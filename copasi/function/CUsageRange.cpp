@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CUsageRange.cpp,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:06:03 $
-   End CVS Header */
-
 /**
  * CUsageRange
  * 
@@ -17,48 +9,30 @@
 #include "copasi.h"
 #include "CUsageRange.h"
 
-CUsageRange::CUsageRange(const std::string & name,
-                         const CCopasiContainer * pParent,
-                         const std::string & type):
-    CRange(name, pParent, type)
-{CONSTRUCTOR_TRACE;}
+CUsageRange::CUsageRange() : CRange(){CONSTRUCTOR_TRACE;}
 
-CUsageRange::CUsageRange(const CUsageRange & src,
-                         const CCopasiContainer * pParent):
-    CRange(src, pParent)
-{CONSTRUCTOR_TRACE;}
+CUsageRange::CUsageRange(const CUsageRange & src) : CRange(src)
+{CONSTRUCTOR_TRACE; mUsage = src.mUsage;}
 
-CUsageRange::~CUsageRange() {DESTRUCTOR_TRACE;}
+CUsageRange::~CUsageRange(){DESTRUCTOR_TRACE;}
 
-void CUsageRange::cleanup() {}
+void CUsageRange::cleanup(){}
 
-void CUsageRange::load(CReadConfig & configBuffer,
+void CUsageRange::load(CReadConfig & configBuffer, 
                        CReadConfig::Mode mode)
 {
-  std::string tmp;
-  configBuffer.getVariable("Usage", "string", &tmp, mode);
-  setObjectName(tmp);
+  configBuffer.getVariable("Usage", "string", &mUsage, mode);
   CRange::load(configBuffer);
 }
 
-/*void CUsageRange::save(CWriteConfig & configBuffer)
+void CUsageRange::save(CWriteConfig & configBuffer)
 {
-  std::string tmp = getObjectName();
-  configBuffer.setVariable("Usage", "string", &tmp);
+  configBuffer.setVariable("Usage", "string", &mUsage);
   CRange::save(configBuffer);
-}*/
-
-bool CUsageRange::setUsage(const std::string & usage)
-{
-  return setObjectName(usage);
 }
 
-const std::string & CUsageRange::getUsage() const
-  {
-    return getObjectName();
-  }
+void CUsageRange::setUsage(const string & usage){mUsage = usage;}
 
-/*const std::string & CUsageRange::getName() const
-  {
-    return getObjectName();
-  }*/
+const string & CUsageRange::getUsage() const {return mUsage;}
+
+const string & CUsageRange::getName() const {return mUsage;}

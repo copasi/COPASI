@@ -1,48 +1,36 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 15:24:04 $
-   End CVS Header */
-
 /****************************************************************************
- **  $ CopasiUI/DifferentialEquations.h               
+ **  $ CopasiUI/MetabolitesWidget.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Differential Equations
+ ** This is the header file for the Metabolites Widget, i.e the First level 
+ ** of Metabolites.
  *****************************************************************************/
 
 #ifndef DIFFERENTIAL_EQUATIONS_H
 #define DIFFERENTIAL_EQUATIONS_H
 #include <qpushbutton.h>
+#include "copasi.h"
 #include <qtextbrowser.h>
 
-#include "copasi.h"
-#include "copasiWidget.h"
-class CMathModel;
-
-class DifferentialEquations : public CopasiWidget
+class DifferentialEquations : public QWidget
   {
     Q_OBJECT
 
   protected:
     QTextBrowser *textBrowser;
-    //QPushButton *btnOK;
-    //QPushButton *btnCancel;
+    QPushButton *btnOK;
+    QPushButton *btnCancel;
 
   public:
     DifferentialEquations(QWidget *parent, const char * name = 0, WFlags f = 0);
-
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool enter(const std::string & key = "");
+    void loadDifferentialEquations();
 
   protected slots:
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
 
   private:
-    void loadDifferentialEquations(CMathModel * mathModel);
+    void showMessage(QString caption, QString text);
   };
 
 #endif

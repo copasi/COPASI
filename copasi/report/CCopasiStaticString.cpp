@@ -1,40 +1,21 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiStaticString.cpp,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/04 17:36:32 $
-   End CVS Header */
-
-#include "copasi.h"
 
 #include <sstream>
 #include "CCopasiStaticString.h"
-#include "CCopasiObjectName.h"
 
-CCopasiStaticString::CCopasiStaticString(const std::string & name,
-    const CCopasiContainer * pParent):
-    CCopasiObject(name, pParent, "String", CCopasiObject::StaticString),
-    mStaticString(name)
+using std::string;
+
+CCopasiStaticString::CCopasiStaticString()
+    : string()
 {}
 
-CCopasiStaticString::CCopasiStaticString(const CCopasiStaticString & src,
-    const CCopasiContainer * pParent):
-    CCopasiObject(src, pParent),
-    mStaticString(src.mStaticString)
+CCopasiStaticString::CCopasiStaticString(const std::string & name)
+    : string(name)
 {}
 
-CCopasiStaticString::~CCopasiStaticString() {}
-
-CCopasiStaticString & CCopasiStaticString::operator = (const std::string & rhs)
+CCopasiStaticString::~CCopasiStaticString()
 {
-  mStaticString = rhs;
-  setObjectName(mStaticString);
-  return *this;
+  cleanup();
 }
 
-void CCopasiStaticString::print(std::ostream * ostream) const
-  {(*ostream) << mStaticString;}
-
-const std::string & CCopasiStaticString::getStaticString() const
-  {return mStaticString;}
+void CCopasiStaticString::cleanup()
+{}

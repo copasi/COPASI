@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.h,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/16 16:20:18 $
-   End CVS Header */
-
 /**
  *  CElementaryFluxModes class.
  *  Main class to calculate elementary flux modes.
@@ -18,89 +10,56 @@
 #ifndef COPASI_CElementaryFluxModes
 #define COPASI_CElementaryFluxModes
 
-#include <iostream>
-#include <vector>
-
-#include "model/CModel.h"
-#include "model/CReaction.h"
-
-// #include "CEFMAlgorithm.h"
-#include "CFluxMode.h"
-
-class CEFMAlgorithm;
-
+#include "CEFMAlgorithm.h"
+class CModel;
 class CElementaryFluxModes
-  {
-    // Attributes
+{
+  // Attributes
+ private:  
+  /**
+   *  The resulting elementary flux modes
+   */
+  vector < vector <unsigned C_INT32> > mFluxModes;
 
-  private:
-    /**
-     *  The resulting elementary flux modes
-     * @supplierCardinality 0..*
-     */
-    std::vector< CFluxMode > mFluxModes;
+  /**
+   *  Vector to keep track of the rearangements neccessary to put the
+   *  reversible reactions to the top of Stoi.
+   */
+  unsigned C_INT32 mReversible;
+  
+  /**
+   *  Vector to keep track of the rearangements neccessary to put the
+   *  reversible reactions to the top of Stoi
+   */
+  vector < unsigned C_INT32 > mIndex;
 
-    /**
-     *  Vector to keep track of the rearangements neccessary to put the
-     *  reversible reactions to the top of Stoi
-     */
-    std::vector< unsigned C_INT32 > mIndex;
+  /**
+   *  The COPASI model we are acting on.
+   */
+  const CModel *mModel;
 
-    /**
-     *  The COPASI model we are acting on.
-     */
-    const CModel *mModel;
+  //Operations
+ public:    
+  /**
+   *  Default constructor
+   */
+  CElementaryFluxModes();
+  
+  /**
+   *  Destructor
+   */
+  ~CElementaryFluxModes();
 
-    /** @link dependency */
-    /*#  CEFMAlgorithm lnkCEFMAlgorithm; */
-    //Operations
-
-  public:
-    /**
-     *  Default constructor
-     */
-    CElementaryFluxModes();
-
-    /**
-     *  Destructor
-     */
-    ~CElementaryFluxModes();
-
-    /**
-     *  calculate
-     *  @param "const CModel *" model
-     */
-    void calculate(const CModel * model);
-
-    /**
-     * Check the reversibility of the indexed Flux Mode
-     * @param unsigned C_INT32 index
-     * @return bool
-     */ // should not be used
-    bool isFluxModeReversible(unsigned C_INT32 index) const;
-
-    /**
-     * Retrieve the number of Flux Modes
-     * @return unsigned C_INT32 size
-     */
-    unsigned C_INT32 getFluxModeSize() const;
-
-    /**
-     * Get one of the flux modes
-     * @param unsigned C_INT32 index
-     * @return reference to flux mode
-     */
-    const CFluxMode & getFluxMode(unsigned C_INT32 index) const;
-
-    /**
-     * Retrieve the description of the indexed Flux Mode
-     * @param unsigned C_INT32 index
-     * @return std::string description
-     */
-    std::string getFluxModeDescription(unsigned C_INT32 index) const;
-
-    // Friend functions
-    friend std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A);
-  };
-
+  /**
+   *  calculate
+   *  @param "const CModel *" model
+   */
+  void calculate(const CModel * model);
+  
+  /**
+   *  Write the result
+   *  @param "ostream &" output
+   */
+  void write(ostream & output) const;
+};
 #endif //COPASI_CElementaryFluxModes

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/08/13 21:12:37 $
+   $Author: ssahle $ 
+   $Date: 2004/08/05 12:54:11 $
    End CVS Header */
 
 /**
@@ -37,31 +37,27 @@ class CPlotDataChannelSpec : public CCopasiObjectName
     /**
      * Should autoscaling be attempted?
      */
-    bool minAutoscale;
-    bool maxAutoscale;
+    bool autoscale;
 
     CPlotDataChannelSpec()
         : CCopasiObjectName(),
         min(0.0),
         max(0.0),
-        minAutoscale(true),
-        maxAutoscale(true)
+        autoscale(true)
     {}
 
     CPlotDataChannelSpec(const CCopasiObjectName & obj)
         : CCopasiObjectName(obj),
         min(0.0),
         max(0.0),
-        minAutoscale(true),
-        maxAutoscale(true)
+        autoscale(true)
     {}
 
     CPlotDataChannelSpec(const CCopasiObjectName & obj, C_FLOAT64 minimum, C_FLOAT64 maximum)
         : CCopasiObjectName(obj),
         min(minimum),
         max(maximum),
-        minAutoscale(false),
-        maxAutoscale(false)
+        autoscale(false)
     {}};
 
 //****************************************************************************************
@@ -74,7 +70,7 @@ class CPlotItem : public CCopasiParameterGroup
      */
     enum Type
     {
-      unset = 0, curve2d,     //for plot items
+      unset = 0, curve2d,   //for plot items
       plot2d, simWiz   //for plot specifications
     };
 
@@ -87,7 +83,7 @@ class CPlotItem : public CCopasiParameterGroup
     /**
      * XML sub type names of methods known to COPASI.
      */
-    static const std::string XMLType[];
+    static const char* XMLType[];
 
     // Attributes
   private:
@@ -112,7 +108,7 @@ class CPlotItem : public CCopasiParameterGroup
   public:
     CPlotItem(const std::string & name = "NoName",
               const CCopasiContainer * pParent = NULL,
-              const Type & type = curve2d);
+              const CPlotItem::Type & type = curve2d);
 
     CPlotItem(const CPlotItem & src,
               const CCopasiContainer * pParent = NULL);
@@ -138,11 +134,9 @@ class CPlotItem : public CCopasiParameterGroup
      * Returns CCopasiMethod::unset if no match is found.
      * @param (const char * xmlTypeName)
      * @return CCopasiMethod::SubType type
-     */ 
-    //static
-    //CPlotItem::Type XMLNameToEnum(const char * xmlTypeName);
+     */
     static
-    CPlotItem::Type XMLNameToEnum(const std::string& xmlTypeName);
+    CPlotItem::Type XMLNameToEnum(const char * xmlTypeName);
 
     /**
      * Retrieve the type of the method

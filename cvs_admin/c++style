@@ -1,52 +1,19 @@
-ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
-GAWK=gawk
-MV=mv
+ASTYLE=/home/cvs/copasi_dev/cvs_admin/astyle
+GAWK=/usr/bin/gawk
+MV=/bin/mv
 
-# ASTYLE=/home/shoops/projects/copasi_dev/cvs_admin/astyle
-# GAWK=/usr/bin/gawk
-# MV=/bin/mv
-
-$GAWK -- '
-BEGIN {
-  printf "/* Begin CVS Header\n"
-  printf "    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $\n" 
-  printf "    $Revision: 1.16 $\n"
-  printf "    $Name:  $\n"
-  printf "    $Author: shoops $ \n"
-  printf "    $Date: 2003/11/05 18:38:04 $\n"
-  printf "    End CVS Header */\n\n"
-
-  Delete = 0
-}
-
-$0 ~ ".*Begin CVS Header.*" {Delete = 1}
-
-{
-  if (Delete == 0) print
-}
-
-$0 ~ ".*End CVS Header.*" {Delete = 0}
-
-' $1 | \
-$ASTYLE --mode=c \
-        --style=gnu \
-        --one-line=keep-statements \
+$ASTYLE --style=gnu \
         --one-line=keep-blocks \
         --pad=oper \
+        --break-blocks \
         --convert-tabs \
+        --indent-preprocessor \
         --min-conditional=0 \
-        |\
+        < $1 |\
 $GAWK -- '
 BEGIN {
   lastEmpty = 0
   lastOpenBracket = 0
-  lastClosingBracket = 0
-}
-
-END {
-  if (lastClosingBracket == 1) {
-    printf "\n"
-  }
 }
 
 $0 ~ "^$" {
@@ -57,33 +24,16 @@ $0 ~ "^$" {
 
 $0 !~ "^$" {
   if (lastEmpty == 1) {
-    if ($0 !~ "^ *}.*$") printf "\n"
+    if ($0 !~ "};$" && $0 !~ "}$") printf "\n"
     lastEmpty = 0
-  }
-
-  if (lastClosingBracket == 1) {
-    if ($0 !~ "^ *;")  printf "\n"
-    lastClosingBracket = 0
   }
 
   gsub(/\( +/, "(")
   gsub(/ +)/, ")")
-  gsub(/\{ +/, "{")
   gsub(/^\*/, " *")
-        
-  $0 = gensub(/ +;/, ";", "g")
-  $0 = gensub(/;([a-zA-Z0-9])/, "; \\1", "g")
-  $0 = gensub(/([^ ]) +}/, "\\1}", "g")
-  
-  if ($0 ~ ".*}$") {
-    lastClosingBracket = 1
-    printf "%s", $0
-  }
-  else {
-    lastClosingBracket = 0
-    printf "%s\n", $0
-  }
 
+  printf "%s\n", gensub(/;([^ ])/, "; \\1", "g")
+  
   if ($0 ~ "{$") lastOpenBracket = 1
   else lastOpenBracket = 0
 }

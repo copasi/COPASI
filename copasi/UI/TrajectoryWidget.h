@@ -1,43 +1,27 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.24 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/30 11:46:43 $
-   End CVS Header */
-
-/********************************************************
-Author: Liang Xu
-Version : 1.xx  <first>
-Description: 
-Date: 02/03 
-Comment : TrajectoryWidget
-Contact: Please contact lixu1@vt.edu.
- *********************************************************/
+/****************************************************************************
+ ** Form interface generated from reading ui file '.\TrajectoryWidget.ui'
+ **
+ ** Created: Tue Feb 11 14:01:14 2003
+ **      by:  The User Interface Compiler (uic)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 #ifndef TRAJECTORYWIDGET_H
 #define TRAJECTORYWIDGET_H
 
-#include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
-#include "copasiWidget.h"
-
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
-class QCheckBox;
-class QComboBox;
 class QFrame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+class QSplitter;
 class QTable;
-class CTrajectoryTask;
-class CTrajectoryProblem;
-class CTrajectoryMethod;
-class CModel;
 
-class TrajectoryWidget : public CopasiWidget
+class TrajectoryWidget : public QWidget
   {
     Q_OBJECT
 
@@ -45,63 +29,36 @@ class TrajectoryWidget : public CopasiWidget
     TrajectoryWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TrajectoryWidget();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
-
-    //void setModel(CModel* newModel);
-
-  signals:
-    //virtual void runFinished(CModel*);
-
-  protected slots:
-    virtual void CancelChange();
-    virtual void CommitChange();
-    //virtual void EnableRunTask();
-    virtual void ExportToFile();
-    virtual void runTrajectoryTask();
-    virtual void UpdateMethod(const bool & update = true);
-    virtual void ReportDefinitionClicked();
-
-    virtual void StartTimeSlot();
-    virtual void EndTimeSlot();
-    virtual void StepsizeSlot();
-    virtual void NumStepsSlot();
-
-  private:
-
-    std::string objKey;
-    void loadTrajectoryTask();
-    void saveTrajectoryTask();
-    void loadMethodParameters();
-
-    QWidget* pParent;
-    QGridLayout* TrajectoryWidgetLayout;
-    QHBoxLayout* Layout2;
+    QFrame* line6;
+    QSplitter* splitter3;
+    QPushButton* commitChange;
+    QPushButton* cancelChange;
     QFrame* line8;
-    QTable* parameterTable;
     QLabel* taskNameLabel;
     QFrame* line7;
-    QFrame* line7_2;
-    QLineEdit* taskName;
-    QComboBox* ComboBox1;
-    QLineEdit* nStartTime;
-    QCheckBox* bExecutable;
+    QSplitter* splitter11;
     QLabel* parameterValueLabel;
+    QTable* parameterTable;
     QLabel* TextLabel1;
     QLabel* TextLabel1_3;
-    QLabel* TextLabel1_3_2;
     QLineEdit* nStepSize;
-    QLabel* TextLabel1_2_2;
-    QLineEdit* nEndTime;
-    QLineEdit* nStepNumber;
+    QLineEdit* taskName;
+    QLineEdit* nStepSize_2;
     QLabel* TextLabel1_2;
-    QFrame* line6;
-    QPushButton* bRunTask;
-    //    QPushButton* commitChange;
-    QPushButton* cancelChange;
-    QPushButton* ExportToFileButton;
-    QPushButton* reportDefinitionButton;
+    QLabel* TextLabel1_2_2;
+    QLineEdit* nStepNumber;
+    QLineEdit* nStepNumber_2;
+
+  public slots:
+    virtual void taskNameChanged();
+    virtual void methodJacob();
+    virtual void methodStability();
+    virtual void parameterValueChanged();
+    virtual void CommitChange();
+    virtual void CancelChange();
+
+  protected:
+    QVBoxLayout* layout15;
   };
 
 #endif // TRAJECTORYWIDGET_H

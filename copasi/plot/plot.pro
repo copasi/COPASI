@@ -1,31 +1,34 @@
-######################################################################
-# $Revision: 1.9 $ $Author: ssahle $ $Date: 2004/08/09 13:14:22 $  
-######################################################################
+SOURCES	+= \
+	plotwidget1.cpp \
+  curvegroupbox.cpp \
+  doublerect.cpp \
+  zoomplot.cpp \
+	CopasiPlot.cpp \
+  plotwindow.cpp \
+	main.cpp
 
-LIB = plot
-include(../lib.pri)
-CONFIG += qt
+HEADERS	+= plotwidget1.h \
+	crvspecscrlview.h \
+  curvegroupbox.h \
+  doublerect.h \
+  zoomplot.h \
+	CopasiPlot.h \
+	plotspec.h \
+	plotwindow.h
 
-HEADERS += plotwidget1.h \
-           doublerect.h \
-           zoomplot.h \
-           CopasiPlot.h \
-           COutputHandlerPlot.h \
-           CPlotItem.h \
-           CPlotSpecification.h \
-           CPlotSpec2Vector.h \
-           plotwindow.h  
-#           curve2dwidget.h
+TARGET       = copasiplot
+MOC_DIR      = moc
+OBJECTS_DIR  = obj
+DEPENDPATH   = ../include
 
-SOURCES += CopasiPlot.cpp \
-           doublerect.cpp \
-           plotwidget1.cpp \
-           plotwindow.cpp \
-           COutputHandlerPlot.cpp \
-           CPlotItem.cpp \
-           CPlotSpecification.cpp \
-           CPlotSpec2Vector.cpp \
-           zoomplot.cpp 
-#           curve2dwidget.cpp
 
-FORMS +=  curve2dwidget.ui
+linux-g++:TMAKE_CXXFLAGS += -fno-exceptions 
+
+
+#FORMS	= plotwidget1.ui
+#FORMS	= curvegroupbox.ui
+TEMPLATE	=app
+CONFIG	+= qt warn_on debug release thread
+INCLUDEPATH	+= ../include
+unix:LIBS	+= -lqwt
+LANGUAGE	= C++

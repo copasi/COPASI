@@ -19,265 +19,214 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="Line" row="7" column="0" rowspan="1" colspan="3">
+        <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>bodyField</cstring>
+                <cstring>layout18</cstring>
             </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="8" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>layout14</cstring>
-            </property>
-            <hbox>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QPushButton">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>confirmButton</cstring>
+                        <cstring>layout17</cstring>
                     </property>
-                    <property name="text">
-                        <string>confirm</string>
-                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLineEdit" row="1" column="1">
+                            <property name="name">
+                                <cstring>expressionText</cstring>
+                            </property>
+                            <property name="frameShape">
+                                <enum>LineEditPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="0" column="1">
+                            <property name="name">
+                                <cstring>expressionName</cstring>
+                            </property>
+                            <property name="frameShape">
+                                <enum>LineEditPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>expressionEditlabel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Expression</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>expressionNameLabel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Expression Name</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="Line">
                     <property name="name">
-                        <cstring>cancelButton</cstring>
+                        <cstring>bodyField_2</cstring>
                     </property>
-                    <property name="text">
-                        <string>cancel</string>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
                     </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QTable" row="6" column="2">
-            <property name="name">
-                <cstring>itemsTable</cstring>
-            </property>
-            <property name="numRows">
-                <number>0</number>
-            </property>
-            <property name="numCols">
-                <number>0</number>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="6" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>layout8</cstring>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton" row="1" column="0">
-                    <property name="name">
-                        <cstring>addButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="1">
-                    <property name="name">
-                        <cstring>deleteButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="2" column="1">
-                    <property name="name">
-                        <cstring>downButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                </widget>
-                <widget class="QListBox" row="3" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>itemnamesTable</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>itemsLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Copasi Items</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="2" column="0">
-                    <property name="name">
-                        <cstring>upButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="Line" row="5" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>bodyField_2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>layout7</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>steadystateCheck</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Steady State</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>steadystateEditButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>edit</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer1</cstring>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>101</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QCheckBox">
+                </widget>
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>timeCheck</cstring>
+                        <cstring>layout16</cstring>
                     </property>
-                    <property name="text">
-                        <string>Time Course</string>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout15</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>itemsLabel</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Copasi Items</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout14</cstring>
+                                    </property>
+                                    <grid>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QPushButton" row="1" column="1">
+                                            <property name="name">
+                                                <cstring>downButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string></string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton" row="0" column="1">
+                                            <property name="name">
+                                                <cstring>deleteButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string></string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton" row="0" column="0">
+                                            <property name="name">
+                                                <cstring>addButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string></string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton" row="1" column="0">
+                                            <property name="name">
+                                                <cstring>upButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string></string>
+                                            </property>
+                                        </widget>
+                                    </grid>
+                                </widget>
+                                <widget class="QListBox">
+                                    <property name="name">
+                                        <cstring>listBoxItems</cstring>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QTable">
+                            <property name="name">
+                                <cstring>itemsTable</cstring>
+                            </property>
+                            <property name="numRows">
+                                <number>0</number>
+                            </property>
+                            <property name="numCols">
+                                <number>0</number>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="Line">
+                    <property name="name">
+                        <cstring>bodyField</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>timeEditButton</cstring>
+                        <cstring>layout14</cstring>
                     </property>
-                    <property name="text">
-                        <string>edit</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>confirmButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>confirm</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>cancelButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>cancel</string>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-            </hbox>
-        </widget>
-        <widget class="Line" row="3" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>bodyField_2_2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>expressionName</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>LineEditPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="1" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>methodCombo</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="1" column="0">
-            <property name="name">
-                <cstring>optimizationLabel</cstring>
-            </property>
-            <property name="text">
-                <string>Optimization Method</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="0">
-            <property name="name">
-                <cstring>expressionEditlabel</cstring>
-            </property>
-            <property name="text">
-                <string>Expression</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>expressionText</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>LineEditPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-        </widget>
-        <widget class="QLabel" row="0" column="0">
-            <property name="name">
-                <cstring>expressionNameLabel</cstring>
-            </property>
-            <property name="text">
-                <string>Name</string>
-            </property>
+            </vbox>
         </widget>
     </grid>
 </widget>
 <tabstops>
     <tabstop>expressionName</tabstop>
-    <tabstop>methodCombo</tabstop>
     <tabstop>expressionText</tabstop>
-    <tabstop>steadystateCheck</tabstop>
-    <tabstop>steadystateEditButton</tabstop>
-    <tabstop>timeCheck</tabstop>
-    <tabstop>timeEditButton</tabstop>
     <tabstop>addButton</tabstop>
     <tabstop>deleteButton</tabstop>
     <tabstop>upButton</tabstop>
     <tabstop>downButton</tabstop>
-    <tabstop>itemnamesTable</tabstop>
+    <tabstop>listBoxItems</tabstop>
     <tabstop>itemsTable</tabstop>
     <tabstop>confirmButton</tabstop>
     <tabstop>cancelButton</tabstop>

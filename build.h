@@ -1,1 +1,1 @@
-#define COPASI_BUILD $Revision: 1.2 $
+#define COPASI_BUILD $Revision: 1.1 $

@@ -1,10 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 09:31:04 $
-   End CVS Header */
 
 /* COptMethodSA code */
 
@@ -21,30 +14,25 @@
 #define NumDirection 10
 #define TRUE 1
 #define FALSE 0
+#define PI 3.1415926
 
-#include <vector>
-#include "mathematics.h"
-
+#include "vector.h"
 #include "copasi.h"
 #include "COptMethod.h"
 #include "COptMethodSA.h"
 #include "CRealProblem.h"
 #include "randomGenerator/CRandom.h"
 
-//static double PI = 4.0 * atan(1.0);
-
 COptMethodSA::COptMethodSA():
-    COptMethod(CCopasiMethod::SimulatedAnnealing)
+    COptMethod()
 {
-  addParameter("SimulatedAnnealing.Iterations",
-               CCopasiParameter::UINT,
-               (unsigned C_INT32) 10000);
-  addParameter("SimulatedAnnealing.RandomGenerator.Type",
-               CCopasiParameter::INT,
-               (C_INT32) CRandom::mt19937);
-  addParameter("SimulatedAnnealing.RandomGenerator.Seed",
-               CCopasiParameter::INT,
-               (C_INT32) 0);
+  setName("SimulatedAnnealing");
+  mTypeEnum = COptMethod::SimulatedAnnealing;
+  setType(COptMethod::TypeName[mTypeEnum]);
+
+  add("SimulatedAnnealing.Iterations", 10000, CParameter::UINT);
+  add("SimulatedAnnealing.RandomGenerator.Type", CRandom::mt19937, CParameter::INT);
+  add("SimulatedAnnealing.RandomGenerator.Seed", 0, CParameter::INT);
 }
 
 COptMethodSA::COptMethodSA(const COptMethodSA & src):
@@ -160,16 +148,16 @@ C_INT32 COptMethodSA::optimise()
     {
       for (int ff = 0; ff < NumIteration; ff++) //step adjustments
         {
-          std::cout << "New iteration begins ......" << std::endl;
-          std::cout << "Current Temperature: " << t << std::endl;
-          std::cout << "Number of Temperature Change: " << NumTempChange << std::endl;
+          std::cout << "New iteration begins ......" << endl;
+          std::cout << "Current Temperature: " << t << endl;
+          std::cout << "Number of Temperature Change: " << NumTempChange << endl;
 
           for (j = 0; j < NumDirection; j++) // adjustment in all directions
             {
               for (int hh = 0; hh < NumParameter; hh++)
                 {
                   // ChangeValue=tan(2*PI*rand()/RAND_MAX)*(t/pow(pow(2,2.0)+t*t,(NumParameter+1)/2.0));
-                  ChangeValue = tan(2 * M_PI * pRand->getRandomCC()) * (t / pow(pow(2, 2.0) + t * t, (NumParameter + 1) / 2.0));
+                  ChangeValue = tan(2 * PI * pRand->getRandomCC()) * (t / pow(pow(2, 2.0) + t * t, (NumParameter + 1) / 2.0));
                   newparameter[hh] = thisparameter[hh] + step[hh] * ChangeValue;
 
                   if (newparameter[hh] < Minimum[hh]) newparameter[hh] = Minimum[hh] + pRand->getRandomCC() * (Maximum[hh] - Minimum[hh]);

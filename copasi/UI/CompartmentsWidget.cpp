@@ -1,217 +1,177 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.92 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:27 $
-   End CVS Header */
-
-/*******************************************************************
- **  $ CopasiUI/CompartmentsWidget.cpp                 
- **  $ Author  : Mudita Singhal
- **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
- ** Compartments----It is Basically the First level of Compartments
- ********************************************************************/
-#include "CompartmentsWidget.h"
-
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
-#include <qfont.h>
-#include <qpushbutton.h>
-#include <qaction.h>
+#include "CompartmentsWidget.h"
 
-#include "MyTable.h"
-#include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "listviews.h"
-#include "report/CKeyFactory.h"
-#include "qtUtilities.h"
-#include "DataModelGUI.h"
 
-std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
-  {
-    CCopasiVectorN<CCompartment>& tmp = dataModel->getModel()->getCompartments();
-    std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
 
-    return ret;
-  }
-
-void CompartmentsWidget::init()
+/** 
+ *  Constructs a Widget for the Compartments subsection of the tree.
+ *  This widget is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f'. 
+ *  @param model The CModel class which contains the metabolites 
+ *  to be displayed.
+ *  @param parent The widget which this widget is a child of.
+ *  @param name The object name is a text that can be used to identify 
+ *  this QObject. It's particularly useful in conjunction with the Qt Designer.
+ *  You can find an object by name (and type) using child(), and more than one 
+ *  using queryList(). 
+ *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
+ *  for more information about these flags.
+ */
+CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlags f)
+						: QWidget(parent, name, f)
 {
-  mOT = ListViews::COMPARTMENT;
-  numCols = 3;
-  table->setNumCols(numCols);
-  //table->QTable::setNumRows(1);
+	 mModel=NULL;		
+	table = new MyTable(0, 2, this, "tblCompartments");
+	QVBoxLayout *vBoxLayout = new QVBoxLayout( this, 0 );
+	vBoxLayout->addWidget(table);
 
-  //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Status");
-  tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Volume");
+	//Setting table headers
+	QHeader *tableHeader = table->horizontalHeader();
+	tableHeader->setLabel(0, "Name");
+	tableHeader->setLabel(1, "Volume");
+
+	btnOK = new QPushButton("&OK", this);
+	btnCancel = new QPushButton("&Cancel", this);
+
+	QHBoxLayout *hBoxLayout = new QHBoxLayout( vBoxLayout, 0 );
+	
+	//To match the Table left Vertical Header Column Width.
+	hBoxLayout->addSpacing( 32 );
+	
+	hBoxLayout->addSpacing( 50 );
+	hBoxLayout->addWidget(btnOK);
+	hBoxLayout->addSpacing( 5 );
+	hBoxLayout->addWidget(btnCancel);
+	hBoxLayout->addSpacing( 50 );
+	
+    table->sortColumn (0, TRUE, TRUE);
+	table->setSorting ( TRUE );
+	table->setFocusPolicy(QWidget::WheelFocus);
+
+	
+	// signals and slots connections
+    connect( table, SIGNAL( clicked( int, int, int, const QPoint &) ), this, SLOT( slotTableClicked( int, int, int, const QPoint &) ) );
+	connect( table, SIGNAL( currentChanged ( int, int ) ), this, SLOT( slotTableCurrentChanged( int, int ) ) );
+	connect( table, SIGNAL( selectionChanged () ), this, SLOT( slotTableSelectionChanged () ) );
+	connect( btnOK, SIGNAL( clicked () ), this, SLOT( slotBtnOKClicked() ) );
+	connect( btnCancel, SIGNAL( clicked () ), this, SLOT( slotBtnCancelClicked() ) );
+
 }
 
-void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
+void CompartmentsWidget::loadCompartments(CModel *model)
 {
-  if (!obj) return;
-  const CCompartment* pComp = (const CCompartment*)obj;
-  table->setText(row, 1, FROM_UTF8(pComp->getObjectName()));
-  table->setText(row, 2, QString::number(pComp->getVolume()));
+	if (model != NULL)
+	{
+		mModel = model;
+		//Emptying the table
+		int numberOfRows = table->numRows();
+		for(int i = 0; i < numberOfRows; i++)
+		{
+			table->removeRow(0);
+		}
+		
+		CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+		C_INT32 noOfCompartmentsRows = compartments.size();
+		table->setNumRows(noOfCompartmentsRows);
+		
+		//Now filling the table.
+		CCompartment *compartn;
+		for (C_INT32 j = 0; j < noOfCompartmentsRows; j++)
+		{
+			compartn = compartments[j];
+			table->setText(j, 0, compartn->getName().c_str());
+			//table->setText(j, 1, QString::number(*(compartn->getVolume())));
+			table->setText(j, 1, QString::number(compartn->getVolume()));
+			//table->setText(j, 3, QString::number(metab->getStatus()));
+		}
+	}
 }
 
-void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
+
+void CompartmentsWidget::mousePressEvent ( QMouseEvent * e )
 {
-  if (!obj) return;
-  CCompartment* pComp = (CCompartment*)obj;
-  pComp->setInitialVolume(table->text(row, 2).toDouble());
+	QMessageBox::information( this, "Application name",
+                            "Clicked (mousePress) On Compartments Widget." );
+
+	QWidget::mousePressEvent(e);
+	table->setFocus();
+
 }
 
-void CompartmentsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+
+void CompartmentsWidget::slotTableClicked( int row, int col, int button, const QPoint & mousePos )
 {
-  if (exc != 2)
-    table->setText(row, 2, QString::number(1.0));
+	//QMessageBox::information( this, "Application name",
+		//"Clicked (Inside CompartmentsWidget::slotTableClicked) On Compartments table." );	
+
 }
 
-QString CompartmentsWidget::defaultObjectName() const
-  {
-    return "compartment";
-  }
-
-//specific
-/*void CompartmentsWidget::createNewObject()
+void CompartmentsWidget::slotBtnOKClicked()
 {
-  std::string name = "compartment_0";
-  int i = 0;
-  while (!dataModel->getModel()->createCompartment(name))
-    {
-      i++;
-      name = "compartment_";
-      name += (const char *)QString::number(i).utf8();
-    }
-  table->setText(table->numRows() - 1, 1, FROM_UTF8(name));
-  table->setNumRows(table->numRows());
-  ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD);
-}*/
-
-CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
-{
-  std::string nname = name;
-  int i = 0;
-  CCompartment* pCom;
-  while (!(pCom = dataModel->getModel()->createCompartment(nname)))
-    {
-      i++;
-      nname = name;
-      nname += (const char *)QString::number(i).utf8();
-    }
-  std::cout << " *** created Compartment: " << nname << " : " << pCom->getKey() << std::endl;
-  return pCom;
+	QMessageBox::information( this, "Compartments Widget",
+		"Clicked Ok button On Compartments widget.(Inside CompartmentsWidget::slotBtnOKClicked())" );	
 }
 
-void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
+void CompartmentsWidget::slotBtnCancelClicked()
 {
-  if (!dataModel->getModel())
-    return;
-
-  if (keys.size() == 0)
-    return;
-
-  QString compartmentList = "Are you sure you want to delete listed COMPARTMENT(S) ?\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above COMPARTMENT(S) and will be deleted -\n";
-  QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-  int metabFound = 0;
-  int reacFound = 0;
-
-  unsigned C_INT32 i, imax = keys.size();
-  for (i = 0; i < imax; i++) //all compartments
-    {
-      compartmentList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
-      compartmentList.append(", ");
-
-      CCompartment* comp =
-        dynamic_cast< CCompartment *>(GlobalKeys.get(keys[i]));
-
-      const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
-      unsigned C_INT32 noOfMetabs = Metabs.size();
-
-      if (noOfMetabs > 0)
-        {
-          metabFound = 1;
-          unsigned C_INT32 k;
-          for (k = 0; k < noOfMetabs; k++)
-            {
-              effectedMetabList.append(FROM_UTF8(Metabs[k]->getObjectName()));
-              effectedMetabList.append(", ");
-            }
-
-          effectedMetabList.remove(effectedMetabList.length() - 2, 2);
-          effectedMetabList.append("  ---> ");
-          effectedMetabList.append(FROM_UTF8(comp->getObjectName()));
-          effectedMetabList.append("\n");
-
-          std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnCompartment(keys[i]);
-          if (effectedReacKeys.size() > 0)
-            {
-              reacFound = 1;
-              std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
-              for (it = effectedReacKeys.begin(); it != itEnd; ++it)
-                {
-                  effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
-                  effectedReacList.append(", ");
-                }
-
-              effectedReacList.remove(effectedReacList.length() - 2, 2);
-              effectedReacList.append("  ---> ");
-              effectedReacList.append(FROM_UTF8(comp->getObjectName()));
-              effectedReacList.append("\n");
-            }
-        }
-    }
-
-  compartmentList.remove(compartmentList.length() - 2, 2);
-
-  QString msg = compartmentList;
-  if (metabFound == 1)
-    {
-      msg.append("\n \n");
-      msg.append(effectedMetabList);
-      if (reacFound == 1)
-        {
-          msg.append("\n \n");
-          msg.append(effectedReacList);
-        }
-    }
-
-  C_INT32 choice;
-  if (metabFound == 1)
-    choice = QMessageBox::warning(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 0, 1);
-  else
-    choice = 0;
-
-  switch (choice)
-    {
-    case 0:                // Yes or Enter
-      {
-        for (i = 0; i < imax; i++)
-          {
-            dataModel->getModel()->removeCompartment(keys[i]);
-          }
-
-        for (i = 0; i < imax; i++)
-          ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, keys[i]);
-        //TODO notify about metabs and reactions
-        break;
-      }
-    case 1:                // No or Escape
-      break;
-    }
+	QMessageBox::information( this, "Compartments Widget",
+		"Clicked Ok button On Compartments widget.(Inside CompartmentsWidget::slotBtnCancelClicked())" );	
 }
+
+void CompartmentsWidget::slotTableCurrentChanged( int row, int col )
+{
+	//QMessageBox::information( this, "Reactions Widget",
+		//"Current Changed.(Inside ReactionsWidget::slotTableCurrentChanged())" );	
+}
+
+void CompartmentsWidget::slotTableSelectionChanged() 
+{
+	if (!table->hasFocus())
+	{
+		table->setFocus();
+	}
+}
+
+
+void CompartmentsWidget::resizeEvent( QResizeEvent * re)
+{
+	if (isVisible())
+	{
+		int newWidth = re->size().width();
+		
+		newWidth -= 35;	//Accounting for the left (vertical) header width.
+		float weight0 = 3.5, weight1 = 6.5;
+		float weightSum = weight0 + weight1;
+		int w0, w1;
+		w0 = newWidth * (weight0 / weightSum);
+		w1 = newWidth - w0;
+		table->setColumnWidth(0, w0);
+		table->setColumnWidth(1, w1);
+	}
+		
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

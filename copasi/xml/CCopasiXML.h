@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/06 14:59:33 $
-   End CVS Header */
-
 /**
  * CCopasiXML class.
  * This class implements a CCopasiXMLInterface to the COPASI XML specified in
@@ -19,10 +11,6 @@
 #define COPASI_CCopasiXML
 
 #include "CCopasiXMLInterface.h"
-
-class CCopasiParameter;
-class CCopasiParameterGroup;
-class CCopasiObjectName;
 
 class CCopasiXML : public CCopasiXMLInterface
   {
@@ -72,45 +60,10 @@ class CCopasiXML : public CCopasiXMLInterface
     bool saveTaskList();
 
     /**
-     * Save the list of plots.
-     * @return bool success
-     */
-    bool CCopasiXML::savePlotList();
-
-    /**
      * Save the list of reports.
      * @return bool success
      */
     bool saveReportList();
-
-    /**
-     * Save a Parameter.
-     * @param const CCopasiParameter & parameter
-     * @return bool success
-     */
-    bool saveParameter(const CCopasiParameter & parameter);
-
-    /**
-     * Save a Parameter Group.
-     * @param const CCopasiParameterGroup::parameterGroup & group
-     * @return bool success
-     */
-    bool saveParameterGroup(const std::vector< CCopasiParameter * > & group);
-
-    /**
-     * Save a Report Section such as Header, Body or Footer.
-     * @param const std::string & name
-     * @param const std::vector <CCopasiObjectName> & section
-     * @return bool success
-     */
-    bool saveReportSection(const std::string & name,
-                           const std::vector <CCopasiObjectName> & section);
-
-    /**
-     * Build a list of functions.
-     * @return bool success
-     */
-    bool buildFunctionList();
   };
 
 #endif // COPASI_CCopasiXML

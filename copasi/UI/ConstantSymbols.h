@@ -1,47 +1,40 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.h,v $
-   $Revision: 1.15 $
-   $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 14:45:27 $
-   End CVS Header */
-
 /****************************************************************************
- **  $ CopasiUI/ConstantSymbols.h               
+ **  $ CopasiUI/MetabolitesWidget.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Constant Symbols
+ ** This is the header file for the Metabolites Widget, i.e the First level 
+ ** of Metabolites.
  *****************************************************************************/
 
 #ifndef CONSTANT_SYMBOLS_H
 #define CONSTANT_SYMBOLS_H
 
-#include <qtable.h>
-#include <qpushbutton.h>
 #include "MyTable.h"
 #include "copasi.h"
-#include "copasiWidget.h"
-class CMathModel;
+#include "model/model.h"
+#include <qtable.h>
+#include <qpushbutton.h>
 
-class ConstantSymbols : public CopasiWidget
+class ConstantSymbols : public QWidget
   {
     Q_OBJECT
 
   protected:
-    CMathModel * mModel;
+    CModel * mModel;
     MyTable * table;
-    //QPushButton *btnOK;
-    //QPushButton *btnCancel;
+    QPushButton *btnOK;
+    QPushButton *btnCancel;
+
+  public slots:
+    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
   signals:
-    void name(const QString &);
+    void name(QString &);
 
   public:
     ConstantSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
+    //void loadMetabolites(CModel *model);
     void resizeEvent(QResizeEvent * re);
-
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool enter(const std::string & key = "");
 
   protected slots:
     virtual void slotBtnOKClicked();
@@ -49,7 +42,7 @@ class ConstantSymbols : public CopasiWidget
     virtual void slotTableSelectionChanged();
 
   private:
-    bool loadConstantSymbols(CMathModel *model);
+    void showMessage(QString caption, QString text);
   };
 
 #endif

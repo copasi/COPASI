@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathSymbol.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:24:29 $
-   End CVS Header */
-
 /**
  *  CMathSymbol class.
  *  The class CMathSymbol associates a symbol with a CCopasiObject assuring
@@ -24,14 +16,11 @@ std::map< std::string, CMathSymbol * > CMathSymbol::mList;
 std::string & CMathSymbol::alternateName(std::string & name)
 {
   unsigned C_INT32 count = 1;
-  std::stringstream tmpName;
+  stringstream tmpName;
   tmpName << name;
 
   while (mList.count(tmpName.str()))
-    {
-      tmpName.seekp(0);
-      tmpName << name << "_" << count++;
-    }
+    tmpName << name << "_" << count++;
 
   return name = tmpName.str();
 }
@@ -77,25 +66,23 @@ CMathSymbol::CMathSymbol(const CMathSymbol & src):
   mList[mName] = this;
 }
 
-CMathSymbol::~CMathSymbol()
-{
-  mList.erase(mName);
-}
+CMathSymbol::~CMathSymbol() {mList.erase(mName);}
 
 bool CMathSymbol::setName(std::string & name)
 {
-  bool Success = true;
-
   mList.erase(mName);
 
   mName = name;
-  if (alternateName(mName) == name) Success = true;
-  else Success = false;
-  name = mName;
-
-  mList[mName] = this;
-
-  return Success;
+  if (alternateName(mName) == name)
+    {
+      mList[mName] = this;
+      return true;
+    }
+  else
+    {
+      mList[mName] = this;
+      return false;
+    }
 }
 
 const std::string & CMathSymbol::getName() const {return mName;}
@@ -104,7 +91,7 @@ bool CMathSymbol::setCN(const CCopasiObjectName & cn,
                         const CCopasiContainer * pContainer)
 {
   mCN = cn;
-  mpObject = const_cast<CCopasiObject *>(const_cast<CCopasiContainer *>(pContainer)->getObject(mCN));
+  mpObject = const_cast<CCopasiContainer *>(pContainer)->getObject(mCN);
   if (mpObject)
     return true;
   else

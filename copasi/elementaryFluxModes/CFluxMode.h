@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/16 16:20:18 $
-   End CVS Header */
-
 /**
  *  CFluxMode class.
  *  Used to return the flux modes in human readable form
@@ -19,80 +11,66 @@
 
 #include <vector>
 
-class CReaction;
-class CModel;
-class CTableauLine;
+#include "CTableauLine.h"
 
 class CFluxMode
-  {
-    // Attributes
+{
+  // Attributes
+ private:
+  /**
+   *  Vector containing an index to a reaction an the multiplier
+   *  for that reaction.
+   */
+  vector < pair < unsigned C_INT32, C_FLOAT64 > > mReactions ;
 
-  private:
-    /**
-     *  Vector containing an index to a reaction and the multiplier
-     *  for that reaction.
-     */
-    std::vector < std::pair < unsigned C_INT32, C_FLOAT64 > > mReactions;
+  /**
+   *  Reversibility of the mode.
+   */
+  bool mReversible;
 
-    /**
-     *  Reversibility of the mode.
-     */
-    bool mReversible;
+  // Operations
+ public:
+  /**
+   *  Default constructor
+   */
+  CFluxMode();
 
-    // Operations
+  /**
+   *  Specific constructor
+   *  @param "const CTableauLine &" line
+   */
+  CFluxMode(const CTableauLine * line);
 
-  public:
-    /**
-     *  Default constructor
-     */
-    CFluxMode();
+  /**
+   *  Destructor
+   */
+  ~CFluxMode();
 
-    /**
-     *  Copy constructor
-     *  @param "const CFluxMode &" src
-     */
-    CFluxMode(const CFluxMode & src);
+  /**
+   *  Retrieve the index of the reaction
+   *  @param "const unsigned C_INT32 &" index
+   *  @return "const unsigned C_INT32 &" index
+   */
+  const unsigned C_INT32 & getReaction(const unsigned C_INT32 & index) const;
 
-    /**
-     *  Specific constructor
-     *  @param "const CTableauLine &" line
-     */
-    CFluxMode(const CTableauLine * line);
+  /**
+   *  Retrieves the multiplier for the reaction
+   *  @param "const unsigned C_INT32 &" index
+   *  @return "const unsigned C_INT32 &" index
+   */
+  const C_FLOAT64 & getMultiplier(const unsigned C_INT32 & index) const;
 
-    /**
-     *  Destructor
-     */
-    ~CFluxMode();
+  /**
+   *  Check whether the mode is reversible
+   *  @return "const bool &" isReversible
+   */
+  const bool & isReversible() const;
 
-    /**
-     *  Retrieve the index of the reaction
-     *  @param "unsigned C_INT32 " index
-     *  @return "unsigned C_INT32 " index
-     */
-    unsigned C_INT32 getReactionIndex(unsigned C_INT32 index) const;
-
-    const CReaction * getReaction(unsigned C_INT32 index, const CModel * model) const;
-    std::string getReactionName(unsigned C_INT32 index, const CModel * model) const;
-    std::string getReactionEquation(unsigned C_INT32 index, const CModel * model) const;
-
-    /**
-     *  Retrieves the multiplier for the reaction
-     *  @param "unsigned C_INT32 " index
-     *  @return "unsigned C_FLOAT64 " index
-     */
-    const C_FLOAT64 & getMultiplier(unsigned C_INT32 index) const;
-
-    /**
-     *  Check whether the mode is reversible
-     *  @return "bool" isReversible
-     */
-    bool isReversible() const;
-
-    /**
-     *  Retrieves the size of the mode
-     *  @return "unsigned C_INT32" size
-     */
-    unsigned C_INT32 size() const;
-  };
+  /**
+   *  Retrieves the size of the mode
+   *  @return "const unsigned C_INT32 &" size
+   */
+  const unsigned C_INT32 & size() const;
+};
 
 #endif // COPASI_CFluxMode

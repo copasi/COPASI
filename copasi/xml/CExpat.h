@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/28 15:27:56 $
-   End CVS Header */
-
 /**
  * This file describes the C++ interface to the expat library used by
  * COPASI.
@@ -18,45 +10,26 @@
 #define COPASI_CExpat
 
 #include <assert.h>
-#include <expat.h>
-
-#include "utilities/CCopasiMessage.h"
+#include "expat.h"
 
 /**
  * CExpatTemplate class.
- * The class CExpatTemplate is a demplate defining a C++ interface to
+ * The class CExpatTemplate is a demplate definening a C++ interface to
  * the expat library.
  *
  * Created for Copasi by Stefan Hoops 2003
  */
-template <class CType>
+template <class _T>
 class CExpatTemplate
   {
-    // Attributes
-  protected:
-
-    /**
-     * The expat parser 
-     */
-    XML_Parser mParser;
-
   public:
-    /**
-     * Destroy the parser
-     */
-    void destroy()
-    {
-      if (mParser != NULL)
-        XML_ParserFree(mParser);
-      mParser = NULL;
-    }
 
     /**
      * Default constructor
      */
     CExpatTemplate():
-        mParser(NULL)
-  {}
+        m_p(NULL)
+    {}
 
     /**
      * Destructor
@@ -78,7 +51,7 @@ class CExpatTemplate
       destroy();
 
       //
-      // If the encoding or separator are empty, then NULL
+      // If the encoding or seperator are empty, then NULL
       //
 
       if (pszEncoding != NULL && pszEncoding [0] == 0)
@@ -90,23 +63,33 @@ class CExpatTemplate
       // Create the new one
       //
 
-      mParser = XML_ParserCreate_MM(pszEncoding, NULL, pszSep);
-      if (mParser == NULL)
+      m_p = XML_ParserCreate_MM(pszEncoding, NULL, pszSep);
+      if (m_p == NULL)
         return false;
 
       //
       // Invoke the post create routine
       //
 
-      CType *pThis = static_cast <CType *>(this);
+      _T *pThis = static_cast <_T *>(this);
       pThis->onPostCreate();
 
       //
       // Set the user data used in callbacks
       //
 
-      XML_SetUserData(mParser, (void *) this);
+      XML_SetUserData(m_p, (void *) this);
       return true;
+    }
+
+    /**
+     * Destroy the parser
+     */
+    void destroy()
+    {
+      if (m_p != NULL)
+        XML_ParserFree(m_p);
+      m_p = NULL;
     }
 
     /**
@@ -122,7 +105,7 @@ class CExpatTemplate
       // Validate
       //
 
-      assert(mParser != NULL);
+      assert(m_p != NULL);
 
       //
       // Get the length if not specified
@@ -135,7 +118,7 @@ class CExpatTemplate
       // Invoke the parser
       //
 
-      return XML_Parse(mParser, pszBuffer, nLength, fIsFinal) != 0;
+      return XML_Parse(m_p, pszBuffer, nLength, fIsFinal) != 0;
     }
 
 #ifdef WCHAR
@@ -152,7 +135,7 @@ class CExpatTemplate
       // Validate
       //
 
-      assert(mParser != NULL);
+      assert(m_p != NULL);
 
       //
       // Get the length if not specified
@@ -165,7 +148,7 @@ class CExpatTemplate
       // Invoke the parser
       //
 
-      return XML_Parse(mParser, pszBuffer, nLength, fIsFinal) != 0;
+      return XML_Parse(m_p, pszBuffer, nLength, fIsFinal) != 0;
     }
 #endif
 
@@ -177,8 +160,8 @@ class CExpatTemplate
      */
     bool parseBuffer(int nLength, bool fIsFinal = true)
     {
-      assert(mParser != NULL);
-      return XML_ParseBuffer(mParser, nLength, fIsFinal) != 0;
+      assert(m_p != NULL);
+      return XML_ParseBuffer(m_p, nLength, fIsFinal) != 0;
     }
 
     /**
@@ -186,8 +169,8 @@ class CExpatTemplate
      */
     void *getBuffer(int nLength)
     {
-      assert(mParser != NULL);
-      return XML_GetBuffer(mParser, nLength);
+      assert(m_p != NULL);
+      return XML_GetBuffer(m_p, nLength);
     }
 
     /**
@@ -196,8 +179,8 @@ class CExpatTemplate
      */
     void enableStartElementHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetStartElementHandler(mParser, fEnable ? startElementHandler : NULL);
+      assert(m_p != NULL);
+      XML_SetStartElementHandler(m_p, fEnable ? startElementHandler : NULL);
     }
 
     /**
@@ -206,8 +189,8 @@ class CExpatTemplate
      */
     void enableEndElementHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetEndElementHandler(mParser, fEnable ? endElementHandler : NULL);
+      assert(m_p != NULL);
+      XML_SetEndElementHandler(m_p, fEnable ? endElementHandler : NULL);
     }
 
     /**
@@ -216,7 +199,7 @@ class CExpatTemplate
      */
     void enableElementHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
+      assert(m_p != NULL);
       enableStartElementHandler(fEnable);
       enableEndElementHandler(fEnable);
     }
@@ -227,8 +210,8 @@ class CExpatTemplate
      */
     void enableCharacterDataHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetCharacterDataHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetCharacterDataHandler(m_p,
                                   fEnable ? characterDataHandler : NULL);
     }
 
@@ -238,8 +221,8 @@ class CExpatTemplate
      */
     void enableProcessingInstructionHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetProcessingInstructionHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetProcessingInstructionHandler(m_p,
                                           fEnable ? processingInstructionHandler : NULL);
     }
 
@@ -249,8 +232,8 @@ class CExpatTemplate
      */
     void enableCommentHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetCommentHandler(mParser, fEnable ? commentHandler : NULL);
+      assert(m_p != NULL);
+      XML_SetCommentHandler(m_p, fEnable ? commentHandler : NULL);
     }
 
     /**
@@ -259,8 +242,8 @@ class CExpatTemplate
      */
     void enableStartCdataSectionHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetStartCdataSectionHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetStartCdataSectionHandler(m_p,
                                       fEnable ? startCdataSectionHandler : NULL);
     }
 
@@ -270,8 +253,8 @@ class CExpatTemplate
      */
     void enableEndCdataSectionHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetEndCdataSectionHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetEndCdataSectionHandler(m_p,
                                     fEnable ? endCdataSectionHandler : NULL);
     }
 
@@ -281,7 +264,7 @@ class CExpatTemplate
      */
     void enableCdataSectionHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
+      assert(m_p != NULL);
       enableStartCdataSectionHandler(fEnable);
       enableEndCdataSectionHandler(fEnable);
     }
@@ -292,14 +275,14 @@ class CExpatTemplate
      */
     void enableDefaultHandler(bool fEnable = true, bool fExpand = true)
     {
-      assert(mParser != NULL);
+      assert(m_p != NULL);
       if (fExpand)
         {
-          XML_SetDefaultHandlerExpand(mParser,
+          XML_SetDefaultHandlerExpand(m_p,
                                       fEnable ? defaultHandler : NULL);
         }
       else
-        XML_SetDefaultHandler(mParser, fEnable ? defaultHandler : NULL);
+        XML_SetDefaultHandler(m_p, fEnable ? defaultHandler : NULL);
     }
 
     /**
@@ -308,8 +291,8 @@ class CExpatTemplate
      */
     void enableExternalEntityRefHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetExternalEntityRefHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetExternalEntityRefHandler(m_p,
                                       fEnable ? externalEntityRefHandler : NULL);
     }
 
@@ -319,8 +302,8 @@ class CExpatTemplate
      */
     void enableUnknownEncodingHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetUnknownEncodingHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetUnknownEncodingHandler(m_p,
                                     fEnable ? unknownEncodingHandler : NULL);
     }
 
@@ -330,8 +313,8 @@ class CExpatTemplate
      */
     void enableStartNamespaceDeclHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetStartNamespaceDeclHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetStartNamespaceDeclHandler(m_p,
                                        fEnable ? startNamespaceDeclHandler : NULL);
     }
 
@@ -341,8 +324,8 @@ class CExpatTemplate
      */
     void enableEndNamespaceDeclHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetEndNamespaceDeclHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetEndNamespaceDeclHandler(m_p,
                                      fEnable ? endNamespaceDeclHandler : NULL);
     }
 
@@ -362,8 +345,8 @@ class CExpatTemplate
      */
     void enableXmlDeclHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetXmlDeclHandler(mParser, fEnable ? xmlDeclHandler : NULL);
+      assert(m_p != NULL);
+      XML_SetXmlDeclHandler(m_p, fEnable ? xmlDeclHandler : NULL);
     }
 
     /**
@@ -372,8 +355,8 @@ class CExpatTemplate
      */
     void enableStartDoctypeDeclHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetStartDoctypeDeclHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetStartDoctypeDeclHandler(m_p,
                                      fEnable ? startDoctypeDeclHandler : NULL);
     }
 
@@ -383,8 +366,8 @@ class CExpatTemplate
      */
     void enableEndDoctypeDeclHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
-      XML_SetEndDoctypeDeclHandler(mParser,
+      assert(m_p != NULL);
+      XML_SetEndDoctypeDeclHandler(m_p,
                                    fEnable ? endDoctypeDeclHandler : NULL);
     }
 
@@ -394,7 +377,7 @@ class CExpatTemplate
      */
     void enableDoctypeDeclHandler(bool fEnable = true)
     {
-      assert(mParser != NULL);
+      assert(m_p != NULL);
       enableStartDoctypeDeclHandler(fEnable);
       enableEndDoctypeDeclHandler(fEnable);
     }
@@ -405,8 +388,8 @@ class CExpatTemplate
      */
     enum XML_Error getErrorCode()
     {
-      assert(mParser != NULL);
-      return XML_GetErrorCode(mParser);
+      assert(m_p != NULL);
+      return XML_GetErrorCode(m_p);
     }
 
     /**
@@ -430,19 +413,19 @@ class CExpatTemplate
      */
     long getCurrentByteIndex()
     {
-      assert(mParser != NULL);
-      return XML_GetCurrentByteIndex(mParser);
+      assert(m_p != NULL);
+      return XML_GetCurrentByteIndex(m_p);
     }
 
     /**
      * Get the current line number
      * @return ing lineNumber
      */
-    int getCurrentLineNumber() const
-      {
-        assert(mParser != NULL);
-        return XML_GetCurrentLineNumber(mParser);
-      }
+    int getCurrentLineNumber()
+    {
+      assert(m_p != NULL);
+      return XML_GetCurrentLineNumber(m_p);
+    }
 
     /**
      * Get the current column number
@@ -450,8 +433,8 @@ class CExpatTemplate
      */
     int getCurrentColumnNumber()
     {
-      assert(mParser != NULL);
-      return XML_GetCurrentColumnNumber(mParser);
+      assert(m_p != NULL);
+      return XML_GetCurrentColumnNumber(m_p);
     }
 
     /**
@@ -460,8 +443,8 @@ class CExpatTemplate
      */
     int getCurrentByteCount()
     {
-      assert(mParser != NULL);
-      return XML_GetCurrentByteCount(mParser);
+      assert(m_p != NULL);
+      return XML_GetCurrentByteCount(m_p);
     }
 
     /**
@@ -470,8 +453,8 @@ class CExpatTemplate
      */
     const char *getInputContext(int *pnOffset, int *pnSize)
     {
-      assert(mParser != NULL);
-      return XML_GetInputContext(mParser, pnOffset, pnSize);
+      assert(m_p != NULL);
+      return XML_GetInputContext(m_p, pnOffset, pnSize);
     }
 
     /**
@@ -624,89 +607,12 @@ class CExpatTemplate
     void onEndDoctypeDecl()
     {return;}
 
-    /**
-     * Retreive the attribute value for the given name out of the list
-     * of attributes. If required is true and the attribute is not found an
-     * exception is thrown. If required is false and the attribute is not found
-     * NULL is returned.
-     *
-     * @param const std::string & name
-     * @param const char ** attributes
-     * @param const bool & required (default: true)
-     * @return const char * value
-     */
-    const char * getAttributeValue(const std::string & name,
-                                   const char ** attributes,
-                                   const bool & required = true) const
-      {
-        unsigned C_INT32 i;
-
-        for (i = 0; attributes[i]; i += 2)
-          if (attributes[i] == name) break;
-
-        if (attributes[i]) return attributes[i + 1];
-
-        if (required)
-          CCopasiMessage(CCopasiMessage::ERROR, MCXML + 1,
-                         name.c_str(), getCurrentLineNumber());
-        return NULL;
-      }
-
-    /**
-     * Retreive the attribute value for the given name out of the list
-     * of attributes. If the attribute is not found default is returned.
-     * @param const std::string & name
-     * @param const char ** attributes
-     * @param const char * default
-     * @return const char * value
-     */
-    const char * getAttributeValue(const std::string & name,
-                                   const char ** attributes,
-                                   const char * def) const
-      {
-        const char * tmp = getAttributeValue(name, attributes, false);
-        if (!tmp) return def;
-        return tmp;
-      }
-
-    /**
-     * Convert a attribute of type xs:boolean to bool. If attribute is NULL
-     * false is returned.
-     * @param const char * attribute
-     * @return bool
-     */
-    bool toBool(const char * attribute) const
-      {
-        if (!attribute) return false;
-        if (!strcmp(attribute, "true") || !strcmp(attribute, "1")) return true;
-        return false;
-      }
-
-    /**
-     * Convert a attribute of type to enum. If attribute is NULL
-     * or no matching name is found -1 is returned. Note: enumNames must be 
-     * zero terminated.
-     * @param const char * attribute
-     * @param const char ** enumNames 
-     * @return bool
-     */
-    int toEnum(const char * attribute,
-               const char ** enumNames) const
-      {
-        if (!attribute) return - 1;
-
-        for (int i = 0; *enumNames; i++, enumNames++)
-          if (!strcmp(attribute, *enumNames)) return i;
-
-        return - 1;
-      }
-
   protected:
     /**
      * Handle any post creation
      */
     void onPostCreate()
-  {}
+    {}
 
     /**
      * Start element handler wrapper
@@ -718,7 +624,7 @@ class CExpatTemplate
                                     const XML_Char *pszName,
                                     const XML_Char **papszAttrs)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onStartElement(pszName, papszAttrs);
     }
 
@@ -730,7 +636,7 @@ class CExpatTemplate
     static void endElementHandler(void *pUserData,
                                   const XML_Char *pszName)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onEndElement(pszName);
     }
 
@@ -744,7 +650,7 @@ class CExpatTemplate
                                      const XML_Char *pszData,
                                      int nLength)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onCharacterData(pszData, nLength);
     }
 
@@ -758,7 +664,7 @@ class CExpatTemplate
         const XML_Char *pszTarget,
         const XML_Char *pszData)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onProcessingInstruction(pszTarget, pszData);
     }
 
@@ -770,7 +676,7 @@ class CExpatTemplate
     static void commentHandler(void *pUserData,
                                const XML_Char *pszData)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onComment(pszData);
     }
 
@@ -780,7 +686,7 @@ class CExpatTemplate
      */
     static void startCdataSectionHandler(void *pUserData)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onStartCdataSection();
     }
 
@@ -790,7 +696,7 @@ class CExpatTemplate
      */
     static void endCdataSectionHandler(void *pUserData)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onEndCdataSection();
     }
 
@@ -804,7 +710,7 @@ class CExpatTemplate
                                const XML_Char *pszData,
                                int nLength)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onDefault(pszData, nLength);
     }
 
@@ -822,7 +728,7 @@ class CExpatTemplate
                                         const XML_Char *pszSystemID,
                                         const XML_Char *pszPublicID)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       return pThis->onExternalEntityRef(pszContext,
                                         pszBase, pszSystemID, pszPublicID) ? 1 : 0;
     }
@@ -837,7 +743,7 @@ class CExpatTemplate
                                       const XML_Char *pszName,
                                       XML_Encoding *pInfo)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       return pThis->onUnknownEncoding(pszName, pInfo) ? 1 : 0;
     }
 
@@ -851,7 +757,7 @@ class CExpatTemplate
                                           const XML_Char *pszPrefix,
                                           const XML_Char *pszURI)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onStartNamespaceDecl(pszPrefix, pszURI);
     }
 
@@ -863,7 +769,7 @@ class CExpatTemplate
     static void endNamespaceDeclHandler(void *pUserData,
                                         const XML_Char *pszPrefix)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onEndNamespaceDecl(pszPrefix);
     }
 
@@ -879,7 +785,7 @@ class CExpatTemplate
                                const XML_Char *pszEncoding,
                                int nStandalone)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onXmlDecl(pszVersion, pszEncoding, nStandalone != 0);
     }
 
@@ -897,7 +803,7 @@ class CExpatTemplate
                                         const XML_Char *pszPubID,
                                         int nHasInternalSubset)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onStartDoctypeDecl(pszDoctypeName, pszSysID,
                                 pszPubID, nHasInternalSubset != 0);
     }
@@ -908,9 +814,17 @@ class CExpatTemplate
      */
     static void endDoctypeDeclHandler(void *pUserData)
     {
-      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
+      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onEndDoctypeDecl();
     }
+
+    // Attributes
+  protected:
+
+    /**
+     * The expat parser 
+     */
+    XML_Parser m_p;
   };
 
 /**

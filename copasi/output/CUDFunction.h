@@ -1,169 +1,96 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CUDFunction.h,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:52 $
-   End CVS Header */
-
 /*****************************************************************************
- * PROGRAM NAME: CUDFunction.h
- * PROGRAMMER: Wei Sun wsun@vt.edu
- * PURPOSE: Define the user defined function object
- *****************************************************************************/
+* PROGRAM NAME: CUDFunction.h
+* PROGRAMMER: Wei Sun	wsun@vt.edu
+* PURPOSE: Define the user defined function object
+*****************************************************************************/
 #ifndef COPASI_CUDFunction
-#define COPASI_CUDFunction
+#define	COPASI_CUDFunction
 
 #include <string>
-#include <vector>
 
-#include "utilities/CReadConfig.h"
-#include "function/CKinFunction.h"
-#include "model/CModel.h"
+#include "copasi.h"
+#include "utilities/utilities.h"
+#include "function/CBaseFunction.h"
 #include "CNodeO.h"
 
-class CUDFunction: public CKinFunction
-  {
-  private:
-    /**
-     *  The vector of nodes of the binary tree of the function
-     */
-    std::vector< CNodeO * > mNodes;
+class CUDFunction: public CBaseFunction
+{
+ private:
+  /**
+   *  The vector of nodes of the binary tree of the function
+   */
+  CCopasiVectorS < CNodeO > mNodes;
+  /**
+   *  Internal variable
+   */
+  unsigned C_INT32 mNidx;
 
-    /**
-     * Value of user defined function
-     */
-    C_FLOAT64 mValue;
+ public:
+  /**
+   *  Default constructor
+   */
+  CUDFunction();
+    
+  /**
+   *  This creates a user defined function with a name an description
+   *  @param "const string" &name
+   *  @param "const string" &description
+   */
+  CUDFunction(const string & name,
+	       const string & description);
 
-    /**
-     *  Internal variable
-     */
-    unsigned C_INT32 mNidx;
+  /**
+   *  Destructor
+   */
+  ~CUDFunction();
 
-    /**
-     *  A pointer to the  call parameters of the user defined function
-     */ 
-    //CCallParameters mCallParameters;
+  /**
+   *  Delete
+   */
+  void cleanup();
 
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CUDFunction(const std::string & name = "NoName",
-                const CCopasiContainer * pParent = NULL);
+  /**
+   *  Copy
+   */
+  void copy(const CUDFunction & in);
 
-    /**
-     * Copy constructor
-     * @param "const CFunction &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CUDFunction(const CFunction & src,
-                const CCopasiContainer * pParent = NULL);
+  /**
+   *  Loads an object with data coming from a CReadConfig object.
+   *  (CReadConfig object reads an input stream)
+   *  @param pconfigbuffer reference to a CReadConfig object.
+   *  @return Fail
+   */
+  C_INT32 load(CReadConfig & configbuffer,
+	       CReadConfig::Mode mode = CReadConfig::LOOP);
 
-    /**
-     * Copy constructor
-     * @param "const CUDFunction &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CUDFunction(const CUDFunction & src,
-                const CCopasiContainer * pParent = NULL);
+  /**
+   *  Saves the contents of the object to a CWriteConfig object.
+   *  (Which usually has a file attached but may also have socket)
+   *  @param pconfigbuffer reference to a CWriteConfig object.
+   *  @return Fail
+   */
+  C_INT32 save(CWriteConfig & configbuffer);
 
-    /**
-     *  This creates a user defined function with a name an description
-     *  @param "const string" &name
-     *  @param "const string" &description
-     */
-    CUDFunction(const std::string & name,
-                const std::string & description,
-                const CCopasiContainer * pParent = NULL);
+  /**
+   *  This retrieves the node tree of the function
+   *  @return "CCopasiVectorS < CNodeO > &"
+   */
+  CCopasiVectorS < CNodeO > & nodes();
 
-    /**
-     *  Destructor
-     */
-    virtual ~CUDFunction();
+ private:
+  /**
+   *  This clears all nodes of the function tree
+   */
+  void clearNodes();
 
-    /**
-     *  Delete
-     */
-    void cleanup();
+  /**
+   *  This  connects the nodes to build the binary function tree
+   */
+  C_INT32 connectNodes();
 
-    /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return Fail
-     */
-    void load(CReadConfig & configbuffer,
-              CReadConfig::Mode mode = CReadConfig::LOOP);
+  CNodeO * parseExpression(C_INT16 priority);
 
-    /**
-     *  Compile a function
-     */
-    void compile();
-
-    /**
-     *  This parses the function into a binary tree
-     */
-    C_INT32 parse();
-
-    /**
-     * Calculate the value of this user defined function
-     * return the pointer of this user defined function
-     */
-    C_FLOAT64 calcValue();
-
-    /**
-     * Get the pointer of user defined function
-     */
-    void * getValueAddr();
-
-    /**
-     * Return the value of user defined function
-     */
-    const C_FLOAT64 & getValue() const;
-
-    //CCallParameters & getCallParameters();
-
-    /**
-     *  This parses the function into a binary tree
-     */ 
-    //C_INT32 parse();
-
-    /**
-     *  Retreives the nodes of the function
-     */
-    std::vector< CNodeO * > & getNodes();
-
-  private:
-    /**
-     *  This function creates the parameter description for older file versions
-     */
-    void createParameters();
-
-    /**
-     *  This  connects the nodes to build the binary function tree
-     */
-    C_INT32 connectNodes();
-
-    /**
-     *  This function is part of the algorithm that builds the binary tree
-     *  @param C_INT16 priority
-     *  @return CNodeK *
-     */
-    CNodeO * parseExpression(C_INT16 priority);
-
-    /**
-     *  This function is part of the algorithm that builds the binary tree
-     *  @return CNodeK *
-     */
-    CNodeO * parsePrimary();
-
-    /**
-     * Cleanup nodes
-     */
-    void cleanupNodes();
-  };
+  CNodeO * parsePrimary();
+};
 
 #endif

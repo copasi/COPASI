@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/26 18:39:28 $
-   End CVS Header */
-
 /**
  * CSteadyStateTask class.
  *
@@ -21,28 +13,47 @@
 
 #include <iostream>
 
-#include "utilities/CCopasiTask.h"
-#include "utilities/CMatrix.h"
 #include "utilities/CReadConfig.h"
+#include "utilities/CWriteConfig.h"
 #include "CSteadyStateMethod.h"
 
 class CSteadyStateProblem;
 class CState;
+class COutputEvent;
 class CEigen;
 
-class CSteadyStateTask : public CCopasiTask
+using std::ostream;
+using std::endl;
+
+class CSteadyStateTask
   {
     //Attributes
   private:
+
+    /**
+     * A pointer to the steady state problem.
+     */
+    CSteadyStateProblem *mpProblem;
+
+    /**
+     * A pointer to the method choosen for the evaluation.
+     */
+    CSteadyStateMethod * mpMethod;
+
     /**
      * A pointer to the found steady state.
      */
     CState * mpSteadyState;
 
     /**
+     * The result of the steady state analysis.
+     */
+    CSteadyStateMethod::ReturnCode mResult;
+
+    /**
      * The jacobian of the steady state.
      */
-    CMatrix< C_FLOAT64 > mJacobian;
+    C_FLOAT64 * mJacobian;
 
     /**
      *  The CEigen to work with
@@ -50,44 +61,43 @@ class CSteadyStateTask : public CCopasiTask
     CEigen * mpEigenValues;
 
     /**
-     * The result of the steady state analysis.
+     * End Phase Output Event
      */
-    CSteadyStateMethod::ReturnCode mResult;
+    COutputEvent *mpOutEnd;
+
+    /**
+     * Pointer to the output stream for reporting
+     */
+    std::ofstream * mpOut;
 
     //Operations
   public:
-
     /**
-     * Default constructor
-     * @param const CCopasiContainer * pParent (default: NULL)
+     * default constructor
      */
-    CSteadyStateTask(const CCopasiContainer * pParent = NULL);
+    CSteadyStateTask();
 
     /**
      * Copy constructor
      * @param const CSteadyStateTask & src
-     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateTask(const CSteadyStateTask & src,
-                     const CCopasiContainer * pParent = NULL);
+    CSteadyStateTask(const CSteadyStateTask & src);
 
     /**
      * Destructor
      */
-    virtual ~CSteadyStateTask();
+    ~CSteadyStateTask();
 
     /**
-     * Initialize the task. If an ostream is given this ostream is used
-     * instead of the target specified in the report. This allows nested 
-     * tasks to share the same output device.
-     * @param std::ostream * pOstream (default: NULL)
+     * cleanup()
      */
-    virtual bool initialize(std::ostream * pOstream = NULL);
+    void cleanup();
 
     /**
-     * Process the task
+     * Initilize the reporting feature
+     * @param ofstream & out
      */
-    virtual bool process();
+    void initializeReporting(std::ofstream & out);
 
     /**
      * Loads parameters for this solver with data coming from a
@@ -97,6 +107,37 @@ class CSteadyStateTask : public CCopasiTask
     void load(CReadConfig & configBuffer);
 
     /**
+     * Saves the parameters of the solver to a CWriteConfig object.
+     * (Which usually has a file attached but may also have socket)
+     * @param configbuffer reference to a CWriteConfig object.
+     */
+    void save(CWriteConfig & configBuffer);
+
+    /**
+     * Retrieve the steady state problem.
+     * @return CSteadyStateProblem * pProblem
+     */
+    CSteadyStateProblem * getProblem();
+
+    /**
+     * Set the steady state problem
+     * @param CSteadyStateProblem * pProblem
+     */
+    void setProblem(CSteadyStateProblem * pProblem);
+
+    /**
+     * Retrieve the method choosen.
+     * @return CSteadyStateMethod * pMethod
+     */
+    CSteadyStateMethod * getMethod();
+
+    /**
+     * Set the method to be used for finding the steady state.
+     * @param CSteadyStateMethod * pMethod
+     */
+    void setMethod(CSteadyStateMethod * pMethod);
+
+    /**
      * Retrieves a pointer to steady state.
      * @return CState * pSteadyState
      */
@@ -104,9 +145,9 @@ class CSteadyStateTask : public CCopasiTask
 
     /**
      * Retrieves a the jacobian of the steady state.
-     * @return const CMatrix< C_FLOAT64 > jacobian
+     * @return C_FLOAT64 * jacobian
      */
-    const CMatrix< C_FLOAT64 > & getJacobian() const;
+    const C_FLOAT64 * getJacobian();
 
     /**
      * Retrieves a the eigen values of the steady state.
@@ -114,15 +155,32 @@ class CSteadyStateTask : public CCopasiTask
      */
     const CEigen * getEigenValues();
 
-    // Friend functions
-    friend std::ostream &operator<<(std::ostream &os,
-                                    const CSteadyStateTask &A);
-
-  private:
     /**
-     * cleanup()
+     * Do the integration
      */
-    void cleanup();
-  };
+    void process();
 
+    // Friend functions
+    friend ostream &operator<<(ostream &os, const CSteadyStateTask &A)
+    {
+      os << endl;
+
+      if (A.mResult == CSteadyStateMethod::notFound)
+        {
+          os << "A STEADY STATE COULD NOT BE FOUND." << endl;
+          os << "(below are the last unsuccessful trial values)";
+        }
+      else
+        {
+          os << "STEADY STATE SOLUTION";
+
+          if (A.mResult == CSteadyStateMethod::foundEquilibrium)
+            os << " (chemical equilibrium)";
+        }
+
+      os << endl;
+
+      return os;
+    }
+  };
 #endif // COPASI_CSteadyStateTask

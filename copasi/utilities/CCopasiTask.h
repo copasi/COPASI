@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/10 12:17:03 $
+   $Author: shoops $ 
+   $Date: 2003/10/21 20:32:47 $
    End CVS Header */
 
 /**
@@ -19,12 +19,11 @@
 
 #include <string>
 
-#include "report/CCopasiContainer.h"
-#include "report/CReport.h"
+#include "CCopasiContainer.h"
 
 class CCopasiProblem;
-class CCopasiMethod;
-class CCallbackHandler;
+class CMethodParameterList;
+class CReport;
 
 class CCopasiTask : public CCopasiContainer
   {
@@ -40,36 +39,25 @@ class CCopasiTask : public CCopasiContainer
       fluxMode,
       optimization,
       parameterFitting,
-      unset,
     };
 
     /**
      * String literals for the GUI to display type names of tasks known
      * to COPASI.
      */
-    static const std::string TypeName[];
+    const static string TypeName[];
 
     /**
      * XML type names of tasks known to COPASI.
      */
-    static const char* XMLType[];
+    const static char* XMLType[];
 
     // Attributes
-  protected:
+  private:
     /**
      * The type of the task
      */
-    Type mType;
-
-    /**
-     * The key of the task
-     */
-    std::string mKey;
-
-    /**
-     * Tells whether the task is scheduled for execution
-     */
-    bool mScheduled;
+    std::string mType;
 
     /**
      * The problem of the task
@@ -79,39 +67,35 @@ class CCopasiTask : public CCopasiContainer
     /**
      * The method used to solve the problem.
      */
-    CCopasiMethod * mpMethod;
+    CMethodParameterList * mpMethod;
 
     /**
      * The report used to track results of the task.
      */
-    CReport mReport;
+    CReport * mpReport;
 
-    /**
-     * The output handler (at this time only for plotting)
-     */
-    CCallbackHandler * mpOutputHandler;
-
-  public:
+    // Operations
+  protected:
     /**
      * Default constructor
      */
-    CCopasiTask(const std::string & name = "NoName",
-                const CCopasiContainer * pParent = NULL,
-                const std::string & type = "Task");
+    CCopasiTask();
+
+  public:
 
     /**
      * Specific constructor
-     * @param const Type & taskType
+     * @param "const string &" name (Default = "NoName")
      * @param const CCopasiContainer * pParent (default: NULL)
      * @param const std::string & type (default: "Task")
      */
-    CCopasiTask(const Type & taskType,
+    CCopasiTask(const CCopasiTask::Type & type,
                 const CCopasiContainer * pParent = NULL,
                 const std::string & type = "Task");
 
     /**
      * Copy constructor
-     * @param const CCopasiTask & src
+     * @param "const CCopasiTaskr &" src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CCopasiTask(const CCopasiTask & src,
@@ -120,113 +104,37 @@ class CCopasiTask : public CCopasiContainer
     /**
      * Destructor
      */
-    virtual ~CCopasiTask();
+    ~CCopasiTask();
 
     /**
-     * Retrieve the name of the task
+     * Retrieve the name of the method
      * @return " const string &" name
-     */ 
-    //    const std::string & getName() const;
+     */
+    const std::string & getName() const;
 
     /**
-     * Set the name of the task
+     * Set the name of the method
      * @param "const string &" name
      */
     bool setName(const std::string & name);
 
     /**
-     * Retrieve the type of the task
-     * @return CCopasiTask::Type type
+     * Retrieve the type of the method
+     * @return " const string &" type
      */
-    Type getType() const;
+    const std::string & getType() const;
 
     /**
-     * Set the type of the task
-     * @param CCopasiTask::Type & type
+     * Set the type of the method
+     * @param "const string &" type
      */
-    void setType(const Type & type);
+    void setType(const std::string & type);
 
     /**
-     * Convert an XMLType string to the matching enum value
-     * Returns CCopasiTask::unset if no match is found.
-     * @param (const char * xmlTypeName)
-     * @return CCopasiTask::Type type
+     * Retrieve the name of the indexed parameter
+     * @param "const unsigned C_INT32 &" index
+     * @return "const string &" mName
      */
-    static
-    CCopasiTask::Type XMLNameToEnum(const char * xmlTypeName);
-
-    /**
-     * Retrieve the key for the task.
-     * @return std::string key
-     */
-    virtual const std::string & getKey() const;
-
-    /**
-     * Set whether the task is scheduled
-     * @param const bool & scheduled (default: true)
-     */
-    void setScheduled(const bool & scheduled);
-
-    /**
-     * Check whether the task is scheduled
-     * @return const bool & scheduled
-     */
-    const bool & isScheduled() const;
-
-    /**
-     * Initialize the task. If an ostream is given this ostream is used
-     * instead of the target specified in the report. This allows nested 
-     * tasks to share the same output device.
-     * @param std::ostream * pOstream (default: NULL)
-     */
-    virtual bool initialize(std::ostream * pOstream = NULL);
-
-    /**
-     * Process the task
-     */
-    virtual bool process();
-
-    /**
-     * Perform neccessary cleaup procedures
-     */
-    virtual bool restore();
-
-    /**
-     * Retrieve the problem
-     */
-    CCopasiProblem * getProblem();
-
-    /**
-     * Set the method type applied to solve the task
-     * @param const CCopasiMethod::SubType & type
-     * @return bool success
-     */
-    virtual bool setMethodType(const int & type);
-
-    /**
-     * Retrieve the method
-     */
-    CCopasiMethod * getMethod();
-
-    /**
-     * Retrieve the report
-     */
-    CReport & getReport();
-
-    /**
-     * Cleanup function
-     **/
-    void cleanup();
-
-    /**
-     * set Output handler
-     **/
-    void setOutputHandler(CCallbackHandler* pHandler);
-
-    /**
-     * get address of output handler
-     **/
-    CCallbackHandler* getOutputHandlerAddr();
   };
 
 #endif // COPASI_CCopasiTask

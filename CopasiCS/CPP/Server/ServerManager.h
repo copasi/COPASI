@@ -28,47 +28,47 @@ class ServerManager
 	
 protected:
 	
-    /**ServerNetwork object which this ServerManager object will manage.*/
-    ServerNetwork *serverNetwork;
+	/**ServerNetwork object which this ServerManager object will manage.*/
+	ServerNetwork *serverNetwork;
 
-    /**Needed for synchronization with the ServerSocketReader. ServerSocketReader
-     * notifies the manager on recieving a message.
-     */
-    sem_t bin_sem;
-    /**The thread ID for the manager thread.*/
-    pthread_t a_thread;
+	/**Needed for synchronization with the ServerSocketReader. ServerSocketReader
+	* notifies the manager on recieving a message.
+	*/
+	sem_t bin_sem;
+	/**The thread ID for the manager thread.*/
+	pthread_t a_thread;
 
-public:
-    /**Constructor taking ServerNetwork object
-     * @param sn ServerNetwork object to use to build the Manager
-     */
-    ServerManager(ServerNetwork *s);
-    //void setMembersAndStartManager(ServerNetwork sn, sem_t bin_sem);
+ public:
+	/**Constructor taking ServerNetwork object
+	* @param sn ServerNetwork object to use to build the Manager
+	*/
+	ServerManager(ServerNetwork *s);
+	//void setMembersAndStartManager(ServerNetwork sn, sem_t bin_sem);
 	
-    /**Spawns a new ServerManager Thread.*/
-    void start();
-    /**When this method is called the manager gets unblocked from its wait position.
-     * Used by ServerSocketReader to notify the manager.
-     */
-    void notify();
+	/**Spawns a new ServerManager Thread.*/
+	void start();
+	/**When this method is called the manager gets unblocked from its wait position.
+	 * Used by ServerSocketReader to notify the manager.
+	 */
+	void notify();
     /**Used to put the ServerManager thread in the wait position.*/
-    void wait();
+	void wait();
     /***/
-    friend void *manager_thread_function(void *arg);
+	friend void *manager_thread_function(void *arg);
     ClientConnection* getClientConnection();
-    /**Stops the ServerManager Thread.*/
-    void stop();
+	/**Stops the ServerManager Thread.*/
+	void stop();
 	
-    /**Destructor. Destroys the semaphore that was created during construction.*/
-    ~ServerManager();
+	/**Destructor. Destroys the semaphore that was created during construction.*/
+	~ServerManager();
 
-private:
-    /**A small function to display messages.
-     * @param msg The message string to show.
-     */
-    void showMessage(string msg)
+ private:
+	/**A small function to display messages.
+	 * @param msg The message string to show.
+	 */
+	void showMessage(string msg)
   	{
-            cerr << "ServerManager: "  << msg;
+  		cerr << "ServerManager: "  << msg;
   	}
 };
 
@@ -79,3 +79,4 @@ private:
 void *manager_thread_function(void *arg);
 
 #endif
+

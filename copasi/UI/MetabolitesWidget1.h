@@ -1,92 +1,74 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.h,v $
-   $Revision: 1.24 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/10 11:07:59 $
-   End CVS Header */
+#ifndef METABOLITES_WIDGET1_H
+#define METABOLITES_WIDGET1_H
 
-/****************************************************************************
- **  $ CopasiUI/MetaboliteWidget.h               
- **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Metabolite Widget, i.e the second level 
- ** of Metabolites.
- *****************************************************************************/
-#ifndef METABOLITESWIDGET1_H
-#define METABOLITESWIDGET1_H
-
-#include "copasiWidget.h"
-
-// class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
-// class QButtonGroup;
-class QComboBox;
-class QFrame;
+#include <qsplitter.h>
+#include <qvariant.h>
+class QVBoxLayout; 
+class QHBoxLayout; 
+class QGridLayout; 
+class QAction;
+class QActionGroup;
+class QToolBar;
+class QPopupMenu;
+class QGroupBox;
 class QLabel;
 class QLineEdit;
+class QComboBox;
+class QListBoxItem;
 class QPushButton;
-// class QRadioButton;
-class QCheckBox;
-
-class CMetab;
-
-class MetabolitesWidget1 : public CopasiWidget
-  {
+class QRadioButton;
+class QFrame;
+class CModel;
+class MetabolitesWidget1 : public QWidget
+{ 
     Q_OBJECT
 
-  public:
-    MetabolitesWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
-    ~MetabolitesWidget1();
-
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
-
-  protected slots:
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnOKClicked();
-    virtual void slotBtnNewClicked();
-    virtual void slotBtnDeleteClicked();
-
-  protected:
-    bool loadFromMetabolite(const CMetab*);
-    bool saveToMetabolite();
-    std::string objKey;
-
-    //Widgets
-    QGridLayout* MetabolitesWidget1Layout;
-    //    QGridLayout* ButtonGroup2Layout;
-    //    QGridLayout* ButtonGroup3Layout;
-    QHBoxLayout* Layout7;
-    QLabel* mLblName;
-    QLineEdit* mEditName;
-    QLabel* mLblCompartment;
-    QComboBox* mComboCompartment;
-    QFrame* Line1;
-    QLabel* mLblInitStatus;
-    QCheckBox * mCheckStatus;
-    QLabel* mLblStatus;
-    QLineEdit * mEditStatus;
-    QFrame* Line2;
-    QLabel* mLblInitConcentration;
-    QLineEdit* mEditInitConcentration;
-    QLabel* mLblConcentration;
-    QLineEdit* mEditConcentration;
-    QLabel* mLblInitNumber;
-    QLineEdit* mEditInitNumber;
-    QLabel* mLblNumber;
-    QLineEdit* mEditNumber;
-    QLabel* mLblTransitionTime;
-    QLineEdit* mEditTransitionTime;
-    QLabel* mLblRate;
-    QLineEdit* mEditRate;
-    QFrame* Line3;
+protected:
+	QPushButton* cancelChanges;
     QPushButton* commitChanges;
-    QPushButton* cancelChanges;
-    QPushButton* newMetaboliteBtn;
-    QPushButton* deleteMetaboliteBtn;
-  };
+	CModel *mModel;
+public:
+    MetabolitesWidget1( QWidget *parent, const char * name=0, WFlags f=0 );
+	void loadMetabolites(CModel *model);
 
-#endif // METABOLITESWIDGET1_H
+    QGroupBox* GroupBox1;
+    QGroupBox* GroupBox2;
+
+	QRadioButton* RadioButton1;
+    QRadioButton* RadioButton2;
+	QRadioButton* RadioButton3;
+    QRadioButton* RadioButton4;
+	QRadioButton* RadioButton5;
+   
+    QLineEdit* LineEdit1;
+    QLineEdit* LineEdit4;
+    QLineEdit* LineEdit5;
+	QLineEdit* LineEdit7;
+    QLineEdit* LineEdit8;
+    QLineEdit* LineEdit9;
+
+    QLabel* TextLabel1;
+    QLabel* TextLabel2;
+    QLabel* TextLabel4;
+	QLabel* TextLabel5;
+    QLabel* TextLabel7;
+    QLabel* TextLabel8;
+	QLabel* TextLabel9;
+    
+	QComboBox* ComboBox1;
+	
+	QFrame* Frame1;
+	QFrame* Frame2;
+	QFrame* Frame3;
+	QFrame* Frame4a;
+	QFrame* Frame4b;
+	QFrame* Frame4c;
+	QFrame* Frame4d;
+	QFrame* Frame4e;
+	QFrame* Frame4f;
+	QFrame* Frame4g;
+	QFrame* Frame4h;
+	QFrame* Frame4i;
+};
+
+#endif // MetabolitesWidget

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/CGene.h,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:19:27 $
-   End CVS Header */
-
 /**
  *  CGene class.
  *  Written by Pedro Mendes September 2002.
@@ -20,12 +12,9 @@
 #include <string>
 #include <iostream>
 
-#include "utilities/CCopasiVector.h"
-#include "report/CCopasiObject.h"
-
 class CGene;
 
-class CGeneModifier: public CCopasiObject
+class CGeneModifier
   {
     // Attributes
 
@@ -41,24 +30,16 @@ class CGeneModifier: public CCopasiObject
     C_INT32 mType;
 
     /**
-     *  Inhibition/activation constant
+     *  Constant
      */
     C_FLOAT64 mK;
-
-    /**
-     *  Hill coefficient
-     */
-    C_FLOAT64 mn;
 
   public:
 
     /**
      *  Default constructor
      */
-    CGeneModifier(const std::string & name = "NoName",
-                  CCopasiContainer * pParent = NULL);
-    CGeneModifier(const CGeneModifier & src,
-                  CCopasiContainer * pParent = NULL);
+    CGeneModifier();
 
     /**
      *  Constructor
@@ -66,7 +47,7 @@ class CGeneModifier: public CCopasiObject
      *  @param type (0=Inhibition, 1=Activation).
      *  @param K positive value for effect strength.
      */
-    CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n);
+    CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K);
 
     /**
      *  Retrieves the pointer to the modifier
@@ -79,19 +60,9 @@ class CGeneModifier: public CCopasiObject
     C_INT32 getType(void);
 
     /**
-     *  Sets the type of the modification
-     */
-    void setType(C_INT32 t);
-
-    /**
-     *  Retrieves the inhibition/activation constant
+     *  Retrieves the constant
      */
     C_FLOAT64 getK(void);
-
-    /**
-     *  Retrieves the Hill coefficient
-     */
-    C_FLOAT64 getn(void);
 
     /**
      *  Destructor
@@ -104,7 +75,7 @@ class CGeneModifier: public CCopasiObject
     void cleanup();
   };
 
-class CGene: public CCopasiObject
+class CGene
   {
     // Attributes
 
@@ -112,51 +83,21 @@ class CGene: public CCopasiObject
     /**
      *  Name of the gene
      */
-    std::string mName;
-
-    /**
-     *  Basal or maximal rate for the transcription
-     */
-    C_FLOAT64 mRate;
-
-    /**
-     *  Basal or maximal rate for the transcription
-     */
-    C_FLOAT64 mDegradationRate;
-
-    /**
-     *  number of incoming links to this gene
-     */
-    C_INT32 mInDegree;
-
-    /**
-     *  number of outgoing links from this gene
-     */
-    C_INT32 mOutDegree;
+    string mName;
 
     /**
      *  List of other genes that modify transcription of this one
      *  @supplierCardinality 0..*
      *  @associates <{CGene*}>
      */
-    CCopasiVector< CGeneModifier > mModifier;
-
-    /**
-     *  List of other genes that modify transcription of this one (indices)
-     *  @supplierCardinality 0..*
-     *  @associates <{C_INT32}>
-     */
-    std::vector < C_INT32 > mModifierIndex;
+    CCopasiVector < CGeneModifier > mModifier;
 
   public:
 
     /**
      *  Default constructor
      */
-    CGene(const std::string & name = "NoName",
-          CCopasiContainer * pParent = NULL);
-    CGene(const CGene & src,
-          CCopasiContainer * pParent = NULL);
+    CGene();
 
     /**
      *  Destructor
@@ -166,12 +107,12 @@ class CGene: public CCopasiObject
     /**
      *  Sets the name of the gene.
      */
-    void setName(const std::string & name);
+    void setName(const string & name);
 
     /**
      *  Retrieve the name of the gene.
      */
-    const std::string & getName() const;
+    const string & getName() const;
 
     /**
      *  Retrieve the number of modifiers.
@@ -184,41 +125,9 @@ class CGene: public CCopasiObject
     CGene * getModifier(C_INT32 n);
 
     /**
-     *  Sets the name of the gene.
-     */
-    void setRate(C_FLOAT64 rate);
-
-    /**
-     *  Retrieves the constant
-     */
-    C_FLOAT64 getDegradationRate(void);
-
-    /**
-     *  Sets the name of the gene.
-     */
-    void setDegradationRate(C_FLOAT64 rate);
-
-    /**
-     *  Retrieves the constant
-     */
-    C_FLOAT64 getRate(void);
-
-    /**
      *  Add a new Modifier to this gene.
      */
-    void addModifier(CGene *modf, C_INT32 idx, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n);
-
-    /**
-     *  Removes a Modifier from this gene.
-    *
-    *  @param "CGene *" modf pointer to the modifier gene to remove
-     */
-    void removeModifier(CGene *modf);
-
-    /**
-     *  Retrieve the index of Modifier n.
-     */
-    C_INT32 getModifierIndex(C_INT32 n);
+    void addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K);
 
     /**
      *  Retrieve the type of Modifier n.
@@ -226,74 +135,14 @@ class CGene: public CCopasiObject
     C_INT32 getModifierType(C_INT32 n);
 
     /**
-     *  Retrieve the inhibition/activation constant of Modifier i.
+     *  Retrieve the constant of Modifier n.
      */
-    C_FLOAT64 getK(C_INT32 i);
-
-    /**
-     *  Retrieve the Hill coefficient of Modifier i.
-     */
-    C_FLOAT64 getn(C_INT32 i);
-
-    /**
-     *  Retrieve the number of negative modifiers
-    *  @return C_INT32 the number of negative modifiers
-     */
-    C_INT32 getNegativeModifiers(void);
-
-    /**
-     *  Retrieve the number of positive modifiers
-     *  @return C_INT32 the number of negative modifiers
-     */
-    C_INT32 getPositiveModifiers(void);
-
-    /**
-     *  Retrieve the number incoming links to this gene
-     *  @return C_INT32 the in-degree
-     */
-    C_INT32 getInDegree();
-
-    /**
-     *  Increment the in-degree of this gene
-     */
-    void addInDegree();
-
-    /**
-     *  Retrieve the number outgoing links from this gene
-     *  @return C_INT32 the out-degree
-     */
-    C_INT32 getOutDegree();
-
-    /**
-     *  Increment the out-degree of this gene
-     */
-    void addOutDegree();
-
-    /**
-     *  Decrement the in-degree of this gene
-     */
-    void decreaseInDegree();
-
-    /**
-     *  Decrement the out-degree of this gene
-     */
-    void decreaseOutDegree();
-
-    /**
-     *  Retrieve the total number of links (incoming and outgoing) of this gene
-     *  @return C_INT32 the total degree
-     */
-    C_INT32 getTotalDegree();
+    C_FLOAT64 getK(C_INT32 n);
 
     /**
      *  cleanup()
      */
     void cleanup();
-
-    /**
-     *  Sort the order of modifiers, activators at the top
-     */
-    void sortModifiers();
   };
 
 #endif // COPASI_CGene

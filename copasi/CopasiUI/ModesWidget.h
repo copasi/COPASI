@@ -1,63 +1,55 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.h,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/16 18:33:12 $
-   End CVS Header */
-
 /****************************************************************************
- **  $ CopasiUI/ModesWidget.h               
+ **  $ CopasiUI/CompartmentsWidget.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Elementary Modes Widget
- *****************************************************************************/ 
-/*
- resizeEvent functions modified 
- Goal: to memorize the user change and expand according
- comments: Liang Xu 
- */
+ ** This is the header file for the Compartments Widget, i.e the First level 
+ ** of Compartments.
+ *****************************************************************************/
+
 #ifndef MODES_WIDGET_H
 #define MODES_WIDGET_H
 
-//#include <qtable.h>
-#include <qlistview.h>
+#include <qtable.h>
 #include <qpushbutton.h>
 #include "MyTable.h"
 #include "copasi.h"
-#include "copasiWidget.h"
-#include "elementaryFluxModes/CElementaryFluxModes.h"
+#include "Structures.h"
 
 class CModel;
 
-class ModesWidget : public CopasiWidget
+class ModesWidget : public QWidget
   {
     Q_OBJECT
 
   protected:
     CModel *mModel;
-    CElementaryFluxModes *modes;
-    //MyTable *table;
-    QListView *listView;
-    QPushButton *btnCalculate;
-    bool binitialized;
+    MyTable *table;
+    QPushButton *btnOK;
+    QPushButton *btnCancel;
 
   public:
     ModesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
     void loadModes(CModel *model);
+    //void mousePressEvent(QMouseEvent * e);
     void resizeEvent(QResizeEvent * re);
+    //QString *Compartment_Name;
 
-    virtual bool enter(const std::string & key = "");
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  public slots:
+    //virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
   signals:
-    void signal_emitted(const QString &);
-    void name(const QString&);
+    // void name(QString &);
+    //void signal_emitted(QString &);
 
   protected slots:
 
     virtual void slotTableSelectionChanged();
-    virtual void slotBtnCalculateClicked();
+    virtual void slotBtnOKClicked();
+    virtual void slotBtnCancelClicked();
+    //virtual void tableValueChanged(int, int);
+
+  private:
+    void showMessage(QString caption, QString text);
   };
 
 #endif

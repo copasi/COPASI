@@ -1,21 +1,7 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.96 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/22 21:56:56 $
-   End CVS Header */
 
-/*******************************************************************
- **  $ CopasiUI/MetaboliteWidget1.cpp                 
- **  $ Author  : Mudita Singhal
- **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the individual
- ** Metabolites----It is the second level of Metabolites
- ********************************************************************/
-#include "mathematics.h"
-
+//This code is for making the second level of the Metabolites
+#include "MetabolitesWidget1.h"
+#include "Model/CMetab.h"
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -26,451 +12,261 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qmessagebox.h>
-#include <qvalidator.h>
+//#include "MyTreeAndListWidget.h"
 
-#include "copasi.h"
-#include "MetabolitesWidget1.h"
-#include "model/CModel.h"
-#include "listviews.h"
-#include "DataModelGUI.h"
-#include "report/CKeyFactory.h"
-#include "qtUtilities.h"
-#include "utilities/CGlobals.h"
-
-/*
- *  Constructs a MetabolitesWidget1 which is a child of 'parent', with the 
+/* 
+ *  Constructs a MetabolitesWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
+ *
  */
-MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl),
-    objKey("")
-{
-  if (!name) setName("MetabolitesWidget1");
-  setCaption(trUtf8("MetabolitesWidget1"));
 
-  MetabolitesWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MetabolitesWidget1Layout");
+MetabolitesWidget1::MetabolitesWidget1( QWidget *parent, const char * name, WFlags f )
+    : QWidget(parent, name, f)
 
-  mLblName = new QLabel(this, "mLblName");
-  mLblName->setText(trUtf8("Metabolite Name"));
-  MetabolitesWidget1Layout->addWidget(mLblName, 0, 0);
+{	
 
-  mEditName = new QLineEdit(this, "mEditName");
-  MetabolitesWidget1Layout->addMultiCellWidget(mEditName, 0, 0, 1, 3);
+	//This is to make the Main Frame of the page
+	//The Main layout used is the Vertical Layout
+	QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0 );
+	Frame1 = new QFrame( this, "Frame1" );
+	Frame1->setFrameShape( QFrame::Box );
+    Frame1->setFrameShadow( QFrame::Plain);
+	vboxLayout->addWidget(Frame1);
+	
+	
+	//This Frame had to be added because of the border around the frame
+	//The grid Layout is used for this frame
+	QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0 );
+	vboxLayout1->addSpacing(1);
+   	Frame3 = new QFrame( Frame1, "Frame3" );
+	vboxLayout1->addWidget(Frame3);
+	QGridLayout *gridLayout = new QGridLayout(Frame3, 0 );	
+	
+	//All the other frames(rows) are embeded in it
+	Frame2 = new QFrame( Frame3, "Frame2" );
+	gridLayout->addWidget(Frame2,0,0,0);
+	QGridLayout *gridLayout1 = new QGridLayout( Frame2, 0 );
+	
+	
+	//Frame for Ist Row
+	Frame4a = new QFrame(Frame2, "Frame4a" );
+    gridLayout1->addWidget(Frame4a,0,0,0);
+	QHBoxLayout *hBoxLayout4a = new QHBoxLayout( Frame4a, 0 );
+	hBoxLayout4a->addSpacing(15);
+	
+	TextLabel1 = new QLabel( "Metabolite Name", Frame4a );
+    hBoxLayout4a->addWidget(TextLabel1);
+	hBoxLayout4a->addSpacing(17);
+    LineEdit1 = new QLineEdit( "",Frame4a  );
+	hBoxLayout4a->addWidget(LineEdit1);
+    hBoxLayout4a->addSpacing(20);
+	
+	//Frame for 2nd Row
+	Frame4b = new QFrame( Frame2, "Frame4b" );
+    gridLayout1->addWidget(Frame4b,1,0,0);
+	QHBoxLayout *hBoxLayout4b = new QHBoxLayout( Frame4b, 0 );
+	hBoxLayout4b->addSpacing(15);
+	
+	TextLabel2= new QLabel( "Compartment Name",Frame4b );
+    hBoxLayout4b->addWidget( TextLabel2);
+    hBoxLayout4b->addSpacing(-65);
+	ComboBox1 = new QComboBox( Frame4b, "ComboBox1" );
+    hBoxLayout4b->addWidget(ComboBox1);
+	hBoxLayout4b->addSpacing(20);
 
-  mLblCompartment = new QLabel(this, "mLblCompartment");
-  mLblCompartment->setText(trUtf8("Compartment Name"));
-  MetabolitesWidget1Layout->addWidget(mLblCompartment, 1, 0);
 
-  mComboCompartment = new QComboBox(FALSE, this, "mComboCompartment");
-  MetabolitesWidget1Layout->addMultiCellWidget(mComboCompartment, 1, 1, 1, 3);
+	//Frame for 3rd Row
+	Frame4c = new QFrame( Frame2, "Frame4c" );
+    gridLayout1->addWidget(Frame4c,2,0,0);
+	QHBoxLayout *hBoxLayout4c = new QHBoxLayout( Frame4c, 0 );
+	hBoxLayout4c->addSpacing(15);
+	
+	GroupBox1 = new QGroupBox ( "&Metabolite Status Selection",Frame4c );
+	hBoxLayout4c->addWidget(GroupBox1);
+	hBoxLayout4c->addSpacing(20);
 
-  Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  Line1->setFrameShadow(QFrame::Sunken);
-  Line1->setFrameShape(QFrame::HLine);
-  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 3);
 
-  mLblInitStatus = new QLabel(this, "mLblInitStatus");
-  mLblInitStatus->setText(trUtf8("Metabolite status"));
-  MetabolitesWidget1Layout->addWidget(mLblInitStatus, 3, 0);
+	RadioButton1 = new QRadioButton( GroupBox1, "RadioButton1" );
+    RadioButton1->setGeometry( QRect( 10, 30, 87, 20 ) ); 
+    RadioButton1->setText( trUtf8( "Fixed" ) );
 
-  mCheckStatus = new QCheckBox(this, "mCheckStatus");
-  mCheckStatus->setText("fixed");
-  //mCheckStatus->setChecked(false);
-  mCheckStatus->setChecked(true);
-  MetabolitesWidget1Layout->addWidget(mCheckStatus, 3, 1);
+    RadioButton2 = new QRadioButton( GroupBox1, "RadioButton2" );
+    RadioButton2->setGeometry( QRect( 100, 30, 87, 20 ) ); 
+    RadioButton2->setText( trUtf8( "Non-Fixed" ) );
 
-  mLblStatus = new QLabel(this, "mLblStatus");
-  mLblStatus->setText(trUtf8("Model Status"));
-  MetabolitesWidget1Layout->addWidget(mLblStatus, 3, 2);
+   
+	//Frame for 4th Row
+	Frame4d = new QFrame( Frame2, "Frame4d" );
+    gridLayout1->addWidget(Frame4d,3,0,0);
+	QHBoxLayout *hBoxLayout4d = new QHBoxLayout( Frame4d, 0 );
+	hBoxLayout4d->addSpacing(15);
+    
+	TextLabel4 = new QLabel( "Initial  Concentration",Frame4d);
+    hBoxLayout4d->addWidget(TextLabel4);
+	hBoxLayout4d->addSpacing(5);
 
-  mEditStatus = new QLineEdit(this, "mEditStatus");
-  mEditStatus->setEnabled(false);
-  MetabolitesWidget1Layout->addWidget(mEditStatus, 3, 3);
+	LineEdit4 = new QLineEdit( "", Frame4d );
+	LineEdit4->setGeometry( QRect( 150, 90, 121, 21 ) ); 
+	hBoxLayout4d->addWidget(LineEdit4 );
+	hBoxLayout4d->addSpacing(20);
+	   
+	//Frame for 5th Row
+	Frame4e = new QFrame( Frame2, "Frame4e" );
+    gridLayout1->addWidget(Frame4e,4,0,0);
+	QHBoxLayout *hBoxLayout4e = new QHBoxLayout( Frame4e, 0 );
+	hBoxLayout4e->addSpacing(15);
+    	
+	TextLabel5 = new QLabel( "Initial  Number", Frame4e );
+    TextLabel5->setGeometry( QRect( 30, 360, 260, 40 ) ); 
+    hBoxLayout4e->addWidget(TextLabel5);
+    hBoxLayout4e->addSpacing(32);
 
-  Line2 = new QFrame(this, "Line2");
-  Line2->setFrameShape(QFrame::HLine);
-  Line2->setFrameShadow(QFrame::Sunken);
-  Line2->setFrameShape(QFrame::HLine);
+	LineEdit5 = new QLineEdit( "", Frame4e );
+    hBoxLayout4e->addWidget(LineEdit5);
+    hBoxLayout4e->addSpacing(20);
+	
+	
+	//Frame for 6th Row
+	Frame4f = new QFrame( Frame2, "Frame4f" );
+    gridLayout1->addWidget(Frame4f,2,1,0);
+	QHBoxLayout *hBoxLayout4f = new QHBoxLayout( Frame4f, 0 );
+		
+	GroupBox2 = new QGroupBox( "Metabolite Status", Frame4f );
+   	hBoxLayout4f->addWidget(  GroupBox2);
+	hBoxLayout4f->addSpacing(20);
+	
+	RadioButton3 = new QRadioButton( GroupBox2, "RadioButton3" );
+    RadioButton3->setGeometry( QRect( 10, 30, 87, 20 ) ); 
+    RadioButton3->setText( trUtf8( "Fixed" ) );
+	RadioButton3->setEnabled(false);
 
-  MetabolitesWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 3);
+	RadioButton4 = new QRadioButton( GroupBox2, "RadioButton4" );
+    RadioButton4->setGeometry( QRect( 80, 30, 87, 20 ) ); 
+    RadioButton4->setText( trUtf8( "Independent" ) );
+	RadioButton4->setEnabled(false);
 
-  mLblInitConcentration = new QLabel(this, "mLblInitConcentration");
-  mLblInitConcentration->setText(trUtf8("Initial  Concentration"));
-  MetabolitesWidget1Layout->addWidget(mLblInitConcentration, 6, 0);
+    RadioButton5 = new QRadioButton( GroupBox2, "RadioButton5" );
+    RadioButton5->setGeometry( QRect( 180, 30, 87, 20 ) ); 
+    RadioButton5->setText( trUtf8( "Dependent" ) );
+	RadioButton5->setEnabled(false);
+    
+	
+        
+	//Frame for 7th subpart
+	Frame4g = new QFrame( Frame2, "Frame4g" );
+    gridLayout1->addWidget(Frame4g,3,1,0);
+	QHBoxLayout *hBoxLayout4g = new QHBoxLayout( Frame4g, 0 );
+	
+	TextLabel7 = new QLabel( "Transient Concentration", Frame4g);
+    hBoxLayout4g->addWidget( TextLabel7);
+    hBoxLayout4g->addSpacing(5);
+	LineEdit7 = new QLineEdit( "",Frame4g);
+    hBoxLayout4g->addWidget(LineEdit7);
+    LineEdit7->setEnabled(false);
+	hBoxLayout4g->addSpacing(20);
 
-  mEditInitConcentration = new QLineEdit(this, "mEditInitConcentration");
-  mEditInitConcentration->setValidator(new QDoubleValidator(mEditInitConcentration));
-  MetabolitesWidget1Layout->addWidget(mEditInitConcentration, 6, 1);
+	//Frame for 8th subpart
+	Frame4h = new QFrame( Frame2, "Frame4h" );
+    gridLayout1->addWidget(Frame4h,4,1,0);
+	QHBoxLayout *hBoxLayout4h = new QHBoxLayout( Frame4h, 0 );
+	
+	TextLabel8 = new QLabel( "Transient Number" ,Frame4h);
+    hBoxLayout4h->addWidget(TextLabel8);
+    hBoxLayout4h->addSpacing(32);
+	LineEdit8 = new QLineEdit( "", Frame4h);
+    hBoxLayout4h->addWidget(LineEdit8);
+	LineEdit8->setEnabled(false);
+	hBoxLayout4h->addSpacing(20);
+	
+	//Frame for 9th subpart
+	Frame4i = new QFrame( Frame2, "Frame4i" );
+    gridLayout1->addWidget(Frame4i,5,1,0);
+	QHBoxLayout *hBoxLayout4i = new QHBoxLayout( Frame4i, 0 );
+	
+	TextLabel9 = new QLabel( "Transient Time", Frame4i);
+    hBoxLayout4i->addWidget(TextLabel9);
+    hBoxLayout4i->addSpacing(45);
+	LineEdit9= new QLineEdit( "", Frame4i);
+    hBoxLayout4i->addWidget(LineEdit9);
+	LineEdit9->setEnabled(false);
+	hBoxLayout4i->addSpacing(20);
 
-  mLblConcentration = new QLabel(this, "mLblConcentration");
-  mLblConcentration->setText(trUtf8("Transient Concentration"));
-  MetabolitesWidget1Layout->addWidget(mLblConcentration, 6, 2);
+	
+	
+	//This is for the cancel and the commit buttons 
+	commitChanges = new QPushButton("&Commit Changes", Frame2);
+	cancelChanges = new QPushButton("&Cancel Changes", Frame2);
+	gridLayout1->addWidget(commitChanges,6,0,0);
+	gridLayout1->addWidget(cancelChanges,6,1,0);
+	
 
-  mEditConcentration = new QLineEdit(this, "mEditConcentration");
-  mEditConcentration->setEnabled(false);
-  MetabolitesWidget1Layout->addWidget(mEditConcentration, 6, 3);
 
-  mLblInitNumber = new QLabel(this, "mLblInitNumber");
-  mLblInitNumber->setText(trUtf8("Initial  Number"));
-  MetabolitesWidget1Layout->addWidget(mLblInitNumber, 7, 0);
-
-  mEditInitNumber = new QLineEdit(this, "mEditInitNumber");
-  mEditInitNumber->setValidator(new QDoubleValidator(mEditInitNumber));
-  MetabolitesWidget1Layout->addWidget(mEditInitNumber, 7, 1);
-
-  mLblNumber = new QLabel(this, "mLblNumber");
-  mLblNumber->setText(trUtf8("Transient Number"));
-  MetabolitesWidget1Layout->addWidget(mLblNumber, 7, 2);
-
-  mEditNumber = new QLineEdit(this, "mEditNumber");
-  mEditNumber->setEnabled(FALSE);
-  MetabolitesWidget1Layout->addWidget(mEditNumber, 7, 3);
-
-  mLblTransitionTime = new QLabel(this, "mLblTransitionTime");
-  mLblTransitionTime->setText(trUtf8("Transition Time"));
-  MetabolitesWidget1Layout->addWidget(mLblTransitionTime, 8, 2);
-
-  mEditTransitionTime = new QLineEdit(this, "mEditTransitionTime");
-  mEditTransitionTime->setEnabled(FALSE);
-  MetabolitesWidget1Layout->addWidget(mEditTransitionTime, 8, 3);
-
-  mLblRate = new QLabel(this, "mLblRate");
-  mLblRate->setText(trUtf8("Rate of concentration change"));
-  MetabolitesWidget1Layout->addWidget(mLblRate, 9, 2);
-
-  mEditRate = new QLineEdit(this, "mEditRate");
-  mEditRate->setEnabled(FALSE);
-  MetabolitesWidget1Layout->addWidget(mEditRate, 9, 3);
-
-  QSpacerItem* spacer_3 = new QSpacerItem(470, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addMultiCell(spacer_3, 10, 10, 0, 3);
-
-  Line3 = new QFrame(this, "Line3");
-  Line3->setFrameShape(QFrame::HLine);
-  Line3->setFrameShadow(QFrame::Sunken);
-  Line3->setFrameShape(QFrame::HLine);
-
-  MetabolitesWidget1Layout->addMultiCellWidget(Line3, 11, 11, 0, 3);
-
-  Layout7 = new QHBoxLayout(0, 0, 6, "Layout7");
-
-  commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("Commit"));
-  Layout7->addWidget(commitChanges);
-
-  cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Revert"));
-  Layout7->addWidget(cancelChanges);
-
-  newMetaboliteBtn = new QPushButton(this, "newMetaboliteBtn");
-  newMetaboliteBtn->setText(trUtf8("New"));
-  Layout7->addWidget(newMetaboliteBtn);
-
-  deleteMetaboliteBtn = new QPushButton(this, "deleteMetaboliteBtn");
-  deleteMetaboliteBtn->setText(trUtf8("Delete"));
-  Layout7->addWidget(deleteMetaboliteBtn);
-
-  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 12, 12, 0, 3);
-
-  setTabOrder(mEditName, mComboCompartment);
-  setTabOrder(mComboCompartment, mCheckStatus);
-  setTabOrder(mCheckStatus, mEditInitConcentration);
-  setTabOrder(mEditInitConcentration, mEditInitNumber);
-  setTabOrder(mEditInitNumber, commitChanges);
-  setTabOrder(commitChanges, cancelChanges);
-  setTabOrder(cancelChanges, newMetaboliteBtn);
-  setTabOrder(newMetaboliteBtn, deleteMetaboliteBtn);
-
-  // OK button
-  connect(commitChanges, SIGNAL(clicked()),
-          this, SLOT(slotBtnOKClicked()));
-  // Cancel button
-  connect(cancelChanges, SIGNAL(clicked()),
-          this, SLOT(slotBtnCancelClicked()));
-  connect(newMetaboliteBtn, SIGNAL(clicked()),
-          this, SLOT(slotBtnNewClicked()));
-  connect(deleteMetaboliteBtn, SIGNAL(clicked()),
-          this, SLOT(slotBtnDeleteClicked()));
+   
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
-MetabolitesWidget1::~MetabolitesWidget1()
+void MetabolitesWidget1::loadMetabolites(CModel *model)
 {
-  // no need to delete child widgets, Qt does it all for us
-}
+	if (model != NULL)
+	{
+		mModel = model;
+		vector < CMetab * > metabolites = mModel->getMetabolites();
+			
+		//Now filling the table.
+		CMetab *metab;
 
-/* This function loads the metabolites widget when its name is
-   clicked in the tree   */
-bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
-{
-  if (!metab) return false;
+			metab = metabolites[1];
+			LineEdit1->setText(metab->getName().c_str());
+		    
+			LineEdit4->setText(QString::number(*(metab->getInitialConcentration())));
 
-  CCopasiVectorNS< CCompartment > & allcompartments = dataModel->getModel()->getCompartments();
-  CCompartment *compt;
-  mComboCompartment->clear();
-  mEditName->setText(FROM_UTF8(metab->getObjectName()));
-  //Metabolite1_Name = new QString(metab->getObjectName().);
 
-  mEditInitConcentration->setText(QString::number(metab->getInitialConcentration()));
+			LineEdit7->setText( QString::number(*(metab->getConcentration())));
+			LineEdit7->setReadOnly(true);
+			
+			LineEdit8->setText( QString::number(metab->getNumber()));
+			LineEdit8->setReadOnly(true);
 
-  mEditConcentration->setText(QString::number(metab->getConcentration()));
-  mEditConcentration->setReadOnly(true);
+			LineEdit5->setText( QString::number(metab->getInitialNumber()));
+			
+			
+			LineEdit9->setText(QString::number(metab->getTransitionTime()));
+			LineEdit9->setReadOnly(true);
 
-  mEditNumber->setText(QString::number(metab->getNumber()));
-  mEditNumber->setReadOnly(true);
+		    if(QString::number(metab->getStatus())=="0")
+			{
+			RadioButton1->setChecked(true);
+			RadioButton3->setChecked(true);
+			}
+			else if(QString::number(metab->getStatus())=="1")
+			{
+				RadioButton2->setChecked(true);
+				RadioButton4->setChecked(true);
+			}
+			else if(QString::number(metab->getStatus())=="2")
+			{
+				RadioButton2->setChecked(true);
+				RadioButton5->setChecked(true);
+			}
 
-  mEditInitNumber->setText(QString::number(metab->getInitialNumber()));
+			ComboBox1->insertStringList((metab->getCompartment())->getName().c_str(),-1);
+				
+		if((metab->getCompartment())->getName()=="Glycosome")
+			{
+			ComboBox1->insertItem("Cytosol",1);
+			ComboBox1->insertItem("Exterior",2);
+			}
+		else if((metab->getCompartment())->getName()=="Cytosol")
+			{
+				ComboBox1->insertItem("Glycosome",1);
+				ComboBox1->insertItem("Exterior",2);
+			}
+		else
+			{
+				ComboBox1->insertItem("Glycosome",1);
+				ComboBox1->insertItem("Cytosol",2);
 
-  mEditTransitionTime->setText(QString::number(metab->getTransitionTime()));
-  mEditTransitionTime->setReadOnly(true);
+			}
+		
+	}
 
-  mEditRate->setText(QString::number(metab->getConcentrationRate()));
-  mEditRate->setReadOnly(true);
-
-  if (metab->getStatus() == CMetab::METAB_FIXED)
-    mCheckStatus->setChecked(true);
-  else
-    mCheckStatus->setChecked(false);
-
-  mEditStatus->setText(FROM_UTF8(CMetab::StatusName[metab->getStatus()]));
-
-  mComboCompartment->setDuplicatesEnabled (false);
-  unsigned C_INT32 m;
-  for (m = 0; m < allcompartments.size(); m++)
-    {
-      compt = allcompartments[m];
-      //mComboCompartment->insertStringList(compt->getObjectName().,j);
-      mComboCompartment->insertItem(FROM_UTF8(compt->getObjectName()));
-    }
-  mComboCompartment->setCurrentText(FROM_UTF8(metab->getCompartment()->getObjectName()));
-
-  return true;
-}
-
-bool MetabolitesWidget1::saveToMetabolite()
-{
-  //find pointer to metab from key
-  CMetab* metab = dynamic_cast< CMetab * >(GlobalKeys.get(objKey));
-  if (!metab) return false;
-
-  //name
-  QString name(mEditName->text());
-  if ((const char *)name.utf8() != metab->getObjectName())
-    {
-      metab->setObjectName((const char *)name.utf8());
-      //TODO: update the reactions (the real thing, not the gui)
-      //      propably not necessary anymore when reaction uses keys instead of names
-      protectedNotify(ListViews::METABOLITE, ListViews::RENAME, objKey);
-    }
-
-  //compartment
-  QString Compartment = mComboCompartment->currentText();
-  if ((const char *)Compartment.utf8() != metab->getCompartment()->getObjectName())
-    {
-      std::string CompartmentToRemove = metab->getCompartment()->getObjectName();
-      dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(metab);
-      dataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getObjectName());
-      dataModel->getModel()->initializeMetabolites();
-      //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
-      protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-      protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
-    }
-
-  //for Initial Concentration and Initial Number
-  QString initialConcentration(mEditInitConcentration->text());
-  double temp1;
-  temp1 = initialConcentration.toDouble();
-  if (fabs(temp1 - metab->getInitialConcentration()) > 1e-10)
-    {
-      metab->setInitialConcentration(temp1);
-      metab->setConcentration(temp1);
-      protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-      dataModel->getModel()->setCompileFlag();
-    }
-
-  else
-    {
-      QString initialNumber(mEditInitNumber->text());
-      C_FLOAT64 temp2;
-      temp2 = initialNumber.toDouble();
-      if (fabs(temp2 - metab->getInitialNumber()) > 1e-3) //TODO: this is extremely ugly
-        {
-          metab->setInitialNumber(temp2);
-          metab->setNumber(temp2);
-          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-          dataModel->getModel()->setCompileFlag();
-        }
-    }
-
-  //fixed?
-  if (mCheckStatus->isChecked() == true)
-    {
-      if (metab->getStatus() != CMetab::METAB_FIXED)
-        {
-          metab->setStatus(CMetab::METAB_FIXED);
-          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-          dataModel->getModel()->setCompileFlag();
-        }
-    }
-  else
-    {
-      if (metab->getStatus() != CMetab::METAB_VARIABLE) //TODO: should be ...==METAB_FIXED ?
-        {
-          metab->setStatus(CMetab::METAB_VARIABLE);
-          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-          dataModel->getModel()->setCompileFlag();
-        }
-    }
-  enter(objKey); //this is a hack to update the initial number when the initial concentration has changed and vice versa
-
-  return true; //TODO: really check
-}
-
-void MetabolitesWidget1::slotBtnCancelClicked()
-{
-  //let the user confirm
-  enter(objKey); // reload
-}
-
-void MetabolitesWidget1::slotBtnOKClicked()
-{
-  //let the user confirm?
-  saveToMetabolite();
-}
-
-void MetabolitesWidget1::slotBtnNewClicked()
-{
-  if (dataModel->getModel()->getCompartments().size() == 0)
-    dataModel->getModel()->createCompartment("compartment");
-
-  std::string name = "metabolite";
-  int i = 0;
-  CMetab* pMetab;
-  while (!(pMetab = dataModel->getModel()->createMetabolite(name, "", 1.0, CMetab::METAB_VARIABLE)))
-    {
-      i++;
-      name = "metabolite_";
-      name += (const char *)QString::number(i).utf8();
-    }
-  enter(pMetab->getKey());
-  protectedNotify(ListViews::METABOLITE, ListViews::ADD);
-}
-
-void MetabolitesWidget1::slotBtnDeleteClicked()
-{
-  if (!dataModel->getModel())
-    return;
-
-  QString metabList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
-  QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-  int reacFound = 0;
-
-  //unsigned C_INT32 i, imax = keys.size();
-  //for (i = 0; i < imax; i++)
-  //  {
-  //metabList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
-  metabList.append(FROM_UTF8(GlobalKeys.get(objKey)->getObjectName()));
-  metabList.append(", ");
-
-  //CMetab* metab =
-  //  dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
-
-  std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnMetab(objKey);
-
-  if (effectedReacKeys.size() > 0)
-    {
-      reacFound = 1;
-      std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
-      for (it = effectedReacKeys.begin(); it != itEnd; ++it)
-        {
-          effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
-          effectedReacList.append(", ");
-        }
-      effectedReacList.remove(effectedReacList.length() - 2, 2);
-      effectedReacList.append("  ---> ");
-      effectedReacList.append(FROM_UTF8(GlobalKeys.get(objKey)->getObjectName()));
-      effectedReacList.append("\n");
-    }
-  //}
-
-  metabList.remove(metabList.length() - 2, 2);
-
-  QString msg = metabList;
-  if (reacFound == 1)
-    {
-      msg.append("\n \n");
-      msg.append(effectedReacList);
-    }
-
-  C_INT32 choice;
-  if (reacFound == 1)
-    choice = QMessageBox::warning(this,
-                                  "CONFIRM DELETE",
-                                  msg,
-                                  "Continue", "Cancel", 0, 0, 1);
-  else
-    choice = 0;
-
-  switch (choice)
-    {
-    case 0:                            // Yes or Enter
-      {
-        unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
-        //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
-        unsigned C_INT32 index = Copasi->pModel->getMetabolites().getIndex(GlobalKeys.get(objKey));
-        /*for (i = 0; i < imax; i++)
-               {
-                 dataModel->getModel()->removeMetabolite(keys[i]);
-               }*/
-        dataModel->getModel()->removeMetabolite(objKey);
-        enter(Copasi->pModel->getMetabolites()[std::min(index, size - 2)]->getKey());
-        //for (i = 0; i < imax; i++)
-        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, objKey);
-        //TODO notify about reactions
-        break;
-      }
-    case 1:                            // No or Escape
-      break;
-    }
-}
-
-bool MetabolitesWidget1::update(ListViews::ObjectType objectType,
-                                ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  if (mIgnoreUpdates) return true;
-
-  switch (objectType)
-    {
-    case ListViews::STATE:
-    case ListViews::MODEL:
-    case ListViews::METABOLITE:
-    case ListViews::COMPARTMENT:
-      //TODO: check if it really is a compartment
-      return loadFromMetabolite(dynamic_cast< CMetab * >(GlobalKeys.get(objKey)));
-      break;
-
-    default:
-      break;
-    }
-  return true;
-}
-
-bool MetabolitesWidget1::leave()
-{
-  return saveToMetabolite();
-}
-
-bool MetabolitesWidget1::enter(const std::string & key)
-{
-  objKey = key;
-  CMetab* metab = dynamic_cast< CMetab * >(GlobalKeys.get(key));
-
-  if (metab) return loadFromMetabolite(metab);
-  else return false;
 }

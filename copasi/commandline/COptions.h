@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:20:09 $
-   End CVS Header */
-
 /**
  *  COptions class.
  *  The class retrieves the options from the commandline and various files.
@@ -25,11 +17,11 @@ class COptions
     class COptionValue
       {
       public:
-        typedef void valueType;
+        typedef void optionType;
 
         // Attributes
       protected:
-        valueType * mpValue;
+        optionType * mpValue;
 
         //Operations
       protected:
@@ -44,22 +36,22 @@ class COptions
           {*(CType *) mpValue = value;}
 
         template< class CType > void getValue(CType & value) const
-            {
-              if (this && mpValue) value = *(CType *) mpValue;
-              else value = CType();
-            }
+          {
+            if (this && mpValue) value = *(CType *) mpValue;
+            else value = CType();
+          }
 
         template< class CType > bool compareValue(CType & value) const
-            {
-              if (this && mpValue) return (value == *(CType *) mpValue);
-              else return false;
-            }
+          {
+            if (this && mpValue) return (value == *(CType *) mpValue);
+            else return false;
+          }
       };
 
   template< class CType > class COptionValueTemplate : public COptionValue
         {
         public:
-          typedef CType valueType;
+          typedef CType optionType;
 
           //Operations
         private:
@@ -67,41 +59,33 @@ class COptions
               COptionValue()
           {
             CONSTRUCTOR_TRACE;
-            mpValue = new valueType;
+            mpValue = new optionType;
           }
 
         public:
-          COptionValueTemplate(const valueType & value):
+          COptionValueTemplate(const optionType & value):
               COptionValue()
           {
             CONSTRUCTOR_TRACE;
-            mpValue = new valueType;
-            *(valueType *) mpValue = value;
+            mpValue = new optionType;
+            *(optionType *) mpValue = value;
           }
 
           virtual ~COptionValueTemplate()
           {
-            if (mpValue) {delete (valueType *) mpValue; mpValue = NULL;}
+            pdelete((optionType *) mpValue)
             DESTRUCTOR_TRACE;
           }
         };
 
-  public:
-    typedef std::map< std::string, COptionValue * > optionType;
-    typedef std::vector< std::string > nonOptionType;
-    typedef std::map< std::string, std::string > defaultType;
-
     //Attributes
   private:
-    static optionType mOptions;
-    static defaultType mDefaults;
-    static nonOptionType mNonOptions;
+    static map< std::string, COptionValue * > mOptions;
 
     //Operations
-  private:
+  public:
     COptions();
 
-  public:
     ~COptions();
 
     template< class CType > static void getValue(const std::string & name,
@@ -113,12 +97,6 @@ class COptions
       {return mOptions[name]->compareValue(value);}
 
     static void init(C_INT argc, char *argv[]);
-
-    static void cleanup();
-
-    static std::string getDefault(const std::string & name);
-
-    static const nonOptionType & getNonOptions();
 
     static std::string getEnvironmentVariable(const std::string & name);
 
@@ -134,6 +112,7 @@ class COptions
         return;
       }
 
+  private:
     static std::string getCopasiDir(void);
 
     static std::string getPWD(void);

@@ -1,91 +1,169 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.59 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/10 16:07:02 $
-   End CVS Header */
-
-#include "MoietyWidget.h"
-
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
-#include <qfont.h>
-#include <qpushbutton.h>
-#include <qaction.h>
 
-#include "MyTable.h"
-#include "model/CModel.h"
-#include "model/CMoiety.h"
-#include "listviews.h"
-#include "DataModelGUI.h"
-#include "report/CKeyFactory.h"
-#include "qtUtilities.h"
+#include "MoietyWidget.h"
+#include "Model/CMetab.h"
 
-std::vector<const CCopasiObject*> MoietyWidget::getObjects() const
-  {
-    const CCopasiVectorN<CMoiety>& tmp = dataModel->getModel()->getMoieties();
-    std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+#include "Model/CMoiety.h"
 
-    return ret;
-  }
 
-void MoietyWidget::init()
+/** 
+ *  Constructs a Widget for the Moiety subsection of the tree.
+ *  This widget is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f'. 
+ *  @param model The CModel class which contains the moiety 
+ *  to be displayed.
+ *  @param parent The widget which this widget is a child of.
+ *  @param name The object name is a text that can be used to identify 
+ *  this QObject. It's particularly useful in conjunction with the Qt Designer.
+ *  You can find an object by name (and type) using child(), and more than one 
+ *  using queryList(). 
+ *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
+ *  for more information about these flags.
+ */
+MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
+						: QWidget(parent, name, f)
 {
-  mExtraLayout->addStretch();
-  btnRun = new QPushButton("&Recalculate", this);
-  mExtraLayout->addWidget(btnRun);
-  connect(btnRun, SIGNAL(clicked ()), this,
-          SLOT(slotBtnRunClicked()));
+	 mModel=NULL;		
+	table = new MyTable(0, 3, this, "tblMoieties");
+	QVBoxLayout *vBoxLayout = new QVBoxLayout( this, 0 );
+	vBoxLayout->addWidget(table);
 
-  numCols = 4;
-  table->setNumCols(numCols);
-  //table->QTable::setNumRows(1);
+	//Setting table headers
+	QHeader *tableHeader = table->horizontalHeader();
+	tableHeader->setLabel(0, "Name");
+    tableHeader->setLabel(1, "Number");
+	tableHeader->setLabel(2, "Equation");
 
-  //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Status");
-  table->hideColumn(0);
-  tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Equation");
-  tableHeader->setLabel(3, "Number");
+	btnOK = new QPushButton("&OK", this);
+	btnCancel = new QPushButton("&Cancel", this);
+
+	QHBoxLayout *hBoxLayout = new QHBoxLayout( vBoxLayout, 0 );
+	
+	//To match the Table left Vertical Header Column Width.
+	hBoxLayout->addSpacing( 32 );
+	
+	hBoxLayout->addSpacing( 50 );
+	hBoxLayout->addWidget(btnOK);
+	hBoxLayout->addSpacing( 5 );
+	hBoxLayout->addWidget(btnCancel);
+	hBoxLayout->addSpacing( 50 );
+	
+	table->sortColumn (0, TRUE, TRUE);
+	table->setSorting ( TRUE );
+	table->setFocusPolicy(QWidget::WheelFocus);
+
+	
+	// signals and slots connections
+    connect( table, SIGNAL( clicked( int, int, int, const QPoint &) ), this, SLOT( slotTableClicked( int, int, int, const QPoint &) ) );
+	connect( table, SIGNAL( currentChanged ( int, int ) ), this, SLOT( slotTableCurrentChanged( int, int ) ) );
+	connect( table, SIGNAL( selectionChanged () ), this, SLOT( slotTableSelectionChanged () ) );
+	connect( btnOK, SIGNAL( clicked () ), this, SLOT( slotBtnOKClicked() ) );
+	connect( btnCancel, SIGNAL( clicked () ), this, SLOT( slotBtnCancelClicked() ) );
+
 }
 
-void MoietyWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
+void MoietyWidget::loadMoieties(CModel *model)
 {
-  if (!obj) return;
-  const CMoiety* pMoi = (const CMoiety*)obj;
-  table->setText(row, 1, FROM_UTF8(pMoi->getObjectName()));
-  table->setText(row, 2, FROM_UTF8(pMoi->getDescription(dataModel->getModel())));
-  table->setText(row, 3, QString::number(pMoi->getNumber()));
+	if (model != NULL)
+	{
+		
+		//Emptying the table
+		int numberOfRows = table->numRows();
+		for(int i = 0; i < numberOfRows; i++)
+		{
+			table->removeRow(0);
+		}
+
+
+		CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
+	
+		C_INT32 noOfMoietyRows = moieties.size();
+		table->setNumRows(noOfMoietyRows);
+		
+		//Now filling the table.
+		CMoiety *moiety;
+		//CEquation *eqn;
+		for (C_INT32 j = 0; j < noOfMoietyRows; j++)
+		{
+			moiety = moieties[j];
+			table->setText(j, 0,moiety->getName().c_str());
+		    table->setText(j, 1,QString::number(moiety->getNumber()));
+		    table->setText(j, 2,moiety->getDescription().c_str());
+			//table->setText(j, 2,QString::number(moiety->dependentNumber()));
+			
+		
+		
+		
+		}
+	}
 }
 
-void MoietyWidget::tableLineToObject(unsigned C_INT32 C_UNUSED(row), CCopasiObject* C_UNUSED(obj))
-{}
 
-void MoietyWidget::defaultTableLineContent(unsigned C_INT32 C_UNUSED(row), unsigned C_INT32 C_UNUSED(exc))
-{}
-
-QString MoietyWidget::defaultObjectName() const
-  {return "";}
-
-CCopasiObject* MoietyWidget::createNewObject(const std::string & C_UNUSED(name))
-{return NULL;}
-
-void MoietyWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys))
-{}
-
-void MoietyWidget::slotBtnRunClicked()
+void MoietyWidget::mousePressEvent ( QMouseEvent * e )
 {
-  dataModel->getModel()->compileIfNecessary();
-  fillTable();
+	QMessageBox::information( this, "Application name",
+                            "Clicked (mousePress) On Moiety Widget." );
 
-  mIgnoreUpdates = true; //to avoid recursive calls
-  ListViews::notify(ListViews::MODEL, ListViews::CHANGE);
-  mIgnoreUpdates = false; //to avoid recursive calls
+	QWidget::mousePressEvent(e);
+	table->setFocus();
+
+}
+
+
+void MoietyWidget::slotTableClicked( int row, int col, int button, const QPoint & mousePos )
+{
+	//QMessageBox::information( this, "Application name",
+		//"Clicked (Inside MoietyWidget::slotTableClicked) On Moiety table." );	
+
+}
+
+void MoietyWidget::slotBtnOKClicked()
+{
+	QMessageBox::information( this, "Moiety Widget",
+		"Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())" );	
+}
+
+void MoietyWidget::slotBtnCancelClicked()
+{
+	QMessageBox::information( this, "Moiety Widget",
+		"Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())" );	
+}
+
+void MoietyWidget::slotTableCurrentChanged( int row, int col )
+{
+	//QMessageBox::information( this, "Moiety Widget",
+		//"Current Changed.(Inside MoietyWidget::slotTableCurrentChanged())" );	
+}
+
+void MoietyWidget::slotTableSelectionChanged() 
+{
+	if (!table->hasFocus())
+	{
+		table->setFocus();
+	}
+}
+
+
+void MoietyWidget::resizeEvent( QResizeEvent * re)
+{
+	if (isVisible())
+	{
+	int newWidth = re->size().width();
+		
+		newWidth -= 35;	//Accounting for the left (vertical) header width.
+		float weight0 = 1.0, weight1 = 1.0, weight2 = 6.0;
+		float weightSum = weight0 + weight1 + weight2;
+		int w0, w1, w2;
+		w0 = newWidth * (weight0 / weightSum);
+		w1 = newWidth * (weight1 / weightSum);
+		w2 = newWidth - w0 - w1 ;
+		table->setColumnWidth(0, w0);
+		table->setColumnWidth(1, w1);
+		table->setColumnWidth(2, w2);
+	
+	}
+		
 }

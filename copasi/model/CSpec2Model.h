@@ -1,20 +1,12 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.h,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:36 $
-   End CVS Header */
-
 #ifndef COPASI_Spec2Model
 #define COPASI_Spec2Model
 
 #include <string>
 #include <vector>
 #include <list>
-
+#include "copasi.h"
+#include "model.h"
 #include "CSpecLine.h"
-#include "CDeTerm.h" 
 /**
  * CSpec2Model
  *
@@ -37,10 +29,9 @@
  * model = sprecreader.createModel();
  */
 
-/** @dia:pos 87.8692,-1.91886 */
 class CSpec2Model
-  {
-  public:
+{
+ public:
     //Lifecycle methods
 
     /**
@@ -53,7 +44,7 @@ class CSpec2Model
      * will read the contents of the specified file.  
      * @param filename The name of the spec file to process.
      */
-    CSpec2Model(std::string filename);
+    CSpec2Model(string filename);
 
     /**
      * The destructor
@@ -71,12 +62,17 @@ class CSpec2Model
      */
     CModel *createModel();
 
-  private:
-
+    /**
+     * Prints the input file, used to test that input was correctly read
+     */
+    void printInput();
+ private:
+    // Private operations
+    
     /**
      * Determine the type of an input line.
      */
-    void determineType(std::string line);
+    void determineType(string line);
 
     /**
      * Extract and instantiate compartments.
@@ -118,7 +114,7 @@ class CSpec2Model
      * Extract the terms of the DEs, and process them
      */
     void processDETerms();
-  private:
+ private:
     /**
      * Adds the contents of a file to CSpec2Model
      */
@@ -136,82 +132,35 @@ class CSpec2Model
      * involved in the model.
      */
     void processDifferentialEquations();
-
     /**
-     * Return the left hand side metabolite in a differential equation
+     * Parse a line
      */
-    const CMetab *getLHSMetab(const CBaseEqn &) const;
-    /**
-     * 
-     */
-    void processDeTerms();
-    /**
-     * Create a stack of terms, used by processDeTerms().
-     * @param The string description of the DE.
-     * @return A vector of pointers to CDeTerm describing the stack.
-     */
-    std::vector< CDeTerm *> createTermStack(std::string str);
-    /**
-     * Expand any functions found in the rate.
-     * @return The expanded rate.
-     */
-    std::string expandRate(CDeTerm *term);
-    /**
-     * Adjusts the level of parentheses encountered; used internally by
-     * createTermStack to determine term boundaries.
-     * @param level The depth of parameters so far
-     * @param The symbol type
-     * @return The adjusted level
-     */
-    C_INT32 adjustLevel(C_INT32 level, C_INT32 type);
-
-    /**
-     *  Find the metabolite with the given name.
-     * @param metab_name The name of the metabolite
-     * @return A pointer to the metabolite
-     */
-    CMetab *findMetabolite(std::string metab_name);
-
-  private:
+    C_INT32 parseLine(string line);
+ private:
     /**
      * The name of the specification file
      */
-    std::string mSpecFileName;
+    string mSpecFileName;
     /**
      * The contents of the specification file.
      */
-    std::vector< std::string> mSpecContents;
+    vector<string> mSpecContents;
     /**
      * The contents again, annotated
      */
-    /** @dia:route 22,2; h,87.8692,5.78114,80.8589,10.7701,73.8487 */
-    std::vector< CSpecLine> mSpecLines;
+    vector<CSpecLine> mSpecLines;
     /**
      * The differential equation contents, for further processing
      */
-    /** @dia:route 9,0; h,73.6311,0.95321,80.7502,-1.91886,87.8692 */
-    std::vector< CBaseEqn> mDeVector;
+    vector<CBaseEqn> mReactVector;
     /**
      * The moiety equation contents, for further processing
      */
-    /** @dia:route 2,0; h,73.6311,-0.94679,80.7502,-1.91886,87.8692 */
-    std::vector< CBaseEqn> mMoietyVector;
-    /**
-     * The constants, which are later plugged into rates or moiety equations
-     */
-    /** @dia:route 2,40; h,73.0862,25.6516,80.4777,12.9811,87.8692 */
-    std::vector< CNameVal> mConstVector;
-    /**
-     * The rate constants, used later to create reactions and 
-     * to parse the differential equations.
-     */
-    /** @dia:route 9,40; h,73.0862,27.5516,80.4777,12.9811,87.8692 */
-    std::vector< CNameVal> mRateVector;
+    vector<CBaseEqn> mMoietyVector;
     /**
      * A pointer to the model being constructed.
      */
-    /** @dia:route 8,47; h,177.081,32.1423,119.137,15.3811,108.069 */
     CModel *mModel;
-  };
+};
 
 #endif // COPASI_Spec2Model

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.17 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 12:16:30 $
-   End CVS Header */
-
 /**
  *   CHybridMethod
  *
@@ -29,11 +21,10 @@
 #define max _cpp_max
 #endif // WIN32
 
-#include "mathematics.h" // pow(), floor()
-
-#include "copasi.h"
-
+/* HEADER FILE ***************************************************************/
 #include "CHybridMethod.h"
+
+/* INCLUDES ******************************************************************/
 #include "CTrajectoryProblem.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
@@ -47,6 +38,7 @@
 #include "utilities/CMatrix.h"
 #include "utilities/CDependencyGraph.h"
 #include "utilities/CIndexedPriorityQueue.h"
+#include "math.h" // pow(), floor()
 #include "randomGenerator/CRandom.h"
 
 /* PUBLIC METHODS ************************************************************/
@@ -56,7 +48,7 @@
  */
 CHybridMethod::~CHybridMethod()
 {
-  std::cout << "~CHybridMethod() " << CCopasiParameter::getObjectName() << std::endl;
+  cout << "~CHybridMethod() " << getName() << endl;
   delete mRandomGenerator;
   mRandomGenerator = 0;
   cleanup();
@@ -76,15 +68,9 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:                 // non-integer stoichometry
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
-      break;
-    case - 2:                 // reversible reaction exists
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
-      break;
-    case - 1:                 // more than one compartment involved
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
-      break;
+    case - 3:  // non-integer stoichometry
+    case - 2:  // reversible reaction exists
+    case - 1:  // more than one compartment involved
       // Error: Hybrid simulation impossible
       break;
     case 1:
@@ -105,7 +91,7 @@ const double CHybridMethod::step(const double & deltaT)
   unsigned C_INT32 imax;
 
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolites()[i]->getNumber() >= mMaxIntBeforeStep)
+    if (mpProblem->getModel()->getMetabolites()[i]->getNumberInt() >= mMaxIntBeforeStep)
       {
         // throw exception or something like that
       }
@@ -123,9 +109,13 @@ const double CHybridMethod::step(const double & deltaT)
   // get back the particle numbers
 
   /* Set the variable metabolites */
-  C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVector().array());
+  C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVectorDbl().array());
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
+    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumberDbl();
+
+  C_INT32 * Int = const_cast<C_INT32 *>(mpCurrentState->getVariableNumberVectorInt().array());
+  for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Int++)
+    *Int = mpProblem->getModel()->getMetabolites()[i]->getNumberInt();
 
   return deltaT;
 }
@@ -149,24 +139,21 @@ const double CHybridMethod::step(const double & deltaT,
 /**
  *   Default constructor.
  */
-CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::hybrid, pParent)
+CHybridMethod::CHybridMethod():
+    CTrajectoryMethod()
 {
+  setName("HYBRID");
+  mTypeEnum = CTrajectoryMethod::hybrid;
+  setType(CTrajectoryMethod::TypeName[mTypeEnum]);
   /* Set version number */
   mVersion.setVersion(1, 0, 101);
 
-  // Max number of doSingleStep() per step()
-  addParameter("HYBRID.MaxSteps",
-               CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS);
-  addParameter("HYBRID.LowerStochLimit",
-               CCopasiParameter::INT, (C_INT32) LOWER_STOCH_LIMIT);
-  addParameter("HYBRID.UpperStochLimit",
-               CCopasiParameter::INT, (C_INT32) UPPER_STOCH_LIMIT);
-  addParameter("HYBRID.RungeKuttaStepsize",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) RUNGE_KUTTA_STEPSIZE);
-  //deprecated:  addParameter("HYBRID.OutputCounter", OUTPUT_COUNTER);
-  addParameter("HYBRID.IntEpsilon",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) INT_EPSILON);
+  add("HYBRID.MaxSteps", MAX_STEPS); // Max number of doSingleStep() per step()
+  add("HYBRID.LowerStochLimit", LOWER_STOCH_LIMIT);
+  add("HYBRID.UpperStochLimit", UPPER_STOCH_LIMIT);
+  add("HYBRID.RungeKuttaStepsize", RUNGE_KUTTA_STEPSIZE);
+  //deprecated:  add("HYBRID.OutputCounter", OUTPUT_COUNTER);
+  add("HYBRID.IntEpsilon", INT_EPSILON);
 
   mRandomGenerator = CRandom::createGenerator(CRandom::r250);
 
@@ -193,7 +180,7 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   mReactions = &mpModel->getReactions();
   mAmu.resize(mReactions->size());
   mAmuOld.resize(mReactions->size());
-  mMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolites()));
+  mMetabolites = &(const_cast < CCopasiVectorN < CMetab > & > (mpModel->getMetabolites()));
   //  mDim = static_cast<C_INT32>mpModel->getTotMetab();
   mDim = mMetabolites->size();
   delete[] x;
@@ -218,18 +205,16 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   testState = new C_FLOAT64[mDim];
   oldState = new C_INT32[mDim];
 
-  mMaxSteps = * (unsigned C_INT32 *) getValue("HYBRID.MaxSteps");
-  std::cout << "HYBRID.MaxSteps: " << mMaxSteps << std::endl;
-  mLowerStochLimit = * (C_INT32 *) getValue("HYBRID.LowerStochLimit");
-  std::cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << std::endl;
-  mUpperStochLimit = * (C_INT32 *) getValue("HYBRID.UpperStochLimit");
-  std::cout << "HYBRID.UpperStochLimit: " << mUpperStochLimit << std::endl;
+  mMaxSteps = (unsigned C_INT32) getValue("HYBRID.MaxSteps");
+  cout << "HYBRID.MaxSteps: " << mMaxSteps << endl;
+  mLowerStochLimit = (C_INT32) getValue("HYBRID.LowerStochLimit");
+  cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << endl;
+  mUpperStochLimit = (C_INT32) getValue("HYBRID.UpperStochLimit");
+  cout << "HYBRID.UpperStochLimit: " << mUpperStochLimit << endl;
   if (mLowerStochLimit > mUpperStochLimit)
-    std::cerr << "CHybridMethod.initialize(): Error: mLowerStochLimit ("
-    << mLowerStochLimit << ") is greater than mUpperStochLimit ("
-    << mUpperStochLimit << ")." << std::endl;
-  mStepsize = * (C_FLOAT64 *) getValue("HYBRID.RungeKuttaStepsize");
-  std::cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << std::endl;
+    cerr << "CHybridMethod.initialize(): Error: mLowerStochLimit (" << mLowerStochLimit << ") is greater than mUpperStochLimit (" << mUpperStochLimit << ")." << endl;
+  mStepsize = getValue("HYBRID.RungeKuttaStepsize");
+  cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << endl;
   mStoi = mpModel->getStoi();
 
   setupBalances(); // initialize mBalances (has to be called first!)
@@ -300,8 +285,8 @@ void CHybridMethod::integrateDeterministicPart(C_FLOAT64 dt)
   for (react = mFirstFlag; react != NULL; react = react->next)
     {
       const std::set <C_INT32> & dependents = mDG.getDependents(react->index);
-      std::copy(dependents.begin(), dependents.end(),
-                std::inserter(mUpdateSet, mUpdateSet.begin()));
+      copy(dependents.begin(), dependents.end(),
+           inserter(mUpdateSet, mUpdateSet.begin()));
     }
   return;
 }
@@ -321,9 +306,9 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
   while ((dt - integrationTime) > mStepsize)
     {
       for (i = 0; i < mDim; i++)
-        oldState[i] = (*mMetabolites)[i]->getNumber();
+        oldState[i] = (*mMetabolites)[i]->getNumberInt();
       for (i = 0; i < mDim; i++)
-        x[i] = (*mMetabolites)[i]->getNumber();
+        x[i] = (*mMetabolites)[i]->getNumberDbl();
       calculateDerivative(temp);
       for (i = 0; i < mDim; i++)
         increment[i] = temp[i] * dt;
@@ -332,16 +317,16 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
       for (i = 0; i < mDim; i++)
         {
           if (increment[i] != 0.0)
-            (*mMetabolites)[i]->setNumber(y[i]);
+            (*mMetabolites)[i]->setNumberDbl(y[i]);
           else
-            (*mMetabolites)[i]->setNumber(oldState[i]);
+            (*mMetabolites)[i]->setNumberInt(oldState[i]);
         }
       integrationTime += mStepsize;
     }
   for (i = 0; i < mDim; i++)
-    oldState[i] = (*mMetabolites)[i]->getNumber();
+    oldState[i] = (*mMetabolites)[i]->getNumberInt();
   for (i = 0; i < mDim; i++)
-    x[i] = (*mMetabolites)[i]->getNumber();
+    x[i] = (*mMetabolites)[i]->getNumberDbl();
   calculateDerivative(temp);
   for (i = 0; i < mDim; i++)
     increment[i] = temp[i] * (dt - integrationTime);
@@ -350,17 +335,17 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
   for (i = 0; i < mDim; i++)
     {
       if (increment[i] != 0.0)
-        (*mMetabolites)[i]->setNumber(y[i]);
+        (*mMetabolites)[i]->setNumberDbl(y[i]);
       else
-        (*mMetabolites)[i]->setNumber(oldState[i]);
+        (*mMetabolites)[i]->setNumberInt(oldState[i]);
     }
 
   // find the set union of all reactions, which depend on one of the deterministic reactions. the propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
   for (react = mFirstFlag; react != NULL; react = react->next)
     {
       const std::set <C_INT32> & dependents = mDG.getDependents(react->index);
-      std::copy(dependents.begin(), dependents.end(),
-                std::inserter(mUpdateSet, mUpdateSet.begin()));
+      copy(dependents.begin(), dependents.end(),
+           inserter(mUpdateSet, mUpdateSet.begin()));
     }
   return;
 }
@@ -470,7 +455,7 @@ void CHybridMethod::calculateDerivative(C_FLOAT64 * deriv)
         {
           // juergen: +0.5 to get a rounding out of the static_cast
           bal = static_cast<C_INT32>(floor(mStoi[i][j->index] + 0.5));
-          deriv[i] += bal * (*mReactions)[j->index]->getParticleFlux(); //  balance * flux;
+          deriv[i] += bal * (*mReactions)[j->index]->getScaledFlux(); //  balance * flux;
         }
     }
   for (; i < mDim; i++) deriv[i] = 0.0; // important to get a correct deriv vector, because mStoi doesn't cover fixed metabolites
@@ -490,7 +475,7 @@ void CHybridMethod::getState(C_FLOAT64 * target)
 
   for (i = 0; i < mDim; i++)
     {
-      target[i] = (*mMetabolites)[i]->getNumber();
+      target[i] = (*mMetabolites)[i]->getNumberDbl();
     }
   return;
 }
@@ -508,7 +493,7 @@ void CHybridMethod::getState(C_INT32 * target)
 
   for (i = 0; i < mDim; i++)
     {
-      target[i] = (*mMetabolites)[i]->getNumber();
+      target[i] = (*mMetabolites)[i]->getNumberInt();
     }
   return;
 }
@@ -527,7 +512,7 @@ void CHybridMethod::setState(C_FLOAT64 * source)
 
   for (i = 0; i < mDim; i++)
     {
-      (*mMetabolites)[i]->setNumber(source[i]);
+      (*mMetabolites)[i]->setNumberDbl(source[i]);
     }
   return;
 }
@@ -556,9 +541,9 @@ void CHybridMethod::changeState(C_FLOAT64 * increment,
   for (i = 0; i < mDim; i++)
     {
       if (increment[i] != 0.0)
-        (*mMetabolites)[i]->setNumber(y[i]);
+        (*mMetabolites)[i]->setNumberDbl(y[i]);
       else
-        (*mMetabolites)[i]->setNumber(oldState[i]);
+        (*mMetabolites)[i]->setNumberInt(oldState[i]);
     }
   return;
 }
@@ -607,8 +592,7 @@ void CHybridMethod::updatePartitionDet(C_FLOAT64 * increment,
                       mAmuOld[*iter] = mAmu[*iter];
                       key = time + generateReactionTime(*iter);
                       mPQ.insertStochReaction(*iter, key);
-                      std::cerr << "time: " << time << " rIndex: " << *iter
-                      << "      ->stoch" << std::endl; // DEBUG
+                      cerr << "time: " << time << " rIndex: " << *iter << "      ->stoch" << endl; // DEBUG
                     }
                   mStochReactionFlags[*iter].value++;
                 }
@@ -663,7 +647,7 @@ void CHybridMethod::fireReactionAndUpdatePartition(C_INT32 rIndex, C_FLOAT64 tim
 
   for (i = 0; i < mBalances[rIndex].size(); i++)
     {
-      number = mBalances[rIndex][i].metabolitePointer->getNumber();
+      number = mBalances[rIndex][i].metabolitePointer->getNumberInt();
       newNumber = number + mBalances[rIndex][i].balance;
       metabIndex = mBalances[rIndex][i].index;
 
@@ -679,8 +663,7 @@ void CHybridMethod::fireReactionAndUpdatePartition(C_INT32 rIndex, C_FLOAT64 tim
                 {
                   insertDeterministicReaction(*iter);
                   mPQ.removeStochReaction(*iter);
-                  std::cerr << "time: " << time << " rIndex: " << *iter
-                  << " stoch->" << std::endl; // DEBUG
+                  cerr << "time: " << time << " rIndex: " << *iter << " stoch->" << endl; // DEBUG
                 }
             }
         }
@@ -693,8 +676,7 @@ void CHybridMethod::fireReactionAndUpdatePartition(C_INT32 rIndex, C_FLOAT64 tim
                 {
                   removeDeterministicReaction(*iter);
                   mPQ.insertStochReaction(*iter, 1234567.8);  // juergen: have to beautify this, number has to be the biggest C_FLOAT64 !!!
-                  std::cerr << "time: " << time << " rIndex: " << *iter
-                  << "      ->stoch" << std::endl; // DEBUG
+                  cerr << "time: " << time << " rIndex: " << *iter << "      ->stoch" << endl; // DEBUG
                 }
               mStochReactionFlags[*iter].value++;
             }
@@ -702,12 +684,12 @@ void CHybridMethod::fireReactionAndUpdatePartition(C_INT32 rIndex, C_FLOAT64 tim
       // juergen: if new_num < schwelle, then mark reaction as stochastic; if new_num < schwelle for none of the metabolites, then mark reaction as deterministic
 
       // update particle number
-      (*mMetabolites)[metabIndex]->setNumber(newNumber);
+      (*mMetabolites)[metabIndex]->setNumberInt(newNumber);
     }
   // insert all dependent reactions into the mUpdateSet
   const std::set <C_INT32> & dependents = mDG.getDependents(rIndex);
-  std::copy(dependents.begin(), dependents.end(),
-            std::inserter(mUpdateSet, mUpdateSet.begin()));
+  copy(dependents.begin(), dependents.end(),
+       inserter(mUpdateSet, mUpdateSet.begin()));
 
   return;
 }
@@ -789,7 +771,7 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
       num_ident = static_cast<C_INT32>(floor(substrates[i]->getMultiplicity() + 0.5)); // juergen: +0.5 to get a rounding out of the static_cast !
       //std::cout << "Num ident = " << num_ident << std::endl;
       total_substrates += num_ident;
-      number = substrates[i]->getMetabolite().getNumber();
+      number = substrates[i]->getMetabolite().getNumberInt();
       lower_bound = number - num_ident;
       //cout << "Number = " << number << "  Lower bound = " << lower_bound << endl;
       substrate_factor = substrate_factor * pow(number, num_ident);
@@ -826,7 +808,7 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
   mpModel->getReactions()[rIndex]->calculate();
-  C_FLOAT64 rate_factor = mpModel->getReactions()[rIndex]->getParticleFlux() / substrate_factor;
+  C_FLOAT64 rate_factor = mpModel->getReactions()[rIndex]->getScaledFlux() / substrate_factor;
 
   //cout << "Rate factor = " << rate_factor << endl;
   amu *= rate_factor;
@@ -948,13 +930,11 @@ void CHybridMethod::setupBalances()
 // juergen: based on Carel's Next Reaction Method
 void CHybridMethod::setupDependencyGraph()
 {
-  mDG.clear();
-  std::vector< std::set<std::string>* > DependsOn;
-  std::vector< std::set<std::string>* > Affects;
-  unsigned C_INT32 numReactions = mpModel->getReactions().size();
-  unsigned C_INT32 i, j;
+  std::vector< std::set<const CMetab*>* > dependsOn;
+  std::vector< std::set<const CMetab*>* > affects;
+  C_INT32 numReactions = mReactions->size();
+  C_INT32 i, j;
   // Do for each reaction:
-
   for (i = 0; i < numReactions; i++)
     {
       // Get the set of metabolites  which affect the value of amu for this
@@ -962,11 +942,10 @@ void CHybridMethod::setupDependencyGraph()
       // the set of substrates, since the kinetics can involve other
       // reactants, e.g. catalysts. We thus need to step through the
       // rate function and pick out every reactant which can vary.
-      DependsOn.push_back(getDependsOn(i));
+      dependsOn.push_back(getDependsOn(i));
       // Get the set of metabolites which are affected when this reaction takes place
-      Affects.push_back(getAffects(i));
+      affects.push_back(getAffects(i));
     }
-
   // For each possible pair of reactions i and j, if the intersection of
   // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.
   for (i = 0; i < numReactions; i++)
@@ -976,11 +955,10 @@ void CHybridMethod::setupDependencyGraph()
           // Determine whether the intersection of these two sets is non-empty
           // Could also do this with set_intersection generic algorithm, but that
           // would require operator<() to be defined on the set elements.
-
-          std::set<std::string>::iterator iter = Affects[i]->begin();
-          for (; iter != Affects[i]->end(); iter++)
+          std::set<const CMetab*>::iterator iter = affects[i]->begin();
+          for (; iter != affects[i]->end(); iter++)
             {
-              if (DependsOn[j]->count(*iter))
+              if (dependsOn[j]->count(*iter))
                 {
                   // The set intersection is non-empty
                   mDG.addDependent(i, j);
@@ -989,15 +967,14 @@ void CHybridMethod::setupDependencyGraph()
             }
         }
       // Ensure that self edges are included
-      //mDG.addDependent(i, i);
+      mDG.addDependent(i, i);
     }
-
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
   for (i = 0; i < numReactions; i++)
     {
-      delete DependsOn[i];
-      delete Affects[i];
+      delete dependsOn[i];
+      delete affects[i];
     }
   return;
 }
@@ -1108,7 +1085,7 @@ void CHybridMethod::setupPartition()
       mStochReactionFlags[i].value = 0;
       for (j = 0; j < mBalances[i].size(); j++)
         {
-          if ((mBalances[i][j].metabolitePointer->getNumber()) < averageStochLimit)
+          if ((mBalances[i][j].metabolitePointer->getNumberInt()) < averageStochLimit)
             {
               mStochReactionFlags[i].value++;
             }
@@ -1165,8 +1142,7 @@ void CHybridMethod::setupPriorityQueue(C_FLOAT64 startTime)
           calculateAmu(i);
           time = startTime + generateReactionTime(i);
           mPQ.insertStochReaction(i, time);
-          std::cerr << "time: " << mpCurrentState->getTime() << " rIndex: "
-          << i << "      ->stoch" << std::endl; // DEBUG
+          cerr << "time: " << mpCurrentState->getTime() << " rIndex: " << i << "      ->stoch" << endl; // DEBUG
         }
     }
   return;
@@ -1271,24 +1247,26 @@ C_INT32 CHybridMethod::findMetab(const CMetab * metab)
  *   @return The set of metabolites depended on.
  */ 
 // juergen: based Carel's Next Reaction Method, adapted by Sven
-std::set<std::string> *CHybridMethod::getDependsOn(C_INT32 reaction_index)
+std::set<const CMetab*> *CHybridMethod::getDependsOn(C_INT32 rIndex)
 {
-  std::set<std::string> *retset = new std::set<std::string>;
+  std::set<const CMetab*> *retset = new std::set<const CMetab*>;
 
-  unsigned C_INT32 i, imax = mpModel->getReactions()[reaction_index]->getFunctionParameters().size();
-  unsigned C_INT32 j, jmax;
+  CCopasiVector<CReaction::CId2Metab> & subst = (*mReactions)[rIndex]->getId2Substrates();
 
-  std::vector <const CMetab*> metablist;
+  CCopasiVector<CReaction::CId2Metab> & modif = (*mReactions)[rIndex]->getId2Modifiers();
 
-  for (i = 0; i < imax; ++i)
+  unsigned C_INT32 i;
+
+  for (i = 0; i < subst.size(); i++)
     {
-      if (mpModel->getReactions()[reaction_index]->getFunctionParameters()[i]->getUsage() == "PARAMETER")
-        continue;
-      metablist = mpModel->getReactions()[reaction_index]->getParameterMappingMetab(i);
-      jmax = metablist.size();
-      for (j = 0; j < jmax; ++j)
-      {retset->insert(metablist[j]->getKey());}
+      retset->insert((subst[i]->getMetabolite()));
     }
+
+  for (i = 0; i < modif.size(); i++)
+    {
+      retset->insert((modif[i]->getMetabolite()));
+    }
+
   return retset;
 }
 
@@ -1300,9 +1278,9 @@ std::set<std::string> *CHybridMethod::getDependsOn(C_INT32 reaction_index)
  *   @return The set of affected metabolites.
  */ 
 // juergen: based on Carel's Next Reaction Method
-std::set<std::string> *CHybridMethod::getAffects(C_INT32 rIndex)
+std::set<const CMetab*> *CHybridMethod::getAffects(C_INT32 rIndex)
 {
-  std::set<std::string> *retset = new std::set<std::string>;
+  std::set<const CMetab*> *retset = new std::set<const CMetab*>;
 
   // Get the balances  associated with the reaction at this index
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
@@ -1311,7 +1289,7 @@ std::set<std::string> *CHybridMethod::getAffects(C_INT32 rIndex)
     {
       if (mBalances[rIndex][i].balance != 0)
         {
-          retset->insert(mBalances[rIndex][i].metabolitePointer->getKey());
+          retset->insert(mBalances[rIndex][i].metabolitePointer);
         }
     }
   return retset;
@@ -1327,7 +1305,7 @@ std::set<std::string> *CHybridMethod::getAffects(C_INT32 rIndex)
 std::set<C_INT32> *CHybridMethod::getParticipatesIn(C_INT32 rIndex)
 {
   std::set<C_INT32> *retset = new std::set<C_INT32>;
-  /*
+
   CCopasiVector<CReaction::CId2Metab> & subst = (*mReactions)[rIndex]->getId2Substrates();
 
   CCopasiVector<CReaction::CId2Metab> & prod = (*mReactions)[rIndex]->getId2Products();
@@ -1349,14 +1327,14 @@ std::set<C_INT32> *CHybridMethod::getParticipatesIn(C_INT32 rIndex)
     {
       retset->insert(findMetab(modif[i]->getMetabolite()));
     }
-  */ //TODO reac  
+
   return retset;
 }
 
 /**
  *   Prints out data on standard output. Deprecated.
  */
-void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
+void CHybridMethod::outputData(ostream & os, C_INT32 mode)
 {
   static C_INT32 counter = 0;
   unsigned C_INT32 i;
@@ -1370,18 +1348,18 @@ void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
           os << mpCurrentState->getTime() << " : ";
           for (i = 0; i < mMetabolites->size(); i++)
             {
-              os << (*mMetabolites)[i]->getNumber() << " ";
+              os << (*mMetabolites)[i]->getNumberInt() << " ";
             }
-          os << std::endl;
+          os << endl;
         }
       break;
     case 1:
       os << mpCurrentState->getTime() << " : ";
       for (i = 0; i < mMetabolites->size(); i++)
         {
-          os << (*mMetabolites)[i]->getNumber() << " ";
+          os << (*mMetabolites)[i]->getNumberInt() << " ";
         }
-      os << std::endl;
+      os << endl;
       break;
     default:
 ;
@@ -1392,188 +1370,186 @@ void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
 /**
  *   Prints out various data on standard output for debugging purposes.
  */
-void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
+void CHybridMethod::outputDebug(ostream & os, C_INT32 level)
 {
   unsigned C_INT32 i, j;
   std::set <C_INT32>::iterator iter, iterEnd;
 
-  os << "outputDebug(" << level << ") *********************************************** BEGIN" << std::endl;
+  os << "outputDebug(" << level << ") *********************************************** BEGIN" << endl;
 
   switch (level)
     {
-    case 0:                 // Everything !!!
-      os << "Version: " << mVersion.getVersion() << " Name: "
-      << CCopasiParameter::getObjectName() << " Method: " /* << mMethod */
-      << std::endl;
-      os << "mTime: " << mpCurrentState->getTime() << std::endl;
-      os << "mDim: " << mDim << std::endl;
-      os << "mReactions.size(): " << mReactions->size() << std::endl;
+    case 0:  // Everything !!!
+      os << "Version: " << mVersion.getVersion() << " Name: " << getName() << " Method: " /* << mMethod */ << endl;
+      os << "mTime: " << mpCurrentState->getTime() << endl;
+      os << "mDim: " << mDim << endl;
+      os << "mReactions.size(): " << mReactions->size() << endl;
       for (i = 0; i < mReactions->size(); i++)
-        os << *(*mReactions)[i] << std::endl;
-      os << "mMetabolites.size(): " << mMetabolites->size() << std::endl;
+        os << *(*mReactions)[i] << endl;
+      os << "mMetabolites.size(): " << mMetabolites->size() << endl;
       for (i = 0; i < mMetabolites->size(); i++)
-        os << *(*mMetabolites)[i] << std::endl;
-      os << "mStoi: " << std::endl;
+        os << *(*mMetabolites)[i] << endl;
+      os << "mStoi: " << endl;
       for (i = 0; i < (unsigned C_INT32) mStoi.numRows(); i++)
         {
           for (j = 0; j < (unsigned C_INT32) mStoi.numCols(); j++)
             os << mStoi[i][j] << " ";
-          os << std::endl;
+          os << endl;
         }
       os << "oldState: ";
       for (i = 0; i < mDim; i++)
         os << oldState[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "x: ";
       for (i = 0; i < mDim; i++)
         os << x[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "y: ";
       for (i = 0; i < mDim; i++)
         os << y[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "increment: ";
       for (i = 0; i < mDim; i++)
         os << increment[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "temp: ";
       for (i = 0; i < mDim; i++)
         os << temp[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "k1: ";
       for (i = 0; i < mDim; i++)
         os << k1[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "k2: ";
       for (i = 0; i < mDim; i++)
         os << k2[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "k3: ";
       for (i = 0; i < mDim; i++)
         os << k3[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "k4: ";
       for (i = 0; i < mDim; i++)
         os << k4[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "testState: ";
       for (i = 0; i < mDim; i++)
         os << testState[i] << " ";
-      os << std::endl;
-      os << "mStochReactionFlags: " << std::endl;
+      os << endl;
+      os << "mStochReactionFlags: " << endl;
       for (i = 0; i < mBalances.size(); i++)
         os << mStochReactionFlags[i];
-      os << "mFirstFlag: " << std::endl;
-      if (mFirstFlag == NULL) os << "NULL" << std::endl; else os << *mFirstFlag;
-      os << "mBalances: " << std::endl;
+      os << "mFirstFlag: " << endl;
+      if (mFirstFlag == NULL) os << "NULL" << endl; else os << *mFirstFlag;
+      os << "mBalances: " << endl;
       for (i = 0; i < mBalances.size(); i++)
         {
           for (j = 0; j < mBalances[i].size(); j++)
             os << mBalances[i][j];
-          os << std::endl;
+          os << endl;
         }
-      os << "mLowerStochLimit: " << mLowerStochLimit << std::endl;
-      os << "mUpperStochLimit: " << mUpperStochLimit << std::endl;
+      os << "mLowerStochLimit: " << mLowerStochLimit << endl;
+      os << "mUpperStochLimit: " << mUpperStochLimit << endl;
       //deprecated:      os << "mOutputCounter: " << mOutputCounter << endl;
-      os << "mStepsize: " << mStepsize << std::endl;
-      os << "mMetab2React: " << std::endl;
+      os << "mStepsize: " << mStepsize << endl;
+      os << "mMetab2React: " << endl;
       for (i = 0; i < mMetab2React.size(); i++)
         {
           os << i << ": ";
           for (iter = mMetab2React[i].begin(), iterEnd = mMetab2React[i].end(); iter != iterEnd; ++iter)
             os << *iter << " ";
-          os << std::endl;
+          os << endl;
         }
-      os << "mAmu: " << std::endl;
+      os << "mAmu: " << endl;
       for (i = 0; i < mReactions->size(); i++)
         os << mAmu[i] << " ";
-      os << std::endl;
-      os << "mAmuOld: " << std::endl;
+      os << endl;
+      os << "mAmuOld: " << endl;
       for (i = 0; i < mReactions->size(); i++)
         os << mAmuOld[i] << " ";
-      os << std::endl;
-      os << "mUpdateSet: " << std::endl;
+      os << endl;
+      os << "mUpdateSet: " << endl;
       for (iter = mUpdateSet.begin(), iterEnd = mUpdateSet.end(); iter != iterEnd; iter++)
         os << *iter;
-      os << std::endl;
-      os << "mRandomGenerator: " << mRandomGenerator << std::endl;
-      os << "mFail: " << mFail << std::endl;
-      os << "mDG: " << std::endl << mDG;
-      os << "mPQ: " << std::endl << mPQ;
-      os << "Particle numbers: " << std::endl;
+      os << endl;
+      os << "mRandomGenerator: " << mRandomGenerator << endl;
+      os << "mFail: " << mFail << endl;
+      os << "mDG: " << endl << mDG;
+      os << "mPQ: " << endl << mPQ;
+      os << "Particle numbers: " << endl;
       for (i = 0; i < mMetabolites->size(); i++)
         {
-          os << (*mMetabolites)[i]->getNumber() << " ";
+          os << (*mMetabolites)[i]->getNumberInt() << " ";
         }
-      os << std::endl;
+      os << endl;
       break;
 
-    case 1:                  // Variable values only
-      os << "mTime: " << mpCurrentState->getTime() << std::endl;
+    case 1:   // Variable values only
+      os << "mTime: " << mpCurrentState->getTime() << endl;
       os << "oldState: ";
       for (i = 0; i < mDim; i++)
         os << oldState[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "x: ";
       for (i = 0; i < mDim; i++)
         os << x[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "y: ";
       for (i = 0; i < mDim; i++)
         os << y[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "increment: ";
       for (i = 0; i < mDim; i++)
         os << increment[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "temp: ";
       for (i = 0; i < mDim; i++)
         os << temp[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "k1: ";
       for (i = 0; i < mDim; i++)
         os << k1[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "k2: ";
       for (i = 0; i < mDim; i++)
         os << k2[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "k3: ";
       for (i = 0; i < mDim; i++)
         os << k3[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "k4: ";
       for (i = 0; i < mDim; i++)
         os << k4[i] << " ";
-      os << std::endl;
+      os << endl;
       os << "testState: ";
       for (i = 0; i < mDim; i++)
         os << testState[i] << " ";
-      os << std::endl;
-      os << "mStochReactionFlags: " << std::endl;
+      os << endl;
+      os << "mStochReactionFlags: " << endl;
       for (i = 0; i < mBalances.size(); i++)
         os << mStochReactionFlags[i];
-      os << "mFirstFlag: " << std::endl;
-      if (mFirstFlag == NULL) os << "NULL" << std::endl; else os << *mFirstFlag;
-      os << "mAmu: " << std::endl;
+      os << "mFirstFlag: " << endl;
+      if (mFirstFlag == NULL) os << "NULL" << endl; else os << *mFirstFlag;
+      os << "mAmu: " << endl;
       for (i = 0; i < mReactions->size(); i++)
         os << mAmu[i] << " ";
-      os << std::endl;
-      os << "mAmuOld: " << std::endl;
+      os << endl;
+      os << "mAmuOld: " << endl;
       for (i = 0; i < mReactions->size(); i++)
         os << mAmuOld[i] << " ";
-      os << std::endl;
-      os << "mUpdateSet: " << std::endl;
+      os << endl;
+      os << "mUpdateSet: " << endl;
       for (iter = mUpdateSet.begin(), iterEnd = mUpdateSet.end(); iter != iterEnd; iter++)
         os << *iter;
-      os << std::endl;
-      os << "mPQ: " << std::endl << mPQ;
-      os << "Particle numbers: " << std::endl;
+      os << endl;
+      os << "mPQ: " << endl << mPQ;
+      os << "Particle numbers: " << endl;
       for (i = 0; i < mMetabolites->size(); i++)
         {
-          os << (*mMetabolites)[i]->getNumber() << " ";
+          os << (*mMetabolites)[i]->getNumberInt() << " ";
         }
-      os << std::endl;
+      os << endl;
       break;
 
     case 2:
@@ -1582,29 +1558,6 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
     default:
 ;
     }
-  os << "outputDebug(" << level << ") ************************************************* END" << std::endl;
+  os << "outputDebug(" << level << ") ************************************************* END" << endl;
   return;
-}
-
-std::ostream & operator<<(std::ostream & os, const StochFlag & d)
-{
-  os << "StochFlag " << std::endl;
-  os << "  index: " << d.index << " value: " << d.value << std::endl;
-  if (d.prev != NULL)
-    os << "  prevIndex: " << d.prev->index << " prevPointer: " << d.prev << std::endl;
-  else
-    os << "  prevPointer: NULL" << std::endl;
-  if (d.next != NULL)
-    os << "  nextIndex: " << d.next->index << " nextPointer: " << d.next << std::endl;
-  else
-    os << "  nextPointer: NULL" << std::endl;
-  return os;
-}
-
-std::ostream & operator<<(std::ostream & os, const Balance & d)
-{
-  os << "Balance" << std::endl;
-  os << "  index: " << d.index << " balance: " << d.balance
-  << " metabPointer: " << d.metabolitePointer << std::endl;
-  return os;
 }

@@ -1,379 +1,269 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.65 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/10 11:17:50 $
-   End CVS Header */
+// cmetab.cpp : implementation of the CMetab class
+//
 
 #include <iostream>
 #include <string>
 #include <vector>
 
-#define  COPASI_TRACE_CONSTRUCTION
-
 #include "copasi.h"
 #include "utilities/CGlobals.h"
-#include "utilities/utility.h"
-#include "report/CCopasiObjectReference.h"
-#include "report/CKeyFactory.h"
 #include "CCompartment.h"
-#include "CModel.h"
 #include "CMetab.h"
 
-//static
-const CCompartment * CMetab::mpParentCompartment = NULL;
+/////////////////////////////////////////////////////////////////////////////
+// CMetab
 
-//static
-const std::string CMetab::StatusName[] =
-  {"fixed", "independent", "dependent", "unused", ""};
-
-//static
-const char * CMetab::XMLStatus[] =
-  {"fixed", "variable", "variable", "variable", NULL};
-
-//static
-void CMetab::setParentCompartment(const CCompartment * parentCompartment)
-{mpParentCompartment = parentCompartment;}
-
-CMetab::CMetab(const std::string & name,
-               const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Metabolite",
-                     CCopasiObject::Container |
-                     CCopasiObject::ValueDbl |
-                     CCopasiObject::NonUniqueName),
-    mKey(GlobalKeys.add("Metabolite", this)),
-    mConc(1.0),
-    mIConc(1.0),
-    mNumber(1.0),
-    mINumber(1.0),
-    mRate(1.0),
-    mTT(0.0),
-    mStatus(METAB_VARIABLE)
+CMetab::CMetab()
 {
-  if (getObjectParent())
-    {
-      initModel();
-      initCompartment(NULL);
-    }
-
-  initObjects();
-  CONSTRUCTOR_TRACE;
+  // initialize everything
+  mName       = "metab";
+  if (!isValidName()) fatalError();
+  mConc       = Copasi.DefaultConc;
+  mIConc      = Copasi.DefaultConc;
+  mRate       = 1.0;
+  mTT         = 0.0;
+  mStatus     = METAB_VARIABLE;
+  mCompartment = NULL;
 }
 
-CMetab::CMetab(const CMetab & src,
-               const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Metabolite", this)),
-    mConc(src.mConc),
-    mIConc(src.mIConc),
-    mNumber(src.mNumber),
-    mINumber(src.mINumber),
-    mRate(src.mRate),
-    mTT(src.mTT),
-    mStatus(src.mStatus)
+CMetab::CMetab(const string & name)
 {
-  initModel();
-  initCompartment(src.mpCompartment);
-  initObjects();
-  CONSTRUCTOR_TRACE;
+  reset(name);
 }
 
-CMetab &CMetab::operator=(const CMetabOld &RHS)
+#ifdef XXXX
+CMetab::CMetab(const string & name, const C_INT16 status, 
+               CCompartment & compartment)
 {
-  setObjectName(RHS.getObjectName());
+  mName        = name;
+  mConc        = Copasi.DefaultConc;
+  mIConc       = Copasi.DefaultConc;
+  mRate        = 1.0;
+  mTT          = 0.0;
+  mStatus      = status;
+  mCompartment = &compartment;
+}
+#endif // XXXX
 
-  setInitialConcentration(RHS.mIConc);
-  setConcentration(RHS.mIConc);
-
-  mRate = 1.0;
-  mTT = 0.0;
-  mStatus = RHS.mStatus;
+// overload assignment operator
+CMetab &CMetab::operator=(const CMetab &RHS)
+{
+  mName        = RHS.mName;
+  mConc        = RHS.mConc;
+  mIConc       = RHS.mIConc;
+  mRate        = RHS.mRate;
+  mTT          = RHS.mTT;
+  mStatus      = RHS.mStatus;
+  mCompartment = RHS.mCompartment;
 
   return *this;  // Assignment operator returns left side.
 }
 
-CMetab::~CMetab()
+CMetab &CMetab::operator=(const CMetabOld &RHS)
 {
-  GlobalKeys.remove(mKey);
-  DESTRUCTOR_TRACE;
+  mName        = RHS.mName;
+  mConc        = RHS.mIConc;
+  mIConc       = RHS.mIConc;
+  mRate        = 1.0;
+  mTT          = 0.0;
+  mStatus      = RHS.mStatus;
+  mCompartment = NULL;
+
+  return *this;  // Assignment operator returns left side.
 }
 
-void CMetab::cleanup() {}
+CMetab::~CMetab() {}
 
-void CMetab::initModel()
+C_INT32 CMetab::reset(const string& name)
 {
-  mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
-  if (!mpModel && Copasi) mpModel = Copasi->pModel;
+  // initialize everything
+  mName        = name;
+  if (!isValidName()) fatalError();
+  mConc        = mIConc;
+  mRate        = 1.0;
+  mTT          = 0.0;
+  mStatus      = METAB_VARIABLE;
+  mCompartment = NULL;
+
+  return 0;
 }
 
-void CMetab::initCompartment(const CCompartment * pCompartment)
-{
-  mpCompartment = (const CCompartment *) getObjectAncestor("Compartment");
-  if (!mpCompartment) mpCompartment = pCompartment;
-  if (!mpCompartment) mpCompartment = mpParentCompartment;
-}
-
-const std::string & CMetab::getKey() const {return mKey;}
-
-const C_FLOAT64 & CMetab::getConcentration() const {return mConc;}
-
-const C_FLOAT64 & CMetab::getNumber() const {return mNumber;}
-
-const C_FLOAT64 & CMetab::getInitialConcentration() const {return mIConc;}
-
-const C_FLOAT64 & CMetab::getInitialNumber() const {return mINumber;}
-
-const CMetab::Status & CMetab::getStatus() const {return mStatus;}
-
-const CCompartment * CMetab::getCompartment() const {return mpCompartment;}
-
-const CModel * CMetab::getModel() const {return mpModel;}
-
-void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
-{mTT = transitionTime;}
-
-const C_FLOAT64 & CMetab::getTransitionTime() const {return mTT;}
-
-bool CMetab::setObjectParent(const CCopasiContainer * pParent)
-{
-  CCopasiObject::setObjectParent(pParent);
-
-  initCompartment(NULL);
-  initModel();
-
-  return true;
-}
-
-// ***** set quantities ********
-
-void CMetab::setConcentration(const C_FLOAT64 concentration)
-{
-  mConc = concentration;
-  mNumber = concentration * mpCompartment->getVolume()
-            * mpModel->getQuantity2NumberFactor();
-}
-
-void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
-{
-  mIConc = initialConcentration;
-  mINumber = initialConcentration * mpCompartment->getVolume()
-             * mpModel->getQuantity2NumberFactor();
-}
-
-void CMetab::setNumber(const C_FLOAT64 number)
-{
-  mConc = number * mpCompartment->getVolumeInv()
-          * mpModel->getNumber2QuantityFactor();
-  mNumber = number;
-}
-
-void CMetab::setInitialNumber(const C_FLOAT64 initialNumber)
-{
-  mIConc = initialNumber * mpCompartment->getVolumeInv()
-           * mpModel->getNumber2QuantityFactor();
-  mINumber = initialNumber;
-}
-
-//  ******************
-
-void CMetab::setStatus(const CMetab::Status & status) {mStatus = status;}
-
-void CMetab::setCompartment(const CCompartment * compartment)
-{mpCompartment = compartment;}
-
-void CMetab::setModel(CModel * model) {mpModel = model;}
-
-void CMetab::initObjects()
-{
-  addObjectReference("Concentration", mConc, CCopasiObject::ValueDbl);
-  addObjectReference("InitialConcentration", mIConc, CCopasiObject::ValueDbl);
-  addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
-}
-
-// non-member
-/*bool operator<(const CMetab &lhs, const CMetab &rhs)
-{
-  // Do the comparison based on the name
-  if (lhs.getObjectName() < rhs.getObjectName())
-    {
-      return true;
-    }
-  else
-    {
-      return false;
-    }
-}*/
-
-/**
- * Return rate of production of this metaboLite
- */
-const C_FLOAT64 & CMetab::getConcentrationRate() const
-  {return mRate;}
-
-C_FLOAT64 CMetab::getNumberRate() const
-  {
-    return mRate * getCompartment()->getVolume()
-    * mpModel->getQuantity2NumberFactor();
-  }
-
-void CMetab::setNumberRate(const C_FLOAT64 & rate)
-{
-  //converts particles/time to concentration/time
-  mRate = rate * getCompartment()->getVolumeInv()
-          * mpModel->getNumber2QuantityFactor();
-}
-
-void CMetab::setConcentrationRate(const C_FLOAT64 & rate)
-{mRate = rate;}
-
-void * CMetab::getReference() const
-  {return const_cast<C_FLOAT64 *>(&mConc);}
-
-std::ostream & operator<<(std::ostream &os, const CMetab & d)
-{
-  os << "    ++++CMetab: " << d.getObjectName() << std::endl;
-  os << "        mConc " << d.mConc << " mIConc " << d.mIConc << std::endl;
-  os << "        mNumber " << d.mNumber << " mINumber " << d.mINumber << std::endl;
-  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << std::endl;
-
-  if (d.mpCompartment)
-    os << "        mpCompartment == " << d.mpCompartment << std::endl;
-  else
-    os << "        mpCompartment == 0 " << std::endl;
-
-  if (d.mpModel)
-    os << "        mpModel == " << d.mpModel << std::endl;
-  else
-    os << "        mpModel == 0 " << std::endl;
-
-  os << "    ----CMetab " << std::endl;
-
-  return os;
-}
 
 C_INT32 CMetab::load(CReadConfig &configbuffer)
 {
   C_INT32 Fail = 0;
-
-  std::string tmp;
+    
   Fail = configbuffer.getVariable("Metabolite", "string",
-                                  (void *) & tmp,
-                                  CReadConfig::SEARCH);
+				  (void *) &mName,
+				  CReadConfig::SEARCH);
+  if (Fail) return Fail;
 
-  if (Fail)
-    return Fail;
-  setObjectName(tmp);
-
-  Fail = configbuffer.getVariable("InitialConcentration", "C_FLOAT64",
-                                  (void *) & mIConc);
-
-  setInitialConcentration(mIConc);
-  setConcentration(mIConc);
-
+  Fail = configbuffer.getVariable("Concentration", "C_FLOAT64",
+				  (void *) &mIConc);
+  if (Fail) return Fail;
+  mConc = mIConc;
+    
   Fail = configbuffer.getVariable("Type", "C_INT16",
-                                  (void *) & mStatus);
-
-  if (Fail)
-    return Fail;
+				  (void *) &mStatus);
+  if (Fail) return Fail;
 
   // sanity check
-  if ((mStatus < 0) || (mStatus > 7))
+  if ((mStatus<0) || (mStatus>7))
     {
-      CCopasiMessage(CCopasiMessage::WARNING,
-                     "The file specifies a non-existing type "
-                     "for '%s'.\nReset to internal metabolite.",
-                     getObjectName().c_str());
-      mStatus = CMetab::METAB_VARIABLE;
+      CCopasiMessage(CCopasiMessage::WARNING, 
+		     "The file specifies a non-existing type "
+		     "for '%s'.\nReset to internal metabolite.",
+		     mName.c_str());
+      mStatus = 1;
     }
 
   // sanity check
-  if ((mStatus != METAB_MOIETY) && (mIConc < 0.0))
+  if ((mStatus!=METAB_MOIETY) && (mIConc < 0.0))
     {
-      CCopasiMessage(CCopasiMessage::WARNING,
-                     "The file specifies a negative concentration "
-                     "for '%s'.\nReset to default.",
-                     getObjectName().c_str());
-      mIConc = 1.0;
+      CCopasiMessage(CCopasiMessage::WARNING, 
+		     "The file specifies a negative concentration "
+		     "for '%s'.\nReset to default.",
+		     mName.c_str());
+      mIConc = Copasi.DefaultConc;
     }
-
   return Fail;
 }
 
-//******************* CMetabOld ***************************************************
 
-CMetabOld::CMetabOld(const std::string & name,
-                     const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Old Metabolite"),
-    mIConc(1.0),
-    mStatus(CMetab::METAB_VARIABLE),
-    mCompartment()
-{CONSTRUCTOR_TRACE;}
+C_INT32 CMetab::save(CWriteConfig &configbuffer)
+{
+  C_INT32 Fail = 0;
+    
+  Fail = configbuffer.setVariable("Metabolite", "string",
+				  (void *) &mName);
+  if (Fail) return Fail;
 
-CMetabOld::CMetabOld(const CMetabOld & src,
-                     const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mIConc(src.mIConc),
-    mStatus(src.mStatus),
-    mCompartment(src.mCompartment)
-{CONSTRUCTOR_TRACE;}
+  Fail = configbuffer.setVariable("Concentration", "C_FLOAT64",
+				  (void *) &mIConc);
+  if (Fail) return Fail;
 
-CMetabOld::~CMetabOld() {DESTRUCTOR_TRACE;}
+  Fail = configbuffer.setVariable("Type", "C_INT16",
+				  (void *) &mStatus);
+  return Fail;
+}
 
-void CMetabOld::cleanup(){}
+string CMetab::getName() const {return mName;}
+
+C_FLOAT64 * CMetab::getConcentration() {return &mConc;}
+
+C_FLOAT64 CMetab::getNumber() const 
+{
+  return mConc * mCompartment->getVolume();
+}
+
+C_FLOAT64 * CMetab::getInitialConcentration() {return &mIConc;}
+
+C_FLOAT64 CMetab::getInitialNumber() const 
+{
+  return mIConc * mCompartment->getVolume();
+}
+
+C_INT16 CMetab::getStatus() const {return mStatus;}
+
+CCompartment * CMetab::getCompartment() {return mCompartment;} 
+
+void CMetab::setName(const string & name) {mName = name;}
+
+void CMetab::setConcentration(const C_FLOAT64 concentration)
+{
+  mConc = concentration;
+}
+
+void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
+{
+  mConc = initialConcentration;
+}
+
+void CMetab::setNumber(const C_FLOAT64 number)
+{
+  mConc = number / mCompartment->getVolume();
+}
+
+void CMetab::setStatus(const C_INT16 status) {mStatus = status;}
+
+void CMetab::setCompartment(CCompartment * compartment) 
+{
+  mCompartment = compartment;
+} 
+
+C_INT16 CMetab::isValidName()
+{
+  return (mName.find_first_of("; ") == string::npos);
+}
 
 C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 {
   C_INT32 Fail = 0;
-  std::string tmp;
+    
   Fail = configbuffer.getVariable("Metabolite", "string",
-                                  (void *) & tmp,
-                                  CReadConfig::SEARCH);
-
-  if (Fail)
-    return Fail;
-  setObjectName(tmp);
+				  (void *) &mName,
+				  CReadConfig::SEARCH);
+  if (Fail) return Fail;
 
   Fail = configbuffer.getVariable("Concentration", "C_FLOAT64",
-                                  (void *) & mIConc);
-
-  if (Fail)
-    return Fail;
-
+				  (void *) &mIConc);
+  if (Fail) return Fail;
+    
   Fail = configbuffer.getVariable("Compartment", "C_INT32",
-                                  (void *) & mCompartment);
-
-  if (Fail)
-    return Fail;
+				  (void *) &mCompartment);
+  if (Fail) return Fail;
 
   C_INT32 Status;
-
   Fail = configbuffer.getVariable("Type", "C_INT32",
-                                  (void *) & Status);
-
-  mStatus = (CMetab::Status) Status;
+				  (void *) &Status);
+  mStatus = (C_INT16) Status;
 
   // sanity check
-  if ((mStatus < 0) || (mStatus > 7))
+  if ((mStatus<0) || (mStatus>7))
     {
-      CCopasiMessage(CCopasiMessage::WARNING,
-                     "The file specifies a non-existing type "
-                     "for '%s'.\nReset to internal metabolite.",
-                     getObjectName().c_str());
-      mStatus = CMetab::METAB_VARIABLE;
+      CCopasiMessage(CCopasiMessage::WARNING, 
+		     "The file specifies a non-existing type "
+		     "for '%s'.\nReset to internal metabolite.",
+		     mName.c_str());
+      mStatus = 1;
     }
 
   // sanity check
-  if ((mStatus != METAB_MOIETY) && (mIConc < 0.0))
+  if ((mStatus!=METAB_MOIETY) && (mIConc < 0.0))
     {
-      CCopasiMessage(CCopasiMessage::WARNING,
-                     "The file specifies a negative concentration "
-                     "for '%s'.\nReset to default.",
-                     getObjectName().c_str());
-      mIConc = 1.0;
+      CCopasiMessage(CCopasiMessage::WARNING, 
+		     "The file specifies a negative concentration "
+		     "for '%s'.\nReset to default.",
+		     mName.c_str());
+      mIConc = Copasi.DefaultConc;
     }
-
   return Fail;
 }
 
 C_INT32 CMetabOld::getIndex() const {return mCompartment;}
+
+string CMetabOld::getName() const {return mName;}
+
+/**
+ *	Returns the address of mIConc		Wei Sun
+ */
+void * CMetab::getIConcAddr()
+{
+  return &mIConc;
+}
+
+/**
+ *	Returns the address of mConc
+ */
+void * CMetab::getConcAddr()
+{
+  return &mConc;
+}
+
+/**
+ *	Returns the address of mTT
+ */
+void * CMetab::getTTAddr()
+{
+  return &mTT;
+}

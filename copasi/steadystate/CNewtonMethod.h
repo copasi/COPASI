@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 12:15:49 $
-   End CVS Header */
-
 /**
  *  CNewtonMethod class.
  *  This class implements the enhanced Newton method which attempts to find the
@@ -17,14 +9,12 @@
 #ifndef COPASI_CNewtonMethod
 #define COPASI_CNewtonMethod
 
-#include "utilities/CMatrix.h"
-#include "utilities/CVector.h"
-#include "model/CState.h"
+class CStateX;
 
-class CNewtonMethod : public CSteadyStateMethod
+class CNewtonMethod : private CSteadyStateMethod
   {
     friend CSteadyStateMethod *
-    CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType);
+    CSteadyStateMethod::createSteadyStateMethod(CSteadyStateMethod::Type type);
 
     // Attributes
   private:
@@ -44,48 +34,33 @@ class CNewtonMethod : public CSteadyStateMethod
 
     C_FLOAT64 mFactor;
     C_FLOAT64 mResolution;
-    C_FLOAT64 mScaledResolution;
-    C_INT mDimension;
+    C_INT32 mDimension;
     C_FLOAT64 mMaxrate;
     C_FLOAT64 * mX;
-    CVector< C_FLOAT64 > mH;
-    CVector< C_FLOAT64 > mXold;
-    CVector< C_FLOAT64 > mdxdt;
-    CMatrix< C_FLOAT64 > mJacobianX;
-    C_INT * mIpiv;
-
-    CStateX mStateX;
-    CStateX mInitialStateX;
+    C_FLOAT64 * mH;
+    C_FLOAT64 * mXold;
+    C_FLOAT64 * mdxdt;
+    C_FLOAT64 * mJacobian;
+    C_INT32 * mIpiv;
 
     // Operations
   private:
     /**
-     * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
+     *  Default constructor.
      */
-    CNewtonMethod(const CCopasiContainer * pParent = NULL);
+    CNewtonMethod();
 
   public:
     /**
-     * Copy constructor.
-     * @param "const CNewtonMethod &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
+     *  Copy constructor.
+     *  @param "const CNewtonMethod &" src
      */
-    CNewtonMethod(const CNewtonMethod & src,
-                  const CCopasiContainer * pParent = NULL);
+    CNewtonMethod(const CNewtonMethod & src);
 
     /**
      *  Destructor.
      */
     ~CNewtonMethod();
-
-    /**
-     * Load a list of parameters
-     * @param "CReadConfig &" configBuffer
-     * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)
-     */
-    virtual void load(CReadConfig & configBuffer,
-                      CReadConfig::Mode mode = CReadConfig::SEARCH);
 
     /**
      * This instructs the method to calculate a the steady state
@@ -96,7 +71,8 @@ class CNewtonMethod : public CSteadyStateMethod
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     virtual CSteadyStateMethod::ReturnCode
-    processInternal();
+    process(CState & steadyState,
+            const CState & initialState);
 
   private:
     /**
@@ -107,10 +83,13 @@ class CNewtonMethod : public CSteadyStateMethod
      * @param const CState * initialState
      * @return CNewtonMethod::NewtonReturnCode newtonReturnCode
      */
-    CNewtonMethod::NewtonReturnCode processNewton();
+    CNewtonMethod::NewtonReturnCode processNewton(CState * steadyState,
+        CState * initialState);
 
     CNewtonMethod::NewtonReturnCode
-    returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode);
+    returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode,
+                 CState * steadyState,
+                 CState * initialState);
 
     bool isSteadyState();
 

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:13:16 $
-   End CVS Header */
-
 /**
  *  CSteadyStateProblem class.
  *  This class describes the steady state problem, i.e., it allows to specify
@@ -27,23 +19,22 @@
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::steadyState, pParent),
-    mInitialState()
+CSteadyStateProblem::CSteadyStateProblem():
+    mpModel(NULL),
+    mpInitialState(NULL)
 {
-  addParameter("JacobianRequested", CCopasiParameter::BOOL, true);
-  addParameter("StabilityAnalysisRequested", CCopasiParameter::BOOL, true);
   CONSTRUCTOR_TRACE;
+  if (mpModel)
+    mpInitialState = mpModel->getInitialState();
 }
 
 /**
  *  Copy constructor.
  *  @param "const CSteadyStateProblem &" src
  */
-CSteadyStateProblem::CSteadyStateProblem(const CSteadyStateProblem & src,
-    const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent),
-    mInitialState(src.mInitialState)
+CSteadyStateProblem::CSteadyStateProblem(const CSteadyStateProblem & src):
+    mpModel(src.mpModel),
+    mpInitialState(src.mpInitialState)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -56,13 +47,7 @@ CSteadyStateProblem::~CSteadyStateProblem()
  * Set the model the problem is dealing with.
  * @param "CModel *" pModel
  */
-bool CSteadyStateProblem::setModel(CModel * pModel)
-{
-  mpModel = pModel;
-  mInitialState.setModel(mpModel);
-
-  return true;
-}
+void CSteadyStateProblem::setModel(CModel * pModel) {mpModel = pModel;}
 
 /**
  * Retrieve the model the problem is dealing with.
@@ -72,75 +57,95 @@ CModel * CSteadyStateProblem::getModel() const {return mpModel;}
 
 /**
  * Set the initial state of the problem.
- * @param const CState & initialState
+ * @param "const CState *" pInitialState
  */
-void CSteadyStateProblem::setInitialState(const CState & initialState)
-{mInitialState = initialState;}
-
-/**
- * Set the initial state of the problem.
- * @param const CStateX & InitialState
- */
-void CSteadyStateProblem::setInitialState(const CStateX & initialState)
-{mInitialState = initialState;}
+void CSteadyStateProblem::setInitialState(CState * pInitialState)
+{mpInitialState = pInitialState;}
 
 /**
  * Retrieve the initial state of the problem.
- * @return "const CState &" pInitialState
+ * @return "const CState *" pInitialState
  */
-const CState & CSteadyStateProblem::getInitialState() const
-  {return mInitialState;}
+const CState * CSteadyStateProblem::getInitialState() const
+  {return mpInitialState;}
 
 /**
  * Set whether the jacobian is requested.
  * @param bool * jacobianRequested
  */
-void CSteadyStateProblem::setJacobianRequested(bool & jacobianRequested)
-{setValue("JacobianRequested", jacobianRequested);}
+void CSteadyStateProblem::setJacobianRequested(bool * jacobianRequested)
+{mJacobianRequested = jacobianRequested;}
 
 /**
  * Retrieve whether the jacobian is requested.
  * @return bool jacobianRequested
  */
 bool CSteadyStateProblem::isJacobianRequested() const
-  {return * (bool *) getValue("JacobianRequested");}
+  {return mJacobianRequested;}
 
 /**
  * Set whether stabilty analysis is requested.
  * @param bool * stabilityAnalysisRequested
  */
-void CSteadyStateProblem::setStabilityAnalysisRequested(bool & stabilityAnalysisRequested)
-{setValue("StabilityAnalysisRequested", stabilityAnalysisRequested);}
+void CSteadyStateProblem::setStabilityAnalysisRequested(bool * stabilityAnalysisRequested)
+{mStabilityAnalysisRequested = stabilityAnalysisRequested;}
 
 /**
  * Retrieve whether the stabilty analysis is requested.
  * @return bool stabilityAnalysisRequested
  */
 bool CSteadyStateProblem::isStabilityAnalysisRequested() const
-  {return * (bool *) getValue("StabilityAnalysisRequested");}
+  {return mStabilityAnalysisRequested;}
 
 /**
  * Load a steadystate problem
  * @param "CReadConfig &" configBuffer
  */
 void CSteadyStateProblem::load(CReadConfig & configBuffer,
-                               CReadConfig::Mode C_UNUSED(mode))
+                               CReadConfig::Mode mode)
 {
   if (configBuffer.getVersion() < "4.0")
     {
-      mpModel = Copasi->pModel;
-      mInitialState = mpModel->getInitialState();
+      mpModel = Copasi->Model;
+      mpInitialState = mpModel->getInitialState();
       configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
-                               getValue("StabilityAnalysisRequested"),
+                               &mStabilityAnalysisRequested,
                                CReadConfig::LOOP);
-      setValue("JacobianRequested",
-               * (bool *) getValue("StabilityAnalysisRequested"));
+      mJacobianRequested = mStabilityAnalysisRequested;
+    }
+  else
+    {
+      string Tmp;
+
+      configBuffer.getVariable("SteadyStateProblemModel", "string", &Tmp, mode);
+      if (Tmp == Copasi->Model->getTitle())
+        mpModel = Copasi->Model;
+      else
+        fatalError();
+
+      mpInitialState = new CState;
+      mpInitialState->load(configBuffer);
+
+      configBuffer.getVariable("JacobianRequested", "bool" ,
+                               &mJacobianRequested);
+      configBuffer.getVariable("StabilityAnalysisRequested", "bool" ,
+                               &mStabilityAnalysisRequested);
     }
 }
 
 /**
  * Save a steady state problem
  * @param "CWriteConfig &" configBuffer
- */ 
-/*void CSteadyStateProblem::save(CWriteConfig & C_UNUSED(configBuffer)) const
-  {fatalError();}*/
+ */
+void CSteadyStateProblem::save(CWriteConfig & configBuffer) const
+  {
+    string Tmp = mpModel->getTitle();
+    configBuffer.setVariable("SteadyStateProblemModel", "string", &Tmp);
+
+    mpInitialState->save(configBuffer);
+
+    configBuffer.setVariable("JacobianRequested", "bool" ,
+                             &mJacobianRequested);
+    configBuffer.setVariable("StabilityAnalysisRequested", "bool" ,
+                             &mStabilityAnalysisRequested);
+  }

@@ -1,48 +1,40 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.h,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 15:23:48 $
-   End CVS Header */
-
 /****************************************************************************
- **  $ CopasiUI/CompartmentSymbols.h               
+ **  $ CopasiUI/MetabolitesWidget.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Compartment Symbols
+ ** This is the header file for the Metabolites Widget, i.e the First level 
+ ** of Metabolites.
  *****************************************************************************/
 
 #ifndef COMPARTMENT_SYMBOLS_H
 #define COMPARTMENT_SYMBOLS_H
 
+#include "MyTable.h"
+#include "copasi.h"
+#include "model/model.h"
 #include <qtable.h>
 #include <qpushbutton.h>
 
-//#include "MyTable.h"
-#include "copasi.h"
-#include "copasiWidget.h"
-class CMathModel;
-
-class CompartmentSymbols : public CopasiWidget
+class CompartmentSymbols : public QWidget
   {
     Q_OBJECT
 
   protected:
-    CMathModel * mModel;
-    QTable * table;
-    //QPushButton *btnOK;
-    //QPushButton *btnCancel;
+    CModel * mModel;
+    MyTable * table;
+    QPushButton *btnOK;
+    QPushButton *btnCancel;
+
+  public slots:
+    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
   signals:
-    void name(const QString &);
+    void name(QString &);
 
   public:
     CompartmentSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
+    //void loadMetabolites(CModel *model);
     void resizeEvent(QResizeEvent * re);
-
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool enter(const std::string & key = "");
 
   protected slots:
     virtual void slotBtnOKClicked();
@@ -50,7 +42,7 @@ class CompartmentSymbols : public CopasiWidget
     virtual void slotTableSelectionChanged();
 
   private:
-    void loadCompartmentSymbols(CMathModel *model);
+    void showMessage(QString caption, QString text);
   };
 
 #endif

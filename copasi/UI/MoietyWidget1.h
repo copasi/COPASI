@@ -1,66 +1,46 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget1.h,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:39 $
-   End CVS Header */
+#ifndef MOIETY_WIDGET1_H
+#define MOIETY_WIDGET1_H
 
-/****************************************************************************
- **  $ CopasiUI/MoietyWidget1.h               
- **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Moiety Widget, i.e the second level 
- ** of Moieties.
- *****************************************************************************/ 
-/*
- reimplement UI to automatically change internal components size
- Author: Liang Xu
- */
-
-#ifndef MOIETYWIDGET1_H
-#define MOIETYWIDGET1_H
-
+#include <qsplitter.h>
 #include <qvariant.h>
-#include <qwidget.h>
-#include <qtextbrowser.h>
-#include "copasiWidget.h"
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class QVBoxLayout; 
+class QHBoxLayout; 
+class QGridLayout; 
+class QAction;
+class QActionGroup;
+class QToolBar;
+class QPopupMenu;
 class QLabel;
 class QLineEdit;
+class QListBoxItem;
+class QPushButton;
+class QFrame;
 class CModel;
-class CMoiety;
-
-class MoietyWidget1 : public CopasiWidget
-  {
+class MoietyWidget1 : public QWidget
+{ 
     Q_OBJECT
 
-  public:
-    MoietyWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
-    ~MoietyWidget1();
-
-    //By G
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
-
-  protected slots:
-    //virtual void slotBtnCancelClicked();
-    //virtual void slotBtnOKClicked();
-
-  protected:
-    QGridLayout* MoietyWidget1Layout;
+protected:
+	QPushButton* cancelChanges;
+    QPushButton* commitChanges;
+	CModel *mModel;
+public:
+    MoietyWidget1( QWidget *parent, const char * name=0, WFlags f=0 );
+	void loadMoieties(CModel *model);
     QLabel* TextLabel1;
-    QLineEdit* LineEdit2;
     QLabel* TextLabel2;
     QLabel* TextLabel3;
+    QLineEdit* LineEdit1;
+    QLineEdit* LineEdit2;
     QLineEdit* LineEdit3;
-    QTextBrowser* textBrowser;
+ 	QFrame* Frame1;
+	QFrame* Frame2;
+	QFrame* Frame3;
+	QFrame* Frame4a;
+	QFrame* Frame4b;
+	QFrame* Frame4c;
+	QFrame* Frame4d;
 
-    bool loadFromMoiety(const CMoiety *);
-    std::string objKey; //By G
-  };
+};
 
-#endif // MOIETYWIDGET1_H
+#endif 

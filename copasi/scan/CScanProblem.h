@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:12:42 $
-   End CVS Header */
-
 /**
  *  CTrajectoryProblem class.
  *  This class describes the trajectory problem, i.e., it allows to specify
@@ -14,145 +6,62 @@
  *  Created for Copasi by Stefan Hoops 2002
  */
 
-#ifndef COPASI_CScanProblem
-#define COPASI_CScanProblem
+#ifndef COPASI_CTrajectoryProblem
+#define COPASI_CTrajectoryProblem
 
 #include <string>
-#include "utilities/CCopasiMethod.h"
-#include "utilities/CCopasiProblem.h"
+#include "model/model.h"
+#include "utilities/CMethodParameterList.h"
+#include "utilities/CReadConfig.h"
+#include "utilities/CWriteConfig.h"
 #include "utilities/CCopasiVector.h"
 
-class CModel;
-//class CWriteConfig;
-class CReadConfig;
-class CTrajectoryTask;
-class CSteadyStateTask;
-class CRandom;
-class Cr250;
-
-class CScanProblem : public CCopasiProblem
+class CScanProblem
   {
-  public:
-    enum Type
-    {
-      SD_UNIFORM = 0,
-      SD_GAUSS,
-      SD_BOLTZ,
-      SD_REGULAR
-    };
-
     // Attributes
   private:
     /**
-     *
+     *  The model the problem is working on.
      */
-    CCopasiParameterGroup * mpScanParameterList;
+    CModel * mpModel;
 
-    /**
-     *
-     */
-    CTrajectoryTask * mpTrajectory;
+    //CMethodParameterList **scanItem;
 
-    /**
-     *
-     */
-    CSteadyStateTask * mpSteadyState;
-
-    /**
-     * 
-     */
-    CVector< C_FLOAT64 * > mMapping;
-
-    /**
-     * 
-     */
-    CVector< C_FLOAT64 > mStartValues;
+    CCopasiVectorNS < CMethodParameterList > scanItem;
 
   public:
-    /**
-     * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CScanProblem(const CCopasiContainer * pParent = NULL);
+    // Operations
 
     /**
-     * Copy constructor.
-     * @param const CScanProblem & src
-     * @param const CCopasiContainer * pParent (default: NULL)
+     *  Default constructor.
      */
-    CScanProblem(const CScanProblem & src,
-                 const CCopasiContainer * pParent = NULL);
+    CScanProblem();
+
+    /**
+     *  Copy constructor.
+     *  @param "const CScanProblem &" src
+     */
+    CScanProblem(const CScanProblem & src);
 
     /**
      *  Destructor.
      */
-    virtual ~CScanProblem();
-
-    /**
-     * Set the model of the problem
-     * @param CModel * pModel
-     * @result bool succes
-     */
-    virtual bool setModel(CModel * pModel);
-
-    /**
-     * Do all neccessary initialization so that calls to caluclate will 
-     * be successful. This is called once from CScanTask::process()
-     * @result bool succes
-     */
-    virtual bool initialize();
-
-    /**
-     * Do the calculattin based on CalculateVariables and fill
-     * CalculateResults with the results. 
-     * @result bool succes
-     */
-    virtual bool calculate();
-
-    /**
-     * Undo all temporary changes to the model etc.
-     * This is called once from CScanTask::process()
-     * @result bool succes
-     */
-    virtual bool restore();
-
-    /**
-     * Initialize the pointer for steadystate task 
-    */
-    void setSteadyStateTask(CSteadyStateTask* pSteadyStateTask);
-
-    /**
-     * Initialize the pointer to the trajectory task
-    */
-    void setTrajectoryTask(CTrajectoryTask* pTrajectoryTask);
+    ~CScanProblem();
 
     /**
      *  Size of the scanItem vector
-     * @ return unsigned C_INT32 size
      */
-    unsigned C_INT32 getListSize() const;
+    C_INT32 scanItemSize();
 
     /**
      *  Add a Scan Item to the vector ScanItem
-     * @param const std::string & name
-     * @return bool success
      */
-    bool addScanItem(const std::string & name);
-
-    /**
-    * Delete a parameter in the list
-    */
-    void removeScanItem(const std::string & name);
-
-    /**
-    * Delete a parameter in the list
-    */
-    void swapScanItem(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo);
+    void addScanItem(CMethodParameterList * Item);
 
     /**
      *  Get a Scan Item from the vector ScanItem
      */
-    CCopasiParameterGroup * getScanItem(C_INT32 itemNumber);
+    CMethodParameterList * getScanItem(C_INT32 itemNumber);
 
     /**
      *  Add a parameter to a scan item
@@ -165,82 +74,55 @@ class CScanProblem : public CCopasiProblem
                               const double & value);
 
     /**
-     * Get a parameter from a scan item
+     *  Get a parameter from a scan item
      * @param "const C_INT32" itemNumber
      * @param "const std::string &" name
-     * @return void *;
      */
-    void * getScanItemParameter(const C_INT32 itemNumber,
-                                const std::string & name);
+    const double & getScanItemParameter(const C_INT32 itemNumber,
+                                        const std::string & name);
 
     /**
-     * Set the value of a parameter in a scan item
-     * @param const C_INT32 itemNumber
-     * @param const std::string & name
-     * @param const CType & value
-     * @return bool success
+     *  Set the value of a parameter in a scan item
+     * @param "const C_INT32" itemNumber
+     * @param "const std::string &" name
+     * @param "const double &" value
      */
-    template< class CType >
-          bool setScanItemParameter(const C_INT32 itemNumber,
-                                    const std::string & name,
-                                    const CType & value)
-      {
-        return
-        ((CCopasiParameterGroup *)
-         mpScanParameterList->getParameter(itemNumber))
-        ->setValue(name, value);
-      }
+    void setScanItemParameter(const C_INT32 itemNumber,
+                              const std::string & name,
+                              const double & value);
 
     /**
-     * Check whether to process a Trajectory task
-     * @return bool processTrajectory
+     * Set the moddel the problem is dealing with.
+     * @param "CModel *" pModel
      */
-    bool processTrajectory() const;
+    void setModel(CModel * pModel);
 
     /**
-     * Set whether to process a Trajectory task
-     * @param const bool & processTrajectory
-     * @return bool success
+     * Retrieve the model the problem is dealing with.
+     * @return "CModel *" pModel
      */
-    bool setProcessTrajectory(const bool & processTrajectory);
-
-    /**
-     * Check whether to process a SteadyState task
-     * @return bool processSteadyState
-     */
-    bool processSteadyState() const;
-
-    /**
-     * Set whether to process a SteadyState task
-     * @param const bool & processSteadyState
-     * @return bool success
-     */
-    bool setProcessSteadyState(const bool & processSteadyState);
+    CModel * getModel() const;
 
     /**
      * Load a trajectory problem
      * @param "CReadConfig &" configBuffer
      * @param "CReadConfig::Mode mode (Default: CReadConfig::NEXT)
      */
+
+    /*
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
 
-    // this function counts the number of iterations to execute
-    unsigned C_INT32 CountScan(void);
-
-    CSteadyStateTask* getSteadyStateTask();
-    CTrajectoryTask* getTrajectoryTask();
+    */
 
     /**
-     * check if an object already exists in the list
+     * Save a trajectory problem
+     * @param "CWriteConfig &" configBuffer
      */
-    bool bExisted(const std::string & name);
 
-  private:
-    /**
-     * Intialized all parameters insidethe Scan Parameter Matrix,
-     */
-    void InitScan(void);
+    /*
+    void save(CWriteConfig & configBuffer) const;
+    */
   };
 
-#endif // COPASI_CScanProblem
+#endif // COPASI_CTrajectoryProblem

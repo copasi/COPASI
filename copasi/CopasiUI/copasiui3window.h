@@ -1,59 +1,52 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.h,v $
-   $Revision: 1.29 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/10 16:08:08 $
-   End CVS Header */
+/****************************************************************************
+**  $ CopasiUI/copasiui3window.h                 Modified on : 8th March, 2002
+**  $ Author  : Ankur Gupta
+**  
+**  
+**   
+**
+*****************************************************************************/
 
 #include <qmainwindow.h>
 #include <qtoolbar.h>
 
-class QToolButton;
+#include "copasi.h"
+#include "listviews.h"
+
+
+
+
+#include "./icons/fileopen.xpm"
+#include "./icons/filesave.xpm"
+#include "./icons/fileprint.xpm"
+
+
 class ListViews;
-class DataModelGUI;
-
 class CopasiUI3Window : public QMainWindow
-  {
-    Q_OBJECT
+{
+	Q_OBJECT
+public:
+	CopasiUI3Window( QWidget* parent = 0, const char* name = 0, WFlags f = WType_TopLevel );
 
-  public:
-    CopasiUI3Window();
-    void enabled_object_browser_menu();
-    void disable_object_browser_menu();
-    DataModelGUI* getDataModel();
+protected:
 
-  protected:
-    DataModelGUI* dataModel; // to keep track of the data model..
-    //QSplitter *splitter; // to hold different views...
-    ListViews *listViews; // to create different list views...
 
-  protected slots:
-    void slotFileOpen(QString file = QString::null);
-    void slotFileSave();
-    void slotFileSaveAs(QString str = QString::null);
-    void newDoc();
-    void slotFilePrint();
-    void slotImportSBML();
-    void slotExportSBML();
-    void slotObjectBrowser();
-    void about();
-    void aboutQt();
-    void slotQuit();
-    void slotConvertToIrreversible();
-    void closeEvent(QCloseEvent* ce);
+	DataModel<Folder>* dataModel; // to keep track of the data model..
+    QSplitter *splitter;// to hold different views...
+	ListViews *listViews; // to create different list views...
 
-  private:
-    int closeFlag;
-    int newFlag;
-    QString gpsFile;
-    QToolButton * msave_button;
-    QPopupMenu * mpFileMenu;
-    int nsave_menu_id;
-    int nsaveas_menu_id;
-    int nexport_menu_SBML;
-    int nobject_browser;
-    bool bobject_browser_open;
-    void createToolBar();
-    void createMenuBar();
-  };
+protected slots:
+	void slotFileOpen();
+	void slotFileSave();
+	void slotFileSaveAs();
+	void newDoc();
+	void slotFilePrint();
+	void about();  // added by ankur on 5th feb 2002
+    void aboutQt(); // added by ankur on 5th feb 2002
+private: // added by ankur on 5th feb 2002
+	void createToolBar();
+	void createMenuBar();
+	
+
+};
+

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/1d.cpp,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:19:25 $
-   End CVS Header */
-
 /**
  *  ABiochem  -  wattstrog
  *
@@ -20,15 +12,12 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include <stdio.h>
-#include "utilities/CMethodParameter.h"
 #include "model/model.h"
 #include "ABiochem/CGene.h"
 
 extern "C" void r250_init(int seed);
 extern "C" unsigned int r250n(unsigned n);
 extern "C" double dr250();
-
-char versionString[] = " version 1.1";
 
 using namespace std;
 
@@ -39,22 +28,16 @@ using namespace std;
  *  @param C_INT32 k the total number of links
  *  @param C_FLOAT64 p the probability that a link is positive
  *  @param C_FLOAT64 r the probability of rewiring a gene
- *  @param C_FLOAT64 coopval the value for Hill coefficients
- *  @param C_FLOAT64 rateval the value for rate constants
- *  @param C_FLOAT64 constval the value for inh/act constants
  *  @param "CCopasiVector < CGene > &" gene a vector of genes (the network)
  *  @param "char *" comments a string to write comments on the network
  */
 
 void MakeGeneNetwork(C_INT32 n,
-                     C_INT32 k,
-                     C_FLOAT64 p,
-                     C_FLOAT64 r,
-                     C_FLOAT64 coopval,
-                     C_FLOAT64 rateval,
-                     C_FLOAT64 constval,
-                     CCopasiVector < CGene > &gene,
-                     char *comments)
+                      C_INT32 k,
+                      C_FLOAT64 p,
+                      C_FLOAT64 r,
+                      CCopasiVector < CGene > &gene,
+                      char *comments)
 {
   C_INT32 i, j, l, l2, modf, links, links2;
   char gn[1024];
@@ -85,15 +68,15 @@ void MakeGeneNetwork(C_INT32 n,
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l], l, modf, constval, coopval);
+          gene[i]->addModifier(gene[l], modf, 1.0, 1.0);
           if (dr250() < p)
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l2], l2, modf, constval, coopval);
+          gene[i]->addModifier(gene[l2], modf, 1.0, 1.0);
         }
-      gene[i]->setRate(rateval);
-      gene[i]->setDegradationRate(rateval);
+      gene[i]->setRate(1.0);
+      gene[i]->setDegradationRate(1.0);
     }
   sprintf(comments, "Model of a gene network on a regular 1D grid (ring)\nwith %ld genes and %ld input connections each.\n\nCreated automatically by the A-Biochem system", n, 2*links2);
 }

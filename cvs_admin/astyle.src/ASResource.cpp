@@ -52,15 +52,12 @@ namespace astyle
   const string ASResource::AS_STATIC = string("static");
   const string ASResource::AS_SYNCHRONIZED = string("synchronized");
   const string ASResource::AS_OPERATOR = string("operator");
-  //  const string ASResource::AS_OPERATOR = string(":operator:");
-  //  const string ASResource::AS_TEMPLATE = string("template");
-  const string ASResource::AS_TEMPLATE = string(":template:");
+  const string ASResource::AS_TEMPLATE = string("template");
   const string ASResource::AS_TRY = string("try");
   const string ASResource::AS_CATCH = string("catch");
   const string ASResource::AS_FINALLY = string("finally");
   const string ASResource::AS_THROWS = string("throws");
   const string ASResource::AS_CONST = string("const");
-  // const string ASResource::AS_CONST = string(":const:");
 
   const string ASResource::AS_ASM = string("asm");
 

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.cpp,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:06:19 $
-   End CVS Header */
-
 /**
  *  CMathConstant class.
  *  The class CMathConstant associates a symbol with a CCopasiObject with
@@ -18,11 +10,9 @@
 #include "CMathConstant.h"
 #include "CMathVariable.h"
 
-#include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CReaction.h"
 #include "model/CCompartment.h"
-#include "report/CCopasiObjectReference.h"
 
 CMathConstant::CMathConstant(const CMathConstant & src):
     CMathSymbol(src)
@@ -62,16 +52,16 @@ const C_FLOAT64 & CMathConstantMetab::getConcentration() const
 
 bool CMathConstantMetab::setParticleNumber(const C_FLOAT64 & particleNumber)
 {
-  ((CMetab *) mpObject)->setInitialNumber(particleNumber);
+  ((CMetab *) mpObject)->setInitialNumberDbl(particleNumber);
   return true;
 }
 
 C_FLOAT64 CMathConstantMetab::getParticleNumber() const
-  {return ((CMetab *) mpObject)->getInitialNumber();}
+  {return ((CMetab *) mpObject)->getInitialNumberDbl();}
 
 bool CMathConstantMetab::compile()
 {
-  mpCompartment = (CMathConstantCompartment *)(CMathConstant *)
+  mpCompartment = (CMathConstantCompartment *)
                   CMathSymbol::find(((CMetab *) mpObject)->getCompartment());
 
   if (mpCompartment) return true;
@@ -81,93 +71,25 @@ bool CMathConstantMetab::compile()
 CMathConstantCompartment & CMathConstantMetab::getCompartment() const
 {return *mpCompartment;}
 
-/* Reference */
-CMathConstantReference::CMathConstantReference(const CMathConstantReference & src):
-    CMathConstant(src)
-{}
-
-CMathConstantReference::CMathConstantReference(const CCopasiObjectReference< C_FLOAT64 > & reference):
-    CMathConstant(&reference)
-{assert(reference.isReference());}
-
-CMathConstantReference::~CMathConstantReference() {}
-
-bool CMathConstantReference::setValue(const C_FLOAT64 & value)
-{
-  *(C_FLOAT64 *)mpObject->getReference() = value;
-  return true;
-}
-
-const C_FLOAT64 & CMathConstantReference::getValue() const
-  {return *(C_FLOAT64 *)mpObject->getReference();}
-
 /* Parameter */
-std::map< std::string, CCopasiObject * > CMathConstantParameter::mSelection;
-
 CMathConstantParameter::CMathConstantParameter(const CMathConstantParameter & src):
     CMathConstant(src)
 {}
 
-CMathConstantParameter::CMathConstantParameter(const CCopasiParameter & parameter, const std::string & reaction):
-    CMathConstant(& parameter),
-    mReaction(reaction)
-{
-  if (parameter.getObjectName() != getName())
-    {
-      std::string Name(parameter.getObjectName() + "{" + mReaction + "}");
-      setName(Name);
-    }
-}
+CMathConstantParameter::CMathConstantParameter(const CReaction::CId2Param & parameter):
+    CMathConstant(& parameter)
+{}
 
 CMathConstantParameter::~CMathConstantParameter() {}
 
 bool CMathConstantParameter::setValue(const C_FLOAT64 & value)
 {
-  ((CCopasiParameter *) mpObject)->setValue(value);
+  ((CReaction::CId2Param *) mpObject)->setValue(value);
   return true;
 }
 
 const C_FLOAT64 & CMathConstantParameter::getValue() const
-  {
-    return
-    * (C_FLOAT64 *) ((CCopasiParameter *)(CCopasiContainer *) mpObject)->
-    getValue();
-  }
-
-const std::string & CMathConstantParameter::getReaction() const
-  {return mReaction;}
-
-const std::map< std::string, CCopasiObject * > &
-CMathConstantParameter::getSelection()
-{return mSelection;}
-
-bool CMathConstantParameter::buildSelection(const CModel * pModel)
-{
-  const CCopasiVector< CReaction > & Reactions = pModel->getReactions();
-  unsigned C_INT32 i, imax = Reactions.size();
-  unsigned C_INT32 j, jmax;
-
-  CReaction * pReaction;
-  const CCopasiParameterGroup * pParameters;
-  std::string Name;
-
-  mSelection.clear();
-
-  for (i = 0; i < imax; i++)
-    {
-      pReaction = Reactions[i];
-      Name = pReaction->getObjectName();
-      pParameters = & pReaction->getParameters();
-
-      jmax = pParameters->size();
-
-      for (j = 0; j < jmax; j++)
-        mSelection[pParameters->getName(j) + "(" + Name + ")"] =
-          const_cast< CCopasiParameterGroup * >(pParameters)->getParameter(j);
-    }
-
-  return true;
-}
+  {return ((CReaction::CId2Param *) mpObject)->getValue();}
 
 /* Compartment */
 CMathConstantCompartment::CMathConstantCompartment(const CMathConstantCompartment & src):

@@ -1,16 +1,8 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/20 21:58:34 $
-   End CVS Header */
-
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.18 2004/09/20 21:58:34 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.1 2003/10/14 15:08:28 huwenjun Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,27 +15,34 @@
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-#include <qlayout.h>
-#include <qtabwidget.h>
-#include <qcheckbox.h>
+#include <qlayout.h> 
+//#include <qtooltip.h>
+//#include <qwhatsthis.h>
+//#include <qimage.h>
+//#include <qpixmap.h>
 
-#include "curve2dwidget.h"
+#include "crvspecscrlview.h"
+#include "curvegroupbox.h"
 #include "plotwindow.h"
-#include "CPlotSpecification.h"
-#include "report/CKeyFactory.h"
-#include "CopasiUI/ObjectBrowser.h"
+#include "plotspec.h"
 
-//temporary
-#include "mathematics.h"
+// temporary...
+#include <fstream>
+
+CurveSpecScrollView::CurveSpecScrollView(QWidget * parent = 0, const char * name = 0, WFlags f = 0)
+    : QScrollView(parent, name, f)
+{}
 
 //-----------------------------------------------------------------------------
 
 /*
  *  Constructs a PlotWidget1 as a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
- */
-PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+ */ 
+//TODO: this widget should inherit CopasiWidget, but omitting inheritance for now with
+//all the copasi code elsewhere
+PlotWidget1::PlotWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0)
+    : QWidget(parent, name, fl), filename("plotdata"), nextPlotKey(0), currentPlotKey(-1)
 {
   if (!name)
     setName("PlotWidget1");
@@ -58,12 +57,6 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 
   titleLineEdit = new QLineEdit(this, "titleLineEdit");
   layout5->addWidget(titleLineEdit);
-
-  //activeLabel = new QLabel(this, "active?");
-  //layout5->addWidget(activeLabel);
-
-  activeCheckBox = new QCheckBox("active?", this, "activeCheckBox");
-  layout5->addWidget(activeCheckBox);
   layout20->addLayout(layout5);
 
   layout19 = new QVBoxLayout(0, 0, 6, "layout19");
@@ -90,10 +83,28 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   layout17->addWidget(deleteCurveButton);
   layout18->addLayout(layout17);
 
-  tabs = new QTabWidget(this, "tabs");
-  //tabs = new MyQTabWidget(this, "tabs");
-  layout18->addWidget(tabs);
+  scrollView = new CurveSpecScrollView(this, "scrollView");
+  layout18->addWidget(scrollView);
   layout19->addLayout(layout18);
+
+  layoutScrlView = new QVBoxLayout(scrollView->viewport(), 0, 6, "layoutScrlView");
+
+  layoutGrpBox = new QVBoxLayout(0, 0, 0, "layoutGrpBox");
+  layoutScrlView->addLayout(layoutGrpBox);
+
+  scrollView->setVScrollBarMode(QScrollView::AlwaysOn);
+  scrollView->verticalScrollBar()->setEnabled(true);
+
+  CurveGroupBox* cgbox = new CurveGroupBox(scrollView->viewport());
+  scrollView->addChild(cgbox);
+  layoutGrpBox->addWidget(cgbox);
+  cgrpboxes.push_back(cgbox);
+
+  // a hack to get the layout 'right' (though still not that pretty)
+  CurveGroupBox* big_box = new CurveGroupBox(scrollView->viewport());
+  scrollView->addChild(big_box);
+  layoutGrpBox->addWidget(big_box);
+  delete big_box;
 
   line3 = new QFrame(this, "line3");
   line3->setFrameShape(QFrame::HLine);
@@ -103,7 +114,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 
   layout4 = new QHBoxLayout(0, 0, 6, "layout4");
 
-  startPlotButton = new QPushButton(this, "Commit");
+  startPlotButton = new QPushButton(this, "startPlotButton");
   layout4->addWidget(startPlotButton);
 
   deletePlotButton = new QPushButton(this, "deletePlotButton");
@@ -112,14 +123,14 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   addPlotButton = new QPushButton(this, "addPlotButton");
   layout4->addWidget(addPlotButton);
 
-  resetButton = new QPushButton(this, "Revert");
+  resetButton = new QPushButton(this, "resetButton");
   layout4->addWidget(resetButton);
   layout19->addLayout(layout4);
   layout20->addLayout(layout19);
 
   PlotWidget1Layout->addLayout(layout20, 0, 0);
   languageChange();
-  //resize(QSize(508, 505).expandedTo(minimumSizeHint()));
+  resize(QSize(508, 505).expandedTo(minimumSizeHint()));
 
   //TODO: adjust tab order? - mostly fine
 
@@ -130,13 +141,6 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   connect(deletePlotButton, SIGNAL(clicked()), this, SLOT(deletePlot()));
   connect(addPlotButton, SIGNAL(clicked()), this, SLOT(addPlot()));
   connect(resetButton, SIGNAL(clicked()), this, SLOT(resetPlot()));
-
-  //TODO: this is for debugging only.
-  //channelNames += "time";
-  //channelNames += "X-Data";
-  //channelNames += "Y-Data";
-
-  //mpPlotSpec = new CPlotSpecification;
 }
 
 //-----------------------------------------------------------------------------
@@ -146,6 +150,27 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 PlotWidget1::~PlotWidget1()
 {
   // no need to delete child widgets, Qt does it all for us
+
+  // delete all the pointers in cgrpboxes
+  while (cgrpboxes.size() > 0)
+    {
+      delete cgrpboxes[cgrpboxes.size() - 1];  //always delete from the end of the vector
+      cgrpboxes.pop_back();    //necessary?
+    }
+
+  // delete all the pointers in plotSpecVector
+  while (plotSpecVector.size() > 0)
+    {
+      delete plotSpecVector[plotSpecVector.size() - 1];  //always delete from the end of the vector
+      plotSpecVector.pop_back();
+    }
+
+  // delete all the pointers in plotWinVector
+  while (plotWinVector.size() > 0)
+    {
+      delete plotWinVector[plotWinVector.size() - 1];  //always delete from the end of the vector
+      plotWinVector.pop_back();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -161,173 +186,265 @@ void PlotWidget1::languageChange()
   curveSpecLabel->setText(tr("Curve Specification"));
   addCurveButton->setText(tr("New Curve"));
   deleteCurveButton->setText(tr("Delete Curve"));
-  startPlotButton->setText(tr("Commit"));
+  startPlotButton->setText(tr("Start Plot"));
   deletePlotButton->setText(tr("Delete Plot"));
   addPlotButton->setText(tr("New Plot"));
-  resetButton->setText(tr("Revert"));
+  resetButton->setText(tr("Reset"));
 }
 
 //-----------------------------------------------------------------------------
 
-void PlotWidget1::addCurveTab(const std::string & title,
-                              const CPlotDataChannelSpec & x,
-                              const CPlotDataChannelSpec & y)
-{
-  CPlotItem* item = new CPlotItem(title, NULL, CPlotItem::curve2d);
-  item->addChannel(x);
-  item->addChannel(y);
-
-  Curve2DWidget * curveWidget = new Curve2DWidget(tabs);
-  curveWidget->LoadFromCurveSpec(item);
-  tabs->addTab(curveWidget, item->getTitle().c_str());
-
-  delete item;
-}
-
 void PlotWidget1::addCurveGroupBox()
 {
-  ObjectBrowser* pBrowser1 = new ObjectBrowser();
-  ObjectBrowser* pBrowser2 = new ObjectBrowser();
+  CurveGroupBox* cgbox = new CurveGroupBox(scrollView->viewport());
+  cgbox->show();
+  scrollView->addChild(cgbox);
+  layoutGrpBox->addWidget(cgbox);
+  cgrpboxes.push_back(cgbox);
 
-  std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
-  pBrowser1->setOutputVector(pVector1);
+  // note that for now CopasiPlot::CopasiPlot() provides 6 colours only
+  // so we can't have more than six curves in one plot window
+  // the following code might need to be modified...
+  if (cgrpboxes.size() >= 6)
+    addCurveButton->setEnabled(false);
 
-  if (pBrowser1->exec () == QDialog::Rejected)
-    {
-      //pdelete(pBrowser1);
-      pdelete(pVector1);
-      return;
-    }
+  deleteCurveButton->setEnabled(true);
 
-  if (pVector1->size() == 0)
-    {
-      //pdelete(pBrowser1);
-      pdelete(pVector1);
-      return;
-    }
-
-  //pdelete(pBrowser);
-  //pBrowser = new ObjectBrowser();
-
-  std::vector<CCopasiObject*>* pVector2 = new std::vector<CCopasiObject*>();
-  pBrowser2->setOutputVector(pVector2);
-
-  if (pBrowser2->exec () == QDialog::Rejected)
-    {
-      //pdelete(pBrowser2);
-      pdelete(pVector1);
-      pdelete(pVector2);
-      return;
-    }
-
-  if (pVector1->size() == 0)
-    {
-      //pdelete(pBrowser2);
-      pdelete(pVector1);
-      pdelete(pVector2);
-      return;
-    }
-
-  std::string cn;
-  std::vector<CCopasiObjectName> objects1, objects2;
-  unsigned C_INT32 i;
-  std::vector<CCopasiObjectName>::const_iterator sit;
-
-  for (i = 0; i < pVector1->size(); i++)
-    if ((*pVector1)[i])
-      {
-        cn = (*pVector1)[i]->getCN();
-        for (sit = objects1.begin(); sit != objects1.end(); ++sit)
-          if (*sit == cn) break;
-        if (sit == objects1.end())
-          {
-            objects1.push_back(cn);
-            std::cout << "***" << cn << std::endl;
-          }
-      }
-
-  for (i = 0; i < pVector2->size(); i++)
-    if ((*pVector2)[i])
-      {
-        cn = (*pVector2)[i]->getCN();
-        for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-          if (*sit == cn) break;
-        if (sit == objects2.end())
-          {
-            objects2.push_back(cn);
-            std::cout << "---" << cn << std::endl;
-          }
-      }
-
-  //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
-  //if (!pspec) return;
-
-  if (objects1.size() == 1)
-    {
-      for (i = 0; i < objects2.size(); ++i)
-      {addCurveTab("***", objects1[0], objects2[i]);}
-    }
-  else if (objects2.size() == 1)
-    {
-      for (i = 0; i < objects1.size(); ++i)
-      {addCurveTab("***", objects1[i], objects2[0]);}
-    }
-  else
-    {
-      unsigned C_INT32 imax;
-      if (objects1.size() > objects2.size())
-        imax = objects2.size();
-      else
-        imax = objects1.size();
-
-      for (i = 0; i < imax; ++i)
-      {addCurveTab("***", objects1[i], objects2[i]);}
-    }
-
-  //pdelete(pBrowser1);
-  //pdelete(pBrowser2);
-  pdelete(pVector1);
-  pdelete(pVector2);
+  // maybe need to set some flag here (which should be checked in startPlot())
+  // so that the plot spec can be updated accordingly
+  // or perhaps simply save the spec on leaving it irrespective of changes
 }
 
 //-----------------------------------------------------------------------------
 
 void PlotWidget1::removeCurveGroupBox()
 {
-  delete tabs->currentPage();
+  //TODO
+  //1. record the 'index' of the CurveGroupBox in focus
+
+  //2. for the GUI, delete this CurveGroupBox (remove and delete the pointer from cgrpboxes)
+
+  //test code for now
+  delete cgrpboxes[cgrpboxes.size() - 1];
+  cgrpboxes.pop_back();
+  //end of test code
+
+  //3. for the backend, delete the corresponding entry in plotSpecVector[currentPlotkey]->curves[index]
+  // and remove the corresponding curve in the plot
+
+  //4. also record the index in deleteCurveIndices: deleteCurveIndices.push_back(index);
+
+  if (cgrpboxes.size() == 0)
+    deleteCurveButton->setEnabled(false);
+
+  // the number might need changing if we allow more curves in one plot
+  if (cgrpboxes.size() < 6)
+    addCurveButton->setEnabled(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void PlotWidget1::startPlot()
 {
-  saveToPlotSpec();
+  // save changes first
+  // let the user confirm changes to existing spec?
+  // code creating/manipulating ptspec could be moved to a method saveChanges()
 
-  //commented for testing
-  //startPlotButton->setEnabled(false);
-  /*    deletePlotButton->setEnabled(false);
+  std::vector<CurveSpec*> crvspecs;
+  std::vector<int> vindices;
+
+  // see if the plot spec exists. no - create a new window displaying the plot
+  if (currentPlotKey == -1)
+    {
+      //disable the start plot button
+
+      //commented for testing
+      //startPlotButton->setEnabled(false);
+      deletePlotButton->setEnabled(false);
       addCurveButton->setEnabled(false);
       deleteCurveButton->setEnabled(false);
       titleLineEdit->setEnabled(false);
       scrollView->setEnabled(false);
-    */
+
+      // ...and maybe all other input fields??
+      // note that these must be enabled again when the plot window is destroyed
+
+      // create new CurveSpec objects and a new PlotTaskSpec
+      //TODO: validate all user input...is that necessary?
+
+      for (unsigned int i = 0; i < cgrpboxes.size(); i++)
+        {
+          CurveGroupBox* cgb = cgrpboxes[i];
+          int axis_h = (cgb->xBtmRadioButton->isChecked()) ? 2 : 3,
+                       axis_v = (cgb->yLeftRadioButton->isChecked()) ? 0 : 1;
+
+          // and some code to map selected variables for X an Y axes into column indices
+          // dummy values for now
+          int coordX = 0, coordY = 1;
+          vindices.push_back(coordX);
+          vindices.push_back(coordY);
+
+          //NB: this might not quite work...
+          //in CopasiPlot::updatePlot(), it is assumed that elements in vindices (varIndices)
+          // are distinct and in ascending order (so that data retrieval can be optimised)
+          // this requires a bit more work than the above code
+          // moreover, the indices fed into the CurveSpec constructor must correspond to (i.e. be the subscripts of)
+          // the 'variable indices' stored in vindices
+          // one possibility is to store the variable names (in string format) in the CurveSpec instance
+          // and then converted to subscripts in CopasiPlot::updatePlot()
+
+          // hmm, not really...
+          CurveSpec* cs = new CurveSpec(cgb->curveTitleLineEdit->text().latin1(),
+                                        2 * i, 2 * i + 1, axis_h, axis_v,
+                                        cgb->xTitleLineEdit->text().latin1(),
+                                        cgb->xTitleLineEdit->text().latin1());
+          // note that 2 * i and 2*i+1 are now indices into the vector of variable indices for this curve...
+
+          //TODO: modify CopasiPlot::updatePlot() accordingly
+
+          crvspecs.push_back(cs);
+        }
+
+      // we need a file stream from somewhere...(probably this model)
+      // for now this is a dummy value
+      std::fstream sourcefile;
+      sourcefile.open("plotdata", std::ios::in);
+
+      PlotTaskSpec* ptspec = new PlotTaskSpec(sourcefile, titleLineEdit->text().latin1(),
+                                              vindices, crvspecs, PlotTaskSpec::PlotType(0));
+
+      plotSpecVector.push_back(ptspec);
+
+      // create a new window
+      PlotWindow* win = new PlotWindow(filename);
+      plotWinVector.push_back(win);
+
+      win->resize(600, 360);
+      win->show();
+      // this doesn't do what I'd like...
+      //connect(win, SIGNAL(destroyed()), this, SLOT(plotFinished()));
+
+      currentPlotKey = nextPlotKey++;
+    }
+  else
+    {
+      // mostly reload the plot, but also check if new curves have been added
+      // i.e. compare the size of cgrpboxes(for the GUI) and plotSpecVector[currentPlotKey]->curvespecs(the backend)
+
+      // modify the current plot spec if necessary...
+      PlotTaskSpec* ptspec = plotSpecVector[currentPlotKey];
+
+      int formNum = cgrpboxes.size(), deletedNum = deletedCurveIndices.size();
+
+      //TODO: test the code to modify the spec
+
+      // delete the curve specs as specified
+      for (int i = 0; i < deletedNum; i++)
+        {
+          delete ptspec->curves[i];
+          ptspec->curves.erase(ptspec->curves.begin() + i);
+        }
+
+      // add the new curve specs
+      int specNum = ptspec->curves.size();
+      if (formNum > specNum)
+        {
+          for (int i = specNum; i < formNum; i++)
+            {
+              CurveGroupBox* cgb = cgrpboxes[i];
+              int axis_h = (cgb->xBtmRadioButton->isChecked()) ? 2 : 3,
+                           axis_v = (cgb->yLeftRadioButton->isChecked()) ? 0 : 1;
+
+              // and some code to map selected variables for X an Y axes into column indices
+              // dummy values for now
+              int coordX = 0, coordY = 1;
+              vindices.push_back(coordX);
+              vindices.push_back(coordY);
+
+              // hmm, not really...see above
+              CurveSpec* cs = new CurveSpec(cgb->curveTitleLineEdit->text().latin1(),
+                                            2 * i, 2 * i + 1, axis_h, axis_v,
+                                            cgb->xTitleLineEdit->text().latin1(),
+                                            cgb->xTitleLineEdit->text().latin1());
+              // note that 2 * i and 2*i+1 are now indices into the vector of variable indices for this curve...
+
+              crvspecs.push_back(cs);
+            }
+        }
+
+      // show the window again
+      PlotWindow* winptr = plotWinVector[currentPlotKey];
+      winptr->reloadPlot(ptspec, deletedCurveIndices);
+      winptr->resize(600, 360);
+      winptr->show();
+
+      // flush the vector
+      while (deletedCurveIndices.size() > 0)
+        deletedCurveIndices.pop_back();
+    }
+
+  //maybe this method should return the id of the plot, or similar...
 }
 
 //-----------------------------------------------------------------------------
 
 void PlotWidget1::deletePlot()
-{}
+{
+  // let the user confirm?
+
+  // just a precaution for now...
+  if (currentPlotKey == -1)
+    return;
+
+  delete plotSpecVector[currentPlotKey];
+  plotSpecVector.erase(plotSpecVector.begin() + currentPlotKey);
+
+  // load the first level of plot widget?
+}
 
 //-----------------------------------------------------------------------------
 
 void PlotWidget1::addPlot()
-{}
+{
+  // maybe call leave() or resetPlot() first?
+
+  // reset the object key
+  currentPlotKey = -1;
+
+  // maybe move the following code into enter() ...
+  // leave only one CurveGroupBox in the CurveScrollView
+  while (cgrpboxes.size() > 1)
+    {
+      delete cgrpboxes[cgrpboxes.size() - 1];
+      cgrpboxes.pop_back();
+    }
+
+  // set all fields to default values
+  titleLineEdit->setText("Copasi");
+
+  CurveGroupBox* cgb = cgrpboxes[0];
+  cgb->curveTitleLineEdit->setText("");
+
+  // then reset the axis title fields to be the first from the list ...
+
+  cgb->xBtmRadioButton->setChecked(true);   // use xBottom by default
+  cgb->yLeftRadioButton->setChecked(true);   // use yLeft by default
+
+  // enable all input fields
+  startPlotButton->setEnabled(true);
+  deletePlotButton->setEnabled(false);
+  addCurveButton->setEnabled(true);
+  deleteCurveButton->setEnabled(true);
+  titleLineEdit->setEnabled(true);
+  scrollView->setEnabled(true);
+}
 
 //-----------------------------------------------------------------------------
 
 void PlotWidget1::resetPlot()
 {
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(GlobalKeys.get(objKey)));
+  //when called, this method should restore the plot specification
+  //enter(...);
 }
 
 //-----------------------------------------------------------------------------
@@ -339,99 +456,29 @@ void PlotWidget1::plotFinished()
   // ...and enable all other input fields
 }
 
-bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
+//-----------------------------------------------------------------------------
+
+bool PlotWidget1::enter()
 {
-  if (!pspec) return false;
+  // this method should have an object key as an argument
+  // load the plot specification according to the key or a blank form
 
-  //title
-  titleLineEdit->setText(pspec->getTitle().c_str());
+  // just in case this is necessary... enable all fields
+  startPlotButton->setEnabled(true);
 
-  //active?
-  activeCheckBox->setChecked(pspec->isActive());
+  // but disable the delete button if this is a new plot
+  if (currentPlotKey == -1)
+    deletePlotButton->setEnabled(false);
 
-  C_INT32 oldIndex = tabs->currentPageIndex();
-
-  //clear tabWidget
-  while (tabs->currentPage()) delete tabs->currentPage();
-
-  //reconstruct tabWidget from curve specs
-  Curve2DWidget* curve;
-  const CCopasiVector<CPlotItem> & curves = pspec->getItems();
-  unsigned C_INT32 i, imax = curves.size();
-  for (i = 0; i < imax; ++i)
-    {
-      curve = new Curve2DWidget(tabs);
-      curve->LoadFromCurveSpec(curves[i]);
-      tabs->addTab(curve, curves[i]->getTitle().c_str());
-    }
-
-  tabs->setCurrentPage(oldIndex);
-
-  return true; //TODO really check
-}
-
-bool PlotWidget1::saveToPlotSpec()
-{
-  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(GlobalKeys.get(objKey));
-  if (!pspec) return false;
-
-  pspec->cleanup();
-
-  //title
-  pspec->setTitle((const char*)titleLineEdit->text().utf8());
-
-  //active?
-  pspec->setActive(activeCheckBox->isChecked());
-
-  //curves
-  CPlotItem* item;
-  unsigned C_INT32 i, imax;
-  imax = tabs->count();
-  for (i = 0; i < imax; ++i)
-    {
-      item = pspec->createItem("dummyname", CPlotItem::curve2d);
-      dynamic_cast<Curve2DWidget*>(tabs->page(i))->SaveToCurveSpec(item);
-    }
-
-  //TODO: CopasiParameters
-
+  //dummy
   return true;
 }
 
 //-----------------------------------------------------------------------------
 
-//TODO:  save a copy!
-
-bool PlotWidget1::enter(const std::string & key)
+bool PlotWidget1::update()
 {
-  objKey = key;
-  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(GlobalKeys.get(key));
-
-  if (!pspec) return false;
-
-  return loadFromPlotSpec(pspec);
-}
-
-//-----------------------------------------------------------------------------
-
-bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  if (mIgnoreUpdates) return true;
-
-  switch (objectType)
-    {//TODO: check list:
-    case ListViews::MODEL:
-    case ListViews::STATE:
-    case ListViews::COMPARTMENT:
-    case ListViews::METABOLITE:
-    case ListViews::REPORT:
-    case ListViews::PLOT:
-      return loadFromPlotSpec(dynamic_cast< CPlotSpecification * >(GlobalKeys.get(objKey)));
-      break;
-
-    default:
-      break;
-    }
+  //dummy
   return true;
 }
 
@@ -439,5 +486,9 @@ bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_U
 
 bool PlotWidget1::leave()
 {
-  return saveToPlotSpec();
+  // save changes? (and prompt the user to confirm first?)
+  // if (currentPlotKey == -1) then create the new PlotTaskSpec object?
+
+  //dummy
+  return true;
 }

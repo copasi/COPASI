@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathNode.cpp,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:24:29 $
-   End CVS Header */
-
 /**
  * CMathNode class.
  * The class CMathNode is describes a node of the equation tree.
@@ -19,95 +11,62 @@
 #include "CMathNode.h"
 #include "CMathSymbol.h"
 
-CMathNode::CMathNode(CMathNode * pParent):
-    CCopasiNode< std::string >(pParent),
-    mData()
+CMathNode::CMathNode():
+    CCopasiNode()
 {}
 
 CMathNode::CMathNode(const CMathNode &src):
-    CCopasiNode< std::string >(src),
-    mData(src.mData)
-{}
-
-CMathNode::CMathNode(const std::string & data, CMathNode * pParent):
-    CCopasiNode< std::string >(pParent),
-    mData(data)
+    CCopasiNode(src)
 {}
 
 CMathNode::~CMathNode() {}
 
-std::string CMathNode::getData() const
-  {
-    CMathNode * pC = (CMathNode *) getChild();
-    if (pC) return pC->getData();
-    else return "@@@";
-  }
-
-bool CMathNode::setData(const std::string & data)
-{
-  mData = data;
-  return true;
-}
+std::string CMathNode::getText() const
+  {return ((CMathNode *) const_cast< CMathNode * >(this)->getChild())->getText();}
 
 const std::string CMathNodeOperation::Operations("+-*/%^");
 
-CMathNodeOperation::CMathNodeOperation(CMathNode * pParent):
-    CMathNode(pParent)
+CMathNodeOperation::CMathNodeOperation():
+    CMathNode(),
+    mOperation()
 {}
 
-CMathNodeOperation::CMathNodeOperation(const std::string & operation, CMathNode * pParent):
-    CMathNode(operation, pParent)
+CMathNodeOperation::CMathNodeOperation(const std::string & operation):
+    CMathNode(),
+    mOperation(operation)
 {assert (Operations.find(operation) != std::string::npos);}
 
 CMathNodeOperation::CMathNodeOperation(const CMathNodeOperation & src):
-    CMathNode(src)
+    CMathNode(src),
+    mOperation(src.mOperation)
 {}
 
 CMathNodeOperation::~CMathNodeOperation() {}
 
-std::string CMathNodeOperation::getData() const
+std::string CMathNodeOperation::getText() const
   {
-    std::stringstream text;
-    const CMathNode * pChild = (CMathNode *) getChild();
+    stringstream text;
+    CMathNode * pChild =
+      (CMathNode *) const_cast< CMathNodeOperation * >(this)->getChild();
 
     if (pChild)
       {
-        text << pChild->getData();
+        text << pChild->getText() << mOperation;
 
-        std::string tmp;
-        if (pChild->getSibling())
-          tmp = ((CMathNode *) pChild->getSibling())->getData();
+        if (pChild->getSibbling())
+          text << ((CMathNode *) pChild->getSibbling())->getText();
         else
-          tmp = "@@@";
-
-        if (mData == "+" && tmp[0] == '-')
-          {
-            tmp = tmp.substr(1);
-            text << " - ";
-          }
-        else if (mData == "-" && tmp[0] == '-')
-          {
-            tmp = tmp.substr(1);
-            text << " + ";
-          }
-        else
-          text << " " << mData << " ";
-
-        if (text.str().substr(text.str().length() - 4) == "1 * ")
-          text.seekp(-4, std::ios_base::cur);
-
-        text << tmp;
+          text << "???";
       }
     else
-      text << "@@@" << mData << "@@@";
+      text << "???" << mOperation << "???";
 
     return text.str();
   }
 
-CMathNodeDerivative::CMathNodeDerivative(const std::string & operation,
-    CMathNode * pParent):
-    CMathNodeOperation(pParent)
-{mData = operation;}
+CMathNodeDerivative::CMathNodeDerivative(const std::string & operation):
+    CMathNodeOperation()
+{mOperation = operation;}
 
 CMathNodeDerivative::CMathNodeDerivative(const CMathNodeDerivative &src):
     CMathNodeOperation(src)
@@ -115,57 +74,55 @@ CMathNodeDerivative::CMathNodeDerivative(const CMathNodeDerivative &src):
 
 CMathNodeDerivative::~CMathNodeDerivative() {}
 
-std::string CMathNodeDerivative::getData() const
+std::string CMathNodeDerivative::getText() const
   {
-    std::stringstream text;
-    CMathNode * pChild = (CMathNode *) getChild();
+    stringstream text;
+    CMathNode * pChild =
+      (CMathNode *) const_cast< CMathNodeDerivative * >(this)->getChild();
 
-    text << "(" << mData << " ";
+    text << mOperation << " ";
 
     if (pChild)
       {
-        text << pChild->getData() << ")(";
+        text << pChild->getText() << "(";
 
-        if (pChild->getSibling())
-          text << ((CMathNode *) pChild->getSibling())->getData();
+        if (pChild->getSibbling())
+          text << ((CMathNode *) pChild->getSibbling())->getText();
         else
-          text << "@@@";
+          text << "???";
 
         text << ")";
       }
     else
-      text << "@@@)(@@@)";
+      text << "???(???)";
 
     return text.str();
   }
 
-CMathNodeNumber::CMathNodeNumber(const C_FLOAT64 & number,
-                                 CMathNode * pParent):
-    CMathNode(pParent)
-{setData(number);}
+CMathNodeNumber::CMathNodeNumber(const C_FLOAT64 & number):
+    CMathNode(),
+    mNumber(number)
+{}
 
 CMathNodeNumber::CMathNodeNumber(const CMathNodeNumber &src):
-    CMathNode(src)
+    CMathNode(src),
+    mNumber(src.mNumber)
 {}
 
 CMathNodeNumber::~CMathNodeNumber() {}
 
-std::string CMathNodeNumber::getData() const {return mData;}
+std::string CMathNodeNumber::getText() const
+  {
+    stringstream text;
+    text << mNumber;
 
-bool CMathNodeNumber::setData(const C_FLOAT64 & number)
-{
-  std::stringstream text;
-  text << number;
-  mData = text.str();
+    return text.str();
+  }
 
-  return true;
-}
-
-CMathNodeSymbol::CMathNodeSymbol(const CMathSymbol * pSymbol,
-                                 CMathNode * pParent):
-    CMathNode(pParent),
+CMathNodeSymbol::CMathNodeSymbol(const CMathSymbol * pSymbol):
+    CMathNode(),
     mpSymbol(pSymbol)
-{setData(pSymbol);}
+{}
 
 CMathNodeSymbol::CMathNodeSymbol(const CMathNodeSymbol & src):
     CMathNode(src),
@@ -174,23 +131,16 @@ CMathNodeSymbol::CMathNodeSymbol(const CMathNodeSymbol & src):
 
 CMathNodeSymbol::~CMathNodeSymbol() {}
 
-std::string CMathNodeSymbol::getData() const {return mData;}
+std::string CMathNodeSymbol::getText() const
+  {
+    if (mpSymbol)
+      return mpSymbol->getName();
+    else
+      return "???";
+  }
 
-bool CMathNodeSymbol::setData(const CMathSymbol * pSymbol)
-{
-  mpSymbol = pSymbol;
-
-  if (mpSymbol)
-    mData = mpSymbol->getName();
-  else
-    mData = "@@@";
-
-  return true;
-}
-
-CMathNodeFunction::CMathNodeFunction(const CMathSymbol * pSymbol,
-                                     CMathNode * pParent):
-    CMathNodeSymbol(pSymbol, pParent)
+CMathNodeFunction::CMathNodeFunction(const CMathSymbol * pSymbol):
+    CMathNodeSymbol(pSymbol)
 {}
 
 CMathNodeFunction::CMathNodeFunction(const CMathNodeFunction & src):
@@ -199,46 +149,27 @@ CMathNodeFunction::CMathNodeFunction(const CMathNodeFunction & src):
 
 CMathNodeFunction::~CMathNodeFunction() {}
 
-std::string CMathNodeFunction::getData() const
+std::string CMathNodeFunction::getText() const
   {
-    std::stringstream text;
+    stringstream text;
 
-    text << "<emp>" << mData << "</emp>";
-
-    CMathNode * pChild = (CMathNode *) getChild();
-
-    if (pChild) text << pChild->getData();
-
-    return text.str();
-  }
-
-CMathNodeList::CMathNodeList(CMathNode * pParent):
-    CMathNode(pParent)
-{}
-
-CMathNodeList::CMathNodeList(const CMathNodeList & src):
-    CMathNode(src)
-{}
-
-CMathNodeList::~CMathNodeList() {}
-
-std::string CMathNodeList::getData() const
-  {
-    std::stringstream text;
-
-    CMathNode * pChild = (CMathNode *) getChild();
-
-    text << "(";
-
-    while (pChild)
+    if (!mpSymbol)
+      text << "???()";
+    else
       {
-        text << pChild->getData();
-        pChild = (CMathNode *) pChild->getSibling();
+        text << mpSymbol->getName() << "(";
 
-        if (pChild) text << ", ";
+        CMathNode * pChild =
+          (CMathNode *) const_cast< CMathNodeFunction * >(this)->getChild();
+
+        while (pChild)
+          {
+            text << pChild->getText();
+            pChild = (CMathNode *) pChild->getSibbling();
+          }
+
+        text << ")";
       }
-
-    text << ")";
 
     return text.str();
   }

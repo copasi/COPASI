@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/09/15 20:47:52 $
+   $Author: ssahle $ 
+   $Date: 2004/08/31 12:21:14 $
    End CVS Header */
 
 #ifndef COPASI_time
 #define COPASI_time
 
+#include <sys/time.h>
 #include "copasi.h"
 
 class CopasiTimePoint

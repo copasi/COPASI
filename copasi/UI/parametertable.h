@@ -1,18 +1,8 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/06 19:57:08 $
-   End CVS Header */
-
 #ifndef PARAMETERTABLE_H
 #define PARAMETERTABLE_H
 
 #include <qtable.h>
 #include <qcombobox.h>
-
-#include "copasi.h"
 #include "model/CReaction.h"
 
 class CReactionInterface;
@@ -51,10 +41,9 @@ class ParameterTable : public QTable
     ParameterTable(QWidget * parent = 0, const char * name = 0);
 
     static void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl);
-    void initTable();
 
   public slots:
-    void updateTable(const CReactionInterface & ri, const CModel & model);
+    void updateTable(const CReactionInterface & ri); // this will get a CReactionInterface & later
 
   private slots:
     void handleCurrentCell(int row, int col);
@@ -64,11 +53,7 @@ class ParameterTable : public QTable
     void signalChanged(int, int, QString);
 
   private:
-    //void initTable();
-
-    //convenience function. It gets a List of all metab names in the CMetabNameInterface format
-    static const std::vector<std::string> getListOfAllMetabNames(const CModel & model,
-        const CReactionInterface & ri);
+    void initTable();
 
     int mOldRow;
 

@@ -1,23 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/12 09:12:10 $
+   $Author: shoops $ 
+   $Date: 2003/10/21 20:32:46 $
    End CVS Header */
-
-#ifndef COPASI_CCopasiParameter
-#define COPASI_CCopasiParameter
-
-#include <string>
-#include <vector>
-
-#include "report/CCopasiContainer.h"
-
-class CCopasiParameterGroup;
-
-class CReadConfig;
-//class CWriteConfig;
 
 /**
  *  CCopasiParameter class.
@@ -26,36 +13,35 @@ class CReadConfig;
  *  
  *  Created for Copasi by Stefan Hoops 2002
  */
+
+#ifndef COPASI_CCopasiParameter
+#define COPASI_CCopasiParameter
+
+#include <string>
+
+#include "report/CCopasiContainer.h"
+
+class CReadConfig;
+class CWriteConfig;
+
 class CCopasiParameter: public CCopasiContainer
   {
     // Attributes
   public:
+    static const std::string TypeName[];
+
     enum Type
     {
       DOUBLE = 0,
-      UDOUBLE,
       INT,
       UINT,
       BOOL,
-      GROUP,
-      STRING,
-      INVALID
+      GROUP
     };
-
-    /**
-     * String literals for the GUI to display type names of parameters known
-     * to COPASI.
-     */
-    static const std::string TypeName[];
-
-    /**
-     * XML type names of parameters known to COPASI.
-     */
-    static const char* XMLType[];
 
   private:
     /**
-     * The key of the parameter.
+     *  key of the parameter
      */
     std::string mKey;
 
@@ -64,29 +50,28 @@ class CCopasiParameter: public CCopasiContainer
      */
     CCopasiParameter::Type mType;
 
-  protected:
     /**
-     *  The size alloactaed for the value of the parameter.
-     */
-    unsigned C_INT32 mSize;
-
-    /**
-     *  A pointer to the value of the parameter.
+     *  A pointer to the value of the attribute
      */
     void * mpValue;
 
     // Operations
 
-  private:
+  public:
+
     /**
      * Default constructor
+     * @param "const string &" name (Default = "")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & objectType (default: "Parameter")
      */
-    CCopasiParameter();
+    CCopasiParameter(const std::string & name = "NoName",
+                     const CCopasiContainer * pParent = NULL,
+                     const std::string & objectType = "Parameter");
 
-  public:
     /**
      * Copy constructor
-     * @param const CCopasiParameter & src
+     * @param "const CCopasiParameter &" src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CCopasiParameter(const CCopasiParameter & src,
@@ -95,52 +80,67 @@ class CCopasiParameter: public CCopasiContainer
     /**
      * Specific constructor
      * @param const string & name
+     * @param const void * pValue
      * @param const CCopasiParameter::Type & type
-     * @param const void * pValue (default: NULL)
      * @param const CCopasiContainer * pParent (default: NULL)
      * @param const std::string & objectType (default: "Parameter")
      */
     CCopasiParameter(const std::string & name,
+                     const void * pValue,
                      const Type & type,
-                     const void * pValue = NULL,
                      const CCopasiContainer * pParent = NULL,
                      const std::string & objectType = "Parameter");
 
     /**
      * Destructor
      */
-    virtual ~CCopasiParameter();
+    ~CCopasiParameter();
 
     /**
      * Return the key of this model
      * @return string key
      */
-    virtual const std::string & getKey() const;
+    std::string getKey() const;
 
     /**
      * Set name of the parameter
-     * @param const string & name
-     */ 
-    //bool setName(const std::string & name);
+     * @param "const string &" name
+     */
+    bool setName(const std::string & name);
 
     /**
      * Retrieve the name of the parameter
-     * @return const string & mName
-     */ 
-    //const std::string & getName() const;
+     * @return "const string &" mName
+     */
+    const std::string & getName() const;
 
     /**
      * Set the value of the parameter
-     * @param const unsigned C_INT32 & value
+     * @param "const C_FLOAT64 &" value
      * @return bool is ValidValue
      */
-    template <class CType> bool setValue(const CType & value)
-    {
-      if (!isValidValue(value)) return false;
+    bool setValue(const C_FLOAT64 & value);
 
-      * (CType *) mpValue = value;
-      return true;
-    }
+    /**
+     * Set the value of the parameter
+     * @param "const C_INT32 &" value
+     * @return bool is ValidValue
+     */
+    bool setValue(const C_INT32 & value);
+
+    /**
+     * Set the value of the parameter
+     * @param "const bool &" value
+     * @return bool is ValidValue
+     */
+    bool setValue(const bool & value);
+
+    /**
+     * Set the value of the parameter
+     * @param "const unsigned C_INT32 &" value
+     * @return bool is ValidValue
+     */
+    bool setValue(const unsigned C_INT32 & value);
 
     /**
      * Retrieve the private value of the parameter.
@@ -149,10 +149,10 @@ class CCopasiParameter: public CCopasiContainer
     const void * getValue() const;
 
     /**
-     * Retrieve the private value of the parameter.
-     * @return void * pValue
+     * Set the type of the parameter
+     * @param const CCopasiParameter::Type & type
      */
-    void * getValue();
+    void setType(const CCopasiParameter::Type & type);
 
     /**
      * Retrieve the type of the parameter.
@@ -162,59 +162,30 @@ class CCopasiParameter: public CCopasiContainer
 
     /**
      * Check whether the value corresponds to the type
-     * @param const C_FLOAT64 & value
+     * @param (const void *pValue
      * @return bool isValidValue
      */
-    bool isValidValue(const C_FLOAT64 & value) const;
+    bool isValidValue(const void *pValue) const;
 
     /**
-     * Check whether the value corresponds to the type
-     * @param const C_INT32 & value
-     * @return bool isValidValue
+     * Load a list of parameters
+     * @param "CReadConfig &" configBuffer
      */
-    bool isValidValue(const C_INT32 & value) const;
+    void load(CReadConfig & configBuffer);
 
     /**
-     * Check whether the value corresponds to the type
-     * @param const unsigend C_INT32 & value
-     * @return bool isValidValue
+     * Save a list of parameters
+     * @param "CWriteConfig &" configBuffer
      */
-    bool isValidValue(const unsigned C_INT32 & value) const;
+    void save(CWriteConfig & configBuffer) const;
 
     /**
-     * Check whether the value corresponds to the type
-     * @param const bool & value
-     * @return bool isValidValue
+     * Clean up
      */
-    bool isValidValue(const bool & value) const;
-
-    /**
-     * Check whether the value corresponds to the type
-     * @param const std::string & value
-     * @return bool isValidValue
-     */
-    bool isValidValue(const std::string & value) const;
-
-    /**
-     * Check whether the value corresponds to the type
-     * @param const CCopasiParameterGroup::parameterGroup & value
-     * @return bool isValidValue
-     */
-    bool isValidValue(const std::vector< CCopasiParameter * > & value) const;
-
-    virtual void * getReference() const;
+    void cleanup();
 
   private:
-    /**
-     * Create or copy the value
-     * @param const void * pValue = NULL
-     * @return void * pValue
-     */
     void * createValue(const void * pValue = NULL);
-
-    /**
-     * Delete the value
-     */
     void deleteValue();
   };
 

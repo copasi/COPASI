@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.cpp,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:38 $
-   End CVS Header */
-
 /**
  *  File name: CRealProblem.cpp
  *
@@ -14,18 +6,20 @@
  *           functions. It's used by COptAlgorithm class and COptimization class
  */
 
-#include "copasi.h"
+
 #include "CRealProblem.h"
 
 //? Do I need to call super() ? find out
-
+   
 //  Default constructor
-CRealProblem::CRealProblem() : COptProblem()
-{}
+CRealProblem::CRealProblem()
+{
+}
 
+   
 // Destructor
 CRealProblem::~CRealProblem()
-{}
+{ }
 
 // calculate function for optimization
 // YOHE: Here is the N-Dimensional Test Function I use:
@@ -35,7 +29,7 @@ CRealProblem::~CRealProblem()
 //       Global minimum found by TRUST:
 //        [-2.90354, -2.90354, ..., -2.90354].
 // calculate function for optimization
-C_FLOAT64 CRealProblem::calculate()
+void CRealProblem::calculate() 
 {
   int j;
 
@@ -43,31 +37,28 @@ C_FLOAT64 CRealProblem::calculate()
   double fitness0;
 
   int parameterNum = getParameterNum();
-  double * parameterValues = getParameter().array();
+  double * parameterValues = getParameterValues();
 
   //YOHE: this is the mathematics function used only for testing purpose
   // evaluate the fitness
-
   try
-    {
-      fitness0 = 0;
-
-      for (j = 0; j < parameterNum; j++)
-        {
-          fitness = fitness0 + pow(parameterValues[j], 4.0) - 16.0 * pow(parameterValues[j], 2.0)
-                    + 5.0 * parameterValues[j];
-          fitness0 = fitness;
-        }
-
-      fitness = fitness0 / 2.0;
-    }
-  catch (unsigned int e)
-    {
-      fitness = DBL_MAX;
-    }
+  {
+   fitness0=0;
+   for(j=0;j < parameterNum;j++)
+   {
+     fitness=fitness0+pow(parameterValues[j],4.0)-16.0*pow(parameterValues[j],2.0)
+                              +5.0*parameterValues[j];
+     fitness0=fitness;
+   }
+   fitness=fitness0/2.0;
+  }
+  catch( unsigned int e )
+  {
+   fitness = DBL_MAX;
+  }
 
   //set the best value as the fitness;
-  //setBestValue(fitness);
-  //cout<<"fitness is:\t"<<fitness;
-  return fitness;
+   setBestValue(fitness);
+
 }
+

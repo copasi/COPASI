@@ -1,59 +1,28 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/07/07 08:08:26 $
+   $Author: ssahle $ 
+   $Date: 2004/04/06 15:01:18 $
    End CVS Header */
 
-#include <iostream>
 #include "copasi.h"
 #include "COutputHandler.h"
 
-bool CCallbackHandler::init()
+bool COutputHandler::init()
 {
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: init" << std::endl;
-#endif // COPASI_DEBUG
+  std::cout << "OutputHandler: init" << std::endl;
   return true;
 }
 
-bool CCallbackHandler::doOutput()
+bool COutputHandler::doOutput()
 {
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: do" << std::endl;
-#endif // COPASI_DEBUG
+  std::cout << "OutputHandler: do" << std::endl;
   return true;
 }
 
-bool CCallbackHandler::finish()
+bool COutputHandler::finish()
 {
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: finish" << std::endl;
-#endif // COPASI_DEBUG
-  return true;
-}
-
-bool CCallbackHandler::init(C_INT32 maxSteps, const std::string & text)
-{
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: init" << std::endl;
-#endif // COPASI_DEBUG
-  return true;
-}
-
-bool CCallbackHandler::reInit(C_INT32 maxSteps, const std::string & text)
-{
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: reInit" << std::endl;
-#endif // COPASI_DEBUG
-  return true;
-}
-
-bool CCallbackHandler::progress(C_INT32 steps)
-{
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: progress" << std::endl;
-#endif // COPASI_DEBUG
+  std::cout << "OutputHandler: finish" << std::endl;
   return true;
 }

@@ -1,0 +1,449 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>SliderSettingsDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>SliderSettingsDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>579</width>
+            <height>236</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Slider Settings</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="resizeMode">
+            <enum>Fixed</enum>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout19</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout18</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton" row="1" column="2">
+                            <property name="name">
+                                <cstring>objectBrowseButton</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>40</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>objectLabel</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Object:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>taskLabel</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Task:</string>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>objectComboBox</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>300</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>taskComboBox</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>300</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="sizeLimit">
+                                <number>10</number>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout15</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout14</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>20</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout12</cstring>
+                                    </property>
+                                    <grid>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLabel" row="2" column="0">
+                                            <property name="name">
+                                                <cstring>minorTickSizeLabel</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Minor Ticksize:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel" row="0" column="0">
+                                            <property name="name">
+                                                <cstring>minValueLabel</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Minimum Value:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLineEdit" row="1" column="1">
+                                            <property name="name">
+                                                <cstring>majorTicksSizeEdit</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>10.0</string>
+                                            </property>
+                                            <property name="alignment">
+                                                <set>AlignRight</set>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLineEdit" row="0" column="1">
+                                            <property name="name">
+                                                <cstring>minValueEdit</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>0.0</string>
+                                            </property>
+                                            <property name="alignment">
+                                                <set>AlignRight</set>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLineEdit" row="2" column="1">
+                                            <property name="name">
+                                                <cstring>minorTickSizeEdit</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>1.0</string>
+                                            </property>
+                                            <property name="alignment">
+                                                <set>AlignRight</set>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel" row="1" column="0">
+                                            <property name="name">
+                                                <cstring>majorTickSizeLabel</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Major Ticksize:</string>
+                                            </property>
+                                        </widget>
+                                    </grid>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer1</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Fixed</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout13</cstring>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLineEdit" row="3" column="1">
+                                    <property name="name">
+                                        <cstring>numMinorTicksEdit</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>10</string>
+                                    </property>
+                                    <property name="alignment">
+                                        <set>AlignRight</set>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="2" column="1">
+                                    <property name="name">
+                                        <cstring>numMajorTicksEdit</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>10</string>
+                                    </property>
+                                    <property name="alignment">
+                                        <set>AlignRight</set>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="3" column="0">
+                                    <property name="name">
+                                        <cstring>numMinorTicksLabel</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Number of Minor Ticks:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="1" column="1">
+                                    <property name="name">
+                                        <cstring>maxValueEdit</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>100.0</string>
+                                    </property>
+                                    <property name="alignment">
+                                        <set>AlignRight</set>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="1" column="0">
+                                    <property name="name">
+                                        <cstring>maxValueLabel</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Maximum Value:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>objectValueLabel</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="text">
+                                        <string>Object Value:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="0" column="1">
+                                    <property name="name">
+                                        <cstring>objectValueEdit</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>50.0</string>
+                                    </property>
+                                    <property name="alignment">
+                                        <set>AlignRight</set>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="2" column="0">
+                                    <property name="name">
+                                        <cstring>numMajorTicksLabel</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Number of Major Ticks:</string>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>okButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>OK</string>
+                            </property>
+                            <property name="default">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>cancelButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Cancel</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>taskComboBox</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>updateObjectBox()</slot>
+    </connection>
+    <connection>
+        <sender>objectComboBox</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>updateSliderValues()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>okButton</tabstop>
+    <tabstop>cancelButton</tabstop>
+    <tabstop>taskComboBox</tabstop>
+    <tabstop>objectBrowseButton</tabstop>
+    <tabstop>objectValueEdit</tabstop>
+    <tabstop>minValueEdit</tabstop>
+    <tabstop>maxValueEdit</tabstop>
+    <tabstop>majorTicksSizeEdit</tabstop>
+    <tabstop>numMajorTicksEdit</tabstop>
+    <tabstop>minorTickSizeEdit</tabstop>
+    <tabstop>numMinorTicksEdit</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">qvalidator.h</include>
+    <include location="local" impldecl="in implementation">qregexp.h</include>
+    <include location="global" impldecl="in declaration">map</include>
+    <include location="global" impldecl="in declaration">vector</include>
+    <include location="local" impldecl="in declaration">SliderDialog.h</include>
+    <include location="global" impldecl="in declaration">string</include>
+    <include location="global" impldecl="in declaration">sstream</include>
+    <include location="local" impldecl="in implementation">slidersettingsdialog.ui.h</include>
+</includes>
+<variables>
+    <variable>std::ostringstream outStream;</variable>
+</variables>
+<signals>
+    <signal>sliderChanged(CopasiSlider* slider)</signal>
+</signals>
+<slots>
+    <slot access="protected">updateObjectBox()</slot>
+    <slot access="protected">updateSliderValues()</slot>
+    <slot access="protected">okButtonPressed()</slot>
+    <slot access="protected">cancelButtonPressed()</slot>
+    <slot access="protected">majorTickSizeChanged()</slot>
+    <slot access="protected">minorTickSizeChanged()</slot>
+    <slot>numMajorTicksChanged()</slot>
+    <slot>numMinorTicksChanged()</slot>
+    <slot access="protected">minValueChanged()</slot>
+    <slot access="protected">maxValueChanged()</slot>
+    <slot access="protected">objectValueChanged()</slot>
+</slots>
+<functions>
+    <function>setSlider( C_INT32 taskId, CopasiSlider * slider )</function>
+    <function>setTask( C_INT32 taskId )</function>
+    <function>setTaskList( std::map&lt;C_INT32, std::string&gt; taskMap )</function>
+    <function>setSliderMap( std::map&lt;C_INT32, std::vector&lt;CopasiSlider *&gt; &gt; sliderMap )</function>
+    <function access="protected">init()</function>
+    <function access="protected" returnType="const std::string &amp;">int2Text( int i )</function>
+    <function access="protected" returnType="const std::string &amp;">double2Text( double d )</function>
+    <function access="protected" returnType="double">text2Double( const std::string &amp; text )</function>
+    <function access="protected" returnType="int">text2Int( const std::string &amp; text )</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cmt19937.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:30:27 $
-   End CVS Header */
-
 /**
  * Cmt19937 class implementing the Mersenne Twister random number generator,
  * 
@@ -58,7 +50,7 @@
 #ifndef COPASI_Cmt19937
 #define COPASI_Cmt19937
 
-#define Cmt19937_N 624
+/*** Class definition for R250 random number generator ***/
 
 class Cmt19937 : private CRandom
   {
@@ -67,11 +59,6 @@ class Cmt19937 : private CRandom
 
     // Attributes
   private:
-    unsigned C_INT32 mState[Cmt19937_N]; /* the array for the state vector  */
-
-    C_INT mLeft; // = 1;
-
-    unsigned C_INT32 *mNext;
 
     // Operations
   private:
@@ -82,8 +69,6 @@ class Cmt19937 : private CRandom
      */
     Cmt19937(unsigned C_INT32 seed);
 
-    void next_state();
-
   public:
     /**
      * The destructor.
@@ -93,44 +78,56 @@ class Cmt19937 : private CRandom
     /**
      * Initialize or reinitialize the random number generator with 
      * the given seed.
+     * Note: seed = 12345 gives the default initilization as in W. L. Maier code
      * @param unsigned C_INT32 seed (default system seed)
      */
     void initialize(unsigned C_INT32 seed = CRandom::getSystemSeed());
 
     /**
      * Get a random number in 0 <= n <= Modulus
-     * @return unsigned C_INT32 random
+     * @return const unsigned C_INT32 & random
      */
-    unsigned C_INT32 getRandomU();
+    const unsigned C_INT32 & getRandomU();
 
     /**
      * Get a random number in 0 <= n <= (Modulus & 0x7ffffff)
-     * @return C_INT32 random
+     * @return const C_INT32 & random
      */
-    C_INT32 getRandomS();
+    const C_INT32 & getRandomS();
+
+    /**
+     * Get a random number in 0 <= n <= min (max, Modulus)
+     * @param const unsigned C_INT32 & max
+     * @return const unsigned C_INT32 & random
+     */
+    const unsigned C_INT32 & getRandomU(const unsigned C_INT32 & max);
+
+    /**
+     * Get a random number in 0 <= n <= min (max, (Modulus & 0x7ffffff))
+     * @param const C_INT32 & max
+     * @return const C_INT32 & random
+     */
+    const C_INT32 & getRandomS(const C_INT32 & max);
 
     /**
      * Produces a uniformly distributed random number in 0 <= x <= 1.
-     * @return C_FLOAT64 random
+     * @return const C_FLOAT64 & random
      */
-    C_FLOAT64 getRandomCC();
+    const C_FLOAT64 & getRandomCC();
 
     /**
      * Produces a uniformly distributed random number in 0 <= x < 1.
      * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
-     * @return C_FLOAT64 random
+     * @return const C_FLOAT64 & random
      */
-    C_FLOAT64 getRandomCO();
+    const C_FLOAT64 & getRandomCO();
 
     /**
      * Produces a uniformly distributed random number in 0 < x < 1.
-     * @return C_FLOAT64 random
+     * @return const C_FLOAT64 & random
      */
-    C_FLOAT64 getRandomOO();
+    const C_FLOAT64 & getRandomOO();
 
-    void init_by_array(unsigned C_INT32 init_key[],
-                       C_INT32 key_length);
-
-    C_FLOAT64 genrand_res53();        // getRandomCO() with higher resolution
+  private:
   };
 #endif // COPASI_Cmt19937

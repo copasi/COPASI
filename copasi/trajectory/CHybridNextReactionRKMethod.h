@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionRKMethod.h,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:34:03 $
-   End CVS Header */
-
 /**
  *   CHybridNextReactionRKMethod
  *

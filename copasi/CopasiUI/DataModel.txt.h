@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.txt.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/06 18:26:01 $
+   $Date: 2003/10/16 19:05:49 $
    End CVS Header */
 
 static char DataModeltxt[] =
@@ -30,7 +30,9 @@ static char DataModeltxt[] =
   "22:221:Elementary Modes\n"
   "22:222:Mass Conservation\n"
   "2:23:Time Course\n"
-  "23:231:Result\n"
+  "23:231:MCA\n"
+  "23:232:Trajectory\n"
+  "23:233:Phase Plane\n"
   "0:3:Multiple Tasks\n"
   "3:31:Optimization\n"
   "3:32:Scan\n"

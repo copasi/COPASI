@@ -1,15 +1,7 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:55 $
-   End CVS Header */
-
 /***************************************************************************
-                  CRandomSearch.cpp  -  Random Optimizer
-                     -------------------
- 
+                    CRandomSearch.cpp  -  Random Optimizer
+                       -------------------
+
 Programmer           : Rohan Luktuke
 email                : rluktuke@vt.edu
  ***************************************************************************/
@@ -19,23 +11,27 @@ email                : rluktuke@vt.edu
  * class is inherited from the COptAlgorithm class
  ***************************************************************************/
 
+#include<iostream>
+#include<fstream>
+#include<sys/timeb.h>
+#include<time.h>
+#include <vector>
+
 #include "copasi.h"
 #include "COptMethod.h"
 #include "CRealProblem.h"
 #include "randomGenerator/CRandom.h"
 
 CRandomSearch::CRandomSearch():
-    COptMethod(CCopasiMethod::RandomSearch)
+    COptMethod()
 {
-  addParameter("RandomSearch.Iterations",
-               CCopasiParameter::UINT,
-               (unsigned C_INT32) 100000);
-  addParameter("RandomSearch.RandomGenerator.Type",
-               CCopasiParameter::INT,
-               (C_INT32) CRandom::mt19937);
-  addParameter("RandomSearch.RandomGenerator.Seed",
-               CCopasiParameter::INT,
-               (C_INT32) 0);
+  setName("RandomSearch");
+  mTypeEnum = COptMethod::RandomSearch;
+  setType(COptMethod::TypeName[mTypeEnum]);
+
+  add("RandomSearch.Iterations", 100000.0);
+  add("RandomSearch.RandomGenerator.Type", CRandom::mt19937);
+  add("RandomSearch.RandomGenerator.Seed", 0);
 }
 
 CRandomSearch::CRandomSearch(const CRandomSearch & src):
@@ -60,7 +56,7 @@ C_INT32 CRandomSearch::optimise()
 
   /* Create a random number generator */
   CRandom::Type Type;
-  Type = (CRandom::Type) (C_INT32) getValue("RandomSearch.RandomGenerator.Type");
+  Type = (CRandom::Type) getValue("RandomSearch.RandomGenerator.Type");
   unsigned C_INT32 Seed;
   Seed = (unsigned C_INT32) getValue("RandomSearch.RandomGenerator.Seed");
   CRandom * pRand = CRandom::createGenerator(Type, Seed);

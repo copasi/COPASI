@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/29 09:31:45 $
-   End CVS Header */
-
 #ifndef COPASI_CluX
 #define COPASI_CluX
 
@@ -31,6 +23,9 @@
 //
 //   See details below.
 //
+
+// for fabs()
+#include <cmath>
 
 // right-looking LU factorization algorithm (unblocked)
 //
@@ -58,106 +53,137 @@
 //
 
 template <class Matrix, class Subscript>
-      int LUfactor(Matrix &A, std::vector< Subscript > & row, std::vector< Subscript > & col, CCallbackHandler* cb = NULL)
-  {
-    Subscript M = A.numRows();
-    Subscript N = A.numCols();
+int LUfactor(Matrix &A, vector< Subscript > & row, vector< Subscript > & col)
+{
+  Subscript M = A.numRows();
+  Subscript N = A.numCols();
 
-    if (M == 0 || N == 0)
-      return 0;
-    if (row.size() != M)
-      row.resize(M);
-    if (col.size() != N)
-      col.resize(N);
+  if (M == 0 || N == 0)
+    return 0;
+  if (row.size() != M)
+    row.resize(M);
+  if (col.size() != N)
+    col.resize(N);
 
-    Subscript i = 0, j = 0, k = 0;
-    Subscript jp = 0;
-    Subscript jl = N - 1;
+  Subscript i = 1, j = 1, k = 1;
+  Subscript jp = 0;
+  Subscript jl = N;
 
-    for (i = 0; i < M; i++)
-      row[i] = i;
-    for (i = 0; i < N; i++)
-      col[i] = i;
+  for (i = 1; i <= M; i++)
+    row[i - 1] = i;
+  for (i = 1; i <= N; i++)
+    col[i - 1] = i;
 
-    typename Matrix::elementType t;
+  typename Matrix::elementType t;
 
   Subscript minMN = (M < N ? M : N);        // min(M,N);
 
-    if (cb) cb->reInit(minMN, "LU decomposition...");
-    for (j = 0; j < minMN; j++)
-      {
-        if (cb) cb->progress(j);
-        // find pivot in column j and  test for singularity.
-        while (true)
-          {
-            jp = j;
-            t = fabs(A(j, j));
-            for (i = j + 1; i < M; i++)
-              if (fabs(A(i, j)) > t)
-                {
-                  jp = i;
-                  t = fabs(A(i, j));
-                }
-
-            row[j] = jp;
-
-            // jp now has the index of maximum element
-            // of column j, below the diagonal
-
-            if (A(jp, j) == 0) // now we have to swap colums to find a pivot
+  for (j = 1; j <= minMN; j++)
+    {
+      // find pivot in column j and  test for singularity.
+      while (TRUE)
+        {
+          jp = j;
+          t = fabs(A(j, j));
+          for (i = j + 1; i <= M; i++)
+            if (fabs(A(i, j)) > t)
               {
-                if (jl <= j)
-                  return 1; // we are done
-                for (k = 0; k < M; k++)
-                  {
-                    t = A(k, jl);
-                    A(k, jl) = A(k, j);
-                    A(k, j) = t;
-                  }
-                col[jl] = j;
-                jl--;
-                continue;
+                jp = i;
+                t = fabs(A(i, j));
               }
-            else
-              break;
-          }
 
-        if (jp != j)      // swap rows j and jp
-          for (k = 0; k < N; k++)
+          row[j - 1] = jp;
+
+          // jp now has the index of maximum element
+          // of column j, below the diagonal
+
+          if (A(jp, j) == 0) // now we have to swap colums to find a pivot
             {
-              t = A(j, k);
-              A(j, k) = A(jp, k);
-              A(jp, k) = t;
+              if (jl <= j)
+                return 1; // we are done
+              for (k = 1; k <= M; k++)
+                {
+                  t = A(k, jl);
+                  A(k, jl) = A(k, j);
+                  A(k, j) = t;
+                }
+              col[jl - 11] = j;
+              jl--;
+              continue;
             }
+          else
+            break;
+        }
 
-        if (j < M - 1)    // compute elements j+1 <= k < M of jth column
+      if (jp != j)            // swap rows j and jp
+        for (k = 1; k <= N; k++)
           {
-            // note A(j,j), was A(jp,p) previously which was
-            // guarranteed not to be zero (Label #1)
-            //
-            typename Matrix::elementType recp = 1.0 / A(j, j);
-
-            for (k = j + 1; k < M; k++)
-              A(k, j) *= recp;
+            t = A(j, k);
+            A(j, k) = A(jp, k);
+            A(jp, k) = t;
           }
 
-        if (j < minMN - 1)
-          {
-            // rank-1 update to trailing submatrix:   E = E - x*y;
-            //
-            // E is the region A(j+1:M, j+1:N)
-            // x is the column vector A(j+1:M,j)
-            // y is row vector A(j,j+1:N)
+      if (j < M)                // compute elements j+1:M of jth column
+        {
+          // note A(j,j), was A(jp,p) previously which was
+          // guarranteed not to be zero (Label #1)
+          //
+          typename Matrix::elementType recp = 1.0 / A(j, j);
 
-            Subscript ii, jj;
+          for (k = j + 1; k <= M; k++)
+            A(k, j) *= recp;
+        }
 
-            for (ii = j + 1; ii < M; ii++)
-              for (jj = j + 1; jj < N; jj++)
-                A(ii, jj) -= A(ii, j) * A(j, jj);
-          }
-      }
+      if (j < minMN)
+        {
+          // rank-1 update to trailing submatrix:   E = E - x*y;
+          //
+          // E is the region A(j+1:M, j+1:N)
+          // x is the column vector A(j+1:M,j)
+          // y is row vector A(j,j+1:N)
 
-    return 0;
-  }
+          Subscript ii, jj;
+
+          for (ii = j + 1; ii <= M; ii++)
+            for (jj = j + 1; jj <= N; jj++)
+              A(ii, jj) -= A(ii, j) * A(j, jj);
+        }
+    }
+
+  return 0;
+}
+
+template <class Matrix, class Vector, class Subscript>
+int LUsolve(const Matrix &A,
+            vector< Subscript > & row,
+            vector< Subscript > & col,
+            Vector &b)
+{
+  Subscript i, ii = 0, ip, j;
+  Subscript n = b.dim();
+  typename Matrix::elementType sum = 0.0;
+
+  for (i = 1; i <= n; i++)
+    {
+      ip = row(i);
+      sum = b(ip);
+      b(ip) = b(i);
+      if (ii)
+        for (j = ii; j <= i - 1; j++)
+          sum -= A(i, j) * b(j);
+      else if (sum)
+        ii = i;
+      b(i) = sum;
+    }
+  for (i = n; i >= 1; i--)
+    {
+      sum = b(i);
+      for (j = i + 1; j <= n; j++)
+        sum -= A(i, j) * b(j);
+      b(i) = sum / A(i, i);
+    }
+
+  return 0;
+}
 
 #endif // COPASI_CluX

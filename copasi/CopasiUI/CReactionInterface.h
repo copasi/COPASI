@@ -1,20 +1,11 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReactionInterface.h,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 12:58:30 $
-   End CVS Header */
-
 #ifndef CREACTIONINTERFACE_H
 #define CREACTIONINTERFACE_H
 
 #include <vector>
 #include <string>
-#include "copasi.h" 
-//#include "model/CChemEq.h"
+#include "copasi.h"
+#include "model/CChemEq.h"
 #include "model/CReaction.h"
-#include "model/CChemEqInterface.h"
 #include "function/CFunction.h"
 
 class CFunction;
@@ -30,9 +21,9 @@ class CReactionInterface
     std::string emptyString;
 
     /**
-     * This is the key that identifies the Reaction that is beeing edited
+     * This is the name that identifies the Reaction that is beeing edited (may become a key later)
      */
-    std::string mReactionReferenceKey;
+    std::string mReactionReferenceName;
 
     /**
      * The name of the reaction (which may change)
@@ -41,9 +32,8 @@ class CReactionInterface
 
     /**
      * A copy of the chemical equation of the reaction
-     */ 
-    //CChemEq *mpChemEq;
-    CChemEqInterface mChemEqI;
+     */
+    CChemEq mChemEq;
 
     /**
      * A pointer to the kinetic function of the reaction
@@ -53,7 +43,7 @@ class CReactionInterface
     /**
      * A copy of the function parameters
      */
-    CFunctionParameters * mpParameters;
+    CFunctionParameters mParameters;
 
     /**
      * what metabolite for what function parameter
@@ -77,32 +67,16 @@ class CReactionInterface
     void setReactionName(const std::string & name) {mReactionName = name;};
     const std::string & getReactionName() const {return mReactionName;};
 
-    /**
-     * set a new chemical equation.
-     * newFunction suggests a new kinetic function which is only used if adequate.
-     */
-    void setChemEqString(const std::string & eq, const std::string & newFunction = "");
-    std::string getChemEqString() const {return mChemEqI.getChemEqString(false);};
-
-    bool isReversible() const {return mChemEqI.getReversibility();};
-
-    /**
-     * set the reversibility.
-     * newFunction suggests a new kinetic function which is only used if adequate.
-     */
-    void setReversibility(bool rev, const std::string & newFunction = "");
-
-    /**
-     * reverse the reaction and set the reversibility.
-     * newFunction suggests a new kinetic function which is only used if adequate.
-     */
-    void reverse(bool rev, const std::string & newFunction = "");
+    void setChemEqString(const std::string & eq);
+    std::string getChemEqString() const {return mChemEq.getChemicalEquationConverted();};
+    bool isReversible() const {return mChemEq.getReversibility();};
+    void setReversibility(bool rev);
 
     /**
      * This produces a list of metab names (from the chem eq) for use in
      * the combo boxes. The role must be given like a usage, e.g. "SUBSTRATE".
      */
-    const std::vector<std::string> & getListOfMetabs(std::string role) const;
+    std::vector<std::string> getListOfMetabs(std::string role) const;
 
     /**
      * set the function.
@@ -110,77 +84,60 @@ class CReactionInterface
      * enforced when the function is the same as before
      */
     void setFunction(const std::string & fn, bool force = false);
-
     const std::string & getFunctionName() const
-      {if (mpFunction) return mpFunction->getObjectName(); else return emptyString;};
+      {if (mpFunction) return mpFunction->getName(); else return emptyString;};
 
     std::vector< std::string > getListOfPossibleFunctions() const;
 
     C_INT32 size() const
-    {if (mpFunction) return mpParameters->size(); else return 0;};
+    {if (mpFunction) return mpFunction->getParameters().size(); else return 0;};
 
-    bool isVector(unsigned C_INT32 index) const
+    bool isVector(C_INT32 index) const
       {
-        if (mpFunction) return ((*mpParameters)[index]->getType() == CFunctionParameter::VFLOAT64);
+        if (mpFunction) return (mpFunction->getParameters()[index]->getType() == CFunctionParameter::VFLOAT64);
         else return (false);
       }
 
-    std::string getUsage(unsigned C_INT32 index) const
+    std::string getUsage(C_INT32 index) const
       {
-        if (mpFunction) return (*mpParameters)[index]->getUsage();
+        if (mpFunction) return mpFunction->getParameters()[index]->getUsage();
         else return emptyString;
       }
 
-    std::string getParameterName(unsigned C_INT32 index) const
+    std::string getParameterName(C_INT32 index) const
       {
-        if (mpFunction) return (*mpParameters)[index]->getObjectName();
+        if (mpFunction) return mpFunction->getParameters()[index]->getName();
         else return emptyString;
       }
 
-    void setMetab(unsigned C_INT32 index, std::string mn);
-    void removeMetab(unsigned C_INT32 index, std::string mn);
-    const std::vector< std::string > & getMetabs(unsigned C_INT32 index) const
+    void setMetab(C_INT32 index, std::string mn);
+    void removeMetab(C_INT32 index, std::string mn);
+    const std::vector< std::string > & getMetabs(C_INT32 index) const
     {return mNameMap[index];}
 
-    void setValue(unsigned C_INT32 index, C_FLOAT64 value) {mValues[index] = value;}
-    const C_FLOAT64 & getValue(unsigned C_INT32 index) const {return mValues[index];}
+    void setValue(C_INT32 index, C_FLOAT64 value) {mValues[index] = value;}
+    const C_FLOAT64 & getValue(C_INT32 index) const {return mValues[index];}
 
-    void initFromReaction(const CModel & model, const std::string & key);
+    void initFromReaction(const std::string & rn, const CModel & model);
 
     void writeBackToReaction(CModel & model) const;
-
-    bool createMetabolites(CModel & model) const;
 
     bool isValid() const {return mValid;}
 
     /**
      * is the mapping of this parameter locked?
      */
-    bool isLocked(unsigned C_INT32 index) const;
+    bool isLocked(C_INT32 index) const;
     bool isLocked(std::string usage) const;
 
   private:
 
     /**
-     * guesses how to connect metabs with parameters for a specific usage
+     * guesses how to connect metabs with paramters for a specific usage
      */
     void connectFromScratch(std::string role, bool pedantic);
 
     void clearFunction();
-
-    /**
-     * checks if newFunction is an valid function for the reaction.
-     * If it is not or if newFunction="" another function is chosen.
-     */
-    void findAndSetFunction(const std::string & newFunction = "");
-
-    /**
-     * returns a list of metabolites (from the chemical equation). Species´ can occur
-     * several times according to theit multiplicity
-     */
-    std::vector<std::string> getExpandedMetabList(const std::string & role) const;
-
-    void loadNameMap(const CModel & model, const CReaction & rea);
   };
 
 #endif

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cmt19937.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:30:26 $
-   End CVS Header */
-
 #include "copasi.h"
 #include "CRandom.h"
 
@@ -50,7 +42,7 @@ void Cmt19937::initialize(unsigned C_INT32 seed)
 /* init_key is the array for initializing keys */
 /* key_length is its length */
 void Cmt19937::init_by_array(unsigned C_INT32 init_key[],
-                             C_INT32 key_length)
+                             unsigned C_INT32 key_length)
 {
   int i, j, k;
   initialize(19650218UL);
@@ -65,7 +57,7 @@ void Cmt19937::init_by_array(unsigned C_INT32 init_key[],
       i++;
       j++;
       if (i >= Cmt19937_N)
-      {mState[0] = mState[Cmt19937_N - 1]; i = 1;}
+      { mState[0] = mState[Cmt19937_N - 1]; i = 1; }
       if (j >= key_length)
         j = 0;
     }
@@ -76,7 +68,7 @@ void Cmt19937::init_by_array(unsigned C_INT32 init_key[],
       mState[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
       i++;
       if (i >= Cmt19937_N)
-      {mState[0] = mState[Cmt19937_N - 1]; i = 1;}
+      { mState[0] = mState[Cmt19937_N - 1]; i = 1; }
     }
 
   mState[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
@@ -101,85 +93,90 @@ void Cmt19937::next_state()
 }
 
 /* generates a random number on [0,0xffffffff]-interval */
-unsigned C_INT32 Cmt19937::getRandomU()
+const unsigned C_INT32 & Cmt19937::getRandomU()
 {
   if (--mLeft == 0)
     next_state();
-  mNumberU = *mNext++;
+  mNumber = *mNext++;
 
   /* Tempering */
-  mNumberU ^= (mNumberU >> 11);
-  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
-  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
-  mNumberU ^= (mNumberU >> 18);
+  mNumber ^= (mNumber >> 11);
+  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
+  mNumber ^= (mNumber << 15) & 0xefc60000UL;
+  mNumber ^= (mNumber >> 18);
 
-  return mNumberU;
+  return mNumber;
 }
 
 /* generates a random number on [0,0x7fffffff]-interval */
-C_INT32 Cmt19937::getRandomS()
+const C_INT32 & Cmt19937::getRandomS()
 {
   if (--mLeft == 0)
     next_state();
-  mNumberU = *mNext++;
+  mNumber = *mNext++;
 
   /* Tempering */
-  mNumberU ^= (mNumberU >> 11);
-  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
-  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
-  mNumberU ^= (mNumberU >> 18);
+  mNumber ^= (mNumber >> 11);
+  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
+  mNumber ^= (mNumber << 15) & 0xefc60000UL;
+  mNumber ^= (mNumber >> 18);
+  mNumber >>= 1;
 
-  return mNumberU >> 1;
+  return mNumber;
 }
 
+// const unsigned C_INT32 & getRandomU(const unsigned C_INT32 & max)
+
+// const C_INT32 & getRandomS(const C_INT32 & max)
+
 /* generates a random number on [0,1]-real-interval */
-C_FLOAT64 Cmt19937::getRandomCC()
+const C_FLOAT64 & Cmt19937::getRandomCC()
 {
   if (--mLeft == 0)
     next_state();
-  mNumberU = *mNext++;
+  mNumber = *mNext++;
 
   /* Tempering */
-  mNumberU ^= (mNumberU >> 11);
-  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
-  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
-  mNumberU ^= (mNumberU >> 18);
+  mNumber ^= (mNumber >> 11);
+  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
+  mNumber ^= (mNumber << 15) & 0xefc60000UL;
+  mNumber ^= (mNumber >> 18);
 
-  return (C_FLOAT64)mNumberU * (1.0 / 4294967295.0);
+  return mFloat = (C_FLOAT64)mNumber * (1.0 / 4294967295.0);
   /* divided by 2^32-1 */
 }
 
 /* generates a random number on [0,1)-real-interval */
-C_FLOAT64 Cmt19937::getRandomCO()
+const C_FLOAT64 & Cmt19937::getRandomCO()
 {
   if (--mLeft == 0)
     next_state();
-  mNumberU = *mNext++;
+  mNumber = *mNext++;
 
   /* Tempering */
-  mNumberU ^= (mNumberU >> 11);
-  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
-  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
-  mNumberU ^= (mNumberU >> 18);
+  mNumber ^= (mNumber >> 11);
+  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
+  mNumber ^= (mNumber << 15) & 0xefc60000UL;
+  mNumber ^= (mNumber >> 18);
 
-  return (C_FLOAT64)mNumberU * (1.0 / 4294967296.0);
+  return mFloat = (C_FLOAT64)mNumber * (1.0 / 4294967296.0);
   /* divided by 2^32 */
 }
 
 /* generates a random number on (0,1)-real-interval */
-C_FLOAT64 Cmt19937::getRandomOO()
+const C_FLOAT64 & Cmt19937::getRandomOO()
 {
   if (--mLeft == 0)
     next_state();
-  mNumberU = *mNext++;
+  mNumber = *mNext++;
 
   /* Tempering */
-  mNumberU ^= (mNumberU >> 11);
-  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
-  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
-  mNumberU ^= (mNumberU >> 18);
+  mNumber ^= (mNumber >> 11);
+  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
+  mNumber ^= (mNumber << 15) & 0xefc60000UL;
+  mNumber ^= (mNumber >> 18);
 
-  return ((C_FLOAT64)mNumberU + 0.5) * (1.0 / 4294967296.0);
+  return mFloat = ((C_FLOAT64)mNumber + 0.5) * (1.0 / 4294967296.0);
   /* divided by 2^32 */
 }
 

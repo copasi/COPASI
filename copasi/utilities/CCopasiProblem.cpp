@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/28 14:41:16 $
+   $Author: shoops $ 
+   $Date: 2003/10/30 17:59:20 $
    End CVS Header */
 
 /**
@@ -30,7 +30,7 @@ CCopasiProblem::CCopasiProblem():
 
 CCopasiProblem::CCopasiProblem(const CCopasiTask::Type & type,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Problem"),
+    CCopasiParameterGroup(TypeName[type], pParent, "Problem"),
     mType(type),
     mpModel(NULL),
     mCalculateVariables(),
@@ -80,12 +80,8 @@ C_FLOAT64 * CCopasiProblem::getSolutionVariables()
 C_FLOAT64 * CCopasiProblem::getSolutionResults()
 {return mSolutionResults.array();}
 
-bool CCopasiProblem::initialize() {return true;}
-
 bool CCopasiProblem::calculate() {return true;}
 
 bool CCopasiProblem::checkParametricConstraints() {return true;}
 
 bool CCopasiProblem::checkFunctionalConstraints() {return true;}
-
-void CCopasiProblem::setInitialState(const CState & initialState) {}

@@ -1,69 +1,67 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.h,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/24 14:58:54 $
-   End CVS Header */
-
-#ifndef FUNCTION_WIDGET_H
-#define FUNCTION_WIDGET_H
-
-#include <qtable.h>
+/****************************************************************************
+ ** Form interface generated from reading ui file '.\function2.ui'
+ **
+ ** Created: Thu May 30 18:47:54 2002
+ **      by:  The User Interface Compiler (uic)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
+#ifndef FUNCTIONWIDGET_H
+#define FUNCTIONWIDGET_H
+#include <qvariant.h>
+#include <qwidget.h>
+#include "MyTable.h"
 #include "copasi.h"
-#include "CopasiTableWidget.h"
+#include "model/model.h"
+#include "utilities/CGlobals.h"
+#include "function/function.h"
 
-class FunctionWidget : public CopasiTableWidget
+class QVBoxLayout;
+
+class QHBoxLayout;
+
+class QGridLayout;
+
+class QTable;
+
+class CModel;
+
+class CGlobals;
+/*class FunctionWidget : public QWidget
+{ 
+    Q_OBJECT
+ 
+public:
+    FunctionWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ~FunctionWidget();
+ 
+    QTable* Table1;
+ 
+ 
+};
+ 
+#endif // FunctionWidget_H */
+
+// make changes for
+
+class FunctionWidget : public QWidget
   {
     Q_OBJECT
 
-  public:
-    FunctionWidget(QWidget *parent, const char * name = 0, WFlags f = 0)
-        : CopasiTableWidget(parent, false, name, f)
-    {init();}
-
   protected:
+    MyTable *table;
+    CModel *mModel;
+    //CFunction *fFunction;
 
-    /**
-     * This initializes the widget 
-     */
-    virtual void init();
+  public:
+    FunctionWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
+    void loadFunction(CModel *model);
+    void setFocus();
+    void resizeEvent(QResizeEvent * re);
 
-    /**
-     * returns a list of objects that should be displayed
-     */
-    virtual std::vector<const CCopasiObject*> getObjects() const;
-
-    /**
-     * fills one table row with the data from one object
-     */
-    virtual void tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row);
-
-    /**
-     * reads the contents of one row of the table and writes it to the object
-     */
-    virtual void tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj);
-
-    /**
-     * creates a new object
-     */
-    virtual CCopasiObject* createNewObject(const std::string & name);
-
-    /**
-     * deletes objects. Performs all additional tasks, like asking the user, ...
-     */
-    virtual void deleteObjects(const std::vector<std::string> & keys);
-
-    /**
-     * this is used to fill a row of the table when a new object is added to the table.
-     * it fills only the data columns, not the name. It should not fill column exc.
-     */
-    virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc);
-
-    /**
-     * the prefix that is used to construct new object names
-     */
-    virtual QString defaultObjectName() const;
+  protected slots:
+    virtual void slotTableClicked(int row, int col, int button, const QPoint & mousePos);
+    virtual void slotTableSelectionChanged();
   };
 
 #endif

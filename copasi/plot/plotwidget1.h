@@ -1,16 +1,8 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/20 21:58:34 $
-   End CVS Header */
-
 /****************************************************************************
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.12 2004/09/20 21:58:34 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.1 2003/10/14 15:08:39 huwenjun Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,40 +10,28 @@
 #ifndef PLOTWIDGET1_H
 #define PLOTWIDGET1_H
 
+//#include <qapplication.h>
 #include <vector>
 #include <string>
-#include <fstream>
 #include <qvariant.h>
-
-#include "CopasiUI/copasiWidget.h"
-#include "plot/CPlotSpecification.h"
+#include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QFrame;
+//class QIconView;
+//class QIconViewItem;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-//class QTabWidget;
-class QCheckBox;
+class CurveSpecScrollView;
+class CurveGroupBox;
+
+class PlotTaskSpec;
 class PlotWindow;
-class Curve2DWidget;
 
-#include <qtabwidget.h>
-class MyQTabWidget : public QTabWidget
-  {
-    Q_OBJECT
-
-  public:
-    MyQTabWidget(QWidget * parent = 0, const char * name = 0, WFlags f = 0)
-        : QTabWidget(parent, name, f)
-    {
-      ((QWidget*)(this->tabBar()))->setStyle("platinum");
-    };
-  };
-
-class PlotWidget1 : public CopasiWidget
+class PlotWidget1 : public QWidget
   {
     Q_OBJECT
 
@@ -60,34 +40,12 @@ class PlotWidget1 : public CopasiWidget
     ~PlotWidget1();
 
     // some methods according to the general guideline, mostly only stubs for now...
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool enter();
+    virtual bool update();
     virtual bool leave();
-    virtual bool enter(const std::string & key = "");
-
-  protected:
-    bool loadFromPlotSpec(const CPlotSpecification *);
-    bool saveToPlotSpec();
-    void addCurveTab(const std::string & title,
-                     const CPlotDataChannelSpec & x,
-                     const CPlotDataChannelSpec & y);
-
-    std::string objKey;
-
-    //CPlotSpecification *mpPlotSpec;
-
-    QGridLayout* PlotWidget1Layout;
-    QVBoxLayout* layout20;
-    QHBoxLayout* layout5;
-    QVBoxLayout* layout19;
-    QVBoxLayout* layout18;
-    QHBoxLayout* layout17;
-    QHBoxLayout* layout4;
-    QVBoxLayout* layoutGrpBox;
 
     QLabel* titleLabel;
     QLineEdit* titleLineEdit;
-    //QLabel* activeLabel;
-    QCheckBox* activeCheckBox;
     QFrame* line2;
     QLabel* curveSpecLabel;
     QPushButton* addCurveButton;
@@ -98,11 +56,27 @@ class PlotWidget1 : public CopasiWidget
     QPushButton* addPlotButton;
     QPushButton* resetButton;
 
-    //MyQTabWidget* tabs;
-    QTabWidget* tabs;
+    CurveSpecScrollView* scrollView;
+
+    // a vector with pointers to CurveGroupBox instances
+    std::vector<CurveGroupBox*> cgrpboxes;
+
+  protected:
+    QGridLayout* PlotWidget1Layout;
+    QVBoxLayout* layout20;
+    QHBoxLayout* layout5;
+    QVBoxLayout* layout19;
+    QVBoxLayout* layout18;
+    QHBoxLayout* layout17;
+    QHBoxLayout* layout4;
+
+    QVBoxLayout* layoutGrpBox;
+    QVBoxLayout* layoutScrlView;
 
   protected slots:
     virtual void languageChange();
+
+  public slots:
 
     /*
      * adds a CurveGroupBox
@@ -139,6 +113,36 @@ class PlotWidget1 : public CopasiWidget
      * this is called when the plot window is closed; it enables all the input fields and appropriate buttons
      */
     void plotFinished();
+
+  private:
+    // a vector of PlotTaskSpec instances - this should be incorporated into a CModel object or something similar
+    // could be a dictionary of object keys and the pointers, etc.
+    std::vector<PlotTaskSpec*> plotSpecVector;
+
+    // a vector of pointers to windows that each contains a plot
+    std::vector<PlotWindow*> plotWinVector;
+
+    // a vector to hold indices of the keys of the deleted curves
+    // when curves are inserted in the plot object, their indices correspond to those in the vector
+    // of CurveSpec objects in PlotTaskSpec
+    std::vector<int> deletedCurveIndices;
+
+    //-------------------------------------------------------
+    // the following might be incorporated elsewhere somehow
+
+    // a vector of object keys - this is a dummy in the testing application
+    // associates with pointers in plotSpecVector and plotWinVector through the vector subscripts
+    std::vector<int> keys;
+
+    // the name of the simulation output file - should be from the model
+    std::string filename;
+
+    // generates the key for a new plot
+    int nextPlotKey;
+
+    // the key of the current plot; -1 on entering the PlotWidget indicates this is a new plot.
+    // also serves as the index into vectors plotSpecVector and plotWinVector
+    int currentPlotKey;
   };
 
 #endif // PLOTWIDGET1_H

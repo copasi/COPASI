@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.36 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 13:55:32 $
-   End CVS Header */
-
 /**
  * CCompartment
  * 
@@ -19,177 +11,137 @@
 
 #include <string>
 
-#include "report/CCopasiContainer.h"
+#include "utilities/CReadConfig.h"
+#include "utilities/CWriteConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "CMetab.h"
+#include "CModel.h"
 
-class CReadConfig;
-//class CWriteConfig;
+class CCompartment {
+  // Attributes
+ private:
+  /**
+   *  Name of the compartment.
+   */
+  string mName;
 
-/** @dia:pos 128.756,34.703 */
-class CCompartment : public CCopasiContainer
-  {
-    // Attributes
+  /**
+   *  Volume of the compartment.
+   */
+  C_FLOAT64 mVolume;
 
-  private:
-    /**
-     *  The key of the compartment.
-     */
-    std::string mKey;
+  /**
+   *  Metabolites located in the compartment.
+   *  @supplierCardinality 0..*
+   *  @associates <{CMetab}>
+   */
+  CCopasiVector < CMetab > * mMetabolites;
+  // Operations
+ public:
+  /**
+   *  Default constructor. 
+   *  Creates an empty object with mName="compartment" and mVolume=1
+   */
+  CCompartment();
 
-    /**
-     *  The initial volume of the compartment.
-     */
-    C_FLOAT64 mInitialVolume;
+  /**
+   *  Specified constructor. 
+   *  Creates an object with contents passed as arguments
+   *  @param name name of the comnpartment.
+   *  @param volume volume of the compartment.
+   */
+  CCompartment(const string & name, C_FLOAT64 volume);
 
-    /**
-     *  Volume of the compartment.
-     */
-    C_FLOAT64 mVolume;
+  /**
+   *  Init
+   */
+  void initialize();
+    
+  /**
+   *  Destructor. 
+   *  The destructor does nothing.
+   */
+  ~CCompartment();
 
-    /**
-     *  1/Volume of the compartment.
-     */
-    C_FLOAT64 mVolumeInv;
+  /**
+   *  Delete
+   */
+  void cleanup();
+    
+  /**
+   *  Assignement operator. 
+   *  Copies the contents from one CCompartment object to another.
+   *  @param ptRHS reference to the recipient object.
+   */
+  CCompartment & operator=(const CCompartment & rhs);
 
-    /**
-     *  Metabolites located in the compartment.
-     *  @supplierCardinality 0..*
-     *  @associates <{CMetab}>
-     */
-    /** @dia:route 3,9; h,128.756,35.403,118.742,53.4961,108.729 */
-    CCopasiVectorNS < CMetab > mMetabolites;
+  /**
+   *  Loads an object with data coming from a CReadConfig object.
+   *  (CReadConfig object reads an input stream)
+   *  @param pconfigbuffer reference to a CReadConfig object.
+   *  @return mFail
+   *  @see mFail
+   */
+  C_INT32 load(CReadConfig & configbuffer);
 
-  public:
-    /**
-     * Default constructor. 
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCompartment(const std::string & name = "NoName",
-                 const CCopasiContainer * pParent = NULL);
+  /**
+   *  Saves the contents of the object to a CWriteConfig object.
+   *  (Which usually has a file attached but may also have socket)
+   *  @param pconfigbuffer reference to a CWriteConfig object.
+   *  @return mFail
+   *  @see mFail
+   */
+  C_INT32 save(CWriteConfig & configbuffer);
 
-    /**
-     * Copy constructor.
-     * @param "const CCompartment &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCompartment(const CCompartment & src,
-                 const CCopasiContainer * pParent = NULL);
+  /**
+   *  Returns a string with the name of this compartment.
+   *  @return mName
+   *  @see mName
+   */
+  string getName() const;
 
-    /**
-     *  Destructor. 
-     *  The destructor does nothing.
-     */
-    ~CCompartment();
+  /**
+   *  Returns a C_FLOAT64 with the volume of this compartment.
+   *  @return mVolume
+   *  @see mVolume
+   */
+  C_FLOAT64 getVolume() const;
 
-    /**
-     *  Cleanup
-     */
-    void cleanup();
+  /*
+   *
+   */
+  CCopasiVector < CMetab > & metabolites();
+    
+  /*
+   *
+   */
+  void addMetabolite(CMetab & metabolite);
+    
+  /**
+   *  Sets the name of this compartment.
+   *  @param name string with the name of the compartment.
+   *  @see mName
+   */
+  void setName(const string & name);
 
-    /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return mFail
-     *  @see mFail
-     */
-    C_INT32 load(CReadConfig & configbuffer);
+  /**
+   *  Sets the volume of this compartment.
+   *  @param volume the volume of the compartment.
+   *  @see mVolume
+   */
+  void setVolume(C_FLOAT64 volume);
 
-    /**
-     *  Returns a string with the name of this compartment.
-     *  @return std::string key
-     */
-    virtual const std::string & getKey() const;
+  /**
+   *	Returns the address of mVolume		Wei Sun
+   */
+  void * getVolumeAddr();
 
-    /**
-     *  Returns a C_FLOAT64 with the volume of this compartment.
-     *  @return const C_FLOAT64 & InitialVolume
-     *  @see mInitialVolume
-     */
-    const C_FLOAT64 & getInitialVolume() const;
+ private:
 
-    /**
-     *  Returns a C_FLOAT64 with the volume of this compartment.
-     *  @return mVolume
-     *  @see mVolume
-     */
-    const C_FLOAT64 & getVolume() const;
-
-    /**
-     *  Returns a C_FLOAT64 with the 1/volume of this compartment.
-     *  @return mVolumeInv
-     *  @see mVolumeInv
-     */
-    const C_FLOAT64 & getVolumeInv() const;
-
-    /*
-     *
-     */
-    CCopasiVectorNS < CMetab > & getMetabolites();
-    const CCopasiVectorNS < CMetab > & getMetabolites() const;
-
-    /**
-     *  Adds a metabolite to the compartment. Only the concentration is taken from
-     *  the metabolite, the number of particles is calculated according to the
-     *  volume of the compartment
-     *  @param const CMetab & metabolite;
-     *  @return bool success
-     */
-    bool createMetabolite(const CMetab & metabolite);
-
-    /**
-     *  Adds a metabolite to the compartment. Only the concentration is taken from
-     *  the metabolite, the number of particles is calculated according to the
-     *  volume of the compartment
-     *  @param CMetab * metabolite;
-     *  @return bool success
-     */
-    bool addMetabolite(CMetab * metabolite);
-
-    bool removeMetabolite(CMetab *metabolite);
-
-    /**
-     *  Sets the name of this compartment.
-     *  @param name string with the name of the compartment.
-     *  @see mName
-     */
-    bool setName(const std::string & name);
-
-    /**
-     *  Sets the initial volume of this compartment.
-     *  @param volume the volume of the compartment.
-     *  @param adapt if true the particle numbers of the metabolites are adapted
-     *  @see mVolume
-     */
-    void setInitialVolume(C_FLOAT64 volume, bool adapt = true);
-
-    /**
-     *  Sets the volume of this compartment.
-     *  @param volume the volume of the compartment.
-     *  @see mVolume
-     */
-    void setVolume(C_FLOAT64 volume);
-
-    /**
-     * Returns the address of mVolume  Wei Sun
-     */
-    void * getVolumeAddr();
-
-    friend std::ostream & operator<<(std::ostream &os, const CCompartment & d);
-
-  private:
-
-    /**
-     *  Check whether the name is valid.
-     */
-    bool isValidName(const std::string & name) const;
-
-    /**
-     * Initialize the contained CCopasiObjects
-     */
-    void initObjects();
-  };
+  /*
+   *
+   */
+  C_INT16 isValidName() const;
+};
 
 #endif // COPASI_CCompartment

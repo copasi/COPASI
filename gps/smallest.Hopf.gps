@@ -1,6 +1,6 @@
-Version=3.21301
+Version=3.21107
 EndTime=1.000000e+002
-Points=1000
+Points=100
 OutputTimeZero=1
 RealTime=0
 SleepTime=1
@@ -40,6 +40,11 @@ TotalMetabolites=4
 TotalSteps=5
 TotalMoieties=0
 TotalCompartments=1
+Stoichiometry
+1.000000 -1.000000 -1.000000 0.000000 0.000000 
+-1.000000 1.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 1.000000 -1.000000 
+0.000000 0.000000 1.000000 -1.000000 0.000000 
 TotalUDKinetics=0
 Metabolite=X
 Concentration=2.5
@@ -146,16 +151,7 @@ PlotZ0=5
 User-defined functions
 Items=0
 Interactive time course
-Items=3
-Title=[X]t
-Type=3
-I=X
-Title=[Y]t
-Type=3
-I=Y
-Title=[Z]t
-Type=3
-I=Z
+Items=0
 Time-course output
 Items=6
 Title=time

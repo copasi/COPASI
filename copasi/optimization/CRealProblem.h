@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 09:31:04 $
-   End CVS Header */
-
 /**
  *  File name: CRealProblem.h
  *
@@ -28,42 +20,50 @@
  * 
  */
 
+
 #ifndef CREALPROBLEM_H
 #define CREALPROBLEM_H
 
 #include <string>
+#include <copasi.h>
 #include <vector>
-#include "mathematics.h"
-#include <float.h>
+#include "math.h"
+#include "float.h"
+
 
 #include "COptProblem.h"
 
 //
-/** @dia:pos 3.05,34.05 */
-/** @dia:route COptProblem; v,9.3288,30.75,32.7,9.3472,34.05 */
 class CRealProblem : public COptProblem
-  {
-    //data member
-    //no real variables defined here, but the base class has many members
-  private:
+{
 
-    // Implementation
-  public:
+  //data member
+  //no real variables defined here, but the base class has many members
+ private:
+  
+  
+  // Implementation
+ public:
 
-    /**
-     * Default constructor
-     */
-    CRealProblem();
+   /**
+    * Default constructor
+    */
+   CRealProblem();
 
-    /**
-     * Destructor
-     */
-    ~CRealProblem();
+   /**
+    * Destructor
+    */
+   ~CRealProblem();
 
-    /**
-     * calculate function for optimization
-     */
-    C_FLOAT64 calculate();
-  };
 
-#endif  // the end
+   /**
+    * calculate function for optimization
+    */
+   void calculate(); 
+
+ 
+};
+
+
+#endif  // the end 
+

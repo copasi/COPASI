@@ -1,19 +1,13 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:29 $
-   End CVS Header */
-
 /****************************************************************************
  ** Form implementation generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Tue Apr 1 19:46:58 2003
- **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.4 2003/11/05 14:36:29 shoops Exp $)
+ ** Created: Fri Mar 28 17:58:13 2003
+ **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.1 2003/04/01 12:35:53 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
+
+#include "objectdebug.h"
 
 #include <qvariant.h>
 #include <qheader.h>
@@ -25,8 +19,6 @@
 #include <qimage.h>
 #include <qpixmap.h>
 
-#include "copasi.h"
-#include "objectdebug.h"
 #include "objectdebug.ui.h"
 
 /*
@@ -42,20 +34,15 @@ ObjectDebug::ObjectDebug(QWidget* parent, const char* name, bool modal, WFlags f
 {
   if (!name)
     setName("ObjectDebug");
-  ObjectDebugLayout = new QGridLayout(this, 1, 1, 11, 6, "ObjectDebugLayout");
 
   UpdateButton = new QPushButton(this, "UpdateButton");
-
-  ObjectDebugLayout->addWidget(UpdateButton, 1, 1);
+  UpdateButton->setGeometry(QRect(410, 430, 141, 30));
 
   ListOfObjects = new QListView(this, "ListOfObjects");
   ListOfObjects->addColumn(tr("Column 1"));
-
-  ObjectDebugLayout->addMultiCellWidget(ListOfObjects, 0, 0, 0, 1);
-  QSpacerItem* spacer = new QSpacerItem(121, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  ObjectDebugLayout->addItem(spacer, 1, 0);
+  ListOfObjects->setGeometry(QRect(10, 10, 581, 410));
   languageChange();
-  resize(QSize(517, 486).expandedTo(minimumSizeHint()));
+  resize(QSize(600, 480).expandedTo(minimumSizeHint()));
 
   // signals and slots connections
   connect(UpdateButton, SIGNAL(clicked()), this, SLOT(update()));

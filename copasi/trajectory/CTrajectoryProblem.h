@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:13:38 $
-   End CVS Header */
-
 /**
  *  CTrajectoryProblem class.
  *  This class describes the trajectory problem, i.e., it allows to specify
@@ -19,48 +11,72 @@
 
 #include <string>
 
-#include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h" 
-//#include "utilities/CWriteConfig.h"
-#include "model/CState.h"
-
 class CModel;
 
-class CTrajectoryProblem : public CCopasiProblem
+class CState;
+
+#include "utilities/CReadConfig.h"
+#include "utilities/CWriteConfig.h"
+
+class CTrajectoryProblem
   {
     // Attributes
+
   private:
+    /**
+     *  The model the problem is working on.
+     */
+    CModel * mpModel;
+
+    /**
+     *  The number of steps to calculate
+     */
+    unsigned C_INT32 mStepNumber;
+
+    /**
+     *  The size of each step
+     */
+    double mStepSize;
+
     /**
      *  Indicate whether the step number or step size was set last.
      */
     bool mStepNumberSetLast;
 
     /**
+     *  The start time of the trajectory
+     */
+    double mStartTime;
+
+    /**
+     *  The end time of the trajectory
+     */
+    double mEndTime;
+
+    /**
      *  The initial state, i.e., the starting conditions of the trajectroy.
      */
-    CState mInitialState;
+    CState * mpInitialState;
 
     /**
      *  The final state of the trajectory at time EndTime
      */
-    CState mEndState;
+    const CState *mpEndState;
 
   public:
     // Operations
 
     /**
-     * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
+     *  Default constructor.
+     *  @param "CModel *" pModel
      */
-    CTrajectoryProblem(const CCopasiContainer * pParent = NULL);
+    CTrajectoryProblem(CModel * pModel);
 
     /**
-     * Copy constructor.
-     * @param const CTrajectoryProblem & src
-     * @paramconst CCopasiContainer * pParent (default: NULL)
+     *  Copy constructor.
+     *  @param "const CTrajectoryProblem &" src
      */
-    CTrajectoryProblem(const CTrajectoryProblem & src,
-                       const CCopasiContainer * pParent = NULL);
+    CTrajectoryProblem(const CTrajectoryProblem & src);
 
     /**
      *  Destructor.
@@ -71,7 +87,13 @@ class CTrajectoryProblem : public CCopasiProblem
      * Set the moddel the problem is dealing with.
      * @param "CModel *" pModel
      */
-    virtual bool setModel(CModel * pModel);
+    void setModel(CModel * pModel);
+
+    /**
+     * Retrieve the model the problem is dealing with.
+     * @return "CModel *" pModel
+     */
+    CModel * getModel() const;
 
     /**
      * Set the number of time steps the trajectory method should integrate.
@@ -87,57 +109,51 @@ class CTrajectoryProblem : public CCopasiProblem
 
     /**
      * Set the size a integration step the trajectory method should do.
-     * @param "const C_FLOAT64 &" stepSize
+     * @param "const double &" stepSize
      */
-    void setStepSize(const C_FLOAT64 & stepSize);
+    void setStepSize(const double & stepSize);
 
     /**
      * Retrieve the size a integration step the trajectory method should do.
-     * @return "const C_FLOAT64 &" stepSize
+     * @return "const double &" stepSize
      */
-    const C_FLOAT64 & getStepSize() const;
+    const double & getStepSize() const;
 
     /**
      * Set the start time.
-     * @param "const C_FLOAT64 &" startTime
+     * @param "const double &" startTime
      */
-    void setStartTime(const C_FLOAT64 & startTime);
+    void setStartTime(const double & startTime);
 
     /**
      * Retrieve the start time.
-     * @return "const C_FLOAT64 &" startTime
+     * @return "const double &" startTime
      */
-    const C_FLOAT64 & getStartTime() const;
+    const double & getStartTime() const;
 
     /**
      * Set the end time.
-     * @param "const C_FLOAT64 &" endTime
+     * @param "const double &" endTime
      */
-    void setEndTime(const C_FLOAT64 & endTime);
+    void setEndTime(const double & endTime);
 
     /**
      * Retrieve the end time.
-     * @return "const C_FLOAT64 &" endTime
+     * @return "const double &" endTime
      */
-    const C_FLOAT64 & getEndTime() const;
+    const double & getEndTime() const;
 
     /**
      * Set the initial state of the problem.
-     * @param "const CState &" initialState
+     * @param "const CState *" pInitialState
      */
-    void setInitialState(const CState & initialState);
-
-    /**
-     * Set the initial state of the problem.
-     * @param "const CStateX &" initialState
-     */
-    void setInitialState(const CStateX & initialState);
+    void setInitialState(CState * pInitialState);
 
     /**
      * Retrieve the initial state of the problem.
-     * @return "const CState &" pInitialState
+     * @return "const CState *" pInitialState
      */
-    const CState & getInitialState() const;
+    const CState * getInitialState() const;
 
     /**
      * Set the end state of the problem.
@@ -146,16 +162,10 @@ class CTrajectoryProblem : public CCopasiProblem
     void setEndState(const CState * pEndState);
 
     /**
-     * Set the end state of the problem.
-     * @param "const CStateX *" pEndState
-     */
-    void setEndState(const CStateX * pEndState);
-
-    /**
      * Retrieve the end state of the problem.
-     * @return "const CState &" pEndState
+     * @return "const CState *" pEndState
      */
-    const CState & getEndState() const;
+    const CState * getEndState() const;
 
     /**
      * Load a trajectory problem
@@ -164,6 +174,12 @@ class CTrajectoryProblem : public CCopasiProblem
      */
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
+
+    /**
+     * Save a trajectory problem
+     * @param "CWriteConfig &" configBuffer
+     */
+    void save(CWriteConfig & configBuffer) const;
 
   private:
     /**

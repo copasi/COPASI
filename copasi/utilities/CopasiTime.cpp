@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/09/15 20:49:35 $
+   $Author: ssahle $ 
+   $Date: 2004/08/31 12:21:14 $
    End CVS Header */
 
 #include "CopasiTime.h"
@@ -13,7 +13,7 @@ CopasiTimePoint::CopasiTimePoint():
 {}
 
 C_INT32 CopasiTimePoint::init()
-{return mTime = getCurrentTime_msec();}
+{mTime = getCurrentTime_msec();}
 
 C_INT32 CopasiTimePoint::get() const
   {return mTime;}
@@ -33,8 +33,6 @@ C_INT32 CopasiTimePoint::getTimeDiff() const
 // ...
 // but I cannot test that
 
-#ifndef WIN32
-
 #include <sys/time.h>
 
 //static
@@ -46,17 +44,3 @@ C_INT32 CopasiTimePoint::getCurrentTime_msec()
   time = ttt.tv_sec * 1000 + ttt.tv_usec / 1000;
   return time % (1 << 30);
 }
-#else
-
-#include <windows.h>
-#include <winbase.h>
-
-//static
-C_INT32 CopasiTimePoint::getCurrentTime_msec()
-{
-  LARGE_INTEGER SystemTime;
-  GetSystemTimeAsFileTime((FILETIME *) &SystemTime);
-
-  return (SystemTime.QuadPart / 10000) & 0x3fffffff;
-}
-#endif

@@ -1,17 +1,10 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/05 12:58:58 $
-   End CVS Header */
+#include <iostream>
 
 #ifndef COPASI_CVector
 #define COPASI_CVector
 
-#include <iostream>
-#include <stdarg.h>
-#include "copasi.h"
+using std::ostream;
+using std::endl;
 
 /**
  * Template class CVector < class CType >
@@ -19,7 +12,8 @@
  * C-style and fortran style access to the elements. It also supplies 
  * an ostream operator.
  */
-template <class CType> class CVector
+template <class CType>
+class CVector
   {
   public:
     typedef CType elementType;
@@ -41,11 +35,15 @@ template <class CType> class CVector
     /**
      * Default constructor
      * @param unsigned C_INT32 rows (default = 0)
+     * @param unsigned C_INT32 cols (default = 0)
      */
     CVector(unsigned C_INT32 rows = 0) :
         mRows(rows),
         mVector(NULL)
-    {if (mRows) mVector = new CType[mRows];}
+    {
+      if (mRows)
+        mVector = new CType[mRows];
+    }
 
     /**
      * Copy constructor
@@ -63,52 +61,19 @@ template <class CType> class CVector
     }
 
     /**
-     * Initializing constructor
-     * @param const unsigned C_INT32 & rows
-     * @param CType first
-     * @param ... (rows - 1 arguments of CType)
-     */
-#ifdef XXXX
-    CVector(const unsigned C_INT32 & rows, CType first, ...):
-        mRows(rows),
-        mVector(NULL)
-    {
-      if (mRows)
-        {
-          mVector = new CType[mRows];
-          mVector[0] = first;
-
-          va_list values; // = NULL;
-          va_start(values, first);
-
-#if (CType ==  SubType)
-          for (unsigned C_INT32 i = 1; i < mRows; i++)
-            mVector[i] = (CType) va_arg(values, int);
-#else
-          if (sizeof(CType) > sizeof(int))
-            for (unsigned C_INT32 i = 1; i < mRows; i++)
-              mVector[i] = va_arg(values, CType);
-          else /* sizes smaller or equal to int are promoted to int */
-            for (unsigned C_INT32 i = 1; i < mRows; i++)
-              mVector[i] = (CType) va_arg(values, int);
-#endif
-
-          va_end(values);
-        }
-    }
-#endif // XXXX
-
-    /**
      * Destructor.
      */
     ~CVector()
-  {if (mVector) delete [] mVector;}
+    {
+      if (mVector)
+        delete [] mVector;
+    }
 
     /**
      * The number of elements stored in the vector.
      * @return unsigned C_INT32 size
      */
-    unsigned C_INT32 size() const {return mRows;}
+  unsigned C_INT32 size() const {return mRows;}
 
     /**
      * The number of rows of the vector.
@@ -130,7 +95,8 @@ template <class CType> class CVector
 
       mRows = rows;
 
-      if (mRows) mVector = new CType[mRows];
+      if (mRows)
+        mVector = new CType[mRows];
     }
 
     /**
@@ -140,44 +106,47 @@ template <class CType> class CVector
      */
     CVector <CType> & operator = (const CVector <CType> & rhs)
     {
-      if (mRows != rhs.mRows) resize(rhs.mRows);
+      if (mRows != rhs.mRows)
+        resize(rhs.mRows);
 
       memcpy(mVector, rhs.mVector, mRows * sizeof(CType));
 
-      return * this;
+      return *this;
     }
 
     /**
      * Retrieve an element of the vector
-     * @param const unsigned C_INT32 & row
-     * @return CType & element
+     * @param unsigned C_INT32 row
+     * @return CType & row
      */
-    inline CType & operator[](const unsigned C_INT32 & row)
-  {return * (mVector + row);}
+    inline CType & operator[](unsigned C_INT32 row)
+  {return *(mVector + row);}
 
     /**
      * Retrieve an element of the vector
-     * @param const unsigned C_INT32 & row
-     * @return const CType & element
+     * @param unsigned C_INT32 row
+     * @return const CType & row
      */
-    inline const CType & operator[](const unsigned C_INT32 & row) const
-      {return * (mVector + row);}
+    inline const CType & operator[](unsigned C_INT32 row) const
+      {return *(mVector + row);}
 
     /**
      * Retrieve a vector element using Fortan style indexing.
      * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
      * @return const CType & element
      */
     inline CType & operator()(const unsigned C_INT32 & row)
-    {return * (mVector + (row - 1));}
+    {return *(mVector + (row - 1));}
 
     /**
      * Retrieve a vector element using Fortan style indexing.
      * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
      * @return const CType & element
      */
     inline const CType & operator()(const unsigned C_INT32 & row) const
-      {return * (mVector + (row - 1));}
+      {return *(mVector + (row - 1));}
 
     /**
      * Retrieve the array of the vector elements. This is suitable
@@ -199,27 +168,30 @@ template <class CType> class CVector
      * @param const CVector< CType > & A
      * @retrun ostream & os
      */
-#ifdef WIN32
-    friend std::ostream &operator << (std::ostream &os,
-                                      const CVector< CType > & A);
-#else
-    friend std::ostream &operator << <> (std::ostream &os,
-                                         const CVector< CType > & A);
-#endif // WIN32
+    friend ostream &operator<<(ostream &os, const CVector< CType > & A)
+    {
+      os << "Vector(" << A.mRows << ")" << endl;
+
+      unsigned C_INT32 i, j;
+      CType * tmp = A.mVector;
+
+      for (i = 0; i < A.mRows; i++)
+        cout << "  " << * (tmp++);
+      cout << endl;
+      return os;
+    }
   };
 
-template <class CType>
-std::ostream &operator<<(std::ostream &os, const CVector< CType > & A)
-{
-  os << "Vector(" << A.mRows << ")" << std::endl;
+/**
+ * This creates an instantiation of 
+ * the ostream operator << for CVector <C_FLOAT64>
+ */
+class CVectorDbl : public CVector <C_FLOAT64> {};
 
-  unsigned C_INT32 i;
-  CType * tmp = A.mVector;
-
-  for (i = 0; i < A.mRows; i++)
-    os << "  " << * (tmp++);
-  os << std::endl;
-  return os;
-}
+/**
+ * This creates an instantiation of 
+ * the ostream operator << for CVector <C_INT32>
+ */
+class CVectorInt : public CVector <C_INT32> {};
 
 #endif // COPASI_CVector

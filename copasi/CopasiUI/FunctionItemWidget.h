@@ -1,36 +1,26 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionItemWidget.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:50 $
-   End CVS Header */
-
-/********************************************************
-Author: Liang Xu
-Version : 1.xx  <first>
-Description: 
-Date: 09/29
-Comment : FunctionItemWidget for editing of the optimization function
-Contact: Please contact lixu1@vt.edu.
- *********************************************************/
+/****************************************************************************
+ ** Form interface generated from reading ui file '.\FunctionItemWidget.ui'
+ **
+ ** Created: Mon Sep 29 00:08:09 2003
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.h,v 1.1 2003/09/29 04:12:31 lixu1 Exp $)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 
 #ifndef FUNCTIONITEMWIDGET_H
 #define FUNCTIONITEMWIDGET_H
 
 #include <qvariant.h>
 #include <qdialog.h>
-#include <string>
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QTextEdit;
-class QButtonGroup;
-class QRadioButton;
 class QPushButton;
 class QFrame;
-class CCopasiObject;
+class QButtonGroup;
+class QRadioButton;
 
 class FunctionItemWidget : public QDialog
   {
@@ -41,45 +31,38 @@ class FunctionItemWidget : public QDialog
     ~FunctionItemWidget();
 
     QTextEdit* textFunction;
+    QPushButton* button7;
+    QPushButton* button0;
+    QPushButton* button1;
+    QPushButton* button6;
+    QPushButton* button3;
+    QPushButton* button8;
+    QPushButton* button2;
+    QPushButton* buttonItems;
+    QPushButton* button4;
+    QPushButton* buttonSign;
+    QPushButton* button5;
+    QPushButton* button9;
+    QPushButton* buttonRightB;
+    QPushButton* buttonDiv;
+    QPushButton* buttonCos;
+    QPushButton* buttonAdd;
+    QPushButton* buttonLog;
+    QPushButton* buttonLeftB;
+    QPushButton* buttonMul;
+    QPushButton* buttonExp;
+    QPushButton* buttonMin;
+    QPushButton* buttonLn;
+    QPushButton* buttonSin;
+    QPushButton* buttonPower;
+    QFrame* line1;
     QButtonGroup* radioGroup;
     QRadioButton* radioDec;
     QRadioButton* radioHex;
     QRadioButton* radioBin;
     QRadioButton* radioOct;
-    QPushButton* buttonAdd;
-    QPushButton* button5;
-    QPushButton* button9;
-    QPushButton* button1;
-    QPushButton* button6;
-    QPushButton* button3;
-    QPushButton* button8;
-    QPushButton* button0;
-    QPushButton* buttonLn;
-    QPushButton* buttonSin;
-    QPushButton* buttonDiv;
-    QPushButton* buttonMul;
-    QPushButton* buttonRightB;
-    QPushButton* buttonPower;
-    QPushButton* buttonLeftB;
-    QPushButton* buttonMin;
-    QPushButton* buttonExp;
-    QPushButton* button7;
-    QPushButton* buttonItems;
-    QPushButton* button2;
-    QPushButton* button4;
-    QPushButton* buttonLog;
-    QPushButton* buttonSign;
-    QPushButton* buttonCos;
-    QPushButton* buttonConfirm;
-    QPushButton* buttonCancel;
-    QFrame* line1;
-    QFrame* line1_3;
     QPushButton* buttonClear;
-
-    /*
-     external interface to initialize the output str point
-    */
-    void setStrFunction(std::string * targetFunctionPtr);
+    QFrame* line1_2;
 
   public slots:
     virtual void slotButtonClear();
@@ -88,7 +71,7 @@ class FunctionItemWidget : public QDialog
     virtual void slotButtonItems();
     virtual void slotButton2();
     virtual void slotButton3();
-    virtual void slotButtonConfirm();
+    virtual void slotButton0();
     virtual void slotButton5();
     virtual void slotButton7();
     virtual void slotButton8();
@@ -108,18 +91,10 @@ class FunctionItemWidget : public QDialog
     virtual void slotButtonRightB();
     virtual void slotButtonPower();
     virtual void slotButtonCos();
-    virtual void slotButton0();
-    virtual void slotButtonCancel();
 
   protected:
     QGridLayout* FunctionItemWidgetLayout;
     QGridLayout* radioGroupLayout;
-    QGridLayout* layout1;
-    std::string* strFunction;
-    /*
-     wrapper a object to object cn
-    */
-    void objectLinkWrapper(CCopasiObject * pObject);
 
   protected slots:
     virtual void languageChange();

@@ -33,8 +33,8 @@
 #include <algorithm>
 #include <iostream>
 
-#define INIT_CONTAINER(container, value)     {if ((container) != NULL) delete (container); (container) = (value);}
-#define DELETE_CONTAINER(container)          {if ((container) != NULL) delete (container);}
+#define INIT_CONTAINER(container, value)     {if ((container) != NULL) delete (container); (container) = (value); }
+#define DELETE_CONTAINER(container)          {if ((container) != NULL) delete (container); }
 
 #ifdef USES_NAMESPACE
 using namespace std;
@@ -556,9 +556,9 @@ namespace astyle
    * @return    are there any indented lines ready?
    */
   bool ASBeautifier::hasMoreLines() const
-  {
-    return sourceIterator->hasMoreLines();
-  }
+    {
+      return sourceIterator->hasMoreLines();
+    }
 
   /**
    * get the next indented line.
@@ -591,7 +591,7 @@ namespace astyle
     char prevCh;
     string outBuffer; // the newly idented line is bufferd here
     int tabCount = 0;
-    const string * lastLineHeader = NULL;
+    const string *lastLineHeader = NULL;
     bool closingBracketReached = false;
     int spaceTabCount = 0;
     char tempCh;
@@ -656,7 +656,7 @@ namespace astyle
               {
                 if (!isInDefineDefinition)
                   {
-                    ASBeautifier * defineBeautifier;
+                    ASBeautifier *defineBeautifier;
 
                     // this is the original beautifier
                     isInDefineDefinition = true;
@@ -702,7 +702,7 @@ namespace astyle
             else if (preproc.COMPARE(0, 5, string("endif")) == 0)
               {
                 int stackLength;
-                ASBeautifier * beautifier;
+                ASBeautifier *beautifier;
 
                 if (!waitingBeautifierStackLengthStack->empty())
                   {
@@ -742,7 +742,7 @@ namespace astyle
         if (!backslashEndsPrevLine && isInDefineDefinition && !isInDefine)
           {
             string beautifiedLine;
-            ASBeautifier * defineBeautifier;
+            ASBeautifier *defineBeautifier;
 
             isInDefineDefinition = false;
             defineBeautifier = activeBeautifierStack->back();
@@ -912,7 +912,7 @@ namespace astyle
         if (probationHeader != NULL)
           {
             if (((probationHeader == &AS_STATIC || probationHeader == &AS_CONST) && ch == '{')
-                || (probationHeader == &AS_SYNCHRONIZED && ch == '('))
+                 || (probationHeader == &AS_SYNCHRONIZED && ch == '('))
               {
                 // insert the probation header as a new header
                 isInHeader = true;
@@ -944,7 +944,7 @@ namespace astyle
 
         prevNonSpaceCh = currentNonSpaceCh;
         currentNonSpaceCh = ch;
-        if (!isLegalNameChar(ch) && ch != ',' && ch != ';')
+        if (!isLegalNameChar(ch) && ch != ',' && ch != '; ')
           {
             prevNonLegalCh = currentNonLegalCh;
             currentNonLegalCh = ch;
@@ -977,7 +977,7 @@ namespace astyle
                 if (--templateDepth <= 0)
                   {
                     if (isInTemplate)
-                      ch = ';';
+                      ch = '; ';
                     else
                       ch = 't';
                     isInTemplate = false;
@@ -1044,16 +1044,16 @@ namespace astyle
 
             // first, check if '{' is a block-opener or an static-array opener
             isBlockOpener = ((prevNonSpaceCh == '{' && bracketBlockStateStack->back())
-                             || prevNonSpaceCh == '}'
-                             || prevNonSpaceCh == ')'
-                             || prevNonSpaceCh == ';'
-                             || isInClassHeader
-                             || isBlockOpener
-                             || isImmediatelyAfterConst
-                             || (isInDefine &&
-                                 (prevNonSpaceCh == '('
-                                  || prevNonSpaceCh == '_'
-                                  || isalnum(prevNonSpaceCh))));
+                              || prevNonSpaceCh == '}'
+                              || prevNonSpaceCh == ')'
+                              || prevNonSpaceCh == '; '
+                              || isInClassHeader
+                              || isBlockOpener
+                              || isImmediatelyAfterConst
+                              || (isInDefine &&
+                                  (prevNonSpaceCh == '('
+                                   || prevNonSpaceCh == '_'
+                                   || isalnum(prevNonSpaceCh))));
 
             isInClassHeader = false;
             if (!isBlockOpener && currentHeader != NULL)
@@ -1109,7 +1109,7 @@ namespace astyle
         if (prevCh == ' ')
           {
             bool isIndentableHeader = true;
-            const string * newHeader = findHeader(line, i, headers);
+            const string *newHeader = findHeader(line, i, headers);
             if (newHeader != NULL)
               {
                 // if we reached here, then this is a header...
@@ -1340,11 +1340,11 @@ namespace astyle
               }
             else
               {
-                currentNonSpaceCh = ';'; // so that brackets after the ':' will appear as block-openers
+                currentNonSpaceCh = '; '; // so that brackets after the ':' will appear as block-openers
                 if (isInCase)
                   {
                     isInCase = false;
-                    ch = ';'; // from here on, treat char as ';'
+                    ch = '; '; // from here on, treat char as '; '
                   }
 
                 else // is in a label (e.g. 'label1:')
@@ -1357,12 +1357,12 @@ namespace astyle
               }
           }
 
-        if ((ch == ';' || (parenDepth > 0 && ch == ',')) && !inStatementIndentStackSizeStack->empty())
+        if ((ch == '; ' || (parenDepth > 0 && ch == ',')) && !inStatementIndentStackSizeStack->empty())
           while (inStatementIndentStackSizeStack->back() + (parenDepth > 0 ? 1 : 0) < inStatementIndentStack->size())
             inStatementIndentStack->pop_back();
 
         // handle ends of statements
-        if ((ch == ';' && parenDepth == 0) || ch == '}' /* || (ch == ',' && parenDepth == 0)*/)
+        if ((ch == '; ' && parenDepth == 0) || ch == '}' /* || (ch == ',' && parenDepth == 0)*/)
           {
             if (ch == '}')
               {
@@ -1419,7 +1419,7 @@ namespace astyle
                 int headerPlace = indexOf(*headerStack, &AS_OPEN_BRACKET); // <---
                 if (headerPlace != -1)
                   {
-                    const string * popped = headerStack->back();
+                    const string *popped = headerStack->back();
                     while (popped != &AS_OPEN_BRACKET)
                       {
                         headerStack->pop_back();
@@ -1456,7 +1456,7 @@ namespace astyle
                 headerStack->pop_back();
               }
 
-            if (parenDepth == 0 && ch == ';')
+            if (parenDepth == 0 && ch == '; ')
               isInStatement = false;
 
             isInClassHeader = false;
@@ -1468,7 +1468,7 @@ namespace astyle
         // (otherwise 'struct XXX' statements would be wrongly interpreted...)
         if (prevCh == ' ' && !isInTemplate && parenDepth == 0)
           {
-            const string * newHeader = findHeader(line, i, preBlockStatements);
+            const string *newHeader = findHeader(line, i, preBlockStatements);
             if (newHeader != NULL)
               {
                 isInClassHeader = true;
@@ -1487,8 +1487,8 @@ namespace astyle
         ////        // The precheck is important, so that statements such as 'i--==2' are not recognized
         ////        // to have assignment operators (here, '-=') in them . . .
 
-        const string * foundAssignmentOp = NULL;
-        const string * foundNonAssignmentOp = NULL;
+        const string *foundAssignmentOp = NULL;
+        const string *foundNonAssignmentOp = NULL;
 
         immediatelyPreviousAssignmentOp = NULL;
 
@@ -1766,10 +1766,10 @@ namespace astyle
    * @param ch        the character to be checked.
    */
   bool ASBeautifier::isLegalNameChar(char ch) const
-  {
-    return (isalnum(ch) //(ch>='a' && ch<='z') || (ch>='A' && ch<='Z') || (ch>='0' && ch<='9') ||
-            || ch == '.' || ch == '_' || (!isCStyle && ch == '$') || (isCStyle && ch == '~'));
-  }
+    {
+      return (isalnum(ch) //(ch>='a' && ch<='z') || (ch>='A' && ch<='Z') || (ch>='0' && ch<='9') ||
+              || ch == '.' || ch == '_' || (!isCStyle && ch == '$') || (isCStyle && ch == '~'));
+    }
 
   /**
    * check if a specific line position contains a header, out of several possible headers.
@@ -1779,7 +1779,7 @@ namespace astyle
   const string *ASBeautifier::findHeader(const string &line, int i, const vector<const string*> &possibleHeaders, bool checkBoundry)
   {
     int maxHeaders = possibleHeaders.size();
-    const string * header = NULL;
+    const string *header = NULL;
     int p;
 
     for (p = 0; p < maxHeaders; p++)
@@ -1839,9 +1839,9 @@ namespace astyle
    * @param ch        the character to be checked.
    */
   bool ASBeautifier::isWhiteSpace(char ch) const
-  {
-    return (ch == ' ' || ch == '\t');
-  }
+    {
+      return (ch == ' ' || ch == '\t');
+    }
 
   /**
    * find the index number of a string element in a container of strings

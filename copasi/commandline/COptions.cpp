@@ -1,14 +1,4 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/02/20 16:23:36 $
-   End CVS Header */
-
 #define COPASI_TRACE_CONSTRUCTION
-
-#include "copasi.h"
 
 #ifdef WIN32
 # include <windows.h>
@@ -24,19 +14,28 @@
 #include <sstream>
 #include <errno.h>
 
+#include "copasi.h"
+
 #include "utilities/CCopasiMessage.h"
 #include "COptionParser.h"
 #include "COptions.h"
 
-COptions::optionType COptions::mOptions;
-COptions::defaultType COptions::mDefaults;
-COptions::nonOptionType COptions::mNonOptions;
+map< std::string, COptions::COptionValue * > COptions::mOptions;
 
 COptions::COptions()
 {CONSTRUCTOR_TRACE;}
 
 COptions::~COptions()
-{DESTRUCTOR_TRACE;}
+{
+  std::map< std::string, COptionValue * >::iterator begin;
+  std::map< std::string, COptionValue * >::const_iterator end;
+
+  for (begin = mOptions.begin(), end = mOptions.end();
+       begin != end; begin++)
+    pdelete(begin->second);
+
+  DESTRUCTOR_TRACE;
+}
 
 void COptions::init(C_INT argc, char *argv[])
 {
@@ -71,46 +70,11 @@ void COptions::init(C_INT argc, char *argv[])
 
   /* Parse the system wide configuration file */
   std::string ConfigFile(CopasiDir + "/etc/copasi.conf");
-  try
-    {
-      Parser->parse(ConfigFile.c_str());
-    }
-
-  catch (copasi::option_error &e)
-    {
-      if (errno != ENOENT) throw(e);
-
-#ifdef XXXX
-      /* This is currently not needed since a system wide configuration
-         is not supported */
-      std::ostringstream error;
-      error << std::endl
-      << "file '" << ConfigFile << "' does not exist." << std::endl
-      << "  use -c COPASIDIR or --copasidir COPASIDIR" << std::endl
-      << "  or set the environment variable COPASIDIR" << std::endl
-      << "  to point to the Copasi installation directory" << std::endl;
-
-      throw copasi::option_error(error.str());
-#endif // XXXX
-    }
+  Parser->parse(ConfigFile.c_str());
 
   /* Parse the user's configuration file */
-  ConfigFile = Home + "/.copasirc";
-  try
-    {
-      Parser->parse(ConfigFile.c_str());
-    }
-
-  catch (copasi::option_error &e)
-    {
-      if (errno != ENOENT) throw(e);
-
-#ifdef XXXX
-      /* Make sure that the user's configuration file exists in the future */
-      /* :TODO: we should create a template that will be copied */
-      std::ofstream f(ConfigFile.c_str());
-#endif // XXXX
-    }
+  ConfigFile = Home + ".copasirc";
+  Parser->parse(ConfigFile.c_str());
 
   /* Parse the commandline specified file */
   if (!compareValue("ConfigFile", (std::string) ""))
@@ -122,41 +86,11 @@ void COptions::init(C_INT argc, char *argv[])
   /* Parse the commandline arguments */
   Parser->parse(argc, argv);
 
-  mNonOptions = Parser->get_non_options();
-
   const copasi::options &Options = Parser->get_options();
-  mDefaults = Options.Default;
 
-  /* Create manually for each option except for:
-     CopasiDir, ConfigFile, Home, and Default
+  /* Create manually for each option except CopasiDir and ConfigFile:
      setValue("OptionId", Options.OptionID); */
-  setValue("SystemFunctionDB", Options.SystemFunctionDB);
-  setValue("UserFunctionDB", Options.UserFunctionDB);
-  setValue("CopasiFile", Options.CopasiFile);
-  setValue("Save", Options.Save);
-  setValue("ImportSBML", Options.ImportSBML);
-  setValue("ExportSBML", Options.ExportSBML);
-
-  delete Parser;
 }
-
-void COptions::cleanup()
-{
-  optionType::iterator begin = mOptions.begin();
-  optionType::iterator end = mOptions.end();
-
-  for (; begin != end; begin++) pdelete(begin->second);
-}
-
-std::string COptions::getDefault(const std::string & name)
-{
-  defaultType::iterator found = mDefaults.find(name);
-
-  if (found == mDefaults.end()) return "<unset>";
-  else return found->second;
-}
-
-const COptions::nonOptionType & COptions::getNonOptions() {return mNonOptions;}
 
 std::string COptions::getEnvironmentVariable(const std::string & name)
 {
@@ -169,42 +103,25 @@ std::string COptions::getEnvironmentVariable(const std::string & name)
 std::string COptions::getCopasiDir(void)
 {
   std::string CopasiDir;
-
-  CopasiDir = getEnvironmentVariable("COPASIDIR");
-
 #ifdef WIN32
-  if (CopasiDir == "")
-    {
-      size_t PrgNameSize = 256;
-      size_t Returned;
-      char * PrgName = new char[PrgNameSize];
+  size_t PrgNameSize = 1024
+                       char * PrgName = new char[PrgNameSize];
+  if (!GetModuleFileName(NULL, PrgName, PrgNameSize)) fatalError();
 
-      while (!(Returned = GetModuleFileName(NULL, PrgName, PrgNameSize)) ||
-             PrgNameSize == Returned)
-        {
-          if (GetLastError() != ERROR_ALREADY_EXISTS)
-            {
-              *PrgName = '\0';
-              break;
-            }
+  CopasiDir = PrgName;
+  delete [] PrgName;
 
-          delete [] PrgName;
-          PrgNameSize *= 2;
-          PrgName = new char[PrgNameSize];
-        }
+  /* Get rid of the executable */
+  CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
 
-      CopasiDir = PrgName;
-      delete [] PrgName;
+  /* Get rid of bin or sbin */
+  CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
 
-      /* Get rid of the executable */
-      CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
-
-      /* Get rid of bin or sbin */
-      CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
-    }
+  setValue("CopasiDir", CopasiDir);
+#else
+  CopasiDir = getEnvironmentVariable("COPASIDIR");
 #endif // WIN32
 
-#ifdef XXXX
   if (CopasiDir == "")
     {
       std::ostringstream error;
@@ -215,14 +132,12 @@ std::string COptions::getCopasiDir(void)
 
       throw copasi::option_error(error.str());
     }
-#endif // XXXX
-
   return CopasiDir;
 }
 
 std::string COptions::getPWD(void)
 {
-  size_t PWDSize = 256;
+  size_t PWDSize = 64;
   char * PWD = NULL;
 
   while (!(PWD = getcwd(NULL, PWDSize)))
@@ -231,34 +146,18 @@ std::string COptions::getPWD(void)
       PWDSize *= 2;
     }
 
-  std::string pwd;
   if (PWD)
-    {
-      pwd = PWD;
-      free(PWD);
-    }
+    return (std::string) PWD;
   else
-    pwd = "";
-
-  return pwd;
+    return "";
 }
 
 std::string COptions::getHome(void)
 {
   std::string Home;
-
-  Home = getEnvironmentVariable("HOME");
-
 #ifdef WIN32
-  if (Home == "")
-    {
-      Home = getEnvironmentVariable("APPDATA");
-      if (Home != "")
-        {
-          Home += "\\copasi";
-          CreateDirectory(Home.c_str(), NULL);
-        }
-    }
+#else
+  Home = getEnvironmentVariable("HOME");
 #endif // WIN32
 
   if (Home == "")
@@ -271,6 +170,5 @@ std::string COptions::getHome(void)
 
       throw copasi::option_error(error.str());
     }
-
   return Home;
 }

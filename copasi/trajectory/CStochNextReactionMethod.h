@@ -1,22 +1,10 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochNextReactionMethod.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:34:05 $
-   End CVS Header */
-
 #ifndef COPASI_CStochNextReactionMethod
 #define COPASI_CStochNextReactionMethod
 
 #include "CStochMethod.h"
-#include "utilities/CIndexedPriorityQueue.h"
 
 class CStochNextReactionMethod: public CStochMethod
   {
-    friend CStochMethod *
-    CStochMethod::createStochMethod(CTrajectoryProblem * pProblem);
-
   private:
     // Private attributes
 
@@ -41,7 +29,7 @@ class CStochNextReactionMethod: public CStochMethod
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */
-    C_FLOAT64 doSingleStep(C_FLOAT64 time, C_FLOAT64 endTime);
+    C_FLOAT64 doSingleStep(C_FLOAT64 time);
 
     /**
      * print internal information (for debugging)

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.h,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:14 $
-   End CVS Header */
-
 /**
  *  CFluxScore class.
  *  Used to compare flux modes
@@ -18,44 +10,40 @@
 #define COPASI_CFluxScore
 
 #include <vector>
-
 class CFluxScore
-  {
-    // Attributes
+{
+  // Attributes  
+ private:    
+  /**
+   *  The score of a flux mode
+   */
+  vector <int> mScore;
 
-  private:
-    /**
-     *  The score of a flux mode
-     */
-    std::vector <int> mScore;
+  // Operations
+ public:    
+  /**
+   *  Default constructor
+   */
+  CFluxScore();
+  
+  /**
+   *  Specific constructor
+   *  @param "const vector < C_FLOAT64 > &" fluxModes
+   */
+  CFluxScore(const vector < C_FLOAT64 > & fluxModes);
+  
+  /**
+   *  Destructor();
+   */
+  ~CFluxScore();
 
-    // Operations
-
-  public:
-    /**
-     *  Default constructor
-     */
-    CFluxScore();
-
-    /**
-     *  Specific constructor
-     *  @param "const vector < C_FLOAT64 > &" fluxModes
-     */
-    CFluxScore(const std::vector < C_FLOAT64 > & fluxModes);
-
-    /**
-     *  Destructor();
-     */
-    ~CFluxScore();
-
-    /**
-     *  Comparison operator deciding whether lhs has a smaller flux score than
-     *  rhs
-     *  @param "const CFluxScore &" lhs
-     *  @param "const CFluxScore &" rhs
-     *  @return "bool" 
-     */
-    bool operator < (const CFluxScore & rhs) const;
-  };
-
+  /**
+   *  Comparison operator deciding whether lhs has a smaller flux score than
+   *  rhs
+   *  @param "const CFluxScore &" lhs
+   *  @param "const CFluxScore &" rhs
+   *  @return "bool" 
+   */
+  bool operator < (const CFluxScore & rhs) const;
+};
 #endif // COPASI_CFluxScore

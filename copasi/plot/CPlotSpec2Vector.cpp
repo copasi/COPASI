@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.1 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 12:19:19 $
+   $Date: 2004/08/05 12:54:11 $
    End CVS Header */
 
 #include "copasi.h"
@@ -91,8 +91,6 @@ bool CPlotSpec2Vector::initPlottingFromObjects()
 
   inputFlag = FROM_OBJECTS;
 
-  mTime.init();
-
   return compile(); //create mObjects
 }
 
@@ -120,30 +118,22 @@ bool CPlotSpec2Vector::updateAllPlots()
 
 bool CPlotSpec2Vector::initAllPlots()
 {
-  windows.resize(0);
-
   //step through the vector of specifications and create the plot windows
-  std::string key;
+  PlotWindow* pTemp;
   const_iterator it;
-  for (it = begin(); it != end(); ++it)
+  std::vector<PlotWindow*>::iterator winit;
+  windows.resize(size());
+  for (it = begin(), winit = windows.begin(); it != end(); ++it, ++winit)
     {
-      if ((*it)->isActive())
+      if (*winit)
+      {(*winit)->initFromSpec(this, *it);}
+      else
         {
-          key = (*it)->CCopasiParameter::getKey();
-          std::cout << key << std::endl;
-
-          if (windowMap[key] == NULL)
-            {
-              windowMap[key] = new PlotWindow(this, *it);
-            }
-          else
-            {
-              windowMap[key]->initFromSpec(this, *it);
-            }
-          windowMap[key]->show();
-
-          windows.push_back(windowMap[key]);
+          pTemp = new PlotWindow(this, *it);
+          *winit = pTemp;
+          //pTemp->resize(600, 360);
         }
+      (*winit)->show();
     }
   return true;
 }
@@ -171,11 +161,7 @@ bool CPlotSpec2Vector::doPlotting()
       return false;
     }
 
-  if (mTime.getTimeDiff() > 200)
-    {
-      updateAllPlots();
-      mTime.init();
-    }
+  //updateAllPlots();
 
   return success;
 }
@@ -201,6 +187,8 @@ C_INT32 CPlotSpec2Vector::getIndexFromCN(const CCopasiObjectName & name)
 
 bool CPlotSpec2Vector::compile()
 {
+  bool success = true;
+
   mObjects.clear();
 
   CCopasiObject* pSelected;

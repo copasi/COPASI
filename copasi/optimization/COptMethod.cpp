@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:52 $
-   End CVS Header */
-
 /**
  *  COptMethod class
  *  This class describes the interface to all optimization methods.
@@ -23,61 +15,46 @@
 const std::string COptMethod::TypeName[] =
   {
     "RandomSearch",
-    "RandomSearchMaster",
-    "SimulatedAnnealing"
+    "RandomSearchMaster"
   };
 
-COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
+COptMethod * COptMethod::createMethod(COptMethod::Type type)
 {
-  COptMethod * pMethod = NULL;
-  switch (subType)
+  COptMethod * Method = NULL;
+  switch (type)
     {
     case RandomSearch:
-      pMethod = new CRandomSearch();
+      Method = new CRandomSearch();
       break;
 
     case RandomSearchMaster:
-      pMethod = new CRandomSearchMaster();
-      break;
-
-    case SimulatedAnnealing:
-      pMethod = new COptMethodSA();
+      Method = new CRandomSearchMaster();
       break;
 
     default:
       fatalError();
     }
-
-  return pMethod;
+  return Method;
 }
 
 // Default constructor
-COptMethod::COptMethod():
-    CCopasiMethod(CCopasiTask::optimization, CCopasiMethod::unset),
+COptMethod::COptMethod(const bool & bounds):
+    CMethodParameterList(),
+    mTypeEnum(COptMethod::RandomSearch),
     mOptProblem(NULL),
-    //    mParameters(NULL),
-    //    mParameterMin(NULL),
-    //    mParameterMax(NULL),
-    mBounds(false)
+    mParameters(NULL),
+    mParameterMin(NULL),
+    mParameterMax(NULL),
+    mBounds(bounds)
 {CONSTRUCTOR_TRACE;}
 
-COptMethod::COptMethod(CCopasiMethod::SubType subType,
-                       const CCopasiContainer * pParent):
-    CCopasiMethod(CCopasiTask::optimization, subType, pParent),
-    mOptProblem(NULL),
-    //    mParameters(NULL),
-    //    mParameterMin(NULL),
-    //    mParameterMax(NULL),
-    mBounds(false)
-{CONSTRUCTOR_TRACE;}
-
-COptMethod::COptMethod(const COptMethod & src,
-                       const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
+COptMethod::COptMethod(const COptMethod & src):
+    CMethodParameterList(src),
+    mTypeEnum(src.mTypeEnum),
     mOptProblem(src.mOptProblem),
-    //    mParameters(src.mParameters),
-    //    mParameterMin(src.mParameterMin),
-    //    mParameterMax(src.mParameterMax),
+    mParameters(src.mParameters),
+    mParameterMin(src.mParameterMin),
+    mParameterMax(src.mParameterMax),
     mBounds(src.mBounds)
 {CONSTRUCTOR_TRACE;}
 
@@ -88,7 +65,11 @@ COptMethod::~COptMethod()
 void COptMethod::setProblem(COptProblem * problem)
 {
   assert(problem);
+
   mOptProblem = problem;
+  mParameters = & mOptProblem->getParameter();
+  mParameterMin = & mOptProblem->getParameterMin();
+  mParameterMax = & mOptProblem->getParameterMax();
 }
 
 // Returns True if this method is capable of handling adjustable parameter boundary

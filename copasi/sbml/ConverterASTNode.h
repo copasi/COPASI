@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.1 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/16 13:29:59 $
+   $Date: 2004/06/11 08:43:27 $
    End CVS Header */
 
 #ifndef ConverterASTNode_HPP__
@@ -14,10 +14,6 @@
 class ConverterASTNode : public ASTNode
   {
   public:
-    /**
-     * Standard constructor.
-     */
-    ConverterASTNode();
 
     /**
      * Sets the list of children to the one given as argument. The list is not

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/19 20:58:58 $
-   End CVS Header */
-
 /**
  *   CHybridMethod
  *
@@ -24,16 +16,12 @@
 #define COPASI_CHybridMethod
 
 /* INCLUDES ******************************************************************/
+#include "copasi.h"
 #include "CTrajectoryMethod.h"
 #include <set>
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "utilities/CVersion.h"
-#include "utilities/CMatrix.h"
-#include "utilities/CDependencyGraph.h"
-#include "utilities/CIndexedPriorityQueue.h"
-#include "utilities/CCopasiVector.h"
 
 /* DEFINE ********************************************************************/
 #define MAX_STEPS              1000
@@ -69,7 +57,20 @@ class StochFlag
     StochFlag * next;
 
     // insert operator
-    friend std::ostream & operator<<(std::ostream & os, const StochFlag & d);
+    friend ostream & operator<<(ostream &os, const StochFlag & d)
+    {
+      os << "StochFlag " << endl;
+      os << "  index: " << d.index << " value: " << d.value << endl;
+      if (d.prev != NULL)
+        os << "  prevIndex: " << d.prev->index << " prevPointer: " << d.prev << endl;
+      else
+        os << "  prevPointer: NULL" << endl;
+      if (d.next != NULL)
+        os << "  nextIndex: " << d.next->index << " nextPointer: " << d.next << endl;
+      else
+        os << "  nextPointer: NULL" << endl;
+      return os;
+    }
   };
 
 /**
@@ -84,14 +85,18 @@ class Balance
     CMetab * metabolitePointer;
 
     // insert operator
-    friend std::ostream & operator<<(std::ostream & os, const Balance & d);
+    friend ostream & operator<<(ostream &os, const Balance & d)
+    {
+      os << "Balance" << endl;
+      os << "  index: " << d.index << " balance: " << d.balance << " metabPointer: " << d.metabolitePointer << endl;
+      return os;
+    }
   };
 
-class CHybridMethod : public CTrajectoryMethod
+class CHybridMethod : private CTrajectoryMethod
   {
     friend CTrajectoryMethod *
-    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-        CTrajectoryProblem * pProblem);
+    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type, CTrajectoryProblem * pProblem);
 
     /* PUBLIC METHODS **********************************************************/
 
@@ -140,14 +145,14 @@ class CHybridMethod : public CTrajectoryMethod
 
   protected:
     /**
-     * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
+     *   Default constructor.
      */
-    CHybridMethod(const CCopasiContainer * pParent = NULL);
+    CHybridMethod();
 
     /**
-     * Initializes the solver.
-     * @param time the current time
+     *   Initializes the solver.
+     *
+     *   @param time the current time
      */
     void initMethod(C_FLOAT64 time);
 
@@ -424,7 +429,7 @@ class CHybridMethod : public CTrajectoryMethod
      *   @param rIndex The index of the reaction being executed.
      *   @return The set of metabolites depended on.
      */
-    std::set <std::string> *getDependsOn(C_INT32 rIndex);
+    std::set <const CMetab *> *getDependsOn(C_INT32 rIndex);
 
     /**
      *   Gets the set of metabolites which change number when a given
@@ -433,7 +438,7 @@ class CHybridMethod : public CTrajectoryMethod
      *   @param rIndex The index of the reaction being executed.
      *   @return The set of affected metabolites.
      */
-    std::set <std::string> *getAffects(C_INT32 rIndex);
+    std::set <const CMetab *> *getAffects(C_INT32 rIndex);
 
     /**
      *   Gets the set of metabolites, which participate in the given
@@ -447,12 +452,12 @@ class CHybridMethod : public CTrajectoryMethod
     /**
      *   Prints out data on standard output.
      */
-    void outputData(std::ostream & os, C_INT32 mode);
+    void outputData(ostream & os, C_INT32 mode);
 
     /**
      *   Prints out various data on standard output for debugging purposes.
      */
-    void outputDebug(std::ostream & os, C_INT32 level);
+    void outputDebug(ostream & os, C_INT32 level);
 
     /* PRIVATE METHODS *********************************************************/
 
@@ -506,7 +511,7 @@ class CHybridMethod : public CTrajectoryMethod
     /**
      *   A pointer to the metabolites of the model.
      */
-    CCopasiVector <CMetab> * mMetabolites;
+    CCopasiVectorN <CMetab> * mMetabolites;
 
     /**
      *   The stoichometry matrix of the model.
@@ -613,7 +618,7 @@ class CHybridMethod : public CTrajectoryMethod
     /**
      *   File output stream to write data.
      */
-    std::ofstream mOutputFile;
+    ofstream mOutputFile;
 
     /**
      *   Output filename.

@@ -1,20 +1,16 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2003/07/02 14:28:30 $  
+# $Revision: 1.1 $ $Author: shoops $ $Date: 2003/05/19 00:39:55 $  
 ######################################################################
 
 LIB = xml
 include(../lib.pri)
 
-TARGET = copasiXML
 
 # Input
 HEADERS += CCopasiXML.h \
            CCopasiXMLInterface.h \
-           CExpat.h \
-           CXMLHandler.h  \
-           CCopasiXMLParser.h
+           CExpat.h
 
 SOURCES += CCopasiXML.cpp \
            CCopasiXMLInterface.cpp \
-           CExpat.cpp \
-           CCopasiXMLParser.cpp
+           CExpat.cpp

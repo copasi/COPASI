@@ -1,82 +1,30 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/24 08:20:24 $
-   End CVS Header */
-
-/****************************************************************************
- **  $ CopasiUI/CompartmentsWidget.h               
- **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Compartments Widget, i.e the First level 
- ** of Compartments.
- *****************************************************************************/
-
 #ifndef METABOLITES_WIDGET_H
 #define METABOLITES_WIDGET_H
 
-#include <qtable.h>
+
+#include "MyTable.h"
 #include "copasi.h"
-#include "CopasiTableWidget.h"
+#include "model/model.h"
 
-class MetabolitesWidget : public CopasiTableWidget
-  {
-    Q_OBJECT
 
-  public:
-    MetabolitesWidget(QWidget *parent, const char * name = 0, WFlags f = 0)
-        : CopasiTableWidget(parent, false, name, f)
-    {init();}
+class CModel;
+class MetabolitesWidget : public QWidget
+{
+		Q_OBJECT
+protected:
+	MyTable *table;
+	CModel *mModel;
+	
 
-  protected slots:
-    virtual void slotBtnToggleClicked();
-
-  protected:
-    bool mFlagConc;
-    QPushButton* btnToggle;
-
-    /**
-     * This initializes the widget 
-     */
-    virtual void init();
-
-    /**
-     * returns a list of objects that should be displayed
-     */
-    virtual std::vector<const CCopasiObject*> getObjects() const;
-
-    /**
-     * fills one table row with the data from one object
-     */
-    virtual void tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row);
-
-    /**
-     * reads the contents of one row of the table and writes it to the object
-     */
-    virtual void tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj);
-
-    /**
-     * creates a new object
-     */
-    virtual CCopasiObject* createNewObject(const std::string & name);
-
-    /**
-     * deletes objects. Performs all additional tasks, like asking the user, ...
-     */
-    virtual void deleteObjects(const std::vector<std::string> & keys);
-
-    /**
-     * this is used to fill a row of the table when a new object is added to the table.
-     * it fills only the data columns, not the name. It should not fill column exc.
-     */
-    virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc);
-
-    /**
-     * the prefix that is used to construct new object names
-     */
-    virtual QString defaultObjectName() const;
-  };
+public:
+	MetabolitesWidget(QWidget *parent, const char * name=0, WFlags f=0);
+	void loadMetabolites(CModel *model);
+	void setFocus();
+	void resizeEvent( QResizeEvent * re);
+	
+protected slots:
+    virtual void slotTableClicked( int row, int col, int button, const QPoint & mousePos );
+	virtual void slotTableSelectionChanged();
+};
 
 #endif

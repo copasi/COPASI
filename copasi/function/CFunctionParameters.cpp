@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.29 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:48 $
-   End CVS Header */
-
 /**
  * CFunctionParameters
  * 
@@ -16,23 +8,17 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFunctionParameters.h"
-#include "utilities/CCopasiException.h"
 
-CFunctionParameters::CFunctionParameters(const std::string & name,
-    const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Variable Description"),
-    mParameters("Variables", this),
-    mUsageRanges("Usage Ranges", this)
-{CONSTRUCTOR_TRACE;}
+CFunctionParameters::CFunctionParameters() {CONSTRUCTOR_TRACE;}
 
-CFunctionParameters::CFunctionParameters(const CFunctionParameters & src,
-    const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mParameters(src.mParameters, this),
-    mUsageRanges(src.mUsageRanges, this)
-{CONSTRUCTOR_TRACE;}
+CFunctionParameters::CFunctionParameters(const CFunctionParameters & src)
+{
+  CONSTRUCTOR_TRACE;
+  mParameters = CCopasiVectorNS < CFunctionParameter >(src.mParameters);
+  mUsageRanges = CCopasiVectorNS < CUsageRange  >(src.mUsageRanges);
+}
 
-CFunctionParameters::~CFunctionParameters() {DESTRUCTOR_TRACE;}
+CFunctionParameters::~CFunctionParameters(){DESTRUCTOR_TRACE;}
 
 void CFunctionParameters::cleanup()
 {
@@ -44,7 +30,7 @@ void CFunctionParameters::load(CReadConfig & configBuffer,
                                CReadConfig::Mode mode)
 {
   unsigned C_INT32 Size;
-
+  
   configBuffer.getVariable("ParameterSize", "C_INT32", &Size, mode);
   mParameters.load(configBuffer, Size);
 
@@ -52,177 +38,136 @@ void CFunctionParameters::load(CReadConfig & configBuffer,
   mUsageRanges.load(configBuffer, Size);
 }
 
-/*void CFunctionParameters::save(CWriteConfig & configBuffer)
+void CFunctionParameters::save(CWriteConfig & configBuffer)
 {
   unsigned C_INT32 Size = mParameters.size();
   configBuffer.setVariable("ParameterSize", "C_INT32", &Size);
   mParameters.save(configBuffer);
- 
+  
   Size = mUsageRanges.size();
   configBuffer.setVariable("UsageParameterSize", "C_INT32", &Size);
   mUsageRanges.save(configBuffer);
-}*/
+}
 
 void CFunctionParameters::add(const CFunctionParameter & parameter)
 {
   mParameters.add(parameter);
   updateUsageRanges();
 }
-
-void CFunctionParameters::add(CFunctionParameter * parameter,
-                              const bool & adopt)
+  
+void CFunctionParameters::add(CFunctionParameter * parameter)
 {
-  mParameters.add(parameter, adopt);
+  mParameters.add(parameter);
   updateUsageRanges();
 }
-
-bool CFunctionParameters::add(const std::string & name,
-                              const CFunctionParameter::DataType & type,
-                              const std::string & usage)
+  
+void 
+CFunctionParameters::add(const string & name,
+                             const CFunctionParameter::DataType & type,
+                             const string & usage)
 {
-  if (mParameters.getIndex(name) != C_INVALID_INDEX) return false;
-
-  CFunctionParameter *parameter
-  = new CFunctionParameter(name, type, usage);
-  mParameters.add(parameter, true);
+  CFunctionParameter *parameter 
+    = new CFunctionParameter(name, type, usage);
+  mParameters.add(parameter);
   updateUsageRanges();
-  return true;
 }
-
-void CFunctionParameters::remove(const std::string & name)
+  
+void CFunctionParameters::remove(const string & name)
 {
   mParameters.remove(name);
   updateUsageRanges();
 }
 
-CFunctionParameter * CFunctionParameters::operator[](unsigned C_INT32 index)
+CFunctionParameter * & CFunctionParameters::operator[](unsigned C_INT32 index) 
+{return  mParameters[index];}
+
+/*
+const CFunctionParameter * & 
+CFunctionParameters::operator[](unsigned C_INT32 index) const
 {return mParameters[index];}
+*/
 
-const CFunctionParameter * CFunctionParameters::operator[](unsigned C_INT32 index) const
-  {return mParameters[index];}
-
-CFunctionParameter * CFunctionParameters::operator[](const std::string &name)
-{return mParameters[name];}
-
-const CFunctionParameter * CFunctionParameters::operator[](const std::string &name) const
-  {return mParameters[name];}
+CFunctionParameter * CFunctionParameters::operator[](const string &name) 
+{return mParameters[name];}   
 
 unsigned C_INT32 CFunctionParameters::size() const {return mParameters.size();}
 
-const CCopasiVectorNS < CUsageRange > & CFunctionParameters::getUsageRanges() const
-  {return mUsageRanges;}
+CCopasiVectorNS < CUsageRange  > & CFunctionParameters::getUsageRanges()
+{return mUsageRanges;} 
 
-const CFunctionParameter &
-CFunctionParameters::getParameterByUsage(const std::string & usage,
-    unsigned C_INT32 & pos) const
-  {
-    unsigned C_INT32 i, imax = mParameters.size();
-
-    for (i = pos; i < imax; i++)
-      if (mParameters[i]->getUsage() == usage)
-        {
-          pos = i + 1;
-          return *mParameters[i];
-        }
-
-    CCopasiMessage(CCopasiMessage::ERROR,
-                   MCFunctionParameters + 2,
-                   usage.c_str(), pos);
-    // This line is never reached!
-    return *mParameters[i];
-  }
-
-unsigned C_INT32 CFunctionParameters::getNumberOfParametersByUsage(const std::string & usage) const
-  {
-    unsigned C_INT32 i, imax = mParameters.size();
-    unsigned C_INT32 count = 0;
-
-    for (i = 0; i < imax; i++)
-      if (mParameters[i]->getUsage() == usage) ++count;
-
-    return count;
-  }
-
-unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & name,
-    CFunctionParameter::DataType & dataType) const
-  {
-    std::string VectorName = name.substr(0, name.find_last_of('_'));
-    std::string Name;
-    unsigned C_INT32 i, imax = mParameters.size();
-
-    for (i = 0; i < imax; i++)
+CFunctionParameter & 
+CFunctionParameters::getParameterByUsage(const string & usage,
+                                         unsigned C_INT32 & pos)
+{
+  unsigned C_INT32 i, imax = mParameters.size();
+  
+  for (i=pos; i<imax; i++, pos)
+    if (mParameters[i]->getUsage() == usage) 
       {
-        Name = mParameters[i]->getObjectName();
-
-        if (Name == name || Name == VectorName)
-          {
-            dataType = mParameters[i]->getType();
-            return i;
-          }
+        pos = i + 1;
+        return *mParameters[i];
       }
-
-    return C_INVALID_INDEX;
-  }
+  
+  CCopasiMessage(CCopasiMessage::ERROR,
+                 MCFunctionParameters + 2,
+                 usage.c_str(), pos);
+  // This line is never reached!
+  return *mParameters[i];
+}
 
 void CFunctionParameters::updateUsageRanges()
 {
   unsigned C_INT32 i, imax = mParameters.size();
-  unsigned C_INT32 index;
-
+  
   CUsageRange * pUsageRange = NULL;
-
-  const std::string * Usage;
-  const CFunctionParameter::DataType * Type;
+  CUsageRange UsageRange;
+  
+  string Usage;
+  CFunctionParameter::DataType Type;
 
   mUsageRanges.cleanup();
-
-  for (i = 0; i < imax; i++)
+  for (i=0; i<imax; i++)
     {
-      Usage = &mParameters[i]->getUsage();
-      Type = &mParameters[i]->getType();
+      Usage = mParameters[i]->getUsage();
+      Type = mParameters[i]->getType();
 
-      if ((index = mUsageRanges.getIndex(*Usage)) == C_INVALID_INDEX)
+      try
         {
-          pUsageRange = new CUsageRange(*Usage);
-          mUsageRanges.add(pUsageRange, true);
-
-          if (*Type < CFunctionParameter::VINT32)
-            {
-              /* Non vectors are assumed to have a fixed number
-                 of elements */
-              pUsageRange->setRange(1, CRange::NoRange);
-            }
-          else
-            {
-              /* Vectors are assumed to have at least one element */
-              pUsageRange->setRange(1, CRange::Infinity);
-            }
+          pUsageRange = mUsageRanges[Usage];
         }
-      else
+
+      catch (CCopasiException Exception)
         {
-          pUsageRange = mUsageRanges[index];
+          /* Usage not found */
+          if ((MCCopasiVector + 1) == Exception.getMessage().getNumber())
+            {
+              if (Type < CFunctionParameter::VINT16)
+                {
+                  /* Non vectors are assumed to have a fixed number
+                     of elements */
+                  UsageRange.setRange(1, CRange::NoRange);
+                  UsageRange.setUsage(Usage);
+                  mUsageRanges.add(UsageRange);
+                }
+              else
+                {
+                  /* Vectors are assumed to have an arbitrary 
+                     number of elements */
+                  UsageRange.setRange(0, CRange::Infinity);
+                  UsageRange.setUsage(Usage);
+                  mUsageRanges.add(UsageRange);
+                }
+              pUsageRange = NULL;
+            }
+          else throw Exception;
+        }
 
-          if ((CFunctionParameter::VINT32 <= *Type) ||
-              (pUsageRange->getHigh() == (unsigned C_INT32) CRange::Infinity))
+      if (pUsageRange)
+        {
+          if (CFunctionParameter::VINT16 <= Type) 
             CCopasiMessage(CCopasiMessage::ERROR, MCFunctionParameters + 1,
-                           Usage->c_str(), Type);
-          // this means a vector parameter must be the only parameter with the respective usage
-
+                           Usage.c_str(), Type);
           pUsageRange->setLow(pUsageRange->getLow() + 1);
         }
     }
 }
-
-bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
-  {
-    if (size() != rhs.size()) return false;
-
-    C_INT32 i, imax = size();
-    for (i = 0; i < imax; ++i)
-      {
-        if (mParameters[i]->getObjectName() != rhs.mParameters[i]->getObjectName()) return false;
-        if (mParameters[i]->getType() != rhs.mParameters[i]->getType()) return false;
-        if (mParameters[i]->getUsage() != rhs.mParameters[i]->getUsage()) return false;
-      }
-    return true;
-  }

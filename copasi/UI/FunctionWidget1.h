@@ -1,123 +1,139 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.36 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/20 07:33:56 $
-   End CVS Header */
-
 /****************************************************************************
- **  $ CopasiUI/FunctionWidget1.h               
- **  $ Author  : Mrinmayee Kulkarni
- **  
- ** This is the header file for Function Widget1, i.e the Second  level 
- ** widget which shows detailed description of an individual function
- *****************************************************************************/
+ ** Form interface generated from reading ui file '.\function.ui'
+ **
+ ** Created: Wed May 29 16:39:16 2002
+ **      by:  The User Interface Compiler (uic)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 #ifndef FUNCTION_WIDGET1_H
 #define FUNCTION_WIDGET1_H
 
-#include "copasiWidget.h"
+#include <qsplitter.h>
+#include <qvariant.h>
+#include <qtable.h>
+#include "MyTable.h"
 
 class QVBoxLayout;
+
 class QHBoxLayout;
+
 class QGridLayout;
-class QButtonGroup;
-class QFrame;
+
+class QAction;
+
+class QActionGroup;
+
+class QToolBar;
+
+class QPopupMenu;
+
+class QGroupBox;
+
 class QLabel;
+
 class QLineEdit;
+
+class QComboBox;
+
+class QListBoxItem;
+
 class QPushButton;
+
 class QRadioButton;
-class QTable;
-class QTextEdit;
-class CFunction;
-//class MyLineEdit;
 
-class CFunction;
-class CFunctionParameters;
-class CUsageRange;
-template <class CType> class CCopasiVectorNS;
+class QFrame;
 
-class FunctionWidget1 : public CopasiWidget
+class CModel;
+
+class FunctionWidget1 : public QWidget
   {
     Q_OBJECT
 
+  protected:
+    QPushButton* cancelChanges;
+    QPushButton* commitChanges;
+    CModel *mModel;
+    QTable *Table1;
+    QTable *Table2;
+
   public:
     FunctionWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
-    virtual ~FunctionWidget1();
+    void loadFunction(CModel *model);
+    void loadName(QString setValue);
+    int isName(QString setValue);
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
-
-  protected slots:
-    virtual void slotCancelButtonClicked();
-    virtual void slotCommitButtonClicked();
-    virtual void slotNewButtonClicked();
-    virtual void slotDeleteButtonClicked();
-    virtual void slotTableValueChanged(int row, int col);
-    virtual void slotAppTableValueChanged(int row, int col);
-    virtual void slotFcnDescriptionChanged();
-
-  protected:
-    bool loadFromFunction(const CFunction* = NULL);
-    bool loadParameterTable(const CFunctionParameters & params);
-    bool loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages);
-    bool loadReversibility(TriLogic rev);
-    void updateParameters();
-    void updateApplication();
-    bool saveToFunction();
-    bool copyFunctionContentsToFunction(const CFunction* src, CFunction* target);
-
-    std::string objKey;
-    bool flagRO;
-    bool flagChanged;
-    bool isValid;
-
-    //Widgets
-    QGridLayout* FunctionWidget1Layout;
-    QHBoxLayout* Layout1;
-    QHBoxLayout* Layout2;
-    QLabel* TextLabel1;
-    QLabel* TextLabel2;
-    QTextEdit* textBrowser;
-
-    QFrame* Line2;
-    QPushButton* commitChanges;
-    QPushButton* cancelChanges;
-    QPushButton* newFcn;
-    QPushButton* deleteFcn;
-    QButtonGroup* ButtonGroup1;
+    QGroupBox* GroupBox1;
+    QGroupBox* GroupBox2;
+    QGroupBox* GroupBox3
+    ;
     QRadioButton* RadioButton1;
     QRadioButton* RadioButton2;
     QRadioButton* RadioButton3;
-    QLabel* TextLabel4;
-    QFrame* Line3;
+    QRadioButton* RadioButton4;
+    QRadioButton* RadioButton5;
+
     QLineEdit* LineEdit1;
-    QTable* Table2;
-    QLabel* TextLabel5;
-    QFrame* Line4;
-    QTable* Table1;
+    QLineEdit* LineEdit2;
+    QLineEdit* LineEdit4;
+    QLineEdit* LineEdit5;
+    QLineEdit* LineEdit7;
+    QLineEdit* LineEdit8;
+    QLineEdit* LineEdit9;
+
+    QLabel* TextLabel1;
+    QLabel* TextLabel2;
     QLabel* TextLabel3;
-    QFrame* Line1;
+    QLabel* TextLabel4;
+    QLabel* TextLabel7;
+    QLabel* TextLabel8;
+    QLabel* TextLabel9;
 
-    //void loadName(QString setValue);
-    //int isName(QString setValue);
+    QComboBox* ComboBox1;
 
-    //QString mName;
-
-    //QString *Function_Name;
-    //QString *new_Name;
-    //QString *new_Description;
-    //QString param_Type;
-    //QString param_Name;
-    //QString param_Usage;
-    //QString app_Desc;
-    //QString app_Low;
-    //QString app_High;
-    //int int_Low;
-    //int int_High;
-
-    CFunction * pFunction;
+    QFrame* Frame1;
+    QFrame* Frame2;
+    QFrame* Frame3;
+    QFrame* Frame4;
+    QFrame* Frame5;
+    QFrame* Frame6;
+    QFrame* Frame7;
   };
 
-#endif // FunctionWidget1
+#endif // FunctionWidget
+
+/*#include <qvariant.h>
+#include <qwidget.h>
+class QVBoxLayout; 
+class QHBoxLayout; 
+class QGridLayout; 
+class QLabel;
+class QLineEdit;
+class QRadioButton;
+class QTable;
+ 
+class Form1 : public QWidget
+{ 
+    Q_OBJECT
+ 
+public:
+    Form1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ~Form1();
+ 
+    QLineEdit* LineEdit1;
+    QLabel* TextLabel1;
+    QLabel* TextLabel2;
+    QLineEdit* LineEdit2;
+    QTable* Table1;
+    QTable* Table2;
+    QLabel* TextLabel3;
+    QLabel* TextLabel4;
+    QRadioButton* RadioButton1;
+    QRadioButton* RadioButton2;
+    QRadioButton* RadioButton3;
+ 
+ 
+};
+ 
+#endif // FORM1_H
+ */

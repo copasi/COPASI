@@ -1,40 +1,29 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/19 08:59:51 $
-   End CVS Header */
-
 #ifndef COPASI_CStochMethod
 #define COPASI_CStochMethod
 
-#include <set>
-#include <vector>
+#include "utilities/CVector.h"
 #include "CTrajectoryMethod.h"
-#include "utilities/CDependencyGraph.h"
-
-class CModel;
-class CMetab;
-class CTrajectoryProblem;
+#include "CTrajectoryProblem.h"
+#include "model/CModel.h"
 
 /**
  * Integer Balances  for internal use
  */
+
 class CStochBalance
   {
   public:
-    C_INT32 mIndex;
-    C_INT32 mMultiplicity;
+    //CStochBalance();
+    CMetab * mMetabAddr;
+    C_INT32 mBalance;
   };
 
 class CRandom;
 
-class CStochMethod : public CTrajectoryMethod
+class CStochMethod : private CTrajectoryMethod
   {
     friend CTrajectoryMethod *
-    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-        CTrajectoryProblem * pProblem);
+    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type);
 
   protected:
 
@@ -57,15 +46,10 @@ class CStochMethod : public CTrajectoryMethod
     C_FLOAT64 mA0Old;
 
     /**
-     * Initialization.
-     */
-    virtual void initMethod(C_FLOAT64 start_time) = 0;
-
-    /**
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */
-    virtual C_FLOAT64 doSingleStep(C_FLOAT64 time, C_FLOAT64 endtime) = 0;
+    virtual C_FLOAT64 doSingleStep(C_FLOAT64 time) = 0;
 
     /**
      * Calculate the propensities for all reactions
@@ -112,19 +96,12 @@ class CStochMethod : public CTrajectoryMethod
   private:
 
     /**
-     *  This checks if a model is suitable for stochastic simulation.
-     *  It returns a suggestion which method to use
-     *  @param model The model to check
-     *  @return 1: direct method, 2: next reaction method, -1: no stochastic simulation possible
-     */
-    static C_INT32 checkModel(CModel * pmodel);
-
-    /**
      * Get the set of metabolites on which a given reaction depends.
      * @param reaction_index The index of the reaction being executed.
      * @return The set of metabolites depended on.
      */
-    std::set<std::string> *getDependsOn(C_INT32 reaction_index);
+
+    std::set<CMetab*> *getDependsOn(C_INT32 reaction_index);
 
     /**
      * Get the set of metabolites which change number when a given
@@ -132,30 +109,18 @@ class CStochMethod : public CTrajectoryMethod
      * @param reaction_index The index of the reaction being executed.
      * @return The set of affected metabolites.
      */
-    std::set<std::string> *getAffects(C_INT32 reaction_index);
+    std::set<CMetab*> *getAffects(C_INT32 reaction_index);
 
     /**
     * max number of single stochastic steps to do in one step()
     */
     C_INT32 mMaxSteps;
 
-    /**
-    * maximal increase of a particle number in one step.
-    */
-    C_INT32 mMaxBalance;
-    /**
-    * This is set to maxint - mMaxSteps*mMaxBalance
-    */
-    C_INT32 mMaxIntBeforeStep;
-
-  protected:
+  public:
     /**
      *  Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CStochMethod(const CCopasiContainer * pParent = NULL);
-
-  public:
+    CStochMethod();
     /**
      *  Copy constructor.
      *  @param "const CStochMethod &" src
@@ -166,12 +131,6 @@ class CStochMethod : public CTrajectoryMethod
      *  Destructor.
      */
     ~CStochMethod();
-
-    /**
-     *  Chooses a stochastic method adequate for the problem
-     */
-    static CStochMethod *
-    createStochMethod(CTrajectoryProblem * pProblem = NULL);
 
     /**
      *  This instructs the method to calculate a time step of deltaT
@@ -187,7 +146,6 @@ class CStochMethod : public CTrajectoryMethod
     /**
      *  This instructs the method to calculate a time step of deltaT
      *  starting with the initialState given.
-     *  Also initialization of the method is done.
      *  The new state (after deltaT) is expected in the current state.
      *  The return value is the actual timestep taken.
      *  @param "double &" deltaT
@@ -195,6 +153,8 @@ class CStochMethod : public CTrajectoryMethod
      *  @return "const double" actualDeltaT
      */
     const double step(const double & deltaT, const CState * initialState);
+
+    // the following operations were public in Clsoda.
 
   protected:
 
@@ -204,9 +164,9 @@ class CStochMethod : public CTrajectoryMethod
     CRandom *mRandomGenerator;
 
     /**
-     * A pointer to the instance of CModel being used.
+     * A pointer to the instance of CModel being used. May get thrown out later
      */
-    const CModel *mpModel;
+    CModel *mpModel;
 
     /**
      * The graph of reactions and their dependent reactions. When a reaction is
@@ -218,22 +178,5 @@ class CStochMethod : public CTrajectoryMethod
      * The balances of the reactions as integers
      */
     std::vector < std::vector <CStochBalance> > mLocalBalances;
-
-    /**
-     * the substrates of each reaction with their multiplicities
-     */
-    std::vector < std::vector <CStochBalance> > mLocalSubstrates;
-
-    /**
-     * The particle numbers
-     */
-    std::vector <C_INT32> mNumbers;
-
-    unsigned C_INT32 mNumReactions;
-    unsigned C_INT32 mNumNumbers;
   };
-
-//#include "CStochDirectMethod.h"
-//#include "CStochNextReactionMethod.h"
-
 #endif // COPASI_CStochMethod

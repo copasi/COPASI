@@ -26,42 +26,42 @@ class ClientNetwork;
 class ClientSocketReader
 {
 protected:
-    /**The clientNetwork whose reader this thread is.*/
-    ClientNetwork *clientNetwork;
+ 	/**The clientNetwork whose reader this thread is.*/
+	ClientNetwork *clientNetwork;
 
 private:
-    /**A thread ID*/
-    pthread_t a_thread;
+	/**A thread ID*/
+	pthread_t a_thread;
 
 public:
-    /**The constructor
-     * @param c The ClientNetwork whose reader this thread is.
-     */
-    ClientSocketReader(ClientNetwork *c)
+	/**The constructor
+	* @param c The ClientNetwork whose reader this thread is.
+	*/
+	ClientSocketReader(ClientNetwork *c)
 	{
-            this->clientNetwork = c;
+		this->clientNetwork = c;
 	}
 
     /**Spawns a new thread*/
-    void start();
+	void start();
     friend void *reader_thread_function(void *arg);
     /**Function to get the Thread ID.
-     * @return The ID of the reader thread
-     */
-    pthread_t getReaderThreadID();
+	* @return The ID of the reader thread
+	*/
+	pthread_t getReaderThreadID();
 
-    /**Stops the thread*/
-    void stop();
+	/**Stops the thread*/
+	void stop();
 
 
 private:
 
-    /**A small function to display messages.
-     * @param msg The message string to show.
-     */
-    void showMessage(string msg)
+	/**A small function to display messages.
+	 * @param msg The message string to show.
+	 */
+	void showMessage(string msg)
   	{
-            cerr << "ClientSocketReader: " << msg << endl;
+  		cerr << "ClientSocketReader: " << msg << endl;
   	}
 
 };

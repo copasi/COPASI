@@ -1,10 +1,11 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2003/09/12 19:10:36 $  
+# $Revision: 1.1 $ $Author: shoops $ $Date: 2003/06/03 20:55:00 $  
 ######################################################################
 
 include(../common.pri)
 
 TEMPLATE = app
+CONFIG -= qt 
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
@@ -25,25 +26,28 @@ contains(BUILD_OS, WIN32) {
           ../lib/trajectory.lib \
           ../lib/utilities.lib
 } else {
-  # The order of objects is important 
-  OBJECTS += ../lib/libmodel.a \
-             ../lib/libcommandline.a \
-             ../lib/libelementaryFluxModes.a \
-             ../lib/libmathmodel.a \
-             ../lib/liboptimization.a \
-             ../lib/libscan.a \
-             ../lib/libsteadystate.a \
-             ../lib/libtrajectory.a \
-             ../lib/librandomGenerator.a \
-             ../lib/libutilities.a \
-             ../lib/liboutput.a \
-             ../lib/libreport.a \
-             ../lib/libfunction.a \
-             ../lib/libcopasiXML.a \
-             ../lib/libmodel.a
+  # The order of libs is important 
+  tmpLIBS = $${LIBS}
+  LIBS = -L../lib \
+         -Wl,-lcommandline \
+         -Wl,-lelementaryFluxModes \
+         -Wl,-lcopasiXML \
+         -Wl,-lmathmodel \
+         -Wl,-lmodel \
+         -Wl,-lfunction \
+         -Wl,-loutput \
+         -Wl,-lreport \
+         -Wl,-loptimization \
+         -Wl,-lscan \
+         -Wl,-lsteadystate \
+         -Wl,-ltrajectory \
+         -Wl,-lrandomGenerator \
+         -Wl,-lutilities \
+         -Wl,-loutput \
+         -Wl,-lfunction \
+         -Wl,-lmodel
+  LIBS += $${tmpLIBS}
 
-  LIBS += -lexpat
-  
   TARGETDEPS += ../lib/libcommandline.a \
                 ../lib/libcopasiXML.a \
                 ../lib/libelementaryFluxModes.a \
@@ -58,6 +62,7 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libsteadystate.a \
                 ../lib/libtrajectory.a \
                 ../lib/libutilities.a
+
 }
 
 # Input

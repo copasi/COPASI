@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathNode.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:24:29 $
-   End CVS Header */
-
 /**
  * CMathNode class.
  * The class CMathNode is describes a node of the equation tree.
@@ -22,25 +14,17 @@
 class CMathSymbol;
 
 /** @dia:pos -23.1584,-36.8607 */
-class CMathNode: public CCopasiNode< std::string >
+class CMathNode: public CCopasiNode
   {
-    // Attributes
-  protected:
-    std::string mData;
-
-    // Operations
+    // Operations:
   public:
-    CMathNode(CMathNode * pParent = NULL);
+    CMathNode();
 
     CMathNode(const CMathNode &src);
 
-    CMathNode(const std::string & data, CMathNode * pParent = NULL);
-
     virtual ~CMathNode();
 
-    virtual std::string getData() const;
-
-    virtual bool setData(const std::string & data);
+    virtual std::string getText() const;
   };
 
 class CMathNodeOperation: public CMathNode
@@ -49,47 +33,51 @@ class CMathNodeOperation: public CMathNode
   protected:
     static const std::string Operations;
 
+    std::string mOperation;
+
     // Operations
   protected:
-    CMathNodeOperation(CMathNode * pParent = NULL);
+    CMathNodeOperation();
 
   public:
-    CMathNodeOperation(const std::string & operation, CMathNode * pParent = NULL);
+    CMathNodeOperation(const std::string & operation);
 
     CMathNodeOperation(const CMathNodeOperation &src);
 
     virtual ~CMathNodeOperation();
 
-    virtual std::string getData() const;
+    virtual std::string getText() const;
   };
 
 class CMathNodeDerivative: public CMathNodeOperation
   {
     // Operations
   public:
-    CMathNodeDerivative(const std::string & operation = "d/d", CMathNode * pParent = NULL);
+    CMathNodeDerivative(const std::string & operation = "d/d");
 
     CMathNodeDerivative(const CMathNodeDerivative &src);
 
     virtual ~CMathNodeDerivative();
 
-    virtual std::string getData() const;
+    virtual std::string getText() const;
   };
 
 class CMathNodeNumber: public CMathNode
   {
+    // Attributes
+  private:
+    C_FLOAT64 mNumber;
+
     // Operations
 
   public:
-    CMathNodeNumber(const C_FLOAT64 & number = 0.0, CMathNode * pParent = NULL);
+    CMathNodeNumber(const C_FLOAT64 & number = 0.0);
 
     CMathNodeNumber(const CMathNodeNumber &src);
 
     virtual ~CMathNodeNumber();
 
-    virtual std::string getData() const;
-
-    virtual bool setData(const C_FLOAT64 & number);
+    virtual std::string getText() const;
   };
 
 class CMathNodeSymbol: public CMathNode
@@ -100,41 +88,26 @@ class CMathNodeSymbol: public CMathNode
 
     // Operations
   public:
-    CMathNodeSymbol(const CMathSymbol * pSymbol = NULL, CMathNode * pParent = NULL);
+    CMathNodeSymbol(const CMathSymbol * pSymbol = NULL);
 
     CMathNodeSymbol(const CMathNodeSymbol & src);
 
     virtual ~CMathNodeSymbol();
 
-    virtual std::string getData() const;
-
-    virtual bool setData(const CMathSymbol * pSymbol);
+    virtual std::string getText() const;
   };
 
 class CMathNodeFunction: public CMathNodeSymbol
   {
     // Operations
   public:
-    CMathNodeFunction(const CMathSymbol * pSymbol = NULL, CMathNode * pParent = NULL);
+    CMathNodeFunction(const CMathSymbol * pSymbol = NULL);
 
     CMathNodeFunction(const CMathNodeFunction & src);
 
     virtual ~CMathNodeFunction();
 
-    virtual std::string getData() const;
-  };
-
-class CMathNodeList: public CMathNode
-  {
-    // Operations
-  public:
-    CMathNodeList(CMathNode * pParent = NULL);
-
-    CMathNodeList(const CMathNodeList & src);
-
-    virtual ~CMathNodeList();
-
-    virtual std::string getData() const;
+    virtual std::string getText() const;
   };
 
 #endif // COPASI_CMathNode

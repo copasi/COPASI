@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:53 $
-   End CVS Header */
-
 /**
  * COptMethodSA class
  */
@@ -24,7 +16,7 @@ class CRandom;
 
 class COptMethodSA : public COptMethod
   {
-    friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
+    friend COptMethod * COptMethod::createMethod(COptMethod::Type type);
 
     // Operations
   private:

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathVariable.cpp,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/18 17:59:24 $
-   End CVS Header */
-
 /**
  *  CMathVariable class.
  *  The class CMathVariable associates a symbol with a CCopasiObject which
@@ -16,7 +8,6 @@
 
 #include "copasi.h"
 #include "CMathVariable.h"
-#include "CMathConstant.h"
 #include "CMathEq.h"
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
@@ -34,17 +25,19 @@ CMathVariable::CMathVariable(const CCopasiObject * pObject):
     mpEq(NULL)
 {}
 
-CMathVariable::~CMathVariable() {}
+CMathVariable::~CMathVariable() {pdelete(mpEq);}
 
 bool CMathVariable::setEq(CMathEq * eq, const CMathVariable::Type & type)
 {
+  pdelete(mpEq);
+
   mType = type;
   mpEq = eq;
 
   return true;
 }
 
-CMathEq * CMathVariable::getEq() {return mpEq;}
+CMathEq *CMathVariable:: getEq() {return mpEq;}
 
 CMathVariable::Type CMathVariable::getType() const {return mType;}
 
@@ -83,19 +76,19 @@ const C_FLOAT64 & CMathVariableMetab::getConcentration() const
 
 bool CMathVariableMetab::setInitialParticleNumber(const C_FLOAT64 & particleNumber)
 {
-  ((CMetab *) mpObject)->setInitialNumber(particleNumber);
+  ((CMetab *) mpObject)->setInitialNumberDbl(particleNumber);
   return true;
 }
 
 C_FLOAT64 CMathVariableMetab::getInitialParticleNumber() const
-  {return ((CMetab *) mpObject)->getInitialNumber();}
+  {return ((CMetab *) mpObject)->getInitialNumberDbl();}
 
 C_FLOAT64 CMathVariableMetab::getParticleNumber() const
-  {return ((CMetab *) mpObject)->getNumber();}
+  {return ((CMetab *) mpObject)->getNumberDbl();}
 
 bool CMathVariableMetab::compile()
 {
-  mpCompartment = (CMathConstantCompartment *)(CMathConstant *)
+  mpCompartment = (CMathConstantCompartment *)
                   CMathSymbol::find(((CMetab *) mpObject)->getCompartment());
 
   if (mpCompartment) return true;
@@ -135,10 +128,7 @@ CMathVariableTime::CMathVariableTime(const CMathVariableTime & src):
 
 CMathVariableTime::CMathVariableTime(const CModel & model):
     CMathVariable(& model)
-{
-  std::string Name("Time");
-  setName(Name);
-}
+{}
 
 CMathVariableTime::~CMathVariableTime() {}
 

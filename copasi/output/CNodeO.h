@@ -1,76 +1,64 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CNodeO.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:41 $
-   End CVS Header */
-
 /*****************************************************************************
- * PROGRAM NAME: CNodeO.h
- * PROGRAMMER: Wei Sun wsun@vt.edu
- * PURPOSE: Define the node object in user defined function
- *****************************************************************************/
+* PROGRAM NAME: CNodeO.h
+* PROGRAMMER: Wei Sun	wsun@vt.edu
+* PURPOSE: Define the node object in user defined function
+*****************************************************************************/
 #ifndef COPASI_CNodeO
-#define COPASI_CNodeO
+#define	COPASI_CNodeO
 
 #include <string>
+#include <vector>
 
-//#include "model/model.h"
-#include "function/CNodeK.h"
-#include "CDatum.h"
-
-class CReadConfig;
+#include "copasi.h"
+#include "model/model.h"
+#include "utilities/utilities.h"
+#include "function/function.h"
 
 class CNodeO: public CNodeK
-  {
-    // Attributes
-  private:
-    /**
-     *  A datum needed to specify the identifiers
-     */
-    CDatum mDatum;
-    /**
-     *  The left branch of the tree originating from this node
-     */
-    CNodeO * mLeft;
+{
+private:
+	/**
+	 *  Title of the node.
+	 */
+	string mTitle; 
+	/**
+     *  Type of the node's Datum.
+	 */
+	C_INT32 mDatumType;
+	/**
+	 * I String of the node
+	 */
+	string mI;
+	/**
+	 * J String of the node
+	 */
+	string mJ;
 
-    /**
-     *  The right branch of the tree originating from this node
-     */
-    CNodeO * mRight;
-
-  public:
-    /**
+public:
+	/**
      * Default constructor
      */
     CNodeO();
+	/**
+	 * Constructor for operator
+	 * @param "const string" title
+	 * @param "const C_INT32" type
+	 * @param "const string" i_str
+	 * @param "const string" j_str
+	 */
+	CNodeO(string title, C_INT32 type, string i_str, string j_str);
 
-    /**
-     * Constructor for operator
-     * @param "const char" type
-     * @param "const char" subtype
-     */
-    CNodeO(char type, char subtype);
+	/**
+	 * Destructor
+	 */
+	~CNodeO();
 
-    /**
-     * Constructor for identifier
-     * @param "const string" &name
-     */
-    CNodeO(const std::string & name);
-
-    /**
-     * Constructor for a constant
-     * @param "const C_FLOAT64" constant
-     */
-    CNodeO(C_FLOAT64 constant);
-
-    /**
-     * Destructor
-     */
-    virtual ~CNodeO();
-
-    /**
+	/**
+	 * Delete
+	 */
+	void cleanup();
+    
+	/**
      *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
      *  @param pconfigbuffer reference to a CReadConfig object.
@@ -78,51 +66,61 @@ class CNodeO: public CNodeK
      */
     C_INT32 load(CReadConfig & configbuffer);
 
-    /**
-     *  Retreives the datum of an identifier node
-     *  @return "const CDatum &" datum
+	/**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return Fail
      */
-    const CDatum & getDatum() const;
-
-    virtual C_FLOAT64 value();
-
-    /**
-     * Retrieving mLeft the left branch of a node
-     * @return CNodeO
-     */
-    CNodeO & getLeft() const;
+    C_INT32 save(CWriteConfig & configbuffer) const;
 
     /**
-     * Retrieving mRight the left branch of a node
-     * @return CNodeO
+     * Retrieving the Title of a node
+     * @return string
      */
-    CNodeO & getRight() const;
-    /**
-     * Setting mLeft the pointer to the left branch
-     * @param CNodeO &left
-     */
-    void setLeft(CNodeO & left);
+    string getTitle() const;
 
-    /**
-     * Setting mLeft the pointer to the left branch
-     * @param CNodeO *pleft
-     */
-    void setLeft(CNodeO * pleft);
+   /**
+    * Retrieving I String of a node
+    * @return string
+    */
+   string getIString() const;
 
-    /**
-     * Setting mRight the pointer to the right branch
-     * @param CNodeO &right
-     */
-    void setRight(CNodeO & right);
+   /**
+    * Retrieving J String of a node
+    * @return string
+    */
+   string getJString() const;
+  
 
-    /**
-     * Setting mRight the pointer to the right branch
-     * @param CNodeO *pright
-     */
-    void setRight(CNodeO * pright);
+   /**
+    * Setting Title of the node
+    * @param "const string" &title
+    */
+   void setTitle(const string& title);
 
-    C_INT16 isLeftValid() const;
+   /**
+    * Setting I String of the node
+    * @param "const string" &i_string
+    */
 
-    C_INT16 isRightValid() const;
-  };
+   void setIString(const string & i_string);
+
+   /**
+    * Setting I String of the node
+    * @param "const string" &j_string
+    */
+   void setJString(const string & j_string);
+
+   /**
+    * Get the node's Datum type
+	*/
+   C_INT32 getDatumType() const;
+
+   /**
+    * Set the node's Datum Type
+	*/
+   void setDatumType(const C_INT32 datumType);
+};
 #endif
+

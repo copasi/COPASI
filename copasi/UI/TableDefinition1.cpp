@@ -1,16 +1,8 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.40 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:49 $
-   End CVS Header */
-
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.40 2004/09/17 13:51:49 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.1 2003/08/13 15:02:00 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -29,19 +21,13 @@
 #include <qlistbox.h>
 #include <qcombobox.h>
 #include <qstring.h>
-#include <qmessagebox.h>
 
 #include "TableDefinition1.h"
 #include "ObjectBrowser.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinition.h"
-#include "report/CCopasiObjectName.h"
-#include "report/CCopasiContainer.h"
-#include "report/CCopasiStaticString.h"
-#include "report/CReport.h"
 #include "ScanWidget.h"
-#include "qtUtilities.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
 
@@ -59,15 +45,15 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   QPixmap image3((const char**) image3_data);
 
   if (!name)
-    setName("TableDefinition");
-  TableDefinitionLayout = new QGridLayout(this, 1, 1, 11, 6, "TableDefinitionLayout");
+    setName("TableDefinition1");
+  TableDefinition1Layout = new QGridLayout(this, 1, 1, 11, 6, "TableDefinition1Layout");
 
   bodyField = new QFrame(this, "bodyField");
   bodyField->setFrameShape(QFrame::HLine);
   bodyField->setFrameShadow(QFrame::Sunken);
   bodyField->setFrameShape(QFrame::HLine);
 
-  TableDefinitionLayout->addMultiCellWidget(bodyField, 2, 2, 0, 1);
+  TableDefinition1Layout->addMultiCellWidget(bodyField, 2, 2, 0, 1);
 
   layout14 = new QHBoxLayout(0, 0, 6, "layout14");
 
@@ -77,7 +63,7 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   cancelButton = new QPushButton(this, "cancelButton");
   layout14->addWidget(cancelButton);
 
-  TableDefinitionLayout->addMultiCellLayout(layout14, 3, 3, 0, 1);
+  TableDefinition1Layout->addMultiCellLayout(layout14, 3, 3, 0, 1);
 
   layout7 = new QHBoxLayout(0, 0, 6, "layout7");
 
@@ -114,10 +100,20 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   layout7->addLayout(layout6);
 
   itemsTable = new QListBox(this);
-  itemsTable->setSelectionMode(QListBox::Single);
+  //  ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
+  //  scrollview->setMinimumWidth(parameterTable->minimumSizeHint().width());
+  //  pdelete(parameterTable);
+  //  itemsTable->setVScrollBarMode(QScrollView::Auto);
+  //  itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
+  //  itemsTable->setSelectedList(&selectedList);
+  selectedList.clear();
+
+  //    itemsTable = new QTable(this, "itemsTable");
+  //    itemsTable->setNumRows(0);
+  //    itemsTable->setNumCols(0);
   layout7->addWidget(itemsTable);
 
-  TableDefinitionLayout->addMultiCellLayout(layout7, 1, 1, 0, 1);
+  TableDefinition1Layout->addMultiCellLayout(layout7, 1, 1, 0, 1);
 
   frame4 = new QFrame(this, "frame4");
   frame4->setFrameShape(QFrame::Box);
@@ -129,18 +125,19 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
 
   frame4Layout->addWidget(tabChecked, 3, 1);
 
-  separatorEdit = new QLineEdit(frame4, "separatorEdit");
+  seperatorEdit = new QLineEdit(frame4, "seperatorEdit");
 
-  frame4Layout->addWidget(separatorEdit, 2, 1);
+  frame4Layout->addWidget(seperatorEdit, 2, 1);
 
-  separatorLabel = new QLabel(frame4, "separatorLabel");
+  seperatorLabel = new QLabel(frame4, "seperatorLabel");
 
-  frame4Layout->addWidget(separatorLabel, 2, 0);
+  frame4Layout->addWidget(seperatorLabel, 2, 0);
 
   comboTask = new QComboBox(FALSE, frame4, "comboTask");
-  comboTask->insertItem("Scan Task");
-  comboTask->insertItem("Trajectory Task");
-  comboTask->insertItem("SteadyState Task");
+  comboTask->insertItem ("Scan Task");
+  comboTask->insertItem ("Trajectory Task");
+  comboTask->insertItem ("SteadyState Task");
+  //  comboTask->setEnabled(false);
 
   frame4Layout->addWidget(comboTask, 0, 1);
 
@@ -155,48 +152,42 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
 
   frame4Layout->addWidget(taskLabel, 0, 0);
 
-  TableDefinitionLayout->addWidget(frame4, 0, 1);
+  TableDefinition1Layout->addWidget(frame4, 0, 1);
 
   frame5 = new QFrame(this, "frame5");
   frame5->setFrameShape(QFrame::Box);
   frame5->setFrameShadow(QFrame::Sunken);
   frame5Layout = new QGridLayout(frame5, 1, 1, 11, 6, "frame5Layout");
 
-  commentEdit = new QLineEdit(frame5, "commentEdit");
-  commentEdit->setFrameShape(QLineEdit::LineEditPanel);
-  commentEdit->setFrameShadow(QLineEdit::Sunken);
-  commentEdit->setLineWidth(2);
-
-  frame5Layout->addWidget(commentEdit, 1, 1);
-
-  commentLabel = new QLabel(frame5, "commentLabel");
-
-  frame5Layout->addWidget(commentLabel, 1, 0);
+  layout5_2 = new QHBoxLayout(0, 0, 6, "layout5_2");
 
   targetLabel = new QLabel(frame5, "targetLabel");
+  layout5_2->addWidget(targetLabel);
 
-  frame5Layout->addWidget(targetLabel, 0, 0);
+  targetEdit = new QLineEdit(frame5, "targetEdit");
+  targetEdit->setFrameShape(QLineEdit::LineEditPanel);
+  targetEdit->setFrameShadow(QLineEdit::Sunken);
+  layout5_2->addWidget(targetEdit);
 
-  nameEdit = new QLineEdit(frame5, "nameEdit");
-  nameEdit->setFrameShape(QLineEdit::LineEditPanel);
-  nameEdit->setFrameShadow(QLineEdit::Sunken);
-
-  frame5Layout->addWidget(nameEdit, 0, 1);
+  frame5Layout->addLayout(layout5_2, 0, 0);
 
   titleChecked = new QCheckBox(frame5, "titleChecked");
 
-  frame5Layout->addWidget(titleChecked, 2, 1);
+  frame5Layout->addWidget(titleChecked, 1, 0);
 
-  TableDefinitionLayout->addWidget(frame5, 0, 0);
+  appendChecked = new QCheckBox(frame5, "appendChecked");
+
+  frame5Layout->addWidget(appendChecked, 2, 0);
+
+  TableDefinition1Layout->addWidget(frame5, 0, 0);
   languageChange();
   clearWState(WState_Polished);
 
   // tab order
-  setTabOrder(nameEdit, commentEdit);
-  setTabOrder(commentEdit, titleChecked);
-  setTabOrder(titleChecked, comboTask);
-  setTabOrder(comboTask, separatorEdit);
-  setTabOrder(separatorEdit, tabChecked);
+  setTabOrder(targetEdit, titleChecked);
+  setTabOrder(titleChecked, appendChecked);
+  setTabOrder(appendChecked, seperatorEdit);
+  setTabOrder(seperatorEdit, tabChecked);
   setTabOrder(tabChecked, addButton);
   setTabOrder(addButton, deleteButton);
   setTabOrder(deleteButton, upButton);
@@ -205,12 +196,9 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(itemsTable, confirmButton);
   setTabOrder(confirmButton, cancelButton);
 
-  //connect(nameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(nameTextChanged(const QString&)));
-  connect(commentEdit, SIGNAL(textChanged(const QString&)), this, SLOT(commentTextChanged(const QString&)));
-  connect(separatorEdit, SIGNAL(textChanged(const QString&)), this, SLOT(separatorTextChanged(const QString&)));
-
   connect(tabChecked, SIGNAL(clicked()), this, SLOT(tabButtonClicked()));
   connect(titleChecked, SIGNAL(clicked()), this, SLOT(titleButtonClicked()));
+  connect(appendChecked, SIGNAL(clicked()), this, SLOT(appendButtonClicked()));
 
   connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
   connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
@@ -227,7 +215,9 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
  *  Destroys the object and frees any allocated resources
  */
 TableDefinition1::~TableDefinition1()
-{}
+{
+  // no need to delete child widgets, Qt does it all for us
+}
 
 /*
  *  Sets the strings of the subwidgets using the current
@@ -236,138 +226,63 @@ TableDefinition1::~TableDefinition1()
 void TableDefinition1::languageChange()
 {
   setCaption(tr("Reports"));
-  confirmButton->setText(tr("Commit"));
-  cancelButton->setText(tr("Revert"));
+  confirmButton->setText(tr("confirm"));
+  cancelButton->setText(tr("cancel"));
   itemsLabel->setText(tr("Items"));
   upButton->setText(QString::null);
   downButton->setText(QString::null);
   deleteButton->setText(QString::null);
   addButton->setText(QString::null);
   tabChecked->setText(tr("Tab"));
-  separatorLabel->setText(tr("Separator"));
+  seperatorLabel->setText(tr("Seperator"));
   taskLabel->setText(tr("Task"));
-  commentLabel->setText(tr("Comment"));
-  targetLabel->setText(tr("ReportDefinition"));
+  targetLabel->setText(tr("Target"));
   titleChecked->setText(tr("Title"));
+  appendChecked->setText(tr("Append"));
 }
 
 /*This function is to load the model for the table*/
 void TableDefinition1::loadTableDefinition1()
-{//TODO: check if it is really a table
-  CReportDefinition* pReportDefinition =
-    dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
-
-  itemsTable->clear();
-
-  //name
-  nameEdit->setText(FROM_UTF8(pReportDefinition->getObjectName()));
-
-  //comment
-  commentEdit->setText(FROM_UTF8(pReportDefinition->getComment()));
-
-  //title checkbox
-  titleChecked->setChecked(pReportDefinition->getTitle());
-
-  //object list
-  std::vector< CCopasiContainer * > ListOfContainer; //dummy
-  unsigned C_INT32 i;
-  // i+=2; is due to skip to show the separator
-  for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i += 2)
-    {
-      new MyListBoxItem(itemsTable,
-                        FROM_UTF8(CCopasiContainer::ObjectFromName(ListOfContainer, (*(pReportDefinition->getBodyAddr()))[i])->getObjectUniqueName()),
-                        (*(pReportDefinition->getBodyAddr()))[i]);
-    }
+{
   comboTask->setEnabled(true);
+  seperatorEdit->setEnabled(false);
+  tabChecked->setChecked(true);
+}
 
-  //separator
-  if (pReportDefinition->getSeparator().getStaticString() == "\t")
-    {
-      separatorEdit->setEnabled(false);
-      tabChecked->setChecked(true);
-    }
-  else
-    {
-      separatorEdit->setEnabled(true);
-      tabChecked->setChecked(false);
-      separatorEdit->setText(FROM_UTF8(pReportDefinition->getSeparator().getStaticString()));
-    }
-  bUpdated = false;
+void TableDefinition1::setReport(CReport* pNewReport)
+{
+  mReport = pNewReport;
+}
+
+void TableDefinition1::comboTaskChanged(const QString & string)
+{
+  int i = 0;
 }
 
 void TableDefinition1::slotBtnCancelClicked()
 {
-  loadTableDefinition1();
+  //check for the connection int i =0;
 }
 
 void TableDefinition1::slotBtnConfirmClicked()
 {
-  CReportDefinition* pReportDefinition =
-    dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
-
-  if (!pReportDefinition) return;
-
-  //name
-  if (FROM_UTF8(pReportDefinition->getObjectName()) != (const char*)nameEdit->text().utf8())
-    {
-      pReportDefinition->setObjectName((const char*)nameEdit->text().utf8());
-      protectedNotify(ListViews::REPORT, ListViews::RENAME, reportKey);
-    }
-
-  if (!bUpdated) return;
-
-  //comment
-  pReportDefinition->setComment((const char*)commentEdit->text().utf8());
-
-  //title
-  pReportDefinition->setTitle(titleChecked->isChecked());
-
-  //separator
-  CCopasiStaticString Separator;
-  if (tabChecked->isChecked())
-    Separator = "\t";
-  else
-    Separator = (const char *)separatorEdit->text().utf8();
-  pReportDefinition->setSeparator(Separator);
-
-  //object list
-  pReportDefinition->getHeaderAddr()->clear();
-  pReportDefinition->getBodyAddr()->clear();
-
-  C_INT32 i;
-  for (i = 0; i < itemsTable->numRows(); i++)
-    {
-      pReportDefinition->addTableElement(CCopasiObjectName(((MyListBoxItem*)(itemsTable->item(i)))->getCN()));
-    }
-
-  protectedNotify(ListViews::REPORT, ListViews::CHANGE, reportKey);
-  bUpdated = false;
+  //check for the connection int i =0;
 }
-
-void TableDefinition1::commentTextChanged(const QString &)
-{bUpdated = true;}
-
-void TableDefinition1::separatorTextChanged(const QString &)
-{bUpdated = true;}
-
-void TableDefinition1::comboTaskChanged(const QString & C_UNUSED(string))
-{bUpdated = true;}
-
-void TableDefinition1::titleButtonClicked()
-{bUpdated = true;}
 
 void TableDefinition1::tabButtonClicked()
 {
-  bUpdated = true;
-  if (tabChecked->isChecked())
-    {
-      separatorEdit->setText("");
-    }
-  separatorEdit->setEnabled(!tabChecked->isChecked());
+  seperatorEdit->setEnabled(!tabChecked->isChecked());
 }
 
-//************************************************************************
-//TODO: allow selecting several objects in the itemsTable (for deleting)
+void TableDefinition1::titleButtonClicked()
+{
+  //check for the connection int i =0;
+}
+
+void TableDefinition1::appendButtonClicked()
+{
+  //check for the connection int i =0;
+}
 
 void TableDefinition1::addButtonClicked()
 {
@@ -387,29 +302,26 @@ void TableDefinition1::addButtonClicked()
       return;
     }
 
-  bool found;
-  std::vector< CCopasiContainer * > ListOfContainer; //dummy
-  unsigned C_INT32 i = 0;
+  int i = 0;
   for (; i < pSelectedVector->size(); i++)
     if ((*pSelectedVector)[i])
-      {
-        found = false;
-        unsigned C_INT32 counter, cmax = itemsTable->count();
-        for (counter = 0; counter < cmax; ++counter)
-          if (((MyListBoxItem*)(itemsTable->item(counter)))->getCN() == (*pSelectedVector)[i]->getCN())
-            found = true;
+      break;
 
-        if (!found)
-          {
-            new MyListBoxItem(itemsTable,
-                              FROM_UTF8((*pSelectedVector)[i]->getObjectUniqueName()),
-                              //FROM_UTF8((*pSelectedVector)[i]->getCN()),
-                              (*pSelectedVector)[i]->getCN());
-            //FROM_UTF8(CCopasiContainer::ObjectFromName(ListOfContainer, (*pSelectedVector)[i]->getCN())->getObjectUniqueName()),
-            bUpdated = true;
-          }
-      }
+  if (i >= pSelectedVector->size()) //no result returned
+    {
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  if (itemsTable->findItem((*pSelectedVector)[i]->getObjectUniqueName().c_str()) == NULL)
+    {
+      itemsTable->insertItem((*pSelectedVector)[i]->getObjectUniqueName().c_str());
+      selectedList.push_back((*pSelectedVector)[i]);
+    }
+
   pdelete(pSelectedVector);
+  //  if (addNewScanItem((*pSelectedVector)[i]))
+  //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
 }
 
 void TableDefinition1::deleteButtonClicked()
@@ -418,13 +330,10 @@ void TableDefinition1::deleteButtonClicked()
   UINT32 selectedIndex = itemsTable->index(selectedItem);
   if (selectedItem)
     {
+      std::vector<CCopasiObject*>::iterator it = selectedList.begin();
+      selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
+      int pp = selectedList.size();
       itemsTable->removeItem(selectedIndex);
-
-      if (selectedIndex >= itemsTable->count())
-        --selectedIndex; //if the last item was deleted
-      itemsTable->setCurrentItem(selectedIndex);
-      itemsTable->setSelected(selectedIndex, TRUE);
-      bUpdated = true;
     }
 }
 
@@ -434,10 +343,19 @@ void TableDefinition1::upButtonClicked()
   UINT32 selectedIndex = itemsTable->index(selectedItem);
   if ((selectedItem) && (selectedIndex != 0))
     {
-      itemsTable->takeItem(selectedItem);
-      itemsTable->insertItem(selectedItem, selectedIndex - 1);
-      itemsTable->setCurrentItem(selectedItem);
-      bUpdated = true;
+      //swap in selectedList
+      CCopasiObject* pDownObject = selectedList[selectedIndex];
+      // check for valid of the update object pointer array
+      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
+      CCopasiObject* pUpperObject = selectedList[selectedIndex - 1];
+      selectedList[selectedIndex] = pUpperObject;
+      selectedList[selectedIndex - 1] = pDownObject;
+
+      //swap in ListBox
+      QString pDownItemStr(itemsTable->item(selectedIndex)->text());
+      QString pUpperItemStr(itemsTable->item(selectedIndex - 1)->text());
+      itemsTable->changeItem (pUpperItemStr, selectedIndex);
+      itemsTable->changeItem (pDownItemStr, selectedIndex - 1);
     }
 }
 
@@ -447,18 +365,25 @@ void TableDefinition1::downButtonClicked()
   UINT32 selectedIndex = itemsTable->index(selectedItem);
   if ((selectedItem) && (itemsTable->item(selectedIndex + 1)))
     {
-      itemsTable->takeItem(selectedItem);
-      itemsTable->insertItem(selectedItem, selectedIndex + 1);
-      itemsTable->setCurrentItem(selectedItem);
-      bUpdated = true;
+      //swap in selectedList
+      CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
+      // check for valid of the update object pointer array
+      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
+      CCopasiObject* pUpperObject = selectedList[selectedIndex];
+      selectedList[selectedIndex + 1] = pUpperObject;
+      selectedList[selectedIndex] = pDownObject;
+
+      //swap in ListBox
+      QString pDownItemStr(itemsTable->item(selectedIndex + 1)->text());
+      QString pUpperItemStr(itemsTable->item(selectedIndex)->text());
+      itemsTable->changeItem (pUpperItemStr, selectedIndex + 1);
+      itemsTable->changeItem (pDownItemStr, selectedIndex);
     }
 }
 
-//*********************************************************************
-
 bool TableDefinition1::enter(const std::string & key)
 {
-  if (!dynamic_cast< CReportDefinition * >(GlobalKeys.get(key))) return false;
+  if (!CKeyFactory::get(key)) return false;
 
   reportKey = key;
 
@@ -469,14 +394,12 @@ bool TableDefinition1::enter(const std::string & key)
 
 bool TableDefinition1::leave()
 {
-  slotBtnConfirmClicked();
+  //let the user confirm?
   return true;
 }
 
-bool TableDefinition1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool TableDefinition1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (mIgnoreUpdates) return true;
-
   switch (objectType)
     {
     case ListViews::MODEL:

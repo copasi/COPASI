@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.71 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 12:09:41 $
-   End CVS Header */
-
 /**
  *  CReaction class.
  *  Derived from Gepasi's cstep.cpp. (C) Pedro Mendes 1995-2000.
@@ -18,399 +10,360 @@
 
 #include <string>
 #include <vector>
+#include <utility>
 
-#include "utilities/CCopasiVector.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "function/CFunction.h"
-#include "function/CCallParameters.h"
-#include "function/CFunctionParameters.h"
+#include "function/CKinFunction.h"
+#include "function/CFunctionDB.h"
 #include "CMetab.h"
-#include "CChemEq.h"
-#include "CChemEqElement.h"
-#include "CCompartment.h"
-
-//template < class CType > class CVector;
-//class CWriteConfig;
-class CReadConfig;
-
-/** @dia:pos 129.788,76.3337 */
-class CReaction : public CCopasiContainer
-  {
-    // Attributes
-  private:
-    /**
-     *  The default scaling factor of a reaction which is 1.
-     */
-    static C_FLOAT64 mDefaultScalingFactor;
-
-    /**
-     *  The key of the reaction
-     */
-    std::string mKey;
-
-    /**
-     *  The chemical equation
-     */
-    /** @dia:route 4,92; h,80.3628,99.0144,105.075,112.034,129.788 */
-    CChemEq mChemEq;
-
-    /**
-     *  A pointer to the rate function of the reaction
-     */
-    const CFunction * mpFunction;
-
-    /**
-     *  The flux of the reaction
-     */
-    C_FLOAT64 mFlux;
-
-    /**
-     *  The scaled flux of the reaction
-     */
-    C_FLOAT64 mParticleFlux;
-
-    /**
-     *  A Pointer to the scaling factor for the flux to calculate the particle number
-     *  changes. For a single compartment reaction this is the volume of
-     *  the compartment
-     */
-    const C_FLOAT64 * mScalingFactor;
-
-    /**
-     *  The unit conversion factor 
-     */
-    const C_FLOAT64 * mUnitScalingFactor;
-
-    /**
-     *  Pointer to the compartment in which the kinetic function is defined.
-     *  (the kinetic function gives a rate as concentration/time unit. If there is
-     *  more than one compartment involved it must be specified to which volume
-     *  the concentration change refers)
-     */
-    /** @dia:route 9,23; h,155.606,36.603,165.837,83.8337,159.088 */
-    const CCompartment * mpFunctionCompartment;
-
-    /**
-     *  This describes the mapping of the Metabs and Params to the function parameters.
-     *  Here are the pointers to the actual objects and values.
-     */
-    CFunctionParameterMap mMap;
-
-    /**
-     *  This describes the mapping of the Metabs to the function parameters. Here the
-     *  keys of the metabolites (as in the chemical equation) are stored.
-     */
-    std::vector< std::vector< std::string > > mMetabKeyMap;
-
-    /**
-     *  This is a list of parameter objects.
-     */
-    CCopasiParameterGroup mParameters;
-
-    // Operations
-
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CReaction(const std::string & name = "NoName",
-              const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Copy constructor
-     * @param "const CReaction &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CReaction(const CReaction & src,
-              const CCopasiContainer * pParent = NULL);
-
-    /**
-     *  Destructor
-     */
-    ~CReaction();
-
-    /**
-     *  Delete
-     */
-    void cleanup();
-
-    /**
-     *  Assignment operator
-     */ 
-    //CReaction & operator=(const CReaction & rhs);
-
-    /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return mFail
-     *  @see mFail
-     */
-    C_INT32 load(CReadConfig & configbuffer);
-
-    /**
-     *  Retrieves the key of the reaction
-     *  @return std::string key
-     */
-    virtual const std::string & getKey() const;
-
-    /**
-     *  Retrieves the chemical equation of the reaction
-     */
-    const CChemEq & getChemEq() const;
-    CChemEq & getChemEq();
-
-    /**
-     *  Retrieves the rate function of the reaction
-     *  @return "CBaseFunction &"
-     */
-    const CFunction & getFunction() const;
-
-    /**
-     *  Retrieves the flux of the reaction
-     *  @return const C_FLOAT64 & flux
-     */
-    const C_FLOAT64 & getFlux() const;
-
-    /**
-     *  Retrieves the scaled flux of the reaction
-     *  @return const C_FLOAT64 & scaledFlux
-     */
-    const C_FLOAT64 & getParticleFlux() const;
-
-    /**
-     *  Retrieves whether the reaction is reversible
-     *  @return bool
-     */
-    bool isReversible() const;
-
-    /**
-     *  Sets the name of the reaction
-     *  @param "const string &" name
-     *  @return bool success
-     */
-    bool setName(const std::string & name);
-
-    /**
-     * Add a substrate to the reaction
-     * @param std::string & metabKey
-     * @param const C_FLOAT64 & multiplicity (Default 1.0)
-     * @return bool success
-     */
-    bool addSubstrate(const std::string & metabKey,
-                      const C_FLOAT64 & multiplicity = 1.0);
-
-    /**
-     * Add a product to the reaction
-     * @param std::string & metabKey
-     * @param const C_FLOAT64 & multiplicity (Default 1.0)
-     * @return bool success
-     */
-    bool addProduct(const std::string & metabKey,
-                    const C_FLOAT64 & multiplicity = 1.0);
-
-    /**
-     * Add a modifier to the reaction
-     * @param std::string & metabKey
-     * @param const C_FLOAT64 & multiplicity (Default 1.0)
-     * @return bool success
-     */
-    bool addModifier(const std::string & metabKey,
-                     const C_FLOAT64 & multiplicity = 1.0);
-
-    /**
-     * Sets the rate function of the reaction
-     * @param const string & functionName
-     * @return bool success
-     */
-    bool setFunction(const std::string & functionName);
-
-    /**
-     * Sets the rate function of the reaction
-     * @param CFunction * pFunction
-     * @return bool success
-     */
-    bool setFunction(CFunction * pFunction);
-
-    //****************************************************************************************
-
-    /**
-     *  Sets a parameter value
-     */
-    void setParameterValue(const std::string & parameterName, C_FLOAT64 value);
-
-    /**
-     *  Gets a parameter value
-     */
-    const C_FLOAT64 & getParameterValue(const std::string & parameterName) const;
-
-    /**
-     *  sets a function parameter->metab mapping.
-     */
-    void setParameterMapping(C_INT32 index, const std::string & key);
-    void addParameterMapping(C_INT32 index, const std::string & key);
-    void setParameterMapping(const std::string & parameterName, const std::string & key);
-    void addParameterMapping(const std::string & parameterName, const std::string & key);
-
-    void setParameterMappingVector(const std::string & parameterName,
-                                   const std::vector<std::string> & keys);
-
-    /**
-     *  Clears a function parameter->metab mapping (only for vector parameters).
-     */
-    void clearParameterMapping(const std::string & parameterName);
-    void clearParameterMapping(C_INT32 index);
-
-    const std::vector< std::vector<std::string> > getParameterMappingName() const;
-
-    const std::vector< std::vector<std::string> > & getParameterMappings() const
-      {return mMetabKeyMap;}
-
-    //std::vector<const CMetab *> getParameterMappingMetab(const std::string & parameterName) const;
-    std::vector<const CMetab *> getParameterMappingMetab(C_INT32 index) const;
-
-    /**
-     *  Gets the list of kinetic parameter objects of the reaction/function
-     */
-    const CCopasiParameterGroup & getParameters() const;
-
-    /**
-     *  Gets the list of kinetic parameter objects of the reaction/function
-     */
-    CCopasiParameterGroup & getParameters();
-
-    /**
-     *  Gets the description of what parameters the function expects.
-     */
-    const CFunctionParameters & getFunctionParameters() const;
-
-    /**
-     *  Sets whether the reaction is reversible
-     *  @param bool reversible
-     */
-    void setReversible(bool reversible);
-
-    /**
-     *  Compile the reaction, i.e., links the metabolites and parameters with the
-     *  rate function. The connection of the reaction and the function parameter mapping
-     *  to the actual metabolites is established (before compile() the chemical equation
-     *  and the reaction only hold the names of the metabolites).
-     *  @param "CCopasiVectorNS < CCompartment > &" compartments
-     */
-    void compile(/*const CCopasiVectorNS < CCompartment > & compartments*/);
-
-    /**
-     *  Calculate the kinetic function
-     *  @return C_FLOAT64 velocity
-     */
-    C_FLOAT64 calculate();
-
-    /**
-     * Calculate partial derivative of the flux 
-     * @param C_FLOAT64 & xi
-     * @param const C_FLOAT64 & derivationFactor
-     * @param const C_FLOAT64 & resolution (unscaled resolution)
-     * @return C_FLOAT64 partial 
-     */
-    C_FLOAT64 calculatePartialDerivative(C_FLOAT64 & xi,
-                                         const C_FLOAT64 & derivationFactor,
-                                         const C_FLOAT64 & resolution);
-
-    /**
-     * Sets the Compartment related to the kinetic function
-     */
-    void setCompartment(const CCompartment* comp);
-
-    /**
-     * Gets the Compartment related to the kinetic function
-     */
-    const CCompartment* getCompartment() const;
-
-    /**
-     *  Retrieves the number of compartments the reaction is acting in.
-     *  @return "unsigned C_INT32" the compartment number
-     */
-    unsigned C_INT32 getCompartmentNumber() const;
-
-    const CFunctionParameterMap & getFunctionParameterMap() const {return mMap;}
-
-    C_INT32 getSubstrateMolecularity() const;
-    C_INT32 getProductMolecularity() const;
-    C_INT32 getModifierMolecularity() const;
-
-    /**
-     * insert operator
-     */
-    friend std::ostream & operator<<(std::ostream &os, const CReaction & d);
-
-    /**
-     * Retrieve the list of CallParameterObjects()
-     */ 
-    //
-
-    const CCallParameterPointers & getCallParameterObjects() const;
-  private:
-
-    /**
-     *  used by compile(). It finds the reference to the transient concentration in the
-     *  metabolite and tells mMap about it.
-     */ 
-    //void setParameterMapping(const std::string & parameterName, const CMetab & metab);
-
-    /**
-     *  It set the key for a parameter mapping
-     *  metabolite and tells mKeyMap about it.
-     */ 
-    //    void setParameterMappingKey(const std::string & parameterName, const CMetab & metab);
-
-    /**
-     *  used by compile(). It finds the reference to the transient concentration in the
-     *  metabolite and tells mMap about it.
-     */ 
-    //void addParameterMapping(const std::string & parameterName, const CMetab & metab);
-
-    /**
-     *  It adds a key to a Metabolite to the parameter map.
-     */ 
-    //    void addParameterMappingKey(const std::string & parameterName, const CMetab & metab);
-
-    /**
-     *
-     */
-    C_INT32 loadOld(CReadConfig & configbuffer);
-
-    /**
-     *  Returns the max number of elements for the specified usage
-     *  @param "const string" & usage
-     *  @return unsigned C_INT32 size
-     */
-    unsigned C_INT32 usageRangeSize(const std::string & usage) const;
-
-    /**
-     * Sets the scaling factor of the for the fluxes
-     */
-    void setScalingFactor();
-
-    void initObjects();
-
-    /**
-     * creates the mParamters List of CParameter objects.
-     * mMap needs to be initialized before.
-     */
-    void initializeParameters();
-
-    /**
-     * sets the pointers in mMap to the kinetic parameters. This is needed
-     * by initializeParameters() and the copy constructor.
-     */
-    void compileParameters();
-
-    /**
-     * Initializes the mMetabNameMap vectors to the right size.
-     */
-    void initializeMetaboliteNameMap();
-  };
+
+class CReaction
+{
+  // Attributes
+ private:
+  class CId2Metab
+    {
+      friend class CReaction;
+      // Attributes
+    private:
+      /**
+       *  The name of the identifier as defined by the called function
+       */
+      string mIdentifierName;
+
+      /**
+       *  The name of the metabolite
+       */
+      string mMetaboliteName;
+
+      /**
+       *  The name of the compartment the metabolite is located in
+       */
+      string mCompartmentName;
+
+      /**
+       *  A pointer to the metabolite
+       */
+      CMetab *mpMetabolite;
+
+    public:
+      // Operations
+      /**
+       *  Default Constructor
+       */
+      CId2Metab();
+
+      /**
+       *  Destructor
+       */
+      ~CId2Metab();
+    };
+
+  class CId2Param
+    {
+      friend class CReaction;
+      // Attributes
+    private:
+      /**
+       *  The name of the parameter as defined by the called function
+       */
+      string mIdentifierName;
+
+      /**
+       *  The value of the parameter
+       */
+      C_FLOAT64 mValue;
+
+    public:
+      // Operations
+      /**
+       *  Default Constructor
+       */
+      CId2Param();
+
+      /**
+       *  Destructor
+       */
+      ~CId2Param();
+      /**
+       *	Return Identifier Name		Wei Sun		
+       */
+      string getIdentifierName() const;
+
+      /**
+       *	Retun the value of the pararmeter	
+       */
+      C_FLOAT64 getValue() const;
+
+      /**
+       *	Returns the address of mValue
+       */
+      void * getValueAddr();
+
+    };
+
+  /**
+   *  The name of the step
+   */
+  string mName;
+
+  /**
+   *  The chemical equation
+   */
+  string mChemEq;
+
+  /**
+   *  A pointer to the rate function of the step
+   */
+  CBaseFunction * mFunction;
+
+  /**
+   *  The flux of the step
+   */
+  C_FLOAT64 mFlux;
+
+  /**
+   *  The reversibility of the step
+   */
+  C_INT16 mReversible;
+
+  /**
+   *  A pointer to the substrates of the step
+   */
+  vector < CId2Metab > * mSubstrates;
+
+  /**
+   *  A pointer to the products of the step 
+   */
+  vector < CId2Metab > * mProducts;
+
+  /**
+   *  A pointer to the modifiers of the step
+   */
+  vector < CId2Metab > * mModifiers;
+
+  /**
+   *  A pointer to the parameters of the step
+   */
+  vector < CId2Param > * mParameters;
+
+  /**
+   *  A pointer to the  call parameters of the rate function of the step
+   */
+  vector < CCallParameter > * mCallParameters;
+
+  /**
+   *
+   */
+  C_INT32 mFail;
+  // Operations
+ public:
+  /**
+   *  Default constructor
+   */
+  CReaction();
+
+  /**
+   *  Named constructor
+   *  @param "const string &" name
+   */
+  CReaction(const string & name);
+
+  /**
+   *  Init
+   */
+  void initialize();
+    
+  /**
+   *  Destructor
+   */
+  ~CReaction();
+
+  /**
+   *  Delete
+   */
+  void cleanup();
+    
+  /**
+   *  Assignment operator
+   */
+  CReaction & operator=(const CReaction & rhs);
+
+  /**
+   *  Loads an object with data coming from a CReadConfig object.
+   *  (CReadConfig object reads an input stream)
+   *  @param pconfigbuffer reference to a CReadConfig object.
+   *  @return mFail
+   *  @see mFail
+   */
+  C_INT32 load(CReadConfig & configbuffer);
+
+  /**
+   *  Saves the contents of the object to a CWriteConfig object.
+   *  (Which usually has a file attached but may also have socket)
+   *  @param pconfigbuffer reference to a CWriteConfig object.
+   *  @return mFail
+   *  @see mFail
+   */
+  C_INT32 save(CWriteConfig & configbuffer);
+
+  /**
+   *  Retrieves the vector of substrates
+   *  @return "vector < CId2Metab > &"
+   */
+  vector < CId2Metab > &substrates();
+
+  /**
+   *  Retrieves the vector of products
+   *  @return "vector < CId2Metab > &"
+   */
+  vector < CId2Metab > &products();
+
+  /**
+   *  Retrieves the vector of modifiers
+   *  @return "vector < CId2Metab > &"
+   */
+  vector < CId2Metab > &modifiers();
+
+  /**
+   *  Retrieves the vector of parameters
+   *  @return "vector < CId2Param > &"
+   */
+  vector < CId2Param > &parameters();
+
+  /**
+   *  Retrieves the name of the step
+   *  @return string
+   */
+  string getName() const;
+
+  /**
+   *  Retrieves the chemical equation of the step
+   *  @return string
+   */
+  string getChemEq() const;
+
+  /**
+   *  Retrieves the chemical structure of the step
+   *  @return vector < ELEMENT >
+   */
+  typedef struct ELEMENT {C_FLOAT64 mValue; string mName;};
+  vector < ELEMENT > getChemStructure() const;
+
+  /**
+   *  Retrieves the rate function of the step
+   *  @return "CBaseFunction &"
+   */
+  CBaseFunction & getFunction();
+
+  /**
+   *  Retrieves the flux of the step
+   *  @return C_FLOAT64
+   */
+  C_FLOAT64 getFlux() const;
+
+  /**
+   *  Retrieves whether the step is reversible
+   *  @return C_INT16
+   */
+  C_INT16 isReversible() const;
+
+  /**
+   *  Sets the name of the step
+   *  @param "const string &" name
+   */
+  void setName(const string & name);
+
+  /**
+   *  Sets the chemical equation of the step
+   *  @param "const string &" chemEq
+   */
+  void setChemEq(const string & chemEq);
+
+  /**
+   *  Sets the rate function of the step
+   *  @param "const string &" functionName
+   */
+  void setFunction(const string & functionName);
+
+  /**
+   *  Sets the flux of the step
+   *  @param C_FLOAT64 flux
+   */
+  void setFlux(C_FLOAT64 flux);
+
+  /**
+   *  Sets whether the step is reversible
+   *  @param C_INT16 reversible
+   */
+  void setReversible(C_INT16 reversible);
+
+  /**
+   *  Compile the step, i.e., links the metabolites and parameters with the
+   *  rate function.
+   *  @param "CCopasiVector < CMetab * > &" metabolites
+   */
+  void compile(const CCopasiVector < CCompartment > * compartments);
+
+  /**
+   *  Calculate the kinetic function
+   *  @return C_FLOAT64 velocity
+   */
+  C_FLOAT64 calculate();
+
+  /**
+   *  Retrieves the Compartment Name for substrates, products, and modifiers
+   *  @param "vector < CMetab* > &" Metabolites 
+   */
+  void old2New(const vector < CMetab* > & metabolites);
+    
+  /**
+   *	Returns the address of mFlux		Wei Sun
+   */
+  void * getFluxAddr();
+
+  /**
+   *	Returns the index of the parameter
+   */
+  C_INT32 findPara(string &Target);
+
+ private:
+  /**
+   *
+   */
+  C_INT32 loadNew(CReadConfig & configbuffer);
+
+  /**
+   *
+   */
+  C_INT32 loadOld(CReadConfig & configbuffer);
+
+  /**
+   *
+   */
+  void initIdentifiers();
+
+  /**
+   *
+   */
+  void setIdentifiers();
+
+  /**
+   *
+   */
+  void checkIdentifiers();
+
+  /**
+   *
+   */
+  ELEMENT extractElement(const string & input, 
+			 string::size_type & pos) const;
+
+  /**
+   *
+   */
+  void addElement(const ELEMENT & element,
+		  vector < ELEMENT > & structure) const;
+
+};
 
 #endif // COPASI_CReaction

@@ -2,7 +2,7 @@
 <!-- generated with COPASI (http://www.copasi.org) -->
 <COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://calvin.bioinformatics.vt.edu/copasi/schema/copasi.xsd">
   <ListOfFunctions>
-    <Function key="Function_1" name="Allosteric inhibition (MWC)" type="PreDefined" positive="false">
+    <Function key="Function_1" name="Allosteric inhibition (MWC)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate*(Ks+substrate)^(n-1)/(L*(Ks*(1+Inhibitor/Ki))^n+(Ks+substrate)^n)
@@ -18,7 +18,7 @@
         <ParameterDescription key="FunctionParameter_7" name="Ki" order="6" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_2" name="Allosteric inhibition (empirical)" type="PreDefined" positive="true">
+    <Function key="Function_2" name="Allosteric inhibition (empirical)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)/(1+substrate/Kms+product/Kmp+(Inhibitor/Ki)^n)
@@ -36,7 +36,7 @@
         <ParameterDescription key="FunctionParameter_16" name="Ki" order="8" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_3" name="Catalytic activation (irrev)" type="PreDefined" positive="false">
+    <Function key="Function_3" name="Catalytic activation (irrev)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate*Activator/((Kms+substrate)*(Ka+Activator))
@@ -50,7 +50,7 @@
         <ParameterDescription key="FunctionParameter_21" name="Ka" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_4" name="Catalytic activation (rev)" type="PreDefined" positive="true">
+    <Function key="Function_4" name="Catalytic activation (rev)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)*Activator/((1+substrate/Kms+product/Kmp)*(Ka+Activator))
@@ -67,7 +67,7 @@
         <ParameterDescription key="FunctionParameter_29" name="Ka" order="7" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_5" name="Competitive inhibition (irr)" type="PreDefined" positive="false">
+    <Function key="Function_5" name="Competitive inhibition (irr)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate/(Km+substrate+Km*Inhibitor/Ki)
@@ -81,7 +81,7 @@
         <ParameterDescription key="FunctionParameter_34" name="Ki" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_6" name="Competitive inhibition (rev)" type="PreDefined" positive="true">
+    <Function key="Function_6" name="Competitive inhibition (rev)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)/(1+substrate/Kms+product/Kmp+Inhibitor/Ki)
@@ -98,7 +98,7 @@
         <ParameterDescription key="FunctionParameter_42" name="Ki" order="7" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_7" name="Constant flux (irreversible)" type="PreDefined" positive="false">
+    <Function key="Function_7" name="Constant flux (irreversible)" type="PreDefined">
       <MathML>
         <Text>
           v
@@ -108,7 +108,7 @@
         <ParameterDescription key="FunctionParameter_43" name="v" order="0" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_8" name="Constant flux (reversible)" type="PreDefined" positive="true">
+    <Function key="Function_8" name="Constant flux (reversible)" type="PreDefined">
       <MathML>
         <Text>
           v
@@ -118,7 +118,7 @@
         <ParameterDescription key="FunctionParameter_44" name="v" order="0" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_9" name="Henri-Michaelis-Menten (irreversible)" type="PreDefined" positive="false">
+    <Function key="Function_9" name="Henri-Michaelis-Menten (irreversible)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate/(Km+substrate)
@@ -130,7 +130,7 @@
         <ParameterDescription key="FunctionParameter_47" name="V" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_10" name="Hill Cooperativity" type="PreDefined" positive="false">
+    <Function key="Function_10" name="Hill Cooperativity" type="PreDefined">
       <MathML>
         <Text>
           V*substrate^h/(Shalve^h+substrate^h)
@@ -143,7 +143,7 @@
         <ParameterDescription key="FunctionParameter_51" name="h" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_11" name="Hyperbolic modifier (irrev)" type="PreDefined" positive="false">
+    <Function key="Function_11" name="Hyperbolic modifier (irrev)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate*(1+b*Modifier/(a*Kd))/(Km*(1+Modifier/Kd)+substrate*(1+Modifier/(a*Kd)))
@@ -159,7 +159,7 @@
         <ParameterDescription key="FunctionParameter_58" name="b" order="6" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_12" name="Hyperbolic modifier (rev)" type="PreDefined" positive="true">
+    <Function key="Function_12" name="Hyperbolic modifier (rev)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)*(1+b*Modifier/(a*Kd))/(1+Modifier/Kd+(substrate/Kms+product/Kmp)*(1+Modifier/(a*Kd)))
@@ -178,7 +178,7 @@
         <ParameterDescription key="FunctionParameter_68" name="b" order="9" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_13" name="Iso Uni Uni" type="PreDefined" positive="true">
+    <Function key="Function_13" name="Iso Uni Uni" type="PreDefined">
       <MathML>
         <Text>
           Vf*(substrate-product/Keq)/(substrate*(1+product/Kii)+Kms*(1+product/Kmp))
@@ -194,7 +194,7 @@
         <ParameterDescription key="FunctionParameter_75" name="Keq" order="6" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_14" name="Mass action (irreversible)" type="MassAction" positive="false">
+    <Function key="Function_14" name="Mass action (irreversible)" type="MassAction">
       <MathML>
         <Text>
           k1*PRODUCT&lt;substrate_i&gt;
@@ -205,7 +205,7 @@
         <ParameterDescription key="FunctionParameter_77" name="substrate" order="1" role="substrate" minOccurs="1" maxOccurs="unbounded"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_15" name="Mass action (reversible)" type="MassAction" positive="true">
+    <Function key="Function_15" name="Mass action (reversible)" type="MassAction">
       <MathML>
         <Text>
           k1*PRODUCT&lt;substrate_i&gt;-k2*PRODUCT&lt;product_j&gt;
@@ -218,7 +218,7 @@
         <ParameterDescription key="FunctionParameter_81" name="product" order="3" role="product" minOccurs="1" maxOccurs="unbounded"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_16" name="Mixed activation (irrev)" type="PreDefined" positive="false">
+    <Function key="Function_16" name="Mixed activation (irrev)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate*Activator/(Kms*(Kas+Activator)+substrate*(Kac+Activator))
@@ -233,7 +233,7 @@
         <ParameterDescription key="FunctionParameter_87" name="Kac" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_17" name="Mixed activation (rev)" type="PreDefined" positive="true">
+    <Function key="Function_17" name="Mixed activation (rev)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)*Activator/(Kas+Activator+(substrate/Kms+product/Kmp)*(Kac+Activator))
@@ -251,7 +251,7 @@
         <ParameterDescription key="FunctionParameter_96" name="Kac" order="8" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_18" name="Mixed inhibition (irr)" type="PreDefined" positive="false">
+    <Function key="Function_18" name="Mixed inhibition (irr)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate/(Km*(1+Inhibitor/Kis)+substrate*(1+Inhibitor/Kic))
@@ -266,7 +266,7 @@
         <ParameterDescription key="FunctionParameter_102" name="Kic" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_19" name="Mixed inhibition (rev)" type="PreDefined" positive="true">
+    <Function key="Function_19" name="Mixed inhibition (rev)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)/(1+Inhibitor/Kis+(substrate/Kms+product/Kmp)*(1+Inhibitor/Kic))
@@ -284,7 +284,7 @@
         <ParameterDescription key="FunctionParameter_111" name="Kic" order="8" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_20" name="Noncompetitive inhibition (irr)" type="PreDefined" positive="false">
+    <Function key="Function_20" name="Noncompetitive inhibition (irr)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate/((Km+substrate)*(1+Inhibitor/Ki))
@@ -298,7 +298,7 @@
         <ParameterDescription key="FunctionParameter_116" name="Ki" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_21" name="Noncompetitive inhibition (rev)" type="PreDefined" positive="true">
+    <Function key="Function_21" name="Noncompetitive inhibition (rev)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)/((1+substrate/Kms+product/Kmp)*(1+Inhibitor/Ki))
@@ -315,7 +315,7 @@
         <ParameterDescription key="FunctionParameter_124" name="Ki" order="7" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_22" name="Ordered Bi Bi" type="PreDefined" positive="true">
+    <Function key="Function_22" name="Ordered Bi Bi" type="PreDefined">
       <MathML>
         <Text>
           Vf*(substratea*substrateb-productp*productq/Keq)/(substratea*substrateb*(1+productp/Kip)+Kma*substrateb+Kmb*(substratea+Kia)+Vf/(Vr*Keq)*(Kmq*productp*(1+substratea/Kia)+productq*(Kmp*(1+Kia*substrateb/(Kma*Kmb))+productp*(1+substrateb/Kib))))
@@ -338,7 +338,7 @@
         <ParameterDescription key="FunctionParameter_138" name="Kip" order="13" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_23" name="Ordered Bi Uni" type="PreDefined" positive="true">
+    <Function key="Function_23" name="Ordered Bi Uni" type="PreDefined">
       <MathML>
         <Text>
           Vf*(substratea*substrateb-product/Keq)/(substratea*substrateb+Kma*substrateb+Kmb*substratea+Vf/(Vr*Keq)*(Kmp+product*(1+substratea/Kia)))
@@ -357,7 +357,7 @@
         <ParameterDescription key="FunctionParameter_148" name="Vr" order="9" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_24" name="Ordered Uni Bi" type="PreDefined" positive="true">
+    <Function key="Function_24" name="Ordered Uni Bi" type="PreDefined">
       <MathML>
         <Text>
           Vf*(substrate-productp*productq/Keq)/(Kms+substrate*(1+productp/Kip)+Vf/(Vr*Keq)*(Kmq*productp+Kmp*productq+productp*productq))
@@ -376,7 +376,7 @@
         <ParameterDescription key="FunctionParameter_158" name="Vr" order="9" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_25" name="Ping Pong Bi Bi" type="PreDefined" positive="true">
+    <Function key="Function_25" name="Ping Pong Bi Bi" type="PreDefined">
       <MathML>
         <Text>
           Vf*(substratea*substrateb-productp*productq/Keq)/(substratea*substrateb*(1+productq/Kiq)+Kma*substrateb+Kmb*substratea+Vf/(Vr*Keq)*(Kmq*productp*(1+substratea/Kia)+productq*(Kmp+productp)))
@@ -398,7 +398,7 @@
         <ParameterDescription key="FunctionParameter_171" name="Kiq" order="12" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_26" name="Reversible Hill 1 modifier" type="PreDefined" positive="true">
+    <Function key="Function_26" name="Reversible Hill 1 modifier" type="PreDefined">
       <MathML>
         <Text>
           Vf*substrate/Shalve*(1-product/(substrate*Keq))*(substrate/Shalve+product/Phalve)^(h-1)/((1+(Modifier/Mhalve)^h)/(1+alpha*(Modifier/Mhalve)^h)+(substrate/Shalve+product/Phalve)^h)
@@ -417,7 +417,7 @@
         <ParameterDescription key="FunctionParameter_181" name="alpha" order="9" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_27" name="Reversible Hill 2 modifiers" type="PreDefined" positive="true">
+    <Function key="Function_27" name="Reversible Hill 2 modifiers" type="PreDefined">
       <MathML>
         <Text>
           Vf*substrate/Shalve*(1-product/(substrate*Keq))*(substrate/Shalve+product/Phalve)^(h-1)/((1+(ModifierA/MAhalve)^h+(ModifierB/MBhalve)^h)/(1+alphaA*(ModifierA/MAhalve)^h+alphaB*(ModifierB/MBhalve)^h+alphaA*alphaB*alphaAB*(ModifierA/MAhalve)^h*(ModifierB/MBhalve)^h)+(substrate/Shalve+product/Phalve)^h)
@@ -440,7 +440,7 @@
         <ParameterDescription key="FunctionParameter_195" name="alphaAB" order="13" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_28" name="Reversible Hill" type="PreDefined" positive="true">
+    <Function key="Function_28" name="Reversible Hill" type="PreDefined">
       <MathML>
         <Text>
           Vf*substrate/Shalve*(1-product/(substrate*Keq))*(substrate/Shalve+product/Phalve)^(h-1)/(1+(substrate/Shalve+product/Phalve)^h)
@@ -456,7 +456,7 @@
         <ParameterDescription key="FunctionParameter_202" name="h" order="6" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_29" name="Reversible Michaelis-Menten" type="PreDefined" positive="true">
+    <Function key="Function_29" name="Reversible Michaelis-Menten" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)/(1+substrate/Kms+product/Kmp)
@@ -471,7 +471,7 @@
         <ParameterDescription key="FunctionParameter_208" name="Vr" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_30" name="Specific activation (irrev)" type="PreDefined" positive="false">
+    <Function key="Function_30" name="Specific activation (irrev)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate*Activator/(Kms*Ka+(Kms+substrate)*Activator)
@@ -485,7 +485,7 @@
         <ParameterDescription key="FunctionParameter_213" name="Ka" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_31" name="Specific activation (rev)" type="PreDefined" positive="true">
+    <Function key="Function_31" name="Specific activation (rev)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)*Activator/(Ka+(1+substrate/Kms+product/Kmp)*Activator)
@@ -502,7 +502,7 @@
         <ParameterDescription key="FunctionParameter_221" name="Ka" order="7" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_32" name="Substrate activation (irr)" type="PreDefined" positive="false">
+    <Function key="Function_32" name="Substrate activation (irr)" type="PreDefined">
       <MathML>
         <Text>
           V*(substrate/Ksa)^2/(1+substrate/Ksc+substrate/Ksa+(substrate/Ksa)^2)
@@ -515,7 +515,7 @@
         <ParameterDescription key="FunctionParameter_225" name="Ksa" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_33" name="Substrate inhibition (irr)" type="PreDefined" positive="false">
+    <Function key="Function_33" name="Substrate inhibition (irr)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate/(Km+substrate+Km*(substrate/Ki)^2)
@@ -528,7 +528,7 @@
         <ParameterDescription key="FunctionParameter_229" name="Ki" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_34" name="Substrate inhibition (rev)" type="PreDefined" positive="true">
+    <Function key="Function_34" name="Substrate inhibition (rev)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)/(1+substrate/Kms+product/Kmp+(substrate/Ki)^2)
@@ -544,7 +544,7 @@
         <ParameterDescription key="FunctionParameter_236" name="Ki" order="6" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_35" name="Uncompetitive inhibition (irr)" type="PreDefined" positive="false">
+    <Function key="Function_35" name="Uncompetitive inhibition (irr)" type="PreDefined">
       <MathML>
         <Text>
           V*substrate/(Km+substrate*(1+Inhibitor/Ki))
@@ -558,7 +558,7 @@
         <ParameterDescription key="FunctionParameter_241" name="Ki" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_36" name="Uncompetitive inhibition (rev)" type="PreDefined" positive="true">
+    <Function key="Function_36" name="Uncompetitive inhibition (rev)" type="PreDefined">
       <MathML>
         <Text>
           (Vf*substrate/Kms-Vr*product/Kmp)/(1+(substrate/Kms+product/Kmp)*(1+Inhibitor/Ki))
@@ -575,7 +575,7 @@
         <ParameterDescription key="FunctionParameter_249" name="Ki" order="7" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_37" name="Uni Uni" type="PreDefined" positive="true">
+    <Function key="Function_37" name="Uni Uni" type="PreDefined">
       <MathML>
         <Text>
           Vf*(substrate-product/Keq)/(substrate+Kms*(1+product/Kmp))

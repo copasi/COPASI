@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.21 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/27 03:11:25 $
-   End CVS Header */
-
 /**
  *  CTrajectoryMethod class.
  *  This class describes the interface to all integration methods.
@@ -20,100 +12,52 @@
 #include "CTrajectoryMethod.h"
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
-#include "model/CCompartment.h"
 
-CTrajectoryValidSubTypes::CTrajectoryValidSubTypes():
-    CVector< CCopasiMethod::SubType >(2)
-{
-  CCopasiMethod::SubType * pSubType = array();
-
-  *pSubType++ = CCopasiMethod::deterministic;
-  *pSubType++ = CCopasiMethod::stochastic;
-}
-
-/**
- * Destructor.
- */
-CTrajectoryValidSubTypes::~CTrajectoryValidSubTypes() {}
-
-const CTrajectoryValidSubTypes CTrajectoryMethod::ValidSubTypes;
-
-#ifdef XXXX
-const CVector< CCopasiMethod::SubType >
-CTrajectoryMethod::ValidSubTypes(2,
-                                 CCopasiMethod::deterministic,
-                                 CCopasiMethod::stochastic,
-                                 CCopasiMethod::hybrid);
-#endif // XXXX
-
-bool CTrajectoryMethod::isValidSubType(const CCopasiMethod::SubType & subType)
-{
-  unsigned C_INT32 i, imax = CTrajectoryMethod::ValidSubTypes.size();
-
-  for (i = 0; i < imax; i++)
-    if (CTrajectoryMethod::ValidSubTypes[i] == subType) return true;
-
-  return false;
-}
-
-CTrajectoryMethod *
-CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-    CTrajectoryProblem * pProblem)
-{
-  CTrajectoryMethod * pMethod = NULL;
-
-  switch (subType)
-    {
-    case unset:
-    case deterministic:
-      pMethod = new CLsodaMethod();
-      break;
-
-    case stochastic:
-      pMethod = CStochMethod::createStochMethod(pProblem);
-      break;
-
-    case hybrid:
-      pMethod = CHybridMethod::createHybridMethod(pProblem);
-      break;
-
-    default:
-      fatalError();
-    }
-  return pMethod;
-}
+const string CTrajectoryMethod::MethodTypeName[] =
+  {
+    "unspecified",
+    "deterministic",
+    "stochastic",
+    "hybrid"
+  };
 
 /**
  *  Default constructor.
+ *  @param "CState *" currentState (Default = NULL)
  */
-CTrajectoryMethod::CTrajectoryMethod(const CCopasiMethod::SubType & subType,
-                                     const CCopasiContainer * pParent) :
-    CCopasiMethod(CCopasiTask::timeCourse, subType, pParent),
-    mpCurrentState(NULL),
+CTrajectoryMethod::CTrajectoryMethod(CState * currentState) :
+    CMethodParameterList(),
+    mName("No Name"),
+    mType(CTrajectoryMethod::unspecified),
+    mpCurrentState(currentState),
     mpProblem(NULL)
-{CONSTRUCTOR_TRACE;}
+{CONSTRUCTOR_TRACE; }
 
 /**
  *  Copy constructor.
  *  @param "const CTrajectoryMethod &" src
  */
-CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
-                                     const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
+CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src):
+    CMethodParameterList(src),
+    mName(src.mName),
+    mType(src.mType),
     mpCurrentState(src.mpCurrentState),
     mpProblem(src.mpProblem)
-{CONSTRUCTOR_TRACE;}
+{CONSTRUCTOR_TRACE; }
 
 /**
  *  Destructor.
  */
 CTrajectoryMethod::~CTrajectoryMethod()
-{DESTRUCTOR_TRACE;}
+{DESTRUCTOR_TRACE; }
 
+/**
+ *  Set a pointer to the current state.
+ *  This method is used by CTrajectory 
+ *  @param "CState *" currentState
+ */
 void CTrajectoryMethod::setCurrentState(CState * currentState)
-{
-  mpCurrentState = currentState;
-}
+{mpCurrentState = currentState; }
 
 /**
  *  Set a pointer to the problem.
@@ -121,7 +65,7 @@ void CTrajectoryMethod::setCurrentState(CState * currentState)
  *  @param "CTrajectoryProblem *" problem
  */
 void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
-{mpProblem = problem;}
+{mpProblem = problem; }
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
@@ -132,8 +76,7 @@ void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
  *  @param "const double &" deltaT
  *  @return "const double" actualDeltaT
  */
-const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
-{return 0.0;}
+const double CTrajectoryMethod::step(const double & deltaT) { return 0.0; }
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
@@ -144,6 +87,6 @@ const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
  *  @param "const CState *" initialState
  *  @return "const double &" actualDeltaT
  */
-const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT),
-                                     const CState * C_UNUSED(initialState))
-{return 0.0;}
+const double CTrajectoryMethod::step(const double & deltaT,
+                                     const CState * initialState)
+{ return 0.0; }

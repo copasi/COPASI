@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.1 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:43 $
+   $Date: 2004/05/19 15:54:00 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,25 +17,21 @@
 #ifndef COPASI_TABLE_WIDGET_H
 #define COPASI_TABLE_WIDGET_H
 
-#include <vector>
-
-//#include <qtable.h>
+#include <qtable.h>
 #include "copasi.h"
 #include "copasiWidget.h"
 
 class QPushButton;
 class QGridLayout;
 class QTable;
-class QHBoxLayout;
 class MyTable;
-class CCopasiObject;
 
 class CopasiTableWidget : public CopasiWidget
   {
     Q_OBJECT
 
   public:
-    CopasiTableWidget(QWidget *parent, bool ro, const char * name = 0, WFlags f = 0);
+    CopasiTableWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
@@ -46,12 +42,10 @@ class CopasiTableWidget : public CopasiWidget
     virtual void slotTableSelectionChanged();
     virtual void slotValueChanged(int, int);
     virtual void slotCurrentChanged(int, int);
-    virtual void slotTableDelKey();
 
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
     virtual void slotBtnDeleteClicked();
-    virtual void slotBtnNewClicked();
 
     //void resizeEvent(QResizeEvent * re);
 
@@ -67,9 +61,6 @@ class CopasiTableWidget : public CopasiWidget
     QPushButton* btnOK;
     QPushButton* btnCancel;
     QPushButton* btnDelete;
-    QPushButton* btnNew;
-    //    QHBoxLayout* mHLayout;
-    QHBoxLayout* mExtraLayout;
     std::vector<std::string> mKeys;
 
     C_INT32 numCols;
@@ -77,11 +68,8 @@ class CopasiTableWidget : public CopasiWidget
     std::vector<bool> mFlagDelete;
     std::vector<bool> mFlagNew;
     std::vector<bool> mFlagRenamed;
-    std::vector<bool> mFlagRO;
 
-    //bool mIgnoreUpdates;
-    bool mRO;
-    ListViews::ObjectType mOT;
+    bool mIgnoreUpdates;
 
     //These are the methods that need to be implemented by specialized widgets:
 
@@ -93,7 +81,7 @@ class CopasiTableWidget : public CopasiWidget
     /**
      * returns a list of objects that should be displayed
      */
-    virtual std::vector<const CCopasiObject*> getObjects() const = 0;
+    virtual std::vector<const CCopasiObject*> getObjects() const;
 
     /**
      * fills one table row with the data from one object
@@ -108,7 +96,7 @@ class CopasiTableWidget : public CopasiWidget
     /**
      * creates a new object
      */
-    virtual CCopasiObject* createNewObject(const std::string & name) = 0;
+    virtual CCopasiObject* createNewObject(const std::string & name);
 
     /**
      * deletes objects. Performs all additional tasks, like asking the user, ...
@@ -117,14 +105,14 @@ class CopasiTableWidget : public CopasiWidget
 
     /**
      * this is used to fill a row of the table when a new object is added to the table.
-     * it fills only the data columns, not the name. It should not fill column exc.
+     * it fills only the data columns, not the name.
      */
-    virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc);
+    virtual void defaultTableLineContent(unsigned C_INT32 row);
 
     /**
      * the prefix that is used to construct new object names
      */
-    virtual QString defaultObjectName() const = 0;
+    virtual QString defaultObjectName() const;
   };
 
 #endif

@@ -1,100 +1,49 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiWidget.cpp,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/09/21 22:12:36 $
-   End CVS Header */
-
 // copasiWidget.cpp: implementation of the CopasiWidget class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "copasiWidget.h"
-#include "listviews.h"
-#include "qvaluelist.h" 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction of CopasiWidget
-//////////////////////////////////////////////////////////////////////
-int CopasiWidget::realMinHeight = 0;
-int CopasiWidget::realMinWidth = 0;
 
-DataModelGUI* CopasiWidget::dataModel = NULL;
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
 
 CopasiWidget::CopasiWidget(QWidget * parent, const char * name, WFlags f)
-    : QWidget (parent, name, f),
-    mIgnoreUpdates(false)
+    : QWidget (parent, name, f)
 {
-  pListView = (ListViews*)parent;
-  dataModel = ListViews::getDataModel();
-  bInitialized = false;
-  bSetMinSize = false;
+  // maxMinWidth=0;
+  // maxMinHeight=0;
 }
+
+CopasiWidget::~CopasiWidget()
+{}
 
 void CopasiWidget::resize (int w, int h)
 {
-  if (!bInitialized)
-    {
-      bInitialized = true;
-      int tmpW = realMinWidth;
-      int tmpH = realMinHeight;
-      if (minimumSizeHint().width() > realMinWidth)
-        realMinWidth = minimumSizeHint().width();
-      if (minimumSizeHint().height() > realMinHeight)
-        realMinHeight = minimumSizeHint().height();
-      if ((tmpW != realMinWidth) || (tmpH != realMinHeight))
-        {
-          //   ListViews* qParent=(ListViews*)topLevelWidget();
-          QValueList<int> list = pListView->sizes();
-          pListView->setMinimumSize(realMinWidth + list[0], realMinHeight);
-          //   qParent->resize(realMinWidth, realMinHeight);
-        }
-      return;
-    }
-  if (!bSetMinSize)
-    {
-      setMinimumSize(realMinWidth, realMinHeight);
-      bSetMinSize = true;
-    }
-  //after initialization
-  //realMinWidth and realMinHeight are set,
-  QWidget::resize(w, h);
+  /* if (w<CopasiWidget::maxMinWidth)
+    w=CopasiWidget::maxMinWidth;
+   else
+    CopasiWidget::maxMinWidth=w;
+   if (h<CopasiWidget::maxMinHeight)
+    h=CopasiWidget::maxMinHeight;
+   else
+    CopasiWidget::maxMinHeight=h;
+  */ QWidget::resize(w, h);
 }
-
-void CopasiWidget::resizeEvent (QResizeEvent * event)
+void CopasiWidget::resizeEvent (QResizeEvent *)
 {
-  int w = event->size().width();
-  int h = event->size().height();
-  // ListViews* qParent = (ListViews*)topLevelWidget();
-  // QValueList<int> list = pListView->sizes();
-  // pListView->setMinimumSize(realMinWidth+list[0], realMinHeight);
-  // if ((qParent->size().width()<realMinWidth || qParent->size().height()<realMinHeight))
-  //  qParent->setMinimumSize(realMinWidth, realMinHeight);
-  resize(w, h);
-  // QWidget::resizeEvent (event);
+  int i = 0;
 }
 
-bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{return true;}
-
-bool CopasiWidget::leave()
-{return true;}
-
-bool CopasiWidget::enter(const std::string & C_UNUSED(key))
-{return true;}
-
-bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+void CopasiWidget::resize (const QSize &)
 {
-  mIgnoreUpdates = true;
-  ListViews::notify(objectType, action, key);
-  mIgnoreUpdates = false;
-
-  return true;
+  int i = 0;
 }
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction of CopasiParametersWidget
-//////////////////////////////////////////////////////////////////////
-CopasiParametersWidget::CopasiParametersWidget(QWidget * parent, const char * name, WFlags f)
-    : CopasiWidget (parent, name, f)
-{}
+void CopasiWidget::setGeometry (int x, int y, int w, int h)
+{
+  int i = 0;
+}
+void CopasiWidget::setGeometry (const QRect &)
+{
+  int i = 0;
+}

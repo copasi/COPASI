@@ -1,46 +1,64 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.46 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/08/19 15:09:32 $
-   End CVS Header */
+#include "DataModel.h"
 
-#include "DataModel.h" 
-//#include "DataModel.txt.h"
-#include "function/CFunctionDB.h"
-#include "sbml/SBMLImporter.h"
-#include "sbml/SBMLExporter.h"
-
-#include "utilities/CGlobals.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "scan/CScanTask.h"
-#include "report/CReportDefinitionVector.h"
-#include "plot/CPlotSpec2Vector.h"
-#include "optimization/COptFunction.h"
-#include "xml/CCopasiXML.h"
-
-DataModel::DataModel()
+DataModel::DataModel(char* fileName)
 {
-  //this->populateData();
+  this->populateData(fileName);
   model = NULL;
-  mChanged = false;
   trajectorytask = NULL;
   steadystatetask = NULL;
-  scantask = NULL;
-  reportdefinitions = NULL;
-  plotspecs = NULL;
-  pOptFunction = NULL;
 }
 
-void DataModel::createModel()
+Folder* DataModel::searchFolderList(int id)
 {
-  mChanged = false;
+  for (Folder* f = folderList.first(); f; f = folderList.next())
+    if (f->getID() == id)
+      return f;
 
+  return NULL;
+}
+
+Node<Folder> * DataModel::addData(Folder* parent, Folder* child)
+{
+  myTree.addSibling(child, parent);
+  folderList.append(child);
+  return /*last = */ myTree.search(child, myTree.getRoot());    //propably needs to return
+}
+
+void DataModel::removeData(Folder* i)
+{
+  Node<Folder>* node = myTree.search(i, myTree.getRoot());
+
+  if (node)
+    {
+      //last = node;
+      //notify(DELETE);
+
+      myTree.deleteNode(i);
+      folderList.remove(i);
+    }
+
+  //last = NULL;
+}
+
+void DataModel::removeAllChildren(Folder* f)
+{
+  Node<Folder>* node = myTree.search(f, myTree.getRoot());
+  Folder* fff;
+
+  if (!node->child) return;
+
+  while (node->child)
+    {
+      fff = node->child->info;
+      removeData(node->child->info);
+      delete fff;
+    }
+}
+
+void DataModel::createModel(const char* fileName)
+{
   pdelete(model);
   model = new CModel();
-  Copasi->pModel = model;
 
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
@@ -49,198 +67,89 @@ void DataModel::createModel()
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->getProblem()->setModel(model);
+  searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //32=Time course
 
-  pdelete(scantask);
-  scantask = new CScanTask();
-  scantask->getProblem()->setModel(model);
-
-  pdelete(reportdefinitions);
-  reportdefinitions = new CReportDefinitionVector();
-
-  pdelete(plotspecs);
-  plotspecs = new CPlotSpec2Vector();
-
-  pdelete(pOptFunction);
-  pOptFunction = new COptFunction();
+  saveModel(fileName);
 }
 
 void DataModel::loadModel(const char* fileName)
 {
-  mChanged = false;
+  pdelete(model);
+  CReadConfig inbuf(fileName);
+  model = new CModel();
+  model->load(inbuf);
 
-  std::ifstream File(fileName);
-  std::string Line;
-  File >> Line;
+  pdelete(steadystatetask);
+  steadystatetask = new CSteadyStateTask();
+  steadystatetask->load(inbuf);
 
-  if (!Line.compare(0, 8, "Version="))
-    {
-      File.close();
-      pdelete(model);
-      CReadConfig inbuf(fileName);
-      model = new CModel();
-      model->load(inbuf);
+  pdelete(trajectorytask);
+  trajectorytask = new CTrajectoryTask();
+  trajectorytask->load(inbuf);
+  searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //32=Time course
 
-      pdelete(steadystatetask);
-      steadystatetask = new CSteadyStateTask();
-      steadystatetask->load(inbuf);
+  Copasi->pOutputList->load(inbuf);
 
-      pdelete(trajectorytask);
-      trajectorytask = new CTrajectoryTask();
-      trajectorytask->load(inbuf);
-
-      pdelete(scantask);
-      scantask = new CScanTask();
-      scantask->getProblem()->setModel(model);
-
-      pdelete(reportdefinitions);
-      reportdefinitions = new CReportDefinitionVector();
-
-      pdelete(plotspecs);
-      plotspecs = new CPlotSpec2Vector();
-
-      pdelete(pOptFunction);
-      pOptFunction = new COptFunction();
-    }
-  else if (!Line.compare(0, 5, "<?xml"))
-    {
-      std::cout << "XML Format" << std::endl;
-      File.seekg(0, std::ios_base::beg);
-
-      CCopasiXML XML;
-
-      XML.setFunctionList(Copasi->pFunctionDB->loadedFunctions());
-
-      CReportDefinitionVector * pNewReports = new CReportDefinitionVector();
-      XML.setReportList(*pNewReports);
-
-      CCopasiVectorN< CCopasiTask > TaskList;
-      XML.setTaskList(TaskList);
-
-      CPlotSpec2Vector * pNewPlotSpecs = new CPlotSpec2Vector();
-      XML.setPlotList(*pNewPlotSpecs);
-
-      XML.load(File);
-
-      pdelete(model);
-      model = XML.getModel();
-
-      pdelete(steadystatetask);
-      pdelete(trajectorytask);
-      pdelete(scantask);
-
-      unsigned C_INT32 i, imax = TaskList.size();
-      for (i = 0; i < imax; i++)
-        {
-          switch (TaskList[i]->getType())
-            {
-            case CCopasiTask::steadyState:
-              steadystatetask = dynamic_cast< CSteadyStateTask * >(TaskList[i]);
-              break;
-
-            case CCopasiTask::timeCourse:
-              trajectorytask = dynamic_cast< CTrajectoryTask * >(TaskList[i]);
-              break;
-
-            case CCopasiTask::scan:
-              scantask = dynamic_cast< CScanTask * >(TaskList[i]);
-              break;
-            }
-        }
-
-      if (!steadystatetask) steadystatetask = new CSteadyStateTask();
-      steadystatetask->getProblem()->setModel(model);
-
-      if (!trajectorytask) trajectorytask = new CTrajectoryTask();
-      trajectorytask->getProblem()->setModel(model);
-
-      if (!scantask) scantask = new CScanTask();
-      scantask->getProblem()->setModel(model);
-
-      pdelete(reportdefinitions);
-      reportdefinitions = pNewReports;
-
-      pdelete(plotspecs);
-      plotspecs = pNewPlotSpecs;
-
-      pdelete(pOptFunction);
-      pOptFunction = new COptFunction();
-    }
-
-  if (model) model->setCompileFlag();
+  //  steadystatetask->compile();
 }
 
 void DataModel::saveModel(const char* fileName)
 {
   if (fileName == NULL) return;
 
-  model->compileIfNecessary();
-
   CCopasiXML XML;
+
   std::ofstream os(fileName);
 
   XML.setModel(*model);
-  XML.setReportList(*reportdefinitions);
-
-  CCopasiVectorN< CCopasiTask > TaskList;
-  if (steadystatetask) TaskList.add(steadystatetask);
-  if (trajectorytask) TaskList.add(trajectorytask);
-  //  if (scantask) TaskList.add(scantask);
-  XML.setTaskList(TaskList);
-
-  XML.setPlotList(*plotspecs);
   XML.save(os);
 }
 
-bool DataModel::isChanged() const {return mChanged;}
-
-void DataModel::changed(const bool & changed) {mChanged = changed;}
-
-void DataModel::importSBML(const char* fileName)
+void DataModel::populateData(char* fileName)
 {
-  mChanged = false;
+  QString str = QString("Folder ");
+  Folder *f = new Folder(0, str);
+  f->setID(0, true);
+  myTree.addRoot(f);
+  folderList.append(f);
 
-  pdelete(pOptFunction);
-  pOptFunction = new COptFunction();
+  const int MAX = 80;
+  char str1[MAX];
 
-  pdelete(model);
-  SBMLImporter* importer = new SBMLImporter();
-  try
+  std::ifstream in(fileName);
+
+  while (!in.eof())
     {
-      model = importer->readSBML(fileName, Copasi->pFunctionDB);
+      in.getline(str1, MAX);
+      QString data(str1);
+
+      if (str1 == "")
+        break;
+
+      int first = data.find(':');
+
+      int second = data.find(':', first + 1);
+
+      int parentId = data.mid(0, first).toInt();
+
+      int myId = data.mid(first + 1, second - first - 1).toInt();
+
+      QString myStr = data.mid(second + 1, data.length() - second - 1);
+
+      str = QString(myStr);
+
+      Folder* parent = this->searchFolderList(parentId);
+
+      Folder* f1;
+
+      f1 = (parentId == 0) ? new Folder(0, str) : new Folder(parent, str);
+
+      f1->setID(myId, true);
+
+      myTree.addSibling(f1, parent);
+
+      folderList.append(f1);
     }
-  catch (StdException ex)
-  {}
-  if (model == NULL)
-    {
-      model = new CModel();
-    }
 
-  Copasi->pModel = model;
-
-  pdelete(steadystatetask);
-  steadystatetask = new CSteadyStateTask();
-  steadystatetask->getProblem()->setModel(model);
-
-  pdelete(trajectorytask);
-  trajectorytask = new CTrajectoryTask();
-  trajectorytask->getProblem()->setModel(model);
-
-  pdelete(scantask);
-  scantask = new CScanTask();
-  scantask->getProblem()->setModel(model);
-
-  pdelete(reportdefinitions);
-  reportdefinitions = new CReportDefinitionVector();
-
-  pdelete(plotspecs);
-  plotspecs = new CPlotSpec2Vector();
-}
-
-void DataModel::exportSBML(const char* fileName)
-{
-  if (fileName == NULL) return;
-
-  SBMLExporter exporter;
-
-  exporter.exportSBML(model, fileName);
+  in.close();
 }

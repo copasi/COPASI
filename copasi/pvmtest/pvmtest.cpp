@@ -1,28 +1,28 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/pvmtest/pvmtest.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:30:00 $
-   End CVS Header */
+// Main
+//
+// (C) Pedro Mendes 2000
+//
+
+// #include <iostream>
+// #include <fstream>
+// #include <string>
+// #include <strstream>
+// #include <vector>
+// #include <iomanip>
+// #include <algorithm>
 
 #define COPASI_MAIN
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
-#include "optimization/COptMethod.h"
-#include "optimization/CRealProblem.h"
-#include "utilities/CCopasiException.h"
+#include "optimization/optimization.h"
 
 C_INT32 TestOptimization(void);     //yohe: new
 
 C_INT main(C_INT argc, char *argv[])
 {
   cout << "Starting main program." << endl;
-
-  CCopasiContainer::init();
   Copasi = new CGlobals;
-
   Copasi->setArguments(argc, argv);
 
   try
@@ -35,32 +35,33 @@ C_INT main(C_INT argc, char *argv[])
       cout << Exception.getMessage().getText() << endl;
     }
 
-  pdelete(Copasi);
-  pdelete(CCopasiContainer::Root);
-
+  delete Copasi;
   cout << "Leaving main program." << endl;
   return 0;
-} // end of main
+}
 
 C_INT32 TestOptimization(void)
 {
-  int i, num_params;
+  int i;
   cout << "TestOptimization() begins --- " << endl;
-  COptMethod * CRand = COptMethod::createMethod();
+  COptAlgorithm * CRand = new COptAlgorithmRand();
 
   CRealProblem *CReal = new CRealProblem();
   CRand->setProblem(CReal);
+  //CRandom *testRand = new CRandom(2);
+  //CRandom *rand;
+  //CRandom::Type t;
+  //t=CRandom::r250;
+  //rand = CRandom::createGenerator(t,2);
 
   // set parameter numbers....
-  /**** hard coded num of params ***/
-  num_params = 10;
-  CReal->setParameterNum(num_params);
+  CReal->setParameterNum(5);
 
   // set the individual parameters
 
   CRand->setValue(0, 100000);
 
-  for (i = 0; i < num_params; i++)
+  for (i = 0; i < 5; i++)
     {
       CReal->setParameterMin(i, -5);
       CReal->setParameterMax(i, 2);
@@ -68,12 +69,10 @@ C_INT32 TestOptimization(void)
 
   CRand->optimise();
   cout << "result---best values";
-  for (i = 0; i < num_params; i++)
+  for (i = 0; i < 5; i++)
     {
       cout << CReal->getBestValue(i);
       cout << "\n";
     }
-
-  pdelete(CRand);
   return 0;
 }

@@ -1,44 +1,56 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:17 $
-   End CVS Header */
-
 #include <fstream>
 #include <string>
 #include <vector>
-#include <qmainwindow.h>
+#include <qmainwindow.h> 
+//#include <qtoolbar.h>
 #include <qtoolbutton.h>
-#include "copasi.h"
+#include <qtimer.h>
 
+class PlotTaskSpec;
 class CopasiPlot;
-class CPlotSpecification;
-class CPlotSpec2Vector;
 
 class PlotWindow : public QMainWindow
   {
     Q_OBJECT
 
-  private:
+    std::fstream targetfile;
+
+    // the write position
+    std::streampos pos;
+
+    // a timer that controls automatic updates of the plot
+    QTimer* timer;
+
+    // the size of the increment
+    int stepSize;
+
+    // the count of the steps
+    int count;
+
+    // points to the specification of the plot inside this window - temporary perhaps
+    PlotTaskSpec* ptspec;
 
     // points to the plot instance inside this window
     CopasiPlot *plot;
 
   public:
-    PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec);
-
-    bool initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec);
-
     QToolButton * zoomButton;
+
+    PlotWindow(std::string filename);
 
     ~PlotWindow();
 
-    void takeData(const std::vector<C_FLOAT64> & data);
-    void updatePlot();
+    void writeFile(int step);
+
+    // reloads the plot inside the window, updating it as necessary
+    void reloadPlot(PlotTaskSpec* plotspec, std::vector<int> deletedCurveKeys);
 
   private slots:
+    void append();
+
+    // let the plot updates itself at regular intervals - the length of the interval is fixed for now
+    void autoUpdate(bool toggled);
+
     void enableZoom();
 
     void mouseReleased(const QMouseEvent &e);

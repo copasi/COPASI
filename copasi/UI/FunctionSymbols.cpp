@@ -1,33 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.32 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:45 $
-   End CVS Header */
-
-/*******************************************************************
+/***********************************************************************
  **  $ CopasiUI/FunctionSymbols.cpp                 
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
- ** Function Symbols
- ********************************************************************/
+ ** This file is used to create the GUI FrontPage for the  information
+ ** obtained from the data model about the Metabolites----It is 
+ ** Basically the First level of Metabolites.
+ ************************************************************************/
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
-#include <qfont.h>
-
 #include "FunctionSymbols.h"
-#include "mathmodel/CMathModel.h"
-#include "mathmodel/CMathSymbol.h"
-#include "utilities/CGlobals.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
-#include "function/CFunctionDB.h"
-#include "function/CFunction.h"
-#include "qtUtilities.h"
+#include <qfont.h>
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -45,12 +29,10 @@
  *  for more information about these flags.
  */
 FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
-    : CopasiWidget(parent, name, f)
+    : QWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(this, "tblFunctionSymbols");
-  table->setNumCols(3);
-  table->setNumRows(-1);
+  table = new MyTable(0, 3, this, "tblFunctionSymbols");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
@@ -59,78 +41,96 @@ FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(1, "Function");
   tableHeader->setLabel(2, "Parameters");
 
-  //btnOK = new QPushButton("&OK", this);
-  //btnCancel = new QPushButton("&Cancel", this);
+  btnOK = new QPushButton("&OK", this);
+  btnCancel = new QPushButton("&Cancel", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
   //To match the Table left Vertical Header Column Width.
   hBoxLayout->addSpacing(32);
 
-  /*hBoxLayout->addSpacing(50);
+  hBoxLayout->addSpacing(50);
   hBoxLayout->addWidget(btnOK);
   hBoxLayout->addSpacing(5);
   hBoxLayout->addWidget(btnCancel);
-  hBoxLayout->addSpacing(50);*/
+  hBoxLayout->addSpacing(50);
 
   table->sortColumn (0, true, true);
   table->setSorting (true);
   table->setFocusPolicy(QWidget::WheelFocus);
-  //table->setProtected(true);
 
   // signals and slots connections
-  connect(table, SIGNAL(selectionChanged ()),
-          this, SLOT(slotTableSelectionChanged ()));
-  /*connect(btnOK, SIGNAL(clicked ()),
-          this, SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()),
-          this, SLOT(slotBtnCancelClicked()));*/
-
-  table -> setVScrollBarMode(QScrollView::AlwaysOn);
+  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  //connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
+  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
+  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
+/*void MetabolitesWidget::loadMetabolites(CModel *model)
 {
-  dataModel->updateMathModel();
-
   if (model != NULL)
     {
       mModel = model;
-
+ 
+      //Emptying the table
       int numberOfRows = table->numRows();
-
+ 
       for (int i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
-
-      Copasi->pFunctionDB->loadedFunctions();
-
-      std::map< std::string, CMathSymbol * > functionList = mModel->getFunctionList();
-      std::map<std::string, CMathSymbol * >::iterator it;
-      CMathSymbol * mathSymbol;
-
-      table->setNumRows(functionList.size());
-      int index = 0;
-      for (it = functionList.begin(); it != functionList.end();++it)
+ 
+      CCopasiVectorN< CMetab > metabolites(mModel->getMetabolites());
+      C_INT32 noOfMetabolitesRows = metabolites.size();
+      table->setNumRows(noOfMetabolitesRows);
+ 
+      //Now filling the table.
+      CMetab *metab;
+ 
+      for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
         {
-          mathSymbol = it->second;
-          table->setText(index, 0, FROM_UTF8(it->first));
+          metab = metabolites[j];
+          table->setText(j, 0, metab->getName().c_str());
+ 
+          /*double m=(*(metab->getConcentration()));
+          QString *m1;
+          //QString ms = m1.setNum(m,'g',6);
+             m1=  QString::setNum(m,'g',6);            
+          table->setText(j, 1,*m1);
+           
+          //table->setText(j, 1,ms); */
+/*table->setText(j, 1, QString::number(metab->getConcentration()));
 
-          CFunction *metabObject = (CFunction *)mathSymbol->getObject();
-          table->setText(index, 1, FROM_UTF8(metabObject->getObjectName()));
-          QStringList functionType;
-          CFunctionParameters &functParam = metabObject->getParameters();
-          for (unsigned C_INT32 j = 0; j < functParam.size(); j++)
-            {
-              functionType.push_back(FROM_UTF8(functParam[j]->getObjectName()));
-            }
-          QComboTableItem * item = new QComboTableItem(table, functionType, false);
-          table->setItem(index, 2, item);
-          //item->setCurrentItem(temp);
-          index++;
-        }
-    }
+table->setText(j, 2, QString::number(metab->getNumberDbl()));
+
+table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
+
+#ifdef XXXX
+if (QString::number(metab->getStatus()) == "0")
+  {
+    table->setText(j, 3, "defineda");
+  }
+else if (QString::number(metab->getStatus()) == "1")
+  {
+    table->setText(j, 3, "definedb");
+  }
+else if (QString::number(metab->getStatus()) == "2")
+  {
+    table->setText(j, 3, "definedc");
+  }
+#endif // XXXX
+table->setText(j, 4, metab->getCompartment()->getName().c_str());
+}
+
+//table->sortColumn(0,true,true);
+}
+}
+ */
+void FunctionSymbols::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
+{
+  QString x = table->text(row, col);
+  emit name(x);
 }
 
 void FunctionSymbols::slotTableSelectionChanged()
@@ -141,52 +141,43 @@ void FunctionSymbols::slotTableSelectionChanged()
     }
 }
 
+/***********ListViews::showMessage(QString caption,QString text)------------------------>
+ **
+ ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
+ **              2. QString :_ The Text that needs to be displayed in the message box
+ ** Returns  :-  void(Nothing)
+ ** Description:- This method is used to show the message box on the screen
+ ****************************************************************************************/
+
 void FunctionSymbols::slotBtnOKClicked()
-{}
+{
+  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
+}
 
 void FunctionSymbols::slotBtnCancelClicked()
-{}
+{
+  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
+}
 
 void FunctionSymbols::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
       int newWidth = re->size().width();
+
       newWidth -= 35; //Accounting for the left (vertical) header width.
-      float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0;
-      float weightSum = weight0 + weight1 + weight2;
-      int w0, w1, w2;
+      float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0, weight3 = 3.0 , weight4 = 3.0;
+      float weightSum = weight0 + weight1 + weight2 + weight3 + weight4;
+      int w0, w1, w2, w3 , w4;
       w0 = newWidth * (weight0 / weightSum);
       w1 = newWidth * (weight1 / weightSum);
-      w2 = newWidth - w0 - w1 - table->verticalScrollBar()->width();
+      w2 = newWidth * (weight2 / weightSum);
+      w3 = newWidth * (weight3 / weightSum);
+      w4 = newWidth - w0 - w1 - w2 - w3;
       table->setColumnWidth(0, w0);
       table->setColumnWidth(1, w1);
       table->setColumnWidth(2, w2);
+      table->setColumnWidth(3, w3);
+      table->setColumnWidth(4, w4);
     }
-  CopasiWidget::resizeEvent(re);
-}
-
-bool FunctionSymbols::update(ListViews::ObjectType objectType,
-                             ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  if (mIgnoreUpdates) return true;
-
-  switch (objectType)
-    {
-    case ListViews::MODEL:
-    case ListViews::REACTION:
-    case ListViews::FUNCTION:
-      loadFunctionSymbols(dataModel->getMathModel());
-      break;
-
-    default:
-      break;
-    }
-  return true;
-}
-
-bool FunctionSymbols::enter(const std::string & C_UNUSED(key))
-{
-  loadFunctionSymbols(dataModel->getMathModel());
-  return true;
 }

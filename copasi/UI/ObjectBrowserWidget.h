@@ -1,9 +1,9 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ObjectBrowser.h,v $
-   $Revision: 1.41 $
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/12/02 15:54:36 $
+   $Author: jpahle $ 
+   $Date: 2004/10/06 16:29:20 $
    End CVS Header */
 
 /********************************************************
@@ -15,12 +15,12 @@ Comment : Copasi Object Browser:
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
-#ifndef OBJECTBROWSER_H
-#define OBJECTBROWSER_H
+#ifndef OBJECTBROWSERWIDGET_H
+#define OBJECTBROWSERWIDGET_H
 
 #include <qvariant.h>
 #include <qwidget.h>
-#include <qdialog.h>
+#include <qwidget.h>
 #include <vector>
 
 class QVBoxLayout;
@@ -39,19 +39,22 @@ class CopasiUI3Window;
 
 enum pageIndex {LISTVIEWPAGE = 0, SELECTEDITEMPAGE};
 
-class ObjectBrowser : public QDialog
+class ObjectBrowserWidget : public QWidget
   {
     Q_OBJECT
   private:
     pageIndex currentPage;
     CopasiUI3Window* mparent;
     std::vector<CCopasiObject*>* mOutputObjectVector;
+    QPixmap *pObjectAll;   // to store the image of locked icon folder
+    QPixmap *pObjectParts;   // to store the image of closed icon folder
+    QPixmap *pObjectNone;     // to store the image of open icon folder
 
   public:
     ObjectList* objectItemList;
     ObjectList* refreshList;
-    ObjectBrowser(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
-    ~ObjectBrowser();
+    ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ~ObjectBrowserWidget();
     void cleanup();
 
     QPushButton* cancelButton;
@@ -81,14 +84,20 @@ class ObjectBrowser : public QDialog
     void updateUI();
     void loadUI();
 
+    void swap(int, int, ObjectBrowserItem**);
+    int partition(int, int, int, ObjectBrowserItem**);
+    void quick_sort(int, int, ObjectBrowserItem**);
+
   public slots:
     virtual void cancelClicked();
     virtual void listviewChecked(QListViewItem*);
     virtual void backClicked();
     virtual void nextClicked();
 
+  signals:
+    void commitClicked(int);
+
   protected:
-    void closeEvent (QCloseEvent * e);
     QGridLayout* ObjectBrowserLayout;
   };
-#endif // OBJECTBROWSER_H
+#endif // OBJECTBROWSERWIDGET_H

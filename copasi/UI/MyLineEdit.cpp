@@ -1,86 +1,44 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.cpp,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/22 21:57:28 $
-   End CVS Header */
-
+#include <qmessagebox.h>
 #include "MyLineEdit.h"
-#include <qvalidator.h>
 
 MyLineEdit::MyLineEdit(QWidget * parent, const char * name)
     : QLineEdit(parent, name)
 {
-  setupWidget();
+  //deleteConfirmation = TRUE;
 }
 
 MyLineEdit::MyLineEdit(const QString & contents, QWidget * parent, const char * name)
     : QLineEdit(contents, parent, name)
 {
-  setupWidget();
+  //deleteConfirmation = TRUE;
 }
 
-void MyLineEdit::setupWidget()
+void MyLineEdit::focusOutEvent(QFocusEvent *fe)
 {
-  connect(this, SIGNAL(lostFocus()), this, SLOT(slotLostFocus()));
-  connect(this, SIGNAL(returnPressed()), this, SLOT(slotReturnPressed()));
-  connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(slotTextChanged(const QString &)));
-
-  mOldColor = paletteBackgroundColor();
-  int h, s, v;
-  mOldColor.getHsv(&h, &s, &v);
-  if (s < 20) s = 20;
-  mNewColor.setHsv(240, s, v);
-
-  mErrorColor.setHsv(0, s, v);
+  QMessageBox::information(this, "got it", "yipeee ");
+  emit edited();
 }
 
-void MyLineEdit::process()
+/*void MyLineEdit::slotLineEditChanged()
 {
-  if (isModified())
+  //const QString & chemreactn
+ /* const QString & chemreactn = LineEdit2->text();
+  const string & changed_chemical_reaction = chemreactn.latin1();
+  CCopasiVectorNS < CReaction > & reactions1 = mModel->getReactions();
+  CReaction *reactn1;
+  reactn1 = reactions1[(string)name];
+  CChemEq * chemEq1;
+  chemEq1 = & reactn1->getChemEq();
+  bool status;
+  status = chemEq1->setChemicalEquation(changed_chemical_reaction);
+  reactn1->setChemEq(changed_chemical_reaction);
+   if (reactn1->isReversible() == TRUE)
     {
-      clearModified();
-      updateColor();
-      emit edited();
-    }
-}
-
-void MyLineEdit::slotLostFocus()
-{process();}
-
-void MyLineEdit::slotReturnPressed()
-{process();}
-
-void MyLineEdit::slotForceUpdate()
-{process();}
-
-void MyLineEdit::slotTextChanged(const QString & text)
-{
-  updateColor();
-}
-
-void MyLineEdit::updateColor()
-{
-  if (isModified())
-    {
-      setPaletteBackgroundColor(mNewColor);
+      checkBox->setChecked(TRUE);
     }
   else
     {
-      setPaletteBackgroundColor(mOldColor);
+      checkBox->setChecked(FALSE);
     }
-
-  const QValidator * val = validator();
-  int dummy = 0;
-  QString ttt = text();
-  if (val)
-    if (val->validate(ttt, dummy) == QValidator::Intermediate)
-      setPaletteBackgroundColor(mErrorColor);
-}
-
-void MyLineEdit::setText(const QString & text)
-{
-  QLineEdit::setText(text);
-  updateColor();
-}
+  slotCheckBoxClicked();
+}*/

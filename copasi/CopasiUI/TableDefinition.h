@@ -1,69 +1,59 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.h,v $
-   $Revision: 1.24 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/27 10:35:32 $
-   End CVS Header */
+/****************************************************************************
+ **  $ CopasiUI/TableDefinition.h               
+ **  $ Author  : Mudita Singhal
+ **  
+ ** This is the header file for the TableDefinition 
+ *****************************************************************************/
 
-#ifndef TABLE_WIDGET_H
-#define TABLE_WIDGET_H
+#ifndef TABLEDEFINITION_H
+#define TABLEDEFINITION_H
 
-#include <qtable.h>
-#include "copasi.h"
-#include "CopasiTableWidget.h"
+#include <qvariant.h>
+#include <qwidget.h>
+#include "copasiWidget.h"
 
-class TableDefinition : public CopasiTableWidget
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
+class QFrame;
+class QLabel;
+class QLineEdit;
+class QListBox;
+class QListBoxItem;
+class QPushButton;
+class CModel;
+
+class TableDefinition : public CopasiWidget
   {
     Q_OBJECT
 
   public:
-    TableDefinition(QWidget *parent, const char * name = 0, WFlags f = 0)
-        : CopasiTableWidget(parent, false, name, f)
-    {init();}
+    TableDefinition (QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ~TableDefinition ();
+    CModel *mModel;
+    void loadTableDefinition();
+
+    QLineEdit* LineEdit4;
+    QLineEdit* LineEdit1;
+    QLabel* TextLabel2;
+    QLabel* TextLabel2_2;
+    QLabel* TextLabel1;
+    QFrame* Line4;
+    QFrame* Line4_2;
+    QListBox* ListBox1;
+    QLabel* TextLabel3;
+    QLineEdit* LineEdit3;
+    QPushButton* commitChanges;
+    QPushButton* cancelChanges;
+    QFrame* Line4_3;
+
+  public slots:
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
 
   protected:
-
-    /**
-     * This initializes the widget 
-     */
-    virtual void init();
-
-    /**
-     * returns a list of objects that should be displayed
-     */
-    virtual std::vector<const CCopasiObject*> getObjects() const;
-
-    /**
-     * fills one table row with the data from one object
-     */
-    virtual void tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row);
-
-    /**
-     * reads the contents of one row of the table and writes it to the object
-     */
-    virtual void tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj);
-
-    /**
-     * creates a new object
-     */
-    virtual CCopasiObject* createNewObject(const std::string & name);
-
-    /**
-     * deletes objects. Performs all additional tasks, like asking the user, ...
-     */
-    virtual void deleteObjects(const std::vector<std::string> & keys);
-
-    /**
-     * this is used to fill a row of the table when a new object is added to the table.
-     * it fills only the data columns, not the name. It should not fill column exc.
-     */
-    virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc);
-
-    /**
-     * the prefix that is used to construct new object names
-     */
-    virtual QString defaultObjectName() const;
+    QGridLayout* TableDefinitionLayout;
+    QHBoxLayout* Layout5;
   };
 
-#endif
+#endif // TableDefinition.h

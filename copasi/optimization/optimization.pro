@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.5 $ $Author: djchen $ $Date: 2003/10/10 13:34:31 $  
+# Created by Stefan Hoops <shoops@vt.edu> Sun May 18 11:05:59 2003
 ######################################################################
 
 LIB = optimization
@@ -10,14 +10,10 @@ HEADERS += COptMethod.h \
            COptProblem.h \
            CRandomSearch.h \
            CRandomSearchMaster.h \
-	   COptMethodSA.h \
-           CRealProblem.h \
-	   COptFunction.h
+           CRealProblem.h
            
 SOURCES += COptMethod.cpp \
            COptProblem.cpp \
            CRandomSearch.cpp \
            CRandomSearchMaster.cpp \
-	   COptMethodSA.cpp \
-           CRealProblem.cpp \
-	   COptFunction.cpp
+           CRealProblem.cpp

@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>417</width>
+            <width>543</width>
             <height>471</height>
         </rect>
     </property>
@@ -35,35 +35,26 @@
                 <property name="text">
                     <string>Name</string>
                 </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
             </column>
             <column>
                 <property name="text">
                     <string>Volume</string>
                 </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
             </column>
             <property name="name">
-                <cstring>table</cstring>
-            </property>
-            <property name="focusPolicy">
-                <enum>WheelFocus</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="resizePolicy">
-                <enum>AutoOneFit</enum>
+                <cstring>Table1</cstring>
             </property>
             <property name="numRows">
                 <number>0</number>
             </property>
             <property name="numCols">
                 <number>2</number>
-            </property>
-            <property name="rowMovingEnabled">
-                <bool>false</bool>
-            </property>
-            <property name="sorting">
-                <bool>true</bool>
             </property>
         </widget>
         <widget class="QPushButton" row="1" column="0">
@@ -84,10 +75,5 @@
         </widget>
     </grid>
 </widget>
-<connections>
-</connections>
-<slots>
-    <slot>ResizeTable()</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

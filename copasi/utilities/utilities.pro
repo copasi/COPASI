@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.5 $ $Author: ssahle $ $Date: 2004/08/31 12:21:14 $  
+# $Revision: 1.1 $ $Author: shoops $ $Date: 2003/05/19 00:39:51 $  
 ######################################################################
 
 LIB = utilities
@@ -8,12 +8,7 @@ include(../lib.pri)
 # Input
 HEADERS += CCopasiException.h \
            CCopasiMessage.h \
-           CCopasiMethod.h \
            CCopasiNode.h \
-           CCopasiParameter.h \
-           CCopasiParameterGroup.h \
-           CCopasiProblem.h \
-           CCopasiTask.h \
            CCopasiTree.h \
            CCopasiVector.h \
            CDependencyGraph.h \
@@ -21,26 +16,24 @@ HEADERS += CCopasiException.h \
            CIndexedPriorityQueue.h \
            CluX.h \
            CMatrix.h \
-           COutputHandler.h \
+           CMethodParameter.h \
+           CMethodParameterList.h \
            CReadConfig.h \
-           CopasiTime.h \
            CVector.h \
            CVersion.h \
+           CWriteConfig.h \
            messages.h \
+           readwrite.h \
            utility.h
 
 SOURCES += CCopasiException.cpp \
            CCopasiMessage.cpp \
-           CCopasiMethod.cpp \
-           CCopasiParameter.cpp \
-           CCopasiParameterGroup.cpp \
-           CCopasiProblem.cpp \
-           CCopasiTask.cpp \
            CDependencyGraph.cpp \
            CGlobals.cpp \
            CIndexedPriorityQueue.cpp \
-           COutputHandler.cpp \
+           CMethodParameter.cpp \
+           CMethodParameterList.cpp \
            CReadConfig.cpp \
-           CopasiTime.cpp \
            CVersion.cpp \
+           CWriteConfig.cpp \
            utility.cpp

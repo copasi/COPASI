@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.34 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:47 $
-   End CVS Header */
-
 /*******************************************************************
  **  $ CopasiUI/ModelWidget.cpp                 
  **  $ Author  : Mudita Singhal
@@ -22,14 +14,9 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qlistbox.h>
-
 #include "copasi.h"
 #include "ModelWidget.h"
 #include "listviews.h"
-#include "CReactionInterface.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
-#include "qtUtilities.h"
 
 /*
  *  Constructs a ModelWidget which is a child of 'parent', with the 
@@ -80,20 +67,14 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   Layout5->addWidget(commitChanges);
 
   cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Revert"));
+  cancelChanges->setText(trUtf8("Cancel"));
   Layout5->addWidget(cancelChanges);
-
-  // preliminary
-  splitModel = new QPushButton(this, "irreversible");
-  splitModel->setText(trUtf8("Convert All Reactions to Irreversible"));
-  ModelWidgetLayout->addWidget(splitModel, 7, 1);
 
   ModelWidgetLayout->addMultiCellLayout(Layout5, 8, 8, 0, 1);
 
   // signals and slots connections
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
-  connect(splitModel, SIGNAL(clicked()), this, SLOT(slotBtnSplitClicked()));
 }
 
 /*
@@ -105,224 +86,18 @@ ModelWidget::~ModelWidget()
 }
 
 /*This function is to load the model for the compartments*/
-bool ModelWidget::loadModel(CModel *model)
+void ModelWidget::loadModel(CModel *model)
 {
-  bool ret = true;
-
-  LineEdit->setText(FROM_UTF8(model->getObjectName()));
-  textBrowser->setText(FROM_UTF8(model->getComments()));
-  textBrowser->setReadOnly(FALSE);
-  ComboBox1->clear();
-  ComboBox2->clear();
-  ComboBox3->clear();
-  QStringList comboEntries;
-
-  unsigned int temp1;
-  for (temp1 = 0; model->TimeUnitName[temp1] /*!= ""*/; temp1++)
+  if (model != NULL)
     {
-      comboEntries.push_front(QString::fromUtf8(model->TimeUnitName[temp1]));
+      mModel = model;
     }
-  ComboBox1->insertStringList(comboEntries, -1);
-  ComboBox1->setCurrentText(FROM_UTF8(model->getTimeUnit()));
-
-  QStringList comboEntries1;
-  for (temp1 = 0; CModel::VolumeUnitName[temp1]  /*!= ""*/; temp1++)
-    {
-      comboEntries1.push_front(QString::fromUtf8(CModel::VolumeUnitName[temp1]));
-    }
-  ComboBox2->insertStringList(comboEntries1, -1);
-  ComboBox2->setCurrentText(FROM_UTF8(model->getVolumeUnit()));
-
-  QStringList comboEntries2;
-  for (temp1 = 0; CModel::QuantityUnitName[temp1] /*!= ""*/; temp1++)
-    {
-      comboEntries2.push_front(QString::fromUtf8(CModel::QuantityUnitName[temp1]));
-    }
-  ComboBox3->insertStringList(comboEntries2, -1);
-  ComboBox3->setCurrentText(FROM_UTF8(model->getQuantityUnit()));
-
-  return ret;
-}
-
-bool ModelWidget::saveToModel()
-{
-  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
-
-  if (!model) return false;
-
-  bool success = true;
-
-  if ((const char *)LineEdit->text().utf8() != model->getObjectName())
-    {
-      model->setTitle((const char *)LineEdit->text().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::RENAME, objKey);
-    }
-
-  if ((const char *)textBrowser->text().utf8() != model->getComments())
-    {
-      model->setComments((const char *)textBrowser->text().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
-    }
-
-  if ((const char *)ComboBox1->currentText().utf8() != model->getTimeUnit())
-    {
-      model->setTimeUnit((const char *)ComboBox1->currentText().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
-    }
-
-  if ((const char *)ComboBox2->currentText().utf8() != model->getVolumeUnit())
-    {
-      model->setVolumeUnit((const char *)ComboBox2->currentText().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
-    }
-
-  if ((const char *)ComboBox3->currentText().utf8() != model->getQuantityUnit())
-    {
-      model->setQuantityUnit((const char *)ComboBox3->currentText().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
-    }
-
-  return success;
 }
 
 void ModelWidget::slotBtnCancelClicked()
 {
-  //TOD: let the user confirm
-  enter(objKey); // reload
 }
 
 void ModelWidget::slotBtnOKClicked()
 {
-  //let the user confirm?
-  saveToModel();
-}
-
-void ModelWidget::slotBtnSplitClicked()
-{
-  convert2NonReversible();
-}
-
-bool ModelWidget::convert2NonReversible()
-{
-  //TODO check if there are any reversible reactions
-  //TODO warn the user
-  //TODO tell the gui about changes
-  //TODO generate report ?
-
-  bool ret = true;
-
-  std::vector<std::string> reactionsToDelete;
-
-  CReaction *reac0, *reac1, *reac2;
-  CReactionInterface ri1, ri2;
-  std::string fn, rn1, rn2;
-
-  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
-  if (!model) return false;
-
-  CCopasiVectorN< CReaction > & steps = model->getReactions();
-
-  unsigned C_INT32 i, imax = steps.size();
-  for (i = 0; i < imax; ++i)
-    if (steps[i]->isReversible())
-      {
-        ret = false;
-        reac0 = steps[i];
-        std::cout << i << "  ";
-
-        //create the two new reactions
-        reac1 = new CReaction(*reac0, &steps);
-        rn1 = reac1->getObjectName() + " (forward)";
-        reac1->setName(rn1);
-        steps.add(reac1);
-
-        reac2 = new CReaction(*reac0, &steps);
-        rn2 = reac2->getObjectName() + " (backward)";
-        reac2->setName(rn2);
-        steps.add(reac2);
-
-        ri1.initFromReaction(*model, reac1->getKey());
-        ri2.initFromReaction(*model, reac2->getKey());
-
-        //set the new function
-        fn = reac0->getFunction().getObjectName();
-        std::cout << fn << "  " << std::endl;
-
-        if (fn == "Mass action (reversible)")
-          {
-            ri1.setReversibility(false, "Mass action (irreversible)");
-            ri2.reverse(false, "Mass action (irreversible)");
-          }
-        else if (fn == "Constant flux (reversible)")
-          {
-            ri1.setReversibility(false, "Constant flux (irreversible)");
-            ri2.reverse(false, "Constant flux (irreversible)");
-          }
-        else
-          {
-            //ri1.setReversibility(false);
-            ri2.reverse(false, "Mass action (irreversible)");
-          }
-
-        ri1.writeBackToReaction(*model);
-        ri2.writeBackToReaction(*model);
-
-        //set the kinetic parameters
-
-        if (fn == "Mass action (reversible)")
-          {
-            reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
-            reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
-            ret = true;
-          }
-        else
-          {
-            reac2->setParameterValue("k1", 0);
-          }
-
-        //remove the old reaction
-        //mSteps.remove(reac0->getName());
-        reactionsToDelete.push_back(reac0->getObjectName());
-      }
-
-  imax = reactionsToDelete.size();
-  for (i = 0; i < imax; ++i)
-    steps.remove(reactionsToDelete[i]);
-
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
-
-  return ret;
-}
-
-bool ModelWidget::update(ListViews::ObjectType objectType,
-                         ListViews::Action C_UNUSED(action), const std::string & key)
-{
-  if (mIgnoreUpdates) return true;
-
-  switch (objectType)
-    {
-    case ListViews::MODEL:
-      enter(key);
-      break;
-
-    default:
-      break;
-    }
-  return true;
-}
-
-bool ModelWidget::leave()
-{
-  //let the user confirm?
-  return saveToModel();
-}
-
-bool ModelWidget::enter(const std::string & key)
-{
-  objKey = key;
-  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(key));
-  //TODO: check if it really is a model
-
-  if (model) return loadModel(model);
-  else return false;
 }

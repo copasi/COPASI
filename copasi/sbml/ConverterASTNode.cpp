@@ -1,21 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.1 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/24 10:03:39 $
+   $Date: 2004/06/11 08:43:27 $
    End CVS Header */
 
-#include <string>
-#include <iostream>
-
 #include "ConverterASTNode.h"
-
-/**
- * Standard constructor
- */
-ConverterASTNode::ConverterASTNode(): ASTNode()
-{};
+#include <string.h>
+#include <iostream>
 
 /**
  * Extension of the ASTNode class from libsbml. This class extends the original
@@ -58,8 +51,7 @@ ConverterASTNode::ConverterASTNode(const ASTNode &templ): ASTNode(templ.getType(
     {
       this->setName(templ.getName());
     }
-  unsigned int counter;
-  for (counter = 0; counter < templ.getNumChildren(); counter++)
+  for (unsigned int counter = 0; counter < templ.getNumChildren(); counter++)
     {
       this->addChild(new ConverterASTNode(*templ.getChild(counter)));
     }
@@ -82,9 +74,7 @@ bool ConverterASTNode::isUserDefinedFunction(){
 void ConverterASTNode::printASTNode(const ASTNode* node, unsigned int indent)
 {
   std::string spacer = "";
-  unsigned int counter;
-
-  for (counter = 0; counter < indent; counter++)
+  for (unsigned int counter = 0; counter < indent; counter++)
     {
       spacer += " ";
     }
@@ -110,7 +100,7 @@ void ConverterASTNode::printASTNode(const ASTNode* node, unsigned int indent)
       std::cout << "[" << node->getType() << "]";
     }
   std::cout << std::endl;
-  for (counter = 0; counter < node->getNumChildren(); counter++)
+  for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
     {
       ConverterASTNode::printASTNode(node->getChild(counter), indent + 2);
     }

@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/03/10 04:19:33 $
-   End CVS Header */
-
 /**
  *  CEFMAlgorithm class.
  *  Used to calculate elementary flux modes
@@ -14,142 +6,128 @@
  * (C) Stefan Hoops 2002
  */
 
-// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CEFMAlgorithm.h"
-#include "CFluxMode.h"
-#include "CTableauMatrix.h"
 
 CEFMAlgorithm::CEFMAlgorithm()
 {
-  CONSTRUCTOR_TRACE;
   mCurrentTableau = NULL;
   mNextTableau = NULL;
 }
-
+  
 CEFMAlgorithm::~CEFMAlgorithm()
 {
-  DESTRUCTOR_TRACE;
   pdelete(mCurrentTableau);
   pdelete(mNextTableau);
 }
 
-bool CEFMAlgorithm::calculate(const std::vector < std::vector < C_FLOAT64 > > & stoi,
+
+bool CEFMAlgorithm::calculate(const vector < vector < C_FLOAT64 > > & stoi,
                               const unsigned C_INT32 &reversibleNumber,
-                              std::vector < CFluxMode > & fluxModes)
+                              vector < vector < unsigned C_INT32 > > & fluxModes)
 {
-  bool Success = true;
+  bool Success = TRUE;
+  unsigned C_INT32 Step, MaxSteps = stoi[0].size();
+  
+  /* initialize the current tableu matrix */
+  mCurrentTableau = new CTableauMatrix(stoi, reversibleNumber);
+  
+  /* Do the iteration */
+  for (Step = 0; Step < MaxSteps; Step++) calculateNextTableau(Step);
 
-  if (stoi.size())
-    {
-      unsigned C_INT32 Step, MaxSteps = stoi[0].size();
+  /* Build the elementary flux modes to be returned */
+  buildFluxModes(fluxModes,stoi.size());
 
-      /* initialize the current tableu matrix */
-      mCurrentTableau = new CTableauMatrix(stoi, reversibleNumber);
-
-      /* Do the iteration */
-
-      for (Step = 0; Step < MaxSteps; Step++)
-        calculateNextTableau();
-
-      /* Build the elementary flux modes to be returned */
-      buildFluxModes(fluxModes);
-
-      /* Delete the current / final tableu matrix */
-      pdelete(mCurrentTableau);
-    }
-
+  /* Delete the current / final tableu matrix */
+  pdelete(mCurrentTableau);
+  
   return Success;
 }
 
-void CEFMAlgorithm::calculateNextTableau()
+void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
 {
-  std::list< const CTableauLine * >::iterator a;
-  std::list< const CTableauLine * >::iterator b;
-  C_FLOAT64 ma, mb;
-
+  list < const CTableauLine * >::iterator a;
+  list < const CTableauLine * >::iterator b;
+  C_FLOAT64 m;
+  
   mNextTableau = new CTableauMatrix();
-
+  
   /* Move all lines with zeros in the step column to the new tableu matrix */
   /* and remove them from the current tableau matrix */
   a = mCurrentTableau->getFirst();
-
   while (a != mCurrentTableau->getEnd())
-    if ((*a)->getReaction(0) == 0.0)
+    if ((*a)->getReaction(step) == 0.0)
       {
         /* We have to make sure that "a" points to the next element in the */
-        /* list after the removal of itself */
-
+        /* list after the remember the previous element so that a++ points to */
+        /* past the removed one */
         if (a == mCurrentTableau->getFirst())
           {
             mNextTableau->addLine(*a);
             mCurrentTableau->removeLine(a);
-            a = mCurrentTableau->getFirst();
+            a == mCurrentTableau->getFirst();
           }
         else
           {
             /* We have to remember the previous element so that a++ points to */
             /* past the removed one */
             b = a--;
-            mNextTableau->addLine(*b);
-            mCurrentTableau->removeLine(b);
-            a++;
+            mNextTableau->addLine(*a);
+            mCurrentTableau->removeLine(a);
+            a = b++;
           }
       }
-    else
-      a++;
 
   /* Now we create all linear combinations of the remaining lines in the */
   /* current tableau */
   a = mCurrentTableau->getFirst();
-
   while (a != mCurrentTableau->getEnd())
     {
       b = a;
       b++;
-
+      
       while (b != mCurrentTableau->getEnd())
         {
-          mb = (*a)->getReaction(0);
+          m = - (*b)->getReaction(step) / (*a)->getReaction(step);
 
-          /* We make sure that "mb" is positive */
-
-          if (mb < 0.0)
-            {
-              mb *= -1;
-              ma = (*b)->getReaction(0);
-            }
-          else
-            ma = - (*b)->getReaction(0);
-
-          /* The multiplier "ma" for irreversible reactions must be positive */
-          if ((*a)->isReversible() || ma > 0.0)
-            mNextTableau->addLine(new CTableauLine(ma, **a, mb, **b));
-
+          /* The multiplier "m" for irreversible reactions must be positive */
+          if ((*a)->isReversible() || m > 0.0)
+            mNextTableau->addLine(new CTableauLine(m, **a, **b));
+          
           b++;
         }
-
       a++;
     }
-
+  
   /* Assigne the next tableau to the current tableau and cleanup */
   pdelete(mCurrentTableau);
-
   mCurrentTableau = mNextTableau;
-
   mNextTableau = NULL;
 }
 
-void CEFMAlgorithm::buildFluxModes(std::vector < CFluxMode > & fluxModes)
+void CEFMAlgorithm::buildFluxModes(vector < vector < unsigned C_INT32 > > & fluxModes,
+                                   const unsigned C_INT32 reactionNumber)
 {
+  unsigned C_INT32 i, imax = fluxModes.size();
+
+  /* Clear the fluxModes */
+  for (i=0; i<imax; i++) fluxModes[i].clear();
   fluxModes.clear();
 
-  std::list< const CTableauLine * >::iterator a = mCurrentTableau->getFirst();
-  std::list< const CTableauLine * >::iterator end = mCurrentTableau->getEnd();
+  list < const CTableauLine * >::iterator a = mCurrentTableau->getFirst();
+  list < const CTableauLine * >::iterator end = mCurrentTableau->getEnd();
 
+  vector < unsigned C_INT32 > FluxMode;
+  
   while (a != end)
     {
-      fluxModes.push_back(CFluxMode(*a));
+      FluxMode.clear();
+      
+      for (i=0; i<reactionNumber; i++)
+        if ((*a)->getFluxMode(i)) FluxMode.push_back(i);
+      
+      fluxModes.push_back(FluxMode);
       a++;
     }
 }
+

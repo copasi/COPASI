@@ -1,35 +1,24 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CProgressBar.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.1 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:27 $
+   $Date: 2004/06/28 22:22:45 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CProgressBar.h"
 #include <qprogressdialog.h>
 #include <qapplication.h>
-#include "DataModelGUI.h"
+#include "DataModel.h"
 
-CProgressBar::CProgressBar(DataModelGUI* dm)
-{
-  mDataModel = dm;
-  mpWidget = NULL;
-}
+CProgressBar::CProgressBar(DataModel* dm)
+{mDataModel = dm;}
 
 bool CProgressBar::init(C_INT32 maxSteps, const std::string & text)
 {
-  if (!mpWidget)
-    mpWidget = new QProgressDialog(text.c_str(), 0, maxSteps,
-                                   NULL, "progress_bar", TRUE);
-  else
-    {
-      mpWidget->reset();
-      mpWidget->setLabelText(text.c_str());
-      mpWidget->setTotalSteps(maxSteps);
-    }
-
+  mpWidget = new QProgressDialog(text.c_str(), 0, maxSteps,
+                                 NULL, "progress_bar", TRUE);
   mpWidget->setMinimumDuration(0); //
   mpWidget->setProgress(0);
   mDataModel->getQApp()->processEvents();
@@ -59,7 +48,6 @@ bool CProgressBar::progress(C_INT32 steps)
 bool CProgressBar::finish()
 {
   mpWidget->setProgress(mpWidget->totalSteps());
-  mpWidget->reset();
   //std::cout << "ProgressBar: finish" << std::endl;
   return true;
 }

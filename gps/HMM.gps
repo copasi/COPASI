@@ -39,10 +39,10 @@ TotalSteps=2
 TotalMoieties=1
 TotalCompartments=1
 Stoichiometry
--1.000000 0.000000 
--1.000000 1.000000 
-1.000000 -1.000000 
-0.000000 1.000000 
+-1.000000 0.000000
+-1.000000 1.000000
+1.000000 -1.000000
+0.000000 1.000000
 TotalUDKinetics=0
 Metabolite=S
 Concentration=1.0000000000000000
@@ -60,7 +60,7 @@ Metabolite=P
 Concentration=0.0000000000000000
 Compartment=0
 Type=0
-Metabolite=  E + ES 
+Metabolite=  E + ES
 Concentration=1.0000000000000000
 Compartment=0
 Type=7
@@ -94,10 +94,10 @@ Param0=1.0000000000000000
 Compartment=compartment
 Volume=1.000000e+000
 Comments
-Henri, V.  (1902), "Th¨¦orie g¨¦n¨¦rale de l'action de quelques diastases.", 
+Henri, V.  (1902), "Théorie générale de l'action de quelques diastases.",
 Compt. Rend. Hebd. Acad. Sci. Paris 135, 916-919.
 
-Michaelis, L. and Menten, M.L.  (1913), "Die kinetik der invertinwirkung.", 
+Michaelis, L. and Menten, M.L.  (1913), "Die kinetik der invertinwirkung.",
 Biochem. Z.  49, 333-369.
 EndComments
 PlotType=0

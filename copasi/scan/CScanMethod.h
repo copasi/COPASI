@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 16:51:07 $
-   End CVS Header */
-
 /**
  *  CScanMethod class.
  *  This class describes the method for doing the Scan.
@@ -18,16 +10,11 @@
 
 #include <string>
 
-#include "utilities/CCopasiMethod.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "report/CReport.h"
+#include "utilities/CMethodParameterList.h"
 
 class CScanProblem;
-class CSteadyStateTask;
-class CTrajectory;
 
-class CScanMethod : public CCopasiMethod
+class CScanMethod
   {
   protected:
     /**
@@ -35,36 +22,12 @@ class CScanMethod : public CCopasiMethod
      */
     CScanProblem * scanProblem;
 
-    /**
-     * A pointer to the random number generator
-     */
-    CRandom * mpRandomGenerator;
-
-    /**
-     *
-     */
-    unsigned C_INT32 mVariableSize;
-
-    /**
-     *
-     */
-    C_FLOAT64 * mpVariables;
-
     // Operations
-  private:
-    /**
-     * Default constructor.
-     */
-    CScanMethod();
-
   protected:
     /**
-     * Specific constructor.
-     * @param CCopasiMethod::SubType subType 
-     * @param const CCopasiContainer * pParent (default: NULL)
+     *  Default constructor.
      */
-    CScanMethod(CCopasiMethod::SubType subType,
-                const CCopasiContainer * pParent = NULL);
+    CScanMethod();
 
   public:
     /**
@@ -72,14 +35,18 @@ class CScanMethod : public CCopasiMethod
      * Note: the returned object has to be released after use with delete
      */
 
-    static CScanMethod * createMethod();
+    /*
+    static CTrajectoryMethod *
+    createTrajectoryMethod(CTrajectoryMethod::Type type
+                           = CTrajectoryMethod::deterministic);
+
+    */
 
     /**
      *  Copy constructor.
      *  @param "const CTrajectoryMethod &" src
      */
-    CScanMethod(const CScanMethod & src,
-                const CCopasiContainer * pParent = NULL);
+    CScanMethod(const CScanMethod & src);
 
     /**
      *  Destructor.
@@ -96,18 +63,16 @@ class CScanMethod : public CCopasiMethod
     /**
      *  The main scan method.
      */
-    void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
+    void scan(C_INT32 i, bool nl);
 
-  private:
     /**
      *  Set the value of the scan parameter based on the distribution
-     *  @param unsigned C_INT32 i where to start in the distribution
-     *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
-     *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
+     *  @param "C_INT32 i" where to start in the distribution
+     *  @param "C_INT32 first" first parameter in the set of Master/Slaves
+     *  @param "C_INT32 last" last parameter in the set of Master/Slaves
      */
-    void setScanParameterValue(unsigned C_INT32 i,
-                               unsigned C_INT32 first,
-                               unsigned C_INT32 last);
+
+    void setScanParameterValue(C_INT32 i, C_INT32 first, C_INT32 last);
   };
 
 #endif // COPASI_CTrajectoryMethod

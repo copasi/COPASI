@@ -1,80 +1,43 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.cpp,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/14 22:15:26 $
-   End CVS Header */
-
-#include "copasi.h"
 #include "CCallParameters.h"
-#include "CFunction.h"
 
-//TODO: modify the constructors so that CFunctionParameterMap behaves like a CCopasiObject
-
-CFunctionParameterMap::CFunctionParameterMap():
-    mPointers(),
-    mObjects(),
-    mpFunctionParameters(NULL)
-{};
-
-CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
-    mPointers(src.mPointers),
-    mObjects(src.mObjects),
-    mpFunctionParameters(new CFunctionParameters(*src.mpFunctionParameters))
-{
-  std::vector<const void*> * pDummy;
-
-  C_INT32 i, imax = mpFunctionParameters->size();
-  for (i = 0; i < imax; ++i)
-    if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
-      {
-        pDummy = new std::vector<const void*>(*(std::vector<const void*>*)(mPointers[i]));
-        mPointers[i] = pDummy;
-        pDummy = new std::vector<const void*>(*(std::vector<const void*>*)(mObjects[i]));
-        mObjects[i] = pDummy;
-      }
-}
-
-CFunctionParameterMap::~CFunctionParameterMap()
-{
-  pdelete(mpFunctionParameters)
-};
-
-void CFunctionParameterMap::initializeFromFunctionParameters(const CFunctionParameters & src)
+void CCallParameters::initializeFromFunctionParameters(const CFunctionParameters & src)
 {
   clearCallParameters();
 
-  pdelete(mpFunctionParameters)
-  mpFunctionParameters = new CFunctionParameters(src);
+  mpFunctionParameters = &src;
+  /* TODO: may be we should copy the function parameters here. the call parameters can only be
+     destroyed if we have the type information. So the CCallparameter object is save when the 
+     function changes. But what about the reaction? Should it copy the function? (Then CCallParams
+     would not need to copy CFunctionParameters) */
 
   initCallParameters();
 }
 
-void CFunctionParameterMap::clearCallParameters()
+void CCallParameters::clearCallParameters()
 {
-  if (mpFunctionParameters)
+  if (!mpFunctionParameters) return;
+
+  unsigned C_INT32 i, imax = mpFunctionParameters->size();
+
+  for (i = 0; i < imax; i++)
     {
-      unsigned C_INT32 i, imax = mpFunctionParameters->size();
-
-      for (i = 0; i < imax; i++)
+      if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
         {
-          if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
-            {
-              if (mObjects[i])
-                delete (std::vector< CCopasiObject * > *) mObjects[i];
+          if (mObjects[i])
+            delete (std::vector< CCopasiObject * > *) mObjects[i];
 
-              if (mPointers[i])
-                delete (std::vector< void * > *) mPointers[i];
-            }
+          if (mPointers[i])
+            delete (std::vector< void * > *) mPointers[i];
         }
     }
-  mPointers.clear();
+  mPointer.clear();
   mObjects.clear();
 }
 
-void CFunctionParameterMap::initCallParameters()
+void CCallParameters::initCallParameters()
 {
+  if (!mpFunctionParameters) fatalError();
+
   unsigned C_INT32 i, imax = mpFunctionParameters->size();
 
   mPointers.resize(imax);
@@ -93,7 +56,7 @@ void CFunctionParameterMap::initCallParameters()
             delete (std::vector< void * > *) mPointers[i];
           mPointers[i] = NULL;
 
-          switch ((*mpFunctionParameters)[i]->getType())
+          switch (*mpFunctionParameters)[i]->getType())
             {
             case CFunctionParameter::VINT32:
               mPointers[i] = new std::vector< C_INT32 * >;
@@ -116,7 +79,7 @@ void CFunctionParameterMap::initCallParameters()
     }
 }
 
-void CFunctionParameterMap::checkCallParameters() const
+void CCallParameters::checkCallParameters() const
   {
     unsigned C_INT32 i, imax = mpFunctionParameters->size();
     unsigned C_INT32 j, jmax;
@@ -148,80 +111,45 @@ void CFunctionParameterMap::checkCallParameters() const
       }
   }
 
-void CFunctionParameterMap::setCallParameter(const std::string paramName, const CCopasiObject* obj)
+void CCallParameters::setCallParameter(const std::string paramName, const CCopasiObject* obj)
 {
   CFunctionParameter::DataType type;
   C_INT32 index = findParameterByName(paramName, type);
 
-  if (type >= CFunctionParameter::VINT32) fatalError(); // is a vector
+  if (type >= CFunctionParameter::VINT32) fatal(); // is a vector
 
   // TODO: check type of object
   mObjects[index] = obj;
 
-  mPointers[index] = obj->getReference();
+  // TODO: that does not work yet. CCopasiObject does not provide value
+  mPointers[index] = obj->getValueAddr();
 }
 
-void CFunctionParameterMap::addCallParameter(const std::string paramName, const CCopasiObject* obj)
-{
-  CFunctionParameter::DataType type;
-  C_INT32 index = findParameterByName(paramName, type);
-
-  if (type < CFunctionParameter::VINT32) fatalError(); // is not a vector
-
-  // TODO: check type of object
-  ((std::vector<const CCopasiObject*> *)mObjects[index])->push_back(obj);
-
-  ((std::vector<const C_FLOAT64*> *)mPointers[index])->push_back((const C_FLOAT64*)obj->getReference());
-}
-
-void CFunctionParameterMap::clearCallParameter(const std::string paramName)
-{
-  CFunctionParameter::DataType type;
-  C_INT32 index = findParameterByName(paramName, type);
-
-  if (type < CFunctionParameter::VINT32) fatalError(); // is not a vector
-
-  // TODO: check type of object
-  ((std::vector<const CCopasiObject*> *)mObjects[index])->clear();
-
-  ((std::vector<const C_FLOAT64*> *)mPointers[index])->clear();
-}
-
-unsigned C_INT32 CFunctionParameterMap::findParameterByName(const std::string & name,
+C_INT32 CCallParameters::findParameterByName(const std::string & name,
     CFunctionParameter::DataType & dataType) const
   {
-    return mpFunctionParameters->findParameterByName(name, dataType);
-  }
+    std::string VectorName = name.substr(0, name.find_last_of('_'));
+    std::string Name;
+    unsigned C_INT32 i, imax = mpFunctionParameters->size();
 
-CCallParameterPointers & CFunctionParameterMap::getPointers()
-{return mPointers;};
-
-std::vector< const CCopasiObject * > CFunctionParameterMap::getObjects(const unsigned C_INT32 & index) const
-  {
-    std::vector< const CCopasiObject * > Objects;
-
-    if (index != C_INVALID_INDEX)
+    for (i = 0; i < imax; i++)
       {
-        if ((*mpFunctionParameters)[index]->getType() < CFunctionParameter::VINT32)
-          Objects.push_back((const CCopasiObject *) mObjects[index]);
-        else
-          {
-            std::vector< void * > * tmp =
-              (std::vector< void * > *) mObjects[index];
-            unsigned C_INT32 i, imax = tmp->size();
+        Name = (*mpFunctionParameters)[i]->getName();
 
-            for (i = 0; i < imax; i++)
-              Objects.push_back((const CCopasiObject *) (*tmp)[i]);
+        if (Name == name || Name == VectorName)
+          {
+            dataType = (*mpFunctionParameters)[i]->getType();
+            return i;
           }
       }
 
-    return Objects;
+    fatalError()
+    return - 1;
   }
 
-CCallParameterPointers & CFunctionParameterMap::getObjects() {return mObjects;};
+ich arbeite gerade an den Aenderungen fuer CReaction, die wir uns ueberlegt hatten.
+Dabei ist mir was aufgefallen:
 
-const CCallParameterPointers & CFunctionParameterMap::getObjects() const
-  {return mObjects;};
+Ich hatte Dich doch gefragt, warum CReaction sich eine Kopie von CFunctionParameters anlegt. Das habe ich jetzt verstanden. Falls sich die Funktion aendert braucht CReaction noch die Information, wo vorher ein Vektor in den Parametern war, um das CCallParameters Objekt aufraeumen zu koennen.
 
-const CFunctionParameters & CFunctionParameterMap::getFunctionParameters() const
-  {return * mpFunctionParameters;};
+Jetzt die Frage: Wenn sich die Funktion aendert, geraet auch die Reaktion in Schwierigkeiten. Die Callparameter sind dann zwar in sich konsistent (siehe oben), passen aber nicht mehr zu der geaenderten Funktion. Sollte daher die Reaktion auch eine Kopie der Funktion anlegen ? Vermutlich nicht, denn dieses Problem laesst sich abfangen (Bevor eine Berechnung gestartet wird muss ueberprueft werden, ob die CallParameter zur Funktion passen). Das weiter oben erwaehnte Problem laesst sich hingegen nicht umgehen, da eine Freigabe des Speichers von CCallParameters gar nicht mehr moeglich ist, wenn die Information ueber die Typen der CallParameter nicht gesichert wurde.

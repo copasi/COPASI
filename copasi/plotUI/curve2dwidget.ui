@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>655</width>
-            <height>380</height>
+            <width>600</width>
+            <height>318</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,144 +19,133 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="Line" row="1" column="0" rowspan="1" colspan="3">
+        <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>line</cstring>
+                <cstring>layout1</cstring>
             </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLabel" row="0" column="0">
-            <property name="name">
-                <cstring>textLabelTitle</cstring>
-            </property>
-            <property name="text">
-                <string>Title</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>lineEditTitle</cstring>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>lineEditXName</cstring>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="3" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>lineEditXCN</cstring>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="5" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>lineEditYName</cstring>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="6" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>lineEditYCN</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="0">
-            <property name="name">
-                <cstring>textLabelX</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>X-Axis</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="5" column="0">
-            <property name="name">
-                <cstring>textLabelY</cstring>
-            </property>
-            <property name="text">
-                <string>Y-Axis</string>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="4" column="1">
-            <item>
-                <property name="text">
-                    <string>Top</string>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
                 </property>
-            </item>
-            <item>
-                <property name="text">
-                    <string>Bottom</string>
-                </property>
-            </item>
-            <property name="name">
-                <cstring>comboXAxis</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="currentItem">
-                <number>1</number>
-            </property>
-        </widget>
-        <spacer row="8" column="2">
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>21</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QComboBox" row="7" column="1">
-            <item>
-                <property name="text">
-                    <string>Left</string>
-                </property>
-            </item>
-            <item>
-                <property name="text">
-                    <string>Right</string>
-                </property>
-            </item>
-            <property name="name">
-                <cstring>comboYAxis</cstring>
-            </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabelTitle</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Title</string>
+                    </property>
+                </widget>
+                <widget class="Line" row="1" column="0" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>line</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="2" column="2">
+                    <item>
+                        <property name="text">
+                            <string>Top</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Bottom</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>comboXAxis</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="currentItem">
+                        <number>1</number>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="2" column="1">
+                    <property name="name">
+                        <cstring>comboXData</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>200</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabelX</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>X-Axis</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>lineEditTitle</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="3" column="1">
+                    <property name="name">
+                        <cstring>comboYData</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="3" column="2">
+                    <item>
+                        <property name="text">
+                            <string>Left</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Right</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>comboYAxis</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabelY</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Y-Axis</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
     </grid>
 </widget>
 <includes>
-    <include location="local" impldecl="in declaration">CPlotSpecification.h</include>
+    <include location="local" impldecl="in declaration">CPlotSpec.h</include>
     <include location="local" impldecl="in implementation">curve2dwidget.ui.h</include>
 </includes>
 <functions>
-    <function returnType="bool">LoadFromCurveSpec( const CPlotItem * curve )</function>
-    <function returnType="bool">SaveToCurveSpec( CPlotItem * curve ) const</function>
+    <function specifier="non virtual" returnType="bool">LoadFromCurveSpec( const Curve2DSpec * curve, const QStringList &amp; channels )</function>
+    <function specifier="non virtual" returnType="bool">SaveToCurveSpec( Curve2DSpec * curve ) const</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

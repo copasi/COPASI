@@ -1,4 +1,4 @@
-Version=3.00301
+Version=3.02103
 EndTime=1.000000e+004
 Points=5000
 RealTime=0
@@ -6,8 +6,8 @@ SleepTime=0
 TimeUnit=s
 ConcentrationUnit=mM
 VolumeUnit=ml
-Dynamics=1
-SteadyState=0
+Dynamics=0
+SteadyState=1
 Report=1
 DynTitles=0
 SSTitles=0
@@ -20,7 +20,7 @@ SSSeparator=44
 SSMCAUnscaled=0
 SSStrategy=0
 SSBackIntegration=1
-RepStructuralAnalysis=0
+RepStructuralAnalysis=1
 RepStabilityAnalysis=1
 RepMCA=1
 NewtonLimit=50
@@ -30,7 +30,7 @@ AbsoluteTolerance=1.000000e-012
 AdamsMaxOrder=12
 BDFMaxOrder=5
 DerivationFactor=1.000000e-003
-ReportFile=C:\Pedro\gep3\Install-I\DATA\SAMPLES\Decroly3.txt
+ReportFile=Z:\GEP3\Source\Decroly3.txt
 DynamicsFile=Decroly3.dyn
 SSFile=
 Title=Double product-activation (chaos)
@@ -159,7 +159,7 @@ Type=0
 Step=R1
 Equation= -> A
 KineticType=Constant flux (irreversible)
-Flux=0.0000000000000000
+Flux=0.0176152500000000
 Reversible=0
 Substrates=0
 Products=1
@@ -170,7 +170,7 @@ Param0=0.0176152500000000
 Step=R2
 Equation=A -> B
 KineticType=Allosteric activation (MWC)
-Flux=0.0000000000000000
+Flux=-1.0000000000000000
 Reversible=0
 Substrates=1
 Products=1
@@ -186,7 +186,7 @@ Param3=500000000.0000000000000000
 Step=R3
 Equation=B -> C
 KineticType=Allosteric activation (MWC)
-Flux=0.0000000000000000
+Flux=-1.0000000000000000
 Reversible=0
 Substrates=1
 Products=1
@@ -202,7 +202,7 @@ Param3=100.0000000000000000
 Step=R4
 Equation=C -> D
 KineticType=Mass action (irreversible)
-Flux=0.0000000000000000
+Flux=-1.0000000000000000
 Reversible=0
 Substrates=1
 Products=1
@@ -214,17 +214,14 @@ Param0=1.2000000000000000
 Compartment=compartment
 Volume=1.000000e+000
 Comments
-This is a model of glycolysis published in Decroly, O. and Goldbeter, A.  (1982),
-"Birhythmicity, chaos, and other patterns of temporal self-organization in a multiply
-regulated biochemical system.", Proc. Nat. Acad. Sci. USA 79,  6917-6921
+This is the model of glycolysis by Decroly & Goldbeter.
 
-The model only takes into consideration two enzymes that are activated
-allosterically by their own products, a constant supply of substrate and a
-first-order sink reaction. The two allosteric enzymes represent PFK and 
-PK which are activated by ADP, a product of both.
+The pathway is only represented by a source at constant rate, two enzymes that
+are activated allosterically by their own products and a first-order sink reaction.
+The two allosteric enzymes represent PFK and PK which are activated by ADP,
+a product of both.
 
-This set of parameters generates chaotic behaviour. See the strange attractor
-by plotting [A] versus [B] versus [C] in a 3D graph (use the plot window).
+This set of parameters generates chaotic behaviour.
 EndComments
 PlotType=0
 PlotDyn=1
@@ -238,11 +235,11 @@ PlotHidden3d=0
 PlotLogX=0
 PlotLogY=0
 PlotLogZ=0
-PlotXEntry=2
+PlotXEntry=5
 PlotYTotal=1
 PlotZTotal=1
-PlotY0=3
-PlotZ0=4
+PlotY0=2
+PlotZ0=3
 User-defined functions
 Items=0
 Interactive time course

@@ -1,48 +1,40 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetaboliteSymbols.h,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 14:45:28 $
-   End CVS Header */
-
 /****************************************************************************
- **  $ CopasiUI/MetaboliteSymbols.h               
+ **  $ CopasiUI/MetabolitesWidget.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Metabolite Symbols
+ ** This is the header file for the Metabolites Widget, i.e the First level 
+ ** of Metabolites.
  *****************************************************************************/
 
 #ifndef METABOLITE_SYMBOLS_H
 #define METABOLITE_SYMBOLS_H
 
+#include "MyTable.h"
+#include "copasi.h"
+#include "model/model.h"
 #include <qtable.h>
 #include <qpushbutton.h>
 
-#include "MyTable.h"
-#include "copasi.h"
-#include "copasiWidget.h"
-class CMathModel;
-
-class MetaboliteSymbols : public CopasiWidget
+class MetaboliteSymbols : public QWidget
   {
     Q_OBJECT
 
   protected:
-    CMathModel * mModel;
+    CModel * mModel;
     MyTable * table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
 
+  public slots:
+    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+
   signals:
-    void name(const QString &);
+    void name(QString &);
 
   public:
     MetaboliteSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
+    //void loadMetabolites(CModel *model);
     void resizeEvent(QResizeEvent * re);
-
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool enter(const std::string & key = "");
 
   protected slots:
     virtual void slotBtnOKClicked();
@@ -50,7 +42,7 @@ class MetaboliteSymbols : public CopasiWidget
     virtual void slotTableSelectionChanged();
 
   private:
-    void loadMetaboliteSymbols(CMathModel *model);
+    void showMessage(QString caption, QString text);
   };
 
 #endif

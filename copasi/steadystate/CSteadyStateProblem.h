@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:13:16 $
-   End CVS Header */
-
 /**
  *  CSteadyStateProblem class.
  *  This class describes the steady state problem, i.e., it allows to specify
@@ -19,48 +11,70 @@
 
 #include <string>
 
-#include "model/CState.h"
-#include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h" 
-//#include "utilities/CWriteConfig.h"
+class CModel;
+class CState;
 
-class CSteadyStateProblem: public CCopasiProblem
+#include "utilities/CReadConfig.h"
+#include "utilities/CWriteConfig.h"
+
+class CSteadyStateProblem
   {
     // Attributes
   private:
     /**
+     *  The model the problem is working on.
+     */
+    CModel * mpModel;
+
+    /**
+     *  The resolution of the steadystate.
+     */
+    unsigned C_INT32 mResolution;
+
+    /**
+     *  The factor used for finite difference methods.
+     */
+    unsigned C_INT32 mFactor;
+
+    /**
      *  The initial state, i.e., the starting conditions of the trajectroy.
      */
-    CState mInitialState;
+    CState * mpInitialState;
+
+    /**
+     *  Whether the jacobian is requested for the steady state
+     */
+    bool mJacobianRequested;
+
+    /**
+     *  Whether the stabilty analysis is requested for the the steady state
+     */
+    bool mStabilityAnalysisRequested;
 
   public:
     // Operations
 
     /**
-     * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
+     *  Default constructor.
      */
-    CSteadyStateProblem(const CCopasiContainer * pParent = NULL);
+    CSteadyStateProblem();
 
     /**
      *  Copy constructor.
      *  @param "const CSteadyStateProblem &" src
-     * @paramconst CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateProblem(const CSteadyStateProblem & src,
-                        const CCopasiContainer * pParent = NULL);
+    CSteadyStateProblem(const CSteadyStateProblem & src);
 
     /**
      *  Destructor.
      */
-    virtual ~CSteadyStateProblem();
+    ~CSteadyStateProblem();
 
     /**
-     * Set the model of the problem
-     * @param CModel * pModel
-     * @result bool succes
+     * Set the moddel the problem is dealing with.
+     * @param "CModel *" pModel
      */
-    virtual bool setModel(CModel * pModel);
+    void setModel(CModel * pModel);
 
     /**
      * Retrieve the model the problem is dealing with.
@@ -70,27 +84,21 @@ class CSteadyStateProblem: public CCopasiProblem
 
     /**
      * Set the initial state of the problem.
-     * @param const CState & InitialState
+     * @param "const CState *" pInitialState
      */
-    void setInitialState(const CState & initialState);
-
-    /**
-     * Set the initial state of the problem.
-     * @param const CStateX & InitialState
-     */
-    void setInitialState(const CStateX & initialState);
+    void setInitialState(CState * pInitialState);
 
     /**
      * Retrieve the initial state of the problem.
-     * @return "const CState &" pInitialState
+     * @return "const CState *" pInitialState
      */
-    const CState & getInitialState() const;
+    const CState * getInitialState() const;
 
     /**
      * Set whether the jacobian is requested.
-     * @param bool & jacobianRequested
+     * @param bool * jacobianRequested
      */
-    void setJacobianRequested(bool & jacobianRequested);
+    void setJacobianRequested(bool * jacobianRequested);
 
     /**
      * Retrieve whether the jacobian is requested.
@@ -100,9 +108,9 @@ class CSteadyStateProblem: public CCopasiProblem
 
     /**
      * Set whether stabilty analysis is requested.
-     * @param bool & stabilityAnalysisRequested
+     * @param bool * stabilityAnalysisRequested
      */
-    void setStabilityAnalysisRequested(bool & stabilityAnalysisRequested);
+    void setStabilityAnalysisRequested(bool * stabilityAnalysisRequested);
 
     /**
      * Retrieve whether the stabilty analysis is requested.
@@ -121,8 +129,8 @@ class CSteadyStateProblem: public CCopasiProblem
     /**
      * Save a trajectory problem
      * @param "CWriteConfig &" configBuffer
-     */ 
-    //    void save(CWriteConfig & configBuffer) const;
+     */
+    void save(CWriteConfig & configBuffer) const;
 
   private:
     /**

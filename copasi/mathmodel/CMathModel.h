@@ -1,11 +1,3 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/24 13:04:19 $
-   End CVS Header */
-
 /**
  *  CMathModel class.
  *  The class CMathModel is a mathematical representation of a chemical
@@ -19,9 +11,6 @@
 
 #include <map>
 #include <string>
-#include <vector>
-
-#include "model/CReaction.h"
 
 class CModel;
 class CMathConstantCompartment;
@@ -31,11 +20,6 @@ class CMathVariableVolume;
 class CMathVariableTime;
 class CMathSymbol;
 class CMathConstantParameter;
-class CMathConstantReference;
-class CMathEq;
-class CMathNode;
-class CMathNodeFunction;
-class CMathNodeOperation;
 
 /** @dia:pos 97.0405,-33.6536 */
 class CMathModel
@@ -46,7 +30,6 @@ class CMathModel
      *
      */
     const CModel * mpModel;
-    CModel * mpModelNonConst;
 
     /**
      *
@@ -90,16 +73,6 @@ class CMathModel
     /** @dia:route 4,18; h,36.0356,33.3698,45.8713,-27.5536,97.0405 */
     std::map< std::string, CMathConstantParameter * > mConstantsList;
 
-    /**
-     *
-     */
-    std::vector< CMathEq * > mEqList;
-
-    /**
-     *
-     */
-    CMathConstantReference * mpConversionFactor;
-
     // Operations
   public:
     /**
@@ -120,7 +93,7 @@ class CMathModel
     /**
      *
      */
-    bool setModel(CModel * pModel);
+    bool setModel(const CModel * pModel);
 
     /**
      *
@@ -166,11 +139,6 @@ class CMathModel
      *
      */
     std::map< std::string, CMathConstantParameter * > & getConstantsList();
-
-    /**
-     *
-     */
-    std::vector< CMathEq * > & getEqList();
 
   private:
     /**
@@ -226,60 +194,12 @@ class CMathModel
     /**
      *
      */
-    template < class SymbolList > bool clearList(SymbolList & list)
-      {
-        typedef typename SymbolList::iterator iterator;
-
-        iterator it = list.begin();
-        iterator end = list.end();
-
-        for (; it != end; it++)
-          pdelete(it->second);
-
-        list.clear();
-
-        return true;
-      }
+    bool clearList(std::map< std::string, CMathSymbol * > * list);
 
     /**
      *
      */
-    bool clearEqList();
-
-    /**
-     *
-     */
-    bool buildEqList();
-
-    /**
-     *
-     */
-    CMathNode * createScalingFactor(const CReaction * pReaction);
-
-    /**
-     * Create a node presenting the kinetic function for a reaction
-     * including it list of parameters.
-     * @param const CReaction * pReaction
-     * @return CMathNodeFunction * pFunction
-     */
-    static CMathNodeFunction * createFunction(const CReaction * pReaction);
-
-    /**
-     *
-     */
-    static CMathNodeOperation * createComponent(const CChemEqElement * pElement,
-        CMathNode * pScalingFactor,
-        CMathNodeFunction * pFunction);
-
-    /**
-     *
-     */ 
-    //static bool addParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
-
-    /**
-     *
-     */ 
-    //static bool deleteParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
+    bool buildEquations();
   };
 
 #endif // COPASI_CMathModel

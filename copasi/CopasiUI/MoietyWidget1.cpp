@@ -1,122 +1,134 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.45 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:47 $
-   End CVS Header */
-
-/*******************************************************************
- **  $ CopasiUI/MoietyWidget1.cpp                 
- **  $ Author  : Mudita Singhal
- **
- ** This file is used to create the GUI FrontPage for the  information 
- ** obtained from the data model about the Moiety----It is 
- ** the Second level of Moieties.
- ********************************************************************/
+//This code is for making the second level of the Moieties 
+#include "MoietyWidget1.h"
 #include <qlabel.h>
-#include <qlistbox.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
+//#include "MyTreeAndListWidget.h"
 
-#include "copasi.h"
-#include "utilities/CCopasiVector.h"
-#include "MoietyWidget1.h"
-#include "model/CModel.h"
-#include "model/CMoiety.h"
-#include "listviews.h"
-#include "DataModelGUI.h"
-#include "qtUtilities.h"
-#include "report/CKeyFactory.h"
-
-/*
+/* 
  *  Constructs a MoietyWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  *
  */
 
-MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
-    : CopasiWidget(parent, name, f)
+MoietyWidget1::MoietyWidget1( QWidget *parent, const char * name, WFlags f )
+    : QWidget(parent, name, f)
 
-{
-  if (!name)
-    setName("MoietyWidget1");
-  setCaption(trUtf8("MoietyWidget1"));
-  MoietyWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MoietyWidget1Layout");
+{	
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Equation"));
+	//This is to make the Main Frame of the page
+	//The Main layout used is the Vertical Layout
 
-  MoietyWidget1Layout->addWidget(TextLabel1, 2, 0);
+	QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0 );
+	Frame1 = new QFrame( this, "Frame1" );
+	Frame1->setFrameShape( QFrame::Box );
+    Frame1->setFrameShadow( QFrame::Plain);
+	vboxLayout->addWidget(Frame1);
 
-  textBrowser = new QTextBrowser (this, "Text Browser");
-  textBrowser->setReadOnly(TRUE);
+	//This Frame had to be added because of the border around the frame
+	//The grid Layout is used for this frame
+	QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0 );
+	vboxLayout1->addSpacing(1);
+   	Frame3 = new QFrame( Frame1, "Frame3" );
+	vboxLayout1->addWidget(Frame3);
+	QGridLayout *gridLayout = new QGridLayout(Frame3, 0 );
 
-  MoietyWidget1Layout->addWidget(textBrowser, 2, 1);
+	//All the other frames(rows) are embeded in it
+	Frame2 = new QFrame( Frame3, "Frame2" );
+	gridLayout->addWidget(Frame2,0,0,0);
+	QGridLayout *gridLayout1 = new QGridLayout( Frame2, 0 );
+	
+	
+	//Frame for Ist Row
+	Frame4a = new QFrame(Frame2, "Frame4a" );
+    gridLayout1->addWidget(Frame4a,0,0,0);
+	QHBoxLayout *hBoxLayout4a = new QHBoxLayout( Frame4a, 0 );
+	hBoxLayout4a->addSpacing(15);
+	
+	TextLabel1 = new QLabel( "Equation", Frame4a );
+    hBoxLayout4a->addWidget(TextLabel1);
+	hBoxLayout4a->addSpacing(83);
+    LineEdit1 = new QLineEdit( "",Frame4a  );
+	hBoxLayout4a->addWidget(LineEdit1);
+    hBoxLayout4a->addSpacing(20);
+	
+	//Frame for 2nd Row
+	Frame4b = new QFrame( Frame2, "Frame4b" );
+    gridLayout1->addWidget(Frame4b,1,0,0);
+	QHBoxLayout *hBoxLayout4b = new QHBoxLayout( Frame4b, 0 );
+	hBoxLayout4b->addSpacing(15);
+	
+	TextLabel2= new QLabel( "Total Particle Number",Frame4b );
+    hBoxLayout4b->addWidget( TextLabel2);
+    hBoxLayout4b->addSpacing(25);
+	
+	LineEdit2 = new QLineEdit( "", Frame4b );
+	hBoxLayout4b->addWidget(LineEdit2 );
+	hBoxLayout4b->addSpacing(180);
 
-  LineEdit2 = new QLineEdit(this, "LineEdit2");
-  LineEdit2->setEnabled(FALSE);
+	
+	//Frame for 3rd Row
+	Frame4c = new QFrame( Frame2, "Frame4c" );
+    gridLayout1->addWidget(Frame4c,2,0,0);
+	QHBoxLayout *hBoxLayout4c = new QHBoxLayout( Frame4c, 0 );
+	hBoxLayout4c->addSpacing(15);
+    
+	TextLabel3 = new QLabel( "Dependent Metabolite",Frame4c);
+    hBoxLayout4c->addWidget(TextLabel3);
+	hBoxLayout4c->addSpacing(25);
 
-  MoietyWidget1Layout->addWidget(LineEdit2, 0, 1);
+	LineEdit3 = new QLineEdit( "", Frame4c );
+	hBoxLayout4c->addWidget(LineEdit3 );
+	hBoxLayout4c->addSpacing(180);
+	   
+	
+      
+    //This is the frame for the cancel and the commit buttons   
+	Frame4d= new QFrame( Frame2, "Frame4d" );
+	gridLayout1->addWidget(Frame4d,7,0,0);
+	QHBoxLayout *hBoxLayout4d = new QHBoxLayout( Frame4d, 0 );
+	hBoxLayout4d->addSpacing(15);
 
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Total Particle Number"));
-
-  MoietyWidget1Layout->addWidget(TextLabel2, 0, 0);
-
-  TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Dependent Metabolite"));
-
-  MoietyWidget1Layout->addWidget(TextLabel3, 1, 0);
-
-  LineEdit3 = new QLineEdit(this, "LineEdit3");
-  LineEdit3->setEnabled(FALSE);
-
-  MoietyWidget1Layout->addWidget(LineEdit3, 1, 1);
-  QSpacerItem* spacer = new QSpacerItem(430, 171, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  MoietyWidget1Layout->addMultiCell(spacer, 3, 3, 0, 1);
-
-  // signals and slots connections
+	//Th buttons are laid out using the Horizontal Layout
+	commitChanges = new QPushButton("&Commit Changes", Frame4d);
+	cancelChanges = new QPushButton("&Cancel Changes", Frame4d);
+	hBoxLayout4d->addWidget(commitChanges);
+	hBoxLayout4d->addSpacing(15);
+	hBoxLayout4d->addWidget(cancelChanges);
+	hBoxLayout4d->addSpacing(15);
+   
+   
 }
 
-MoietyWidget1::~MoietyWidget1()
-{}
 
-bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
+
+//Th function for loading the moities in this form
+void MoietyWidget1::loadMoieties(CModel *model)
 {
-  if (!moiety) return false;
+	if (model != NULL)
+	{
+		mModel = model;
+		
+		CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
+		C_INT32 noOfMoietyRows = moieties.size();
+		CMoiety *moiety;
+		moiety= moieties[2];
 
-  textBrowser->setText(FROM_UTF8(moiety->getDescription(dataModel->getModel())));
-
-  LineEdit3->setText(FROM_UTF8(moiety->getObjectName()));
-
-  LineEdit2->setText(QString::number(moiety->getNumber()));
-
-  return true; //TODO really check
+		
+		LineEdit1->setText(moiety->getDescription().c_str());
+		LineEdit3->setText(moiety->getName().c_str());
+		LineEdit2->setText(QString::number(moiety->getNumber()));
+		  	
+		}
 }
 
-bool MoietyWidget1::update(ListViews::ObjectType objectType,
-                           ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  if (mIgnoreUpdates) return true;
-  return loadFromMoiety(dynamic_cast< CMoiety * >(GlobalKeys.get(objKey)));
-}
 
-bool MoietyWidget1::leave()
-{
-  return true;
-}
 
-bool MoietyWidget1::enter(const std::string & key)
-{
-  objKey = key;
-  CMoiety* moiety = dynamic_cast< CMoiety * >(GlobalKeys.get(objKey));
 
-  //TODO: check if it really is a Moiety
-  if (moiety) return loadFromMoiety(moiety);
-  else return false;
-}
+
+
+

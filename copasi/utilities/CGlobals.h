@@ -1,97 +1,54 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CGlobals.h,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/05 12:58:22 $
-   End CVS Header */
-
 #ifndef COPASI_CGlobals
 #define COPASI_CGlobals
 
 #include <string>
-#include <vector>
 
+#include "model/CMetab.h"
+#include "function/CFunctionDB.h"
 #include "CVersion.h"
-
-template < class CType > class CCopasiVectorS;
-class CMetabOld;
-class CFunctionDB;
-//class CUDFunctionDB;
-class CModel;
-//class COutputList;
-class CReportDefinitionVector;
-//class CPlotSpecVector;
+// #include "Output/COutputList.h"
 
 class CGlobals
-  {
-    // Attributes
+{
+  // Attributes
+ public:
+  /**
+   *
+   */
+  CVersion ProgramVersion;
+    
+  /**
+   *
+   */
+  CFunctionDB FunctionDB;
 
-  public:
-    /**
-     *
-     */
-    CVersion ProgramVersion;
+  /**
+   *  This is a hack at the moment to be able to read old configuration files
+   */
+  CMetabolitesOld OldMetabolites;
+    
+  /**
+   *
+   */
+  C_FLOAT64 DefaultConc;
+ private:
+  //    COutputList OutputList;
+ public:
 
-    /**
-     *
-     */
-    CFunctionDB * pFunctionDB;
+  // Operations
+ public:
+  /**
+   *
+   */
+  CGlobals();
 
-    /**
-     *
-     */ 
-    //CUDFunctionDB * pUDFunctionDB;
-    // CCompartment Compartmentfile;
+  /**
+   *
+   */
+  ~CGlobals();
+};
 
-    /**
-     *  This is a hack at the moment to be able to read old configuration files
-     */
-    CCopasiVectorS < CMetabOld > * pOldMetabolites;
-
-    /**
-     *
-     */ 
-    //COutputList * pOutputList;
-
-    /**
-     *
-     */
-    std::vector <char *> Arguments;
-
-    /**
-     *  This a hack to be able to read old configaration files output information
-     */
-    CModel * pModel;
-
-    CReportDefinitionVector * pReportDefinitions;
-    //    CPlotSpecVector *;
-
-  public:
-
-    // Operations
-
-  public:
-    /**
-     *
-     */
-    CGlobals();
-
-    /**
-     *
-     */
-    ~CGlobals();
-
-    /**
-     *
-     */
-    void setArguments(C_INT argc, char *argv[]);
-  };
-
-#ifdef COPASI_MAIN
-CGlobals *Copasi = NULL;
-#else
-extern CGlobals *Copasi;
-#endif // __MAIN
+extern CGlobals Copasi;
 
 #endif // COPASI_CGlobals
+

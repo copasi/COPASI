@@ -1,118 +1,67 @@
-# Original Author was Kalle@kde.org
-# I lifted it in some mater. (Stephan Kulow)
-# I used much code from Janos Farkas
+dnl without this order in this file, autoconf will not work!
+dnl the argument is a source file out of your sources. But
+dnl acinclude.m4 makes the job for all programs ;-)
+AC_INIT(acinclude.m4)
 
-dnl Process this file with autoconf to produce a configure script.
+dnl enable the following if you want to use autoconf/automake 
+dnl framework from a certain directory (like kde-common)
+dnl AC_CONFIG_AUX_DIR(admin)
 
-AC_INIT(acinclude.m4) dnl a source file from your sub dir
-
-dnl This is so we can use kde-common
-AC_CONFIG_AUX_DIR(admin)
-
-dnl Perform program name transformation
+AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
-dnl Automake doc recommends to do this only here. (Janos)
 AM_INIT_AUTOMAKE(copasi,0.1)
 
-dnl make /usr/local the default for the installation
 AC_PREFIX_DEFAULT(/usr/local)
-
-AC_ARG_WITH([expat],
-  AC_HELP_STRING([--with-expat=PATH],
-                 [Path to Expat XML Library ]),
-  [EXPAT_PATH=$withval])
-
-AC_ARG_WITH([sbml],
-  AC_HELP_STRING([--with-sbml=PATH],
-                 [Path to SBML Library ]),
-  [SBML_PATH=$withval])
-
-
-AC_ARG_WITH([clapack],
-  AC_HELP_STRING([--with-clapack=PATH],
-                 [Path to CLAPACK Library ]),
-  [CLAPACK_PATH=$withval])
-
-
-AC_ARG_WITH([mkl],
-  AC_HELP_STRING([--with-mkl=PATH],
-                 [Path to MKL Library ]),
-  [MKL_PATH=$withval])
-
-AC_ARG_WITH([qwt],
-  AC_HELP_STRING([--with-qwt=PATH],
-                 [Path to QWT Library ]),
-  [QWT_PATH=$withval])
-
-
-
-
-
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
-if test x"${enable_release}" != x"yes" -a x"${enable_debug}" != x"no"; then
-  cps_release="CONFIG+=debug CONFIG-=release"
-else
-  cps_release="CONFIG+=release CONFIG-=debug"
-fi
+dnl without this order in this file, automake will be confused!
+dnl 
+AM_CONFIG_HEADER(config.h)
 
-if test x"${enable_thread}" != x"no"; then
-  cps_thread="CONFIG+=thread"
-else
-  cps_thread="CONFIG-=thread"
-fi
+dnl checks for programs.
+dnl first check for c/c++ compilers
+AC_CHECK_COMPILERS
+dnl check for lex
+AM_PROG_LEX
 
-if test x"${MKL_PATH}" != x""; then
-  cps_mkl_path="MKL_PATH=$MKL_PATH"
-fi
+dnl create only shared libtool-libraries
+AC_ENABLE_SHARED(yes)
 
-if test x"${CLAPACK_PATH}" != x""; then
-  cps_clapack_path="CLAPACK_PATH=$CLAPACK_PATH"
-fi
+dnl set the following to yes, if you want to create static
+dnl libtool-libraries
+AC_ENABLE_STATIC(no)
 
-if test x"${LAPACK_PATH}" != x""; then
-  cps_clapack_path="LAPACK_PATH=$LAPACK_PATH"
-fi
+dnl create a working libtool-script
+KDE_PROG_LIBTOOL
 
-if test x"${EXPAT_PATH}" != x""; then
-  cps_expat_path="EXPAT_PATH=$EXPAT_PATH"
-fi
+dnl check for presence of dynamic-loading-library functions
+KDE_CHECK_LIBDL
 
-if test x"${QWT_PATH}" != x""; then
-  cps_qwt_path="QWT_PATH=$QWT_PATH"
-fi
+dnl activate the following for some additional tests
+dnl   (compat, crypt, socket, nsl, ...)
+dnl KDE_MISC_TESTS
 
-if test x"${SBML_PATH}" != x""; then
-  cps_sbml_path="SBML_PATH=$SBML_PATH"
-fi
+dnl add --with-extra-includes and --with-extra-libs switch to ./configure
+dnl
+AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
+all_libraries="$all_libraries $USER_LDFLAGS"
+all_includes="$all_includes $USER_INCLUDES"
+AC_SUBST(all_includes)
+AC_SUBST(all_libraries)
+
+AC_SUBST(AUTODIRS)
+
+dnl in this space add everything you want to check for
+dnl examples are specific headers, libraries, etc.
 
 
-(
-dnl to prevent calling aclocal, automake and configure again
- touch configure.in
- touch aclocal.m4 
- touch Makefile.in
- touch configure
 
- cd copasi && \
- echo executing in `pwd`: && \
- echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
- rm .qmake.internal.cache */.qmake.internal.cache; \
- rm Makefile */Makefile; \
- echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" && \
- $QTDIR/bin/qmake $cps_release $cps_thread \
-                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path && \
- cat Makefile | \
- sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
-     -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
- mv $$.tmp Makefile && \
- echo depend:  >> Makefile && \
- echo "	touch Makefile" >> Makefile 
-)
+dnl perform program name transformation
+AC_ARG_PROGRAM
 
 dnl add here all your Makefiles. These will be created by configure
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile copasi/Makefile copasi/function/Makefile copasi/output/Makefile copasi/model/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/steadystate/Makefile copasi/test/Makefile tnt/Makefile)

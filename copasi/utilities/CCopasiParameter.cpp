@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/12 09:12:10 $
+   $Author: shoops $ 
+   $Date: 2003/10/21 20:32:46 $
    End CVS Header */
 
 /**
@@ -18,168 +18,182 @@
 
 #include "copasi.h"
 #include "CCopasiParameter.h"
-#include "CCopasiParameterGroup.h"
 #include "CCopasiMessage.h"
 #include "report/CKeyFactory.h"
 
 const std::string CCopasiParameter::TypeName[] =
   {
     "float",
-    "unsigned float",
     "integer",
     "unsigned integer",
     "bool",
-    "group",
-    "string",
-    ""
+    "group"
   };
 
-const char* CCopasiParameter::XMLType[] =
-  {
-    "float",
-    "unsignedFloat",
-    "integer",
-    "unsignedInteger",
-    "bool",
-    "group",
-    "string",
-    NULL
-  };
-
-CCopasiParameter::CCopasiParameter():
-    CCopasiContainer("NoName", NULL, "Parameter"),
-    mType(INVALID)
+CCopasiParameter::CCopasiParameter(const std::string & name,
+                                   const CCopasiContainer * pParent,
+                                   const std::string & objectType):
+    CCopasiContainer(name, pParent, objectType, CCopasiObject::Container | CCopasiObject::ValueDbl),
+    mKey(CKeyFactory::add("Constant", this)),
+    mType(CCopasiParameter::DOUBLE),
+    mpValue(createValue())
 {}
 
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
                                    const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add(src.getObjectType(), this)),
+    mKey(CKeyFactory::add("Constant", this)),
     mType(src.mType),
-    mSize(0),
     mpValue(createValue(src.mpValue))
 {}
 
 CCopasiParameter::CCopasiParameter(const std::string & name,
-                                   const CCopasiParameter::Type & type,
                                    const void * pValue,
+                                   const CCopasiParameter::Type & type,
                                    const CCopasiContainer * pParent,
                                    const std::string & objectType):
-    CCopasiContainer(name, pParent, objectType,
-                     CCopasiObject::Container |
-                     ((type == DOUBLE || type == UDOUBLE) ?
-                      CCopasiObject::ValueDbl :
-                      ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
-                       (type == BOOL) ? CCopasiObject::ValueBool : 0))),
-    mKey(GlobalKeys.add(objectType, this)),
+    CCopasiContainer(name, pParent, objectType, CCopasiObject::Container | CCopasiObject::ValueDbl),
+    mKey(CKeyFactory::add("Constant", this)),
     mType(type),
-    mSize(0),
     mpValue(createValue(pValue))
 {}
 
 CCopasiParameter::~CCopasiParameter()
 {
-  GlobalKeys.remove(mKey);
+  CKeyFactory::remove(mKey);
   deleteValue();
 }
 
-const std::string & CCopasiParameter::getKey() const {return mKey;}
+std::string CCopasiParameter::getKey() const {return mKey;}
 
-//bool CCopasiParameter::setName(const std::string & name) {return setObjectName(name);}
+bool CCopasiParameter::setName(const std::string & name) {return setObjectName(name);}
 
-//const std::string & CCopasiParameter::getName() const {return getObjectName();}
+const std::string & CCopasiParameter::getName() const {return getObjectName();}
+
+bool CCopasiParameter::setValue(const double & value)
+{
+  if (isValidValue(&value))
+    {
+      * (C_FLOAT64 *) mpValue = value;
+      return true;
+    }
+  else
+    return false;
+}
+
+bool CCopasiParameter::setValue(const C_INT32 & value)
+{
+  if (mType == CCopasiParameter::INT)
+    {
+      * (C_INT32 *) mpValue = value;
+      return true;
+    }
+  else
+    return false;
+}
+
+bool CCopasiParameter::setValue(const unsigned C_INT32 & value)
+{
+  if (mType == CCopasiParameter::UINT)
+    {
+      * (unsigned C_INT32 *) mpValue = value;
+      return true;
+    }
+  else
+    return false;
+}
+
+bool CCopasiParameter::setValue(const bool & value)
+{
+  if (mType == CCopasiParameter::BOOL)
+    {
+      * (bool *) mpValue = value;
+      return true;
+    }
+  else
+    return false;
+}
 
 const void * CCopasiParameter::getValue() const {return mpValue;}
 
-void * CCopasiParameter::getValue() {return mpValue;}
+void CCopasiParameter::setType(const CCopasiParameter::Type & type)
+{mType = type;}
 
 const CCopasiParameter::Type & CCopasiParameter::getType() const
   {return mType;}
 
-bool CCopasiParameter::isValidValue(const C_FLOAT64 & value) const
+bool CCopasiParameter::isValidValue(const void *pValue) const
   {
-    if ((mType != CCopasiParameter::DOUBLE &&
-         mType != CCopasiParameter::UDOUBLE) ||
-        (mType == CCopasiParameter::UDOUBLE &&
-         value < 0.0)) return false;
+    switch (mType)
+      {
+      case CCopasiParameter::DOUBLE:
+        return true;
+        break;
 
-    return true;
+      case CCopasiParameter::INT:
+        if (LONG_MIN <= * (C_INT32 *) pValue &&
+            LONG_MAX >= * (C_INT32 *) pValue)
+          return true;
+        break;
+
+      case CCopasiParameter::UINT:
+        if (* (unsigned C_INT32 *) pValue <= ULONG_MAX)
+          return true;
+        break;
+
+      case CCopasiParameter::BOOL:
+        if (true == * (bool *) pValue ||
+            false == * (bool *) pValue)
+          return true;
+        break;
+
+      case CCopasiParameter::GROUP:
+        if (((CCopasiContainer *)pValue)->getObjectType() == "ParameterGroup")
+          return true;
+        break;
+
+      default:
+        break;
+      }
+
+    return false;
   }
 
-bool CCopasiParameter::isValidValue(const C_INT32 & C_UNUSED(value)) const
-  {
-    if (mType != CCopasiParameter::INT) return false;
-    return true;
-  }
-
-bool CCopasiParameter::isValidValue(const unsigned C_INT32 & C_UNUSED(value)) const
-  {
-    if (mType != CCopasiParameter::UINT) return false;
-    return true;
-  }
-
-bool CCopasiParameter::isValidValue(const bool & C_UNUSED(value)) const
-  {
-    if (mType != CCopasiParameter::BOOL) return false;
-    return true;
-  }
-
-bool CCopasiParameter::isValidValue(const std::string & C_UNUSED(value)) const
-  {
-    if (mType != CCopasiParameter::STRING) return false;
-    return true;
-  }
-
-bool CCopasiParameter::isValidValue(const CCopasiParameterGroup::parameterGroup & C_UNUSED(value)) const
-  {
-    if (mType != CCopasiParameter::GROUP) return false;
-    return true;
-  }
-
-void * CCopasiParameter::getReference() const
-{return const_cast<void *>(mpValue);}
+void CCopasiParameter::cleanup() {}
 
 void * CCopasiParameter::createValue(const void * pValue)
 {
+  if (pValue) assert(isValidValue(pValue));
+
   switch (mType)
     {
     case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
       mpValue = new C_FLOAT64;
       if (pValue) * (C_FLOAT64 *) mpValue = * (C_FLOAT64 *) pValue;
-      mSize = sizeof(C_FLOAT64);
       break;
 
     case CCopasiParameter::INT:
       mpValue = new C_INT32;
       if (pValue) * (C_INT32 *) mpValue = * (C_INT32 *) pValue;
-      mSize = sizeof(C_INT32);
       break;
 
     case CCopasiParameter::UINT:
       mpValue = new unsigned C_INT32;
       if (pValue)
         * (unsigned C_INT32 *) mpValue = * (unsigned C_INT32 *) pValue;
-      mSize = sizeof(unsigned C_INT32);
       break;
 
     case CCopasiParameter::BOOL:
       mpValue = new bool;
       if (pValue) * (bool *) mpValue = * (bool *) pValue;
-      mSize = sizeof(bool);
-      break;
-
-    case CCopasiParameter::STRING:
-      if (pValue)
-        mpValue = new std::string(* (std::string *) pValue);
-      else mpValue = new std::string;
-      mSize = sizeof(std::string);
       break;
 
     case CCopasiParameter::GROUP:
-    case CCopasiParameter::INVALID:
-      mpValue = NULL;
-      mSize = 0;
+      //      if (pValue) mpValue = new CCopasiParameterGroup(*pValue);
+      //      else mpValue = new CCopasiParameterGroup;
+      break;
+
+    default:
       break;
     }
 
@@ -193,7 +207,6 @@ void CCopasiParameter::deleteValue()
   switch (mType)
     {
     case CCopasiParameter::DOUBLE:
-    case CCopasiParameter::UDOUBLE:
       delete (C_FLOAT64 *) mpValue;
       break;
 
@@ -209,15 +222,13 @@ void CCopasiParameter::deleteValue()
       delete (bool *) mpValue;
       break;
 
-    case CCopasiParameter::STRING:
-      delete (std::string *) mpValue;
+    case CCopasiParameter::GROUP:
+      //      delete (CCopasiParameterGroup *) mpValue;
       break;
 
     default:
-      fatalError();
       break;
     }
 
-  mpValue = NULL;
   return;
 }
