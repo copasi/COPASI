@@ -66,6 +66,22 @@ unsigned C_INT32 CScanProblem::getListSize() const
 void CScanProblem::addScanItem(const CMethodParameterList & Item)
 {mScanItemList.add(Item);}
 
+/*
+  Remove a parameter from the list
+ */
+void CScanProblem::removeScanItem(const std::string & name)
+{
+  mScanItemList.remove(name);
+}
+
+/*
+  Swap
+ */
+void CScanProblem::swapScanItem(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
+{
+  mScanItemList.Swap(indexFrom, indexTo);
+}
+
 /**
  *  Get a Scan Item from the vector ScanItem
  * @param "C_INT32" itemNumber

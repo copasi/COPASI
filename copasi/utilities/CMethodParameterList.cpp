@@ -175,6 +175,22 @@ void CMethodParameterList::add(const std::string & name,
                                const CParameter::Type & type)
 {mMethodParameters.add(CParameter(name, value, type));}
 
+/*
+  Remove a parameter from the list
+ */
+void CMethodParameterList::remove(const std::string & name)
+{
+  mMethodParameters.remove(name);
+}
+
+/*
+  Swap
+ */
+void CMethodParameterList::Swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
+{
+  mMethodParameters.Swap(indexFrom, indexTo);
+}
+
 /**
  * Load a list of parameters
  * @param "CReadConfig &" configBuffer

@@ -180,6 +180,16 @@ class CMethodParameterList : public CCopasiContainer
              const CParameter::Type & type = CParameter::DOUBLE);
 
     /**
+    * Delete a parameter in the list
+    */
+    void remove(const std::string & name);
+
+    /**
+    * Delete a parameter in the list
+    */
+    void Swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo);
+
+    /**
      * Load a list of parameters
      * @param "CReadConfig &" configBuffer
      * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)

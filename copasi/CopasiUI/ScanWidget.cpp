@@ -213,6 +213,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   scanTask = NULL;
   activeObject = -1;
+  selectedList.clear();
 
   nTitleHeight = fontMetrics().height() + 6;
 
@@ -286,6 +287,9 @@ void ScanWidget::deleteButtonClicked()
     return;
 
   emit hide_me();
+
+  CCopasiObject* pObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getObject();
+  scanTask->getProblem()->removeScanItem(pObject->getCN().c_str());
   scrollview->removeChild(selectedList[2*activeObject]);
   scrollview->removeChild(selectedList[2*activeObject + 1]);
 
@@ -366,6 +370,8 @@ void ScanWidget::upButtonClicked()
   ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject + 1) , activeObject);
   ObjectListBox->changeItem (NULL, tmp, activeObject + 1);
 
+  scanTask->getProblem()->swapScanItem(activeObject + 1, activeObject);
+
   emit show_me();
   if (activeObject >= 0)
     ListBoxClicked(ObjectListBox->item(activeObject));
@@ -399,6 +405,8 @@ void ScanWidget::downButtonClicked()
   QString tmp = ObjectListBox->text (activeObject);
   ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject - 1) , activeObject);
   ObjectListBox->changeItem (NULL, tmp, activeObject - 1);
+
+  scanTask->getProblem()->swapScanItem(activeObject - 1, activeObject);
 
   emit show_me();
   if (activeObject >= 0)
@@ -529,8 +537,8 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   selectedList.push_back(parameterTable);
 
   nSelectedObjects++;
-  if (pObject->isContainer())
-    scanTask->getProblem()->addScanItem(CMethodParameterList(pObject->getObjectUniqueName(), (CCopasiContainer*)pObject, pObject->getObjectType()));
+  //  if (pObject->isContainer())
+  scanTask->getProblem()->addScanItem(CMethodParameterList(pObject->getCN().c_str(), (CCopasiContainer*)pObject, pObject->getObjectType()));
   emit show_me();
 }
 

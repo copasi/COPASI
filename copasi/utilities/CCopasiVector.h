@@ -101,6 +101,36 @@ template < class CType > class CCopasiVector:
       /**
        *
        */
+      virtual void Swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
+      {
+        iterator it = begin();
+        iterator End = end();
+        iterator from = NULL, to = NULL;
+
+        for (; it != End; it++)
+          {
+            if (it - begin() == indexFrom)
+              {
+                from = it;
+                if (to)
+                  break;
+              }
+            else
+              if (it - begin() == indexTo)
+                {
+                  to = it;
+                  if (from)
+                    break;
+                }
+          }
+        CType* tmp = *from;
+        *from = *to;
+        *to = tmp;
+      }
+
+      /**
+       *
+       */
       virtual void add(CType * src)
       {
         // This is not very efficient !!!

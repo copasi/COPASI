@@ -100,6 +100,16 @@ class CScanProblem
     void addScanItem(const CMethodParameterList & Item);
 
     /**
+    * Delete a parameter in the list
+    */
+    void removeScanItem(const std::string & name);
+
+    /**
+    * Delete a parameter in the list
+    */
+    void swapScanItem(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo);
+
+    /**
      *  Get a Scan Item from the vector ScanItem
      */
     CMethodParameterList * getScanItem(C_INT32 itemNumber);
