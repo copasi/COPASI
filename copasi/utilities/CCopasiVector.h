@@ -60,25 +60,27 @@ template < class CType > class CCopasiVector:
        *  Destructor
        */
       virtual ~CCopasiVector()
-    {DESTRUCTOR_TRACE;}
+      {
+        cleanup();
+        DESTRUCTOR_TRACE;
+      }
 
       /**
        *  Cleanup
        */
       virtual void cleanup()
       {
-        unsigned C_INT32 i, imax = ((std::vector< CType * >*)this)->size();
-        iterator Target = begin();
+        iterator it = begin();
+        iterator end = std::vector< CType * >::end();
 
-        for (i = 0; i < imax; i++, Target++)
-          {
-            if (*Target)
+        for (; it != end; it++)
+          if (*it)
+            if ((*it)->getObjectParent() == this)
               {
-                (*Target)->cleanup();
-                delete *Target;
-                *Target = NULL;
+                (*it)->cleanup();
+                delete(*it);
+                *it = NULL;
               }
-          }
 
         clear();
       }
@@ -98,8 +100,7 @@ template < class CType > class CCopasiVector:
       /**
        *
        */
-      virtual void add
-      (CType * src)
+      virtual void add(CType * src)
       {
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
@@ -110,18 +111,18 @@ template < class CType > class CCopasiVector:
        *  Removes the index-th element from the vector
        *  @param "const unsigned C_INT32 &" indecx
        */
-      virtual void remove
-      (const unsigned C_INT32 & index)
+      virtual void remove(const unsigned C_INT32 & index)
       {
         iterator Target = begin() + index;
         assert(index < ((std::vector< CType * > *)this)->size());
 
         if (*Target)
-          {
-            (*Target)->cleanup();
-            delete *Target;
-            *Target = NULL;
-          }
+          if ((*Target)->getObjectParent() == this)
+            {
+              (*Target)->cleanup();
+              delete *Target;
+              *Target = NULL;
+            }
 
         erase(Target, Target + 1);
       }
