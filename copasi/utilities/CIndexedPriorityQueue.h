@@ -167,16 +167,16 @@ class CIndexedPriorityQueue
     {
       unsigned C_INT32 i;
 
-      os << "PQ: " << endl;
+      os << "PQ: " << std::endl;
 
       std::vector <PQNode>::const_iterator it;
-      os << "  mHeap: " << endl;
+      os << "  mHeap: " << std::endl;
       for (it = d.mHeap.begin(); it != d.mHeap.end(); it++)
         os << *it << std::endl;
-      os << "  mIndexPointer: " << endl;
+      os << "  mIndexPointer: " << std::endl;
       for (i = 0; i < d.mIndexPointer.size(); i++)
         os << d.mIndexPointer[i] << " ";
-      os << endl;
+      os << std::endl;
 
       os << std::endl;
 
