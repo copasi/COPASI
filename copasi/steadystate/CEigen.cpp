@@ -11,11 +11,6 @@
 
 #include "CEigen.h"
 
-/*
-extern "C" void DGEES(char *JOBVS, char *SORT, int *SELECT, int *N, double *A, int *LDA, int *SDIM, double *WR, double *WI, double *VS, int *LDVS, double *WORK, int *LWORK, int *BWORK, int *INFO);
-*/
-
-
 /**
  * Defaulut constructor
  */
@@ -85,7 +80,7 @@ CEigen::~CEigen()
 //{
 //  mMatrix.newsize(rows, cols);
 //}
-        
+	
 /**
  * Set the Work
  */
@@ -210,61 +205,71 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
           NULL, // mSelect,           //NULL,   
           &mN,                //&n,    
           mA,                    
-         &(int)mLDA, 
-         &(int)mSdim,        // output
+          & mLDA,            
+          & mSdim,        // output
           mEigen_r,         
           mEigen_i,               
           mVS,              
           & mLdvs,       
           mWork,            
-         &(int)mLWork,               
-         //    mBWork,            //NULL
-         NULL,
-         &mInfo);            //output
+          & mLWork,               
+          mBWork,            //NULL
+          &mInfo);            //output
 
- // release the work array
- delete [] mWork;
- // initialise variables
- //mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
- //mEigen_nzero = mEigen_ncplxconj = 0.0;
+  // release the work array
+  delete [] mWork;
+  // initialise variables
+  //mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
+  //mEigen_nzero = mEigen_ncplxconj = 0.0;
 
- // sort the eigenvalues
- quicksort( mEigen_r, mEigen_i, 0, mN-1 );
- // search for the number of positive real parts
- for( pz=0; pz<mN; pz++ )
-  if( mEigen_r[pz] < 0.0 ) break;
- // calculate various eigenvalue statistics
- mEigen_maxrealpart = mEigen_r[0];
- mEigen_maximagpart = fabs(mEigen_i[0]);
- for( i=0; i<mN; i++ )
- {
-  // for the largest real part
-  if( mEigen_r[i] > mEigen_maxrealpart ) mEigen_maxrealpart = mEigen_r[i];
-  // for the largest imaginary part
-  if( fabs(mEigen_i[i]) > mEigen_maximagpart ) mEigen_maximagpart = fabs(mEigen_i[i]);
-  if( fabs(mEigen_r[i]) > SSRes )
-  {
-   // positive real part
-   if( mEigen_r[i]>=SSRes ) mEigen_nposreal += 1.0;
-   // negative real part
-   if( mEigen_r[i]<=-SSRes ) mEigen_nnegreal += 1.0;
-   if( fabs(mEigen_i[i]) > SSRes )
-   {
-    // complex
-    mEigen_ncplxconj += 1.0;
-   }
-   else
-   {
-    // pure real
-        mEigen_nreal += 1.0;
-   }
-  }
-  else
+  // sort the eigenvalues
+  quicksort( mEigen_r, mEigen_i, 0, mN-1 );
+  // search for the number of positive real parts
+  for( pz=0; pz<mN; pz++ )
+    if( mEigen_r[pz] < 0.0 ) break;
+  // calculate various eigenvalue statistics
+  mEigen_maxrealpart = mEigen_r[0];
+  mEigen_maximagpart = fabs(mEigen_i[0]);
+  for( i=0; i<mN; i++ )
     {
-      mx = mN-1; // index of the largest absolute real part
-      mn = 0; // index of the smallest absolute real part
+      // for the largest real part
+      if( mEigen_r[i] > mEigen_maxrealpart ) mEigen_maxrealpart = mEigen_r[i];
+      // for the largest imaginary part
+      if( fabs(mEigen_i[i]) > mEigen_maximagpart ) mEigen_maximagpart = fabs(mEigen_i[i]);
+      if( fabs(mEigen_r[i]) > SSRes )
+        {
+          // positive real part
+          if( mEigen_r[i]>=SSRes ) mEigen_nposreal += 1.0;
+          // negative real part
+          if( mEigen_r[i]<=-SSRes ) mEigen_nnegreal += 1.0;
+          if( fabs(mEigen_i[i]) > SSRes )
+            {
+              // complex
+              mEigen_ncplxconj += 1.0;
+            }
+          else
+            {
+              // pure real
+              mEigen_nreal += 1.0;
+            }
+        }
+      else
+	{
+	  mx = mN-1; // index of the largest absolute real part
+	  mn = 0; // index of the smallest absolute real part
+	}
+      mEigen_stiffness = fabs( mEigen_r[mx] ) / fabs( mEigen_r[mn] );
+      maxt = tott = fabs( 1/mEigen_r[mn] );
+      distt = 0.0;
+      for( i=1; i<mN; i++ )
+	if( i!=mn )
+	  {
+	    distt += maxt - fabs( 1/mEigen_r[i] );
+	    tott += fabs( 1/mEigen_r[i] );
+	  }
+      mEigen_hierarchy = distt / tott / (mN-1);
     }
-  mEigen_stiffness = fabs( mEigen_r[mx] ) / fabs( mEigen_r[mn] );
+ 
   maxt = tott = fabs( 1/mEigen_r[mn] );
   distt = 0.0;
   for( i=1; i<mN; i++ )
@@ -274,10 +279,7 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
         tott += fabs( 1/mEigen_r[i] );
       }
   mEigen_hierarchy = distt / tott / (mN-1);
-
 }
-
-
 
 // routines for sorting one matrix taking along another one
 // useful to sort complex numbers by their real or imaginary parts

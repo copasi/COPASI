@@ -16,12 +16,24 @@
 #include "tnt/cmat.h"
 #include "copasi.h"
 #include <cmath>
+//#include "clapack.h"
 
 //include clapack.h for eigenvalue calculations0
 extern "C" {
-  #include "clapack.h"       //use CLAPACK
+  //#ifdef __cplusplus
+  //#define __old__cplusplus __cplusplus
+  //#undef __cplusplus
+  //#endif
+#include "clapack.h"       //use CLAPACK
+  //#ifdef __old__cplusplus
+  //#define __cplusplus __old__cplusplus
+  //#undef __old__cplusplus
+  //#endif
 }
 
+/*
+extern "C" void DGEES(char *JOBVS, char *SORT, int *SELECT, int *N, double *A, int *LDA, int *SDIM, double *WR, double *WI, double *VS, int *LDVS, double *WORK, int *LWORK, int *BWORK, int *INFO);
+*/
 
 /*
 extern "C" int dgees_(char *jobvs, char *sort, L_fp select, long int *n,
@@ -29,7 +41,6 @@ extern "C" int dgees_(char *jobvs, char *sort, L_fp select, long int *n,
         double *wi, double *vs, long int *ldvs, double *work,
         long int *lwork, long int *bwork, long int *info);
 */
-
 
 class CEigen {
 

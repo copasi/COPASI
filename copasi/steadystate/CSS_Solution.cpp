@@ -15,13 +15,15 @@
 #include "CSS_Solution.h"
 #include "model/CModel.h"
 
+//don't consider CEigen class now, do it later
+//#include "CEigen.h"
 
 //default constructor
 CSS_Solution::CSS_Solution()
 {
   mNewton = NULL;
   mModel = NULL;
-  mEigen = NULL;
+  //  mEigen = NULL;
   mTraj = NULL;
   mJacob = NULL;
   mOption = 0;    //0 means normal
@@ -39,7 +41,7 @@ CSS_Solution::CSS_Solution(const CSS_Solution& source)
 {
   mNewton = source.mNewton;
   mModel = source.mModel;
-  mEigen = source.mEigen;
+  //mEigen = source.mEigen;
   mTraj = source.mTraj;
   mJacob = source.mJacob;
   mDerivFactor = source.mDerivFactor;
@@ -57,7 +59,7 @@ CSS_Solution& CSS_Solution::operator=(const CSS_Solution& source)
     {
       mNewton = source.mNewton;
       mModel = source.mModel;
-      mEigen = source.mEigen;
+      //mEigen = source.mEigen;
       mTraj = source.mTraj;
       mJacob = source.mJacob;
       mDerivFactor = source.mDerivFactor;
@@ -87,7 +89,7 @@ void CSS_Solution::initialize()
 
   mNewton = new CNewton();
   mModel = new CModel();
-  mEigen = new CEigen();
+  //mEigen = new CEigen();
   mTraj = new CTrajectory();
   mJacob = new CJacob();
   
@@ -140,7 +142,7 @@ CNewton * CSS_Solution::getNewton() const
   return mNewton;
 }
 
-
+/*
 //set mEigen
 void CSS_Solution::setEigen(CEigen * aEigen)
 {
@@ -153,7 +155,7 @@ CEigen * CSS_Solution::getEigen() const
 {
   return mEigen;
 }
-
+*/
 
 
 //set mModel
@@ -446,9 +448,14 @@ void CSS_Solution::afterFindSteadyState()
   //calculate the eigenvalues of the jacobian
   //CEigen tmp = CEigen(mSSRes,  mJocob, 
   //mEigen = tmp;
+
+  /* don't consider Eigen class now, do it later  //yohe
+
   mEigen->setN( mModel->getIndMetab() );
   mEigen->initialize();
   mEigen->CalcEigenvalues(mSSRes, mJacob->getJacob());
+
+  */
 
   //copy the concentrations back to the model
   mModel->setConcentrations(mSs_x);
@@ -622,7 +629,7 @@ void CSS_Solution::steadyState( void )
           // evaluate the jacobian
           JEval( mSs_x, ss_jacob );
           // calculate the eigenvalues of the jacobian
-          CalcEigenvalues();
+          //CalcEigenvalues();   //do it later
           // copy the concentrations back to the model
           for( i=0; i<mModel.TotMetab; i++ )
             mModel.Metabolite[mModel.Row[i]].Conc = mSs_x[i+1] / 
