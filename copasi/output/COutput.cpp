@@ -488,7 +488,7 @@ void COutput::repStruct(ofstream &fout)
 
   for (i = 0; i < model->getMetabolitesInd().size(); i++)
     {
-      fout << setw(11) << model->getMetabolites()[i]->getName() << "|";
+      fout << setw(11) << model->getMetabolitesInd()[i]->getName() << "|";
 
       for (j = 0; j < model->getMetabolitesInd().size(); j++)
 	  {
@@ -551,7 +551,7 @@ void COutput::repSS(ofstream &fout)
   for (i = 0; i < model->getTotMetab(); i++)
     {
       if (model->getMetabolites()[i]->getStatus() == 0) // METAB_FIXED == 0
-        rate = 0.0;
+       rate = 0.0;
       else
 		  rate = model->getMetabolites()[i]->getRate();			
 		
