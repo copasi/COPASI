@@ -186,42 +186,37 @@ void SteadyStateWidget::CommitChange()
   steadystateproblem->setStabilityAnalysisRequested(bStatistics);
 
   QTableItem * pItem;
-  pItem = (QTableItem *)parameterTable->item(0, 0);
-  int t = (pItem->text()).toInt();
-  //  steadystatemethod->setValue("Newton.UseNewton", (pItem->text()).toInt());
-  //  steadystatemethod->setValue("Newton.UseNewton", 0);
-  //  t  = steadystatemethod->getValue("Newton.UseNewton");
-  steadystatemethod->setValue(1, 0);
-  t = steadystatemethod->getValue(1);
 
-  /*  pItem = (QTableItem  *)parameterTable->item(1, 0);
-    steadystatemethod->setValue("Newton.UseIntegration", pItem->text().toInt());
-    
-    pItem = (QTableItem  *)parameterTable->item(2, 0);
-    steadystatemethod->setValue("Newton.UseBackIntegration", pItem->text().toInt());
-    
-    pItem = (QTableItem  *)parameterTable->item(3, 0);
-    steadystatemethod->setValue("Newton.IterationLimit", pItem->text().toInt());
-   
-    pItem = (QTableItem  *)parameterTable->item(4, 0);
-    steadystatemethod->setValue("Newton.DerivationFactor", pItem->text().toDouble());
-   
-    pItem = (QTableItem  *)parameterTable->item(5, 0);
-    steadystatemethod->setValue("Newton.Resolution", pItem->text().toDouble());
-   
-    pItem = (QTableItem  *)parameterTable->item(6, 0);
-    steadystatemethod->setValue("Newton.LSODA.RelativeTolerance", pItem->text().toDouble());
-   
-    pItem = (QTableItem  *)parameterTable->item(7, 0);
-    steadystatemethod->setValue("Newton.LSODA.AbsoluteTolerance", pItem->text().toDouble());
-   
-    pItem = (QTableItem  *)parameterTable->item(8, 0);
-    steadystatemethod->setValue("Newton.LSODA.AdamsMaxOrder", pItem->text().toInt());
-   
-    pItem = (QTableItem  *)parameterTable->item(9, 0);
-    steadystatemethod->setValue("Newton.LSODA.BDFMaxOrder", pItem->text().toInt());
-   
-   
+  pItem = (QTableItem *)parameterTable->item(0, 0);
+  steadystatemethod->setValue("Newton.UseNewton", bool((pItem->text()).toInt()));
+
+  pItem = (QTableItem *)parameterTable->item(1, 0);
+  steadystatemethod->setValue("Newton.UseIntegration", bool(pItem->text().toInt()));
+
+  pItem = (QTableItem *)parameterTable->item(2, 0);
+  steadystatemethod->setValue("Newton.UseBackIntegration", bool(pItem->text().toInt()));
+
+  pItem = (QTableItem *)parameterTable->item(3, 0);
+  steadystatemethod->setValue("Newton.IterationLimit", unsigned(pItem->text().toInt()));
+
+  pItem = (QTableItem *)parameterTable->item(4, 0);
+  steadystatemethod->setValue("Newton.DerivationFactor", pItem->text().toDouble());
+
+  pItem = (QTableItem *)parameterTable->item(5, 0);
+  steadystatemethod->setValue("Newton.Resolution", pItem->text().toDouble());
+
+  pItem = (QTableItem *)parameterTable->item(6, 0);
+  steadystatemethod->setValue("Newton.LSODA.RelativeTolerance", pItem->text().toDouble());
+
+  pItem = (QTableItem *)parameterTable->item(7, 0);
+  steadystatemethod->setValue("Newton.LSODA.AbsoluteTolerance", pItem->text().toDouble());
+
+  pItem = (QTableItem *)parameterTable->item(8, 0);
+  steadystatemethod->setValue("Newton.LSODA.AdamsMaxOrder", unsigned(pItem->text().toInt()));
+
+  pItem = (QTableItem *)parameterTable->item(9, 0);
+  steadystatemethod->setValue("Newton.LSODA.BDFMaxOrder", unsigned(pItem->text().toInt()));
+
   /*
     CWriteConfig outbuf(mSteadyStateTask->getFileName());
     mSteadyStateTask->save(outbuf);
@@ -236,7 +231,7 @@ void SteadyStateWidget::CancelChange()
   if (mSteadyStateTask == NULL)
     return;
   CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
-  CNewtonMethod* steadystatemethod = (CNewtonMethod*)mSteadyStateTask->getMethod();
+  CSteadyStateMethod* steadystatemethod = mSteadyStateTask->getMethod();
 
   taskName->setText(tr("Steady State Task"));
   taskName->setEnabled(false);
@@ -283,7 +278,7 @@ void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)
     return;
   mSteadyStateTask = steadystatetask;
   CSteadyStateProblem * steadystateproblem = steadystatetask->getProblem();
-  CNewtonMethod* steadystatemethod = (CNewtonMethod*)steadystatetask->getMethod();
+  CSteadyStateMethod* steadystatemethod = steadystatetask->getMethod();
 
   taskName->setText(tr("Steady State Task"));
   taskName->setEnabled(false);
