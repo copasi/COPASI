@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/14 21:20:18 $
+   $Author: shoops $ 
+   $Date: 2004/11/26 17:53:27 $
    End CVS Header */
 
 // CSate.cpp
@@ -469,7 +469,7 @@ void CStateX::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
           *sum = E(i, j);
 
           for (k = iNo; k < mNo; k++)
-            *sum -= E(i, k) * L(k, j);
+            *sum += E(i, k) * L(k, j);
         }
 
     for (i = 0; i < iNo; i++)

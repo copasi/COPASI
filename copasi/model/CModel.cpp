@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.202 $
+   $Revision: 1.203 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/23 03:57:38 $
+   $Date: 2004/11/26 17:53:27 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -701,10 +701,10 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
     for (j = 0; j < jmax; j++)
       {
         sum = & mL(i - imin, j);
-        *sum = - LU(i, j);
+        *sum = LU(i, j);
 
         for (k = j + 1; k < jmax; k++)
-          *sum -= LU(i, k) * R(k, j);
+          *sum += LU(i, k) * R(k, j);
       }
 
 #ifdef DEBUG_MATRIX
@@ -735,7 +735,7 @@ void CModel::buildMoieties()
       for (j = 0; j < jmax; j++)
         {
           if (mLView(i, j) != 0.0)
-            pMoiety->add(mLView(i, j), mMetabolitesX[j]);
+            pMoiety->add(- mLView(i, j), mMetabolitesX[j]);
         }
 
       pMoiety->setInitialValue();
