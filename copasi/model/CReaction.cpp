@@ -595,7 +595,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   // Construct Id2Substrate
   imax = mId2Substrates.size();
 
-  for (i = 0, pos = 0, Type = CFunctionParameter::INT16; i < imax; i++)
+  for (i = 0, pos = 0, Type = CFunctionParameter::INT32; i < imax; i++)
     {
       name = StringPrint("Subs%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
@@ -603,14 +603,14 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       mId2Substrates[i]->mMetaboliteName =
         Copasi->OldMetabolites[index]->getName();
 
-      if (Type < CFunctionParameter::VINT16)
+      if (Type < CFunctionParameter::VINT32)
         Type =
           mParameterDescription.getParameterByUsage("SUBSTRATE", pos).getType();
 
       mId2Substrates[i]->mIdentifierName =
         mParameterDescription[pos - 1]->getName();
 
-      if (Type >= CFunctionParameter::VINT16)
+      if (Type >= CFunctionParameter::VINT32)
         mId2Substrates[i]->mIdentifierName += StringPrint("_%ld", i);
     }
 
@@ -623,7 +623,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   // Construct Id2Product
   imax = mId2Products.size();
 
-  for (i = 0, pos = 0, Type = CFunctionParameter::INT16; i < imax; i++)
+  for (i = 0, pos = 0, Type = CFunctionParameter::INT32; i < imax; i++)
     {
       name = StringPrint("Prod%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
@@ -631,14 +631,14 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       mId2Products[i]->mMetaboliteName =
         Copasi->OldMetabolites[index]->getName();
 
-      if (Type < CFunctionParameter::VINT16)
+      if (Type < CFunctionParameter::VINT32)
         Type =
           mParameterDescription.getParameterByUsage("PRODUCT", pos).getType();
 
       mId2Products[i]->mIdentifierName =
         mParameterDescription[pos - 1]->getName();
 
-      if (Type >= CFunctionParameter::VINT16)
+      if (Type >= CFunctionParameter::VINT32)
         mId2Products[i]->mIdentifierName += StringPrint("_%ld", i);
     }
 
@@ -651,7 +651,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   // Construct Id2Modifier
   imax = mId2Modifiers.size();
 
-  for (i = 0, pos = 0, Type = CFunctionParameter::INT16; i < imax; i++)
+  for (i = 0, pos = 0, Type = CFunctionParameter::INT32; i < imax; i++)
     {
       name = StringPrint("Modf%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
@@ -659,14 +659,14 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       mId2Modifiers[i]->mMetaboliteName =
         Copasi->OldMetabolites[index]->getName();
 
-      if (Type < CFunctionParameter::VINT16)
+      if (Type < CFunctionParameter::VINT32)
         Type =
           mParameterDescription.getParameterByUsage("MODIFIER", pos).getType();
 
       mId2Modifiers[i]->mIdentifierName =
         mParameterDescription[pos - 1]->getName();
 
-      if (Type >= CFunctionParameter::VINT16)
+      if (Type >= CFunctionParameter::VINT32)
         mId2Modifiers[i]->mIdentifierName += StringPrint("_%ld", i);
     }
 
@@ -679,20 +679,20 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   // Construct Id2Parameter
   imax = mId2Parameters.size();
 
-  for (i = 0, pos = 0, Type = CFunctionParameter::INT16; i < imax; i++)
+  for (i = 0, pos = 0, Type = CFunctionParameter::INT32; i < imax; i++)
     {
       name = StringPrint("Param%d", i);
       configbuffer.getVariable(name, "C_FLOAT64",
                                &mId2Parameters[i]->mValue);
 
-      if (Type < CFunctionParameter::VINT16)
+      if (Type < CFunctionParameter::VINT32)
         Type =
           mParameterDescription.getParameterByUsage("PARAMETER", pos).getType();
 
       mId2Parameters[i]->mIdentifierName =
         mParameterDescription[pos - 1]->getName();
 
-      if (Type >= CFunctionParameter::VINT16)
+      if (Type >= CFunctionParameter::VINT32)
         mId2Parameters[i]->mIdentifierName += StringPrint("_%ld", i);
     }
 
@@ -909,7 +909,7 @@ void CReaction::cleanupCallParameters()
 
   for (i = 0; i < imax; i++)
     {
-      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT16)
+      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT32)
         if (mCallParameters[i])
           delete (std::vector< void * > *) mCallParameters[i];
       mCallParameters[i] = NULL;
@@ -932,29 +932,13 @@ void CReaction::initCallParameters()
     {
       mCallParameters[i] = NULL;
 
-      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT16)
+      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT32)
         continue;
 
       switch (mParameterDescription[i]->getType())
         {
-        case CFunctionParameter::VINT16:
-          mCallParameters[i] = new std::vector< C_INT16 * >;
-          break;
-
         case CFunctionParameter::VINT32:
           mCallParameters[i] = new std::vector< C_INT32 * >;
-          break;
-
-        case CFunctionParameter::VUINT16:
-          mCallParameters[i] = new std::vector< unsigned C_INT16 * >;
-          break;
-
-        case CFunctionParameter::VUINT32:
-          mCallParameters[i] = new std::vector< unsigned C_INT32 * >;
-          break;
-
-        case CFunctionParameter::VFLOAT32:
-          mCallParameters[i] = new std::vector< C_FLOAT32 * >;
           break;
 
         case CFunctionParameter::VFLOAT64:
@@ -981,7 +965,7 @@ void CReaction::setCallParameters()
     {
       Index = findParameter(mId2Substrates[i]->mIdentifierName, dataType);
 
-      if (dataType < CFunctionParameter::VINT16)
+      if (dataType < CFunctionParameter::VINT32)
         mCallParameters[Index] =
           & mId2Substrates[i]->mpMetabolite->getConcentration();
       else
@@ -995,7 +979,7 @@ void CReaction::setCallParameters()
     {
       Index = findParameter(mId2Products[i]->mIdentifierName, dataType);
 
-      if (dataType < CFunctionParameter::VINT16)
+      if (dataType < CFunctionParameter::VINT32)
         mCallParameters[Index] =
           & mId2Products[i]->mpMetabolite->getConcentration();
       else
@@ -1009,7 +993,7 @@ void CReaction::setCallParameters()
     {
       Index = findParameter(mId2Modifiers[i]->mIdentifierName, dataType);
 
-      if (dataType < CFunctionParameter::VINT16)
+      if (dataType < CFunctionParameter::VINT32)
         mCallParameters[Index] =
           & mId2Modifiers[i]->mpMetabolite->getConcentration();
       else
@@ -1023,7 +1007,7 @@ void CReaction::setCallParameters()
     {
       Index = findParameter(mId2Parameters[i]->mIdentifierName, dataType);
 
-      if (dataType < CFunctionParameter::VINT16)
+      if (dataType < CFunctionParameter::VINT32)
         mCallParameters[Index] = &mId2Parameters[i]->mValue;
       else
         ((std::vector< void * > *) mCallParameters[Index])->
@@ -1042,7 +1026,7 @@ void CReaction::checkCallParameters()
       if (mCallParameters[i] == NULL)
         fatalError();
 
-      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT16)
+      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT32)
         continue;
 
       pVector = (std::vector< void * > *) mCallParameters[i];
@@ -1061,7 +1045,7 @@ void CReaction::cleanupCallParameterNames()
 
   for (i = 0; i < imax; i++)
     {
-      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT16)
+      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT32)
         if (mCallParameterNames[i])
           delete (std::vector< std::string * > *) mCallParameterNames[i];
       mCallParameterNames[i] = NULL;
@@ -1079,7 +1063,7 @@ void CReaction::initCallParameterNames()
   for (i = 0; i < imax; i++)
     {
       mCallParameterNames[i] = NULL;
-      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT16)
+      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT32)
         mCallParameterNames[i] = new std::vector< std::string * >;
     }
 }
@@ -1094,7 +1078,7 @@ void CReaction::setCallParameterNames()
   for (i = 0; i < imax; i++)
     {
       Index = findParameter(mId2Substrates[i]->mIdentifierName, dataType);
-      if (dataType < CFunctionParameter::VINT16)
+      if (dataType < CFunctionParameter::VINT32)
         mCallParameterNames[Index] =
           & mId2Substrates[i]->mMetaboliteName;
       else
@@ -1109,7 +1093,7 @@ void CReaction::setCallParameterNames()
   for (i = 0; i < imax; i++)
     {
       Index = findParameter(mId2Products[i]->mIdentifierName, dataType);
-      if (dataType < CFunctionParameter::VINT16)
+      if (dataType < CFunctionParameter::VINT32)
         mCallParameterNames[Index] =
           & mId2Products[i]->mMetaboliteName;
       else
@@ -1122,7 +1106,7 @@ void CReaction::setCallParameterNames()
   for (i = 0; i < imax; i++)
     {
       Index = findParameter(mId2Modifiers[i]->mIdentifierName, dataType);
-      if (dataType < CFunctionParameter::VINT16)
+      if (dataType < CFunctionParameter::VINT32)
         mCallParameterNames[Index] =
           & mId2Modifiers[i]->mMetaboliteName;
       else
@@ -1135,7 +1119,7 @@ void CReaction::setCallParameterNames()
   for (i = 0; i < imax; i++)
     {
       Index = findParameter(mId2Parameters[i]->mIdentifierName, dataType);
-      if (dataType < CFunctionParameter::VINT16)
+      if (dataType < CFunctionParameter::VINT32)
         mCallParameterNames[Index] = &mId2Parameters[i]->mIdentifierName;
       else
         ((std::vector< std::string * > *) mCallParameterNames[Index])->
@@ -1154,7 +1138,7 @@ void CReaction::checkCallParameterNames()
       if (mCallParameterNames[i] == NULL)
         fatalError();
 
-      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT16)
+      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT32)
         continue;
 
       pVector = (std::vector< void * > *) mCallParameterNames[i];
@@ -1302,10 +1286,10 @@ void CReaction::setReactantsFromChemEq()
         {
           mId2Substrates[i]->mMetaboliteName = sub[i]->getMetaboliteName();
           mId2Substrates[i]->mCompartmentName = sub[i]->getMetabolite().getCompartment()->getName();
-          if (Type < CFunctionParameter::VINT16)
+          if (Type < CFunctionParameter::VINT32)
             Type = mParameterDescription.getParameterByUsage("SUBSTRATE", pos).getType();
           mId2Substrates[i]->mIdentifierName = mParameterDescription[pos - 1]->getName();
-          if (Type >= CFunctionParameter::VINT16)
+          if (Type >= CFunctionParameter::VINT32)
             mId2Substrates[i]->mIdentifierName += StringPrint("_%ld", i);
         }
       mId2Products.resize(nprod);
@@ -1313,10 +1297,10 @@ void CReaction::setReactantsFromChemEq()
         {
           mId2Products[i]->mMetaboliteName = prod[i]->getMetaboliteName();
           mId2Products[i]->mCompartmentName = prod[i]->getMetabolite().getCompartment()->getName();
-          if (Type < CFunctionParameter::VINT16)
+          if (Type < CFunctionParameter::VINT32)
             Type = mParameterDescription.getParameterByUsage("PRODUCT", pos).getType();
           mId2Products[i]->mIdentifierName = mParameterDescription[pos - 1]->getName();
-          if (Type >= CFunctionParameter::VINT16)
+          if (Type >= CFunctionParameter::VINT32)
             mId2Products[i]->mIdentifierName += StringPrint("_%ld", i);
         }
     }
