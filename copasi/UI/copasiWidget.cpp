@@ -7,28 +7,27 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+int CopasiWidget::maxMinWidth = 0;
+int CopasiWidget::maxMinHeight = 0;
 
 CopasiWidget::CopasiWidget(QWidget * parent, const char * name, WFlags f)
     : QWidget (parent, name, f)
-{
-  // maxMinWidth=0;
-  // maxMinHeight=0;
-}
+{}
 
 CopasiWidget::~CopasiWidget()
 {}
 
 void CopasiWidget::resize (int w, int h)
 {
-  /* if (w<CopasiWidget::maxMinWidth)
-    w=CopasiWidget::maxMinWidth;
-   else
-    CopasiWidget::maxMinWidth=w;
-   if (h<CopasiWidget::maxMinHeight)
-    h=CopasiWidget::maxMinHeight;
-   else
-    CopasiWidget::maxMinHeight=h;
-  */ QWidget::resize(w, h);
+  if (w < maxMinWidth)
+    w = maxMinWidth;
+  else
+    maxMinWidth = w;
+  if (h < maxMinHeight)
+    h = maxMinHeight;
+  else
+    maxMinHeight = h;
+  QWidget::resize(w, h);
 }
 void CopasiWidget::resizeEvent (QResizeEvent * event)
 {

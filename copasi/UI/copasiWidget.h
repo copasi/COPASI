@@ -18,8 +18,8 @@ class CopasiWidget : public QWidget
     virtual void setGeometry (int x, int y, int w, int h);
     virtual void setGeometry (const QRect &);
   public:
-    static unsigned maxMinWidth;
-    static unsigned maxMinHeight;
+    static int maxMinWidth;
+    static int maxMinHeight;
   };
 
 #endif // !defined(COPASI_WIDGET_H)
