@@ -300,7 +300,7 @@ void FunctionWidget1::loadName(QString setValue)
       for (int j = 0; j < noOffunctParams; j++)
         {
           Table1->setText(j, 0, functParam[j]->getName().c_str());
-          Table1->setText(j, 1, enumname[functParam[j]->getType()]);
+          Table1->setText(j, 1, CFunctionParameter::enumname[functParam[j]->getType()].c_str());
           Table1->setText(j, 2, functParam[j]->getUsage().c_str());
         }
 
