@@ -26,6 +26,7 @@
 #include "optimization/optimization.h"
 #include "utilities/CGlobals.h"
 #include "randomGenerator/CRandom.h"
+#include "trajectory/CTrajectoryTask.h"
 
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
@@ -53,6 +54,7 @@ C_INT32 TestModel(void);
 C_INT32 TestLU();
 C_INT32 TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
 C_INT32 TestTrajectory(void);
+C_INT32 TestTrajectoryTask(void);
 C_INT32 TestStochDirectMethod(void);
 C_INT32 TestNewton(void);
 C_INT32 TestSSSolution(void);
@@ -89,6 +91,7 @@ C_INT main(C_INT argc, char *argv[])
 
   try
     {
+      cout << "sizeof(long long) = " << sizeof(long long) << endl;
       cout << "sizeof(long) = " << sizeof(long) << endl;
       cout << "sizeof(int) = " << sizeof(int) << endl;
       cout << "sizeof(short) = " << sizeof(short) << endl;
@@ -107,9 +110,10 @@ C_INT main(C_INT argc, char *argv[])
       //      TestNewton();
       //      TestSSSolution();
       //YOHE: new test
-      TestOptimization();
+      //      TestOptimization();
       //      TestEigen();
       //      TestTrajectory();
+      TestTrajectoryTask();
       //      TestStochDirectMethod();
       //      TestMoiety();
       //      TestKinFunction();
@@ -121,8 +125,7 @@ C_INT main(C_INT argc, char *argv[])
       //      TestMCA();
       //      TestOutputEvent();
       //      MakeFunctionDB();
-      //ConvertFunctionDB();
-      // ConvertFunctionDB();
+      //      ConvertFunctionDB();
       //      TestRandom(10000, 100);
       //      Testr250();
       //      Testmt19937();
@@ -454,16 +457,46 @@ C_INT32 TestTrajectory(void)
   Copasi->OutputList.load(inbuf);
   Copasi->OutputList.save(outbuf);
 
-  CTrajectory traj;
-  traj.setModel(&model);
+  CTrajectoryTask traj;
+  // traj.setModel(&model);
   traj.load(inbuf);
   traj.save(outbuf);
-  traj.initialize();
-  traj.getODESolver()->load(inbuf);
-  ofstream output("output.txt");
+  //  traj.initialize();
+  // traj.getODESolver()->load(inbuf);
+  //  ofstream output("output.txt");
 
-  cout << "Running trajectory\n";
-  traj.process(output);
+  //  cout << "Running trajectory\n";
+  //  traj.process(output);
+  traj.cleanup();
+
+  return 0;
+}
+
+C_INT32 TestTrajectoryTask(void)
+{
+  string InputFile(Copasi->Arguments[1]);
+  string OutputFile(Copasi->Arguments[2]);
+
+  CReadConfig inbuf(InputFile);
+  CWriteConfig outbuf(OutputFile);
+
+  CModel model;
+
+  model.load(inbuf);
+  model.compile();
+  model.save(outbuf);
+
+  Copasi->OutputList.load(inbuf);
+  Copasi->OutputList.save(outbuf);
+
+  CTrajectoryTask traj;
+
+  traj.load(inbuf);
+  traj.save(outbuf);
+
+  ofstream output("output.txt");
+  traj.initializeReporting(output);
+  traj.process();
   traj.cleanup();
 
   return 0;
@@ -1875,6 +1908,9 @@ C_INT32 Testmt19937(void)
       if (i % 5 == 4)
         printf("\n");
     }
+
+  cout << &rand->getRandomU() << endl;
+  cout << &rand->getRandomS() << endl;
 
   return 0;
 }
