@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/09/30 02:59:03 $
+   $Date: 2004/10/21 17:49:02 $
    End CVS Header */
 
 /**
@@ -24,8 +24,8 @@
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
 
 CCopasiObject::CCopasiObject():
-    mObjectName(),
-    mObjectType(),
+    mObjectName("No Name"),
+    mObjectType("Unknown Type"),
     mpObjectParent(NULL),
     mObjectFlag(0)
 {}
@@ -120,7 +120,7 @@ bool CCopasiObject::setObjectName(const std::string & name)
         return false;
     }
 
-  mObjectName = name;
+  mObjectName = (name == "") ? "No Name" : name;
 
   if (mpObjectParent)
     {
