@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.5 2003/08/07 16:36:23 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.6 2003/08/08 15:13:14 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,6 +24,7 @@ class QLineEdit;
 class QFrame;
 class QPushButton;
 //class QTable;
+class QRadioButton;
 class ScanScrollView;
 class CModel;
 
@@ -35,33 +36,37 @@ class TableDefinition : public CopasiWidget
     TableDefinition(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TableDefinition();
     CModel *mModel;
+    ScanScrollView* itemsTable;
     void loadTableDefinition();
 
-    QLabel* targetLabel;
-    QCheckBox* appendChecked;
-    QLineEdit* targetEdit;
-    QFrame* targetField;
-    QLabel* titleLabel;
-    QLabel* seperatorLabel;
-    QLineEdit* titleEdit;
-    QLineEdit* seperatorEdit;
-    QFrame* titleField;
+    QFrame* bodyField;
+    QPushButton* confirmButton;
+    QPushButton* cancelButton;
     QLabel* itemsLabel;
     QPushButton* upButton;
     QPushButton* downButton;
     QPushButton* deleteButton;
     QPushButton* addButton;
-    ScanScrollView* itemsTable;
-    QFrame* bodyField;
-    QPushButton* confirmButton;
-    QPushButton* cancelButton;
+    QFrame* frame5;
+    QLabel* targetLabel;
+    QLineEdit* targetEdit;
+    QCheckBox* titleChecked;
+    QCheckBox* appendChecked;
+    QFrame* frame4;
+    QLabel* seperatorLabel;
+    QLineEdit* seperatorEdit;
+    QRadioButton* radioTab;
 
   protected:
     QGridLayout* TableDefinitionLayout;
+    QHBoxLayout* layout14;
     QHBoxLayout* layout7;
     QVBoxLayout* layout6;
     QGridLayout* layout5;
-    QHBoxLayout* layout14;
+    QGridLayout* frame5Layout;
+    QHBoxLayout* layout5_2;
+    QGridLayout* frame4Layout;
+
     QWidget* pParent;
     std::vector<QWidget*> selectedList;
 

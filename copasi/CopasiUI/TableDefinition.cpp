@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.7 2003/08/07 16:36:23 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.8 2003/08/08 15:13:14 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -12,6 +12,7 @@
 #include <qlabel.h>
 #include <qcheckbox.h>
 #include <qlineedit.h>
+#include <qradiobutton.h>
 #include <qframe.h>
 #include <qtable.h>
 #include <qlayout.h>
@@ -33,59 +34,31 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
     : CopasiWidget(parent, name, fl),
     pParent(parent)
 {
-  if (!name)
-    setName("TableDefinition");
-
   QPixmap image0((const char**) image0_data);
   QPixmap image1((const char**) image1_data);
   QPixmap image2((const char**) image2_data);
   QPixmap image3((const char**) image3_data);
 
+  if (!name)
+    setName("TableDefinition");
   TableDefinitionLayout = new QGridLayout(this, 1, 1, 11, 6, "TableDefinitionLayout");
 
-  targetLabel = new QLabel(this, "targetLabel");
+  bodyField = new QFrame(this, "bodyField");
+  bodyField->setFrameShape(QFrame::HLine);
+  bodyField->setFrameShadow(QFrame::Sunken);
+  bodyField->setFrameShape(QFrame::HLine);
 
-  TableDefinitionLayout->addWidget(targetLabel, 0, 0);
+  TableDefinitionLayout->addMultiCellWidget(bodyField, 2, 2, 0, 1);
 
-  appendChecked = new QCheckBox(this, "appendChecked");
+  layout14 = new QHBoxLayout(0, 0, 6, "layout14");
 
-  TableDefinitionLayout->addWidget(appendChecked, 0, 2);
+  confirmButton = new QPushButton(this, "confirmButton");
+  layout14->addWidget(confirmButton);
 
-  targetEdit = new QLineEdit(this, "targetEdit");
-  targetEdit->setFrameShape(QLineEdit::LineEditPanel);
-  targetEdit->setFrameShadow(QLineEdit::Sunken);
+  cancelButton = new QPushButton(this, "cancelButton");
+  layout14->addWidget(cancelButton);
 
-  TableDefinitionLayout->addWidget(targetEdit, 0, 1);
-
-  targetField = new QFrame(this, "targetField");
-  targetField->setFrameShape(QFrame::HLine);
-  targetField->setFrameShadow(QFrame::Sunken);
-  targetField->setFrameShape(QFrame::HLine);
-
-  TableDefinitionLayout->addMultiCellWidget(targetField, 1, 1, 0, 2);
-
-  titleLabel = new QLabel(this, "titleLabel");
-
-  TableDefinitionLayout->addWidget(titleLabel, 2, 0);
-
-  seperatorLabel = new QLabel(this, "seperatorLabel");
-
-  TableDefinitionLayout->addWidget(seperatorLabel, 3, 0);
-
-  titleEdit = new QLineEdit(this, "titleEdit");
-
-  TableDefinitionLayout->addMultiCellWidget(titleEdit, 2, 2, 1, 2);
-
-  seperatorEdit = new QLineEdit(this, "seperatorEdit");
-
-  TableDefinitionLayout->addMultiCellWidget(seperatorEdit, 3, 3, 1, 2);
-
-  titleField = new QFrame(this, "titleField");
-  titleField->setFrameShape(QFrame::HLine);
-  titleField->setFrameShadow(QFrame::Sunken);
-  titleField->setFrameShape(QFrame::HLine);
-
-  TableDefinitionLayout->addMultiCellWidget(titleField, 4, 4, 0, 2);
+  TableDefinitionLayout->addMultiCellLayout(layout14, 3, 3, 0, 1);
 
   layout7 = new QHBoxLayout(0, 0, 6, "layout7");
 
@@ -135,32 +108,63 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   //    itemsTable->setNumCols(0);
   layout7->addWidget(itemsTable);
 
-  TableDefinitionLayout->addMultiCellLayout(layout7, 5, 5, 0, 2);
+  TableDefinitionLayout->addMultiCellLayout(layout7, 1, 1, 0, 1);
 
-  bodyField = new QFrame(this, "bodyField");
-  bodyField->setFrameShape(QFrame::HLine);
-  bodyField->setFrameShadow(QFrame::Sunken);
-  bodyField->setFrameShape(QFrame::HLine);
+  frame5 = new QFrame(this, "frame5");
+  frame5->setFrameShape(QFrame::Box);
+  frame5->setFrameShadow(QFrame::Sunken);
+  frame5Layout = new QGridLayout(frame5, 1, 1, 11, 6, "frame5Layout");
 
-  TableDefinitionLayout->addMultiCellWidget(bodyField, 6, 6, 0, 2);
+  layout5_2 = new QHBoxLayout(0, 0, 6, "layout5_2");
 
-  layout14 = new QHBoxLayout(0, 0, 6, "layout14");
+  targetLabel = new QLabel(frame5, "targetLabel");
+  layout5_2->addWidget(targetLabel);
 
-  confirmButton = new QPushButton(this, "confirmButton");
-  layout14->addWidget(confirmButton);
+  targetEdit = new QLineEdit(frame5, "targetEdit");
+  targetEdit->setFrameShape(QLineEdit::LineEditPanel);
+  targetEdit->setFrameShadow(QLineEdit::Sunken);
+  layout5_2->addWidget(targetEdit);
 
-  cancelButton = new QPushButton(this, "cancelButton");
-  layout14->addWidget(cancelButton);
+  frame5Layout->addLayout(layout5_2, 0, 0);
 
-  TableDefinitionLayout->addMultiCellLayout(layout14, 7, 7, 0, 2);
+  titleChecked = new QCheckBox(frame5, "titleChecked");
+
+  frame5Layout->addWidget(titleChecked, 1, 0);
+
+  appendChecked = new QCheckBox(frame5, "appendChecked");
+
+  frame5Layout->addWidget(appendChecked, 2, 0);
+
+  TableDefinitionLayout->addWidget(frame5, 0, 0);
+
+  frame4 = new QFrame(this, "frame4");
+  frame4->setFrameShape(QFrame::Box);
+  frame4->setFrameShadow(QFrame::Sunken);
+  frame4->setLineWidth(1);
+  frame4Layout = new QGridLayout(frame4, 1, 1, 11, 6, "frame4Layout");
+
+  seperatorLabel = new QLabel(frame4, "seperatorLabel");
+
+  frame4Layout->addWidget(seperatorLabel, 0, 0);
+
+  seperatorEdit = new QLineEdit(frame4, "seperatorEdit");
+
+  frame4Layout->addWidget(seperatorEdit, 0, 1);
+
+  radioTab = new QRadioButton(frame4, "radioTab");
+
+  frame4Layout->addWidget(radioTab, 1, 1);
+
+  TableDefinitionLayout->addWidget(frame4, 0, 1);
   languageChange();
   clearWState(WState_Polished);
 
   // tab order
-  setTabOrder(targetEdit, appendChecked);
-  setTabOrder(appendChecked, titleEdit);
-  setTabOrder(titleEdit, seperatorEdit);
-  setTabOrder(seperatorEdit, addButton);
+  setTabOrder(targetEdit, titleChecked);
+  setTabOrder(titleChecked, appendChecked);
+  setTabOrder(appendChecked, seperatorEdit);
+  setTabOrder(seperatorEdit, radioTab);
+  setTabOrder(radioTab, addButton);
   setTabOrder(addButton, deleteButton);
   setTabOrder(deleteButton, upButton);
   setTabOrder(upButton, downButton);
@@ -184,17 +188,18 @@ TableDefinition::~TableDefinition()
 void TableDefinition::languageChange()
 {
   setCaption(tr("Reports"));
-  targetLabel->setText(tr("Target"));
-  appendChecked->setText(tr("Append"));
-  titleLabel->setText(tr("Title"));
-  seperatorLabel->setText(tr("Seperator"));
+  confirmButton->setText(tr("confirm"));
+  cancelButton->setText(tr("cancel"));
   itemsLabel->setText(tr("Items"));
   upButton->setText(QString::null);
   downButton->setText(QString::null);
   deleteButton->setText(QString::null);
   addButton->setText(QString::null);
-  confirmButton->setText(tr("confirm"));
-  cancelButton->setText(tr("cancel"));
+  targetLabel->setText(tr("Target"));
+  titleChecked->setText(tr("Title"));
+  appendChecked->setText(tr("Append"));
+  seperatorLabel->setText(tr("Seperator"));
+  radioTab->setText(tr("Tab"));
 }
 
 /*This function is to load the model for the table*/
