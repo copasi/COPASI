@@ -29,223 +29,6 @@ class CParameter;
 class CReaction : public CCopasiContainer
   {
     // Attributes
-
-  public:
-
-    /** @dia:pos 93.3703,97.2451 */
-  class CId2Metab : public CCopasiContainer
-      {
-        friend class CReaction;
-        // Attributes
-
-      private:
-        /**
-         *  The name of the identifier as defined by the called function
-         */
-        std::string & mIdentifierName;
-
-        /**
-         *  The name of the metabolite
-         */
-        std::string mMetaboliteName;
-
-        /**
-         *  The name of the compartment the metabolite is located in
-         */
-        std::string mCompartmentName;
-
-        /**
-         *  A pointer to the metabolite
-         */
-        /** @dia:route 97,2; h,117.263,88.8961,131.334,97.2451,126.108 */
-        const CMetab *mpMetabolite;
-
-      public:
-        // Operations
-        /**
-         * Default constructor
-         * @param const std::string & name (default: "NoName")
-         * @param const CCopasiContainer * pParent (default: NULL)
-         */
-        CId2Metab(const std::string & name = "NoName",
-                  const CCopasiContainer * pParent = NULL);
-
-        /**
-         * Copy constructor
-         * @param "const CId2Metab &" src
-         * @param const CCopasiContainer * pParent (default: NULL)
-         */
-        CId2Metab(const CId2Metab & src,
-                  const CCopasiContainer * pParent = NULL);
-
-        /**
-         *  Destructor
-         */
-        ~CId2Metab();
-
-        /**
-         *  cleanup();
-         */
-        void cleanup();
-
-        /**
-         *  Set the identifier name
-         *  @param "const string &" identifierName
-         */
-        void setIdentifierName(const std::string & identifierName);
-
-        /**
-         *  Retrieve the identifier name
-         *  @return "const string &" identifierName
-         */
-        const std::string & getIdentifierName() const;
-
-        /**
-         *  Set the metabolite name
-         *  @param "const string &" metaboliteName
-         */
-        void setMetaboliteName(const std::string & metaboliteName);
-
-        /**
-         *  Retrieve the metabolite name
-         *  @return "const string &" metaboliteName
-         */
-        const std::string & getMetaboliteName() const;
-
-        /**
-         *  Set the compartment name
-         *  @param "const string &" compartmentName
-         */
-        void setCompartmentName(const std::string & compartmentName);
-
-        /**
-         *  Retrieve the compartment name
-         *  @return "const string &" compartmentName
-         */
-        const std::string & getCompartmentName() const;
-
-        /**
-         *  Retrieve a pointer to the metabolite
-         *  @return "CMetab *" pointer to metabolite
-         */
-        const CMetab * getMetabolite() const;
-
-        /**
-         * insert operator
-         */
-        friend std::ostream & operator<<(std::ostream &os, const CId2Metab & d)
-        {
-          os << "     CId2Metab: Ident " << d.getIdentifierName()
-          << " Metab " << d.getMetaboliteName()
-          << " Compa " << d.getCompartmentName();
-
-          if (d.mpMetabolite)
-            os << " *metab " << d.mpMetabolite->getName() << std::endl;
-          else
-            os << " metab == 0 " << std::endl;
-
-          return os;
-        }
-      };
-
-    /** @dia:pos 93.7456,113.598 */
-  class CId2Param : public CCopasiContainer
-      {
-        friend class CReaction;
-        // Attributes
-
-      private:
-        /**
-         * The key of the Parameter
-         */
-        std::string mKey;
-
-        /**
-         * The name of the parameter as defined by the called function
-         */
-        std::string & mIdentifierName;
-
-        /**
-         * The value of the parameter
-         */
-        C_FLOAT64 mValue;
-
-      public:
-        // Operations
-        /**
-         * Default constructor
-         * @param const std::string & name (default: "NoName")
-         * @param const CCopasiContainer * pParent (default: NULL)
-         */
-        CId2Param(const std::string & name = "NoName",
-                  const CCopasiContainer * pParent = NULL);
-
-        /**
-         * Copy constructor
-         * @param "const CId2Param &" src
-         * @param const CCopasiContainer * pParent (default: NULL)
-         */
-        CId2Param(const CId2Param & src,
-                  const CCopasiContainer * pParent = NULL);
-
-        /**
-         *  Destructor
-         */
-        ~CId2Param();
-
-        /**
-         *  cleanup();
-         */
-        void cleanup();
-
-        /**
-         *  Retrieves the key of the parameter.
-         *  @return std::string key
-         */
-        std::string getKey() const;
-
-        /**
-         *  Set the identifier name
-         *  @param "const string &" identifierName
-         */
-        void setIdentifierName(const std::string & identifierName);
-
-        /**
-         *  Retrieve the identifier name
-         *  @return "const string &" identifierName
-         */
-        const std::string & getName() const;
-
-        /**
-         *  Set the identifier value
-         *  @param "const C_FLOAT64 &" value
-         */
-        void setValue(const C_FLOAT64 & value);
-
-        /**
-         *  Retrieve the identifier value
-         *  @return "const C_FLOAT64 &" value
-         */
-        const C_FLOAT64 & getValue() const;
-
-        /**
-         * Returns the address of mValue
-         */ 
-        //void * getValueAddr();
-
-        /**
-         * insert operator
-         */
-        friend std::ostream & operator<<(std::ostream &os, const CId2Param & d)
-        {
-          os << "     CId2Param: Ident " << d.getName()
-          << " Value " << d.getValue() << std::endl;
-          return os;
-        }
-      };
-
-    //**************************************************************************
-
   private:
     /**
      *  The default scaling factor of a reaction which is 1.
@@ -272,13 +55,6 @@ class CReaction : public CCopasiContainer
      *  A pointer to the rate function of the reaction
      */
     const CFunction * mpFunction;
-
-    /**
-     *  The description of the function parameters.
-     *  This is a copy of the information in the CFunction object.
-     *  It describes which parameters need to be passed to the function.
-     */ 
-    //CFunctionParameters mParameterDescription;
 
     /**
      *  The flux of the reaction
@@ -313,61 +89,24 @@ class CReaction : public CCopasiContainer
      *  more than one compartment involved it must be specified to which volume
      *  the concentration change refers)
      */
-    const CCompartment * mpCompartment;
+    const CCompartment * mpFunctionCompartment;
 
     /**
-     *  The reversibility of the reaction
-     */ 
-    //bool mReversible;
-
-    /**
-     *  A vector of links between the substrates of the reaction 
-     *  and function parameters
-     */
-    /** @dia:route 20,9; h,135.488,82.2337,133.093,99.1451,126.108 */
-    CCopasiVector < CId2Metab > mId2Substrates;
-
-    /**
-     *  A vector of links between the products of the reaction 
-     *  and function parameters
-     */
-    /** @dia:route 20,13; h,135.488,82.2337,133.093,100.745,126.108 */
-    CCopasiVector < CId2Metab > mId2Products;
-
-    /**
-     *  A vector of links between the modifiers of the reaction 
-     *  and function parameters
-     */
-    /** @dia:route 20,17; h,135.488,82.2337,133.093,102.545,126.108 */
-    CCopasiVectorN < CId2Metab > mId2Modifiers;
-
-    /**
-     *  A vector of links between the kinetic parameters of the reaction 
-     *  and function parameters
-     */
-    /** @dia:route 84,2; h,135.488,108.034,133.093,113.598,125.427 */
-    CCopasiVectorN < CId2Param > mId2Parameters;
-
-    /**
-     *  A pointer to the  call parameters of the rate function of the reaction
-     */ 
-    //CCallParameterPointers mCallParameters;
-
-    /**
-     * A list of pointers to the call parameter objects of the rate function
-     * of the reaction
-     */ 
-    //CCallParameterPointers mCallParameterObjects;
-
-    /**
-     *  This describes the mapping of the Metabs and Params to the function parameters
+     *  This describes the mapping of the Metabs and Params to the function parameters.
+     *  Here are the pointers to the actual objects and values.
      */
     CFunctionParameterMap mMap;
 
     /**
-     *
+     *  This describes the mapping of the Metabs to the function parameters. Here the
+     *  names of the metabolites (as in the chemical equation) are stored.
      */
-    C_INT32 mFail;
+    std::vector< std::vector< std::string > > mMetabNameMap;
+
+    /**
+     *  This is a list of parameter objects.
+     */
+    CCopasiVectorNS <CParameter> mParameters;
 
     // Operations
 
@@ -441,31 +180,6 @@ class CReaction : public CCopasiContainer
     void saveSBML(std::ofstream &fout, C_INT32 r = 0);
 
     /**
-     *  Retrieves the vector of substrates
-     *  @return "CCopasiVector < CId2Metab > &"
-     */
-    CCopasiVector < CId2Metab > &getId2Substrates();
-
-    /**
-     *  Retrieves the vector of products
-     *  @return "CCopasiVector < CId2Metab > &"
-     */
-    CCopasiVector < CId2Metab > &getId2Products();
-
-    /**
-     *  Retrieves the vector of modifiers
-     *  @return "CCopasiVectorN < CId2Metab > &"
-     */
-    CCopasiVectorN < CId2Metab > &getId2Modifiers();
-
-    /**
-     *  Retrieves the vector of parameters
-     *  @return "CCopasiVectorN < CId2Param > &"
-     */
-    const CCopasiVectorN < CId2Param > & getId2Parameters() const;
-    CCopasiVectorN < CId2Param > & getId2Parameters();
-
-    /**
      *  Retrieves the key of the reaction
      *  @return std::string key
      */
@@ -482,29 +196,6 @@ class CReaction : public CCopasiContainer
      *  @return string
      */
     const CChemEq & getChemEq() const;
-
-    /**
-     *  Retrieves the number of substrates of this reaction
-    *  Note: this is the number of different species, not
-    *  not the total number of substrate molecules
-     *  @return C_INT32
-     */
-    C_INT32 getSubstrateNumber() const;
-
-    /**
-     *  Retrieves the number of substrates of this reaction
-    *  Note: this is the number of different species, not
-    *  not the total number of substrate molecules
-     *  @return C_INT32
-     */
-    C_INT32 getProductNumber() const;
-
-    /**
-     *  Retrieves the chemical structure of the reaction
-     *  @return vector < ELEMENT >
-     */ 
-    // typedef struct ELEMENT {C_FLOAT64 mValue; string mName;};
-    // vector < ELEMENT > getChemStructure() const;
 
     /**
      *  Retrieves the rate function of the reaction
@@ -549,10 +240,60 @@ class CReaction : public CCopasiContainer
      */
     void setFunction(const std::string & functionName);
 
+    //****************************************************************************************
+
     /**
      *  Sets a parameter value
      */
-    void setParameter(const std::string & parameterName, C_FLOAT64 value);
+    void setParameterValue(const std::string & parameterName, C_FLOAT64 value);
+
+    /**
+     *  Gets a parameter value
+     */
+    const C_FLOAT64 & getParameterValue(const std::string & parameterName) const;
+
+    /**
+     *  Maps a function parameter to a metab (only for non vector parameters).
+     */
+    void setParameterMapping(const std::string & parameterName, const std::string & metabName);
+    void setParameterMapping(C_INT32 index, const std::string & metabName);
+
+    /**
+     *  Clears a function parameter->metab mapping (only for vector parameters).
+     */
+    void clearParameterMapping(const std::string & parameterName);
+    void clearParameterMapping(C_INT32 index);
+
+    /**
+     *  Maps a function parameter to a metab (only for vector parameters).
+     */
+    void addParameterMapping(const std::string & parameterName, const std::string & metabName);
+    void addParameterMapping(C_INT32 index, const std::string & metabName);
+
+    /**
+     *  Maps a function parameter to some metabs (the size of the vector must be 1 if the
+     *  parameter is not a vector).
+     */
+    void setParameterMapping(const std::string & parameterName, const std::vector<std::string> & metabNames);
+    //void setParameterMapping(C_INT32 index, const std::vector<std::string> & metabNames);
+
+    std::vector<std::string> getParameterMappingName(const std::string & parameterName) const;
+    const std::vector<std::string> & getParameterMappingName(C_INT32 index) const;
+    const std::vector< std::vector<std::string> > & getParameterMappingName() const
+      {return mMetabNameMap;}
+
+    std::vector<const CMetab *> getParameterMappingMetab(const std::string & parameterName) const;
+    std::vector<const CMetab *> getParameterMappingMetab(C_INT32 index) const;
+
+    /**
+     *  Gets the list of kinetic parameter objects of the reaction/function
+     */
+    const CCopasiVectorN <CParameter> & getParameters() const;
+
+    /**
+     *  Gets the description of what parameters the function expects.
+     */
+    const CFunctionParameters & getFunctionParameters() const;
 
     /**
      *  Sets whether the reaction is reversible
@@ -562,7 +303,9 @@ class CReaction : public CCopasiContainer
 
     /**
      *  Compile the reaction, i.e., links the metabolites and parameters with the
-     *  rate function.
+     *  rate function. The connection of the reaction and the function parameter mapping
+     *  to the actual metabolites is established (before compile() the chemical equation
+     *  and the reaction only hold the names of the metabolites).
      *  @param "CCopasiVectorNS < CCompartment > &" compartments
      */
     void compile(const CCopasiVectorNS < CCompartment > & compartments);
@@ -585,44 +328,14 @@ class CReaction : public CCopasiContainer
                                          const C_FLOAT64 & resolution);
 
     /**
-     *  Retrieves the Compartment Name for substrates, products, and modifiers
-     *  @param const CCopasiVector< CMetab > & metabolites
-     */
-    void old2New(const CCopasiVector< CMetab > & metabolites);
-
-    /**
-     * Returns the address of mFlux  Wei Sun
-     */ 
-    //void * getFluxAddr();
-
-    /**
-     * Returns the index of the parameter
-     */
-    C_INT32 findPara(std::string &Target) const;
-
-    /**
-     * Find an pointer to a substrate corresponding to the given identifier name.
-     * @param ident_name The identifier name to search by
-     * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
-     */
-    const CMetab * findSubstrate(std::string ident_name) const;
-
-    /**
-     * Find an pointer to a modifier corresponding to the given identifier name.
-     * @param ident_name The identifier name to search by
-     * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
-     */
-    const CMetab * findModifier(std::string ident_name) const;
-
-    /**
      * Sets the Compartment related to the kinetic function
      */
-    void setCompartment(const CCompartment* comp);
+    void setFunctionCompartment(const CCompartment* comp);
 
     /**
      * Gets the Compartment related to the kinetic function
      */
-    const CCompartment* getCompartment() const;
+    const CCompartment* getFunctionCompartment() const;
 
     /**
      *  Retrieves the number of compartments the reaction is acting in.
@@ -655,104 +368,37 @@ class CReaction : public CCopasiContainer
 
       os << "   mScalingFactor2: " << d.mScalingFactor2 << std::endl;
       //os << "   mCompartmentNumber: " << d.mCompartmentNumber << std::endl;
-      if (d.mpCompartment)
-        os << "   *mpCompartment " << d.mpCompartment->getName() << std::endl;
+      if (d.mpFunctionCompartment)
+        os << "   *mpFunctionCompartment " << d.mpFunctionCompartment->getName() << std::endl;
       else
-        os << "   mpCompartment == 0 " << std::endl;
-      //os << "   mReversible: " << d.mReversible << std::endl;
-      os << "   mId2Substrates" << std::endl;
-      os << d.mId2Substrates;
-      os << "   mId2Products" << std::endl;
-      os << d.mId2Products;
-      os << "   mId2Modifiers" << std::endl;
-      os << d.mId2Modifiers;
-      os << "   mId2Parameters" << std::endl;
-      os << d.mId2Parameters;
-      os << "   mFail: " << d.mFail << std::endl;
+        os << "   mpFunctionCompartment == 0 " << std::endl;
       os << "----CReaction" << std::endl;
 
       return os;
     }
 
     /**
-     *  Sets mId2Substrates and mId2Products from the mChemEq
-     *  can be called after setting reaction name and chemical equation
-     *  needs metabolites to already have been created
-     */
-    void setReactantsFromChemEq();
-
-    /**
-     *  Forces compilation of Chemical equation object
-     */
-    void compileChemEq(const CCopasiVectorN < CCompartment > & compartments);
-
-    /**
-     * Retrieve the map of function parameters
-     */
-    const CFunctionParameterMap & getFunctionParameterMap() const;
-
-    /**
      * Retrieve the list of CallParameterObjects()
      */
     const CCallParameterPointers & getCallParameterObjects() const;
   private:
+
     /**
-     *
+     *  used by compile(). It finds the reference to the transient concentration in the
+     *  metabolite and tells mMap about it.
      */
-    C_INT32 loadNew(CReadConfig & configbuffer);
+    void setParameterMapping(const std::string & parameterName, const CMetab & metab);
+
+    /**
+     *  used by compile(). It finds the reference to the transient concentration in the
+     *  metabolite and tells mMap about it.
+     */
+    void addParameterMapping(const std::string & parameterName, const CMetab & metab);
 
     /**
      *
      */
     C_INT32 loadOld(CReadConfig & configbuffer);
-
-    /**
-     *
-     */ 
-    //void cleanupCallParameters();
-
-    /**
-     *  gets mParameterDescription from mpFunction and then creates the vectors inside
-     *  mCallParameters (If needed)
-     */ 
-    //void initCallParameters();
-
-    /**
-     *
-     */
-    void setCallParameters();
-
-    /**
-     *  Checks if all the Pointers in mCallParameters are !=NULL
-     */ 
-    //void checkCallParameters() const;
-
-    /**
-     *
-     */ 
-    //void cleanupCallParameterObjects();
-
-    /**
-     *  gets mParameterDescription from mpFunction and then creates the vectors inside
-     *  mCallParameterObjects (If needed)
-     */ 
-    //void initCallParameterObjects();
-
-    /**
-     *
-     */
-    void setCallParameterObjects();
-
-    /**
-     *  Checks if all the Pointers in mCallParameters are !=NULL
-     */ 
-    //void checkCallParameterObjects() const;
-
-    /**
-     *
-     */ 
-    //unsigned C_INT32 findParameter(const std::string & name,
-    //                               CFunctionParameter::DataType & dataType) const;
 
     /**
      *  Returns the max number of elements for the specified usage
@@ -773,6 +419,17 @@ class CReaction : public CCopasiContainer
      * mMap needs to be initialized before.
      */
     void initializeParameters();
+
+    /**
+     * sets the pointers in mMap to the kinetic parameters. This is needed
+     * by initializeParameters() and the copy constructor.
+     */
+    void compileParameters();
+
+    /**
+     * Initializes the mMetabNameMap vectors to the right size.
+     */
+    void initializeMetaboliteNameMap();
   };
 
 #endif // COPASI_CReaction
