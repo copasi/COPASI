@@ -17,6 +17,7 @@ CStep::CStep()
     mReversible = TRUE;
     mFunction = NULL;
 
+    mCallParameters = new vector < CCallParameter >;
 }
 
 CStep::CStep(const string & name)
@@ -25,10 +26,13 @@ CStep::CStep(const string & name)
     mFlux = 0.0;
     mReversible = TRUE;
     mFunction = NULL;
+
+    mCallParameters = new vector < CCallParameter >;
 }
 
 CStep::~CStep()
 {
+    delete [] mCallParameters;
 }
 
 CStep & CStep::operator=(const CStep & rhs)
@@ -42,7 +46,7 @@ CStep & CStep::operator=(const CStep & rhs)
     mProducts    = rhs.mProducts;
     mModifiers   = rhs.mModifiers;
     mParameters  = rhs.mParameters;
-    mIdentifiers = rhs.mIdentifiers;
+    mCallParameters = rhs.mCallParameters;
 
     return *this;
 }
@@ -66,8 +70,10 @@ long CStep::Load(CReadConfig & configbuffer)
     if (Fail = configbuffer.GetVariable("KineticType", "string", &KinType))
         return Fail;
 
-    mFunction = &Copasi.FunctionDB.FindFunction(KinType);
+    SetFunction(KinType);
     if (mFunction == NULL) return Fail = 1;
+
+    InitIdentifiers();
     
     if (Fail = configbuffer.GetVariable("Flux", "double", &mFlux))
         return Fail;
@@ -80,8 +86,6 @@ long CStep::Load(CReadConfig & configbuffer)
     else 
         Fail = LoadNew(configbuffer);
         
-    SetFunction(KinType);
-    
     return Fail; 
 }
 
@@ -207,41 +211,88 @@ void CStep::SetFunction(const string & functionName)
 
 void CStep::InitIdentifiers()
 {
-    mIdentifiers.clear();
+    long Count;
     
-    if (mFunction)
+    if (!mFunction) FatalError();
+
+    mCallParameters->clear();
+    
+    mCallParameters->resize(mFunction->CallParameters().size());
+    for (long i = 0; i < mCallParameters->size(); i++)
     {
-        mIdentifiers.resize(mFunction->Identifiers().size());
-        for (long i = 0; i < mIdentifiers.size(); i++)
-            mIdentifiers[i] = NULL;
+        (*mCallParameters)[i].SetType(mFunction->CallParameters()[i].GetType());
+
+        (*mCallParameters)[i].Identifiers().clear();
+
+        Count = mFunction->CallParameters()[i].GetCount();
+        (*mCallParameters)[i].Identifiers().resize(Count);
+        for (long j = 0; j < Count; j++)
+            (*mCallParameters)[i].Identifiers()[j] = NULL;
     }
 }
 
 void CStep::SetIdentifiers()
 {
+    pair < long, long > Tuple;
+    
     long i;
     
     for (i = 0; i < mSubstrates.size(); i++)
-        mIdentifiers[mFunction->FindIdentifier(mSubstrates[i].mIdentifierName)] =
+    {
+        Tuple = mFunction->FindIdentifier(mSubstrates[i].mIdentifierName);
+
+        if (Tuple.first < 0 || Tuple.second < 0) FatalError();
+        if ((*mCallParameters)[Tuple.first].GetType() 
+            != CCallParameter::VECTOR_DOUBLE) FatalError();
+                                                     
+        (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
             mSubstrates[i].mpMetabolite->GetConcentration();
+    }
     
     for (i = 0; i < mProducts.size(); i++)
-        mIdentifiers[mFunction->FindIdentifier(mProducts[i].mIdentifierName)] =
+    {
+        Tuple = mFunction->FindIdentifier(mProducts[i].mIdentifierName);
+
+        if (Tuple.first < 0 || Tuple.second < 0) FatalError();
+        if ((*mCallParameters)[Tuple.first].GetType ()
+            != CCallParameter::VECTOR_DOUBLE) FatalError();
+                                                     
+        (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
             mProducts[i].mpMetabolite->GetConcentration();
+    }
 
     for (i = 0; i < mModifiers.size(); i++)
-        mIdentifiers[mFunction->FindIdentifier(mModifiers[i].mIdentifierName)] =
+    {
+        Tuple = mFunction->FindIdentifier(mModifiers[i].mIdentifierName);
+
+        if (Tuple.first < 0 || Tuple.second < 0) FatalError();
+        if ((*mCallParameters)[Tuple.first].GetType()
+            != CCallParameter::VECTOR_DOUBLE) FatalError();
+                                                     
+        (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
             mModifiers[i].mpMetabolite->GetConcentration();
+    }
 
     for (i = 0; i < mParameters.size(); i++)
-        mIdentifiers[mFunction->FindIdentifier(mParameters[i].mIdentifierName)] =
+    {
+        Tuple = mFunction->FindIdentifier(mParameters[i].mIdentifierName);
+
+        if (Tuple.first < 0 || Tuple.second < 0) FatalError();
+        if ((*mCallParameters)[Tuple.first].GetType()
+            != CCallParameter::VECTOR_DOUBLE) FatalError();
+                                                     
+        (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
             &mParameters[i].mValue;
+    }
 }
 
 void CStep::CheckIdentifiers()
 {
-    for (long i = 0; i < mIdentifiers.size(); i++)
-        if ( !mIdentifiers[i] ) FatalError();
+    for (long i = 0; i < mCallParameters->size(); i++)
+    {
+        for (long j = 0; j < (*mCallParameters)[i].Identifiers().size(); j++)
+            if (!(*mCallParameters)[i].Identifiers()[j]) FatalError();
+    }
 }
 
 void CStep::Compile(CCopasiVector < CMetab * > &metabolites)

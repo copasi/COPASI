@@ -235,7 +235,7 @@ short CNodeK::RightPrecedence()
     return 0;
 }
 
-double CNodeK::Value(vector < double * > & identifiers)
+double CNodeK::Value(vector < void * > & identifiers)
 {
     // if it is a constant or an identifier just return its value
     if (IsNumber()) return mConstant;
@@ -243,7 +243,7 @@ double CNodeK::Value(vector < double * > & identifiers)
     switch (mType)
     {
     case N_IDENTIFIER :
-        return *identifiers[mIndex];
+        return  *(double *)identifiers[mIndex];
         break;
         
     case N_OPERATOR:

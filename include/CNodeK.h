@@ -275,7 +275,7 @@ class CNodeK
      *  @param "vector < double * >" &identifiers
      *  @return double
      */
-    double Value(vector < double * > &identifiers);
+    double Value(vector < void * > &identifiers);
 };
 
 #endif // COPASI_CNodeK

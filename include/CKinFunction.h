@@ -32,11 +32,11 @@ private:
             short IsInsertAllowed(CNodeK src) {return TRUE;}
         } mNodes;
 
-    class CCallParameter: public CBaseCallParameter
+    class CKinCallParameter: public CBaseCallParameter
         {
             friend class CKinFunction;
         private:
-            class CIdentifier: public CBaseIdentifier
+            class CKinIdentifier: public CBaseIdentifier
                 {
                 // Attributes
                 public:
@@ -49,32 +49,32 @@ private:
                     /**
                      *  Default constructor
                      */
-                    CIdentifier();
+                    CKinIdentifier();
                     
                     /**
                      *  Destructor
                      */
-                    ~CIdentifier();
+                    ~CKinIdentifier();
                 };
 
-            vector < CIdentifier > * mIdentifiers;
+            vector < CKinIdentifier > * mIdentifiers;
         // Operations
         public:
             /**
              *  Default constructor
              */
-            CCallParameter();
+            CKinCallParameter();
 
             /**
              *  Destructor
              */
-            ~CCallParameter();
+            ~CKinCallParameter();
         };
     
     /**
      *  The vector of pointers to the identifiers to the function
      */
-    vector < CCallParameter > * mCallParameters;
+    vector < CKinCallParameter > * mCallParameters;
 
     /**
      *  Internal variable
@@ -136,7 +136,7 @@ public:
      *  @param "vector < double * >" &identifiers
      *  @return double
      */
-    double CalcValue(vector < double * > &identifiers);
+    double CalcValue(vector < CCallParameter > & callParameters);
 
 private:
     /**

@@ -53,9 +53,9 @@ long main(void)
         // TestCompartment();
         // TestDatum();
         // TestMetab();
-        TestReadSample();
+        // TestReadSample();
         // TestMoiety();
-        // TestKinFunction();
+        TestKinFunction();
         
     }
 
@@ -377,12 +377,17 @@ long TestKinFunction()
     double a = 4;
     double b = 1;
     
-    vector < double * > Identifiers;
+    vector < CCallParameter > CallParameters;
+
+    CallParameters.resize(1);
     
-    Identifiers.push_back(&a);
-    Identifiers.push_back(&b);
+    CallParameters[0].SetType(CCallParameter::VECTOR_DOUBLE);
+    CallParameters[0].Identifiers().resize(2);
     
-    double r = f.CalcValue(Identifiers);
+    CallParameters[0].Identifiers()[0] = &a;
+    CallParameters[0].Identifiers()[1] = &b;
+    
+    double r = f.CalcValue(CallParameters);
     
     CWriteConfig out("TestKinFunction");
     f.Save(out);
@@ -395,7 +400,7 @@ long TestKinFunction()
     g.Load(in);
     
     a = 5;
-    r = g.CalcValue(Identifiers);
+    r = g.CalcValue(CallParameters);
 
     return 0;
 }

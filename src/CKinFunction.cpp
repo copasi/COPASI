@@ -11,8 +11,8 @@ short DefinedInsertAllowed(CNodeK src);
 CKinFunction::CKinFunction() 
 {
     SetReversible(FALSE);
-    mCallParameters = new vector < CCallParameter >[1];
-    (*mCallParameters)[0].SetType(CBaseCallParameter::VECTOR_DOUBLE);
+    mCallParameters = new vector < CKinCallParameter >(1);
+    (*mCallParameters)[0].SetType(CCallParameter::VECTOR_DOUBLE);
     (*mCallParameters)[0].SetCount(-1);
     (*mCallParameters)[0].IdentifierTypes().resize(5);
     (*mCallParameters)[0].IdentifierTypes()[0] = 0;
@@ -26,8 +26,8 @@ CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
     SetReversible(FALSE);
-    mCallParameters = new vector < CCallParameter >[1];
-    (*mCallParameters)[0].SetType(CBaseCallParameter::VECTOR_DOUBLE);
+    mCallParameters = new vector < CKinCallParameter >(1);
+    (*mCallParameters)[0].SetType(CCallParameter::VECTOR_DOUBLE);
     (*mCallParameters)[0].SetCount(-1);
     (*mCallParameters)[0].IdentifierTypes().resize(5);
     (*mCallParameters)[0].IdentifierTypes()[0] = 0;
@@ -160,9 +160,9 @@ long CKinFunction::Parse()
     return ConnectNodes();
 }
 
-double CKinFunction::CalcValue(vector < double * > & identifiers)
+double CKinFunction::CalcValue(vector < CCallParameter > & callParameters)
 {
-    return mNodes[0].GetLeft().Value(identifiers);
+    return mNodes[0].GetLeft().Value(callParameters[0].Identifiers());
 }
 
 void CKinFunction::ClearNodes() {mNodes.Delete();}
@@ -415,7 +415,7 @@ CNodeK * CKinFunction::ParsePrimary()
 
 void CKinFunction::InitIdentifiers()
 {
-    CCallParameter::CIdentifier Identifier;
+    CKinCallParameter::CKinIdentifier Identifier;
     pair < long, long > Index;
 
     (*(*mCallParameters)[0].mIdentifiers).clear();
@@ -439,22 +439,22 @@ void CKinFunction::InitIdentifiers()
     (*mCallParameters)[0].SetCount((*mCallParameters)[0].Identifiers(0).size());
 }
 
-CKinFunction::CCallParameter::CCallParameter()
+CKinFunction::CKinCallParameter::CKinCallParameter()
 {
-    mIdentifiers = new vector < CIdentifier >;
+    mIdentifiers = new vector < CKinIdentifier >;
 }
 
-CKinFunction::CCallParameter::~CCallParameter()
+CKinFunction::CKinCallParameter::~CKinCallParameter()
 {
-    delete [] mIdentifiers;
+    delete  mIdentifiers;
 }
 
-CKinFunction::CCallParameter::CIdentifier::CIdentifier()
+CKinFunction::CKinCallParameter::CKinIdentifier::CKinIdentifier()
 {
     mNodes = new vector < CNodeK * >;
 }
 
-CKinFunction::CCallParameter::CIdentifier::~CIdentifier()
+CKinFunction::CKinCallParameter::CKinIdentifier::~CKinIdentifier()
 {
-    delete [] mNodes;
+    delete mNodes;
 }

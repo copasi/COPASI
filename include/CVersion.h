@@ -85,7 +85,7 @@ public:
     /** 
      *  Sets a version number 
      *  @param major major version number. 
-     *  @param minor minoor version number. 
+     *  @param minor minor version number. 
      *  @param devel development version number. 
      */
     SetVersion(long major, long minor, long devel);

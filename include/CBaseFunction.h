@@ -13,6 +13,33 @@
 
 #include "CBaseIdentifier.h"
 
+/**
+ *
+ */
+class CCallParameter
+{
+//Attributes
+public:
+    /**
+     *  The valid types of a parameter.
+     */
+    enum Type
+    {
+        VECTOR_DOUBLE = 0,
+        VECTOR_LONG
+    };
+private:
+    enum Type mType;
+    vector < void * > * mIdentifiers;
+//Operations
+public:
+    CCallParameter();
+    ~CCallParameter();
+    void SetType(enum Type type);
+    enum Type GetType();
+    vector < void * > &Identifiers();
+};
+    
 class CBaseFunction
 {
 // Attributes
@@ -54,22 +81,12 @@ private:
 //        friend class CKinFunction;
         // Attributes
     public:
-        /**
-         *  The valid types of a parameter.
-         */
-        enum Type
-        {
-            DOUBLE = 0,
-            VECTOR_DOUBLE,
-            LONG,
-            VECTOR_LONG
-        };
         
     private:
         /**
          *  The type of the parameter.
          */
-        long mType;
+        enum CCallParameter::Type mType;
 
         /**
          *  The count of objects for parameters of type VECTOR_xxx else
@@ -103,7 +120,7 @@ private:
         /**
          *
          */
-        void SetType(enum Type type);
+        void SetType(enum CCallParameter::Type type);
         
         /**
          *
@@ -114,7 +131,7 @@ private:
          *  Retrieves the type of the the call parameter
          *  @return enum Type
          */
-        long GetType();
+        enum CCallParameter::Type GetType();
 
         /**
          *  Retrieves the type of the function
@@ -125,7 +142,7 @@ private:
         /**
          *  Retrieves the valis identifier types
          */
-        vector < char > IdentifierTypes();
+        virtual vector < char > & IdentifierTypes();
 
         /**
          *  Retrieves the number of identifiers of a specific type
@@ -139,7 +156,7 @@ private:
          *  @param char identifierType Default = 0 (all identifiers)
          *  @return "vector < char > &"
          */
-        virtual vector< CBaseIdentifier * >
+        virtual vector< CBaseIdentifier * > &
         Identifiers(char identifierType = 0);
     };
 
@@ -218,7 +235,7 @@ public:
      *  Calculates the value of the function
      *  @param "vector < double * >" identifiers
      */
-    virtual double CalcValue(vector < double * > identifiers);
+    virtual double CalcValue(vector < CCallParameter > callParameters);
 
     /**
      *  Returns the index of an identifier. The index specifies the position in
@@ -228,5 +245,6 @@ public:
      */
     virtual pair < long, long > FindIdentifier(const string & name);
 };
+
 
 #endif // COPASI_CBaseFunction

@@ -44,7 +44,7 @@ long CVersion::GetVersionDevel()
     return mDevel;
 }
 
-string CVersion::GetVersion()
+const string & CVersion::GetVersion()
 {
     return mVersion;
 }

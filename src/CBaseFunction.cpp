@@ -8,7 +8,7 @@ CBaseFunction::CBaseFunction()
 
 CBaseFunction::~CBaseFunction() 
 {
-    delete [] mCallParameters;
+    delete mCallParameters;
 }
 
 void CBaseFunction::SetName(const string & name) {mName = name;}
@@ -34,14 +34,19 @@ vector < CBaseFunction::CBaseCallParameter > & CBaseFunction::CallParameters()
 
 CBaseFunction::CBaseCallParameter::CBaseCallParameter()
 {
-    mIdentifierTypes = new vector < char >;
+    mType = CCallParameter::VECTOR_DOUBLE;
+    mCount = -1;
+    
+    mIdentifierTypes = new vector < char >(1);
+    (*mIdentifierTypes)[0] = 0;
+    
     mIdentifiers = new vector< CBaseIdentifier >;
 }
 
 CBaseFunction::CBaseCallParameter::~CBaseCallParameter()
 {
-    delete [] mIdentifierTypes;
-    delete [] mIdentifiers;
+    delete mIdentifierTypes;
+    delete mIdentifiers;
 }
 
 long CBaseFunction::CBaseCallParameter::NoIdentifiers(char identifierType)
@@ -57,11 +62,21 @@ long CBaseFunction::CBaseCallParameter::NoIdentifiers(char identifierType)
         return mIdentifiers->size();
 }
 
-void CBaseFunction::CBaseCallParameter::SetType(enum Type type) {mType = type;}
+void CBaseFunction::CBaseCallParameter::SetType(enum CCallParameter::Type type)
+ {mType = type;}
 
 void CBaseFunction::CBaseCallParameter::SetCount(long count) {mCount = count;}
 
-vector< CBaseIdentifier * > 
+enum CCallParameter::Type CBaseFunction::CBaseCallParameter::GetType()
+{return mType;}
+
+long CBaseFunction::CBaseCallParameter::GetCount() 
+{return mCount;}
+
+vector < char > & CBaseFunction::CBaseCallParameter::IdentifierTypes()
+{return *mIdentifierTypes;}
+
+vector < CBaseIdentifier * > &
 CBaseFunction::CBaseCallParameter::Identifiers(char identifierType)
 {
     vector < CBaseIdentifier * > Identifiers;
@@ -74,7 +89,7 @@ CBaseFunction::CBaseCallParameter::Identifiers(char identifierType)
     return Identifiers;
 }
 
-double CBaseFunction::CalcValue(vector < double * > identifiers)
+double CBaseFunction::CalcValue(vector < CCallParameter > callParameters)
 {return 0.0;}
 
 pair < long, long > CBaseFunction::FindIdentifier(const string & name)
@@ -94,3 +109,20 @@ pair < long, long > CBaseFunction::FindIdentifier(const string & name)
 
     return Tuple;
 }
+
+CCallParameter::CCallParameter()
+{
+    mType = VECTOR_DOUBLE;
+    mIdentifiers = new vector < void * >;
+}
+
+CCallParameter::~CCallParameter()
+{
+    delete mIdentifiers;
+}
+
+void CCallParameter::SetType(enum CCallParameter::Type type) {mType = type;}
+
+enum CCallParameter::Type CCallParameter::GetType() {return mType;}
+
+vector < void * > & CCallParameter::Identifiers() {return *mIdentifiers;}

@@ -85,10 +85,7 @@ private:
      */
     vector < CId2Param > mParameters;
 
-    /**
-     *
-     */
-    vector < double * > mIdentifiers;
+    vector < CCallParameter > * mCallParameters;
 
     /**
      *
