@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/20 10:51:20 $
+   $Author: shoops $ 
+   $Date: 2005/01/20 15:53:19 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,6 +17,7 @@
 
 #include "report/CCopasiContainer.h"
 #include "CopasiUI/CCopasiSelectionDialog.h"
+#include "CopasiUI/qtUtilities.h"
 
 bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
@@ -25,7 +26,7 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (curve->getType() != CPlotItem::curve2d) return false;
   //if (curve->getChannels().getSize != 2) return false;
 
-  lineEditTitle->setText(curve->getTitle().c_str());
+  lineEditTitle->setText(FROM_UTF8(curve->getTitle()));
 
   //TODO: check if objects exist....
 
@@ -34,11 +35,11 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   if ((!mpObjectX) || (!mpObjectY)) return false;
 
-  lineEditXName->setText(mpObjectX->getObjectDisplayName().c_str());
-  //lineEditXCN->setText(co1->getCN().c_str());
+  lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+  //lineEditXCN->setText(FROM_UTF8(co1->getCN()));
 
-  lineEditYName->setText(mpObjectY->getObjectDisplayName().c_str());
-  //lineEditYCN->setText(co2->getCN().c_str());
+  lineEditYName->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
+  //lineEditYCN->setText(FROM_UTF8(co2->getCN()));
 
   //for debugging:
   //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
@@ -96,14 +97,14 @@ void Curve2DWidget::buttonPressedX()
       if (mpObjectX == selection->at(0)) return; //nothing to be done
       mpObjectX = selection->at(0);
       if (mpObjectX)
-        lineEditXName->setText(mpObjectX->getObjectDisplayName());
+        lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
       else
         lineEditXName->setText("");
 
       if (mpObjectX && mpObjectY)
-        lineEditTitle->setText(mpObjectY->getObjectDisplayName()
-                               + "|"
-                               + mpObjectX->getObjectDisplayName());
+        lineEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
+                                         + "|"
+                                         + mpObjectX->getObjectDisplayName()));
       //TODO update tab title
     }
 }
@@ -124,14 +125,14 @@ void Curve2DWidget::buttonPressedY()
       if (mpObjectY == selection->at(0)) return; //nothing to be done
       mpObjectY = selection->at(0);
       if (mpObjectY)
-        lineEditYName->setText(mpObjectY->getObjectDisplayName());
+        lineEditYName->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
       else
         lineEditYName->setText("");
 
       if (mpObjectX && mpObjectY)
-        lineEditTitle->setText(mpObjectY->getObjectDisplayName()
-                               + "|"
-                               + mpObjectX->getObjectDisplayName());
+        lineEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
+                                         + "|"
+                                         + mpObjectX->getObjectDisplayName()));
       //TODO update tab title
     }
 }
