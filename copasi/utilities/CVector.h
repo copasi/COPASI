@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:58:58 $
+   $Date: 2004/10/07 09:33:25 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -122,6 +122,10 @@ template <class CType> class CVector
      */
     void resize(unsigned C_INT32 rows)
     {
+      //TODO: maybe we should only resize if the vector gets bigger
+      //or much smaller?
+      if (rows == mRows) return;
+
       if (mVector)
         {
           delete [] mVector;
@@ -131,6 +135,8 @@ template <class CType> class CVector
       mRows = rows;
 
       if (mRows) mVector = new CType[mRows];
+      //TODO: maybe we should only resize if the vector gets bigger
+      //or much smaller?
     }
 
     /**
