@@ -36,6 +36,12 @@ if [ x"$#" = x1 ]; then
 
     strip ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
 
+# copy the commandline version if it exists
+    if [ -e copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ] ; then    
+      cp copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ${TMPDIR}/copasi/
+      strip ${TMPDIR}/CopasiSE
+    fi  
+    
 # copy the icon into the Resources directory
     echo "Creating Resources directory."
     mkdir -p ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources
