@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "1_configure"=".\1_configure.dsp" - Package Owner=<4>
+Project: "1_configure"=.\1_configure.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "CopasiSE"=".\CopasiSE\CopasiSE.dsp" - Package Owner=<4>
+Project: "CopasiSE"=.\CopasiSE\CopasiSE.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -66,7 +66,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "CopasiUI"=".\CopasiUI\CopasiUI.dsp" - Package Owner=<4>
+Project: "CopasiUI"=.\CopasiUI\CopasiUI.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -91,9 +91,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name optimization
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name output
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name randomGenerator
@@ -119,11 +116,14 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name plot
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sbml
+    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "commandline"=".\commandline\commandline.dsp" - Package Owner=<4>
+Project: "commandline"=.\commandline\commandline.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -135,7 +135,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "copasiXML"=".\xml\copasiXML.dsp" - Package Owner=<4>
+Project: "copasiXML"=.\xml\copasiXML.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -147,7 +147,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "elementaryFluxModes"=".\elementaryFluxModes\elementaryFluxModes.dsp" - Package Owner=<4>
+Project: "elementaryFluxModes"=.\elementaryFluxModes\elementaryFluxModes.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -159,7 +159,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "function"=".\function\function.dsp" - Package Owner=<4>
+Project: "function"=.\function\function.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -171,7 +171,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mathmodel"=".\mathmodel\mathmodel.dsp" - Package Owner=<4>
+Project: "mathmodel"=.\mathmodel\mathmodel.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -183,7 +183,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "model"=".\model\model.dsp" - Package Owner=<4>
+Project: "model"=.\model\model.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -195,7 +195,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "optimization"=".\optimization\optimization.dsp" - Package Owner=<4>
+Project: "optimization"=.\optimization\optimization.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -207,7 +207,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "output"=".\output\output.dsp" - Package Owner=<4>
+Project: "output"=.\output\output.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -219,7 +219,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "plot"=".\plot\plot.dsp" - Package Owner=<4>
+Project: "plot"=.\plot\plot.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -231,7 +231,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "randomGenerator"=".\randomGenerator\randomGenerator.dsp" - Package Owner=<4>
+Project: "randomGenerator"=.\randomGenerator\randomGenerator.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -243,7 +243,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "report"=".\report\report.dsp" - Package Owner=<4>
+Project: "report"=.\report\report.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -255,7 +255,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "scan"=".\scan\scan.dsp" - Package Owner=<4>
+Project: "sbml"=.\sbml\sbml.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -267,7 +267,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "steadystate"=".\steadystate\steadystate.dsp" - Package Owner=<4>
+Project: "scan"=.\scan\scan.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -279,7 +279,19 @@ Package=<4>
 
 ###############################################################################
 
-Project: "test"=".\test\test.dsp" - Package Owner=<4>
+Project: "steadystate"=.\steadystate\steadystate.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "test"=.\test\test.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -333,7 +345,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "trajectory"=".\trajectory\trajectory.dsp" - Package Owner=<4>
+Project: "trajectory"=.\trajectory\trajectory.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -345,7 +357,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "utilities"=".\utilities\utilities.dsp" - Package Owner=<4>
+Project: "utilities"=.\utilities\utilities.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
