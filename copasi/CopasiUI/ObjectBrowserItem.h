@@ -7,7 +7,7 @@ Comment : Copasi Object Browser including:
 
 browserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject, 
- there may exist multiply wrappers to one browserObject
+there may exist multiply wrappers to one browserObject
 ObjectListItem
 ObjectList: A queue for all element: 
 The reason I dont use std:vector is
