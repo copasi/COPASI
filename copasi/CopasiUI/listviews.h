@@ -149,8 +149,23 @@ class ListViews : public QSplitter
     QMultiLineEdit *bigWidget;
 
     ScanWidget *scanWidget;
+    inline ScanWidget* getScanWidget() const
+      {
+        return scanWidget;
+      }
+
     SteadyStateWidget *steadystateWidget;
+    inline SteadyStateWidget* getSteadystateWidget() const
+      {
+        return steadystateWidget;
+      }
+
     TrajectoryWidget *trajectoryWidget;
+    inline TrajectoryWidget* getTrajectoryWidget() const
+      {
+        return trajectoryWidget;
+      }
+
     MetabolitesWidget *metabolitesWidget;
     ReactionsWidget *reactionsWidget;
     CompartmentsWidget *compartmentsWidget;
