@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/22 23:15:18 $
+   $Date: 2005/02/25 01:45:57 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -204,9 +204,6 @@ std::string COptions::getCopasiDir(void)
       size_t Returned;
       char * PrgName = new char[PrgNameSize];
 
-      CCopasiMessage(CCopasiMessage::WARNING,
-                     "\nCopasi Directory is not set.\nThe help documentation might not be accessible!");
-
       while (!(Returned = GetModuleFileName(NULL, PrgName, PrgNameSize)) ||
              PrgNameSize == Returned)
         {
@@ -242,18 +239,8 @@ std::string COptions::getCopasiDir(void)
     }
 #endif // Darwin
 
-#if (defined SunOS || defined Linux) // :TODO: use CCopasiMessage
   if (CopasiDir == "")
-    {
-      std::ostringstream error;
-      error << std::endl
-      << "  use -c COPASIDIR or --copasidir COPASIDIR" << std::endl
-      << "  or set the environment variable COPASIDIR" << std::endl
-      << "  to point to the Copasi installation directory" << std::endl;
-
-      throw copasi::option_error(error.str());
-    }
-#endif // SunOS || Linux
+    CCopasiMessage Message(CCopasiMessage::RAW, MCConfiguration + 1);
 
   return CopasiDir;
 }
