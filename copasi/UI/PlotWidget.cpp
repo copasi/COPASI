@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/10 16:07:43 $
+   $Date: 2004/08/31 15:49:03 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -123,9 +123,9 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
       nname += (const char *)QString::number(i).utf8();
     }
 
-  pPl->createDefaultPlot(dataModel->getModel()); //TODO have an extra button for that
+  //pPl->createDefaultPlot(dataModel->getModel());
 
-  std::cout << " *** created PlotSpecification: " << nname << " : " << pPl->CCopasiParameter::getKey() << std::endl;
+  //std::cout << " *** created PlotSpecification: " << nname << " : " << pPl->CCopasiParameter::getKey() << std::endl;
   return pPl;
 }
 
@@ -146,4 +146,22 @@ void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
 }
 
 void PlotWidget::slotBtnDefaultClicked()
-{}
+{
+  saveTable(); //commit changes
+
+  std::string nname = "ConcentrationPlot";
+  int i = 0;
+  CPlotSpecification* pPl;
+  while (!(pPl = dataModel->getPlotSpecVectorAddr()->createPlotSpec(nname, CPlotItem::plot2d)))
+    {
+      i++;
+      nname = "ConcentrationPlot";
+      nname += (const char *)QString::number(i).utf8();
+    }
+
+  pPl->createDefaultPlot(dataModel->getModel());
+  ListViews::notify(ListViews::PLOT, ListViews::ADD, pPl->CCopasiParameter::getKey());
+
+  //std::cout << " *** created PlotSpecification: " << nname << " : " << pPl->CCopasiParameter::getKey() << std::endl;
+  fillTable();
+}
