@@ -105,6 +105,7 @@ void ReactionsWidget::repaint_table()
       table->setText(j, 0, reactn->getName().c_str());
       table->setText(j, 1, reactn->getChemEq().getChemicalEquation().c_str());
     }
+  table->setText(noOfReactionsRows, 1, "");
 }
 
 void ReactionsWidget::slotBtnOKClicked()

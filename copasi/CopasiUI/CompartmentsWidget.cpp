@@ -158,6 +158,7 @@ void CompartmentsWidget::repaint_table()
       table->setText(j, 0, compartn->getName().c_str());
       table->setText(j, 1, QString::number(compartn->getVolume()));
     }
+  table->setText(noOfCompartmentsRows, 1, "");
 }
 
 void CompartmentsWidget::resizeEvent(QResizeEvent * re)

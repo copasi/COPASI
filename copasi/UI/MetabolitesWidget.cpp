@@ -293,4 +293,8 @@ void MetabolitesWidget::repaint_table()
 #endif // XXXX
       table->setText(j, 4, metab->getCompartment()->getName().c_str());
     }
+  table->setText(noOfMetabolitesRows, 1, "");
+  table->setText(noOfMetabolitesRows, 2, "");
+  table->setText(noOfMetabolitesRows, 3, "");
+  table->setText(noOfMetabolitesRows, 4, "");
 }

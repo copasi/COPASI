@@ -106,6 +106,7 @@ void FunctionWidget::repaint_table()
         }
       table->setText(j, 1, ftype);
     }
+  table->setText(noOfFunctionsRows, 1, "");
 }
 
 void FunctionWidget::setFocus()
