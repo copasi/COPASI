@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/30 03:00:06 $
+   $Author: ssahle $ 
+   $Date: 2004/12/19 20:01:18 $
    End CVS Header */
 
 /*******************************************************************
@@ -30,10 +30,12 @@
 #include <qcheckbox.h>
 #include <qmessagebox.h>
 #include <qvalidator.h>
+#include <qtable.h>
 
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
 #include "model/CModel.h"
+#include "model/CChemEqInterface.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "report/CKeyFactory.h"
@@ -70,9 +72,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
-  //Line1->setFrameShadow(QFrame::Sunken);
-  //Line1->setFrameShape(QFrame::HLine);
-  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 3);
+  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 10, 10, 0, 3); //2
 
   mLblInitStatus = new QLabel(this, "mLblInitStatus");
   mLblInitStatus->setText(trUtf8("Metabolite status"));
@@ -92,11 +92,10 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   mEditStatus->setEnabled(false);
   MetabolitesWidget1Layout->addWidget(mEditStatus, 3, 3);
 
+  //***********************************************
+
   Line2 = new QFrame(this, "Line2");
   Line2->setFrameShape(QFrame::HLine);
-  //Line2->setFrameShadow(QFrame::Sunken);
-  //Line2->setFrameShape(QFrame::HLine);
-
   MetabolitesWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 3);
 
   mLblInitConcentration = new QLabel(this, "mLblInitConcentration");
@@ -147,15 +146,33 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   mEditRate->setEnabled(FALSE);
   MetabolitesWidget1Layout->addWidget(mEditRate, 9, 3);
 
-  QSpacerItem* spacer_3 = new QSpacerItem(470, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addMultiCell(spacer_3, 10, 10, 0, 3);
+  //***********************************************
+
+  mReactionsLabel = new QLabel(this, "ReactionsLabel");
+  mReactionsLabel->setText("Reactions\naffecting this\nmetabolite");
+  mReactionsLabel->setAlignment(Qt::AlignTop);
+  MetabolitesWidget1Layout->addWidget(mReactionsLabel, 11, 0);
+
+  mReactionsTable = new QTable(this, "ReactionsTable");
+  mReactionsTable->setNumCols(2);
+  mReactionsTable->setNumRows(2);
+  mReactionsTable->setLeftMargin(0);
+  mReactionsTable->horizontalHeader()->setLabel(0, "Name");
+  mReactionsTable->horizontalHeader()->setLabel(1, "chemical equation");
+  mReactionsTable->setReadOnly(true);
+  mReactionsTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+  MetabolitesWidget1Layout->addMultiCellWidget(mReactionsTable, 11, 11, 1, 3);
+
+  QSpacerItem* spacer_3 = new QSpacerItem(470, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  MetabolitesWidget1Layout->addMultiCell(spacer_3, 12, 12, 0, 3);
 
   Line3 = new QFrame(this, "Line3");
   Line3->setFrameShape(QFrame::HLine);
   //Line3->setFrameShadow(QFrame::Sunken);
   //Line3->setFrameShape(QFrame::HLine);
-  MetabolitesWidget1Layout->addMultiCellWidget(Line3, 11, 11, 0, 3);
+  MetabolitesWidget1Layout->addMultiCellWidget(Line3, 13, 13, 0, 3);
 
+  //***************************************
   Layout7 = new QHBoxLayout(0, 0, 6, "Layout7");
 
   commitChanges = new QPushButton(this, "commitChanges");
@@ -174,7 +191,9 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   deleteMetaboliteBtn->setText(trUtf8("Delete"));
   Layout7->addWidget(deleteMetaboliteBtn);
 
-  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 12, 12, 0, 3);
+  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 14, 14, 0, 3);
+
+  //*******************************************
 
   setTabOrder(mEditName, mComboCompartment);
   setTabOrder(mComboCompartment, mCheckStatus);
@@ -254,6 +273,8 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
       mComboCompartment->insertItem(FROM_UTF8(compt->getObjectName()));
     }
   mComboCompartment->setCurrentText(FROM_UTF8(metab->getCompartment()->getObjectName()));
+
+  loadReactionsTable();
 
   //mChanged = false;
   return true;
@@ -335,6 +356,24 @@ bool MetabolitesWidget1::saveToMetabolite()
 
   //mChanged = false;
   return true; //TODO: really check
+}
+
+bool MetabolitesWidget1::loadReactionsTable()
+{
+  std::set<std::string> reactions = dataModel->getModel()->listReactionsDependentOnMetab(objKey);
+  mReactionsTable->setNumRows(reactions.size());
+  if (reactions.size() == 0) mReactionsTable->setNumRows(1);
+
+  std::set<std::string>::const_iterator it, itEnd = reactions.end();
+  C_INT32 i;
+  CReaction* pReac;
+  for (it = reactions.begin(), i = 0; it != itEnd; ++it, ++i)
+    {
+      pReac = dynamic_cast< CReaction * >(GlobalKeys.get(*it));
+      mReactionsTable->setText(i, 0, FROM_UTF8(pReac->getObjectName()));
+      mReactionsTable->setText(i, 1, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pReac, false)));
+    }
+  return true;
 }
 
 void MetabolitesWidget1::slotBtnCancelClicked()
@@ -424,7 +463,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                 // Yes or Enter
+    case 0:                                  // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -447,7 +486,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                 // No or Escape
+    case 1:                                  // No or Escape
       break;
     }
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/29 18:19:04 $
+   $Date: 2004/12/19 20:01:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -27,6 +27,7 @@ class QFrame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+class QTable;
 // class QRadioButton;
 class QCheckBox;
 
@@ -57,6 +58,8 @@ class MetabolitesWidget1 : public CopasiWidget
   protected:
     bool loadFromMetabolite(const CMetab*);
     bool saveToMetabolite();
+
+    bool loadReactionsTable();
     std::string objKey;
 
     //bool mChanged;
@@ -93,6 +96,9 @@ class MetabolitesWidget1 : public CopasiWidget
     QPushButton* cancelChanges;
     QPushButton* newMetaboliteBtn;
     QPushButton* deleteMetaboliteBtn;
+
+    QTable* mReactionsTable;
+    QLabel* mReactionsLabel;
   };
 
 #endif // METABOLITESWIDGET1_H
