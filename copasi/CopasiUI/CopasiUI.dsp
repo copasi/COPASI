@@ -130,10 +130,6 @@ SOURCE=.\CTimeSeriesTable.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DataModel.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\DataModelGUI.cpp
 # End Source File
 # Begin Source File
@@ -427,10 +423,6 @@ SOURCE=.\CReportDefinitionSelect.h
 # Begin Source File
 
 SOURCE=.\CTimeSeriesTable.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\DataModel.h
 # End Source File
 # Begin Source File
 
