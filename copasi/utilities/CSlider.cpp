@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/30 13:57:42 $
+   $Author: gauges $ 
+   $Date: 2005/04/05 16:56:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -102,7 +102,15 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
       this->setSliderType(Undefined);
     }
   if (this->mSync) this->sync();
-  this->resetRange();
+  C_FLOAT64 value = this->getSliderValue();
+  if (this->mMinValue > value)
+    {
+      this->mMinValue = value;
+    }
+  if (this->mMaxValue < value)
+    {
+      this->mMaxValue = value;
+    }
   return true;
 }
 

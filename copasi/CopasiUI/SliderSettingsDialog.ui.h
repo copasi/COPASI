@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/31 13:38:07 $
+   $Date: 2005/04/05 16:56:05 $
    End CVS Header */
 
 /****************************************************************************
@@ -308,6 +308,7 @@ void SliderSettingsDialog::browseButtonPressed()
         {
           this->mpSlider = new CSlider();
           this->mpSlider->setSliderObject(object);
+          this->mpSlider->resetRange();
           this->updateInputFields();
           this->updateInputFieldsValues();
         }
