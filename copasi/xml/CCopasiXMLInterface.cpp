@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/26 18:58:55 $
+   $Author: shoops $ 
+   $Date: 2005/02/27 14:17:45 $
    End CVS Header */
 
 /**
@@ -26,10 +26,8 @@
 #include "utilities/CSlider.h"
 
 SCopasiXMLGUI::SCopasiXMLGUI():
-    pSliderList(NULL)
-{
-  this->pSliderList = new CCopasiVector<CSlider>;
-}
+    pSliderList(new CCopasiVector<CSlider>)
+{}
 
 SCopasiXMLGUI::~SCopasiXMLGUI()
 {

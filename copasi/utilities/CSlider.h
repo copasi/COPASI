@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/19 02:02:10 $
+   $Date: 2005/02/27 14:17:45 $
    End CVS Header */
 
 #ifndef COPASI_CSlider
@@ -181,14 +181,49 @@ class CSlider : public CCopasiContainer
 
     // Attributes
   private:
+    /**
+     * The key of the slider.
+     */
     std::string mKey;
+
+    /**
+     * The key of the associated entity of the slider's object.
+     */
     std::string mAssociatedEntityKey;
+
+    /**
+     * The slider object pointing to the slider's object afteer compile.
+     */
     CCopasiObject * mpSliderObject;
+
+    /**
+     * The value type of the slider's object.
+     */
     Type mSliderType;
+
+    /**
+     * The value of the slider's object.
+     */
     C_FLOAT64 mSliderValue;
+
+    /**
+     * The minimun value of the slider
+     */
     C_FLOAT64 mMinValue;
+
+    /**
+     * The maximum value of the slider
+     */
     C_FLOAT64 mMaxValue;
+
+    /**
+     * The number of ticks the slider is divided into.
+     */
     unsigned C_INT32 mTickNumber;
+
+    /**
+     * The factor between minor and major ticks.
+     */
     unsigned C_INT32 mTickFactor;
   };
 
