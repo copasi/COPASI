@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/10 02:21:26 $
+   $Author: ssahle $ 
+   $Date: 2005/03/14 13:40:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -66,11 +66,9 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(23)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
   mTree.findNodeFromId(24)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]->getKey());
 
-#ifdef COPASI_DEBUG
   mTree.findNodeFromId(31)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
   //  mTree.findNodeFromId(32).setObjectKey(pOptFunction->getKey());
-  mTree.findNodeFromId(115)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
-#endif // COPASI_DEBUG
+  mTree.findNodeFromId(115)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey()); //parameters
 
   mTree.findNodeFromId(43)->setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());
   mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
