@@ -36,14 +36,12 @@
 
 #if (defined SunOS || defined __CYGWIN__ || defined Darwin)
 # define C_INT32 long
-# define C_INT long
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
 #else
 #ifdef WIN32
 # define C_INT32 int
-# define C_INT int
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
@@ -56,11 +54,20 @@
 # define max _cpp_max
 #else
 # define C_INT32 long
-# define C_INT int
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
 #endif
+#endif
+
+#ifdef USE_MKL
+# define C_INT int
+#else
+# if (defined USE_CLAPACK || defined Darwin)
+#  define C_INT long
+# else
+#  error Neither USE_CLAPACK or USE_MKL is defined!
+# endif
 #endif
 
 enum TriLogic
