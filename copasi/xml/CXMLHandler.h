@@ -14,59 +14,65 @@
 
 #include "expat.h"
 
-template<class CType>
-class CXMLElementHandler
-  {
-    // Attributes
-  protected:
-    /**
-     *
-     */
-    CType & mCommon;
+template<class CType, class CCommon>
+      class CXMLElementHandler
+    {
+      // Attributes
+    protected:
+      /**
+       * The underlying parser.
+       */
+      CType & mParser;
 
-    /**
-     * The currently processed element.
-     */
-    C_INT32 mCurrentElement;
+      /**
+       * The shared elements between all element handlers of a parser
+       */
+      CCommon & mCommon;
 
-    /**
-     * 
-     */
-    CXMLElementHandler * mpCurrentHandler;
+      /**
+       * The currently processed element.
+       */
+      C_INT32 mCurrentElement;
 
-    // Operations
-  public:
-    /**
-     * Constructor
-     */
-    CXMLElementHandler(CType & common):
-        mCommon(common),
-        mCurrentElement(-1),
-        mpCurrentHandler(NULL)
-    {}
+      /**
+       * 
+       */
+      CXMLElementHandler * mpCurrentHandler;
 
-    /**
-     * Destructor
-     */
-    virtual ~CXMLElementHandler() {}
+      // Operations
+    public:
+      /**
+       * Constructor
+       */
+      CXMLElementHandler(CType & parser, CCommon & common):
+          mParser(parser),
+          mCommon(common),
+          mCurrentElement(-1),
+          mpCurrentHandler(NULL)
+      {}
 
-    /**
-     * Start element handler
-     * @param const XML_Char *pszName
-     * @param const XML_Char **papszAttrs
-     */
-    virtual void start(const XML_Char * C_UNUSED(pszName),
-                       const XML_Char ** C_UNUSED(papszAttrs)) {}
+      /**
+       * Destructor
+       */
+      virtual ~CXMLElementHandler() {}
 
-    /**
-     * End element handler
-     * @param const XML_Char *pszName
-     */
-    virtual void end(const XML_Char * C_UNUSED(pszName)) {}
+      /**
+       * Start element handler
+       * @param const XML_Char *pszName
+       * @param const XML_Char **papszAttrs
+       */
+      virtual void start(const XML_Char * C_UNUSED(pszName),
+                         const XML_Char ** C_UNUSED(papszAttrs)) {}
 
-    /**
-     * Reset the element handler to start values.
-     */
-    virtual void reset() {}};
+      /**
+       * End element handler
+       * @param const XML_Char *pszName
+       */
+      virtual void end(const XML_Char * C_UNUSED(pszName)) {}
+
+      /**
+       * Reset the element handler to start values.
+       */
+      virtual void reset() {}};
 
 #endif // COPASI_CXMLHandler

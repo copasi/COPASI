@@ -22,8 +22,6 @@ class CCopasiXMLParser;
 
 struct SCopasiXMLParserCommon
   {
-    std::stack< CXMLElementHandler< SCopasiXMLParserCommon > * > ElementHandlerStack;
-
     CCopasiXMLParser * pParser;
 
     CModel * pModel;
@@ -71,7 +69,12 @@ class CCopasiXMLParser : public CExpat
      */
     std::string mCharacterData;
 
-  class ModelElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+    /**
+     * The element hndler stack
+     */
+    std::stack< CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon > * > mElementHandlerStack;
+
+  class ModelElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -92,7 +95,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        ModelElement(SCopasiXMLParserCommon & common);
+        ModelElement(CCopasiXMLParser & parser,
+                     SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -114,7 +118,7 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
-  class ListOfTasksElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+  class ListOfTasksElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -135,7 +139,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        ListOfTasksElement(SCopasiXMLParserCommon & common);
+        ListOfTasksElement(CCopasiXMLParser & parser,
+                           SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -157,7 +162,7 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
-  class ListOfReportsElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+  class ListOfReportsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -178,7 +183,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        ListOfReportsElement(SCopasiXMLParserCommon & common);
+        ListOfReportsElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -203,7 +209,7 @@ class CCopasiXMLParser : public CExpat
     /**
      * 
      */
-  class COPASIElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+  class COPASIElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -224,7 +230,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        COPASIElement(SCopasiXMLParserCommon & common);
+        COPASIElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -246,7 +253,7 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
-  class ListOfFunctionsElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+  class ListOfFunctionsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -264,7 +271,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        ListOfFunctionsElement(SCopasiXMLParserCommon & common);
+        ListOfFunctionsElement(CCopasiXMLParser & parser,
+                               SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -286,7 +294,7 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
-  class TextElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+  class TextElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -303,7 +311,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        TextElement(SCopasiXMLParserCommon & common);
+        TextElement(CCopasiXMLParser & parser,
+                    SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -325,7 +334,7 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
-  class MathMLElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+  class MathMLElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -343,7 +352,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        MathMLElement(SCopasiXMLParserCommon & common);
+        MathMLElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -365,7 +375,7 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
-  class ParameterDescriptionElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+  class ParameterDescriptionElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -387,7 +397,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        ParameterDescriptionElement(SCopasiXMLParserCommon & common);
+        ParameterDescriptionElement(CCopasiXMLParser & parser,
+                                    SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -414,7 +425,7 @@ class CCopasiXMLParser : public CExpat
         virtual void reset();
       };
 
-  class ListOfParameterDescriptionsElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+  class ListOfParameterDescriptionsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -432,7 +443,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        ListOfParameterDescriptionsElement(SCopasiXMLParserCommon & common);
+        ListOfParameterDescriptionsElement(CCopasiXMLParser & parser,
+                                           SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -454,7 +466,7 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
-  class FunctionElement : public CXMLElementHandler< SCopasiXMLParserCommon >
+  class FunctionElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
@@ -483,7 +495,8 @@ class CCopasiXMLParser : public CExpat
         /**
          * Constructor
          */
-        FunctionElement(SCopasiXMLParserCommon & common);
+        FunctionElement(CCopasiXMLParser & parser,
+                        SCopasiXMLParserCommon & common);
 
         /**
          * Destructor
@@ -566,6 +579,17 @@ class CCopasiXMLParser : public CExpat
      */
     std::string getCharacterData(const std::string & toBeStripped = "",
                                  const std::string & join = " ");
+
+    /**
+     * Push the element handler on the stack.
+     * @param CXMLHandler< CCopasiXMLParser > elementHandler
+     */
+    void pushElementHandler(CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon > * elementHandler);
+
+    /**
+     * Pop the element handler form the stack.
+     */
+    void popElementHandler();
 
     /**
      * Retrieve the list of loaded functions
