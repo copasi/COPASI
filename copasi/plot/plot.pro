@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.8 $ $Author: ssahle $ $Date: 2004/08/05 12:54:15 $  
+# $Revision: 1.9 $ $Author: ssahle $ $Date: 2004/08/09 13:14:22 $  
 ######################################################################
 
 LIB = plot
@@ -14,8 +14,8 @@ HEADERS += plotwidget1.h \
            CPlotItem.h \
            CPlotSpecification.h \
            CPlotSpec2Vector.h \
-           plotwindow.h  \
-           curve2dwidget.h
+           plotwindow.h  
+#           curve2dwidget.h
 
 SOURCES += CopasiPlot.cpp \
            doublerect.cpp \
@@ -25,7 +25,7 @@ SOURCES += CopasiPlot.cpp \
            CPlotItem.cpp \
            CPlotSpecification.cpp \
            CPlotSpec2Vector.cpp \
-           zoomplot.cpp \
-           curve2dwidget.cpp
+           zoomplot.cpp 
+#           curve2dwidget.cpp
 
 FORMS +=  curve2dwidget.ui
