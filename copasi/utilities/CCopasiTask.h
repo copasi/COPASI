@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/25 15:06:29 $
+   $Date: 2004/08/10 12:17:03 $
    End CVS Header */
 
 /**
@@ -145,6 +145,15 @@ class CCopasiTask : public CCopasiContainer
      * @param CCopasiTask::Type & type
      */
     void setType(const Type & type);
+
+    /**
+     * Convert an XMLType string to the matching enum value
+     * Returns CCopasiTask::unset if no match is found.
+     * @param (const char * xmlTypeName)
+     * @return CCopasiTask::Type type
+     */
+    static
+    CCopasiTask::Type XMLNameToEnum(const char * xmlTypeName);
 
     /**
      * Retrieve the key for the task.

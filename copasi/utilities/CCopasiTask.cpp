@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/25 15:06:28 $
+   $Date: 2004/08/10 12:17:03 $
    End CVS Header */
 
 /**
@@ -43,6 +43,16 @@ const char* CCopasiTask::XMLType[] =
     "parameterFitting",
     NULL
   };
+
+//static
+CCopasiTask::Type CCopasiTask::XMLNameToEnum(const char * xmlTypeName)
+{
+  unsigned C_INT32 i = 0;
+  while (strcmp(xmlTypeName, XMLType[i]) && XMLType[i]) i++;
+
+  if (XMLType[i]) return (CCopasiTask::Type) i;
+  else return CCopasiTask::unset;
+}
 
 CCopasiTask::CCopasiTask(const std::string & name,
                          const CCopasiContainer * pParent,
