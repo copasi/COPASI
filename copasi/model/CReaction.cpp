@@ -171,7 +171,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
         if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
           {
             c = j;
-            multp = reactants[i]->getMultiplicity();
+            multp = (C_INT32) reactants[i]->getMultiplicity();
             break;
           }
       if (c == -1)
@@ -191,7 +191,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
         if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
           {
             c = j;
-            multp = reactants[i]->getMultiplicity();
+            multp = (C_INT32) reactants[i]->getMultiplicity();
             break;
           }
       if (c == -1)
@@ -211,7 +211,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
         if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
           {
             c = j;
-            multp = reactants[i]->getMultiplicity();
+            multp = (C_INT32) reactants[i]->getMultiplicity();
             break;
           }
       if (c == -1)
