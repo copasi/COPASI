@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/22 20:58:23 $
+   $Date: 2004/09/22 21:55:07 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -506,7 +506,6 @@ bool CChemEqInterface::isValidEq(const std::string & eq)
 
   if ((dummyNames.size() == 0) && flag) return false; //neither substrate nor product
 
-  // True tells the method to look for " " as separator instead of " + ".
   if (!setElements(dummyNames, dummyMults, Modifiers, true)) return false;
 
   return true;
@@ -515,7 +514,7 @@ bool CChemEqInterface::isValidEq(const std::string & eq)
 //static
 bool CChemEqInterface::checkFirstLevel(const std::string & eq)
 {
-  std::string::size_type startMetab = eq.find_first_not_of(" ");  // the starting position of the first metabolite, also the equation
+  std::string::size_type startMetab = eq.find_first_not_of(" ");
   if (startMetab == std::string::npos)  // empty equation string
     {
       std::cout << "Empty equation string\n";
@@ -555,7 +554,6 @@ bool CChemEqInterface::checkFirstLevel(const std::string & eq)
     }
 
   //now look for ";"
-
   sep2 = eq.find(";");
   sep3 = eq.rfind(";");
 
