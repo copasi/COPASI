@@ -6,26 +6,61 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <strstream>
 
-using namespace std ;
-
+#include "copasi.h"
 #include "CReadConfig.h"
+#include "CWriteConfig.h"
 #include "CCompartment.h"
+#include "CCopasiMessage.h"
+#include "CCopasiException.h"
 #include "CDatum.h"
 
 int  TestReadConfig(void);
+int  TestWriteConfig(void);
 int  TestCompartment(void);
+int  TestException(void);
 int  TestDatum(void);
 
 int main(void)
 {
+    cout << "Starting main program." << endl;
+    
+    // TestWriteConfig();
+    // TestException();
     // TestReadConfig();
+    // TestCompartment();
+    // TestDatum();
 
-    TestCompartment();
-    TestDatum();
+    cout << "Leaving main program." << endl;
+    return 0;
+}
+
+int  TestException()
+{
+    try
+    {
+        cout << "Entering exception test." << endl;
+        CCopasiMessage FatalError((string)"Fatal Error",
+                                  (enum COPASI_MESSAGE_TYPE) ERROR);
+        cout << "Leaving exception test." << endl;
+    }
+    
+    catch (CCopasiException Exception)
+    {
+        cout << "Entering fatal error handling." << endl;
+        cout << Exception.Message.GetText() << endl;
+        cout << "Leaving fatal error handling." << endl;
+    }
+    
+    catch (char *str)
+    {
+        cout << "Caugth other exception" <<endl;
+    }
 
     return 0;
 }
+
 
 int  TestReadConfig(void)
 {
@@ -50,7 +85,32 @@ int  TestReadConfig(void)
     
     return 0;
 }
+ 
+int  TestWriteConfig(void)
+{
+    // CWriteConfig Default;
+    CWriteConfig Specific((string) "TestWriteConfig.txt");
+    string outstring = "Laber";
+    Specific.SetVariable((string) "Compartment", 
+                         (string) "string", 
+                         (void *) &outstring);
+    double outdouble = 1.03e3;
+    Specific.SetVariable((string) "Volume", 
+                         (string) "double", 
+                         (void *) &outdouble);
+
+    outstring = "Blubber";
+    Specific.SetVariable((string) "Compartment", 
+                         (string) "string", 
+                         (void *) &outstring);
+    outdouble = 1.03e3;
+    Specific.SetVariable((string) "Junk", 
+                         (string) "double", 
+                         (void *) &outdouble);
     
+    return 0;
+}
+   
 
 int TestCompartment(void)
 {
