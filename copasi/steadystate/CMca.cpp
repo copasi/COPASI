@@ -469,7 +469,7 @@ void CMca::CalculateTimeMCA(int res)
  * Return the mSSx vector for calculate time mca
  * @return vector <C_FLOAT64>
  */
-vector <C_FLOAT64> CMca::getSsx()
+std::vector <C_FLOAT64> CMca::getSsx()
 {
   return mSsx;
 }

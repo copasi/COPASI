@@ -119,7 +119,7 @@ int MoietyWidget1::isName(QString setValue)
   CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
   C_INT32 noOfMoietyRows = moieties.size();
   CMoiety *moiety1;
-  moiety1 = moieties[(string) setValue];
+  moiety1 = moieties[(std::string) setValue];
 
   if (moiety1 != NULL)
     {
@@ -146,12 +146,12 @@ void MoietyWidget1::loadName(QString setValue)
 {
   if (mModel == NULL)
     {
-      return ;
+      return;
     }
 
   CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
   CMoiety *moiety;
-  moiety = moieties[(string)setValue];
+  moiety = moieties[(std::string)setValue];
   LineEdit1->setText(moiety->getDescription().c_str());
   LineEdit3->setText(moiety->getName().c_str());
   Moiety1_Name = new QString(moiety->getName().c_str());

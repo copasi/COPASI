@@ -17,8 +17,6 @@
 #include "COutputLine.h"
 #include "steadystate/CSteadyStateTask.h"
 
-using namespace std;
-
 /**
  *  Default constructor. 
  */
@@ -65,15 +63,15 @@ COutputLine& COutputLine::operator=(const COutputLine &source)
  *  @see mLine
  */
 const CCopasiVectorS < CDatum > & COutputLine::getLine() const
-  {
-    return mLine;
-  }
+{
+  return mLine;
+}
 
 /**
  *  Sets the name of this line, (For example: Interactive time course)
  *  @param title constant reference to a string.
  */
-void COutputLine::setName(string LineName)
+void COutputLine::setName(std::string LineName)
 {
   mName = LineName;
 }
@@ -87,7 +85,7 @@ void COutputLine::addDatum(CDatum & newDatum)
 {
   mLine.add(newDatum);
 }
-C_INT32 COutputLine::load(CReadConfig & C_UNUSED(configbuffer)) {return 0; }
+C_INT32 COutputLine::load(CReadConfig & C_UNUSED(configbuffer)) {return 0;}
 
 /**
  *  Loads an object with data coming from a CReadConfig object.
@@ -98,7 +96,7 @@ C_INT32 COutputLine::load(CReadConfig & C_UNUSED(configbuffer)) {return 0; }
  *  @return mFail
  *  @see mFail
  */
-C_INT32 COutputLine::load(CReadConfig & configbuffer, string &searchName)
+C_INT32 COutputLine::load(CReadConfig & configbuffer, std::string &searchName)
 {
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
@@ -161,14 +159,14 @@ C_INT32 COutputLine::save(CWriteConfig & configbuffer)
 /**
  * print the titles of the steady-state data file
  */
-void COutputLine::sSOutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
+void COutputLine::sSOutputTitles(std::ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
 {
   unsigned C_INT32 i;
   CDatum item;
-  string Title;
+  std::string Title;
 
   // Set Left Justification
-  fout.setf(ios::left);
+  fout.setf(std::ios::left);
 
   for (i = 0; i < mLine.size(); i++)
     {
@@ -198,19 +196,19 @@ void COutputLine::sSOutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SS
         Title = item.getTitle();
 
       if (SSQuotes)
-        fout << "\"" << setw(SSColWidth) << Title << "\"";
+        fout << "\"" << std::setw(SSColWidth) << Title << "\"";
       else
-        fout << setw(SSColWidth) << Title;
+        fout << std::setw(SSColWidth) << Title;
     }
 
-  fout.unsetf(ios::left);
-  fout << endl;
+  fout.unsetf(std::ios::left);
+  fout << std::endl;
 }
 
 /**
  * print the mpValue of each Object in the steady-state data file
  */
-void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator,
+void COutputLine::sSOutputData(std::ofstream &fout, C_INT16 SSSeparator,
                                C_INT16 SSColWidth, C_INT16 C_UNUSED(SSQuotes))
 {
   unsigned C_INT32 i;
@@ -222,10 +220,10 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator,
   CDatum *datum;
 
   // Set Left Justification
-  fout.setf(ios::left);
+  fout.setf(std::ios::left);
   // Set Float manipulators
-  fout.setf(ios::scientific, ios::floatfield);
-  fout.setf(ios::showpoint);
+  fout.setf(std::ios::scientific, std::ios::floatfield);
+  fout.setf(std::ios::showpoint);
 
   for (i = 0; i < mLine.size(); i++)
     {
@@ -263,9 +261,9 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator,
           Value1 = (C_INT16 *)mLine[i]->getValue();
 
           if (!Value1)
-            fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;  //?? Sign setw(SSColWidth-1)
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << 0;  //?? Sign std::setw(SSColWidth-1)
           else
-            fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value1; //?? Sign
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << *Value1; //?? Sign
 
           break;
 
@@ -274,9 +272,9 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator,
           Value2 = (C_INT32 *)mLine[i]->getValue();
 
           if (!Value2)
-            fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << 0;
           else
-            fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value2;
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << *Value2;
 
           break;
 
@@ -285,9 +283,9 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator,
           Value3 = (C_FLOAT32 *)mLine[i]->getValue();
 
           if (!Value3)
-            fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << 0;
           else
-            fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value3;
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << *Value3;
 
           break;
 
@@ -296,29 +294,29 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator,
           Value4 = (C_FLOAT64 *)mLine[i]->getValue();
 
           if (!Value4)
-            fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << 0;
           else
-            fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value4;
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << *Value4;
 
           break;
         }
     }
 
-  fout.unsetf(ios::left);
-  fout << endl;
+  fout.unsetf(std::ios::left);
+  fout << std::endl;
 }
 
 /**
  * print the titles of the time course data file
  */
-void COutputLine::dynOutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
+void COutputLine::dynOutputTitles(std::ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
 {
   unsigned C_INT32 i;
   CDatum item;
-  string Title;
+  std::string Title;
 
   // Set Left Justification
-  fout.setf(ios::left);
+  fout.setf(std::ios::left);
 
   for (i = 0; i < mLine.size(); i++)
     {
@@ -348,19 +346,19 @@ void COutputLine::dynOutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 
         Title = item.getTitle();
 
       if (DynQuotes)
-        fout << "\"" << setw(DynColWidth) << Title << "\"";
+        fout << "\"" << std::setw(DynColWidth) << Title << "\"";
       else
-        fout << setw(DynColWidth) << Title;
+        fout << std::setw(DynColWidth) << Title;
     }
 
-  fout.unsetf(ios::left);
-  fout << endl;
+  fout.unsetf(std::ios::left);
+  fout << std::endl;
 }
 
 /**
  * print the mpValue of each Object in the time course data file
  */
-void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator,
+void COutputLine::dynOutputData(std::ofstream &fout, C_INT16 DynSeparator,
                                 C_INT16 DynColWidth, C_INT16 C_UNUSED(DynQuotes))
 {
   unsigned C_INT32 i;
@@ -372,10 +370,10 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator,
   CDatum *datum;
 
   // Set Left Justification
-  fout.setf(ios::left);
+  fout.setf(std::ios::left);
   // Set Float manipulators
-  fout.setf(ios::scientific, ios::floatfield);
-  fout.setf(ios::showpoint);
+  fout.setf(std::ios::scientific, std::ios::floatfield);
+  fout.setf(std::ios::showpoint);
 
   for (i = 0; i < mLine.size(); i++)
     {
@@ -413,9 +411,9 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator,
           Value1 = (C_INT16 *)mLine[i]->getValue();
 
           if (!Value1)
-            fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << 0;
           else
-            fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value1;
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << *Value1;
 
           break;
 
@@ -424,9 +422,9 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator,
           Value2 = (C_INT32 *)mLine[i]->getValue();
 
           if (!Value2)
-            fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << 0;
           else
-            fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value2;
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << *Value2;
 
           break;
 
@@ -435,9 +433,9 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator,
           Value3 = (C_FLOAT32 *)mLine[i]->getValue();
 
           if (!Value3)
-            fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << 0;
           else
-            fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value3;
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << *Value3;
 
           break;
 
@@ -446,22 +444,22 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator,
           Value4 = (C_FLOAT64 *)mLine[i]->getValue();
 
           if (!Value4)
-            fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << 0;
           else
-            fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value4;
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << *Value4;
 
           break;
         }
     }
 
-  fout.unsetf(ios::left);
-  fout << endl;
+  fout.unsetf(std::ios::left);
+  fout << std::endl;
 }
 
 /**
  *  Assign the pointer to each datum object in the output line for time course
  */
-void COutputLine::compile(const string & name, CModel *model, CState *state)
+void COutputLine::compile(const std::string & name, CModel *model, CState *state)
 {
   if (!mName.compare(name))
     {// ???? Maybe it isnot necessary after finish whole module
@@ -476,7 +474,7 @@ void COutputLine::compile(const string & name, CModel *model, CState *state)
 /**
  *  Assign the pointer to each datum object in the output line for steady state
  */
-void COutputLine::compile(const string & name, CModel * model,
+void COutputLine::compile(const std::string & name, CModel * model,
                           CSteadyStateTask * soln)
 {
   if (!mName.compare(name))
@@ -494,6 +492,6 @@ COutputLine::CCDatum::CCDatum() {}
 COutputLine::CCDatum::~CCDatum() {}
 
 C_INT16 COutputLine::CCDatum::isInsertAllowed(const CDatum & src)
-{return TRUE; }
+{return TRUE;}
 
 #endif // XXXX

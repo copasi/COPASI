@@ -69,7 +69,7 @@ class CDatum
     /**
      *  Title of the object.
      */
-    string mTitle;
+    std::string mTitle;
 
     /**
      *  Pointer to the memory location that contains the value of this
@@ -85,32 +85,32 @@ class CDatum
     /**
      *  Name of the object.
      */
-    string mObject;
+    std::string mObject;
 
     /**
      *  Creates the mObject
      *  @param object constant reference to a string specifing the name of the 
      *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
      */
-    void createObject(const string& IStr, const string& JStr, C_INT32 Type);
+    void createObject(const std::string& IStr, const std::string& JStr, C_INT32 Type);
 
     /**
      *  Transfers the Type to the associated member data in each class
      *  @Type object constant reference to a type of the datum, for example,D_TCONC
      */
-    string transferType(C_INT32 Type);
+    std::string transferType(C_INT32 Type);
 
     /**
      *  Get the object I string part
      *  @object reference to CDatum object
      */
-    string getObjectIStr(string object, C_INT16 HasJStr);
+    std::string getObjectIStr(std::string object, C_INT16 HasJStr);
 
     /**
      *  Get the object J string part
      *  @object reference to CDatum object
      */
-    string getObjectJStr(string object);
+    std::string getObjectJStr(std::string object);
 
   public:
 
@@ -128,7 +128,7 @@ class CDatum
      *  @param type: type of the object (e.g. C_INT32).
      *  @param object: the name of this object 
      */
-    CDatum(const string& title, void* value, C_INT32 type, const string& object);
+    CDatum(const std::string& title, void* value, C_INT32 type, const std::string& object);
 
     /**
      *  cleanup 
@@ -147,14 +147,14 @@ class CDatum
      *  @return mTitle
      *  @see mTitle
      */
-    string getTitle() const;
+    std::string getTitle() const;
 
     /**
      *  Sets the title of this object
      *  @param title constant reference to a string.
      *  @see mTitle
      */
-    void setTitle(const string& title);
+    void setTitle(const std::string& title);
 
     /**
      *  Returns the value of this object.
@@ -190,14 +190,14 @@ class CDatum
      *  @return mObject
      *  @see mObject
      */
-    string getObject() const;
+    std::string getObject() const;
 
     /**
      *  Sets the name of this object
      *  @param object constant reference to a string specifing the type of this object.
      *  @see mobject
      */
-    void setObject(const string& object);
+    void setObject(const std::string& object);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -220,7 +220,7 @@ class CDatum
     /**
      *  Dummy method.
      */
-    string getName() const {return "";}
+    std::string getName() const {return "";}
 
     /**
      *  Complie the mpValue in each CDatum
@@ -230,7 +230,7 @@ class CDatum
     /**
      * Returns the index of a user defined function
      */
-    int FindUDFunct(string title);
+    int FindUDFunct(std::string title);
     /**
      * Dynamically calculate the value of user defined function
      */
@@ -239,7 +239,7 @@ class CDatum
      *  Transfers the associated member data to the Type to  in each class
      *  @Type object constant reference to a type of the datum, for example,D_TCONC
      */
-    C_INT32 getObjectType(string Object);
+    C_INT32 getObjectType(std::string Object);
   };
 
 #endif // CDatum

@@ -89,9 +89,9 @@ C_INT32 COutputList::load(CReadConfig & configbuffer)
  *  @see mList
  */
 const CCopasiVectorS < COutput > & COutputList::getList() const
-  {
-    return mList;
-  }
+{
+  return mList;
+}
 
 /**
  *  Add new OutputLine object to a list
@@ -107,7 +107,7 @@ void COutputList::addOutput(COutput &newOutput)
 /*
  * print the reporting data file
  */
-void COutputList::copasiRep(ofstream &fout)
+void COutputList::copasiRep(std::ofstream &fout)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
@@ -118,7 +118,7 @@ void COutputList::copasiRep(ofstream &fout)
 /*
  * print the steady state data file
  */
-void COutputList::copasiSS(ofstream &fout)
+void COutputList::copasiSS(std::ofstream &fout)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
@@ -129,7 +129,7 @@ void COutputList::copasiSS(ofstream &fout)
 /*
  * print the time course dynamic data file
  */
-void COutputList::copasiDyn(ofstream &fout, int time)
+void COutputList::copasiDyn(std::ofstream &fout, int time)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
@@ -140,7 +140,7 @@ void COutputList::copasiDyn(ofstream &fout, int time)
 /**
  * Assign the mpvalue in CDatum for each type
  */
-void COutputList::compile(const string & name, CModel *model, CState *state)
+void COutputList::compile(const std::string & name, CModel *model, CState *state)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
@@ -151,7 +151,7 @@ void COutputList::compile(const string & name, CModel *model, CState *state)
 /**
  * Assign the pointer to each datum object for steady state
  */
-void COutputList::compile(const string & name, CModel *model,
+void COutputList::compile(const std::string & name, CModel *model,
                           CSteadyStateTask *soln)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)

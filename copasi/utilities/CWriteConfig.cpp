@@ -16,21 +16,19 @@
 #include "CGlobals.h"
 #include "CWriteConfig.h"
 
-using namespace std;
-
 CWriteConfig::CWriteConfig(void)
 {
   // initialize everything
   mFileName = "";
-  mOpenMode = ios::out;
+  mOpenMode = std::ios::out;
   mLineNumber = 0;
   mFail = 0;
 
-  mBuffer.setf(ios::scientific);
+  mBuffer.setf(std::ios::scientific);
   mBuffer.precision(16);
 }
 
-CWriteConfig::CWriteConfig(const string& name, ios::openmode mode)
+CWriteConfig::CWriteConfig(const std::string& name, std::ios::openmode mode)
 {
   // initialize everything
   mFileName = name;
@@ -38,10 +36,10 @@ CWriteConfig::CWriteConfig(const string& name, ios::openmode mode)
   mLineNumber = 0;
   mFail = 0;
 
-  mBuffer.setf(ios::scientific);
+  mBuffer.setf(std::ios::scientific);
   mBuffer.precision(16);
 
-  if (mOpenMode & ios::out)
+  if (mOpenMode & std::ios::out)
     writeVersion();
 }
 
@@ -66,10 +64,10 @@ C_INT32 CWriteConfig::flush(void)
 C_INT32 CWriteConfig::commit(void)
 {
 #ifdef WIN32
-  mOpenMode |= ios::binary;
+  mOpenMode |= std::ios::binary;
 #endif
 
-  ofstream ConfigFile(mFileName.c_str(), mOpenMode);
+  std::ofstream ConfigFile(mFileName.c_str(), mOpenMode);
 
   if (ConfigFile.fail())
     {
@@ -85,7 +83,7 @@ C_INT32 CWriteConfig::commit(void)
       return mFail = 1;
     }
 
-  mOpenMode |= ios::app;
+  mOpenMode |= std::ios::app;
   return mFail;
 }
 
@@ -98,8 +96,8 @@ C_INT32 CWriteConfig::fail()
   return mFail;
 }
 
-C_INT32 CWriteConfig::setVariable(const string & name,
-                                  const string & type,
+C_INT32 CWriteConfig::setVariable(const std::string & name,
+                                  const std::string & type,
                                   const void *pout)
 {
   mBuffer << name;
@@ -112,7 +110,7 @@ C_INT32 CWriteConfig::setVariable(const string & name,
       // Return the value depending on the type
       if (type == "string")
         {
-          mBuffer << *(string *) pout;
+          mBuffer << *(std::string *) pout;
         }
       else if (type == "C_FLOAT64")
         {
@@ -132,8 +130,8 @@ C_INT32 CWriteConfig::setVariable(const string & name,
         }
       else if (type == "multiline")
         {
-          mBuffer << endl;
-          mBuffer << *(string *) pout << endl;
+          mBuffer << std::endl;
+          mBuffer << *(std::string *) pout << std::endl;
           mBuffer << "End" << name;
         }
       else
@@ -143,14 +141,14 @@ C_INT32 CWriteConfig::setVariable(const string & name,
         }
     }
 
-  mBuffer << endl;
+  mBuffer << std::endl;
   mLineNumber++;
 
   return mFail;
 }
 
-C_INT32 CWriteConfig::setVariable(const string & name,
-                                  const string & type,
+C_INT32 CWriteConfig::setVariable(const std::string & name,
+                                  const std::string & type,
                                   const void *pout1,
                                   const void *pout2)
 {
@@ -174,7 +172,7 @@ C_INT32 CWriteConfig::setVariable(const string & name,
       mFail = 1; //Error
     }
 
-  mBuffer << endl;
+  mBuffer << std::endl;
   mLineNumber++;
 
   return mFail;
@@ -186,7 +184,7 @@ void CWriteConfig::writeVersion(void)
     setVariable("Version", "string", &Copasi->ProgramVersion.getVersion());
   else
     {
-      string Version("4.0.0");
+      std::string Version("4.0.0");
       setVariable("Version", "string", &Version);
     }
 }

@@ -7,16 +7,15 @@
 #include "CDeTerm.h"
 #include "utilities/CGlobals.h"
 
-using namespace std;
-CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE; }
+CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE;}
 
-CSpecLine::CSpecLine(C_INT32 type, string contents)
+CSpecLine::CSpecLine(C_INT32 type, std::string contents)
     : mType(type),
     mContents(contents)
-{CONSTRUCTOR_TRACE; }
-CSpecLine::~CSpecLine() {DESTRUCTOR_TRACE; }
+{CONSTRUCTOR_TRACE;}
+CSpecLine::~CSpecLine() {DESTRUCTOR_TRACE;}
 
-string CSpecLine::convertedType(int type)
+std::string CSpecLine::convertedType(int type)
 {
   switch (type)
     {
@@ -52,12 +51,12 @@ string CSpecLine::convertedType(int type)
     }
 }
 
-string CSpecLine::extractLeft()
+std::string CSpecLine::extractLeft()
 {
   // Find the operator position
-  string::size_type op_pos = mContents.find_first_of('=');
+  std::string::size_type op_pos = mContents.find_first_of('=');
 
-  if (op_pos == string::npos || op_pos == 0)
+  if (op_pos == std::string::npos || op_pos == 0)
     {
       // No operator like "=" or ":=", or LHS is empty, so LHS not defined
       return "";
@@ -80,9 +79,9 @@ string CSpecLine::extractLeft()
   // Now find the start position. If the string begins with a
   // compartment specification, use the end of that +1 as the
   // start position; otherwise, use the string beginning.
-  string ::size_type start_pos = mContents.find_first_of(':');
+  std::string ::size_type start_pos = mContents.find_first_of(':');
 
-  if (start_pos == string::npos)
+  if (start_pos == std::string::npos)
     {
       start_pos = 0;
     }
@@ -99,32 +98,32 @@ string CSpecLine::extractLeft()
   // Strip the leading blanks again
   start_pos = mContents.find_first_not_of(' ', start_pos);
 
-  string tmp = stripBlanks(mContents.substr(start_pos, op_pos - start_pos));
+  std::string tmp = stripBlanks(mContents.substr(start_pos, op_pos - start_pos));
 
   return tmp;
 }
 
-string CSpecLine::extractRight()
+std::string CSpecLine::extractRight()
 {
-  string::size_type start_pos = mContents.find_first_of('=');
+  std::string::size_type start_pos = mContents.find_first_of('=');
 
-  if (start_pos == string::npos)
+  if (start_pos == std::string::npos)
     {
       // No operator =, thus no RHS
       return "";
     }
   else
     {
-      //        cout << "Returning RHS = " << mContents.substr(start_pos+1) << endl;
+      //        std::cout << "Returning RHS = " << mContents.substr(start_pos+1) << std::endl;
       return mContents.substr(start_pos + 1);
     }
 }
 
-string CSpecLine::extractCpt()
+std::string CSpecLine::extractCpt()
 {
-  string::size_type end_pos = mContents.find_first_of(':');
+  std::string::size_type end_pos = mContents.find_first_of(':');
 
-  if (mContents[end_pos + 1] == '=' || end_pos == string::npos)
+  if (mContents[end_pos + 1] == '=' || end_pos == std::string::npos)
     {
       // No compartment is specified
       return "";
@@ -132,19 +131,19 @@ string CSpecLine::extractCpt()
 
   // See if the first bit contains the keyword INIT or Init or init.
   // If it does, look for the compartment only after that
-  string::size_type start_pos = mContents.find("INIT");
+  std::string::size_type start_pos = mContents.find("INIT");
 
-  if (start_pos == string::npos)
+  if (start_pos == std::string::npos)
     {
       start_pos = mContents.find("init");
     }
 
-  if (start_pos == string::npos)
+  if (start_pos == std::string::npos)
     {
       start_pos = mContents.find("Init");
     }
 
-  if (start_pos == string::npos)
+  if (start_pos == std::string::npos)
     {
       start_pos = 0;
     }
@@ -156,12 +155,12 @@ string CSpecLine::extractCpt()
   return stripBlanks(mContents.substr(start_pos, end_pos - start_pos));
 }
 
-string CSpecLine::stripBlanks(const string instr)
+std::string CSpecLine::stripBlanks(const std::string instr)
 {
-  string::size_type start_pos = instr.find_first_not_of(" \t");
-  string::size_type end_pos = instr.find_last_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_/+-*:=");
+  std::string::size_type start_pos = instr.find_first_not_of(" \t");
+  std::string::size_type end_pos = instr.find_last_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_/+-*:=");
 
-  if (start_pos == string::npos || end_pos == string::npos)
+  if (start_pos == std::string::npos || end_pos == std::string::npos)
     {
       // error
       return "";
@@ -171,15 +170,15 @@ string CSpecLine::stripBlanks(const string instr)
 }
 
 bool CBaseEqn::operator==(const CBaseEqn &rhs) const
+{
+  if ((mCompartment == rhs.getCompartment()) &&
+      (mMetabolite == rhs.getMetabolite()))
   {
-    if ((mCompartment == rhs.getCompartment()) &&
-        (mMetabolite == rhs.getMetabolite()))
-      {
-        return true;
-      }
-
-    return false;
+    return true;
   }
+
+  return false;
+}
 
 CTempMetab::CTempMetab(const CTempMetab &rhs)
     : mMetab(rhs.mMetab),
@@ -207,7 +206,7 @@ CTempMetab *CTempReaction::addMetabolite(CMetab *metab)
 
 void CTempReaction::setIdentifiers(const CDeTerm *deTerm)
 {
-  const vector<pair<CDeTerm::Type, string>* > & TokenStack = deTerm->getTokenStack();
+  const std::vector< std::pair<CDeTerm::Type, std::string>* > & TokenStack = deTerm->getTokenStack();
   unsigned int i, imax = TokenStack.size();
 
   for (i = 0; i < imax; i++)
@@ -218,8 +217,8 @@ void CTempReaction::setIdentifiers(const CDeTerm *deTerm)
 }
 
 void CTempReaction::compile(CModel *model,
-                            const vector<CNameVal> & rates,
-                            const vector<CNameVal> & constants)
+                            const std::vector<CNameVal> & rates,
+                            const std::vector<CNameVal> & constants)
 {
   // Create the reaction
   CReaction *reaction = new CReaction(mName); // XXX TODO: add the bits necessary
@@ -249,9 +248,9 @@ void CTempReaction::compile(CModel *model,
     }
 
   // Create strings describing the chemical equation
-  ostringstream lhs_desc;
+  std::ostringstream lhs_desc;
 
-  ostringstream rhs_desc;
+  std::ostringstream rhs_desc;
 
   C_INT32 mult = 0;
 
@@ -299,7 +298,7 @@ void CTempReaction::compile(CModel *model,
       rhs_desc << mProducts[i].getMetab()->getName();
     }
 
-  string chemeqdesc = lhs_desc.str() + "->" + rhs_desc.str();
+  std::string chemeqdesc = lhs_desc.str() + "->" + rhs_desc.str();
   // Set the chemical equation description in the reaction. This
   // automatically parses the description, extracts the metabolites
   // and constructs the chemical equations.
@@ -311,7 +310,7 @@ void CTempReaction::compile(CModel *model,
   fun->setDescription(mRateDescription);
   // Parse the identifiers to specify the function parameters and the
   // Is2... stuff of the reaction
-  string *name;
+  std::string *name;
   CFunctionParameters & Parameters = fun->getParameters();
   int index;
   CReaction::CId2Param *id2Param;
@@ -368,7 +367,7 @@ void CTempReactionSet::addReaction(CTempReaction *tempreact)
   mReactions.push_back(*tempreact);
 }
 
-CTempReaction *CTempReactionSet::findReaction(string name)
+CTempReaction *CTempReactionSet::findReaction(std::string name)
 {
   for (unsigned C_INT32 i = 0; i < mReactions.size(); i++)
     {
@@ -381,7 +380,7 @@ CTempReaction *CTempReactionSet::findReaction(string name)
   return 0; // If we get here, we didn't find it
 }
 
-bool CTempReaction::isIn(vector<CTempMetab> & metabs, const string & target)
+bool CTempReaction::isIn(std::vector<CTempMetab> & metabs, const std::string & target)
 {
   unsigned int i, imax = metabs.size();
 
@@ -392,9 +391,9 @@ bool CTempReaction::isIn(vector<CTempMetab> & metabs, const string & target)
   return false;
 }
 
-C_FLOAT64 CTempReaction::getParameterValue(const string & name,
-    const vector<CNameVal> & rates,
-    const vector<CNameVal> & C_UNUSED(constants))
+C_FLOAT64 CTempReaction::getParameterValue(const std::string & name,
+    const std::vector<CNameVal> & rates,
+    const std::vector<CNameVal> & C_UNUSED(constants))
 {
   unsigned i, imax = rates.size();
 

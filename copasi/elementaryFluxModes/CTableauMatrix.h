@@ -12,8 +12,6 @@
 #include <list>
 #include "CTableauLine.h"
 
-using namespace std;
-
 class CTableauMatrix
   {
     // Attributes
@@ -24,12 +22,12 @@ class CTableauMatrix
      *  @associates <{CTableauLine}>
      *  @supplierCardinality 0..*
      */
-    list < const CTableauLine * > mLine;
+    std::list< const CTableauLine * > mLine;
 
     /**
      *  Iterator pointing to the first irreversible reaction
      */
-    list < const CTableauLine * >::iterator mFirstIrreversible;
+    std::list< const CTableauLine * >::iterator mFirstIrreversible;
 
     // Operations
 
@@ -46,7 +44,7 @@ class CTableauMatrix
      *  @param "const vector < vector < double > >" & stoi
      *  @param "C_INT32 " reversibleNumber
      */
-    CTableauMatrix(const vector < vector < double > > & stoi,
+    CTableauMatrix(const std::vector < std::vector < double > > & stoi,
                    C_INT32 reversibleNumber);
 
     /**
@@ -56,15 +54,15 @@ class CTableauMatrix
 
     /**
      *  Retrieves the first line from the matrix
-     *  @return "list < const CTableauLine * >::iterator" iterator
+     *  @return "list< const CTableauLine * >::iterator" iterator
      */
-    list < const CTableauLine * >::iterator getFirst();
+    std::list< const CTableauLine * >::iterator getFirst();
 
     /**
      *  Retrieves the last line from the matrix
-     *  @return "list < const CTableauLine * >::iterator" iterator
+     *  @return "list< const CTableauLine * >::iterator" iterator
      */
-    list < const CTableauLine * >::iterator getEnd();
+    std::list< const CTableauLine * >::iterator getEnd();
 
     /**
      *  Add a line to the matrix
@@ -74,9 +72,9 @@ class CTableauMatrix
 
     /**
      *  Remove the indexed line of the matrix
-     *  @param "list < const CTableauLine * >::const_iterator" line
+     *  @param "list< const CTableauLine * >::const_iterator" line
      */
-    void removeLine(list < const CTableauLine * >::iterator line);
+    void removeLine(std::list< const CTableauLine * >::iterator line);
 
   private:
     /**

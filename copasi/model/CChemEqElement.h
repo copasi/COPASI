@@ -21,12 +21,12 @@ class CChemEqElement
     /**
      *  The name of the metabolite the element
      */
-    string mMetaboliteName;
+    std::string mMetaboliteName;
 
     /**
      *  The name of the compartment the element is located in
      */
-    string mCompartmentName;
+    std::string mCompartmentName;
 
     /**
      *  The multiplizity of the metabolite
@@ -96,25 +96,25 @@ class CChemEqElement
      *  Set the name of the element.
      *  @param "const string &" name
      */
-    void setMetaboliteName(const string & metabolitName);
+    void setMetaboliteName(const std::string & metabolitName);
 
     /**
      *  Retrieves the name of the element.
      *  @return "const string &" name
      */
-    const string & getMetaboliteName() const;
+    const std::string & getMetaboliteName() const;
 
     /**
      *  Set the name of the element.
      *  @param "const string &" name
      */
-    void setCompartmentName(const string & compartmentName);
+    void setCompartmentName(const std::string & compartmentName);
 
     /**
      *  Retrieves the name of the element.
      *  @return "const string &" name
      */
-    const string & getCompartmentName() const;
+    const std::string & getCompartmentName() const;
 
     /**
      *  Add to the multiplicity of the element.
@@ -132,17 +132,17 @@ class CChemEqElement
      *  Write the element in the form mMultiplier * mMetaboliteName
      *  @return "string"
      */
-    string writeElement() const;
+    std::string writeElement() const;
 
-    friend ostream & operator<<(ostream &os, const CChemEqElement & d)
+    friend std::ostream & operator<<(std::ostream &os, const CChemEqElement & d)
     {
       os << "CChemEqElement: [" << d.mCompartmentName << "]  " << d.mMultiplicity <<
-      " * " << d.mMetaboliteName << endl;
+      " * " << d.mMetaboliteName << std::endl;
 
       if (d.mpMetabolite)
-        os << "      mpMetabolite " << d.mpMetabolite->getName() << endl;
+        os << "      mpMetabolite " << d.mpMetabolite->getName() << std::endl;
       else
-        os << "      mpMetabolite == 0 " << endl;
+        os << "      mpMetabolite == 0 " << std::endl;
 
       return os;
     }

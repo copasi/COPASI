@@ -13,9 +13,6 @@
 
 class CTableauLine;
 
-using std::vector;
-using std::pair;
-
 class CFluxMode
   {
     // Attributes
@@ -25,7 +22,7 @@ class CFluxMode
      *  Vector containing an index to a reaction an the multiplier
      *  for that reaction.
      */
-    vector < pair < unsigned C_INT32, C_FLOAT64 > > mReactions ;
+    std::vector < std::pair < unsigned C_INT32, C_FLOAT64 > > mReactions;
 
     /**
      *  Reversibility of the mode.

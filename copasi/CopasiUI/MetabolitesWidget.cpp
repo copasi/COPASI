@@ -87,7 +87,7 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
           table->removeRow(0);
         }
 
-      vector < CMetab * > metabolites = mModel->getMetabolites();
+      std::vector < CMetab * > metabolites = mModel->getMetabolites();
       C_INT32 noOfMetabolitesRows = metabolites.size();
       table->setNumRows(noOfMetabolitesRows);
 

@@ -1,6 +1,6 @@
 /***************************************************************************
-                      COptAlgorithmRand.cpp  -  Random Optimizer
-                         -------------------
+                     COptAlgorithmRand.cpp  -  Random Optimizer
+                        -------------------
 
 Programmer           : Rohan Luktuke
 email                : rluktuke@vt.edu
@@ -26,8 +26,6 @@ email                : rluktuke@vt.edu
 #define TRUE 1
 #define FALSE 0 
 //enum answer{NO,YES};
-
-using namespace std;
 
 /**
  * Default constructor
@@ -96,7 +94,7 @@ C_INT32 COptAlgorithmRand::optimise()
   C_INT32 count, i, j;
   //set candx to max value
   candx = DBL_MAX;
-  //cout<<"inside optimise()";
+  //std::cout<<"inside optimise()";
   //count = (C_INT32) getMethodParameterValue(0);
   count = (C_INT32) getValue(0);
   /**
@@ -131,7 +129,6 @@ C_INT32 COptAlgorithmRand::optimise()
             mOptProblem->setParameter(j, (mMin[j] + rand->getRandomCC() * (mMax[j] - mMin[j])));
           else
             mOptProblem->setParameter(j, (mMin[j] * pow(10, la * rand->getRandomCC())));
-
         } // j<..getParameterNum() loop ends
 
       // check parametric constraints

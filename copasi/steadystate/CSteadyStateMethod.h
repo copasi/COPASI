@@ -19,12 +19,10 @@ class CSteadyStateProblem;
 class CState;
 class CEigen;
 
-using std::string;
-
 class CSteadyStateMethod : public CMethodParameterList
   {
   public:
-    static const string TypeName[];
+    static const std::string TypeName[];
 
     // Attributes
     enum Type

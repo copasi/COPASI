@@ -23,7 +23,7 @@ CMoiety::CMoiety(const CMoiety & src)
   mEquation = CCopasiVector < CChemEqElement >(src.mEquation);
 }
 
-CMoiety::CMoiety(const string & name)
+CMoiety::CMoiety(const std::string & name)
 {
   CONSTRUCTOR_TRACE;
   mName = name;
@@ -35,21 +35,21 @@ CMoiety::~CMoiety()
 }
 
 void CMoiety::add
-  (C_FLOAT64 value, CMetab & metabolite)
-  {
-    CChemEqElement * element = new CChemEqElement;
-    element->setMultiplicity(value);
-    element->setMetabolite(metabolite);
+(C_FLOAT64 value, CMetab & metabolite)
+{
+  CChemEqElement * element = new CChemEqElement;
+  element->setMultiplicity(value);
+  element->setMetabolite(metabolite);
 
-    mEquation.add(element);
-  }
+  mEquation.add(element);
+}
 
 void CMoiety::add
-  (C_FLOAT64 value, CMetab * metabolite)
-  {
-    add
-      (value, *metabolite);
-  }
+(C_FLOAT64 value, CMetab * metabolite)
+{
+  add
+  (value, *metabolite);
+}
 
 void CMoiety::cleanup()
 {
@@ -79,33 +79,33 @@ C_FLOAT64 CMoiety::dependentRate()
   return Rate * mEquation[0]->getMetabolite().getCompartment()->getVolume();
 }
 
-string CMoiety::getName() const
-  {
-    return mName;
-  }
+std::string CMoiety::getName() const
+{
+  return mName;
+}
 
-string CMoiety::getDescription() const
+std::string CMoiety::getDescription() const
+{
+  std::string Description;
+  for (unsigned C_INT32 i = 0; i < mEquation.size(); i++)
   {
-    string Description;
-    for (unsigned C_INT32 i = 0; i < mEquation.size(); i++)
-      {
-        if (i)
-          {
-            if (mEquation[i]->getMultiplicity() < 0.0)
-              Description += " - ";
-            else
-              Description += " + ";
-          }
-        if (fabs(mEquation[i]->getMultiplicity()) != 1.0)
-          Description += StringPrint("%3.1f * ",
-                                     fabs(mEquation[i]->getMultiplicity()));
-        Description += mEquation[i]->getMetaboliteName();
-        Description += "{" + mEquation[i]->getCompartmentName() + "}";
-      }
-    return Description;
-  }
+    if (i)
+        {
+          if (mEquation[i]->getMultiplicity() < 0.0)
+            Description += " - ";
+          else
+            Description += " + ";
+        }
+      if (fabs(mEquation[i]->getMultiplicity()) != 1.0)
+        Description += StringPrint("%3.1f * ",
+                                   fabs(mEquation[i]->getMultiplicity()));
+      Description += mEquation[i]->getMetaboliteName();
+      Description += "{" + mEquation[i]->getCompartmentName() + "}";
+    }
+  return Description;
+}
 
-void CMoiety::setName(const string name)
+void CMoiety::setName(const std::string name)
 {
   mName = name;
 }
@@ -124,9 +124,9 @@ void CMoiety::setInitialValue()
  * Return the number value Wei Sun
  */
 C_FLOAT64 CMoiety::getNumber() const
-  {
-    return mINumber;
-  }
+{
+  return mINumber;
+}
 
 /**
  * Returns the address of mNumber

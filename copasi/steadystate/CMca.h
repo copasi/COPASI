@@ -44,7 +44,7 @@ class CMca
      * If need to evaluate the elasticites, ss_x
      * will be assigned in calculateTimeMCA()
      */
-    vector <C_FLOAT64> mSsx;
+    std::vector <C_FLOAT64> mSsx;
 
     /**
      * Modulation factor for finite differences derivation
@@ -154,7 +154,7 @@ class CMca
     /**
      * Return the mSSx vector for calculate time mca
      */
-    vector <C_FLOAT64> getSsx();
+    std::vector <C_FLOAT64> getSsx();
 
     /**
      *  Saves the SSReder of the object to a CWriteConfig object.

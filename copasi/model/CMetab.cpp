@@ -15,7 +15,7 @@
 const CCompartment * CMetab::mpParentCompartment = NULL;
 
 void CMetab::setParentCompartment(const CCompartment * parentCompartment)
-{mpParentCompartment = parentCompartment; }
+{mpParentCompartment = parentCompartment;}
 
 /////////////////////////////////////////////////////////////////////////////
 // CMetab
@@ -60,7 +60,7 @@ CMetab::CMetab(const CMetab & src)
 }
 
 #ifdef XXXX
-CMetab::CMetab(const string & name)
+CMetab::CMetab(const std::string & name)
 {
   CONSTRUCTOR_TRACE;
   reset(name);
@@ -100,7 +100,7 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
 
   return *this;  // Assignment operator returns left side.
 }
-CMetab::~CMetab() {DESTRUCTOR_TRACE; }
+CMetab::~CMetab() {DESTRUCTOR_TRACE;}
 void CMetab::cleanup() {}
 
 C_INT32 CMetab::load(CReadConfig &configbuffer)
@@ -205,7 +205,7 @@ C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
 
 void CMetab::saveSBML(std::ofstream &fout)
 {
-  string str;
+  std::string str;
   FixSName(mName, str);
   fout << "\t\t\t<specie name=\"" << str << "\"";
   FixSName(getCompartment()->getName(), str);
@@ -216,50 +216,50 @@ void CMetab::saveSBML(std::ofstream &fout)
     fout << "true";
   else
     fout << "false";
-  fout << "\"/>" << endl;
+  fout << "\"/>" << std::endl;
 }
 
-const string & CMetab::getName() const
-  {
-    return mName;
-  }
+const std::string & CMetab::getName() const
+{
+  return mName;
+}
 
 const C_FLOAT64 & CMetab::getConcentration() const
-  {
-    return mConcDbl;
-  }
+{
+  return mConcDbl;
+}
 
 const C_INT32 & CMetab::getNumberInt() const
-  {
-    return mNumberInt;
-  }
+{
+  return mNumberInt;
+}
 
 C_FLOAT64 CMetab::getNumberDbl() const
-  {
-    return mConcDbl * mCompartment->getVolume()
-           * mpModel->getQuantity2NumberFactor();
-  }
+{
+  return mConcDbl * mCompartment->getVolume()
+  * mpModel->getQuantity2NumberFactor();
+}
 
 const C_FLOAT64 & CMetab::getInitialConcentration() const
-  {
-    return mIConcDbl;
-  }
+{
+  return mIConcDbl;
+}
 
 const C_INT32 & CMetab::getInitialNumberInt() const
-  {
-    return mINumberInt;
-  }
+{
+  return mINumberInt;
+}
 
 C_FLOAT64 CMetab::getInitialNumberDbl() const
-  {
-    return mIConcDbl * mCompartment->getVolume()
-           * mpModel->getQuantity2NumberFactor();
-  }
+{
+  return mIConcDbl * mCompartment->getVolume()
+  * mpModel->getQuantity2NumberFactor();
+}
 
 const C_INT16 & CMetab::getStatus() const
-  {
-    return mStatus;
-  }
+{
+  return mStatus;
+}
 
 CCompartment * CMetab::getCompartment()
 {
@@ -267,9 +267,9 @@ CCompartment * CMetab::getCompartment()
 }
 
 const CModel * CMetab::getModel() const
-  {
-    return mpModel;
-  }
+{
+  return mpModel;
+}
 
 void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
 {
@@ -281,7 +281,7 @@ const C_FLOAT64 & CMetab::getTransitionTime()
   return mTT;
 }
 
-void CMetab::setName(const string & name)
+void CMetab::setName(const std::string & name)
 {
   mName = name;
 }
@@ -349,10 +349,10 @@ void CMetab::setModel(CModel * model)
 
 C_INT16 CMetab::isValidName()
 {
-  return (mName.find_first_of("; ") == string::npos);
+  return (mName.find_first_of("; ") == std::string::npos);
 }
-CMetabOld::CMetabOld() {CONSTRUCTOR_TRACE; }
-CMetabOld::~CMetabOld() {DESTRUCTOR_TRACE; }
+CMetabOld::CMetabOld() {CONSTRUCTOR_TRACE;}
+CMetabOld::~CMetabOld() {DESTRUCTOR_TRACE;}
 void CMetabOld::cleanup(){}
 
 C_INT32 CMetabOld::load(CReadConfig &configbuffer)
@@ -407,9 +407,9 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 
   return Fail;
 }
-C_INT32 CMetabOld::save(CWriteConfig & C_UNUSED(configbuffer)){ return 0; }
-C_INT32 CMetabOld::getIndex() const { return mCompartment; }
-string CMetabOld::getName() const { return mName; }
+C_INT32 CMetabOld::save(CWriteConfig & C_UNUSED(configbuffer)){return 0;}
+C_INT32 CMetabOld::getIndex() const {return mCompartment;}
+std::string CMetabOld::getName() const {return mName;}
 
 /**
  * Returns the address of mIConcDbl  Wei Sun
@@ -464,7 +464,7 @@ void CMetab::setRate(const C_FLOAT64 & rate)
           * mpModel->getNumber2QuantityFactor();
   //  calculateTransitionTime();
 }
-void CMetab::calculateTransitionTime(void) {mTT = mConcDbl / mRate; }
+void CMetab::calculateTransitionTime(void) {mTT = mConcDbl / mRate;}
 
 void CMetab::checkConcentrationAndNumber()
 {

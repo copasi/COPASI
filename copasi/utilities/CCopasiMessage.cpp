@@ -17,10 +17,8 @@
 #include "messages.h"
 #include "CCopasiException.h"
 
-string TimeStamp();
+std::string TimeStamp();
 #define INITIALTEXTSIZE 1024
-
-using namespace std;
 
 CCopasiMessage::CCopasiMessage(void)
 {
@@ -109,7 +107,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
 
 void CCopasiMessage::handler()
 {
-  string Text = mText;
+  std::string Text = mText;
 
   switch (mType)
     {
@@ -142,14 +140,14 @@ void CCopasiMessage::handler()
   if (mType == ERROR)
     {
 #ifdef COPASI_DEBUG
-      DebugFile << mText << endl;
+      DebugFile << mText << std::endl;
 #endif // COPASI_DEBUG
 
       throw CCopasiException(*this);
     }
   else
     {
-      cout << mText << endl;
+      std::cout << mText << std::endl;
     }
 }
 
@@ -163,11 +161,11 @@ CCopasiMessage &CCopasiMessage::operator=(CCopasiMessage &RHS)
   return *this;
 }
 CCopasiMessage::~CCopasiMessage(void) {}
-const string & CCopasiMessage::getText(void) const { return mText; }
-const CCopasiMessage::Type & CCopasiMessage::getType(void) const { return mType; }
-const unsigned C_INT32 & CCopasiMessage::getNumber(void) const { return mNumber; }
+const std::string & CCopasiMessage::getText(void) const {return mText;}
+const CCopasiMessage::Type & CCopasiMessage::getType(void) const {return mType;}
+const unsigned C_INT32 & CCopasiMessage::getNumber(void) const {return mNumber;}
 
-string TimeStamp()
+std::string TimeStamp()
 {
   time_t Time;
   tm *sTime = NULL;
@@ -191,20 +189,20 @@ string TimeStamp()
       sprintf(str, "0000-00-00 00:00:00");
     }
 
-  return (string) str;
+  return (std::string) str;
 }
 
 void CCopasiMessage::lineBreak()
 {
-  string Search("\n");
-  string Replace("\n>                           < ");
-  string::size_type pos = 0;
+  std::string Search("\n");
+  std::string Replace("\n>                           < ");
+  std::string::size_type pos = 0;
 
   while (TRUE)
     {
       pos = mText.find(Search, pos);
 
-      if (pos == string::npos)
+      if (pos == std::string::npos)
         break;
 
       mText.replace(pos, Search.length(), Replace);

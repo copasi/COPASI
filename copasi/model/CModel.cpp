@@ -270,7 +270,7 @@ C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
 
 void CModel::saveSBML(std::ofstream &fout)
 {
-  string tmpstr, tmpstr2;
+  std::string tmpstr, tmpstr2;
   C_INT32 p, dummy;
   unsigned C_INT32 i;
 
@@ -341,7 +341,7 @@ void CModel::buildStoi()
 {
   CCopasiVector < CChemEqElement > Structure;
   unsigned C_INT32 i, j, k, imax;
-  string Name;
+  std::string Name;
 
   imax = mMetabolites.size();
   mMetabolitesX.resize(imax);
@@ -404,8 +404,8 @@ void CModel::lUDecomposition()
 {
   unsigned C_INT32 i;
 
-  vector < unsigned C_INT32 > rowLU(mStoi.numRows());
-  vector < unsigned C_INT32 > colLU(mStoi.numCols());
+  std::vector < unsigned C_INT32 > rowLU(mStoi.numRows());
+  std::vector < unsigned C_INT32 > colLU(mStoi.numCols());
 
   mRowLU.resize(mStoi.numRows());
   for (i = 0; i < mRowLU.size(); i++)
@@ -827,7 +827,7 @@ const CCopasiVectorNS < CReaction > & CModel::getReactions() const
   return mSteps;
 }
 
-vector < CReaction * > & CModel::getReactionsX()
+std::vector < CReaction * > & CModel::getReactionsX()
 {
   return mStepsX;
 }
@@ -852,9 +852,9 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 C_UNUSED(t), C_FLOAT64 * y, C_FLOAT6
   return;
 }
 #endif // COPASI_DEPRECATED
-vector < CMetab * > & CModel::getMetabolitesInd(){return mMetabolitesInd;}
-vector < CMetab * > & CModel::getMetabolitesDep(){return mMetabolitesDep;}
-vector < CMetab * > & CModel::getMetabolitesX(){return mMetabolitesX;}
+std::vector < CMetab * > & CModel::getMetabolitesInd(){return mMetabolitesInd;}
+std::vector < CMetab * > & CModel::getMetabolitesDep(){return mMetabolitesDep;}
+std::vector < CMetab * > & CModel::getMetabolitesX(){return mMetabolitesX;}
 
 unsigned C_INT32 CModel::getTotMetab() const
 {
@@ -922,7 +922,7 @@ unsigned C_INT32 CModel::getDimension() const
 /**
  *        Return the comments of this model        Wei Sun 
  */
-string CModel::getComments() const
+std::string CModel::getComments() const
 {
   return mComments;
 }
@@ -931,7 +931,7 @@ string CModel::getComments() const
  *        Return the title of this model
  *        @return string
  */
-string CModel::getTitle() const
+std::string CModel::getTitle() const
 {
   return mTitle;
 }
@@ -949,7 +949,7 @@ CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
  *        Return the metabolites of this model
  *        @return vector < CMetab * > 
  */
-vector < CMetab * > & CModel::getMetabolites()
+std::vector < CMetab * > & CModel::getMetabolites()
 {
   return mMetabolites;
 }
@@ -982,10 +982,10 @@ CCopasiVectorN < CMoiety > & CModel::getMoieties()
 /**
  *        Returns the index of the metab
  */
-C_INT32 CModel::findMetab(const string & Target)
+C_INT32 CModel::findMetab(const std::string & Target)
 {
   unsigned C_INT32 i, s;
-  string name;
+  std::string name;
 
   s = mMetabolites.size();
   for (i = 0; i < s; i++)
@@ -1000,10 +1000,10 @@ C_INT32 CModel::findMetab(const string & Target)
 /**
  *        Returns the index of the step
  */
-C_INT32 CModel::findStep(const string & Target)
+C_INT32 CModel::findStep(const std::string & Target)
 {
   unsigned C_INT32 i, s;
-  string name;
+  std::string name;
 
   s = mSteps.size();
   for (i = 0; i < s; i++)
@@ -1018,10 +1018,10 @@ C_INT32 CModel::findStep(const string & Target)
 /**
  *        Returns the index of the compartment
  */
-C_INT32 CModel::findCompartment(const string & Target)
+C_INT32 CModel::findCompartment(const std::string & Target)
 {
   unsigned C_INT32 i, s;
-  string name;
+  std::string name;
 
   s = mCompartments.size();
   for (i = 0; i < s; i++)
@@ -1036,10 +1036,10 @@ C_INT32 CModel::findCompartment(const string & Target)
 /**
  *        Returns the index of the Moiety
  */
-C_INT32 CModel::findMoiety(string &Target)
+C_INT32 CModel::findMoiety(std::string &Target)
 {
   unsigned C_INT32 i, s;
-  string name;
+  std::string name;
 
   s = mMoieties.size();
   for (i = 0; i < s; i++)
@@ -1072,7 +1072,7 @@ void CModel::initializeMetabolites()
  * Returns the mStepsX of this model
  * @return vector < CStep * > 
  */
-vector < CReaction * > & CModel::getStepsX()
+std::vector < CReaction * > & CModel::getStepsX()
 {
   return mStepsX;
 }
@@ -1413,7 +1413,7 @@ void CModel::getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives)
   return;
 }
 
-void CModel::setQuantityUnit(const string & name)
+void CModel::setQuantityUnit(const std::string & name)
 {
   mQuantityUnitName = name;
 
@@ -1436,7 +1436,7 @@ void CModel::setQuantityUnit(const string & name)
 
   mNumber2QuantityFactor = 1 / mQuantity2NumberFactor;
 }
-string CModel::getQuantityUnit() const {return mQuantityUnitName;}
+std::string CModel::getQuantityUnit() const {return mQuantityUnitName;}
 
 const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
 {return mQuantity2NumberFactor;}
@@ -1444,18 +1444,18 @@ const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
 const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
 {return mNumber2QuantityFactor;}
 
-void CModel::setTitle(const string &title)
+void CModel::setTitle(const std::string &title)
 {
   mTitle = title;
 }
 
-void CModel::setComments(const string &comments)
+void CModel::setComments(const std::string &comments)
 {
   mComments = comments;
 }
 
-C_INT32 CModel::addMetabolite(const string & comp,
-                              const string & name,
+C_INT32 CModel::addMetabolite(const std::string & comp,
+                              const std::string & name,
                               C_FLOAT64 iconc,
                               C_INT16 status)
 {
@@ -1476,7 +1476,7 @@ C_INT32 CModel::addMetabolite(const string & comp,
   return 0;
 }
 
-C_INT32 CModel::addCompartment(string &name, C_FLOAT64 vol)
+C_INT32 CModel::addCompartment(std::string &name, C_FLOAT64 vol)
 {
   CCompartment *cpt;
   // check if there is already a volume with this name
@@ -1497,10 +1497,10 @@ C_INT32 CModel::addReaction(CReaction *r)
   return mSteps.size();
 }
 
-const vector <unsigned C_INT32> & CModel::getMetabolitePermutation() const
+const std::vector <unsigned C_INT32> & CModel::getMetabolitePermutation() const
 {return mRowLU;}
 
-const vector <unsigned C_INT32> & CModel::getReactionPermutation() const
+const std::vector <unsigned C_INT32> & CModel::getReactionPermutation() const
 {return mColLU;}
 
 void CModel::updateDepMetabNumbers(CStateX const & state) const
@@ -1512,7 +1512,7 @@ const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mZero = 0.0;
 const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
 
 CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-    const vector< CMetab * > & independent):
+    const std::vector< CMetab * > & independent):
     mA(A),
     mIndependent(independent)
 {CONSTRUCTOR_TRACE;}
@@ -1524,7 +1524,7 @@ CModel::CLinkMatrixView &
 CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView & rhs)
 {
   const_cast< CMatrix< C_FLOAT64 > &>(mA) = rhs.mA;
-  const_cast< vector< CMetab * > &>(mIndependent) = rhs.mIndependent;
+  const_cast< std::vector< CMetab * > &>(mIndependent) = rhs.mIndependent;
 
   return *this;
 }

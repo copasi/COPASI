@@ -13,9 +13,6 @@
 
 #include "CRange.h"
 
-using std::ostream;
-using std::endl;
-
 class CUsageRange : public CRange
   {
   private:
@@ -25,7 +22,7 @@ class CUsageRange : public CRange
      * for CFunction but it might be used in derived classes. Possible
      * usages are SUBSTRATE, PRODUCT, MODIFIER, or PARAMETER 
      */
-    string mUsage;
+    std::string mUsage;
 
   public:
     /**
@@ -70,29 +67,29 @@ class CUsageRange : public CRange
      *  Retrieves the usage of the range
      *  @return "const string &" usage
      */
-    const string & getUsage() const;
+    const std::string & getUsage() const;
 
     /**
      *  Retrieves the name in this case the usage the range
      *  @return "const string &" name
      */
-    const string & getName() const;
+    const std::string & getName() const;
 
     /**
      *  Set the usage of the range
      *  @param "const string &" usage
      */
-    void setUsage(const string & usage);
+    void setUsage(const std::string & usage);
 
     /**
     * insert operator
     */
-    friend ostream & operator<<(ostream &os, const CUsageRange & d)
+    friend std::ostream & operator<<(std::ostream &os, const CUsageRange & d)
     {
       os << "CUsageRange: "
       << " mLow " << d.getLow()
       << " mHigh " << d.getHigh()
-      << " mUsage " << d.mUsage << endl;
+      << " mUsage " << d.mUsage << std::endl;
 
       return os;
     }

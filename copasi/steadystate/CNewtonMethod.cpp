@@ -14,17 +14,7 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "trajectory/CTrajectoryMethod.h"
 
-extern "C"
-  {
-#include "clapack.h"        //use CLAPACK
-  }
-
-/* clapack includes f2c.h which defines min and max. We need
-   to remove the define since we use std::min and std::max */
-#if (defined min && ! defined WIN32)
-# undef min
-# undef max
-#endif // min && ! WIN32
+#include "clapackwrap.h"        //use CLAPACK
 
 CNewtonMethod::CNewtonMethod():
     CSteadyStateMethod(),
@@ -415,7 +405,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,      /* fortran style vector */
+                           mdxdt.array() - 1,       /* fortran style vector */
                            1);
         }
 
@@ -472,7 +462,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,      /* fortran style vector */
+                   mdxdt.array() - 1,       /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

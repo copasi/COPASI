@@ -79,14 +79,14 @@ class CFunctionParameters
      */
 
     void add
-      (const CFunctionParameter & parameter);
+    (const CFunctionParameter & parameter);
 
     /**
      *  Add a parameter to the parameter list
      *  @param "CFunctionParameter *" parameter
      */
     void add
-      (CFunctionParameter * parameter);
+    (CFunctionParameter * parameter);
 
     /**
      *  Add a parameter to the parameter list
@@ -95,16 +95,16 @@ class CFunctionParameters
      *  @param "const string &" usage
      */
     void add
-      (const string & name,
-       const CFunctionParameter::DataType & type,
-       const string & usage);
+    (const std::string & name,
+     const CFunctionParameter::DataType & type,
+     const std::string & usage);
 
     /**
      *  Remove a parameter from the parameter list
      *  @param "const CFunctionParameter &" parameter
      */
     void remove
-      (const string & name);
+    (const std::string & name);
 
     /**
      *  Retrieves the vector of function parameters
@@ -125,7 +125,7 @@ class CFunctionParameters
     /**
      *
      */
-    CFunctionParameter * operator[](const string &name);
+    CFunctionParameter * operator[](const std::string &name);
 
     /**
      *
@@ -148,18 +148,18 @@ class CFunctionParameters
      *  @param "unsigned C_INT32 &" pos (first call should be with 0)
      *  @return "CFunctionParameter &" usageRange
      */
-    CFunctionParameter & getParameterByUsage(const string & usage,
+    CFunctionParameter & getParameterByUsage(const std::string & usage,
         unsigned C_INT32 & pos);
 
     /**
      * insert operator
      */
-    friend ostream & operator<<(ostream &os, const CFunctionParameters & d)
+    friend std::ostream & operator<<(std::ostream &os, const CFunctionParameters & d)
     {
-      os << "++++CFunctionParameters: " << endl;
-      os << "    CFunctionParameters.mParameters " << endl << d.mParameters;
-      os << "    CFunctionParameters.mUsageRanges " << endl << d.mUsageRanges;
-      os << "----CFunctionParameters " << endl;
+      os << "++++CFunctionParameters: " << std::endl;
+      os << "    CFunctionParameters.mParameters " << std::endl << d.mParameters;
+      os << "    CFunctionParameters.mUsageRanges " << std::endl << d.mUsageRanges;
+      os << "----CFunctionParameters " << std::endl;
 
       return os;
     }

@@ -21,7 +21,7 @@ class CFunctionDB
     /**
      *  Filename which contains the function database
      */
-    string mFilename;
+    std::string mFilename;
 
     /**
      *  Vector of the currently loaded functions
@@ -79,19 +79,19 @@ class CFunctionDB
     /**
      *
      */
-    void setFilename(const string & filename);
+    void setFilename(const std::string & filename);
 
     /**
      *
      */
-    string getFilename() const;
+    std::string getFilename() const;
 
     /**
      *  Load the function functionName from the database
      *  @param "const string" &functionName
      *  @return CFunction * function (NULL if function can not be loaded)
      */
-    CFunction * dBLoad(const string & functionName);
+    CFunction * dBLoad(const std::string & functionName);
 
     /**
      *  Add the function to the database
@@ -99,14 +99,14 @@ class CFunctionDB
      *  @return C_INT32 Fail
      */
     void add
-      (CFunction * function);
+    (CFunction * function);
 
     /**
      *  Delete the function functionName from the database
      *  @param "const string" &functionName
      *  @return C_INT32 Fail
      */
-    void dBDelete(const string & functionName);
+    void dBDelete(const std::string & functionName);
 
     /**
      *  Search for a function among the loaded functions. If no
@@ -114,7 +114,7 @@ class CFunctionDB
      *  @param "const string" &functionName
      *  @return CFunction *
      */
-    CFunction * findFunction(const string & functionName);
+    CFunction * findFunction(const std::string & functionName);
 
     /**
      *  Search for a function among the loaded functions. If no
@@ -123,7 +123,7 @@ class CFunctionDB
      *  @param "const string" &functionName
      *  @return CFunction * function (NULL if function is not found)
      */
-    CFunction * findLoadFunction(const string & functionName);
+    CFunction * findLoadFunction(const std::string & functionName);
 
     /**
      *  Retrieves the vector of loaded functions.

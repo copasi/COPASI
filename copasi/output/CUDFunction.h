@@ -1,10 +1,10 @@
 /*****************************************************************************
  * PROGRAM NAME: CUDFunction.h
- * PROGRAMMER: Wei Sun	wsun@vt.edu
+ * PROGRAMMER: Wei Sun wsun@vt.edu
  * PURPOSE: Define the user defined function object
  *****************************************************************************/
 #ifndef COPASI_CUDFunction
-#define	COPASI_CUDFunction
+#define COPASI_CUDFunction
 
 #include <string>
 
@@ -15,134 +15,133 @@
 #include "CNodeO.h"
 
 class CUDFunction: public CKinFunction
-{
- private:
-  /**
-   *  The vector of nodes of the binary tree of the function
-   */
-  CCopasiVectorS < CNodeO > mNodes;
-  /**
-   * Value of user defined function
-   */
-  C_FLOAT64 mValue;
+  {
+  private:
+    /**
+     *  The vector of nodes of the binary tree of the function
+     */
+    CCopasiVectorS < CNodeO > mNodes;
+    /**
+     * Value of user defined function
+     */
+    C_FLOAT64 mValue;
 
-  /**
-   *  Internal variable
-   */
-  unsigned C_INT32 mNidx;
+    /**
+     *  Internal variable
+     */
+    unsigned C_INT32 mNidx;
 
-  /**
-   *  A pointer to the  call parameters of the user defined function
-   */
-  //CCallParameters mCallParameters;
+    /**
+     *  A pointer to the  call parameters of the user defined function
+     */ 
+    //CCallParameters mCallParameters;
 
- public:
-  /**
-   *  Default constructor
-   */
-  CUDFunction();
+  public:
+    /**
+     *  Default constructor
+     */
+    CUDFunction();
 
-  /**
-   *  Copy constructor
-   *  @param "const CFunction &" src
-   */
-  CUDFunction(const CFunction & src);
-  
-  /**
-   *  Copy constructor
-   *  @param "const CUDFunction &" src
-   */
-  CUDFunction(const CUDFunction & src);
-  
-  /**
-   *  This creates a user defined function with a name an description
-   *  @param "const string" &name
-   *  @param "const string" &description
-   */
-  CUDFunction(const string & name,
-              const string & description);
+    /**
+     *  Copy constructor
+     *  @param "const CFunction &" src
+     */
+    CUDFunction(const CFunction & src);
 
-  /**
-   *  Destructor
-   */
-  virtual ~CUDFunction();
+    /**
+     *  Copy constructor
+     *  @param "const CUDFunction &" src
+     */
+    CUDFunction(const CUDFunction & src);
 
-  /**
-   *  Delete
-   */
-  void cleanup();
+    /**
+     *  This creates a user defined function with a name an description
+     *  @param "const string" &name
+     *  @param "const string" &description
+     */
+    CUDFunction(const std::string & name,
+                const std::string & description);
 
-  /**
-   *  Loads an object with data coming from a CReadConfig object.
-   *  (CReadConfig object reads an input stream)
-   *  @param pconfigbuffer reference to a CReadConfig object.
-   *  @return Fail
-   */
-  void load(CReadConfig & configbuffer,
-            CReadConfig::Mode mode = CReadConfig::LOOP);
+    /**
+     *  Destructor
+     */
+    virtual ~CUDFunction();
 
-  /**
-   *  Compile a function
-   */
-  void compile();
-  
-  /**
-   *  This parses the function into a binary tree
-   */
-  C_INT32 parse();
+    /**
+     *  Delete
+     */
+    void cleanup();
 
-  /**
-   * Calculate the value of this user defined function
-   * return the pointer of this user defined function
-   */
-  C_FLOAT64 calcValue();
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return Fail
+     */
+    void load(CReadConfig & configbuffer,
+              CReadConfig::Mode mode = CReadConfig::LOOP);
 
-  /**
-   * Get the pointer of user defined function
-   */
-  void * getValueAddr();
+    /**
+     *  Compile a function
+     */
+    void compile();
 
-  /**
-   * Return the value of user defined function
-   */
-  C_FLOAT64 getValue() const;
+    /**
+     *  This parses the function into a binary tree
+     */
+    C_INT32 parse();
 
-  //CCallParameters & getCallParameters();
+    /**
+     * Calculate the value of this user defined function
+     * return the pointer of this user defined function
+     */
+    C_FLOAT64 calcValue();
 
-  /**
-   *  This parses the function into a binary tree
-   */
-  //C_INT32 parse();
+    /**
+     * Get the pointer of user defined function
+     */
+    void * getValueAddr();
 
-  /**
-   *  Retreives the nodes of the function
-   */
-  CCopasiVectorS < CNodeO > & getNodes();
+    /**
+     * Return the value of user defined function
+     */
+    C_FLOAT64 getValue() const;
 
- private:
-  /**
-   *  This function creates the parameter description for older file versions
-   */
-  void createParameters();
+    //CCallParameters & getCallParameters();
 
-  /**
-   *  This  connects the nodes to build the binary function tree
-   */
-  C_INT32 connectNodes();
+    /**
+     *  This parses the function into a binary tree
+     */ 
+    //C_INT32 parse();
 
-  /**
-   *  This function is part of the algorithm that builds the binary tree
-   *  @param C_INT16 priority
-   *  @return CNodeK *
-   */
-  CNodeO * parseExpression(C_INT16 priority);
+    /**
+     *  Retreives the nodes of the function
+     */
+    CCopasiVectorS < CNodeO > & getNodes();
 
-  /**
-   *  This function is part of the algorithm that builds the binary tree
-   *  @return CNodeK *
-   */
-  CNodeO * parsePrimary();
+  private:
+    /**
+     *  This function creates the parameter description for older file versions
+     */
+    void createParameters();
 
-};
+    /**
+     *  This  connects the nodes to build the binary function tree
+     */
+    C_INT32 connectNodes();
+
+    /**
+     *  This function is part of the algorithm that builds the binary tree
+     *  @param C_INT16 priority
+     *  @return CNodeK *
+     */
+    CNodeO * parseExpression(C_INT16 priority);
+
+    /**
+     *  This function is part of the algorithm that builds the binary tree
+     *  @return CNodeK *
+     */
+    CNodeO * parsePrimary();
+  };
 
 #endif

@@ -83,7 +83,7 @@ class CIndexedPriorityQueue
     /**
      * Return the size of the heap
      */
-    C_INT32 size() { return mHeap.size(); }
+    C_INT32 size() {return mHeap.size();}
 
     // Operations
     /**
@@ -120,10 +120,10 @@ class CIndexedPriorityQueue
      * @return Returns the key
      */
     C_FLOAT64 getKey(C_INT32 index) const
-      {
-        // does not consider negative IndexPointer
-        return mHeap[mIndexPointer[index]].mKey;
-      }
+    {
+      // does not consider negative IndexPointer
+      return mHeap[mIndexPointer[index]].mKey;
+    }
 
   private:
     // Private operations
@@ -150,32 +150,32 @@ class CIndexedPriorityQueue
      * @param pos The current node position
      * @return The parent node position
      */
-    C_INT32 parent(C_INT32 pos) { return (pos + 1) / 2 - 1; }
+    C_INT32 parent(C_INT32 pos) {return (pos + 1) / 2 - 1;}
 
     /**
      * Provide the position in the heap of the left child of the current node.
      * @param pos The current node position
      * @return The left child position
      */
-    C_INT32 leftChild(C_INT32 pos) { return 2*pos + 1; }
+    C_INT32 leftChild(C_INT32 pos) {return 2*pos + 1;}
 
     /**
      * Provide the position in the heap of the right child of the current node.
      * @param pos The current node position
      * @return The right child position
      */
-    C_INT32 rightChild(C_INT32 pos) { return 2*pos + 2; }
+    C_INT32 rightChild(C_INT32 pos) {return 2*pos + 2;}
 
   private:
     // Members
     /**
      * The vector which stores the heap
      */
-    vector<PQNode> mHeap;
+    std::vector<PQNode> mHeap;
     /**
      * The vector which stores a pointer to each indexed node on the heap
      */
-    vector<C_INT32> mIndexPointer;
+    std::vector<C_INT32> mIndexPointer;
   };
 
 #endif // COPASI_CPriorityQueue

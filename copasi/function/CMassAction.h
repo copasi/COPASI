@@ -42,14 +42,14 @@ class CMassAction : public CFunction
      *  @param "const string &" name
      *  @return "const unsigned C_INT32" index
      */
-    virtual unsigned C_INT32 getParameterPosition(const string & name);
+    virtual unsigned C_INT32 getParameterPosition(const std::string & name);
 
     /**
      *  Returns a string containing the explicit function in SBML format
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      */
-    string getSBMLString(const CCallParameters & callParameterNames, const string &r);
+    std::string getSBMLString(const CCallParameters & callParameterNames, const std::string &r);
 
     /**
      *  Calculates the value of the function

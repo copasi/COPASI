@@ -12,20 +12,20 @@
 #include "copasi.h"
 #include "CTableauMatrix.h"
 
-CTableauMatrix::CTableauMatrix() 
+CTableauMatrix::CTableauMatrix()
 {
   CONSTRUCTOR_TRACE;
   mFirstIrreversible = mLine.end();
 }
 
-CTableauMatrix::CTableauMatrix(const vector < vector < C_FLOAT64 > > & stoi,
+CTableauMatrix::CTableauMatrix(const std::vector< std::vector< C_FLOAT64 > > & stoi,
                                C_INT32 reversibleNumber)
 {
   CONSTRUCTOR_TRACE;
   unsigned C_INT32 ReactionCounter = 0;
   unsigned C_INT32 ReactionNumber = stoi.size();
-  
-  for (vector < vector < C_FLOAT64 > >::const_iterator Reaction = stoi.begin();
+
+  for (std::vector< std::vector< C_FLOAT64 > >::const_iterator Reaction = stoi.begin();
        Reaction < stoi.end();
        Reaction++, reversibleNumber--, ReactionCounter++)
     {
@@ -44,18 +44,18 @@ CTableauMatrix::CTableauMatrix(const vector < vector < C_FLOAT64 > > & stoi,
 CTableauMatrix::~CTableauMatrix()
 {
   DESTRUCTOR_TRACE;
-  for (list < const CTableauLine * >::iterator i = mLine.begin();
+  for (std::list< const CTableauLine * >::iterator i = mLine.begin();
        i != mLine.end(); i++)
     pdelete(*i);
 }
 
-list < const CTableauLine * >::iterator 
+std::list< const CTableauLine * >::iterator
 CTableauMatrix::getFirst()
 {
   return mLine.begin();
 }
 
-list < const CTableauLine * >::iterator 
+std::list< const CTableauLine * >::iterator
 CTableauMatrix::getEnd()
 {
   return mLine.end();
@@ -67,7 +67,7 @@ void CTableauMatrix::addLine(const CTableauLine * src)
   /* This really breaks the "const" but it is the only place tableau */
   /* lines are changed */
   const_cast <CTableauLine *>(src)->truncate();
-  
+
   /* First we check whether we have a valid new flux mode */
   if (isValid(src))
     {
@@ -87,10 +87,9 @@ void CTableauMatrix::addLine(const CTableauLine * src)
     }
   else
     pdelete(src);
-  
 }
 
-void CTableauMatrix::removeLine(const list < const CTableauLine * >::iterator line)
+void CTableauMatrix::removeLine(const std::list< const CTableauLine * >::iterator line)
 {
   if (line == mFirstIrreversible && mFirstIrreversible == mLine.begin())
     {
@@ -111,18 +110,18 @@ void CTableauMatrix::removeLine(const list < const CTableauLine * >::iterator li
 
 bool CTableauMatrix::isValid(const CTableauLine * src)
 {
-  list < const CTableauLine * >::iterator i;
-  list < const CTableauLine * >::iterator tmp;
-  
+  std::list< const CTableauLine * >::iterator i;
+  std::list< const CTableauLine * >::iterator tmp;
+
   /* Check whether we have already better lines */
   for (i = mLine.begin(); i != mLine.end(); i++)
     if ((*i)->getScore() < src->getScore()) return FALSE;
-  
+
   i = mLine.begin();
   /* Check whether the new line scores better than existing lines */
   /* If so the existing lines are removed */
   for (i = mLine.begin(); i != mLine.end();)
-    if (src->getScore() < (*i)->getScore()) 
+    if (src->getScore() < (*i)->getScore())
       {
         if (i == mLine.begin())
           {
@@ -140,7 +139,7 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
       }
     else
       i++;
-    
+
   return TRUE;
 }
 
@@ -148,9 +147,9 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
 void CTableauMatrix::print(void)
 {
   cout << "Tableau Matrix: Number of Lines = " << mLine.size() << endl;
-  list < const CTableauLine * >::iterator i;
+  std::list< const CTableauLine * >::iterator i;
 
-  for (i=mLine.begin(); i!=mLine.end(); i++)
+  for (i = mLine.begin(); i != mLine.end(); i++)
     (*i)->print();
 }
 #endif // XXXX

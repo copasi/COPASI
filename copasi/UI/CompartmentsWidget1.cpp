@@ -144,7 +144,7 @@ int CompartmentsWidget1::isName(QString setValue)
   name = setValue;
   CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
-  if (compartments[(string) setValue] != NULL)
+  if (compartments[(std::string) setValue] != NULL)
     {
       loadName(setValue);
       return 1;
@@ -168,14 +168,14 @@ void CompartmentsWidget1::loadName(QString setValue)
 {
   if (mModel == NULL)
     {
-      return ;
+      return;
     }
 
   CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
   CCompartment *compartn;
 
-  compartn = compartments[(string)setValue];
+  compartn = compartments[(std::string)setValue];
 
   LineEdit1->setText(compartn->getName().c_str());
   Compartment1_Name = new QString(compartn->getName().c_str());
@@ -208,11 +208,11 @@ void CompartmentsWidget1::slotBtnCancelClicked()
 void CompartmentsWidget1::slotBtnOKClicked()
 {
   QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
-  string filename = ((string) name.latin1()) + ".gps";
+  std::string filename = ((std::string) name.latin1()) + ".gps";
   CWriteConfig *Com = new CWriteConfig(filename);
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
-  compartn1 = compartments1[(string)name.latin1()];
+  compartn1 = compartments1[(std::string)name.latin1()];
 
   QString volume(LineEdit3->text());
   double m1;

@@ -15,8 +15,6 @@ class COutput;
 class COutputList;
 class CSteadyStateTask;
 
-using std::ofstream;
-
 class COutputEvent
   {
   private:
@@ -58,13 +56,13 @@ class COutputEvent
      * Copy output at the specified time 
      * @param tra refers to the CTrajectory object.
      */
-    void print(COutputList list, ofstream &fout);
+    void print(COutputList list, std::ofstream &fout);
 
     /**
      * Copy output at the specified time 
      * @param tra refers to the CSS_solution object.
      */
-    void print(CSteadyStateTask &ss, COutputList list, ofstream &fout);
+    void print(CSteadyStateTask &ss, COutputList list, std::ofstream &fout);
   };
 
 #endif // COutputEvent

@@ -12,8 +12,8 @@
 #include "model/model.h"
 #include "CElementaryFluxModes.h"
 #include "CEFMAlgorithm.h"
-CElementaryFluxModes::CElementaryFluxModes(){CONSTRUCTOR_TRACE; mModel = NULL; }
-CElementaryFluxModes::~CElementaryFluxModes(){DESTRUCTOR_TRACE; }
+CElementaryFluxModes::CElementaryFluxModes(){CONSTRUCTOR_TRACE; mModel = NULL;}
+CElementaryFluxModes::~CElementaryFluxModes(){DESTRUCTOR_TRACE;}
 
 void CElementaryFluxModes::calculate(const CModel * model)
 {
@@ -26,7 +26,7 @@ void CElementaryFluxModes::calculate(const CModel * model)
   unsigned C_INT32 col, numCols = mModel->getStoi().numCols();
 
   /* Size the stoichiometry matrix passed to the algorithm */
-  vector < vector < C_FLOAT64 > > Stoi;
+  std::vector< std::vector< C_FLOAT64 > > Stoi;
   Stoi.resize(numRows);
 
   for (row = 0; row < numRows; row++)

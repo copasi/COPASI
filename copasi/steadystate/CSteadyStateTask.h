@@ -22,9 +22,6 @@ class CState;
 class COutputEvent;
 class CEigen;
 
-using std::ostream;
-using std::endl;
-
 class CSteadyStateTask
   {
     //Attributes
@@ -161,13 +158,13 @@ class CSteadyStateTask
     void process();
 
     // Friend functions
-    friend ostream &operator<<(ostream &os, const CSteadyStateTask &A)
+    friend std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
     {
-      os << endl;
+      os << std::endl;
 
       if (A.mResult == CSteadyStateMethod::notFound)
         {
-          os << "A STEADY STATE COULD NOT BE FOUND." << endl;
+          os << "A STEADY STATE COULD NOT BE FOUND." << std::endl;
           os << "(below are the last unsuccessful trial values)";
         }
       else
@@ -178,7 +175,7 @@ class CSteadyStateTask
             os << " (chemical equilibrium)";
         }
 
-      os << endl;
+      os << std::endl;
 
       return os;
     }

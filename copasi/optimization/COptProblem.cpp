@@ -83,10 +83,10 @@ void COptProblem::initialize(void)
   steady_state = NULL;
   trajectory = NULL;
 
-  //  For test purposes: delete test.txt after the CSS_Solution.process(&ofstream)
+  //  For test purposes: delete test.txt after the CSS_Solution.process(&std::ofstream)
   //  is modified to CSS_Solution.process()
 
-  ofstream out("test.txt");
+  std::ofstream out("test.txt");
 }
 
 // check constraints : unimplemented - always returns true
@@ -111,12 +111,12 @@ C_FLOAT64 COptProblem::calculate()
 {
   if (steady_state != NULL)
     {
-      // cout << "COptProblem: steady_state";
+      // std::cout << "COptProblem: steady_state";
       steady_state->process();
     }
   if (trajectory != NULL)
     {
-      // cout << "COptProblem: trajectory";
+      // std::cout << "COptProblem: trajectory";
       trajectory->process();
     }
   return 0;

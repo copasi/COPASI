@@ -52,13 +52,13 @@ class CEFMAlgorithm
      *  @param "vector < vector < C_INT32 > > &" fluxModes
      *  @return "bool" success
      */
-    bool calculate(const vector < vector < C_FLOAT64 > > & stoi,
+    bool calculate(const std::vector < std::vector < C_FLOAT64 > > & stoi,
                    const unsigned C_INT32 & reversibleNumber,
-                   vector < CFluxMode > & fluxModes);
+                   std::vector < CFluxMode > & fluxModes);
 
   private:
     void calculateNextTableau();
-    void buildFluxModes(vector < CFluxMode > & fluxModes);
+    void buildFluxModes(std::vector < CFluxMode > & fluxModes);
   };
 
 #endif // COPASI_CEFMAlgorithm

@@ -18,17 +18,6 @@
 #include "utilities/CMatrix.h"
 #include "utilities/CVector.h"
 
-using std::ostream;
-using std::endl;
-using std::setprecision;
-using std::ios;
-
-//include clapack.h for eigenvalue calculations
-extern "C"
-  {
-#include "clapack.h"       //use CLAPACK
-  }
-
 class CEigen
   {
   private:
@@ -297,15 +286,15 @@ class CEigen
     const CVector< C_FLOAT64 > & getEigen_r() const;
 
     // Friend functions
-    friend ostream &operator<<(ostream &os, const CEigen &A)
+    friend std::ostream &operator<<(std::ostream &os, const CEigen &A)
     {
-      os << endl;
+      os << std::endl;
       os << "KINETIC STABILITY ANALYSIS";
-      os << endl;
-      os << "The linear stability analysis based on the eigenvalues" << endl;
-      os << "of the Jacobian matrix is only valid for steady states." << endl;
-      os << endl;
-      os << "Summary:" << endl;
+      os << std::endl;
+      os << "The linear stability analysis based on the eigenvalues" << std::endl;
+      os << "of the Jacobian matrix is only valid for steady states." << std::endl;
+      os << std::endl;
+      os << "Summary:" << std::endl;
       os << "This steady state ";
 
       // Output statistics
@@ -319,46 +308,46 @@ class CEigen
 
       if (A.mEigen_maximagpart > A.mResolution)
         {
-          os << "," << endl;
+          os << "," << std::endl;
           os << "transient states in its vicinity have oscillatory components";
         }
 
-      os << endl;
-      os << endl;
+      os << std::endl;
+      os << std::endl;
 
-      os << "Eigenvalue statistics:" << endl;
+      os << "Eigenvalue statistics:" << std::endl;
       // Output Max Real Part
       os << " Largest real part: ";
-      os << setprecision(6) << A.mEigen_maxrealpart << endl;
+      os << std::setprecision(6) << A.mEigen_maxrealpart << std::endl;
       // Output Max imaginary Part
       os << " Largest absolute imaginary part:  ";
-      os << setprecision(6) << A.mEigen_maximagpart << endl;
+      os << std::setprecision(6) << A.mEigen_maximagpart << std::endl;
       // Output Eigen-nreal
-      os.unsetf(ios::scientific);
-      os.unsetf(ios::showpoint);
+      os.unsetf(std::ios::scientific);
+      os.unsetf(std::ios::showpoint);
       os << " " << A.mEigen_nreal;
-      os << " are purely real" << endl;
+      os << " are purely real" << std::endl;
       // Output Eigen-nimage
       os << " " << A.mEigen_nimag;
-      os << " are purely imaginary" << endl;
+      os << " are purely imaginary" << std::endl;
       // Output Eigen-ncplxconj
       os << " " << A.mEigen_ncplxconj;
-      os << " are complex" << endl;
+      os << " are complex" << std::endl;
       // Output Eigen-nzero
       os << " " << A.mEigen_nzero;
-      os << " are equal to zero" << endl;
+      os << " are equal to zero" << std::endl;
       // Output Eigen-nposreal
       os << " " << A.mEigen_nposreal;
-      os << " have positive real part" << endl;
+      os << " have positive real part" << std::endl;
       // Output Eigen-nnegreal
       os << " " << A.mEigen_nnegreal;
-      os << " have negative real part" << endl;
+      os << " have negative real part" << std::endl;
 
       // Set point manipulators
-      os.setf(ios::showpoint);
+      os.setf(std::ios::showpoint);
       // Output Eigne-stiffness
-      os << " stiffness = " << A.mEigen_stiffness << endl;
-      os << " time hierarchy = " << A.mEigen_hierarchy << endl;
+      os << " stiffness = " << A.mEigen_stiffness << std::endl;
+      os << " time hierarchy = " << A.mEigen_hierarchy << std::endl;
 
       return os;
     }

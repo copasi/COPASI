@@ -13,8 +13,6 @@
 #include "utilities/CGlobals.h"
 #include "CTrajectory.h"
 
-using std::cout;
-
 //default constructor
 CTrajectory::CTrajectory()
 {
@@ -35,7 +33,7 @@ CTrajectory::CTrajectory()
 //destructor
 CTrajectory::~CTrajectory()
 {
-  cout << "~CTrajectory " << endl;
+  std::cout << "~CTrajectory " << std::endl;
 }
 
 void CTrajectory::initialize()
@@ -51,7 +49,7 @@ void CTrajectory::initialize()
 
   mStartTime = 0;
 
-  cout << "Method = " << mMethod << endl;
+  std::cout << "Method = " << mMethod << std::endl;
 
   switch (mMethod)
     {
@@ -61,17 +59,17 @@ void CTrajectory::initialize()
 
     case STOCH_DIRECT:
       // we're doing a stochastic simulation
-      cout << "In trajectory: performing a stochastic simulation\n";
+      std::cout << "In trajectory: performing a stochastic simulation\n";
       mStochSolver = new CStochSolver(mMethod);
-      cout << "Initializing the solver\n";
+      std::cout << "Initializing the solver\n";
       mStochSolver->initialize(mModel, mStartTime);
       break;
 
     case STOCH_NEXTREACTION:
       // we're doing a stochastic simulation
-      cout << "In trajectory: performing a stochastic simulation (next reaction)\n";
+      std::cout << "In trajectory: performing a stochastic simulation (next reaction)\n";
       mStochSolver = new CStochSolver(mMethod);
-      cout << "Initializing the solver\n";
+      std::cout << "Initializing the solver\n";
       mStochSolver->initialize(mModel, mStartTime);
       break;
 
@@ -158,9 +156,9 @@ void CTrajectory::setModel(CModel * aModel)
 }
 
 CModel * CTrajectory::getModel() const
-  {
-    return mModel;
-  }
+{
+  return mModel;
+}
 
 void CTrajectory::setPoints(const C_INT32 anInt)
 {
@@ -168,9 +166,9 @@ void CTrajectory::setPoints(const C_INT32 anInt)
 }
 
 C_INT32 CTrajectory::getPoints() const
-  {
-    return mPoints;
-  }
+{
+  return mPoints;
+}
 
 void CTrajectory::setStartingPoint(const C_FLOAT64 & time,
                                    const C_FLOAT64 * particleNumbers)
@@ -203,14 +201,14 @@ void CTrajectory::setEndTime(const C_FLOAT64 aDouble)
 }
 
 const C_FLOAT64 & CTrajectory::getEndTime() const
-  {
-    return mEndTime;
-  }
+{
+  return mEndTime;
+}
 
 const C_FLOAT64 & CTrajectory::getTime() const
-  {
-    return mTime;
-  }
+{
+  return mTime;
+}
 
 void CTrajectory::setMethod(const CTrajectory::MethodType & anInt)
 {
@@ -218,9 +216,9 @@ void CTrajectory::setMethod(const CTrajectory::MethodType & anInt)
 }
 
 const CTrajectory::MethodType & CTrajectory::getMethod() const
-  {
-    return mMethod;
-  }
+{
+  return mMethod;
+}
 
 void dummy_out(CModel* model, double time)
 {
@@ -229,16 +227,16 @@ void dummy_out(CModel* model, double time)
   if (100 == (ccc++))
     {
       ccc = 0;
-      cout << " " << time << " ";
+      std::cout << " " << time << " ";
 
       for (int j = 0; j < 5; j++)
-        cout << model->getMetabolites()[j]->getNumberInt() << "  ";
+        std::cout << model->getMetabolites()[j]->getNumberInt() << "  ";
 
-      cout << endl;
+      std::cout << std::endl;
     }
 }
 
-void CTrajectory::process(ofstream &fout)
+void CTrajectory::process(std::ofstream &fout)
 {
   mModel->setNumbersDblAndUpdateConcentrations(mY);
 

@@ -3,9 +3,6 @@
 #ifndef COPASI_CMatrix
 #define COPASI_CMatrix
 
-using std::ostream;
-using std::endl;
-
 /**
  * Template class CMatrix < class CType >
  * This template class is a simple matrix class  allowing standard
@@ -187,9 +184,9 @@ class CMatrix
      * @param const CMatrix< CType > & A
      * @return ostream & os
      */
-    friend ostream &operator<<(ostream &os, const CMatrix< CType > & A)
+    friend std::ostream &operator<<(std::ostream &os, const CMatrix< CType > & A)
     {
-      os << "Matrix(" << A.mRows << "x" << A.mCols << ")" << endl;
+      os << "Matrix(" << A.mRows << "x" << A.mCols << ")" << std::endl;
 
       unsigned C_INT32 i, j;
       CType * tmp = A.mArray;
@@ -198,7 +195,7 @@ class CMatrix
         {
           for (j = 0; j < A.mCols; j++)
             cout << "  " << * (tmp++);
-          cout << endl;
+          cout << std::endl;
         }
       return os;
     }
@@ -320,18 +317,18 @@ class CUpperTriangularView
        * @param const CUpperTriangularView< Matrix > & A
        * @return ostream & os
        */
-      friend ostream &operator<<(ostream &os,
-                                 const CUpperTriangularView< Matrix > & A)
+      friend std::ostream &operator<<(std::ostream &os,
+                                      const CUpperTriangularView< Matrix > & A)
         {
           unsigned C_INT32 i, imax = A.numRows();
           unsigned C_INT32 j, jmax = A.numCols();
-          os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+          os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
           for (i = 0; i < imax; i++)
             {
               for (j = 0; j < jmax; j++)
                 cout << "  " << A(i, j);
-              cout << endl;
+              cout << std::endl;
             }
           return os;
         }
@@ -388,18 +385,18 @@ class CLowerTriangularView
        * @param const CLowerTriangularView< Matrix > & A
        * @return ostream & os
        */
-      friend ostream &operator<<(ostream &os,
-                                 const CLowerTriangularView< Matrix > & A)
+      friend std::ostream &operator<<(std::ostream &os,
+                                      const CLowerTriangularView< Matrix > & A)
         {
           unsigned C_INT32 i, imax = A.numRows();
           unsigned C_INT32 j, jmax = A.numCols();
-          os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+          os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
           for (i = 0; i < imax; i++)
             {
               for (j = 0; j < jmax; j++)
                 cout << "  " << A(i, j);
-              cout << endl;
+              cout << std::endl;
             }
           return os;
         }
@@ -462,18 +459,18 @@ class CUnitUpperTriangularView
          * @param const CUnitUpperTriangularView< Matrix > & A
          * @return ostream & os
          */
-        friend ostream &operator<<(ostream &os,
-                                   const CUnitUpperTriangularView< Matrix > & A)
+        friend std::ostream &operator<<(std::ostream &os,
+                                        const CUnitUpperTriangularView< Matrix > & A)
           {
             unsigned C_INT32 i, imax = A.numRows();
             unsigned C_INT32 j, jmax = A.numCols();
-            os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+            os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
             for (i = 0; i < imax; i++)
               {
                 for (j = 0; j < jmax; j++)
                   cout << "  " << A(i, j);
-                cout << endl;
+                cout << std::endl;
               }
             return os;
           }
@@ -536,18 +533,18 @@ class CUnitLowerTriangularView
          * @param const CUnitLowerTriangularView< Matrix > & A
          * @return ostream & os
          */
-        friend ostream &operator<<(ostream &os,
-                                   const CUnitLowerTriangularView< Matrix > & A)
+        friend std::ostream &operator<<(std::ostream &os,
+                                        const CUnitLowerTriangularView< Matrix > & A)
           {
             unsigned C_INT32 i, imax = A.numRows();
             unsigned C_INT32 j, jmax = A.numCols();
-            os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+            os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
             for (i = 0; i < imax; i++)
               {
                 for (j = 0; j < jmax; j++)
                   cout << "  " << A(i, j);
-                cout << endl;
+                cout << std::endl;
               }
             return os;
           }
@@ -595,18 +592,18 @@ class CTransposeView
      * @param const CTransposeView< Matrix > & A
      * @return ostream & os
      */
-    friend ostream &operator<<(ostream &os,
-                               const CTransposeView< Matrix > & A)
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const CTransposeView< Matrix > & A)
     {
       unsigned C_INT32 i, imax = A.numRows();
       unsigned C_INT32 j, jmax = A.numCols();
-      os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+      os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
       for (i = 0; i < imax; i++)
         {
           for (j = 0; j < jmax; j++)
             cout << "  " << A(i, j);
-          cout << endl;
+          cout << std::endl;
         }
       return os;
     }

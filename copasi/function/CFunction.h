@@ -47,12 +47,12 @@ class CFunction
     /**
      *  The name of the function
      */
-    string mName;
+    std::string mName;
 
     /**
      *  The mathematical formula
      */
-    string mDescription;
+    std::string mDescription;
 
     /**
      *  Whether the function is reversible
@@ -126,31 +126,31 @@ class CFunction
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      */
-    virtual string getSBMLString(const CCallParameters & callParameterNames, const string &r);
+    virtual std::string getSBMLString(const CCallParameters & callParameterNames, const std::string &r);
 
     /**
      *  Retrieves the name of the function
      *  @return "const string &" name
      */
-    virtual const string& getName() const;
+    virtual const std::string& getName() const;
 
     /**
      *  Set the name of the function
      *  @param "const string &" name
      */
-    virtual void setName(const string& name);
+    virtual void setName(const std::string& name);
 
     /**
      *  Retrieves the description of the function
      *  @return "const string &" description
      */
-    virtual const string& getDescription() const;
+    virtual const std::string& getDescription() const;
 
     /**
      *  Set the description of the function
      *  @param "const string &" description
      */
-    virtual void setDescription(const string& description);
+    virtual void setDescription(const std::string& description);
 
     /**
      *  Retrieves the type of the function
@@ -189,7 +189,7 @@ class CFunction
      *  @param "const string &" name
      *  @return "const unsigned C_INT32" index
      */
-    virtual unsigned C_INT32 getParameterPosition(const string & name);
+    virtual unsigned C_INT32 getParameterPosition(const std::string & name);
 
     /**
      *  Calculates the value of the function
@@ -204,7 +204,7 @@ class CFunction
      *  @param "C_INT32" low lower cardinality
      *  @param "C_INT32" high maximum cardinality
      */
-    virtual void addUsage(const string& usage, C_INT32 low, C_INT32 high);
+    virtual void addUsage(const std::string& usage, C_INT32 low, C_INT32 high);
 
     /**
      *  Adds the description of one parameter 
@@ -212,7 +212,8 @@ class CFunction
     *  @param "CFunctionParameter::DataType &" type type of parameter (usually FLOAT64)
     *  @param "const string &" usage usage for this paramter (SUBSTRATE, PRODUCT, MODIFIER, PARAMETER)
      */
-    virtual void addParameter(const string & name, const CFunctionParameter::DataType & type,
-                              const string & usage);
+    virtual void addParameter(const std::string & name,
+                              const CFunctionParameter::DataType & type,
+                              const std::string & usage);
   };
 #endif // COPASI_CFunction

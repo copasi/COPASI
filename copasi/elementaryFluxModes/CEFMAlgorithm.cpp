@@ -26,9 +26,9 @@ CEFMAlgorithm::~CEFMAlgorithm()
   pdelete(mNextTableau);
 }
 
-bool CEFMAlgorithm::calculate(const vector < vector < C_FLOAT64 > > & stoi,
+bool CEFMAlgorithm::calculate(const std::vector < std::vector < C_FLOAT64 > > & stoi,
                               const unsigned C_INT32 &reversibleNumber,
-                              vector < CFluxMode > & fluxModes)
+                              std::vector < CFluxMode > & fluxModes)
 {
   bool Success = TRUE;
   unsigned C_INT32 Step, MaxSteps = stoi[0].size();
@@ -52,8 +52,8 @@ bool CEFMAlgorithm::calculate(const vector < vector < C_FLOAT64 > > & stoi,
 
 void CEFMAlgorithm::calculateNextTableau()
 {
-  list < const CTableauLine * >::iterator a;
-  list < const CTableauLine * >::iterator b;
+  std::list< const CTableauLine * >::iterator a;
+  std::list< const CTableauLine * >::iterator b;
   C_FLOAT64 ma, mb;
 
   mNextTableau = new CTableauMatrix();
@@ -128,12 +128,12 @@ void CEFMAlgorithm::calculateNextTableau()
   mNextTableau = NULL;
 }
 
-void CEFMAlgorithm::buildFluxModes(vector < CFluxMode > & fluxModes)
+void CEFMAlgorithm::buildFluxModes(std::vector < CFluxMode > & fluxModes)
 {
   fluxModes.clear();
 
-  list < const CTableauLine * >::iterator a = mCurrentTableau->getFirst();
-  list < const CTableauLine * >::iterator end = mCurrentTableau->getEnd();
+  std::list< const CTableauLine * >::iterator a = mCurrentTableau->getFirst();
+  std::list< const CTableauLine * >::iterator end = mCurrentTableau->getEnd();
 
   while (a != end)
     {

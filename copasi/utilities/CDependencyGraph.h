@@ -5,11 +5,6 @@
 #include <vector>
 #include <set>
 
-using std::vector;
-using std::ostream;
-using std::endl;
-using std::set;
-
 /**
  * CDependencyGraphNode describes a node in the dependency graph.
  */
@@ -45,19 +40,19 @@ class CDependencyGraphNode
      * @return A vector of the dependents.
      */
 
-    const set <C_INT32> &getDependents();
+    const std::set <C_INT32> &getDependents();
 
     /**
      * insert operator
      */
-    friend ostream & operator<<(ostream &os, const CDependencyGraphNode & d)
+    friend std::ostream & operator<<(std::ostream &os, const CDependencyGraphNode & d)
     {
       unsigned int i;
 
       for (i = 0; i < d.mDependents.size(); i++)
         // os << d.mDependents[i] << "  ";
 
-        os << endl;
+        os << std::endl;
 
       return os;
     }
@@ -68,7 +63,7 @@ class CDependencyGraphNode
      * specified by the remote node to which it connects.
      */
 
-    set <C_INT32> mDependents;
+    std::set <C_INT32> mDependents;
   };
 
 /**
@@ -106,25 +101,25 @@ class CDependencyGraph
      * @param node The number of the node to access.
      * @return A vector of node numbers.
      */
-    const set <C_INT32> &getDependents(C_INT32 node);
+    const std::set <C_INT32> &getDependents(C_INT32 node);
 
   private:
     /**
      * A vector containing the nodes in the graph
      */
-    vector<CDependencyGraphNode> mNodes;
+    std::vector<CDependencyGraphNode> mNodes;
 
     /**
      * insert operator
      */
-    friend ostream & operator<<(ostream &os, const CDependencyGraph & d)
+    friend std::ostream & operator<<(std::ostream &os, const CDependencyGraph & d)
     {
       unsigned int i;
 
       for (i = 0; i < d.mNodes.size(); i++)
         os << d.mNodes[i];
 
-      os << endl;
+      os << std::endl;
 
       return os;
     }

@@ -13,8 +13,6 @@
 #include "copasi.h"
 #include "COptAlgorithmParameter.h"
 
-using namespace std;
-
 //Default constructor
 COptAlgorithmParameter::COptAlgorithmParameter()
 {
@@ -24,7 +22,7 @@ COptAlgorithmParameter::COptAlgorithmParameter()
 
 // Destructor
 COptAlgorithmParameter::~COptAlgorithmParameter()
-{ }
+{}
 
 // copy constructor
 COptAlgorithmParameter::COptAlgorithmParameter(const COptAlgorithmParameter& source)
@@ -47,14 +45,14 @@ COptAlgorithmParameter & COptAlgorithmParameter::operator = (const COptAlgorithm
 
 //set name
 //param: aName a string to be set as mName
-void COptAlgorithmParameter:: setName(string aName)
+void COptAlgorithmParameter:: setName(std::string aName)
 {
   mName = aName;
 }
 
 //get the private member mName
 //return mName
-string COptAlgorithmParameter::getName()
+std::string COptAlgorithmParameter::getName()
 {
   return mName;
 }

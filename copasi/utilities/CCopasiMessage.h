@@ -7,8 +7,8 @@
 #define COPASI_CCopasiMessage
 
 #include <string>
-using std::string;
-typedef struct MESSAGES {unsigned C_INT32 No; const char * Text; }
+
+typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;}
 
 Message;
 
@@ -26,7 +26,7 @@ Message;
 /**
  *  This throws an exception with information where the error occured.
  */
-#define fatalError() {CCopasiMessage(CCopasiMessage::ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__); }
+#define fatalError() {CCopasiMessage(CCopasiMessage::ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
 
 class CCopasiMessage
   {
@@ -45,7 +45,7 @@ class CCopasiMessage
     /**
      *  Message text.
      */
-    string mText;
+    std::string mText;
 
     /**
      *  Message type.
@@ -98,7 +98,7 @@ class CCopasiMessage
      *  Retrieves the text of the message.
      *  @return "const string &" mMessage
      */
-    const string & getText() const;
+    const std::string & getText() const;
 
     /**
      *  Retrieves thetype of the message.

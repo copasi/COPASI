@@ -14,14 +14,13 @@
 
 #include <string>
 
-using std::string;
 //
 class COptAlgorithmParameter
   {
     //data members
   private:
 
-    string mName;
+    std::string mName;
     double mValue;
 
     //implementation
@@ -54,13 +53,13 @@ class COptAlgorithmParameter
      * set name
      * @param aName a string to be set as mName
      */
-    void setName(string aName);
+    void setName(std::string aName);
 
     /**
      * get the private member mName
      * @return mName
      */
-    string getName();
+    std::string getName();
 
     /**
      * set the value

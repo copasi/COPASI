@@ -4,8 +4,6 @@
 #include "CGlobals.h"
 #include "utilities.h"
 
-using namespace std;
-
 CGlobals::CGlobals():
     DefaultConc(0.0),
     DefaultVolume(1.0)
@@ -21,7 +19,7 @@ CGlobals::CGlobals():
 
   catch (CCopasiException Exception)
     {
-      cout << Exception.getMessage().getText() << endl;
+      std::cout << Exception.getMessage().getText() << std::endl;
     }
 }
 

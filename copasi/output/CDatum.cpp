@@ -37,7 +37,7 @@ CDatum::CDatum()
  *  @param type: type of the object (e.g. C_INT32).
  *  @param object: the name of this object 
  */
-CDatum::CDatum(const string& title, void* value, C_INT32 type, const string& object)
+CDatum::CDatum(const std::string& title, void* value, C_INT32 type, const std::string& object)
 {
   mTitle = title;
   mpValue = value;
@@ -66,16 +66,16 @@ CDatum& CDatum::operator=(const CDatum &source)
  *  Returns a string with the title of this object.
  *  @return mTitle
  */
-string CDatum::getTitle() const
-  {
-    return mTitle;
-  }
+std::string CDatum::getTitle() const
+{
+  return mTitle;
+}
 
 /**
  *  Sets the title of this object
  *  @param title constant reference to a string.
  */
-void CDatum::setTitle(const string& title)
+void CDatum::setTitle(const std::string& title)
 {
   mTitle = title;
 }
@@ -85,9 +85,9 @@ void CDatum::setTitle(const string& title)
  *  @return *mpValue
  */
 const void* CDatum::getValue() const
-  {
-    return mpValue;
-  }
+{
+  return mpValue;
+}
 
 /**
  *  Sets the value of mpValue with a pointer to a memory location that has 
@@ -104,9 +104,9 @@ void CDatum::setValue(void* value)
  *  @return mType
  */
 C_INT32 CDatum::getType() const
-  {
-    return mType;
-  }
+{
+  return mType;
+}
 
 /**
  *  Sets the type of this object
@@ -121,16 +121,16 @@ void CDatum::setType(const C_INT32 type)
  *  Returns a string with the name of this object.
  *  @return mObject
  */
-string CDatum::getObject() const
-  {
-    return mObject;
-  }
+std::string CDatum::getObject() const
+{
+  return mObject;
+}
 
 /**
  *  Sets the name of this object
  *  @param object constant reference to a string specifing the type of this object.
  */
-void CDatum::setObject(const string& object)
+void CDatum::setObject(const std::string& object)
 {
   mObject = object;
 }
@@ -146,7 +146,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail;
   C_INT16 Type;
-  string IStr, JStr;
+  std::string IStr, JStr;
 
   Fail = configbuffer.getVariable("Title", "string", &mTitle);
   if (Fail)
@@ -160,7 +160,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
   // some types need more input... (mI or mJ)
   switch (Type)
     {
-    case D_UNDEF:    // Fall through as all have no mI and no mJ
+    case D_UNDEF:     // Fall through as all have no mI and no mJ
     case D_T:
     case D_RT:
     case D_INTS:
@@ -170,7 +170,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
     case D_RTOL:
     case D_ATOL:
     case D_SSRES:
-    case D_UFUNC:  // D_UFUNC has mI
+    case D_UFUNC:   // D_UFUNC has mI
     case D_DERIV:
     case D_ENDT:
     case D_POINT:
@@ -185,7 +185,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
     case D_THIER:
     case D_STIFF:
       break;
-    case D_ICONC:    // Fall through as all have mI but no mJ
+    case D_ICONC:     // Fall through as all have mI but no mJ
     case D_SCONC:
     case D_TCONC:
     case D_SFLUX:
@@ -199,19 +199,19 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
       if (Fail)
         return Fail;
       break;
-    case D_KIN:      // Fall through as all have mI and mJ
+    case D_KIN:       // Fall through as all have mI and mJ
     case D_ELAST:
     case D_CCC:
     case D_FCC:
     case D_EIG:
-      Fail = configbuffer.getVariable("I", (string) "string",
+      Fail = configbuffer.getVariable("I", (std::string) "string",
                                       (void *) & IStr);
 
       if (Fail)
         return Fail;
 
-      Fail = configbuffer.getVariable((string) "J",
-                                      (string) "string",
+      Fail = configbuffer.getVariable((std::string) "J",
+                                      (std::string) "string",
                                       (void *) & JStr);
 
       if (Fail)
@@ -240,7 +240,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
   C_INT32 Type = 0;
-  string IStr, JStr;
+  std::string IStr, JStr;
 
   // Output Title
   if ((Fail = configbuffer.setVariable("Title", "string", &mTitle)))
@@ -255,7 +255,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
   // some types need more output... (mI or mJ)
   switch (Type)
     {
-    case D_UNDEF:    // Fall through as all have no mI and no mJ
+    case D_UNDEF:     // Fall through as all have no mI and no mJ
     case D_T:
     case D_RT:
     case D_INTS:
@@ -265,7 +265,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
     case D_RTOL:
     case D_ATOL:
     case D_SSRES:
-    case D_UFUNC:  // D_UFUNC has mI
+    case D_UFUNC:   // D_UFUNC has mI
     case D_DERIV:
     case D_ENDT:
     case D_POINT:
@@ -280,7 +280,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
     case D_THIER:
     case D_STIFF:
       break;
-    case D_ICONC:    // Fall through as all have mI but no mJ
+    case D_ICONC:     // Fall through as all have mI but no mJ
     case D_SCONC:
     case D_TCONC:
     case D_SFLUX:
@@ -295,7 +295,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
       if (Fail)
         return Fail;
       break;
-    case D_KIN:      // Fall through as all have mI and mJ
+    case D_KIN:       // Fall through as all have mI and mJ
     case D_ELAST:
     case D_CCC:
     case D_FCC:
@@ -326,9 +326,9 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
  *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
  */
 
-void CDatum::createObject(const string& IStr, const string& JStr, C_INT32 Type)
+void CDatum::createObject(const std::string& IStr, const std::string& JStr, C_INT32 Type)
 {
-  string member;
+  std::string member;
 
   // Create CModel part
   mObject.append("CModel = \"");
@@ -338,7 +338,7 @@ void CDatum::createObject(const string& IStr, const string& JStr, C_INT32 Type)
   // Create CMetab part
   switch (Type)
     {
-    case D_UNDEF:    // Fall through as all have no mI and no mJ
+    case D_UNDEF:     // Fall through as all have no mI and no mJ
     case D_T:
     case D_RT:
     case D_INTS:
@@ -365,7 +365,7 @@ void CDatum::createObject(const string& IStr, const string& JStr, C_INT32 Type)
       mObject.append("CMetab = \"");
       mObject.append("\"");
       break;
-    case D_ICONC:    // Fall through as all have mI but no mJ
+    case D_ICONC:     // Fall through as all have mI but no mJ
     case D_SCONC:
     case D_TCONC:
     case D_SFLUX:
@@ -377,7 +377,7 @@ void CDatum::createObject(const string& IStr, const string& JStr, C_INT32 Type)
     case D_EIGVI:
       mObject.append("CMetab = \"" + IStr + "\"");
       break;
-    case D_KIN:      // Fall through as all have mI and mJ
+    case D_KIN:       // Fall through as all have mI and mJ
     case D_ELAST:
     case D_CCC:
     case D_FCC:
@@ -408,9 +408,9 @@ void CDatum::createObject(const string& IStr, const string& JStr, C_INT32 Type)
  *  Transfers the Type to the associated member data in each class
  *  @Type object constant reference to a type of the datum, for example,D_TCONC
  */
-string CDatum::transferType(C_INT32 Type)
+std::string CDatum::transferType(C_INT32 Type)
 {
-  string cMemb;
+  std::string cMemb;
 
   // find the member for different associated type
   // find the member for different associated type
@@ -446,7 +446,7 @@ string CDatum::transferType(C_INT32 Type)
 
     case D_EIGVR:
     case D_EIGVI:
-    case D_EIG:   // These types have no assocaited member data
+    case D_EIG:    // These types have no assocaited member data
       break;
     case D_ICONC:
       cMemb = "mIConc";
@@ -472,16 +472,16 @@ string CDatum::transferType(C_INT32 Type)
     case D_TT:
       cMemb = "mTT";
       break;
-    case D_KIN:   //???
+    case D_KIN:    //???
       cMemb = "mParameters";
       break;
-    case D_ELAST:  //???
+    case D_ELAST:   //???
       cMemb = "mIColmIRow";
       break;
-    case D_CCC:   //???
+    case D_CCC:    //???
       cMemb = "mIRowmICol";
       break;
-    case D_FCC:   //???
+    case D_FCC:    //???
       cMemb = "mIColmICol";
       break;
     }
@@ -493,13 +493,13 @@ string CDatum::transferType(C_INT32 Type)
  *  Transfers the associated member data to the Type to  in each class
  *  @Type object constant reference to a type of the datum, for example,D_TCONC
  */
-C_INT32 CDatum::getObjectType(string Object)
+C_INT32 CDatum::getObjectType(std::string Object)
 {
   C_INT32 Type = 0;
   C_INT16 Posi = 0;
   C_INT16 StrNum = 0;
-  string TypeStr;
-  string CMemb = "CMember = \"";
+  std::string TypeStr;
+  std::string CMemb = "CMember = \"";
 
   Posi = Object.find(CMemb, 0);
   Posi += CMemb.length();
@@ -542,14 +542,14 @@ C_INT32 CDatum::getObjectType(string Object)
  *  Get the object I string part
  *  @object reference to CDatum object
  */
-string CDatum::getObjectIStr(string object, C_INT16 HasJStr)
+std::string CDatum::getObjectIStr(std::string object, C_INT16 HasJStr)
 {
-  string Metab;
+  std::string Metab;
   C_INT16 Posi = 0;
   C_INT16 Posi1 = 0;
   C_INT16 StrNum = 0;
-  string IStr;
-  string CMetab = "CMetab = \"";
+  std::string IStr;
+  std::string CMetab = "CMetab = \"";
 
   Posi = object.find(CMetab, 0) + CMetab.length() - 1;
   Posi1 = object.find("\", CMember =", 0);
@@ -572,14 +572,14 @@ string CDatum::getObjectIStr(string object, C_INT16 HasJStr)
  *  Get the object J string part
  *  @object reference to CDatum object
  */
-string CDatum::getObjectJStr(string object)
+std::string CDatum::getObjectJStr(std::string object)
 {
-  string Metab;
+  std::string Metab;
   C_INT16 Posi = 0;
   C_INT16 Posi1 = 0;
   C_INT16 StrNum = 0;
-  string JStr;
-  string CMetab = "CMetab = \"";
+  std::string JStr;
+  std::string CMetab = "CMetab = \"";
 
   Posi = object.find(CMetab, 0) + CMetab.length() - 1;
   Posi1 = object.find("\", CMember =", 0);
@@ -600,7 +600,7 @@ string CDatum::getObjectJStr(string object)
 void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
 {
   C_INT32 Type = 0;
-  string IStr, JStr;
+  std::string IStr, JStr;
   int Index, Index1;
   CUDFunction *pFunct;
 
@@ -609,7 +609,7 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
   switch (Type)
     {
 #if 0
-    case D_UNDEF:    // Fall through as all have no mI and no mJ
+    case D_UNDEF:     // Fall through as all have no mI and no mJ
     case D_RT:
     case D_INTS:
     case D_FEVAL:
@@ -619,12 +619,12 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
     case D_ATOL:
 #endif
 
-    case D_SSRES:  // steady-state resolution
+    case D_SSRES:   // steady-state resolution
       //   mpValue = soln->getSSResAddr();
       fatalError();
       mType = CFLOAT64;
       break;
-    case D_UFUNC:  // user functions
+    case D_UFUNC:   // user functions
       Index = FindUDFunct(mTitle);
       if (Index == -1)
         break;
@@ -633,7 +633,7 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
       mpValue = pFunct->getValueAddr();
       mType = CFLOAT64;
       break;
-    case D_DERIV:  // Derive Factor
+    case D_DERIV:   // Derive Factor
       //   mpValue = soln->getDerivFactorAddr();
       fatalError();
       mType = CFLOAT64;
@@ -644,51 +644,51 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
     case D_POINT:
 #endif
 
-    case D_EIGMR:  // max real eigenvalue component
+    case D_EIGMR:   // max real eigenvalue component
       mpValue = &soln->getEigenValues()->getEigen_maxrealpart();
       mType = CFLOAT64;
       break;
-    case D_EIGMI:  // max absolute imaginary eigenvalue component
+    case D_EIGMI:   // max absolute imaginary eigenvalue component
       mpValue = &soln->getEigenValues()->getEigen_maximagpart();
       mType = CFLOAT64;
       break;
-    case D_EIGPR:   // number of eigenvalues w/ positive real parts
+    case D_EIGPR:    // number of eigenvalues w/ positive real parts
       mpValue = &soln->getEigenValues()->getEigen_nposreal();
       mType = CFLOAT64;
       break;
-    case D_EIGNR:  // number of eigenvalues w/ negative real parts
+    case D_EIGNR:   // number of eigenvalues w/ negative real parts
       mpValue = &soln->getEigenValues()->getEigen_nnegreal();
       mType = CFLOAT64;
       break;
-    case D_EIGR:   // number of real eigenvalues
+    case D_EIGR:    // number of real eigenvalues
       mpValue = &soln->getEigenValues()->getEigen_nreal();
       mType = CFLOAT64;
       break;
-    case D_EIGI:  // number of imaginary eigenvalues
+    case D_EIGI:   // number of imaginary eigenvalues
       mpValue = &soln->getEigenValues()->getEigen_nimag();
       mType = CFLOAT64;
       break;
-    case D_EIGC:  // number of complex eigenvalues
+    case D_EIGC:   // number of complex eigenvalues
       mpValue = &soln->getEigenValues()->getEigen_ncplxconj();
       mType = CFLOAT64;
       break;
-    case D_EIGZ:  // number of zero eigenvalues
+    case D_EIGZ:   // number of zero eigenvalues
       mpValue = &soln->getEigenValues()->getEigen_nzero();
       mType = CFLOAT64;
       break;
-    case D_THIER:  // time hierarchy
+    case D_THIER:   // time hierarchy
       mpValue = &soln->getEigenValues()->getEigen_hierarchy();
       mType = CFLOAT64;
       break;
-    case D_STIFF:  // stiffness
+    case D_STIFF:   // stiffness
       mpValue = &soln->getEigenValues()->getEigen_stiffness();
       mType = CFLOAT64;
       break;
-    case D_T:  // time
+    case D_T:   // time
       mpValue = &state->getTime();
       mType = CFLOAT64;
       break;
-    case D_ICONC:    // Fall through as all have mI but no mJ
+    case D_ICONC:     // Fall through as all have mI but no mJ
       IStr = getObjectIStr(mObject, 0);
       Index = Model->findMetab(IStr);
       if (Index == -1)
@@ -747,7 +747,7 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
       break;
 #endif
 
-    case D_KIN:      // Fall through as all have mI and mJ
+    case D_KIN:       // Fall through as all have mI and mJ
       IStr = getObjectIStr(mObject, 1);
       JStr = getObjectJStr(mObject);
       Index = Model->findStep(IStr);
@@ -804,7 +804,7 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
 /**
  * Returns the index of a user defined function
  */
-int CDatum::FindUDFunct(string title)
+int CDatum::FindUDFunct(std::string title)
 {
   int i;
 

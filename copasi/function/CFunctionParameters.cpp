@@ -55,58 +55,54 @@ void CFunctionParameters::save(CWriteConfig & configBuffer)
   mUsageRanges.save(configBuffer);
 }
 
-void CFunctionParameters::add
-  (const CFunctionParameter & parameter)
-  {
-    mParameters.add(parameter);
-    updateUsageRanges();
-  }
+void CFunctionParameters::add(const CFunctionParameter & parameter)
+{
+  mParameters.add(parameter);
+  updateUsageRanges();
+}
 
-void CFunctionParameters::add
-  (CFunctionParameter * parameter)
-  {
-    mParameters.add(parameter);
-    updateUsageRanges();
-  }
+void CFunctionParameters::add(CFunctionParameter * parameter)
+{
+  mParameters.add(parameter);
+  updateUsageRanges();
+}
 
-void CFunctionParameters::add
-  (const string & name,
-   const CFunctionParameter::DataType & type,
-   const string & usage)
-  {
-    CFunctionParameter *parameter
-    = new CFunctionParameter(name, type, usage);
-    mParameters.add(parameter);
-    updateUsageRanges();
-  }
+void CFunctionParameters::add(const std::string & name,
+                              const CFunctionParameter::DataType & type,
+                              const std::string & usage)
+{
+  CFunctionParameter *parameter
+  = new CFunctionParameter(name, type, usage);
+  mParameters.add(parameter);
+  updateUsageRanges();
+}
 
-void CFunctionParameters::remove
-  (const string & name)
-  {
-    mParameters.remove(name);
-    updateUsageRanges();
-  }
+void CFunctionParameters::remove(const std::string & name)
+{
+  mParameters.remove(name);
+  updateUsageRanges();
+}
 
 CFunctionParameter * CFunctionParameters::operator[](unsigned C_INT32 index)
-{return mParameters[index]; }
+{return mParameters[index];}
 
 /*
 const CFunctionParameter * & 
 CFunctionParameters::operator[](unsigned C_INT32 index) const
-{return mParameters[index]; }
+{return mParameters[index];}
  */
 
-CFunctionParameter * CFunctionParameters::operator[](const string &name)
+CFunctionParameter * CFunctionParameters::operator[](const std::string &name)
 {
   return mParameters[name];
 }
-unsigned C_INT32 CFunctionParameters::size() const { return mParameters.size(); }
+unsigned C_INT32 CFunctionParameters::size() const {return mParameters.size();}
 
 CCopasiVectorNS < CUsageRange > & CFunctionParameters::getUsageRanges()
-{ return mUsageRanges; }
+{return mUsageRanges;}
 
 CFunctionParameter &
-CFunctionParameters::getParameterByUsage(const string & usage,
+CFunctionParameters::getParameterByUsage(const std::string & usage,
     unsigned C_INT32 & pos)
 {
   unsigned C_INT32 i, imax = mParameters.size();
@@ -132,7 +128,7 @@ void CFunctionParameters::updateUsageRanges()
   CUsageRange * pUsageRange = NULL;
   CUsageRange UsageRange;
 
-  string Usage;
+  std::string Usage;
   CFunctionParameter::DataType Type;
 
   mUsageRanges.cleanup();

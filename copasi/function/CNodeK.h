@@ -81,7 +81,7 @@ class CNodeK
     /**
      *  The name of the node for type N_IDENTIFIER
      */
-    string mName;
+    std::string mName;
 
     /**
      *  The index of the node for type N_IDENTIFIER
@@ -101,7 +101,7 @@ class CNodeK
     /**
      *  The explicit function string 
      */
-    string mExplicitFunction;
+    std::string mExplicitFunction;
 
     // Operations
   public:
@@ -127,7 +127,7 @@ class CNodeK
      * Constructor for identifier
      * @param "const string" &name
      */
-    CNodeK(const string & name);
+    CNodeK(const std::string & name);
 
     /**
      * Constructor for a constant
@@ -177,7 +177,7 @@ class CNodeK
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      *  @return string
      */
-    string getExplicitFunctionString(const CCallParameters & callParameterNames, const string &r);
+    std::string getExplicitFunctionString(const CCallParameters & callParameterNames, const std::string &r);
 
     /**
      * Retrieving mType the type of a node
@@ -207,7 +207,7 @@ class CNodeK
      * Retrieving mName the name of a node
      * @return string
      */
-    string getName() const;
+    std::string getName() const;
 
     /**
      * Retrieving value of a node
@@ -261,7 +261,7 @@ class CNodeK
      * Setting mName the name of an identifier
      * @param "const string" &name
      */
-    void setName(const string & name);
+    void setName(const std::string & name);
 
     /**
      * Setting the value of a number

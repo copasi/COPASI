@@ -13,19 +13,15 @@
 #include "CCopasiMessage.h"
 
 class CReadConfig;
-
 class CWriteConfig;
 
-using std::vector;
-using std::ostream;
-
 template < class CType >
-      class CCopasiVector : protected vector < CType * >
+      class CCopasiVector : protected std::vector< CType * >
     {
     public:
-      typedef typename vector< CType * >::value_type value_type;
-      typedef typename vector< CType * >::iterator iterator;
-      typedef typename vector< CType * >::const_iterator const_iterator;
+      typedef typename std::vector< CType * >::value_type value_type;
+      typedef typename std::vector< CType * >::iterator iterator;
+      typedef typename std::vector< CType * >::const_iterator const_iterator;
 
       // Operations
 
@@ -33,7 +29,7 @@ template < class CType >
       /**
        *  Default constructor
        */
-      CCopasiVector() : vector < CType * > ()
+      CCopasiVector() : std::vector< CType * > ()
       {
         CONSTRUCTOR_TRACE;
       }
@@ -42,10 +38,10 @@ template < class CType >
        *  Copy constructor
        */
       CCopasiVector(const CCopasiVector < CType > & src) :
-          vector < CType * > (src)
+          std::vector< CType * > (src)
       {
         CONSTRUCTOR_TRACE;
-        unsigned C_INT32 i, imax = vector < CType * >::size();
+        unsigned C_INT32 i, imax = ((std::vector< CType * > *)this)->size();
         iterator Target = begin();
         const_iterator Source = src.begin();
 
@@ -63,7 +59,7 @@ template < class CType >
        */
       virtual void cleanup()
       {
-        unsigned C_INT32 i, imax = vector < CType * >::size();
+        unsigned C_INT32 i, imax = ((std::vector< CType * >*)this)->size();
         iterator Target = begin();
 
         for (i = 0; i < imax; i++, Target++)
@@ -112,7 +108,7 @@ template < class CType >
       (const unsigned C_INT32 & index)
       {
         iterator Target = begin() + index;
-        assert(index < vector < CType * >::size());
+        assert(index < ((std::vector< CType * > *)this)->size());
 
         if (*Target)
           {
@@ -129,7 +125,7 @@ template < class CType >
        */
       const value_type operator[](unsigned C_INT32 index) const
       {
-        assert(index < vector < CType * >::size());
+        assert(index < ((std::vector< CType * > *)this)->size());
         return *(begin() + index);
       }
 
@@ -138,7 +134,7 @@ template < class CType >
        */
       value_type operator[](unsigned C_INT32 index)
       {
-        assert(index < vector < CType * >::size());
+        assert(index < ((std::vector< CType * > *)this)->size());
         return *(begin() + index);
       }
 
@@ -146,7 +142,8 @@ template < class CType >
        *  Retrieves the size of the vector
        *  @return "unsigned C_INT32" size
        */
-      virtual unsigned C_INT32 size() const {return vector < CType * >::size();}
+      virtual unsigned C_INT32 size() const
+      {return ((std::vector< CType * > *)this)->size();}
 
       /**
        *  Resizes the vector
@@ -154,9 +151,9 @@ template < class CType >
        */
       virtual void resize(unsigned C_INT32 size)
       {
-        unsigned C_INT32 OldSize = vector < CType * >::size();
+        unsigned C_INT32 OldSize = ((std::vector< CType * > *)this)->size();
 
-        vector < CType * >::resize(size);
+        ((std::vector< CType * > *)this)->resize(size);
         unsigned C_INT32 i;
         iterator Target = begin() + OldSize;
 
@@ -164,9 +161,9 @@ template < class CType >
           *Target = new CType;
       }
 
-      friend ostream &operator<<(ostream &os, const CCopasiVector<CType> & d)
+      friend std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d)
       {
-        os << "   +++Vektor;  size: " << d.size() << endl;
+        os << "   +++Vektor;  size: " << d.size() << std::endl;
 
         unsigned int i;
 
@@ -174,9 +171,9 @@ template < class CType >
           os << "   " << *(d[i]);
 
         if (d.size() == 0)
-          os << "   empty" << endl;
+          os << "   empty" << std::endl;
 
-        os << "   ---Vektor" << endl;
+        os << "   ---Vektor" << std::endl;
 
         return os;
       }
@@ -188,9 +185,9 @@ template < class CType >
         : public CCopasiVector < CType >
     {
     public:
-      typedef typename vector< CType * >::value_type value_type;
-      typedef typename vector< CType * >::iterator iterator;
-      typedef typename vector< CType * >::const_iterator const_iterator;
+      typedef typename std::vector< CType * >::value_type value_type;
+      typedef typename std::vector< CType * >::iterator iterator;
+      typedef typename std::vector< CType * >::const_iterator const_iterator;
 
       // Operations
 
@@ -222,7 +219,7 @@ template < class CType >
         unsigned C_INT32 i;
 
         cleanup();
-        vector < CType * >::resize(size);
+        ((std::vector< CType * > *)this)->resize(size);
 
         iterator Target = begin();
 
@@ -266,9 +263,9 @@ template < class CType >
         : public CCopasiVector < CType >
     {
     public:
-      typedef typename vector< CType * >::value_type value_type;
-      typedef typename vector< CType * >::iterator iterator;
-      typedef typename vector< CType * >::const_iterator const_iterator;
+      typedef typename std::vector< CType * >::value_type value_type;
+      typedef typename std::vector< CType * >::iterator iterator;
+      typedef typename std::vector< CType * >::const_iterator const_iterator;
 
       // Operations
 
@@ -324,7 +321,7 @@ template < class CType >
        *
        */
       virtual void remove
-      (const string & name)
+      (const std::string & name)
       {
         unsigned C_INT32 Index = getIndex(name);
 
@@ -353,7 +350,7 @@ template < class CType >
       /**
        *
        */
-      value_type operator[](const string &name)
+      value_type operator[](const std::string &name)
       {
         C_INT32 Index = getIndex(name);
 
@@ -367,7 +364,7 @@ template < class CType >
       /**
        *
        */
-      const value_type operator[](const string &name) const
+      const value_type operator[](const std::string &name) const
       {
         C_INT32 Index = getIndex(name);
 
@@ -381,7 +378,7 @@ template < class CType >
       /**
        *
        */
-      virtual unsigned C_INT32 getIndex(const string &name) const
+      virtual unsigned C_INT32 getIndex(const std::string &name) const
         {
           unsigned C_INT32 i, imax = size();
           const_iterator Target = begin();
@@ -407,9 +404,9 @@ template < class CType >
         : public CCopasiVectorN < CType >
     {
     public:
-      typedef typename vector< CType * >::value_type value_type;
-      typedef typename vector< CType * >::iterator iterator;
-      typedef typename vector< CType * >::const_iterator const_iterator;
+      typedef typename std::vector< CType * >::value_type value_type;
+      typedef typename std::vector< CType * >::iterator iterator;
+      typedef typename std::vector< CType * >::const_iterator const_iterator;
 
       // Operations
 
@@ -441,7 +438,7 @@ template < class CType >
         unsigned C_INT32 i;
 
         cleanup();
-        vector < CType * >::resize(size);
+        ((std::vector< CType * >*)this)->resize(size);
 
         iterator Target = begin();
 
@@ -481,13 +478,13 @@ template < class CType >
       /**
        *
        */
-      value_type operator[](const string &name)
+      value_type operator[](const std::string &name)
       {return ((CCopasiVectorN <CType>*) this)->operator [](name);}
 
       /**
        *
        */
-      const value_type operator[](const string &name) const
+      const value_type operator[](const std::string &name) const
       {return ((CCopasiVectorN <CType>*) this)->operator [](name);}
 
     private:

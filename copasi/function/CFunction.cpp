@@ -117,7 +117,7 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
 {
   C_INT32 dummy, i, sizem, sizep;
   unsigned C_INT32 pos;
-  string tmpstr1, tmpstr2;
+  std::string tmpstr1, tmpstr2;
   CCopasiVectorNS < CUsageRange > tmpusage;
 
   if (mType == UserDefined)
@@ -156,31 +156,31 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   configBuffer.setVariable("Description", "string", &mDescription);
 }
 
-string CFunction::getSBMLString(const CCallParameters & C_UNUSED(callParameterNames),
-                                const string & C_UNUSED(r))
+std::string CFunction::getSBMLString(const CCallParameters & C_UNUSED(callParameterNames),
+                                     const std::string & C_UNUSED(r))
 {
   return "0";
 }
 
-void CFunction::setName(const string& name)
+void CFunction::setName(const std::string& name)
 {
   mName = name;
 }
 
-const string & CFunction::getName() const
-  {
-    return mName;
-  }
+const std::string & CFunction::getName() const
+{
+  return mName;
+}
 
-void CFunction::setDescription(const string & description)
+void CFunction::setDescription(const std::string & description)
 {
   mDescription = description;
 }
 
-const string & CFunction::getDescription() const
-  {
-    return mDescription;
-  }
+const std::string & CFunction::getDescription() const
+{
+  return mDescription;
+}
 
 void CFunction::setType(const CFunction::Type & type)
 {
@@ -188,9 +188,9 @@ void CFunction::setType(const CFunction::Type & type)
 }
 
 const CFunction::Type & CFunction::getType() const
-  {
-    return mType;
-  }
+{
+  return mType;
+}
 
 void CFunction::setReversible(const TriLogic & reversible)
 {
@@ -198,9 +198,9 @@ void CFunction::setReversible(const TriLogic & reversible)
 }
 
 const TriLogic & CFunction::isReversible() const
-  {
-    return mReversible;
-  }
+{
+  return mReversible;
+}
 
 CFunctionParameters & CFunction::getParameters()
 {
@@ -212,17 +212,17 @@ CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
   return mUsageDescriptions;
 }
 
-unsigned C_INT32 CFunction::getParameterPosition(const string & name)
+unsigned C_INT32 CFunction::getParameterPosition(const std::string & name)
 {
   return mParameters[0] - mParameters[name];
 }
 
 C_FLOAT64 CFunction::calcValue(const CCallParameters & C_UNUSED(callParameters)) const
-  {
-    return 0.0;
-  }
+{
+  return 0.0;
+}
 
-void CFunction::addUsage(const string& usage, C_INT32 low, C_INT32 high)
+void CFunction::addUsage(const std::string& usage, C_INT32 low, C_INT32 high)
 {
   CUsageRange *u;
   u = new CUsageRange();
@@ -232,8 +232,9 @@ void CFunction::addUsage(const string& usage, C_INT32 low, C_INT32 high)
   mUsageDescriptions.add(u);
 }
 
-void CFunction::addParameter(const string & name, const CFunctionParameter::DataType & type,
-                             const string & usage)
+void CFunction::addParameter(const std::string & name,
+                             const CFunctionParameter::DataType & type,
+                             const std::string & usage)
 {
   mParameters.add(name, type, usage);
 }

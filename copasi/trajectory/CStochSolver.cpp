@@ -11,8 +11,6 @@
 #include "CStochSolver.h"
 #include "CTrajectory.h"
 
-using namespace std;
-
 CStochSolver::CStochSolver()
     : mMethodType(CTrajectory::STOCH_DIRECT),
     mMethod(0)
@@ -35,7 +33,7 @@ void CStochSolver::initialize(CModel *model, C_FLOAT64 time)
     }
 
   mMethod->initMethod(time);
-  cout << "Done initializing stochastic method\n";
+  std::cout << "Done initializing stochastic method\n";
 }
 CStochSolver::~CStochSolver() {cleanup();}
 
@@ -89,7 +87,7 @@ C_INT32 CStochMethod::initMethod(C_FLOAT64 C_UNUSED(start_time))
     }
 
   setupDependencyGraphAndBalances();
-  cout << mDG;
+  std::cout << mDG;
   updatePropensities();
   return 0;
 }
@@ -98,17 +96,17 @@ C_INT32 CStochMethod::updatePropensities()
 {
   mA0Old = mA0;
   mA0 = 0;
-  //cout << "        updatePropensities: ";
+  //std::cout << "        updatePropensities: ";
 
   for (unsigned C_INT32 i = 0; i < mModel->getReactions().size(); i++)
     {
       mAmuOld[i] = mAmu[i];
       calculateAmu(i);
-      //cout << mAmu[i] << " ";
+      //std::cout << mAmu[i] << " ";
       mA0 += mAmu[i];
     }
 
-  //cout << endl;
+  //std::cout << std::endl;
   return 0;
 }
 
@@ -136,13 +134,13 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       num_ident = static_cast<C_INT32>(substrates[i]->getMultiplicity());
-      //cout << "Num ident = " << num_ident << endl;
+      //std::cout << "Num ident = " << num_ident << std::endl;
       total_substrates += num_ident;
       number = static_cast<C_INT32> (substrates[i]->getMetabolite().getNumberInt());
       lower_bound = number - num_ident;
-      //cout << "Number = " << number << "  Lower bound = " << lower_bound << endl;
+      //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
       substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
-      //cout << "Substrate factor = " << substrate_factor << endl;
+      //std::cout << "Substrate factor = " << substrate_factor << std::endl;
 
       while (number > lower_bound)
         {
@@ -178,12 +176,12 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
 
   C_FLOAT64 rate_factor = mModel->getReactions()[index]->calculate() / substrate_factor;
 
-  //cout << "Rate factor = " << rate_factor << endl;
+  //std::cout << "Rate factor = " << rate_factor << std::endl;
   amu *= rate_factor;
 
   mAmu[index] = amu;
 
-  //cout << "Index = " << index << "  Amu = " << amu << endl;
+  //std::cout << "Index = " << index << "  Amu = " << amu << std::endl;
   return 0;
 }
 
@@ -199,8 +197,8 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   //CStochBalance bal;
   C_INT32 new_num;
 
-  vector<CStochBalance> & bals = mLocalBalances[rxn];
-  vector<CStochBalance>::const_iterator bi;
+  std::vector<CStochBalance> & bals = mLocalBalances[rxn];
+  std::vector<CStochBalance>::const_iterator bi;
 
   for (bi = bals.begin(); bi != bals.end(); bi++)
     {
@@ -208,9 +206,9 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
       bi->mMetabAddr->setNumberInt(new_num);
     }
 
-  const set <C_INT32> & dep_nodes = mDG.getDependents(rxn);
+  const std::set<C_INT32> & dep_nodes = mDG.getDependents(rxn);
 
-  set <C_INT32>::const_iterator it;
+  std::set<C_INT32>::const_iterator it;
 
   for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
     {
@@ -222,7 +220,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   mA0Old = mA0;
 
   mA0 = 0;
-  mA0 = accumulate(mAmu.begin(), mAmu.end(), mA0);
+  mA0 = std::accumulate(mAmu.begin(), mAmu.end(), mA0);
 
   return 0;
 }
@@ -263,10 +261,10 @@ C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 
 void CStochMethod::setupDependencyGraphAndBalances()
 {
-  vector< set<CMetab*>* > DependsOn;
-  vector< set<CMetab*>* > Affects;
-  //    set<CMetab> *tmpdepends = 0;
-  //    set<CMetab> *tmpaffects = 0;
+  std::vector< std::set<CMetab*>* > DependsOn;
+  std::vector< std::set<CMetab*>* > Affects;
+  //    std::set<CMetab> *tmpdepends = 0;
+  //    std::set<CMetab> *tmpaffects = 0;
   C_INT32 num_reactions = mModel->getReactions().size();
   C_INT32 i, j;
   // Do for each reaction:
@@ -293,7 +291,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
           // Could also do this with set_intersection generic algorithm, but that
           // would require operator<() to be defined on the set elements.
 
-          set <CMetab*>::iterator iter = Affects[i]->begin();
+          std::set<CMetab*>::iterator iter = Affects[i]->begin();
 
           for (; iter != Affects[i]->end(); iter++)
             {
@@ -319,7 +317,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
     {
       const CCopasiVector<CChemEqElement> & bbb = mModel->getReactions()[i]->getChemEq().getBalances();
 
-      //cout << endl << i << " : ";
+      //std::cout << std::endl << i << " : ";
 
       for (j = 0; j < bbb.size(); j++)
         {
@@ -329,7 +327,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
           if ((bb.mMetabAddr->getStatus()) != METAB_FIXED)
             {
               mLocalBalances[i].push_back(bb);
-              //cout << bb.mMetabAddr->getName() << "  ";
+              //std::cout << bb.mMetabAddr->getName() << "  ";
             }
         }
     }
@@ -343,9 +341,9 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
 }
 
-set <CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
+std::set<CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
 {
-  set <CMetab*> *retset = new set <CMetab*>;
+  std::set<CMetab*> *retset = new std::set<CMetab*>;
 
   CCopasiVector<CReaction::CId2Metab> & subst = mModel->getReactions()[reaction_index]->getId2Substrates();
 
@@ -355,35 +353,35 @@ set <CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
 
   CMetab* dummy;
 
-  cout << reaction_index << " depends on ";
+  std::cout << reaction_index << " depends on ";
 
   for (i = 0; i < subst.size(); i++)
     {
       retset->insert((subst[i]->getMetabolite()));
       dummy = (subst[i]->getMetabolite());
-      cout << "  " << subst[i]->getMetaboliteName() << ":" << (int)(subst[i]->getMetabolite());
+      std::cout << "  " << subst[i]->getMetaboliteName() << ":" << (int)(subst[i]->getMetabolite());
     }
 
   for (i = 0; i < modif.size(); i++)
     {
       retset->insert((modif[i]->getMetabolite()));
       dummy = (modif[i]->getMetabolite());
-      cout << " " << modif[i]->getMetaboliteName() << ":" << (int)(modif[i]->getMetabolite());
+      std::cout << " " << modif[i]->getMetaboliteName() << ":" << (int)(modif[i]->getMetabolite());
     }
 
-  cout << endl;
+  std::cout << std::endl;
   return retset;
 }
 
-set <CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
+std::set<CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
 {
-  set <CMetab*> *retset = new set <CMetab*>;
+  std::set<CMetab*> *retset = new std::set<CMetab*>;
 
   // Get the balances  associated with the reaction at this index
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
   const CCopasiVector<CChemEqElement> & balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
 
-  cout << reaction_index << " affects ";
+  std::cout << reaction_index << " affects ";
 
   for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
@@ -391,11 +389,11 @@ set <CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
         if (balances[i]->getMetaboliteAddr()->getStatus() != METAB_FIXED)
           {
             retset->insert(balances[i]->getMetaboliteAddr());
-            cout << " " << balances[i]->getMetaboliteName() << ":" << (int)(balances[i]->getMetaboliteAddr());
+            std::cout << " " << balances[i]->getMetaboliteName() << ":" << (int)(balances[i]->getMetaboliteAddr());
           }
     }
 
-  cout << endl;
+  std::cout << std::endl;
   return retset;
 }
 
@@ -462,13 +460,13 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
 
 void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time)
 {
-  const set <C_INT32> & dep_nodes = mDG.getDependents(reaction_index);
+  const std::set<C_INT32> & dep_nodes = mDG.getDependents(reaction_index);
 
   C_FLOAT64 new_time = time + generateReactionTime(reaction_index);
 
   mPQ.updateNode(reaction_index, new_time);
 
-  set <C_INT32>::const_iterator di;
+  std::set<C_INT32>::const_iterator di;
 
   for (di = dep_nodes.begin(); di != dep_nodes.end(); di++)
     {

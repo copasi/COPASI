@@ -27,12 +27,12 @@ class CChemEq
     /**
      *  The chemical equation with multipliers
      */
-    string mChemicalEquation;
+    std::string mChemicalEquation;
 
     /**
      *  The chemical equation without multipliers
      */
-    string mChemicalEquationConverted;
+    std::string mChemicalEquationConverted;
 
     /**
      *  A vector of substrates and their multiplicity in the chemical reaction
@@ -90,20 +90,20 @@ class CChemEq
      *  @param "const string &" chemicalEquation (in any form even mixed)
     *  @return "bool" returns reversibility of reaction (TRUE if reversible)
      */
-    bool setChemicalEquation(const string & chemicalEquation);
+    bool setChemicalEquation(const std::string & chemicalEquation);
 
     /**
      *  Retrieves the chemical equation with multipliers.
      *  @return "const string &" ChemicalEquation
      */
-    const string & getChemicalEquation() const;
+    const std::string & getChemicalEquation() const;
 
     /**
      *  Retrieves the converted form of chemical equation.
      *  This does not contain any multipliers.
      *  @return "const string &" ChemicalEquationConverted
      */
-    const string & getChemicalEquationConverted() const;
+    const std::string & getChemicalEquationConverted() const;
 
     /**
      *  Retrieves the vector of substrates and their multiplicity 
@@ -139,8 +139,8 @@ class CChemEq
      *              (on output: starting position for the next parse)
      *  @return "CChemEqElement" element
      */
-    CChemEqElement extractElement(const string & input,
-                                  string::size_type & pos) const;
+    CChemEqElement extractElement(const std::string & input,
+                                  std::string::size_type & pos) const;
 
     /**
      *  Adds an element to the vector given by structure. The element is
@@ -161,7 +161,7 @@ class CChemEq
      *  @param "CChemEq::MetaboliteRole" role (default: CChemEq::PRODUCT
      */
     void setChemEqElements(CCopasiVector < CChemEqElement > & elements,
-                           const string & reaction,
+                           const std::string & reaction,
                            CChemEq::MetaboliteRole role =
                              CChemEq::PRODUCT);
 
@@ -178,7 +178,7 @@ class CChemEq
      *  This function frees a vector of CChemEqElement
      *  @param "vector < CChemEqElement * > &" elements
      */
-    void cleanupChemEqElements(vector < CChemEqElement * > & elements);
+    void cleanupChemEqElements(std::vector < CChemEqElement * > & elements);
 
     /**
      *  This function splits the chemical equation into a left and a right
@@ -186,7 +186,7 @@ class CChemEq
      *  @param "string &" right (product side)
     *  @return "bool" returns reversibility of reaction (TRUE if reversible)
      */
-    bool splitChemEq(string & left, string & right) const;
+    bool splitChemEq(std::string & left, std::string & right) const;
 
     /**
      *  Writes the chemical equation in a form with multipliers.
@@ -198,20 +198,20 @@ class CChemEq
      */
     void writeChemicalEquationConverted();
 
-    friend ostream & operator<<(ostream &os, const CChemEq & d)
+    friend std::ostream & operator<<(std::ostream &os, const CChemEq & d)
     {
-      os << "CChemEq:" << endl;
-      os << "   mChemicalEquation:          " << d.mChemicalEquation << endl;
-      os << "   mChemicalEquationConverted: " << d.mChemicalEquationConverted << endl;
+      os << "CChemEq:" << std::endl;
+      os << "   mChemicalEquation:          " << d.mChemicalEquation << std::endl;
+      os << "   mChemicalEquationConverted: " << d.mChemicalEquationConverted << std::endl;
 
-      os << "   mSubstrates:" << endl;
+      os << "   mSubstrates:" << std::endl;
       os << d.mSubstrates;
-      os << "   mProducts:" << endl;
+      os << "   mProducts:" << std::endl;
       os << d.mProducts;
-      os << "   mBalances:" << endl;
+      os << "   mBalances:" << std::endl;
       os << d.mBalances;
 
-      os << "----CChemEq" << endl;
+      os << "----CChemEq" << std::endl;
       return os;
     }
   };

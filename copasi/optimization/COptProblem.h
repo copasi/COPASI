@@ -22,8 +22,6 @@
 class CSteadyStateTask;
 class CTrajectoryTask;
 
-using std::ofstream;
-
 enum ProblemType
 {
   SteadyState,
@@ -51,12 +49,6 @@ class COptProblem
      * trajectory and steady state method
      */
     CTrajectoryTask * trajectory;
-
-    /**
-     * This is not permanant !  this will change when CSS_Solution.process(&ofstream) 
-     * changes to CSS_Solution.process().  delete this parameter when this change is comitted.
-     */
-    ofstream out;
 
     // Implementation
 

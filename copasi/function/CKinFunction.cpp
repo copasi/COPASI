@@ -16,8 +16,6 @@
 #include "FlexLexer.h"
 #include "CKinFunction.h"
 
-using std::istringstream;
-
 CKinFunction::CKinFunction() : CFunction()
 {
   CONSTRUCTOR_TRACE;
@@ -50,8 +48,8 @@ CKinFunction::CKinFunction(const CKinFunction & src) : CFunction(src)
 }
 
 #ifdef XXXX
-CKinFunction::CKinFunction(const string & name,
-                           const string & description)
+CKinFunction::CKinFunction(const std::string & name,
+                           const std::string & description)
 {
   CONSTRUCTOR_TRACE;
   setType(CFunction::UserDefined);
@@ -104,7 +102,7 @@ void CKinFunction::saveOld(CWriteConfig & configBuffer)
     mNodes[i]->saveOld(configBuffer);
 }
 
-string CKinFunction::getSBMLString(const CCallParameters & callParameterNames, const string &r)
+std::string CKinFunction::getSBMLString(const CCallParameters & callParameterNames, const std::string &r)
 {
   return mNodes[0]->getExplicitFunctionString(callParameterNames, r);
 }
@@ -120,8 +118,8 @@ void CKinFunction::compile()
 C_INT32 CKinFunction::parse()
 {
   int i = 1;
-  istringstream buffer(getDescription());
-  CKinFunctionFlexLexer Scanner((istream *) &buffer);
+  std::istringstream buffer(getDescription());
+  CKinFunctionFlexLexer Scanner((std::istream *) &buffer);
 
   // add the root node
   CNodeK * pNode = new CNodeK(N_ROOT, N_NOP);
@@ -167,7 +165,7 @@ C_INT32 CKinFunction::parse()
           mNodes.add(pNode);
           break;
 
-        case N_NOP:              // this is an error
+        case N_NOP:               // this is an error
           mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -182,9 +180,9 @@ C_INT32 CKinFunction::parse()
 }
 
 C_FLOAT64 CKinFunction::calcValue(const CCallParameters & callParameters) const
-  {
-    return mNodes[0]->getLeft().value(callParameters);
-  }
+{
+  return mNodes[0]->getLeft().value(callParameters);
+}
 
 C_INT32 CKinFunction::connectNodes()
 {
@@ -562,7 +560,7 @@ void CKinFunction::initIdentifierNodes()
   // CCopasiVectorNS < CFunctionParameter > * BaseParameters;
   // BaseParameters = &getParameters().getParameters();
 
-  string IdentifierName, ParameterName, Usage;
+  std::string IdentifierName, ParameterName, Usage;
   unsigned C_INT32 i, imax = getParameters().size();
   unsigned C_INT32 j, jmax = mNodes.size();
   C_INT32 subidx, prodidx, modfidx, constidx;

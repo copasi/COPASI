@@ -11,9 +11,9 @@
 // #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CTableauLine.h"
-CTableauLine::CTableauLine() {CONSTRUCTOR_TRACE; mFluxScore = NULL; }
+CTableauLine::CTableauLine() {CONSTRUCTOR_TRACE; mFluxScore = NULL;}
 
-CTableauLine::CTableauLine(const vector <C_FLOAT64> & reaction,
+CTableauLine::CTableauLine(const std::vector <C_FLOAT64> & reaction,
                            bool reversible,
                            const C_INT32 & reactionCounter,
                            const C_INT32 & reactionNumber)
@@ -50,57 +50,56 @@ CTableauLine::CTableauLine(const C_FLOAT64 & m1,
 
   mFluxScore = new CFluxScore(mFluxMode);
 }
-CTableauLine::~CTableauLine() {DESTRUCTOR_TRACE; pdelete(mFluxScore); }
+CTableauLine::~CTableauLine() {DESTRUCTOR_TRACE; pdelete(mFluxScore);}
 
 const CFluxScore & CTableauLine::getScore() const
-  {
-    return *mFluxScore;
-  }
+{
+  return *mFluxScore;
+}
 
 const C_FLOAT64 &
 CTableauLine::getReaction(const unsigned C_INT32 & index) const
-  {
-    return mReaction[index];
-  }
+{
+  return mReaction[index];
+}
 
-const vector < C_FLOAT64 > & CTableauLine::getFluxMode() const
-  {
-    return mFluxMode;
-  }
+const std::vector < C_FLOAT64 > & CTableauLine::getFluxMode() const
+{
+  return mFluxMode;
+}
 
 bool CTableauLine::isReversible() const
-  {
-    return mReversible;
-  }
+{
+  return mReversible;
+}
 
 void CTableauLine::truncate()
 {
-  using namespace std;
-  vector < C_FLOAT64 >::iterator i = mReaction.begin();
+  std::vector < C_FLOAT64 >::iterator i = mReaction.begin();
 
   mReaction.erase(i, i + 1);
 }
 
 #ifdef XXXX
 void CTableauLine::print(void) const
-  {
-    unsigned C_INT32 i, imax = mReaction.size();
-    unsigned C_INT32 j, jmax = mFluxMode.size();
+{
+  unsigned C_INT32 i, imax = mReaction.size();
+  unsigned C_INT32 j, jmax = mFluxMode.size();
 
-    if (isReversible())
-      cout << "reversible:  ";
-    else
-      cout << "irreversible:";
+  if (isReversible())
+  cout << "reversible:  ";
+  else
+    cout << "irreversible:";
 
     for (i = 0; i < imax; i++)
       cout << "  " << mReaction[i];
 
-    cout << "\t";
+      cout << "\t";
 
-    for (j = 0; j < jmax; j++)
-      cout << "  " << mFluxMode[j];
+      for (j = 0; j < jmax; j++)
+        cout << "  " << mFluxMode[j];
 
-    cout << endl;
-  }
+        cout << endl;
+      }
 
 #endif // XXXX

@@ -41,17 +41,17 @@ void CUsageRange::save(CWriteConfig & configBuffer)
   CRange::save(configBuffer);
 }
 
-void CUsageRange::setUsage(const string & usage)
+void CUsageRange::setUsage(const std::string & usage)
 {
   mUsage = usage;
 }
 
-const string & CUsageRange::getUsage() const
-  {
-    return mUsage;
-  }
+const std::string & CUsageRange::getUsage() const
+{
+  return mUsage;
+}
 
-const string & CUsageRange::getName() const
-  {
-    return mUsage;
-  }
+const std::string & CUsageRange::getName() const
+{
+  return mUsage;
+}

@@ -3,9 +3,6 @@
 #ifndef COPASI_CVector
 #define COPASI_CVector
 
-using std::ostream;
-using std::endl;
-
 /**
  * Template class CVector < class CType >
  * This template class is a simple vector class  allowing standard
@@ -156,16 +153,16 @@ template <class CType> class CVector
      * @param const CVector< CType > & A
      * @retrun ostream & os
      */
-    friend ostream &operator<<(ostream &os, const CVector< CType > & A)
+    friend std::ostream &operator<<(std::ostream &os, const CVector< CType > & A)
     {
-      os << "Vector(" << A.mRows << ")" << endl;
+      os << "Vector(" << A.mRows << ")" << std::endl;
 
       unsigned C_INT32 i;
       CType * tmp = A.mVector;
 
       for (i = 0; i < A.mRows; i++)
         os << "  " << * (tmp++);
-      os << endl;
+      os << std::endl;
       return os;
     }
   };

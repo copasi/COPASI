@@ -8,8 +8,6 @@
 
 class CRandom;
 
-using std::set;
-
 /**
  * CStochSolver
  *
@@ -43,7 +41,7 @@ using std::set;
  * {
  *     time = solver->GetMethod()->DoStep(time);
  *     step++;
- * }
+ *}
  *
  */
 
@@ -159,7 +157,7 @@ class CStochMethod
     /**
      * The balances of the reactions as integers
      */
-    vector < vector <CStochBalance> > mLocalBalances;
+    std::vector < std::vector <CStochBalance> > mLocalBalances;
 
     /**
      * The random number generator
@@ -249,7 +247,7 @@ class CStochMethod
      * @return The set of metabolites depended on.
      */
 
-    set <CMetab*> *getDependsOn(C_INT32 reaction_index);
+    std::set<CMetab*> *getDependsOn(C_INT32 reaction_index);
 
     /**
      * Get the set of metaboloites which change number when a given
@@ -257,7 +255,7 @@ class CStochMethod
      * @param reaction_index The index of the reaction being executed.
      * @return The set of affected metabolites.
      */
-    set <CMetab*> *getAffects(C_INT32 reaction_index);
+    std::set<CMetab*> *getAffects(C_INT32 reaction_index);
   };
 
 /**

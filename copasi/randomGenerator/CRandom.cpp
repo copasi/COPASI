@@ -4,7 +4,7 @@
 #include "CRandom.h"
 #include "utilities/CCopasiMessage.h"
 
-const string CRandom::TypeName[] =
+const std::string CRandom::TypeName[] =
   {
     "r250",
     "Mersenne Twister"
@@ -40,8 +40,8 @@ CRandom * CRandom::createGenerator(CRandom::Type type,
 }
 CRandom::CRandom() {}
 CRandom::~CRandom() {}
-const CRandom::Type & CRandom::getType() const { return mType; }
-const unsigned C_INT32 & CRandom::getModulus() const { return mModulus; }
+const CRandom::Type & CRandom::getType() const {return mType;}
+const unsigned C_INT32 & CRandom::getModulus() const {return mModulus;}
 
 void CRandom::setModulus(const unsigned C_INT32 & modulus)
 {

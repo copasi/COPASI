@@ -21,8 +21,6 @@
 #include "CUDFunction.h"
 #include "utilities/CGlobals.h"
 
-using namespace std;
-
 /**
  *  Default constructor
  */
@@ -33,18 +31,18 @@ CUDFunction::CUDFunction() : CKinFunction()
 }
 
 CUDFunction::CUDFunction(const CFunction & src) : CKinFunction(src)
-{CONSTRUCTOR_TRACE; }
+{CONSTRUCTOR_TRACE;}
 
 CUDFunction::CUDFunction(const CUDFunction & src) : CKinFunction(src)
-{CONSTRUCTOR_TRACE; }
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  This creates a user defined function with a name an description
  *  @param "const string" &name
  *  @param "const string" &description
  */
-CUDFunction::CUDFunction(const string & name,
-                         const string & description) : CKinFunction()
+CUDFunction::CUDFunction(const std::string & name,
+                         const std::string & description) : CKinFunction()
 {
   CONSTRUCTOR_TRACE;
   setType(CFunction::Output);
@@ -55,7 +53,7 @@ CUDFunction::CUDFunction(const string & name,
 /**
  *  Destructor
  */
-CUDFunction::~CUDFunction() {cleanup(); DESTRUCTOR_TRACE; }
+CUDFunction::~CUDFunction() {cleanup(); DESTRUCTOR_TRACE;}
 
 /**
  *  Delete
@@ -94,7 +92,7 @@ void CUDFunction::load(CReadConfig & configbuffer,
                        CReadConfig::Mode mode)
 {
   C_INT32 Size = 0;
-  string Name, Description;
+  std::string Name, Description;
 
   if (configbuffer.getVersion() < "4")
     {
@@ -183,9 +181,9 @@ void * CUDFunction::getValueAddr()
  * Return the value of user defined function
  */
 C_FLOAT64 CUDFunction::getValue() const
-  {
-    return mValue;
-  }
+{
+  return mValue;
+}
 
 C_INT32 CUDFunction::connectNodes()
 {
@@ -476,7 +474,7 @@ CNodeO * CUDFunction::parsePrimary()
         parseExpression(0);
     }
 }
-CCopasiVectorS < CNodeO > & CUDFunction::getNodes() { return mNodes; }
+CCopasiVectorS < CNodeO > & CUDFunction::getNodes() {return mNodes;}
 
 void CUDFunction::compile()
 {
@@ -488,8 +486,8 @@ void CUDFunction::compile()
 C_INT32 CUDFunction::parse()
 {
   int i = 1;
-  istringstream buffer(getDescription());
-  CKinFunctionFlexLexer Scanner((istream *) &buffer);
+  std::istringstream buffer(getDescription());
+  CKinFunctionFlexLexer Scanner((std::istream *) &buffer);
 
   // add the root node
   mNodes.add(CNodeO(N_ROOT, N_NOP));
@@ -558,7 +556,7 @@ C_INT32 CUDFunction::parse()
           mNodes.add(CNodeO(N_FUNCTION, N_COS));
           break;
 
-        case N_NOP:           // this is an error
+        case N_NOP:            // this is an error
           mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

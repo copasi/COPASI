@@ -12,8 +12,6 @@
 #include <vector>
 #include "CFluxScore.h"
 
-using std::vector;
-
 class CTableauLine
   {
     // Attributes
@@ -22,7 +20,7 @@ class CTableauLine
     /**
      *  
      */
-    vector <double> mReaction;
+    std::vector <double> mReaction;
 
     /**
      *  
@@ -32,7 +30,7 @@ class CTableauLine
     /**
      *  
      */
-    vector <double> mFluxMode;
+    std::vector <double> mFluxMode;
 
     /**
      *  
@@ -50,7 +48,7 @@ class CTableauLine
     /**
      *  Specific constructor
      */
-    CTableauLine(const vector <C_FLOAT64> & reaction,
+    CTableauLine(const std::vector <C_FLOAT64> & reaction,
                  bool reversible,
                  const C_INT32 & reactionCounter,
                  const C_INT32 & reactionNumber);
@@ -82,7 +80,7 @@ class CTableauLine
     /**
      *  Retreives the flux mode
      */
-    const vector < C_FLOAT64 > & getFluxMode() const;
+    const std::vector < C_FLOAT64 > & getFluxMode() const;
 
     /**
      *  Checks whether the reaction is reversible

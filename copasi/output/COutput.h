@@ -15,8 +15,6 @@
 class COutputLine;
 class CSteadyStateTask;
 
-using std::ofstream;
-
 class COutput
   {
   private:
@@ -115,12 +113,12 @@ class COutput
     /**
      * Concentration Unit
      */
-    string ConcUnit;
+    std::string ConcUnit;
 
     /**
      * Time Unit
      */
-    string TimeUnit;
+    std::string TimeUnit;
 
     /**
      * Pointer to a ss_solution when each 
@@ -141,7 +139,7 @@ class COutput
     /**
      * Print each line of the header in the reporting file
      */
-    void repHeaderLine(ofstream &fout, int width, string OutStr);
+    void repHeaderLine(std::ofstream &fout, int width, std::string OutStr);
 
     int CheckEquilibrium();
 
@@ -221,107 +219,107 @@ class COutput
     /**
      *  Dummy method.
      */
-    string getName() const {return ""; }
+    std::string getName() const {return "";}
 
     /**
      * print the titles of the steady-state data file
      */
-    void sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    void sSOutputTitles(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
     /**
      * print the mpValue of Object in the steady-state data file
      */
-    void sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    void sSOutputData(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
     /**
      * print the titles of the time couse data file
      */
-    void dynOutputTitles(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    void dynOutputTitles(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
     /**
      * print the mpValue of Object in the time course data file
      */
-    void dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    void dynOutputData(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
     /**
      * print the header of the reporting file
      */
-    void repHeader(ofstream &fout);
+    void repHeader(std::ofstream &fout);
 
     /**
      * Output the comments to the output reporting file
      */
-    void repComments(ofstream &fout);
+    void repComments(std::ofstream &fout);
 
     /**
      * print the parameters of the simulation
      */
-    void repParams(ofstream &fout);
+    void repParams(std::ofstream &fout);
 
     /**
      * print the structural analysis
      */
-    void repStruct(ofstream &fout);
+    void repStruct(std::ofstream &fout);
 
     /**
      * print the results of the stability analysis
      */
-    void repStability(ofstream &fout);
+    void repStability(std::ofstream &fout);
 
     /**
      * print the results of the MCA
      */
-    void repMCA(ofstream &fout);
+    void repMCA(std::ofstream &fout);
 
     /**
      * print the titles of the time-course data file
      */
-    void dynOutputTitles(ofstream &fout, string &DynName);
+    void dynOutputTitles(std::ofstream &fout, std::string &DynName);
 
     /**
      * print a line of data (one time point) on the time-course data file
      */
-    void dynOutputData(ofstream &fout, string &DynName);
+    void dynOutputData(std::ofstream &fout, std::string &DynName);
 
     /**
      * print the titles of the steady-state data file
      */
-    void sSOutputTitles(ofstream &fout, string &SSName);
+    void sSOutputTitles(std::ofstream &fout, std::string &SSName);
 
     /**
      * print a line of data (one iteration) on the steady-state data file
      */
-    void sSOutputData(ofstream &fout, string &SSName);
+    void sSOutputData(std::ofstream &fout, std::string &SSName);
 
     /**
      * Output the model title to the output reporting file
      */
-    void repTitle(ofstream &fout);
+    void repTitle(std::ofstream &fout);
 
     /**
      * Assign the pointer to each datum object for time course
      */
-    void compile(const string & name, CModel *model, CState *state);
+    void compile(const std::string & name, CModel *model, CState *state);
 
     /**
      * Assign the pointer to each datum object for steady state
      */
-    void compile(const string & name, CModel *model, CSteadyStateTask *soln);
+    void compile(const std::string & name, CModel *model, CSteadyStateTask *soln);
 
     /*
      * print the time course dynamic data file
      */
-    void copasiDyn(ofstream &fout, int time);
+    void copasiDyn(std::ofstream &fout, int time);
 
     /*
      * print the steady state data file
      */
-    void copasiSS(ofstream &fout);
+    void copasiSS(std::ofstream &fout);
 
     /*
      * print the reporting data file
      */
-    void copasiRep(ofstream &fout);
+    void copasiRep(std::ofstream &fout);
 
     /**
      * Write output control variables from input configburg buffer
@@ -338,7 +336,7 @@ class COutput
     /**
      * print the results of the steady-state simulation
      */
-    void repSS(ofstream &fout);
+    void repSS(std::ofstream &fout);
   };
 
 #endif //COutput.h

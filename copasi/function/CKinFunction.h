@@ -53,7 +53,7 @@ class CKinFunction : public CFunction
      *  @param "const string" &name
      *  @param "const string" &description
      */
-    CKinFunction(const string & name, const string & description);
+    CKinFunction(const std::string & name, const std::string & description);
 
     /**
      *  Destructor
@@ -87,7 +87,7 @@ class CKinFunction : public CFunction
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      */
-    string getSBMLString(const CCallParameters & callParameterNames, const string &r);
+    std::string getSBMLString(const CCallParameters & callParameterNames, const std::string &r);
 
     /**
      *  Compile a function

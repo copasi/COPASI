@@ -5,7 +5,7 @@
 #include "copasi.h"
 #include "utility.h"
 
-string StringPrint(const char * format, ...)
+std::string StringPrint(const char * format, ...)
 {
   C_INT32 TextSize = INITIALTEXTSIZE;
   C_INT32 Printed = 0;
@@ -30,7 +30,7 @@ string StringPrint(const char * format, ...)
     }
   va_end(Arguments);
 
-  string Result = Text;
+  std::string Result = Text;
 
   delete [] Text;
   return Result;
@@ -43,19 +43,19 @@ C_FLOAT64 ddot(C_INT32 n,
                C_INT32 incy)
 /*
   Purpose : Inner product dx . dy
-
+ 
   --- Input ---
-
+ 
   n    : number of elements in input vector(s)
   dx   : C_FLOAT64 vector with n+1 elements, dx[0] is not used
   incx : storage spacing between elements of dx
   dy   : C_FLOAT64 vector with n+1 elements, dy[0] is not used
   incy : storage spacing between elements of dy
-
+ 
   --- Output ---
-
+ 
   ddot : dot product dx . dy, 0 if n <= 0
-
+ 
   ddot = sum for i = 0 to n-1 of
   dx[lx+i*incx] * dy[ly+i*incy] where lx = 1 if
   incx >= 0, else lx = (-incx)*(n-1)+1, and ly
@@ -121,23 +121,23 @@ void dscal(C_INT32 n,
            C_FLOAT64 * dx,
            C_INT32 incx)
 /* Purpose : scalar vector multiplication
-
+ 
 dx = da * dx
-
+ 
 --- Input ---
-
+ 
 n    : number of elements in input vector
 da   : C_FLOAT64 scale factor
 dx   : C_FLOAT64 vector with n+1 elements, dx[0] is not used
 incx : storage spacing between elements of dx
-
+ 
 --- Output ---
-
+ 
 dx = da * dx, unchanged if n <= 0
-
+ 
 For i = 0 to n-1, replace dx[1+i*incx] with
 da * dx[1+i*incx].
-
+ 
  */
 {
   C_INT32 m, i;
@@ -185,27 +185,27 @@ void daxpy(C_INT32 n,
            C_INT32 incy)
 /*
   Purpose : To compute
-
+ 
   dy = da * dx + dy
-
+ 
   --- Input ---
-
+ 
   n    : number of elements in input vector(s)
   da   : C_FLOAT64 scalar multiplier
   dx   : C_FLOAT64 vector with n+1 elements, dx[0] is not used
   incx : storage spacing between elements of dx
   dy   : C_FLOAT64 vector with n+1 elements, dy[0] is not used
   incy : storage spacing between elements of dy
-
+ 
   --- Output ---
-
+ 
   dy = da * dx + dy, unchanged if n <= 0
-
+ 
   For i = 0 to n-1, replace dy[ly+i*incy] with
   da*dx[lx+i*incx] + dy[ly+i*incy], where lx = 1
   if  incx >= 0, else lx = (-incx)*(n-1)+1 and ly is
   defined in a similar way using incy.
-
+ 
  */
 {
   C_INT32 ix, iy, i, m;
@@ -273,9 +273,9 @@ void dgesl(C_FLOAT64 ** a,
   Purpose : dgesl solves the linear system
   a * x = b or Transpose(a) * x = b
   using the factors computed by dgeco or degfa.
-
+ 
   On Entry :
-
+ 
   a    : C_FLOAT64 matrix of dimension (n+1, n+1),
   the output from dgeco or dgefa.
   The 0-th row and column are not used.
@@ -284,20 +284,20 @@ void dgesl(C_FLOAT64 ** a,
   b    : the right hand side vector.
   job  : = 0       to solve a * x = b,
   = nonzero to solve Transpose(a) * x = b.
-
+ 
   On Return :
-
+ 
   b : the solution vector x.
-
+ 
   Error Condition :
-
+ 
   A division by zero will occur if the input factor contains
   a zero on the diagonal.  Technically this indicates
   singularity but it is often caused by improper argments or
   improper setting of the pointers of a.  It will not occur
   if the subroutines are called correctly and if dgeco has
   set rcond > 0 or dgefa has set info = 0.
-
+ 
   BLAS : daxpy, ddot
  */
 {
@@ -367,20 +367,20 @@ C_INT32 idamax(C_INT32 n,
                C_FLOAT64 * dx,
                C_INT32 incx)
 /* Purpose : Find largest component of C_FLOAT64 vector dx
-
+ 
 --- Input ---
-
+ 
 n    : number of elements in input vector
 dx   : C_FLOAT64 vector with n+1 elements, dx[0] is not used
 incx : storage spacing between elements of dx
-
+ 
 --- Output ---
-
+ 
 idamax : smallest index, 0 if n <= 0
-
+ 
 Find smallest index of maximum magnitude of dx.
 idamax = first i, i=1 to n, to minimize fabs(dx[1-incx+i*incx]).
-
+ 
  */
 {
   C_FLOAT64 dmax, xmag;
@@ -439,24 +439,24 @@ void dgefa(C_FLOAT64 ** a,
            C_INT32 * info)
 /*
   Purpose : dgefa factors a C_FLOAT64 matrix by Gaussian elimination.
-
+ 
   dgefa is usually called by dgeco, but it can be called directly
   with a saving in time if rcond is not needed.
   (Time for dgeco) = (1+9/n)*(time for dgefa).
-
+ 
   This c version uses algorithm kji rather than the kij in dgefa.f.
   Note that the fortran version input variable lda is not needed.
-
+ 
   On Entry :
-
+ 
   a   : C_FLOAT64 matrix of dimension (n+1, n+1),
   the 0-th row and column are not used.
   a is created using NewDoubleMatrix, hence
   lda is unnecessary.
   n   : the row dimension of a.
-
+ 
   On Return :
-
+ 
   a     : a lower triangular matrix and the multipliers
   which were used to obtain it.  The factorization
   can be written a = L * U where U is a product of
@@ -469,9 +469,9 @@ void dgefa(C_FLOAT64 ** a,
   indicate that dgesl or dgedi will divide by
   zero if called.  Use rcond in dgeco for
   a reliable indication of singularity.
-
+ 
   Notice that the calling program must use &info.
-
+ 
   BLAS : daxpy, dscal, idamax
  */
 {
@@ -537,7 +537,7 @@ void dgefa(C_FLOAT64 ** a,
  *
  */
 
-void FixSName(const string &original, string &fixed)
+void FixSName(const std::string &original, std::string &fixed)
 {
   int i, len;
   // check reserved names
@@ -619,10 +619,10 @@ void FixSName(const string &original, string &fixed)
 /*
  * Fixes a string to a XHTML valid equivalent
  */
-void FixXHTML(const string &original, string &fixed)
+void FixXHTML(const std::string &original, std::string &fixed)
 {
   C_INT32 i, p, len;
-  string Str;
+  std::string Str;
   // find the next illegal character
   Str = original;
   fixed.erase();

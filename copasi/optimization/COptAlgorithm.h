@@ -20,8 +20,6 @@
 #include "utilities/CMethodParameter.h"
 #include "utilities/CMethodParameterList.h"
 
-using std::vector;
-
 class COptProblem;
 
 // YOHE: this is an abstract class that contains many virtual functions
@@ -41,10 +39,10 @@ class COptAlgorithm : public CMethodParameterList
     C_FLOAT64 * mParameterMax;        // the maximum values of parameters
 
     // is this ever used ? -- 10/14
-    //vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
+    //std::vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
 
-    string mMethodVersion;            // Method Version string, yes
-    string mMethodName;               // method Name (descriptive)
+    std::string mMethodVersion;            // Method Version string, yes
+    std::string mMethodName;               // method Name (descriptive)
     bool mBounds;                     // True if method accepts bounds on the parameters
 
     //rohan: modified 7/26
@@ -122,12 +120,12 @@ class COptAlgorithm : public CMethodParameterList
     /**
      * get method name
      */
-    string getMethodName(void);
+    std::string getMethodName(void);
 
     /**
      * get method version
      */
-    string getMethodVersion(void);
+    std::string getMethodVersion(void);
 
     /**
      * Returns True if this method is capable of handling adjustable parameter 

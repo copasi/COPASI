@@ -33,17 +33,17 @@ class CReaction
         /**
          *  The name of the identifier as defined by the called function
          */
-        string mIdentifierName;
+        std::string mIdentifierName;
 
         /**
          *  The name of the metabolite
          */
-        string mMetaboliteName;
+        std::string mMetaboliteName;
 
         /**
          *  The name of the compartment the metabolite is located in
          */
-        string mCompartmentName;
+        std::string mCompartmentName;
 
         /**
          *  A pointer to the metabolite
@@ -77,37 +77,37 @@ class CReaction
          *  Set the identifier name
          *  @param "const string &" identifierName
          */
-        void setIdentifierName(const string & identifierName);
+        void setIdentifierName(const std::string & identifierName);
 
         /**
          *  Retrieve the identifier name
          *  @return "const string &" identifierName
          */
-        const string & getIdentifierName() const;
+        const std::string & getIdentifierName() const;
 
         /**
          *  Set the metabolite name
          *  @param "const string &" metaboliteName
          */
-        void setMetaboliteName(const string & metaboliteName);
+        void setMetaboliteName(const std::string & metaboliteName);
 
         /**
          *  Retrieve the metabolite name
          *  @return "const string &" metaboliteName
          */
-        const string & getMetaboliteName() const;
+        const std::string & getMetaboliteName() const;
 
         /**
          *  Set the compartment name
          *  @param "const string &" compartmentName
          */
-        void setCompartmentName(const string & compartmentName);
+        void setCompartmentName(const std::string & compartmentName);
 
         /**
          *  Retrieve the compartment name
          *  @return "const string &" compartmentName
          */
-        const string & getCompartmentName() const;
+        const std::string & getCompartmentName() const;
 
         /**
          *  Retrieve a pointer to the metabolite
@@ -118,16 +118,16 @@ class CReaction
         /**
          * insert operator
          */
-        friend ostream & operator<<(ostream &os, const CId2Metab & d)
+        friend std::ostream & operator<<(std::ostream &os, const CId2Metab & d)
         {
           os << "     CId2Metab: Ident " << d.getIdentifierName()
           << " Metab " << d.getMetaboliteName()
           << " Compa " << d.getCompartmentName();
 
           if (d.mpMetabolite)
-            os << " *metab " << d.mpMetabolite->getName() << endl;
+            os << " *metab " << d.mpMetabolite->getName() << std::endl;
           else
-            os << " metab == 0 " << endl;
+            os << " metab == 0 " << std::endl;
 
           return os;
         }
@@ -142,7 +142,7 @@ class CReaction
         /**
          *  The name of the parameter as defined by the called function
          */
-        string mIdentifierName;
+        std::string mIdentifierName;
 
         /**
          *  The value of the parameter
@@ -177,13 +177,13 @@ class CReaction
          *  Set the identifier name
          *  @param "const string &" identifierName
          */
-        void setIdentifierName(const string & identifierName);
+        void setIdentifierName(const std::string & identifierName);
 
         /**
          *  Retrieve the identifier name
          *  @return "const string &" identifierName
          */
-        const string & getIdentifierName() const;
+        const std::string & getIdentifierName() const;
 
         /**
          *  Set the identifier value
@@ -205,10 +205,10 @@ class CReaction
         /**
          * insert operator
          */
-        friend ostream & operator<<(ostream &os, const CId2Param & d)
+        friend std::ostream & operator<<(std::ostream &os, const CId2Param & d)
         {
           os << "     CId2Param: Ident " << d.getIdentifierName()
-          << " Value " << d.getValue() << endl;
+          << " Value " << d.getValue() << std::endl;
           return os;
         }
       };
@@ -222,7 +222,7 @@ class CReaction
     /**
      *  The name of the reaction
      */
-    string mName;
+    std::string mName;
 
     /**
      *  The chemical equation
@@ -328,7 +328,7 @@ class CReaction
      *  Named constructor
      *  @param "const string &" name
      */
-    CReaction(const string & name);
+    CReaction(const std::string & name);
 
     /**
      *  Destructor
@@ -370,7 +370,7 @@ class CReaction
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 saveOld(CWriteConfig & configbuffer, const vector < CMetab* > &metabolites);
+    C_INT32 saveOld(CWriteConfig & configbuffer, const std::vector < CMetab* > &metabolites);
 
     /**
      *  Saves the contents of the object to a ofstream object.
@@ -408,7 +408,7 @@ class CReaction
      *  Retrieves the name of the reaction
      *  @return string
      */
-    const string & getName() const;
+    const std::string & getName() const;
 
     /**
      *  Retrieves the chemical equation of the reaction
@@ -436,7 +436,7 @@ class CReaction
      *  Retrieves the chemical structure of the reaction
      *  @return vector < ELEMENT >
      */ 
-    // typedef struct ELEMENT {C_FLOAT64 mValue; string mName; };
+    // typedef struct ELEMENT {C_FLOAT64 mValue; string mName;};
     // vector < ELEMENT > getChemStructure() const;
 
     /**
@@ -467,19 +467,19 @@ class CReaction
      *  Sets the name of the reaction
      *  @param "const string &" name
      */
-    void setName(const string & name);
+    void setName(const std::string & name);
 
     /**
      *  Sets the chemical equation of the reaction
      *  @param "const string &" chemEq
      */
-    void setChemEq(const string & chemEq);
+    void setChemEq(const std::string & chemEq);
 
     /**
      *  Sets the rate function of the reaction
      *  @param "const string &" functionName
      */
-    void setFunction(const string & functionName);
+    void setFunction(const std::string & functionName);
 
     /**
      *  Sets whether the reaction is reversible
@@ -504,7 +504,7 @@ class CReaction
      *  Retrieves the Compartment Name for substrates, products, and modifiers
      *  @param "vector < CMetab* > &" Metabolites 
      */
-    void old2New(const vector < CMetab* > & metabolites);
+    void old2New(const std::vector < CMetab* > & metabolites);
 
     /**
      * Returns the address of mFlux  Wei Sun
@@ -514,21 +514,21 @@ class CReaction
     /**
      * Returns the index of the parameter
      */
-    C_INT32 findPara(string &Target);
+    C_INT32 findPara(std::string &Target);
 
     /**
      * Find an pointer to a substrate corresponding to the given identifier name.
      * @param ident_name The identifier name to search by
      * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
      */
-    CMetab * findSubstrate(string ident_name);
+    CMetab * findSubstrate(std::string ident_name);
 
     /**
      * Find an pointer to a modifier corresponding to the given identifier name.
      * @param ident_name The identifier name to search by
      * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
      */
-    CMetab * findModifier(string ident_name);
+    CMetab * findModifier(std::string ident_name);
 
     /**
      *  Retrieves the number of compartments the reaction is acting in.
@@ -539,52 +539,39 @@ class CReaction
     /**
      * insert operator
      */
-    friend ostream & operator<<(ostream &os, const CReaction & d)
+    friend std::ostream & operator<<(std::ostream &os, const CReaction & d)
     {
-      os << "CReaction:  " << d.getName() << endl;
+      os << "CReaction:  " << d.getName() << std::endl;
 
-      os << "   mChemEq " << endl;
+      os << "   mChemEq " << std::endl;
       os << d.mChemEq;
 
       if (d.mFunction)
-        os << "   *mFunction " << d.mFunction->getName() << endl;
+        os << "   *mFunction " << d.mFunction->getName() << std::endl;
       else
-        os << "   mFunction == 0 " << endl;
+        os << "   mFunction == 0 " << std::endl;
 
-      os << "   mParameterDescription: " << endl << d.mParameterDescription;
-
-      os << "   mFlux: " << d.mFlux << endl;
+      os << "   mParameterDescription: " << std::endl << d.mParameterDescription;
+      os << "   mFlux: " << d.mFlux << std::endl;
 
       if (d.mScalingFactor)
-        os << "   *mScalingFactor " << *(d.mScalingFactor) << endl;
+        os << "   *mScalingFactor " << *(d.mScalingFactor) << std::endl;
       else
-        os << "   mScalingFactor == 0 " << endl;
+        os << "   mScalingFactor == 0 " << std::endl;
 
-      os << "   mScalingFactor2: " << d.mScalingFactor2 << endl;
-
-      os << "   mCompartmentNumber: " << d.mCompartmentNumber << endl;
-
-      os << "   mReversible: " << d.mReversible << endl;
-
-      os << "   mId2Substrates" << endl;
-
+      os << "   mScalingFactor2: " << d.mScalingFactor2 << std::endl;
+      os << "   mCompartmentNumber: " << d.mCompartmentNumber << std::endl;
+      os << "   mReversible: " << d.mReversible << std::endl;
+      os << "   mId2Substrates" << std::endl;
       os << d.mId2Substrates;
-
-      os << "   mId2Products" << endl;
-
+      os << "   mId2Products" << std::endl;
       os << d.mId2Products;
-
-      os << "   mId2Modifiers" << endl;
-
+      os << "   mId2Modifiers" << std::endl;
       os << d.mId2Modifiers;
-
-      os << "   mId2Parameters" << endl;
-
+      os << "   mId2Parameters" << std::endl;
       os << d.mId2Parameters;
-
-      os << "   mFail: " << d.mFail << endl;
-
-      os << "----CReaction" << endl;
+      os << "   mFail: " << d.mFail << std::endl;
+      os << "----CReaction" << std::endl;
 
       return os;
     }
@@ -657,7 +644,7 @@ class CReaction
     /**
      *
      */
-    unsigned C_INT32 findParameter(const string & name,
+    unsigned C_INT32 findParameter(const std::string & name,
                                    CFunctionParameter::DataType & dataType);
 
     /**
@@ -665,7 +652,7 @@ class CReaction
      *  @param "const string" & usage
      *  @return unsigned C_INT32 size
      */
-    unsigned C_INT32 usageRangeSize(const string & usage);
+    unsigned C_INT32 usageRangeSize(const std::string & usage);
 
     /**
      * Sets the scaling factor of the for the fluxes

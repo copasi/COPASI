@@ -11,8 +11,6 @@
 
 #include <vector>
 
-using std::vector;
-
 class CFluxScore
   {
     // Attributes
@@ -21,7 +19,7 @@ class CFluxScore
     /**
      *  The score of a flux mode
      */
-    vector <int> mScore;
+    std::vector <int> mScore;
 
     // Operations
 
@@ -35,7 +33,7 @@ class CFluxScore
      *  Specific constructor
      *  @param "const vector < C_FLOAT64 > &" fluxModes
      */
-    CFluxScore(const vector < C_FLOAT64 > & fluxModes);
+    CFluxScore(const std::vector < C_FLOAT64 > & fluxModes);
 
     /**
      *  Destructor();

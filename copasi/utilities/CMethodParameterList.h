@@ -24,12 +24,12 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
     /**
      *  The name of the Method
      */
-    string mName;
+    std::string mName;
 
     /**
      *  The type of the Method
      */
-    string mType;
+    std::string mType;
 
     // Operations
   public:
@@ -60,32 +60,32 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
      * Retrieve the name of the method
      * @return " const string &" name
      */
-    const string & getName() const;
+    const std::string & getName() const;
 
     /**
      * Set the name of the method
      * @param "const string &" name
      */
-    void setName(const string & name);
+    void setName(const std::string & name);
 
     /**
      * Retrieve the type of the method
      * @return " const string &" type
      */
-    const string & getType() const;
+    const std::string & getType() const;
 
     /**
      * Set the type of the method
      * @param "const string &" type
      */
-    void setType(const string & type);
+    void setType(const std::string & type);
 
     /**
      * Retrieve the name of the indexed parameter
      * @param "const unsigned C_INT32 &" index
      * @return "const string &" mName
      */
-    const string & getName(const unsigned C_INT32 & index) const;
+    const std::string & getName(const unsigned C_INT32 & index) const;
 
     /**
      * Set the value of the indexed parameter
@@ -100,7 +100,7 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
      * @param "const string &" name
      * @param "const double &" value
      */
-    void setValue(const string & name,
+    void setValue(const std::string & name,
                   const double & value);
 
     /**
@@ -115,16 +115,15 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
      * @param "const string &" index
      * @return "const double & value
      */
-    const double & getValue(const string & name) const;
+    const double & getValue(const std::string & name) const;
 
     /**
      * Add a parameter to the list
      * @param "const string &" name 
      * @param "const double &" value (Default = 0.0)
      */
-    void add
-    (const string & name,
-     const double & value = 0.0);
+    void add(const std::string & name,
+             const double & value = 0.0);
 
     /**
      * Load a list of parameters
@@ -150,8 +149,8 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
      * @return "CMethodParameterList *" methodParameterList
      */
     static CMethodParameterList * search(CReadConfig & configBuffer,
-                                         const string & name,
-                                         const string & type);
+                                         const std::string & name,
+                                         const std::string & type);
   };
 
 #endif // COPASI_CMethodParameterList

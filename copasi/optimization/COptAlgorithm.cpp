@@ -14,8 +14,6 @@
 #include "COptAlgorithm.h"
 #include "COptProblem.h"
 
-using namespace std;
-
 // Default constructor
 COptAlgorithm::COptAlgorithm()
 {
@@ -127,7 +125,7 @@ unsigned C_INT32 COptAlgorithm::getMethodParameterNumber(void)
  * -- commented 10/15...method deleted because another class encapsulates method parameters
  
 // get method parameters
-vector <COptAlgorithmParameter> & COptAlgorithm::getMethodParameters()
+std::vector <COptAlgorithmParameter> & COptAlgorithm::getMethodParameters()
 {
   return mOptAlgmParams;
 }
@@ -161,7 +159,7 @@ C_FLOAT64 COptAlgorithm::getMethodParameterValue(C_INT32 i)
  
  
 // get method parameter name
-string COptAlgorithm::getMethodParameterName(C_INT32 i)
+std::string COptAlgorithm::getMethodParameterName(C_INT32 i)
 {
   return mOptAlgmParams[i].getName();
 }
@@ -169,13 +167,13 @@ string COptAlgorithm::getMethodParameterName(C_INT32 i)
  */
 
 // get method name
-string COptAlgorithm::getMethodName(void)
+std::string COptAlgorithm::getMethodName(void)
 {
   return mMethodName;
 }
 
 // get method version
-string COptAlgorithm::getMethodVersion(void)
+std::string COptAlgorithm::getMethodVersion(void)
 {
   return mMethodVersion;
 }

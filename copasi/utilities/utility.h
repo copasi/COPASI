@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-using std::string;
-
 #define INITIALTEXTSIZE 1024
 
 /**
@@ -15,7 +13,7 @@ using std::string;
  *  @param ...
  *  @return "string" 
  */
-string StringPrint(const char * format, ...);
+std::string StringPrint(const char * format, ...);
 
 /**
  *
@@ -93,13 +91,13 @@ C_FLOAT64 ddot(C_INT32 n,
  * (this is a destructive function, some changes are irreversible)
  *
  */
-void FixSName(const string &original, string &fixed)
+void FixSName(const std::string &original, std::string &fixed)
 ;
 
 /*
  * Fixes a string to a XHTML valid equivalent
  */
-void FixXHTML(const string &original, string &fixed)
+void FixXHTML(const std::string &original, std::string &fixed)
 ;
 
 #endif // COPASI_utilities

@@ -9,8 +9,6 @@
 
 #include <string>
 
-using std::string;
-
 class CVersion
   {
     // Attributes
@@ -40,7 +38,7 @@ class CVersion
      *  Version string.
      *  (printable version number in the form "4.01 beta 2")
      */
-    string mVersion;
+    std::string mVersion;
 
     // Operations
 
@@ -82,7 +80,7 @@ class CVersion
      *  @return mVersion
      *  @see mVersion  
      */
-    const string & getVersion() const;
+    const std::string & getVersion() const;
 
     /**
      *  Sets a version number 

@@ -19,7 +19,7 @@
 #include "model/CState.h"
 #include "model/CCompartment.h"
 
-const string CSteadyStateMethod::TypeName[] =
+const std::string CSteadyStateMethod::TypeName[] =
   {
     "unspecified",
     "Newton",

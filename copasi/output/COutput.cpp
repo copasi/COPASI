@@ -20,8 +20,6 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CEigen.h"
 
-using std::setw;
-
 /**
  *  Default constructor. 
  */
@@ -161,9 +159,9 @@ C_INT32 COutput::load(CReadConfig & configbuffer)
 
   readDefaultVar(configbuffer);
 
-  string InteractiveTimeCourse = "Interactive time course";
-  string TimeCourse = "Time-course output";
-  string SteadyState = "Steady-state output";
+  std::string InteractiveTimeCourse = "Interactive time course";
+  std::string TimeCourse = "Time-course output";
+  std::string SteadyState = "Steady-state output";
 
   COutputLine newLine1;
   newLine1.load(configbuffer, InteractiveTimeCourse);
@@ -183,9 +181,9 @@ C_INT32 COutput::load(CReadConfig & configbuffer)
 /**
  * print the titles of the steady-state data file
  */
-void COutput::sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
+void COutput::sSOutputTitles(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
 {
-  string Name;
+  std::string Name;
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -199,9 +197,9 @@ void COutput::sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator
 /**
  * print mpValue of each Object in the steady-state data file
  */
-void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
+void COutput::sSOutputData(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
 {
-  string Name;
+  std::string Name;
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -215,9 +213,9 @@ void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, 
 /**
  * print the titles of the time couse data file
  */
-void COutput::dynOutputTitles(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
+void COutput::dynOutputTitles(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
 {
-  string Name;
+  std::string Name;
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -231,9 +229,9 @@ void COutput::dynOutputTitles(ofstream &fout, string &DynName, C_INT16 DynSepara
 /**
  * print the mpValue of Object in the time course data file
  */
-void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
+void COutput::dynOutputData(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
 {
-  string Name;
+  std::string Name;
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -247,7 +245,7 @@ void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparato
 /**
  * Assign the pointer to each datum object for time course
  */
-void COutput::compile(const string & name, CModel *model, CState *state)
+void COutput::compile(const std::string & name, CModel *model, CState *state)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -258,7 +256,7 @@ void COutput::compile(const string & name, CModel *model, CState *state)
 /**
  * Assign the pointer to each datum object for steady state
  */
-void COutput::compile(const string & name, CModel *model, CSteadyStateTask *soln)
+void COutput::compile(const std::string & name, CModel *model, CSteadyStateTask *soln)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -271,26 +269,26 @@ void COutput::compile(const string & name, CModel *model, CSteadyStateTask *soln
 /**
  * Output the comments to the output reporting file
  */
-void COutput::repComments(ofstream &fout)
+void COutput::repComments(std::ofstream &fout)
 {
-  fout << Copasi->Model->getComments() << endl;
+  fout << Copasi->Model->getComments() << std::endl;
 }
 
 /**
  * Output the model title to the output reporting file
  */
-void COutput::repTitle(ofstream &fout)
+void COutput::repTitle(std::ofstream &fout)
 {
-  fout << Copasi->Model->getTitle() << endl << endl;
+  fout << Copasi->Model->getTitle() << std::endl << std::endl;
 }
 
 /**
  * Print each line of the header in the reporting file
  */
-void COutput::repHeaderLine(ofstream &fout, int width, string OutStr)
+void COutput::repHeaderLine(std::ofstream &fout, int width, std::string OutStr)
 {
   int pre, suf, i;
-  string Str = "*";
+  std::string Str = "*";
 
   pre = (width - OutStr.length()) / 2;
   suf = width - pre - OutStr.length();
@@ -305,15 +303,15 @@ void COutput::repHeaderLine(ofstream &fout, int width, string OutStr)
 
   Str += "*";
 
-  fout << Str << endl;
+  fout << Str << std::endl;
 }
 
 /**
  * print the header of the reporting file
  */
-void COutput::repHeader(ofstream &fout)
+void COutput::repHeader(std::ofstream &fout)
 {
-  string TimeStamp, TimeStr;
+  std::string TimeStamp, TimeStr;
   int width, i;
 
   struct tm *newtime;
@@ -326,7 +324,7 @@ void COutput::repHeader(ofstream &fout)
   TimeStr = asctime(newtime);
   TimeStamp = TimeStr.substr(0, TimeStr.length() - 1);
 
-  string VersionString = "Copasi Version " + Copasi->ProgramVersion.getVersion();
+  std::string VersionString = "Copasi Version " + Copasi->ProgramVersion.getVersion();
   width = (VersionString.length() > TimeStamp.length()) ? VersionString.length() : TimeStamp.length();
   // width = max(width, ArchString.length());
 
@@ -335,7 +333,7 @@ void COutput::repHeader(ofstream &fout)
   for (i = 0; i < width + 4; i++)
     fout << "*";
 
-  fout << endl;
+  fout << std::endl;
 
   repHeaderLine(fout, width + 2, VersionString);
 
@@ -345,24 +343,24 @@ void COutput::repHeader(ofstream &fout)
   for (i = 0; i < width + 4; i++)
     fout << "*";
 
-  fout << endl << endl;
+  fout << std::endl << std::endl;
 }
 
 /**
  * print the parameters of the simulation
  */
-void COutput::repParams(ofstream &fout)
+void COutput::repParams(std::ofstream &fout)
 {
-  string StrOut;
+  std::string StrOut;
   unsigned C_INT32 i, j;
   CModel *model = Copasi->Model;
 
   StrOut = "KINETIC PARAMETERS";
-  fout << endl << StrOut << endl;
+  fout << std::endl << StrOut << std::endl;
 
   // Set Float manipulators
-  fout.setf(ios::scientific, ios::floatfield);
-  fout.setf(ios::showpoint);
+  fout.setf(std::ios::scientific, std::ios::floatfield);
+  fout.setf(std::ios::showpoint);
 
   for (i = 0; i < model->getReactions().size(); i++)
     {
@@ -370,32 +368,32 @@ void COutput::repParams(ofstream &fout)
       fout << StrOut << " (";
 
       StrOut = model->getReactions()[i]->getFunction().getName();
-      fout << StrOut << ")" << endl;
+      fout << StrOut << ")" << std::endl;
 
       for (j = 0; j < model->getReactions()[i]->getId2Parameters().size(); j++)
         {
           fout << " " << model->getReactions()[i]->getId2Parameters()[j]->getIdentifierName() << " =  ";
-          fout << setprecision(4) << model->getReactions()[i]->getId2Parameters()[j]->getValue();
-          fout << endl;
+          fout << std::setprecision(4) << model->getReactions()[i]->getId2Parameters()[j]->getValue();
+          fout << std::endl;
         }
     }
 
-  fout << endl << "COMPARTMENTS" << endl;
+  fout << std::endl << "COMPARTMENTS" << std::endl;
 
   for (i = 0; i < model->getCompartments().size(); i++)
     {
       fout << "V(" << model->getCompartments()[i]->getName() << ") =  ";
-      fout << setprecision(4) << model->getCompartments()[i]->getVolume();
-      fout << endl;
+      fout << std::setprecision(4) << model->getCompartments()[i]->getVolume();
+      fout << std::endl;
     }
 
-  fout << endl;
+  fout << std::endl;
 }
 
 /**
  * print the structural analysis
  */
-void COutput::repStruct(ofstream &fout)
+void COutput::repStruct(std::ofstream &fout)
 {
   unsigned C_INT32 i, j;
   CModel *model = Copasi->Model;
@@ -403,98 +401,98 @@ void COutput::repStruct(ofstream &fout)
   // determine the kernel of the stoichiometry matrix
   //model.getKernel();
 
-  fout << endl << "STRUCTURAL ANALYSIS" << endl;
+  fout << std::endl << "STRUCTURAL ANALYSIS" << std::endl;
 
   if (model->getDimension() > 0)
     {
-      fout << endl << "Rank of the stoichiometry matrix: " << model->getDimension() << endl;
+      fout << std::endl << "Rank of the stoichiometry matrix: " << model->getDimension() << std::endl;
     }
 
-  fout << endl << "key for step (column) numbers: " << endl;
+  fout << std::endl << "key for step (column) numbers: " << std::endl;
 
   for (i = 0; i < model->getReactions().size(); i++)
     {
-      fout << setw(2) << i << " - ";
+      fout << std::setw(2) << i << " - ";
       fout << model->getReactions()[i]->getName();
-      fout << endl;
+      fout << std::endl;
     }
 
-  fout << endl << "REDUCED STOICHIOMETRY MATRIX" << endl;
+  fout << std::endl << "REDUCED STOICHIOMETRY MATRIX" << std::endl;
 
   for (i = 0; i < model->getReactions().size(); i++)
     if (i)
-      fout << setw(4) << i;
+      fout << std::setw(4) << i;
     else
-      fout << setw(16) << i;
+      fout << std::setw(16) << i;
 
-  fout << endl;
+  fout << std::endl;
 
   for (i = 0; i < model->getReactions().size(); i++)
     {
       if (i)
-        fout << setw(4) << "----";
+        fout << std::setw(4) << "----";
       else
-        fout << setw(15) << "----";
+        fout << std::setw(15) << "----";
     }
 
-  fout << "--" << endl;
+  fout << "--" << std::endl;
 
   // Set Left Justification
-  fout.setf(ios::left);
+  fout.setf(std::ios::left);
 
   for (i = 0; i < model->getMetabolitesInd().size(); i++)
     {
-      fout << setw(11) << model->getMetabolitesInd()[i]->getName() << "|";
+      fout << std::setw(11) << model->getMetabolitesInd()[i]->getName() << "|";
 
       for (j = 0; j < model->getReactions().size(); j++)
         {
-          fout << setprecision(1);
+          fout << std::setprecision(1);
 
           if (j)
             // Set Left Justification
-            fout.setf(ios::left);
+            fout.setf(std::ios::left);
           else
-            fout.setf(ios::right);
+            fout.setf(std::ios::right);
 
-          fout << setw(4) << model->getRedStoi()[i][j];
+          fout << std::setw(4) << model->getRedStoi()[i][j];
         }
 
-      fout << endl;
+      fout << std::endl;
       // Restore Justification
-      fout.unsetf(ios::right);
-      fout.setf(ios::left);
+      fout.unsetf(std::ios::right);
+      fout.setf(std::ios::left);
     }
 
-  fout << endl << "INVERSE OF THE REDUCTION MATRIX" << endl;
+  fout << std::endl << "INVERSE OF THE REDUCTION MATRIX" << std::endl;
 
-  fout << endl;
+  fout << std::endl;
 
   // Restore Justification
-  fout.unsetf(ios::left);
+  fout.unsetf(std::ios::left);
 
   for (i = 0; i < model->getIntMetab(); i++)
     {
       if (i)
-        fout << setw(4) << i;
+        fout << std::setw(4) << i;
       else
-        fout << setw(16) << i;
+        fout << std::setw(16) << i;
     }
 
-  fout << endl;
+  fout << std::endl;
 
   for (i = 0; i < model->getIntMetab(); i++)
     if (i)
-      fout << setw(4) << "----";
+      fout << std::setw(4) << "----";
     else
-      fout << setw(15) << "----";
+      fout << std::setw(15) << "----";
 
-  fout << "--" << endl;
+  fout << "--" << std::endl;
 
   // Set Left Justification
-  fout.setf(ios::left);
+  fout.setf(std::ios::left);
 
   // Create a arry to store name from
-  vector < string > inverse;
+  std::vector < std::string > inverse;
 
   for (i = 0; i < model->getMetabolitesInd().size(); i++)
     inverse.push_back(model->getMetabolitesInd()[i]->getName());
@@ -506,54 +504,54 @@ void COutput::repStruct(ofstream &fout)
 
   for (i = 0; i < model->getIntMetab(); i++)
     {
-      fout << setw(11) << inverse[i] << "|";
+      fout << std::setw(11) << inverse[i] << "|";
 
       for (j = 0; j < model->getIntMetab(); j++)
         {
           if (j)
             // Set Left Justification
-            fout.setf(ios::left);
+            fout.setf(std::ios::left);
           else
-            fout.setf(ios::right);
+            fout.setf(std::ios::right);
 
-          fout << setprecision(1) << setw(4) << Inverse(i, j);
+          fout << std::setprecision(1) << std::setw(4) << Inverse(i, j);
 
-          //fout << setprecision(1) << setw(4) << model->getML()[i][j];
+          //fout << std::setprecision(1) << std::setw(4) << model->getML()[i][j];
         }
 
-      fout << endl;
+      fout << std::endl;
       // Restore Justification
-      fout.unsetf(ios::right);
-      fout.setf(ios::left);
+      fout.unsetf(std::ios::right);
+      fout.setf(std::ios::left);
     }
 
-  fout << endl;
+  fout << std::endl;
 
   if (model->getMoieties().size() > 0)
     {
-      fout << endl << "CONSERVATION RELATIONSHIPS" << endl;
+      fout << std::endl << "CONSERVATION RELATIONSHIPS" << std::endl;
 
-      fout.setf(ios::fixed)
+      fout.setf(std::ios::fixed)
 
 ;
       for (i = 0; i < model->getMoieties().size(); i++)
         {
           fout << model->getMoieties()[i]->getDescription() << " = ";
-          fout << model->getMoieties()[i]->getNumber() << endl;
+          fout << model->getMoieties()[i]->getNumber() << std::endl;
         }
 
-      fout.unsetf(ios::fixed)
+      fout.unsetf(std::ios::fixed)
 
 ;
     }
 
-  fout << endl;
+  fout << std::endl;
 }
 
 /**
  * print the results of the steady-state simulation
  */
-void COutput::repSS(ofstream &fout)
+void COutput::repSS(std::ofstream &fout)
 {
   unsigned C_INT32 i;
   double rate;
@@ -561,8 +559,8 @@ void COutput::repSS(ofstream &fout)
 
   fout << *mSolution;
 
-  fout.unsetf(ios::left);
-  fout.setf(ios::right);
+  fout.unsetf(std::ios::left);
+  fout.setf(std::ios::right);
 
   // Output concentrations
 
@@ -574,36 +572,36 @@ void COutput::repSS(ofstream &fout)
         rate = model->getMetabolites()[i]->getRate();
 
       // Output Concentration
-      fout << "[" << setw(10) << model->getMetabolites()[i]->getName();
+      fout << "[" << std::setw(10) << model->getMetabolites()[i]->getName();
 
       fout << "] = ";
 
-      fout << setprecision(6) << model->getMetabolites()[i]->getConcentration();
+      fout << std::setprecision(6) << model->getMetabolites()[i]->getConcentration();
 
       fout << " " << ConcUnit << ", ";
 
       // Output Transition time of the metabolite
-      fout << "tt = " << setprecision(6) << model->getMetabolites()[i]->getTransitionTime();
+      fout << "tt = " << std::setprecision(6) << model->getMetabolites()[i]->getTransitionTime();
 
       fout << " " << TimeUnit << " " << ", ";
 
       // Output rate
-      fout << "rate = " << setprecision(3) << rate;
+      fout << "rate = " << std::setprecision(3) << rate;
 
       fout << " " << ConcUnit << "/" << TimeUnit;
 
       if (model->getMetabolites()[i]->getConcentration() < 0.0)
         fout << " BOGUS!";
 
-      fout << endl;
+      fout << std::endl;
     }
 
   // output fluxes
   for (i = 0; i < model->getTotSteps(); i++)
     {
       fout << "J(" << model->getReactions()[i]->getName() << ") = ";
-      fout << setprecision(6) << model->getReactions()[i]->getFlux();
-      fout << " " << ConcUnit << "/" << TimeUnit << endl;
+      fout << std::setprecision(6) << model->getReactions()[i]->getFlux();
+      fout << " " << ConcUnit << "/" << TimeUnit << std::endl;
     }
 
   // output user-defined functions
@@ -613,15 +611,15 @@ void COutput::repSS(ofstream &fout)
 
   if (size > 0)
     {
-      fout << endl;
+      fout << std::endl;
 
       for (i = 0; i < size; i++)
         {
           // calculate the flux of this step
           fout << Copasi->UDFunctionDB.getFunctions()[i]->getName();
           fout << " =";
-          fout << setprecision(6) << Copasi->UDFunctionDB.getFunctions()[i]->getValue();
-          fout << endl;
+          fout << std::setprecision(6) << Copasi->UDFunctionDB.getFunctions()[i]->getValue();
+          fout << std::endl;
         }
     }
 }
@@ -629,7 +627,7 @@ void COutput::repSS(ofstream &fout)
 /**
  * print the results of the stability analysis
  */
-void COutput::repStability(ofstream &fout)
+void COutput::repStability(std::ofstream &fout)
 {
   unsigned C_INT32 i, imax;
   unsigned C_INT32 j, jmax;
@@ -640,13 +638,13 @@ void COutput::repStability(ofstream &fout)
   fout << *mSolution->getEigenValues();
 
   // Set Float manipulators
-  fout.setf(ios::scientific, ios::floatfield);
-  fout.setf(ios::showpoint);
+  fout.setf(std::ios::scientific, std::ios::floatfield);
+  fout.setf(std::ios::showpoint);
   fout.width(10);
 
   // Output Jacobian Matrix
-  fout << endl << "Jacobian matrix" << endl;
-  fout << setprecision(6);
+  fout << std::endl << "Jacobian matrix" << std::endl;
+  fout << std::setprecision(6);
 
   imax = jmax = model->getIntMetab();
   for (i = 0; i < imax; i++)
@@ -654,32 +652,32 @@ void COutput::repStability(ofstream &fout)
       for (j = 0; j < jmax; j++)
         fout << Jacobian[i][j] << "  ";
 
-      fout << endl;
+      fout << std::endl;
     }
 
   // Output Eigenvalus of the Jacibian Matrix
-  fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
+  fout << std::endl << "Eigenvalues of the Jacobian matrix" << std::endl;
 
   for (i = 0; i < model->getIntMetab(); i++)
     {
       if (mSolution->getEigenValues()->getEigen_i()[i] == 0.0)
-        fout << setprecision(6) << mSolution->getEigenValues()->getEigen_r()[i];
+        fout << std::setprecision(6) << mSolution->getEigenValues()->getEigen_r()[i];
       else
         {
-          fout << setprecision(6) << mSolution->getEigenValues()->getEigen_r()[i];
-          fout << " + " << setprecision(6) << mSolution->getEigenValues()->getEigen_i()[i];
+          fout << std::setprecision(6) << mSolution->getEigenValues()->getEigen_r()[i];
+          fout << " + " << std::setprecision(6) << mSolution->getEigenValues()->getEigen_i()[i];
         }
 
-      fout << endl;
+      fout << std::endl;
     }
 
-  fout << endl;
+  fout << std::endl;
 }
 
 /**
  * print the results of the MCA
  */
-void COutput::repMCA(ofstream & C_UNUSED(fout))
+void COutput::repMCA(std::ofstream & C_UNUSED(fout))
 {
 #if 0
 
@@ -687,7 +685,7 @@ void COutput::repMCA(ofstream & C_UNUSED(fout))
     return;
   else
     {
-      fout << endl << "METABOLIC CONTROL ANALYSIS" << endl;
+      fout << std::endl << "METABOLIC CONTROL ANALYSIS" << std::endl;
       // Output elasticties
 
       if (mSolution->)
@@ -700,7 +698,7 @@ void COutput::repMCA(ofstream & C_UNUSED(fout))
 /**
  * print the titles of the time-course data file
  */
-void COutput::dynOutputTitles(ofstream &fout, string & C_UNUSED(DynName))
+void COutput::dynOutputTitles(std::ofstream &fout, std::string & C_UNUSED(DynName))
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -711,7 +709,7 @@ void COutput::dynOutputTitles(ofstream &fout, string & C_UNUSED(DynName))
 /**
  * print a line of data (one time point) on the time-course data file
  */
-void COutput::dynOutputData(ofstream &fout, string & C_UNUSED(DynName))
+void COutput::dynOutputData(std::ofstream &fout, std::string & C_UNUSED(DynName))
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -722,7 +720,7 @@ void COutput::dynOutputData(ofstream &fout, string & C_UNUSED(DynName))
 /**
  * print the titles of the steady-state data file
  */
-void COutput::sSOutputTitles(ofstream &fout, string &SSName)
+void COutput::sSOutputTitles(std::ofstream &fout, std::string &SSName)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -734,7 +732,7 @@ void COutput::sSOutputTitles(ofstream &fout, string &SSName)
 /**
  * print a line of data (one iteration) on the steady-state data file
  */
-void COutput::sSOutputData(ofstream &fout, string &SSName)
+void COutput::sSOutputData(std::ofstream &fout, std::string &SSName)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -746,7 +744,7 @@ void COutput::sSOutputData(ofstream &fout, string &SSName)
 /*
  * print the reporting data file
  */
-void COutput::copasiRep(ofstream &fout)
+void COutput::copasiRep(std::ofstream &fout)
 {
   repHeader(fout);
 
@@ -776,9 +774,9 @@ void COutput::copasiRep(ofstream &fout)
 /*
  * print the steady state data file
  */
-void COutput::copasiSS(ofstream &fout)
+void COutput::copasiSS(std::ofstream &fout)
 {
-  string SSName = "Steady-state output";
+  std::string SSName = "Steady-state output";
 
   if (SS)
     {
@@ -795,9 +793,9 @@ void COutput::copasiSS(ofstream &fout)
 /*
  * print the time course dynamic data file
  */
-void COutput::copasiDyn(ofstream &fout, int time)
+void COutput::copasiDyn(std::ofstream &fout, int time)
 {
-  string DynName = "Time-course output";
+  std::string DynName = "Time-course output";
 
   if (Dyn)
     {

@@ -4,12 +4,11 @@
  * (C) Pedro Mendes 2001
  */
 
-#define  COPASI_TRACE_CONSTRUCTION 
+#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CVersion.h"
 #include "utilities.h"
-
 
 CVersion::CVersion()
 {
@@ -47,19 +46,17 @@ C_INT32 CVersion::getVersionDevel() const
   return mDevel;
 }
 
-const string & CVersion::getVersion() const 
+const std::string & CVersion::getVersion() const
 {
   return mVersion;
 }
 
-
 void CVersion::setString()
 {
   /* if it is a development version, set a string with 3 numbers */
-  if (mDevel<300L)
+  if (mDevel < 300L)
     mVersion = StringPrint("%d.%d.%d", mMajor, mMinor, mDevel);
   /* otherwise just major and minor */
   else
     mVersion = StringPrint("%d.%d", mMajor, mMinor);
 }
-

@@ -4,9 +4,6 @@
 #include <vector>
 #include "CSpecLine.h"
 
-using std::vector;
-using std::pair;
-
 /**
  * This class describes a term in the differential equation.
  */
@@ -29,22 +26,22 @@ class CDeTerm
     /**
      * Set the rate constant
      */
-    void setRateConstant(string rate) {mRateConstant = rate; }
+    void setRateConstant(std::string rate) {mRateConstant = rate;}
 
     /**
      * Retrieve the rate constant
      */
-    string getRateConstant() { return mRateConstant; }
+    std::string getRateConstant() {return mRateConstant;}
 
     /**
      * Set the multiplier
      */
-    void setMultiplier(C_FLOAT64 multiplier) {mMultiplier = multiplier; }
+    void setMultiplier(C_FLOAT64 multiplier) {mMultiplier = multiplier;}
 
     /**
      * Get the multiplier
      */
-    C_FLOAT64 getMultiplier() { return mMultiplier; }
+    C_FLOAT64 getMultiplier() {return mMultiplier;}
 
     /**
      * Set the sign
@@ -53,12 +50,12 @@ class CDeTerm
     /**
      * Retrieve the sign
      */
-    C_INT32 getSign() { return mSign; }
+    C_INT32 getSign() {return mSign;}
 
     /**
      * Add an element to the vector of tokens describing the rate
      */
-    void addElement(Type type, string token);
+    void addElement(Type type, std::string token);
     /**
      * Remove an element from the stack
      */
@@ -66,38 +63,38 @@ class CDeTerm
     /**
      * Extract the top level metabolites in this DeTerm
      */
-    string getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multiplicity);
+    std::string getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multiplicity);
     /**
      * Return the size of the token stack
      */
-    C_INT32 size() { return mTokenStack.size(); }
+    C_INT32 size() {return mTokenStack.size();}
 
     /**
      * Access the stack at a given position
      */
-    string operator[](unsigned C_INT32 index);
+    std::string operator[](unsigned C_INT32 index);
     /**
      * Return the full description string. This will have been modified by the end.
      */
-    string getDescription();
+    std::string getDescription();
     /**
      * Do things like strip out the multiplier and determine the rate constant
      */
-    void compile(vector<CNameVal> &rates);
+    void compile(std::vector< CNameVal> &rates);
     /**
      * Get the Token Stack
      */
-    const vector<pair<Type, string>* > & getTokenStack() const { return mTokenStack; }
+    const std::vector< std::pair< Type, std::string>* > & getTokenStack() const {return mTokenStack;}
 
   private:
     /**
      * The stack of tokens making up the term
      */
-    vector<pair<Type, string>* > mTokenStack;
+    std::vector< std::pair< Type, std::string>* > mTokenStack;
     /**
      * The top level metabolites in this term. Each metabolite has a name and a multiplicity.
      */
-    vector<pair<string, C_INT32>*> mTopLevelMetabolites;
+    std::vector< std::pair< std::string, C_INT32>*> mTopLevelMetabolites;
     /**
      * The sign
      */
@@ -109,26 +106,26 @@ class CDeTerm
     /**
      * The rate constant
      */
-    string mRateConstant;
+    std::string mRateConstant;
 
-    friend ostream & operator<<(ostream &os, const CDeTerm & d)
+    friend std::ostream & operator<<(std::ostream &os, const CDeTerm & d)
     {
-      os << "RateConstant =   " << d.mRateConstant << endl
-      << "Sign =           " << d.mSign << endl
-      << "StoiCoeficient = " << d.mMultiplier << endl;
-      os << "TokenStack :" << endl;
+      os << "RateConstant =   " << d.mRateConstant << std::endl
+      << "Sign =           " << d.mSign << std::endl
+      << "StoiCoeficient = " << d.mMultiplier << std::endl;
+      os << "TokenStack :" << std::endl;
 
       unsigned int i;
 
       for (i = 0; i < d.mTokenStack.size(); i++)
         os << "  " << i << ": Type = '" << d.mTokenStack[i]->first
-        << "', String = '" << d.mTokenStack[i]->second << "'" << endl;
+        << "', String = '" << d.mTokenStack[i]->second << "'" << std::endl;
 
-      os << "Metabolites :" << endl;
+      os << "Metabolites :" << std::endl;
 
       for (i = 0; i < d.mTopLevelMetabolites.size(); i++)
         os << "  " << i << ": Metabolite = '" << d.mTopLevelMetabolites[i]->first
-        << "', Multiplicity = '" << d.mTopLevelMetabolites[i]->second << "'" << endl;
+        << "', Multiplicity = '" << d.mTopLevelMetabolites[i]->second << "'" << std::endl;
 
       return os;
     }

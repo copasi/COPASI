@@ -12,10 +12,7 @@
 #include <string>
 
 class CReadConfig;
-
 class CWriteConfig;
-
-using std::string;
 
 class CMethodParameter
   {
@@ -26,7 +23,7 @@ class CMethodParameter
     /**
      *  The name of the attribute
      */
-    string mName;
+    std::string mName;
 
     /**
      *  The value of the attribute
@@ -42,7 +39,7 @@ class CMethodParameter
      * @param "const string &" name (Default = "")
      * @param "const double &" value (Default = 0.0)
      */
-    CMethodParameter(const string & name = "",
+    CMethodParameter(const std::string & name = "",
                      const double & value = 0.0);
 
     /**
@@ -60,13 +57,13 @@ class CMethodParameter
      * Set name of the parameter
      * @param "const string &" name
      */
-    void setName(const string & name);
+    void setName(const std::string & name);
 
     /**
      * Retrieve the name of the parameter
      * @return "const string &" mName
      */
-    const string & getName() const;
+    const std::string & getName() const;
 
     /**
      * Set the value of the parameter

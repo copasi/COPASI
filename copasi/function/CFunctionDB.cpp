@@ -119,17 +119,17 @@ C_INT32 CFunctionDB::saveOld(CWriteConfig &configbuffer)
   return Fail;
 }
 
-void CFunctionDB::setFilename(const string & filename)
+void CFunctionDB::setFilename(const std::string & filename)
 {
   mFilename = filename;
 }
 
-string CFunctionDB::getFilename() const
-  {
-    return mFilename;
-  }
+std::string CFunctionDB::getFilename() const
+{
+  return mFilename;
+}
 
-CFunction * CFunctionDB::dBLoad(const string & functionName)
+CFunction * CFunctionDB::dBLoad(const std::string & functionName)
 {
   CFunction Function;
   CFunction * pFunction = NULL;
@@ -184,16 +184,16 @@ CFunction * CFunctionDB::dBLoad(const string & functionName)
 }
 
 void CFunctionDB::add
-  (CFunction * function)
-  {
-    mLoadedFunctions.add(function);
-  }
+(CFunction * function)
+{
+  mLoadedFunctions.add(function);
+}
 
 // void CFunctionDB::dBDelete(const string & functionName)
 // {
-// }
+//}
 
-CFunction * CFunctionDB::findFunction(const string & functionName)
+CFunction * CFunctionDB::findFunction(const std::string & functionName)
 {
   unsigned C_INT32 i;
 
@@ -204,7 +204,7 @@ CFunction * CFunctionDB::findFunction(const string & functionName)
   return NULL;
 }
 
-CFunction * CFunctionDB::findLoadFunction(const string & functionName)
+CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
 {
   unsigned C_INT32 i;
 
@@ -216,7 +216,7 @@ CFunction * CFunctionDB::findLoadFunction(const string & functionName)
 }
 
 CCopasiVectorNS < CFunction > & CFunctionDB::loadedFunctions()
-{ return mLoadedFunctions; }
+{return mLoadedFunctions;}
 
 CCopasiVectorN < CFunction >
 CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,

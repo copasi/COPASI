@@ -208,7 +208,7 @@ int ReactionsWidget1::isName(QString setValue)
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
 
   CReaction *reactn1;
-  reactn1 = reactions[(string) setValue];
+  reactn1 = reactions[(std::string) setValue];
 
   if (reactn1 != NULL)
     {
@@ -248,7 +248,7 @@ void ReactionsWidget1::loadName(QString setValue)
   QHeader *tableHeader2 = table->verticalHeader();
 
   ComboBox1->clear();
-  reactn = reactions[(string)setValue];
+  reactn = reactions[(std::string)setValue];
 
   LineEdit1->setText(reactn->getName().c_str());
   Reaction1_Name = new QString(reactn->getName().c_str());
@@ -356,7 +356,7 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   CCopasiVector < CReaction::CId2Metab > & react3z = reactn->getId2Modifiers();
-  vector < CMetab * > & Metabolites = mModel->getMetabolites();
+  std::vector < CMetab * > & Metabolites = mModel->getMetabolites();
   CMetab * Metabolite;
   z = 0;
 
@@ -413,13 +413,13 @@ void ReactionsWidget1::slotBtnCancelClicked()
 void ReactionsWidget1::slotBtnOKClicked()
 {
   //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
-  string filename = ((string) name.latin1()) + ".gps";
+  std::string filename = ((std::string) name.latin1()) + ".gps";
   CWriteConfig *Rtn = new CWriteConfig(filename);
   /*This code is to save the changes in the reaction*/
   /*
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
   CReaction *reactn2;
-  reactn2 = reactions[(string)name.latin1()];
+  reactn2 = reactions[(std::string)name.latin1()];
   CChemEq * chem;
   chem = & reactn1->getChemEq();
   chem->setChemicalEquation(chemical_reaction->latin1());
@@ -437,11 +437,11 @@ void ReactionsWidget1::slotBtnOKClicked()
 void ReactionsWidget1::slotCheckBoxClicked()
 {
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-  reactn1 = reactions[(string)name.latin1()];
+  reactn1 = reactions[(std::string)name.latin1()];
   CChemEq * chemEq1;
 
   chemEq1 = & reactn1->getChemEq();
-  string chemEq2 = chemEq1->getChemicalEquationConverted();
+  std::string chemEq2 = chemEq1->getChemicalEquationConverted();
   QString chemical_reaction = chemEq2.c_str();
   TriLogic reversible;
   if (reactn1->isReversible())
@@ -465,7 +465,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
       chemical_reaction = chemical_reaction.replace(i, 2, "=");
       reversible = TriTrue;
     }
-  const string chemEq3 = chemical_reaction.latin1();
+  const std::string chemEq3 = chemical_reaction.latin1();
   chemEq1->setChemicalEquation(chemEq3);
   reactn1->setChemEq(chemEq3);
 
@@ -494,7 +494,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
-  const string & p1 = p2.latin1();
+  const std::string & p1 = p2.latin1();
   CFunction * function = Copasi->FunctionDB.findLoadFunction(p1);
   CFunctionParameters &functionParameters = function->getParameters();
 
@@ -503,11 +503,11 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   int count_parameters = 0;
   int count_modifiers = 0;
 
-  string usagetypes[20];
-  string substrate_name[20];
-  string product_name[20];
-  string modifier_name[20];
-  string parameter_name[20];
+  std::string usagetypes[20];
+  std::string substrate_name[20];
+  std::string product_name[20];
+  std::string modifier_name[20];
+  std::string parameter_name[20];
   unsigned int count = 0;
 
   //for clearing the values of the table
@@ -556,7 +556,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 
   for (unsigned int i = 0; i < functionParameters.size(); i++)
     {
-      string p4 = functionParameters[i]->getUsage();
+      std::string p4 = functionParameters[i]->getUsage();
       usagetypes[i] = p4;
 
       if (p4 == "SUBSTRATE")
@@ -637,7 +637,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
           line++;
         }
 
-      //vector < CMetab * > metabolites = mModel->getMetabolites();
+      //std::vector < CMetab * > metabolites = mModel->getMetabolites();
       //  C_INT32 noOfMetabolitesRows = metabolites.size();
       //  CMetab *metab;
       //  QStringList comboEntries1;
@@ -664,10 +664,10 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 void ReactionsWidget1::slotLineEditChanged()
 {
   const QString & chemreactn = LineEdit2->text();
-  const string & changed_chemical_reaction = chemreactn.latin1();
+  const std::string & changed_chemical_reaction = chemreactn.latin1();
   CCopasiVectorNS < CReaction > & reactions1 = mModel->getReactions();
   CReaction *reactn1;
-  reactn1 = reactions1[(string)name];
+  reactn1 = reactions1[(std::string)name];
   CChemEq * chemEq1;
   chemEq1 = & reactn1->getChemEq();
   bool status;

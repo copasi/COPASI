@@ -20,7 +20,7 @@ class CState;
 class CTrajectoryMethod : public CMethodParameterList
   {
   public:
-    static const string TypeName[];
+    static const std::string TypeName[];
 
     // Attributes
   public:

@@ -6,7 +6,7 @@
 #include <list>
 #include "copasi.h"
 #include "CSpecLine.h"
-#include "CDeTerm.h"
+#include "CDeTerm.h" 
 /**
  * CSpec2Model
  *
@@ -30,8 +30,8 @@
  */
 
 class CSpec2Model
-{
- public:
+  {
+  public:
     //Lifecycle methods
 
     /**
@@ -44,7 +44,7 @@ class CSpec2Model
      * will read the contents of the specified file.  
      * @param filename The name of the spec file to process.
      */
-    CSpec2Model(string filename);
+    CSpec2Model(std::string filename);
 
     /**
      * The destructor
@@ -66,13 +66,13 @@ class CSpec2Model
      * Prints the input file, used to test that input was correctly read
      */
     void printInput();
- private:
+  private:
     // Private operations
-    
+
     /**
      * Determine the type of an input line.
      */
-    void determineType(string line);
+    void determineType(std::string line);
 
     /**
      * Extract and instantiate compartments.
@@ -114,7 +114,7 @@ class CSpec2Model
      * Extract the terms of the DEs, and process them
      */
     void processDETerms();
- private:
+  private:
     /**
      * Adds the contents of a file to CSpec2Model
      */
@@ -135,7 +135,7 @@ class CSpec2Model
     /**
      * Parse a line
      */
-    C_INT32 parseLine(string line);
+    C_INT32 parseLine(std::string line);
     /**
      * Return the left hand side metabolite in a differential equation
      */
@@ -149,18 +149,18 @@ class CSpec2Model
      * @param The string description of the DE.
      * @return A vector of pointers to CDeTerm describing the stack.
      */
-    vector<CDeTerm *> createTermStack(string str);
+    std::vector< CDeTerm *> createTermStack(std::string str);
     /**
      * Find a reaction in the model based on its name.
      * @param str The name of the reaction to find.
      * @return The reaction found
      */
-    CReaction *findReaction(string);
+    CReaction *findReaction(std::string);
     /**
      * Expand any functions found in the rate.
      * @return The expanded rate.
      */
-    string expandRate(CDeTerm *term);
+    std::string expandRate(CDeTerm *term);
     /**
      * Adjusts the level of parentheses encountered; used internally by
      * createTermStack to determine term boundaries.
@@ -170,7 +170,7 @@ class CSpec2Model
      */
     C_INT32 adjustLevel(C_INT32 level, C_INT32 type);
 
-    /** 
+    /**
      * Add a metabolite to the given reaction, with default values for num_change and multiplicity
      * @param react The CReaction to which the metabolite is added.
      * @param metab The metabolite to add
@@ -182,43 +182,42 @@ class CSpec2Model
      * @param mtab_name The name of the metabolite
      * @return A pointer to the metabolite
      */
-    CMetab *findMetabolite(string metab_name);
+    CMetab *findMetabolite(std::string metab_name);
 
-
- private:
+  private:
     /**
      * The name of the specification file
      */
-    string mSpecFileName;
+    std::string mSpecFileName;
     /**
      * The contents of the specification file.
      */
-    vector<string> mSpecContents;
+    std::vector< std::string> mSpecContents;
     /**
      * The contents again, annotated
      */
-    vector<CSpecLine> mSpecLines;
+    std::vector< CSpecLine> mSpecLines;
     /**
      * The differential equation contents, for further processing
      */
-    vector<CBaseEqn> mDeVector;
+    std::vector< CBaseEqn> mDeVector;
     /**
      * The moiety equation contents, for further processing
      */
-    vector<CBaseEqn> mMoietyVector;
+    std::vector< CBaseEqn> mMoietyVector;
     /**
      * The constants, which are later plugged into rates or moiety equations
      */
-    vector<CNameVal> mConstVector;
+    std::vector< CNameVal> mConstVector;
     /**
      * The rate constants, used later to create reactions and 
      * to parse the differential equations.
      */
-    vector<CNameVal> mRateVector;
+    std::vector< CNameVal> mRateVector;
     /**
      * A pointer to the model being constructed.
      */
     CModel *mModel;
-};
+  };
 
 #endif // COPASI_Spec2Model

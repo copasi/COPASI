@@ -13,14 +13,10 @@
 
 #include "utilities/utilities.h"
 
-using std::string;
-using std::ostream;
-using std::endl;
-
 class CFunctionParameter
   {
   public:
-    static const string DataTypeName[];
+    static const std::string DataTypeName[];
 
     //Attributes
 
@@ -35,7 +31,7 @@ class CFunctionParameter
     /**
      *  The name of the parameter. 
      */
-    string mName;
+    std::string mName;
 
     /**
      *  The data type of the parameter this may be one of INT16, INT32, 
@@ -49,7 +45,7 @@ class CFunctionParameter
      *  implication for CFunction but it might be used in derived classes.
      *  Possible usage is SUBSTRATE, PRODUCT, MODIFIER, or PARAMETER
      */
-    string mUsage;
+    std::string mUsage;
 
   public:
     /**
@@ -69,7 +65,7 @@ class CFunctionParameter
      *  @param "const CFunctionParameter::DataType &" type
      *  @param "const string &" usage
      */
-    CFunctionParameter(const string & name, const DataType & type, const string & usage);
+    CFunctionParameter(const std::string & name, const DataType & type, const std::string & usage);
 
     /**
      *  Destructor
@@ -102,13 +98,13 @@ class CFunctionParameter
      *  Retrieves the name of the parameter
      *  @return  "const string" & name
      */
-    const string & getName() const;
+    const std::string & getName() const;
 
     /**
      *  Sets the name of the parameter
      *  @param "const string" & name
      */
-    void setName(const string & name);
+    void setName(const std::string & name);
 
     /**
      *  Retrieves the data type of the parameter
@@ -126,23 +122,23 @@ class CFunctionParameter
      *  Retrieves the usage of the parameter
      *  @return "const string" & usage
      */
-    const string & getUsage() const;
+    const std::string & getUsage() const;
 
     /**
      *  Sets the usage of the parameter
      *  @param "const string" & usage
      */
-    void setUsage(const string & usage);
+    void setUsage(const std::string & usage);
 
     /**
      * insert operator
      */
-    friend ostream & operator<<(ostream &os, const CFunctionParameter & d)
+    friend std::ostream& operator<<(std::ostream &os, const CFunctionParameter & d)
     {
       os << "CFunctionParameter: "
       << d.mName
       << " mType " << d.mType
-      << " mUsage " << d.mUsage << endl;
+      << " mUsage " << d.mUsage << std::endl;
 
       return os;
     }

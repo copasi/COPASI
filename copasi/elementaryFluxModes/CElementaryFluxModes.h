@@ -20,9 +20,6 @@
 
 class CEFMAlgorithm;
 
-using std::ostream;
-using std::endl;
-
 class CElementaryFluxModes
   {
     // Attributes
@@ -32,13 +29,13 @@ class CElementaryFluxModes
      *  The resulting elementary flux modes
      * @supplierCardinality 0..*
      */
-    vector < CFluxMode > mFluxModes;
+    std::vector< CFluxMode > mFluxModes;
 
     /**
      *  Vector to keep track of the rearangements neccessary to put the
      *  reversible reactions to the top of Stoi
      */
-    vector < unsigned C_INT32 > mIndex;
+    std::vector< unsigned C_INT32 > mIndex;
 
     /**
      *  The COPASI model we are acting on.
@@ -67,7 +64,7 @@ class CElementaryFluxModes
     void calculate(const CModel * model);
 
     // Friend functions
-    friend ostream &operator<<(ostream &os, const CElementaryFluxModes &A)
+    friend std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A)
     {
       /* Get the reactions from the model */
       const CCopasiVectorNS < CReaction > & Reaction = A.mModel->getReactions();
@@ -76,7 +73,7 @@ class CElementaryFluxModes
       unsigned C_INT32 j, jmax;
 
       os << "Elementary Flux Modes of Model \""
-      << A.mModel->getTitle() << "\":" << endl;
+      << A.mModel->getTitle() << "\":" << std::endl;
 
       for (i = 0; i < imax; i++)
         {
@@ -87,7 +84,7 @@ class CElementaryFluxModes
           else
             os << "(irreversible)";
 
-          os << endl;
+          os << std::endl;
 
           jmax = A.mFluxModes[i].size();
 
@@ -96,10 +93,10 @@ class CElementaryFluxModes
               os << "   " << A.mFluxModes[i].getMultiplier(j) << " * "
               << Reaction[A.mIndex[A.mFluxModes[i].getReaction(j)]]
               ->getName()
-              << endl;
+              << std::endl;
             }
 
-          os << endl;
+          os << std::endl;
         }
 
       return os;

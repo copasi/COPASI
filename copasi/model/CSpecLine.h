@@ -8,7 +8,6 @@
 #include "model/CMetab.h"
 
 class CModel;
-
 class CDeTerm;
 
 /**
@@ -17,8 +16,6 @@ class CDeTerm;
  * This class represents a line of input from the spec file. It contains
  * a type identifier and a string, representing the actual input.
  */
-using std::vector;
-
 class CSpecLine
   {
   public:
@@ -27,14 +24,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,   // Comments
-      DE,    // Differential equations
-      EQN,   // Moiety specification equations
-      INIT,   // Initializations
-      CNST,   // Constant assignments
-      VOL,   // Volume assignment
-      CPT,   // Compartment volume assignments
-      RATE,   // Rate constant assignments
+      CMNT,    // Comments
+      DE,     // Differential equations
+      EQN,    // Moiety specification equations
+      INIT,    // Initializations
+      CNST,    // Constant assignments
+      VOL,    // Volume assignment
+      CPT,    // Compartment volume assignments
+      RATE,    // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 
@@ -46,7 +43,7 @@ class CSpecLine
     /**
      * The named constructor
      */
-    CSpecLine(C_INT32 type, string contents);
+    CSpecLine(C_INT32 type, std::string contents);
 
     /**
      * Destructor
@@ -57,14 +54,14 @@ class CSpecLine
      * Retrieve the type.
      * @return The type
      */
-    C_INT32 getType() { return mType; }
+    C_INT32 getType() {return mType;}
 
-    static string convertedType(int type);
+    static std::string convertedType(int type);
 
     /**
      * Retrieve the content string
      */
-    string &getString() { return mContents; }
+    std::string &getString() {return mContents;}
 
     /**
      * Extract and return the left hand side of the contents string. 
@@ -72,19 +69,19 @@ class CSpecLine
      * this is stripped from the returned string.
      * @return The (stripped) left hand side string
     */
-    string extractLeft();
+    std::string extractLeft();
 
     /**
      * Extract and return the right hand side of the contents string. 
      * @return The right hand side string
     */
-    string extractRight();
+    std::string extractRight();
 
     /**
      * Extract and return the compartment name/number on the right hand side
      * @return The compartment specifier
      */
-    string extractCpt();
+    std::string extractCpt();
 
   private:
     /**
@@ -94,10 +91,10 @@ class CSpecLine
     /**
      * The contents
      */
-    string mContents;
+    std::string mContents;
 
     // private operations
-    string stripBlanks(string instr);
+    std::string stripBlanks(std::string instr);
   };
 
 /**
@@ -112,7 +109,7 @@ class CBaseEqn
     /**
      * Named constructor
      */
-    CBaseEqn(string comp, string metab, string contents)
+    CBaseEqn(std::string comp, std::string metab, std::string contents)
         : mCompartment(comp), mMetabolite(metab), mContents(contents) {}
 
     /**
@@ -124,19 +121,19 @@ class CBaseEqn
      * Retrieve the string containing the name of the compartment.
      * @return The compartment name.
      */
-    string getCompartment() const { return mCompartment; }
+    std::string getCompartment() const {return mCompartment;}
 
     /**
      * Retrieve the string containing the name of the metabolite
      * @return The metabolite name
      */
-    string getMetabolite() const { return mMetabolite; }
+    std::string getMetabolite() const {return mMetabolite;}
 
     /**
      * Retrieve the string containing the contents of the right hand side.
      * @return The RHS contents.
      */
-    string getContents() const{ return mContents; }
+    std::string getContents() const{return mContents;}
 
     /**
      * Overloads the == operator. Equality is true if the strings
@@ -145,9 +142,9 @@ class CBaseEqn
     bool operator==(const CBaseEqn &rhs) const;
 
   private:
-    string mCompartment;
-    string mMetabolite;
-    string mContents;
+    std::string mCompartment;
+    std::string mMetabolite;
+    std::string mContents;
   };
 
 /**
@@ -161,7 +158,7 @@ class CNameVal
     /**
      * Named constructor
      */
-    CNameVal(string name, C_FLOAT64 val): mName(name), mVal(val) {};
+    CNameVal(std::string name, C_FLOAT64 val): mName(name), mVal(val) {};
 
     /*
      * Destructor
@@ -172,19 +169,19 @@ class CNameVal
      * Return the name
      * @return The name
      */
-    string getName() const { return mName; }
+    std::string getName() const {return mName;}
 
     /**
      * Return the value
      * @return The value field
      */
-    C_FLOAT64 getVal() const { return mVal; }
+    C_FLOAT64 getVal() const {return mVal;}
 
   private:
     /**
      * The name
      */
-    string mName;
+    std::string mName;
     /**
      * The value
      */
@@ -208,18 +205,18 @@ class CTempMetab
     CTempMetab(CMetab *metab) : mMetab(metab), mMultiplicity(0), mNumChange(0) {}
 
     CTempMetab(const CTempMetab &rhs);
-    CMetab *getMetab() { return mMetab; }
-    C_INT32 getMultiplicity() { return mMultiplicity; }
-    void setMultiplicity(C_INT32 mult) { mMultiplicity = mult; }
-    C_INT32 getNumChange() { return mNumChange; }
-    void setNumChange(C_INT32 num) { mNumChange = num; }
+    CMetab *getMetab() {return mMetab;}
+    C_INT32 getMultiplicity() {return mMultiplicity;}
+    void setMultiplicity(C_INT32 mult) {mMultiplicity = mult;}
+    C_INT32 getNumChange() {return mNumChange;}
+    void setNumChange(C_INT32 num) {mNumChange = num;}
 
   private:
     CMetab *mMetab;
     C_INT32 mMultiplicity;
     C_INT32 mNumChange;
 
-    friend ostream & operator<<(ostream &os, const CTempMetab & m)
+    friend std::ostream & operator<<(std::ostream &os, const CTempMetab & m)
     {
       os << "Name = '" << m.mMetab->getName();
       os << "', Multiplicty = '" << m.mMultiplicity;
@@ -231,52 +228,52 @@ class CTempMetab
 class CTempReaction
   {
   public:
-    CTempReaction(string name) : mName(name) {}
-    string getName() { return mName; }
-    void setDescription(string desc) { mRateDescription = desc; }
-    string getDescription() { return mRateDescription; }
+    CTempReaction(std::string name) : mName(name) {}
+    std::string getName() {return mName;}
+    void setDescription(std::string desc) {mRateDescription = desc;}
+    std::string getDescription() {return mRateDescription;}
 
     CTempMetab *addMetabolite(CMetab *metab);
-    vector <CTempMetab> &getMetabs() { return mMetabs; }
+    std::vector< CTempMetab> &getMetabs() {return mMetabs;}
 
     void compile(CModel *model,
-                 const vector<CNameVal> & rates,
-                 const vector<CNameVal> & constants);
+                 const std::vector< CNameVal> & rates,
+                 const std::vector< CNameVal> & constants);
     void setIdentifiers(const CDeTerm *deTerm);
 
   private:
-    bool isIn(vector<CTempMetab> & metabs, const string & target);
-    C_FLOAT64 getParameterValue(const string & name,
-                                const vector<CNameVal> & rates,
-                                const vector<CNameVal> & constants);
+    bool isIn(std::vector< CTempMetab> & metabs, const std::string & target);
+    C_FLOAT64 getParameterValue(const std::string & name,
+                                const std::vector< CNameVal> & rates,
+                                const std::vector< CNameVal> & constants);
 
   private:
-    string mName;
-    string mRateDescription;
-    vector<CTempMetab> mMetabs;
-    vector<CTempMetab> mSubstrates;
-    vector<CTempMetab> mProducts;
-    vector<string> mIdentifiers;
+    std::string mName;
+    std::string mRateDescription;
+    std::vector< CTempMetab> mMetabs;
+    std::vector< CTempMetab> mSubstrates;
+    std::vector< CTempMetab> mProducts;
+    std::vector< std::string> mIdentifiers;
 
-    friend ostream & operator<<(ostream & os, const CTempReaction & r)
+    friend std::ostream & operator<<(std::ostream & os, const CTempReaction & r)
     {
-      os << "TempReaction = '" << r.mName << "'" << endl;
-      os << "  Rate       = '" << r.mRateDescription << "'" << endl;
+      os << "TempReaction = '" << r.mName << "'" << std::endl;
+      os << "  Rate       = '" << r.mRateDescription << "'" << std::endl;
       unsigned int i;
-      os << "  Metabolites:" << endl;
+      os << "  Metabolites:" << std::endl;
 
       for (i = 0; i < r.mMetabs.size(); i++)
-        os << "    " << i << ": " << r.mMetabs[i] << endl;
+        os << "    " << i << ": " << r.mMetabs[i] << std::endl;
 
-      os << "  Substrates: " << endl;
+      os << "  Substrates: " << std::endl;
 
       for (i = 0; i < r.mSubstrates.size(); i++)
-        os << "    " << i << ": " << r.mSubstrates[i] << endl;
+        os << "    " << i << ": " << r.mSubstrates[i] << std::endl;
 
-      os << "  Products:   " << endl;
+      os << "  Products:   " << std::endl;
 
       for (i = 0; i < r.mProducts.size(); i++)
-        os << "    " << i << ": " << r.mProducts[i] << endl;
+        os << "    " << i << ": " << r.mProducts[i] << std::endl;
 
       return os;
     }
@@ -287,13 +284,13 @@ class CTempReactionSet
   public:
     CTempReactionSet();
     void addReaction(CTempReaction *temp_react);
-    CTempReaction *findReaction(string name);
-    vector<CTempReaction> getReactions() { return mReactions; }
-    C_INT32 size() { return mReactions.size(); }
-    CTempReaction &operator[](C_INT32 i) { return mReactions[i]; }
+    CTempReaction *findReaction(std::string name);
+    std::vector< CTempReaction> getReactions() {return mReactions;}
+    C_INT32 size() {return mReactions.size();}
+    CTempReaction &operator[](C_INT32 i) {return mReactions[i];}
 
   private:
-    vector<CTempReaction> mReactions;
+    std::vector< CTempReaction> mReactions;
   };
 
 #endif // Copasi_SpecLine

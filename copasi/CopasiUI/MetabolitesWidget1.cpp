@@ -221,7 +221,7 @@ int MetabolitesWidget1::isName(QString setValue)
       return 0;
     }
 
-  vector < CMetab * > metabolites = mModel->getMetabolites();
+  std::vector < CMetab * > metabolites = mModel->getMetabolites();
 
   //Now filling the table.
   CMetab *metab1;
@@ -244,7 +244,7 @@ int MetabolitesWidget1::isName(QString setValue)
   if (myValue != -1)
     {
       metab1 = metabolites[myValue];
-      //metab1 = metabolites[(string)setValue];
+      //metab1 = metabolites[(std::string)setValue];
 
       if (metab1 != NULL)
         {
@@ -277,7 +277,7 @@ void MetabolitesWidget1::loadName(QString setValue)
       return;
     }
 
-  vector < CMetab * > metabolites = mModel->getMetabolites();
+  std::vector < CMetab * > metabolites = mModel->getMetabolites();
 
   name = setValue;
   CMetab *metab;
@@ -373,10 +373,10 @@ void MetabolitesWidget1::slotBtnCancelClicked()
 void MetabolitesWidget1::slotBtnOKClicked()
 {
   QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit the changes?");
-  string filename = ((string) name.latin1()) + ".gps";
+  std::string filename = ((std::string) name.latin1()) + ".gps";
   CWriteConfig *Met = new CWriteConfig(filename);
 
-  vector < CMetab * > metabolites = mModel->getMetabolites();
+  std::vector < CMetab * > metabolites = mModel->getMetabolites();
   CMetab *metab;
   metab = metabolites[myValue];
 

@@ -2,7 +2,6 @@
 #define COPASI_CRandom
 
 #include <string>
-using std::string;
 
 class CRandom
   {
@@ -20,7 +19,7 @@ class CRandom
     /**
      * A userfriendly string representation for the above enum
      */
-    static const string TypeName[];
+    static const std::string TypeName[];
 
   protected:
     /**

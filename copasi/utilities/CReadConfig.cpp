@@ -17,8 +17,6 @@
 #include "CReadConfig.h"
 #include "model/model.h"
 
-using namespace std;
-
 // char *initInputBuffer(char *name);
 // static C_INT32 GetFileSize(const char *name);
 
@@ -32,7 +30,7 @@ CReadConfig::CReadConfig(void)
   initInputBuffer();
 }
 
-CReadConfig::CReadConfig(const string& name)
+CReadConfig::CReadConfig(const std::string& name)
 {
   // initialize everything
   mFilename = name;
@@ -53,21 +51,21 @@ C_INT32 CReadConfig::fail()
   // return the failure state
   return mFail;
 }
-string CReadConfig::getVersion() {return mVersion;}
+std::string CReadConfig::getVersion() {return mVersion;}
 
 void CReadConfig::getDefaults()
 {}
 
-C_INT32 CReadConfig::getVariable(const string& name,
-                                 const string& type,
+C_INT32 CReadConfig::getVariable(const std::string& name,
+                                 const std::string& type,
                                  void * pout,
                                  enum Mode mode)
 {
   char c[] = " ";
   C_INT32 equal = 0;
-  string Line;
-  string Name;
-  string Value;
+  std::string Line;
+  std::string Name;
+  std::string Value;
 
   mode = (mode & CReadConfig::LOOP) ? CReadConfig::ALL : mode;
 
@@ -158,7 +156,7 @@ C_INT32 CReadConfig::getVariable(const string& name,
   // Return the value depending on the type
   if (type == "string")
     {
-      *(string *) pout = Value;
+      *(std::string *) pout = Value;
     }
   else if (type == "C_FLOAT64")
     {
@@ -214,7 +212,7 @@ C_INT32 CReadConfig::getVariable(const string& name,
           Value += Line;
         }
 
-      *(string *) pout = Value;
+      *(std::string *) pout = Value;
     }
   else
     {
@@ -226,13 +224,13 @@ C_INT32 CReadConfig::getVariable(const string& name,
   return mFail;
 }
 
-C_INT32 CReadConfig::getVariable(const string& name,
-                                 const string& type,
+C_INT32 CReadConfig::getVariable(const std::string& name,
+                                 const std::string& type,
                                  void * pout1,
                                  void * pout2,
                                  enum Mode mode)
 {
-  string Value;
+  std::string Value;
 
   if ((mFail = getVariable(name, "string", &Value, mode)))
     return mFail;
@@ -243,10 +241,10 @@ C_INT32 CReadConfig::getVariable(const string& name,
 
       komma = Value.find(",");
 
-      string Type = Value.substr(0, komma);
+      std::string Type = Value.substr(0, komma);
       * (char*) pout1 = (char) atoi(Type.c_str());
 
-      string Subtype = Value.substr(komma + 1);
+      std::string Subtype = Value.substr(komma + 1);
       * (char*) pout2 = (char) atoi(Subtype.c_str());
     }
   else
@@ -264,7 +262,7 @@ C_INT32 CReadConfig::initInputBuffer()
   char c[] = " ";
 
   // read the configuration file into the configuration buffer
-  ifstream File(mFilename.c_str());
+  std::ifstream File(mFilename.c_str());
 
   if (File.fail())
     CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 2,
@@ -295,14 +293,14 @@ C_INT32 CReadConfig::initInputBuffer()
   return mFail;
 }
 
-string CReadConfig::lookAhead()
+std::string CReadConfig::lookAhead()
 {
-  streampos pos = mBuffer.tellg();
+  std::streampos pos = mBuffer.tellg();
 
-  string Line;
+  std::string Line;
   mBuffer >> Line;
 
-  mBuffer.seekg(pos - mBuffer.tellg(), ios::cur);
+  mBuffer.seekg(pos - mBuffer.tellg(), std::ios::cur);
 
   return Line.substr(0, Line.find("="));
 }
@@ -310,7 +308,7 @@ string CReadConfig::lookAhead()
 void CReadConfig::rewind()
 {
   mBuffer.clear();
-  mBuffer.seekg(0, ios::beg);
+  mBuffer.seekg(0, std::ios::beg);
   mLineNumber = 0;
 
   return;

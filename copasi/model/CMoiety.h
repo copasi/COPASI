@@ -21,7 +21,7 @@ class CMoiety
     /**
      *
      */
-    string mName;
+    std::string mName;
 
     /**
      *  Number of Particles of Moietiy.
@@ -55,7 +55,7 @@ class CMoiety
     /**
      *
      */
-    CMoiety(const string & name);
+    CMoiety(const std::string & name);
 
     /**
      *  Destructor
@@ -74,13 +74,13 @@ class CMoiety
      *
      */
     void add
-      (C_FLOAT64 value, CMetab & metabolite);
+    (C_FLOAT64 value, CMetab & metabolite);
 
     /**
      *
      */
     void add
-      (C_FLOAT64 value, CMetab * metabolite);
+    (C_FLOAT64 value, CMetab * metabolite);
 
     /**
      *
@@ -90,7 +90,7 @@ class CMoiety
     /**
      *
      */
-    void cleanup(const string & name);
+    void cleanup(const std::string & name);
 
     /**
      *
@@ -106,13 +106,13 @@ class CMoiety
     /**
      *
      */
-    void change(const string & name,
+    void change(const std::string & name,
                 C_FLOAT64 value);
 
     /**
      *
      */
-    void setName(const string name);
+    void setName(const std::string name);
 
     /**
      *
@@ -122,12 +122,12 @@ class CMoiety
     /**
      *
      */
-    string getName() const;
+    std::string getName() const;
 
     /**
      *
      */
-    string getDescription() const;
+    std::string getDescription() const;
 
     /**
      *

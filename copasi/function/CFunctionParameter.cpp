@@ -9,7 +9,7 @@
 #include "copasi.h"
 #include "CFunctionParameter.h"
 
-const string CFunctionParameter::DataTypeName[] =
+const std::string CFunctionParameter::DataTypeName[] =
   {
     "INT16", "INT32", "UINT16", "UINT32", "FLOAT32", "FLOAT64",
     "VINT16", "VINT32", "VUINT16", "VUINT32", "VFLOAT32", "VFLOAT64"
@@ -31,9 +31,9 @@ CFunctionParameter::CFunctionParameter(const CFunctionParameter & src)
   mUsage = src.mUsage;
 }
 
-CFunctionParameter::CFunctionParameter(const string &name,
+CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const enum CFunctionParameter::DataType &type,
-                                       const string &usage)
+                                       const std::string &usage)
 {
   CONSTRUCTOR_TRACE;
   mName = name;
@@ -64,25 +64,25 @@ void CFunctionParameter::save(CWriteConfig & configbuffer)
   configbuffer.setVariable("Usage", "string", &mUsage);
 }
 
-void CFunctionParameter::setName(const string & name)
+void CFunctionParameter::setName(const std::string & name)
 {
   mName = name;
 }
 
-const string & CFunctionParameter::getName() const
-  {
-    return mName;
-  }
+const std::string & CFunctionParameter::getName() const
+{
+  return mName;
+}
 
-void CFunctionParameter::setUsage(const string & usage)
+void CFunctionParameter::setUsage(const std::string & usage)
 {
   mUsage = usage;
 }
 
-const string & CFunctionParameter::getUsage() const
-  {
-    return mUsage;
-  }
+const std::string & CFunctionParameter::getUsage() const
+{
+  return mUsage;
+}
 
 void CFunctionParameter::setType(const CFunctionParameter::DataType & type)
 {
@@ -92,6 +92,6 @@ void CFunctionParameter::setType(const CFunctionParameter::DataType & type)
 const CFunctionParameter::DataType &
 
 CFunctionParameter::getType() const
-  {
-    return mType;
-  }
+{
+  return mType;
+}

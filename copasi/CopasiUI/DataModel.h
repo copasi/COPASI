@@ -17,16 +17,10 @@
 #define MODEL 3
 
 class CModel;
-
 class CReadConfig;
-
 class Folder;
 
-using std::ifstream;
-
-template <class T>
-
-class DataModel: public Subject
+template <class T> class DataModel: public Subject
   {
   private:
     Tree<T> myTree; // create the  object of the tree
@@ -51,12 +45,12 @@ class DataModel: public Subject
     void removeData(T*);
 
     void loadModel(const char* fileName);
-    inline CModel* getModel(){ return model; }
-    inline void setModelUpdate(bool value){modelUpdate = value; }
-    inline bool getModelUpdate(){ return modelUpdate; }
-    // inline int getStatus(){return STATUS; }
-    inline Node<T>* getRoot(){ return myTree.getRoot(); }
-    inline Node<T>* getData(){ return last; }
+    inline CModel* getModel(){return model;}
+    inline void setModelUpdate(bool value){modelUpdate = value;}
+    inline bool getModelUpdate(){return modelUpdate;}
+    // inline int getStatus(){return STATUS;}
+    inline Node<T>* getRoot(){return myTree.getRoot();}
+    inline Node<T>* getData(){return last;}
   };
 
 template <class T>
@@ -180,7 +174,7 @@ void DataModel<T>::populateData(char* fileName)
   const int MAX = 80;
   char str1[MAX];
 
-  ifstream in(fileName);
+  std::ifstream in(fileName);
 
   while (!in.eof())
     {

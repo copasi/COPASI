@@ -45,7 +45,7 @@ COutputEvent::COutputEvent(CSteadyStateTask & C_UNUSED(ss))
  * @param time refers to the output interval
  * @param list refer to the while output list of this model
  */
-void COutputEvent::print(COutputList list, ofstream &fout)
+void COutputEvent::print(COutputList list, std::ofstream &fout)
 {
   list.copasiDyn(fout, mTime);
 }
@@ -57,7 +57,7 @@ void COutputEvent::print(COutputList list, ofstream &fout)
  */
 void COutputEvent::print(CSteadyStateTask & C_UNUSED(ss),
                          COutputList list,
-                         ofstream &fout)
+                         std::ofstream &fout)
 {list.copasiSS(fout);}
 
 /**

@@ -28,7 +28,7 @@ class CModel
 
       private:
         const CMatrix< C_FLOAT64 > & mA;
-        const vector < CMetab * > & mIndependent;
+        const std::vector< CMetab * > & mIndependent;
         static const elementType mZero;
         static const elementType mUnit;
 
@@ -39,7 +39,7 @@ class CModel
          * @param const vector< CMetab * > & independent
          */
         CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-                        const vector< CMetab * > & independent);
+                        const std::vector< CMetab * > & independent);
 
         /**
          * Destructor.
@@ -88,8 +88,8 @@ class CModel
              * @param const CLinkMatrixView & A
              * @return ostream & os
              */
-            friend ostream &operator<<(ostream &os,
-                                       const CLinkMatrixView & A)
+            friend std::ostream &operator<<(std::ostream &os,
+                                            const CLinkMatrixView & A)
               {
                 unsigned C_INT32 i, imax = A.numRows();
                 unsigned C_INT32 j, jmax = A.numCols();
@@ -109,12 +109,12 @@ class CModel
     /**
      *  title of the model
      */
-    string mTitle;
+    std::string mTitle;
 
     /**
      *  Comments
      */
-    string mComments;
+    std::string mComments;
 
     // metabolites
 
@@ -128,22 +128,22 @@ class CModel
     /**
      *  Vector of reference to metabolites
      */
-    vector < CMetab * > mMetabolites;
+    std::vector< CMetab * > mMetabolites;
 
     /**
      *  Vector of reference to metabolites in reduced model representation
      */
-    vector < CMetab * > mMetabolitesX;
+    std::vector< CMetab * > mMetabolitesX;
 
     /**
      *  Vector of reference to independent metabolites
      */
-    vector < CMetab * > mMetabolitesInd;
+    std::vector< CMetab * > mMetabolitesInd;
 
     /**
      *  Vector of reference to dependent metabolites
      */
-    vector < CMetab * > mMetabolitesDep;
+    std::vector< CMetab * > mMetabolitesDep;
 
     /**
      *  for array of steps
@@ -155,21 +155,21 @@ class CModel
     /**
      *  Vector of reference to reactions in reduced model representation.
      */
-    vector < CReaction * > mStepsX;
+    std::vector< CReaction * > mStepsX;
 
     /**
      *  Vector of reference to independend reactions.
      */
-    vector < CReaction * > mStepsInd;
+    std::vector< CReaction * > mStepsInd;
 
     /**
      *  Vector of fluxes of the reactions.
      *  Note: The fluxes are the order corresponding to mStepX
      */
-    vector <const C_FLOAT64 *> mFluxes;
-    vector <const C_FLOAT64 *> mFluxesX;
-    vector <const C_FLOAT64 *> mScaledFluxes;
-    vector <const C_FLOAT64 *> mScaledFluxesX;
+    std::vector<const C_FLOAT64 *> mFluxes;
+    std::vector<const C_FLOAT64 *> mFluxesX;
+    std::vector<const C_FLOAT64 *> mScaledFluxes;
+    std::vector<const C_FLOAT64 *> mScaledFluxesX;
 
     /**
      *  Transition time 
@@ -201,12 +201,12 @@ class CModel
     /**
      * Vector for storing the row interchanges during LU-Decomposition
      */
-    vector < unsigned C_INT32 > mRowLU;
+    std::vector< unsigned C_INT32 > mRowLU;
 
     /**
      * Vector for storing the column interchanges during LU-Decomposition
      */
-    vector < unsigned C_INT32 > mColLU;
+    std::vector< unsigned C_INT32 > mColLU;
 
     /**
      *   This matrix stores L
@@ -221,7 +221,7 @@ class CModel
     /**
      *  Unit for substance quantities
      */
-    string mQuantityUnitName;
+    std::string mQuantityUnitName;
 
     /**
      *  Factor to convert from quantity to particle number
@@ -338,19 +338,19 @@ class CModel
      * Retrieves the vector of independent metabolites.
      * @return vector < CMetab * > metabolites
      */
-    vector < CMetab * > & getMetabolitesInd();
+    std::vector< CMetab * > & getMetabolitesInd();
 
     /**
      * Retrieves the vector of dependent metabolites.
      * @return vector < CMetab * > metabolites
      */
-    vector < CMetab * > & getMetabolitesDep();
+    std::vector< CMetab * > & getMetabolitesDep();
 
     /**
      * Retrieves the vector of metabolites at it is used in the reduced model.
      * @return vector < CMetab * > metabolites
      */
-    vector < CMetab * > & getMetabolitesX();
+    std::vector< CMetab * > & getMetabolitesX();
 
     /**
      *  Get the number of total metabolites
@@ -436,7 +436,7 @@ class CModel
      * Retreives the vector of steps in the order used by the reduced model.
      * @return vector < CReaction * > & reactions
      */
-    vector < CReaction * > & getReactionsX();
+    std::vector< CReaction * > & getReactionsX();
 
     // Added by Yongqun He
     /**
@@ -455,25 +455,25 @@ class CModel
      * Return the comments of this model Wei Sun 
      * @return string
      */
-    string getComments() const;
+    std::string getComments() const;
 
     /**
      * Return the title of this model
      * @return string
      */
-    string getTitle() const;
+    std::string getTitle() const;
 
     /**
      * Set the title of this model
      * @param "const string &" title title for this model
      */
-    void setTitle(const string &title);
+    void setTitle(const std::string &title);
 
     /**
      * Set the title of this model
      * @param "const string &" comments comments for this model
      */
-    void setComments(const string &comments);
+    void setComments(const std::string &comments);
 
     /**
      * Return the compartments of this model
@@ -485,7 +485,7 @@ class CModel
      * Return the metabolites of this model
      * @return vector < CMetab * > 
      */
-    vector < CMetab * > & getMetabolites();
+    std::vector< CMetab * > & getMetabolites();
 
     /**
      *  Get the Stoichiometry Matrix of this Model
@@ -506,28 +506,28 @@ class CModel
     /**
      * Returns the index of the metab
      */
-    C_INT32 findMetab(const string & Target);
+    C_INT32 findMetab(const std::string & Target);
 
     /**
      * Returns the index of the step
      */
-    C_INT32 findStep(const string & Target);
+    C_INT32 findStep(const std::string & Target);
 
     /**
      * Returns the index of the compartment
      */
-    C_INT32 findCompartment(const string & Target);
+    C_INT32 findCompartment(const std::string & Target);
 
     /**
      * Returns the index of the Moiety
      */
-    C_INT32 findMoiety(string &Target);
+    C_INT32 findMoiety(std::string &Target);
 
     /**
      * Returns the mStepsX of this model
      * @return vector < CStep * > 
      */
-    vector < CReaction * > & getStepsX();
+    std::vector< CReaction * > & getStepsX();
 
     /**
      * Get the LU decomposition matrix of this model
@@ -611,12 +611,12 @@ class CModel
      * the unit the conversion factors are set accordingly. 
      * Otherwise they are set to 1.
      */
-    void setQuantityUnit(const string & name);
+    void setQuantityUnit(const std::string & name);
 
     /**
      *  Get the Name of the unit for substance quantities
      */
-    string getQuantityUnit() const;
+    std::string getQuantityUnit() const;
 
     /**
      *  Get the conversion factor quantity -> number
@@ -635,8 +635,8 @@ class CModel
      * @param iconc initial concentration of metabolite
      * @param status metabolite status (see CMetab for valid values)
      */
-    C_INT32 addMetabolite(const string & comp,
-                          const string & name,
+    C_INT32 addMetabolite(const std::string & comp,
+                          const std::string & name,
                           C_FLOAT64 iconc,
                           C_INT16 status);
 
@@ -647,7 +647,7 @@ class CModel
      * @return C_INT32 number of compartments in the model 
      *   (after insertion) or -1 if failed
      */
-    C_INT32 addCompartment(string &name, C_FLOAT64 vol);
+    C_INT32 addCompartment(std::string &name, C_FLOAT64 vol);
 
     /**
      * Add a new rection to the model
@@ -660,13 +660,13 @@ class CModel
      * Retrieve the metabolite permutation vector
      * @return const vector <unsigned C_INT32> & permutation
      */
-    const vector <unsigned C_INT32> & getMetabolitePermutation() const;
+    const std::vector<unsigned C_INT32> & getMetabolitePermutation() const;
 
     /**
      * Retrieve the reaction permutation vector
      * @return const vector <unsigned C_INT32> & permutation
      */
-    const vector <unsigned C_INT32> & getReactionPermutation() const;
+    const std::vector<unsigned C_INT32> & getReactionPermutation() const;
 
     /**
      * Calculates the particle numbers of the dependent

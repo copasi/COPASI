@@ -16,8 +16,6 @@
 #include "copasi.h"
 #include "CGA.h"
 
-using namespace std;
-
 //default constructor
 CGA::CGA()
 {
@@ -34,7 +32,7 @@ CGA::CGA()
   mWins = NULL;
 
   setMethodParameterNumber(3);
-  vector <COptAlgorithmParameter> & AlgorithmParameters = getMethodParameters();
+  std::vector <COptAlgorithmParameter> & AlgorithmParameters = getMethodParameters();
 
   AlgorithmParameters.resize(3);
   //#1:
@@ -59,7 +57,7 @@ bool CGA::initialize()
   mMax = *(mRealProblem.getParameterMax());
   mParamNum = mRealProblem.getParameterNum();
 
-  vector <COptAlgorithmParameter> &AlgmParams = getMethodParameters();
+  std::vector <COptAlgorithmParameter> &AlgmParams = getMethodParameters();
 
   for (i = 0; i < getMethodParameterNumber(); i++)
     {
@@ -163,7 +161,7 @@ CGA& CGA::operator=(const CGA& source)
 
 // clean up
 int CGA::cleanup()
-{ return 0; }
+{return 0;}
 
 //destructor
 CGA::~CGA()
@@ -285,7 +283,7 @@ double CGA::evaluate(unsigned int i)
     }
 
   //for debugging purpose
-  //cout << "Debug: mRealProblem.getParameterNum() is:" << mRealProblem.getParameterNum() << endl;
+  //std::cout << "Debug: mRealProblem.getParameterNum() is:" << mRealProblem.getParameterNum() << std::endl;
 
   mRealProblem.calculate();
 
@@ -522,7 +520,7 @@ void CGA::select(int method)
 
   switch (method)
     {
-    case 1:      // parent-offspring competition
+    case 1:       // parent-offspring competition
 
       for (i = mPopSize; i < 2*mPopSize; i++)
         {
@@ -534,7 +532,7 @@ void CGA::select(int method)
 
       break;
 
-    case 2:      // tournament competition
+    case 2:       // tournament competition
       // compete with 20% of the population
       nopp = mPopSize / 5;
       // but at least one
@@ -657,18 +655,18 @@ void CGA::dumpData(unsigned int i)
   //  {
   //  cout << "debugopt.dat cannot be opened!" << endl;
   // exit(1);
-  // }
+  //}
   //finalout << "#" << i << "\t" << mCandX[mBest] << endl;
-  cout << "#" << i << "\t" << mCandX[mBest] << endl;
+  std::cout << "#" << i << "\t" << mCandX[mBest] << std::endl;
 
   for (int j = 0; j < mParamNum; j++)
     {
       //finalout << mIndV[mBest][j] << "\t";
-      cout << mIndV[mBest][j] << "\t";
+      std::cout << mIndV[mBest][j] << "\t";
     }
 
-  //finalout << endl;
-  // finalout << endl;
+  //finalout << std::endl;
+  // finalout << std::endl;
   //finalout.close();
 }
 
@@ -688,15 +686,15 @@ int CGA::optimise()
   //mMax = *(mRealProblem.getParameterMax());
   //mParamNum = mRealProblem.getParameterNum();
 
-  cout << "mMin = " << mMin << ", mMax= " << mMax << ", mParamNum = " << mParamNum << endl;
-  cout << "mRealProblem.getParameterNum() = " << mRealProblem.getParameterNum() << endl;
+  std::cout << "mMin = " << mMin << ", mMax= " << mMax << ", mParamNum = " << mParamNum << std::endl;
+  std::cout << "mRealProblem.getParameterNum() = " << mRealProblem.getParameterNum() << std::endl;
 
   initOptRandom();
 
   /*
   //YOHE: new 
 
-  vector <COptAlgorithmParameter> *AlgmParams = getMethodParameters();
+  std::vector <COptAlgorithmParameter> *AlgmParams = getMethodParameters();
 
   for (int i=0; i < (getMethodParameterNumber()); i++)
   {
@@ -717,15 +715,15 @@ int CGA::optimise()
   u100 = u300 = u500 = 0;
 
   //Display layout of all MPI processes
-  cout << endl;
-  cout << "Initial populaiton has successfully created!!!!!" << endl;
+  std::cout << std::endl;
+  std::cout << "Initial populaiton has successfully created!!!!!" << std::endl;
 
   // and store that value
   bx = getBestCandidate();
 
-  cout << "-----------------------------best result at each generation---------------------" << endl;
-  cout << "Generation\t" << "Best candidate value for object function\t" << "Display " << mParamNum << " parameters" << endl;
-  cout << endl;
+  std::cout << "-----------------------------best result at each generation---------------------" << std::endl;
+  std::cout << "Generation\t" << "Best candidate value for object function\t" << "Display " << mParamNum << " parameters" << std::endl;
+  std::cout << std::endl;
 
   int psize = getPopSize();
 
@@ -733,8 +731,8 @@ int CGA::optimise()
 
   for (i = 0; i < getGeneration(); i++)
     {
-      cout << endl;
-      cout << "GA is processing at generation " << i << endl;
+      std::cout << std::endl;
+      std::cout << "GA is processing at generation " << i << std::endl;
 
       dumpData(i);
       // replicate the individuals
@@ -785,22 +783,22 @@ int CGA::optimise()
     }
 
   ftime(&after);
-  ofstream tout("time.dat");
+  std::ofstream tout("time.dat");
 
   if (!tout)
     {
-      cout << " tout cannot output!" << endl;
+      std::cout << " tout cannot output!" << std::endl;
       exit(0);
     }
 
-  tout << "CPU's Calculation Time [ms]:" << 1000*(after.time - before.time) + (after.millitm - before.millitm) << endl;
-  tout << " It has taken about " << time(NULL) - dTime << " seconds!" << endl;
+  tout << "CPU's Calculation Time [ms]:" << 1000*(after.time - before.time) + (after.millitm - before.millitm) << std::endl;
+  tout << " It has taken about " << time(NULL) - dTime << " seconds!" << std::endl;
   tout.close();
 
-  cout << endl;
-  cout << "GA has successfully done!" << endl;
-  cout << " It has taken about " << time(NULL) - dTime << " seconds!" << endl;
-  cout << "and it is ready to exit now!" << endl;
+  std::cout << std::endl;
+  std::cout << "GA has successfully done!" << std::endl;
+  std::cout << " It has taken about " << time(NULL) - dTime << " seconds!" << std::endl;
+  std::cout << "and it is ready to exit now!" << std::endl;
 
   return 0;
 }

@@ -51,7 +51,7 @@ void CTrajectoryTask::cleanup()
   pdelete(mpOutEnd);
 }
 
-void CTrajectoryTask::initializeReporting(ofstream & out)
+void CTrajectoryTask::initializeReporting(std::ofstream & out)
 {
   pdelete(mpOutInit);
   pdelete(mpOutPoint);

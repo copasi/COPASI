@@ -115,7 +115,7 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
     }
   else
     {
-      string Tmp;
+      std::string Tmp;
 
       configBuffer.getVariable("SteadyStateProblemModel", "string", &Tmp, mode);
       if (Tmp == Copasi->Model->getTitle())
@@ -139,7 +139,7 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
  */
 void CSteadyStateProblem::save(CWriteConfig & configBuffer) const
 {
-  string Tmp = mpModel->getTitle();
+  std::string Tmp = mpModel->getTitle();
   configBuffer.setVariable("SteadyStateProblemModel", "string", &Tmp);
 
   mpInitialState->save(configBuffer);

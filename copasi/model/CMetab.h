@@ -22,10 +22,6 @@ class CModel;
 #define METAB_DEPENDENT 2
 #define METAB_MOIETY 7
 
-using std::string;
-using std::ostream;
-using std::endl;
-
 class CMetab
   {
     // Attributes
@@ -33,7 +29,7 @@ class CMetab
     /**
      *  Name of the metabolite
      */
-    string mName;
+    std::string mName;
 
     /**
      *  Concentration of the metabolite as double.
@@ -109,7 +105,7 @@ class CMetab
      *  @param compartment name of the compartment the metabolite
      *     is located in.
      */ 
-    // CMetab(const string & compartment, C_INT16 status, CCompartment & name);
+    // CMetab(const std::string & compartment, C_INT16 status, CCompartment & name);
 
     /**
      *  Destructor.
@@ -165,12 +161,12 @@ class CMetab
     /**
      *  Sets the name of the metabolite.
      */
-    void setName(const string & name);
+    void setName(const std::string & name);
 
     /**
      *  Retrieve the name of the metabolite.
      */
-    const string & getName() const;
+    const std::string & getName() const;
 
     /**
      *
@@ -309,24 +305,24 @@ class CMetab
     /**
      * insert operator
      */
-    friend ostream & operator<<(ostream &os, const CMetab & d)
+    friend std::ostream & operator<<(std::ostream &os, const CMetab & d)
     {
-      os << "    ++++CMetab: " << d.mName << endl;
-      os << "        mConcDbl " << d.mConcDbl << " mIConcDbl " << d.mIConcDbl << endl;
-      os << "        mNumberInt " << d.mNumberInt << " mINumberInt " << d.mINumberInt << endl;
-      os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << endl;
+      os << "    ++++CMetab: " << d.mName << std::endl;
+      os << "        mConcDbl " << d.mConcDbl << " mIConcDbl " << d.mIConcDbl << std::endl;
+      os << "        mNumberInt " << d.mNumberInt << " mINumberInt " << d.mINumberInt << std::endl;
+      os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << std::endl;
 
       if (d.mCompartment)
-        os << "        mCompartment == " << d.mCompartment << endl;
+        os << "        mCompartment == " << d.mCompartment << std::endl;
       else
-        os << "        mCompartment == 0 " << endl;
+        os << "        mCompartment == 0 " << std::endl;
 
       if (d.mpModel)
-        os << "        mpModel == " << d.mpModel << endl;
+        os << "        mpModel == " << d.mpModel << std::endl;
       else
-        os << "        mpModel == 0 " << endl;
+        os << "        mpModel == 0 " << std::endl;
 
-      os << "    ----CMetab " << endl;
+      os << "    ----CMetab " << std::endl;
 
       return os;
     }
@@ -359,7 +355,7 @@ class CMetabOld
     /**
      *  Name of the metabolite
      */
-    string mName;
+    std::string mName;
 
     /**
      *  Concentration of the metabolite.
@@ -411,7 +407,7 @@ class CMetabOld
 
     C_INT32 getIndex() const;
 
-    string getName() const;
+    std::string getName() const;
   };
 
 /**

@@ -17,11 +17,9 @@
 #include "utilities/utilities.h"
 
 template < class CType >
-class CCopasiVector;
+      class CCopasiVector;
 class CState;
 class CSteadyStateTask;
-
-using std::ofstream;
 
 class COutputLine
   {
@@ -50,7 +48,7 @@ class COutputLine
      * The name of outputline from configuration file, 
      *  such as "Interactive time course"
      */
-    string mName;
+    std::string mName;
 
   public:
 
@@ -108,12 +106,12 @@ class COutputLine
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 load(CReadConfig & configbuffer, string& searchName);
+    C_INT32 load(CReadConfig & configbuffer, std::string& searchName);
 
     /**
      *  Dummy method.
      */
-    string getName() const {return mName; }
+    std::string getName() const {return mName;}
 
     /**
      *  Complie the mpValue in each output line
@@ -123,38 +121,38 @@ class COutputLine
     /**
      * print the titles of the steady-state data file
      */
-    void sSOutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    void sSOutputTitles(std::ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
     /**
      * print the mpValue of each Object in the steady-state data file
      */
-    void sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    void sSOutputData(std::ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
     /**
      * print the titles of the time couse data file
      */
-    void dynOutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    void dynOutputTitles(std::ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
     /**
      * print the mpValue of Object in the time course data file
      */
-    void dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    void dynOutputData(std::ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
     /**
      *  Sets the name of this line, (For example: Interactive time course)
      *  @param title constant reference to a string.
      */
-    void setName(string LineName);
+    void setName(std::string LineName);
 
     /**
      *  Assign the pointer to each datum object in the output line for time course
      */
-    void compile(const string & name, CModel *model, CState *state);
+    void compile(const std::string & name, CModel *model, CState *state);
 
     /**
      *  Assign the pointer to each datum object in the output line for steady State
      */
-    void compile(const string & name, CModel *model, CSteadyStateTask *soln);
+    void compile(const std::string & name, CModel *model, CSteadyStateTask *soln);
   };
 
 #endif // COutputLine

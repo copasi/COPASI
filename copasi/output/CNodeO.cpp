@@ -30,7 +30,7 @@ CNodeO::CNodeO(char type, char subtype)
   setIndex(-1);
 }
 
-CNodeO::CNodeO(const string & name)
+CNodeO::CNodeO(const std::string & name)
 {
   CONSTRUCTOR_TRACE;
   setType(N_IDENTIFIER);

@@ -26,7 +26,7 @@ class CCompartment
     /**
      *  Name of the compartment.
      */
-    string mName;
+    std::string mName;
 
     /**
      *  Volume of the compartment.
@@ -65,7 +65,7 @@ class CCompartment
      *  @param name name of the comnpartment.
      *  @param volume volume of the compartment.
      */
-    CCompartment(const string & name, C_FLOAT64 volume);
+    CCompartment(const std::string & name, C_FLOAT64 volume);
 
     /**
      *  Init
@@ -129,7 +129,7 @@ class CCompartment
      *  @return mName
      *  @see mName
      */
-    string getName() const;
+    std::string getName() const;
 
     /**
      *  Returns a C_FLOAT64 with the volume of this compartment.
@@ -162,7 +162,7 @@ class CCompartment
      *  @param name string with the name of the compartment.
      *  @see mName
      */
-    void setName(const string & name);
+    void setName(const std::string & name);
 
     /**
      *  Sets the volume of this compartment.
@@ -176,12 +176,12 @@ class CCompartment
      */
     void * getVolumeAddr();
 
-    friend ostream & operator<<(ostream &os, const CCompartment & d)
+    friend std::ostream & operator<<(std::ostream &os, const CCompartment & d)
     {
       os << "++++CCompartment: " << d.mName << " mVolume " << d.mVolume
-      << " mVolumeInv " << d.mVolumeInv << endl;
-      os << "    CCompartment.mMetabolites " << endl << d.mMetabolites;
-      os << "----CCompartment " << endl;
+      << " mVolumeInv " << d.mVolumeInv << std::endl;
+      os << "    CCompartment.mMetabolites " << std::endl << d.mMetabolites;
+      os << "----CCompartment " << std::endl;
 
       return os;
     }

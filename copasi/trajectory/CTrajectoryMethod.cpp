@@ -14,7 +14,7 @@
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
 
-const string CTrajectoryMethod::TypeName[] =
+const std::string CTrajectoryMethod::TypeName[] =
   {
     "unspecified",
     "deterministic",
@@ -53,7 +53,7 @@ CTrajectoryMethod::CTrajectoryMethod() :
     mTypeEnum(CTrajectoryMethod::unspecified),
     mpCurrentState(NULL),
     mpProblem(NULL)
-{CONSTRUCTOR_TRACE; }
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  Copy constructor.
@@ -64,16 +64,16 @@ CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src):
     mTypeEnum(src.mTypeEnum),
     mpCurrentState(src.mpCurrentState),
     mpProblem(src.mpProblem)
-{CONSTRUCTOR_TRACE; }
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  Destructor.
  */
 CTrajectoryMethod::~CTrajectoryMethod()
-{DESTRUCTOR_TRACE; }
+{DESTRUCTOR_TRACE;}
 
 const CTrajectoryMethod::Type & CTrajectoryMethod::getTypeEnum() const
-  { return mTypeEnum; }
+{return mTypeEnum;}
 
 /**
  *  Set a pointer to the current state.
@@ -81,7 +81,7 @@ const CTrajectoryMethod::Type & CTrajectoryMethod::getTypeEnum() const
  *  @param "CState *" currentState
  */
 void CTrajectoryMethod::setCurrentState(CState * currentState)
-{mpCurrentState = currentState; }
+{mpCurrentState = currentState;}
 
 /**
  *  Set a pointer to the problem.
@@ -89,7 +89,7 @@ void CTrajectoryMethod::setCurrentState(CState * currentState)
  *  @param "CTrajectoryProblem *" problem
  */
 void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
-{mpProblem = problem; }
+{mpProblem = problem;}
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
@@ -101,7 +101,7 @@ void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
  *  @return "const double" actualDeltaT
  */
 const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
-{ return 0.0; }
+{return 0.0;}
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
@@ -114,4 +114,4 @@ const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
  */
 const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT),
                                      const CState * C_UNUSED(initialState))
-{ return 0.0; }
+{return 0.0;}

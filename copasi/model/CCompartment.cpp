@@ -35,7 +35,7 @@ CCompartment::CCompartment(const CCompartment & src)
     mMetabolites[i]->setCompartment(this);
 }
 
-CCompartment::CCompartment(const string & name,
+CCompartment::CCompartment(const std::string & name,
                            C_FLOAT64 volume)
 {
   CONSTRUCTOR_TRACE;
@@ -49,9 +49,9 @@ CCompartment::CCompartment(const string & name,
 
   mVolumeInv = 1 / volume;
 }
-CCompartment::~CCompartment() {DESTRUCTOR_TRACE; }
+CCompartment::~CCompartment() {DESTRUCTOR_TRACE;}
 // void CCompartment::initialize() {}
-void CCompartment::cleanup() {mMetabolites.cleanup(); }
+void CCompartment::cleanup() {mMetabolites.cleanup();}
 
 CCompartment & CCompartment::operator=(const CCompartment & rhs)
 {
@@ -129,33 +129,33 @@ C_INT32 CCompartment::saveOld(CWriteConfig & configbuffer)
 
 void CCompartment::saveSBML(std::ofstream &fout)
 {
-  string str;
+  std::string str;
   FixSName(mName, str);
   fout << "\t\t\t<compartment name=\"" << str << "\"";
-  fout << " volume=\"" << mVolume << "\"/>" << endl;
+  fout << " volume=\"" << mVolume << "\"/>" << std::endl;
 }
 
-string CCompartment::getName() const
-  {
-    return mName;
-  }
+std::string CCompartment::getName() const
+{
+  return mName;
+}
 
 const C_FLOAT64 & CCompartment::getVolume() const
-  {
-    return mVolume;
-  }
+{
+  return mVolume;
+}
 
 const C_FLOAT64 & CCompartment::getVolumeInv() const
-  {
-    return mVolumeInv;
-  }
+{
+  return mVolumeInv;
+}
 
 CCopasiVectorNS < CMetab > & CCompartment::metabolites()
 {
   return mMetabolites;
 }
 
-void CCompartment::setName(const string & name)
+void CCompartment::setName(const std::string & name)
 {
   mName = name;
   //if (!isValidName()) fatalError();
@@ -180,9 +180,9 @@ void CCompartment::addMetabolite(CMetab &metabolite)
 }
 
 C_INT16 CCompartment::isValidName() const
-  {
-    return (mName.find_first_of(" ") == string::npos);
-  }
+{
+  return (mName.find_first_of(" ") == std::string::npos);
+}
 
 void * CCompartment::getVolumeAddr()
 {

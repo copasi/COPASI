@@ -50,7 +50,7 @@
 //
 
 template <class Matrix, class Subscript>
-      int LUfactor(Matrix &A, vector< Subscript > & row, vector< Subscript > & col)
+      int LUfactor(Matrix &A, std::vector< Subscript > & row, std::vector< Subscript > & col)
   {
     Subscript M = A.numRows();
     Subscript N = A.numCols();
