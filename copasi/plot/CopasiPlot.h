@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:18 $
+   $Date: 2004/06/20 19:57:37 $
    End CVS Header */
 
 // the plot object for copasi
@@ -57,7 +57,8 @@ class CopasiPlot : public ZoomPlot
     void mouseReleased(const QMouseEvent &e);
 
     // hides or redisplays the curve with the given key
-    void redrawCurve(long key);
+    //void redrawCurve(long key);
+    void toggleCurve(long curveId);
 
   private:
     //std::istream* sourcefile;

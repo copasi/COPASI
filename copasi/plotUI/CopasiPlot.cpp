@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:18 $
+   $Date: 2004/06/20 19:57:36 $
    End CVS Header */
 
 #include <qarray.h>
@@ -52,18 +52,18 @@ void CopasiPlot::createIndices(const CPlotSpec* pspec)
 CopasiPlot::CopasiPlot(const CPlotSpec* plotspec, QWidget* parent)
     : ZoomPlot(parent), zoomOn(false)
 {
+  // set up legend
+  enableLegend(TRUE);
+  setAutoLegend(TRUE); //curves have to be inserted after this is set
+  setLegendPos(Qwt::Bottom);
+
   initFromSpec(plotspec);
+
   // white background better for printing...
   setCanvasBackground(white);
 
   //  setTitle(FROM_UTF8(plotspec->getTitle()));
   setCanvasLineWidth(0);
-
-  // set up legend
-  setAutoLegend(TRUE);
-  setLegendPos(Qwt::Right);
-  //??enableLegend(TRUE);
-  //??setLegendFrameStyle(QFrame::Box|QFrame::Sunken);
 
   // signal and slot connections
   connect(this, SIGNAL(plotMousePressed(const QMouseEvent &)),
@@ -71,7 +71,7 @@ CopasiPlot::CopasiPlot(const CPlotSpec* plotspec, QWidget* parent)
   connect(this, SIGNAL(plotMouseReleased(const QMouseEvent &)),
           SLOT(mouseReleased(const QMouseEvent&)));
   connect(this, SIGNAL(legendClicked(long)),
-          SLOT(redrawCurve(long)));
+          SLOT(toggleCurve(long)));
 }
 
 bool CopasiPlot::initFromSpec(const CPlotSpec* plotspec)
@@ -143,22 +143,22 @@ void CopasiPlot::updatePlot()
 
 //-----------------------------------------------------------------------------
 
-void CopasiPlot::drawCurveInterval(long curveId, int from, int to)
+/*void CopasiPlot::drawCurveInterval(long curveId, int from, int to)
 {
   // taken from the realtime_plot example from Qwt library...
   QwtPlotCurve *curve = CopasiPlot::curve(curveId);
   if (curve == 0)
     return;
-
+ 
   QPainter p(canvas());
-
+ 
   p.setClipping(TRUE);
   p.setClipRect(canvas()->rect());
-
+ 
   curve->draw(&p,
               canvasMap(curve->xAxis()), canvasMap(curve->yAxis()),
               from, to);
-}
+}*/
 
 //-----------------------------------------------------------------------------
 
@@ -198,30 +198,14 @@ void CopasiPlot::mouseReleased(const QMouseEvent &e)
 
 //-----------------------------------------------------------------------------
 
-void CopasiPlot::redrawCurve(long key)
+void CopasiPlot::toggleCurve(long curveId)
 {
-  // this is the same as in the constructor
-  QColor curveColours[6] = {red, yellow, blue, green, cyan, magenta};
-
-  QPen crvPen = curvePen(key);
-  if (crvPen.color() == canvasBackground())
+  QwtPlotCurve *c = curve(curveId);
+  if (c)
     {
-      // the curve is 'hidden', so find its original colour and redraw it
-      QMemArray<long> keys = curveKeys();
-      for (unsigned int i = 0; i < keys.size(); i++)
-        if (keys.at(i) == key)
-          {
-            setCurvePen(key, QPen(curveColours[i]));
-            break;
-          }
+      c->setEnabled(!c->enabled());
+      replot();
     }
-  else
-    {
-      // hide the curve by redrawing it using the background colour
-      // NB: this could result in incomplete grids on the canvas
-      setCurvePen(key, QPen(canvasBackground()));
-    }
-  replot();
 }
 
 //-----------------------------------------------------------------------------
