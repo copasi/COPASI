@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/11 20:47:16 $
+   $Author: shoops $ 
+   $Date: 2003/11/11 21:25:01 $
    End CVS Header */
 
 /***********************************************************************
@@ -354,11 +354,11 @@ void MetabolitesWidget::slotBtnDeleteClicked()
                                             "Yes", "No", 0, 0, 1);
           switch (choice)
             {
-            case 0:   // Yes or Enter
+            case 0:    // Yes or Enter
               {
                 QString name(table->text(j, 0));
 
-                QString EffectedReactions = dataModel->getModel()->removeMetaboliteEffected(mKeys[j]);
+                QString EffectedReactions = dataModel->getModel()->removeMetaboliteEffected(mKeys[j]).c_str();
 
                 if (EffectedReactions)
                   choice = QMessageBox::warning(this, "Confirm Delete",
@@ -374,7 +374,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:   // No or Escape
+            case 1:    // No or Escape
               break;
             }
         }
