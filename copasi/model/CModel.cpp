@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.184 $
+   $Revision: 1.185 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 13:02:41 $
+   $Date: 2004/06/25 15:03:15 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,8 @@ CModel::CModel():
     mLView(mL, mMetabolitesInd),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
-    mStateTemplate()
+    mStateTemplate(),
+    mpCompileHandler(NULL)
 {
   initObjects();
 
@@ -132,8 +133,8 @@ CModel::CModel(const CModel & src):
     mLView(mL, mMetabolitesInd),
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
-    mStateTemplate()
-
+    mStateTemplate(),
+    mpCompileHandler(NULL)
 {
   CONSTRUCTOR_TRACE;
 
@@ -1686,6 +1687,12 @@ bool CModel::hasReversibleReaction() const
 
     return false;
   }
+
+void CModel::setCompileHandler(CCallbackHandler* pHandler)
+{mpCompileHandler = pHandler;}
+
+CCallbackHandler* CModel::getCompileHandlerAddr()
+{return mpCompileHandler;}
 
 //**********************************************************************
 //                   CLinkMatrixView

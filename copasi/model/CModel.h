@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 11:47:22 $
+   $Date: 2004/06/25 15:03:15 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -27,6 +27,7 @@
 class CCompartment;
 class CState;
 class CStateX;
+class CCallbackHandler;
 
 /** @dia:pos 177.081,30.2423 */
 class CModel : public CCopasiContainer
@@ -376,6 +377,8 @@ class CModel : public CCopasiContainer
      * necessary
      */
     bool mCompileIsNecessary;
+
+    CCallbackHandler * mpCompileHandler;
 
   public:
     /**
@@ -924,6 +927,16 @@ class CModel : public CCopasiContainer
     const CModel::CStateTemplate & getStateTemplate() const;
 
     bool hasReversibleReaction() const;
+
+    /**
+     * set Progress bar handler
+     **/
+    void setCompileHandler(CCallbackHandler* pHandler);
+
+    /**
+     * get address of progress bar handler
+     **/
+    CCallbackHandler* getCompileHandlerAddr();
 
   private:
 
