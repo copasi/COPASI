@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.64 $ $Author: shoops $ $Date: 2004/11/18 15:20:15 $  
+# $Revision: 1.65 $ $Author: gauges $ $Date: 2004/11/18 15:38:11 $  
 ######################################################################
 
 include(../common.pri)
@@ -122,6 +122,7 @@ HEADERS += \
            CopasiTableWidget.h \
            copasiWidget.h \
            copasiui3window.h \
+           CPlotSelectionDialog.h \
            CProgressBar.h \
            CTimeSeriesTable.h \
            DataModel.h \
@@ -197,6 +198,7 @@ SOURCES += \
            CopasiTableWidget.cpp \
            copasiWidget.cpp \
            copasiui3window.cpp \
+           CPlotSelectionDialog.cpp \
            CProgressBar.cpp \
            CTimeSeriesTable.cpp \
            DataModel.cpp \
