@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.53 $ $Author: shoops $ $Date: 2004/10/24 02:42:42 $  
+# $Revision: 1.57 $ $Author: shoops $ $Date: 2004/10/27 14:22:33 $  
 ######################################################################
 
 include(../common.pri)
@@ -87,7 +87,7 @@ contains(BUILD_OS, WIN32) {
 
 release {
   contains(BUILD_OS, Linux) {   
-    LIBS += -Wl,-lqt \
+    LIBS += -Wl,-lqt-mt \
             -Wl,-lXcursor \
             -Wl,-lXft \
             -Wl,-lfontconfig \
@@ -95,7 +95,7 @@ release {
   }
 
   contains(BUILD_OS, SunOS) {
-    LIBS += -Wl,-lqt \
+    LIBS += -Wl,-lqt-mt \
             -Wl,-lfontconfig \
             -Wl,-lpthread
   }
@@ -109,6 +109,9 @@ contains(BUILD_OS, SunOS) {
 HEADERS += \
            AboutDialog.h \
            ChemEqValidator.h \
+#           CMCAWidget.h \
+#           CMCAResultSubwidget.h \
+#           CMCAResultWidget.h \
            CReactionInterface.h \
            CReportDefinitionSelect.h \
            CompartmentSymbols.h \
@@ -129,7 +132,6 @@ HEADERS += \
            FunctionSymbols.h \
            FunctionWidget.h \
            FunctionWidget1.h \
-           MCAWidget.h \
            MetaboliteSymbols.h \
            MetabolitesWidget.h \
            MetabolitesWidget1.h \
@@ -179,6 +181,9 @@ HEADERS += \
 
 SOURCES += \
            AboutDialog.cpp \
+#           CMCAWidget.cpp \
+#           CMCAResultSubwidget.cpp \
+#           CMCAResultWidget.cpp \
            CReactionInterface.cpp \
            CReportDefinitionSelect.cpp \
            CompartmentSymbols.cpp \
@@ -201,7 +206,6 @@ SOURCES += \
            FunctionWidget1.cpp \
            listviews.cpp \
            main.cpp \
-           MCAWidget.cpp \
            MetaboliteSymbols.cpp \
            MetabolitesWidget.cpp \
            MetabolitesWidget1.cpp \
@@ -227,7 +231,7 @@ SOURCES += \
            ScanWidget.cpp \
            SliderDialog.cpp \
            SimpleSelectionDialog.cpp \
-	   simpleselectionwidget.cpp \	
+     	   simpleselectionwidget.cpp \	
            StateWidget.cpp \
            StateSubwidget.cpp \
            SteadyStateWidget.cpp \
@@ -242,7 +246,7 @@ SOURCES += \
 #FORMS +=  TimeSeriesSubwidget.ui \
 #          StateSubwidget.ui \
 #          simpleselectionwidget.ui        
-#FORMS += slidersettingsdialog.ui
+#FORMS += CMCAResultSubwidget.ui
 
 release {
   distribution.path = .
