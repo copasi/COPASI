@@ -153,12 +153,20 @@ void DataModel::populateData(char* fileName)
   std::string str1;
 
   std::ifstream in(fileName);
+  std::string delimiter("\x0a\x0d");
+  char c;
 
   while (!in.eof())
     {
-      in >> str1;
-      if (str1 == "")
-        break;
+      str1 = "";
+      while (!in.fail())
+        {
+          in.get(c);
+          if (delimiter.find(c) != std::string::npos) break;
+          str1 += c;
+        }
+
+      if (str1 == "") break;
 
       QString data(str1.c_str());
 
