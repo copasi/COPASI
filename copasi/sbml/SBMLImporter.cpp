@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/23 17:46:45 $
+   $Author: ssahle $ 
+   $Date: 2004/06/24 07:52:11 $
    End CVS Header */
 
 #include <iostream>
@@ -92,7 +92,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
   /* Create the compartments */
   //DebugFile << "Creating compartments." << std::endl;
   unsigned int num = sbmlModel->getNumCompartments();
-  for (unsigned int counter = 0; counter < num; counter++)
+  unsigned int counter;
+  for (counter = 0; counter < num; counter++)
     {
       Compartment* sbmlCompartment = sbmlModel->getCompartment(counter);
       if (sbmlCompartment == NULL)
