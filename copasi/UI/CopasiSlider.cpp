@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/25 15:15:58 $
+   $Date: 2005/02/27 15:48:43 $
    End CVS Header */
 
-#include <cmath>
+#include <math.h>
 
 #include "qlabel.h"
 #include "qstring.h"
@@ -16,11 +16,11 @@
 #include "qvbox.h"
 
 #include "CopasiSlider.h"
-#include "qtUtilities.h"
-#include "report/CCopasiObject.h"
-#include "report/CCopasiObjectReference.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "report/CCopasiObjectName.h"
+#include "qtUtilities.h" 
+//#include "report/CCopasiObject.h"
+//#include "report/CCopasiObjectReference.h"
+//#include "utilities/CCopasiParameterGroup.h"
+//#include "report/CCopasiObjectName.h"
 
 #include "icons/closeSlider.xpm"
 #include "icons/editSlider.xpm"
@@ -61,26 +61,13 @@ void CopasiSlider::updateSliderData()
 {
   if (this->mpCSlider)
     {
-      CCopasiObject* object = this->mpCSlider->getSliderObject();
-      this->mpCSlider->setSliderValue(0.0);
-      if (object->isValueDbl())
-        {
-          this->mpCSlider->setSliderValue(*(double*)object->getReference());
-        }
-      else if (object->isValueInt())
-        {
-          this->mpCSlider->setSliderValue((double)(*(int*)object->getReference()));
-        }
-      this->mpCSlider->setMinValue(0.0);
-      this->mpCSlider->setMaxValue(2*this->mpCSlider->getSliderValue());
-      this->mpCSlider->setTickNumber(100);
-      this->mpCSlider->setTickFactor(10);
       this->mpQSlider->setMinValue(0);
-      this->mpQSlider->setMaxValue(100);
+      this->mpQSlider->setMaxValue(this->mpCSlider->getTickNumber());
       this->mpQSlider->setTickInterval(1);
       this->mpQSlider->setLineStep(1);
-      this->mpQSlider->setPageStep(10);
-      this->mpQSlider->setValue((int)floor(((this->mpCSlider->getSliderValue()) / this->minorTickInterval()) + 0.5));
+      this->mpQSlider->setPageStep(this->mpCSlider->getTickFactor());
+      int value = (int)floor(((this->mpCSlider->getSliderValue() - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5);
+      this->mpQSlider->setValue(value);
       this->updateLabel();
     }
 }
@@ -92,36 +79,16 @@ C_FLOAT64 CopasiSlider::value() const
 
 void CopasiSlider::setValue(C_FLOAT64 value)
 {
-  double minValue, maxValue, tickInterval, tickNumber;
-  minValue = this->mpCSlider->getMinValue();
-  maxValue = this->mpCSlider->getMaxValue();
-  tickNumber = this->mpCSlider->getTickNumber();
-  tickInterval = (maxValue - minValue) / tickNumber;
-  CSlider::Type type = this->mpCSlider->getSliderType();
-  CCopasiObject* object = this->mpCSlider->getSliderObject();
+  double minValue = this->mpCSlider->getMinValue();
 
-  if (value < minValue)
-    {
-      value = minValue;
-    }
-  else if (value > maxValue)
-    {
-      value = maxValue;
-    }
   this->mpCSlider->setSliderValue(value);
-  this->mpQSlider->setValue((int)floor(((value - minValue) / tickInterval) + 0.5));
-  if (type == CSlider::Integer || type == CSlider::UnsignedInteger)
-    {
-      C_INT32* reference = (C_INT32*)(((CCopasiObjectReference<C_INT32>*)object)->getReference());
 
-      *reference = (C_INT32)floor(value + 0.5);
-    }
-  else if (type == CSlider::Float || type == CSlider::UnsignedFloat)
-    {
-      C_FLOAT64* reference = (C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)object)->getReference());
+  /* reget value in case it was outside range and got set to minValue or
+   * maxValue */
+  value = this->mpCSlider->getSliderValue();
 
-      *reference = value;
-    }
+  this->mpQSlider->setValue((int)floor(((value - minValue) / this->minorTickInterval()) + 0.5));
+
   this->updateLabel();
 }
 
@@ -177,35 +144,18 @@ void CopasiSlider::setObject(CCopasiObject* object)
 
 void CopasiSlider::setMaxValue(C_FLOAT64 value)
 {
-  double minValue = this->mpCSlider->getMinValue();
-  if (value <= minValue) return;
-
   this->mpCSlider->setMaxValue(value);
 
-  double maxValue = this->mpCSlider->getMaxValue();
-  if (this->mpCSlider->getSliderValue() > maxValue)
-    {
-      this->mpCSlider->setSliderValue(maxValue);
-    }
-
-  this->mpQSlider->setValue((int)floor(((this->mpCSlider->getSliderValue() - minValue) / this->minorTickInterval()) + 0.5));
+  this->mpQSlider->setValue((int)floor(((this->mpCSlider->getSliderValue() - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5));
 
   this->updateLabel();
 }
 
 void CopasiSlider::setMinValue(C_FLOAT64 value)
 {
-  if (value >= this->mpCSlider->getMaxValue()) return;
-
   this->mpCSlider->setMinValue(value);
 
-  double minValue = this->mpCSlider->getMinValue();
-  if (this->mpCSlider->getSliderValue() < minValue)
-    {
-      this->mpCSlider->setSliderValue(minValue);
-    }
-
-  this->mpQSlider->setValue((int)floor(((this->mpCSlider->getSliderValue() - minValue) / this->minorTickInterval()) + 0.5));
+  this->mpQSlider->setValue((int)floor(((this->mpCSlider->getSliderValue() - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5));
 
   this->updateLabel();
 }
@@ -239,36 +189,11 @@ void CopasiSlider::updateLabel()
 
 void CopasiSlider::sliderValueChanged(int value)
 {
-  double currValue, minValue, tickInterval;
-  minValue = this->mpCSlider->getMinValue();
-  tickInterval = this->minorTickInterval();
-  currValue = minValue + value * tickInterval;
-  CSlider::Type type = this->mpCSlider->getSliderType();
-  CCopasiObject* object = this->mpCSlider->getSliderObject();
+  this->mpCSlider->setSliderValue(this->mpCSlider->getMinValue() + value * this->minorTickInterval());
 
-  if (type == CSlider::Integer || type == CSlider::UnsignedInteger)
-    {
-      C_INT32* reference = (C_INT32*)(((CCopasiObjectReference<C_INT32>*)object)->getReference());
-
-      *reference = (C_INT32)floor(currValue + 0.5);
-    }
-  else if (type == CSlider::Float || type == CSlider::UnsignedFloat)
-    {
-      if (object->isReference() && object->getObjectParent())
-        {
-          object->getObjectParent()
-          ->setValueOfNamedReference(object->getObjectName() , currValue);
-        }
-      else
-        {
-          C_FLOAT64* reference = (C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)object)->getReference());
-
-          *reference = currValue;
-        }
-    }
   this->updateLabel();
 
-  emit valueChanged(currValue);
+  emit valueChanged(this->mpCSlider->getSliderValue());
 }
 
 void CopasiSlider::qSliderReleased()
@@ -293,42 +218,21 @@ void CopasiSlider::setType(CSlider::Type type)
 
 void CopasiSlider::updateValue(bool modifyRange)
 {
-  CCopasiObject* object = this->mpCSlider->getSliderObject();
-  double currValue = this->mpCSlider->getSliderValue();
-  double value, minValue, maxValue;
-  maxValue = this->mpCSlider->getMaxValue();
-  minValue = this->mpCSlider->getMinValue();
+  double value = this->mpCSlider->getSliderValue();
+  double maxValue = this->mpCSlider->getMaxValue();
+  double minValue = this->mpCSlider->getMinValue();
 
-  if (object->isValueDbl())
+  if ((value > maxValue) || (value < minValue))
     {
-      value = *(double*)object->getReference();
-    }
-  else if (object->isValueInt())
-    {
-      value = (double)(*(int*)object->getReference());
-    }
-  if (value != currValue)
-    {
-      if ((value > maxValue) || (value < minValue))
+      if (!modifyRange)
         {
-          if (!modifyRange)
-            {
-              this->mValueOutOfRange = true;
-            }
-          else
-            {
-              this->mValueOutOfRange = false;
-              if (value < minValue)
-                {
-                  this->setMinValue(value / 2.0);
-                }
-              else
-                {
-                  this->setMaxValue(value*2.0);
-                }
-            }
+          this->mValueOutOfRange = true;
         }
-      this->setValue(value);
+      else
+        {
+          this->mValueOutOfRange = false;
+          this->mpCSlider->resetRange();
+        }
     }
 }
 

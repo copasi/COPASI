@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/26 18:58:55 $
+   $Date: 2005/02/27 15:48:43 $
    End CVS Header */
 
 #include <iostream>
@@ -165,6 +165,7 @@ void SliderDialog::createNewSlider()
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       CSlider* pCSlider = pSettingsDialog->getSlider();
+      pCSlider->setAssociatedEntityKey(object->getKey());
       if (pCSlider)
         {
           if (!this->equivalentSliderExists(pCSlider))

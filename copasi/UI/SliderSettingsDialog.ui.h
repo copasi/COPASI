@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/25 15:15:58 $
+   $Date: 2005/02/27 15:48:43 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,7 +18,7 @@
  ** destructor.
  *****************************************************************************/
 
-#include <cmath>
+#include <math.h>
 
 CSlider* SliderSettingsDialog::getSlider()
 {
