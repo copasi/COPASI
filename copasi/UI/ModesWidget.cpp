@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/27 21:53:57 $
+   $Author: shoops $ 
+   $Date: 2004/09/28 02:32:29 $
    End CVS Header */
 
 /*******************************************************************
@@ -31,6 +31,8 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
 
 {
   //mModel = NULL;
+  modes = NULL;
+
   binitialized = true;
 
   listView = new QListView(this, "tblCompartments");
