@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.11 2003/09/23 04:07:43 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.12 2003/09/23 20:24:21 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -37,7 +37,7 @@ class ExpressionWidget : public CopasiWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
     //manually added
-    QTextEdit* expressionText;
+    QLineEdit* expressionText;
     QListBox* itemsTable;
 
     QLineEdit* expressionName;

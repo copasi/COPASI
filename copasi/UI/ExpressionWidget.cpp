@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.13 2003/09/23 04:17:32 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.14 2003/09/23 20:24:20 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -57,7 +57,7 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
 
   //    expressionText = new QTextBrowser(this, "expressionText");
   //   expressionText = new QLineEdit(this, "expressionText");
-  expressionText = new QTextEdit(this, "expressionText");
+  expressionText = new QLineEdit(this, "expressionText");
 
   layout17->addWidget(expressionText, 1, 1);
 
@@ -154,6 +154,12 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
 
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotBtnConfirmClicked()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+
+  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
+  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+
+  connect(listBoxItems, SIGNAL(clicked(QListBoxItem*)), this, SLOT(ListBoxClicked(QListBoxItem*)));
+  connect(listBoxItems, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(ListBoxDoubleClicked(QListBoxItem*)));
 }
 
 /*
