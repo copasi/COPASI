@@ -21,9 +21,11 @@ CopasiUI_MOC = \
 	ReactionsWidget.moc.cpp \
 	ReactionsWidget1.moc.cpp \
 	SteadyStateWidget.moc.cpp \
+	ScanWidget.moc.cpp \
 	TrajectoryWidget.moc.cpp \
 	copasiui3window.moc.cpp \
-	listviews.moc.cpp
+	listviews.moc.cpp \
+	objectdebug.moc.cpp 
 
 CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	main.cpp \
@@ -49,10 +51,12 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
         ReactionsWidget.cpp \
         ReactionsWidget1.cpp \
 	SteadyStateWidget.cpp \
+	ScanWidget.cpp \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
         copasiui3window.cpp \
-        listviews.cpp
+        listviews.cpp \
+	objectdebug.cpp
 
 CopasiUI_DEPENDENCIES = $(CopasiUI_LIBS) check_LIBS
 
@@ -63,6 +67,7 @@ CopasiUI_LIBS = \
 	../function \
 	../output \
 	../optimization \
+	../scan \
 	../randomGenerator \
 	../report \
 	../steadystate \
@@ -94,6 +99,7 @@ EXTRA_DIST = \
 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp \
 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp \
 	SteadyStateWidget.h SteadyStateWidget.cpp SteadyStateWidget.moc.cpp \
+	ScanWidget.h ScanWidget.cpp ScanWidget.moc.cpp \
 	StretchTable.h StretchTable.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
@@ -112,6 +118,8 @@ LIBS = $(LIB_QT) \
 	-Wl,-lfunction \
 	-Wl,-loutput \
 	-Wl,-lreport \
+	-Wl,-loptimization \
+	-Wl,-lscan \
 	-Wl,-lsteadystate \
 	-Wl,-ltrajectory \
 	-Wl,-lrandomGenerator \
@@ -119,10 +127,7 @@ LIBS = $(LIB_QT) \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-llapack \
-	-lblas \
-	-lF77 \
-	-lfl
+	-llapack -lblas -lF77 -lfl
 
 #  Use this for standard clapack
 #	-llapack -lblas -lF77 -lfl
@@ -134,10 +139,11 @@ LIBS = $(LIB_QT) \
 LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
 	-L../function \
-        -L../mathmodel \
+	-L../mathmodel \
 	-L../model \
 	-L../output \
 	-L../optimization \
+	-L../scan \
 	-L../randomGenerator \
 	-L../report \
 	-L../steadystate \
