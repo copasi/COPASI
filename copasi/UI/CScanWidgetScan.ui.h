@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetScan.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/22 15:54:50 $
+   $Author: shoops $ 
+   $Date: 2005/02/22 23:23:59 $
    End CVS Header */
 
 /****************************************************************************
@@ -20,6 +20,7 @@
 
 #include <qvalidator.h>
 #include <CCopasiSelectionDialog.h>
+#include "qtUtilities.h"
 
 void CScanWidgetScan::init()
 {
@@ -48,13 +49,12 @@ void CScanWidgetScan::slotChooseObject()
     {
       mpObject = selection->at(0);
       if (mpObject)
-        lineEditObject->setText(mpObject->getObjectDisplayName());
+        lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
       else
         lineEditObject->setText("");
     }
   else
-  {}
-}
+    {}}
 
 #include "report/CCopasiObjectName.h"
 bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel* model)
@@ -80,7 +80,7 @@ bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel*
     mpObject = CCopasiContainer::ObjectFromName(tmpString);
 
   if (mpObject)
-    lineEditObject->setText(mpObject->getObjectDisplayName());
+    lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
   else
     lineEditObject->setText("");
 
