@@ -632,7 +632,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
 void ScanWidget::ListBoxDoubleClicked(QListBoxItem * item)
 {
-  if (ObjectListBox->index(item) == nSelectedObjects)
+  if (ObjectListBox->index(item) >= nSelectedObjects)
     addButtonClicked();
 }
 
