@@ -23,6 +23,7 @@
 #include "MoietyWidget1.h"
 #include "FunctionWidget1.h"
 #include "ModesWidget.h"
+#include "SteadyStateWidget.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -391,8 +392,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     currentWidget = moietyWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Functions")))
     currentWidget = functionWidget;
-  //else if (! (value = QString::compare(item->folder()->folderName(), "Steady-State")))
-  //currentWidget = steadystateWidget;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Steady-State")))
+    currentWidget = steadystateWidget;
 
   else if (item1)
     {
@@ -501,7 +502,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:                         // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:                          // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
 
           // ADD DEFINED IN DATAMODEL.H
 
@@ -524,7 +525,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:                     // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:                      // WHEN ANY DATA IS DELETED FROM THE TREE
 
           if ((node = dataModel->getData()) != NULL)
             // check if the node that is requested to be deleted is present or not
@@ -536,7 +537,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:                       // new model is loaded.
+        case MODEL:                        // new model is loaded.
 
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
@@ -780,8 +781,9 @@ void ListViews::ConstructNodeWidgets()
     functionWidget = new FunctionWidget(this);
     functionWidget->hide();
 
-    //steadystateWidget = new SteadyStateWidget(this);
-    //steadystateWidget->hide();
+    //Construction od the Steady-state Widget
+    steadystateWidget = new SteadyStateWidget(this);
+    steadystateWidget->hide();
 
     //Constructing the Reactions Widget1
     reactionsWidget1 = new ReactionsWidget1(this);

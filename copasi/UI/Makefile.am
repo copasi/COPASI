@@ -14,6 +14,7 @@ CopasiUI_MOC = \
 	MyLineEdit.moc.cpp \
 	ReactionsWidget.moc.cpp \
 	ReactionsWidget1.moc.cpp \
+	SteadyStateWidget.moc.cpp \
 	copasiui3window.moc.cpp \
 	listviews.moc.cpp
 
@@ -34,6 +35,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	MyLineEdit.cpp \
         ReactionsWidget.cpp \
         ReactionsWidget1.cpp \
+	SteadyStateWidget.cpp \
         copasiui3window.cpp \
         listviews.cpp
 
@@ -69,6 +71,7 @@ EXTRA_DIST = \
 	MyLineEdit.h MyLineEdit.cpp MyLineEdit.moc.cpp \
 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp \
 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp \
+	SteadyStateWidget.h SteadyStateWidget.cpp SteadyStateWidget.moc.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
 	listviews.h listviews.cpp moc_listviews.cpp
 

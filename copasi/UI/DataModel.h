@@ -18,8 +18,9 @@
 #include "Subject.h"
 
 class CSteadyStateTask;
-class CModel;
+class CWriteConfig;
 class CReadConfig;
+class CModel;
 class Folder;
 
 template <class T> class DataModel: public Subject

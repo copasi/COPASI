@@ -188,16 +188,16 @@ void SteadyStateWidget::CommitChange()
   QTableItem * pItem;
 
   pItem = (QTableItem *)parameterTable->item(0, 0);
-  steadystatemethod->setValue("Newton.UseNewton", bool((pItem->text()).toInt()));
+  steadystatemethod->setValue("Newton.UseNewton", (bool) pItem->text().toInt());
 
   pItem = (QTableItem *)parameterTable->item(1, 0);
-  steadystatemethod->setValue("Newton.UseIntegration", bool(pItem->text().toInt()));
+  steadystatemethod->setValue("Newton.UseIntegration", (bool) pItem->text().toInt());
 
   pItem = (QTableItem *)parameterTable->item(2, 0);
-  steadystatemethod->setValue("Newton.UseBackIntegration", bool(pItem->text().toInt()));
+  steadystatemethod->setValue("Newton.UseBackIntegration", (bool) pItem->text().toInt());
 
   pItem = (QTableItem *)parameterTable->item(3, 0);
-  steadystatemethod->setValue("Newton.IterationLimit", unsigned(pItem->text().toInt()));
+  steadystatemethod->setValue("Newton.IterationLimit", (unsigned C_INT32) pItem->text().toInt());
 
   pItem = (QTableItem *)parameterTable->item(4, 0);
   steadystatemethod->setValue("Newton.DerivationFactor", pItem->text().toDouble());
@@ -212,10 +212,10 @@ void SteadyStateWidget::CommitChange()
   steadystatemethod->setValue("Newton.LSODA.AbsoluteTolerance", pItem->text().toDouble());
 
   pItem = (QTableItem *)parameterTable->item(8, 0);
-  steadystatemethod->setValue("Newton.LSODA.AdamsMaxOrder", unsigned(pItem->text().toInt()));
+  steadystatemethod->setValue("Newton.LSODA.AdamsMaxOrder", (unsigned C_INT32) pItem->text().toInt());
 
   pItem = (QTableItem *)parameterTable->item(9, 0);
-  steadystatemethod->setValue("Newton.LSODA.BDFMaxOrder", unsigned(pItem->text().toInt()));
+  steadystatemethod->setValue("Newton.LSODA.BDFMaxOrder", (unsigned C_INT32) pItem->text().toInt());
 
   /*
     CWriteConfig outbuf(mSteadyStateTask->getFileName());
