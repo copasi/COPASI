@@ -1,9 +1,8 @@
 /****************************************************************************
- **  $ CopasiUI/CompartmentsWidget.h               
+ **  $ CopasiUI/ModesWidget.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Compartments Widget, i.e the First level 
- ** of Compartments.
+ ** This is the header file for the Elementary Modes Widget
  *****************************************************************************/
 
 #ifndef MODES_WIDGET_H
@@ -25,29 +24,20 @@ class ModesWidget : public QWidget
   protected:
     CModel *mModel;
     MyTable *table;
-    QPushButton *btnOK;
-    QPushButton *btnCancel;
+    QPushButton *btnCalculate;
 
   public:
     ModesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
     void loadModes(CModel *model);
-    //void mousePressEvent(QMouseEvent * e);
     void resizeEvent(QResizeEvent * re);
-    //QString *Compartment_Name;
-
-  public slots:
-    //virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
   signals:
-    // void name(QString &);
-    //void signal_emitted(QString &);
+    void signal_emitted(QString &);
 
   protected slots:
 
     virtual void slotTableSelectionChanged();
-    virtual void slotBtnOKClicked();
-    virtual void slotBtnCancelClicked();
-    //virtual void tableValueChanged(int, int);
+    virtual void slotBtnCalculateClicked();
 
   private:
     void showMessage(QString caption, QString text);

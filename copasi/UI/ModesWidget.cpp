@@ -44,8 +44,8 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(0, "Reversible/Irreversible");
   tableHeader->setLabel(1, "Elementary Mode");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  btnCalculate = new QPushButton("&Calculate/Run", this);
+  //btnCancel = new QPushButton("&Cancel", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -53,9 +53,9 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   hBoxLayout->addSpacing(32);
 
   hBoxLayout->addSpacing(50);
-  hBoxLayout->addWidget(btnOK);
-  hBoxLayout->addSpacing(5);
-  hBoxLayout->addWidget(btnCancel);
+  hBoxLayout->addWidget(btnCalculate);
+  //hBoxLayout->addSpacing(5);
+  // hBoxLayout->addWidget(btnCancel);
   hBoxLayout->addSpacing(50);
 
   table->sortColumn (0, true, true);
@@ -67,7 +67,7 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   //connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
 
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
+  connect(btnCalculate, SIGNAL(clicked ()), this, SLOT(slotBtnCalculateClicked()));
   //connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
 }
 
@@ -76,31 +76,6 @@ void ModesWidget::loadModes(CModel *model)
   if (model != NULL)
     {
       mModel = model;
-      //Emptying the table
-      int numberOfRows = table->numRows();
-
-      for (int i = 0; i < numberOfRows; i++)
-        {
-          table->removeRow(0);
-        }
-
-      CElementaryFluxModes *modes = new CElementaryFluxModes();
-      modes->calculate(mModel);
-      unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
-      //QString y=QString::number(noOfModesRows);
-
-      //QMessageBox::information(this, "recahed ",y);
-      table->setNumRows(noOfModesRows);
-      //bool status;
-      for (C_INT32 j = 0; j < noOfModesRows; j++)
-        {
-          //status=modes->isFluxModeReversible(j);
-          //table->setText(j, 0, QString::String(status));
-          QString x = modes->getFluxModeDescription(j).c_str();
-          QMessageBox::information(this, "recahed ", x);
-          table->setText(j, 0, modes->getFluxModeDescription(j).c_str());
-          table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
-        }
     }
 }
 
@@ -136,23 +111,45 @@ void ModesWidget::resizeEvent(QResizeEvent * re)
     }
 }
 
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- ** ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- 
- ****************************************************************************************/
-
-void ModesWidget::slotBtnOKClicked()
-{
-  // QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
-}
-
-void ModesWidget::slotBtnCancelClicked()
+void ModesWidget::slotBtnCalculateClicked()
 {
   // QMessageBox::information(this, "Compartments Widget", "Do you really want to cancel changes");
   // emit signal_emitted(*Compartment_Name);
+
+  //Emptying the table
+  int numberOfRows = table->numRows();
+
+  for (int i = 0; i < numberOfRows; i++)
+    {
+      table->removeRow(0);
+    }
+
+  CElementaryFluxModes *modes = new CElementaryFluxModes();
+  modes->calculate(mModel);
+  unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
+  //QString y=QString::number(noOfModesRows);
+
+  //QMessageBox::information(this, "recahed ",y);
+  table->setNumRows(noOfModesRows);
+  //bool status;
+  for (C_INT32 j = 0; j < noOfModesRows; j++)
+    {
+      // status=modes->isFluxModeReversible(j);
+      if (modes->isFluxModeReversible(j) == true)
+        {
+          table->setText(j, 0, "Reversible");
+        }
+      else
+        {
+          table->setText(j, 0, "Irrversible");
+        }
+      //QString y=modes->isFluxModeReversible(j)->c_str();
+      //QString x=modes->getFluxModeDescription(j).c_str();
+      //QMessageBox::information(this, "recahed ",x);
+      //table->setText(j, 0,y);
+      //table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
+      table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
+    }
 }
 
 /*void ModesWidget::tableValueChanged(int C_UNUSED(row),
