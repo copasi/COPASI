@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/21 11:00:17 $
+   $Date: 2004/06/21 11:31:10 $
    End CVS Header */
 
 #include <iostream>
@@ -475,8 +475,20 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
     }
 
   /* Create a new user defined CKinFunction */
+
   std::string functionName = "function_4_" + copasiReaction->getObjectName();
-  CFunction* cFun = this->functionDB->createFunction(functionName, CFunction::UserDefined);
+
+  appendix = "";
+  counter = 0;
+  while (this->functionDB->findFunction(functionName + appendix) != NULL)
+    {
+      counter++;
+      std::ostringstream numberStream;
+      numberStream << "_" << counter;
+      appendix = numberStream.str();
+    }
+
+  CFunction* cFun = this->functionDB->createFunction(functionName + appendix, CFunction::UserDefined);
   //ConverterASTNode::printASTNode(node);
   //DebugFile << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
   if (cFun == NULL)
