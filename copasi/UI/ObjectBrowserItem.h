@@ -77,7 +77,8 @@ class objectList
     objectList();
     void insert(ObjectBrowserItem* pItem);
     objectListItem* getRoot();
-    objectListItem* pop();
+    ObjectBrowserItem* pop();
+    inline int len() {return length;};
   };
 
 #endif

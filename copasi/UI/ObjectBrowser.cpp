@@ -193,13 +193,20 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(CONTAINERATTR);
           loadChild(currentItem, (CCopasiContainer*) current);
+          currentItem->attachKey();
         }
       else
         {
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(OBJECTATTR);
           if (current->isVector())
-            loadVectors(currentItem, (CCopasiContainer *) current);
+            {
+              loadVectors(currentItem, (CCopasiContainer *) current);
+              currentItem->attachKey();
+            }
+          else
+            childStack->insert(currentItem);
+
           QString st1(current->getObjectName().c_str());
           bool test = current->isVector();
           test = current->isMatrix();
@@ -209,6 +216,13 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
         }
       it++;
     }
+
+  ObjectBrowserItem* pCurrent;
+  while (childStack->len() > 0)
+    {
+      pCurrent = childStack->pop();
+      pCurrent->attachKey();
+    }
 }
 
 void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * copaParent)
@@ -216,7 +230,8 @@ void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * co
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
 
-  //std::vector< CCopasiObject * > & getObjects()
+  objectList* vectorStack = new objectList();
+
   const std::vector<CCopasiObject *> * pObjectList = & copaParent->getObjects();
   std::vector<CCopasiObject *>::const_iterator it = pObjectList->begin();
   std::vector<CCopasiObject *>::const_iterator end = pObjectList->end();
@@ -230,6 +245,7 @@ void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * co
         {
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(OBJECTATTR);
+          currentItem->attachKey();
           loadChild(currentItem, (CCopasiContainer*)current);
         }
       else
@@ -237,7 +253,12 @@ void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * co
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(OBJECTATTR);
           if (current->isVector())
-            loadVectors(currentItem, (CCopasiContainer *) current);
+            {
+              loadVectors(currentItem, (CCopasiContainer *) current);
+              currentItem->attachKey();
+            }
+          else
+            vectorStack->insert(currentItem);
           QString st1(current->getObjectName().c_str());
           bool test = current->isVector();
           test = current->isMatrix();
@@ -247,6 +268,13 @@ void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * co
           //   loadChild(currentItem, current);
         }
       it++;
+    }
+
+  ObjectBrowserItem* pCurrent;
+  while (vectorStack->len() > 0)
+    {
+      pCurrent = vectorStack->pop();
+      pCurrent->attachKey();
     }
 }
 

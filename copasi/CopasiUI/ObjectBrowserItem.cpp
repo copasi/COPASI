@@ -169,11 +169,13 @@ objectListItem* objectList::getRoot()
   return root;
 }
 
-objectListItem* objectList::pop()
+ObjectBrowserItem* objectList::pop()
 {
   if (length == 0) return NULL;
-  objectListItem* returnValue = root;
+  ObjectBrowserItem* returnValue = root->pItem;
+  objectListItem* delNode = root;
   root = root->pNext;
   length--;
+  delete delNode;
   return returnValue;
 }
