@@ -12,9 +12,10 @@
 #include "copasi.h"
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
-#include "CCompartmentVector.h"
+#include "CCompartment.h"
 #include "CDatum.h"
-#include "CMetabVector.h"
+#include "CMetab.h"
+#include "CCopasiVector.h"
 // #include "CNodeK.h"
 #include "CKinetics.h"
 #include "CStep.h"
@@ -154,6 +155,7 @@ long  TestWriteConfig(void)
     return 0;
 }
    
+#ifdef XXXX
 
 long TestCompartment(void)
 {
@@ -194,8 +196,6 @@ long TestCompartment(void)
     cout << endl;
     return 0;
 }
-
-#ifdef XXXX
 
 long TestDatum(void)
 {
@@ -257,15 +257,17 @@ long TestReadSample(void)
     long size = 0;
     
     CReadConfig inbuf("sample.gps");
-    
-    CCompartmentVector Compartments;
+ 
+    CCopasiVector< CCompartment > Compartments;
+//    CCompartmentVector Compartments;
     
     inbuf.GetVariable("TotalCompartments", "long", &size,
                       CReadConfig::LOOP);
     
     Compartments.Load(inbuf, size);
     
-    CMetabVector Metabolites;
+    CCopasiVector< CMetab > Metabolites;
+//    CMetabVector Metabolites;
 
     inbuf.GetVariable("TotalMetabolites", "long", &size,
                       CReadConfig::LOOP);
