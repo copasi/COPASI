@@ -516,13 +516,13 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:        //Time course
+      case 23:       //Time course
         return trajectoryWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:       //Report
+      case 43:      //Report
         return tableDefinition;
         break;
       case 5:
@@ -588,18 +588,20 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   //TODO: the fall back widget bifWidget should really be a CopasiWidget to avoid the typecasts that follow
 
   // find the widget
-  currentWidget = findWidgetFromItem(item);
+
+  QWidget* newWidget;
+  newWidget = findWidgetFromItem(item);
   std::string itemKey = item->folder()->getObjectKey();
 
-  if (currentWidget == lastWidget)
+  if (newWidget == currentWidget)
     if (itemKey == lastKey) return;
 
   // leave old widget
-  if (lastWidget)
-    if (lastWidget != bigWidget)
+  if (currentWidget)
+    if (currentWidget != bigWidget)
       {
         C_INT32 saveFolderID = item->folder()->getID();
-        ((CopasiWidget*)lastWidget)->leave();
+        ((CopasiWidget*)currentWidget)->leave();
         item = (FolderListItem*)searchListViewItem(saveFolderID);
         if (item)
           folders->setCurrentItem(item);
@@ -614,22 +616,22 @@ void ListViews::slotFolderChanged(QListViewItem *i)
       }
 
   // enter new widget
-  if (currentWidget) ((CopasiWidget*)currentWidget)->enter(itemKey);
+  if (newWidget) ((CopasiWidget*)newWidget)->enter(itemKey);
 
   // fall back
-  if (!currentWidget)
+  if (!newWidget)
     {
-      currentWidget = bigWidget;
+      newWidget = bigWidget;
       bigWidget->setText("You Clicked On: " + item->folder()->folderName());
     }
 
-  if (lastWidget != currentWidget)
+  if (currentWidget != newWidget)
     {
-      if (lastWidget) lastWidget->hide();
-      if (currentWidget) currentWidget->show();
+      if (currentWidget) currentWidget->hide();
+      if (newWidget) newWidget->show();
     }
 
-  lastWidget = currentWidget;
+  currentWidget = newWidget;
   lastKey = itemKey;
 }
 
@@ -987,6 +989,8 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
 {
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
+  std::cout << "notify: " << objectType << "  " << action << " " << key << std::endl;
 
   bool success = true;
 
