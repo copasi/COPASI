@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/10 12:17:03 $
+   $Date: 2004/10/04 13:40:39 $
    End CVS Header */
 
 /**
@@ -195,6 +195,7 @@ class CCopasiTask : public CCopasiContainer
      * Retrieve the problem
      */
     CCopasiProblem * getProblem();
+    const CCopasiProblem * getProblem() const;
 
     /**
      * Set the method type applied to solve the task

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/10 12:17:03 $
+   $Date: 2004/10/04 13:40:38 $
    End CVS Header */
 
 /**
@@ -63,7 +63,8 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mScheduled(false),
     mpProblem(NULL),
     mpMethod(NULL),
-    mReport()
+    mReport(),
+    mpOutputHandler(NULL)
 {}
 
 CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
@@ -75,7 +76,8 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mScheduled(false),
     mpProblem(NULL),
     mpMethod(NULL),
-    mReport()
+    mReport(),
+    mpOutputHandler(NULL)
 {}
 
 CCopasiTask::CCopasiTask(const CCopasiTask & src,
@@ -86,7 +88,8 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mScheduled(src.mScheduled),
     mpProblem(NULL),
     mpMethod(NULL),
-    mReport(src.mReport)
+    mReport(src.mReport),
+    mpOutputHandler(NULL)
 {}
 
 CCopasiTask::~CCopasiTask()
@@ -122,6 +125,8 @@ bool CCopasiTask::restore()
 }
 
 CCopasiProblem * CCopasiTask::getProblem() {return mpProblem;}
+
+const CCopasiProblem * CCopasiTask::getProblem() const {return mpProblem;}
 
 bool CCopasiTask::setMethodType(const int & C_UNUSED(type))
 {return false;}
