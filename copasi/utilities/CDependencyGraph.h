@@ -3,10 +3,8 @@
 
 #include <iostream>
 #include <vector>
-#include <set> 
-/**
- * CDependencyGraphNode describes a node in the dependency graph.
- */
+#include <set>
+
 using std::vector;
 using std::ostream;
 using std::endl;
@@ -14,6 +12,10 @@ using std::endl;
 using std::set
 
   ;
+
+/**
+ * CDependencyGraphNode describes a node in the dependency graph.
+ */
 
 class CDependencyGraphNode
   {
