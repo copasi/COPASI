@@ -6,19 +6,10 @@
 
 CStochSolver::CStochSolver()
     : mMethod(0),
-      mMaxTime(0),
-      mMaxSteps(0)
 {
 }
 
-#ifdef XXXX
-CStochSolver::CStochSolver(std::string method_name, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps)
-{
-    (void) Initialize(method_name, model, maxtime, maxsteps);
-}
-#endif // XXXX
-
-void CStochSolver::Initialize(std::string method_name, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps)
+void CStochSolver::initialize(std::string method_name, CModel *model)
 {
     CStochSolver::Type method;
     if (method_name == "DIRECT" || method_name == "direct" || method_name == "Direct")
@@ -33,12 +24,10 @@ void CStochSolver::Initialize(std::string method_name, CModel *model, C_FLOAT64 
         // must still implement this
         // mMethod = new CStochNextReactionMethod(model);
     }
-    mMethod->InitMethod();
-    mMaxTime = maxtime;
-    mMaxSteps = maxsteps;
+    mMethod->initMethod();
 }
 
-CStochMethod *CStochSolver::GetStochMethod()
+CStochMethod *CStochSolver::getStochMethod()
 {
     return mMethod;
 }
@@ -46,9 +35,11 @@ CStochMethod *CStochSolver::GetStochMethod()
 CStochMethod::CStochMethod(CModel *model)
     : mModel(model),
       mFail(0)
-{}
+{
+    mRandomGenerator = new CRandom();
+}
 
-C_INT32 CStochMethod::UpdatePropensities()
+C_INT32 CStochMethod::updatePropensities()
 {
     mA0 = 0;
     for (C_INT32 i = 0; i < mModel->getReactions().size(); i++)
@@ -59,25 +50,26 @@ C_INT32 CStochMethod::UpdatePropensities()
     return 0;
 }
 
-C_INT32 CStochMethod::CalculateAmu(C_INT32 index)
+C_INT32 CStochMethod::calculateAmu(C_INT32 index)
 {
-    // We need the product of the cmu and hmu for this step. We
-    // calculate this in one go, as there are fewer steps to perform.
+    // We need the product of the cmu and hmu for this step.
+    // We calculate this in one go, as there are fewer steps to 
+    // perform and we eliminate some possible rounding errors.
     C_FLOAT32 amu = 1; // initially
     C_INT32 total_substrates = 0;
     C_INT32 num_ident = 0;
     C_INT32 number = 0;
     C_INT32 lower_bound;
-    // First, find the step (reaction) associated with this index.
+    // First, find the reaction associated with this index.
     // Keep a pointer to this.
-    CReaction *step = &mModel->getReactions()[index];
-    // Iterate through each reactant type in the step 
-    std::vector<CStepMetab>::iterator it;
-    for (it = step->substrates().begin(); it < step->substrates().end(); it++)
+    CChemEq *chemeq = &mModel->getReactions()[index].getChemEq();
+    // Iterate through each substrate in the reaction 
+    CCopasiVector<CChemEqElement> &substrates = chemeq->getSubstrates();
+    for (int i = 0; i < substrates.size(); i++)
     {
-        num_ident = it.GetNumIdent(); // XXX To do: NumberIdentical()
+        num_ident = substrates[i].getMultiplicity();
         total_substrates += num_ident;
-        number = it.GetMetab()->getNumber(); // XXX To do: Number()
+        number = substrates[i].getMetabolite()->getNumber();
         lower_bound = number - num_ident;
         while (number > lower_bound)
         {
@@ -85,7 +77,15 @@ C_INT32 CStochMethod::CalculateAmu(C_INT32 index)
             number--;
         }
     }
-    amu /= pow(volume, total_substrates-1); // XXX To do: get volume
+    // We assume that all substrates are in the same compartment.
+    // If there are no substrates, then volume is irrelevant. Otherwise,
+    // we can use the volume of the compartment for the first substrate.
+    if (substrates.size() > 0)
+    {
+        C_FLOAT64 volume = substrates[0].getMetabolite().getCompartment()->getVolume();
+        amu /= pow(volume, total_substrates-1);
+    }
+    C_FLOAT64 rate;
     amu *= rate_with_factor; // XXX To do: rate (including factor from dynamics)
     mAmu[index] = amu;
 }
@@ -95,7 +95,7 @@ CStochDirectMethod::CStochDirectMethod(CModel *model)
 {
 }
 
-C_INT32 CStochDirectMethod::InitMethod()
+C_INT32 CStochDirectMethod::initMethod()
 {
     // Populate the vector of propensities
     for (C_INT32 i = 0; i < mModel->getSteps()->size(); i++)
@@ -105,19 +105,18 @@ C_INT32 CStochDirectMethod::InitMethod()
     return 0;
 }
 
-C_FLOAT64 CStochDirectMethod::DoStep(C_FLOAT64 initial_time)
+C_FLOAT64 CStochDirectMethod::doStep(C_FLOAT64 initial_time)
 {
     UpdatePropensities();
     C_INT32 rxn = GetReaction();
     C_FLOAT64 step_time = GetTime();
     UpdateSystemState(rxn);
     return initial_time + step_time;
-    
 }
 
-C_INT32 CStochDirectMethod::GetReaction()
+C_INT32 CStochDirectMethod::getReaction()
 {
-    C_FLOAT32 rand1 = GetUniformRandom(); // XXX To do: implement random number generation
+    C_FLOAT64 rand1 = mRandomGenerator.GetUniformRandom();
     C_FLOAT64 sum;
     C_INT32 index = 0;
     while (index < mModel->getSteps()->size())
@@ -133,30 +132,29 @@ C_INT32 CStochDirectMethod::GetReaction()
     return mFail;
 }
 
-C_FLOAT64 CStochDirectMethod::GetTime()
+C_FLOAT64 CStochDirectMethod::getTime()
 {
-    C_FLOAT32 rand2 = GetUniformRandom(); // XXX To do: implement random number generation
+    C_FLOAT32 rand2 = GetUniformRandom();
     return -1 * log(rand2 / mA0);
 }
 
-C_INT32 CStochDirectMethod::UpdateSystemState(C_INT32 rxn)
+C_INT32 CStochDirectMethod::updateSystemState(C_INT32 rxn)
 {
-    // Change the particle numbers according to which step took place
-    CStep *step = &(*mModel->getSteps())[rxn];
-    std::vector<CStep::CId2Metab>::iterator it;
-    // Update the substrate numbers
-    for (it = step.substrates()->begin(); it < step->substrates()->end(); it++)
+    // Change the particle numbers according to which step took place.
+    // First, get the vector of balances in the reaction we've got.
+    // (This vector expresses the number change of each metabolite 
+    // in the reaction.) Then step through each balance, using its 
+    // multiplicity to calculate a new value for the associated 
+    // metabolite. Finally, update the metabolite.
+    CCopasiVectorS <CChemEqElement> &balances = 
+        mModel->getReactions()[rxn].getChemEq().getBalances();
+    CChemEqElement *bal = 0;
+    C_FLOAT32 new_num;
+    for (C_INT32 i = 0; i < balances.size(); i++)
     {
-        it.mpMetabolite->IncrementNumber(it.NumberChange()); // XXX To do: Implement IncrementNumber(C_INT32 nc)
-    }
-    // Update the product numbers (if the metabolite isn't also a substrate; if it is, do nothing)
-
-    for (it = step->products().begin(); it < step->products().end(); it++)
-    {
-        if (!it.IsSubstrate()) // XXX To do: Implement IsSubstrate
-        {
-            it.mpMetabolite->IncrementNumber(it.NumberChange()); // XXX To do: Implement IncrementNumber(C_INT32 nc)
-        }
+        bal = &balances[i];
+        new_num = bal.getMetabolite().getNumber() + bal.getMultiplicity();
+        bal.getMetabolite().setMultiplicity(new_num);
     }
     return 0;
 }

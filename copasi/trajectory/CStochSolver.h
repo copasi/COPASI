@@ -27,7 +27,8 @@ class CModel;
  * of CModel, which it passes to CStochMethod. This then extracts
  * parameters from the model relevant to the simulation.
  *
- * Prototypical use:
+ * Prototypical use: This would be done from an instance of CTrajectory, 
+ * which would call each step up to the maximum step number of maximum time.
  *
  * C_INT32 step = 0;
  * C_FLOAT32 time = 0;
@@ -48,7 +49,8 @@ class CStochSolver
 {
  public:
   /**
-   * The types of method which may be used
+   * The types of method which may be used.
+   * So far, only Gillespie's direct method has been implemented.
    */
   enum Type {DIRECT=0, NEXTREACTION};
  private:
@@ -61,6 +63,7 @@ class CStochSolver
    * A pointer to the method used
    */
   CStochMethod *mMethod; 
+#if 0
   /**
    * The maximum time for which the simulation should run.
    */
@@ -69,6 +72,7 @@ class CStochSolver
    * The maximum number of steps over which to iterate.
    */
   C_INT32 mMaxSteps;
+#endif // 0
  public:
   // Lifecycle methods
   /**
@@ -82,18 +86,16 @@ class CStochSolver
   /**
    * This initializes the solver, creates an instance of the method, 
    * and initializes that with the given model.
-   * @param method_type The type of the method to use.
+   * @param method The type of the method to use.
    * @param model A pointer to an instance of CModel 
-   * @param maxtime The maximum time the simulation may take.
-   * @param maxsteps The maximum number of steps in the simulation.
    */
-  void Initialize(std::string method, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps);
+  void initialize(std::string method, CModel *model);
   // Operations methods
   /**
    * Returns a pointer to the instance of the solver method.
    * @return mMethod
    */
-  CStochMethod *GetStochMethod();
+  CStochMethod *getStochMethod();
 };
 
 /**
@@ -128,6 +130,10 @@ class CStochMethod
    */
   C_FLOAT64 mA0;
   /**
+   * The random number generator
+   */
+  CRandom *mRandomGenerator;
+  /**
    * Failure status.
    * 0 = Success
    * !0 = Failure
@@ -149,12 +155,12 @@ class CStochMethod
    * @return mFail
    * @see mFail
    */
-  virtual C_INT32 InitMethod() = 0;
+  virtual C_INT32 initMethod() = 0;
   /**
    * Do one iteration of the simulation
    * @return Current simulation time or -1 if error.
    */
-  virtual C_FLOAT64 DoStep(C_FLOAT64 time) = 0;
+  virtual C_FLOAT64 doStep(C_FLOAT64 time) = 0;
  protected:
   // Protected operations
   /**
@@ -162,11 +168,11 @@ class CStochMethod
    * @return mFail
    * @see mFail
    */
-  C_INT32 UpdatePropensities();
+  C_INT32 updatePropensities();
   /**
    * Calculate one of the propensities
    */
-  C_INT32 CalculateAmu(C_INT32);
+  C_INT32 calculateAmu(C_INT32);
 #if 0
   /**
    * Determine the value of one of the cmu's
@@ -212,30 +218,30 @@ class CStochDirectMethod: public CStochMethod
    * @return mFail
    * @see mFail
    */
-  C_INT32 InitMethod();
+  C_INT32 initMethod();
   /**
    * Do one iteration of the simulation
    * @return Current simulation time or -1 if error.
    */
-  C_FLOAT64 DoStep(C_FLOAT64 time);
+  C_FLOAT64 doStep(C_FLOAT64 time);
  private:
   // Private operations
   /**
    * Get the next reaction
    * @return the index of the reaction which occurs.
    */
-  C_INT32 GetReaction();
+  C_INT32 getReaction();
   /**
    * Get the time taken by the reaction
    * @return the time takenfor this reaction
    */
-  C_FLOAT64 GetTime();
+  C_FLOAT64 getTime();
   /**
    * Update the particle numbers according to which reaction ocurred
    * @return mFail
    * @see mFail
    */
-  C_INT32 UpdateSystemState(C_INT32 reaction_idx);
+  C_INT32 updateSystemState(C_INT32 reaction_idx);
 };
 
 /**
