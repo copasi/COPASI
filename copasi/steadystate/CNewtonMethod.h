@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 18:19:25 $
+   $Author: ssahle $ 
+   $Date: 2004/12/22 10:48:42 $
    End CVS Header */
 
 /**
@@ -40,6 +40,7 @@ class CNewtonMethod : public CSteadyStateMethod
     bool mUseNewton;
     bool mUseIntegration;
     bool mUseBackIntegration;
+    bool mAcceptNegative;
     C_INT32 mIterationLimit;
 
     C_FLOAT64 mFactor;
@@ -116,6 +117,8 @@ class CNewtonMethod : public CSteadyStateMethod
      * @return CNewtonMethod::NewtonReturnCode newtonReturnCode
      */
     CNewtonMethod::NewtonReturnCode processNewton();
+
+    bool allPositive() const;
 
     CNewtonMethod::NewtonReturnCode
     returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode);

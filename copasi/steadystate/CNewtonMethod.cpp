@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 18:19:25 $
+   $Author: ssahle $ 
+   $Date: 2004/12/22 10:48:42 $
    End CVS Header */
 
 #include <algorithm>
@@ -38,6 +38,8 @@ CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
                CCopasiParameter::BOOL, true);
   addParameter("Newton.UseBackIntegration",
                CCopasiParameter::BOOL, true);
+  addParameter("Newton.acceptNegativeConcentrations",
+               CCopasiParameter::BOOL, false);
   addParameter("Newton.IterationLimit",
                CCopasiParameter::UINT, (unsigned C_INT32) 50);
   addParameter("Newton.DerivationFactor",
@@ -148,7 +150,7 @@ CNewtonMethod::processInternal()
   cleanup();
 
   /* Configure Newton */
-  mUseNewton = mUseIntegration = mUseBackIntegration = false;
+  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = false;
 
   if (* (bool *) getValue("Newton.UseNewton"))
     mUseNewton = true;
@@ -156,6 +158,9 @@ CNewtonMethod::processInternal()
     mUseIntegration = true;
   if (* (bool *) getValue("Newton.UseBackIntegration"))
     mUseBackIntegration = true;
+  if (* (bool *) getValue("Newton.acceptNegativeConcentrations"))
+    mAcceptNegative = true;
+
   mIterationLimit = * (unsigned C_INT32 *) getValue("Newton.IterationLimit");
   mFactor = * (C_FLOAT64 *) getValue("Newton.DerivationFactor");
   mResolution = * (C_FLOAT64 *) getValue("Newton.Resolution");
@@ -221,7 +226,7 @@ CNewtonMethod::processInternal()
   if (mUseIntegration)
     {
       std::cout << "Try integrating ..." << std::endl;
-      for (EndTime = 1; EndTime < 1.0e10; EndTime *= 10)
+      for (EndTime = 0.01; EndTime < 1.0e10; EndTime *= 2)
         {
           if (mpProgressHandler) mpProgressHandler->reInit(0, "forward integrating...");
           if (mpProgressHandler) if (mpProgressHandler->progress(-1)) break;
@@ -447,7 +452,9 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       for (i = 0; i < mDimension; i++)
         mH[i] = mdxdt[i];
 
-      for (i = 0; (i < 32) && (newMaxRate >= oldMaxRate); i++)
+      //repeat till the new max rate is smaller than the old and all concentrations are positive.
+      //max 32 times
+      for (i = 0; (i < 32) && !((newMaxRate < oldMaxRate) && (allPositive() || mAcceptNegative)); i++)
         {
           for (j = 0; j < mDimension; j++)
             {
@@ -498,24 +505,21 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
   return returnNewton(ReturnCode);
 }
 
+bool CNewtonMethod::allPositive() const
+  {
+    C_INT32 i, imax = mX->size();
+    for (i = 0; i < imax; ++i)
+      if ((*mX)[i] < 0) return false;
+
+    return true;
+  }
+
 CNewtonMethod::NewtonReturnCode
 CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 {
   mpProblem->getModel()->setStateX(mpSteadyStateX);
   mpProblem->getModel()->updateRates();
   *mpSteadyState = *mpSteadyStateX; //convert back to CState
-
-  /*if (returnCode == CNewtonMethod::found)
-    {
-      const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
-      *mpSteadyState = mStateX; //convert back to CState
-    }
-  else
-    {
-      const_cast<CModel *>(mpProblem->getInitialState().getModel())
-      ->getDerivatives_particles(&mpProblem->getInitialState(), mdxdt);
-      *mpSteadyState = mpProblem->getInitialState();
-    }*/
 
   return returnCode;
 }
