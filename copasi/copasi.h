@@ -9,7 +9,9 @@
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
-# pragma warning (disable: 4243)
+# pragma warning (disable: 4243) 
+// warning C4355: 'this' : used in base member initializer list
+# pragma warning (disable: 4355)
 #endif  // WIN32
 
 #include <assert.h>
