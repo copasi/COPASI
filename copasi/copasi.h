@@ -43,11 +43,39 @@ using namespace std ;
 #define MCA_SINGULAR 1
 
 
+/* Define COPASI_DEBUG */
+#ifndef NDEBUG              // for gcc
+#define COPASI_DEBUG
+#else
+#ifdef _DEBUG             // for Visual Studio
+#define COPASI_DEBUG
+#else 
+#undef COPASI_DEBUG
+#endif // _DEBUG
+#endif // not NDEBUG
 
+/* Define Constructor/Destructor Trace */
+#define CONSTRUCTOR_TRACE
+#define DESTRUCTOR_TRACE
 
+#ifdef COPASI_DEBUG
+#ifdef COPASI_TRACE_CONSTRUCTION
+#include <typeinfo>
+#undef  CONSTRUCTOR_TRACE
+#define CONSTRUCTOR_TRACE \
+  {cout << "Construct: " << typeid(*this).name() \
+        << ", \tAddress: " << (void *) this << endl;}
+#undef  DESTRUCTOR_TRACE
+#define DESTRUCTOR_TRACE \
+  {cout << "Destruct: " << typeid(*this).name() \
+        << ", \tAddress: " << (void *) this << endl;}
+#endif // COPASI_TRACE_CONSTRUCTION
+#endif // COPASI_DEBUG
 
 // protected free
 #define pfree(p) {if (p) {free(p); p = NULL;}}
-    
+#define pdelete(p) {if (p) {delete p; p = NULL;}}
+#define pcleanup(p) {if (p) {p->cleanup(); delete p; p = NULL;}}
+
 #endif // COPASI_copasi
 
