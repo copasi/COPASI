@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/28 02:28:06 $
+   $Date: 2005/03/01 03:01:16 $
    End CVS Header */
 
 #include "copasi.h"
@@ -22,9 +22,9 @@ CSlider::CSlider(const std::string & name,
     mKey(GlobalKeys.add("Slider", this)),
     mAssociatedEntityKey(),
     mpSliderObject(NULL),
-    mSliderType(),
-    mMinValue(),
-    mMaxValue(),
+    mSliderType(Float),
+    mMinValue(0),
+    mMaxValue(0),
     mTickNumber(1000),
     mTickFactor(100)
 {}
