@@ -343,6 +343,17 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
   return true;
 } //end of function
 
+//**** Try to get parameters table to display proper texts
+/*bool FunctionWidget1::updateParameters()
+{
+ CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+ // for addition of objects from Description field
+ CFunctionParameters &functParam = func->getParameters(); 
+ // next step parse the equation in the description field
+ 
+ return loadFromFunction(func);
+}*/ //end of function
+
 bool FunctionWidget1::saveToFunction()
 {
   CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
@@ -522,6 +533,8 @@ void FunctionWidget1::slotCancelButtonClicked()
 
 void FunctionWidget1::slotCommitButtonClicked()
 {
+  // Call function to add params from desc field into param table
+  //updateParameters();
   //let the user confirm?
   saveToFunction();
 }

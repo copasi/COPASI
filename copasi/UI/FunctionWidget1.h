@@ -40,6 +40,7 @@ class FunctionWidget1 : public CopasiWidget
 
   protected:
     bool loadFromFunction(CFunction*);
+    //bool updateParameters();
     bool saveToFunction();
     std::string objKey;
 
