@@ -215,7 +215,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   setTabOrder(downButton, ObjectListBox);
   setTabOrder(ObjectListBox, scrollview);
   setTabOrder(scrollview, sExecutable);
-  setTabOrder(scanButton, cancelChange)
+  setTabOrder(scanButton, cancelChange);
   setTabOrder(cancelChange, reportDefinitionButton);
 
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
