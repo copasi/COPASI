@@ -12,10 +12,10 @@
 #include <qmessagebox.h>
 
 #include "MoietyWidget.h"
-#include "Model/CMetab.h"
+#include "model/CMetab.h"
 
 
-#include "Model/CMoiety.h"
+#include "model/CMoiety.h"
 
 
 /** 

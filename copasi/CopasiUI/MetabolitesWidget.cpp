@@ -10,7 +10,7 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include "MetabolitesWidget.h"
-#include "Model/CMetab.h"
+#include "model/CMetab.h"
 
 /** 
  *  Constructs a Widget for the Metabolites subsection of the tree for 

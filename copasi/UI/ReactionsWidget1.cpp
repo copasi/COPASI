@@ -408,22 +408,4 @@ void ReactionsWidget1::loadName(QString setValue)
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	

@@ -7,7 +7,7 @@
 ** Basically the Second level of Metabolites.
 ***********************************************************************/
 #include "MetabolitesWidget1.h"
-#include "Model/CMetab.h"
+#include "model/CMetab.h"
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>

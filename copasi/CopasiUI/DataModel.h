@@ -17,6 +17,8 @@
 #define MODEL 3
 
 class CModel;
+class CReadConfig;
+class Folder;
 
 template<class T>
 class DataModel: public Subject{
