@@ -148,4 +148,4 @@ LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	$(MOC) -o $@ $<
 
 check_LIBS:
-	@for d in $(CopasiUI_LIBS); do (cd $$d && make); done
+	@+for d in $(CopasiUI_LIBS); do (cd $$d && make); done

@@ -747,7 +747,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 	$(MOC) -o $@ $<
 
 check_LIBS:
-	@for d in $(CopasiUI_LIBS); do (cd $$d && make); done
+	@+for d in $(CopasiUI_LIBS); do (cd $$d && make); done
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
