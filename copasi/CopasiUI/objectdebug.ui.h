@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/18 15:35:09 $
+   $Date: 2004/12/14 17:08:14 $
    End CVS Header */
 
 /****************************************************************************
@@ -58,7 +58,12 @@ else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
       int cnt = container->getObjects().size();
 
       for (; it != container->getObjects().end(); ++it)
-      {addObjectRecursive((QWidget*)element, (void*)it->second);}
+        {
+          //the next line skips name references...
+          if (it->second->getObjectName() == "Name") continue;
+
+          addObjectRecursive((QWidget*)element, (void*)it->second);
+        }
       return;
     }
 
