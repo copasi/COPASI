@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/10 19:42:30 $
+   $Date: 2003/12/10 19:59:23 $
    End CVS Header */
 
 /**
@@ -160,6 +160,48 @@ class CCopasiXMLParser : public CExpat
       };
 
 #endif // COPASI_TEMPLATE
+
+  class InitialStateElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          InitialState = 0,
+          etc
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        InitialStateElement(CCopasiXMLParser & parser,
+                            SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~InitialStateElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
 
   class StateTemplateVariableElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >

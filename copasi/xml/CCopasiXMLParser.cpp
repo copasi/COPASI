@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/10 19:42:30 $
+   $Date: 2003/12/10 19:59:23 $
    End CVS Header */
 
 /**
@@ -832,12 +832,10 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         mpCurrentHandler = new StateTemplateElement(mParser, mCommon);
       break;
 
-#ifdef XXXX
     case InitialState:
       if (!strcmp(pszName, "InitialState"))
         mpCurrentHandler = new InitialStateElement(mParser, mCommon);
       break;
-#endif // XXXX
 
     default:
       fatalError();
@@ -2412,6 +2410,56 @@ void CCopasiXMLParser::StateTemplateVariableElement::end(const XML_Char *pszName
     {
     case StateTemplateVariable:
       if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::InitialStateElement::InitialStateElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::InitialStateElement::~InitialStateElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::InitialStateElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case InitialState:
+      if (strcmp(pszName, "InitialState")) fatalError();
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case InitialState:
+      if (strcmp(pszName, "InitialState")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = -1;
 
