@@ -616,7 +616,7 @@ void OptimizationWidget::slotBtnCancelClicked()
 
 void OptimizationWidget::slotBtnConfirmClicked()
 {
-  COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(key);
+  COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
   for (int i = 0; i < func->mParaList.size(); i++)
     {
       func->mMinList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerLimit();
