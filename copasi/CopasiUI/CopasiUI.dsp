@@ -242,6 +242,14 @@ SOURCE=.\ScanWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\SliderDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\slidersettingsdialog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\SteadyStateWidget.cpp
 # End Source File
 # Begin Source File
@@ -478,6 +486,18 @@ SOURCE=.\ScanWidget.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\SliderDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\slidersettingsdialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\slidersettingsdialog.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\SteadyStateWidget.h
 # End Source File
 # Begin Source File
@@ -531,15 +551,7 @@ SOURCE=..\common.pri
 # End Source File
 # Begin Source File
 
-SOURCE=..\copasi.pro
-# End Source File
-# Begin Source File
-
 SOURCE=.\CopasiUI.pro
-# End Source File
-# Begin Source File
-
-SOURCE=..\lib.pri
 # End Source File
 # End Target
 # End Project
