@@ -434,11 +434,18 @@
         <receiver>TrajectoryWidget</receiver>
         <slot>EnableRunTask()</slot>
     </connection>
+    <connection>
+        <sender>ComboBox1</sender>
+        <signal>activated(int)</signal>
+        <receiver>TrajectoryWidget</receiver>
+        <slot>UpdateMethod()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>CancelChange()</slot>
     <slot>CommitChange()</slot>
     <slot>EnableRunTask()</slot>
+    <slot>UpdateMethod()</slot>
     <slot>RunTask()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>

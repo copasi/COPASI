@@ -1,11 +1,15 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Thu Feb 20 14:48:29 2003
+ ** Created: Fri Feb 21 14:46:45 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
+#include "TrajectoryWidget.h"
+#include "trajectory/CTrajectoryTask.h"
+
+#include <qmessagebox.h>
 #include <qvariant.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
@@ -17,9 +21,6 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-
-#include "TrajectoryWidget.h"
-#include "trajectory/CTrajectoryTask.h"
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -71,8 +72,11 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   parameterTable = new QTable(this, "parameterTable");
   parameterTable->setGeometry(QRect(100, 296, 484, 160));
-  parameterTable->setNumRows(3);
-  parameterTable->setNumCols(3);
+  parameterTable->setNumRows(0);
+  parameterTable->setNumCols(1);
+
+  QHeader *colHeader = parameterTable->horizontalHeader();
+  colHeader->setLabel(0, tr("Value"));
 
   line7 = new QFrame(this, "line7");
   line7->setGeometry(QRect(10, 270, 568, 16));
@@ -105,12 +109,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   nStartTime->setGeometry(QRect(98, 117, 121, 21));
   nStartTime->setText(trUtf8(""));
 
-  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-  //  ComboBox1->insertItem(trUtf8("deterministic"));
-  //  ComboBox1->insertItem(trUtf8("stochastic"));
-  //  ComboBox1->insertItem(trUtf8("hybrid"));
-  ComboBox1->setGeometry(QRect(101, 210, 281, 21));
-
   nStepSize = new QLineEdit(this, "nStepSize");
   nStepSize->setGeometry(QRect(97, 71, 121, 21));
   nStepSize->setText(trUtf8(""));
@@ -131,11 +129,15 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TextLabel1_2->setGeometry(QRect(247, 71, 80, 20));
   TextLabel1_2->setText(trUtf8("Step Number"));
 
+  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
+  ComboBox1->setGeometry(QRect(99, 210, 281, 21));
+
   // signals and slots connections
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(bRunTask, SIGNAL(clicked()), this, SLOT(RunTask()));
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
+  connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
 }
 
 /*
@@ -165,6 +167,20 @@ void TrajectoryWidget::CommitChange()
   trajectoryproblem->setStartTime(nStartTime->text().toDouble());
   trajectoryproblem->setEndTime(nEndTime->text().toDouble());
 
+  CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
+  trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CTrajectoryMethod::Type)ComboBox1->currentItem(), trajectoryproblem);
+  if (trajectorymethod != NULL)
+    {
+      trajectorymethod -> setProblem(trajectoryproblem);
+      mTrajectoryTask -> setMethod(trajectorymethod);
+      pdelete(ptrTmpMethod);
+    }
+  else
+    {
+      QMessageBox::warning(this, NULL, "The method has not yet been handled!", QMessageBox::Ok, QMessageBox::Cancel);
+      trajectorymethod = ptrTmpMethod;
+    }
+
   QTableItem * pItem;
   QString substrate;
   QString strname;
@@ -189,18 +205,6 @@ void TrajectoryWidget::CommitChange()
           trajectorymethod->setValue((const char *)strname.utf8(), bool(substrate.toUShort()));
           break;
         }
-    }
-  CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
-  trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CTrajectoryMethod::Type)ComboBox1->currentItem(), trajectoryproblem);
-  if (trajectorymethod != NULL)
-    {
-      trajectorymethod -> setProblem(trajectoryproblem);
-      mTrajectoryTask -> setMethod(trajectorymethod);
-      pdelete(ptrTmpMethod);
-    }
-  else
-    {
-      trajectorymethod = ptrTmpMethod;
     }
 
   loadTrajectoryTask(mTrajectoryTask);
@@ -259,6 +263,7 @@ void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)
       parameterTable->setItem(i, 0, pItem);
     }
 
+  ComboBox1->clear ();
   for (i = 0; strlen(trajectorymethod->TypeName[i].c_str()) > 0; i++)
     ComboBox1->insertItem(trUtf8(trajectorymethod->TypeName[i].c_str()));
 
@@ -268,4 +273,28 @@ void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)
     bRunTask->setEnabled(false);
   else
     bRunTask->setEnabled(true);
+}
+
+void TrajectoryWidget::UpdateMethod()
+{
+  if (!mTrajectoryTask)
+    return;
+  CTrajectoryProblem* trajectoryproblem = mTrajectoryTask->getProblem();
+  CTrajectoryMethod* trajectorymethod = mTrajectoryTask->getMethod();
+
+  CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
+  trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CTrajectoryMethod::Type)ComboBox1->currentItem(), trajectoryproblem);
+  if (trajectorymethod != NULL)
+    {
+      trajectorymethod -> setProblem(trajectoryproblem);
+      mTrajectoryTask -> setMethod(trajectorymethod);
+      pdelete(ptrTmpMethod);
+    }
+  else
+    {
+      QMessageBox::warning(this, NULL, "The method has not yet been handled!", QMessageBox::Ok, QMessageBox::Cancel);
+      trajectorymethod = ptrTmpMethod;
+    }
+
+  loadTrajectoryTask(mTrajectoryTask);
 }

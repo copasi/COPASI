@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Thu Feb 20 14:48:29 2003
+ ** Created: Fri Feb 21 14:46:45 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -15,8 +15,8 @@
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
-class QComboBox;
 class QCheckBox;
+class QComboBox;
 class QFrame;
 class QLabel;
 class QLineEdit;
@@ -53,17 +53,18 @@ class TrajectoryWidget : public QWidget
     QLineEdit* taskName;
     QLabel* TextLabel1_3_2;
     QLineEdit* nStartTime;
-    QComboBox* ComboBox1;
     QLineEdit* nStepSize;
     QLabel* TextLabel1_2_2;
     QLineEdit* nEndTime;
     QLineEdit* nStepNumber;
     QLabel* TextLabel1_2;
+    QComboBox* ComboBox1;
 
   public slots:
     virtual void CancelChange();
     virtual void CommitChange();
     virtual void EnableRunTask();
+    virtual void UpdateMethod();
     virtual void RunTask();
   };
 
