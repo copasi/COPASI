@@ -520,6 +520,9 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   //index using some value and loop thru...
 
   string usagetypes[100];
+  string substrate_name[100];
+  string product_name[100];
+  string parameter_name[100];
 
   unsigned int i;
   for (i = 0; i < functionParameters.size(); i++)
@@ -531,14 +534,17 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
       //little bit left...just to sort and add the variables in the combo box.
       if (p4 == "SUBSTRATES")
         {
+          substrate_name[count_substrates] = functionParameters[i]->getName();
           count_substrates++;
         }
       else if (p4 == "PRODUCTS")
         {
+          product_name[count_products] = functionParameters[i]->getName();
           count_products++;
         }
       else if (p4 == "PARAMETERS")
         {
+          parameter_name[count_parameters] = functionParameters[i]->getName();
           count_parameters++;
         }
     }

@@ -274,7 +274,7 @@ void MetabolitesWidget1::loadName(QString setValue)
 {
   if (mModel == NULL)
     {
-      return ;
+      return;
     }
 
   vector < CMetab * > metabolites = mModel->getMetabolites();
@@ -312,10 +312,10 @@ void MetabolitesWidget1::loadName(QString setValue)
       LineEdit7->setText(QString::number(metab->getConcentration()));
       LineEdit7->setReadOnly(true);
 
-      LineEdit8->setText(QString::number(metab->getNumberInt()));
+      LineEdit8->setText(QString::number(metab->getNumberDbl()));
       LineEdit8->setReadOnly(true);
 
-      LineEdit5->setText(QString::number(metab->getInitialNumberInt()));
+      LineEdit5->setText(QString::number(metab->getInitialNumberDbl()));
 
       LineEdit9->setText(QString::number(metab->getTransitionTime()));
       LineEdit9->setReadOnly(true);
