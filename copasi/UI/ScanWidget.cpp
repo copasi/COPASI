@@ -67,7 +67,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   vBox = new QVBox(this, 0);
 
   //Just for test
-  for (int temp = 1; temp <= 7; temp++)
+  for (int temp = 1; temp <= 6; temp++)
     addNewScanItem(NULL);
 
   scrollview->addChild(vBox);
