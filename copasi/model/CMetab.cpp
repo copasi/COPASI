@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/06 09:52:21 $
+   $Author: gauges $ 
+   $Date: 2004/10/08 13:06:56 $
    End CVS Header */
 
 #include <iostream>
@@ -188,8 +188,8 @@ void CMetab::initObjects()
 {
   addObjectReference("Concentration", mConc, CCopasiObject::ValueDbl);
   addObjectReference("InitialConcentration", mIConc, CCopasiObject::ValueDbl);
-  addObjectReference("Number", mNumber, CCopasiObject::ValueDbl);
-  addObjectReference("InitialNumber", mINumber, CCopasiObject::ValueDbl);
+  addObjectReference("ParticleNumber", mNumber, CCopasiObject::ValueDbl);
+  addObjectReference("InitialParticleNumber", mINumber, CCopasiObject::ValueDbl);
   addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
 }
 
