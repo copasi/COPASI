@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.108 $
+   $Revision: 1.110 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/22 10:09:32 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:42:39 $
    End CVS Header */
 
 // CReaction
@@ -702,6 +702,12 @@ unsigned C_INT32 CReaction::usageRangeSize(const std::string & usage) const
 unsigned C_INT32 CReaction::getCompartmentNumber() const
 {return mChemEq.getCompartmentNumber();}
 
+const CCompartment & CReaction::getLargestCompartment() const
+  {return mChemEq.getLargestCompartment();}
+
+/*const CCompartment & CReaction::getSmallestCompartment() const
+{return mChemEq.getSmallestCompartment();}*/
+
 void CReaction::setScalingFactor()
 {
   if (1 == getCompartmentNumber())
@@ -738,6 +744,7 @@ void CReaction::setScalingFactor()
     mUnitScalingFactor = & mDefaultScalingFactor;
 }
 
+//TODO: these dont do anything
 void CReaction::setCompartment(const CCompartment* comp)
 {mpFunctionCompartment = comp;}
 

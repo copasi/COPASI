@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/07 20:06:56 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:42:38 $
    End CVS Header */
 
 /**
@@ -137,6 +137,12 @@ class CChemEq : public CCopasiContainer
      * with. 
      */
     unsigned C_INT32 getCompartmentNumber() const;
+
+    /**
+     *  get the largest (smallest) compartment that the reaction touches.
+     */
+    const CCompartment & getLargestCompartment() const;
+    const CCompartment & getSmallestCompartment() const;
 
     /**
      *  Checks if it is possible to figure out a compartment from the

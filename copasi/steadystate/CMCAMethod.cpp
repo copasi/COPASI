@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/02 17:25:51 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 18:19:25 $
    End CVS Header */
 
 #include <cmath>
@@ -378,15 +378,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   for (i = 0; i < mpModel->getTotSteps(); i++)
     for (j = 0; j < mpModel->getTotSteps(); j++)
       {
-        //this is a hack. We just take the volume of the first compartment that appears in the
-        //reaction and use it to calculate a concentration rate. I hope it scales better than
-        //the unscaled flux
-        const CCopasiVector < CChemEqElement > & balances = mpModel->getReactionsX()[i]->getChemEq().getBalances();
-        C_FLOAT64 tmp;
-        if (balances.size())
-          tmp = balances[0]->getMetabolite().getCompartment()->getVolumeInv();
-        else
-          tmp = 1;
+        C_FLOAT64 tmp = mpModel->getReactionsX()[i]->getLargestCompartment().getVolumeInv();
 
         if (fabs(mpModel->getReactionsX()[i]->getFlux()*tmp) >= res)
           mScaledFluxCC[i][j] = mUnscaledFluxCC[i][j]

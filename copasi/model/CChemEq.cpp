@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 09:30:45 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:42:38 $
    End CVS Header */
 
 // CChemEqElement
@@ -20,6 +20,7 @@
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "CMetabNameInterface.h"
+#include "CCompartment.h"
 
 CChemEq::CChemEq(const std::string & name,
                  const CCopasiContainer * pParent):
@@ -112,6 +113,29 @@ unsigned C_INT32 CChemEq::getCompartmentNumber() const
 
     return Number;
   }
+
+const CCompartment & CChemEq::getLargestCompartment() const
+  {
+    unsigned C_INT32 index, i, imax = mBalances.size();
+
+    C_FLOAT64 tmp, maxVol = 0;
+
+    for (i = 0; i < imax; i++)
+      {
+        tmp = mBalances[i]->getMetabolite().getCompartment()->getVolume();
+
+        if (tmp > maxVol)
+          {
+            maxVol = tmp;
+            index = i;
+          }
+      }
+    return *mBalances[index]->getMetabolite().getCompartment();
+  }
+
+/*const CCompartment & CChemEq::getSmallestCompartment() const
+{
+} */
 
 void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
                          const CChemEqElement & element,

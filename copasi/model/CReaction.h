@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.71 $
+   $Revision: 1.73 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 12:09:41 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:42:39 $
    End CVS Header */
 
 /**
@@ -333,6 +333,12 @@ class CReaction : public CCopasiContainer
      *  @return "unsigned C_INT32" the compartment number
      */
     unsigned C_INT32 getCompartmentNumber() const;
+
+    /**
+     *  get the largest (smallest) compartment that the reaction touches.
+     */
+    const CCompartment & getLargestCompartment() const;
+    const CCompartment & getSmallestCompartment() const;
 
     const CFunctionParameterMap & getFunctionParameterMap() const {return mMap;}
 

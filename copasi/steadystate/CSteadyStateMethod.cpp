@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/02 17:25:13 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 18:19:25 $
    End CVS Header */
 
 /**
@@ -172,8 +172,8 @@ bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
     unsigned C_INT32 i, imax = Reaction.size();
 
     for (i = 0; i < imax; i++)
-      if (Reaction[i]->getFlux() > resolution)
-        return false;
+      if (Reaction[i]->getFlux() * Reaction[i]->getLargestCompartment().getVolumeInv() > resolution)
+        return false; //TODO: smallest or largest ?
 
     return true;
   }
