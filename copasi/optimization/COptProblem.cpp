@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/21 18:54:02 $
+   $Date: 2005/02/10 20:33:28 $
    End CVS Header */
 
 /**
@@ -59,6 +59,15 @@ COptProblem::COptProblem(const COptProblem& src,
 // Destructor
 COptProblem::~COptProblem()
 {}
+
+bool COptProblem::setModel(CModel * pModel)
+{
+  mpModel = pModel;
+  return true;
+}
+
+bool COptProblem::initialize()
+{return true;}
 
 // check constraints : unimplemented - always returns true
 bool COptProblem::checkParametricConstraints()
