@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:19 $
+   $Date: 2003/10/30 19:01:32 $
    End CVS Header */
 
 /**
@@ -70,7 +70,11 @@ void CCopasiParameterGroup::deleteGroup()
 
   for (; it != end; ++it) pdelete(*it);
 
-  pdelete((parameterGroup *) mpValue);
+  if (mpValue)
+    {
+      delete (parameterGroup *) mpValue;
+      mpValue = NULL;
+    }
 }
 
 void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)

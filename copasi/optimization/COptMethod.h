@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:53 $
+   $Date: 2003/10/30 19:00:06 $
    End CVS Header */
 
 /**
@@ -25,10 +25,8 @@
 #define COPASI_COptMethod
 
 #include <string>
-#include <vector>
 
 #include "utilities/CCopasiMethod.h"
-#include "utilities/CCopasiVector.h"
 
 class COptProblem;
 template < class CType > class CVector;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:22 $
+   $Date: 2003/10/30 19:00:43 $
    End CVS Header */
 
 /**
@@ -83,14 +83,13 @@ class CCopasiTask : public CCopasiContainer
     CCopasiTask();
 
   public:
-
     /**
      * Specific constructor
      * @param "const string &" name (Default = "NoName")
      * @param const CCopasiContainer * pParent (default: NULL)
      * @param const std::string & type (default: "Task")
      */
-    CCopasiTask(const CCopasiTask::Type & type,
+    CCopasiTask(const Type & taskType,
                 const CCopasiContainer * pParent = NULL,
                 const std::string & type = "Task");
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:17 $
+   $Date: 2003/10/30 19:00:54 $
    End CVS Header */
 
 /**
@@ -22,8 +22,6 @@
 #include "CCopasiParameterGroup.h"
 #include "CCopasiTask.h"
 #include "CReadConfig.h"
-
-class CCopasiProblem;
 
 class CCopasiMethod : public CCopasiParameterGroup
   {
@@ -81,8 +79,8 @@ class CCopasiMethod : public CCopasiParameterGroup
      * @param const CCopasiMethod::SubType & subType
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CCopasiMethod(const CCopasiTask::Type & type,
-                  const CCopasiMethod::SubType & subType,
+    CCopasiMethod(const CCopasiTask::Type & taskType,
+                  const SubType & subType,
                   const CCopasiContainer * pParent = NULL);
 
   public:
