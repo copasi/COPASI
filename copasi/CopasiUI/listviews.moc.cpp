@@ -153,9 +153,27 @@ QMetaObject* ListViews::staticMetaObject()
 
   static const QUParameter param_slot_3[] =
     {
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+    };
+  static const QUMethod slot_3 = {"slotMetaboliteTableChanged", 1, param_slot_3 };
+
+  static const QUParameter param_slot_4[] =
+    {
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+    };
+  static const QUMethod slot_4 = {"slotMoietyTableChanged", 1, param_slot_4 };
+
+  static const QUParameter param_slot_5[] =
+    {
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+    };
+  static const QUMethod slot_5 = {"slotReactionTableChanged", 1, param_slot_5 };
+
+  static const QUParameter param_slot_6[] =
+    {
       { 0, &static_QUType_ptr, "QListViewItem", QUParameter::In }
     };
-  static const QUMethod slot_3 = {"slotFolderChanged", 1, param_slot_3 };
+  static const QUMethod slot_6 = {"slotFolderChanged", 1, param_slot_6 };
 
   static const QMetaData slot_tbl[] =
     {
@@ -163,12 +181,15 @@ QMetaObject* ListViews::staticMetaObject()
 
       { "slotMetaboliteSelected(const QString&)", &slot_1, QMetaData::Public },
       { "slotCompartmentTableChanged(QString&)", &slot_2, QMetaData::Public },
-      { "slotFolderChanged(QListViewItem*)", &slot_3, QMetaData::Protected }
+      { "slotMetaboliteTableChanged(QString&)", &slot_3, QMetaData::Public },
+      { "slotMoietyTableChanged(QString&)", &slot_4, QMetaData::Public },
+      { "slotReactionTableChanged(QString&)", &slot_5, QMetaData::Public },
+      { "slotFolderChanged(QListViewItem*)", &slot_6, QMetaData::Protected }
     };
 
   metaObj = QMetaObject::new_metaobject(
               "ListViews", parentObject,
-              slot_tbl, 4,
+              slot_tbl, 7,
               0, 0,
 #ifndef QT_NO_PROPERTIES
               0, 0,
@@ -209,6 +230,18 @@ bool ListViews::qt_invoke(int _id, QUObject* _o)
       break;
 
     case 3:
+      slotMetaboliteTableChanged(static_QUType_QString.get(_o + 1));
+      break;
+
+    case 4:
+      slotMoietyTableChanged(static_QUType_QString.get(_o + 1));
+      break;
+
+    case 5:
+      slotReactionTableChanged(static_QUType_QString.get(_o + 1));
+      break;
+
+    case 6:
       slotFolderChanged((QListViewItem*)static_QUType_ptr.get(_o + 1));
       break;
 

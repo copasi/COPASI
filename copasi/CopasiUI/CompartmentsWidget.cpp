@@ -11,7 +11,9 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include "CompartmentsWidget.h"
-#include "listviews.h" 
+#include "listviews.h"
+#include "model/CMetab.h"
+
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
  *  This widget is a child of 'parent', with the 
@@ -59,18 +61,11 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-
-  //connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged()));
-
-  /*connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(table, SIGNAL(name1(int)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(int))); */
-
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
   connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
-
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  //connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  //connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
 void CompartmentsWidget::loadCompartments(CModel *model)
@@ -147,4 +142,16 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
 void CompartmentsWidget::showMessage(QString title, QString text)
 {
   QMessageBox::about (this, title, text);
+}
+
+void CompartmentsWidget::slotBtnOKClicked()
+{
+  QMessageBox::information(this, "Moiety Widget",
+                            "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
+}
+
+void CompartmentsWidget::slotBtnCancelClicked()
+{
+  QMessageBox::information(this, "Moiety Widget",
+                            "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
 }

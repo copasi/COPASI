@@ -1,22 +1,19 @@
 /*******************************************************************
-**  $ CopasiUI/ReactionsWidget.cpp                 
-**  $ Author  : Mudita Singhal
-**
-** This file is used to create the GUI FrontPage for the  information 
-** obtained from the data  model about the Moiety----It is Basically
-** the First level of Reactions.
-********************************************************************/
+ **  $ CopasiUI/ReactionsWidget.cpp                 
+ **  $ Author  : Mudita Singhal
+ **
+ ** This file is used to create the GUI FrontPage for the  information 
+ ** obtained from the data  model about the Moiety----It is Basically
+ ** the First level of Reactions.
+ ********************************************************************/
 
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
-
+#include "listviews.h"
 #include "ReactionsWidget.h"
 
-
-
-
-/** 
+/**
  *  Constructs a Widget for the Metabolites subsection of the tree.
  *  This widget is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'. 
@@ -31,138 +28,128 @@
  *  for more information about these flags.
  */
 ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
-						: QWidget(parent, name, f)
+    : QWidget(parent, name, f)
 {
-	
-        mModel=NULL;		
-	table = new MyTable(0, 2, this, "tblReactions");
-	QVBoxLayout *vBoxLayout = new QVBoxLayout( this, 0 );
-	vBoxLayout->addWidget(table);
+  mModel = NULL;
+  table = new MyTable(0, 2, this, "tblReactions");
+  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
+  vBoxLayout->addWidget(table);
 
-	//Setting table headers
-	QHeader *tableHeader = table->horizontalHeader();
-	tableHeader->setLabel(0, "Name");
-	tableHeader->setLabel(1, "Reaction");
+  //Setting table headers
+  QHeader *tableHeader = table->horizontalHeader();
+  tableHeader->setLabel(0, "Name");
+  tableHeader->setLabel(1, "Reaction");
 
-	btnOK = new QPushButton("&OK", this);
-	btnCancel = new QPushButton("&Cancel", this);
+  btnOK = new QPushButton("&OK", this);
+  btnCancel = new QPushButton("&Cancel", this);
 
-	QHBoxLayout *hBoxLayout = new QHBoxLayout( vBoxLayout, 0 );
-	
-	//To match the Table left Vertical Header Column Width.
-	hBoxLayout->addSpacing( 32 );
-	
-	hBoxLayout->addSpacing( 50 );
-	hBoxLayout->addWidget(btnOK);
-	hBoxLayout->addSpacing( 5 );
-	hBoxLayout->addWidget(btnCancel);
-	hBoxLayout->addSpacing( 50 );
-	
-	//table->sortColumn (0, TRUE, TRUE);
-	//table->setSorting ( TRUE );
-	table->setFocusPolicy(QWidget::WheelFocus);
+  QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
-	
-	// signals and slots connections
-    connect( table, SIGNAL( clicked( int, int, int, const QPoint &) ), this, SLOT( slotTableClicked( int, int, int, const QPoint &) ) );
-	connect( table, SIGNAL( currentChanged ( int, int ) ), this, SLOT( slotTableCurrentChanged( int, int ) ) );
-	connect( table, SIGNAL( selectionChanged () ), this, SLOT( slotTableSelectionChanged () ) );
-	connect( btnOK, SIGNAL( clicked () ), this, SLOT( slotBtnOKClicked() ) );
-	connect( btnCancel, SIGNAL( clicked () ), this, SLOT( slotBtnCancelClicked() ) );
+  //To match the Table left Vertical Header Column Width.
+  hBoxLayout->addSpacing(32);
 
+  hBoxLayout->addSpacing(50);
+  hBoxLayout->addWidget(btnOK);
+  hBoxLayout->addSpacing(5);
+  hBoxLayout->addWidget(btnCancel);
+  hBoxLayout->addSpacing(50);
+
+  table->sortColumn (0, TRUE, TRUE);
+  table->setSorting (TRUE);
+  table->setFocusPolicy(QWidget::WheelFocus);
+
+  // signals and slots connections
+  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
+  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
+  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
 void ReactionsWidget::loadReactions(CModel *model)
 {
-	if (model != NULL)
-	{
-		mModel = model;
-		//Emptying the table
-		int numberOfRows = table->numRows();
-		for(int i = 0; i < numberOfRows; i++)
-		{
-			table->removeRow(0);
-		}
-		
-		CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-		C_INT32 noOfReactionsRows = reactions.size();
-		table->setNumRows(noOfReactionsRows);
+  if (model != NULL)
+    {
+      mModel = model;
+      //Emptying the table
+      int numberOfRows = table->numRows();
 
-		
-		//Now filling the table.
-		CReaction *reactn;
-		CChemEq chemEq;
-		for (C_INT32 j = 0; j < noOfReactionsRows; j++)
-		{
-			reactn = reactions[j];
-			table->setText(j, 0, reactn->getName().c_str());
-			chemEq = reactn->getChemEq();
-			table->setText(j, 1, chemEq.getChemicalEquation().c_str());
-					
-		}
-	}
-}
+      for (int i = 0; i < numberOfRows; i++)
+        {
+          table->removeRow(0);
+        }
 
+      CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+      C_INT32 noOfReactionsRows = reactions.size();
+      table->setNumRows(noOfReactionsRows);
 
-void ReactionsWidget::mousePressEvent ( QMouseEvent * e )
-{
-	QMessageBox::information( this, "Application name",
-                            "Clicked (mousePress) On Reactions Widget." );
+      //Now filling the table.
+      CReaction *reactn;
+      CChemEq chemEq;
 
-	QWidget::mousePressEvent(e);
-	table->setFocus();
-
-}
-
-
-void ReactionsWidget::slotTableClicked( int row, int col, int button, const QPoint & mousePos )
-{
-	//QMessageBox::information( this, "Application name",
-		//"Clicked (Inside ReactionsWidget::slotTableClicked) On Reactions table." );	
-
+      for (C_INT32 j = 0; j < noOfReactionsRows; j++)
+        {
+          reactn = reactions[j];
+          table->setText(j, 0, reactn->getName().c_str());
+          chemEq = reactn->getChemEq();
+          table->setText(j, 1, chemEq.getChemicalEquation().c_str());
+        }
+    }
 }
 
 void ReactionsWidget::slotBtnOKClicked()
 {
-	QMessageBox::information( this, "Reactions Widget",
-		"Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnOKClicked())" );	
+  QMessageBox::information(this, "Reactions Widget",
+                            "Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnOKClicked())");
 }
 
 void ReactionsWidget::slotBtnCancelClicked()
 {
-	QMessageBox::information( this, "Reactions Widget",
-		"Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnCancelClicked())" );	
+  QMessageBox::information(this, "Reactions Widget",
+                            "Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnCancelClicked())");
 }
 
-void ReactionsWidget::slotTableCurrentChanged( int row, int col )
+void ReactionsWidget::slotTableSelectionChanged()
 {
-	//QMessageBox::information( this, "Reactions Widget",
-		//"Current Changed.(Inside ReactionsWidget::slotTableCurrentChanged())" );	
+  if (!table->hasFocus())
+    {
+      table->setFocus();
+    }
 }
 
-void ReactionsWidget::slotTableSelectionChanged() 
+void ReactionsWidget::resizeEvent(QResizeEvent * re)
 {
-	if (!table->hasFocus())
-	{
-		table->setFocus();
-	}
+  if (isVisible())
+    {
+      int newWidth = re->size().width();
+
+      newWidth -= 35; //Accounting for the left (vertical) header width.
+      float weight0 = 3.5, weight1 = 6.5;
+      float weightSum = weight0 + weight1;
+      int w0, w1;
+      w0 = newWidth * (weight0 / weightSum);
+      w1 = newWidth - w0;
+      table->setColumnWidth(0, w0);
+      table->setColumnWidth(1, w1);
+    }
 }
 
-
-void ReactionsWidget::resizeEvent( QResizeEvent * re)
+void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
-	if (isVisible())
-	{
-		int newWidth = re->size().width();
-		
-		newWidth -= 35;	//Accounting for the left (vertical) header width.
-		float weight0 = 3.5, weight1 = 6.5;
-		float weightSum = weight0 + weight1;
-		int w0, w1;
-		w0 = newWidth * (weight0 / weightSum);
-		w1 = newWidth - w0;
-		table->setColumnWidth(0, w0);
-		table->setColumnWidth(1, w1);
-	}
-		
+  QString &x = table->text(row, col);
+  emit name(x);
+  //QMessageBox::information(this, "Compartments Widget",x);
+}
+
+/***********ListViews::showMessage(QString caption,QString text)------------------------>
+ **
+ ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
+ **              2. QString :_ The Text that needs to be displayed in the message box
+ ** Returns  :-  void(Nothing)
+ ** Description:- This method is used to show the message box on the screen
+ ****************************************************************************************/
+
+void ReactionsWidget::showMessage(QString title, QString text)
+{
+  QMessageBox::about (this, title, text);
 }

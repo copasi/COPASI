@@ -11,7 +11,7 @@
 #include <qmessagebox.h>
 #include "MetabolitesWidget.h"
 #include "model/CMetab.h"
-
+#include "listviews.h" 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
  *  displaying the Metabolites in model 'model'.
@@ -41,15 +41,31 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   tableHeader->setLabel(2, "Number");
   tableHeader->setLabel(3, "Status");
   tableHeader->setLabel(4, "Compartment");
-  //table->sortColumn (0, TRUE, TRUE);
 
-  setFocusPolicy(QWidget::WheelFocus);
-  setFocusProxy (table);
+  btnOK = new QPushButton("&OK", this);
+  btnCancel = new QPushButton("&Cancel", this);
+
+  QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
+
+  //To match the Table left Vertical Header Column Width.
+  hBoxLayout->addSpacing(32);
+
+  hBoxLayout->addSpacing(50);
+  hBoxLayout->addWidget(btnOK);
+  hBoxLayout->addSpacing(5);
+  hBoxLayout->addWidget(btnCancel);
+  hBoxLayout->addSpacing(50);
+
+  table->sortColumn (0, TRUE, TRUE);
+  table->setSorting (TRUE);
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-  connect(table, SIGNAL(clicked (int, int, int, const QPoint &)), this, SLOT(slotTableClicked(int, int, int, const QPoint &)));
+  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
+  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
 void MetabolitesWidget::loadMetabolites(CModel *model)
@@ -110,21 +126,11 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
     }
 }
 
-void MetabolitesWidget::setFocus()
+void MetabolitesWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
-  QWidget::setFocus();
-  table->setFocus();
-}
-
-void MetabolitesWidget::slotTableClicked(int row, int col, int button, const QPoint & mousePos)
-{
-  //QMessageBox::information(this, "Application name",
-  //"Clicked (mousePress) On Metabolites table.");
-
-  if (!table->hasFocus())
-    {
-      table->setFocus();
-    }
+  QString &x = table->text(row, col);
+  emit name(x);
+  //QMessageBox::information(this, "Compartments Widget",x);
 }
 
 void MetabolitesWidget::slotTableSelectionChanged()
@@ -133,6 +139,31 @@ void MetabolitesWidget::slotTableSelectionChanged()
     {
       table->setFocus();
     }
+}
+
+/***********ListViews::showMessage(QString caption,QString text)------------------------>
+ **
+ ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
+ **              2. QString :_ The Text that needs to be displayed in the message box
+ ** Returns  :-  void(Nothing)
+ ** Description:- This method is used to show the message box on the screen
+ ****************************************************************************************/
+
+void MetabolitesWidget::showMessage(QString title, QString text)
+{
+  QMessageBox::about (this, title, text);
+}
+
+void MetabolitesWidget::slotBtnOKClicked()
+{
+  QMessageBox::information(this, "Moiety Widget",
+                            "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
+}
+
+void MetabolitesWidget::slotBtnCancelClicked()
+{
+  QMessageBox::information(this, "Moiety Widget",
+                            "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
 }
 
 void MetabolitesWidget::resizeEvent(QResizeEvent * re)
