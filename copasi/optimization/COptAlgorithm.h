@@ -3,7 +3,7 @@
  *
  *  Programmer: Yongqun He 
  *  Contact email: yohe@vt.edu
- *  Purpose: This is the interface (.h file) of the COptimizer class. 
+ *  Purpose: This is the interface (.h file) of the COptAlgorithm class. 
  *           It contains the designed abstract interaction between a simulation
  *           subsystem and optimization algorithms. This base class defines
  *           methods by which the simulation subsystem accesses several 
@@ -31,7 +31,7 @@ class COptAlgorithm
   
   COptProblem * mOptProblem;  // pointer to remote problem
   double * mParameters;        // pointer to parameters
-  int mParamterNum;           // the number of parameters
+  int mParameterNum;           // the number of parameters
   double * mParameterMin;     // the minimum values of parameters
   double * mParameterMax;     // the maximum values of parameters
   vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
@@ -61,7 +61,7 @@ class COptAlgorithm
    /**
     * Initialization of private variables
     */
-   int initialize(void);
+   bool initialize(void);
 
    /**
     * Execute the optimization algorithm calling simulation routine 
@@ -69,6 +69,7 @@ class COptAlgorithm
     * of its progress by the callback function set with SetCallback.
     */
    virtual int optimise();
+  
 
    /**
     * get the number of method parameters
@@ -88,24 +89,24 @@ class COptAlgorithm
    /**
     * get method parameter name
     */
-   String getMethodParameterName(int i);
+   string getMethodParameterName(int i);
 
    /**
     * get method name
     */
-   String getMethodName(void);
+   string getMethodName(void);
 
    /**
     * get method version
     */
-   String getMethodVersion(void);
+   string getMethodVersion(void);
    
    /**
     * Returns True if this method is capable of handling adjustable parameter 
     * boundary constraints, False otherwise
     */
-   virtual bool isBounded( void );
-
+   //virtual bool isBounded( void );
+   bool isBounded( void );
 };
 
 

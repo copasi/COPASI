@@ -18,7 +18,7 @@ COptAlgorithm::COptAlgorithm()
 {
   mOptProblem = NULL;
   mParameters = NULL; 
-  mParamterNum = 0;         // the number of parameters
+  mParameterNum = 0;         // the number of parameters
   mParameterMin = NULL;     // the minimum values of parameters
   mParameterMax = NULL;     // the maximum values of parameters
   //if (mOptAlgmParams != ; //vector of COptAlgorithmParameter object
@@ -47,6 +47,8 @@ int COptAlgorithm::cleanup(void)
   mParameters = NULL; 
   mParameterMin = NULL;    
   mParameterMax = NULL;
+
+  return 0;
 }
 
 int COptAlgorithm::getMethodParameterNumber(void)
@@ -57,32 +59,32 @@ int COptAlgorithm::getMethodParameterNumber(void)
 
 void COptAlgorithm::setMethodParameter(int i, double value)
 {
-  mMethodParams(i) = value;
+  mOptAlgmParams[i].setValue(value);
 }
 
 double COptAlgorithm::getMethodParameter(int i)
 {
-  return mOptParams(i);
+  return mOptAlgmParams[i].getValue();
 }
 
-String COptAlgorithm::getMethodParameterName(int i)
+string COptAlgorithm::getMethodParameterName(int i)
 {
-  return mMethodParam(i);
+  return mOptAlgmParams[i].getName();
 }
 
-String COptAlgorithm::getMethodName(void)
+string COptAlgorithm::getMethodName(void)
 {
   return mMethodName;
 }
 
-String COptAlgorithm::getMethodVersion(void)
+string COptAlgorithm::getMethodVersion(void)
 {
   return mMethodVersion;
 }
 
 // Returns True if this method is capable of handling adjustable parameter boundary
 // constraints, False otherwise
-bool COptAlgorithm::IsBounded( void )
+bool COptAlgorithm::isBounded( void )
 {
   return mBounds;
 
@@ -95,7 +97,7 @@ bool COptAlgorithm::IsBounded( void )
 // when needed. It is noted that this procedure can give feedback of its progress by 
 // the callback function set with SetCallback
 //virtual int COptAlgorithm::Optimise( double (*func) (void) )
-int COptAlgorithm::Optimise(void)
+int COptAlgorithm::optimise(void)
 {
   return 0;
 }
