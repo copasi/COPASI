@@ -10,10 +10,7 @@
 #include "CFunctionParameter.h"
 
 const std::string CFunctionParameter::DataTypeName[] =
-  {
-    "INT16", "INT32", "UINT16", "UINT32", "FLOAT32", "FLOAT64",
-    "VINT16", "VINT32", "VUINT16", "VUINT32", "VFLOAT32", "VFLOAT64"
-  };
+  {"Integer", "Double", "Vector of Integer", "Vector of Double"};
 
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):

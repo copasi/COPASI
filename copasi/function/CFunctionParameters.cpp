@@ -148,7 +148,7 @@ void CFunctionParameters::updateUsageRanges()
 
           if ((MCCopasiVector + 1) == Exception.getMessage().getNumber())
             {
-              if (Type < CFunctionParameter::VINT16)
+              if (Type < CFunctionParameter::VINT32)
                 {
                   /* Non vectors are assumed to have a fixed number
                      of elements */
@@ -173,7 +173,7 @@ void CFunctionParameters::updateUsageRanges()
 
       if (pUsageRange)
         {
-          if (CFunctionParameter::VINT16 <= Type)
+          if (CFunctionParameter::VINT32 <= Type)
             CCopasiMessage(CCopasiMessage::ERROR, MCFunctionParameters + 1,
                            Usage.c_str(), Type);
 
