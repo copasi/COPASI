@@ -893,7 +893,7 @@ void ListViews::ConstructNodeWidgets()
     compartmentSymbols = new CompartmentSymbols(this);
     compartmentSymbols->hide();
 
-    //Constructing the Compartments Symbols
+    //Constructing the   tableDefinition
     tableDefinition = new TableDefinition(this);
     tableDefinition->hide();
 
