@@ -136,6 +136,7 @@ void MetabolitesWidget::slotTableCurrentChanged(int row,
   if (row == table->numRows() - 1)
     {
       //TODO: create a new Object
+      createNewObject();
     }
 
   pListView->switchToOtherWidget(mKeys[row]);
