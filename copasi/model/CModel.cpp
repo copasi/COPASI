@@ -351,14 +351,22 @@ void CModel::lUDecomposition()
   TNT::Vector < unsigned C_INT32 > rowLU(mStoi.num_rows());
   TNT::Vector < unsigned C_INT32 > colLU(mStoi.num_cols());
 
+  mRowLU.resize(mStoi.num_rows());
+  for (i = 0; i < mRowLU.size(); i++)
+    mRowLU[i] = i;
+
+  mColLU.resize(mStoi.num_cols());
+  for (i = 0; i < mColLU.size(); i++)
+    mColLU[i] = i;
+
   mLU = mStoi;
 
   TNT::LUX_factor(mLU, rowLU, colLU);
 
+#ifdef DEBUG_MATRIX
+
   TNT::UpperTriangularView < TNT::Matrix < C_FLOAT64 > > U(mLU);
   TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
-
-#ifdef DEBUG_MATRIX
 
   cout << "U" << endl;
   cout << U << endl;
@@ -376,7 +384,11 @@ void CModel::lUDecomposition()
   // permutate Metabolites and Steps to match rearangements done during
   // LU decomposition
 
+  // Create a more understandable permutation vector for row and column
+  // interchanges
+
   CMetab *pMetab;
+  unsigned C_INT32 tmp;
 
   for (i = 0; i < (unsigned C_INT32) rowLU.size(); i++)
     {
@@ -385,6 +397,10 @@ void CModel::lUDecomposition()
           pMetab = mMetabolitesX[i];
           mMetabolitesX[i] = mMetabolitesX[rowLU[i] - 1];
           mMetabolitesX[rowLU[i] - 1] = pMetab;
+
+          tmp = mRowLU[i];
+          mRowLU[i] = mRowLU[rowLU[i] - 1];
+          mRowLU[rowLU[i] - 1] = tmp;
         }
     }
 
@@ -397,6 +413,10 @@ void CModel::lUDecomposition()
           pStep = mStepsX[i];
           mStepsX[i] = mStepsX[colLU[i] - 1];
           mStepsX[colLU[i] - 1] = pStep;
+
+          tmp = mColLU[i];
+          mColLU[i] = mColLU[colLU[i] - 1];
+          mColLU[colLU[i] - 1] = tmp;
         }
     }
 
@@ -1306,8 +1326,12 @@ void CModel::setQuantityUnit(const string & name)
   mNumber2QuantityFactor = 1 / mQuantity2NumberFactor;
 }
 string CModel::getQuantityUnit() const { return mQuantityUnitName; }
-C_FLOAT64 CModel::getQuantity2NumberFactor() const { return mQuantity2NumberFactor; }
-C_FLOAT64 CModel::getNumber2QuantityFactor() const { return mNumber2QuantityFactor; }
+
+C_FLOAT64 CModel::getQuantity2NumberFactor() const
+  { return mQuantity2NumberFactor; }
+
+C_FLOAT64 CModel::getNumber2QuantityFactor() const
+  { return mNumber2QuantityFactor; }
 
 void CModel::setTitle(const string &title)
 {
@@ -1360,3 +1384,9 @@ C_INT32 CModel::addReaction(CReaction *r)
   mSteps.add(r);
   return mSteps.size();
 }
+
+const vector <unsigned C_INT32> & CModel::getMetabolitePermutation() const
+  { return mRowLU; }
+
+const vector <unsigned C_INT32> & CModel::getReactionPermutation() const
+  { return mColLU; }

@@ -112,9 +112,19 @@ class CModel
     TNT::Matrix < C_FLOAT64 > mRedStoi;
 
     /**
-     *   The Matrix which stores the L U Decompasition
+     *   The Matrix which stores the LU-Decomposition
      */
     TNT::Matrix < C_FLOAT64 > mLU;
+
+    /**
+     * Vector for storing the row interchanges during LU-Decomposition
+     */
+    vector < unsigned C_INT32 > mRowLU;
+
+    /**
+     * Vector for storing the column interchanges during LU-Decomposition
+     */
+    vector < unsigned C_INT32 > mColLU;
 
     /**
      *   This matrix stores L and the inverse of L
@@ -565,19 +575,32 @@ class CModel
                           C_INT16 status);
 
     /**
-     *  Add a compartment to the model
-     *  @param name name of the new compartment
-     *  @param vol volume of the new compartment
-     *  @return C_INT32 number of compartments in the model (after insertion) or -1 if failed
+     * Add a compartment to the model
+     * @param name name of the new compartment
+     * @param vol volume of the new compartment
+     * @return C_INT32 number of compartments in the model 
+     *   (after insertion) or -1 if failed
      */
     C_INT32 addCompartment(string &name, C_FLOAT64 vol);
 
     /**
-     *  Add a new rection to the model
-     *  @param r a pointer to the new reaction
-     *  @return C_INT32 number of reactions in the model (after insertion)
+     * Add a new rection to the model
+     * @param r a pointer to the new reaction
+     * @return C_INT32 number of reactions in the model (after insertion)
      */
     C_INT32 addReaction(CReaction *r);
+
+    /**
+     * Retrieve the metabolite permutation vector
+     * @return const vector <unsigned C_INT32> & permutation
+     */
+    const vector <unsigned C_INT32> & getMetabolitePermutation() const;
+
+    /**
+     * Retrieve the reaction permutation vector
+     * @return const vector <unsigned C_INT32> & permutation
+     */
+    const vector <unsigned C_INT32> & getReactionPermutation() const;
 
   private:
 

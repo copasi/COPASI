@@ -224,3 +224,29 @@ void CStateX::setModel(const CModel * model)
   mModel = model;
   mNumbersUpdated = model->getIndMetab();
 }
+
+CStateViewX::CStateViewX(CState & state):
+    mState(state),
+    mNumbersSizeView(0),
+    mNumbersInt(NULL),
+    mNumbersDbl(NULL),
+    mNumbersIntView(NULL),
+    mNumbersDblView(NULL)
+{
+  if (mState.mModel)
+    {
+      mNumbersSizeView = mState.mModel->getIndMetab();
+      mNumbersInt = new C_INT32 [mNumbersSizeView];
+      mNumbersDbl = new C_FLOAT64 [mNumbersSizeView];
+      mNumbersIntView = new C_INT32 * [mNumbersSizeView];
+      mNumbersDblView = new C_FLOAT64 * [mNumbersSizeView];
+    }
+}
+
+CStateViewX::~CStateViewX()
+{
+  pdelete(mNumbersInt);
+  pdelete(mNumbersDbl);
+  pdelete(mNumbersIntView);
+  pdelete(mNumbersDblView);
+}
