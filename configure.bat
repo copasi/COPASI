@@ -45,6 +45,6 @@ rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 echo   qmake "CONFIG+=%cps_release%" %1 %2
 %QTDIR%\bin\qmake "CONFIG+=%cps_release%" %1 %2
-
+nmake qmake_all
 cd ..
 
