@@ -53,5 +53,5 @@ C_FLOAT64 ddot(C_INT32 n,
                C_INT32 incy);
 
 
-#endif COPASI_utilities
+#endif // COPASI_utilities
 
