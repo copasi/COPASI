@@ -370,7 +370,7 @@ void MetabolitesWidget1::slotBtnCancelClicked()
 
 void MetabolitesWidget1::slotBtnOKClicked()
 {
-  string filename = name + ".gps";
+  string filename = ((string) name.latin1()) + ".gps";
   CWriteConfig *Met = new CWriteConfig(filename);
 
   vector < CMetab * > metabolites = mModel->getMetabolites();

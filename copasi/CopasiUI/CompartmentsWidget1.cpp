@@ -203,7 +203,7 @@ void CompartmentsWidget1::slotBtnCancelClicked()
 
 void CompartmentsWidget1::slotBtnOKClicked()
 {
-  string filename = name + ".gps";
+  string filename = ((string) name.latin1()) + ".gps";
   CWriteConfig *Com = new CWriteConfig(filename);
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
