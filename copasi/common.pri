@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.12 $ $Author: shoops $ $Date: 2003/05/30 18:46:11 $  
+# $Revision: 1.13 $ $Author: shoops $ $Date: 2003/06/05 18:24:59 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -10,13 +10,12 @@ isEmpty(BUILD_OS) {
     BUILD_OS = $$system(uname)
   }
 }
-DEFINES += $${BUILD_OS}
+DEFINES += $$BUILD_OS
 message("Configuring for $${BUILD_OS}.")
 
 # Common configuration settings
 CONFIG += exceptions
 CONFIG += rtti
-CONFIG += thread
 
 !contains(BUILD_OS, WIN32) {
   QMAKE_QMAKE = $(QTDIR)/bin/qmake
@@ -41,7 +40,6 @@ contains(BUILD_OS, Darwin) {
   LIBS += -framework Carbon
   LIBS += -framework QuickTime
   LIBS += -lz
-  CONFIG -= thread
 }
 
 contains(BUILD_OS, WIN32) {
