@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.170 $
+   $Revision: 1.171 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:25:28 $
+   $Date: 2004/05/19 09:51:08 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1490,7 +1490,7 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
   CModel::QuantityUnit Unit = unit;
   bool success = true;
 
-  //TODO use AVOGADRO !!!!
+  //TODO use AVOGADRO (defined in copasi.h) !!!!
   switch (Unit)
     {
     case Mol:
