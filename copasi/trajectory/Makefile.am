@@ -2,12 +2,12 @@
 noinst_LIBRARIES = libtrajectory.a
 
 libtrajectory_a_SOURCES = \
-	CTrajectory.cpp \
-	CStochSolver.cpp \
 	CTrajectoryTask.cpp \
 	CTrajectoryProblem.cpp \
 	CTrajectoryMethod.cpp \
-	CLsodaMethod.cpp 
+	CLsodaMethod.cpp \
+	CStochMethod.cpp \
+  CStochDirectMethod.cpp
 
 EXTRA_DIST = \
 	trajectory.h \
@@ -16,7 +16,9 @@ EXTRA_DIST = \
 	CTrajectoryTask.h	CTrajectoryTask.cpp \
 	CTrajectoryProblem.h	CTrajectoryProblem.cpp \
 	CTrajectoryMethod.h	CTrajectoryMethod.cpp \
-	CLsodaMethod.h	CLsodaMethod.cpp
+	CLsodaMethod.h	CLsodaMethod.cpp \
+	CStochMethod.h CStochMethod.cpp \
+  CstochDirectMethod.h CStochDirectMethod.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 
