@@ -333,13 +333,13 @@ class CReaction : public CCopasiContainer
     /**
      *  A pointer to the  call parameters of the rate function of the reaction
      */
-    CCallParameters mCallParameters;
+    CCallParameterPointers mCallParameters;
 
     /**
      * A list of pointers to the call parameter objects of the rate function
      * of the reaction
      */
-    CCallParameters mCallParameterObjects;
+    CCallParameterPointers mCallParameterObjects;
 
     /**
      *
@@ -655,7 +655,7 @@ class CReaction : public CCopasiContainer
     /**
      * Retrieve the list of CallParameterObjects()
      */
-    const CCallParameters & getCallParameterObjects() const;
+    const CCallParameterPointers & getCallParameterObjects() const;
   private:
     /**
      *

@@ -414,7 +414,7 @@ CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
 
   const CFunctionParameters & Description =
     pReaction->getFunction().getParameters();
-  const CCallParameters & Objects = pReaction->getCallParameterObjects();
+  const CCallParameterPointers & Objects = pReaction->getCallParameterObjects();
 
   unsigned C_INT32 i, imax = Description.size();
   unsigned C_INT32 j, jmax;

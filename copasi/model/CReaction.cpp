@@ -1317,7 +1317,7 @@ void CReaction::setFunctionCompartment(const CCompartment* comp)
 const CCompartment* CReaction::getFunctionCompartment() const
   {return mpFunctionCompartment;}
 
-const CCallParameters & CReaction::getCallParameterObjects() const
+const CCallParameterPointers & CReaction::getCallParameterObjects() const
   {return mCallParameterObjects;}
 
 void CReaction::initObjects()
