@@ -1,7 +1,19 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = test
 
-test_SOURCES = test.cpp
+test_SOURCES = \
+	test.cpp
+
+test_DEPENDENCIES = $(test_LIBS) check_LIBS
+
+test_LIBS = \
+	../elementaryFluxModes \
+	../model \
+	../function \
+	../output \
+	../steadystate \
+	../trajectory \
+	../utilities
 
 # matrix_SOURCES = matrix.cpp
 
@@ -52,19 +64,5 @@ LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
         -L../trajectory \
         -L../utilities
 
-SUBDIRS = \
-	elementaryFluxModes \
-	function \
-	model \
-	optimization \
-	output \
-	steadystate \
-	trajectory \
-	utilities
-
-all-recursive install-data-recursive install-exec-recursive \
-installdirs-recursive install-recursive uninstall-recursive  \
-check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
-
-$(SUBDIRS): ../
-	@test -d $@ || ln -s ../$@ $@
+check_LIBS:
+	@for d in $(test_LIBS); do (cd $$d && make); done

@@ -1,13 +1,3 @@
-SUBDIRS = \
-	commandline \
-	elementaryFluxModes \
-	function \
-	output \
-	model \
-	steadystate \
-	trajectory \
-	utilities
-
 default: all
 
 dist:
@@ -29,10 +19,6 @@ dist:
 	rm -f Makefile.dist
 
 all:
-	list='$(SUBDIRS)'; \
-	for d in $$list; do \
-	  test -d copasi/test/$$d || ln -s ../$$d copasi/test/$$d; \
-	done
 	cat acinclude.m4.in libtool.m4.in >acinclude.m4
 	aclocal
 	autoheader
