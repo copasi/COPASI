@@ -1,0 +1,52 @@
+# This is a simple example input file for the COPASI specification
+# file reader.
+
+# The input must be given as follows: Each line must begin with a
+# number and a colon, where the number indicates the compartment of
+# the variable being described, or in the case of functions or
+# differential equations, the LHS variable. Differential equations are
+# denoted with a ', rate constants with a ->, and volumes with a := .
+
+# This describes a simple two compartment system in which a substrate
+# is converted to a product in an enzyme catalysed reaction. The
+# product can also diffuse from one cell to another.
+
+# Differential equations
+
+#compartment 1
+1: E1' = -k11*E1*S1 + k12 * ES1 + k13 *ES1
+1: S1' = -k11*E1*S1 + k12 * ES1
+1: ES1' = k11*E1*S1 - k12 * ES1 - k13 *ES1
+1: P' = k13 *ES1 - k14*P1 + k24*P2
+#compartment 2
+2: E2' = -k21*E2*S2 + k22 * ES2 + k23 *ES2
+2: S2' = -k21*E2*S2 + k22 * ES2
+2: ES2' = k21*E2*S2 - k22 * ES2 - k23 *ES2
+2: P' = k23 *ES2 - k24*P2 + k14*P1
+
+# Initial conditions
+1: E1 = 0.1
+1: S1 = 1.0
+1: ES1 = 0
+1: P1 = 0
+2: E2 = 0.2
+2: S2 = 2.0
+2: ES2 = 0
+2: P2 = 0
+
+# Rate constants
+1: k11 -> 10
+1: k12 -> 2
+1: k13 -> 0.5
+2: k21 -> 12
+2: k22 -> 2.5
+2: k23 -> 0.7
+
+# Volumes
+1: Volume := 5.0e-13
+2: Volume := 3.5e-13
+
+# Later versions of the parser will also be able to parse lines like
+# the following:
+# f1(S1) = (S1)/(K_M + S1) * E0;
+# 1: S1' = -k11 * f1(S1)
