@@ -33,6 +33,8 @@ class CCopasiObject
 
     static const unsigned C_INT32 NameVector;
 
+    static const unsigned C_INT32 Reference;
+
     std::string mObjectName;
 
   private:
@@ -102,6 +104,8 @@ class CCopasiObject
     bool isMatrix();
 
     bool isNameVector();
+
+    bool isReference();
 
   protected:
     virtual void * getReference();

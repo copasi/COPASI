@@ -13,13 +13,17 @@
 #include "CCopasiObject.h"
 #include "CCopasiContainer.h"
 
-const unsigned C_INT32 CCopasiObject::Container = 1;
-const unsigned C_INT32 CCopasiObject::Vector = 2;
-const unsigned C_INT32 CCopasiObject::Matrix = 4;
-const unsigned C_INT32 CCopasiObject::NameVector = 8;
+const unsigned C_INT32 CCopasiObject::Container = 0x1;
+const unsigned C_INT32 CCopasiObject::Vector = 0x2;
+const unsigned C_INT32 CCopasiObject::Matrix = 0x4;
+const unsigned C_INT32 CCopasiObject::NameVector = 0x8;
+const unsigned C_INT32 CCopasiObject::Reference = 0x10;
 
 CCopasiObject::CCopasiObject():
-    mObjectName(), mObjectType(), mpObjectParent(NULL), mObjectFlag(0)
+    mObjectName(),
+    mObjectType(),
+    mpObjectParent(NULL),
+    mObjectFlag(0)
 {}
 
 CCopasiObject::CCopasiObject(const std::string & name,
@@ -109,3 +113,5 @@ bool CCopasiObject::isVector() {return (0 < (mObjectFlag & Vector));}
 bool CCopasiObject::isMatrix() {return (0 < (mObjectFlag & Matrix));}
 
 bool CCopasiObject::isNameVector() {return (0 < (mObjectFlag & NameVector));}
+
+bool CCopasiObject::isReference() {return (0 < (mObjectFlag & Reference));}
