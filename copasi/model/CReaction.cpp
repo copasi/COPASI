@@ -114,7 +114,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   if ((Fail = configbuffer.getVariable("Flux", "C_FLOAT64", &mFlux)))
     return Fail;
 
-  if ((Fail = configbuffer.getVariable("Reversible", "C_INT16", &mReversible)))
+  if ((Fail = configbuffer.getVariable("Reversible", "bool", &mReversible)))
     return Fail;
 
   if (configbuffer.getVersion() < "4")
@@ -145,7 +145,7 @@ C_INT32 CReaction::save(CWriteConfig & configbuffer)
   if ((Fail = configbuffer.setVariable("Flux", "C_FLOAT64", &mFlux)))
     return Fail;
 
-  if ((Fail = configbuffer.setVariable("Reversible", "C_INT32", &mReversible)))
+  if ((Fail = configbuffer.setVariable("Reversible", "bool", &mReversible)))
     return Fail;
 
   Size = mId2Substrates.size();
@@ -248,7 +248,11 @@ void CReaction::setName(const string & name) {mName = name; }
 void CReaction::setChemEq(const string & chemEq)
 {mChemEq.setChemicalEquation(chemEq); }
 void CReaction::setFlux(C_FLOAT64 flux) {mFlux = flux; }
-void CReaction::setReversible(C_INT16 reversible) {mReversible = reversible; }
+
+void CReaction::setReversible(bool reversible)
+{
+  mReversible = reversible;
+}
 
 void CReaction::setFunction(const string & functionName)
 {

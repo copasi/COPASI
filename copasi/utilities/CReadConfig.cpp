@@ -181,6 +181,11 @@ C_INT32 CReadConfig::getVariable(const string& name,
       // may be we should check if Value is really a integer
       *(C_INT16 *) pout = atoi(Value.c_str());
     }
+  else if (type == "bool")
+    {
+      // may be we should check if Value is really a integer
+      *(bool *) pout = atoi(Value.c_str());
+    }
   else if (type == "multiline")
     {
       Value.erase();

@@ -408,11 +408,12 @@ void ReactionsWidget1::slotBtnOKClicked()
   reactn1 = reactions[(string)name.latin1()];
 
   CChemEq * chem;
-  chem = & reactn1->getChemEq();
+  //chem = & reactn1->getChemEq();
 
   //for Chemical Reaction
   chemical_reaction = new QString(LineEdit2->text());
-  chem->setChemicalEquation(chemical_reaction->latin1());
+  //chem->setChemicalEquation(chemical_reaction->latin1());
+  reactn1->setChemEq(chemical_reaction->latin1());
 
   if (reactn1->isReversible() == TRUE && checkBox->isChecked() == FALSE)
     {

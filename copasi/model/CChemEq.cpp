@@ -39,6 +39,7 @@ void CChemEq::setChemicalEquation(const string & chemicalEquation)
 {
   string Substrates, Products;
 
+  cleanup();
   mChemicalEquation = chemicalEquation;
 
   splitChemEq(Substrates, Products);

@@ -402,9 +402,9 @@ class CReaction
 
     /**
      *  Sets whether the reaction is reversible
-     *  @param C_INT16 reversible
+     *  @param bool reversible
      */
-    void setReversible(C_INT16 reversible);
+    void setReversible(bool reversible);
 
     /**
      *  Compile the reaction, i.e., links the metabolites and parameters with the
