@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/29 22:15:22 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 17:03:28 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -16,8 +16,8 @@
 //#include <qtimer.h>
 #include <qprinter.h>
 
-#include "plotwindow.h"
-#include "plotspec.h"
+#include "plotwindow.h" 
+//#include "plotspec.h"
 #include "CopasiPlot.h" 
 // #include "plotwidget1.h"
 
@@ -37,7 +37,7 @@ class PrintFilter: public QwtPlotPrintFilter
 
 //-----------------------------------------------------------------------------
 
-PlotWindow::PlotWindow(std::istream& targetfile)
+PlotWindow::PlotWindow(CPlotSpec* ptrSpec)
 {
   // set up the GUI - the toolbar
   QToolBar * plotTools = new QToolBar(this, "plot operations");
@@ -59,7 +59,7 @@ PlotWindow::PlotWindow(std::istream& targetfile)
 
   plotTools->setStretchableWidget(new QWidget(plotTools));
 
-  CurveSpec* cs1 = new CurveSpec("sin", 0, 1);
+  /*CurveSpec* cs1 = new CurveSpec("sin", 0, 1);
   CurveSpec* cs2 = new CurveSpec("cos", 0, 2);
   CurveSpec* cs3 = new CurveSpec("log", 0, 3);
 
@@ -74,27 +74,27 @@ PlotWindow::PlotWindow(std::istream& targetfile)
   crvspecs.push_back(cs2);
   crvspecs.push_back(cs3);
 
-  ptspec = new PlotTaskSpec(targetfile, "Copasi plot", vindices, crvspecs);
+  ptspec = new PlotTaskSpec(targetfile, "Copasi plot", vindices, crvspecs);*/
 
-  plot = new CopasiPlot(ptspec, this);
+  plot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(plot);
 
-  timer = new QTimer();
+  //timer = new QTimer();
 
   //connect(appendPlot, SIGNAL(clicked()), this, SLOT(append()));
   connect(autoUpdateButton, SIGNAL(toggled(bool)), this, SLOT(autoUpdate(bool)));
   connect(zoomButton, SIGNAL(clicked()), this, SLOT(enableZoom()));
   connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
   connect(plot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
-  connect(timer, SIGNAL(timeout()), this, SLOT(append()));
+  //connect(timer, SIGNAL(timeout()), this, SLOT(append()));
 }
 
 //-----------------------------------------------------------------------------
 
-void PlotWindow::append()
-{
-  plot->appendPlot();
-}
+//void PlotWindow::append()
+//{
+//  plot->appendPlot();
+//}
 
 //-----------------------------------------------------------------------------
 
@@ -115,14 +115,14 @@ void PlotWindow::autoUpdate(bool toggled)
       plot->enableZoom(false);
 
       // initiate the first update
-      append();  //for now
+      //      append();  //for now
 
       // NB: timeout is hard-coded for now - maybe add something in the GUI to let the user decide
-      timer->start(5000);
+      //timer->start(5000);
     }
   else
     {
-      timer->stop();
+      //timer->stop();
       zoomButton->setEnabled(true);
     }
 }
@@ -168,12 +168,18 @@ void PlotWindow::printPlot()
 
 //-----------------------------------------------------------------------------
 
-void PlotWindow::reloadPlot(PlotTaskSpec* plotspec, std::vector<int> deletedCurveKeys)
-{
-  plot->reloadPlot(plotspec, deletedCurveKeys);
-}
+//void PlotWindow::reloadPlot(CPlotSpec* plotspec, std::vector<int> deletedCurveKeys)
+//{
+//  plot->reloadPlot(plotspec, deletedCurveKeys);
+//}
 
 //-----------------------------------------------------------------------------
 
 PlotWindow::~PlotWindow()
 {}
+
+void PlotWindow::takeData(const std::vector<C_FLOAT64> & data)
+{if (plot) plot->takeData(data);};
+
+void PlotWindow::updatePlot()
+{if (plot) plot->updatePlot();};

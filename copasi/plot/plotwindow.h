@@ -1,46 +1,54 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:32:41 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 17:03:29 $
    End CVS Header */
 
 #include <fstream>
 #include <string>
 #include <vector>
 #include <qmainwindow.h>
-#include <qtoolbutton.h>
-#include <qtimer.h>
-
+#include <qtoolbutton.h> 
+//#include <qtimer.h>
+#include "copasi.h"
 class PlotTaskSpec;
 class CopasiPlot;
+class CPlotSpec;
 
 class PlotWindow : public QMainWindow
   {
     Q_OBJECT
 
+  private:
     // a timer that controls automatic updates of the plot
-    QTimer* timer;
+    //QTimer* timer;
 
     // points to the specification of the plot inside this window - temporary perhaps
-    PlotTaskSpec* ptspec;
+    //PlotTaskSpec* ptspec;
+
+    //CPlotSpec* pSpec;
 
     // points to the plot instance inside this window
     CopasiPlot *plot;
 
   public:
-    QToolButton * zoomButton;
+    PlotWindow(CPlotSpec* ptrSpec);
+    //PlotWindow(std::istream& targetfile);
 
-    PlotWindow(std::istream& targetfile);
+    QToolButton * zoomButton;
 
     ~PlotWindow();
 
     // reloads the plot inside the window, updating it as necessary
-    void reloadPlot(PlotTaskSpec* plotspec, std::vector<int> deletedCurveKeys);
+    //void reloadPlot(CPlotSpec* plotspec, std::vector<int> deletedCurveKeys);
+
+    void takeData(const std::vector<C_FLOAT64> & data);
+    void updatePlot();
 
   private slots:
-    void append();
+    //void append();
 
     // let the plot updates itself at regular intervals - the length of the interval is fixed for now
     void autoUpdate(bool toggled);
