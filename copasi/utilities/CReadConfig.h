@@ -10,6 +10,7 @@
 
 #include <sstream>
 #include <string>
+#include "copasi.h"
 
 // available operations mode for the configurations buffer
 // #define CReadConfig_SEARCH 0x01
