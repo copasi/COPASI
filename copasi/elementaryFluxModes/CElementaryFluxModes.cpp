@@ -73,3 +73,27 @@ void CElementaryFluxModes::calculate(const CModel * model)
 
   Algorithm.calculate(Stoi, Reversible, mFluxModes);
 }
+
+bool
+CElementaryFluxModes::isFluxModeReversible(const unsigned C_INT32 & index) const
+{return mFluxModes[index].isReversible();}
+
+std::string
+CElementaryFluxModes::getFluxModeDescription(const unsigned C_INT32 & index) const
+  {
+    std::stringstream tmp;
+    unsigned C_INT32 j, jmax = mFluxModes[index].size();
+    const CCopasiVectorNS < CReaction > & Reaction = mModel->getReactions();
+
+    for (j = 0; j < jmax; j++)
+      {
+        if (j) tmp << " ";
+        tmp << mFluxModes[index].getMultiplier(j) << " * "
+        << Reaction[mIndex[mFluxModes[index].getReaction(j)]]->getName();
+      }
+
+    return tmp.str();
+  }
+
+unsigned C_INT32 CElementaryFluxModes::getFluxModeSize() const
+{return mFluxModes.size();}

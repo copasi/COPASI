@@ -63,6 +63,26 @@ class CElementaryFluxModes
      */
     void calculate(const CModel * model);
 
+    /**
+     * Check the reversibility of the indexed Flux Mode
+     * @param const unsigned C_INT32 & index
+     * @return bool
+     */
+    bool isFluxModeReversible(const unsigned C_INT32 & index) const;
+
+    /**
+     * Retrieve the description of the indexed Flux Mode
+     * @param const unsigned C_INT32 & index
+     * @return std::string description
+     */
+    std::string getFluxModeDescription(const unsigned C_INT32 & index) const;
+
+    /**
+     * Retrieve the number of Flux Modes
+     * @return unsigned C_INT32 size
+     */
+    unsigned C_INT32 getFluxModeSize() const;
+
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A)
     {
