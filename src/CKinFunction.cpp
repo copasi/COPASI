@@ -7,85 +7,53 @@
 #include "CKinFunction.h"
 #include "lexkk.h"
 
+short DefinedInsertAllowed(CNodeK src);
 
-////////////////////////////////////
-// CKinFunction implementation
-
-CKinFunction::CKinFunction()
+CKinFunction::CKinFunction() 
 {
-//    Node.SetSize(10, 10);
-//    NodeSize = 0;
     mReversible = FALSE;
-//    TotSub = TotProd = TotModf = TotParm = 0;
-//    Parm.SetSize(10, 10);
-//    Modf.SetSize(2, 2);
+    mNodes.SetInsertAllowed(DefinedInsertAllowed);
 }
 
-CKinFunction::CKinFunction(const string &name, const string &description)
+CKinFunction::CKinFunction(const string & name,
+                           const string & description)
 {
     mName = name;
     mDescription = description;
     mReversible = FALSE;
-//    Node.SetSize(10, 10);
-//    NodeSize = 0;
-//    TotSub = TotProd = TotModf = TotParm = 0;
-//    Parm.SetSize(10, 10);
-//    Modf.SetSize(2, 2);
+    mNodes.SetInsertAllowed(DefinedInsertAllowed);
 }
 
+CKinFunction::~CKinFunction() {}
 
-CKinFunction::~CKinFunction()
+long CKinFunction::Load(CReadConfig & configbuffer)
 {
-    // delete the node objects
-//    ClearNodes();
-    // frees the space taken up by the node pointers
-//    Node.RemoveAll();
-}
-
-// a new node (operator | function)
-long CKinFunction::AddNode(const char type, const char subtype)
-{
-    if (type == N_IDENTIFIER) FatalError()
-                                  mNodes.push_back(CNodeK(type, subtype));
-    return mNodes.size();
-}
-
-// a new node (numeric constant)
-long CKinFunction::AddNode(const double constant)
-{
-    mNodes.push_back(CNodeK(constant));
-    return mNodes.size();
-}
-
-// a new node (identifier)
-long CKinFunction::AddNode(const string &name)
-{
-    // we need to check wheter a identifier with this name already exists
-    for (long i=0; i<mNodes.size(); i++)
-        if( mNodes[i].GetName() == name ) FatalError();
+    long Size = 0;
+    long Index = 0;
+    long Fail = 0;
     
-    mNodes.push_back(CNodeK(name));
-    return mNodes.size();
+    if (Fail = configbuffer.GetVariable("FunctionName", "string", &mName,
+                                        CReadConfig::LOOP))
+        return Fail;
+
+    if (Fail = configbuffer.GetVariable("Description", "string", &mDescription))
+        return Fail;
+
+    if (Fail = configbuffer.GetVariable("Nodes", "long", &Size))
+        return Fail;
+
+    if (Fail = mNodes.Load(configbuffer,Size))
+        return Fail;
+
+    ConnectNodes();
+    InitIdentifiers();
+    
+    return Fail;
 }
 
-// this evaluates the function
-double CKinFunction::CalcValue(CModel &model, double *s, long r)
+long CKinFunction::Save(CWriteConfig & configbuffer)
 {
-    return mNodes[0].GetLeft().Value(model, s, r);
-}
-
-string CKinFunction::GetName(void) {return mName;}
-
-vector < CNodeK * > *CKinFunction::Substrates(void) {return &mSubstrates;}
-    
-vector < CNodeK * > *CKinFunction::Products(void) {return &mProducts;}
-    
-vector < CNodeK * > *CKinFunction::Modifiers(void) {return &mModifiers;}
-    
-vector < CNodeK * > *CKinFunction::Parameters(void) {return &mParameters;}
-
-long CKinFunction::Save(CWriteConfig &configbuffer)
-{
+    long Size = mNodes.Size();
     long Fail = 0;
     
     if (Fail = configbuffer.SetVariable("FunctionName", "string", &mName))
@@ -94,70 +62,76 @@ long CKinFunction::Save(CWriteConfig &configbuffer)
     if (Fail = configbuffer.SetVariable("Description", "string", &mDescription))
         return Fail;
 
+    if (Fail = configbuffer.SetVariable("Nodes", "long", &Size))
+        return Fail;
+
     if (Fail = mNodes.Save(configbuffer))
         return Fail;
     
     return Fail;
 }
 
-long CKinFunction::Load(CReadConfig &configbuffer)
+string CKinFunction::GetName() {return mName;}
+
+string CKinFunction::GetDescription() {return mDescription;}
+
+CCopasiVector < CNodeK > & CKinFunction::Nodes() {return mNodes;}
+
+vector < CKinFunction::IDENTIFIER > & CKinFunction::Identifiers()
+{return mIdentifiers;} 
+
+char CKinFunction::GetIdentifierType(const string & name)
 {
-    long Fail = 0;
+    long Index = 0;
     
-    configbuffer.SetMode(CReadConfig_SEARCH);
-    configbuffer.SetMode(CReadConfig_LOOP);
+    if ( Index = FindIdentifier(name) < 0 ) FatalError();
 
-    if (Fail = configbuffer.GetVariable("FunctionName", "string", &mName))
-        return Fail;
-
-    configbuffer.SetMode(-CReadConfig_SEARCH);
-    configbuffer.SetMode(-CReadConfig_LOOP);
-
-    if (Fail = configbuffer.GetVariable("Description", "string", &mDescription))
-        return Fail;
-
-    if (Fail = mNodes.Load(configbuffer))
-        return Fail;
-    
-    //Initialize the identifier arrays
-    for (long i=0; i<mNodes.size(); i++)
+    switch (mIdentifiers[Index].Nodes[0]->GetSubtype())
     {
-        if (mNodes[i].GetType() == N_IDENTIFIER)
-            switch (mNodes[i].GetSubtype())
-            {
-            case N_SUBSTRATE: 
-                mSubstrates.push_back(&mNodes[i]); 
-                break;
-
-            case N_PRODUCT: 
-                mProducts.push_back(&mNodes[i]); 
-                break;
-
-            case N_MODIFIER: 
-                mModifiers.push_back(&mNodes[i]); 
-                break;
-
-            case N_KCONSTANT: 
-                mParameters.push_back(&mNodes[i]); 
-                break;
-
-            default: 
-                assert(FALSE);
-                break;
-            }
+    case N_SUBSTRATE: 
+        return 0; 
+        break;
+        
+    case N_PRODUCT: 
+        return 1; 
+        break;
+        
+    case N_MODIFIER: 
+        return 2; 
+        break;
+        
+    case N_KCONSTANT: 
+        return 3; 
+        break;
+        
+    default: 
+        assert(FALSE);
+        break;
     }
-    
-    return Fail;
 }
 
-// this function deletes the elements in the node tree
-void CKinFunction::ClearNodes(void)
+CKinFunction::SetName(const string & name) {mName = name;}
+
+CKinFunction::SetDescription(const string & description) 
+{mDescription = description;}
+
+CKinFunction::SetReversible(short reversible) {mReversible = reversible;}
+
+CKinFunction::SetIdentifierType(const string & name,
+                                char type)
 {
-    mNodes.resize(0);
+    long Index = 0;
+    
+    if ( Index = FindIdentifier(name) < 0 ) FatalError();
+    for (long i = 0; i < mIdentifiers[Index].Nodes.size(); i++)
+        mIdentifiers[Index].Nodes[i]->SetSubtype(type);
+    
+    return 0;    
 }
 
-// parse the function into a binary tree through successive calls to lexkk
-long CKinFunction::Parse(void)
+short CKinFunction::IsReversible() {return mReversible;}
+
+long CKinFunction::Parse()
 {
     long i;
     char *buffer;
@@ -169,27 +143,27 @@ long CKinFunction::Parse(void)
     // input for the scanner is from the buffer
     kkbuff = kk_scan_string(buffer);
     // add the root node
-    AddNode(N_ROOT, N_NOP);
+    mNodes.Add(CNodeK(N_ROOT, N_NOP));
     // call the lexical analyser successively until done
     for (i=1; i!=0;)
     {
         i = kklex();
         switch (i)
         {
-        case N_IDENTIFIER: AddNode(kktext); break;
-        case N_NUMBER:     AddNode(atof(kktext)); break;
-        case '+':          AddNode(N_OPERATOR, '+'); break;
-        case '-':          AddNode(N_OPERATOR, '-'); break;
-        case '*':          AddNode(N_OPERATOR, '*'); break;
-        case '/':          AddNode(N_OPERATOR, '/'); break;
-        case '^':          AddNode(N_OPERATOR, '^'); break;
-        case '(':          AddNode(N_OPERATOR, '('); break;
-        case ')':          AddNode(N_OPERATOR, ')'); break;
-        case N_LOG:        AddNode(N_FUNCTION, N_LOG); break;
-        case N_LOG10:      AddNode(N_FUNCTION, N_LOG10); break;
-        case N_EXP:        AddNode(N_FUNCTION, N_EXP); break;
-        case N_SIN:        AddNode(N_FUNCTION, N_SIN); break;
-        case N_COS:        AddNode(N_FUNCTION, N_COS); break;
+        case N_IDENTIFIER: mNodes.Add(CNodeK(kktext)); break;
+        case N_NUMBER:     mNodes.Add(CNodeK(atof(kktext))); break;
+        case '+':          mNodes.Add(CNodeK(N_OPERATOR, '+')); break;
+        case '-':          mNodes.Add(CNodeK(N_OPERATOR, '-')); break;
+        case '*':          mNodes.Add(CNodeK(N_OPERATOR, '*')); break;
+        case '/':          mNodes.Add(CNodeK(N_OPERATOR, '/')); break;
+        case '^':          mNodes.Add(CNodeK(N_OPERATOR, '^')); break;
+        case '(':          mNodes.Add(CNodeK(N_OPERATOR, '(')); break;
+        case ')':          mNodes.Add(CNodeK(N_OPERATOR, ')')); break;
+        case N_LOG:        mNodes.Add(CNodeK(N_FUNCTION, N_LOG)); break;
+        case N_LOG10:      mNodes.Add(CNodeK(N_FUNCTION, N_LOG10)); break;
+        case N_EXP:        mNodes.Add(CNodeK(N_FUNCTION, N_EXP)); break;
+        case N_SIN:        mNodes.Add(CNodeK(N_FUNCTION, N_SIN)); break;
+        case N_COS:        mNodes.Add(CNodeK(N_FUNCTION, N_COS)); break;
         case N_NOP:        // this is an error
             ClearNodes();
             delete [] buffer;
@@ -202,21 +176,36 @@ long CKinFunction::Parse(void)
     delete [] buffer;
     kk_delete_buffer(kkbuff);
     // connect the nodes
+    InitIdentifiers();
+    
     return ConnectNodes();
 }
 
-// builds the binary tree using recursion 
-// (this was taken from a compiler's book very long ago!)
-long CKinFunction::ConnectNodes(void)
+long CKinFunction::FindIdentifier(const string & name)
+{
+    for (long i=0; i<mIdentifiers.size(); i++)
+        if (mIdentifiers[i].Name == name) return i;
+    return -1;
+}
+
+double CKinFunction::CalcValue(vector < double * > & identifiers)
+{
+    return mNodes[0].GetLeft().Value(identifiers);
+}
+
+long CKinFunction::ClearNodes() {mNodes.Delete();}
+
+long CKinFunction::ConnectNodes()
 {
     long errfl = 0;     // !!! do we need this?
     long errnode = -1;  // !!! do we need this?
     long i;
+
     // initialise the control variables
-    nidx = 1;
+    mNidx = 1;
 
     // point all Left & Right to the root node
-    for (i=1; i<mNodes.size(); i++)
+    for (i=1; i<mNodes.Size(); i++)
     {
         mNodes[i].SetLeft(mNodes[0]);
         mNodes[i].SetRight(mNodes[0]);
@@ -238,7 +227,7 @@ long CKinFunction::ConnectNodes(void)
         errfl++;
     }
 
-    for (i=1; i<mNodes.size() && !errfl; i++)
+    for (i=1; i<mNodes.Size() && !errfl; i++)
     {
         switch (mNodes[i].GetType())
         {
@@ -281,8 +270,8 @@ long CKinFunction::ConnectNodes(void)
             }
             break;
         case N_IDENTIFIER:
-            if (&mNodes[i].GetLeft()  == &mNodes[0] || 
-                &mNodes[i].GetRight() == &mNodes[0])
+            if (mNodes[i].IsLeftValid() || 
+                mNodes[i].IsRightValid()  )
             {
                 if (!errfl)
                 {
@@ -294,8 +283,8 @@ long CKinFunction::ConnectNodes(void)
             }
             break;
         case N_NUMBER:
-            if (&mNodes[i].GetLeft()  == &mNodes[0] || 
-                &mNodes[i].GetRight() == &mNodes[0])
+            if (mNodes[i].IsLeftValid() || 
+                mNodes[i].IsRightValid()  )
             {
                 if (!errfl)
                 {
@@ -312,8 +301,7 @@ long CKinFunction::ConnectNodes(void)
     return errfl;
 }
 
-// this function is part of the algorithm that builds the binary tree
-CNodeK *CKinFunction::ParseExpression(long priority)
+CNodeK * CKinFunction::ParseExpression(short priority)
 {
     long errfl = 0;     // !!! do we need this?
     long errnode = -1;  // !!! do we need this?
@@ -324,13 +312,13 @@ CNodeK *CKinFunction::ParseExpression(long priority)
     lhs = ParsePrimary();
     if (!lhs) return NULL;
 
-    while( nidx < mNodes.size() && 
-           mNodes[nidx].IsOperator() && 
-           priority < mNodes[nidx].LeftPrecedence())
+    while( mNidx < mNodes.Size() && 
+           mNodes[mNidx].IsOperator() && 
+           priority < mNodes[mNidx].LeftPrecedence())
     {
-        op = nidx;
+        op = mNidx;
         rhs = NULL;
-        ++nidx;
+        ++mNidx;
         rhs = ParseExpression(mNodes[op].RightPrecedence());
         if (!rhs)
         {
@@ -352,8 +340,7 @@ CNodeK *CKinFunction::ParseExpression(long priority)
     return lhs;
 }
 
-// this function is part of the algorithm that builds the binary tree
-CNodeK *CKinFunction::ParsePrimary(void)
+CNodeK * CKinFunction::ParsePrimary()
 {
     long errfl = 0;     // !!! do we need this?
     long errnode = -1;  // !!! do we need this?
@@ -363,40 +350,40 @@ CNodeK *CKinFunction::ParsePrimary(void)
     long op;
     npt = NULL;
 
-//    if (Node[nidx]==NULL)
-    if (nidx >= mNodes.size())
+//    if (Node[mNidx]==NULL)
+    if (mNidx >= mNodes.Size())
     {
 //  if (!errfl) // execute only if no previous error
-//   errnode = nidx-1;
+//   errnode = mNidx-1;
 //  errfl++;
         return NULL;
     } 
     
-    if (mNodes[nidx].IsNumber() || 
-        mNodes[nidx].IsIdentifier())
+    if (mNodes[mNidx].IsNumber() || 
+        mNodes[mNidx].IsIdentifier())
     {
         t = 'K';
     }
     else 
     {
-        t = mNodes[nidx].GetSubtype();
+        t = mNodes[mNidx].GetSubtype();
     }
     
     switch (t)
     {
     case 'K':
-        mNodes[nidx].SetLeft(NULL);
-        mNodes[nidx].SetRight(NULL);
-        npt = &mNodes[nidx];
-        ++nidx;
+        mNodes[mNidx].SetLeft(NULL);
+        mNodes[mNidx].SetRight(NULL);
+        npt = &mNodes[mNidx];
+        ++mNidx;
         return npt;
-    case '(': ++nidx;
+    case '(': ++mNidx;
         npt = ParseExpression(0);
-        if (nidx < mNodes.size()      && 
-            mNodes[nidx].IsOperator() && 
-            mNodes[nidx].GetSubtype() == ')')
+        if (mNidx < mNodes.Size()      && 
+            mNodes[mNidx].IsOperator() && 
+            mNodes[mNidx].GetSubtype() == ')')
         {
-            ++nidx;
+            ++mNidx;
             return npt;
         }
         else
@@ -404,7 +391,7 @@ CNodeK *CKinFunction::ParsePrimary(void)
             if (!errfl) // execute only if no previous error
             {
                 //             sprintf(errstr, "ERROR - right bracket missing");
-                errnode = nidx;
+                errnode = mNidx;
             }
             errfl++;
         }
@@ -414,8 +401,8 @@ CNodeK *CKinFunction::ParsePrimary(void)
     case N_LOG10:
     case N_EXP:
     case N_SIN:
-    case N_COS:   op = nidx; primary = NULL;
-        ++nidx;
+    case N_COS:   op = mNidx; primary = NULL;
+        ++mNidx;
         primary = ParsePrimary();
         if (primary==NULL)
         {
@@ -430,169 +417,52 @@ CNodeK *CKinFunction::ParsePrimary(void)
         {
             npt = &mNodes[op];
             // unary operators are taken as functions
-            mNodes[op].Function();
+            mNodes[op].SetType(N_FUNCTION);
             mNodes[op].SetLeft(primary);
             mNodes[op].SetRight(NULL);
             return &mNodes[op];
         }
     default:  return NULL;
     }
-    if (nidx < mNodes.size()      &&
-        mNodes[nidx].IsOperator() &&
-        mNodes[nidx].GetSubtype() == '(')
+    if (mNidx < mNodes.Size()      &&
+        mNodes[mNidx].IsOperator() &&
+        mNodes[mNidx].GetSubtype() == '(')
     {
-        ++nidx;
-        if (nidx < mNodes.size()      &&
-            mNodes[nidx].IsOperator() &&
-            mNodes[nidx].GetSubtype() == ')')
+        ++mNidx;
+        if (mNidx < mNodes.Size()      &&
+            mNodes[mNidx].IsOperator() &&
+            mNodes[mNidx].GetSubtype() == ')')
         {
-            mNodes[nidx].SetLeft(npt);
-            mNodes[nidx].SetRight(NULL);
-            return &mNodes[nidx];
+            mNodes[mNidx].SetLeft(npt);
+            mNodes[mNidx].SetRight(NULL);
+            return &mNodes[mNidx];
         }
         else ParseExpression(0);
     }
 }
 
-// finds the first occurrence of ID as an identifier name 
-long CKinFunction::FindId(const string &Id)
+long CKinFunction::InitIdentifiers()
 {
-    for (long i=0; i<mNodes.size(); i++)
-        if (mNodes[i].IsIdentifier() &&
-            mNodes[i].GetName() == Id)
-            return i;
-    return -1;
-}
+    IDENTIFIER Identifier;
+    long Index;
 
-short CKinFunction::IsReversible(void)
-{
-    return (short) mReversible;
-}
-
-// returns the number of substrates in the equation
-long CKinFunction::SubstratesNo(void) {return mSubstrates.size();}
-
-// returns the number of products in the equation
-long CKinFunction::ProductsNo(void) {return mProducts.size();}
-
-// returns the number of modifiers in the equation
-long CKinFunction::ModifiersNo(void) {return mModifiers.size();}
-
-// returns the number of kinetic constants in the equation
-long CKinFunction::ParametersNo(void) {return mParameters.size();}
-
-// returns the name of a parameter
-string CKinFunction::GetParameterName(long index)
-{
-    assert(0 <= index && index < mParameters.size());
-    return mParameters[index]->GetName();
-}
-
-// returns the name of a parameter
-string CKinFunction::GetModifierName(long index)
-{
-    assert(0 <= index && index < mModifiers.size());
-    return mModifiers[index]->GetName();
-}
-
-// returns the name of a parameter
-void CKinFunction::SetParameterName(const string &name, long index)
-{
-    // we need to check wheter a identifier with this name already exists
-    for (long i=0; i<mNodes.size(); i++)
-        if( mNodes[i].GetName() == name ) FatalError();
+    mIdentifiers.clear();
     
-    assert(0 <= index && index < mParameters.size());
-    mParameters[index]->SetName(name);
-}
-
-// returns the name of a parameter
-void CKinFunction::SetModifierName(const string &name, long index)
-{
-    // we need to check wheter a identifier with this name already exists
-    for (long i=0; i<mNodes.size(); i++)
-        if( mNodes[i].GetName() == name ) FatalError();
-    
-    assert(0 <= index && index < mModifiers.size());
-    mModifiers[index]->SetName(name);
-}
-
-// sets the type of an Identifier
-void CKinFunction::SetIdentifierType(const string &name, long type)
-{
-    char Type;
-    vector <CNodeK *> Array;
-    
-    switch (type)
+    for(long i = 0; i < mNodes.Size(); i++)
     {
-    case 0: 
-        Type = N_SUBSTRATE;
-        Array = mSubstrates;
-        break;
-        
-    case 1: 
-        Type = N_PRODUCT;
-        Array = mProducts;
-        break;
-        
-    case 2: 
-        Type = N_MODIFIER;
-        Array = mModifiers;
-        break;
-        
-    case 3: 
-        Type = N_KCONSTANT;
-        Array = mParameters;
-        break;
-
-    default:
-        FatalError();
-        break;
-    }
-    
-    for (long i=1; i<mNodes.size(); i++)
-        if (mNodes[i].GetName() == name)
+        if (mNodes[i].IsIdentifier())
         {
-            assert(mNodes[i].GetSubtype() == N_NOP);
-            
-            // set the type
-            mNodes[i].SetSubtype(Type);
-            // add it to the apropriate array
-            Array.push_back(&mNodes[i]);
-            // update the index
-            mNodes[i].SetIndex(Array.size());
-        }
-}
-
-// returns the type of an Identifier
-long CKinFunction::GetIdentifierType(const string &name)
-{
-    // search for the first node with this identifier
-    for (long i=1; i<mNodes.size(); i++)
-        if (mNodes[i].GetName() == name)
-        {
-            switch (mNodes[i].GetSubtype())
+            Index = FindIdentifier(mNodes[i].GetName());
+            if ( Index == -1 )
             {
-            case N_SUBSTRATE: 
-                return 0; 
-                break;
-
-            case N_PRODUCT: 
-                return 1; 
-                break;
-
-            case N_MODIFIER: 
-                return 2; 
-                break;
-
-            case N_KCONSTANT: 
-                return 3; 
-                break;
-
-            default: 
-                assert(FALSE);
-                break;
+                Identifier.Name = mNodes[i].GetName();
+                mIdentifiers.push_back(Identifier);
+                Index = mIdentifiers.size() - 1;
             }
+            mNodes[i].SetIndex(Index);
+            mIdentifiers[Index].Nodes.push_back(&mNodes[i]);
         }
-    return -1;
+    }
 }
+
+short DefinedInsertAllowed(CNodeK src) {return TRUE;}

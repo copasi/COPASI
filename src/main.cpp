@@ -16,9 +16,10 @@
 #include "CDatum.h"
 #include "CMetab.h"
 #include "CCopasiVector.h"
-// #include "CNodeK.h"
-#include "CKinetics.h"
+#include "CNodeK.h"
+#include "CKinFunction.h"
 #include "CStep.h"
+#include "CMoiety.h"
 
 long  TestReadConfig(void);
 long  TestWriteConfig(void);
@@ -28,6 +29,8 @@ long  TestDatum(void);
 long  TestMetab(void);
 long  TestMessage(void);
 long  TestReadSample(void);
+long  TestMoiety(void);
+long  TestKinFunction(void);
 
 long main(void)
 {
@@ -46,6 +49,9 @@ long main(void)
         // TestDatum();
         // TestMetab();
         TestReadSample();
+        // TestMoiety();
+        // TestKinFunction();
+        
     }
 
     catch (CCopasiException Exception)
@@ -292,5 +298,72 @@ long TestReadSample(void)
     // Nodes.Save(outbuf);
     
     outbuf.Flush();
+    return 0;
+}
+
+long TestMoiety()
+{
+    CMoiety mo("test");
+    CCompartment c("comp", 1.0);
+    CCopasiVector < CMetab > mv;
+    
+    mv = c.GetMetabolites();
+    
+    mv.Add(CMetab("metab 1"));
+
+    c.GetMetabolites().Add(CMetab("metab 1"));
+    c.GetMetabolites().Add(CMetab("metab 2"));
+    
+    c.GetMetabolites()[0].SetConcentration(5.2);
+    c.GetMetabolites()[1].SetConcentration(2.0);
+    CMetab m = c.GetMetabolites()["metab 2"];
+    
+    mo.Add(-2000, c.GetMetabolites()[0]);
+    mo.Add(3, c.GetMetabolites()[1]);
+    mo.Add(0, c.GetMetabolites()[1]);
+    
+    double Value=mo.Value();
+    string Description = mo.GetDescription();
+    
+    mo.Change("metab 2", 2);
+    
+    mo.Delete("metab 1");
+    Value=mo.Value();
+    
+    return 0;
+}
+
+long TestKinFunction()
+{
+    CKinFunction f;
+    f.SetName("test");
+    f.SetDescription("(a-b)*(a+b)/5");
+    
+    f.Parse();
+    f.SetIdentifierType("a", N_SUBSTRATE);
+    
+    double a = 4;
+    double b = 1;
+    
+    vector < double * > Identifiers;
+    
+    Identifiers.push_back(&a);
+    Identifiers.push_back(&b);
+    
+    double r = f.CalcValue(Identifiers);
+    
+    CWriteConfig out("TestKinFunction");
+    f.Save(out);
+
+    out.Flush();
+    
+    CReadConfig in("TestKinFunction");
+    CKinFunction g;
+    
+    g.Load(in);
+    
+    a = 5;
+    r = g.CalcValue(Identifiers);
+
     return 0;
 }

@@ -3,13 +3,11 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <math.h>
+#include <stdio.h>
 
 #include "copasi.h"
 #include "globals.h"
 #include "CNodeK.h"
-
-////////////////////////////////////
-// CNodeK implementation
 
 CNodeK::CNodeK()
 {
@@ -21,7 +19,7 @@ CNodeK::CNodeK()
     mIndex    = -1;
 }
 
-CNodeK::CNodeK(const char type, const char subtype)
+CNodeK::CNodeK(char type, char subtype)
 {
     mType     = type;
     mSubtype  = subtype;
@@ -31,8 +29,7 @@ CNodeK::CNodeK(const char type, const char subtype)
     mIndex    = -1;
 }
 
-// this constructor is for identifier nodes
-CNodeK::CNodeK(const string &name)
+CNodeK::CNodeK(const string & name)
 {
     mType     = N_IDENTIFIER;
     mSubtype  = N_NOP;
@@ -43,14 +40,13 @@ CNodeK::CNodeK(const string &name)
     mIndex    = -1;
 }
 
-// this constructor is for numerical constants
-CNodeK::CNodeK(const double c)
+CNodeK::CNodeK(double constant)
 {
     mType     = N_NUMBER;
     mSubtype  = N_NOP;
     mLeft     = NULL;
     mRight    = NULL;
-    mConstant = c;
+    mConstant = constant;
     mIndex    = -1;
 }
 
@@ -58,219 +54,39 @@ CNodeK::~CNodeK()
 {
 }
 
-void CNodeK::SetLeft(CNodeK &pt) {mLeft = &pt;}
-
-void CNodeK::SetLeft(CNodeK *pt) {mLeft = pt;}
-
-void CNodeK::SetRight(CNodeK &pt) {mRight = &pt;}
-
-void CNodeK::SetRight(CNodeK *pt) {mRight = pt;}
-
-void CNodeK::SetSubtype(const char subtype) {mSubtype = subtype;}
+long CNodeK::Load(CReadConfig & configbuffer)
+{
+    long Fail = 0;
     
-void CNodeK::SetIndex(const long index) {mIndex = index;}
-
-void CNodeK::SetName(const string &name) {mName = name;}
-
-CNodeK &CNodeK::GetLeft(void) 
-{ 
-    if (!mLeft) 
-        FatalError(); // Call LeftIsValid first to avoid this!
-    return *mLeft;
-}
-
-CNodeK &CNodeK::GetRight(void)
-{
-    if (!mRight) 
-        FatalError(); // Call RightIsValid first to avoid this!
-    return *mRight;
-}
-
-string CNodeK::GetName(void) {return mName;}
-
-char CNodeK::GetType(void) {return mType;}
-
-char CNodeK::GetSubtype(void) {return mSubtype;}
-
-long CNodeK::IsLeftValid() {return (long) mLeft;}
-
-long CNodeK::IsRightValid() {return (long) mRight;}
-
-long CNodeK::IsNumber(void) {return mType == N_NUMBER;}
-
-long CNodeK::IsIdentifier(void)
-{
-    switch (mType)
+    if (Fail = configbuffer.GetVariable("Node", "node", &mType, &mSubtype,
+                                        CReadConfig::SEARCH))
+        return Fail;
+    
+    if (IsIdentifier() && mType != N_IDENTIFIER)
     {
-    case N_IDENTIFIER:
-    case N_SUBSTRATE:
-    case N_PRODUCT:
-    case N_MODIFIER:
-    case N_KCONSTANT: return TRUE;
-    default: return FALSE;
+        mSubtype = mType;
+        mType = N_IDENTIFIER;
     }
-}
-
-long CNodeK::IsOperator(void)
-{
-    return mType == N_OPERATOR;
-}
-
-void CNodeK::Constant(const double constant)
-{
-    mType     = N_NUMBER;
-    mConstant = constant;
-}
-
-void CNodeK::Operator(char operation)
-{
-    mType     = N_OPERATOR;
-    mSubtype  = operation;
-}
-
-void CNodeK::Function(void)
-{
-    mType     = N_FUNCTION;
-}
-
-// calculates the value of this sub-tree (ie with this node as root)
-double CNodeK::Value(const CModel &model, double *s, long r)
-{
-    // if it is a constant or an identifier just return its value
-    if (IsNumber()) return mConstant;
-
-    switch (mType)
+    
+    // leave the Left & Right pointers out
+    // value of the constant if one
+    if (mType == N_NUMBER)
     {
-    case N_SUBSTRATE:
-//        return s[model.IRow[model.Step[r].Substrate[Index]]];
-        FatalError();   // THROW EXCEPTION
-        break;
-        
-    case N_PRODUCT:
-//        return s[model.IRow[model.Step[r].Product[Index]]];
-        FatalError();   // THROW EXCEPTION
-        break;
-        
-    case N_MODIFIER:
-//        return s[model.IRow[model.Step[r].Modifier[Index]]];
-        FatalError();   // THROW EXCEPTION
-        break;
-        
-    case N_KCONSTANT:
-//        return model.Step[r].Param[Index];
-        FatalError();   // THROW EXCEPTION
-        break;
-        
-    case N_OPERATOR:
-	switch (mSubtype)
-	{
-        case '+':
-            return mLeft->Value(model, s,r) + mRight->Value(model, s,r);
-
-        case '-': 
-            return mLeft->Value(model, s,r) - mRight->Value(model, s,r);
-
-        case '*': 
-            return mLeft->Value(model, s,r) * mRight->Value(model, s,r);
-        
-        case '/': 
-            return mLeft->Value(model, s,r) / mRight->Value(model, s,r);
-        
-        case '^': 
-            return pow(mLeft->Value(model, s,r), mRight->Value(model, s,r));
-        
-        default: 
-            FatalError();   // THROW EXCEPTION
-            return 0.0;
-	}
-	break;
-
-    case N_FUNCTION:
-	switch (mSubtype)
-	{
-        case '+': 
-            return mLeft->Value(model, s,r);
-
-        case '-': 
-            return - mLeft->Value(model, s,r);
-
-        case N_EXP: 
-            return exp(mLeft->Value(model, s,r));
-
-        case N_LOG: 
-            return log(mLeft->Value(model, s,r));
-
-        case N_LOG10: 
-            return log10(mLeft->Value(model, s,r));
-
-        case N_SIN: 
-            return sin(mLeft->Value(model, s,r));
-
-        case N_COS: 
-            return cos(mLeft->Value(model, s,r));
-
-        default: 
-            FatalError();   // THROW EXCEPTION
-            return 0.0;// THROW EXCEPTION
-	}
-	break;
-
-    default: 
-        FatalError();   // THROW EXCEPTION
-        return 0.0;
+        if (Fail = configbuffer.GetVariable("Value", "double", &mConstant))
+            return Fail;
     }
-    FatalError();   // THROW EXCEPTION
-    return 0.0;
-}
-
-long CNodeK::RightPrecedence(void)
-{
-    switch (mType)
+    else if (mType == N_IDENTIFIER)
     {
-    case N_NUMBER:
-    case N_IDENTIFIER: return 6;
-    case N_FUNCTION:   return 4;
+        if (Fail = configbuffer.GetVariable("Index", "long", &mIndex))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Name", "string", &mName))
+            return Fail;
     }
 
-    // if we got here then it is an operator
-    switch (mSubtype)
-    {
-    case '+':
-    case '-': return 2;
-    case '*':
-    case '/': return 4;
-    case ')': return 6;
-    case '^': return 4;
-    case '(':
-    case '%': return 0;
-    }
-    return 0;
+    return Fail;
 }
 
-long CNodeK::LeftPrecedence(void)
-{
-    switch (mType)
-    {
-    case N_NUMBER:
-    case N_IDENTIFIER:
-    case N_FUNCTION:   return 5;
-    }
-    // if we got here then it is an operator
-    switch (mSubtype)
-    {
-    case '+':
-    case '-': return 1;
-    case '*':
-    case '/': return 3;
-    case '(': return 6;
-    case '^': return 5;
-    case ')':
-    case '%': return 0;
-    }
-    return 0;
-}
-
-long CNodeK::Save(CWriteConfig &configbuffer)
+long CNodeK::Save(CWriteConfig & configbuffer)
 {
     long Fail = 0;
     
@@ -298,90 +114,198 @@ long CNodeK::Save(CWriteConfig &configbuffer)
     return Fail;
 }
 
+char CNodeK::GetType() {return mType;}
 
-long CNodeK::Load(CReadConfig &configbuffer)
+char CNodeK::GetSubtype() {return mSubtype;}
+
+CNodeK & CNodeK::GetLeft()
 {
-    long Fail = 0;
-    
-    if (Fail = configbuffer.GetVariable("Node", "node", &mType, &mSubtype))
-        return Fail;
-    
-    if (IsIdentifier() && mType != N_IDENTIFIER)
-    {
-        mSubtype = mType;
-        mType = N_IDENTIFIER;
-    }
-    
-    // leave the Left & Right pointers out
-    // value of the constant if one
-    if (mType == N_NUMBER)
-    {
-        if (Fail = configbuffer.GetVariable("Value", "double", &mConstant))
-            return Fail;
-    }
-    else if (mType == N_IDENTIFIER)
-    {
-        if (Fail = configbuffer.GetVariable("Index", "long", &mIndex))
-            return Fail;
-        if (Fail = configbuffer.GetVariable("Name", "string", &mName))
-            return Fail;
-    }
-
-    return Fail;
+    if (!mLeft) 
+        FatalError(); // Call LeftIsValid first to avoid this!
+    return *mLeft;
 }
 
-CNodeKVector::CNodeKVector()
+CNodeK & CNodeK::GetRight()
 {
-    this->resize(0);
+    if (!mRight) 
+        FatalError(); // Call RightIsValid first to avoid this!
+    return *mRight;
 }
 
-CNodeKVector::CNodeKVector(long size)
+string CNodeK::GetName() 
 {
-    this->resize(size);
-}
-
-long CNodeKVector::Save(CWriteConfig &configbuffer)
-{
-    long Fail = 0;
-    long Size = this->size();
+    static unsigned long ctr = 0;
+    char name[9];
     
-    if (Fail = configbuffer.SetVariable("Nodes", "long",
-                                        (void *) &Size))
-        return Fail;
-
-    for(long i = 0; i < Size; i++)
+    if (IsIdentifier()) return mName;
+    else 
     {
-
-        if (Fail = (&this->front()+i)->Save(configbuffer))
-        {
-            break;
-        }
+        sprintf(name, "%X", ctr++);
+        return name;
     }
-    return Fail;
 }
 
-long CNodeKVector::Load(CReadConfig &configbuffer)
+double CNodeK::GetConstant() {return mConstant;}
+
+long CNodeK::GetIndex() {return mIndex;}
+
+CNodeK::SetType(char type) {mType = type;}
+
+CNodeK::SetSubtype(char subtype) {mSubtype = subtype;}
+
+CNodeK::SetLeft(CNodeK & left) {mLeft = &left;}
+
+CNodeK::SetLeft(CNodeK * pleft) {mLeft = pleft;}
+
+CNodeK::SetRight(CNodeK & right) {mRight = &right;}
+
+CNodeK::SetRight(CNodeK * pright) {mRight = pright;}
+
+CNodeK::SetName(const string & name) {mName = name;}
+
+CNodeK::SetConstant(double & constant) {mConstant = constant;}
+
+CNodeK::SetIndex(long index) {mIndex = index;}
+
+short CNodeK::IsLeftValid() {return (short) mLeft;}
+
+short CNodeK::IsRightValid() {return (short) mRight;}
+
+short CNodeK::IsNumber() {return mType == N_NUMBER;}
+
+short CNodeK::IsIdentifier()
 {
-    long Fail = 0;
-    long Size = 0;
-    
-    configbuffer.SetMode(CReadConfig_SEARCH);
-    configbuffer.SetMode(CReadConfig_LOOP);
-    
-    if (Fail = configbuffer.GetVariable("Nodes","long",
-                                        (void *) &Size))
-        return Fail;
-
-    this->resize(Size);
-    
-    configbuffer.SetMode(-CReadConfig_LOOP);
-    for(long i = 0; i < Size; i++)
+    switch (mType)
     {
-        if (Fail = (&this->front()+i)->Load(configbuffer))
-        {
-            break;
-        }
+    case N_IDENTIFIER:
+    case N_SUBSTRATE:
+    case N_PRODUCT:
+    case N_MODIFIER:
+    case N_KCONSTANT: return TRUE;
+    default: return FALSE;
     }
-    
-    return Fail;
 }
+
+short CNodeK::IsOperator() {return mType == N_OPERATOR;}
+
+short CNodeK::LeftPrecedence()
+{
+    switch (mType)
+    {
+    case N_NUMBER:
+    case N_IDENTIFIER:
+    case N_FUNCTION:   return 5;
+    }
+    // if we got here then it is an operator
+    switch (mSubtype)
+    {
+    case '+':
+    case '-': return 1;
+    case '*':
+    case '/': return 3;
+    case '(': return 6;
+    case '^': return 5;
+    case ')':
+    case '%': return 0;
+    }
+    return 0;
+}
+
+short CNodeK::RightPrecedence()
+{
+    switch (mType)
+    {
+    case N_NUMBER:
+    case N_IDENTIFIER: return 6;
+    case N_FUNCTION:   return 4;
+    }
+
+    // if we got here then it is an operator
+    switch (mSubtype)
+    {
+    case '+':
+    case '-': return 2;
+    case '*':
+    case '/': return 4;
+    case ')': return 6;
+    case '^': return 4;
+    case '(':
+    case '%': return 0;
+    }
+    return 0;
+}
+
+double CNodeK::Value(vector < double * > & identifiers)
+{
+    // if it is a constant or an identifier just return its value
+    if (IsNumber()) return mConstant;
+
+    switch (mType)
+    {
+    case N_IDENTIFIER :
+        return *identifiers[mIndex];
+        break;
+        
+    case N_OPERATOR:
+	switch (mSubtype)
+	{
+        case '+':
+            return mLeft->Value(identifiers) + mRight->Value(identifiers);
+
+        case '-': 
+            return mLeft->Value(identifiers) - mRight->Value(identifiers);
+
+        case '*': 
+            return mLeft->Value(identifiers) * mRight->Value(identifiers);
+        
+        case '/': 
+            return mLeft->Value(identifiers) / mRight->Value(identifiers);
+        
+        case '^': 
+            return pow(mLeft->Value(identifiers), mRight->Value(identifiers));
+        
+        default: 
+            FatalError();   // THROW EXCEPTION
+            return 0.0;
+	}
+	break;
+
+    case N_FUNCTION:
+	switch (mSubtype)
+	{
+        case '+': 
+            return mLeft->Value(identifiers);
+
+        case '-': 
+            return - mLeft->Value(identifiers);
+
+        case N_EXP: 
+            return exp(mLeft->Value(identifiers));
+
+        case N_LOG: 
+            return log(mLeft->Value(identifiers));
+
+        case N_LOG10: 
+            return log10(mLeft->Value(identifiers));
+
+        case N_SIN: 
+            return sin(mLeft->Value(identifiers));
+
+        case N_COS: 
+            return cos(mLeft->Value(identifiers));
+
+        default: 
+            FatalError();   // THROW EXCEPTION
+            return 0.0;    
+	}
+	break;
+
+    default: 
+        FatalError();   // THROW EXCEPTION
+        return 0.0;
+    }
+    FatalError();   // THROW EXCEPTION
+    return 0.0;
+}
+
+

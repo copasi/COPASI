@@ -15,22 +15,21 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CFLAGS) -c $< -o $@
 
 all: 	test
-#	doc/html/index.html
+	doc/html/index.html
 
-OBJS	= $(OBJDIR)/CCompartment.o \
-	  $(OBJDIR)/CCopasiException.o \
+OBJS	= $(OBJDIR)/CCopasiException.o \
 	  $(OBJDIR)/CCopasiMessage.o \
-	  $(OBJDIR)/CDatum.o \
-	  $(OBJDIR)/CKinetics.o \
-	  $(OBJDIR)/CKinFunction.o \
-	  $(OBJDIR)/CMetab.o \
-	  $(OBJDIR)/CNodeK.o \
 	  $(OBJDIR)/CReadConfig.o  \
 	  $(OBJDIR)/CStep.o \
 	  $(OBJDIR)/CWriteConfig.o  \
-	  $(OBJDIR)/globals.o  \
+	  $(OBJDIR)/CCompartment.o \
+          $(OBJDIR)/CMetab.o \
+	  $(OBJDIR)/CNodeK.o \
+	  $(OBJDIR)/CKinFunction.o \
 	  $(OBJDIR)/lexkk.o  \
-          $(OBJDIR)/main.o
+	  $(OBJDIR)/CMoiety.o \
+	  $(OBJDIR)/globals.o  \
+	  $(OBJDIR)/main.o
 
 test: 	dependencies $(OBJDIR) $(OBJS)
 	$(CXX) $(CFLAGS) -o test $(OBJS)
@@ -51,7 +50,3 @@ clean:
 #	rm -rf doc 
 
 include ./dependencies
-
-
-
-
