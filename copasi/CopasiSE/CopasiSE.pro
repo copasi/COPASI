@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.13 $ $Author: shoops $ $Date: 2005/02/28 02:41:51 $  
+# $Revision: 1.14 $ $Author: shoops $ $Date: 2005/02/28 02:44:37 $  
 ######################################################################
 
 TEMPLATE = app
@@ -45,7 +45,7 @@ contains(BUILD_OS, Linux) {
          -Wl,--end-group \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/", ../lib/, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
 
 contains(BUILD_OS, SunOS) {
@@ -55,14 +55,14 @@ contains(BUILD_OS, SunOS) {
          $$join(COPASI_LIBS, " -l", -l)) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/", ../lib/, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }  
 
 contains(BUILD_OS, Darwin){
-  LIBS = $$join(COPASI_LIBS, ".a  ../lib/", ../lib/, .a) \
+  LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $$LIBS
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/", ../lib/, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
 
 
