@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/16 14:39:06 $
+   $Date: 2004/06/17 05:41:01 $
    End CVS Header */
 
 #include <iostream>
@@ -272,7 +272,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
     {
       Compartment* sbmlCompartment = sbmlModel->getCompartment(counter);
       CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel);
-      compartmentMap[sbmlCompartment->getId()] = copasiCompartment;
+      std::string key = sbmlCompartment->getId();
+      if (!sbmlCompartment->isSetId())
+        {
+          key = sbmlCompartment->getName();
+        }
+      compartmentMap[key] = copasiCompartment;
     }
 
   /* Create all species */
@@ -285,7 +290,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
       if (copasiCompartment != NULL)
         {
           CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment);
-          this->speciesMap[sbmlSpecies->getId()] = copasiMetabolite;
+          std::string key = sbmlSpecies->getId();
+          if (!sbmlSpecies->isSetId())
+            {
+              key = sbmlSpecies->getName();
+            }
+          this->speciesMap[key] = copasiMetabolite;
         }
     }
 
