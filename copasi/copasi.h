@@ -85,7 +85,6 @@ enum TriLogic
 #include <sys/timeb.h>
 # ifdef COPASI_MAIN
 #  ifndef Darwin
-#pragma error "Debug"
 struct timeb init_time;
 unsigned C_INT32 last_time = 0;
 unsigned C_INT32 this_time;
