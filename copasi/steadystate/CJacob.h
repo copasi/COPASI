@@ -97,7 +97,7 @@ class CJacob {
   /**
    * Set the Model
    */
-  void setModel(CModel & model);
+  void setModel(CModel * model);			// wsun 3/19/02
 };
 
 #endif
