@@ -19,7 +19,9 @@ class CModel;
 class CMetab;
 
 /**
- *
+ * This class handels the display names of metabolites. It converts "Metabolite" to 
+ * "Metabolite {Compartment}" if the metabolite name is not unique. If it is unique
+ * (that means it occurs in only one compartment) then the "{Compartment}" is not added.
  */
 class CMetabNameInterface
   {
@@ -63,12 +65,17 @@ class CMetabNameInterface
     static bool doesExist(const CModel* model, const std::string & name);
 
     /**
-    * This extracts the compartment name from the given metabolite name. If no compartment name is 
+    * This extracts the compartment name from the given metabolite display name. If no compartment name is 
     * present in the given metabolite name then the name of the compartment the metabolite is really 
     * in is given. If the metabolite does not exist and the name does not contain a compartment
     * then the name of the first compatmnet in the model is returned.
     */
     static std::string extractCompartmentName(const CModel* model, const std::string & name);
+
+    /**
+    * This extracts the metabolite name from the given metabolite display name. 
+    */
+    static std::string extractMetabName(const CModel* model, const std::string & name);
 
   private:
     static std::string empty_string;
