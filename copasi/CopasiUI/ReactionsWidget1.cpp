@@ -559,7 +559,8 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   QString all_elements = individual_elements.join (" ");
   QStringList individual_elements1 = QStringList::split (" ", all_elements, false);
 
-  for (unsigned int m = 0; m <= individual_elements1.size() - 1; m++)
+  unsigned int m, n;
+  for (m = 0; m <= individual_elements1.size() - 1; m++)
     {
       if ((individual_elements1[m] == "->") || (individual_elements1[m] == "="))
         {
@@ -573,7 +574,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
     }
 
   // start = 0;
-  for (unsigned int n = m; n <= individual_elements1.size() - 1; n++)
+  for (n = m; n <= individual_elements1.size() - 1; n++)
     {
       if (individual_elements1[m] == "+")
         {
@@ -619,7 +620,8 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
       unsigned int countofproducts = count_products;
       QHeader *tableHeader2 = table->verticalHeader();
 
-      for (int index1 = 0; index1 <= (count_products - 1); index1++)
+      int index1;
+      for (index1 = 0; index1 <= (count_products - 1); index1++)
         {
           substrate_name[index] = product_name[index1];
           index++;
