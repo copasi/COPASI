@@ -1,0 +1,233 @@
+/**
+ *  CMathConstant class.
+ *  The class CMathConstant associates a symbol with a CCopasiObject with
+ *  that represents a fixed metabolite.
+ *
+ *  Created for Copasi by Stefan Hoops 2003
+ */
+
+#ifndef COPASI_CMathConstant
+#define COPASI_CMathConstant
+
+#include <map>
+
+#include "CMathSymbol.h"
+#include "model/CReaction.h"
+
+class CMetab;
+class CMathVariableMetab;
+class CMathConstantCompartment;
+
+/** @dia:pos -3.01499,-4.1693 */
+/** @dia:route CMathSymbol; v,-33.2334,-9.4956,-6.77622,9.59181,-4.1693 */
+class CMathConstant: public CMathSymbol
+  {
+    // Operations
+  protected:
+    /**
+     *
+     */
+    CMathConstant();
+
+    /**
+     *
+     */
+    CMathConstant(const CMathConstant & src);
+
+  public:
+    /**
+     *
+     */
+    CMathConstant(const CCopasiObject * pObject);
+
+    /**
+     *
+     */
+    virtual ~CMathConstant();
+
+    /**
+     *
+     */
+    virtual bool setValue(const C_FLOAT64 & value) = NULL;
+
+    /**
+     *
+     */
+    virtual const C_FLOAT64 & getValue() const = NULL;
+  };
+
+/** @dia:pos 2.18922,19.202 */
+/** @dia:route CMathConstant; v,-3.01499,2.6307,18.3177,17.4624,19.202 */
+class CMathConstantMetab : public CMathConstant
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    /** @dia:route 13,4; h,36.0092,11.6564,41.4265,19.902,32.7356 */
+    CMathConstantCompartment * mpCompartment;
+
+    // Operations
+  protected:
+    /**
+     *
+     */
+    CMathConstantMetab();
+
+    /**
+     *
+     */
+    CMathConstantMetab(const CMathConstantMetab & src);
+
+  public:
+    /**
+     *
+     */
+    CMathConstantMetab(const CMetab & metabolite);
+
+    /**
+     *
+     */
+    ~CMathConstantMetab();
+
+    /**
+     *
+     */
+    virtual bool setValue(const C_FLOAT64 & value);
+
+    /**
+     *
+     */
+    virtual const C_FLOAT64 & getValue() const;
+
+    /**
+     *
+     */
+    bool setConcentration(const C_FLOAT64 & concentration);
+
+    /**
+     *
+     */
+    const C_FLOAT64 & getConcentration() const;
+
+    /**
+     *
+     */
+    bool setParticleNumber(const C_FLOAT64 & particleNumber);
+
+    /**
+     *
+     */
+    C_FLOAT64 getParticleNumber() const;
+
+    /**
+     *
+     */
+    CMathConstantCompartment & getCompartment() const;
+
+    /**
+     *
+     */
+    bool compile();
+  };
+
+/** @dia:pos 2.18922,32.6698 */
+/** @dia:route CMathConstant; v,-3.01499,2.6307,31.9,19.1124,32.6698 */
+class CMathConstantParameter : public CMathConstant
+  {
+    // Operations
+  protected:
+    /**
+     *
+     */
+    CMathConstantParameter();
+
+    /**
+     *
+     */
+    CMathConstantParameter(const CMathConstantParameter & src);
+
+  public:
+    /**
+     *
+     */
+    CMathConstantParameter(const CReaction::CId2Param & parameter);
+
+    /**
+     *
+     */
+    ~CMathConstantParameter();
+
+    /**
+     *
+     */
+    virtual bool setValue(const C_FLOAT64 & value);
+
+    /**
+     *
+     */
+    virtual const C_FLOAT64 & getValue() const;
+  };
+
+/** @dia:pos 2.18922,7.75635 */
+/** @dia:route CMathConstant; v,-3.01499,2.6307,6.64374,19.0992,7.75635 */
+class CMathConstantCompartment : public CMathConstant
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    /** @dia:route 0,9; h,2.18922,7.75635,-6.00072,-23.7956,-12.6802 */
+    std::vector< CMathSymbol * > mMetaboliteList;
+
+    // Operations
+  protected:
+    /**
+     *
+     */
+    CMathConstantCompartment();
+
+    /**
+     *
+     */
+    CMathConstantCompartment(const CMathConstantCompartment & src);
+
+  public:
+    /**
+     *
+     */
+    CMathConstantCompartment(const CCompartment & compartment);
+
+    /**
+     *
+     */
+    ~CMathConstantCompartment();
+
+    /**
+     *
+     */
+    virtual bool setValue(const C_FLOAT64 & value);
+
+    /**
+     *
+     */
+    virtual const C_FLOAT64 & getValue() const;
+
+    /**
+     *
+     */
+    const C_FLOAT64 & getTransientValue() const;
+
+    /**
+     *
+     */
+    const std::vector< CMathSymbol * > & getMetaboliteList() const;
+
+    /**
+     *
+     */
+    bool compile();
+  };
+#endif // COPASI_CMathConstant

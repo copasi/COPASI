@@ -182,6 +182,16 @@ class CModel : public CCopasiContainer
     CVector< const C_FLOAT64 * > mScaledFluxesX;
 
     /**
+     * The initial time for modeling (default = 0)
+     */
+    C_FLOAT64 mInitialTime;
+
+    /**
+     * The actual time for modeling (default = 0)
+     */
+    C_FLOAT64 mTime;
+
+    /**
      *  Transition time 
      */
     C_FLOAT64 mTransitionTime;
@@ -367,9 +377,9 @@ class CModel : public CCopasiContainer
 
     /**
      * Retrieves the vector of metabolites at it is used in the reduced model.
-     * @return vector < CMetab * > metabolites
+     * @return const CCopasiVectorN< CMetab > &metabolites
      */
-    CCopasiVectorN< CMetab > & getMetabolitesX();
+    const CCopasiVectorN< CMetab > & getMetabolitesX() const;
 
     /**
      *  Get the number of total metabolites
@@ -455,6 +465,30 @@ class CModel : public CCopasiContainer
      * @param "const string &" comments comments for this model
      */
     void setComments(const std::string &comments);
+
+    /**
+     * Set the start time for modeling
+     * @param const C_FLOAT64 & time
+     */
+    void setInitialTime(const C_FLOAT64 & time);
+
+    /**
+     * Retreive the initial time
+     * @return const C_FLOAT64 & time
+     */
+    const C_FLOAT64 & getInitialTime() const;
+
+    /**
+     * Set the actual model time
+     * @param const C_FLOAT64 & time
+     */
+    void setTime(const C_FLOAT64 & time);
+
+    /**
+     * Retreive the actual model time
+     * @return const C_FLOAT64 & time
+     */
+    const C_FLOAT64 & getTime() const;
 
     /**
      * Return the compartments of this model

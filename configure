@@ -22239,7 +22239,7 @@ fi;
 
 
 
-ac_config_files="$ac_config_files Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/report/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/scan/Makefile copasi/steadystate/Makefile copasi/test/Makefile copasi/pvmtest/Makefile tnt/Makefile"
+ac_config_files="$ac_config_files Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/mathmodel/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/report/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/scan/Makefile copasi/steadystate/Makefile copasi/test/Makefile copasi/pvmtest/Makefile tnt/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -22730,6 +22730,7 @@ do
   "copasi/elementaryFluxModes/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/elementaryFluxModes/Makefile" ;;
   "copasi/function/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/function/Makefile" ;;
   "copasi/optimization/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/optimization/Makefile" ;;
+  "copasi/mathmodel/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/mathmodel/Makefile" ;;
   "copasi/model/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/model/Makefile" ;;
   "copasi/output/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/output/Makefile" ;;
   "copasi/randomGenerator/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/randomGenerator/Makefile" ;;

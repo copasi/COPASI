@@ -52,11 +52,10 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
     return Fail;
 
   if ((Fail = configbuffer.getVariable("Volume", "C_FLOAT64",
-                                       (void *) & mVolume)))
+                                       (void *) & mInitialVolume)))
     return Fail;
 
-  if (mVolume != 0)
-    mVolumeInv = 1 / mVolume;
+  setVolume(mInitialVolume);
 
   if (configbuffer.getVersion() < "4")
     return Fail;
@@ -112,20 +111,14 @@ void CCompartment::saveSBML(std::ofstream &fout)
   fout << " volume=\"" << mVolume << "\"/>" << std::endl;
 }
 
-const std::string & CCompartment::getName() const
-  {
-    return mName;
-  }
+const std::string & CCompartment::getName() const {return mName;}
 
-const C_FLOAT64 & CCompartment::getVolume() const
-  {
-    return mVolume;
-  }
+const C_FLOAT64 & CCompartment::getInitialVolume() const
+  {return mInitialVolume;}
 
-const C_FLOAT64 & CCompartment::getVolumeInv() const
-  {
-    return mVolumeInv;
-  }
+const C_FLOAT64 & CCompartment::getVolume() const {return mVolume;}
+
+const C_FLOAT64 & CCompartment::getVolumeInv() const {return mVolumeInv;}
 
 CCopasiVectorNS < CMetab > & CCompartment::getMetabolites()
 {return mMetabolites;}
@@ -139,10 +132,20 @@ void CCompartment::setName(const std::string & name)
   //if (!isValidName()) fatalError();
 }
 
+void CCompartment::setInitialVolume(C_FLOAT64 volume)
+{
+  mInitialVolume = volume;
+
+  /* This has to be moved to the state */
+  setVolume(volume);
+}
+
 void CCompartment::setVolume(C_FLOAT64 volume)
 {
   mVolume = volume;
-  mVolumeInv = 1.0 / volume;
+
+  if (volume != 0.0) mVolumeInv = 1.0 / volume;
+  else mVolumeInv = DBL_MAX;
 }
 
 /* Note: the metabolite stored in mMetabolites has definetly mpCompartment set.

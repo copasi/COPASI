@@ -830,7 +830,8 @@ const CCopasiVectorN< CReaction > & CModel::getReactionsX() {return mStepsX;}
 const CCopasiVectorN< CMetab > & CModel::getMetabolites() const {return mMetabolites;}
 CCopasiVectorN< CMetab > & CModel::getMetabolitesInd() {return mMetabolitesInd;}
 CCopasiVectorN< CMetab > & CModel::getMetabolitesDep() {return mMetabolitesDep;}
-CCopasiVectorN< CMetab > & CModel::getMetabolitesX() {return mMetabolitesX;}
+const CCopasiVectorN< CMetab > & CModel::getMetabolitesX() const
+  {return mMetabolitesX;}
 
 unsigned C_INT32 CModel::getTotMetab() const
   {return mMetabolites.size();}
@@ -1012,10 +1013,13 @@ CState * CModel::getInitialState() const
     unsigned C_INT32 i, imax;
     CState * s = new CState(this);
 
+    /* Set the time */
+    s->setTime(mInitialTime);
+
     /* Set the volumes */
     C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s->getVolumeVector().array());
     for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
-      *Dbl = mCompartments[i]->getVolume();
+      *Dbl = mCompartments[i]->getInitialVolume();
 
     /* Set the variable Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s->getVariableNumberVectorDbl().array());
@@ -1043,10 +1047,13 @@ CStateX * CModel::getInitialStateX() const
     unsigned C_INT32 i, imax;
     CStateX * s = new CStateX(this);
 
+    /* Set the time */
+    s->setTime(mInitialTime);
+
     /* Set the volumes */
     C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s->getVolumeVector().array());
     for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
-      *Dbl = mCompartments[i]->getVolume();
+      *Dbl = mCompartments[i]->getInitialVolume();
 
     /* Set the independent variable Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s->getVariableNumberVectorDbl().array());
@@ -1191,6 +1198,9 @@ void CModel::setState(const CState * state)
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
 
+  /* Set the time */
+  mTime = state->getTime();
+
 #ifdef XXXX // This gets enabled when we have dynamic volume changes
   /* Set the volumes */
   Dbl = state->getVolumeVector();
@@ -1249,6 +1259,9 @@ void CModel::setState(const CStateX * state)
 {
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
+
+  /* Set the time */
+  mTime = state->getTime();
 
 #ifdef XXXX // This gets enabled when we have dynamic volume changes
 
@@ -1401,6 +1414,14 @@ void CModel::setComments(const std::string &comments)
 {
   mComments = comments;
 }
+
+void CModel::setInitialTime(const C_FLOAT64 & time) {mInitialTime = time;}
+
+const C_FLOAT64 & CModel::getInitialTime() const {return mInitialTime;}
+
+void CModel::setTime(const C_FLOAT64 & time) {mTime = time;}
+
+const C_FLOAT64 & CModel::getTime() const {return mTime;}
 
 C_INT32 CModel::addMetabolite(const std::string & comp,
                               const std::string & name,

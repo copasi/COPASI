@@ -8,6 +8,7 @@ test_DEPENDENCIES = $(test_LIBS) check_LIBS
 
 test_LIBS = \
 	../elementaryFluxModes \
+	../mathmodel \
 	../model \
 	../function \
 	../output \
@@ -31,6 +32,7 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 # the library search path.
 LIBS = \
 	-Wl,-lelementaryFluxModes \
+	-Wl,-lmathmodel \
 	-Wl,-lmodel \
 	-Wl,-lfunction \
 	-Wl,-loutput \
@@ -56,6 +58,7 @@ LIBS = \
 LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
         -L../function \
+        -L../mathmodel \
         -L../model \
         -L../output \
 	-L../optimization \

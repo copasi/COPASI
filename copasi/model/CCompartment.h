@@ -30,6 +30,11 @@ class CCompartment : public CCopasiContainer
     std::string & mName;
 
     /**
+     *  The initial volume of the compartment.
+     */
+    C_FLOAT64 mInitialVolume;
+
+    /**
      *  Volume of the compartment.
      */
     C_FLOAT64 mVolume;
@@ -124,6 +129,13 @@ class CCompartment : public CCopasiContainer
 
     /**
      *  Returns a C_FLOAT64 with the volume of this compartment.
+     *  @return const C_FLOAT64 & InitialVolume
+     *  @see mInitialVolume
+     */
+    const C_FLOAT64 & getInitialVolume() const;
+
+    /**
+     *  Returns a C_FLOAT64 with the volume of this compartment.
      *  @return mVolume
      *  @see mVolume
      */
@@ -155,6 +167,13 @@ class CCompartment : public CCopasiContainer
      *  @see mName
      */
     void setName(const std::string & name);
+
+    /**
+     *  Sets the initial volume of this compartment.
+     *  @param volume the volume of the compartment.
+     *  @see mVolume
+     */
+    void setInitialVolume(C_FLOAT64 volume);
 
     /**
      *  Sets the volume of this compartment.

@@ -1,10 +1,15 @@
 0:1:Model
-1:11:Biochem
+1:11:Biochemecal
 11:111:Compartments
 11:112:Metabolites
 11:113:Moiety
 11:114:Reactions
-1:12:Maths
+1:12:Mathematical
+12:121:Compartment Symbols
+12:122:Function Symbols
+12:123:Constant Symbols
+12:124:Fixed Metabolite Symbols
+12:125:Metabolite Symbols
 0:2:Tasks
 2:21:Steady-State
 21:211:Bifurcation

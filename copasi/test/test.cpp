@@ -31,8 +31,8 @@
 #include "steadystate/CMca.h"
 #include "randomGenerator/CRandom.h"
 #include "utilities/CluX.h"
-#include "report/CCopasiObjectName.h" 
-// #include "report/CMetabNew.h"
+#include "report/CCopasiObjectName.h"
+#include "mathmodel/CMathModel.h"
 
 using namespace std;
 
@@ -112,11 +112,11 @@ int main(int argc, char *argv[])
       //      TestMetab();
       //      TestReadSample();
       //      TestNewton();
-      TestSSSolution();
+      //      TestSSSolution();
       //YOHE: new test
       //  TestOptimization();
       //      TestEigen();
-      //      TestTrajectory();
+      TestTrajectory();
       //      TestTrajectoryTask();
       //      TestMoiety();
       //      TestKinFunction();
@@ -447,6 +447,9 @@ C_INT32 TestTrajectory(void)
   model.load(inbuf);
   model.compile();
   model.save(outbuf);
+
+  CMathModel MathModel;
+  MathModel.setModel(&model);
 
   Copasi->OutputList.load(inbuf);
   Copasi->OutputList.save(outbuf);
