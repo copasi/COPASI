@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/09 02:33:04 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:12:14 $
    End CVS Header */
 
 /*******************************************************************
@@ -295,7 +295,8 @@ bool ModelWidget::convert2NonReversible()
   return ret;
 }
 
-bool ModelWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool ModelWidget::update(ListViews::ObjectType objectType,
+                         ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:33 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:15:48 $
    End CVS Header */
 
 #include <math.h>
@@ -124,7 +124,7 @@ bool CChemEqInterface::loadFromChemEq(const CModel * model, const CChemEq & ce)
 
 bool CChemEqInterface::writeToChemEq(const CModel * model, CChemEq & ce) const
   {
-    bool ret;
+    bool ret = true;
     C_INT32 i, imax;
 
     ce.cleanup();
@@ -143,7 +143,7 @@ bool CChemEqInterface::writeToChemEq(const CModel * model, CChemEq & ce) const
 
     ce.setReversibility(mReversibility);
 
-    return ret;
+    return ret; //TODO: really check
   }
 
 const std::vector<std::string> & CChemEqInterface::getListOfNames(const std::string & role) const

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/04/14 19:22:04 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:07:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -318,7 +318,8 @@ void MetabolitesWidget1::slotBtnOKClicked()
   saveToMetabolite();
 }
 
-bool MetabolitesWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool MetabolitesWidget1::update(ListViews::ObjectType objectType,
+                                ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

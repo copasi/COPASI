@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/04/14 19:22:05 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:08:02 $
    End CVS Header */
 
 /***********************************************************************
@@ -126,7 +126,7 @@ void MetabolitesWidget::fillTable()
 {
   const CMetab *obj;
   const CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
-  C_INT32 j, jmax = objects.size();
+  unsigned C_INT32 j, jmax = objects.size();
   table->setNumRows(jmax);
   mKeys.resize(jmax);
 
@@ -509,7 +509,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
               if (effectedReacKeys.size() > 0)
                 {
                   reacFound = 1;
-                  for (int j = 0; j < effectedReacKeys.size(); j++)
+                  for (unsigned C_INT32 j = 0; j < effectedReacKeys.size(); j++)
                     {
                       CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(effectedReacKeys[j]));
                       effectedReacList.append(reac->getName().c_str());
@@ -538,7 +538,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                             // Yes or Enter
+            case 0:                              // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -551,7 +551,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                             // No or Escape
+            case 1:                              // No or Escape
               break;
             }
         }
@@ -562,7 +562,8 @@ void MetabolitesWidget::tableValueChanged(int C_UNUSED(row),
     int C_UNUSED(col))
 {}
 
-bool MetabolitesWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool MetabolitesWidget::update(ListViews::ObjectType objectType,
+                               ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {
@@ -585,7 +586,7 @@ bool MetabolitesWidget::leave()
   return true;
 }
 
-bool MetabolitesWidget::enter(const std::string & key)
+bool MetabolitesWidget::enter(const std::string & C_UNUSED(key))
 {
   //does nothing.
   return true;

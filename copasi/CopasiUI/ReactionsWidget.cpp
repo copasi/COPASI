@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/13 17:38:42 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:13:34 $
    End CVS Header */
 
 /*******************************************************************
@@ -287,7 +287,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:    // Yes or Enter
+            case 0:     // Yes or Enter
               {
                 for (i = ToBeDeleted.size(); 0 < i;)
                   {
@@ -303,7 +303,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
                 break;
               }
 
-            default:           // No or Escape
+            default:            // No or Escape
               break;
             }
         }
@@ -314,7 +314,8 @@ void ReactionsWidget::tableValueChanged(int C_UNUSED(row),
                                         int C_UNUSED(col))
 {}
 
-bool ReactionsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool ReactionsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action),
+                             const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {
@@ -338,7 +339,7 @@ bool ReactionsWidget::leave()
   return true;
 }
 
-bool ReactionsWidget::enter(const std::string & key)
+bool ReactionsWidget::enter(const std::string & C_UNUSED(key))
 {
   //does nothing.
   return true;

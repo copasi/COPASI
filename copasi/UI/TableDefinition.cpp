@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 16:44:20 $
+   $Date: 2004/04/25 21:14:35 $
    End CVS Header */
 
 /*******************************************************************
@@ -150,7 +150,8 @@ void TableDefinition::tableValueChanged(int C_UNUSED(row),
                                         int C_UNUSED(col))
 {}
 
-bool TableDefinition::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool TableDefinition::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action),
+                             const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {
@@ -173,7 +174,7 @@ bool TableDefinition::leave()
   return true;
 }
 
-bool TableDefinition::enter(const std::string & key)
+bool TableDefinition::enter(const std::string & C_UNUSED(key))
 {
   //does nothing.
   return true;

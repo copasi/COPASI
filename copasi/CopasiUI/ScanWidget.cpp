@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.162 $
+   $Revision: 1.163 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/04/03 23:37:52 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:14:34 $
    End CVS Header */
 
 /********************************************************
@@ -321,7 +321,7 @@ void ScanWidget::addButtonClicked()
       return;
     }
 
-  int i = 0;
+  unsigned C_INT32 i = 0;
   for (; i < pSelectedVector->size(); i++)
     if ((*pSelectedVector)[i])
       break;
@@ -709,7 +709,7 @@ void ScanWidget::mouseSelected(ScanItemWidget* pSelected)
   if (selectedList.size() == 0)
     return;
 
-  int i = 1;
+  unsigned C_INT32 i = 1;
   for (; (i < selectedList.size()) && (pSelected != selectedList[i]); i += 2)
 ;
   if (pSelected != selectedList[i]) //not find
@@ -780,7 +780,7 @@ bool ScanWidget::leave()
   return true;
 }
 
-bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

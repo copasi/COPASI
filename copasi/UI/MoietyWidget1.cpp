@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/19 08:36:48 $
+   $Date: 2004/04/25 21:12:14 $
    End CVS Header */
 
 /*******************************************************************
@@ -183,7 +183,8 @@ void MoietyWidget1::slotBtnOKClicked()
   // emit signal_emitted(*Compartment1_Name);
 }
 
-bool MoietyWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool MoietyWidget1::update(ListViews::ObjectType objectType,
+                           ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

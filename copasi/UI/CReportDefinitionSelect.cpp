@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:24 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:06:37 $
    End CVS Header */
 
 /********************************************************
@@ -140,7 +140,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
 {
   DataModel* dataModel = ListViews::getDataModel();
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
-  C_INT32 i;
+  unsigned C_INT32 i;
   for (i = 0; i < pReportDefinitionVector->size(); i++)
     reportDefinitionNameList->insertItem((*(pReportDefinitionVector))[i]->getName().c_str());
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/30 06:38:47 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:13:34 $
    End CVS Header */
 
 /*******************************************************************
@@ -174,7 +174,7 @@ void PlotWidget::tableValueChanged(int C_UNUSED(row),
                                    int C_UNUSED(col))
 {}
 
-bool PlotWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool PlotWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {
@@ -199,7 +199,7 @@ bool PlotWidget::leave()
   return true;
 }
 
-bool PlotWidget::enter(const std::string & key)
+bool PlotWidget::enter(const std::string & C_UNUSED(key))
 {
   //does nothing.
   return true;
@@ -217,7 +217,7 @@ void PlotWidget::resizeEvent(QResizeEvent * re)
           float weight0 = 3.5, weight1 = 6.5;
           float weightSum = weight0 + weight1;
           int w0, w1;
-          w0 = newWidth * (weight0 / weightSum);
+          w0 = (int)(newWidth * (weight0 / weightSum));
           w1 = newWidth - w0;
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);

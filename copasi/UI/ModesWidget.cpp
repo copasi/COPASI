@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/13 17:38:42 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:12:14 $
    End CVS Header */
 
 /*******************************************************************
@@ -105,7 +105,7 @@ void ModesWidget::loadModes(CModel *model)
       unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
       table->setNumRows(noOfModesRows);
       //bool status;
-      C_INT32 j;
+      unsigned C_INT32 j;
       for (j = 0; j < noOfModesRows; j++)
         {
           // status=modes->isFluxModeReversible(j);
@@ -264,7 +264,8 @@ void ModesWidget::slotBtnCalculateClicked()
     }***CL***/
 }
 
-bool ModesWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool ModesWidget::update(ListViews::ObjectType C_UNUSED(objectType),
+                         ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   pdelete(modes);
   return true;

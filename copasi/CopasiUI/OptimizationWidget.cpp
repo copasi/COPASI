@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:23 $
+   $Author: ssahle $ 
+   $Date: 2004/04/25 21:13:34 $
    End CVS Header */
 
 /********************************************************
@@ -396,7 +396,8 @@ void OptimizationWidget::languageChange()
   expressionNameLabel->setText(tr("Name"));
 }
 
-bool OptimizationWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool OptimizationWidget::update(ListViews::ObjectType objectType,
+                                ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {
