@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/25 13:28:42 $
+   $Date: 2004/10/26 11:36:02 $
    End CVS Header */
 
 /****************************************************************************
@@ -57,6 +57,7 @@ class PlotWidget;
 class CopasiDefaultWidget;
 class TimeSeriesWidget;
 class CMCAWidget;
+class CMCAResultWidget;
 
 //*********************************************************************************
 
@@ -168,6 +169,7 @@ class ListViews : public QSplitter
     TimeSeriesWidget *timeSeriesWidget;
     StateWidget *stateWidget;
     CMCAWidget* mpCMCAWidget;
+    CMCAResultWidget* mpCMCAResultWidget;
   };
 
 #endif

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.54 $ $Author: gauges $ $Date: 2004/10/25 13:24:02 $  
+# $Revision: 1.55 $ $Author: gauges $ $Date: 2004/10/26 11:36:02 $  
 ######################################################################
 
 include(../common.pri)
@@ -110,6 +110,8 @@ HEADERS += \
            AboutDialog.h \
            ChemEqValidator.h \
            CMCAWidget.h \
+           CMCAResultSubwidget.h \
+           CMCAResultWidget.h \
            CReactionInterface.h \
            CReportDefinitionSelect.h \
            CompartmentSymbols.h \
@@ -180,6 +182,8 @@ HEADERS += \
 SOURCES += \
            AboutDialog.cpp \
            CMCAWidget.cpp \
+           CMCAResultSubwidget.cpp \
+           CMCAResultWidget.cpp \
            CReactionInterface.cpp \
            CReportDefinitionSelect.cpp \
            CompartmentSymbols.cpp \
@@ -227,7 +231,7 @@ SOURCES += \
            ScanWidget.cpp \
            SliderDialog.cpp \
            SimpleSelectionDialog.cpp \
-	   simpleselectionwidget.cpp \	
+     	   simpleselectionwidget.cpp \	
            StateWidget.cpp \
            StateSubwidget.cpp \
            SteadyStateWidget.cpp \
@@ -242,7 +246,7 @@ SOURCES += \
 #FORMS +=  TimeSeriesSubwidget.ui \
 #          StateSubwidget.ui \
 #          simpleselectionwidget.ui        
-#FORMS += slidersettingsdialog.ui
+#FORMS += CMCAResultSubwidget.ui
 
 release {
   distribution.path = .
