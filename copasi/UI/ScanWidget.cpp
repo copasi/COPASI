@@ -132,12 +132,29 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChangeButton()));
+  connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
+
+  connect(sExecutable, SIGNAL(clicked()), this, SLOT(SteadyStateButtonClicked()));
+  connect(trajectory, SIGNAL(clicked()), this, SLOT(TrajectoryButtonClicked()));
 }
 
 ScanWidget::~ScanWidget()
 {
   // no need to delete child widgets, Qt does it all for us
 }
+
+void ScanWidget::CancelChangeButton()
+{}
+
+void ScanWidget::CommitChangeButton()
+{}
+
+void ScanWidget::SteadyStateButtonClicked()
+{}
+
+void ScanWidget::TrajectoryButtonClicked()
+{}
 
 void ScanWidget::loadScan(CModel *model)
 {
