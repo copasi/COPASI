@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:40:08 $
+   $Date: 2005/03/30 14:31:00 $
    End CVS Header */
 
 /**
@@ -42,8 +42,9 @@ bool CRealProblem::calculate()
   double fitness;
   double fitness0;
 
-  int parameterNum = getCalculateVariables().size();
-  double * parameterValues = getCalculateVariables().array();
+  // :TODO: broken
+  int parameterNum; // = getCalculateVariables().size();
+  double * parameterValues; // = getCalculateVariables().array();
 
   //YOHE: this is the mathematics function used only for testing purpose
   // evaluate the fitness

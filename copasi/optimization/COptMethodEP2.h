@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/23 12:31:29 $
+   $Author: shoops $ 
+   $Date: 2005/03/30 14:35:46 $
    End CVS Header */
 
 /**
@@ -52,7 +52,8 @@ class COptMethodEP2 : public COptMethod
     int BestFoundSoFar;  // index of the BestFoundSoFar individual
     int NumParameter;   // number of parameters
 
-    double **individual; // for array of individuals w/ candidate values for the parameters
+    //    double **individual; // for array of individuals w/ candidate values for the parameters
+    CVector< CVector < C_FLOAT64 > > individual;
     double *CandidateValue; // array of values of objective function f/ individuals
     double *CandidateValueRate; // array of map values of objective function f/ individuals
 
@@ -133,7 +134,7 @@ class COptMethodEP2 : public COptMethod
 
     virtual void TrackDataFile(int i);
 
-    virtual C_INT32 optimise();
+    virtual bool optimise();
   };
 
 //implementation of mutation functions

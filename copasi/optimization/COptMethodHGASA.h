@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHGASA.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/23 12:31:29 $
+   $Author: shoops $ 
+   $Date: 2005/03/30 14:35:46 $
    End CVS Header */
 
 /**
@@ -137,8 +137,8 @@ class COptMethodHGASA : public COptMethod
 
     virtual void TrackDataFile(int i);
 
-    virtual C_INT32 optimise();
-    virtual C_INT32 optimise(int index);
+    virtual bool optimise();
+    virtual bool optimise(int index);
   };
 
 //implementation of mutation functions

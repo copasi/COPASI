@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:53 $
+   $Date: 2005/03/30 14:35:46 $
    End CVS Header */
 
 /**
@@ -50,7 +50,7 @@ class COptMethodSA : public COptMethod
      * when needed. It is noted that this procedure can give feedback 
      * of its progress by the callback function set with SetCallback.
      */
-    virtual C_INT32 optimise();
+    virtual bool optimise();
   };
 
 #endif  // COPASI_COptMethodSA
