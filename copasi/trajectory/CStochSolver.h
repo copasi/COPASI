@@ -4,6 +4,7 @@
 #include "utilities/utilities.h"
 
 class CModel;
+class CRandom;
 
 /**
  * CStochSolver
