@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/25 15:05:15 $
+   $Date: 2004/06/28 09:43:43 $
    End CVS Header */
 
 /****************************************************************************
@@ -102,6 +102,12 @@ class CReportDefinition : public CCopasiObject
      *gets the footer in the report tag
      */
     std::vector<CCopasiObjectName>* getFooterAddr();
+
+    /**
+     * This adds header and body entries for one table element 
+     * (including separator if necessary)
+     */
+    void addTableElement(const std::string & cn);
 
     /**
      *
