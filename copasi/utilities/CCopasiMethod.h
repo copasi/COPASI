@@ -1,15 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/23 19:43:01 $
+   $Date: 2003/10/30 17:59:17 $
    End CVS Header */
 
 /**
  *  CCopasiMethod class.
- *  This class is used to describe a task in COPASI. This class is 
- *  intended to be used as the parent class for all tasks whithin COPASI.
+ *  This class is used to describe a method in COPASI. This class is 
+ *  intended to be used as the parent class for all methods whithin COPASI.
  *  
  *  Created for Copasi by Stefan Hoops 2003
  */
@@ -19,65 +19,73 @@
 
 #include <string>
 
-#include "CCopasiContainer.h"
+#include "CCopasiParameterGroup.h"
+#include "CCopasiTask.h"
+#include "CReadConfig.h"
 
 class CCopasiProblem;
-class CMethodParameterList;
-class CReport;
 
 class CCopasiMethod : public CCopasiParameterGroup
   {
   public:
     /**
-     * Enumeration of the types of tasks known to COPASI.
+     * Enumeration of the sub types of methods known to COPASI.
      */
-    enum Type
+    enum SubType
     {
-      steadyState = 0,
-      timeCourse,
-      scan,
-      fluxMode,
-      optimization,
-      parameterFitting,
+      unset = 0,
+      RandomSearch,
+      RandomSearchMaster,
+      SimulatedAnnealing,
+      Newton,
+      deterministic,
+      stochastic,
+      hybrid
     };
 
     /**
-     * String literals for the GUI to display type names of tasks known
+     * String literals for the GUI to display sub type names of methods known
      * to COPASI.
      */
-    const static string TypeName[];
+    static const std::string SubTypeName[];
 
     /**
-     * XML type names of tasks known to COPASI.
+     * XML sub type names of methods known to COPASI.
      */
-    const static char* XMLType[];
+    static const char* XMLSubType[];
 
     // Attributes
   private:
     /**
-     * The type of the task
+     * The type of the method
      */
-    std::string mType;
+    CCopasiTask::Type mType;
+
+    /**
+     * The type of the method
+     */
+    CCopasiMethod::SubType mSubType;
 
     // Operations
-  protected:
+
+  private:
     /**
      * Default constructor
      */
     CCopasiMethod();
 
-  public:
-
+  protected:
     /**
      * Specific constructor
-     * @param const string & name (Default = "NoName")
+     * @param const CCopasiTask::Type & type
+     * @param const CCopasiMethod::SubType & subType
      * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & type (default: "Method")
      */
-    CCopasiMethod(const CCopasiMethod::Type & type,
-                  const CCopasiContainer * pParent = NULL,
-                  const std::string & type = "Method");
+    CCopasiMethod(const CCopasiTask::Type & type,
+                  const CCopasiMethod::SubType & subType,
+                  const CCopasiContainer * pParent = NULL);
 
+  public:
     /**
      * Copy constructor
      * @param const CCopasiMethodr & src
@@ -89,19 +97,27 @@ class CCopasiMethod : public CCopasiParameterGroup
     /**
      * Destructor
      */
-    ~CCopasiMethod();
+    virtual ~CCopasiMethod();
 
     /**
      * Retrieve the type of the method
      * @return  const string & type
      */
-    const std::string & getType() const;
+    const CCopasiTask::Type & getType() const;
 
     /**
-     * Set the type of the method
-     * @param const string & type
+     * Retrieve the sub type of the method
+     * @return CCopasiMethod::SubType & subType
      */
-    void setType(const std::string & type);
+    const CCopasiMethod::SubType & getSubType() const;
+
+    /**
+     * Load a list of parameters
+     * @param "CReadConfig &" configBuffer
+     * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)
+     */
+    virtual void load(CReadConfig & configBuffer,
+                      CReadConfig::Mode mode = CReadConfig::SEARCH);
   };
 
 #endif // COPASI_CCopasiMethod

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:25 $
+   $Date: 2003/10/30 17:58:53 $
    End CVS Header */
 
 /**
@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiVector.h"
 
 class COptProblem;
@@ -37,27 +37,16 @@ template < class CType > class CVector;
 // without definitions
 //
 /** @dia:pos 36.4,4.15 */
-class COptMethod : public CMethodParameterList
+class COptMethod : public CCopasiMethod
   {
   public:
     static const std::string TypeName[];
 
     // Attributes
   public:
-    enum Type
-    {
-      RandomSearch = 0,
-      RandomSearchMaster = 1,
-      SimulatedAnnealing = 2
-    };
 
     //data member
   protected:
-    /**
-     *  The type of the method
-     */
-    COptMethod::Type mTypeEnum;
-
     /** @dia:route 0,2; h,36.4,4.15,33.95,4.15,23.0576 */
     COptProblem * mOptProblem;        // pointer to remote problem
 
@@ -72,33 +61,42 @@ class COptMethod : public CMethodParameterList
 
     //rohan: modified 7/26
 
-    // Implementation
+    // Operations
+  private:
+    /**
+     * Default constructor.
+     */
+    COptMethod();
+
   protected:
+    /**
+     *
+     * @param CCopasiMethod::SubType subType
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    COptMethod(CCopasiMethod::SubType subType,
+               const CCopasiContainer * pParent = NULL);
 
   public:
     /**
      * Create a optimization method.
      * Note: the returned object has to be released after use with delete
      */
-    static COptMethod * createMethod(COptMethod::Type type
-                                     = COptMethod::RandomSearch);
+    static COptMethod * createMethod(CCopasiMethod::SubType subType
+                                     = CCopasiMethod::RandomSearch);
 
     /**
-     * Default constructor
-     * @param const bool & bounds (Default: false)
+     * Copy constructor
+     * @param const COptMethod & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COptMethod(const bool & bounds = false);
+    COptMethod(const COptMethod & src,
+               const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
      */
     virtual ~COptMethod();
-
-    /**
-     * Copy constructor
-     * @param const COptMethod & src
-     */
-    COptMethod(const COptMethod & src);
 
     /**
      * Execute the optimization algorithm calling simulation routine 
@@ -118,7 +116,6 @@ class COptMethod : public CMethodParameterList
      * @param "COptProblem *" problem
      */
     void setProblem(COptProblem * problem);
-    int GetMethodType(void);
   };
 
 #include "CRandomSearch.h"

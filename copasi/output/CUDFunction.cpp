@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CUDFunction.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:54 $
+   $Date: 2003/10/30 17:58:57 $
    End CVS Header */
 
 /*****************************************************************************
@@ -28,7 +28,6 @@
 #include "CUDFunction.h"
 #include "utilities/CGlobals.h"
 #include "utilities/CCopasiException.h"
-#include "utilities/CMethodParameter.h"
 
 /**
  *  Default constructor
@@ -581,7 +580,7 @@ C_INT32 CUDFunction::parse()
           mNodes.push_back(new CNodeO(N_FUNCTION, N_COS));
           break;
 
-        case N_NOP:                    // this is an error
+        case N_NOP:                     // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

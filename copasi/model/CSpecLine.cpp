@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:53 $
+   $Date: 2003/10/30 17:58:50 $
    End CVS Header */
 
 #include <iostream>
@@ -19,7 +19,6 @@
 #include "utilities/CGlobals.h"
 #include "function/CKinFunction.h"
 #include "function/CFunctionDB.h"
-#include "utilities/CMethodParameter.h"
 
 CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE;}
 

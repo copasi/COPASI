@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:01 $
+   $Date: 2003/10/30 17:59:07 $
    End CVS Header */
 
 /**
@@ -56,7 +56,7 @@
  */
 CHybridMethod::~CHybridMethod()
 {
-  std::cout << "~CHybridMethod() " << getName() << std::endl;
+  std::cout << "~CHybridMethod() " << CCopasiParameter::getName() << std::endl;
   delete mRandomGenerator;
   mRandomGenerator = 0;
   cleanup();
@@ -76,13 +76,13 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:         // non-integer stoichometry
+    case - 3:          // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-    case - 2:         // reversible reaction exists
+    case - 2:          // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-    case - 1:         // more than one compartment involved
+    case - 1:          // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;
       // Error: Hybrid simulation impossible
@@ -155,21 +155,24 @@ const double CHybridMethod::step(const double & deltaT,
 /**
  *   Default constructor.
  */
-CHybridMethod::CHybridMethod():
-    CTrajectoryMethod()
+CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
+    CTrajectoryMethod(CCopasiMethod::hybrid, pParent)
 {
-  setName("HYBRID");
-  mTypeEnum = CTrajectoryMethod::hybrid;
-  setType(CTrajectoryMethod::TypeName[mTypeEnum]);
   /* Set version number */
   mVersion.setVersion(1, 0, 101);
 
-  add("HYBRID.MaxSteps", MAX_STEPS); // Max number of doSingleStep() per step()
-  add("HYBRID.LowerStochLimit", LOWER_STOCH_LIMIT);
-  add("HYBRID.UpperStochLimit", UPPER_STOCH_LIMIT);
-  add("HYBRID.RungeKuttaStepsize", RUNGE_KUTTA_STEPSIZE);
-  //deprecated:  add("HYBRID.OutputCounter", OUTPUT_COUNTER);
-  add("HYBRID.IntEpsilon", INT_EPSILON);
+  // Max number of doSingleStep() per step()
+  addParameter("HYBRID.MaxSteps",
+               CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS);
+  addParameter("HYBRID.LowerStochLimit",
+               CCopasiParameter::INT, (C_INT32) LOWER_STOCH_LIMIT);
+  addParameter("HYBRID.UpperStochLimit",
+               CCopasiParameter::INT, (C_INT32) UPPER_STOCH_LIMIT);
+  addParameter("HYBRID.RungeKuttaStepsize",
+               CCopasiParameter::DOUBLE, (C_FLOAT64) RUNGE_KUTTA_STEPSIZE);
+  //deprecated:  addParameter("HYBRID.OutputCounter", OUTPUT_COUNTER);
+  addParameter("HYBRID.IntEpsilon",
+               CCopasiParameter::DOUBLE, (C_FLOAT64) INT_EPSILON);
 
   mRandomGenerator = CRandom::createGenerator(CRandom::r250);
 
@@ -221,17 +224,17 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   testState = new C_FLOAT64[mDim];
   oldState = new C_INT32[mDim];
 
-  mMaxSteps = (unsigned C_INT32) getValue("HYBRID.MaxSteps");
+  mMaxSteps = * (unsigned C_INT32 *) getValue("HYBRID.MaxSteps");
   std::cout << "HYBRID.MaxSteps: " << mMaxSteps << std::endl;
-  mLowerStochLimit = (C_INT32) getValue("HYBRID.LowerStochLimit");
+  mLowerStochLimit = * (C_INT32 *) getValue("HYBRID.LowerStochLimit");
   std::cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << std::endl;
-  mUpperStochLimit = (C_INT32) getValue("HYBRID.UpperStochLimit");
+  mUpperStochLimit = * (C_INT32 *) getValue("HYBRID.UpperStochLimit");
   std::cout << "HYBRID.UpperStochLimit: " << mUpperStochLimit << std::endl;
   if (mLowerStochLimit > mUpperStochLimit)
     std::cerr << "CHybridMethod.initialize(): Error: mLowerStochLimit ("
     << mLowerStochLimit << ") is greater than mUpperStochLimit ("
     << mUpperStochLimit << ")." << std::endl;
-  mStepsize = getValue("HYBRID.RungeKuttaStepsize");
+  mStepsize = * (C_FLOAT64 *) getValue("HYBRID.RungeKuttaStepsize");
   std::cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << std::endl;
   mStoi = mpModel->getStoi();
 
@@ -1404,8 +1407,10 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:         // Everything !!!
-      os << "Version: " << mVersion.getVersion() << " Name: " << getName() << " Method: " /* << mMethod */ << std::endl;
+    case 0:          // Everything !!!
+      os << "Version: " << mVersion.getVersion() << " Name: "
+      << CCopasiParameter::getName() << " Method: " /* << mMethod */
+      << std::endl;
       os << "mTime: " << mpCurrentState->getTime() << std::endl;
       os << "mDim: " << mDim << std::endl;
       os << "mReactions.size(): " << mReactions->size() << std::endl;
@@ -1509,7 +1514,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:          // Variable values only
+    case 1:           // Variable values only
       os << "mTime: " << mpCurrentState->getTime() << std::endl;
       os << "oldState: ";
       for (i = 0; i < mDim; i++)

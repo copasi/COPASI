@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:04 $
+   $Date: 2003/10/30 17:59:11 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -34,7 +34,8 @@ class CRandom;
 class CStochMethod : private CTrajectoryMethod
   {
     friend CTrajectoryMethod *
-    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type, CTrajectoryProblem * pProblem);
+    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
+        CTrajectoryProblem * pProblem);
 
   protected:
 
@@ -151,8 +152,9 @@ class CStochMethod : private CTrajectoryMethod
   protected:
     /**
      *  Default constructor.
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CStochMethod();
+    CStochMethod(const CCopasiContainer * pParent = NULL);
 
   public:
     /**

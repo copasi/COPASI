@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2003/10/29 17:29:53 $
+   $Author: shoops $ 
+   $Date: 2003/10/30 17:57:33 $
    End CVS Header */
 
 /**********************************************************************
@@ -39,7 +39,6 @@
 #include "model/CMetab.h"
 #include "listviews.h"
 #include "utilities/CGlobals.h"
-#include "utilities/CMethodParameter.h"
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
@@ -418,10 +417,10 @@ void FunctionWidget1::updateParameters()
                                    "Retry",
                                    "Quit", 0, 0, 1))
         {
-        case 0:          // The user clicked the Retry again button or pressed Enter
+        case 0:           // The user clicked the Retry again button or pressed Enter
           // try again
           break;
-        case 1:          // The user clicked the Quit or pressed Escape
+        case 1:           // The user clicked the Quit or pressed Escape
           // exit
           break;
         }

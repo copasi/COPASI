@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:06 $
+   $Date: 2003/10/30 17:59:14 $
    End CVS Header */
 
 /**
@@ -19,21 +19,17 @@
 
 #include <string>
 
+#include "utilities/CCopasiProblem.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
 #include "model/CState.h"
 
 class CModel;
 
-class CTrajectoryProblem
+class CTrajectoryProblem : public CCopasiProblem
   {
     // Attributes
   private:
-    /**
-     *  The model the problem is working on.
-     */
-    CModel * mpModel;
-
     /**
      *  The number of steps to calculate
      */
@@ -73,16 +69,20 @@ class CTrajectoryProblem
     // Operations
 
     /**
-     *  Default constructor.
+     * Default constructor.
+     * @paramconst CCopasiContainer * pParent (default: NULL)
      */
-    CTrajectoryProblem();
+    CTrajectoryProblem(const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor.
-     *  @param "const CTrajectoryProblem &" src
+     * Copy constructor.
+     * @param const CTrajectoryProblem & src
+     * @paramconst CCopasiContainer * pParent (default: NULL)
      */
-    CTrajectoryProblem(const CTrajectoryProblem & src);
+    CTrajectoryProblem(const CTrajectoryProblem & src,
+                       const CCopasiContainer * pParent = NULL);
 
+#ifdef XXXX
     /**
      *  special constructor. Allows simple definition of a TrajectoryProblem
      *  @param "CModel *" pmodel
@@ -93,6 +93,7 @@ class CTrajectoryProblem
     CTrajectoryProblem(CModel * pmodel,
                        C_FLOAT64 starttime, C_FLOAT64 endtime,
                        unsigned C_INT32 stepnumber = 200);
+#endif // XXXX
 
     /**
      *  Destructor.
@@ -103,13 +104,7 @@ class CTrajectoryProblem
      * Set the moddel the problem is dealing with.
      * @param "CModel *" pModel
      */
-    void setModel(CModel * pModel);
-
-    /**
-     * Retrieve the model the problem is dealing with.
-     * @return "CModel *" pModel
-     */
-    CModel * getModel() const;
+    virtual bool setModel(CModel * pModel);
 
     /**
      * Set the number of time steps the trajectory method should integrate.

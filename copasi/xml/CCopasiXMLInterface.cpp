@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:36:25 $
+   $Date: 2003/10/30 17:59:29 $
    End CVS Header */
 
 /**
@@ -19,7 +19,6 @@
 #include "copasi.h"
 #include "CCopasiXMLInterface.h"
 #include "model/CModel.h"
-#include "utilities/CMethodParameter.h"
 #include "report/CReportDefinition.h"
 
 std::string CCopasiXMLInterface::encode(const std::string & str)

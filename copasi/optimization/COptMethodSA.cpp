@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:23 $
+   $Date: 2003/10/30 17:58:53 $
    End CVS Header */
 
 /* COptMethodSA code */
@@ -35,15 +35,17 @@
 static double PI = 4.0 * atan(1.0);
 
 COptMethodSA::COptMethodSA():
-    COptMethod()
+    COptMethod(CCopasiMethod::SimulatedAnnealing)
 {
-  setName("SimulatedAnnealing");
-  mTypeEnum = COptMethod::SimulatedAnnealing;
-  setType(COptMethod::TypeName[mTypeEnum]);
-
-  add("SimulatedAnnealing.Iterations", 10000, CParameter::UINT);
-  add("SimulatedAnnealing.RandomGenerator.Type", CRandom::mt19937, CParameter::INT);
-  add("SimulatedAnnealing.RandomGenerator.Seed", 0, CParameter::INT);
+  addParameter("SimulatedAnnealing.Iterations",
+               CCopasiParameter::UINT,
+               (unsigned C_INT32) 10000);
+  addParameter("SimulatedAnnealing.RandomGenerator.Type",
+               CCopasiParameter::INT,
+               (C_INT32) CRandom::mt19937);
+  addParameter("SimulatedAnnealing.RandomGenerator.Seed",
+               CCopasiParameter::INT,
+               (C_INT32) 0);
 }
 
 COptMethodSA::COptMethodSA(const COptMethodSA & src):

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:52 $
+   $Date: 2003/10/30 17:58:49 $
    End CVS Header */
 
 // CReaction
@@ -28,7 +28,6 @@
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/utility.h"
-#include "utilities/CMethodParameter.h"
 #include "function/CFunctionDB.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
@@ -141,6 +140,8 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
                            const CCopasiVector< CMetab > &metabolites)
 {
   std::string tmp;
+  C_FLOAT64 Dbl;
+
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
   C_INT32 i = 0, j = 0, s = 0, c = -1;
@@ -242,7 +243,8 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   for (i = 0; i < Size; i++)
     {
       sprintf(strtmp, "Param%ld", i);
-      if ((Fail = configbuffer.setVariable(strtmp, "C_FLOAT64", (void *) & mParameters[i]->getValue())))
+      Dbl = * (C_FLOAT64 *) mParameters.getValue(i);
+      if ((Fail = configbuffer.setVariable(strtmp, "C_FLOAT64", &Dbl)))
         return Fail;
     }
   return 0;
@@ -305,9 +307,9 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
   fout << "\t\t\t\t\t<listOfParameters>" << std::endl;
   for (i = 0; i < mParameters.size(); i++)
     {
-      FixSName(mParameters[i]->getName(), tmpstr);
+      FixSName(mParameters.getName(i), tmpstr);
       fout << "\t\t\t\t\t\t<parameter name=\"" + tmpstr;
-      fout << "_" << r << "\" value=\"" << mParameters[i]->getValue() << "\"/>" << std::endl;
+      fout << "_" << r << "\" value=\"" << mParameters.getValue(i) << "\"/>" << std::endl;
     }
   fout << "\t\t\t\t\t</listOfParameters>" << std::endl;
   fout << "\t\t\t\t</kineticLaw>" << std::endl;
@@ -410,19 +412,19 @@ bool CReaction::setFunction(CFunction * pFunction)
 void CReaction::setParameterValue(const std::string & parameterName, C_FLOAT64 value)
 {
   if (!mpFunction) fatalError();
-  mParameters[parameterName]->setValue(value);
+  mParameters.setValue(parameterName, value);
 }
 
 const C_FLOAT64 & CReaction::getParameterValue(const std::string & parameterName) const
   {
     if (!mpFunction) fatalError();
-    return mParameters[parameterName]->getValue();
+    return * (C_FLOAT64 *) mParameters.getValue(parameterName);
   }
 
-const CCopasiVectorN <CParameter> & CReaction::getParameters() const
+const CCopasiParameterGroup & CReaction::getParameters() const
 {return mParameters;}
 
-CCopasiVectorN <CParameter> & CReaction::getParameters()
+CCopasiParameterGroup & CReaction::getParameters()
 {return mParameters;}
 
 //bool CReaction::setParameterKeys(const std::string & parameterName,
@@ -603,7 +605,7 @@ void CReaction::compileParameters()
   for (i = 0, pos = 0; i < imax; ++i)
     {
       name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getName();
-      mMap.setCallParameter(name, mParameters[name]);
+      mMap.setCallParameter(name, mParameters.getParameter(name));
     }
 }
 
@@ -614,18 +616,16 @@ void CReaction::initializeParameters()
   unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage("PARAMETER");
   unsigned C_INT32 pos;
   std::string name;
-  CParameter param;
+  //  CCopasiParameter param("NoName", CCopasiParameter::DOUBLE);
+  //  param.setValue((C_FLOAT64) 1.0);
 
-  mParameters.cleanup();
-
-  param.setType(CParameter::DOUBLE);
-  param.setValue(1.0);
+  mParameters.clear();
 
   for (i = 0, pos = 0; i < imax; ++i)
     {
       name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getName();
-      param.setName(name);
-      mParameters.add(param);
+      //      param.setName(name);
+      mParameters.addParameter(name, CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
       mMetabKeyMap[pos - 1][0] = name;
     }
 

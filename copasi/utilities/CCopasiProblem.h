@@ -1,15 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/21 20:32:46 $
+   $Date: 2003/10/30 17:59:21 $
    End CVS Header */
 
 /**
  *  CCopasiProblem class.
- *  This class is used to describe a task in COPASI. This class is 
- *  intended to be used as the parent class for all tasks whithin COPASI.
+ *  This class is used to describe a problem in COPASI. This class is 
+ *  intended to be used as the parent class for all problems whithin COPASI.
  *  
  *  Created for Copasi by Stefan Hoops 2003
  */
@@ -19,40 +19,67 @@
 
 #include <string>
 
-#include "CCopasiContainer.h"
+#include "CCopasiParameterGroup.h"
+#include "CVector.h"
+#include "CCopasiTask.h"
 
-class CCCopasiTask;
-class MethodParameterList;
+class CModel;
 
-class CCopasiProblem : public CCopasiContainer
+class CCopasiProblem : public CCopasiParameterGroup
   {
-  public:
     // Attributes
-
   private:
+    /**
+     * The type of the problem
+     */
+    CCopasiTask::Type mType;
+
+  protected:
+    /**
+     * The model of the problem
+     */
+    CModel * mpModel;
+
+    /**
+     * A vector of variables for calculate
+     */
+    CVector< C_FLOAT64 > mCalculateVariables;
+
+    /**
+     * A vector of results for calculate
+     */
+    CVector< C_FLOAT64 > mCalculateResults;
+
+    /**
+     * A vector of solution variables
+     */
+    CVector< C_FLOAT64 > mSolutionVariables;
+
+    /**
+     * A vector of solution results
+     */
+    CVector< C_FLOAT64 > mSolutionResults;
 
     // Operations
-  protected:
+  private:
     /**
      * Default constructor
      */
     CCopasiProblem();
 
-  public:
-
+  protected:
     /**
      * Specific constructor
-     * @param "const string &" name (Default = "NoName")
+     * @param const CCopasiTask::Type & type
      * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & type (default: "Task")
      */
-    CCopasiProblem(const CCopasiProblem::Type & type,
-                   const CCopasiContainer * pParent = NULL,
-                   const std::string & type = "Task");
+    CCopasiProblem(const CCopasiTask::Type & type,
+                   const CCopasiContainer * pParent = NULL);
 
+  public:
     /**
      * Copy constructor
-     * @param "const CCopasiProblemr &" src
+     * @param const CCopasiProblemr & src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CCopasiProblem(const CCopasiProblem & src,
@@ -61,37 +88,77 @@ class CCopasiProblem : public CCopasiContainer
     /**
      * Destructor
      */
-    ~CCopasiProblem();
+    virtual ~CCopasiProblem();
 
     /**
-     * Retrieve the name of the method
-     * @return " const string &" name
+     * Retrieve the type of the problem
+     * @return  const string & type
      */
-    const std::string & getName() const;
+    const CCopasiTask::Type & getType() const;
 
     /**
-     * Set the name of the method
-     * @param "const string &" name
+     * Set the model of the problem
+     * @param CModel * pModel
+     * @result bool succes
      */
-    bool setName(const std::string & name);
+    virtual bool setModel(CModel * pModel);
 
     /**
-     * Retrieve the type of the method
-     * @return " const string &" type
+     * Retrieve the model of the problem
+     * @result CModel * pModel
      */
-    const std::string & getType() const;
+    CModel * getModel();
 
     /**
-     * Set the type of the method
-     * @param "const string &" type
+     * Retrieve the size of the variable vectors
+     * @result unsigned C_INT32 VariableSize
      */
-    void setType(const std::string & type);
+    unsigned C_INT32 getVariableSize() const;
 
     /**
-     * Retrieve the name of the indexed parameter
-     * @param "const unsigned C_INT32 &" index
-     * @return "const string &" mName
+     * Retrieve the size of the result vectors
+     * @result unsigned C_INT32 ResultSize
      */
+    unsigned C_INT32 getResultSize() const;
+
+    /**
+     * Retrieve the variables for calculation
+     */
+    C_FLOAT64 * getCalculateVariables();
+
+    /**
+     * Retrieve the result of a calculation
+     */
+    C_FLOAT64 * getCalculateResults();
+
+    /**
+     * Retrieve the solution variables
+     */
+    C_FLOAT64 * getSolutionVariables();
+
+    /**
+     * Retrieve the results for the solution
+     */
+    C_FLOAT64 * getSolutionResults();
+
+    /**
+     * Do the calculattin based on CalculateVariables and fill
+     * CalculateResults with the results. 
+     * @result bool succes
+     */
+    virtual bool calculate();
+
+    /**
+     * calculate function for optimization
+     * @result bool fullfilled
+     */
+    virtual bool checkParametricConstraints();
+
+    /**
+     * calculate function for optimization
+     * @result bool fullfilled
+     */
+    virtual bool checkFunctionalConstraints();
   };
 
 #endif // COPASI_CCopasiProblem

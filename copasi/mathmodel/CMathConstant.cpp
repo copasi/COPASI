@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:28 $
+   $Date: 2003/10/30 17:58:48 $
    End CVS Header */
 
 /**
@@ -23,7 +23,6 @@
 #include "model/CReaction.h"
 #include "model/CCompartment.h"
 #include "report/CCopasiObjectReference.h"
-#include "utilities/CMethodParameter.h"
 
 CMathConstant::CMathConstant(const CMathConstant & src):
     CMathSymbol(src)
@@ -109,7 +108,7 @@ CMathConstantParameter::CMathConstantParameter(const CMathConstantParameter & sr
     CMathConstant(src)
 {}
 
-CMathConstantParameter::CMathConstantParameter(const CParameter & parameter, const std::string & reaction):
+CMathConstantParameter::CMathConstantParameter(const CCopasiParameter & parameter, const std::string & reaction):
     CMathConstant(& parameter),
     mReaction(reaction)
 {
@@ -124,12 +123,16 @@ CMathConstantParameter::~CMathConstantParameter() {}
 
 bool CMathConstantParameter::setValue(const C_FLOAT64 & value)
 {
-  ((CParameter *) mpObject)->setValue(value);
+  ((CCopasiParameter *) mpObject)->setValue(value);
   return true;
 }
 
 const C_FLOAT64 & CMathConstantParameter::getValue() const
-  {return ((CParameter *) mpObject)->getValue();}
+  {
+    return
+    * (C_FLOAT64 *) ((CCopasiParameter *)(CCopasiContainer *) mpObject)->
+    getValue();
+  }
 
 const std::string & CMathConstantParameter::getReaction() const
   {return mReaction;}
@@ -145,7 +148,7 @@ bool CMathConstantParameter::buildSelection(const CModel * pModel)
   unsigned C_INT32 j, jmax;
 
   CReaction * pReaction;
-  const CCopasiVector < CParameter > * pParameters;
+  const CCopasiParameterGroup * pParameters;
   std::string Name;
 
   mSelection.clear();
@@ -159,8 +162,8 @@ bool CMathConstantParameter::buildSelection(const CModel * pModel)
       jmax = pParameters->size();
 
       for (j = 0; j < jmax; j++)
-        mSelection[(*pParameters)[j]->getName() + "(" + Name + ")"] =
-          (*pParameters)[j];
+        mSelection[pParameters->getName(j) + "(" + Name + ")"] =
+          const_cast< CCopasiParameterGroup * >(pParameters)->getParameter(j);
     }
 
   return true;

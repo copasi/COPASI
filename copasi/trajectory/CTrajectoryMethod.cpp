@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:02 $
+   $Date: 2003/10/30 17:59:11 $
    End CVS Header */
 
 /**
@@ -22,49 +22,39 @@
 #include "model/CState.h"
 #include "model/CCompartment.h"
 
-const std::string CTrajectoryMethod::TypeName[] =
-  {
-    "deterministic",
-    "stochastic",
-    "hybrid",
-    ""
-  };
-
 CTrajectoryMethod *
-CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type,
+CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
     CTrajectoryProblem * pProblem)
 {
-  CTrajectoryMethod * Method = NULL;
+  CTrajectoryMethod * pMethod = NULL;
 
-  switch (type)
+  switch (subType)
     {
-    case unspecified:
+    case unset:
     case deterministic:
-      Method = new CLsodaMethod();
+      pMethod = new CLsodaMethod();
       break;
 
     case stochastic:
-      Method = CStochMethod::createStochMethod(pProblem);
+      pMethod = CStochMethod::createStochMethod(pProblem);
       break;
 
     case hybrid:
-      Method = CHybridMethod::createHybridMethod(pProblem);
+      pMethod = CHybridMethod::createHybridMethod(pProblem);
       break;
 
     default:
       fatalError();
     }
-  return Method;
+  return pMethod;
 }
 
 /**
  *  Default constructor.
  */
-CTrajectoryMethod::CTrajectoryMethod(const std::string & name,
-                                     const CCopasiContainer * pParent,
-                                     const std::string & type) :
-    CMethodParameterList(name, pParent, type),
-    mTypeEnum(CTrajectoryMethod::unspecified),
+CTrajectoryMethod::CTrajectoryMethod(const CCopasiMethod::SubType & subType,
+                                     const CCopasiContainer * pParent) :
+    CCopasiMethod(CCopasiTask::timeCourse, subType, pParent),
     mpCurrentState(NULL),
     mpProblem(NULL)
 {CONSTRUCTOR_TRACE;}
@@ -75,8 +65,7 @@ CTrajectoryMethod::CTrajectoryMethod(const std::string & name,
  */
 CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
                                      const CCopasiContainer * pParent):
-    CMethodParameterList(src, pParent),
-    mTypeEnum(src.mTypeEnum),
+    CCopasiMethod(src, pParent),
     mpCurrentState(src.mpCurrentState),
     mpProblem(src.mpProblem)
 {CONSTRUCTOR_TRACE;}
@@ -86,9 +75,6 @@ CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
  */
 CTrajectoryMethod::~CTrajectoryMethod()
 {DESTRUCTOR_TRACE;}
-
-const CTrajectoryMethod::Type & CTrajectoryMethod::getTypeEnum() const
-  {return mTypeEnum;}
 
 void CTrajectoryMethod::setCurrentState(CState * currentState)
 {

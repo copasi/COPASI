@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearchMaster.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:26 $
+   $Date: 2003/10/30 17:58:56 $
    End CVS Header */
 
 /**
@@ -17,7 +17,7 @@
 /** @dia:route COptMethod; v,46.9608,16.35,33,32.3332,34.05 */
 class CRandomSearchMaster : public COptMethod
   {
-    friend COptMethod * COptMethod::createMethod(COptMethod::Type type);
+    friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
 
     // Operations
   private:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:13 $
+   $Date: 2003/10/30 17:58:47 $
    End CVS Header */
 
 /**
@@ -19,7 +19,6 @@
 #include "copasi.h"
 #include "CElementaryFluxModes.h"
 #include "CEFMAlgorithm.h"
-#include "utilities/CMethodParameter.h"
 
 CElementaryFluxModes::CElementaryFluxModes(){CONSTRUCTOR_TRACE; mModel = NULL;}
 CElementaryFluxModes::~CElementaryFluxModes(){DESTRUCTOR_TRACE;}

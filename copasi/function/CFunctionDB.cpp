@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 18:55:55 $
+   $Date: 2003/10/30 17:58:47 $
    End CVS Header */
 
 /**
@@ -19,9 +19,7 @@
 #include "CMassAction.h"
 #include "output/CUDFunction.h"
 #include "utilities/CCopasiException.h"
-#include "report/CCopasiObjectReference.h" 
-// #include "report/CKeyFactory.h"
-#include "utilities/CMethodParameter.h"
+#include "report/CCopasiObjectReference.h"
 #include "xml/CCopasiXML.h"
 
 #include "FunctionDB.xml.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:06 $
+   $Date: 2003/10/30 17:59:15 $
    End CVS Header */
 
 /**
@@ -106,7 +106,8 @@ class CTrajectoryTask : public CCopasiContainer
      * special constructor. Allows definition of a Trajectory task without loading one
      */
     CTrajectoryTask(CTrajectoryProblem * pProblem,
-                    CTrajectoryMethod::Type type = CTrajectoryMethod::deterministic,
+                    CTrajectoryMethod::SubType type =
+                      CTrajectoryMethod::deterministic,
                     const CCopasiContainer * pParent = NULL);
 
     /**
@@ -116,12 +117,13 @@ class CTrajectoryTask : public CCopasiContainer
      *  @param "C_FLOAT64" starttime
      *  @param "C_FLOAT64" endtime
      *  @param "unsigned C_INT32" stepnumber : number of steps
-     *  @param "CTrajectoryMethod::Type" type : type of the method that will be created
+     *  @param "CTrajectoryMethod::SubType" type : type of the method that will be created
      */
     CTrajectoryTask(CModel * pModel,
                     C_FLOAT64 starttime, C_FLOAT64 endtime,
                     unsigned C_INT32 stepnumber,
-                    CTrajectoryMethod::Type type = CTrajectoryMethod::deterministic,
+                    CTrajectoryMethod::SubType type
+                    = CTrajectoryMethod::deterministic,
                     const CCopasiContainer * pParent = NULL);
 
     /**
@@ -147,13 +149,6 @@ class CTrajectoryTask : public CCopasiContainer
      * @param configbuffer reference to a CReadConfig object.
      */
     void load(CReadConfig & configBuffer);
-
-    /**
-     * Saves the parameters of the solver to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     * @param configbuffer reference to a CWriteConfig object.
-     */
-    void save(CWriteConfig & configBuffer);
 
     /**
      * Retrieve the probel to be integrated.

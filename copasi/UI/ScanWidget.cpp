@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.154 $
+   $Revision: 1.155 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:40 $
+   $Date: 2003/10/30 17:57:37 $
    End CVS Header */
 
 /********************************************************
@@ -351,12 +351,13 @@ void ScanWidget::deleteButtonClicked()
 
   ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
 
-  CMethodParameterList* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
+  CCopasiParameterGroup* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
   //  if (!CKeyFactory::get(scanTaskKey))
   //   return;
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   if (scanTask->getProblem()->getListSize() > 0)  // for reloading
-    scanTask->getProblem()->removeScanItem(pScanObject->getName().c_str());
+    scanTask->getProblem()->
+    removeScanItem(pScanObject->CCopasiParameter::getName().c_str());
   scrollview->removeChild(selectedList[2*activeObject]);
   scrollview->removeChild(selectedList[2*activeObject + 1]);
 
@@ -424,8 +425,8 @@ void ScanWidget::upButtonClicked()
   emit hide_me();
   ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
 
-  CMethodParameterList* pScanObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
-  CMethodParameterList* pScanObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
+  CCopasiParameterGroup* pScanObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
+  CCopasiParameterGroup* pScanObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject));
@@ -437,13 +438,13 @@ void ScanWidget::upButtonClicked()
   //lower one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(pScanObjectUp->getName().c_str());
+  activeTitle->setText(pScanObjectUp->CCopasiParameter::getName().c_str());
 
   //activate
   //upper one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(pScanObjectDown->getName().c_str());
+  activeTitle->setText(pScanObjectDown->CCopasiParameter::getName().c_str());
 
   //Update ListBox
   QString tmp = ObjectListBox->text (activeObject);
@@ -468,8 +469,8 @@ void ScanWidget::downButtonClicked()
   ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
 
   activeObject++;
-  CMethodParameterList* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
-  CMethodParameterList* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
+  CCopasiParameterGroup* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
+  CCopasiParameterGroup* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject));
@@ -479,12 +480,12 @@ void ScanWidget::downButtonClicked()
   //upper one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(pObjectDown->getName().c_str());
+  activeTitle->setText(pObjectDown->CCopasiParameter::getName().c_str());
 
   //bottom one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(pObjectUp->getName().c_str());
+  activeTitle->setText(pObjectUp->CCopasiParameter::getName().c_str());
 
   //Update ListBox
   QString tmp = ObjectListBox->text (activeObject);
@@ -676,7 +677,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
   nSelectedObjects++;
   //  if (pObject->isContainer())
-  CMethodParameterList* pNewMethodItem = new CMethodParameterList(pObject->getCN().c_str(), (CCopasiContainer*)pObject, pObject->getObjectType());
+  CCopasiParameterGroup* pNewMethodItem = new CCopasiParameterGroup(pObject->getCN().c_str(), (CCopasiContainer*)pObject, pObject->getObjectType());
   scanTask->getProblem()->addScanItem(*pNewMethodItem);
   parameterTable->setScanObject(scanTask->getProblem()->getScanItem(nSelectedObjects - 1));
   parameterTable->setCopasiObject(pObject);

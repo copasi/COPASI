@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:39 $
+   $Date: 2003/10/30 17:57:35 $
    End CVS Header */
 
 /*******************************************************************
@@ -22,7 +22,6 @@
 #include "copasi.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "ModesWidget.h"
-#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 
 /**

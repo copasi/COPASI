@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/18 16:39:46 $
+   $Author: shoops $ 
+   $Date: 2003/10/30 17:58:51 $
    End CVS Header */
 
 #include <sstream>
@@ -17,11 +17,8 @@
 
 COptFunction::COptFunction(const std::string & name, const CCopasiContainer * pParent)
     : CCopasiContainer(name, pParent, "OptFunction"),
-    mKey(CKeyFactory::add("OptFunction", this)),
-    mpMethod(new COptMethod),
-    mpProblem(new COptProblem)
+    mKey(CKeyFactory::add("OptFunction", this))
 {
-  mpMethod->setProblem(mpProblem);
   mParaList.clear();
   mMinFunctionList.clear();
   mMaxFunctionList.clear();
@@ -34,8 +31,6 @@ COptFunction::COptFunction(const std::string & name, const CCopasiContainer * pP
 COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer, const CCopasiContainer * pParent)
     : CCopasiContainer(src, pParent),
     mKey(CKeyFactory::add("OptFunction", this)),
-    mpMethod(src.mpMethod),
-    mpProblem(src.mpProblem),
     mParaList(src.mParaList),
     mMinFunctionList(src.mMinFunctionList),
     mMaxFunctionList(src.mMaxFunctionList),
@@ -43,9 +38,7 @@ COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer,
     mMaxList(src.mMaxList),
     mMinOperList(src.mMinOperList),
     mMaxOperList(src.mMaxOperList)
-{
-  mpMethod->setProblem(mpProblem);
-}
+{}
 
 COptFunction::~COptFunction()
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:32:26 $
+   $Date: 2003/10/30 17:59:00 $
    End CVS Header */
 
 /**
@@ -37,23 +37,22 @@
  *
  */
 CScanProblem::CScanProblem():
+    CCopasiProblem(CCopasiTask::scan),
     mpModel(NULL),
     mProcessTrajectory(false),
     mpTrajectory(NULL),
     mProcessSteadyState(false),
     mpSteadyState(NULL),
-    mScanItemList()
-{
-  CRandom *pRandomGenerator = CRandom::createGenerator();
-  Cr250* pCr250Generator = (Cr250*)(CRandom::createGenerator(CRandom::r250));
-  CONSTRUCTOR_TRACE;
-}
+    mScanItemList("ScanItemList", this)
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  Copy constructor.
  *  @param "const CTrajectoryProblem &" src
  */
-CScanProblem::CScanProblem(const CScanProblem & src):
+CScanProblem::CScanProblem(const CScanProblem & src,
+                           const CCopasiContainer * pParent):
+    CCopasiProblem(src, pParent),
     mpModel(src.mpModel),
     mProcessTrajectory(src.mProcessTrajectory),
     mpTrajectory(src.mpTrajectory),
@@ -74,20 +73,19 @@ CScanProblem::~CScanProblem()
 unsigned C_INT32 CScanProblem::getListSize() const
   {return mScanItemList.size();}
 
-/**
- *  Add a Scan Item to the vector ScanItem
- * @param const CMethodParameterList & Item
- */
-void CScanProblem::addScanItem(const CMethodParameterList & Item)
-{mScanItemList.add(Item);}
+void CScanProblem::addScanItem(const CCopasiParameterGroup & Item)
+{
+  mScanItemList.addParameter(Item.CCopasiParameter::getName(),
+                             CCopasiParameter::GROUP,
+                             * (CCopasiParameterGroup::parameterGroup *)
+                             Item.CCopasiParameter::getValue());
+}
 
 /*
   Remove a parameter from the list
  */
 void CScanProblem::removeScanItem(const std::string & name)
-{
-  mScanItemList.remove(name);
-}
+{mScanItemList.removeParameter(name);}
 
 /*
   Swap
@@ -101,8 +99,8 @@ void CScanProblem::swapScanItem(unsigned C_INT32 indexFrom, unsigned C_INT32 ind
  *  Get a Scan Item from the vector ScanItem
  * @param "C_INT32" itemNumber
  */
-CMethodParameterList * CScanProblem::getScanItem(C_INT32 itemNumber)
-{return mScanItemList[itemNumber];}
+CCopasiParameterGroup * CScanProblem::getScanItem(C_INT32 itemNumber)
+{return (CCopasiParameterGroup *) mScanItemList.getParameter(itemNumber);}
 
 /**
  *  Add a parameter to a scan item
@@ -113,7 +111,10 @@ CMethodParameterList * CScanProblem::getScanItem(C_INT32 itemNumber)
 void CScanProblem::addScanItemParameter(const C_INT32 itemNumber,
                                         const std::string & name,
                                         const double & value)
-{mScanItemList[itemNumber]->add(name, value);}
+{
+  ((CCopasiParameterGroup *)mScanItemList.getParameter(itemNumber))
+  ->addParameter(name, CCopasiParameter::DOUBLE, value);
+}
 
 /**
  *  Get a parameter from a scan item
@@ -122,7 +123,12 @@ void CScanProblem::addScanItemParameter(const C_INT32 itemNumber,
  */
 const double & CScanProblem::getScanItemParameter(const C_INT32 itemNumber,
     const std::string & name)
-{return mScanItemList[itemNumber]->getValue(name);}
+{
+  return
+  * (C_FLOAT64 *)
+  ((CCopasiParameterGroup *)mScanItemList.getParameter(itemNumber))
+  ->getValue(name);
+}
 
 /**
  *  Set the value of a parameter in a scan item
@@ -133,7 +139,10 @@ const double & CScanProblem::getScanItemParameter(const C_INT32 itemNumber,
 void CScanProblem::setScanItemParameter(const C_INT32 itemNumber,
                                         const std::string & name,
                                         const double & value)
-{mScanItemList[itemNumber]->setValue(name, value);}
+{
+  ((CCopasiParameterGroup *)mScanItemList.getParameter(itemNumber))
+  ->setValue(name, value);
+}
 
 /**
  * Load a trajectory problem
@@ -184,33 +193,6 @@ void CScanProblem::load(CReadConfig & configBuffer,
   mpTrajectory->load(configBuffer);
 }
 
-/**
- * Save a trajectory problem
- * @param "CWriteConfig &" configBuffer
- */
-
-void CScanProblem::save(CWriteConfig & configBuffer) const
-  {
-    /*
-        string Tmp = mpModel->getTitle();
-        configBuffer.setVariable("TrajectoryProblemModel", "string", &Tmp);
-     
-        configBuffer.setVariable("TrajectoryProblemStepNumber",
-                                 "C_INT32", &mStepNumber);
-        configBuffer.setVariable("TrajectoryProblemStepSize",
-                                 "C_FLOAT64", &mStepSize);
-        configBuffer.setVariable("TrajectoryProblemSetLast",
-                                 "bool", &mStepNumberSetLast);
-        configBuffer.setVariable("TrajectoryProblemStartTime",
-                                 "C_FLOAT64", &mStartTime);
-        configBuffer.setVariable("TrajectoryProblemEndTime",
-                                 "C_FLOAT64", &mEndTime);
-        mpInitialState->save(configBuffer);
-    */
-    mpSteadyState->save(configBuffer);
-    mpTrajectory->save(configBuffer);
-  }
-
 bool CScanProblem::processTrajectory() const {return mProcessTrajectory;}
 
 bool CScanProblem::setProcessTrajectory(const bool & processTrajectory)
@@ -227,11 +209,15 @@ bool CScanProblem::setProcessSteadyState(const bool & processSteadyState)
   return true;
 }
 
-void CScanProblem::setModel(CModel * pModel) {mpModel = pModel;}
+bool CScanProblem::setModel(CModel * pModel)
+{
+  mpModel = pModel;
+  return true;
+}
 
 CModel * CScanProblem::getModel() const {return mpModel;}
 
-void CScanProblem::calculate()
+bool CScanProblem::calculate()
 {
   if ((mpSteadyState != NULL) && mProcessSteadyState)
     {
@@ -249,6 +235,8 @@ void CScanProblem::calculate()
       setStartTime(getTrajectoryTask()->getProblem()->getStartTime());
       mpTrajectory->process();
     }
+
+  return true;
 }
 
 void CScanProblem::setSteadyStateTask(CSteadyStateTask* pSteadyStateTask)

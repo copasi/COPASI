@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:32:25 $
+   $Date: 2003/10/30 17:58:58 $
    End CVS Header */
 
 /**
@@ -36,10 +36,13 @@
 
 CScanMethod * CScanMethod::createMethod() {return new CScanMethod;}
 
-CScanMethod::CScanMethod()
+CScanMethod::CScanMethod():
+    CCopasiMethod(CCopasiTask::scan, CCopasiMethod::unset)
 {}
 
-CScanMethod::CScanMethod(const CScanMethod & C_UNUSED(src))
+CScanMethod::CScanMethod(const CScanMethod & src,
+                         const CCopasiContainer * pParent):
+    CCopasiMethod(src, pParent)
 {}
 
 CScanMethod::~CScanMethod(){}

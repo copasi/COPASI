@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:25 $
+   $Date: 2003/10/30 17:58:54 $
    End CVS Header */
 
 /**
@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "utilities/CVector.h"
-#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiVector.h"
 
 class CSteadyStateTask;
@@ -42,7 +42,7 @@ class COptProblem
     //data member
   private:
 
-    CCopasiVectorNS < CMethodParameterList > mOptItemList;
+    CCopasiParameterGroup mOptItemList;
 
     /**
      * The best result of the problem

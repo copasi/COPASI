@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:23 $
+   $Date: 2003/10/30 17:58:52 $
    End CVS Header */
 
 /**
@@ -27,43 +27,53 @@ const std::string COptMethod::TypeName[] =
     "SimulatedAnnealing"
   };
 
-COptMethod * COptMethod::createMethod(COptMethod::Type type)
+COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 {
-  COptMethod * Method = NULL;
-  switch (type)
+  COptMethod * pMethod = NULL;
+  switch (subType)
     {
     case RandomSearch:
-      Method = new CRandomSearch();
+      pMethod = new CRandomSearch();
       break;
 
     case RandomSearchMaster:
-      Method = new CRandomSearchMaster();
+      pMethod = new CRandomSearchMaster();
       break;
 
     case SimulatedAnnealing:
-      Method = new COptMethodSA();
+      pMethod = new COptMethodSA();
       break;
 
     default:
       fatalError();
     }
-  return Method;
+
+  return pMethod;
 }
 
 // Default constructor
-COptMethod::COptMethod(const bool & bounds):
-    CMethodParameterList(),
-    mTypeEnum(COptMethod::RandomSearch),
+COptMethod::COptMethod():
+    CCopasiMethod(CCopasiTask::optimization, CCopasiMethod::unset),
     mOptProblem(NULL),
     //    mParameters(NULL),
     //    mParameterMin(NULL),
     //    mParameterMax(NULL),
-    mBounds(bounds)
+    mBounds(false)
 {CONSTRUCTOR_TRACE;}
 
-COptMethod::COptMethod(const COptMethod & src):
-    CMethodParameterList(src),
-    mTypeEnum(src.mTypeEnum),
+COptMethod::COptMethod(CCopasiMethod::SubType subType,
+                       const CCopasiContainer * pParent):
+    CCopasiMethod(CCopasiTask::optimization, subType, pParent),
+    mOptProblem(NULL),
+    //    mParameters(NULL),
+    //    mParameterMin(NULL),
+    //    mParameterMax(NULL),
+    mBounds(false)
+{CONSTRUCTOR_TRACE;}
+
+COptMethod::COptMethod(const COptMethod & src,
+                       const CCopasiContainer * pParent):
+    CCopasiMethod(src, pParent),
     mOptProblem(src.mOptProblem),
     //    mParameters(src.mParameters),
     //    mParameterMin(src.mParameterMin),
@@ -92,9 +102,4 @@ bool COptMethod::isBounded(void)
 C_INT32 COptMethod::optimise(void)
 {
   return 0;
-}
-
-int COptMethod::GetMethodType(void)
-{
-  return mTypeEnum;
 }

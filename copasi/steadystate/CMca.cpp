@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/Attic/CMca.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:14 $
+   $Date: 2003/10/30 17:59:02 $
    End CVS Header */
 
 /*****************************************************************************
@@ -23,7 +23,6 @@
 #include "utilities/utility.h"
 #include "model/CModel.h"
 #include "CMca.h"
-#include "utilities/CMethodParameter.h"
 
 #ifndef DBL_MAX
 #define DBL_MAX 1.7976931348623158e+308

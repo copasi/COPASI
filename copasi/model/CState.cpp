@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:53 $
+   $Date: 2003/10/30 17:58:51 $
    End CVS Header */
 
 // CSate.cpp
@@ -19,7 +19,6 @@
 #include "utilities/CGlobals.h"
 #include "utilities/CVector.h"
 #include "utilities/utility.h"
-#include "utilities/CMethodParameter.h"
 
 /*************************/
 /* Code for class CState */

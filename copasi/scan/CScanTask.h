@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:32:28 $
+   $Date: 2003/10/30 17:59:01 $
    End CVS Header */
 
 /**
@@ -114,13 +114,6 @@ class CScanTask : public CCopasiContainer
      * @param configbuffer reference to a CReadConfig object.
      */
     void load(CReadConfig & configBuffer);
-
-    /**
-     * Saves the parameters of the solver to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     * @param configbuffer reference to a CWriteConfig object.
-     */
-    void save(CWriteConfig & configBuffer);
 
     /**
      * Set wheter the execution of the task is requested.

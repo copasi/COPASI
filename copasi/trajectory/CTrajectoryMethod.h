@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:05 $
+   $Date: 2003/10/30 17:59:12 $
    End CVS Header */
 
 /**
@@ -20,32 +20,14 @@
 
 #include <string>
 
-#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiMethod.h"
 
 class CTrajectoryProblem;
 class CState;
 
-class CTrajectoryMethod : public CMethodParameterList
+class CTrajectoryMethod : public CCopasiMethod
   {
-  public:
-    static const std::string TypeName[];
-
-    // Attributes
-  public:
-    enum Type
-    {
-      unspecified = -1,
-      deterministic = 0,
-      stochastic,
-      hybrid
-    };
-
   protected:
-    /**
-     *  The type of the method
-     */
-    CTrajectoryMethod::Type mTypeEnum;
-
     /**
      *  A pointer to the current state. This is set from outside
      *  with the setState() method and never changed anywhere else.
@@ -60,16 +42,20 @@ class CTrajectoryMethod : public CMethodParameterList
     CTrajectoryProblem * mpProblem;
 
     // Operations
+  private:
+    /**
+     * Default constructor.
+     */
+    CTrajectoryMethod();
+
   protected:
     /**
      * Default constructor.
-     * @param "const string &" name (Default = "NoName")
+     * @param const CCopasiMethod::SubType & subType 
      * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & type (default: "Trajectory Method Parameter List")
      */
-    CTrajectoryMethod(const std::string & name = "NoName",
-                      const CCopasiContainer * pParent = NULL,
-                      const std::string & type = "Trajectory Method Parameter List");
+    CTrajectoryMethod(const CCopasiMethod::SubType & subType,
+                      const CCopasiContainer * pParent = NULL);
 
   public:
 
@@ -80,8 +66,8 @@ class CTrajectoryMethod : public CMethodParameterList
      * appropriate simulation method.
      */
     static CTrajectoryMethod *
-    createTrajectoryMethod(CTrajectoryMethod::Type type
-                           = CTrajectoryMethod::deterministic,
+    createTrajectoryMethod(CCopasiMethod::SubType subType
+                           = CCopasiMethod::deterministic,
                            CTrajectoryProblem * pProblem = NULL);
 
     /**
@@ -96,12 +82,6 @@ class CTrajectoryMethod : public CMethodParameterList
      *  Destructor.
      */
     ~CTrajectoryMethod();
-
-    /**
-     * Retrieve the type in numeric form
-     * @return const CTrajectoryMethod::Type & type 
-     */
-    const CTrajectoryMethod::Type & getTypeEnum() const;
 
     /**
      *  Set a pointer to the current state.

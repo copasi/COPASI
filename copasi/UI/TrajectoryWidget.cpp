@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:42 $
+   $Date: 2003/10/30 17:57:38 $
    End CVS Header */
 
 /********************************************************
@@ -253,10 +253,10 @@ void TrajectoryWidget::CommitChange()
   trajectoryproblem->setStartTime(nStartTime->text().toDouble());
   trajectoryproblem->setEndTime(nEndTime->text().toDouble());
 
-  if (trajectorymethod->getTypeEnum() != (CTrajectoryMethod::Type)ComboBox1->currentItem())
+  if (trajectorymethod->getSubType() != (CTrajectoryMethod::Type)ComboBox1->currentItem())
     {
       CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
-      trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CTrajectoryMethod::Type)ComboBox1->currentItem(), trajectoryproblem);
+      trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CCopasiMethod::SubType)ComboBox1->currentItem(), trajectoryproblem);
       if (trajectorymethod != NULL)
         {
           trajectorymethod -> setProblem(trajectoryproblem);
@@ -279,24 +279,23 @@ void TrajectoryWidget::CommitChange()
       pItem = parameterTable->item(i, 0);
       substrate = pItem->text();
       strname = (trajectorymethod->getName(i)).c_str();
-      switch (trajectorymethod->getType((const char *)strname.utf8()))
+      switch (trajectorymethod->CCopasiParameterGroup::getType(i))
         {
-        case CParameter::DOUBLE:
-          trajectorymethod->setValue((const char *)strname.utf8(),
-                                     substrate.toDouble());
+        case CCopasiParameter::DOUBLE:
+          trajectorymethod->setValue(i, (C_FLOAT64) substrate.toDouble());
           break;
-        case CParameter::INT:
-          trajectorymethod->setValue((const char *)strname.utf8(),
-                                     (C_INT32)substrate.toInt());
+        case CCopasiParameter::INT:
+          trajectorymethod->setValue(i, (C_INT32) substrate.toInt());
           break;
-        case CParameter::UINT:
-          trajectorymethod->setValue((const char *)strname.utf8(),
-                                     (unsigned C_INT32)substrate.toUInt());
+        case CCopasiParameter::UINT:
+          trajectorymethod->setValue(i, (unsigned C_INT32) substrate.toUInt());
           break;
-        case CParameter::BOOL:;
-          trajectorymethod->setValue((const char *)strname.utf8(),
-                                     bool(substrate.toUShort()));
+        case CCopasiParameter::BOOL:;
+          trajectorymethod->setValue(i, (bool) substrate.toUShort());
           break;
+
+        default:
+          fatalError();
         }
     }
 
@@ -392,10 +391,36 @@ void TrajectoryWidget::loadTrajectoryTask()
       rowHeader->setLabel(i, tr(strname));
     }
 
+  CCopasiParameter::Type Type;
   for (i = 0; i < trajectorymethod->size(); i++)
     {
       strname = (trajectorymethod->getName(i)).c_str();
-      substrate = QString::number(trajectorymethod->getValue((const char *)strname.utf8()));
+      Type = trajectorymethod->CCopasiParameterGroup::getType(i);
+      switch (Type)
+        {
+        case CCopasiParameter::DOUBLE:
+          substrate =
+            QString::number(* (C_FLOAT64 *) trajectorymethod->getValue(i));
+          break;
+
+        case CCopasiParameter::INT:
+          substrate =
+            QString::number(* (C_INT32 *) trajectorymethod->getValue(i));
+          break;
+
+        case CCopasiParameter::UINT:
+          substrate = QString::number(* (unsigned C_INT32 *) trajectorymethod
+                                      ->getValue(i));
+          break;
+
+        case CCopasiParameter::BOOL:
+          substrate =
+            QString::number(* (bool *) trajectorymethod ->getValue(i));
+          break;
+
+        default:
+          fatalError();
+        }
       pItem = new QTableItem (parameterTable, QTableItem::Always, substrate);
       parameterTable->setItem(i, 0, pItem);
     }
@@ -405,7 +430,7 @@ void TrajectoryWidget::loadTrajectoryTask()
   for (i = 0; (strlen(trajectorymethod->TypeName[i].c_str()) > 0) && (QString::compare(trajectorymethod->TypeName[i].c_str(), "hybrid") != 0); i++)
     ComboBox1->insertItem(trUtf8(trajectorymethod->TypeName[i].c_str()));
 
-  ComboBox1->setCurrentItem (trajectorymethod->getTypeEnum());
+  ComboBox1->setCurrentItem (trajectorymethod->getSubType());
 
   if (!bExecutable->isChecked())
     bRunTask->setEnabled(false);
@@ -422,7 +447,7 @@ void TrajectoryWidget::UpdateMethod()
   CTrajectoryMethod* trajectorymethod = tt->getMethod();
 
   CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
-  trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CTrajectoryMethod::Type)ComboBox1->currentItem(), trajectoryproblem);
+  trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CCopasiMethod::SubType)ComboBox1->currentItem(), trajectoryproblem);
   if (trajectorymethod != NULL)
     {
       trajectorymethod -> setProblem(trajectoryproblem);
@@ -448,8 +473,8 @@ void TrajectoryWidget::ExportToFile()
   if (/*mTrajectoryTask &&*/ textFile)
     {
       textFile += ".txt";
-      CWriteConfig outbuf((const char *)textFile.utf8());
-      ((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey))->save(outbuf);
+      CWriteConfig outbuf(textFile.latin1());
+      //      ((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey))->save(outbuf);
     }
 }
 

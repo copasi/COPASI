@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:02 $
+   $Date: 2003/10/30 17:59:13 $
    End CVS Header */
 
 /**
@@ -22,14 +22,13 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
-#include "utilities/CMethodParameter.h"
 
 /**
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CTrajectoryProblem::CTrajectoryProblem():
-    mpModel(NULL),
+CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
+    CCopasiProblem(CCopasiTask::timeCourse, pParent),
     mStepNumber(1),
     mStepSize(1),
     mStepNumberSetLast(true),
@@ -39,15 +38,16 @@ CTrajectoryProblem::CTrajectoryProblem():
     mEndState()
 {
   CONSTRUCTOR_TRACE;
-  mInitialState.setModel(mpModel);
-  mEndState.setModel(mpModel);
+  //  mInitialState.setModel(mpModel);
+  //  mEndState.setModel(mpModel);
 
-  if (mpModel)
-    mInitialState = mpModel->getInitialState();
+  //  if (mpModel)
+  //    mInitialState = mpModel->getInitialState();
 
-  mStartTime = mInitialState.getTime();
+  //  mStartTime = mInitialState.getTime();
 }
 
+#ifdef XXXX
 CTrajectoryProblem::CTrajectoryProblem(CModel * pmodel,
                                        C_FLOAT64 starttime, C_FLOAT64 endtime,
                                        unsigned C_INT32 stepnumber):
@@ -68,13 +68,15 @@ CTrajectoryProblem::CTrajectoryProblem(CModel * pmodel,
   mInitialState.setTime(mStartTime);
   sync();
 }
+#endif // XXXX
 
 /**
  *  Copy constructor.
  *  @param "const CTrajectoryProblem &" src
  */
-CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src):
-    mpModel(src.mpModel),
+CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
+                                       const CCopasiContainer * pParent):
+    CCopasiProblem(src, pParent),
     mStepNumber(src.mStepNumber),
     mStepSize(src.mStepSize),
     mStepNumberSetLast(src.mStepNumberSetLast),
@@ -94,18 +96,14 @@ CTrajectoryProblem::~CTrajectoryProblem()
  * Set the model the problem is dealing with.
  * @param "CModel *" pModel
  */
-void CTrajectoryProblem::setModel(CModel * pModel)
+bool CTrajectoryProblem::setModel(CModel * pModel)
 {
   mpModel = pModel;
   mInitialState.setModel(mpModel);
   mEndState.setModel(mpModel);
-}
 
-/**
- * Retrieve the model the problem is dealing with.
- * @return "CModel *" pModel
- */
-CModel * CTrajectoryProblem::getModel() const {return mpModel;}
+  return true;
+}
 
 /**
  * Set the number of time steps the trajectory method should integrate.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:15 $
+   $Date: 2003/10/30 17:59:03 $
    End CVS Header */
 
 /**
@@ -19,13 +19,12 @@
 
 #include "utilities/CMatrix.h"
 #include "utilities/CVector.h"
-
 #include "model/CState.h"
 
 class CNewtonMethod : private CSteadyStateMethod
   {
     friend CSteadyStateMethod *
-    CSteadyStateMethod::createSteadyStateMethod(CSteadyStateMethod::Type type);
+    CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType);
 
     // Attributes
   private:
@@ -61,13 +60,9 @@ class CNewtonMethod : private CSteadyStateMethod
   private:
     /**
      * Default constructor.
-     * @param "const string &" name (Default = "Enhanced Newton Method")
      * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & type (default: "Steady State Method Parameter List")
      */
-    CNewtonMethod(const std::string & name = "Enhanced Newton Method",
-                  const CCopasiContainer * pParent = NULL,
-                  const std::string & type = "Steady State Method Parameter List");
+    CNewtonMethod(const CCopasiContainer * pParent = NULL);
 
   public:
     /**

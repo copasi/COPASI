@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:50 $
+   $Date: 2003/10/30 17:58:48 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -18,7 +18,6 @@
 #include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "utilities/utility.h"
-#include "utilities/CMethodParameter.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "CCompartment.h"

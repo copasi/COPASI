@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:41 $
+   $Date: 2003/10/30 17:57:38 $
    End CVS Header */
 
 /********************************************************
@@ -223,24 +223,23 @@ void SteadyStateWidget::CommitButtonClicked()
       pItem = parameterTable->item(i, 0);
       substrate = pItem->text();
       strname = (steadystatemethod->getName(i)).c_str();
-      switch (steadystatemethod->getType((const char *)strname.utf8()))
+      switch (steadystatemethod->CCopasiParameterGroup::getType(i))
         {
-        case CParameter::DOUBLE:
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      substrate.toDouble());
+        case CCopasiParameter::DOUBLE:
+          steadystatemethod->setValue(i, (C_FLOAT64) substrate.toDouble());
           break;
-        case CParameter::INT:
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      (C_INT32) substrate.toInt());
+        case CCopasiParameter::INT:
+          steadystatemethod->setValue(i, (C_INT32) substrate.toInt());
           break;
-        case CParameter::UINT:
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      (unsigned C_INT32) substrate.toUInt());
+        case CCopasiParameter::UINT:
+          steadystatemethod->setValue(i, (unsigned C_INT32) substrate.toUInt());
           break;
-        case CParameter::BOOL:;
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      (bool) substrate.toUShort());
+        case CCopasiParameter::BOOL:;
+          steadystatemethod->setValue(i, (bool) substrate.toUShort());
           break;
+
+        default:
+          fatalError();
         }
     }
   loadSteadyStateTask();
@@ -362,10 +361,36 @@ void SteadyStateWidget::loadSteadyStateTask()
       rowHeader->setLabel(i, tr(strname));
     }
 
+  CCopasiParameter::Type Type;
   for (i = 0; i < steadystatemethod->size(); i++)
     {
       strname = (steadystatemethod->getName(i)).c_str();
-      substrate = QString::number(steadystatemethod->getValue((const char *)strname.utf8()));
+      Type = steadystatemethod->CCopasiParameterGroup::getType(i);
+      switch (Type)
+        {
+        case CCopasiParameter::DOUBLE:
+          substrate =
+            QString::number(* (C_FLOAT64 *) steadystatemethod->getValue(i));
+          break;
+
+        case CCopasiParameter::INT:
+          substrate =
+            QString::number(* (C_INT32 *) steadystatemethod->getValue(i));
+          break;
+
+        case CCopasiParameter::UINT:
+          substrate = QString::number(* (unsigned C_INT32 *) steadystatemethod
+                                      ->getValue(i));
+          break;
+
+        case CCopasiParameter::BOOL:
+          substrate =
+            QString::number(* (bool *) steadystatemethod->getValue(i));
+          break;
+
+        default:
+          fatalError();
+        }
       pItem = new QTableItem (parameterTable, QTableItem::Always, substrate);
       parameterTable->setItem(i, 0, pItem);
     }
@@ -387,9 +412,9 @@ void SteadyStateWidget::ExportToFileButtonClicked()
   if (textFile)
     {
       textFile += ".txt";
-      CWriteConfig outbuf((const char *)textFile.utf8());
+      CWriteConfig outbuf(textFile.latin1());
       CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-      mSteadyStateTask->save(outbuf);
+      //      mSteadyStateTask->save(outbuf);
     }
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanItemWidget.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:13:00 $
+   $Date: 2003/10/30 17:57:37 $
    End CVS Header */
 
 /****************************************************************************
@@ -33,7 +33,7 @@ class ScanCheckBox;
 class ScanLineEdit;
 class ScanRadioButton;
 class QScrollView;
-class CMethodParameterList;
+class CCopasiParameterGroup;
 class CCopasiObject;
 
 class ScanItemWidget : public QWidget
@@ -49,7 +49,7 @@ class ScanItemWidget : public QWidget
     QString strSTDLabel;
 
     QScrollView* mParent;
-    CMethodParameterList* pParameter;
+    CCopasiParameterGroup* pParameter;
     CCopasiObject* pObject;
     void ResetData();
     void InitializeParameterList();
@@ -93,12 +93,12 @@ class ScanItemWidget : public QWidget
       QWidget::mousePressEvent(e);
     }
 
-    void setScanObject(CMethodParameterList* pNewParameter)
+    void setScanObject(CCopasiParameterGroup* pNewParameter)
     {
       pParameter = pNewParameter;
     }
 
-    CMethodParameterList* getScanObject()
+    CCopasiParameterGroup* getScanObject()
     {
       return pParameter;
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:32:26 $
+   $Date: 2003/10/30 17:59:01 $
    End CVS Header */
 
 /**
@@ -85,11 +85,6 @@ void CScanTask::initializeReporting(std::ostream & out)
 void CScanTask::load(CReadConfig & configBuffer)
 {
   mpProblem->load(configBuffer);
-}
-
-void CScanTask::save(CWriteConfig & configBuffer)
-{
-  mpProblem->save(configBuffer);
 }
 
 void CScanTask::setRequested(const bool & requested)

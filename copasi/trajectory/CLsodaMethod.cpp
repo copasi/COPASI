@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:01 $
+   $Date: 2003/10/30 17:59:08 $
    End CVS Header */
 
 /*
@@ -138,21 +138,19 @@ static const C_FLOAT64 sm1[13] =
   meth
  */
 
-CLsodaMethod::CLsodaMethod(const std::string & name,
-                           const CCopasiContainer * pParent,
-                           const std::string & type):
-    CTrajectoryMethod(name, pParent, type),
+CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
+    CTrajectoryMethod(CCopasiMethod::deterministic, pParent),
     mpStateX(NULL),
     mY(NULL)
 {
-  setName("LSODA");
-  mTypeEnum = CTrajectoryMethod::deterministic;
-  setType(CTrajectoryMethod::TypeName[mTypeEnum]);
-
-  add("LSODA.RelativeTolerance", 1.0e-012);
-  add("LSODA.AbsoluteTolerance", 1.0e-006);
-  add("LSODA.AdamsMaxOrder", 12);
-  add("LSODA.BDFMaxOrder", 5);
+  addParameter("LSODA.RelativeTolerance",
+               CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0e-012);
+  addParameter("LSODA.AbsoluteTolerance",
+               CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0e-006);
+  addParameter("LSODA.AdamsMaxOrder",
+               CCopasiParameter::UINT, (unsigned C_INT32) 12);
+  addParameter("LSODA.BDFMaxOrder",
+               CCopasiParameter::UINT, (unsigned C_INT32) 5);
 
 #ifdef COPASI_DEBUG // We only want lsoda to output information while debuging.
   prfl = 1;
@@ -206,25 +204,25 @@ CLsodaMethod::~CLsodaMethod()
 
 const double CLsodaMethod::step(const double & deltaT)
 {
-  lsoda(mDim,                            // number of variables
-        mY - 1,                          // the array of current concentrations
+  lsoda(mDim,                             // number of variables
+        mY - 1,                           // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                          // the current time
-        mTime + deltaT,                  // the final time
-        1,                               // scalar error control
-        (&mRtol) - 1,                    // relative tolerance array
+        &mTime,                           // the current time
+        mTime + deltaT,                   // the final time
+        1,                                // scalar error control
+        (&mRtol) - 1,                     // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,                    // absolute tolerance array
+        (&mAtol) - 1,                     // absolute tolerance array
         // fortran style vector !!!
-        1,                               // output by overshoot & interpolatation
-        &mLsodaStatus,                   // the state control variable
-        1,                               // optional inputs are being used
-        2,                               // jacobian calculated internally
-        0, 0, 0,                         // options left at default values
-        10000,                           // max iterations for each lsoda call
-        0,                               // another value left at the default
-        mAdams,                          // max order for Adams method
-        mBDF,                            // max order for BDF method
+        1,                                // output by overshoot & interpolatation
+        &mLsodaStatus,                    // the state control variable
+        1,                                // optional inputs are being used
+        2,                                // jacobian calculated internally
+        0, 0, 0,                          // options left at default values
+        10000,                            // max iterations for each lsoda call
+        0,                                // another value left at the default
+        mAdams,                           // max order for Adams method
+        mBDF,                             // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if ((mLsodaStatus != 1) && (mLsodaStatus != 2))
@@ -248,10 +246,10 @@ const double CLsodaMethod::step(const double & deltaT,
   mLsodaStatus = 1;
 
   /* Configure lsoda */
-  mRtol = getValue("LSODA.RelativeTolerance");
-  mAtol = getValue("LSODA.AbsoluteTolerance");
-  mAdams = (C_INT32) getValue("LSODA.AdamsMaxOrder");
-  mBDF = (C_INT32) getValue("LSODA.BDFMaxOrder");
+  mRtol = * (C_FLOAT64 *) getValue("LSODA.RelativeTolerance");
+  mAtol = * (C_FLOAT64 *) getValue("LSODA.AbsoluteTolerance");
+  mAdams = * (C_INT32 *) getValue("LSODA.AdamsMaxOrder");
+  mBDF = * (C_INT32 *) getValue("LSODA.BDFMaxOrder");
 
   /* Release previous state and make the initialState the current */
   pdelete(mpStateX);
@@ -2628,7 +2626,7 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::eval(C_FLOAT64 t,
-                        C_FLOAT64 * y,             /* Fortran style vector */
+                        C_FLOAT64 * y,              /* Fortran style vector */
                         C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);

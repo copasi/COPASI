@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:37 $
+   $Date: 2003/10/30 17:59:27 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -37,8 +37,8 @@ MESSAGES Messages[] =
     {MCMassAction + 1, "CMassAction (1): The function Mass Action reversibility "
      "must be either TRUE or FALSE."},
 
-    // CMethodParameterList
-    {MCMethodParameterList + 1, "CMethodParameterList (1): No parameter list "
+    // CCopasiMethod
+    {MCCopasiMethod + 1, "CCopasiMethod (1): No parameter list "
      "found for name '%s' and type '%s'."},
 
     // CReaction

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.130 $
+   $Revision: 1.131 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/10/24 21:03:36 $
+   $Author: shoops $ 
+   $Date: 2003/10/30 17:58:49 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -40,8 +40,7 @@
 #include "utilities/CGlobals.h"
 #include "utilities/CVector.h"
 #include "utilities/CluX.h"
-#include "utilities/utility.h"
-#include "utilities/CMethodParameter.h" 
+#include "utilities/utility.h" 
 // #include "CopasiUI/CReactionInterface.h"
 
 #include "clapackwrap.h"
@@ -1361,9 +1360,9 @@ void CModel::initObjects()
   //  add(&mStepsX);
   //  add(&mStepsInd);
   addVectorReference("Fluxes", mFluxes);
-  addVectorReference("Reduced Model Fluxes", mFluxesX);
+  //  addVectorReference("Reduced Model Fluxes", mFluxesX);
   addVectorReference("Scaled Fluxes", mScaledFluxes);
-  addVectorReference("Reduced Model Scaled Fluxes", mScaledFluxesX);
+  //  addVectorReference("Reduced Model Scaled Fluxes", mScaledFluxesX);
   // addObjectReference("Transition Time", mTransitionTime);
   addMatrixReference("Stoichiometry", mStoi);
   addMatrixReference("Reduced Model Stoichiometry", mRedStoi);

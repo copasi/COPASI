@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:13:07 $
+   $Date: 2003/10/30 17:57:39 $
    End CVS Header */
 
 #ifndef PARAMETERTABLE_H
@@ -12,7 +12,6 @@
 #include <qtable.h>
 #include <qcombobox.h>
 #include "model/CReaction.h"
-#include "utilities/CMethodParameter.h"
 
 class CReactionInterface;
 

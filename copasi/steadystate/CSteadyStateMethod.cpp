@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:14 $
+   $Date: 2003/10/30 17:59:03 $
    End CVS Header */
 
 /**
@@ -27,37 +27,31 @@
 #include "model/CState.h"
 #include "model/CCompartment.h"
 
-const std::string CSteadyStateMethod::TypeName[] =
-  {
-    "unspecified",
-    "Newton",
-  };
-
 CSteadyStateMethod *
-CSteadyStateMethod::createSteadyStateMethod(CSteadyStateMethod::Type type)
+CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType)
 {
-  CSteadyStateMethod * Method = NULL;
-  switch (type)
+  CSteadyStateMethod * pMethod = NULL;
+
+  switch (subType)
     {
-    case unspecified:
+    case unset:
     case Newton:
-      Method = new CNewtonMethod();
+      pMethod = new CNewtonMethod();
       break;
 
     default:
       fatalError();
     }
-  return Method;
+
+  return pMethod;
 }
 
 /**
  *  Default constructor.
  */
-CSteadyStateMethod::CSteadyStateMethod(const std::string & name,
-                                       const CCopasiContainer * pParent,
-                                       const std::string & type) :
-    CMethodParameterList(name, pParent, type),
-    mTypeEnum(CSteadyStateMethod::unspecified),
+CSteadyStateMethod::CSteadyStateMethod(CCopasiMethod::SubType subType,
+                                       const CCopasiContainer * pParent):
+    CCopasiMethod(CCopasiTask::steadyState, subType, pParent),
     mpProblem(NULL)
 {CONSTRUCTOR_TRACE;}
 
@@ -67,8 +61,7 @@ CSteadyStateMethod::CSteadyStateMethod(const std::string & name,
  */
 CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
                                        const CCopasiContainer * pParent):
-    CMethodParameterList(src, pParent),
-    mTypeEnum(src.mTypeEnum),
+    CCopasiMethod(src, pParent),
     mpProblem(src.mpProblem)
 {CONSTRUCTOR_TRACE;}
 
@@ -77,9 +70,6 @@ CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
  */
 CSteadyStateMethod::~CSteadyStateMethod()
 {DESTRUCTOR_TRACE;}
-
-const CSteadyStateMethod::Type & CSteadyStateMethod::getTypeEnum() const
-  {return mTypeEnum;}
 
 /**
  *  Set a pointer to the problem.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:31:48 $
+   $Date: 2003/10/30 17:58:58 $
    End CVS Header */
 
 /**
@@ -42,10 +42,11 @@ class CCopasiObject
       Matrix = 0x4,
       NameVector = 0x8,
       Reference = 0x10,
-      ValueInt = 0x20,
-      ValueDbl = 0x40,
-      NonUniqueName = 0x80,
-      StaticString = 0x100
+      ValueBool = 0x20,
+      ValueInt = 0x40,
+      ValueDbl = 0x80,
+      NonUniqueName = 0x100,
+      StaticString = 0x200
     };
 
   private:

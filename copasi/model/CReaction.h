@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:59 $
+   $Date: 2003/10/30 17:58:50 $
    End CVS Header */
 
 /**
@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "utilities/CCopasiVector.h"
-#include "utilities/CMethodParameter.h"
+#include "utilities/CCopasiParameterGroup.h"
 #include "function/CFunction.h"
 #include "function/CCallParameters.h"
 #include "function/CFunctionParameters.h"
@@ -109,7 +109,7 @@ class CReaction : public CCopasiContainer
     /**
      *  This is a list of parameter objects.
      */
-    CCopasiVectorNS <CParameter> mParameters;
+    CCopasiParameterGroup mParameters;
 
     // Operations
 
@@ -369,12 +369,12 @@ class CReaction : public CCopasiContainer
     /**
      *  Gets the list of kinetic parameter objects of the reaction/function
      */
-    const CCopasiVectorN <CParameter> & getParameters() const;
+    const CCopasiParameterGroup & getParameters() const;
 
     /**
      *  Gets the list of kinetic parameter objects of the reaction/function
      */
-    CCopasiVectorN <CParameter> & getParameters();
+    CCopasiParameterGroup & getParameters();
 
     /**
      *  Gets the description of what parameters the function expects.

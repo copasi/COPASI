@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:02 $
+   $Date: 2003/10/30 17:59:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -71,15 +71,15 @@ CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
   return method;
 }
 
-CStochMethod::CStochMethod():
-    CTrajectoryMethod()
+CStochMethod::CStochMethod(const CCopasiContainer * pParent):
+    CTrajectoryMethod(CCopasiMethod::stochastic, pParent)
 {
-  setName("STOCH");
-  mTypeEnum = CTrajectoryMethod::stochastic;
-  setType(CTrajectoryMethod::TypeName[mTypeEnum]);
-
-  add("STOCH.MaxSteps", 1000000); // Max number of doSingleStep() per step()
-  add("STOCH.Subtype", 1); // 0: default; 1: direct method; 2: next reaction method
+  // Max number of doSingleStep() per step()
+  addParameter("STOCH.MaxSteps",
+               CCopasiParameter::INT, (C_INT32) 1000000);
+  // 0: default; 1: direct method; 2: next reaction method
+  addParameter("STOCH.Subtype",
+               CCopasiParameter::UINT, (unsigned C_INT32) 1);
 
   mRandomGenerator = CRandom::createGenerator(CRandom::r250);
 }
@@ -135,7 +135,7 @@ const double CStochMethod::step(const double & deltaT,
                                 const CState * initialState)
 {
   /* get configuration data */
-  mMaxSteps = (C_INT32) getValue("STOCH.MaxSteps");
+  mMaxSteps = * (C_INT32 *) getValue("STOCH.MaxSteps");
 
   *mpCurrentState = *initialState;
 

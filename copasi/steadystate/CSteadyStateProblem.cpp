@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:14 $
+   $Date: 2003/10/30 17:59:05 $
    End CVS Header */
 
 /**
@@ -22,7 +22,6 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
-#include "utilities/CMethodParameter.h"
 
 /**
  *  Default constructor.

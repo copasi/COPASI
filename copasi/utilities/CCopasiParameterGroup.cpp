@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/23 14:22:32 $
+   $Date: 2003/10/30 17:59:19 $
    End CVS Header */
 
 /**
@@ -38,6 +38,8 @@ CCopasiParameterGroup::~CCopasiParameterGroup()
 
 void CCopasiParameterGroup::createGroup(const parameterGroup * pGroup)
 {
+  deleteGroup();
+
   mpValue = new parameterGroup;
   mSize = sizeof(parameterGroup);
 
@@ -61,6 +63,8 @@ void CCopasiParameterGroup::createGroup(const parameterGroup * pGroup)
 
 void CCopasiParameterGroup::deleteGroup()
 {
+  if (!mpValue) return;
+
   index_iterator it = ((parameterGroup *) mpValue)->begin();
   index_iterator end = ((parameterGroup *) mpValue)->end();
 
@@ -221,29 +225,37 @@ CCopasiParameter::Type CCopasiParameterGroup::getType(const unsigned C_INT32 & i
     return CCopasiParameter::INVALID;
   }
 
-template <class CType>
-bool CCopasiParameterGroup::setValue(const std::string & name,
-                                     const CType & value)
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
+std::string CCopasiParameterGroup::getKey(const std::string & name) const
+  {
+    CCopasiParameter * pParameter =
+      const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
 
-  if (pParameter) return pParameter->setValue(value);
+    if (pParameter) return pParameter->getKey();
 
-  return false;
-}
+    return "Not Found";
+  }
 
-template <class CType>
-bool CCopasiParameterGroup::setValue(const unsigned C_INT32 & index,
-                                     const CType & value)
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
+std::string CCopasiParameterGroup::getKey(const unsigned C_INT32 & index) const
+  {
+    CCopasiParameter * pParameter =
+      const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
 
-  if (pParameter) return pParameter->setValue(value);
+    if (pParameter) return pParameter->getKey();
 
-  return false;
-}
+    return "Not Found";
+  }
+
+const std::string & CCopasiParameterGroup::getName(const unsigned C_INT32 & index) const
+  {
+    static std::string Invalid("Invalid Index");
+
+    CCopasiParameter * pParameter =
+      const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
+
+    if (pParameter) return pParameter->getName();
+
+    return Invalid;
+  }
 
 bool CCopasiParameterGroup::swap(const unsigned C_INT32 & iFrom,
                                  const unsigned C_INT32 & iTo)
@@ -270,6 +282,8 @@ bool CCopasiParameterGroup::swap(index_iterator & from,
 
 unsigned C_INT32 CCopasiParameterGroup::size() const
 {return ((parameterGroup *) mpValue)->size();}
+
+void CCopasiParameterGroup::clear() {createGroup();}
 
 unsigned C_INT32 CCopasiParameterGroup::getIndex(const std::string & name) const
   {

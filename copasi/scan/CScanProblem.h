@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:32:27 $
+   $Date: 2003/10/30 17:59:00 $
    End CVS Header */
 
 /**
@@ -18,7 +18,8 @@
 #define COPASI_CScanProblem
 
 #include <string>
-#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiMethod.h"
+#include "utilities/CCopasiProblem.h"
 #include "utilities/CCopasiVector.h"
 
 class CModel;
@@ -29,8 +30,17 @@ class CSteadyStateTask;
 class CRandom;
 class Cr250;
 
-class CScanProblem
+class CScanProblem : public CCopasiProblem
   {
+  public:
+    enum Type
+    {
+      SD_UNIFORM = 0,
+      SD_GAUSS,
+      SD_BOLTZ,
+      SD_REGULAR
+    };
+
     // Attributes
   private:
     CRandom * pRandomGenerator;
@@ -64,7 +74,7 @@ class CScanProblem
     /**
      *
      */
-    CCopasiVectorNS < CMethodParameterList > mScanItemList;
+    CCopasiParameterGroup mScanItemList;
 
     /*
      * 
@@ -107,7 +117,8 @@ class CScanProblem
      *  Copy constructor.
      *  @param "const CScanProblem &" src
      */
-    CScanProblem(const CScanProblem & src);
+    CScanProblem(const CScanProblem & src,
+                 const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.
@@ -118,7 +129,7 @@ class CScanProblem
      * process the trajectory and steadystate task
     */
 
-    void calculate();
+    virtual bool calculate();
 
     /**
      * Initialize the pointer for steadystate task 
@@ -139,7 +150,7 @@ class CScanProblem
     /**
      *  Add a Scan Item to the vector ScanItem
      */
-    void addScanItem(const CMethodParameterList & Item);
+    void addScanItem(const CCopasiParameterGroup & Item);
 
     /**
     * Delete a parameter in the list
@@ -154,7 +165,7 @@ class CScanProblem
     /**
      *  Get a Scan Item from the vector ScanItem
      */
-    CMethodParameterList * getScanItem(C_INT32 itemNumber);
+    CCopasiParameterGroup * getScanItem(C_INT32 itemNumber);
 
     /**
      *  Add a parameter to a scan item
@@ -188,7 +199,7 @@ class CScanProblem
      * Set the moddel the problem is dealing with.
      * @param "CModel *" pModel
      */
-    void setModel(CModel * pModel);
+    virtual bool setModel(CModel * pModel);
 
     /**
      * Retrieve the model the problem is dealing with.
@@ -231,14 +242,8 @@ class CScanProblem
               CReadConfig::Mode mode = CReadConfig::NEXT);
 
     /**
-     * Save a trajectory problem
-     * @param "CWriteConfig &" configBuffer
+     * Intialized all parameters insidethe Scan Parameter Matrix,
      */
-    void save(CWriteConfig & configBuffer) const;
-
-    /*
-     Intialized all parameters insidethe Scan Parameter Matrix,
-    */
     void InitScan(void);
 
     // this function counts the number of iterations to execute

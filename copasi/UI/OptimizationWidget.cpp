@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/18 16:59:49 $
+   $Author: shoops $ 
+   $Date: 2003/10/30 17:57:36 $
    End CVS Header */
 
 /********************************************************
@@ -36,7 +36,6 @@ Contact: Please contact lixu1@vt.edu.
 #include "listviews.h"
 #include "ObjectBrowser.h"
 #include "utilities/CGlobals.h"
-#include "utilities/CMethodParameter.h"
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"

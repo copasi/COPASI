@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:23 $
+   $Date: 2003/10/30 17:58:54 $
    End CVS Header */
 
 /**
@@ -29,10 +29,11 @@
 
 //  Default constructor
 COptProblem::COptProblem():
+    mOptItemList("OptProblem"),
+    mBestValue(DBL_MAX),
     mParameter(),
     mParameterMin(),
     mParameterMax(),
-    mBestValue(DBL_MAX),
     mBestParameter(),
     mpSteadyState(NULL),
     mpTrajectory(NULL)
@@ -40,10 +41,11 @@ COptProblem::COptProblem():
 
 // copy constructor
 COptProblem::COptProblem(const COptProblem& src):
+    mOptItemList(src.mOptItemList),
+    mBestValue(src.mBestValue),
     mParameter(src.mParameter),
     mParameterMin(src.mParameterMin),
     mParameterMax(src.mParameterMax),
-    mBestValue(src.mBestValue),
     mBestParameter(src.mBestParameter),
     mpSteadyState(src.mpSteadyState),
     mpTrajectory(src.mpTrajectory)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:03 $
+   $Date: 2003/10/30 17:59:14 $
    End CVS Header */
 
 /**
@@ -61,13 +61,13 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
 {}
 
 CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
-                                 CTrajectoryMethod::Type type,
+                                 CTrajectoryMethod::SubType subType,
                                  const CCopasiContainer * pParent):
     CCopasiContainer("TrajectoryTask", pParent, "TrajectoryTask", CCopasiObject::Container),
     mReport(new CReport),
     mKey(CKeyFactory::add("TrajectoryTask", this)),
     mpProblem(pProblem),
-    mpMethod(CTrajectoryMethod::createTrajectoryMethod(type, pProblem)),
+    mpMethod(CTrajectoryMethod::createTrajectoryMethod(subType, pProblem)),
     mpState(NULL),
     mpOutInit(NULL),
     mpOutPoint(NULL),
@@ -77,18 +77,24 @@ CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
 CTrajectoryTask::CTrajectoryTask(CModel * pModel,
                                  C_FLOAT64 starttime, C_FLOAT64 endtime,
                                  unsigned C_INT32 stepnumber,
-                                 CTrajectoryMethod::Type type,
+                                 CTrajectoryMethod::SubType subType,
                                  const CCopasiContainer * pParent):
     CCopasiContainer("TrajectoryTask", pParent, "TrajectoryTask", CCopasiObject::Container),
     mReport(new CReport),
     mKey(CKeyFactory::add("TrajectoryTask", this)),
-    mpProblem(new CTrajectoryProblem(pModel, starttime, endtime, stepnumber)),
-    mpMethod(CTrajectoryMethod::createTrajectoryMethod(type, mpProblem)),
+    mpProblem(new CTrajectoryProblem(this)),
+    //    mpProblem(new CTrajectoryProblem(pModel, starttime, endtime, stepnumber)),
+    mpMethod(CTrajectoryMethod::createTrajectoryMethod(subType, mpProblem)),
     mpState(NULL),
     mpOutInit(NULL),
     mpOutPoint(NULL),
     mpOutEnd(NULL)
-{}
+{
+  mpProblem->setModel(pModel);
+  mpProblem->setStartTime(starttime);
+  mpProblem->setEndTime(endtime);
+  mpProblem->setStepNumber(stepnumber);
+}
 
 CTrajectoryTask::~CTrajectoryTask()
 {
@@ -141,31 +147,6 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
     {
       mpMethod = CTrajectoryMethod::createTrajectoryMethod();
     }
-  else
-    {
-      C_INT32 Method;
-      configBuffer.getVariable("TrajectoryMethod", "C_INT32", &Method,
-                               CReadConfig::SEARCH);
-
-      mpMethod = CTrajectoryMethod::
-                 createTrajectoryMethod((CTrajectoryMethod::Type) Method);
-      // load the right parameters if several are in the file
-      mpMethod->loadSpecific(configBuffer,
-                             mpMethod->getName(),
-                             mpMethod->getType());
-    }
-}
-
-void CTrajectoryTask::save(CWriteConfig & configBuffer)
-{
-  configBuffer.setVariable("RunTrajectory", "bool", &mRequested);
-
-  mpProblem->save(configBuffer);
-
-  const C_INT32 Method = mpMethod->getTypeEnum();
-  configBuffer.setVariable("TrajectoryMethod", "C_INT32", &Method);
-
-  mpMethod->save(configBuffer);
 }
 
 CTrajectoryProblem * CTrajectoryTask::getProblem()

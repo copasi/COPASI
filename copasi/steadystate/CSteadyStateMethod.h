@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:15 $
+   $Date: 2003/10/30 17:59:04 $
    End CVS Header */
 
 /**
@@ -20,25 +20,16 @@
 
 #include <string>
 
-#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiMethod.h"
 #include "utilities/CMatrix.h"
 
 class CSteadyStateProblem;
 class CState;
 class CEigen;
 
-class CSteadyStateMethod : public CMethodParameterList
+class CSteadyStateMethod : public CCopasiMethod
   {
   public:
-    static const std::string TypeName[];
-
-    // Attributes
-    enum Type
-    {
-      unspecified = 0,
-      Newton
-    };
-
     enum ReturnCode
     {
       notFound = 0,
@@ -47,11 +38,6 @@ class CSteadyStateMethod : public CMethodParameterList
     };
 
   protected:
-    /**
-     *  The type of the method
-     */
-    CSteadyStateMethod::Type mTypeEnum;
-
     /**
      *  A pointer to the trajectory problem.
      */
@@ -74,16 +60,20 @@ class CSteadyStateMethod : public CMethodParameterList
     CEigen * mpEigenValues;
 
     // Operations
-  protected:
+  private:
     /**
      * Default constructor.
-     * @param "const string &" name (Default = "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & type (default: "Steady State Method Parameter List")
      */
-    CSteadyStateMethod(const std::string & name = "NoName",
-                       const CCopasiContainer * pParent = NULL,
-                       const std::string & type = "Steady State Method Parameter List");
+    CSteadyStateMethod();
+
+  protected:
+    /**
+     * Specific constructor.
+     * @param CCopasiMethod::SubType subType 
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CSteadyStateMethod(CCopasiMethod::SubType subType,
+                       const CCopasiContainer * pParent = NULL);
 
   public:
     /**
@@ -91,8 +81,8 @@ class CSteadyStateMethod : public CMethodParameterList
      * Note: the returned object has to be released after use with delete
      */
     static CSteadyStateMethod *
-    createSteadyStateMethod(CSteadyStateMethod::Type type
-                            = CSteadyStateMethod::Newton);
+    createSteadyStateMethod(CCopasiMethod::SubType subType
+                            = CCopasiMethod::Newton);
 
     /**
      * Copy constructor.
@@ -106,12 +96,6 @@ class CSteadyStateMethod : public CMethodParameterList
      *  Destructor.
      */
     ~CSteadyStateMethod();
-
-    /**
-     * Retrieve the type in numeric form
-     * @return const CSteadyStateMethod::Type & type 
-     */
-    const CSteadyStateMethod::Type & getTypeEnum() const;
 
     /**
      *  Set a pointer to the problem.

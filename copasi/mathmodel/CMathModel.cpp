@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:28 $
+   $Date: 2003/10/30 17:58:48 $
    End CVS Header */
 
 /**
@@ -22,7 +22,6 @@
 #include "CMathEq.h"
 
 #include "model/CModel.h"
-#include "utilities/CMethodParameter.h"
 
 CMathModel::CMathModel():
     mpModel(NULL),
@@ -253,7 +252,7 @@ bool CMathModel::buildConstantsList()
   unsigned C_INT32 j, jmax;
 
   CMathConstantParameter * p;
-  const CCopasiVector< CParameter > * ParamList;
+  const CCopasiParameterGroup * ParamList;
   for (i = 0; i < imax; i++)
     {
       ParamList = &List[i]->getParameters();
@@ -261,7 +260,8 @@ bool CMathModel::buildConstantsList()
 
       for (j = 0; j < jmax; j++)
         {
-          p = new CMathConstantParameter(*(*ParamList)[j], List[i]->getName());
+          p = new CMathConstantParameter(* const_cast< CCopasiParameterGroup * >(ParamList)->getParameter(j),
+                                         List[i]->getName());
           mConstantsList[p->getName()] = p;
         }
     }

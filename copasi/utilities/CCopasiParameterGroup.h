@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/23 14:22:32 $
+   $Date: 2003/10/30 17:59:19 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -23,6 +23,7 @@
  */
 class CCopasiParameterGroup: public CCopasiParameter
   {
+  public:
     typedef std::vector< CCopasiParameter *> parameterGroup;
     typedef parameterGroup::iterator index_iterator;
     typedef CCopasiContainer::objectMap::iterator name_iterator;
@@ -66,6 +67,10 @@ class CCopasiParameterGroup: public CCopasiParameter
 
     bool addParameter(const std::string & name,
                       const CCopasiParameter::Type type);
+    template < class CType >
+          bool addParameter(const std::string & name,
+                            const CCopasiParameter::Type type,
+                            const CType & value);
     bool addGroup(const std::string & name);
 
     bool removeParameter(const std::string & name);
@@ -83,6 +88,11 @@ class CCopasiParameterGroup: public CCopasiParameter
     CCopasiParameter::Type getType(const std::string & name) const;
     CCopasiParameter::Type getType(const unsigned C_INT32 & index) const;
 
+    std::string getKey(const std::string & name) const;
+    std::string getKey(const unsigned C_INT32 & index) const;
+
+    const std::string & getName(const unsigned C_INT32 & index) const;
+
     template <class CType>
     bool setValue(const std::string & name,
                   const CType & value);
@@ -98,6 +108,8 @@ class CCopasiParameterGroup: public CCopasiParameter
 
     unsigned C_INT32 size() const;
 
+    void clear();
+
     unsigned C_INT32 getIndex(const std::string & name) const;
 
   private:
@@ -105,5 +117,65 @@ class CCopasiParameterGroup: public CCopasiParameter
     void deleteGroup();
     void addParameter(CCopasiParameter * pParameter);
   };
+
+template < class CType >
+      bool CCopasiParameterGroup::addParameter(const std::string & name,
+          const CCopasiParameter::Type type,
+          const CType & value)
+  {
+    CCopasiParameter * pParameter;
+
+    if (type == GROUP)
+      {
+        CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
+        if (!pParameter->isValidValue(value))
+          {
+            delete pParameter;
+            return false;
+          }
+
+        tmp->mpValue = const_cast< void * >((const void *) & value);
+        pParameter = new CCopasiParameterGroup(*tmp);
+      }
+    else
+      {
+        pParameter = new CCopasiParameter(name, type);
+        if (!pParameter->isValidValue(value))
+          {
+            delete pParameter;
+            return false;
+          }
+
+        pParameter->setValue(value);
+      }
+
+    addParameter(pParameter);
+
+    return true;
+  }
+
+template <class CType>
+bool CCopasiParameterGroup::setValue(const std::string & name,
+                                     const CType & value)
+{
+  CCopasiParameter * pParameter =
+    const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
+
+  if (pParameter) return pParameter->setValue(value);
+
+  return false;
+}
+
+template <class CType>
+bool CCopasiParameterGroup::setValue(const unsigned C_INT32 & index,
+                                     const CType & value)
+{
+  CCopasiParameter * pParameter =
+    const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
+
+  if (pParameter) return pParameter->setValue(value);
+
+  return false;
+}
 
 #endif // COPASI_CCopasiParameterGroup

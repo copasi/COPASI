@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:29 $
+   $Date: 2003/10/30 17:58:48 $
    End CVS Header */
 
 /**
@@ -227,7 +227,7 @@ class CMathConstantParameter : public CMathConstant
     /**
      *
      */
-    CMathConstantParameter(const CParameter & parameter,
+    CMathConstantParameter(const CCopasiParameter & parameter,
                            const std::string & reaction);
 
     /**

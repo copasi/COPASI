@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanItemWidget.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:40 $
+   $Date: 2003/10/30 17:57:37 $
    End CVS Header */
 
 /********************************************************
@@ -28,7 +28,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
-#include "utilities/CMethodParameterList.h" 
+#include "utilities/CCopasiParameterGroup.h"
+
 /*
  *  Constructs a ScanItemWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -221,7 +222,7 @@ void ScanItemWidget::RegularGridClicked()
   mMaxLabel->setText(strMaxLabel);
   mMaxLabel->setFixedWidth(labelMaxWidth);
 
-  pParameter->setValue("gridType", (C_INT32) SD_REGULAR);
+  pParameter->setValue("gridType", (C_INT32) CScanProblem::SD_REGULAR);
 }
 
 void ScanItemWidget::UniformClicked()
@@ -232,7 +233,7 @@ void ScanItemWidget::UniformClicked()
   mMaxLabel->setText(strMaxLabel);
   mMaxLabel->setFixedWidth(labelMaxWidth);
 
-  pParameter->setValue("gridType", (C_INT32) SD_UNIFORM);
+  pParameter->setValue("gridType", (C_INT32) CScanProblem::SD_UNIFORM);
 }
 
 void ScanItemWidget::GaussianClicked()
@@ -242,7 +243,7 @@ void ScanItemWidget::GaussianClicked()
 
   mMaxLabel->setText(strSTDLabel);
   mMaxLabel->setFixedWidth(labelMaxWidth);
-  pParameter->setValue("gridType", (C_INT32) SD_GAUSS);
+  pParameter->setValue("gridType", (C_INT32) CScanProblem::SD_GAUSS);
 }
 
 void ScanItemWidget::PosGaussianClicked()
@@ -252,7 +253,7 @@ void ScanItemWidget::PosGaussianClicked()
 
   mMaxLabel->setText(strSTDLabel);
   mMaxLabel->setFixedWidth(labelMaxWidth);
-  pParameter->setValue("gridType", (C_INT32) SD_BOLTZ);
+  pParameter->setValue("gridType", (C_INT32) CScanProblem::SD_BOLTZ);
 }
 
 /*
@@ -281,29 +282,30 @@ void ScanItemWidget::ResetData()
 
 void ScanItemWidget::updateObject()
 {
-  mMax->setText(QString::number(pParameter->getValue("max")));
-  mMin->setText(QString::number(pParameter->getValue("min")));
-  mDensity->setText(QString::number(pParameter->getValue("density")));
-  mLogarithmic->setChecked(pParameter->getValue("log"));
-  mIndependent->setChecked(pParameter->getValue("indp"));
-  switch (int(pParameter->getValue("gridType")))
+  mMax->setText(QString::number(* (C_FLOAT64 *) pParameter->getValue("max")));
+  mMin->setText(QString::number(* (C_FLOAT64 *) pParameter->getValue("min")));
+  mDensity->
+  setText(QString::number(* (C_FLOAT64 *) pParameter->getValue("density")));
+  mLogarithmic->setChecked(* (bool *) pParameter->getValue("log"));
+  mIndependent->setChecked(* (bool *)pParameter->getValue("indp"));
+  switch (int(* (C_INT32 *)pParameter->getValue("gridType")))
     {
-    case SD_REGULAR:
+    case CScanProblem::SD_REGULAR:
       mMinLabel->setText(tr("Min"));
       mMaxLabel->setText(tr("Max"));
       mRegularGridRadio->setChecked(1);
       break;
-    case SD_UNIFORM:
+    case CScanProblem::SD_UNIFORM:
       mMinLabel->setText(tr("Min"));
       mMaxLabel->setText(tr("Max"));
       mUniformRadio->setChecked(1);
       break;
-    case SD_GAUSS:
+    case CScanProblem::SD_GAUSS:
       mMinLabel->setText(tr("Mean"));
       mMaxLabel->setText(tr("Std.Dev."));
       mGaussianRadio->setChecked(1);
       break;
-    case SD_BOLTZ:
+    case CScanProblem::SD_BOLTZ:
       mMinLabel->setText(tr("Mean"));
       mMaxLabel->setText(tr("Std.Dev."));
       mPosGaussianRadio->setChecked(1);
@@ -314,27 +316,33 @@ void ScanItemWidget::updateObject()
 void ScanItemWidget::InitializeParameterList()
 {
   //name value type
-  pParameter->add("max", mMax->text().toDouble(), CParameter::DOUBLE);
-  pParameter->add("min", mMin->text().toDouble(), CParameter::DOUBLE);
-  pParameter->add("density", mDensity->text().toDouble(), CParameter::DOUBLE);
-  pParameter->add("log", mLogarithmic->isChecked(), CParameter::BOOL);
-  pParameter->add("indp", mIndependent->isChecked(), CParameter::BOOL);
+  pParameter->addParameter("max", CCopasiParameter::DOUBLE,
+                           (C_FLOAT64) mMax->text().toDouble());
+  pParameter->addParameter("min", CCopasiParameter::DOUBLE,
+                           (C_FLOAT64) mMin->text().toDouble());
+  pParameter->addParameter("density", CCopasiParameter::DOUBLE,
+                           (C_FLOAT64) mDensity->text().toDouble());
+  pParameter->addParameter("log", CCopasiParameter::BOOL,
+                           (bool) mLogarithmic->isChecked());
+  pParameter->addParameter("indp", CCopasiParameter::BOOL,
+                           (bool) mIndependent->isChecked());
 
   if (mRegularGridRadio->isChecked())
-    pParameter->add("gridType", SD_REGULAR, CParameter::INT);
-  else
-    if (mGaussianRadio->isChecked())
-      pParameter->add("gridType", SD_GAUSS, CParameter::INT);
-    else
-      if (mUniformRadio->isChecked())
-        pParameter->add("gridType", SD_UNIFORM, CParameter::INT);
-      else
-        if (mPosGaussianRadio->isChecked())
-          pParameter->add("gridType", SD_BOLTZ, CParameter::INT);
+    pParameter->addParameter("gridType", CCopasiParameter::INT,
+                             (C_INT32) CScanProblem::SD_REGULAR);
+  else if (mGaussianRadio->isChecked())
+    pParameter->addParameter("gridType", CCopasiParameter::INT,
+                             (C_INT32) CScanProblem::SD_GAUSS);
+  else if (mUniformRadio->isChecked())
+    pParameter->addParameter("gridType", CCopasiParameter::INT,
+                             (C_INT32) CScanProblem::SD_UNIFORM);
+  else if (mPosGaussianRadio->isChecked())
+    pParameter->addParameter("gridType", CCopasiParameter::INT,
+                             (C_INT32) CScanProblem::SD_BOLTZ);
 
-  //  pParameter->add("value", 0, CParameter::DOUBLE);
-  pParameter->add("incr", 0, CParameter::DOUBLE);
-  pParameter->add("ampl", 0, CParameter::DOUBLE);
+  //  pParameter->addParameter("value", 0, CCopasiParameter::DOUBLE);
+  pParameter->addParameter("incr", CCopasiParameter::DOUBLE, (C_FLOAT64) 0);
+  pParameter->addParameter("ampl", CCopasiParameter::DOUBLE, (C_FLOAT64) 0);
 }
 
 void ScanItemWidget::loadObject()
@@ -343,8 +351,6 @@ void ScanItemWidget::loadObject()
     return;
   ResetData();
   InitializeParameterList();
-
-  int i = 0;
 }
 
 /*

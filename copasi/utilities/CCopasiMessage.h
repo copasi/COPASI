@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:32 $
+   $Date: 2003/10/30 17:59:16 $
    End CVS Header */
 
 /**
@@ -28,7 +28,7 @@ Message;
 #define MCCopasiVector        MCopasiBase + 500
 #define MCFunctionParameters  MCopasiBase + 600
 #define MCMassAction          MCopasiBase + 700
-#define MCMethodParameterList MCopasiBase + 800
+#define MCCopasiMethod        MCopasiBase + 800
 #define MCReaction            MCopasiBase + 900
 #define MCParameter           MCopasiBase + 1000
 #define MCChemEq              MCopasiBase + 1100

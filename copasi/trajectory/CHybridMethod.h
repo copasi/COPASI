@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:03 $
+   $Date: 2003/10/30 17:59:07 $
    End CVS Header */
 
 /**
@@ -34,6 +34,7 @@
 #include "utilities/CMatrix.h"
 #include "utilities/CDependencyGraph.h"
 #include "utilities/CIndexedPriorityQueue.h"
+#include "utilities/CCopasiVector.h"
 
 /* DEFINE ********************************************************************/
 #define MAX_STEPS              1000
@@ -109,7 +110,8 @@ class Balance
 class CHybridMethod : private CTrajectoryMethod
   {
     friend CTrajectoryMethod *
-    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type, CTrajectoryProblem * pProblem);
+    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
+        CTrajectoryProblem * pProblem);
 
     /* PUBLIC METHODS **********************************************************/
 
@@ -158,14 +160,14 @@ class CHybridMethod : private CTrajectoryMethod
 
   protected:
     /**
-     *   Default constructor.
+     * Default constructor.
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CHybridMethod();
+    CHybridMethod(const CCopasiContainer * pParent = NULL);
 
     /**
-     *   Initializes the solver.
-     *
-     *   @param time the current time
+     * Initializes the solver.
+     * @param time the current time
      */
     void initMethod(C_FLOAT64 time);
 

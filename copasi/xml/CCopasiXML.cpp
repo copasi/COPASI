@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:36:25 $
+   $Date: 2003/10/30 17:59:29 $
    End CVS Header */
 
 /**
@@ -22,11 +22,9 @@
 #include "CCopasiXMLParser.h"
 
 #include "utilities/CCopasiVector.h"
-#include "utilities/CMethodParameter.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "function/CFunction.h"
-#include "utilities/CMethodParameter.h"
 #include "report/CReportDefinition.h"
 
 // class CCopasiTask;
@@ -268,7 +266,7 @@ bool CCopasiXML::saveModel()
               endSaveElement("ListOfModifiers");
             }
 
-          const CCopasiVectorN< CParameter > * pParamList;
+          const CCopasiParameterGroup * pParamList;
           pParamList = & pReaction->getParameters();
           if ((jmax = pParamList->size()) > 0)
             {
@@ -281,9 +279,9 @@ bool CCopasiXML::saveModel()
 
               for (j = 0; j < jmax; j++)
                 {
-                  Attr.setValue(0, (*pParamList)[j]->getKey());
-                  Attr.setValue(1, (*pParamList)[j]->getName());
-                  Attr.setValue(2, (*pParamList)[j]->getValue());
+                  Attr.setValue(0, pParamList->getKey(j));
+                  Attr.setValue(1, pParamList->getName(j));
+                  Attr.setValue(2, * (C_FLOAT64 *) pParamList->getValue(j));
 
                   saveElement("Constant", Attr);
                 }
@@ -320,7 +318,7 @@ bool CCopasiXML::saveModel()
 
                       if (pObject->getObjectType() == "Parameter")
                         Attr.setValue(0,
-                                      ((CParameter *)
+                                      ((CCopasiParameter *)
                                        (CCopasiContainer *) pObject)->getKey());
                       else if (pObject->getObjectType() == "Metabolite")
                         Attr.setValue(0,

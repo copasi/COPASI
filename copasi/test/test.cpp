@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:42 $
+   $Date: 2003/10/30 17:59:07 $
    End CVS Header */
 
 // Main
@@ -532,7 +532,7 @@ C_INT32 TestTrajectory(void)
   CTrajectoryTask traj;
   //traj.setModel(&model);
   traj.load(inbuf);
-  traj.save(outbuf);
+  //  traj.save(outbuf);
   //  traj.initialize();
   // traj.getODESolver()->load(inbuf);
   //  ofstream output("output.txt");
@@ -572,7 +572,7 @@ C_INT32 TestTrajectoryTask(void)
 
   CTrajectoryTask traj;
   traj.load(inbuf);
-  traj.save(outbuf);
+  //  traj.save(outbuf);
 
   // define a task without loading
   // CTrajectoryTask traj(&model, 0, 1000, 2000, CTrajectoryMethod::stochastic);
@@ -713,7 +713,7 @@ C_INT32 TestOptimization(void)
 
   CRand->optimise();
 
-  MethodType = CRand->GetMethodType();
+  MethodType = CRand->getSubType();
   char filename[20];
   if (MethodType == 0) sprintf(filename, "best_result.%s", "RS");
   if (MethodType == 1) sprintf(filename, "best_result.%s", "RSM");

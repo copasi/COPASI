@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:34:04 $
+   $Date: 2003/10/30 17:59:09 $
    End CVS Header */
 
 #ifndef COPASI_CLsodaMethod
@@ -16,7 +16,8 @@ class CStateX;
 class CLsodaMethod : private CTrajectoryMethod
   {
     friend CTrajectoryMethod *
-    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type, CTrajectoryProblem * pProblem);
+    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
+        CTrajectoryProblem * pProblem);
 
     // Attributes
   private:
@@ -163,13 +164,9 @@ class CLsodaMethod : private CTrajectoryMethod
   private:
     /**
      * Default constructor.
-     * @param "const string &" name (Default = "NoName")
      * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & type (default: "Trajectory Method Parameter List")
      */
-    CLsodaMethod(const std::string & name = "LSODA",
-                 const CCopasiContainer * pParent = NULL,
-                 const std::string & type = "Trajectory Method Parameter List");
+    CLsodaMethod(const CCopasiContainer * pParent = NULL);
 
   public:
     /**

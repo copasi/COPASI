@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathVariable.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:29 $
+   $Date: 2003/10/30 17:58:48 $
    End CVS Header */
 
 /**
@@ -21,7 +21,6 @@
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
 #include "model/CModel.h"
-#include "utilities/CMethodParameter.h"
 
 CMathVariable::CMathVariable(const CMathVariable & src):
     CMathSymbol(src),

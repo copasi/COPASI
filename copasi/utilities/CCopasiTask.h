@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/21 20:32:47 $
+   $Date: 2003/10/30 17:59:22 $
    End CVS Header */
 
 /**
@@ -19,10 +19,10 @@
 
 #include <string>
 
-#include "CCopasiContainer.h"
+#include "report/CCopasiContainer.h"
 
 class CCopasiProblem;
-class CMethodParameterList;
+class CCopasiMethod;
 class CReport;
 
 class CCopasiTask : public CCopasiContainer
@@ -33,24 +33,25 @@ class CCopasiTask : public CCopasiContainer
      */
     enum Type
     {
-      steadyState = 0,
+      unset = 0,
+      steadyState,
       timeCourse,
       scan,
       fluxMode,
       optimization,
-      parameterFitting,
+      parameterFitting
     };
 
     /**
      * String literals for the GUI to display type names of tasks known
      * to COPASI.
      */
-    const static string TypeName[];
+    static const std::string TypeName[];
 
     /**
      * XML type names of tasks known to COPASI.
      */
-    const static char* XMLType[];
+    static const char* XMLType[];
 
     // Attributes
   private:
@@ -67,7 +68,7 @@ class CCopasiTask : public CCopasiContainer
     /**
      * The method used to solve the problem.
      */
-    CMethodParameterList * mpMethod;
+    CCopasiMethod * mpMethod;
 
     /**
      * The report used to track results of the task.

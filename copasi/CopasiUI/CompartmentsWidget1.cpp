@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:37 $
+   $Date: 2003/10/30 17:57:32 $
    End CVS Header */
 
 /*******************************************************************
@@ -28,7 +28,6 @@
 #include "CompartmentsWidget1.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
-#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 

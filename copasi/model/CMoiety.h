@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:58 $
+   $Date: 2003/10/30 17:58:49 $
    End CVS Header */
 
 /**
@@ -29,6 +29,11 @@ class CMoiety : public CCopasiContainer
     // Attributes
   private:
     /**
+     * The key of the moiety
+     */
+    std::string mKey; //By G
+
+    /**
      *  Number of Particles of Moietiy.
      */
     C_FLOAT64 mNumber;
@@ -44,9 +49,6 @@ class CMoiety : public CCopasiContainer
      */
     /** @dia:route 7,3; h,45.5713,110.781,50.1417,116.762,52.1566 */
     CCopasiVector < CChemEqElement > mEquation;
-
-    //unique key for one obj
-    std::string mKey; //By G
 
     // Operations
   public:

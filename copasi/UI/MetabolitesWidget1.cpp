@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/28 22:10:30 $
+   $Date: 2003/10/30 17:57:34 $
    End CVS Header */
 
 /*******************************************************************
@@ -31,7 +31,6 @@
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
 #include "model/CModel.h"
-#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:14 $
+   $Date: 2003/10/30 17:59:05 $
    End CVS Header */
 
 /**
@@ -100,29 +100,8 @@ void CSteadyStateTask::load(CReadConfig & configBuffer)
     {
       mpMethod = CSteadyStateMethod::createSteadyStateMethod();
     }
-  else
-    {
-      C_INT32 Method;
-      configBuffer.getVariable("SteadyStateMethod", "C_INT32", &Method,
-                               CReadConfig::SEARCH);
-
-      mpMethod = CSteadyStateMethod::
-                 createSteadyStateMethod((CSteadyStateMethod::Type) Method);
-    }
 
   mpMethod->load(configBuffer);
-}
-
-void CSteadyStateTask::save(CWriteConfig & configBuffer)
-{
-  configBuffer.setVariable("RunSteadyState", "bool", &mRequested);
-
-  mpProblem->save(configBuffer);
-
-  const C_INT32 Method = mpMethod->getTypeEnum();
-  configBuffer.setVariable("SteadyStateMethod", "C_INT32", &Method);
-
-  mpMethod->save(configBuffer);
 }
 
 CSteadyStateProblem * CSteadyStateTask::getProblem()

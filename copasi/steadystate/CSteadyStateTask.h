@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:15 $
+   $Date: 2003/10/30 17:59:06 $
    End CVS Header */
 
 /**
@@ -39,12 +39,12 @@ class CSteadyStateTask : public CCopasiContainer
 
     CReport* mReport;
 
+    std::string mKey;
+
     /**
      * A pointer to the steady state problem.
      */
     CSteadyStateProblem *mpProblem;
-
-    std::string mKey;
 
     /**
      * A pointer to the method choosen for the evaluation.
@@ -119,13 +119,6 @@ class CSteadyStateTask : public CCopasiContainer
      * @param configbuffer reference to a CReadConfig object.
      */
     void load(CReadConfig & configBuffer);
-
-    /**
-     * Saves the parameters of the solver to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     * @param configbuffer reference to a CWriteConfig object.
-     */
-    void save(CWriteConfig & configBuffer);
 
     /**
      * Retrieve the steady state problem.

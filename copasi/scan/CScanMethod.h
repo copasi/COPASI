@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:32:26 $
+   $Date: 2003/10/30 17:58:59 $
    End CVS Header */
 
 /**
@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiMethod.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "report/CReport.h"
@@ -27,19 +27,29 @@ class CScanProblem;
 class CSteadyStateTask;
 class CTrajectory;
 
-class CScanMethod
+class CScanMethod : CCopasiMethod
   {
   protected:
     /**
      *  A pointer to the trajectory problem.
      */
     CScanProblem * scanProblem;
+
     // Operations
-  protected:
+  private:
     /**
-     *  Default constructor.
+     * Default constructor.
      */
     CScanMethod();
+
+  protected:
+    /**
+     * Specific constructor.
+     * @param CCopasiMethod::SubType subType 
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CScanMethod(CCopasiMethod::SubType subType,
+                const CCopasiContainer * pParent = NULL);
 
   public:
 
@@ -60,7 +70,8 @@ class CScanMethod
      *  Copy constructor.
      *  @param "const CTrajectoryMethod &" src
      */
-    CScanMethod(const CScanMethod & src);
+    CScanMethod(const CScanMethod & src,
+                const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.

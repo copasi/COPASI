@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:37 $
+   $Date: 2003/10/30 17:57:31 $
    End CVS Header */
 
 #include <string>
@@ -14,7 +14,6 @@
 #include "model/CModel.h"
 #include "model/CChemEqElement.h"
 #include "utilities/CGlobals.h"
-#include "utilities/CMethodParameter.h"
 #include "function/CFunctionDB.h"
 #include "report/CKeyFactory.h"
 #include "model/CMetabNameInterface.h"

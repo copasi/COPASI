@@ -1,16 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CGlobals.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:31 $
+   $Date: 2003/10/30 17:59:23 $
    End CVS Header */
 
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "CGlobals.h"
 #include "CCopasiException.h"
-#include "CMethodParameter.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "output/CUDFunctionDB.h"

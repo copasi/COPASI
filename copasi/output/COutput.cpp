@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutput.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:53 $
+   $Date: 2003/10/30 17:58:56 $
    End CVS Header */
 
 /*****************************************************************************
@@ -441,8 +441,8 @@ void COutput::repParams(std::ostream &fout) const
 
         for (j = 0; j < model->getReactions()[i]->getParameters().size(); j++)
           {
-            fout << " " << model->getReactions()[i]->getParameters()[j]->getName() << " =  ";
-            fout << std::setprecision(4) << model->getReactions()[i]->getParameters()[j]->getValue();
+            fout << " " << model->getReactions()[i]->getParameters().getName(j) << " =  ";
+            fout << std::setprecision(4) << model->getReactions()[i]->getParameters().getValue(j);
             fout << std::endl;
           }
       }

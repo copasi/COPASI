@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:23 $
+   $Date: 2003/10/30 17:58:55 $
    End CVS Header */
 
 /***************************************************************************
@@ -25,15 +25,17 @@ email                : rluktuke@vt.edu
 #include "randomGenerator/CRandom.h"
 
 CRandomSearch::CRandomSearch():
-    COptMethod()
+    COptMethod(CCopasiMethod::RandomSearch)
 {
-  setName("RandomSearch");
-  mTypeEnum = COptMethod::RandomSearch;
-  setType(COptMethod::TypeName[mTypeEnum]);
-
-  add("RandomSearch.Iterations", 100000, CParameter::UINT);
-  add("RandomSearch.RandomGenerator.Type", CRandom::mt19937, CParameter::INT);
-  add("RandomSearch.RandomGenerator.Seed", 0, CParameter::INT);
+  addParameter("RandomSearch.Iterations",
+               CCopasiParameter::UINT,
+               (unsigned C_INT32) 100000);
+  addParameter("RandomSearch.RandomGenerator.Type",
+               CCopasiParameter::INT,
+               (C_INT32) CRandom::mt19937);
+  addParameter("RandomSearch.RandomGenerator.Seed",
+               CCopasiParameter::INT,
+               (C_INT32) 0);
 }
 
 CRandomSearch::CRandomSearch(const CRandomSearch & src):
