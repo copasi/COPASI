@@ -47,6 +47,7 @@ class CompartmentsWidget : public QWidget
     void name(const QString &);
     void signal_emitted(const QString &);
     void leaf(CModel*);
+    void updated();
 
   protected slots:
     virtual void slotTableSelectionChanged();

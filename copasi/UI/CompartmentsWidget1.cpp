@@ -115,6 +115,9 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   connect(ListBox1, SIGNAL(selected(const QString&)), this, SLOT(slotListBoxCurrentChanged(const QString&)));
   connect(this, SIGNAL(name_changed(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(const QString &)));
   connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(const QString &)));
+
+  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
+  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 /*
@@ -209,8 +212,12 @@ void CompartmentsWidget1::slotBtnOKClicked()
   m1 = volume.toDouble();
   compartn1->setVolume((float)m1);
   compartn1->setName(std::string(LineEdit1->text()));
+  name = LineEdit1->text();
 
   emit signal_emitted(*Compartment1_Name);
+
+  emit updated();
+  emit leaf(mModel);
 }
 
 void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & m)

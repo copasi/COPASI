@@ -58,6 +58,9 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
   connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(const QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
+
+  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
+  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 void MoietyWidget::loadMoieties(CModel *model)
@@ -72,22 +75,28 @@ void MoietyWidget::loadMoieties(CModel *model)
         {
           table->removeRow(0);
         }
+      repaint_table();
+    }
+}
 
-      const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
+void MoietyWidget::repaint_table()
+{
+  if (!mModel)
+    return;
+  const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
 
-      C_INT32 noOfMoietyRows = moieties.size();
-      table->setNumRows (noOfMoietyRows);
+  C_INT32 noOfMoietyRows = moieties.size();
+  table->setNumRows (noOfMoietyRows);
 
-      //Now filling the table.
-      CMoiety *moiety;
-      C_INT32 j;
-      for (j = 0; j < noOfMoietyRows; j++)
-        {
-          moiety = moieties[j];
-          table->setText(j, 0, moiety->getName().c_str());
-          table->setText(j, 1, QString::number(moiety->getNumber()));
-          table->setText(j, 2, moiety->getDescription().c_str());
-        }
+  //Now filling the table.
+  CMoiety *moiety;
+  C_INT32 j;
+  for (j = 0; j < noOfMoietyRows; j++)
+    {
+      moiety = moieties[j];
+      table->setText(j, 0, moiety->getName().c_str());
+      table->setText(j, 1, QString::number(moiety->getNumber()));
+      table->setText(j, 2, moiety->getDescription().c_str());
     }
 }
 

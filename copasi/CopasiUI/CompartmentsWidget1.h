@@ -58,6 +58,8 @@ class CompartmentsWidget1 : public QWidget
   signals:
     void name_changed(const QString &);
     void signal_emitted(const QString &);
+    void leaf(CModel*);
+    void updated();
 
   protected:
     QGridLayout* CompartmentsWidget1Layout;

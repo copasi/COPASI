@@ -33,6 +33,7 @@ class ModesWidget : public QWidget
 
   signals:
     void signal_emitted(const QString &);
+    void name(const QString&);
 
   protected slots:
 

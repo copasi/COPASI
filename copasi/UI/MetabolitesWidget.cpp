@@ -71,6 +71,9 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+
+  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
+  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 void MetabolitesWidget::loadMetabolites(CModel *model)
@@ -87,48 +90,7 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
           table->removeRow(0);
         }
 
-      CCopasiVectorN< CMetab > metabolites(mModel->getMetabolites());
-      C_INT32 noOfMetabolitesRows = metabolites.size();
-      table->setNumRows(noOfMetabolitesRows);
-
-      //Now filling the table.
-      CMetab *metab;
-      C_INT32 j;
-      for (j = 0; j < noOfMetabolitesRows; j++)
-        {
-          metab = metabolites[j];
-          table->setText(j, 0, metab->getName().c_str());
-
-          /*double m=(*(metab->getConcentration()));
-          QString *m1;
-          //QString ms = m1.setNum(m,'g',6);
-             m1=  QString::setNum(m,'g',6);            
-          table->setText(j, 1,*m1);
-           
-          //table->setText(j, 1,ms); */
-          table->setText(j, 1, QString::number(metab->getConcentration()));
-
-          table->setText(j, 2, QString::number(metab->getNumberDbl()));
-
-          table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
-
-#ifdef XXXX
-          if (QString::number(metab->getStatus()) == "0")
-            {
-              table->setText(j, 3, "defineda");
-            }
-          else if (QString::number(metab->getStatus()) == "1")
-            {
-              table->setText(j, 3, "definedb");
-            }
-          else if (QString::number(metab->getStatus()) == "2")
-            {
-              table->setText(j, 3, "definedc");
-            }
-#endif // XXXX
-          table->setText(j, 4, metab->getCompartment()->getName().c_str());
-        }
-
+      repaint_table();
       //table->sortColumn(0,true,true);
     }
 }
@@ -136,6 +98,29 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
 void MetabolitesWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
   QString x = table->text(row, 0);
+  if (row == table->numRows() - 1)
+    {
+      const CCompartment *compartn;
+      const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+      C_INT32 noOfCompartmentsRows = compartments.size();
+      if (noOfCompartmentsRows <= 0) //You have to create a Compartment first,
+        return;
+
+      std::string name = "Metabolites";
+      int i = 0;
+      while (mModel->addMetabolite(compartments[0]->getName().c_str(), name, 1, CMetab::METAB_FIXED) == -1)
+        {
+          i++;
+          name = "Metabolites";
+          name += "_";
+          name += QString::number(i);
+        }
+      table->setNumRows(table->numRows());
+      table->setText(row, 0, name.c_str());
+      x = name.c_str();
+      emit updated();
+      emit leaf(mModel);
+    }
   emit name(x);
 }
 
@@ -245,5 +230,53 @@ void MetabolitesWidget::resizeEvent(QResizeEvent * re)
           table->EnableColWidthUpdate();
           return;
         }
+    }
+}
+
+void MetabolitesWidget::repaint_table()
+{
+  if (!mModel)
+    return;
+  //repaint()
+  CCopasiVectorN< CMetab > metabolites(mModel->getMetabolites());
+  C_INT32 noOfMetabolitesRows = metabolites.size();
+  table->setNumRows(noOfMetabolitesRows);
+
+  //Now filling the table.
+  CMetab *metab;
+  C_INT32 j;
+  for (j = 0; j < noOfMetabolitesRows; j++)
+    {
+      metab = metabolites[j];
+      table->setText(j, 0, metab->getName().c_str());
+
+      /*double m=(*(metab->getConcentration()));
+      QString *m1;
+      //QString ms = m1.setNum(m,'g',6);
+         m1=  QString::setNum(m,'g',6);            
+      table->setText(j, 1,*m1);
+       
+      //table->setText(j, 1,ms); */
+      table->setText(j, 1, QString::number(metab->getConcentration()));
+
+      table->setText(j, 2, QString::number(metab->getNumberDbl()));
+
+      table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
+
+#ifdef XXXX
+      if (QString::number(metab->getStatus()) == "0")
+        {
+          table->setText(j, 3, "defineda");
+        }
+      else if (QString::number(metab->getStatus()) == "1")
+        {
+          table->setText(j, 3, "definedb");
+        }
+      else if (QString::number(metab->getStatus()) == "2")
+        {
+          table->setText(j, 3, "definedc");
+        }
+#endif // XXXX
+      table->setText(j, 4, metab->getCompartment()->getName().c_str());
     }
 }

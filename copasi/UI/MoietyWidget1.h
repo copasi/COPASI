@@ -43,6 +43,9 @@ class MoietyWidget1 : public QWidget
 
   signals:
     void signal_emitted(const QString &);
+    void leaf(CModel*);
+    void updated();
+
   protected:
     QGridLayout* MoietyWidget1Layout;
   };

@@ -76,6 +76,7 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
 
   connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
+  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 void CompartmentsWidget::loadCompartments(CModel *model)
@@ -115,6 +116,7 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
       x = name.c_str();
+      emit updated();
       emit leaf(mModel);
     }
   emit name(x);

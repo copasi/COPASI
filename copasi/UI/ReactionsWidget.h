@@ -34,12 +34,15 @@ class ReactionsWidget : public QWidget
     void loadReactions(CModel *model);
     //void mousePressEvent(QMouseEvent * e);
     void resizeEvent(QResizeEvent * re);
+    void repaint_table();
 
   public slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
   signals:
     void name(const QString &);
+    void leaf(CModel*);
+    void updated();
 
   protected slots:
 

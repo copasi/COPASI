@@ -64,12 +64,12 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   table->setProtected(true);
 
   // signals and slots connections
-  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotModesTableChanged(QString &)));
+  //  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  //  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotModesTableChanged(QString &)));
 
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnCalculate, SIGNAL(clicked ()), this, SLOT(slotBtnCalculateClicked()));
-  connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
+  //  connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
 }
 
 void ModesWidget::loadModes(CModel *model)

@@ -165,6 +165,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
   connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
   connect(this, SIGNAL(new_reaction()), (ListViews*)parent, SLOT(slotNewReaction()));
+
+  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
+  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 ReactionsWidget1::~ReactionsWidget1()

@@ -31,11 +31,14 @@ class MetabolitesWidget : public QWidget
 
   signals:
     void name(const QString &);
+    void leaf(CModel*);
+    void updated();
 
   public:
     MetabolitesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
     void loadMetabolites(CModel *model);
     void resizeEvent(QResizeEvent * re);
+    void repaint_table();
 
   protected slots:
     virtual void slotBtnOKClicked();

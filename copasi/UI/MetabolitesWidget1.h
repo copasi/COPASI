@@ -74,6 +74,8 @@ class MetabolitesWidget1 : public QWidget
 
   signals:
     void signal_emitted(const QString &);
+    void leaf(CModel*);
+    void updated();
 
   private:
     void showMessage(QString caption, QString text);

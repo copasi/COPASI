@@ -73,14 +73,17 @@ void FunctionWidget::loadFunction()
       table->removeRow(0);
     }
 
+  //Now filling the table.
+  repaint_table();
+}
+
+void FunctionWidget::repaint_table()
+{
   CCopasiVectorNS< CFunction > & Functions =
     Copasi->pFunctionDB->loadedFunctions();
 
   C_INT32 noOfFunctionsRows = Functions.size();
   table->setNumRows(noOfFunctionsRows);
-
-  //Now filling the table.
-
   CFunction *funct;
   C_INT32 j;
   for (j = 0; j < noOfFunctionsRows; j++)
@@ -119,6 +122,24 @@ void FunctionWidget::slotTableSelectionChanged()
 void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
   QString x = table->text(row, col);
+  if (row == table->numRows() - 1)
+    {
+      std::string name = "Function";
+      CFunction* newFunction = new CFunction(name);
+      int i = 0;
+      while (Copasi->pFunctionDB->findFunction(name) != NULL)
+        {
+          i++;
+          name = "Function";
+          name += "_";
+          name += QString::number(i);
+        }
+      Copasi->pFunctionDB->add(newFunction);
+      table->setNumRows(table->numRows());
+      table->setText(row, 0, name.c_str());
+      x = name.c_str();
+      emit leaf();
+    }
   emit name(x);
 }
 

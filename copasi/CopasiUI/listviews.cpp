@@ -1018,8 +1018,8 @@ void ListViews::loadCompartments(QListViewItem* i)
   if (mModel == NULL)
     return;
 
-  //  if (!dataModel->getModelUpdate())
-  //    return; // if the model is not updated than return
+  if (!dataModel->getModelUpdate())
+    return; // if the model is not updated than return
 
   //   showMessage("Ankur","This is duplicate call");
   FolderListItem *item = (FolderListItem*)i;
@@ -1251,4 +1251,9 @@ void ListViews::loadTrajectoryTaskNodes(CTrajectoryTask* trajectorytask)
         }
       dataModel->setTrajectoryTaskUpdate(false);
     }
+}
+
+void ListViews::dataModelUpdated()
+{
+  dataModel->setModelUpdate(true);
 }

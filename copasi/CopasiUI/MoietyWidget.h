@@ -30,12 +30,15 @@ class MoietyWidget : public QWidget
     MoietyWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
     void loadMoieties(CModel *model);
     void resizeEvent(QResizeEvent * re);
+    void repaint_table();
 
   public slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
   signals:
     void name(const QString &);
+    void leaf(CModel*);
+    void updated();
 
   protected slots:
 

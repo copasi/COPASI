@@ -197,6 +197,7 @@ class ListViews : public QSplitter, public Observer
     void loadFunction();
   public slots:
     void loadModelNodes(CModel *model);
+    void dataModelUpdated();
   };
 
 #endif

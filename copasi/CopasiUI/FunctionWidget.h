@@ -34,6 +34,7 @@ class FunctionWidget : public QWidget
     void loadFunction();
     void setFocus();
     void resizeEvent(QResizeEvent * re);
+    void repaint_table();
 
   public slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
@@ -43,6 +44,7 @@ class FunctionWidget : public QWidget
 
   signals:
     void name(const QString &);
+    void leaf();
   };
 
 #endif

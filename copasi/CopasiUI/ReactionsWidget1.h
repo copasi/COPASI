@@ -80,6 +80,8 @@ class ReactionsWidget1 : public QWidget
   signals:
     void signal_emitted(const QString &);
     void new_reaction();
+    void leaf(CModel*);
+    void updated();
 
   protected:
     QGridLayout* ReactionsWidget1Layout;
