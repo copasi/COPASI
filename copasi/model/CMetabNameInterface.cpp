@@ -53,3 +53,30 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model, const std::stri
   else
     return model->getMetabolites()[index];
 }
+
+bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
+{
+  bool found = false;
+  unsigned C_INT32 i;
+  std::string metabname;
+
+  for (i = 0; i < model.mMetabolites.size(); i++)
+    {
+      metabName = model.mMetabolites[i]->getName();
+      if (metabName == name)
+        {
+          if (found)
+            return false;
+          else
+            found = true;
+        }
+    }
+
+  return found;
+}
+
+bool CMetabNameInterface::doesExist(const CModel* model, const std::string & name)
+{
+  //model->findMetab returns -1 if the metabolite is not found and a non-negative integer otherwise
+  return (model->findMetab(name) + 1);
+}
