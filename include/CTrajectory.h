@@ -37,9 +37,14 @@ private:
     C_INT32 mN;
 
     /**
-     *  The end of time point
+     *  The end time point
      */
     C_FLOAT64 mEndTime;
+
+    /**
+     *  The current time point
+     */
+    C_FLOAT64 mTime;
 
     /**
      *  Pointer to array of doubles "y", vector of mole numbers for each particle

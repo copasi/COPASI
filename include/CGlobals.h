@@ -6,6 +6,7 @@
 #include "CMetab.h"
 #include "CFunctionDB.h"
 #include "CVersion.h"
+// #include "Output/COutputList.h"
 
 class CGlobals
 {
@@ -30,6 +31,9 @@ public:
      *
      */
     C_FLOAT64 DefaultConc;
+private:
+//    COutputList OutputList;
+public:
 
 // Operations
 public:

@@ -184,7 +184,7 @@ void CTrajectory::process()
 
     //calculates number of iterations and time intervals
     C_FLOAT64 length = mEndTime/mPoints;
-    C_FLOAT64 t = 0.0;
+    mTime = 0.0;
 
     // print for the initial time point	
     // if (OutInit) OutInit.Print();
@@ -193,7 +193,7 @@ void CTrajectory::process()
     for(C_INT32 i = 0; i < mPoints; i++)
     {
         //update the CODESolver from current time to end time
-        mODESolver->step(t, t+length);
+        mODESolver->step(mTime, mTime+length);
 
         //update CModel
         mModel->setConcentrations(mY);
@@ -201,7 +201,7 @@ void CTrajectory::process()
         //print for current time point in the outputEvent
         // if (OutPoint) OutPoint.Print();
 
-        t += length;
+        mTime += length;
     }
 	
     // if (OutEnd) OutEnd.Print();
