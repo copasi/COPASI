@@ -45,8 +45,10 @@ CSteadyStateMethod::createSteadyStateMethod(CSteadyStateMethod::Type type)
 /**
  *  Default constructor.
  */
-CSteadyStateMethod::CSteadyStateMethod() :
-    CMethodParameterList(),
+CSteadyStateMethod::CSteadyStateMethod(const std::string & name,
+                                       const CCopasiContainer * pParent,
+                                       const std::string & type) :
+    CMethodParameterList(name, pParent, type),
     mTypeEnum(CSteadyStateMethod::unspecified),
     mpProblem(NULL)
 {CONSTRUCTOR_TRACE;}
@@ -55,8 +57,9 @@ CSteadyStateMethod::CSteadyStateMethod() :
  *  Copy constructor.
  *  @param "const CSteadyStateMethod &" src
  */
-CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src):
-    CMethodParameterList(src),
+CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
+                                       const CCopasiContainer * pParent):
+    CMethodParameterList(src, pParent),
     mTypeEnum(src.mTypeEnum),
     mpProblem(src.mpProblem)
 {CONSTRUCTOR_TRACE;}
@@ -68,7 +71,7 @@ CSteadyStateMethod::~CSteadyStateMethod()
 {DESTRUCTOR_TRACE;}
 
 const CSteadyStateMethod::Type & CSteadyStateMethod::getTypeEnum() const
-{return mTypeEnum;}
+  {return mTypeEnum;}
 
 /**
  *  Set a pointer to the problem.

@@ -50,16 +50,23 @@ class CNewtonMethod : private CSteadyStateMethod
     // Operations
   private:
     /**
-     *  Default constructor.
+     * Default constructor.
+     * @param "const string &" name (Default = "Enhanced Newton Method")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Steady State Method Parameter List")
      */
-    CNewtonMethod();
+    CNewtonMethod(const std::string & name = "Enhanced Newton Method",
+                  const CCopasiContainer * pParent = NULL,
+                  const std::string & type = "Steady State Method Parameter List");
 
   public:
     /**
-     *  Copy constructor.
-     *  @param "const CNewtonMethod &" src
+     * Copy constructor.
+     * @param "const CNewtonMethod &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CNewtonMethod(const CNewtonMethod & src);
+    CNewtonMethod(const CNewtonMethod & src,
+                  const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.

@@ -68,9 +68,14 @@ class CSteadyStateMethod : public CMethodParameterList
     // Operations
   protected:
     /**
-     *  Default constructor.
+     * Default constructor.
+     * @param "const string &" name (Default = "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Steady State Method Parameter List")
      */
-    CSteadyStateMethod();
+    CSteadyStateMethod(const std::string & name = "NoName",
+                       const CCopasiContainer * pParent = NULL,
+                       const std::string & type = "Steady State Method Parameter List");
 
   public:
     /**
@@ -82,10 +87,12 @@ class CSteadyStateMethod : public CMethodParameterList
                             = CSteadyStateMethod::Newton);
 
     /**
-     *  Copy constructor.
-     *  @param "const CSteadyStateMethod &" src
+     * Copy constructor.
+     * @param "const CSteadyStateMethod &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateMethod(const CSteadyStateMethod & src);
+    CSteadyStateMethod(const CSteadyStateMethod & src,
+                       const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.

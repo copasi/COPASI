@@ -16,11 +16,12 @@
 
 #include "clapackwrap.h"        //use CLAPACK
 
-CNewtonMethod::CNewtonMethod():
-    CSteadyStateMethod(),
+CNewtonMethod::CNewtonMethod(const std::string & name,
+                             const CCopasiContainer * pParent,
+                             const std::string & type):
+    CSteadyStateMethod(name, pParent, type),
     mIpiv(NULL)
 {
-  setName("Newton");
   mTypeEnum = CSteadyStateMethod::Newton;
   setType(CSteadyStateMethod::TypeName[mTypeEnum]);
 
@@ -35,6 +36,12 @@ CNewtonMethod::CNewtonMethod():
   add("Newton.LSODA.AdamsMaxOrder", 12, CMethodParameter::UINT);
   add("Newton.LSODA.BDFMaxOrder", 5, CMethodParameter::UINT);
 }
+
+CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
+                             const CCopasiContainer * pParent):
+    CSteadyStateMethod(src, pParent),
+    mIpiv(NULL)
+{}
 
 CNewtonMethod::~CNewtonMethod()
 {cleanup();}
