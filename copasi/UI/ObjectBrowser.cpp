@@ -188,7 +188,6 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
       current = *it;
       ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
       last = currentItem;
-      QString st1(current->getObjectName().c_str());
       if (current->isContainer() && !current->isVector())
         {
           currentItem->setText(0, current->getObjectName().c_str());
@@ -199,6 +198,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
       else
         {
           currentItem->setText(0, current->getObjectName().c_str());
+          QString st1(current->getObjectName().c_str());
           if (current->isVector())
             {
               currentItem->setObjectType(CONTAINERATTR);
@@ -210,7 +210,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
                   fieldChild->attachKey();
                   fieldChild->setObjectType(FIELDATTR);
                   fieldChild->setText(0, "Attribute list");
-                  //     loadField(fieldChild, (CCopasiContainer*) current);
+                  loadField(fieldChild, (CCopasiContainer*) current);
 
                   objectChild = new ObjectBrowserItem(currentItem, fieldChild, NULL, objectItemList);
                   objectChild->attachKey();
@@ -251,7 +251,7 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
   std::vector<CCopasiObject *>::iterator end = pObjectList.end();
   std::vector<CCopasiObject *>::iterator pFirstObject = it;
 
-  if (!(*it)->isContainer())
+  if (it == end)
     return;
 
   std::vector<CCopasiObject *> fieldList = ((CCopasiContainer*) * it)->getObjects();
@@ -263,14 +263,15 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
       currentField = *fieldIt;
       ObjectBrowserItem* currentItemField = new ObjectBrowserItem(parent, lastField, NULL, objectItemList);
       currentItemField->setObjectType(FIELDATTR);
+      currentItemField->setText(0, currentField->getObjectName().c_str());
       lastField = currentItemField;
       it = pFirstObject;
       while (it < end)
         {
           current = *it;
-          //      ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
-          //      last = currentItem;
-
+          ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, current, objectItemList);
+          currentItem->setText(0, current->getObjectName().c_str());
+          last = currentItem;
           it++;
         }
       fieldIt++;
