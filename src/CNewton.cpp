@@ -303,8 +303,9 @@ void CNewton::FEval(int num, double time, double *y, double *ydot )
  for(i=0;i<mModel->getIndMetab();i++)
  {
   ydot[i+1] = 0.0;
-  for( j=0; j<mModel->TotStep; j++ )
-  {
+  // for( j=0; j<mModel->TotStep; j++ )
+  for( j=0; j<mModel->getTotSteps(); j++   //from Y.H.
+   {
    if( mModel->Stoichiometry[mModel->Row[i]][mModel->Col[j]] != 0.0 )
       ydot[i+1] += mModel->Stoichiometry[mModel->Row[i]][mModel->Col[j]]
 	  * (*(mModel->Step[mModel->Col[j]].Kinetics->Function))((void *)mModel, &y[1], mModel->Col[j]);
