@@ -132,7 +132,7 @@ class CSpec2Model
     /**
      * Return the left hand side metabolite in a differential equation
      */
-    CMetab *getLHSMetab(CBaseEqn &);
+    const CMetab *getLHSMetab(const CBaseEqn &) const;
     /**
      * 
      */

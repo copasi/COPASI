@@ -348,6 +348,12 @@ class CModel : public CCopasiContainer
     void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
 
     /**
+     * Return the metabolites of this model
+     * @return CCopasiVectorN< CMetab > & metabolites
+     */
+    const CCopasiVectorN< CMetab > & getMetabolites() const;
+
+    /**
      * Retrieves the vector of independent metabolites.
      * @return vector < CMetab * > metabolites
      */
@@ -418,7 +424,7 @@ class CModel : public CCopasiContainer
      * Get the total steps
      * @return unsigned C_INT32 total steps;
      */
-    unsigned C_INT32 getTotSteps();
+    unsigned C_INT32 getTotSteps() const;
 
     /**
      *  Get the dimension of the reduced problem
@@ -453,14 +459,9 @@ class CModel : public CCopasiContainer
     /**
      * Return the compartments of this model
      * @return CCopasiVectorNS < CCompartment > *
-     */
-    CCopasiVectorNS < CCompartment > & getCompartments() const;
-
-    /**
-     * Return the metabolites of this model
-     * @return CCopasiVectorN< CMetab > & metabolites 
-     */
-    CCopasiVectorN< CMetab > & getMetabolites();
+     */ 
+    //CCopasiVectorNS < CCompartment > & getCompartments();
+    const CCopasiVectorNS < CCompartment > & getCompartments() const;
 
     /**
      *  Get the Stoichiometry Matrix of this Model
@@ -481,28 +482,28 @@ class CModel : public CCopasiContainer
     /**
      * Returns the index of the metab
      */
-    C_INT32 findMetab(const std::string & Target);
+    C_INT32 findMetab(const std::string & Target) const;
 
     /**
      * Returns the index of the step
      */
-    C_INT32 findStep(const std::string & Target);
+    C_INT32 findStep(const std::string & Target) const;
 
     /**
      * Returns the index of the compartment
      */
-    C_INT32 findCompartment(const std::string & Target);
+    C_INT32 findCompartment(const std::string & Target) const;
 
     /**
      * Returns the index of the Moiety
      */
-    C_INT32 findMoiety(std::string &Target);
+    C_INT32 findMoiety(std::string &Target) const;
 
     /**
      * Returns the mStepsX of this model
      * @return const CCopasiVectorN< CReaction > & 
      */
-    const CCopasiVectorN< CReaction > & getStepsX();
+    const CCopasiVectorN< CReaction > & getStepsX() const;
 
     /**
      * Get the LU decomposition matrix of this model

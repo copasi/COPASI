@@ -127,10 +127,11 @@ const C_FLOAT64 & CCompartment::getVolumeInv() const
     return mVolumeInv;
   }
 
-CCopasiVectorNS < CMetab > & CCompartment::metabolites()
-{
-  return mMetabolites;
-}
+CCopasiVectorNS < CMetab > & CCompartment::getMetabolites()
+{return mMetabolites;}
+
+const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
+  {return mMetabolites;}
 
 void CCompartment::setName(const std::string & name)
 {

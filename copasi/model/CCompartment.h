@@ -139,7 +139,8 @@ class CCompartment : public CCopasiContainer
     /*
      *
      */
-    CCopasiVectorNS < CMetab > & metabolites();
+    CCopasiVectorNS < CMetab > & getMetabolites();
+    const CCopasiVectorNS < CMetab > & getMetabolites() const;
 
     /*
      *  Adds a metabolite to the compartment. Only the concentration is taken from

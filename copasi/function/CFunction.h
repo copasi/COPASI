@@ -138,7 +138,7 @@ class CFunction : public CCopasiContainer
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      */
-    virtual std::string getSBMLString(const CCallParameters & callParameterNames, const std::string &r);
+    virtual std::string getSBMLString(const CCallParameters & callParameterNames, const std::string &r) const;
 
     /**
      *  Retrieves the name of the function
@@ -190,6 +190,7 @@ class CFunction : public CCopasiContainer
      *  Retrives the definition of the parameters
      */
     virtual CFunctionParameters & getParameters();
+    virtual const CFunctionParameters & getParameters() const;
 
     /**
      *  Retrives the of the usage description of 
@@ -200,8 +201,8 @@ class CFunction : public CCopasiContainer
      *  Retrieves the position of a parameter in the function call
      *  @param "const string &" name
      *  @return "const unsigned C_INT32" index
-     */
-    virtual unsigned C_INT32 getParameterPosition(const std::string & name);
+     */ 
+    //virtual unsigned C_INT32 getParameterPosition(const std::string & name) const;
 
     /**
      *  Calculates the value of the function

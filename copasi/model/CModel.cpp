@@ -823,6 +823,11 @@ const CCopasiVectorNS < CReaction > & CModel::getReactions() const
 
 const CCopasiVectorN< CReaction > & CModel::getReactionsX() {return mStepsX;}
 
+/**
+ *        Return the metabolites of this model
+ *        @return vector < CMetab * >
+ */
+const CCopasiVectorN< CMetab > & CModel::getMetabolites() const {return mMetabolites;}
 CCopasiVectorN< CMetab > & CModel::getMetabolitesInd() {return mMetabolitesInd;}
 CCopasiVectorN< CMetab > & CModel::getMetabolitesDep() {return mMetabolitesDep;}
 CCopasiVectorN< CMetab > & CModel::getMetabolitesX() {return mMetabolitesX;}
@@ -844,10 +849,10 @@ unsigned C_INT32 CModel::getDepMetab() const
  * Get the total steps
  *
  */
-unsigned C_INT32 CModel::getTotSteps()
-{
-  return mSteps.size();   //should not return mSteps
-}
+unsigned C_INT32 CModel::getTotSteps() const
+  {
+    return mSteps.size();   //should not return mSteps
+  }
 
 unsigned C_INT32 CModel::getDimension() const
   {
@@ -872,19 +877,17 @@ std::string CModel::getTitle() const
   }
 
 /**
- *        Return the comments of this model
+ *        Return the compartments of this model
  *        @return CCopasiVector < CCompartment > *
- */
-CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
+ */ 
+/*CCopasiVectorNS < CCompartment > & CModel::getCompartments()
   {
     return (const_cast< CModel * >(this))->mCompartments;
+  }*/
+const CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
+  {
+    return mCompartments;
   }
-
-/**
- *        Return the metabolites of this model
- *        @return vector < CMetab * > 
- */
-CCopasiVectorN< CMetab > & CModel::getMetabolites() {return mMetabolites;}
 
 /**
  *  Get the Reduced Stoichiometry Matrix of this Model
@@ -914,74 +917,74 @@ CCopasiVectorN < CMoiety > & CModel::getMoieties()
 /**
  *        Returns the index of the metab
  */
-C_INT32 CModel::findMetab(const std::string & Target)
-{
-  unsigned C_INT32 i, s;
-  std::string name;
+C_INT32 CModel::findMetab(const std::string & Target) const
+  {
+    unsigned C_INT32 i, s;
+    std::string name;
 
-  s = mMetabolites.size();
-  for (i = 0; i < s; i++)
-    {
-      name = mMetabolites[i]->getName();
-      if (name == Target)
-        return i;
-    }
-  return - 1;
-}
+    s = mMetabolites.size();
+    for (i = 0; i < s; i++)
+      {
+        name = mMetabolites[i]->getName();
+        if (name == Target)
+          return i;
+      }
+    return - 1;
+  }
 
 /**
  *        Returns the index of the step
  */
-C_INT32 CModel::findStep(const std::string & Target)
-{
-  unsigned C_INT32 i, s;
-  std::string name;
+C_INT32 CModel::findStep(const std::string & Target) const
+  {
+    unsigned C_INT32 i, s;
+    std::string name;
 
-  s = mSteps.size();
-  for (i = 0; i < s; i++)
-    {
-      name = mSteps[i]->getName();
-      if (name == Target)
-        return i;
-    }
-  return - 1;
-}
+    s = mSteps.size();
+    for (i = 0; i < s; i++)
+      {
+        name = mSteps[i]->getName();
+        if (name == Target)
+          return i;
+      }
+    return - 1;
+  }
 
 /**
  *        Returns the index of the compartment
  */
-C_INT32 CModel::findCompartment(const std::string & Target)
-{
-  unsigned C_INT32 i, s;
-  std::string name;
+C_INT32 CModel::findCompartment(const std::string & Target) const
+  {
+    unsigned C_INT32 i, s;
+    std::string name;
 
-  s = mCompartments.size();
-  for (i = 0; i < s; i++)
-    {
-      name = mCompartments[i]->getName();
-      if (name == Target)
-        return i;
-    }
-  return - 1;
-}
+    s = mCompartments.size();
+    for (i = 0; i < s; i++)
+      {
+        name = mCompartments[i]->getName();
+        if (name == Target)
+          return i;
+      }
+    return - 1;
+  }
 
 /**
  *        Returns the index of the Moiety
  */
-C_INT32 CModel::findMoiety(std::string &Target)
-{
-  unsigned C_INT32 i, s;
-  std::string name;
+C_INT32 CModel::findMoiety(std::string &Target) const
+  {
+    unsigned C_INT32 i, s;
+    std::string name;
 
-  s = mMoieties.size();
-  for (i = 0; i < s; i++)
-    {
-      name = mMoieties[i]->getName();
-      if (name == Target)
-        return i;
-    }
-  return - 1;
-}
+    s = mMoieties.size();
+    for (i = 0; i < s; i++)
+      {
+        name = mMoieties[i]->getName();
+        if (name == Target)
+          return i;
+      }
+    return - 1;
+  }
 
 void CModel::initializeMetabolites()
 {
@@ -992,11 +995,11 @@ void CModel::initializeMetabolites()
   mMetabolites.resize(0);
 
   for (i = 0; i < mCompartments.size(); i++)
-    for (j = 0; j < mCompartments[i]->metabolites().size(); j++)
+    for (j = 0; j < mCompartments[i]->getMetabolites().size(); j++)
       {
-        mMetabolites.add(mCompartments[i]->metabolites()[j]);
-        mCompartments[i]->metabolites()[j]->setModel(this);
-        mCompartments[i]->metabolites()[j]->checkConcentrationAndNumber();
+        mMetabolites.add(mCompartments[i]->getMetabolites()[j]);
+        mCompartments[i]->getMetabolites()[j]->setModel(this);
+        mCompartments[i]->getMetabolites()[j]->checkConcentrationAndNumber();
       }
 }
 
@@ -1004,7 +1007,7 @@ void CModel::initializeMetabolites()
  * Returns the mStepsX of this model
  * @return vector < CStep * > 
  */
-const CCopasiVectorN< CReaction > & CModel::getStepsX(){return mStepsX;}
+const CCopasiVectorN< CReaction > & CModel::getStepsX() const {return mStepsX;}
 
 /* only used in steadystate/CMca.cpp */
 /**

@@ -95,7 +95,7 @@ class CKinFunction : public CFunction
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      */
-    std::string getSBMLString(const CCallParameters & callParameterNames, const std::string &r);
+    std::string getSBMLString(const CCallParameters & callParameterNames, const std::string &r) const;
 
     /**
      *  Compile a function

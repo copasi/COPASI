@@ -987,12 +987,12 @@ void ListViews::loadCompartments(QListViewItem* i)
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
   //  myId = 10 * myId;
 
-  CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+  const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
   C_INT32 noOfCompartmentsRows = compartments.size();
 
   //Now filling the table.
-  CCompartment *compartn;
+  const CCompartment *compartn;
 
   for (C_INT32 j = 0; j < noOfCompartmentsRows; j++)
     {

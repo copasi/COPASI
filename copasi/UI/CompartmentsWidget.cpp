@@ -86,8 +86,7 @@ void CompartmentsWidget::loadCompartments(CModel *model)
           table->removeRow(0);
         }
 
-      CCopasiVectorNS < CCompartment > & compartments =
-
+      const CCopasiVectorNS < CCompartment > & compartments =
         mModel->getCompartments();
 
       C_INT32 noOfCompartmentsRows = compartments.size();
@@ -95,7 +94,7 @@ void CompartmentsWidget::loadCompartments(CModel *model)
       table->setNumRows(noOfCompartmentsRows);
 
       //Now filling the table.
-      CCompartment *compartn;
+      const CCompartment *compartn;
 
       for (C_INT32 j = 0; j < noOfCompartmentsRows; j++)
         {

@@ -85,40 +85,39 @@ void CFunctionParameters::remove(const std::string & name)
 CFunctionParameter * CFunctionParameters::operator[](unsigned C_INT32 index)
 {return mParameters[index];}
 
-/*
-const CFunctionParameter * & 
-CFunctionParameters::operator[](unsigned C_INT32 index) const
-{return mParameters[index];}
- */
+const CFunctionParameter * CFunctionParameters::operator[](unsigned C_INT32 index) const
+  {return mParameters[index];}
 
 CFunctionParameter * CFunctionParameters::operator[](const std::string &name)
-{
-  return mParameters[name];
-}
+{return mParameters[name];}
+
+const CFunctionParameter * CFunctionParameters::operator[](const std::string &name) const
+  {return mParameters[name];}
+
 unsigned C_INT32 CFunctionParameters::size() const {return mParameters.size();}
 
-CCopasiVectorNS < CUsageRange > & CFunctionParameters::getUsageRanges()
-{return mUsageRanges;}
+const CCopasiVectorNS < CUsageRange > & CFunctionParameters::getUsageRanges() const
+  {return mUsageRanges;}
 
-CFunctionParameter &
+const CFunctionParameter &
 CFunctionParameters::getParameterByUsage(const std::string & usage,
-    unsigned C_INT32 & pos)
-{
-  unsigned C_INT32 i, imax = mParameters.size();
+    unsigned C_INT32 & pos) const
+  {
+    unsigned C_INT32 i, imax = mParameters.size();
 
-  for (i = pos; i < imax; i++)
-    if (mParameters[i]->getUsage() == usage)
-      {
-        pos = i + 1;
-        return *mParameters[i];
-      }
+    for (i = pos; i < imax; i++)
+      if (mParameters[i]->getUsage() == usage)
+        {
+          pos = i + 1;
+          return *mParameters[i];
+        }
 
-  CCopasiMessage(CCopasiMessage::ERROR,
-                 MCFunctionParameters + 2,
-                 usage.c_str(), pos);
-  // This line is never reached!
-  return *mParameters[i];
-}
+    CCopasiMessage(CCopasiMessage::ERROR,
+                   MCFunctionParameters + 2,
+                   usage.c_str(), pos);
+    // This line is never reached!
+    return *mParameters[i];
+  }
 
 void CFunctionParameters::updateUsageRanges()
 {
@@ -176,6 +175,7 @@ void CFunctionParameters::updateUsageRanges()
           if (CFunctionParameter::VINT32 <= Type)
             CCopasiMessage(CCopasiMessage::ERROR, MCFunctionParameters + 1,
                            Usage.c_str(), Type);
+          // this means a vector parameter must be the first parameter with the respective usage
 
           pUsageRange->setLow(pUsageRange->getLow() + 1);
         }

@@ -142,7 +142,7 @@ int CompartmentsWidget1::isName(QString setValue)
     }
 
   name = setValue;
-  CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+  const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
   if (compartments[(std::string) setValue] != NULL)
     {
@@ -171,18 +171,18 @@ void CompartmentsWidget1::loadName(QString setValue)
       return;
     }
 
-  CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+  const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
-  CCompartment *compartn;
+  const CCompartment *compartn;
 
   compartn = compartments[(std::string)setValue];
 
   LineEdit1->setText(compartn->getName().c_str());
   Compartment1_Name = new QString(compartn->getName().c_str());
 
-  CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
+  const CCopasiVectorNS < CMetab > & Metabs = compartn->getMetabolites();
   C_INT32 noOfMetabolitesRows = Metabs.size();
-  CMetab *mtb;
+  const CMetab *mtb;
   ListBox1->setFixedSize(100, 150);
   ListBox1->setAutoScrollBar(true);
   ListBox1->clear();
@@ -210,7 +210,7 @@ void CompartmentsWidget1::slotBtnOKClicked()
   //QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
   std::string filename = ((std::string) name.latin1()) + ".gps";
   CWriteConfig *Com = new CWriteConfig(filename);
-  CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
+  const CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
   compartn1 = compartments1[(std::string)name.latin1()];
 

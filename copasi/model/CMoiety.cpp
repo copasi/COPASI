@@ -84,7 +84,8 @@ std::string CMoiety::getDescription() const
           Description += StringPrint("%3.1f * ",
                                      fabs(mEquation[i]->getMultiplicity()));
         Description += mEquation[i]->getMetaboliteName();
-        Description += "{" + mEquation[i]->getCompartmentName() + "}";
+        //Description += "{" + mEquation[i]->getCompartmentName() + "}";
+        Description += "{" + mEquation[i]->getMetabolite().getCompartment()->getName() + "}";
       }
     return Description;
   }

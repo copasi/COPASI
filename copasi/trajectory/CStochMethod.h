@@ -193,7 +193,7 @@ class CStochMethod : private CTrajectoryMethod
     /**
      * A pointer to the instance of CModel being used.
      */
-    CModel *mpModel;
+    const CModel *mpModel;
 
     /**
      * The graph of reactions and their dependent reactions. When a reaction is

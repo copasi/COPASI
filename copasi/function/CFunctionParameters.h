@@ -125,16 +125,13 @@ class CFunctionParameters : public CCopasiContainer
      *
      */
     CFunctionParameter * operator[](unsigned C_INT32 index);
-
-    /**
-     *
-     */
     const CFunctionParameter * operator[](unsigned C_INT32 index) const;
 
     /**
      *
      */
     CFunctionParameter * operator[](const std::string &name);
+    const CFunctionParameter * operator[](const std::string &name) const;
 
     /**
      *
@@ -145,7 +142,7 @@ class CFunctionParameters : public CCopasiContainer
      *  Retreives the vector of usage ranges for the parameters
      *  @return "vector < CUsageRange * > & usageRanges
      */
-    CCopasiVectorNS < CUsageRange > & getUsageRanges();
+    const CCopasiVectorNS < CUsageRange > & getUsageRanges() const;
 
     /**
      *  Retrieves the first parameter with the specified usage after pos
@@ -157,8 +154,8 @@ class CFunctionParameters : public CCopasiContainer
      *  @param "unsigned C_INT32 &" pos (first call should be with 0)
      *  @return "CFunctionParameter &" usageRange
      */
-    CFunctionParameter & getParameterByUsage(const std::string & usage,
-        unsigned C_INT32 & pos);
+    const CFunctionParameter & getParameterByUsage(const std::string & usage,
+        unsigned C_INT32 & pos) const;
 
     /**
      * insert operator

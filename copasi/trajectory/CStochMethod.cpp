@@ -184,7 +184,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
       num_ident = static_cast<C_INT32>(substrates[i]->getMultiplicity());
       //std::cout << "Num ident = " << num_ident << std::endl;
       total_substrates += num_ident;
-      number =  /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
+      number =   /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
       lower_bound = number - num_ident;
       //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
       substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
@@ -316,8 +316,8 @@ void CStochMethod::setupDependencyGraphAndBalances()
   std::vector< std::set<const CMetab*>* > Affects;
   //    std::set<CMetab> *tmpdepends = 0;
   //    std::set<CMetab> *tmpaffects = 0;
-  C_INT32 num_reactions = mpModel->getReactions().size();
-  C_INT32 i, j;
+  unsigned C_INT32 num_reactions = mpModel->getReactions().size();
+  unsigned C_INT32 i, j;
   // Do for each reaction:
 
   for (i = 0; i < num_reactions; i++)
@@ -371,9 +371,9 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
       //std::cout << std::endl << i << " : ";
 
-      for (j = 0; (unsigned C_INT32) j < bbb.size(); j++)
+      for (j = 0; /*(unsigned C_INT32)*/ j < bbb.size(); j++)
         {
-          bb.mMetabAddr = bbb[j]->getMetaboliteAddr();
+          bb.mMetabAddr = const_cast < CMetab* > (& bbb[j]->getMetabolite());
           bb.mBalance = static_cast<C_INT32>(floor(bbb[j]->getMultiplicity() + 0.5));
 
           if ((bb.mMetabAddr->getStatus()) != CMetab::METAB_FIXED)
@@ -442,10 +442,10 @@ std::set<const CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
   for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
       if (fabs(balances[i]->getMultiplicity()) >= 0.1)
-        if (balances[i]->getMetaboliteAddr()->getStatus() != CMetab::METAB_FIXED)
+        if (balances[i]->getMetabolite().getStatus() != CMetab::METAB_FIXED)
           {
-            retset->insert(balances[i]->getMetaboliteAddr());
-            std::cout << " " << balances[i]->getMetaboliteName() << ":" << (int)(balances[i]->getMetaboliteAddr());
+            retset->insert(& balances[i]->getMetabolite());
+            std::cout << " " << balances[i]->getMetaboliteName() << ":" << (int)(& balances[i]->getMetabolite());
           }
     }
 

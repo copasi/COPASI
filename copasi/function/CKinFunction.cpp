@@ -106,10 +106,10 @@ void CKinFunction::saveOld(CWriteConfig & configBuffer)
     mNodes[i]->saveOld(configBuffer);
 }
 
-std::string CKinFunction::getSBMLString(const CCallParameters & callParameterNames, const std::string &r)
-{
-  return mNodes[0]->getExplicitFunctionString(callParameterNames, r);
-}
+std::string CKinFunction::getSBMLString(const CCallParameters & callParameterNames, const std::string &r) const
+  {
+    return mNodes[0]->getExplicitFunctionString(callParameterNames, r);
+  }
 
 void CKinFunction::compile()
 {
@@ -169,7 +169,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                // this is an error
+        case N_NOP:                 // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

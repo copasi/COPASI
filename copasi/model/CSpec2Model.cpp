@@ -270,18 +270,18 @@ void CSpec2Model::processDeTerms()
   CTempReactionSet trs;
   CTempMetab *tmp_metab = 0;
 
-  std::vector<CBaseEqn>::iterator it = mDeVector.begin();
+  std::vector<CBaseEqn>::const_iterator it = mDeVector.begin();
 
   for (; it != mDeVector.end(); it++)  //every DE in File
     {
       // Create a stack of terms on the RHS of the DE.
       std::vector<CDeTerm *> termstack = createTermStack(it->getContents());
       // Get the metabolite on the LHS of the DE
-      CMetab *LHSMetab = getLHSMetab(*it);
+      const CMetab *LHSMetab = getLHSMetab(*it);
       std::cout << std::endl << "LHS-Name: " << LHSMetab->getName() << std::endl;
 
       // Step through each term of this differential equation.
-      std::vector <CDeTerm *>::iterator termit = termstack.begin();
+      std::vector <CDeTerm *>::const_iterator termit = termstack.begin();
       for (; termit != termstack.end(); termit++)  //every Term in DE
         {
           // The rate constant is used to relate this term to a particular reaction.
@@ -298,7 +298,7 @@ void CSpec2Model::processDeTerms()
               trs.addReaction(reaction);
               reaction = trs.findReaction(rate_constant);
 
-              CMetab *metabolite = 0;
+              const CMetab *metabolite = 0;
               std::string metabolite_name;
               unsigned C_INT32 pos = 0;
 
@@ -405,20 +405,20 @@ C_INT32 CSpec2Model::adjustLevel(C_INT32 level, C_INT32 type)
   return level;
 }
 
-CMetab *CSpec2Model::getLHSMetab(CBaseEqn &beqn)
-{
-  return mModel->getCompartments()[beqn.getCompartment()]->metabolites()[beqn.getMetabolite()];
-}
+const CMetab *CSpec2Model::getLHSMetab(const CBaseEqn &beqn) const
+  {
+    return mModel->getCompartments()[beqn.getCompartment()]->getMetabolites()[beqn.getMetabolite()];
+  }
 
 CMetab *CSpec2Model::findMetabolite(std::string metab_name)
 {
   for (unsigned C_INT32 i = 0; i < mModel->getCompartments().size(); i++)
     {
-      for (unsigned C_INT32 j = 0; j < mModel->getCompartments()[i]->metabolites().size(); j++)
+      for (unsigned C_INT32 j = 0; j < mModel->getCompartments()[i]->getMetabolites().size(); j++)
         {
-          if (mModel->getCompartments()[i]->metabolites()[j]->getName() == metab_name)
+          if (mModel->getCompartments()[i]->getMetabolites()[j]->getName() == metab_name)
             {
-              return mModel->getCompartments()[i]->metabolites()[j];
+              return mModel->getCompartments()[i]->getMetabolites()[j];
             }
         }
     }

@@ -90,8 +90,7 @@ void CMetab::initCompartment(const CCompartment * pCompartment)
 {
   mpCompartment = (const CCompartment *) getObjectAncestor("Compartment");
   if (!mpCompartment) mpCompartment = pCompartment;
-  if (!mpCompartment)
-    mpCompartment =  /* const_cast<CCompartment *> */(mpParentCompartment);
+  if (!mpCompartment) mpCompartment = mpParentCompartment;
 }
 
 C_INT32 CMetab::load(CReadConfig &configbuffer)

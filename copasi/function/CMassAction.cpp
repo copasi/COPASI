@@ -63,11 +63,11 @@ CMassAction::CMassAction(const TriLogic & reversible,
 }
 CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
 
-unsigned C_INT32 CMassAction::getParameterPosition(const std::string & name)
+/*unsigned C_INT32 CMassAction::getParameterPosition(const std::string & name) const
 {
   if (isReversible() != TriFalse && isReversible() != TriTrue)
     CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
-
+ 
   if (name == "k1")
     return 0;
   if (name.substr(0, strlen("substrate")) == "substrate")
@@ -78,45 +78,45 @@ unsigned C_INT32 CMassAction::getParameterPosition(const std::string & name)
   if (name.substr(0, strlen("product")) == "product" &&
       isReversible() == TriTrue)
     return 3;
-
+ 
   return (unsigned C_INT32) - 1;
-}
+}*/
 
-std::string CMassAction::getSBMLString(const CCallParameters & callParameterNames, const std::string &r)
-{
-  std::string sf, tmpstr;
-  unsigned C_INT32 i, imax;
-  std::vector< std::string*>* Factor;
+std::string CMassAction::getSBMLString(const CCallParameters & callParameterNames, const std::string &r) const
+  {
+    std::string sf, tmpstr;
+    unsigned C_INT32 i, imax;
+    std::vector< std::string*>* Factor;
 
-  imax = ((std::vector< std::string *> *)callParameterNames[1])->size();   // NoSubstrates
-  if (imax)
-    {
-      sf = *(std::string *) callParameterNames[0] + r;           // k1
-      Factor = ((std::vector< std::string*>*)callParameterNames[1]);   // first substr.
-      for (i = 0; i < imax; i++)
-        {
-          FixSName(*(*Factor)[i], tmpstr);
-          sf += "*" + tmpstr;
-        }
-    }
+    imax = ((std::vector< std::string *> *)callParameterNames[1])->size();   // NoSubstrates
+    if (imax)
+      {
+        sf = *(std::string *) callParameterNames[0] + r;           // k1
+        Factor = ((std::vector< std::string*>*)callParameterNames[1]);   // first substr.
+        for (i = 0; i < imax; i++)
+          {
+            FixSName(*(*Factor)[i], tmpstr);
+            sf += "*" + tmpstr;
+          }
+      }
 
-  if (isReversible() == TriFalse)
+    if (isReversible() == TriFalse)
+      return sf;
+
+    imax = ((std::vector< std::string *> *)callParameterNames[3])->size();   // NoSubstrates
+    if (imax)
+      {
+        sf += "-" + *(std::string *) callParameterNames[2] + r;           // k1
+        Factor = ((std::vector< std::string*>*)callParameterNames[3]);   // first product
+        for (i = 0; i < imax; i++)
+          {
+            FixSName(*(*Factor)[i], tmpstr);
+            sf += "*" + tmpstr;
+          }
+      }
+
     return sf;
-
-  imax = ((std::vector< std::string *> *)callParameterNames[3])->size();   // NoSubstrates
-  if (imax)
-    {
-      sf += "-" + *(std::string *) callParameterNames[2] + r;           // k1
-      Factor = ((std::vector< std::string*>*)callParameterNames[3]);   // first product
-      for (i = 0; i < imax; i++)
-        {
-          FixSName(*(*Factor)[i], tmpstr);
-          sf += "*" + tmpstr;
-        }
-    }
-
-  return sf;
-}
+  }
 
 C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
   {
