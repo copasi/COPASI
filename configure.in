@@ -34,11 +34,16 @@ AC_ARG_WITH([clapack],
                  [Path to CLAPACK Library ]),
   [CLAPACK_PATH=$withval])
 
+AC_ARG_WITH([lapack],
+  AC_HELP_STRING([--with-lapack=PATH],
+                 [Path to LAPACK Library ]),
+  [LAPACK_PATH=$withval])
 
 AC_ARG_WITH([mkl],
   AC_HELP_STRING([--with-mkl=PATH],
                  [Path to MKL Library ]),
   [MKL_PATH=$withval])
+
 
 AC_ARG_WITH([qwt],
   AC_HELP_STRING([--with-qwt=PATH],
