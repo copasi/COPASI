@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionRKMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:34:01 $
+   $Author: jpahle $ 
+   $Date: 2004/12/16 10:48:03 $
    End CVS Header */
 
 /**
@@ -14,9 +14,9 @@
  *
  *   File name: CHybridNextReactionRKMethod.h
  *   Author: Juergen Pahle
- *   Email: juergen.pahle@eml.villa-bosch.de
+ *   Email: juergen.pahle@eml-r.villa-bosch.de
  *
- *   Last change: 24, January 2003
+ *   Last change: 15, December 2004
  *
  *   (C) European Media Lab 2003.
  */
@@ -24,6 +24,7 @@
 /* HEADER FILE ***************************************************************/
 #include "copasi.h"
 #include "CHybridNextReactionRKMethod.h"
+#include "model/CState.h"
 
 CHybridNextReactionRKMethod::CHybridNextReactionRKMethod() : CHybridMethod()
 {}
@@ -48,24 +49,34 @@ C_FLOAT64 CHybridNextReactionRKMethod::doSingleStep(C_FLOAT64 currentTime, C_FLO
       if (ds <= endTime) // ds is an absolute time value!
         {
           // if there are deterministic reactions
-          if (mFirstFlag != NULL) // there is at least one deterministic reaction
+          if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(ds - currentTime);
-              updatePartitionDet(increment, y, ds);
             }
-          fireReactionAndUpdatePartition(rIndex, ds);
+          fireReaction(rIndex);
+          mpCurrentState->setTime(ds);
+          if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
+            {
+              partitionSystem();
+              mStepsAfterPartitionSystem = 0;
+            }
           updatePriorityQueue(rIndex, ds);
         }
       else
         {
+          ds = endTime;
           // if there are deterministic reactions
-          if (mFirstFlag != NULL) // there is at least one deterministic reaction
+          if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(endTime - currentTime);
-              updatePartitionDet(increment, y, endTime);
+            }
+          mpCurrentState->setTime(ds);
+          if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
+            {
+              partitionSystem();
+              mStepsAfterPartitionSystem = 0;
             }
           updatePriorityQueue(-1, endTime);
-          ds = endTime;
         }
     }
   else // there is no stochastic reaction
@@ -74,23 +85,33 @@ C_FLOAT64 CHybridNextReactionRKMethod::doSingleStep(C_FLOAT64 currentTime, C_FLO
       if (ds <= endTime)
         {
           // if there are deterministic reactions
-          if (mFirstFlag != NULL) // there is at least one deterministic reaction
+          if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(mStepsize);
-              updatePartitionDet(increment, y, ds);
+            }
+          mpCurrentState->setTime(ds);
+          if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
+            {
+              partitionSystem();
+              mStepsAfterPartitionSystem = 0;
             }
           updatePriorityQueue(-1, ds);
         }
       else
         {
+          ds = endTime;
           // if there are deterministic reactions
-          if (mFirstFlag != NULL) // there is at least one deterministic reaction
+          if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(endTime - currentTime);
-              updatePartitionDet(increment, y, endTime);
+            }
+          mpCurrentState->setTime(ds);
+          if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
+            {
+              partitionSystem();
+              mStepsAfterPartitionSystem = 0;
             }
           updatePriorityQueue(-1, endTime);
-          ds = endTime;
         }
     }
   //deprecated:  outputDebug(mOutputFile, 1);  // DEBUG
