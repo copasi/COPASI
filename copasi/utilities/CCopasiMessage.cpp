@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/11 02:27:29 $
+   $Date: 2005/03/14 04:14:04 $
    End CVS Header */
 
 // CCopasiMessage
@@ -30,6 +30,18 @@ std::string TimeStamp();
 
 std::deque< CCopasiMessage > CCopasiMessage::mMessageDeque;
 
+CCopasiMessage CCopasiMessage::getFirstMessage()
+{
+  if (mMessageDeque.empty())
+    CCopasiMessage(CCopasiMessage::RAW,
+                   MCCopasiMessage + 1);
+
+  CCopasiMessage Message(mMessageDeque.front());
+  mMessageDeque.pop_front();
+
+  return Message;
+}
+
 CCopasiMessage CCopasiMessage::getLastMessage()
 {
   if (mMessageDeque.empty())
@@ -42,9 +54,23 @@ CCopasiMessage CCopasiMessage::getLastMessage()
   return Message;
 }
 
-void CCopasiMessage::clearStack()
+std::string CCopasiMessage::getAllMessageText(const bool & chronological)
 {
-  while (mMessageDeque.size()) mMessageDeque.pop_back();
+  std::string Text = "";
+  CCopasiMessage (*getMessage)() = chronological ? getFirstMessage : getLastMessage;
+
+  while (!mMessageDeque.empty())
+    {
+      if (Text != "") Text += "\n";
+      Text += getMessage().getText();
+    }
+
+  return Text;
+}
+
+void CCopasiMessage::clearDeque()
+{
+  mMessageDeque.clear();
 
   return;
 }
@@ -135,7 +161,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
   handler();
 }
 
-void CCopasiMessage::handler()
+void CCopasiMessage::handler(const bool & _throw)
 {
   std::string Text = mText;
 
@@ -146,21 +172,27 @@ void CCopasiMessage::handler()
       break;
 
     case TRACE:
-      mText = ">TRACE   ";
+      mText = ">TRACE    ";
       mText += TimeStamp();
-      mText += "< ";
+      mText += "<\n";
       break;
 
     case WARNING:
-      mText = ">WARNING ";
+      mText = ">WARNING  ";
       mText += TimeStamp();
-      mText += "< ";
+      mText += "<\n";
       break;
 
     case ERROR:
-      mText = ">ERROR   ";
+      mText = ">ERROR    ";
       mText += TimeStamp();
-      mText += "< ";
+      mText += "<\n";
+      break;
+
+    case EXCEPTION:
+      mText = ">EXCEPTION";
+      mText += TimeStamp();
+      mText += "<\n";
       break;
     }
 
@@ -228,7 +260,7 @@ std::string TimeStamp()
 void CCopasiMessage::lineBreak()
 {
   std::string Search("\n");
-  std::string Replace("\n>                           < ");
+  std::string Replace("\n  ");
   std::string::size_type pos = 0;
 
   while (true)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/11 02:27:29 $
+   $Date: 2005/03/14 04:14:04 $
    End CVS Header */
 
 /**
@@ -42,7 +42,9 @@ Message;
 /**
  *  This throws an exception with information where the error occured.
  */
-#define fatalError() {CCopasiMessage(CCopasiMessage::ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
+#define fatalError() {CCopasiMessage(CCopasiMessage::EXCEPTION, \
+                                     "%s (%d) compiled: %s %s", \
+                                     __FILE__, __LINE__, __DATE__, __TIME__);}
 
 class CCopasiMessage
   {
@@ -58,11 +60,12 @@ class CCopasiMessage
 # define COPASI_ERROR_BACKUP ERROR
 # undef ERROR
 #endif
-      ERROR
+      ERROR,
 #ifdef COPASI_ERROR_BACKUP
 # define ERROR COPASI_ERROR_BACKUP
 # undef COPASI_ERROR_BACKUP
 #endif
+      EXCEPTION
     };
 
     // Attributes
@@ -93,17 +96,37 @@ class CCopasiMessage
 
   public:
     /**
+     * This function retrieves the first message created in COPASI.
+     * Consecutive calls allow for the retrieval of all generated 
+     * messages in chronological order. If no more messages are in
+     * the deque the message (MCCopasiMessage + 1, "Message (1): 
+     * No more messages." is returned.
+     * @return CCopasiMessage
+     */
+    static CCopasiMessage getFirstMessage();
+
+    /**
      * This function retrieves the last message created in COPASI.
      * Consecutive calls allow for the retrieval of all generated 
-     * messages. If no more messages are on the stack
+     * messages in reverse chronological order. If no more messages 
+     * are in the deque the message (MCCopasiMessage + 1, "Message
+     * (1): No more messages." is returned.
      * @return CCopasiMessage
      */
     static CCopasiMessage getLastMessage();
 
     /**
+     * Retrieve the text of all messages in the deque in chronological
+     * or reverse chronological order. If more than on message is in
+     * the deque the messages are seperated by an empty line.
+     * @return std::string messageTexts
+     */
+    static std::string getAllMessageText(const bool & chronological = true);
+
+    /**
      * This function clears the message stack.
      */
-    static void clearStack();
+    static void clearDeque();
 
     /**
      *  Default consructor. 
@@ -166,10 +189,10 @@ class CCopasiMessage
   private:
     /**
      *  The actual constructor of a message.
-     *  @param type message type (RAW|TRACE|WARNING|ERROR)
+     *  @param const bool & throw (default: false)
      *  @param text message text
      */
-    void handler();
+    void handler(const bool & _throw = false);
 
     /**
      *  Inserts line breaks in the message text.
