@@ -8,7 +8,6 @@
  *
  */
 
-
 #ifndef COPASI_CNewton
 #define COPASI_CNewton
 
@@ -38,179 +37,180 @@
 #define DefaultDerivFactor 1.0
 
 class CNewton
-{
-  //Attibutes
- private:
+  {
+    //Attibutes
 
-  /**
-   *  The CModel to work with
-   */
-  CModel * mModel;
+  private:
 
-  /**
-   * The limit of iterations on Newton's method
-   */
-  C_INT32 mNewtonLimit;
+    /**
+     *  The CModel to work with
+     */
+    CModel * mModel;
 
-  /**
-   * The steady state resolution
-   */
-  C_FLOAT64 mSSRes;
+    /**
+     * The limit of iterations on Newton's method
+     */
+    unsigned C_INT32 mNewtonLimit;
 
-  /**
-   * The modulation factor for finite differences derivation
-   */
-  C_FLOAT64 mDerivFactor;
+    /**
+     * The steady state resolution
+     */
+    C_FLOAT64 mSSRes;
 
-  /**
-   *  variable for steady-state solution
-   */
-  C_FLOAT64 * mSs_x;
+    /**
+     * The modulation factor for finite differences derivation
+     */
+    C_FLOAT64 mDerivFactor;
 
-  /**
-   *  variable for steady-state solution
-   */
-  C_FLOAT64 * mSs_xnew;
+    /**
+     *  variable for steady-state solution
+     */
+    C_FLOAT64 * mSs_x;
 
+    /**
+     *  variable for steady-state solution
+     */
+    C_FLOAT64 * mSs_xnew;
 
-  // variables for steady-state solution
-  //add more variables here
+    // variables for steady-state solution
+    //add more variables here
 
-  TNT::Vector < C_FLOAT64 > mSs_dxdt;
+    TNT::Vector < C_FLOAT64 > mSs_dxdt;
 
-  C_FLOAT64 * mSs_h;
+    C_FLOAT64 * mSs_h;
 
-  CJacob mSs_jacob;
+    CJacob mSs_jacob;
 
-  // C_INT32 * mSs_ipvt;
+    // C_INT32 * mSs_ipvt;
 
-  int mSs_solution;
+    int mSs_solution;
 
-  //  int mSs_unstable;
+    //  int mSs_unstable;
 
-  /**
-   * The number counter of FVal() function
-   */
-  C_INT32 mSs_nfunction;
+    /**
+     * The number counter of FVal() function
+     */
+    C_INT32 mSs_nfunction;
 
-  //Operations
- public:
+    //Operations
 
-  /**
-   * default constructor
-   */
-  CNewton();
+  public:
 
-  /**
-   *  destructor
-   */
-  ~CNewton();
+    /**
+     * default constructor
+     */
+    CNewton();
 
-  /**
-   *  Set the starting point of the Newton method
-   *  @param "const C_FLOAT64 *" particleNumbers (Default: Models Initial Val.)
-   */
-  void setStartingPoint(const C_FLOAT64 * particleNumbers = NULL);
+    /**
+     *  destructor
+     */
+    ~CNewton();
 
-  /**
-   *  set CModel
-   *  @param "const CModel &" model
-   */
-  void setModel(CModel & model);
+    /**
+     *  Set the starting point of the Newton method
+     *  @param "const C_FLOAT64 *" particleNumbers (Default: Models Initial Val.)
+     */
+    void setStartingPoint(const C_FLOAT64 * particleNumbers = NULL);
 
-  /**
-   *  get CModel
-   *  @return mModel, the private CModel pointer
-   */
-  CModel * getModel() const;
+    /**
+     *  set CModel
+     *  @param "const CModel &" model
+     */
+    void setModel(CModel & model);
 
-  /**
-   *  set mSSRes
-   *  @param aDouble is a double set as mSSRes
-   */
-  void setSSRes(C_FLOAT64 aDouble);
+    /**
+     *  get CModel
+     *  @return mModel, the private CModel pointer
+     */
+    CModel * getModel() const;
 
-  /**
-   *  get mSSRes
-   *  @return mSSRes, the private mSSRes double
-   */
-  C_FLOAT64 getSSRes() const;
+    /**
+     *  set mSSRes
+     *  @param aDouble is a double set as mSSRes
+     */
+    void setSSRes(C_FLOAT64 aDouble);
 
-  /**
-   *  get mSs_nfunction
-   *  @param aInt an int set as the private mSs_nfunction
-   */
-  void setSs_nfunction(C_INT32 aInt);
+    /**
+     *  get mSSRes
+     *  @return mSSRes, the private mSSRes double
+     */
+    C_FLOAT64 getSSRes() const;
 
-  /**
-   *  get mSs_nfunction
-   *  @return mSs_nfunction, the private mSs_nfunction int
-   */
-  C_INT32 getSs_nfunction() const;
+    /**
+     *  get mSs_nfunction
+     *  @param aInt an int set as the private mSs_nfunction
+     */
+    void setSs_nfunction(C_INT32 aInt);
 
-  /**
-   *  get mSs_xnew
-   *  @return mSs_xnew, the private mSs_xnew double pointer
-   */
-  const C_FLOAT64 * getSs_xnew() const;
+    /**
+     *  get mSs_nfunction
+     *  @return mSs_nfunction, the private mSs_nfunction int
+     */
+    C_INT32 getSs_nfunction() const;
 
-  /**
-   *  get mSs_dxdt
-   *  @return mSs_dxdt, the private mSs_dxdt double pointer
-   */
-  const TNT::Vector < C_FLOAT64 > & getSs_dxdt() const;
+    /**
+     *  get mSs_xnew
+     *  @return mSs_xnew, the private mSs_xnew double pointer
+     */
+    const C_FLOAT64 * getSs_xnew() const;
 
-  /**
-   *  set mDerivFactor
-   *  @param aDouble is a double set as mDerivFactor
-   */
-  void setDerivFactor(C_FLOAT64 aDouble);
+    /**
+     *  get mSs_dxdt
+     *  @return mSs_dxdt, the private mSs_dxdt double pointer
+     */
+    const TNT::Vector < C_FLOAT64 > & getSs_dxdt() const;
 
-  /**
-   *  get mDerivFactor
-   *  @return mDerivFactor, the private mDerivFactor double
-   */
-  C_FLOAT64 getDerivFactor() const;
+    /**
+     *  set mDerivFactor
+     *  @param aDouble is a double set as mDerivFactor
+     */
+    void setDerivFactor(C_FLOAT64 aDouble);
 
-  /**
-   *  set the iteration limit
-   *  @param C_INT32 limit
-   */
-  void setNewtonLimit(C_INT32 limit);
+    /**
+     *  get mDerivFactor
+     *  @return mDerivFactor, the private mDerivFactor double
+     */
+    C_FLOAT64 getDerivFactor() const;
 
-  /**
-   *  retrieve the iteration limit
-   *  @return C_INT32 limit
-   */
-  C_INT32 getNewtonLimit() const;
+    /**
+     *  set the iteration limit
+     *  @param C_INT32 limit
+     */
+    void setNewtonLimit(C_INT32 limit);
 
-  /**
-   *  retrieve the mSs_solution
-   *  @return C_INT32
-   */
-  C_INT32 getSs_solution(void) const;
+    /**
+     *  retrieve the iteration limit
+     *  @return C_INT32 limit
+     */
+    C_INT32 getNewtonLimit() const;
 
-  /**
-   *  to process the primary function of this class
-   */
-  void process(void);
+    /**
+     *  retrieve the mSs_solution
+     *  @return C_INT32
+     */
+    C_INT32 getSs_solution(void) const;
 
-  /**
-   * Clean up internal pointer variables
-   */
-  void cleanup(void);
+    /**
+     *  to process the primary function of this class
+     */
+    void process(void);
 
-  /**
-   * finds out if current state is a valid steady state
-   *  destroys the contents of matrix ss_dxdt
-   */
-  C_INT32 isSteadyState(void);
+    /**
+     * Clean up internal pointer variables
+     */
+    void cleanup(void);
 
-  //private:   //YH: set as public now because my testSSSolution() is using it.
-  /**
-   *  initialize()
-   */
-  void initialize();
+    /**
+     * finds out if current state is a valid steady state
+     *  destroys the contents of matrix ss_dxdt
+     */
+    C_INT32 isSteadyState(void);
 
-};
+    //private:   //YH: set as public now because my testSSSolution() is using it.
+    /**
+     *  initialize()
+     */
+    void initialize();
+  };
+
 #endif // COPASI_CNewton

@@ -835,7 +835,7 @@ void ListViews::loadMoieties(QListViewItem* i)
   //Now filling the table.
   CMoiety *moiety;
 
-  for (C_INT32 j = 0; j < moieties->size(); j++)
+  for (unsigned C_INT32 j = 0; j < moieties->size(); j++)
     {
       moiety = (*moieties)[j];
       f = new Folder(p, moiety->getName().c_str());

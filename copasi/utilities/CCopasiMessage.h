@@ -7,8 +7,9 @@
 #define COPASI_CCopasiMessage
 
 #include <string>
+typedef struct MESSAGES {unsigned C_INT32 No; const char * Text; }
 
-typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;} Message;
+Message;
 
 #define MCopasiBase        5000
 #define MCReadConfig       5100
@@ -19,93 +20,107 @@ typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;} Message;
 #define MCFunctionParameters 5600
 #define MCMassAction       5700
 
-
 /**
  *  This throws an exception with information where the error occured.
  */
-#define fatalError() {CCopasiMessage(CCopasiMessage::ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
+#define fatalError() {CCopasiMessage(CCopasiMessage::ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__); }
 
 class CCopasiMessage
-{
- public:
-  enum Type
+  {
+  public:
+    enum Type
     {
-    RAW = 0,
-    TRACE,
-    WARNING,
-    ERROR
+      RAW = 0,
+      TRACE,
+      WARNING,
+      ERROR
     };
 
-  /**
-   *  Default consructor. 
-   *  This creates a default error messages, which actually does nothing.
-   */
-  CCopasiMessage();
+    // Attributes
 
-  /**
-   *  Specified consructor. 
-   *  This creates a formated message.
-   *  @param type message type (RAW|TRACE|WARNING|ERROR)
-   *  @param format printf like format string.
-   *  @param ... arguments like in printf
-   */
-  CCopasiMessage(Type type, const char *format, ... );
-  CCopasiMessage(Type type, unsigned C_INT32 number, ...);
-    
-  /**
-   *  Destructor. 
-   */
-  ~CCopasiMessage();
+  private:
+    /**
+     *  Message text.
+     */
+    string mText;
 
-  /**
-   *  Assignement operator. 
-   */
-  CCopasiMessage &operator=(CCopasiMessage &);
+    /**
+     *  Message type.
+     */
+    CCopasiMessage::Type mType;
 
-  /**
-   *  Retrieves the text of the message.
-   *  @return mMessage
-   */
-  string getText();
+    /**
+     *  Message Number
+     */
+    unsigned C_INT32 mNumber;
 
-  /**
-   *  Retrieves thetype of the message.
-   *  @return mType
-   */
-  CCopasiMessage::Type getType();
+    // Operations
 
-  /**
-   *  Retrieves the number of the message.
-   *  @return mNumber
-   */
-  unsigned C_INT32 getNumber();
+  public:
+    /**
+     *  Default consructor. 
+     *  This creates a default error messages, which actually does nothing.
+     */
+    CCopasiMessage();
 
- private:
-  /**
-   *  The actual constructor of a message.
-   *  @param type message type (RAW|TRACE|WARNING|ERROR)
-   *  @param text message text
-   */
-  void handler();
-    
-  /**
-   *  Inserts line breaks in the message text.
-   */
-  void lineBreak();
-    
-  /**
-   *  Message text.
-   */
-  string mText;               // Message text
+    /**
+     *  Specified consructor. 
+     *  This creates a formated message.
+     *  @param CCopasiMessage::Type type (RAW|TRACE|WARNING|ERROR)
+     *  @param const char * format (printf like format string)
+     *  @param ... arguments like in printf
+     */
+    CCopasiMessage(Type type, const char *format, ...);
 
-  /**
-   *  Message type.
-   */
-  CCopasiMessage::Type mType;  // Message type
+    /**
+     *  Specified consructor. 
+     *  This creates a formated message.
+     *  @param CCopasiMessage::Type type (RAW|TRACE|WARNING|ERROR)
+     *  @param unsigned C_INT32 number (message number see message.h)
+     *  @param ... arguments like in printf
+     */
+    CCopasiMessage(Type type, unsigned C_INT32 number, ...);
 
-  /**
-   *  Message Number
-   */
-  unsigned C_INT32 mNumber;
-};
+    /**
+     *  Destructor. 
+     */
+    ~CCopasiMessage();
+
+    /**
+     *  Assignement operator. 
+     */
+    CCopasiMessage &operator=(CCopasiMessage &);
+
+    /**
+     *  Retrieves the text of the message.
+     *  @return "const string &" mMessage
+     */
+    const string & getText() const;
+
+    /**
+     *  Retrieves thetype of the message.
+     *  @return "const CCopasiMessage::Type &" mType
+     */
+    const CCopasiMessage::Type & getType() const;
+
+    /**
+     *  Retrieves the number of the message.
+     *  @return "const unsigned C_INT32 &" mNumber
+     */
+    const unsigned C_INT32 & getNumber() const;
+
+  private:
+    /**
+     *  The actual constructor of a message.
+     *  @param type message type (RAW|TRACE|WARNING|ERROR)
+     *  @param text message text
+     */
+    void handler();
+
+    /**
+     *  Inserts line breaks in the message text.
+     */
+    void lineBreak();
+  };
+
 #endif // COPASI_CCopasiMessage

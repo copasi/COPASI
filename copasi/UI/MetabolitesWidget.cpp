@@ -128,7 +128,7 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
 
 void MetabolitesWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
-  QString &x = table->text(row, col);
+  QString x = table->text(row, col);
   emit name(x);
   //QMessageBox::information(this, "Compartments Widget",x);
 }
@@ -157,13 +157,13 @@ void MetabolitesWidget::showMessage(QString title, QString text)
 void MetabolitesWidget::slotBtnOKClicked()
 {
   QMessageBox::information(this, "Moiety Widget",
-                            "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
+                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
 }
 
 void MetabolitesWidget::slotBtnCancelClicked()
 {
   QMessageBox::information(this, "Moiety Widget",
-                            "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
 }
 
 void MetabolitesWidget::resizeEvent(QResizeEvent * re)

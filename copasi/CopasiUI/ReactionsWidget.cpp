@@ -100,13 +100,13 @@ void ReactionsWidget::loadReactions(CModel *model)
 void ReactionsWidget::slotBtnOKClicked()
 {
   QMessageBox::information(this, "Reactions Widget",
-                            "Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnOKClicked())");
+                           "Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnOKClicked())");
 }
 
 void ReactionsWidget::slotBtnCancelClicked()
 {
   QMessageBox::information(this, "Reactions Widget",
-                            "Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnCancelClicked())");
+                           "Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnCancelClicked())");
 }
 
 void ReactionsWidget::slotTableSelectionChanged()
@@ -136,7 +136,7 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
 
 void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
-  QString &x = table->text(row, col);
+  QString x = table->text(row, col);
   emit name(x);
   //QMessageBox::information(this, "Compartments Widget",x);
 }

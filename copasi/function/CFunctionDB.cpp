@@ -47,14 +47,23 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
         case CFunction::PreDefined:
 
         case CFunction::UserDefined:
-          pFunction = new CKinFunction(Function, & configbuffer);
+          pFunction = new CKinFunction(Function, &configbuffer);
           break;
 
         default:
           fatalError();
         }
 
-      mLoadedFunctions.add(pFunction);
+      try
+        {
+          mLoadedFunctions.add(pFunction);
+        }
+
+      catch (CCopasiException Exception)
+        {
+          if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
+            throw Exception;
+        }
     }
 
   return Fail;

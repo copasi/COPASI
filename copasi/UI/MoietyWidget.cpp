@@ -105,13 +105,13 @@ void MoietyWidget::loadMoieties(CModel *model)
 void MoietyWidget::slotBtnOKClicked()
 {
   QMessageBox::information(this, "Moiety Widget",
-                            "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
+                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
 }
 
 void MoietyWidget::slotBtnCancelClicked()
 {
   QMessageBox::information(this, "Moiety Widget",
-                            "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
 }
 
 void MoietyWidget::slotTableSelectionChanged()
@@ -143,7 +143,7 @@ void MoietyWidget::resizeEvent(QResizeEvent * re)
 
 void MoietyWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
-  QString &x = table->text(row, col);
+  QString x = table->text(row, col);
   emit name(x);
   //QMessageBox::information(this, "Compartments Widget",x);
 }

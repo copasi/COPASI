@@ -1,8 +1,8 @@
 /*****************************************************************************
-* PROGRAM NAME: COutput.cpp
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: COutput Class Implemention
-*****************************************************************************/
+ * PROGRAM NAME: COutput.cpp
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: COutput Class Implemention
+ *****************************************************************************/
 
 #include <fstream>
 #include <iostream>
@@ -10,7 +10,7 @@
 #include <string>
 #include <time.h>
 
-#define  COPASI_TRACE_CONSTRUCTION 
+#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "COutput.h"
@@ -39,7 +39,7 @@ COutput::COutput()
   RepStruct = 0;
   RepStab = 0;
   RepMCA = 0;
-  RepComments = 1;	//???? No such configure variable in *.GPS files
+  RepComments = 1; //???? No such configure variable in *.GPS files
 
   //  mOutput = NULL;
   mSolution = NULL;
@@ -63,11 +63,11 @@ void COutput::cleanup()
  */
 COutput::~COutput()
 {
-  //	cleanup();
+  // cleanup();
 }
 
 /**
- *	Reset output data file and reporting file configure variables
+ * Reset output data file and reporting file configure variables
  */
 void COutput::reset()
 {
@@ -110,9 +110,9 @@ COutput& COutput::operator=(const COutput &source)
  *  @see mOutput
  */
 const CCopasiVectorS < COutputLine > & COutput::getList() const
-{
-  return mOutput;
-}
+  {
+    return mOutput;
+  }
 
 /**
  *  Add new OutputLine object to a list
@@ -148,7 +148,7 @@ C_INT32 COutput::save(CWriteConfig & configbuffer)
  *  (CReadConfig object reads an input stream)
  *  @param pconfigbuffer reference to a CReadConfig object.
  *  @param searchName refernece to a the time of seach section,
- *		   for example: Interactive time course		
+ *     for example: Interactive time course  
  *  @return mFail
  *  @see mFail
  */
@@ -157,7 +157,7 @@ C_INT32 COutput::load(CReadConfig & configbuffer)
   C_INT32 Fail = 0;
 
   readDefaultVar(configbuffer);
-	
+
   string InteractiveTimeCourse = "Interactive time course";
   string TimeCourse = "Time-course output";
   string SteadyState = "Steady-state output";
@@ -178,33 +178,34 @@ C_INT32 COutput::load(CReadConfig & configbuffer)
 }
 
 /**
- *	print the titles of the steady-state data file
+ * print the titles of the steady-state data file
  */
-void COutput::sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
+void COutput::sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
 {
   string Name;
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
       Name = mOutput[i]->getName();
-      if (Name == SSName)
-	mOutput[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
-    }
 
+      if (Name == SSName)
+        mOutput[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
+    }
 }
 
 /**
- *	print mpValue of each Object in the steady-state data file
+ * print mpValue of each Object in the steady-state data file
  */
-void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes, C_INT32 ss_solution) 
+void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes, C_INT32 ss_solution)
 {
   string Name;
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
       Name = mOutput[i]->getName();
+
       if (Name == SSName)
-		mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes, ss_solution);
+        mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes, ss_solution);
     }
 }
 
@@ -218,10 +219,10 @@ void COutput::dynOutputTitles(ofstream &fout, string &DynName, C_INT16 DynSepara
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
       Name = mOutput[i]->getName();
-      if (Name == DynName)
-	mOutput[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
-    }
 
+      if (Name == DynName)
+        mOutput[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
+    }
 }
 
 /**
@@ -234,18 +235,17 @@ void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparato
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
       Name = mOutput[i]->getName();
-      if (Name == DynName)
-	mOutput[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
-    }
 
+      if (Name == DynName)
+        mOutput[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
+    }
 }
 
 /**
- *	Assign the pointer to each datum object for time course
+ * Assign the pointer to each datum object for time course
  */
 void COutput::compile(const string & name, CModel *model, CTrajectory *traj)
 {
-
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
       mOutput[i]->compile(name, model, traj);
@@ -253,23 +253,20 @@ void COutput::compile(const string & name, CModel *model, CTrajectory *traj)
 }
 
 /**
- *	Assign the pointer to each datum object for steady state
+ * Assign the pointer to each datum object for steady state
  */
 void COutput::compile(const string & name, CModel *model, CSS_Solution *soln)
 {
-
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
-  {
+    {
       mOutput[i]->compile(name, model, soln);
-  }
+    }
 
   mSolution = soln;
-
 }
 
-
 /**
- *	Output the comments to the output reporting file
+ * Output the comments to the output reporting file
  */
 void COutput::repComments(ofstream &fout)
 {
@@ -277,7 +274,7 @@ void COutput::repComments(ofstream &fout)
 }
 
 /**
- *	Output the model title to the output reporting file
+ * Output the model title to the output reporting file
  */
 void COutput::repTitle(ofstream &fout)
 {
@@ -285,7 +282,7 @@ void COutput::repTitle(ofstream &fout)
 }
 
 /**
- *	Print each line of the header in the reporting file
+ * Print each line of the header in the reporting file
  */
 void COutput::repHeaderLine(ofstream &fout, int width, string OutStr)
 {
@@ -308,10 +305,8 @@ void COutput::repHeaderLine(ofstream &fout, int width, string OutStr)
   fout << Str << endl;
 }
 
-
-
 /**
- *	print the header of the reporting file
+ * print the header of the reporting file
  */
 void COutput::repHeader(ofstream &fout)
 {
@@ -322,39 +317,42 @@ void COutput::repHeader(ofstream &fout)
   time_t aclock;
 
   // Get time in seconds
-  time( &aclock );
+  time(&aclock);
   // Convert time to struct tm form
-  newtime = localtime( &aclock );
-  TimeStr = asctime( newtime );
-  TimeStamp = TimeStr.substr(0, TimeStr.length()-1);
+  newtime = localtime(&aclock);
+  TimeStr = asctime(newtime);
+  TimeStamp = TimeStr.substr(0, TimeStr.length() - 1);
 
   string VersionString = "Copasi Version " + Copasi->ProgramVersion.getVersion();
-  width = (VersionString.length() > TimeStamp.length()) ? VersionString.length():TimeStamp.length();
+  width = (VersionString.length() > TimeStamp.length()) ? VersionString.length() : TimeStamp.length();
   // width = max(width, ArchString.length());
 
   // write a full line with stars
-  for (i = 0; i < width+4; i++)
+
+  for (i = 0; i < width + 4; i++)
     fout << "*";
+
   fout << endl;
 
-  repHeaderLine(fout, width+2, VersionString);
+  repHeaderLine(fout, width + 2, VersionString);
+
   //repHeaderLine(fout, width, ArchString);
-  repHeaderLine(fout, width+2, TimeStamp);
+  repHeaderLine(fout, width + 2, TimeStamp);
 
-  for (i = 0; i < width+4; i++)
+  for (i = 0; i < width + 4; i++)
     fout << "*";
-  fout << endl << endl;
 
+  fout << endl << endl;
 }
 
 /**
- *	print the parameters of the simulation
+ * print the parameters of the simulation
  */
 void COutput::repParams(ofstream &fout)
 {
   string StrOut;
   unsigned C_INT32 i, j;
-  CModel *model = Copasi->Model;	
+  CModel *model = Copasi->Model;
 
   StrOut = "KINETIC PARAMETERS";
   fout << endl << StrOut << endl;
@@ -362,10 +360,9 @@ void COutput::repParams(ofstream &fout)
   // Set Float manipulators
   fout.setf(ios::scientific, ios::floatfield);
   fout.setf(ios::showpoint);
-	
+
   for (i = 0; i < model->getReactions().size(); i++)
     {
-	  
       StrOut = model->getReactions()[i]->getName();
       fout << StrOut << " (";
 
@@ -373,29 +370,27 @@ void COutput::repParams(ofstream &fout)
       fout << StrOut << ")" << endl;
 
       for (j = 0; j < model->getReactions()[i]->getId2Parameters().size(); j++)
-	  {
-
-		fout << " " << model->getReactions()[i]->getId2Parameters()[j]->getIdentifierName() << " =  ";
-		fout << setprecision(4) << model->getReactions()[i]->getId2Parameters()[j]->getValue();
-		fout << endl;
-		
-	  }
+        {
+          fout << " " << model->getReactions()[i]->getId2Parameters()[j]->getIdentifierName() << " =  ";
+          fout << setprecision(4) << model->getReactions()[i]->getId2Parameters()[j]->getValue();
+          fout << endl;
+        }
     }
 
   fout << endl << "COMPARTMENTS" << endl;
 
-  for( i=0; i< model->getCompartments().size(); i++ )
+  for (i = 0; i < model->getCompartments().size(); i++)
     {
       fout << "V(" << model->getCompartments()[i]->getName() << ") =  ";
       fout << setprecision(4) << model->getCompartments()[i]->getVolume();
       fout << endl;
-    }		
+    }
 
   fout << endl;
 }
 
 /**
- *	print the structural analysis
+ * print the structural analysis
  */
 void COutput::repStruct(ofstream &fout)
 {
@@ -412,7 +407,7 @@ void COutput::repStruct(ofstream &fout)
       fout << endl << "Rank of the stoichiometry matrix: " << model->getDimension() << endl;
     }
 
-  fout << endl << "key for step (column) numbers: "<< endl;
+  fout << endl << "key for step (column) numbers: " << endl;
 
   for (i = 0; i < model->getReactions().size(); i++)
     {
@@ -423,17 +418,20 @@ void COutput::repStruct(ofstream &fout)
 
   fout << endl << "REDUCED STOICHIOMETRY MATRIX" << endl;
 
-
   for (i = 0; i < model->getReactions().size(); i++)
-    if (i)	fout << setw(4) << i;
-    else fout << setw(16) << i;
+    if (i)
+      fout << setw(4) << i;
+    else
+      fout << setw(16) << i;
 
   fout << endl;
 
   for (i = 0; i < model->getReactions().size(); i++)
     {
-      if (i) fout << setw(4) << "----";
-      else fout << setw(15) << "----";
+      if (i)
+        fout << setw(4) << "----";
+      else
+        fout << setw(15) << "----";
     }
 
   fout << "--" << endl;
@@ -446,20 +444,22 @@ void COutput::repStruct(ofstream &fout)
       fout << setw(11) << model->getMetabolitesInd()[i]->getName() << "|";
 
       for (j = 0; j < model->getReactions().size(); j++)
-	  {
-		fout << setprecision(1);
-		if (j) 
-			// Set Left Justification
-			fout.setf(ios::left);
-		else 
-			fout.setf(ios::right);
+        {
+          fout << setprecision(1);
 
-		fout << setw(4) << model->getRedStoi()[i][j];
-	  }
+          if (j)
+            // Set Left Justification
+            fout.setf(ios::left);
+          else
+            fout.setf(ios::right);
+
+          fout << setw(4) << model->getRedStoi()[i][j];
+        }
+
       fout << endl;
-	   // Restore Justification
-	  fout.unsetf(ios::right);
-	  fout.setf(ios::left);	
+      // Restore Justification
+      fout.unsetf(ios::right);
+      fout.setf(ios::left);
     }
 
   fout << endl << "INVERSE OF THE REDUCTION MATRIX" << endl;
@@ -471,85 +471,94 @@ void COutput::repStruct(ofstream &fout)
 
   for (i = 0; i < model->getIntMetab(); i++)
     {
-      if (i)	fout << setw(4) << i;
-      else fout << setw(16) << i;
+      if (i)
+        fout << setw(4) << i;
+      else
+        fout << setw(16) << i;
     }
 
   fout << endl;
 
-  	
   for (i = 0; i < model->getIntMetab(); i++)
-    if (i) fout << setw(4) << "----";
-    else fout << setw(15) << "----";
+    if (i)
+      fout << setw(4) << "----";
+    else
+      fout << setw(15) << "----";
 
   fout << "--" << endl;
 
   // Set Left Justification
   fout.setf(ios::left);
 
-  // Create a arry to store name from 
+  // Create a arry to store name from
   vector < string > inverse;
 
-  for (i = 0 ; i < model->getMetabolitesInd().size(); i++)	
-	  inverse.push_back(model->getMetabolitesInd()[i]->getName());
-  for (j = 0 ; j < model->getDepMetab(); j++)	
-	   inverse.push_back(model->getMetabolitesDep()[j]->getName());
+  for (i = 0 ; i < model->getMetabolitesInd().size(); i++)
+    inverse.push_back(model->getMetabolitesInd()[i]->getName());
+
+  for (j = 0 ; j < model->getDepMetab(); j++)
+    inverse.push_back(model->getMetabolitesDep()[j]->getName());
 
   TNT::Matrix < C_FLOAT64 > Inverse;
+
   TNT::Matrix < C_FLOAT64 > ml;
 
   ml = model->getML();
 
-  TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
-    *InverseLView;  
+  const TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
+  & InverseLView =
+    TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >(ml);
 
-  InverseLView = & TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >(ml);
+  Inverse.newsize(InverseLView.num_rows(), InverseLView.num_cols());
 
-  Inverse.newsize(InverseLView->num_rows(), InverseLView->num_cols());
-
-  for (i = 0; i < InverseLView->num_rows(); i++)
-	  for (int j = 0; j < InverseLView->num_cols(); j++)
-		  Inverse[i][j] = InverseLView->array()(j+1, i+1);
+  for (i = 0; i < (unsigned C_INT32) InverseLView.num_rows(); i++)
+    for (j = 0; j < (unsigned C_INT32) InverseLView.num_cols(); j++)
+      Inverse[i][j] = InverseLView.array()(j + 1, i + 1);
 
   for (i = 0; i < model->getIntMetab(); i++)
     {
       fout << setw(11) << inverse[i] << "|";
 
       for (j = 0; j < model->getIntMetab(); j++)
-	  {
-  		if (j) 
-			// Set Left Justification
-			fout.setf(ios::left);
-		else 
-			fout.setf(ios::right);
+        {
+          if (j)
+            // Set Left Justification
+            fout.setf(ios::left);
+          else
+            fout.setf(ios::right);
 
-		fout << setprecision(1) << setw(4) << Inverse[i][j];
-		//fout << setprecision(1) << setw(4) << model->getML()[i][j];
-	  }
+          fout << setprecision(1) << setw(4) << Inverse[i][j];
+
+          //fout << setprecision(1) << setw(4) << model->getML()[i][j];
+        }
+
       fout << endl;
-	   // Restore Justification
-	  fout.unsetf(ios::right);
-	  fout.setf(ios::left);	
+      // Restore Justification
+      fout.unsetf(ios::right);
+      fout.setf(ios::left);
     }
 
   fout << endl;
-
 
   if (model->getMoieties().size() > 0)
     {
       fout << endl << "CONSERVATION RELATIONSHIPS" << endl;
-		
-	  fout.setf(ios::fixed); 
+
+      fout.setf(ios::fixed)
+
+        ;
       for (i = 0; i < model->getMoieties().size(); i++)
-	  {
-		fout << model->getMoieties()[i]->getDescription() << " = " ;
-		fout << model->getMoieties()[i]->getNumber() << endl;
+        {
+          fout << model->getMoieties()[i]->getDescription() << " = " ;
+          fout << model->getMoieties()[i]->getNumber() << endl;
+        }
 
-	  }
-	  fout.unsetf(ios::fixed); 
+      fout.unsetf(ios::fixed)
+
+        ;
     }
-  fout << endl;
 
+  fout << endl;
 }
 
 /**
@@ -557,47 +566,58 @@ void COutput::repStruct(ofstream &fout)
  */
 void COutput::repSS(ofstream &fout)
 {
-  C_INT32 i;
+  unsigned C_INT32 i;
   double rate;
   CModel *model = Copasi->Model;
 
   if (mSolution->getSolution() != SS_FOUND)
     {
-      fout << endl; 
+      fout << endl;
       fout << "A STEADY STATE COULD NOT BE FOUND.\n(below are the last unsuccessful trial values)";
       fout << endl;
     }
-  else {
-    fout << endl << "STEADY STATE SOLUTION" << endl;
-    if (CheckEquilibrium())
-      fout << "(chemical equilibrium)" << endl;
-  }
+  else
+    {
+      fout << endl << "STEADY STATE SOLUTION" << endl;
+
+      if (CheckEquilibrium())
+        fout << "(chemical equilibrium)" << endl;
+    }
 
   fout.unsetf(ios::left);
-  fout.setf(ios::right);	
+  fout.setf(ios::right);
 
   // Output concentrations
+
   for (i = 0; i < model->getTotMetab(); i++)
     {
       if (model->getMetabolites()[i]->getStatus() == 0) // METAB_FIXED == 0
-       rate = 0.0;
+        rate = 0.0;
       else
-		  rate = model->getMetabolites()[i]->getRate();			
-		
+        rate = model->getMetabolites()[i]->getRate();
+
       // Output Concentration
       fout << "[" << setw(10) << model->getMetabolites()[i]->getName();
+
       fout << "] = ";
-      fout << setprecision(6) << *model->getMetabolites()[i]->getConcentration(); 
+
+      fout << setprecision(6) << *model->getMetabolites()[i]->getConcentration();
+
       fout << " " << ConcUnit << ", ";
+
       // Output Transition time of the metabolite
       fout << "tt = " << setprecision(6) << model->getMetabolites()[i]->getTransitionTime();
+
       fout << " " << TimeUnit << " " << ", ";
+
       // Output rate
       fout << "rate = " << setprecision(3) << rate;
+
       fout << " " << ConcUnit << "/" << TimeUnit;
-	
+
       if (*model->getMetabolites()[i]->getConcentration() < 0.0)
         fout << " BOGUS!";
+
       fout << endl;
     }
 
@@ -608,13 +628,16 @@ void COutput::repSS(ofstream &fout)
       fout << setprecision(6) << model->getReactions()[i]->getFlux();
       fout << " " << ConcUnit << "/" << TimeUnit << endl;
     }
-	
+
   // output user-defined functions
-  int size = Copasi->UDFunctionDB.getFunctions().size();
+  unsigned C_INT32 size = Copasi->UDFunctionDB.getFunctions().size();
+
   CUDFunction pFunct;
-  if ( size > 0)
+
+  if (size > 0)
     {
       fout << endl;
+
       for (i = 0; i < size; i++)
         {
           // calculate the flux of this step
@@ -627,7 +650,7 @@ void COutput::repSS(ofstream &fout)
 }
 
 /**
- *	print the results of the stability analysis
+ * print the results of the stability analysis
  */
 void COutput::repStability(ofstream &fout)
 {
@@ -639,38 +662,41 @@ void COutput::repStability(ofstream &fout)
       fout << "The linear stability analysis based on the eigenvalues" << endl;
       fout << "of the Jacobian matrix is only valid for steady states." << endl;
     }
-  else 
+  else
     {
       fout << endl << "KINETIC STABILITY ANALYSIS" << endl << endl;
       fout << "Summary:" << endl;
       fout << "This steady state ";
 
       // Output statistics
+
       if (mSolution->getEigen()->getEigen_maxrealpart() > mSolution->getSSRes())
         fout << "is unstable";
-      else {
-        if (mSolution->getEigen()->getEigen_maxrealpart() < -mSolution->getSSRes())
-          fout << "is asymptotically stable";
-        else fout << "stability is undetermined";
-      }
+      else
+        {
+          if (mSolution->getEigen()->getEigen_maxrealpart() < -mSolution->getSSRes())
+            fout << "is asymptotically stable";
+          else
+            fout << "stability is undetermined";
+        }
 
       if (mSolution->getEigen()->getEigen_maximagpart() > mSolution->getSSRes())
         {
           fout << "," << endl;
           fout << "transient states in its vicinity have oscillatory components" << endl;
         }
-			
+
       fout << endl;
       fout << endl << "Eigenvalue statistics:" << endl;
       // Output Max Real Part
-      fout << " Largest real part: "; 
+      fout << " Largest real part: ";
       fout << setprecision(6) << mSolution->getEigen()->getEigen_maxrealpart() << endl;
       // Output Max imaginary Part
       fout << " Largest absolute imaginary part:  ";
       fout << setprecision(6) << mSolution->getEigen()->getEigen_maximagpart() << endl;
       // Output Eigen-nreal
-	  fout.unsetf(ios::scientific);
-	  fout.unsetf(ios::showpoint);   
+      fout.unsetf(ios::scientific);
+      fout.unsetf(ios::showpoint);
       fout << " " << mSolution->getEigen()->getEigen_nreal();
       fout << " are purely real" << endl;
       // Output Eigen-nimage
@@ -689,73 +715,86 @@ void COutput::repStability(ofstream &fout)
       fout << " " << mSolution->getEigen()->getEigen_nnegreal();
       fout << " have negative real part" << endl;
 
-	  // Set point manipulators
-	  fout.setf(ios::showpoint);
+      // Set point manipulators
+      fout.setf(ios::showpoint);
       // Output Eigne-stiffness
       fout << " stiffness = " << mSolution->getEigen()->getEigen_stiffness() << endl;
       fout << " time hierarchy = " << mSolution->getEigen()->getEigen_hierarchy() << endl;
 
-	  // Set Float manipulators
-	  fout.setf(ios::scientific, ios::floatfield);
-	  fout.setf(ios::showpoint);
+      // Set Float manipulators
+      fout.setf(ios::scientific, ios::floatfield);
+      fout.setf(ios::showpoint);
 
       // Output Jacobian Matrix
       fout << endl << "Jacobian matrix" << endl;
-	  fout << setprecision(6);
+      fout << setprecision(6);
+
       for (i = 0; i < model->getMetabolitesInd().size(); i++)
         {
           for (j = 0; j < model->getMetabolitesInd().size(); j++)
-		  {
-			if (mSolution->getJacob()->getJacob()[i][j] >= 0) 
-			{
-				if (j) fout << "  ";
-				else fout << " ";
-			}
-			else {
-				if (j) fout << " ";
-			}
-			fout << mSolution->getJacob()->getJacob()[i][j];
-		  }
+            {
+              if (mSolution->getJacob()->getJacob()[i][j] >= 0)
+                {
+                  if (j)
+                    fout << "  ";
+                  else
+                    fout << " ";
+                }
+              else
+                {
+                  if (j)
+                    fout << " ";
+                }
+
+              fout << mSolution->getJacob()->getJacob()[i][j];
+            }
+
           fout << endl;
         }
 
-
       // Output Eigenvalus of the Jacibian Matrix
       fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
+
       for (i = 0; i < model->getMetabolitesInd().size(); i++)
         {
           if (mSolution->getEigen()->getEigen_i()[i] == 0.0)
             fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
-          else 
+          else
             {
               fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
               fout << " + " << setprecision(6) << mSolution->getEigen()->getEigen_i()[i];
-            }	
-		  fout << endl;
+            }
+
+          fout << endl;
         }
+
       fout << endl;
     }
 }
 
 /**
- *	print the results of the MCA
+ * print the results of the MCA
  */
 void COutput::repMCA(ofstream &fout)
 {
 #if 0
-	if (mSolution->getSolution != SS_FOUND) 
-		return;
-	else {
-		fout << endl << "METABOLIC CONTROL ANALYSIS" << endl;
-		// Output elasticties
-		if (mSolution->)
-		else 
-	}
+
+  if (mSolution->getSolution != SS_FOUND)
+    return ;
+  else
+    {
+      fout << endl << "METABOLIC CONTROL ANALYSIS" << endl;
+      // Output elasticties
+
+      if (mSolution->)
+        else
+        }
+
 #endif
 }
 
 /**
- *	print the titles of the time-course data file
+ * print the titles of the time-course data file
  */
 void COutput::dynOutputTitles(ofstream &fout, string &DynName)
 {
@@ -763,11 +802,10 @@ void COutput::dynOutputTitles(ofstream &fout, string &DynName)
     {
       mOutput[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
     }
-
 }
 
 /**
- *	print a line of data (one time point) on the time-course data file
+ * print a line of data (one time point) on the time-course data file
  */
 void COutput::dynOutputData(ofstream &fout, string &DynName)
 {
@@ -775,36 +813,34 @@ void COutput::dynOutputData(ofstream &fout, string &DynName)
     {
       mOutput[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
     }
-
 }
 
 /**
- *	print the titles of the steady-state data file
+ * print the titles of the steady-state data file
  */
 void COutput::sSOutputTitles(ofstream &fout, string &SSName)
 {
-
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
       if (SSName == mOutput[i]->getName())
-	mOutput[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
+        mOutput[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
 /**
- *	print a line of data (one iteration) on the steady-state data file
+ * print a line of data (one iteration) on the steady-state data file
  */
 void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT32 ss_solution)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
       if (SSName == mOutput[i]->getName())
-	mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes, ss_solution);
+        mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes, ss_solution);
     }
 }
 
 /*
- *	print the reporting data file
+ * print the reporting data file
  */
 void COutput::copasiRep(ofstream &fout)
 {
@@ -812,15 +848,25 @@ void COutput::copasiRep(ofstream &fout)
 
   repTitle(fout);
 
-  if (RepComments) repComments(fout);
-  if (RepStruct) repStruct(fout);
-  repParams(fout);
-  repSS(fout);
-  if (RepStab) repStability(fout);
-#if 0
-  if (RepMCA)	repMCA(fout);
-#endif
+  if (RepComments)
+    repComments(fout);
 
+  if (RepStruct)
+    repStruct(fout);
+
+  repParams(fout);
+
+  repSS(fout);
+
+  if (RepStab)
+    repStability(fout);
+
+#if 0
+
+  if (RepMCA)
+    repMCA(fout);
+
+#endif
 }
 
 /*
@@ -831,10 +877,12 @@ void COutput::copasiSS(ofstream &fout, C_INT32 ss_solution)
   string SSName = "Steady-state output";
 
   if (SS)
-  {
-	if (SSTitles) sSOutputTitles(fout, SSName);
-	sSOutputData(fout, SSName, ss_solution);
-  }
+    {
+      if (SSTitles)
+        sSOutputTitles(fout, SSName);
+
+      sSOutputData(fout, SSName, ss_solution);
+    }
 }
 
 /*
@@ -845,232 +893,232 @@ void COutput::copasiDyn(ofstream &fout, int time)
   string DynName = "Time-course output";
 
   if (Dyn)
-  {
-	if (!time) 
-	{
-	  if (DynTitles) dynOutputTitles(fout, DynName, DynSeparator, DynColWidth, DynQuotes);
-	}
-	else dynOutputData(fout, DynName, DynSeparator, DynColWidth, DynQuotes);
-  }
+    {
+      if (!time)
+        {
+          if (DynTitles)
+            dynOutputTitles(fout, DynName, DynSeparator, DynColWidth, DynQuotes);
+        }
+      else
+        dynOutputData(fout, DynName, DynSeparator, DynColWidth, DynQuotes);
+    }
 }
 
-
 /**
- *	Read config variables from input configburg buffer
+ * Read config variables from input configburg buffer
  *  @param configbuffer: reference of the config buffer.
  */
 C_INT32 COutput::readDefaultVar(CReadConfig &configbuffer)
 {
-  C_INT32	Fail = 0;
+  C_INT32 Fail = 0;
 
   if ((Fail = configbuffer.getVariable("TimeUnit", "string",
-				       (void *) &TimeUnit,
-				       CReadConfig::LOOP)))
+                                       (void *) & TimeUnit,
+                                       CReadConfig::LOOP)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("ConcentrationUnit", "string",
-				       (void *) &ConcUnit,
-				       CReadConfig::SEARCH)))
+                                       (void *) & ConcUnit,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("Dynamics", "C_INT16",
-				       (void *) &Dyn,
-				       CReadConfig::SEARCH)))
+                                       (void *) & Dyn,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("SteadyState", "C_INT16",
-				       (void *) &SS,
-				       CReadConfig::SEARCH)))
+                                       (void *) & SS,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("Report", "C_INT16",
-				       (void *) &Rep,
-				       CReadConfig::SEARCH)))
+                                       (void *) & Rep,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("DynTitles", "C_INT16",
-				       (void *) &DynTitles,
-				       CReadConfig::SEARCH)))
+                                       (void *) & DynTitles,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("SSTitles", "C_INT16",
-				       (void *) &SSTitles,
-				       CReadConfig::SEARCH)))
+                                       (void *) & SSTitles,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("DynQuotes", "C_INT16",
-				       (void *) &DynQuotes,
-				       CReadConfig::SEARCH)))
+                                       (void *) & DynQuotes,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("SSQuotes", "C_INT16",
-				       (void *) &SSQuotes,
-				       CReadConfig::SEARCH)))
+                                       (void *) & SSQuotes,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("DynColWidth", "C_INT16",
-				       (void *) &DynColWidth,
-				       CReadConfig::SEARCH)))
+                                       (void *) & DynColWidth,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("SSColWidth", "C_INT16",
-				       (void *) &SSColWidth,
-				       CReadConfig::SEARCH)))
+                                       (void *) & SSColWidth,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("DynSeparator", "C_INT16",
-				       (void *) &DynSeparator,
-				       CReadConfig::SEARCH)))
+                                       (void *) & DynSeparator,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("SSSeparator", "C_INT16",
-				       (void *) &SSSeparator,
-				       CReadConfig::SEARCH)))
+                                       (void *) & SSSeparator,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("SSStrategy", "C_INT16",
-				       (void *) &SSStrategy,
-				       CReadConfig::SEARCH)))
+                                       (void *) & SSStrategy,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
-  try 
+  try
     {
       Fail = configbuffer.getVariable("RepComments", "C_INT16",
-				      (void *) &RepComments,
-				      CReadConfig::SEARCH);
+                                      (void *) & RepComments,
+                                      CReadConfig::SEARCH);
     }
-  
+
   catch (CCopasiException Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
-	RepComments = 0;
+        RepComments = 0;
       else
-	throw Exception;
+        throw Exception;
     }
-  
+
   if ((Fail = configbuffer.getVariable("RepStructuralAnalysis", "C_INT16",
-				       (void *) &RepStruct,
-				       CReadConfig::LOOP)))
+                                       (void *) & RepStruct,
+                                       CReadConfig::LOOP)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("RepStabilityAnalysis", "C_INT16",
-				       (void *) &RepStab,
-				       CReadConfig::SEARCH)))
+                                       (void *) & RepStab,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("RepMCA", "C_INT16",
-				       (void *) &RepMCA,
-				       CReadConfig::SEARCH)))
+                                       (void *) & RepMCA,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
-
   // Note:: there is no variable controlling comments output
-  //		  in current configure file
+  //    in current configure file
   return Fail;
 }
 
-
 /**
- *	Write output control variables from input configburg buffer
+ * Write output control variables from input configburg buffer
  *  @param configbuffer: reference of the config buffer.
  */
 C_INT32 COutput::writeDefaultVar(CWriteConfig &configbuffer)
 {
-  C_INT32	Fail = 0;
+  C_INT32 Fail = 0;
 
   if ((Fail = configbuffer.setVariable("TimeUnit", "string",
-				       &TimeUnit)))
+                                       &TimeUnit)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("ConcentrationUnit", "string",
-				       &ConcUnit)))
+                                       &ConcUnit)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("Dynamics", "C_INT16",
-				       &Dyn)))
+                                       &Dyn)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("SteadyState", "C_INT16",
-				       &SS)))
+                                       &SS)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("Report", "C_INT16",
-				       &Rep)))
+                                       &Rep)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("DynTitles", "C_INT16",
-				       &DynTitles)))
+                                       &DynTitles)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("SSTitles", "C_INT16",
-				       &SSTitles)))
+                                       &SSTitles)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("DynQuotes", "C_INT16",
-				       &DynQuotes)))
+                                       &DynQuotes)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("SSQuotes", "C_INT16",
-				       &SSQuotes)))
+                                       &SSQuotes)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("DynColWidth", "C_INT16",
-				       &DynColWidth)))
+                                       &DynColWidth)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("SSColWidth", "C_INT16",
-				       &SSColWidth)))
+                                       &SSColWidth)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("DynSeparator", "C_INT16",
-				       &DynSeparator)))
+                                       &DynSeparator)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("SSSeparator", "C_INT16",
-				       &SSSeparator)))
+                                       &SSSeparator)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("SSStrategy", "C_INT16",
-				       &SSStrategy)))
+                                       &SSStrategy)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("RepComments", "C_INT16",
-				       &RepComments)))
+                                       &RepComments)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("RepStructuralAnalysis", "C_INT16",
-				       &RepStruct)))
+                                       &RepStruct)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("RepStabilityAnalysis", "C_INT16",
-				       &RepStab)))
+                                       &RepStab)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("RepMCA", "C_INT16",
-				       &RepMCA)))
+                                       &RepMCA)))
     return Fail;
 
   // Note:: there is no variable controlling comments output
-  //		  in current configure file
+  //    in current configure file
   return Fail;
 }
 
-
 int COutput::CheckEquilibrium()
 {
-	int i;
-	double hr, tmp;
-	int Equilibrium;
+  unsigned C_INT32 i;
+  double hr, tmp;
+  int Equilibrium;
 
-	// find the highest concentration rate
-	for( i=0, hr = 0.0; i < Copasi->Model->getTotSteps(); i++)
-		if ( (tmp=fabs(Copasi->Model->getReactions()[i]->getFlux())) > hr )
-			hr = tmp;
+  // find the highest concentration rate
 
-	// true if in chemical equilibrium
-    if (hr < mSolution->getSSRes())
-		Equilibrium = 1;
-	else Equilibrium = 0;
+  for (i = 0, hr = 0.0; i < Copasi->Model->getTotSteps(); i++)
+    if ((tmp = fabs(Copasi->Model->getReactions()[i]->getFlux())) > hr)
+      hr = tmp;
 
-	return 0;
+  // true if in chemical equilibrium
+  if (hr < mSolution->getSSRes())
+    Equilibrium = 1;
+  else
+    Equilibrium = 0;
+
+  return 0;
 }
