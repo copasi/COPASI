@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/06 21:15:00 $
+   $Author: ssahle $ 
+   $Date: 2004/05/10 13:00:25 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -23,9 +23,9 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
-#include "utilities/CGlobals.h"
-#include "output/COutputList.h"
-#include "output/COutput.h"
+#include "utilities/CGlobals.h" 
+//#include "output/COutputList.h"
+//#include "output/COutput.h"
 #include "model/CModel.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"

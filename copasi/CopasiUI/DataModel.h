@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.h,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 16:46:17 $
+   $Date: 2004/05/10 12:58:48 $
    End CVS Header */
 
 /****************************************************************************
@@ -31,8 +31,8 @@
 #include "report/CReportDefinitionVector.h"
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"
-#include "utilities/CGlobals.h"
-#include "output/COutputList.h"             //TODO sort out the include dependencies
+#include "utilities/CGlobals.h" 
+//#include "output/COutputList.h"             //TODO sort out the include dependencies
 #include "optimization/COptFunction.h"
 #include "plot/CPlotSpecVector.h"
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 19:54:18 $
+   $Date: 2004/05/10 12:58:48 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -168,7 +168,7 @@ void DataModel::loadModel(const char* fileName)
       pOptFunction = new COptFunction();
       searchFolderList(31)->setObjectKey(pOptFunction->getKey());
 
-      Copasi->pOutputList->load(inbuf);
+      //Copasi->pOutputList->load(inbuf);
     }
   else if (!Line.compare(0, 5, "<?xml"))
     {

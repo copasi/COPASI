@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/26 21:17:57 $
+   $Author: ssahle $ 
+   $Date: 2004/05/10 12:56:35 $
    End CVS Header */
 
 /**
@@ -21,10 +21,10 @@
 #include "CSteadyStateTask.h"
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateMethod.h"
-#include "CEigen.h"
-#include "output/COutputEvent.h"
-#include "output/COutputList.h"
-#include "output/COutput.h"
+#include "CEigen.h" 
+//#include "output/COutputEvent.h"
+//#include "output/COutputList.h"
+//#include "output/COutput.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"

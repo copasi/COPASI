@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/04/03 23:37:52 $
+   $Author: ssahle $ 
+   $Date: 2004/05/10 12:56:35 $
    End CVS Header */
 
 /**
@@ -24,7 +24,7 @@
 #include "CScanProblem.h"
 
 class CScanMethod;
-class COutputEvent;
+//class COutputEvent;
 class CReport;
 
 //-class CScanTask : public CCopasiContainer
@@ -57,8 +57,8 @@ class CScanTask : public CCopasiTask
 
     /**
      * End Phase Output Event
-     */
-    COutputEvent *mpOutEnd;
+     */ 
+    //COutputEvent *mpOutEnd;
 
     /**
         * Unique Key

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/04/03 23:37:53 $
+   $Author: ssahle $ 
+   $Date: 2004/05/10 12:56:35 $
    End CVS Header */
 
 /**
@@ -18,10 +18,10 @@
 #include "CScanProblem.h"
 #include "CScanMethod.h"
 #include "utilities/CGlobals.h"
-#include "utilities/readwrite.h"
-#include "output/COutputEvent.h"
-#include "output/COutputList.h"
-#include "output/COutput.h"
+#include "utilities/readwrite.h" 
+//#include "output/COutputEvent.h"
+//#include "output/COutputList.h"
+//#include "output/COutput.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 
@@ -38,7 +38,7 @@ CScanTask::CScanTask(const CCopasiContainer * pParent):
     //-CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
     //-mReport(new CReport()),
     mRequested(true),
-    mpOutEnd(NULL),
+    //mpOutEnd(NULL),
     mKey(GlobalKeys.add("ScanTask", this))
 {
   mpProblem = new CScanProblem(this);
@@ -57,7 +57,7 @@ CScanTask::CScanTask(const CScanTask & src,
     mRequested(src.mRequested),
     //mpProblem(new CScanProblem(*src.mpProblem)),
     //mpMethod(new CScanMethod(*src.mpMethod)),
-    mpOutEnd(src.mpOutEnd),
+    //mpOutEnd(src.mpOutEnd),
     mKey(GlobalKeys.add("ScanTask", this))
 {
   mpProblem =
@@ -77,13 +77,13 @@ void CScanTask::cleanup()
   //GlobalKeys.remove(mKey);
   //pdelete(mpProblem);
   //pdelete(mpMethod);
-  pdelete(mpOutEnd);
+  //  pdelete(mpOutEnd);
   //-pdelete(mReport);
 }
 
 void CScanTask::initializeReporting(std::ostream & out)
 {
-  pdelete(mpOutEnd);
+  //  pdelete(mpOutEnd);
   mpOut = & out;
   // added by Liang for Scan Report
   mReport.open(mpOut);
