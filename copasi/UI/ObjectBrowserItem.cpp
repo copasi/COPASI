@@ -32,7 +32,7 @@ CBrowserObject::CBrowserObject()
 
 CBrowserObject::~CBrowserObject()
 {
-  delete referenceList;
+  pdelete(referenceList);
 }
 
 ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList)
