@@ -21,7 +21,7 @@ class CReactionInterface
     std::string emptyString;
 
     /**
-     * This is the name that identifies the Reaction that is beeing edited (may become a key later)
+     * This is the key that identifies the Reaction that is beeing edited
      */
     std::string mReactionReferenceKey;
 
