@@ -131,14 +131,14 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
      * @param "CReadConfig &" configBuffer
      * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)
      */
-    void load(CReadConfig & configBuffer,
-              CReadConfig::Mode mode = CReadConfig::SEARCH);
+    virtual void load(CReadConfig & configBuffer,
+                      CReadConfig::Mode mode = CReadConfig::SEARCH);
 
     /**
      * Save a list of parameters
      * @param "CWriteConfig &" configBuffer
      */
-    void save(CWriteConfig & configBuffer);
+    virtual void save(CWriteConfig & configBuffer);
 
     /**
      * Search for method parameter list of a specified name and type 
