@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/05 21:25:17 $
+   $Author: mkulkarn $ 
+   $Date: 2003/12/09 20:14:01 $
    End CVS Header */
 
 /**
@@ -815,7 +815,6 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
     case ListOfCompartments:
       if (!strcmp(pszName, "ListOfCompartments"))
         mpCurrentHandler = new ListOfCompartmentsElement(mParser, mCommon);
-
       break;
 
     case ListOfMetabolites:
