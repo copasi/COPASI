@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/09/29 03:37:00 $
+   $Author: jpahle $ 
+   $Date: 2004/09/30 13:49:56 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'wizard.ui'
  **
  ** Created: Tue Sep 28 23:32:28 2004
- **      by: The User Interface Compiler ($Id: wizard.cpp,v 1.7 2004/09/29 03:37:00 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: wizard.cpp,v 1.8 2004/09/30 13:49:56 jpahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -168,18 +168,18 @@ void WizardDialog::languageChange()
   setCaption(tr("Tutorial"));
   buttonGroup->setTitle(QString::null);
   button1->setText(tr("Step 1\n"
-                        "Naming and Description"));
+                      "Naming and Description"));
   button6->setText(tr("Step 6\n"
-                        "Plotting a Trajectory"));
+                      "Plotting a Trajectory"));
   button2->setText(tr("Step 2\n"
-                        "Creating Reactions"));
+                      "Creating Reactions"));
   button3->setText(tr("Step 3\n"
-                        "Refining the Model"));
+                      "Refining the Model"));
   button4->setText(tr("Step 4\n"
-                        "Defining the Output"));
+                      "Defining the Output"));
   button5->setText(tr("Step 5\n"
-                        "Calculating a Time Course"));
+                      "Calculating a Time Course"));
   backButton->setText(tr("<< back"));
   forwardButton->setText(tr("forward >>"));
-  cancelButton->setText(tr("Cancel"));
+  cancelButton->setText(tr("Close"));
 }
