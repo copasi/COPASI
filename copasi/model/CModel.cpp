@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.208 $
+   $Revision: 1.209 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/07 21:59:56 $
+   $Date: 2005/01/20 18:48:59 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -332,6 +332,7 @@ bool CModel::compile()
 
   if (mpCompileHandler) mpCompileHandler->init(100, "");
   buildStoi();
+
   lUDecomposition(LU);
   if (mpCompileHandler) mpCompileHandler->progress(2);
   setMetabolitesStatus(LU);
@@ -419,14 +420,85 @@ void CModel::buildStoi()
               }
         }
     }
+
+  // We need to have all unused and fixed metabolites at the end of mMetabolites.
+  // However we can only detect unused metabolites after building the
+  // stoichiometry matrix.
+  handleUnusedMetabolites();
+
 #ifdef DEBUG_MATRIX
   DebugFile << "Stoichiometry Matrix" << std::endl;
   DebugFile << mStoi << std::endl;
 #endif
-  //std::cout << "Stoichiometry Matrix" << std::endl;
-  //std::cout << mStoi << std::endl;
 
   return;
+}
+
+bool CModel::handleUnusedMetabolites()
+{
+  unsigned C_INT32 i, imax = mStoi.numRows();
+  unsigned C_INT32 j, jmax = mStoi.numCols();
+  std::vector< unsigned C_INT32 > Unused;
+
+  for (i = 0; i < imax; i++)
+    {
+      for (j = 0; j < jmax; j++)
+        if (mStoi[i][j] != 0.0) break;
+
+      if (j == jmax) Unused.push_back(i);
+    }
+
+  unsigned C_INT32 k = 0, kmax = Unused.size();
+
+  if (kmax == 0) return false;
+
+  // We treat unused variables in the same way as fixed, i.e.
+  // they will be sorted to the end of the metabolite list.
+  mNumFixed += kmax;
+
+  CMatrix< C_FLOAT64 > Stoi(imax - kmax, jmax);
+  std::vector< CMetab * > VariableMetabolites(imax - kmax);
+  std::vector< CMetab * > UnusedMetabolites(kmax);
+  std::vector< unsigned C_INT32 >::const_iterator itUnused = Unused.begin();
+  std::vector< unsigned C_INT32 >::const_iterator endUnused = Unused.end();
+  CMetab * pMetab;
+
+  // Build new stoichiometry Matrix
+  for (i = 0; i < imax; i++)
+    {
+      if (itUnused != endUnused && i == *itUnused)
+        {
+          pMetab = mMetabolites[i];
+          pMetab->setStatus(CMetab::METAB_UNUSED);
+          UnusedMetabolites[k] = pMetab;
+
+          k++;
+          ++itUnused;
+        }
+      else
+        {
+          VariableMetabolites[i - k] = mMetabolites[i];
+
+          // The row needs to be copied to the new stoichiometry matrix
+          for (j = 0; j < jmax; j++)
+            Stoi[i - k][j] = mStoi[i][j];
+        }
+    }
+
+  // Reorder metabolites
+  for (i = 0, imax = VariableMetabolites.size(); i < imax; i++)
+    mMetabolites[i] = VariableMetabolites[i];
+
+  for (k = 0; k < kmax; k++)
+    mMetabolites[i + k] = UnusedMetabolites[k];
+
+  // We need also to update the metabolites for the reduced system.
+  for (i = 0, imax = mMetabolites.size(); i < imax; i++)
+    mMetabolitesX[i] = mMetabolites[i];
+
+  // Update stoichiometry matrix
+  mStoi = Stoi;
+  return true;
 }
 
 void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
@@ -516,55 +588,41 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
 {
   unsigned C_INT32 i, j, k;
+  unsigned C_INT32 iIndependent = 0, iVariable = 0;
+
   C_FLOAT64 Sum;
 
-  // for (i=0; i<min(LU.numRows(), LU.numCols()); i++)
-  // for compiler
   unsigned C_INT32 imax = (LU.numRows() < LU.numCols()) ?
                           LU.numRows() : LU.numCols();
 
   for (i = 0; i < imax; i++)
     {
-      if (LU[i][i] == 0.0)
-        break;
+      // Interupt processing when first dependent metabolite is found.
+      if (LU[i][i] == 0.0) break;
 
       mMetabolitesX[i]->setStatus(CMetab::METAB_VARIABLE);
     }
 
-  mMetabolitesInd.resize(i, false);
-  mMetabolitesVar.resize(i, false);
+  iIndependent = i;
 
-  //mStepsInd.resize(i, false);
-  for (j = 0; j < i; j++)
+  for (i; i < LU.numRows(); i++)
+    mMetabolitesX[i]->setStatus(CMetab::METAB_DEPENDENT);
+
+  iVariable = i;
+
+  assert(mNumFixed + iVariable == mMetabolites.size());
+
+  mMetabolitesInd.resize(iIndependent, false);
+  mMetabolitesVar.resize(iVariable, false);
+
+  for (i = 0; i < iIndependent; i++)
     {
-      mMetabolitesInd[j] = mMetabolitesX[j];
-      mMetabolitesVar[j] = mMetabolitesX[j];
-
-      //mStepsInd[j] = mStepsX[j];
+      mMetabolitesInd[i] = mMetabolitesX[i];
+      mMetabolitesVar[i] = mMetabolitesX[i];
     }
 
-  for (j = i; j < LU.numRows(); j++)
-    {
-      Sum = 0.0;
-
-      for (k = 0; k < LU.numCols(); k++)
-        Sum += fabs(LU[j][k]);
-
-      if (Sum == 0.0)
-        mMetabolitesX[j]->setStatus(CMetab::METAB_UNUSED);
-      else
-        mMetabolitesX[j]->setStatus(CMetab::METAB_DEPENDENT);
-    }
-
-  //mMetabolitesDep.resize(j - i, false);
-  mMetabolitesVar.resize(j, false);
-  for (k = i; k < j; k++)
-    mMetabolitesVar[k] = mMetabolitesX[k];
-  //mMetabolitesDep[k - i] = mMetabolitesX[k];
-
-  for (k = j; k < LU.numRows(); k++)
-    if (mMetabolitesX[k]->getStatus() != CMetab::METAB_FIXED)
-      mMetabolitesX[k]->setStatus(CMetab::METAB_UNUSED);
+  for (; i < iVariable; i++)
+    mMetabolitesVar[i] = mMetabolitesX[i];
 
   return;
 }
@@ -836,15 +894,12 @@ void CModel::initializeMetabolites()
   mMetabolitesX.resize(imax, false);
 
   // We reorder mMetabolitesX so that the fixed metabolites appear at the end.
-
-  j = 0;
-  for (i = 0; i < imax; i++)
+  for (i = 0, mNumFixed = 0; i < imax; i++)
     if (mMetabolites[i]->getStatus() == CMetab::METAB_FIXED)
-      mMetabolitesX[imax - ++j] = mMetabolites[i];
+      mMetabolitesX[imax - ++mNumFixed] = mMetabolites[i];
     else
-      mMetabolitesX[i - j] = mMetabolites[i];
+      mMetabolitesX[i - mNumFixed] = mMetabolites[i];
 
-  mNumFixed = j;
   // Update mMetabolites to reflect the reordering.
   // We need to to this to allow the use of the full model for simulation.
   // :TODO: This most definitely breaks output when reading Gepasi files.

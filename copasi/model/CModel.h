@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/20 17:42:39 $
+   $Date: 2005/01/20 18:48:59 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -435,9 +435,15 @@ class CModel : public CCopasiContainer
     void setCompileFlag(bool flag = true);
 
     /**
-     *  Compile the model if necessary
+     * Compile the model if necessary
+     * @return bool success
      */
     bool compileIfNecessary();
+
+    /**
+     * Force a compile the model.
+     * @return bool success
+     */
     bool forceCompile();
 
     /**
@@ -950,6 +956,13 @@ class CModel : public CCopasiContainer
   private:
 
     bool compile();
+
+    /**
+     * Handles unused metbolites and moves them to the end of mMetabolites.
+     * Rows of the stoichiometry matrix dealing with unused metabolites are removed.
+     * @return bool found
+     */
+    bool handleUnusedMetabolites();
 
     /**
      * Initialize the contained CCopasiObjects
