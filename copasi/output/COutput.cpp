@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutput.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:14:21 $
+   $Date: 2004/05/24 08:36:06 $
    End CVS Header */
 
 /*****************************************************************************
@@ -605,7 +605,7 @@ void COutput::repStruct(std::ostream &fout) const
 ;
         for (i = 0; i < model->getMoieties().size(); i++)
           {
-            fout << model->getMoieties()[i]->getDescription() << " = ";
+            fout << model->getMoieties()[i]->getDescription(model) << " = ";
             fout << model->getMoieties()[i]->getNumber() << std::endl;
           }
 
