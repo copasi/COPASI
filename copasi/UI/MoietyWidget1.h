@@ -58,7 +58,7 @@ class MoietyWidget1 : public QWidget
     QLabel* TextLabel2;
     QLabel* TextLabel3;
     QLineEdit* LineEdit1;
-    QListBox* ListBox;
+    QListBox* ListBox1;
     QLineEdit* LineEdit2;
     QLineEdit* LineEdit3;
     QFrame* Frame1;

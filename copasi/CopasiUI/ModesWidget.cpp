@@ -45,7 +45,6 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(1, "Elementary Mode");
 
   btnCalculate = new QPushButton("&Run", this);
-  //btnCancel = new QPushButton("&Cancel", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -54,8 +53,6 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
 
   hBoxLayout->addSpacing(50);
   hBoxLayout->addWidget(btnCalculate);
-  //hBoxLayout->addSpacing(5);
-  // hBoxLayout->addWidget(btnCancel);
   hBoxLayout->addSpacing(50);
 
   table->sortColumn (0, true, true);

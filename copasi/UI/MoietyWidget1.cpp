@@ -61,14 +61,18 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   TextLabel1 = new QLabel("Equation", Frame4a);
   hBoxLayout4a->addWidget(TextLabel1);
   hBoxLayout4a->addSpacing(83);
-  //ListBox= new QListBox(Frame4a, "ListBox1");
-  // hBoxLayout4a->addWidget(ListBox);
-  //ListBox->setScrollBar(false);
-  //ListBox->setEnabled(false);
+
+  /*ListBox1= new QListBox(Frame4a, "ListBox1");
+    ListBox1->setFixedSize(100, 150);
+  ListBox1->setAutoScrollBar(true);
+  hBoxLayout4a->addWidget(ListBox1);
+  // ListBox1->setScrollBar(false);
+  ListBox1->setEnabled(false);*/
 
   LineEdit1 = new QLineEdit(" " , Frame4a);
   LineEdit1->setGeometry(QRect(110, 330, 531, 261));
   hBoxLayout4a->addWidget(LineEdit1);
+  LineEdit1->setEnabled(false);
 
   hBoxLayout4a->addSpacing(20);
 
@@ -159,7 +163,7 @@ void MoietyWidget1::loadName(QString setValue)
   CMoiety *moiety;
   moiety = moieties[(std::string)setValue];
   LineEdit1->setText(moiety->getDescription().c_str());
-  //ListBox->insertItem(moiety->getDescription().c_str());
+  //ListBox1->insertItem(moiety->getDescription().c_str());
 
   /*  CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
   C_INT32 noOfMetabolitesRows = Metabs.size();
