@@ -59,7 +59,23 @@ SOURCE=.\CopasiPlot.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COutputHandlerPlot.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CPlotItem.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CPlotSpec.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CPlotSpec2Vector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CPlotSpecification.cpp
 # End Source File
 # Begin Source File
 
@@ -67,19 +83,7 @@ SOURCE=.\CPlotSpecVector.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\curve2dwidget.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\curvegroupbox.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\doublerect.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
@@ -103,7 +107,23 @@ SOURCE=.\CopasiPlot.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\COutputHandlerPlot.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CPlotItem.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CPlotSpec.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CPlotSpec2Vector.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CPlotSpecification.h
 # End Source File
 # Begin Source File
 
@@ -112,10 +132,6 @@ SOURCE=.\CPlotSpecVector.h
 # Begin Source File
 
 SOURCE=.\crvspecscrlview.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\curve2dwidget.h
 # End Source File
 # Begin Source File
 
