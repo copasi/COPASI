@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/02/09 20:27:52 $
+   $Author: shoops $ 
+   $Date: 2004/03/25 12:41:41 $
    End CVS Header */
 
 /*******************************************************************
@@ -27,6 +27,7 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qbuttongroup.h>
+#include <qcheckbox.h>
 
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
@@ -42,170 +43,109 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
     : CopasiWidget(parent, name, fl),
     objKey("")
 {
-  if (!name)
-    setName("MetabolitesWidget1");
+  if (!name) setName("MetabolitesWidget1");
   setCaption(trUtf8("MetabolitesWidget1"));
+
   MetabolitesWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MetabolitesWidget1Layout");
 
-  TextLabel4 = new QLabel(this, "TextLabel4");
-  TextLabel4->setText(trUtf8("Metabolite Name"));
+  mLblName = new QLabel(this, "mLblName");
+  mLblName->setText(trUtf8("Metabolite Name"));
+  MetabolitesWidget1Layout->addWidget(mLblName, 0, 0);
 
-  MetabolitesWidget1Layout->addWidget(TextLabel4, 0, 0);
+  mEditName = new QLineEdit(this, "mEditName");
+  //  mEditName->setFrameShape(QLineEdit::LineEditPanel);
+  //  mEditName->setFrameShadow(QLineEdit::Sunken);
+  MetabolitesWidget1Layout->addMultiCellWidget(mEditName, 0, 0, 1, 3);
 
-  TextLabel5 = new QLabel(this, "TextLabel5");
-  TextLabel5->setText(trUtf8("Compartment Name"));
+  mLblCompartment = new QLabel(this, "mLblCompartment");
+  mLblCompartment->setText(trUtf8("Compartment Name"));
+  MetabolitesWidget1Layout->addWidget(mLblCompartment, 1, 0);
 
-  MetabolitesWidget1Layout->addWidget(TextLabel5, 1, 0);
-
-  LineEdit1 = new QLineEdit(this, "LineEdit1");
-  //  QFont LineEdit1_font(LineEdit1->font());
-  //  LineEdit1->setFont(LineEdit1_font);
-  LineEdit1->setFrameShape(QLineEdit::LineEditPanel);
-  LineEdit1->setFrameShadow(QLineEdit::Sunken);
-
-  MetabolitesWidget1Layout->addMultiCellWidget(LineEdit1, 0, 0, 1, 3);
-
-  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-
-  MetabolitesWidget1Layout->addMultiCellWidget(ComboBox1, 1, 1, 1, 3);
-
-  Line1_3 = new QFrame(this, "Line1_3");
-  Line1_3->setFrameShape(QFrame::HLine);
-  Line1_3->setFrameShadow(QFrame::Sunken);
-  Line1_3->setFrameShape(QFrame::HLine);
-
-  MetabolitesWidget1Layout->addMultiCellWidget(Line1_3, 2, 2, 0, 3);
-
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Metabolite Status Select"));
-
-  MetabolitesWidget1Layout->addWidget(TextLabel2, 3, 0);
-
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Metabolite Status"));
-
-  MetabolitesWidget1Layout->addWidget(TextLabel1, 3, 2);
-
-  ButtonGroup3 = new QButtonGroup(this, "ButtonGroup3");
-  ButtonGroup3->setFrameShape(QButtonGroup::WinPanel);
-  ButtonGroup3->setFrameShadow(QButtonGroup::Sunken);
-  ButtonGroup3->setTitle(trUtf8(""));
-  ButtonGroup3->setExclusive(TRUE);
-  ButtonGroup3->setColumnLayout(0, Qt::Vertical);
-  ButtonGroup3->layout()->setSpacing(6);
-  ButtonGroup3->layout()->setMargin(11);
-  ButtonGroup3Layout = new QGridLayout(ButtonGroup3->layout());
-  ButtonGroup3Layout->setAlignment(Qt::AlignTop);
-
-  RadioButton3 = new QRadioButton(ButtonGroup3, "RadioButton3");
-  RadioButton3->setEnabled(FALSE);
-  RadioButton3->setText(trUtf8("Fixed"));
-
-  ButtonGroup3Layout->addWidget(RadioButton3, 0, 0);
-
-  RadioButton5 = new QRadioButton(ButtonGroup3, "RadioButton5");
-  RadioButton5->setEnabled(FALSE);
-  RadioButton5->setText(trUtf8("Dependent"));
-
-  ButtonGroup3Layout->addWidget(RadioButton5, 2, 0);
-
-  RadioButton4 = new QRadioButton(ButtonGroup3, "RadioButton4");
-  RadioButton4->setEnabled(FALSE);
-  RadioButton4->setText(trUtf8("Independent"));
-
-  ButtonGroup3Layout->addWidget(RadioButton4, 1, 0);
-
-  MetabolitesWidget1Layout->addMultiCellWidget(ButtonGroup3, 3, 4, 3, 3);
-  QSpacerItem* spacer = new QSpacerItem(100, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addItem(spacer, 4, 2);
-  QSpacerItem* spacer_2 = new QSpacerItem(100, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addItem(spacer_2, 4, 0);
-
-  ButtonGroup2 = new QButtonGroup(this, "ButtonGroup2");
-  ButtonGroup2->setFrameShape(QButtonGroup::WinPanel);
-  ButtonGroup2->setTitle(trUtf8(""));
-  ButtonGroup2->setExclusive(TRUE);
-  ButtonGroup2->setColumnLayout(0, Qt::Vertical);
-  ButtonGroup2->layout()->setSpacing(6);
-  ButtonGroup2->layout()->setMargin(11);
-  ButtonGroup2Layout = new QGridLayout(ButtonGroup2->layout());
-  ButtonGroup2Layout->setAlignment(Qt::AlignTop);
-
-  RadioButton2 = new QRadioButton(ButtonGroup2, "RadioButton2");
-  RadioButton2->setText(trUtf8("Variable"));
-
-  ButtonGroup2Layout->addWidget(RadioButton2, 1, 0);
-
-  RadioButton1 = new QRadioButton(ButtonGroup2, "RadioButton1");
-  RadioButton1->setText(trUtf8("Fixed"));
-
-  ButtonGroup2Layout->addWidget(RadioButton1, 0, 0);
-
-  MetabolitesWidget1Layout->addMultiCellWidget(ButtonGroup2, 3, 4, 1, 1);
-
-  Line1_2 = new QFrame(this, "Line1_2");
-  Line1_2->setFrameShape(QFrame::HLine);
-  Line1_2->setFrameShadow(QFrame::Sunken);
-  Line1_2->setFrameShape(QFrame::HLine);
-
-  MetabolitesWidget1Layout->addMultiCellWidget(Line1_2, 5, 5, 0, 3);
-
-  LineEdit5 = new QLineEdit(this, "LineEdit5");
-
-  MetabolitesWidget1Layout->addWidget(LineEdit5, 7, 1);
-
-  TextLabel11 = new QLabel(this, "TextLabel11");
-  TextLabel11->setText(trUtf8("Transient Number"));
-
-  MetabolitesWidget1Layout->addWidget(TextLabel11, 7, 2);
-
-  TextLabel8 = new QLabel(this, "TextLabel8");
-  TextLabel8->setText(trUtf8("Initial  Number"));
-
-  MetabolitesWidget1Layout->addWidget(TextLabel8, 7, 0);
-
-  TextLabel7 = new QLabel(this, "TextLabel7");
-  TextLabel7->setText(trUtf8("Initial  Concentration"));
-
-  MetabolitesWidget1Layout->addWidget(TextLabel7, 6, 0);
-
-  LineEdit7 = new QLineEdit(this, "LineEdit7");
-  LineEdit7->setEnabled(FALSE);
-
-  MetabolitesWidget1Layout->addWidget(LineEdit7, 6, 3);
-
-  LineEdit4 = new QLineEdit(this, "LineEdit4");
-
-  MetabolitesWidget1Layout->addWidget(LineEdit4, 6, 1);
-
-  TextLabel12 = new QLabel(this, "TextLabel12");
-  TextLabel12->setText(trUtf8("Transient Time"));
-
-  MetabolitesWidget1Layout->addWidget(TextLabel12, 8, 0);
-
-  LineEdit9 = new QLineEdit(this, "LineEdit9");
-  LineEdit9->setEnabled(FALSE);
-
-  MetabolitesWidget1Layout->addWidget(LineEdit9, 8, 1);
-
-  LineEdit8 = new QLineEdit(this, "LineEdit8");
-  LineEdit8->setEnabled(FALSE);
-
-  MetabolitesWidget1Layout->addWidget(LineEdit8, 7, 3);
-
-  TextLabel10 = new QLabel(this, "TextLabel10");
-  TextLabel10->setText(trUtf8("Transient Concentration"));
-
-  MetabolitesWidget1Layout->addWidget(TextLabel10, 6, 2);
-  QSpacerItem* spacer_3 = new QSpacerItem(470, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addMultiCell(spacer_3, 9, 9, 0, 3);
+  mComboCompartment = new QComboBox(FALSE, this, "mComboCompartment");
+  MetabolitesWidget1Layout->addMultiCellWidget(mComboCompartment, 1, 1, 1, 3);
 
   Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
   Line1->setFrameShadow(QFrame::Sunken);
   Line1->setFrameShape(QFrame::HLine);
+  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 3);
 
-  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 10, 10, 0, 3);
+  mLblInitStatus = new QLabel(this, "mLblInitStatus");
+  mLblInitStatus->setText(trUtf8("Metabolite status"));
+  MetabolitesWidget1Layout->addWidget(mLblInitStatus, 3, 0);
+
+  mCheckStatus = new QCheckBox(this, "mCheckStatus");
+  mCheckStatus->setText("fixed");
+  mCheckStatus->setChecked(false);
+  MetabolitesWidget1Layout->addWidget(mCheckStatus, 3, 1);
+
+  mLblStatus = new QLabel(this, "mLblStatus");
+  mLblStatus->setText(trUtf8("Model Status"));
+  MetabolitesWidget1Layout->addWidget(mLblStatus, 3, 2);
+
+  mEditStatus = new QLineEdit(this, "mEditStatus");
+  mEditStatus->setEnabled(false);
+  MetabolitesWidget1Layout->addWidget(mEditStatus, 3, 3);
+
+  //  QSpacerItem* spacer = new QSpacerItem(100, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  //  MetabolitesWidget1Layout->addItem(spacer, 4, 2);
+  //  QSpacerItem* spacer_2 = new QSpacerItem(100, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  //  MetabolitesWidget1Layout->addItem(spacer_2, 4, 0);
+
+  Line2 = new QFrame(this, "Line2");
+  Line2->setFrameShape(QFrame::HLine);
+  Line2->setFrameShadow(QFrame::Sunken);
+  Line2->setFrameShape(QFrame::HLine);
+
+  MetabolitesWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 3);
+
+  mLblInitConcentration = new QLabel(this, "mLblInitConcentration");
+  mLblInitConcentration->setText(trUtf8("Initial  Concentration"));
+  MetabolitesWidget1Layout->addWidget(mLblInitConcentration, 6, 0);
+
+  mEditInitConcentration = new QLineEdit(this, "mEditInitConcentration");
+  MetabolitesWidget1Layout->addWidget(mEditInitConcentration, 6, 1);
+
+  mLblConcentration = new QLabel(this, "mLblConcentration");
+  mLblConcentration->setText(trUtf8("Transient Concentration"));
+  MetabolitesWidget1Layout->addWidget(mLblConcentration, 6, 2);
+
+  mEditConcentration = new QLineEdit(this, "mEditConcentration");
+  mEditConcentration->setEnabled(false);
+  MetabolitesWidget1Layout->addWidget(mEditConcentration, 6, 3);
+
+  mLblInitNumber = new QLabel(this, "mLblInitNumber");
+  mLblInitNumber->setText(trUtf8("Initial  Number"));
+  MetabolitesWidget1Layout->addWidget(mLblInitNumber, 7, 0);
+
+  mEditInitNumber = new QLineEdit(this, "mEditInitNumber");
+  MetabolitesWidget1Layout->addWidget(mEditInitNumber, 7, 1);
+
+  mLblNumber = new QLabel(this, "mLblNumber");
+  mLblNumber->setText(trUtf8("Transient Number"));
+  MetabolitesWidget1Layout->addWidget(mLblNumber, 7, 2);
+
+  mEditNumber = new QLineEdit(this, "mEditNumber");
+  mEditNumber->setEnabled(FALSE);
+  MetabolitesWidget1Layout->addWidget(mEditNumber, 7, 3);
+
+  mLblTransitionTime = new QLabel(this, "mLblTransitionTime");
+  mLblTransitionTime->setText(trUtf8("Transition Time"));
+  MetabolitesWidget1Layout->addWidget(mLblTransitionTime, 8, 2);
+
+  mEditTransitionTime = new QLineEdit(this, "mEditTransitionTime");
+  mEditTransitionTime->setEnabled(FALSE);
+  MetabolitesWidget1Layout->addWidget(mEditTransitionTime, 8, 3);
+
+  QSpacerItem* spacer_3 = new QSpacerItem(470, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  MetabolitesWidget1Layout->addMultiCell(spacer_3, 9, 9, 0, 3);
+
+  Line3 = new QFrame(this, "Line3");
+  Line3->setFrameShape(QFrame::HLine);
+  Line3->setFrameShadow(QFrame::Sunken);
+  Line3->setFrameShape(QFrame::HLine);
+
+  MetabolitesWidget1Layout->addMultiCellWidget(Line3, 10, 10, 0, 3);
 
   Layout7 = new QHBoxLayout(0, 0, 6, "Layout7");
 
@@ -219,18 +159,11 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 11, 11, 0, 3);
 
-  setTabOrder(LineEdit1, ComboBox1);
-  setTabOrder(ComboBox1, RadioButton1);
-  setTabOrder(RadioButton1, RadioButton2);
-  setTabOrder(RadioButton2, RadioButton3);
-  setTabOrder(RadioButton3, RadioButton4);
-  setTabOrder(RadioButton4, RadioButton5);
-  setTabOrder(RadioButton5, LineEdit4);
-  setTabOrder(LineEdit4, LineEdit5);
-  setTabOrder(LineEdit5, LineEdit9);
-  setTabOrder(LineEdit9, LineEdit7);
-  setTabOrder(LineEdit7, LineEdit8);
-  setTabOrder(LineEdit8, commitChanges);
+  setTabOrder(mEditName, mComboCompartment);
+  setTabOrder(mComboCompartment, mCheckStatus);
+  setTabOrder(mCheckStatus, mEditInitConcentration);
+  setTabOrder(mEditInitConcentration, mEditInitNumber);
+  setTabOrder(mEditInitNumber, commitChanges);
   setTabOrder(commitChanges, cancelChanges);
 
   // OK button
@@ -257,55 +190,41 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
 
   CCopasiVectorNS< CCompartment > & allcompartments = dataModel->getModel()->getCompartments();
   CCompartment *compt;
-  ComboBox1->clear();
-  LineEdit1->setText(metab->getName().c_str());
+  mComboCompartment->clear();
+  mEditName->setText(metab->getName().c_str());
   //Metabolite1_Name = new QString(metab->getName().c_str());
 
-  LineEdit4->setText(QString::number(metab->getInitialConcentration()));
+  mEditInitConcentration->setText(QString::number(metab->getInitialConcentration()));
 
-  LineEdit7->setText(QString::number(metab->getConcentration()));
-  LineEdit7->setReadOnly(true);
+  mEditConcentration->setText(QString::number(metab->getConcentration()));
+  mEditConcentration->setReadOnly(true);
 
-  LineEdit8->setText(QString::number(metab->getNumber()));
-  LineEdit8->setReadOnly(true);
+  mEditNumber->setText(QString::number(metab->getNumber()));
+  mEditNumber->setReadOnly(true);
 
-  LineEdit5->setText(QString::number(metab->getInitialNumber()));
+  mEditInitNumber->setText(QString::number(metab->getInitialNumber()));
 
-  LineEdit9->setText(QString::number(metab->getTransitionTime()));
-  LineEdit9->setReadOnly(true);
-  RadioButton1->setChecked(false);
-  RadioButton2->setChecked(false);
-  RadioButton3->setChecked(false);
-  RadioButton4->setChecked(false);
-  RadioButton5->setChecked(false);
+  mEditTransitionTime->setText(QString::number(metab->getTransitionTime()));
+  mEditTransitionTime->setReadOnly(true);
 
   if (metab->getStatus() == CMetab::METAB_FIXED)
-    {
-      RadioButton1->setChecked(true);
-      RadioButton3->setChecked(true);
-    }
-  else if (metab->getStatus() == CMetab::METAB_VARIABLE)
-    {
-      RadioButton2->setChecked(true);
-      RadioButton4->setChecked(true);
-    }
-  else if (metab->getStatus() == CMetab::METAB_DEPENDENT)
-    {
-      RadioButton2->setChecked(true);
-      RadioButton5->setChecked(true);
-    }
+    mCheckStatus->setChecked(true);
+  else
+    mCheckStatus->setChecked(false);
 
-  ComboBox1->setDuplicatesEnabled (false);
+  mEditStatus->setText(CMetab::StatusName[metab->getStatus()].c_str());
+
+  mComboCompartment->setDuplicatesEnabled (false);
   unsigned C_INT32 m;
   for (m = 0; m < allcompartments.size(); m++)
     {
       //showMessage("mudita","It comes here");
 
       compt = allcompartments[m];
-      //ComboBox1->insertStringList(compt->getName().c_str(),j);
-      ComboBox1->insertItem(compt->getName().c_str());
+      //mComboCompartment->insertStringList(compt->getName().c_str(),j);
+      mComboCompartment->insertItem(compt->getName().c_str());
     }
-  ComboBox1->setCurrentText(metab->getCompartment()->getName().c_str());
+  mComboCompartment->setCurrentText(metab->getCompartment()->getName().c_str());
 
   return true;
 }
@@ -317,7 +236,7 @@ bool MetabolitesWidget1::saveToMetabolite()
   if (!metab) return false;
 
   //name
-  QString name(LineEdit1->text());
+  QString name(mEditName->text());
   if (name.latin1() != metab->getName())
     {
       metab->setName(name.latin1());
@@ -327,7 +246,7 @@ bool MetabolitesWidget1::saveToMetabolite()
     }
 
   //compartment
-  QString Compartment = ComboBox1->currentText();
+  QString Compartment = mComboCompartment->currentText();
   if (Compartment.latin1() != metab->getCompartment()->getName())
     {
       std::string CompartmentToRemove = metab->getCompartment()->getName();
@@ -340,7 +259,7 @@ bool MetabolitesWidget1::saveToMetabolite()
     }
 
   //for Initial Concentration and Initial Number
-  QString initialConcentration(LineEdit4->text());
+  QString initialConcentration(mEditInitConcentration->text());
   double temp1;
   temp1 = initialConcentration.toDouble();
   if (fabs(temp1 - metab->getInitialConcentration()) > 1e-10)
@@ -352,7 +271,7 @@ bool MetabolitesWidget1::saveToMetabolite()
 
   else
     {
-      QString initialNumber(LineEdit5->text());
+      QString initialNumber(mEditInitNumber->text());
       C_FLOAT64 temp2;
       temp2 = initialNumber.toDouble();
       if (fabs(temp2 - metab->getInitialNumber()) > 1e-3) //TODO: this is extremely ugly
@@ -364,7 +283,7 @@ bool MetabolitesWidget1::saveToMetabolite()
     }
 
   //fixed?
-  if (RadioButton1->isChecked() == true)
+  if (mCheckStatus->isChecked() == true)
     {
       if (metab->getStatus() != CMetab::METAB_FIXED)
         {

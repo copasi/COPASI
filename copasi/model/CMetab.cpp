@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/02/26 21:17:35 $
+   $Date: 2004/03/25 12:41:41 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -27,10 +27,10 @@
 const CCompartment * CMetab::mpParentCompartment = NULL;
 
 const std::string CMetab::StatusName[] =
-  {"fixed", "independent", "dependent", ""};
+  {"fixed", "independent", "dependent", "unused", ""};
 
 const char * CMetab::XMLStatus[] =
-  {"fixed", "variable", "variable", NULL};
+  {"fixed", "variable", "variable", "variable", NULL};
 
 void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 {mpParentCompartment = parentCompartment;}

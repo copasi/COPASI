@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/05 21:21:36 $
+   $Date: 2004/03/25 12:41:41 $
    End CVS Header */
 
 /**
@@ -39,7 +39,8 @@ class CMetab : public CCopasiContainer
     {
       METAB_FIXED = 0,
       METAB_VARIABLE,
-      METAB_DEPENDENT
+      METAB_DEPENDENT,
+      METAB_UNUSED
     };
 
   public:

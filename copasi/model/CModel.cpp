@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.161 $
+   $Revision: 1.162 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/03/16 19:00:41 $
+   $Date: 2004/03/25 12:41:41 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -679,7 +679,8 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
   //  mMetabolitesDep.insert(mMetabolitesDep.begin(), &mMetabolitesX[i], &mMetabolitesX[j]);
 
   for (k = j; k < LU.numRows(); k++)
-    mMetabolitesX[k]->setStatus(CMetab::METAB_FIXED);
+    if (mMetabolitesX[k]->getStatus() != CMetab::METAB_FIXED)
+      mMetabolitesX[k]->setStatus(CMetab::METAB_UNUSED);
 
   return;
 }

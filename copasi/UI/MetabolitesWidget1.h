@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:53 $
+   $Date: 2004/03/25 12:41:41 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,16 +18,17 @@
 
 #include "copasiWidget.h"
 
-class QVBoxLayout;
+// class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
-class QButtonGroup;
+// class QButtonGroup;
 class QComboBox;
 class QFrame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-class QRadioButton;
+// class QRadioButton;
+class QCheckBox;
 
 class MetabolitesWidget1 : public CopasiWidget
   {
@@ -52,37 +53,32 @@ class MetabolitesWidget1 : public CopasiWidget
 
     //Widgets
     QGridLayout* MetabolitesWidget1Layout;
-    QGridLayout* ButtonGroup2Layout;
-    QGridLayout* ButtonGroup3Layout;
+    //    QGridLayout* ButtonGroup2Layout;
+    //    QGridLayout* ButtonGroup3Layout;
     QHBoxLayout* Layout7;
-    QLabel* TextLabel4;
-    QLabel* TextLabel5;
-    QLineEdit* LineEdit1;
-    QComboBox* ComboBox1;
+    QLabel* mLblName;
+    QLineEdit* mEditName;
+    QLabel* mLblCompartment;
+    QComboBox* mComboCompartment;
     QFrame* Line1;
+    QLabel* mLblInitStatus;
+    QCheckBox * mCheckStatus;
+    QLabel* mLblStatus;
+    QLineEdit * mEditStatus;
+    QFrame* Line2;
+    QLabel* mLblInitConcentration;
+    QLineEdit* mEditInitConcentration;
+    QLabel* mLblConcentration;
+    QLineEdit* mEditConcentration;
+    QLabel* mLblInitNumber;
+    QLineEdit* mEditInitNumber;
+    QLabel* mLblNumber;
+    QLineEdit* mEditNumber;
+    QLabel* mLblTransitionTime;
+    QLineEdit* mEditTransitionTime;
+    QFrame* Line3;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
-    QFrame* Line1_3;
-    QButtonGroup* ButtonGroup2;
-    QRadioButton* RadioButton1;
-    QRadioButton* RadioButton2;
-    QButtonGroup* ButtonGroup3;
-    QRadioButton* RadioButton4;
-    QRadioButton* RadioButton5;
-    QRadioButton* RadioButton3;
-    QFrame* Line1_2;
-    QLineEdit* LineEdit5;
-    QLineEdit* LineEdit8;
-    QLineEdit* LineEdit7;
-    QLineEdit* LineEdit4;
-    QLineEdit* LineEdit9;
-    QLabel* TextLabel10;
-    QLabel* TextLabel12;
-    QLabel* TextLabel8;
-    QLabel* TextLabel11;
-    QLabel* TextLabel7;
-    QLabel* TextLabel1;
-    QLabel* TextLabel2;
   };
 
 #endif // METABOLITESWIDGET1_H
