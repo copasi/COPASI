@@ -625,6 +625,7 @@ void OptimizationWidget::slotBtnConfirmClicked()
       func->mMinOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerOper());
       func->mMaxOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperOper());
     }
+  func->compile();
 }
 
 void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)
