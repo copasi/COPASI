@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.112 $
+   $Revision: 1.113 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/02/02 19:28:51 $
+   $Author: ssahle $ 
+   $Date: 2005/02/03 12:10:39 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -79,7 +79,7 @@ void MetabolitesWidget::showHeaders()
                         FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
 
   tableHeader->setLabel(7, "Rate\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
-                        "/(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*"FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))");
+                        "/(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))");
   /* --> */
 }
 
@@ -318,7 +318,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                // Yes or Enter
+    case 0:                                 // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -330,7 +330,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                // No or Escape
+    case 1:                                 // No or Escape
       break;
     }
 }
