@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 09:32:56 $
+   $Date: 2004/09/09 12:16:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -260,13 +260,13 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
 
   if (flag)
     {
-      C_FLOAT64 rate_factor = mpModel->getReactions()[index]->getScaledFlux() / substrate_factor;
+      C_FLOAT64 rate_factor = mpModel->getReactions()[index]->getParticleFlux() / substrate_factor;
       //cout << "Rate factor = " << rate_factor << endl;
       amu *= rate_factor;
       mAmu[index] = amu;
     }
   else
-  {mAmu[index] = mpModel->getReactions()[index]->getScaledFlux();}
+  {mAmu[index] = mpModel->getReactions()[index]->getParticleFlux();}
 
   //std::cout << "Index = " << index << "  Amu = " << amu << std::endl;
   return 0;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 11:48:49 $
+   $Date: 2004/09/09 12:16:30 $
    End CVS Header */
 
 /**
@@ -148,10 +148,10 @@ bool CTrajectoryTask::process()
 
   CVector< C_FLOAT64 > Derivatives(mpState->getVariableNumberSize());
 
-  pProblem->getModel()->getDerivatives(mpState, Derivatives);
+  pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
   mReport.printHeader();
 
-  pProblem->getModel()->getDerivatives(mpState, Derivatives);
+  pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
   mReport.printBody();
 
   if (mpOutputHandler) mpOutputHandler->init();
@@ -163,7 +163,7 @@ bool CTrajectoryTask::process()
 
   ActualStepSize = pMethod->step(StepSize, mpState);
 
-  pProblem->getModel()->getDerivatives(mpState, Derivatives);
+  pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
   mReport.printBody();
 
 #ifdef  XXXX_Event
@@ -177,7 +177,7 @@ bool CTrajectoryTask::process()
     {
       ActualStepSize = pMethod->step(StepSize);
 
-      pProblem->getModel()->getDerivatives(mpState, Derivatives);
+      pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
       mReport.printBody();
       if (mpOutputHandler) mpOutputHandler->doOutput();
 
@@ -206,7 +206,7 @@ bool CTrajectoryTask::process()
 
   pProblem->setEndState(new CState(*mpState));
 
-  pProblem->getModel()->getDerivatives(mpState, Derivatives);
+  pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
   mReport.printFooter();
 
   if (mpOutputHandler) mpOutputHandler->finish();

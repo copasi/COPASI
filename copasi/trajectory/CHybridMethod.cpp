@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 09:32:55 $
+   $Date: 2004/09/09 12:16:30 $
    End CVS Header */
 
 /**
@@ -76,13 +76,13 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:                // non-integer stoichometry
+    case - 3:                 // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-    case - 2:                // reversible reaction exists
+    case - 2:                 // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-    case - 1:                // more than one compartment involved
+    case - 1:                 // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;
       // Error: Hybrid simulation impossible
@@ -470,7 +470,7 @@ void CHybridMethod::calculateDerivative(C_FLOAT64 * deriv)
         {
           // juergen: +0.5 to get a rounding out of the static_cast
           bal = static_cast<C_INT32>(floor(mStoi[i][j->index] + 0.5));
-          deriv[i] += bal * (*mReactions)[j->index]->getScaledFlux(); //  balance * flux;
+          deriv[i] += bal * (*mReactions)[j->index]->getParticleFlux(); //  balance * flux;
         }
     }
   for (; i < mDim; i++) deriv[i] = 0.0; // important to get a correct deriv vector, because mStoi doesn't cover fixed metabolites
@@ -826,7 +826,7 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
   mpModel->getReactions()[rIndex]->calculate();
-  C_FLOAT64 rate_factor = mpModel->getReactions()[rIndex]->getScaledFlux() / substrate_factor;
+  C_FLOAT64 rate_factor = mpModel->getReactions()[rIndex]->getParticleFlux() / substrate_factor;
 
   //cout << "Rate factor = " << rate_factor << endl;
   amu *= rate_factor;
@@ -1401,7 +1401,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                // Everything !!!
+    case 0:                 // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << " Method: " /* << mMethod */
       << std::endl;
@@ -1508,7 +1508,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                 // Variable values only
+    case 1:                  // Variable values only
       os << "mTime: " << mpCurrentState->getTime() << std::endl;
       os << "oldState: ";
       for (i = 0; i < mDim; i++)
