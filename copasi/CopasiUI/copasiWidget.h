@@ -17,6 +17,10 @@ class CopasiWidget : public QWidget
   public:
     static int maxMinWidth;
     static int maxMinHeight;
+    static int realMinWidth;
+    static int realMinHeight;
+  private:
+    bool bInitialized;
   };
 
 #endif // !defined(COPASI_WIDGET_H)
