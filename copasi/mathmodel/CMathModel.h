@@ -11,6 +11,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 class CModel;
 class CMathConstantCompartment;
@@ -20,6 +21,7 @@ class CMathVariableVolume;
 class CMathVariableTime;
 class CMathSymbol;
 class CMathConstantParameter;
+class CMathEq;
 
 /** @dia:pos 97.0405,-33.6536 */
 class CMathModel
@@ -72,6 +74,11 @@ class CMathModel
      */
     /** @dia:route 4,18; h,36.0356,33.3698,45.8713,-27.5536,97.0405 */
     std::map< std::string, CMathConstantParameter * > mConstantsList;
+
+    /**
+     *
+     */
+    std::vector< CMathEq * > mEqList;
 
     // Operations
   public:
@@ -140,6 +147,11 @@ class CMathModel
      */
     std::map< std::string, CMathConstantParameter * > & getConstantsList();
 
+    /**
+     *
+     */
+    std::vector< CMathEq * > & getEqList();
+
   private:
     /**
      *
@@ -199,7 +211,12 @@ class CMathModel
     /**
      *
      */
-    bool buildEquations();
+    bool clearEqList();
+
+    /**
+     *
+     */
+    bool buildEqList();
   };
 
 #endif // COPASI_CMathModel

@@ -10,6 +10,8 @@
 #include "CMathModel.h"
 #include "CMathConstant.h"
 #include "CMathVariable.h"
+#include "CMathEq.h"
+
 #include "model/CModel.h"
 
 CMathModel::CMathModel():
@@ -20,7 +22,8 @@ CMathModel::CMathModel():
     mVolumeList(),
     mpTime(NULL),
     mFunctionList(),
-    mConstantsList()
+    mConstantsList(),
+    mEqList()
 {}
 
 CMathModel::CMathModel(const CMathModel & src):
@@ -31,7 +34,8 @@ CMathModel::CMathModel(const CMathModel & src):
     mVolumeList(src.mVolumeList),
     mpTime(src.mpTime),
     mFunctionList(src.mFunctionList),
-    mConstantsList(src.mConstantsList)
+    mConstantsList(src.mConstantsList),
+    mEqList(src.mEqList)
 {compile();}
 
 CMathModel::~CMathModel()
@@ -43,6 +47,7 @@ CMathModel::~CMathModel()
   pdelete(mpTime);
   clearList((std::map< std::string, CMathSymbol * > *) & mFunctionList);
   clearList((std::map< std::string, CMathSymbol * > *) & mConstantsList);
+  clearEqList();
 }
 
 bool CMathModel::setModel(const CModel * pModel)
@@ -70,6 +75,8 @@ bool CMathModel::compile()
   if (!compileCompartmentList()) Success = false;
   if (!compileMetabList()) Success = false;
   if (!compileFixedMetabList()) Success = false;
+
+  if (!buildEqList()) Success = false;
 
   return Success;
 }
@@ -237,6 +244,8 @@ bool CMathModel::buildConstantsList()
         }
     }
 
+  Success = CMathConstantParameter::buildSelection(mpModel);
+
   return Success;
 }
 
@@ -294,6 +303,65 @@ bool CMathModel::compileFixedMetabList()
 
   for (; it != end; it++)
     if (!it->second->compile()) Success = false;
+
+  return Success;
+}
+
+bool CMathModel::clearEqList()
+{
+  bool Success = true;
+
+  std::vector< CMathEq * >::iterator it = mEqList.begin();
+  std::vector< CMathEq * >::iterator end = mEqList.begin();
+
+  for (; it != end; it++)
+    pdelete(*it);
+
+  return Success;
+}
+
+bool CMathModel::buildEqList()
+{
+  bool Success = true;
+
+  clearEqList();
+
+  unsigned C_INT32 i, imax = mMetabList.size();
+  mEqList.resize(imax);
+
+  CMathEq * pEq;
+
+  std::map< std::string, CMathVariableMetab *>::iterator it =
+    mMetabList.begin();
+
+  for (i = 0; i < imax; i++, it++)
+    {
+      pEq = new CMathEq;
+      pEq->setVariable(it->second);
+      it->second->setEq(pEq);
+      mEqList[i] = pEq;
+    }
+
+  const CCopasiVector< CReaction > & ReactionList =
+    mpModel->getReactions();
+
+  imax = ReactionList.size();
+
+  const CReaction * pReaction;
+
+  for (i = 0; i < imax; i++)
+    {
+      pReaction = ReactionList[i];
+
+      const CCopasiVector<CChemEqElement> & Balances =
+        pReaction->getChemEq().getBalances();
+      unsigned C_INT32 j, jmax = Balances.size();
+      for (j = 0; j < jmax; j++)
+        {
+          pEq = ((CMathVariable *) CMathSymbol::find(&Balances[i]->getMetabolite()))->getEq();
+          pEq->getRight().attachNode(new CMathNodeNumber(Balances[i]->getMultiplicity()));
+        }
+    }
 
   return Success;
 }
