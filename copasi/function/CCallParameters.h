@@ -45,17 +45,22 @@ class CFunctionParameterMap
     /**
      * Sets a specific parameter. Works only if the parameter is no vector
      */
-    void setCallParameter(const std::string paramName, const CCopasiObject* obj);
+    void setCallParameter(const std::string paramName,
+                          const CCopasiObject* obj);
 
     /**
-     * Adds an object to a specific parameter vector. Works only if the parameter is a vector
+     * Adds an object to a specific parameter vector. 
+     * Works only if the parameter is a vector.
      */
-    void addCallParameter(const std::string paramName, const CCopasiObject* obj);
+    void addCallParameter(const std::string paramName,
+                          const CCopasiObject* obj);
 
     /**
-     * Removes an object from a specific parameter vector. Works only if the parameter is a vector
+     * Removes an object from a specific parameter vector.
+     * Works only if the parameter is a vector
      */
-    void removeCallParameter(const std::string paramName, const CCopasiObject* obj);
+    void removeCallParameter(const std::string paramName,
+                             const CCopasiObject* obj);
 
     /**
      * Initializes a CallParameters object from a CFunctionParameters object.
@@ -103,10 +108,11 @@ class CFunctionParameterMap
 
     // these are preliminary
   public:
-    CCallParameterPointers & getPointers() {return mPointers;};
-    CCallParameterPointers & getObjects() {return mObjects;};
-    const CCallParameterPointers & getObjects() const {return mObjects;};
-    const CFunctionParameters & getFunctionParameters() const {return mFunctionParameters;};
+    CCallParameterPointers & getPointers();
+    CCallParameterPointers & getObjects();
+    std::vector< const CCopasiObject * > getObjects(const unsigned C_INT32 & index) const;
+    const CCallParameterPointers & getObjects() const;
+    const CFunctionParameters & getFunctionParameters() const;
   };
 
 #endif // COPASI_CCallParameters

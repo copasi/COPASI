@@ -156,3 +156,36 @@ C_INT32 CFunctionParameterMap::findParameterByName(const std::string & name,
     fatalError()
     return - 1;
   }
+
+CCallParameterPointers & CFunctionParameterMap::getPointers()
+{return mPointers;};
+
+std::vector< const CCopasiObject * > CFunctionParameterMap::getObjects(const unsigned C_INT32 & index) const
+  {
+    std::vector< const CCopasiObject * > Objects;
+
+    if (index != C_INVALID_INDEX)
+      {
+        if (mFunctionParameters[index]->getType() < CFunctionParameter::VINT32)
+          Objects.push_back((const CCopasiObject *) mObjects[index]);
+        else
+          {
+            std::vector< void * > * tmp =
+              (std::vector< void * > *) mObjects[index];
+            unsigned C_INT32 i, imax = tmp->size();
+
+            for (i = 0; i < imax; i++)
+              Objects.push_back((const CCopasiObject *) (*tmp)[i]);
+          }
+      }
+
+    return Objects;
+  }
+
+CCallParameterPointers & CFunctionParameterMap::getObjects() {return mObjects;};
+
+const CCallParameterPointers & CFunctionParameterMap::getObjects() const
+  {return mObjects;};
+
+const CFunctionParameters & CFunctionParameterMap::getFunctionParameters() const
+  {return mFunctionParameters;};
