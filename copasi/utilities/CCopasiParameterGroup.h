@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:19 $
+   $Date: 2003/10/30 18:06:07 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -100,8 +100,8 @@ class CCopasiParameterGroup: public CCopasiParameter
     bool setValue(const unsigned C_INT32 & index,
                   const CType & value);
 
-    bool swap(const unsigned C_INT32 & index,
-              const unsigned C_INT32 & index);
+    bool swap(const unsigned C_INT32 & iFrom,
+              const unsigned C_INT32 & iTo);
 
     bool swap(parameterGroup::iterator & from,
               parameterGroup::iterator & to);
