@@ -152,7 +152,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
 /*
  *  Destroys the object and frees any allocated resources
  */
-ScanWidget::~ ScanWidget()
+ScanWidget::~ScanWidget()
 {
   // no need to delete child widgets, Qt does it all for us
 }
