@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/30 06:38:47 $
+   $Author: shoops $ 
+   $Date: 2004/02/03 23:24:49 $
    End CVS Header */
 
 /***********************************************************************
@@ -388,12 +388,23 @@ void MetabolitesWidget::slotBtnOKClicked()
           QString Compartment(table->text(j, 5));
           if (Compartment.latin1() != obj->getCompartment()->getName())
             {
-              dataModel->getModel()->getCompartments()[Compartment.latin1()]->addMetabolite(*obj);
-              dataModel->getModel()->getCompartments()[obj->getCompartment()->getName()]->getMetabolites().remove(obj->getName());
-              dataModel->getModel()->initializeMetabolites();
-              ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+              unsigned C_INT32 index =
+                dataModel->getModel()->
+                getCompartments().getIndex(Compartment.latin1());
+              if (index != C_INVALID_INDEX)
+                {
+                  dataModel->getModel()->
+                  getCompartments()[Compartment.latin1()]->
+                  addMetabolite(*obj);
+                  dataModel->getModel()->
+                  getCompartments()[obj->getCompartment()->getName()]->
+                  getMetabolites().remove(obj->getName());
+                  dataModel->getModel()->initializeMetabolites();
+                  ListViews::notify(ListViews::COMPARTMENT,
+                                    ListViews::CHANGE, "");
 
-              changed[j] = 1;
+                  changed[j] = 1;
+                }
             }
         }
 
@@ -524,7 +535,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                      // Yes or Enter
+            case 0:                       // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -537,7 +548,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                      // No or Escape
+            case 1:                       // No or Escape
               break;
             }
         }
