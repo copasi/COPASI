@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SimpleSelectionDialog.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/04 18:50:57 $
+   $Date: 2004/10/06 06:31:48 $
    End CVS Header */
 
 #include "SimpleSelectionDialog.h"
@@ -24,6 +24,8 @@ SimpleSelectionDialog::SimpleSelectionDialog(QWidget * parent , const char * nam
   ((QBoxLayout*)this->buttonBox->layout())->addStretch();
   this->okButton = new QPushButton(this, "OK");
   this->okButton->setText("OK");
+  this->okButton->setDefault(true);
+  this->okButton->setAutoDefault(true);
   this->buttonBox->addWidget(this->okButton);
   this->cancelButton = new QPushButton(this, "Cancel");
   this->cancelButton->setText("Cancel");
@@ -35,6 +37,9 @@ SimpleSelectionDialog::SimpleSelectionDialog(QWidget * parent , const char * nam
   this->mainLayout->addWidget(this->mainWidget);
   this->mainLayout->addLayout(this->buttonBox);
   this->mainWidget->setOutputVector(this->tmpVector);
+
+  this->setTabOrder(this->okButton, this->cancelButton);
+  this->setTabOrder(this->cancelButton, this->mainWidget);
 }
 
 SimpleSelectionDialog::~SimpleSelectionDialog()

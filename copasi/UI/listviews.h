@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/30 09:04:38 $
+   $Author: gauges $ 
+   $Date: 2004/10/06 06:31:48 $
    End CVS Header */
 
 /****************************************************************************
@@ -79,6 +79,9 @@ class FolderListItem : public QListViewItem
 class ListViews : public QSplitter
   {
     Q_OBJECT
+
+    friend class CopasiUI3Window;
+
   public:
     ListViews(QWidget *parent = 0, const char *name = 0);
     ~ListViews();

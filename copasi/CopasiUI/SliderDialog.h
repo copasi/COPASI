@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/01 14:50:51 $
+   $Date: 2004/10/06 06:31:49 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -11,7 +11,9 @@
 
 #include "qdialog.h"
 #include "qvbox.h"
+#include "copasi.h"
 #include <vector>
+#include <map>
 
 class QScrollView;
 class QHBox;
@@ -23,6 +25,7 @@ class QString;
 class QSlider;
 class CCopasiObject;
 class QLabel;
+class CopasiSlider;
 
 class SliderDialog: public QDialog
   {
@@ -31,15 +34,23 @@ class SliderDialog: public QDialog
   public:
     SliderDialog(QWidget* parent);
     virtual ~SliderDialog();
-    void addSlider(const QString& name, int min, int max, int tickInterval);
+    void addSlider(CCopasiObject* object, C_INT32 folderId);
+    void setCurrentFolderId(C_INT32 id);
 
   protected:
     QPushButton* runTaskButton;
     QCheckBox* autoRunCheckBox;
     QScrollView* scrollView;
     QVBox* sliderBox;
+    std::map<C_INT32 , std::vector< CopasiSlider* > > sliderMap;
+    C_INT32 currentFolderId;
+
+    C_INT32 mapFolderId2EntryId(C_INT32 folderId) const;
 
     void init();
+
+    static C_INT32 numMappings;
+    static C_INT32 folderMappings[][2];
 
   public slots:
     void toggleRunButtonState(bool);
@@ -67,6 +78,7 @@ class CopasiSlider: public QVBox
     void setMaxValue(double value);
     double minValue() const;
     double maxValue() const;
+    bool ensureConsistency();
 
   public slots:
     void sliderValueChanged(int value);

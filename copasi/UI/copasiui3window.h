@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/05 15:32:26 $
+   $Author: gauges $ 
+   $Date: 2004/10/06 06:31:48 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -14,6 +14,7 @@ class QToolButton;
 class ListViews;
 class DataModelGUI;
 class SliderDialog;
+class QListViewItem;
 
 class CopasiUI3Window : public QMainWindow
   {
@@ -47,6 +48,7 @@ class CopasiUI3Window : public QMainWindow
     void closeEvent(QCloseEvent* ce);
     void slotToggleSliders(const QVariant& variant);
     void slotSimpleSelection();
+    void listViewsFolderChanged(QListViewItem* item);
 
   private:
     int closeFlag;
