@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2003/08/13 15:39:13 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2003/09/16 23:45:43 $  
 ######################################################################
 
 include(../common.pri)
@@ -28,27 +28,25 @@ contains(BUILD_OS, WIN32) {
   LIBS += $$COPASI_LIBS
   TARGETDEPS += $$COPASI_LIBS
 } else {
-  # The order of libs is important 
-  tmpLIBS = $${LIBS}
-  LIBS = -L../lib \
-         -Wl,-lelementaryFluxModes \
-         -Wl,-lcopasiXML \
-         -Wl,-lmathmodel \
-         -Wl,-lmodel \
-         -Wl,-lfunction \
-         -Wl,-loutput \
-         -Wl,-lreport \
-         -Wl,-loptimization \
-         -Wl,-lscan \
-         -Wl,-lsteadystate \
-         -Wl,-ltrajectory \
-         -Wl,-lrandomGenerator \
-         -Wl,-lutilities \
-         -Wl,-loutput \
-         -Wl,-lreport \
-         -Wl,-lfunction \
-         -Wl,-lmodel
-  LIBS += $${tmpLIBS}
+  # The order of objects is important 
+  OBJECTS += ../lib/libelementaryFluxModes.a \
+             ../lib/libcopasiXML.a \
+             ../lib/libmathmodel.a \
+             ../lib/libmodel.a \
+             ../lib/libfunction.a \
+             ../lib/liboutput.a \
+             ../lib/libreport.a \
+             ../lib/liboptimization.a \
+             ../lib/libscan.a \
+             ../lib/libsteadystate.a \
+             ../lib/libtrajectory.a \
+             ../lib/librandomGenerator.a \
+             ../lib/libutilities.a \
+             ../lib/liboutput.a \
+             ../lib/libreport.a \
+             ../lib/libfunction.a \
+             ../lib/libmodel.a
+    
   LIBS += -lexpat
   
   TARGETDEPS += ../lib/libcommandline.a \
