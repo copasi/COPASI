@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:13:05 $
+   $Author: gasingh $ 
+   $Date: 2003/10/17 22:49:44 $
    End CVS Header */
 
 /****************************************************************************
@@ -24,7 +24,8 @@
 #include <qobjectlist.h>
 #include <qheader.h>
 #include <qmessagebox.h>
-#include <qmultilineedit.h> 
+#include <qmultilineedit.h>
+#include <qimage.h> 
 //#include "copasiWidget.h"
 #include "copasi.h"
 #include "DataModel.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.118 $
+   $Revision: 1.119 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:44 $
+   $Author: gasingh $ 
+   $Date: 2003/10/17 22:49:44 $
    End CVS Header */
 
 /****************************************************************************
@@ -166,9 +166,9 @@ ListViews::ListViews(QWidget *parent, const char *name):
   folderOpen = new QPixmap((const char**)folderopen);
 
   // setting the parameter for the qptrlist...
-  //lstFolders.setAutoDelete(false);
+  // lstFolders.setAutoDelete(false);
 
-  //  create a new QListview to be displayed on the screen..and set its property
+  // create a new QListview to be displayed on the screen..and set its property
   folders = new QListView(this);
   folders->header()->setClickEnabled(false);
   folders->setRootIsDecorated(true);
@@ -534,7 +534,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                    //Time course
+      case 23:                     //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -543,7 +543,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                   //Report
+      case 43:                    //Report
         return tableDefinition;
         break;
       case 5:
@@ -592,11 +592,29 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
  *************************************************************************************/
 void ListViews::slotFolderChanged(QListViewItem *i)
 {
-  // to show the folders open or close or locked..
   if (!i) return;
 
-  if (i->childCount() != 0)
+  //To show the folders open or close or locked.
+  QListViewItemIterator it(folders);
+  for (; it.current(); ++it)
+    {
+      QPixmap *icon = (QPixmap *)it.current()->pixmap(0);
+      QImage image1 = icon->convertToImage ();
+      QImage image2 = folderOpen->convertToImage ();
+
+      if (image1 == image2)
+        it.current()->setPixmap(0, *folderClosed);
+    }
+
+  QPixmap *icon = (QPixmap *)i->pixmap(0);
+  QImage image1 = icon->convertToImage ();
+  QImage image2 = folderLocked->convertToImage ();
+
+  if (image1 != image2)
     i->setPixmap(0, *folderOpen);
+
+  //if (i->childCount() != 0)
+  //  i->setPixmap(0, *folderOpen);
 
   // to change the status of the folder (closed/open)
   //if (lastSelection)
