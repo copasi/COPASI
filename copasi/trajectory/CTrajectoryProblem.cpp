@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 15:54:56 $
+   $Date: 2004/10/08 09:19:10 $
    End CVS Header */
 
 /**
@@ -37,6 +37,7 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
   addParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01);
   addParameter("StartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
   addParameter("EndTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
+  addParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
 
   CONSTRUCTOR_TRACE;
 }
@@ -143,6 +144,14 @@ void CTrajectoryProblem::setEndTime(const C_FLOAT64 & endTime)
  */
 const C_FLOAT64 & CTrajectoryProblem::getEndTime() const
   {return * (C_FLOAT64 *) getValue("EndTime");}
+
+void CTrajectoryProblem::setTimeSeriesRequested(bool flag)
+{
+  setValue("TimeSeriesRequested", flag);
+}
+
+bool CTrajectoryProblem::timeSeriesRequested() const
+  {return * (bool *) getValue("TimeSeriesRequested");}
 
 /**
  * Set the initial state of the problem.

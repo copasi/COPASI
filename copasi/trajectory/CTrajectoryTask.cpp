@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 15:56:05 $
+   $Date: 2004/10/08 09:19:10 $
    End CVS Header */
 
 /**
@@ -139,6 +139,8 @@ bool CTrajectoryTask::process()
 
   CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
   CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
+
+  mTimeSeriesRequested = pProblem->timeSeriesRequested();
 
   pdelete(mpState);
   mpState = new CState(pProblem->getInitialState());
