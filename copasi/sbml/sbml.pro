@@ -1,5 +1,5 @@
 
-LIB = sbml
+LIB = sbmlimport
 include(../lib.pri)
 
 # Input
@@ -9,6 +9,6 @@ HEADERS += ConverterASTNode.h \
            
            
 SOURCES += ConverterASTNode.cpp \
-           SBMLImporter.h
+           SBMLImporter.cpp
 
 

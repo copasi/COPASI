@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.32 $ $Author: gauges $ $Date: 2004/06/11 11:59:56 $  
+# $Revision: 1.33 $ $Author: ssahle $ $Date: 2004/06/11 14:21:51 $  
 ######################################################################
 
 include(../common.pri)
@@ -20,6 +20,7 @@ contains(BUILD_OS, WIN32) {
 #          ../lib/output.lib \
           ../lib/randomGenerator.lib \
           ../lib/report.lib \
+          ../lib/sbmlimport.lib \
           ../lib/scan.lib \
           ../lib/steadystate.lib \
           ../lib/trajectory.lib \
@@ -45,6 +46,7 @@ contains(BUILD_OS, WIN32) {
 #              ../lib/liboutput.a \
               ../lib/libreport.a \
               ../lib/liboptimization.a \
+              ../lib/libsbmlimport.a \
               ../lib/libscan.a \
               ../lib/libsteadystate.a \
               ../lib/libtrajectory.a \
@@ -57,7 +59,8 @@ contains(BUILD_OS, WIN32) {
               ../lib/libmodel.a
 
   LIBS += -lqwt \
-          -lsbml
+          -lsbml \
+          -lxerces-c
   
   release {
     distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
@@ -73,6 +76,7 @@ contains(BUILD_OS, WIN32) {
 #                ../lib/liboutput.a \
                 ../lib/librandomGenerator.a \
                 ../lib/libreport.a \
+                ../lib/libsbmlimport.a \
                 ../lib/libscan.a \
                 ../lib/libsteadystate.a \
                 ../lib/libtrajectory.a \

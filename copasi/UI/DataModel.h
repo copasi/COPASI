@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.h,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/29 02:37:52 $
+   $Author: ssahle $ 
+   $Date: 2004/06/11 14:22:20 $
    End CVS Header */
 
 /****************************************************************************
@@ -139,6 +139,9 @@ class DataModel
     void loadModel(const char* fileName);
     void createModel();
     void saveModel(const char* fileName);
+
+    void importSBML(const char* fileName);
+    void exportSBML(const char* fileName);
 
     CModel* getModel() {return model;}
 
