@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MCAWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/21 15:09:02 $
+   $Author: shoops $ 
+   $Date: 2004/10/22 17:11:15 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -270,8 +270,8 @@ bool MCAWidget::enter(const std::string & key)
 
   loadMCATask();;
 
-  return true;
   */
+  return true;
 }
 
 bool MCAWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action),
