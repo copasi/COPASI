@@ -270,7 +270,7 @@ void ReactionsWidget1::loadName(QString setValue)
     {
       comboEntry = reactn->getFunction().getName().c_str();
       ComboBox1->setCurrentText(comboEntry);
-      slotComboBoxSelectionChanged(comboEntry);
+      //      slotComboBoxSelectionChanged(comboEntry);
     }
   //  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
   //emit sideySignal();
@@ -292,11 +292,26 @@ void ReactionsWidget1::slotBtnOKClicked()
 {
   /*This code is to save the changes in the reaction*/
   CReaction *pReaction = mModel->getReactions()[name.latin1()];
-  if (pReaction->setName(LineEdit1->text().latin1()))
-    name = LineEdit1->text();
 
-  pReaction->setChemEq(LineEdit2->text().latin1());
-  pReaction->setFunction(ComboBox1->currentText().latin1());
+  if (pReaction->getName() != LineEdit1->text().latin1())
+    if (pReaction->setName(LineEdit1->text().latin1()))
+      name = LineEdit1->text();
+
+  CChemEq ChemEq;
+  ChemEq.setChemicalEquation(LineEdit2->text().latin1());
+
+  if (ChemEq.getChemicalEquationConverted() !=
+      pReaction->getChemEq().getChemicalEquationConverted())
+    {
+      slotLineEditChanged();
+      //        pReaction->setChemEq(LineEdit2->text().latin1());
+      //        pReaction->compileChemEq(mModel->getCompartments());
+    }
+
+  if (!&pReaction->getFunction())
+    pReaction->setFunction(ComboBox1->currentText().latin1());
+  else if (pReaction->getFunction().getName() != ComboBox1->currentText().latin1())
+    pReaction->setFunction(ComboBox1->currentText().latin1());
 
   CCopasiVector< CReaction::CId2Metab > & Substrates =
     pReaction->getId2Substrates();
@@ -314,7 +329,7 @@ void ReactionsWidget1::slotBtnOKClicked()
   const CFunctionParameters & Variables =
     pReaction->getFunction().getParameters();
 
-  unsigned C_INT32 i, imax = Variables.size();
+  unsigned C_INT32 i, imax = std::min(Variables.size(), (unsigned C_INT32) table->numRows());
   unsigned C_INT32 j, jmax;
   unsigned C_INT32 l;
   CReaction::CId2Metab Metabolite;

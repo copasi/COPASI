@@ -33,7 +33,7 @@ class FunctionWidget1 : public QWidget
     void loadName(QString setValue);
     int isName(QString setValue);
 
-    int myValue;
+    QString mName;
 
     QString *Function_Name;
     QString *new_Name;
@@ -46,7 +46,6 @@ class FunctionWidget1 : public QWidget
     QString app_High;
     int int_Low;
     int int_High;
-    int enum_Type;
 
     QLabel* TextLabel1;
     QLabel* TextLabel2;

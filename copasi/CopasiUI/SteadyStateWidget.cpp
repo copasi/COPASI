@@ -25,6 +25,7 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "model/CModel.h"
 #include "listviews.h"
+#include "utilities/CCopasiException.h"
 
 /*
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
@@ -237,9 +238,26 @@ void SteadyStateWidget::RunTask()
   std::ofstream output("steadystate.txt");
   mSteadyStateTask->initializeReporting(output);
 
-  mSteadyStateTask->process();
+  setCursor(Qt::WaitCursor);
 
+  try
+    {
+      mSteadyStateTask->process();
+    }
+
+  catch (CCopasiException Exception)
+    {
+      QMessageBox mb("Copasi",
+                     "Could not find a Steady State",
+                     QMessageBox::NoIcon,
+                     QMessageBox::Ok | QMessageBox::Escape,
+                     QMessageBox::NoButton,
+                     QMessageBox::NoButton);
+      mb.exec();
+    }
   emit runFinished(mSteadyStateTask->getProblem()->getModel());
+
+  unsetCursor();
 }
 
 void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)

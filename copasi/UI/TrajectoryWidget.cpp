@@ -200,23 +200,28 @@ void TrajectoryWidget::CommitChange()
   CTrajectoryProblem * trajectoryproblem = mTrajectoryTask->getProblem();
   CTrajectoryMethod* trajectorymethod = mTrajectoryTask->getMethod();
 
-  trajectoryproblem->setStepSize(nStepSize->text().toDouble());
-  trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
+  if (trajectoryproblem->getStepSize() != nStepSize->text().toDouble())
+    trajectoryproblem->setStepSize(nStepSize->text().toDouble());
+  else if (trajectoryproblem->getStepNumber() != nStepNumber->text().toLong())
+    trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
   trajectoryproblem->setStartTime(nStartTime->text().toDouble());
   trajectoryproblem->setEndTime(nEndTime->text().toDouble());
 
-  CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
-  trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CTrajectoryMethod::Type)ComboBox1->currentItem(), trajectoryproblem);
-  if (trajectorymethod != NULL)
+  if (trajectorymethod->getTypeEnum() != (CTrajectoryMethod::Type)ComboBox1->currentItem())
     {
-      trajectorymethod -> setProblem(trajectoryproblem);
-      mTrajectoryTask -> setMethod(trajectorymethod);
-      pdelete(ptrTmpMethod);
-    }
-  else
-    {
-      QMessageBox::warning(this, NULL, "New method cannot be created by the paramters!", QMessageBox::Ok, QMessageBox::Cancel);
-      trajectorymethod = ptrTmpMethod;
+      CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
+      trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CTrajectoryMethod::Type)ComboBox1->currentItem(), trajectoryproblem);
+      if (trajectorymethod != NULL)
+        {
+          trajectorymethod -> setProblem(trajectoryproblem);
+          mTrajectoryTask -> setMethod(trajectorymethod);
+          pdelete(ptrTmpMethod);
+        }
+      else
+        {
+          QMessageBox::warning(this, NULL, "New method cannot be created by the paramters!", QMessageBox::Ok, QMessageBox::Cancel);
+          trajectorymethod = ptrTmpMethod;
+        }
     }
 
   QTableItem * pItem;
@@ -231,16 +236,20 @@ void TrajectoryWidget::CommitChange()
       switch (trajectorymethod->getType((const char *)strname.utf8()))
         {
         case CMethodParameter::DOUBLE:
-          trajectorymethod->setValue((const char *)strname.utf8(), substrate.toDouble());
+          trajectorymethod->setValue((const char *)strname.utf8(),
+                                     substrate.toDouble());
           break;
         case CMethodParameter::INT:
-          trajectorymethod->setValue((const char *)strname.utf8(), (C_INT32)substrate.toInt());
+          trajectorymethod->setValue((const char *)strname.utf8(),
+                                     (C_INT32)substrate.toInt());
           break;
         case CMethodParameter::UINT:
-          trajectorymethod->setValue((const char *)strname.utf8(), (unsigned C_INT32)substrate.toUInt());
+          trajectorymethod->setValue((const char *)strname.utf8(),
+                                     (unsigned C_INT32)substrate.toUInt());
           break;
         case CMethodParameter::BOOL:;
-          trajectorymethod->setValue((const char *)strname.utf8(), bool(substrate.toUShort()));
+          trajectorymethod->setValue((const char *)strname.utf8(),
+                                     bool(substrate.toUShort()));
           break;
         }
     }
@@ -263,6 +272,8 @@ void TrajectoryWidget::RunTask()
   if (mTrajectoryTask == NULL)
     return;
 
+  setCursor(Qt::WaitCursor);
+
   mTrajectoryTask->getProblem()->getModel()->compile();
   mTrajectoryTask->getProblem()->
   setInitialState(mTrajectoryTask->getProblem()->
@@ -271,11 +282,14 @@ void TrajectoryWidget::RunTask()
   setStartTime(mTrajectoryTask->getProblem()->getStartTime());
 
   std::ofstream output("trajectory.txt");
+  output << "# "; // Hack for gnuplot
   mTrajectoryTask->initializeReporting(output);
 
   mTrajectoryTask->process();
 
   emit runFinished(mTrajectoryTask->getProblem()->getModel());
+
+  unsetCursor();
 }
 
 void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)

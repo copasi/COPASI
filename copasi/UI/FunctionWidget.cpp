@@ -131,7 +131,9 @@ void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPo
   if (row == table->numRows() - 1)
     {
       std::string name = "Function";
-      CFunction* newFunction = new CFunction(name);
+      CKinFunction newFunction;;
+      newFunction.setType(CFunction::UserDefined);
+
       int i = 0;
       while (Copasi->pFunctionDB->findFunction(name) != NULL)
         {
@@ -140,7 +142,7 @@ void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPo
           name += "_";
           name += QString::number(i);
         }
-      newFunction->setName(name);
+      newFunction.setName(name);
       Copasi->pFunctionDB->add(newFunction);
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
