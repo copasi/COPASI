@@ -199,20 +199,28 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
       else
         {
           currentItem->setText(0, current->getObjectName().c_str());
-          currentItem->setObjectType(OBJECTATTR);
           if (current->isVector())
             {
+              currentItem->setObjectType(CONTAINERATTR);
               currentItem->attachKey();
-              loadChild(currentItem, (CCopasiContainer *) current);
+
+              ObjectBrowserItem* fieldChild = new ObjectBrowserItem(currentItem, NULL, NULL, objectItemList);
+              fieldChild->attachKey();
+              fieldChild->setObjectType(FIELDATTR);
+              fieldChild->setText(0, "Attribute");
+
+              ObjectBrowserItem* objectChild = new ObjectBrowserItem(currentItem, fieldChild, NULL, objectItemList);
+              objectChild->attachKey();
+              objectChild->setObjectType(CONTAINERATTR);
+              objectChild->setText(0, "Object List");
+
+              loadChild(objectChild, (CCopasiContainer *) current);
             }
           else
-            childStack->insert(currentItem);
-
-          bool test = current->isVector();
-          test = current->isMatrix();
-          test = current->isNameVector();
-          test = current->isReference();
-          //   loadChild(currentItem, current);
+            {
+              currentItem->setObjectType(OBJECTATTR);
+              childStack->insert(currentItem);
+            }
         }
       it++;
     }

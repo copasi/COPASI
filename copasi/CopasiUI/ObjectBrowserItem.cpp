@@ -1,6 +1,6 @@
 #include "ObjectBrowserItem.h"
 
-long ObjectBrowserItem::KeySpace = 1;
+long ObjectBrowserItem::KeySpace = 100000000;
 
 ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList)
     : QListViewItem(parent, after)
