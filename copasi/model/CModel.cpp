@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.149 $
+   $Revision: 1.150 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/25 14:32:01 $
+   $Date: 2003/11/25 17:58:19 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -845,14 +845,12 @@ void CModel::buildMoieties()
 
       pMoiety->setName(mMetabolitesX[i]->getName());
 
-      pMoiety->add
-      (1.0, mMetabolitesX[i]);
+      pMoiety->add(1.0, mMetabolitesX[i]);
 
       for (j = 0; j < jmax; j++)
         {
           if (mLView(i, j) != 0.0)
-            pMoiety->add
-            (mLView(i, j), mMetabolitesX[j]);
+            pMoiety->add(mLView(i, j), mMetabolitesX[j]);
         }
 
       pMoiety->setInitialValue();
