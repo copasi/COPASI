@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/11/04 15:54:10 $
+   $Author: shoops $ 
+   $Date: 2004/11/10 16:03:06 $
    End CVS Header */
 
 /****************************************************************************
@@ -70,11 +70,12 @@ class FolderListItem : public QListViewItem
     void createSubFolders();
     void deleteSubFolders();
 
-    const IndexedNode *folder() const;
+    bool setFolder(const IndexedNode & folder);
+    const IndexedNode & getFolder() const;
     QString key(int, bool) const;
 
   protected:
-    const IndexedNode *mpFolder;
+    IndexedNode mFolder;
   };
 
 //********************************************************************************

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.106 $
+   $Revision: 1.107 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/02 17:06:46 $
+   $Author: shoops $ 
+   $Date: 2004/11/10 16:03:06 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -95,7 +95,7 @@ CopasiUI3Window::CopasiUI3Window():
   listViews->show();
   this->setCentralWidget(listViews);
   this->sliders = new SliderDialog(this, this->dataModel);
-  C_INT32 id = ((FolderListItem*)listViews->folders->currentItem())->folder()->getId();
+  C_INT32 id = ((FolderListItem*)listViews->folders->currentItem())->getFolder().getId();
   this->sliders->setCurrentFolderId(id);
   const COptions::nonOptionType & Files = COptions::getNonOptions();
   if (Files.size())
@@ -107,6 +107,12 @@ CopasiUI3Window::CopasiUI3Window():
     }
 
   // ListViews::notify(ListViews::FUNCTION, ListViews::ADD, "");
+}
+
+CopasiUI3Window::~CopasiUI3Window()
+{
+  pdelete(listViews);
+  pdelete(dataModel);
 }
 
 /***************CopasiUI3Window::slotFileSaveAs()******
@@ -162,14 +168,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                          // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                           // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                          // Discard clicked or Alt+D pressed
+        case 1:                                           // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                          // Cancel clicked or Escape pressed
+        case 2:                                           // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -224,14 +230,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                          // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                           // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                          // Discard clicked or Alt+D pressed
+            case 1:                                           // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                          // Cancel clicked or Escape pressed
+            case 2:                                           // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -346,14 +352,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                          // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                           // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                          // Discard clicked or Alt+D pressed
+        case 1:                                           // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                          // Cancel clicked or Escape pressed
+        case 2:                                           // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -375,14 +381,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                          // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                           // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                          // Discard clicked or Alt+D pressed
+            case 1:                                           // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                          // Cancel clicked or Escape pressed
+            case 2:                                           // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -611,14 +617,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                          // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                           // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                          // Discard clicked or Alt+D pressed
+            case 1:                                           // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                          // Cancel clicked or Escape pressed
+            case 2:                                           // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -720,7 +726,7 @@ DataModelGUI* CopasiUI3Window::getDataModel()
 
 void CopasiUI3Window::listViewsFolderChanged(QListViewItem* item)
 {
-  C_INT32 id = ((FolderListItem*)item)->folder()->getId();
+  C_INT32 id = ((FolderListItem*)item)->getFolder().getId();
   this->sliders->setCurrentFolderId(id);
 }
 

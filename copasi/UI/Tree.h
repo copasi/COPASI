@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/15 17:15:57 $
+   $Author: shoops $ 
+   $Date: 2004/11/10 16:03:06 $
    End CVS Header */
 
 /****************************************************************************
@@ -37,38 +37,29 @@ class IndexedTree;
 class IndexedNode
   {
   public:
-    IndexedNode(int id = 0, const QString & name = "", const std::string & key = "")
-        : mId(id), mName(name), mObjectKey(key)
-    {
-      mSortKey.setNum(id);
-      mSortKey += "_" + name;
-    };
+    IndexedNode(int id = 0, const QString & name = "", const std::string & key = "");
 
-    //~IndexedNode(); // destructor
+    IndexedNode(const IndexedNode & src);
 
-    const std::vector<IndexedNode>& children() const
-      {return mChildren;};
+    ~IndexedNode(); // destructor
 
-    void removeChildren()
-    {mChildren.resize(0);};
+    const std::vector<IndexedNode>& children() const;
 
-    void addChild(int id, const QString & name, const std::string & key)
-    {mChildren.push_back(IndexedNode(id, name, key));};
+    void removeChildren();
 
-    int getId() const {return mId;};
+    void addChild(int id, const QString & name, const std::string & key);
+
+    int getId() const;
 
     //contents methods
-    const QString & getName() const {return mName;};
-    void setName(const QString & name)
-    {
-      mName = name;
-      mSortKey.setNum(mId);
-      mSortKey += "_" + name;
-    };
-    const std::string & getObjectKey() const {return mObjectKey;};
-    void setObjectKey(const std::string & key) {mObjectKey = key;};
+    const QString & getName() const;
+    void setName(const QString & name);
+    const std::string & getObjectKey() const;
+    void setObjectKey(const std::string & key);
 
-    const QString & getSortKey() const {return mSortKey;};
+    const QString & getSortKey() const;
+
+    const std::vector<IndexedNode> & children();
 
   private:
     int mId;
@@ -81,9 +72,6 @@ class IndexedNode
     QString mName;
     std::string mObjectKey;
 
-    std::vector<IndexedNode>& children()
-    {return mChildren;};
-
     friend class IndexedTree;
   };
 
@@ -93,7 +81,7 @@ class IndexedTree
   private:
     IndexedNode root; // declares the head of the tree
 
-    IndexedNode * findNodeFromId(IndexedNode & node, int id);
+    const IndexedNode * findNodeFromId(const IndexedNode & node, int id) const;
 
   public :
 

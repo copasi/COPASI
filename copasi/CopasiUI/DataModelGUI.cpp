@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/28 07:34:27 $
+   $Author: shoops $ 
+   $Date: 2004/11/10 16:03:06 $
    End CVS Header */
 
 #include "DataModelGUI.h"
@@ -236,6 +236,9 @@ void DataModelGUI::updatePlots()
 
 const IndexedNode & DataModelGUI::getRootNode() const
   {return mTree.getRoot();}
+
+const IndexedNode & DataModelGUI::getNode(const int & id) const
+  {return const_cast<IndexedTree *>(&mTree)->findNodeFromId(id);}
 
 //*****************************************************************
 
