@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.30 $ $Author: ssahle $ $Date: 2004/05/24 08:44:29 $  
+# $Revision: 1.31 $ $Author: ssahle $ $Date: 2004/05/26 09:47:42 $  
 ######################################################################
 
 include(../common.pri)
@@ -17,7 +17,7 @@ contains(BUILD_OS, WIN32) {
           ../lib/mathmodel.lib \
           ../lib/model.lib \
           ../lib/optimization.lib \
-          ../lib/output.lib \
+#          ../lib/output.lib \
           ../lib/randomGenerator.lib \
           ../lib/report.lib \
           ../lib/scan.lib \
@@ -42,7 +42,7 @@ contains(BUILD_OS, WIN32) {
               ../lib/libmathmodel.a \
               ../lib/libmodel.a \
               ../lib/libfunction.a \
-              ../lib/liboutput.a \
+#              ../lib/liboutput.a \
               ../lib/libreport.a \
               ../lib/liboptimization.a \
               ../lib/libscan.a \
@@ -51,7 +51,7 @@ contains(BUILD_OS, WIN32) {
               ../lib/librandomGenerator.a \
               ../lib/libplot.a \
               ../lib/libutilities.a \
-              ../lib/liboutput.a \
+#              ../lib/liboutput.a \
               ../lib/libreport.a \
               ../lib/libfunction.a \
               ../lib/libmodel.a
@@ -70,7 +70,7 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libmathmodel.a \
                 ../lib/libmodel.a \
                 ../lib/liboptimization.a \
-                ../lib/liboutput.a \
+#                ../lib/liboutput.a \
                 ../lib/librandomGenerator.a \
                 ../lib/libreport.a \
                 ../lib/libscan.a \
