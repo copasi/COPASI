@@ -51,7 +51,7 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
     {
       for (i = s - 1; i > 0; i--)
         //if(scanItem[i]->Indp) break;
-        if (scanProblem->getScanItemParameter(i, "Indp") == 1.0) break;
+        if (scanProblem->getScanItemParameter(i, "indp") == 1.0) break;
 
       next = i;
     }
@@ -65,7 +65,7 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
   if (s < scanDimension - 1)
     {
       for (i = s + 1; i < scanDimension; i++)
-        if (scanProblem->getScanItemParameter(i, "Indp") == 1.0) break;
+        if (scanProblem->getScanItemParameter(i, "indp") == 1.0) break;
       top = i;
     }
   else
@@ -86,7 +86,7 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
       // start with the min values
       setScanParameterValue(0, s, top);
       //different from SD_REGULR by initial value
-      for (i = 0; i < scanProblem->getScanItemParameter(s, "Density"); i++)
+      for (i = 0; i < scanProblem->getScanItemParameter(s, "density"); i++)
         {
           if (s != 0) scan(next, false);
           else
@@ -144,7 +144,7 @@ void CScanMethod::setScanParameterValue(unsigned C_INT32 i,
       // making a copy of the min and max parameters of the scanItem j
       min = scanProblem->getScanItemParameter(j, "min");
       max = scanProblem->getScanItemParameter(j, "max");
-      ampl = scanProblem->getScanItemParameter(j, "Ampl");
+      ampl = scanProblem->getScanItemParameter(j, "ampl");
       incr = scanProblem->getScanItemParameter(j, "incr");
 
       // switch the grid type and set values accordingly
@@ -183,44 +183,50 @@ void CScanMethod::setScanParameterValue(unsigned C_INT32 i,
 
 void CScanMethod::InitScan(void)
 {
-  /*
   int i, density;
+  unsigned C_INT32 scanDimension = scanProblem->getListSize();
   // do nothing if ScanDimension is smaller than 1
-  if(ScanDimension<1)
-  {
-   ScanDimension = 0;
-   return;
-  }
-  // ensure that that the first item is a master
-  ScanItem[0]->Indp = TRUE;
-  // and that its density is >= 2
-  if(ScanItem[0]->Density < 2) ScanItem[0]->Density = 2;
-  TotIteration = 1;
-  for(i=0, density=2; i<ScanDimension; i++)
-  {
-   // if this item is slave keep the density of the master
-   if(ScanItem[i]->Indp)
-   {
-    density = ScanItem[i]->Density;
-    TotIteration *= density;
-   }
-   // calculate the amplitude
-   if(ScanItem[i]->Log)
-   {
-    if((ScanItem[i]->Min <= 0) || (ScanItem[i]->Max <= 0))
+  if (scanDimension < 1)
     {
-     // logarithmic scanning requires positive arguments!
-  // user should be warned, but this should never happen!
-  ScanItem[i]->Min = 1.0;
-  ScanItem[i]->Max = 2.0;
+      scanDimension = 0;
+      return;
     }
-    ScanItem[i]->Ampl =   log10(ScanItem[i]->Max)
-                        - log10(ScanItem[i]->Min);
-   }
-   else
-    ScanItem[i]->Ampl = ScanItem[i]->Max - ScanItem[i]->Min;
-   // calculate the increment
-   ScanItem[i]->Incr = ScanItem[i]->Ampl/(density-1);
-  }
-  */
+  // ensure that that the first item is a master
+  scanProblem->setScanItemParameter(0, "indp", true);
+  // and that its density is >= 2
+  if (scanProblem->getScanItemParameter(0, "density") < 2)
+    scanProblem->setScanItemParameter(0, "density", 2);
+
+  unsigned C_INT32 TotIteration = 1;
+  for (i = 0, density = 2; i < scanDimension; i++)
+    {
+      // if this item is slave keep the density of the master
+      if (scanProblem->getScanItemParameter(i, "indp"))
+        {
+          density = scanProblem->getScanItemParameter(i, "density");
+          TotIteration *= density;
+        }
+
+      // calculate the amplitude
+      if (scanProblem->getScanItemParameter(i, "log"))
+        {
+          if ((scanProblem->getScanItemParameter(i, "min") <= 0) ||
+               (scanProblem->getScanItemParameter(i, "max") <= 0))
+            {
+              // logarithmic scanning requires positive arguments!
+              // user should be warned, but this should never happen!
+              scanProblem->setScanItemParameter(i, "min", 1.0);
+              scanProblem->setScanItemParameter(i, "max", 2.0);
+            }
+          scanProblem->setScanItemParameter(i, "ampl",
+                                            log10(scanProblem->getScanItemParameter(i, "max"))
+                                            - log10(scanProblem->getScanItemParameter(i, "min")));
+        }
+      else
+        scanProblem->setScanItemParameter(i, "ampl",
+                                          scanProblem->getScanItemParameter(i, "max")
+                                          - scanProblem->getScanItemParameter(i, "min"));
+      // calculate the increment
+      scanProblem->setScanItemParameter(i, "incr", scanProblem->getScanItemParameter(i, "ampl") / (scanProblem->getScanItemParameter(i, "density") - 1));
+    }
 }
