@@ -1,125 +1,127 @@
-/*******************************************************************
- **  $ CopasiUI/TableDefinition.cpp                 
- **  $ Author  : Mudita Singhal
+/****************************************************************************
+ ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the Table Definition
- ********************************************************************/
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
+ ** Created: Wed Aug 6 22:43:06 2003
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.5 2003/08/07 03:12:05 lixu1 Exp $)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
+
+#include <qvariant.h>
 #include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtoolbar.h>
-#include <qwidget.h>
+#include <qlabel.h>
+#include <qcheckbox.h>
+#include <qlineedit.h>
 #include <qframe.h>
-#include <qlistbox.h>
-#include "copasi.h"
-#include "utilities/CCopasiVector.h"
+#include <qtable.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+
 #include "TableDefinition.h"
-#include "model/CModel.h"
-#include "utilities/CMethodParameter.h"
 #include "listviews.h"
-#include "./icons/scanwidgetbuttonicon.xpm" 
+#include "report/CKeyFactory.h"
+
 /*
- *  Constructs a TableDefinition which is a child of 'parent', with the 
+ *  Constructs a TableDefinition as a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
 TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl),
+    pParent(parent)
 {
   if (!name)
     setName("TableDefinition");
-
-  QPixmap image0((const char**) image0_data);
-  QPixmap image1((const char**) image1_data);
-  QPixmap image2((const char**) image2_data);
-  QPixmap image3((const char**) image3_data);
-  setCaption(trUtf8("TableDefinition"));
   TableDefinitionLayout = new QGridLayout(this, 1, 1, 11, 6, "TableDefinitionLayout");
 
-  LineEdit1 = new QLineEdit(this, "LineEdit1");
+  targetLabel = new QLabel(this, "targetLabel");
 
-  TableDefinitionLayout->addWidget(LineEdit1, 0, 1);
+  TableDefinitionLayout->addWidget(targetLabel, 0, 0);
 
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Title"));
+  appendChecked = new QCheckBox(this, "appendChecked");
 
-  TableDefinitionLayout->addWidget(TextLabel2, 2, 0);
+  TableDefinitionLayout->addWidget(appendChecked, 0, 2);
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Seperator"));
+  targetEdit = new QLineEdit(this, "targetEdit");
 
-  TableDefinitionLayout->addWidget(TextLabel1, 0, 0);
+  TableDefinitionLayout->addWidget(targetEdit, 0, 1);
 
-  ListBox1 = new QListBox(this, "ListBox1");
+  targetField = new QFrame(this, "targetField");
+  targetField->setFrameShape(QFrame::HLine);
+  targetField->setFrameShadow(QFrame::Sunken);
+  targetField->setFrameShape(QFrame::HLine);
 
-  TableDefinitionLayout->addMultiCellWidget(ListBox1, 5, 6, 1, 1);
-  QSpacerItem* spacer = new QSpacerItem(131, 270, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  TableDefinitionLayout->addItem(spacer, 6, 0);
+  TableDefinitionLayout->addMultiCellWidget(targetField, 1, 1, 0, 2);
 
-  Layout7 = new QVBoxLayout(0, 0, 6, "Layout7");
-  TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Items"));
-  Layout7->addWidget(TextLabel3);
+  titleLabel = new QLabel(this, "titleLabel");
 
-  Layout6 = new QGridLayout(0, 1, 1, 0, 6, "Layout6");
+  TableDefinitionLayout->addWidget(titleLabel, 2, 0);
 
-  deleteButton = new QPushButton(this, "deleteButton");
-  deleteButton->setText(trUtf8(""));
-  deleteButton->setPixmap(image0);
+  seperatorLabel = new QLabel(this, "seperatorLabel");
 
-  Layout6->addWidget(deleteButton, 0, 1);
+  TableDefinitionLayout->addWidget(seperatorLabel, 3, 0);
 
-  downButton = new QPushButton(this, "downButton");
-  downButton->setText(trUtf8(""));
-  downButton->setPixmap(image1);
+  titleEdit = new QLineEdit(this, "titleEdit");
 
-  Layout6->addWidget(downButton, 1, 1);
+  TableDefinitionLayout->addMultiCellWidget(titleEdit, 2, 2, 1, 2);
 
-  addButton = new QPushButton(this, "addButton");
-  addButton->setText(trUtf8(""));
-  addButton->setPixmap(image2);
+  seperatorEdit = new QLineEdit(this, "seperatorEdit");
 
-  Layout6->addWidget(addButton, 0, 0);
+  TableDefinitionLayout->addMultiCellWidget(seperatorEdit, 3, 3, 1, 2);
+
+  titleField = new QFrame(this, "titleField");
+  titleField->setFrameShape(QFrame::HLine);
+  titleField->setFrameShadow(QFrame::Sunken);
+  titleField->setFrameShape(QFrame::HLine);
+
+  TableDefinitionLayout->addMultiCellWidget(titleField, 4, 4, 0, 2);
+
+  layout7 = new QHBoxLayout(0, 0, 6, "layout7");
+
+  layout6 = new QVBoxLayout(0, 0, 6, "layout6");
+
+  itemsLabel = new QLabel(this, "itemsLabel");
+  layout6->addWidget(itemsLabel);
+
+  layout5 = new QGridLayout(0, 1, 1, 0, 6, "layout5");
 
   upButton = new QPushButton(this, "upButton");
-  upButton->setText(trUtf8(""));
-  upButton->setPixmap(image3);
 
-  Layout6->addWidget(upButton, 1, 0);
-  Layout7->addLayout(Layout6);
-  TableDefinitionLayout->addLayout(Layout7, 5, 0);
+  layout5->addWidget(upButton, 1, 0);
 
-  //TableDefinitionLayout->addWidget(TextLabel3, 5, 0);
-  LineEdit3 = new QLineEdit(this, "LineEdit3");
-  LineEdit3->setFrameShape(QLineEdit::LineEditPanel);
-  LineEdit3->setFrameShadow(QLineEdit::Sunken);
+  downButton = new QPushButton(this, "downButton");
 
-  TableDefinitionLayout->addWidget(LineEdit3, 2, 1);
+  layout5->addWidget(downButton, 1, 1);
 
-  Layout5 = new QHBoxLayout(0, 0, 6, "Layout5");
+  deleteButton = new QPushButton(this, "deleteButton");
 
-  commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("Commit"));
-  Layout5->addWidget(commitChanges);
+  layout5->addWidget(deleteButton, 0, 1);
 
-  cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Cancel"));
-  Layout5->addWidget(cancelChanges);
+  addButton = new QPushButton(this, "addButton");
 
-  TableDefinitionLayout->addMultiCellLayout(Layout5, 8, 8, 0, 1);
+  layout5->addWidget(addButton, 0, 0);
+  layout6->addLayout(layout5);
+  QSpacerItem* spacer = new QSpacerItem(90, 262, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  layout6->addItem(spacer);
+  layout7->addLayout(layout6);
 
-  Line4_3 = new QFrame(this, "Line4_3");
-  Line4_3->setFrameShape(QFrame::HLine);
-  Line4_3->setFrameShadow(QFrame::Sunken);
-  Line4_3->setFrameShape(QFrame::HLine);
+  itemsTable = new QTable(this, "itemsTable");
+  itemsTable->setNumRows(0);
+  itemsTable->setNumCols(0);
+  layout7->addWidget(itemsTable);
 
-  TableDefinitionLayout->addMultiCellWidget(Line4_3, 7, 7, 0, 1);
+  TableDefinitionLayout->addMultiCellLayout(layout7, 5, 5, 0, 2);
+  languageChange();
 
-  // signals and slots connections
-  connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
-  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  // tab order
+  setTabOrder(targetEdit, appendChecked);
+  setTabOrder(appendChecked, titleEdit);
+  setTabOrder(titleEdit, seperatorEdit);
+  setTabOrder(seperatorEdit, addButton);
+  setTabOrder(addButton, upButton);
+  setTabOrder(upButton, deleteButton);
+  setTabOrder(deleteButton, downButton);
+  setTabOrder(downButton, itemsTable);
 }
 
 /*
@@ -130,12 +132,20 @@ TableDefinition::~TableDefinition()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*This function is to load the model for the table*/
-void TableDefinition::loadTableDefinition()
-{}
-
-void TableDefinition::slotBtnCancelClicked()
-{}
-
-void TableDefinition::slotBtnOKClicked()
-{}
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void TableDefinition::languageChange()
+{
+  setCaption(tr("Reports"));
+  targetLabel->setText(tr("Target"));
+  appendChecked->setText(tr("Append"));
+  titleLabel->setText(tr("Title"));
+  seperatorLabel->setText(tr("Seperator"));
+  itemsLabel->setText(tr("Items"));
+  upButton->setText(QString::null);
+  downButton->setText(QString::null);
+  deleteButton->setText(QString::null);
+  addButton->setText(QString::null);
+}
