@@ -34,17 +34,15 @@ class COutputEvent
 
     /**
      * User defined constructor. 
-     * @param tra refers to the CTrajectory object.
      * @param time refers to the output interval
      * time = 0, header
      * time = 1, any time of simulation exceution
      * time = 2, the final result
      */
-    COutputEvent(CTrajectory &tra, int time);
+    COutputEvent(int time);
 
     /**
      * User defined constructor. 
-     * @param tra refers to the CSS_solution object.
      * @param time refers to the output interval
      */
     COutputEvent(CSS_Solution &ss);
@@ -63,7 +61,7 @@ class COutputEvent
      * Copy output at the specified time 
      * @param tra refers to the CTrajectory object.
      */
-    void print(CTrajectory &tra, COutputList list, ofstream &fout);
+    void print(COutputList list, ofstream &fout);
 
     /**
      * Copy output at the specified time 

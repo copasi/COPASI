@@ -81,13 +81,13 @@ void CTrajectory::initialize()
       fatalError();
     }
 
-  mOutInit = new COutputEvent(*this, 0);
-  mOutPoint = new COutputEvent(*this, 1);
-  mOutEnd = new COutputEvent(*this, 2);
+  mOutInit = new COutputEvent(0);
+  mOutPoint = new COutputEvent(1);
+  mOutEnd = new COutputEvent(2);
   //  if (mOutInit || mOutPoint || mOutEnd)
   //      Copasi->OutputList.compile("Time-course output",mModel,this);
 
-  return ;
+  return;
 }
 
 void CTrajectory::cleanup()
@@ -112,7 +112,7 @@ void CTrajectory::cleanup()
     }
 
   mStochSolver = NULL;
-  return ;
+  return;
 }
 
 C_INT32 CTrajectory::load(CReadConfig & configbuffer)
@@ -246,7 +246,7 @@ void dummy_out(CModel* model, double time)
       ccc = 0;
       cout << " " << time << " ";
 
-      for (int j = 0 ; j < 5 ; j++)
+      for (int j = 0; j < 5; j++)
         cout << model->getMetabolites()[j]->getNumberInt() << "  ";
 
       cout << endl;
@@ -260,7 +260,7 @@ void CTrajectory::process(ofstream &fout)
   //print for the initial time point
 
   if (mOutInit)
-    mOutInit->print(*this, Copasi->OutputList, fout);
+    mOutInit->print(Copasi->OutputList, fout);
 
   // The trajectory can be calculated using the ODE solver,
   // one of the stochastic solver, or a hybrid method (as yet unimplemented)
@@ -271,7 +271,7 @@ void CTrajectory::process(ofstream &fout)
       mTime = mStartTime;
 
       if (mOutPoint && mOutputTimeZero)
-        mOutPoint->print(*this, Copasi->OutputList, fout);
+        mOutPoint->print(Copasi->OutputList, fout);
 
       for (C_INT32 i = 0; i < mPoints; i++)
         {
@@ -285,7 +285,7 @@ void CTrajectory::process(ofstream &fout)
           //print for current time point in the outputEvent
 
           if (mOutPoint)
-            mOutPoint->print(*this, Copasi->OutputList, fout);
+            mOutPoint->print(Copasi->OutputList, fout);
         }
     }
   else if (mMethod == STOCH_DIRECT || mMethod == STOCH_NEXTREACTION)
@@ -302,5 +302,5 @@ void CTrajectory::process(ofstream &fout)
     }
 
   if (mOutEnd && !mOutPoint)
-    mOutEnd->print(*this, Copasi->OutputList, fout);
+    mOutEnd->print(Copasi->OutputList, fout);
 }
