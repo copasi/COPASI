@@ -188,7 +188,7 @@ void CompartmentsWidget1::loadName(QString setValue)
 
   LineEdit3->setText(QString::number(compartn->getVolume()));
 
-  LineEdit4->setText(QString::number(compartn->getVolume()));
+  LineEdit4->setText(QString::number(compartn->getVolumeInv()));
   LineEdit4->setReadOnly(true);
 }
 
@@ -211,6 +211,7 @@ void CompartmentsWidget1::slotBtnOKClicked()
   double m1;
   m1 = volume.toDouble();
   compartn1->setVolume((float)m1);
+  emit signal_emitted(*Compartment1_Name);
   //mModel->save(*Com);
   //compartn1->save(*Com);
   //Copasi->Model->save(*Com);
