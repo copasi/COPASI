@@ -163,7 +163,7 @@ C_FLOAT64 CNodeO::value(CModel *model)
 			C_FLOAT64 *Value4;
 			C_FLOAT64 Value;
 
-			mDatum->compileDatum(model, NULL);
+			mDatum->compileDatum(*model, NULL);
 			Type = mDatum->getType();
 			switch (Type)
 			{
