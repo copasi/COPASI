@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/03 16:15:36 $
+   $Author: ssahle $ 
+   $Date: 2004/11/26 15:49:16 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,6 +19,7 @@
  *****************************************************************************/
 
 #include "qtUtilities.h"
+#include "utilities/CAnnotatedMatrix.h"
 
 void CMCAResultSubwidget::init()
 {
@@ -67,7 +68,7 @@ void CMCAResultSubwidget::loadElasticities(CMCAMethod * mcaMethod)
     {
       header->setLabel(i, FROM_UTF8(model->getMetabolites()[i]->getObjectName()));
     }
-  CMatrix<C_FLOAT64> elasticities = mcaMethod->getDxv();
+  const CAnnotatedMatrix & elasticities = mcaMethod->getUnscaledElasticities();
   if (elasticities.numRows() == 0 || elasticities.numCols() == 0) return;
   for (i = 0; i < numRows;++i)
     {
@@ -83,7 +84,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(CMCAMethod * mcaMethod)
   CModel* model = mcaMethod->getModel();
   assert(model);
   unsigned C_INT32 numRows, numCols;
-  numRows = model->getMetabolitesInd().size();
+  numRows = model->getIntMetab();
   numCols = model->getTotSteps();
   mTableCCC->setNumRows(numRows);
   mTableCCC->setNumCols(numCols);
@@ -91,14 +92,14 @@ void CMCAResultSubwidget::loadConcentrationCCs(CMCAMethod * mcaMethod)
   QHeader* header = mTableCCC->verticalHeader();
   for (i = 0; i < numRows;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getMetabolitesInd()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getMetabolites()[i]->getObjectName()));
     }
   header = mTableCCC->horizontalHeader();
   for (i = 0; i < numCols;++i)
     {
       header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
-  CMatrix<C_FLOAT64> CCCs = mcaMethod->getGamma();
+  const CAnnotatedMatrix & CCCs = mcaMethod->getUnscaledConcentrationCC();
   if (CCCs.numRows() == 0 || CCCs.numCols() == 0) return;
   for (i = 0; i < numRows;++i)
     {
@@ -129,7 +130,7 @@ void CMCAResultSubwidget::loadFluxCCs(CMCAMethod * mcaMethod)
     {
       header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
-  CMatrix<C_FLOAT64> FCCs = mcaMethod->getFcc();
+  const CAnnotatedMatrix & FCCs = mcaMethod->getUnscaledFluxCC();
   if (FCCs.numRows() == 0 || FCCs.numCols() == 0) return;
   for (i = 0; i < numRows;++i)
     {
