@@ -38,14 +38,14 @@ class CNewtonMethod : private CSteadyStateMethod
     C_FLOAT64 mFactor;
     C_FLOAT64 mResolution;
     C_FLOAT64 mScaledResolution;
-    C_INT32 mDimension;
+    C_INT mDimension;
     C_FLOAT64 mMaxrate;
     C_FLOAT64 * mX;
     CVector< C_FLOAT64 > mH;
     CVector< C_FLOAT64 > mXold;
     CVector< C_FLOAT64 > mdxdt;
     CMatrix< C_FLOAT64 > mJacobian;
-    C_INT32 * mIpiv;
+    C_INT * mIpiv;
 
     // Operations
   private:

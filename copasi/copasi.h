@@ -53,7 +53,7 @@
 # define min _cpp_min
 # define max _cpp_max
 #else
-# define C_INT32 int
+# define C_INT32 long
 # define C_INT int
 # define C_INT16 short
 # define C_FLOAT64 double

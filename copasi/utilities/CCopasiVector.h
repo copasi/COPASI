@@ -387,14 +387,14 @@ template < class CType >
           if ((*Target)->getName() == name)
             return i;
 
-            return - 1;
+            return (unsigned C_INT32) - 1;
           }
 
 private:
           /**
            *
            */
-          virtual C_INT16 isInsertAllowed(const CType * src)
+          virtual bool isInsertAllowed(const CType * src)
           {return (getIndex(src->getName()) == (unsigned C_INT32) - 1);}
     };
 

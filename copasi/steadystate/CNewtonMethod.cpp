@@ -173,7 +173,7 @@ CNewtonMethod::process(CState & steadyState,
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);
   mJacobian.resize(mDimension, mDimension);
-  mIpiv = new C_INT32 [mDimension];
+  mIpiv = new C_INT [mDimension];
 
   CNewtonMethod::NewtonReturnCode returnCode;
 
@@ -275,9 +275,9 @@ CNewtonMethod::processNewton (CStateX & steadyState,
     returnNewton(CNewtonMethod::found, steadyState, initialState);
 
   // Start the iterations
-  C_INT32 info = 0;
+  C_INT info = 0;
   char T = 'T'; /* difference between fortran's and c's matrix storrage */
-  C_INT32 one = 1;
+  C_INT one = 1;
 
   for (k = 0; k < mIterationLimit && mMaxrate > mScaledResolution; k++)
     {
@@ -405,7 +405,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,       /* fortran style vector */
+                           mdxdt.array() - 1,        /* fortran style vector */
                            1);
         }
 
@@ -462,7 +462,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,       /* fortran style vector */
+                   mdxdt.array() - 1,        /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

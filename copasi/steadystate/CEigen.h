@@ -107,7 +107,7 @@ class CEigen
     /**
      * #4: (input) The order of the matrix A
      */
-    C_INT32 mN;
+    C_INT mN;
 
     /**
      * #5: (input/output) The double precision array, dimension (LDA,N)
@@ -121,7 +121,7 @@ class CEigen
     /**
      * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
      */
-    C_INT32 mLDA;
+    C_INT mLDA;
 
     /**
      * #7: (output) an integer
@@ -129,7 +129,7 @@ class CEigen
      * if Sort = 'S', its value = number of eigenvalues (after sorting)
      *                for which mSelect is true.
      */
-    C_INT32 mSdim;
+    C_INT mSdim;
 
     /**
      * #8: array with dimension (mN)
@@ -152,7 +152,7 @@ class CEigen
      * #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
      * if mJobvs='V', mLdvs >= N.
      */
-    C_INT32 mLdvs;
+    C_INT mLdvs;
 
     /**
      * #12: (workspace/output) double precision array, dimension (mLWork)
@@ -164,13 +164,13 @@ class CEigen
      * #13: (input) Dimension of array Work, its value >= max(1,3*mN).
      * For good performance, it must generally be larger
      */
-    C_INT32 mLWork;
+    C_INT mLWork;
 
     /**
      * #14: (workspace) Logical array, dimension (N)
      * Not referenced if mSort = 'N'
      */
-    C_INT32 * mBWork;
+    C_INT * mBWork;
 
     /**
      * #15: (output) an integer
@@ -185,7 +185,7 @@ class CEigen
      *           Schur form no longer satisfy mSelect=.True. This could
      *           caused by underflow due to scaling
      */
-    C_INT32 mInfo;
+    C_INT mInfo;
 
     /**
      * sorts two arrays using one as the criterion for sorting
