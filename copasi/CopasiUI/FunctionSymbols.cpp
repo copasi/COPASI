@@ -16,7 +16,8 @@
 #include "mathmodel/CMathSymbol.h"
 #include "utilities/CGlobals.h"
 #include "listviews.h"
-#include "function/CFunctionDB.h" 
+#include "function/CFunctionDB.h"
+#include "function/CFunction.h" 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
  *  displaying the Metabolites in model 'model'.
@@ -84,21 +85,28 @@ void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
 
       Copasi->pFunctionDB->loadedFunctions();
 
-      std::map< std::string, CMathSymbol * > functionList =
-        mModel->getFunctionList();
+      std::map< std::string, CMathSymbol * > functionList = mModel->getFunctionList();
       std::map<std::string, CMathSymbol * >::iterator it;
       CMathSymbol * mathSymbol;
 
-      C_INT32 noOfMetaboliteRows = functionList.size();
-      table->setNumRows(noOfMetaboliteRows);
+      table->setNumRows(functionList.size());
       int index = 0;
       for (it = functionList.begin(); it != functionList.end();++it)
         {
           mathSymbol = it->second;
-          table->setText(index, 0, mathSymbol->getName().c_str());
-          CCopasiObject *metabObject = mathSymbol->getObject();
+          table->setText(index, 0, it->first.c_str());
+
+          CFunction *metabObject = (CFunction *)mathSymbol->getObject();
           table->setText(index, 1, metabObject->getName().c_str());
-          //table->setText(index, 5, QString::number(variableMetab->getParticleNumber()));
+          QStringList functionType;
+          CFunctionParameters &functParam = metabObject->getParameters();
+          for (int j = 0; j < functParam.size(); j++)
+            {
+              functionType.push_back(functParam[j]->getName().c_str());
+            }
+          QComboTableItem * item = new QComboTableItem(table, functionType, false);
+          table->setItem(index, 2, item);
+          //item->setCurrentItem(temp);
           index++;
         }
     }
