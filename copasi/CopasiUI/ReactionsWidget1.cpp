@@ -292,7 +292,7 @@ void ReactionsWidget1::loadName(QString setValue)
   table->setColumnWidth (0, 200);
   unsigned int line = 0;
   unsigned int l;
-  int k;
+  unsigned int k;
 
   CCopasiVector < CReaction::CId2Metab > & react1z = reactn->getId2Substrates();
   const CCopasiVector < CChemEqElement > * react1 = &reactn->getChemEq().getSubstrates();
@@ -453,10 +453,9 @@ void ReactionsWidget1::slotCheckBoxClicked()
         Copasi->FunctionDB.suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
                                              reactn1->getChemEq().getSubstrates().size(),
                                              TriFalse);
-      int m = 0;
       QStringList comboEntries;
       QString comboEntry;
-      int temp2;
+      unsigned int temp2;
 
       for (temp2 = 0; temp2 < Functions.size(); temp2++)
         {
@@ -488,10 +487,9 @@ void ReactionsWidget1::slotCheckBoxClicked()
         Copasi->FunctionDB.suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
                                              reactn1->getChemEq().getSubstrates().size(),
                                              TriTrue);
-      int m = 0;
       QStringList comboEntries;
       QString comboEntry;
-      int temp2;
+      unsigned int temp2;
 
       for (temp2 = 0; temp2 < Functions.size(); temp2++)
         {
@@ -523,7 +521,8 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 
   string usagetypes[100];
 
-  for (int i = 0; i < functionParameters.size(); i++)
+  unsigned int i;
+  for (i = 0; i < functionParameters.size(); i++)
     {
       //string p3=functionParameters[i]->getName();
       string p4 = functionParameters[i]->getUsage();
