@@ -19,7 +19,7 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include "listviews.h"
-
+#include <qbuttongroup.h>
 #include <qfont.h>
 
 /*
@@ -85,15 +85,16 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
   QHBoxLayout *hBoxLayout4c = new QHBoxLayout(Frame4c, 0);
   hBoxLayout4c->addSpacing(15);
 
-  GroupBox1 = new QGroupBox ("&Metabolite Status Selection", Frame4c);
-  hBoxLayout4c->addWidget(GroupBox1);
+  ButtonGroup1 = new QButtonGroup ("&Metabolite Status Selection", Frame4c);
+  hBoxLayout4c->addWidget(ButtonGroup1);
   hBoxLayout4c->addSpacing(20);
+  ButtonGroup1->setExclusive(TRUE);
 
-  RadioButton1 = new QRadioButton(GroupBox1, "RadioButton1");
+  RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
   RadioButton1->setGeometry(QRect(10, 30, 87, 20));
   RadioButton1->setText(trUtf8("Fixed"));
 
-  RadioButton2 = new QRadioButton(GroupBox1, "RadioButton2");
+  RadioButton2 = new QRadioButton(ButtonGroup1, "RadioButton2");
   RadioButton2->setGeometry(QRect(100, 30, 87, 20));
   RadioButton2->setText(trUtf8("Non-Fixed"));
 
@@ -323,40 +324,21 @@ void MetabolitesWidget1::loadName(QString setValue)
 
       if (QString::number(metab->getStatus()) == "0")
         {
-          RadioButton1->setChecked(true);
-          RadioButton3->setChecked(true);
+          RadioButton1->setChecked(TRUE);
+          RadioButton3->setChecked(TRUE);
         }
-      else if (QString::number(metab->getStatus()) == "1")
-        {
-          RadioButton2->setChecked(true);
-          RadioButton4->setChecked(true);
-        }
-      else if (QString::number(metab->getStatus()) == "2")
-        {
-          RadioButton2->setChecked(true);
-          RadioButton5->setChecked(true);
-        }
-
-      /*previous code...changes being made
-      ComboBox1->insertStringList((metab->getCompartment())->getName().c_str(),-1);
-        
-      if((metab->getCompartment())->getName()=="Glycosome")
-       {
-       ComboBox1->insertItem("Cytosol",1);
-       ComboBox1->insertItem("Exterior",2);
-       }
-      else if((metab->getCompartment())->getName()=="Cytosol")
-       {
-        ComboBox1->insertItem("Glycosome",1);
-        ComboBox1->insertItem("Exterior",2);
-       }
       else
-       {
-        ComboBox1->insertItem("Glycosome",1);
-        ComboBox1->insertItem("Cytosol",2);
-       }
-
-      */
+        if (QString::number(metab->getStatus()) == "1")
+          {
+            RadioButton2->setChecked(TRUE);
+            RadioButton4->setChecked(TRUE);
+          }
+        else
+          if (QString::number(metab->getStatus()) == "2")
+            {
+              RadioButton2->setChecked(TRUE);
+              RadioButton5->setChecked(TRUE);
+            }
 
       ComboBox1->setDuplicatesEnabled (false);
 

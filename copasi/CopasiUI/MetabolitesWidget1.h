@@ -36,6 +36,8 @@ class QComboBox;
 
 class QListBoxItem;
 
+class QButtonGroup;
+
 class QPushButton;
 
 class QRadioButton;
@@ -63,7 +65,7 @@ class MetabolitesWidget1 : public QWidget
     int isName(QString setValue);
     QString *Metabolite1_Name;
 
-    QGroupBox* GroupBox1;
+    QButtonGroup* ButtonGroup1;
     QGroupBox* GroupBox2;
 
     QRadioButton* RadioButton1;

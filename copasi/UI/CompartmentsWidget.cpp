@@ -152,13 +152,14 @@ void CompartmentsWidget::slotBtnOKClicked()
 {
   //QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
 
-  CWriteConfig FunctionDB1("oo.gps");
+  //CWriteConfig FunctionDB1("oo.gps");
   CWriteConfig ModelFile("model.gps");
   //CWriteConfig *Fun = new CWriteConfig();
   string outstring = "Laber";
-  //mModel->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
-  mModel->save(ModelFile);
-  Copasi->FunctionDB.save(FunctionDB1);
+  //  mModel->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
+  //mModel->save(ModelFile);
+
+  //Copasi->FunctionDB.save(FunctionDB1);
 }
 
 /*C_INT32  TestWriteConfig(void)
