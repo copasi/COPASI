@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by Gepasi 3.30 on September 03, 2002, 23:12 -->
+<sbml xmlns="http://www.sbml.org/sbml/level1" level="1" version="1">
+	<model name="Yeast_glycolysis_model_of_Pritchard_and_Kell">
+		<notes>
+			<body xmlns="http://www.w3.org/1999/xhtml">
+				<p>From Pritchard and Kell (2002) Eur. J. Biochem. 269, 3894-3904 which was</p>
+				<p>modified from Teusink et al. (2000) Eur J Biochem 267, 5313-5329. </p>
+				<p>This version uses the Vmaxes found by the best fit (R1) of Table 1 of the </p>
+				<p>Pritchard and Kell paper, and simulates a decrease of external glucose  concentration from 100 to 2 mM.</p>
+				<p>(More model files at http://users.aber.ac.uk/lep/models.shtml)</p>
+				<p></p>
+			</body>
+		</notes>
+		<listOfCompartments>
+			<compartment name="compartment" volume="1"/>
+		</listOfCompartments>
+		<listOfSpecies>
+			<specie name="GLCo" compartment="compartment" initialAmount="2" boundaryCondition="true"/>
+			<specie name="GLCi" compartment="compartment" initialAmount="0.09765223106456296" boundaryCondition="false"/>
+			<specie name="ATP" compartment="compartment" initialAmount="2.525127464992715" boundaryCondition="false"/>
+			<specie name="G6P" compartment="compartment" initialAmount="2.675040140447866" boundaryCondition="false"/>
+			<specie name="ADP" compartment="compartment" initialAmount="1.281987681687193" boundaryCondition="false"/>
+			<specie name="F6P" compartment="compartment" initialAmount="0.6249764055323729" boundaryCondition="false"/>
+			<specie name="F16bP" compartment="compartment" initialAmount="6.22132076069411" boundaryCondition="false"/>
+			<specie name="AMP" compartment="compartment" initialAmount="0.2928848533200905" boundaryCondition="false"/>
+			<specie name="F26bP" compartment="compartment" initialAmount="0.02" boundaryCondition="true"/>
+			<specie name="DHAP" compartment="compartment" initialAmount="1.004152548996437" boundaryCondition="false"/>
+			<specie name="GAP" compartment="compartment" initialAmount="0.04518091757809632" boundaryCondition="false"/>
+			<specie name="NAD" compartment="compartment" initialAmount="1.503290302015306" boundaryCondition="false"/>
+			<specie name="BPG" compartment="compartment" initialAmount="0.0007368734998656016" boundaryCondition="false"/>
+			<specie name="NADH" compartment="compartment" initialAmount="0.08670969798469518" boundaryCondition="false"/>
+			<specie name="P3G" compartment="compartment" initialAmount="0.8856885383606591" boundaryCondition="false"/>
+			<specie name="P2G" compartment="compartment" initialAmount="0.1276958173866317" boundaryCondition="false"/>
+			<specie name="PEP" compartment="compartment" initialAmount="0.06323521449365273" boundaryCondition="false"/>
+			<specie name="PYR" compartment="compartment" initialAmount="1.815312511927359" boundaryCondition="false"/>
+			<specie name="AcAld" compartment="compartment" initialAmount="0.178140579850657" boundaryCondition="false"/>
+			<specie name="CO2" compartment="compartment" initialAmount="1" boundaryCondition="true"/>
+			<specie name="EtOH" compartment="compartment" initialAmount="50" boundaryCondition="true"/>
+			<specie name="Glycerol" compartment="compartment" initialAmount="0.15" boundaryCondition="true"/>
+			<specie name="Glycogen" compartment="compartment" initialAmount="0" boundaryCondition="true"/>
+			<specie name="Trehalose" compartment="compartment" initialAmount="0" boundaryCondition="true"/>
+			<specie name="Succinate" compartment="compartment" initialAmount="0" boundaryCondition="true"/>
+		</listOfSpecies>
+		<listOfReactions>
+			<reaction name="HXT" reversible="true">
+				<listOfReactants>
+					<specieReference specie="GLCo" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="GLCi" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="(((Vmax_1)*(GLCo-GLCi))/(Kglc_1))/(1                   +(GLCo+GLCi)/(Kglc_1)+(((Ki_1)*(GLCo))*(GLCi))/((Kglc_1)^(2                   )))">
+					<listOfParameters>
+						<parameter name="Vmax_1" value="97.24"/>
+						<parameter name="Kglc_1" value="1.1918"/>
+						<parameter name="Ki_1" value="0.91"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="HK" reversible="true">
+				<listOfReactants>
+					<specieReference specie="GLCi" stoichiometry="1"/>
+					<specieReference specie="ATP" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="G6P" stoichiometry="1"/>
+					<specieReference specie="ADP" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_2)*(((GLCi)*(ATP))/((Kglc_2)*(Katp_2))-((G6P)*(ADP))/(((Kglc_2)*(Katp_2))*(Keq_2))))/((1                   +(GLCi)/(Kglc_2)+(G6P)/(Kg6p_2))*(1                   +(ATP)/(Katp_2)+(ADP)/(Kadp_2)))">
+					<listOfParameters>
+						<parameter name="Vmax_2" value="236.7"/>
+						<parameter name="Kglc_2" value="0.08"/>
+						<parameter name="Katp_2" value="0.15"/>
+						<parameter name="Keq_2" value="2000"/>
+						<parameter name="Kg6p_2" value="30"/>
+						<parameter name="Kadp_2" value="0.23"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="PGI" reversible="true">
+				<listOfReactants>
+					<specieReference specie="G6P" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="F6P" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_3)*((G6P)/(Kg6p_3)-(F6P)/((Kg6p_3)*(Keq_3))))/(1                   +(G6P)/(Kg6p_3)+(F6P)/(Kf6p_3))">
+					<listOfParameters>
+						<parameter name="Vmax_3" value="1056"/>
+						<parameter name="Kg6p_3" value="1.4"/>
+						<parameter name="Keq_3" value="0.29"/>
+						<parameter name="Kf6p_3" value="0.3"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="PFK" reversible="false">
+				<listOfReactants>
+					<specieReference specie="ATP" stoichiometry="1"/>
+					<specieReference specie="F6P" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="ADP" stoichiometry="1"/>
+					<specieReference specie="F16bP" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="(Vmax_4)*(((((gR_4)*((F6P)/(Kf6p_4)))*((ATP)/(Katp_4)))*(1                   +(F6P)/(Kf6p_4)+(ATP)/(Katp_4)+((((gR_4)*(F6P))/(Kf6p_4))*(ATP))/(Katp_4)))/((1                   +(F6P)/(Kf6p_4)+(ATP)/(Katp_4)+((((gR_4)*(F6P))/(Kf6p_4))*(ATP))/(Katp_4))^(2                   )+((((L0_4)*(((1                   +((Ciatp_4)*(ATP))/(Kiatp_4))/(1                   +(ATP)/(Kiatp_4)))^(2                   )))*(((1                   +((Camp_4)*(AMP))/(Kamp_4))/(1                   +(AMP)/(Kamp_4)))^(2                   )))*(((1                   +((Cf26_4)*(F26bP))/(Kf26_4)+((Cf16_4)*(F16bP))/(Kf16_4))/(1                   +(F26bP)/(Kf26_4)+(F16bP)/(Kf16_4)))^(2                   )))*((1                   +((Catp_4)*(ATP))/(Katp_4))^(2                   ))))">
+					<listOfParameters>
+						<parameter name="Vmax_4" value="110"/>
+						<parameter name="gR_4" value="5.12"/>
+						<parameter name="Kf6p_4" value="0.1"/>
+						<parameter name="Katp_4" value="0.71"/>
+						<parameter name="L0_4" value="0.66"/>
+						<parameter name="Ciatp_4" value="100"/>
+						<parameter name="Kiatp_4" value="0.65"/>
+						<parameter name="Camp_4" value="0.08450000000000001"/>
+						<parameter name="Kamp_4" value="0.09950000000000001"/>
+						<parameter name="Cf26_4" value="0.0174"/>
+						<parameter name="Kf26_4" value="0.000682"/>
+						<parameter name="Cf16_4" value="0.397"/>
+						<parameter name="Kf16_4" value="0.111"/>
+						<parameter name="Catp_4" value="3"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="ALD" reversible="true">
+				<listOfReactants>
+					<specieReference specie="F16bP" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="DHAP" stoichiometry="1"/>
+					<specieReference specie="GAP" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_5)*((F16bP)/(Kf16bp_5)-((DHAP)*(GAP))/((Kf16bp_5)*(Keq_5))))/(1                   +(F16bP)/(Kf16bp_5)+(DHAP)/(Kdhap_5)+(GAP)/(Kgap_5)+((F16bP)*(GAP))/((Kf16bp_5)*(Kigap_5))+((DHAP)*(GAP))/((Kdhap_5)*(Kgap_5)))">
+					<listOfParameters>
+						<parameter name="Vmax_5" value="94.69"/>
+						<parameter name="Kf16bp_5" value="0.3"/>
+						<parameter name="Keq_5" value="0.06900000000000001"/>
+						<parameter name="Kdhap_5" value="2"/>
+						<parameter name="Kgap_5" value="2.4"/>
+						<parameter name="Kigap_5" value="10"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="TPI" reversible="true">
+				<listOfReactants>
+					<specieReference specie="DHAP" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="GAP" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="k1_6*DHAP-k2_6*GAP">
+					<listOfParameters>
+						<parameter name="k1_6" value="450000"/>
+						<parameter name="k2_6" value="10000000"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="GAPDH" reversible="true">
+				<listOfReactants>
+					<specieReference specie="GAP" stoichiometry="1"/>
+					<specieReference specie="NAD" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="BPG" stoichiometry="1"/>
+					<specieReference specie="NADH" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((C_7)*((((Vmaxf_7)*(GAP))*(NAD))/((Kgap_7)*(Knad_7))-(((Vmaxr_7)*(BPG))*(NADH))/((Kbpg_7)*(Knadh_7))))/((1                   +(GAP)/(Kgap_7)+(BPG)/(Kbpg_7))*(1                   +(NAD)/(Knad_7)+(NADH)/(Knadh_7)))">
+					<listOfParameters>
+						<parameter name="C_7" value="1"/>
+						<parameter name="Vmaxf_7" value="1152"/>
+						<parameter name="Kgap_7" value="0.21"/>
+						<parameter name="Knad_7" value="0.09"/>
+						<parameter name="Vmaxr_7" value="6719"/>
+						<parameter name="Kbpg_7" value="0.0098"/>
+						<parameter name="Knadh_7" value="0.06"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="PGK" reversible="true">
+				<listOfReactants>
+					<specieReference specie="ADP" stoichiometry="1"/>
+					<specieReference specie="BPG" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="ATP" stoichiometry="1"/>
+					<specieReference specie="P3G" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_8)*((((Keq_8)*(BPG))*(ADP)-(P3G)*(ATP))/((Kp3g_8)*(Katp_8))))/((1                   +(BPG)/(Kbpg_8)+(P3G)/(Kp3g_8))*(1                   +(ADP)/(Kadp_8)+(ATP)/(Katp_8)))">
+					<listOfParameters>
+						<parameter name="Vmax_8" value="1288"/>
+						<parameter name="Keq_8" value="3200"/>
+						<parameter name="Kp3g_8" value="0.53"/>
+						<parameter name="Katp_8" value="0.3"/>
+						<parameter name="Kbpg_8" value="0.003"/>
+						<parameter name="Kadp_8" value="0.2"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="PGM" reversible="true">
+				<listOfReactants>
+					<specieReference specie="P3G" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="P2G" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_9)*((P3G)/(Kp3g_9)-(P2G)/((Kp3g_9)*(Keq_9))))/(1                   +(P3G)/(Kp3g_9)+(P2G)/(Kp2g_9))">
+					<listOfParameters>
+						<parameter name="Vmax_9" value="2585"/>
+						<parameter name="Kp3g_9" value="1.2"/>
+						<parameter name="Keq_9" value="0.19"/>
+						<parameter name="Kp2g_9" value="0.08"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="ENO" reversible="true">
+				<listOfReactants>
+					<specieReference specie="P2G" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="PEP" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_10)*((P2G)/(Kp2g_10)-(PEP)/((Kp2g_10)*(Keq_10))))/(1                   +(P2G)/(Kp2g_10)+(PEP)/(Kpep_10))">
+					<listOfParameters>
+						<parameter name="Vmax_10" value="201.6"/>
+						<parameter name="Kp2g_10" value="0.04"/>
+						<parameter name="Keq_10" value="6.7"/>
+						<parameter name="Kpep_10" value="0.5"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="PYK" reversible="true">
+				<listOfReactants>
+					<specieReference specie="ADP" stoichiometry="1"/>
+					<specieReference specie="PEP" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="ATP" stoichiometry="1"/>
+					<specieReference specie="PYR" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_11)*(((PEP)*(ADP))/((Kpep_11)*(Kadp_11))-((PYR)*(ATP))/(((Kpep_11)*(Kadp_11))*(Keq_11))))/((1                   +(PEP)/(Kpep_11)+(PYR)/(Kpyr_11))*(1                   +(ADP)/(Kadp_11)+(ATP)/(Katp_11)))">
+					<listOfParameters>
+						<parameter name="Vmax_11" value="1000"/>
+						<parameter name="Kpep_11" value="0.14"/>
+						<parameter name="Kadp_11" value="0.53"/>
+						<parameter name="Keq_11" value="6500"/>
+						<parameter name="Kpyr_11" value="21"/>
+						<parameter name="Katp_11" value="1.5"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="PDC" reversible="false">
+				<listOfReactants>
+					<specieReference specie="PYR" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="AcAld" stoichiometry="1"/>
+					<specieReference specie="CO2" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_12)*(((PYR)/(Kpyr_12))^(nH_12)))/(1                   +((PYR)/(Kpyr_12))^(nH_12))">
+					<listOfParameters>
+						<parameter name="Vmax_12" value="857.8"/>
+						<parameter name="Kpyr_12" value="4.33"/>
+						<parameter name="nH_12" value="1.9"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="ADH" reversible="true">
+				<listOfReactants>
+					<specieReference specie="NAD" stoichiometry="1"/>
+					<specieReference specie="EtOH" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="NADH" stoichiometry="1"/>
+					<specieReference specie="AcAld" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_13)*(((EtOH)*(NAD))/((Ketoh_13)*(Kinad_13))-((AcAld)*(NADH))/(((Ketoh_13)*(Kinad_13))*(Keq_13))))/(1                   +(NAD)/(Kinad_13)+((EtOH)*(Knad_13))/((Kinad_13)*(Ketoh_13))+((AcAld)*(Knadh_13))/((Kinadh_13)*(Kacald_13))+(NADH)/(Kinadh_13)+((EtOH)*(NAD))/((Kinad_13)*(Ketoh_13))+(((NAD)*(AcAld))*(Knadh_13))/(((Kinad_13)*(Kinadh_13))*(Kacald_13))+(((EtOH)*(NADH))*(Knad_13))/(((Kinad_13)*(Kinadh_13))*(Ketoh_13))+((AcAld)*(NADH))/((Kacald_13)*(Kinadh_13))+(((EtOH)*(NAD))*(AcAld))/(((Kinad_13)*(Kiacald_13))*(Ketoh_13))+(((EtOH)*(AcAld))*(NADH))/(((Kietoh_13)*(Kinadh_13))*(Kacald_13)))">
+					<listOfParameters>
+						<parameter name="Vmax_13" value="209.5"/>
+						<parameter name="Ketoh_13" value="17"/>
+						<parameter name="Kinad_13" value="0.92"/>
+						<parameter name="Keq_13" value="6.9e-005"/>
+						<parameter name="Knad_13" value="0.17"/>
+						<parameter name="Knadh_13" value="0.11"/>
+						<parameter name="Kinadh_13" value="0.031"/>
+						<parameter name="Kacald_13" value="1.11"/>
+						<parameter name="Kiacald_13" value="1.1"/>
+						<parameter name="Kietoh_13" value="90"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="ATPase" reversible="false">
+				<listOfReactants>
+					<specieReference specie="ATP" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="ADP" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="(Katpase_14)*(ATP)">
+					<listOfParameters>
+						<parameter name="Katpase_14" value="39.5"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="AK" reversible="true">
+				<listOfReactants>
+					<specieReference specie="ADP" stoichiometry="2"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="ATP" stoichiometry="1"/>
+					<specieReference specie="AMP" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="k1_15*ADP*ADP-k2_15*ATP*AMP">
+					<listOfParameters>
+						<parameter name="k1_15" value="45"/>
+						<parameter name="k2_15" value="100"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="G3PDH" reversible="false">
+				<listOfReactants>
+					<specieReference specie="DHAP" stoichiometry="1"/>
+					<specieReference specie="NADH" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="NAD" stoichiometry="1"/>
+					<specieReference specie="Glycerol" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Vmax_16)*(((DHAP)/(Kdhap_16))*((NADH)/(Knadh_16))-(((Glycerol)/(Kdhap_16))*((NAD)/(Knadh_16)))*((1                   )/(Keq_16))))/((1                   +(DHAP)/(Kdhap_16)+(Glycerol)/(Kglycerol_16))*(1                   +(NADH)/(Knadh_16)+(NAD)/(Knad_16)))">
+					<listOfParameters>
+						<parameter name="Vmax_16" value="47.11"/>
+						<parameter name="Kdhap_16" value="0.4"/>
+						<parameter name="Knadh_16" value="0.023"/>
+						<parameter name="Keq_16" value="4300"/>
+						<parameter name="Kglycerol_16" value="1"/>
+						<parameter name="Knad_16" value="0.9300000000000001"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="Glycogen_Branch" reversible="false">
+				<listOfReactants>
+					<specieReference specie="ATP" stoichiometry="1"/>
+					<specieReference specie="G6P" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="ADP" stoichiometry="1"/>
+					<specieReference specie="Glycogen" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="KGLYCOGEN_17">
+					<listOfParameters>
+						<parameter name="KGLYCOGEN_17" value="6"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="Trehalose_Branch" reversible="false">
+				<listOfReactants>
+					<specieReference specie="ATP" stoichiometry="1"/>
+					<specieReference specie="G6P" stoichiometry="2"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="ADP" stoichiometry="1"/>
+					<specieReference specie="Trehalose" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="Ktrehalose_18">
+					<listOfParameters>
+						<parameter name="Ktrehalose_18" value="2.4"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="Succinate_Branch" reversible="false">
+				<listOfReactants>
+					<specieReference specie="NAD" stoichiometry="3"/>
+					<specieReference specie="AcAld" stoichiometry="2"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="NADH" stoichiometry="3"/>
+					<specieReference specie="Succinate" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="(k_19)*(AcAld)">
+					<listOfParameters>
+						<parameter name="k_19" value="21.4"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+		</listOfReactions>
+	</model>
+</sbml>

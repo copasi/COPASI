@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by Gepasi 3.30 on September 03, 2002, 23:14 -->
+<sbml xmlns="http://www.sbml.org/sbml/level1" level="1" version="1">
+	<model name="SEQFB">
+		<notes>
+			<body xmlns="http://www.w3.org/1999/xhtml">
+				<p>This is a model of a branched pathway with sequential feedback, described</p>
+				<p>in Hofmeyr, J.-H. S. (1986), Comput. Aplic. Biosci. 2, 243-249. </p>
+				<p></p>
+				<p>In the report, look for the Stability Analysis section and note that two </p>
+				<p>eigenvalues are a complex conjugate pair. This indicates that</p>
+				<p>variable perturbations relax back to the steady state with one oscillatory</p>
+				<p>component. If you plot the time course for the fluxes and metabolites concentrations you will see that they have either a maxima or a minima,</p>
+				<p>which are part of the the first cycle (but because it is very damped it is</p>
+				<p>also the last).</p>
+			</body>
+		</notes>
+		<listOfCompartments>
+			<compartment name="compartment" volume="1"/>
+		</listOfCompartments>
+		<listOfSpecies>
+			<specie name="X" compartment="compartment" initialAmount="10" boundaryCondition="true"/>
+			<specie name="A" compartment="compartment" initialAmount="22.09915" boundaryCondition="false"/>
+			<specie name="B" compartment="compartment" initialAmount="4.6395" boundaryCondition="false"/>
+			<specie name="C" compartment="compartment" initialAmount="0.3357719" boundaryCondition="false"/>
+			<specie name="D" compartment="compartment" initialAmount="1" boundaryCondition="false"/>
+			<specie name="E" compartment="compartment" initialAmount="0.2777732" boundaryCondition="false"/>
+			<specie name="F" compartment="compartment" initialAmount="0.2649989" boundaryCondition="false"/>
+			<specie name="Y" compartment="compartment" initialAmount="2" boundaryCondition="true"/>
+			<specie name="Z" compartment="compartment" initialAmount="1" boundaryCondition="true"/>
+		</listOfSpecies>
+		<listOfReactions>
+			<reaction name="R1" reversible="true">
+				<listOfReactants>
+					<specieReference specie="X" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="A" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="(Vf_1*X/Kms_1-Vr_1*A/Kmp_1)/(1+X/Kms_1+A/Kmp_1+(B/Ki_1)^n_1)">
+					<listOfParameters>
+						<parameter name="Vf_1" value="10"/>
+						<parameter name="Vr_1" value="1"/>
+						<parameter name="Kms_1" value="1"/>
+						<parameter name="Kmp_1" value="1"/>
+						<parameter name="n_1" value="2"/>
+						<parameter name="Ki_1" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="R2" reversible="true">
+				<listOfReactants>
+					<specieReference specie="A" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="B" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="Vf_2*A-Vr_2*B/(Kms_2*Kmp_2+Kmp_2*A+Kms_2*B)">
+					<listOfParameters>
+						<parameter name="Kms_2" value="1"/>
+						<parameter name="Kmp_2" value="1"/>
+						<parameter name="Vf_2" value="2"/>
+						<parameter name="Vr_2" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="R3" reversible="true">
+				<listOfReactants>
+					<specieReference specie="B" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="C" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="(Vf_3*B/Kms_3-Vr_3*C/Kmp_3)/(1+B/Kms_3+C/Kmp_3+(D/Ki_3)^n_3)">
+					<listOfParameters>
+						<parameter name="Vf_3" value="1"/>
+						<parameter name="Vr_3" value="1"/>
+						<parameter name="Kms_3" value="1"/>
+						<parameter name="Kmp_3" value="1"/>
+						<parameter name="n_3" value="2"/>
+						<parameter name="Ki_3" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="R4" reversible="true">
+				<listOfReactants>
+					<specieReference specie="C" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="D" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="Vf_4*C-Vr_4*D/(Kms_4*Kmp_4+Kmp_4*C+Kms_4*D)">
+					<listOfParameters>
+						<parameter name="Kms_4" value="1"/>
+						<parameter name="Kmp_4" value="1"/>
+						<parameter name="Vf_4" value="5"/>
+						<parameter name="Vr_4" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="R5" reversible="true">
+				<listOfReactants>
+					<specieReference specie="B" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="E" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="(Vf_5*B/Kms_5-Vr_5*E/Kmp_5)/(1+B/Kms_5+E/Kmp_5+(F/Ki_5)^n_5)">
+					<listOfParameters>
+						<parameter name="Vf_5" value="1"/>
+						<parameter name="Vr_5" value="1"/>
+						<parameter name="Kms_5" value="1"/>
+						<parameter name="Kmp_5" value="1"/>
+						<parameter name="n_5" value="2"/>
+						<parameter name="Ki_5" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="R6" reversible="true">
+				<listOfReactants>
+					<specieReference specie="E" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="F" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="Vf_6*E-Vr_6*F/(Kms_6*Kmp_6+Kmp_6*E+Kms_6*F)">
+					<listOfParameters>
+						<parameter name="Kms_6" value="1"/>
+						<parameter name="Kmp_6" value="1"/>
+						<parameter name="Vf_6" value="5"/>
+						<parameter name="Vr_6" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="R7" reversible="true">
+				<listOfReactants>
+					<specieReference specie="D" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="Y" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="Vf_7*D-Vr_7*Y/(Kms_7*Kmp_7+Kmp_7*D+Kms_7*Y)">
+					<listOfParameters>
+						<parameter name="Kms_7" value="1"/>
+						<parameter name="Kmp_7" value="1"/>
+						<parameter name="Vf_7" value="10"/>
+						<parameter name="Vr_7" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="R8" reversible="true">
+				<listOfReactants>
+					<specieReference specie="F" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="Z" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="Vf_8*F-Vr_8*Z/(Kms_8*Kmp_8+Kmp_8*F+Kms_8*Z)">
+					<listOfParameters>
+						<parameter name="Kms_8" value="1"/>
+						<parameter name="Kmp_8" value="1"/>
+						<parameter name="Vf_8" value="10"/>
+						<parameter name="Vr_8" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+		</listOfReactions>
+	</model>
+</sbml>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by Gepasi 3.30 on September 03, 2002, 23:15 -->
+<sbml xmlns="http://www.sbml.org/sbml/level1" level="1" version="1">
+	<model name="Signal_transduction_cascade">
+		<notes>
+			<body xmlns="http://www.w3.org/1999/xhtml">
+				<p>- This is a model of a branched pathway controlled by a signal metabolite</p>
+				<p>through an enzyme cascade.</p>
+				<p>- This simulates a time course and the corresponding steady state when all the</p>
+				<p>enzyme forms are inactive and the concentration of Signal has just been set to 1. </p>
+				<p></p>
+				<p>Further details in http://gepasi.dbs.aber.ac.uk/metab/signal/signal.html</p>
+			</body>
+		</notes>
+		<listOfCompartments>
+			<compartment name="cell" volume="1"/>
+		</listOfCompartments>
+		<listOfSpecies>
+			<specie name="Signal" compartment="cell" initialAmount="1" boundaryCondition="true"/>
+			<specie name="Kinase1" compartment="cell" initialAmount="1" boundaryCondition="false"/>
+			<specie name="Kinase1_P" compartment="cell" initialAmount="0" boundaryCondition="false"/>
+			<specie name="Kinase2" compartment="cell" initialAmount="1" boundaryCondition="false"/>
+			<specie name="Kinase2_P" compartment="cell" initialAmount="0" boundaryCondition="false"/>
+			<specie name="Enzyme_i" compartment="cell" initialAmount="1" boundaryCondition="false"/>
+			<specie name="Enzyme_a" compartment="cell" initialAmount="0" boundaryCondition="false"/>
+			<specie name="S" compartment="cell" initialAmount="10" boundaryCondition="true"/>
+			<specie name="M" compartment="cell" initialAmount="0" boundaryCondition="false"/>
+			<specie name="P1" compartment="cell" initialAmount="1e-005" boundaryCondition="true"/>
+			<specie name="P2" compartment="cell" initialAmount="1e-005" boundaryCondition="true"/>
+		</listOfSpecies>
+		<listOfReactions>
+			<reaction name="Kin1_activation" reversible="false">
+				<listOfReactants>
+					<specieReference specie="Kinase1" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="Kinase1_P" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="V_1*Kinase1/Kms_1/(1+Ka_1/Signal+Kinase1/Kms_1*(1+Ka_1/Signal))">
+					<listOfParameters>
+						<parameter name="Kms_1" value="0.001"/>
+						<parameter name="V_1" value="10"/>
+						<parameter name="Ka_1" value="0.5"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="Kin1_inactivation" reversible="false">
+				<listOfReactants>
+					<specieReference specie="Kinase1_P" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="Kinase1" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="V_2*Kinase1_P/Km_2/(1+Kinase1_P/Km_2*(1+Signal/Ki_2))">
+					<listOfParameters>
+						<parameter name="Km_2" value="0.001"/>
+						<parameter name="V_2" value="10"/>
+						<parameter name="Ki_2" value="0.5"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="Kin2_activation" reversible="false">
+				<listOfReactants>
+					<specieReference specie="Kinase2" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="Kinase2_P" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="(((Kinase1_P)*(Kinase2))*(kcat_3))/(Km_3+Kinase2)">
+					<listOfParameters>
+						<parameter name="kcat_3" value="10"/>
+						<parameter name="Km_3" value="0.01"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="Kin2_inactivation" reversible="false">
+				<listOfReactants>
+					<specieReference specie="Kinase2_P" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="Kinase2" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="V_4*Kinase2_P/(Km_4+Kinase2_P)">
+					<listOfParameters>
+						<parameter name="Km_4" value="0.1"/>
+						<parameter name="V_4" value="10"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="Enzyme_activation" reversible="false">
+				<listOfReactants>
+					<specieReference specie="Enzyme_i" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="Enzyme_a" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="(((Kinase2_P)*(Enzyme_i))*(kcat_5))/(Km_5+Enzyme_i)">
+					<listOfParameters>
+						<parameter name="kcat_5" value="1"/>
+						<parameter name="Km_5" value="0.01"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="Enzyme_inactivation" reversible="false">
+				<listOfReactants>
+					<specieReference specie="Enzyme_a" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="Enzyme_i" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="V_6*Enzyme_a/(Km_6+Enzyme_a)">
+					<listOfParameters>
+						<parameter name="Km_6" value="1"/>
+						<parameter name="V_6" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="M_production" reversible="true">
+				<listOfReactants>
+					<specieReference specie="S" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="M" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="Vf_7*S-Vr_7*M/(Kms_7*Kmp_7+Kmp_7*S+Kms_7*M)">
+					<listOfParameters>
+						<parameter name="Kms_7" value="1"/>
+						<parameter name="Kmp_7" value="1"/>
+						<parameter name="Vf_7" value="100"/>
+						<parameter name="Vr_7" value="10"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="P1_formation" reversible="true">
+				<listOfReactants>
+					<specieReference specie="M" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="P1" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="((Enzyme_a)*(((kcatf_8)*(M))/(Kms_8)-((kcatr_8)*(P1))/(Kmp_8)))/(1                   +(M)/(Kms_8)+(P1)/(Kmp_8))">
+					<listOfParameters>
+						<parameter name="kcatf_8" value="2000"/>
+						<parameter name="Kms_8" value="1"/>
+						<parameter name="kcatr_8" value="1"/>
+						<parameter name="Kmp_8" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="P2_formation" reversible="true">
+				<listOfReactants>
+					<specieReference specie="M" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="P2" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="Vf_9*M-Vr_9*P2/(Kms_9*Kmp_9+Kmp_9*M+Kms_9*P2)">
+					<listOfParameters>
+						<parameter name="Kms_9" value="1"/>
+						<parameter name="Kmp_9" value="1"/>
+						<parameter name="Vf_9" value="180"/>
+						<parameter name="Vr_9" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+		</listOfReactions>
+	</model>
+</sbml>

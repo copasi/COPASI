@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by Gepasi 3.30 on September 03, 2002, 23:14 -->
+<sbml xmlns="http://www.sbml.org/sbml/level1" level="1" version="1">
+	<model name="The_Henri_Michaelis_Menten_mechanism_in_an_open_system">
+		<notes>
+			<body xmlns="http://www.w3.org/1999/xhtml">
+				<p>Henri, V.  (1902), &quot;Th&#233;orie g&#233;n&#233;rale de l'action de quelques diastases.&quot;, </p>
+				<p>Compt. Rend. Hebd. Acad. Sci. Paris 135, 916-919.</p>
+				<p></p>
+				<p>Michaelis, L. and Menten, M.L.  (1913), &quot;Die kinetik der invertinwirkung.&quot;, </p>
+				<p>Biochem. Z.  49, 333-369.</p>
+			</body>
+		</notes>
+		<listOfCompartments>
+			<compartment name="compartment" volume="1"/>
+		</listOfCompartments>
+		<listOfSpecies>
+			<specie name="S" compartment="compartment" initialAmount="1" boundaryCondition="true"/>
+			<specie name="E" compartment="compartment" initialAmount="0.999" boundaryCondition="false"/>
+			<specie name="ES" compartment="compartment" initialAmount="0.001" boundaryCondition="false"/>
+			<specie name="P" compartment="compartment" initialAmount="0" boundaryCondition="true"/>
+		</listOfSpecies>
+		<listOfReactions>
+			<reaction name="R1" reversible="true">
+				<listOfReactants>
+					<specieReference specie="S" stoichiometry="1"/>
+					<specieReference specie="E" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="ES" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="k1_1*S*E-k2_1*ES">
+					<listOfParameters>
+						<parameter name="k1_1" value="1"/>
+						<parameter name="k2_1" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+			<reaction name="R2" reversible="false">
+				<listOfReactants>
+					<specieReference specie="ES" stoichiometry="1"/>
+				</listOfReactants>
+				<listOfProducts>
+					<specieReference specie="E" stoichiometry="1"/>
+					<specieReference specie="P" stoichiometry="1"/>
+				</listOfProducts>
+				<kineticLaw formula="k_2*ES">
+					<listOfParameters>
+						<parameter name="k_2" value="1"/>
+					</listOfParameters>
+				</kineticLaw>
+			</reaction>
+		</listOfReactions>
+	</model>
+</sbml>
