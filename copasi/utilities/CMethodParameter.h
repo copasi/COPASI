@@ -15,6 +15,8 @@ class CReadConfig;
 
 class CWriteConfig;
 
+using std::string;
+
 class CMethodParameter
   {
     // Attributes
