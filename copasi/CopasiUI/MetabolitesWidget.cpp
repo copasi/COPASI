@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2003/12/18 16:48:34 $
+   $Author: shoops $ 
+   $Date: 2003/12/18 17:55:21 $
    End CVS Header */
 
 /***********************************************************************
@@ -303,9 +303,9 @@ void MetabolitesWidget::slotTableValueChanged(int row, int col)
       else
         {
           //handle fixed CBs that have just been unchecked
-          obj->setStatus(CMetab::METAB_DEPENDENT);
+          obj->setStatus(CMetab::METAB_VARIABLE);
           table->setText(row, 4,
-                         CMetab::StatusName[CMetab::METAB_DEPENDENT].c_str());
+                         CMetab::StatusName[CMetab::METAB_VARIABLE].c_str());
         }
 
       // may have to keep previous checkbox status to make unchecked independent
@@ -513,7 +513,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                  // Yes or Enter
+        case 0:                   // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -526,7 +526,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:                  // No or Escape
+        case 1:                   // No or Escape
           break;
         }
     }
