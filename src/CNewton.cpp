@@ -361,13 +361,3 @@ void CNewton::JEval( double *y, double **ydot )
  ss_njacob++;
 }
 
-
-
-
-
-
-
-
-
-
-
