@@ -115,6 +115,8 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   Layout34->addLayout(Layout33, 0, 1);
 
   ScanItemWidgetLayout->addMultiCellLayout(Layout34, 0, 1, 0, 0);
+
+  pObject = NULL;
 }
 
 /*
@@ -124,3 +126,6 @@ ScanItemWidget::~ScanItemWidget()
 {
   // no need to delete child widgets, Qt does it all for us
 }
+
+void ScanItemWidget::loadObject()
+{}

@@ -298,10 +298,61 @@ void ScanWidget::deleteButtonClicked()
 }
 
 void ScanWidget::upButtonClicked()
-{}
+{
+  if (activeObject <= 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
+    return;
+
+  emit hide_me();
+
+  CCopasiObject* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
+  CCopasiObject* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(pObjectUp);
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(pObjectDown);
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->loadObject();
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->loadObject();
+  activeObject--;
+
+  //deactivate
+  //lower one
+  QLineEdit* activeTitle = (QLineEdit*)(selectedList[(activeObject + 1) * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+  activeTitle->setText(pObjectUp->getCN().getName().c_str());
+
+  //activate
+  //upper one
+  activeTitle = (QLineEdit*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  activeTitle->setText(pObjectDown->getCN().getObjectName().c_str());
+
+  emit show_me();
+}
 
 void ScanWidget::downButtonClicked()
-{}
+{
+  if (activeObject < 0 || activeObject >= selectedList.size() / 2 - 1)  // not a valid entry
+    return;
+
+  emit hide_me();
+  activeObject++;
+  CCopasiObject* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
+  CCopasiObject* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(pObjectUp);
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(pObjectDown);
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->loadObject();
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->loadObject();
+
+  //upper one
+  QLineEdit* activeTitle = (QLineEdit*)(selectedList[(activeObject - 1) * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+  activeTitle->setText(pObjectDown->getCN().getName().c_str());
+
+  //bottom one
+  activeTitle = (QLineEdit*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  activeTitle->setText(pObjectUp->getCN().getObjectName().c_str());
+
+  emit show_me();
+}
 
 void ScanWidget::CancelChangeButton()
 {}
@@ -407,11 +458,12 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
   if (pObject)
-    newTitleBar->setText(pObject->getObjectName().c_str());
+    newTitleBar->setText(pObject->getCN().getObjectName().c_str());
   newTitleBar->setReadOnly(TRUE);
   scrollview->addChild(newTitleBar, 0, widgetOffset - TITLE_HEIGHT);
   selectedList.push_back(newTitleBar);
 
+  parameterTable->setObject(pObject);
   parameterTable->setFixedWidth(scrollview->visibleWidth());
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
   scrollview->addChild(parameterTable, 0 , widgetOffset);

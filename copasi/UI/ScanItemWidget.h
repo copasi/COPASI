@@ -25,13 +25,14 @@ class ScanCheckBox;
 class ScanLineEdit;
 class ScanRadioButton;
 class QScrollView;
+class CCopasiObject;
 
 class ScanItemWidget : public QWidget
   {
     Q_OBJECT
   private:
     QScrollView* mParent;
-
+    CCopasiObject* pObject;
   public:
     ScanItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanItemWidget();
@@ -61,8 +62,17 @@ class ScanItemWidget : public QWidget
     virtual void mousePressEvent (QMouseEvent * e)
     {
       QWidget::mousePressEvent(e);
-      //  mParent->mousePressEvent(e);
     }
+    void setObject(CCopasiObject* pNewObject)
+    {
+      pObject = pNewObject;
+    }
+
+    CCopasiObject* getObject()
+    {
+      return pObject;
+    }
+    void loadObject();
   };
 
 class ScanCheckBox : public QCheckBox
