@@ -18,6 +18,7 @@ StretchTable::StretchTable(int numRows, int numCols, QWidget * parent, const cha
   binitialized = NULL;
   systemUpdate = false;
   setNumCols(numCols);
+  setNumRows(numRows);
 }
 
 void StretchTable::DisableColWidthUpdate()
@@ -43,15 +44,15 @@ void StretchTable::columnWidthChanged (int col)
     minColWidth[col] = columnWidth(col);
 }
 
-void StretchTable::setNumCols (int r)
+void StretchTable::setNumCols (int c)
 {
-  QTable::setNumCols(r);
+  QTable::setNumCols(c);
   if (numColumn > 0)
     {
       delete[] minColWidth;
       delete[] binitialized;
     }
-  numColumn = r;
+  numColumn = c;
   if (numColumn == 0)
     {
       minColWidth = NULL;
@@ -66,4 +67,11 @@ void StretchTable::setNumCols (int r)
       binitialized[i] = true;
       minColWidth[i] = 3;
     }
+}
+
+void StretchTable::setNumRows (int r)
+{
+  QTable::setNumRows(r + 1);
+  if (r >= 0)
+    QTable::setText(r, 0, "Click to add new item");
 }

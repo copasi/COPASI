@@ -38,6 +38,7 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   binitialized = true;
 
   table = new MyTable(0, 2, this, "tblCompartments");
+  table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
@@ -119,7 +120,7 @@ void ModesWidget::resizeEvent(QResizeEvent * re)
       else
         {
           table->DisableColWidthUpdate();
-          int newWidth = re->size().width() - 35;
+          int newWidth = re->size().width();
           int i;
 
           int totalWidth = 0;
@@ -131,13 +132,13 @@ void ModesWidget::resizeEvent(QResizeEvent * re)
             minTotalWidth += table->minColWidth[i];
 
           //Zoom in
-          if (newWidth > (re->oldSize().width() - 35))
+          if (newWidth > re->oldSize().width())
             {
               if (newWidth > totalWidth) // can do expansion
                 {
-                  if (totalWidth < (re->oldSize().width() - 35))
+                  if (totalWidth < re->oldSize().width())
                     for (i = 0; i < table->numCols(); i++) // Do expansion
-                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / (re->oldSize().width() - 35));
+                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / re->oldSize().width());
                   else
                     for (i = 0; i < table->numCols(); i++) // Do expansion
                       table->setColumnWidth(i, float(newWidth)*float(table->columnWidth(i)) / float(totalWidth));

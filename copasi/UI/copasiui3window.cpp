@@ -105,27 +105,46 @@ void CopasiUI3Window::newDoc()
   // and assigns only one dataModel to all the views
   // hence maintaning doc/view architecture
 
-  /* if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
-     {
-       // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
-       //"Choose a file");
-       QString fileName = "DataModel.txt";
+  /*   if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
+       {
+         // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
+         //"Choose a file");
+         QString fileName = "DataModel.txt";
+   
+         if (fileName)
+           {
+             dataModel = new DataModel<Folder>((char *)fileName.ascii()); // create the data model
+             splitter = new QSplitter(QSplitter::Vertical, this , "main");
+             splitter->show();
+             this->setCentralWidget(splitter);
+           }
+       }
+   
+     if (dataModel)
+       {
+       gpsFile="temp.gps";
+       dataModel->loadModel((const char *)gpsFile.utf8());
+    file->setItemEnabled(nexport_menu_SBML, true);
+    file->setItemEnabled(nsaveas_menu_id, true);
+    msave_button->setEnabled(true);
+    file->setItemEnabled(nsave_menu_id, true);
+  //       listViews = new ListViews(splitter);
+  //       listViews->setDataModel(dataModel);
+  //       listViews->show();
+       }
+  */
+  if (!dataModel)
+    {
+      QString fileName = "DataModel.txt";
+      dataModel = new DataModel<Folder>((char *)fileName.ascii()); // create the data model
+    }
 
-       if (fileName)
-         {
-           dataModel = new DataModel<Folder>((char *)fileName.ascii()); // create the data model
-           splitter = new QSplitter(QSplitter::Vertical, this , "main");
-           splitter->show();
-           this->setCentralWidget(splitter);
-         }
-     }
-
-   if (dataModel)
-     {
-       listViews = new ListViews(splitter);
-       listViews->setDataModel(dataModel);
-       listViews->show();
-     }*/
+  gpsFile = "temp.gps";
+  dataModel->createModel((const char *)gpsFile.utf8());
+  file->setItemEnabled(nexport_menu_SBML, true);
+  file->setItemEnabled(nsaveas_menu_id, true);
+  msave_button->setEnabled(true);
+  file->setItemEnabled(nsave_menu_id, true);
 }
 
 /***************CopasiUI3Window::slotFileOpen()******

@@ -17,10 +17,8 @@
 #include "Tree.h"
 #include "listviews.h"
 #include "Subject.h"
-#include "utilities/CGlobals.h"
+
 #include "trajectory/CTrajectoryTask.h"
-#include "output/COutputList.h"
-#include "output/COutput.h"
 
 class CTrajectoryTask;
 class CSteadyStateTask;
@@ -35,18 +33,17 @@ template <class T> class DataModel: public Subject
     Tree<T> myTree; // create the  object of the tree
     Node<T>* last; // to keep track of the last change done...
     QPtrList<T> folderList;  // to keep track of the number of the object in the tree...
-    CModel* model;
-    CSteadyStateTask* steadystatetask;
-    CTrajectoryTask* trajectorytask;
     bool modelUpdate;
     bool steadystatetaskUpdate;
     bool trajectorytaskUpdate;
+    CModel* model;
 
   protected:
     T* searchFolderList(int id);
 
   public:
-
+    CSteadyStateTask* steadystatetask;
+    CTrajectoryTask* trajectorytask;
     //DataModel();
     DataModel(char* fileName = "DataModel.txt");
 
@@ -58,6 +55,7 @@ template <class T> class DataModel: public Subject
     void removeData(T*);
 
     void loadModel(const char* fileName);
+    void createModel(const char* fileName);
     void saveModel(const char* fileName);
     inline CModel* getModel(){return model;}
     inline CSteadyStateTask* getSteadyStateTask(){return steadystatetask;}
@@ -163,12 +161,23 @@ void DataModel<T>::setData(int status)
 }*/
 
 template <class T>
+void DataModel<T>::createModel(const char* fileName)
+{
+  pdelete(model);
+  model = new CModel();
+  modelUpdate = true;
+  notify(MODEL);
+  saveModel(fileName);
+}
+
+template <class T>
 void DataModel<T>::loadModel(const char* fileName)
 {
   pdelete(model);
   CReadConfig inbuf(fileName);
   model = new CModel();
   model->load(inbuf);
+  model->compile();
   modelUpdate = true;
   notify(MODEL);
 
@@ -183,8 +192,6 @@ void DataModel<T>::loadModel(const char* fileName)
   trajectorytask->load(inbuf);
   trajectorytaskUpdate = true;
   notify(TRAJECTORYTASK);
-
-  Copasi->pOutputList->load(inbuf);
   //  steadystatetask->compile();
 }
 

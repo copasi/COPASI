@@ -35,6 +35,7 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
   binitialized = true;
 
   table = new MyTable(0, 2, this, "tblReactions");
+  table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
@@ -63,7 +64,7 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
 
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(const QString &)));
+  connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
@@ -137,7 +138,7 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
       else
         {
           table->DisableColWidthUpdate();
-          int newWidth = re->size().width() - 35;
+          int newWidth = re->size().width();
           int i;
 
           int totalWidth = 0;
@@ -149,13 +150,13 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
             minTotalWidth += table->minColWidth[i];
 
           //Zoom in
-          if (newWidth > (re->oldSize().width() - 35))
+          if (newWidth > re->oldSize().width())
             {
               if (newWidth > totalWidth) // can do expansion
                 {
-                  if (totalWidth < (re->oldSize().width() - 35))
+                  if (totalWidth < re->oldSize().width())
                     for (i = 0; i < table->numCols(); i++) // Do expansion
-                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / (re->oldSize().width() - 35));
+                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / re->oldSize().width());
                   else
                     for (i = 0; i < table->numCols(); i++) // Do expansion
                       table->setColumnWidth(i, float(newWidth)*float(table->columnWidth(i)) / float(totalWidth));

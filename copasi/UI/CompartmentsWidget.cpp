@@ -41,6 +41,7 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   binitialized = true;
   mModel = NULL;
   table = new MyTable(0, 2, this, "tblCompartments");
+  table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
@@ -120,6 +121,8 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
 
 void CompartmentsWidget::slotTableSelectionChanged()
 {
+  if (!mModel)
+    return;
   if (!table->hasFocus())
     {
       table->setFocus();
