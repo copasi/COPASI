@@ -1,0 +1,296 @@
+#ifndef COPASI_CStochSolver
+#define COPASI_CStochSolver
+
+#include "CReadConfig.h"
+#include "CWriteConfig.h"
+#include "CVersion.h"
+
+class CModel;
+
+/**
+ * CStochSolver
+ *
+ * This class is used to perform stochastic simulations on the
+ * model. The user may specify the algorithm to be used, and a default
+ * is assumed if this is not given.
+ *
+ * The available algorithms at the moment are Gillespie's Direct
+ * method, and Gibson and Bruck's Next Reaction method. // TODO: implement the latter
+ *
+ * These are implemented as classes inheriting their common
+ * functionality from the abstract CStochMethod base class, and which
+ * provide the rest themselves.  The CStochSolver class is initialised
+ * with a pointer to an instance of a particular concrete class, and
+ * uses this class to do each iteration of the simulation.  This is
+ * essentially an implementation of the Strategy pattern described in
+ * the "Design Patterns" book.
+ *
+ * CStochSolver must also be supplied with a reference to an instance
+ * of CModel, which it passes to CStochMethod. This then extracts
+ * parameters from the model relevant to the simulation.
+ *
+ * Prototypical use:
+ *
+ * CStochSolver solver(method, model, total_time, total_steps);
+ * C_INT32 step = 0;
+ * C_FLOAT32 time = 0;
+ * C_INT32 retval = 0;
+ * solver->GetMethod()->InitMethod();
+ * while (step < total_steps && time < total_time && time >= 0)
+ * {
+ *     time = solver->GetMethod()->DoStep();
+ *     step++;
+ * }
+ *
+ */
+
+class CStochSolver
+{
+ public:
+    /**
+     * The types of method which may be used
+     */
+    enum Type {DIRECT=0, NEXTREACTION};
+ private:
+    // Private attributes
+    /**
+     * The type of the stochastic solver method
+     */
+    Type mMethodType;
+    /**
+     * A pointer to the method used
+     */
+    CStochMethod *mMethod; 
+    /**
+     * The maximum time for which the simulation should run.
+     */
+    C_FLOAT32 mMaxTime;
+    /**
+     * The maximum number of steps over which to iterate.
+     */
+    C_INT32 mMaxSteps;
+ public:
+    // Lifecycle methods
+    /**
+     * The default constructor
+     */
+    CStochSolver();
+    /**
+     * The specified constructor.  This creates an instance of
+     * CStochSolver, initialised with the named method, maximum time
+     * and maximum step number.  
+     * @param method_type The type of the method.
+     * @param model A pointer to an instance of CModel 
+     * @param maxtime The maximum simulation time.
+     * @param maxsteps The maximum number of simulation steps.
+     */
+    CStochSolver(CStochSolver::Type method_type, CModel *model, C_FLOAT_32 maxtime, C_INT32 maxsteps);
+    /**
+     * The destructor
+     */
+    ~CStochSolver();
+    /**
+     * This initialises the solver.
+     * @param method_type The type of the method to use.
+     * @param model A pointer to an instance of CModel 
+     * @param maxtime The maximum time the simulation may take.
+     * @param maxsteps The maximum number of steps in the simulation.
+     */
+    void Initialise(std::string method, CModel *model, C_FLOAT_32 maxtime, C_INT32 maxsteps);
+    // Operations methods
+    /**
+     * Returns a pointer to the instance of the solver method.
+     * @return mMethod
+     */
+    CStochMethod *GetStochMethod();
+};
+
+/**
+ * CStochMethod is a parent to concrete solvers derived from it.
+ *
+ * For each reactant in the model, an initial count is determined from
+ * the concentration; this count of each reactant characterises the
+ * system state.  For each reaction (specified by CStep) in the model
+ * (given by CModel) a propensity amu may be determined. These are
+ * stored in the vector mAmu. Each propensity is a product of two
+ * state-dependent factors, cmu and hmu; these are stored in the
+ * vectors mCmu and mHmu. Since the hmu and cmu values change as the
+ * system state changes, the values of amu (may) need to be updated
+ * after each step in the simulation. The propensities are then used
+ * to determine the next step and the time at which it occurs, after
+ * which the particle numbers are updated and the time is
+ * incremented. The particulars of how the updating is done, and the
+ * determination of the next reaction and its time are left to the
+ * inherited classes.
+ */
+
+class CStochMethod
+{
+ protected:    
+    // Protected attributes
+    /**
+     * A pointer to the instance of CModel being used.
+     */
+    CModel *mModel;
+    /**
+     * The rate-dependent part of the propensity function. (The rate
+     * function may depend on the state, for more complex dynamics.)
+     */
+    std::vector<C_FLOAT64> mCmu;
+    /**
+     * The state-dependent part of the propensity function
+     */
+    std::vector<C_FLOAT64> mHmu;
+    /**
+     * The propensity functions
+     */
+    std::vector<C_FLOAT64> mAmu;
+    /**
+     * Failure status.
+     * 0 = Success
+     * !0 = Failure
+     */
+    C_INT32 mFail;
+ public:
+    // Lifecycle methods
+    /**
+     * Default constructor
+     */
+    CStochMethod(CModel *model);
+    /**
+     * Destructor
+     */
+    virtual ~CStochMethod();
+    // Operations
+    /**
+     * Initialize the method
+     * @return mFail
+     * @see mFail
+     */
+    virtual C_INT32 InitMethod() = 0;
+    /**
+     * Do one iteration of the simulation
+     * @return Current simulation time or -1 if error.
+     */
+     virtual C_FLOAT64 DoStep() = 0;
+ protected:
+    // Protected operations
+    /**
+     * Determine the value of one of the cmu's
+     * @param index The position in the vector of this value of Cmu
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 CalculateCmu(C_INT32 index);
+    /**
+     * Determine the value of one of the hmu's 
+     * @param index The position in the vector of this value of Cmu
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 CalculateHmu(C_INT32 index);
+};
+
+/**
+ * CStochDirectMethod implements Gillespie's Direct Method algorithm.
+ *
+ * This is the simplest and earliest of the stochastic simulation
+ * algorithms. A reaction and its time are each determined
+ * independently using a Monte-Carlo method. Each propensity function
+ * is updated after each reaction.
+ */
+
+class CStochDirectMethod: public CStochMethod
+{
+ public:
+     // Lifecycle methods
+    /**
+     * Default constructor
+     */
+    CStochDirectMethod(CModel *model);
+    /** 
+     * Destructor
+     */
+    ~CStochDirectMethod();
+    // Operations
+    /**
+     * Initialize the method
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 InitMethod() = 0;
+    /**
+     * Do one iteration of the simulation
+     * @return Current simulation time or -1 if error.
+     */
+     C_FLOAT64 DoStep();
+ private:
+    // Private operations
+    /**
+     * Calculate the propensity functions for all reactions
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 CalculateAmu();
+    /**
+     * Get the next reaction
+     * @return the index of the reaction which occurs.
+     */
+    C_INT32 GetReaction();
+    /**
+     * Get the time taken by the reaction
+     * @return the time takenfor this reaction
+     */
+    C_FLOAT64 GetTime();
+    /**
+     * Update the particle numbers according to which reaction ocurred
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 UpdateParticleNumbers();
+};
+
+/**
+ * CStochNextReactionMethod implements the Next Reaction method.
+ *
+ * In this method, the putative reaction times tmu are calculated and
+ * stored in a indexed priority queue. In the algorithm, the next
+ * reaction to occur is defined to be that at the front of the
+ * queue. The Amu's affected by this reaction are recalculated, a new
+ * putative time tmu is calculated for this reaction, and the priority
+ * queue is reordered so that the node associated with this reaction
+ * occurs in the proper place.
+ */
+
+//----- ---------NOT COMPLETE YET------------------------------------------------
+
+class CStochNextReactionMethod: public CStochMethod
+{
+ private:
+    // Private attributes
+    /**
+     * The set of putative times at which each reaction occurs
+     */
+//    CCopasiIndPriQueue<C_FLOAT64> tmu; // must still write this class
+ public:
+    // Lifecycle methods
+    /**
+     * Default constructor
+     */
+    CStochNextReactionMethod();
+    /** 
+     * Destructor
+     */
+    ~CStochNextReactionMethod();
+    // Operations
+    /**
+     * Do one iteration of the simulation
+     * @return Current simulation time or -1 if error.
+     */
+    C_FLOAT64 Step();
+ private:
+    // Private operations
+    /**
+     * Update the neccessary values of amu
+
+#endif // COPASI_CStochSolver
