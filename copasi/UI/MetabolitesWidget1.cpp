@@ -201,6 +201,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
   gridLayout1->addWidget(commitChanges, 6, 0, 0);
   gridLayout1->addWidget(cancelChanges, 6, 1, 0);
 
+  connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
 
@@ -276,11 +277,11 @@ void MetabolitesWidget1::loadName(QString setValue)
 
   vector < CMetab * > metabolites = mModel->getMetabolites();
 
-  //Now filling the table.
+  name = setValue;
   CMetab *metab;
 
   int i = 0;
-  int myValue = -1;
+  myValue = -1;
 
   for (; i < metabolites.size(); i++)
     {
@@ -361,18 +362,6 @@ void MetabolitesWidget1::loadName(QString setValue)
  ** Description:- This method is used to show the message box on the screen
  ****************************************************************************************/
 
-void MetabolitesWidget1::showMessage(QString title, QString text)
-{
-  QMessageBox::about (this, title, text);
-}
-
-void MetabolitesWidget1::slotmSelected()
-{
-  QMessageBox::information(this, "Compartments Widget",
-                           "kk");
-  //(ListViews*)parent->slotCompartmentSelected();
-}
-
 void MetabolitesWidget1::slotBtnCancelClicked()
 {
   //QMessageBox::information(this, "Moiety Widget","Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
@@ -381,6 +370,24 @@ void MetabolitesWidget1::slotBtnCancelClicked()
 
 void MetabolitesWidget1::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
-  // emit signal_emitted(*Compartment1_Name);
+  string filename = name + ".gps";
+  CWriteConfig *Met = new CWriteConfig(filename);
+
+  vector < CMetab * > metabolites = mModel->getMetabolites();
+  CMetab *metab;
+  metab = metabolites[myValue];
+
+  QString initialConcentration(LineEdit7->text());
+  double temp1;
+  temp1 = initialConcentration.toDouble();
+  metab->setConcentration((float)temp1);
+
+  QString initialNumber(LineEdit5->text());
+  double temp2;
+  temp2 = initialNumber.toDouble();
+  metab->setNumber((float)temp2);
+
+  metab->save(*Met);
+  Copasi->Compartmentfile.save(*Met);
+  delete Met;
 }

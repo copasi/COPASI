@@ -55,9 +55,6 @@ class MetabolitesWidget1 : public QWidget
     QPushButton* commitChanges;
     CModel *mModel;
 
-  public slots:
-    virtual void slotmSelected();
-
   public:
     MetabolitesWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
     void loadMetabolites(CModel *model);
@@ -103,6 +100,8 @@ class MetabolitesWidget1 : public QWidget
     QFrame* Frame4g;
     QFrame* Frame4h;
     QFrame* Frame4i;
+    int myValue;
+    QString name;
 
   protected slots:
     virtual void slotBtnCancelClicked();

@@ -53,16 +53,13 @@ QMetaObject* MetabolitesWidget1::staticMetaObject()
     return metaObj;
 
   QMetaObject* parentObject = QWidget::staticMetaObject();
-  static const QUMethod slot_0 = {"slotmSelected", 0, 0 };
-  static const QUMethod slot_1 = {"slotBtnCancelClicked", 0, 0 };
-  static const QUMethod slot_2 = {"slotBtnOKClicked", 0, 0 };
+  static const QUMethod slot_0 = {"slotBtnCancelClicked", 0, 0 };
+  static const QUMethod slot_1 = {"slotBtnOKClicked", 0, 0 };
 
   static const QMetaData slot_tbl[] =
     {
-      { "slotmSelected()", &slot_0, QMetaData::Public },
-
-      { "slotBtnCancelClicked()", &slot_1, QMetaData::Protected },
-      { "slotBtnOKClicked()", &slot_2, QMetaData::Protected }
+      { "slotBtnCancelClicked()", &slot_0, QMetaData::Protected },
+      { "slotBtnOKClicked()", &slot_1, QMetaData::Protected }
     };
 
   static const QUParameter param_signal_0[] =
@@ -78,7 +75,7 @@ QMetaObject* MetabolitesWidget1::staticMetaObject()
 
   metaObj = QMetaObject::new_metaobject(
               "MetabolitesWidget1", parentObject,
-              slot_tbl, 3,
+              slot_tbl, 2,
               signal_tbl, 1,
 #ifndef QT_NO_PROPERTIES
               0, 0,
@@ -127,14 +124,10 @@ bool MetabolitesWidget1::qt_invoke(int _id, QUObject* _o)
   switch (_id - staticMetaObject()->slotOffset())
     {
     case 0:
-      slotmSelected();
-      break;
-
-    case 1:
       slotBtnCancelClicked();
       break;
 
-    case 2:
+    case 1:
       slotBtnOKClicked();
       break;
 

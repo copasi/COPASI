@@ -56,25 +56,10 @@ QMetaObject* CompartmentsWidget1::staticMetaObject()
   static const QUMethod slot_0 = {"slotBtnCancelClicked", 0, 0 };
   static const QUMethod slot_1 = {"slotBtnOKClicked", 0, 0 };
 
-  static const QUParameter param_slot_2[] =
-    {
-      { 0, &static_QUType_QString, 0, QUParameter::In }
-    };
-  static const QUMethod slot_2 = {"NameChanged", 1, param_slot_2 };
-
-  static const QUParameter param_slot_3[] =
-    {
-      { 0, &static_QUType_QString, 0, QUParameter::In }
-    };
-  static const QUMethod slot_3 = {"VolumeChanged", 1, param_slot_3 };
-
   static const QMetaData slot_tbl[] =
     {
       { "slotBtnCancelClicked()", &slot_0, QMetaData::Protected },
-
-      { "slotBtnOKClicked()", &slot_1, QMetaData::Protected },
-      { "NameChanged(const QString&)", &slot_2, QMetaData::Protected },
-      { "VolumeChanged(const QString&)", &slot_3, QMetaData::Protected }
+      { "slotBtnOKClicked()", &slot_1, QMetaData::Protected }
     };
 
   static const QUParameter param_signal_0[] =
@@ -90,7 +75,7 @@ QMetaObject* CompartmentsWidget1::staticMetaObject()
 
   metaObj = QMetaObject::new_metaobject(
               "CompartmentsWidget1", parentObject,
-              slot_tbl, 4,
+              slot_tbl, 2,
               signal_tbl, 1,
 #ifndef QT_NO_PROPERTIES
               0, 0,
@@ -144,14 +129,6 @@ bool CompartmentsWidget1::qt_invoke(int _id, QUObject* _o)
 
     case 1:
       slotBtnOKClicked();
-      break;
-
-    case 2:
-      NameChanged(static_QUType_QString.get(_o + 1));
-      break;
-
-    case 3:
-      VolumeChanged(static_QUType_QString.get(_o + 1));
       break;
 
     default:

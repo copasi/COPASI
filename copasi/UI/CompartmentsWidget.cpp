@@ -15,8 +15,6 @@
 #include "model/CMetab.h"
 #include <qfont.h>
 #include "utilities/CGlobals.h"
-string outstring;
-CWriteConfig *Mod;
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
@@ -26,21 +24,15 @@ CWriteConfig *Mod;
  *  to be displayed.
  *  @param parent The widget which this widget is a child of.
  *  @param name The object name is a text that can be used to identify 
- *  this QObject. It's particularly useful in conjunction with the Qt 
- 
-Designer.
+ *  this QObject. It's particularly useful in conjunction with the Qt Designer.
  *  You can find an object by name (and type) using child(), and more than one 
  *  using queryList(). 
- *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt 
- 
-documentation 
+ *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
  *  for more information about these flags.
  */
 CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlags f)
     : QWidget(parent, name, f)
 {
-  Mod = new CWriteConfig("try.gps");
-  Copasi = new CGlobals;
   mModel = NULL;
   table = new MyTable(0, 2, this, "tblCompartments");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
@@ -178,7 +170,7 @@ void CompartmentsWidget::showMessage(QString title, QString text)
 
 void CompartmentsWidget::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Moiety Widget", outstring.c_str());
+  QMessageBox::information(this, "Moiety Widget", "kkkk");
   //CWriteConfig *Fun = new CWriteConfig("oo.gps");
   //string outstring = "Laber";
   // Fun->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
@@ -200,7 +192,7 @@ void CompartmentsWidget::slotBtnCancelClicked()
 
 void CompartmentsWidget::tableValueChanged(int row, int col)
 {
-  //CWriteConfig *Mod = new CWriteConfig("try.gps");
+  CWriteConfig *Mod = new CWriteConfig("try.gps");
 
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
