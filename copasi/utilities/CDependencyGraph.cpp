@@ -50,6 +50,9 @@ const std::set <C_INT32> & CDependencyGraph::getDependents(C_INT32 node) const
     return mNodes[node].getDependents();
   }
 
+void CDependencyGraph::clear()
+{mNodes.clear();}
+
 #ifdef TEST_DEPENDENCY_GRAPH
 
 int main(int argc, char **argv)

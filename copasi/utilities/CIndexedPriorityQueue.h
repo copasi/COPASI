@@ -150,6 +150,8 @@ class CIndexedPriorityQueue
         return mHeap[pos].mKey;
       }
 
+    void clear();
+
     /**
      * gets the key from a given index
      * @return Returns the key

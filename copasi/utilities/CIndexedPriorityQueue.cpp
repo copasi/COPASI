@@ -107,6 +107,9 @@ void CIndexedPriorityQueue::buildHeap()
     }
 }
 
+void CIndexedPriorityQueue::clear()
+{mHeap.clear(); mIndexPointer.clear();}
+
 void CIndexedPriorityQueue::updateNode(const C_INT32 index, const C_FLOAT64 new_key)
 {
   C_INT32 pos = mIndexPointer[index];

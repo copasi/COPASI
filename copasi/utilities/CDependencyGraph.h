@@ -89,6 +89,8 @@ class CDependencyGraph
      */
     const std::set <C_INT32> &getDependents(const C_INT32 node) const;
 
+    void clear();
+
   private:
 
     /**
