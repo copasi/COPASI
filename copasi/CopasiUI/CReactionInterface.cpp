@@ -220,7 +220,10 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
   C_INT32 findresult = -1;
 
   if (imax == 0)
-    setFunction("", true);
+    {
+      setFunction("", true);
+      return;
+    }
 
   if (newFunction == "")
     {
