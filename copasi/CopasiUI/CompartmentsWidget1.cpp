@@ -18,7 +18,7 @@
 #include "listviews.h"
 
 /* 
- *  Constructs a ComaprtmentsWidget which is a child of 'parent', with the 
+ *  Constructs a CompartmentsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  *
  */
