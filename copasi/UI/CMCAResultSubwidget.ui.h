@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/28 07:36:04 $
+   $Date: 2004/10/28 07:47:21 $
    End CVS Header */
 
 /****************************************************************************
@@ -30,6 +30,7 @@ void CMCAResultSubwidget::loadAll(CMCAMethod * mcaMethod)
       this->loadElasticities(mcaMethod);
       if (mcaMethod->isSteadyState())
         {
+          mTopLabel->setText(QString::null);
           this->loadConcentrationCCs(mcaMethod);
           this->loadFluxCCs(mcaMethod);
           mTabWidget->setTabEnabled(mTabWidget->page(1), true);

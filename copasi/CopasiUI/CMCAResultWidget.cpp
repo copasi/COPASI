@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/26 11:34:23 $
+   $Date: 2004/10/28 07:47:21 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -13,7 +13,7 @@
 #include "CMCAResultSubwidget.h"
 #include "DataModelGUI.h"
 #include "steadystate/CMCATask.h"
-
+#include "steadystate/CMCAMethod.h"
 #include "qtUtilities.h"
 
 /*
@@ -44,6 +44,7 @@ CMCAResultWidget::~CMCAResultWidget()
   clicked in the tree   */
 bool CMCAResultWidget::loadFromBackend()
 {
+  mCentralWidget->loadAll(dynamic_cast<CMCAMethod*>(dataModel->getMCATask()->getMethod()));
   return true;
 }
 
