@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/16 16:20:18 $
+   $Date: 2004/09/26 21:48:35 $
    End CVS Header */
 
 /**
@@ -18,8 +18,8 @@
 #include "copasi.h"
 #include "CFluxMode.h"
 #include "CTableauLine.h"
-#include "model/CModel.h"
-#include "model/CChemEqInterface.h"
+#include "model/CModel.h" 
+//#include "model/CChemEqInterface.h"
 
 CFluxMode::CFluxMode() {CONSTRUCTOR_TRACE;}
 
@@ -67,11 +67,16 @@ unsigned C_INT32 CFluxMode::size() const
     return mReactions.size();
   }
 
+/*
 const CReaction * CFluxMode::getReaction(unsigned C_INT32 index, const CModel * model) const
-  {return model->getReactions()[index];}
-
+  {return model->getReactions()[mReactions[index].first];}
+ 
 std::string CFluxMode::getReactionName(unsigned C_INT32 index, const CModel * model) const
   {return getReaction(index, model)->getObjectName();}
-
+ 
 std::string CFluxMode::getReactionEquation(unsigned C_INT32 index, const CModel * model) const
-  {return CChemEqInterface::getChemEqString(model, *getReaction(index, model), false);}
+  {
+    std::cout << "CFluxMode:" << index << " " <<    mReactions[index].first << std::endl;
+    return CChemEqInterface::getChemEqString(model, *getReaction(index, model), false);
+  }
+ */

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/16 16:20:18 $
+   $Date: 2004/09/26 21:48:35 $
    End CVS Header */
 
 /**
@@ -89,8 +89,8 @@ class CElementaryFluxModes
      * Get one of the flux modes
      * @param unsigned C_INT32 index
      * @return reference to flux mode
-     */
-    const CFluxMode & getFluxMode(unsigned C_INT32 index) const;
+     */ 
+    //const CFluxMode & getFluxMode(unsigned C_INT32 index) const;
 
     /**
      * Retrieve the description of the indexed Flux Mode
@@ -98,6 +98,12 @@ class CElementaryFluxModes
      * @return std::string description
      */
     std::string getFluxModeDescription(unsigned C_INT32 index) const;
+
+    unsigned C_INT32 getFluxModeSize(unsigned C_INT32 index) const;
+
+    std::string getReactionEquation(unsigned C_INT32 index1,
+                                    unsigned C_INT32 index2,
+                                    const CModel * model) const;
 
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A);

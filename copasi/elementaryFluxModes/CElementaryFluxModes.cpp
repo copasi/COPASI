@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/16 18:33:12 $
+   $Author: ssahle $ 
+   $Date: 2004/09/26 21:48:34 $
    End CVS Header */
 
 /**
@@ -19,6 +19,7 @@
 #include "copasi.h"
 #include "CElementaryFluxModes.h"
 #include "CEFMAlgorithm.h"
+#include "model/CChemEqInterface.h"
 
 CElementaryFluxModes::CElementaryFluxModes(){CONSTRUCTOR_TRACE; mModel = NULL;}
 CElementaryFluxModes::~CElementaryFluxModes(){DESTRUCTOR_TRACE;}
@@ -87,21 +88,21 @@ void CElementaryFluxModes::calculate(const CModel * model)
 bool CElementaryFluxModes::isFluxModeReversible(unsigned C_INT32 index) const
 {return mFluxModes[index].isReversible();}
 
-const CFluxMode & CElementaryFluxModes::getFluxMode(unsigned C_INT32 index) const
-  {return mFluxModes[index];}
+//const CFluxMode & CElementaryFluxModes::getFluxMode(unsigned C_INT32 index) const
+//  {return mFluxModes[index];}
 
 std::string
 CElementaryFluxModes::getFluxModeDescription(unsigned C_INT32 index) const
   {
     std::stringstream tmp;
     unsigned C_INT32 j, jmax = mFluxModes[index].size();
-    const CCopasiVectorNS < CReaction > & Reaction = mModel->getReactions();
+    const CCopasiVectorNS < CReaction > & Reactions = mModel->getReactions();
 
     for (j = 0; j < jmax; j++)
       {
         if (j) tmp << "\n";
         tmp << mFluxModes[index].getMultiplier(j) << " * "
-        << Reaction[mIndex[mFluxModes[index].getReactionIndex(j)]]->getObjectName();
+        << Reactions[mIndex[mFluxModes[index].getReactionIndex(j)]]->getObjectName();
       }
 
     return tmp.str();
@@ -109,6 +110,20 @@ CElementaryFluxModes::getFluxModeDescription(unsigned C_INT32 index) const
 
 unsigned C_INT32 CElementaryFluxModes::getFluxModeSize() const
 {return mFluxModes.size();}
+
+unsigned C_INT32 CElementaryFluxModes::getFluxModeSize(unsigned C_INT32 index) const
+  {return mFluxModes[index].size();}
+
+std::string CElementaryFluxModes::getReactionEquation(unsigned C_INT32 index1,
+    unsigned C_INT32 index2,
+    const CModel * model) const
+  {
+    const CCopasiVectorNS < CReaction > & Reactions = mModel->getReactions();
+
+    return CChemEqInterface::getChemEqString(model,
+        *Reactions[mIndex[mFluxModes[index1].getReactionIndex(index2)]],
+        false);
+  }
 
 std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A)
 {
