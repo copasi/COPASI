@@ -40,6 +40,7 @@ C_INT32  TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
 C_INT32  TestTrajectory(void);
 C_INT32  TestNewton(void);
 C_INT32  TestSSSolution(void);
+C_INT32  TestEigen(void);
 
 C_INT32  MakeFunctionDB(void);
 C_INT32  MakeFunctionEntry(const string &name,
@@ -517,6 +518,27 @@ C_INT32  TestSSSolution(void)
     return 0;
 }
 
+//by YH
+//first, test matrix A = [-1 4 -2; -3 4 0; -3 1 3].
+//the eig(A)=[1.0 2.0 3.0].
+// 
+C_INT32  TestEigen(void)
+{
+  /*
+  CEigen myEigen;
+  TNT::Matrix<C_FLOAT64> matrix=[-1 4 -2; -3 4 0; -3 1 3] ;
+  C_FLOAT64 ssRes = 0.0;
+
+
+  myEigen.setN(3);
+  myEigen.initialize();
+  myEigen.CalcEigenvalues(ssRes, matrix);
+
+  cout << "YH: the max eigenvalue real part is: "<<myEigen.getEigen_maxrealpart() << endl<<endl;
+
+  */
+  return 0;
+}
 
 
 /*
