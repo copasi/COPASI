@@ -1,10 +1,10 @@
 /********************************************************
-   Author: Liang Xu
-   Version : 1.xx  <first>
-   Description: 
-   Date: 04/03 
-   Comment : Copasi Object Browser: 
-   Contact: Please contact lixu1@vt.edu.
+  Author: Liang Xu
+  Version : 1.xx  <first>
+  Description: 
+  Date: 04/03 
+  Comment : Copasi Object Browser: 
+  Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #ifndef OBJECTBROWSER_H
@@ -18,9 +18,11 @@ class QHBoxLayout;
 class QGridLayout;
 class QPushButton;
 class QListView;
+class QTextEdit;
 class ObjectBrowserItem;
 class ObjectList;
 class QListViewItem;
+class QFrame;
 class CCopasiContainer;
 class CCopasiObject;
 
@@ -41,6 +43,8 @@ class ObjectBrowser : public QWidget
     QPushButton* nextButton;
     QPushButton* backButton;
     QListView* ObjectListView;
+    QFrame* Line1;
+    QTextEdit* ObjectItemText;
 
     void export(ObjectBrowserItem* pCurrent, ObjectList* outputList);
 

@@ -13,12 +13,15 @@ Contact: Please contact lixu1@vt.edu.
 #include <qvariant.h>
 #include <qheader.h>
 #include <qlistview.h>
+#include <qtextedit.h>
+#include <qlistbox.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
+#include <qsimplerichtext.h>
 
 #include "./icons/objectAll.xpm"
 #include "./icons/objectParts.xpm"
@@ -42,35 +45,84 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
 {
   if (!name)
     setName("ObjectBrowser");
-  resize(516, 321);
-  setCaption(trUtf8("TabListView"));
+  resize(420, 460);
+  setCaption(trUtf8("Object Browser"));
   ObjectBrowserLayout = new QGridLayout(this, 1, 1, 11, 6, "ObjectBrowserLayout");
-
-  cancelButton = new QPushButton(this, "cancelButton");
-  cancelButton->setText(trUtf8("Cancel"));
-
-  ObjectBrowserLayout->addWidget(cancelButton, 1, 2);
-
-  nextButton = new QPushButton(this, "nextButton");
-  nextButton->setText(trUtf8("Next"));
-
-  ObjectBrowserLayout->addWidget(nextButton, 1, 1);
-
-  backButton = new QPushButton(this, "backButton");
-  backButton->setText(trUtf8("Back"));
-
-  ObjectBrowserLayout->addWidget(backButton, 1, 0);
 
   ObjectListView = new QListView(this, "ObjectListView");
   ObjectListView->addColumn(trUtf8("Object Browser"));
   ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
-
   ObjectListView->setAcceptDrops(FALSE);
   ObjectListView->setResizeMode(QListView::LastColumn);
   ObjectListView->setTreeStepSize(19);
 
-  ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 2);
+  ObjectItemText = new QTextEdit(this, "ObjectItemText");
+  ObjectItemText ->hide();
 
+  ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 3);
+  ObjectBrowserLayout->addMultiCellWidget(ObjectItemText, 0, 0, 0, 3);
+
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setFrameShadow(QFrame::Sunken);
+  Line1->setFrameShape(QFrame::HLine);
+
+  ObjectBrowserLayout->addMultiCellWidget(Line1, 1, 1, 0, 3);
+
+  cancelButton = new QPushButton(this, "cancelButton");
+  cancelButton->setText(trUtf8("Cancel"));
+
+  ObjectBrowserLayout->addWidget(cancelButton, 2, 0);
+
+  nextButton = new QPushButton(this, "nextButton");
+  nextButton->setText(trUtf8("Next >"));
+
+  ObjectBrowserLayout->addWidget(nextButton, 2, 3);
+
+  backButton = new QPushButton(this, "backButton");
+  backButton->setText(trUtf8("< Back"));
+
+  ObjectBrowserLayout->addWidget(backButton, 2, 2);
+  QSpacerItem* spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  ObjectBrowserLayout->addItem(spacer, 2, 1);
+
+  // tab order
+  setTabOrder(ObjectListView, cancelButton);
+  setTabOrder(cancelButton, backButton);
+  setTabOrder(backButton, nextButton);
+
+  /*
+    if (!name)
+      setName("ObjectBrowser");
+    resize(516, 321);
+    setCaption(trUtf8("TabListView"));
+    ObjectBrowserLayout = new QGridLayout(this, 1, 1, 11, 6, "ObjectBrowserLayout");
+   
+    cancelButton = new QPushButton(this, "cancelButton");
+    cancelButton->setText(trUtf8("Cancel"));
+   
+    ObjectBrowserLayout->addWidget(cancelButton, 1, 2);
+   
+    nextButton = new QPushButton(this, "nextButton");
+    nextButton->setText(trUtf8("Next"));
+   
+    ObjectBrowserLayout->addWidget(nextButton, 1, 1);
+   
+    backButton = new QPushButton(this, "backButton");
+    backButton->setText(trUtf8("Back"));
+   
+    ObjectBrowserLayout->addWidget(backButton, 1, 0);
+   
+    ObjectListView = new QListView(this, "ObjectListView");
+    ObjectListView->addColumn(trUtf8("Object Browser"));
+    ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
+   
+    ObjectListView->setAcceptDrops(FALSE);
+    ObjectListView->setResizeMode(QListView::LastColumn);
+    ObjectListView->setTreeStepSize(19);
+   
+    ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 2);
+  */
   pObjectAll = new QPixmap((const char**)ptrObjectAll);
   pObjectNone = new QPixmap((const char**)ptrObjectNone);
   pObjectParts = new QPixmap((const char**)ptrObjectParts);
@@ -80,12 +132,6 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   connect(nextButton, SIGNAL(clicked()), this, SLOT(nextClicked()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
   connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
-  //  connect(ObjectListView, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
-
-  // tab order
-  setTabOrder(ObjectListView, backButton);
-  setTabOrder(backButton, nextButton);
-  setTabOrder(nextButton, cancelButton);
 
   objectItemList = new ObjectList();
   refreshList = new ObjectList();
@@ -193,7 +239,7 @@ void ObjectBrowser::backClicked()
     case SELECTEDITEMPAGE:
       currentPage = LISTVIEWPAGE;
       ObjectListView->show();
-      // ->hide();
+      ObjectItemText->hide();
       break;
     }
 }
@@ -206,10 +252,27 @@ void ObjectBrowser::nextClicked()
     {
     case LISTVIEWPAGE:
       ObjectListView->hide(); //last page
+      ObjectItemText->show();
       rootItem = objectItemList->getRoot()->pItem;
       outputList = new ObjectList();
       export(rootItem, outputList);
-      QMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
+      //      QMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
+      ObjectListItem* pHead;
+      ObjectItemText->clear();
+      int i;
+      for (pHead = outputList->getRoot(), i = 1; pHead != NULL; pHead = pHead->pNext)
+        {
+          if (double(i) / 2 == int(i / 2))
+            ObjectItemText->setColor(red);
+          else
+            ObjectItemText->setColor(blue);
+          if (pHead->pItem->getObject()->pCopasiObject)
+            {
+              ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN().c_str(), -1);
+              i++;
+            }
+        }
+
       delete outputList;
       currentPage = SELECTEDITEMPAGE;
       break;
