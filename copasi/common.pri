@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.37 $ $Author: shoops $ $Date: 2005/02/09 14:21:57 $  
+# $Revision: 1.38 $ $Author: shoops $ $Date: 2005/02/15 03:31:42 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -49,6 +49,10 @@ contains(BUILD_OS, Darwin) {
     }
   }
  
+  contains(CONFIG, qt) {
+    LIBS += -lqwt
+  }
+
   INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
   INCLUDEPATH += /System/Library/Frameworks/Carbon.framework/Headers
   LIBS += -framework vecLib
@@ -103,6 +107,10 @@ contains(BUILD_OS, WIN32) {
     LIBS += libsbml.lib
   } else {
     error( "SBML_PATH must be specified" )
+  }
+
+  contains(CONFIG, qt) {
+    LIBS += -lqwt
   }
 } 
 
