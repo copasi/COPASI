@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/03/07 23:21:35 $
+   $Author: shoops $ 
+   $Date: 2005/03/10 02:20:37 $
    End CVS Header */
 
 #include "CPlotItem.h"
@@ -62,7 +62,6 @@ CPlotItem::CPlotItem(const std::string & name,
                      const CCopasiContainer * pParent,
                      const CPlotItem::Type & type):
     CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
-    mKey(GlobalKeys.add("PlotItem", this)),
     mType(unset)
 {
   //setObjectName(TypeName[mType]); //TODO
@@ -73,7 +72,6 @@ CPlotItem::CPlotItem(const std::string & name,
 CPlotItem::CPlotItem(const CPlotItem & src,
                      const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
-    mKey(GlobalKeys.add("PlotItem", this)),
     mType(src.mType),
     channels(src.getChannels())
 {
@@ -116,9 +114,7 @@ void CPlotItem::setType(CPlotItem::Type type)
 }
 
 CPlotItem::~CPlotItem()
-{
-  GlobalKeys.remove(mKey);
-}
+{}
 
 void CPlotItem::cleanup()
 {
@@ -144,11 +140,6 @@ void CPlotItem::addChannel(const CPlotDataChannelSpec & channel)
 {
   channels.push_back(channel);
 }
-
-const std::string & CPlotItem::getKey() const
-  {
-    return mKey;
-  }
 
 const std::string & CPlotItem::getTitle() const
   {

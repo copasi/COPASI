@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/03/07 23:20:35 $
+   $Author: shoops $ 
+   $Date: 2005/03/10 02:20:37 $
    End CVS Header */
 
 /**
@@ -74,7 +74,7 @@ class CPlotItem : public CCopasiParameterGroup
      */
     enum Type
     {
-      unset = 0, curve2d, histoItem1d,       //for plot items
+      unset = 0, curve2d, histoItem1d,        //for plot items
       plot2d, simWiz   //for plot specifications
     };
 
@@ -91,11 +91,6 @@ class CPlotItem : public CCopasiParameterGroup
 
     // Attributes
   private:
-
-    /**
-     *  Key 
-     */
-    std::string mKey;
 
     /**
      * The type of the method
@@ -150,8 +145,6 @@ class CPlotItem : public CCopasiParameterGroup
     const CPlotItem::Type & getType() const;
 
     void setType(CPlotItem::Type type);
-
-    virtual const std::string & getKey() const;
 
     const std::string & getTitle() const; //TODO later replace with something more generic
     void setTitle(const std::string & title);
