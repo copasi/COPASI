@@ -26,6 +26,8 @@
 #include "CModel.h"
 #include "CODESolver.h"
 #include "CTrajectory.h"
+#include "CSS_Solution.h"
+#include "CNewton.h"
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
 #include "tnt/cmat.h"
@@ -47,6 +49,9 @@ C_INT32  TestModel(void);
 C_INT32  TestLU();
 C_INT32  TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
 C_INT32  TestTrajectory(void);
+C_INT32  TestNewton(void);
+C_INT32  TestSSSolution(void);
+
 
 C_INT32  MakeFunctionDB(void);
 C_INT32  MakeFunctionEntry(const string &name,
@@ -82,7 +87,13 @@ C_INT32 main(void)
         // TestCompartment();
         // TestDatum();
         // TestMetab();
-        TestReadSample();
+	//        TestReadSample();
+
+	//by Yongqun He
+	//CReadConfig inbuf("gps/BakkerComp.gps");
+	TestNewton();
+	//TestSSSolution();
+
         // TestTrajectory();
         // TestMoiety();
         // TestKinFunction();
@@ -362,6 +373,82 @@ C_INT32 TestTrajectory(void)
 
     return 0;
 }
+
+// by Yongqun He
+//
+C_INT32  TestNewton(void)
+{
+    C_INT32 size = 0;
+    C_INT32 i;
+    
+    CReadConfig inbuf("gps/BakkerComp.gps");
+    CModel model;
+    model.load(inbuf);
+    model.buildStoi();
+    model.lUDecomposition();
+    model.setMetabolitesStatus();
+    model.buildRedStoi();
+    model.buildConsRel();
+    model.buildMoieties();
+    
+
+    //set up CNewton object and pass to CSS_Solution
+    CNewton newton;
+    newton.setModel(&model);
+    newton.initialize();
+
+    //get mDerivFactor, mSSRes, and mNewtonLimit, 
+    //or may use their default values
+    newton.setDerivFactor(1.0);
+    newton.setSSRes(1.0);
+    // newton.setNewtonLimit(1);
+
+
+    //how to get ss_nfunction?
+    newton.setSs_nfunction(0);
+
+    //how to get mSs_x, mSs_new, mSs_dxdt, mSs_h, mSs_jacob, mSs_ipvt
+    //and mSs_solution??? or don't need to care about them here??
+    newton.init_Ss_x_new();
+
+    newton.process();
+
+    return 0;
+}
+
+
+// by Yongqun He
+//
+C_INT32  TestSSSolution(void)
+{
+    C_INT32 size = 0;
+    C_INT32 i;
+    
+    CReadConfig inbuf("gps/BakkerComp.gps");
+    CModel model;
+    model.load(inbuf);
+    model.buildStoi();
+    model.lUDecomposition();
+    model.setMetabolitesStatus();
+    model.buildRedStoi();
+    model.buildConsRel();
+    model.buildMoieties();
+    
+    CSS_Solution ss_soln;
+    ss_soln.setModel(&model);
+
+    //set up CNewton object and pass to CSS_Solution
+    CNewton newton;
+    newton.setModel(&model);
+
+    ss_soln.setNewton(&newton);
+    
+
+    ss_soln.process();
+
+    return 0;
+}
+
 
 C_INT32 TestMoiety()
 {
