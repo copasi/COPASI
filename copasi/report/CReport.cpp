@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:45 $
+   $Date: 2003/11/12 17:22:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -167,37 +167,5 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
                 objectList.push_back(pSelected);
             }
         }
-    }
-}
-
-void CReport::getObjectFromName(
-  const std::vector< CCopasiContainer * > * pListOfContainer,
-  CCopasiObject* pObject,
-  const CCopasiObjectName& objName)
-{
-  // if no specified container list
-  if (!pListOfContainer)
-    {
-      pObject = NULL;
-      pObject =
-        (CCopasiObject*)CCopasiContainer::Root->getObject(objName);
-    }
-  else
-    {
-      CCopasiContainer* pCopasiObject;
-      unsigned C_INT32 containerIndex;
-      //favor to search the list of container first
-      pObject = NULL;
-      for (containerIndex = 0; containerIndex < pListOfContainer->size(); containerIndex++)
-        {
-          pCopasiObject = (*pListOfContainer)[containerIndex];
-          pObject =
-            (CCopasiObject*)pCopasiObject->getObject(objName);
-        }
-      // if not find search the root
-      if (!pObject)
-        pObject =
-          (CCopasiObject*)CCopasiContainer::Root->getObject(objName);
-      // has been deleted all where
     }
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:31:50 $
+   $Date: 2003/11/12 17:22:30 $
    End CVS Header */
 
 /****************************************************************************
@@ -81,14 +81,6 @@ class CReport : public CCopasiObject
       const std::vector< CCopasiContainer * > * pListOfContainer,
       std::vector<CCopasiObject*> & objectList,
       std::vector<CCopasiObjectName>* nameVector);
-
-    /**
-    transfer an individual object list from one name
-    */
-    static void getObjectFromName(
-      const std::vector< CCopasiContainer * > * pListOfContainer,
-      CCopasiObject* pObject,
-      const CCopasiObjectName& objName);
 
     /**
        sets the reference to the report
