@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/13 17:38:43 $
+   $Author: ssahle $ 
+   $Date: 2004/04/26 11:12:40 $
    End CVS Header */
 
 /*******************************************************************
@@ -131,7 +131,7 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
           table->setText(index, 3, QString::number(constantCompart->getTransientValue()));
 
           const std::vector< CMathSymbol * > &list = constantCompart->getMetaboliteList();
-          for (int l = 0; l < list.size(); l++)
+          for (unsigned C_INT32 l = 0; l < list.size(); l++)
             {
               const std::string &name = list[l]->getName();
               comboEntries1.push_back(name.c_str());
@@ -194,7 +194,8 @@ void CompartmentSymbols::resizeEvent(QResizeEvent * re)
   CopasiWidget::resizeEvent(re);
 }
 
-bool CompartmentSymbols::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CompartmentSymbols::update(ListViews::ObjectType objectType,
+                                ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

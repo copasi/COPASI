@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.133 $
+   $Revision: 1.134 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/02/02 21:50:56 $
+   $Author: ssahle $ 
+   $Date: 2004/04/26 11:13:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -546,7 +546,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                  //Time course
+      case 23:                                   //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -555,10 +555,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                 //Report
+      case 43:                                  //Report
         return tableDefinition;
         break;
-      case 42:                                 //Plots
+      case 42:                                  //Plots
         return plotWidget;
         break;
       case 5:
@@ -835,7 +835,8 @@ bool ListViews::updateAllListviews2(C_INT32 id) //static
   return success;
 }
 
-bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key) //static
+bool ListViews::updateDataModelAndListviews(ObjectType objectType,
+    Action C_UNUSED(action), const std::string & C_UNUSED(key)) //static
 {
   bool success = true;
 

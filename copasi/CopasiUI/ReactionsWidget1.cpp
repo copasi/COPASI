@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.137 $
+   $Revision: 1.138 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/04/07 17:21:40 $
+   $Author: ssahle $ 
+   $Date: 2004/04/26 11:13:26 $
    End CVS Header */
 
 /*********************************************************************
@@ -342,7 +342,8 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
   FillWidgetFromRI();
 }
 
-bool ReactionsWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool ReactionsWidget1::update(ListViews::ObjectType objectType,
+                              ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/13 17:38:42 $
+   $Author: ssahle $ 
+   $Date: 2004/04/26 11:13:25 $
    End CVS Header */
 
 /*******************************************************************
@@ -290,7 +290,8 @@ void MoietyWidget::showMessage(QString title, QString text)
   QMessageBox::about (this, title, text);
 }
 
-bool MoietyWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool MoietyWidget::update(ListViews::ObjectType objectType,
+                          ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

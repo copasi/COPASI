@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/02/24 15:24:32 $
+   $Author: ssahle $ 
+   $Date: 2004/04/26 11:13:25 $
    End CVS Header */
 
 /********************************************************
@@ -294,7 +294,7 @@ void ObjectBrowser::nextClicked()
 
   std::vector<CCopasiObject*>* outputVector;
   ObjectBrowserItem* rootItem;
-  int i;
+  unsigned C_INT32 i;
   switch (currentPage)
     {
     case LISTVIEWPAGE:
