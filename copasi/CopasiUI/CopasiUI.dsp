@@ -81,7 +81,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 steadystate.lib report.lib $(QTDIR)\lib\qt-mt302.lib mkl_lapack.lib mkl_p3.lib mkl_c.lib utilities.lib function.lib mathmodel.lib model.lib output.lib trajectory.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /pdbtype:sept /libpath:"../Debug" /libpath:"$(CBLAS_LIB)/ia32/lib"
+# ADD LINK32 steadystate.lib report.lib $(QTDIR)\lib\qt-mt307.lib mkl_lapack.lib mkl_p3.lib mkl_c.lib utilities.lib function.lib mathmodel.lib model.lib output.lib trajectory.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /pdbtype:sept /libpath:"../Debug" /libpath:"$(CBLAS_LIB)/ia32/lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -215,6 +215,10 @@ SOURCE=.\moc_MetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\moc_ObjectBrowser.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\moc_ReactionsWidget.cpp
 # End Source File
 # Begin Source File
@@ -264,6 +268,10 @@ SOURCE=.\MyLineEdit.moc.cpp
 # Begin Source File
 
 SOURCE=.\MyTable.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ObjectBrowser.cpp
 # End Source File
 # Begin Source File
 
@@ -707,35 +715,6 @@ InputName=MetabolitesWidget
 # Begin Source File
 
 SOURCE=.\MetabolitesWidget1.h
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
-InputDir=.
-InputPath=.\MetabolitesWidget1.h
-InputName=MetabolitesWidget1
-
-"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
-InputDir=.
-InputPath=.\MetabolitesWidget1.h
-InputName=MetabolitesWidget1
-
-"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -906,6 +885,10 @@ InputName=MyLineEdit
 
 SOURCE=.\MyTable.h
 # PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\ObjectBrowser.h
 # End Source File
 # Begin Source File
 
@@ -1124,6 +1107,61 @@ InputName=CompartmentsWidget
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
 
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\ObjectBrowser.ui
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - UICing ObjectBrowser.ui...
+InputDir=.
+InputPath=.\ObjectBrowser.ui
+InputName=ObjectBrowser
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - UICing ObjectBrowser.ui...
+InputDir=.
+InputPath=.\ObjectBrowser.ui
+InputName=ObjectBrowser
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
 # End Custom Build
 
 !ENDIF 

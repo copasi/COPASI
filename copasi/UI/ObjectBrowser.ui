@@ -1,0 +1,80 @@
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<class>ObjectBrowser</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>ObjectBrowser</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>516</width>
+            <height>321</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>TabListView</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QPushButton" row="1" column="0">
+            <property name="name">
+                <cstring>backButton</cstring>
+            </property>
+            <property name="text">
+                <string>Previous</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="1">
+            <property name="name">
+                <cstring>nextButton</cstring>
+            </property>
+            <property name="text">
+                <string>Next</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="2">
+            <property name="name">
+                <cstring>cancelButton</cstring>
+            </property>
+            <property name="text">
+                <string>Cancel</string>
+            </property>
+        </widget>
+        <widget class="QListView" row="0" column="0" rowspan="1" colspan="3">
+            <column>
+                <property name="text">
+                    <string>Object Browser</string>
+                </property>
+                <property name="clickable">
+                    <bool>false</bool>
+                </property>
+                <property name="resizeable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>ObjectList</cstring>
+            </property>
+            <property name="acceptDrops">
+                <bool>false</bool>
+            </property>
+            <property name="resizeMode">
+                <enum>LastColumn</enum>
+            </property>
+            <property name="treeStepSize">
+                <number>19</number>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
