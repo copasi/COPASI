@@ -6,6 +6,8 @@
  ** information obtained from the data model about the individual
  ** Metabolites----It is the second level of Metabolites
  ********************************************************************/
+#include <math.h>
+
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -17,6 +19,7 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qbuttongroup.h>
+
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
 #include "model/CModel.h"
