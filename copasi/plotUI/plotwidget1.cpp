@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.2 2003/10/14 15:56:34 huwenjun Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.3 2003/10/15 08:30:58 huwenjun Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -29,7 +29,7 @@
 //temporary
 #include <math.h>
 
-CurveSpecScrollView::CurveSpecScrollView(QWidget * parent = 0, const char * name = 0, WFlags f = 0)
+CurveSpecScrollView::CurveSpecScrollView(QWidget * parent, const char * name, WFlags f)
     : QScrollView(parent, name, f)
 {}
 
@@ -41,7 +41,7 @@ CurveSpecScrollView::CurveSpecScrollView(QWidget * parent = 0, const char * name
  */ 
 //TODO: this widget should inherit CopasiWidget, but omitting inheritance for now with
 //all the copasi code elsewhere
-PlotWidget1::PlotWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0)
+PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl), filename("plotdata"), nextPlotKey(0), currentPlotKey(-1)
 {
   if (!name)
