@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/01/14 16:46:17 $
+   $Author: shoops $ 
+   $Date: 2004/02/26 03:16:32 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -168,8 +168,12 @@ void DataModel::loadModel(const char* fileName)
       CCopasiXML XML;
 
       XML.setFunctionList(Copasi->pFunctionDB->loadedFunctions());
+
       CReportDefinitionVector * pNewReports = new CReportDefinitionVector();
       XML.setReportList(*pNewReports);
+
+      CCopasiVectorN< CCopasiTask > TaskList;
+      XML.setTaskList(TaskList);
 
       CPlotSpecVector * pNewPlotSpecs = new CPlotSpecVector();
       //TODO XML.setPlotList(*pNewPlotSpecs);
@@ -182,17 +186,37 @@ void DataModel::loadModel(const char* fileName)
       searchFolderList(1)->setObjectKey(model->getKey());
 
       pdelete(steadystatetask);
-      steadystatetask = new CSteadyStateTask();
+      pdelete(trajectorytask);
+      pdelete(scantask);
+
+      unsigned C_INT32 i, imax = TaskList.size();
+      for (i = 0; i < imax; i++)
+        {
+          switch (TaskList[i]->getType())
+            {
+            case CCopasiTask::steadyState:
+              steadystatetask = dynamic_cast< CSteadyStateTask * >(TaskList[i]);
+              break;
+
+            case CCopasiTask::timeCourse:
+              trajectorytask = dynamic_cast< CTrajectoryTask * >(TaskList[i]);
+              break;
+
+            case CCopasiTask::scan:
+              scantask = dynamic_cast< CScanTask * >(TaskList[i]);
+              break;
+            }
+        }
+
+      if (!steadystatetask) steadystatetask = new CSteadyStateTask();
       steadystatetask->getProblem()->setModel(model);
       searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
-      pdelete(trajectorytask);
-      trajectorytask = new CTrajectoryTask();
+      if (!trajectorytask) trajectorytask = new CTrajectoryTask();
       trajectorytask->getProblem()->setModel(model);
       searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
-      pdelete(scantask);
-      scantask = new CScanTask();
+      if (!scantask) scantask = new CScanTask();
       scantask->getProblem()->setModel(model);
       searchFolderList(32)->setObjectKey(scantask->getKey());
 
@@ -222,6 +246,13 @@ void DataModel::saveModel(const char* fileName)
 
   XML.setModel(*model);
   XML.setReportList(*reportdefinitions);
+
+  CCopasiVectorN< CCopasiTask > TaskList;
+  if (steadystatetask) TaskList.add(steadystatetask);
+  if (trajectorytask) TaskList.add(trajectorytask);
+  //  if (scantask) TaskList.add(scantask);
+  XML.setTaskList(TaskList);
+
   //TODO XML.setPlotList(*plotspecs);
   XML.save(os);
 }
