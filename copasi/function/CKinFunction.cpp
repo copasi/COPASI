@@ -171,7 +171,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                     // this is an error
+        case N_NOP:                      // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -189,11 +189,7 @@ void CKinFunction::setDescription(const std::string& description)
 {
   CFunction::setDescription(description);
 
-  //  cleanupNodes();
-  //  parse();
-  //  connectNodes();
-  //  createParameters();
-  //  initIdentifierNodes();
+  compile();
 }
 
 C_FLOAT64 CKinFunction::calcValue(const CCallParameterPointers & callParameters) const
