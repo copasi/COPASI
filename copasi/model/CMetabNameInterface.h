@@ -66,7 +66,7 @@ class CMetabNameInterface
 
     /**
     * This extracts the compartment name from the given metabolite display name. If no compartment name is 
-    * present in the given metabolite name then the name of the compartment the metabolite is really 
+    * present in the given metabolite name then the name of the (first) compartment the metabolite is really 
     * in is given. If the metabolite does not exist and the name does not contain a compartment
     * then the name of the first compatmnet in the model is returned.
     */
@@ -76,6 +76,15 @@ class CMetabNameInterface
     * This extracts the metabolite name from the given metabolite display name. 
     */
     static std::string extractMetabName(const CModel* model, const std::string & name);
+
+    /**
+      *  This checks if the metabolite name (possibly including the compartment) is valid.
+      * A valid name must be in the format of "metabolite" or "metabolite{compartment}"
+      * and does not contain white spaces. (Other special characters are not considered yet.
+      * Nor is it designed to handle deliberate mistakes such as the sequence "{{}")
+      * Neither metabolite nor  compartment can be an empty string.
+      */
+    static bool isValidMetabName(const std::string name);
 
   private:
     static std::string empty_string;
