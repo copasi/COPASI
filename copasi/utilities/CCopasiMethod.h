@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 19:00:54 $
+   $Date: 2003/11/06 18:41:51 $
    End CVS Header */
 
 /**
@@ -84,6 +84,24 @@ class CCopasiMethod : public CCopasiParameterGroup
                   const CCopasiContainer * pParent = NULL);
 
   public:
+    /**
+     * Convert a SubTypeName to the matching enum value.
+     * Returns CCopasiMethod::unset if no match is found.
+     * @param (const std::string & subTypeName)
+     * @return CCopasiMethod::SubType type
+     */
+    static
+    CCopasiMethod::SubType TypeNameToEnum(const std::string & subTypeName);
+
+    /**
+     * Convert a XMLSubType to the matching enum value
+     * Returns CCopasiMethod::unset if no match is found.
+     * @param (const char * xmlTypeName)
+     * @return CCopasiMethod::SubType type
+     */
+    static
+    CCopasiMethod::SubType XMLNameToEnum(const char * xmlTypeName);
+
     /**
      * Copy constructor
      * @param const CCopasiMethodr & src

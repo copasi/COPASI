@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 18:36:01 $
+   $Date: 2003/11/06 18:41:51 $
    End CVS Header */
 
 /**
@@ -46,6 +46,24 @@ const char* CCopasiMethod::XMLSubType[] =
   };
 
 //    std::string mType;
+
+CCopasiMethod::SubType CCopasiMethod::TypeNameToEnum(const std::string & subTypeName)
+{
+  unsigned C_INT32 i = 0;
+  while (SubTypeName[i] != subTypeName && SubTypeName[i] != "") i++;
+
+  if (CCopasiMethod::SubTypeName[i] != "") return (CCopasiMethod::SubType) i;
+  else return CCopasiMethod::unset;
+}
+
+CCopasiMethod::SubType CCopasiMethod::XMLNameToEnum(const char * xmlTypeName)
+{
+  unsigned C_INT32 i = 0;
+  while (strcmp(xmlTypeName, XMLSubType[i]) && XMLSubType[i]) i++;
+
+  if (XMLSubType[i]) return (CCopasiMethod::SubType) i;
+  else return CCopasiMethod::unset;
+}
 
 CCopasiMethod::CCopasiMethod():
     CCopasiParameterGroup("NoName", NULL, "Method"),
