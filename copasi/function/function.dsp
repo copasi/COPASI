@@ -95,31 +95,43 @@ PostBuild_Cmds=copy Debug\*.lib ..\Debug
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CBaseFunction.cpp
+SOURCE=.\CFunction.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CBaseIdentifier.cpp
+SOURCE=.\CFunctionDB.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CFunctionDB.cpp
+SOURCE=.\CFunctionParameter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CKinFunction.cpp
+SOURCE=.\CFunctionParameters.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CMassAction.cpp
+SOURCE=.\CKinFunction.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CNodeK.cpp
+SOURCE=.\CMassAction.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\lexkk.cpp
+SOURCE=.\CNodeK.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRange.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUsageRange.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\lexkk.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -127,27 +139,47 @@ SOURCE=..\..\copasi\function\lexkk.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CBaseFunction.h
+SOURCE=.\CCallParameter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CBaseIdentifier.h
+SOURCE=.\CCallParameters.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CFunctionDB.h
+SOURCE=.\CFunction.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CKinFunction.h
+SOURCE=.\CFunctionDB.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CMassAction.h
+SOURCE=.\CFunctionParameter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\CNodeK.h
+SOURCE=.\CFunctionParameters.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CKinFunction.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMassAction.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CNodeK.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRange.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUsageRange.h
 # End Source File
 # Begin Source File
 
@@ -155,7 +187,7 @@ SOURCE=.\function.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\function\lexkk.h
+SOURCE=.\lexkk.h
 # End Source File
 # End Group
 # End Target

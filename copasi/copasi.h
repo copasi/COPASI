@@ -23,6 +23,7 @@ using namespace std ;
 #define snprintf  _snprintf  // they just have a different name for this guy
 #undef C_INT32
 #define C_INT32 int
+#undef COPASI_TRACE_CONSTRUCTION
 #endif  // WIN32
 
 #ifdef TRUE
