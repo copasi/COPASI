@@ -84,10 +84,8 @@ void CopasiUI3Window::slotFileSaveAs()
 
   if (dataModel && gpsFile)
     {
-      gpsFile += ".gps";
+      //      gpsFile += ".gps";
       dataModel->saveModel((const char *)gpsFile.utf8());
-      //the below are to reopen the file and created the relative objects
-      dataModel->loadModel((const char *)gpsFile.utf8());
     }
 } //cout<<"it comes in filesave as...";}
 
@@ -184,14 +182,11 @@ void CopasiUI3Window::slotFileSave()
   if (dataModel && gpsFile)
     {
       CReadConfig inbuf((const char *)gpsFile.utf8());
-      if (inbuf.getVersion() < "4.0")
+      if (inbuf.getVersion() < "4.0" ||
+          gpsFile == QString::fromLatin1("temp.gps"))
         slotFileSaveAs();
       else
-        {
-          dataModel->saveModel((const char *)gpsFile.utf8());
-          //the below are to reopen the file and created the relative objects
-          dataModel->loadModel((const char *)gpsFile.utf8());
-        }
+        dataModel->saveModel((const char *)gpsFile.utf8());
     }
 }
 
