@@ -3,6 +3,14 @@
 // (C) Stefan Hoops 2002
 //
 
+#ifdef WIN32
+# include <windows.h>
+# include <winbase.h>
+# ifdef ERROR
+#  undef ERROR
+# endif
+#endif
+
 #define COPASI_MAIN
 
 #include "copasi.h"
@@ -14,8 +22,14 @@ C_INT32 TestOptimization(void);
 C_INT main(C_INT argc, char *argv[])
 {
   unsigned C_INT32 i, imax;
+  char PrgName[512];
 
-  std::cout << "Starting main program." << std::endl;
+#ifdef WIN32
+  GetModuleFileName(NULL, PrgName, 512);
+#else
+  strcpy(PrgName, argv[0]);
+#endif
+  std::cout << "Starting main program: " << PrgName << std::endl;
   Copasi = new CGlobals;
 
   try
@@ -80,7 +94,6 @@ C_INT main(C_INT argc, char *argv[])
         case copasi::autothrow_help:
           std::cout << "Usage: " << argv[0] << " [options]\n";
           std::cout << e.what();
-          return 0;
         }
     }
 
@@ -88,7 +101,6 @@ C_INT main(C_INT argc, char *argv[])
     {
       std::cerr << argv[0] << ": " << e.what() << "\n";
       std::cerr << e.get_help_comment() << std::endl;
-      return 1;
     }
 
   catch (CCopasiException Exception)
