@@ -26,6 +26,7 @@
 #include "report/CCopasiObject.h"
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiContainer.h"
+#include "utilities/CCopasiVector.h"
 
 QPixmap *pObjectAll = 0;   // to store the image of locked icon folder
 QPixmap *pObjectParts = 0;   // to store the image of closed icon folder
@@ -189,14 +190,14 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
         {
           currentItem->setText(0, current->getObjectType().c_str());
           currentItem->setObjectType(CONTAINERATTR);
-          loadChild(currentItem, (CCopasiContainer*)current);
+          loadChild(currentItem, (CCopasiContainer*) current);
         }
       else
         {
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(OBJECTATTR);
           if (current->isVector())
-            loadVectors(currentItem, current);
+            loadVectors(currentItem, (CCopasiContainer *) current);
           QString st1(current->getObjectName().c_str());
           bool test = current->isVector();
           test = current->isMatrix();
@@ -209,43 +210,43 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
     }
 }
 
-void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiObject* copaParent)
+void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * copaParent)
 {
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
-  /*
-   CCopasiVectorNS<CCopasiObject *> pObjectList=((CCopasiContainer*)copaParent)->getObjects();
-   CCopasiVectorNS<CCopasiObject *>::iterator it = pObjectList.begin();
-   CCopasiVectorNS<CCopasiObject *>::iterator end = pObjectList.end();
-   
-    while (it<end) 
+
+  //std::vector< CCopasiObject * > & getObjects()
+  const std::vector<CCopasiObject *> * pObjectList = & copaParent->getObjects();
+  std::vector<CCopasiObject *>::const_iterator it = pObjectList->begin();
+  std::vector<CCopasiObject *>::const_iterator end = pObjectList->end();
+
+  while (it < end)
     {
-     current=*it;
-     ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
-     last=currentItem;
-     if (current->isContainer())
-     {
-     currentItem->setText(0, current->getObjectType().c_str());
-     currentItem->setObjectType(CONTAINERATTR);
-     loadChild(currentItem, (CCopasiContainer*)current);
-     }
-     else
-     {
-     currentItem->setText(0, current->getObjectName().c_str());
-     currentItem->setObjectType(OBJECTATTR);
-     if (current->isVector())
-      loadVectors(currentItem, current);
-     QString st1(current->getObjectName().c_str());
-     bool test = current->isVector();
-     test = current->isMatrix();
-     test = current->isNameVector();
-     test = current->isReference();
-   
-  //   loadChild(currentItem, current);
-     }
-     it++;
+      current = *it;
+      ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
+      last = currentItem;
+      if (current->isContainer())
+        {
+          currentItem->setText(0, current->getObjectType().c_str());
+          currentItem->setObjectType(CONTAINERATTR);
+          loadChild(currentItem, (CCopasiContainer*)current);
+        }
+      else
+        {
+          currentItem->setText(0, current->getObjectName().c_str());
+          currentItem->setObjectType(OBJECTATTR);
+          if (current->isVector())
+            loadVectors(currentItem, (CCopasiContainer *) current);
+          QString st1(current->getObjectName().c_str());
+          bool test = current->isVector();
+          test = current->isMatrix();
+          test = current->isNameVector();
+          test = current->isReference();
+
+          //   loadChild(currentItem, current);
+        }
+      it++;
     }
-  */
 }
 
 void ObjectBrowser::updateUI()
