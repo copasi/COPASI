@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.18 2003/09/17 21:24:13 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.19 2003/09/18 02:51:54 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -40,14 +40,6 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
     setName("CReportDefinitionSelect");
   CReportDefinitionSelectLayout = new QGridLayout(this, 1, 1, 11, 6, "CReportDefinitionSelectLayout");
 
-  confirmButton = new QPushButton(this, "confirmButton");
-
-  CReportDefinitionSelectLayout->addWidget(confirmButton, 1, 0);
-
-  cancelButton = new QPushButton(this, "cancelButton");
-
-  CReportDefinitionSelectLayout->addWidget(cancelButton, 1, 1);
-
   frame5 = new QFrame(this, "frame5");
   frame5->setFrameShape(QFrame::Box);
   frame5->setFrameShadow(QFrame::Sunken);
@@ -57,36 +49,49 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
 
   frame5Layout->addWidget(reportLabel, 0, 0);
 
+  targetLabel = new QLabel(frame5, "targetLabel");
+
+  frame5Layout->addWidget(targetLabel, 1, 0);
+
+  appendChecked = new QCheckBox(frame5, "appendChecked");
+
+  frame5Layout->addMultiCellWidget(appendChecked, 2, 2, 1, 2);
+
   reportDefinitionNameList = new QComboBox(FALSE, frame5, "reportDefinitionNameList");
 
   frame5Layout->addWidget(reportDefinitionNameList, 0, 1);
+
+  jumpButton = new QPushButton(frame5, "jumpButton");
+
+  frame5Layout->addWidget(jumpButton, 0, 2);
 
   targetEdit = new QLineEdit(frame5, "targetEdit");
   targetEdit->setFrameShape(QLineEdit::LineEditPanel);
   targetEdit->setFrameShadow(QLineEdit::Sunken);
 
-  frame5Layout->addWidget(targetEdit, 2, 1);
+  frame5Layout->addWidget(targetEdit, 1, 1);
 
-  targetLabel = new QLabel(frame5, "targetLabel");
+  browseButton = new QPushButton(frame5, "browseButton");
 
-  frame5Layout->addWidget(targetLabel, 2, 0);
-
-  appendChecked = new QCheckBox(frame5, "appendChecked");
-
-  frame5Layout->addWidget(appendChecked, 3, 1);
-
-  jumpButton = new QPushButton(frame5, "jumpButton");
-
-  frame5Layout->addWidget(jumpButton, 1, 1);
+  frame5Layout->addWidget(browseButton, 1, 2);
 
   CReportDefinitionSelectLayout->addMultiCellWidget(frame5, 0, 0, 0, 1);
+
+  confirmButton = new QPushButton(this, "confirmButton");
+
+  CReportDefinitionSelectLayout->addWidget(confirmButton, 1, 0);
+
+  cancelButton = new QPushButton(this, "cancelButton");
+
+  CReportDefinitionSelectLayout->addWidget(cancelButton, 1, 1);
   languageChange();
   clearWState(WState_Polished);
 
   // tab order
   setTabOrder(reportDefinitionNameList, jumpButton);
   setTabOrder(jumpButton, targetEdit);
-  setTabOrder(targetEdit, appendChecked);
+  setTabOrder(targetEdit, browseButton);
+  setTabOrder(browseButton, appendChecked);
   setTabOrder(appendChecked, confirmButton);
   setTabOrder(confirmButton, cancelButton);
 
@@ -111,12 +116,13 @@ CReportDefinitionSelect::~CReportDefinitionSelect()
 void CReportDefinitionSelect::languageChange()
 {
   setCaption(tr("CReportDefinitionSelect"));
-  confirmButton->setText(tr("Confirm"));
-  cancelButton->setText(tr("Cancel"));
   reportLabel->setText(tr("ReportDefinitions"));
   targetLabel->setText(tr("Target"));
   appendChecked->setText(tr("Append"));
-  jumpButton->setText(tr("Go editing..."));
+  jumpButton->setText(tr("edit"));
+  browseButton->setText(tr("browse"));
+  confirmButton->setText(tr("Confirm"));
+  cancelButton->setText(tr("Cancel"));
 }
 
 void CReportDefinitionSelect::loadReportDefinitionVector()
