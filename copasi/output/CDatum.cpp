@@ -606,8 +606,11 @@ void CDatum::compileDatum(CModel *Model, CTrajectory *traj, CSS_Solution *soln)
     case D_SSIZE:
     case D_RTOL:
     case D_ATOL:
-    case D_SSRES:
 #endif
+    case D_SSRES:	// steady-state resolution
+	  mpValue = soln->getSSResAddr();
+	  mType = CFLOAT64;	
+	  break;	
     case D_UFUNC:	// user functions
 	  Index = FindUDFunct(mTitle);
 	  if (Index == -1) break;
@@ -616,23 +619,55 @@ void CDatum::compileDatum(CModel *Model, CTrajectory *traj, CSS_Solution *soln)
 	  mpValue = pFunct->getValueAddr();
 	  mType = CFLOAT64;			
 	  break;						
-
+    case D_DERIV:	// Derive Factor	
+	  mpValue = soln->getDerivFactorAddr();		
+	  mType = CFLOAT64;		  
+	  break;
 #if 0
-    case D_DERIV:
     case D_ENDT:
     case D_POINT:
-    case D_EIGMR:
-    case D_EIGMI:
-    case D_EIGPR:
-    case D_EIGNR:
-    case D_EIGR:
-    case D_EIGI:
-    case D_EIGC:
-    case D_EIGZ:
-    case D_THIER:
-    case D_STIFF:   
-      break;
 #endif
+
+    case D_EIGMR:	// max real eigenvalue component
+	  mpValue = soln->getEigen()->getMaxRealPartAddr();
+	  mType = CFLOAT64;	
+	  break;
+    case D_EIGMI:	// max absolute imaginary eigenvalue component
+	  mpValue = soln->getEigen()->getMaxImagPartAddr();
+	  mType = CFLOAT64;
+	  break;
+    case D_EIGPR:  // number of eigenvalues w/ positive real parts
+	  mpValue = soln->getEigen()->getNPosRealAddr();
+	  mType = CFLOAT64;
+	  break;
+    case D_EIGNR: // number of eigenvalues w/ negative real parts
+	  mpValue = soln->getEigen()->getNNegRealAddr();
+	  mType = CFLOAT64;
+	  break;
+    case D_EIGR:  // number of real eigenvalues
+	  mpValue = soln->getEigen()->getNRealAddr();
+	  mType = CFLOAT64;
+	  break;
+    case D_EIGI: // number of imaginary eigenvalues
+	  mpValue = soln->getEigen()->getNImagAddr();		
+	  mType = CFLOAT64;
+	  break;
+    case D_EIGC: // number of complex eigenvalues
+	  mpValue = soln->getEigen()->getNCplxConjAddr();
+	  mType = CFLOAT64;
+	  break;
+    case D_EIGZ: // number of zero eigenvalues
+	  mpValue = soln->getEigen()->getNZeroAddr();
+	  mType = CFLOAT64;
+	  break;
+    case D_THIER: // time hierarchy
+	  mpValue = soln->getEigen()->getHierarchyAddr();
+	  mType = CFLOAT64;
+	  break;
+    case D_STIFF: // stiffness
+	  mpValue = soln->getEigen()->getStiffnessAddr();	
+	  mType = CFLOAT64;
+      break;
     case D_T: // time
 	  mpValue = &traj->getTime();
 	  mType = CFLOAT64;	
@@ -705,7 +740,7 @@ void CDatum::compileDatum(CModel *Model, CTrajectory *traj, CSS_Solution *soln)
       Index = outputList.Model.FindStep(IStr);
       Index1 = outputList.Model.FindMetab(JStr);
       if ((Index = -1) || (Index1 = -1))
-	break;
+		break;
       mpValue = &(Dxv[outputList.Model.mICol[Index]][outputList.Model.mIRow[Index1]] );
       mType = C_FLOAT64;
       break;
@@ -715,7 +750,7 @@ void CDatum::compileDatum(CModel *Model, CTrajectory *traj, CSS_Solution *soln)
       Index = outputList.Model.FindMetab(IStr);
       Index1 = outputList.Model.FindStep(JStr);
       if ((Index == -1) || (Index1 == -1) || (outputList.Model.mMetabolite[Index].Status == METAB_FIXED))
-	break;
+		break;
       mpValue = &(Gamma[outputList.Model.mIRow[Index]][outputList.Model.mICol[Index1]] );
       mType = C_FLOAT64;
       break;
