@@ -19,7 +19,7 @@
 #include <qbuttongroup.h>
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
-#include "model/model.h"
+#include "model/CModel.h"
 #include "listviews.h"
 
 /*

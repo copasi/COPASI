@@ -22,7 +22,7 @@
 #include "utilities/CCopasiVector.h"
 #include "ReactionsWidget1.h"
 #include "listviews.h"
-#include "model/model.h"
+#include "model/CModel.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"

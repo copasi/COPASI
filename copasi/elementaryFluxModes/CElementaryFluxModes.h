@@ -13,7 +13,8 @@
 #include <iostream>
 #include <vector>
 
-#include "model/model.h"
+#include "model/CModel.h"
+#include "model/CReaction.h"
 
 // #include "CEFMAlgorithm.h"
 #include "CFluxMode.h"

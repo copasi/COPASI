@@ -1,4 +1,5 @@
 #include "CCallParameters.h"
+#include "CFunction.h"
 
 CFunctionParameterMap::CFunctionParameterMap():
     mPointers(),

@@ -8,8 +8,8 @@
 
 #include <string>
 
-#include "copasi.h"
-#include "model/model.h"
+#include "copasi.h" 
+//#include "model/model.h"
 #include "function/CNodeK.h"
 #include "CDatum.h"
 

@@ -16,6 +16,7 @@
 #include "utilities/CGlobals.h"
 #include "output/COutputList.h"
 #include "output/COutput.h"
+#include "model/CModel.h"
 
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"

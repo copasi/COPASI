@@ -11,6 +11,7 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include "MoietyWidget.h"
+#include "model/CModel.h"
 #include "model/CMetab.h"
 #include "listviews.h"
 #include "model/CMoiety.h"

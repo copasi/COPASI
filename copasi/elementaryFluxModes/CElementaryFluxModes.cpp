@@ -9,9 +9,9 @@
 
 // #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
-#include "model/model.h"
 #include "CElementaryFluxModes.h"
 #include "CEFMAlgorithm.h"
+
 CElementaryFluxModes::CElementaryFluxModes(){CONSTRUCTOR_TRACE; mModel = NULL;}
 CElementaryFluxModes::~CElementaryFluxModes(){DESTRUCTOR_TRACE;}
 

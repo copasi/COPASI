@@ -12,8 +12,8 @@
 #include <qtable.h>
 #include <qpushbutton.h>
 #include "MyTable.h"
-#include "copasi.h"
-#include "model/model.h"
+#include "copasi.h" 
+//#include "model/model.h"
 #include "copasiWidget.h"
 
 class CModel;

@@ -12,7 +12,7 @@
 #include "CompartmentSymbols.h"
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathConstant.h"
-#include "model/model.h"
+#include "model/CCompartment.h"
 #include "listviews.h"
 #include <qfont.h>
 

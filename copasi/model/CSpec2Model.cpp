@@ -12,7 +12,7 @@
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "FlexLexer.h"
-#include "model.h"
+#include "CModel.h"
 #include "utilities/CGlobals.h"
 #include "CSpec2Model.h"
 #include "CSpecLine.h"

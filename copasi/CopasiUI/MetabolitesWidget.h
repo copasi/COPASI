@@ -11,10 +11,11 @@
 
 #include "MyTable.h"
 #include "copasi.h"
-#include "model/model.h"
 #include <qtable.h>
 #include <qpushbutton.h>
 #include "copasiWidget.h"
+
+class CModel;
 
 class MetabolitesWidget : public CopasiWidget
   {

@@ -12,10 +12,8 @@
 #include <qpushbutton.h>
 #include "MyTable.h"
 #include "copasi.h"
-#include "model/model.h"
 #include "utilities/CGlobals.h"
-#include "copasiWidget.h" 
-//#include "function/function.h"
+#include "copasiWidget.h"
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;

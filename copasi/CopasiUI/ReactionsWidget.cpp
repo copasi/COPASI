@@ -13,6 +13,8 @@
 #include "listviews.h"
 #include "ReactionsWidget.h"
 #include <qfont.h>
+#include "model/CModel.h"
+#include "model/CReaction.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree.

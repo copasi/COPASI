@@ -2,8 +2,8 @@
 #include <qtoolbar.h>
 
 #include "copasi.h"
-#include "listviews.h"
-#include "model/model.h"
+#include "listviews.h" 
+//#include "model/model.h"
 
 class QToolButton;
 class CopasiUI3Window : public QMainWindow

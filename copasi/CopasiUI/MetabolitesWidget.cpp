@@ -11,6 +11,7 @@
 #include <qmessagebox.h>
 #include "MetabolitesWidget.h"
 #include "model/CMetab.h"
+#include "model/CModel.h"
 #include "listviews.h"
 #include <qfont.h>
 

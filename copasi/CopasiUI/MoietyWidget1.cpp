@@ -17,7 +17,8 @@
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
 #include "MoietyWidget1.h"
-#include "model/model.h"
+#include "model/CModel.h"
+#include "model/CMoiety.h"
 #include "listviews.h" 
 /*
  *  Constructs a MoietyWidget which is a child of 'parent', with the 

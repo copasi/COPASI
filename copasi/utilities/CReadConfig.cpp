@@ -3,7 +3,6 @@
 // New Class based on pmutils read functionality
 // (C) Stefan Hoops 2001
 
-//#include <sstream>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -15,7 +14,6 @@
 #include "copasi.h"
 #include "CCopasiMessage.h"
 #include "CReadConfig.h"
-#include "model/model.h"
 
 // char *initInputBuffer(char *name);
 // static C_INT32 GetFileSize(const char *name);

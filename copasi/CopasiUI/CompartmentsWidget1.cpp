@@ -18,7 +18,8 @@
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
 #include "CompartmentsWidget1.h"
-#include "model/model.h"
+#include "model/CModel.h"
+#include "model/CCompartment.h"
 #include "listviews.h"
 
 /*
@@ -129,7 +130,7 @@ CompartmentsWidget1::~CompartmentsWidget1()
 
 /*This function is used to connect this class to the listviews
     class to basically choose the right widget to display   */
-int CompartmentsWidget1::isName(QString setValue)
+int CompartmentsWidget1::isName(const QString setValue)
 {
   if (mModel == NULL)
     {
@@ -160,7 +161,7 @@ void CompartmentsWidget1::loadCompartments(CModel *model)
 
 /* This function loads the compartments widget when its name is
   clicked in the tree   */
-void CompartmentsWidget1::loadName(QString setValue)
+void CompartmentsWidget1::loadName(const QString setValue)
 {
   if (mModel == NULL)
     {
