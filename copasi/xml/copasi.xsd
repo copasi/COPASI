@@ -258,23 +258,25 @@
             <xs:sequence>
               <xs:element name="Report" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:choice>
-                    <xs:sequence>
-                      <xs:element name="Comment" type="cCOMMENT" minOccurs="0"/>
-                      <xs:element name="Header" type="cREPORT_SECTION" minOccurs="0"/>
-                      <xs:element name="Body" type="cREPORT_SECTION" minOccurs="0"/>
-                      <xs:element name="Footer" type="cREPORT_SECTION" minOccurs="0"/>
-                    </xs:sequence>
-                    <xs:element name="Table">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="Object" type="cOBJECT" maxOccurs="unbounded"/>
-                        </xs:sequence>
-                        <xs:attribute name="seperator" type="xs:string" use="optional" default=" "/>
-                        <xs:attribute name="printTitle" type="xs:boolean" use="optional" default="true"/>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:choice>
+                  <xs:sequence>
+                    <xs:element name="Comment" type="cCOMMENT" minOccurs="0"/>
+                    <xs:choice>
+                      <xs:element name="Table">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="Object" type="cOBJECT" minOccurs="0" maxOccurs="unbounded"/>
+                          </xs:sequence>
+                          <xs:attribute name="seperator" type="xs:string" use="optional" default=" "/>
+                          <xs:attribute name="printTitle" type="xs:boolean" use="optional" default="true"/>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:sequence>
+                        <xs:element name="Header" type="cREPORT_SECTION" minOccurs="0"/>
+                        <xs:element name="Body" type="cREPORT_SECTION" minOccurs="0"/>
+                        <xs:element name="Footer" type="cREPORT_SECTION" minOccurs="0"/>
+                      </xs:sequence>
+                    </xs:choice>
+                  </xs:sequence>
                   <xs:attribute name="key" type="cREPORT_KEY" use="required"/>
                   <xs:attribute name="name" type="xs:string" use="required"/>
                   <xs:attribute name="taskType" type="xs:string" use="required"/>
