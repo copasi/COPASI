@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowser.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:57 $
+   $Author: lixu1 $ 
+   $Date: 2003/12/02 15:54:36 $
    End CVS Header */
 
 /********************************************************
@@ -65,7 +65,7 @@ class ObjectBrowser : public QDialog
     //    ObjectList* outputList();
 
     void eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObject*>* outputVector);
-
+    void removeDuplicate(ObjectList* objectItemList);
     void setCheck(ObjectBrowserItem* pCurrent);
     void setUncheck(ObjectBrowserItem* pCurrent);
     void clickToReverseCheck(ObjectBrowserItem* pCurrent);

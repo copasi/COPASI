@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/12/02 05:01:47 $
+   $Date: 2003/12/02 15:54:36 $
    End CVS Header */
 
 /********************************************************
@@ -365,6 +365,50 @@ void ObjectBrowser::eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObjec
     }
 }
 
+void swap(int first_pos, int second_pos, ObjectBrowserItem** array)
+{
+  ObjectBrowserItem* tmp = array[first_pos];
+  array[first_pos] = array[second_pos];
+  array[second_pos] = tmp;
+}
+
+int partition(int split_pos, int start_pos, int end_pos, ObjectBrowserItem** quick_sort_array)
+{
+  void* tmp = quick_sort_array[split_pos]->getObject()->pCopasiObject;
+  if (split_pos != start_pos)
+    swap(split_pos, start_pos, quick_sort_array);
+  split_pos = start_pos;
+  end_pos++;
+  while (start_pos < end_pos)
+    {
+      while ((++start_pos < end_pos) && (quick_sort_array[start_pos]->getObject()->pCopasiObject <= tmp));
+
+      while ((--end_pos > start_pos) && (quick_sort_array[end_pos]->getObject()->pCopasiObject > tmp));
+
+      if (start_pos < end_pos)
+        swap(start_pos, end_pos, quick_sort_array);
+      else
+        break;
+    }
+  start_pos--;
+  if (split_pos != start_pos)
+    swap(split_pos, start_pos, quick_sort_array);
+  return start_pos;
+}
+
+void quick_sort(int m, int n, ObjectBrowserItem** quick_sort_array)
+{
+  if (m < n)
+    {
+      int medium = (m + n) / 2;
+      medium = partition(medium, m, n, quick_sort_array);
+      if (m < medium - 1)
+        quick_sort(m, medium - 1, quick_sort_array);
+      if (medium + 1 < n)
+        quick_sort(medium + 1, n, quick_sort_array);
+    }
+}
+
 void ObjectBrowser::loadData()
 {
   CCopasiContainer * root = CCopasiContainer::Root;
@@ -374,7 +418,44 @@ void ObjectBrowser::loadData()
   itemRoot->setText(0, root->getName().c_str());
   itemRoot->setOpen(true);
   loadChild(itemRoot, root, true);
+  removeDuplicate(objectItemList);
   loadUI();
+}
+
+void ObjectBrowser::removeDuplicate(ObjectList* objectItemList)
+{
+  int length = objectItemList->len();
+  ObjectBrowserItem** bufferVector = new ObjectBrowserItem * [length];
+
+  // copy out the list
+  ObjectListItem* pCurrent = objectItemList->getRoot();
+  for (int i = 0; i < length; i++)
+    {
+      bufferVector[i] = pCurrent->pItem;
+      pCurrent = pCurrent->pNext;
+    }
+  // sort list according to CCopasiObject
+  quick_sort(0, length - 1, bufferVector);
+
+  int index;
+  CBrowserObject* pBrowserObject = NULL;
+  ObjectBrowserItem* pBrowserItem = NULL;
+
+  for (index = 0; (index < length) && (!bufferVector[index]->getObject()->pCopasiObject); index++);
+
+  pBrowserObject = bufferVector[index++]->getObject();
+
+  for (; index < length; index++)
+    {
+      if (bufferVector[index]->getObject()->pCopasiObject == pBrowserObject->pCopasiObject) //duplicate point
+        {
+          pBrowserItem = bufferVector[index]->getObject()->referenceList->pop();
+          pBrowserObject->referenceList->insert(pBrowserItem);
+          pBrowserItem->setBrowserObject(pBrowserObject);
+        }
+      else
+        pBrowserObject = bufferVector[index]->getObject();
+    }
 }
 
 void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
@@ -410,14 +491,14 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
                   objectChild->setObjectType(OBJECTATTR);
                   objectChild->setText(0, "Object list");
                   loadChild(objectChild, (CCopasiContainer *) current, false);
-                  /* To change */
+                  /* To change
                   ObjectBrowserItem* fieldChild = new ObjectBrowserItem(currentItem, objectChild, NULL, objectItemList);
                   fieldChild->setObjectType(FIELDATTR);
                   fieldChild->setText(0, "Attribute list");
                   loadField(fieldChild, (CCopasiContainer*) current);
 
                   fieldChild->attachKey();
-                  /* To change */
+                   To change */
                   objectChild->attachKey();
                 }
               else

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserItem.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/12/02 05:06:39 $
+   $Date: 2003/12/02 15:54:36 $
    End CVS Header */
 
 /********************************************************
@@ -56,7 +56,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
   if (mObject != NULL)
     {
       ObjectListItem* pTmp = pList->getRoot();
-      /* To change */
+      /* To change
       while (pTmp != NULL)
         {
           if (pTmp->pItem->getObject()->pCopasiObject == mObject) // already be pointed in the list
@@ -70,14 +70,14 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
           pBrowserObject->referenceList->insert(this);
         }
       else
-        /* To change */
-        {
-          CBrowserObject* newBrowserObject = new CBrowserObject();
-          newBrowserObject->pCopasiObject = mObject;
-          newBrowserObject->mChecked = false;
-          pBrowserObject = newBrowserObject;
-          pBrowserObject->referenceList->insert(this);
-        }
+         To change */
+      {
+        CBrowserObject* newBrowserObject = new CBrowserObject();
+        newBrowserObject->pCopasiObject = mObject;
+        newBrowserObject->mChecked = false;
+        pBrowserObject = newBrowserObject;
+        pBrowserObject->referenceList->insert(this);\
+      }
     }
   else //this is not an ending node
     {
@@ -106,7 +106,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
   if (mObject != NULL)
     {
       ObjectListItem* pTmp = pList->getRoot();
-      /* To change */
+      /* To change
       while (pTmp != NULL)
         {
           if (pTmp->pItem->getObject()->pCopasiObject == mObject)
@@ -120,14 +120,14 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
           pBrowserObject->referenceList->insert(this);
         }
       else
-        /* To change */
-        {
-          CBrowserObject* newBrowserObject = new CBrowserObject();
-          newBrowserObject->pCopasiObject = mObject;
-          newBrowserObject->mChecked = false;
-          pBrowserObject = newBrowserObject;
-          pBrowserObject->referenceList->insert(this);
-        }
+         To change */
+      {
+        CBrowserObject* newBrowserObject = new CBrowserObject();
+        newBrowserObject->pCopasiObject = mObject;
+        newBrowserObject->mChecked = false;
+        pBrowserObject = newBrowserObject;
+        pBrowserObject->referenceList->insert(this);
+      }
     }
   else //this is not an ending node
     {

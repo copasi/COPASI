@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserItem.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/12/02 05:01:16 $
+   $Date: 2003/12/02 15:54:36 $
    End CVS Header */
 
 /********************************************************
@@ -124,6 +124,11 @@ class ObjectBrowserItem : public QListViewItem
       mType = newType;
     }
 
+    void setBrowserObject(CBrowserObject* updateObject)
+    {
+      pBrowserObject = updateObject;
+    }
+
     objectType getType()
     {
       return mType;
@@ -158,9 +163,9 @@ class ObjectList
     bool* quickIndex;
     ObjectBrowserItem* *pointerList;
     int index_length;
-
     ObjectListItem* root;
     int length;
+
   public:
     ObjectList();
     ~ObjectList()
