@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.7 2003/08/19 21:34:06 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.8 2003/08/20 00:52:13 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -11,7 +11,7 @@
 #define CREPORTDEFINITIONSELECT_H
 
 #include <qvariant.h>
-#include <qDialog.h>
+#include <qdialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
