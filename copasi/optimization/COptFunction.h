@@ -14,16 +14,18 @@ Contact: Please contact lixu1@vt.edu.
 #include "utilities/readwrite.h"
 #include "utilities/CCopasiVector.h"
 #include "report/CCopasiObject.h"
+#include "report/CCopasiContainer.h"
 
 class COptMethod;
 class COptProblem;
 
-class COptFunction: public CKinFunction
+class COptFunction: public CCopasiContainer
   {
   public:
     std::vector<CCopasiObject*> mParaList;
     std::vector<std::string> mMinList;
     std::vector<std::string> mMaxList;
+    std::vector<CKinFunction*> mFunctionList;
 
     // check if a parameter already existing inside the mParaList
     bool bExisted(const std::string & name);
@@ -61,6 +63,8 @@ class COptFunction: public CKinFunction
     COptMethod* mpMethod;
 
   public:
+    std::string mKey;
+
     COptProblem* getProblem()
     {return mpProblem;}
 

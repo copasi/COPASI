@@ -6,31 +6,37 @@
 #include "COptFunction.h"
 #include "COptMethod.h"
 #include "COptProblem.h"
+#include "report/CKeyFactory.h"
 
 COptFunction::COptFunction(const std::string & name, const CCopasiContainer * pParent)
-    : CKinFunction(name, pParent),
+    : CCopasiContainer(name, pParent, "OptFunction"),
+    mKey(CKeyFactory::add("OptFunction", this)),
     mpMethod(new COptMethod),
     mpProblem(new COptProblem)
 {
   mpMethod->setProblem(mpProblem);
   mParaList.clear();
+  mFunctionList.clear();
   mMinList.clear();
   mMaxList.clear();
 }
 
 COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer, const CCopasiContainer * pParent)
-    : CKinFunction(src, configBuffer, pParent) ,
+    : CCopasiContainer(src, pParent),
+    mKey(CKeyFactory::add("OptFunction", this)),
     mpMethod(src.mpMethod),
-    mpProblem(src.mpProblem)
+    mpProblem(src.mpProblem),
+    mParaList(src.mParaList),
+    mFunctionList(src.mFunctionList),
+    mMinList(src.mMinList),
+    mMaxList(src.mMaxList)
 {
   mpMethod->setProblem(mpProblem);
-  mParaList.clear();
-  mMinList.clear();
-  mMaxList.clear();
 }
 
 COptFunction::~COptFunction()
 {
+  CKeyFactory::remove(mKey);
   cleanup();
 }
 
@@ -38,6 +44,7 @@ void COptFunction::cleanup()
 {
   //static members will be deleted during the deconstruction of COptFunction
   mParaList.clear();
+  mFunctionList.clear();
   mMinList.clear();
   mMaxList.clear();
 }
