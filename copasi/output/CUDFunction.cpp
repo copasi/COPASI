@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CUDFunction.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:57 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:14:21 $
    End CVS Header */
 
 /*****************************************************************************
@@ -238,7 +238,7 @@ C_INT32 CUDFunction::connectNodes()
       //  errnode should index the node in error
       //  but we don't know its index (pointer only)
       CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2,
-                     getName().c_str());
+                     getObjectName().c_str());
       errnode = -1;
       errfl++;
     }
@@ -580,7 +580,7 @@ C_INT32 CUDFunction::parse()
           mNodes.push_back(new CNodeO(N_FUNCTION, N_COS));
           break;
 
-        case N_NOP:                     // this is an error
+        case N_NOP:                      // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/17 20:57:53 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:18:34 $
    End CVS Header */
 
 /**
@@ -270,7 +270,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                   // this is an error
+        case N_NOP:                                    // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -336,7 +336,7 @@ C_INT32 CKinFunction::connectNodes()
       //  errnode should index the node in error
       //  but we don't know its index (pointer only)
       CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2,
-                     getName().c_str());
+                     getObjectName().c_str());
       errnode = -1;
       errfl++;
     }
@@ -613,14 +613,14 @@ void CKinFunction::createParameters()
       if (mNodes[i]->getType() == N_IDENTIFIER)
         {
           pParameter = new CFunctionParameter(mNodes[i]->getName());
-          //          Parameter.setName(mNodes[i]->getName());
+          //          Parameter.setName(mNodes[i]->getObjectName());
           pParameter->setType(CFunctionParameter::FLOAT64);
 
           switch (mNodes[i]->getSubtype())
             {
             case N_SUBSTRATE:
               pParameter->setUsage("SUBSTRATE");
-              if (Substrates.getIndex(pParameter->getName()) == C_INVALID_INDEX)
+              if (Substrates.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
                 Substrates.add(pParameter, false);
               else
                 pdelete(pParameter);
@@ -628,7 +628,7 @@ void CKinFunction::createParameters()
 
             case N_PRODUCT:
               pParameter->setUsage("PRODUCT");
-              if (Products.getIndex(pParameter->getName()) == C_INVALID_INDEX)
+              if (Products.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
                 Products.add(pParameter, false);
               else
                 pdelete(pParameter);
@@ -636,7 +636,7 @@ void CKinFunction::createParameters()
 
             case N_MODIFIER:
               pParameter->setUsage("MODIFIER");
-              if (Modifiers.getIndex(pParameter->getName()) == C_INVALID_INDEX)
+              if (Modifiers.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
                 Modifiers.add(pParameter, false);
               else
                 pdelete(pParameter);
@@ -645,7 +645,7 @@ void CKinFunction::createParameters()
             case N_KCONSTANT:
             case N_NOP:
               pParameter->setUsage("PARAMETER");
-              if (Parameters.getIndex(pParameter->getName()) == C_INVALID_INDEX)
+              if (Parameters.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
                 Parameters.add(pParameter, false);
               else
                 pdelete(pParameter);
@@ -718,7 +718,7 @@ void CKinFunction::initIdentifierNodes()
           else if (Usage == "PARAMETER")
             constidx++;
 
-          ParameterName = getParameters()[i]->getName();
+          ParameterName = getParameters()[i]->getObjectName();
           if (IdentifierName != ParameterName)
             continue;
           mNodes[j]->setIndex(i);

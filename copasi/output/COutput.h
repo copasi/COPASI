@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutput.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:25:55 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:14:21 $
    End CVS Header */
 
 /*****************************************************************************
@@ -244,8 +244,8 @@ class COutput : public CCopasiContainer
 
     /**
      *  Dummy method.
-     */
-    const std::string & getName() const;
+     */ 
+    //    const std::string & getName() const;
 
     /**
      * print the titles of the steady-state data file

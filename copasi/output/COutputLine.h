@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutputLine.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:25:56 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:14:21 $
    End CVS Header */
 
 /*****************************************************************************
@@ -105,8 +105,8 @@ class COutputLine : public CCopasiContainer
 
     /**
      *  Dummy method.
-     */
-    const std::string & getName() const;
+     */ 
+    //    const std::string & getName() const;
 
     /**
      *  Complie the mpValue in each output line

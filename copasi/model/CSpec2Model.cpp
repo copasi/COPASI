@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 20:06:58 $
+   $Date: 2004/05/13 13:15:48 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -289,7 +289,7 @@ void CSpec2Model::processDeTerms()
       std::vector<CDeTerm *> termstack = createTermStack(it->getContents());
       // Get the metabolite on the LHS of the DE
       const CMetab *LHSMetab = getLHSMetab(*it);
-      std::cout << std::endl << "LHS-Name: " << LHSMetab->getName() << std::endl;
+      std::cout << std::endl << "LHS-Name: " << LHSMetab->getObjectName() << std::endl;
 
       // Step through each term of this differential equation.
       std::vector <CDeTerm *>::const_iterator termit = termstack.begin();
@@ -427,7 +427,7 @@ CMetab *CSpec2Model::findMetabolite(std::string metab_name)
     {
       for (unsigned C_INT32 j = 0; j < mModel->getCompartments()[i]->getMetabolites().size(); j++)
         {
-          if (mModel->getCompartments()[i]->getMetabolites()[j]->getName() == metab_name)
+          if (mModel->getCompartments()[i]->getMetabolites()[j]->getObjectName() == metab_name)
             {
               return mModel->getCompartments()[i]->getMetabolites()[j];
             }

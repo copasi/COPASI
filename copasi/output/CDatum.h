@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CDatum.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:41 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:14:20 $
    End CVS Header */
 
 /*****************************************************************************
@@ -238,8 +238,8 @@ class CDatum : public CCopasiContainer
 
     /**
      *  Dummy method.
-     */
-    const std::string & getName() const;
+     */ 
+    //    const std::string & getName() const;
 
     /**
      *  Complie the mpValue in each CDatum

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/03/25 12:41:41 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:15:45 $
    End CVS Header */
 
 /**
@@ -209,8 +209,8 @@ class CMetab : public CCopasiContainer
     /**
      *  Retrieve the name of the metabolite.
      * @return const std::string & name
-     */
-    const std::string & getName() const;
+     */ 
+    //    const std::string & getName() const;
 
     /**
      *
@@ -417,7 +417,7 @@ class CMetabOld : public CCopasiContainer
 
     C_INT32 getIndex() const;
 
-    const std::string & getName() const;
+    //    const std::string & getName() const;
   };
 
 /**

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CUsageRange.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:48 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:18:34 $
    End CVS Header */
 
 /**
@@ -58,7 +58,7 @@ const std::string & CUsageRange::getUsage() const
     return getObjectName();
   }
 
-const std::string & CUsageRange::getName() const
+/*const std::string & CUsageRange::getName() const
   {
     return getObjectName();
-  }
+  }*/

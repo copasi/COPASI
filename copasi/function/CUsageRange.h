@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CUsageRange.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:53 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:18:34 $
    End CVS Header */
 
 /**
@@ -82,8 +82,8 @@ class CUsageRange : public CRange
     /**
      *  Retrieves the name in this case the usage the range
      *  @return "const string &" name
-     */
-    const std::string & getName() const;
+     */ 
+    //    const std::string & getName() const;
 
     /**
      *  Set the usage of the range

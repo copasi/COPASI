@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:31 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:18:33 $
    End CVS Header */
 
 /**
@@ -173,8 +173,8 @@ class CFunction : public CCopasiContainer
     /**
      *  Retrieves the name of the function
      *  @return "const string &" name
-     */
-    virtual const std::string& getName() const;
+     */ 
+    //    virtual const std::string& getName() const;
 
     /**
      *  Set the name of the function

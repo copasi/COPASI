@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/22 01:17:52 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:15:44 $
    End CVS Header */
 
 /**
@@ -138,8 +138,8 @@ class CCompartment : public CCopasiContainer
      *  Returns a string with the name of this compartment.
      *  @return mName
      *  @see mName
-     */
-    const std::string & getName() const;
+     */ 
+    //    const std::string & getName() const;
 
     /**
      *  Returns a C_FLOAT64 with the volume of this compartment.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.166 $
+   $Revision: 1.167 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 20:06:56 $
+   $Date: 2004/05/13 13:15:45 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -454,7 +454,7 @@ void CModel::saveSBML(std::ofstream &fout)
   if (dummy)
     {
       fout << "\t\t\t<specie name=\"_void_\"";
-      FixSName(mCompartments[0]->getName(), tmpstr);
+      FixSName(mCompartments[0]->getObjectName(), tmpstr);
       fout << " compartment=\"" << tmpstr << "\"";
       fout << " initialAmount=\"0.0\" boundaryCondition=\"true\"/>" << std::endl;
     }
@@ -530,7 +530,7 @@ void CModel::buildStoi()
         {
           mStoi[j][i] = 0.0;
           key = mMetabolites[j]->getKey();
-          // Name = mMetabolitesX[j]->getName();
+          // Name = mMetabolitesX[j]->getObjectName();
 
           for (k = 0; k < Structure.size(); k++)
             if (Structure[k]->getMetaboliteKey() == key)
@@ -850,7 +850,7 @@ void CModel::buildMoieties()
     {
       pMoiety = new CMoiety;
 
-      pMoiety->setName(mMetabolitesX[i]->getName());
+      pMoiety->setName(mMetabolitesX[i]->getObjectName());
 
       pMoiety->add(1.0, mMetabolitesX[i]);
 
@@ -1018,7 +1018,7 @@ C_INT32 CModel::findMetabByName(const std::string & Target) const
     s = mMetabolites.size();
     for (i = 0; i < s; i++)
       {
-        name = mMetabolites[i]->getName();
+        name = mMetabolites[i]->getObjectName();
         if (name == Target)
           return i;
       }
@@ -1036,7 +1036,7 @@ C_INT32 CModel::findMoiety(std::string &Target) const
     s = mMoieties.size();
     for (i = 0; i < s; i++)
       {
-        name = mMoieties[i]->getName();
+        name = mMoieties[i]->getObjectName();
         if (name == Target)
           return i;
       }
@@ -1714,7 +1714,7 @@ std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
         {
           if (key == Substrates[i]->getMetaboliteKey())
             {
-              EffectedReactions.append(Reactions[j]->getName());
+              EffectedReactions.append(Reactions[j]->getObjectName());
               EffectedReactions.append(", ");
               reactionFound = 1;
               reactionChecked = 1;
@@ -1729,7 +1729,7 @@ std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
           for (i = 0; i < imax; i++)
             if (key == Products[i]->getMetaboliteKey())
               {
-                EffectedReactions.append(Reactions[j]->getName());
+                EffectedReactions.append(Reactions[j]->getObjectName());
                 EffectedReactions.append(", ");
                 reactionFound = 1;
                 reactionChecked = 1;
@@ -1744,7 +1744,7 @@ std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
           for (i = 0; i < imax; i++)
             if (key == Modifiers[i]->getMetaboliteKey())
               {
-                EffectedReactions.append(Reactions[j]->getName().c_str());
+                EffectedReactions.append(Reactions[j]->getObjectName().c_str());
                 EffectedReactions.append(", ");
                 reactionFound = 1;
                 reactionChecked = 1;
@@ -1855,11 +1855,11 @@ bool CModel::addReaction(const std::string & name)
 
 bool CModel::addReaction(const CReaction & reaction)
 {
-  if (mSteps.getIndex(reaction.getName()) != C_INVALID_INDEX)
+  if (mSteps.getIndex(reaction.getObjectName()) != C_INVALID_INDEX)
     return false;
 
   mSteps.add(reaction);
-  mSteps[reaction.getName()]->compile(/*mCompartments*/);
+  mSteps[reaction.getObjectName()]->compile(/*mCompartments*/);
   compile();
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutput.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:56 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:14:21 $
    End CVS Header */
 
 /*****************************************************************************
@@ -172,7 +172,7 @@ COutputLine * COutput::findOrCreateOutputLine(std::string nameOfLine)
 
   for (i = 0; i < imax; i++)
     {
-      if (nameOfLine == mOutputLines[i]->getName())
+      if (nameOfLine == mOutputLines[i]->getObjectName())
         return mOutputLines[i];
     }
   COutputLine * pLine = new COutputLine(nameOfLine);
@@ -245,7 +245,7 @@ C_INT32 COutput::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-const std::string & COutput::getName() const {return getObjectName();}
+//const std::string & COutput::getName() const {return getObjectName();}
 
 /**
  * print the titles of the steady-state data file
@@ -256,7 +256,7 @@ void COutput::sSOutputTitles(std::ostream &fout, std::string &SSName, C_INT16 SS
 
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
-        Name = mOutputLines[i]->getName();
+        Name = mOutputLines[i]->getObjectName();
 
         if (Name == SSName)
           mOutputLines[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
@@ -272,7 +272,7 @@ void COutput::sSOutputData(std::ostream &fout, std::string &SSName, C_INT16 SSSe
 
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
-        Name = mOutputLines[i]->getName();
+        Name = mOutputLines[i]->getObjectName();
 
         if (Name == SSName)
           mOutputLines[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
@@ -288,7 +288,7 @@ void COutput::dynOutputTitles(std::ostream &fout, std::string &DynName, C_INT16 
 
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
-        Name = mOutputLines[i]->getName();
+        Name = mOutputLines[i]->getObjectName();
 
         if (Name == DynName)
           mOutputLines[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
@@ -304,7 +304,7 @@ void COutput::dynOutputData(std::ostream &fout, std::string &DynName, C_INT16 Dy
 
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
-        Name = mOutputLines[i]->getName();
+        Name = mOutputLines[i]->getObjectName();
 
         if (Name == DynName)
           mOutputLines[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
@@ -433,10 +433,10 @@ void COutput::repParams(std::ostream &fout) const
 
     for (i = 0; i < model->getReactions().size(); i++)
       {
-        StrOut = model->getReactions()[i]->getName();
+        StrOut = model->getReactions()[i]->getObjectName();
         fout << StrOut << " (";
 
-        StrOut = model->getReactions()[i]->getFunction().getName();
+        StrOut = model->getReactions()[i]->getFunction().getObjectName();
         fout << StrOut << ")" << std::endl;
 
         for (j = 0; j < model->getReactions()[i]->getParameters().size(); j++)
@@ -451,7 +451,7 @@ void COutput::repParams(std::ostream &fout) const
 
     for (i = 0; i < model->getCompartments().size(); i++)
       {
-        fout << "V(" << model->getCompartments()[i]->getName() << ") =  ";
+        fout << "V(" << model->getCompartments()[i]->getObjectName() << ") =  ";
         fout << std::setprecision(4) << model->getCompartments()[i]->getVolume();
         fout << std::endl;
       }
@@ -482,7 +482,7 @@ void COutput::repStruct(std::ostream &fout) const
     for (i = 0; i < model->getReactions().size(); i++)
       {
         fout << std::setw(2) << i << " - ";
-        fout << model->getReactions()[i]->getName();
+        fout << model->getReactions()[i]->getObjectName();
         fout << std::endl;
       }
 
@@ -511,7 +511,7 @@ void COutput::repStruct(std::ostream &fout) const
 
     for (i = 0; i < model->getMetabolitesInd().size(); i++)
       {
-        fout << std::setw(11) << model->getMetabolitesInd()[i]->getName() << "|";
+        fout << std::setw(11) << model->getMetabolitesInd()[i]->getObjectName() << "|";
 
         for (j = 0; j < model->getReactions().size(); j++)
           {
@@ -564,10 +564,10 @@ void COutput::repStruct(std::ostream &fout) const
     std::vector < std::string > inverse;
 
     for (i = 0; i < model->getMetabolitesInd().size(); i++)
-      inverse.push_back(model->getMetabolitesInd()[i]->getName());
+      inverse.push_back(model->getMetabolitesInd()[i]->getObjectName());
 
     for (j = 0; j < model->getDepMetab(); j++)
-      inverse.push_back(model->getMetabolitesDep()[j]->getName());
+      inverse.push_back(model->getMetabolitesDep()[j]->getObjectName());
 
     const CModel::CLinkMatrixView & Inverse = model->getL();
 
@@ -641,7 +641,7 @@ void COutput::repSS(std::ostream &fout) const
           rate = model->getMetabolites()[i]->getRate();
 
         // Output Concentration
-        fout << "[" << std::setw(10) << model->getMetabolites()[i]->getName();
+        fout << "[" << std::setw(10) << model->getMetabolites()[i]->getObjectName();
 
         fout << "] = ";
 
@@ -668,7 +668,7 @@ void COutput::repSS(std::ostream &fout) const
     // output fluxes
     for (i = 0; i < model->getTotSteps(); i++)
       {
-        fout << "J(" << model->getReactions()[i]->getName() << ") = ";
+        fout << "J(" << model->getReactions()[i]->getObjectName() << ") = ";
         fout << std::setprecision(6) << model->getReactions()[i]->getFlux();
         fout << " " << ConcUnit << "/" << TimeUnit << std::endl;
       }
@@ -685,7 +685,7 @@ void COutput::repSS(std::ostream &fout) const
         for (i = 0; i < size; i++)
           {
             // calculate the flux of this step
-            fout << Copasi->pUDFunctionDB->getFunctions()[i]->getName();
+            fout << Copasi->pUDFunctionDB->getFunctions()[i]->getObjectName();
             fout << " =";
             fout << std::setprecision(6) << Copasi->pUDFunctionDB->getFunctions()[i]->getValue();
             fout << std::endl;
@@ -793,7 +793,7 @@ void COutput::sSOutputTitles(std::ostream &fout, std::string &SSName) const
   {
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
-        if (SSName == mOutputLines[i]->getName())
+        if (SSName == mOutputLines[i]->getObjectName())
           mOutputLines[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
       }
   }
@@ -805,7 +805,7 @@ void COutput::sSOutputData(std::ostream &fout, std::string &SSName) const
   {
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
-        if (SSName == mOutputLines[i]->getName())
+        if (SSName == mOutputLines[i]->getObjectName())
           mOutputLines[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
       }
   }

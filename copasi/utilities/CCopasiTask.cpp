@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/06 15:01:18 $
+   $Date: 2004/05/13 13:21:02 $
    End CVS Header */
 
 /**
@@ -86,8 +86,7 @@ CCopasiTask::~CCopasiTask()
   pdelete(mpMethod);
 }
 
-const std::string & CCopasiTask::getName() const
-  {return getObjectName();}
+//const std::string & CCopasiTask::getName() const {return getObjectName();}
 
 bool CCopasiTask::setName(const std::string & name)
 {return setObjectName(name);}

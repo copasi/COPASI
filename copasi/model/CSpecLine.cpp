@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/03 20:47:25 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:15:48 $
    End CVS Header */
 
 #include <iostream>
@@ -205,7 +205,7 @@ CTempMetab *CTempReaction::addMetabolite(const CMetab *metab)
 
   for (unsigned C_INT32 i = 0; i < mMetabs.size(); i++)
     {
-      if (mMetabs[i].getMetab()->getName() == metab->getName())
+      if (mMetabs[i].getMetab()->getObjectName() == metab->getObjectName())
         {
           return &mMetabs[i];
         }
@@ -291,7 +291,7 @@ std::string CTempReaction::getChemEquation() const
             chemeqn << mult << "*";
           }
 
-        chemeqn << mSubstrates[i].getMetab()->getName();
+        chemeqn << mSubstrates[i].getMetab()->getObjectName();
       }
 
     chemeqn << " -> ";
@@ -313,7 +313,7 @@ std::string CTempReaction::getChemEquation() const
             chemeqn << mult << "*";
           }
 
-        chemeqn << mProducts[i].getMetab()->getName();
+        chemeqn << mProducts[i].getMetab()->getObjectName();
       }
 
     //std::string chemeqdesc = lhs_desc.str() + "->" + rhs_desc.str();
@@ -369,8 +369,8 @@ void CTempReaction::compile(CModel *model,
           {
             id2Metab = new CReaction::CId2Metab();
             id2Metab->setIdentifierName(name);
-            id2Metab->setMetaboliteName(model->getMetabolites()[index]->getName());
-            id2Metab->setCompartmentName(model->getMetabolites()[index]->getCompartment()->getName());
+            id2Metab->setMetaboliteName(model->getMetabolites()[index]->getObjectName());
+            id2Metab->setCompartmentName(model->getMetabolites()[index]->getCompartment()->getObjectName());
    
             if (isIn(mSubstrates, name))
               {
@@ -423,7 +423,7 @@ bool CTempReaction::isIn(std::vector<CTempMetab> & metabs, const std::string & t
   unsigned int i, imax = metabs.size();
 
   for (i = 0; i < imax; i++)
-    if (target == metabs[i].getMetab()->getName())
+    if (target == metabs[i].getMetab()->getObjectName())
       return true;
 
   return false;
@@ -449,7 +449,7 @@ C_FLOAT64 CTempReaction::getParameterValue(const std::string & name,
 
 std::ostream & operator<<(std::ostream &os, const CTempMetab & m)
 {
-  os << "Name = '" << m.mMetab->getName();
+  os << "Name = '" << m.mMetab->getObjectName();
   os << "', Multiplicty = '" << m.mMultiplicity;
   os << "', Change = '" << m.mNumChange << "'";
   return os;

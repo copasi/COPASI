@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:25 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:18:33 $
    End CVS Header */
 
 /**
@@ -244,13 +244,13 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   configBuffer.setVariable("Constants", "C_INT32", &sizep);
   for (i = 0, pos = 0; i < sizem; i++)
     {
-      tmpstr1 = mParameters.getParameterByUsage("MODIFIER", pos).getName();
+      tmpstr1 = mParameters.getParameterByUsage("MODIFIER", pos).getObjectName();
       tmpstr2 = StringPrint("Modifier%d", i);
       configBuffer.setVariable(tmpstr2, "string", &tmpstr1);
     }
   for (i = 0, pos = 0; i < sizep; i++)
     {
-      tmpstr1 = mParameters.getParameterByUsage("PARAMETER", pos).getName();
+      tmpstr1 = mParameters.getParameterByUsage("PARAMETER", pos).getObjectName();
       tmpstr2 = StringPrint("Parameter%d", i);
       configBuffer.setVariable(tmpstr2, "string", &tmpstr1);
     }
@@ -267,7 +267,7 @@ std::string CFunction::getKey() const {return mKey;}
 
 bool CFunction::setName(const std::string& name) {return setObjectName(name);}
 
-const std::string & CFunction::getName() const {return getObjectName();}
+//const std::string & CFunction::getName() const {return getObjectName();}
 
 void CFunction::setDescription(const std::string & description) {mDescription = description;}
 

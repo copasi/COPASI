@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/14 22:11:41 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:21:02 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -126,8 +126,8 @@ class CCopasiParameter: public CCopasiContainer
     /**
      * Retrieve the name of the parameter
      * @return const string & mName
-     */
-    const std::string & getName() const;
+     */ 
+    //    const std::string & getName() const;
 
     /**
      * Set the value of the parameter

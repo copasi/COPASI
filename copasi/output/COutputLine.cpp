@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutputLine.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:25:53 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:14:21 $
    End CVS Header */
 
 /*****************************************************************************
@@ -130,7 +130,7 @@ C_INT32 COutputLine::load(CReadConfig & configbuffer, std::string &searchName)
   return Fail;
 }
 
-const std::string & COutputLine::getName() const {return getObjectName();}
+//const std::string & COutputLine::getName() const {return getObjectName();}
 
 /**
  *  Saves the contents of the object to a CWriteConfig object.

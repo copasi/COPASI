@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 20:06:57 $
+   $Date: 2004/05/13 13:15:47 $
    End CVS Header */
 
 // CReaction
@@ -158,7 +158,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   tmp = tmp.substr(0, tmp.find(';'));
   if ((Fail = configbuffer.setVariable("Equation", "string", &tmp)))
     return Fail;
-  std::string KinType = mpFunction->getName();
+  std::string KinType = mpFunction->getObjectName();
   if ((Fail = configbuffer.setVariable("KineticType", "string", &KinType)))
     return Fail;
   if ((Fail = configbuffer.setVariable("Flux", "C_FLOAT64", &mFlux)))
@@ -184,7 +184,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   for (i = 0, idx = 0; i < Size; i++)
     {
       for (j = 0, c = -1; j < s; j++)
-        if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
+        if (reactants[i]->getMetabolite().getObjectName() == metabolites[j]->getObjectName())
           {
             c = j;
             multp = (C_INT32) reactants[i]->getMultiplicity();
@@ -204,7 +204,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   for (i = 0, idx = 0; i < Size; i++)
     {
       for (j = 0, c = -1; j < s; j++)
-        if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
+        if (reactants[i]->getMetabolite().getObjectName() == metabolites[j]->getObjectName())
           {
             c = j;
             multp = (C_INT32) reactants[i]->getMultiplicity();
@@ -224,7 +224,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   for (i = 0, idx = 0; i < Size; i++)
     {
       for (j = 0, c = -1; j < s; j++)
-        if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
+        if (reactants[i]->getMetabolite().getObjectName() == metabolites[j]->getObjectName())
           {
             c = j;
             multp = (C_INT32) reactants[i]->getMultiplicity();
@@ -274,7 +274,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
       // write them out
       for (i = 0; i < rr.size(); i++)
         {
-          tmpstr2 = rr[i]->getMetabolite().getName(); //TODO: this name is not unique
+          tmpstr2 = rr[i]->getMetabolite().getObjectName(); //TODO: this name is not unique
           FixSName(tmpstr2, tmpstr);
           fout << "\t\t\t\t\t<specieReference specie=\"" << tmpstr << "\"";
           fout << " stoichiometry=\"" << rr[i]->getMultiplicity() << "\"/>" << std::endl;
@@ -291,7 +291,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
       // write them out
       for (i = 0; i < rr.size(); i++)
         {
-          tmpstr2 = rr[i]->getMetabolite().getName(); //TODO: this name is not unique
+          tmpstr2 = rr[i]->getMetabolite().getObjectName(); //TODO: this name is not unique
           FixSName(tmpstr2, tmpstr);
           fout << "\t\t\t\t\t<specieReference specie=\"" << tmpstr << "\"";
           fout << " stoichiometry=\"" << rr[i]->getMultiplicity() << "\"/>" << std::endl;
@@ -325,8 +325,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
 std::string CReaction::getKey() const
   {return mKey;}
 
-const std::string & CReaction::getName() const
-  {return getObjectName();}
+//const std::string & CReaction::getName() const {return getObjectName();}
 
 const CChemEq & CReaction::getChemEq() const
   {return mChemEq;}
@@ -604,7 +603,7 @@ void CReaction::compileParameters()
 
   for (i = 0, pos = 0; i < imax; ++i)
     {
-      name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getName();
+      name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getObjectName();
       mMap.setCallParameter(name, mParameters.getParameter(name));
     }
 }
@@ -623,7 +622,7 @@ void CReaction::initializeParameters()
   /* Add missing parameters with default value 1.0. */
   for (i = 0, pos = 0; i < imax; ++i)
     {
-      name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getName();
+      name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getObjectName();
       //      param.setName(name);
       if (!mParameters.getParameter(name))
         mParameters.addParameter(name,
@@ -641,7 +640,7 @@ void CReaction::initializeParameters()
     {
       --it;
 
-      name = (*it)->getName();
+      name = (*it)->getObjectName();
       if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
         mParameters.removeParameter(name);
     }
@@ -686,14 +685,14 @@ void CReaction::compile(/*const CCopasiVectorNS < CCompartment > & compartments*
           if (mMap.getFunctionParameters()[i]->getUsage() == "PARAMETER") continue;
           if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
             {
-              paramName = getFunctionParameters()[i]->getName();
+              paramName = getFunctionParameters()[i]->getObjectName();
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
               for (j = 0; j < jmax; ++j)
                 mMap.addCallParameter(paramName, GlobalKeys.get(mMetabKeyMap[i][j]));
             }
           else
-            mMap.setCallParameter(getFunctionParameters()[i]->getName(), GlobalKeys.get(mMetabKeyMap[i][0]));
+            mMap.setCallParameter(getFunctionParameters()[i]->getObjectName(), GlobalKeys.get(mMetabKeyMap[i][0]));
         }
     }
 
@@ -729,12 +728,12 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       name = StringPrint("Subs%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
 
-      metabName = (*Copasi->pOldMetabolites)[index]->getName();
+      metabName = (*Copasi->pOldMetabolites)[index]->getObjectName();
 
       if (Type < CFunctionParameter::VINT32)
         {
           Type = mMap.getFunctionParameters().getParameterByUsage("SUBSTRATE", pos).getType();
-          parName = mMap.getFunctionParameters()[pos - 1]->getName();
+          parName = mMap.getFunctionParameters()[pos - 1]->getObjectName();
           if (Type >= CFunctionParameter::VINT32)
             clearParameterMapping(parName);
         }
@@ -759,12 +758,12 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       name = StringPrint("Prod%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
 
-      metabName = (*Copasi->pOldMetabolites)[index]->getName();
+      metabName = (*Copasi->pOldMetabolites)[index]->getObjectName();
 
       if (Type < CFunctionParameter::VINT32)
         {
           Type = mMap.getFunctionParameters().getParameterByUsage("PRODUCT", pos).getType();
-          parName = mMap.getFunctionParameters()[pos - 1]->getName();
+          parName = mMap.getFunctionParameters()[pos - 1]->getObjectName();
           if (Type >= CFunctionParameter::VINT32)
             clearParameterMapping(parName);
         }
@@ -789,12 +788,12 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       name = StringPrint("Modf%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
 
-      metabName = (*Copasi->pOldMetabolites)[index]->getName();
+      metabName = (*Copasi->pOldMetabolites)[index]->getObjectName();
 
       if (Type < CFunctionParameter::VINT32)
         {
           Type = mMap.getFunctionParameters().getParameterByUsage("MODIFIER", pos).getType();
-          parName = mMap.getFunctionParameters()[pos - 1]->getName();
+          parName = mMap.getFunctionParameters()[pos - 1]->getObjectName();
           if (Type >= CFunctionParameter::VINT32)
             clearParameterMapping(parName);
         }
@@ -826,7 +825,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       Type = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getType();
       if (Type != CFunctionParameter::FLOAT64) {Fail = 1; return Fail;}
 
-      setParameterValue(mMap.getFunctionParameters()[pos - 1]->getName(), value);
+      setParameterValue(mMap.getFunctionParameters()[pos - 1]->getObjectName(), value);
     }
 
   for (i = imax; i < ParameterSize; i++)
@@ -913,9 +912,9 @@ void CReaction::setScalingFactor()
         {
           unsigned C_INT32 nr = Exc.getMessage().getNumber();
           if ((MCChemEq + 2 == nr) || (MCChemEq + 3 == nr))
-            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2, getName().c_str());
+            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2, getObjectName().c_str());
           if (MCChemEq + 1 == nr)
-            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 3, getName().c_str());
+            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 3, getObjectName().c_str());
           throw;
         }
     }
@@ -954,13 +953,13 @@ void CReaction::initObjects()
 
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
 {
-  os << "CReaction:  " << d.getName() << std::endl;
+  os << "CReaction:  " << d.getObjectName() << std::endl;
 
   os << "   mChemEq " << std::endl;
   os << d.mChemEq;
 
   if (d.mpFunction)
-    os << "   *mpFunction " << d.mpFunction->getName() << std::endl;
+    os << "   *mpFunction " << d.mpFunction->getObjectName() << std::endl;
   else
     os << "   mpFunction == 0 " << std::endl;
 
@@ -975,7 +974,7 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   os << "   mScalingFactor2: " << d.mScalingFactor2 << std::endl;
   //os << "   mCompartmentNumber: " << d.mCompartmentNumber << std::endl;
   if (d.mpFunctionCompartment)
-    os << "   *mpFunctionCompartment " << d.mpFunctionCompartment->getName() << std::endl;
+    os << "   *mpFunctionCompartment " << d.mpFunctionCompartment->getObjectName() << std::endl;
   else
     os << "   mpFunctionCompartment == 0 " << std::endl;
   os << "----CReaction" << std::endl;

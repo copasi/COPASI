@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/17 20:57:52 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:18:34 $
    End CVS Header */
 
 /**
@@ -152,7 +152,7 @@ unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & na
 
     for (i = 0; i < imax; i++)
       {
-        Name = mParameters[i]->getName();
+        Name = mParameters[i]->getObjectName();
 
         if (Name == name || Name == VectorName)
           {
@@ -220,7 +220,7 @@ bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
     C_INT32 i, imax = size();
     for (i = 0; i < imax; ++i)
       {
-        if (mParameters[i]->getName() != rhs.mParameters[i]->getName()) return false;
+        if (mParameters[i]->getObjectName() != rhs.mParameters[i]->getObjectName()) return false;
         if (mParameters[i]->getType() != rhs.mParameters[i]->getType()) return false;
         if (mParameters[i]->getUsage() != rhs.mParameters[i]->getUsage()) return false;
       }

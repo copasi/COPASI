@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/03/25 12:41:41 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:15:45 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -195,7 +195,7 @@ C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
   Fail = configbuffer.setVariable("Concentration", "C_FLOAT64", (void *) & mIConc);
   if (Fail)
     return Fail;
-  c = mpModel->getCompartments().getIndex(mpCompartment->getName());
+  c = mpModel->getCompartments().getIndex(mpCompartment->getObjectName());
   Fail = configbuffer.setVariable("Compartment", "C_INT32", (void *) & c);
   if (Fail)
     return Fail;
@@ -208,7 +208,7 @@ void CMetab::saveSBML(std::ofstream &fout)
   std::string str;
   FixSName(getObjectName(), str);
   fout << "\t\t\t<specie name=\"" << str << "\"";
-  FixSName(getCompartment()->getName(), str);
+  FixSName(getCompartment()->getObjectName(), str);
   fout << " compartment=\"" + str + "\"";
   fout << " initialAmount=\"" << mIConc << "\"";
   fout << " boundaryCondition=\"";
@@ -221,7 +221,7 @@ void CMetab::saveSBML(std::ofstream &fout)
 
 std::string CMetab::getKey() const {return mKey;}
 
-const std::string & CMetab::getName() const {return getObjectName();}
+//const std::string & CMetab::getName() const {return getObjectName();}
 
 const C_FLOAT64 & CMetab::getConcentration() const {return mConc;}
 
@@ -378,7 +378,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 }
 C_INT32 CMetabOld::save(CWriteConfig & C_UNUSED(configbuffer)){return 0;}
 C_INT32 CMetabOld::getIndex() const {return mCompartment;}
-const std::string & CMetabOld::getName() const {return getObjectName();}
+//const std::string & CMetabOld::getName() const {return getObjectName();}
 
 /**
  * Returns the address of mIConc  Wei Sun
@@ -409,7 +409,7 @@ bool operator<(const CMetab &lhs, const CMetab &rhs)
 {
   // Do the comparison based on the name
 
-  if (lhs.getName() < rhs.getName())
+  if (lhs.getObjectName() < rhs.getObjectName())
     {
       return true;
     }

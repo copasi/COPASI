@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/04 20:30:04 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:15:46 $
    End CVS Header */
 
 /**
@@ -127,8 +127,8 @@ class CMoiety : public CCopasiContainer
 
     /**
      *
-     */
-    const std::string & getName() const;
+     */ 
+    //    const std::string & getName() const;
 
     /**
      *

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/30 17:19:47 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:10:57 $
    End CVS Header */
 
 /**
@@ -256,7 +256,7 @@ const std::string & CCopasiParameterGroup::getName(const unsigned C_INT32 & inde
     CCopasiParameter * pParameter =
       const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
 
-    if (pParameter) return pParameter->getName();
+    if (pParameter) return pParameter->getObjectName();
 
     return Invalid;
   }
@@ -295,7 +295,7 @@ unsigned C_INT32 CCopasiParameterGroup::getIndex(const std::string & name) const
     index_iterator end = ((parameterGroup *) mpValue)->end();
 
     for (unsigned C_INT32 i = 0; it != end; ++it, ++i)
-      if (name == (*it)->getName()) return i;;
+      if (name == (*it)->getObjectName()) return i;;
 
     return C_INVALID_INDEX;
   }

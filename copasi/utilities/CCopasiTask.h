@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/06 15:01:18 $
+   $Date: 2004/05/13 13:21:02 $
    End CVS Header */
 
 /**
@@ -125,8 +125,8 @@ class CCopasiTask : public CCopasiContainer
     /**
      * Retrieve the name of the task
      * @return " const string &" name
-     */
-    const std::string & getName() const;
+     */ 
+    //    const std::string & getName() const;
 
     /**
      * Set the name of the task

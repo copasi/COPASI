@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:26 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:18:33 $
    End CVS Header */
 
 /**
@@ -171,7 +171,7 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
 
   CReadConfig inbuf(mFilename);
 
-  while (functionName != Function.getName())
+  while (functionName != Function.getObjectName())
     {
       Function.cleanup();
       Function.load(inbuf);
@@ -212,7 +212,7 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
       // CCopasiVector (2): Object '%s' allready exists.
       if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
         throw Exception;
-      pFunction = mLoadedFunctions[Function.getName()];
+      pFunction = mLoadedFunctions[Function.getObjectName()];
     }
 
   return pFunction;
@@ -256,8 +256,8 @@ bool CFunctionDB::addFunction(const std::string & name, const CFunction::Type & 
 
 CFunction * CFunctionDB::add(const CFunction & function)
 {
-  if (mLoadedFunctions.getIndex(function.getName()) != C_INVALID_INDEX)
-    return findFunction(function.getName());
+  if (mLoadedFunctions.getIndex(function.getObjectName()) != C_INVALID_INDEX)
+    return findFunction(function.getObjectName());
 
   CFunction * pFunction = NULL;
   switch (function.getType())
@@ -310,7 +310,7 @@ CFunction * CFunctionDB::findFunction(const std::string & functionName)
   unsigned C_INT32 i;
 
   for (i = 0; i < mLoadedFunctions.size(); i++)
-    if (functionName == mLoadedFunctions[i]->getName())
+    if (functionName == mLoadedFunctions[i]->getObjectName())
       return mLoadedFunctions[i];
 
   return NULL;
@@ -321,7 +321,7 @@ CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
   unsigned C_INT32 i;
 
   for (i = 0; i < mLoadedFunctions.size(); i++)
-    if (functionName == mLoadedFunctions[i]->getName())
+    if (functionName == mLoadedFunctions[i]->getObjectName())
       return mLoadedFunctions[i];
 
   return dBLoad(functionName);

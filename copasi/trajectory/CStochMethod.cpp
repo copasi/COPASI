@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/18 17:59:23 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:16:41 $
    End CVS Header */
 
 #include "copasi.h"
@@ -405,7 +405,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
       //TODO clear old local balances and substrates
       for (j = 0; j < bbb->size(); j++)
         {
-          //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
+          //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getObjectName(());
           //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
           bb.mIndex = mpModel->getMetabolites().getIndex(&(*bbb)[j]->getMetabolite());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
@@ -414,7 +414,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
             {
               if (bb.mMultiplicity > maxBalance) maxBalance = bb.mMultiplicity;
               mLocalBalances[i].push_back(bb);
-              //std::cout << bb.mMetabAddr->getName() << "  ";
+              //std::cout << bb.mMetabAddr->getObjectName(() << "  ";
             }
         }
 
@@ -422,7 +422,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
       //std::cout << std::endl << i << " : ";
       for (j = 0; j < bbb->size(); j++)
         {
-          //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
+          //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getObjectName(());
           //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
           bb.mIndex = mpModel->getMetabolites().getIndex(&(*bbb)[j]->getMetabolite());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
@@ -430,7 +430,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
           if (1)
             {
               mLocalSubstrates[i].push_back(bb);
-              //std::cout << bb.mMetabAddr->getName() << "  ";
+              //std::cout << bb.mMetabAddr->getObjectName(() << "  ";
             }
         }
     }
@@ -466,7 +466,7 @@ std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
       for (j = 0; j < jmax; ++j)
         {
           retset->insert(metablist[j]->getKey());
-          std::cout << "  " << metablist[j]->getName() << ":" << metablist[j]->getKey();
+          std::cout << "  " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
         }
     }
   std::cout << std::endl;
@@ -489,7 +489,7 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
         if (balances[i]->getMetabolite().getStatus() != CMetab::METAB_FIXED)
           {
             retset->insert(balances[i]->getMetabolite().getKey());
-            std::cout << " " << balances[i]->getMetabolite().getName() << ":" << balances[i]->getMetabolite().getKey();
+            std::cout << " " << balances[i]->getMetabolite().getObjectName() << ":" << balances[i]->getMetabolite().getKey();
           }
     }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/19 08:47:20 $
+   $Date: 2004/05/13 13:15:45 $
    End CVS Header */
 
 //
@@ -42,10 +42,10 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::
 
 std::string CMetabNameInterface::getDisplayName(const CModel* model, const CMetab & metab)
 {
-  if (CMetabNameInterface::isUnique(model, metab.getName()))
-    return metab.getName();
+  if (CMetabNameInterface::isUnique(model, metab.getObjectName()))
+    return metab.getObjectName();
   else
-    return metab.getName() + '{' + metab.getCompartment()->getName() + '}';
+    return metab.getObjectName() + '{' + metab.getCompartment()->getObjectName() + '}';
 }
 
 std::string CMetabNameInterface::getMetaboliteKey(const CModel* model, const std::string & name)
@@ -93,7 +93,7 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
 
   for (i = 0; i < metabs.size(); i++)
     {
-      metabName = metabs[i]->getName();
+      metabName = metabs[i]->getObjectName();
       if (metabName == name)
         {
           if (unique)
@@ -130,7 +130,7 @@ bool CMetabNameInterface::doesExist(const CModel* model, const std::string & nam
 
       for (i = 0; i < metabs.size(); i++)
         {
-          s = metabs[i]->getName();
+          s = metabs[i]->getObjectName();
           if (s == metabName)
             return true;
         }
@@ -166,13 +166,13 @@ std::string CMetabNameInterface::extractCompartmentName(const CModel* model, con
             return "compartment";  // default compartment name if none existed
 
           comp = comps[0];
-          return comp->getName();
+          return comp->getObjectName();
         }
       else  //return the first compartment where the metabolite is present
         {
           CMetab *metb = metabs[index];
           comp = metb->getCompartment();
-          return comp->getName();
+          return comp->getObjectName();
         }
     }
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2004/02/26 19:44:47 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:12:26 $
    End CVS Header */
 
 /**
@@ -154,7 +154,7 @@ bool CCopasiXML::saveModel()
           CCompartment * pComp = mpModel->getCompartments()[i];
 
           Attributes.setValue(0, pComp->getKey());
-          Attributes.setValue(1, pComp->getName());
+          Attributes.setValue(1, pComp->getObjectName());
           Attributes.setValue(2,
                               mpModel->getStateTemplate().getKey(pComp->getKey()));
           saveElement("Compartment", Attributes);
@@ -179,7 +179,7 @@ bool CCopasiXML::saveModel()
           CMetab * pMetab = mpModel->getMetabolites()[i];
 
           Attributes.setValue(0, pMetab->getKey());
-          Attributes.setValue(1, pMetab->getName());
+          Attributes.setValue(1, pMetab->getObjectName());
           Attributes.setValue(2, pMetab->getCompartment()->getKey());
           Attributes.setValue(3, CMetab::XMLStatus[pMetab->getStatus()]);
           Attributes.setValue(4,
@@ -213,7 +213,7 @@ bool CCopasiXML::saveModel()
           CReaction * pReaction = mpModel->getReactions()[i];
 
           Attributes.setValue(0, pReaction->getKey());
-          Attributes.setValue(1, pReaction->getName());
+          Attributes.setValue(1, pReaction->getObjectName());
           if (pReaction->getCompartment())
             Attributes.setValue(2, pReaction->getCompartment()->getKey());
           else
@@ -415,7 +415,7 @@ bool CCopasiXML::saveFunctionList()
 
       Attributes.erase();
       Attributes.add("key", pFunction->getKey());
-      Attributes.add("name", pFunction->getName());
+      Attributes.add("name", pFunction->getObjectName());
       Attributes.add("type", CFunction::XMLType[pFunction->getType()]);
       Attributes.add("positive", pFunction->isReversible() ? "true" : "false");
       startSaveElement("Function", Attributes);
@@ -447,7 +447,7 @@ bool CCopasiXML::saveFunctionList()
         {
           pParameter = pFunction->getParameters()[j];
           Attributes.setValue(0, pParameter->getKey());
-          Attributes.setValue(1, pParameter->getName());
+          Attributes.setValue(1, pParameter->getObjectName());
           Attributes.setValue(2, j);
           Usage = pParameter->getUsage();
           if (Usage == "SUBSTRATE")
@@ -510,7 +510,7 @@ bool CCopasiXML::saveTaskList()
       pTask = (*mpTaskList)[i];
 
       Attributes.erase();
-      Attributes.add("name", pTask->getName());
+      Attributes.add("name", pTask->getObjectName());
       Attributes.add("type", CCopasiTask::XMLType[pTask->getType()]);
       startSaveElement("Task", Attributes);
 
@@ -549,7 +549,7 @@ bool CCopasiXML::saveTaskList()
       for (j = 0; j < jmax; j++)
         {
           Attributes.erase();
-          Attributes.add("name", tparamGroup[i]->getName());
+          Attributes.add("name", tparamGroup[i]->getObjectName());
           Attributes.add("type", tparamGroup[i]->getType());
           Attributes.add("value", tparamGroup[i]->getValue());
           startSaveElement("Parameter", Attributes);
@@ -644,7 +644,7 @@ bool CCopasiXML::saveReportList()
                 {
                   //Write in Text
                   startSaveElement("Text");
-                  saveData((*body)[j].getName());
+                  saveData((*body)[j].getName(0)); //TODO check
                   endSaveElement("Text");
                 }
               else
@@ -662,7 +662,7 @@ bool CCopasiXML::saveReportList()
             Attributes.add("seperator",);
             Attributes.add("printTitle",);
             startSaveElement("Table",Attributes);
-            //*** Add stuff here
+            // *** Add stuff here
             Attributes.erase();
             Attributes.add("cn",);
             startSaveElement("Object",Attributes);
@@ -675,13 +675,13 @@ bool CCopasiXML::saveReportList()
       //footer is not yet implented
 
       /*startSaveElement("Footer");
-      //*** Add stuff here
+      // *** Add stuff here
        Attributes.erase();
        Attributes.add("cn",);
           startSaveElement("Object",Attributes);
        endSaveElement("Object");
           startSaveElement("Text");
-        //*** Add here
+        // *** Add here
        saveData();
        endSaveElement("Text");
           startSaveElement("Report");

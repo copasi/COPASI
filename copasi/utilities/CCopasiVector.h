@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/26 11:15:57 $
+   $Date: 2004/05/13 13:21:03 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -411,7 +411,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       {
         if (!isInsertAllowed(&src))
           CCopasiMessage(CCopasiMessage::ERROR,
-                         MCCopasiVector + 2, src.getName().c_str());
+                         MCCopasiVector + 2, src.getObjectName().c_str());
 
         CType * Element = new CType(src);
 
@@ -426,7 +426,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       {
         if (!isInsertAllowed(src))
           CCopasiMessage(CCopasiMessage::ERROR,
-                         MCCopasiVector + 2, src->getName().c_str());
+                         MCCopasiVector + 2, src->getObjectName().c_str());
 
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
@@ -495,7 +495,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        */
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
         {
-          C_INT32 Index = getIndex(name.getName());
+          C_INT32 Index = getIndex(name.getName(0));
           if (Index == -1) return NULL;
 
           CCopasiObject * pObject = *(begin() + Index);
@@ -508,7 +508,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
 
           std::cout << "CCopasiVector::getObject: Vector contains object of right name but wrong type" << std::endl;
           std::cout << "  CN            " << name << std::endl;
-          std::cout << "  CN.getName    " << name.getName() << std::endl;
+          std::cout << "  CN.getName(0) " << name.getName(0) << std::endl;
           std::cout << "  Index         " << Index << std::endl;
           std::cout << "  CN.getObjName " << name.getObjectName() << std::endl;
           std::cout << "  CN.getObjType " << name.getObjectType() << std::endl << std::endl;
@@ -525,7 +525,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           const_iterator Target = begin();
 
           for (i = 0; i < imax; i++, Target++)
-            if (*Target && (*Target)->getName() == name) return i;
+            if (*Target && (*Target)->getObjectName() == name) return i;
 
           return C_INVALID_INDEX;
         }
@@ -535,7 +535,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        *
        */
       virtual bool isInsertAllowed(const CType * src)
-    {return (getIndex(src->getName()) == C_INVALID_INDEX);}
+    {return (getIndex(src->getObjectName()) == C_INVALID_INDEX);}
     };
 
 template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >

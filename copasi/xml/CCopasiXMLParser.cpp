@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2004/01/16 20:29:14 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:12:27 $
    End CVS Header */
 
 /**
@@ -2301,7 +2301,7 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
       if (mCommon.SourceParameterKeys.size() > 0)
         {
           mCommon.pReaction->
-          setParameterMappingVector(mpFunctionParameter->getName(),
+          setParameterMappingVector(mpFunctionParameter->getObjectName(),
                                     mCommon.SourceParameterKeys);
           mCommon.SourceParameterKeys.clear();
         }
