@@ -276,7 +276,7 @@ void SteadyStateWidget::runSteadyStateTask()
   //  mSteadyStateTask->initializeReporting(output);
 
   std::ofstream output;
-  if (tt->getReport()->getTarget() != "")
+  if (mSteadyStateTask->getReport()->getTarget() != "")
     {
       if (mSteadyStateTask->getReport()->append())
         output.open(mSteadyStateTask->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);

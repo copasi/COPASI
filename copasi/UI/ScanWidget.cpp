@@ -508,7 +508,7 @@ void ScanWidget::runScanTask()
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
 
   std::ofstream output;
-  if (tt->getReport()->getTarget() != "")
+  if (scanTask->getReport()->getTarget() != "")
     {
       if (scanTask->getReport()->append())
         output.open(scanTask->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);
