@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.89 $ $Author: shoops $ $Date: 2005/03/02 17:32:20 $  
+# $Revision: 1.90 $ $Author: shoops $ $Date: 2005/03/02 17:59:04 $  
 ######################################################################
 
 TEMPLATE = app
@@ -47,9 +47,6 @@ contains(BUILD_OS, Linux) {
          $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
-  release {
-    distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
-  }
 
   LIBS += -Wl,-lqt-mt \
           -Wl,-lXcursor \
@@ -69,7 +66,7 @@ contains(BUILD_OS, Linux) {
     dynamic_LIBS -= -Wl,-lpthread
  
     dynamic.target   = CopasiUI-dynamic
-    dynamic.depends  = CopasiUI
+    dynamic.depends  = $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${TARGETDEPS}
     dynamic.commands = \
       $(LINK) $${dynamic_LFLAGS} -L$(QTDIR)/lib -L/usr/X11R6/lib \
               -o $@ $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${dynamic_LIBS} \
@@ -81,7 +78,10 @@ contains(BUILD_OS, Linux) {
               strip $@
 
     QMAKE_EXTRA_UNIX_TARGETS += dynamic
-    TARGETDEPS += $${dynamic.target}
+
+    distribution.extra = make $${dynamic.target}; \
+                         ../../admin/mkbuild.sh $${BUILD_OS}
+
   }
 }
 
