@@ -31,5 +31,14 @@ EXTRA_DIST = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
+.lpp.cpp:
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e '/#include <unistd.h>/d' > $@
+
 %.cpp: %.lpp
-	$(LEX) -t $< | grep -v unistd.h > $@
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e '/#include <unistd.h>/d' > $@

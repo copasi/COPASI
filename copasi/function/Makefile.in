@@ -486,10 +486,16 @@ mostlyclean distclean maintainer-clean
 
 
 .lpp.cpp:
-	$(LEX) -t $< | grep -v unistd.h > $@
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e '/#include <unistd.h>/d' > $@
 
 %.cpp: %.lpp
-	$(LEX) -t $< | grep -v unistd.h > $@
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e '/#include <unistd.h>/d' > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

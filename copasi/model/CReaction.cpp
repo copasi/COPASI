@@ -532,18 +532,52 @@ C_FLOAT64 CReaction::calculate()
   return mFlux = mFunction->calcValue(mCallParameters);
 }
 
-/**
- *	Return Identifier Name		Wei Sun
- */
-string CReaction::CId2Param::getIdentifierName() const
+void CReaction::CId2Metab::setIdentifierName(const string & identifierName)
+{
+  mIdentifierName = identifierName;
+}
+
+const string & CReaction::CId2Metab::getIdentifierName() const
 {
   return mIdentifierName;
 }
 
-/**
- *	Retun the value of the pararmeter
- */
-C_FLOAT64 CReaction::CId2Param::getValue() const
+void CReaction::CId2Metab::setMetaboliteName(const string & metaboliteName)
+{
+  mMetaboliteName = metaboliteName;
+}
+
+const string & CReaction::CId2Metab::getMetaboliteName() const
+{
+  return mMetaboliteName;
+}
+
+void CReaction::CId2Metab::setCompartmentName(const string & compartmentName)
+{
+  mCompartmentName = compartmentName;
+}
+
+const string & CReaction::CId2Metab::getCompartmentName() const
+{
+  return mCompartmentName;
+}
+
+void CReaction::CId2Param::setIdentifierName(const string & identifierName)
+{
+  mIdentifierName = identifierName;
+}
+
+const string & CReaction::CId2Param::getIdentifierName() const
+{
+  return mIdentifierName;
+}
+
+void CReaction::CId2Param::setValue(const C_FLOAT64 & value)
+{
+  mValue = value;
+}
+
+const C_FLOAT64 & CReaction::CId2Param::getValue() const
 {
   return mValue;
 }

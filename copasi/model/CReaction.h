@@ -71,6 +71,42 @@ class CReaction
        *  cleanup();
        */
       void cleanup();
+      
+      /**
+       *  Set the identifier name
+       *  @param "const string &" identifierName
+       */ 
+      void setIdentifierName(const string & identifierName);
+      
+      /**
+       *  Retrieve the identifier name
+       *  @return "const string &" identifierName
+       */
+      const string & getIdentifierName() const;
+      
+      /**
+       *  Set the metabolite name
+       *  @param "const string &" metaboliteName
+       */ 
+      void setMetaboliteName(const string & metaboliteName);
+      
+      /**
+       *  Retrieve the metabolite name
+       *  @return "const string &" metaboliteName
+       */
+      const string & getMetaboliteName() const;
+      
+      /**
+       *  Set the compartment name
+       *  @param "const string &" compartmentName
+       */ 
+      void setCompartmentName(const string & compartmentName);
+      
+      /**
+       *  Retrieve the compartment name
+       *  @return "const string &" compartmentName
+       */
+      const string & getCompartmentName() const;
     };
 
   class CId2Param
@@ -111,16 +147,31 @@ class CReaction
        */
 
       void cleanup();
-      /**
-       *	Return Identifier Name		Wei Sun		
-       */
-      string getIdentifierName() const;
 
       /**
-       *	Retun the value of the pararmeter	
+       *  Set the identifier name
+       *  @param "const string &" identifierName
+       */ 
+      void setIdentifierName(const string & identifierName);
+      
+      /**
+       *  Retrieve the identifier name
+       *  @return "const string &" identifierName
        */
-      C_FLOAT64 getValue() const;
-
+      const string & getIdentifierName() const;
+      
+      /**
+       *  Set the identifier value
+       *  @param "const C_FLOAT64 &" value
+       */ 
+      void setValue(const C_FLOAT64 & value);
+      
+      /**
+       *  Retrieve the identifier value
+       *  @return "const C_FLOAT64 &" value
+       */
+      const C_FLOAT64 & getValue() const;
+      
       /**
        *	Returns the address of mValue
        */

@@ -36,18 +36,21 @@ class CChemEq
   /**
    *  A vector of substrates and their multiplicity in the chemical reaction
    * @supplierCardinality 0..*
+   * @label Substrates
    */
   CCopasiVector < CChemEqElement > mSubstrates;
   
   /**
    *  A vector of products and their multiplicity in the chemical reaction
    * @supplierCardinality 0..*
+   * @label Products
    */
   CCopasiVector < CChemEqElement > mProducts;
 
   /**
    *  A vector of metabolites and their total balance in the chemical reaction
    * @supplierCardinality 0..*
+   * @label Stoichiometry
    */
   CCopasiVector < CChemEqElement > mBalances;
 
