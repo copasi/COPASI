@@ -17,6 +17,7 @@ SUBDIRS = \
 	output \
 	model \
 	optimization \
+	report \
 	steadystate \
 	trajectory \
 	utilities \

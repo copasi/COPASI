@@ -50,8 +50,7 @@ LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
         -L../output \
         -L../steadystate \
         -L../trajectory \
-        -L../utilities \
-	$(USER_LDFLAGS)
+        -L../utilities
 
 SUBDIRS = \
 	elementaryFluxModes \

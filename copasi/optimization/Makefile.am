@@ -13,7 +13,8 @@ EXTRA_DIST = \
 	COptAlgorithm.h			COptAlgorithm.cpp \
 	COptAlgorithmParameter.h	COptAlgorithmParameter.cpp \
 	COptProblem.h			COptProblem.cpp \
-	CRealProblem.h			CRealProblem.cpp
+	CRealProblem.h			CRealProblem.cpp \
+	optimization.h
 
 ####### kdevelop will overwrite this part!!! (end)############
 

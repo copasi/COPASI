@@ -12,7 +12,8 @@ libmodel_a_SOURCES = \
 	CScanInputFlexLexer.cpp \
 	CSpecLine.cpp \
 	CDeTerm.cpp \
-	CSpec2Model.cpp
+	CSpec2Model.cpp \
+	CState.cpp
 
 EXTRA_DIST = \
 	model.h \
@@ -26,7 +27,8 @@ EXTRA_DIST = \
 	CScanInputFlexLexer.lpp	CScanInputFlexLexer.cpp \
 	CSpecLine.h	CSpecLine.cpp \
 	CDeTerm.h	CDeTerm.cpp \
-	CSpec2Model.h	CSpec2Model.cpp
+	CSpec2Model.h	CSpec2Model.cpp \
+	CState.h	CState.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 

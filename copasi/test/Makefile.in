@@ -215,7 +215,7 @@ LIBS =  	-lelementaryFluxModes 	-lmodel         -lfunction         -loutput     
 #	-lpthread \
 
 # the library search path.
-LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS) 	-L../elementaryFluxModes         -L../function         -L../model         -L../output         -L../steadystate         -L../trajectory         -L../utilities 	$(USER_LDFLAGS)
+LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS) 	-L../elementaryFluxModes         -L../function         -L../model         -L../output         -L../steadystate         -L../trajectory         -L../utilities
 
 
 SUBDIRS =  	elementaryFluxModes 	function 	model 	optimization 	output 	steadystate 	trajectory 	utilities

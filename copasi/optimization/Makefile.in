@@ -191,7 +191,7 @@ noinst_LIBRARIES = liboptimization.a
 liboptimization_a_SOURCES =  	CGA.cpp 	COptAlgorithm.cpp 	COptAlgorithmParameter.cpp 	COptProblem.cpp 	CRealProblem.cpp
 
 
-EXTRA_DIST =  	CGA.h				CGA.cpp 	COptAlgorithm.h			COptAlgorithm.cpp 	COptAlgorithmParameter.h	COptAlgorithmParameter.cpp 	COptProblem.h			COptProblem.cpp 	CRealProblem.h			CRealProblem.cpp
+EXTRA_DIST =  	CGA.h				CGA.cpp 	COptAlgorithm.h			COptAlgorithm.cpp 	COptAlgorithmParameter.h	COptAlgorithmParameter.cpp 	COptProblem.h			COptProblem.cpp 	CRealProblem.h			CRealProblem.cpp 	optimization.h
 
 
 ####### kdevelop will overwrite this part!!! (end)############

@@ -941,7 +941,7 @@ void CModel::setInitialState(const CState * state)
   Dbl = state->getNumbersDbl();
 
   for (i = 0, imax = mMetabolites.size(); i < imax; i++, Dbl++)
-    static_cast<C_FLOAT64>(mMetabolites[i]->getInitialConcentration())
+    *const_cast<C_FLOAT64 *>(&mMetabolites[i]->getInitialConcentration())
     = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv();
 
   /* We are not using the set method since it automatically updates the
@@ -949,7 +949,7 @@ void CModel::setInitialState(const CState * state)
   const C_INT32 * Int = state->getNumbersInt();
 
   for (i = 0; i < imax; i++, Int++)
-    static_cast<C_INT32>(mMetabolites[i]->getInitialNumber()) = *Int;
+    *const_cast<C_INT32*>(&mMetabolites[i]->getInitialNumber()) = *Int;
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -972,7 +972,7 @@ void CModel::setInitialState(const CStateX * state)
   Dbl = state->getNumbersDbl();
 
   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Dbl++)
-    static_cast<C_FLOAT64>(mMetabolitesX[i]->getInitialConcentration())
+    *const_cast<C_FLOAT64*>(&mMetabolitesX[i]->getInitialConcentration())
     = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv();
 
   /* We are not using the set method since it automatically updates the
@@ -980,7 +980,7 @@ void CModel::setInitialState(const CStateX * state)
   const C_INT32 * Int = state->getNumbersInt();
 
   for (i = 0; i < imax; i++, Int++)
-    static_cast<C_INT32>(mMetabolitesX[i]->getInitialNumber()) = *Int;
+    *const_cast<C_INT32*>(&mMetabolitesX[i]->getInitialNumber()) = *Int;
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -1057,7 +1057,7 @@ void CModel::setState(const CState * state)
 
   for (i = 0, imax = mMetabolitesInd.size() + mMetabolitesDep.size();
        i < imax; i++, Dbl++)
-    static_cast<C_FLOAT64>(mMetabolites[i]->getConcentration())
+    *const_cast<C_FLOAT64*>(&mMetabolites[i]->getConcentration())
     = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv();
 
   /* We are not using the set method since it automatically updates the
@@ -1065,7 +1065,7 @@ void CModel::setState(const CState * state)
   const C_INT32 * Int = state->getNumbersInt();
 
   for (i = 0; i < imax; i++, Int++)
-    static_cast<C_INT32>(mMetabolites[i]->getNumber()) = *Int;
+    *const_cast<C_INT32*>(&mMetabolites[i]->getNumber()) = *Int;
 
   return ;
 }
@@ -1089,7 +1089,7 @@ void CModel::setState(const CStateX * state)
   Dbl = state->getNumbersDbl();
 
   for (i = 0, imax = mMetabolitesInd.size(); i < imax; i++, Dbl++)
-    static_cast<C_FLOAT64>(mMetabolitesX[i]->getInitialConcentration())
+    *const_cast<C_FLOAT64*>(&mMetabolitesX[i]->getInitialConcentration())
     = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv();
 
   /* We are not using the set method since it automatically updates the
@@ -1097,7 +1097,7 @@ void CModel::setState(const CStateX * state)
   const C_INT32 * Int = state->getNumbersInt();
 
   for (i = 0, imax = mMetabolitesInd.size(); i < imax; i++, Int++)
-    static_cast<C_INT32>(mMetabolitesX[i]->getInitialNumber()) = *Int;
+    *const_cast<C_INT32*>(&mMetabolitesX[i]->getInitialNumber()) = *Int;
 
   /* We need to update the dependent metabolites by using moieties */
   /* This changes need to be reflected in the current state */

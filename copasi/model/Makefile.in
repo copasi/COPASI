@@ -188,10 +188,10 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libmodel.a
 
-libmodel_a_SOURCES =  	CCompartment.cpp 	CMetab.cpp 	CModel.cpp 	CMoiety.cpp 	CReaction.cpp 	CChemEq.cpp 	CChemEqElement.cpp 	CScanInputFlexLexer.cpp 	CSpecLine.cpp 	CDeTerm.cpp 	CSpec2Model.cpp
+libmodel_a_SOURCES =  	CCompartment.cpp 	CMetab.cpp 	CModel.cpp 	CMoiety.cpp 	CReaction.cpp 	CChemEq.cpp 	CChemEqElement.cpp 	CScanInputFlexLexer.cpp 	CSpecLine.cpp 	CDeTerm.cpp 	CSpec2Model.cpp 	CState.cpp
 
 
-EXTRA_DIST =  	model.h 	CCompartment.h	CCompartment.cpp 	CMetab.h	CMetab.cpp 	CModel.h	CModel.cpp 	CMoiety.h	CMoiety.cpp 	CReaction.h	CReaction.cpp 	CChemEq.h	CChemEq.cpp 	CChemEqElement.h	CChemEqElement.cpp 	CScanInputFlexLexer.lpp	CScanInputFlexLexer.cpp 	CSpecLine.h	CSpecLine.cpp 	CDeTerm.h	CDeTerm.cpp 	CSpec2Model.h	CSpec2Model.cpp
+EXTRA_DIST =  	model.h 	CCompartment.h	CCompartment.cpp 	CMetab.h	CMetab.cpp 	CModel.h	CModel.cpp 	CMoiety.h	CMoiety.cpp 	CReaction.h	CReaction.cpp 	CChemEq.h	CChemEq.cpp 	CChemEqElement.h	CChemEqElement.cpp 	CScanInputFlexLexer.lpp	CScanInputFlexLexer.cpp 	CSpecLine.h	CSpecLine.cpp 	CDeTerm.h	CDeTerm.cpp 	CSpec2Model.h	CSpec2Model.cpp 	CState.h	CState.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -213,7 +213,7 @@ libmodel_a_OBJECTS =  CCompartment.$(OBJEXT) CMetab.$(OBJEXT) \
 CModel.$(OBJEXT) CMoiety.$(OBJEXT) CReaction.$(OBJEXT) \
 CChemEq.$(OBJEXT) CChemEqElement.$(OBJEXT) \
 CScanInputFlexLexer.$(OBJEXT) CSpecLine.$(OBJEXT) CDeTerm.$(OBJEXT) \
-CSpec2Model.$(OBJEXT)
+CSpec2Model.$(OBJEXT) CState.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -235,7 +235,7 @@ GZIP_ENV = --best
 DEP_FILES =  .deps/CChemEq.P .deps/CChemEqElement.P .deps/CCompartment.P \
 .deps/CDeTerm.P .deps/CMetab.P .deps/CModel.P .deps/CMoiety.P \
 .deps/CReaction.P .deps/CScanInputFlexLexer.P .deps/CSpec2Model.P \
-.deps/CSpecLine.P
+.deps/CSpecLine.P .deps/CState.P
 SOURCES = $(libmodel_a_SOURCES)
 OBJECTS = $(libmodel_a_OBJECTS)
 

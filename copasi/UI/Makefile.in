@@ -189,13 +189,13 @@ x_libraries = @x_libraries@
 ####### kdevelop will overwrite this part!!! (end)############
 bin_PROGRAMS = CopasiUI
 
-CopasiUI_MOC_SOURCES =  	CompartmentsWidget1.moc.cpp 	CompartmentsWidget.moc.cpp 	MetabolitesWidget.moc.cpp 	MetabolitesWidget1.moc.cpp 	MoietyWidget.moc.cpp 	MoietyWidget1.moc.cpp 	ReactionsWidget.moc.cpp 	ReactionsWidget1.moc.cpp 	copasiui3window.moc.cpp 	listviews.moc.cpp
+CopasiUI_MOC_SOURCES =  	CompartmentsWidget1.moc.cpp 	CompartmentsWidget.moc.cpp 	FunctionWidget1.moc.cpp 	FunctionWidget.moc.cpp 	MetabolitesWidget.moc.cpp 	MetabolitesWidget1.moc.cpp 	MoietyWidget.moc.cpp 	MoietyWidget1.moc.cpp 	ReactionsWidget.moc.cpp 	ReactionsWidget1.moc.cpp 	copasiui3window.moc.cpp 	listviews.moc.cpp
 
 
-CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) 	main.cpp 	MyTable.cpp 	Observer.cpp 	Subject.cpp         CompartmentsWidget.cpp         CompartmentsWidget1.cpp         MetabolitesWidget.cpp         MetabolitesWidget1.cpp         MoietyWidget.cpp         MoietyWidget1.cpp         ReactionsWidget.cpp         ReactionsWidget1.cpp         copasiui3window.cpp         listviews.cpp
+CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) 	main.cpp 	MyTable.cpp 	Observer.cpp 	Subject.cpp         CompartmentsWidget.cpp         CompartmentsWidget1.cpp         FunctionWidget.cpp         FunctionWidget1.cpp         MetabolitesWidget.cpp         MetabolitesWidget1.cpp         MoietyWidget.cpp         MoietyWidget1.cpp         ReactionsWidget.cpp         ReactionsWidget1.cpp         copasiui3window.cpp         listviews.cpp
 
 
-EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 	Subject.h Subject.cpp 	CompartmentsWidget.h CompartmentsWidget.cpp moc_CompartmentsWidget1.cpp 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp 	listviews.h listviews.cpp moc_listviews.cpp
+EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 	Subject.h Subject.cpp 	CompartmentsWidget.h CompartmentsWidget.cpp moc_CompartmentsWidget1.cpp 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp 	FunctionWidget.h FunctionWidget.cpp moc_FunctionWidget1.cpp 	FunctionWidget1.h FunctionWidget1.cpp moc_FunctionWidget.cpp 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp 	listviews.h listviews.cpp moc_listviews.cpp
 
 
 # set the include path found by configure
@@ -230,13 +230,15 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 CopasiUI_OBJECTS =  CompartmentsWidget1.moc.$(OBJEXT) \
-CompartmentsWidget.moc.$(OBJEXT) MetabolitesWidget.moc.$(OBJEXT) \
+CompartmentsWidget.moc.$(OBJEXT) FunctionWidget1.moc.$(OBJEXT) \
+FunctionWidget.moc.$(OBJEXT) MetabolitesWidget.moc.$(OBJEXT) \
 MetabolitesWidget1.moc.$(OBJEXT) MoietyWidget.moc.$(OBJEXT) \
 MoietyWidget1.moc.$(OBJEXT) ReactionsWidget.moc.$(OBJEXT) \
 ReactionsWidget1.moc.$(OBJEXT) copasiui3window.moc.$(OBJEXT) \
 listviews.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
 Observer.$(OBJEXT) Subject.$(OBJEXT) CompartmentsWidget.$(OBJEXT) \
-CompartmentsWidget1.$(OBJEXT) MetabolitesWidget.$(OBJEXT) \
+CompartmentsWidget1.$(OBJEXT) FunctionWidget.$(OBJEXT) \
+FunctionWidget1.$(OBJEXT) MetabolitesWidget.$(OBJEXT) \
 MetabolitesWidget1.$(OBJEXT) MoietyWidget.$(OBJEXT) \
 MoietyWidget1.$(OBJEXT) ReactionsWidget.$(OBJEXT) \
 ReactionsWidget1.$(OBJEXT) copasiui3window.$(OBJEXT) \
@@ -258,6 +260,8 @@ TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/CompartmentsWidget.P .deps/CompartmentsWidget.moc.P \
 .deps/CompartmentsWidget1.P .deps/CompartmentsWidget1.moc.P \
+.deps/FunctionWidget.P .deps/FunctionWidget.moc.P \
+.deps/FunctionWidget1.P .deps/FunctionWidget1.moc.P \
 .deps/MetabolitesWidget.P .deps/MetabolitesWidget.moc.P \
 .deps/MetabolitesWidget1.P .deps/MetabolitesWidget1.moc.P \
 .deps/MoietyWidget.P .deps/MoietyWidget.moc.P .deps/MoietyWidget1.P \
