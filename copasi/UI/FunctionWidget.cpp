@@ -70,7 +70,7 @@ void FunctionWidget::loadFunction()
     }
 
   CCopasiVectorNS< CFunction > & Functions =
-    Copasi->FunctionDB.loadedFunctions();
+    Copasi->pFunctionDB->loadedFunctions();
 
   C_INT32 noOfFunctionsRows = Functions.size();
   table->setNumRows(noOfFunctionsRows);

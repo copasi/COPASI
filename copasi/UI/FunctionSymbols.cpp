@@ -84,7 +84,7 @@ void FunctionSymbols::loadFunctionSymbols(CModel *model)
       CMathModel *mathmodel = new CMathModel();
       mathmodel->setModel(mModel);
       const CModel *nModel = mathmodel->getModel();
-      Copasi->FunctionDB.loadedFunctions();
+      Copasi->pFunctionDB->loadedFunctions();
 
       std::map< std::string, CMathSymbol * > functionList = mathmodel->getFunctionList();
       std::map<std::string, CMathSymbol * >::iterator it;
