@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 18:58:50 $
+   $Date: 2005/02/19 02:59:37 $
    End CVS Header */
 
 /**
@@ -38,6 +38,8 @@ class CPlotDataChannelSpec;
 class CCopasiParameter;
 class CCopasiParameterGroup;
 class CVersion;
+class CSlider;
+class SCopasiXMLGUI;
 
 struct SCopasiXMLParserCommon
   {
@@ -169,6 +171,8 @@ struct SCopasiXMLParserCommon
      *  with the index together with the key to the reference.
      */
     std::map<std::string , std::vector < std::pair < std::vector <CCopasiObjectName >*, unsigned int > > > reportReferenceMap;
+
+    SCopasiXMLGUI * pGUI;
   };
 
 class CCopasiXMLParser : public CExpat
@@ -2271,7 +2275,8 @@ class CCopasiXMLParser : public CExpat
           Model,
           ListOfTasks,
           ListOfReports,
-          ListOfPlots
+          ListOfPlots,
+          GUI
         };
 
         // Operations
@@ -2567,6 +2572,131 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  class GUIElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          GUI = 0,
+          ListOfSliders
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        GUIElement(CCopasiXMLParser & parser,
+                   SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~GUIElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfSlidersElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfSliders = 0,
+          Slider
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfSlidersElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfSlidersElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class SliderElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Slider = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        SliderElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~SliderElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
     // Operations
   private:
     /**
@@ -2697,16 +2827,28 @@ class CCopasiXMLParser : public CExpat
     CCopasiVectorN< CCopasiTask > * getTaskList() const;
 
     /**
-        * Set the list of loaded plots
-        * @param CCopasiVectorN< CPlotSpecification > * pPlotList
-        */
+     * Set the list of loaded plots
+     * @param CCopasiVectorN< CPlotSpecification > * pPlotList
+     */
     void setPlotList(CCopasiVectorN< CPlotSpecification > * pPlotList);
 
     /**
      * Retrieve the list of loaded functions
-     * @return CCopasiVectorN< CTask > * pTaskList
+     * @return CCopasiVectorN< CPlotSpecification > * pPlotList
      */
     CCopasiVectorN< CPlotSpecification > * getPlotList() const;
+
+    /**
+     * Set the GUI information to be saved
+     * @param SCopasiXMLGUI * pGUI
+     */
+    void setGUI(SCopasiXMLGUI * pGUI);
+
+    /**
+     * Retrieve the GUI information
+     * @return SCopasiXMLGUI * pGUI
+     */
+    SCopasiXMLGUI * getGUI() const;
   };
 
 #endif // COPASI_CCopasiXMLParser

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 18:58:50 $
+   $Date: 2005/02/19 02:59:37 $
    End CVS Header */
 
 /**
@@ -28,6 +28,7 @@
 
 #include "utilities/CCopasiParameter.h"
 #include "utilities/CCopasiParameterGroup.h"
+#include "utilities/CSlider.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
 #include "scan/CScanTask.h"
@@ -131,6 +132,7 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pReportList = NULL;
   mCommon.pReport = NULL;
   mCommon.mParameterGroupLevel = -1;
+  mCommon.pGUI = NULL;
 
   enableElementHandler(true);
 }
@@ -241,6 +243,12 @@ void CCopasiXMLParser::setPlotList(CCopasiVectorN< CPlotSpecification > * pPlotL
 CCopasiVectorN< CPlotSpecification > * CCopasiXMLParser::getPlotList() const
   {return mCommon.pPlotList;}
 
+void CCopasiXMLParser::setGUI(SCopasiXMLGUI * pGUI)
+{mCommon.pGUI = pGUI;}
+
+SCopasiXMLGUI * CCopasiXMLParser::getGUI() const
+  {return mCommon.pGUI;}
+
 CCopasiXMLParser::UnknownElement::UnknownElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
@@ -339,6 +347,14 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
     case ListOfPlots:
       if (!strcmp(pszName, "ListOfPlots"))
         mpCurrentHandler = new ListOfPlotsElement(mParser, mCommon);
+      break;
+
+    case GUI:
+      if (!strcmp(pszName, "GUI"))
+        if (mCommon.pGUI)
+          mpCurrentHandler = new GUIElement(mParser, mCommon);
+        else
+          mpCurrentHandler = &mParser.mUnknownElement;
       break;
 
     default:
@@ -3544,7 +3560,8 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
 {
   mCurrentElement++; /* We should always be on the next element */
   mpCurrentHandler = NULL;
-  //std::string name;
+
+  const char * Key;
   std::string sType;
   CCopasiTask::Type type;
 
@@ -3552,10 +3569,13 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
     {
     case Task:
       if (strcmp(pszName, "Task")) fatalError();
-      // create a new CCopasiTask element depending on the type
-      mCommon.pCurrentTask = new CCopasiTask();
+
+      Key = mParser.getAttributeValue("key", papszAttrs, false);
       sType = mParser.getAttributeValue("type", papszAttrs);
       type = CCopasiTask::XMLNameToEnum(sType.c_str());
+      mCommon.pCurrentTask = NULL;
+
+      // create a new CCopasiTask element depending on the type
       switch (type)
         {
         case CCopasiTask::steadyState:
@@ -3575,6 +3595,8 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           mParser.onStartElement(pszName, papszAttrs);
           break;
         }
+      if (Key && mCommon.pCurrentTask) mCommon.KeyMap.addFix(Key, mCommon.pCurrentTask);
+
       return;
       break;
 
@@ -5173,4 +5195,235 @@ void CCopasiXMLParser::ObjectElement::end(const XML_Char *pszName)
       fatalError();
       break;
     }
+}
+
+CCopasiXMLParser::GUIElement::GUIElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::GUIElement::~GUIElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::GUIElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case GUI:
+      if (strcmp(pszName, "GUI")) fatalError();
+      break;
+
+    case ListOfSliders:
+      if (strcmp(pszName, "ListOfSliders")) fatalError();
+
+      /* If we do not have a etc element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new ListOfSlidersElement(mParser, mCommon);
+      break;
+
+    default:
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
+      break;
+    }
+
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
+
+  return;
+}
+
+void CCopasiXMLParser::GUIElement::end(const XML_Char *pszName)
+{
+  if (!strcmp(pszName, "GUI"))
+    {
+      mParser.popElementHandler();
+      mCurrentElement = START_ELEMENT;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+    }
+  else
+    pdelete(mpCurrentHandler);
+
+  return;
+}
+
+CCopasiXMLParser::ListOfSlidersElement::ListOfSlidersElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfSlidersElement::~ListOfSlidersElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfSlidersElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case ListOfSliders:
+      if (strcmp(pszName, "ListOfSliders")) fatalError();
+      if (!mCommon.pGUI->pSliderList)
+        mCommon.pGUI->pSliderList = new CCopasiVectorN< CSlider >;
+      break;
+
+    case Slider:
+      if (strcmp(pszName, "Slider")) fatalError();
+
+      /* If we do not have a Slider element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new SliderElement(mParser, mCommon);
+
+      /* Push the Slider element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+    default:
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfSlidersElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case ListOfSliders:
+      if (strcmp(pszName, "ListOfSliders")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = START_ELEMENT;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case Slider:
+      if (strcmp(pszName, "Slider")) fatalError();
+      mCurrentElement = ListOfSliders;
+      break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::SliderElement::SliderElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::SliderElement::~SliderElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  CSlider * pSlider = NULL;
+  const char * Key;
+  const char * AssociatedEntityKey;
+  const char * ObjectCN;
+  const char * objectType;
+  CSlider::Type ObjectType;
+  const char * tmp;
+  C_FLOAT64 ObjectValue;
+  C_FLOAT64 MinValue;
+  C_FLOAT64 MaxValue;
+  unsigned C_INT32 TickNumber;
+  unsigned C_INT32 TickFactor;
+
+  switch (mCurrentElement)
+    {
+    case Slider:
+      if (strcmp(pszName, "Slider")) fatalError();
+      Key = mParser.getAttributeValue("key", papszAttrs);
+      AssociatedEntityKey = mParser.getAttributeValue("AssociatedEntityKey", papszAttrs);
+      ObjectCN = mParser.getAttributeValue("objectCN", papszAttrs);
+      objectType = mParser.getAttributeValue("objectType", papszAttrs);
+      ObjectType = (CSlider::Type) mParser.toEnum(objectType, CSlider::TypeName);
+      tmp = mParser.getAttributeValue("objectValue", papszAttrs);
+      ObjectValue = atof(tmp);
+      tmp = mParser.getAttributeValue("minValue", papszAttrs);
+      MinValue = atof(tmp);
+      tmp = mParser.getAttributeValue("maxValue", papszAttrs);
+      MaxValue = atof(tmp);
+      tmp = mParser.getAttributeValue("tickNumber", papszAttrs, "1000");
+      TickNumber = atoi(tmp);
+      tmp = mParser.getAttributeValue("tickFactor", papszAttrs, "100");
+      TickFactor = atoi(tmp);
+
+      // This is always the case if the XML is conforming to the schema.
+      if (mCommon.KeyMap.get(AssociatedEntityKey))
+        {
+          pSlider = new CSlider;
+          mCommon.KeyMap.addFix(Key, pSlider);
+          pSlider->setAssociatedEntityKey(mCommon.KeyMap.get(AssociatedEntityKey)->getKey());
+          pSlider->setSliderObject((std::string) ObjectCN);
+          pSlider->setSliderType(ObjectType);
+          pSlider->setSliderValue(ObjectValue);
+          pSlider->setMinValue(MinValue);
+          pSlider->setMaxValue(MaxValue);
+          pSlider->setTickNumber(TickNumber);
+          pSlider->setTickFactor(TickFactor);
+
+          mCommon.pGUI->pSliderList->add(pSlider, true);
+        }
+      break;
+
+    default:
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::SliderElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case Slider:
+      if (strcmp(pszName, "Slider")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = START_ELEMENT;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
 }
