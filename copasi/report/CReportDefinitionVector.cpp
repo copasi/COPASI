@@ -13,7 +13,10 @@ CReportDefinitionVector::CReportDefinitionVector(const std::string & name,
     const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "TrajectoryTask", CCopasiObject::Container),
     mKey(CKeyFactory::add("CReportDefinitionVector", this))
-{}
+{
+  CReportDefinition * test = new CReportDefinition();
+  mReportDefinitions.push_back(test);
+}
 
 CReportDefinitionVector::~CReportDefinitionVector()
 {
