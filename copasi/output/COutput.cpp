@@ -650,11 +650,11 @@ void COutput::repStability(ofstream &fout)
   fout << endl << "Jacobian matrix" << endl;
   fout << setprecision(6);
 
-  imax = jmax = model->getMetabolitesInd().size();
+  imax = jmax = model->getIntMetab();
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
-        fout << Jacobian[i * jmax + j];
+        fout << Jacobian[i * jmax + j] << "  ";
 
       fout << endl;
     }
@@ -662,7 +662,7 @@ void COutput::repStability(ofstream &fout)
   // Output Eigenvalus of the Jacibian Matrix
   fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
 
-  for (i = 0; i < model->getMetabolitesInd().size(); i++)
+  for (i = 0; i < model->getIntMetab(); i++)
     {
       if (mSolution->getEigenValues()->getEigen_i()[i] == 0.0)
         fout << setprecision(6) << mSolution->getEigenValues()->getEigen_r()[i];
@@ -784,10 +784,13 @@ void COutput::copasiSS(ofstream &fout)
 
   if (SS)
     {
+      repSS(fout);
+      repStability(fout);
       if (SSTitles)
-        sSOutputTitles(fout, SSName);
-
-      sSOutputData(fout, SSName);
+        {
+          sSOutputTitles(fout, SSName);
+          sSOutputData(fout, SSName);
+        }
     }
 }
 
