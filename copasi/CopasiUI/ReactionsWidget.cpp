@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/22 01:16:08 $
+   $Author: shoops $ 
+   $Date: 2003/12/17 21:19:17 $
    End CVS Header */
 
 /*******************************************************************
@@ -277,10 +277,12 @@ void ReactionsWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0: // Yes or Enter
+        case 0:  // Yes or Enter
           {
-            for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
+            for (i = ToBeDeleted.size(); 0 < i;)
               {
+                i--;
+
                 dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
                 table->removeRow(ToBeDeleted[i]);
               }
@@ -291,7 +293,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
             break;
           }
 
-        default:      // No or Escape
+        default:       // No or Escape
           break;
         }
     }
