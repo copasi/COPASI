@@ -99,7 +99,7 @@ class CGene: public CCopasiObject
     /**
      *  Name of the gene
      */
-    string mName;
+    std::string mName;
 
     /**
      *  Basal or maximal rate for the transcription
@@ -133,7 +133,7 @@ class CGene: public CCopasiObject
      *  @supplierCardinality 0..*
      *  @associates <{C_INT32}>
      */
-    vector < C_INT32 > mModifierIndex;
+    std::vector < C_INT32 > mModifierIndex;
 
   public:
 
@@ -153,12 +153,12 @@ class CGene: public CCopasiObject
     /**
      *  Sets the name of the gene.
      */
-    void setName(const string & name);
+    void setName(const std::string & name);
 
     /**
      *  Retrieve the name of the gene.
      */
-    const string & getName() const;
+    const std::string & getName() const;
 
     /**
      *  Retrieve the number of modifiers.

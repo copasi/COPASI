@@ -89,12 +89,12 @@ CGene::CGene(const CGene & src,
 CGene::~CGene()
 {}
 
-void CGene::setName(const string & name)
+void CGene::setName(const std::string & name)
 {
   mName = name;
 }
 
-const string & CGene::getName() const
+const std::string & CGene::getName() const
   {
     return mName;
   }
