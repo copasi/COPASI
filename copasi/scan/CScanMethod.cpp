@@ -20,7 +20,10 @@
 
 // this will have to be defined somewhere else with the
 // values of other distribution types
-#define SD_REGULAR 1
+#define SD_UNIFORM 0
+#define SD_GAUSS 1
+#define SD_BOLTZ 2
+#define SD_REGULAR 3
 
 CScanMethod * CScanMethod::createMethod() {return new CScanMethod;}
 
@@ -71,6 +74,12 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
   //switch(gridtype[distribution])
   switch ((int)scanProblem->getScanItemParameter(i, "gridType"))
     {
+    case SD_UNIFORM:
+      break;
+    case SD_GAUSS:
+      break;
+    case SD_BOLTZ:
+      break;
     case SD_REGULAR:
       //start with min value - give 0 as first param in setscanparametervalue
       setScanParameterValue(0, s, top);
@@ -126,6 +135,12 @@ void CScanMethod::setScanParameterValue(unsigned C_INT32 i,
       // switch the grid type and set values accordingly
       switch ((int)scanProblem->getScanItemParameter(j, "gridType"))
         {
+        case SD_UNIFORM:
+          break;
+        case SD_GAUSS:
+          break;
+        case SD_BOLTZ:
+          break;
         case SD_REGULAR:
           // log scale
           if (scanProblem->getScanItemParameter(j, "log") == 1.0)
