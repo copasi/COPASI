@@ -14,8 +14,8 @@ LIBS        = -lnsl
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CFLAGS) -c $< -o $@
 
-all: 	test \
-	doc/html/index.html
+all: 	test
+#	doc/html/index.html
 
 OBJS	= $(OBJDIR)/CCompartment.o \
 	  $(OBJDIR)/CCopasiException.o \
