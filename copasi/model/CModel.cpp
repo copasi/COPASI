@@ -152,18 +152,31 @@ void CModel::cleanup()
   mMoieties.cleanup();
 
   /* The references */
-  mStepsX.resize(0);
-  mStepsInd.resize(0);
-
-  mMetabolites.resize(0);
-  mMetabolitesX.resize(0);
-  mMetabolitesInd.resize(0);
-  mMetabolitesDep.resize(0);
-
+  ((std::vector<CReaction*>)mStepsX).resize(0);
+  ((std::vector<CReaction*>)mStepsInd).resize(0);
+  ((std::vector<CMetab*>)mMetabolites).resize(0);
+  ((std::vector<CMetab*>)mMetabolitesX).resize(0);
+  ((std::vector<CMetab*>)mMetabolitesInd).resize(0);
+  ((std::vector<CMetab*>)mMetabolitesDep).resize(0);
   mFluxes.resize(0);
   mFluxesX.resize(0);
   mScaledFluxes.resize(0);
   mScaledFluxesX.resize(0);
+
+  /*
+    mStepsX.resize(0);
+    mStepsInd.resize(0);
+   
+    mMetabolites.resize(0);
+    mMetabolitesX.resize(0);
+    mMetabolitesInd.resize(0);
+    mMetabolitesDep.resize(0);
+   
+    mFluxes.resize(0);
+    mFluxesX.resize(0);
+    mScaledFluxes.resize(0);
+    mScaledFluxesX.resize(0);
+  */
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
