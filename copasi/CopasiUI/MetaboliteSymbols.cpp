@@ -10,6 +10,9 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include "MetaboliteSymbols.h"
+#include "mathmodel/CMathModel.h"
+#include "mathmodel/CMathConstant.h"
+#include "model/CCompartment.h"
 #include "listviews.h"
 #include <qfont.h>
 
@@ -69,66 +72,84 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-/*void MetaboliteSymbols::loadMetaboliteSymbols(CModel *model)
+void MetaboliteSymbols::loadMetaboliteSymbols(CModel *model)
 {
   if (model != NULL)
     {
+      int i;
       mModel = model;
- 
       //Emptying the table
       int numberOfRows = table->numRows();
- 
-      for (int i = 0; i < numberOfRows; i++)
+      for (i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
- 
-      CCopasiVectorN< CMetab > metabolites(mModel->getMetabolites());
-      C_INT32 noOfMetabolitesRows = metabolites.size();
-      table->setNumRows(noOfMetabolitesRows);
- 
-      //Now filling the table.
-      CMetab *metab;
- 
-      for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+
+      CMathModel *mathmodel = new CMathModel();
+      mathmodel->setModel(mModel);
+      const CModel *nModel = mathmodel->getModel();
+
+      unsigned C_INT32 k = mModel->getIntMetab();
+      CCopasiVectorN< CMetab > metabolite(mModel->getMetabolitesX());
+      C_INT32 noOfMetaboliteRows = metabolite.size();
+      table->setNumRows(k - 1);
+      const CMetab *metab;
+
+      //QMessageBox::information(this, "k",QString::number(k));
+      //QMessageBox::information(this, "noOfMetaboliteRows",QString::number(noOfMetaboliteRows));
+
+      for (i = 0; i < k - 1; i++)
         {
-          metab = metabolites[j];
-          table->setText(j, 0, metab->getName().c_str());
- 
+          //CMathConstantMetab *metablist=new CMathConstantMetab(metabolite);
+          //metablist = mathmodel->getFixedMetabList();
+          //C_INT32 noOfMetabElements = metablist->size();
+
+          metab = metabolite[i];
+          table->setText(i, 0, metab->getName().c_str());
+          //const CCopasiObjectName *name;
+          //CCopasiObject *metab_object=metab->getObject(name);
+          //table->setText(noOfMetaboliteRows-i-1, 1, QString::number(metab->getObject()->getName()));
+          table->setText(i, 2, QString::number(metab->getInitialConcentration()));
+          table->setText(i, 3, QString::number(metab->getInitialNumberDbl()));
+          table->setText(i, 4, QString::number(metab->getConcentration()));
+          table->setText(i, 5, QString::number(metab->getNumberDbl()));
+          const CCompartment *Compartment = metab->getCompartment();
+          table->setText(i, 6, Compartment->getName().c_str());
           /*double m=(*(metab->getConcentration()));
           QString *m1;
           //QString ms = m1.setNum(m,'g',6);
-             m1=  QString::setNum(m,'g',6);            
+           m1=  QString::setNum(m,'g',6);            
           table->setText(j, 1,*m1);
-           
+
           //table->setText(j, 1,ms); */
-/*table->setText(j, 1, QString::number(metab->getConcentration()));
+          /*table->setText(j, 1, QString::number(metab->getConcentration()));
 
-table->setText(j, 2, QString::number(metab->getNumberDbl()));
+          table->setText(j, 2, QString::number(metab->getNumberDbl()));
 
-table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
+          table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
 
-#ifdef XXXX
-if (QString::number(metab->getStatus()) == "0")
-  {
-    table->setText(j, 3, "defineda");
-  }
-else if (QString::number(metab->getStatus()) == "1")
-  {
-    table->setText(j, 3, "definedb");
-  }
-else if (QString::number(metab->getStatus()) == "2")
-  {
-    table->setText(j, 3, "definedc");
-  }
-#endif // XXXX
-table->setText(j, 4, metab->getCompartment()->getName().c_str());
+          #ifdef XXXX
+          if (QString::number(metab->getStatus()) == "0")
+            {
+              table->setText(j, 3, "defineda");
+            }
+          else if (QString::number(metab->getStatus()) == "1")
+            {
+              table->setText(j, 3, "definedb");
+            }
+          else if (QString::number(metab->getStatus()) == "2")
+            {
+              table->setText(j, 3, "definedc");
+            }
+          #endif // XXXX
+          table->setText(j, 4, metab->getCompartment()->getName().c_str());
+          }
+
+          //table->sortColumn(0,true,true);*/
+        }
+    }
 }
 
-//table->sortColumn(0,true,true);
-}
-}
- */
 void MetaboliteSymbols::slotTableSelectionChanged()
 {
   if (!table->hasFocus())

@@ -20,7 +20,7 @@ class MetaboliteSymbols : public QWidget
     Q_OBJECT
 
   protected:
-    CModel * mModel;
+    const CModel * mModel;
     MyTable * table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
@@ -30,7 +30,7 @@ class MetaboliteSymbols : public QWidget
 
   public:
     MetaboliteSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
-    //void loadMetabolites(CModel *model);
+    void loadMetaboliteSymbols(CModel *model);
     void resizeEvent(QResizeEvent * re);
 
   protected slots:
