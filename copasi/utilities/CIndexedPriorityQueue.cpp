@@ -31,7 +31,7 @@ C_INT32 CIndexedPriorityQueue::pushPair(C_INT32 index, C_FLOAT64 key)
     // First check that the index corresponds to the heap size before insertion
     if (static_cast<unsigned int>(index) != mHeap.size())
     {
-        printf("Error inserting pair into priority queue\n");
+        CCopasiMessage(CCopasiMessage::ERROR, "Error inserting pair into priority queue");
         return -1;
     }
     PQNode heap_node(index, key);
@@ -53,14 +53,15 @@ void CIndexedPriorityQueue::buildHeap()
 void CIndexedPriorityQueue::updateNode(C_INT32 index, C_FLOAT64 new_key)
 {
     C_INT32 pos = mIndexPointer[index];
+//    cout << "Setting heap at " << pos << " to be " << new_key << endl;
     mHeap[pos].mKey = new_key;
     updateAux(pos);
 }
     
 void CIndexedPriorityQueue::swapNodes(C_INT32 pos1, C_INT32 pos2)
 {
-    cout << "Swapping node " << pos1 << "(" << mHeap[pos1].mKey << ") with node ";
-    cout << pos2 << "(" << mHeap[pos2].mKey << ")\n";
+//    cout << "Swapping node " << pos1 << "(" << mHeap[pos1].mKey << ") with node ";
+//    cout << pos2 << "(" << mHeap[pos2].mKey << ")\n";
     C_FLOAT64 tempkey = mHeap[pos1].mKey;
     C_INT32 index1 = mHeap[pos1].mIndex;
     C_INT32 index2 = mHeap[pos2].mIndex;
@@ -80,7 +81,7 @@ void CIndexedPriorityQueue::heapify(C_INT32 current)
     C_INT32 left = leftChild(current);
     C_INT32 right = rightChild(current);
     C_INT32 highest_priority = current;
-    cout << "Heapifying " << current << "(Currently " << mHeap[current].mKey << ")" << endl;
+//    cout << "Heapifying " << current << "(Currently " << mHeap[current].mKey << ")" << endl;
     if ( (static_cast<unsigned int>(left) < mHeap.size()) && (mHeap[left].mKey < mHeap[current].mKey) )
     {
         highest_priority = left;
@@ -124,7 +125,8 @@ void CIndexedPriorityQueue::updateAux(C_INT32 pos)
         }
         if ( (min_pos > 0) && (keyval > min) )
         {
-            swapNodes(mHeap[pos].mIndex, min_pos);
+//            swapNodes(mHeap[pos].mIndex, min_pos);
+            swapNodes(pos, min_pos);
             updateAux(min_pos);
         }
     }
