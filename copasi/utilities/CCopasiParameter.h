@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/07 16:55:41 $
+   $Date: 2003/11/07 18:00:27 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -12,6 +12,8 @@
 #include <string>
 
 #include "report/CCopasiContainer.h"
+
+class CCopasiParameterGroup;
 
 class CReadConfig;
 class CWriteConfig;
@@ -166,16 +168,38 @@ class CCopasiParameter: public CCopasiContainer
 
     /**
      * Check whether the value corresponds to the type
-     * @param const CType & value
+     * @param const C_INT32 & value
      * @return bool isValidValue
      */
-    template <class CType>
-    bool isValidValue(const CType & C_UNUSED(value)) const
-      {
-        if (mSize != sizeof(CType)) return false;
+    bool isValidValue(const C_INT32 & value) const;
 
-        return true;
-      }
+    /**
+     * Check whether the value corresponds to the type
+     * @param const unsigend C_INT32 & value
+     * @return bool isValidValue
+     */
+    bool isValidValue(const unsigned C_INT32 & value) const;
+
+    /**
+     * Check whether the value corresponds to the type
+     * @param const bool & value
+     * @return bool isValidValue
+     */
+    bool isValidValue(const bool & value) const;
+
+    /**
+     * Check whether the value corresponds to the type
+     * @param const std::string & value
+     * @return bool isValidValue
+     */
+    bool isValidValue(const std::string & value) const;
+
+    /**
+     * Check whether the value corresponds to the type
+     * @param const CCopasiParameterGroup & value
+     * @return bool isValidValue
+     */
+    bool isValidValue(const CCopasiParameterGroup & value) const;
 
   private:
     /**
