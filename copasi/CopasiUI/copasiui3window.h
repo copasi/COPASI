@@ -4,8 +4,8 @@
 #include "copasi.h"
 #include "listviews.h"
 #include "model/model.h"
-#include "steadystate/steadystate.h"
-#include "trajectory/trajectory.h"
+#include "steadystate/steadystate.h" 
+// #include "trajectory/trajectory.h"
 
 class ListViews;
 class QToolButton;

@@ -12,7 +12,6 @@
 #include <qpushbutton.h>
 #include "MyTable.h"
 #include "copasi.h"
-#include "Structures.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 
 class CModel;

@@ -10,10 +10,8 @@
 #define STEADYSTATEWIDGET_H
 
 #include <qvariant.h>
-#include <qwidget.h> 
-//#include "model/model.h"
+#include <qwidget.h>
 #include "copasi.h"
-#include "Structures.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

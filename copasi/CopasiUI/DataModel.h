@@ -22,6 +22,7 @@ class CTrajectoryTask;
 class CSteadyStateTask;
 class CModel;
 class CReadConfig;
+class CWriteConfig;
 class Folder;
 
 template <class T> class DataModel: public Subject

@@ -11,7 +11,9 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include <qfont.h>
+
 #include "copasi.h"
+#include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "CompartmentsWidget.h"
 #include "listviews.h"

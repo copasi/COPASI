@@ -10,6 +10,8 @@
 
 #include "copasiui3window.h"
 #include "listviews.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "trajectory/CTrajectoryTask.h"
 
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"

@@ -362,6 +362,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
       lastSelection->setPixmap(0, *folderClosed);
 
   lastSelection = i;
+  std::cout << "lastSelection: " << lastSelection << std::endl;
 
   // get the qlistview item in form of folderlistitem...
   FolderListItem *item = (FolderListItem*)i;
@@ -644,6 +645,9 @@ void ListViews::deleteAllMyChildrens(QListViewItem* me)
 
   while (myChild)
     {
+      if (myChild == lastSelection)
+        lastSelection == NULL;
+
       nextChild = myChild;
       myChild = myChild->nextSibling();
       // first delete that item...

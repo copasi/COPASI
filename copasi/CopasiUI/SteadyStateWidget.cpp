@@ -6,8 +6,6 @@
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
-#include "SteadyStateWidget.h"
-
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -16,6 +14,11 @@
 #include <qsplitter.h>
 #include <qtable.h>
 #include <qlayout.h>
+
+#include "copasi.h"
+#include "SteadyStateWidget.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
 
 /*
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
