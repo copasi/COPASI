@@ -192,7 +192,7 @@ copasi_SOURCES = main.cpp
 copasi_LDADD =  	./function/libfunction.a 	./output/liboutput.a 	./model/libmodel.a 	./steadystate/libsteadystate.a 	./trajectory/libtrajectory.a 	./utilities/libutilities.a 
 
 
-SUBDIRS =  	commandline 	elementaryFluxModes 	function 	output 	model 	optimization 	report 	steadystate 	trajectory 	utilities 	CopasiUI 	test 
+SUBDIRS =  	ABiochem 	commandline 	elementaryFluxModes 	function 	output 	model 	optimization 	steadystate 	trajectory 	utilities 	CopasiUI 	test 
 
 
 EXTRA_DIST =  	main.cpp 	copasi.h 	FlexLexer.h
