@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.33 $ $Author: ssahle $ $Date: 2004/06/11 14:21:51 $  
+# $Revision: 1.34 $ $Author: ssahle $ $Date: 2004/06/22 09:30:50 $  
 ######################################################################
 
 include(../common.pri)
@@ -59,8 +59,7 @@ contains(BUILD_OS, WIN32) {
               ../lib/libmodel.a
 
   LIBS += -lqwt \
-          -lsbml \
-          -lxerces-c
+          -lsbml 
   
   release {
     distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
