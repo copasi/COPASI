@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 17:02:56 $
+   $Date: 2004/06/16 16:19:42 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.6 2004/01/14 17:02:56 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.7 2004/06/16 16:19:42 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -53,6 +53,8 @@ class PlotWidget1 : public CopasiWidget
     bool loadFromPlotSpec(const CPlotSpec *);
     bool saveToPlotSpec();
     std::string objKey;
+
+    CPlotSpec mPlotSpec;
 
     QGridLayout* PlotWidget1Layout;
     QVBoxLayout* layout20;

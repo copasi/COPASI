@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 13:42:13 $
+   $Date: 2004/06/16 16:19:41 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.11 2004/05/27 13:42:13 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.12 2004/06/16 16:19:41 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -234,18 +234,18 @@ void PlotWidget1::addCurveGroupBox()
           }
       }
 
-  CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
-  if (!pspec) return;
+  //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
+  //if (!pspec) return;
 
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
-        pspec->getCurves().push_back(Curve2DSpec("***", objects1[0], objects2[i])); //TODO title
+        mPlotSpec.getCurves().push_back(Curve2DSpec("***", objects1[0], objects2[i])); //TODO title
     }
   else if (objects2.size() == 1)
     {
       for (i = 0; i < objects1.size(); ++i)
-        pspec->getCurves().push_back(Curve2DSpec("***", objects1[i], objects2[0])); //TODO title
+        mPlotSpec.getCurves().push_back(Curve2DSpec("***", objects1[i], objects2[0])); //TODO title
     }
   else
     {
@@ -256,10 +256,10 @@ void PlotWidget1::addCurveGroupBox()
         imax = objects1.size();
 
       for (i = 0; i < imax; ++i)
-        pspec->getCurves().push_back(Curve2DSpec("***", objects1[i], objects2[i])); //TODO title
+        mPlotSpec.getCurves().push_back(Curve2DSpec("***", objects1[i], objects2[i])); //TODO title
     }
 
-  loadFromPlotSpec(pspec);
+  loadFromPlotSpec(&mPlotSpec);
   //pdelete(pBrowser1);
   //pdelete(pBrowser2);
   pdelete(pVector1);
@@ -274,15 +274,15 @@ void PlotWidget1::removeCurveGroupBox()
   C_INT32 index = tabs->currentPageIndex();
 
   //erase the curve spec
-  CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
+  //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
   unsigned C_INT32 i;
   std::vector<Curve2DSpec>::iterator it, itEnd;
-  itEnd = pspec->getCurves().end();
-  for (it = pspec->getCurves().begin(), i = 0; (it != itEnd)&(i < index); ++it, ++i);
-  if (it != itEnd) pspec->getCurves().erase(it);
+  itEnd = mPlotSpec.getCurves().end();
+  for (it = mPlotSpec.getCurves().begin(), i = 0; (it != itEnd)&(i < index); ++it, ++i);
+  if (it != itEnd) mPlotSpec.getCurves().erase(it);
 
   //recreate the tabs
-  loadFromPlotSpec(pspec);
+  loadFromPlotSpec(&mPlotSpec);
 
   /*
   delete curveWidgetVector[index];
@@ -324,8 +324,7 @@ void PlotWidget1::addPlot()
 
 void PlotWidget1::resetPlot()
 {
-  //when called, this method should restore the plot specification
-  //enter(...);
+  loadFromPlotSpec(dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey)));
 }
 
 //-----------------------------------------------------------------------------
@@ -340,6 +339,8 @@ void PlotWidget1::plotFinished()
 bool PlotWidget1::loadFromPlotSpec(const CPlotSpec *pspec)
 {
   if (!pspec) return false;
+
+  mPlotSpec = *pspec;
 
   C_INT32 oldIndex = tabs->currentPageIndex();
 
@@ -372,9 +373,12 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpec *pspec)
 
 bool PlotWidget1::saveToPlotSpec()
 {
-  /*CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
+  CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
   if (!pspec) return false;
 
+  *pspec = mPlotSpec;
+
+  /*
   //clear curves vector
   pspec->getCurves().clear();
 
@@ -399,8 +403,9 @@ bool PlotWidget1::enter(const std::string & key)
   CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(key));
   //TODO: check if it really is a plot spec
 
-  if (pspec) return loadFromPlotSpec(pspec);
-  else return false;
+  if (!pspec) return false;
+
+  return loadFromPlotSpec(pspec);
 }
 
 //-----------------------------------------------------------------------------
