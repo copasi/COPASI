@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/16 09:25:58 $
+   $Date: 2004/06/16 13:30:01 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_HPP
@@ -12,6 +12,8 @@
 #include <string>
 #include <map>
 #include "sbml/ASTNode.hpp"
+
+#include "function/CFunctionDB.h"
 
 class SBMLDocument;
 class CModel;
@@ -61,7 +63,7 @@ class SBMLImporter
   {
   protected:
     std::map<std::string, CMetab*> speciesMap;
-    //std::map<std::string,CCompartment*> compartmentMap;
+    CFunctionDB* functionDB;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -121,10 +123,16 @@ class SBMLImporter
      */
     ConverterASTNode* replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> bvarMap);
 
+    /**
+     * This function replaces the AST_FUNCTION_POWER ASTNodes in a ASTNode tree
+     * with the AST_POWER node.
+     */
+    void replacePowerFunctionNodes(ASTNode* node);
+
   public:
     SBMLImporter();
     ~SBMLImporter();
-    CModel* readSBML(std::string filename);
+    CModel* readSBML(std::string filename, CFunctionDB* funDB) throw(StdException);
   };
 
 #endif

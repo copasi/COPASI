@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/16 09:49:11 $
+   $Date: 2004/06/16 13:30:00 $
    End CVS Header */
 
 #include "SBMLExporter.h"
@@ -480,10 +480,24 @@ KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* c
             {
               volume = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment()->getInitialVolume();
             }
-          ASTNode_setReal(vNode, volume);
-          ASTNode_addChild(tNode, vNode);
-          ASTNode_addChild(tNode, forwardNode);
-          forwardNode = tNode;
+          /* only multiply if the volume is neither 1 nor 0 */
+          if (volume != 1.0 && volume != 0.0)
+            {
+              /* if the whole function already has been divided by the same
+              ** volume, e.g. by a formaer export, drop one level instead of
+              ** adding another one */
+              if ((ASTNode_getType(forwardNode) == AST_DIVIDE) && ((ASTNode_getType(ASTNode_getRightChild(forwardNode)) == AST_REAL) && (ASTNode_getReal(ASTNode_getRightChild(forwardNode)) == volume)))
+                {
+                  forwardNode = ASTNode_getLeftChild(forwardNode);
+                }
+              else
+                {
+                  ASTNode_setReal(vNode, volume);
+                  ASTNode_addChild(tNode, forwardNode);
+                  ASTNode_addChild(tNode, vNode);
+                  forwardNode = tNode;
+                }
+            }
         }
       KineticLaw_setMath(kLaw, forwardNode);
     }

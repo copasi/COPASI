@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/16 09:25:57 $
+   $Date: 2004/06/16 13:30:00 $
    End CVS Header */
 
 #include <iostream>
@@ -39,6 +39,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
 {
   Model* sbmlModel = sbmlDocument->getModel();
   /* Create an empty model and set the title. */
+  //std::cerr << "Setting units." << std::endl;
   CModel* copasiModel = new CModel();
   copasiModel->setVolumeUnit(CModel::l);
   copasiModel->setTimeUnit(CModel::s);
@@ -265,6 +266,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
   /* Set standard units to match the standard units of SBML files. */
   std::map<std::string, CCompartment*> compartmentMap;
   /* Create the compartments */
+  //std::cerr << "Creating compartments." << std::endl;
   unsigned int num = sbmlModel->getNumCompartments();
   for (unsigned int counter = 0; counter < num; counter++)
     {
@@ -274,6 +276,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
     }
 
   /* Create all species */
+  //std::cerr << "Creating Metabolites." << std::endl;
   num = sbmlModel->getNumSpecies();
   for (unsigned int counter = num; counter > 0; counter--)
     {
@@ -283,6 +286,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
     }
 
   /* Create all reactions */
+  //std::cerr << "Creating reactions." << std::endl;
   num = sbmlModel->getNumReactions();
   for (unsigned int counter = 0; counter < num; counter++)
     {
@@ -327,6 +331,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       appendix = numberStream.str();
     }
   CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, sbmlCompartment->getVolume());
+  //std::cerr << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
   return copasiCompartment;
 }
 
@@ -384,6 +389,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     {
       copasiMetabolite->setInitialConcentration(sbmlSpecies->getInitialConcentration());      // CHECK UNITS !!!
     }
+  //std::cerr << "Created metabolite: " << copasiMetabolite->getObjectName() << std::endl;
   return copasiMetabolite;
 }
 
@@ -524,7 +530,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   ASTNode* node = new ConverterASTNode(*kLawMath);
   node = this->replaceUserDefinedFunctions(node, sbmlModel);
   this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
-  /* if it is a single compartment reaction, we have to devide the whole kinitc
+  this->replacePowerFunctionNodes(node);
+  /* if it is a single compartment reaction, we have to devide the whole kinetic
   ** equation by the volume of the compartment because copasi expects
   ** kinetic laws that specify concentration/time for single compartment
   ** reactions.
@@ -533,14 +540,28 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
     {
       if (compartment != NULL)
         {
-          ConverterASTNode* tmpNode1 = new ConverterASTNode();
-          tmpNode1->setType(AST_DIVIDE);
-          tmpNode1->addChild(node);
-          ConverterASTNode* tmpNode2 = new ConverterASTNode();
-          tmpNode2->setType(AST_REAL);
-          tmpNode2->setValue(compartment->getVolume());
-          tmpNode1->addChild(tmpNode2);
-          node = tmpNode1;
+          /* only divide if the volume is not 1 */
+          if (compartment->getVolume() != 1.0)
+            {
+              /* if the whole function has been multiplied by the same volume
+              ** already, drop one level instead of adding one.
+              */
+              if ((ASTNode_getType(node) == AST_TIMES) && ((ASTNode_getType(ASTNode_getRightChild(node)) == AST_REAL) && (ASTNode_getReal(ASTNode_getRightChild(node)) == compartment->getVolume())))
+                {
+                  node = node->getLeftChild();
+                }
+              else
+                {
+                  ConverterASTNode* tmpNode1 = new ConverterASTNode();
+                  tmpNode1->setType(AST_DIVIDE);
+                  tmpNode1->addChild(node);
+                  ConverterASTNode* tmpNode2 = new ConverterASTNode();
+                  tmpNode2->setType(AST_REAL);
+                  tmpNode2->setValue(compartment->getVolume());
+                  tmpNode1->addChild(tmpNode2);
+                  node = tmpNode1;
+                }
+            }
         }
       else
         {
@@ -550,12 +571,12 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
   /* Create a new user defined CKinFunction */
   std::string functionName = "function_4_" + copasiReaction->getObjectName();
-  CFunction* cFun = Copasi->pFunctionDB->createFunction(functionName, CFunction::UserDefined);
-
+  CFunction* cFun = this->functionDB->createFunction(functionName, CFunction::UserDefined);
+  //ConverterASTNode::printASTNode(node);
+  //std::cerr << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
   cFun->setDescription(SBML_formulaToString(node));
   cFun->setType(CFunction::UserDefined);
   cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
-
   //create parameters
   std::vector<CNodeK*>& v = dynamic_cast<CKinFunction*>(cFun)->getNodes();
   for (unsigned int counter = 0; counter < v.size(); counter++)
@@ -689,12 +710,14 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                 }
               if (!found)
                 {
+                  //std::cerr << "Could not find parameter: " << nodeName << std::endl;
                   throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
                 }
             }
         }
     }
   copasiReaction->setReversible(sbmlReaction->getReversible());
+  //std::cerr << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
   return copasiReaction;
 }
 
@@ -898,18 +921,36 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
 }
 
 /**
- * Constructor that initializes speciesMap und compartmentMap.
+ * Constructor that initializes speciesMap and the FunctionDB object
  */
 SBMLImporter::SBMLImporter()
 {
   this->speciesMap = std::map<std::string, CMetab*>();
+  this->functionDB = NULL;
 }
 
 /**
- * Destructor that does nothing
+ * Destructor that does nothing. 
  */
 SBMLImporter::~SBMLImporter()
 {}
+
+/**
+ * This function replaces the AST_FUNCTION_POWER ASTNodes in a ASTNode tree
+ * with the AST_POWER node.
+ */
+void SBMLImporter::replacePowerFunctionNodes(ASTNode* node)
+{
+  if (node->getType() == AST_FUNCTION_POWER)
+    {
+      //node->setType(AST_POWER);
+      node->setCharacter('^');
+    }
+  for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
+    {
+      this->replacePowerFunctionNodes(node->getChild(counter));
+    }
+}
 
 /**
  * Function reads an SBML file with libsbml and converts it to a Copasi CModel
@@ -917,14 +958,26 @@ SBMLImporter::~SBMLImporter()
  * caller.
  */
 CModel*
-SBMLImporter::readSBML(std::string filename)
+SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB) throw(StdException)
 {
-  SBMLReader* reader = new SBMLReader(XML_SCHEMA_VALIDATION_NONE);
-  SBMLDocument* sbmlDoc = reader->readSBML(filename);
-  delete reader;
-  CModel* model = this->createCModelFromSBMLDocument(sbmlDoc);
-  delete sbmlDoc;
-  return model;
+  if (funDB != NULL)
+    {
+      this->functionDB = funDB;
+      SBMLReader* reader = new SBMLReader(XML_SCHEMA_VALIDATION_NONE);
+      SBMLDocument* sbmlDoc = reader->readSBML(filename);
+      delete reader;
+      //std::cerr << "Number of Compartments: " << sbmlDoc->getModel()->getNumCompartments() << std::endl;
+      //std::cerr << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
+      //std::cerr << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
+
+      CModel* model = this->createCModelFromSBMLDocument(sbmlDoc);
+      delete sbmlDoc;
+      return model;
+    }
+  else
+    {
+      throw StdException("Error. readSBML needs a valid CFunctionDB object.");
+    }
 }
 
 /**
