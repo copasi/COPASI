@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:25 $
+   $Author: jpahle $ 
+   $Date: 2004/02/24 15:26:06 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.29 2004/01/09 14:48:25 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.30 2004/02/24 15:26:06 jpahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -422,20 +422,12 @@ void TableDefinition1::addButtonClicked()
   int i = 0;
   for (; i < pSelectedVector->size(); i++)
     if ((*pSelectedVector)[i])
-      break;
-
-  if (i >= pSelectedVector->size()) //no result returned
-    {
-      pdelete(pSelectedVector);
-      return;
-    }
-
-  if (itemsTable->findItem((*pSelectedVector)[i]->getCN().c_str()) == NULL)
-    {
-      itemsTable->insertItem((*pSelectedVector)[i]->getCN().c_str());
-      //      selectedList.push_back((*pSelectedVector)[i]);
-      bUpdated = true;
-    }
+      if (itemsTable->findItem((*pSelectedVector)[i]->getCN().c_str()) == NULL)
+        {
+          itemsTable->insertItem((*pSelectedVector)[i]->getCN().c_str());
+          //      selectedList.push_back((*pSelectedVector)[i]);
+          bUpdated = true;
+        }
 
   pdelete(pSelectedVector);
   //  if (addNewScanItem((*pSelectedVector)[i]))
