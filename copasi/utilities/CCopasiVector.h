@@ -71,9 +71,9 @@ template < class CType > class CCopasiVector:
       virtual void cleanup()
       {
         iterator it = begin();
-        iterator end = std::vector< CType * >::end();
+        iterator End = end();
 
-        for (; it != end; it++)
+        for (; it != End; it++)
           if (*it)
             if ((*it)->getObjectParent() == this)
               {
@@ -175,6 +175,9 @@ template < class CType > class CCopasiVector:
         if (allocate)
           for (i = OldSize; i < size; i++, Target++)
             *Target = new CType("NoName", this);
+        else
+          for (i = OldSize; i < size; i++, Target++)
+            *Target = NULL;
       }
 
       /**
