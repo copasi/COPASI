@@ -175,8 +175,9 @@ ListViews::ListViews(QWidget *parent, const char *name):
   //bigWidget->setFixedWidth(620);
   this->moveToFirst(folders);
   this->moveToLast(bigWidget);
-  this->setResizeMode(folders, QSplitter::Stretch);
-
+  this->setResizeMode(folders, QSplitter::KeepSize);
+  if (!opaqueResize())
+    setOpaqueResize();
   //  This section defines few of the variables that will be used in the code
   lastSelection = NULL;          // keeps track of the node that was selected last..to change the icon type
   currentWidget = bigWidget; // keeps track of the currentWidget in use
