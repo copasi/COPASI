@@ -61,14 +61,14 @@ CStochMethod::CStochMethod()
     : mModel(NULL),
     mFail(0)
 {
-  mRandomGenerator = CRandom::createGenerator(CRandom::R250);
+  mRandomGenerator = CRandom::createGenerator(CRandom::r250);
 }
 
 CStochMethod::CStochMethod(CModel *model)
     : mModel(model),
     mFail(0)
 {
-  mRandomGenerator = CRandom::createGenerator(CRandom::R250);
+  mRandomGenerator = CRandom::createGenerator(CRandom::r250);
 }
 CStochMethod::~CStochMethod() {cleanup(); }
 
@@ -228,7 +228,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
 C_INT32 CStochMethod::generateReactionIndex()
 {
-  C_FLOAT64 rand1 = mRandomGenerator->getRandomF();
+  C_FLOAT64 rand1 = mRandomGenerator->getRandomCC();
   C_FLOAT64 sum = 0;
   unsigned C_INT32 index = 0;
 
@@ -250,13 +250,13 @@ C_INT32 CStochMethod::generateReactionIndex()
 
 C_FLOAT64 CStochMethod::generateReactionTime()
 {
-  C_FLOAT32 rand2 = mRandomGenerator->getRandomF();
+  C_FLOAT32 rand2 = mRandomGenerator->getRandomCC();
   return -1 * log(rand2) / mA0;
 }
 
 C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 {
-  C_FLOAT32 rand2 = mRandomGenerator->getRandomF();
+  C_FLOAT32 rand2 = mRandomGenerator->getRandomCC();
   return -1 * log(rand2) / mAmu[reaction_index];
 }
 

@@ -37,30 +37,18 @@
  ******************************************************************************/
 
 #include "copasi.h"
-#include "Cr250.h"
+#include "CRandom.h"
 
-/**
- * Default/Named constructor.
- * Seeds the random number generator with the given seed.
- * @param C_INT32 seed (default system seed)
- */
 Cr250::Cr250(unsigned C_INT32 seed):
+    CRandom(),
     mIndex(0)
 {
-  mModulus = 65536;
+  setModulus(65535);
   initialize(seed);
 }
-
-/**
- * The destructor.
- */
 Cr250::~Cr250(){}
 
-/**
- * Initialize or reinitialize the random number generator with the given seed.
- * @param C_INT32 seed (default system seed)
- */
-void Cr250::initialize(C_INT32 seed)
+void Cr250::initialize(unsigned C_INT32 seed)
 {
   /*--------------------------------------------------------------------------*/
   int j, k;
@@ -94,35 +82,45 @@ void Cr250::initialize(C_INT32 seed)
   return;
 }
 
-/**
- * Get a random number in 0 <= n < getModulus()
- * @return const unsigned C_INT32 & n
- */
-const unsigned C_INT32 & Cr250::getRandom() { return r250(); }
-
-/**
- * Get a random number in 0 <= n < modulus
- * @param const unsigned C_INT32 & modulus
- * @return const unsigned C_INT32 & n
- */
-const unsigned C_INT32 & Cr250::getRandom(const unsigned C_INT32 & modulus)
-{ return r250n(modulus); }
-
-/**
- * Produces a uniformly distributed random number in 0 <= x < 1.
- * @return const unsigned C_INT32 & x
- */
-const C_FLOAT64 & Cr250::getRandomF() { return dr250(); }
-
-/**
- * Number returned by r250() is in the interval 0 <= k < 65536.
- * @return unsigned C_INT16 random
- */
-const unsigned C_INT16 & Cr250::r250(void)
+const unsigned C_INT32 & Cr250::getRandomU()
 {
-  /*--------------------------------------------------------------------------*/
+  return r250();
+}
+
+const C_INT32 & Cr250::getRandomS()
+{
+  r250();
+  return mNumber &= 0x7ffffff;
+}
+
+const unsigned C_INT32 & Cr250::getRandomU(const unsigned C_INT32 & max)
+{
+  return r250n(max + 1);
+}
+
+const C_INT32 & Cr250::getRandomS(const C_INT32 & max)
+{
+  return r250n(max + 1);
+}
+
+const C_FLOAT64 & Cr250::getRandomCC()
+{
+  return mFloat = r250() * mModulusInv;
+}
+
+const C_FLOAT64 & Cr250::getRandomCO()
+{
+  return dr250();
+}
+
+const C_FLOAT64 & Cr250::getRandomOO()
+{
+  return mFloat = (r250() + .5) * mModulusInv1;
+}
+
+const unsigned C_INT32 & Cr250::r250(void)
+{
   register C_INT16 j;
-  /*--------------------------------------------------------------------------*/
 
   if (mIndex > 146)
     j = mIndex - 147;      /* Wrap pointer around */
@@ -139,113 +137,30 @@ const unsigned C_INT16 & Cr250::r250(void)
   return mNumber;
 }
 
-/**
- * Number returned by r250() is in the interval 0 <= k < max.
- * @param unsigned C_INT16 max
- * @return unsigned C_INT16 random
- */
-const unsigned C_INT16 & Cr250::r250n(const unsigned C_INT16 & max)
+const unsigned C_INT32 & Cr250::r250n(const unsigned C_INT16 & max)
 {
-  /*--------------------------------------------------------------------------*/
-  register C_INT16 j;
   register unsigned C_INT16 limit;
-  /*--------------------------------------------------------------------------*/
 
   limit = (65535U / max) * max;
 
   do
     {
-      mNumber = r250();
-
-      if (mIndex >= 147)
-        j = mIndex - 147;     /* Wrap pointer around */
-      else
-        j = mIndex + 103;
-
-      mNumber = mBuffer[mIndex] ^= mBuffer[j];
-
-      if (mIndex >= 249)      /* Increment pointer for next time */
-        mIndex = 0;
-      else
-        mIndex++;
+      r250();
+      r250(); // Why a second call?
     }
   while (mNumber >= limit);
 
   return mNumber %= max;
 }
 
-/**
- * Number returned by dr250() is in range [0,1)
- * @return double random
- */
 const C_FLOAT64 & Cr250::dr250()
 {
-  /*--------------------------------------------------------------------------*/
-  register int j;
-  /*--------------------------------------------------------------------------*/
-  if (mIndex >= 147)
-    j = mIndex - 147;     /* Wrap pointer around */
-  else
-    j = mIndex + 103;
-
-  mNumber = mBuffer[mIndex] ^= mBuffer[j];
-
-  if (mIndex >= 249)      /* Increment pointer for next time */
-    mIndex = 0;
-  else
-    mIndex++;
+  mNumber = r250();
   return mFloat = mNumber / 65536.;   /* Return a number in [0.0 to 1.0) */
 }
 
-/***  linear congruent pseudorandom number generator for initialization ***/
-
-/* Return a pseudorandom number in the interval 0 <= n < 32768.
-        This produces the following sequence of pseudorandom
-        numbers:
-        346, 130, 10982, 1090...  (9996 numbers skipped) ...23369,
-        2020, 5703, 12762, 10828, 16252, 28648, 27041, 23444, 6604...
- */
 unsigned C_INT16 Cr250::myrand()
 {
   mSeed = mSeed * 0x015a4e35L + 1;
   return (mSeed >> 16)&0x7fff;
-}
-
-/**
- * Default buffer assignement
- */
-void Cr250::initBuffer()
-{
-  unsigned C_INT16 Buffer[250] =
-    {
-      15301, 57764, 10921, 56345, 19316, 43154, 54727, 49252, 32360, 49582,
-      26124, 25833, 34404, 11030, 26232, 13965, 16051, 63635, 55860, 5184,
-      15931, 39782, 16845, 11371, 38624, 10328, 9139, 1684, 48668, 59388,
-      13297, 1364, 56028, 15687, 63279, 27771, 5277, 44628, 31973, 46977,
-      16327, 23408, 36065, 52272, 33610, 61549, 58364, 3472, 21367, 56357,
-      56345, 54035, 7712, 55884, 39774, 10241, 50164, 47995, 1718, 46887,
-      47892, 6010, 29575, 54972, 30458, 21966, 54449, 10387, 4492, 644,
-      57031, 41607, 61820, 54588, 40849, 54052, 59875, 43128, 50370, 44691,
-      286, 12071, 3574, 61384, 15592, 45677, 9711, 23022, 35256, 45493,
-      48913, 146, 9053, 5881, 36635, 43280, 53464, 8529, 34344, 64955,
-      38266, 12730, 101, 16208, 12607, 58921, 22036, 8221, 31337, 11984,
-      20290, 26734, 19552, 48, 31940, 43448, 34762, 53344, 60664, 12809,
-      57318, 17436, 44730, 19375, 30, 17425, 14117, 5416, 23853, 55783,
-      57995, 32074, 26526, 2192, 11447, 11, 53446, 35152, 64610, 64883,
-      26899, 25357, 7667, 3577, 39414, 51161, 4, 58427, 57342, 58557,
-      53233, 1066, 29237, 36808, 19370, 17493, 37568, 3, 61468, 38876,
-      17586, 64937, 21716, 56472, 58160, 44955, 55221, 63880, 1, 32200,
-      62066, 22911, 24090, 10438, 40783, 36364, 14999, 2489, 43284, 9898,
-      39612, 9245, 593, 34857, 41054, 30162, 65497, 53340, 27209, 45417,
-      37497, 4612, 58397, 52910, 56313, 62716, 22377, 40310, 15190, 34471,
-      64005, 18090, 11326, 50839, 62901, 59284, 5580, 15231, 9467, 13161,
-      58500, 7259, 317, 50968, 2962, 23006, 32280, 6994, 18751, 5148,
-      52739, 49370, 51892, 18552, 52264, 54031, 2804, 17360, 1919, 19639,
-      2323, 9448, 43821, 11022, 45500, 31509, 49180, 35598, 38883, 19754,
-      987, 11521, 55494, 38056, 20664, 2629, 50986, 31009, 54043, 59743
-    };
-
-  C_INT16 i;
-  for (i = 0; i < 250; i++)
-    mBuffer[i] = Buffer[i];
 }

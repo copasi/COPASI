@@ -1795,13 +1795,12 @@ C_INT32 TestElementaryFluxMode(void)
 
 C_INT32 Testr250(void)
 {
-  CRandom * rand = CRandom::createGenerator(CRandom::R250, 12345);
+  CRandom * rand = CRandom::createGenerator(CRandom::r250, 12345);
 
   C_INT32 i, j = 0;
   for (i = 0; i < 2000; i++)
     {
-      // rand.r250();
-      cout << rand->getRandom() << ", ";
+      cout << rand->getRandomU(10) << ", ";
       if (j++ == 4)
         {
           j = 0;
