@@ -1,15 +1,16 @@
-/** 
- *  CDatum class.
- *  Derived from Gepasi's CDatum.cpp. (C) Pedro Mendes 1995-2000.
- *  Converted for Copasi by Pedro Mendes.
- */
-
-// CDatum is not yet finished: because all data are now private, we will need 
-// to add a few more methods (perhaps not in this class, though - thus it is
-// best to wait until we hit the problem in CGepasiDoc.   PEDRO 1/11/01
+/*****************************************************************************
+* PROGRAM NAME: CDatum.h
+* PROGRAMMER: Wei Sun	wsun@vt.edu
+* PURPOSE: Define the basic output object for Copasi
+*****************************************************************************/
 
 #ifndef COPASI_CDatum
 #define COPASI_CDatum
+
+#include "CReadConfig.h"
+#include "CWriteConfig.h"
+#include "CModel.h"
+#include <string>
 
 // symbols for CDatum type
 #define D_UNDEF	0	// undefined
@@ -52,45 +53,148 @@
 #define D_EIGVR 37	// real part of eigenvalues
 #define D_EIGVI 38	// imaginary part of eigenvalues
 
-// CDatum objects reference model objects of type C_FLOAT64
+// Symbols for mType 
+#define CINT16		1
+#define CINT32		2
+#define CFLOAT32	3
+#define CFLOAT64	4
+
 class CDatum
 {
-// Implementation
+private:
+    /**
+     *  Title of the object.
+     */
+	string mTitle; 
+
+    /**
+     *  Pointer to the memory location that contains the value of this
+     *  object 
+     */
+	void * mpValue;
+
+    /**
+     *  Type of the object value.
+     */
+ 	C_INT32 mType;
+
+    /**
+     *  Name of the object.
+     */
+	string mObject; 
+
+    /**
+     *  Creates the mObject
+     *  @param object constant reference to a string specifing the name of the 
+	 *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
+     */
+	void CreateObject(const string& Model, const string& IStr, const string& JStr, C_INT32 Type);
+
+    /**
+     *  Transfers the Type to the associated member data in each class
+     *  @Type object constant reference to a type of the datum, for example,D_TCONC
+     */
+	string TransferType(C_INT32 Type);
+
+    /**
+     *  Transfers the associated member data to the Type to  in each class
+     *  @Type object constant reference to a type of the datum, for example,D_TCONC
+     */
+	C_INT32 GetObjectType(string Object);
+
+    /**
+     *  Get the object I string part
+     *  @object reference to CDatum object
+     */
+	string GetObjectIStr(string object, C_INT16 HasJStr);
+
+    /**
+     *  Get the object J string part
+     *  @object reference to CDatum object
+     */
+	string GetObjectJStr(string object);
+
 public:
 
     /**
      *  Default constructor. 
-     *  Creates an empty object with type D_UNDEF
+     *  Creates an empty object with C_INT32 type
      */
-    CDatum();
+  	CDatum();
 
     /**
-     *  Specified constructor. 
+     *  User Defined constructor. 
      *  Creates an object with contents passed as arguments
-     *  @param title title of the object.
-     *  @param type type of the object (e.g. D_ICONC).
-     *  @param i first string describing the object.
-     *  @param j second string describing the object.
-     *  @param pval pointer to C_FLOAT64 containing the value of the object.
+     *  @param title: title of the object.
+	 *  @param value: pointer to the memeory location containing the value of the object.
+     *  @param type: type of the object (e.g. C_INT32).
+     *  @param object: the name of this object 
      */
-    CDatum(const string& title, C_INT32 type, const string& i, const string& j,
-           C_FLOAT64 *pval);
+	CDatum(const string& title, void* value, C_INT32 type, const string& object);
 
-    /**
+	/**
      *  Assignement operator. 
      *  Copies the contents from one CDatum object to another.
-     *  @param ptRHS reference to the recipient object.
+     *  @param source reference to the recipient object.
      */
-    CDatum& operator=(const CDatum &RHS);
+    CDatum& operator=(const CDatum &source);
 
     /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return mFail
-     *  @see mFail
+     *  Returns a string with the title of this object.
+     *  @return mTitle
+     *  @see mTitle
      */
-    C_INT32 save(CWriteConfig &configbuffer);
+	string GetTitle() const;
+
+    /**
+     *  Sets the title of this object
+     *  @param title constant reference to a string.
+     *  @see mTitle
+     */
+	void SetTitle(const string& title); 
+
+    /**
+     *  Returns the value of this object.
+     *  @return *mpValue
+     *  @see mpValue
+     */
+	void* GetValue() const;
+
+    /**
+     *  Sets the value of mpValue with a pointer to a memory location that has 
+     *  the value of this object.
+     *  @param value constant reference to a void pointer.
+     *  @see mpValue
+     */
+	void SetValue(void* value);
+
+    /**
+     *  Returns the type of this object.
+     *  @return mType
+     *  @see mType
+     */	
+	C_INT32 GetType() const;
+
+    /**
+     *  Sets the type of this object
+     *  @param type constant reference to a string specifing the type of this object.
+     *  @see mType
+     */
+	void SetType(const C_INT32 type);
+
+    /**
+     *  Returns a string with the name of this object.
+     *  @return mObject
+     *  @see mObject
+     */	
+	string GetObject() const;
+
+    /**
+     *  Sets the name of this object
+     *  @param object constant reference to a string specifing the type of this object.
+     *  @see mobject
+     */
+	void SetObject(const string& object);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -99,121 +203,27 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 load(CReadConfig &configbuffer);
+    C_INT32 load(CReadConfig & configbuffer);
 
     /**
-     *  Sets the value of mpValue with a pointer to a C_FLOAT64 that has 
-     *  the value of this object.
-     *  @param pvalue pointer to a C_FLOAT64.
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     *  @see mFail
      */
-    void CDatum::setValue(C_FLOAT64* pvalue);
+    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
-     *  Returns a C_FLOAT64 with the value of this object.
-     *  @return *mpValue
-     *  @see mpValue
-     */
-    C_FLOAT64 CDatum::getValue();
+     *  Dummy method.
+     */	
+	string getName() const {return "";}
 
-    /**
-     *  Sets the value of mI with a string
-     *  @param str constant reference to a string.
-     *  @see mI
-     */
-    void CDatum::setI(const string& str);
+	/**
+	 *  Complie the mpValue in each CDatum
+	 */
+	void CompileDatum(CModel &Model);
 
-    /**
-     *  Returns the first string describing this object.
-     *  @return mI
-     *  @see mI
-     */
-    string CDatum::getI();
-
-    /**
-     *  Sets the value of mJ with a string
-     *  @param str constant reference to a string.
-     *  @see mJ
-     */
-    void CDatum::setJ(const string& str);
-
-    /**
-     *  Returns the second string describing this object.
-     *  @return mJ
-     *  @see mJ
-     */
-    string CDatum::getJ();
-
-    /**
-     *  Sets the type of this object
-     *  @param type integer code of the type
-     *  @see mType
-     */
-    void CDatum::setType(C_INT32 type);
-
-    /**
-     *  Returns the type code of this object.
-     *  @return mType
-     *  @see mType
-     */
-    C_INT32 CDatum::getType();
-
-    /**
-     *  Sets the title of this object
-     *  @param str constant reference to a string.
-     *  @see mTitle
-     */
-    void CDatum::setTitle(const string& str);
-
-    /**
-     *  Returns a string with the title of this object.
-     *  @return mTitle
-     *  @see mTitle
-     */
-    string CDatum::getTitle();
-
-private:
-    /**
-     *  Title of the object.
-     */
-    string mTitle;
-
-    /**
-     *  Type code of the object.
-     *  Codes are currently integer constants referenced with
-     *  pre-compiler defined symbols of the form D_????? (e.g. D_ICONC).
-     *  This could possibly be changed to a enum set (need to think about
-     *  portability issues, related with data alignment
-     */
-    C_INT32 mType;
-
-    /**
-     *  First descriptor of the object.
-     *  For example: if the object is "control of Hexokinase by Glucose",
-     *  mI is set to the string "Hexokinase"
-     */
-    string mI;
-
-
-    /**
-     *  Second descriptor of the object.
-     *  For example: if the object is "control of Hexokinase by Glucose",
-     *  mJ is set to the string "Glucose"
-     */
-    string mJ;
-
-
-    /**
-     *  Pointer to the memory location that contains the value of this
-     *  object (a C_FLOAT64)
-     */
-    C_FLOAT64 *mpValue;
-
-    /**
-     *  Failure status:
-     *  0 = no error
-     *  !0 = error
-     */
-    C_INT32    mFail;
 };
 
-#endif // COPASI_CDatum
+#endif	// CDatum
