@@ -206,6 +206,7 @@ void ObjectBrowser::loadData()
 {
   CCopasiContainer* root = &CRootContainer::ref();
   ObjectBrowserItem * itemRoot = new ObjectBrowserItem(ObjectListView, NULL, root, objectItemList);
+  itemRoot->attachKey();
   itemRoot->setObjectType(CONTAINERATTR);
   itemRoot->setText(0, root->getName().c_str());
   itemRoot->setOpen(true);
@@ -327,24 +328,23 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
 
 void ObjectBrowser::updateUI()
 {
-  /*  objectListItem* pCurrent = objectItemList->getRoot();
-    setCheckMark(pCurrent->pItem);
-    for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
-      setCheckMark(pCurrent->pItem);
-  */ 
   //refresh List stores all affected items,
 
   refreshList->sortList();
+  refreshList->delDuplicate();
+  refreshList->createQuickIndex();
   for (objectListItem* pCurrent = refreshList->getRoot(); pCurrent != NULL; pCurrent = pCurrent->pNext)
     {
       objectListItem * pHead = pCurrent->pItem->getObject()->referenceList->getRoot();
       for (; pHead != NULL; pHead = pHead->pNext)
         {
           ObjectBrowserItem * pCurrentLevel = pHead->pItem;
-          for (; pCurrentLevel != NULL; pCurrentLevel = pCurrentLevel->parent())
-            refreshList->sortListInsert(pCurrentLevel);
+          if (pCurrent != pHead)
+            for (; pCurrentLevel != NULL; pCurrentLevel = pCurrentLevel->parent())
+              refreshList->sortListInsert(pCurrentLevel);
         }
     }
+
   for (ObjectBrowserItem* pUpdate = refreshList->pop(); pUpdate != NULL; pUpdate = refreshList->pop())
     setCheckMark(pUpdate);
 }

@@ -114,9 +114,20 @@ struct objectListItem
     objectListItem* pLast;
   };
 
+#define INDEXLENGTH 1000
+
+struct CIndex
+  {
+    objectListItem* mIndex;
+    QString mKey;
+  };
+
 class objectList
   {
   private:
+    CIndex quickIndex[INDEXLENGTH];
+    int index_length;
+
     objectListItem* root;
     int length;
   public:
@@ -132,7 +143,9 @@ class objectList
   inline int len() {return length;};
 
     void sortList();
+    void delDuplicate();
     bool sortListInsert(ObjectBrowserItem* pItem); //insert and keep the sort order
+    void createQuickIndex();
   };
 
 #endif

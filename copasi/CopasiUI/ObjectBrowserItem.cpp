@@ -257,6 +257,25 @@ ObjectBrowserItem* objectList::pop()
   return returnValue;
 }
 
+void objectList::delDuplicate()
+{
+  objectListItem* objectLast = getRoot();
+  objectListItem* objectNext = objectLast->pNext;
+  for (; objectNext != NULL; objectNext = objectNext->pNext)
+    {
+      if (objectLast->pItem->key(0, 0) == objectNext->pItem->key(0, 0)) //delete the current item
+        {
+          objectLast->pNext = objectNext->pNext;
+          objectNext->pNext->pLast = objectLast;
+          delete objectNext;
+          length--;
+          objectNext = objectLast;
+        }
+      else // objectLast.key<objectNext.Key
+        objectLast = objectNext; //next step
+    }
+}
+
 void objectList::sortList()
 {
   if (len() <= 1) //sorted
@@ -274,6 +293,8 @@ void objectList::sortList()
           }
     }
 }
+
+//please do call createQuickIndex() first
 bool objectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the sort order
 {
   if (pItem->key(0, 0) < getRoot()->pItem->key(0, 0)) //insert at the front
@@ -285,13 +306,38 @@ bool objectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the 
       return true;
     }
 
-  for (objectListItem* pHead = getRoot(); (pHead != NULL) && (pItem->key(0, 0) > pHead->pItem->key(0, 0)); pHead = pHead->pNext)
+  int begin = 0;
+  int end = index_length;
+  int comp;
+
+  objectListItem* pHead;
+
+  if (pItem->key(0, 0) < quickIndex[begin].mKey)
+    pHead = quickIndex[begin].mIndex;
+  else
+    if (pItem->key(0, 0) > quickIndex[end].mKey)
+      pHead = quickIndex[end].mIndex;
+    else //do binary search
+      {
+        while (end - begin > 1)
+          {
+            comp = (end + begin) / 2;
+            if (pItem->key(0, 0) < quickIndex[comp].mKey) //first half
+              end = comp;
+            else
+              begin = comp;
+          }
+        pHead = quickIndex[begin].mIndex;
+      }
+
+  for (; (pHead != NULL) && (pItem->key(0, 0) > pHead->pItem->key(0, 0)); pHead = pHead->pNext)
 ;
+
   if (pHead && (pHead->pItem->key(0, 0) == pItem->key(0, 0))) //duplicate key
     return false;
   //else insert
 
-  if (!pHead) //insert at the end of the list
+  if (pHead == NULL) //insert at the end of the list
     {
       insert(pItem);
       return true;
@@ -302,4 +348,23 @@ bool objectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the 
   pHead->pLast = pNewItem;
   pNewItem->pLast->pNext = pNewItem;
   return true;
+}
+
+void objectList::createQuickIndex()
+{
+  int step_size = int (len() / INDEXLENGTH);
+  index_length = 0;
+
+  for (objectListItem* pHead = getRoot(); pHead != NULL; pHead = pHead->pNext)
+    {
+      quickIndex[index_length].mIndex = pHead;
+      quickIndex[index_length].mKey = pHead->pItem->key(0, 0);
+      for (int i = 0; i < step_size; i++)
+        {
+          if (pHead != NULL)
+            pHead = pHead->pNext;
+        }
+      index_length++;
+    }
+  index_length--;
 }
