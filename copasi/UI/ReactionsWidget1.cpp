@@ -185,6 +185,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
+  connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
 }
 
 /*This function is used to connect this class to the listviews
@@ -406,34 +407,46 @@ void ReactionsWidget1::slotBtnOKClicked()
   string filename = ((string) name.latin1()) + ".gps";
   CWriteConfig *Rtn = new CWriteConfig(filename);
 
-  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-  CReaction *reactn1;
-  reactn1 = reactions[(string)name.latin1()];
+  // CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+  //CReaction *reactn1;
+  //reactn1 = reactions[(string)name.latin1()];
 
   //CChemEq * chem;
   //chem = & reactn1->getChemEq();
 
-  //for Chemical Reaction
-  chemical_reaction = new QString(LineEdit2->text());
   //chem->setChemicalEquation(chemical_reaction->latin1());
-  reactn1->setChemEq(chemical_reaction->latin1());
-
-  if (reactn1->isReversible() == TRUE && checkBox->isChecked() == FALSE)
-    {
-      QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
-      //int noSubstrates= ;
-      //int noProducts= ;
-      CCopasiVectorN < CFunction > & Functions = fFunctionDB->suitableFunctions(k, m, TriFalse);
-      int m = -1;
-      //CFunction *function;
-      //function = Functions[1];
-      //ComboBox1->insertItem(Functions[1].c_str(), m);
-      reactn1->setReversible(TriFalse);
-    }
-
+  //reactn1->setChemEq(chemical_reaction->latin1());
   mModel->save(*Rtn);
 
   //reactn1->save(*Rtn);
   //Copasi->Model->save(*Rtn);
   delete Rtn;
+}
+
+void ReactionsWidget1::slotCheckBoxClicked()
+{
+  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+  reactn1 = reactions[(string)name.latin1()];
+
+  if (reactn1->isReversible() == TRUE && checkBox->isChecked() == FALSE)
+    {
+      //for Chemical Reaction
+      QString chemical_reaction = LineEdit2->text();
+      int i = chemical_reaction.find ("=", 0, TRUE);
+      chemical_reaction = chemical_reaction.replace(i, 1, "->");
+
+      //chemical_reaction =  chemical_reaction.replace(QRegExp("="), "->");
+      LineEdit2->setText(chemical_reaction);
+      ComboBox1->clear();
+      ComboBox1->insertItem("trying", -1);
+      //  CCopasiVectorN < CFunction > & Functions = fFunctionDB->suitableFunctions(k, m, TriFalse);
+      //  int m = 0;
+      /*  if (Functions.size() > 0) {
+       CFunction *function = Functions[0];
+       ComboBox1->insertItem(function->getName().c_str(), 0);
+       //reactn1->setReversible(TriFalse);
+       
+        }*/
+      QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
+    }
 }

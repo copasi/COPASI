@@ -12,6 +12,7 @@
 #include <qvariant.h>
 #include <qlayout.h>
 #include "function/function.h"
+#include "model/model.h"
 
 class QAction;
 
@@ -59,7 +60,7 @@ class ReactionsWidget1 : public QWidget
     int isName(QString setValue);
     void loadReactions(CModel *model);
     QString *Reaction1_Name;
-    QString *chemical_reaction;
+    //QString *chemical_reaction;
     QString name;
     QFrame* Line1;
     QFrame* Line2;
@@ -85,7 +86,7 @@ class ReactionsWidget1 : public QWidget
     QFrame* Frame4f;
     QFrame* Frame4g;
     QFrame* Frame4h;
-
+    CReaction *reactn1;
     QCheckBox* checkBox;
 
     QComboBox* ComboBox1;
@@ -95,6 +96,7 @@ class ReactionsWidget1 : public QWidget
   protected slots:
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
+    virtual void slotCheckBoxClicked();
 
   signals:
     void signal_emitted(QString &);

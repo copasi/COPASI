@@ -55,11 +55,14 @@ QMetaObject* ReactionsWidget1::staticMetaObject()
   QMetaObject* parentObject = QWidget::staticMetaObject();
   static const QUMethod slot_0 = {"slotBtnCancelClicked", 0, 0 };
   static const QUMethod slot_1 = {"slotBtnOKClicked", 0, 0 };
+  static const QUMethod slot_2 = {"slotCheckBoxClicked", 0, 0 };
 
   static const QMetaData slot_tbl[] =
     {
       { "slotBtnCancelClicked()", &slot_0, QMetaData::Protected },
-      { "slotBtnOKClicked()", &slot_1, QMetaData::Protected }
+
+      { "slotBtnOKClicked()", &slot_1, QMetaData::Protected },
+      { "slotCheckBoxClicked()", &slot_2, QMetaData::Protected }
     };
 
   static const QUParameter param_signal_0[] =
@@ -75,7 +78,7 @@ QMetaObject* ReactionsWidget1::staticMetaObject()
 
   metaObj = QMetaObject::new_metaobject(
               "ReactionsWidget1", parentObject,
-              slot_tbl, 2,
+              slot_tbl, 3,
               signal_tbl, 1,
 #ifndef QT_NO_PROPERTIES
               0, 0,
@@ -129,6 +132,10 @@ bool ReactionsWidget1::qt_invoke(int _id, QUObject* _o)
 
     case 1:
       slotBtnOKClicked();
+      break;
+
+    case 2:
+      slotCheckBoxClicked();
       break;
 
     default:
