@@ -47,7 +47,7 @@ TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Name");
-  tableHeader->setLabel(1, "Target");
+  tableHeader->setLabel(1, "Comment");
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
@@ -80,8 +80,24 @@ TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
 
 void TableDefinition::fillTable()
 {
-  //  const CReportDefinition* mpReportDefinition;
-  //  const std::vector<CReportDefinition*> &reportVector =
+  const CReportDefinition* obj;
+
+  const std::vector<CReportDefinition*>& objects =
+    *(dataModel->getReportDefinitionVectorAddr()
+      ->getReportDefinitionsAddr());
+
+  C_INT32 j, jmax = objects.size();
+  table->setNumRows(jmax);
+  mKeys.resize(jmax);
+
+  for (j = 0; j < jmax; ++j)
+    {
+      obj = objects[j];
+      table->setText(j, 0, obj->getName().c_str());
+      table->setText(j, 1, obj->getComment().c_str()));
+      mKeys[j] = obj->getKey();
+    }
+  table->setText(jmax, 1, "");
 
   /*
     const CCompartment *obj;
