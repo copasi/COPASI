@@ -609,6 +609,11 @@ const string & CReaction::CId2Metab::getCompartmentName() const
     return mCompartmentName;
   }
 
+CMetab * CReaction::CId2Metab::getMetabolite() const
+  {
+    return mpMetabolite;
+  }
+
 void CReaction::CId2Param::setIdentifierName(const string & identifierName)
 {
   mIdentifierName = identifierName;

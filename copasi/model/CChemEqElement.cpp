@@ -44,6 +44,9 @@ CMetab & CChemEqElement::getMetabolite() const
     return *mpMetabolite;
   }
 
+CMetab * CChemEqElement::getMetaboliteAddr() const
+{ return mpMetabolite; }
+
 void CChemEqElement::setMetaboliteName(const string & metaboliteName)
 {mMetaboliteName = metaboliteName; }
 

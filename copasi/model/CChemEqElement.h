@@ -87,6 +87,12 @@ class CChemEqElement
     CMetab & getMetabolite() const;
 
     /**
+     *  Retrieves the address of the metabolite of the element.
+     *  @return "CMetab *" metabolite
+     */
+    CMetab * getMetaboliteAddr() const;
+
+    /**
      *  Set the name of the element.
      *  @param "const string &" name
      */

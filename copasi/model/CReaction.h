@@ -110,6 +110,12 @@ class CReaction
         const string & getCompartmentName() const;
 
         /**
+         *  Retrieve a pointer to the metabolite
+         *  @return "CMetab *" pointer to metabolite
+         */
+        CMetab * getMetabolite() const;
+
+        /**
          * insert operator
          */
         friend ostream & operator<<(ostream &os, const CId2Metab & d)
