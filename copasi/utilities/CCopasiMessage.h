@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/25 01:42:15 $
+   $Date: 2005/03/11 02:27:29 $
    End CVS Header */
 
 /**
@@ -15,7 +15,7 @@
 #define COPASI_CCopasiMessage
 
 #include <string>
-#include <stack>
+#include <deque>
 
 #include "copasi.h"
 
@@ -87,7 +87,7 @@ class CCopasiMessage
      *  The stack of messages. Each message created with one of 
      *  the specific constructors is automically added to the stack.
      */
-    static std::stack< CCopasiMessage > mMessageStack;
+    static std::deque< CCopasiMessage > mMessageDeque;
 
     // Operations
 
