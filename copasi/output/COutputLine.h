@@ -123,7 +123,7 @@ class COutputLine
   /**
    * print the mpValue of each Object in the steady-state data file
    */
-  void sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+  void sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes, C_INT32 ss_solution);
 
   /**
    * print the titles of the time couse data file
