@@ -10,8 +10,6 @@
 // #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "model/model.h"
-#include "tnt/tnt.h"
-#include "tnt/cmat.h"
 #include "CElementaryFluxModes.h"
 #include "CEFMAlgorithm.h"
 CElementaryFluxModes::CElementaryFluxModes(){CONSTRUCTOR_TRACE; mModel = NULL; }
@@ -22,11 +20,10 @@ void CElementaryFluxModes::calculate(const CModel * model)
   mModel = model;
 
   /* ModelStoi is the transpose of the models stoichiometry matrix */
-  const TNT::Transpose_View < TNT::Matrix < C_FLOAT64 > > & ModelStoi =
-    TNT::Transpose_View< TNT::Matrix < C_FLOAT64 > >(mModel->getStoi());
+  const CTransposeView< CMatrix< C_FLOAT64 > > ModelStoi(mModel->getStoi());
 
-  unsigned C_INT32 row, numRows = ModelStoi.num_rows();
-  unsigned C_INT32 col, numCols = ModelStoi.num_cols();
+  unsigned C_INT32 row, numRows = mModel->getStoi().numRows();
+  unsigned C_INT32 col, numCols = mModel->getStoi().numCols();
 
   /* Size the stoichiometry matrix passed to the algorithm */
   vector < vector < C_FLOAT64 > > Stoi;

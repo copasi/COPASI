@@ -503,7 +503,7 @@ void COutput::repStruct(ofstream &fout)
   for (j = 0; j < model->getDepMetab(); j++)
     inverse.push_back(model->getMetabolitesDep()[j]->getName());
 
-  const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
+  const CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > >
   & Inverse = model->getInverseL();
 
   for (i = 0; i < model->getIntMetab(); i++)

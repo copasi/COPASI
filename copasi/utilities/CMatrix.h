@@ -15,6 +15,9 @@ using std::endl;
 template <class CType>
 class CMatrix
   {
+  public:
+    typedef CType elementType;
+
     // Attributes
   private:
     /**
@@ -52,7 +55,7 @@ class CMatrix
      * Copy constructor
      * @param const CMatrix <CType> & src
      */
-    CMatrix(const CMatrix <CType> &src):
+    CMatrix(const CMatrix <CType> & src):
         mRows(src.mRows),
         mCols(src.mCols),
         mArray(NULL)
@@ -211,4 +214,134 @@ class CMatrixDbl : public CMatrix <C_FLOAT64> {};
  */
 class CMatrixInt : public CMatrix <C_INT32> {};
 
+template <class Matrix>
+class CUpperTriangularView
+  {
+    typedef typename Matrix::elementType elementType;
+
+  private:
+    const Matrix & mA;
+    elementType mZero;
+
+  public:
+    CUpperTriangularView(const Matrix & A, const elementType zero):
+        mA(A),
+        mZero(zero)
+    {}
+
+    ~CUpperTriangularView() {}
+
+    /**
+     * Retrieve a matrix element using Fortan style indexing.
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return CType element
+     */
+    inline elementType operator()(const unsigned C_INT32 & row,
+                                  const unsigned C_INT32 & col) const
+      {
+        if (row < col)
+          return mA(row, col);
+        else
+          return mZero;
+      }
+  };
+
+template <class Matrix>
+class CLowerTriangularView
+  {
+    typedef typename Matrix::elementType elementType;
+
+  private:
+    const Matrix & mA;
+    elementType mZero;
+
+  public:
+    CLowerTriangularView(const Matrix & A, const elementType zero):
+        mA(A),
+        mZero(zero)
+    {}
+
+    ~CLowerTriangularView() {}
+
+    /**
+     * Retrieve a matrix element using Fortan style indexing.
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return CType element
+     */
+    inline elementType operator()(const unsigned C_INT32 & row,
+                                  const unsigned C_INT32 & col) const
+      {
+        if (row > col)
+          return mA(row, col);
+        else
+          return mZero;
+      }
+  };
+
+template <class Matrix>
+class CUnitLowerTriangularView
+  {
+    typedef typename Matrix::elementType elementType;
+
+  private:
+    const Matrix & mA;
+    elementType mZero;
+    elementType mUnit;
+
+  public:
+    CUnitLowerTriangularView(const Matrix & A,
+                             const elementType zero,
+                             const elementType unit):
+        mA(A),
+        mZero(zero),
+        mUnit(unit)
+    {}
+
+    ~CUnitLowerTriangularView() {}
+
+    /**
+     * Retrieve a matrix element using Fortan style indexing.
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return CType element
+     */
+    inline elementType operator()(const unsigned C_INT32 & row,
+                                  const unsigned C_INT32 & col) const
+      {
+        if (row > col)
+          return mA(row, col);
+        else if (row < col)
+          return mZero;
+        else
+          return mUnit;
+      }
+  };
+
+#define TransposeView(A)[row][col] A[col][row]
+
+template <class Matrix>
+class CTransposeView
+  {
+    typedef typename Matrix::elementType elementType;
+
+  private:
+    const Matrix & mA;
+
+  public:
+    CTransposeView(const Matrix & A): mA(A) {}
+
+    ~CTransposeView() {}
+
+    /**
+     * Retrieve a matrix element using Fortan style indexing.
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return CType element
+     */
+    inline elementType operator()(const unsigned C_INT32 & row,
+                                  const unsigned C_INT32 & col) const
+      {return mA(col, row);}
+  };
 #endif // COPASI_CMatrix

@@ -10,10 +10,11 @@
 
 #include "CReaction.h"
 #include "CMoiety.h"
-#include "tnt/tnt.h"
-#include "tnt/cmat.h"
-#include "tnt/triang.h"
-#include "tnt/transv.h"
+#include "utilities/CMatrix.h" 
+// #include "tnt/tnt.h"
+// #include "tnt/cmat.h"
+// #include "tnt/triang.h"
+// #include "tnt/transv.h"
 
 class CCompartment;
 
@@ -106,17 +107,17 @@ class CModel
     /**
      *   Stoichiometry Matrix
      */
-    TNT::Matrix < C_FLOAT64 > mStoi;
+    CMatrix < C_FLOAT64 > mStoi;
 
     /**
      *   Reduced Stoichiometry Matrix
      */
-    TNT::Matrix < C_FLOAT64 > mRedStoi;
+    CMatrix < C_FLOAT64 > mRedStoi;
 
     /**
      *   The Matrix which stores the LU-Decomposition
      */
-    TNT::Matrix < C_FLOAT64 > mLU;
+    CMatrix < C_FLOAT64 > mLU;
 
     /**
      * Vector for storing the row interchanges during LU-Decomposition
@@ -131,17 +132,17 @@ class CModel
     /**
      *   This matrix stores L and the inverse of L
      */
-    TNT::Matrix < C_FLOAT64 > mL;
+    CMatrix < C_FLOAT64 > mL;
 
     /**
      *   This is used to return a view to L
      */
-    TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > *mpLView;
+    CUnitLowerTriangularView< CMatrix< C_FLOAT64 > > *mpLView;
 
     /**
      *   This is used to return a view to the inverse of L
      */
-    TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
+    CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > >
     *mpInverseLView;
 
     /**
@@ -416,12 +417,12 @@ class CModel
     /**
      *  Get the Stoichiometry Matrix of this Model
      */
-    const TNT::Matrix < C_FLOAT64 > & getStoi() const;
+    const CMatrix < C_FLOAT64 > & getStoi() const;
 
     /**
      *  Get the Reduced Stoichiometry Matrix of this Model
      */
-    const TNT::Matrix < C_FLOAT64 >& getRedStoi() const;
+    const CMatrix < C_FLOAT64 >& getRedStoi() const;
 
     /**
      * Return the mMoieties of this model 
@@ -459,20 +460,20 @@ class CModel
      * Get the LU decomposition matrix of this model
      * @return const TNT::Matrix < C_FLOAT64 > & LU
      */
-    const TNT::Matrix < C_FLOAT64 > & getmLU() const;
+    const CMatrix < C_FLOAT64 > & getmLU() const;
 
     /**
      * Get the L matrix the LU decomposition of this model
      * @return const TNT::Matrix < C_FLOAT64 > & LU
      */
-    const TNT::UnitLowerTriangularView<TNT::Matrix<C_FLOAT64 > > & getL() const;
+    const CUnitLowerTriangularView<CMatrix<C_FLOAT64 > > & getL() const;
 
     /**
      * Retrieve the inverse of the L matrix
      * @return const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > > & L-inverse
      */
     const
-    TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
+    CTransposeView<CUpperTriangularView<CMatrix<C_FLOAT64 > > >
     & getInverseL() const;
 
     /**

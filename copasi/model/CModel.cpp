@@ -18,10 +18,8 @@
 #include "CModel.h"
 #include "CCompartment.h"
 #include "CState.h"
-#include "tnt/luX.h"
-#include "tnt/triang.h"
-#include "tnt/transv.h"
 #include "utilities/CGlobals.h"
+#include "utilities/CluX.h"
 
 using std::cout;
 
@@ -31,10 +29,10 @@ CModel::CModel()
   mComments = "";
 
   mpLView
-  = new TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
+  = new CUnitLowerTriangularView< CMatrix< C_FLOAT64 > > (mL, 0.0, 1.0);
 
   mpInverseLView
-  = new TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > > (mL);
+  = new CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > > (CUpperTriangularView< CMatrix< C_FLOAT64 > >(mL, 0.0));
 
   mQuantityUnitName = "unknown";
   mNumber2QuantityFactor = 1.0;
@@ -45,10 +43,10 @@ CModel::CModel(const CModel & src)
 {
   CONSTRUCTOR_TRACE;
   mpLView
-  = new TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
+  = new CUnitLowerTriangularView< CMatrix< C_FLOAT64 > > (mL, 0.0, 1.0);
 
   mpInverseLView
-  = new TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > > (mL);
+  = new CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > > (CUpperTriangularView< CMatrix< C_FLOAT64 > >(mL, 0.0));
 
   mTitle = src.mTitle;
   mComments = src.mComments;
@@ -380,13 +378,13 @@ void CModel::buildStoi()
       mScaledFluxes[i] = & mSteps[i]->getScaledFlux();
     }
 
-  mStoi.newsize(imax - j, mSteps.size());
+  mStoi.resize(imax - j, mSteps.size());
 
-  for (i = 0; i < (unsigned C_INT32) mStoi.num_cols(); i++)
+  for (i = 0; i < (unsigned C_INT32) mStoi.numCols(); i++)
     {
       Structure = mSteps[i]->getChemEq().getBalances();
 
-      for (j = 0; j < (unsigned C_INT32) mStoi.num_rows(); j++)
+      for (j = 0; j < (unsigned C_INT32) mStoi.numRows(); j++)
         {
           mStoi[j][i] = 0.0;
           Name = mMetabolites[j]->getName();
@@ -413,25 +411,25 @@ void CModel::lUDecomposition()
 {
   unsigned C_INT32 i;
 
-  TNT::Vector < unsigned C_INT32 > rowLU(mStoi.num_rows());
-  TNT::Vector < unsigned C_INT32 > colLU(mStoi.num_cols());
+  vector < unsigned C_INT32 > rowLU(mStoi.numRows());
+  vector < unsigned C_INT32 > colLU(mStoi.numCols());
 
-  mRowLU.resize(mStoi.num_rows());
+  mRowLU.resize(mStoi.numRows());
   for (i = 0; i < mRowLU.size(); i++)
     mRowLU[i] = i;
 
-  mColLU.resize(mStoi.num_cols());
+  mColLU.resize(mStoi.numCols());
   for (i = 0; i < mColLU.size(); i++)
     mColLU[i] = i;
 
   mLU = mStoi;
 
-  TNT::LUX_factor(mLU, rowLU, colLU);
+  LUfactor(mLU, rowLU, colLU);
 
 #ifdef DEBUG_MATRIX
 
-  TNT::UpperTriangularView < TNT::Matrix < C_FLOAT64 > > U(mLU);
-  TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
+  CUpperTriangularView < CMatrix < C_FLOAT64 > > U(mLU);
+  CUnitLowerTriangularView < CMatrix < C_FLOAT64 > > L(mLU);
 
   cout << "U" << endl;
   cout << U << endl;
@@ -499,13 +497,13 @@ void CModel::lUDecomposition()
 
 void CModel::setMetabolitesStatus()
 {
-  C_INT32 i, j, k;
+  unsigned C_INT32 i, j, k;
   C_FLOAT64 Sum;
 
-  // for (i=0; i<min(mLU.num_rows(), mLU.num_cols()); i++)
+  // for (i=0; i<min(mLU.numRows(), mLU.numCols()); i++)
   // for compiler
-  C_INT32 imax = (mLU.num_rows() < mLU.num_cols()) ?
-                 mLU.num_rows() : mLU.num_cols();
+  unsigned C_INT32 imax = (mLU.numRows() < mLU.numCols()) ?
+                          mLU.numRows() : mLU.numCols();
 
   for (i = 0; i < imax; i++)
     {
@@ -519,11 +517,11 @@ void CModel::setMetabolitesStatus()
   mMetabolitesInd.insert(mMetabolitesInd.begin(), &mMetabolitesX[0], &mMetabolitesX[i]);
   mStepsInd.insert(mStepsInd.begin(), &mStepsX[0], &mStepsX[i]);
 
-  for (j = i; j < mLU.num_rows(); j++)
+  for (j = i; j < mLU.numRows(); j++)
     {
       Sum = 0.0;
 
-      for (k = 0; k < mLU.num_cols(); k++)
+      for (k = 0; k < mLU.numCols(); k++)
         Sum += fabs(mLU[j][k]);
 
       if (Sum == 0.0)
@@ -535,7 +533,7 @@ void CModel::setMetabolitesStatus()
   mMetabolitesDep.clear();
   mMetabolitesDep.insert(mMetabolitesDep.begin(), &mMetabolitesX[i], &mMetabolitesX[j]);
 
-  for (k = j; k < mLU.num_rows(); k++)
+  for (k = j; k < mLU.numRows(); k++)
     mMetabolitesX[k]->setStatus(METAB_FIXED);
 
   return;
@@ -550,7 +548,7 @@ void CModel::buildRedStoi()
   imax = mMetabolitesInd.size();
   jmax = mStepsX.size();
 
-  mRedStoi.newsize(imax, jmax);
+  mRedStoi.resize(imax, jmax);
 
   for (i = 0; i < imax; i++)
     for (j = 0; j < jmax; j++)
@@ -589,11 +587,11 @@ void CModel::buildRedStoi()
 
 void CModel::buildL()
 {
-  unsigned C_INT32 size = mStoi.num_rows();
+  unsigned C_INT32 size = mStoi.numRows();
   unsigned C_INT32 i, j, jmax, k;
-  TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
+  CUnitLowerTriangularView < CMatrix < C_FLOAT64 > > L(mLU, 0.0, 1.0);
 
-  mL.newsize(size, size);
+  mL.resize(size, size);
   jmax = (size < mSteps.size()) ? size : mSteps.size();
 
   /* Create L from the UnitLowerTriangularView of mLU */
@@ -630,10 +628,10 @@ void CModel::buildL()
 
 #ifdef DEBUG_MATRIX
   cout << "L" << endl;
-  cout << TNT::LowerTriangularView< TNT::Matrix< C_FLOAT64 > >(mL)
+  cout << CLowerTriangularView< CMatrix< C_FLOAT64 > >(mL)
   << endl;
   cout << "L inverse" << endl;
-  cout << TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >(mL)
+  cout << CTranspose_View< CUpperTriangularView< CMatrix< C_FLOAT64 > > >(mL)
   << endl;
 #endif
 }
@@ -915,7 +913,7 @@ vector < CMetab * > & CModel::getMetabolites()
 /**
  *  Get the Reduced Stoichiometry Matrix of this Model
  */
-const TNT::Matrix < C_FLOAT64 >& CModel::getRedStoi() const
+const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
   {
     return mRedStoi;
   }
@@ -923,7 +921,7 @@ const TNT::Matrix < C_FLOAT64 >& CModel::getRedStoi() const
 /**
  *  Get the Stoichiometry Matrix of this Model
  */
-const TNT::Matrix < C_FLOAT64 >& CModel::getStoi() const
+const CMatrix < C_FLOAT64 >& CModel::getStoi() const
   {
     return mStoi;
   }
@@ -1038,17 +1036,17 @@ vector < CReaction * > & CModel::getStepsX()
 /**
  *  Get the mLU matrix of this model
  */
-const TNT::Matrix < C_FLOAT64 > & CModel::getmLU() const
+const CMatrix < C_FLOAT64 > & CModel::getmLU() const
   {
     return mLU;
   }
 
-const TNT::UnitLowerTriangularView<TNT::Matrix<C_FLOAT64 > > & CModel::getL() const
+const CUnitLowerTriangularView< CMatrix< C_FLOAT64 > > & CModel::getL() const
   {
     return *mpLView;
   }
 
-const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
+const CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > >
 & CModel::getInverseL() const
   {
     return *mpInverseLView;
