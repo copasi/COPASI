@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/05 15:44:40 $
+   $Date: 2004/01/05 19:21:46 $
    End CVS Header */
 
 /*******************************************************************
@@ -175,7 +175,7 @@ bool ConstantSymbols::update(ListViews::ObjectType objectType, ListViews::Action
     case ListViews::METABOLITE:
     case ListViews::REACTION:
       dataModel->scheduleMathModelUpdate();
-      if (isVisible())
+      if (isShown())
         loadConstantSymbols(dataModel->getMathModel());
       break;
 
