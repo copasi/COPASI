@@ -23,8 +23,8 @@ CModel::CModel()
 {
   
   //  mCompartments = NULL;
-  mSteps        = NULL;
-  mMoieties     = NULL;
+  //  mSteps        = NULL;
+  //  mMoieties     = NULL;
   mComments = "";
 
   mpLView = new
@@ -40,8 +40,8 @@ CModel::CModel()
 void CModel::initialize()
 {
   // if ( !mCompartments ) mCompartments = new CCopasiVector < CCompartment >;
-  if ( !mSteps )        mSteps        = new CCopasiVector < CReaction >;
-  if ( !mMoieties )     mMoieties     = new CCopasiVector < CMoiety >;
+  //  if ( !mSteps )        mSteps        = new CCopasiVector < CReaction >;
+  //  if ( !mMoieties )     mMoieties     = new CCopasiVector < CMoiety >;
 }
 
 CModel::~CModel()
@@ -54,13 +54,16 @@ CModel::~CModel()
 
 void CModel::cleanup()
 {
+  mCompartments.cleanup();
+  mSteps.cleanup();
+  mMoieties.cleanup();
   /*
   if ( mCompartments ) 
     {
       mCompartments->cleanup();
       mCompartments = NULL;
     }
-  */ 
+ 
   if ( mSteps )
     {
       mSteps->cleanup();
@@ -72,6 +75,7 @@ void CModel::cleanup()
       mMoieties->cleanup();
       mMoieties = NULL;
     }
+  */ 
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -89,8 +93,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                            &Size, CReadConfig::LOOP)))
         return Fail;
         
-      if ((Fail = Copasi.OldMetabolites.load(configBuffer, Size)))
-        return Fail;
+      Copasi.OldMetabolites.load(configBuffer, Size);
     }
 
   if ((Fail = configBuffer.getVariable("Title", "string", &mTitle,
@@ -124,9 +127,9 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       CMetab Metabolite;
       for (i = 0; i < Copasi.OldMetabolites.size(); i++)
         {
-          Metabolite = Copasi.OldMetabolites[i];
+          Metabolite = *Copasi.OldMetabolites[i];
             
-          mCompartments[Copasi.OldMetabolites[i].getIndex()]->
+          mCompartments[Copasi.OldMetabolites[i]->getIndex()]->
             addMetabolite(Metabolite);
         }
     }
@@ -139,15 +142,15 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                        CReadConfig::LOOP)))
     return Fail;
     
-  if ((Fail = mSteps->load(configBuffer, Size))) return Fail;
+  mSteps.load(configBuffer, Size);
     
   // We must postprocess the steps for old file versions
   if (configBuffer.getVersion() < "4")
-    for (i = 0; i < mSteps->size(); i++)
-      (*mSteps)[i].old2New(mMetabolites);
+    for (i = 0; i < mSteps.size(); i++)
+      mSteps[i]->old2New(mMetabolites);
             
-  for (i = 0; i < mSteps->size(); i++)
-    (*mSteps)[i].compile(mCompartments);
+  for (i = 0; i < mSteps.size(); i++)
+    mSteps[i]->compile(mCompartments);
 
   return Fail;
 }
@@ -172,18 +175,18 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
   
   if ((Fail = Copasi.FunctionDB.save(configBuffer))) return Fail;
 
-  Size = mSteps->size();
+  Size = mSteps.size();
   if ((Fail = configBuffer.setVariable("TotalSteps", "C_INT32", &Size)))
     return Fail;
     
-  if ((Fail = mSteps->save(configBuffer))) return Fail;
+  mSteps.save(configBuffer);
 
   return Fail;
 }
 
 void CModel::buildStoi()
 {
-  CCopasiVectorNBase < CChemEqElement > Structure;
+  C_CopasiVector < CChemEqElement > Structure;
   unsigned C_INT32 i, j, k, imax;
   string Name;
   
@@ -198,11 +201,11 @@ void CModel::buildStoi()
       mMetabolitesX[i - j] = mMetabolites[i];
   
   
-  mStoi.newsize(imax - j, mSteps->size());
+  mStoi.newsize(imax - j, mSteps.size());
     
   for (i=0; i<(unsigned C_INT32) mStoi.num_cols(); i++)
     {
-      Structure = (*mSteps)[i].getChemEq().getBalances();
+      Structure = mSteps[i]->getChemEq().getBalances();
         
       for (j=0; j<(unsigned C_INT32) mStoi.num_rows(); j++)
         {
@@ -244,9 +247,9 @@ void CModel::lUDecomposition()
 
   // mMetabolitesX = mMetabolites;
     
-  mStepsX.resize(mSteps->size());
-  for (i=0; i<mSteps->size(); i++)
-    mStepsX[i] = &(*mSteps)[i];
+  mStepsX.resize(mSteps.size());
+  for (i=0; i<mSteps.size(); i++)
+    mStepsX[i] = mSteps[i];
 
   // permutate Metabolites and Steps to match rearangements done during
   // LU decomposition
@@ -355,7 +358,7 @@ void CModel::buildL()
   TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
   
   mL.newsize(size,size);
-  jmax = (size < mSteps->size()) ? size : mSteps->size();
+  jmax = (size < mSteps.size()) ? size : mSteps.size();
  
   /* Create L from the UnitLowerTriangularView of mLU */
   for (i=0; i<size; i++)
@@ -430,7 +433,7 @@ void CModel::buildMoieties()
   
   CMoiety Moiety;
   
-  mMoieties->cleanup();
+  mMoieties.cleanup();
 
   for (i=imin; i<imax; i++)
     {
@@ -447,7 +450,7 @@ void CModel::buildMoieties()
       Moiety.setInitialValue();
       cout << Moiety.getDescription() << endl;
       
-      mMoieties->add(Moiety);
+      mMoieties.add(Moiety);
     }
     
   return;
@@ -467,7 +470,7 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
   // Set the concentration of the dependent metabolites
   for (i=0; i<mMetabolitesDep.size(); i++)
     {
-      mMetabolitesDep[i]->setNumber((*mMoieties)[i].dependentNumber());
+      mMetabolitesDep[i]->setNumber(mMoieties[i]->dependentNumber());
       cout << *mMetabolitesDep[i]->getConcentration() << "  ";
     }
   cout << endl;
@@ -475,9 +478,9 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
   return;
 }
 
-CCopasiVector < CReaction > & CModel::getReactions()
+C_CopasiVectorS < CReaction > & CModel::getReactions()
 {
-  return *mSteps;
+  return mSteps;
 }
 
 vector < CReaction * > & CModel::getReactionsX()
@@ -489,19 +492,19 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
   unsigned C_INT32 i,j;
   //FIXME: This should be a member
-  C_FLOAT64 * v = new C_FLOAT64[mSteps->size()];
+  C_FLOAT64 * v = new C_FLOAT64[mSteps.size()];
     
   setConcentrations(y);
     
   // Calculate the velocity vector depending on the step kinetics
-  for (i=0; i<mSteps->size(); i++)
-    v[i] = (*mSteps)[i].calculate();
+  for (i=0; i<mSteps.size(); i++)
+    v[i] = mSteps[i]->calculate();
 
   // Calculate ydot = RedStoi * v
   for (i=0; i<(unsigned C_INT32) n; i++)
     {
       ydot[i] = 0.0;
-      for (j=0; j<mSteps->size(); j++)
+      for (j=0; j<mSteps.size(); j++)
         ydot[i] += mRedStoi[i][j] * v[j];
     }
     
@@ -553,7 +556,7 @@ C_FLOAT64 * CModel::getInitialNumbers()
 */
 C_INT32 CModel::getTotSteps()
 {
- return mSteps->size();   //should not return mSteps
+ return mSteps.size();   //should not return mSteps
 }
 
 C_INT32 CModel::getDimension() const
@@ -582,7 +585,7 @@ string CModel::getTitle() const
  *        Return the comments of this model
  *        @return CCopasiVector < CCompartment > *
  */
-CCopasiVectorN < CCompartment > & CModel::getCompartments()
+C_CopasiVectorNS < CCompartment > & CModel::getCompartments()
 {
   return mCompartments;
 }
@@ -608,7 +611,7 @@ const TNT::Matrix < C_FLOAT64 >& CModel::getRedStoi() const
  *        Return the mMoieties of this model        
  *        @return CCopasiVector < CMoiety > * 
  */
-CCopasiVector < CMoiety > * CModel::getMoieties()
+C_CopasiVectorN < CMoiety > & CModel::getMoieties()
 {
   return mMoieties;
 }
@@ -638,9 +641,9 @@ C_INT32 CModel::findStep(string &Target)
   unsigned C_INT32 i;
   string name;
 
-  for(i = 0; i < mSteps->size(); i++ )
+  for(i = 0; i < mSteps.size(); i++ )
     {
-      name = (*mSteps)[i].getName();
+      name = mSteps[i]->getName();
       if( name == Target) return i;
     }
 
@@ -672,9 +675,9 @@ C_INT32 CModel::findMoiety(string &Target)
   unsigned C_INT32 i;
   string name;
 
-  for(i = 0; i < mMoieties->size(); i++ )
+  for(i = 0; i < mMoieties.size(); i++ )
     {
-      name = (*mMoieties)[i].getName();
+      name = mMoieties[i]->getName();
       if( name == Target) return i;
     }
 

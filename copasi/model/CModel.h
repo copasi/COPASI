@@ -15,7 +15,6 @@
 #include "tnt/triang.h"
 #include "tnt/transv.h"
 
-template < class CType > class CCopasiVector;
 class CCompartment;
 
 class CModel
@@ -39,7 +38,7 @@ class CModel
    *  @supplierCardinality 0..*
    *  @associates <{CCompartment}>
    */
-  CCopasiVectorN < CCompartment > mCompartments;
+  C_CopasiVectorNS < CCompartment > mCompartments;
 
   /**
    *  for array of metabolites
@@ -54,7 +53,7 @@ class CModel
    *  @supplierCardinality 0..*
    *  @associates <{CReaction}>
    */
-  CCopasiVector < CReaction > * mSteps;
+  C_CopasiVectorS < CReaction > mSteps;
   vector < CReaction * > mStepsX;
   vector < CReaction * > mStepsInd;
     
@@ -63,7 +62,7 @@ class CModel
    *  @supplierCardinality 0..*
    *  @associates <{CMoiety}>
    */
-  CCopasiVector < CMoiety > * mMoieties;
+  C_CopasiVectorN < CMoiety > mMoieties;
 
   /**
    *   Stoichiometry Matrix
@@ -357,9 +356,9 @@ class CModel
   // Added by CvG
   /**
    * Return the vector of reactions
-   * @return "CCopasiVector<CReaction> *"
+   * @return "C_CopasiVectorS <CReaction> &"
    */
-  CCopasiVector < CReaction > & getReactions();
+  C_CopasiVectorS < CReaction > & getReactions();
   vector < CReaction * > & getReactionsX();
 
   // Added by Yongqun He
@@ -389,9 +388,9 @@ class CModel
 
   /**
    *	Return the compartments of this model
-   *	@return CCopasiVector < CCompartment > *
+   *	@return C_CopasiVectorNS < CCompartment > *
    */
-  CCopasiVectorN < CCompartment > & getCompartments();
+  C_CopasiVectorNS < CCompartment > & getCompartments();
 
   /**
    *	Return the metabolites of this model
@@ -406,9 +405,9 @@ class CModel
 
   /**
    *	Return the mMoieties of this model	
-   *	@return CCopasiVector < CMoiety > * 
+   *	@return C_CopasiVectorN < CMoiety > & 
    */
-  CCopasiVector < CMoiety > * getMoieties();
+  C_CopasiVectorN < CMoiety > & getMoieties();
 
   /**
    *	Returns the index of the metab

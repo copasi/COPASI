@@ -252,6 +252,11 @@ class CMetabOld
   // Operations
  public:
   /**
+   *  cleanup()
+   */
+  void cleanup();
+  
+  /**
    *  Loads an object with data coming from a CReadConfig object.
    *  (CReadConfig object reads an input stream)
    *  @param pconfigbuffer reference to a CReadConfig object.
@@ -259,11 +264,18 @@ class CMetabOld
    */
   C_INT32 load(CReadConfig & configbuffer);
 
+  /**
+   *  This function is only defined for completeness. We really never going 
+   *  to save objects of class CMetabOld.
+   */
+  C_INT32 save(CWriteConfig & configbuffer);
+
   C_INT32 getIndex() const;
 
   string getName() const;
 };
 
+#ifdef XXXX
 class CMetabolitesOld: public CCopasiVector < CMetabOld >
 {
  private:    
@@ -275,5 +287,5 @@ class CMetabolitesOld: public CCopasiVector < CMetabOld >
 
   C_INT16 isInsertAllowed(const CMetabOld & src) const {return TRUE;}
 };
-  
+#endif // XXXX
 #endif // COPASI_CMetab

@@ -208,6 +208,8 @@ C_INT16 CMetab::isValidName()
   return (mName.find_first_of("; ") == string::npos);
 }
 
+void  CMetabOld::cleanup(){}
+
 C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 {
   C_INT32 Fail = 0;
@@ -251,6 +253,8 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
     }
   return Fail;
 }
+
+C_INT32 CMetabOld::save(CWriteConfig & configbuffer){return 0;}
 
 C_INT32 CMetabOld::getIndex() const {return mCompartment;}
 

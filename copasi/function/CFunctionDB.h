@@ -11,9 +11,8 @@
 
 #include <string>
 
-
-#include "CKinFunction.h"
 #include "utilities/utilities.h"
+#include "CKinFunction.h"
 
 class CFunctionDB
 {
@@ -32,7 +31,8 @@ class CFunctionDB
   /**
    *  Vector of the currently loaded functions
    */
-  CCopasiVectorN < CBaseFunction > mLoadedFunctions;
+  C_CopasiVectorN < CBaseFunction > mLoadedFunctions;
+
   // Operations
  public:
   /**
@@ -113,9 +113,9 @@ class CFunctionDB
 
   /**
    *  Retrieves the vector of loades functions.
-   *  @return "CCopasiVector < CKinFunction > &" LoadedFunctions
+   *  @return "C_CopasiVectorN < CKinFunction > &" LoadedFunctions
    */
-  CCopasiVectorN < CBaseFunction > & loadedFunctions();
+  C_CopasiVectorN < CBaseFunction > & loadedFunctions();
 };
 
 #endif // COPASI_CFunctionDB

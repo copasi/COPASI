@@ -18,7 +18,7 @@
 class COutputLine
 {
  private:
-
+#ifdef XXXX
   class CCDatum: public CCopasiVector < CDatum >
     {
     public:
@@ -28,11 +28,11 @@ class COutputLine
     private:
       C_INT16 isInsertAllowed(const CDatum & src);
     };
-
+#endif // XXXX
   /**
    *  Datum can be output in the same line.
    */
-  CCDatum * mLine;
+  C_CopasiVectorS < CDatum > mLine;
 
   /**
    *  Note: Temperaly use it 
@@ -70,7 +70,7 @@ class COutputLine
    *  @return mLine
    *  @see mLine
    */
-  CCDatum * getLine() const;
+  const C_CopasiVectorS < CDatum > & getLine() const;
 
   /**
    *  Add new data object to a line
@@ -88,6 +88,7 @@ class COutputLine
    */
   C_INT32 save(CWriteConfig & configbuffer);
 
+  C_INT32 load(CReadConfig & configbuffer);
   /**
    *  Loads an object with data coming from a CReadConfig object.
    *  (CReadConfig object reads an input stream)

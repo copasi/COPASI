@@ -11,6 +11,7 @@
 #include <iostream>
 #include "COutputLine.h"
 
+#ifdef XXXX
 class CCOutputLine: public CCopasiVector < COutputLine >
 {
  public:
@@ -19,7 +20,7 @@ class CCOutputLine: public CCopasiVector < COutputLine >
  private:
   C_INT16 isInsertAllowed(const COutputLine & src);
 };
-
+#endif // XXXX
 
 class COutput
 {
@@ -27,7 +28,7 @@ class COutput
   /**
    *  Datum lines can be output in the same time.
    */
-  CCOutputLine * mOutput;
+  C_CopasiVectorS < COutputLine > mOutput;
 
   /**
    *  The type of output trigger
@@ -159,7 +160,7 @@ class COutput
    *  @return mList
    *  @see mList
    */
-  CCOutputLine * getList() const;
+  const C_CopasiVectorS < COutputLine > & getList() const;
 
   /**
    *  Add new OutputLine object to a list

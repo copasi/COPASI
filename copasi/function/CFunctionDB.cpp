@@ -1,3 +1,4 @@
+#include "copasi.h"
 #include "CFunctionDB.h"
 #include "CMassAction.h"
 
@@ -111,5 +112,5 @@ CBaseFunction * CFunctionDB::findFunction(const string & functionName)
   return dBLoad(functionName);
 }
 
-CCopasiVectorN < CBaseFunction > & CFunctionDB::loadedFunctions()
+C_CopasiVectorN < CBaseFunction > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}

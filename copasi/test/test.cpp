@@ -47,10 +47,10 @@ C_INT32  MakeFunctionEntry(const string &name,
                            short reversible,
                            vector < string > modifier,
                            vector < string > parameter,
-                           CCopasiVector <CKinFunction> &functions);
+                           C_CopasiVectorNS <CKinFunction> &functions);
 
 vector < CMetab * >
-InitMetabolites(CCopasiVector < CCompartment > & compartment);
+InitMetabolites(C_CopasiVector < CCompartment > & compartment);
 C_INT32 TestMCA(void);
 
 C_INT32 TestOutputEvent(void);
@@ -227,7 +227,7 @@ C_INT32 TestCompartment(void)
 
   CReadConfig Specific((string) "TestCompartment.txt");
     
-  CCopasiVector < CCompartment > ListOut;
+  C_CopasiVectorNS < CCompartment > ListOut;
 
   ListOut.load(Specific,2);
 
@@ -235,7 +235,7 @@ C_INT32 TestCompartment(void)
   ListOut.save(VectorOut);
   VectorOut.flush();
 
-  CCopasiVector < CCompartment > ListIn;
+  C_CopasiVectorNS < CCompartment > ListIn;
 
   CReadConfig VectorIn((string) "TestCompartmentVector.txt");
 
@@ -533,7 +533,7 @@ C_INT32 TestMoiety()
 {
   CMoiety mo("test");
   CCompartment c("comp", 1.0);
-  CCopasiVectorN < CMetab > mv;
+  C_CopasiVectorN < CMetab > mv;
     
   mv = c.metabolites();
     
@@ -607,7 +607,7 @@ C_INT32 TestKinFunction()
 }
 
 vector < CMetab * > 
-InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
+InitMetabolites(C_CopasiVectorN < CCompartment > & compartments)
 {
   vector < CMetab * > Metabolites;
 
@@ -632,7 +632,7 @@ C_INT32 TestBaseFunction()
 
 C_INT32 MakeFunctionDB()
 {
-  CCopasiVector <CKinFunction> functions;
+  C_CopasiVectorNS <CKinFunction> functions;
   vector <string> modifier;
   vector <string> parameter;
 
@@ -1154,7 +1154,7 @@ C_INT32 MakeFunctionEntry(const string &name,
                           short reversible,
                           vector < string > modifier,
                           vector < string > parameter,
-                          CCopasiVector <CKinFunction> &functions)
+                          C_CopasiVectorNS <CKinFunction> &functions)
 {
   C_INT32 Index = functions.size();
   unsigned C_INT32 i;
@@ -1164,44 +1164,44 @@ C_INT32 MakeFunctionEntry(const string &name,
     
   functions.add(f);
 
-  functions[Index].setName(name);
-  functions[Index].setDescription(description);
-  functions[Index].setReversible(reversible);
+  functions[Index]->setName(name);
+  functions[Index]->setDescription(description);
+  functions[Index]->setReversible(reversible);
 
-  functions[Index].parse();
+  functions[Index]->parse();
 
   pair < C_INT32, C_INT32 > Tuple(0, 0);
 
-  Tuple = functions[Index].findIdentifier("substrate");
+  Tuple = functions[Index]->findIdentifier("substrate");
   if (0 <= Tuple.first && 0 <= Tuple.second )
-    functions[Index].setIdentifierType("substrate", N_SUBSTRATE);
+    functions[Index]->setIdentifierType("substrate", N_SUBSTRATE);
         
-  Tuple = functions[Index].findIdentifier("substratea");
+  Tuple = functions[Index]->findIdentifier("substratea");
   if (0 <= Tuple.first && 0 <= Tuple.second )
-    functions[Index].setIdentifierType("substratea", N_SUBSTRATE);
+    functions[Index]->setIdentifierType("substratea", N_SUBSTRATE);
         
-  Tuple = functions[Index].findIdentifier("substrateb");
+  Tuple = functions[Index]->findIdentifier("substrateb");
   if (0 <= Tuple.first && 0 <= Tuple.second )
-    functions[Index].setIdentifierType("substrateb", N_SUBSTRATE);
+    functions[Index]->setIdentifierType("substrateb", N_SUBSTRATE);
         
-  Tuple = functions[Index].findIdentifier("product");
+  Tuple = functions[Index]->findIdentifier("product");
   if (0 <= Tuple.first && 0 <= Tuple.second )
-    functions[Index].setIdentifierType("product", N_PRODUCT);
+    functions[Index]->setIdentifierType("product", N_PRODUCT);
         
-  Tuple = functions[Index].findIdentifier("productp");
+  Tuple = functions[Index]->findIdentifier("productp");
   if (0 <= Tuple.first && 0 <= Tuple.second )
-    functions[Index].setIdentifierType("productp", N_PRODUCT);
+    functions[Index]->setIdentifierType("productp", N_PRODUCT);
         
-  Tuple = functions[Index].findIdentifier("productq");
+  Tuple = functions[Index]->findIdentifier("productq");
   if (0 <= Tuple.first && 0 <= Tuple.second )
-    functions[Index].setIdentifierType("productq", N_PRODUCT);
+    functions[Index]->setIdentifierType("productq", N_PRODUCT);
         
 
   for (i = 0; i < modifier.size(); i++)
-    functions[Index].setIdentifierType(modifier[i], N_MODIFIER);
+    functions[Index]->setIdentifierType(modifier[i], N_MODIFIER);
 
   for (i = 0; i < parameter.size(); i++)
-    functions[Index].setIdentifierType(parameter[i], N_KCONSTANT);
+    functions[Index]->setIdentifierType(parameter[i], N_KCONSTANT);
             
   return 0;
 }

@@ -10,7 +10,6 @@
 #include "copasi.h"
 #include "CCompartment.h"
 #include "utilities/utilities.h"
-#include "utilities/CCopasiVectorN.h"
 
 CCompartment::CCompartment()
 {
@@ -24,7 +23,7 @@ CCompartment::CCompartment(const CCompartment & src)
   mName        = src.mName;
   mVolume      = src.mVolume;
 
-  mMetabolites = CCopasiVectorN < CMetab >(src.mMetabolites);
+  mMetabolites = C_CopasiVectorNS < CMetab >(src.mMetabolites);
   for (unsigned C_INT32 i = 0; i < mMetabolites.size(); i++)
     mMetabolites[i]->setCompartment(this);
 }
@@ -50,7 +49,7 @@ CCompartment & CCompartment::operator=(const CCompartment & rhs)
   mName        = rhs.mName;
   mVolume      = rhs.mVolume;
 
-  mMetabolites = CCopasiVectorN < CMetab >(rhs.mMetabolites);
+  mMetabolites = C_CopasiVectorNS < CMetab >(rhs.mMetabolites);
     
   return *this;
 }
@@ -106,7 +105,7 @@ string CCompartment::getName() const {return mName;}
 
 C_FLOAT64 CCompartment::getVolume() const {return mVolume;}
 
-CCopasiVectorN < CMetab > & CCompartment::metabolites() 
+C_CopasiVectorNS < CMetab > & CCompartment::metabolites() 
 {return mMetabolites;}
 
 void CCompartment::setName(const string & name) 

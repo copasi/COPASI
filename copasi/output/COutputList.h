@@ -16,6 +16,7 @@
 #include "COutput.h"
 #include "model/model.h"
 
+#ifdef XXXX
 class CCOutput: public CCopasiVector < COutput >
 {
  public:
@@ -24,12 +25,12 @@ class CCOutput: public CCopasiVector < COutput >
  private:
   C_INT16 isInsertAllowed(const COutput & src);
 };
+#endif // XXXX
 
 class COutputList
 {
  private:
-
-  CCOutput *mList;
+  C_CopasiVectorS < COutput > mList;
 
   /* :TODO: this should be remved SH */
   CModel Model;			// Temperorary use for testing 
@@ -58,7 +59,7 @@ class COutputList
    *  @return mList
    *  @see mList
    */
-  CCOutput * getList() const;
+  const C_CopasiVectorS < COutput > & getList() const;
 
   /**
    *  Add new OutputLine object to a list

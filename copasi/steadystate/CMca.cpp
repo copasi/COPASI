@@ -131,12 +131,12 @@ void CMca::initDxv(C_FLOAT64 res)
       mSsx[j+1] = temp * K1;
       // Calcualte the fluxes
       for (i = 0; i < mDxv.num_rows(); i++)
-	f1[i] = Model.getReactions()[i].calculate();
+	f1[i] = Model.getReactions()[i]->calculate();
       // now X-dx
       mSsx[j+1] = temp * K2;
       // calculate the fluxes
       for (i = 0; i < mDxv.num_rows(); i++)
-	f2[i] = Model.getReactions()[i].calculate();
+	f2[i] = Model.getReactions()[i]->calculate();
 
       // set column j of Dxv
       for( i = 0; i < mDxv.num_rows(); i++ )

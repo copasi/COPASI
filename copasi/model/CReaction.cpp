@@ -375,7 +375,7 @@ void CReaction::checkIdentifiers()
     }
 }
 
-void CReaction::compile(CCopasiVectorN < CCompartment > & compartments)
+void CReaction::compile(C_CopasiVectorNS < CCompartment > & compartments)
 {
   unsigned C_INT32 i;
     
@@ -509,7 +509,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 	  identifiers(N_SUBSTRATE)[i]->getName();
         
       (*mId2Substrates)[i].mMetaboliteName = 
-	Copasi.OldMetabolites[index].getName();
+	Copasi.OldMetabolites[index]->getName();
     }
     
   for (i = 0; i < mId2Products->size(); i++)
@@ -527,7 +527,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 	  identifiers(N_PRODUCT)[i]->getName();
         
       (*mId2Products)[i].mMetaboliteName = 
-	Copasi.OldMetabolites[index].getName();
+	Copasi.OldMetabolites[index]->getName();
     }
     
   for (i = 0; i < mId2Modifiers->size(); i++)
@@ -543,7 +543,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 	  identifiers(N_MODIFIER)[i]->getName();
 
       (*mId2Modifiers)[i].mMetaboliteName = 
-	Copasi.OldMetabolites[index].getName();
+	Copasi.OldMetabolites[index]->getName();
     }
     
   for (i = 0; i < mId2Parameters->size(); i++)

@@ -32,7 +32,7 @@ class CCompartment {
    *  @supplierCardinality 0..*
    *  @associates <{CMetab}>
    */
-  CCopasiVectorN < CMetab > mMetabolites;
+  C_CopasiVectorNS < CMetab > mMetabolites;
   // Operations
  public:
   /**
@@ -113,7 +113,7 @@ class CCompartment {
   /*
    *
    */
-  CCopasiVectorN < CMetab > & metabolites();
+  C_CopasiVectorNS < CMetab > & metabolites();
     
   /*
    *

@@ -330,9 +330,9 @@ class CReaction
   /**
    *  Compile the reaction, i.e., links the metabolites and parameters with the
    *  rate function.
-   *  @param "CCopasiVector < CMetab * > &" metabolites
+   *  @param "C_CopasiVectorNS < CCompartment > &" compartments
    */
-  void compile(CCopasiVectorN < CCompartment > & compartments);
+  void compile(C_CopasiVectorNS < CCompartment > & compartments);
 
   /**
    *  Calculate the kinetic function

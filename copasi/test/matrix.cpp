@@ -74,7 +74,7 @@ C_INT main(void)
       for (i = 0; i < model.getReactions().size(); i++)
 	{
 	  if (i) cout << ", ";
-	  cout << model.getReactions()[i].getName();
+	  cout << model.getReactions()[i]->getName();
 	}
       cout << endl;
       

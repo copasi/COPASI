@@ -134,6 +134,11 @@ class CDatum
   CDatum(const string& title, void* value, C_INT32 type, const string& object);
 
   /**
+   *  cleanup 
+   */
+  void cleanup();
+  
+  /**
    *  Assignement operator. 
    *  Copies the contents from one CDatum object to another.
    *  @param source reference to the recipient object.

@@ -38,6 +38,8 @@ CDatum::CDatum(const string& title, void* value, C_INT32 type, const string& obj
   mObject = object;
 }
 
+void CDatum::cleanup() {}
+
 /**
  *  Assignement operator. 
  *  Copies the contents from one CDatum object to another.
@@ -643,7 +645,7 @@ void CDatum::compileDatum(CModel &Model)
       IStr = getObjectIStr(mObject, 0);
       Index = Model.findStep(IStr);
       if (Index == -1) break;
-      mpValue = Model.getReactions()[Index].getFluxAddr();
+      mpValue = Model.getReactions()[Index]->getFluxAddr();
       mType = CFLOAT64; 
       break;
     case D_VOL:
@@ -657,7 +659,7 @@ void CDatum::compileDatum(CModel &Model)
       IStr = getObjectIStr(mObject, 0);
       Index = Model.findMoiety(IStr);
       if (Index == -1) break;
-      mpValue = (*Model.getMoieties())[Index].getNumberAddr();
+      mpValue = Model.getMoieties()[Index]->getNumberAddr();
       mType = CFLOAT64;
       break;	
 #if 0						
@@ -672,9 +674,9 @@ void CDatum::compileDatum(CModel &Model)
       JStr = getObjectJStr(mObject);
       Index = Model.findStep(IStr);
       if (Index == -1) break;
-      Index1 = Model.getReactions()[Index].findPara(JStr);
+      Index1 = Model.getReactions()[Index]->findPara(JStr);
       if (Index1 == -1) break;
-      mpValue = (C_FLOAT64 *)Model.getReactions()[Index].getId2Parameters()[Index1].getValueAddr();
+      mpValue = (C_FLOAT64 *)Model.getReactions()[Index]->getId2Parameters()[Index1].getValueAddr();
       mType = CFLOAT64;
       break;
 #if 0

@@ -38,18 +38,19 @@ COutput::COutput()
   RepMCA = 0;
   RepComments = 1;	//???? No such configure variable in *.GPS files
 
-  mOutput = NULL;
+  //  mOutput = NULL;
 }
 
 void COutput::init()
 {
-  mOutput = new CCOutputLine;
+  //  mOutput = new CCOutputLine;
 }
 
 void COutput::cleanup()
 {
-  if (mOutput) delete mOutput;
-  mOutput = NULL;
+  //  if (mOutput) delete mOutput;
+  //  mOutput = NULL;
+  mOutput.cleanup();
 }
 
 /**
@@ -100,7 +101,7 @@ COutput& COutput::operator=(const COutput &source)
  *  @return mOutput
  *  @see mOutput
  */
-CCOutputLine * COutput::getList() const
+const C_CopasiVectorS < COutputLine > & COutput::getList() const
 {
   return mOutput;
 }
@@ -112,8 +113,8 @@ CCOutputLine * COutput::getList() const
  */
 void COutput::addLine(COutputLine &newLine)
 {
-  if (!mOutput) init();
-  mOutput->add(newLine);
+  // if (!mOutput) init();
+  mOutput.add(newLine);
 }
 
 /**
@@ -129,8 +130,7 @@ C_INT32 COutput::save(CWriteConfig & configbuffer)
 
   writeDefaultVar(configbuffer);
 
-  if ((Fail = mOutput->save(configbuffer)))
-    return Fail;
+  mOutput.save(configbuffer);
 
   return Fail;
 }
@@ -176,11 +176,11 @@ void COutput::sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator
 {
   string Name;
 
-  for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      Name = (*mOutput)[i].getName();
+      Name = mOutput[i]->getName();
       if (Name == SSName)
-	(*mOutput)[i].sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
+	mOutput[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 
 }
@@ -192,11 +192,11 @@ void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, 
 {
   string Name;
 
-  for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      Name = (*mOutput)[i].getName();
+      Name = mOutput[i]->getName();
       if (Name == SSName)
-	(*mOutput)[i].sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
+	mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
@@ -207,11 +207,11 @@ void COutput::dynOutputTitles(ofstream &fout, string &DynName, C_INT16 DynSepara
 {
   string Name;
 
-  for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      Name = (*mOutput)[i].getName();
+      Name = mOutput[i]->getName();
       if (Name == DynName)
-	(*mOutput)[i].dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
+	mOutput[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 
 }
@@ -223,11 +223,11 @@ void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparato
 {
   string Name;
 
-  for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      Name = (*mOutput)[i].getName();
+      Name = mOutput[i]->getName();
       if (Name == DynName)
-	(*mOutput)[i].dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
+	mOutput[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 
 }
@@ -238,9 +238,9 @@ void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparato
 void COutput::compile(string &name, CModel &model)
 {
 
-  for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      (*mOutput)[i].compile(name, model);
+      mOutput[i]->compile(name, model);
     }
 }
 
@@ -342,17 +342,17 @@ void COutput::repParams(ofstream &fout, CModel & model)
   for (i = 0; i < model.getReactions().size(); i++)
     {
 	  
-      StrOut = model.getReactions()[i].getName();
+      StrOut = model.getReactions()[i]->getName();
       fout << StrOut << " (";
 
-      StrOut = model.getReactions()[i].getFunction().getName();
+      StrOut = model.getReactions()[i]->getFunction().getName();
       fout << StrOut << ")" << endl;
 
-      for (j = 0; j < model.getReactions()[i].getId2Parameters().size(); j++)
+      for (j = 0; j < model.getReactions()[i]->getId2Parameters().size(); j++)
 	{
 
-	  fout << " " << model.getReactions()[i].getId2Parameters()[j].getIdentifierName() << " =  ";
-	  fout << setprecision(4) << model.getReactions()[i].getId2Parameters()[j].getValue();
+	  fout << " " << model.getReactions()[i]->getId2Parameters()[j].getIdentifierName() << " =  ";
+	  fout << setprecision(4) << model.getReactions()[i]->getId2Parameters()[j].getValue();
 	  fout << endl;
 		
 	}
@@ -391,7 +391,7 @@ void COutput::repStruct(ofstream &fout, CModel & model)
   for (i = 0; i < model.getReactions().size(); i++)
     {
       fout << setw(2) << i << " - ";
-      fout << model.getReactions()[i].getName();
+      fout << model.getReactions()[i]->getName();
       fout << endl;
     }
 
@@ -457,14 +457,14 @@ void COutput::repStruct(ofstream &fout, CModel & model)
 
   fout << endl;
 
-  if (model.getMoieties()->size() > 0)
+  if (model.getMoieties().size() > 0)
     {
       fout << endl << "CONSERVATION RELATIONSHIPS" << endl;
 		
-      for (i = 0; i < model.getMoieties()->size(); i++)
+      for (i = 0; i < model.getMoieties().size(); i++)
 	{
-	  fout << (*model.getMoieties())[i].getDescription() << " = " ;
-	  fout << (*model.getMoieties())[i].getNumber() << endl;
+	  fout << model.getMoieties()[i]->getDescription() << " = " ;
+	  fout << model.getMoieties()[i]->getNumber() << endl;
 
 	}
     }
@@ -490,9 +490,9 @@ void COutput::repMCA(ofstream &fout)
  */
 void COutput::dynOutputTitles(ofstream &fout, string &DynName)
 {
-  for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      (*mOutput)[i].dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
+      mOutput[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 
 }
@@ -502,9 +502,9 @@ void COutput::dynOutputTitles(ofstream &fout, string &DynName)
  */
 void COutput::dynOutputData(ofstream &fout, string &DynName)
 {
-  for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      (*mOutput)[i].sSOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
+      mOutput[i]->sSOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 
 }
@@ -515,10 +515,10 @@ void COutput::dynOutputData(ofstream &fout, string &DynName)
 void COutput::sSOutputTitles(ofstream &fout, string &SSName)
 {
 
-  for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      if (SSName == (*mOutput)[i].getName())
-	(*mOutput)[i].sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
+      if (SSName == mOutput[i]->getName())
+	mOutput[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
@@ -527,10 +527,10 @@ void COutput::sSOutputTitles(ofstream &fout, string &SSName)
  */
 void COutput::sSOutputData(ofstream &fout, string &SSName)
 {
-  for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      if (SSName == (*mOutput)[i].getName())
-	(*mOutput)[i].sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
+      if (SSName == mOutput[i]->getName())
+	mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
@@ -772,9 +772,11 @@ void COutput::setModel(const CModel &model)
   Model = model;
 }
 
+#ifdef XXXX
 CCOutputLine::CCOutputLine() {}
 
 CCOutputLine::~CCOutputLine() {}
 
 C_INT16 CCOutputLine::isInsertAllowed(const COutputLine & src)
 {return TRUE;}
+#endif // XXXX

@@ -41,16 +41,6 @@ class CKinIdentifier: public CBaseIdentifier
   ~CKinIdentifier();
 };
 
-class CKinNodes: public CCopasiVector < CNodeK >
-{
- public:
-  CKinNodes();
-  ~CKinNodes();
-
- private:
-  C_INT16 isInsertAllowed(const CNodeK & src);
-};
-
 class CKinFunction: public CBaseFunction
 {
   // Attributes
@@ -58,7 +48,7 @@ class CKinFunction: public CBaseFunction
   /**
    *  The vector of nodes of the binary tree of the function
    */
-  CKinNodes * mNodes;
+  C_CopasiVectorS < CNodeK > mNodes;
     
   /**
    *  Internal variable
@@ -119,9 +109,9 @@ class CKinFunction: public CBaseFunction
 
   /**
    *  This retrieves the node tree of the function
-   *  @return "CCopasiVector < CNodeK > &"
+   *  @return "C_CopasiVectorS < CNodeK > &"
    */
-  CKinNodes & nodes();
+  C_CopasiVectorS < CNodeK > & nodes();
 
   /**
    *  This sets the type of an identifier

@@ -16,7 +16,7 @@
  */
 COutputList::COutputList()
 {
-  mList = NULL;
+  //  mList = NULL;
 }
 
 COutputList::~COutputList()
@@ -36,13 +36,14 @@ COutputList::COutputList(CReadConfig &configbuffer)
 
 void COutputList::init()
 {
-  mList = new CCOutput;
+  //  mList = new CCOutput;
 }
 
 void COutputList::cleanup()
 {
-  if (mList) delete mList;
-  mList = NULL;
+  //  if (mList) delete mList;
+  //  mList = NULL;
+  mList.cleanup();
 }
 
 /**
@@ -56,7 +57,7 @@ C_INT32 COutputList::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
 
-  mList->save(configbuffer);
+  mList.save(configbuffer);
 
   return Fail;
 }
@@ -88,7 +89,7 @@ C_INT32 COutputList::load(CReadConfig & configbuffer)
  *  @return mList
  *  @see mList
  */
-CCOutput * COutputList::getList() const
+const C_CopasiVectorS < COutput > & COutputList::getList() const
 {
   return mList;
 }
@@ -100,8 +101,8 @@ CCOutput * COutputList::getList() const
  */
 void COutputList::addOutput(COutput &newOutput)
 {
-  if (!mList) init();
-  mList->add(newOutput);
+  //  if (!mList) init();
+  mList.add(newOutput);
 }
 
 /**
@@ -111,9 +112,9 @@ void COutputList::setModel(const CModel &model)
 {
   Model = model;
   // Temporarily use, need consideration???
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      (*mList)[i].setModel(model);
+      mList[i]->setModel(model);
     }
 
 }
@@ -123,9 +124,9 @@ void COutputList::setModel(const CModel &model)
  */
 void COutputList::copasiRep(ofstream &fout, CModel & model)
 {
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      (*mList)[i].copasiRep(fout, model);
+      mList[i]->copasiRep(fout, model);
     }
 }
 
@@ -134,9 +135,9 @@ void COutputList::copasiRep(ofstream &fout, CModel & model)
  */
 void COutputList::copasiSS(ofstream &fout, int time)
 {
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      (*mList)[i].copasiSS(fout, time);
+      mList[i]->copasiSS(fout, time);
     }
 }
 
@@ -145,25 +146,27 @@ void COutputList::copasiSS(ofstream &fout, int time)
  */
 void COutputList::copasiDyn(ofstream &fout, int time)
 {
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      (*mList)[i].copasiDyn(fout, time);
+      mList[i]->copasiDyn(fout, time);
     }
 }
 
 void COutputList::compile(string &name)
 {
 
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      (*mList)[i].compile(name, Model);
+      mList[i]->compile(name, Model);
     }
 
 }
 
+#ifdef XXXX
 CCOutput::CCOutput() {}
 
 CCOutput::~CCOutput() {}
 
 C_INT16 CCOutput::isInsertAllowed(const COutput & src)
 {return TRUE;}
+#endif // XXXX

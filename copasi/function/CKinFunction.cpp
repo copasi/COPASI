@@ -13,14 +13,14 @@ C_INT16 DefinedInsertAllowed(CNodeK src);
 CKinFunction::CKinFunction()
 {
   setType(CBaseFunction::USERDEFINED);
-  mNodes = NULL;
+  // mNodes = NULL;
 }
 
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
   setType(CBaseFunction::USERDEFINED);
-  mNodes = NULL;
+  // mNodes = NULL;
 
   setName(name);
   setDescription(description);
@@ -29,16 +29,16 @@ CKinFunction::CKinFunction(const string & name,
 void CKinFunction::initialize() 
 {
   cleanup();
-  mNodes = new CKinNodes;
+  // mNodes = new CKinNodes;
 }
 
 CKinFunction::~CKinFunction() {}
 
 void CKinFunction::cleanup() 
 {
-  if (mNodes) delete mNodes;
-  mNodes = NULL;
-    
+  // if (mNodes) delete mNodes;
+  // mNodes = NULL;
+  mNodes.cleanup();
   CBaseFunction::cleanup();
 }
 
@@ -46,14 +46,14 @@ void CKinFunction::copy(const CKinFunction & in)
 {
   CBaseFunction::copy(in);
 
-  for (unsigned C_INT32 i = 0; i < in.mNodes->size(); i++)
-    mNodes->add((*in.mNodes)[i]);
+  mNodes = C_CopasiVectorS < CNodeK > (in.mNodes);
+  //for (unsigned C_INT32 i = 0; i < in.mNodes.size(); i++)
+  //  mNodes.add(in.mNodes[i]);
     
   mNidx = in.mNidx;    
 
   connectNodes();
   initIdentifiers();
-
 }
 
 C_INT32 CKinFunction::load(CReadConfig & configbuffer,
@@ -70,8 +70,7 @@ C_INT32 CKinFunction::load(CReadConfig & configbuffer,
   if ((Fail = configbuffer.getVariable("Nodes", "C_INT32", &Size)))
     return Fail;
 
-  if ((Fail = mNodes->load(configbuffer,Size)))
-    return Fail;
+  mNodes.load(configbuffer,Size);
 
   connectNodes();
   initIdentifiers();
@@ -87,27 +86,16 @@ C_INT32 CKinFunction::save(CWriteConfig & configbuffer)
     
   if ((Fail = CBaseFunction::save(configbuffer))) return Fail;
 
-#ifdef XXXX    
-  TmpString = getName();
-  if ((Fail = configbuffer.setVariable("FunctionName", "string", &TmpString)))
-    return Fail;
-    
-  TmpString = getDescription();
-  if ((Fail = configbuffer.setVariable("Description", "string", &TmpString)))
-    return Fail;
-#endif // XXXX
-
-  TmpLong = mNodes->size();
+  TmpLong = mNodes.size();
   if ((Fail = configbuffer.setVariable("Nodes", "C_INT32", &TmpLong)))
     return Fail;
 
-  if ((Fail = mNodes->save(configbuffer)))
-    return Fail;
+  mNodes.save(configbuffer);
     
   return Fail;
 }
 
-CKinNodes & CKinFunction::nodes() {return *mNodes;}
+C_CopasiVectorS < CNodeK > & CKinFunction::nodes() {return mNodes;}
 
 void CKinFunction::setIdentifierType(const string & name,
                                      char identifierType)
@@ -140,27 +128,27 @@ C_INT32 CKinFunction::parse()
   // input for the scanner is from the buffer
   kkbuff = kk_scan_string(buffer);
   // add the root node
-  mNodes->add(CNodeK(N_ROOT, N_NOP));
+  mNodes.add(CNodeK(N_ROOT, N_NOP));
   // call the lexical analyser successively until done
   for (i=1; i!=0;)
     {
       i = kklex();
       switch (i)
         {
-        case N_IDENTIFIER: mNodes->add(CNodeK(kktext)); break;
-        case N_NUMBER:     mNodes->add(CNodeK(atof(kktext))); break;
-        case '+':          mNodes->add(CNodeK(N_OPERATOR, '+')); break;
-        case '-':          mNodes->add(CNodeK(N_OPERATOR, '-')); break;
-        case '*':          mNodes->add(CNodeK(N_OPERATOR, '*')); break;
-        case '/':          mNodes->add(CNodeK(N_OPERATOR, '/')); break;
-        case '^':          mNodes->add(CNodeK(N_OPERATOR, '^')); break;
-        case '(':          mNodes->add(CNodeK(N_OPERATOR, '(')); break;
-        case ')':          mNodes->add(CNodeK(N_OPERATOR, ')')); break;
-        case N_LOG:        mNodes->add(CNodeK(N_FUNCTION, N_LOG)); break;
-        case N_LOG10:      mNodes->add(CNodeK(N_FUNCTION, N_LOG10)); break;
-        case N_EXP:        mNodes->add(CNodeK(N_FUNCTION, N_EXP)); break;
-        case N_SIN:        mNodes->add(CNodeK(N_FUNCTION, N_SIN)); break;
-        case N_COS:        mNodes->add(CNodeK(N_FUNCTION, N_COS)); break;
+        case N_IDENTIFIER: mNodes.add(CNodeK(kktext)); break;
+        case N_NUMBER:     mNodes.add(CNodeK(atof(kktext))); break;
+        case '+':          mNodes.add(CNodeK(N_OPERATOR, '+')); break;
+        case '-':          mNodes.add(CNodeK(N_OPERATOR, '-')); break;
+        case '*':          mNodes.add(CNodeK(N_OPERATOR, '*')); break;
+        case '/':          mNodes.add(CNodeK(N_OPERATOR, '/')); break;
+        case '^':          mNodes.add(CNodeK(N_OPERATOR, '^')); break;
+        case '(':          mNodes.add(CNodeK(N_OPERATOR, '(')); break;
+        case ')':          mNodes.add(CNodeK(N_OPERATOR, ')')); break;
+        case N_LOG:        mNodes.add(CNodeK(N_FUNCTION, N_LOG)); break;
+        case N_LOG10:      mNodes.add(CNodeK(N_FUNCTION, N_LOG10)); break;
+        case N_EXP:        mNodes.add(CNodeK(N_FUNCTION, N_EXP)); break;
+        case N_SIN:        mNodes.add(CNodeK(N_FUNCTION, N_SIN)); break;
+        case N_COS:        mNodes.add(CNodeK(N_FUNCTION, N_COS)); break;
         case N_NOP:        // this is an error
 	  clearNodes();
 	  delete [] buffer;
@@ -181,10 +169,10 @@ C_INT32 CKinFunction::parse()
 C_FLOAT64 
 CKinFunction::calcValue(const vector < CCallParameter > & callParameters) const
 {
-  return (*mNodes)[0].getLeft().value(callParameters[0].identifiers());
+  return mNodes[0]->getLeft().value(callParameters[0].identifiers());
 }
 
-void CKinFunction::clearNodes() {mNodes->cleanup();}
+void CKinFunction::clearNodes() {mNodes.cleanup();}
 
 C_INT32 CKinFunction::connectNodes()
 {
@@ -196,19 +184,19 @@ C_INT32 CKinFunction::connectNodes()
   mNidx = 1;
 
   // point all Left & Right to the root node
-  for (i=1; i<mNodes->size(); i++)
+  for (i=1; i<mNodes.size(); i++)
     {
-      (*mNodes)[i].setLeft((*mNodes)[0]);
-      (*mNodes)[i].setRight((*mNodes)[0]);
+      mNodes[i]->setLeft(mNodes[0]);
+      mNodes[i]->setRight(mNodes[0]);
     }
     
   // update pointers and references in the tree
-  (*mNodes)[0].setLeft(parseExpression(0));
+  mNodes[0]->setLeft(parseExpression(0));
 
   // further checking for errors
-  if ((*mNodes)[0].isLeftValid() && 
-      (*mNodes)[0].getLeft().isOperator() && 
-      (*mNodes)[0].getLeft().getSubtype() == '(')
+  if (mNodes[0]->isLeftValid() && 
+      mNodes[0]->getLeft().isOperator() && 
+      mNodes[0]->getLeft().getSubtype() == '(')
     {
       //  sprintf(errstr, "ERROR - missing operand");
       //  errnode should index the node in error 
@@ -219,17 +207,17 @@ C_INT32 CKinFunction::connectNodes()
       errfl++;
     }
 
-  for (i=1; i<mNodes->size() && !errfl; i++)
+  for (i=1; i<mNodes.size() && !errfl; i++)
     {
-      switch ((*mNodes)[i].getType())
+      switch (mNodes[i]->getType())
         {
         case N_OPERATOR:
-	  if (!(*mNodes)[i].isLeftValid()      ||
-	      !(*mNodes)[i].isRightValid()     ||
-	      &(*mNodes)[i].getLeft()  == &(*mNodes)[0] || 
-	      &(*mNodes)[i].getRight() == &(*mNodes)[0])
-	    if ((*mNodes)[i].getSubtype() != '(' &&
-		(*mNodes)[i].getSubtype() != ')')
+	  if (!mNodes[i]->isLeftValid()      ||
+	      !mNodes[i]->isRightValid()     ||
+	      &mNodes[i]->getLeft()  == mNodes[0] || 
+	      &mNodes[i]->getRight() == mNodes[0])
+	    if (mNodes[i]->getSubtype() != '(' &&
+		mNodes[i]->getSubtype() != ')')
 	      {
 		if (!errfl)
 		  {
@@ -241,18 +229,18 @@ C_INT32 CKinFunction::connectNodes()
 	      }
 	  if (!errfl)
             {
-	      if ((*mNodes)[i].isLeftValid()    && 
-		  (*mNodes)[i].getLeft().isOperator() && 
-		  (*mNodes)[i].getLeft().getSubtype() == '(' )
+	      if (mNodes[i]->isLeftValid()    && 
+		  mNodes[i]->getLeft().isOperator() && 
+		  mNodes[i]->getLeft().getSubtype() == '(' )
                 {
 		  //           sprintf(errstr, "ERROR - missing operand");
 		  fatalError();
 		  errnode = -1;
 		  errfl++;
                 }
-	      if ((*mNodes)[i].isRightValid()    && 
-		  (*mNodes)[i].getRight().isOperator() && 
-		  (*mNodes)[i].getRight().getSubtype() == ')' )
+	      if (mNodes[i]->isRightValid()    && 
+		  mNodes[i]->getRight().isOperator() && 
+		  mNodes[i]->getRight().getSubtype() == ')' )
                 {
 		  //           sprintf(errstr, "ERROR - missing operand");
 		  fatalError();
@@ -262,8 +250,8 @@ C_INT32 CKinFunction::connectNodes()
             }
 	  break;
         case N_IDENTIFIER:
-	  if ((*mNodes)[i].isLeftValid() || 
-	      (*mNodes)[i].isRightValid()  )
+	  if (mNodes[i]->isLeftValid() || 
+	      mNodes[i]->isRightValid()  )
             {
 	      if (!errfl)
                 {
@@ -275,8 +263,8 @@ C_INT32 CKinFunction::connectNodes()
             }
 	  break;
         case N_NUMBER:
-	  if ((*mNodes)[i].isLeftValid() || 
-	      (*mNodes)[i].isRightValid()  )
+	  if (mNodes[i]->isLeftValid() || 
+	      mNodes[i]->isRightValid()  )
             {
 	      if (!errfl)
                 {
@@ -304,14 +292,14 @@ CNodeK * CKinFunction::parseExpression(C_INT16 priority)
   lhs = parsePrimary();
   if (!lhs) return NULL;
 
-  while( mNidx < mNodes->size() && 
-	 (*mNodes)[mNidx].isOperator() && 
-	 priority < (*mNodes)[mNidx].leftPrecedence())
+  while( mNidx < mNodes.size() && 
+	 mNodes[mNidx]->isOperator() && 
+	 priority < mNodes[mNidx]->leftPrecedence())
     {
       op = mNidx;
       rhs = NULL;
       ++mNidx;
-      rhs = parseExpression((*mNodes)[op].rightPrecedence());
+      rhs = parseExpression(mNodes[op]->rightPrecedence());
       if (!rhs)
         {
 	  if (!errfl)
@@ -324,9 +312,9 @@ CNodeK * CKinFunction::parseExpression(C_INT16 priority)
         }
       else
         {
-	  (*mNodes)[op].setLeft(*lhs);
-	  (*mNodes)[op].setRight(*rhs);
-	  lhs = &(*mNodes)[op] ;
+	  mNodes[op]->setLeft(lhs);
+	  mNodes[op]->setRight(rhs);
+	  lhs = mNodes[op] ;
         }
     }
   return lhs;
@@ -343,7 +331,7 @@ CNodeK * CKinFunction::parsePrimary()
   npt = NULL;
 
   //    if (Node[mNidx]==NULL)
-  if (mNidx >= mNodes->size())
+  if (mNidx >= mNodes.size())
     {
       //  if (!errfl) // execute only if no previous error
       //   errnode = mNidx-1;
@@ -351,29 +339,29 @@ CNodeK * CKinFunction::parsePrimary()
       return NULL;
     } 
     
-  if ((*mNodes)[mNidx].isNumber() || 
-      (*mNodes)[mNidx].isIdentifier())
+  if (mNodes[mNidx]->isNumber() || 
+      mNodes[mNidx]->isIdentifier())
     {
       t = 'K';
     }
   else 
     {
-      t = (*mNodes)[mNidx].getSubtype();
+      t = mNodes[mNidx]->getSubtype();
     }
     
   switch (t)
     {
     case 'K':
-      (*mNodes)[mNidx].setLeft(NULL);
-      (*mNodes)[mNidx].setRight(NULL);
-      npt = &(*mNodes)[mNidx];
+      mNodes[mNidx]->setLeft(NULL);
+      mNodes[mNidx]->setRight(NULL);
+      npt = mNodes[mNidx];
       ++mNidx;
       return npt;
     case '(': ++mNidx;
       npt = parseExpression(0);
-      if (mNidx < mNodes->size()      && 
-	  (*mNodes)[mNidx].isOperator() && 
-	  (*mNodes)[mNidx].getSubtype() == ')')
+      if (mNidx < mNodes.size()      && 
+	  mNodes[mNidx]->isOperator() && 
+	  mNodes[mNidx]->getSubtype() == ')')
         {
 	  ++mNidx;
 	  return npt;
@@ -407,27 +395,27 @@ CNodeK * CKinFunction::parsePrimary()
         }
       else
         {
-	  npt = &(*mNodes)[op];
+	  npt = mNodes[op];
 	  // unary operators are taken as functions
-	  (*mNodes)[op].setType(N_FUNCTION);
-	  (*mNodes)[op].setLeft(primary);
-	  (*mNodes)[op].setRight(NULL);
-	  return &(*mNodes)[op];
+	  mNodes[op]->setType(N_FUNCTION);
+	  mNodes[op]->setLeft(primary);
+	  mNodes[op]->setRight(NULL);
+	  return mNodes[op];
         }
     default:  return NULL;
     }
-  if (mNidx < mNodes->size()      &&
-      (*mNodes)[mNidx].isOperator() &&
-      (*mNodes)[mNidx].getSubtype() == '(')
+  if (mNidx < mNodes.size()      &&
+      mNodes[mNidx]->isOperator() &&
+      mNodes[mNidx]->getSubtype() == '(')
     {
       ++mNidx;
-      if (mNidx < mNodes->size()      &&
-	  (*mNodes)[mNidx].isOperator() &&
-	  (*mNodes)[mNidx].getSubtype() == ')')
+      if (mNidx < mNodes.size()      &&
+	  mNodes[mNidx]->isOperator() &&
+	  mNodes[mNidx]->getSubtype() == ')')
         {
-	  (*mNodes)[mNidx].setLeft(npt);
-	  (*mNodes)[mNidx].setRight(NULL);
-	  return &(*mNodes)[mNidx];
+	  mNodes[mNidx]->setLeft(npt);
+	  mNodes[mNidx]->setRight(NULL);
+	  return mNodes[mNidx];
         }
       else parseExpression(0);
     }
@@ -456,23 +444,23 @@ void CKinFunction::initIdentifiers()
   callParameters().clear();
   callParameters().push_back(pCallParameter);
     
-  for(i = 0; i < mNodes->size(); i++)
+  for(i = 0; i < mNodes.size(); i++)
     {
-      if ((*mNodes)[i].isIdentifier())
+      if (mNodes[i]->isIdentifier())
         {
-	  Index = findIdentifier((*mNodes)[i].getName());
+	  Index = findIdentifier(mNodes[i]->getName());
 	  if ( Index.first == -1 )
             {
 	      pIdentifier = new CKinIdentifier;
-	      pIdentifier->setName((*mNodes)[i].getName());
-	      pIdentifier->setType((*mNodes)[i].getSubtype());
+	      pIdentifier->setName(mNodes[i]->getName());
+	      pIdentifier->setType(mNodes[i]->getSubtype());
 	      Index.second = callParameters()[0]->identifiers().size();
 	      callParameters()[0]->identifiers().push_back(pIdentifier);
             }
-	  (*mNodes)[i].setIndex(Index.second);
+	  mNodes[i]->setIndex(Index.second);
 	  ((CKinIdentifier *) callParameters()[0]->
 	   identifiers()[Index.second])->
-	    mNodes.push_back(&(*mNodes)[i]);
+	    mNodes.push_back(mNodes[i]);
         }
     }
   callParameters()[0]->setCount(callParameters()[0]->identifiers().size());
@@ -481,10 +469,3 @@ void CKinFunction::initIdentifiers()
 CKinIdentifier::CKinIdentifier() {}
 
 CKinIdentifier::~CKinIdentifier() {} 
-
-CKinNodes::CKinNodes() {}
-
-CKinNodes::~CKinNodes() {}
-
-C_INT16 CKinNodes::isInsertAllowed(const CNodeK & src)
-{return TRUE;}

@@ -17,18 +17,19 @@
  */
 COutputLine::COutputLine()
 {
-  mLine = NULL;
+  //  mLine = NULL;
 }
 
 void COutputLine::init()
 {
-  mLine = new CCDatum;
+  //  mLine = new CCDatum;
 }
 
 void COutputLine::cleanup()
 {
-  if (mLine) delete mLine;
-  mLine = NULL;
+  // if (mLine) delete mLine;
+  // mLine = NULL;
+  mLine.cleanup();
 }
 
 /**
@@ -56,7 +57,7 @@ COutputLine& COutputLine::operator=(const COutputLine &source)
  *  @return mLine
  *  @see mLine
  */
-COutputLine::CCDatum * COutputLine::getLine() const
+const C_CopasiVectorS < CDatum > & COutputLine::getLine() const
 {
   return mLine;
 }
@@ -78,8 +79,10 @@ void COutputLine::setName(string LineName)
      */
 void COutputLine::addDatum(CDatum & newDatum)
 {
-  mLine->add(newDatum);
+  mLine.add(newDatum);
 }
+
+C_INT32 COutputLine::load(CReadConfig & configbuffer) {return 0;}
 
 /**
  *  Loads an object with data coming from a CReadConfig object.
@@ -133,7 +136,7 @@ C_INT32 COutputLine::save(CWriteConfig & configbuffer)
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
 
-  Size = mLine->size();
+  Size = mLine.size();
 
   if ((Fail = configbuffer.setVariable(mName, "string", NULL)))
     return Fail;
@@ -142,7 +145,7 @@ C_INT32 COutputLine::save(CWriteConfig & configbuffer)
     return Fail;
 
   // Output each datum in this line
-  Fail = mLine->save(configbuffer);
+  mLine.save(configbuffer);
 	
   return Fail;
 }
@@ -158,7 +161,7 @@ void COutputLine::sSOutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SS
 
   // Set Left Justification
   fout.setf(ios::left);
-  for (i = 0; i < mLine->size(); i++)
+  for (i = 0; i < mLine.size(); i++)
     {
       if (i) {
 	switch (SSSeparator)
@@ -174,7 +177,7 @@ void COutputLine::sSOutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SS
 	    break;
 	  }
       }
-      item = (*mLine)[i];
+      item = *mLine[i];
 		
       if (item.getTitle().length() > (unsigned C_INT32) SSColWidth)
 	Title = item.getTitle().substr(0, SSColWidth);
@@ -206,7 +209,7 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSCo
   fout.setf(ios::scientific, ios::floatfield);
   fout.setf(ios::showpoint);
 
-  for (i = 0; i < mLine->size(); i++)
+  for (i = 0; i < mLine.size(); i++)
     {
       if (i) {
 	switch (SSSeparator)
@@ -223,34 +226,34 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSCo
 	  }
       }
 
-      Type = (*mLine)[i].getType();
+      Type = mLine[i]->getType();
 
       switch (Type)
 	{
 	case 1:	
 	  // Type is C_INT16
-	  Value1 = (C_INT16 *)(*mLine)[i].getValue();
+	  Value1 = (C_INT16 *)mLine[i]->getValue();
 	  if (!Value1)
 	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;  //?? Sign setw(SSColWidth-1)
 	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value1; //?? Sign
 	  break;
 	case 2:
 	  // Type is C_INT32
-	  Value2 = (C_INT32 *)(*mLine)[i].getValue();
+	  Value2 = (C_INT32 *)mLine[i]->getValue();
 	  if (!Value2)
 	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
 	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value2;
 	  break;
 	case 3:
 	  // Type is C_FLOAT32
-	  Value3 = (C_FLOAT32 *)(*mLine)[i].getValue();
+	  Value3 = (C_FLOAT32 *)mLine[i]->getValue();
 	  if (!Value3)
 	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
 	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value3;
 	  break;
 	case 4:
 	  // Type is C_FLOAT64
-	  Value4 = (C_FLOAT64 *)(*mLine)[i].getValue();
+	  Value4 = (C_FLOAT64 *)mLine[i]->getValue();
 	  if (!Value4)
 	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
 	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value4;
@@ -275,7 +278,7 @@ void COutputLine::dynOutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 
 
   // Set Left Justification
   fout.setf(ios::left);
-  for (i = 0; i < mLine->size(); i++)
+  for (i = 0; i < mLine.size(); i++)
     {
       if (i) {
 	switch (DynSeparator)
@@ -291,7 +294,7 @@ void COutputLine::dynOutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 
 	    break;
 	  }
       }
-      item = (*mLine)[i];
+      item = *mLine[i];
 		
       if (item.getTitle().length() > (unsigned C_INT16) DynColWidth)
 	Title = item.getTitle().substr(0, DynColWidth);
@@ -323,7 +326,7 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 Dy
   fout.setf(ios::scientific, ios::floatfield);
   fout.setf(ios::showpoint);
 
-  for (i = 0; i < mLine->size(); i++)
+  for (i = 0; i < mLine.size(); i++)
     {
       if (i) {
 	switch (DynSeparator)
@@ -340,34 +343,34 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 Dy
 	  }
       }
 
-      Type = (*mLine)[i].getType();
+      Type = mLine[i]->getType();
 
       switch (Type)
 	{
 	case 1:	
 	  // Type is C_INT16
-	  Value1 = (C_INT16 *)(*mLine)[i].getValue();
+	  Value1 = (C_INT16 *)mLine[i]->getValue();
 	  if (!Value1)
 	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
 	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value1;
 	  break;
 	case 2:
 	  // Type is C_INT32
-	  Value2 = (C_INT32 *)(*mLine)[i].getValue();
+	  Value2 = (C_INT32 *)mLine[i]->getValue();
 	  if (!Value2)
 	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
 	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value2;
 	  break;
 	case 3:
 	  // Type is C_FLOAT32
-	  Value3 = (C_FLOAT32 *)(*mLine)[i].getValue();
+	  Value3 = (C_FLOAT32 *)mLine[i]->getValue();
 	  if (!Value3)
 	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
 	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value3;
 	  break;
 	case 4:
 	  // Type is C_FLOAT64
-	  Value4 = (C_FLOAT64 *)(*mLine)[i].getValue();
+	  Value4 = (C_FLOAT64 *)mLine[i]->getValue();
 	  if (!Value4)
 	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
 	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value4;
@@ -388,16 +391,18 @@ void COutputLine::compile(string &name, CModel &model)
 {
   if (!mName.compare(name))
     { // ???? Maybe it isnot necessary after finish whole module
-      for (unsigned C_INT32 i = 0; i < mLine->size(); i++)
+      for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
 	{
-	  (*mLine)[i].compileDatum(model);
+	  mLine[i]->compileDatum(model);
 	}
     }
 }
 
+#ifdef XXXX
 COutputLine::CCDatum::CCDatum() {}
 
 COutputLine::CCDatum::~CCDatum() {}
 
 C_INT16 COutputLine::CCDatum::isInsertAllowed(const CDatum & src)
 {return TRUE;}
+#endif // XXXX

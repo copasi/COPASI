@@ -1,329 +1,369 @@
-#ifndef COPASI_CCopasiVector
-#define COPASI_CCopasiVector
+#ifndef COPASI_C_CopasiVector
+#define COPASI_C_CopasiVector
 
 #include <vector>
 #include <iostream>
-#include <typeinfo>
+#include <assert.h>
 
-#include "CCopasiMessage.h"
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
 
-template < class CType > 
-class CCopasiVector
+template < class CType >
+class C_CopasiVector : protected vector < CType * >
 {
-  // Attributes
- private:
-  /**
-   *
-   */
-  vector < CType > *mTypes;
-
+ public:
+  typedef CType* value_type;
+  typedef value_type* pointer;
+  typedef const value_type* const_pointer;
+  typedef value_type* iterator;
+  typedef const value_type* const_iterator;
+  typedef value_type& reference;
+  typedef const value_type& const_reference;
+  typedef size_t size_type;
+  typedef ptrdiff_t difference_type;
+ 
   // Operations
  public:
   /**
-   *
+   *  Default constructor
    */
-  CCopasiVector() 
-    {mTypes = new vector < CType >;}
+  C_CopasiVector() : vector < CType * > (){} 
 
   /**
-   *
+   *  Copy constructor
    */
-  virtual ~CCopasiVector() {delete mTypes;}
-
-  /**
-   *  Loads an object with data coming from a CReadConfig object.
-   *  (CReadConfig object reads an input stream)
-   *  @param "CReadConfig &" configbuffer reference to a CReadConfig object.
-   *  @return Fail
-   */
-  C_INT32 load(CReadConfig & configbuffer, C_INT32 size)
+  C_CopasiVector(const C_CopasiVector < CType > & src) :
+    vector < CType * > (src)
     {
-      C_INT32 Fail = 0;
-            
-      mTypes->resize(size);
-      for (C_INT32 i = 0; i < size; i++)
-	if (Fail = (*mTypes)[i].load(configbuffer)) break;
-    
-      return Fail;
+      unsigned C_INT32 i, imax = size();
+      iterator Target = begin();
+      const_iterator Source = src.begin();
+      
+      for (i=0; i<imax; i++)
+	*(Target++) = new CType(**(Source++));
     }
 
   /**
-   *  Saves the contents of the object to a CWriteConfig object.
-   *  (Which usually has a file attached but may also have socket)
-   *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
-   *  @return Fail
+   *  Destructor
    */
-  C_INT32 save(CWriteConfig & configbuffer)
+  virtual ~C_CopasiVector() {cleanup();}
+
+  /**
+   *  Cleanup
+   */
+  virtual void cleanup()
     {
-      C_INT32 Fail = 0;
-
-      for (unsigned C_INT32 i = 0; i < size(); i++)
-	if (Fail = (*mTypes)[i].save(configbuffer)) return Fail;
-    
-      return Fail;
+      unsigned C_INT32 i, imax = size();
+      iterator Target = begin();
+      
+      for (i=0; i<imax; i++)
+	(*(Target++))->cleanup();
+  
+      clear();
     }
-
+  
   /**
    *
    */
-  void add(const CType & src)
+  virtual void add(const CType & src)
     {
-      if ( ! isInsertAllowed(src) ) fatalError();
+      CType * Element = new CType(src);
+      
       // This is not very efficient !!!
       // It results in a lot of resizing of the vector !!!
-      mTypes->push_back(src);
+      push_back(Element);
     }
 
   /**
    *
    */
-  void cleanup() 
+  virtual void add(CType * src)
     {
-      for (unsigned C_INT32 i = 0; i < mTypes->size(); i++)
-	(*mTypes)[i].cleanup();
-      mTypes->clear();
-    }
-    
-  /**
-   *
-   */
-  void cleanup(C_INT32 index)
-    {
-      if ( 0 <= index && index < size() )
-	(*mTypes)[index].cleanup();
-      mTypes->erase(&(*mTypes)[index], &(*mTypes)[index+1]);
+      // This is not very efficient !!!
+      // It results in a lot of resizing of the vector !!!
+      push_back(src);
     }
 
   /**
+   *  Removes the index-th element from the vector
+   *  @param "const unsigned C_INT32 &" indecx
+   */
+  virtual void remove(const unsigned C_INT32 & index)
+    {
+      iterator Target = begin() + index;
+      assert(index < size());
+
+      (*Target)->cleanup();
+      delete *Target;
+      erase(Target, Target + 1);
+    }
+
+  /**
    *
    */
-  void cleanup(const string & name)
+  const CType * operator[](unsigned C_INT32 index) const
     {
-      C_INT32 Index = getIndex(name);
-      if ( Index == -1 ) fatalError();
-    
-      return cleanup(Index);
-    }
-
-  CType &operator[](unsigned C_INT32 index) 
-    {
-      if (size() <= index) fatalError();
-      return (*mTypes)[index];
-    }   
-
-  CType operator[](unsigned C_INT32 index) const    
-    {
-      if (size() <= index) fatalError();
-      return (*mTypes)[index];
-    }
-    
-  CType &operator[](const string &name) 
-    {
-      C_INT32 Index = getIndex(name);
-      if ( Index == -1 ) fatalError();
-            
-      return (*mTypes)[Index];
-    }   
-
-  CType operator[](const string &name) const
-    {
-      C_INT32 Index = getIndex(name);
-      if ( Index == -1 ) fatalError();
-            
-      return (*mTypes)[Index];
+      assert(index < size());
+      return *(begin() + index);
     }   
 
   /**
    *
    */
-  unsigned C_INT32 size() const {return mTypes->size();}
-
- private:
-  /**
-   *
-   */
-  virtual C_INT16 isInsertAllowed(const CType & src)
-    {return (getIndex(src.getName()) == (unsigned C_INT32) -1);}
- 
-  /**
-   *
-   */
-  unsigned C_INT32 getIndex(const string &name) const
+  CType * & operator[](unsigned C_INT32 index) 
     {
-      unsigned C_INT32 i;
-            
-      for (i = 0; i < size(); i++)
-	if ( name == (*mTypes)[i].getName() ) 
-	  return i;
-            
-      return -1;
-    }
+      assert(index < size());
+      return *(begin() + index);
+    }   
+
+  /**
+   *
+   */
+  virtual unsigned C_INT32 size() const 
+    {return vector < CType * >::size();}
 };
 
-#ifdef XXXX
-template < class CType > 
-class CCopasiVectorP
+template < class CType > class C_CopasiVectorS 
+: public C_CopasiVector < CType >
 {
-  // Attributes
- private:
-  /**
-   *
-   */
-  vector < CType > *mTypes;
-
   // Operations
  public:
   /**
-   *
+   *  Default constructor
    */
-  CCopasiVectorP() {mTypes = new vector < CType >;}
+  C_CopasiVectorS() : C_CopasiVector < CType > (){} 
 
   /**
-   *
+   *  Copy constructor
    */
-  virtual ~CCopasiVectorP() {delete mTypes;}
+  C_CopasiVectorS(const C_CopasiVectorS < CType > & src) :
+      C_CopasiVector < CType > (src) {}
+
+  /**
+   *  Destructor
+   */
+  virtual ~C_CopasiVectorS() {cleanup();}
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
    *  (CReadConfig object reads an input stream)
-   *  @param "CReadConfig &" configbuffer reference to a CReadConfig object.
-   *  @return Fail
-     */
-  C_INT32 load(CReadConfig & configbuffer, C_INT32 size)
+   *  @param "CReadConfig &" configbuffer reference to a CReadConfig object
+   *  @param "const unsigend C_INT32 &" size
+   */
+  virtual void load(CReadConfig & configbuffer, unsigned C_INT32 size)
     {
-      // This is broken
-      fatalError();
-            
-      C_INT32 Fail = 0;
-            
-      mTypes->resize(size);
-      for (C_INT32 i = 0; i < size; i++)
-	if (Fail = (*mTypes)[i]->load(configbuffer)) break;
-    
-      return Fail;
+      unsigned C_INT32 i;
+      
+      cleanup();
+      resize(size);
+      
+      C_CopasiVector< CType >::iterator Target = begin();
+ 
+      for (i=0; i<size; i++)
+	{
+	  *Target = new CType;
+	  (*(Target++))->load(configbuffer);
+	}
     }
-
+  
   /**
    *  Saves the contents of the object to a CWriteConfig object.
    *  (Which usually has a file attached but may also have socket)
    *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
-   *  @return Fail
    */
-  C_INT32 save(CWriteConfig & configbuffer)
+  virtual void save(CWriteConfig & configbuffer)
     {
-      C_INT32 Fail = 0;
-
-      for (unsigned C_INT32 i=0; i<size(); i++)
-	if (Fail = (*mTypes)[i]->save(configbuffer)) return Fail;
-    
-      return Fail;
+      unsigned C_INT32 i, imax = size();
+      C_CopasiVector< CType >::iterator Target = begin();
+      
+      for (i=0; i<imax; i++)
+	(*(Target++))->save(configbuffer);
     }
 
   /**
    *
    */
-  void add(const CType & src)
+  CType * & operator[](unsigned C_INT32 index) 
+    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+
+  /**
+   *
+   */
+  const CType * operator[](unsigned C_INT32 index) const
+    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+};
+
+template < class CType > class C_CopasiVectorN 
+: public C_CopasiVector < CType >
+{
+  // Operations
+ public:
+  /**
+   *  Default constructor
+   */
+  C_CopasiVectorN() : C_CopasiVector < CType > (){} 
+
+  /**
+   *  Copy constructor
+   */
+  C_CopasiVectorN(const C_CopasiVectorN < CType > & src) :
+      C_CopasiVector < CType > (src) {}
+
+  /**
+   *  Destructor
+   */
+  virtual ~C_CopasiVectorN() {cleanup();}
+
+  /**
+   *
+   */
+  virtual void add(const CType & src)
     {
-      if ( ! isInsertAllowed(src) ) fatalError();
+      CType * Element = new CType(src);
+      add(Element);
+    }
+
+  /**
+   *
+   */
+  virtual void add(CType * src)
+    {
+      isInsertAllowed(src);
       // This is not very efficient !!!
       // It results in a lot of resizing of the vector !!!
-      mTypes->push_back(src);
+      push_back(src);
     }
 
   /**
    *
    */
-  void cleanup() 
+  virtual void remove(const string & name)
     {
-      for (unsigned C_INT32 i = 0; i < mTypes->size(); i++)
-	{
-	  (*mTypes)[i]->cleanup();
-	  delete (*mTypes)[i];
-	}
-            
-      mTypes->clear();
-    }
+      unsigned C_INT32 Index = getIndex(name);
+      if ((signed) Index == -1 ) fatalError();
     
-  /**
-   *
-   */
-  void cleanup(C_INT32 index)
-    {
-      if ( 0 <= index && index < size() )
-	{
-	  (*mTypes)[index]->cleanup();
-	  delete (*mTypes)[i];
-                
-	  mTypes->erase(&(*mTypes)[index], &(*mTypes)[index+1]);
-	}
+      return C_CopasiVector< CType >::remove(Index);
     }
 
   /**
    *
    */
-  void cleanup(const string & name)
-    {
-      C_INT32 Index = getIndex(name);
-      if ( Index == -1 ) fatalError();
-    
-      return cleanup(Index);
-    }
+  CType * & operator[](unsigned C_INT32 index) 
+    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
 
-  CType &operator[](unsigned C_INT32 index) 
-    {
-      if (size() <= index) fatalError();
-      return (*mTypes)[index];
-    }   
+  /**
+   *
+   */
+  const CType * & operator[](unsigned C_INT32 index) const
+    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
 
-  CType operator[](unsigned C_INT32 index) const    
-    {
-      if (size() <= index) fatalError();
-      return (*mTypes)[index];
-    }
-    
-  CType &operator[](const string &name) 
+  /**
+   *
+   */
+  CType * operator[](const string &name) 
     {
       C_INT32 Index = getIndex(name);
       if ( Index == -1 ) fatalError();
             
-      return (*mTypes)[Index];
+      return *(begin() + Index);
     }   
-
-  CType operator[](const string &name) const
-    {
-      C_INT32 Index = getIndex(name);
-      if ( Index == -1 ) fatalError();
-            
-      return (*mTypes)[Index];
-    }   
-
-  /**
-   *
-   */
-  unsigned C_INT32 size() const {return mTypes->size();}
 
  private:
   /**
    *
    */
-  virtual C_INT16 isInsertAllowed(const CType & src)
+  virtual C_INT16 isInsertAllowed(const CType * src)
     {return (getIndex(src->getName()) == (unsigned C_INT32) -1);}
  
   /**
    *
    */
-  unsigned C_INT32 getIndex(const string &name) const
+  virtual unsigned C_INT32 getIndex(const string &name) const
     {
-      unsigned C_INT32 i;
-            
-      for (i = 0; i < size(); i++)
-	if ( name == (*mTypes)[i]->getName() ) 
-	  return i;
+      unsigned C_INT32 i,imax = size();
+      C_CopasiVector< CType >::const_iterator Target = begin();
+      
+      for (i=0; i<imax; i++)
+        if (name == (*(Target++))->getName()) return i;
             
       return -1;
     }
 };
-#endif // XXXX
-#endif // COPASI_CCopasiVector
+
+template < class CType > class C_CopasiVectorNS 
+: public C_CopasiVectorN < CType >
+{
+  // Operations
+ public:
+  /**
+   *  Default constructor
+   */
+  C_CopasiVectorNS() : C_CopasiVectorN < CType > (){} 
+
+  /**
+   *  Copy constructor
+   */
+  C_CopasiVectorNS(const C_CopasiVectorNS < CType > & src) :
+      C_CopasiVectorN < CType > (src) {}
+
+  /**
+   *  Destructor
+   */
+  virtual ~C_CopasiVectorNS() 
+    {cleanup();}
+
+  /**
+   *  Loads an object with data coming from a CReadConfig object.
+   *  (CReadConfig object reads an input stream)
+   *  @param "CReadConfig &" configbuffer reference to a CReadConfig object
+   *  @param "const unsigend C_INT32 &" size
+   */
+  virtual void load(CReadConfig & configbuffer, unsigned C_INT32 size)
+    {
+      unsigned C_INT32 i;
+      
+      cleanup();
+      resize(size);
+      
+      C_CopasiVector< CType >::iterator Target = begin();
+ 
+      for (i=0; i<size; i++)
+	{
+	  *Target = new CType;
+	  (*(Target++))->load(configbuffer);
+	}
+    }
+  
+  /**
+   *  Saves the contents of the object to a CWriteConfig object.
+   *  (Which usually has a file attached but may also have socket)
+   *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
+   */
+  virtual void save(CWriteConfig & configbuffer)
+    {
+      unsigned C_INT32 i, imax = size();
+      C_CopasiVector< CType >::iterator Target = begin();
+      
+      for (i=0; i<imax; i++)
+	(*(Target++))->save(configbuffer);
+    }
+
+  /**
+   *
+   */
+  CType * & operator[](unsigned C_INT32 index) 
+    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+
+  /**
+   *
+   */
+  const CType * & operator[](unsigned C_INT32 index) const
+    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+
+  /**
+   *
+   */
+  CType * operator[](const string &name) 
+    {return ((C_CopasiVectorN <CType>*) this)->operator [](name);}   
+};
+#endif // COPASI_C_CopasiVector
