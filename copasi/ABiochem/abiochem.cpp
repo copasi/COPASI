@@ -174,8 +174,8 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
   char strname[512], strname2[512], streq[512];
   string compname = "cell", rname, rchemeq, kiname;
   CReaction *react;
-  /*  CReaction::CId2Metab id2metab;
-    CReaction::CId2Param id2param;*/ 
+  std::vector <std::string> subnames;
+  subnames.resize(1);
   // two reactions per gene
   r = 2 * n;
   // set the title and comments
@@ -202,13 +202,15 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
           abort();
         }
       react->setChemEq(streq);
-      /*      react->compileChemEq(model.getCompartments());*/
+      s = gene[i]->getModifierNumber();
+      for (j = 0; j < s; j++)
+        {
+          react->addModifier(gene[i]->getModifier(j)->getName());
+        }
       sprintf(strname, "basal %ld inh %ld act (indp)", gene[i]->getNegativeModifiers(),
               gene[i]->getPositiveModifiers());
       kiname = strname;
       react->setFunction(kiname);
-      s = gene[i]->getModifierNumber();
-      /*      id2metab.setCompartmentName(compname);*/
       for (j = 0, pos = neg = 1; j < s; j++)
         {
           if (gene[i]->getModifierType(j) == 0)
@@ -216,16 +218,10 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
           else
             sprintf(strname, "A%ld", pos++);
           react->setParameterMapping(strname, gene[i]->getModifier(j)->getName());
-          /*    id2metab.setIdentifierName(strname);
-                    id2metab.setMetaboliteName(gene[i]->getModifier(j)->getName());
-                    react->getId2Modifiers().add(id2metab);*/
         }
       // first the basal rate
       sprintf(strname, "V");
       react->setParameterValue(strname, gene[i]->getRate());
-      /*      id2param.setIdentifierName("V");
-            id2param.setValue(gene[i]->getRate());
-            react->getId2Parameters().add(id2param);*/ 
       // we have two more constants per modifier
       for (j = 0, pos = neg = 1; j < s; j++)
         {
@@ -241,12 +237,6 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
             }
           react->setParameterValue(strname, gene[i]->getK(j));
           react->setParameterValue(strname2, gene[i]->getn(j));
-          /*          id2param.setIdentifierName(strname);
-                    id2param.setValue(gene[i]->getK(j));
-                    react->getId2Parameters().add(id2param);
-                    id2param.setIdentifierName(strname2);
-                    id2param.setValue(gene[i]->getn(j));
-                    react->getId2Parameters().add(id2param);*/
         }
       model.addReaction(*react);
       // mRNA degradation
@@ -261,21 +251,15 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
           abort();
         }
       react->setChemEq(streq);
-      /*      react->compileChemEq(model.getCompartments());*/
       kiname = "Mass action (irreversible)";
       react->setFunction(kiname);
       // first the kinetic constant
       sprintf(strname, "k1");
       react->setParameterValue(strname, gene[i]->getDegradationRate());
-      /*      id2param.setIdentifierName("k1");
-            id2param.setValue(gene[i]->getDegradationRate());
-            react->getId2Parameters().add(id2param);*/ 
       // now the substrate
       sprintf(strname, "substrate_0");
-      react->setParameterMapping(strname, gene[i]->getName());
-      /*      id2metab.setIdentifierName("substrate_0");
-            id2metab.setMetaboliteName(gene[i]->getName());
-            react->getId2Substrates().add(id2metab);*/
+      subnames[0] = gene[i]->getName();
+      react->setParameterMapping(strname, subnames);
       model.addReaction(*react);
     }
   // structural analysis (moieties, etc.)
