@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/26 21:17:57 $
+   $Author: ssahle $ 
+   $Date: 2004/09/20 21:57:29 $
    End CVS Header */
 
 /**
@@ -22,6 +22,7 @@
 #include "CTrajectoryMethod.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CReadConfig.h"
+#include "CTimeSeries.h"
 
 class CTrajectoryProblem;
 class CTrajectoryMethod;
@@ -36,6 +37,16 @@ class CTrajectoryTask : public CCopasiTask
      * A pointer to the current state of the integration.
      */
     CState * mpState;
+
+    /**
+     * the time series (if requested)
+     */
+    CTimeSeries mTimeSeries;
+
+    /**
+     * whether the time series should be stored in mTimeSeries
+     */
+    bool mTimeSeriesRequested;
 
   public:
     /**
