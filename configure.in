@@ -24,9 +24,9 @@ if test "x$prefix" = "xNONE"; then
 fi
 
 if test x"${enable_release}" != x"yes" -a x"${enable_debug}" != x"no"; then
-  cps_release="CONFIG+=debug"
+  cps_release="CONFIG+=debug CONFIG-=release"
 else
-  cps_release="CONFIG+=release"
+  cps_release="CONFIG+=release CONFIG-=debug"
 fi
 
 if test x"${enable_thread}" != x"no"; then
