@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.83 $ $Author: shoops $ $Date: 2005/02/18 16:45:55 $  
+# $Revision: 1.84 $ $Author: ssahle $ $Date: 2005/02/22 15:56:30 $  
 ######################################################################
 
 include(../common.pri)
@@ -154,7 +154,6 @@ HEADERS += \
            CCopasiSimpleSelectionTree.h \
            ChemEqValidator.h \
            CMCAWidget.h \
-           CMCAResultSubwidget.h \
            CMCAResultWidget.h \
            CReportDefinitionSelect.h \
            CompartmentSymbols.h \
@@ -167,6 +166,7 @@ HEADERS += \
            copasiWidget.h \
            copasiui3window.h \
            CProgressBar.h \
+           CScanContainerWidget.h \
            CTimeSeriesTable.h \
            DataModelGUI.h \
            DifferentialEquations.h \
@@ -187,7 +187,6 @@ HEADERS += \
            ObjectBrowserDialog.h \
            ObjectBrowserItem.h \
            ObjectBrowserWidget.h \
-           objectdebug.h \
            OptimizationItemWidget.h \
            OptimizationWidget.h \
            ParametersWidget.h \
@@ -199,16 +198,14 @@ HEADERS += \
            ReactionsWidget.h \
            ReactionsWidget1.h \
            ScanItemWidget.h \
+           ScanScrollView.h \
            ScanWidget.h \
            SliderDialog.h \
-           SliderSettingsDialog.h \
            StateWidget.h \
-           StateSubwidget.h \
            SteadyStateWidget.h \
            TableDefinition.h \
            TableDefinition1.h \
            TimeSeriesWidget.h \
-           TimeSeriesSubwidget.h \
            TrajectoryWidget.h \
            Tree.h
 
@@ -229,7 +226,6 @@ SOURCES += \
            CCopasiSelectionWidget.cpp \
            CCopasiSimpleSelectionTree.cpp \
            CMCAWidget.cpp \
-           CMCAResultSubwidget.cpp \
            CMCAResultWidget.cpp \
            CReportDefinitionSelect.cpp \
            CompartmentSymbols.cpp \
@@ -242,6 +238,7 @@ SOURCES += \
            copasiWidget.cpp \
            copasiui3window.cpp \
            CProgressBar.cpp \
+           CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \
            DataModelGUI.cpp \
            DifferentialEquations.cpp \
@@ -263,7 +260,6 @@ SOURCES += \
            ObjectBrowserDialog.cpp \
            ObjectBrowserItem.cpp \
            ObjectBrowserWidget.cpp \
-           objectdebug.cpp \
            OptimizationItemWidget.cpp \
            OptimizationWidget.cpp \
            ParametersWidget.cpp \
@@ -275,19 +271,38 @@ SOURCES += \
            ReactionsWidget.cpp \
            ReactionsWidget1.cpp \
            ScanItemWidget.cpp \
+           ScanScrollView.cpp \
            ScanWidget.cpp \
            SliderDialog.cpp \
-           SliderSettingsDialog.cpp \	
            StateWidget.cpp \
-           StateSubwidget.cpp \
            SteadyStateWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
            TimeSeriesWidget.cpp \
-           TimeSeriesSubwidget.cpp \
            TrajectoryWidget.cpp \
            Tree.cpp
 
+# headers generated from .ui files   
+HEADERS += \
+           CMCAResultSubwidget.h \
+           CUpDownSubwidget.h \
+           CScanWidgetScan.h \
+           CScanWidgetTask.h  \ 
+           objectdebug.h \
+           SliderSettingsDialog.h \
+           StateSubwidget.h \
+           TimeSeriesSubwidget.h 
+
+# sources generated from .ui files   
+SOURCES += \
+           CMCAResultSubwidget.cpp \
+           CUpDownSubwidget.cpp \
+           CScanWidgetScan.cpp \
+           CScanWidgetTask.cpp \  
+           objectdebug.cpp \
+           SliderSettingsDialog.cpp \
+           StateSubwidget.cpp \
+           TimeSeriesSubwidget.cpp 
 
 # FORMS +=  TimeSeriesSubwidget.ui
 # FORMS +=  StateSubwidget.ui
@@ -295,6 +310,9 @@ SOURCES += \
 # FORMS +=  SimpleSelectionWidget.ui        
 # FORMS +=  SliderSettingsDialog.ui    
 # FORMS +=  objectdebug.ui       
+# FORMS += CUpDownSubwidget.ui
+# FORMS += CScanWidgetScan.ui
+# FORMS += CScanWidgetTask.ui
 
 release {
   distribution.path = .
