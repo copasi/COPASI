@@ -62,7 +62,7 @@ CScanMethod * CScanTask::getMethod()
 void CScanTask::setMethod(CScanMethod * pMethod)
 {mpMethod = pMethod;}
 
-void CScanTask::process()
+void CScanTask::process(bool bSteadyStateTask, bool bTrajectoryTask)
 {
   if (!mpProblem)
     fatalError();
@@ -78,8 +78,8 @@ void CScanTask::process()
     if (mpProblem->getScanItemParameter(i, "indp")) break;
   if (i >= 0)
     // execute many simulations
-    mpMethod->scan(i, true);
-  mpMethod->simulate();
+    mpMethod->scan(i, true, bSteadyStateTask, bTrajectoryTask);
+  mpMethod->simulate(bSteadyStateTask, bTrajectoryTask);
 
   return;
 }

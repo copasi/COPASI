@@ -121,6 +121,6 @@ class CScanTask
     /**
      * Do the integration
      */
-    void process();
+    void process(bool bSteadyStateTask, bool bTrajectoryTask);
   };
 #endif // COPASI_CScanTask

@@ -91,7 +91,7 @@ class CScanProblem
      * process the trajectory and steadystate task
     */
 
-    void calculate();
+    void calculate(bool bSteadyStateTask, bool bTrajectoryTask);
 
     /**
      * Initialize the pointer for steadystate task 

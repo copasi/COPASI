@@ -41,7 +41,7 @@ CScanMethod::CScanMethod(const CScanMethod & src)
 
 CScanMethod::~CScanMethod(){}
 
-void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
+void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl), bool bSteadyStateTask, bool bTrajectoryTask)
 {
   unsigned C_INT32 scanDimension = scanProblem->getListSize();
   unsigned C_INT32 i, next, top;
@@ -88,10 +88,10 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
       //different from SD_REGULR by initial value
       for (i = 0; i < scanProblem->getScanItemParameter(s, "density"); i++)
         {
-          if (s != 0) scan(next, false);
+          if (s != 0) scan(next, false, bSteadyStateTask, bTrajectoryTask);
           else
             // some function
-            simulate();
+            simulate(bSteadyStateTask, bTrajectoryTask);
           setScanParameterValue(i, s, top);
         }
       break;
@@ -102,19 +102,19 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
       for (i = 1; i < scanProblem->getScanItemParameter(s, "density"); i++)
         {
           if (s != 0)
-            scan(next, false);
+            scan(next, false, bSteadyStateTask, bTrajectoryTask);
           else
             // some function
-            simulate();
+            simulate(bSteadyStateTask, bTrajectoryTask);
           setScanParameterValue(i, s, top);
         }
       break;
     }
 } // scan() ends
 
-C_FLOAT64 CScanMethod::simulate()
+C_FLOAT64 CScanMethod::simulate(bool bSteadyStateTask, bool bTrajectoryTask)
 {
-  scanProblem->calculate();
+  scanProblem->calculate(bSteadyStateTask, bTrajectoryTask);
   return 0;
 }
 

@@ -214,14 +214,14 @@ void CScanProblem::setModel(CModel * pModel) {mpModel = pModel;}
 
 CModel * CScanProblem::getModel() const {return mpModel;}
 
-void CScanProblem::calculate()
+void CScanProblem::calculate(bool bSteadyStateTask, bool bTrajectoryTask)
 {
-  if (mpSteadyState != NULL)
+  if ((mpSteadyState != NULL) && bSteadyStateTask)
     {
       // std::cout << "COptProblem: mpSteadyState";
       mpSteadyState->process();
     }
-  if (mpTrajectory != NULL)
+  if ((mpTrajectory != NULL) && bTrajectoryTask)
     {
       // std::cout << "COptProblem: mpTrajectory";
       mpTrajectory->process();
