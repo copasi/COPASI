@@ -58,7 +58,6 @@ C_INT32 CWriteConfig::flush(void)
       return mFail;
     }
 
-  mBuffer.freeze(0);
   mBuffer.seekp(0);
 
   return mFail;
@@ -78,7 +77,7 @@ C_INT32 CWriteConfig::commit(void)
       return mFail = 1;
     }
 
-  ConfigFile.write(mBuffer.str(), mBuffer.pcount());
+  ConfigFile << mBuffer.str();
 
   if (ConfigFile.fail())
     {

@@ -8,7 +8,7 @@
 #ifndef COPASI_CWriteConfig
 #define COPASI_CWriteConfig
 
-#include <strstream>
+#include <sstream>
 
 class CWriteConfig
   {
@@ -27,7 +27,7 @@ class CWriteConfig
      *  @param name name of the confguration file. 
      *  @param mode output mode, defaults to creating a new file. 
      */
-    CWriteConfig(const string& name, std::ios::openmode mode = std::ios::out);
+    CWriteConfig(const std::string& name, std::ios::openmode mode = std::ios::out);
 
     /**
      *  Destructor. 
@@ -58,11 +58,11 @@ class CWriteConfig
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 setVariable(const string & name,
-                        const string & type,
+    C_INT32 setVariable(const std::string & name,
+                        const std::string & type,
                         const void * pout);
-    C_INT32 setVariable(const string & name,
-                        const string & type,
+    C_INT32 setVariable(const std::string & name,
+                        const std::string & type,
                         const void * pout1,
                         const void * pout2);
 
@@ -87,12 +87,12 @@ class CWriteConfig
     /**
      *  Name of the configuration file.
      */
-    string mFileName;               // Config File Name
+    std::string mFileName;               // Config File Name
 
     /**
      *  Output file
      */
-    strstream mBuffer;
+    std::stringstream mBuffer;
 
     /**
      *  Current line number in the configuration file
