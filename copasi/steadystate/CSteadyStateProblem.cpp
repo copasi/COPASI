@@ -47,7 +47,11 @@ CSteadyStateProblem::~CSteadyStateProblem()
  * Set the model the problem is dealing with.
  * @param "CModel *" pModel
  */
-void CSteadyStateProblem::setModel(CModel * pModel) {mpModel = pModel;}
+void CSteadyStateProblem::setModel(CModel * pModel)
+{
+  mpModel = pModel;
+  mInitialState.setModel(mpModel);
+}
 
 /**
  * Retrieve the model the problem is dealing with.
