@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 09:32:36 $
+   $Date: 2004/12/30 15:31:54 $
    End CVS Header */
 
 /**
@@ -78,9 +78,9 @@ void CScanMethod::scan(unsigned C_INT32 s,
     {
       for (i = s - 1; i > 0; i--)
         //if(scanItem[i]->Indp) break;
-        if (scanProblem->getScanItemParameter(i, "indp")) break;
+        //  if (scanProblem->getScanItemParameter(i, "indp")) break;
 
-      next = i;
+        next = i;
     }
 
   else
@@ -92,8 +92,8 @@ void CScanMethod::scan(unsigned C_INT32 s,
   if (s < mVariableSize - 1)
     {
       for (i = s + 1; i < mVariableSize; i++)
-        if (scanProblem->getScanItemParameter(i, "indp")) break;
-      top = i;
+        //     if (scanProblem->getScanItemParameter(i, "indp")) break;
+        top = i;
     }
   else
     top = mVariableSize;
@@ -105,44 +105,44 @@ void CScanMethod::scan(unsigned C_INT32 s,
      this parameter into the vector.
   */ 
   //switch(gridtype[distribution])
-  switch ((int)scanProblem->getScanItemParameter(s, "gridType"))
-    {
-    case SD_UNIFORM:
-    case SD_GAUSS:
-    case SD_BOLTZ:
-      // start with the min values
-      setScanParameterValue(0, s, top);
-      //different from SD_REGULR by initial value
-      for (i = 0; i < * (unsigned C_INT32 *) scanProblem->getScanItemParameter(s, "density"); i++)
-        {
-          if (s != 0) scan(next, false, pCallback, pReport);
-          else
-            // some function
-            {
-              scanProblem->calculate();
-              pCallback(pReport);
-            }
-          setScanParameterValue(i, s, top);
-        }
-      break;
-    case SD_REGULAR:
-      //start with min value - give 0 as first param in setscanparametervalue
-      setScanParameterValue(0, s, top);
-
-      for (i = 1; i <= * (unsigned C_INT32 *) scanProblem->getScanItemParameter(s, "density"); i++)
-        {
-          if (s != 0)
-            scan(next, false, pCallback, pReport);
-          else
-            // some function
-            {
-              scanProblem->calculate();
-              pCallback(pReport);
-            }
-          setScanParameterValue(i, s, top);
-        }
-      break;
-    }
+  /*  switch ((int)scanProblem->getScanItemParameter(s, "gridType"))
+      {
+      case SD_UNIFORM:
+      case SD_GAUSS:
+      case SD_BOLTZ:
+        // start with the min values
+        setScanParameterValue(0, s, top);
+        //different from SD_REGULR by initial value
+        for (i = 0; i < * (unsigned C_INT32 *) scanProblem->getScanItemParameter(s, "density"); i++)
+          {
+            if (s != 0) scan(next, false, pCallback, pReport);
+            else
+              // some function
+              {
+                scanProblem->calculate();
+                pCallback(pReport);
+              }
+            setScanParameterValue(i, s, top);
+          }
+        break;
+      case SD_REGULAR:
+        //start with min value - give 0 as first param in setscanparametervalue
+        setScanParameterValue(0, s, top);
+   
+        for (i = 1; i <= * (unsigned C_INT32 *) scanProblem->getScanItemParameter(s, "density"); i++)
+          {
+            if (s != 0)
+              scan(next, false, pCallback, pReport);
+            else
+              // some function
+              {
+                scanProblem->calculate();
+                pCallback(pReport);
+              }
+            setScanParameterValue(i, s, top);
+          }
+        break;
+      }*/
 
   pdelete(mpRandomGenerator);
 } // scan() ends
@@ -154,51 +154,51 @@ void CScanMethod::setScanParameterValue(unsigned C_INT32 i,
                                         unsigned C_INT32 first,
                                         unsigned C_INT32 last)
 {
-  unsigned C_INT32 j;
-  double min, max, incr, ampl;
-  for (j = first; j < last; j++)
-    {
-      // making a copy of the min and max parameters of the scanItem j
-      min = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "min");
-      max = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "max");
-      ampl = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "ampl");
-      incr = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "incr");
-
-      // switch the grid type and set values accordingly
-      switch ((int)scanProblem->getScanItemParameter(j, "gridType"))
-        {
-        case SD_UNIFORM:
-          if (scanProblem->getScanItemParameter(j, "log"))
-            mpVariables[j] =
-              min * pow(10, ampl * mpRandomGenerator->getRandomCO());
-          else
-            mpVariables[j] =
-              min + ampl * mpRandomGenerator->getRandomCO();
-          break;
-
-        case SD_GAUSS:
-          if (scanProblem->getScanItemParameter(j, "log"))
-            mpVariables[j] = mpRandomGenerator->getRandomNormalLog(min, max);
-          else
-            mpVariables[j] = mpRandomGenerator->getRandomNormal(min, max);
-          break;
-
-        case SD_BOLTZ:
-          if (scanProblem->getScanItemParameter(j, "log"))
-            mpVariables[j] = mpRandomGenerator->getRandomNormalLog(min, max);
-          else
-            mpVariables[j] =
-              mpRandomGenerator->getRandomNormalPositive(min, max);
-          break;
-
-        case SD_REGULAR:
-          // log scale
-          if (scanProblem->getScanItemParameter(j, "log"))
-            mpVariables[j] = min * pow(10, incr * i);
-          // non-log scale
-          else
-            mpVariables[j] = (min + incr * i);
-          break;
-        }
-    }
+  /*  unsigned C_INT32 j;
+    double min, max, incr, ampl;
+    for (j = first; j < last; j++)
+      {
+        // making a copy of the min and max parameters of the scanItem j
+        min = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "min");
+        max = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "max");
+        ampl = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "ampl");
+        incr = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "incr");
+   
+        // switch the grid type and set values accordingly
+        switch ((int)scanProblem->getScanItemParameter(j, "gridType"))
+          {
+          case SD_UNIFORM:
+            if (scanProblem->getScanItemParameter(j, "log"))
+              mpVariables[j] =
+                min * pow(10, ampl * mpRandomGenerator->getRandomCO());
+            else
+              mpVariables[j] =
+                min + ampl * mpRandomGenerator->getRandomCO();
+            break;
+   
+          case SD_GAUSS:
+            if (scanProblem->getScanItemParameter(j, "log"))
+              mpVariables[j] = mpRandomGenerator->getRandomNormalLog(min, max);
+            else
+              mpVariables[j] = mpRandomGenerator->getRandomNormal(min, max);
+            break;
+   
+          case SD_BOLTZ:
+            if (scanProblem->getScanItemParameter(j, "log"))
+              mpVariables[j] = mpRandomGenerator->getRandomNormalLog(min, max);
+            else
+              mpVariables[j] =
+                mpRandomGenerator->getRandomNormalPositive(min, max);
+            break;
+   
+          case SD_REGULAR:
+            // log scale
+            if (scanProblem->getScanItemParameter(j, "log"))
+              mpVariables[j] = min * pow(10, incr * i);
+            // non-log scale
+            else
+              mpVariables[j] = (min + incr * i);
+            break;
+          }
+      }*/
 }

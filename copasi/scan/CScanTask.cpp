@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/16 17:11:14 $
+   $Date: 2004/12/30 15:31:54 $
    End CVS Header */
 
 /**
@@ -75,12 +75,12 @@ void CScanTask::initializeReporting(std::ostream & out)
   assert(pProblem);
 
   // for Steadystate Report
-  if (pProblem->processSteadyState())
-    pProblem->getSteadyStateTask()->initialize(mpOut);
+  //  if (pProblem->processSteadyState())
+  //    pProblem->getSteadyStateTask()->initialize(mpOut);
 
   // for Trajectory Report
-  if (pProblem->processTrajectory())
-    pProblem->getTrajectoryTask()->initialize(mpOut);
+  //  if (pProblem->processTrajectory())
+  //    pProblem->getTrajectoryTask()->initialize(mpOut);
 }
 
 void CScanTask::load(CReadConfig & configBuffer)
@@ -108,30 +108,30 @@ bool CScanTask::process()
   mReport.compile();
   mReport.printHeader();
 
-  if ((pProblem->getSteadyStateTask() != NULL) && pProblem->processSteadyState())
-    {
-      pProblem->getSteadyStateTask()->getProblem()->getModel()->compileIfNecessary();
-    }
-  if ((pProblem->getTrajectoryTask() != NULL) && pProblem->processTrajectory())
-    {
-      pProblem->getTrajectoryTask()->getProblem()->getModel()->compileIfNecessary();
-    }
-
-  unsigned C_INT32 scanDimension = pProblem->getListSize();
-  int i;
-
-  // find the last master
-  for (i = scanDimension - 1; i >= 0; i--)
-    if (pProblem->getScanItemParameter(i, "indp")) break;
-
-  if (i >= 0)
-    // execute many simulations
-    pMethod->scan(i, true, &CReport::printBody, &mReport);
-
-  //  if (mpOutEnd)
-  //    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
-  mReport.printFooter();
-
-  pProblem->restore();
+  /*  if ((pProblem->getSteadyStateTask() != NULL) && pProblem->processSteadyState())
+      {
+        pProblem->getSteadyStateTask()->getProblem()->getModel()->compileIfNecessary();
+      }
+    if ((pProblem->getTrajectoryTask() != NULL) && pProblem->processTrajectory())
+      {
+        pProblem->getTrajectoryTask()->getProblem()->getModel()->compileIfNecessary();
+      }
+   
+    unsigned C_INT32 scanDimension = pProblem->getListSize();
+    int i;
+   
+    // find the last master
+    for (i = scanDimension - 1; i >= 0; i--)
+      if (pProblem->getScanItemParameter(i, "indp")) break;
+   
+    if (i >= 0)
+      // execute many simulations
+      pMethod->scan(i, true, &CReport::printBody, &mReport);
+   
+    //  if (mpOutEnd)
+    //    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
+    mReport.printFooter();
+   
+    pProblem->restore();*/
   return true;
 }
