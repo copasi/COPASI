@@ -229,7 +229,6 @@ void ScanWidget::loadScan(CModel *model)
   if (model != NULL)
     {
       mModel = model;
-
       pSteadyStateWidget->setModel(mModel);
       pTrajectoryWidget->setModel(mModel);
 
