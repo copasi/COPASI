@@ -37,6 +37,7 @@
 #include "tnt/cmat.h"
 #include "tnt/vec.h"
 #include "tnt/subscript.h"
+#include "output/output.h"
 #include "steadystate/CMca.h"
 
 C_INT32  TestReadConfig(void);
@@ -95,9 +96,9 @@ C_INT main(void)
       // TestDatum();
       // TestMetab();
       // TestReadSample();
-      // TestTrajectory();
+      TestTrajectory();
       // by Yongqun He
-      TestNewton();
+      // TestNewton();
       // TestSSSolution();
 
       // TestTrajectory();
@@ -381,15 +382,15 @@ C_INT32 TestOutputEvent(void)
     
 	COutputList oList;
 
-	oList.Load(inbuf);
+	oList.load(inbuf);
 
 	CWriteConfig outbuf("wei.gps");
-	oList.Save(outbuf);
+	oList.save(outbuf);
 
 	oList.setModel(model);
 
 	string SS = "Steady-state output";
-	oList.Compile(SS);
+	oList.compile(SS);
 
 	//oList.CCopasi_SS(fout);
 	//oList.CCopasi_Dyn(fout1);
@@ -412,8 +413,12 @@ C_INT32 TestOutputEvent(void)
 
 C_INT32 TestTrajectory(void)
 {
-  CReadConfig inbuf("gps/HMM.GPS");
+  CReadConfig inbuf("gps/brusselator.gps");
   CModel model;
+
+  COutput output;
+  output.load(inbuf);
+  
   model.load(inbuf);
   model.buildStoi();
   model.lUDecomposition();
@@ -510,7 +515,7 @@ C_INT32  TestSSSolution(void)
     model.buildRedStoi();
     model.buildL();
     model.buildMoieties();
-
+ 
     //set up CNewton object and pass to CSS_Solution
     CNewton newton;
     newton.setModel(&model);
