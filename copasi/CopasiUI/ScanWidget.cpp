@@ -436,6 +436,7 @@ void ScanWidget::addButtonClicked()
       return;
     }
 
+  ObjectListBox->insertItem ((*pSelectedVector)[i]->getName().c_str(), nSelectedObjects);
   addNewScanItem((*pSelectedVector)[i]);
   pdelete(pSelectedVector);
 }
