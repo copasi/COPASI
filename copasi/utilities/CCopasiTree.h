@@ -188,6 +188,12 @@ template < class Node > class CCopasiTree
       Node * getRoot() {return mpRoot;}
 
       /**
+       * Retreive the data of the Tree.
+       * @return Data data
+       */
+      typename Node::Data getData() const {return mpRoot->getData();}
+
+      /**
        * Attach a Node to the tree
        * Note: If pAfterChild == pParent then the child will be inserted as
        *       the first child 
