@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 14:58:54 $
+   $Date: 2004/05/26 15:56:01 $
    End CVS Header */
 
 #include "FunctionWidget.h"
@@ -36,7 +36,7 @@ std::vector<const CCopasiObject*> FunctionWidget::getObjects() const
 void FunctionWidget::init()
 {
   mOT = ListViews::FUNCTION;
-  numCols = 3;
+  numCols = 4;
   table->setNumCols(numCols);
 
   //Setting table headers
@@ -44,9 +44,11 @@ void FunctionWidget::init()
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Type");
+  tableHeader->setLabel(3, "mathematical description");
 
-  //this restricts users from editing function types on the table
+  //this restricts users from editing function types or descriptions on the table
   table->setColumnReadOnly (2, true);
+  table->setColumnReadOnly (3, true);
 }
 
 void FunctionWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -61,13 +63,14 @@ void FunctionWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
     case 1:
     case 2:
       ftype = QString("pre-defined");
-      table->setRowReadOnly (row, true);
+      mFlagRO[row] = true;
       break;
     case 3:
       ftype = QString("user-defined");
       break;
     }
   table->setText(row, 2, ftype);
+  table->setText(row, 3, FROM_UTF8(pFunc->getDescription()));
 }
 
 void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -81,6 +84,8 @@ void FunctionWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_IN
 {
   if (exc != 2)
     table->setText(row, 2, "");
+  if (exc != 3)
+    table->setText(row, 3, "");
 }
 
 QString FunctionWidget::defaultObjectName() const
@@ -115,6 +120,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
   QString effectedReacList = "The following reaction(s) reference above functions(s) and will be deleted -\n";
   int reacFound = 0;
 
+  std::set<std::string> totalEffectedReacKeys;
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++)
     {
@@ -134,6 +140,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
             {
               effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
               effectedReacList.append(", ");
+              totalEffectedReacKeys.insert(*it);
             }
           effectedReacList.remove(effectedReacList.length() - 2, 2);
           effectedReacList.append("  ---> ");
@@ -141,7 +148,6 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedReacList.append("\n");
         }
     }
-
   funcList.remove(funcList.length() - 2, 2);
 
   QString msg = funcList;
@@ -160,21 +166,29 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
   else
     choice = 0;
 
-  /* switch (choice)
-     {
-     case 0:                // Yes or Enter
-       {
-         for (i = 0; i < imax; i++)
-           {
-             dataModel->getModel()->removeMetabolite(keys[i]);
-           }
+  switch (choice)
+    {
+    case 0:                 // Yes or Enter
+      {
+        //first delete reactions
+        std::set<std::string>::const_iterator it, itEnd = totalEffectedReacKeys.end();
+        for (it = totalEffectedReacKeys.begin(); it != itEnd; ++it)
+          {
+            dataModel->getModel()->removeReaction(*it);
+            ListViews::notify(ListViews::REACTION, ListViews::DELETE, *it);
+          }
 
-         for (i = 0; i < imax; i++)
-           ListViews::notify(ListViews::METABOLITE, ListViews::DELETE, keys[i]);
-         //TODO notify about reactions
-         break;
-       }
-     case 1:                // No or Escape
-       break;
-     }*/ //TODO
+        //now delete functions
+
+        for (i = 0; i < imax; i++)
+          {
+            Copasi->pFunctionDB->removeFunction(keys[i]);
+            ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, keys[i]);
+          }
+
+        break;
+      }
+    case 1:                 // No or Escape
+      break;
+    }
 }
