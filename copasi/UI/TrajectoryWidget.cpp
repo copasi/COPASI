@@ -6,12 +6,8 @@
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
-#include "TrajectoryWidget.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
 #include <qmessagebox.h>
 #include <qfiledialog.h>
-
 #include <qvariant.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
@@ -23,6 +19,11 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+
+#include "TrajectoryWidget.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "trajectory/CTrajectoryProblem.h"
+#include "model/CModel.h"
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -259,6 +260,13 @@ void TrajectoryWidget::RunTask()
 {
   if (mTrajectoryTask == NULL)
     return;
+
+  mTrajectoryTask->getProblem()->getModel()->compile();
+  mTrajectoryTask->getProblem()->
+  setInitialState(mTrajectoryTask->getProblem()->
+                  getModel()->getInitialState());
+  mTrajectoryTask->getProblem()->
+  setStartTime(mTrajectoryTask->getProblem()->getStartTime());
 
   std::ofstream output("output.txt");
   mTrajectoryTask->initializeReporting(output);
