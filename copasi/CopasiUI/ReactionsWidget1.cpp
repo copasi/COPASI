@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.157 $
+   $Revision: 1.158 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/02/02 19:06:29 $
+   $Date: 2005/02/02 19:10:43 $
    End CVS Header */
 
 /*********************************************************************
@@ -207,8 +207,8 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
   if (!reaction) return false;
 
-  TextLabel8->setText(trUtf8("Flux:\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/("\
-                             + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))"));
+  TextLabel8->setText(trUtf8("Flux:\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/"\
+                             + FROM_UTF8(dataModel->getModel()->getTimeUnit())));
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
@@ -347,7 +347,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                        // Yes or Enter
+        case 0:                         // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -379,7 +379,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                               // No or Escape
+        default:                                // No or Escape
           break;
         }
       //}
