@@ -9,6 +9,7 @@
 #include <strstream>
 #include <vector>
 
+#define __MAIN
 #include "copasi.h"
 
 #include "function/function.h"
@@ -17,19 +18,19 @@
 #include "steadystate/steadystate.h"
 #include "trajectory/trajectory.h"
 #include "utilities/utilities.h"
+#include "utilities/CGlobals.h"
 
 #include "VirtualBase.h"
 
-// #include "function/function.h"
 #include <typeinfo>
 
 int main(void)
 {
-  CBaseFunction baseFunction;
+  CFunction baseFunction;
   CKinFunction kinFunction;
   CMassAction massFunction;
   
-  CBaseFunction *pFunction;
+  CFunction *pFunction;
   pFunction = &baseFunction;
   pFunction = &kinFunction;
   pFunction = &massFunction;

@@ -196,17 +196,17 @@ matrix_SOURCES = matrix.cpp
 EXTRA_DIST = test.cpp matrix.cpp
 
 # set the include path found by configure
-INCLUDES = $(all_includes) -I$(top_srcdir)/copasi
+INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
-LIBS =          -lutilities         -lfunction         -lmodel         -loutput         -lsteadystate         -ltrajectory
+LIBS =          -lfunction         -lmodel         -loutput         -lsteadystate         -ltrajectory         -lutilities 	-llapack 	-lblas 	-lF77
 
 
 # the library search path.
-LDFLAGS = -all-static         -L../utilities         -L../function         -L../model         -L../output         -L../steadystate         -L../trajectory
+LDFLAGS = -all-static         -L../function         -L../model         -L../output         -L../steadystate         -L../trajectory         -L../utilities 	$(USER_LDFLAGS)
 
 
-LDADD =          ../utilities/libutilities.a         ../function/libfunction.a         ../output/liboutput.a         ../model/libmodel.a         ../trajectory/libtrajectory.a
+LDADD =          ../function/libfunction.a         ../output/liboutput.a         ../model/libmodel.a 	../steadystate/libsteadystate.a         ../trajectory/libtrajectory.a         ../utilities/libutilities.a
 
 
 SUBDIRS =          function         output         model         steadystate         trajectory         utilities
@@ -222,15 +222,15 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 test_OBJECTS =  test.$(OBJEXT)
 test_LDADD = $(LDADD)
-test_DEPENDENCIES =  ../utilities/libutilities.a \
-../function/libfunction.a ../output/liboutput.a ../model/libmodel.a \
-../trajectory/libtrajectory.a
+test_DEPENDENCIES =  ../function/libfunction.a ../output/liboutput.a \
+../model/libmodel.a ../steadystate/libsteadystate.a \
+../trajectory/libtrajectory.a ../utilities/libutilities.a
 test_LDFLAGS = 
 matrix_OBJECTS =  matrix.$(OBJEXT)
 matrix_LDADD = $(LDADD)
-matrix_DEPENDENCIES =  ../utilities/libutilities.a \
-../function/libfunction.a ../output/liboutput.a ../model/libmodel.a \
-../trajectory/libtrajectory.a
+matrix_DEPENDENCIES =  ../function/libfunction.a ../output/liboutput.a \
+../model/libmodel.a ../steadystate/libsteadystate.a \
+../trajectory/libtrajectory.a ../utilities/libutilities.a
 matrix_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -242,7 +242,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/matrix.P .deps/test.P
 SOURCES = $(test_SOURCES) $(matrix_SOURCES)
@@ -595,7 +595,7 @@ installdirs-recursive install-recursive uninstall-recursive  \
 check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
 
 $(SUBDIRS): ../
-	test -d $@ || ln -s ../$@ $@
+	@test -d $@ || ln -s ../$@ $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

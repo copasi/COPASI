@@ -17,20 +17,13 @@
 #include "model/model.h"
 #include "trajectory/trajectory.h"
 
-#ifdef XXXX
-class CCOutput: public CCopasiVector < COutput >
-{
- public:
-  CCOutput();
-  ~CCOutput();
- private:
-  C_INT16 isInsertAllowed(const COutput & src);
-};
-#endif // XXXX
-
 class COutputList
 {
  private:
+
+  /**
+   * @supplierCardinality 0..* 
+   */
   CCopasiVectorS < COutput > mList;
 
  public:

@@ -304,7 +304,7 @@ void COutput::repHeader(ofstream &fout)
   TimeStr = asctime( newtime );
   TimeStamp = TimeStr.substr(0, TimeStr.length()-1);
 
-  string VersionString = "Copasi Version " + Copasi.ProgramVersion.getVersion();
+  string VersionString = "Copasi Version " + Copasi->ProgramVersion.getVersion();
 
   width = (VersionString.length() > TimeStamp.length()) ? VersionString.length():TimeStamp.length();
   // width = max(width, ArchString.length());
@@ -763,12 +763,3 @@ C_INT32 COutput::writeDefaultVar(CWriteConfig &configbuffer)
   //		  in current configure file
   return Fail;
 }
-
-#ifdef XXXX
-CCOutputLine::CCOutputLine() {}
-
-CCOutputLine::~CCOutputLine() {}
-
-C_INT16 CCOutputLine::isInsertAllowed(const COutputLine & src)
-{return TRUE;}
-#endif // XXXX

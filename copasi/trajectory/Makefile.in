@@ -188,10 +188,10 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libtrajectory.a
 
-libtrajectory_a_SOURCES =  	Clsoda.cpp 	CODESolver.cpp 	CTrajectory.cpp
+libtrajectory_a_SOURCES =  	Clsoda.cpp 	CODESolver.cpp 	CTrajectory.cpp 	CStochSolver.cpp
 
 
-EXTRA_DIST =  	trajectory.h 	Clsoda.h	Clsoda.cpp 	CODESolver.h	CODESolver.cpp 	CTrajectory.h	CTrajectory.cpp 	CStochSolver.h
+EXTRA_DIST =  	trajectory.h 	Clsoda.h	Clsoda.cpp 	CODESolver.h	CODESolver.cpp 	CTrajectory.h	CTrajectory.cpp 	CStochSolver.h	CStochSolver.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -210,7 +210,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libtrajectory_a_LIBADD = 
 libtrajectory_a_OBJECTS =  Clsoda.$(OBJEXT) CODESolver.$(OBJEXT) \
-CTrajectory.$(OBJEXT)
+CTrajectory.$(OBJEXT) CStochSolver.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -222,9 +222,10 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/CODESolver.P .deps/CTrajectory.P .deps/Clsoda.P
+DEP_FILES =  .deps/CODESolver.P .deps/CStochSolver.P .deps/CTrajectory.P \
+.deps/Clsoda.P
 SOURCES = $(libtrajectory_a_SOURCES)
 OBJECTS = $(libtrajectory_a_OBJECTS)
 

@@ -103,7 +103,7 @@ int main(int argc, char **argv)
         C_FLOAT64 rnd = generator.getUniformRandom();
         C_INT32 k = static_cast<C_INT32> (rnd * nbins);
         if (k >= nbins) {cout << " k too big \n"; exit(2);}
-	else if (k < 0.0) {cout << " k too small \n"; exit(2);}
+        else if (k < 0.0) {cout << " k too small \n"; exit(2);}
         store[k] += 1;
         random_nums.push_back(rnd);
     }
@@ -114,9 +114,9 @@ int main(int argc, char **argv)
     for (C_INT32 l = 0; l < nbins; l++)
     {
         fout << l << "  " << store[l] << endl;
-	if (store[l] > max) max = store[l];
-	if (store[l] < min) min = store[l];
-	mean += store[l];
+        if (store[l] > max) max = store[l];
+        if (store[l] < min) min = store[l];
+        mean += store[l];
     }
     cout << "Total points = " << setprecision (12) << mean << endl,
     mean = mean / nbins;

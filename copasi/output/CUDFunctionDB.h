@@ -23,7 +23,7 @@ private:
   /**
    * The number of user defined function
    */
-  C_INT16 mItems;	
+  C_INT32 mItems;	
   /**
    *  Vector of user defined functions
    */

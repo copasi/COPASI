@@ -8,7 +8,8 @@ liboutput_a_SOURCES = \
 	COutputLine.cpp \
 	COutputList.cpp \
 	CUDFunction.cpp \
-	CUDFunctionDB.cpp
+	CUDFunctionDB.cpp \
+	CNodeO.cpp
 
 
 EXTRA_DIST = \
@@ -19,7 +20,8 @@ EXTRA_DIST = \
 	COutputLine.h COutputLine.cpp \
 	COutputList.h COutputList.cpp \
 	CUDFunction.h	CUDFunction.cpp \
-	CUDFunctionDB.h	CUDFunctionDB.cpp
+	CUDFunctionDB.h	CUDFunctionDB.cpp \
+	CNodeO.h	CNodeO.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 

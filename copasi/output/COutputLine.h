@@ -35,6 +35,7 @@ class COutputLine
 #endif // XXXX
   /**
    *  Datum can be output in the same line.
+   * @supplierCardinality 0..*
    */
   CCopasiVectorS < CDatum > mLine;
 

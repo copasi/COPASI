@@ -150,12 +150,3 @@ void COutputList::compile(string &name, CModel &model, CTrajectory *traj)
     }
 
 }
-
-#ifdef XXXX
-CCOutput::CCOutput() {}
-
-CCOutput::~CCOutput() {}
-
-C_INT16 CCOutput::isInsertAllowed(const COutput & src)
-{return TRUE;}
-#endif // XXXX

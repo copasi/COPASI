@@ -43,7 +43,7 @@ class CTrajectory
   /**
    * The stochastic solver
    */
-  CStochSolver *mStochSolver;
+  CStochSolver * mStochSolver;
   /**
    *  The time points
    */

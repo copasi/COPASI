@@ -20,7 +20,10 @@ LIBS = \
         -loutput \
         -lsteadystate \
         -ltrajectory \
-        -lutilities
+        -lutilities \
+	-llapack \
+	-lblas \
+	-lF77
 
 # the library search path.
 LDFLAGS = -all-static \
@@ -29,7 +32,8 @@ LDFLAGS = -all-static \
         -L../output \
         -L../steadystate \
         -L../trajectory \
-        -L../utilities
+        -L../utilities \
+	$(USER_LDFLAGS)
 
 LDADD = \
         ../function/libfunction.a \
@@ -52,4 +56,4 @@ installdirs-recursive install-recursive uninstall-recursive  \
 check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
 
 $(SUBDIRS): ../
-	test -d $@ || ln -s ../$@ $@
+	@test -d $@ || ln -s ../$@ $@

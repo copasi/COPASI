@@ -9,6 +9,8 @@
 #include <strstream>
 #include <vector>
 
+#define __MAIN
+
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "model/model.h"
@@ -33,6 +35,8 @@ C_INT32  TestMessage(void);
 C_INT32  TestReadSample(void);
 C_INT32  TestMoiety(void);
 C_INT32  TestKinFunction(void);
+C_INT32  TestFunctionDB(void);
+C_INT32  TestMassAction(void);
 C_INT32  TestBaseFunction(void);
 C_INT32  TestModel(void);
 C_INT32  TestLU();
@@ -42,10 +46,11 @@ C_INT32  TestNewton(void);
 C_INT32  TestSSSolution(void);
 C_INT32  TestEigen(void);
 
+C_INT32  CovertFunctionDB(void);
 C_INT32  MakeFunctionDB(void);
 C_INT32  MakeFunctionEntry(const string &name,
                            const string &description,
-                           short reversible,
+                           TriLogic reversible,
                            vector < string > modifier,
                            vector < string > parameter,
                            CCopasiVectorNS <CKinFunction> &functions);
@@ -58,6 +63,7 @@ C_INT32 TestOutputEvent(void);
 C_INT main(void)
 {
   cout << "Starting main program." << endl;
+  Copasi = new CGlobals;
     
   try
     {
@@ -66,7 +72,7 @@ C_INT main(void)
       cout << "sizeof(short) = " << sizeof(short) << endl;
       cout << "sizeof(double) = " << sizeof(double) << endl;
       cout << "sizeof(float) = " << sizeof(float) << endl;
-        
+
         
       // TestException();
       // TestMessage();
@@ -82,15 +88,18 @@ C_INT main(void)
       // TestNewton();
       TestSSSolution();
 
-      TestTrajectory();
+      // TestTrajectory();
       // TestMoiety();
       // TestKinFunction();
+      // TestMassAction();
+      // TestFunctionDB();
       // TestBaseFunction();
       // MakeFunctionDB();
       // TestModel();
       // TestLU();
       // TestMCA();
       // TestOutputEvent();        
+      CovertFunctionDB();
     }
 
   catch (CCopasiException Exception)
@@ -98,6 +107,7 @@ C_INT main(void)
       cout << Exception.getMessage().getText() << endl;
     }
 
+  delete Copasi;
   cout << "Leaving main program." << endl;
   return 0;
 }
@@ -325,8 +335,8 @@ C_INT32 TestReadSample(void)
   model.save(outbuf);
   outbuf.flush();
 
-  Copasi.FunctionDB.cleanup();
-  Copasi.FunctionDB.initialize();
+  Copasi->FunctionDB.cleanup();
+  Copasi->FunctionDB.initialize();
 
   CReadConfig inbuf2("copasi.gps");
   CModel model2;
@@ -339,7 +349,6 @@ C_INT32 TestReadSample(void)
   return 0;
 }
 
-/*
 C_INT32 TestOutputEvent(void)
 {
   C_INT32 size = 0;
@@ -391,11 +400,11 @@ C_INT32 TestOutputEvent(void)
 
   return 0;
 }
-*/
+
 
 C_INT32 TestTrajectory(void)
 {
-  CReadConfig inbuf("gps/dchan1.gps");
+  CReadConfig inbuf("gps/NewtonTest.gps");
   CModel model;
 
   // COutput output;
@@ -420,7 +429,6 @@ C_INT32 TestTrajectory(void)
   return 0;
 }
 
-/*
 C_INT32 TestMCA(void)
 {
     cout << "Entering TestReport." << endl;
@@ -437,7 +445,6 @@ C_INT32 TestMCA(void)
     CMca mMCA();
     return 0;
 }
-*/
 
 /*
 // by YH
@@ -531,9 +538,9 @@ C_INT32  TestEigen(void)
 
   //initialize matrix
   TNT::Matrix<C_FLOAT64> matrix(3, 3, 
-			   " -1 4 -2 "
-			   " -3 4  0 "
-			   " -3 1  3 ");
+                           " -1 4 -2 "
+                           " -3 4  0 "
+                           " -3 1  3 ");
   //TNT::Matrix<C_FLOAT64> matrix=[-1 4 -2; -3 4 0; -3 1 3] ;
   // SSResoltion=1.000000e-009 (from NewtonTest_yhtest.gps)
   C_FLOAT64 ssRes = 0.0;
@@ -548,9 +555,6 @@ C_INT32  TestEigen(void)
   
   return 0;
 }
-
-
-/*
 
 C_INT32 TestMoiety()
 {
@@ -585,41 +589,39 @@ C_INT32 TestMoiety()
   return 0;
 }
 
-*/
-
 C_INT32 TestKinFunction()
 {
   CKinFunction f;
     
   f.setName("test");
   f.setDescription("(a-b)*(a+b)/5");
-    
+  f.getParameters().add("a", CFunctionParameter::FLOAT64, "UNKNOWN");
+  f.getParameters().add("b", CFunctionParameter::FLOAT64, "UNKNOWN");
+  
   f.parse();
-  f.setIdentifierType("a", N_SUBSTRATE);
-  f.setIdentifierType("b", N_PRODUCT);
+  
+  //  f.setIdentifierType("a", N_SUBSTRATE);
+  //  f.setIdentifierType("b", N_PRODUCT);
 
   C_FLOAT64 a = 4;
   C_FLOAT64 b = 1;
     
-  CCopasiVector < CCallParameter > CallParameters;
+  CCallParameters CallParameters;
 
-  CallParameters.resize(1);
+  CallParameters.resize(2);
     
-  CallParameters[0]->setType(CCallParameter::VECTOR_DOUBLE);
-  CallParameters[0]->identifiers().resize(2);
-    
-  CallParameters[0]->identifiers()[0] = &a;
-  CallParameters[0]->identifiers()[1] = &b;
+  CallParameters[0] = &a;
+  CallParameters[1] = &b;
     
   C_FLOAT64 r = f.calcValue(CallParameters);
     
-  CWriteConfig out("TestKinFunction");
+  CWriteConfig out("TestKinFunction.gps");
   f.save(out);
   f.cleanup();
     
   out.flush();
     
-  CReadConfig in("TestKinFunction");
+  CReadConfig in("TestKinFunction.gps");
   CKinFunction g;
     
   g.load(in);
@@ -647,15 +649,16 @@ InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
 
 C_INT32 TestBaseFunction()
 {
-  CBaseFunction BaseFunction;
+  CFunction BaseFunction;
     
-  BaseFunction.callParameters().resize(3);
+  //  BaseFunction.callParameters().resize(3);
     
   BaseFunction.cleanup();
     
   return 0;
 }
 
+#ifdef XXXX
 C_INT32 MakeFunctionDB()
 {
   CCopasiVectorNS <CKinFunction> functions;
@@ -665,7 +668,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("v");
   MakeFunctionEntry("Constant flux (irreversible)",
                     "v",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -675,7 +678,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("v");
   MakeFunctionEntry("Constant flux (reversible)",
                     "v",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -686,7 +689,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("V");
   MakeFunctionEntry("Henri-Michaelis-Menten (irreversible)",
                     "V*substrate/(Km+substrate)",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -699,7 +702,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Vr");
   MakeFunctionEntry("Reversible Michaelis-Menten",
                     "(Vf*substrate/Kms-Vr*product/Kmp)/(1+substrate/Kms+product/Kmp)",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -713,7 +716,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Substrate inhibition (rev)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)/(1+substrate/Kms+product/Kmp+(substrate/Ki)^2)",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -725,7 +728,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Substrate inhibition (irr)",
                     "V*substrate/(Km+substrate+Km*(substrate/Ki)^2)",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -737,7 +740,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ksa");
   MakeFunctionEntry("Substrate activation (irr)",
                     "V*(substrate/Ksa)^2/(1+substrate/Ksc+substrate/Ksa+(substrate/Ksa)^2)",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -752,7 +755,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Competitive inhibition (rev)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)/(1+substrate/Kms+product/Kmp+Inhibitor/Ki)",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -765,7 +768,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Competitive inhibition (irr)",
                     "V*substrate/(Km+substrate+Km*Inhibitor/Ki)",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -780,7 +783,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Uncompetitive inhibition (rev)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)/(1+(substrate/Kms+product/Kmp)*(1+Inhibitor/Ki))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -793,7 +796,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Uncompetitive inhibition (irr)",
                     "V*substrate/(Km+substrate*(1+Inhibitor/Ki))",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -808,7 +811,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Noncompetitive inhibition (rev)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)/((1+substrate/Kms+product/Kmp)*(1+Inhibitor/Ki))",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -821,7 +824,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Noncompetitive inhibition (irr)",
                     "V*substrate/((Km+substrate)*(1+Inhibitor/Ki))",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -837,7 +840,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Kic");
   MakeFunctionEntry("Mixed inhibition (rev)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)/(1+Inhibitor/Kis+(substrate/Kms+product/Kmp)*(1+Inhibitor/Kic))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -851,7 +854,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Kic");
   MakeFunctionEntry("Mixed inhibition (irr)",
                     "V*substrate/(Km*(1+Inhibitor/Kis)+substrate*(1+Inhibitor/Kic))",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -866,7 +869,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ka");
   MakeFunctionEntry("Specific activation (rev)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)*Activator/(Ka+(1+substrate/Kms+product/Kmp)*Activator)",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -879,7 +882,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ka");
   MakeFunctionEntry("Specific activation (irrev)",
                     "V*substrate*Activator/(Kms*Ka+(Kms+substrate)*Activator)",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -894,7 +897,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ka");
   MakeFunctionEntry("Catalytic activation (rev)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)*Activator/((1+substrate/Kms+product/Kmp)*(Ka+Activator))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -907,7 +910,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ka");
   MakeFunctionEntry("Catalytic activation (irrev)",
                     "V*substrate*Activator/((Kms+substrate)*(Ka+Activator))",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -923,7 +926,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Kac");
   MakeFunctionEntry("Mixed activation (rev)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)*Activator/(Kas+Activator+(substrate/Kms+product/Kmp)*(Kac+Activator))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -937,7 +940,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Kac");
   MakeFunctionEntry("Mixed activation (irrev)",
                     "V*substrate*Activator/(Kms*(Kas+Activator)+substrate*(Kac+Activator))",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -952,7 +955,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("b");
   MakeFunctionEntry("Hyperbolic modifier (irrev)",
                     "V*substrate*(1+b*Modifier/(a*Kd))/(Km*(1+Modifier/Kd)+substrate*(1+Modifier/(a*Kd)))",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -969,7 +972,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("b");
   MakeFunctionEntry("Hyperbolic modifier (rev)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)*(1+b*Modifier/(a*Kd))/(1+Modifier/Kd+(substrate/Kms+product/Kmp)*(1+Modifier/(a*Kd)))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -984,7 +987,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Allosteric inhibition (MWC)",
                     "V*substrate*(Ks+substrate)^(n-1)/(L*(Ks*(1+Inhibitor/Ki))^n+(Ks+substrate)^n)",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -1000,7 +1003,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Ki");
   MakeFunctionEntry("Allosteric inhibition (empirical)",
                     "(Vf*substrate/Kms-Vr*product/Kmp)/(1+substrate/Kms+product/Kmp+(Inhibitor/Ki)^n)",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1012,7 +1015,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("h");
   MakeFunctionEntry("Hill Cooperativity",
                     "V*substrate^h/(Shalve^h+substrate^h)",
-                    FALSE,
+                    TriFalse,
                     modifier,
                     parameter,
                     functions);
@@ -1026,7 +1029,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("h");
   MakeFunctionEntry("Reversible Hill",
                     "Vf*substrate/Shalve*(1-product/(substrate*Keq))*(substrate/Shalve+product/Phalve)^(h-1)/(1+(substrate/Shalve+product/Phalve)^h)",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1043,7 +1046,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("alpha");
   MakeFunctionEntry("Reversible Hill 1 modifier",
                     "Vf*substrate/Shalve*(1-product/(substrate*Keq))*(substrate/Shalve+product/Phalve)^(h-1)/((1+(Modifier/Mhalve)^h)/(1+alpha*(Modifier/Mhalve)^h)+(substrate/Shalve+product/Phalve)^h)",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1064,7 +1067,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("alphaAB");
   MakeFunctionEntry("Reversible Hill 2 modifiers",
                     "Vf*substrate/Shalve*(1-product/(substrate*Keq))*(substrate/Shalve+product/Phalve)^(h-1)/((1+(ModifierA/MAhalve)^h+(ModifierB/MBhalve)^h)/(1+alphaA*(ModifierA/MAhalve)^h+alphaB*(ModifierB/MBhalve)^h+alphaA*alphaB*alphaAB*(ModifierA/MAhalve)^h*(ModifierB/MBhalve)^h)+(substrate/Shalve+product/Phalve)^h)",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1077,7 +1080,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Keq");
   MakeFunctionEntry("Uni Uni",
                     "Vf*(substrate-product/Keq)/(substrate+Kms*(1+product/Kmp))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1091,7 +1094,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Keq");
   MakeFunctionEntry("Iso Uni Uni",
                     "Vf*(substrate-product/Keq)/(substrate*(1+product/Kii)+Kms*(1+product/Kmp))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1107,7 +1110,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Vr");
   MakeFunctionEntry("Ordered Uni Bi",
                     "Vf*(substrate-productp*productq/Keq)/(Kms+substrate*(1+productp/Kip)+Vf/(Vr*Keq)*(Kmq*productp+Kmp*productq+productp*productq))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1123,7 +1126,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Vr");
   MakeFunctionEntry("Ordered Bi Uni",
                     "Vf*(substratea*substrateb-product/Keq)/(substratea*substrateb+Kma*substrateb+Kmb*substratea+Vf/(Vr*Keq)(Kmp+product*(1+substratea/Kia)))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1142,7 +1145,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Kip");
   MakeFunctionEntry("Ordered Bi Bi",
                     "Vf*(substratea*substrateb-productp*productq/Keq)/(substratea*substrateb*(1+productp/Kip)+Kma*substrateb+Kmb*(substratea+Kia)+Vf/(Vr*Keq)*(Kmq*productp(1+substratea/Kia)+productq*(Kmp*(1+Kia*substrateb/(Kma*Kmb))+productp*(1+substrateb/Kib))))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1160,7 +1163,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("Kiq");
   MakeFunctionEntry("Ping Pong Bi Bi",
                     "Vf*(substratea*substrateb-productp*productq/Keq)/(substratea*substrateb*(1+productq/Kiq)+Kma*substrateb+Kmb*substratea+Vf/(Vr*Keq)*(Kmq*productp*(1+substratea/Kia)+productq*(Kmp+productp)))",
-                    TRUE,
+                    TriTrue,
                     modifier,
                     parameter,
                     functions);
@@ -1177,7 +1180,7 @@ C_INT32 MakeFunctionDB()
 
 C_INT32 MakeFunctionEntry(const string &name,
                           const string &description,
-                          short reversible,
+                          TriLogic reversible,
                           vector < string > modifier,
                           vector < string > parameter,
                           CCopasiVectorNS <CKinFunction> &functions)
@@ -1230,14 +1233,16 @@ C_INT32 MakeFunctionEntry(const string &name,
             
   return 0;
 }
+#endif // XXXX
 
 C_INT32 TestModel()
 {
   CReadConfig inbuf("gps/BakkerComp.gps");
 
   CModel m;
-    
-  return m.load(inbuf);
+  m.load(inbuf);
+
+  return 0;
 }
 
 C_INT32 TestLU()
@@ -1340,3 +1345,95 @@ C_INT32  TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *))
 
   return 0;
 }
+
+C_INT32  TestMassAction(void)
+{
+  string Usage;
+  
+  CUsageRange Src;
+  Src.setRange(1,0);
+  Src.setUsage("parameter");
+
+  CUsageRange Copy(Src);
+  Usage = Copy.getUsage();
+
+  CUsageRange * pCopy = new CUsageRange(Src);
+  Usage = "";
+  Usage = pCopy->getUsage();
+  
+  CMassAction Reversible(TriTrue);
+  CMassAction Irreversible(TriFalse);
+
+  CWriteConfig WriteBuffer("TestMassAction.gps");
+  Reversible.save(WriteBuffer);
+  Irreversible.save(WriteBuffer);
+
+  delete pCopy;
+  return 0;
+}
+
+C_INT32  TestFunctionDB(void) 
+{
+  CFunctionDB FunctionDB;
+  
+  FunctionDB.setFilename("FunctionDB.gps");
+  FunctionDB.initialize();
+
+  CFunction * pFunction;
+  pFunction = FunctionDB.findFunction("Henri-Michaelis-Menten (irreversible)");
+  
+  return 0;
+}
+
+C_INT32 CovertFunctionDB(void)
+{
+  CFunctionDB FunctionDB;
+  
+  FunctionDB.setFilename("FunctionDB.gps");
+  FunctionDB.initialize();
+
+  FunctionDB.findFunction("Mass action (reversible)");
+  FunctionDB.findFunction("Mass action (irreversible)");
+
+  FunctionDB.findFunction("Constant flux (irreversible)");
+  FunctionDB.findFunction("Constant flux (reversible)");
+  FunctionDB.findFunction("Henri-Michaelis-Menten (irreversible)");
+  FunctionDB.findFunction("Reversible Michaelis-Menten");
+  FunctionDB.findFunction("Substrate inhibition (rev)");
+  FunctionDB.findFunction("Substrate inhibition (irr)");
+  FunctionDB.findFunction("Substrate activation (irr)");
+  FunctionDB.findFunction("Competitive inhibition (rev)");
+  FunctionDB.findFunction("Competitive inhibition (irr)");
+  FunctionDB.findFunction("Uncompetitive inhibition (rev)");
+  FunctionDB.findFunction("Uncompetitive inhibition (irr)");
+  FunctionDB.findFunction("Noncompetitive inhibition (rev)");
+  FunctionDB.findFunction("Noncompetitive inhibition (irr)");
+  FunctionDB.findFunction("Mixed inhibition (rev)");
+  FunctionDB.findFunction("Mixed inhibition (irr)");
+  FunctionDB.findFunction("Specific activation (rev)");
+  FunctionDB.findFunction("Specific activation (irrev)");
+  FunctionDB.findFunction("Catalytic activation (rev)");
+  FunctionDB.findFunction("Catalytic activation (irrev)");
+  FunctionDB.findFunction("Mixed activation (rev)");
+  FunctionDB.findFunction("Mixed activation (irrev)");
+  FunctionDB.findFunction("Hyperbolic modifier (irrev)");
+  FunctionDB.findFunction("Hyperbolic modifier (rev)");
+  FunctionDB.findFunction("Allosteric inhibition (MWC)");
+  FunctionDB.findFunction("Allosteric inhibition (empirical)");
+  FunctionDB.findFunction("Hill Cooperativity");
+  FunctionDB.findFunction("Reversible Hill");
+  FunctionDB.findFunction("Reversible Hill 1 modifier");
+  FunctionDB.findFunction("Reversible Hill 2 modifiers");
+  FunctionDB.findFunction("Uni Uni");
+  FunctionDB.findFunction("Iso Uni Uni");
+  FunctionDB.findFunction("Ordered Uni Bi");
+  FunctionDB.findFunction("Ordered Bi Uni");
+  FunctionDB.findFunction("Ordered Bi Bi");
+  FunctionDB.findFunction("Ping Pong Bi Bi");
+
+  CWriteConfig out("FunctionDBnew.gps");
+  FunctionDB.save(out);
+  return 0;
+}
+
+  

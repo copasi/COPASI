@@ -188,10 +188,10 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = liboutput.a
 
-liboutput_a_SOURCES =  	CDatum.cpp 	COutput.cpp 	COutputEvent.cpp 	COutputLine.cpp 	COutputList.cpp 	CUDFunction.cpp 	CUDFunctionDB.cpp
+liboutput_a_SOURCES =  	CDatum.cpp 	COutput.cpp 	COutputEvent.cpp 	COutputLine.cpp 	COutputList.cpp 	CUDFunction.cpp 	CUDFunctionDB.cpp 	CNodeO.cpp
 
 
-EXTRA_DIST =  	output.h 	CDatum.h CDatum.cpp 	COutput.h COutput.cpp 	COutputEvent.h COutputEvent.cpp 	COutputLine.h COutputLine.cpp 	COutputList.h COutputList.cpp 	CUDFunction.h	CUDFunction.cpp 	CUDFunctionDB.h	CUDFunctionDB.cpp
+EXTRA_DIST =  	output.h 	CDatum.h CDatum.cpp 	COutput.h COutput.cpp 	COutputEvent.h COutputEvent.cpp 	COutputLine.h COutputLine.cpp 	COutputList.h COutputList.cpp 	CUDFunction.h	CUDFunction.cpp 	CUDFunctionDB.h	CUDFunctionDB.cpp 	CNodeO.h	CNodeO.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -211,7 +211,7 @@ LIBS = @LIBS@
 liboutput_a_LIBADD = 
 liboutput_a_OBJECTS =  CDatum.$(OBJEXT) COutput.$(OBJEXT) \
 COutputEvent.$(OBJEXT) COutputLine.$(OBJEXT) COutputList.$(OBJEXT) \
-CUDFunction.$(OBJEXT) CUDFunctionDB.$(OBJEXT)
+CUDFunction.$(OBJEXT) CUDFunctionDB.$(OBJEXT) CNodeO.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -225,9 +225,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/CDatum.P .deps/COutput.P .deps/COutputEvent.P \
-.deps/COutputLine.P .deps/COutputList.P .deps/CUDFunction.P \
-.deps/CUDFunctionDB.P
+DEP_FILES =  .deps/CDatum.P .deps/CNodeO.P .deps/COutput.P \
+.deps/COutputEvent.P .deps/COutputLine.P .deps/COutputList.P \
+.deps/CUDFunction.P .deps/CUDFunctionDB.P
 SOURCES = $(liboutput_a_SOURCES)
 OBJECTS = $(liboutput_a_OBJECTS)
 

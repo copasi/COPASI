@@ -4,14 +4,15 @@ noinst_LIBRARIES = libtrajectory.a
 libtrajectory_a_SOURCES = \
 	Clsoda.cpp \
 	CODESolver.cpp \
-	CTrajectory.cpp
+	CTrajectory.cpp \
+	CStochSolver.cpp
 
 EXTRA_DIST = \
 	trajectory.h \
 	Clsoda.h	Clsoda.cpp \
 	CODESolver.h	CODESolver.cpp \
 	CTrajectory.h	CTrajectory.cpp \
-	CStochSolver.h
+	CStochSolver.h	CStochSolver.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 

@@ -13,17 +13,6 @@
 #include "trajectory/trajectory.h"
 
 
-#ifdef XXXX
-class CCOutputLine: public CCopasiVector < COutputLine >
-{
- public:
-  CCOutputLine();
-  ~CCOutputLine();
- private:
-  C_INT16 isInsertAllowed(const COutputLine & src);
-};
-#endif // XXXX
-
 class COutputLine;
 
 class COutput
@@ -31,6 +20,7 @@ class COutput
  private:
   /**
    *  Datum lines can be output in the same time.
+   * @supplierCardinality 0..*
    */
   CCopasiVectorS < COutputLine > mOutput;
 
@@ -124,7 +114,7 @@ class COutput
    * the mathematical model 
    * :TODO: this should be removed SH
    */
-  CModel		Model;			
+  // CModel 		Model;			
 
   /**
    *	Reset output data file and reporting file configure variable

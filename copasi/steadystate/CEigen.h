@@ -119,12 +119,12 @@ class CEigen {
    * = 'N': Eigenvalues are ordered Select is not refereced.
    */
   //char mSelect;
-  int * mSelect;
+  C_INT32 * mSelect;
 
   /**
    * #4: (input) The order of the matrix A 
    */
-  int mN;
+  C_INT32 mN;
 
  
   /**
@@ -140,7 +140,7 @@ class CEigen {
   /**
    * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
    */
-  int mLDA;
+  C_INT32 mLDA;
 
   /**
    * #7: (output) an integer
@@ -148,7 +148,7 @@ class CEigen {
    * if Sort = 'S', its value = number of eigenvalues (after sorting)
    *                for which mSelect is true.
    */
-  int mSdim;
+  C_INT32 mSdim;
 
   /**
    * #8: array with dimension (mN)
@@ -190,7 +190,7 @@ class CEigen {
    * #14: (workspace) Logical array, dimension (N)
    * Not referenced if mSort = 'N'
    */
-  int * mBWork;
+  C_INT32 * mBWork;
 
 
   /**
@@ -206,20 +206,20 @@ class CEigen {
    *           Schur form no longer satisfy mSelect=.True. This could
    *           caused by underflow due to scaling
    */
-  int mInfo;
+  C_INT32 mInfo;
 
 
   /** 
    * sorts two arrays using one as the criterion for sorting 
    */
-  int qs_partition(double *A, double *B, int p, int r);
+  C_INT32 qs_partition(double *A, double *B, C_INT32 p, C_INT32 r);
 
   /** 
    * Do quicksort with 2 arrays of double. 
    * One is the array of the real part of the eigenvalues.
    * another is the array of the imaginary part of the eigenvalues
    */
-  void quicksort(double *A, double *B, int p, int r);
+  void quicksort(double *A, double *B, C_INT32 p, C_INT32 r);
 
 
  public:
@@ -233,7 +233,7 @@ class CEigen {
    * @param rows is the max row number of the Matrix
    * @param cols is the max column number of the Matrix
    */
-  //CEigen(int rows, int cols);
+  //CEigen(C_INT32 rows, C_INT32 cols);
 
   /**
    * Destructor
@@ -257,7 +257,7 @@ class CEigen {
   /**
    * Set the Matrix
    */
-  //void setMatrix(int rows, int cols);
+  //void setMatrix(C_INT32 rows, C_INT32 cols);
 
 
   /**

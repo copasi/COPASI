@@ -1689,7 +1689,7 @@ AC_DEFUN(AC_CHECK_COMPILERS,
        kde_use_debug_define=yes
      else
        kde_use_debug_code="yes"
-       kde_use_debug_define=no
+       kde_use_debug_define=yes
    fi
   ], [kde_use_debug_code="no"
       kde_use_debug_define=no

@@ -68,22 +68,22 @@ class CRandom
      */
      std::vector<C_INT32> mShuffleTable;
 #if 0
-    /**
-     * The multiplier
-     */
-    const C_INT32 mMultiplier;
-    /**
-     * The modulus
-     */
-    const C_INT32 mModulus;
-    /**
-     * The q value
-     */
-    const C_INT32 mQ;
-    /**
-     * The r value
-     */
-    const C_INT32 mR;
+  /**
+   * The multiplier
+   */
+  const C_INT32 mMultiplier;
+  /**
+   * The modulus
+   */
+  const C_INT32 mModulus;
+  /**
+   * The q value
+   */
+  const C_INT32 mQ;
+  /**
+   * The r value
+   */
+  const C_INT32 mR;
 #endif // 0
 };
 
