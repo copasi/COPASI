@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.179 $
+   $Revision: 1.180 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 17:23:31 $
+   $Date: 2005/02/27 20:23:56 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -49,6 +49,9 @@
 #include "utilities/CopasiTime.h"
 
 //+++
+#include "CScanWidgetBreak.h"
+#include "CScanWidgetRandom.h"
+#include "CScanWidgetRepeat.h"
 #include "CScanWidgetScan.h"
 #include "CScanWidgetTask.h"
 
@@ -81,7 +84,11 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   tmpLayout->addWidget(tmpLabel);
 
   comboType = new QComboBox(this);
+  //+++
   comboType->insertItem("Parameter Scan");
+  comboType->insertItem("Repeat");
+  comboType->insertItem("Random distribution");
+  comboType->insertItem("Output separator");
   tmpLayout->addWidget(comboType);
 
   buttonNewItem = new QPushButton(this, "buttonNewItem");
@@ -248,7 +255,11 @@ bool ScanWidget::loadScan()
 
   //std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
 
+  //+++
   CScanWidgetScan* tmp1;
+  CScanWidgetRepeat* tmp2;
+  CScanWidgetRandom* tmp3;
+  CScanWidgetBreak* tmp4;
 
   // the scan items
   unsigned C_INT32 i, imax = scanProblem->getNumberOfScanItems();
@@ -268,6 +279,21 @@ bool ScanWidget::loadScan()
           break;
 
         case CScanProblem::SCAN_REPEAT :
+          tmp2 = new CScanWidgetRepeat(scrollview);
+          tmp2->initFromScanItem(scanProblem->getScanItem(i));
+          scrollview->addWidget(tmp2);
+          break;
+
+        case CScanProblem::SCAN_RANDOM :
+          tmp3 = new CScanWidgetRandom(scrollview);
+          tmp3->initFromScanItem(scanProblem->getScanItem(i), CCopasiDataModel::Global->getModel());
+          scrollview->addWidget(tmp3);
+          break;
+
+        case CScanProblem::SCAN_BREAK :
+          tmp4 = new CScanWidgetBreak(scrollview);
+          tmp4->initFromScanItem(scanProblem->getScanItem(i));
+          scrollview->addWidget(tmp4);
           break;
 
         default:
@@ -286,9 +312,32 @@ bool ScanWidget::loadScan()
 
 bool ScanWidget::slotAddItem()
 {
+  //+++
   CScanWidgetScan* tmp1;
+  CScanWidgetRepeat* tmp2;
+  CScanWidgetRandom* tmp3;
+  CScanWidgetBreak* tmp4;
 
-  CScanProblem::Type type = CScanProblem::SCAN_LINEAR;
+  int intType = comboType->currentItem();
+  CScanProblem::Type type;
+  switch (intType)
+    {
+      //+++
+    case 0:
+      type = CScanProblem::SCAN_LINEAR;
+      break;
+    case 1:
+      type = CScanProblem::SCAN_REPEAT;
+      break;
+    case 2:
+      type = CScanProblem::SCAN_RANDOM;
+      break;
+    case 3:
+      type = CScanProblem::SCAN_BREAK;
+      break;
+    default:
+      type = CScanProblem::SCAN_LINEAR;
+    }
 
   //create item to get the default values
   CScanProblem* tmpProblem = new CScanProblem();
@@ -304,6 +353,21 @@ bool ScanWidget::slotAddItem()
       break;
 
     case CScanProblem::SCAN_REPEAT :
+      tmp2 = new CScanWidgetRepeat(scrollview);
+      tmp2->initFromScanItem(tmpItem);
+      scrollview->insertWidget(tmp2);
+      break;
+
+    case CScanProblem::SCAN_RANDOM :
+      tmp3 = new CScanWidgetRandom(scrollview);
+      tmp3->initFromScanItem(tmpItem, CCopasiDataModel::Global->getModel());
+      scrollview->insertWidget(tmp3);
+      break;
+
+    case CScanProblem::SCAN_BREAK :
+      tmp4 = new CScanWidgetBreak(scrollview);
+      tmp4->initFromScanItem(tmpItem);
+      scrollview->insertWidget(tmp4);
       break;
 
     default:
@@ -337,6 +401,18 @@ bool ScanWidget::saveScan() const
         const CScanWidgetScan* tmp1 = dynamic_cast<CScanWidgetScan*>(widgetList[i]);
         if (tmp1) {tmp1->saveToScanItem(scanProblem); continue;}
 
+        // item: repeat
+        const CScanWidgetRepeat* tmp2 = dynamic_cast<CScanWidgetRepeat*>(widgetList[i]);
+        if (tmp2) {tmp2->saveToScanItem(scanProblem); continue;}
+
+        // item: random
+        const CScanWidgetRandom* tmp3 = dynamic_cast<CScanWidgetRandom*>(widgetList[i]);
+        if (tmp3) {tmp3->saveToScanItem(scanProblem); continue;}
+
+        // item: repeat
+        const CScanWidgetBreak* tmp4 = dynamic_cast<CScanWidgetBreak*>(widgetList[i]);
+        if (tmp4) {tmp4->saveToScanItem(scanProblem); continue;}
+
         // the subtask
         const CScanWidgetTask* tmpT = dynamic_cast<CScanWidgetTask*>(widgetList[i]);
         if (tmpT) {tmpT->saveToScanProblem(scanProblem); continue;}
@@ -344,6 +420,9 @@ bool ScanWidget::saveScan() const
         return false;
       }
     //scrollview->updateFromWidgetList();
+
+    //set initial state
+    scanProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
     return true;
   }
