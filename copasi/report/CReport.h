@@ -20,7 +20,10 @@ class CReportTable;
 class CReport : public CCopasiObject
   {
   private:
-    std::vector<CCopasiObject*> objectList;
+    std::vector<CCopasiObject*> footerObjectList;
+    std::vector<CCopasiObject*> bodyObjectList;
+    std::vector<CCopasiObject*> headerObjectList;
+
     CReportDefinition *mpReportDef;
     std::string mTarget;
     bool mAppend;
@@ -48,9 +51,17 @@ class CReport : public CCopasiObject
     CReportDefinition* getReportDefinition();
 
     /**
-    returns the reference of the Report Tag
+    compile the object list from name vector
     */
     void compile(const std::vector< CCopasiContainer * > * pListOfContainer = NULL);
+
+    /**
+    transfer every individual object list from name vector
+    */
+    void generateObjectFromName(
+      const std::vector< CCopasiContainer * > * pListOfContainer,
+      std::vector<CCopasiObject*> & objectList,
+      std::vector<CCopasiObjectName>* nameVector);
 
     /**
     sets the reference to the report

@@ -23,12 +23,18 @@ void CReport::cleanup()
 {
   // Please Dont clear the objectList, as all pointers are also referred swh else
   int i;
-  for (i = 0; i < objectList.size(); i++)
-    {
-      objectList[i] = NULL;
-    }
+  for (i = 0; i < headerObjectList.size(); i++)
+    headerObjectList[i] = NULL;
 
-  objectList.clear();
+  for (i = 0; i < bodyObjectList.size(); i++)
+    bodyObjectList[i] = NULL;
+
+  for (i = 0; i < footerObjectList.size(); i++)
+    footerObjectList[i] = NULL;
+
+  headerObjectList.clear();
+  bodyObjectList.clear();
+  footerObjectList.clear();
   //  CKeyFactory::remove(mKey);
   // mpReportDef pointer shall be dealt outside, where it is created
   //  pdelete(mpReportDef);
@@ -72,16 +78,31 @@ void CReport::printFooter()
 
 void CReport::compile(const std::vector< CCopasiContainer * > * pListOfContainer)
 {
+  generateObjectFromName(pListOfContainer, headerObjectList, mpReportDef->getHeaderAddr());
+  generateObjectFromName(pListOfContainer, bodyObjectList, mpReportDef->getBodyAddr());
+  generateObjectFromName(pListOfContainer, footerObjectList, mpReportDef->getFooterAddr());
+}
+
+void CReport::printBody(CReport * pReport)
+{
+  if (pReport)
+    pReport->printBody();
+}
+
+void CReport::generateObjectFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
+                                     std::vector<CCopasiObject*> & objectList,
+                                     std::vector<CCopasiObjectName>* nameVector)
+{
   int i;
   CCopasiObject* pSelected;
 
   // if no specified container list
   if (!pListOfContainer)
-    for (i = 0; i < mpReportDef->getBodyAddr()->size(); i++)
+    for (i = 0; i < nameVector->size(); i++)
       {
         pSelected = NULL;
         pSelected =
-          (CCopasiObject*)CCopasiContainer::Root->getObject((*(mpReportDef->getBodyAddr()))[i]);
+          (CCopasiObject*)CCopasiContainer::Root->getObject((*(nameVector))[i]);
         if (pSelected)
           objectList.push_back(pSelected);
       }
@@ -89,7 +110,7 @@ void CReport::compile(const std::vector< CCopasiContainer * > * pListOfContainer
     {
       CCopasiContainer* pCopasiObject;
       int containerIndex;
-      for (i = 0; i < mpReportDef->getBodyAddr()->size(); i++)
+      for (i = 0; i < nameVector->size(); i++)
         {
           //favor to search the list of container first
           pSelected = NULL;
@@ -97,7 +118,7 @@ void CReport::compile(const std::vector< CCopasiContainer * > * pListOfContainer
             {
               pCopasiObject = (*pListOfContainer)[containerIndex];
               pSelected =
-                (CCopasiObject*)pCopasiObject->getObject((*(mpReportDef->getBodyAddr()))[i]);
+                (CCopasiObject*)pCopasiObject->getObject((*(nameVector))[i]);
               if (pSelected)
                 {
                   objectList.push_back(pSelected);
@@ -108,17 +129,11 @@ void CReport::compile(const std::vector< CCopasiContainer * > * pListOfContainer
           if (!pSelected)
             {
               pSelected =
-                (CCopasiObject*)CCopasiContainer::Root->getObject((*(mpReportDef->getBodyAddr()))[i]);
+                (CCopasiObject*)CCopasiContainer::Root->getObject((*(nameVector))[i]);
               // has been deleted all where
               if (pSelected)
                 objectList.push_back(pSelected);
             }
         }
     }
-}
-
-void CReport::printBody(CReport * pReport)
-{
-  if (pReport)
-    pReport->printBody();
 }
