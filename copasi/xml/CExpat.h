@@ -21,7 +21,7 @@
  *
  * Created for Copasi by Stefan Hoops 2003
  */
-template <class _T>
+template <class CType>
 class CExpatTemplate
   {
     // Attributes
@@ -90,7 +90,7 @@ class CExpatTemplate
       // Invoke the post create routine
       //
 
-      _T *pThis = static_cast <_T *>(this);
+      CType *pThis = static_cast <CType *>(this);
       pThis->onPostCreate();
 
       //
@@ -710,7 +710,7 @@ class CExpatTemplate
                                     const XML_Char *pszName,
                                     const XML_Char **papszAttrs)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onStartElement(pszName, papszAttrs);
     }
 
@@ -722,7 +722,7 @@ class CExpatTemplate
     static void endElementHandler(void *pUserData,
                                   const XML_Char *pszName)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onEndElement(pszName);
     }
 
@@ -736,7 +736,7 @@ class CExpatTemplate
                                      const XML_Char *pszData,
                                      int nLength)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onCharacterData(pszData, nLength);
     }
 
@@ -750,7 +750,7 @@ class CExpatTemplate
         const XML_Char *pszTarget,
         const XML_Char *pszData)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onProcessingInstruction(pszTarget, pszData);
     }
 
@@ -762,7 +762,7 @@ class CExpatTemplate
     static void commentHandler(void *pUserData,
                                const XML_Char *pszData)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onComment(pszData);
     }
 
@@ -772,7 +772,7 @@ class CExpatTemplate
      */
     static void startCdataSectionHandler(void *pUserData)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onStartCdataSection();
     }
 
@@ -782,7 +782,7 @@ class CExpatTemplate
      */
     static void endCdataSectionHandler(void *pUserData)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onEndCdataSection();
     }
 
@@ -796,7 +796,7 @@ class CExpatTemplate
                                const XML_Char *pszData,
                                int nLength)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onDefault(pszData, nLength);
     }
 
@@ -814,7 +814,7 @@ class CExpatTemplate
                                         const XML_Char *pszSystemID,
                                         const XML_Char *pszPublicID)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       return pThis->onExternalEntityRef(pszContext,
                                         pszBase, pszSystemID, pszPublicID) ? 1 : 0;
     }
@@ -829,7 +829,7 @@ class CExpatTemplate
                                       const XML_Char *pszName,
                                       XML_Encoding *pInfo)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       return pThis->onUnknownEncoding(pszName, pInfo) ? 1 : 0;
     }
 
@@ -843,7 +843,7 @@ class CExpatTemplate
                                           const XML_Char *pszPrefix,
                                           const XML_Char *pszURI)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onStartNamespaceDecl(pszPrefix, pszURI);
     }
 
@@ -855,7 +855,7 @@ class CExpatTemplate
     static void endNamespaceDeclHandler(void *pUserData,
                                         const XML_Char *pszPrefix)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onEndNamespaceDecl(pszPrefix);
     }
 
@@ -871,7 +871,7 @@ class CExpatTemplate
                                const XML_Char *pszEncoding,
                                int nStandalone)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onXmlDecl(pszVersion, pszEncoding, nStandalone != 0);
     }
 
@@ -889,7 +889,7 @@ class CExpatTemplate
                                         const XML_Char *pszPubID,
                                         int nHasInternalSubset)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onStartDoctypeDecl(pszDoctypeName, pszSysID,
                                 pszPubID, nHasInternalSubset != 0);
     }
@@ -900,7 +900,7 @@ class CExpatTemplate
      */
     static void endDoctypeDeclHandler(void *pUserData)
     {
-      _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
+      CType *pThis = static_cast <CType *>((CExpatTemplate <CType> *) pUserData);
       pThis->onEndDoctypeDecl();
     }
   };
