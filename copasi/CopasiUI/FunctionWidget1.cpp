@@ -344,15 +344,19 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 } //end of function
 
 //**** Try to get parameters table to display proper texts
-/*bool FunctionWidget1::updateParameters()
+void FunctionWidget1::updateParameters()
 {
- CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
- // for addition of objects from Description field
- CFunctionParameters &functParam = func->getParameters(); 
- // next step parse the equation in the description field
- 
- return loadFromFunction(func);
-}*/ //end of function
+  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  // for addition of objects from Description field
+  //CFunctionParameters &functParam = func->getParameters();
+  // next step place the text area contents into the function description
+  func->setDescription(textBrowser->text().latin1());
+  // compile and retrieve nodes
+  // go through nodes and determine if identifier, if so, then add to parameters
+  //func->addParameter(name, FLOAT64,usage);
+  // Call loadFromFunction to display the table
+  loadFromFunction(func);
+} //end of function
 
 bool FunctionWidget1::saveToFunction()
 {
