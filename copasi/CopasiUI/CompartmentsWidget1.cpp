@@ -122,6 +122,9 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
   hBoxLayout4_1->addWidget(commitChanges);
   hBoxLayout4_1->addWidget(cancelChanges);
 
+  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
+
   connect(ListBox1, SIGNAL(selected(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
 }
 
@@ -170,6 +173,7 @@ void CompartmentsWidget1::loadName(QString setValue)
   compartn = compartments[(string)setValue];
 
   LineEdit1->setText(compartn->getName().c_str());
+  Compartment1_Name = new QString(compartn->getName().c_str());
 
   CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
   C_INT32 noOfMetabolitesRows = Metabs.size();
@@ -188,6 +192,18 @@ void CompartmentsWidget1::loadName(QString setValue)
 
   LineEdit4->setText(QString::number(compartn->getVolume()));
   LineEdit4->setReadOnly(true);
+}
+
+void CompartmentsWidget1::slotBtnCancelClicked()
+{
+  //QMessageBox::information(this, "Moiety Widget","Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  emit signal_emitted(*Compartment1_Name);
+}
+
+void CompartmentsWidget1::slotBtnOKClicked()
+{
+  QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  // emit signal_emitted(*Compartment1_Name);
 }
 
 //last function ends

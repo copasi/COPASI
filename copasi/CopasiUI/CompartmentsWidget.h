@@ -32,6 +32,7 @@ class CompartmentsWidget : public QWidget
     void loadCompartments(CModel *model);
     //void mousePressEvent(QMouseEvent * e);
     void resizeEvent(QResizeEvent * re);
+    QString Compartment_Name;
 
   public slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);

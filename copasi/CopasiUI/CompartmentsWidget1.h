@@ -56,6 +56,8 @@ class CompartmentsWidget1 : public QWidget
     void loadCompartments(CModel *model);
     void loadName(QString setValue);
     int isName(QString setValue);
+    QString *Compartment1_Name;
+
     QLineEdit* LineEdit1;
     QLineEdit* LineEdit3;
     QLineEdit* LineEdit4;
@@ -77,6 +79,13 @@ class CompartmentsWidget1 : public QWidget
     QFrame* Frame4_1;
     QFrame* Frame4_2;
     QFrame* Frame4_3;
+
+  protected slots:
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
+
+  signals:
+    void signal_emitted(QString &);
   };
 
 #endif // CompartmentsWidget
