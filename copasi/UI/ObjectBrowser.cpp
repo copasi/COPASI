@@ -227,8 +227,8 @@ void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * co
       last = currentItem;
       if (current->isContainer())
         {
-          currentItem->setText(0, current->getObjectType().c_str());
-          currentItem->setObjectType(CONTAINERATTR);
+          currentItem->setText(0, current->getObjectName().c_str());
+          currentItem->setObjectType(OBJECTATTR);
           loadChild(currentItem, (CCopasiContainer*)current);
         }
       else

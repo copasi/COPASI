@@ -41,8 +41,8 @@ class ObjectBrowser : public QWidget
     void setCheckMark(ObjectBrowserItem* pCurrent);
 
     void loadData();
-    void loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaParent);
-    void loadVectors(ObjectBrowserItem* parent, CCopasiObject* copaParent);
+    void loadChild(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
+    void loadVectors(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
     void updateUI();
   public slots:
     virtual void cancelClicked();
