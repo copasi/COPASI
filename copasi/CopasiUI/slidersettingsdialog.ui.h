@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/slidersettingsdialog.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/03 14:58:07 $
+   $Date: 2004/11/05 09:14:34 $
    End CVS Header */
 
 /****************************************************************************
@@ -63,9 +63,9 @@ void SliderSettingsDialog::updateInputFieldsValues()
   this->mpObjectValueEdit->setText(QString::number(this->mpSlider->value()));
   this->mpMinValueEdit->setText(QString::number(this->mpSlider->minValue()));
   this->mpMaxValueEdit->setText(QString::number(this->mpSlider->maxValue()));
-  this->mpMinorTickSizeEdit->setText(QString::number(this->mpSlider->minorTickInterval()));
+  this->mpNumMinorTicksEdit->setText(QString::number(this->mpSlider->numMinorTicks()));
   this->mpMinorMajorFactorEdit->setText(QString::number(this->mpSlider->minorMajorFactor()));
-  this->minorTickSizeChanged();
+  this->numMinorTicksChanged();
 }
 
 void SliderSettingsDialog::updateInputFields()
@@ -108,30 +108,30 @@ void SliderSettingsDialog::minorTickSizeChanged()
 {
   // adjust numMinorTicks
   double value = this->mpMinorTickSizeEdit->text().toDouble();
-  this->mpSlider->setMinorTickInterval(value);
-  value = (this->mpSlider->maxValue() - this->mpSlider->minValue()) / value;
-  if (value < 1.0)
+  //this->mpSlider->setMinorTickInterval(value);
+  unsigned int numMinorTicks = (unsigned int)floor(((this->mpSlider->maxValue() - this->mpSlider->minValue()) / value) + 0.5);
+  if (numMinorTicks == 0)
     {
+      numMinorTicks = 1;
       value = this->mpSlider->maxValue() - this->mpSlider->minValue();
-      this->mpSlider->setMinorTickInterval(value);
+      //this->mpSlider->setMinorTickInterval(value);
       this->mpMinorTickSizeEdit->setText(QString::number(value));
-      value = 1.0;
     }
-  this->mpNumMinorTicksEdit->setText(QString::number(value));
+  this->mpNumMinorTicksEdit->setText(QString::number(numMinorTicks));
+  this->mpSlider->setNumMinorTicks(numMinorTicks);
 }
 
 void SliderSettingsDialog::numMinorTicksChanged()
 {
   // adjust minorTickSize
-  double value = this->mpNumMinorTicksEdit->text().toDouble();
-  if (value < 1.0)
+  unsigned int numMinorTicks = this->mpNumMinorTicksEdit->text().toUInt();
+  if (numMinorTicks == 1)
     {
-      value = 1.0;
-      this->mpNumMinorTicksEdit->setText(QString::number(value));
+      numMinorTicks = 1;
+      this->mpNumMinorTicksEdit->setText(QString::number(numMinorTicks));
     }
-  value = (this->mpSlider->maxValue() - this->mpSlider->minValue()) / value;
-  this->mpSlider->setMinorTickInterval(value);
-  this->mpMinorTickSizeEdit->setText(QString::number(value));
+  this->mpSlider->setNumMinorTicks(numMinorTicks);
+  this->mpMinorTickSizeEdit->setText(QString::number(this->mpSlider->minorTickInterval()));
 }
 
 void SliderSettingsDialog::minValueChanged()
@@ -145,11 +145,7 @@ void SliderSettingsDialog::minValueChanged()
       this->mpMinValueEdit->setText(QString::number(value));
     }
   this->mpSlider->setMinValue(value);
-  // adjust tickIntervalSize
-  value = this->mpNumMinorTicksEdit->text().toDouble();
-  value = (this->mpSlider->maxValue() - this->mpSlider->minValue()) / value;
-  this->mpSlider->setMinorTickInterval(value);
-  this->mpMinorTickSizeEdit->setText(QString::number(value));
+  this->mpMinorTickSizeEdit->setText(QString::number(this->mpSlider->minorTickInterval()));
 }
 
 void SliderSettingsDialog::maxValueChanged()
@@ -164,10 +160,7 @@ void SliderSettingsDialog::maxValueChanged()
     }
   this->mpSlider->setMaxValue(value);
   // adjust tickIntervalSize
-  value = this->mpNumMinorTicksEdit->text().toDouble();
-  value = (this->mpSlider->maxValue() - this->mpSlider->minValue()) / value;
-  this->mpSlider->setMinorTickInterval(value);
-  this->mpMinorTickSizeEdit->setText(QString::number(value));
+  this->mpMinorTickSizeEdit->setText(QString::number(this->mpSlider->minorTickInterval()));
 }
 
 void SliderSettingsDialog::objectValueChanged()
@@ -192,7 +185,7 @@ void SliderSettingsDialog::objectValueChanged()
 void SliderSettingsDialog::minorMajorFactorChanged()
 {
   // get the value and set it in the current slider
-  int value = this->mpMinorMajorFactorEdit->text().toInt();
+  unsigned int value = this->mpMinorMajorFactorEdit->text().toUInt();
   this->mpSlider->setMinorMajorFactor(value);
 }
 
@@ -202,8 +195,10 @@ void SliderSettingsDialog::init()
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
   mpMaxValueEdit->setValidator(new QDoubleValidator(this));
   mpMinorTickSizeEdit->setValidator(new QDoubleValidator(this));
-  mpNumMinorTicksEdit->setValidator(new QDoubleValidator(this));
   QIntValidator* v = new QIntValidator(this);
+  v->setBottom(0);
+  mpNumMinorTicksEdit->setValidator(v);
+  v = new QIntValidator(this);
   v->setBottom(0);
   mpMinorMajorFactorEdit->setValidator(v);
   this->updateInputFields();

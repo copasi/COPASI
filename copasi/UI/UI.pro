@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.61 $ $Author: shoops $ $Date: 2004/11/04 16:07:44 $  
+# $Revision: 1.62 $ $Author: gauges $ $Date: 2004/11/05 09:14:34 $  
 ######################################################################
 
 include(../common.pri)
@@ -119,6 +119,7 @@ HEADERS += \
            CompartmentsWidget1.h \
            ConstantSymbols.h \
            CopasiDefaultWidget.h \
+           CopasiSlider.h \
            CopasiTableWidget.h \
            copasiWidget.h \
            copasiui3window.h \
@@ -194,6 +195,7 @@ SOURCES += \
            CompartmentsWidget1.cpp \
            ConstantSymbols.cpp \
            CopasiDefaultWidget.cpp \
+           CopasiSlider.cpp \
            CopasiTableWidget.cpp \
            copasiWidget.cpp \
            copasiui3window.cpp \
@@ -254,7 +256,7 @@ SOURCES += \
 #          simpleselectionwidget.ui        
 #          CMCAResultSubwidget.ui \
 #          simpleselectionwidget.ui        
-#          slidersettingsdialog.ui           
+#FORMS +=          slidersettingsdialog.ui           
 
 release {
   distribution.path = .

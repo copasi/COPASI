@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/03 16:15:36 $
+   $Author: gauges $ 
+   $Date: 2004/11/05 09:14:34 $
    End CVS Header */
 
 #include <iostream>
@@ -20,20 +20,30 @@
 #include "qlabel.h"
 #include "qobjectlist.h"
 #include "qtooltip.h"
-#include "qpopupmenu.h"
+#include "qpopupmenu.h" 
+<<< <<< < SliderDialog.cpp
+#include "report/CCopasiObject.h" 
+== == == =
 
-#include "SliderDialog.h"
+#include "SliderDialog.h" 
+  >>> >>> > 1.10
 #include "copasiui3window.h"
 #include "TrajectoryWidget.h"
 #include "slidersettingsdialog.h"
-#include "DataModelGUI.h"
+#include "DataModelGUI.h" 
+  <<< <<< < SliderDialog.cpp
+#include "CopasiSlider.h"
+#include "mathematics.h"
+
+  == == == =
 #include "qtUtilities.h"
 #include "model/CCompartment.h"
 #include "report/CCopasiObject.h"
 #include "report/CCopasiObjectName.h"
-#include "report/CCopasiObjectReference.h"
+#include "report/CCopasiObjectReference.h" 
+    >>> >>> > 1.10
 
-C_INT32 SliderDialog::numMappings = 2;
+    C_INT32 SliderDialog::numMappings = 2;
 C_INT32 SliderDialog::folderMappings[][2] = {
       {23, 23}, {231, 23}
     };
@@ -210,14 +220,7 @@ SliderDialog::~SliderDialog()
 }
 
 void SliderDialog::init()
-{
-  /*
-  CCompartment* comp = new CCompartment();
-  comp->setVolume(1.0);
-  CCopasiObject* o = (CCopasiObject*)comp->getObject(CCopasiObjectName("Reference=Volume"));
-  this->addSlider(o, 23);
-  */
-}
+{}
 
 void SliderDialog::addSlider(CopasiSlider* slider, C_INT32 folderId)
 {
@@ -235,7 +238,6 @@ void SliderDialog::addSlider(CopasiSlider* slider, C_INT32 folderId)
         }
     }
   if (folderId == -1 || found) return;
-  //CopasiSlider* cslider = new CopasiSlider(object, this->sliderBox);
   slider->reparent(this->sliderBox, 0, QPoint(0, 0));
   slider->setHidden(true);
   this->sliderMap[folderId].push_back(slider);
@@ -244,7 +246,7 @@ void SliderDialog::addSlider(CopasiSlider* slider, C_INT32 folderId)
       ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, slider);
       slider->setHidden(false);
     }
-  connect(slider, SIGNAL(valueChanged(double)), this , SLOT(this->sliderValueChanged()));
+  connect(slider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
 }
 
 void SliderDialog::setCurrentFolderId(C_INT32 id)
@@ -276,10 +278,6 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
           CopasiSlider* s = this->sliderMap[this->currentFolderId][counter];
           // check if any object values have changed and set the slider
           // accordingly if possible
-          if (!(s->ensureConsistency()))
-            {
-              s->setEnabled(false);
-            }
           s->setHidden(false);
           ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, s);
         }
@@ -334,272 +332,4 @@ void SliderDialog::closeEvent(QCloseEvent* e)
     {
       p->slotToggleSliders();
     }
-}
-
-/* ----------------- CopasiSlider ----------------*/
-
-CopasiSlider::CopasiSlider(CCopasiObject* object, QWidget* parent): QVBox(parent), cobject(object), typeVar(undefined), minValueVar(0.0), maxValueVar(0.0), mMinorFactor(1.0), mMinorMajorFactor(1), slider(NULL), label(NULL)
-{
-  this->label = new QLabel(this);
-  this->label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-  this->slider = new QSlider(Qt::Horizontal, this);
-  this->slider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-  this->updateSliderData();
-
-  connect(this->slider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
-}
-
-CopasiSlider::~CopasiSlider()
-{
-  delete this->slider;
-  delete this->label;
-}
-
-void CopasiSlider::updateSliderData()
-{
-  if (this->cobject)
-    {
-      double value = 0.0;
-      if (this->cobject->isValueDbl())
-        {
-          value = *(double*)(((CCopasiObjectReference<C_FLOAT64>*)this->cobject)->getReference());
-        }
-      else if (this->cobject->isValueInt())
-        {
-          //value = *(int*)this->cobject->getReference();
-          value = *(int*)(((CCopasiObjectReference<C_INT32>*)this->cobject)->getReference());
-        }
-      this->minValueVar = 0.0;
-      this->maxValueVar = 2.0 * value;
-      this->mMinorFactor = value / 5.0;
-      this->slider->setMinValue(0);
-      this->slider->setMaxValue((int)floor((this->maxValueVar / this->mMinorFactor) + 0.5));
-      this->slider->setTickInterval(1);
-      this->slider->setValue((int)floor((value / this->mMinorFactor) + 0.5));
-      if (this->cobject->isValueInt())
-        {
-          this->setType(intType);
-          QToolTip::add(this->slider, "Int Tooltip");
-        }
-      else if (this->cobject->isValueDbl())
-        {
-          this->setType(doubleType);
-          QToolTip::add(this->slider, "Double Tooltip");
-        }
-      else
-        {
-          this->setEnabled(false);
-        }
-    }
-  this->updateLabel();
-}
-
-double CopasiSlider::value() const
-  {
-    return this->minValueVar + this->mMinorFactor*this->slider->value();
-  }
-
-void CopasiSlider::setValue(double value)
-{
-  if (value < this->minValueVar)
-    {
-      value = this->minValueVar;
-    }
-  else if (value > this->maxValueVar)
-    {
-      value = this->maxValueVar;
-    }
-  this->slider->setValue((int)floor(((value - this->minValueVar) / this->mMinorFactor) + 0.5));
-  if (this->typeVar == intType)
-    {
-      int* reference = (int*)(((CCopasiObjectReference<C_INT32>*)this->cobject)->getReference());
-
-      *reference = (int)floor(value + 0.5);
-    }
-  else if (this->typeVar == doubleType)
-    {
-      double* reference = (double*)(((CCopasiObjectReference<C_FLOAT64>*)this->cobject)->getReference());
-
-      *reference = value;
-    }
-  this->updateLabel();
-}
-
-unsigned int CopasiSlider::minorMajorFactor() const
-  {
-    return this->mMinorMajorFactor;
-  }
-
-void CopasiSlider::setMinorMajorFactor(unsigned int factor)
-{
-  this->mMinorMajorFactor = factor;
-}
-
-double CopasiSlider::minorTickInterval() const
-  {
-    return this->mMinorFactor;
-  }
-
-void CopasiSlider::setMinorTickInterval(double minorTickInterval)
-{
-  double numTicks = (this->maxValueVar - this->minValueVar) / minorTickInterval;
-  this->mMinorFactor = minorTickInterval;
-  if ((numTicks / (int)numTicks) > 1.001)
-    {
-      numTicks = numTicks + 1.0;
-    }
-  this->maxValueVar = this->minValueVar + numTicks * this->mMinorFactor;
-  this->slider->setMaxValue(this->slider->minValue() + (int)floor(numTicks + 0.5));
-}
-
-double CopasiSlider::minValue() const
-  {
-    return this->minValueVar;
-  }
-
-double CopasiSlider::maxValue() const
-  {
-    return this->maxValueVar;
-  }
-
-CCopasiObject* CopasiSlider::object() const
-  {
-    return this->cobject;
-  }
-
-void CopasiSlider::setObject(CCopasiObject* object)
-{
-  this->cobject = object;
-  this->updateSliderData();
-}
-
-void CopasiSlider::setMaxValue(double value)
-{
-  if (value <= minValueVar) return;
-  double numTicks = (value - this->minValueVar) / this->mMinorFactor;
-  if ((numTicks / (int)numTicks) > 1.001)
-    {
-      numTicks = numTicks + 1.0;
-    }
-  this->slider->setMaxValue((int)floor(numTicks + 0.5));
-  this->maxValueVar = this->minValueVar + this->mMinorFactor * numTicks;
-  if (this->value() > this->maxValueVar)
-    {
-      this->setValue(this->maxValueVar);
-    }
-  this->updateLabel();
-}
-
-void CopasiSlider::setMinValue(double value)
-{
-  if (value >= maxValueVar) return;
-  double numTicks = (this->maxValueVar - value) / this->mMinorFactor;
-  if ((numTicks / (int)numTicks) > 1.001)
-    {
-      numTicks = numTicks + 1.0;
-    }
-  this->slider->setMaxValue((int)floor(numTicks + 0.5));
-  this->minValueVar = value;
-  this->setMaxValue(this->minValueVar + this->mMinorFactor*numTicks);
-  if (this->value() < this->minValueVar)
-    {
-      this->setValue(this->minValueVar);
-    }
-  this->updateLabel();
-}
-
-void CopasiSlider::updateLabel()
-{
-  std::string labelString = "";
-  if (this->cobject)
-    {
-      labelString += this->cobject->getObjectName();
-    }
-  labelString += " : [";
-  labelString += this->numberToString(this->minValueVar);
-  labelString += "-";
-  labelString += this->numberToString(this->maxValueVar);
-  labelString += "] {";
-  labelString += this->numberToString(this->value());
-  labelString += "}";
-  this->label->setText(FROM_UTF8(labelString));
-}
-
-std::string CopasiSlider::numberToString(double number) const
-  {
-    std::ostringstream oss;
-    oss << number;
-    return oss.str();
-  }
-
-void CopasiSlider::sliderValueChanged(int value)
-{
-  double v = this->minValueVar + value * this->mMinorFactor;
-  if (this->typeVar == intType)
-    {
-      int* reference = (int*)(((CCopasiObjectReference<C_INT32>*)this->cobject)->getReference());
-
-      *reference = (int)floor(v + 0.5);
-    }
-  else if (this->typeVar == doubleType)
-    {
-      double* reference = (double*)(((CCopasiObjectReference<C_FLOAT64>*)this->cobject)->getReference());
-
-      *reference = v;
-    }
-  this->updateLabel();
-
-  emit valueChanged(v);
-}
-
-CopasiSlider::NumberType CopasiSlider::type() const
-  {
-    return this->typeVar;
-  }
-
-void CopasiSlider::setType(NumberType type)
-{
-  this->typeVar = type;
-}
-
-bool CopasiSlider::ensureConsistency()
-{
-  bool success = true;
-  double objectValue;
-  // check if the slider setting reflects the value of the object with some
-  // small tolerance that depends on the range of the slider.
-  // if the error is smaller than the size of the ticks, leave it.
-  if (this->typeVar == intType)
-    {
-      int* reference = (int*)(((CCopasiObjectReference<C_INT32>*)this->cobject)->getReference());
-
-      objectValue = (double)(*reference);
-    }
-  else if (this->typeVar == doubleType)
-    {
-      double* reference = (double*)(((CCopasiObjectReference<C_FLOAT64>*)this->cobject)->getReference());
-      objectValue = *reference;
-    }
-  double difference = fabs(objectValue - this->value());
-  if (difference > (this->mMinorFactor / 2.0))
-    {
-      // If the slider value and the object value differ, see if the object value
-      // is within the range of the slider and set it, else return false
-      if ((objectValue > (this->minValueVar - (this->mMinorFactor / 2.0))) && (objectValue < this->maxValueVar + (this->mMinorFactor / 2.0)))
-        {
-          // adjust slider value setting
-          int tick = (int)floor(((objectValue - this->minValueVar) / this->mMinorFactor) + 0.5);
-          if (tick < 0) tick = 0;
-          if (tick > this->slider->maxValue()) tick = this->slider->maxValue();
-          this->slider->setValue(tick);
-        }
-      else
-        {
-          // could not update settings without changing the range of the
-          // slider
-          success = false;
-        }
-    }
-
-  return success;
 }

@@ -349,7 +349,8 @@
 </tabstops>
 <includes>
     <include location="global" impldecl="in declaration">vector</include>
-    <include location="local" impldecl="in declaration">SliderDialog.h</include>
+    <include location="local" impldecl="in declaration">CopasiSlider.h</include>
+    <include location="local" impldecl="in declaration">copasi.h</include>
     <include location="global" impldecl="in declaration">string</include>
     <include location="global" impldecl="in declaration">sstream</include>
     <include location="local" impldecl="in implementation">qtUtilities.h</include>

@@ -1,16 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/03 14:58:08 $
+   $Date: 2004/11/05 09:14:33 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
 #define SLIDER_DIALOG_H__
 
 #include "qdialog.h"
-#include "qvbox.h"
 #include "copasi.h"
 #include <vector>
 #include <map>
@@ -25,9 +24,9 @@ class QString;
 class QSlider;
 class CCopasiObject;
 class QLabel;
-class CopasiSlider;
 class QPopupMenu;
 class DataModelGUI;
+class CopasiSlider;
 
 class SliderDialog: public QDialog
   {
@@ -78,53 +77,6 @@ class SliderDialog: public QDialog
     void createNewSlider();
     void runTask();
     void sliderValueChanged();
-  };
-
-class CopasiSlider: public QVBox
-  {
-    Q_OBJECT
-  public:
-    enum NumberType {undefined = 0, intType, doubleType};
-
-    CopasiSlider(CCopasiObject* object, QWidget* parent = 0);
-    virtual ~CopasiSlider();
-
-    NumberType type() const;
-    void setType(NumberType type);
-
-    double value() const;
-    void setValue(double value);
-    unsigned int minorMajorFactor() const;
-    void setMinorMajorFactor(unsigned int factor);
-    double minorTickInterval() const;
-    void setMinorTickInterval(double tickInterval);
-    CCopasiObject* object() const;
-    void setObject(CCopasiObject* object);
-    void setMinValue(double value);
-    void setMaxValue(double value);
-    double minValue() const;
-    double maxValue() const;
-    bool ensureConsistency();
-
-  public slots:
-    void sliderValueChanged(int value);
-
-  signals:
-    void valueChanged(double);
-
-  protected:
-    CCopasiObject* cobject;
-    NumberType typeVar;
-    double minValueVar;
-    double maxValueVar;
-    double mMinorFactor;
-    unsigned int mMinorMajorFactor;
-    QSlider* slider;
-    QLabel* label;
-
-    void updateSliderData();
-    void updateLabel();
-    std::string numberToString(double number) const;
   };
 
 #endif
