@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/06 16:29:21 $
+   $Author: gauges $ 
+   $Date: 2004/10/19 07:14:50 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -25,6 +25,7 @@ class CopasiUI3Window : public QMainWindow
     void enable_object_browser_menu();
     void disable_object_browser_menu();
     DataModelGUI* getDataModel();
+    void saveFile();
 
   protected:
     DataModelGUI* dataModel; // to keep track of the data model..

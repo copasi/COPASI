@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/14 20:58:23 $
+   $Author: gauges $ 
+   $Date: 2004/10/19 07:14:50 $
    End CVS Header */
 
 /********************************************************
@@ -44,6 +44,9 @@ Contact: Please contact lixu1@vt.edu.
 #include "CProgressBar.h"
 #include "plot/CPlotSpec2Vector.h"
 
+#include "copasiui3window.h"
+#include "qmessagebox.h"
+#include "qapplication.h" 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -322,6 +325,21 @@ void TrajectoryWidget::CommitChange()
 
 void TrajectoryWidget::runTrajectoryTask()
 {
+  if (dataModel->isChanged())
+    {
+      const QApplication* qApp = dataModel->getQApp();
+      if (qApp)
+        {
+          CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
+          if (mainWidget)
+            {
+              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsafed changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
+                {
+                  mainWidget->saveFile();
+                }
+            }
+        }
+    }
   checkTimeSeries();
   saveTrajectoryTask();
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/18 13:59:28 $
+   $Author: gauges $ 
+   $Date: 2004/10/19 07:14:50 $
    End CVS Header */
 
 /********************************************************
@@ -44,6 +44,9 @@ Contact: Please contact lixu1@vt.edu.
 #include "report/CReportDefinition.h"
 #include "CReportDefinitionSelect.h"
 #include "CProgressBar.h"
+#include "copasiui3window.h"
+#include "qmessagebox.h"
+#include "qapplication.h"
 
 /**
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
@@ -242,6 +245,21 @@ void SteadyStateWidget::parameterValueChanged()
 
 void SteadyStateWidget::runSteadyStateTask()
 {
+  if (dataModel->isChanged())
+    {
+      const QApplication* qApp = dataModel->getQApp();
+      if (qApp)
+        {
+          CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
+          if (mainWidget)
+            {
+              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsafed changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
+                {
+                  mainWidget->saveFile();
+                }
+            }
+        }
+    }
   CommitButtonClicked();
 
   if (bRunButton->text() != "Run")

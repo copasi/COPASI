@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/10 16:07:02 $
+   $Author: gauges $ 
+   $Date: 2004/10/19 07:14:50 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -22,6 +22,9 @@
 #include "DataModelGUI.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
+#include "qmessagebox.h"
+#include "qapplication.h"
+#include "copasiui3window.h"
 
 std::vector<const CCopasiObject*> MoietyWidget::getObjects() const
   {
@@ -82,6 +85,21 @@ void MoietyWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys)
 
 void MoietyWidget::slotBtnRunClicked()
 {
+  if (dataModel->isChanged())
+    {
+      const QApplication* qApp = dataModel->getQApp();
+      if (qApp)
+        {
+          CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
+          if (mainWidget)
+            {
+              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsafed changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
+                {
+                  mainWidget->saveFile();
+                }
+            }
+        }
+    }
   dataModel->getModel()->compileIfNecessary();
   fillTable();
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/28 14:51:35 $
+   $Author: gauges $ 
+   $Date: 2004/10/19 07:14:49 $
    End CVS Header */
 
 /*******************************************************************
@@ -25,6 +25,9 @@
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "qtUtilities.h"
+#include "qmessagebox.h"
+#include "qapplication.h"
+#include "copasiui3window.h"
 
 ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
@@ -135,6 +138,21 @@ void ModesWidget::resizeEvent(QResizeEvent * re)
 
 void ModesWidget::slotBtnCalculateClicked()
 {
+  if (dataModel->isChanged())
+    {
+      const QApplication* qApp = dataModel->getQApp();
+      if (qApp)
+        {
+          CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
+          if (mainWidget)
+            {
+              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsafed changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
+                {
+                  mainWidget->saveFile();
+                }
+            }
+        }
+    }
   pdelete(modes);
   modes = new CElementaryFluxModes();
   modes->calculate(dataModel->getModel());
