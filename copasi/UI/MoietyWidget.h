@@ -56,6 +56,10 @@ class MoietyWidget : public CopasiWidget
   private:
     void fillTable(); //By G
     void showMessage(QString caption, QString text);
+
+    int pixelsWide0;
+    int pixelsWide1;
+    int pixelsWide2;
   };
 
 #endif

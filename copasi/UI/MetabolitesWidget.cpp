@@ -278,8 +278,8 @@ void MetabolitesWidget::slotBtnOKClicked()
 
   table->setCurrentCell(prev_row, prev_col);
 
-  delete renamed;
-  delete changed;
+  delete[] renamed;
+  delete[] changed;
 
   return; //TODO: really check
 }
@@ -325,7 +325,9 @@ void MetabolitesWidget::slotBtnSwitchColsClicked() //By G
 }
 
 void MetabolitesWidget::slotBtnCancelClicked()
-{}
+{
+  fillTable();
+}
 
 void MetabolitesWidget::tableValueChanged(int C_UNUSED(row),
     int C_UNUSED(col))

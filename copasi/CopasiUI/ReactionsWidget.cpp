@@ -227,13 +227,15 @@ void ReactionsWidget::slotBtnOKClicked()
 
   table->setCurrentCell(prev_row, prev_col);
 
-  delete changed;
+  delete[] changed;
 
   return; //TODO: really check
 }
 
 void ReactionsWidget::slotBtnCancelClicked()
-{}
+{
+  fillTable();
+}
 
 void ReactionsWidget::tableValueChanged(int C_UNUSED(row),
                                         int C_UNUSED(col))

@@ -75,6 +75,9 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
           this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this,
           SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()), this,
+          SLOT(slotBtnCancelClicked()));
+
   connect(table, SIGNAL(valueChanged(int , int)),
           this, SLOT(tableValueChanged(int, int)));
 
@@ -199,12 +202,14 @@ void CompartmentsWidget::slotBtnOKClicked()
     }
   table->setCurrentCell(prev_row, prev_col);
 
-  delete changed;
+  delete[] changed;
   return; //TODO: really check
 }
 
 void CompartmentsWidget::slotBtnCancelClicked()
-{}
+{
+  fillTable();
+}
 
 void CompartmentsWidget::tableValueChanged(int C_UNUSED(row),
     int C_UNUSED(col))

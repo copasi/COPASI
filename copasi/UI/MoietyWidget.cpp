@@ -6,7 +6,7 @@
  ** obtained from the data model about the Moiety----It is Basically 
  ** the First level of Moieties.
  ********************************************************************/
-
+#include <qapplication.h>
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
@@ -43,6 +43,7 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   table->setNumCols(3);
   table->setNumRows(-1);
+
   vBoxLayout->addWidget(table);
 
   //Setting table headers
@@ -65,6 +66,10 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
 
   //connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadMoietiesNodes(CModel*)));
   //connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
+
+  pixelsWide0 = 0;
+  pixelsWide1 = 0;
+  pixelsWide2 = 0;
 }
 
 void MoietyWidget::fillTable() //By G
@@ -74,6 +79,13 @@ void MoietyWidget::fillTable() //By G
   C_INT32 j, jmax = objects.size();
   table->setNumRows(jmax);
   mKeys.resize(jmax);
+
+  /*Calculate column spacing based on the choosen font*/
+  QFont tablefont = QApplication::font(this);
+  QFontMetrics fm(tablefont);
+  pixelsWide0 = fm.width(objects[0]->getName().c_str());
+  pixelsWide1 = fm.width(QString::number(objects[0]->getNumber()));
+  pixelsWide2 = fm.width(objects[0]->getDescription().c_str());
 
   for (j = 0; j < jmax; ++j)
     {
@@ -140,7 +152,10 @@ void MoietyWidget::resizeEvent(QResizeEvent * re)
         {
           int newWidth = re->size().width();
           newWidth -= 35; //Accounting for the left (vertical) header width.
-          float weight0 = 1.0, weight1 = 1.0, weight2 = 6.0;
+
+          //float weight0 = 1.0, weight1 = 2.0, weight2 = 6.0;
+          float weight0 = pixelsWide0, weight1 = pixelsWide1, weight2 = pixelsWide2; //By G
+
           float weightSum = weight0 + weight1 + weight2;
           int w0, w1, w2;
           w0 = newWidth * (weight0 / weightSum);

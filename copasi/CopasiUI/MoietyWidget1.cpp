@@ -80,6 +80,7 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
 MoietyWidget1::~MoietyWidget1()
 {}
 
+#ifdef XXXX 
 /*This function is used to connect this class to the listviews
 class to basically choose the right widget to display   */
 int MoietyWidget1::isName(QString setValue)
@@ -103,6 +104,7 @@ int MoietyWidget1::isName(QString setValue)
   else
     return 0;
 }
+#endif // XXXX
 
 /*This function is to load the model for the Moieties*/
 void MoietyWidget1::loadMoieties(CModel *model)
