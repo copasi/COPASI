@@ -125,12 +125,19 @@ class CChemEq : public CCopasiContainer
     const std::string getChemicalEquationConverted() const;
 
     /**
-     *  add a substrate, product, or modifier by name. The Metabolite need not exist
+     * Add a substrate, product, or modifier by name. 
+     * The Metabolite need not exist
+     * @param const std::string & name
+     * @param const C_FLOAT64 mult
+     * @param const MetaboliteRole role
      */
     void addMetaboliteByName(const std::string & name, const C_FLOAT64 mult, const MetaboliteRole role);
 
     /**
-     *  add a substrate, product, or modifier. 
+     * Add a substrate, product, or modifier. 
+     * @param CMetab & metab
+     * @param const C_FLOAT64 mult
+     * @param const MetaboliteRole role
      */
     void addMetabolite(CMetab & metab, const C_FLOAT64 mult, const MetaboliteRole role);
 
