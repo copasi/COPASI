@@ -15,13 +15,13 @@
     <property name="caption">
         <string>Form1</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>layoutButtonRow</cstring>
+                <cstring>layout2</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -39,11 +39,19 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>141</width>
+                            <width>110</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pushButtonToggle</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show Numbers</string>
+                    </property>
+                </widget>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>ButtonSaveData</cstring>
@@ -54,7 +62,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QTable">
+        <widget class="QTable" row="1" column="0">
             <property name="name">
                 <cstring>dataTable</cstring>
             </property>
@@ -65,7 +73,7 @@
                 <number>3</number>
             </property>
         </widget>
-    </vbox>
+    </grid>
 </widget>
 <connections>
     <connection>
@@ -74,12 +82,19 @@
         <receiver>TimeSeriesSubWidget</receiver>
         <slot>saveDataToFile()</slot>
     </connection>
+    <connection>
+        <sender>pushButtonToggle</sender>
+        <signal>clicked()</signal>
+        <receiver>TimeSeriesSubWidget</receiver>
+        <slot>toggleView()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">TimeSeriesSubwidget.ui.h</include>
 </includes>
 <slots>
     <slot access="protected" specifier="non virtual">saveDataToFile()</slot>
+    <slot access="protected" specifier="non virtual">toggleView()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

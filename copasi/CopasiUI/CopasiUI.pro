@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.42 $ $Author: gauges $ $Date: 2004/09/23 13:37:09 $  
+# $Revision: 1.43 $ $Author: ssahle $ $Date: 2004/09/23 14:58:13 $  
 ######################################################################
 
 include(../common.pri)
@@ -157,6 +157,7 @@ HEADERS += \
            SteadyStateWidget.h \
            TableDefinition.h \
            TableDefinition1.h \
+           TimeSeriesWidget.h \
            TrajectoryWidget.h \
            Tree.h
 
@@ -216,9 +217,12 @@ SOURCES += \
            SteadyStateWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
+           TimeSeriesWidget.cpp \
            TrajectoryWidget.cpp \
            Tree.cpp
 
+FORMS +=  TimeSeriesSubwidget.ui           
+           
 release {
   distribution.path = .
   distribution.file = CopasiUI
