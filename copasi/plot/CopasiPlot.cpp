@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/29 22:13:25 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 17:00:02 $
    End CVS Header */
 
 #include <qarray.h>
@@ -17,31 +17,62 @@
 #include <qwt_scale.h>
 
 #include "CopasiPlot.h"
-#include "plotspec.h"
+#include "CPlotSpec.h"
 
-CopasiPlot::CopasiPlot(PlotTaskSpec* plotspec, QWidget* parent)
-    : ZoomPlot(parent), startRow(0), zoomOn(false)
+//TODO: put all the stuff to locally store the data in a separate class!
+
+void CopasiPlot::createIndices()
+{
+  C_INT32 i, imax = ptspec->getCurves().size();
+  C_INT32 index;
+  std::vector<C_INT32>::iterator it; // iterator for indexTable
+  C_INT32 iterindex;
+  dataIndices.resize(imax);
+
+  for (i = 0; i < imax; ++i)
+    {
+      //TODO generalize to N dims.
+      dataIndices[i].resize(2);
+
+      index = ptspec->getCurves()[i].xChannel.index;
+      for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
+      {if (*it >= index) break;};
+      if (it == indexTable.end()) //index is not yet in indexTable
+        indexTable.insert(it, index);
+      else if (*it != index)
+        indexTable.insert(it, index);
+      dataIndices[i][0] = iterindex;
+
+      index = ptspec->getCurves()[i].yChannel.index;
+      for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
+      {if (*it >= index) break;};
+      if (it == indexTable.end()) //index is not yet in indexTable
+        indexTable.insert(it, index);
+      else if (*it != index)
+        indexTable.insert(it, index);
+      dataIndices[i][1] = iterindex;
+    }
+}
+
+CopasiPlot::CopasiPlot(CPlotSpec* plotspec, QWidget* parent)
+    : ZoomPlot(parent), zoomOn(false)
 {
   ptspec = plotspec;
+  createIndices();
 
   // white background better for printing...
   setCanvasBackground(white);
 
-  //hideous workaround - TODO: tidy up later!!
-  QString qstitle((ptspec->plotTitle).c_str());
-  setTitle(qstitle);
-  //setTitle(ptspec->plotTitle);
-
-  sourcefile = &(ptspec->sourceStream);
-  sourcefile->seekg(0, std::ios::beg);
-  pos = sourcefile->tellg();
+  setTitle(ptspec->getTitle().c_str());
+  setCanvasLineWidth(0);
 
   // allocate memory for the plotting data
-  for (unsigned int i = 0; i < ptspec->varIndices.size(); i++)
+  for (unsigned int i = 0; i < indexTable.size(); i++)
     {
       QMemArray<double>* v = new QMemArray<double>(500);  // initial size = 500
       data.push_back(v);
     }
+  ndata = 0;
 
   // set up legend
   setAutoLegend(TRUE);
@@ -55,31 +86,15 @@ CopasiPlot::CopasiPlot(PlotTaskSpec* plotspec, QWidget* parent)
   QColor curveColours[6] = {red, yellow, blue, green, cyan, magenta};
 
   // insert curves, though without data yet
-  for (unsigned int k = 0; k < (ptspec->curves).size(); k++)
+  unsigned C_INT32 k;
+  for (k = 0; k < ptspec->getCurves().size(); k++)
     {
-      CurveSpec* cspec = ptspec->curves[k];
-
-      // Set up axes
-      // enable the axes just in case
-      enableAxis(cspec->xAxis);
-      enableAxis(cspec->yAxis);
-
-      // set axes titles
-      // might need some tidying up as to whether to use QString and standard string
-      QString qs1(cspec->axisTitles[0].c_str());
-      setAxisTitle(cspec->xAxis, qs1);
-      QString qs2(cspec->axisTitles[1].c_str());
-      setAxisTitle(cspec->yAxis, qs2);
-
-      //TODO: maybe set axis titles the same colour as the curve?
-      // but can't see any methods for doing this...
-
       // set up the curve
-      long crv = insertCurve(cspec->curveTitle.c_str());
+      long crv = insertCurve(ptspec->getCurves()[k].title.c_str());
 
       setCurvePen(crv, QPen(curveColours[k]));
-      setCurveXAxis(crv, cspec->xAxis);
-      setCurveYAxis(crv, cspec->yAxis);
+      setCurveXAxis(crv, ptspec->getCurves()[k].xAxis);
+      setCurveYAxis(crv, ptspec->getCurves()[k].yAxis);
     }
 
   // signal and slot connections
@@ -89,86 +104,59 @@ CopasiPlot::CopasiPlot(PlotTaskSpec* plotspec, QWidget* parent)
           SLOT(mouseReleased(const QMouseEvent&)));
   connect(this, SIGNAL(legendClicked(long)),
           SLOT(redrawCurve(long)));
-
-  appendPlot();
 }
 
-//-----------------------------------------------------------------------------
-
-void CopasiPlot::appendPlot()
+void setupAxes()
 {
-  // retrieve the data for the plotting task (from all columns)
-  // currently we require all curves to draw data from the same rows (across columns)
+  /*
+  // Set up axes
+  // enable the axes just in case
+  enableAxis(cspec->xAxis);
+  enableAxis(cspec->yAxis);
 
-  // assume we know how many columns there are from somewhere in the simulation
-  // for now this is 5
-  // same in reloadPlot()
-  const unsigned int colNum = 5;
+  // set axes titles
+  // might need some tidying up as to whether to use QString and standard string
+  QString qs1(cspec->axisTitles[0].c_str());
+  setAxisTitle(cspec->xAxis, qs1);
+  QString qs2(cspec->axisTitles[1].c_str());
+  setAxisTitle(cspec->yAxis, qs2);
 
-  double temp; // a dummy to take unwanted double from the file
+  //TODO: maybe set axis titles the same colour as the curve?
+  // but can't see any methods for doing this...
+  */
+}
 
-  sourcefile->seekg(pos);
-
-  unsigned int index; // this is the subscript into the vector ptspec->varIndices
-
-  // get the data for the plot up to the end of the file
-  int currentRow; // the index of the current row...
-  int currentSize = data[0]->size();  // the current size of the arrays holding the plot data
-
-  for (currentRow = startRow; !(sourcefile->eof()); currentRow++)
+void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
+{
+  unsigned C_INT32 i;
+  if (ndata >= data[0]->size())
     {
-      index = 0;  // the index into the vector varIndices
-
-      // check the arrays are big enough
-      if (currentRow >= currentSize)
-        {
-          currentSize += 500;
-
-          for (unsigned int i = 0; i < data.size(); i++)
-            data[i]->resize(currentSize);
-        }
-
-      for (unsigned int i = 0; i < colNum; i++)
-        {
-          if (!(*sourcefile >> temp))
-            break;
-
-          if ((index < ptspec->varIndices.size()) && (i == ptspec->varIndices[index]))  // this is in a chosen column
-            {
-              QMemArray<double>* v = data[index++];
-              v->at(currentRow) = temp;
-            }
-        }
+      unsigned C_INT32 newSize = data[0]->size() + 1000;
+      for (i = 0; i < data.size(); i++)
+        data[i]->resize(newSize);
     }
 
-  sourcefile->clear();
-  currentRow--;  // go back to the proper end of read operation...
-  pos = sourcefile->tellg();
+  for (i = 0; i < indexTable.size(); ++i)
+    {
+      data[i]->at(ndata) = dataVector[indexTable[i]];
+    }
+  ++ndata;
+}
 
-  // match data (i.e. columns) with each curve spec and hence produce the plot
+void CopasiPlot::updatePlot()
+{
+  // TODO: only do this once
   QMemArray<long> crvKeys = curveKeys();
 
-  for (unsigned int k = 0; k < crvKeys.size(); k++)
+  unsigned C_INT32 k;
+  for (k = 0; k < crvKeys.size(); k++)
     {
-      CurveSpec* cspec = ptspec->curves[k];  // the indices of the curve key and its spec should correspond...
-
-      // Attach the data
-      //setCurveData(crvKeys[k], data[cspec->coordX]->data(), data[cspec->coordY]->data(), currentRow);
-
-      // attach the data - this way might yield better performance when data sets are large
-      QwtPlotCurve *curve = CopasiPlot::curve(crvKeys.at(k));
-
-      curve->setRawData(data[cspec->coordX]->data(),
-                        data[cspec->coordY]->data(),
-                        currentRow);
-
-      // append each (section of) curve as it's set up
-      drawCurveInterval(crvKeys.at(k), startRow, currentRow - 1);
+      curve(crvKeys[k])->setRawData(data[dataIndices[k][0]]->data(),
+                                    data[dataIndices[k][1]]->data(),
+                                    ndata);
+      //drawCurveInterval(crvKeys[k], 0, ndata-1);
     }
-
   replot();
-
-  startRow = currentRow;
 }
 
 //-----------------------------------------------------------------------------
@@ -192,123 +180,123 @@ void CopasiPlot::drawCurveInterval(long curveId, int from, int to)
 
 //-----------------------------------------------------------------------------
 
-void CopasiPlot::reloadPlot(PlotTaskSpec* plotspec, std::vector<int> deletedCurveKeys)
+void CopasiPlot::reload2Plot(CPlotSpec* plotspec, std::vector<int> deletedCurveKeys)
 {
-  // is this necessary? the pointers should actually be the same...
-  ptspec = plotspec;
+  /* // is this necessary? the pointers should actually be the same...
+   ptspec = plotspec;
 
-  // make sure we're zoomed out
-  zoomOut();
-  setAxisAutoScale(QwtPlot::yLeft);
-  setAxisAutoScale(QwtPlot::yRight);
-  setAxisAutoScale(QwtPlot::xBottom);
-  setAxisAutoScale(QwtPlot::xTop);
-  enableZoom(false);
+   // make sure we're zoomed out
+   zoomOut();
+   setAxisAutoScale(QwtPlot::yLeft);
+   setAxisAutoScale(QwtPlot::yRight);
+   setAxisAutoScale(QwtPlot::xBottom);
+   setAxisAutoScale(QwtPlot::xTop);
+   enableZoom(false);
 
-  // remove curves as specified
-  QArray<long> crvKeys = curveKeys();
-  while (deletedCurveKeys.size() > 0)
-    {
-      removeCurve(crvKeys[deletedCurveKeys[deletedCurveKeys.size() - 1]]);
-      deletedCurveKeys.pop_back();
-    }
+   // remove curves as specified
+   QArray<long> crvKeys = curveKeys();
+   while (deletedCurveKeys.size() > 0)
+     {
+       removeCurve(crvKeys[deletedCurveKeys[deletedCurveKeys.size() - 1]]);
+       deletedCurveKeys.pop_back();
+     }
 
-  unsigned int specNum = ptspec->curves.size();
-  bool addCurve = (crvKeys.size() < specNum);   // decide whether to add curve before deleting any
+   unsigned int specNum = ptspec->curves.size();
+   bool addCurve = (crvKeys.size() < specNum);   // decide whether to add curve before deleting any
 
-  // is this necessary??
-  crvKeys = curveKeys();
+   // is this necessary??
+   crvKeys = curveKeys();
 
-  // now we need to insert some curves if there are more curve specs than existing curves
-  // this is the case if specNum > keyNum before and/or after curves are removed
-  unsigned int keyNum = crvKeys.size();
-  if ((specNum > keyNum) || addCurve)
-    {
-      // allocate the extra memory for the plotting data
-      int arraySize = data[0]->size();
+   // now we need to insert some curves if there are more curve specs than existing curves
+   // this is the case if specNum > keyNum before and/or after curves are removed
+   unsigned int keyNum = crvKeys.size();
+   if ((specNum > keyNum) || addCurve)
+     {
+       // allocate the extra memory for the plotting data
+       int arraySize = data[0]->size();
 
-      for (unsigned int i = keyNum; i < specNum; i++)
-        {
-          QMemArray<double>* v = new QMemArray<double>(arraySize);  // initial size = 500
-          data.push_back(v);
-        }
+       for (unsigned int i = keyNum; i < specNum; i++)
+         {
+           QMemArray<double>* v = new QMemArray<double>(arraySize);  // initial size = 500
+           data.push_back(v);
+         }
 
-      // get the extra data (from the beginning of the file)
-      sourcefile->seekg(0, std::ios::beg);
+       // get the extra data (from the beginning of the file)
+       sourcefile->seekg(0, std::ios::beg);
+  */
+  /*--------------------------------------------
+     hmm, it's a little messy here. the following code will work, but it's equivalent to
+     reading in ALL the data, which is surely inefficient. on the other hand, given the characteristics
+     specified for ptspec->varIndices, i.e. the elements in the vector should be in ascending order,
+     how do we know which is/are the new column/s to pick out???
+  */
+  /*     unsigned int colNum = 5, index;
+       double temp;
+       for (int currentRow = 0; currentRow < startRow; currentRow++)
+         {
+           index = 0;  // the index into the vector varIndices
 
-      /*--------------------------------------------
-         hmm, it's a little messy here. the following code will work, but it's equivalent to
-         reading in ALL the data, which is surely inefficient. on the other hand, given the characteristics
-         specified for ptspec->varIndices, i.e. the elements in the vector should be in ascending order,
-         how do we know which is/are the new column/s to pick out???
-      */
-      unsigned int colNum = 5, index;
-      double temp;
-      for (int currentRow = 0; currentRow < startRow; currentRow++)
-        {
-          index = 0;  // the index into the vector varIndices
+           for (unsigned int i = 0; i < colNum; i++)
+             {
+               if (!(*sourcefile >> temp))
+                 break;
 
-          for (unsigned int i = 0; i < colNum; i++)
-            {
-              if (!(*sourcefile >> temp))
-                break;
+               if ((index < ptspec->varIndices.size()) && (i == ptspec->varIndices[index]))  // this is in a chosen column
+                 {
+                   QMemArray<double>* v = data[index++];
+                   v->at(currentRow) = temp;
+                 }
+             }
+         }
+       //--------------------------------------------
 
-              if ((index < ptspec->varIndices.size()) && (i == ptspec->varIndices[index]))  // this is in a chosen column
-                {
-                  QMemArray<double>* v = data[index++];
-                  v->at(currentRow) = temp;
-                }
-            }
-        }
-      //--------------------------------------------
+       sourcefile->clear();
+       pos = sourcefile->tellg();
 
-      sourcefile->clear();
-      pos = sourcefile->tellg();
+       // NB: this should be the same as in redrawCurve() and the constructor
+       QColor curveColours[6] = {red, yellow, blue, green, cyan, magenta};
 
-      // NB: this should be the same as in redrawCurve() and the constructor
-      QColor curveColours[6] = {red, yellow, blue, green, cyan, magenta};
+       // set up curves
+       for (unsigned int k = keyNum; k < specNum; k++)
+         {
+           CurveSpec* cspec = ptspec->curves[k];
 
-      // set up curves
-      for (unsigned int k = keyNum; k < specNum; k++)
-        {
-          CurveSpec* cspec = ptspec->curves[k];
+           // Set up axes
+           // enable the axes just in case
+           enableAxis(cspec->xAxis);
+           enableAxis(cspec->yAxis);
 
-          // Set up axes
-          // enable the axes just in case
-          enableAxis(cspec->xAxis);
-          enableAxis(cspec->yAxis);
+           // set axes titles
+           // might need some tidying up as to whether to use QString and standard string
+           QString qs1(cspec->axisTitles[0].c_str());
+           setAxisTitle(cspec->xAxis, qs1);
+           QString qs2(cspec->axisTitles[1].c_str());
+           setAxisTitle(cspec->yAxis, qs2);
 
-          // set axes titles
-          // might need some tidying up as to whether to use QString and standard string
-          QString qs1(cspec->axisTitles[0].c_str());
-          setAxisTitle(cspec->xAxis, qs1);
-          QString qs2(cspec->axisTitles[1].c_str());
-          setAxisTitle(cspec->yAxis, qs2);
+           //TODO: maybe set axis titles the same colour as the curve?
+           // but can't see any methods for doing this...
 
-          //TODO: maybe set axis titles the same colour as the curve?
-          // but can't see any methods for doing this...
+           // set up the curve
+           long crv = insertCurve(cspec->curveTitle.c_str());
 
-          // set up the curve
-          long crv = insertCurve(cspec->curveTitle.c_str());
+           setCurvePen(crv, QPen(curveColours[k]));
+           setCurveXAxis(crv, cspec->xAxis);
+           setCurveYAxis(crv, cspec->yAxis);
 
-          setCurvePen(crv, QPen(curveColours[k]));
-          setCurveXAxis(crv, cspec->xAxis);
-          setCurveYAxis(crv, cspec->yAxis);
+           // attach the data - this way might yield better performance when data sets are large
+           QwtPlotCurve *curve = CopasiPlot::curve(crv);
 
-          // attach the data - this way might yield better performance when data sets are large
-          QwtPlotCurve *curve = CopasiPlot::curve(crv);
+           curve->setRawData(data[cspec->coordX]->data(),
+                             data[cspec->coordY]->data(),
+                             startRow);  // note that startRow now holds the total number of rows read in
 
-          curve->setRawData(data[cspec->coordX]->data(),
-                            data[cspec->coordY]->data(),
-                            startRow);  // note that startRow now holds the total number of rows read in
+           // append each (section of) curve as it's set up
+           drawCurveInterval(crv, 0, startRow - 1);
+         }
+     }
 
-          // append each (section of) curve as it's set up
-          drawCurveInterval(crv, 0, startRow - 1);
-        }
-    }
-
-  // otherwise simply display the old plot if there's no change to the specification
-  replot();
+   // otherwise simply display the old plot if there's no change to the specification
+   replot();*/
 }
 
 //-----------------------------------------------------------------------------

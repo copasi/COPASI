@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/29 22:05:46 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 17:02:56 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.5 2003/10/29 22:05:46 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.6 2004/01/14 17:02:56 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,12 +18,10 @@
 #ifndef PLOTWIDGET1_H
 #define PLOTWIDGET1_H
 
-//#include <qapplication.h>
 #include <vector>
 #include <string>
 #include <fstream>
-#include <qvariant.h> 
-//#include <qwidget.h>
+#include <qvariant.h>
 
 #include "CopasiUI/copasiWidget.h"
 
@@ -34,11 +32,9 @@ class QFrame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-class CurveSpecScrollView;
-class CurveGroupBox;
-
-class PlotTaskSpec;
+class QTabWidget;
 class PlotWindow;
+class Curve2DWidget;
 
 class PlotWidget1 : public CopasiWidget
   {
@@ -53,6 +49,20 @@ class PlotWidget1 : public CopasiWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
+  protected:
+    bool loadFromPlotSpec(const CPlotSpec *);
+    bool saveToPlotSpec();
+    std::string objKey;
+
+    QGridLayout* PlotWidget1Layout;
+    QVBoxLayout* layout20;
+    QHBoxLayout* layout5;
+    QVBoxLayout* layout19;
+    QVBoxLayout* layout18;
+    QHBoxLayout* layout17;
+    QHBoxLayout* layout4;
+    QVBoxLayout* layoutGrpBox;
+
     QLabel* titleLabel;
     QLineEdit* titleLineEdit;
     QFrame* line2;
@@ -65,27 +75,10 @@ class PlotWidget1 : public CopasiWidget
     QPushButton* addPlotButton;
     QPushButton* resetButton;
 
-    CurveSpecScrollView* scrollView;
-
-    // a vector with pointers to CurveGroupBox instances
-    std::vector<CurveGroupBox*> cgrpboxes;
-
-  protected:
-    QGridLayout* PlotWidget1Layout;
-    QVBoxLayout* layout20;
-    QHBoxLayout* layout5;
-    QVBoxLayout* layout19;
-    QVBoxLayout* layout18;
-    QHBoxLayout* layout17;
-    QHBoxLayout* layout4;
-
-    QVBoxLayout* layoutGrpBox;
-    QVBoxLayout* layoutScrlView;
+    QTabWidget* tabs;
 
   protected slots:
     virtual void languageChange();
-
-  public slots:
 
     /*
      * adds a CurveGroupBox
@@ -124,52 +117,9 @@ class PlotWidget1 : public CopasiWidget
     void plotFinished();
 
   private:
-    // a vector of PlotTaskSpec instances - this should be incorporated into a CModel object or something similar
-    // could be a dictionary of object keys and the pointers, etc.
-    std::vector<PlotTaskSpec*> plotSpecVector;
 
-    // a vector of pointers to windows that each contains a plot
-    std::vector<PlotWindow*> plotWinVector;
-
-    // a vector to hold indices of the keys of the deleted curves
-    // when curves are inserted in the plot object, their indices correspond to those in the vector
-    // of CurveSpec objects in PlotTaskSpec
-    std::vector<int> deletedCurveIndices;
-
-    //-------------------------------------------------------
-    // the following might be incorporated elsewhere somehow
-
-    // a vector of object keys - this is a dummy in the testing application
-    // associates with pointers in plotSpecVector and plotWinVector through the vector subscripts
-    std::vector<int> keys;
-
-    // the name of the simulation output file - should be from the model
-    std::string filename;
-
-    // generates the key for a new plot
-    int nextPlotKey;
-
-    // the key of the current plot; -1 on entering the PlotWidget indicates this is a new plot.
-    // also serves as the index into vectors plotSpecVector and plotWinVector
-    int currentPlotKey;
-
-    //-------------------------------------------------
-    // temporary, all for the test application
-    std::fstream targetfile;
-
-    // the write position
-    std::streampos pos;
-
-    // the size of the increment
-    int stepSize;
-
-    // the count of the steps
-    int count;
-
-    void writeFile(int step);
-
-  private slots:
-    void appendData();
+    QStringList channelNames;
+    std::vector<Curve2DWidget*> curveWidgetVector;
   };
 
 #endif // PLOTWIDGET1_H
