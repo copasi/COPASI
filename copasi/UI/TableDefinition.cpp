@@ -161,9 +161,8 @@ bool TableDefinition::update(ListViews::ObjectType objectType, ListViews::Action
     case ListViews::STATE:
     case ListViews::METABOLITE:
     case ListViews::COMPARTMENT:
+    case ListViews::REPORT:
       fillTable();
-      break;
-
     default:
       break;
     }
