@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.108 $
+   $Revision: 1.109 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/10/28 20:06:31 $
+   $Date: 2004/11/04 19:52:12 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -62,15 +62,7 @@ void MetabolitesWidget::init()
   tableHeader->setLabel(7, "Rate");
 
   colWidth.reserve(8); // reserve only for the number of columns needed
-
-  colWidth[0] = 50;
-  colWidth[1] = 50;
-  colWidth[2] = 50;
-  colWidth[3] = 50;
-  colWidth[4] = 50;
-  colWidth[5] = 50;
-  colWidth[6] = 50;
-  colWidth[7] = 50;
+  resetColWidth();
 
   //this restricts users from editing concentration values on the table
   table->setColumnReadOnly (3, true);
@@ -86,16 +78,10 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
 
   table->setColumnWidth(0, colWidth[0]);
   //1: name
-  QString metabolitenameString = FROM_UTF8(pMetab->getObjectName());
-
-  if (fontMetrics().width(metabolitenameString, metabolitenameString.length()) > colWidth[1])
-    {
-      colWidth[1] = fontMetrics().width(metabolitenameString, metabolitenameString.length());
-    }
 
   table->setColumnWidth(1, colWidth[1] + 10);
 
-  table->setText(row, 1, metabolitenameString);
+  table->setText(row, 1, FROM_UTF8(pMetab->getObjectName()));
 
   //2,3,7: Concentrations, Numbers
 
@@ -265,10 +251,7 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
 
 void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  C_INT32 j = 0;
-
-  for (j = 0; j < 8; j++)
-    colWidth[j] = 50;
+  resetColWidth();
 
   if (!dataModel->getModel())
     return;
@@ -327,7 +310,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                            // Yes or Enter
+    case 0:                             // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -339,7 +322,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                            // No or Escape
+    case 1:                             // No or Escape
       break;
     }
 }
@@ -379,4 +362,28 @@ void MetabolitesWidget::slotBtnToggleClicked()
     }
 
   fillTable();
+}
+
+void MetabolitesWidget::checkColumnWidth(const CCopasiObject* obj)
+{
+  if (!obj) return;
+  const CMetab* pMetab = (const CMetab*)obj;
+
+  QString metabolitenameString = FROM_UTF8(pMetab->getObjectName());
+  if (fontMetrics().width(metabolitenameString, metabolitenameString.length()) > colWidth[1])
+    {
+      colWidth[1] = fontMetrics().width(metabolitenameString, metabolitenameString.length());
+    }
+}
+
+void MetabolitesWidget::resetColWidth()
+{
+  colWidth[0] = 50;
+  colWidth[1] = 50;
+  colWidth[2] = 50;
+  colWidth[3] = 50;
+  colWidth[4] = 50;
+  colWidth[5] = 50;
+  colWidth[6] = 50;
+  colWidth[7] = 50;
 }

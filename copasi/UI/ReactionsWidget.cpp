@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/10/28 20:06:31 $
+   $Date: 2004/11/04 19:53:07 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -55,12 +55,7 @@ void ReactionsWidget::init()
   tableHeader->setLabel(3, "Kinetics");
   tableHeader->setLabel(4, "Flux");
   colWidth.reserve(5); // reserve only for the number of columns needed
-
-  colWidth[0] = 80;
-  colWidth[1] = 80;
-  colWidth[2] = 80;
-  colWidth[3] = 80;
-  colWidth[4] = 80;
+  resetColWidth(); // resets the width of columns in the table
 
   //this restricts users from editing function names
   table->setColumnReadOnly (3, true);
@@ -70,40 +65,22 @@ void ReactionsWidget::init()
 void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
+
   const CReaction* pRea = (const CReaction*)obj;
 
   table->setText(row, 1, FROM_UTF8(pRea->getObjectName()));
 
-  QString eqString = FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pRea, false));
-
-;
-
-  if (colWidth[1] < fontMetrics().width(eqString, eqString.length()))
-    {
-      colWidth[1] = fontMetrics().width(eqString, eqString.length()) + 20;
-    }
-
+  table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pRea, false)));
   table->setColumnWidth(2, colWidth[1]);
-
-  table->setText(row, 2, eqString);
 
   if (&(pRea->getFunction()))
     {
-      QString funcString = FROM_UTF8(pRea->getFunction().getObjectName());
-
-      if (colWidth[2] < fontMetrics().width(funcString, funcString.length()))
-        {
-          colWidth[2] = fontMetrics().width(funcString, funcString.length()) + 20;
-        }
-
+      table->setText(row, 3, FROM_UTF8(pRea->getFunction().getObjectName()));
       table->setColumnWidth(3, colWidth[2]);
-      table->setText(row, 3, funcString);
     }
 
   table->setText(row, 4, QString::number(pRea->getFlux()));
-
-  // a call to this function modifies the colWidth variable only if the width required
-  // for the current object(name) is more than the value of colWidth
+  table->setColumnWidth(4, colWidth[3]);
 }
 
 void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -171,10 +148,7 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
 
 void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  C_INT32 j;
-
-  for (j = 0; j < 5; j ++)
-    colWidth[j] = 80;
+  resetColWidth();
 
   if (!dataModel->getModel())
     return;
@@ -188,4 +162,44 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
       dataModel->getModel()->removeReaction(keys[i]);
       ListViews::notify(ListViews::REACTION, ListViews::DELETE, keys[i]);
     }
+}
+
+void ReactionsWidget::checkColumnWidth (const CCopasiObject* obj)
+{
+  //sets the colWidth variable...all the rules for changing the column width
+  // are specified here.
+
+  if (!obj) return;
+
+  const CReaction* pRea = (const CReaction*)obj;
+  // cast the object
+
+  QString eqString = FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pRea, false));
+  // read the object
+
+  if (colWidth[1] < fontMetrics().width(eqString, eqString.length()))
+    {
+      colWidth[1] = fontMetrics().width(eqString, eqString.length()) + 20;
+    }
+
+  // set the ColWidth if it is greater than it previous value.
+
+  if (&(pRea->getFunction()))
+    {
+      QString funcString = FROM_UTF8(pRea->getFunction().getObjectName());
+
+      if (colWidth[2] < fontMetrics().width(funcString, funcString.length()))
+        {
+          colWidth[2] = fontMetrics().width(funcString, funcString.length()) + 20;
+        }
+    }
+}
+
+void ReactionsWidget::resetColWidth()
+{
+  colWidth[0] = 80;
+  colWidth[1] = 80;
+  colWidth[2] = 80;
+  colWidth[3] = 80;
+  colWidth[4] = 80;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/10/28 17:56:10 $
+   $Date: 2004/11/04 19:52:58 $
    End CVS Header */
 
 /*******************************************************************
@@ -122,6 +122,7 @@ void CopasiTableWidget::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       mFlagRO[j] = false;
+      checkColumnWidth(objects[j]);
       tableLineFromObject(objects[j], j);
       mKeys[j] = objects[j]->getKey();
       mFlagChanged[j] = false;
@@ -423,6 +424,14 @@ bool CopasiTableWidget::enter(const std::string & C_UNUSED(key))
   fillTable();
   return true;
 }
+
+void CopasiTableWidget::resetColWidth ()
+{
+  std::cout << "**** resetColWidth: method of CopasiTableWidget should never be called ****" << std::endl;
+}
+
+void CopasiTableWidget::checkColumnWidth (const CCopasiObject* obj)
+{std::cout << "**** checkColWidth: method of CopasiTableWidget should never be called ****" << std::endl;}
 
 void CopasiTableWidget::init()
 {std::cout << "**** init: method of CopasiTableWidget should never be called ****" << std::endl;}

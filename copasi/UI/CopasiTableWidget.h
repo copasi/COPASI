@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/10/28 17:56:10 $
+   $Date: 2004/11/04 19:52:49 $
    End CVS Header */
 
 /****************************************************************************
@@ -77,7 +77,7 @@ class CopasiTableWidget : public CopasiWidget
     std::vector<C_INT32> colWidth;
 
     // colWidth 'protected' so that the width can be filled by
-    // any subclass
+    // any subclass.
 
     std::vector<bool> mFlagChanged;
     std::vector<bool> mFlagDelete;
@@ -131,6 +131,17 @@ class CopasiTableWidget : public CopasiWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const = 0;
+
+    /**
+        * update the width related variables (called from the function fillTable)
+        */
+    virtual void checkColumnWidth(const CCopasiObject* obj);
+
+    /**
+        * reset the column width variables of the table
+        */
+
+    virtual void resetColWidth ();
   };
 
 #endif
