@@ -249,7 +249,8 @@ void FunctionWidget1::loadName(QString setValue)
 
   CFunction *funct;
   int i = 0;
-  int myValue = -1;
+  //int myValue=-1;
+  myValue = -1;
 
   for (; i < Functions.size(); i++)
     {
@@ -299,8 +300,11 @@ void FunctionWidget1::loadName(QString setValue)
           Table1->setText(j, 2, functParam[j]->getUsage().c_str());
         }
 
+      // for application table
       CCopasiVectorNS < CUsageRange > & functUsage = funct2.getUsageDescriptions();
+
       C_INT32 noOfApplns = functUsage.size();
+
       Table2->setNumRows(noOfApplns);
 
       for (j = 0; j < noOfApplns; j++)
@@ -381,6 +385,100 @@ void FunctionWidget1::slotCommitButtonClicked()
   QMessageBox::information(this, "Function Widget1", "Saving changes to Widget");
 
   CWriteConfig * sFunctionDB = new CWriteConfig("FunctionDB1.gps");
+
+  CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
+  CFunction *funct;
+  funct = Functions[myValue];
+  /**** for Name and Description ****/
+  new_Name = new QString(LineEdit1->text());
+  new_Description = new QString(LineEdit2->text());
+  funct->setName(new_Name->latin1());
+  funct->setDescription(new_Description->latin1());
+  /**** For Radio Buttons ****/
+
+  if (RadioButton1->isChecked() == TRUE)
+    {
+      funct->setReversible(TriUnspecified);
+    }
+  else
+    if (RadioButton2->isChecked() == TRUE)
+      {
+        funct->setReversible(TriTrue);
+      }
+    else
+      funct->setReversible(TriFalse);
+
+  /***** for Table 1: Parameters table *****/
+  CFunction &funct2 = *Copasi->FunctionDB.loadedFunctions()[funct->getName()];
+
+  CFunctionParameters &functParam = funct2.getParameters();
+
+  C_INT32 noOffunctParams = functParam.size();
+
+  Table1->setNumRows(noOffunctParams);
+
+  // for parameters table
+
+  for (int j = 0; j < noOffunctParams; j++)
+    {
+      //param_Name = new QString(Table1->text(j,0));
+      param_Name = &Table1->text(j, 0);
+
+      /****** conv enumerated types ???? *****/
+      //Table1->setText(j, 1, enumname[functParam[j]->getType()]);
+      param_Type = &Table1->text(j, 1);
+
+      //param_Usage = new QString(Table1->text(j,2));
+      param_Usage = &Table1->text(j, 2);
+
+      /***** set new values *****/
+      functParam[j]->setName(param_Name->latin1());
+      /**** enum ??? ****/
+      //functParam[j]->setType(param_Type);
+
+      for (int i = 0; i < 11; i++)
+        {
+          if (QString:: compare(*param_Type, enumname[i]))
+            enum_Type = i;
+        }
+
+      //functParam[j]->setType((enum DataType)enum_Type);
+      functParam[j]->setUsage(param_Usage->latin1());
+    }
+
+  /***** for Table 2: Applications table *****/
+  CCopasiVectorNS < CUsageRange > & functUsage = funct2.getUsageDescriptions();
+
+  C_INT32 noOfApplns = functUsage.size();
+
+  Table2->setNumRows(noOfApplns);
+
+  for (j = 0; j < noOfApplns; j++)
+    {
+      //app_Desc = new QString(Table2->text(j,0));
+      app_Desc = &Table2->text(j, 0);
+      //app_Low=new QString(Table2->text(j,1));
+      app_Low = &Table2->text(j, 1);
+      int_Low = app_Low->toInt();
+      app_High = &Table2->text(j, 2);
+      //app_High = new QString(Table2->text(j,2));
+
+      if (QString::compare(*app_High, "NA") == 0)
+        {
+          int_High = 0;
+        }
+      else
+        {
+          int_High = app_High->toInt();
+        }
+
+      /***** there is no setName  here ????? ******/
+      functUsage[j]->setUsage(app_Desc->latin1());
+
+      functUsage[j]->setLow(int_Low);
+
+      functUsage[j]->setHigh(int_High);
+    }
 
   Copasi->FunctionDB.save(*sFunctionDB);
   delete sFunctionDB;

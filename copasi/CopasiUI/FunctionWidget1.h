@@ -62,7 +62,21 @@ class FunctionWidget1 : public QWidget
     void loadName(QString setValue);
     int isName(QString setValue);
 
+    int myValue;
+
     QString *Function_Name;
+    QString *new_Name;
+    QString *new_Description;
+    QString *param_Type;
+    QString *param_Name;
+    QString *param_Usage;
+    QString *app_Desc;
+    QString *app_Low;
+    QString *app_High;
+    int int_Low;
+    int int_High;
+    int enum_Type;
+
     QButtonGroup* ButtonGroup1;
     QButtonGroup* ButtonGroup2;
     QButtonGroup* ButtonGroup3;
