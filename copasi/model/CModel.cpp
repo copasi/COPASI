@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.135 $
+   $Revision: 1.136 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/11 20:47:17 $
+   $Author: shoops $ 
+   $Date: 2003/11/11 21:15:54 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1706,9 +1706,9 @@ bool CModel::addMetabolite(const std::string & name,
   return mMetabolites.add(pMetab);
 }
 
-QString CModel::removeMetaboliteEffected(const std::string & key)
+std::string CModel::removeMetaboliteEffected(const std::string & key)
 {
-  QString EffectedReactions = "Following Reactions will be effected:\n";
+  std::string EffectedReactions = "Following Reactions will be effected:\n";
   int reactionFound = 0;
   const CCopasiVectorN <CReaction> & Reactions = getReactions();
   C_INT32 j, reactionChecked, jmax = Reactions.size();
@@ -1722,7 +1722,7 @@ QString CModel::removeMetaboliteEffected(const std::string & key)
         {
           if (key == Substrates[i]->getMetaboliteKey())
             {
-              EffectedReactions.append(Reactions[j]->getName().c_str());
+              EffectedReactions.append(Reactions[j]->getName());
               EffectedReactions.append(", ");
               reactionFound = 1;
               reactionChecked = 1;
@@ -1737,7 +1737,7 @@ QString CModel::removeMetaboliteEffected(const std::string & key)
           for (i = 0; i < imax; i++)
             if (key == Products[i]->getMetaboliteKey())
               {
-                EffectedReactions.append(Reactions[j]->getName().c_str());
+                EffectedReactions.append(Reactions[j]->getName());
                 EffectedReactions.append(", ");
                 reactionFound = 1;
                 reactionChecked = 1;
@@ -1763,7 +1763,7 @@ QString CModel::removeMetaboliteEffected(const std::string & key)
 
   if (reactionFound == 1)
     {
-      EffectedReactions.remove(EffectedReactions.length() - 2, 2);
+      EffectedReactions.substr(0, EffectedReactions.length() - 2);
       return EffectedReactions;
     }
   else

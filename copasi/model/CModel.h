@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/11 20:47:16 $
+   $Author: shoops $ 
+   $Date: 2003/11/11 21:15:54 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -22,7 +22,6 @@
 #include "utilities/CVector.h"
 #include "utilities/CMatrix.h"
 #include "report/CCopasiContainer.h"
-#include "C:/Qt/3.2.0/include/qstring.h"
 
 class CCompartment;
 class CState;
@@ -834,7 +833,7 @@ class CModel : public CCopasiContainer
     bool removeMetabolite(const std::string & key);
 
     /* Retreives list of Reactions which are dependent on the Metabolite */
-    QString removeMetaboliteEffected(const std::string & key);
+    std::string removeMetaboliteEffected(const std::string & key);
 
     /**
      * Add a compartment to the model
