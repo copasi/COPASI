@@ -1,6 +1,7 @@
 /**
  *  CChemEq class.
- *  Describing a chemical equation Stefan Hoops 2001
+ *  Describing a chemical equation.
+ *  The CChemEq class handles everything a reaction has to do with metabolites.
  *
  *  Created for Copasi by Stefan Hoops 2001
  */
@@ -21,7 +22,8 @@ class CChemEq : public CCopasiContainer
     {
       PRODUCT = 0,
       SUBSTRATE,
-      MODIFIER
+      MODIFIER,
+      NOROLE
     };
 
     // Attributes
@@ -166,6 +168,14 @@ class CChemEq : public CCopasiContainer
      *  @return "vector < CChemEqElement * > &" balances
      */
     const CCopasiVector < CChemEqElement > & getBalances() const;
+
+    /**
+     *  Find an element by its metabolite name. if role=NOROLE (default) all three list are
+     *  searched. If the chemical equation was compiled before this is the way to get a
+     *  pointer to a metabolite from its name.
+     */
+    const CChemEqElement & findElementByName(const std::string & name,
+        const MetaboliteRole role = NOROLE) const;
 
     //const getExpandedMetaboliteList
 
