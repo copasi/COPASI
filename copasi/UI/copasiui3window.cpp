@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.123 $
+   $Revision: 1.124 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/02 09:40:27 $
+   $Author: stupe $ 
+   $Date: 2005/03/07 15:02:37 $
    End CVS Header */
 
 #include <vector>
@@ -69,10 +69,10 @@ CopasiUI3Window::CopasiUI3Window():
   // Set the window caption/title
   closeFlag = 0;
   newFlag = 0;
-  QString Title = "COPASI (";
-  Title += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
-  Title += " test version)";
-  setCaption(Title);
+  FixedTitle = "COPASI (";
+  FixedTitle += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
+  FixedTitle += " test version) ";
+  setCaption(FixedTitle);
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
   //  mpFileMenu = new QPopupMenu;
@@ -138,6 +138,7 @@ CopasiUI3Window::~CopasiUI3Window()
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSaveAs(QString str)
 {
+  bool mSuccess;
   ListViews::commit();
 
   QString tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.cps)",
@@ -153,12 +154,14 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
 
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      dataModel->saveModel(tmp.utf8());
+      if (mSuccess = dataModel->saveModel(tmp.utf8()))
+        {
+          CCopasiDataModel::Global->changed(false);
+          gpsFile = tmp;
+          Title = FixedTitle + gpsFile;
+          setCaption(Title);
+        }
       setCursor(oldCursor);
-
-      CCopasiDataModel::Global->changed(false);
-
-      gpsFile = tmp;
     }
 }
 
@@ -182,14 +185,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                         // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                          // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                         // Discard clicked or Alt+D pressed
+        case 1:                                                          // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                         // Cancel clicked or Escape pressed
+        case 2:                                                          // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -209,7 +212,8 @@ void CopasiUI3Window::newDoc()
   mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   msave_button->setEnabled(true);
   mpFileMenu->setItemEnabled(nsave_menu_id, true);
-
+  Title = FixedTitle + gpsFile;
+  setCaption(Title);
   ListViews::switchAllListViewsToWidget(1, "");
 }
 
@@ -246,14 +250,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                         // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                          // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                         // Discard clicked or Alt+D pressed
+            case 1:                                                          // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                         // Cancel clicked or Escape pressed
+            case 2:                                                          // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -329,7 +333,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
       msave_button->setEnabled(true);
       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-
+      Title = FixedTitle + gpsFile;
+      setCaption(Title);
       ListViews::switchAllListViewsToWidget(1, "");
     }
 }
@@ -398,14 +403,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                         // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                          // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                         // Discard clicked or Alt+D pressed
+        case 1:                                                          // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                         // Cancel clicked or Escape pressed
+        case 2:                                                          // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -427,14 +432,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                         // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                          // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                         // Discard clicked or Alt+D pressed
+            case 1:                                                          // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                         // Cancel clicked or Escape pressed
+            case 2:                                                          // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -446,15 +451,24 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
 // Cleanup all the temp .cps files created at runtime.
 void CopasiUI3Window::CleanUp()
 {
-  std::string tempDir, mCleanTemp;
+  std::string tempDir, mCleanTemp, mRemDir;
+  int i;
   COptions::getValue("Tmp", tempDir);
 #ifdef WIN32
   mCleanTemp = "del " + tempDir + "\\tmp_*.cps";
 #else
   mCleanTemp = "rm " + tempDir + "/tmp_*.cps";
 #endif
-
   system(mCleanTemp.c_str());
+  mRemDir = "rmdir " + tempDir;
+  i = system(mRemDir.c_str());
+  if (i == -1)
+    {
+      std::string mError;
+      mError = "Unable to Delete Temporary Directory:\nPlease Manually delete the folder at:\n" + tempDir;
+      //CCopasiMessage Message(CCopasiMessage::RAW,"Unable to Delete Temoporary Directory:\nPlease Manually delete the folder at:\\n." ,+mRemDir.c_str());
+      QMessageBox::warning(this, "Warning !!!", mError.c_str());
+    }
 }
 
 /***************CopasiUI3Window::slotFilePrint()******
@@ -478,9 +492,6 @@ void CopasiUI3Window::slotFilePrint()
  *******************************************************************************************/
 void CopasiUI3Window::about()
 {
-  QString Title = "COPASI (";
-  Title += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
-  Title += ")";
   AboutDialog* aboutDialog = new AboutDialog(this);
   aboutDialog->setCaption(Title);
   aboutDialog->exec();
@@ -693,14 +704,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                         // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                          // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                         // Discard clicked or Alt+D pressed
+            case 1:                                                          // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                         // Cancel clicked or Escape pressed
+            case 2:                                                          // Cancel clicked or Escape pressed
               return;
               break;
             }
