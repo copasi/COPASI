@@ -1,15 +1,16 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2003/05/19 12:45:53 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2003/05/19 14:48:06 $  
 ######################################################################
 
 # In the case the OS is not specified we make a guess.
 isEmpty(OS) {
   win32: {
-    OS = win32
+    OS = WIN32
   } else {
     OS = $$system(uname)
   }
 }
+DEFINES += $${OS}
 
 # Common configuration settings
 CONFIG += exceptions
@@ -30,11 +31,14 @@ myLex = \
 
 contains(OS, Darwin) {
   INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
-  LIBS += -l/System/Library/Frameworks/vecLib.framework/vecLib
+  LIBS += -framework vecLib
+  LIBS += -framework Carbon
+  LIBS += -framework QuickTime
+  LIBS += -lz
+  CONFIG -= thread
 }
 
-contains(OS, win32) {
-  DEFINES += WIN32
+contains(OS, WIN32) {
   DEFINES -= UNICODE
 
   !isEmpty(MKL_PATH) {

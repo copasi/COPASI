@@ -53,7 +53,7 @@ void CRandom::setModulus(const unsigned C_INT32 & modulus)
   mModulusInv1 = 1.0 / (mModulus + 1.0);
 }
 
-#ifdef __MacOsX__
+#ifdef Darwin
 #include <mach/mach_init.h> 
 /*
  * References to host objects are returned by:

@@ -70,7 +70,7 @@ tam@wri.com
 // #define DBL_EPSILON 2.2204460492503131e-16
 
 #ifndef _ZTC
-#ifdef __MacOsX__
+#ifdef Darwin
 #include <alloc.h>
 #else
 #include <malloc.h>

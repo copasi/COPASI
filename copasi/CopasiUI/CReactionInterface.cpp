@@ -199,7 +199,7 @@ void CReactionInterface::setReversibility(bool rev, const std::string & newFunct
 void CReactionInterface::reverse(bool rev, const std::string & newFunction)
 {
   mChemEq.setReversibility(rev);
-  mChemEq.reverse();
+  //  mChemEq.reverse();
   findAndSetFunction(newFunction);
 }
 
