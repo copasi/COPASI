@@ -36,9 +36,6 @@ $PBMOPS = "/usr/local/bin/netpbm/pnmcrop -verbose";
 $counter = 0;
 unlink( "layout.log" );
 
-$lasthfile = ".";
-$lastgfile = "top level";
-
 # processing
 while( defined($gfile = <*.$GRAPHEXTENSION>) )
 {
@@ -48,23 +45,25 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	# read statistics first
 	$statfile = $gfile;
 	$statfile =~ s/\.$GRAPHEXTENSION/\.netstat/;
-	open( STATFILE, "<$statfile" );
+	open( STATFILE, "$statfile" );
 	$vertex = 0;
 	@stats = <STATFILE>;
 	close(STATFILE);
     foreach $line (@stats) 
-      if( $line =~ /number of vertices\t([0..9]+)/ )
+	{
+      if ($line =~ /number of vertices\t([0-9]+)/)
 	  {
 	    $vertex = $1;
 	    last;
 	  }
+	}
 
 	$psfile = $gfile;
 	$psfile =~ s/\.$GRAPHEXTENSION/\.eps/;
 	$pngfilen = $gfile;
     $pngfilen =~ s/\.$GRAPHEXTENSION/\.n\.png/;
     # don't bother laying out if more than 500 vertices
-    if( $vertex lt 500 )
+    if ($vertex < 500)
 	{
 	  # Layout the graph into postscript
 	  system "$NEATO -Tps -G\"page=8.5,11\" -G\"size=7.5,10\" -o$psfile $gfile 2>>layout.log";
@@ -77,13 +76,13 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	else
 	{
 	  # create a replacement graph ...
-	  open( DTFILE, ">tmp.dot" );
-	  print( DTFILE "digraph \"$gfile\" { graph[ label=\"too many nodes to layout, use Pajek!\" ]\nNO -> GRAPH\n}");
-	  close( FTFILE );
+	  open( DTFILE, ">tmp.gvz" );
+	  print( DTFILE "digraph \"$gfile\" { graph[ label=\"too many nodes to layout, use Pajek!\" ]\nNO -> IMAGE\n}");
+	  close( DTFILE );
 
  	  print ".";
 
-	  system "$NEATO -G\"size=8,8\" -Tpng -o$pngfilen tmp.dot 2>>layout.log";
+	  system "$NEATO -G\"size=8,8\" -Tpng -o$pngfilen tmp.gvz 2>>layout.log";
 	} 
 
 	print ".";
@@ -102,10 +101,10 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	# Layout the graph into a picture (png)
 	$pngfiled = $gfile;
 	$pngfiled =~ s/\.$GRAPHEXTENSION/\.d\.png/;
-	if( $vertex lt 500 )
-	 system "$DOT -G\"size=8,8\" -Tpng -o$pngfiled $gfile 2>>layout.log";
+	if ($vertex < 500)
+	 {system "$DOT -G\"size=8,8\" -Tpng -o$pngfiled $gfile 2>>layout.log";}
 	else
-	 system "$DOT -G\"size=8,8\" -Tpng -o$pngfiled tmp.dot 2>>layout.log";
+	 {system "$DOT -G\"size=8,8\" -Tpng -o$pngfiled tmp.gvz 2>>layout.log";}
 
 
     print ".";
@@ -149,7 +148,7 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
     # write the HTML header
 	$strtime = localtime();
 	print( HTFILE "<html>\n<!-- Created by A-Biochem, $strtime -->\n");
-	print( HTFILE "<head>\n<style type=\"text/css\" media=\"all\">@import \"nets.css\";</style>\n");
+	print( HTFILE "<head>\n<style type=\"text/css\" media=\"all\">\@import \"nets.css\";</style>\n");
 	print( HTFILE "<title>$gfile</title>\n</head>\n");
 	# write the HTML body
 	print( HTFILE "<body>\n<center>\n");
@@ -158,11 +157,11 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	print( HTFILE "<li><a href=\"..\">Artificial Gene Networks</a></li>\n");
 	print( HTFILE "</ul></div>\n");
 	print( HTFILE "<h1>Artificial Gene Network $gfile</h1>\n");
-	print( HTFILE "<h2>statistics</h2>\n<table>");
+	print( HTFILE "<h2>statistics</h2>\n<table>\n");
     foreach $line (@stats)
 	{ 
-      $line =~ s/\t/<\/td><td>/
-      print( HTFILE "<tr><td>$line</td></tr>");
+      $line =~ s/\t/<\/td><td>/;
+      print( HTFILE "<tr><td>$line</td></tr>\n");
 	}
 	print( HTFILE "</table>\n");
 	print( HTFILE "<div id=\"menu\">\n<ul>\n");
@@ -170,14 +169,11 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	print( HTFILE "<li><a href=\"#dot\">Hierarchical layout</a></li>\n");
 	print( HTFILE "<li><a href=\"#deg\">Degree distribution</a></li>\n");
 	print( HTFILE "</ul></div>\n");
-	print( HTFILE "[ <a href=\"#deg\">degree distribution</a> ]</p>\n");
-	print( HTFILE "<h2><a name=\"neato\">neato</a></h2>\n<img border=\"0\" src=\"$pngfilen\">\n");
-	print( HTFILE "<h2><a name=\"dot\">dot</a></h2>\n<img border=\"0\" src=\"$pngfiled\">\n");
+	print( HTFILE "<h2><a name=\"Force field layout\">neato</a></h2>\n<img border=\"0\" src=\"$pngfilen\">\n");
+	print( HTFILE "<h2><a name=\"dot\">Hierarchical layout</a></h2>\n<img border=\"0\" src=\"$pngfiled\">\n");
 	print( HTFILE "<h2><a name=\"deg\">Degree distribution</a></h2>\n<img border=\"0\" src=\"$pngfileg\">\n");
 	print( HTFILE "</center>\n</body>\n</html>");
 	close( HTFILE );
-	$lasthfile=$hfile;
-	$lastgfile=$gfile;
 
 	print ".";
 
@@ -191,8 +187,8 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	# cleanup the mess
 	unlink($bfile);
 	unlink($b1file);
-	if( $vertex ge 500 ) unlink("tmp.dot");
 }
 
 unlink("offset.txt");
 unlink("temp.plt");
+unlink("tmp.gvz");
