@@ -544,14 +544,13 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 
   for (unsigned int m = 0; m <= individual_elements1.size() - 1; m++)
     {
-      substrates[start] = individual_elements1[m];
-
       if ((individual_elements1[m] == "->") || (individual_elements1[m] == "="))
         {
           m++;
           break;
         }
-      QMessageBox::information(this, individual_elements1[m], "substrates ");
+      substrates[start] = individual_elements1[m];
+      QMessageBox::information(this, substrates[start], "substrates ");
       start++;
     }
 
@@ -624,19 +623,29 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
         {
           tableHeader2->setLabel(count, substrate_name[count].c_str());
         }
+      //---------------------------------------------
+      unsigned int z = 0;
+      unsigned int k = 0;
+      unsigned int line = 0;
+      for (k = 0; k <= substrates.size(); k++)
+        {
+          //QString temp = substrates[z];
+          QComboTableItem * item = new QComboTableItem(table, substrates, TRUE);
+          //item->setCurrentItem(temp);
+          //z++;
+          table->setItem(line, 0, item);
+          line++;
+        }
 
-      //insert the values of substrates[] and products[] in the combo boxes here...
-
-      //QStringList individual_products=QStringList::split (" ", chemical_reaction1, FALSE);
-      //QString try1=individual_products[0];
-
-      /* chemical_reaction = chemical_reaction1.replace(i, 2, "=");
-       LineEdit2->setText(chemical_reaction);
-
-      comboEntries1.push_back(overall);
-      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
-      QString temp = comboEntries1[z];
-      item->setCurrentItem(temp);
-      table->setItem(line, 0, item); */
+      z = 0;
+      for (k = 0; k <= products.size(); k++)
+        {
+          //QString temp =products[z];
+          QComboTableItem * item = new QComboTableItem(table, products, TRUE);
+          // item->setCurrentItem(temp);
+          // z++;
+          table->setItem(line, 0, item);
+          line++;
+        }
     }
 }
