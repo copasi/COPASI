@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanItemWidget.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:27 $
+   $Date: 2003/11/12 17:17:21 $
    End CVS Header */
 
 /****************************************************************************
@@ -90,30 +90,15 @@ class ScanItemWidget : public QWidget
   public slots:
     virtual void languageChange();
 
-    virtual void mousePressEvent (QMouseEvent * e)
-    {
-      QWidget::mousePressEvent(e);
-    }
+    virtual void mousePressEvent (QMouseEvent * e);
 
-    void setScanObject(CCopasiParameterGroup* pNewParameter)
-    {
-      pParameter = pNewParameter;
-    }
+    void setScanObject(CCopasiParameterGroup* pNewParameter);
 
-    CCopasiParameterGroup* getScanObject()
-    {
-      return pParameter;
-    }
+    CCopasiParameterGroup* getScanObject();
 
-    void setCopasiObject(CCopasiObject* pNewObject)
-    {
-      pObject = pNewObject;
-    }
+    void setCopasiObject(CCopasiObject* pNewObject);
 
-    CCopasiObject* getCopasiObject()
-    {
-      return pObject;
-    }
+    CCopasiObject* getCopasiObject();
 
     void loadObject();
     void updateObject();
