@@ -1,0 +1,71 @@
+%{
+
+#include "CSpecLine.h"
+#include <iostream>
+
+%}
+
+%option c++
+%option outfile="CScanInputFlexLexer.cpp"
+%option prefix="CScanInput"
+%option noyywrap
+%option never-interactive
+
+ident [_!@%~]?[a-zA-Z]+[_!@%~a-zA-Z0-9]*[ \t]*
+
+/*rhs [ \t]*(-)?[_!@%~]?[a-zA-Z]+[-/+*_!@%~a-zA-Z0-9^ \t()]*  */
+
+rhs [ \t]*[-*+/_!@%~a-zA-Z0-9^ \t()]+
+
+num [ \t]*(0|([1-9]+[0-9]*)|([0-9]*\.[0-9]+[ \t]*((e|E)[-+]?[1-9]+[0-9]*)?))[ \t]*
+
+init (INIT|init|Init)[ \t]*
+
+varlist {ident}(,{ident})*
+
+vol (VOLUME|Volume|volume)[ \t]*
+
+eol \n
+
+spc [ \t]*
+
+chr .
+
+%%
+
+[ \t\r] ;
+
+#.*			{ // A comment
+// cout << "Lex read a comment: " << yytext << endl;
+}
+
+{num}:{spc}{ident}'{spc}={rhs} { // A differential equation. 
+			return CSpecLine::DE;
+}
+
+{num}:{spc}{ident}={rhs} { // An equation
+			return CSpecLine::EQN;
+}
+
+{init}{spc}{num}:{spc}{ident}={num} { // An initialization
+			return CSpecLine::INIT;
+}
+
+{spc}{ident}{spc}={spc}{num} { // A constant specification
+			return CSpecLine::CNST;
+}
+
+{num}:{spc}{ident}:={num} { // A rate constant specification
+			return CSpecLine::RATE;
+}
+
+{num}:{spc}{vol}={num}		{ // A volume specification
+			return CSpecLine::CPT;
+}
+
+{ident}\({varlist}\){spc}={spc}{rhs} { // A function
+			return CSpecLine::FUN;
+}
+
+%%
+
