@@ -438,7 +438,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
       //chemical_reaction =  chemical_reaction.replace(QRegExp("="), "->");
       LineEdit2->setText(chemical_reaction);
       ComboBox1->clear();
-      ComboBox1->insertItem("trying", -1);
+      ComboBox1->insertItem("No Values", -1);
       //  CCopasiVectorN < CFunction > & Functions = fFunctionDB->suitableFunctions(k, m, TriFalse);
       //  int m = 0;
       /*  if (Functions.size() > 0) {
