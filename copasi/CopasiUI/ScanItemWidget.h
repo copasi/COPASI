@@ -31,6 +31,13 @@ class ScanItemWidget : public QWidget
   {
     Q_OBJECT
   private:
+    static int labelMaxWidth;
+    QString strDensityLabel;
+    QString strMaxLabel;
+    QString strMinLabel;
+    QString strMeanLabel;
+    QString strSTDLabel;
+
     QScrollView* mParent;
     CMethodParameterList* pParameter;
     void ResetData();

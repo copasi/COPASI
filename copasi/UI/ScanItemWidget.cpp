@@ -21,9 +21,19 @@
  *  Constructs a ScanItemWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
+
+int ScanItemWidget::labelMaxWidth = 0;
+
 ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl)
 {
+  pParameter = NULL;
+  strDensityLabel = tr("Density");
+  strMaxLabel = tr("Max");
+  strMinLabel = tr("Min");
+  strMeanLabel = tr("Mean");
+  strSTDLabel = tr("Std.Dev.");
+
   if (!name)
     setName("ScanItemWidget");
   ScanItemWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanItemWidgetLayout");
@@ -140,8 +150,6 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   connect(mUniformRadio, SIGNAL(clicked()), this, SLOT(UniformClicked()));
   connect(mGaussianRadio, SIGNAL(clicked()), this, SLOT(GaussianClicked()));
   connect(mPosGaussianRadio, SIGNAL(clicked()), this, SLOT(PosGaussianClicked()));
-
-  pParameter = NULL;
 }
 
 void ScanItemWidget::MaxValueChanged(const QString&)
@@ -191,29 +199,43 @@ void ScanItemWidget::LogarithmicClicked()
 
 void ScanItemWidget::RegularGridClicked()
 {
-  mMinLabel->setText(tr("Min     "));
-  mMaxLabel->setText(tr("Max     "));
+  mMinLabel->setText(strMinLabel);
+  mMinLabel->setFixedWidth(labelMaxWidth);
+
+  mMaxLabel->setText(strMaxLabel);
+  mMaxLabel->setFixedWidth(labelMaxWidth);
+
   pParameter->setValue("gridType", (C_INT32) SD_REGULAR);
 }
 
 void ScanItemWidget::UniformClicked()
 {
-  mMinLabel->setText(tr("Min     "));
-  mMaxLabel->setText(tr("Max     "));
+  mMinLabel->setText(strMinLabel);
+  mMinLabel->setFixedWidth(labelMaxWidth);
+
+  mMaxLabel->setText(strMaxLabel);
+  mMaxLabel->setFixedWidth(labelMaxWidth);
+
   pParameter->setValue("gridType", (C_INT32) SD_UNIFORM);
 }
 
 void ScanItemWidget::GaussianClicked()
 {
-  mMinLabel->setText(tr("Mean    "));
-  mMaxLabel->setText(tr("Std.Dev."));
+  mMinLabel->setText(strMeanLabel);
+  mMinLabel->setFixedWidth(labelMaxWidth);
+
+  mMaxLabel->setText(strSTDLabel);
+  mMaxLabel->setFixedWidth(labelMaxWidth);
   pParameter->setValue("gridType", (C_INT32) SD_GAUSS);
 }
 
 void ScanItemWidget::PosGaussianClicked()
 {
-  mMinLabel->setText(tr("Mean    "));
-  mMaxLabel->setText(tr("Std.Dev."));
+  mMinLabel->setText(strMeanLabel);
+  mMinLabel->setFixedWidth(labelMaxWidth);
+
+  mMaxLabel->setText(strSTDLabel);
+  mMaxLabel->setFixedWidth(labelMaxWidth);
   pParameter->setValue("gridType", (C_INT32) SD_BOLTZ);
 }
 
@@ -312,9 +334,20 @@ void ScanItemWidget::loadObject()
 void ScanItemWidget::languageChange()
 {
   setCaption(tr("ScanItemWidget"));
-  mDensityLabel->setText(tr("Density "));
-  mMaxLabel->setText(tr("Max     "));
-  mMinLabel->setText(tr("Min     "));
+
+  labelMaxWidth = fontMetrics().width(strSTDLabel);
+  if (fontMetrics().width(strDensityLabel) > labelMaxWidth)
+    labelMaxWidth = fontMetrics().width(strDensityLabel);
+
+  mDensityLabel->setText(strDensityLabel);
+  mDensityLabel->setFixedWidth(labelMaxWidth);
+
+  mMaxLabel->setText(strMaxLabel);
+  mMaxLabel->setFixedWidth(labelMaxWidth);
+
+  mMinLabel->setText(strMinLabel);
+  mMinLabel->setFixedWidth(labelMaxWidth);
+
   mDensity->setText(QString::null);
   mIndependent->setText(tr("          Master"));
   mLogarithmic->setText(tr("          Logarithmic"));
