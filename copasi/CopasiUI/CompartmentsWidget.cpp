@@ -17,8 +17,8 @@
 #include "MyTable.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
-#include "utilities/CMethodParameter.h"
 #include "listviews.h"
+#include "report/CKeyFactory.h"
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
@@ -38,9 +38,7 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
     : CopasiWidget(parent, name, f)
 
 {
-  mModel = NULL;
   binitialized = true;
-  mModel = NULL;
   table = new MyTable(0, 2, this, "tblCompartments");
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
@@ -72,34 +70,53 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
           this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(table, SIGNAL(selectionChanged ()), this,
-          SLOT(slotTableSelectionChanged ()));
+  connect(table, SIGNAL(selectionChanged ()),
+          this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this,
           SLOT(slotBtnOKClicked()));
   connect(table, SIGNAL(valueChanged(int , int)),
           this, SLOT(tableValueChanged(int, int)));
-
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent,
-          SLOT(slotCompartmentTableChanged(const QString &)));
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent,
-          SLOT(loadCompartmentsNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
-void CompartmentsWidget::loadCompartments(CModel *model)
+void CompartmentsWidget::fillTable()
 {
-  if (model != NULL)
+  const CCompartment *obj;
+  const CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
+  C_INT32 j, jmax = objects.size();
+  table->setNumRows(jmax);
+  mKeys.resize(jmax);
+
+  for (j = 0; j < jmax; ++j)
     {
-      mModel = model;
-      //Emptying the table
-      int numberOfRows = table->numRows();
-      int i;
-      for (i = 0; i < numberOfRows; i++)
-        {
-          table->removeRow(0);
-        }
-      repaint_table();
+      obj = objects[j];
+      table->setText(j, 0, obj->getName().c_str());
+      table->setText(j, 1, QString::number(obj->getVolume()));
+      mKeys[j] = obj->getKey();
     }
+  table->setText(jmax, 1, "");
+}
+
+void CompartmentsWidget::createNewObject()
+{
+#ifdef XXXX
+  {
+    std::string name = "compartment";
+    int i = 0;
+    while (dataModel->getModel()->addCompartment(name, 1) == -1)
+      {
+        i++;
+        name = "compartment";
+        name += "_";
+        name += QString::number(i).latin1();
+      }
+    table->setNumRows(table->numRows());
+    table->setText(row, 0, name.c_str());
+    x = name.c_str();
+    //emit updated();
+    //emit leaf(mModel);
+    ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE);
+  }
+#endif
 }
 
 void CompartmentsWidget::slotTableCurrentChanged(int row,
@@ -107,59 +124,57 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
     int C_UNUSED(m) ,
     const QPoint & C_UNUSED(n))
 {
-  if (row >= table->numRows() || row < 0)
-    return;
-  QString x = table->text(row, 0);
+  if (row >= table->numRows() || row < 0) return;
+
   if (row == table->numRows() - 1)
     {
-      std::string name = "compartment";
-      int i = 0;
-      while (mModel->addCompartment(name, 1) == -1)
-        {
-          i++;
-          name = "compartment";
-          name += "_";
-          name += QString::number(i).latin1();
-        }
-      table->setNumRows(table->numRows());
-      table->setText(row, 0, name.c_str());
-      x = name.c_str();
-      emit updated();
-      emit leaf(mModel);
+      //TODO: create a new Object
     }
-  emit name(x);
-  //QMessageBox::information(this, "Compartments Widget",x);
+
+  pListView->switchToOtherWidget(mKeys[row]);
 }
 
 void CompartmentsWidget::slotTableSelectionChanged()
 {
-  if (!mModel)
-    return;
-  if (!table->hasFocus())
-    {
-      table->setFocus();
-    }
+  if (!table->hasFocus()) table->setFocus();
 }
 
-void CompartmentsWidget::repaint_table()
-{
-  if (!mModel)
-    return;
-  //repaint()
-  int j;
-  const CCompartment *compartn;
-  const CCopasiVectorNS < CCompartment > & compartments =
-    mModel->getCompartments();
-  C_INT32 noOfCompartmentsRows = compartments.size();
-  table->setNumRows(noOfCompartmentsRows);
+void CompartmentsWidget::slotBtnOKClicked()
+{}
 
-  for (j = 0; j < noOfCompartmentsRows; j++)
+void CompartmentsWidget::slotBtnCancelClicked()
+{}
+
+void CompartmentsWidget::tableValueChanged(int C_UNUSED(row),
+    int C_UNUSED(col))
+{}
+
+bool CompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
     {
-      compartn = compartments[j];
-      table->setText(j, 0, compartn->getName().c_str());
-      table->setText(j, 1, QString::number(compartn->getVolume()));
+    case ListViews::MODEL:
+    case ListViews::METABOLITE:
+    case ListViews::COMPARTMENT:
+      fillTable();
+      break;
+
+    default:
+      break;
     }
-  table->setText(noOfCompartmentsRows, 1, "");
+  return true;
+}
+
+bool CompartmentsWidget::leave()
+{
+  //does nothing.
+  return true;
+}
+
+bool CompartmentsWidget::enter(const std::string & key)
+{
+  //does nothing.
+  return true;
 }
 
 void CompartmentsWidget::resizeEvent(QResizeEvent * re)
@@ -239,48 +254,4 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
         }
     }
   CopasiWidget::resizeEvent(re);
-}
-
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- ** ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- 
- ****************************************************************************************/
-
-void CompartmentsWidget::slotBtnOKClicked()
-{
-  // QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
-}
-
-void CompartmentsWidget::slotBtnCancelClicked()
-{
-  // QMessageBox::information(this, "Compartments Widget", "Do you really want to cancel changes");
-  emit signal_emitted(*Compartment_Name);
-}
-
-void CompartmentsWidget::tableValueChanged(int C_UNUSED(row),
-    int C_UNUSED(col))
-{
-  /*CWriteConfig *Mod = new CWriteConfig("try.gps");
-
-  CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
-  CCompartment *compartn1;
-  compartn1 = compartments1[row];
-
-  string x = table->text(row, col).latin1();
-
-  if (col == 0)
-    {
-      compartn1->setName(x);
-    }
-  else
-    {
-      compartn1->setVolume(int(x.c_str()));
-    }
-
-  compartn1->save(*Mod);
-  //Copasi->Compartmentfile.save(*Mod);
-  delete Mod; */
 }
