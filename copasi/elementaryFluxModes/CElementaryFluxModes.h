@@ -19,48 +19,50 @@
 #include "CFluxMode.h"
 
 class CElementaryFluxModes
-{
-  // Attributes
- private:  
-  /**
-   *  The resulting elementary flux modes
-   * @supplierCardinality 0..*
-   */
-  vector < CFluxMode > mFluxModes;
+  {
+    // Attributes
 
-  /**
-   *  Vector to keep track of the rearangements neccessary to put the
-   *  reversible reactions to the top of Stoi
-   */
-  vector < unsigned C_INT32 > mIndex;
+  private:
+    /**
+     *  The resulting elementary flux modes
+     * @supplierCardinality 0..*
+     */
+    vector < CFluxMode > mFluxModes;
 
-  /**
-   *  The COPASI model we are acting on.
-   */
-  const CModel *mModel;
+    /**
+     *  Vector to keep track of the rearangements neccessary to put the
+     *  reversible reactions to the top of Stoi
+     */
+    vector < unsigned C_INT32 > mIndex;
 
-  /** @link dependency */
-  /*#  CEFMAlgorithm lnkCEFMAlgorithm; */
-  //Operations
- public:    
-  /**
-   *  Default constructor
-   */
-  CElementaryFluxModes();
-  
-  /**
-   *  Destructor
-   */
-  ~CElementaryFluxModes();
+    /**
+     *  The COPASI model we are acting on.
+     */
+    const CModel *mModel;
 
-  /**
-   *  calculate
-   *  @param "const CModel *" model
-   */
-  void calculate(const CModel * model);
+    /** @link dependency */
+    /*#  CEFMAlgorithm lnkCEFMAlgorithm; */
+    //Operations
 
-  // Friend functions
-  friend ostream &operator<<(ostream &os, CElementaryFluxModes &A)
+  public:
+    /**
+     *  Default constructor
+     */
+    CElementaryFluxModes();
+
+    /**
+     *  Destructor
+     */
+    ~CElementaryFluxModes();
+
+    /**
+     *  calculate
+     *  @param "const CModel *" model
+     */
+    void calculate(const CModel * model);
+
+    // Friend functions
+    friend ostream &operator<<(ostream &os, const CElementaryFluxModes &A)
     {
       /* Get the reactions from the model */
       const CCopasiVectorNS < CReaction > & Reaction = A.mModel->getReactions();
@@ -68,30 +70,35 @@ class CElementaryFluxModes
       unsigned C_INT32 i, imax = A.mFluxModes.size();
       unsigned C_INT32 j, jmax;
 
-      os << "Elementary Flux Modes of Model \"" 
-         << A.mModel->getTitle() << "\":" << endl;
-  
-      for (i=0; i<imax; i++)
+      os << "Elementary Flux Modes of Model \""
+      << A.mModel->getTitle() << "\":" << endl;
+
+      for (i = 0; i < imax; i++)
         {
-          os << " Mode " << i+1 << ":  ";
+          os << " Mode " << i + 1 << ":  ";
+
           if (A.mFluxModes[i].isReversible())
             os << "(reversible)";
           else
             os << "(irreversible)";
+
           os << endl;
 
           jmax = A.mFluxModes[i].size();
-          for (j=0; j<jmax; j++)
+
+          for (j = 0; j < jmax; j++)
             {
-              os << "   " << A.mFluxModes[i].getMultiplier(j) << " * " 
-                 << Reaction[A.mIndex[A.mFluxModes[i].getReaction(j)]]
-                             ->getName()
-                 << endl;
+              os << "   " << A.mFluxModes[i].getMultiplier(j) << " * "
+              << Reaction[A.mIndex[A.mFluxModes[i].getReaction(j)]]
+              ->getName()
+              << endl;
             }
-          
+
           os << endl;
         }
+
       return os;
     }
-};
+  };
+
 #endif //COPASI_CElementaryFluxModes
