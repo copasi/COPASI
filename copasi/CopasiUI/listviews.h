@@ -25,16 +25,27 @@
 
 #include "copasi.h"
 
-#include "MetabolitesWidget.h"
-#include "ReactionsWidget.h"
-#include "CompartmentsWidget.h"
-#include "MoietyWidget.h"
-#include "FunctionWidget.h"
-#include "ReactionsWidget1.h"
-#include "MetabolitesWidget1.h"
-#include "CompartmentsWidget1.h"
-#include "MoietyWidget1.h"
-#include "FunctionWidget1.h"
+// #include "MetabolitesWidget.h"
+
+class MetabolitesWidget;
+
+class ReactionsWidget;
+
+class CompartmentsWidget;
+
+class MoietyWidget;
+
+class FunctionWidget;
+
+class ReactionsWidget1;
+
+class MetabolitesWidget1;
+
+class CompartmentsWidget1;
+
+class MoietyWidget1;
+
+class FunctionWidget1;
 #include "./icons/folderclosed.xpm"
 #include "./icons/folderopen.xpm"
 #include "./icons/folderlocked.xpm"
