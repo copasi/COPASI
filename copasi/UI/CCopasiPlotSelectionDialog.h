@@ -1,0 +1,62 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.h,v $
+   $Revision: 1.1 $
+   $Name:  $
+   $Author: gauges $ 
+   $Date: 2004/12/10 20:49:31 $
+   End CVS Header */
+
+#ifndef CPlotSelectionDialog_H__
+#define CPlotSelectionDialog_H__
+
+#include "qdialog.h"
+#include <vector>
+
+class QWidget;
+class QPushButton;
+class QSplitter;
+class QCheckBox;
+class QHBox;
+class QVBox;
+class QVBoxLayout;
+class QLabel;
+class CCopasiObject;
+class CModel;
+class CCopasiSelectionWidget;
+
+class CCopasiPlotSelectionDialog: public QDialog
+  {
+    Q_OBJECT
+
+  public:
+    CCopasiPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = FALSE, WFlags f = 0);
+    virtual ~CCopasiPlotSelectionDialog();
+    void setOutputVectors(std::vector<CCopasiObject*>* outputVector1, std::vector<CCopasiObject*>* outputVector2);
+    void setModel(CModel* model);
+
+  protected slots:
+    void slotOKButtonClicked();
+    void slotCancelButtonClicked();
+    void slotExpertCheckBoxToggled(bool checked);
+
+  protected:
+    void setTabOrder();
+
+  protected:
+    QPushButton* mpOKButton;
+    QPushButton* mpCancelButton;
+    QCheckBox* mpExpertCheckBox;
+    CCopasiSelectionWidget* mpXAxisSelectionWidget;
+    CCopasiSelectionWidget* mpYAxisSelectionWidget;
+    QSplitter* mpSplitter;
+    QHBox* mpButtonBox;
+    QVBoxLayout* mpMainLayout;
+    QLabel* mpXAxisLabel;
+    QLabel* mpYAxisLabel;
+    QVBox* mpXAxisSelectionBox;
+    QVBox* mpYAxisSelectionBox;
+    std::vector<CCopasiObject*>* mpXAxisOutputVector;
+    std::vector<CCopasiObject*>* mpYAxisOutputVector;
+  };
+
+#endif // CPlotSelectionDialog_H__
