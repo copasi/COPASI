@@ -46,11 +46,23 @@ class CModel
     CCopasiVectorNS < CCompartment > mCompartments;
 
     /**
-     *  for array of metabolites
+     *  Vector of reference to metabolites
      */
     vector < CMetab * > mMetabolites;
+
+    /**
+     *  Vector of reference to metabolites in reduced model representation
+     */
     vector < CMetab * > mMetabolitesX;
+
+    /**
+     *  Vector of reference to independent metabolites
+     */
     vector < CMetab * > mMetabolitesInd;
+
+    /**
+     *  Vector of reference to dependent metabolites
+     */
     vector < CMetab * > mMetabolitesDep;
 
     /**
@@ -59,7 +71,15 @@ class CModel
      *  @associates <{CReaction}>
      */
     CCopasiVectorNS < CReaction > mSteps;
+
+    /**
+     *  Vector of reference to reactions in reduced model representation.
+     */
     vector < CReaction * > mStepsX;
+
+    /**
+     *  Vector of reference to independend reactions.
+     */
     vector < CReaction * > mStepsInd;
 
     /**
@@ -142,17 +162,12 @@ class CModel
     CModel(const CModel & src);
 
     /**
-     * 
-     */
-    void initialize();
-
-    /**
-     * 
+     * Destructor
      */
     ~CModel();        // destructor (deallocation code here)
 
     /**
-     * 
+     * Cleanup 
      */
     void cleanup();
 
@@ -227,8 +242,22 @@ class CModel
      */
     void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
 
+    /**
+     * Retrieves the vector of independent metabolites.
+     * @return vector < CMetab * > metabolites
+     */
     vector < CMetab * > & getMetabolitesInd();
+
+    /**
+     * Retrieves the vector of dependent metabolites.
+     * @return vector < CMetab * > metabolites
+     */
     vector < CMetab * > & getMetabolitesDep();
+
+    /**
+     * Retrieves the vector of metabolites at it is used in the reduced model.
+     * @return vector < CMetab * > metabolites
+     */
     vector < CMetab * > & getMetabolitesX();
 
     /**
@@ -291,13 +320,22 @@ class CModel
      */
     void setTransitionTimes();
 
-    // Added by CvG
     /**
      * Return the vector of reactions
-     * @return "CCopasiVectorS <CReaction> &"
+     * @return CCopasiVectorNS <CReaction> & reactions
      */
     CCopasiVectorNS < CReaction > & getReactions();
+
+    /**
+     * Return the vector of reactions
+     * @return const CCopasiVectorS <CReaction> & reactions
+     */
     const CCopasiVectorNS < CReaction > & getReactions() const;
+
+    /**
+     * Retreives the vector of steps in the order used by the reduced model.
+     * @return vector < CReaction * > & reactions
+     */
     vector < CReaction * > & getReactionsX();
 
     // Added by Yongqun He
@@ -392,37 +430,110 @@ class CModel
     vector < CReaction * > & getStepsX();
 
     /**
-     *  Get the mLU matrix of this model
+     * Get the LU decomposition matrix of this model
+     * @return const TNT::Matrix < C_FLOAT64 > & LU
      */
     const TNT::Matrix < C_FLOAT64 > & getmLU() const;
 
+    /**
+     * Get the L matrix the LU decomposition of this model
+     * @return const TNT::Matrix < C_FLOAT64 > & LU
+     */
     const TNT::UnitLowerTriangularView<TNT::Matrix<C_FLOAT64 > > & getL() const;
 
+    /**
+     * Retrieve the inverse of the L matrix
+     * @return const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > > & L-inverse
+     */
     const
     TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
     & getInverseL() const;
 
     /**
-     *  Get the reverse Matrix of this Model
+     * Get the initial state of the model, i.e., initial concentrations 
+     * and volumes.
+     * @return CState * initialState
      */
-    const TNT::Matrix < C_FLOAT64 >& getML() const;
-
-    TNT::Matrix < C_FLOAT64 >& getML();
-
     CState * getInitialState() const;
+
+    /**
+     * Get the initial state of the model, i.e., initial concentrations 
+     * and volumes in reduced model representation.
+     * @return CStateX * initialStateX
+     */
     CStateX * getInitialStateX() const;
+
+    /**
+     * Set the initial state of the model, i.e., initial concentrations 
+     * and volumes.
+     * @param const CState * initialState
+     */
     void setInitialState(const CState * state);
+
+    /**
+     * Set the initial state of the model, i.e., initial concentrations 
+     * and volumes in reduced model representation.
+     * @param const CStateX * initialStateX
+     */
     void setInitialState (const CStateX * state);
+
+    /**
+     * Calculate the rates of the reaction in the given state.
+     * The parameter rates must at least provide space mSteps.size() double
+     * &param CState * state (input)
+     * &param  C_FLOAT64 * rates (output)
+     */
     void getRates(CState * state, C_FLOAT64 * rates);
+
+    /**
+     * Calculate the rates of the reaction in the given state in 
+     * reduced model representation.
+     * The parameter rates must at least provide space mStepsX.size() double
+     * &param CStateX * stateX (input)
+     * &param  C_FLOAT64 * rates (output)
+     */
     void getRates(CStateX * state, C_FLOAT64 * rates);
+
+    /**
+     * Calculate the changes of particles numbers of the metabolites 
+     * in the given state.
+     * The parameter derivatives must at least provide space for
+     * mMetabolites.size() double
+     * &param CState * state (input)
+     * &param  C_FLOAT64 * derivatives (output)
+     */
     void getDerivatives(CState * state, C_FLOAT64 * derivatives);
+
+    /**
+     * Calculate the changes of particles numbers of the metabolites 
+     * in the given state in reduced model representation.
+     * The parameter derivatives must at least provide space for
+     * mMetabolitesX.size() double
+     * &param CStateX * stateX (input)
+     * &param  C_FLOAT64 * derivatives (output)
+     */
     void getDerivatives(CStateX * state, C_FLOAT64 * derivatives);
+
+    /**
+     * Returns a stateX eqivalent to the given state.
+     * Note: The returned object must be released after use
+     * @param CState * state
+     * @return  CStateX * stateX
+     */
     CStateX * convertState(CState * state);
+
+    /**
+     * Returns a state eqivalent to the given stateX.
+     * Note: The returned object must be released after use
+     * @param CState * stateX
+     * @return  CStateX * state
+     */
     CState * convertState(CStateX * state);
 
     /**
-     *  set the unit for substance quantities. If copasi recognises the unit the conversion
-     *  factors are set accordingly. Otherwise they are set to 1.
+     * set the unit for substance quantities. If copasi recognises 
+     * the unit the conversion factors are set accordingly. 
+     * Otherwise they are set to 1.
      */
     void setQuantityUnit(const string & name);
 
@@ -443,10 +554,10 @@ class CModel
 
     /**
      * Add a metabolite to the model
-    * @param comp name of compartment to own this metabolite
-    * @param name name of metabolite
-    * @param iconc initial concentration of metabolite
-    * @param status metabolite status (see CMetab for valid values)
+     * @param comp name of compartment to own this metabolite
+     * @param name name of metabolite
+     * @param iconc initial concentration of metabolite
+     * @param status metabolite status (see CMetab for valid values)
      */
     C_INT32 addMetabolite(const string & comp,
                           const string & name,
@@ -455,27 +566,49 @@ class CModel
 
     /**
      *  Add a compartment to the model
-    *  @param name name of the new compartment
-    *  @param vol volume of the new compartment
-    *  @return C_INT32 number of compartments in the model (after insertion) or -1 if failed
+     *  @param name name of the new compartment
+     *  @param vol volume of the new compartment
+     *  @return C_INT32 number of compartments in the model (after insertion) or -1 if failed
      */
     C_INT32 addCompartment(string &name, C_FLOAT64 vol);
 
     /**
      *  Add a new rection to the model
-    *  @param r a pointer to the new reaction
-    *  @return C_INT32 number of reactions in the model (after insertion)
+     *  @param r a pointer to the new reaction
+     *  @return C_INT32 number of reactions in the model (after insertion)
      */
     C_INT32 addReaction(CReaction *r);
 
   private:
 
+    /**
+     * Set the transient concentrations and volumes according to the
+     * given state.
+     * @param const CState * state
+     */
     void setState(const CState * state);
 
+    /**
+     * Set the transient concentrations and volumes according to the
+     * given stateX in reduced model representation.
+     * @param const CState * stateX
+     */
     void setState(const CStateX * state);
 
+    /**
+     * Retrieves a state containing current transient concentrations and volumes
+     * of the model.
+     * Note: The returned object must be released after use
+     * @return CState * state.
+     */
     CState * getState() const;
 
+    /**
+     * Retrieves a state containing current transient concentrations and volumes
+     * of the model in reduce model representation.
+     * Note: The returned object must be released after use
+     * @return CStateX * stateX.
+     */
     CStateX * getStateX() const;
   };
 
