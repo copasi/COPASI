@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/26 16:53:37 $
+   $Date: 2004/11/26 20:39:43 $
    End CVS Header */
 
 #include <cmath>
@@ -165,15 +165,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       aux2[i] = (C_FLOAT64 *) malloc((dim) * sizeof(C_FLOAT64));
     }
 
-  // set mGamma to zeros
-
-  /*for (i = 0; i < (unsigned C_INT32) mGamma.numRows(); i++)
-    for (j = 0; j < (unsigned C_INT32) mGamma.numCols(); j++)
-      mGamma[i][j] = 0.0;*/
-
   // aux1 = rstoi * mDxv
   //CMatrix<C_FLOAT64> aux1; aux1.resize(mpModel->getIndMetab(), mpModel->getIntMetab());
-
   for (i = 0; i < mpModel->getIndMetab(); i++)
     for (j = 0; j < mpModel->getIntMetab(); j++)
       {
@@ -195,18 +188,13 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 
   // aux2 = aux1 * m1 (shifting indices for dgefa)
   //CMatrix<C_FLOAT64> aux2; aux2.resize(mpModel->getIndMetab()+1, mpModel->getIndMetab()+1);
-
   for (i = 0; i < mpModel->getIndMetab(); i++)
     for (j = 0; j < mpModel->getIndMetab(); j++)
       {
         aux2[i + 1][j + 1] = 0.0;
-
         for (k = 0; k < mpModel->getIntMetab(); k++)
-          if (k < mpModel->getIndMetab()) //correct different signs in L in copasi
-            aux2[i + 1][j + 1] += aux1[i][k] * mpModel->getL()(k, j); //???
-          else
-            aux2[i + 1][j + 1] -= aux1[i][k] * mpModel->getL()(k, j); //???
-      } //should be the jacobian of the reduced system?
+          aux2[i + 1][j + 1] += aux1[i][k] * mpModel->getL()(k, j); //???
+      }
 
   //debug
   std::cout << "aux2 = aux1 * L,  equals reduced Jacobian?" << std::endl;
@@ -229,13 +217,11 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       // matrix is singular
       // return now (mGamma[i][j] = 0)
       // delete matrices
-
       for (i = 0; i < dim; i++)
         {
           free((void *) aux1[i]);
           free((void *) aux2[i]);
         }
-
       free((void *) aux1);
       free((void *) aux2);
       pfree(ssipvt);
@@ -249,7 +235,6 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       aux1[i + 1][j + 1] = (i == j) ? 1.0 : 0.0;
 
   // now invert aux2 (result in aux1)
-
   for (i = 0; i < mpModel->getIndMetab(); i++)
     dgesl(aux2, mpModel->getIndMetab(), ssipvt, aux1[i + 1], 1);
 
@@ -268,12 +253,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     for (j = 0; j < mpModel->getIndMetab(); j++)
       {
         aux2[i][j] = 0.0;
-
         for (k = 0; k < mpModel->getIndMetab(); k++)
-          if (i < mpModel->getIndMetab()) //because the signs are different in copasi
-            aux2[i][j] -= (C_FLOAT64)mpModel->getL()(i, k) * aux1[k + 1][j + 1];
-          else
-            aux2[i][j] += (C_FLOAT64)mpModel->getL()(i, k) * aux1[k + 1][j + 1];
+          aux2[i][j] -= (C_FLOAT64)mpModel->getL()(i, k) * aux1[k + 1][j + 1];
       }
 
   //debug
@@ -302,7 +283,6 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       free((void *) aux1[i]);
       free((void *) aux2[i]);
     }
-
   free((void *) aux1);
   free((void *) aux2);
   pfree(ssipvt);
@@ -486,32 +466,6 @@ void CMCAMethod::CalculateTimeMCA(C_FLOAT64 res)
       }
   */
 }
-
-/**
- * Return the mSSx vector for calculate time mca
- * @return vector <C_FLOAT64>
- */ 
-/*std::vector <C_FLOAT64> CMCAMethod::getSsx()
-{
-  return mSsx;
-}*/
-
-/**
- *  Saves the SSReder of the object to a CWriteConfig object.
- *  @param pconfigbuffer reference to a CWriteConfig object.
- *  @return mFail
- *  @see mFail
- */ 
-/*C_INT32 CMCAMethod::save(CWriteConfig & configbuffer)
-{
-  C_INT32 Fail = 0;
- 
-  if ((Fail = configbuffer.setVariable("SSMCAUnscaled", "C_INT16",
-                                       &mSSReder)))
-    return Fail;
- 
-  return Fail;
-}*/
 
 bool CMCAMethod::process()
 {
