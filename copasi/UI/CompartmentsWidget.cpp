@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/22 22:14:34 $
+   $Date: 2003/10/24 21:03:36 $
    End CVS Header */
 
 /*******************************************************************
@@ -22,10 +22,10 @@
 #include <qfont.h>
 #include <qpushbutton.h>
 
-#include "MyTable.h"
-#include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "listviews.h"
+#include "MyTable.h" 
+//#include "model/CModel.h"
+#include "model/CCompartment.h" 
+//#include "listviews.h"
 #include "report/CKeyFactory.h"
 
 /**
@@ -117,21 +117,19 @@ void CompartmentsWidget::fillTable()
 
 void CompartmentsWidget::createNewObject()
 {
-  {
-    std::string name = "compartment_0";
-    int i = 0;
-    while (!dataModel->getModel()->addCompartment(name))
-      {
-        i++;
-        name = "compartment_";
-        name += QString::number(i).latin1();
-      }
-    table->setText(table->numRows() - 1, 0, name.c_str());
-    table->setNumRows(table->numRows());
-    //emit updated();
-    //emit leaf(mModel);
-    ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD);
-  }
+  std::string name = "compartment_0";
+  int i = 0;
+  while (!dataModel->getModel()->addCompartment(name))
+    {
+      i++;
+      name = "compartment_";
+      name += QString::number(i).latin1();
+    }
+  table->setText(table->numRows() - 1, 0, name.c_str());
+  table->setNumRows(table->numRows());
+  //emit updated();
+  //emit leaf(mModel);
+  ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD);
 }
 
 void CompartmentsWidget::slotTableCurrentChanged(int row,
