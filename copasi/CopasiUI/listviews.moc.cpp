@@ -147,21 +147,28 @@ QMetaObject* ListViews::staticMetaObject()
 
   static const QUParameter param_slot_2[] =
     {
+      { 0, &static_QUType_QString, 0, QUParameter::In }
+    };
+  static const QUMethod slot_2 = {"slotCompartmentTableChanged", 1, param_slot_2 };
+
+  static const QUParameter param_slot_3[] =
+    {
       { 0, &static_QUType_ptr, "QListViewItem", QUParameter::In }
     };
-  static const QUMethod slot_2 = {"slotFolderChanged", 1, param_slot_2 };
+  static const QUMethod slot_3 = {"slotFolderChanged", 1, param_slot_3 };
 
   static const QMetaData slot_tbl[] =
     {
       { "slotCompartmentSelected(const QString&)", &slot_0, QMetaData::Public },
 
       { "slotMetaboliteSelected(const QString&)", &slot_1, QMetaData::Public },
-      { "slotFolderChanged(QListViewItem*)", &slot_2, QMetaData::Protected }
+      { "slotCompartmentTableChanged(const QString&)", &slot_2, QMetaData::Public },
+      { "slotFolderChanged(QListViewItem*)", &slot_3, QMetaData::Protected }
     };
 
   metaObj = QMetaObject::new_metaobject(
               "ListViews", parentObject,
-              slot_tbl, 3,
+              slot_tbl, 4,
               0, 0,
 #ifndef QT_NO_PROPERTIES
               0, 0,
@@ -198,6 +205,10 @@ bool ListViews::qt_invoke(int _id, QUObject* _o)
       break;
 
     case 2:
+      slotCompartmentTableChanged(static_QUType_QString.get(_o + 1));
+      break;
+
+    case 3:
       slotFolderChanged((QListViewItem*)static_QUType_ptr.get(_o + 1));
       break;
 

@@ -56,40 +56,24 @@ QMetaObject* CompartmentsWidget::staticMetaObject()
 
   static const QUParameter param_slot_0[] =
     {
-      { "row", &static_QUType_int, 0, QUParameter::In },
+      { 0, &static_QUType_int, 0, QUParameter::In },
 
-      { "col", &static_QUType_int, 0, QUParameter::In },
-      { "button", &static_QUType_int, 0, QUParameter::In },
-      { "mousePos", &static_QUType_ptr, "const QPoint&", QUParameter::In }
+      { 0, &static_QUType_int, 0, QUParameter::In },
+      { 0, &static_QUType_int, 0, QUParameter::In },
+      { 0, &static_QUType_ptr, "const QPoint&", QUParameter::In }
     };
-  static const QUMethod slot_0 = {"slotTableClicked", 4, param_slot_0 };
-
-  static const QUParameter param_slot_1[] =
-    {
-      { "row", &static_QUType_int, 0, QUParameter::In },
-
-      { "col", &static_QUType_int, 0, QUParameter::In },
-      { "m", &static_QUType_int, 0, QUParameter::In },
-      { "n", &static_QUType_ptr, "const QPoint&", QUParameter::In }
-    };
-  static const QUMethod slot_1 = {"slotTableCurrentChanged", 4, param_slot_1 };
-  static const QUMethod slot_2 = {"slotTableSelectionChanged", 0, 0 };
-  static const QUMethod slot_3 = {"slotBtnOKClicked", 0, 0 };
-  static const QUMethod slot_4 = {"slotBtnCancelClicked", 0, 0 };
+  static const QUMethod slot_0 = {"slotTableCurrentChanged", 4, param_slot_0 };
+  static const QUMethod slot_1 = {"slotTableSelectionChanged", 0, 0 };
 
   static const QMetaData slot_tbl[] =
     {
-      { "slotTableClicked(int,int,int,const QPoint&)", &slot_0, QMetaData::Protected },
-
-      { "slotTableCurrentChanged(int,int,int,const QPoint&)", &slot_1, QMetaData::Protected },
-      { "slotTableSelectionChanged()", &slot_2, QMetaData::Protected },
-      { "slotBtnOKClicked()", &slot_3, QMetaData::Protected },
-      { "slotBtnCancelClicked()", &slot_4, QMetaData::Protected }
+      { "slotTableCurrentChanged(int,int,int,const QPoint&)", &slot_0, QMetaData::Public },
+      { "slotTableSelectionChanged()", &slot_1, QMetaData::Protected }
     };
 
   metaObj = QMetaObject::new_metaobject(
               "CompartmentsWidget", parentObject,
-              slot_tbl, 5,
+              slot_tbl, 2,
               0, 0,
 #ifndef QT_NO_PROPERTIES
               0, 0,
@@ -115,23 +99,11 @@ bool CompartmentsWidget::qt_invoke(int _id, QUObject* _o)
   switch (_id - staticMetaObject()->slotOffset())
     {
     case 0:
-      slotTableClicked(static_QUType_int.get(_o + 1), static_QUType_int.get(_o + 2), static_QUType_int.get(_o + 3), *((QPoint*)static_QUType_ptr.get(_o + 4)));
-      break;
-
-    case 1:
       slotTableCurrentChanged(static_QUType_int.get(_o + 1), static_QUType_int.get(_o + 2), static_QUType_int.get(_o + 3), *((QPoint*)static_QUType_ptr.get(_o + 4)));
       break;
 
-    case 2:
+    case 1:
       slotTableSelectionChanged();
-      break;
-
-    case 3:
-      slotBtnOKClicked();
-      break;
-
-    case 4:
-      slotBtnCancelClicked();
       break;
 
     default:

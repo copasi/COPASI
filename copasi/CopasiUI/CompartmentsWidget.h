@@ -30,15 +30,18 @@ class CompartmentsWidget : public QWidget
   public:
     CompartmentsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
     void loadCompartments(CModel *model);
-    void mousePressEvent(QMouseEvent * e);
+    //void mousePressEvent(QMouseEvent * e);
     void resizeEvent(QResizeEvent * re);
 
+  public slots:
+    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+
   protected slots:
-    virtual void slotTableClicked(int row, int col, int button, const QPoint & mousePos);
-    virtual void slotTableCurrentChanged(int row, int col, int m , const QPoint &n);
+    //virtual void slotTableClicked(int row, int col, int button, const QPoint & mousePos);
+
     virtual void slotTableSelectionChanged();
-    virtual void slotBtnOKClicked();
-    virtual void slotBtnCancelClicked();
+    //virtual void slotBtnOKClicked();
+    //virtual void slotBtnCancelClicked();
   };
 
 #endif

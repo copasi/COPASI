@@ -233,13 +233,11 @@ void ReactionsWidget1::loadName(QString setValue)
   LineEdit2->setText(chemEq->getChemicalEquation().c_str());
 
   LineEdit3->setText(QString::number(reactn->getFlux()));
-  /*
-    for (C_INT32 j = 0; j < noOfReactionsRows ; j++)
-      {
-        reactn = reactions[j]; */
+
   int m = -1;
   function = &reactn->getFunction();
   ComboBox1->insertItem(function->getName().c_str(), m);
+  checkBox->setChecked(FALSE);
 
   if (reactn->isReversible() == TRUE)
     {
