@@ -13,6 +13,8 @@
 #include <qlayout.h>
 #include "function/function.h"
 #include "model/model.h"
+#include "qtable.h"
+#include "MyTable.h"
 
 class QAction;
 
@@ -35,8 +37,6 @@ class QListBoxItem;
 class QFrame;
 
 class QRect;
-#include "qtable.h"
-#include "MyTable.h"
 
 class CModel;
 
@@ -59,8 +59,8 @@ class ReactionsWidget1 : public QWidget
     void loadName(QString setValue);
     int isName(QString setValue);
     void loadReactions(CModel *model);
+
     QString *Reaction1_Name;
-    //QString *chemical_reaction;
     QString name;
     QFrame* Line1;
     QFrame* Line2;
@@ -86,12 +86,10 @@ class ReactionsWidget1 : public QWidget
     QFrame* Frame4f;
     QFrame* Frame4g;
     QFrame* Frame4h;
+
     CReaction *reactn1;
     QCheckBox* checkBox;
-
     QComboBox* ComboBox1;
-    int k;
-    int m;
 
   protected slots:
     virtual void slotBtnCancelClicked();

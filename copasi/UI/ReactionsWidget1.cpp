@@ -265,23 +265,23 @@ void ReactionsWidget1::loadName(QString setValue)
   QHeader *tableHeader1 = table->horizontalHeader();
   QHeader *tableHeader2 = table->verticalHeader();
 
-  int sidey = reactn->getId2Substrates().size() +
-              reactn->getId2Products().size() +
-              reactn->getId2Modifiers().size() +
-              reactn->getId2Parameters().size();
+  int numrows = reactn->getId2Substrates().size() +
+                reactn->getId2Products().size() +
+                reactn->getId2Modifiers().size() +
+                reactn->getId2Parameters().size();
 
-  table->setNumRows(sidey);
-
+  table->setNumRows(numrows);
   cout << "NumRows: " << reactn->getId2Substrates().size() +
   reactn->getId2Products().size() +
   reactn->getId2Modifiers().size() +
   reactn->getId2Parameters().size() << endl;
-  table->ensureCellVisible(sidey + 1, 0);
+  table->ensureCellVisible(numrows + 1, 0);
 
   tableHeader1->setLabel(0, "Value");
   table->setColumnWidth (0, 200);
   unsigned int line = 0;
   unsigned int l;
+  int k;
 
   CCopasiVector < CReaction::CId2Metab > & react1z = reactn->getId2Substrates();
   const CCopasiVector < CChemEqElement > * react1 = &reactn->getChemEq().getSubstrates();
