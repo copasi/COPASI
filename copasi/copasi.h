@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/24 19:01:45 $
+   $Date: 2005/01/24 21:38:50 $
    End CVS Header */
 
 // copasi.h
@@ -47,6 +47,10 @@
 
 #if (defined SunOS || defined __CYGWIN__ || defined Darwin)
 # define C_INT64 long long int
+# ifndef LLONG_MAX
+#  define  LLONG_MAX LONG_LONG_MAX
+# endif
+# define LLONG_CONST(n) n ## LL
 # define C_INT32 long
 # define C_INT16 short
 # define C_FLOAT64 double
