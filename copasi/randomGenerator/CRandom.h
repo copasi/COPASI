@@ -6,8 +6,8 @@ using std::string;
 
 class CRandom
   {
-    friend class Cr250;
-    friend class Cmt19937;
+    //    friend class Cr250;
+    //    friend class Cmt19937;
 
     // Attributes
   public:
@@ -25,7 +25,7 @@ class CRandom
      */
     static const string TypeName[];
 
-  private:
+  protected:
     /**
      * A unsigned 32-bit integer random number.
      */
@@ -62,7 +62,7 @@ class CRandom
     C_FLOAT64 mModulusInv1;
 
     // Operations
-  private:
+  protected:
     /**
      * Default/Named constructor.
      * Seeds the random number generator with the given seed.
@@ -79,7 +79,7 @@ class CRandom
     /**
      * Create a Generator. 
      * Note: the returned object has to be released after use with delete
-     * @param CRandom::Type type
+     * @param CRandom::Type type (default Mersenne Twister)
      * @param const C_INT32 & seed (default system generated seed)
      * @return CRandom * randomGenerator
      */
