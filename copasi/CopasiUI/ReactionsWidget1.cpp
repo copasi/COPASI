@@ -192,7 +192,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
   connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
-  connect(LineEdit2, SIGNAL(textChanged(const QString &)), this, SLOT(slotLineEditChanged(const QString &)));
+  connect(LineEdit2, SIGNAL(returnPressed()), this, SLOT(slotLineEditChanged()));
   //connect(LineEdit2, SIGNAL(signal_emitted1()), this, SLOT(slotCheckBoxClicked()));
 }
 
@@ -437,91 +437,46 @@ void ReactionsWidget1::slotCheckBoxClicked()
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
   reactn1 = reactions[(string)name.latin1()];
   CChemEq * chemEq1;
+
+  chemEq1 = & reactn1->getChemEq();
+  string chemEq2 = chemEq1->getChemicalEquationConverted();
+  QString chemical_reaction = chemEq2.c_str();
+
   if (checkBox->isChecked() == FALSE)
     {
-      //reactn1->setReversible(TriFalse);
-
-      //for Chemical Reaction
-      chemEq1 = & reactn1->getChemEq();
-      string chemEq2 = chemEq1->getChemicalEquationConverted();
-      QString chemical_reaction = chemEq2.c_str();
-
       int i = chemical_reaction.find ("=", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 1, "->");
-      const string chemEq3 = chemical_reaction.latin1();
-      chemEq1->setChemicalEquation(chemEq3);
-      LineEdit2->setText(chemEq1->getChemicalEquationConverted().c_str());
-      QMessageBox::information(this, chemical_reaction, "getchemEq.......................");
-
-      ComboBox1->clear();
-      //ComboBox1->insertItem("No Values", -1);
-      //CFunctionDB *fFunctionDB=new CFunctionDB();
-      //CCopasiVectorN < CFunction > & Functions = fFunctionDB->suitableFunctions(num_substrates,num_products, TriFalse);
-      const CCopasiVectorN < CFunction > & Functions =
-        Copasi->FunctionDB.suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
-                                             reactn1->getChemEq().getSubstrates().size(),
-                                             TriFalse);
-      QStringList comboEntries;
-      QString comboEntry;
-      unsigned int temp2;
-
-      for (temp2 = 0; temp2 < Functions.size(); temp2++)
-        {
-          const CFunction *function = Functions[temp2];
-          comboEntry = function->getName().c_str();
-          comboEntries.push_back(comboEntry);
-          //ComboBox1->insertItem(function->getName().c_str(), 0);
-        }
-
-      ComboBox1->insertStringList(comboEntries, -1);
-      QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
+      const TriLogic reversible = TriFalse;
     }
-
   else
-    //if (reactn1->isReversible() == FALSE && checkBox->isChecked() == FALSE)
     {
-      //for Chemical Reaction
-      /*QString chemical_reaction = LineEdit2->text();
       int i = chemical_reaction.find ("->", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 2, "=");
-      LineEdit2->setText(chemical_reaction); */
-
-      chemEq1 = & reactn1->getChemEq();
-      string chemEq2 = chemEq1->getChemicalEquationConverted();
-      QString chemical_reaction = chemEq2.c_str();
-
-      int i = chemical_reaction.find ("->", 0, TRUE);
-      chemical_reaction = chemical_reaction.replace(i, 2, "=");
-      const string chemEq3 = chemical_reaction.latin1();
-      chemEq1->setChemicalEquation(chemEq3);
-      LineEdit2->setText(chemEq1->getChemicalEquationConverted().c_str());
-      QMessageBox::information(this, chemical_reaction, "getchemEq.......................");
-
-      ComboBox1->clear();
-
-      // CFunction *function;
-      //int m = -1;
-      //function = &reactn1->getFunction();
-      //ComboBox1->insertItem(function->getName().c_str(), m);
-      const CCopasiVectorN < CFunction > & Functions =
-        Copasi->FunctionDB.suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
-                                             reactn1->getChemEq().getSubstrates().size(),
-                                             TriTrue);
-      QStringList comboEntries;
-      QString comboEntry;
-      unsigned int temp2;
-
-      for (temp2 = 0; temp2 < Functions.size(); temp2++)
-        {
-          const CFunction *function = Functions[temp2];
-          comboEntry = function->getName().c_str();
-          comboEntries.push_back(comboEntry);
-          //ComboBox1->insertItem(function->getName().c_str(), 0);
-        }
-
-      ComboBox1->insertStringList(comboEntries, -1);
-      QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
+      const TriLogic reversible = TriTrue;
     }
+  const string chemEq3 = chemical_reaction.latin1();
+  chemEq1->setChemicalEquation(chemEq3);
+  reactn1->setChemEq(chemEq3);
+
+  LineEdit2->setText(chemEq1->getChemicalEquationConverted().c_str());
+
+  ComboBox1->clear();
+  const CCopasiVectorN < CFunction > & Functions =
+    Copasi->FunctionDB.suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
+                                         reactn1->getChemEq().getSubstrates().size(), TriFalse);
+  QStringList comboEntries;
+  QString comboEntry;
+  unsigned int temp2;
+
+  for (temp2 = 0; temp2 < Functions.size(); temp2++)
+    {
+      const CFunction *function = Functions[temp2];
+      comboEntry = function->getName().c_str();
+      comboEntries.push_back(comboEntry);
+    }
+
+  ComboBox1->insertStringList(comboEntries, -1);
+  QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
 }
 
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
@@ -692,9 +647,179 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
     }
 }
 
-/*This function is called when the "Chemical Reaction" LineEdit is changed.*/
-void ReactionsWidget1::slotLineEditChanged(const QString & chemreactn)
+void ReactionsWidget1::comboUpdate(QString p2)
 {
+  const string & p1 = p2.latin1();
+  CFunction * function = Copasi->FunctionDB.findLoadFunction(p1);
+  CFunctionParameters &functionParameters = function->getParameters();
+
+  int count_substrates = 0;
+  int count_products = 0;
+  int count_parameters = 0;
+  int count_modifiers = 0;
+
+  string usagetypes[20];
+  string substrate_name[20];
+  string product_name[20];
+  string modifier_name[20];
+  string parameter_name[20];
+  unsigned int count = 0;
+
+  //for clearing the values of the table
+  for (count = 0; count <= numrows; count++)
+    {
+      table->clearCell(count, 0);
+    }
+
+  unsigned int z = 0;
+  unsigned int line = 0;
+  QStringList comboEntries1;
+  QStringList substrates;
+  QStringList products;
+  QString chemical_reaction = LineEdit2->text();
+  //unsigned int start = 0;
+  QStringList individual_elements = QStringList::split ("+", chemical_reaction, FALSE);
+  QString all_elements = individual_elements.join (" ");
+  QStringList individual_elements1 = QStringList::split (" ", all_elements, FALSE);
+
+  for (unsigned int m = 0; m <= individual_elements1.size() - 1; m++)
+    {
+      if ((individual_elements1[m] == "->") || (individual_elements1[m] == "="))
+        {
+          m++;
+          break;
+        }
+      substrates.push_back(individual_elements1[m]);
+      //substrates[start] = individual_elements1[m];
+      // QMessageBox::information(this, substrates[start], "substrates ");
+      //start++;
+    }
+
+  // start = 0;
+  for (unsigned int n = m; n <= individual_elements1.size() - 1; n++)
+    {
+      if (individual_elements1[m] == "+")
+        {
+          n++;
+          break;
+        }
+      products.push_back(individual_elements1[n]);
+      //products[start] = individual_elements1[n];
+      //QMessageBox::information(this, products[start], "products ");
+      //start++;
+    }
+
+  for (unsigned int i = 0; i < functionParameters.size(); i++)
+    {
+      string p4 = functionParameters[i]->getUsage();
+      usagetypes[i] = p4;
+
+      if (p4 == "SUBSTRATE")
+        {
+          substrate_name[count_substrates] = functionParameters[i]->getName();
+          count_substrates++;
+        }
+      else if (p4 == "PRODUCT")
+        {
+          product_name[count_products] = functionParameters[i]->getName();
+          count_products++;
+        }
+      else if (p4 == "MODIFIER")
+        {
+          modifier_name[count_modifiers] = functionParameters[i]->getName();
+          count_modifiers++;
+        }
+
+      else if (p4 == "PARAMETER")
+        {
+          parameter_name[count_parameters] = functionParameters[i]->getName();
+          count_parameters++;
+        }
+
+      count = 0;
+      unsigned int index = count_substrates;
+      unsigned int countofsubstrates = count_substrates;
+      unsigned int countofproducts = count_products;
+      QHeader *tableHeader2 = table->verticalHeader();
+
+      for (int index1 = 0; index1 <= (count_products - 1); index1++)
+        {
+          substrate_name[index] = product_name[index1];
+          index++;
+        }
+
+      for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
+        {
+          substrate_name[index] = modifier_name[index1];
+          index++;
+        }
+
+      for (index1 = 0; index1 <= (count_parameters - 1); index1++)
+        {
+          substrate_name[index] = parameter_name[index1];
+          index++;
+        }
+
+      unsigned int length = index - 1;
+      table->setNumRows(index);
+      for (; count <= length; count++)
+        {
+          tableHeader2->setLabel(count, substrate_name[count].c_str());
+        }
+      //---------------------------------------------
+      unsigned int z = 0;
+      unsigned int k;
+      unsigned int line = 0;
+      QString temp;
+      for (k = 1; k <= countofsubstrates; k++)
+        {
+          QComboTableItem * item1 = new QComboTableItem(table, substrates, TRUE);
+          table->setItem(line, 0, item1);
+          temp = substrates[z];
+          item1->setCurrentItem(temp);
+          z++;
+          line++;
+        }
+
+      z = 0;
+      for (k = 1; k <= countofproducts; k++)
+        {
+          QComboTableItem * item1 = new QComboTableItem(table, products, TRUE);
+          table->setItem(line, 0, item1);
+          temp = products[z];
+          item1->setCurrentItem(temp);
+          z++;
+          line++;
+        }
+
+      //vector < CMetab * > metabolites = mModel->getMetabolites();
+      //  C_INT32 noOfMetabolitesRows = metabolites.size();
+      //  CMetab *metab;
+      //  QStringList comboEntries1;
+      //  for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+      // {
+      //     metab = metabolites[j];
+      // comboEntries1.push_back(metab->getName().c_str());
+      //}
+      for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
+        {
+          table->setText(line, 0, "1");
+          line++;
+        }
+
+      for (index1 = 0; index1 <= (count_parameters - 1); index1++)
+        {
+          table->setText(line, 0, "1");
+          line++;
+        }
+    }
+}
+
+/*This function is called when the "Chemical Reaction" LineEdit is changed.*/
+void ReactionsWidget1::slotLineEditChanged()
+{
+  //const QString & chemreactn
+  const QString & chemreactn = LineEdit2->text();
   const string & changed_chemical_reaction = chemreactn.latin1();
   CCopasiVectorNS < CReaction > & reactions1 = mModel->getReactions();
   CReaction *reactn1;
@@ -703,8 +828,19 @@ void ReactionsWidget1::slotLineEditChanged(const QString & chemreactn)
   chemEq1 = & reactn1->getChemEq();
   bool status;
   status = chemEq1->setChemicalEquation(changed_chemical_reaction);
+  reactn1->setChemEq(changed_chemical_reaction);
+
   //string info=(string)status;
   // QMessageBox::information(this, info, "products ");
   //connect(this, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   //emit signal_emitted1();
+
+  if (reactn1->isReversible() == TRUE)
+    {
+      checkBox->setChecked(TRUE);
+    }
+  else
+    {
+      checkBox->setChecked(FALSE);
+    }
 }
