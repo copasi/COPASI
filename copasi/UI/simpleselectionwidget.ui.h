@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/simpleselectionwidget.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/06 10:40:50 $
+   $Date: 2004/11/18 15:33:59 $
    End CVS Header */
 
 /****************************************************************************
@@ -60,17 +60,19 @@ void SimpleSelectionWidget::addButtonClicked()
     {
       CCopasiObject* object = selection->at(counter);
 
-      const std::string name = object->getCN();
-      QListViewItem* lvitem = this->findListViewItem(object);
-      //const std::string name = lvitem->text(0);
-      QListBoxText* item = new QListBoxText(this->selectedItemsBox,
-                                            FROM_UTF8(name));
-
-      this->selectedItemsBox->setSelected(item, true);
-      this->selectedObjects[item] = object;
-      if (this->mSingleSelect)
+      if (object)
         {
-          lvitem->setEnabled(false);
+          const std::string name = object->getCN();
+          QListViewItem* lvitem = this->findListViewItem(object);
+          QListBoxText* item = new QListBoxText(this->selectedItemsBox,
+                                                FROM_UTF8(name));
+
+          this->selectedItemsBox->setSelected(item, true);
+          this->selectedObjects[item] = object;
+          if (this->mSingleSelect)
+            {
+              lvitem->setEnabled(false);
+            }
         }
     }
   this->updateOutputVector();
@@ -284,6 +286,28 @@ void SimpleSelectionWidget::populateTree(CModel* model)
             new QListViewItem(item,
                               FROM_UTF8(parameter->getObjectName()));
           treeItems[parameterItem] = (CCopasiObject*)parameter;
+        }
+    }
+  if (this->itemTree->selectionMode() == QListView::NoSelection && this->mSingleSelect)
+    {
+      // see if some objects are there, if yes set to single selection
+      QListViewItemIterator it = QListViewItemIterator(this->itemTree);
+      while (it.current())
+        {
+          if (this->treeItems.find(it.current()) != this->treeItems.end())
+            {
+              this->itemTree->setSelectionMode(QListView::Single);
+              this->itemTree->setCurrentItem(it.current());
+              it.current()->setSelected(true);
+              QListViewItem* parent = it.current()->parent();
+              while (parent)
+                {
+                  parent->setOpen(true);
+                  parent = parent->parent();
+                }
+              break;
+            }
+          ++it;
         }
     }
 }
@@ -554,10 +578,10 @@ void SimpleSelectionWidget::selectObjects(std::vector<CCopasiObject * > * object
 
 void SimpleSelectionWidget::setSingleSelection(bool singleSelection)
 {
+  QListViewItem* item2Select = NULL;
   if (singleSelection && !mSingleSelect)
     {
       // clear all items from the list
-      // select the topmost list item in the tree
       if (this->selectedItemsBox->count() != 0)
         {
           QListBoxText* item = (QListBoxText*)this->selectedItemsBox->item(0);
@@ -577,7 +601,25 @@ void SimpleSelectionWidget::setSingleSelection(bool singleSelection)
               it.current()->setSelected(false);
               it.current()->setSelectable(false);
             }
+          else
+            {
+              if (!item2Select)
+                {
+                  item2Select = it.current();
+                }
+            }
           ++it;
+        }
+      if (item2Select)
+        {
+          this->itemTree->setCurrentItem(item2Select);
+          item2Select->setSelected(true);
+          QListViewItem* parent = item2Select->parent();
+          while (parent)
+            {
+              parent->setOpen(true);
+              parent = parent->parent();
+            }
         }
     }
   if (!singleSelection && mSingleSelect)
@@ -594,7 +636,14 @@ void SimpleSelectionWidget::setSingleSelection(bool singleSelection)
   this->mSingleSelect = singleSelection;
   if (this->mSingleSelect)
     {
-      this->itemTree->setSelectionMode(QListView::Single);
+      if (item2Select)
+        {
+          this->itemTree->setSelectionMode(QListView::Single);
+        }
+      else
+        {
+          this->itemTree->setSelectionMode(QListView::NoSelection);
+        }
       this->selectedItemsBox->setHidden(true);
       this->addButton->setHidden(true);
       this->deleteButton->setHidden(true);
