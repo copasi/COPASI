@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.110 $
+   $Revision: 1.111 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/03/14 04:49:00 $
+   $Author: shoops $ 
+   $Date: 2005/03/14 05:24:25 $
    End CVS Header */
 
 /*******************************************************************
@@ -32,7 +32,7 @@
 #include <qvalidator.h>
 #include <qtable.h>
 #include <qhbox.h>
-#include <QPoint.h>
+#include <qpoint.h>
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
 #include "model/CModel.h"
@@ -522,7 +522,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                          // Yes or Enter
+    case 0:                                           // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -545,7 +545,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                          // No or Escape
+    case 1:                                           // No or Escape
       break;
     }
 }
