@@ -13,11 +13,13 @@ CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
     mFunctionParameters(src.mFunctionParameters)
 {};
 
+CFunctionParameterMap::~CFunctionParameterMap() {};
+
 void CFunctionParameterMap::initializeFromFunctionParameters(const CFunctionParameters & src)
 {
   clearCallParameters();
 
-  mFunctionParameters = CFunctionParameters(src);
+  mFunctionParameters = src;
   /* TODO: may be we should copy the function parameters here. the call parameters can only be
      destroyed if we have the type information. So the CCallparameter object is save when the 
      function changes. But what about the reaction? Should it copy the function? (Then CCallParams
