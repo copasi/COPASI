@@ -19,6 +19,8 @@ COptFunction::COptFunction(const std::string & name, const CCopasiContainer * pP
   mFunctionList.clear();
   mMinList.clear();
   mMaxList.clear();
+  mMinOperList.clear();
+  mMaxOperList.clear();
 }
 
 COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer, const CCopasiContainer * pParent)
@@ -29,7 +31,9 @@ COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer,
     mParaList(src.mParaList),
     mFunctionList(src.mFunctionList),
     mMinList(src.mMinList),
-    mMaxList(src.mMaxList)
+    mMaxList(src.mMaxList),
+    mMinOperList(src.mMinOperList),
+    mMaxOperList(src.mMaxOperList)
 {
   mpMethod->setProblem(mpProblem);
 }
@@ -47,6 +51,8 @@ void COptFunction::cleanup()
   mFunctionList.clear();
   mMinList.clear();
   mMaxList.clear();
+  mMinOperList.clear();
+  mMaxOperList.clear();
 }
 
 // check if a parameter already existing inside the mParaList

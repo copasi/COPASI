@@ -25,6 +25,8 @@ class COptFunction: public CCopasiContainer
     std::vector<CCopasiObject*> mParaList;
     std::vector<std::string> mMinList;
     std::vector<std::string> mMaxList;
+    std::vector<std::string> mMinOperList;
+    std::vector<std::string> mMaxOperList;
     std::vector<CKinFunction*> mFunctionList;
 
     // check if a parameter already existing inside the mParaList
