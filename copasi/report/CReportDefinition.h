@@ -250,9 +250,9 @@ class CReport
   {
   private:
     CReportDefinition *rReportDef;
-    //    CReport *rReport;
     const std::string * rTarget;
     bool rAppend;
+    //std::string reportKey;
 
   public:
     /**

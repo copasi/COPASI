@@ -12,6 +12,7 @@
 #include "utilities/CGlobals.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
+#include "CKeyFactory.h"
 #include "CReportDefinition.h"
 #include "utilities/CMethodParameter.h"
 
@@ -180,6 +181,7 @@ void CReportObject::setName(const std::string * name)
 CReport::CReport():
     rReportDef(new CReportDefinition),
     rAppend(true)
+    // reportKey(CKeyFactory::add("Report", this))
 {}
 
 CReport::~CReport()
