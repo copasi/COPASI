@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:50:39 $
+   $Date: 2004/09/09 13:55:32 $
    End CVS Header */
 
 /**
@@ -137,7 +137,7 @@ class CCompartment : public CCopasiContainer
      *  @param const CMetab & metabolite;
      *  @return bool success
      */
-    bool addMetabolite(const CMetab & metabolite);
+    bool createMetabolite(const CMetab & metabolite);
 
     /**
      *  Adds a metabolite to the compartment. Only the concentration is taken from
@@ -160,9 +160,10 @@ class CCompartment : public CCopasiContainer
     /**
      *  Sets the initial volume of this compartment.
      *  @param volume the volume of the compartment.
+     *  @param adapt if true the particle numbers of the metabolites are adapted
      *  @see mVolume
      */
-    void setInitialVolume(C_FLOAT64 volume);
+    void setInitialVolume(C_FLOAT64 volume, bool adapt = true);
 
     /**
      *  Sets the volume of this compartment.

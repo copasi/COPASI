@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:10:59 $
+   $Date: 2004/09/09 13:55:32 $
    End CVS Header */
 
 // CCompartment
@@ -155,12 +155,23 @@ bool CCompartment::setName(const std::string & name)
   return setObjectName(name);
 }
 
-void CCompartment::setInitialVolume(C_FLOAT64 volume)
+void CCompartment::setInitialVolume(C_FLOAT64 volume, bool adapt)
 {
   mInitialVolume = volume;
 
   /* This has to be moved to the state */
   setVolume(volume);
+
+  if (adapt)
+    {
+      C_INT32 i, imax = mMetabolites.size();
+      for (i = 0; i < imax; ++i)
+        {
+          //update particle numbers
+          mMetabolites[i]->setInitialConcentration(mMetabolites[i]->getInitialConcentration());
+          mMetabolites[i]->setConcentration(mMetabolites[i]->getConcentration());
+        }
+    }
 }
 
 void CCompartment::setVolume(C_FLOAT64 volume)
@@ -173,7 +184,7 @@ void CCompartment::setVolume(C_FLOAT64 volume)
 
 /* Note: the metabolite stored in mMetabolites has definetly mpCompartment set.
    In the case the compartment is part of a model also mpModel is set. */
-bool CCompartment::addMetabolite(const CMetab & metabolite)
+bool CCompartment::createMetabolite(const CMetab & metabolite)
 {
   CMetab * pMetab = new CMetab(metabolite);
   return addMetabolite(pMetab);
