@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 18:19:03 $
+   $Date: 2003/10/30 20:06:53 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -77,9 +77,9 @@ class CCopasiParameterGroup: public CCopasiParameter
         if (type == GROUP)
           {
             CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
-            if (!pParameter->isValidValue(value))
+            if (!tmp->isValidValue(value))
               {
-                delete pParameter;
+                delete tmp;
                 return false;
               }
 
