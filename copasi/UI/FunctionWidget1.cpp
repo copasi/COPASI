@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/11/07 20:32:44 $
+   $Date: 2003/11/12 17:31:48 $
    End CVS Header */
 
 /**********************************************************************
@@ -398,10 +398,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                 // The user clicked the Retry again button or pressed Enter
+            case 0:                  // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                 // The user clicked the Quit or pressed Escape
+            case 1:                  // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -604,22 +604,40 @@ bool FunctionWidget1::saveToFunction()
     }
   CFunctionParameters &functParam = func->getParameters();
   CFunctionParameters &pfunctParam = pFunction->getParameters();
+  CFunctionParameter::DataType Type;
+  unsigned C_INT32 index;
 
-  /*for (int i=0; i < pfunctParam.size(); i++)
-  {
-   // check if function parameter exists in pFunctionParameter
-   CFunctionParameter *p = functParam[pfunctParam[i]->getName()];
-   if (p)  // match found
-   //if (functParam[pfunctParam[i]->getName()])
-   {
-    // update usage and type
-    p->setUsage(functParam[i]->getUsage());
-    //functParam[pfunctParam[i]->getName()]->setUsage(functParam[i]->getUsage());
-   } else {// match not found
-    changed = true;
-    functParam.add(*pfunctParam[i]);
-   }
-  }*/
+  for (int i = 0; i < pfunctParam.size(); i++)
+    {
+      // check if function parameter exists in pFunctionParameter
+      if ((index = functParam.findParameterByName(pfunctParam[i]->getName(),
+                   Type)) != C_INVALID_INDEX)
+        // match found
+        {
+          // update usage and type
+          pfunctParam[index]->setUsage(functParam[i]->getUsage());
+          //functParam[pfunctParam[i]->getName()]->setUsage(functParam[i]->getUsage());
+        } else
+        {// match not found
+          changed = true;
+          functParam.add(*pfunctParam[i]);
+        }
+    }
+  // remove extra parameters existing in functParam, compare functParam to pfunctParam
+  if (pfunctParam.size() != functParam.size())
+    {
+      for (int j = 0; j < functParam.size(); j++)
+        {
+          if ((index = pfunctParam.findParameterByName(functParam[j]->getName(),
+                       Type)) == C_INVALID_INDEX)
+            // the lines below occurs if new functionParameter does not exist in pfunctParam
+            {
+              changed = true;
+              // remove the extra parameter in functParam
+              functParam.remove(functParam[j]->getName());
+            }
+        }
+    }
   if (func->getDescription() != pFunction->getDescription())
     {
       changed = true;
