@@ -22,7 +22,7 @@ class CReaction
   {
     // Attributes
 
-  private:
+  public:
 
     class CId2Metab
       {
@@ -180,6 +180,7 @@ class CReaction
         void * getValueAddr();
       };
 
+  private:
     /**
      *  The name of the reaction
      */
