@@ -69,6 +69,10 @@ SOURCE=.\CCopasiObjectName.cpp
 
 SOURCE=.\CKeyFactory.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CReportDefinition.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -92,6 +96,10 @@ SOURCE=.\CCopasiObjectReference.h
 # Begin Source File
 
 SOURCE=.\CKeyFactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReportDefinition.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
