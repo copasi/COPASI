@@ -17,6 +17,8 @@
 class CScanProblem;
 class CSteadyStateTask;
 class CTrajectory;
+class Random;
+class Cr250;
 
 class CScanMethod
   {
@@ -25,7 +27,8 @@ class CScanMethod
      *  A pointer to the trajectory problem.
      */
     CScanProblem * scanProblem;
-
+    CRandom * pRandomGenerator;
+    Cr250* pCr250Generator;
     // Operations
   protected:
     /**
@@ -34,6 +37,11 @@ class CScanMethod
     CScanMethod();
 
   public:
+    /*
+     Intialized all parameters insidethe Scan Parameter Matrix,
+    */
+
+    void InitScan(void);
 
     /**
        * calculate function for ScanMethod
