@@ -1462,25 +1462,38 @@ void CModel::getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives)
   return;
 }
 
+unsigned C_INT32 CModel::unitCompare(const std::string & name,
+                                     const std::string * units,
+                                     const unsigned C_INT32 unique)
+{
+  unsigned C_INT32 i, j;
+
+  for (i = 0; units[i] != ""; i++)
+    for (j = units[i].length(); j >= unique || j == units[i].length(); j--)
+      if (units[i].substr(0, j) == name.substr(0, j)) return i;
+
+  return i;
+}
+
 bool CModel::setVolumeUnit(const std::string & name)
 {
   bool success = true;
-  unsigned C_INT32 i = 0;
-  CModel::VolumeUnit Unit;
+  CModel::VolumeUnit Unit =
+    (CModel::VolumeUnit) unitCompare(name, VolumeUnitName, 2);
 
-  while (QuantityUnitName[i].substr(0, name.length()) !=
-         name.substr(0, QuantityUnitName[i].length()) &&
-         QuantityUnitName[i] != "") i++;
-
-  if (QuantityUnitName[i] == "")
+  switch (Unit)
     {
+    case l:
+    case ml:
+    case microl:
+    case nl:
+    case pl:
+    case fl:
+      break;
+
+    default:
       Unit = ml;
       success = false;
-    }
-  else
-    {
-      Unit = (CModel::VolumeUnit) i;
-      success = true;
     }
 
   mVolumeUnit = VolumeUnitName[Unit];
@@ -1489,27 +1502,25 @@ bool CModel::setVolumeUnit(const std::string & name)
 }
 
 std::string CModel::getVolumeUnit() const
-  {return mVolumeUnit;}
+{return mVolumeUnit;}
 
 bool CModel::setTimeUnit(const std::string & name)
 {
   bool success = true;
-  unsigned C_INT32 i = 0;
-  CModel::TimeUnit Unit;
+  CModel::TimeUnit Unit =
+    (CModel::TimeUnit) unitCompare(name, TimeUnitName, 1);
 
-  while (QuantityUnitName[i].substr(0, name.length()) !=
-         name.substr(0, QuantityUnitName[i].length()) &&
-         QuantityUnitName[i] != "") i++;
-
-  if (QuantityUnitName[i] == "")
+  switch (Unit)
     {
+    case s:
+    case m:
+    case h:
+    case d:
+      break;
+
+    default:
       Unit = s;
       success = false;
-    }
-  else
-    {
-      Unit = (CModel::TimeUnit) i;
-      success = true;
     }
 
   mTimeUnit = TimeUnitName[Unit];
@@ -1518,29 +1529,13 @@ bool CModel::setTimeUnit(const std::string & name)
 }
 
 std::string CModel::getTimeUnit() const
-  {return mTimeUnit;}
+{return mTimeUnit;}
 
 bool CModel::setQuantityUnit(const std::string & name)
 {
   bool success = true;
-  unsigned C_INT32 i = 0;
-  CModel::QuantityUnit Unit;
-
-  while (QuantityUnitName[i].substr(0, name.length()) !=
-         name.substr(0, QuantityUnitName[i].length()) &&
-         QuantityUnitName[i] != "") i++;
-  if (QuantityUnitName[i] == "")
-    {
-      Unit = mMol;
-      success = false;
-    }
-  else
-    {
-      Unit = (CModel::QuantityUnit) i;
-      success = true;
-    }
-
-  mQuantityUnit = QuantityUnitName[Unit];
+  CModel::QuantityUnit Unit =
+    (CModel::QuantityUnit) unitCompare(name, QuantityUnitName, 2);
 
   switch (Unit)
     {
@@ -1569,9 +1564,16 @@ bool CModel::setQuantityUnit(const std::string & name)
       break;
 
     case number:
-    default:
       mQuantity2NumberFactor = 1.0;
+      break;
+
+    default:
+      Unit = number;
+      mQuantity2NumberFactor = 1.0;
+      success = false;
     }
+
+  mQuantityUnit = QuantityUnitName[Unit];
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 

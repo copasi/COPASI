@@ -791,6 +791,17 @@ class CModel : public CCopasiContainer
      * Initialize the contained CCopasiObjects
      */
     void initObjects();
+
+    /**
+     * Find the unit the string refers to.
+     * @param const std::string & name 
+     * @param const std::string * units (list of valid units)
+     * @param const unsigned C_INT32 unique (minimum characters being unique)
+     * @return unsigned C_INT32 unit
+     */
+    static unsigned C_INT32 unitCompare(const std::string & name,
+                                        const std::string * units,
+                                        const unsigned C_INT32 unique);
   };
 
 #endif // CModel
