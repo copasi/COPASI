@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/05 16:13:04 $
+   $Author: jpahle $ 
+   $Date: 2004/10/06 16:33:13 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.41 2004/10/05 16:13:04 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.42 2004/10/06 16:33:13 jpahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,7 +32,7 @@
 #include <qmessagebox.h>
 
 #include "TableDefinition1.h"
-#include "ObjectBrowser.h"
+#include "ObjectBrowserDialog.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinition.h"
@@ -372,7 +372,7 @@ void TableDefinition1::tabButtonClicked()
 
 void TableDefinition1::addButtonClicked()
 {
-  ObjectBrowser* pSelectedObjects = new ObjectBrowser();
+  ObjectBrowserDialog* pSelectedObjects = new ObjectBrowserDialog();
   std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
   pSelectedObjects->setOutputVector(pSelectedVector);
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionItemWidget.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 20:26:16 $
+   $Author: jpahle $ 
+   $Date: 2004/10/06 16:29:21 $
    End CVS Header */
 
 /********************************************************
@@ -27,7 +27,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qcolor.h>
 
 #include "FunctionItemWidget.h"
-#include "ObjectBrowser.h"
+#include "ObjectBrowserDialog.h"
 #include "copasi.h"
 #include "report/CCopasiObject.h"
 #include "report/CCopasiObjectName.h"
@@ -363,7 +363,7 @@ void FunctionItemWidget::slotButton1()
 
 void FunctionItemWidget::slotButtonItems()
 {
-  ObjectBrowser* pSelectedObjects = new ObjectBrowser();
+  ObjectBrowserDialog* pSelectedObjects = new ObjectBrowserDialog();
   std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
   pSelectedObjects->setOutputVector(pSelectedVector);
 

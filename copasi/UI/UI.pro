@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.48 $ $Author: gauges $ $Date: 2004/10/04 18:50:55 $  
+# $Revision: 1.49 $ $Author: jpahle $ $Date: 2004/10/06 16:29:19 $  
 ######################################################################
 
 include(../common.pri)
@@ -143,8 +143,10 @@ HEADERS += \
            MyLineEdit.h \
            MyTable.h \
            listviews.h \
-           ObjectBrowser.h \
+#           ObjectBrowser.h \
+           ObjectBrowserDialog.h \
            ObjectBrowserItem.h \
+           ObjectBrowserWidget.h \
            objectdebug.h \
            OptimizationItemWidget.h \
            OptimizationWidget.h \
@@ -210,8 +212,10 @@ SOURCES += \
            MoietyWidget1.cpp \
            MyLineEdit.cpp \
            MyTable.cpp \
-           ObjectBrowser.cpp \
+#           ObjectBrowser.cpp \
+           ObjectBrowserDialog.cpp \
            ObjectBrowserItem.cpp \
+           ObjectBrowserWidget.cpp \
            objectdebug.cpp \
            OptimizationItemWidget.cpp \
            OptimizationWidget.cpp \

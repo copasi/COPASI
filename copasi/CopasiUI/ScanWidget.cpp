@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.169 $
+   $Revision: 1.170 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 18:28:18 $
+   $Author: jpahle $ 
+   $Date: 2004/10/06 16:29:22 $
    End CVS Header */
 
 /********************************************************
@@ -45,7 +45,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "ScanItemWidget.h"
-#include "ObjectBrowser.h"
+#include "ObjectBrowserDialog.h"
 #include "ObjectBrowserItem.h"
 #include "SteadyStateWidget.h"
 #include "TrajectoryWidget.h"
@@ -307,7 +307,7 @@ ScanWidget::~ScanWidget()
 
 void ScanWidget::addButtonClicked()
 {
-  ObjectBrowser* pSelectedObjects = new ObjectBrowser();
+  ObjectBrowserDialog* pSelectedObjects = new ObjectBrowserDialog();
   std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
   pSelectedObjects->setOutputVector(pSelectedVector);
 

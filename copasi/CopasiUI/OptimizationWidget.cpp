@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/20 07:34:27 $
+   $Author: jpahle $ 
+   $Date: 2004/10/06 16:29:21 $
    End CVS Header */
 
 /********************************************************
@@ -35,7 +35,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "OptimizationWidget.h"
 #include "copasi.h"
 #include "listviews.h"
-#include "ObjectBrowser.h"
+#include "ObjectBrowserDialog.h"
 #include "utilities/CGlobals.h"
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
@@ -446,7 +446,7 @@ bool OptimizationWidget::loadFromExpression(COptFunction*)
 
 void OptimizationWidget::addButtonClicked()
 {
-  ObjectBrowser* pSelectedObjects = new ObjectBrowser();
+  ObjectBrowserDialog* pSelectedObjects = new ObjectBrowserDialog();
   std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
   pSelectedObjects->setOutputVector(pSelectedVector);
 

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/04 13:47:32 $
+   $Author: jpahle $ 
+   $Date: 2004/10/06 16:29:22 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.19 2004/10/04 13:47:32 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.20 2004/10/06 16:29:22 jpahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,7 +31,7 @@
 #include "plotwindow.h"
 #include "CPlotSpecification.h"
 #include "report/CKeyFactory.h"
-#include "CopasiUI/ObjectBrowser.h"
+#include "CopasiUI/ObjectBrowserDialog.h"
 #include "model/CMetabNameInterface.h"
 #include "CopasiUI/DataModelGUI.h" 
 //temporary
@@ -187,8 +187,8 @@ void PlotWidget1::addCurveTab(const std::string & title,
 
 void PlotWidget1::addCurveGroupBox()
 {
-  ObjectBrowser* pBrowser1 = new ObjectBrowser();
-  ObjectBrowser* pBrowser2 = new ObjectBrowser();
+  ObjectBrowserDialog* pBrowser1 = new ObjectBrowserDialog();
+  ObjectBrowserDialog* pBrowser2 = new ObjectBrowserDialog();
 
   std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
   pBrowser1->setOutputVector(pVector1);
