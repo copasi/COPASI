@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/04 20:30:04 $
+   $Author: gasingh $ 
+   $Date: 2003/11/22 01:17:52 $
    End CVS Header */
 
 /**
@@ -185,6 +185,8 @@ class CCompartment : public CCopasiContainer
      *  @return bool success
      */
     bool addMetabolite(CMetab * metabolite);
+
+    bool removeMetabolite(CMetab *metabolite);
 
     /**
      *  Sets the name of this compartment.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 22:15:22 $
+   $Author: gasingh $ 
+   $Date: 2003/11/22 01:17:52 $
    End CVS Header */
 
 // CCompartment
@@ -186,8 +186,19 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
   return success;
 }
 
+bool CCompartment::removeMetabolite(CMetab * pMetabolite)
+{
+  unsigned C_INT32 index = mMetabolites.CCopasiVector < CMetab >::getIndex(pMetabolite);
+  if (index == C_INVALID_INDEX)
+    return false;
+
+  mMetabolites.CCopasiVector < CMetab >::remove(index);
+
+  return true;
+}
+
 bool CCompartment::isValidName(const std::string & name) const
-  {return (name.find_first_of(" ") == std::string::npos);}
+{return (name.find_first_of(" ") == std::string::npos);}
 
 void CCompartment::initObjects()
 {
