@@ -246,7 +246,9 @@ bool CReaction::isReversible() const { return (mReversible == TRUE); }
 void CReaction::setName(const string & name) {mName = name; }
 
 void CReaction::setChemEq(const string & chemEq)
-{mChemEq.setChemicalEquation(chemEq); }
+{
+  mReversible = mChemEq.setChemicalEquation(chemEq);
+}
 void CReaction::setFlux(C_FLOAT64 flux) {mFlux = flux; }
 
 void CReaction::setReversible(bool reversible)

@@ -88,8 +88,9 @@ class CChemEq
     /**
      *  Set the chemical equation
      *  @param "const string &" chemicalEquation (in any form even mixed)
+    *  @return "bool" returns reversibility of reaction (TRUE if reversible)
      */
-    void setChemicalEquation(const string & chemicalEquation);
+    bool setChemicalEquation(const string & chemicalEquation);
 
     /**
      *  Retrieves the chemical equation with multipliers.
@@ -183,8 +184,9 @@ class CChemEq
      *  This function splits the chemical equation into a left and a right
      *  @param "string &" left (substrate side)
      *  @param "string &" right (product side)
+    *  @return "bool" returns reversibility of reaction (TRUE if reversible)
      */
-    void splitChemEq(string & left, string & right) const;
+    bool splitChemEq(string & left, string & right) const;
 
     /**
      *  Writes the chemical equation in a form with multipliers.

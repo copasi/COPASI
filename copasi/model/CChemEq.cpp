@@ -42,14 +42,15 @@ void CChemEq::compile(CCopasiVectorN < CCompartment > & compartments)
   compileChemEqElements(mBalances, compartments);
 }
 
-void CChemEq::setChemicalEquation(const string & chemicalEquation)
+bool CChemEq::setChemicalEquation(const string & chemicalEquation)
 {
   string Substrates, Products;
+  bool reversible;
 
   cleanup();
   mChemicalEquation = chemicalEquation;
 
-  splitChemEq(Substrates, Products);
+  reversible = splitChemEq(Substrates, Products);
 
   setChemEqElements(mSubstrates, Substrates);
 
@@ -60,6 +61,7 @@ void CChemEq::setChemicalEquation(const string & chemicalEquation)
 
   writeChemicalEquation();
   writeChemicalEquationConverted();
+  return reversible;
 }
 
 const string & CChemEq::getChemicalEquation() const
@@ -165,10 +167,11 @@ void CChemEq::cleanupChemEqElements(vector < CChemEqElement * > & elements)
 
 #endif // XXXX
 
-void CChemEq::splitChemEq(string & left, string & right) const
+bool CChemEq::splitChemEq(string & left, string & right) const
   {
     string::size_type equal = string::npos;
-    string Separator[] = {"->", "=>", "=", ""};
+    bool reversibility;
+    string Separator[] = {"->", "=", ""};
     unsigned C_INT32 i = 0;
 
     while (*Separator != "" && equal == string::npos)
@@ -177,11 +180,15 @@ void CChemEq::splitChemEq(string & left, string & right) const
     if (equal == string::npos)
       fatalError();
 
+    if (mChemicalEquation.substr(equal, 1) == "=")
+      reversibility = true;
+    else
+      reversibility = false;
     right = mChemicalEquation.substr(equal + (Separator[--i].length()));
 
     left = mChemicalEquation.substr(0, equal);
 
-    return;
+    return reversibility;
   }
 
 void CChemEq::compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
