@@ -87,5 +87,10 @@ public:
    */
   bool isReversible() const;
 
+  /**
+   *  Remove the first entry from the reaction vector
+   */
+  void truncate();
+  
 };
 #endif // COPASI_CTableauLine

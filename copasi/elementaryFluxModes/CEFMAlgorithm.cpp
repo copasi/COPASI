@@ -34,7 +34,7 @@ bool CEFMAlgorithm::calculate(const vector < vector < C_FLOAT64 > > & stoi,
   mCurrentTableau = new CTableauMatrix(stoi, reversibleNumber);
   
   /* Do the iteration */
-  for (Step = 0; Step < MaxSteps; Step++) calculateNextTableau(Step);
+  for (Step = 0; Step < MaxSteps; Step++) calculateNextTableau();
 
   /* Build the elementary flux modes to be returned */
   buildFluxModes(fluxModes);
@@ -45,7 +45,7 @@ bool CEFMAlgorithm::calculate(const vector < vector < C_FLOAT64 > > & stoi,
   return Success;
 }
 
-void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
+void CEFMAlgorithm::calculateNextTableau()
 {
   list < const CTableauLine * >::iterator a;
   list < const CTableauLine * >::iterator b;
@@ -58,7 +58,7 @@ void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
   a = mCurrentTableau->getFirst();
   
   while (a != mCurrentTableau->getEnd())
-    if ((*a)->getReaction(step) == 0.0)
+    if ((*a)->getReaction(0) == 0.0)
       {
         /* We have to make sure that "a" points to the next element in the */
         /* list after the removal of itself */
@@ -91,16 +91,16 @@ void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
       
       while (b != mCurrentTableau->getEnd())
         {
-          mb = (*a)->getReaction(step);
+          mb = (*a)->getReaction(0);
 
           /* We make sure that "mb" is positive */
           if (mb < 0.0)
             {
               mb *= -1;
-              ma = (*b)->getReaction(step);
+              ma = (*b)->getReaction(0);
             }
           else
-            ma = - (*b)->getReaction(step);
+            ma = - (*b)->getReaction(0);
               
           /* The multiplier "ma" for irreversible reactions must be positive */
           if ((*a)->isReversible() || ma > 0.0)

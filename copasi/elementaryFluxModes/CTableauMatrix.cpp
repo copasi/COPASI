@@ -59,6 +59,11 @@ CTableauMatrix::getEnd()
 
 void CTableauMatrix::addLine(const CTableauLine * src)
 {
+  /* The first element in reaction is always 0 so we can remove it */
+  /* This really breaks the "const" but it is the only place tableau */
+  /* lines are changed */
+  const_cast <CTableauLine *>(src)->truncate();
+  
   /* First we check whether we have a valid new flux mode */
   if (isValid(src))
     {

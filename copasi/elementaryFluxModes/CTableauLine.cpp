@@ -40,7 +40,7 @@ CTableauLine::CTableauLine(const C_FLOAT64 & m1,
   else
     mReversible = TRUE;
   
-  for (i=0, mReaction.resize(imax); i<imax; i++)
+  for (i=1, mReaction.resize(imax); i<imax; i++)
     mReaction[i] = m1 * src1.mReaction[i] + m2 * src2.mReaction[i];
   
   for (j=0, mFluxMode.resize(jmax); j<jmax; j++)
@@ -70,6 +70,13 @@ const vector < C_FLOAT64 > & CTableauLine::getFluxMode() const
 bool CTableauLine::isReversible() const
 {
   return mReversible;
+}
+
+void CTableauLine::truncate()
+{
+  vector < C_FLOAT64 >::iterator i = mReaction.begin();
+
+  mReaction.erase(i, i+1);
 }
 
 #ifdef XXXX
