@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/19 02:00:35 $
+   $Date: 2005/03/16 21:14:03 $
    End CVS Header */
 
 /**
@@ -27,16 +27,6 @@
 /** @dia:route CCopasiObject; v,60.054,22.7537,47.9048,40.5521,50.8343 */
 class CCopasiContainer: public CCopasiObject
   {
-    friend CCopasiObject::CCopasiObject(const std::string & name,
-                                        const CCopasiContainer * pParent,
-                                        const std::string & type,
-                                        const unsigned C_INT32 & flag);
-
-    friend CCopasiObject::CCopasiObject(const CCopasiObject & src,
-                                        const CCopasiContainer * pParent);
-
-    friend CCopasiObject::~CCopasiObject();
-
     //Attributes
   public:
     static CCopasiContainer * Root;
