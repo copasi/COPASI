@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.90 $ $Author: shoops $ $Date: 2005/03/02 17:59:04 $  
+# $Revision: 1.91 $ $Author: shoops $ $Date: 2005/03/17 03:08:34 $  
 ######################################################################
 
 TEMPLATE = app
@@ -95,6 +95,10 @@ contains(BUILD_OS, SunOS) {
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 
   LIBS += -lICE -ldl
+
+  release {
+    distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
+  }
 }  
 
 contains(BUILD_OS, Darwin){
@@ -107,6 +111,9 @@ contains(BUILD_OS, Darwin){
   
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 
+  release {
+    distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
+  }
 }
 
 # Input
