@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:22 $
+   $Author: ssahle $ 
+   $Date: 2004/05/06 19:59:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -117,6 +117,9 @@ void PlotWidget::createNewObject()
     }
   table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
   table->setNumRows(table->numRows());
+
+  (*dataModel->getPlotSpecVectorAddr())[dataModel->getPlotSpecVectorAddr()->size() - 1]->createDefaultPlot(dataModel->getModel());
+
   ListViews::notify(ListViews::PLOT, ListViews::ADD);
 }
 
@@ -153,15 +156,15 @@ void PlotWidget::slotBtnOKClicked()
   if (dataModel->getPlotSpecVectorAddr())
     {
       //for testing only
-      std::ifstream datafile("datafile");
+      //std::ifstream datafile("datafile");
       //datafile.open("datafile", std::ios::in);
 
-      dataModel->getPlotSpecVectorAddr()->setNumColumns(3);
-      dataModel->getPlotSpecVectorAddr()->setSourceStream(&datafile);
-      dataModel->getPlotSpecVectorAddr()->initPlottingFromStream();
+      //dataModel->getPlotSpecVectorAddr()->setNumColumns(3);
+      //dataModel->getPlotSpecVectorAddr()->setSourceStream(&datafile);
+      //dataModel->getPlotSpecVectorAddr()->initPlottingFromStream();
 
-      dataModel->getPlotSpecVectorAddr()->doPlotting();
-      dataModel->getPlotSpecVectorAddr()->doPlotting();
+      //dataModel->getPlotSpecVectorAddr()->doPlotting();
+      //dataModel->getPlotSpecVectorAddr()->doPlotting();
     }
 }
 
