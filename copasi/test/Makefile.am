@@ -14,6 +14,7 @@ test_LIBS = \
 	../optimization \
 	../randomGenerator \
 	../report \
+	../scan \
 	../steadystate \
 	../trajectory \
 	../utilities
@@ -35,6 +36,7 @@ LIBS = \
 	-Wl,-loutput \
 	-Wl,-lreport \
 	-Wl,-loptimization \
+	-Wl,-lscan \
 	-Wl,-lsteadystate \
 	-Wl,-ltrajectory \
 	-Wl,-lrandomGenerator \
@@ -42,7 +44,7 @@ LIBS = \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
+	-llapack -lblas -lF77 -lfl
 
 #  Use this for standard clapack
 #	-llapack -lblas -lF77 -lfl
@@ -59,6 +61,7 @@ LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
 	-L../optimization \
 	-L../randomGenerator \
         -L../report \
+        -L../scan \
         -L../steadystate \
         -L../trajectory \
         -L../utilities

@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.21 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.23 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -249,6 +249,7 @@ test_LIBS = \
 	../optimization \
 	../randomGenerator \
 	../report \
+	../scan \
 	../steadystate \
 	../trajectory \
 	../utilities
@@ -271,6 +272,7 @@ LIBS = \
 	-Wl,-loutput \
 	-Wl,-lreport \
 	-Wl,-loptimization \
+	-Wl,-lscan \
 	-Wl,-lsteadystate \
 	-Wl,-ltrajectory \
 	-Wl,-lrandomGenerator \
@@ -278,7 +280,7 @@ LIBS = \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
+	-llapack -lblas -lF77 -lfl
 
 
 #  Use this for standard clapack
@@ -296,6 +298,7 @@ LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
 	-L../optimization \
 	-L../randomGenerator \
 	-L../report \
+	-L../scan \
 	-L../steadystate \
 	-L../trajectory \
 	-L../utilities
