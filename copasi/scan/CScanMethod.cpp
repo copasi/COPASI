@@ -78,7 +78,7 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
      this parameter into the vector.
   */ 
   //switch(gridtype[distribution])
-  switch ((int)scanProblem->getScanItemParameter(i, "gridType"))
+  switch ((int)scanProblem->getScanItemParameter(s, "gridType"))
     {
     case SD_UNIFORM:
     case SD_GAUSS:
