@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CProgressBar.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/11/17 17:26:42 $
+   $Author: ssahle $ 
+   $Date: 2005/02/02 17:50:43 $
    End CVS Header */
 
 #include <qprogressdialog.h>
@@ -26,10 +26,12 @@ bool CProgressBar::init(C_INT32 maxSteps, const std::string & text, bool cancelB
     {
       if (cancelButton)
         mpWidget = new QProgressDialog(FROM_UTF8(text), "Stop", maxSteps,
-                                       NULL, "progress_bar", FALSE);
+                                       NULL, "progress_bar", TRUE,
+                                       (Qt::WStyle_StaysOnTop));
       else
         mpWidget = new QProgressDialog(FROM_UTF8(text), 0, maxSteps,
-                                       NULL, "progress_bar", FALSE);
+                                       NULL, "progress_bar", TRUE,
+                                       Qt::WStyle_StaysOnTop);
     }
   else
     {
