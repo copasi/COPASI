@@ -1,8 +1,8 @@
 #ifndef COPASI_utilities
 #define COPASI_utilities
 
-#include <string>
-#include <stdio.h>
+#include <string> 
+// #include <stdio.h>
 #include <stdarg.h>
 
 #define INITIALTEXTSIZE 1024

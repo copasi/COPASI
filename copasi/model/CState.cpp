@@ -10,6 +10,7 @@
 #include "CModel.h"
 #include "utilities/CGlobals.h"
 #include "utilities/CVector.h"
+#include "utilities/utility.h"
 
 /*************************/
 /* Code for class CState */

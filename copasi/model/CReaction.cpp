@@ -8,12 +8,16 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include <algorithm>
+#include <stdio.h>
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "CReaction.h"
 #include "CCompartment.h"
 #include "utilities/utilities.h"
+#include "utilities/CCopasiMessage.h"
+#include "utilities/CCopasiException.h"
+#include "utilities/utility.h"
 
 #ifdef WIN32
 #define min _cpp_min

@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 
 #define  COPASI_TRACE_CONSTRUCTION
 
