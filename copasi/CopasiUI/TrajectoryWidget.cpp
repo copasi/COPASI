@@ -106,9 +106,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   nStartTime->setText(trUtf8(""));
 
   ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-  ComboBox1->insertItem(trUtf8("deterministic"));
-  ComboBox1->insertItem(trUtf8("stochastic"));
-  ComboBox1->insertItem(trUtf8("hybrid"));
+  //  ComboBox1->insertItem(trUtf8("deterministic"));
+  //  ComboBox1->insertItem(trUtf8("stochastic"));
+  //  ComboBox1->insertItem(trUtf8("hybrid"));
   ComboBox1->setGeometry(QRect(101, 210, 281, 21));
 
   nStepSize = new QLineEdit(this, "nStepSize");
@@ -258,6 +258,9 @@ void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)
       pItem = new QTableItem (parameterTable, QTableItem::Always, substrate);
       parameterTable->setItem(i, 0, pItem);
     }
+
+  for (i = 0; strlen(trajectorymethod->TypeName[i].c_str()) > 0; i++)
+    ComboBox1->insertItem(trUtf8(trajectorymethod->TypeName[i].c_str()));
 
   ComboBox1->setCurrentItem (trajectorymethod->getTypeEnum());
 
