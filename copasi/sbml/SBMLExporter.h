@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/24 09:09:43 $
+   $Date: 2004/09/30 15:26:26 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -59,48 +59,48 @@ class SBMLExporter
      ** This method takes a pointer to a copasi CCompartment object and creates
      ** a SBML Compartment. The pointer to the SBML Comprtment is returned.
      */
-    Compartment createSBMLCompartmentFromCCompartment(const CCompartment* copasiCompartment);
+    Compartment* createSBMLCompartmentFromCCompartment(const CCompartment* copasiCompartment);
 
     /**
      ** This method takes a pointer to a copasi CMetab object and creates a SBML 
      ** Species object. The pointer to the species object is returned.
      */
-    Species createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolite);
+    Species* createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolite);
 
     /**
      ** This method takes a pointer to a copasi CReaction object and creates an
      ** SBML Reaction object. The pointer to the created reaction object is
      ** returned.
      */
-    Reaction createSBMLReactionFromCReaction(const CReaction* reaction);
+    Reaction* createSBMLReactionFromCReaction(const CReaction* reaction);
 
     /**
      ** This method takes a pointer to a copasi CReation object and creates a
      ** SBML KineticLaw object from the kintik function of the copasi reaction
      ** object. The pointer to the created KineticLaw is returned.
      */
-    KineticLaw createSBMLKineticLawFromCReaction(const CReaction* copasiReaction);
+    KineticLaw* createSBMLKineticLawFromCReaction(const CReaction* copasiReaction);
 
     /**
      ** This method takes a string that specifies the time unit used in the
      ** copasi model and returns a pointer to the corresponding SBML
      ** UnitDefinition object.
      */
-    UnitDefinition createSBMLTimeUnitDefinitionFromCopasiTimeUnit(const std::string u);
+    UnitDefinition* createSBMLTimeUnitDefinitionFromCopasiTimeUnit(const std::string u);
 
     /**
      ** This method takes a string that specifies the substance unit used in the
      ** copasi model and returns a pointer to the corresponding SBML
      ** UnitDefinition object.
      */
-    UnitDefinition createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(const std::string u);
+    UnitDefinition* createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(const std::string u);
 
     /**
      ** This method takes a string that specifies the volume unit used in the
      ** copasi model and returns a pointer to the corresponding SBML
      ** UnitDefinition object.
      */
-    UnitDefinition createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(const std::string u);
+    UnitDefinition* createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(const std::string u);
 
     /**
      ** This method creates an ASTNode tree where all the species specified in

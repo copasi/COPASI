@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/24 21:05:07 $
+   $Author: gauges $ 
+   $Date: 2004/09/30 15:26:26 $
    End CVS Header */
 
 #include "copasi.h"
@@ -114,8 +114,8 @@ Model* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
   */
   if (!(copasiModel->getVolumeUnit() == "l"))
     {
-      UnitDefinition uDef = this->createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(copasiModel->getVolumeUnit());
-      sbmlModel->addUnitDefinition(uDef);
+      UnitDefinition* uDef = this->createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(copasiModel->getVolumeUnit());
+      sbmlModel->addUnitDefinition(*uDef);
     }
   /* if the copasi time unit does not correspond to the default SBML time
   ** unit, we have to create a UnitDefinition and make it the default in the
@@ -123,8 +123,8 @@ Model* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
   */
   if (!(copasiModel->getTimeUnit() == "s"))
     {
-      UnitDefinition uDef = this->createSBMLTimeUnitDefinitionFromCopasiTimeUnit(copasiModel->getTimeUnit());
-      sbmlModel->addUnitDefinition(uDef);
+      UnitDefinition* uDef = this->createSBMLTimeUnitDefinitionFromCopasiTimeUnit(copasiModel->getTimeUnit());
+      sbmlModel->addUnitDefinition(*uDef);
     }
   /* if the copasi quantity unit does not correspond to the default SBML
   ** substance
@@ -133,27 +133,27 @@ Model* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
   */
   if (!(copasiModel->getQuantityUnit() == "Mol"))
     {
-      UnitDefinition uDef = this->createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(copasiModel->getQuantityUnit());
-      sbmlModel->addUnitDefinition(uDef);
+      UnitDefinition* uDef = this->createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(copasiModel->getQuantityUnit());
+      sbmlModel->addUnitDefinition(*uDef);
     }
   /* create all compartments */
   unsigned int counter;
   for (counter = 0; counter < copasiModel->getCompartments().size(); counter++)
     {
-      Compartment sbmlCompartment = this->createSBMLCompartmentFromCCompartment(copasiModel->getCompartments()[counter]);
-      sbmlModel->addCompartment(sbmlCompartment);
+      Compartment* sbmlCompartment = this->createSBMLCompartmentFromCCompartment(copasiModel->getCompartments()[counter]);
+      sbmlModel->addCompartment(*sbmlCompartment);
     }
   /* create all metabolites */
   for (counter = 0; counter < copasiModel->getMetabolites().size(); counter++)
     {
-      Species sbmlSpecies = this->createSBMLSpeciesFromCMetab(copasiModel->getMetabolites()[counter]);
-      sbmlModel->addSpecies(sbmlSpecies);
+      Species* sbmlSpecies = this->createSBMLSpeciesFromCMetab(copasiModel->getMetabolites()[counter]);
+      sbmlModel->addSpecies(*sbmlSpecies);
     }
   /* create all reactions */
   for (counter = 0; counter < copasiModel->getReactions().size(); counter++)
     {
-      Reaction sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter]);
-      sbmlModel->addReaction(sbmlReaction);
+      Reaction* sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter]);
+      sbmlModel->addReaction(*sbmlReaction);
     }
   return sbmlModel;
 }
@@ -163,53 +163,54 @@ Model* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
  ** copasi model and returns a pointer to the corresponding SBML
  ** UnitDefinition object.
  */
-UnitDefinition SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(const std::string u)
+UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(const std::string u)
 {
-  UnitDefinition uDef("time");
-  Unit unit;
+  UnitDefinition* uDef = new UnitDefinition("time");
+  uDef->setId("TimeUnitDefinition");
+  Unit* unit;
 
   if (u == "d")
     {
-      unit = Unit(UNIT_KIND_SECOND, 1, 0);
-      unit.setMultiplier(86400);
+      unit = new Unit(UNIT_KIND_SECOND, 1, 0);
+      unit->setMultiplier(86400);
     }
   else if (u == "h")
     {
-      unit = Unit(UNIT_KIND_SECOND, 1, 0);
-      unit.setMultiplier(3600);
+      unit = new Unit(UNIT_KIND_SECOND, 1, 0);
+      unit->setMultiplier(3600);
     }
   else if (u == "m")
     {
-      unit = Unit(UNIT_KIND_SECOND, 1, 0);
-      unit.setMultiplier(60);
+      unit = new Unit(UNIT_KIND_SECOND, 1, 0);
+      unit->setMultiplier(60);
     }
 
   else if (u == "ms")
     {
-      unit = Unit(UNIT_KIND_SECOND, 1, -3);
+      unit = new Unit(UNIT_KIND_SECOND, 1, -3);
     }
   else if (u == "\xc2\xb5s")
     {
-      unit = Unit(UNIT_KIND_SECOND, 1, -6);
+      unit = new Unit(UNIT_KIND_SECOND, 1, -6);
     }
   else if (u == "ns")
     {
-      unit = Unit(UNIT_KIND_SECOND, 1, -9);
+      unit = new Unit(UNIT_KIND_SECOND, 1, -9);
     }
   else if (u == "ps")
     {
-      unit = Unit(UNIT_KIND_SECOND, 1, -12);
+      unit = new Unit(UNIT_KIND_SECOND, 1, -12);
     }
   else if (u == "fs")
     {
-      unit = Unit(UNIT_KIND_SECOND, 1, -15);
+      unit = new Unit(UNIT_KIND_SECOND, 1, -15);
     }
   else
     {
       throw StdException("Error. Unknown copasi time unit.");
     }
 
-  uDef.addUnit(unit);
+  uDef->addUnit(*unit);
   return uDef;
 }
 
@@ -218,39 +219,40 @@ UnitDefinition SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(cons
  ** copasi model and returns a pointer to the corresponding SBML
  ** UnitDefinition object.
  */
-UnitDefinition SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(const std::string u)
+UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(const std::string u)
 {
-  UnitDefinition uDef("substance");
-  Unit unit;
+  UnitDefinition* uDef = new UnitDefinition("substance");
+  uDef->setId("SubstanceUnitDefinition");
+  Unit* unit;
   if (u == "mMol")
     {
-      unit = Unit(UNIT_KIND_MOLE, 1, -3);
+      unit = new Unit(UNIT_KIND_MOLE, 1, -3);
     }
   else if (u == "\xc2\xb5Mol")
     {
-      unit = Unit(UNIT_KIND_MOLE, 1, -6);
+      unit = new Unit(UNIT_KIND_MOLE, 1, -6);
     }
   else if (u == "nMol")
     {
-      unit = Unit(UNIT_KIND_MOLE, 1, -9);
+      unit = new Unit(UNIT_KIND_MOLE, 1, -9);
     }
   else if (u == "pMol")
     {
-      unit = Unit(UNIT_KIND_MOLE, 1, -12);
+      unit = new Unit(UNIT_KIND_MOLE, 1, -12);
     }
   else if (u == "fMol")
     {
-      unit = Unit(UNIT_KIND_MOLE, 1, -15);
+      unit = new Unit(UNIT_KIND_MOLE, 1, -15);
     }
   else if (u == "#")
     {
-      unit = Unit(UNIT_KIND_ITEM, 1, 1);
+      unit = new Unit(UNIT_KIND_ITEM, 1, 1);
     }
   else
     {
       throw StdException("Error. Unknown copasi quantity unit.");
     }
-  uDef.addUnit(unit);
+  uDef->addUnit(*unit);
   return uDef;
 }
 
@@ -259,39 +261,40 @@ UnitDefinition SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantity
  ** copasi model and returns a pointer to the corresponding SBML
  ** UnitDefinition object.
  */
-UnitDefinition SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(const std::string u)
+UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(const std::string u)
 {
-  UnitDefinition uDef("volume");
-  Unit unit;
+  UnitDefinition* uDef = new UnitDefinition("volume");
+  uDef->setId("VolumeUnitDefinition");
+  Unit* unit;
   if (u == "ml")
     {
-      unit = Unit(UNIT_KIND_LITER, 1, -3);
+      unit = new Unit(UNIT_KIND_LITER, 1, -3);
     }
   else if (u == "\xc2\xb5l")
     {
-      unit = Unit(UNIT_KIND_LITER, 1, -6);
+      unit = new Unit(UNIT_KIND_LITER, 1, -6);
     }
   else if (u == "nl")
     {
-      unit = Unit(UNIT_KIND_LITER, 1, -9);
+      unit = new Unit(UNIT_KIND_LITER, 1, -9);
     }
   else if (u == "pl")
     {
-      unit = Unit(UNIT_KIND_LITER, 1, -12);
+      unit = new Unit(UNIT_KIND_LITER, 1, -12);
     }
   else if (u == "fl")
     {
-      unit = Unit(UNIT_KIND_LITER, 1, -15);
+      unit = new Unit(UNIT_KIND_LITER, 1, -15);
     }
   else if (u == "m3")
     {
-      unit = Unit(UNIT_KIND_METER, 3, 1);
+      unit = new Unit(UNIT_KIND_METER, 3, 1);
     }
   else
     {
       throw StdException("Error. Unknown copasi volume unit.");
     }
-  uDef.addUnit(unit);
+  uDef->addUnit(*unit);
   return uDef;
 }
 
@@ -299,14 +302,14 @@ UnitDefinition SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(
  ** This method takes a pointer to a copasi CCompartment object and creates
  ** a SBML Compartment. The pointer to the SBML Comprtment is returned.
  */
-Compartment SBMLExporter::createSBMLCompartmentFromCCompartment(const CCompartment* copasiCompartment)
+Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(const CCompartment* copasiCompartment)
 {
-  Compartment sbmlCompartment;
-  sbmlCompartment.setId(copasiCompartment->getKey().c_str());
-  sbmlCompartment.setName(copasiCompartment->getObjectName().c_str());
-  sbmlCompartment.setSpatialDimensions(3);
-  sbmlCompartment.setConstant(1);
-  sbmlCompartment.setVolume(copasiCompartment->getInitialVolume());
+  Compartment* sbmlCompartment = new Compartment();
+  sbmlCompartment->setId(copasiCompartment->getKey().c_str());
+  sbmlCompartment->setName(copasiCompartment->getObjectName().c_str());
+  sbmlCompartment->setSpatialDimensions(3);
+  sbmlCompartment->setConstant(1);
+  sbmlCompartment->setVolume(copasiCompartment->getInitialVolume());
   return sbmlCompartment;
 }
 
@@ -314,15 +317,15 @@ Compartment SBMLExporter::createSBMLCompartmentFromCCompartment(const CCompartme
  ** This method takes a pointer to a copasi CMetab object and creates a SBML 
  ** Species object. The pointer to the species object is returned.
  */
-Species SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolite)
+Species* SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolite)
 {
-  Species sbmlSpecies;
-  sbmlSpecies.setId(copasiMetabolite->getKey().c_str());
-  sbmlSpecies.setName(copasiMetabolite->getObjectName().c_str());
-  sbmlSpecies.setBoundaryCondition(false);
-  sbmlSpecies.setConstant(copasiMetabolite->getStatus() == CMetab::METAB_FIXED);
-  sbmlSpecies.setCompartment(copasiMetabolite->getCompartment()->getKey().c_str());
-  sbmlSpecies.setInitialConcentration(copasiMetabolite->getInitialConcentration());
+  Species* sbmlSpecies = new Species();
+  sbmlSpecies->setId(copasiMetabolite->getKey().c_str());
+  sbmlSpecies->setName(copasiMetabolite->getObjectName().c_str());
+  sbmlSpecies->setBoundaryCondition(false);
+  sbmlSpecies->setConstant(copasiMetabolite->getStatus() == CMetab::METAB_FIXED);
+  sbmlSpecies->setCompartment(copasiMetabolite->getCompartment()->getKey().c_str());
+  sbmlSpecies->setInitialConcentration(copasiMetabolite->getInitialConcentration());
   return sbmlSpecies;
 }
 
@@ -331,46 +334,46 @@ Species SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolite
  ** SBML Reaction object. The pointer to the created reaction object is
  ** returned.
  */
-Reaction SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copasiReaction)
+Reaction* SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copasiReaction)
 {
   /* create a new reaction object */
-  Reaction sbmlReaction;
-  sbmlReaction.setId(copasiReaction->getKey().c_str());
-  sbmlReaction.setName(copasiReaction->getObjectName().c_str());
-  sbmlReaction.setReversible(copasiReaction->isReversible());
+  Reaction* sbmlReaction = new Reaction();
+  sbmlReaction->setId(copasiReaction->getKey().c_str());
+  sbmlReaction->setName(copasiReaction->getObjectName().c_str());
+  sbmlReaction->setReversible(copasiReaction->isReversible());
   const CChemEq chemicalEquation = copasiReaction->getChemEq();
   /* Add all substrates */
   unsigned int counter;
   for (counter = 0; counter < chemicalEquation.getSubstrates().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getSubstrates()[counter];
-      SpeciesReference sRef;
-      sRef.setSpecies(element->getMetaboliteKey().c_str());
-      sRef.setStoichiometry(element->getMultiplicity());
-      sRef.setDenominator(1);
-      sbmlReaction.addReactant(sRef);
+      SpeciesReference* sRef = new SpeciesReference();
+      sRef->setSpecies(element->getMetaboliteKey().c_str());
+      sRef->setStoichiometry(element->getMultiplicity());
+      sRef->setDenominator(1);
+      sbmlReaction->addReactant(*sRef);
     }
   /* Add all products */
   for (counter = 0; counter < chemicalEquation.getProducts().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getProducts()[counter];
-      SpeciesReference sRef;
-      sRef.setSpecies(element->getMetaboliteKey().c_str());
-      sRef.setStoichiometry(element->getMultiplicity());
-      sRef.setDenominator(1);
-      sbmlReaction.addProduct(sRef);
+      SpeciesReference* sRef = new SpeciesReference();
+      sRef->setSpecies(element->getMetaboliteKey().c_str());
+      sRef->setStoichiometry(element->getMultiplicity());
+      sRef->setDenominator(1);
+      sbmlReaction->addProduct(*sRef);
     }
   /* Add all modifiers */
   for (counter = 0; counter < chemicalEquation.getModifiers().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getModifiers()[counter];
-      ModifierSpeciesReference sRef;
-      sRef.setSpecies(element->getMetaboliteKey().c_str());
-      sbmlReaction.addModifier(sRef);
+      ModifierSpeciesReference* sRef = new ModifierSpeciesReference();
+      sRef->setSpecies(element->getMetaboliteKey().c_str());
+      sbmlReaction->addModifier(*sRef);
     }
   /* create the kinetic law */
-  KineticLaw kLaw = this->createSBMLKineticLawFromCReaction(copasiReaction);
-  sbmlReaction.setKineticLaw(kLaw);
+  KineticLaw* kLaw = this->createSBMLKineticLawFromCReaction(copasiReaction);
+  sbmlReaction->setKineticLaw(*kLaw);
   return sbmlReaction;
 }
 
@@ -379,10 +382,10 @@ Reaction SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copasiRe
  ** SBML KineticLaw object from the kintik function of the copasi reaction
  ** object. The pointer to the created KineticLaw is returned.
  */
-KineticLaw SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copasiReaction)
+KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copasiReaction)
 {
   /* create a new KineticLaw */
-  KineticLaw kLaw;
+  KineticLaw* kLaw = new KineticLaw();;
   /* if the copasi CFunction specifies a mass-action kinetic */
   if (copasiReaction->getFunction().getType() == CFunction::MassAction)
     {
@@ -395,10 +398,10 @@ KineticLaw SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copa
       ASTNode* parameterNode1 = new ASTNode(AST_NAME);
       std::string parameterName1 = cMassAction.getParameters()[0]->getObjectName();
       parameterNode1->setName(parameterName1.c_str());
-      Parameter parameter1;
-      parameter1.setId(parameterName1.c_str());
-      parameter1.setValue(copasiReaction->getParameterValue(parameterName1));
-      kLaw.addParameter(parameter1);
+      Parameter* parameter1 = new Parameter();
+      parameter1->setId(parameterName1.c_str());
+      parameter1->setValue(copasiReaction->getParameterValue(parameterName1));
+      kLaw->addParameter(*parameter1);
 
       forwardNode->addChild(parameterNode1);
       forwardNode->addChild(this->createTimesTree(copasiReaction->getChemEq().getSubstrates()));
@@ -413,10 +416,10 @@ KineticLaw SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copa
           ASTNode* parameterNode2 = new ASTNode(AST_NAME);
           std::string parameterName2 = cMassAction.getParameters()[2]->getObjectName();
           parameterNode2->setName(parameterName2.c_str());
-          Parameter parameter2;
-          parameter2.setId(parameterName2.c_str());
-          parameter2.setValue(copasiReaction->getParameterValue(parameterName2));
-          kLaw.addParameter(parameter2);
+          Parameter* parameter2 = new Parameter();
+          parameter2->setId(parameterName2.c_str());
+          parameter2->setValue(copasiReaction->getParameterValue(parameterName2));
+          kLaw->addParameter(*parameter2);
           backwardNode->addChild(parameterNode2);
 
           backwardNode->addChild(this->createTimesTree(copasiReaction->getChemEq().getProducts()));
@@ -463,7 +466,7 @@ KineticLaw SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copa
                 }
             }
         }
-      kLaw.setMath(forwardNode);
+      kLaw->setMath(forwardNode);
     }
   /* if the copasi CFunction does not specify a mass-action kinetic, it is a
   ** CKinFunction */
@@ -509,7 +512,7 @@ KineticLaw SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copa
             }
         }
 
-      kLaw.setMath(node);
+      kLaw->setMath(node);
       /* add the parameters */
       unsigned int counter;
       for (counter = 0; counter < copasiReaction->getFunctionParameters().size(); counter++)
@@ -517,13 +520,13 @@ KineticLaw SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copa
           const CFunctionParameter* para = copasiReaction->getFunctionParameters()[counter];
           if (para->getUsage() == "PARAMETER")
             {
-              Parameter sbmlPara;
+              Parameter* sbmlPara = new Parameter();
 
               std::string parameterKey = copasiReaction->getParameterMappings()[counter][0];
 
-              sbmlPara.setId(para->getObjectName().c_str());
-              sbmlPara.setValue(copasiReaction->getParameterValue(para->getObjectName()));
-              kLaw.addParameter(sbmlPara);
+              sbmlPara->setId(para->getObjectName().c_str());
+              sbmlPara->setValue(copasiReaction->getParameterValue(para->getObjectName()));
+              kLaw->addParameter(*sbmlPara);
             }
         }
     }
