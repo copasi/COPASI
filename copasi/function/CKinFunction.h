@@ -15,7 +15,6 @@
 class CKinFunction : public CFunction
   {
     // Attributes
-
   private:
     /**
      *  The vector of nodes of the binary tree of the function
@@ -30,7 +29,6 @@ class CKinFunction : public CFunction
     unsigned C_INT32 mNidx;
 
     // Operations
-
   public:
     /**
      *  Default constructor

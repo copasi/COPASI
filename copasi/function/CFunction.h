@@ -37,7 +37,6 @@ class CFunction
     };
 
     // Attributes
-
   private:
 
     /**
@@ -73,7 +72,6 @@ class CFunction
     CFunctionParameters mParameters;
 
     // Operations
-
   public:
 
     /**
@@ -186,5 +184,4 @@ class CFunction
     virtual C_FLOAT64
     calcValue(const CCallParameters & callParameters) const;
   };
-
 #endif // COPASI_CFunction

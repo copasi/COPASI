@@ -105,7 +105,8 @@ C_INT32 CKinFunction::parse()
   CKinFunctionFlexLexer Scanner((istream *) &buffer);
 
   // add the root node
-  mNodes.add(CNodeK(N_ROOT, N_NOP));
+  CNodeK * pNode = new CNodeK(N_ROOT, N_NOP);
+  mNodes.add(pNode);
 
   // call the lexical analyser successively until done
 
@@ -116,66 +117,45 @@ C_INT32 CKinFunction::parse()
       switch (i)
         {
         case N_IDENTIFIER:
-          mNodes.add(CNodeK(Scanner.YYText()));
+        case N_OBJECT:
+          pNode = new CNodeK(Scanner.YYText());
+          pNode->setType(i);
+          mNodes.add(pNode);
           break;
 
         case N_NUMBER:
-          mNodes.add(CNodeK(atof(Scanner.YYText())));
+          pNode = new CNodeK(atof(Scanner.YYText()));
+          mNodes.add(pNode);
           break;
 
         case '+':
-          mNodes.add(CNodeK(N_OPERATOR, '+'));
-          break;
-
         case '-':
-          mNodes.add(CNodeK(N_OPERATOR, '-'));
-          break;
-
         case '*':
-          mNodes.add(CNodeK(N_OPERATOR, '*'));
-          break;
-
         case '/':
-          mNodes.add(CNodeK(N_OPERATOR, '/'));
-          break;
-
         case '^':
-          mNodes.add(CNodeK(N_OPERATOR, '^'));
-          break;
-
         case '(':
-          mNodes.add(CNodeK(N_OPERATOR, '('));
-          break;
-
         case ')':
-          mNodes.add(CNodeK(N_OPERATOR, ')'));
+          pNode = new CNodeK(N_OPERATOR, i);
+          mNodes.add(pNode);
           break;
 
         case N_LOG:
-          mNodes.add(CNodeK(N_FUNCTION, N_LOG));
-          break;
-
         case N_LOG10:
-          mNodes.add(CNodeK(N_FUNCTION, N_LOG10));
-          break;
-
         case N_EXP:
-          mNodes.add(CNodeK(N_FUNCTION, N_EXP));
-          break;
-
         case N_SIN:
-          mNodes.add(CNodeK(N_FUNCTION, N_SIN));
-          break;
-
         case N_COS:
-          mNodes.add(CNodeK(N_FUNCTION, N_COS));
+          pNode = new CNodeK(N_FUNCTION, i);
+          mNodes.add(pNode);
           break;
 
-        case N_NOP:          // this is an error
+        case N_NOP:           // this is an error
           mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
           return 0;
+
+        default:
+          break;
         }
     }
 
@@ -344,7 +324,7 @@ CNodeK * CKinFunction::parseExpression(C_INT16 priority)
         {
           mNodes[op]->setLeft(lhs);
           mNodes[op]->setRight(rhs);
-          lhs = mNodes[op] ;
+          lhs = mNodes[op];
         }
     }
 
@@ -371,8 +351,10 @@ CNodeK * CKinFunction::parsePrimary()
       return NULL;
     }
 
-  if (mNodes[mNidx]->isNumber() ||
-      mNodes[mNidx]->isIdentifier())
+  t = mNodes[mNidx]->getType();
+  if (t == N_IDENTIFIER ||
+      t == N_OBJECT ||
+      t == N_NUMBER)
     {
       t = 'K';
     }

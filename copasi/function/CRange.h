@@ -14,11 +14,9 @@
 /**
  *
  */
-
 class CRange
   {
     //Attributes
-
   public:
     /**
      *  Constants which may be used specifying a Range
@@ -41,7 +39,6 @@ class CRange
     unsigned C_INT32 mHigh;
 
     // Operations
-
   public:
     /**
      *  Default Constructor

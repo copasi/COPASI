@@ -41,6 +41,8 @@ COS   return N_COS;
 ")"   return ')';
 
 {ID}  return N_IDENTIFIER;
+
+\<.*\>  return N_OBJECT;
      
 [ \t\r\n]+ /* eat up whitespace */
      

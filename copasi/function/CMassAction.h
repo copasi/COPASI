@@ -13,11 +13,9 @@
 class CMassAction : public CFunction
   {
     // Attributes
-
   private:
 
     // Operations
-
   public:
     /**
      *  Default constructor
