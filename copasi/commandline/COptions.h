@@ -73,14 +73,14 @@ class COptions
 
           virtual ~COptionValueTemplate()
           {
-            pdelete((optionType *) mpValue)
+            if (mpValue) {delete (optionType *) mpValue; mpValue = NULL;}
             DESTRUCTOR_TRACE;
           }
         };
 
     //Attributes
   private:
-    static map< std::string, COptionValue * > mOptions;
+    static std::map< std::string, COptionValue * > mOptions;
 
     //Operations
   public:

@@ -1,5 +1,7 @@
 #define COPASI_TRACE_CONSTRUCTION
 
+#include "copasi.h"
+
 #ifdef WIN32
 # include <windows.h>
 # include <winbase.h>
@@ -14,13 +16,11 @@
 #include <sstream>
 #include <errno.h>
 
-#include "copasi.h"
-
 #include "utilities/CCopasiMessage.h"
 #include "COptionParser.h"
 #include "COptions.h"
 
-map< std::string, COptions::COptionValue * > COptions::mOptions;
+std::map< std::string, COptions::COptionValue * > COptions::mOptions;
 
 COptions::COptions()
 {CONSTRUCTOR_TRACE;}
@@ -28,7 +28,7 @@ COptions::COptions()
 COptions::~COptions()
 {
   std::map< std::string, COptionValue * >::iterator begin;
-  std::map< std::string, COptionValue * >::const_iterator end;
+  std::map< std::string, COptionValue * >::iterator end;
 
   for (begin = mOptions.begin(), end = mOptions.end();
        begin != end; begin++)
@@ -74,7 +74,13 @@ void COptions::init(C_INT argc, char *argv[])
 
   /* Parse the user's configuration file */
   ConfigFile = Home + ".copasirc";
-  Parser->parse(ConfigFile.c_str());
+  try
+    {
+      Parser->parse(ConfigFile.c_str());
+    }
+
+  catch (copasi::option_error &e)
+  {}
 
   /* Parse the commandline specified file */
   if (!compareValue("ConfigFile", (std::string) ""))
@@ -88,7 +94,7 @@ void COptions::init(C_INT argc, char *argv[])
 
   const copasi::options &Options = Parser->get_options();
 
-  /* Create manually for each option except CopasiDir and ConfigFile:
+  /* Create manually for each option except CopasiDir, ConfigFile and Home:
      setValue("OptionId", Options.OptionID); */
 }
 
@@ -103,23 +109,37 @@ std::string COptions::getEnvironmentVariable(const std::string & name)
 std::string COptions::getCopasiDir(void)
 {
   std::string CopasiDir;
-#ifdef WIN32
-  size_t PrgNameSize = 1024
-                       char * PrgName = new char[PrgNameSize];
-  if (!GetModuleFileName(NULL, PrgName, PrgNameSize)) fatalError();
 
-  CopasiDir = PrgName;
-  delete [] PrgName;
-
-  /* Get rid of the executable */
-  CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
-
-  /* Get rid of bin or sbin */
-  CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
-
-  setValue("CopasiDir", CopasiDir);
-#else
   CopasiDir = getEnvironmentVariable("COPASIDIR");
+
+#ifdef WIN32
+  if (CopasiDir == "")
+    {
+      size_t PrgNameSize = 256;
+      char * PrgName = new char[PrgNameSize];
+
+      while (PrgNameSize == GetModuleFileName(NULL, PrgName, PrgNameSize))
+        {
+          if (GetLastError() != ERROR_ALREADY_EXISTS)
+            {
+              *PrgName = '\0';
+              break;
+            }
+
+          delete [] PrgName;
+          PrgNameSize *= 2;
+          PrgName = new char[PrgNameSize];
+        }
+
+      CopasiDir = PrgName;
+      delete [] PrgName;
+
+      /* Get rid of the executable */
+      CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
+
+      /* Get rid of bin or sbin */
+      CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
+    }
 #endif // WIN32
 
   if (CopasiDir == "")
@@ -137,7 +157,7 @@ std::string COptions::getCopasiDir(void)
 
 std::string COptions::getPWD(void)
 {
-  size_t PWDSize = 64;
+  size_t PWDSize = 1;
   char * PWD = NULL;
 
   while (!(PWD = getcwd(NULL, PWDSize)))
@@ -146,18 +166,34 @@ std::string COptions::getPWD(void)
       PWDSize *= 2;
     }
 
+  std::string pwd;
   if (PWD)
-    return (std::string) PWD;
+    {
+      pwd = PWD;
+      free(PWD);
+    }
   else
-    return "";
+    pwd = "";
+
+  return pwd;
 }
 
 std::string COptions::getHome(void)
 {
   std::string Home;
-#ifdef WIN32
-#else
+
   Home = getEnvironmentVariable("HOME");
+
+#ifdef WIN32
+  if (Home == "")
+    {
+      Home = getEnvironmentVariable("APPDATA");
+      if (Home != "")
+        {
+          Home += "\\copasi";
+          CreateDirectory(Home.c_str(), NULL);
+        }
+    }
 #endif // WIN32
 
   if (Home == "")
@@ -170,5 +206,6 @@ std::string COptions::getHome(void)
 
       throw copasi::option_error(error.str());
     }
+
   return Home;
 }
