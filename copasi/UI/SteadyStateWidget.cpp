@@ -377,3 +377,9 @@ bool SteadyStateWidget::update(ListViews::ObjectType objectType, ListViews::Acti
     }
   return true;
 }
+
+bool SteadyStateWidget::leave()
+{
+  //let the user confirm?
+  return true;
+}

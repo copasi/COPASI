@@ -63,8 +63,8 @@ class ScanWidget : public CopasiWidget
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanWidget();
-    //    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    //    virtual bool leave();
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
     //    void loadScan(CModel *model);

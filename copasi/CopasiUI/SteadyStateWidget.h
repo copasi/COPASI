@@ -35,7 +35,7 @@ class SteadyStateWidget : public CopasiWidget
 
   public:
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    //    virtual bool leave();
+    virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
     SteadyStateWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);

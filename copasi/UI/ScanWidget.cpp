@@ -712,6 +712,12 @@ bool ScanWidget::enter(const std::string & key)
   return true;
 }
 
+bool ScanWidget::leave()
+{
+  //let the user confirm?
+  return true;
+}
+
 ScanScrollView::ScanScrollView(QWidget* parent, const char* name, WFlags fl)
     : QScrollView(parent, name, fl)
 {
