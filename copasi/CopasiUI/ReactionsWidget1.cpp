@@ -28,6 +28,7 @@
 #include "function/CFunctionParameter.h"
 #include "utilities/CGlobals.h"
 #include "utilities/CMethodParameter.h"
+#include "parametertable.h"
 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
@@ -126,10 +127,10 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   ReactionsWidget1Layout->addMultiCellWidget(Line4, 3, 3, 0, 3);
 
-  table = new QTable(this, "table");
-  table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Value"));
-  table->setNumRows(0);
-  table->setNumCols(1);
+  table = new ParameterTable(this, "table");
+  //table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Value"));
+  //table->setNumRows(0);
+  //table->setNumCols(1);
 
   ReactionsWidget1Layout->addMultiCellWidget(table, 7, 9, 1, 3);
 
@@ -170,11 +171,15 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
-  connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(const QString &)));
+  connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
+
   connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
-  connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
+
+  //connect(table, SIGNAL(signalChanged(int, int, Qstring)), this, SLOT(slotTableChanged(int, int, QString)));
+
+  connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(const QString &)));
   connect(this, SIGNAL(new_reaction()), (ListViews*)parent, SLOT(slotNewReaction()));
   connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadReactionsNodes(CModel*)));
   connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
@@ -187,12 +192,12 @@ ReactionsWidget1::~ReactionsWidget1()
     class to basically choose the right widget to display   */
 int ReactionsWidget1::isName(QString setValue)
 {
-  if (mModel == NULL)
+  if (mpModel == NULL)
     {
       return 0;
     }
 
-  if (mModel->getReactions().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
+  if (mpModel->getReactions().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
     {
       loadName(setValue);
       name = setValue;
@@ -207,7 +212,7 @@ void ReactionsWidget1::loadReactions(CModel *model)
 {
   if (model != NULL)
     {
-      mModel = model;
+      mpModel = model;
     }
 }
 
@@ -215,64 +220,19 @@ void ReactionsWidget1::loadReactions(CModel *model)
    clicked in the tree   */
 void ReactionsWidget1::loadName(QString setValue)
 {
-  if (mModel == NULL)
+  name = setValue;
+
+  if (mpModel == NULL)
     {
       return;
     }
 
-  name = setValue;
+  // this loads the reaction into a CReactionInterface object.
+  // the gui works on this object and later writes back the changes to the reaction
+  mRi.initFromReaction(setValue.latin1(), *mpModel);
 
-  CReaction *reactn;
-  reactn = mModel->getReactions()[setValue.latin1()];
-
-  TriLogic reversible;
-  if (reactn->isReversible() == false)
-    reversible = TriFalse;
-  else
-    reversible = TriTrue;
-
-  const CCopasiVector< CFunction > Functions
-  = Copasi->pFunctionDB->suitableFunctions(reactn->getChemEq().getSubstrates().size(),
-      reactn->getChemEq().getProducts().size(),
-      reversible);
-  const CChemEq * chemEq;
-
-  ComboBox1->clear();
-
-  LineEdit1->setText(reactn->getName().c_str());
-
-  chemEq = & reactn->getChemEq();
-  LineEdit2->setText(chemEq->getChemicalEquationConverted().c_str());
-
-  LineEdit3->setText(QString::number(reactn->getFlux()));
-
-  QStringList comboEntries;
-  QString comboEntry;
-  unsigned int temp2;
-
-  for (temp2 = 0; temp2 < Functions.size(); temp2++)
-    comboEntries.push_back(Functions[temp2]->getName().c_str());
-
-  ComboBox1->insertStringList(comboEntries, -1);
-
-  CheckBox->setChecked(false);
-
-  if (reactn->isReversible() == true)
-    CheckBox->setChecked(true);
-
-  table->setNumCols(1);
-
-  table->setColumnWidth (0, 200);
-
-  if (&reactn->getFunction())
-    {
-      comboEntry = reactn->getFunction().getName().c_str();
-      ComboBox1->setCurrentText(comboEntry);
-      slotComboBoxSelectionChanged(comboEntry);
-    }
-
-  //  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
-  //  emit sideySignal();
+  // update the widget.
+  FillWidgetFromRI();
 }
 
 /*This slot is activated when the cancel button is clicked.It basically cancels any changes that
@@ -281,7 +241,10 @@ void ReactionsWidget1::loadName(QString setValue)
 void ReactionsWidget1::slotBtnCancelClicked()
 {
   //QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
-  emit signal_emitted(name);
+  //TODO: reinsert some confirmation by user (see line above).
+  loadName(name); //reloads the reaction
+
+  //emit signal_emitted(name); // don´t know what this is for.
 }
 
 /*This slot is connected to the commit changes button.There is a difference between commit
@@ -289,115 +252,15 @@ void ReactionsWidget1::slotBtnCancelClicked()
   does and what is the difference between them.Have to ask Dr Hoops about it.*/
 void ReactionsWidget1::slotBtnOKClicked()
 {
-  /*This code is to save the changes in the reaction*/
-  CReaction *pReaction = mModel->getReactions()[name.latin1()];
+  //this writes all changes to the reaction
+  mRi.writeBackToReaction(*mpModel);
 
-  if (pReaction->getName() != LineEdit1->text().latin1())
-    if (pReaction->setName(LineEdit1->text().latin1()))
-      name = LineEdit1->text();
-
-  CChemEq ChemEq;
-  ChemEq.setChemicalEquation(LineEdit2->text().latin1());
-
-  if (ChemEq.getChemicalEquationConverted() !=
-      pReaction->getChemEq().getChemicalEquationConverted())
-    {
-      slotLineEditChanged();
-      //        pReaction->setChemEq(LineEdit2->text().latin1());
-      //        pReaction->compileChemEq(mModel->getCompartments());
-    }
-
-  if (!&pReaction->getFunction())
-    pReaction->setFunction(ComboBox1->currentText().latin1());
-  else if (pReaction->getFunction().getName() != ComboBox1->currentText().latin1())
-    pReaction->setFunction(ComboBox1->currentText().latin1());
-
-  CCopasiVector< CReaction::CId2Metab > & Substrates =
-    pReaction->getId2Substrates();
-  Substrates.cleanup();
-  CCopasiVector< CReaction::CId2Metab > & Products =
-    pReaction->getId2Products();
-  Products.cleanup();
-  CCopasiVector< CReaction::CId2Metab > & Modifiers =
-    pReaction->getId2Modifiers();
-  Modifiers.cleanup();
-  CCopasiVector< CReaction::CId2Param > & Parameters =
-    pReaction->getId2Parameters();
-  Parameters.cleanup();
-
-  const CFunctionParameters & Variables =
-    pReaction->getFunction().getParameters();
-
-  unsigned C_INT32 i, imax = std::min(Variables.size(), (unsigned C_INT32) table->numRows());
-  unsigned C_INT32 j, jmax;
-  unsigned C_INT32 l;
-  CReaction::CId2Metab Metabolite;
-  CReaction::CId2Param Parameter;
-  const CCopasiVectorN< CMetab > & MetaboliteList = mModel->getMetabolites();
-
-  std::string ThisUsage;
-  for (i = 0, l = 0; i < imax; i++, l++)
-    {
-      ThisUsage = Variables[i]->getUsage();
-      if (ThisUsage == "PARAMETER")
-        {
-          Parameter.setIdentifierName(table->verticalHeader()->label(l).latin1());
-          Parameter.setValue(table->text(l, 0).toDouble());
-          Parameters.add(Parameter);
-        }
-      else
-        {
-          if (Variables[i]->getType() < CFunctionParameter::VINT32)
-            {
-              Metabolite.setIdentifierName(table->verticalHeader()->label(l).latin1());
-              Metabolite.setMetaboliteName(table->text(l, 0).latin1());
-              Metabolite.setCompartmentName(MetaboliteList[table->text(l, 0).latin1()]->getCompartment()->getName());
-
-              if (ThisUsage == "SUBSTRATE")
-                Substrates.add(Metabolite);
-              else if (ThisUsage == "PRODUCT")
-                Products.add(Metabolite);
-              else if (ThisUsage == "MODIFIER")
-                Modifiers.add(Metabolite);
-            }
-          else
-            {
-              if (ThisUsage == "SUBSTRATE")
-                for (j = 0, jmax = 0; j < pReaction->getChemEq().getSubstrates().size(); j++)
-                  jmax += pReaction->getChemEq().getSubstrates()[j]->getMultiplicity();
-              else if (ThisUsage == "PRODUCT")
-                for (j = 0, jmax = 0; j < pReaction->getChemEq().getProducts().size(); j++)
-                  jmax += pReaction->getChemEq().getProducts()[j]->getMultiplicity();
-
-              for (j = 0; j < jmax; j++)
-                {
-                  Metabolite.setIdentifierName(table->verticalHeader()->label(l).latin1());
-                  Metabolite.setMetaboliteName(table->text(l, 0).latin1());
-                  Metabolite.setCompartmentName(MetaboliteList[table->text(l, 0).latin1()]->getCompartment()->getName());
-
-                  if (ThisUsage == "SUBSTRATE")
-                    Substrates.add(Metabolite);
-                  else if (ThisUsage == "PRODUCT")
-                    Products.add(Metabolite);
-
-                  l++;
-                }
-              l--;
-            }
-        }
-    }
-
-  pReaction->compile(mModel->getCompartments());
-
+  //this tells the gui what it needs to know.
+  /* TODO: tell the gui about name change of a reaction and changed chemical equation.
+  also tell the gui if the reaction was new. */
   emit updated();
-  emit leaf(mModel);
+  emit leaf(mpModel);
   emit signal_emitted(name);
-  //   CChemEq * chem;
-  //   chem = & reactn1->getChemEq();
-  //   chem->setChemicalEquation(chemical_reaction->latin1());
-  //   reactn1->setChemEq(chemical_reaction->latin1());
-  //   reactn1->save(*Rtn);
-  //   Copasi->Model->save(*Rtn);
 }
 
 /*This slot is activated when the check box is clicked.It needs to have functionality to
@@ -405,246 +268,87 @@ void ReactionsWidget1::slotBtnOKClicked()
 
 void ReactionsWidget1::slotCheckBoxClicked()
 {
-  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-  reactn1 = reactions[(std::string)name.latin1()];
-  const CChemEq * chemEq1;
+  // tell the reaction interface
+  mRi.setReversibility(CheckBox->isChecked());
 
-  chemEq1 = & reactn1->getChemEq();
-  std::string chemEq2 = chemEq1->getChemicalEquationConverted();
-  QString chemical_reaction = chemEq2.c_str();
-  TriLogic reversible;
-  if (reactn1->isReversible())
-    {
-      reversible = TriTrue;
-    }
-  else
-    {
-      reversible = TriFalse;
-    }
-
-  if (!chemical_reaction.length())
-    return;
-  if (CheckBox->isChecked() == false && reactn1->isReversible() == true)
-    {
-      int i = chemical_reaction.find ("=", 0, true);
-      chemical_reaction = chemical_reaction.replace(i, 1, "->");
-      reversible = TriFalse;
-    }
-  else if (CheckBox->isChecked() == true && reactn1->isReversible() == false)
-    {
-      int i = chemical_reaction.find ("->", 0, true);
-      chemical_reaction = chemical_reaction.replace(i, 2, "=");
-      reversible = TriTrue;
-    }
-  if (chemical_reaction.length())
-    {
-      const std::string chemEq3 = chemical_reaction.latin1();
-      //chemEq1->setChemicalEquation(chemEq3); //is this really necessary?
-      reactn1->setChemEq(chemEq3);
-    }
-
-  LineEdit2->setText(chemEq1->getChemicalEquationConverted().c_str());
-
-  ComboBox1->clear();
-  const CCopasiVector< CFunction > & Functions =
-    Copasi->pFunctionDB->suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
-                                           reactn1->getChemEq().getSubstrates().size(),
-                                           reversible);
-  QStringList comboEntries;
-  QString comboEntry;
-  unsigned int temp2;
-
-  for (temp2 = 0; temp2 < Functions.size(); temp2++)
-    {
-      const CFunction *function = Functions[temp2];
-      comboEntry = function->getName().c_str();
-      comboEntries.push_back(comboEntry);
-    }
-
-  ComboBox1->insertStringList(comboEntries, -1);
-  QString comboValue = ComboBox1->currentText();
-  slotComboBoxSelectionChanged(comboValue);
-  //QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
+  // update the widget
+  FillWidgetFromRI();
 }
 
+// the function has been changed
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
-  const std::string p1 = p2.latin1();
-  const CFunction * pFunction = Copasi->pFunctionDB->findLoadFunction(p1);
-  const CFunctionParameters & functionParameters = pFunction->getParameters();
+  // tell the reaction interface
+  mRi.setFunction(p2.latin1());
 
-  unsigned C_INT32 i, imax;
-  unsigned C_INT32 j, jmax;
-
-  CChemEq ChemicalEquation;
-  ChemicalEquation.setChemicalEquation(LineEdit2->text().latin1());
-  const CCopasiVector< CChemEqElement > * pElementList;
-  const std::string * pName;
-
-  /* build list of substrates */
-  QStringList SubstrateNames;
-  std::vector< const std::string * > Substrates;
-  pElementList = &ChemicalEquation.getSubstrates();
-  for (i = 0, imax = pElementList->size(); i < imax; i++)
-    {
-      pName = &(*pElementList)[i]->getMetaboliteName();
-      SubstrateNames.push_back(pName->c_str());
-      jmax = (unsigned C_INT32)(*pElementList)[i]->getMultiplicity();
-      for (j = 0; j < jmax; j++)
-        Substrates.push_back(pName);
-    }
-
-  /* build list of products */
-  QStringList ProductNames;
-  std::vector< const std::string * > Products;
-  pElementList = &ChemicalEquation.getProducts();
-  for (i = 0, imax = pElementList->size(); i < imax; i++)
-    {
-      pName = &(*pElementList)[i]->getMetaboliteName();
-      ProductNames.push_back(pName->c_str());
-      jmax = (unsigned C_INT32)(*pElementList)[i]->getMultiplicity();
-      for (j = 0; j < jmax; j++)
-        Products.push_back(pName);
-    }
-
-  /* build list of modifiers */
-  QStringList ModifierNames;
-  pElementList = &ChemicalEquation.getModifiers();
-  for (i = 0, imax = pElementList->size(); i < imax; i++)
-    {
-      pName = &(*pElementList)[i]->getMetaboliteName();
-      ModifierNames.push_back(pName->c_str());
-    }
-
-  //   const CCopasiVector< CMetab > & MetaboliteList = mModel->getMetabolites();
-  //   for (i = 0, imax = MetaboliteList.size(); i < imax; i++)
-  //     ModifierNames.push_back(MetaboliteList[i]->getName().c_str());
-
-  /* build list of all needed variables */
-  std::vector< std::pair< QString, QString > > VariableList;
-  std::pair< QString, QString > Variable;
-  const CFunctionParameter * pParameter;
-
-  for (i = 0, imax = functionParameters.size(); i < imax; i++)
-    {
-      pParameter = functionParameters[i];
-      Variable.second = pParameter->getUsage().c_str();
-
-      if (pParameter->getType() < CFunctionParameter::VINT32)
-        {
-          Variable.first = pParameter->getName().c_str();
-          VariableList.push_back(Variable);
-        }
-      else
-        {
-          if (Variable.second == "SUBSTRATE")
-            jmax = Substrates.size();
-          else if (Variable.second == "PRODUCT")
-            jmax = Products.size();
-          else
-            jmax = 0;
-
-          for (j = 0; j < jmax; j++)
-            {
-              Variable.first = pParameter->getName().c_str();
-              Variable.first += "_";
-              Variable.first += QString::number(j);
-              VariableList.push_back(Variable);
-            }
-        }
-    }
-
-  //for clearing the values of the table
-  for (i = 0, imax = table->numRows(); i < imax; i++)
-    table->clearCell(i, 0);
-
-  /* build the table according to the variable list*/
-  table->setNumRows(VariableList.size());
-  table->ensureCellVisible(VariableList.size() + 1, 0);
-
-  QComboTableItem * pItem;
-  unsigned C_INT32 nSubstrate = 0;
-  unsigned C_INT32 nProduct = 0;
-  bool HaveParameters = false;
-  CReaction *pReaction = mModel->getReactions()[name.latin1()];
-  if (&pReaction->getFunction() == pFunction)
-    HaveParameters = true;
-  for (i = 0, imax = table->numRows(); i < imax; i++)
-    {
-      table->verticalHeader()->setLabel(i, VariableList[i].first);
-      if (VariableList[i].second == "SUBSTRATE")
-        {
-          pItem = new QComboTableItem(table, SubstrateNames, true);
-          pItem->setCurrentItem(Substrates[nSubstrate++]->c_str());
-          table->setItem(i, 0, pItem);
-        }
-      else if (VariableList[i].second == "PRODUCT")
-        {
-          pItem = new QComboTableItem(table, ProductNames, true);
-          pItem->setCurrentItem(Products[nProduct++]->c_str());
-          table->setItem(i, 0, pItem);
-        }
-      else if (VariableList[i].second == "MODIFIER")
-        {
-          pItem = new QComboTableItem(table, ModifierNames, true);
-          j = pReaction->
-              getId2Modifiers().getIndex(VariableList[i].first.latin1());
-          if (HaveParameters && j != C_INVALID_INDEX)
-            pItem->setCurrentItem(pReaction->getId2Modifiers()[j]->getMetaboliteName().c_str());
-          else
-            pItem->setCurrentItem(0);
-          table->setItem(i, 0, pItem);
-        }
-      else if (VariableList[i].second == "PARAMETER")
-        {
-          //Liang
-          QTableItem * pItem;
-          j = pReaction->
-              getId2Parameters().getIndex(VariableList[i].first.latin1());
-          if (HaveParameters && j != C_INVALID_INDEX)
-            pItem = new QTableItem (table, QTableItem::Always, QString::number(pReaction->getId2Parameters()[j]->getValue()));
-          else
-            pItem = new QTableItem (table, QTableItem::Always, QString::number(1.0));
-          table->setItem(i, 0, pItem);
-          /*
-                    j = pReaction->
-                        getId2Parameters().getIndex(VariableList[i].first.latin1());
-                    if (HaveParameters && j != C_INVALID_INDEX)
-                      table->setText(i, 0, QString::number(pReaction->getId2Parameters()[j]->getValue()));
-                    else
-                      table->setText(i, 0, QString::number(1.0));
-          */
-        }
-    }
+  // update the widget
+  FillWidgetFromRI();
 }
 
 /*This function is called when the "Chemical Reaction" LineEdit is changed.*/
 void ReactionsWidget1::slotLineEditChanged()
 {
-  const QString & chemreactn = LineEdit2->text();
-  const std::string & changed_chemical_reaction = chemreactn.latin1();
-  CCopasiVectorNS < CReaction > & reactions1 = mModel->getReactions();
-  CReaction *reactn1;
-  reactn1 = reactions1[(std::string)name.latin1()];
-  const CChemEq * chemEq1;
-  chemEq1 = & reactn1->getChemEq();
-  //bool status;
-  //status = chemEq1->setChemicalEquation(changed_chemical_reaction); //is this necessary?
-  if (changed_chemical_reaction.length())
-    reactn1->setChemEq(changed_chemical_reaction);
-  if (reactn1->isReversible() == true)
-    {
-      CheckBox->setChecked(true);
-    }
-  else
-    {
-      CheckBox->setChecked(false);
-    }
-  slotCheckBoxClicked();
+  // tell the reaction interface
+  mRi.setChemEqString(LineEdit2->text().latin1());
+
+  // update the widget
+  FillWidgetFromRI();
 }
 
 void ReactionsWidget1::slotBtnNewClicked()
 {
   // QMessageBox::information(this, "Reactions Widget", "adding a new reaction");
   emit new_reaction();
+}
+
+void ReactionsWidget1::FillWidgetFromRI()
+{
+  LineEdit1->setText(mRi.getReactionName().c_str());
+
+  LineEdit2->setText(mRi.getChemEqString().c_str());
+
+  //LineEdit3->setText(QString::number(reactn->getFlux())); //TODO
+
+  // the reversibility checkbox
+  CheckBox->setChecked(false);
+  if (mRi.isReversible() == true)
+    {
+      CheckBox->setChecked(true);
+    }
+
+  // the function combobox
+  QStringList comboEntries;
+  ParameterTable::vectorOfStrings2QStringList(mRi.getListOfPossibleFunctions(), comboEntries);
+
+  ComboBox1->clear();
+  ComboBox1->insertStringList(comboEntries, -1);
+
+  // if there is a current function the parameter table is initialized
+  if (mRi.getFunctionName() != "")
+    {
+      ComboBox1->setCurrentText(mRi.getFunctionName().c_str());
+      table->updateTable(mRi);
+    }
+
+  //TODO isValid()
+  commitChanges->setEnabled(mRi.isValid());
+}
+
+void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
+{
+  std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
+
+  // setValue
+  if (mRi.getUsage(index) == "PARAMETER")
+    {
+      if (sub != 0) return;
+      mRi.setValue(index, newValue.toDouble()); // TODO: check
+    }
+  else
+    {
+      //if (sub==0)
+    }
+
+  // update the widget
+  FillWidgetFromRI();
 }
