@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/30 20:25:12 $
+   $Author: shoops $ 
+   $Date: 2003/11/12 17:21:20 $
    End CVS Header */
 
 /**
@@ -53,9 +53,6 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
     virtual ~CCopasiObjectReference() {}
 
     virtual void * getReference() {return &mReference;}
-
-    // inherited from CCopasiObject. TODO: The hasValue flag needs to be set in the contructors.
-    virtual const void * getObjectValueAddress() const {return &mReference;}
 
     virtual void print(std::ostream& ostream) {ostream << mReference;};
   };
