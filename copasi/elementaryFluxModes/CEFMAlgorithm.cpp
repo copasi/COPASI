@@ -8,6 +8,7 @@
 
 #include "copasi.h"
 #include "CEFMAlgorithm.h"
+#include "CFluxMode.h"
 
 CEFMAlgorithm::CEFMAlgorithm()
 {
@@ -24,15 +25,13 @@ CEFMAlgorithm::~CEFMAlgorithm()
 
 bool CEFMAlgorithm::calculate(const vector < vector < C_FLOAT64 > > & stoi,
                               const unsigned C_INT32 &reversibleNumber,
-                              vector < vector < unsigned C_INT32 > > & fluxModes)
+                              vector < CFluxMode > & fluxModes)
 {
   bool Success = TRUE;
   unsigned C_INT32 Step, MaxSteps = stoi[0].size();
   
   /* initialize the current tableu matrix */
   mCurrentTableau = new CTableauMatrix(stoi, reversibleNumber);
-  
-  mCurrentTableau->print();
   
   /* Do the iteration */
   for (Step = 0; Step < MaxSteps; Step++) calculateNextTableau(Step);
@@ -50,7 +49,7 @@ void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
 {
   list < const CTableauLine * >::iterator a;
   list < const CTableauLine * >::iterator b;
-  C_FLOAT64 m;
+  C_FLOAT64 ma, mb;
   
   mNextTableau = new CTableauMatrix();
   
@@ -92,11 +91,20 @@ void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
       
       while (b != mCurrentTableau->getEnd())
         {
-          m = - (*b)->getReaction(step) / (*a)->getReaction(step);
+          mb = (*a)->getReaction(step);
 
-          /* The multiplier "m" for irreversible reactions must be positive */
-          if ((*a)->isReversible() || m > 0.0)
-            mNextTableau->addLine(new CTableauLine(m, **a, **b));
+          /* We make sure that "mb" is positive */
+          if (mb < 0.0)
+            {
+              mb *= -1;
+              ma = (*b)->getReaction(step);
+            }
+          else
+            ma = - (*b)->getReaction(step);
+              
+          /* The multiplier "ma" for irreversible reactions must be positive */
+          if ((*a)->isReversible() || ma > 0.0)
+            mNextTableau->addLine(new CTableauLine(ma, **a, mb, **b));
           
           b++;
         }
@@ -107,32 +115,20 @@ void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
   pdelete(mCurrentTableau);
   mCurrentTableau = mNextTableau;
 
-  mCurrentTableau->print();
   mNextTableau = NULL;
 }
 
-void CEFMAlgorithm::buildFluxModes(vector < vector < unsigned C_INT32 > > & fluxModes,
+void CEFMAlgorithm::buildFluxModes(vector < CFluxMode > & fluxModes,
                                    const unsigned C_INT32 reactionNumber)
 {
-  unsigned C_INT32 i, imax = fluxModes.size();
-
-  /* Clear the fluxModes */
-  for (i=0; i<imax; i++) fluxModes[i].clear();
   fluxModes.clear();
 
   list < const CTableauLine * >::iterator a = mCurrentTableau->getFirst();
   list < const CTableauLine * >::iterator end = mCurrentTableau->getEnd();
 
-  vector < unsigned C_INT32 > FluxMode;
-  
   while (a != end)
     {
-      FluxMode.clear();
-      
-      for (i=0; i<reactionNumber; i++)
-        if ((*a)->getFluxMode(i)) FluxMode.push_back(i);
-      
-      fluxModes.push_back(FluxMode);
+      fluxModes.push_back(CFluxMode(*a));
       a++;
     }
 }

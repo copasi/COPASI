@@ -6,6 +6,8 @@
  * (C) Stefan Hoops 2002
  */
 
+#include <iostream>
+
 #include "copasi.h"
 #include "CTableauMatrix.h"
 
@@ -25,7 +27,7 @@ CTableauMatrix::CTableauMatrix(const vector < vector < C_FLOAT64 > > & stoi,
        Reaction++, reversibleNumber--, ReactionCounter++)
     {
       mLine.push_back(new CTableauLine(*Reaction,
-                                       reversibleNumber > 0 ? TRUE : FALSE,
+                                       reversibleNumber > 0 ? true : false,
                                        ReactionCounter,
                                        ReactionNumber));
       if (reversibleNumber == 0)
@@ -108,7 +110,7 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
   /* Check whether the new line scores better than existing lines */
   /* If so the existing lines are removed */
   for (i = mLine.begin(); i != mLine.end();)
-    if ((*i)->getScore() > src->getScore()) 
+    if (src->getScore() < (*i)->getScore()) 
       {
         if (i == mLine.begin())
           {
@@ -130,6 +132,7 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
   return TRUE;
 }
 
+#ifdef XXXX
 void CTableauMatrix::print(void)
 {
   cout << "Tableau Matrix: Number of Lines = " << mLine.size() << endl;
@@ -138,3 +141,4 @@ void CTableauMatrix::print(void)
   for (i=mLine.begin(); i!=mLine.end(); i++)
     (*i)->print();
 }
+#endif // XXXX

@@ -48,15 +48,16 @@ public:
    *  Specific constructor
    */
   CTableauLine(const vector <C_FLOAT64> & reaction,
-               const C_INT32 & reversible,
+               bool reversible,
                const C_INT32 & reactionCounter,
                const C_INT32 & reactionNumber);
 
   /**
    *  Specific constructor
    */
-  CTableauLine(const C_FLOAT64 & m,
+  CTableauLine(const C_FLOAT64 & m1,
                const CTableauLine & src1,
+               const C_FLOAT64 & m2,
                const CTableauLine & src2);  
 
   /**
@@ -70,14 +71,15 @@ public:
   const CFluxScore & getScore() const;
 
   /**
-   *  Retreives the reaction
+   *  Retreives the "index" coefficient of the reaction
+   *  @param "const unsigned C_INT32 &" index
    */
   const C_FLOAT64 & getReaction(const unsigned C_INT32 & index) const;
 
   /**
    *  Retreives the flux mode
    */
-  const C_FLOAT64 & getFluxMode(const unsigned C_INT32 & index) const;
+  const vector < C_FLOAT64 > & getFluxMode() const;
 
   /**
    *  Checks whether the reaction is reversible
@@ -85,6 +87,5 @@ public:
    */
   bool isReversible() const;
 
-  void print(void) const;
 };
 #endif // COPASI_CTableauLine

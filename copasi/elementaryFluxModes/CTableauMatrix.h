@@ -74,8 +74,6 @@ class CTableauMatrix
    */
   void removeLine(list < const CTableauLine * >::iterator line);
 
-  void print(void);
-
  private:
   /**
    *  Check whether the new line fullfills the constraints

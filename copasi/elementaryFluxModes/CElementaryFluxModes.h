@@ -10,8 +10,14 @@
 #ifndef COPASI_CElementaryFluxModes
 #define COPASI_CElementaryFluxModes
 
+#include <iostream>
+
+#include "utilities/utilities.h"
+#include "model/model.h"
+
 #include "CEFMAlgorithm.h"
-class CModel;
+#include "CFluxMode.h"
+
 class CElementaryFluxModes
 {
   // Attributes
@@ -19,14 +25,8 @@ class CElementaryFluxModes
   /**
    *  The resulting elementary flux modes
    */
-  vector < vector <unsigned C_INT32> > mFluxModes;
+  vector < CFluxMode > mFluxModes;
 
-  /**
-   *  Vector to keep track of the rearangements neccessary to put the
-   *  reversible reactions to the top of Stoi.
-   */
-  unsigned C_INT32 mReversible;
-  
   /**
    *  Vector to keep track of the rearangements neccessary to put the
    *  reversible reactions to the top of Stoi
@@ -55,11 +55,40 @@ class CElementaryFluxModes
    *  @param "const CModel *" model
    */
   void calculate(const CModel * model);
+
+  // Friend functions
+  friend ostream &operator<<(ostream &os, CElementaryFluxModes &A)
+    {
+      /* Get the reactions from the model */
+      const CCopasiVectorS < CReaction > & Reaction = A.mModel->getReactions();
+
+      unsigned C_INT32 i, imax = A.mFluxModes.size();
+      unsigned C_INT32 j, jmax;
+
+      os << "Elementary Flux Modes of Model \"" 
+         << A.mModel->getTitle() << "\":" << endl;
   
-  /**
-   *  Write the result
-   *  @param "ostream &" output
-   */
-  void write(ostream & output) const;
+      for (i=0; i<imax; i++)
+        {
+          os << " Mode " << i+1 << ":  ";
+          if (A.mFluxModes[i].isReversible())
+            os << "(reversible)";
+          else
+            os << "(irreversible)";
+          os << endl;
+
+          jmax = A.mFluxModes[i].size();
+          for (j=0; j<jmax; j++)
+            {
+              os << "   " << A.mFluxModes[i].getMultiplier(j) << " * " 
+                 << Reaction[A.mIndex[A.mFluxModes[i].getReaction(j)]]
+                             ->getName()
+                 << endl;
+            }
+          
+          os << endl;
+        }
+      return os;
+    }
 };
 #endif //COPASI_CElementaryFluxModes

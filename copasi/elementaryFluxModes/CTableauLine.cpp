@@ -6,13 +6,15 @@
  * (C) Stefan Hoops 2002
  */
 
+#include <iostream>
+
 #include "copasi.h"
 #include "CTableauLine.h"
 
 CTableauLine::CTableauLine() {mFluxScore=NULL;} 
 
 CTableauLine::CTableauLine(const vector <C_FLOAT64> & reaction,
-                           const C_INT32 & reversible,
+                           bool reversible,
                            const C_INT32 & reactionCounter,
                            const C_INT32 & reactionNumber)
 {
@@ -25,8 +27,9 @@ CTableauLine::CTableauLine(const vector <C_FLOAT64> & reaction,
   mFluxScore = new CFluxScore(mFluxMode);
 }
 
-CTableauLine::CTableauLine(const C_FLOAT64 & m,
+CTableauLine::CTableauLine(const C_FLOAT64 & m1,
                            const CTableauLine & src1,
+                           const C_FLOAT64 & m2,
                            const CTableauLine & src2)
 {
   unsigned C_INT32 i, imax = src1.mReaction.size();
@@ -38,10 +41,10 @@ CTableauLine::CTableauLine(const C_FLOAT64 & m,
     mReversible = TRUE;
   
   for (i=0, mReaction.resize(imax); i<imax; i++)
-    mReaction[i] = m * src1.mReaction[i] + src2.mReaction[i];
+    mReaction[i] = m1 * src1.mReaction[i] + m2 * src2.mReaction[i];
   
   for (j=0, mFluxMode.resize(jmax); j<jmax; j++)
-    mFluxMode[j] = m * src1.mFluxMode[j] + src2.mFluxMode[j];
+    mFluxMode[j] = m1 * src1.mFluxMode[j] + m2 * src2.mFluxMode[j];
 
   mFluxScore = new CFluxScore(mFluxMode);
 }
@@ -59,10 +62,9 @@ CTableauLine::getReaction(const unsigned C_INT32 & index) const
   return mReaction[index];
 }
 
-const C_FLOAT64 & 
-CTableauLine::getFluxMode(const unsigned C_INT32 & index) const
+const vector < C_FLOAT64 > & CTableauLine::getFluxMode() const
 {
-  return mFluxMode[index];
+  return mFluxMode;
 }
 
 bool CTableauLine::isReversible() const
@@ -70,6 +72,7 @@ bool CTableauLine::isReversible() const
   return mReversible;
 }
 
+#ifdef XXXX
 void CTableauLine::print(void) const
 {
   unsigned C_INT32 i, imax = mReaction.size();
@@ -90,4 +93,4 @@ void CTableauLine::print(void) const
   
   cout << endl;
 }
-
+#endif // XXXX

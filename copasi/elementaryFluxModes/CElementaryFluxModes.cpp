@@ -42,7 +42,7 @@ void CElementaryFluxModes::calculate(const CModel * model)
   mIndex.resize(numRows);
   
   /* Reversible reaction counter */
-  mReversible = 0;
+  unsigned C_INT32 Reversible = 0;
   
   unsigned C_INT32 Insert;
   unsigned C_INT32 InsertReversible = 0;
@@ -56,7 +56,7 @@ void CElementaryFluxModes::calculate(const CModel * model)
       if (Reaction[row]->isReversible())
         {
           Insert = InsertReversible++;
-          mReversible++;
+          Reversible++;
         }
       else
         Insert = InsertIrreversible--;
@@ -69,35 +69,5 @@ void CElementaryFluxModes::calculate(const CModel * model)
 
   /* Now do the calculation */
   CEFMAlgorithm Algorithm;
-  Algorithm.calculate(Stoi, mReversible, mFluxModes);
-}
-
-void CElementaryFluxModes::write(ostream & output) const
-{
-  /* Get the reactions from the model */
-  const CCopasiVectorS < CReaction > & Reaction = mModel->getReactions();
-
-  string Reversible;
-  unsigned C_INT32 i, imax = mFluxModes.size();
-  unsigned C_INT32 j, jmax;
-
-  output << "Elementary Flux Modes of Model \"" 
-         << mModel->getTitle() << "\":" << endl;
-  
-  for (i=0; i<imax; i++)
-    {
-      output << i << ".\t";
-      jmax = mFluxModes[i].size();
-      Reversible = "reversible";
-      
-      for (j=0; j<jmax; j++)
-        {
-          if (!Reaction[mIndex[mFluxModes[i][j]]]->isReversible())
-              Reversible = "irreversible";
-              
-          output << Reaction[mIndex[mFluxModes[i][j]]]->getName() << ", ";
-        }
-          
-      output << "\t" << Reversible << endl;
-    }
+  Algorithm.calculate(Stoi, Reversible, mFluxModes);
 }

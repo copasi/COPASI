@@ -10,6 +10,7 @@
 #define COPASI_CEFMAlgorithm
 
 #include "CTableauMatrix.h"
+#include "CFluxMode.h"
 
 class CEFMAlgorithm
 {
@@ -48,11 +49,11 @@ class CEFMAlgorithm
    */
   bool calculate(const vector < vector < C_FLOAT64 > > & stoi,
                  const unsigned C_INT32 & reversibleNumber,
-                 vector < vector < unsigned C_INT32 > > & fluxModes);
+                 vector < CFluxMode > & fluxModes);
 
  private:
   void calculateNextTableau(const unsigned C_INT32 & step);
-  void buildFluxModes(vector < vector < unsigned C_INT32 > > & fluxModes,
+  void buildFluxModes(vector < CFluxMode > & fluxModes,
                       const unsigned C_INT32 reactionNumber);
 };
 #endif // COPASI_CEFMAlgorithm
