@@ -31,7 +31,6 @@ void CFunctionDB::cleanup() {mLoadedFunctions.cleanup();}
 void CFunctionDB::initObjects()
 {
   addObjectReference("File", mFilename);
-  CCopasiContainer::add(&mLoadedFunctions);
 }
 
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
@@ -133,7 +132,7 @@ std::string CFunctionDB::getFilename() const
 
 CFunction * CFunctionDB::dBLoad(const std::string & functionName)
 {
-  CFunction Function;
+  CFunction Function("NoName", &mLoadedFunctions);
   CFunction * pFunction = NULL;
 
   CReadConfig inbuf(mFilename);
