@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:21:02 $
+   $Date: 2004/05/19 09:45:01 $
    End CVS Header */
 
 /**
@@ -83,7 +83,7 @@ CCopasiParameter::~CCopasiParameter()
   deleteValue();
 }
 
-std::string CCopasiParameter::getKey() const {return mKey;}
+const std::string & CCopasiParameter::getKey() const {return mKey;}
 
 bool CCopasiParameter::setName(const std::string & name) {return setObjectName(name);}
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:28:29 $
+   $Date: 2004/05/19 09:42:32 $
    End CVS Header */
 
 /**
@@ -182,7 +182,7 @@ class CReaction : public CCopasiContainer
      *  Retrieves the key of the reaction
      *  @return std::string key
      */
-    std::string getKey() const;
+    virtual const std::string & getKey() const;
 
     /**
      *  Retrieves the chemical equation of the reaction

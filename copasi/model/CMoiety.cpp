@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:46 $
+   $Date: 2004/05/19 09:42:31 $
    End CVS Header */
 
 #include <stdio.h>
@@ -24,7 +24,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(GlobalKeys.add("Moiety", this)),      //By G
+    mKey(GlobalKeys.add("Moiety", this)),       //By G
     mNumber(0),
     mINumber(0),
     mEquation("Equation", this)
@@ -33,7 +33,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Moiety", this)),      //By G
+    mKey(GlobalKeys.add("Moiety", this)),       //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation, this)
@@ -79,7 +79,7 @@ C_FLOAT64 CMoiety::dependentRate()
   return Rate * mEquation[0]->getMetabolite().getCompartment()->getVolume();
 }
 
-std::string CMoiety::getKey() const {return mKey;} //By G
+const std::string & CMoiety::getKey() const {return mKey;} //By G
 
 //const std::string & CMoiety::getName() const {return getObjectName();}
 

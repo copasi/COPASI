@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:17 $
+   $Date: 2004/05/19 09:43:21 $
    End CVS Header */
 
 #ifndef COPASI_CPLOTSPEC
@@ -186,7 +186,7 @@ class CPlotSpec : public CCopasiObject
 
     bool compile(CPlotSpecVector * ps);
 
-    inline const std::string & getKey() const
+    virtual const std::string & getKey() const
       {
         return mKey;
       }

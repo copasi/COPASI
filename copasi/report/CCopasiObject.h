@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:24:58 $
+   $Date: 2004/05/19 09:44:08 $
    End CVS Header */
 
 /**
@@ -129,6 +129,8 @@ class CCopasiObject
     virtual void * getReference() const;
 
     friend std::ostream &operator<<(std::ostream &os, const CCopasiObject & o);
+
+    virtual const std::string & getKey() const;
   };
 
 template <class CType> CCopasiObjectReference< CType > *

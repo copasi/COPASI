@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:21:02 $
+   $Date: 2004/05/19 09:45:02 $
    End CVS Header */
 
 /**
@@ -150,7 +150,7 @@ class CCopasiTask : public CCopasiContainer
      * Retrieve the key for the task.
      * @return std::string key
      */
-    std::string getKey() const;
+    virtual const std::string & getKey() const;
 
     /**
      * Set whether the task is scheduled

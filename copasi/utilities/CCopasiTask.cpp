@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:21:02 $
+   $Date: 2004/05/19 09:45:02 $
    End CVS Header */
 
 /**
@@ -95,7 +95,7 @@ CCopasiTask::Type CCopasiTask::getType() const {return mType;}
 
 void CCopasiTask::setType(const CCopasiTask::Type & type) {mType = type;}
 
-std::string CCopasiTask::getKey() const {return mKey;}
+const std::string & CCopasiTask::getKey() const {return mKey;}
 
 void CCopasiTask::setScheduled(const bool & scheduled) {mScheduled = scheduled;}
 

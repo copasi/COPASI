@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/19 08:59:03 $
+   $Date: 2004/05/19 09:44:08 $
    End CVS Header */
 
 /****************************************************************************
@@ -130,7 +130,7 @@ class CReportDefinition : public CCopasiObject
       mbTitle = mTitle;
     }
 
-    inline const std::string & getKey() const
+    virtual const std::string & getKey() const
       {
         return mKey;
       }

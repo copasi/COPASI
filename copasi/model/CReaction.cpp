@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:47 $
+   $Date: 2004/05/19 09:42:31 $
    End CVS Header */
 
 // CReaction
@@ -322,8 +322,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
 //C_INT32 CReaction::getProductNumber() const
 //  {return mChemEq.getProducts().size();}
 
-std::string CReaction::getKey() const
-  {return mKey;}
+const std::string & CReaction::getKey() const {return mKey;}
 
 //const std::string & CReaction::getName() const {return getObjectName();}
 
