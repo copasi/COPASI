@@ -1,11 +1,10 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: shoops $ $Date: 2003/06/03 21:09:46 $  
+# $Revision: 1.3 $ $Author: shoops $ $Date: 2003/06/05 03:41:45 $  
 ######################################################################
 
 include(../common.pri)
 
 TEMPLATE = app
-CONFIG -= qt
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
