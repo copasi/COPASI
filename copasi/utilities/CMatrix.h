@@ -130,7 +130,7 @@ class CMatrix
     }
 
     /**
-     * Retrieve a row of the matrix
+     * Retrieve a row of the matrix using c-style indexing
      * @param unsigned C_INT32 row
      * @return CType * row
      */
@@ -138,7 +138,7 @@ class CMatrix
   {return mArray + row * mCols;}
 
     /**
-     * Retrieve a row of the matrix
+     * Retrieve a row of the matrix using c-style indexing
      * @param unsigned C_INT32 row
      * @return const CType * row
      */
@@ -146,24 +146,24 @@ class CMatrix
       {return mArray + row * mCols;}
 
     /**
-     * Retrieve a matrix element using Fortan style indexing.
+     * Retrieve a matrix element using c-style indexing.
      * @param const unsigned C_INT32 & row
      * @param const unsigned C_INT32 & col
-     * @return const CType & element
+     * @return const elementType & element
      */
-    inline CType & operator()(const unsigned C_INT32 & row,
-                              const unsigned C_INT32 & col)
-    {return *(mArray + (row - 1) * mCols + col - 1);}
+    inline elementType & operator()(const unsigned C_INT32 & row,
+                                    const unsigned C_INT32 & col)
+    {return *(mArray + row * mCols + col);}
 
     /**
-     * Retrieve a matrix element using Fortan style indexing.
+     * Retrieve a matrix element using c-style indexing.
      * @param const unsigned C_INT32 & row
      * @param const unsigned C_INT32 & col
-     * @return const CType & element
+     * @return const elementType & element
      */
-    inline const CType & operator()(const unsigned C_INT32 & row,
-                                    const unsigned C_INT32 & col) const
-      {return *(mArray + (row - 1) * mCols + col - 1);}
+    inline const elementType & operator()(const unsigned C_INT32 & row,
+                                          const unsigned C_INT32 & col) const
+      {return *(mArray + row * mCols + col);}
 
     /**
      * Retrieve the array of the matrix elements. This is suitable
@@ -215,6 +215,59 @@ class CMatrixDbl : public CMatrix <C_FLOAT64> {};
 class CMatrixInt : public CMatrix <C_INT32> {};
 
 template <class Matrix>
+class CFortranAccess
+  {
+  public:
+    typedef typename Matrix::elementType elementType;
+
+  private:
+    Matrix & mA;
+
+  public:
+    CFortranAccess(Matrix & A):
+        mA(A)
+    {}
+
+    ~CFortranAccess() {}
+
+    /**
+     * Retrieve a row of the matrix using Fortran style indexing.
+     * @param unsigned C_INT32 row
+     * @return elementType * row
+     */
+    inline elementType * operator[](unsigned C_INT32 row)
+    {return mA[row - 1] - 1;}
+
+    /**
+     * Retrieve a row of the matrix using Fortran style indexing.
+     * @param unsigned C_INT32 row
+     * @return const elementType * row
+     */
+    inline const elementType * operator[](unsigned C_INT32 row) const
+      {return mA[row - 1] - 1;}
+
+    /**
+     * Retrieve a matrix element using Fortran style indexing.
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return const elementType & element
+     */
+    inline elementType & operator()(const unsigned C_INT32 & row,
+                                    const unsigned C_INT32 & col)
+    {return mA(row - 1, col - 1);}
+
+    /**
+     * Retrieve a matrix element using Fortran style indexing.
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return const elementType & element
+     */
+    inline const elementType & operator()(const unsigned C_INT32 & row,
+                                          const unsigned C_INT32 & col) const
+      {return mA(row - 1, col - 1);}
+  };
+
+template <class Matrix>
 class CUpperTriangularView
   {
   public:
@@ -233,10 +286,10 @@ class CUpperTriangularView
     ~CUpperTriangularView() {}
 
     /**
-     * Retrieve a matrix element using Fortan style indexing.
+     * Retrieve a matrix element using the indexing style of the matrix.
      * @param const unsigned C_INT32 & row
      * @param const unsigned C_INT32 & col
-     * @return CType element
+     * @return elementType element
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
@@ -267,10 +320,10 @@ class CLowerTriangularView
     ~CLowerTriangularView() {}
 
     /**
-     * Retrieve a matrix element using Fortan style indexing.
+     * Retrieve a matrix element using the indexing style of the matrix.
      * @param const unsigned C_INT32 & row
      * @param const unsigned C_INT32 & col
-     * @return CType element
+     * @return elementType element
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
@@ -305,10 +358,10 @@ class CUnitUpperTriangularView
     ~CUnitUpperTriangularView() {}
 
     /**
-     * Retrieve a matrix element using Fortan style indexing.
+     * Retrieve a matrix element  using the indexing style of the matrix.
      * @param const unsigned C_INT32 & row
      * @param const unsigned C_INT32 & col
-     * @return CType element
+     * @return elementType element
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
@@ -345,10 +398,10 @@ class CUnitLowerTriangularView
     ~CUnitLowerTriangularView() {}
 
     /**
-     * Retrieve a matrix element using Fortan style indexing.
+     * Retrieve a matrix element using the indexing style of the matrix.
      * @param const unsigned C_INT32 & row
      * @param const unsigned C_INT32 & col
-     * @return CType element
+     * @return elementType element
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
@@ -377,10 +430,10 @@ class CTransposeView
     ~CTransposeView() {}
 
     /**
-     * Retrieve a matrix element using Fortan style indexing.
+     * Retrieve a matrix element using the indexing style of the matrix.
      * @param const unsigned C_INT32 & row
      * @param const unsigned C_INT32 & col
-     * @return CType element
+     * @return elementType element
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
