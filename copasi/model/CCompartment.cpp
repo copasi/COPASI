@@ -78,6 +78,9 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
                                        (void *) & mVolume)))
     return Fail;
 
+  if (mVolume != 0)
+    mVolumeInv = 1 / mVolume;
+
   if (configbuffer.getVersion() < "4")
     return Fail;
 
@@ -138,9 +141,10 @@ void CCompartment::addMetabolite(CMetab &metabolite)
   CMetab *pMetabolite = new CMetab(metabolite);
 
   pMetabolite->setCompartment(this);
-  pMetabolite->setConcentration(pMetabolite->getConcentration());
-  pMetabolite->setInitialConcentration(pMetabolite->getInitialConcentration());
-  // Volume is known now. It is assumed that mConcDbl was available and mNumber needed to be set
+  //pMetabolite->setConcentration(pMetabolite->getConcentration());
+  //pMetabolite->setInitialConcentration(pMetabolite->getInitialConcentration());
+  // Volume is known now. But the model is not known. So we can not calculate numbers
+  // from concentrations
   mMetabolites.add(pMetabolite);
 }
 
