@@ -2058,8 +2058,8 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
 
       FunctionKey = mCommon.KeyMap.find(Function);
       if (FunctionKey == mCommon.KeyMap.end()) fatalError();
-      pFunction =
-        (CFunction*)(CCopasiContainer*)CKeyFactory::get(FunctionKey->second);
+      //      pFunction =
+      //        (CFunction*)(CCopasiContainer*)CKeyFactory::get(FunctionKey->second);
 
       mCommon.pReaction->setFunction(pFunction);
       break;
