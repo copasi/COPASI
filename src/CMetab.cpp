@@ -244,3 +244,27 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 C_INT32 CMetabOld::getIndex() const {return mCompartment;}
 
 string CMetabOld::getName() const {return mName;}
+
+/**
+ *	Returns the address of mIConc		Wei Sun
+ */
+void * CMetab::getIConcAddr()
+{
+	return &mIConc;
+}
+
+/**
+ *	Returns the address of mConc
+ */
+void * CMetab::getConcAddr()
+{
+	return &mConc;
+}
+
+/**
+ *	Returns the address of mTT
+ */
+void * CMetab::getTTAddr()
+{
+	return &mTT;
+}
