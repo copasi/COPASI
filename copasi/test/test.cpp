@@ -146,11 +146,11 @@ int main(int argc, char *argv[])
       //      TestMCA();
       //      TestOutputEvent();
       //      MakeFunctionDB();
-      //      ConvertFunctionDB();
+      ConvertFunctionDB();
       //      TestRandom(10000, 100);
       //      Testr250();
       //      Testmt19937();
-      TestCopasiObject();
+      //      TestCopasiObject();
 
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
@@ -1603,6 +1603,10 @@ C_INT32 TestMassAction(void)
 
 C_INT32 ConvertFunctionDB(void)
 {
+  CCopasiXML xml;
+  ((CCopasiXMLInterface *) &xml)->load("FunctionDB.xml");
+
+#ifdef XXXX
   CFunctionDB FunctionDB;
 
   FunctionDB.setFilename("FunctionDB.gps");
@@ -1648,10 +1652,10 @@ C_INT32 ConvertFunctionDB(void)
   //  CWriteConfig out("FunctionDBnew.gps");
   //  FunctionDB.save(out);
 
-  CCopasiXML xml;
-
   xml.setFunctionList(FunctionDB.loadedFunctions());
-  ofstream os("FunctionDB.xml");
+#endif // XXXX
+
+  ofstream os("FunctionDB.new.xml");
 
   cout << "Writing XML ... ";
   xml.save(os);
