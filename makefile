@@ -26,6 +26,7 @@ OBJS	= $(OBJDIR)/CCompartment.o \
 	  $(OBJDIR)/CMetab.o \
 	  $(OBJDIR)/CNodeK.o \
 	  $(OBJDIR)/CReadConfig.o  \
+	  $(OBJDIR)/CStep.o \
 	  $(OBJDIR)/CWriteConfig.o  \
 	  $(OBJDIR)/globals.o  \
 	  $(OBJDIR)/lexkk.o  \
