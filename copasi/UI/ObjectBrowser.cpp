@@ -158,20 +158,100 @@ void ObjectBrowser::nextClicked()
 
 void ObjectBrowser::loadData()
 {
-  ObjectBrowserItem * item_1 = new ObjectBrowserItem(ObjectListView, 0, NULL, objectItemList);
-  ObjectBrowserItem * item_2 = new ObjectBrowserItem(item_1, 0, NULL, objectItemList);
-  ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_2, 0, NULL, objectItemList);
-  ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_3, 0, NULL, objectItemList);
-  ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_4, 0, NULL, objectItemList);
-  ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_5, 0, NULL, objectItemList);
+  //testing data
+  ObjectBrowserItem * item_2 = new ObjectBrowserItem(ObjectListView, 0 , NULL, objectItemList);
+  item_2->setOpen(TRUE);
+  ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_2, 0 , NULL, objectItemList);
+  ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_3, 0 , NULL, objectItemList);
+  ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_4, 0 , NULL, objectItemList);
+  ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_5, 0 , NULL, objectItemList);
+  ObjectBrowserItem * item = new ObjectBrowserItem(item_6, 0 , NULL, objectItemList);
+  item->setText(0, trUtf8("Initial Volumn"));
+  item = new ObjectBrowserItem(item_6, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Transient Volumn"));
+  item = new ObjectBrowserItem(item_6, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Metabolite List"));
+  item_6->setText(0, trUtf8("Compartment_1"));
+  ObjectBrowserItem * item_7 = new ObjectBrowserItem(item_5, item_6, NULL, objectItemList);
+  item = new ObjectBrowserItem(item_7, item_6, NULL, objectItemList);
+  item->setText(0, trUtf8("Initial Volumn"));
+  item = new ObjectBrowserItem(item_7, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Transient Volumn"));
+  item = new ObjectBrowserItem(item_7, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Metabolite List"));
+  item_7->setText(0, trUtf8("Compartment_2"));
+  ObjectBrowserItem * item_8 = new ObjectBrowserItem(item_5, item_7, NULL, objectItemList);
+  item = new ObjectBrowserItem(item_8, item_7, NULL, objectItemList);
+  item->setText(0, trUtf8("Initial Volumn"));
+  item = new ObjectBrowserItem(item_8, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Transient Volumn"));
+  item = new ObjectBrowserItem(item_8, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Metabolite List"));
+  item_8->setText(0, trUtf8("Compartment_3"));
+  item_5->setText(0, trUtf8("Compartment List"));
+  ObjectBrowserItem * item_9 = new ObjectBrowserItem(item_4, item_5, NULL, objectItemList);
+  ObjectBrowserItem * item_10 = new ObjectBrowserItem(item_9, item_5, NULL, objectItemList);
+  item = new ObjectBrowserItem(item_10, item_5, NULL, objectItemList);
+  item->setText(0, trUtf8("Compartment_1"));
+  item = new ObjectBrowserItem(item_10, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Compartment_2"));
+  item = new ObjectBrowserItem(item_10, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Compartment_3"));
+  item_10->setText(0, trUtf8("Initial Volumn"));
+  ObjectBrowserItem * item_11 = new ObjectBrowserItem(item_9, item_10, NULL, objectItemList);
+  item = new ObjectBrowserItem(item_11, item_10, NULL, objectItemList);
+  item->setText(0, trUtf8("Compartment_1"));
+  item = new ObjectBrowserItem(item_11, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Compartment_2"));
+  item = new ObjectBrowserItem(item_11, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Compartment_3"));
+  item_11->setText(0, trUtf8("Transient Volumn"));
+  ObjectBrowserItem * item_12 = new ObjectBrowserItem(item_9, item_11, NULL, objectItemList);
+  item = new ObjectBrowserItem(item_12, item_11, NULL, objectItemList);
+  item->setText(0, trUtf8("Compartment_1"));
+  item = new ObjectBrowserItem(item_12, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Compartment_2"));
+  item = new ObjectBrowserItem(item_12, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Compartment_3"));
+  item_12->setText(0, trUtf8("Metabolites"));
+  item_9->setText(0, trUtf8("Field"));
+  item_4->setText(0, trUtf8("Compartments"));
+  item = new ObjectBrowserItem(item_3, item_4, NULL, objectItemList);
+  item->setText(0, trUtf8("Metabolites"));
+  item = new ObjectBrowserItem(item_3, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Moieties"));
+  item = new ObjectBrowserItem(item_3, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Reactions"));
+  item_3->setText(0, trUtf8("Model"));
+  ObjectBrowserItem * item_13 = new ObjectBrowserItem(item_2, item_3, NULL, objectItemList);
+  item = new ObjectBrowserItem(item_13, item_3, NULL, objectItemList);
+  item->setText(0, trUtf8("Steady State Task"));
+  item = new ObjectBrowserItem(item_13, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Trajectory Task"));
+  item = new ObjectBrowserItem(item_13, item, NULL, objectItemList);
+  item->setText(0, trUtf8("Scan Task"));
+  item_13->setText(0, trUtf8("Task"));
+  ObjectBrowserItem * item_14 = new ObjectBrowserItem(item_2, item_13, NULL, objectItemList);
+  item = new ObjectBrowserItem(item_14, 0, NULL, objectItemList);
+  item->setText(0, trUtf8("Function 1"));
+  item_14->setText(0, trUtf8("Functions"));
+  item_2->setText(0, trUtf8("Copasi Root"));
 
-  item_1->setText(0, trUtf8("Subitem"));
-  item_2->setText(0, trUtf8("Subitem"));
-  item_3->setText(0, trUtf8("Subitem"));
-  item_4->setText(0, trUtf8("Subitem"));
-  item_5->setText(0, trUtf8("Item"));
-  item_6->setText(0, trUtf8("Item"));
-
+  /*
+     ObjectBrowserItem * item_1 = new ObjectBrowserItem(ObjectListView, 0, NULL, objectItemList);
+     ObjectBrowserItem * item_2 = new ObjectBrowserItem(item_1, 0, NULL, objectItemList);
+     ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_1, item_2, NULL, objectItemList);
+     ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_1, item_3, NULL, objectItemList);
+  //   ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_2, 0, NULL, objectItemList);
+  //   ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_2, 0, NULL, objectItemList);
+   
+     item_1->setText(0, trUtf8("Subitem"));
+     item_2->setText(0, trUtf8("Subitem"));
+     item_3->setText(0, trUtf8("Subitem"));
+     item_4->setText(0, trUtf8("Subitem"));
+  //   item_5->setText(0, trUtf8("Item"));
+  //   item_6->setText(0, trUtf8("Item"));
+  */
   updateUI();
 }
 

@@ -20,7 +20,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
   setParent(parent);
   setSibling(NULL);
   setChild(NULL);
-  if (parent != NULL)
+  if (parent && !parent->child())
     parent->setChild(this);
   if (after != NULL)
     after->setSibling(this);
@@ -32,10 +32,28 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
 int ObjectBrowserItem::nUserChecked()
 {
   int condition;
-
   if (child())
     {
-      condition = child()->nUserChecked();
+      ObjectBrowserItem* pChild = child();
+      condition = pChild->nUserChecked();
+      for (; pChild != NULL; pChild = pChild->sibling())
+        {
+          switch (pChild->nUserChecked())
+            {
+            case ALLCHECKED:
+              if (condition == NOCHECKED)
+                condition = PARTCHECKED;
+              break;
+            case PARTCHECKED:
+              if (condition == NOCHECKED)
+                condition = PARTCHECKED;
+              break;
+            case NOCHECKED:
+              if (condition == ALLCHECKED)
+                condition = PARTCHECKED;
+              break;
+            }
+        }
     }
   else //it has no child
     {
@@ -44,6 +62,8 @@ int ObjectBrowserItem::nUserChecked()
       else
         condition = NOCHECKED;
     }
+
+  return condition;
 
   if (sibling() != NULL)
     {
