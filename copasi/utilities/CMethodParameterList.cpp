@@ -106,6 +106,33 @@ void CMethodParameterList::setValue(const std::string & name,
 {mMethodParameters[name]->setValue(value);}
 
 /**
+ * Set the value of the indexed parameter
+ * @param "const string &" name
+ * @param "const C_INT32 &" value
+ */
+void CMethodParameterList::setValue(const std::string & name,
+                                    const C_INT32 & value)
+{mMethodParameters[name]->setValue(value);}
+
+/**
+ * Set the value of the indexed parameter
+ * @param "const string &" name
+ * @param "const unsigned C_INT32 &" value
+ */
+void CMethodParameterList::setValue(const std::string & name,
+                                    const unsigned C_INT32 & value)
+{mMethodParameters[name]->setValue(value);}
+
+/**
+ * Set the value of the indexed parameter
+ * @param "const string &" name
+ * @param "const bool &" value
+ */
+void CMethodParameterList::setValue(const std::string & name,
+                                    const bool & value)
+{mMethodParameters[name]->setValue(value);}
+
+/**
  * Retrieve the value of the indexed parameter.
  * @param "const unsigned C_INT32 &" index
  * @return "const double & value
@@ -126,8 +153,9 @@ const double & CMethodParameterList::getValue(const std::string & name) const
  * Add a parameter to the list
  */
 void CMethodParameterList::add(const std::string & name,
-                               const double & value)
-{mMethodParameters.add(CMethodParameter(name, value));}
+                               const double & value,
+                               const CMethodParameter::Type & type)
+{mMethodParameters.add(CMethodParameter(name, value, type));}
 
 /**
  * Load a list of parameters

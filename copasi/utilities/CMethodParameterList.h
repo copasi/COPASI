@@ -121,6 +121,30 @@ class CMethodParameterList : public CCopasiContainer
                   const double & value);
 
     /**
+     * Set the value of the indexed parameter
+     * @param "const string &" name
+     * @param "const C_INT32 &" value
+     */
+    void setValue(const std::string & name,
+                  const C_INT32 & value);
+
+    /**
+     * Set the value of the indexed parameter
+     * @param "const string &" name
+     * @param "const unsigned C_INT32 &" value
+     */
+    void setValue(const std::string & name,
+                  const unsigned C_INT32 & value);
+
+    /**
+     * Set the value of the indexed parameter
+     * @param "const string &" name
+     * @param "const bool &" value
+     */
+    void setValue(const std::string & name,
+                  const bool & value);
+
+    /**
      * Retrieve the value of the indexed parameter.
      * @param "const unsigned C_INT32 &" index
      * @return "const double & value
@@ -140,7 +164,8 @@ class CMethodParameterList : public CCopasiContainer
      * @param "const double &" value (Default = 0.0)
      */
     void add(const std::string & name,
-             const double & value = 0.0);
+             const double & value = 0.0,
+             const CMethodParameter::Type & type = CMethodParameter::DOUBLE);
 
     /**
      * Load a list of parameters

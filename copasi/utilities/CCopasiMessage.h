@@ -9,7 +9,6 @@
 #include <string>
 
 typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;}
-
 Message;
 
 #define MCopasiBase           5000
@@ -22,6 +21,7 @@ Message;
 #define MCMassAction          MCopasiBase + 700
 #define MCMethodParameterList MCopasiBase + 800
 #define MCReaction            MCopasiBase + 900
+#define MCMethodParameter     MCopasiBase + 1000
 
 /**
  *  This throws an exception with information where the error occured.
