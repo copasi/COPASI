@@ -311,14 +311,20 @@ int CNodeK::Load(CReadConfig &configbuffer)
     if (Fail = configbuffer.GetVariable("Node", "node", &mType, &mSubtype))
         return Fail;
     
+    if (IsIdentifier() && mType != N_IDENTIFIER)
+    {
+        mSubtype = mType;
+        mType = N_IDENTIFIER;
+    }
+    
     // leave the Left & Right pointers out
     // value of the constant if one
-    if (mType==N_NUMBER)
+    if (mType == N_NUMBER)
     {
         if (Fail = configbuffer.GetVariable("Value", "double", &mConstant))
             return Fail;
     }
-    else if (IsIdentifier())
+    else if (mType == N_IDENTIFIER)
     {
         if (Fail = configbuffer.GetVariable("Index", "int", &mIndex))
             return Fail;

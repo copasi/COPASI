@@ -146,7 +146,7 @@ public:
     /**
      *
      */
-    void SetIdentifierType(string &Id, int type);
+    void SetIdentifierType(string &name, int type);
 
     /**
      *

@@ -503,7 +503,7 @@ void CKinFunction::SetParameterName(const string &name, int index)
         if( mNodes[i].GetName() == name ) FatalError();
     
     assert(0 <= index && index < mParameters.size());
-    return mParameters[index]->SetName(name);
+    mParameters[index]->SetName(name);
 }
 
 // returns the name of a parameter
@@ -514,7 +514,7 @@ void CKinFunction::SetModifierName(const string &name, int index)
         if( mNodes[i].GetName() == name ) FatalError();
     
     assert(0 <= index && index < mModifiers.size());
-    return mModifiers[index]->SetName(name);
+    mModifiers[index]->SetName(name);
 }
 
 // sets the type of an Identifier
@@ -594,7 +594,7 @@ int CKinFunction::GetIdentifierType(string &name)
                 break;
             }
         }
-    FatalError();
+    return -1;
 }
 
 

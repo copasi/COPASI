@@ -15,7 +15,8 @@
 #include "CCompartment.h"
 #include "CDatum.h"
 #include "CMetab.h"
-#include "CNodeK.h"
+// #include "CNodeK.h"
+#include "CKinetics.h"
 
 int  TestReadConfig(void);
 int  TestWriteConfig(void);
@@ -259,13 +260,17 @@ int TestReadSample(void)
     CMetabVector Metabolites;
     Metabolites.Load(inbuf, Compartments);
 
-    CNodeKVector Nodes;
-    Nodes.Load(inbuf);
+    // CNodeKVector Nodes;
+    // Nodes.Load(inbuf);
+
+    CKinetics Kinetics;
+    Kinetics.Load(inbuf);
     
     CWriteConfig outbuf("copasi.gps");
-    Compartments.Save(outbuf);
+    Kinetics.Save(outbuf);
     Metabolites.Save(outbuf, Compartments);
-    Nodes.Save(outbuf);
+    Compartments.Save(outbuf);
+    // Nodes.Save(outbuf);
     
     outbuf.Flush();
     return 0;

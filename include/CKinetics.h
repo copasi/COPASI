@@ -60,12 +60,12 @@ public:
     /**
      *
      */
-    void Save(CWriteConfig &configbuffer);
+    int Save(CWriteConfig &configbuffer);
 
     /**
      *
      */
-    int CKinetics::Load(CReadConfig &configbuffer);
+    int Load(CReadConfig &configbuffer);
 private:
 
     /**
