@@ -5,8 +5,10 @@ libsteadystate_a_SOURCES = \
 	CJacob.cpp \
 	CMca.cpp \
 	CNewton.cpp \
-	CSS_Solution.cpp \
-	CEigen.cpp
+	CSS_Solution.cpp
+
+# \
+#	CEigen.cpp
 
 EXTRA_DIST = \
 	steadystate.h \

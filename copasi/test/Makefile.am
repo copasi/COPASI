@@ -11,32 +11,33 @@ EXTRA_DIST = test.cpp matrix.cpp
 bin_PROGRAMS = test matrix
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/copasi
+INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
 LIBS = \
-        -lutilities \
         -lfunction \
         -lmodel \
         -loutput \
         -lsteadystate \
-        -ltrajectory
+        -ltrajectory \
+        -lutilities
 
 # the library search path.
-LDFLAGS = -all-static\
-        -L../utilities \
+LDFLAGS = -all-static \
         -L../function \
         -L../model \
         -L../output \
         -L../steadystate \
-        -L../trajectory
+        -L../trajectory \
+        -L../utilities
 
 LDADD = \
-        ../utilities/libutilities.a \
         ../function/libfunction.a \
         ../output/liboutput.a \
         ../model/libmodel.a \
-        ../trajectory/libtrajectory.a
+	../steadystate/libsteadystate.a \
+        ../trajectory/libtrajectory.a \
+        ../utilities/libutilities.a
 
 SUBDIRS = \
         function \

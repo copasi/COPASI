@@ -5,6 +5,7 @@ libutilities_a_SOURCES = \
 	CCopasiException.cpp \
 	CCopasiMessage.cpp \
 	CGlobals.cpp \
+	CRandom.cpp \
 	CReadConfig.cpp \
 	CVersion.cpp \
 	CWriteConfig.cpp \
@@ -14,8 +15,9 @@ EXTRA_DIST = \
 	utilities.h \
 	CCopasiException.h	CCopasiException.cpp \
 	CCopasiMessage.h	CCopasiMessage.cpp \
-	CCopasiVector.h 	CCopasiVectorN.h \
+	CCopasiVector.h \
 	CGlobals.h		CGlobals.cpp \
+	CRandom.h		CRandom.cpp \
 	CReadConfig.h		CReadConfig.cpp \
 	CVersion.h		CVersion.cpp \
 	CWriteConfig.h		CWriteConfig.cpp \
@@ -25,4 +27,4 @@ EXTRA_DIST = \
 ####### kdevelop will overwrite this part!!! (end)############
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/copasi
+INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)

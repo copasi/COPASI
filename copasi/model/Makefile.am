@@ -23,4 +23,4 @@ EXTRA_DIST = \
 ####### kdevelop will overwrite this part!!! (end)############
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(top_srcdir)/copasi
+INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)

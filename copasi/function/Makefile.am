@@ -2,23 +2,30 @@
 noinst_LIBRARIES = libfunction.a
 
 libfunction_a_SOURCES = \
-	CBaseFunction.cpp \
-	CBaseIdentifier.cpp \
-	CFunctionDB.cpp \
+	CRange.cpp \
+	CUsageRange.cpp \
+	CFunction.cpp \
+	CFunctionParameter.cpp \
+	CFunctionParameters.cpp \
 	CKinFunction.cpp \
 	CMassAction.cpp \
+	CFunctionDB.cpp \
 	CNodeK.cpp \
 	lexkk.cpp
 
-EXTRA_DIST = 
-	function.h \
-	CBaseFunction.h		CBaseFunction.cpp \
-	CBaseIdentifier.h	CBaseIdentifier.cpp \
-	CFunctionDB.h		CFunctionDB.cpp \
+EXTRA_DIST = \
+	CRange.h		CRange.cpp \
+	CUsageRange.h		CUsageRange.cpp \
+	CFunction.h		CFunction.cpp \
+	CFunctionParameter.h	CFunctionParameter.cpp \
+	CFunctionParameters.h	CFunctionParameters.cpp \
+	CMassAction.h 		CMassAction.cpp \
 	CKinFunction.h		CKinFunction.cpp \
-	CMassAction.h		CMassAction.cpp \
+	CFunctionDB.h		CFunctionDB.cpp \
 	CNodeK.h		CNodeK.cpp \
-	lexkk.h 		lexkk.cpp
+	lexkk.h 		lexkk.cpp\
+	CCallParameter.h \
+	CCallParameters.h
 
 ####### kdevelop will overwrite this part!!! (end)############
 
