@@ -18,9 +18,6 @@ static char *enumname[] = { "INT16", "INT32", "UINT16", "UINT32", "FLOAT32", "FL
 
 class CFunctionParameter
   {
-  public:
-    //static const string enumname[12];
-
     //Attributes
 
   public:
