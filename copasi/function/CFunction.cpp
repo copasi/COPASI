@@ -73,12 +73,18 @@ void CFunction::load(CReadConfig & configBuffer,
 
       configBuffer.getVariable("Substrates", "C_INT32", &Type);
       UsageDescription.setUsage("SUBSTRATES");
-      UsageDescription.setLow(Type);
+      if (Type == 0)
+        UsageDescription.setRange(Type, CRange::Infinity);
+      else
+        UsageDescription.setRange(Type);
       mUsageDescriptions.add(UsageDescription);
 
       configBuffer.getVariable("Products", "C_INT32", &Type);
       UsageDescription.setUsage("PRODUCTS");
-      UsageDescription.setLow(Type);
+      if (Type == 0)
+        UsageDescription.setRange(Type, CRange::Infinity);
+      else
+        UsageDescription.setRange(Type);
       mUsageDescriptions.add(UsageDescription);
 
       mode = CReadConfig::SEARCH;
