@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/slidersettingsdialog.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 09:14:34 $
+   $Date: 2004/11/05 14:48:40 $
    End CVS Header */
 
 /****************************************************************************
@@ -39,7 +39,7 @@ void SliderSettingsDialog::setSlider(CopasiSlider * slider)
   if (found)
     {
       this->mpSlider = slider;
-      this->mpObjectLabel->setText(FROM_UTF8(slider->object()->getCN()));
+      this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->object()->getCN()));
       this->mpObjectBrowseButton->hide();
       this->updateInputFields();
       this->updateInputFieldsValues();
@@ -47,7 +47,7 @@ void SliderSettingsDialog::setSlider(CopasiSlider * slider)
   else
     {
       this->mpSlider = NULL;
-      this->mpObjectLabel->setText("NULL");
+      this->mpObjectNameLineEdit->setText("NULL");
       this->mpObjectBrowseButton->show();
       this->updateInputFields();
     }
@@ -60,11 +60,21 @@ void SliderSettingsDialog::setDefinedSliders(std::vector<CopasiSlider *> sliderV
 
 void SliderSettingsDialog::updateInputFieldsValues()
 {
-  this->mpObjectValueEdit->setText(QString::number(this->mpSlider->value()));
-  this->mpMinValueEdit->setText(QString::number(this->mpSlider->minValue()));
-  this->mpMaxValueEdit->setText(QString::number(this->mpSlider->maxValue()));
-  this->mpNumMinorTicksEdit->setText(QString::number(this->mpSlider->numMinorTicks()));
-  this->mpMinorMajorFactorEdit->setText(QString::number(this->mpSlider->minorMajorFactor()));
+  this->mValue = this->mpSlider->value();
+  this->mpObjectValueEdit->setText(QString::number(this->mValue));
+
+  this->mMinValue = this->mpSlider->minValue();
+  this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+
+  this->mMaxValue = this->mpSlider->maxValue();
+  this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+
+  this->mNumMinorTicks = this->mpSlider->numMinorTicks();
+  this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
+
+  this->mMinorMajorFactor = this->mpSlider->minorMajorFactor();
+  this->mpMinorMajorFactorEdit->setText(QString::number(this->mMinorMajorFactor));
+
   this->numMinorTicksChanged();
 }
 
@@ -93,8 +103,9 @@ void SliderSettingsDialog::updateInputFields()
 
 void SliderSettingsDialog::okButtonPressed()
 {
+  // only noew change underlying slider
+  this->updateSlider();
   // close dialog with positive feedback
-  // fill output structure
   done(QDialog::Accepted);
 }
 
@@ -107,60 +118,63 @@ void SliderSettingsDialog::cancelButtonPressed()
 void SliderSettingsDialog::minorTickSizeChanged()
 {
   // adjust numMinorTicks
-  double value = this->mpMinorTickSizeEdit->text().toDouble();
-  //this->mpSlider->setMinorTickInterval(value);
-  unsigned int numMinorTicks = (unsigned int)floor(((this->mpSlider->maxValue() - this->mpSlider->minValue()) / value) + 0.5);
-  if (numMinorTicks == 0)
+  this->mMinorTickSize = this->mpMinorTickSizeEdit->text().toDouble();
+  if (this->mMinorTickSize == 0.0)
     {
-      numMinorTicks = 1;
-      value = this->mpSlider->maxValue() - this->mpSlider->minValue();
-      //this->mpSlider->setMinorTickInterval(value);
-      this->mpMinorTickSizeEdit->setText(QString::number(value));
+      this->mNumMinorTicks = 1;
     }
-  this->mpNumMinorTicksEdit->setText(QString::number(numMinorTicks));
-  this->mpSlider->setNumMinorTicks(numMinorTicks);
+  else
+    {
+      this->mNumMinorTicks = (unsigned int)floor(((this->mMaxValue - this->mMinValue) / this->mMinorTickSize) + 0.5);
+    }
+  if (this->mNumMinorTicks == 0)
+    {
+      this->mNumMinorTicks = 1;
+      this->mMinorTickSize = this->mMaxValue - this->mMinValue;
+      this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
+    }
+  this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
 }
 
 void SliderSettingsDialog::numMinorTicksChanged()
 {
   // adjust minorTickSize
-  unsigned int numMinorTicks = this->mpNumMinorTicksEdit->text().toUInt();
-  if (numMinorTicks == 1)
+  this-> mNumMinorTicks = this->mpNumMinorTicksEdit->text().toUInt();
+  if (this->mNumMinorTicks == 1)
     {
-      numMinorTicks = 1;
-      this->mpNumMinorTicksEdit->setText(QString::number(numMinorTicks));
+      this->mNumMinorTicks = 1;
+      this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
     }
-  this->mpSlider->setNumMinorTicks(numMinorTicks);
-  this->mpMinorTickSizeEdit->setText(QString::number(this->mpSlider->minorTickInterval()));
+  this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
+  this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
 }
 
 void SliderSettingsDialog::minValueChanged()
 {
   // check if it is smaller than the current value
   // if not, set it to the current value
-  double value = mpMinValueEdit->text().toDouble();
-  if (value > this->mpSlider->value())
+  this->mMinValue = mpMinValueEdit->text().toDouble();
+  if (this->mMinValue > this->mValue)
     {
-      value = this->mpSlider->value();
-      this->mpMinValueEdit->setText(QString::number(value));
+      this->mMinValue = this->mValue;
+      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
     }
-  this->mpSlider->setMinValue(value);
-  this->mpMinorTickSizeEdit->setText(QString::number(this->mpSlider->minorTickInterval()));
+  this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
+  this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
 }
 
 void SliderSettingsDialog::maxValueChanged()
 {
   // check if it is larget then the current value
   // else set it to the current value
-  double value = mpMaxValueEdit->text().toDouble();
-  if (value < this->mpSlider->value())
+  this->mMaxValue = mpMaxValueEdit->text().toDouble();
+  if (this->mMaxValue < this->mValue)
     {
-      value = this->mpSlider->value();
-      this->mpMaxValueEdit->setText(QString::number(value));
+      this->mMaxValue = this->mValue;
+      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
     }
-  this->mpSlider->setMaxValue(value);
-  // adjust tickIntervalSize
-  this->mpMinorTickSizeEdit->setText(QString::number(this->mpSlider->minorTickInterval()));
+  this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
+  this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
 }
 
 void SliderSettingsDialog::objectValueChanged()
@@ -168,25 +182,23 @@ void SliderSettingsDialog::objectValueChanged()
   // check if the value is within range, else set it to
   // the closest border of the range
   // get the value and set it in the current slider
-  double value = mpObjectValueEdit->text().toDouble();
-  if (value > this->mpSlider->maxValue())
+  this->mValue = mpObjectValueEdit->text().toDouble();
+  if (this->mValue > this->mMaxValue)
     {
-      value = this->mpSlider->maxValue();
-      this->mpObjectValueEdit->setText(QString::number(value));
+      this->mValue = this->mMaxValue;
+      this->mpObjectValueEdit->setText(QString::number(this->mValue));
     }
-  if (value < this->mpSlider->minValue())
+  if (this->mValue < this->mMinValue)
     {
-      value = this->mpSlider->minValue();
-      this->mpObjectValueEdit->setText(QString::number(value));
+      this->mValue = this->mMinValue;
+      this->mpObjectValueEdit->setText(QString::number(this->mValue));
     }
-  this->mpSlider->setValue(value);
 }
 
 void SliderSettingsDialog::minorMajorFactorChanged()
 {
   // get the value and set it in the current slider
-  unsigned int value = this->mpMinorMajorFactorEdit->text().toUInt();
-  this->mpSlider->setMinorMajorFactor(value);
+  this->mMinorMajorFactor = this->mpMinorMajorFactorEdit->text().toUInt();
 }
 
 void SliderSettingsDialog::init()
@@ -221,13 +233,13 @@ void SliderSettingsDialog::browseButtonPressed()
       if (this->mpSlider && this->mpSlider->object() == object) return;
       unsigned C_INT32 i;
       unsigned C_INT32 iMax = this->mDefinedSliders.size();
-      bool found = false;
-      bool sliderFound = false;
+      C_INT32 found = iMax;
+      C_INT32 sliderFound = iMax;
       for (i = 0; i < iMax;++i)
         {
           if (this->mDefinedSliders[i]->object() == object)
             {
-              found = true;
+              found = i;
               if (sliderFound)
                 {
                   break;
@@ -235,7 +247,7 @@ void SliderSettingsDialog::browseButtonPressed()
             }
           if (this->mDefinedSliders[i] == this->mpSlider)
             {
-              sliderFound = true;
+              sliderFound = i;
               if (found)
                 {
                   break;
@@ -245,10 +257,11 @@ void SliderSettingsDialog::browseButtonPressed()
       if (this->mpSlider && (!sliderFound))
         {
           delete this->mpSlider;
+          this->mpSlider = NULL;
         }
-      if (found)
+      if (found != iMax)
         {
-          this->setSlider(this->mDefinedSliders[i]);
+          this->setSlider(this->mDefinedSliders[found]);
         }
       else
         {
@@ -263,4 +276,29 @@ void SliderSettingsDialog::browseButtonPressed()
 void SliderSettingsDialog::setModel(CModel * model)
 {
   this->mpModel = model;
+}
+
+void SliderSettingsDialog::disableObjectChoosing(bool disableChoosing)
+{
+  this->mpObjectBrowseButton->setHidden(disableChoosing);
+}
+
+void SliderSettingsDialog::updateSlider()
+{
+  if (this->mpSlider)
+    {
+      if (this->mMinValue < this->mpSlider->maxValue())
+        {
+          this->mpSlider->setMinValue(this->mMinValue);
+          this->mpSlider->setMaxValue(this->mMaxValue);
+        }
+      else
+        {
+          this->mpSlider->setMaxValue(this->mMaxValue);
+          this->mpSlider->setMinValue(this->mMinValue);
+        }
+      this->mpSlider->setValue(this->mValue);
+      this->mpSlider->setNumMinorTicks(this->mNumMinorTicks);
+      this->mpSlider->setMinorMajorFactor(this->mMinorMajorFactor);
+    }
 }

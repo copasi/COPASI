@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 09:14:33 $
+   $Date: 2004/11/05 14:48:39 $
    End CVS Header */
 
 #ifndef CopasiSlider_H__
@@ -58,6 +58,7 @@ class CopasiSlider: public QVBox
     QSlider* mpSlider;
     QLabel* mpLabel;
     double mTickInterval;
+    double mValue;
 
     void updateSliderData();
     void updateLabel();

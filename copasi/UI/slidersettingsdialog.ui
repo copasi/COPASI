@@ -352,7 +352,6 @@
     <include location="local" impldecl="in declaration">CopasiSlider.h</include>
     <include location="local" impldecl="in declaration">copasi.h</include>
     <include location="global" impldecl="in declaration">string</include>
-    <include location="global" impldecl="in declaration">sstream</include>
     <include location="local" impldecl="in implementation">qtUtilities.h</include>
     <include location="local" impldecl="in implementation">qlistbox.h</include>
     <include location="local" impldecl="in implementation">qvalidator.h</include>
@@ -369,9 +368,14 @@
 <variables>
     <variable>CModel* mpModel;</variable>
     <variable>C_INT32 mCurrentTaskId;</variable>
-    <variable>std::ostringstream mOutStream;</variable>
     <variable>CopasiSlider* mpSlider;</variable>
     <variable>std::vector&lt; CopasiSlider* &gt; mDefinedSliders;</variable>
+    <variable>unsigned int mNumMinorTicks</variable>
+    <variable>unsigned int mMinorMajorFactor</variable>
+    <variable>double mValue</variable>
+    <variable>double mMinValue</variable>
+    <variable>double mMaxValue</variable>
+    <variable>double mMinorTickSize</variable>
 </variables>
 <signals>
     <signal>sliderChanged(CopasiSlider* slider)</signal>
@@ -395,6 +399,8 @@
     <function access="protected">updateInputFields()</function>
     <function access="protected">init()</function>
     <function>setModel( CModel * model )</function>
+    <function>disableObjectChoosing( bool disableChoosing )</function>
+    <function>updateSlider()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 09:14:33 $
+   $Date: 2004/11/05 14:48:39 $
    End CVS Header */
 
 #include "CopasiSlider.h"
@@ -35,24 +35,25 @@ void CopasiSlider::updateSliderData()
 {
   if (this->mpObject)
     {
-      double value = 0.0;
+      this->mValue = 0.0;
       if (this->mpObject->isValueDbl())
         {
-          value = *(double*)(((CCopasiObjectReference<C_FLOAT64>*)this->mpObject)->getReference());
+          this->mValue = *(double*)(((CCopasiObjectReference<C_FLOAT64>*)this->mpObject)->getReference());
         }
       else if (this->mpObject->isValueInt())
         {
           //value = *(int*)this->mpObject->getReference();
-          value = *(int*)(((CCopasiObjectReference<C_INT32>*)this->mpObject)->getReference());
+          this->mValue = *(int*)(((CCopasiObjectReference<C_INT32>*)this->mpObject)->getReference());
         }
       this->mMinValue = 0.0;
-      this->mMaxValue = 2.0 * value;
+      this->mMaxValue = 2.0 * this->mValue;
       this->mpSlider->setMinValue(0);
       this->mpSlider->setMaxValue(this->mNumMinorTicks);
+      this->mpSlider->setTickInterval(1);
       this->mpSlider->setLineStep(1);
       this->mpSlider->setPageStep(this->mMinorMajorFactor);
       this->mTickInterval = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
-      this->mpSlider->setValue((int)floor(((value - this->mMinValue) / this->mTickInterval) + 0.5));
+      this->mpSlider->setValue((int)floor(((this->mValue - this->mMinValue) / this->mTickInterval) + 0.5));
       if (this->mpObject->isValueInt())
         {
           this->setType(intType);
@@ -73,7 +74,7 @@ void CopasiSlider::updateSliderData()
 
 double CopasiSlider::value() const
   {
-    return this->mMinValue + this->mTickInterval*this->mpSlider->value();
+    return this->mValue;
   }
 
 void CopasiSlider::setValue(double value)
@@ -86,18 +87,19 @@ void CopasiSlider::setValue(double value)
     {
       value = this->mMaxValue;
     }
-  this->mpSlider->setValue((int)floor(((value - this->mMinValue) / this->mTickInterval) + 0.5));
+  this->mValue = value;
+  this->mpSlider->setValue((int)floor(((this->mValue - this->mMinValue) / this->mTickInterval) + 0.5));
   if (this->mTypeVar == intType)
     {
       int* reference = (int*)(((CCopasiObjectReference<C_INT32>*)this->mpObject)->getReference());
 
-      *reference = (int)floor(value + 0.5);
+      *reference = (int)floor(this->mValue + 0.5);
     }
   else if (this->mTypeVar == doubleType)
     {
       double* reference = (double*)(((CCopasiObjectReference<C_FLOAT64>*)this->mpObject)->getReference());
 
-      *reference = value;
+      *reference = this->mValue;
     }
   this->updateLabel();
 }
@@ -123,7 +125,7 @@ void CopasiSlider::setNumMinorTicks(unsigned int numMinorTicks)
   this->mNumMinorTicks = numMinorTicks;
   // set maxValue and value of slider
   this->mpSlider->setMaxValue(numMinorTicks);
-  this->mpSlider->setValue((int)floor(((this->mMaxValue - this->mMinValue) / this->mTickInterval) + 0.5));
+  this->mpSlider->setValue((int)floor(((this->mValue - this->mMinValue) / this->mTickInterval) + 0.5));
 }
 
 unsigned int CopasiSlider::numMinorTicks() const
@@ -165,7 +167,7 @@ void CopasiSlider::setMaxValue(double value)
       this->setValue(this->mMaxValue);
     }
 
-  this->mpSlider->setValue((int)floor(((this->mMaxValue - this->mMinValue) / this->mTickInterval) + 0.5));
+  this->mpSlider->setValue((int)floor(((this->mValue - this->mMinValue) / this->mTickInterval) + 0.5));
 
   this->updateLabel();
 }
@@ -183,7 +185,7 @@ void CopasiSlider::setMinValue(double value)
       this->setValue(this->mMinValue);
     }
 
-  this->mpSlider->setValue((int)floor(((this->mMaxValue - this->mMinValue) / this->mTickInterval) + 0.5));
+  this->mpSlider->setValue((int)floor(((this->mValue - this->mMinValue) / this->mTickInterval) + 0.5));
 
   this->updateLabel();
 }
@@ -207,22 +209,22 @@ void CopasiSlider::updateLabel()
 
 void CopasiSlider::sliderValueChanged(int value)
 {
-  double v = this->mMinValue + value * this->mTickInterval;
+  this->mValue = this->mMinValue + value * this->mTickInterval;
   if (this->mTypeVar == intType)
     {
       int* reference = (int*)(((CCopasiObjectReference<C_INT32>*)this->mpObject)->getReference());
 
-      *reference = (int)floor(v + 0.5);
+      *reference = (int)floor(this->mValue + 0.5);
     }
   else if (this->mTypeVar == doubleType)
     {
       double* reference = (double*)(((CCopasiObjectReference<C_FLOAT64>*)this->mpObject)->getReference());
 
-      *reference = v;
+      *reference = this->mValue;
     }
   this->updateLabel();
 
-  emit valueChanged(v);
+  emit valueChanged(this->mValue);
 }
 
 CopasiSlider::NumberType CopasiSlider::type() const

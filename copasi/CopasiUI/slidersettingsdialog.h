@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/slidersettingsdialog.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 09:14:34 $
+   $Date: 2004/11/05 14:48:40 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'slidersettingsdialog.ui'
  **
- ** Created: Fri Nov 5 09:50:49 2004
- **      by: The User Interface Compiler ($Id: slidersettingsdialog.h,v 1.5 2004/11/05 09:14:34 gauges Exp $)
+ ** Created: Fri Nov 5 15:37:32 2004
+ **      by: The User Interface Compiler ($Id: slidersettingsdialog.h,v 1.6 2004/11/05 14:48:40 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -22,7 +22,6 @@
 #include <qdialog.h>
 #include <vector>
 #include <string>
-#include <sstream>
 #include "CopasiSlider.h"
 #include "copasi.h"
 
@@ -65,6 +64,8 @@ class SliderSettingsDialog : public QDialog
     virtual void setSlider(CopasiSlider * slider);
     virtual void setDefinedSliders(std::vector< CopasiSlider * > sliderVect);
     virtual void setModel(CModel * model);
+    virtual void disableObjectChoosing(bool disableChoosing);
+    virtual void updateSlider();
 
   signals:
     void sliderChanged(CopasiSlider* slider);
@@ -72,9 +73,14 @@ class SliderSettingsDialog : public QDialog
   protected:
     CModel* mpModel;
     C_INT32 mCurrentTaskId;
-    std::ostringstream mOutStream;
     CopasiSlider* mpSlider;
     std::vector< CopasiSlider* > mDefinedSliders;
+    unsigned int mNumMinorTicks;
+    unsigned int mMinorMajorFactor;
+    double mValue;
+    double mMinValue;
+    double mMaxValue;
+    double mMinorTickSize;
 
     virtual void updateInputFieldsValues();
     virtual void updateInputFields();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 09:24:55 $
+   $Date: 2004/11/05 14:48:39 $
    End CVS Header */
 
 #include <iostream>
@@ -104,12 +104,14 @@ void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
   QWidget* widget = this->childAt(e->pos());
   if (dynamic_cast<QLabel*>(widget) || dynamic_cast<QSlider*>(widget))
     {
+      this->contextMenu->setItemEnabled(this->contextMenu->idAt(0), false);
       this->contextMenu->setItemEnabled(this->contextMenu->idAt(1), true);
       this->contextMenu->setItemEnabled(this->contextMenu->idAt(2), true);
       this->currSlider = dynamic_cast<CopasiSlider*>(widget->parent());
     }
   else
     {
+      this->contextMenu->setItemEnabled(this->contextMenu->idAt(0), true);
       this->contextMenu->setItemEnabled(this->contextMenu->idAt(1), false);
       this->contextMenu->setItemEnabled(this->contextMenu->idAt(2), false);
     }
@@ -120,6 +122,9 @@ void SliderDialog::createNewSlider()
 {
   SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
   pSettingsDialog->setModel(this->mpDataModel->getModel());
+  // set the list of sliders that is already known
+  pSettingsDialog->setDefinedSliders(this->sliderMap[this->currentFolderId]);
+
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       this->currSlider = pSettingsDialog->getSlider();
@@ -179,7 +184,15 @@ void SliderDialog::removeSlider()
 
 void SliderDialog::editSlider()
 {
-  this->currSlider = NULL;
+  SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
+  pSettingsDialog->setModel(this->mpDataModel->getModel());
+  // set the list of sliders that is already known
+  pSettingsDialog->setDefinedSliders(this->sliderMap[this->currentFolderId]);
+
+  pSettingsDialog->disableObjectChoosing(true);
+  pSettingsDialog->setSlider(this->currSlider);
+  pSettingsDialog->exec();
+  delete pSettingsDialog;
 }
 
 void SliderDialog::toggleRunButtonState(bool notState)
