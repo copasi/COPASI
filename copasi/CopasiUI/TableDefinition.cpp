@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.15 2003/08/11 00:53:56 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.16 2003/08/11 00:56:13 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -334,6 +334,8 @@ void TableDefinition::downButtonClicked()
     {
       //swap in selectedList
       CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
+      // check for valid of the update object pointer array
+      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
       CCopasiObject* pUpperObject = selectedList[selectedIndex];
       selectedList[selectedIndex + 1] = pUpperObject;
       selectedList[selectedIndex] = pDownObject;
