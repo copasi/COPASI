@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/25 19:00:00 $
+   $Author: gasingh $ 
+   $Date: 2003/12/15 22:21:30 $
    End CVS Header */
 
 /***********************************************************************
@@ -248,13 +248,6 @@ void FunctionWidget::slotBtnDeleteClicked()
             }
         }
 
-      if (msg1Empty == 0)
-        {
-          QMessageBox::warning(this, "Sorry, Cannot Delete",
-                               msg1,
-                               "OK", 0, 0, 0, 1);
-        }
-
       if (msg2Empty == 0)
         {
           int choice = QMessageBox::warning(this,
@@ -265,7 +258,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if user chooses to deleted Functions */
           switch (choice)
             {
-            case 0:   // Yes or Enter
+            case 0:    // Yes or Enter
               {
                 /* Delete the Functions on which no Reactions are dependent */
                 for (i = 0; i < imax; i++)
@@ -285,9 +278,20 @@ void FunctionWidget::slotBtnDeleteClicked()
                   }
                 break;
               }
-            case 1:   // No or Escape
+            case 1:    // No or Escape
               break;
             }
+        }
+
+      if (msg1Empty == 0)
+        {
+          QMessageBox::warning(this, "Sorry, Cannot Delete",
+                               msg1,
+                               "OK", 0, 0, 0, 1);
+
+          //int choice = QMessageBox::warning(this, "Sorry, Cannot Delete",
+          //                   msg1,
+          //                 "OK", "Navigate to Reaction Widget", 0, 0, 1);
         }
 
       delete[] reacFound;
