@@ -23,8 +23,9 @@
  * the array. 
  *
  * Prototypical usage:
+ * double rnd;
  * CCopasiRandom *crand = new CCopasiRandom();
- * crand->getUniform();
+ * rnd = crand->getUniformRandom();
  */
 
 class CRandom
