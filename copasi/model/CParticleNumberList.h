@@ -44,6 +44,13 @@ class CParticleNumberList
     ~CParticleNumberList();
 
     /**
+     * Assignement operator
+     * @param const CParticleNumberList & rhs
+     * @retrun CParticleNumberList & lhs
+     */
+    CParticleNumberList & operator =(const CParticleNumberList & rhs);
+
+    /**
      * Resize the particle number list
      * @param const unsigned C_INT32 & size
      */

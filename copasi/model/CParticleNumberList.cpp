@@ -25,7 +25,17 @@ CParticleNumberList::CParticleNumberList(const CParticleNumberList & src) :
 CParticleNumberList::~CParticleNumberList()
 {}
 
-const unsigned C_INT32 & CParticleNumberList::size () const
+CParticleNumberList &
+CParticleNumberList::operator=(const CParticleNumberList & rhs)
+{
+  mSize = rhs.mSize;
+  mDbl = rhs.mDbl;
+  mInt = rhs.mInt;
+
+  return *this;
+}
+
+const unsigned C_INT32 & CParticleNumberList::size() const
 {return mSize;}
 
 void CParticleNumberList::resize(const unsigned C_INT32 & size)
