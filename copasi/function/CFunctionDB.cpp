@@ -25,7 +25,11 @@ CFunctionDB::CFunctionDB(const std::string & name,
   CONSTRUCTOR_TRACE;
 }
 
-CFunctionDB::~CFunctionDB() {cleanup(); DESTRUCTOR_TRACE;}
+CFunctionDB::~CFunctionDB()
+{
+  cleanup();
+  DESTRUCTOR_TRACE;
+}
 
 void CFunctionDB::cleanup() {mLoadedFunctions.cleanup();}
 
