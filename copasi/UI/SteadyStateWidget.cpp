@@ -224,6 +224,10 @@ void SteadyStateWidget::RunTask()
 {
   if (mSteadyStateTask == NULL)
     return;
+
+  std::ofstream output("output.txt");
+  mSteadyStateTask->initializeReporting(output);
+
   mSteadyStateTask->process();
 }
 

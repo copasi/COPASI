@@ -259,6 +259,10 @@ void TrajectoryWidget::RunTask()
 {
   if (mTrajectoryTask == NULL)
     return;
+
+  std::ofstream output("output.txt");
+  mTrajectoryTask->initializeReporting(output);
+
   mTrajectoryTask->process();
 }
 
