@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.3 2003/08/18 16:08:30 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.4 2003/08/19 16:22:56 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,10 +20,15 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
+#include "listviews.h"
+#include "DataModel.h"
+#include "report/CReportDefinitionVector.h"
+
 /*
  *  Constructs a CReportDefinitionSelect as a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
+
 CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* name, WFlags fl)
     : QDialog(parent, name, fl)
 {
@@ -48,9 +53,9 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
 
   frame5Layout->addWidget(reportLabel, 0, 0);
 
-  comboBox9 = new QComboBox(FALSE, frame5, "comboBox9");
+  reportDefinitionNameList = new QComboBox(FALSE, frame5, "reportDefinitionNameList");
 
-  frame5Layout->addWidget(comboBox9, 0, 1);
+  frame5Layout->addWidget(reportDefinitionNameList, 0, 1);
 
   targetEdit = new QLineEdit(frame5, "targetEdit");
   targetEdit->setFrameShape(QLineEdit::LineEditPanel);
@@ -75,11 +80,17 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
   clearWState(WState_Polished);
 
   // tab order
-  setTabOrder(comboBox9, jumpButton);
+  setTabOrder(reportDefinitionNameList, jumpButton);
   setTabOrder(jumpButton, targetEdit);
   setTabOrder(targetEdit, appendChecked);
   setTabOrder(appendChecked, confirmButton);
   setTabOrder(confirmButton, cancelButton);
+
+  connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
+  connect(cancelButton, SIGNAL(clicked()), this, SLOT(confirmClicked()));
+  connect(jumpButton, SIGNAL(clicked()), this, SLOT(jumpToEdit()));
+
+  loadReportDefinitionVector();
 }
 
 /*
@@ -87,6 +98,7 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
  */
 CReportDefinitionSelect::~CReportDefinitionSelect()
 {
+  cleanup();
   // no need to delete child widgets, Qt does it all for us
 }
 
@@ -104,3 +116,30 @@ void CReportDefinitionSelect::languageChange()
   appendChecked->setText(tr("Append"));
   jumpButton->setText(tr("Go editing..."));
 }
+
+void CReportDefinitionSelect::loadReportDefinitionVector()
+{
+  DataModel* dataModel = ListViews::getDataModel();
+  CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+  C_INT32 i;
+  for (i = 0; i < pReportDefinitionVector->getReportDefinitionsAddr()->size(); i++)
+    reportDefinitionNameList->insertItem((*(pReportDefinitionVector->getReportDefinitionsAddr()))[i]->getName().c_str());
+}
+
+void CReportDefinitionSelect::cancelClicked()
+{
+  cleanup();
+  QWidget::closeEvent(e);
+}
+
+void CReportDefinitionSelect::confirmButton()
+{
+  cleanup();
+  QWidget::closeEvent(e);
+}
+
+void CReportDefinitionSelect::cleanup()
+{}
+
+void CReportDefinitionSelect::jumpToEdit()
+{}

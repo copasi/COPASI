@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.2 2003/08/18 16:08:30 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.3 2003/08/19 16:22:56 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -35,18 +35,23 @@ class CReportDefinitionSelect : public QDialog
     QPushButton* cancelButton;
     QFrame* frame5;
     QLabel* reportLabel;
-    QComboBox* comboBox9;
+    QComboBox* reportDefinitionNameList;
     QLineEdit* targetEdit;
     QLabel* targetLabel;
     QCheckBox* appendChecked;
     QPushButton* jumpButton;
 
   protected:
+    void cleanup();
+    void loadReportDefinitionVector();
     QGridLayout* CReportDefinitionSelectLayout;
     QGridLayout* frame5Layout;
 
   protected slots:
     virtual void languageChange();
+    virtual void cancelClicked();
+    virtual void confirmClicked();
+    virtual void jumpToEdit();
   };
 
 #endif // CREPORTDEFINITIONSELECT_H
