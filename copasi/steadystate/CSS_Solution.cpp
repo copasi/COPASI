@@ -245,21 +245,23 @@ void CSS_Solution::process(void)
       || (mOption==1) // or forward integration only
       )
     {
+      C_FLOAT64 * oldY;
+      C_FLOAT64 * newY;
 
       while (t < pow(10,10))
         {
           t *= 10;
 
           // before trajectory process, get trajectory.mY
-          //     = mTraj->getMY();
+          oldY = mTraj->getMY();
 
           mTraj -> process();
 
-          // after trajectory process, get trajectory.mY
-          //     = mTraj->getMY();
+	  // after trajectory process, get trajectory.mY
+	  newY = mTraj->getMY();
 
           //compare old and new mY and check isSteadyState()
-          if( isSteadyState() )
+          if( isSteadyStateAfterTrajectory(mTraj, oldY, newY) )
                 afterFindSteadyState();
 
           // newton+integration (we use newton before recycling)
@@ -281,6 +283,7 @@ void CSS_Solution::process(void)
 
   //Backward trajectory until -10^10
   // use backwards integration
+  // find the original lsods_incr, see how it works
   if( ( (mSSBackInt) && (mSs_solution!=SS_FOUND) ) //if others failed
   //  if( ( (mSs_solution!=SS_FOUND) ) // if others failed
       || (mOption==3) // or backwards integration only
@@ -329,6 +332,27 @@ void CSS_Solution::afterFindSteadyState()
 
 
   return;
+}
+
+// finds out if current state is a valid steady state
+// based on if (mY[i]-mY_old[i])/delta(t) < mSSRes 
+C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT64 * oldY, C_FLOAT64 * newY )
+{
+  
+  C_FLOAT64 timeLength = traj->calcTimeLength();
+  C_INT32 arrSize = traj -> getArrSize();
+
+  for (int i=0; i < arrSize; i++)
+    {
+      if ( (newY[i]-oldY[i])/timeLength > mSSRes) {
+	mSs_solution = SS_NOT_FOUND;
+	return mSs_solution;
+      }
+    }
+
+  mSs_solution = SS_FOUND;
+  return mSs_solution;
+
 }
 
 
@@ -563,6 +587,7 @@ C_INT32 CSS_Solution::isSteadyState( void )
 
 */
 
+/*
 
 // YH: move the following function to here from CNewton class
  
@@ -587,7 +612,7 @@ C_INT32  CSS_Solution::isSteadyState( void )
  
 }
 
-
+*/
 
 
 //#endif //XXXXXX

@@ -239,6 +239,14 @@ class CSS_Solution
    */
   C_INT32 isSteadyState( void );
 
+  
+  /**
+   *  Check if it is steady state after processing trajectory
+   *  It's based on if (mY[i]-mY_old[i])/delta(t) < mSSRes
+   *  @return an int acting like a bool
+   */
+  C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * aTraj, C_FLOAT64 *oldY, C_FLOAT64 * newY);
+
 };
 
 
