@@ -10,6 +10,7 @@
 #include "CMathConstant.h"
 #include "CMathVariable.h"
 
+#include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CReaction.h"
 #include "model/CCompartment.h"
@@ -72,6 +73,8 @@ CMathConstantCompartment & CMathConstantMetab::getCompartment() const
 {return *mpCompartment;}
 
 /* Parameter */
+std::map< std::string, CCopasiObject * > CMathConstantParameter::mSelection;
+
 CMathConstantParameter::CMathConstantParameter(const CMathConstantParameter & src):
     CMathConstant(src)
 {}
@@ -90,6 +93,35 @@ bool CMathConstantParameter::setValue(const C_FLOAT64 & value)
 
 const C_FLOAT64 & CMathConstantParameter::getValue() const
   {return ((CReaction::CId2Param *) mpObject)->getValue();}
+
+const std::map< std::string, CCopasiObject * > &
+CMathConstantParameter::getSelection()
+{return mSelection;}
+
+bool CMathConstantParameter::buildSelection(const CModel * pModel)
+{
+  const CCopasiVector< CReaction > & Reactions = pModel->getReactions();
+  unsigned C_INT32 i, imax = Reactions.size();
+  unsigned C_INT32 j, jmax;
+
+  CReaction * pReaction;
+  CCopasiVector < CReaction::CId2Param > * pParameters;
+  std::string Name;
+  for (i = 0; i < imax; i++)
+    {
+      pReaction = Reactions[i];
+      Name = pReaction->getName();
+      pParameters = & pReaction->getId2Parameters();
+
+      jmax = pParameters->size();
+
+      for (j = 0; j < jmax; j++)
+        mSelection[(*pParameters)[j]->getIdentifierName() + "(" + Name + ")"] =
+          (*pParameters)[j];
+    }
+
+  return true;
+}
 
 /* Compartment */
 CMathConstantCompartment::CMathConstantCompartment(const CMathConstantCompartment & src):

@@ -136,6 +136,13 @@ class CMathConstantMetab : public CMathConstant
 /** @dia:route CMathConstant; v,-3.01499,2.6307,31.9,19.1124,32.6698 */
 class CMathConstantParameter : public CMathConstant
   {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    static std::map< std::string, CCopasiObject * > mSelection;
+
     // Operations
   protected:
     /**
@@ -168,6 +175,19 @@ class CMathConstantParameter : public CMathConstant
      *
      */
     virtual const C_FLOAT64 & getValue() const;
+
+    /**
+     * Retreive the selection list
+     * @return const std::map< std::string, CCopasiObject * > & selectionList
+     */
+    static const std::map< std::string, CCopasiObject * > & getSelection();
+
+    /**
+     * Build the selection list
+     * @param const CModel * pModel
+     * @return bool Success
+     */
+    static bool buildSelection(const CModel * pModel);
   };
 
 /** @dia:pos 2.18922,7.75635 */
