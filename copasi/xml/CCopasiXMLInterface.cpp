@@ -151,7 +151,7 @@ bool CCopasiXMLInterface::haveTaskList() const
 
 bool CCopasiXMLInterface::freeTaskList()
 {
-  pdelete(mpTaskList);
+  //  pdelete(mpTaskList);
   return true;
 }
 
@@ -169,7 +169,7 @@ bool CCopasiXMLInterface::haveReportList() const
 
 bool CCopasiXMLInterface::freeReportList()
 {
-  pdelete(mpReportList);
+  //  pdelete(mpReportList);
   return true;
 }
 
