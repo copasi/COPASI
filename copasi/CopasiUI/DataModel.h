@@ -163,12 +163,18 @@ void DataModel<T>::setData(int status)
 template <class T>
 void DataModel<T>::createModel(const char* fileName)
 {
+  pdelete(trajectorytask);
   pdelete(model);
+  pdelete(steadystatetask);
+
+  trajectorytask = NULL;
+  model = NULL;
+  steadystatetask = NULL;
+
   model = new CModel();
   modelUpdate = true;
   notify(MODEL);
 
-  pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
   steadystatetask->setModel(model);
   steadystatetaskUpdate = true;
@@ -218,9 +224,9 @@ void DataModel<T>::saveModel(const char* fileName)
   if (trajectorytask != NULL)
     trajectorytask->save(outbuf);
 
-  pdelete(model);
-  pdelete(steadystatetask);
-  pdelete(trajectorytask);
+  // pdelete(model);
+  // pdelete(steadystatetask);
+  // pdelete(trajectorytask);
 }
 
 /*void DataModel<T>::saveModel(const char* fileName)
