@@ -1,6 +1,6 @@
-Version=3.21106
+Version=3.21103
 EndTime=3.000000e+001
-Points=101
+Points=100
 RealTime=0
 SleepTime=1
 TimeUnit=s
@@ -34,21 +34,32 @@ DerivationFactor=1.000000e-003
 ReportFile=KinMMfit.txt
 DynamicsFile=KinMMfit.dyn
 SSFile=simresults.ss
-Title=Fitting kinetic parameters of a Michaelian enzyme with time course data
-TotalMetabolites=4
-TotalSteps=1
-TotalMoieties=1
+Title=Kinetics of a  Michaelian enzyme measured spectrophotometrically
+TotalMetabolites=7
+TotalSteps=2
+TotalMoieties=2
 TotalCompartments=1
 Stoichiometry
--1.000000 
-1.000000 
-0.000000 
-0.000000 
+-1.000000 0.000000 
+-1.000000 1.000000 
+1.000000 -1.000000 
+0.000000 1.000000 
+0.000000 0.000000 
+0.000000 0.000000 
+0.000000 0.000000 
 TotalUDKinetics=0
 Metabolite=S
 Concentration=10
 Compartment=0
 Type=1
+Metabolite=E
+Concentration=0.01
+Compartment=0
+Type=1
+Metabolite=ES
+Concentration=0
+Compartment=0
+Type=2
 Metabolite=P
 Concentration=0
 Compartment=0
@@ -61,32 +72,64 @@ Metabolite=offset
 Concentration=0.1
 Compartment=0
 Type=0
-Metabolite=  S + P 
-Concentration=10
+Metabolite=noise
+Concentration=0.05
+Compartment=0
+Type=0
+Metabolite=  E + ES 
+Concentration=0.01
+Compartment=0
+Type=7
+Metabolite=  S - E + P 
+Concentration=9.99
 Compartment=0
 Type=7
 Step=R1
-Equation=S -> P
-KineticType=Henri-Michaelis-Menten (irreversible)
+Equation=S + E = ES
+KineticType=Mass action (reversible)
 Flux=0
-Reversible=0
-Substrates=1
+Reversible=1
+Substrates=2
 Products=1
 Modifiers=0
 Constants=2
 Subs0=0
-Prod0=1
-Param0=1
+Subs1=1
+Prod0=2
+Param0=130
 Param1=1
+Step=R2
+Equation=ES -> E + P
+KineticType=Mass action (irreversible)
+Flux=0
+Reversible=0
+Substrates=1
+Products=2
+Modifiers=0
+Constants=1
+Subs0=2
+Prod0=1
+Prod1=3
+Param0=1
 Compartment=compartment
 Volume=1.000000e+000
 Comments
-Fitting a Michaelis-Menten model to time course data generated with
-KinMMspht.gps
+This file is an example of nonlinear parameter fitting
+Synthetic data from a progress curve generated with 
+a Michaelis mechanism (with added Gaussian noise) is
+used to fit the parameters R1(k2) and R1(k) of the 
+Henri-Michaelis-Menten mechanism.
 
-We allow for error in the offset
+The original values were: R1(k2)=4 and R2(k)=45
+
+-Check how the data file is formatted and how one 
+ specifies that in the Fitting page.
+-Check how the signal (eg absorbance) was specified 
+ as a user function.
+-Check how the offsets were made uncertain in the fit.
+-Experiment with several optimisation methods.
 EndComments
-PlotType=2
+PlotType=3
 PlotDyn=1
 Plot3d=0
 PlotGrid=0
@@ -98,10 +141,10 @@ PlotHidden3d=0
 PlotLogX=0
 PlotLogY=0
 PlotLogZ=0
-PlotXEntry=-1
+PlotXEntry=1
 PlotYTotal=1
 PlotZTotal=1
-PlotY0=-1
+PlotY0=2
 PlotZ0=-1
 User-defined functions
 Items=1
@@ -127,11 +170,11 @@ Interactive time course
 Items=0
 Time-course output
 Items=3
+Title=[S]i
+Type=1
+I=S
 Title=time
 Type=14
-Title=[P]t
-Type=3
-I=P
 Title=signal
 Type=24
 Steady-state output
@@ -148,9 +191,9 @@ Sign=1.0
 OptimiseDyn=1
 Constrained=1
 Method=Evolutionary programming
-P0=500
+P0=1000
 P1=10
-P2=0.85
+P2=0.2
 P3=1
 P4=1
 Title=
@@ -161,13 +204,13 @@ Enabled=1
 SetModel=0
 FitDyn=1
 Constrained=1
-FitDataFile=KinMMspect.dat
+FitDataFile=mmspect.dat
 FitSeparator=32
 FitLines=500
-Method=Levenberg-Marquardt
-P0=500
+Method=Evolutionary programming
+P0=1000
 P1=10
-P2=0.85
+P2=0.2
 P3=1
 P4=1
 Parameters=2
@@ -175,13 +218,13 @@ MinType=1
 MaxType=1
 MinIneq=1
 MaxIneq=1
-MinD=1e-005
-MaxD=100
+MinD=1e-006
+MaxD=1000000
 IsParameter=1
-Title=R1(Km)
+Title=R1(k2)
 Type=6
 I=R1
-J=Km
+J=k2
 Min=1.0000000000000000
 Max=2.0000000000000000
 Density=2
@@ -196,13 +239,13 @@ MinType=1
 MaxType=1
 MinIneq=1
 MaxIneq=1
-MinD=0.001
-MaxD=1000
+MinD=1e-006
+MaxD=1000000
 IsParameter=1
-Title=R1(V)
+Title=R2(k)
 Type=6
-I=R1
-J=V
+I=R2
+J=k
 Min=1.0000000000000000
 Max=2.0000000000000000
 Density=2

@@ -1,4 +1,4 @@
-Version=3.00201
+Version=3.02300
 EndTime=1.000000e+004
 Points=5000
 RealTime=0
@@ -7,7 +7,7 @@ TimeUnit=s
 ConcentrationUnit=mM
 VolumeUnit=ml
 Dynamics=1
-SteadyState=1
+SteadyState=0
 Report=1
 DynTitles=0
 SSTitles=0
@@ -18,11 +18,11 @@ SSColWidth=12
 DynSeparator=44
 SSSeparator=44
 SSMCAUnscaled=0
-SSStrategy=0
+SSStrategy=2
 SSBackIntegration=1
 RepStructuralAnalysis=0
-RepStabilityAnalysis=1
-RepMCA=1
+RepStabilityAnalysis=0
+RepMCA=0
 NewtonLimit=50
 SSResoltion=1.000000e-009
 RelativeTolerance=1.000000e-006
@@ -30,7 +30,7 @@ AbsoluteTolerance=1.000000e-012
 AdamsMaxOrder=12
 BDFMaxOrder=5
 DerivationFactor=1.000000e-003
-ReportFile=E:\SCIENCE\GEPASI3\Decroly2.txt
+ReportFile=Z:\GEP3\Install-I\DATA\SAMPLES\Decroly2.txt
 DynamicsFile=decroly2.dyn
 SSFile=
 Title=Double product-activation (oscillations)
@@ -141,15 +141,15 @@ Value=2.000000e+000
 Node=79,41
 Node=79,41
 Metabolite=A
-Concentration=12.1231266297677000
+Concentration=9.0000000000000000
 Compartment=0
 Type=1
 Metabolite=B
-Concentration=0.0004364105586481
+Concentration=0.0500000000000000
 Compartment=0
 Type=1
 Metabolite=C
-Concentration=0.0000433762867011
+Concentration=0.1000000000000000
 Compartment=0
 Type=1
 Metabolite=D
@@ -159,7 +159,7 @@ Type=0
 Step=R1
 Equation= -> A
 KineticType=Constant flux (irreversible)
-Flux=0.0050000000000000
+Flux=0.0000000000000000
 Reversible=0
 Substrates=0
 Products=1
@@ -170,7 +170,7 @@ Param0=0.0050000000000000
 Step=R2
 Equation=A -> B
 KineticType=Allosteric activation (MWC)
-Flux=-1.#IND000000000000
+Flux=0.0000000000000000
 Reversible=0
 Substrates=1
 Products=1
@@ -186,7 +186,7 @@ Param3=500000000.0000000000000000
 Step=R3
 Equation=B -> C
 KineticType=Allosteric activation (MWC)
-Flux=-1.#IND000000000000
+Flux=0.0000000000000000
 Reversible=0
 Substrates=1
 Products=1
@@ -202,7 +202,7 @@ Param3=100.0000000000000000
 Step=R4
 Equation=C -> D
 KineticType=Mass action (irreversible)
-Flux=-1.#IND000000000000
+Flux=0.0000000000000000
 Reversible=0
 Substrates=1
 Products=1
@@ -214,15 +214,17 @@ Param0=1.0000000000000000
 Compartment=compartment
 Volume=1.000000e+000
 Comments
-This is the model of glycolysis by Decroly & Goldbeter.
+This is a model of glycolysis published in Decroly, O. and Goldbeter, A.  (1982),
+"Birhythmicity, chaos, and other patterns of temporal self-organization in a multiply
+regulated biochemical system.", Proc. Nat. Acad. Sci. USA 79,  6917-6921
 
-The pathway is only represented by a source at constant rate, two enzymes that
-are activated allosterically by their own products and a first-order sink reaction.
-The two allosteric enzymes represent PFK and PK which are activated by ADP,
-a product of both.
+The model only takes into consideration two enzymes that are activated
+allosterically by their own products, a constant supply of substrate and a
+first-order sink reaction. The two allosteric enzymes represent PFK and 
+PK which are activated by ADP, a product of both.
 
-This set of parameters allows for the existence of an unstable stable steady state,
-with a complex limit cycle around it.
+This set of parameters results in the existence of a complex oscillation (limit 
+cycle) regime.
 EndComments
 PlotType=0
 PlotDyn=1
