@@ -168,19 +168,8 @@ void CCompartment::setVolume(C_FLOAT64 volume)
 void CCompartment::addMetabolite(CMetab &metabolite)
 {mMetabolites.add(metabolite);}
 
-#ifdef XXXX
-void CCompartment::addMetabolite(CMetab &metabolite)
-{
-  CMetab *pMetabolite = new CMetab(metabolite, this);
-
-  pMetabolite->setCompartment(this);
-  //pMetabolite->setConcentration(pMetabolite->getConcentration());
-  //pMetabolite->setInitialConcentration(pMetabolite->getInitialConcentration());
-  // Volume is known now. But the model is not known. So we can not calculate numbers
-  // from concentrations
-  mMetabolites.add(pMetabolite);
-}
-#endif // XXXX
+bool CCompartment::addMetabolite(CMetab * pMetabolite)
+{return mMetabolites.add(pMetabolite, true);}
 
 bool CCompartment::isValidName(const std::string & name) const
   {return (name.find_first_of(" ") == std::string::npos);}

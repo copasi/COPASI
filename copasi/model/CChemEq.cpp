@@ -207,10 +207,10 @@ void CChemEq::addMetaboliteByName(const std::string & name, const C_FLOAT64 mult
     }
 }
 
-void CChemEq::addMetabolite(CMetab & metab, const C_FLOAT64 mult, const MetaboliteRole role)
+bool CChemEq::addMetabolite(CMetab * pMetab, const C_FLOAT64 mult, const MetaboliteRole role)
 {
   CChemEqElement element;
-  element.setMetabolite(metab);
+  element.setMetabolite(pMetab);
   element.setMultiplicity(mult);
 
   switch (role)
@@ -230,6 +230,8 @@ void CChemEq::addMetabolite(CMetab & metab, const C_FLOAT64 mult, const Metaboli
       fatalError();
       break;
     }
+
+  return true;
 }
 
 const CChemEqElement & CChemEq::findElementByName(const std::string & name,

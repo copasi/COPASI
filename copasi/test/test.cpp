@@ -1604,6 +1604,7 @@ C_INT32 TestMassAction(void)
 C_INT32 ConvertFunctionDB(void)
 {
   CCopasiXML xml;
+
   ((CCopasiXMLInterface *) &xml)->load("FunctionDB.xml");
 
 #ifdef XXXX

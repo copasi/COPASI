@@ -89,14 +89,14 @@ template < class CType > class CCopasiVector:
       /**
        *
        */
-      virtual void add(const CType & src)
+      virtual bool add(const CType & src)
       {
         CType * Element = new CType(src, this);
 
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(Element);
-        CCopasiContainer::add(Element);
+        return CCopasiContainer::add(Element);
       }
 
       /**
@@ -118,13 +118,15 @@ template < class CType > class CCopasiVector:
       /**
        *
        */
-      virtual void add(CType * src, bool adopt = false)
+      virtual bool add(CType * src, bool adopt = false)
       {
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(src);
-        CCopasiContainer::add(src);
+        bool success = CCopasiContainer::add(src);
         if (adopt) src->setObjectParent(this);
+
+        return success;
       }
 
       /**
@@ -194,16 +196,41 @@ template < class CType > class CCopasiVector:
       {
         unsigned C_INT32 OldSize = ((std::vector< CType * > *)this)->size();
 
-        ((std::vector< CType * > *)this)->resize(size);
-        unsigned C_INT32 i;
-        iterator Target = begin() + OldSize;
+        if (OldSize == size) return; // Nothing to do.
 
-        if (allocate)
-          for (i = OldSize; i < size; i++, Target++)
-            *Target = new CType("NoName", this);
+        if (OldSize < size)
+          {
+            ((std::vector< CType * > *)this)->resize(size);
+            unsigned C_INT32 i;
+            iterator Target = begin() + OldSize;
+
+            if (allocate)
+              for (i = OldSize; i < size; i++, Target++)
+                *Target = new CType("NoName", this);
+            else
+              for (i = OldSize; i < size; i++, Target++)
+                *Target = NULL;
+          }
         else
-          for (i = OldSize; i < size; i++, Target++)
-            *Target = NULL;
+          {
+            iterator Target = begin() + size;
+            iterator End = end();
+
+            for (; Target != End; Target++)
+              if (*Target)
+                {
+                  if ((*Target)->getObjectParent() == this)
+                    {
+                      (*Target)->cleanup();
+                      delete *Target;
+                      *Target = NULL;
+                    }
+                  else
+                    CCopasiContainer::remove(*Target);
+                }
+
+            ((std::vector< CType * > *)this)->resize(size);
+          }
       }
 
       /**
@@ -354,7 +381,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        *
        */
 
-      virtual void add(const CType & src)
+      virtual bool add(const CType & src)
       {
         if (!isInsertAllowed(&src))
           CCopasiMessage(CCopasiMessage::ERROR,
@@ -363,13 +390,13 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
         CType * Element = new CType(src, this);
 
         push_back(Element);
-        CCopasiContainer::add(Element);
+        return CCopasiContainer::add(Element);
       }
 
       /**
        *
        */
-      virtual void add(CType * src, bool adopt = false)
+      virtual bool add(CType * src, bool adopt = false)
       {
         if (!isInsertAllowed(src))
           CCopasiMessage(CCopasiMessage::ERROR,
@@ -378,8 +405,9 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(src);
-        CCopasiContainer::add(src);
+        bool success = CCopasiContainer::add(src);
         if (adopt) src->setObjectParent(this);
+        return success;
       }
 
       /**

@@ -82,7 +82,7 @@ class CCopasiObject
 
     const std::string & getObjectType() const;
 
-    bool setObjectParent(const CCopasiContainer * pParent);
+    virtual bool setObjectParent(const CCopasiContainer * pParent);
 
     CCopasiContainer * getObjectParent() const;
 

@@ -230,6 +230,33 @@ class CReaction : public CCopasiContainer
     void setChemEq(const std::string & chemEq);
 
     /**
+     * Add a substrate to the reaction
+     * @param CMetab * pMetab
+     * @param const C_FLOAT64 & multiplicity (Default 1.0)
+     * @return bool success
+     */
+    bool addSubstrate(CMetab * pMetab,
+                      const C_FLOAT64 & multiplicity = 1.0);
+
+    /**
+     * Add a product to the reaction
+     * @param CMetab * pMetab
+     * @param const C_FLOAT64 & multiplicity (Default 1.0)
+     * @return bool success
+     */
+    bool addProduct(CMetab * pMetab,
+                    const C_FLOAT64 & multiplicity = 1.0);
+
+    /**
+     * Add a modifier to the reaction
+     * @param CMetab * pMetab
+     * @param const C_FLOAT64 & multiplicity (Default 1.0)
+     * @return bool success
+     */
+    bool addModifier(CMetab * pMetab,
+                     const C_FLOAT64 & multiplicity = 1.0);
+
+    /**
      * Add a modifier to the reaction
      * @param const std::string &name
      * @return bool success
@@ -298,6 +325,11 @@ class CReaction : public CCopasiContainer
      *  Gets the list of kinetic parameter objects of the reaction/function
      */
     const CCopasiVectorN <CParameter> & getParameters() const;
+
+    /**
+     *  Gets the list of kinetic parameter objects of the reaction/function
+     */
+    CCopasiVectorN <CParameter> & getParameters();
 
     /**
      *  Gets the description of what parameters the function expects.

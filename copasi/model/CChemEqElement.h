@@ -84,9 +84,9 @@ class CChemEqElement : public CCopasiContainer
 
     /**
      *  Set the metabolite of the element.
-     *  @param "const CMetab &" metabolite
+     *  @param CMetab * metabolite
      */
-    void setMetabolite(CMetab & metabolite);
+    void setMetabolite(CMetab * metabolite);
 
     /**
      *  Retrieves the metabolite of the element.

@@ -111,7 +111,7 @@ bool ModelWidget::loadModel(CModel *model)
   unsigned int temp1;
   for (temp1 = 0; model->TimeUnitName[temp1] != ""; temp1++)
     {
-      comboEntries.push_front(model->TimeUnitName[temp1].c_str());
+      comboEntries.push_front(model->TimeUnitName[temp1]);
       //QMessageBox::information(this, "tIME uNIT", model->TimeUnitName[temp1].c_str());
     }
   ComboBox1->insertStringList(comboEntries, -1);
@@ -120,7 +120,7 @@ bool ModelWidget::loadModel(CModel *model)
   QStringList comboEntries1;
   for (temp1 = 0; CModel::VolumeUnitName[temp1] != ""; temp1++)
     {
-      comboEntries1.push_front(CModel::VolumeUnitName[temp1].c_str());
+      comboEntries1.push_front(CModel::VolumeUnitName[temp1]);
       //QMessageBox::information(this, "Volume Unit", model->VolumeUnitName[temp1].c_str());
     }
   ComboBox2->insertStringList(comboEntries1, -1);
@@ -129,7 +129,7 @@ bool ModelWidget::loadModel(CModel *model)
   QStringList comboEntries2;
   for (temp1 = 0; CModel::QuantityUnitName[temp1] != ""; temp1++)
     {
-      comboEntries2.push_front(CModel::QuantityUnitName[temp1].c_str());
+      comboEntries2.push_front(CModel::QuantityUnitName[temp1]);
       //QMessageBox::information(this, "Volume Unit", model->QuantityUnitName[temp1].c_str());
     }
   ComboBox3->insertStringList(comboEntries2, -1);

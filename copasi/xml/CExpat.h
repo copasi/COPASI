@@ -674,6 +674,25 @@ class CExpatTemplate
         return false;
       }
 
+    /**
+     * Convert a attribute of type to enum. If attribute is NULL
+     * or no matching name is found -1 is returned. Note: enumNames must be 
+     * zero terminated.
+     * @param const char * attribute
+     * @param const char ** enumNames 
+     * @return bool
+     */
+    int toEnum(const char * attribute,
+               const char ** enumNames) const
+      {
+        if (!attribute) return - 1;
+
+        for (int i = 0; *enumNames; i++, enumNames++)
+          if (!strcmp(attribute, *enumNames)) return i;
+
+        return - 1;
+      }
+
   protected:
     /**
      * Handle any post creation

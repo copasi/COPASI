@@ -18,6 +18,7 @@
 
 class CModel;
 class CFunction;
+class CReaction;
 class CCopasiXMLParser;
 
 struct SCopasiXMLParserCommon
@@ -36,6 +37,11 @@ struct SCopasiXMLParserCommon
      * Pointer to the currently processed function.
      */
     CFunction * pFunction;
+
+    /**
+     * Pointer to the currently processed reaction.
+     */
+    CReaction * pReaction;
 
     /**
      * A map relating CopasiXML function keys with internal keys
@@ -74,20 +80,716 @@ class CCopasiXMLParser : public CExpat
      */
     std::stack< CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon > * > mElementHandlerStack;
 
-  class ModelElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+#ifdef  COPASI_TEMPLATE
+  class TEMPLATEElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
         /**
-         * 
+         * Enum of invoked parsers
          */
         enum Element
         {
-          COPASI = 0,
-          ListOfFunctions,
-          Model,
-          ListOfTasks,
-          ListOfReports
+          TEMPLATE = 0,
+          etc
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        TEMPLATEElement(CCopasiXMLParser & parser,
+                        SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~TEMPLATEElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+#endif // COPASI_TEMPLATE
+
+  class ConstantElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Constant = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ConstantElement(CCopasiXMLParser & parser,
+                        SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ConstantElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfConstantsElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfConstants = 0,
+          Constant
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfConstantsElement(CCopasiXMLParser & parser,
+                               SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfConstantsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ModifierElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Modifier = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ModifierElement(CCopasiXMLParser & parser,
+                        SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ModifierElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfModifiersElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfModifiers = 0,
+          Modifier
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfModifiersElement(CCopasiXMLParser & parser,
+                               SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfModifiersElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ProductElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Product = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ProductElement(CCopasiXMLParser & parser,
+                       SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ProductElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfProductsElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfProducts = 0,
+          Product
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfProductsElement(CCopasiXMLParser & parser,
+                              SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfProductsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class SubstrateElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Substrate = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        SubstrateElement(CCopasiXMLParser & parser,
+                         SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~SubstrateElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfSubstratesElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfSubstrates = 0,
+          Substrate
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfSubstratesElement(CCopasiXMLParser & parser,
+                                SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfSubstratesElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ReactionElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Reaction = 0,
+          ListOfSubstrates,
+          ListOfProducts,
+          ListOfModifiers,
+          ListOfConstants,
+          KineticLaw
+        };
+
+        /**
+         * Pointer to ListOfSubstratesElement element handler.
+         */
+        ListOfSubstratesElement * mpListOfSubstratesElement;
+
+        /**
+         * Pointer to ListOfProductsElement element handler.
+         */
+        ListOfProductsElement * mpListOfProductsElement;
+
+        /**
+         * Pointer to ListOfModifiersElement element handler.
+         */
+        ListOfModifiersElement * mpListOfModifiersElement;
+
+        /**
+         * Pointer to ListOfConstantsElement element handler.
+         */
+        ListOfConstantsElement * mpListOfConstantsElement;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ReactionElement(CCopasiXMLParser & parser,
+                        SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ReactionElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfReactionsElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfReactions = 0,
+          Reaction
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfReactionsElement(CCopasiXMLParser & parser,
+                               SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfReactionsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class MetaboliteElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Metabolite = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        MetaboliteElement(CCopasiXMLParser & parser,
+                          SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~MetaboliteElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfMetabolitesElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfMetabolites = 0,
+          Metabolite
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfMetabolitesElement(CCopasiXMLParser & parser,
+                                 SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfMetabolitesElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class CompartmentElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Compartment = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        CompartmentElement(CCopasiXMLParser & parser,
+                           SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~CompartmentElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfCompartmentsElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfCompartments = 0,
+          Compartment
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfCompartmentsElement(CCopasiXMLParser & parser,
+                                  SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfCompartmentsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class CommentElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Comment = 0,
+          Ignore
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        CommentElement(CCopasiXMLParser & parser,
+                       SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~CommentElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ModelElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Model = 0,
+          Comment,
+          ListOfCompartments,
+          ListOfMetabolites,
+          ListOfReactions,
+          StateTemplate,
+          InitialState
         };
 
         // Operations

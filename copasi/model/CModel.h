@@ -31,7 +31,7 @@ class CModel : public CCopasiContainer
     /**
      * String representation of valid volume units
      */
-    static const std::string VolumeUnitName[];
+    static const char * VolumeUnitName[];
 
     /**
      *  Enum of valid time units
@@ -41,7 +41,7 @@ class CModel : public CCopasiContainer
     /**
      * String representation of valid time units
      */
-    static const std::string TimeUnitName[];
+    static const char * TimeUnitName[];
 
     /**
      *  Enum of valid quantitye units
@@ -51,7 +51,7 @@ class CModel : public CCopasiContainer
     /**
      * String representation of valid quantity units
      */
-    static const std::string QuantityUnitName[];
+    static const char * QuantityUnitName[];
 
     //Attributes
   public:
@@ -755,6 +755,15 @@ class CModel : public CCopasiContainer
     bool setVolumeUnit(const std::string & name);
 
     /**
+     * Set the unit for volumes. If copasi recognises 
+     * the unit the conversion factors are set accordingly 
+     * and true is returned.
+     * @param const CModel::VolumeUnit & unit
+     * @return bool success
+     */
+    bool setVolumeUnit(const CModel::VolumeUnit & unit);
+
+    /**
      * Get the unit for volumes
      * @return std::string volumeUnit
      */
@@ -770,6 +779,15 @@ class CModel : public CCopasiContainer
     bool setTimeUnit(const std::string & name);
 
     /**
+     * Set the unit for time. If copasi recognises 
+     * the unit the conversion factors are set accordingly 
+     * and true is returned.
+     * @param const const CModel::TimeUnit & unit
+     * @return bool success
+     */
+    bool setTimeUnit(const CModel::TimeUnit & unit);
+
+    /**
      * Get the unit for time
      * @return std::string timeUnit
      */
@@ -783,6 +801,15 @@ class CModel : public CCopasiContainer
      * @return bool success
      */
     bool setQuantityUnit(const std::string & name);
+
+    /**
+     * Set the unit for quantities. If copasi recognises 
+     * the unit the conversion factors are set accordingly 
+     * and true is returned.
+     * @param const CModel::QuantityUnit & unit
+     * @return bool success
+     */
+    bool setQuantityUnit(const CModel::QuantityUnit & unit);
 
     /**
      * Get the unit for quantities
@@ -878,12 +905,12 @@ class CModel : public CCopasiContainer
     /**
      * Find the unit the string refers to.
      * @param const std::string & name 
-     * @param const std::string * units (list of valid units)
+     * @param const char ** units (list of valid units)
      * @param const unsigned C_INT32 unique (minimum characters being unique)
      * @return unsigned C_INT32 unit
      */
     static unsigned C_INT32 unitCompare(const std::string & name,
-                                        const std::string * units,
+                                        const char ** units,
                                         const unsigned C_INT32 unique);
 
     /**

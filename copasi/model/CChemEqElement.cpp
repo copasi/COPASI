@@ -33,9 +33,9 @@ CChemEqElement::~CChemEqElement() {DESTRUCTOR_TRACE;}
 
 void CChemEqElement::cleanup() {}
 
-void CChemEqElement::setMetabolite(CMetab & metabolite)
+void CChemEqElement::setMetabolite(CMetab * pMetabolite)
 {
-  mpMetabolite = &metabolite;
+  mpMetabolite = pMetabolite;
   mMetaboliteName = mpMetabolite->getName();
 }
 

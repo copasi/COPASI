@@ -16,8 +16,8 @@
 const std::string CFunction::TypeName[] =
   {"predefined", "predefined", "predefined", "userdefined", "userdefined", ""};
 
-const std::string CFunction::XMLType[] =
-  {"Base", "MassAction", "PreDefined", "UserDefined", "Expression", ""};
+const char* CFunction::XMLType[] =
+  {"Base", "MassAction", "PreDefined", "UserDefined", "Expression", NULL};
 
 CFunction * CFunction::createFunction(enum CFunction::Type type)
 {

@@ -13,8 +13,8 @@
 const std::string CFunctionParameter::DataTypeName[] =
   {"Integer", "Double", "Vector of Integer", "Vector of Double", ""};
 
-const std::string CFunctionParameter::XMLRole[] =
-  {"substrate", "product", "modifier", "constant", "other", ""};
+const char * CFunctionParameter::RoleName[] =
+  {"substrate", "product", "modifier", "constant", "other", NULL};
 
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):

@@ -280,6 +280,16 @@ bool CMetab::setName(const std::string & name)
   return setObjectName(name);
 }
 
+bool CMetab::setObjectParent(const CCopasiContainer * pParent)
+{
+  CCopasiObject::setObjectParent(pParent);
+
+  initCompartment(NULL);
+  initModel();
+
+  return true;
+}
+
 // ***** set quantities ********
 
 void CMetab::setConcentration(const C_FLOAT64 concentration)

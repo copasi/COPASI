@@ -160,12 +160,21 @@ class CCompartment : public CCopasiContainer
     CCopasiVectorNS < CMetab > & getMetabolites();
     const CCopasiVectorNS < CMetab > & getMetabolites() const;
 
-    /*
+    /**
      *  Adds a metabolite to the compartment. Only the concentration is taken from
      *  the metabolite, the number of particles is calculated according to the
      *  volume of the compartment
      */
     void addMetabolite(CMetab & metabolite);
+
+    /**
+     *  Adds a metabolite to the compartment. Only the concentration is taken from
+     *  the metabolite, the number of particles is calculated according to the
+     *  volume of the compartment
+     *  @param CMetab * metabolite;
+     *  @return bool success
+     */
+    bool addMetabolite(CMetab * metabolite);
 
     /**
      *  Sets the name of this compartment.

@@ -24,9 +24,9 @@ class CFunctionParameter : public CCopasiContainer
     static const std::string DataTypeName[];
 
     /**
-     *  The string representation of valid roles of a function
+     *  The string representation of valid roles of a function parameter
      */
-    static const std::string XMLRole[];
+    static const char * RoleName[];
 
     //Attributes
 
@@ -35,6 +35,11 @@ class CFunctionParameter : public CCopasiContainer
      *  Valid data type for a function parameter
      */
     enum DataType {INT32 = 0, FLOAT64, VINT32, VFLOAT64};
+
+    /**
+     * Valid roles for a function parameter
+     */
+    enum Role {substrate = 0, product, modifier, constant, other};
 
   private:
     /**

@@ -194,6 +194,13 @@ class CMetab : public CCopasiContainer
     bool setName(const std::string & name);
 
     /**
+     * Sets the parent of the metabolite;
+     * @param const CCopasiContainer * pParent
+     * @return bool success
+     */
+    virtual bool setObjectParent(const CCopasiContainer * pParent);
+
+    /**
      *  Retrieve the key of the metabolite.
      * @return std::string key
      */

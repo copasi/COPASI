@@ -38,14 +38,14 @@
 
 #include "clapackwrap.h"
 
-const std::string CModel::VolumeUnitName[] =
-  {"l", "ml", "microl", "nl", "pl", "fl", ""};
+const char * CModel::VolumeUnitName[] =
+  {"l", "ml", "µl", "nl", "pl", "fl", NULL};
 
-const std::string CModel::TimeUnitName[] =
-  {"s", "m", "h", "d", ""};
+const char * CModel::TimeUnitName[] =
+  {"s", "m", "h", "d", NULL};
 
-const std::string CModel::QuantityUnitName[] =
-  {"Mol", "mMol", "microMol", "nMol", "pMol", "fMol", "#", ""};
+const char * CModel::QuantityUnitName[] =
+  {"Mol", "mMol", "µMol", "nMol", "pMol", "fMol", "#", NULL};
 
 CModel::CModel():
     CCopasiContainer("NoName", &RootContainer, "Model"),
@@ -1521,25 +1521,35 @@ void CModel::getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives)
 }
 
 unsigned C_INT32 CModel::unitCompare(const std::string & name,
-                                     const std::string * units,
+                                     const char ** units,
                                      const unsigned C_INT32 unique)
 {
   unsigned C_INT32 i, j;
+  std::string Unit;
 
-  for (i = 0; units[i] != ""; i++)
-    for (j = units[i].length(); j >= unique || j == units[i].length(); j--)
-      if (units[i].substr(0, j) == name.substr(0, j)) return i;
+  for (i = 0; *units; i++, units++)
+    {
+      Unit = *units;
+      for (j = Unit.length(); j >= unique || j == Unit.length(); j--)
+        if (Unit.substr(0, j) == name.substr(0, j)) return i;
+    }
 
   return i;
 }
 
 bool CModel::setVolumeUnit(const std::string & name)
 {
-  bool success = true;
   CModel::VolumeUnit Unit =
     (CModel::VolumeUnit) unitCompare(name, VolumeUnitName, 2);
 
-  switch (Unit)
+  return setVolumeUnit(Unit);
+}
+
+bool CModel::setVolumeUnit(const CModel::VolumeUnit & unit)
+{
+  bool success = true;
+
+  switch (unit)
     {
     case l:
     case ml:
@@ -1547,14 +1557,13 @@ bool CModel::setVolumeUnit(const std::string & name)
     case nl:
     case pl:
     case fl:
+      mVolumeUnit = VolumeUnitName[unit];
       break;
 
     default:
-      Unit = ml;
+      mVolumeUnit = VolumeUnitName[ml];
       success = false;
     }
-
-  mVolumeUnit = VolumeUnitName[Unit];
 
   return success;
 }
@@ -1564,24 +1573,29 @@ std::string CModel::getVolumeUnit() const
 
 bool CModel::setTimeUnit(const std::string & name)
 {
-  bool success = true;
   CModel::TimeUnit Unit =
     (CModel::TimeUnit) unitCompare(name, TimeUnitName, 1);
 
-  switch (Unit)
+  return setTimeUnit(Unit);
+}
+
+bool CModel::setTimeUnit(const CModel::TimeUnit & unit)
+{
+  bool success = true;
+
+  switch (unit)
     {
     case s:
     case m:
     case h:
     case d:
+      mTimeUnit = TimeUnitName[unit];
       break;
 
     default:
-      Unit = s;
+      mTimeUnit = TimeUnitName[s];
       success = false;
     }
-
-  mTimeUnit = TimeUnitName[Unit];
 
   return success;
 }
@@ -1591,9 +1605,16 @@ std::string CModel::getTimeUnit() const
 
 bool CModel::setQuantityUnit(const std::string & name)
 {
-  bool success = true;
   CModel::QuantityUnit Unit =
     (CModel::QuantityUnit) unitCompare(name, QuantityUnitName, 2);
+
+  return setQuantityUnit(Unit);
+}
+
+bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
+{
+  CModel::QuantityUnit Unit = unit;
+  bool success = true;
 
   switch (Unit)
     {

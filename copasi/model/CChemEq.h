@@ -140,8 +140,9 @@ class CChemEq : public CCopasiContainer
      * @param CMetab & metab
      * @param const C_FLOAT64 mult
      * @param const MetaboliteRole role
+     * @return bool success
      */
-    void addMetabolite(CMetab & metab, const C_FLOAT64 mult, const MetaboliteRole role);
+    bool addMetabolite(CMetab * pMetab, const C_FLOAT64 mult, const MetaboliteRole role);
 
     /**
      *  Retrieves the vector of substrates and their multiplicity 

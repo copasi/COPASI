@@ -29,17 +29,14 @@ CMoiety::CMoiety(const CMoiety & src,
 
 CMoiety::~CMoiety() {DESTRUCTOR_TRACE;}
 
-void CMoiety::add(C_FLOAT64 value, CMetab & metabolite)
+void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 {
   CChemEqElement element;
   element.setMultiplicity(value);
-  element.setMetabolite(metabolite);
+  element.setMetabolite(pMetabolite);
 
   mEquation.add(element);
 }
-//TODO do we really need both add methods?
-void CMoiety::add(C_FLOAT64 value, CMetab * metabolite)
-{add(value, *metabolite);}
 
 void CMoiety::cleanup() {mEquation.cleanup();}
 

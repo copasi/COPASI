@@ -69,16 +69,11 @@ class CMoiety : public CCopasiContainer
     C_INT32 saveOld(CWriteConfig & configBuffer);
 
     /**
-     *
+     * Add a metabolite to a moiety
+     * @param C_FLOAT64 value
+     * @param CMetab * metabolite
      */
-    void add
-    (C_FLOAT64 value, CMetab & metabolite);
-
-    /**
-     *
-     */
-    void add
-    (C_FLOAT64 value, CMetab * metabolite);
+    void add(C_FLOAT64 value, CMetab * metabolite);
 
     /**
      *

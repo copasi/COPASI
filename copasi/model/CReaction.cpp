@@ -340,6 +340,18 @@ bool CReaction::addModifier(const std::string &name)
   return true;
 }
 
+bool CReaction::addSubstrate(CMetab * pMetab,
+                             const C_FLOAT64 & multiplicity)
+{return mChemEq.addMetabolite(pMetab, multiplicity, CChemEq::SUBSTRATE);}
+
+bool CReaction::addProduct(CMetab * pMetab,
+                           const C_FLOAT64 & multiplicity)
+{return mChemEq.addMetabolite(pMetab, multiplicity, CChemEq::PRODUCT);}
+
+bool CReaction::addModifier(CMetab * pMetab,
+                            const C_FLOAT64 & multiplicity)
+{return mChemEq.addMetabolite(pMetab, multiplicity, CChemEq::MODIFIER);}
+
 bool CReaction::deleteModifier(const std::string &name)
 {return false;} /* :TODO: this needs to be implemented on CChemEq first. */
 
@@ -376,6 +388,11 @@ const CCopasiVectorN <CParameter> & CReaction::getParameters() const
   {
     return mParameters;
   }
+
+CCopasiVectorN <CParameter> & CReaction::getParameters()
+{
+  return mParameters;
+}
 
 void CReaction::setParameterMapping(const std::string & parameterName, const CMetab & metab)
 {

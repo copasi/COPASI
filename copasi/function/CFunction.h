@@ -39,7 +39,7 @@ class CFunction : public CCopasiContainer
     /**
      *  The string representation of valid types of a function
      */
-    static const std::string XMLType[];
+    static const char * XMLType[];
 
     // Attributes
   private:
