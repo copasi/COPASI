@@ -1,19 +1,11 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:50 $
+   $Date: 2004/05/27 10:35:32 $
    End CVS Header */
 
-/*******************************************************************
- **  $ CopasiUI/TableDefinition.cpp                 
- **  $ Author  : Mudita Singhal
- **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
- ** Compartments----It is Basically the First level of Compartments
- ********************************************************************/
 #include "TableDefinition.h"
 
 #include <qlayout.h>
@@ -21,241 +13,96 @@
 #include <qmessagebox.h>
 #include <qfont.h>
 #include <qpushbutton.h>
+#include <qaction.h>
 
 #include "MyTable.h"
 #include "model/CModel.h"
-#include "model/CCompartment.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinition.h"
 #include "report/CCopasiStaticString.h"
 #include "qtUtilities.h"
 
-/**
- *  Constructs a Widget for the Compartments subsection of the tree.
- *  This widget is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f'. 
- *  @param model The CModel class which contains the metabolites 
- *  to be displayed.
- *  @param parent The widget which this widget is a child of.
- *  @param name The object name is a text that can be used to identify 
- *  this QObject. It's particularly useful in conjunction with the Qt Designer.
- *  You can find an object by name (and type) using child(), and more than one 
- *  using queryList(). 
- *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
- *  for more information about these flags.
- */
-TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
-    : CopasiWidget(parent, name, f)
+std::vector<const CCopasiObject*> TableDefinition::getObjects() const
+  {
+    CCopasiVector< CReportDefinition >* tmp =
+      dataModel->getReportDefinitionVectorAddr();
+
+    std::vector<const CCopasiObject*> ret;
+
+    C_INT32 i, imax = tmp->size();
+    for (i = 0; i < imax; ++i)
+      ret.push_back((*tmp)[i]);
+
+    return ret;
+  }
+
+void TableDefinition::init()
 {
-  binitialized = true;
-  table = new MyTable(this, "tblTableDefinition");
-  table->setNumCols(2);
-  table->setNumRows(-1);
-  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
-  vBoxLayout->addWidget(table);
+  mOT = ListViews::REPORT;
+  numCols = 3;
+  table->setNumCols(numCols);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Name");
-  tableHeader->setLabel(1, "Comment");
-
-  btnOK = new QPushButton("Commit", this);
-  btnCancel = new QPushButton("Revert", this);
-
-  QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
-
-  //To match the Table left Vertical Header Column Width.
-  hBoxLayout->addSpacing(32);
-
-  hBoxLayout->addSpacing(50);
-  hBoxLayout->addWidget(btnOK);
-  hBoxLayout->addSpacing(5);
-  hBoxLayout->addWidget(btnCancel);
-  hBoxLayout->addSpacing(50);
-
-  table->sortColumn (0, true, true);
-  table->setSorting (true);
-  table->setFocusPolicy(QWidget::WheelFocus);
-
-  // signals and slots connections
-  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
-          this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(table, SIGNAL(selectionChanged ()),
-          this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this,
-          SLOT(slotBtnOKClicked()));
-  connect(table, SIGNAL(valueChanged(int , int)),
-          this, SLOT(tableValueChanged(int, int)));
+  tableHeader->setLabel(0, "Status");
+  tableHeader->setLabel(1, "Name");
+  tableHeader->setLabel(2, "Comment");
 }
 
-void TableDefinition::fillTable()
+void TableDefinition::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
-  const CCopasiVector< CReportDefinition >* objects =
-    dataModel->getReportDefinitionVectorAddr();
-
-  C_INT32 j, jmax = objects->size();
-  table->setNumRows(jmax);
-  mKeys.resize(jmax);
-
-  for (j = 0; j < jmax; ++j)
-    {
-      table->setText(j, 0, FROM_UTF8((*objects)[j]->getObjectName()));
-      table->setText(j, 1, FROM_UTF8((*objects)[j]->getComment()));
-      mKeys[j] = (*objects)[j]->getKey();
-    }
-  table->setText(jmax, 1, "");
+  if (!obj) return;
+  const CReportDefinition* pRep = (const CReportDefinition*)obj;
+  table->setText(row, 1, FROM_UTF8(pRep->getObjectName()));
+  table->setText(row, 2, FROM_UTF8(pRep->getComment()));
 }
 
-void TableDefinition::createNewObject()
+void TableDefinition::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
-  std::string name = "ReportDefinition_0";
+  if (!obj) return;
+  CReportDefinition* pRep = (CReportDefinition*)obj;
+  pRep->setComment((const char *)table->text(row, 2).utf8());
+}
+
+void TableDefinition::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+{
+  if (exc != 2)
+    table->setText(row, 2, "");
+}
+
+QString TableDefinition::defaultObjectName() const
+  {
+    return "report";
+  }
+
+CCopasiObject* TableDefinition::createNewObject(const std::string & name)
+{
+  std::string nname = name;
   int i = 0;
-  while (!dataModel->getReportDefinitionVectorAddr()->addReportDefinition(name, ""))
+  CReportDefinition* pRep;
+  while (!(pRep = dataModel->getReportDefinitionVectorAddr()->createReportDefinition(nname, "")))
     {
       i++;
-      name = "ReportDefinition";
-      name += "_";
-      name += QString::number(i).utf8();
+      nname = name;
+      nname += (const char *)QString::number(i).utf8();
     }
-  table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
-  table->setNumRows(table->numRows());
-  ListViews::notify(ListViews::REPORT, ListViews::ADD);
+  std::cout << " *** created ReportDefinition: " << nname << " : " << pRep->getKey() << std::endl;
+  return pRep;
 }
 
-void TableDefinition::slotTableCurrentChanged(int row,
-    int C_UNUSED(col),
-    int C_UNUSED(m) ,
-    const QPoint & C_UNUSED(n))
+void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (row >= table->numRows() || row < 0) return;
+  if (!dataModel->getModel())
+    return;
 
-  if (row == table->numRows() - 1)
-  {createNewObject();}
+  if (keys.size() == 0)
+    return;
 
-  pListView->switchToOtherWidget(mKeys[row]);
-}
-
-void TableDefinition::slotTableSelectionChanged()
-{
-  if (!table->hasFocus()) table->setFocus();
-}
-
-void TableDefinition::slotBtnOKClicked()
-{}
-
-void TableDefinition::slotBtnCancelClicked()
-{}
-
-void TableDefinition::tableValueChanged(int C_UNUSED(row),
-                                        int C_UNUSED(col))
-{}
-
-bool TableDefinition::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action),
-                             const std::string & C_UNUSED(key))
-{
-  switch (objectType)
+  unsigned C_INT32 i, imax = keys.size();
+  for (i = 0; i < imax; i++)
     {
-    case ListViews::MODEL:
-    case ListViews::STATE:
-    case ListViews::METABOLITE:
-    case ListViews::COMPARTMENT:
-    case ListViews::REPORT:
-      fillTable();
-      break;
-    default:
-      break;
+      dataModel->getReportDefinitionVectorAddr()->removeReportDefinition(keys[i]);
+      ListViews::notify(ListViews::REPORT, ListViews::DELETE, keys[i]);
     }
-  return true;
-}
-
-bool TableDefinition::leave()
-{
-  //does nothing.
-  return true;
-}
-
-bool TableDefinition::enter(const std::string & C_UNUSED(key))
-{
-  //does nothing.
-  return true;
-}
-
-void TableDefinition::resizeEvent(QResizeEvent * re)
-{
-  if (isVisible())
-    {
-      //      repaint_table();
-      if (binitialized)
-        {
-          int newWidth = re->size().width();
-          newWidth -= 35; //Accounting for the left (vertical) header width.
-          float weight0 = 3.5, weight1 = 6.5;
-          float weightSum = weight0 + weight1;
-          int w0, w1;
-          w0 = newWidth * (weight0 / weightSum);
-          w1 = newWidth - w0;
-          table->setColumnWidth(0, w0);
-          table->setColumnWidth(1, w1);
-          binitialized = false;
-        }
-      else
-        {
-          table->DisableColWidthUpdate();
-          int newWidth = re->size().width() - 35;
-          int i;
-
-          int totalWidth = 0;
-          for (i = 0; i < table->numCols(); i++)
-            totalWidth += table->columnWidth(i);
-
-          int minTotalWidth = 0;
-          for (i = 0; i < table->numCols(); i++)
-            minTotalWidth += table->minColWidth[i];
-
-          //Zoom in
-          if (newWidth > (re->oldSize().width() - 35))
-            {
-              if (newWidth > totalWidth) // can do expansion
-                {
-                  if (totalWidth < (re->oldSize().width() - 35))
-                    for (i = 0; i < table->numCols(); i++) // Do expansion
-                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / (re->oldSize().width() - 35));
-                  else
-                    for (i = 0; i < table->numCols(); i++) // Do expansion
-                      table->setColumnWidth(i, float(newWidth)*float(table->columnWidth(i)) / float(totalWidth));
-                }
-              else
-                for (i = 0; i < table->numCols(); i++) // Do not expand
-                  table->setColumnWidth(i, table->columnWidth(i));
-
-              table->EnableColWidthUpdate();
-              return;
-            }
-          //Zoom out
-          //calculate total Width
-          if (newWidth >= totalWidth)    //will not decrease any column width
-            {
-              for (i = 0; i < table->numCols(); i++)
-                table->setColumnWidth(i, table->columnWidth(i));
-              table->EnableColWidthUpdate();
-              return;
-            }
-          //will decrease only those larger than the minimum width
-          //Less than the user specified total width
-          if (newWidth <= minTotalWidth)
-            {
-              for (i = 0; i < table->numCols(); i++)
-                table->setColumnWidth(i, table->minColWidth[i]);
-              table->EnableColWidthUpdate();
-              return;
-            }
-          //Bigger than the user specified total width
-          for (i = 0; i < table->numCols(); i++) // Do Expansion
-            table->setColumnWidth(i, (newWidth - minTotalWidth)*(table->columnWidth(i) - table->minColWidth[i]) / (totalWidth - minTotalWidth) + table->minColWidth[i]);
-          table->EnableColWidthUpdate();
-          return;
-        }
-    }
-  CopasiWidget::resizeEvent(re);
 }

@@ -1,19 +1,11 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:48 $
+   $Date: 2004/05/27 10:35:31 $
    End CVS Header */
 
-/*******************************************************************
- **  $ CopasiUI/PlotWidget.cpp                 
- **  $ Author  : Mudita Singhal
- **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
- ** Plots----It is Basically the First level of Plots
- ********************************************************************/
 #include "PlotWidget.h"
 
 #include <qlayout.h>
@@ -21,269 +13,102 @@
 #include <qmessagebox.h>
 #include <qfont.h>
 #include <qpushbutton.h>
+#include <qaction.h>
 
 #include "MyTable.h"
-#include "model/CModel.h" 
-//#include "model/CCompartment.h"
+#include "model/CModel.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
-#include "plot/CPlotSpec.h"
+#include "report/CReportDefinition.h"
+#include "report/CCopasiStaticString.h"
 #include "qtUtilities.h"
 
-/**
- */
-PlotWidget::PlotWidget(QWidget *parent, const char * name, WFlags f)
-    : CopasiWidget(parent, name, f)
+std::vector<const CCopasiObject*> PlotWidget::getObjects() const
+  {
+    CCopasiVector<CPlotSpec>* tmp =
+      dataModel->getPlotSpecVectorAddr();
+
+    std::vector<const CCopasiObject*> ret;
+
+    C_INT32 i, imax = tmp->size();
+    for (i = 0; i < imax; ++i)
+      ret.push_back((*tmp)[i]);
+
+    return ret;
+  }
+
+void PlotWidget::init()
 {
-  binitialized = true;
-  table = new MyTable(this, "tblPlots");
-  table->setNumCols(2);
-  table->setNumRows(-1);
-  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
-  vBoxLayout->addWidget(table);
+  mOT = ListViews::PLOT;
+  numCols = 3;
+  table->setNumCols(numCols);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Name");
-  tableHeader->setLabel(1, "Volume");
+  tableHeader->setLabel(0, "Status");
+  tableHeader->setLabel(1, "Name");
+  tableHeader->setLabel(2, "Curves");
 
-  btnOK = new QPushButton("Commit", this);
-  btnCancel = new QPushButton("Revert", this);
-
-  QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
-
-  //To match the Table left Vertical Header Column Width.
-  hBoxLayout->addSpacing(32);
-
-  hBoxLayout->addSpacing(50);
-  hBoxLayout->addWidget(btnOK);
-  hBoxLayout->addSpacing(5);
-  hBoxLayout->addWidget(btnCancel);
-  hBoxLayout->addSpacing(50);
-
-  table->sortColumn (0, true, true);
-  table->setSorting (true);
-  table->setFocusPolicy(QWidget::WheelFocus);
-
-  // signals and slots connections
-  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
-          this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(table, SIGNAL(selectionChanged ()),
-          this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this,
-          SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this,
-          SLOT(slotBtnCancelClicked()));
-  connect(table, SIGNAL(valueChanged(int , int)),
-          this, SLOT(tableValueChanged(int, int)));
-
-  //connect(table, SIGNAL(currentChanged(int, int)),
-  //        this, SLOT(CurrentValueChanged(int, int)));
-
-  //m_SavedRow = 0;
-  //m_SavedCol = 0;
-  //prev_row = 0;
-  //prev_col = 0;
+  //this restricts users from editing the number of curves
+  table->setColumnReadOnly (2, true);
 }
 
-void PlotWidget::fillTable()
+void PlotWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
-  const CCopasiVector< CPlotSpec >* objects =
-    dataModel->getPlotSpecVectorAddr();
-
-  C_INT32 j, jmax = objects->size();
-  table->setNumRows(jmax);
-  mKeys.resize(jmax);
-
-  for (j = 0; j < jmax; ++j)
-    {
-      table->setText(j, 0, FROM_UTF8((*objects)[j]->getObjectName()));
-      //TODO table->setText(j, 1, (*objects)[j]->getComment().);
-      mKeys[j] = (*objects)[j]->getKey();
-    }
-  table->setText(jmax, 1, "");
+  if (!obj) return;
+  const CPlotSpec* pPl = (const CPlotSpec*)obj;
+  table->setText(row, 1, FROM_UTF8(pPl->getObjectName()));
+  table->setText(row, 2, QString::number(pPl->getCurves().size()));
 }
 
-void PlotWidget::createNewObject()
+void PlotWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
-  std::string name = "PlotSpec_0";
+  if (!obj) return;
+  CPlotSpec* pPl = (CPlotSpec*)obj;
+  //pPl->setComment((const char *)table->text(row, 2).utf8());
+}
+
+void PlotWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+{
+  if (exc != 2)
+    table->setText(row, 2, "");
+}
+
+QString PlotWidget::defaultObjectName() const
+  {
+    return "plot";
+  }
+
+CCopasiObject* PlotWidget::createNewObject(const std::string & name)
+{
+  std::string nname = name;
   int i = 0;
-  while (!dataModel->getPlotSpecVectorAddr()->addNewPlotSpec(name))
+  CPlotSpec* pPl;
+  while (!(pPl = dataModel->getPlotSpecVectorAddr()->createPlotSpec(nname)))
     {
       i++;
-      name = "PlotSpec";
-      name += "_";
-      name += QString::number(i).utf8();
+      nname = name;
+      nname += (const char *)QString::number(i).utf8();
     }
-  table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
-  table->setNumRows(table->numRows());
 
-  (*dataModel->getPlotSpecVectorAddr())[dataModel->getPlotSpecVectorAddr()->size() - 1]->createDefaultPlot(dataModel->getModel());
+  pPl->createDefaultPlot(dataModel->getModel()); //TODO have an extra button for that
 
-  ListViews::notify(ListViews::PLOT, ListViews::ADD);
+  std::cout << " *** created PlotSpec: " << nname << " : " << pPl->getKey() << std::endl;
+  return pPl;
 }
 
-void PlotWidget::slotTableCurrentChanged(int row,
-    int C_UNUSED(col),
-    int C_UNUSED(m) ,
-    const QPoint & C_UNUSED(n))
+void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (row >= table->numRows() || row < 0) return;
+  if (!dataModel->getModel())
+    return;
 
-  if (row == table->numRows() - 1)
-  {createNewObject();}
+  if (keys.size() == 0)
+    return;
 
-  pListView->switchToOtherWidget(mKeys[row]);
-}
-
-void PlotWidget::slotTableSelectionChanged()
-{
-  if (!table->hasFocus()) table->setFocus();
-}
-
-//void PlotWidget::CurrentValueChanged(int row, int col)
-//{
-//  at this point you know old values !
-//prev_row = m_SavedRow;
-//prev_col = m_SavedCol;
-
-//m_SavedCol = col; // Save for a future use
-//m_SavedRow = row; // Save for a future use
-//}
-
-void PlotWidget::slotBtnOKClicked()
-{
-  if (dataModel->getPlotSpecVectorAddr())
+  unsigned C_INT32 i, imax = keys.size();
+  for (i = 0; i < imax; i++)
     {
-      //for testing only
-      //std::ifstream datafile("datafile");
-      //datafile.open("datafile", std::ios::in);
-
-      //dataModel->getPlotSpecVectorAddr()->setNumColumns(3);
-      //dataModel->getPlotSpecVectorAddr()->setSourceStream(&datafile);
-      //dataModel->getPlotSpecVectorAddr()->initPlottingFromStream();
-
-      //dataModel->getPlotSpecVectorAddr()->doPlotting();
-      //dataModel->getPlotSpecVectorAddr()->doPlotting();
+      dataModel->getPlotSpecVectorAddr()->removePlotSpec(keys[i]);
+      ListViews::notify(ListViews::PLOT, ListViews::DELETE, keys[i]);
     }
-}
-
-void PlotWidget::slotBtnCancelClicked()
-{
-  if (dataModel->getPlotSpecVectorAddr())
-    fillTable();
-}
-
-void PlotWidget::tableValueChanged(int C_UNUSED(row),
-                                   int C_UNUSED(col))
-{}
-
-bool PlotWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  switch (objectType)
-    {
-    case ListViews::MODEL:
-    case ListViews::STATE:
-    case ListViews::METABOLITE:
-    case ListViews::COMPARTMENT:
-    case ListViews::REPORT:
-    case ListViews::PLOT:
-      fillTable();
-      break;
-
-    default:
-      break;
-    }
-  return true;
-}
-
-bool PlotWidget::leave()
-{
-  //does nothing.
-  return true;
-}
-
-bool PlotWidget::enter(const std::string & C_UNUSED(key))
-{
-  //does nothing.
-  return true;
-}
-
-void PlotWidget::resizeEvent(QResizeEvent * re)
-{
-  if (isVisible())
-    {
-      //      repaint_table();
-      if (binitialized)
-        {
-          int newWidth = re->size().width();
-          newWidth -= 35; //Accounting for the left (vertical) header width.
-          float weight0 = 3.5, weight1 = 6.5;
-          float weightSum = weight0 + weight1;
-          int w0, w1;
-          w0 = (int)(newWidth * (weight0 / weightSum));
-          w1 = newWidth - w0;
-          table->setColumnWidth(0, w0);
-          table->setColumnWidth(1, w1);
-          binitialized = false;
-        }
-      else
-        {
-          table->DisableColWidthUpdate();
-          int newWidth = re->size().width() - 35;
-          int i;
-
-          int totalWidth = 0;
-          for (i = 0; i < table->numCols(); i++)
-            totalWidth += table->columnWidth(i);
-
-          int minTotalWidth = 0;
-          for (i = 0; i < table->numCols(); i++)
-            minTotalWidth += table->minColWidth[i];
-
-          //Zoom in
-          if (newWidth > (re->oldSize().width() - 35))
-            {
-              if (newWidth > totalWidth) // can do expansion
-                {
-                  if (totalWidth < (re->oldSize().width() - 35))
-                    for (i = 0; i < table->numCols(); i++) // Do expansion
-                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / (re->oldSize().width() - 35));
-                  else
-                    for (i = 0; i < table->numCols(); i++) // Do expansion
-                      table->setColumnWidth(i, float(newWidth)*float(table->columnWidth(i)) / float(totalWidth));
-                }
-              else
-                for (i = 0; i < table->numCols(); i++) // Do not expand
-                  table->setColumnWidth(i, table->columnWidth(i));
-
-              table->EnableColWidthUpdate();
-              return;
-            }
-          //Zoom out
-          //calculate total Width
-          if (newWidth >= totalWidth)    //will not decrease any column width
-            {
-              for (i = 0; i < table->numCols(); i++)
-                table->setColumnWidth(i, table->columnWidth(i));
-              table->EnableColWidthUpdate();
-              return;
-            }
-          //will decrease only those larger than the minimum width
-          //Less than the user specified total width
-          if (newWidth <= minTotalWidth)
-            {
-              for (i = 0; i < table->numCols(); i++)
-                table->setColumnWidth(i, table->minColWidth[i]);
-              table->EnableColWidthUpdate();
-              return;
-            }
-          //Bigger than the user specified total width
-          for (i = 0; i < table->numCols(); i++) // Do Expansion
-            table->setColumnWidth(i, (newWidth - minTotalWidth)*(table->columnWidth(i) - table->minColWidth[i]) / (totalWidth - minTotalWidth) + table->minColWidth[i]);
-          table->EnableColWidthUpdate();
-          return;
-        }
-    }
-  CopasiWidget::resizeEvent(re);
 }
