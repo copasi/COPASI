@@ -13,8 +13,8 @@
 #include "report/CCopasiContainer.h"
 #include "utilities/readwrite.h"
 #include "utilities/CCopasiVector.h"
-
-class CFunction;
+#include "CFunction.h" 
+//class CFunction;
 
 /** @dia:pos 106.082,17.0878 */
 class CFunctionDB : public CCopasiContainer
@@ -110,12 +110,11 @@ class CFunctionDB : public CCopasiContainer
     /**
      *  Add the function to the database
      *  @param const std::string & name
-    *  @param const CFunction::Type & type (Default: CFunction::Base)
+     *  @param const CFunction::Type & type (Default: CFunction::Base)
      *  @return bool success
-     */ 
-    //bool addFunction(const std::string & name,
-    // const CFunction::Type &type = CFunction::Base);
-    bool addFunction(const std::string & name);
+     */
+    bool addFunction(const std::string &name, const CFunction::Type & type = CFunction::Base);
+    //bool addFunction(const std::string & name);
 
     /**
      *  Delete the function functionName from the database

@@ -25,6 +25,7 @@
 #include <qtextbrowser.h>
 #include <qmessagebox.h> 
 //#include <qpixmap.h>
+#include "utilities/CCopasiException.h"
 #include "copasi.h"
 #include "FunctionWidget1.h"
 #include "model/CMetab.h"
@@ -40,6 +41,8 @@
 #include "./icons/substrate.xpm"
 #include "./icons/modifier.xpm"
 #include "parametertable.h" // just for the table item widgets
+
+#include "MyLineEdit.h"
 
 /*
  *  Constructs a FunctionWidget1 which is a child of 'parent', with the 
@@ -59,7 +62,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
 
   FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
 
-  textBrowser = new QTextBrowser (this, "Text Browser");
+  //textBrowser = new QTextBrowser (this, "Text Browser");
+  textBrowser = new MyLineEdit(this, "Text Browser");
 
   FunctionWidget1Layout->addWidget(textBrowser, 1, 1);
 
@@ -184,7 +188,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
-  connect(Line2, SIGNAL(edited()), this, SLOT(slotFcnDescriptionChanged()));
+  connect(textBrowser, SIGNAL(edited()), this, SLOT(slotFcnDescriptionChanged()));
 }
 
 bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be const
@@ -354,17 +358,37 @@ void FunctionWidget1::updateParameters()
 
   // compile and retrieve nodes
   CKinFunction* kinFunc = (CKinFunction*) func;
-  kinFunc->compile();
-  std::vector<CNodeK *> v = kinFunc->getNodes();
-
-  // go through nodes and determine if identifier, if so, then add to parameters
-  for (int i = 0; i < v.size(); i++)
+  try
     {
-      if (((CNodeK*)v[i])->isIdentifier())
-        func->addParameter(((CNodeK*)v[i])->getName(), CFunctionParameter::FLOAT64, "PARAMETER");
+      kinFunc->compile();
+      std::vector<CNodeK *> v = kinFunc->getNodes();
+
+      // go through nodes and determine if identifier, if so, then add to parameters
+      for (int i = 0; i < v.size(); i++)
+        {
+          if (((CNodeK*)v[i])->isIdentifier())
+            func->addParameter(((CNodeK*)v[i])->getName(), CFunctionParameter::FLOAT64, "PARAMETER");
+        }
+      // Call loadFromFunction to display the table
+      loadFromFunction(func);
     }
-  // Call loadFromFunction to display the table
-  loadFromFunction(func);
+  catch (CCopasiException Exception)
+    {
+      switch (QMessageBox::warning(this, "Invalid Function Description",
+                                     "Could not recognize the function description.\n"
+                                     "Please check function and make sure to \n"
+                                     "include operators between variables and coefficients.\n\n",
+                                     "Retry",
+                                     "Quit", 0, 0, 1))
+        {
+        case 0:  // The user clicked the Retry again button or pressed Enter
+          // try again
+          break;
+        case 1:  // The user clicked the Quit or pressed Escape
+          // exit
+          break;
+        }
+    }
 } //end of function
 
 bool FunctionWidget1::saveToFunction()
@@ -553,6 +577,7 @@ void FunctionWidget1::slotCancelButtonClicked()
 
 void FunctionWidget1::slotCommitButtonClicked()
 {
+  //updateParameters();
   //let the user confirm?
   saveToFunction();
 }

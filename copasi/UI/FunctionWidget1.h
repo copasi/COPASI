@@ -21,6 +21,7 @@ class QPushButton;
 class QRadioButton;
 class QTable;
 class CFunction;
+class MyLineEdit;
 
 class FunctionWidget1 : public CopasiWidget
   {
@@ -34,10 +35,10 @@ class FunctionWidget1 : public CopasiWidget
     virtual bool enter(const std::string & key = "");
 
   protected slots:
-    virtual void slotFcnDescriptionChanged();
     virtual void slotCancelButtonClicked();
     virtual void slotCommitButtonClicked();
     virtual void slotTableValueChanged(int row, int col);
+    virtual void slotFcnDescriptionChanged();
 
   protected:
     bool loadFromFunction(CFunction*);
@@ -51,7 +52,8 @@ class FunctionWidget1 : public CopasiWidget
     QHBoxLayout* Layout2;
     QLabel* TextLabel1;
     QLabel* TextLabel2;
-    QTextBrowser* textBrowser;
+    //QTextBrowser* textBrowser;
+    MyLineEdit* textBrowser;
     QFrame* Line2;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
