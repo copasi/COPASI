@@ -45,7 +45,8 @@ CReaction::CReaction(const std::string & name,
     mId2Products("Products", this),
     mId2Modifiers("Modifiers", this),
     mId2Parameters("Parameters", this),
-    mParameters("Parameters", this)
+    mMap(),
+    mParameters("CallParameters", this)
     //mCallParameters(),
     //mCallParameterObjects()
 {
@@ -72,6 +73,7 @@ CReaction::CReaction(const CReaction & src,
     mId2Products(src.mId2Products, this),
     mId2Modifiers(src.mId2Modifiers, this),
     mId2Parameters(src.mId2Parameters, this),
+    mMap(src.mMap),
     mParameters(src.mParameters, this)
     //mCallParameters(src.mCallParameters),
     //mCallParameterObjects(src.mCallParameterObjects)
@@ -479,7 +481,8 @@ void CReaction::setParameter(const std::string & parameterName, C_FLOAT64 value)
 void CReaction::initializeParameters()
 {
   unsigned C_INT32 i;
-  unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage("PARAMETER");
+  unsigned C_INT32 imax
+  = mMap.getFunctionParameters().getNumberOfParametersByUsage("PARAMETER");
   unsigned C_INT32 pos;
   std::string name;
   CParameter param;
