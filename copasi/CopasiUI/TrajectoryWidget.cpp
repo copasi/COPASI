@@ -8,6 +8,7 @@
  ****************************************************************************/
 #include "TrajectoryWidget.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "trajectory/CTrajectoryProblem.h"
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 

@@ -4,13 +4,14 @@
 #define COPASI_MAIN
 #include "copasiui3window.h"
 #include "utilities/CGlobals.h"
+#include "function/CFunctionDB.h"
 
 int main(int argc, char **argv)
 {
   Copasi = new CGlobals;
 
   CReadConfig * pFunctionDB = new CReadConfig("FunctionDB.gps");
-  Copasi->FunctionDB.load(*pFunctionDB);
+  Copasi->pFunctionDB->load(*pFunctionDB);
   delete pFunctionDB;
 
   QApplication a(argc, argv);

@@ -9,13 +9,14 @@
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
+#include <qfont.h>
+
 #include "FunctionSymbols.h"
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathSymbol.h"
 #include "utilities/CGlobals.h"
 #include "listviews.h"
-#include <qfont.h>
-
+#include "function/CFunctionDB.h" 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
  *  displaying the Metabolites in model 'model'.

@@ -23,6 +23,7 @@
 #include "ReactionsWidget1.h"
 #include "listviews.h"
 #include "model/model.h"
+#include "function/CFunctionDB.h"
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"
 #include "utilities/CGlobals.h"
@@ -216,8 +217,9 @@ void ReactionsWidget1::loadName(QString setValue)
     reversible = TriTrue;
 
   const CCopasiVectorN < CFunction > & Functions =
-    Copasi->FunctionDB.suitableFunctions(reactn->getChemEq().getSubstrates().size(),
-                                         reactn->getChemEq().getSubstrates().size(), reversible);
+    Copasi->pFunctionDB->suitableFunctions(reactn->getChemEq().getSubstrates().size(),
+                                           reactn->getChemEq().getSubstrates().size(),
+                                           reversible);
   //const CFunction *function;
 
   const CChemEq * chemEq;
@@ -463,8 +465,9 @@ void ReactionsWidget1::slotCheckBoxClicked()
 
   ComboBox1->clear();
   const CCopasiVectorN < CFunction > & Functions =
-    Copasi->FunctionDB.suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
-                                         reactn1->getChemEq().getSubstrates().size(), reversible);
+    Copasi->pFunctionDB->suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
+                                           reactn1->getChemEq().getSubstrates().size(),
+                                           reversible);
   QStringList comboEntries;
   QString comboEntry;
   unsigned int temp2;
@@ -485,7 +488,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
   const std::string & p1 = p2.latin1();
-  CFunction * function = Copasi->FunctionDB.findLoadFunction(p1);
+  CFunction * function = Copasi->pFunctionDB->findLoadFunction(p1);
   CFunctionParameters &functionParameters = function->getParameters();
 
   int count_substrates = 0;

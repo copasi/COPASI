@@ -172,7 +172,7 @@ int FunctionWidget1::isName(QString setValue)
 {
   int i;
 
-  CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
+  CCopasiVectorNS< CFunction > & Functions = Copasi->pFunctionDB->loadedFunctions();
   C_INT32 noOfFunctionsRows = Functions.size();
   //Now filling the table.
 
@@ -213,7 +213,7 @@ void FunctionWidget1::loadName(QString setValue)
 {
   int i, j;
 
-  CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
+  CCopasiVectorNS< CFunction > & Functions = Copasi->pFunctionDB->loadedFunctions();
 
   //Now filling the table.
 
@@ -257,7 +257,7 @@ void FunctionWidget1::loadName(QString setValue)
           Table2->removeRow(0);
         }
 
-      CFunction &funct2 = *Copasi->FunctionDB.loadedFunctions()[funct->getName()];
+      CFunction &funct2 = *Copasi->pFunctionDB->loadedFunctions()[funct->getName()];
       CFunctionParameters &functParam = funct2.getParameters();
       C_INT32 noOffunctParams = functParam.size();
       Table1->setNumRows(noOffunctParams);
@@ -370,7 +370,7 @@ void FunctionWidget1::slotCommitButtonClicked()
 
   CWriteConfig * sFunctionDB = new CWriteConfig("FunctionDB1.gps");
 
-  CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
+  CCopasiVectorNS< CFunction > & Functions = Copasi->pFunctionDB->loadedFunctions();
   CFunction *funct;
   funct = Functions[myValue];
   /**** for Name and Description ****/
@@ -393,7 +393,7 @@ void FunctionWidget1::slotCommitButtonClicked()
       funct->setReversible(TriFalse);
 
   /***** for Table 1: Parameters table *****/
-  CFunction &funct2 = *Copasi->FunctionDB.loadedFunctions()[funct->getName()];
+  CFunction &funct2 = *Copasi->pFunctionDB->loadedFunctions()[funct->getName()];
 
   CFunctionParameters &functParam = funct2.getParameters();
 
@@ -467,6 +467,6 @@ void FunctionWidget1::slotCommitButtonClicked()
       functUsage[j]->setHigh(int_High);
     }
 
-  Copasi->FunctionDB.save(*sFunctionDB);
+  Copasi->pFunctionDB->save(*sFunctionDB);
   delete sFunctionDB;
 }

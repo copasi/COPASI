@@ -30,6 +30,7 @@
 #include "ModesWidget.h"
 #include "SteadyStateWidget.h"
 #include "TrajectoryWidget.h"
+#include "function/CFunctionDB.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -1067,7 +1068,7 @@ void ListViews::loadFunction()
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
   //  myId = 10 * myId;
 
-  CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
+  CCopasiVectorNS< CFunction > & Functions = Copasi->pFunctionDB->loadedFunctions();
 
   C_INT32 noOfFunctionsRows = Functions.size();
 

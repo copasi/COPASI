@@ -20,6 +20,7 @@
 #include <qimage.h>
 #include <qpixmap.h>
 #include "utilities/CGlobals.h"
+#include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "listviews.h" 
 /**
