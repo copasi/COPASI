@@ -3,7 +3,6 @@
 CBaseFunction::CBaseFunction() 
 {
     mReversible = FALSE;
-    mIdentifierTypes.push_back(0);
 }
 
 CBaseFunction::~CBaseFunction() {;}
@@ -26,7 +25,8 @@ string CBaseFunction::GetDescription() {return mDescription;}
 
 short CBaseFunction::IsReversible() {return mReversible;}
 
-vector < char > & CBaseFunction::IdentifierTypes() {return mIdentifierTypes;}
+vector < CBaseFunction::CCallParameter > & CBaseFunction::CallParameters() 
+{return mCallParameters;}
 
 long CBaseFunction::NoIdentifiers(char identifierType)
 {

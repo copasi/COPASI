@@ -10,6 +10,8 @@
 #include <vector>
 
 #include "copasi.h"
+#include "CCopasiException.h"
+#include "CCopasiMessage.h"
 #include "CGlobals.h"
 #include "CReadConfig.h"
 #include "CWriteConfig.h"

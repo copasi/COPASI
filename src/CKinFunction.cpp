@@ -11,24 +11,30 @@ short DefinedInsertAllowed(CNodeK src);
 CKinFunction::CKinFunction() 
 {
     SetReversible(FALSE);
-    IdentifierTypes().resize(5);
-    IdentifierTypes()[0] = 0;
-    IdentifierTypes()[1] = N_SUBSTRATE;
-    IdentifierTypes()[2] = N_PRODUCT;
-    IdentifierTypes()[3] = N_MODIFIER;
-    IdentifierTypes()[4] = N_KCONSTANT;
+    CallParameters().resize(1);
+    CallParameters()[0].mType  = 0; // double *
+    CallParameters()[0].mCount = 0; // ask for number
+    CallParameters()[0].mIdentifierTypes.resize(5);
+    CallParameters()[0].mIdentifierTypes[0] = 0;
+    CallParameters()[0].mIdentifierTypes[1] = N_SUBSTRATE;
+    CallParameters()[0].mIdentifierTypes[2] = N_PRODUCT;
+    CallParameters()[0].mIdentifierTypes[3] = N_MODIFIER;
+    CallParameters()[0].mIdentifierTypes[4] = N_KCONSTANT;
 }
 
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
     SetReversible(FALSE);
-    IdentifierTypes().resize(5);
-    IdentifierTypes()[0] = 0;
-    IdentifierTypes()[1] = N_SUBSTRATE;
-    IdentifierTypes()[2] = N_PRODUCT;
-    IdentifierTypes()[3] = N_MODIFIER;
-    IdentifierTypes()[4] = N_KCONSTANT;
+    CallParameters().resize(1);
+    CallParameters()[0].mType  = 0; // double *
+    CallParameters()[0].mCount = 0; // ask for number
+    CallParameters()[0].mIdentifierTypes.resize(5);
+    CallParameters()[0].mIdentifierTypes[0] = 0;
+    CallParameters()[0].mIdentifierTypes[1] = N_SUBSTRATE;
+    CallParameters()[0].mIdentifierTypes[2] = N_PRODUCT;
+    CallParameters()[0].mIdentifierTypes[3] = N_MODIFIER;
+    CallParameters()[0].mIdentifierTypes[4] = N_KCONSTANT;
 
     SetName(name);
     SetDescription(description);

@@ -11,6 +11,7 @@
 #include <assert.h>
 
 #include "copasi.h"
+#include "CCopasiMessage.h"
 #include "CReadConfig.h"
 
 // char *InitInputBuffer(char *name);

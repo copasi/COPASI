@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 #include "copasi.h"
+#include "CCopasiMessage.h"
 #include "CNodeK.h"
 
 CNodeK::CNodeK()

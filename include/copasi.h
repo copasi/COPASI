@@ -7,8 +7,8 @@
 #ifndef COPASI_copasi
 #define COPASI_copasi
 
-#include <string>
 #include <assert.h>
+#include <iostream>
 
 using namespace std ;
 
@@ -30,7 +30,4 @@ using namespace std ;
 // protected free
 #define pfree(p) {if (p) {free(p); p = NULL;}}
     
-#include "CCopasiMessage.h"
-#include "CCopasiException.h"
-
 #endif // COPASI_copasi

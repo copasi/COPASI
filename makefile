@@ -1,15 +1,15 @@
-SHELL = /bin/sh
-PRG    = test
+SHELL	= /bin/sh
+PRG	= test.exe
 
 CC	= gcc
 CXX	= g++
-CFLAGS = -g -I$(INCDIR) -DGCC 
+CFLAGS	= -g -I$(INCDIR) -DGCC 
 
-LIBS        = -lnsl 
+LIBS	= -lnsl 
 
-SRCDIR = ./src
-OBJDIR = ./o
-INCDIR = ./include
+SRCDIR	= ./src
+OBJDIR	= ./o
+INCDIR	= ./include
 
 include include.mak
 
@@ -27,9 +27,9 @@ DOC: doc/html/index.html
 doc/html/index.html: $(INCDIR)/*.h test.dox
 	doxygen test.dox
 
-dependencies: $(SRCDIR)/*.cpp
-	$(CC) -I./include -MM $^ | sed -e 's?\(.*\)\.o:?$(OBJDIR)/\1.o:?' \
-	> ./dependencies
+dependencies:
+	$(CC) -I./include -MM $(SRCDIR)/*.cpp | \
+	sed -e 's?\(.*\)\.o:?$(OBJDIR)/\1.o:?' > ./dependencies
 
 clean:  
 	rm -f $(PRG) *.txt dependencies

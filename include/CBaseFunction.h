@@ -1,5 +1,5 @@
 /**
- * CBaseIdentifier
+ * CBaseFunction
  * 
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2001
@@ -21,7 +21,7 @@ public:
     {
         BASIC = 0,
         USERDIFINED,
-        BUILIN
+        BUILTIN
     };
   
 private:
@@ -45,11 +45,27 @@ private:
      */
     short mReversible;
 
-    /**
-     *  Vector of allowed types of the function
-     */
-    vector < char > mIdentifierTypes;
+    class CCallParameter
+        {
+            friend class CBaseFunction;
+            friend class CKinFunction;
+        // Attributes
+        private:
+            long mType;
+            long mCount;
+            vector < char > mIdentifierTypes;
+        // Operations
+        public:
+            long GetType();
+            long GetCount();
+            vector < char > IdentifierTypes();
+        };
 
+    /**
+     *  Vector of call parameter specificying their structure
+     */
+    vector < CCallParameter > mCallParameters;
+    
     /**
      *  Vector of identifiers of the function
      */
@@ -119,7 +135,7 @@ public:
      *  Retrieves the vector of allowed identifiers
      *  @return "vector < char > &"
      */
-    virtual vector < char > & IdentifierTypes();
+    vector < CCallParameter > & CallParameters();
 
     /**
      *  Retrieves the number of identifiers of a specific type
