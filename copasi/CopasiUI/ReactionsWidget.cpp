@@ -12,7 +12,9 @@
 #include <qmessagebox.h>
 #include "listviews.h"
 #include "ReactionsWidget.h"
-#include <qfont.h> 
+
+#include <qfont.h>
+
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree.
  *  This widget is a child of 'parent', with the 

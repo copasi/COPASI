@@ -19,7 +19,9 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include "listviews.h"
-#include <qfont.h> 
+
+#include <qfont.h>
+
 /*
  *  Constructs a MetabolitesWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -191,6 +193,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
   //This is for the cancel and the commit buttons
   commitChanges = new QPushButton("&Commit Changes", Frame2);
   cancelChanges = new QPushButton("&Cancel Changes", Frame2);
+
   commitChanges->setFont(QFont("Times", 10, QFont::Bold));
   cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
 
