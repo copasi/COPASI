@@ -189,3 +189,7 @@ bool CScanProblem::setProcessSteadyState(const bool & processSteadyState)
   mProcessSteadyState = processSteadyState;
   return true;
 }
+
+void CScanProblem::setModel(CModel * pModel) {mpModel = pModel;}
+
+CModel * CScanProblem::getModel() const {return mpModel;}

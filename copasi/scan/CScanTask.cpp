@@ -31,6 +31,7 @@ void CScanTask::cleanup()
 {
   pdelete(mpProblem);
   pdelete(mpMethod);
+  pdelete(mpOut);
 }
 
 void CScanTask::initializeReporting(std::ostream & C_UNUSED(out))
