@@ -110,11 +110,27 @@ SOURCE=.\CompartmentsWidget1.moc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CompartmentSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ConstantSymbols.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\copasiui3window.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\copasiui3window.moc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FixedMetaboliteSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionSymbols.cpp
 # End Source File
 # Begin Source File
 
@@ -159,6 +175,30 @@ SOURCE=.\MetabolitesWidget1.cpp
 # Begin Source File
 
 SOURCE=.\MetabolitesWidget1.moc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MetaboliteSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\moc_CompartmentSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\moc_ConstantSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\moc_FixedMetaboliteSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\moc_FunctionSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\moc_MetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
 
@@ -312,6 +352,72 @@ InputName=CompartmentsWidget1
 # End Source File
 # Begin Source File
 
+SOURCE=.\CompartmentSymbols.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing CompartmentSymbols.h...
+InputDir=.
+InputPath=.\CompartmentSymbols.h
+InputName=CompartmentSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing CompartmentSymbols.h...
+InputDir=.
+InputPath=.\CompartmentSymbols.h
+InputName=CompartmentSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\ConstantSymbols.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ConstantSymbols.h...
+InputDir=.
+InputPath=.\ConstantSymbols.h
+InputName=ConstantSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ConstantSymbols.h...
+InputDir=.
+InputPath=.\ConstantSymbols.h
+InputName=ConstantSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\copasiui3window.h
 
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
@@ -345,6 +451,72 @@ InputName=copasiui3window
 
 SOURCE=.\DataModel.h
 # PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\FixedMetaboliteSymbols.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing FixedMetaboliteSymbols.h...
+InputDir=.
+InputPath=.\FixedMetaboliteSymbols.h
+InputName=FixedMetaboliteSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing FixedMetaboliteSymbols.h...
+InputDir=.
+InputPath=.\FixedMetaboliteSymbols.h
+InputName=FixedMetaboliteSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionSymbols.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing FunctionSymbols.h...
+InputDir=.
+InputPath=.\FunctionSymbols.h
+InputName=FunctionSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing FunctionSymbols.h...
+InputDir=.
+InputPath=.\FunctionSymbols.h
+InputName=FunctionSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -501,6 +673,39 @@ InputName=MetabolitesWidget1
 
 "$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\MetaboliteSymbols.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing MetaboliteSymbols.h...
+InputDir=.
+InputPath=.\MetaboliteSymbols.h
+InputName=MetaboliteSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing MetaboliteSymbols.h...
+InputDir=.
+InputPath=.\MetaboliteSymbols.h
+InputName=MetaboliteSymbols
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -793,7 +998,7 @@ SOURCE=..\elementaryFluxModes\CElementaryFluxModes.moc
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - MOCing CElementaryFluxModes.cpp...
-InputDir=\Documents and Settings\shoops.BIOINFORMATICS\projects\copasi_dev\copasi\elementaryFluxModes
+InputDir=\Documents and Settings\msinghal\DESKTOP\copasi_dev\copasi\elementaryFluxModes
 InputPath=..\elementaryFluxModes\CElementaryFluxModes.moc
 InputName=CElementaryFluxModes
 
@@ -806,9 +1011,42 @@ InputName=CElementaryFluxModes
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - MOCing CElementaryFluxModes.cpp...
-InputDir=\Documents and Settings\shoops.BIOINFORMATICS\projects\copasi_dev\copasi\elementaryFluxModes
+InputDir=\Documents and Settings\msinghal\DESKTOP\copasi_dev\copasi\elementaryFluxModes
 InputPath=..\elementaryFluxModes\CElementaryFluxModes.moc
 InputName=CElementaryFluxModes
+
+"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\ConstantSymbols.moc
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ConstantSymbols.cpp...
+InputDir=.
+InputPath=.\ConstantSymbols.moc
+InputName=ConstantSymbols
+
+"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ConstantSymbols.cpp...
+InputDir=.
+InputPath=.\ConstantSymbols.moc
+InputName=ConstantSymbols
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc

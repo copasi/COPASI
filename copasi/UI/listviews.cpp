@@ -15,10 +15,15 @@
 #include "MetabolitesWidget.h"
 #include "ReactionsWidget.h"
 #include "CompartmentsWidget.h"
+#include "CompartmentSymbols.h"
+#include "ConstantSymbols.h"
+#include "FunctionSymbols.h"
 #include "MoietyWidget.h"
 #include "FunctionWidget.h"
 #include "ReactionsWidget1.h"
 #include "MetabolitesWidget1.h"
+#include "MetaboliteSymbols.h"
+#include "FixedMetaboliteSymbols.h"
 #include "CompartmentsWidget1.h"
 #include "MoietyWidget1.h"
 #include "FunctionWidget1.h"
@@ -382,10 +387,20 @@ void ListViews::slotFolderChanged(QListViewItem *i)
 
   if (!value)
     currentWidget = metabolitesWidget;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Metabolite Symbols")))
+    currentWidget = metaboliteSymbols;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Fixed Metabolite Symbols")))
+    currentWidget = fixedMetaboliteSymbols;
   else if (! (value = QString::compare(item->folder()->folderName(), "Reactions")))
     currentWidget = reactionsWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Compartments")))
     currentWidget = compartmentsWidget;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Compartment Symbols")))
+    currentWidget = compartmentSymbols;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Constant Symbols")))
+    currentWidget = constantSymbols;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Function Symbols")))
+    currentWidget = functionSymbols;
   else if (! (value = QString::compare(item->folder()->folderName(), "Moiety")))
     currentWidget = moietyWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Functions")))
@@ -793,9 +808,25 @@ void ListViews::ConstructNodeWidgets()
     metabolitesWidget = new MetabolitesWidget(this);
     metabolitesWidget->hide();
 
+    //Constructing the Constant Symbols
+    metaboliteSymbols = new MetaboliteSymbols(this);
+    metaboliteSymbols->hide();
+
+    //Constructing the Constant Symbols
+    fixedMetaboliteSymbols = new FixedMetaboliteSymbols(this);
+    fixedMetaboliteSymbols->hide();
+
     //Constructing the Compartments Widget
     compartmentsWidget = new CompartmentsWidget(this);
     compartmentsWidget->hide();
+
+    //Constructing the Compartments Symbols
+    compartmentSymbols = new CompartmentSymbols(this);
+    compartmentSymbols->hide();
+
+    //Constructing the Constant Symbols
+    constantSymbols = new ConstantSymbols(this);
+    constantSymbols->hide();
 
     //Constructing the Moieties Widget
     moietyWidget = new MoietyWidget(this);
@@ -804,6 +835,10 @@ void ListViews::ConstructNodeWidgets()
     //Constructing the Function Widget
     functionWidget = new FunctionWidget(this);
     functionWidget->hide();
+
+    //Constructing the Constant Symbols
+    functionSymbols = new FunctionSymbols(this);
+    functionSymbols->hide();
 
     //Constructing the SteadyStateTask Widget
     steadystateWidget = new SteadyStateWidget(this);

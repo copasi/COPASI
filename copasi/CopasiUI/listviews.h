@@ -32,14 +32,20 @@ class SteadyStateWidget;
 class TrajectoryWidget;
 
 class MetabolitesWidget;
+class MetaboliteSymbols;
+class FixedMetaboliteSymbols;
 
 class ReactionsWidget;
 
 class CompartmentsWidget;
 
+class CompartmentSymbols;
+class ConstantSymbols;
+
 class MoietyWidget;
 
 class FunctionWidget;
+class FunctionSymbols;
 
 class ReactionsWidget1;
 
@@ -165,11 +171,16 @@ class ListViews : public QSplitter, public Observer
     MetabolitesWidget *metabolitesWidget;
     ReactionsWidget *reactionsWidget;
     CompartmentsWidget *compartmentsWidget;
+    CompartmentSymbols *compartmentSymbols;
     MoietyWidget *moietyWidget;
     FunctionWidget *functionWidget;
+    FunctionSymbols *functionSymbols;
     ReactionsWidget1 *reactionsWidget1;
     MetabolitesWidget1 *metabolitesWidget1;
+    MetaboliteSymbols *metaboliteSymbols;
+    FixedMetaboliteSymbols *fixedMetaboliteSymbols;
     CompartmentsWidget1 *compartmentsWidget1;
+    ConstantSymbols *constantSymbols;
     MoietyWidget1 *moietyWidget1;
     FunctionWidget1 *functionWidget1;
     ModesWidget *modesWidget;
