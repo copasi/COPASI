@@ -173,21 +173,21 @@ void ScanItemWidget::MinValueChanged(const QString&)
 
 void ScanItemWidget::DensityValueChanged(const QString&)
 {
-  pParameter->setValue("Density", mDensity->text().toDouble());
+  pParameter->setValue("density", mDensity->text().toDouble());
   /*  for verfication
-   if (pParameter->getIndex(Density")==C_INVALID_INDEX)
+   if (pParameter->getIndex("density")==C_INVALID_INDEX)
     return;
-   double toDouble = pParameter->getValue("Density");
+   double toDouble = pParameter->getValue("density");
   */
 }
 
 void ScanItemWidget::IndependentClicked()
 {
-  pParameter->setValue("Indp", mIndependent->isChecked());
+  pParameter->setValue("indp", mIndependent->isChecked());
   /*  for verfication
-   if (pParameter->getIndex("Indp")==C_INVALID_INDEX)
+   if (pParameter->getIndex("indp")==C_INVALID_INDEX)
     return;
-   bool Indp = pParameter->getValue("Indp");
+   bool Indp = pParameter->getValue("indp");
   */
 }
 
@@ -269,28 +269,28 @@ void ScanItemWidget::updateObject()
 {
   mMax->setText(QString::number(pParameter->getValue("max")));
   mMin->setText(QString::number(pParameter->getValue("min")));
-  mDensity->setText(QString::number(pParameter->getValue("Density")));
+  mDensity->setText(QString::number(pParameter->getValue("density")));
   mLogarithmic->setChecked(pParameter->getValue("log"));
-  mIndependent->setChecked(pParameter->getValue("Indp"));
+  mIndependent->setChecked(pParameter->getValue("indp"));
   switch (int(pParameter->getValue("gridType")))
     {
     case SD_REGULAR:
-      mMinLabel->setText(tr("Min     "));
-      mMaxLabel->setText(tr("Max     "));
+      mMinLabel->setText(tr("Min"));
+      mMaxLabel->setText(tr("Max"));
       mRegularGridRadio->setChecked(1);
       break;
     case SD_UNIFORM:
-      mMinLabel->setText(tr("Min     "));
-      mMaxLabel->setText(tr("Max     "));
+      mMinLabel->setText(tr("Min"));
+      mMaxLabel->setText(tr("Max"));
       mUniformRadio->setChecked(1);
       break;
     case SD_GAUSS:
-      mMinLabel->setText(tr("Mean    "));
+      mMinLabel->setText(tr("Mean"));
       mMaxLabel->setText(tr("Std.Dev."));
       mGaussianRadio->setChecked(1);
       break;
     case SD_BOLTZ:
-      mMinLabel->setText(tr("Mean    "));
+      mMinLabel->setText(tr("Mean"));
       mMaxLabel->setText(tr("Std.Dev."));
       mPosGaussianRadio->setChecked(1);
       break;
@@ -302,9 +302,9 @@ void ScanItemWidget::InitializeParameterList()
   //name value type
   pParameter->add("max", mMax->text().toDouble(), CParameter::DOUBLE);
   pParameter->add("min", mMin->text().toDouble(), CParameter::DOUBLE);
-  pParameter->add("Density", mDensity->text().toDouble(), CParameter::DOUBLE);
+  pParameter->add("density", mDensity->text().toDouble(), CParameter::DOUBLE);
   pParameter->add("log", mLogarithmic->text().toUInt(), CParameter::BOOL);
-  pParameter->add("Indp", mIndependent->text().toUInt(), CParameter::BOOL);
+  pParameter->add("indp", mIndependent->text().toUInt(), CParameter::BOOL);
 
   if (mRegularGridRadio->isChecked())
     pParameter->add("gridType", SD_REGULAR, CParameter::INT);
@@ -319,6 +319,8 @@ void ScanItemWidget::InitializeParameterList()
           pParameter->add("gridType", SD_BOLTZ, CParameter::INT);
 
   pParameter->add("value", 0, CParameter::DOUBLE);
+  pParameter->add("incr", 0, CParameter::DOUBLE);
+  pParameter->add("ampl", 0, CParameter::DOUBLE);
 }
 
 void ScanItemWidget::loadObject()
