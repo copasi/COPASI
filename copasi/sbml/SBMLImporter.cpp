@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/17 05:41:01 $
+   $Date: 2004/06/20 17:46:37 $
    End CVS Header */
 
 #include <iostream>
@@ -20,6 +20,7 @@
 #include "function/CNodeK.h"
 #include "function/CFunctionDB.h"
 
+#include "sbml/config.h"
 #include "sbml/SBMLReader.hpp"
 #include "sbml/SBMLDocument.hpp"
 #include "sbml/Compartment.hpp"
@@ -39,7 +40,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
 {
   Model* sbmlModel = sbmlDocument->getModel();
   /* Create an empty model and set the title. */
-  //std::cerr << "Setting units." << std::endl;
+  //DebugFile << "Setting units." << std::endl;
   CModel* copasiModel = new CModel();
   copasiModel->setVolumeUnit(CModel::l);
   copasiModel->setTimeUnit(CModel::s);
@@ -81,7 +82,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
                               copasiModel->setQuantityUnit(CModel::fMol);
                               break;
                             default:
-                              std::cerr << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
+                              DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
                               exit(1);
                               break;
                             }
@@ -144,7 +145,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
                                   copasiModel->setTimeUnit(CModel::fs);
                                   break;
                                 default:
-                                  std::cerr << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
+                                  DebugFile << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
                                   exit(1);
                                   break;
                                 }
@@ -211,7 +212,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
                               copasiModel->setVolumeUnit(CModel::fl);
                               break;
                             default:
-                              std::cerr << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
+                              DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
                               exit(1);
                               break;
                             }
@@ -266,7 +267,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
   /* Set standard units to match the standard units of SBML files. */
   std::map<std::string, CCompartment*> compartmentMap;
   /* Create the compartments */
-  //std::cerr << "Creating compartments." << std::endl;
+  //DebugFile << "Creating compartments." << std::endl;
   unsigned int num = sbmlModel->getNumCompartments();
   for (unsigned int counter = 0; counter < num; counter++)
     {
@@ -278,10 +279,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
           key = sbmlCompartment->getName();
         }
       compartmentMap[key] = copasiCompartment;
+      DebugFile << "Added compartment with key " << key << " to compartmentMap." << std::endl;
     }
 
   /* Create all species */
-  //std::cerr << "Creating Metabolites." << std::endl;
+  //DebugFile << "Creating Metabolites." << std::endl;
   num = sbmlModel->getNumSpecies();
   for (unsigned int counter = num; counter > 0; counter--)
     {
@@ -290,17 +292,25 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
       if (copasiCompartment != NULL)
         {
           CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment);
-          std::string key = sbmlSpecies->getId();
+          std::string key;
           if (!sbmlSpecies->isSetId())
             {
               key = sbmlSpecies->getName();
             }
+          else
+            {
+              key = sbmlSpecies->getId();
+            }
           this->speciesMap[key] = copasiMetabolite;
+        }
+      else
+        {
+          DebugFile << "Error. Could not find copartment " << sbmlSpecies->getCompartment() << std::endl;
         }
     }
 
   /* Create all reactions */
-  //std::cerr << "Creating reactions." << std::endl;
+  //DebugFile << "Creating reactions." << std::endl;
   num = sbmlModel->getNumReactions();
   for (unsigned int counter = 0; counter < num; counter++)
     {
@@ -345,7 +355,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       appendix = numberStream.str();
     }
   CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, sbmlCompartment->getVolume());
-  std::cerr << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
+  DebugFile << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
   return copasiCompartment;
 }
 
@@ -403,7 +413,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     {
       copasiMetabolite->setInitialConcentration(sbmlSpecies->getInitialConcentration());      // CHECK UNITS !!!
     }
-  //std::cerr << "Created metabolite: " << copasiMetabolite->getObjectName() << std::endl;
+  DebugFile << "Created metabolite: " << copasiMetabolite->getObjectName() << std::endl;
   return copasiMetabolite;
 }
 
@@ -444,8 +454,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
+          DebugFile << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
           throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
-          //std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
 
           //exit(1);
         }
@@ -473,8 +483,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
+          DebugFile << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
           throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
-          //std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
           //exit(1);
         }
       if (compartment == NULL)
@@ -500,8 +510,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
+          DebugFile << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
           throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
-          //std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
           //exit(1);
         }
       if (compartment == NULL)
@@ -582,6 +592,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         }
       else
         {
+          DebugFile << "Error. Could not determine compartment for single compartment reaction." << std::endl;
           throw StdException("Error. Could not determine compartment for single compartment reaction.");
         }
     }
@@ -590,7 +601,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   std::string functionName = "function_4_" + copasiReaction->getObjectName();
   CFunction* cFun = this->functionDB->createFunction(functionName, CFunction::UserDefined);
   //ConverterASTNode::printASTNode(node);
-  //std::cerr << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
+  //DebugFile << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
   cFun->setDescription(SBML_formulaToString(node));
   cFun->setType(CFunction::UserDefined);
   cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
@@ -626,13 +637,23 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               /* first check if the parameter is defined in the reaction */
               for (unsigned int x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
                 {
-                  Parameter* p = sbmlReaction->getKineticLaw()->getParameter(x);
-                  if (p->isSetUnits())
+                  Parameter* parameter = sbmlModel->getParameter(x);
+                  std::string parameterName;
+                  DebugFile << "local parameter " << x << ": " << parameter << std::endl;
+                  if (parameter->isSetId())
+                    {
+                      parameterName = parameter->getId();
+                    }
+                  else
+                    {
+                      parameterName = parameter->getName();
+                    }
+                  if (parameter->isSetUnits())
                     {
                       /* !!! */
                       /* create a warning that the units will be ignored */
                     }
-                  if (p->getId() == nodeName)
+                  if (parameterName == nodeName)
                     {
                       found = true;
                       cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "PARAMETER");
@@ -646,7 +667,22 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   for (unsigned int x = 0; x < sbmlModel->getNumParameters(); x++)
                     {
                       Parameter* parameter = sbmlModel->getParameter(x);
-                      if (parameter->getId() == nodeName)
+                      DebugFile << "global parameter " << x << ": " << parameter << std::endl;
+                      std::string parameterName;
+                      if (parameter->isSetId())
+                        {
+                          parameterName = parameter->getId();
+                        }
+                      else
+                        {
+                          parameterName = parameter->getName();
+                        }
+                      if (parameter->isSetUnits())
+                        {
+                          /* !!! */
+                          /* create a warning that the units will be ignored */
+                        }
+                      if (parameterName == nodeName)
                         {
                           found = true;
                           cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "PARAMETER");
@@ -658,6 +694,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                * */
               if (!found)
                 {
+                  DebugFile << "Could not find parameter: " << nodeName << std::endl;
                   throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
                 }
             }
@@ -728,11 +765,20 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               bool found = false;
               for (unsigned int x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
                 {
-                  Parameter* p = sbmlReaction->getKineticLaw()->getParameter(x);
-                  if (p->getId() == nodeName)
+                  Parameter* parameter = sbmlReaction->getKineticLaw()->getParameter(x);
+                  std::string parameterName;
+                  if (parameter->isSetId())
+                    {
+                      parameterName = parameter->getId();
+                    }
+                  else
+                    {
+                      parameterName = parameter->getName();
+                    }
+                  if (parameterName == nodeName)
                     {
                       found = true;
-                      copasiReaction->setParameterValue(nodeName, p->getValue());
+                      copasiReaction->setParameterValue(nodeName, parameter->getValue());
                       break;
                     }
                 }
@@ -741,7 +787,16 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   for (unsigned int x = 0; x < sbmlModel->getNumParameters(); x++)
                     {
                       Parameter* parameter = sbmlModel->getParameter(x);
-                      if (parameter->getId() == nodeName)
+                      std::string parameterName;
+                      if (parameter->isSetId())
+                        {
+                          parameterName = parameter->getId();
+                        }
+                      else
+                        {
+                          parameterName = parameter->getName();
+                        }
+                      if (parameterName == nodeName)
                         {
                           found = true;
                           copasiReaction->setParameterValue(nodeName, parameter->getValue());
@@ -751,14 +806,14 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                 }
               if (!found)
                 {
-                  //std::cerr << "Could not find parameter: " << nodeName << std::endl;
+                  DebugFile << "Could not find parameter: " << nodeName << std::endl;
                   throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
                 }
             }
         }
     }
   copasiReaction->setReversible(sbmlReaction->getReversible());
-  //std::cerr << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
+  DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
   return copasiReaction;
 }
 
@@ -1003,17 +1058,25 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB) throw(StdExcept
 {
   if (funDB != NULL)
     {
-      this->functionDB = funDB;
-      SBMLReader* reader = new SBMLReader(XML_SCHEMA_VALIDATION_NONE);
-      SBMLDocument* sbmlDoc = reader->readSBML(filename);
-      delete reader;
-      //std::cerr << "Number of Compartments: " << sbmlDoc->getModel()->getNumCompartments() << std::endl;
-      //std::cerr << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
-      //std::cerr << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
+      try
+        {
+          this->functionDB = funDB;
+          SBMLReader* reader = new SBMLReader(XML_SCHEMA_VALIDATION_NONE);
+          SBMLDocument* sbmlDoc = reader->readSBML(filename);
+          delete reader;
+          //DebugFile << "Number of Compartments: " << sbmlDoc->getModel()->getNumCompartments() << std::endl;
+          //DebugFile << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
+          //DebugFile << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
 
-      CModel* model = this->createCModelFromSBMLDocument(sbmlDoc);
-      delete sbmlDoc;
-      return model;
+          CModel* model = this->createCModelFromSBMLDocument(sbmlDoc);
+          delete sbmlDoc;
+          return model;
+        }
+      catch (StdException ex)
+        {
+          DebugFile << ex.what() << std::endl;
+          throw ex;
+        }
     }
   else
     {
