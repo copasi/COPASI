@@ -16,6 +16,12 @@
 #define SS_NOT_FOUND 1
 #define SS_FOUND 0
 #define SS_SINGULAR_JACOBIAN 2
+#define SS_DAMPING_LIMIT 3
+#define SS_ITERATION_LIMIT 4
+
+//Note: they may not be 1.0, check where it comes from orignially (Y.H.)
+#define DefaultSSRes 1.0 
+#define DefaultDerivFactor 1.0
 
 
 class CNewton
@@ -34,9 +40,19 @@ private:
      C_INT32 mNewtonLimit;
 
     /**
+     * The steady state resolution
+     */
+     C_FLOAT64 mSSRes;
+
+    /**
+     * The modulation factor for finite differences derivation
+     */
+     C_FLOAT64 mDerivFactor;
+
+    /**
      * The number counter of FVal() function
      */
-     C_INT32 mFunctionCounter;
+     //  C_INT32 mFunctionCounter;
 
     /**
      *  private function, evaluate the balance equations
@@ -150,6 +166,30 @@ public:
      */
      CModel * GetModel() const;
 
+    /**
+     *  set mSSRes
+     *  @param aDouble is a double set as mSSRes
+     */
+     void SetSSRes(C_FLOAT64 aDouble);
+
+    /**
+     *  get mSSRes
+     *  @return mSSRes, the private mSSRes double
+     */
+     C_FLOAT64 GetSSRes() const;
+
+    /**
+     *  set mDerivFactor
+     *  @param aDouble is a double set as mDerivFactor
+     */
+     void SetDerivFactor(C_FLOAT64 aDouble);
+
+    /**
+     *  get mDerivFactor
+     *  @return mDerivFactor, the private mDerivFactor double
+     */
+     C_FLOAT64 GetDerivFactor() const;
+
 
     /**
      *  to process the primary function of this class
@@ -159,14 +199,15 @@ public:
     /**
      * Clean up internal pointer variables
      */
-     void Cleanup(void);
+     void Cleanup(double * ss_x, double * ss_xnew, double * ss_dxdt, 
+                   double * ss_h, int * ss_ipvt, double ** ss_jacob);
 
      /**
       * returns the largest value in a vector
       * @param mtm is a pointer to ??????
       */
 
-     C_FLOAT64 SS_XNorn( C_FLOAT64 *mtx );
+     C_FLOAT64 SS_XNorn( C_FLOAT64 * mtx );
 
 
 };
@@ -174,3 +215,13 @@ public:
 
 
 #endif  //CNewton_H
+
+
+
+
+
+
+
+
+
+
