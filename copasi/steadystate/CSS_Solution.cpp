@@ -133,19 +133,6 @@ C_INT32 CSS_Solution::load(CReadConfig & configbuffer)
                                       CReadConfig::LOOP)))
     return Fail;
 
-
-  /*
-  if((Fail = configbuffer.getVariable("EndTime", "C_FLOAT64",
-                                      (void *) &mEndTime,
-                                      CReadConfig::LOOP)))
-    return Fail;
-  
-  if((Fail = configbuffer.getVariable("Points", "C_INT32",
-                                      (void *) &mPoints)))
-    return Fail;
-  */
-
-
   return Fail;
 }
 
@@ -166,50 +153,11 @@ C_INT32 CSS_Solution::save(CWriteConfig & configbuffer)
     return Fail;
 
 
-  /*
-  if((Fail = configbuffer.setVariable("EndTime", "C_FLOAT64",
-                                      (void *) &mEndTime)))
-    return Fail;
-  
-  if((Fail = configbuffer.setVariable("Points", "C_FLOAT64",
-                                      (void *) &mPoints)))
-    return Fail;
-  */
-
   return Fail;
 
 }
 
 
-
-
-
-
-
-/*
-
-void CSS_Solution::process(void)
-{
-  C_FLOAT64 t = 0.1;
-
-  mNewton->process();
-  if(mNewton->isSteadyState())
-        afterFindSteadyState();
-
-  while (t < pow(10,10))
-    {
-      // if(mNewton->isSteadyState())
-      //   return;
-
-      t *= 10;
-      mTraj -> process();
-    }
-
-  //Backward trajectory until -10^10
-
-}
-
-*/
 
 void CSS_Solution::process(void)
 {
@@ -219,12 +167,12 @@ void CSS_Solution::process(void)
   //int i,j;
   //int temp_points;
   //bool tt_infinity;     //YH: change it
-  double jtot, ftot;
+  //double jtot, ftot;
   // set the number of function and jacobian evaluations to zero
-  mNjeval = jtot = 0.0;
-  mNfeval = ftot = 0.0;
+  //mNjeval = jtot = 0.0;
+  //mNfeval = ftot = 0.0;
   //lsoda_state = 1;                //YH: comment out
-  mSs_njacob = mSs_nfunction = 0;
+  //mSs_njacob = mSs_nfunction = 0;
 
   // use the damped Newton method
   if((mOption==0) || (mOption==2)) 
@@ -233,8 +181,8 @@ void CSS_Solution::process(void)
       //YH: better return ss_x array from mNewton, or sth. like:
       //mNewton.getSs_x();   // will be used in this class
 
-      ftot += (double) mSs_nfunction;     // ??
-      jtot += (double) mSs_njacob;        // ??
+      //ftot += (double) mSs_nfunction;     // ??
+      //jtot += (double) mSs_njacob;        // ??
 
       if(mNewton->isSteadyState())
         afterFindSteadyState();
@@ -272,8 +220,9 @@ void CSS_Solution::process(void)
               mNewton->process();
 
               // update count of function and jacobian evaluations
-              ftot += (double) mSs_nfunction;
-              jtot += (double) mSs_njacob;
+	      // is it needed, anyway?
+              //ftot += (double) mSs_nfunction;
+              //jtot += (double) mSs_njacob;
 
               if(mNewton->isSteadyState())
                 afterFindSteadyState();
@@ -285,27 +234,32 @@ void CSS_Solution::process(void)
   // use backwards integration
   // find the original lsods_incr, see how it works
   if( ( (mSSBackInt) && (mSs_solution!=SS_FOUND) ) //if others failed
-  //  if( ( (mSs_solution!=SS_FOUND) ) // if others failed
       || (mOption==3) // or backwards integration only
       )
     {
-      t = -0.1;
+      t = -1;
+
+      C_FLOAT64 * oldY;
+      C_FLOAT64 * newY;
 
       //YH: will be done later
       while ( t > -(pow(10,10)) )
         {
           t *= 10;
 
-          //YH: set up a new trajectory class now
-          //set lsoda_incr to -1, and then run it
+	  // before trajectory process, get trajectory.mY
+          oldY = mTraj->getMY();
 
-          //run integration
+          //YH: set up a new trajectory class now
+          //set lsoda_incr to -1, and then run it  // ???
+
           mTraj -> process();
 
-          // update necessary information
-          // to be done
+	  // after trajectory process, get trajectory.mY
+	  newY = mTraj->getMY();
 
-          if( isSteadyState() )
+          //compare old and new mY and check isSteadyState()
+          if( isSteadyStateAfterTrajectory(mTraj, oldY, newY) )
                 afterFindSteadyState();
 
         }
@@ -314,9 +268,7 @@ void CSS_Solution::process(void)
 }
 
 
-/**
- *  Process after the steady state is found
- */
+// Process after the steady state is found
 void CSS_Solution::afterFindSteadyState()
 {
 
@@ -327,6 +279,7 @@ void CSS_Solution::afterFindSteadyState()
   //copy the concentrations back to the model
 
   //calculate the fluxes
+  
 
   //calculate the transition times
 
@@ -335,7 +288,8 @@ void CSS_Solution::afterFindSteadyState()
 }
 
 // finds out if current state is a valid steady state
-// based on if (mY[i]-mY_old[i])/delta(t) < mSSRes 
+// YH: it's a new function 
+// based on if | (mY[i]-mY_old[i])/delta(t)| < mSSRes 
 C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT64 * oldY, C_FLOAT64 * newY )
 {
   
@@ -344,7 +298,7 @@ C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT6
 
   for (int i=0; i < arrSize; i++)
     {
-      if ( (newY[i]-oldY[i])/timeLength > mSSRes) {
+      if ( fabs( (newY[i]-oldY[i])/timeLength ) > mSSRes) {
 	mSs_solution = SS_NOT_FOUND;
 	return mSs_solution;
       }
@@ -356,13 +310,12 @@ C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT6
 }
 
 
-//#ifdef XXXXXX
+#ifdef XXXXXX
 
 //Yongqun: change SSStrategy to mOption
 //
 void CSS_Solution::steadyState( void )
 {
-  #ifdef XXXXXX
 
   int i,j;
   int temp_points;
@@ -553,11 +506,8 @@ void CSS_Solution::steadyState( void )
   //  // set the overall transition time to zero
   //  Model.TransTime = 0.0;
   // }
-
-#endif
 }
 
-/*
 
 // finds out if current state is a valid steady state
 // destroys the contents of matrix ss_dxdt
@@ -585,9 +535,6 @@ C_INT32 CSS_Solution::isSteadyState( void )
   return mSs_solution;
 }
 
-*/
-
-/*
 
 // YH: move the following function to here from CNewton class
  
@@ -612,10 +559,8 @@ C_INT32  CSS_Solution::isSteadyState( void )
  
 }
 
-*/
 
-
-//#endif //XXXXXX
+#endif //XXXXXX
 
 
 
