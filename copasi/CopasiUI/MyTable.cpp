@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyTable.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/16 13:47:09 $
+   $Date: 2004/08/17 08:02:16 $
    End CVS Header */
 
 #include <iostream>
@@ -44,11 +44,16 @@ void MyTable::keyPressEvent (QKeyEvent * e)
 void MyTable::showEvent(QShowEvent* e)
 {
   int vertHeaderWidth = 0;
-  if (this->verticalHeader() && this->verticalHeader()->count() > 0)
+  int vertScrollbarWidth = 0;
+  if (this->verticalHeader() && this->verticalHeader()->count() > 0 && this->verticalHeader()->isShown())
     {
       vertHeaderWidth = this->verticalHeader()->sectionRect(0).width();
     }
-  int width = this->width() - vertHeaderWidth;
+  if (this->verticalScrollBar() && this->verticalScrollBar()->isShown())
+    {
+      vertScrollbarWidth = this->verticalScrollBar()->width();
+    }
+  int width = this->width() - vertHeaderWidth - vertScrollbarWidth;
 
   if (this->firstTime)
     {
@@ -68,7 +73,7 @@ void MyTable::showEvent(QShowEvent* e)
           for (counter = 0; counter < numCols; counter++)
             {
               this->exactColumnWidth[counter] = (double)this->columnWidth(counter) * factor;
-              this->setColumnWidth(counter, (int)floor(this->exactColumnWidth[counter]));
+              this->setColumnWidth(counter, (int)(this->exactColumnWidth[counter]) - 1);
             }
         }
     }
@@ -78,20 +83,21 @@ void MyTable::showEvent(QShowEvent* e)
 void MyTable::resizeEvent(QResizeEvent* e)
 {
   double vertHeaderWidth = 0.0;
-  if (this->verticalHeader() && this->verticalHeader()->count() > 0)
+  double vertScrollbarWidth = 0.0;
+  if (this->verticalHeader() && this->verticalHeader()->count() > 0 && this->verticalHeader()->isVisible())
     {
       vertHeaderWidth = (double)(this->verticalHeader()->sectionRect(0).width());
     }
-  double oldWidth = (double)(e->oldSize().width() - vertHeaderWidth);
-  double width = (double)(e->size().width()) - vertHeaderWidth;
+  if (this->verticalScrollBar() && this->verticalScrollBar()->isVisible())
+    {
+      vertScrollbarWidth = this->verticalScrollBar()->width();
+    }
+  double oldWidth = (double)(e->oldSize().width() - vertHeaderWidth - vertScrollbarWidth);
+  double width = (double)(e->size().width()) - vertHeaderWidth - vertScrollbarWidth;
   int numColumns = this->numCols();
   int * optSizes = new int[numColumns];
   int counter;
-  if (this->contentsWidth() > width && oldWidth < width)
-    {
-      QTable::resizeEvent(e);
-    }
-  else
+  if (!(this->contentsWidth() > width && oldWidth < width))
     {
       double factor = width / oldWidth;
       //std::cout << "oldWidth: " << oldWidth << std::endl;
@@ -99,23 +105,15 @@ void MyTable::resizeEvent(QResizeEvent* e)
       //std::cout << "factor: " << factor << std::endl;
       if (width < oldWidth)
         {
-          //int tooSmall=-1;
           for (counter = 0; counter < numColumns; counter++)
             {
               optSizes[counter] = this->getOptimalColumnWidth(counter);
               if ((int)(this->exactColumnWidth[counter]*factor) < optSizes[counter])
                 {
-                  //tooSmall=counter;
-                  //break;
                   delete [] optSizes;
                   return;
                 }
             }
-          /*
-          if(tooSmall!=-1){
-           return;
-          }
-          */
         }
       this->scaleColumns(factor);
     }
@@ -128,7 +126,6 @@ int MyTable::getOptimalColumnWidth(int index)
 {
   int counter;
   int largest = this->headerSectionSizeHint(index).width();
-  //int largest = this->horizontalHeader()->sectionSize(index);
   for (counter = 0; counter < this->numRows(); counter++)
     {
       QTableItem* it = this->item(counter, index);
@@ -152,18 +149,11 @@ void MyTable::scaleColumns(double factor)
   for (counter = 0; counter < this->numCols() - 1; counter++)
     {
       this->exactColumnWidth[counter] = this->exactColumnWidth[counter] * factor;
-      this->setColumnWidth(counter, (int)floor(this->exactColumnWidth[counter]));
-      w += (int)floor(this->exactColumnWidth[counter]);
+      this->setColumnWidth(counter, (int)(this->exactColumnWidth[counter]) - 1);
+      w += (int)(this->exactColumnWidth[counter]);
     }
   this->exactColumnWidth[this->numCols() - 1] = this->exactColumnWidth[this->numCols() - 1] * factor;
-  if (w + this->exactColumnWidth[this->numCols() - 1] > this->width() - this->verticalScrollBar()->width() - this->verticalHeader()->width())
-    {
-      this->setColumnWidth(this->numCols() - 1, (int)this->exactColumnWidth[this->numCols() - 1]);
-    }
-  else
-    {
-      this->setColumnWidth(this->numCols() - 1, this->width() - w - this->verticalScrollBar()->width() - this->verticalHeader()->width());
-    }
+  this->setColumnWidth(this->numCols() - 1, (int)this->exactColumnWidth[this->numCols() - 1] - 1);
 }
 
 void MyTable::setNumCols(int count)
