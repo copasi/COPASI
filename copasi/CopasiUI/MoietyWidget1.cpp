@@ -16,6 +16,7 @@
 #include <qframe.h>
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
+#include "utilities/CMethodParameter.h"
 #include "MoietyWidget1.h"
 #include "model/CModel.h"
 #include "model/CMoiety.h"

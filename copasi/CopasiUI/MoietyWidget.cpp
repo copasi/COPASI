@@ -16,6 +16,7 @@
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "listviews.h"
+#include "utilities/CMethodParameter.h"
 #include "model/CMoiety.h"
 
 /**

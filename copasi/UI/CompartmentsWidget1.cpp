@@ -20,6 +20,7 @@
 #include "CompartmentsWidget1.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
+#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 
 /*

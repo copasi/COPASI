@@ -15,6 +15,7 @@
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathConstant.h"
 #include "model/CCompartment.h"
+#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 
 /**

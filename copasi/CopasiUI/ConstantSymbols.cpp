@@ -14,6 +14,7 @@
 #include "ConstantSymbols.h"
 #include "mathmodel/CMathConstant.h"
 #include "mathmodel/CMathModel.h"
+#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 
 /**

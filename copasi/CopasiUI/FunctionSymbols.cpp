@@ -14,6 +14,7 @@
 #include "FunctionSymbols.h"
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathSymbol.h"
+#include "utilities/CMethodParameter.h"
 #include "utilities/CGlobals.h"
 #include "listviews.h"
 #include "function/CFunctionDB.h"

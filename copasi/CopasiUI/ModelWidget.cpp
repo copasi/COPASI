@@ -18,6 +18,7 @@
 #include "ModelWidget.h"
 #include "listviews.h"
 #include "model/CModel.h"
+#include "utilities/CMethodParameter.h"
 
 /*
  *  Constructs a ModelWidget which is a child of 'parent', with the 

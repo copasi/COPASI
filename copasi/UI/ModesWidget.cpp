@@ -14,6 +14,7 @@
 #include "copasi.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "ModesWidget.h"
+#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 
 /**
