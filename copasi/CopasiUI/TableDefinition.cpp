@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.10 2003/08/08 15:36:35 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.11 2003/08/08 15:43:52 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -175,6 +175,8 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   connect(tabChecked, SIGNAL(clicked()), this, SLOT(tabButtonClicked()));
   connect(titleChecked, SIGNAL(clicked()), this, SLOT(titleButtonClicked()));
   connect(appendChecked, SIGNAL(clicked()), this, SLOT(appendButtonClicked()));
+  connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotBtnConfirmClicked()));
+  connect(cancelButton, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
 }
 
 /*
@@ -211,10 +213,14 @@ void TableDefinition::loadTableDefinition()
 {}
 
 void TableDefinition::slotBtnCancelClicked()
-{}
+{
+  //check for the connection int i =0;
+}
 
-void TableDefinition::slotBtnOKClicked()
-{}
+void TableDefinition::slotBtnConfirmClicked()
+{
+  //check for the connection int i =0;
+}
 
 void TableDefinition::tabButtonClicked()
 {
@@ -222,7 +228,11 @@ void TableDefinition::tabButtonClicked()
 }
 
 void TableDefinition::titleButtonClicked()
-{}
+{
+  //check for the connection int i =0;
+}
 
 void TableDefinition::appendButtonClicked()
-{}
+{
+  //check for the connection int i =0;
+}
