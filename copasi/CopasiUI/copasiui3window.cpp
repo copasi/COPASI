@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/02/18 20:45:31 $
+   $Date: 2004/02/18 21:38:05 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -18,6 +18,7 @@
 
 #include "copasiui3window.h"
 #include "listviews.h"
+#include "ObjectBrowser.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -26,7 +27,8 @@
 #include "output/COutputList.h"
 #include "output/COutput.h"
 #include "model/CModel.h"
-#include "ObjectBrowser.h"
+#include "commandline/COptionParser.h"
+#include "commandline/COptions.h"
 
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"
@@ -50,7 +52,7 @@ CopasiUI3Window::CopasiUI3Window():
     listViews(NULL),
     gpsFile(),
     msave_button(NULL),
-    file(NULL)
+    mpFileMenu(NULL)
 {
   // Set the window caption/title
   QString Title = "COPASI (";
@@ -59,12 +61,12 @@ CopasiUI3Window::CopasiUI3Window():
   setCaption(Title);
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
-  //  file = new QPopupMenu;
-  file->setItemEnabled(nobject_browser, false);
+  //  mpFileMenu = new QPopupMenu;
+  mpFileMenu->setItemEnabled(nobject_browser, false);
   bobject_browser_open = false;
-  file->setItemEnabled(nexport_menu_SBML, false);
-  file->setItemEnabled(nsave_menu_id, false);
-  file->setItemEnabled(nsaveas_menu_id, false);
+  mpFileMenu->setItemEnabled(nexport_menu_SBML, false);
+  mpFileMenu->setItemEnabled(nsave_menu_id, false);
+  mpFileMenu->setItemEnabled(nsaveas_menu_id, false);
   msave_button->setEnabled(false);
 
   if (!dataModel)
@@ -80,6 +82,12 @@ CopasiUI3Window::CopasiUI3Window():
   listViews = new ListViews(splitter);
   listViews->setDataModel(dataModel);
   listViews->show();
+
+  const COptions::nonOptionType & Files = COptions::getNonOptions();
+  if (Files.size())
+    slotFileOpen(Files[0].c_str());
+  else
+    newDoc();
 
   ListViews::notify(ListViews::FUNCTION, ListViews::ADD, "");
 }
@@ -139,10 +147,10 @@ void CopasiUI3Window::newDoc()
        {
        gpsFile="temp.gps";
        dataModel->loadModel((const char *)gpsFile.utf8());
-    file->setItemEnabled(nexport_menu_SBML, true);
-    file->setItemEnabled(nsaveas_menu_id, true);
+    mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
+    mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
     msave_button->setEnabled(true);
-    file->setItemEnabled(nsave_menu_id, true);
+    mpFileMenu->setItemEnabled(nsave_menu_id, true);
   //       listViews = new ListViews(splitter);
   //       listViews->setDataModel(dataModel);
   //       listViews->show();
@@ -155,11 +163,11 @@ void CopasiUI3Window::newDoc()
   dataModel->createModel(gpsFile.latin1());
   ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
   if (!bobject_browser_open)
-    file->setItemEnabled(nobject_browser, true);
-  file->setItemEnabled(nexport_menu_SBML, true);
-  file->setItemEnabled(nsaveas_menu_id, true);
+    mpFileMenu->setItemEnabled(nobject_browser, true);
+  mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
+  mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   msave_button->setEnabled(true);
-  file->setItemEnabled(nsave_menu_id, true);
+  mpFileMenu->setItemEnabled(nsave_menu_id, true);
 }
 
 /***************CopasiUI3Window::slotFileOpen()******
@@ -169,17 +177,19 @@ void CopasiUI3Window::newDoc()
  ** Descripton:- This method is called when the users clicks on Open 
  **              option in the menu File 
  *******************************************************************************************/
-void CopasiUI3Window::slotFileOpen()
+void CopasiUI3Window::slotFileOpen(QString file)
 {
   QString newFile;
 
-  newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps)",
-                                         this, "open file dialog",
-                                         "Choose a file");
+  if (file == "")
+    newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps)",
+                                           this, "open file dialog",
+                                           "Choose a file");
+  else
+    newFile = file;
 
   // gives the file information to the datamodel to handle it
 
-  //Use this *** gpsFile.endsWith(".gps")
   if (newFile)
     {
       if (!dataModel)
@@ -201,11 +211,11 @@ void CopasiUI3Window::slotFileOpen()
                         dataModel->getModel()->getKey());
 
       if (!bobject_browser_open)
-        file->setItemEnabled(nobject_browser, true);
-      file->setItemEnabled(nexport_menu_SBML, true);
-      file->setItemEnabled(nsaveas_menu_id, true);
+        mpFileMenu->setItemEnabled(nobject_browser, true);
+      mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
+      mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
       msave_button->setEnabled(true);
-      file->setItemEnabled(nsave_menu_id, true);
+      mpFileMenu->setItemEnabled(nsave_menu_id, true);
     }
 }
 
@@ -381,20 +391,20 @@ void CopasiUI3Window::createMenuBar()
   QKeySequence hotKey[8] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_P, CTRL + Key_B};
   int fileSeperator[8] = {0, 0, 0, 0, 0, 0, 1, 0};
 
-  file = new QPopupMenu(this);
-  menuBar()->insertItem("&File", file);
+  mpFileMenu = new QPopupMenu(this);
+  menuBar()->insertItem("&File", mpFileMenu);
   int j;
   for (j = 0; j < 8; j++)
     {
       if (fileSeperator[j] == 1)
-        file->insertSeparator();
+        mpFileMenu->insertSeparator();
 
       int id;
 
-      id = file->insertItem(icon[j], iconName[j],
-                            this, slotFileName[j], hotKey[j]);
+      id = mpFileMenu->insertItem(icon[j], iconName[j],
+                                  this, slotFileName[j], hotKey[j]);
 
-      file->setWhatsThis(id, toolTip[j]);
+      mpFileMenu->setWhatsThis(id, toolTip[j]);
       if (j == 2)
         nsave_menu_id = id;
       if (j == 3)
@@ -405,9 +415,9 @@ void CopasiUI3Window::createMenuBar()
         nobject_browser = id;
     }
 
-  file->insertSeparator();
-  file->insertItem("&Close", this, SLOT(close()), CTRL + Key_W);
-  file->insertItem("&Quit", qApp, SLOT(closeAllWindows()), CTRL + Key_Q);
+  mpFileMenu->insertSeparator();
+  mpFileMenu->insertItem("&Close", this, SLOT(close()), CTRL + Key_W);
+  mpFileMenu->insertItem("&Quit", qApp, SLOT(closeAllWindows()), CTRL + Key_Q);
 
   menuBar()->insertSeparator();
 
@@ -454,12 +464,12 @@ void CopasiUI3Window::slotExportSBML()
 
 void CopasiUI3Window::enabled_object_browser_menu()
 {
-  file->setItemEnabled(nobject_browser, true);
+  mpFileMenu->setItemEnabled(nobject_browser, true);
   bobject_browser_open = false;
 }
 
 void CopasiUI3Window::disable_object_browser_menu()
 {
-  file->setItemEnabled(nobject_browser, false);
+  mpFileMenu->setItemEnabled(nobject_browser, false);
   bobject_browser_open = true;
 }
