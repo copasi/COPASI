@@ -305,7 +305,8 @@ void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)
     }
 
   ComboBox1->clear ();
-  for (i = 0; strlen(trajectorymethod->TypeName[i].c_str()) > 0; i++)
+  //disable Hybrid By Force
+  for (i = 0; (strlen(trajectorymethod->TypeName[i].c_str()) > 0) && (QString::compare(trajectorymethod->TypeName[i].c_str(), "hybrid") != 0); i++)
     ComboBox1->insertItem(trUtf8(trajectorymethod->TypeName[i].c_str()));
 
   ComboBox1->setCurrentItem (trajectorymethod->getTypeEnum());
