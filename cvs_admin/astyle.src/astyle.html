@@ -1,0 +1,981 @@
+<html>
+	<head>
+		<TITLE>Artistic Style</TITLE>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+	</head>
+	<body bgcolor="#ffffff">
+		<h1 align="center"><font color="#0000a0" size="7"><i>Artistic Style 1.15.3<BR>
+				</i></font>
+		</h1>
+		<h3 align="center"><font size="5">A </font><A href="license.html"><font size="5">Free</font></A><font size="5">
+				, Fast and Small Automatic Formatter<br>
+				for </font><font color="#0000a0" size="5">C</font><font color="#000000" size="5">
+				,</font><font color="#0000a0" size="5"> C++ </font><font color="#000000" size="5">
+				,</font><font color="#0000a0" size="5">&nbsp;C# <FONT color="#000000" size="5"><FONT color="#000000" size="5">
+						,</FONT></FONT> Java</font><font size="5"> Source Codes</font></h3>
+		<h3 align="center"><font size="3">by </font><a href="http://www.bigfoot.com/~davidsont">
+				<font size="3">Tal Davidson</font></a><font size="3">, Israel (E-mail: </font>
+			<A href="mailto:davidsont@bigfoot.com"><font size="3">davidsont@bigfoot.com</font></A><font size="3">)</font></h3>
+		<blockquote>
+			<h3 align="center"><font size="3">
+					<table height="108" cellspacing="1" cellpadding="1" width="473" border="0">
+						<tr>
+							<td><strong>Main home Page</strong></td>
+							<td><a href="http://astyle.sourceforge.net">http://astyle.sourceforge.net</a></td>
+						</tr>
+						<tr>
+							<td><strong>Project Page</strong></td>
+							<td><a href="http://www.sourceforge.net/projects/astyle">http://www.sourceforge.net/projects/astyle</a></td>
+						</tr>
+					</table>
+				</font><font size="3"></font>
+			</h3>
+			<p>&nbsp;</p>
+		</blockquote>
+		<p><font color="#000000" size="3">Artistic Style is a <b>reindenter and reformatter</b> 
+				of <b>C, C++, C#&nbsp;and Java </b>source code.</font>
+		</p>
+		<p><font color="#000000" size="3">When indenting source code, we as programmers have a 
+				tendency to use both <b>spaces</b> and <b>tab</b> characters to create the 
+				wanted indentation. Moreover, some editors by default insert spaces instead of 
+				tabs when pressing the tab key, and other editors (Emacs for example) have the 
+				ability to "pretty up" lines by automatically setting up the white space before 
+				the code on the line, possibly inserting spaces in a code that up to now used 
+				only tabs for indentation</font><font size="4">.</font>
+		</p>
+		<p><font size="3">Since the <b>NUMBER</b> of space characters showed on screen for each 
+				tab character in the source code changes between editors (until the user sets 
+				up the number to his liking...), </font><font color="#000000" size="3"><b>one of 
+					the standard problems facing programmers when moving from one source code 
+					editor to another</b> is that code containing both spaces and tabs that was 
+				up to now perfectly indented, suddently becomes a mess to look at when changing 
+				to another editor. Even if you as a programmer take care to ONLY use spaces or 
+				tabs, looking at other peoples source code can still be problematic.</font>
+		</p>
+		<p align="left"><font color="#000000" size="3">To address this problem I have created 
+				Artistic Style - a series of filters, written in <b>C++</b>, that automatically 
+				reindent &amp; reformat C/C++/C#/Java source files. These can be used from a <b>command 
+					line</b>, or it can be <b>incorporated as classes in another C++ program</b>.</font>&nbsp;
+			<br>
+			&nbsp;
+		</p>
+		<h3>Read <A href="astyle_release_notes.html">Release Notes</A><BR>
+		</h3>
+		<p>
+		</p>
+		<h3>Read <A href="license.html">License</A></h3>
+		<blockquote>
+			<p>Artistic Style may be used and&nbsp; distributed under the <font size="4"><b>GNU General 
+						Public License (GPL)</b></font>.
+				<BR>
+			</p>
+		</blockquote>
+		<h3><font size="4">New versions, Comments, Questions, Bugs and Ideas for Improvement:</font></h3>
+		<UL dir="ltr" style="MARGIN-RIGHT: 0px">
+			<LI dir="ltr">
+				<DIV><FONT size="3"><STRONG>Visit Astyle's project page at </STRONG></FONT><a href="http://www.sourceforge.net/projects/astyle">
+						<FONT size="3"><STRONG>http://www.sourceforge.net/projects/astyle</STRONG></FONT></a><FONT size="3"><STRONG>&nbsp;for:</STRONG></FONT></DIV>
+				<UL>
+					<LI>
+					Astyle sources and binaries
+					<LI>
+						<font>Mailing lists</font>
+					<LI>
+						<DIV><font>Bug tracking facilities<BR>
+							</font>
+						</DIV>
+					</LI>
+				</UL>
+			<LI>
+				<font size="3"><STRONG>Author's e-mail: Reach me directly at </STRONG></font><A href="mailto:davidsont@bigfoot.com">
+					<font size="3"><STRONG>davidsont@bigfoot.com</STRONG></font></A>&nbsp;<br>
+			</LI>
+		</UL>
+		<h3><font color="#000000" size="4">To use from the command line:</font></h3>
+		<blockquote>
+			<p><font color="#000000" size="3">1) Unzip astyle.zip and compile 'astyle' (read 
+					README.txt for instructions).</font>
+			</p>
+			<p><font color="#000000" size="3">2) Either place the resulting executable file's 
+					directory in your PATH system-variable, or move the executable to a directory 
+					that appears in your PATH system-variable.</font>
+			</p>
+			<p><font color="#000000" size="3">3) Run it with the following syntax:</font>
+			</p>
+			<blockquote>
+				<p><font color="#800080" size="3" face="Times New Roman"><b><tt>astyle </tt></b></font>
+					<font color="#000080" size="3" face="Times New Roman"><b><tt>[options] </tt></b></font>
+					<font color="#ff0000" size="5" face="Times New Roman"><b><tt>&lt;</tt></b></font><font color="#800080" size="3" face="Times New Roman"><b><tt>
+								OriginalSourceFile </tt></b></font><font color="#ff0000" size="5" face="Times New Roman">
+						<b><tt>&gt;</tt></b></font><font color="#800080" size="3" face="Times New Roman"><b><tt>
+								BeautifiedSourceFile</tt></b></font>
+				</p>
+				<blockquote>
+					<p><font size="4"><b>OR</b></font></p>
+				</blockquote>
+				<p><font color="#800080" size="3" face="Times New Roman"><b><tt>astyle </tt></b></font>
+					<font color="#000080" size="3" face="Times New Roman"><b><tt>[options] </tt></b></font>
+					<font color="#800080" size="3" face="Times New Roman"><b><tt>Foo.java 
+								Bar.javaAnotherBar.java</tt></b></font><font color="#000080" size="3" face="Times New Roman"><b><tt>
+								[ . . . ]</tt></b></font>
+				</p>
+				<p><font color="#000000" size="3">The </font><font color="#ff0000" size="5"><b>&lt;</b></font><font color="#000000" size="3">
+						and</font><font color="#ff0000" size="5"><b> &gt;</b></font><font color="#000000" size="3">
+						characters are used to redirect the files into standard input and out of 
+						standard output - don't forget them!!!</font>
+					<br>
+					&nbsp;
+				</p>
+				<p><font color="#330000" size="3">The newly indented file </font><font color="#ff0000" size="3">
+						<strong>RETAINS the original file name</strong></font><font color="#330000" size="3">, 
+						while a copy of the original file is created with a "</font><font color="#ff0000" size="3"><strong>.orig</strong></font><font color="#330000" size="3">" 
+						appended to the original file name.</font><font size="2"> </font><font color="#330000" size="3">
+						Thus, after indenting </font><font color="#800080" size="3"><strong>Foo.java</strong></font><font color="#330000" size="3">
+						as above, the indented result will be named </font><font color="#993399" size="3">
+						<strong>Foo.java</strong></font><font color="#330000" size="3">, while the 
+						original pre-indented file will be renamed to </font><font color="#993399" size="3">
+						<strong>Foo.java.orig</strong> </font><font color="#330000" size="3">.</font></p>
+			</blockquote></blockquote>
+		<h3><font color="#000000" size="4">Options:</font></h3>
+		<blockquote>
+			<p><font size="3">Not specifying any option will bring to C/C++/C# style indentation, 
+					with a default of 4 spaces per indent, and NO formatting.</font><font size="2"> </font>
+			</p>
+			<p><font color="#000000" size="4"><strong>Options may be written in two different ways:</strong></font></p>
+			<ol>
+				<li>
+					<strong>Long options:</strong><p>These options start with '<font color="#ff0000"><strong>--</strong></font>', 
+						and <font color="#ff0000"><strong>must be written one at a time</strong></font><br>
+						(e.g. <font color="#000080" size="3" face="Times New Roman"><strong>--brackets=attach</strong></font><font size="2"><b>&nbsp;</b></font><font color="#000080" size="3" face="Times New Roman"><strong>--pad</strong></font><font size="2"><b>&nbsp;</b></font><font color="#000080" size="3" face="Times New Roman"><strong>--indent=spaces=4</strong></font>
+						).</p>
+				<li>
+					<strong>Short Options:</strong><p>These options start with a single '<font color="#ff0000"><strong>-</strong></font>', 
+						and <font color="#ff0000" size="3"><strong>may be appended together</strong></font><font size="4">.</font><br>
+						Thus, writing <font color="#000080" size="3" face="Times New Roman"><strong>-bps4</strong></font>
+						is the same as writing <font color="#000080" size="4" face="Times New Roman"><strong>-</strong></font><font color="#000080" size="3" face="Times New Roman"><strong>b</strong></font><font size="2"><b>&nbsp;-</b></font><font color="#000080" size="3" face="Times New Roman"><strong>p</strong></font><font size="2"><b>&nbsp;-</b></font><font color="#000080" size="3" face="Times New Roman"><strong>s4</strong></font><font color="#000080"><strong>
+							</strong></font><font color="#400040" size="2" face="Courier New">.<br>
+						</font>
+					</p>
+				</li>
+			</ol>
+			<p><font color="#000000" size="4"><strong>A </strong></font><font color="#ff0000" size="4">
+					<strong>default options file</strong></font><font color="#000000" size="4"><strong> 
+						may be used to define default options:</strong></font></p>
+			<ul>
+				<li>
+					<font color="#000000" size="3">Artistic Style looks for the default options file in 
+						the following order:
+						<br>
+						1. The value of the the system variable </font><font color="#000080" size="3"><strong>
+							ARTISTIC_STYLE_OPTIONS</strong></font><font color="#000000" size="3"> if 
+						one exists.<br>
+						2. The file named <strong>.astylerc</strong> in the directory pointed to by the </font>
+					<font color="#000080" size="3"><strong>HOME</strong></font><font color="#000000" size="3">
+						system variable (i.e. </font><font color="#000080" size="3"><strong>$PATH</strong></font><font color="#000000" size="3"><strong>/.astylerc</strong>)<br>
+						3. The file named <strong>.astylerc</strong> in the directory pointed to by the </font>
+					<font color="#000080" size="3"><strong>HOMEPATH</strong></font><font color="#000000" size="3">
+						system variable (i.e. </font><font color="#000080" size="3"><strong>%HOMEPATH%</strong></font><font color="#000000" size="3"><strong>\.astylerc</strong>)</font></li>
+			</ul>
+			<ul>
+				<li>
+					<font color="#000000" size="3">Options may be set apart by new-lines, tabs or 
+						spaces.</font>
+				<li>
+					<font color="#000000" size="3">Long options <strong>may be written in the options file 
+							without the preceding '--'</strong>.</font>
+				<li>
+					<font color="#000000" size="3">Lines within the options file that begin with '</font><font color="#ff0000" size="3"><strong>#</strong></font><font color="#000000" size="3">' 
+						are considered <strong>line-comments</strong>.<br>
+					</font>
+				<li>
+					<font color="#000000" size="3">Example contents of a default options file:</font><blockquote>
+						<p><font color="#ff0000" size="3" face="Times New Roman"><tt># default parsing is of java 
+									files</tt></font><font color="#800080" size="3" face="Times New Roman"><tt><br>
+									mode=java<br>
+								</tt></font><font color="#ff0000" size="3" face="Times New Roman"><tt># brackets 
+									should be attached to pre-bracket lines</tt></font><font color="#800080" size="3" face="Times New Roman"><tt><br>
+									brackets=attach<br>
+								</tt></font><font color="#ff0000" size="3" face="Times New Roman"><tt># set 6 
+									spaces per indent</tt></font><font color="#800080" size="3" face="Times New&#13;&#10;&#13;&#10;                Roman">&lt;tt&gt;&lt;br&gt;indent=spaces=6<br>
+								</TT></font><font color="#ff0000" size="3" face="Times New Roman"><tt># indent 
+									switch blocks</tt></font><font color="#800080" size="3" face="Times New Roman"><tt><br>
+									indent-switches</tt></font><font color="#000000" size="3"><br>
+							</font><font color="#ff0000" size="3" face="Times New Roman"><tt># suffix of original 
+									files should be .pre</tt></font><font color="#000000" size="3" face="Times New Roman"><tt><br>
+								</tt></font><font color="#800080" size="3" face="Times New Roman"><tt>suffix=.pre<br>
+								</tt></font>
+						</p>
+					</blockquote>
+				</li>
+			</ul>
+			<p><font color="#000000" size="4">The following </font><font color="#000099" size="4"><b>predefined 
+						style</b></font><font color="#000000" size="4"><b> options</b> are 
+					currently avaiable:</font></p>
+			<blockquote>
+				<p><font color="#000080" size="3"><strong>--style=ansi</strong></font><font color="#000000" size="3"><br>
+					</font>ANSI style formatting/indenting.</p>
+				<blockquote>
+					<p><font color="#800080" size="3"><b><tt>namespace foospace<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; int Foo()<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isBar)<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bar();<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 1;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080"><strong>--style=kr</strong></font><br>
+					Kernighan&amp;Ritchie style formatting/indenting.</p>
+				<blockquote>
+					<p><font color="#800080" size="3"><b><tt>namespace foospace</tt></b></font><font color="#ff0000" size="3"><b><tt>
+									{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; int Foo()</tt></b></font><font color="#ff0000" size="3"><b><tt>
+									{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isBar)</tt></b></font><font color="#ff0000" size="3"><b><tt>
+									{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bar();<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 1;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt> else<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080"><strong>--style=linux</strong></font><br>
+					Linux style formatting/indenting (brackets are broken apart from class/function 
+					declarations, but connected to command lines, and indents are set to 8 spaces).</p>
+				<blockquote>
+					<p><font color="#800080" size="3"><b><tt>namespace foospace<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; int Foo()<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if 
+									(isBar)</tt></b></font><font color="#ff0000" size="3"><b><tt> {</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bar();<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 1;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </tt>
+							</b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt>
+									else </tt></b></font><font color="#800080" size="3"><b><tt>
+									<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; 
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080"><strong>--style=gnu</strong></font><br>
+					GNU style formatting/indenting.</p>
+				<blockquote>
+					<p><font color="#800080" size="3"><b><tt>namespace foospace<br>
+									&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; int Foo()<br>
+									&nbsp;&nbsp;&nbsp; &nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isBar)<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bar();<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 1;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;return 0;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080"><strong>--style=java</strong></font><br>
+					Java style formatting/indenting.</p>
+				<blockquote>
+					<p><font color="#800080" size="3"><b><tt>class foospace</tt></b></font><font color="#ff0000" size="3"><b><tt>
+									{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; int Foo()</tt></b></font><font color="#ff0000" size="3"><b><tt>
+									{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isBar)</tt></b></font><font color="#ff0000" size="3"><b><tt>
+									{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bar();<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 1;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt> else<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote></blockquote>
+			<p><font color="#000000" size="4">The following </font><font color="#000099" size="4"><b>indentation</b></font><font color="#000000" size="4"><b>
+						options</b> are currently available:</font></p>
+		</blockquote><blockquote> <blockquote>
+				<p><font color="#000080" size="3"><b>-c</b></font><font color="#000080" size="4"><b> </b>
+					</font><font size="3">OR </font><font color="#000080" size="3"><strong>--mode=c</strong></font><font size="3"><br>
+						Indent a C, C++ or C#&nbsp;file.</font><font size="2"> </font>
+				</p>
+				<p><font color="#000080" size="3"><b>-j</b></font><font size="3"> OR </font><font color="#000080" size="3">
+						<strong>--mode=java</strong></font><font size="3"><br>
+						Indent a Java file.</font><font size="2"> </font>
+				</p>
+				<p><font color="#000080" size="4"><b>-s</b></font><font color="#ff0000" size="4"><b>#</b></font><font size="3">
+						OR </font><font color="#000080" size="3"><strong>--indent=spaces=</strong></font><font color="#ff0000" size="3"><strong>#</strong></font><font size="3"><br>
+						Indent using </font><font color="#ff0000" size="3">#</font><font size="3"> spaces 
+						per indent (e.g. </font><font size="4"><b>-s</b></font><font color="#ff0000" size="3"><b>4</b></font><font size="3">
+						OR <strong>--indent=spaces=</strong></font><font color="#ff0000" size="3"><strong>4</strong></font><font size="3">).</font>
+				</p>
+				<p><font color="#000080" size="4"><strong>-t </strong><font color="#000000" size="3">OR</font><strong>
+							-t<font color="red">#</font></strong></font><font size="3"> OR </font><font color="#000080" size="3">
+						<strong>--indent=tab=<font color="red">#</font></strong></font><font size="3"><br>
+						Indent using tab characters.</font> Treat each tab as <font color="red">#</font>
+					spaces. If no '#' is set, treats tabs as 4 spaces.</p>
+				<p><font color="#000080" size="4"><strong>-T<font color="red">#</font></strong><font size="3"><font color="#000000">
+								OR </font><font color="#000080"><strong>--force-indent=tab=<font color="red">#</font></strong></font><br>
+							<font color="#000000">Indent using tab characters.</font><font color="#000000"> Treat 
+								each tab as </font><font color="red">#</font><font color="#000000"> spaces. 
+								Uses tabs as indents in areas '--indent=tab' prefers to use spaces, such as 
+								inside multi-line statements.</font></font></font></p>
+				<p><font color="#000080" size="4"><strong>-C</strong></font><font size="3"> OR</font><font color="#000080" size="4"><b>
+							--</b></font><font color="#000080" size="3"><b>indent-classes</b></font><font size="2"><br>
+					</font><font size="3">Indent 'class' blocks so that the headers 'public:', 
+						'protected:' and 'private:' are indented in the class block.</font></p>
+				<blockquote>
+					<p><font color="#330000" size="3">The default:</font></p>
+				</blockquote><blockquote>
+					<p><font color="#800080" size="3"><b><tt>class Foo<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									public:<br>
+									&nbsp;&nbsp;&nbsp; Foo();<br>
+									&nbsp;&nbsp;&nbsp; virtual ~Foo();<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt>;</tt></b></font></p>
+					<p><font color="#330000" size="3">becomes:</font>
+					</p>
+					<p><font color="#800080" size="3"><b><tt>class Foo<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; public:<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Foo();<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; virtual ~Foo();<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt>;</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080" size="4"><b>-S</b></font><font size="3"> OR</font><font color="#000080" size="4"><b>
+							--</b></font><font color="#000080" size="3"><b>indent-switches</b></font><font size="2"><br>
+					</font><font size="3">Indent 'switch' blocks so that the 'case XXX:' headers are 
+						indented in the class block.</font></p>
+				<blockquote>
+					<p><font color="#330000" size="3">The default:</font></p>
+				</blockquote><blockquote>
+					<p><font color="#800080" size="3"><b><tt>switch (foo)<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									case 1:<br>
+									&nbsp;&nbsp;&nbsp; a += 2;<br>
+									&nbsp;&nbsp;&nbsp; break;<br>
+									<br>
+									default:<br>
+									&nbsp;&nbsp;&nbsp; a += 2;<br>
+									&nbsp;&nbsp;&nbsp; break;<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+					<p><font color="#330000" size="3">becomes:</font>
+					</p>
+					<p><font color="#800080" size="3"><b><tt>switch (foo)<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; case 1:<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; a += 2;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break;<br>
+									<br>
+									&nbsp;&nbsp;&nbsp; default:<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; a += 2;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break;<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080" size="4"><b>-K</b></font><font size="3"> OR</font><font color="#000080" size="4"><b>
+							--</b></font><font color="#000080" size="3"><b>indent-cases</b></font><font size="2"><br>
+					</font><font size="3">Indent 'case XXX:' lines so that they are flush with the 
+						comand lines under them.</font></p>
+				<blockquote>
+					<p><font color="#330000" size="3">The default:</font></p>
+				</blockquote><blockquote>
+					<p><font color="#800080" size="3"><b><tt>switch (foo)<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									case 1:<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{<br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>&nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; a += 2;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break;<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}<br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>
+									<br>
+									default:<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{<br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>&nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; a += 2;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break;<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+					<p><font color="#330000" size="3">becomes:</font>
+					</p>
+					<p><font color="#800080" size="3"><b><tt>switch (foo)<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; case 1:<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{<br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>&nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; a += 2;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break;<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}<br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>
+									<br>
+									&nbsp;&nbsp;&nbsp; default:<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{<br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>&nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; a += 2;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break;<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080" size="4"><b>-B</b></font><font size="3"> OR</font><font color="#000080" size="4"><b>
+							--</b></font><font color="#000080" size="3"><b>indent-brackets</b></font><font size="3"><br>
+						Add extra indentation to brackets.</font>
+				</p>
+				<blockquote>
+					<p><font color="#330000" size="3">The default:</font></p>
+					<p><font color="#993399" size="3"><b><tt>if (isFoo)</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#993399" size="3">
+							<b><tt>bar();</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>}</tt></b></font>
+						<br>
+						<font color="#993399" size="3"><b><tt>else</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#993399" size="3">
+							<b><tt>anotherBar();</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+					<p><font color="#330000" size="3">becomes:</font>
+					</p>
+					<p><font color="#993399" size="3"><b><tt>if (isFoo)</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#993399" size="3">
+							<b><tt>bar();</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font>
+						<br>
+						<font color="#993399" size="3"><b><tt>else</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#993399" size="3">
+							<b><tt>anotherBar();</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080" size="4"><b>-G</b></font><font size="3"> OR</font><font color="#000080" size="4"><b>
+							--</b></font><font color="#000080" size="3"><b>indent-blocks</b></font><font size="3"><br>
+						Add extra indentation to entire blocks.</font>
+				</p>
+				<blockquote>
+					<p><font color="#330000" size="3">The default:</font></p>
+					<p><font color="#993399" size="3"><b><tt>if (isFoo)</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#993399" size="3">
+							<b><tt>bar();</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>}</tt></b></font>
+						<br>
+						<font color="#993399" size="3"><b><tt>else</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#993399" size="3">
+							<b><tt>anotherBar();</tt></b></font>
+					</p>
+					<p>becomes:</p>
+					<p><font color="#993399" size="3"><b><tt>if (isFoo)</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </tt></b></font><font color="#993399" size="3">
+							<b><tt>bar();</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font>
+						<br>
+						<font color="#993399" size="3"><b><tt>else</tt></b></font> <font face="Courier New" size="3">
+							<b><tt>
+									<br>
+								</tt></b></font><font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font>
+						<font color="#993399" size="3"><b><tt>anotherBar();</tt></b></font>
+					</p>
+				</blockquote>
+				<p><font color="#000080" size="4"><b>-N</b></font><font size="3"> OR</font><font color="#000080" size="4"><b>
+							--</b></font><font color="#000080" size="3"><b>indent-namespaces</b></font><font size="2"><br>
+					</font><font size="3">Add extra indentation to namespaces.</font>
+				</p>
+				<blockquote>
+					<p><font color="#330000" size="3">The default:</font></p>
+				</blockquote><blockquote>
+					<p><font color="#800080" size="3"><b><tt>namespace foospace<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									class Foo<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; public:<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Foo();<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; virtual ~Foo();<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt>;<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+					<p><font color="#330000" size="3">becomes:</font>
+					</p>
+					<p><font color="#800080" size="3"><b><tt>namespace foospace<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; class Foo<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public:<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Foo();<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; virtual ~Foo();<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt>;<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p>&nbsp;</p>
+				<p><font color="#000080" size="4"><b>-L</b></font><font size="3"> OR</font><font color="#000080" size="4"><b>
+							--</b></font><font color="#000080" size="3"><b>indent-labels</b></font><font size="2"><br>
+					</font><font size="3">Add extra indentation to labels so they they appear 1 indent 
+						less than the current indentation, rather than being flushed to the left (the 
+						default).</font>
+				</p>
+				<blockquote>
+					<p><font color="#330000" size="3">The default:</font></p>
+				</blockquote><blockquote>
+					<p><font color="#800080" size="3"><b><tt>int foospace()<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; while (isFoo)<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{<br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>&nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; ...</tt></b></font><font color="#ff0000" size="3"><b><tt><br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>&nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; goto error;<br>
+									<br>
+									error:<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ...<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+					<p><font color="#330000" size="3">becomes:</font>
+					</p>
+					<p><font color="#800080" size="3"><b><tt>int foospace()<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; while (isFoo)<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{<br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>&nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; ...</tt></b></font><font color="#ff0000" size="3"><b><tt><br>
+								</tt></b></font><font color="#800080" size="3"><b><tt>&nbsp;&nbsp;&nbsp; 
+									&nbsp;&nbsp;&nbsp; goto error;<br>
+									<br>
+									&nbsp;&nbsp;&nbsp; error:<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ...<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080" size="3"><b>-M</b></font><font color="#ff0000" size="4"><b>#</b></font><font size="3">
+						OR </font><font color="#000080" size="3"><b>--max-instatement-indent=</b></font><font color="#ff0000" size="3"><b>#</b></font><font color="#000080" size="4"><b>
+							<br>
+						</b></font>Indent a maximal <font color="#ff0000">#</font> spaces in a 
+					continuous statement, relatively to the previous line (e.g. <strong>--max-instatement-indent=</strong><font color="#ff0000" size="3"><strong>40</strong></font>)
+				</p>
+				<p><font color="#000080" size="4"><b>-m</b></font><font color="#ff0000" size="4"><b>#</b></font><font size="3">
+						OR</font><b> <font color="#000080" size="4">--</font><font color="#000080" size="3">min-conditional</font></b><font color="#000080" size="3"><b>-indent=</b></font><font color="#ff0000" size="3"><b>#</b></font><font size="2"><br>
+					</font>Set the minimal indent that is added when a header is built of 
+					multiple-lines. This indent makes helps to easily separate the header from the 
+					command statements that follow. The default setting for this option is <font color="#ff0000">
+						twice the current indent</font>. (e.g. <strong>--min-conditional-indent=<font color="#ff0000">8</font></strong>)
+				</p>
+				<blockquote>
+					<p><font color="#330000">The default:</font></p>
+				</blockquote><blockquote>
+					<p><font color="#800080"><b><tt>// default setting makes this non-bracketed code clear<br>
+									if (a &lt; b<br>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; || c &gt; d)<br>
+									&nbsp;&nbsp;&nbsp; foo++;<br>
+									<br>
+									// but creates an exaggerated indent in this bracketed code<br>
+									if (a &lt; b<br>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; || c &gt; d)<br>
+								</tt></b></font><font color="#ff0000"><b><tt>{</tt></b></font><font color="#800080"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; foo++;<br>
+								</tt></b></font><font color="#ff0000"><b><tt>}</tt></b></font></p>
+					<p><font color="#330000">When setting <b>--min-conditional=0</b> :</font></p>
+					<p><font color="#800080"><b><tt>// setting makes this non-bracketed code less clear<br>
+									if (a &lt; b<br>
+									&nbsp;&nbsp;&nbsp; || c &gt; d)<br>
+									&nbsp;&nbsp;&nbsp; foo++;<br>
+									<br>
+									// but makes this bracketed code prettier<br>
+									if (a &lt; b<br>
+									&nbsp;&nbsp;&nbsp; || c &gt; d)<br>
+								</tt></b></font><font color="#ff0000"><b><tt>{</tt></b></font><font color="#800080"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; foo++;<br>
+								</tt></b></font><font color="#ff0000"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font> <FONT color="#000080"><FONT size="4"><STRONG><FONT size="3">--indent-preprocessor</FONT><BR>
+								</STRONG><FONT color="#000000" size="3">Indent&nbsp;multi-line preprocessor 
+									definitions. should be used with <STRONG>--convert-tabs</STRONG> for proper 
+									results. Does a pretty good job, but can not perform miracles in obfuscated 
+									preprocessor definitions.</FONT></FONT></FONT></font>
+				</p>
+				<p><STRONG><FONT color="#000080">--convert-tabs<BR>
+						</FONT></STRONG><FONT color="#000000" size="3">Converts tabs into single 
+						spaces.</FONT>
+				</p>
+				<p><font color="#000080" size="4"><STRONG>-E</STRONG></font><font size="3"> OR</font><b>
+						<font color="#000080" size="4">--</font><font color="#000080" size="3">fill-empty-lines</font></b><font size="2"><br>
+					</font><font size="3">Fill empty lines with the white space of their previous 
+						lines.</font>
+				</p>
+			</blockquote>
+			<h3><font color="#000000" size="4">The following </font><font color="#000099" size="4">formatting</font><font color="#000000" size="4"><b>
+						options</b> are currently available:</font></h3>
+			<blockquote>
+				<p><font color="#000080" size="3"><b>-b</b></font><font size="3"> OR </font><font color="#000080" size="3">
+						<strong>--brackets=break</strong></font><font size="3"><br>
+						Break brackets&nbsp; from their pre-block statements ( i.e. ANSI C, C++ style 
+						).</font>
+				</p>
+				<blockquote>
+					<p><font color="#993399" size="3"><b><tt>if (isFoo)</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#993399" size="3">
+							<b><tt>bar();</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>}</tt></b></font>
+						<br>
+						<font color="#993399" size="3"><b><tt>else</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#993399" size="3">
+							<b><tt>anotherBar();</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080" size="3"><b>-a</b></font><font size="3"> OR </font><font color="#000080" size="3">
+						<strong>--brackets=attach</strong></font><font size="3"><br>
+						Attach brackets to their pre-block statements ( i.e. Java , K&amp;R style ).</font>
+				</p>
+				<blockquote>
+					<p><font color="#993399" size="3"><b><tt>if (isFoo)</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;</tt></b></font><font color="#993399" size="3"><b><tt>&nbsp; 
+									bar();</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>}</tt></b></font><font size="3"><b><tt> </tt></b>
+						</font><font color="#993399" size="3"><b><tt>else </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>{</tt></b></font>
+						<br>
+						<font size="3"><b><tt>&nbsp;&nbsp;&nbsp;</tt></b></font><font color="#993399" size="3"><b><tt>
+									anotherBar();</tt></b></font>
+						<br>
+						<font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote>
+				<p><font color="#000080" size="3"><b>-l</b></font><font size="3"> OR </font><font color="#000080" size="3">
+						<strong>--brackets=linux</strong></font><font size="3"><br>
+					</font>Break brackets from class/function declarations, but attach brackets to <font size="3">
+						pre-block </font>command statements.</p>
+				<blockquote>
+					<p><font color="#800080" size="3"><b><tt>namespace foospace<br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; int Foo()<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isBar)</tt></b></font><font color="#ff0000" size="3"><b><tt>
+									{</tt></b></font><font color="#800080" size="3"><b><tt><br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bar();<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 1;<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3">
+							<b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt> else<br>
+									&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; return 0;<br>
+									&nbsp;&nbsp;&nbsp; </tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font><font color="#800080" size="3"><b><tt><br>
+								</tt></b></font><font color="#ff0000" size="3"><b><tt>}</tt></b></font></p>
+				</blockquote><font color="#000080" size="3">
+					<P><FONT><FONT color="navy" size="3"><STRONG>--brackets=break-closing-headers</STRONG></FONT></FONT><FONT size="3"><BR>
+							<FONT color="black">When used with either <STRONG>'--brackets=attach'</STRONG> or <STRONG>
+									'--brackets= linux'</STRONG> , breaks closing headers (e.g. 'else', 
+								'catch', ...) from their immediately preceding closing brackets.).</FONT></FONT>
+					</P>
+					<BLOCKQUOTE><FONT color="#993399" size="3"><TT>
+								<P><FONT color="#993399" size="3"><TT><STRONG>if (isFoo)<FONT color="#ff0000" size="3"><TT>{</TT></FONT></STRONG><STRONG><FONT color="#000080"><FONT face="Times New Roman">
+														<BR>
+													</FONT><FONT size="3"><TT>&nbsp;&nbsp;</TT></FONT></FONT><FONT color="#993399" size="3"><TT>&nbsp; 
+														bar();</TT></FONT></STRONG><STRONG><FONT face="Times New Roman" color="#000080">
+													<BR>
+												</FONT><FONT color="#ff0000" size="3"><TT>}</TT></FONT><FONT color="#000080" size="3"><TT></TT></FONT><FONT color="#993399" size="3"><TT>else
+													</TT></FONT><FONT color="#ff0000" size="3"><TT>{</TT></FONT></STRONG><STRONG><FONT color="#000080"><FONT face="Times New Roman">
+														<BR>
+													</FONT><FONT size="3"><TT>&nbsp;&nbsp;&nbsp;</TT></FONT></FONT><FONT color="#993399" size="3"><TT>
+														anotherBar();</TT></FONT></STRONG><STRONG><FONT face="Times New Roman" color="#000080">
+													<BR>
+												</FONT><FONT color="#ff0000" size="3"><TT>}</TT></FONT></STRONG></TT></FONT></P>
+								<FONT color="#ff0000" size="3"><TT>
+										<p><STRONG><font face="Times New Roman" color="#330000" size="3">becomes:</font> </STRONG>
+										</p>
+										<p>
+									</TT></FONT><STRONG>if (isFoo) </STRONG></TT></FONT><STRONG><FONT color="#ff0000" size="3">
+								<TT>{</TT></FONT>
+							<BR>
+							<FONT size="3"><TT>&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT>&nbsp; 
+									bar();</TT></FONT>
+							<BR>
+							<FONT color="#ff0000" size="3"><TT>}</TT></FONT></STRONG><STRONG><FONT size="3"><TT>
+									<BR>
+								</TT></FONT><FONT color="#993399" size="3"><TT>else </TT></FONT><FONT color="#ff0000" size="3">
+								<TT>{</TT></FONT>
+							<BR>
+							<FONT size="3"><TT>&nbsp;&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT> anotherBar();</TT></FONT>
+							<BR>
+							<FONT color="#ff0000" size="3"><TT>}</TT></FONT></STRONG></P></BLOCKQUOTE>
+					<P><FONT color="#ff0000" size="3"><TT></TT></FONT>&nbsp;</P>
+					<P><FONT size="+0"><FONT color="navy" size="3"><STRONG>--break-blocks</STRONG></FONT></FONT><FONT size="3"><BR>
+							<FONT color="#000000"><STRONG>Pad empty lines around header blocks (e.g.&nbsp;'if', 
+									'while'...).</STRONG> </FONT></FONT>
+					</P>
+					<BLOCKQUOTE>
+						<P><STRONG><FONT color="#993399" size="3"><TT>isFoo = true;<BR>
+									</TT></FONT><FONT color="#993399" size="3"><TT>if (isFoo) <FONT color="#ff0000">{</FONT>
+									</TT></FONT>
+								<BR>
+								<FONT size="3"><TT>&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT>&nbsp; 
+										bar();</TT></FONT>
+								<BR>
+								<FONT color="#993399" size="3"><TT><FONT color="#ff0000">} </FONT>else</TT></FONT>&nbsp;<FONT face="Courier New" color="#ff0000">{</FONT><BR>
+								<FONT size="3"><TT>&nbsp;&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT> anotherBar();</TT></FONT>
+							</STRONG><FONT color="#ff0000" size="3"><TT>
+									<BR>
+									<FONT color="purple"><FONT color="#993399"><STRONG><FONT color="#ff0000">}<BR>
+												</FONT>isBar = false;</STRONG></FONT></FONT></TT></FONT></P>
+						<FONT color="#ff0000" size="3"><TT>
+								<p><STRONG><font face="Times New Roman" color="#330000" size="3">becomes:</font> </STRONG>
+								</p>
+								<p><font color="#993399" size="3"><tt><STRONG>isFoo = true;<BR>
+												<BR>
+												<FONT color="#993399" size="3"><TT>if (isFoo) <FONT color="#ff0000">{</FONT> </TT></FONT>
+												<BR>
+												<FONT size="3"><TT>&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT>&nbsp; 
+														bar();</TT></FONT>
+												<BR>
+												<FONT color="#993399" size="3"><TT><FONT color="#ff0000">} </FONT>else</TT></FONT>&nbsp;<FONT color="#ff0000">{</FONT><BR>
+												<FONT size="3"><TT>&nbsp;&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT> anotherBar();</TT></FONT>
+												<BR>
+											</STRONG><STRONG><FONT color="#ff0000" size="3"><TT>}<BR>
+														<BR>
+														<FONT color="purple"><FONT color="#993399">isBar = false;</FONT></FONT></TT></FONT>
+											</STRONG></tt></font>
+								</p>
+							</TT></FONT></BLOCKQUOTE>
+					<P><FONT size="+0"><FONT color="navy" size="3"><STRONG>--break-blocks=all</STRONG></FONT></FONT><FONT size="3"><BR>
+							<FONT color="#000000"><STRONG>Pad empty lines around header blocks (e.g.&nbsp;'if', 
+									'while'...). Treat closing header blocks (e.g. 'else', 'catch') as stand-alone 
+									blocks.</STRONG> </FONT></FONT>
+					</P>
+					<BLOCKQUOTE>
+						<P><STRONG><FONT color="#993399" size="3"><TT>isFoo = true;<BR>
+									</TT></FONT><FONT color="#993399" size="3"><TT>if (isFoo) <FONT color="#ff0000">{</FONT>
+									</TT></FONT>
+								<BR>
+								<FONT size="3"><TT>&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT>&nbsp; 
+										bar();</TT></FONT>
+								<BR>
+								<FONT color="#993399" size="3"><TT><FONT color="#ff0000">} </FONT>else</TT></FONT>&nbsp;<FONT face="Courier New" color="#ff0000">{</FONT><BR>
+								<FONT size="3"><TT>&nbsp;&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT> anotherBar();</TT></FONT>
+							</STRONG><FONT color="#ff0000" size="3"><TT>
+									<BR>
+									<FONT color="purple"><FONT color="#993399"><STRONG><FONT color="#ff0000">}<BR>
+												</FONT>isBar = false;</STRONG></FONT></FONT></TT></FONT></P>
+						<FONT color="#ff0000" size="3"><TT>
+								<p><STRONG><font face="Times New Roman" color="#330000" size="3">becomes:</font> </STRONG>
+								</p>
+								<p><font color="#993399" size="3"><tt><STRONG>isFoo = true;<BR>
+												<BR>
+												<FONT color="#993399" size="3"><TT>if (isFoo) <FONT color="#ff0000">{</FONT> </TT></FONT>
+												<BR>
+												<FONT size="3"><TT>&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT>&nbsp; 
+														bar();</TT></FONT>
+												<BR>
+											</STRONG><FONT color="#993399" size="3"><TT>
+													<BR>
+													<STRONG><FONT color="#ff0000">} </FONT>else</STRONG></TT></FONT><STRONG>&nbsp;<FONT color="#ff0000">{</FONT><BR>
+												<FONT size="3"><TT>&nbsp;&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT> anotherBar();</TT></FONT>
+												<BR>
+											</STRONG><STRONG><FONT color="#ff0000" size="3"><TT>}<BR>
+														<BR>
+														<FONT color="purple"><FONT color="#993399">isBar = false;</FONT></FONT></TT></FONT>
+											</STRONG></tt></font>
+								</p>
+							</TT></FONT></BLOCKQUOTE>
+					<P><FONT size="+0"><FONT color="navy" size="3"><STRONG>--break-elseifs</STRONG></FONT></FONT><FONT size="3"><BR>
+							<FONT color="#000000"><STRONG>Break 'else if()' header combinations into seperate 
+									lines.</STRONG> </FONT></FONT>
+					</P>
+					<BLOCKQUOTE>
+						<P><STRONG><FONT color="#993399" size="3"><TT>if (isFoo) <FONT color="#ff0000">{</FONT> </TT>
+								</FONT>
+								<BR>
+								<FONT size="3"><TT>&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT>&nbsp; 
+										bar();</TT></FONT>
+								<BR>
+								<FONT color="#993399" size="3"><TT><FONT color="#ff0000">} </FONT>else if (isBar())</TT></FONT><FONT face="Courier New" color="#ff0000">{</FONT><BR>
+								<FONT size="3"><TT>&nbsp;&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT> anotherBar();</TT></FONT>
+							</STRONG><FONT color="#ff0000" size="3"><TT>
+									<BR>
+									<FONT color="purple"><FONT color="#993399"><FONT color="#ff0000"><STRONG>}</STRONG></FONT></FONT></FONT></TT></FONT></P>
+						<FONT color="#ff0000" size="3"><TT>
+								<p><STRONG><font face="Times New Roman" color="#330000" size="3">becomes:</font> </STRONG>
+								</p>
+								<p><font color="#993399" size="3"><tt><STRONG>if (isFoo) <FONT color="#ff0000">{</FONT><BR>
+												<FONT size="3"><TT>&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT>&nbsp; 
+														bar();</TT></FONT>
+												<BR>
+											</STRONG><STRONG><FONT color="#993399" size="3"><TT><FONT color="#ff0000">} </FONT>else
+														<BR>
+														&nbsp;&nbsp;&nbsp; if (isBar())</TT></FONT><FONT face="Courier New" color="#ff0000">{</FONT><BR>
+												<FONT size="3"><TT>&nbsp;&nbsp;&nbsp;</TT></FONT><FONT color="#993399" size="3"><TT>&nbsp;&nbsp;&nbsp;&nbsp; 
+														anotherBar();</TT></FONT></STRONG><FONT color="#ff0000" size="3"><TT><BR>
+													<FONT color="purple"><FONT color="#993399"><FONT color="#ff0000"><STRONG>&nbsp;&nbsp;&nbsp; }</STRONG>
+															</FONT></FONT></FONT></TT></FONT><STRONG></STRONG></tt></font>
+								</p>
+							</TT></FONT></BLOCKQUOTE>
+					<P><STRONG>-p</STRONG>
+				</font><STRONG><font color="#000000" size="3">OR</font><font color="#000080" size="3"> --pad=oper</font></STRONG><font size="2"><br>
+				</font><STRONG><font size="3">Insert space padding around operators only.</font> </STRONG>
+				</P> <blockquote>
+					<P><STRONG><font color="#993399" size="3"><tt>if (isFoo)</tt></font>
+							<br>
+							<font color="#993399" size="3"><tt>&nbsp;&nbsp;&nbsp; a = bar((b-c)*a,*d--);</tt></font>
+						</STRONG>
+					</P>
+					<p><STRONG><font color="#330000" size="3">becomes:</font> </STRONG>
+					</p>
+					<p><STRONG><font color="#993399" size="3"><tt>if (isFoo)</tt></font>
+							<br>
+							<font color="#993399" size="3"><tt>&nbsp;&nbsp;&nbsp; a = bar((b - c) * a, *d--);</tt></font></STRONG></p>
+				</blockquote>
+				<p>&nbsp;</p>
+				<p><font color="#000080" size="3"><STRONG>--pad=paren</STRONG></font><font size="2"><br>
+					</font><STRONG><font size="3">Insert space padding around parenthesies only.</font> </STRONG>
+				</p>
+				<blockquote>
+					<p><STRONG><font color="#993399" size="3"><tt>if (isFoo)</tt></font>
+							<br>
+							<font color="#993399" size="3"><tt>&nbsp;&nbsp;&nbsp; a = bar((b-c)*a,*d--);</tt></font>
+						</STRONG>
+					</p>
+					<p><STRONG><font color="#330000" size="3">becomes:</font> </STRONG>
+					</p>
+					<p><STRONG><font color="#993399" size="3"><tt>if ( isFoo )</tt></font>
+							<br>
+							<font color="#993399" size="3"><tt>&nbsp;&nbsp;&nbsp; a = bar( ( b-c )*a, *d-- );</tt></font></STRONG></p>
+				</blockquote>
+				<p>&nbsp;</p>
+				<p><STRONG><font color="#000080" size="3">-P</font><font color="#000000" size="3">OR</font><font color="#000080" size="3">
+							--pad=all</font></STRONG><font size="2"><br>
+					</font><STRONG><font size="3">Insert space padding around operators AND parenthesies.</font>
+					</STRONG>
+				</p>
+				<blockquote>
+					<p><STRONG><font color="#993399" size="3"><tt>if (isFoo)</tt></font>
+							<br>
+							<font color="#993399" size="3"><tt>&nbsp;&nbsp;&nbsp; a = bar((b-c)*a,*d--);</tt></font>
+						</STRONG>
+					</p>
+					<p><STRONG><font color="#330000" size="3">becomes:</font> </STRONG>
+					</p>
+					<p><STRONG><font color="#993399" size="3"><tt>if ( isFoo )</tt></font>
+							<br>
+							<font color="#993399" size="3"><tt>&nbsp;&nbsp;&nbsp; a = bar( ( b - c ) * a, *d-- );</tt></font></STRONG></p>
+				</blockquote>
+				<p><STRONG><font color="#000080" size="4">-o</font><font size="3"> OR</font><font color="#000080" size="4"></font><font color="#000099">--one-line=keep-statements</font></STRONG><font size="2"><br>
+					</font><STRONG><font size="3">Don't break complex statements and multiple statements 
+							residing in a single line.</font> </STRONG>
+				</p>
+				<blockquote>
+					<p><STRONG><font color="#993399" size="3"><tt>if (isFoo)<br>
+								</tt></font><font color="#ff0000" size="3"><tt>{</tt></font></STRONG><STRONG><font color="#993399" size="3"><tt>
+									&nbsp;<br>
+									&nbsp;&nbsp;&nbsp; isFoo = false; cout &lt;&lt; isFoo &lt;&lt; endl;<br>
+								</tt></font><font color="#ff0000" size="3"><tt>}</tt></font></STRONG></p>
+					<p><font size="3"><STRONG>remains as is.</STRONG> </font>
+					</p>
+					<P><FONT color="#993399" size="3"><TT><STRONG>if (isFoo) DoBar(); </STRONG></TT></FONT>
+					</P>
+					<P><FONT size="3"><STRONG>remains as is.</STRONG> </FONT>
+					</P>
+				</blockquote>
+				<p><STRONG><font color="#000080" size="4">-O</font><font size="3"> OR</font><font color="#000080" size="4"></font><font color="#000099">--one-line=keep-blocks</font></STRONG><font size="2"><br>
+					</font><STRONG><font size="3">Don't break one-line blocks.</font> </STRONG>
+				</p>
+				<blockquote>
+					<p><STRONG><font color="#993399" size="3"><tt>if (isFoo)<br>
+								</tt></font><font color="#ff0000" size="3"><tt>{</tt></font><font color="#993399" size="3"><tt>
+									isFoo = false; cout &lt;&lt; isFoo &lt;&lt; endl; </tt></font><font color="#ff0000" size="3">
+								<tt>}</tt></font></STRONG></p>
+					<p><font size="3"><STRONG>remains as is.</STRONG> </font>
+					</p>
+				</blockquote></blockquote>
+			<h3><font color="#000000" size="4">The following </font><font color="#000099" size="4">other</font><font color="#000000" size="4">
+					options are currently available:</font></h3>
+			<blockquote>
+				<p><STRONG><font color="#000080">--suffix=</font><font color="#ff0000">####</font><br>
+						Append the suffix <font color="#ff0000">####</font> instead of '.orig' to 
+						original filename. (e.g. --suffix=<font color="#ff0000">.prev</font>) </STRONG>
+				</p>
+				<p><STRONG><font color="#000080" size="4">-X</font><font size="3"> OR </font><font color="#000080">
+							--errors-to-standard-output</font><br>
+						Print errors and help information to standard-output rather than to 
+						standard-error.<br>
+						This option should be helpful for systems/shells that do not have this option, 
+						such as in Windows-95.</STRONG>
+				</p>
+				<p><STRONG><font color="#000080">-v</font> OR <font color="#000080">--version</font><br>
+						Print version number.</STRONG>
+				</p>
+				<p><STRONG><font color="#000080">-h</font> OR <font color="#000080">-?</font> OR <font color="#000080">
+							--help</font><br>
+						Print a help message and quit.<br>
+						&nbsp;</STRONG></p>
+			</blockquote></blockquote>
+		<h3>Acknowledgements:</h3>
+		<blockquote>
+			<p><STRONG>-Special thanks to:<font color="#000099"> Jim Watson, Fred Shwartz, W. Nathaniel 
+						Mills III, Danny Deschenes, Andre Houde, Richard Bullington, Paul-Michael 
+						Agapow, Daryn Adler</font> for their patches and contributions to Artistic 
+					Style !!! </STRONG>
+			</p>
+			<p><STRONG>-Special thanks to<font color="#000099"> Richard Bullington and</font></STRONG><a href="http://www.microstate.com"><font color="#000099"><STRONG>MicroState</STRONG></font></a><STRONG><font>
+						for giving Artistic Style its original </font><font color="black">mailing-list</font>
+					!!! </STRONG>
+			</p>
+			<p><STRONG>-Special thanks to<font color="#000099"><a href="http://www.sourceforge.net">SourceForge</font></STRONG></A><STRONG>
+					for giving Artistic Style its<font color="#ff0000">home</font> !!! </STRONG>
+			</p>
+			<p><STRONG>-Special thanks to<font color="#000099"> Paul Michael Agapow</font> for 
+					creating a GUI interface for Artistic Style on the Macintosh. </STRONG>
+			</p>
+			<p><STRONG>-Thanks to all the dedicated beta-testers and bug notifiers !!! </STRONG>
+			</p>
+			<p>&nbsp;</p>
+		</blockquote>
+		<h1 align="center"><font color="#0000a0">ENJOY !!!</font></h1>
+	</body>
+</html>
