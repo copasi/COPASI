@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 09:22:02 $
+   $Date: 2004/12/16 14:03:19 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,10 +43,10 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   if ((!co1) || (!co2)) return false;
 
-  lineEditXName->setText(co1->getObjectUniqueName().c_str());
+  lineEditXName->setText(co1->getObjectDisplayName().c_str());
   lineEditXCN->setText(co1->getCN().c_str());
 
-  lineEditYName->setText(co2->getObjectUniqueName().c_str());
+  lineEditYName->setText(co2->getObjectDisplayName().c_str());
   lineEditYCN->setText(co2->getCN().c_str());
 
   //for debugging:
