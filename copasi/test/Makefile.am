@@ -5,7 +5,7 @@ test_SOURCES = test.cpp
 
 matrix_SOURCES = matrix.cpp
 
-EXTRA_DIST = test.cpp 
+EXTRA_DIST = test.cpp matrix.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 bin_PROGRAMS = test matrix
