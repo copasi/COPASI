@@ -48,9 +48,6 @@ Contact: Please contact lixu1@vt.edu.
 
 #include "./icons/scanwidgetbuttonicon.xpm"
 
-int ScanWidget::nSelectedObjects = 0;
-int ScanWidget::nTitleHeight = 16;
-
 /*
  *  Constructs a ScanWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -59,6 +56,9 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f),
     pParent(parent)
 {
+  nSelectedObjects = 0;
+  nTitleHeight = 16;
+
   if (!name)
     setName("ScanWidget");
 
