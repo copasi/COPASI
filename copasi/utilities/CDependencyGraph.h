@@ -11,6 +11,10 @@ using std::vector;
 using std::ostream;
 using std::endl;
 
+using std::set
+
+  ;
+
 class CDependencyGraphNode
   {
   public:
