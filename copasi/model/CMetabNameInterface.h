@@ -80,8 +80,7 @@ class CMetabNameInterface
     /**
       *  This checks if the metabolite name (possibly including the compartment) is valid.
       * A valid name must be in the format of "metabolite" or "metabolite{compartment}"
-      * and does not contain white spaces. (Other special characters are not considered yet.
-      * Nor is it designed to handle deliberate mistakes such as the sequence "{{}")
+      * and does not contain white spaces. (Other special characters are not considered yet.)
       * Neither metabolite nor  compartment can be an empty string.
       */
     static bool isValidMetabName(const std::string name);
