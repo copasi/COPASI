@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/24 20:57:20 $
+   $Date: 2003/12/04 21:46:47 $
    End CVS Header */
 
 /**
@@ -514,72 +514,69 @@ bool CCopasiXML::saveReportList()
       saveData(pReport->getComment().getStaticString());
       endSaveElement("Comment");
 
-      startSaveElement("Header");
       std::vector <CCopasiObjectName> *header = pReport->getHeaderAddr();
-      for (j = 0; j < header->size(); j++)
+      if (header->size())
         {
-          if ((*header)[j].getObjectType() == "string")
+          startSaveElement("Header");
+          for (j = 0; j < header->size(); j++)
             {
-              //Write in Text
-              startSaveElement("Text");
-              saveData((*header)[j]);
-              endSaveElement("Text");
+              if ((*header)[j].getObjectType() == "string")
+                {
+                  //Write in Text
+                  startSaveElement("Text");
+                  saveData((*header)[j]);
+                  endSaveElement("Text");
+                }
+              else
+                {
+                  //Write in Object
+                  Attributes.erase();
+                  Attributes.add("cn", (*header)[j]);
+                  startSaveElement("Object", Attributes);
+                  endSaveElement("Object");
+                }
             }
-          else
-            {
-              //Write in Object
-              Attributes.erase();
-              Attributes.add("cn", (*header)[j]);
-              startSaveElement("Object", Attributes);
-              endSaveElement("Object");
-            }
+          endSaveElement("Header");
         }
-
-      //Report is not yet implemented
-      /*startSaveElement("Report");
-
-       endSaveElement("Report");*/
-
-      endSaveElement("Header");
-
-      startSaveElement("Body");
       std::vector <CCopasiObjectName> *body = pReport->getBodyAddr();
-      for (j = 0; j < body->size(); j++)
+      if (body->size())
         {
+          startSaveElement("Body");
           startSaveElement("Complex");
-          if ((*body)[j].getObjectType() == "string")
+          for (j = 0; j < body->size(); j++)
             {
-              //Write in Text
-              startSaveElement("Text");
-              saveData((*body)[j]);
-              endSaveElement("Text");
+              if ((*body)[j].getObjectType() == "string")
+                {
+                  //Write in Text
+                  startSaveElement("Text");
+                  saveData((*body)[j]);
+                  endSaveElement("Text");
+                }
+              else
+                {
+                  //Write in Object
+                  Attributes.erase();
+                  Attributes.add("cn", (*body)[j]);
+                  startSaveElement("Object", Attributes);
+                  endSaveElement("Object");
+                }
             }
-          else
-            {
-              //Write in Object
-              Attributes.erase();
-              Attributes.add("cn", (*body)[j]);
-              startSaveElement("Object", Attributes);
-              endSaveElement("Object");
-            }
+
+          //Table is not yet implemented
+          /*Attributes.erase();
+            Attributes.add("seperator",);
+            Attributes.add("printTitle",);
+            startSaveElement("Table",Attributes);
+            //*** Add stuff here
+            Attributes.erase();
+            Attributes.add("cn",);
+            startSaveElement("Object",Attributes);
+            endSaveElement("Object");
+            endSaveElement("Table");*/
 
           endSaveElement("Complex");
+          endSaveElement("Body");
         }
-
-      //Table is not yet implemented
-      /*Attributes.erase();
-      Attributes.add("seperator",);
-      Attributes.add("printTitle",);
-      startSaveElement("Table",Attributes);
-      //*** Add stuff here
-        Attributes.erase();
-        Attributes.add("cn",);
-           startSaveElement("Object",Attributes);
-        endSaveElement("Object");
-      endSaveElement("Table");*/
-
-      endSaveElement("Body");
-
       //footer is not yet implented
 
       /*startSaveElement("Footer");
