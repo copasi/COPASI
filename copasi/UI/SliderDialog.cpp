@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/18 09:58:02 $
+   $Date: 2005/02/18 11:02:51 $
    End CVS Header */
 
 #include <iostream>
@@ -106,7 +106,7 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   layout2->addStretch();
   this->runTaskButton = new QPushButton(this);
   this->runTaskButton->setText("run task");
-  this->runTaskButton->setEnabled(false);
+  this->runTaskButton->setEnabled(true);
   layout2->addWidget(this->runTaskButton);
   layout2->addStretch();
   mainLayout->addLayout(layout2);
