@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 15:07:38 $
+   $Date: 2005/02/03 14:45:50 $
    End CVS Header */
 
 /****************************************************************************
@@ -278,6 +278,7 @@ void SliderSettingsDialog::browseButtonPressed()
   else
     {
       this->mpSlider = NULL;
+      this->mpObjectNameLineEdit->setText("");
     }
 }
 
