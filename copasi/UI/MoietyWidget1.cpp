@@ -40,32 +40,32 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Equation"));
 
-  MoietyWidget1Layout->addWidget(TextLabel1, 0, 0);
+  MoietyWidget1Layout->addWidget(TextLabel1, 2, 0);
 
-  LineEdit1 = new QLineEdit(this, "LineEdit1");
-  LineEdit1->setEnabled(FALSE);
+  textBrowser = new QTextBrowser (this, "Text Browser");
+  textBrowser->setReadOnly(TRUE);
 
-  MoietyWidget1Layout->addWidget(LineEdit1, 0, 1);
+  MoietyWidget1Layout->addWidget(textBrowser, 2, 1);
 
   LineEdit2 = new QLineEdit(this, "LineEdit2");
   LineEdit2->setEnabled(FALSE);
 
-  MoietyWidget1Layout->addWidget(LineEdit2, 1, 1);
+  MoietyWidget1Layout->addWidget(LineEdit2, 0, 1);
 
   TextLabel2 = new QLabel(this, "TextLabel2");
   TextLabel2->setText(trUtf8("Total Particle Number"));
 
-  MoietyWidget1Layout->addWidget(TextLabel2, 1, 0);
+  MoietyWidget1Layout->addWidget(TextLabel2, 0, 0);
 
   TextLabel3 = new QLabel(this, "TextLabel3");
   TextLabel3->setText(trUtf8("Dependent Metabolite"));
 
-  MoietyWidget1Layout->addWidget(TextLabel3, 2, 0);
+  MoietyWidget1Layout->addWidget(TextLabel3, 1, 0);
 
   LineEdit3 = new QLineEdit(this, "LineEdit3");
   LineEdit3->setEnabled(FALSE);
 
-  MoietyWidget1Layout->addWidget(LineEdit3, 2, 1);
+  MoietyWidget1Layout->addWidget(LineEdit3, 1, 1);
   QSpacerItem* spacer = new QSpacerItem(430, 171, QSizePolicy::Expanding, QSizePolicy::Minimum);
   MoietyWidget1Layout->addMultiCell(spacer, 3, 3, 0, 1);
   connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(const QString &)));
@@ -123,7 +123,7 @@ void MoietyWidget1::loadName(QString setValue)
   const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
   CMoiety *moiety;
   moiety = moieties[(std::string)setValue.latin1()];
-  LineEdit1->setText(moiety->getDescription().c_str());
+  textBrowser->setText(moiety->getDescription().c_str());
   //ListBox1->insertItem(moiety->getDescription().c_str());
 
   /*  CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();

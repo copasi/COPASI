@@ -11,7 +11,7 @@
 #include <qvariant.h>
 #include <qwidget.h>
 #include "copasiWidget.h"
-
+#include <qtextbrowser.h>
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -32,11 +32,11 @@ class MoietyWidget1 : public CopasiWidget
     QString *Moiety1_Name;
 
     QLabel* TextLabel1;
-    QLineEdit* LineEdit1;
     QLineEdit* LineEdit2;
     QLabel* TextLabel2;
     QLabel* TextLabel3;
     QLineEdit* LineEdit3;
+    QTextBrowser* textBrowser;
 
   protected slots:
     virtual void slotBtnCancelClicked();

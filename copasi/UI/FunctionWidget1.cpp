@@ -48,9 +48,9 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
 
   FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
 
-  LineEdit2 = new QLineEdit(this, "LineEdit2");
+  textBrowser = new QTextBrowser (this, "Text Browser");
 
-  FunctionWidget1Layout->addWidget(LineEdit2, 1, 1);
+  FunctionWidget1Layout->addWidget(textBrowser, 1, 1);
 
   Line2 = new QFrame(this, "Line2");
   Line2->setFrameShape(QFrame::HLine);
@@ -160,8 +160,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
 
   FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
 
-  setTabOrder(LineEdit1, LineEdit2);
-  setTabOrder(LineEdit2, RadioButton1);
+  setTabOrder(LineEdit1, textBrowser);
+  setTabOrder(textBrowser, RadioButton1);
   setTabOrder(RadioButton1, RadioButton2);
   setTabOrder(RadioButton2, RadioButton3);
   setTabOrder(RadioButton3, Table1);
@@ -249,7 +249,7 @@ void FunctionWidget1::loadName(QString setValue)
 
       // for Name and Description text boxes
       LineEdit1->setText(funct->getName().c_str());
-      LineEdit2->setText(funct->getDescription().c_str());
+      textBrowser->setText(funct->getDescription().c_str());
       Function_Name = new QString(funct->getName().c_str());
 
       //Emptying the tables
@@ -329,7 +329,7 @@ void FunctionWidget1::loadName(QString setValue)
           commitChanges->setEnabled(false);
           cancelChanges->setEnabled(false);
           LineEdit1->setReadOnly(true);
-          LineEdit2->setReadOnly(true);
+          textBrowser->setReadOnly(true);
           Table1->setReadOnly(true);
           Table2->setReadOnly(true);
         }
@@ -341,7 +341,7 @@ void FunctionWidget1::loadName(QString setValue)
           RadioButton2->setEnabled(true);
           RadioButton3->setEnabled(true);
           LineEdit1->setReadOnly(false);
-          LineEdit2->setReadOnly(false);
+          textBrowser->setReadOnly(false);
           Table1->setReadOnly(false);
           Table2->setReadOnly(false);
           commitChanges->setEnabled(true);
@@ -410,9 +410,9 @@ void FunctionWidget1::slotCommitButtonClicked()
   else
     pFunction->setReversible(TriUnspecified);
 
-  if (pFunction->getDescription() != LineEdit2->text().latin1())
+  if (pFunction->getDescription() != textBrowser->text().latin1())
     {
-      pFunction->setDescription(LineEdit2->text().latin1());
+      pFunction->setDescription(textBrowser->text().latin1());
 
       CUsageRange Application;
       functUsage.cleanup();

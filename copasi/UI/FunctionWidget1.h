@@ -7,7 +7,7 @@
  *****************************************************************************/
 #ifndef FUNCTION_WIDGET1_H
 #define FUNCTION_WIDGET1_H
-
+#include <qtextbrowser.h>
 #include <qsplitter.h>
 #include <qvariant.h>
 #include <qtable.h>
@@ -50,7 +50,7 @@ class FunctionWidget1 : public CopasiWidget
 
     QLabel* TextLabel1;
     QLabel* TextLabel2;
-    QLineEdit* LineEdit2;
+    QTextBrowser* textBrowser;
     QFrame* Line2;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
