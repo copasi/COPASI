@@ -125,7 +125,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       CMetab Metabolite;
       for (i = 0; i < Copasi->OldMetabolites.size(); i++)
         {
-	  Metabolite.cleanup();
+          Metabolite.cleanup();
           Metabolite = *Copasi->OldMetabolites[i];
             
           mCompartments[Copasi->OldMetabolites[i]->getIndex()]->
@@ -184,12 +184,12 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
 
 void CModel::compile()
 {
-   buildStoi();
-   lUDecomposition();
-   setMetabolitesStatus();
-   buildRedStoi();
-   buildL();
-   buildMoieties();
+  buildStoi();
+  lUDecomposition();
+  setMetabolitesStatus();
+  buildRedStoi();
+  buildL();
+  buildMoieties();
 }
 
 void CModel::buildStoi()
@@ -209,8 +209,8 @@ void CModel::buildStoi()
       mMetabolitesX[i - j] = mMetabolites[i];
 
   /*  
-  for (i=0; i<imax; i++)
-    mMetabolites[i] = mMetabolitesX[i];
+      for (i=0; i<imax; i++)
+      mMetabolites[i] = mMetabolitesX[i];
   */
 
   mFluxes.resize(mSteps.size());
@@ -407,13 +407,13 @@ void CModel::buildL()
   jmax = (size) ? size - 1: size;
   for (j=0; j<jmax; j++)
     for (i=j+1; i<size; i++)
-    {
+      {
         sum = &mL[j][i];
         *sum = - mL[i][j];
         for (k=j+1; k<i; k++)
-            // I[i][j] -= mL[i][k] * I[k][j]
-            *sum -= mL[i][k] * mL[j][k];
-    }
+          // I[i][j] -= mL[i][k] * I[k][j]
+          *sum -= mL[i][k] * mL[j][k];
+      }
 
   cout << "L" << endl; 
   cout << 
@@ -476,7 +476,7 @@ void CModel::buildMoieties()
         }
       pMoiety->setInitialValue();
       cout << pMoiety->getDescription() << " = " 
-	   << pMoiety->getNumber() << endl;
+           << pMoiety->getNumber() << endl;
       
       mMoieties.add(pMoiety);
     }
@@ -525,8 +525,8 @@ void CModel::setRates(const C_FLOAT64 * y)
 
 void CModel::setTransitionTimes()
 {
-  unsigned C_INT32 i, imax = getIntMetab();
-  unsigned C_INT32 j, jmax = mSteps.size();
+  unsigned C_INT32 i, imax = getIndMetab();
+  unsigned C_INT32 j, jmax = mStepsX.size();
   C_FLOAT64 TotalFlux, PartialFlux;
   C_FLOAT64 TransitionTime;
   
@@ -536,22 +536,22 @@ void CModel::setTransitionTimes()
     {
       TotalFlux = 0.0;
       for (j=0; j<jmax; j++)
-	{
-	  PartialFlux = mStoi[i][j] * *mFluxes[j];
-	  if (PartialFlux > 0.0) TotalFlux += PartialFlux;
-	}
+        {
+          PartialFlux = mRedStoi[i][j] * *mFluxesX[j];
+          if (PartialFlux > 0.0) TotalFlux += PartialFlux;
+        }
 
       if (TotalFlux == 0.0)
-	TransitionTime = DBL_MAX;
+        TransitionTime = DBL_MAX;
       else
-	TransitionTime = mMetabolites[i]->getNumber() / TotalFlux;
+        TransitionTime = mMetabolitesInd[i]->getNumber() / TotalFlux;
 
-      mMetabolites[i]->setTransitionTime(TransitionTime);
+      mMetabolitesInd[i]->setTransitionTime(TransitionTime);
 
       if (TransitionTime == DBL_MAX || mTransitionTime == DBL_MAX)
-	mTransitionTime = DBL_MAX;
+        mTransitionTime = DBL_MAX;
       else
-	mTransitionTime += TransitionTime;
+        mTransitionTime += TransitionTime;
     }
 }
 
@@ -638,10 +638,10 @@ C_FLOAT64 * CModel::getNumbers()
 /**
  * Get the total steps
  *
-*/
+ */
 C_INT32 CModel::getTotSteps()
 {
- return mSteps.size();   //should not return mSteps
+  return mSteps.size();   //should not return mSteps
 }
 
 C_INT32 CModel::getDimension() const
@@ -812,5 +812,5 @@ const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
  */
 const TNT::Matrix < C_FLOAT64 >& CModel::getML() const
 {
-	return mL;
+  return mL;
 }
