@@ -135,19 +135,19 @@ void CopasiUI3Window::slotFileOpen()
   // gives the file information to the datamodel to handle it
 
   if (dataModel && gpsFile)
-    dataModel->loadModel((const char *)gpsFile.utf8());
-
-  CReadConfig inbuf((const char *)gpsFile.utf8());
-
-  if (inbuf.getVersion() < "4.0")
     {
-      msave_button->setEnabled(false);
-      file->setItemEnabled(nsave_menu_id, false);
-    }
-  else
-    {
-      msave_button->setEnabled(true);
-      file->setItemEnabled(nsave_menu_id, true);
+      dataModel->loadModel((const char *)gpsFile.utf8());
+      CReadConfig inbuf((const char *)gpsFile.utf8());
+      if (inbuf.getVersion() < "4.0")
+        {
+          msave_button->setEnabled(false);
+          file->setItemEnabled(nsave_menu_id, false);
+        }
+      else
+        {
+          msave_button->setEnabled(true);
+          file->setItemEnabled(nsave_menu_id, true);
+        }
     }
 }
 
