@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.147 $
+   $Revision: 1.148 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/22 01:17:52 $
+   $Author: shoops $ 
+   $Date: 2003/11/24 19:08:56 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1752,14 +1752,15 @@ std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
 
 bool CModel::removeMetabolite(const std::string & key)
 {
-  CMetab* metab =
+  CMetab* pMetabolite =
     dynamic_cast<CMetab *>(CKeyFactory::get(key));
 
-  if (!metab)
+  if (!pMetabolite)
     return false;
 
   /* Check if metabolite with that name exists */
-  if (mMetabolites.getIndex(metab) == C_INVALID_INDEX)
+  unsigned C_INT32 index = mMetabolites.getIndex(pMetabolite);
+  if (index == C_INVALID_INDEX)
     return false;
 
   /* Before deleting the metabolite, delete all the reactions that are dependent */
@@ -1767,15 +1768,10 @@ bool CModel::removeMetabolite(const std::string & key)
   for (unsigned C_INT32 i = 0; i < reacKeys.size(); i++)
     removeReaction(reacKeys[i]);
 
-  mMetabolites.remove(mMetabolites.getIndex(metab));
-  //<<<<<<< CModel.cpp
-  pdelete(metab);
+  mMetabolites.remove(index);
 
   compile();
-  //=======
-  pdelete(metab);
 
-  //>>>>>>> 1.146
   return true;
 }
 
@@ -1802,23 +1798,24 @@ bool CModel::addCompartment(const std::string & name,
 
 bool CModel::removeCompartment(const std::string & key)
 {
-  CCompartment *comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(key);
+  CCompartment *pCompartment =
+    dynamic_cast< CCompartment * >(CKeyFactory::get(key));
 
-  if (!comp)
+  if (!pCompartment)
     return false;
 
   //Check if Compartment with that name exists
-  unsigned C_INT32 index = mCompartments.CCopasiVector< CCompartment >::getIndex(comp);
+  unsigned C_INT32 index =
+    mCompartments.CCopasiVector< CCompartment >::getIndex(pCompartment);
   if (index == C_INVALID_INDEX)
     return false;
 
   /* Delete the dependent Metabolites before deleting the Compartment */
-  const CCopasiVectorNS <CMetab> &Metabs = comp->getMetabolites();
+  const CCopasiVectorNS <CMetab> &Metabs = pCompartment->getMetabolites();
   for (unsigned C_INT32 i = 0; i < Metabs.size(); i++)
     removeMetabolite(Metabs[i]->getKey());
 
   mCompartments.CCopasiVector< CCompartment >::remove(index);
-  pdelete(comp);
 
   compile();
   return true;
@@ -1851,18 +1848,20 @@ bool CModel::addReaction(const CReaction & reaction)
 
 bool CModel::removeReaction(const std::string & key)
 {
-  CReaction *reaction = (CReaction*)(CCopasiContainer*)CKeyFactory::get(key);
+  CReaction * pReaction =
+    dynamic_cast< CReaction * >(CKeyFactory::get(key));
 
-  if (!reaction)
+  if (!pReaction)
     return false;
 
   //Check if Reaction exists
-  unsigned C_INT32 index = mSteps.CCopasiVector< CReaction >::getIndex(reaction);
+  unsigned C_INT32 index =
+    mSteps.CCopasiVector< CReaction >::getIndex(pReaction);
+
   if (index == C_INVALID_INDEX)
     return false;
 
   mSteps.CCopasiVector< CReaction >::remove(index);
-  pdelete(reaction);
 
   compile();
   return true;
