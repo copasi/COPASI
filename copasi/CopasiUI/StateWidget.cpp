@@ -1,20 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:16:31 $
+   $Author: stupe $ 
+   $Date: 2005/01/25 21:51:08 $
    End CVS Header */
 
-//#include <qpushbutton.h>
+#include <qpushbutton.h>
 #include <qlayout.h>
 #include "copasi.h"
 
 #include "StateWidget.h"
 #include "StateSubwidget.h"
 #include "DataModelGUI.h"
-#include "model/CModel.h"
+#include "report/CKeyFactory.h"
 #include "steadystate/CSteadyStateTask.h"
+#include "model/CModel.h"
 
 //#include "report/CKeyFactory.h"
 #include "qtUtilities.h"
@@ -31,11 +32,21 @@ StateWidget::StateWidget(QWidget* parent, const char* name, WFlags fl)
     setName("StateWidget");
   setCaption(trUtf8("StateWidget"));
 
+  setInitialState = new QPushButton(this, "setInitialState");
+  setInitialState->setText(trUtf8("SetResultsAsNextInitialState"));
+  connect(setInitialState, SIGNAL(clicked()), this, SLOT(runSetInitialState()));
+
+  parentLayout = new QVBoxLayout(this, 0, 0, "parentLayout");
+  stateLayout = new QHBoxLayout(0, 0 , 6, "StateLayout");
   mWidgetLayout = new QGridLayout(this, 1, 1, 0, -1, "Layout");
 
   mCentralWidget = new StateSubwidget(this, "StateSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);
-  //dataModel->getModel()->getVolumeUnit();
+
+  parentLayout->addLayout(stateLayout);
+  parentLayout->addLayout(mWidgetLayout);
+  stateLayout->addWidget(setInitialState);
+
   /*commitChanges = new QPushButton(this, "commitChanges");
   commitChanges->setText(trUtf8("Commit"));
   Layout5->addWidget(commitChanges);
@@ -80,7 +91,9 @@ bool StateWidget::saveToBackend()
   saveToCompartment();
 }*/
 
-bool StateWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool StateWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
+
+                         C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   return true;
 }
@@ -93,10 +106,20 @@ bool StateWidget::leave()
 
 bool StateWidget::enter(const std::string & C_UNUSED(key))
 {
+  //objKey = key;
   return loadFromBackend();
-  /*objKey = key;
-  CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
+  /*CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
 
   if (comp) return loadFromCompartment(comp);
   else return false;*/
+}
+
+void StateWidget::runSetInitialState()
+{
+  CSteadyStateTask* mSteadyStateTask =
+    //dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
+    //I need to remove this hardcoding -- sameer
+    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get("Task_2"));
+
+  dataModel->getModel()->setInitialState(mSteadyStateTask->getState());
 }
