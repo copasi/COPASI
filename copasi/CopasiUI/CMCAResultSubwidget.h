@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/26 11:34:24 $
+   $Date: 2004/10/26 15:30:36 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Tue Oct 26 11:21:38 2004
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.1 2004/10/26 11:34:24 gauges Exp $)
+ ** Created: Tue Oct 26 17:21:40 2004
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.2 2004/10/26 15:30:36 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,6 +31,7 @@ class QTabWidget;
 class QTable;
 class CModel;
 class CMCATask;
+class CMCAMethod;
 
 class CMCAResultSubwidget : public QWidget
   {
@@ -48,6 +49,11 @@ class CMCAResultSubwidget : public QWidget
     QTable* mTableFCC;
     QWidget* TabPage;
     QTable* mTableCCC;
+
+    virtual void loadAll(const CMCAMethod * mcaMethod);
+    virtual void loadElasticities(const CMCAMethod * mcaMethod);
+    virtual void loadConcentrationCCs(const CMCAMethod * mcaMethod);
+    virtual void loadFluxCCs(const CMCAMethod * mcaMethod);
 
   protected:
     QVBoxLayout* CMCAResultSubwidgetLayout;

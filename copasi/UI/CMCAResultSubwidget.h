@@ -9,7 +9,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Tue Oct 26 11:21:38 2004
+ ** Created: Tue Oct 26 17:21:40 2004
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -31,6 +31,7 @@ class QTabWidget;
 class QTable;
 class CModel;
 class CMCATask;
+class CMCAMethod;
 
 class CMCAResultSubwidget : public QWidget
   {
@@ -48,6 +49,11 @@ class CMCAResultSubwidget : public QWidget
     QTable* mTableFCC;
     QWidget* TabPage;
     QTable* mTableCCC;
+
+    virtual void loadAll(const CMCAMethod * mcaMethod);
+    virtual void loadElasticities(const CMCAMethod * mcaMethod);
+    virtual void loadConcentrationCCs(const CMCAMethod * mcaMethod);
+    virtual void loadFluxCCs(const CMCAMethod * mcaMethod);
 
   protected:
     QVBoxLayout* CMCAResultSubwidgetLayout;
