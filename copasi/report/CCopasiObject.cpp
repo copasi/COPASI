@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/03 13:03:31 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:18 $
    End CVS Header */
 
 /**
@@ -147,7 +147,7 @@ std::string CCopasiObject::getObjectDisplayName(bool regular /*=true*/, bool ric
       if ((ret.substr(ret.length() - 2) == "[]") && (!isReference()))
         {
           ret.insert(ret.length() - 1, getObjectName());
-          if (isNameVector() || isVector())
+          if (isNameVector() || isVector() || getObjectType() == "ParameterGroup")
             ret += "[]";
           return ret;
         }
@@ -155,9 +155,11 @@ std::string CCopasiObject::getObjectDisplayName(bool regular /*=true*/, bool ric
     if (ret.length() != 0)
       ret += ".";
 
-    if (isNameVector() || isVector())
+    if (isNameVector() || isVector() || getObjectType() == "ParameterGroup")
       ret += getObjectName() + "[]";
-    else if (isReference())
+    else if (isReference()
+             || getObjectType() == "Parameter"
+             || getObjectType() == getObjectName())
       ret += getObjectName();
     else
       ret += "(" + getObjectType() + ")" + getObjectName();
