@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.1 2003/09/29 04:12:31 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.2 2003/10/04 15:16:33 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -37,121 +37,6 @@ FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool m
 
   FunctionItemWidgetLayout->addMultiCellWidget(textFunction, 0, 0, 0, 3);
 
-  button7 = new QPushButton(this, "button7");
-
-  FunctionItemWidgetLayout->addWidget(button7, 4, 3);
-
-  button0 = new QPushButton(this, "button0");
-
-  FunctionItemWidgetLayout->addWidget(button0, 5, 2);
-
-  button1 = new QPushButton(this, "button1");
-
-  FunctionItemWidgetLayout->addWidget(button1, 3, 1);
-
-  button6 = new QPushButton(this, "button6");
-
-  FunctionItemWidgetLayout->addWidget(button6, 4, 2);
-
-  button3 = new QPushButton(this, "button3");
-
-  FunctionItemWidgetLayout->addWidget(button3, 3, 3);
-
-  button8 = new QPushButton(this, "button8");
-
-  FunctionItemWidgetLayout->addWidget(button8, 5, 0);
-
-  button2 = new QPushButton(this, "button2");
-
-  FunctionItemWidgetLayout->addWidget(button2, 3, 2);
-
-  buttonItems = new QPushButton(this, "buttonItems");
-
-  FunctionItemWidgetLayout->addWidget(buttonItems, 3, 0);
-
-  button4 = new QPushButton(this, "button4");
-
-  FunctionItemWidgetLayout->addWidget(button4, 4, 0);
-
-  buttonSign = new QPushButton(this, "buttonSign");
-
-  FunctionItemWidgetLayout->addWidget(buttonSign, 5, 3);
-
-  button5 = new QPushButton(this, "button5");
-
-  FunctionItemWidgetLayout->addWidget(button5, 4, 1);
-
-  button9 = new QPushButton(this, "button9");
-
-  FunctionItemWidgetLayout->addWidget(button9, 5, 1);
-
-  buttonRightB = new QPushButton(this, "buttonRightB");
-  buttonRightB->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonRightB, 9, 1);
-
-  buttonDiv = new QPushButton(this, "buttonDiv");
-  buttonDiv->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonDiv, 8, 1);
-
-  buttonCos = new QPushButton(this, "buttonCos");
-  buttonCos->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonCos, 9, 3);
-
-  buttonAdd = new QPushButton(this, "buttonAdd");
-  buttonAdd->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonAdd, 7, 0);
-
-  buttonLog = new QPushButton(this, "buttonLog");
-  buttonLog->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonLog, 8, 2);
-
-  buttonLeftB = new QPushButton(this, "buttonLeftB");
-  buttonLeftB->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonLeftB, 9, 0);
-
-  buttonMul = new QPushButton(this, "buttonMul");
-  buttonMul->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonMul, 7, 1);
-
-  buttonExp = new QPushButton(this, "buttonExp");
-  buttonExp->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonExp, 7, 3);
-
-  buttonMin = new QPushButton(this, "buttonMin");
-  buttonMin->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonMin, 8, 0);
-
-  buttonLn = new QPushButton(this, "buttonLn");
-  buttonLn->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonLn, 7, 2);
-
-  buttonSin = new QPushButton(this, "buttonSin");
-  buttonSin->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonSin, 8, 3);
-
-  buttonPower = new QPushButton(this, "buttonPower");
-  buttonPower->setPaletteForegroundColor(QColor(170, 0, 0));
-
-  FunctionItemWidgetLayout->addWidget(buttonPower, 9, 2);
-
-  line1 = new QFrame(this, "line1");
-  line1->setFrameShape(QFrame::HLine);
-  line1->setFrameShadow(QFrame::Sunken);
-  line1->setFrameShape(QFrame::HLine);
-
-  FunctionItemWidgetLayout->addMultiCellWidget(line1, 6, 6, 0, 3);
-
   radioGroup = new QButtonGroup(this, "radioGroup");
   radioGroup->setExclusive(TRUE);
   radioGroup->setColumnLayout(0, Qt::Vertical);
@@ -182,24 +67,150 @@ FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool m
 
   FunctionItemWidgetLayout->addMultiCellWidget(radioGroup, 1, 1, 0, 2);
 
+  buttonAdd = new QPushButton(this, "buttonAdd");
+  buttonAdd->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonAdd, 6, 0);
+
+  button5 = new QPushButton(this, "button5");
+
+  FunctionItemWidgetLayout->addWidget(button5, 3, 1);
+
+  button9 = new QPushButton(this, "button9");
+
+  FunctionItemWidgetLayout->addWidget(button9, 4, 1);
+
+  button1 = new QPushButton(this, "button1");
+
+  FunctionItemWidgetLayout->addWidget(button1, 2, 1);
+
+  button6 = new QPushButton(this, "button6");
+
+  FunctionItemWidgetLayout->addWidget(button6, 3, 2);
+
+  button3 = new QPushButton(this, "button3");
+
+  FunctionItemWidgetLayout->addWidget(button3, 2, 3);
+
+  button8 = new QPushButton(this, "button8");
+
+  FunctionItemWidgetLayout->addWidget(button8, 4, 0);
+
+  button0 = new QPushButton(this, "button0");
+
+  FunctionItemWidgetLayout->addWidget(button0, 4, 2);
+
+  buttonLn = new QPushButton(this, "buttonLn");
+  buttonLn->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonLn, 6, 2);
+
+  buttonSin = new QPushButton(this, "buttonSin");
+  buttonSin->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonSin, 7, 3);
+
+  buttonDiv = new QPushButton(this, "buttonDiv");
+  buttonDiv->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonDiv, 7, 1);
+
+  buttonMul = new QPushButton(this, "buttonMul");
+  buttonMul->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonMul, 6, 1);
+
+  buttonRightB = new QPushButton(this, "buttonRightB");
+  buttonRightB->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonRightB, 8, 1);
+
+  buttonPower = new QPushButton(this, "buttonPower");
+  buttonPower->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonPower, 8, 2);
+
+  buttonLeftB = new QPushButton(this, "buttonLeftB");
+  buttonLeftB->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonLeftB, 8, 0);
+
+  buttonMin = new QPushButton(this, "buttonMin");
+  buttonMin->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonMin, 7, 0);
+
+  buttonExp = new QPushButton(this, "buttonExp");
+  buttonExp->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonExp, 6, 3);
+
+  button7 = new QPushButton(this, "button7");
+
+  FunctionItemWidgetLayout->addWidget(button7, 3, 3);
+
+  buttonItems = new QPushButton(this, "buttonItems");
+
+  FunctionItemWidgetLayout->addWidget(buttonItems, 2, 0);
+
+  button2 = new QPushButton(this, "button2");
+
+  FunctionItemWidgetLayout->addWidget(button2, 2, 2);
+
+  button4 = new QPushButton(this, "button4");
+
+  FunctionItemWidgetLayout->addWidget(button4, 3, 0);
+
+  buttonLog = new QPushButton(this, "buttonLog");
+  buttonLog->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonLog, 7, 2);
+
+  buttonSign = new QPushButton(this, "buttonSign");
+
+  FunctionItemWidgetLayout->addWidget(buttonSign, 4, 3);
+
+  buttonCos = new QPushButton(this, "buttonCos");
+  buttonCos->setPaletteForegroundColor(QColor(170, 0, 0));
+
+  FunctionItemWidgetLayout->addWidget(buttonCos, 8, 3);
+
+  layout1 = new QGridLayout(0, 1, 1, 0, 6, "layout1");
+
+  buttonConfirm = new QPushButton(this, "buttonConfirm");
+
+  layout1->addWidget(buttonConfirm, 0, 0);
+
+  buttonCancel = new QPushButton(this, "buttonCancel");
+
+  layout1->addWidget(buttonCancel, 0, 1);
+
+  FunctionItemWidgetLayout->addMultiCellLayout(layout1, 10, 10, 0, 3);
+
+  line1 = new QFrame(this, "line1");
+  line1->setFrameShape(QFrame::HLine);
+  line1->setFrameShadow(QFrame::Sunken);
+  line1->setFrameShape(QFrame::HLine);
+
+  FunctionItemWidgetLayout->addMultiCellWidget(line1, 5, 5, 0, 3);
+
+  line1_3 = new QFrame(this, "line1_3");
+  line1_3->setFrameShape(QFrame::HLine);
+  line1_3->setFrameShadow(QFrame::Sunken);
+  line1_3->setFrameShape(QFrame::HLine);
+
+  FunctionItemWidgetLayout->addMultiCellWidget(line1_3, 9, 9, 0, 3);
+
   buttonClear = new QPushButton(this, "buttonClear");
   buttonClear->setPaletteForegroundColor(QColor(170, 0, 0));
 
   FunctionItemWidgetLayout->addWidget(buttonClear, 1, 3);
-
-  line1_2 = new QFrame(this, "line1_2");
-  line1_2->setFrameShape(QFrame::HLine);
-  line1_2->setFrameShadow(QFrame::Sunken);
-  line1_2->setFrameShape(QFrame::HLine);
-
-  FunctionItemWidgetLayout->addMultiCellWidget(line1_2, 2, 2, 0, 3);
   languageChange();
-  resize(QSize(368, 332).expandedTo(minimumSizeHint()));
+  resize(QSize(372, 373).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(radioDec, SIGNAL(clicked()), this, SLOT(slotRadioDec()));
-  connect(buttonClear, SIGNAL(clicked()), this, SLOT(slotButtonClear()));
   connect(buttonItems, SIGNAL(clicked()), this, SLOT(slotButtonItems()));
   connect(button0, SIGNAL(clicked()), this, SLOT(slotButton0()));
   connect(button1, SIGNAL(clicked()), this, SLOT(slotButton1()));
@@ -224,13 +235,29 @@ FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool m
   connect(buttonPower, SIGNAL(clicked()), this, SLOT(slotButtonPower()));
   connect(buttonCos, SIGNAL(clicked()), this, SLOT(slotButtonCos()));
   connect(button8, SIGNAL(clicked()), this, SLOT(slotButton8()));
+  connect(buttonClear, SIGNAL(clicked()), this, SLOT(slotButtonClear()));
+  connect(buttonConfirm, SIGNAL(clicked()), this, SLOT(slotButtonConfirm()));
+  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(slotButtonCancel()));
 
   // tab order
   setTabOrder(textFunction, radioHex);
   setTabOrder(radioHex, radioDec);
   setTabOrder(radioDec, radioOct);
   setTabOrder(radioOct, radioBin);
-  setTabOrder(radioBin, buttonAdd);
+  setTabOrder(radioBin, buttonClear);
+  setTabOrder(buttonClear, buttonItems);
+  setTabOrder(buttonItems, button1);
+  setTabOrder(button1, button2);
+  setTabOrder(button2, button3);
+  setTabOrder(button3, button4);
+  setTabOrder(button4, button5);
+  setTabOrder(button5, button6);
+  setTabOrder(button6, button7);
+  setTabOrder(button7, button8);
+  setTabOrder(button8, button9);
+  setTabOrder(button9, button0);
+  setTabOrder(button0, buttonSign);
+  setTabOrder(buttonSign, buttonAdd);
   setTabOrder(buttonAdd, buttonMul);
   setTabOrder(buttonMul, buttonLn);
   setTabOrder(buttonLn, buttonExp);
@@ -242,6 +269,8 @@ FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool m
   setTabOrder(buttonLeftB, buttonRightB);
   setTabOrder(buttonRightB, buttonPower);
   setTabOrder(buttonPower, buttonCos);
+  setTabOrder(buttonCos, buttonConfirm);
+  setTabOrder(buttonConfirm, buttonCancel);
 }
 
 /*
@@ -258,37 +287,39 @@ FunctionItemWidget::~FunctionItemWidget()
  */
 void FunctionItemWidget::languageChange()
 {
-  setCaption(tr("function"));
-  button7->setText(tr("7"));
-  button0->setText(tr("0"));
-  button1->setText(tr("1"));
-  button6->setText(tr("6"));
-  button3->setText(tr("3"));
-  button8->setText(tr("8"));
-  button2->setText(tr("2"));
-  buttonItems->setText(tr("Items"));
-  button4->setText(tr("4"));
-  buttonSign->setText(tr("+/-"));
-  button5->setText(tr("5"));
-  button9->setText(tr("9"));
-  buttonRightB->setText(tr(")"));
-  buttonDiv->setText(tr("/"));
-  buttonCos->setText(tr("cos"));
-  buttonAdd->setText(tr("+"));
-  buttonLog->setText(tr("log"));
-  buttonLeftB->setText(tr("("));
-  buttonMul->setText(tr("*"));
-  buttonExp->setText(tr("exp"));
-  buttonMin->setText(tr("-"));
-  buttonLn->setText(tr("ln"));
-  buttonSin->setText(tr("sin"));
-  buttonPower->setText(tr("^"));
+  setCaption(tr("function editor"));
   radioGroup->setTitle(tr("Bin/Oct/Dec/Hex"));
   radioDec->setText(tr("Decimal"));
   radioHex->setText(tr("Hex"));
   radioBin->setText(tr("Bin"));
   radioOct->setText(tr("Octal"));
-  buttonClear->setText(tr("C"));
+  buttonAdd->setText(tr("+"));
+  button5->setText(tr("5"));
+  button9->setText(tr("9"));
+  button1->setText(tr("1"));
+  button6->setText(tr("6"));
+  button3->setText(tr("3"));
+  button8->setText(tr("8"));
+  button0->setText(tr("0"));
+  buttonLn->setText(tr("ln"));
+  buttonSin->setText(tr("sin"));
+  buttonDiv->setText(tr("/"));
+  buttonMul->setText(tr("*"));
+  buttonRightB->setText(tr(")"));
+  buttonPower->setText(tr("^"));
+  buttonLeftB->setText(tr("("));
+  buttonMin->setText(tr("-"));
+  buttonExp->setText(tr("exp"));
+  button7->setText(tr("7"));
+  buttonItems->setText(tr("Items"));
+  button2->setText(tr("2"));
+  button4->setText(tr("4"));
+  buttonLog->setText(tr("log"));
+  buttonSign->setText(tr("+/-"));
+  buttonCos->setText(tr("cos"));
+  buttonConfirm->setText(tr("Confirm"));
+  buttonCancel->setText(tr("Cancel"));
+  buttonClear->setText(tr("Clear"));
 }
 
 void FunctionItemWidget::slotButtonClear()
@@ -321,9 +352,9 @@ void FunctionItemWidget::slotButton3()
   qWarning("FunctionItemWidget::slotButton3(): Not implemented yet");
 }
 
-void FunctionItemWidget::slotButton0()
+void FunctionItemWidget::slotButtonConfirm()
 {
-  qWarning("FunctionItemWidget::slotButton0(): Not implemented yet");
+  qWarning("FunctionItemWidget::slotButtonConfirm(): Not implemented yet");
 }
 
 void FunctionItemWidget::slotButton5()
@@ -419,4 +450,14 @@ void FunctionItemWidget::slotButtonPower()
 void FunctionItemWidget::slotButtonCos()
 {
   qWarning("FunctionItemWidget::slotButtonCos(): Not implemented yet");
+}
+
+void FunctionItemWidget::slotButton0()
+{
+  qWarning("FunctionItemWidget::slotButton0(): Not implemented yet");
+}
+
+void FunctionItemWidget::slotButtonCancel()
+{
+  qWarning("FunctionItemWidget::slotButtonCancel(): Not implemented yet");
 }

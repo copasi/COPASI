@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.h,v 1.1 2003/09/29 04:12:31 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.h,v 1.2 2003/10/04 15:16:33 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -17,10 +17,10 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QTextEdit;
-class QPushButton;
-class QFrame;
 class QButtonGroup;
 class QRadioButton;
+class QPushButton;
+class QFrame;
 
 class FunctionItemWidget : public QDialog
   {
@@ -31,38 +31,40 @@ class FunctionItemWidget : public QDialog
     ~FunctionItemWidget();
 
     QTextEdit* textFunction;
-    QPushButton* button7;
-    QPushButton* button0;
-    QPushButton* button1;
-    QPushButton* button6;
-    QPushButton* button3;
-    QPushButton* button8;
-    QPushButton* button2;
-    QPushButton* buttonItems;
-    QPushButton* button4;
-    QPushButton* buttonSign;
-    QPushButton* button5;
-    QPushButton* button9;
-    QPushButton* buttonRightB;
-    QPushButton* buttonDiv;
-    QPushButton* buttonCos;
-    QPushButton* buttonAdd;
-    QPushButton* buttonLog;
-    QPushButton* buttonLeftB;
-    QPushButton* buttonMul;
-    QPushButton* buttonExp;
-    QPushButton* buttonMin;
-    QPushButton* buttonLn;
-    QPushButton* buttonSin;
-    QPushButton* buttonPower;
-    QFrame* line1;
     QButtonGroup* radioGroup;
     QRadioButton* radioDec;
     QRadioButton* radioHex;
     QRadioButton* radioBin;
     QRadioButton* radioOct;
+    QPushButton* buttonAdd;
+    QPushButton* button5;
+    QPushButton* button9;
+    QPushButton* button1;
+    QPushButton* button6;
+    QPushButton* button3;
+    QPushButton* button8;
+    QPushButton* button0;
+    QPushButton* buttonLn;
+    QPushButton* buttonSin;
+    QPushButton* buttonDiv;
+    QPushButton* buttonMul;
+    QPushButton* buttonRightB;
+    QPushButton* buttonPower;
+    QPushButton* buttonLeftB;
+    QPushButton* buttonMin;
+    QPushButton* buttonExp;
+    QPushButton* button7;
+    QPushButton* buttonItems;
+    QPushButton* button2;
+    QPushButton* button4;
+    QPushButton* buttonLog;
+    QPushButton* buttonSign;
+    QPushButton* buttonCos;
+    QPushButton* buttonConfirm;
+    QPushButton* buttonCancel;
+    QFrame* line1;
+    QFrame* line1_3;
     QPushButton* buttonClear;
-    QFrame* line1_2;
 
   public slots:
     virtual void slotButtonClear();
@@ -71,7 +73,7 @@ class FunctionItemWidget : public QDialog
     virtual void slotButtonItems();
     virtual void slotButton2();
     virtual void slotButton3();
-    virtual void slotButton0();
+    virtual void slotButtonConfirm();
     virtual void slotButton5();
     virtual void slotButton7();
     virtual void slotButton8();
@@ -91,10 +93,13 @@ class FunctionItemWidget : public QDialog
     virtual void slotButtonRightB();
     virtual void slotButtonPower();
     virtual void slotButtonCos();
+    virtual void slotButton0();
+    virtual void slotButtonCancel();
 
   protected:
     QGridLayout* FunctionItemWidgetLayout;
     QGridLayout* radioGroupLayout;
+    QGridLayout* layout1;
 
   protected slots:
     virtual void languageChange();
