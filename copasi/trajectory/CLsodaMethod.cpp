@@ -1,23 +1,23 @@
 /*
- From tam@dragonfly.wri.com Wed Apr 24 01:35:52 1991
- Return-Path: <tam>
- Date: Wed, 24 Apr 91 03:35:24 CDT
- From: tam@dragonfly.wri.com
- To: whitbeck@wheeler.wrc.unr.edu
- Subject: lsoda.c
- Cc: augenbau@sparc0.brc.uconn.edu
+From tam@dragonfly.wri.com Wed Apr 24 01:35:52 1991
+Return-Path: <tam>
+Date: Wed, 24 Apr 91 03:35:24 CDT
+From: tam@dragonfly.wri.com
+To: whitbeck@wheeler.wrc.unr.edu
+Subject: lsoda.c
+Cc: augenbau@sparc0.brc.uconn.edu
 
- I'm told by Steve Nichols at Georgia Tech that you are interested in
- a stiff integrator.  Here's a translation of the fortran code LSODA.
+I'm told by Steve Nichols at Georgia Tech that you are interested in
+a stiff integrator.  Here's a translation of the fortran code LSODA.
 
- Please note
- that there is no comment.  The interface is the same as the FORTRAN
- code and I believe the documentation in LSODA will suffice.
- As usual, a free software comes with no guarantee.
+Please note
+that there is no comment.  The interface is the same as the FORTRAN
+code and I believe the documentation in LSODA will suffice.
+As usual, a free software comes with no guarantee.
 
- Hon Wah Tam
- Wolfram Research, Inc.
- tam@wri.com
+Hon Wah Tam
+Wolfram Research, Inc.
+tam@wri.com
  */
 
 /*
@@ -92,6 +92,7 @@
 #include "utilities/utility.h"
 #include "model/CModel.h"
 #include "model/CState.h"
+#include "model/CCompartment.h"
 
 #define max(a , b)  ((a) > (b) ? (a) : (b))
 #define min(a , b)  ((a) < (b) ? (a) : (b))
@@ -168,25 +169,25 @@ CLsodaMethod::~CLsodaMethod()
 
 const double CLsodaMethod::step(const double & deltaT)
 {
-  lsoda(mDim,                 // number of variables
-        mY - 1,               // the array of current concentrations
+  lsoda(mDim,                  // number of variables
+        mY - 1,                // the array of current concentrations
         // fortran style vector !!!
-        &mTime,               // the current time
-        mTime + deltaT,       // the final time
-        1,                    // scalar error control
-        (&mRtol) - 1,         // relative tolerance array
+        &mTime,                // the current time
+        mTime + deltaT,        // the final time
+        1,                     // scalar error control
+        (&mRtol) - 1,          // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,         // absolute tolerance array
+        (&mAtol) - 1,          // absolute tolerance array
         // fortran style vector !!!
-        1,                    // output by overshoot & interpolatation
-        &mLsodaStatus,        // the state control variable
-        1,                    // optional inputs are being used
-        2,                    // jacobian calculated internally
-        0, 0, 0,              // options left at default values
-        10000,                // max iterations for each lsoda call
-        0,                    // another value left at the default
-        mAdams,               // max order for Adams method
-        mBDF,                 // max order for BDF method
+        1,                     // output by overshoot & interpolatation
+        &mLsodaStatus,         // the state control variable
+        1,                     // optional inputs are being used
+        2,                     // jacobian calculated internally
+        0, 0, 0,               // options left at default values
+        10000,                 // max iterations for each lsoda call
+        0,                     // another value left at the default
+        mAdams,                // max order for Adams method
+        mBDF,                  // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if ((mLsodaStatus != 1) && (mLsodaStatus != 2))
@@ -2609,7 +2610,7 @@ void CLsodaMethod::successreturn(C_FLOAT64 *y,
                                 }     /*   end resetcoeff   */
 
                                 void CLsodaMethod::eval(C_FLOAT64 t,
-                                                        C_FLOAT64 * y,      /* Fortran style vector */
+                                                        C_FLOAT64 * y,       /* Fortran style vector */
                                                         C_FLOAT64 * ydot)  /* Fortran style vector */
                                 {
                                   assert (y + 1 == mY);
