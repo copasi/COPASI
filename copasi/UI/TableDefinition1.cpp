@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/11 21:17:48 $
+   $Date: 2003/11/12 14:55:53 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.21 2003/11/11 21:17:48 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.22 2003/11/12 14:55:53 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -320,12 +320,16 @@ void TableDefinition1::slotBtnConfirmClicked()
     Seperator.setObjectName(seperatorEdit->text().latin1());
 
   CCopasiObjectName SeperatorCN(Seperator.getCN());
+  std::vector< CCopasiContainer * > ListOfContainer;
 
   for (i = 0; i < itemsTable->numRows(); i++)
     {
       CCopasiObject* pSelectedObject, *pObjectAncestor;
       pSelectedObject = NULL, pObjectAncestor = NULL;
-      CReport::getObjectFromName(NULL, pSelectedObject, CCopasiObjectName(itemsTable->text(i).latin1()));
+      pSelectedObject =
+        CCopasiContainer::ObjectFromName(ListOfContainer,
+                                         CCopasiObjectName(itemsTable->text(i).latin1()));
+
       if (pSelectedObject)
         {
           CCopasiObjectName Title;
@@ -342,7 +346,7 @@ void TableDefinition1::slotBtnConfirmClicked()
         }
     }
 
-  if (itemsTable->numRows() != 0)
+  if (pReportDefinition->getHeaderAddr()->size())
     {
       pReportDefinition->getHeaderAddr()->pop_back();
       pReportDefinition->getBodyAddr()->pop_back();
