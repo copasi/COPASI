@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 15:51:42 $
+   $Date: 2004/12/17 15:21:06 $
    End CVS Header */
 
 #include "CPlotItem.h"
@@ -58,10 +58,11 @@ CPlotItem::CPlotItem(const std::string & name,
                      const CPlotItem::Type & type):
     CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
     //    mKey(GlobalKeys.add("PlotItem", this)),
-    mType(type)
+    mType(unset)
 {
   //setObjectName(TypeName[mType]); //TODO
   setObjectName(name);
+  setType(type); //to create the parameters
 }
 
 CPlotItem::CPlotItem(const CPlotItem & src,
@@ -84,6 +85,26 @@ CPlotItem::CPlotItem(const CPlotItem & src,
   */
 }
 
+void CPlotItem::setType(CPlotItem::Type type)
+{
+  if (type == mType) return;
+
+  mType = type;
+  clear();
+
+  //create parameters
+  if (type == curve2d)
+    {
+      addParameter("withLines", CCopasiParameter::BOOL, true);
+    }
+
+  if (type == plot2d)
+    {
+      addParameter("log X", CCopasiParameter::BOOL, false);
+      addParameter("log Y", CCopasiParameter::BOOL, false);
+    }
+}
+
 CPlotItem::~CPlotItem()
 {
   //  GlobalKeys.remove(mKey);
@@ -99,9 +120,6 @@ void CPlotItem::initObjects()
 
 const CPlotItem::Type & CPlotItem::getType() const
   {return mType;}
-
-void CPlotItem::setType(CPlotItem::Type type)
-{mType = type;}
 
 std::vector<CPlotDataChannelSpec> & CPlotItem::getChannels()
 {return channels;}
