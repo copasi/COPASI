@@ -195,12 +195,15 @@ class CMathConstantParameter : public CMathConstant
   {
     // Attributes
   private:
+    std::string mReaction;
+
+    // Operations
+  private:
     /**
      *
      */
     static std::map< std::string, CCopasiObject * > mSelection;
 
-    // Operations
   protected:
     /**
      *
@@ -216,7 +219,8 @@ class CMathConstantParameter : public CMathConstant
     /**
      *
      */
-    CMathConstantParameter(const CReaction::CId2Param & parameter);
+    CMathConstantParameter(const CReaction::CId2Param & parameter,
+                           const std::string & reaction);
 
     /**
      *
@@ -232,6 +236,11 @@ class CMathConstantParameter : public CMathConstant
      *
      */
     virtual const C_FLOAT64 & getValue() const;
+
+    /**
+     *
+     */
+    const std::string & getReaction() const;
 
     /**
      * Retreive the selection list

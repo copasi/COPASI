@@ -100,9 +100,16 @@ CMathConstantParameter::CMathConstantParameter(const CMathConstantParameter & sr
     CMathConstant(src)
 {}
 
-CMathConstantParameter::CMathConstantParameter(const CReaction::CId2Param & parameter):
-    CMathConstant(& parameter)
-{}
+CMathConstantParameter::CMathConstantParameter(const CReaction::CId2Param & parameter, const std::string & reaction):
+    CMathConstant(& parameter),
+    mReaction(reaction)
+{
+  if (parameter.getIdentifierName() != getName())
+    {
+      std::string Name(parameter.getIdentifierName() + "{" + mReaction + "}");
+      setName(Name);
+    }
+}
 
 CMathConstantParameter::~CMathConstantParameter() {}
 
@@ -114,6 +121,9 @@ bool CMathConstantParameter::setValue(const C_FLOAT64 & value)
 
 const C_FLOAT64 & CMathConstantParameter::getValue() const
   {return ((CReaction::CId2Param *) mpObject)->getValue();}
+
+const std::string & CMathConstantParameter::getReaction() const
+  {return mReaction;}
 
 const std::map< std::string, CCopasiObject * > &
 CMathConstantParameter::getSelection()
