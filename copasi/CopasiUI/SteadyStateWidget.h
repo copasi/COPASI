@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:44:20 $
+   $Date: 2004/10/08 08:59:10 $
    End CVS Header */
 
 /********************************************************
@@ -59,10 +59,10 @@ class SteadyStateWidget : public CopasiWidget
     QFrame* line8;
     QFrame* line8_2;
     QLabel* taskNameLabel;
-    QRadioButton* taskJacobian;
-    QLabel* taskDescriptionLabel;
+    QCheckBox* taskJacobian;
+    QCheckBox* taskStability;
+    //QLabel* taskDescriptionLabel;
     QLabel* parameterValueLabel;
-    QRadioButton* taskStability;
     QCheckBox* bExecutable;
     QLineEdit* taskName;
     QTable* parameterTable;

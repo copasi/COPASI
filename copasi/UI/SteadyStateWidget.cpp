@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/07 09:30:26 $
+   $Date: 2004/10/08 08:59:10 $
    End CVS Header */
 
 /********************************************************
@@ -115,11 +115,11 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   bExecutable->setEnabled(parent != NULL);
   SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
 
-  line8 = new QFrame(this, "line8");
-  line8->setFrameShape(QFrame::HLine);
+  //line8 = new QFrame(this, "line8");
+  //line8->setFrameShape(QFrame::HLine);
   //line8->setFrameShadow(QFrame::Sunken);
   //line8->setFrameShape(QFrame::HLine);
-  SteadyStateWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
+  //SteadyStateWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
 
   parameterTable = new QTable(this, "parameterTable");
   parameterTable->setNumRows(0);
@@ -128,18 +128,17 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   colHeader->setLabel(0, tr("Value"));
   SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
 
-  taskStability = new QRadioButton(this, "taskStability");
-  taskStability->setText(trUtf8("Stability Analysis"));
-  SteadyStateWidgetLayout->addWidget(taskStability, 2, 2);
+  //taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
+  //taskDescriptionLabel->setText(trUtf8(""));
+  //SteadyStateWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
 
-  taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
-  taskDescriptionLabel->setText(trUtf8("Task Description"));
-  SteadyStateWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
-
-  taskJacobian = new QRadioButton(this, "taskJacobian");
-  taskJacobian->setText(trUtf8("Jacobian"));
+  taskJacobian = new QCheckBox(this, "taskJacobian");
+  taskJacobian->setText(trUtf8("calculate Jacobian"));
   SteadyStateWidgetLayout->addWidget(taskJacobian, 2, 1);
-  //TODO: should not be a radio button
+
+  taskStability = new QCheckBox(this, "taskStability");
+  taskStability->setText(trUtf8("perform Stability Analysis"));
+  SteadyStateWidgetLayout->addWidget(taskStability, 2, 2);
 
   line8_2 = new QFrame(this, "line8_2");
   line8_2->setFrameShape(QFrame::HLine);
@@ -255,15 +254,6 @@ void SteadyStateWidget::runSteadyStateTask()
 
   mSteadyStateTask->initialize();
 
-  /*
-  if (!mSteadyStateTask->getReport().getStream())
-    {
-      if (QMessageBox::information (NULL, "No output specified,",
-                                    "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running steadystate task with no output?",
-                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-        return;
-    }*/
-
   setCursor(Qt::WaitCursor);
   CProgressBar* tmpBar = new CProgressBar(dataModel);
   mSteadyStateTask->setProgressHandler(tmpBar);
@@ -284,7 +274,7 @@ void SteadyStateWidget::runSteadyStateTask()
       mb.exec();
     }
 
-  pdelete(tmpBar);
+  tmpBar->finish(); pdelete(tmpBar);
 
   //  emit runFinished(mSteadyStateTask->getProblem()->getModel());
   ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
