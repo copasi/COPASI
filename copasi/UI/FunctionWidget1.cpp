@@ -99,7 +99,7 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   ButtonGroup1 = new QButtonGroup ("&Function Type", Frame4);
   hBoxLayout4a->addWidget(ButtonGroup1);
   hBoxLayout4a->addSpacing(20);
-  ButtonGroup1->setExclusive(TRUE);
+  ButtonGroup1->setExclusive(true);
 
   RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
   RadioButton1->setGeometry(QRect(110, 15, 87, 20));
@@ -132,7 +132,7 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("3"));
   Table1->setNumRows(3);
   Table1->setNumCols(3);
-  Table1->sortColumn (0, TRUE, TRUE);
+  Table1->sortColumn (0, true, true);
   Table1->setFixedSize(375, 104);
   Table1->setFocusPolicy(QWidget::WheelFocus);
   TextLabel3 = new QLabel(Frame5, "TextLabel3");
@@ -158,7 +158,7 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("3"));
   Table2->setNumRows(3);
   Table2->setNumCols(3);
-  Table2->sortColumn (0, TRUE, TRUE);
+  Table2->sortColumn (0, true, true);
   Table2->setFixedSize(335, 104);
   Table2->setFocusPolicy(QWidget::WheelFocus);
   TextLabel4 = new QLabel(Frame6, "TextLabel4");
@@ -306,7 +306,7 @@ void FunctionWidget1::loadName(QString setValue)
           QString overall = "DOUBLE";
           functionType.push_back(overall);
 
-          QComboTableItem * item = new QComboTableItem(Table1, functionType, TRUE);
+          QComboTableItem * item = new QComboTableItem(Table1, functionType, true);
 
           Table1->setItem(j, 1, item);
           item->setCurrentItem(temp);
@@ -346,46 +346,46 @@ void FunctionWidget1::loadName(QString setValue)
       /*** disables some widgets so user cannot make changes **/
       if (funct->getType() == 1 || funct->getType() == 2)
         {
-          RadioButton1->setEnabled(FALSE);
-          RadioButton2->setEnabled(FALSE);
-          RadioButton3->setEnabled(FALSE);
-          commitChanges->setEnabled(FALSE);
-          cancelChanges->setEnabled(FALSE);
-          LineEdit1->setReadOnly(TRUE);
-          LineEdit2->setReadOnly(TRUE);
-          Table1->setReadOnly(TRUE);
-          Table2->setReadOnly(TRUE);
+          RadioButton1->setEnabled(false);
+          RadioButton2->setEnabled(false);
+          RadioButton3->setEnabled(false);
+          commitChanges->setEnabled(false);
+          cancelChanges->setEnabled(false);
+          LineEdit1->setReadOnly(true);
+          LineEdit2->setReadOnly(true);
+          Table1->setReadOnly(true);
+          Table2->setReadOnly(true);
         }
 
       /*** if function is user-defined *****/
       else
         {
-          RadioButton1->setEnabled(TRUE);
-          RadioButton2->setEnabled(TRUE);
-          RadioButton3->setEnabled(TRUE);
-          LineEdit1->setReadOnly(TRUE); //Function Name cannot be changed
-          LineEdit2->setReadOnly(FALSE);
-          Table1->setReadOnly(FALSE);
-          Table2->setReadOnly(FALSE);
-          commitChanges->setEnabled(TRUE);
-          cancelChanges->setEnabled(TRUE);
+          RadioButton1->setEnabled(true);
+          RadioButton2->setEnabled(true);
+          RadioButton3->setEnabled(true);
+          LineEdit1->setReadOnly(true); //Function Name cannot be changed
+          LineEdit2->setReadOnly(false);
+          Table1->setReadOnly(false);
+          Table2->setReadOnly(false);
+          commitChanges->setEnabled(true);
+          cancelChanges->setEnabled(true);
         }
 
       switch (funct->isReversible())
         {
         case TriUnspecified:
-          RadioButton3->setEnabled(TRUE);
-          RadioButton3->setChecked(TRUE);
+          RadioButton3->setEnabled(true);
+          RadioButton3->setChecked(true);
           break;
 
         case TriFalse:
-          RadioButton2->setEnabled(TRUE);
-          RadioButton2->setChecked(TRUE);
+          RadioButton2->setEnabled(true);
+          RadioButton2->setChecked(true);
           break;
 
         case TriTrue:
-          RadioButton1->setEnabled(TRUE);
-          RadioButton1->setChecked(TRUE);
+          RadioButton1->setEnabled(true);
+          RadioButton1->setChecked(true);
           break;
         }
     }
@@ -414,12 +414,12 @@ void FunctionWidget1::slotCommitButtonClicked()
   funct->setDescription(new_Description->latin1());
   /**** For Radio Buttons ****/
 
-  if (RadioButton1->isChecked() == TRUE)
+  if (RadioButton1->isChecked() == true)
     {
       funct->setReversible(TriUnspecified);
     }
   else
-    if (RadioButton2->isChecked() == TRUE)
+    if (RadioButton2->isChecked() == true)
       {
         funct->setReversible(TriTrue);
       }

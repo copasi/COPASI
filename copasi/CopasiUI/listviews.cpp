@@ -127,15 +127,15 @@ ListViews::ListViews(QWidget *parent, const char *name)
   folderOpen = new QPixmap((const char**)folderopen);
 
   // setting the parameter for the qptrlist...
-  lstFolders.setAutoDelete(FALSE);
+  lstFolders.setAutoDelete(false);
 
   //  create a new QListview to be displayed on the screen..and set its property
   folders = new QListView(this);
-  folders->header()->setClickEnabled(FALSE);
+  folders->header()->setClickEnabled(false);
   int col_index = folders->addColumn("Select ");
   int c = folders->columnWidth(col_index);
   folders->setColumnWidth(col_index, c);
-  folders->setRootIsDecorated(TRUE);
+  folders->setRootIsDecorated(true);
   //folders->setMaximumWidth(c);
   //folders->resize(50,0);
   /*QSize *s = new QSize();
@@ -151,7 +151,7 @@ ListViews::ListViews(QWidget *parent, const char *name)
   bigWidget = new QMultiLineEdit(this);
   bigWidget->setText("This widget will get all the remaining space");
   bigWidget->setFrameStyle(QFrame::Panel | QFrame::Plain);
-  bigWidget->setReadOnly(FALSE);
+  bigWidget->setReadOnly(false);
   QSize *s = new QSize();
   *s = bigWidget->size();
   int w = s->width();
@@ -481,7 +481,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:                    // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:                     // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
 
           if ((node = dataModel->getData()) != NULL)
@@ -503,7 +503,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:                  // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:                   // WHEN ANY DATA IS DELETED FROM THE TREE
           // showMessage("Ankur","It comes in delete");
 
           if ((node = dataModel->getData()) != NULL)
@@ -516,7 +516,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:                    // new model is loaded.
+        case MODEL:                     // new model is loaded.
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();

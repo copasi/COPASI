@@ -12,10 +12,10 @@ class MyTable: public QTable
     void keyPressEvent (QKeyEvent * e);
     void setDeleteConfirmation(bool enable);
     void removeRow(int row);
-    void removeSelectedRows(bool full = FALSE);
+    void removeSelectedRows(bool full = false);
     void insertRows(long, long) {}
 
-    virtual void setSorting (bool b, bool wholeRows = TRUE);
+    virtual void setSorting (bool b, bool wholeRows = true);
 
   protected:
     bool deleteConfirmation;

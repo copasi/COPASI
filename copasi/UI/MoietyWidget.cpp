@@ -45,8 +45,8 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(2, "Equation");
 
   table->setReadOnly(true);
-  table->sortColumn (0, TRUE, TRUE);
-  table->setSorting (TRUE);
+  table->sortColumn (0, true, true);
+  table->setSorting (true);
   table->sortColumn(1, true, true);
   table->setFocusPolicy(QWidget::WheelFocus);
 

@@ -89,7 +89,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
   ButtonGroup1 = new QButtonGroup ("&Metabolite Status Selection", Frame4c);
   hBoxLayout4c->addWidget(ButtonGroup1);
   hBoxLayout4c->addSpacing(20);
-  ButtonGroup1->setExclusive(TRUE);
+  ButtonGroup1->setExclusive(true);
 
   RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
   RadioButton1->setGeometry(QRect(10, 30, 87, 20));
@@ -314,28 +314,28 @@ void MetabolitesWidget1::loadName(QString setValue)
 
       LineEdit9->setText(QString::number(metab->getTransitionTime()));
       LineEdit9->setReadOnly(true);
-      RadioButton1->setChecked(FALSE);
-      RadioButton2->setChecked(FALSE);
-      RadioButton3->setChecked(FALSE);
-      RadioButton4->setChecked(FALSE);
-      RadioButton5->setChecked(FALSE);
+      RadioButton1->setChecked(false);
+      RadioButton2->setChecked(false);
+      RadioButton3->setChecked(false);
+      RadioButton4->setChecked(false);
+      RadioButton5->setChecked(false);
 
       if (QString::number(metab->getStatus()) == "0")
         {
-          RadioButton1->setChecked(TRUE);
-          RadioButton3->setChecked(TRUE);
+          RadioButton1->setChecked(true);
+          RadioButton3->setChecked(true);
         }
       else
         if (QString::number(metab->getStatus()) == "1")
           {
-            RadioButton2->setChecked(TRUE);
-            RadioButton4->setChecked(TRUE);
+            RadioButton2->setChecked(true);
+            RadioButton4->setChecked(true);
           }
         else
           if (QString::number(metab->getStatus()) == "2")
             {
-              RadioButton2->setChecked(TRUE);
-              RadioButton5->setChecked(TRUE);
+              RadioButton2->setChecked(true);
+              RadioButton5->setChecked(true);
             }
 
       ComboBox1->setDuplicatesEnabled (false);
@@ -387,7 +387,7 @@ void MetabolitesWidget1::slotBtnOKClicked()
   metab->setInitialNumberInt(temp2);
   //if (QString::number(metab->getStatus()) == "0")
 
-  if (RadioButton1->isChecked() == TRUE && QString::number(metab->getStatus()) == "0")
+  if (RadioButton1->isChecked() == true && QString::number(metab->getStatus()) == "0")
     {
       metab->setStatus(0);
     }

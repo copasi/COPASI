@@ -5,13 +5,13 @@
 MyTable::MyTable(QWidget * parent, const char * name)
     : QTable (parent, name)
 {
-  deleteConfirmation = TRUE;
+  deleteConfirmation = true;
 }
 
 MyTable::MyTable(int numRows, int numCols, QWidget * parent, const char * name)
     : QTable (numRows, numCols, parent, name)
 {
-  deleteConfirmation = TRUE;
+  deleteConfirmation = true;
 }
 
 /*void MyTable::mousePressEvent(QMouseEvent *mpe)
@@ -43,14 +43,14 @@ void MyTable::keyPressEvent (QKeyEvent * e)
 
       switch (choice)
         {
-        case 0:  // Yes or Enter
+        case 0:   // Yes or Enter
           {
-            removeSelectedRows(TRUE);
+            removeSelectedRows(true);
             //True for Completely selected rows.
             break;
           }
 
-        case 1:  // No or Escape
+        case 1:   // No or Escape
           {
             // No
             break;
@@ -68,7 +68,7 @@ void MyTable::removeRow(int row)
 {
   int I = numRows();
 
-  for (int i = row; i < I - 1 ; i++)
+  for (int i = row; i < I - 1; i++)
     {
       swapRows(i, i + 1);
     }
@@ -100,8 +100,7 @@ void MyTable::removeSelectedRows(bool full)
 void MyTable::setSorting (bool b, bool wholeRows)
 {
   if (wholeRows)
-    {
-    }
+  {}
   else
     {
       QTable::setSorting(b);

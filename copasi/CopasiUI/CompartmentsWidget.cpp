@@ -58,8 +58,8 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   hBoxLayout->addWidget(btnCancel);
   hBoxLayout->addSpacing(50);
 
-  table->sortColumn (0, TRUE, TRUE);
-  table->setSorting (TRUE);
+  table->sortColumn (0, true, true);
+  table->setSorting (true);
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections

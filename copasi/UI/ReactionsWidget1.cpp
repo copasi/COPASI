@@ -138,7 +138,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   table = new QTable(Frame4e, "tblsymbol");
   table->setGeometry(QRect(130, 10, 170, 154));
 
-  table->sortColumn (0, TRUE, TRUE);
+  table->sortColumn (0, true, true);
   table->setFixedSize(300, 150);
   //table->setShowGrid(true);
   table->setFocusPolicy(QWidget::WheelFocus);
@@ -253,7 +253,7 @@ void ReactionsWidget1::loadName(QString setValue)
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
   reactn = reactions[(std::string)setValue.latin1()];
   TriLogic reversible;
-  if (reactn->isReversible() == FALSE)
+  if (reactn->isReversible() == false)
     reversible = TriFalse;
   else
     reversible = TriTrue;
@@ -294,11 +294,11 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   ComboBox1->insertStringList(comboEntries, -1);
-  checkBox->setChecked(FALSE);
+  checkBox->setChecked(false);
 
-  if (reactn->isReversible() == TRUE)
+  if (reactn->isReversible() == true)
     {
-      checkBox->setChecked(TRUE);
+      checkBox->setChecked(true);
     }
 
   table->setNumCols(1);
@@ -345,9 +345,9 @@ void ReactionsWidget1::loadName(QString setValue)
 
       QString temp = comboEntries1[z];
       //comboEntries1.push_front(temp);
-      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+      QComboTableItem * item = new QComboTableItem(table, comboEntries1, false);
       item->setCurrentItem(temp);
-      //item = QComboTableItem(table, comboEntries1, FALSE);
+      //item = QComboTableItem(table, comboEntries1, false);
       /*if(comboEntries1.contains(temp)>1)
       {
       comboEntries1.remove(temp);
@@ -380,7 +380,7 @@ void ReactionsWidget1::loadName(QString setValue)
         }
 
       QString temp = comboEntries1[z];
-      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+      QComboTableItem * item = new QComboTableItem(table, comboEntries1, false);
       item->setCurrentItem(temp);
       z++;
       table->setItem(line, 0, item);
@@ -410,7 +410,7 @@ void ReactionsWidget1::loadName(QString setValue)
         }
 
       QString temp = comboEntries1[z];
-      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+      QComboTableItem * item = new QComboTableItem(table, comboEntries1, false);
       item->setCurrentItem(temp);
       z++;
       table->setItem(line, 0, item);
@@ -485,15 +485,15 @@ void ReactionsWidget1::slotCheckBoxClicked()
       reversible = TriFalse;
     }
 
-  if (checkBox->isChecked() == FALSE && reactn1->isReversible() == TRUE)
+  if (checkBox->isChecked() == false && reactn1->isReversible() == true)
     {
-      int i = chemical_reaction.find ("=", 0, TRUE);
+      int i = chemical_reaction.find ("=", 0, true);
       chemical_reaction = chemical_reaction.replace(i, 1, "->");
       reversible = TriFalse;
     }
-  else if (checkBox->isChecked() == TRUE && reactn1->isReversible() == FALSE)
+  else if (checkBox->isChecked() == true && reactn1->isReversible() == false)
     {
-      int i = chemical_reaction.find ("->", 0, TRUE);
+      int i = chemical_reaction.find ("->", 0, true);
       chemical_reaction = chemical_reaction.replace(i, 2, "=");
       reversible = TriTrue;
     }
@@ -555,9 +555,9 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   QStringList products;
   QString chemical_reaction = LineEdit2->text();
   //unsigned int start = 0;
-  QStringList individual_elements = QStringList::split ("+", chemical_reaction, FALSE);
+  QStringList individual_elements = QStringList::split ("+", chemical_reaction, false);
   QString all_elements = individual_elements.join (" ");
-  QStringList individual_elements1 = QStringList::split (" ", all_elements, FALSE);
+  QStringList individual_elements1 = QStringList::split (" ", all_elements, false);
 
   for (unsigned int m = 0; m <= individual_elements1.size() - 1; m++)
     {
@@ -650,7 +650,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
       QString temp;
       for (k = 1; k <= countofsubstrates; k++)
         {
-          QComboTableItem * item1 = new QComboTableItem(table, substrates, TRUE);
+          QComboTableItem * item1 = new QComboTableItem(table, substrates, true);
           table->setItem(line, 0, item1);
           temp = substrates[z];
           item1->setCurrentItem(temp);
@@ -661,7 +661,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
       z = 0;
       for (k = 1; k <= countofproducts; k++)
         {
-          QComboTableItem * item1 = new QComboTableItem(table, products, TRUE);
+          QComboTableItem * item1 = new QComboTableItem(table, products, true);
           table->setItem(line, 0, item1);
           temp = products[z];
           item1->setCurrentItem(temp);
@@ -705,13 +705,13 @@ void ReactionsWidget1::slotLineEditChanged()
   bool status;
   status = chemEq1->setChemicalEquation(changed_chemical_reaction);
   reactn1->setChemEq(changed_chemical_reaction);
-  if (reactn1->isReversible() == TRUE)
+  if (reactn1->isReversible() == true)
     {
-      checkBox->setChecked(TRUE);
+      checkBox->setChecked(true);
     }
   else
     {
-      checkBox->setChecked(FALSE);
+      checkBox->setChecked(false);
     }
   slotCheckBoxClicked();
 }
