@@ -180,8 +180,7 @@ void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
     return;
 
   if (pCurrent->getType() == OBJECTATTR)
-    {
-    }
+  {}
   else if (pCurrent->getType() == FIELDATTR)
   {}
 }
@@ -215,8 +214,7 @@ void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
         pParentSibling = pParent->parent()->child();
     }
   else if (pCurrent->getType() == FIELDATTR)
-  {}
-}
+    {}}
 
 void ObjectBrowser::backClicked()
 {
