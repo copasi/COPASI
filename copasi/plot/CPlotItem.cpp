@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/14 13:45:06 $
+   $Date: 2005/02/27 20:10:46 $
    End CVS Header */
 
 #include "CPlotItem.h"
@@ -99,7 +99,7 @@ void CPlotItem::setType(CPlotItem::Type type)
   //create parameters
   if (type == curve2d)
     {
-      addParameter("withLines", CCopasiParameter::BOOL, true);
+      addParameter("Line type", CCopasiParameter::UINT, (unsigned C_INT32)0);
     }
 
   if (type == plot2d)
