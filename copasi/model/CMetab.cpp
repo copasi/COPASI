@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 09:00:33 $
+   $Date: 2004/10/06 09:52:21 $
    End CVS Header */
 
 #include <iostream>
@@ -47,7 +47,7 @@ CMetab::CMetab(const std::string & name,
     mIConc(1.0),
     mNumber(1.0),
     mINumber(1.0),
-    mRate(1.0),
+    mRate(0.0),
     mTT(0.0),
     mStatus(METAB_VARIABLE)
 {
@@ -86,7 +86,7 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
   setInitialConcentration(RHS.mIConc);
   setConcentration(RHS.mIConc);
 
-  mRate = 1.0;
+  mRate = 0.0;
   mTT = 0.0;
   mStatus = RHS.mStatus;
 
@@ -211,7 +211,9 @@ void CMetab::initObjects()
  * Return rate of production of this metaboLite
  */
 const C_FLOAT64 & CMetab::getConcentrationRate() const
-  {return mRate;}
+  {
+    return mRate;
+  }
 
 C_FLOAT64 CMetab::getNumberRate() const
   {
