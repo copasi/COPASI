@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.167 $
+   $Revision: 1.168 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 17:35:45 $
+   $Author: ssahle $ 
+   $Date: 2005/01/25 12:01:16 $
    End CVS Header */
 
 /****************************************************************************
@@ -38,6 +38,7 @@
 #include "ModesWidget.h"
 #include "MoietyWidget.h"
 #include "MoietyWidget1.h"
+#include "ParametersWidget.h"
 #include "ReactionsWidget.h"
 #include "ReactionsWidget1.h"
 #include "SteadyStateWidget.h"
@@ -209,6 +210,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     moietyWidget1(NULL),
     optimizationWidget(NULL),
     paramFittingWidget(NULL),
+    parametersWidget(NULL),
     plotWidget(NULL),
     plotWidget1(NULL),
     reactionsWidget(NULL),
@@ -354,6 +356,9 @@ void ListViews::ConstructNodeWidgets()
   if (!moietyWidget1) moietyWidget1 = new MoietyWidget1(this);
   moietyWidget1->hide();
 
+  if (!parametersWidget) parametersWidget = new ParametersWidget(this);
+  parametersWidget->hide();
+
   if (!mpCMCAResultWidget) mpCMCAResultWidget = new CMCAResultWidget(this);
   mpCMCAResultWidget->hide();
 
@@ -430,6 +435,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 114:
         return reactionsWidget;
         break;
+      case 115:
+        return parametersWidget;
+        break;
       case 121:
         return compartmentSymbols;
         break;
@@ -481,7 +489,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                          //Report
+      case 43:                           //Report
         return tableDefinition;
         break;
       case 42:
