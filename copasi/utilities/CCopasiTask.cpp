@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/17 08:53:36 $
+   $Date: 2004/11/23 17:02:53 $
    End CVS Header */
 
 /**
@@ -42,7 +42,7 @@ const char* CCopasiTask::XMLType[] =
     "fluxMode",
     "optimization",
     "parameterFitting",
-    "metaboliccontrolanalysis",
+    "metabolicControlAnalysis",
     NULL
   };
 

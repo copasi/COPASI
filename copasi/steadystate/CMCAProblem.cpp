@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/25 17:14:14 $
+   $Date: 2004/11/23 17:02:53 $
    End CVS Header */
 
 /**
@@ -31,8 +31,7 @@ CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::steadyState, pParent),
     mInitialState()
 {
-  addParameter("JacobianRequested", CCopasiParameter::BOOL, true);
-  addParameter("StabilityAnalysisRequested", CCopasiParameter::BOOL, true);
+  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
   CONSTRUCTOR_TRACE;
 }
 

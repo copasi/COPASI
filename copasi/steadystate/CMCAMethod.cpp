@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/18 15:38:36 $
+   $Author: gauges $ 
+   $Date: 2004/11/23 17:02:53 $
    End CVS Header */
 
 #include <cmath>
@@ -26,7 +26,7 @@
  * Default constructor
  */
 CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
-    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent),
+    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
     mSsipvt(NULL)
 {
   CONSTRUCTOR_TRACE;
