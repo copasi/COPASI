@@ -13,7 +13,8 @@ libmodel_a_SOURCES = \
 	CSpecLine.cpp \
 	CDeTerm.cpp \
 	CSpec2Model.cpp \
-	CState.cpp
+	CState.cpp \
+	CParticleNumberList.cpp
 
 EXTRA_DIST = \
 	model.h \
@@ -28,7 +29,8 @@ EXTRA_DIST = \
 	CSpecLine.h	CSpecLine.cpp \
 	CDeTerm.h	CDeTerm.cpp \
 	CSpec2Model.h	CSpec2Model.cpp \
-	CState.h	CState.cpp
+	CState.h	CState.cpp \
+	CParticleNumberList.h	CParticleNumberList.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 

@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.12 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.13 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -247,7 +247,8 @@ libmodel_a_SOURCES = \
 	CSpecLine.cpp \
 	CDeTerm.cpp \
 	CSpec2Model.cpp \
-	CState.cpp
+	CState.cpp \
+	CParticleNumberList.cpp
 
 
 EXTRA_DIST = \
@@ -263,7 +264,8 @@ EXTRA_DIST = \
 	CSpecLine.h	CSpecLine.cpp \
 	CDeTerm.h	CDeTerm.cpp \
 	CSpec2Model.h	CSpec2Model.cpp \
-	CState.h	CState.cpp
+	CState.h	CState.cpp \
+	CParticleNumberList.h	CParticleNumberList.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -282,15 +284,17 @@ am_libmodel_a_OBJECTS = CCompartment.$(OBJEXT) CMetab.$(OBJEXT) \
 	CModel.$(OBJEXT) CMoiety.$(OBJEXT) CReaction.$(OBJEXT) \
 	CChemEq.$(OBJEXT) CChemEqElement.$(OBJEXT) \
 	CScanInputFlexLexer.$(OBJEXT) CSpecLine.$(OBJEXT) \
-	CDeTerm.$(OBJEXT) CSpec2Model.$(OBJEXT) CState.$(OBJEXT)
+	CDeTerm.$(OBJEXT) CSpec2Model.$(OBJEXT) CState.$(OBJEXT) \
+	CParticleNumberList.$(OBJEXT)
 #>- libmodel_a_OBJECTS = $(am_libmodel_a_OBJECTS)
-#>+ 8
+#>+ 9
 libmodel_a_final_OBJECTS = libmodel_a.all_cpp.o 
 libmodel_a_nofinal_OBJECTS = CCompartment.$(OBJEXT) CMetab.$(OBJEXT) \
 	CModel.$(OBJEXT) CMoiety.$(OBJEXT) CReaction.$(OBJEXT) \
 	CChemEq.$(OBJEXT) CChemEqElement.$(OBJEXT) \
 	CScanInputFlexLexer.$(OBJEXT) CSpecLine.$(OBJEXT) \
-	CDeTerm.$(OBJEXT) CSpec2Model.$(OBJEXT) CState.$(OBJEXT)
+	CDeTerm.$(OBJEXT) CSpec2Model.$(OBJEXT) CState.$(OBJEXT) \
+	CParticleNumberList.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@libmodel_a_OBJECTS = $(libmodel_a_nofinal_OBJECTS)
 @KDE_USE_FINAL_TRUE@libmodel_a_OBJECTS = $(libmodel_a_final_OBJECTS)
 
@@ -303,7 +307,9 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CChemEq.Po $(DEPDIR)/CChemEqElement.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CCompartment.Po $(DEPDIR)/CDeTerm.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CMetab.Po $(DEPDIR)/CModel.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CMoiety.Po $(DEPDIR)/CReaction.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CMoiety.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CParticleNumberList.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CReaction.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CScanInputFlexLexer.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CSpec2Model.Po $(DEPDIR)/CSpecLine.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CState.Po
@@ -387,6 +393,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMetab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CModel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMoiety.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CParticleNumberList.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CReaction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CScanInputFlexLexer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CSpec2Model.Po@am__quote@
@@ -450,7 +457,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=exampleinput model.dsp libmodel.a 
+KDE_DIST=exampleinput libmodel.a model.dsp 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -591,11 +598,11 @@ force-reedit:
 
 
 #>+ 11
-libmodel_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CCompartment.cpp $(srcdir)/CMetab.cpp $(srcdir)/CModel.cpp $(srcdir)/CMoiety.cpp $(srcdir)/CReaction.cpp $(srcdir)/CChemEq.cpp $(srcdir)/CChemEqElement.cpp $(srcdir)/CScanInputFlexLexer.cpp $(srcdir)/CSpecLine.cpp $(srcdir)/CDeTerm.cpp $(srcdir)/CSpec2Model.cpp $(srcdir)/CState.cpp
+libmodel_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CCompartment.cpp $(srcdir)/CMetab.cpp $(srcdir)/CModel.cpp $(srcdir)/CMoiety.cpp $(srcdir)/CReaction.cpp $(srcdir)/CChemEq.cpp $(srcdir)/CChemEqElement.cpp $(srcdir)/CScanInputFlexLexer.cpp $(srcdir)/CSpecLine.cpp $(srcdir)/CDeTerm.cpp $(srcdir)/CSpec2Model.cpp $(srcdir)/CState.cpp $(srcdir)/CParticleNumberList.cpp
 	@echo 'creating libmodel_a.all_cpp.cpp ...'; \
 	rm -f libmodel_a.all_cpp.files libmodel_a.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> libmodel_a.all_cpp.final; \
-	for file in CCompartment.cpp CMetab.cpp CModel.cpp CMoiety.cpp CReaction.cpp CChemEq.cpp CChemEqElement.cpp CScanInputFlexLexer.cpp CSpecLine.cpp CDeTerm.cpp CSpec2Model.cpp CState.cpp ; do \
+	for file in CCompartment.cpp CMetab.cpp CModel.cpp CMoiety.cpp CReaction.cpp CChemEq.cpp CChemEqElement.cpp CScanInputFlexLexer.cpp CSpecLine.cpp CDeTerm.cpp CSpec2Model.cpp CState.cpp CParticleNumberList.cpp ; do \
 	  echo "#include \"$$file\"" >> libmodel_a.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libmodel_a.all_cpp.final; \
 	done; \

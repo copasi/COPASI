@@ -525,22 +525,6 @@ class CModel
     void getDerivatives(CStateX * state, C_FLOAT64 * derivatives);
 
     /**
-     * Returns a stateX eqivalent to the given state.
-     * Note: The returned object must be released after use
-     * @param CState * state
-     * @return  CStateX * stateX
-     */
-    CStateX * convertState(CState * state);
-
-    /**
-     * Returns a state eqivalent to the given stateX.
-     * Note: The returned object must be released after use
-     * @param CState * stateX
-     * @return  CStateX * state
-     */
-    CState * convertState(CStateX * state);
-
-    /**
      * set the unit for substance quantities. If copasi recognises 
      * the unit the conversion factors are set accordingly. 
      * Otherwise they are set to 1.
@@ -602,8 +586,14 @@ class CModel
      */
     const vector <unsigned C_INT32> & getReactionPermutation() const;
 
-  private:
+    /**
+     * Calculates the particle numbers of the dependent
+     * metabolites for the given reduced model stateX and updates the state
+     * @param CStateX & stateX
+     */
+    void updateDepMetabNumbers (const CStateX & stateX) const;
 
+  private:
     /**
      * Set the transient concentrations and volumes according to the
      * given state.
@@ -617,22 +607,6 @@ class CModel
      * @param const CState * stateX
      */
     void setState(const CStateX * state);
-
-    /**
-     * Retrieves a state containing current transient concentrations and volumes
-     * of the model.
-     * Note: The returned object must be released after use
-     * @return CState * state.
-     */
-    CState * getState() const;
-
-    /**
-     * Retrieves a state containing current transient concentrations and volumes
-     * of the model in reduce model representation.
-     * Note: The returned object must be released after use
-     * @return CStateX * stateX.
-     */
-    CStateX * getStateX() const;
   };
 
 #endif // CModel
