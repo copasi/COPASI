@@ -205,6 +205,11 @@ class CChemEq : public CCopasiContainer
      */
     void reverse();
 
+    /**
+     *  This returns the sum of the multiplicities
+     */
+    C_INT32 getMolecularity(const MetaboliteRole role) const;
+
   private:
     /**
      *  Extracts the next element of the input string starting at position pos.

@@ -6,6 +6,7 @@
 
 #define  COPASI_TRACE_CONSTRUCTION
 
+#include <math.h>
 #include "copasi.h"
 #include "CChemEq.h"
 #include "utilities/readwrite.h"
@@ -487,3 +488,30 @@ void CChemEq::reverse()
   mSubstrates = mProducts;
   mProducts = dummy;
 }
+
+C_INT32 CChemEq::getMolecularity(const MetaboliteRole role) const
+  {
+    const CCopasiVector<CChemEqElement> * tmpVector;
+
+    switch (role)
+      {
+      case CChemEq::SUBSTRATE:
+        tmpVector = &mSubstrates;
+        break;
+      case CChemEq::PRODUCT:
+        tmpVector = &mProducts;
+        break;
+      case CChemEq::MODIFIER:
+        tmpVector = &mModifiers;
+        break;
+      default:
+        fatalError();
+        break;
+      }
+
+    C_INT32 ccc, i, imax = tmpVector->size();
+    for (i = 0, ccc = 0; i < imax; ++i)
+      ccc += floor((*tmpVector)[i]->getMultiplicity());
+
+    return ccc;
+  }
