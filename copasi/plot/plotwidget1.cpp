@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/14 13:43:31 $
+   $Date: 2005/02/17 14:47:29 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.34 2005/02/14 13:43:31 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.35 2005/02/17 14:47:29 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -353,7 +353,7 @@ void PlotWidget1::addHisto1DTab(const std::string & title,
 void PlotWidget1::addHisto1D()
 {
   C_INT32 storeTab = tabs->count();
-  addHisto1DTab("Test", CPlotDataChannelSpec());
+  addHisto1DTab("Histogram", CPlotDataChannelSpec(CCopasiObjectName("")));
   tabs->setCurrentPage(storeTab);
 }
 

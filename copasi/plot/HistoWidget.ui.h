@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/HistoWidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/14 13:41:17 $
+   $Date: 2005/02/17 14:47:29 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,7 +43,7 @@ void HistoWidget::buttonPressedX()
         lineEditXName->setText("");
 
       if (mpObjectX)
-        lineEditTitle->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+        lineEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
       else
         lineEditTitle->setText("Histogram");
 
