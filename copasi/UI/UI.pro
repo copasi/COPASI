@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.63 $ $Author: shoops $ $Date: 2004/11/12 14:26:34 $  
+# $Revision: 1.64 $ $Author: shoops $ $Date: 2004/11/18 15:20:15 $  
 ######################################################################
 
 include(../common.pri)
@@ -96,7 +96,6 @@ release {
 
   contains(BUILD_OS, SunOS) {
     LIBS += -Wl,-lqt-mt \
-            -Wl,-lfontconfig \
             -Wl,-lpthread
   }
 }
