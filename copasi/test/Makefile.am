@@ -15,40 +15,40 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/copasi
 
 # the library search path.
 LIBS = \
-	-lutilities \
-	-lfunction \
-	-lmodel \
-	-loutput \
-	-lsteadystate \
-	-ltrajectory
+        -lutilities \
+        -lfunction \
+        -lmodel \
+        -loutput \
+        -lsteadystate \
+        -ltrajectory
 
 # the library search path.
 LDFLAGS = -all-static\
-	-L../utilities \
-	-L../function \
-	-L../model \
-	-L../output \
-	-L../steadystate \
-	-L../trajectory
+        -L../utilities \
+        -L../function \
+        -L../model \
+        -L../output \
+        -L../steadystate \
+        -L../trajectory
 
 LDADD = \
-	../utilities/libutilities.a \
-	../function/libfunction.a \
-	../output/liboutput.a \
-	../model/libmodel.a \
-	../trajectory/libtrajectory.a
+        ../utilities/libutilities.a \
+        ../function/libfunction.a \
+        ../output/liboutput.a \
+        ../model/libmodel.a \
+        ../trajectory/libtrajectory.a
 
 SUBDIRS = \
-	function \
-	output \
-	model \
-	steadystate \
-	trajectory \
-	utilities
+        function \
+        output \
+        model \
+        steadystate \
+        trajectory \
+        utilities
 
 all-recursive install-data-recursive install-exec-recursive \
 installdirs-recursive install-recursive uninstall-recursive  \
 check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
 
 $(SUBDIRS): ../
-	test -d $@ || ln -s ../$@ $@
+        test -d $@ || ln -s ../$@ $@
