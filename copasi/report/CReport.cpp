@@ -67,7 +67,7 @@ void CReport::compile()
   for (i = 0; i < mpReportDef->getBodyAddr()->size(); i++)
     {
       CCopasiObject* pSelected =
-        (CCopasiObject*)pCopasiObject->getObject((*(mpReportDef->getBodyAddr()))[i]);
+        (CCopasiObject*)CCopasiContainer::Root->getObject((*(mpReportDef->getBodyAddr()))[i]);
       objectList.push_back(pSelected);
     }
 }
