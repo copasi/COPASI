@@ -230,3 +230,15 @@ void CScanMethod::InitScan(void)
       scanProblem->setScanItemParameter(i, "incr", scanProblem->getScanItemParameter(i, "ampl") / (scanProblem->getScanItemParameter(i, "density") - 1));
     }
 }
+
+// this function counts the number of iterations to execute
+UINT CScanMethod::CountScan(void)
+{
+  int i;
+  unsigned C_INT32 TotIteration = 1;
+  unsigned C_INT32 scanDimension = scanProblem->getListSize();
+  for (i = 0; i < ScanDimension; i++)
+    if (scanProblem->getScanItemParameter(i, "indp"))
+      TotIteration *= (UINT) scanProblem->getScanItemParameter(i, "density");
+  return TotIteration;
+}

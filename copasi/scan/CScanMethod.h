@@ -37,6 +37,10 @@ class CScanMethod
     CScanMethod();
 
   public:
+
+    // this function counts the number of iterations to execute
+    UINT CountScan(void);
+
     /*
      Intialized all parameters insidethe Scan Parameter Matrix,
     */
