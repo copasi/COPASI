@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/21 04:25:29 $
+   $Author: shoops $ 
+   $Date: 2003/11/12 14:54:26 $
    End CVS Header */
 
 /**
@@ -23,6 +23,34 @@
 CCopasiContainer * CCopasiContainer::Root = NULL;
 
 void CCopasiContainer::init() {CCopasiContainer::Root = new CCopasiContainer();}
+
+CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+    const CCopasiObjectName & objName)
+{
+  const CCopasiObject * pObject = NULL;
+  CCopasiContainer* pCopasiObject;
+  CCopasiObjectName Name;
+  unsigned C_INT32 containerIndex;
+
+  //favor to search the list of container first
+  for (containerIndex = 0;
+       containerIndex < listOfContainer.size();
+       containerIndex++)
+    {
+      pCopasiObject = listOfContainer[containerIndex];
+
+      for (Name = objName, pObject = NULL;
+           Name != "" && !pObject;
+           Name = Name.getRemainder())
+        pObject = pCopasiObject->getObject(Name);
+    }
+
+  // if not find search the root
+  if (!pObject)
+    pObject = CCopasiContainer::Root->getObject(objName);
+
+  return const_cast<CCopasiObject *>(pObject);
+}
 
 CCopasiContainer::CCopasiContainer() :
     CCopasiObject("Root", NULL, "CN", CCopasiObject::Container),

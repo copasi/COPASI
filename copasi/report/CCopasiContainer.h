@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/30 20:25:12 $
+   $Author: shoops $ 
+   $Date: 2003/11/12 14:54:26 $
    End CVS Header */
 
 /**
@@ -19,6 +19,8 @@
 #define COPASI_CCopasiContainer
 
 #include <map>
+#include <vector>
+
 #include "CCopasiObject.h"
 
 /** @dia:pos 23.7081,50.8343 */
@@ -49,6 +51,15 @@ class CCopasiContainer: public CCopasiObject
     CCopasiContainer();
 
   public:
+    /**
+     * @param const std::vector< CCopasiContainer * > &listOfContainer
+     * @param const CCopasiObjectName& objName
+     * @return CCopasiObject * pObject
+     */
+    static
+    CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+                                   const CCopasiObjectName & objName);
+
     CCopasiContainer(const std::string & name,
                      const CCopasiContainer * pParent = NULL,
                      const std::string & type = "CN",
