@@ -11,11 +11,35 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
   setChild(NULL);
   if (after != NULL)
     after->setSibling(this);
-  pCopasiObject = mObject;
+
+  if (mObject != NULL)
+    {
+      objectListItem* pTmp = pList->getRoot();
+      while (pTmp != NULL)
+        {
+          if (pTmp->pItem->getObject()->pCopasiObject == mObject) // already be pointed in the list
+            break;
+          pTmp = pTmp->pNext;
+        }
+      if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
+        pBrowserObject = pTmp->pItem->getObject();
+      else
+        {
+          browserObject* newBrowserObject = new browserObject();
+          newBrowserObject->pCopasiObject = mObject;
+          newBrowserObject->mChecked = false;
+          pBrowserObject = newBrowserObject;
+        }
+    }
+  else //this is not an ending node
+    {
+      browserObject* newBrowserObject = new browserObject();
+      newBrowserObject->pCopasiObject = mObject;
+      newBrowserObject->mChecked = false;
+      pBrowserObject = newBrowserObject;
+    }
   pList->insert(this);
 
-  nParam = 0;
-  mChecked = new bool(false);
   mKey = " ";
 }
 
@@ -29,11 +53,34 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
     parent->setChild(this);
   if (after != NULL)
     after->setSibling(this);
-  pCopasiObject = mObject;
+  if (mObject != NULL)
+    {
+      objectListItem* pTmp = pList->getRoot();
+      while (pTmp != NULL)
+        {
+          if (pTmp->pItem->getObject()->pCopasiObject == mObject)
+            break;
+          pTmp = pTmp->pNext;
+        }
+      if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
+        pBrowserObject = pTmp->pItem->getObject();
+      else
+        {
+          browserObject* newBrowserObject = new browserObject();
+          newBrowserObject->pCopasiObject = mObject;
+          newBrowserObject->mChecked = false;
+          pBrowserObject = newBrowserObject;
+        }
+    }
+  else //this is not an ending node
+    {
+      browserObject* newBrowserObject = new browserObject();
+      newBrowserObject->pCopasiObject = mObject;
+      newBrowserObject->mChecked = false;
+      pBrowserObject = newBrowserObject;
+    }
   pList->insert(this);
 
-  nParam = 0;
-  mChecked = new bool(false);
   mKey = " ";
 }
 
@@ -70,53 +117,12 @@ int ObjectBrowserItem::nUserChecked()
     }
   else //it has no child
     {
-      if (nParam == 0)
-        {
-          if (isChecked(0))
-            condition = ALLCHECKED;
-          else
-            condition = NOCHECKED;
-        }
+      if (isChecked())
+        condition = ALLCHECKED;
       else
-        {
-          int nCheck = 0;
-          int nUncheck = 0;
-          for (unsigned int i = 1; i < nParam; i++)
-            {
-              if (isChecked(i))
-                nCheck++;
-              else
-                nUncheck++;
-            }
-          if (nCheck == 0)
-            condition = NOCHECKED;
-          else if (nUncheck == 0)
-            condition = ALLCHECKED;
-          else
-            condition = PARTCHECKED;
-        }
+        condition = NOCHECKED;
     }
 
-  return condition;
-
-  if (sibling() != NULL)
-    {
-      switch (sibling()->nUserChecked())
-        {
-        case ALLCHECKED:
-          if (condition == NOCHECKED)
-            condition = PARTCHECKED;
-          break;
-        case PARTCHECKED:
-          if (condition == NOCHECKED)
-            condition = PARTCHECKED;
-          break;
-        case NOCHECKED:
-          if (condition == ALLCHECKED)
-            condition = PARTCHECKED;
-          break;
-        }
-    }
   return condition;
 }
 
@@ -150,27 +156,14 @@ ObjectBrowserItem* ObjectBrowserItem::sibling() const
     return pSibling;
   }
 
-bool ObjectBrowserItem::isChecked(unsigned int i) const
+bool ObjectBrowserItem::isChecked() const
   {
-    if (i > nParam)
-      return mChecked[0];
-    return mChecked[i];
+    return pBrowserObject->mChecked;
   }
 
-void ObjectBrowserItem::ConstructCheckArray(unsigned int i)
+void ObjectBrowserItem::reverseChecked()
 {
-  nParam = i;
-  delete mChecked;
-  mChecked = new bool(nParam + 1);
-  for (int j = 0; j <= nParam; j++)
-    mChecked[j] = false;
-}
-
-void ObjectBrowserItem::reverseChecked(unsigned int i)
-{
-  if (i > nParam)
-    return;
-  mChecked[i] = !mChecked[i];
+  pBrowserObject->mChecked = !pBrowserObject->mChecked;
 }
 
 objectList::objectList()

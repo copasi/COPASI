@@ -15,30 +15,29 @@ enum objectType {FIELDATTR = 0, OBJECTATTR, CONTAINERATTR};
 
 class objectList;
 
+struct browserObject
+  {
+    CCopasiObject* pCopasiObject;
+    bool mChecked;
+  };
+
 class ObjectBrowserItem : public QListViewItem
   {
   private:
     static long KeySpace;
-    CCopasiObject* pCopasiObject;
+    browserObject* pBrowserObject;
     ObjectBrowserItem* pParent;
     ObjectBrowserItem* pChild;
     ObjectBrowserItem* pSibling;
-    bool* mChecked;
     objectType mType;
-    unsigned int nParam;
     QString mKey;
 
   public:
 
-    const int size()
+    browserObject* getObject()
     {
-      return nParam;
+      return pBrowserObject;
     }
-    const CCopasiObject* getObject()
-    {
-      return pCopasiObject;
-    }
-    void ConstructCheckArray(unsigned int i);
 
     virtual QString key (int column, bool ascending) const
       {
@@ -60,8 +59,8 @@ class ObjectBrowserItem : public QListViewItem
     ObjectBrowserItem* child() const;
     ObjectBrowserItem* sibling() const;
 
-    void reverseChecked(unsigned int i);
-    bool isChecked(unsigned int i) const;
+    void reverseChecked();
+    bool isChecked() const;
 
     void setObjectType(objectType newType)
     {
