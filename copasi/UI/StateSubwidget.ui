@@ -19,6 +19,14 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>topLabel</cstring>
+            </property>
+            <property name="text">
+                <string>textLabel1</string>
+            </property>
+        </widget>
         <widget class="QTabWidget">
             <property name="name">
                 <cstring>tabWidget</cstring>

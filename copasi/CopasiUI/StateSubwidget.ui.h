@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 10:01:00 $
+   $Date: 2004/10/09 14:40:19 $
    End CVS Header */
 
 /****************************************************************************
@@ -26,6 +26,7 @@
 
 void StateSubwidget::init()
 {
+  topLabel->setText("");
   //bla
 }
 
@@ -157,6 +158,11 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
   const CState * pState = task->getState();
   const_cast<CModel *>(pState->getModel())->setState(pState);
   const_cast<CModel *>(pState->getModel())->updateRates();
+
+  if (task->getResult() != CSteadyStateMethod::notFound)
+    topLabel->setText("A steady state with given resolution was found.");
+  else
+    topLabel->setText("");
 
   if (!loadMetabolites(pState->getModel())) return false;
   if (!loadReactions(pState->getModel())) return false;

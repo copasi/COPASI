@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 10:00:59 $
+   $Date: 2004/10/09 14:40:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Tue Oct 5 23:26:03 2004
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.4 2004/10/06 10:00:59 ssahle Exp $)
+ ** Created: Sat Oct 9 15:44:20 2004
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.5 2004/10/09 14:40:18 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -19,10 +19,10 @@
 
 #include <qvariant.h>
 #include <qpushbutton.h>
+#include <qlabel.h>
 #include <qtabwidget.h>
 #include <qtable.h>
 #include <qsplitter.h>
-#include <qlabel.h>
 #include <qtextedit.h>
 #include <qlayout.h>
 #include <qtooltip.h>
@@ -42,6 +42,9 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("StateSubwidget");
   StateSubwidgetLayout = new QVBoxLayout(this, 11, 6, "StateSubwidgetLayout");
+
+  topLabel = new QLabel(this, "topLabel");
+  StateSubwidgetLayout->addWidget(topLabel);
 
   tabWidget = new QTabWidget(this, "tabWidget");
 
@@ -210,6 +213,7 @@ StateSubwidget::~StateSubwidget()
 void StateSubwidget::languageChange()
 {
   setCaption(tr("Form1"));
+  topLabel->setText(tr("textLabel1"));
   concentrationsTable->horizontalHeader()->setLabel(0, tr("Metabolite name"));
   concentrationsTable->horizontalHeader()->setLabel(1, tr("Concentration"));
   concentrationsTable->horizontalHeader()->setLabel(2, tr("Rate"));

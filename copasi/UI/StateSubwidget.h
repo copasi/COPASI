@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 10:00:59 $
+   $Date: 2004/10/09 14:40:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Tue Oct 5 23:26:00 2004
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.3 2004/10/06 10:00:59 ssahle Exp $)
+ ** Created: Sat Oct 9 15:44:17 2004
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.4 2004/10/09 14:40:18 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -26,10 +26,10 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
+class QLabel;
 class QTabWidget;
 class QTable;
 class QSplitter;
-class QLabel;
 class QTextEdit;
 class CModel;
 class CSteadyStateTask;
@@ -42,6 +42,7 @@ class StateSubwidget : public QWidget
     StateSubwidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~StateSubwidget();
 
+    QLabel* topLabel;
     QTabWidget* tabWidget;
     QWidget* tab;
     QTable* concentrationsTable;
