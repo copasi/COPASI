@@ -63,6 +63,10 @@ SOURCE=.\COptMethod.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COptMethodSA.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptProblem.cpp
 # End Source File
 # Begin Source File
@@ -88,6 +92,10 @@ SOURCE=.\COptFunction.h
 # Begin Source File
 
 SOURCE=.\COptMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodSA.h
 # End Source File
 # Begin Source File
 
