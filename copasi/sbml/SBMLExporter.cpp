@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/15 08:22:47 $
+   $Date: 2004/06/15 12:36:49 $
    End CVS Header */
 
 #include "SBMLExporter.h"
@@ -357,7 +357,6 @@ Species_t* SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabol
   Species_setId(sbmlSpecies, copasiMetabolite->getKey().c_str());
   Species_setName(sbmlSpecies, copasiMetabolite->getObjectName().c_str());
   Species_setBoundaryCondition(sbmlSpecies, false);
-  Species_setCharge(sbmlSpecies, 0);
   Species_setConstant(sbmlSpecies, copasiMetabolite->getStatus() == CMetab::METAB_FIXED);
   Species_setCompartment(sbmlSpecies, copasiMetabolite->getCompartment()->getKey().c_str());
   Species_setInitialAmount(sbmlSpecies, copasiMetabolite->getInitialNumber());
@@ -433,7 +432,6 @@ KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* c
       std::string parameterName1 = cMassAction.getParameters()[0]->getObjectName();
       ASTNode_setName(parameterNode1, parameterName1.c_str());
       Parameter_t* parameter1 = Parameter_create();
-      Parameter_setName(parameter1, parameterName1.c_str());
       Parameter_setId(parameter1, parameterName1.c_str());
       Parameter_setValue(parameter1, copasiReaction->getParameterValue(parameterName1));
       KineticLaw_addParameter(kLaw, parameter1);
@@ -452,7 +450,6 @@ KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* c
           std::string parameterName2 = cMassAction.getParameters()[2]->getObjectName();
           ASTNode_setName(parameterNode2, parameterName2.c_str());
           Parameter_t* parameter2 = Parameter_create();
-          Parameter_setName(parameter2, parameterName2.c_str());
           Parameter_setId(parameter2, parameterName2.c_str());
           Parameter_setValue(parameter2, copasiReaction->getParameterValue(parameterName2));
           KineticLaw_addParameter(kLaw, parameter2);
@@ -464,6 +461,30 @@ KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* c
           ASTNode_addChild(tempNode, backwardNode);
           forwardNode = tempNode;
         }
+
+      /*
+       ** If the reaction takes place in a single compartment, the rate law has
+       ** to be converted from concentration/time to substance/time by
+       ** multiplying the rate law with the volume of the compartment.
+       */
+      if (copasiReaction->getCompartmentNumber() == 1)
+        {
+          ASTNode_t* tNode = ASTNode_createWithType(AST_TIMES);
+          ASTNode_t* vNode = ASTNode_createWithType(AST_REAL);
+          double volume = 0.0;
+          if (copasiReaction->getChemEq().getSubstrates().size() != 0)
+            {
+              volume = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite().getCompartment()->getInitialVolume();
+            }
+          else
+            {
+              volume = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment()->getInitialVolume();
+            }
+          ASTNode_setReal(vNode, volume);
+          ASTNode_addChild(tNode, vNode);
+          ASTNode_addChild(tNode, forwardNode);
+          forwardNode = tNode;
+        }
       KineticLaw_setMath(kLaw, forwardNode);
     }
   /* if the copasi CFunction does not specify a mass-action kinetic, it is a
@@ -472,6 +493,31 @@ KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* c
     {
       CKinFunction cKinFunction = static_cast<CKinFunction>(copasiReaction->getFunction());
       ASTNode_t* node = this->createASTNodeFromCNodeK(cKinFunction.getNodes()[0]->getLeft(), cKinFunction, copasiReaction->getParameterMappings());
+
+      /*
+       ** If the reaction takes place in a single compartment, the rate law has
+       ** to be converted from concentration/time to substance/time by
+       ** multiplying the rate law with the volume of the compartment.
+       */
+      if (copasiReaction->getCompartmentNumber() == 1)
+        {
+          ASTNode_t* tNode = ASTNode_createWithType(AST_TIMES);
+          ASTNode_t* vNode = ASTNode_createWithType(AST_REAL);
+          double volume = 0.0;
+          if (copasiReaction->getChemEq().getSubstrates().size() != 0)
+            {
+              volume = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite().getCompartment()->getInitialVolume();
+            }
+          else
+            {
+              volume = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment()->getInitialVolume();
+            }
+          ASTNode_setReal(vNode, volume);
+          ASTNode_addChild(tNode, vNode);
+          ASTNode_addChild(tNode, node);
+          node = tNode;
+        }
+
       KineticLaw_setMath(kLaw, node);
       /* add the parameters */
       for (unsigned int counter = 0; counter < copasiReaction->getFunctionParameters().size(); counter++)
@@ -481,12 +527,11 @@ KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* c
             {
               Parameter_t* sbmlPara = Parameter_create();
 
-              CFunctionParameter::DataType dataType;
-              unsigned C_INT32 index = cKinFunction.getParameters().findParameterByName(para->getObjectName(), dataType);
-              std::string parameterName = copasiReaction->getParameterMappings()[index][0];
+              std::string parameterKey = copasiReaction->getParameterMappings()[counter][0];
 
-              Parameter_setName(sbmlPara, parameterName.c_str());
-              Parameter_setValue(sbmlPara, copasiReaction->getParameterValue(parameterName));
+              Parameter_setId(sbmlPara, para->getObjectName().c_str());
+              Parameter_setValue(sbmlPara, copasiReaction->getParameterValue(para->getObjectName()));
+              KineticLaw_addParameter(kLaw, sbmlPara);
             }
         }
     }
@@ -514,7 +559,14 @@ ASTNode_t* SBMLExporter::createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKi
       ASTNode_setType(node, AST_NAME);
       CFunctionParameter::DataType dataType;
       /* resolve the parameter name mapping */
-      ASTNode_setName(node, vect[kinFunction.getParameters().findParameterByName(cNodeK.getName(), dataType)][0].c_str());
+      if (mSubtype == N_KCONSTANT)
+        {
+          ASTNode_setName(node, cNodeK.getName().c_str());
+        }
+      else
+        {
+          ASTNode_setName(node, vect[kinFunction.getParameters().findParameterByName(cNodeK.getName(), dataType)][0].c_str());
+        }
       break;
     case N_OPERATOR:
       switch (mSubtype)
