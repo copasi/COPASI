@@ -116,10 +116,8 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
   Fail = configbuffer.getVariable("Concentration(double)", "C_FLOAT64",
                                   (void *) & mIConcDbl);
 
-  if (Fail)
-    return Fail;
-
-  mConcDbl = mIConcDbl;
+  setInitialConcentration(mIConcDbl);
+  setConcentration(mIConcDbl);
 
   Fail = configbuffer.getVariable("Concentration(long)", "C_INT32",
                                   (void *) & mINumberInt);
