@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:58:24 $
+   $Date: 2004/09/20 07:34:27 $
    End CVS Header */
 
 /********************************************************
@@ -325,14 +325,14 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotBtnConfirmClicked()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
 
-  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
-  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+  //  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
+  //  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
 
   connect(itemnamesTable, SIGNAL(clicked(QListBoxItem*)), this, SLOT(ListBoxClicked(QListBoxItem*)));
   connect(itemnamesTable, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(ListBoxDoubleClicked(QListBoxItem*)));
 
-  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
-  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+  //  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
+  //  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
 
   connect(steadystateCheck, SIGNAL(clicked()), this, SLOT(steadystateEnable()));
   connect(timeCheck, SIGNAL(clicked()), this, SLOT(timeEnable()));

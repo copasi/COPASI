@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:53 $
+   $Date: 2004/09/20 07:37:09 $
    End CVS Header */
 
 /****************************************************************************
@@ -22,8 +22,9 @@
 
 class DataModelGUI;
 
-class CSteadyStateTask;
-class CTrajectoryTask;
+//class CSteadyStateTask;
+//class CTrajectoryTask;
+
 class CompartmentSymbols;
 class CompartmentsWidget1;
 class CompartmentsWidget;

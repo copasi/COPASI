@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.146 $
+   $Revision: 1.147 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:52 $
+   $Date: 2004/09/20 07:37:09 $
    End CVS Header */
 
 /****************************************************************************
@@ -48,18 +48,10 @@
 #include "plot/plotwidget1.h"
 #include "PlotWidget.h"
 #include "CopasiDefaultWidget.h"
-#include "plot/CPlotSpecification.h"
-#include "plot/CPlotSpec2Vector.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
-#include "TrajectoryWidget.h" 
-//#include "function/CFunctionDB.h"
+#include "TrajectoryWidget.h"
 #include "mathmodel/CMathModel.h"
-#include "model/CModel.h" 
-//#include "model/CMetabNameInterface.h"
 #include "listviews.h"
-#include "qtUtilities.h" 
-//#include "utilities/CGlobals.h"
+#include "qtUtilities.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -251,6 +243,7 @@ void ListViews::setupFolders()
 
   FolderListItem* tmp = new FolderListItem(folders, &dataModel->getRootNode(), true);
   tmp->setText(0, "Copasi");
+  tmp->setOpen(true);
 }
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
@@ -404,7 +397,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:      //Report
+      case 43:       //Report
         return tableDefinition;
         break;
       case 42:

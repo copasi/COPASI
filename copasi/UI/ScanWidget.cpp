@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.167 $
+   $Revision: 1.168 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:48 $
+   $Date: 2004/09/20 07:34:52 $
    End CVS Header */
 
 /********************************************************
@@ -231,8 +231,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   setTabOrder(scanButton, cancelChange);
   setTabOrder(cancelChange, reportDefinitionButton);
 
-  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
-  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+  //  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
+  //  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
 
   connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
   connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));

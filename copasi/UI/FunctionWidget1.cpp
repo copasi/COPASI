@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:45 $
+   $Date: 2004/09/20 07:33:56 $
    End CVS Header */
 
 /**********************************************************************
@@ -47,8 +47,8 @@
 #include "function/CKinFunction.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
-#include "parametertable.h" // just for the table item widgets
-#include "MyLineEdit.h"
+#include "parametertable.h" // just for the table item widgets 
+//#include "MyLineEdit.h"
 
 #include "./icons/product.xpm"
 #include "./icons/substrate.xpm"
@@ -799,7 +799,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                        // Yes or Enter
+        case 0:                         // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -831,7 +831,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                        // No or Escape
+        case 1:                         // No or Escape
           break;
         }
     }

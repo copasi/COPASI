@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:34 $
+   $Date: 2004/09/20 07:33:56 $
    End CVS Header */
 
 /****************************************************************************
@@ -30,7 +30,7 @@ class QRadioButton;
 class QTable;
 class QTextEdit;
 class CFunction;
-class MyLineEdit;
+//class MyLineEdit;
 
 class CFunction;
 class CFunctionParameters;
