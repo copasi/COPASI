@@ -1,10 +1,10 @@
 /********************************************************
- Author: Liang Xu
- Version : 1.xx  <first>
- Description: 
- Date: 02/03 
- Comment : TrajectoryWidget
- Contact: Please contact lixu1@vt.edu.
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 02/03 
+Comment : TrajectoryWidget
+Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include <qmessagebox.h>
 #include <qfiledialog.h>
@@ -204,6 +204,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 TrajectoryWidget::~TrajectoryWidget()
 {
   // no need to delete child widgets, Qt does it all for us
+  if (!CKeyFactory::get(objKey)) return;
+  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  pdelete(tt);
 }
 
 void TrajectoryWidget::CancelChange()

@@ -11,12 +11,13 @@
 
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
+#include "CScanMethod.h"
 
 class CScanProblem;
 class CScanMethod;
 class COutputEvent;
 
-class CScanTask
+class CScanTask : public CCopasiContainer
   {
     //Attributes
   private:
@@ -45,8 +46,14 @@ class CScanTask
      */
     COutputEvent *mpOutEnd;
 
+    /**
+        * Unique Key
+        */
+    std::string mKey;
     //Operations
   public:
+
+    inline std::string getKey() const {return mKey;}
     /**
      * default constructor
      */

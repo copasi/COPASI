@@ -237,7 +237,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   nTitleHeight = fontMetrics().height() + 6;
 
-  scanTask = new CScanTask();
+  scanTaskKey = (new CScanTask())->getKey();
   SteadyStateKey = (new CSteadyStateTask())->getKey();
   TrajectoryKey = (new CTrajectoryTask())->getKey();
   pSteadyStateWidget = new SteadyStateWidget(NULL);
@@ -250,6 +250,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   pSteadyStateWidget->enter(SteadyStateKey);
   pTrajectoryWidget->enter(TrajectoryKey);
 
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   CScanProblem* scanProblem = scanTask->getProblem();
   scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));
   scanProblem->setTrajectoryTask((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey));
@@ -278,9 +279,21 @@ void ScanWidget::TrajectoryEditing()
 
 ScanWidget::~ScanWidget()
 {
-  pdelete(scanTask);
-  pdelete(pTrajectoryWidget);
-  pdelete(pSteadyStateWidget);
+  if (CKeyFactory::get(scanTaskKey))
+    {
+      CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+      pdelete(scanTask);
+    }
+  if (CKeyFactory::get(SteadyStateKey))
+    {
+      CSteadyStateTask* sst = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey);
+      pdelete(sst);
+    }
+  if (CKeyFactory::get(TrajectoryKey))
+    {
+      CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey);
+      pdelete(tt);
+    }
   // no need to pdelete child widgets, Qt does it all for us
 }
 
@@ -329,6 +342,9 @@ void ScanWidget::deleteButtonClicked()
   ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
 
   CMethodParameterList* pObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getObject();
+  //  if (!CKeyFactory::get(scanTaskKey))
+  //   return;
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   scanTask->getProblem()->removeScanItem(pObject->getName().c_str());
   scrollview->removeChild(selectedList[2*activeObject]);
   scrollview->removeChild(selectedList[2*activeObject + 1]);
@@ -399,6 +415,7 @@ void ScanWidget::upButtonClicked()
 
   CMethodParameterList* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
   CMethodParameterList* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(scanTask->getProblem()->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
@@ -442,6 +459,7 @@ void ScanWidget::downButtonClicked()
   activeObject++;
   CMethodParameterList* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
   CMethodParameterList* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(scanTask->getProblem()->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
@@ -476,12 +494,14 @@ void ScanWidget::CancelChangeButton()
 
 void ScanWidget::ScanCheckBoxClicked()
 {
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   scanTask->setRequested(sExecutable->isChecked());
   scanButton->setEnabled(sExecutable->isChecked());
 }
 
 void ScanWidget::ScanButtonClicked()
 {
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   std::ofstream output("scan.txt");
   scanTask->initializeReporting(output);
   scanTask->process();
@@ -489,6 +509,7 @@ void ScanWidget::ScanButtonClicked()
 
 void ScanWidget::SteadyStateButtonClicked()
 {
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   CScanProblem *scanProblem = scanTask->getProblem();
   scanProblem->setProcessSteadyState(steadyState->isChecked());
   eSteadyState->setEnabled(steadyState->isChecked());
@@ -496,6 +517,7 @@ void ScanWidget::SteadyStateButtonClicked()
 
 void ScanWidget::TrajectoryButtonClicked()
 {
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   CScanProblem *scanProblem = scanTask->getProblem();
   scanProblem->setProcessTrajectory(trajectory->isChecked());
   eTrajectory->setEnabled(trajectory->isChecked());
@@ -513,6 +535,7 @@ void ScanWidget::loadScan(CModel *model)
       pSteadyStateWidget->setModel(mModel);
       //pTrajectoryWidget->setModel(mModel);
 
+      CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
       CScanProblem *scanProblem = scanTask->getProblem();
       scanProblem->setModel(model);
       //scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
@@ -550,6 +573,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   if (!pObject)
     return false;
 
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   if (scanTask->getProblem()->bExisted(pObject->getCN().c_str()))
     return false;
 
@@ -673,6 +697,17 @@ void ScanWidget::viewMousePressEvent(QMouseEvent* e)
   QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
   emit show_me();
+}
+
+bool ScanWidget::enter(const std::string & key)
+{
+  if (!CKeyFactory::get(key)) return false;
+
+  scanTaskKey = key;
+
+  loadScan(mModel);
+
+  return true;
 }
 
 ScanScrollView::ScanScrollView(QWidget* parent, const char* name, WFlags fl)

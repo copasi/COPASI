@@ -63,11 +63,32 @@ void DataModel::createModel(const char* fileName)
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
   steadystatetask->getProblem()->setModel(model);
+  searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->getProblem()->setModel(model);
-  searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //32=Time course
+  searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //23=Time course
+
+  scanTaskKey = (new CScanTask())->getKey();
+  SteadyStateKey = (new CSteadyStateTask())->getKey();
+  TrajectoryKey = (new CTrajectoryTask())->getKey();
+  pSteadyStateWidget = new SteadyStateWidget(NULL);
+  pTrajectoryWidget = new TrajectoryWidget(NULL);
+  pSteadyStateWidget->hide();
+  pTrajectoryWidget->hide();
+
+  //pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
+  //pTrajectoryWidget->loadTrajectoryTask(/*new CTrajectoryTask()*/);
+  pSteadyStateWidget->enter(SteadyStateKey);
+  pTrajectoryWidget->enter(TrajectoryKey);
+
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanProblem* scanProblem = scanTask->getProblem();
+  scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));
+  scanProblem->setTrajectoryTask((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey));
+  scanProblem->setProcessSteadyState(steadyState->isChecked());
+  scanProblem->setProcessTrajectory(trajectory->isChecked());
 
   saveModel(fileName);
 }
@@ -87,7 +108,27 @@ void DataModel::loadModel(const char* fileName)
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->load(inbuf);
-  searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //32=Time course
+  searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
+
+  scanTaskKey = (new CScanTask())->getKey();
+  SteadyStateKey = (new CSteadyStateTask())->getKey();
+  TrajectoryKey = (new CTrajectoryTask())->getKey();
+  pSteadyStateWidget = new SteadyStateWidget(NULL);
+  pTrajectoryWidget = new TrajectoryWidget(NULL);
+  pSteadyStateWidget->hide();
+  pTrajectoryWidget->hide();
+
+  //pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
+  //pTrajectoryWidget->loadTrajectoryTask(/*new CTrajectoryTask()*/);
+  pSteadyStateWidget->enter(SteadyStateKey);
+  pTrajectoryWidget->enter(TrajectoryKey);
+
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanProblem* scanProblem = scanTask->getProblem();
+  scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));
+  scanProblem->setTrajectoryTask((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey));
+  scanProblem->setProcessSteadyState(steadyState->isChecked());
+  scanProblem->setProcessTrajectory(trajectory->isChecked());
 
   Copasi->pOutputList->load(inbuf);
 

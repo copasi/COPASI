@@ -14,8 +14,11 @@
 #include "output/COutputEvent.h"
 #include "output/COutputList.h"
 #include "output/COutput.h"
+#include "report/CKeyFactory.h"
 
 CScanTask::CScanTask():
+    CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
+    mKey(CKeyFactory::add("ScanTask", this)),
     mRequested(true),
     mpProblem(new CScanProblem),
     mpMethod(CScanMethod::createMethod()),
@@ -23,6 +26,8 @@ CScanTask::CScanTask():
 {}
 
 CScanTask::CScanTask(const CScanTask & src):
+    CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
+    mKey(CKeyFactory::add("ScanTask", this)),
     mRequested(src.mRequested),
     mpProblem(new CScanProblem(*src.mpProblem)),
     mpMethod(new CScanMethod(*src.mpMethod)),
@@ -34,6 +39,7 @@ CScanTask::~CScanTask()
 
 void CScanTask::cleanup()
 {
+  CKeyFactory::remove(mKey);
   pdelete(mpProblem);
   pdelete(mpMethod);
   pdelete(mpOutEnd);

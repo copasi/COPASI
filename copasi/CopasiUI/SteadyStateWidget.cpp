@@ -166,6 +166,9 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 SteadyStateWidget::~SteadyStateWidget()
 {
   // no need to delete child widgets, Qt does it all for us
+  if (!CKeyFactory::get(objKey)) return;
+  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  pdelete(mSteadyStateTask);
 }
 
 void SteadyStateWidget::CancelChange()

@@ -58,12 +58,16 @@ class ScanWidget : public CopasiWidget
     static int nSelectedObjects;
     static int nTitleHeight;
     int activeObject;
+    std::string scanTaskKey;
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanWidget();
-    CScanTask *scanTask;
+    //    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    //    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
     void loadScan(CModel *model);
-    CScanTask * getScanTask() const {return scanTask;};
+    inline std::string getScanTaskKey() const {return scanTaskKey;};
     bool addNewScanItem(CCopasiObject* pObject);
 
     QListBox* ObjectListBox;
