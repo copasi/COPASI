@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: mkulkarn $ 
-   $Date: 2003/12/02 20:43:27 $
+   $Date: 2003/12/04 21:24:57 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -215,6 +215,10 @@ void CopasiUI3Window::slotFileOpen()
 
       gpsFile = newFile;
       dataModel->createModel(gpsFile.latin1());
+      CCopasiXML parserObject;
+      std::ifstream infile;
+      infile.open((const char *)gpsFile.utf8());
+      parserObject.load(infile);
       ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
       if (!bobject_browser_open)
         file->setItemEnabled(nobject_browser, true);

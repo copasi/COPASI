@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:55 $
+   $Author: mkulkarn $ 
+   $Date: 2003/12/04 21:25:04 $
    End CVS Header */
 
 /**
@@ -784,12 +784,12 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
       volumeUnit = mParser.getAttributeValue("volumeUnit", papszAttrs);
       VolumeUnit =
-        (CModel::VolumeUnit) mParser.toEnum(timeUnit, CModel::VolumeUnitName);
+        (CModel::VolumeUnit) mParser.toEnum(volumeUnit, CModel::VolumeUnitName);
       if (VolumeUnit == -1) fatalError();
 
       quantityUnit = mParser.getAttributeValue("quantityUnit", papszAttrs);
       QuantityUnit =
-        (CModel::QuantityUnit) mParser.toEnum(timeUnit, CModel::QuantityUnitName);
+        (CModel::QuantityUnit) mParser.toEnum(quantityUnit, CModel::QuantityUnitName);
       if (QuantityUnit == -1) fatalError();
 
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
