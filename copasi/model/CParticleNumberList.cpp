@@ -10,7 +10,7 @@
 #include "copasi.h"
 #include "CParticleNumberList.h"
 
-CParticleNumberList::CParticleNumberList(unsigned C_INT32 size) :
+CParticleNumberList::CParticleNumberList(const unsigned C_INT32 & size) :
     mSize(size),
     mDbl(size),
     mInt(size)
@@ -39,14 +39,14 @@ const C_FLOAT64 &
 CParticleNumberList::getDbl(const unsigned C_INT32 & index) const
 {return mDbl[index];}
 
-const CVector< C_FLOAT64 > & CParticleNumberList::getDblArray() const
+const CVector< C_FLOAT64 > & CParticleNumberList::getVectorDbl() const
 {return mDbl;}
 
 const C_INT32 &
 CParticleNumberList::getInt(const unsigned C_INT32 & index) const
 {return mInt[index];}
 
-const CVector< C_INT32 > & CParticleNumberList::getIntArray() const
+const CVector< C_INT32 > & CParticleNumberList::getVectorInt() const
 {return mInt;}
 
 void CParticleNumberList::set(const unsigned C_INT32 & index,
@@ -67,28 +67,28 @@ void CParticleNumberList::set(const unsigned C_INT32 & index,
   mDbl[index] = value;
 }
 
-void CParticleNumberList::setArray(const CVector< C_INT32 > & values)
+void CParticleNumberList::setVector(const CVector< C_INT32 > & vector)
 {
-  assert (mSize == values.size());
+  assert (mSize == vector.size());
 
   unsigned C_INT32 i;
 
   for (i = 0; i < mSize; i++)
     {
-      mInt[i] = values[i];
-      mDbl[i] = (C_FLOAT64) values[i];
+      mInt[i] = vector[i];
+      mDbl[i] = (C_FLOAT64) vector[i];
     }
 }
 
-void CParticleNumberList::setArray(const CVector< C_FLOAT64 > & values)
+void CParticleNumberList::setVector(const CVector< C_FLOAT64 > & vector)
 {
-  assert (mSize == values.size());
+  assert (mSize == vector.size());
 
   unsigned C_INT32 i;
 
   for (i = 0; i < mSize; i++)
     {
-      mInt[i] = (C_INT32) values[i];
-      mDbl[i] = values[i];
+      mInt[i] = (C_INT32) vector[i];
+      mDbl[i] = vector[i];
     }
 }

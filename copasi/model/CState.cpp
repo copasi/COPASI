@@ -53,7 +53,7 @@ CState & CState::operator =(const CStateX & stateX)
         mVariableNumbers.set(Permutation[i],
                              stateX.getDependentNumberDbl(i - iVariable));
 
-      mFixedNumbers.setArray(stateX.getFixedNumberArrayDbl());
+      mFixedNumbers.setVector(stateX.getFixedNumberArrayDbl());
     }
 
   return *this;
@@ -69,8 +69,8 @@ CState & CState::operator =(const CState & state)
     {
       mVolumes = state.mVolumes;
 
-      mVariableNumbers.setArray(state.getVariableNumberArrayDbl());
-      mFixedNumbers.setArray(state.getFixedNumberArrayDbl());
+      mVariableNumbers.setVector(state.getVariableNumberArrayDbl());
+      mFixedNumbers.setVector(state.getFixedNumberArrayDbl());
     }
 
   return *this;
@@ -191,10 +191,10 @@ void CState::setModel(const CModel * pModel)
 const CModel * CState::getModel() const {return mpModel;}
 
 const CVector< C_FLOAT64 > & CState::getFixedNumberArrayDbl() const
-{return mFixedNumbers.getDblArray();}
+{return mFixedNumbers.getVectorDbl();}
 
 const CVector< C_INT32 > & CState::getFixedNumberArrayInt() const
-{return mFixedNumbers.getIntArray();}
+{return mFixedNumbers.getVectorInt();}
 
 const C_FLOAT64 & CState::getFixedNumberDbl(const unsigned C_INT32 & index) const
 {return mFixedNumbers.getDbl(index);}
@@ -206,10 +206,10 @@ const unsigned C_INT32 & CState::getFixedNumberSize () const
 {return mFixedNumbers.size();}
 
 const CVector< C_FLOAT64 > & CState::getVariableNumberArrayDbl() const
-{return mVariableNumbers.getDblArray();}
+{return mVariableNumbers.getVectorDbl();}
 
 const CVector< C_INT32 > & CState::getVariableNumberArrayInt() const
-{return mVariableNumbers.getIntArray();}
+{return mVariableNumbers.getVectorInt();}
 
 const C_FLOAT64 & CState::getVariableNumberDbl(const unsigned C_INT32 & index) const
 {return mVariableNumbers.getDbl(index);}
@@ -235,10 +235,10 @@ void CState::setFixedNumber(const unsigned C_INT32 & index, const C_FLOAT64 & va
 {mFixedNumbers.set(index, value);}
 
 void CState::setFixedNumberArray(const CVector< C_INT32 > & values)
-{mFixedNumbers.setArray(values);}
+{mFixedNumbers.setVector(values);}
 
 void CState::setFixedNumberArray(const CVector< C_FLOAT64 > & values)
-{mFixedNumbers.setArray(values);}
+{mFixedNumbers.setVector(values);}
 
 void CState::setVariableNumber(const unsigned C_INT32 & index,
                                const C_INT32 & value)
@@ -249,10 +249,10 @@ void CState::setVariableNumber(const unsigned C_INT32 & index,
 {mVariableNumbers.set(index, value);}
 
 void CState::setVariableNumberArray(const CVector< C_INT32 > & values)
-{mVariableNumbers.setArray(values);}
+{mVariableNumbers.setVector(values);}
 
 void CState::setVariableNumberArray(const CVector< C_FLOAT64 > & values)
-{mVariableNumbers.setArray(values);}
+{mVariableNumbers.setVector(values);}
 
 void CState::setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value)
 {mVolumes[index] = value;}
@@ -277,7 +277,7 @@ void CState::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
 {
   unsigned C_INT32 i, j, dim = mVariableNumbers.size();
   C_FLOAT64 * x =
-    const_cast<C_FLOAT64 *>(mVariableNumbers.getDblArray().array());
+    const_cast<C_FLOAT64 *>(mVariableNumbers.getVectorDbl().array());
   jacobian.resize(dim, dim);
 
   // constants for differentiation by finite differences
@@ -362,7 +362,7 @@ CStateX & CStateX::operator =(const CState & state)
         mDependentNumbers.set(i - iVariable,
                               state.getVariableNumberDbl(Permutation[i]));
 
-      mFixedNumbers.setArray(state.getFixedNumberArrayDbl());
+      mFixedNumbers.setVector(state.getFixedNumberArrayDbl());
     }
 
   return *this;
@@ -378,9 +378,9 @@ CStateX & CStateX::operator =(const CStateX & stateX)
     {
       mVolumes = stateX.mVolumes;
 
-      mVariableNumbers.setArray(stateX.getVariableNumberArrayDbl());
-      mDependentNumbers.setArray(stateX.getDependentNumberArrayDbl());
-      mFixedNumbers.setArray(stateX.getFixedNumberArrayDbl());
+      mVariableNumbers.setVector(stateX.getVariableNumberArrayDbl());
+      mDependentNumbers.setVector(stateX.getDependentNumberArrayDbl());
+      mFixedNumbers.setVector(stateX.getFixedNumberArrayDbl());
     }
 
   return *this;
@@ -419,10 +419,10 @@ void CStateX::setModel(const CModel * pModel)
 }
 
 const CVector< C_FLOAT64 > & CStateX::getDependentNumberArrayDbl() const
-{return mDependentNumbers.getDblArray();}
+{return mDependentNumbers.getVectorDbl();}
 
 const CVector< C_INT32 > & CStateX::getDependentNumberArrayInt() const
-{return mDependentNumbers.getIntArray();}
+{return mDependentNumbers.getVectorInt();}
 
 const C_FLOAT64 & CStateX::getDependentNumberDbl(const unsigned C_INT32 & index) const
 {return mDependentNumbers.getDbl(index);}
@@ -442,10 +442,10 @@ void CStateX::setDependentNumber(const unsigned C_INT32 & index,
 {mDependentNumbers.set(index, value);}
 
 void CStateX::setDependentNumberArray(const CVector< C_INT32 > & values)
-{mDependentNumbers.setArray(values);}
+{mDependentNumbers.setVector(values);}
 
 void CStateX::setDependentNumberArray(const CVector< C_FLOAT64 > & values)
-{mDependentNumbers.setArray(values);}
+{mDependentNumbers.setVector(values);}
 
 void CStateX::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                           const C_FLOAT64 & factor,
@@ -470,7 +470,7 @@ void CStateX::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
 {
   unsigned C_INT32 i, j, dim = mVariableNumbers.size();
   C_FLOAT64 * x =
-    const_cast<C_FLOAT64 *>(mVariableNumbers.getDblArray().array());
+    const_cast<C_FLOAT64 *>(mVariableNumbers.getVectorDbl().array());
   jacobian.resize(dim, dim);
 
   // constants for differentiation by finite differences
