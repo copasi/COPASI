@@ -348,6 +348,55 @@ class CEigen {
 
   C_FLOAT64 * getEigen_r();
 
+  /**
+   * Get the pointer of max real eigenvalue component for output		WeiSun 04/02/02
+   */
+  void * getMaxRealPartAddr();
+
+  /**
+   * Get the pointer of max real eigenvalue component for output		
+   */
+  void * getMaxImagPartAddr();
+
+  /**
+   * Get the pointer of eigenvalues w/ positive real parts for output
+   */
+  void * getNPosRealAddr();
+
+  /**
+   * Get the pointer of eigenvalues w/ negative real parts for output
+   */
+  void * getNNegRealAddr();
+
+  /**
+   * Get the pointer of real eigenvalues for output
+   */
+  void * getNRealAddr();
+
+  /**
+   * Get the pointer of imaginary eigenvalues for output
+   */
+  void * getNImagAddr();
+
+  /**
+   * Get the pointer of complex eigenvalues for output
+   */
+  void * getNCplxConjAddr();
+
+  /**
+   * Get the pointer of zero eigenvalues for output
+   */
+  void * getNZeroAddr();
+
+  /**
+   * Get the pointer of time hierarchy for output
+   */
+  void * getHierarchyAddr();
+
+  /**
+   * Get th epointer of stiffness for output
+   */
+  void * getStiffnessAddr();
 };
 
 #endif
