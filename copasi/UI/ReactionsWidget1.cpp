@@ -257,6 +257,7 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   ComboBox1->insertStringList(comboEntries, -1);
+
   CheckBox->setChecked(false);
 
   if (reactn->isReversible() == true)
@@ -265,133 +266,15 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   table->setNumCols(1);
-
-  //Required for the suitablefunctions comboBox.
-  num_substrates = reactn->getId2Substrates().size();
-  num_products = reactn->getId2Products().size();
-
-  numrows = reactn->getId2Substrates().size() +
-            reactn->getId2Products().size() +
-            reactn->getId2Modifiers().size() +
-            reactn->getId2Parameters().size();
-
-  table->setNumRows(numrows);
-  table->ensureCellVisible(numrows + 1, 0);
-
   tableHeader1->setLabel(0, "Value");
   table->setColumnWidth (0, 200);
-  unsigned int line = 0;
-  unsigned int l;
-  unsigned int k;
 
-  CCopasiVector < CReaction::CId2Metab > & react1z = reactn->getId2Substrates();
-  const CCopasiVector < CChemEqElement > * react1 = &reactn->getChemEq().getSubstrates();
-  const CChemEqElement *cchem;
-  int z = 0;
-
-  for (k = 0; k < react1z.size(); k++)
-    {
-      tableHeader2->setLabel(line, react1z[k]->getIdentifierName().c_str());
-
-      //for the combo box
-      QStringList comboEntries1;
-
-      for (l = 0; l < react1->size(); l++)
-        {
-          cchem = (*react1)[l];
-          QString overall = cchem->getMetaboliteName().c_str();
-          overall += "{";
-          overall += cchem->getMetabolite().getCompartment()->getName().c_str();
-          overall += "}";
-          comboEntries1.push_back(overall);
-        }
-
-      QString temp = comboEntries1[z];
-      //comboEntries1.push_front(temp);
-      QComboTableItem * item = new QComboTableItem(table, comboEntries1, false);
-      item->setCurrentItem(temp);
-      //item = QComboTableItem(table, comboEntries1, false);
-      /*if(comboEntries1.contains(temp)>1)
-      {
-      comboEntries1.remove(temp);
-      }*/ 
-      //item->setStringList(comboEntries1);
-      z++;
-      table->setItem(line, 0, item);
-      line++;
-    }
-
-  CCopasiVector < CReaction::CId2Metab > & react2z = reactn->getId2Products();
-  const CCopasiVector < CChemEqElement > * react2 = &reactn->getChemEq().getProducts();
-  z = 0;
-
-  for (k = 0; k < react2z.size(); k++)
-    {
-      tableHeader2->setLabel(line, react2z[k]->getIdentifierName().c_str());
-
-      //for the combo box
-      QStringList comboEntries1;
-
-      for (l = 0; l < react2->size(); l++)
-        {
-          cchem = (*react2)[l];
-          QString overall = cchem->getMetaboliteName().c_str();
-          overall += "{";
-          overall += cchem->getMetabolite().getCompartment()->getName().c_str();
-          overall += "}";
-          comboEntries1.push_back(overall);
-        }
-
-      QString temp = comboEntries1[z];
-      QComboTableItem * item = new QComboTableItem(table, comboEntries1, false);
-      item->setCurrentItem(temp);
-      z++;
-      table->setItem(line, 0, item);
-      line++;
-    }
-
-  const CCopasiVector < CReaction::CId2Metab > & react3z = reactn->getId2Modifiers();
-  const CCopasiVectorN< CMetab > & Metabolites = mModel->getMetabolites();
-  const CMetab * Metabolite;
-  z = 0;
-
-  for (k = 0; k < react3z.size(); k++)
-    {
-      tableHeader2->setLabel(line, react3z[k]->getIdentifierName().c_str());
-
-      //for the combo box
-      QStringList comboEntries1;
-
-      for (l = 0; l < Metabolites.size(); l++)
-        {
-          Metabolite = Metabolites[l];
-          QString overall = Metabolite->getName().c_str();
-          overall += "{";
-          overall += Metabolite->getCompartment()->getName().c_str();
-          overall += "}";
-          comboEntries1.push_back(overall);
-        }
-
-      QString temp = comboEntries1[z];
-      QComboTableItem * item = new QComboTableItem(table, comboEntries1, false);
-      item->setCurrentItem(temp);
-      z++;
-      table->setItem(line, 0, item);
-      line++;
-    }
-
-  CCopasiVector < CReaction::CId2Param > & react4z = reactn->getId2Parameters();
-
-  for (k = 0; k < react4z.size(); k++)
-    {
-      tableHeader2->setLabel(line, react4z[k]->getIdentifierName().c_str());
-      table->clearCell(line, 0);
-      table->setText(line, 0, QString::number(react4z[k]->getValue()));
-      line++;
-    }
   if (&reactn->getFunction())
-    ComboBox1->setCurrentText(reactn->getFunction().getName().c_str());
-
+    {
+      comboEntry = reactn->getFunction().getName().c_str();
+      ComboBox1->setCurrentText(comboEntry);
+      slotComboBoxSelectionChanged(comboEntry);
+    }
   //  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
   //emit sideySignal();
 }
@@ -496,170 +379,126 @@ void ReactionsWidget1::slotCheckBoxClicked()
 
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
-  const std::string & p1 = p2.latin1();
-  CFunction * function = Copasi->pFunctionDB->findLoadFunction(p1);
-  CFunctionParameters &functionParameters = function->getParameters();
+  const std::string p1 = p2.latin1();
+  const CFunction * pFunction = Copasi->pFunctionDB->findLoadFunction(p1);
+  const CFunctionParameters & functionParameters = pFunction->getParameters();
 
-  int count_substrates = 0;
-  int count_products = 0;
-  int count_parameters = 0;
-  int count_modifiers = 0;
+  unsigned C_INT32 i, imax;
+  unsigned C_INT32 j, jmax;
 
-  std::string usagetypes[20];
-  std::string substrate_name[20];
-  std::string product_name[20];
-  std::string modifier_name[20];
-  std::string parameter_name[20];
-  unsigned int count = 0;
+  CChemEq ChemicalEquation;
+  ChemicalEquation.setChemicalEquation(LineEdit2->text().latin1());
+  const CCopasiVector< CChemEqElement > * pElementList;
+  const std::string * pName;
+
+  /* build list of substrates */
+  QStringList SubstrateNames;
+  std::vector< const std::string * > Substrates;
+  pElementList = &ChemicalEquation.getSubstrates();
+  for (i = 0, imax = pElementList->size(); i < imax; i++)
+    {
+      pName = &(*pElementList)[i]->getMetaboliteName();
+      SubstrateNames.push_back(pName->c_str());
+      jmax = (unsigned C_INT32)(*pElementList)[i]->getMultiplicity();
+      for (j = 0; j < jmax; j++)
+        Substrates.push_back(pName);
+    }
+
+  /* build list of products */
+  QStringList ProductNames;
+  std::vector< const std::string * > Products;
+  pElementList = &ChemicalEquation.getProducts();
+  for (i = 0, imax = pElementList->size(); i < imax; i++)
+    {
+      pName = &(*pElementList)[i]->getMetaboliteName();
+      ProductNames.push_back(pName->c_str());
+      jmax = (unsigned C_INT32)(*pElementList)[i]->getMultiplicity();
+      for (j = 0; j < jmax; j++)
+        Products.push_back(pName);
+    }
+
+  /* build list of modifiers */
+  QStringList ModifierNames;
+  const CCopasiVector< CMetab > & MetaboliteList = mModel->getMetabolites();
+  for (i = 0, imax = MetaboliteList.size(); i < imax; i++)
+    ModifierNames.push_back(MetaboliteList[i]->getName().c_str());
+
+  /* build list of all needed variables */
+  std::vector< pair< QString, QString > > VariableList;
+  pair< QString, QString > Variable;
+  const CFunctionParameter * pParameter;
+
+  for (i = 0, imax = functionParameters.size(); i < imax; i++)
+    {
+      pParameter = functionParameters[i];
+      Variable.second = pParameter->getUsage().c_str();
+
+      if (pParameter->getType() < CFunctionParameter::VINT32)
+        {
+          Variable.first = pParameter->getName().c_str();
+          VariableList.push_back(Variable);
+        }
+      else
+        {
+          if (Variable.second == "SUBSTRATE")
+            jmax = Substrates.size();
+          else if (Variable.second == "PRODUCT")
+            jmax = Products.size();
+          else
+            jmax = 0;
+
+          for (j = 0; j < jmax; j++)
+            {
+              Variable.first = pParameter->getName().c_str();
+              Variable.first += "_";
+              Variable.first += QString::number(j);
+              VariableList.push_back(Variable);
+            }
+        }
+    }
 
   //for clearing the values of the table
-  for (count = 0; count < table->numRows(); count++)
+  for (i = 0, imax = table->numRows(); i < imax; i++)
+    table->clearCell(i, 0);
+
+  /* build the table according to the variable list*/
+  table->setNumRows(VariableList.size());
+  table->ensureCellVisible(VariableList.size() + 1, 0);
+
+  QComboTableItem * pItem;
+  unsigned C_INT32 nSubstrate = 0;
+  unsigned C_INT32 nProduct = 0;
+  bool HaveParameters = false;
+  CReaction *pReaction = mModel->getReactions()[name.latin1()];
+  if (&pReaction->getFunction() == pFunction)
+    HaveParameters = true;
+  for (i = 0, imax = table->numRows(); i < imax; i++)
     {
-      table->clearCell(count, 0);
-    }
-
-  unsigned int z = 0;
-  unsigned int line = 0;
-  QStringList comboEntries1;
-  QStringList substrates;
-  QStringList products;
-  QString chemical_reaction = LineEdit2->text();
-  //unsigned int start = 0;
-  QStringList individual_elements = QStringList::split ("+", chemical_reaction, false);
-  QString all_elements = individual_elements.join (" ");
-  QStringList individual_elements1 = QStringList::split (" ", all_elements, false);
-
-  unsigned int m, n;
-  for (m = 0; m < individual_elements1.size(); m++)
-    {
-      if ((individual_elements1[m] == "->") || (individual_elements1[m] == "="))
+      table->verticalHeader()->setLabel(i, VariableList[i].first);
+      if (VariableList[i].second == "SUBSTRATE")
         {
-          m++;
-          break;
+          pItem = new QComboTableItem(table, SubstrateNames, true);
+          pItem->setCurrentItem(Substrates[nSubstrate++]->c_str());
+          table->setItem(i, 0, pItem);
         }
-      substrates.push_back(individual_elements1[m]);
-      //substrates[start] = individual_elements1[m];
-      // QMessageBox::information(this, substrates[start], "substrates ");
-      //start++;
-    }
-
-  // start = 0;
-  for (n = m; n < individual_elements1.size(); n++)
-    {
-      if (individual_elements1[m] == "+")
+      else if (VariableList[i].second == "PRODUCT")
         {
-          n++;
-          break;
+          pItem = new QComboTableItem(table, ProductNames, true);
+          pItem->setCurrentItem(Products[nProduct++]->c_str());
+          table->setItem(i, 0, pItem);
         }
-      products.push_back(individual_elements1[n]);
-      //products[start] = individual_elements1[n];
-      //QMessageBox::information(this, products[start], "products ");
-      //start++;
-    }
-  unsigned int i;
-  for (i = 0; i < functionParameters.size(); i++)
-    {
-      std::string p4 = functionParameters[i]->getUsage();
-      usagetypes[i] = p4;
-
-      if (p4 == "SUBSTRATE")
+      else if (VariableList[i].second == "MODIFIER")
         {
-          substrate_name[count_substrates] = functionParameters[i]->getName();
-          count_substrates++;
+          pItem = new QComboTableItem(table, ModifierNames, true);
+          pItem->setCurrentItem(0);
+          table->setItem(i, 0, pItem);
         }
-      else if (p4 == "PRODUCT")
+      else if (VariableList[i].second == "PARAMETER")
         {
-          product_name[count_products] = functionParameters[i]->getName();
-          count_products++;
-        }
-      else if (p4 == "MODIFIER")
-        {
-          modifier_name[count_modifiers] = functionParameters[i]->getName();
-          count_modifiers++;
-        }
-
-      else if (p4 == "PARAMETER")
-        {
-          parameter_name[count_parameters] = functionParameters[i]->getName();
-          count_parameters++;
-        }
-
-      count = 0;
-      unsigned int index = count_substrates;
-      unsigned int countofsubstrates = count_substrates;
-      unsigned int countofproducts = count_products;
-      QHeader *tableHeader2 = table->verticalHeader();
-
-      int index1;
-      for (index1 = 0; index1 <= (count_products - 1); index1++)
-        {
-          substrate_name[index] = product_name[index1];
-          index++;
-        }
-
-      for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
-        {
-          substrate_name[index] = modifier_name[index1];
-          index++;
-        }
-
-      for (index1 = 0; index1 <= (count_parameters - 1); index1++)
-        {
-          substrate_name[index] = parameter_name[index1];
-          index++;
-        }
-
-      unsigned int length = index - 1;
-      table->setNumRows(index);
-      for (; count <= length; count++)
-        {
-          tableHeader2->setLabel(count, substrate_name[count].c_str());
-        }
-
-      unsigned int z = 0;
-      unsigned int k;
-      unsigned int line = 0;
-      QString temp;
-      for (k = 1; k <= countofsubstrates; k++)
-        {
-          QComboTableItem * item1 = new QComboTableItem(table, substrates, true);
-          table->setItem(line, 0, item1);
-          temp = substrates[z];
-          item1->setCurrentItem(temp);
-          z++;
-          line++;
-        }
-
-      z = 0;
-      for (k = 1; k <= countofproducts; k++)
-        {
-          QComboTableItem * item1 = new QComboTableItem(table, products, true);
-          table->setItem(line, 0, item1);
-          temp = products[z];
-          item1->setCurrentItem(temp);
-          z++;
-          line++;
-        }
-
-      //std::vector < CMetab * > metabolites = mModel->getMetabolites();
-      //  C_INT32 noOfMetabolitesRows = metabolites.size();
-      //  CMetab *metab;
-      //  QStringList comboEntries1;
-      //  for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
-      // {
-      //     metab = metabolites[j];
-      // comboEntries1.push_back(metab->getName().c_str());
-      //}
-      for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
-        {
-          table->setText(line, 0, "1");
-          line++;
-        }
-
-      for (index1 = 0; index1 <= (count_parameters - 1); index1++)
-        {
-          table->setText(line, 0, "1");
-          line++;
+          if (HaveParameters)
+            table->setText(i, 0, QString::number(pReaction->getId2Parameters()[VariableList[i].first.latin1()]->getValue()));
+          else
+            table->setText(i, 0, QString::number(1.0));
         }
     }
 }
