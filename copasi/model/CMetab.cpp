@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:05:10 $
+   $Date: 2003/12/05 21:21:36 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -27,7 +27,10 @@
 const CCompartment * CMetab::mpParentCompartment = NULL;
 
 const std::string CMetab::StatusName[] =
-  {"fixed", "independent", "dependent"};
+  {"fixed", "independent", "dependent", ""};
+
+const char * CMetab::XMLStatus[] =
+  {"fixed", "variable", "variable", NULL};
 
 void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 {mpParentCompartment = parentCompartment;}
@@ -145,7 +148,7 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
                      "The file specifies a non-existing type "
                      "for '%s'.\nReset to internal metabolite.",
                      getObjectName().c_str());
-      mStatus = 1;
+      mStatus = CMetab::METAB_VARIABLE;
     }
 
   // sanity check
@@ -228,7 +231,7 @@ const C_FLOAT64 & CMetab::getInitialConcentration() const {return mIConc;}
 
 const C_FLOAT64 & CMetab::getInitialNumber() const {return mINumber;}
 
-const C_INT16 & CMetab::getStatus() const {return mStatus;}
+const CMetab::Status & CMetab::getStatus() const {return mStatus;}
 
 const CCompartment * CMetab::getCompartment() const {return mpCompartment;}
 
@@ -283,7 +286,7 @@ void CMetab::setInitialNumber(const C_FLOAT64 initialNumber)
 
 //  ******************
 
-void CMetab::setStatus(const C_INT16 status) {mStatus = status;}
+void CMetab::setStatus(const CMetab::Status & status) {mStatus = status;}
 
 void CMetab::setCompartment(const CCompartment * compartment)
 {mpCompartment = compartment;}
@@ -349,7 +352,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
   Fail = configbuffer.getVariable("Type", "C_INT32",
                                   (void *) & Status);
 
-  mStatus = (C_INT16) Status;
+  mStatus = (CMetab::Status) Status;
 
   // sanity check
   if ((mStatus < 0) || (mStatus > 7))
@@ -358,7 +361,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
                      "The file specifies a non-existing type "
                      "for '%s'.\nReset to internal metabolite.",
                      getObjectName().c_str());
-      mStatus = 1;
+      mStatus = CMetab::METAB_VARIABLE;
     }
 
   // sanity check

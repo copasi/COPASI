@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 17:59:23 $
+   $Date: 2003/12/05 21:21:36 $
    End CVS Header */
 
 /**
@@ -44,9 +44,14 @@ class CMetab : public CCopasiContainer
 
   public:
     /**
-     * String representation od the states
+     * String representation of the states
      */
     static const std::string StatusName[];
+
+    /**
+     * XML representation of the states
+     */
+    static const char * XMLStatus[];
 
     // Attributes
   private:
@@ -90,7 +95,7 @@ class CMetab : public CCopasiContainer
      *  Status of the metabolite.  
      *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
      */
-    C_INT16 mStatus;
+    Status mStatus;
 
     /**
      *  pointer to the compartment the metabolite is located in.
@@ -209,12 +214,12 @@ class CMetab : public CCopasiContainer
     /**
      *
      */
-    void setStatus(const C_INT16 status);
+    void setStatus(const CMetab::Status & status);
 
     /**
      *
      */
-    const C_INT16 & getStatus() const;
+    const CMetab::Status & getStatus() const;
 
     /**
      *
@@ -359,7 +364,7 @@ class CMetabOld : public CCopasiContainer
      *  Status of the metabolite.  
      *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
      */
-    C_INT16 mStatus;
+    CMetab::Status mStatus;
 
     /**
      *  Index of the compartment the metabolite is located in.
