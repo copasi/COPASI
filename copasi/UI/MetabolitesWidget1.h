@@ -61,6 +61,7 @@ class MetabolitesWidget1 : public QWidget
     void loadMetabolites(CModel *model);
     void loadName(QString setValue);
     int isName(QString setValue);
+    QString *Metabolite1_Name;
 
     QGroupBox* GroupBox1;
     QGroupBox* GroupBox2;
@@ -100,6 +101,13 @@ class MetabolitesWidget1 : public QWidget
     QFrame* Frame4g;
     QFrame* Frame4h;
     QFrame* Frame4i;
+
+  protected slots:
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
+
+  signals:
+    void signal_emitted(QString &);
 
   private:
     void showMessage(QString caption, QString text);

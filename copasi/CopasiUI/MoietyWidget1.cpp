@@ -109,6 +109,9 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4d->addWidget(cancelChanges);
   hBoxLayout4d->addSpacing(15);
   //connect(LineEdit3, SIGNAL(textChanged(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
+
+  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(QString &)));
 }
 
 /*This function is used to connect this class to the listviews
@@ -158,7 +161,21 @@ void MoietyWidget1::loadName(QString setValue)
   moiety = moieties[(string)setValue];
   LineEdit1->setText(moiety->getDescription().c_str());
   LineEdit3->setText(moiety->getName().c_str());
+  Moiety1_Name = new QString(moiety->getName().c_str());
+
   LineEdit2->setText(QString::number(moiety->getNumber()));
+}
+
+void MoietyWidget1::slotBtnCancelClicked()
+{
+  //QMessageBox::information(this, "Moiety Widget","Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  emit signal_emitted(*Moiety1_Name);
+}
+
+void MoietyWidget1::slotBtnOKClicked()
+{
+  QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  // emit signal_emitted(*Compartment1_Name);
 }
 
 ///end of all the functions

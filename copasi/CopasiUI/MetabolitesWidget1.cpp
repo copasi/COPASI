@@ -197,10 +197,9 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
   gridLayout1->addWidget(commitChanges, 6, 0, 0);
   gridLayout1->addWidget(cancelChanges, 6, 1, 0);
 
-  //extra
-  //connect(ComboBox1, SIGNAL(activated(int)), (ListViews*)parent, SLOT(slotCompartmentSelected()));
+  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
 
-  //connect(LineEdit4, SIGNAL(selectionChanged()), (ListViews*)parent, SLOT(slotCompartmentSelected()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), (ListViews*)parent, SLOT(slotCompartmentSelected(const QString &)));
   connect(LineEdit4, SIGNAL(selectionChanged()), (ListViews*)parent, SLOT(slotCompartmentSelected()));
 }
@@ -299,6 +298,7 @@ void MetabolitesWidget1::loadName(QString setValue)
       CCompartment *compt;
       ComboBox1->clear();
       LineEdit1->setText(metab->getName().c_str());
+      Metabolite1_Name = new QString(metab->getName().c_str());
 
       LineEdit4->setText(QString::number(*(metab->getInitialConcentration())));
 
@@ -386,4 +386,16 @@ void MetabolitesWidget1::slotmSelected()
   QMessageBox::information(this, "Compartments Widget",
                            "kk");
   //(ListViews*)parent->slotCompartmentSelected();
+}
+
+void MetabolitesWidget1::slotBtnCancelClicked()
+{
+  //QMessageBox::information(this, "Moiety Widget","Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  emit signal_emitted(*Metabolite1_Name);
+}
+
+void MetabolitesWidget1::slotBtnOKClicked()
+{
+  QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  // emit signal_emitted(*Compartment1_Name);
 }

@@ -54,16 +54,32 @@ QMetaObject* MetabolitesWidget1::staticMetaObject()
 
   QMetaObject* parentObject = QWidget::staticMetaObject();
   static const QUMethod slot_0 = {"slotmSelected", 0, 0 };
+  static const QUMethod slot_1 = {"slotBtnCancelClicked", 0, 0 };
+  static const QUMethod slot_2 = {"slotBtnOKClicked", 0, 0 };
 
   static const QMetaData slot_tbl[] =
     {
-      { "slotmSelected()", &slot_0, QMetaData::Public }
+      { "slotmSelected()", &slot_0, QMetaData::Public },
+
+      { "slotBtnCancelClicked()", &slot_1, QMetaData::Protected },
+      { "slotBtnOKClicked()", &slot_2, QMetaData::Protected }
+    };
+
+  static const QUParameter param_signal_0[] =
+    {
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+    };
+  static const QUMethod signal_0 = {"signal_emitted", 1, param_signal_0 };
+
+  static const QMetaData signal_tbl[] =
+    {
+      { "signal_emitted(QString&)", &signal_0, QMetaData::Protected }
     };
 
   metaObj = QMetaObject::new_metaobject(
               "MetabolitesWidget1", parentObject,
-              slot_tbl, 1,
-              0, 0,
+              slot_tbl, 3,
+              signal_tbl, 1,
 #ifndef QT_NO_PROPERTIES
               0, 0,
               0, 0,
@@ -83,12 +99,43 @@ void* MetabolitesWidget1::qt_cast(const char* clname)
   return QWidget::qt_cast(clname);
 }
 
+#include <qobjectdefs.h>
+#include <qsignalslotimp.h>
+
+// SIGNAL signal_emitted
+void MetabolitesWidget1::signal_emitted(QString& t0)
+{
+  if (signalsBlocked())
+    return ;
+
+  QConnectionList *clist = receivers(staticMetaObject()->signalOffset() + 0);
+
+  if (!clist)
+    return ;
+
+  QUObject o[2];
+
+  static_QUType_QString.set(o + 1, t0);
+
+  activate_signal(clist, o);
+
+  t0 = static_QUType_QString.get(o + 1);
+}
+
 bool MetabolitesWidget1::qt_invoke(int _id, QUObject* _o)
 {
   switch (_id - staticMetaObject()->slotOffset())
     {
     case 0:
       slotmSelected();
+      break;
+
+    case 1:
+      slotBtnCancelClicked();
+      break;
+
+    case 2:
+      slotBtnOKClicked();
       break;
 
     default:
@@ -100,7 +147,17 @@ bool MetabolitesWidget1::qt_invoke(int _id, QUObject* _o)
 
 bool MetabolitesWidget1::qt_emit(int _id, QUObject* _o)
 {
-  return QWidget::qt_emit(_id, _o);
+  switch (_id - staticMetaObject()->signalOffset())
+    {
+    case 0:
+      signal_emitted(static_QUType_QString.get(_o + 1));
+      break;
+
+    default:
+      return QWidget::qt_emit(_id, _o);
+    }
+
+  return TRUE;
 }
 
 #ifndef QT_NO_PROPERTIES

@@ -178,6 +178,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4h->addSpacing(15);
   hBoxLayout4h->addWidget(cancelChanges);
   hBoxLayout4h->addSpacing(15);
+
+  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
 }
 
 /*This function is used to connect this class to the listviews
@@ -232,6 +235,7 @@ void ReactionsWidget1::loadName(QString setValue)
   reactn = reactions[(string)setValue];
 
   LineEdit1->setText(reactn->getName().c_str());
+  Reaction1_Name = new QString(reactn->getName().c_str());
 
   chemEq = & reactn->getChemEq();
   LineEdit2->setText(chemEq->getChemicalEquation().c_str());
@@ -383,6 +387,18 @@ void ReactionsWidget1::loadName(QString setValue)
   //table->setItem(i, 0, item);
   table->setText(i, 0, QString::number(react4[0]->getValue()));
   //}
+}
+
+void ReactionsWidget1::slotBtnCancelClicked()
+{
+  //QMessageBox::information(this, "Moiety Widget","Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  emit signal_emitted(*Reaction1_Name);
+}
+
+void ReactionsWidget1::slotBtnOKClicked()
+{
+  QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  // emit signal_emitted(*Compartment1_Name);
 }
 
 ///end of all the functions
