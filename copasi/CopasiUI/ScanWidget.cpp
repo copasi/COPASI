@@ -129,13 +129,6 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   ScanWidgetLayout->addWidget(taskJacobian, 2, 1);
 
-  /*// tab order
-  setTabOrder(taskName, bExecutable);
-  setTabOrder(bExecutable, taskJacobian);
-  setTabOrder(taskJacobian, taskStability);
-  setTabOrder(taskStability, parameterTable);
-  setTabOrder(commitChange, cancelChange);*/
-
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
 }

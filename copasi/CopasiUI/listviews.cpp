@@ -1301,9 +1301,9 @@ void ListViews::slotHideWidget()
 void ListViews::slotShowWidget()
 {
   //QMessageBox::information(this, "Metabolites Widget","kk");
-  currentWidget = scanWidget;
 
-  currentWidget->show();
+  if (currentWidget)
+    currentWidget->show();
 
   lastWidget = currentWidget;
 }
