@@ -74,17 +74,18 @@ unsigned C_INT32 CMassAction::getParameterPosition(const string & name)
 C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
 {
   unsigned C_INT32 i, imax;
-  C_FLOAT64 *Factor;
+  C_FLOAT64 **Factor;
   C_FLOAT64 Substrates = 0.0, Products = 0.0;
 
   imax = ((vector<C_FLOAT64 *> *)callParameters[1])->size();   // NoSubstrates
   if (imax)
     {
       Substrates = *(C_FLOAT64 *) callParameters[0];           // k1
-      Factor = (*((vector<C_FLOAT64*>*)callParameters[1]))[0]; // first substr.
+      Factor =
+        ((vector<C_FLOAT64*>*)callParameters[1])->begin();     // first substr.
 
       for (i = 0; i < imax; i++)
-        Substrates *= *(Factor++); 
+        Substrates *= **(Factor++); 
     }
   
   if (isReversible() == TriFalse) return Substrates;
@@ -93,10 +94,11 @@ C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
   if (imax)
     {
       Products = *(C_FLOAT64 *) callParameters[2];             // k2
-      Factor = (*((vector<C_FLOAT64*>*)callParameters[3]))[0]; // first product
+      Factor =
+        ((vector<C_FLOAT64*>*)callParameters[3])->begin();     // first product
   
       for (i = 0; i < imax; i++)
-        Products *= *(Factor++);
+        Products *= **(Factor++);
     }
   
   return Substrates - Products;
