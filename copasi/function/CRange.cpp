@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CRange.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:06:03 $
+   $Author: shoops $ 
+   $Date: 2004/10/09 02:09:43 $
    End CVS Header */
 
 /**
@@ -46,8 +46,6 @@ CRange::CRange(const unsigned C_INT32 & low,
 {CONSTRUCTOR_TRACE;}
 
 CRange::~CRange() {DESTRUCTOR_TRACE;}
-
-void CRange::cleanup(){}
 
 void CRange::load(CReadConfig & configBuffer,
                   CReadConfig::Mode mode)

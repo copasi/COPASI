@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CRange.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:06:03 $
+   $Author: shoops $ 
+   $Date: 2004/10/09 02:09:43 $
    End CVS Header */
 
 /**
@@ -32,7 +32,7 @@ class CRange : public CCopasiContainer
      */
     enum Constants
     {
-      Infinity = -1,      // 0xFFFF
+      Infinity = -1,       // 0xFFFF
       NoRange = 0
     };
 
@@ -83,11 +83,6 @@ class CRange : public CCopasiContainer
      *  Destructor
      */
     virtual ~CRange();
-
-    /**
-     *  Cleanup
-     */
-    void cleanup();
 
     /**
      *  Loads an object with data coming from a CReadConfig object. 

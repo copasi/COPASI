@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CUsageRange.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:06:03 $
+   $Author: shoops $ 
+   $Date: 2004/10/09 02:09:43 $
    End CVS Header */
 
 /**
@@ -29,8 +29,6 @@ CUsageRange::CUsageRange(const CUsageRange & src,
 {CONSTRUCTOR_TRACE;}
 
 CUsageRange::~CUsageRange() {DESTRUCTOR_TRACE;}
-
-void CUsageRange::cleanup() {}
 
 void CUsageRange::load(CReadConfig & configBuffer,
                        CReadConfig::Mode mode)

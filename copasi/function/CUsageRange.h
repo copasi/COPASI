@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CUsageRange.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:06:03 $
+   $Author: shoops $ 
+   $Date: 2004/10/09 02:09:43 $
    End CVS Header */
 
 /**
@@ -50,11 +50,6 @@ class CUsageRange : public CRange
      *  Destructor
      */
     ~CUsageRange();
-
-    /**
-     *  Cleanup
-     */
-    void cleanup();
 
     /**
      *  Loads an object with data coming from a CReadConfig object. 
