@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/15 09:33:27 $
+   $Author: gauges $ 
+   $Date: 2004/06/15 09:48:20 $
    End CVS Header */
 
 #include <iostream>
@@ -74,7 +74,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
     {
       Species* sbmlSpecies = sbmlModel->getSpecies(counter - 1);
       CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, compartmentMap[sbmlSpecies->getCompartment()]);
-      CCompartment* comp = compartmentMap[sbmlSpecies->getCompartment()];
       this->speciesMap[sbmlSpecies->getId()] = copasiMetabolite;
     }
 
@@ -82,7 +81,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
   num = sbmlModel->getNumReactions();
   for (unsigned int counter = 0; counter < num; counter++)
     {
-      CReaction* copasiReaction = this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel);
+      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel);
     }
   copasiModel->compile();
   return copasiModel;
@@ -102,7 +101,8 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     }
   std::string appendix = "";
   unsigned int counter = 0;
-  while (copasiModel->getCompartments().getIndex(name + appendix) != -1)
+  while (copasiModel->getCompartments().getIndex(name + appendix) != static_cast < unsigned C_INT32
+         > (-1))
     {
       counter++;
       std::ostringstream numberStream;
@@ -126,7 +126,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
   std::string appendix = "";
   unsigned int counter = 0;
-  while (copasiCompartment->getMetabolites().getIndex(name + appendix) != -1)
+  while (copasiCompartment->getMetabolites().getIndex(name + appendix) != static_cast<unsigned C_INT32>(-1))
     {
       counter++;
       std::ostringstream numberStream;
@@ -169,7 +169,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
     }
   std::string appendix = "";
   unsigned int counter = 0;
-  while (copasiModel->getReactions().getIndex(name + appendix) != -1)
+  while (copasiModel->getReactions().getIndex(name + appendix) != static_cast<unsigned C_INT32>(-1))
     {
       counter++;
       std::ostringstream numberStream;
