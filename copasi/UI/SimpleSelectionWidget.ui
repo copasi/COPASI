@@ -1,0 +1,271 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>SimpleSelectionWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>SimpleSelectionWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>615</width>
+            <height>371</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QSplitter">
+            <property name="name">
+                <cstring>splitter2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <widget class="QListView">
+                <column>
+                    <property name="text">
+                        <string>Column 1</string>
+                    </property>
+                    <property name="clickable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="resizable">
+                        <bool>true</bool>
+                    </property>
+                </column>
+                <property name="name">
+                    <cstring>itemTree</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>7</hsizetype>
+                        <vsizetype>7</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="selectionMode">
+                    <enum>Extended</enum>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout4</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QListBox">
+                        <property name="name">
+                            <cstring>selectedItemsBox</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>3</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="selectionMode">
+                            <enum>Extended</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout3</cstring>
+                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer4</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>40</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>addButton</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="text">
+                                    <string>Add</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>deleteButton</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="text">
+                                    <string>Delete</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer5</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>40</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>moveUpButton</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="text">
+                                    <string>Move Up</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>moveDownButton</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="text">
+                                    <string>Move Down</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer6</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>40</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </vbox>
+                    </widget>
+                </hbox>
+            </widget>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>moveUpButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SimpleSelectionWidget</receiver>
+        <slot>moveUpButton_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>moveDownButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SimpleSelectionWidget</receiver>
+        <slot>moveDownButton_clicked()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>itemTree</tabstop>
+    <tabstop>selectedItemsBox</tabstop>
+    <tabstop>addButton</tabstop>
+    <tabstop>deleteButton</tabstop>
+    <tabstop>moveUpButton</tabstop>
+    <tabstop>moveDownButton</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">model/CModel.h</include>
+    <include location="local" impldecl="in implementation">report/CCopasiObject.h</include>
+    <include location="global" impldecl="in implementation">vector</include>
+    <include location="global" impldecl="in declaration">map</include>
+    <include location="global" impldecl="in declaration">vector</include>
+    <include location="local" impldecl="in declaration">model/CMetab.h</include>
+    <include location="global" impldecl="in declaration">string</include>
+    <include location="local" impldecl="in declaration">utilities/CCopasiVector.h</include>
+    <include location="local" impldecl="in implementation">SimpleSelectionWidget.ui.h</include>
+</includes>
+<forwards>
+    <forward>class CCopasiObject</forward>
+    <forward>class CModel</forward>
+</forwards>
+<variables>
+    <variable>QListViewItem* reactionParameterSubtree;</variable>
+    <variable>bool mSingleSelect;</variable>
+    <variable>QListViewItem* timeSubtree;</variable>
+    <variable>QListViewItem* particleFluxSubtree;</variable>
+    <variable>QListViewItem* transientConcentrationSubtree;</variable>
+    <variable>QListViewItem* transientParticleNumberSubtree;</variable>
+    <variable>QListViewItem* initialConcentrationSubtree;</variable>
+    <variable>QListViewItem* initialParticleNumberSubtree;</variable>
+    <variable>std::vector&lt;CCopasiObject*&gt;* outputVector;</variable>
+    <variable>std::map&lt;QListViewItem*,CCopasiObject*&gt; treeItems;</variable>
+    <variable>std::map&lt;QListBoxItem*,CCopasiObject*&gt; selectedObjects;</variable>
+    <variable>QListViewItem* concentrationFluxSubtree;</variable>
+    <variable>QListViewItem* reactionSubtree;</variable>
+    <variable>QListViewItem* metaboliteSubtree;</variable>
+</variables>
+<slots>
+    <slot>addButtonClicked()</slot>
+    <slot access="protected">deleteButtonClicked()</slot>
+    <slot access="protected">selectionChangedInTree()</slot>
+    <slot access="protected">selectionChangedInList()</slot>
+    <slot access="protected">moveUpButton_clicked()</slot>
+    <slot access="protected">moveDownButton_clicked()</slot>
+</slots>
+<functions>
+    <function access="protected">init()</function>
+    <function access="protected" returnType="bool">treeHasSelection()</function>
+    <function access="protected" returnType="std::vector&lt;CCopasiObject*&gt;*">getTreeSelection()</function>
+    <function access="protected" returnType="std::vector&lt;CCopasiObject*&gt;*">getListSelection()</function>
+    <function access="protected" returnType="bool">listHasSelection()</function>
+    <function>populateTree( CModel * model )</function>
+    <function access="protected">destroy()</function>
+    <function access="protected" returnType="bool">isMetaboliteNameUnique( const std::string &amp; name, const CCopasiVector&lt;CMetab&gt; &amp; metabolites )</function>
+    <function access="protected">clearTree()</function>
+    <function>setOutputVector( std::vector&lt;CCopasiObject *&gt; * outputVector )</function>
+    <function access="protected" returnType="QListViewItem *">findListViewItem( const CCopasiObject * object )</function>
+    <function access="protected" returnType="const std::vector&lt;int&gt;*">getSelectedIndicesFromList()</function>
+    <function access="protected">updateMoveButtons()</function>
+    <function access="protected">updateOutputVector()</function>
+    <function access="protected">selectObjects( std::vector&lt;CCopasiObject *&gt; * objects )</function>
+    <function>setSingleSelection( bool singleSelection )</function>
+    <function returnType="bool">isSingleSelection()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
