@@ -2,6 +2,7 @@
 #include <sstream>
 
 #include "CSpecLine.h"
+#include "CDeTerm.h"
 #include "utilities/CGlobals.h"
 CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE; }
 

@@ -13,6 +13,7 @@
 #include "model.h"
 #include "utilities/utilities.h"
 #include "utilities/CGlobals.h"
+#include "CSpec2Model.h"
 #include "CSpecLine.h"
 #include "CDeTerm.h"
 CSpec2Model::CSpec2Model() {CONSTRUCTOR_TRACE; }
