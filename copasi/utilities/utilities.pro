@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2005/02/18 16:42:39 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2005/02/18 21:59:11 $  
 ######################################################################
 
 LIB = utilities
@@ -25,6 +25,7 @@ HEADERS += CAnnotatedMatrix.h \
            CMatrix.h \
            COutputHandler.h \
            CReadConfig.h \
+           CSlider.h \
 #           CSparseMatrix.h \
 #           CSparseVector.h \
            CopasiTime.h \
@@ -45,6 +46,7 @@ SOURCES += CAnnotatedMatrix.cpp \
            CIndexedPriorityQueue.cpp \
            COutputHandler.cpp \
            CReadConfig.cpp \
+           CSlider.cpp \
 #           CSparseMatrix.cpp \
 #           CSparseVector.cpp \
            CopasiTime.cpp \

@@ -103,6 +103,10 @@ SOURCE=.\CReadConfig.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CSlider.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CSparseMatrix.cpp
 # End Source File
 # Begin Source File
@@ -192,6 +196,10 @@ SOURCE=.\COutputHandler.h
 # Begin Source File
 
 SOURCE=.\CReadConfig.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSlider.h
 # End Source File
 # Begin Source File
 
