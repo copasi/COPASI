@@ -286,6 +286,7 @@ ScanWidget::~ScanWidget()
       CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey);
       pdelete(tt);
     }
+  selectedList.clear();
   // no need to pdelete child widgets, Qt does it all for us
 }
 
@@ -326,6 +327,7 @@ void ScanWidget::addButtonClicked()
 
 void ScanWidget::deleteButtonClicked()
 {
+  int pp = selectedList.size();
   if (activeObject < 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
     return;
 
@@ -337,7 +339,8 @@ void ScanWidget::deleteButtonClicked()
   //  if (!CKeyFactory::get(scanTaskKey))
   //   return;
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
-  scanTask->getProblem()->removeScanItem(pObject->getName().c_str());
+  if (scanTask->getProblem()->getListSize() > 0)  // for reloading
+    scanTask->getProblem()->removeScanItem(pObject->getName().c_str());
   scrollview->removeChild(selectedList[2*activeObject]);
   scrollview->removeChild(selectedList[2*activeObject + 1]);
 
@@ -372,7 +375,7 @@ void ScanWidget::deleteButtonClicked()
     }
 
   activeObject--;
-  if (activeObject >= 0)
+  if ((activeObject >= 0) && (scanTask->getProblem()->getListSize() > 0))
     {
       CCopasiObject* pObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getObject();
       ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
@@ -383,7 +386,7 @@ void ScanWidget::deleteButtonClicked()
   nSelectedObjects--;
   scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
 
-  if (selectedList.size() > 0)
+  if ((selectedList.size() > 0) && (scanTask->getProblem()->getListSize() > 0))
     {
       ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
     }
@@ -536,9 +539,6 @@ void ScanWidget::loadScan()
   CTrajectoryProblem * mTrajectoryproblem = mTrajectoryTask->getProblem();
   mTrajectoryproblem->setModel(mModel);
 
-  //  pSteadyStateWidget->setModel(mModel);
-  //  pTrajectoryWidget->setModel(mModel);
-
   scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));
   scanProblem->setTrajectoryTask((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey));
   scanProblem->setProcessSteadyState(steadyState->isChecked());
@@ -566,6 +566,13 @@ void ScanWidget::loadScan()
     steadyState->setChecked(true);
   else
     steadyState->setChecked(false);
+
+  activeObject = ObjectListBox->count() - 1; //because of the empty item
+  activeObject --;  // list base start from 1, but list base start from 0;
+  while (activeObject >= 0)
+    deleteButtonClicked();
+  ObjectListBox->clear();
+  ObjectListBox->insertItem(trUtf8(""));
 }
 
 bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
