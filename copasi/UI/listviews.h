@@ -46,6 +46,7 @@ class CompartmentsWidget1;
 class MoietyWidget1;
 
 class FunctionWidget1;
+class ModesWidget;
 
 class Folder : public QObject
   {
@@ -151,6 +152,7 @@ class ListViews : public QSplitter, public Observer
     CompartmentsWidget1 *compartmentsWidget1;
     MoietyWidget1 *moietyWidget1;
     FunctionWidget1 *functionWidget1;
+    ModesWidget *modesWidget;
 
   protected slots:
     void slotFolderChanged(QListViewItem*);
