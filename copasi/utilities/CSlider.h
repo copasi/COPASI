@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/27 15:53:16 $
+   $Date: 2005/03/09 13:37:20 $
    End CVS Header */
 
 #ifndef COPASI_CSlider
@@ -185,6 +185,27 @@ class CSlider : public CCopasiContainer
      */
     void resetRange();
 
+    /**
+     * Sets wether the value is to be kept in sync the the objects value.  
+     */
+    void setSynced(bool synced);
+
+    /**
+     * Returns wether the value is to be kept in sync the the objects value.  
+     * @return bool isSynced.
+     */
+    bool getSynced() const;
+
+    /**
+     * Set the CSliders value to the value of the underlying object.
+     */
+    void sync();
+
+    /**
+     * Set the objects value to the value stored in CSlider.
+     */
+    void writeToObject();
+
     // Attributes
   private:
     /**
@@ -208,6 +229,11 @@ class CSlider : public CCopasiContainer
     Type mSliderType;
 
     /**
+     * The value of the slider-
+     */
+    C_FLOAT64 mValue;
+
+    /**
      * The minimun value of the slider
      */
     C_FLOAT64 mMinValue;
@@ -226,6 +252,11 @@ class CSlider : public CCopasiContainer
      * The factor between minor and major ticks.
      */
     unsigned C_INT32 mTickFactor;
+
+    /**
+     * Wether the CSlider's value is always in sync with its object's value.
+     */
+    bool mSync;
   };
 
-#endif // COPASI_CSlider
+#endif
