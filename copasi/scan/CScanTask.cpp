@@ -15,6 +15,13 @@
 #include "output/COutputList.h"
 #include "output/COutput.h"
 #include "report/CKeyFactory.h"
+#include "model/CModel.h"
+#include "model/CState.h"
+
+#include "trajectory/CTrajectoryTask.h"
+#include "trajectory/CTrajectoryProblem.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
 
 CScanTask::CScanTask():
     CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
@@ -91,6 +98,22 @@ void CScanTask::process()
 
   mpMethod->setProblem(mpProblem);
   mpProblem->InitScan();
+
+  if ((mpProblem->getSteadyStateTask() != NULL) && mpProblem->processSteadyState())
+    {
+      mpProblem->getSteadyStateTask()->getProblem()->getModel()->compile();
+      mpProblem->getSteadyStateTask()->getProblem()->
+      setInitialState(mpProblem->getSteadyStateTask()->getProblem()->getModel()->getInitialState());
+    }
+  if ((mpProblem->getTrajectoryTask() != NULL) && mpProblem->processTrajectory())
+    {
+      mpProblem->getTrajectoryTask()->getProblem()->getModel()->compile();
+      mpProblem->getTrajectoryTask()->getProblem()->
+      setInitialState(mpProblem->getTrajectoryTask()->getProblem()->getModel()->getInitialState());
+      mpProblem->getTrajectoryTask()->getProblem()->
+      setStartTime(mpProblem->getTrajectoryTask()->getProblem()->getStartTime());
+    }
+
   unsigned C_INT32 scanDimension = mpProblem->getListSize();
   int i;
   // find the last master
