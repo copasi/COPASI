@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2005/02/08 16:32:20 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2005/02/09 01:26:02 $  
 ######################################################################
 
 include(common.pri)
@@ -29,5 +29,5 @@ SUBDIRS += wizard
 
 # Now the excecutables
 SUBDIRS += CopasiUI
-#SUBDIRS += CopasiSE
+SUBDIRS += CopasiSE
 #SUBDIRS += test
