@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/30 11:50:25 $
+   $Date: 2005/03/30 12:11:59 $
    End CVS Header */
 
 /****************************************************************************
@@ -334,12 +334,7 @@ void SliderSettingsDialog::updateSlider()
 {
   if (this->mChanged)
     {
-      objectValueChanged();
-      minValueChanged();
-      maxValueChanged();
-      minorMajorFactorChanged();
-      minorTickSizeChanged();
-      numMinorTicksChanged();
+      this->updateInternalValues();
     }
   if (this->mpSlider)
     {
@@ -381,6 +376,10 @@ void SliderSettingsDialog::extendedOptionsClicked()
 
 void SliderSettingsDialog::logCheckBoxToggled(bool on)
 {
+  if (this->mChanged)
+    {
+      this->updateInternalValues();
+    }
   this->mChanged = true;
   if (on)
     {
@@ -400,4 +399,22 @@ void SliderSettingsDialog::logCheckBoxToggled(bool on)
     {
       this->mScaling = CSlider::linear;
     }
+}
+
+void SliderSettingsDialog::globalCheckBoxToggled()
+{
+  if (this->mChanged)
+    {
+      this->updateInternalValues();
+    }
+}
+
+void SliderSettingsDialog::updateInternalValues()
+{
+  objectValueChanged();
+  minValueChanged();
+  maxValueChanged();
+  minorMajorFactorChanged();
+  minorTickSizeChanged();
+  numMinorTicksChanged();
 }

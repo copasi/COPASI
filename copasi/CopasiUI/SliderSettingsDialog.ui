@@ -575,6 +575,7 @@
     <slot>lineEditChanged()</slot>
     <slot access="protected">extendedOptionsClicked()</slot>
     <slot access="protected">logCheckBoxToggled( bool on )</slot>
+    <slot access="protected">globalCheckBoxToggled()</slot>
 </slots>
 <functions>
     <function returnType="CSlider *">getSlider()</function>
@@ -586,6 +587,7 @@
     <function>setModel( CModel * model )</function>
     <function>disableObjectChoosing( bool disableChoosing )</function>
     <function>updateSlider()</function>
+    <function access="protected">updateInternalValues()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

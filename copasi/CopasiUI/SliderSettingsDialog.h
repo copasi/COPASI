@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/23 18:58:37 $
+   $Date: 2005/03/30 12:11:58 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Wed Mar 23 09:04:25 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.5 2005/03/23 18:58:37 gauges Exp $)
+ ** Created: Wed Mar 30 14:08:23 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.6 2005/03/30 12:11:58 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -96,6 +96,7 @@ class SliderSettingsDialog : public QDialog
     virtual void updateInputFieldsValues();
     virtual void updateInputFields();
     virtual void init();
+    virtual void updateInternalValues();
 
     QVBoxLayout* SliderSettingsDialogLayout;
     QHBoxLayout* mpLayout11;
@@ -124,6 +125,7 @@ class SliderSettingsDialog : public QDialog
     virtual void browseButtonPressed();
     virtual void extendedOptionsClicked();
     virtual void logCheckBoxToggled(bool on);
+    virtual void globalCheckBoxToggled();
   };
 
 #endif // SLIDERSETTINGSDIALOG_H
