@@ -152,6 +152,10 @@ SOURCE=.\FunctionDB.xml.h
 # End Group
 # Begin Source File
 
+SOURCE=.\CKinFunctionFlexLexer.lpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\common.pri
 # End Source File
 # Begin Source File
