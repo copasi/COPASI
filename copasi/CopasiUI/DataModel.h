@@ -161,23 +161,18 @@ void DataModel<T>::setData(int status)
 template <class T>
 void DataModel<T>::createModel(const char* fileName)
 {
-  pdelete(trajectorytask);
   pdelete(model);
-  pdelete(steadystatetask);
-
-  trajectorytask = NULL;
-  model = NULL;
-  steadystatetask = NULL;
-
   model = new CModel();
   modelUpdate = true;
   notify(MODEL);
 
+  pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
   steadystatetask->getProblem()->setModel(model);
   steadystatetaskUpdate = true;
   notify(STEADYSTATETASK);
 
+  pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->getProblem()->setModel(model);
   trajectorytaskUpdate = true;
