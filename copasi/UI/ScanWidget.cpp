@@ -27,6 +27,7 @@
 #include "model/CModel.h"
 #include "listviews.h"
 #include "ScanItemWidget.h"
+#include "ObjectBrowser.h"
 
 #include "SteadyStateWidget.h"
 #include "TrajectoryWidget.h"
@@ -175,6 +176,12 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+
+  connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
+  connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
+  connect(upButton, SIGNAL(clicked()), this, SLOT(upButtonClicked()));
+  connect(downButton, SIGNAL(clicked()), this, SLOT(downButtonClicked()));
+
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChangeButton()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
 
@@ -217,106 +224,122 @@ ScanWidget::~ScanWidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
-void ScanWidget::CancelChangeButton()
-{}
-
-void ScanWidget::CommitChangeButton()
+void ScanWidget::addButtonClicked()
 {
-  scanTask->process();
-}
+  if (
 
-void ScanWidget::ScanButtonClicked()
-{
-  scanTask->setRequested(sExecutable->isChecked());
-  commitChange->setEnabled(sExecutable->isChecked());
-}
+    addNewScanItem
+  }
 
-void ScanWidget::SteadyStateButtonClicked()
-{
-  CScanProblem *scanProblem = scanTask->getProblem();
-  scanProblem->setProcessSteadyState(steadyState->isChecked());
-  eSteadyState->setEnabled(steadyState->isChecked());
-}
+  void ScanWidget::deleteButtonClicked()
+  {}
 
-void ScanWidget::TrajectoryButtonClicked()
-{
-  CScanProblem *scanProblem = scanTask->getProblem();
-  scanProblem->setProcessTrajectory(trajectory->isChecked());
-  eTrajectory->setEnabled(trajectory->isChecked());
-  if (trajectory->isChecked())
-    {}}
+  void ScanWidget::upButtonClicked()
+  {}
 
-void ScanWidget::loadScan(CModel *model)
-{
-  if (model != NULL)
-    {
-      mModel = model;
-      pSteadyStateWidget->setModel(mModel);
-      pTrajectoryWidget->setModel(mModel);
+  void ScanWidget::downButtonClicked()
+  {}
 
-      taskName->setText(tr("Scan"));
-      scanTask = new CScanTask();
-      CScanProblem *scanProblem = scanTask->getProblem();
+  void ScanWidget::CancelChangeButton()
+  {}
 
-      scanProblem->setModel(model);
-      scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
-      scanProblem->setTrajectoryTask(pTrajectoryWidget->mTrajectoryTask);
+  void ScanWidget::CommitChangeButton()
+  {
+    scanTask->process();
+  }
 
-      if (scanTask->isRequested() == true)
-        sExecutable->setChecked(true);
-      else
-        sExecutable->setChecked(false);
+  void ScanWidget::ScanButtonClicked()
+  {
+    scanTask->setRequested(sExecutable->isChecked());
+    commitChange->setEnabled(sExecutable->isChecked());
+  }
 
-      if (scanProblem->processTrajectory() == true)
-        trajectory->setChecked(true);
-      else
-        trajectory->setChecked(false);
+  void ScanWidget::SteadyStateButtonClicked()
+  {
+    CScanProblem *scanProblem = scanTask->getProblem();
+    scanProblem->setProcessSteadyState(steadyState->isChecked());
+    eSteadyState->setEnabled(steadyState->isChecked());
+  }
 
-      if (scanProblem->processSteadyState() == true)
-        steadyState->setChecked(true);
-      else
-        steadyState->setChecked(false);
+  void ScanWidget::TrajectoryButtonClicked()
+  {
+    CScanProblem *scanProblem = scanTask->getProblem();
+    scanProblem->setProcessTrajectory(trajectory->isChecked());
+    eTrajectory->setEnabled(trajectory->isChecked());
+    if (trajectory->isChecked())
+      {}}
 
-      emit hide_me();
-      //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
-      for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
-        {
-          /*
-                    CMethodParameterList *itemList = scanProblem->getScanItem(i);
-                    itemList->getName();
-                    parameterTable = new QTable(scrollview, "parameterTable");
-                    parameterTable->setNumCols(1);
-                    parameterTable->setFocusPolicy(QWidget::WheelFocus);
-                    parameterTable->horizontalHeader()->setLabel(0, "Value");
-           
-                    for (C_INT32 j = 0; j < itemList->size(); j++)
-                      {
-                        parameterTable->setNumRows(itemList->size());
-                        //rowHeader->setLabel(j, itemList(j).c_str());
-           
-                        parameterTable->verticalHeader()->setLabel(j, itemList->getName(j).c_str());
-                        parameterTable->setText(j, 0, QString::number(itemList->getValue(j)));
-                      }
-                    vBox->insertChild(parameterTable);
-                    vBox->setSpacing(15);
-          */
-        }
+  void ScanWidget::loadScan(CModel *model)
+  {
+    if (model != NULL)
+      {
+        mModel = model;
+        pSteadyStateWidget->setModel(mModel);
+        pTrajectoryWidget->setModel(mModel);
 
-      emit show_me();
-      scrollview->addChild(vBox);
-      ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
-      scrollview->setVScrollBarMode(QScrollView::Auto);
-    }
-}
+        taskName->setText(tr("Scan"));
+        scanTask = new CScanTask();
+        CScanProblem *scanProblem = scanTask->getProblem();
 
-void ScanWidget::addNewScanItem(CCopasiObject* pObject)
-{
-  parameterTable = new ScanItemWidget(this, "parameterTable");
-  parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
-  parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
-  vBox->insertChild(parameterTable);
-  Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  Line1->setLineWidth (4);
-  vBox->insertChild(Line1);
-}
+        scanProblem->setModel(model);
+        scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
+        scanProblem->setTrajectoryTask(pTrajectoryWidget->mTrajectoryTask);
+
+        if (scanTask->isRequested() == true)
+          sExecutable->setChecked(true);
+        else
+          sExecutable->setChecked(false);
+
+        if (scanProblem->processTrajectory() == true)
+          trajectory->setChecked(true);
+        else
+          trajectory->setChecked(false);
+
+        if (scanProblem->processSteadyState() == true)
+          steadyState->setChecked(true);
+        else
+          steadyState->setChecked(false);
+
+        emit hide_me();
+        //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
+        for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
+          {
+            /*
+                      CMethodParameterList *itemList = scanProblem->getScanItem(i);
+                      itemList->getName();
+                      parameterTable = new QTable(scrollview, "parameterTable");
+                      parameterTable->setNumCols(1);
+                      parameterTable->setFocusPolicy(QWidget::WheelFocus);
+                      parameterTable->horizontalHeader()->setLabel(0, "Value");
+             
+                      for (C_INT32 j = 0; j < itemList->size(); j++)
+                        {
+                          parameterTable->setNumRows(itemList->size());
+                          //rowHeader->setLabel(j, itemList(j).c_str());
+             
+                          parameterTable->verticalHeader()->setLabel(j, itemList->getName(j).c_str());
+                          parameterTable->setText(j, 0, QString::number(itemList->getValue(j)));
+                        }
+                      vBox->insertChild(parameterTable);
+                      vBox->setSpacing(15);
+            */
+          }
+
+        emit show_me();
+        scrollview->addChild(vBox);
+        ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
+        scrollview->setVScrollBarMode(QScrollView::Auto);
+      }
+  }
+
+  void ScanWidget::addNewScanItem(CCopasiObject* pObject)
+  {
+    parameterTable = new ScanItemWidget(this, "parameterTable");
+    parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
+    parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
+    vBox->insertChild(parameterTable);
+    Line1 = new QFrame(this, "Line1");
+    Line1->setFrameShape(QFrame::HLine);
+    Line1->setLineWidth (4);
+    vBox->insertChild(Line1);
+  }

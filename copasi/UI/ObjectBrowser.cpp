@@ -249,6 +249,23 @@ void ObjectBrowser::backClicked()
     }
 }
 
+//need to delete the list outside the funciton
+ObjectList* ObjectBrowser::outputList()
+{
+  ObjectList* outputList;
+  ObjectBrowserItem* rootItem;
+  rootItem = objectItemList->getRoot()->pItem;
+  outputList = new ObjectList();
+  eXport(rootItem, outputList);
+  if (outputList->length <= 0)
+    {
+      delete outputList;
+      return NULL;
+    }
+  else
+    return outputList;
+}
+
 void ObjectBrowser::nextClicked()
 {
   ObjectList* outputList;

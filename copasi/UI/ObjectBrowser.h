@@ -49,6 +49,8 @@ class ObjectBrowser : public QWidget
     QFrame* Line1;
     QTextEdit* ObjectItemText;
 
+    ObjectList* outputList();
+
     void eXport(ObjectBrowserItem* pCurrent, ObjectList* outputList);
 
     void setCheck(ObjectBrowserItem* pCurrent);

@@ -80,6 +80,11 @@ class ScanWidget : public CopasiWidget
   public slots:
     virtual void CancelChangeButton();
     virtual void CommitChangeButton();
+    virtual void addButtonClicked();
+    virtual void deleteButtonClicked();
+    virtual void upButtonClicked();
+    virtual void downButtonClicked();
+
     virtual void ScanButtonClicked();
     virtual void SteadyStateButtonClicked();
     virtual void TrajectoryButtonClicked();
