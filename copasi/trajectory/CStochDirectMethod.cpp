@@ -6,11 +6,18 @@ CStochDirectMethod::CStochDirectMethod()
     : CStochMethod()
 {}
 
-C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 initial_time)
+C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 initial_time, C_FLOAT64 end_time)
 {
   //updatePropensities();
-  C_INT32 rxn = generateReactionIndex();
   C_FLOAT64 step_time = generateReactionTime();
-  updateSystemState(rxn);
-  return initial_time + step_time;
+  if ((step_time + initial_time) >= end_time)
+    {
+      return end_time;
+    }
+  else
+    {
+      C_INT32 rxn = generateReactionIndex();
+      updateSystemState(rxn);
+      return initial_time + step_time;
+    }
 }

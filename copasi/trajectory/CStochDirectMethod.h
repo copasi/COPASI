@@ -33,7 +33,7 @@ class CStochDirectMethod : public CStochMethod
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */
-    C_FLOAT64 doSingleStep(C_FLOAT64 initial_time);
+    C_FLOAT64 doSingleStep(C_FLOAT64 initial_time, C_FLOAT64 end_time);
   };
 
 #endif

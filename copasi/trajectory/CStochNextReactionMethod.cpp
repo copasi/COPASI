@@ -11,15 +11,22 @@ void CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
   setupPriorityQueue(start_time);
 }
 
-C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 C_UNUSED(time))
+C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 C_UNUSED(time), C_FLOAT64 endTime)
 {
   C_FLOAT64 steptime = mPQ.topKey();
-  C_INT32 reaction_index = mPQ.topIndex();
-  updateSystemState(reaction_index);
-  updatePriorityQueue(reaction_index, steptime);
 
-  //printDebugInfo();
-  return steptime;
+  if (steptime >= endTime)
+    {
+      return endTime;
+    }
+  else
+    {
+      C_INT32 reaction_index = mPQ.topIndex();
+      updateSystemState(reaction_index);
+      updatePriorityQueue(reaction_index, steptime);
+      //printDebugInfo();
+      return steptime;
+    }
 }
 
 //void CStochNextReactionMethod::printDebugInfo()

@@ -53,7 +53,7 @@ class CStochMethod : private CTrajectoryMethod
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */
-    virtual C_FLOAT64 doSingleStep(C_FLOAT64 time) = 0;
+    virtual C_FLOAT64 doSingleStep(C_FLOAT64 time, C_FLOAT64 endtime) = 0;
 
     /**
      * Calculate the propensities for all reactions

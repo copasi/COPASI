@@ -28,7 +28,7 @@ C_INT32 CStochMethod::checkModel(CModel * pmodel)
 CStochMethod *
 CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
 {
-  C_INT32 result = 1; // direct method as default
+  C_INT32 result = 2; // direct method as default
   if (pProblem && pProblem->getModel())
     {
       checkModel(pProblem->getModel());
@@ -63,7 +63,7 @@ CStochMethod::CStochMethod():
   mTypeEnum = CTrajectoryMethod::stochastic;
   setType(CTrajectoryMethod::TypeName[mTypeEnum]);
 
-  add("STOCH.MaxSteps", 1000); // Max number of doSingleStep() per step()
+  add("STOCH.MaxSteps", 1000000); // Max number of doSingleStep() per step()
   add("STOCH.Subtype", 1); // 0: default; 1: direct method; 2: next reaction method
 
   mRandomGenerator = CRandom::createGenerator(CRandom::r250);
@@ -96,7 +96,7 @@ const double CStochMethod::step(const double & deltaT)
 
   for (i = 0; ((i < mMaxSteps) && (time < endtime)); i++)
     {
-      time = doSingleStep(time);
+      time = doSingleStep(time, endtime);
     }
   mpCurrentState->setTime(time);
 

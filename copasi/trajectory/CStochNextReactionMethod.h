@@ -32,7 +32,7 @@ class CStochNextReactionMethod: public CStochMethod
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */
-    C_FLOAT64 doSingleStep(C_FLOAT64 time);
+    C_FLOAT64 doSingleStep(C_FLOAT64 time, C_FLOAT64 endTime);
 
     /**
      * print internal information (for debugging)
