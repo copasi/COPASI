@@ -20,7 +20,6 @@ class CWriteConfig;
 class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
   {
     // Attributes
-
   private:
     /**
      *  The name of the Method
@@ -33,7 +32,6 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
     string mType;
 
     // Operations
-
   public:
 
     /**
@@ -106,10 +104,12 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
 
     /**
      * Add a parameter to the list
+     * @param "const string &" name 
+     * @param "const double &" value (Default = 0.0)
      */
-
     void add
-      (const CMethodParameter & parameter);
+      (const string & name,
+       const double & value = 0.0);
 
     /**
      * Load a list of parameters

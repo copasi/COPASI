@@ -108,12 +108,12 @@ CMethodParameterList::getValue(const unsigned C_INT32 & index) const
 /**
  * Add a parameter to the list
  */
-
 void CMethodParameterList::add
-  (const CMethodParameter & parameter)
+  (const string & name,
+   const double & value)
   {
     CCopasiVector<CMethodParameter>::add
-      (parameter);
+      (new CMethodParameter(name, value));
   }
 
 /**
@@ -173,10 +173,8 @@ CMethodParameterList::search(CReadConfig & configBuffer,
         {
           list = new CMethodParameterList();
           list->load(configBuffer, mode);
-
           if (name == list->mName && type == list->mType)
             break;
-
           pdelete(list);
         }
     }
@@ -184,10 +182,8 @@ CMethodParameterList::search(CReadConfig & configBuffer,
   catch (CCopasiException Exception)
     {
       pdelete(list);
-
       if ((MCMethodParameterList + 1) == Exception.getMessage().getNumber())
-
-        ;
+;
       else
         throw Exception;
     }
