@@ -7,31 +7,23 @@ SOURCES	+= \
   plotwindow.cpp \
 	main.cpp
 
-HEADERS	+= plotwidget1.h \
-	crvspecscrlview.h \
-  curvegroupbox.h \
-  doublerect.h \
-  zoomplot.h \
-	CopasiPlot.h \
-	plotspec.h \
-	plotwindow.h
 
-TARGET       = copasiplot
-MOC_DIR      = moc
-OBJECTS_DIR  = obj
-DEPENDPATH   = ../include
+LIB = plot
+include(../lib.pri)
+CONFIG += qt
 
+HEADERS += plotwidget1.h \
+           crvspecscrlview.h \
+           curvegroupbox.h \
+           doublerect.h \
+           zoomplot.h \
+           CopasiPlot.h \
+           plotspec.h \
+           plotwindow.h
 
-linux-g++:TMAKE_CXXFLAGS += -fno-exceptions 
-
-
-#FORMS	= plotwidget1.ui
-#FORMS	= curvegroupbox.ui
-TEMPLATE	=app
-CONFIG	+= qt warn_on debug release thread
-INCLUDEPATH	+= ../include
-unix:LIBS	+= -lqwt
-LANGUAGE	= C++
-
-INCLUDEPATH	+= $QWTDIR/include
-LIBS        += -L$QWTDIR/libs
+SOURCES += CopasiPlot.cpp \
+           curvegroupbox.cpp \
+           doublerect.cpp \
+           plotwidget1.cpp \
+           plotwindow.cpp \
+           zoomplot.cpp \
