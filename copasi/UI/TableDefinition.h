@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.11 2003/08/10 03:19:37 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.12 2003/08/11 01:09:44 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -40,9 +40,13 @@ class TableDefinition : public CopasiWidget
     CModel *mModel;
     CReport *mReport;
     QListBox* itemsTable;
+    std::string reportKey;
 
     void setReport(CReport* pNewReport);
     void loadTableDefinition();
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
 
     QFrame* bodyField;
     QPushButton* confirmButton;

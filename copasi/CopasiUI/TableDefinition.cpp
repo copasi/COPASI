@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.16 2003/08/11 00:56:13 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.17 2003/08/11 01:09:44 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -219,7 +219,10 @@ void TableDefinition::languageChange()
 
 /*This function is to load the model for the table*/
 void TableDefinition::loadTableDefinition()
-{}
+{
+  seperatorEdit->setEnabled(false);
+  tabChecked->setChecked(true);
+}
 
 void TableDefinition::setReport(CReport* pNewReport)
 {
@@ -346,4 +349,34 @@ void TableDefinition::downButtonClicked()
       itemsTable->changeItem (pUpperItemStr, selectedIndex + 1);
       itemsTable->changeItem (pDownItemStr, selectedIndex);
     }
+}
+
+bool TableDefinition::enter(const std::string & key)
+{
+  if (!CKeyFactory::get(key)) return false;
+
+  reportKey = key;
+
+  loadTableDefinition();
+
+  return true;
+}
+
+bool TableDefinition::leave()
+{
+  //let the user confirm?
+  return true;
+}
+
+bool TableDefinition::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      break;
+
+    default:
+      break;
+    }
+  return true;
 }
