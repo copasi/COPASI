@@ -1,17 +1,17 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Fri Feb 21 14:46:45 2003
+ ** Created: Sun Mar 2 14:02:22 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 #ifndef TRAJECTORYWIDGET_H
 #define TRAJECTORYWIDGET_H
-
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -37,28 +37,28 @@ class TrajectoryWidget : public QWidget
     CTrajectoryTask* mTrajectoryTask;
     void loadTrajectoryTask(CTrajectoryTask *trajectorytask);
 
-    QLabel* taskNameLabel;
-    QCheckBox* bExecutable;
-    QPushButton* commitChange;
-    QPushButton* bRunTask;
-    QPushButton* cancelChange;
-    QFrame* line8;
     QFrame* line6;
-    QLabel* parameterValueLabel;
+    QFrame* line8;
     QTable* parameterTable;
+    QLabel* taskNameLabel;
     QFrame* line7;
     QFrame* line7_2;
+    QLineEdit* taskName;
+    QComboBox* ComboBox1;
+    QLineEdit* nStartTime;
+    QCheckBox* bExecutable;
+    QLabel* parameterValueLabel;
     QLabel* TextLabel1;
     QLabel* TextLabel1_3;
-    QLineEdit* taskName;
     QLabel* TextLabel1_3_2;
-    QLineEdit* nStartTime;
     QLineEdit* nStepSize;
     QLabel* TextLabel1_2_2;
     QLineEdit* nEndTime;
     QLineEdit* nStepNumber;
     QLabel* TextLabel1_2;
-    QComboBox* ComboBox1;
+    QPushButton* bRunTask;
+    QPushButton* commitChange;
+    QPushButton* cancelChange;
 
   public slots:
     virtual void CancelChange();
@@ -66,6 +66,10 @@ class TrajectoryWidget : public QWidget
     virtual void EnableRunTask();
     virtual void UpdateMethod();
     virtual void RunTask();
+
+  protected:
+    QGridLayout* TrajectoryWidgetLayout;
+    QHBoxLayout* Layout2;
   };
 
 #endif // TRAJECTORYWIDGET_H

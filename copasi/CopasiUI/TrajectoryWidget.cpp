@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Fri Feb 21 14:46:45 2003
+ ** Created: Sun Mar 2 14:02:22 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -9,7 +9,6 @@
 #include "TrajectoryWidget.h"
 #include "trajectory/CTrajectoryTask.h"
 
-#include <qmessagebox.h>
 #include <qvariant.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
@@ -21,6 +20,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qmessagebox.h>
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -33,104 +33,129 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
     setName("TrajectoryWidget");
   resize(719, 539);
   setCaption(trUtf8("TrajectoryWidget"));
-
-  taskNameLabel = new QLabel(this, "taskNameLabel");
-  taskNameLabel->setGeometry(QRect(11, 11, 282, 19));
-  taskNameLabel->setText(trUtf8("Task Name"));
-
-  bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setGeometry(QRect(430, 10, 120, 16));
-  bExecutable->setText(trUtf8("Task Executable "));
-
-  commitChange = new QPushButton(this, "commitChange");
-  commitChange->setGeometry(QRect(206, 501, 188, 23));
-  commitChange->setText(trUtf8("Commit Change"));
-
-  bRunTask = new QPushButton(this, "bRunTask");
-  bRunTask->setGeometry(QRect(11, 501, 189, 23));
-  bRunTask->setText(trUtf8("Run Task"));
-
-  cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setGeometry(QRect(400, 501, 189, 23));
-  cancelChange->setText(trUtf8("Cancel Change"));
-
-  line8 = new QFrame(this, "line8");
-  line8->setGeometry(QRect(11, 42, 568, 16));
-  line8->setFrameShape(QFrame::HLine);
-  line8->setFrameShadow(QFrame::Sunken);
-  line8->setFrameShape(QFrame::HLine);
+  TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
 
   line6 = new QFrame(this, "line6");
-  line6->setGeometry(QRect(11, 468, 578, 16));
   line6->setFrameShape(QFrame::HLine);
   line6->setFrameShadow(QFrame::Sunken);
   line6->setFrameShape(QFrame::HLine);
 
-  parameterValueLabel = new QLabel(this, "parameterValueLabel");
-  parameterValueLabel->setGeometry(QRect(14, 296, 80, 160));
-  parameterValueLabel->setText(trUtf8("Parameter value"));
+  TrajectoryWidgetLayout->addMultiCellWidget(line6, 9, 9, 0, 4);
+
+  line8 = new QFrame(this, "line8");
+  line8->setFrameShape(QFrame::HLine);
+  line8->setFrameShadow(QFrame::Sunken);
+  line8->setFrameShape(QFrame::HLine);
+
+  TrajectoryWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 4);
 
   parameterTable = new QTable(this, "parameterTable");
-  parameterTable->setGeometry(QRect(100, 296, 484, 160));
   parameterTable->setNumRows(0);
   parameterTable->setNumCols(1);
-
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
 
+  TrajectoryWidgetLayout->addMultiCellWidget(parameterTable, 8, 8, 1, 4);
+
+  taskNameLabel = new QLabel(this, "taskNameLabel");
+  taskNameLabel->setText(trUtf8("Task Name"));
+
+  TrajectoryWidgetLayout->addWidget(taskNameLabel, 0, 0);
+
   line7 = new QFrame(this, "line7");
-  line7->setGeometry(QRect(10, 270, 568, 16));
   line7->setFrameShape(QFrame::HLine);
   line7->setFrameShadow(QFrame::Sunken);
   line7->setFrameShape(QFrame::HLine);
 
+  TrajectoryWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 4);
+
   line7_2 = new QFrame(this, "line7_2");
-  line7_2->setGeometry(QRect(20, 160, 568, 16));
   line7_2->setFrameShape(QFrame::HLine);
   line7_2->setFrameShadow(QFrame::Sunken);
   line7_2->setFrameShape(QFrame::HLine);
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setGeometry(QRect(17, 71, 56, 20));
-  TextLabel1->setText(trUtf8("Step Size"));
-
-  TextLabel1_3 = new QLabel(this, "TextLabel1_3");
-  TextLabel1_3->setGeometry(QRect(20, 117, 56, 20));
-  TextLabel1_3->setText(trUtf8("Start Time"));
+  TrajectoryWidgetLayout->addMultiCellWidget(line7_2, 4, 4, 0, 4);
 
   taskName = new QLineEdit(this, "taskName");
-  taskName->setGeometry(QRect(93, 10, 282, 19));
 
-  TextLabel1_3_2 = new QLabel(this, "TextLabel1_3_2");
-  TextLabel1_3_2->setGeometry(QRect(20, 211, 56, 20));
-  TextLabel1_3_2->setText(trUtf8("Method"));
-
-  nStartTime = new QLineEdit(this, "nStartTime");
-  nStartTime->setGeometry(QRect(98, 117, 121, 21));
-  nStartTime->setText(trUtf8(""));
-
-  nStepSize = new QLineEdit(this, "nStepSize");
-  nStepSize->setGeometry(QRect(97, 71, 121, 21));
-  nStepSize->setText(trUtf8(""));
-
-  TextLabel1_2_2 = new QLabel(this, "TextLabel1_2_2");
-  TextLabel1_2_2->setGeometry(QRect(250, 117, 56, 20));
-  TextLabel1_2_2->setText(trUtf8("End Time"));
-
-  nEndTime = new QLineEdit(this, "nEndTime");
-  nEndTime->setGeometry(QRect(347, 110, 121, 21));
-  nEndTime->setText(trUtf8(""));
-
-  nStepNumber = new QLineEdit(this, "nStepNumber");
-  nStepNumber->setGeometry(QRect(347, 71, 121, 21));
-  nStepNumber->setText(trUtf8(""));
-
-  TextLabel1_2 = new QLabel(this, "TextLabel1_2");
-  TextLabel1_2->setGeometry(QRect(247, 71, 80, 20));
-  TextLabel1_2->setText(trUtf8("Step Number"));
+  TrajectoryWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 3);
 
   ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-  ComboBox1->setGeometry(QRect(99, 210, 281, 21));
+
+  TrajectoryWidgetLayout->addMultiCellWidget(ComboBox1, 5, 5, 1, 3);
+
+  nStartTime = new QLineEdit(this, "nStartTime");
+  nStartTime->setText(trUtf8(""));
+
+  TrajectoryWidgetLayout->addWidget(nStartTime, 3, 1);
+
+  bExecutable = new QCheckBox(this, "bExecutable");
+  bExecutable->setText(trUtf8("Task Executable "));
+
+  TrajectoryWidgetLayout->addWidget(bExecutable, 0, 4);
+
+  parameterValueLabel = new QLabel(this, "parameterValueLabel");
+  parameterValueLabel->setText(trUtf8("Parameter value"));
+
+  TrajectoryWidgetLayout->addMultiCellWidget(parameterValueLabel, 7, 8, 0, 0);
+
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Step Size"));
+
+  TrajectoryWidgetLayout->addWidget(TextLabel1, 2, 0);
+
+  TextLabel1_3 = new QLabel(this, "TextLabel1_3");
+  TextLabel1_3->setText(trUtf8("Start Time"));
+
+  TrajectoryWidgetLayout->addWidget(TextLabel1_3, 3, 0);
+
+  TextLabel1_3_2 = new QLabel(this, "TextLabel1_3_2");
+  TextLabel1_3_2->setText(trUtf8("Method"));
+
+  TrajectoryWidgetLayout->addWidget(TextLabel1_3_2, 5, 0);
+
+  nStepSize = new QLineEdit(this, "nStepSize");
+  nStepSize->setText(trUtf8(""));
+
+  TrajectoryWidgetLayout->addWidget(nStepSize, 2, 1);
+
+  TextLabel1_2_2 = new QLabel(this, "TextLabel1_2_2");
+  TextLabel1_2_2->setText(trUtf8("End Time"));
+
+  TrajectoryWidgetLayout->addWidget(TextLabel1_2_2, 3, 2);
+
+  nEndTime = new QLineEdit(this, "nEndTime");
+  nEndTime->setText(trUtf8(""));
+
+  TrajectoryWidgetLayout->addMultiCellWidget(nEndTime, 3, 3, 3, 4);
+
+  nStepNumber = new QLineEdit(this, "nStepNumber");
+  nStepNumber->setText(trUtf8(""));
+
+  TrajectoryWidgetLayout->addMultiCellWidget(nStepNumber, 2, 2, 3, 4);
+
+  TextLabel1_2 = new QLabel(this, "TextLabel1_2");
+  TextLabel1_2->setText(trUtf8("Step Number"));
+
+  TrajectoryWidgetLayout->addWidget(TextLabel1_2, 2, 2);
+
+  Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
+
+  bRunTask = new QPushButton(this, "bRunTask");
+  bRunTask->setText(trUtf8("Run Task"));
+  bRunTask->setEnabled(false);
+
+  Layout2->addWidget(bRunTask);
+
+  commitChange = new QPushButton(this, "commitChange");
+  commitChange->setText(trUtf8("Commit Change"));
+  Layout2->addWidget(commitChange);
+
+  cancelChange = new QPushButton(this, "cancelChange");
+  cancelChange->setText(trUtf8("Cancel Change"));
+  Layout2->addWidget(cancelChange);
+
+  TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 10, 10, 0, 4);
 
   // signals and slots connections
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
@@ -138,6 +163,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(bRunTask, SIGNAL(clicked()), this, SLOT(RunTask()));
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
+
+  mTrajectoryTask = NULL;
 }
 
 /*
@@ -212,6 +239,8 @@ void TrajectoryWidget::CommitChange()
 
 void TrajectoryWidget::EnableRunTask()
 {
+  if (mTrajectoryTask == NULL)
+    return;
   if (!bExecutable->isChecked())
     bRunTask->setEnabled(false);
   else
