@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 08:52:36 $
+   $Author: stupe $ 
+   $Date: 2004/12/20 20:28:38 $
    End CVS Header */
 
 /*******************************************************************
@@ -154,7 +154,7 @@ bool ModelWidget::saveToModel()
       protectedNotify(ListViews::MODEL, ListViews::RENAME, objKey);
     }
 
-  if ((const char *)textBrowser->text().utf8() != model->getComments())
+  if (textBrowser->isModified())
     {
       model->setComments((const char *)textBrowser->text().utf8());
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
