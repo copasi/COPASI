@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/21 15:29:58 $
+   $Author: ssahle $ 
+   $Date: 2005/03/02 16:15:57 $
    End CVS Header */
 
 /**
@@ -52,7 +52,7 @@ class CMCATask : public CCopasiTask
      * Default constructor
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMCATask(const CCopasiContainer * pParent = NULL);
+    CMCATask(const CCopasiContainer * pParent = & RootContainer);
 
     /**
      * Copy constructor
