@@ -247,11 +247,11 @@ void CState::setFixedNumber(const unsigned C_INT32 & index, const C_INT32 & valu
 void CState::setFixedNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value)
 {mFixedNumbers.set(index, value);}
 
-void CState::setFixedNumberVector(const CVector< C_INT32 > & vector)
-{mFixedNumbers.setVector(vector);}
+void CState::setFixedNumberVector(const CVector< C_INT32 > & vektor)
+{mFixedNumbers.setVector(vektor);}
 
-void CState::setFixedNumberVector(const CVector< C_FLOAT64 > & vector)
-{mFixedNumbers.setVector(vector);}
+void CState::setFixedNumberVector(const CVector< C_FLOAT64 > & vektor)
+{mFixedNumbers.setVector(vektor);}
 
 void CState::setVariableNumber(const unsigned C_INT32 & index,
                                const C_INT32 & value)
@@ -261,17 +261,17 @@ void CState::setVariableNumber(const unsigned C_INT32 & index,
                                const C_FLOAT64 & value)
 {mVariableNumbers.set(index, value);}
 
-void CState::setVariableNumberVector(const CVector< C_INT32 > & vector)
-{mVariableNumbers.setVector(vector);}
+void CState::setVariableNumberVector(const CVector< C_INT32 > & vektor)
+{mVariableNumbers.setVector(vektor);}
 
-void CState::setVariableNumberVector(const CVector< C_FLOAT64 > & vector)
-{mVariableNumbers.setVector(vector);}
+void CState::setVariableNumberVector(const CVector< C_FLOAT64 > & vektor)
+{mVariableNumbers.setVector(vektor);}
 
 void CState::setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value)
 {mVolumes[index] = value;}
 
-void CState::setVolumeVector(const CVector< C_FLOAT64 > & vector)
-{mVolumes = vector;}
+void CState::setVolumeVector(const CVector< C_FLOAT64 > & vektor)
+{mVolumes = vektor;}
 
 void CState::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                          const C_FLOAT64 & factor,
@@ -466,11 +466,11 @@ void CStateX::setDependentNumber(const unsigned C_INT32 & index,
                                  const C_FLOAT64 & value)
 {mDependentNumbers.set(index, value);}
 
-void CStateX::setDependentNumberVector(const CVector< C_INT32 > & vector)
-{mDependentNumbers.setVector(vector);}
+void CStateX::setDependentNumberVector(const CVector< C_INT32 > & vektor)
+{mDependentNumbers.setVector(vektor);}
 
-void CStateX::setDependentNumberVector(const CVector< C_FLOAT64 > & vector)
-{mDependentNumbers.setVector(vector);}
+void CStateX::setDependentNumberVector(const CVector< C_FLOAT64 > & vektor)
+{mDependentNumbers.setVector(vektor);}
 
 void CStateX::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                           const C_FLOAT64 & factor,

@@ -198,12 +198,12 @@ class CState
     /**
      *
      */
-    void setFixedNumberVector(const CVector< C_INT32 > & vector);
+    void setFixedNumberVector(const CVector< C_INT32 > & vektor);
 
     /**
      *
      */
-    void setFixedNumberVector(const CVector< C_FLOAT64 > & vector);
+    void setFixedNumberVector(const CVector< C_FLOAT64 > & vektor);
 
     /**
      *
@@ -218,12 +218,12 @@ class CState
     /**
      *
      */
-    void setVariableNumberVector(const CVector< C_INT32 > & vector);
+    void setVariableNumberVector(const CVector< C_INT32 > & vektor);
 
     /**
      *
      */
-    void setVariableNumberVector(const CVector< C_FLOAT64 > & vector);
+    void setVariableNumberVector(const CVector< C_FLOAT64 > & vektor);
 
     /**
      *
@@ -233,7 +233,7 @@ class CState
     /**
      *
      */
-    void setVolumeVector(const CVector< C_FLOAT64 > & vector);
+    void setVolumeVector(const CVector< C_FLOAT64 > & vektor);
 
     /**
      * Calculate the jacobian of the state and store it in the provided matrix.
@@ -361,12 +361,12 @@ class CStateX: public CState
     /**
      *
      */
-    void setDependentNumberVector(const CVector< C_INT32 > & vector);
+    void setDependentNumberVector(const CVector< C_INT32 > & vektor);
 
     /**
      *
      */
-    void setDependentNumberVector(const CVector< C_FLOAT64 > & vector);
+    void setDependentNumberVector(const CVector< C_FLOAT64 > & vektor);
 
     /**
      *
