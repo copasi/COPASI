@@ -63,7 +63,7 @@ int main(int argc, char **argv)
             cout << inarr[i][j] << " ";
             dg.addDependent(i, inarr[i][j]);
         }
-        cout << endl << endl;
+        cout << endl;
     }
     // Display the vector of dependents for each node
     for (i = 0; i < NNODES; i++)
