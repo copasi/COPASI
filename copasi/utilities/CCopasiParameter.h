@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/31 22:01:12 $
+   $Date: 2003/11/07 16:55:41 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -30,12 +30,13 @@ class CCopasiParameter: public CCopasiContainer
     enum Type
     {
       DOUBLE = 0,
+      UDOUBLE,
       INT,
       UINT,
       BOOL,
       GROUP,
       STRING,
-      INVALID = -1
+      INVALID
     };
 
     /**
@@ -158,6 +159,13 @@ class CCopasiParameter: public CCopasiContainer
 
     /**
      * Check whether the value corresponds to the type
+     * @param const C_FLOAT64 & value
+     * @return bool isValidValue
+     */
+    bool isValidValue(const C_FLOAT64 & value) const;
+
+    /**
+     * Check whether the value corresponds to the type
      * @param const CType & value
      * @return bool isValidValue
      */
@@ -165,6 +173,7 @@ class CCopasiParameter: public CCopasiContainer
     bool isValidValue(const CType & C_UNUSED(value)) const
       {
         if (mSize != sizeof(CType)) return false;
+
         return true;
       }
 

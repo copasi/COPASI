@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/31 22:01:12 $
+   $Date: 2003/11/07 16:55:40 $
    End CVS Header */
 
 /**
@@ -25,6 +25,7 @@
 const std::string CCopasiParameter::TypeName[] =
   {
     "float",
+    "unsigned float",
     "integer",
     "unsigned integer",
     "bool",
@@ -36,6 +37,7 @@ const std::string CCopasiParameter::TypeName[] =
 const char* CCopasiParameter::XMLType[] =
   {
     "float",
+    "unsignedFloat",
     "integer",
     "unsignedInteger",
     "bool",
@@ -65,7 +67,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                                    const std::string & objectType):
     CCopasiContainer(name, pParent, objectType,
                      CCopasiObject::Container |
-                     (type == DOUBLE) ? CCopasiObject::ValueDbl :
+                     (type == DOUBLE || type == UDOUBLE) ? CCopasiObject::ValueDbl :
                      (type == INT || type == UINT) ? CCopasiObject::ValueInt :
                      (type == BOOL) ? CCopasiObject::ValueBool : 0),
     mKey(CKeyFactory::add(objectType, this)),
@@ -93,6 +95,16 @@ void * CCopasiParameter::getValue() {return mpValue;}
 const CCopasiParameter::Type & CCopasiParameter::getType() const
   {return mType;}
 
+bool CCopasiParameter::isValidValue(const C_FLOAT64 & value) const
+  {
+    if ((mType != CCopasiParameter::DOUBLE &&
+         mType != CCopasiParameter::UDOUBLE) ||
+        (mType == CCopasiParameter::UDOUBLE &&
+         value < 0.0)) return false;
+
+    return true;
+  }
+
 void * CCopasiParameter::createValue(const void * pValue)
 {
   if (pValue) assert(isValidValue(pValue));
@@ -100,7 +112,8 @@ void * CCopasiParameter::createValue(const void * pValue)
   switch (mType)
     {
     case CCopasiParameter::DOUBLE:
-        mpValue = new C_FLOAT64;
+      case CCopasiParameter::UDOUBLE:
+      mpValue = new C_FLOAT64;
       if (pValue) * (C_FLOAT64 *) mpValue = * (C_FLOAT64 *) pValue;
       mSize = sizeof(C_FLOAT64);
       break;
@@ -131,7 +144,8 @@ void * CCopasiParameter::createValue(const void * pValue)
       mSize = sizeof(std::string);
       break;
 
-    default:
+    case CCopasiParameter::GROUP:
+    case CCopasiParameter::INVALID:
       mpValue = NULL;
       mSize = 0;
       break;
@@ -147,6 +161,7 @@ void CCopasiParameter::deleteValue()
   switch (mType)
     {
     case CCopasiParameter::DOUBLE:
+    case CCopasiParameter::UDOUBLE:
       delete (C_FLOAT64 *) mpValue;
       break;
 
