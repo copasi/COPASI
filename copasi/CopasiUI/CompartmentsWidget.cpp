@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 12:58:30 $
+   $Date: 2004/05/14 13:50:16 $
    End CVS Header */
 
 /*******************************************************************
@@ -126,7 +126,7 @@ void CompartmentsWidget::createNewObject()
 {
   std::string name = "compartment_0";
   int i = 0;
-  while (!dataModel->getModel()->addCompartment(name))
+  while (!dataModel->getModel()->createCompartment(name))
     {
       i++;
       name = "compartment_";
@@ -317,7 +317,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:           // Yes or Enter
+            case 0:            // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -330,7 +330,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:           // No or Escape
+            case 1:            // No or Escape
               break;
             }
         }

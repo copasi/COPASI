@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 20:29:38 $
+   $Date: 2004/05/14 13:46:24 $
    End CVS Header */
 
 #include <math.h>
@@ -322,7 +322,7 @@ void CChemEqInterface::extractModifier(const std::string & input,
 
 C_INT32 CChemEqInterface::getMolecularity(const std::string & role) const
   {
-    const std::vector<C_FLOAT64> * tmpVector = NULL;
+    const std::vector<C_FLOAT64> * tmpVector;
 
     if (role == "SUBSTRATE")
       tmpVector = &mSubstrateMult;
@@ -413,10 +413,10 @@ bool CChemEqInterface::createNonExistingMetabs(CModel * model) const
       {
         compName = CMetabNameInterface::extractCompartmentName(model, *it);
         if (model->getCompartments().getIndex(compName) == C_INVALID_INDEX)
-          model->addCompartment(compName, 1);
-        model->addMetabolite(CMetabNameInterface::extractMetabName(model, *it),
-                             compName,
-                             0.1, CMetab::METAB_VARIABLE);
+          model->createCompartment(compName, 1);
+        model->createMetabolite(CMetabNameInterface::extractMetabName(model, *it),
+                                compName,
+                                0.1, CMetab::METAB_VARIABLE);
       }
 
     return ret;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:48 $
+   $Date: 2004/05/14 13:45:37 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -117,7 +117,7 @@ void CSpec2Model::processCompartments()
       if (it->getType() == CSpecLine::CPT)
         {
           std::string comp_name = it->extractCpt();
-          mModel->addCompartment(comp_name, atof(it->extractRight().c_str()));
+          mModel->createCompartment(comp_name, atof(it->extractRight().c_str()));
         }
     }
 
@@ -189,7 +189,7 @@ void CSpec2Model::processInits()
           if (vit != mDeVector.end())  // this _does_ correspond to a metabolite.
             {
               C_FLOAT64 iconc = atof(contents.c_str());
-              mModel->addMetabolite(metab_name, comp_name, iconc, CMetab::METAB_VARIABLE);
+              mModel->createMetabolite(metab_name, comp_name, iconc, CMetab::METAB_VARIABLE);
             }
           else
             {
@@ -459,7 +459,7 @@ void CSpec2Model::processMoieties()
                                            contents));
 
           metab.setName(moiety_name);
-          mModel->addMetabolite(moiety_name, compartment_name, 0, CMetab::METAB_DEPENDENT);
+          mModel->createMetabolite(moiety_name, compartment_name, 0, CMetab::METAB_DEPENDENT);
           std::cout << "Added moiety " << moiety_name
           << ", " << compartment_name
           << ", " << contents << std::endl;
