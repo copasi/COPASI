@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:24:45 $
+   $Author: ssahle $ 
+   $Date: 2005/01/25 13:28:17 $
    End CVS Header */
 
 /*******************************************************************
@@ -58,14 +58,20 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
 
   TextLabel2 = new QLabel(this, "TextLabel2");
   TextLabel2->setText(trUtf8("Initial  Volume"));
+  TextLabel2->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
   CompartmentsWidget1Layout->addWidget(TextLabel2, 2, 0);
 
   TextLabel2_2 = new QLabel(this, "TextLabel2_2");
   TextLabel2_2->setText(trUtf8("Transient Volume"));
+  TextLabel2_2->setAlignment(int(QLabel::AlignVCenter
+                                 | QLabel::AlignRight));
   CompartmentsWidget1Layout->addWidget(TextLabel2_2, 3, 0);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Compartment Name"));
+  TextLabel1->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
   CompartmentsWidget1Layout->addWidget(TextLabel1, 0, 0);
 
   Line4 = new QFrame(this, "Line4");
@@ -81,7 +87,9 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   CompartmentsWidget1Layout->addItem(spacer, 6, 0);
 
   TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Metabolite Name"));
+  TextLabel3->setText(trUtf8("Metabolites"));
+  TextLabel3->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
   CompartmentsWidget1Layout->addWidget(TextLabel3, 5, 0);
 
   LineEdit3 = new QLineEdit(this, "LineEdit3");
@@ -299,7 +307,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                        // Yes or Enter
+    case 0:                         // Yes or Enter
       {
         unsigned C_INT32 size = dataModel->getModel()->getCompartments().size();
         unsigned C_INT32 index = dataModel->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -317,7 +325,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                        // No or Escape
+    case 1:                         // No or Escape
       break;
     }
 }
