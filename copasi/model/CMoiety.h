@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:42:31 $
+   $Date: 2004/05/24 08:22:50 $
    End CVS Header */
 
 /**
@@ -126,14 +126,14 @@ class CMoiety : public CCopasiContainer
     void setInitialValue();
 
     /**
-     *
-     */ 
-    //    const std::string & getName() const;
-
-    /**
-     *
+     * get the string representation of the moiety
      */
     std::string getDescription() const;
+
+    /**
+     * get the string representation of the moiety using the CMetabNameInterface
+     */
+    std::string getDescription(const CModel* model) const;
 
     /**
      *

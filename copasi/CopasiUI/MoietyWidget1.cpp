@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:48 $
+   $Date: 2004/05/24 08:21:40 $
    End CVS Header */
 
 /*******************************************************************
@@ -129,7 +129,7 @@ bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
 {
   if (!moiety) return false;
 
-  textBrowser->setText(FROM_UTF8(moiety->getDescription()));
+  textBrowser->setText(FROM_UTF8(moiety->getDescription(dataModel->getModel())));
 
   LineEdit3->setText(FROM_UTF8(moiety->getObjectName()));
 
@@ -150,7 +150,7 @@ void MoietyWidget1::loadName(QString setValue)
   const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
   CMoiety *moiety;
   moiety = moieties[(std::string)setValue.utf8()];
-  textBrowser->setText(FROM_UTF8(moiety->getDescription()));
+  textBrowser->setText(FROM_UTF8(moiety->getDescription(dataModel->getModel())));
   //ListBox1->insertItem(moiety->getDescription().);
 
   /*CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();

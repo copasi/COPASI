@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:42:31 $
+   $Date: 2004/05/24 08:22:50 $
    End CVS Header */
 
 #include <stdio.h>
@@ -18,13 +18,14 @@
 #include "utilities/readwrite.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
+#include "CMetabNameInterface.h"
 
 #include "report/CKeyFactory.h"//By G
 
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(GlobalKeys.add("Moiety", this)),       //By G
+    mKey(GlobalKeys.add("Moiety", this)),        //By G
     mNumber(0),
     mINumber(0),
     mEquation("Equation", this)
@@ -33,7 +34,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Moiety", this)),       //By G
+    mKey(GlobalKeys.add("Moiety", this)),        //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation, this)
@@ -83,7 +84,7 @@ const std::string & CMoiety::getKey() const {return mKey;} //By G
 
 //const std::string & CMoiety::getName() const {return getObjectName();}
 
-std::string CMoiety::getDescription() const
+/*std::string CMoiety::getDescription() const
   {
     std::string Description;
     for (unsigned C_INT32 i = 0; i < mEquation.size(); i++)
@@ -101,6 +102,26 @@ std::string CMoiety::getDescription() const
         Description += mEquation[i]->getMetabolite().getObjectName();
         //Description += "{" + mEquation[i]->getCompartmentName() + "}";
         Description += "{" + mEquation[i]->getMetabolite().getCompartment()->getObjectName() + "}";
+      }
+    return Description;
+  }*/
+
+std::string CMoiety::getDescription(const CModel * model) const
+  {
+    std::string Description;
+    for (unsigned C_INT32 i = 0; i < mEquation.size(); i++)
+      {
+        if (i)
+          {
+            if (mEquation[i]->getMultiplicity() < 0.0)
+              Description += " - ";
+            else
+              Description += " + ";
+          }
+        if (fabs(mEquation[i]->getMultiplicity()) != 1.0)
+          Description += StringPrint("%3.1f * ",
+                                     fabs(mEquation[i]->getMultiplicity()));
+        Description += CMetabNameInterface::getDisplayName(model, mEquation[i]->getMetabolite());
       }
     return Description;
   }
