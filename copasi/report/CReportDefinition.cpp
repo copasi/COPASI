@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/29 16:08:22 $
+   $Date: 2004/10/06 09:39:58 $
    End CVS Header */
 
 /**
@@ -103,10 +103,10 @@ void CReportDefinition::addTableElement(const std::string & cn)
   CCopasiObjectName SeparatorCN(mSeparator.getCN());
   CCopasiObjectName Title;
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  //std::vector< CCopasiContainer * > ListOfContainer;
 
   CCopasiObject* pSelectedObject;
-  pSelectedObject = CCopasiContainer::ObjectFromName(ListOfContainer, cn);
+  pSelectedObject = CCopasiContainer::ObjectFromName(cn);
   if (pSelectedObject)
     {
       if (!isFirst)
