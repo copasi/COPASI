@@ -65,13 +65,15 @@ bool CCopasiXML::save(std::ostream & os)
 bool CCopasiXML::load(std::istream & is)
 {
   mpIstream = &is;
+  bool success = true;
 
-  return true;
+  return success;
 }
 
 bool CCopasiXML::saveModel()
 {
   bool success = true;
+  if (!haveModel()) return success;
 
   CXMLAttributeList Attributes;
   Attributes.add("key", mpModel->getKey());
@@ -248,7 +250,7 @@ bool CCopasiXML::saveModel()
 
               for (j = 0; j < jmax; j++)
                 {
-                  //Attr.setValue(0, (*pParamList)[j]->getKey());    //TODO: give the CParameter a key
+                  Attr.setValue(0, (*pParamList)[j]->getKey());
                   Attr.setValue(1, (*pParamList)[j]->getName());
                   Attr.setValue(2, (*pParamList)[j]->getValue());
 
@@ -285,9 +287,10 @@ bool CCopasiXML::saveModel()
                     {
                       const CCopasiObject * pObject = ObjectList[k];
 
-                      if (pObject->getObjectType() == "CParameter")
-                        //Attr.setValue(0, ((CParameter *)
-; //               (CCopasiContainer *) pObject)->getKey()); TODO: key
+                      if (pObject->getObjectType() == "Parameter")
+                        Attr.setValue(0,
+                                      ((CParameter *)
+                                       (CCopasiContainer *) pObject)->getKey());
                       else if (pObject->getObjectType() == "Metabolite")
                         Attr.setValue(0,
                                       ((CMetab *)
@@ -370,7 +373,7 @@ bool CCopasiXML::saveFunctionList()
       Attributes.erase();
       Attributes.add("key", pFunction->getKey());
       Attributes.add("name", pFunction->getName());
-      Attributes.add("type", CFunction::TypeName[pFunction->getType()]);
+      Attributes.add("type", CFunction::XMLType[pFunction->getType()]);
       startSaveElement("Function", Attributes);
 
       startSaveElement("MathML");
@@ -446,6 +449,7 @@ bool CCopasiXML::saveFunctionList()
 bool CCopasiXML::saveTaskList()
 {
   bool success = true;
+  // if (!haveTaskList()) return success;
 
   return success;
 }
@@ -453,6 +457,7 @@ bool CCopasiXML::saveTaskList()
 bool CCopasiXML::saveReportList()
 {
   bool success = true;
+  // if (!haveReportList()) return success;
 
   return success;
 }

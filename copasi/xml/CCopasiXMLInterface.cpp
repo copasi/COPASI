@@ -74,6 +74,18 @@ std::string CCopasiXMLInterface::utf8(const std::string & str)
   return utf8.str();
 }
 
+const char * CCopasiXMLInterface::getAttributeValue(const std::string & name,
+    const char ** attributes)
+{
+  unsigned C_INT32 i;
+
+  for (i = 0; attributes[i]; i += 2)
+    if (attributes[i] == name) break;
+
+  if (attributes[i]) return attributes[i + 1];
+  else return NULL;
+}
+
 CCopasiXMLInterface::CCopasiXMLInterface():
     mpModel(NULL),
     mpFunctionList(NULL),

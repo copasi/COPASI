@@ -10,11 +10,11 @@
 #define COPASI_CExpat
 
 #include <assert.h>
-#include "expat.h"
+#include <expat.h>
 
 /**
  * CExpatTemplate class.
- * The class CExpatTemplate is a demplate definening a C++ interface to
+ * The class CExpatTemplate is a demplate defining a C++ interface to
  * the expat library.
  *
  * Created for Copasi by Stefan Hoops 2003

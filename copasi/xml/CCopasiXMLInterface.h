@@ -227,6 +227,15 @@ class CCopasiXMLInterface
      */
     static std::string utf8(const std::string & str);
 
+    /**
+     * Retreive the attribute value for the given name out of the list
+     * of attributes.
+     * @param const std::string & name
+     * @param const char ** attributes
+     * @return const char * value
+     */
+    static const char * getAttributeValue(const std::string & name,
+                                          const char ** attributes);
   protected:
     /**
      * Save CDATA  to the ostream
