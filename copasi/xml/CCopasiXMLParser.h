@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2004/01/16 20:28:54 $
+   $Author: gauges $ 
+   $Date: 2004/07/05 14:44:41 $
    End CVS Header */
 
 /**
@@ -32,6 +32,9 @@ class CFunction;
 class CFunctionParameter;
 class CCopasiXMLParser;
 class CReportDefinition;
+
+class CCopasiParameter;
+class CCopasiParameterGroup;
 
 struct SCopasiXMLParserCommon
   {
@@ -102,6 +105,38 @@ struct SCopasiXMLParserCommon
      * Pointer to the currently processed report
      */
     CReportDefinition * pReport;
+
+    /**
+     * Pointer to the currently processed task
+     */
+    CCopasiTask* pCurrentTask;
+
+    /**
+     * Pointer to the currently processed parameter
+     */
+    CCopasiParameter* pCurrentParameter;
+
+    /**
+     * Pointer to the currently processed parameter group
+     */
+    CCopasiParameterGroup* pCurrentParameterGroup;
+
+    /**
+     * Nesting level of the currently processed parameter group
+     */
+    int mParameterGroupLevel;
+
+    /**
+     * A map that stores a vector of tasks that reference a certain key
+     * together with the key to the reference.
+     */
+    std::map<std::string , std::vector < CCopasiTask* > > taskReferenceMap;
+
+    /**
+     * A map that stores a vector of pairs of header,body or footer adresses
+     *  with the index together with the key to the reference.
+     */
+    std::map<std::string , std::vector < std::pair < std::vector <CCopasiObjectName >*, unsigned int > > > reportReferenceMap;
   };
 
 class CCopasiXMLParser : public CExpat
@@ -1174,11 +1209,8 @@ class CCopasiXMLParser : public CExpat
          */
         enum Element
         {
-          COPASI = 0,
-          ListOfFunctions,
-          Model,
-          ListOfTasks,
-          ListOfReports
+          ListOfTasks = 0,
+          Task
         };
 
         // Operations
@@ -1193,6 +1225,319 @@ class CCopasiXMLParser : public CExpat
          * Destructor
          */
         virtual ~ListOfTasksElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ReportInstanceElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Report = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ReportInstanceElement(CCopasiXMLParser & parser,
+                              SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ReportInstanceElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ProblemInitialStateElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          InitialState = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ProblemInitialStateElement(CCopasiXMLParser & parser,
+                                   SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ProblemInitialStateElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ParameterElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Parameter = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ParameterElement(CCopasiXMLParser & parser,
+                         SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ParameterElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ParameterGroupElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ParameterGroup = 0,
+          Parameter
+        };
+
+        CCopasiParameterGroup* oldGroup;
+        ParameterElement* mpParameterHandler;
+        ParameterGroupElement* mpParameterGroupHandler;
+
+        int level;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ParameterGroupElement(CCopasiXMLParser & parser,
+                              SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ParameterGroupElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ProblemElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Problem = 0,
+          Parameter,
+          ParameterGroup,
+          InitialState
+        };
+
+        ProblemInitialStateElement* mpInitialStateHandler;
+        ParameterGroupElement* mpParameterGroupHandler;
+        ParameterElement* mpParameterHandler;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ProblemElement(CCopasiXMLParser & parser,
+                       SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ProblemElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class MethodElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Method = 0,
+          Parameter,
+          ParameterGroup
+        };
+
+        ParameterElement* mpParameterHandler;
+        ParameterGroupElement* mpParameterGroupHandler;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        MethodElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~MethodElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class TaskElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Task = 0,
+          Report,
+          Problem,
+          Method
+        };
+
+        ReportInstanceElement* mpReportElement;
+        ProblemElement* mpProblemElement;
+        MethodElement* mpMethodElement;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        TaskElement(CCopasiXMLParser & parser,
+                    SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~TaskElement();
 
         /**
          * Start element handler
@@ -1344,8 +1689,8 @@ class CCopasiXMLParser : public CExpat
         {
           Header = 0,
           Object,
-          Text
-          /*Report*/
+          Text,
+          Report
         };
 
         // Operations
@@ -1386,8 +1731,9 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           Body = 0,
-          Complex
-          //Table
+          Object,
+          Text,
+          Report
         };
 
         // Operations
@@ -1418,7 +1764,6 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
-#ifdef XXXX
   class FooterElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
@@ -1430,8 +1775,8 @@ class CCopasiXMLParser : public CExpat
         {
           Footer = 0,
           Object,
-          Text
-          // Report
+          Text,
+          Report
         };
 
         // Operations
@@ -1461,7 +1806,48 @@ class CCopasiXMLParser : public CExpat
          */
         virtual void end(const XML_Char *pszName);
       };
-#endif // XXXX
+
+  class TableElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Table = 0,
+          Object
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        TableElement(CCopasiXMLParser & parser,
+                     SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~TableElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
 
   class ReportElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
@@ -1475,14 +1861,19 @@ class CCopasiXMLParser : public CExpat
           Report = 0,
           Comment,
           Header,
-          Body
-          //Footer
+          Body,
+          Footer,
+          Table
         };
 
         CommentElement * mpCommentElement;
         HeaderElement * mpHeaderElement;
         BodyElement * mpBodyElement;
-        //FooterElement * mpFooterElement;
+        FooterElement * mpFooterElement;
+        TableElement* mpTableElement;
+
+        bool tableFound;
+        bool otherFound;
 
         // Operations
       public:
