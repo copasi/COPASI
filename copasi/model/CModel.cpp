@@ -68,6 +68,7 @@ CModel::CModel():
     mInitialTime(0),
     mTime(0),
     mTransitionTime(0),
+    mMoieties("Moieties", this),
     mStoi(),
     mRedStoi(),
     mL(),
@@ -102,6 +103,7 @@ CModel::CModel(const CModel & src):
     mInitialTime(src.mInitialTime),
     mTime(src.mTime),
     mTransitionTime(src.mTransitionTime),
+    mMoieties(src.mMoieties, this),
     mStoi(src.mStoi),
     mRedStoi(src.mRedStoi),
     mL(src.mL),
@@ -1312,14 +1314,14 @@ void CModel::initObjects()
 {
   addObjectReference("Name", mTitle);
   addObjectReference("Comments", mComments);
-  add(&mCompartments);
-  add(&mMetabolites);
-  add(&mMetabolitesX);
-  add(&mMetabolitesInd);
-  add(&mMetabolitesDep);
-  add(&mSteps);
-  add(&mStepsX);
-  add(&mStepsInd);
+  //  add(&mCompartments);
+  //  add(&mMetabolites);
+  //  add(&mMetabolitesX);
+  //  add(&mMetabolitesInd);
+  //  add(&mMetabolitesDep);
+  //  add(&mSteps);
+  //  add(&mStepsX);
+  //  add(&mStepsInd);
   addVectorReference("Fluxes", mFluxes);
   addVectorReference("Reduced Model Fluxes", mFluxesX);
   addVectorReference("Scaled Fluxes", mScaledFluxes);
