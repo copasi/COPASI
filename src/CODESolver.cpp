@@ -43,7 +43,7 @@ CODESolver::CODESolver()
 
 CODESolver::~CODESolver() 
 {
-    cleanUp();
+    cleanup();
     cout << "~CODESolver " << mName << endl;
 }
 
@@ -68,7 +68,7 @@ void CODESolver::initialize(CModel & model,
     }
 }
 
-void CODESolver::cleanUp()
+void CODESolver::cleanup()
 {
     switch (mMethod)
     {
@@ -160,21 +160,24 @@ C_INT32 CODESolver::loadLSODAParameters(CReadConfig & configbuffer)
                                         CReadConfig::SEARCH))
         return Fail;
     if (Fail = configbuffer.getVariable("AbsoluteTolerance", "C_FLOAT64",
-                                        (void *) &mAtol,
-                                        CReadConfig::SEARCH))
+                                        (void *) &mAtol))
         return Fail;
     if (Fail = configbuffer.getVariable("AdamsMaxOrder", "C_INT32",
-                                        (void *) &mAdams,
-                                        CReadConfig::SEARCH))
+                                        (void *) &mAdams))
         return Fail;
-    if (mAdams<2) mAdams = 2;
-    else if (mAdams>12) mAdams = 12;
+    if (mAdams<2) 
+        mAdams = 2;
+    else if (mAdams>12) 
+        mAdams = 12;
+
     if (Fail = configbuffer.getVariable("BDFMaxOrder", "C_INT32",
-                                        (void *) &mBDF,
-                                        CReadConfig::SEARCH))
+                                        (void *) &mBDF))
         return Fail;
-    if (mBDF<2) mBDF = 2;
-    else if (mBDF>5) mBDF = 5;
+    if (mBDF<2) 
+        mBDF = 2;
+    else if (mBDF>5) 
+        mBDF = 5;
+
     return Fail;
 }
 

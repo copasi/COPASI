@@ -144,7 +144,7 @@ public:
      *  initialized for next time.
      *  
      */
-    void cleanUp();
+    void cleanup();
 
     /**
      *  Integrate the system from t to et using the selected solver
@@ -153,8 +153,6 @@ public:
      *  @return 0 if successful or an error code otherwise
      */
     C_INT32 step( C_FLOAT64 t, C_FLOAT64 et);
-
-private:
 
     /**
      *  Loads parameters specific for the LSODA solver, from a 
@@ -165,6 +163,7 @@ private:
      */
     C_INT32 loadLSODAParameters(CReadConfig & configbuffer);
 
+private:
     /**
      *  Saves the parameters specific for the LSODA solver to a 
      *  CWriteConfig object. (Which usually has a file attached but 

@@ -344,7 +344,7 @@ C_INT32 TestTrajectory(void)
     C_INT32 size = 0;
     C_INT32 i;
     
-    CReadConfig inbuf("gps/BakkerComp.gps");
+    CReadConfig inbuf("gps/HMM.gps");
     CModel model;
     model.load(inbuf);
     model.buildStoi();
@@ -355,6 +355,7 @@ C_INT32 TestTrajectory(void)
     model.buildMoieties();
     
     CTrajectory traj(&model, 20, 10.0, 1);
+    traj.getODESolver()->loadLSODAParameters(inbuf);
     traj.process();
     traj.cleanup();
 

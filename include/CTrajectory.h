@@ -117,7 +117,7 @@ public:
      *  Get the CODESolver member variable
      *  @return mODESolver
      */	
-    CODESolver * getSolver() const;
+    CODESolver * getODESolver() const;
 
     /*
      * Set the time points

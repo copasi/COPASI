@@ -65,6 +65,7 @@ void CTrajectory::initialize(CModel * aModel)
 {
     cleanup();
     
+    // we really need a copy of the model here
     mModel = aModel;
     mN = mModel->getDimension();
     
@@ -74,6 +75,7 @@ void CTrajectory::initialize(CModel * aModel)
     {
     case 1:
         mODESolver = new CODESolver();
+        mODESolver->initialize(* mModel, mY, mN, mMethod);
         break;
     default:
         fatalError();
@@ -90,7 +92,12 @@ void CTrajectory::cleanup()
     //if (mModel) delete mModel;
     mModel = NULL;
 
-    if (mODESolver) delete mODESolver;
+    if (mODESolver) 
+    {
+        mODESolver->cleanup();
+        delete mODESolver;
+    }
+    
     mODESolver = NULL;
     
     return;
@@ -114,7 +121,7 @@ void CTrajectory::setODESolver(CODESolver * aSolver)
 }
 
 
-CODESolver * CTrajectory::getSolver() const
+CODESolver * CTrajectory::getODESolver() const
 {
     return mODESolver;
 }
@@ -166,7 +173,7 @@ C_INT32 CTrajectory::getMethod() const
 
 void CTrajectory::process()
 {
-    mODESolver->initialize(* mModel, mY, mN, mMethod);
+    // mODESolver->initialize(* mModel, mY, mN, mMethod);
     
     // COutputEvent *OutInit = NULL, *OutPoint = NULL, *OutEnd = NULL;
 
@@ -177,11 +184,11 @@ void CTrajectory::process()
 
     //calculates number of iterations and time intervals
     C_FLOAT64 length = mEndTime/mPoints;
+    C_FLOAT64 t = 0.0;
 
     // print for the initial time point	
     // if (OutInit) OutInit.Print();
     // if (OutPoint) OutPoint.Print();
-    C_FLOAT64 t = 0.0;
         
     for(C_INT32 i = 0; i < mPoints; i++)
     {
@@ -203,7 +210,7 @@ void CTrajectory::process()
     // delete OutPoint;
     // delete OutEnd;
     
-    mODESolver->cleanUp();
+    // mODESolver->cleanup();
 }
 
 
