@@ -49,24 +49,30 @@ private:
     /**
      *  variable for steady-state solution
      */
-     C_FLOAT64 * mSs_x;
+     //C_FLOAT64 * mSs_x;
 
     /**
      *  variable for steady-state solution
      */
-     C_FLOAT64 * mSs_xnew;
+     //C_FLOAT64 * mSs_xnew;
 
     /**
      *  variable for steady-state solution
      */
      C_INT32 mSs_nfunction; 
 
-     //more variables
-     C_FLOAT64 mNjeval;
+    /**
+     *  variable for steady-state solution
+     *  its result is either SS_FOUND or SS_NOT_FOUND
+     */
+     C_INT32 mSs_solution;
 
-     C_FLOAT64 mNfeval;
+     //more variables
+     //C_FLOAT64 mNjeval;
+
+     //C_FLOAT64 mNfeval;
   
-     C_INT32 mSs_njacob;
+     // C_INT32 mSs_njacob;
 
     /**
      *  The CTrajectory to work with
@@ -113,71 +119,65 @@ public:
      *  set mOption
      *  @param anOption that's an int
      */
-     void SetOption(C_INT32 anOption);
+     void setOption(C_INT32 anOption);
 
     /**
      * get option
      * @return int mOption 
      */
-     C_INT32 GetOption() const;
+     C_INT32 getOption() const;
 
     /**
      *  set CModel
      *  @param aModel is the CModel set as mModel
      */
-     void SetModel(CModel * aModel);
+     void setModel(CModel * aModel);
 
     /**
      *  get CModel
      *  @return mModel
      */
-     CModel * GetModel() const;
+     CModel * getModel() const;
 
     /**
      *  set CNewton
      *  @param aNewton, CNewton pointer to be set as mNewton
      */
-     void SetNewton(CNewton * aNewton);
+     void setNewton(CNewton * aNewton);
 
     /**
      *  get CNewton
      *  @return mNewton private member
      */
-     CNewton * GetNewton() const;
+     CNewton * getNewton() const;
 
     /**
      *  set CTrajectory pointer
      *  @param aTraj, a CTrajectory pointer to be set as mTraj
      */
-     void SetTrajectory(CTrajectory * aTraj);
+     void setTrajectory(CTrajectory * aTraj);
 
     /**
      *  get CTrajectory pointer
      *  @return mTraj
      */
-     CTrajectory * GetTrajectory() const;
+     CTrajectory * getTrajectory() const;
 
     /**
      *  to process the primary function of this class
      */
-     void Process(void);
+     void process(void);
 
     /**
      *  Analyze steady state
      */
-     void SteadyState(void);  
+     void steadyState(void);  
 
     /**
      *  Check if it is steady state
      *  @return an int acting like a bool
      */
-     C_INT32 IsSteadyState( void );
-
-    /**
-    * returns the largest value in a vector
-    * @param mtm is a pointer to ??????
-    */
-    C_FLOAT64 SS_XNorn( C_FLOAT64 *mtx );
+     //C_INT32 isSteadyState( void );
 
 };
 

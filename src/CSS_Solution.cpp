@@ -5,8 +5,7 @@
 
 #include "CSS_Solution.h"
 
-//extern "C" int idamax( int n, double *dx, int incx );
-//extern ss_nfunction;
+
 //default constructor
 CSS_Solution::CSS_Solution()
 {
@@ -16,8 +15,8 @@ CSS_Solution::CSS_Solution()
   mOption = NEWTON;
 
   mSs_nfunction = 0;
-  mSs_x = NULL;
-  mSs_xnew = NULL;
+  //  mSs_x = NULL;
+  //mSs_xnew = NULL;
 
 }
 
@@ -54,68 +53,68 @@ CSS_Solution::~CSS_Solution()
 }
   
 //set mOption
-void CSS_Solution::SetOption(C_INT32 anOption)
+void CSS_Solution::setOption(C_INT32 anOption)
 {
   mOption = anOption;
 }
 
 // get option 
-C_INT32 CSS_Solution::GetOption() const
+C_INT32 CSS_Solution::getOption() const
 {
   return mOption;
 }
 
 
 //set mNewton
-void CSS_Solution::SetNewton(CNewton * aNewton)
+void CSS_Solution::setNewton(CNewton * aNewton)
 {
   mNewton = aNewton;
 }
 
 
 //get mNewton
-CNewton * CSS_Solution::GetNewton() const
+CNewton * CSS_Solution::getNewton() const
 {
   return mNewton;
 }
 
 //set mModel
-void CSS_Solution:: SetModel(CModel * aModel)
+void CSS_Solution:: setModel(CModel * aModel)
 {
   mModel = aModel;
 }
 
 
 //get mNewton
-CModel * CSS_Solution::GetModel() const
+CModel * CSS_Solution::getModel() const
 {
   return mModel;
 }
 
 //set mTraj
-void CSS_Solution::SetTrajectory(CTrajectory * aTraj)
+void CSS_Solution::setTrajectory(CTrajectory * aTraj)
 { 
   mTraj = aTraj;
 }
 
 
 //get mTraj
-CTrajectory *  CSS_Solution::GetTrajectory() const
+CTrajectory *  CSS_Solution::getTrajectory() const
 {
   return mTraj;
 }
 
 
 
-void CSS_Solution::Process(void)
+void CSS_Solution::process(void)
 {
   C_FLOAT64 t = 0.1;
 
-  mNewton->ProcessNewton();
+  mNewton->process();
 
   while (t < pow(10,10))
   {
-    if(IsSteadyState())
+    if(mNewton->isSteadyState())
       return;
 
     t *= 10;
@@ -127,11 +126,11 @@ void CSS_Solution::Process(void)
 
 }
 
+#ifdef XXXXXX
 
 //Yongqun: change SSStrategy to mOption
 //
-
-void CSS_Solution::SteadyState( void )
+void CSS_Solution::steadyState( void )
 {
  int i,j;
  int temp_points;
@@ -163,7 +162,7 @@ void CSS_Solution::SteadyState( void )
    )
  {
   // load array with the metabolite initial concentrations
-  for( i=0; i<mModel.TotMetab; i++ )
+  for( i=0; i<mModel->getTotMetab(); i++ )
    lsoda_y[i+1] = mModel.Metabolite[mModel.Row[i]].IConc *
                   mModel.Compartment[mModel.Metabolite[mModel.Row[i]].Compart].Volume;
   // set the integration tolerances
@@ -324,33 +323,37 @@ try
 // }
 }
 
+
+
 // finds out if current state is a valid steady state
 // destroys the contents of matrix ss_dxdt
-C_INT32 CSS_Solution::IsSteadyState( void )
+C_INT32 CSS_Solution::isSteadyState( void )
 {
  int i;
  double maxrate;
- ss_solution = SS_NOT_FOUND;
- for( i=0; i<mModel.IntMetab; i++ )
+ mSs_solution = SS_NOT_FOUND;
+ for( i=0; i<mModel->getIntMetab(); i++ )
+   // if( mSs_x[i+1] < 0.0 ) return SS_NOT_FOUND;
   if( mSs_x[i+1] < 0.0 ) return SS_NOT_FOUND;
-try
-{
- FEval( 0, 0, mSs_x, ss_dxdt );
+ //try
+ //{
+ //FEval( 0, 0, mSs_x, ss_dxdt );
+ mModel->lSODAEval( 0, 0, mNewton->getSs_xnew(), mNewton->getSs_dxdt() );
  mSs_nfunction++;
  // maxrate = SS_XNorn( ss_dxdt );
- maxrate = xNorm(mModel->getIntMetab(), ss_dxd, 1);
-}
+ maxrate = xNorm(mModel->getIntMetab(),mNewton->getSs_dxdt(), 1);
+ //}
 //__finally
 //{
 //}
- if( maxrate < SSRes ) ss_solution = SS_FOUND;
- return ss_solution;
+ // if( maxrate < SSRes ) mSs_solution = SS_FOUND;
+ if( maxrate < mNewton->getSSRes() ) mSs_solution = SS_FOUND;
+ return mSs_solution;
 }
 
 
 
-
-
+#endif //XXXXXX
 
 
 

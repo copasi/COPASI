@@ -529,9 +529,10 @@ void dgefa(C_FLOAT64 ** a,
 }
 
 
-/*
+  /*
+
 // evaluates the Jacobian matrix
-void CNewton::JEval( double *y, double **ydot )
+void JEval( double *y, double **ydot )
 {
  register int i, j;
  double store, temp, *f1, *f2;
@@ -579,7 +580,7 @@ void CNewton::JEval( double *y, double **ydot )
 
 
 // evaluates the Jacobian matrix
-void CNewton::JEval( double *y, double **ydot )
+void JEval( double *y, double **ydot )
 {
  register int i, j;
  double store, temp, *f1, *f2;

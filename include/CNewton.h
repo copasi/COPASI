@@ -1,6 +1,7 @@
 /**
-  CNewton.h
-
+ *  CNewton.h
+ *  Note: modified by Yongqun He from GepasiDoc class of the gepasi.
+ *
  */
 
 #ifndef CNewton_H
@@ -59,15 +60,31 @@ private:
      */
      C_FLOAT64 * mSs_xnew;
 
+
+     // variables for steady-state solution
+     //add more variables here
+
+     C_FLOAT64 * mSs_dxdt;
+
+     C_FLOAT64 * mSs_h;
+
+     C_FLOAT64 ** mSs_jacob;
+
+     C_INT32 * mSs_ipvt;
+
+     int mSs_solution;
+
+     //  int mSs_unstable;
+
     /**
      * The number counter of FVal() function
      */
-     //  C_INT32 mFunctionCounter;
+     C_INT32 mSs_nfunction;
 
     /**
      *  private function, evaluate the balance equations
      */
-     void FEval(int num, double time, double *y, double *ydot );
+     //void FEval(int num, double time, double *y, double *ydot );
 
     /**
      *  private function, evaluate the Jacobian matrix
@@ -76,36 +93,6 @@ private:
 
 
    /*
-      // variables for steady-state solution
-// double			*ss_x;
- double			*ss_dxdt;
- //double			*ss_xnew;
- double			*ss_h;
- int			*ss_ipvt;
- int			ss_solution;
- int			ss_unstable;
-
-     // copy from GepasiDoc.cpp void CGepasiDoc::InitialiseEngine( void ).
-     //
-     // Newton variables
- mSs_x = new double[Model.TotMetab+1];
- mSs_xnew = new double[Model.TotMetab+1];
- ss_dxdt = new double[Model.TotMetab+1];
- ss_h = new double[Model.TotMetab+1];
- ss_ipvt = new int[Model.IndMetab+1];
- ss_jacob = new double *[Model.TotMetab+1];
- for( i=0; i<Model.TotMetab+1; i++ )
-  ss_jacob[i] = new double[Model.TotMetab+1];
-
-  //copy from void CGepasiDoc::CleanupEngine( void )
-  // Newton variables
-// delete [] mSs_x;
-// delete [] mSs_xnew;
- delete [] ss_dxdt;
- delete [] ss_h;
- delete [] ss_ipvt;
- for( i=0; i<Model.TotMetab+1; i++ ) delete [] ss_jacob[i];
- delete [] ss_jacob;
 
  //copy from  void CGepasiDoc::ResetVariables( void )
  NewtonLimit = DefaultNewtonLimit;
@@ -124,15 +111,11 @@ private:
   PMMessageBox( IDS_WARN_NEWTON, MB_ICONINFORMATION | MB_OK );
   NewtonLimit = DefaultNewtonLimit;
  }
+
    */
 
 //Operations
 public:
-
-    /**
-     * a counter for Fval() function
-     */
-     static int ss_nfunction;
 
     /**
      * default constructor
@@ -165,59 +148,77 @@ public:
 
 
     /**
+     *  iniliatize()
+     */
+     void initialize();
+
+
+    /**
      *  set CModel
      *  @param aModel is the CModel set as mModel
      */
-     void SetModel(CModel * aModel);
+     void setModel(CModel * aModel);
 
     /**
      *  get CModel
      *  @return mModel, the private CModel pointer
      */
-     CModel * GetModel() const;
+     CModel * getModel() const;
 
     /**
      *  set mSSRes
      *  @param aDouble is a double set as mSSRes
      */
-     void SetSSRes(C_FLOAT64 aDouble);
+     void setSSRes(C_FLOAT64 aDouble);
 
     /**
      *  get mSSRes
      *  @return mSSRes, the private mSSRes double
      */
-     C_FLOAT64 GetSSRes() const;
+     C_FLOAT64 getSSRes() const;
+
+
+    /**
+     *  get mSs_xnew
+     *  @return mSs_xnew, the private mSs_xnew double pointer
+     */
+     C_FLOAT64 * getSs_xnew() const;
+
+    /**
+     *  get mSs_dxdt
+     *  @return mSs_dxdt, the private mSs_dxdt double pointer
+     */
+     C_FLOAT64 * getSs_dxdt() const;
 
     /**
      *  set mDerivFactor
      *  @param aDouble is a double set as mDerivFactor
      */
-     void SetDerivFactor(C_FLOAT64 aDouble);
+     void setDerivFactor(C_FLOAT64 aDouble);
 
     /**
      *  get mDerivFactor
      *  @return mDerivFactor, the private mDerivFactor double
      */
-     C_FLOAT64 GetDerivFactor() const;
+     C_FLOAT64 getDerivFactor() const;
 
 
     /**
      *  to process the primary function of this class
      */
-     void ProcessNewton(void);
+     void process(void);
 
     /**
      * Clean up internal pointer variables
      */
-     void Cleanup(double * ss_dxdt, 
-                       double * ss_h, C_INT32 * ss_ipvt, double ** ss_jacob);
+     void cleanup(void);
+
 
      /**
-      * returns the largest value in a vector
-      * @param mtm is a pointer to ??????
+      * finds out if current state is a valid steady state
+      *  destroys the contents of matrix ss_dxdt
       */
-
-     //C_FLOAT64 SS_XNorn( C_FLOAT64 * mtx );
+     C_INT32 isSteadyState( void );
 
 
 };
