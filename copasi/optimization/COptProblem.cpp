@@ -74,6 +74,17 @@ void COptProblem::initialize(void)
   mBestParameters = new double[mParameterNum];
   mParameterMin = new double[mParameterNum];
   mParameterMax = new double[mParameterNum];
+
+  /**
+   * Initializing the steady state and Trajectory pointers to NULL
+   */
+  steady_state = NULL;
+  trajectory = NULL;
+
+  //  For test purposes: delete test.txt after the CSS_Solution.process(&ofstream)
+  //  is modified to CSS_Solution.process()
+
+  ofstream out("test.txt");
 }
 
 // check constraints : unimplemented - always returns true
@@ -87,9 +98,27 @@ bool COptProblem::checkFunctionalConstraints()
   return true;
 }
 
-//
+/**
+ * calculate() decides whether the problem is a steady state problem or a
+ * trajectory problem based on whether the pointer to that type of problem
+ * is null or not.  It then calls the process() method for that type of 
+ * problem.  Currently process takes ofstream& as a parameter but it will
+ * change so that process() takes no parameters.
+ */
 C_FLOAT64 COptProblem::calculate()
-{ return 0; }
+{
+  if (steady_state != NULL)
+    {
+      cout << "COptProblem: steady_state";
+      steady_state->process(out);
+    }
+  if (trajectory != NULL)
+    {
+      cout << "COptProblem: trajectory";
+      trajectory->process(out);
+    }
+  return 0;
+}
 
 //set the parameter values
 void COptProblem::setParamterValues(double * aDouble)
@@ -198,4 +227,13 @@ double * COptProblem::getParameterMax()
 double COptProblem::getParameterMax(int i)
 {
   return mParameterMax[i];
+}
+
+// set the type of problem : Steady State OR Trajectory
+void COptProblem::setProblemType(ProblemType t)
+{
+  if (t = SteadyState)
+    steady_state = new CSS_Solution();
+  if (t = Trajectory)
+    trajectory = new CTrajectory();
 }
