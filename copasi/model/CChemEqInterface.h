@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/22 17:34:28 $
+   $Date: 2004/09/22 20:58:23 $
    End CVS Header */
 
 #ifndef CCHEMEQINTERFACE_H
@@ -37,7 +37,7 @@ class CChemEqInterface
     ~CChemEqInterface();
 
     std::string getChemEqString(bool expanded) const;
-    void setChemEqString(const std::string & ces);
+    bool setChemEqString(const std::string & ces);
 
     bool loadFromChemEq(const CModel * model, const CChemEq & ce);
     bool writeToChemEq(const CModel * model, CChemEq & ce) const;
@@ -83,8 +83,6 @@ class CChemEqInterface
     static bool extractModifier(const std::string & input,
                                 std::string::size_type & pos,
                                 std::string & name);
-
-    static bool isValidEqPart(const std::string & s);
 
     static bool checkFirstLevel(const std::string & eq);
   };

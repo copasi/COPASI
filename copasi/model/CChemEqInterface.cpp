@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/22 17:34:27 $
+   $Date: 2004/09/22 20:58:23 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -67,22 +67,22 @@ std::string CChemEqInterface::getChemEqString(bool expanded) const
     return ChemicalEquation;
   }
 
-void CChemEqInterface::setChemEqString(const std::string & ces)
+bool CChemEqInterface::setChemEqString(const std::string & ces)
 {
   std::string Substrates, Products, Modifiers;
 
   //cleanup();
-  if (!checkFirstLevel(ces)) return;
+  if (!checkFirstLevel(ces)) return false;
   mReversibility = splitChemEq(ces, Substrates, Products, Modifiers);
 
-  setElements(mSubstrateNames, mSubstrateMult, Substrates);
+  if (!setElements(mSubstrateNames, mSubstrateMult, Substrates)) return false;
 
-  setElements(mProductNames, mProductMult, Products);
+  if (!setElements(mProductNames, mProductMult, Products)) return false;
 
   // True tells the method to look for " " as separator instead of " + ".
-  setElements(mModifierNames, mModifierMult, Modifiers, true);
+  if (!setElements(mModifierNames, mModifierMult, Modifiers, true)) return false;
 
-  //  return mReversibility;
+  return true;
 }
 
 bool CChemEqInterface::loadFromChemEq(const CModel * model, const CChemEq & ce)
@@ -290,9 +290,9 @@ bool CChemEqInterface::extractElement(const std::string & input,
   std::string part = input.substr(Start, eee - Start);
 
   //part now contains the term we want to analyze
-  std::cout << "    part " << part << std::endl;
+  std::cout << "    part \"" << part << "\"" << std::endl;
 
-  std::string::size_type Multiplier = part.find("*", Start);
+  std::string::size_type Multiplier = part.find("*", 0);
   std::string::size_type Multiplier2 = part.find("*", Multiplier + 1);
   if (Multiplier2 != std::string::npos)
     {
@@ -324,7 +324,7 @@ bool CChemEqInterface::extractElement(const std::string & input,
   std::string nameString = part.substr(NameStart, NameEnd - NameStart);
 
   //nameString now contains the metab name of the term we want to analyze
-  std::cout << "    nameString " << nameString << std::endl;
+  std::cout << "    nameString \"" << nameString << "\"" << std::endl;
 
   if (!CMetabNameInterface::isValidMetabName(nameString))
     {
@@ -345,16 +345,25 @@ bool CChemEqInterface::extractModifier(const std::string & input,
   std::string Value;
 
   std::string::size_type Start = input.find_first_not_of(" ", pos);
-  std::string::size_type End;
-  if (Start == std::string::npos)
-    End = Start;
-  else
-    End = input.find(" ", Start);
+  if (Start == std::string::npos) //empty
+    {
+      name = ""; pos = std::string::npos;
+      return true;
+    }
 
-  if (Start != std::string::npos)
-    name = input.substr(Start, End - Start);
+  std::string::size_type End = input.find(" ", Start);
+  std::string part = input.substr(Start, End - Start);
+
+  //part now contains the term we want to analyze
+  std::cout << "    part/metabName \"" << part << "\"" << std::endl;
+
+  if (!CMetabNameInterface::isValidMetabName(part))
+    {
+      std::cout << "invalid  metab name  \n";
+      return false;
+    }
   else
-    name = "";
+    name = part;
 
   pos = (End == std::string::npos) ? End : End + 1;
   return true;
@@ -478,39 +487,27 @@ void CChemEqInterface::setChemEqFromString(const CModel * model, CReaction & rea
   cei.writeToChemEq(model, rea.getChemEq());
 }
 
-//static
-bool CChemEqInterface::isValidEqPart(const std::string & s)
-{
-  return true;
-}
-
 /*static*/
 bool CChemEqInterface::isValidEq(const std::string & eq)
 {
-  // a valid equation should be in the format of (metab + (metab)*) (= | ->) (metab (+ metab)*) (; (modifieer)*)
-  // metab here can include moiety
+  std::string Substrates, Products, Modifiers;
 
   if (!checkFirstLevel(eq)) return false;
+  splitChemEq(eq, Substrates, Products, Modifiers);
 
-  // it should be save now to split the string
-  std::string substrates, products, modifiers;
-  bool reversibility = splitChemEq(eq, substrates, products, modifiers);
+  std::vector<std::string> dummyNames;
+  std::vector<C_FLOAT64> dummyMults;
+  if (!setElements(dummyNames, dummyMults, Substrates)) return false;
 
-  if (!isValidEqPart(substrates))
-    {
-      //debugging
-      std::cout << "substrates part not valid\n";
-      return false;
-    }
+  bool flag = false;
+  if (dummyNames.size() == 0) flag = true; //no substrate present
 
-  if (!isValidEqPart(products))
-    {
-      //debugging
-      std::cout << "products part not valid\n";
-      return false;
-    }
+  if (!setElements(dummyNames, dummyMults, Products)) return false;
 
-  // next check if each metabolite name is valid
+  if ((dummyNames.size() == 0) && flag) return false; //neither substrate nor product
+
+  // True tells the method to look for " " as separator instead of " + ".
+  if (!setElements(dummyNames, dummyMults, Modifiers, true)) return false;
 
   return true;
 }
@@ -521,7 +518,6 @@ bool CChemEqInterface::checkFirstLevel(const std::string & eq)
   std::string::size_type startMetab = eq.find_first_not_of(" ");  // the starting position of the first metabolite, also the equation
   if (startMetab == std::string::npos)  // empty equation string
     {
-      //debugging
       std::cout << "Empty equation string\n";
       return false;
     }
