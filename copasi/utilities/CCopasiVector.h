@@ -146,10 +146,19 @@ template < class CType > class CCopasiVector:
       }
 
       /**
-       *
+       * Retrieve a the CCopasiObject with the given name.
+       * @param const CCopasiObjectName &name
+       * @return const CCopasiObject * object
        */
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
         {return (CCopasiObject *) (*this)[name.getIndex()];}
+
+      /**
+       * Retrieve a vector of contained objects.
+       * @return  const std::vector< CCopasiObject * > & mObjects
+       */
+      virtual const std::vector< CCopasiObject * > & getObjects() const
+        {return *(std::vector< CCopasiObject * > *)this;}
 
       /**
        *  Retrieves the size of the vector
