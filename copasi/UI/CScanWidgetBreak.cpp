@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetBreak.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:27:39 $
+   $Date: 2005/03/17 15:21:20 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetBreak.ui'
  **
- ** Created: Sa Feb 26 19:16:27 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetBreak.cpp,v 1.1 2005/02/27 20:27:39 ssahle Exp $)
+ ** Created: Do Mär 17 16:10:04 2005
+ **      by: The User Interface Compiler ($Id: CScanWidgetBreak.cpp,v 1.2 2005/03/17 15:21:20 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -44,16 +44,19 @@ CScanWidgetBreak::CScanWidgetBreak(QWidget* parent, const char* name, WFlags fl)
   frameLayout = new QGridLayout(frame, 1, 1, 6, 6, "frameLayout");
 
   comboBoxReport = new QComboBox(FALSE, frame, "comboBoxReport");
+  comboBoxReport->setEnabled(FALSE);
   comboBoxReport->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, comboBoxReport->sizePolicy().hasHeightForWidth()));
 
   frameLayout->addWidget(comboBoxReport, 0, 3);
 
   textLabelReport = new QLabel(frame, "textLabelReport");
+  textLabelReport->setEnabled(FALSE);
   textLabelReport->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
   frameLayout->addWidget(textLabelReport, 0, 2);
 
   comboBoxPlot = new QComboBox(FALSE, frame, "comboBoxPlot");
+  comboBoxPlot->setEnabled(FALSE);
   comboBoxPlot->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, comboBoxPlot->sizePolicy().hasHeightForWidth()));
 
   frameLayout->addWidget(comboBoxPlot, 1, 3);
@@ -63,6 +66,7 @@ CScanWidgetBreak::CScanWidgetBreak(QWidget* parent, const char* name, WFlags fl)
   frameLayout->addMultiCellWidget(labelTitle, 0, 1, 0, 0);
 
   textLabelPlot = new QLabel(frame, "textLabelPlot");
+  textLabelPlot->setEnabled(FALSE);
   textLabelPlot->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
   frameLayout->addWidget(textLabelPlot, 1, 2);

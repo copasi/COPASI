@@ -70,6 +70,9 @@
                     <property name="name">
                         <cstring>comboBoxReport</cstring>
                     </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
                     <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>0</hsizetype>
@@ -82,6 +85,9 @@
                 <widget class="QLabel" row="0" column="2">
                     <property name="name">
                         <cstring>textLabelReport</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
                     </property>
                     <property name="text">
                         <string>for reports:</string>
@@ -109,6 +115,9 @@
                     <property name="name">
                         <cstring>comboBoxPlot</cstring>
                     </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
                     <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>0</hsizetype>
@@ -129,6 +138,9 @@
                 <widget class="QLabel" row="1" column="2">
                     <property name="name">
                         <cstring>textLabelPlot</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
                     </property>
                     <property name="text">
                         <string>for plots:</string>
