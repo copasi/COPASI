@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/19 20:01:18 $
+   $Date: 2004/12/22 15:51:28 $
    End CVS Header */
 
 /*******************************************************************
@@ -61,18 +61,14 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addWidget(mLblName, 0, 0);
 
   mEditName = new QLineEdit(this, "mEditName");
-  MetabolitesWidget1Layout->addMultiCellWidget(mEditName, 0, 0, 1, 3);
+  MetabolitesWidget1Layout->addMultiCellWidget(mEditName, 0, 0, 1, 2);
 
   mLblCompartment = new QLabel(this, "mLblCompartment");
-  mLblCompartment->setText(trUtf8("Compartment Name"));
+  mLblCompartment->setText(trUtf8("Compartment"));
   MetabolitesWidget1Layout->addWidget(mLblCompartment, 1, 0);
 
   mComboCompartment = new QComboBox(FALSE, this, "mComboCompartment");
-  MetabolitesWidget1Layout->addMultiCellWidget(mComboCompartment, 1, 1, 1, 3);
-
-  Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 10, 10, 0, 3); //2
+  MetabolitesWidget1Layout->addMultiCellWidget(mComboCompartment, 1, 1, 1, 2);
 
   mLblInitStatus = new QLabel(this, "mLblInitStatus");
   mLblInitStatus->setText(trUtf8("Metabolite status"));
@@ -84,69 +80,77 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   mCheckStatus->setChecked(true);
   MetabolitesWidget1Layout->addWidget(mCheckStatus, 3, 1);
 
-  mLblStatus = new QLabel(this, "mLblStatus");
-  mLblStatus->setText(trUtf8("Model Status"));
-  MetabolitesWidget1Layout->addWidget(mLblStatus, 3, 2);
+  //mLblStatus = new QLabel(this, "mLblStatus");
+  //mLblStatus->setText(trUtf8("Model Status"));
+  //MetabolitesWidget1Layout->addWidget(mLblStatus, 3, 2);
 
   mEditStatus = new QLineEdit(this, "mEditStatus");
   mEditStatus->setEnabled(false);
-  MetabolitesWidget1Layout->addWidget(mEditStatus, 3, 3);
+  MetabolitesWidget1Layout->addWidget(mEditStatus, 3, 2);
 
   //***********************************************
 
   Line2 = new QFrame(this, "Line2");
   Line2->setFrameShape(QFrame::HLine);
-  MetabolitesWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 3);
+  MetabolitesWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 2);
+
+  mLblConcentration = new QLabel(this, "mLblConcentration");
+  mLblConcentration->setText(trUtf8("Initial value"));
+  MetabolitesWidget1Layout->addWidget(mLblConcentration, 5, 1);
+
+  mLblNumber = new QLabel(this, "mLblNumber");
+  mLblNumber->setText(trUtf8("Transient value"));
+  MetabolitesWidget1Layout->addWidget(mLblNumber, 5, 2);
 
   mLblInitConcentration = new QLabel(this, "mLblInitConcentration");
-  mLblInitConcentration->setText(trUtf8("Initial  Concentration"));
+  mLblInitConcentration->setText(trUtf8("Concentration"));
   MetabolitesWidget1Layout->addWidget(mLblInitConcentration, 6, 0);
 
   mEditInitConcentration = new MyLineEdit(this, "mEditInitConcentration");
   mEditInitConcentration->setValidator(new QDoubleValidator(mEditInitConcentration));
   MetabolitesWidget1Layout->addWidget(mEditInitConcentration, 6, 1);
 
-  mLblConcentration = new QLabel(this, "mLblConcentration");
-  mLblConcentration->setText(trUtf8("Transient Concentration"));
-  MetabolitesWidget1Layout->addWidget(mLblConcentration, 6, 2);
-
   mEditConcentration = new QLineEdit(this, "mEditConcentration");
   mEditConcentration->setEnabled(false);
-  MetabolitesWidget1Layout->addWidget(mEditConcentration, 6, 3);
+  MetabolitesWidget1Layout->addWidget(mEditConcentration, 6, 2);
 
   mLblInitNumber = new QLabel(this, "mLblInitNumber");
-  mLblInitNumber->setText(trUtf8("Initial  Number"));
+  mLblInitNumber->setText(trUtf8("Particle Number"));
   MetabolitesWidget1Layout->addWidget(mLblInitNumber, 7, 0);
 
   mEditInitNumber = new MyLineEdit(this, "mEditInitNumber");
   mEditInitNumber->setValidator(new QDoubleValidator(mEditInitNumber));
   MetabolitesWidget1Layout->addWidget(mEditInitNumber, 7, 1);
 
-  mLblNumber = new QLabel(this, "mLblNumber");
-  mLblNumber->setText(trUtf8("Transient Number"));
-  MetabolitesWidget1Layout->addWidget(mLblNumber, 7, 2);
-
   mEditNumber = new QLineEdit(this, "mEditNumber");
   mEditNumber->setEnabled(FALSE);
-  MetabolitesWidget1Layout->addWidget(mEditNumber, 7, 3);
+  MetabolitesWidget1Layout->addWidget(mEditNumber, 7, 2);
+
+  //********
 
   mLblTransitionTime = new QLabel(this, "mLblTransitionTime");
   mLblTransitionTime->setText(trUtf8("Transition Time"));
-  MetabolitesWidget1Layout->addWidget(mLblTransitionTime, 8, 2);
+  MetabolitesWidget1Layout->addWidget(mLblTransitionTime, 8, 1);
 
   mEditTransitionTime = new QLineEdit(this, "mEditTransitionTime");
   mEditTransitionTime->setEnabled(FALSE);
-  MetabolitesWidget1Layout->addWidget(mEditTransitionTime, 8, 3);
+  MetabolitesWidget1Layout->addWidget(mEditTransitionTime, 8, 2);
 
   mLblRate = new QLabel(this, "mLblRate");
-  mLblRate->setText(trUtf8("Rate of concentration change"));
-  MetabolitesWidget1Layout->addWidget(mLblRate, 9, 2);
+  mLblRate->setText(trUtf8("Concentration rate"));
+  MetabolitesWidget1Layout->addWidget(mLblRate, 9, 1);
 
   mEditRate = new QLineEdit(this, "mEditRate");
   mEditRate->setEnabled(FALSE);
-  MetabolitesWidget1Layout->addWidget(mEditRate, 9, 3);
+  MetabolitesWidget1Layout->addWidget(mEditRate, 9, 2);
 
   //***********************************************
+
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 10, 10, 0, 2); //2
+
+  //***************************************
 
   mReactionsLabel = new QLabel(this, "ReactionsLabel");
   mReactionsLabel->setText("Reactions\naffecting this\nmetabolite");
@@ -161,16 +165,16 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   mReactionsTable->horizontalHeader()->setLabel(1, "chemical equation");
   mReactionsTable->setReadOnly(true);
   mReactionsTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-  MetabolitesWidget1Layout->addMultiCellWidget(mReactionsTable, 11, 11, 1, 3);
+  MetabolitesWidget1Layout->addMultiCellWidget(mReactionsTable, 11, 11, 1, 2);
 
   QSpacerItem* spacer_3 = new QSpacerItem(470, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addMultiCell(spacer_3, 12, 12, 0, 3);
+  MetabolitesWidget1Layout->addMultiCell(spacer_3, 12, 12, 0, 2);
 
   Line3 = new QFrame(this, "Line3");
   Line3->setFrameShape(QFrame::HLine);
   //Line3->setFrameShadow(QFrame::Sunken);
   //Line3->setFrameShape(QFrame::HLine);
-  MetabolitesWidget1Layout->addMultiCellWidget(Line3, 13, 13, 0, 3);
+  MetabolitesWidget1Layout->addMultiCellWidget(Line3, 13, 13, 0, 2);
 
   //***************************************
   Layout7 = new QHBoxLayout(0, 0, 6, "Layout7");
@@ -191,7 +195,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   deleteMetaboliteBtn->setText(trUtf8("Delete"));
   Layout7->addWidget(deleteMetaboliteBtn);
 
-  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 14, 14, 0, 3);
+  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 14, 14, 0, 2);
 
   //*******************************************
 
@@ -463,7 +467,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                  // Yes or Enter
+    case 0:                                   // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -486,7 +490,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                  // No or Escape
+    case 1:                                   // No or Escape
       break;
     }
 }
