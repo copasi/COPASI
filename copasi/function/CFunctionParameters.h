@@ -164,6 +164,12 @@ class CFunctionParameters : public CCopasiContainer
     unsigned C_INT32 getNumberOfParametersByUsage(const std::string & usage) const;
 
     /**
+     * find a parameter by its name and return its index
+     */
+    unsigned C_INT32 findParameterByName(const std::string & name,
+                                         CFunctionParameter::DataType & dataType) const;
+
+    /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CFunctionParameters & d)

@@ -131,6 +131,28 @@ unsigned C_INT32 CFunctionParameters::getNumberOfParametersByUsage(const std::st
     return count;
   }
 
+unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & name,
+    CFunctionParameter::DataType & dataType) const
+  {
+    std::string VectorName = name.substr(0, name.find_last_of('_'));
+    std::string Name;
+    unsigned C_INT32 i, imax = mParameters.size();
+
+    for (i = 0; i < imax; i++)
+      {
+        Name = mParameters[i]->getName();
+
+        if (Name == name || Name == VectorName)
+          {
+            dataType = mParameters[i]->getType();
+            return i;
+          }
+      }
+
+    fatalError()
+    return - 1;
+  }
+
 void CFunctionParameters::updateUsageRanges()
 {
   unsigned C_INT32 i, imax = mParameters.size();
