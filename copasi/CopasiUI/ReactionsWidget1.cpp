@@ -248,6 +248,7 @@ void ReactionsWidget1::loadName(QString setValue)
   QHeader *tableHeader1 = table->horizontalHeader();
   QHeader *tableHeader2 = table->verticalHeader();
   CCopasiVector < CReaction::CId2Metab> * react3 = &reactn->getId2Modifiers();
+  //const CCopasiVector < CChemEqElement > * react3 = &reactn->getChemEq().getModifiers();
 
   if (react3->size() != 0)
     {
@@ -293,91 +294,76 @@ void ReactionsWidget1::loadName(QString setValue)
       QStringList comboEntries1;
       comboEntries1 = overall;
       QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
-      //table->setItem(0, 0, item);
+      table->setItem(0, 0, item);
     }
 
-  /* CCopasiVector < CReaction::CId2Metab > & react1 = reactn->getId2Substrates();
-     C_INT32 noOfReact1s =react1.size();
-     for (int k = 0; k <noOfReact1s; ++k)
-     {
-       QString overall1=react1[k]->getMetaboliteName().c_str();
-       QString & overall1_2=overall1.operator+=(overall2) ;
-    QString overall3=react1[k]->getCompartmentName().c_str();
-    QString & overall3_4=overall3.operator+=(overall4) ;
-    QString & overall=overall1_2.operator+=(overall3_4) ;
-    //for the combo box
-    QStringList comboEntries1;
-    comboEntries1= overall;
-    QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
-    table->setItem(0, 0, item);
-     }
-   
-   
-   
-     CCopasiVector < CReaction::CId2Metab> & react2 = reactn->getId2Products();
-     C_INT32 noOfReact2s =react2.size();
-     for (k = 0; k <noOfReact2s; ++k)
-     {
-     QString overall1=react2[k]->getMetaboliteName().c_str();
-     QString & overall1_2=overall1.operator+=(overall2) ;
-     QString overall3=react2[k]->getCompartmentName().c_str();
-     QString & overall3_4=overall3.operator+=(overall4) ;
-     QString & overall=overall1_2.operator+=(overall3_4) ;
-     //for the combo box
-     QStringList comboEntries2;
-     comboEntries2= overall;
-     QComboTableItem * item = new QComboTableItem(table, comboEntries2, FALSE);
-     table->setItem(1, 0, item);
-     }
-   
-   
-    int i=2;
-    C_INT32 noOfReact3s =react3.size();
-    if(noOfReact3s!=0)
-    { 
-     tableHeader2->setLabel(i,"Modifiers");
-     i++;
-     for (k = 0; k <noOfReact3s; ++k)
-     {
-      QString overall1=react3[k]->getMetaboliteName().c_str();
-      QString & overall1_2=overall1.operator+=(overall2) ;
-      QString overall3=react3[k]->getCompartmentName().c_str();
-      QString & overall3_4=overall3.operator+=(overall4) ;
-      QString & overall=overall1_2.operator+=(overall3_4) ;
-   
-   
+  const CCopasiVector < CChemEqElement > * react2 = &reactn->getChemEq().getProducts();
+
+  //CCopasiVector < CReaction::CId2Metab> & react2 = reactn->getId2Products();
+  //C_INT32 noOfReact2s =react2.size();
+  for (k = 0; k < react2->size(); ++k)
+    {
+      cchem = (*react2)[k];
+      QString overall1 = cchem->getMetaboliteName().c_str();
+      QString & overall1_2 = overall1.operator += (overall2) ;
+      QString overall3 = cchem->getCompartmentName().c_str();
+      QString & overall3_4 = overall3.operator += (overall4) ;
+      QString & overall = overall1_2.operator += (overall3_4) ;
       //for the combo box
-      QStringList comboEntries3;
-      comboEntries3= overall;
-         QComboTableItem * item = new QComboTableItem(table, comboEntries3, FALSE);
-      table->setItem(2, 0, item);
-     }
+      QStringList comboEntries2;
+      comboEntries2 = overall;
+      QComboTableItem * item = new QComboTableItem(table, comboEntries2, FALSE);
+      table->setItem(1, 0, item);
     }
-   
-    CCopasiVector < CReaction::CId2Param > & react4 = reactn->getId2Parameters();
-    C_INT32 noOfReact4s =react4.size();
-    for (k = 0; k <noOfReact4s; ++k)
-     {
+
+  int i = 2;
+  C_INT32 noOfReact3s = react3->size();
+
+  if (noOfReact3s != 0)
+    {
+      tableHeader2->setLabel(i, "Modifiers");
+      i++;
+      /* for (k = 0; k <noOfReact3s; ++k)
+       {
+      cchem = (*react3)[k];
+        QString overall1=cchem->getMetaboliteName().c_str();
+        QString & overall1_2=overall1.operator+=(overall2) ;
+        QString overall3=cchem->getCompartmentName().c_str();
+        QString & overall3_4=overall3.operator+=(overall4) ;
+        QString & overall=overall1_2.operator+=(overall3_4) ;
+        //for the combo box
+        QStringList comboEntries3;
+        comboEntries3= overall;
+        QComboTableItem * item = new QComboTableItem(table, comboEntries3, FALSE);
+        table->setItem(2, 0, item);
+       }*/
+    }
+
+  //const CCopasiVector < CChemEqElement > * react4 = &reactn->getChemEq().getParameters();
+  CCopasiVector < CReaction::CId2Param > & react4 = reactn->getId2Parameters();
+
+  //C_INT32 noOfReact4s =react4.size();
+  for (k = 0; k < react4.size(); k++)
+    {
+      //cchem = (*react4)[k];
       //for the combo box
       QStringList comboEntries4;
-      comboEntries4= react4[k]->getIdentifierName().c_str();
+      comboEntries4 = react4[k]->getIdentifierName().c_str();
       QComboTableItem * item = new QComboTableItem(table, comboEntries4, FALSE);
       table->setItem(i, 0, item);
-     }
-   
-   
-   
-    CCopasiVector < CReaction::CId2Param > & react5 = reactn->getId2Parameters();
-    C_INT32 noOfReact5s =react5.size();
-    for (k = 0; k <noOfReact5s; ++k)
-     {
+    }
+
+  // CCopasiVector < CReaction::CId2Param > & react5 = reactn->getId2Parameters();
+  // C_INT32 noOfReact5s =react5.size();
+  for (k = 0; k < react4.size(); k++)
+    {
+      //cchem = (*react4)[k];
       //for the combo box
       QStringList comboEntries5;
-      comboEntries5= QString::number(react5[k]->getValue());
+      comboEntries5 = QString::number(react4[k]->getValue());
       QComboTableItem * item = new QComboTableItem(table, comboEntries5, FALSE);
-      table->setItem(i+1, 0, item);
-     }
-  */
+      table->setItem(i + 1, 0, item);
+    }
 }
 
 ///end of all the functions
