@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.70 $ $Author: gauges $ $Date: 2004/12/15 13:26:45 $  
+# $Revision: 1.71 $ $Author: ssahle $ $Date: 2004/12/22 12:38:25 $  
 ######################################################################
 
 include(../common.pri)
@@ -73,7 +73,6 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libmathmodel.a \
                 ../lib/libmodel.a \
                 ../lib/liboptimization.a \
-#                ../lib/liboutput.a \
                 ../lib/librandomGenerator.a \
                 ../lib/libreport.a \
                 ../lib/libsbmlimport.a \
@@ -170,7 +169,8 @@ HEADERS += \
            TimeSeriesWidget.h \
            TimeSeriesSubwidget.h \
            TrajectoryWidget.h \
-           Tree.h
+           Tree.h\
+           ../mml/qtmmlwidget.h
 
 # INTERFACES += CompartmentsWidget.ui \
 #               FunctionWidget1.ui \
@@ -247,13 +247,16 @@ SOURCES += \
            TimeSeriesWidget.cpp \
            TimeSeriesSubwidget.cpp \
            TrajectoryWidget.cpp \
-           Tree.cpp
+           Tree.cpp \
+           ../mml/qtmmlwidget.cpp
 
 
 # FORMS +=  TimeSeriesSubwidget.ui
 # FORMS +=  StateSubwidget.ui
 # FORMS +=  CMCAResultSubwidget.ui
-# FORMS +=  SliderSettingsDialog.ui           
+# FORMS +=  SimpleSelectionWidget.ui        
+# FORMS +=  SliderSettingsDialog.ui    
+#FORMS +=  objectdebug.ui       
 
 release {
   distribution.path = .
