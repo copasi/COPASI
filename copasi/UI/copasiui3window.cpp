@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/12/17 21:30:44 $
+   $Author: shoops $ 
+   $Date: 2004/02/18 20:45:31 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -53,7 +53,10 @@ CopasiUI3Window::CopasiUI3Window():
     file(NULL)
 {
   // Set the window caption/title
-  setCaption("Copasi ");
+  QString Title = "COPASI (";
+  Title += Copasi->ProgramVersion.getVersion().c_str();
+  Title += ")";
+  setCaption(Title);
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
   //  file = new QPopupMenu;
@@ -259,7 +262,10 @@ void CopasiUI3Window::slotFilePrint()
  *******************************************************************************************/
 void CopasiUI3Window::about()
 {
-  QMessageBox::about(this, "COPASI HELP",
+  QString Title = "COPASI (";
+  Title += Copasi->ProgramVersion.getVersion().c_str();
+  Title += ")";
+  QMessageBox::about(this, Title,
                      "It is a Biochemical path simulator for complex pathways");
 }
 
