@@ -190,7 +190,7 @@ bool CMetabNameInterface::isValidMetabName(const std::string name)
 
   // check for white spaces before the end of the string
   pos1 = name.find(" ");
-  if ((pos1 >= 0) && (pos1 <= end))
+  if ((pos1 >= 0) && (pos1 < end))
     return false;
 
   // curly braces: '{' is not the first character in the string, and appears before '}'
