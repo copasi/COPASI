@@ -56,10 +56,10 @@ echo "Set the icon in the Info.plist file."
 
 # copy the examples into the Resources directory
     echo "Make example directory."
-    mkdir -p ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/examples
+    mkdir -p ${TMPDIR}/copasi/examples
     echo "Copy examples to example directory."
     cp ./TestSuite/distribution/* \
-      ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/examples/
+      ${TMPDIR}/copasi/examples/
 
 # copy the files for the wizard into the Resources directory
     echo "Making directory for wizard."
@@ -87,6 +87,8 @@ echo "Set the icon in the Info.plist file."
     ;;
 
   xLinux|xSunOS)
+    (cd ../copasi/CopasiUI; make CopasiUI-dynamic)
+
     mkdir $build-$1
     cd $build-$1
  
@@ -117,15 +119,20 @@ echo "Set the icon in the Info.plist file."
     chmod 644 copasi/share/copasi/doc/html/figures/*.jpg
 
     tar -czf ../Copasi-$build-$1.tar.gz copasi
-  
+
+    cp ../copasi/CopasiUI/CopasiUI-dynamic  copasi/bin/CopasiUI
+    chmod 755 copasi/bin/CopasiUI
+
+    tar -czf ../Copasi-$build-$1-Dynamic.tar.gz copasi
+
     cd ..
     rm -rf $build-$1
     ;;
   esac
 
-  scp Copasi-$build-$1.* \
+  scp Copasi-$build-$1*.* \
       calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1
-  rm Copasi-$build-$1.*
+#  rm Copasi-$build-$1*.*
 else
   echo usage: mkbuild.sh BUILD_OS
 fi

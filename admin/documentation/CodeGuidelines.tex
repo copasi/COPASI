@@ -92,7 +92,7 @@ location must be set by the user.
  pt}\=\hspace{17 pt}\=\hspace{17 pt}\= \\ [-12 pt]
  \$COPASIDIR \\
  \> +- bin \\
- \> | \> += CopasiUI \\
+ \> | \> +- CopasiUI \\
  \> +- share \\
  \> | \> +- copasi \\
  \> | \> \> +- doc \\
@@ -109,17 +109,20 @@ location must be set by the user.
  \> | \> \> | \> \> | \> +- ReactionOverviewEmpty.jpg \\
  \> | \> \> | \> \> | \> +- ReportDefinitionDialog.jpg \\
  \> | \> \> | \> \> | \> +- TimeCourseDialog.jpg \\
+ \> | \> \> | \> \> | \> +- ... \\
  \> | \> \> | \> \> +- TutWiz-Step1.html \\
  \> | \> \> | \> \> +- TutWiz-Step2.html \\
  \> | \> \> | \> \> +- TutWiz-Step3.html \\
  \> | \> \> | \> \> +- TutWiz-Step4.html \\
  \> | \> \> | \> \> +- TutWiz-Step5.html \\
  \> | \> \> | \> \> +- TutWiz-Step6.html \\
+ \> | \> \> | \> \> +- ... \\
  \> | \> \> +- examples \\
  \> | \> \> \> +- CircadianClock.cps \\
  \> | \> \> \> +- Metabolism-2000Poo.xml \\
  \> | \> \> \> +- YeastGlycolysis.gps \\
  \> | \> \> \> +- brusselator.cps \\
+ \> | \> \> \> +- ... \\
  \> +- README \\
  \> +- ChangeLog \\
 \end{tabbing}
@@ -137,7 +140,7 @@ X.
  \> +- COPASI.app \\
  \> | \> +- Contents \\
  \> | \> +- MacOS \\
- \> | \> += CopasiUI \\
+ \> | \> +- CopasiUI \\
  \> | \> +- Resources \\
  \> | \> | \> +- doc \\
  \> | \> | \> | \> +- html \\
@@ -153,19 +156,22 @@ X.
  \> | \> | \> | \> \> | \> +- ReactionOverviewEmpty.jpg \\
  \> | \> | \> | \> \> | \> +- ReportDefinitionDialog.jpg \\
  \> | \> | \> | \> \> | \> +- TimeCourseDialog.jpg \\
+ \> | \> | \> | \> \> | \> +- ... \\
  \> | \> | \> | \> \> +- TutWiz-Step1.html \\
  \> | \> | \> | \> \> +- TutWiz-Step2.html \\
  \> | \> | \> | \> \> +- TutWiz-Step3.html \\
  \> | \> | \> | \> \> +- TutWiz-Step4.html \\
  \> | \> | \> | \> \> +- TutWiz-Step5.html \\
  \> | \> | \> | \> \> +- TutWiz-Step6.html \\
- \> | \> | \> +- examples \\
- \> | \> | \> \> +- CircadianClock.cps \\
- \> | \> | \> \> +- Metabolism-2000Poo.xml \\
- \> | \> | \> \> +- YeastGlycolysis.gps \\
- \> | \> | \> \> +- brusselator.cps \\
+ \> | \> | \> | \> \> +- ... \\
  \> | \> +- Info.plist \\
  \> | \> +- ChangeLog \\
+ \> +- examples \\
+ \> | \> +- CircadianClock.cps \\
+ \> | \> +- Metabolism-2000Poo.xml \\
+ \> | \> +- YeastGlycolysis.gps \\
+ \> | \> +- brusselator.cps \\
+ \> | \> +- ... \\
  \> +- COPASI-README.rtf \\
 \end{tabbing}
 }
@@ -180,7 +186,7 @@ Windows specific means.
  pt}\=\hspace{17 pt}\=\hspace{17 pt}\= \\ [-12 pt]
  \$COPASIDIR \\
  \> +- bin \\
- \> | \> += CopasiUI \\
+ \> | \> +- CopasiUI \\
  \> +- share \\
  \> | \> +- copasi \\
  \> | \> \> +- doc \\
@@ -197,17 +203,20 @@ Windows specific means.
  \> | \> \> | \> \> | \> +- ReactionOverviewEmpty.jpg \\
  \> | \> \> | \> \> | \> +- ReportDefinitionDialog.jpg \\
  \> | \> \> | \> \> | \> +- TimeCourseDialog.jpg \\
+ \> | \> \> | \> \> | \> +- ... \\
  \> | \> \> | \> \> +- TutWiz-Step1.html \\
  \> | \> \> | \> \> +- TutWiz-Step2.html \\
  \> | \> \> | \> \> +- TutWiz-Step3.html \\
  \> | \> \> | \> \> +- TutWiz-Step4.html \\
  \> | \> \> | \> \> +- TutWiz-Step5.html \\
  \> | \> \> | \> \> +- TutWiz-Step6.html \\
+ \> | \> \> | \> \> +- ... \\
  \> | \> \> +- examples \\
  \> | \> \> \> +- CircadianClock.cps \\
  \> | \> \> \> +- Metabolism-2000Poo.xml \\
  \> | \> \> \> +- YeastGlycolysis.gps \\
  \> | \> \> \> +- brusselator.cps \\
+ \> | \> \> \> +- ... \\
  \> +- README \\
  \> +- ChangeLog \\
 \end{tabbing}
@@ -227,7 +236,7 @@ name, \\
 \noindent
 provides access to common options within COPASI. The following values
 will deal with installation dependent settings:
-{\tt CopasiDir}, {\tt ExampleDir}, and {\tt WizardDir}. The following code
+{\tt CopasiDir}, {\tt TempDir}, {\tt ExampleDir}, and {\tt WizardDir}. The following code
 shows howe to retrieve the location of the examples files for COPASI: \\
 {\tt \scriptsize
 \indent std::string ExampleDir; \\[-4 pt]
