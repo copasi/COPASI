@@ -225,7 +225,7 @@ void CChemEq::writeChemicalEquationConverted()
 
   for (j=0; j<mProducts.size(); j++)
     {
-      if (j) mChemicalEquation += " + ";
+      if (j) mChemicalEquationConverted += " + ";
       kmax = (unsigned C_INT32) mProducts[j]->getMultiplicity();
       
       for (k=0; k<kmax; k++)
