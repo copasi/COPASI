@@ -195,7 +195,6 @@ ListViews::ListViews(QWidget *parent, const char *name):
   connect(folders, SIGNAL(pressed(QListViewItem*)),
           this, SLOT(slotFolderChanged(QListViewItem*)));
 
-  connect(this, SIGNAL(resetWidget(QListViewItem*)), (ListViews*)folders, SIGNAL(pressed(QListViewItem*)));
   attach();
 }
 
@@ -1127,7 +1126,12 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
 
-      emit resetWidget(searchListViewItem(1)); // 1 == modelWidget
+      // 1 == modelWidget
+      //reset active to the Model Widget,
+      folders->clearSelection();
+      folders->setSelected(searchListViewItem(1), true);
+      slotFolderChanged(searchListViewItem(1));
+
       break;
     case STATE:
       //        scanWidget->update(objectType, action, key);

@@ -171,9 +171,6 @@ class ListViews : public QSplitter
     ModesWidget *modesWidget;
     ModelWidget *modelWidget;
     TableDefinition *tableDefinition;
-
-  signals:
-    void resetWidget(QListViewItem*);
   };
 
 #endif
