@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.2 2003/09/30 04:10:09 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.3 2003/10/04 18:55:20 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -10,6 +10,7 @@
 #ifndef OPTIMIZATIONITEMWIDGET_H
 #define OPTIMIZATIONITEMWIDGET_H
 
+#include "report/CCopasiObject.h"
 #include <qvariant.h>
 #include <qwidget.h>
 
@@ -45,6 +46,17 @@ class OptimizationItemWidget : public QWidget
     ScanCheckBox* checkUpperInf;
     QFrame* line11;
     ScanLineEdit* ObjectName;
+
+    CCopasiObject* mpObject;
+
+    std::string getItemUpperLimit();
+    std::string getItemLowerLimit();
+
+    setItemUpperLimit(std::string strUpperLimit);
+    setItemLowerLimit(std::string strLowerLimit);
+
+    CCopasiObject* getCopasiObject();
+    void setCopasiObjecPtr (CCopasiObject* sourceObject);
 
   public slots:
     virtual void slotPosInfClicked();

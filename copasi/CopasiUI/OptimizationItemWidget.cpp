@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.8 2003/10/04 16:46:01 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.9 2003/10/04 18:55:20 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -192,5 +192,65 @@ void OptimizationItemWidget::slotUpperEdit()
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
       lineUpper->setText(strFunction.c_str());
+    }
+}
+
+std::string OptimizationItemWidget::getItemUpperLimit()
+{
+  if (checkUpperInf->isChecked())
+    return "+inf";
+  else
+    return lineUpper->text().latin1();
+}
+
+std::string OptimizationItemWidget::getItemLowerLimit()
+{
+  if (checkUpperInf->isChecked())
+    return "+inf";
+  else
+    return lineUpper->text().latin1();
+}
+
+CCopasiObject* OptimizationItemWidget::getCopasiObject()
+{
+  return mpObject;
+}
+
+void OptimizationItemWidget::setCopasiObjecPtr (CCopasiObject* sourceObject)
+{
+  mpObject = sourceObject;
+}
+
+OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
+{
+  if (strUpperLimit == "+inf")
+    {
+      checkUpperInf->setChecked(true);
+      buttonUpperEdit->setEnabled(false);
+      lineUpper->setEnabled(false);
+    }
+  else
+    {
+      checkUpperInf->setChecked(false);
+      buttonUpperEdit->setEnabled(true);
+      lineUpper->setEnabled(true);
+      lineUpper->setText(strUpperLimit.c_str());
+    }
+}
+
+OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
+{
+  if (strLowerLimit == "-inf")
+    {
+      checkLowerInf->setChecked(true);
+      buttonLowerEdit->setEnabled(false);
+      lineLower->setEnabled(false);
+    }
+  else
+    {
+      checkLowerInf->setChecked(false);
+      buttonLowerEdit->setEnabled(true);
+      lineLower->setEnabled(true);
+      lineLower->setText(strLowerLimit.c_str());
     }
 }
