@@ -30,7 +30,7 @@ class CompartmentSymbols : public QWidget
 
   public:
     CompartmentSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
-    //void loadMetabolites(CModel *model);
+    void loadCompartmentSymbols(CModel *model);
     void resizeEvent(QResizeEvent * re);
 
   protected slots:

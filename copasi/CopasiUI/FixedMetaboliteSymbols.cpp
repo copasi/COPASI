@@ -7,7 +7,6 @@
 #include "mathmodel/CMathConstant.h"
 #include "model/CCompartment.h"
 #include <qfont.h>
-#include <map>
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 

@@ -11,6 +11,7 @@
 #include <qmessagebox.h>
 #include "ConstantSymbols.h"
 #include "mathmodel/CMathConstant.h"
+#include "mathmodel/CMathModel.h"
 #include "listviews.h"
 #include <qfont.h>
 
@@ -78,23 +79,26 @@ void ConstantSymbols::loadConstantSymbols(CModel *model)
           table->removeRow(0);
         }
 
-      //CMathConstantParameter *mathconstant=new CMathConstantParameter();
+      CMathModel *mathmodel = new CMathModel();
+      mathmodel->setModel(mModel);
+      const CModel *nModel = mathmodel->getModel();
 
-      CMathConstantParameter::getSelection();
+      std::map< std::string, CCopasiObject * > selection = CMathConstantParameter::getSelection();
+      std::map<std::string, CCopasiObject * >::iterator it;
+      CCopasiObject * constantObject;
 
-      /////mathmodel->setModel(mModel);
-      ///const CModel *nModel=mathmodel->getModel();
-
-      //mathconstant->buildSelection(mModel);
-      //CCopasiVectorN< CMetab > metabolite=mathConstant->getSelection();
-      //C_INT32 noOfMetaboliteRows = metabolite.size();
-      //table->setNumRows(k-1);
-      //const CMetab *metab;
-
-      for (C_INT32 j = 0; j < 10; j++)
+      C_INT32 noOfMetaboliteRows = selection.size();
+      table->setNumRows(noOfMetaboliteRows);
+      int index = 0;
+      for (it = selection.begin(); it != selection.end();++it)
         {
-          //metab = metabolites[j];
-          //table->setText(j, 0, CMathConstantParameter::getSelection()::getName().c_str());
+          //QMessageBox::information(this, "key",it->first.c_str());
+          constantObject = it->second;
+          table->setText(index, 0, constantObject->getName().c_str());
+          //CCopasiObject *metabObject=constantObject->getObject();
+          //table->setText(index, 1, metabObject->getName().c_str());
+          //table->setText(index, 2, QString::number(constantObject->getValue()));
+          index++;
         }
     }
 }

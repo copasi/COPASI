@@ -30,7 +30,7 @@ class FunctionSymbols : public QWidget
 
   public:
     FunctionSymbols (QWidget *parent, const char * name = 0, WFlags f = 0);
-    //void loadMetabolites(CModel *model);
+    void loadFunctionSymbols(CModel *model);
     void resizeEvent(QResizeEvent * re);
 
   protected slots:

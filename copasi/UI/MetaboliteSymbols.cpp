@@ -15,8 +15,6 @@
 #include "mathmodel/CMathConstant.h"
 #include "model/CCompartment.h"
 #include "listviews.h"
-#include <qfont.h>
-#include <map>
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -109,8 +107,8 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CModel *model)
           table->setText(index, 3, QString::number(variableMetab->getInitialParticleNumber()));
           table->setText(index, 4, QString::number(variableMetab->getConcentration()));
           table->setText(index, 5, QString::number(variableMetab->getParticleNumber()));
-          //CMathConstantCompartment &Compartment=variableMetab->getCompartment();
-          //table->setText(index, 6, Compartment.getName().c_str());
+          //CMathConstantCompartment & compart =variableMetab->getCompartment();
+          //table->setText(index, 6, compart.getName().c_str());
           index++;
         }
 

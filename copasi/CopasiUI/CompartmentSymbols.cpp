@@ -10,6 +10,8 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include "CompartmentSymbols.h"
+#include "mathmodel/CMathModel.h"
+#include "mathmodel/CMathConstant.h"
 #include "listviews.h"
 #include <qfont.h>
 
@@ -67,66 +69,45 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-/*void CompartmentSymbols::loadCompartmentSymbols(CModel *model)
+void CompartmentSymbols::loadCompartmentSymbols(CModel *model)
 {
   if (model != NULL)
     {
       mModel = model;
- 
+
       //Emptying the table
       int numberOfRows = table->numRows();
- 
+
       for (int i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
- 
-      CCopasiVectorN< CMetab > metabolites(mModel->getMetabolites());
-      C_INT32 noOfMetabolitesRows = metabolites.size();
-      table->setNumRows(noOfMetabolitesRows);
- 
-      //Now filling the table.
-      CMetab *metab;
- 
-      for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+
+      CMathModel *mathmodel = new CMathModel();
+      mathmodel->setModel(mModel);
+      const CModel *nModel = mathmodel->getModel();
+
+      std::map< std::string, CMathConstantCompartment * > compartList = mathmodel->getCompartmentList();
+      std::map<std::string, CMathConstantCompartment * >::iterator it;
+      CMathConstantCompartment * constantCompart;
+
+      C_INT32 noOfMetaboliteRows = compartList.size();
+      table->setNumRows(noOfMetaboliteRows);
+      int index = 0;
+      for (it = compartList.begin(); it != compartList.end();++it)
         {
-          metab = metabolites[j];
-          table->setText(j, 0, metab->getName().c_str());
- 
-          /*double m=(*(metab->getConcentration()));
-          QString *m1;
-          //QString ms = m1.setNum(m,'g',6);
-             m1=  QString::setNum(m,'g',6);            
-          table->setText(j, 1,*m1);
-           
-          //table->setText(j, 1,ms); */
-/*table->setText(j, 1, QString::number(metab->getConcentration()));
-
-table->setText(j, 2, QString::number(metab->getNumberDbl()));
-
-table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
-
-#ifdef XXXX
-if (QString::number(metab->getStatus()) == "0")
-  {
-    table->setText(j, 3, "defineda");
-  }
-else if (QString::number(metab->getStatus()) == "1")
-  {
-    table->setText(j, 3, "definedb");
-  }
-else if (QString::number(metab->getStatus()) == "2")
-  {
-    table->setText(j, 3, "definedc");
-  }
-#endif // XXXX
-table->setText(j, 4, metab->getCompartment()->getName().c_str());
+          //QMessageBox::information(this, "key",it->first.c_str());
+          constantCompart = it->second;
+          table->setText(index, 0, constantCompart->getName().c_str());
+          CCopasiObject *compartObject = constantCompart->getObject();
+          table->setText(index, 1, compartObject->getName().c_str());
+          table->setText(index, 2, QString::number(constantCompart->getValue()));
+          table->setText(index, 3, QString::number(constantCompart->getTransientValue()));
+          // const std::vector< CMathSymbol * > & constantCompart->getMetaboliteList();
+          index++;
+        }
+    }
 }
-
-//table->sortColumn(0,true,true);
-}
-}
- */
 
 void CompartmentSymbols::slotTableSelectionChanged()
 {

@@ -698,6 +698,8 @@ void ListViews::loadModelNodes(CModel *model)
       // UPDATE THE METABOLITES STUFF..
       fixedMetaboliteSymbols->loadFixedMetaboliteSymbols(model);
       metaboliteSymbols->loadMetaboliteSymbols(model);
+      functionSymbols->loadFunctionSymbols(model);
+      compartmentSymbols->loadCompartmentSymbols(model);
       metabolitesWidget->loadMetabolites(model);
       metabolitesWidget1->loadMetabolites(model);
       loadNode = searchNode("Metabolites");
