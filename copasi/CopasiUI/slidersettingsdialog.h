@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/slidersettingsdialog.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/02 17:00:57 $
+   $Date: 2004/11/02 17:13:58 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'slidersettingsdialog.ui'
  **
- ** Created: Tue Nov 2 17:20:48 2004
- **      by: The User Interface Compiler ($Id: slidersettingsdialog.h,v 1.1 2004/11/02 17:00:57 gauges Exp $)
+ ** Created: Tue Nov 2 18:08:00 2004
+ **      by: The User Interface Compiler ($Id: slidersettingsdialog.h,v 1.2 2004/11/02 17:13:58 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -89,6 +89,7 @@ class SliderSettingsDialog : public QDialog
     double minorTickSizeVar;
     double majorTickSizeVar;
     double objectValueVar;
+    C_INT32 mCurrentTaskId;
     std::ostringstream outStream;
     std::map<C_INT32, std::vector< CopasiSlider * > > sliderMap;
     std::map<C_INT32, std::string> taskDisplayMap;
