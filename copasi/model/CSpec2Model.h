@@ -63,12 +63,7 @@ class CSpec2Model
      */
     CModel *createModel();
 
-    /**
-     * Prints the input file, used to test that input was correctly read
-     */ 
-    //void printInput();
   private:
-    // Private operations
 
     /**
      * Determine the type of an input line.
@@ -133,10 +128,7 @@ class CSpec2Model
      * involved in the model.
      */
     void processDifferentialEquations();
-    /**
-     * Parse a line
-     */
-    C_INT32 parseLine(std::string line);
+
     /**
      * Return the left hand side metabolite in a differential equation
      */
@@ -152,12 +144,6 @@ class CSpec2Model
      */
     std::vector< CDeTerm *> createTermStack(std::string str);
     /**
-     * Find a reaction in the model based on its name.
-     * @param str The name of the reaction to find.
-     * @return The reaction found
-     */
-    CReaction *findReaction(std::string);
-    /**
      * Expand any functions found in the rate.
      * @return The expanded rate.
      */
@@ -172,15 +158,8 @@ class CSpec2Model
     C_INT32 adjustLevel(C_INT32 level, C_INT32 type);
 
     /**
-     * Add a metabolite to the given reaction, with default values for num_change and multiplicity
-     * @param react The CReaction to which the metabolite is added.
-     * @param metab The metabolite to add
-     */
-    void addMetabolite(CReaction *react, CMetab *metab);
-
-    /**
      *  Find the metabolite with the given name.
-     * @param mtab_name The name of the metabolite
+     * @param metab_name The name of the metabolite
      * @return A pointer to the metabolite
      */
     CMetab *findMetabolite(std::string metab_name);
