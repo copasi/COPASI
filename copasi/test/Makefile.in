@@ -1,5 +1,4 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.26 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -317,9 +316,7 @@ bin_PROGRAMS = test$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_test_OBJECTS = test.$(OBJEXT)
-#>- test_OBJECTS = $(am_test_OBJECTS)
-#>+ 1
-test_OBJECTS = test.$(OBJEXT)
+test_OBJECTS = $(am_test_OBJECTS)
 test_LDADD = $(LDADD)
 test_LDFLAGS =
 
@@ -328,32 +325,20 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 CPPFLAGS = @CPPFLAGS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/test.Po
-#>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-#>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-#>+ 2
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS)
-#>- LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
-#>- $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-#>- $(AM_CXXFLAGS) $(CXXFLAGS)
-#>+ 3
-LTCXXCOMPILE = $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS)
+	$(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-#>- CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
-#>- $(AM_LDFLAGS) $(LDFLAGS) -o $@
-#>+ 2
-CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS) \
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(test_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
 SOURCES = $(test_SOURCES)
 
-#>- all: all-am
-#>+ 1
-all: docs-am  all-am
+all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .cpp .lo .o .obj
@@ -367,36 +352,32 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
-#>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --gnu  copasi/test/Makefile
-#>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/test/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/test/Makefile.in
+	  $(AUTOMAKE) --gnu  copasi/test/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
-	CONFIG_HEADERS= CONFIG_LINKS= \
-	CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
-	if test -f $$p \
-	|| test -f $$p1 \
-	; then \
-	f=`echo $$p1|sed '$(transform);s/$$/$(EXEEXT)/'`; \
-	echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f"; \
-	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f; \
-	else :; fi; \
+	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  if test -f $$p \
+	     || test -f $$p1 \
+	  ; then \
+	    f=`echo $$p1|sed '$(transform);s/$$/$(EXEEXT)/'`; \
+	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f"; \
+	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f; \
+	  else :; fi; \
 	done
 
 uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	f=`echo $$p|sed 's/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
-	echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
-	rm -f $(DESTDIR)$(bindir)/$$f; \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
+	  rm -f $(DESTDIR)$(bindir)/$$f; \
 	done
 
 clean-binPROGRAMS:
@@ -441,58 +422,53 @@ tags: TAGS
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique $(LISP)
 
 TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
-	$(TAGS_FILES) $(LISP)
+		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	|| etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 GTAGS:
 	here=`CDPATH=: && cd $(top_builddir) && pwd` \
-	&& cd $(top_srcdir) \
-	&& gtags -i $(GTAGS_ARGS) $$here
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
 
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 
-#>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-#>+ 4
-KDE_DIST=test.dsp test 
-
-DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
-
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 top_distdir = ../..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
-	if test -f $$file; then d=.; else d=$(srcdir); fi; \
-	dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
-	if test "$$dir" != "$$file" && test "$$dir" != "."; then \
-	$(mkinstalldirs) "$(distdir)/$$dir"; \
-	fi; \
-	if test -d $$d/$$file; then \
-	cp -pR $$d/$$file $(distdir) \
-	|| exit 1; \
-	else \
-	test -f $(distdir)/$$file \
-	|| cp -p $$d/$$file $(distdir)/$$file \
-	|| exit 1; \
-	fi; \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
 	done
 check-am: all-am
 check: check-am
@@ -512,8 +488,8 @@ install-am: all-am
 installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
-	`test -z '$(STRIP)' || \
-	echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:
@@ -524,13 +500,9 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-#>- clean: clean-am
-#>+ 1
-clean: kde-rpo-clean  clean-am
+clean: clean-am
 
-#>- clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
-#>+ 1
-clean-am: clean-final  clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
 
@@ -584,55 +556,3 @@ check_LIBS:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
-
-#>+ 2
-docs-am:
-
-#>+ 2
-apidox-am:
-
-#>+ 2
-apidox: apidox-am
-
-#>+ 6
-force-reedit:
-		cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/test/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/test/Makefile.in
-
-
-#>+ 11
-test.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/test.cpp
-	@echo 'creating test.all_cpp.cpp ...'; \
-	rm -f test.all_cpp.files test.all_cpp.final; \
-	echo "#define KDE_USE_FINAL 1" >> test.all_cpp.final; \
-	for file in test.cpp ; do \
-	  echo "#include \"$$file\"" >> test.all_cpp.files; \
-	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> test.all_cpp.final; \
-	done; \
-	cat test.all_cpp.final test.all_cpp.files > test.all_cpp.cpp; \
-	rm -f test.all_cpp.final test.all_cpp.files
-
-#>+ 3
-clean-final:
-	-rm -f test.all_cpp.cpp
-
-#>+ 2
-final:
-	$(MAKE) all-am
-#>+ 2
-final-install:
-	$(MAKE) install-am
-#>+ 2
-no-final:
-	$(MAKE) all-am
-#>+ 2
-no-final-install:
-	$(MAKE) install-am
-#>+ 3
-cvs-clean:
-	$(MAKE) admindir=$(top_srcdir)/admin -f $(top_srcdir)/admin/Makefile.common cvs-clean
-
-#>+ 3
-kde-rpo-clean:
-	-rm -f *.rpo

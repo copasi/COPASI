@@ -1,5 +1,4 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.2 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -261,13 +260,7 @@ libscan_a_AR = $(AR) cru
 libscan_a_LIBADD =
 am_libscan_a_OBJECTS = CScanMethod.$(OBJEXT) CScanProblem.$(OBJEXT) \
 	CScanTask.$(OBJEXT)
-#>- libscan_a_OBJECTS = $(am_libscan_a_OBJECTS)
-#>+ 5
-libscan_a_final_OBJECTS = libscan_a.all_cpp.o 
-libscan_a_nofinal_OBJECTS = CScanMethod.$(OBJEXT) CScanProblem.$(OBJEXT) \
-	CScanTask.$(OBJEXT)
-@KDE_USE_FINAL_FALSE@libscan_a_OBJECTS = $(libscan_a_nofinal_OBJECTS)
-@KDE_USE_FINAL_TRUE@libscan_a_OBJECTS = $(libscan_a_final_OBJECTS)
+libscan_a_OBJECTS = $(am_libscan_a_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -276,33 +269,21 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CScanMethod.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CScanProblem.Po $(DEPDIR)/CScanTask.Po
-#>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-#>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-#>+ 2
+@AMDEP_TRUE@	$(DEPDIR)/CScanProblem.Po $(DEPDIR)/CScanTask.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS)
-#>- LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
-#>- $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-#>- $(AM_CXXFLAGS) $(CXXFLAGS)
-#>+ 3
-LTCXXCOMPILE = $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS)
+	$(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-#>- CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
-#>- $(AM_LDFLAGS) $(LDFLAGS) -o $@
-#>+ 2
-CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS) \
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(libscan_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
 SOURCES = $(libscan_a_SOURCES)
 
-#>- all: all-am
-#>+ 1
-all: docs-am  all-am
+all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .cpp .lo .o .obj
@@ -316,16 +297,12 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
-#>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --gnu  copasi/scan/Makefile
-#>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/scan/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/scan/Makefile.in
+	  $(AUTOMAKE) --gnu  copasi/scan/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
-	CONFIG_HEADERS= CONFIG_LINKS= \
-	CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
 
 AR = ar
 
@@ -374,58 +351,53 @@ tags: TAGS
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique $(LISP)
 
 TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
-	$(TAGS_FILES) $(LISP)
+		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	|| etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 GTAGS:
 	here=`CDPATH=: && cd $(top_builddir) && pwd` \
-	&& cd $(top_srcdir) \
-	&& gtags -i $(GTAGS_ARGS) $$here
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
 
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 
-#>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-#>+ 4
-KDE_DIST=libscan.a scan.dsp 
-
-DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
-
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 top_distdir = ../..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
-	if test -f $$file; then d=.; else d=$(srcdir); fi; \
-	dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
-	if test "$$dir" != "$$file" && test "$$dir" != "."; then \
-	$(mkinstalldirs) "$(distdir)/$$dir"; \
-	fi; \
-	if test -d $$d/$$file; then \
-	cp -pR $$d/$$file $(distdir) \
-	|| exit 1; \
-	else \
-	test -f $(distdir)/$$file \
-	|| cp -p $$d/$$file $(distdir)/$$file \
-	|| exit 1; \
-	fi; \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
 	done
 check-am: all-am
 check: check-am
@@ -444,8 +416,8 @@ install-am: all-am
 installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
-	`test -z '$(STRIP)' || \
-	echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:
@@ -456,14 +428,9 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-#>- clean: clean-am
-#>+ 1
-clean: kde-rpo-clean  clean-am
+clean: clean-am
 
-#>- clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
-#>- mostlyclean-am
-#>+ 2
-clean-am: clean-final  clean-generic clean-libtool clean-noinstLIBRARIES \
+clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -514,55 +481,3 @@ uninstall-am: uninstall-info-am
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
-
-#>+ 2
-docs-am:
-
-#>+ 2
-apidox-am:
-
-#>+ 2
-apidox: apidox-am
-
-#>+ 6
-force-reedit:
-		cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/scan/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/scan/Makefile.in
-
-
-#>+ 11
-libscan_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CScanMethod.cpp $(srcdir)/CScanProblem.cpp $(srcdir)/CScanTask.cpp
-	@echo 'creating libscan_a.all_cpp.cpp ...'; \
-	rm -f libscan_a.all_cpp.files libscan_a.all_cpp.final; \
-	echo "#define KDE_USE_FINAL 1" >> libscan_a.all_cpp.final; \
-	for file in CScanMethod.cpp CScanProblem.cpp CScanTask.cpp ; do \
-	  echo "#include \"$$file\"" >> libscan_a.all_cpp.files; \
-	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libscan_a.all_cpp.final; \
-	done; \
-	cat libscan_a.all_cpp.final libscan_a.all_cpp.files > libscan_a.all_cpp.cpp; \
-	rm -f libscan_a.all_cpp.final libscan_a.all_cpp.files
-
-#>+ 3
-clean-final:
-	-rm -f libscan_a.all_cpp.cpp
-
-#>+ 2
-final:
-	$(MAKE) libscan_a_OBJECTS="$(libscan_a_final_OBJECTS)" all-am
-#>+ 2
-final-install:
-	$(MAKE) libscan_a_OBJECTS="$(libscan_a_final_OBJECTS)" install-am
-#>+ 2
-no-final:
-	$(MAKE) libscan_a_OBJECTS="$(libscan_a_nofinal_OBJECTS)" all-am
-#>+ 2
-no-final-install:
-	$(MAKE) libscan_a_OBJECTS="$(libscan_a_nofinal_OBJECTS)" install-am
-#>+ 3
-cvs-clean:
-	$(MAKE) admindir=$(top_srcdir)/admin -f $(top_srcdir)/admin/Makefile.common cvs-clean
-
-#>+ 3
-kde-rpo-clean:
-	-rm -f *.rpo

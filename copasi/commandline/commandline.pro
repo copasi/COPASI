@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2003/05/20 01:53:58 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2003/05/21 20:36:34 $  
 ######################################################################
 
 LIB = commandline
@@ -15,8 +15,8 @@ SOURCES += COptionParser.cpp \
 !contains(BUILD_OS, WIN32) {
   CLOPP = $$system(which clo++)
   count(CLOPP, 1) {
-    1.target = COptionParser.cpp
-    1.depends = COptionParser.xml
+    1.target = BromeParser.cpp
+    1.depends = BromeOptions.xml
     1.commands = \
           -@rm $@ $*.h; \
           -clo++ -o c++ $< && \

@@ -144,7 +144,7 @@ LIBS = $(LIB_QT) \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-llapack -lblas -lg2c -lfl
+	-llapack -lblas -lF77 -lfl
 
 #  Use this for standard clapack
 #	-llapack -lblas -lF77 -lfl

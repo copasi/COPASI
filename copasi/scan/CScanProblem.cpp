@@ -19,8 +19,8 @@
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
-#include "SteadyState/CSteadyStateTask.h"
-#include "SteadyState/CSteadyStateProblem.h" 
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h" 
 /**
  *  Default constructor.
  *

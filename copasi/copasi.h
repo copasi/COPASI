@@ -116,7 +116,7 @@ extern std::ofstream DebugFile;
 #define pcleanup(p) {if (p) {p->cleanup(); delete p; p = NULL;}}
 
 // suppress unused parameter warnings
-#define C_UNUSED(p) 
-// #define COPASI_DEPRECATED
+#define C_UNUSED(p)
+#define COPASI_DEPRECATED
 #define C_INVALID_INDEX ((unsigned C_INT32) -1)
 #endif // COPASI_copasi

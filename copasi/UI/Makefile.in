@@ -1,5 +1,4 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.25 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -261,7 +260,8 @@ CopasiUI_MOC = \
 	ObjectBrowser.moc.cpp \
 	copasiui3window.moc.cpp \
 	listviews.moc.cpp \
-	objectdebug.moc.cpp 
+	objectdebug.moc.cpp \
+	parametertable.moc.cpp 
 
 
 CopasiUI_SOURCES = $(CopasiUI_MOC) \
@@ -269,35 +269,37 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	MyTable.cpp \
 	Observer.cpp \
 	Subject.cpp \
-	CompartmentsWidget.cpp \
-	CompartmentsWidget1.cpp \
+        CompartmentsWidget.cpp \
+        CompartmentsWidget1.cpp \
 	CompartmentSymbols.cpp \
 	ConstantSymbols.cpp \
 	DifferentialEquations.cpp \
 	FixedMetaboliteSymbols.cpp \
-	FunctionWidget.cpp \
-	FunctionWidget1.cpp \
+        FunctionWidget.cpp \
+        FunctionWidget1.cpp \
 	FunctionSymbols.cpp \
-	MetabolitesWidget.cpp \
-	MetabolitesWidget1.cpp \
+        MetabolitesWidget.cpp \
+        MetabolitesWidget1.cpp \
 	MetaboliteSymbols.cpp \
 	ModelWidget.cpp \
 	ModesWidget.cpp \
-	MoietyWidget.cpp \
-	MoietyWidget1.cpp \
+        MoietyWidget.cpp \
+        MoietyWidget1.cpp \
 	MyLineEdit.cpp \
-	ReactionsWidget.cpp \
-	ReactionsWidget1.cpp \
+        ReactionsWidget.cpp \
+        ReactionsWidget1.cpp \
 	ScanWidget.cpp \
 	SteadyStateWidget.cpp \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
 	ObjectBrowser.cpp \
 	ObjectBrowserItem.cpp \
-	copasiui3window.cpp \
+        copasiui3window.cpp \
 	copasiWidget.cpp \
-	listviews.cpp \
-	objectdebug.cpp
+        listviews.cpp \
+	objectdebug.cpp \
+	parametertable.cpp \
+	CReactionInterface.cpp
 
 
 CopasiUI_DEPENDENCIES = $(CopasiUI_LIBS) check_LIBS
@@ -352,7 +354,8 @@ EXTRA_DIST = \
 	ObjectBrowserItem.h ObjectBrowserItem.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
 	copasiWidget.h copasiWidget.cpp \
-	listviews.h listviews.cpp moc_listviews.cpp
+	listviews.h listviews.cpp moc_listviews.cpp \
+	CReactionInterface.h CReactionInterface.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -425,11 +428,11 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	SteadyStateWidget.moc.$(OBJEXT) ScanWidget.moc.$(OBJEXT) \
 	TrajectoryWidget.moc.$(OBJEXT) ObjectBrowser.moc.$(OBJEXT) \
 	copasiui3window.moc.$(OBJEXT) listviews.moc.$(OBJEXT) \
-	objectdebug.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
-	Observer.$(OBJEXT) Subject.$(OBJEXT) \
-	CompartmentsWidget.$(OBJEXT) CompartmentsWidget1.$(OBJEXT) \
-	CompartmentSymbols.$(OBJEXT) ConstantSymbols.$(OBJEXT) \
-	DifferentialEquations.$(OBJEXT) \
+	objectdebug.moc.$(OBJEXT) parametertable.moc.$(OBJEXT) \
+	main.$(OBJEXT) MyTable.$(OBJEXT) Observer.$(OBJEXT) \
+	Subject.$(OBJEXT) CompartmentsWidget.$(OBJEXT) \
+	CompartmentsWidget1.$(OBJEXT) CompartmentSymbols.$(OBJEXT) \
+	ConstantSymbols.$(OBJEXT) DifferentialEquations.$(OBJEXT) \
 	FixedMetaboliteSymbols.$(OBJEXT) FunctionWidget.$(OBJEXT) \
 	FunctionWidget1.$(OBJEXT) FunctionSymbols.$(OBJEXT) \
 	MetabolitesWidget.$(OBJEXT) MetabolitesWidget1.$(OBJEXT) \
@@ -441,41 +444,9 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	StretchTable.$(OBJEXT) TrajectoryWidget.$(OBJEXT) \
 	ObjectBrowser.$(OBJEXT) ObjectBrowserItem.$(OBJEXT) \
 	copasiui3window.$(OBJEXT) copasiWidget.$(OBJEXT) \
-	listviews.$(OBJEXT) objectdebug.$(OBJEXT)
-#>- CopasiUI_OBJECTS = $(am_CopasiUI_OBJECTS)
-#>+ 32
-CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
-	CompartmentsWidget.moc.$(OBJEXT) \
-	CompartmentSymbols.moc.$(OBJEXT) ConstantSymbols.moc.$(OBJEXT) \
-	DifferentialEquations.moc.$(OBJEXT) \
-	FixedMetaboliteSymbols.moc.$(OBJEXT) \
-	FunctionWidget1.moc.$(OBJEXT) FunctionWidget.moc.$(OBJEXT) \
-	FunctionSymbols.moc.$(OBJEXT) MetabolitesWidget.moc.$(OBJEXT) \
-	MetabolitesWidget1.moc.$(OBJEXT) \
-	MetaboliteSymbols.moc.$(OBJEXT) ModelWidget.moc.$(OBJEXT) \
-	ModesWidget.moc.$(OBJEXT) MoietyWidget.moc.$(OBJEXT) \
-	MoietyWidget1.moc.$(OBJEXT) MyLineEdit.moc.$(OBJEXT) \
-	ReactionsWidget.moc.$(OBJEXT) ReactionsWidget1.moc.$(OBJEXT) \
-	SteadyStateWidget.moc.$(OBJEXT) ScanWidget.moc.$(OBJEXT) \
-	TrajectoryWidget.moc.$(OBJEXT) ObjectBrowser.moc.$(OBJEXT) \
-	copasiui3window.moc.$(OBJEXT) listviews.moc.$(OBJEXT) \
-	objectdebug.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
-	Observer.$(OBJEXT) Subject.$(OBJEXT) \
-	CompartmentsWidget.$(OBJEXT) CompartmentsWidget1.$(OBJEXT) \
-	CompartmentSymbols.$(OBJEXT) ConstantSymbols.$(OBJEXT) \
-	DifferentialEquations.$(OBJEXT) \
-	FixedMetaboliteSymbols.$(OBJEXT) FunctionWidget.$(OBJEXT) \
-	FunctionWidget1.$(OBJEXT) FunctionSymbols.$(OBJEXT) \
-	MetabolitesWidget.$(OBJEXT) MetabolitesWidget1.$(OBJEXT) \
-	MetaboliteSymbols.$(OBJEXT) ModelWidget.$(OBJEXT) \
-	ModesWidget.$(OBJEXT) MoietyWidget.$(OBJEXT) \
-	MoietyWidget1.$(OBJEXT) MyLineEdit.$(OBJEXT) \
-	ReactionsWidget.$(OBJEXT) ReactionsWidget1.$(OBJEXT) \
-	ScanWidget.$(OBJEXT) SteadyStateWidget.$(OBJEXT) \
-	StretchTable.$(OBJEXT) TrajectoryWidget.$(OBJEXT) \
-	ObjectBrowser.$(OBJEXT) ObjectBrowserItem.$(OBJEXT) \
-	copasiui3window.$(OBJEXT) copasiWidget.$(OBJEXT) \
-	listviews.$(OBJEXT) objectdebug.$(OBJEXT)
+	listviews.$(OBJEXT) objectdebug.$(OBJEXT) \
+	parametertable.$(OBJEXT) CReactionInterface.$(OBJEXT)
+CopasiUI_OBJECTS = $(am_CopasiUI_OBJECTS)
 CopasiUI_LDADD = $(LDADD)
 CopasiUI_LDFLAGS =
 
@@ -483,84 +454,75 @@ DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 CPPFLAGS = @CPPFLAGS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CompartmentSymbols.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CompartmentSymbols.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CompartmentsWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CompartmentsWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CompartmentsWidget1.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CompartmentsWidget1.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ConstantSymbols.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ConstantSymbols.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/DifferentialEquations.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/DifferentialEquations.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/FixedMetaboliteSymbols.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/FixedMetaboliteSymbols.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/FunctionSymbols.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/FunctionSymbols.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/FunctionWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/FunctionWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/FunctionWidget1.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/FunctionWidget1.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MetaboliteSymbols.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MetaboliteSymbols.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MetabolitesWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MetabolitesWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MetabolitesWidget1.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MetabolitesWidget1.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ModelWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ModelWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ModesWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ModesWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget1.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget1.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MyLineEdit.Po $(DEPDIR)/MyLineEdit.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MyTable.Po $(DEPDIR)/ObjectBrowser.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ObjectBrowser.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ObjectBrowserItem.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/Observer.Po $(DEPDIR)/ReactionsWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/ScanWidget.Po $(DEPDIR)/ScanWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/SteadyStateWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/SteadyStateWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/StretchTable.Po $(DEPDIR)/Subject.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/TrajectoryWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/TrajectoryWidget.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/copasiWidget.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/copasiui3window.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/copasiui3window.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/listviews.Po $(DEPDIR)/listviews.moc.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/main.Po $(DEPDIR)/objectdebug.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/objectdebug.moc.Po
-#>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-#>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-#>+ 2
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CReactionInterface.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CompartmentSymbols.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CompartmentSymbols.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CompartmentsWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CompartmentsWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CompartmentsWidget1.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CompartmentsWidget1.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ConstantSymbols.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ConstantSymbols.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/DifferentialEquations.Po \
+@AMDEP_TRUE@	$(DEPDIR)/DifferentialEquations.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/FixedMetaboliteSymbols.Po \
+@AMDEP_TRUE@	$(DEPDIR)/FixedMetaboliteSymbols.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/FunctionSymbols.Po \
+@AMDEP_TRUE@	$(DEPDIR)/FunctionSymbols.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/FunctionWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/FunctionWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/FunctionWidget1.Po \
+@AMDEP_TRUE@	$(DEPDIR)/FunctionWidget1.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MetaboliteSymbols.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MetaboliteSymbols.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MetabolitesWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MetabolitesWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MetabolitesWidget1.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MetabolitesWidget1.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ModelWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ModelWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ModesWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ModesWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget1.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget1.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MyLineEdit.Po $(DEPDIR)/MyLineEdit.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MyTable.Po $(DEPDIR)/ObjectBrowser.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ObjectBrowser.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ObjectBrowserItem.Po \
+@AMDEP_TRUE@	$(DEPDIR)/Observer.Po $(DEPDIR)/ReactionsWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ScanWidget.Po $(DEPDIR)/ScanWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/SteadyStateWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/SteadyStateWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/StretchTable.Po $(DEPDIR)/Subject.Po \
+@AMDEP_TRUE@	$(DEPDIR)/TrajectoryWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/TrajectoryWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/copasiWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/copasiui3window.Po \
+@AMDEP_TRUE@	$(DEPDIR)/copasiui3window.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/listviews.Po $(DEPDIR)/listviews.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/main.Po $(DEPDIR)/objectdebug.Po \
+@AMDEP_TRUE@	$(DEPDIR)/objectdebug.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/parametertable.Po \
+@AMDEP_TRUE@	$(DEPDIR)/parametertable.moc.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS)
-#>- LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
-#>- $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-#>- $(AM_CXXFLAGS) $(CXXFLAGS)
-#>+ 3
-LTCXXCOMPILE = $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS)
+	$(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-#>- CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
-#>- $(AM_LDFLAGS) $(LDFLAGS) -o $@
-#>+ 2
-CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS) \
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(CopasiUI_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
 SOURCES = $(CopasiUI_SOURCES)
 
-#>- all: all-am
-#>+ 1
-all: docs-am  all-am
+all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .cpp .lo .o .obj
@@ -574,36 +536,32 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
-#>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --gnu  copasi/CopasiUI/Makefile
-#>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/CopasiUI/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/CopasiUI/Makefile.in
+	  $(AUTOMAKE) --gnu  copasi/CopasiUI/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
-	CONFIG_HEADERS= CONFIG_LINKS= \
-	CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
-	if test -f $$p \
-	|| test -f $$p1 \
-	; then \
-	f=`echo $$p1|sed '$(transform);s/$$/$(EXEEXT)/'`; \
-	echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f"; \
-	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f; \
-	else :; fi; \
+	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  if test -f $$p \
+	     || test -f $$p1 \
+	  ; then \
+	    f=`echo $$p1|sed '$(transform);s/$$/$(EXEEXT)/'`; \
+	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f"; \
+	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f; \
+	  else :; fi; \
 	done
 
 uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	f=`echo $$p|sed 's/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
-	echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
-	rm -f $(DESTDIR)$(bindir)/$$f; \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
+	  rm -f $(DESTDIR)$(bindir)/$$f; \
 	done
 
 clean-binPROGRAMS:
@@ -618,6 +576,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CReactionInterface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CompartmentSymbols.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CompartmentSymbols.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CompartmentsWidget.Po@am__quote@
@@ -677,6 +636,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/objectdebug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/objectdebug.moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/parametertable.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/parametertable.moc.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
@@ -706,58 +667,53 @@ tags: TAGS
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique $(LISP)
 
 TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
-	$(TAGS_FILES) $(LISP)
+		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	|| etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 GTAGS:
 	here=`CDPATH=: && cd $(top_builddir) && pwd` \
-	&& cd $(top_srcdir) \
-	&& gtags -i $(GTAGS_ARGS) $$here
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
 
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 
-#>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-#>+ 4
-KDE_DIST=SteadyStateWidget.ui objectdebug.ui DataModel.h FunctionWidget1.ui TrajectoryWidget.ui trace Sample2.txt CompartmentsWidget.ui CopasiUI-Static.dsp MoietiesWidget.cpp MoietiesWidget.h Sample.txt MetabolitesWidget1.ui objectdebug.ui.h ObjectBrowser.ui MoietyWidget1.ui objectdebug.h CopasiUI.dsp ReactionsWidget1.ui 
-
-DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
-
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 top_distdir = ../..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
-	if test -f $$file; then d=.; else d=$(srcdir); fi; \
-	dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
-	if test "$$dir" != "$$file" && test "$$dir" != "."; then \
-	$(mkinstalldirs) "$(distdir)/$$dir"; \
-	fi; \
-	if test -d $$d/$$file; then \
-	cp -pR $$d/$$file $(distdir) \
-	|| exit 1; \
-	else \
-	test -f $(distdir)/$$file \
-	|| cp -p $$d/$$file $(distdir)/$$file \
-	|| exit 1; \
-	fi; \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
 	done
 check-am: all-am
 check: check-am
@@ -777,8 +733,8 @@ install-am: all-am
 installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
-	`test -z '$(STRIP)' || \
-	echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:
@@ -789,9 +745,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-#>- clean: clean-am
-#>+ 1
-clean: kde-rpo-clean  clean-am
+clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 
@@ -850,39 +804,3 @@ check_LIBS:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
-
-#>+ 2
-docs-am:
-
-#>+ 2
-apidox-am:
-
-#>+ 2
-apidox: apidox-am
-
-#>+ 6
-force-reedit:
-		cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/CopasiUI/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/CopasiUI/Makefile.in
-
-
-#>+ 2
-final:
-	$(MAKE) all-am
-#>+ 2
-final-install:
-	$(MAKE) install-am
-#>+ 2
-no-final:
-	$(MAKE) all-am
-#>+ 2
-no-final-install:
-	$(MAKE) install-am
-#>+ 3
-cvs-clean:
-	$(MAKE) admindir=$(top_srcdir)/admin -f $(top_srcdir)/admin/Makefile.common cvs-clean
-
-#>+ 3
-kde-rpo-clean:
-	-rm -f *.rpo

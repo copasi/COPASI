@@ -1,5 +1,4 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.10 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -245,6 +244,7 @@ libfunction_a_SOURCES = \
 	CKinFunctionFlexLexer.cpp \
 	CMassAction.cpp \
 	CFunctionDB.cpp \
+	CCallParameters.cpp \
 	CNodeK.cpp
 
 
@@ -260,9 +260,7 @@ EXTRA_DIST = \
 	CKinFunctionFlexLexer.lpp \
 	CFunctionDB.h		CFunctionDB.cpp \
 	CNodeK.h		CNodeK.cpp \
-	CCallParameter.h \
-	CCallParameters.h \
-	function.h
+	CCallParameters.h CCallParameters.cpp 
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -281,17 +279,9 @@ am_libfunction_a_OBJECTS = CRange.$(OBJEXT) CUsageRange.$(OBJEXT) \
 	CFunction.$(OBJEXT) CFunctionParameter.$(OBJEXT) \
 	CFunctionParameters.$(OBJEXT) CKinFunction.$(OBJEXT) \
 	CKinFunctionFlexLexer.$(OBJEXT) CMassAction.$(OBJEXT) \
-	CFunctionDB.$(OBJEXT) CNodeK.$(OBJEXT)
-#>- libfunction_a_OBJECTS = $(am_libfunction_a_OBJECTS)
-#>+ 8
-libfunction_a_final_OBJECTS = libfunction_a.all_cpp.o 
-libfunction_a_nofinal_OBJECTS = CRange.$(OBJEXT) CUsageRange.$(OBJEXT) \
-	CFunction.$(OBJEXT) CFunctionParameter.$(OBJEXT) \
-	CFunctionParameters.$(OBJEXT) CKinFunction.$(OBJEXT) \
-	CKinFunctionFlexLexer.$(OBJEXT) CMassAction.$(OBJEXT) \
-	CFunctionDB.$(OBJEXT) CNodeK.$(OBJEXT)
-@KDE_USE_FINAL_FALSE@libfunction_a_OBJECTS = $(libfunction_a_nofinal_OBJECTS)
-@KDE_USE_FINAL_TRUE@libfunction_a_OBJECTS = $(libfunction_a_final_OBJECTS)
+	CFunctionDB.$(OBJEXT) CCallParameters.$(OBJEXT) \
+	CNodeK.$(OBJEXT)
+libfunction_a_OBJECTS = $(am_libfunction_a_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -299,30 +289,21 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CFunction.Po $(DEPDIR)/CFunctionDB.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CFunctionParameter.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CFunctionParameters.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CKinFunction.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CKinFunctionFlexLexer.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CMassAction.Po $(DEPDIR)/CNodeK.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CRange.Po $(DEPDIR)/CUsageRange.Po
-#>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-#>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-#>+ 2
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CCallParameters.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CFunction.Po $(DEPDIR)/CFunctionDB.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CFunctionParameter.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CFunctionParameters.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CKinFunction.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CKinFunctionFlexLexer.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CMassAction.Po $(DEPDIR)/CNodeK.Po \
+@AMDEP_TRUE@	$(DEPDIR)/CRange.Po $(DEPDIR)/CUsageRange.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS)
-#>- LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
-#>- $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-#>- $(AM_CXXFLAGS) $(CXXFLAGS)
-#>+ 3
-LTCXXCOMPILE = $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS)
+	$(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-#>- CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
-#>- $(AM_LDFLAGS) $(LDFLAGS) -o $@
-#>+ 2
-CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS) \
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
 CFLAGS = @CFLAGS@
@@ -337,9 +318,7 @@ DIST_SOURCES = $(libfunction_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
 SOURCES = $(libfunction_a_SOURCES)
 
-#>- all: all-am
-#>+ 1
-all: docs-am  all-am
+all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .cpp .lo .lpp .o .obj
@@ -353,16 +332,12 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
-#>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --gnu  copasi/function/Makefile
-#>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/function/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/function/Makefile.in
+	  $(AUTOMAKE) --gnu  copasi/function/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
-	CONFIG_HEADERS= CONFIG_LINKS= \
-	CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
 
 AR = ar
 
@@ -379,6 +354,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCallParameters.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CFunction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CFunctionDB.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CFunctionParameter.Po@am__quote@
@@ -418,58 +394,53 @@ tags: TAGS
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique $(LISP)
 
 TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
-	$(TAGS_FILES) $(LISP)
+		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	done | \
-	$(AWK) '    { files[$$0] = 1; } \
-	END { for (i in files) print i; }'`; \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	|| etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 GTAGS:
 	here=`CDPATH=: && cd $(top_builddir) && pwd` \
-	&& cd $(top_srcdir) \
-	&& gtags -i $(GTAGS_ARGS) $$here
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
 
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 
-#>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-#>+ 4
-KDE_DIST=libfunction.a function.dsp 
-
-DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
-
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 top_distdir = ../..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
-	if test -f $$file; then d=.; else d=$(srcdir); fi; \
-	dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
-	if test "$$dir" != "$$file" && test "$$dir" != "."; then \
-	$(mkinstalldirs) "$(distdir)/$$dir"; \
-	fi; \
-	if test -d $$d/$$file; then \
-	cp -pR $$d/$$file $(distdir) \
-	|| exit 1; \
-	else \
-	test -f $(distdir)/$$file \
-	|| cp -p $$d/$$file $(distdir)/$$file \
-	|| exit 1; \
-	fi; \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
 	done
 check-am: all-am
 check: check-am
@@ -488,8 +459,8 @@ install-am: all-am
 installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
-	`test -z '$(STRIP)' || \
-	echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:
@@ -500,14 +471,9 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-#>- clean: clean-am
-#>+ 1
-clean: kde-rpo-clean  clean-am
+clean: clean-am
 
-#>- clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
-#>- mostlyclean-am
-#>+ 2
-clean-am: clean-final  clean-generic clean-libtool clean-noinstLIBRARIES \
+clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -559,66 +525,14 @@ uninstall-am: uninstall-info-am
 .lpp.cpp:
 	$(LEX) -t $< | \
 	sed -e 's/class istream;/#include "copasi.h"/' \
-	-e 's/<FlexLexer.h>/"FlexLexer.h"/' \
-	-e 's/#include <unistd.h>/using namespace std;/' > $@
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e 's/#include <unistd.h>/using namespace std;/' > $@
 
 %.cpp: %.lpp
 	$(LEX) -t $< | \
 	sed -e 's/class istream;/#include "copasi.h"/' \
-	-e 's/<FlexLexer.h>/"FlexLexer.h"/' \
-	-e 's/#include <unistd.h>/using namespace std;/' > $@
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e 's/#include <unistd.h>/using namespace std;/' > $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
-
-#>+ 2
-docs-am:
-
-#>+ 2
-apidox-am:
-
-#>+ 2
-apidox: apidox-am
-
-#>+ 6
-force-reedit:
-		cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/function/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/function/Makefile.in
-
-
-#>+ 11
-libfunction_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CRange.cpp $(srcdir)/CUsageRange.cpp $(srcdir)/CFunction.cpp $(srcdir)/CFunctionParameter.cpp $(srcdir)/CFunctionParameters.cpp $(srcdir)/CKinFunction.cpp $(srcdir)/CKinFunctionFlexLexer.cpp $(srcdir)/CMassAction.cpp $(srcdir)/CFunctionDB.cpp $(srcdir)/CNodeK.cpp
-	@echo 'creating libfunction_a.all_cpp.cpp ...'; \
-	rm -f libfunction_a.all_cpp.files libfunction_a.all_cpp.final; \
-	echo "#define KDE_USE_FINAL 1" >> libfunction_a.all_cpp.final; \
-	for file in CRange.cpp CUsageRange.cpp CFunction.cpp CFunctionParameter.cpp CFunctionParameters.cpp CKinFunction.cpp CKinFunctionFlexLexer.cpp CMassAction.cpp CFunctionDB.cpp CNodeK.cpp ; do \
-	  echo "#include \"$$file\"" >> libfunction_a.all_cpp.files; \
-	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libfunction_a.all_cpp.final; \
-	done; \
-	cat libfunction_a.all_cpp.final libfunction_a.all_cpp.files > libfunction_a.all_cpp.cpp; \
-	rm -f libfunction_a.all_cpp.final libfunction_a.all_cpp.files
-
-#>+ 3
-clean-final:
-	-rm -f libfunction_a.all_cpp.cpp
-
-#>+ 2
-final:
-	$(MAKE) libfunction_a_OBJECTS="$(libfunction_a_final_OBJECTS)" all-am
-#>+ 2
-final-install:
-	$(MAKE) libfunction_a_OBJECTS="$(libfunction_a_final_OBJECTS)" install-am
-#>+ 2
-no-final:
-	$(MAKE) libfunction_a_OBJECTS="$(libfunction_a_nofinal_OBJECTS)" all-am
-#>+ 2
-no-final-install:
-	$(MAKE) libfunction_a_OBJECTS="$(libfunction_a_nofinal_OBJECTS)" install-am
-#>+ 3
-cvs-clean:
-	$(MAKE) admindir=$(top_srcdir)/admin -f $(top_srcdir)/admin/Makefile.common cvs-clean
-
-#>+ 3
-kde-rpo-clean:
-	-rm -f *.rpo

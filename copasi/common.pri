@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2003/05/21 02:44:15 $  
+# $Revision: 1.9 $ $Author: shoops $ $Date: 2003/05/21 20:36:32 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -62,7 +62,7 @@ contains(BUILD_OS, WIN32) {
       QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${CLAPACK_PATH}\lib"
       LIBS += clapack.lib
     } else {
-      error( "Either MKL_PATH or CLAPACK_PATH must be specified )
+      error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
     }
   }
 
@@ -72,7 +72,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
     LIBS += libexpat.lib
   } else {
-    error( "EXPAT_PATH must be specified )
+    error( "EXPAT_PATH must be specified" )
   }
 } 
 
@@ -83,7 +83,7 @@ contains(BUILD_OS, SunOS) {
     LIBS += -llapack -lblas -lF77 -lfl
     LIBS += -L$${CLAPACK_PATH}/lib
   } else {
-    error( "CLAPACK_PATH must be specified )
+    error( "CLAPACK_PATH must be specified" )
   }
 }
  
@@ -100,7 +100,7 @@ contains(BUILD_OS, Linux) {
       LIBS += -llapack -lblas -lF77 -lfl
       LIBS += -L$${CLAPACK_PATH}/lib
     } else {
-      error( "Either MKL_PATH or CLAPACK_PATH must be specified )
+      error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
     }
   }
 }
