@@ -14,6 +14,7 @@ CopasiUI_MOC = \
 	MetabolitesWidget.moc.cpp \
 	MetabolitesWidget1.moc.cpp \
 	MetaboliteSymbols.moc.cpp \
+	ModelWidget.moc.cpp \
 	ModesWidget.moc.cpp \
 	MoietyWidget.moc.cpp \
 	MoietyWidget1.moc.cpp \
@@ -45,6 +46,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
         MetabolitesWidget.cpp \
         MetabolitesWidget1.cpp \
 	MetaboliteSymbols.cpp \
+	ModelWidget.cpp \
 	ModesWidget.cpp \
         MoietyWidget.cpp \
         MoietyWidget1.cpp \
@@ -95,6 +97,7 @@ EXTRA_DIST = \
 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp \
 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp \
 	MetaboliteSymbols.h MetaboliteSymbols.cpp MetaboliteSymbols.moc.cpp \
+	ModelWidget.h ModelWidget.cpp ModelWidget.moc.cpp \
 	ModesWidget.h ModesWidget.cpp \
 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp \
 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp \
