@@ -1,9 +1,9 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/Attic/UnitConversionFactory.cpp,v $
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
    $Revision: 1.1 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 09:00:07 $
+   $Date: 2005/02/16 09:05:41 $
    End CVS Header */
 
 class UnitDefinition;
