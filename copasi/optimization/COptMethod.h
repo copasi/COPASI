@@ -39,7 +39,8 @@ class COptMethod : public CMethodParameterList
     enum Type
     {
       RandomSearch = 0,
-      RandomSearchMaster
+      RandomSearchMaster = 1,
+      SimulatedAnnealing = 2
     };
 
     //data member
@@ -109,9 +110,11 @@ class COptMethod : public CMethodParameterList
      * @param "COptProblem *" problem
      */
     void setProblem(COptProblem * problem);
+    int GetMethodType(void);
   };
 
 #include "CRandomSearch.h"
 #include "CRandomSearchMaster.h"
+#include "COptMethodSA.h"
 
 #endif  // COPASI_COptMethod

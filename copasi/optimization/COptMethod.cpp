@@ -15,7 +15,8 @@
 const std::string COptMethod::TypeName[] =
   {
     "RandomSearch",
-    "RandomSearchMaster"
+    "RandomSearchMaster",
+    "SimulatedAnnealing"
   };
 
 COptMethod * COptMethod::createMethod(COptMethod::Type type)
@@ -29,6 +30,10 @@ COptMethod * COptMethod::createMethod(COptMethod::Type type)
 
     case RandomSearchMaster:
       Method = new CRandomSearchMaster();
+      break;
+
+    case SimulatedAnnealing:
+      Method = new COptMethodSA();
       break;
 
     default:
@@ -79,4 +84,9 @@ bool COptMethod::isBounded(void)
 C_INT32 COptMethod::optimise(void)
 {
   return 0;
+}
+
+int COptMethod::GetMethodType(void)
+{
+  return mTypeEnum;
 }
