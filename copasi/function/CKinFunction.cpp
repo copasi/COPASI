@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/22 18:59:16 $
+   $Author: chlee $ 
+   $Date: 2003/10/23 19:45:59 $
    End CVS Header */
 
 /**
@@ -265,7 +265,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                               // this is an error
+        case N_NOP:                                // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -740,7 +740,7 @@ void CKinFunction::initIdentifierNodes()
           break;
         }
 
-      if (i == imax)
+      if (i == imax && imax != 0)
         fatalError();
     }
 }
