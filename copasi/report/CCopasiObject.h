@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/03 13:03:31 $
+   $Author: shoops $ 
+   $Date: 2005/01/18 20:04:30 $
    End CVS Header */
 
 /**
@@ -91,6 +91,15 @@ class CCopasiObject
     virtual ~CCopasiObject();
 
     //  pure virtual function,
+    /**
+     * This is the output method for any object. The default implementation
+     * provided with CCopasiObject uses the ostream operator<< of the object
+     * to print the object.
+     * There exist two ways to modify the print behaviour of an object
+     * 1) implement an ostream operator for the object
+     * 2) reimplement the virtual print function.
+     * @param std::ostream * ostream
+     */
     virtual void print(std::ostream * ostream) const;
 
     //    virtual const std::string & getName() const;
