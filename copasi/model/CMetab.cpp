@@ -26,6 +26,17 @@ CMetab::CMetab()
   mCompartment = NULL;
 }
 
+CMetab::CMetab(const CMetab & src)
+{
+  mName        = src.mName;
+  mConc        = src.mConc;
+  mIConc       = src.mIConc;
+  mRate        = src.mRate;
+  mTT          = src.mTT;
+  mStatus      = src.mStatus;
+  mCompartment = src.mCompartment;
+}
+
 CMetab::CMetab(const string & name)
 {
   reset(name);
@@ -88,6 +99,7 @@ C_INT32 CMetab::reset(const string& name)
   return 0;
 }
 
+void CMetab::cleanup() {} 
 
 C_INT32 CMetab::load(CReadConfig &configbuffer)
 {

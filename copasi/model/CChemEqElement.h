@@ -55,6 +55,11 @@ class CChemEqElement
   ~CChemEqElement();
 
   /**
+   *  cleanup
+   */
+  void cleanup();
+
+  /**
    *  Set the multiplicity of the element.
    *  @param "const C_FLOAT64" multiplicity
    */

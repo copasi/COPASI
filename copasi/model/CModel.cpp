@@ -684,7 +684,7 @@ void CModel::initializeMetabolites()
   // Note, the metabolites physically exist in the compartments.
   for (i = 0; i < mCompartments->size(); i++)
     for (j = 0; j < (*mCompartments)[i].metabolites().size(); j++)
-      mMetabolites.push_back(&(*mCompartments)[i].metabolites()[j]);
+      mMetabolites.push_back((*mCompartments)[i].metabolites()[j]);
 }
 
 /**

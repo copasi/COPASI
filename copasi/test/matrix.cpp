@@ -26,7 +26,7 @@ C_INT main(void)
       model.initialize();
   
       CCompartment compartment;
-      compartment.initialize();
+      // compartment.initialize();
       
       CMetab metabolite;
       metabolite.setInitialConcentration(1.0);

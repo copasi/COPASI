@@ -74,6 +74,11 @@ class CMetab
   CMetab();
 
   /**
+   *  Copy constructor
+   */
+  CMetab(const CMetab & src);
+
+  /**
    *  Specific constructor. 
    *  @param name name of the metabolite.
    */
@@ -94,6 +99,11 @@ class CMetab
    */
   ~CMetab();
 
+  /**
+   *  Cleanup
+   */
+  void cleanup();
+    
   /**
    *  Assignment operator.
    */

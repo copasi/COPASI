@@ -1,16 +1,14 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
-bin_PROGRAMS = test matrix SHvirtual
+bin_PROGRAMS = test matrix 
 
 test_SOURCES = test.cpp
-
-SHvirtual_SOURCES = VirtualMain.cpp
 
 matrix_SOURCES = matrix.cpp
 
 EXTRA_DIST = test.cpp matrix.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
-bin_PROGRAMS = test matrix SHvirtual
+bin_PROGRAMS = test matrix
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/copasi

@@ -10,19 +10,23 @@
 #include "copasi.h"
 #include "CCompartment.h"
 #include "utilities/utilities.h"
+#include "utilities/CCopasiVectorN.h"
 
 CCompartment::CCompartment()
 {
   // initialize everything
   mName   = "compartment";
   mVolume = 1.0;
-  mMetabolites = NULL;
 }
 
-void CCompartment::initialize()
+CCompartment::CCompartment(const CCompartment & src)
 {
-  if (!mMetabolites) mMetabolites = new CCopasiVector < CMetab >;
+  mName        = src.mName;
+  mVolume      = src.mVolume;
+
+  mMetabolites = CCopasiVectorN < CMetab >(src.mMetabolites);
 }
+
 
 CCompartment::CCompartment(const string & name,
                            C_FLOAT64 volume)
@@ -31,22 +35,20 @@ CCompartment::CCompartment(const string & name,
   mName   = name;
   if (!isValidName()) fatalError();
   mVolume = volume;
-  mMetabolites = NULL;
 }
 
 CCompartment::~CCompartment() {}
 
-void CCompartment::cleanup()
-{
-  if (mMetabolites) delete mMetabolites;
-  mMetabolites = NULL;
-}
+// void CCompartment::initialize() {}
+
+void CCompartment::cleanup() {mMetabolites.cleanup();}
 
 CCompartment & CCompartment::operator=(const CCompartment & rhs)
 {
   mName        = rhs.mName;
   mVolume      = rhs.mVolume;
-  mMetabolites = rhs.mMetabolites;
+
+  mMetabolites = CCopasiVectorN < CMetab >(rhs.mMetabolites);
     
   return *this;
 }
@@ -54,7 +56,7 @@ CCompartment & CCompartment::operator=(const CCompartment & rhs)
 C_INT32 CCompartment::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
-  initialize();
+  // initialize();
     
   if ((Fail = configbuffer.getVariable("Compartment", "string",
 				       (void *) &mName,
@@ -72,7 +74,7 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
 				       (void *) &MetabolitesNo)))
     return Fail;
     
-  Fail = mMetabolites->load(configbuffer, MetabolitesNo);
+  mMetabolites.load(configbuffer, MetabolitesNo);
     
   return Fail;
 }
@@ -89,12 +91,12 @@ C_INT32 CCompartment::save(CWriteConfig & configbuffer)
 				       (void *) &mVolume)))
     return Fail;
     
-  C_INT32 size = mMetabolites->size();
+  C_INT32 size = mMetabolites.size();
   if ((Fail = configbuffer.setVariable("MetabolitesNo", "C_INT32",
 				       (void *) &size)))
     return Fail;
 
-  Fail = mMetabolites->save(configbuffer);
+  mMetabolites.save(configbuffer);
   return Fail;
 }
 
@@ -102,8 +104,8 @@ string CCompartment::getName() const {return mName;}
 
 C_FLOAT64 CCompartment::getVolume() const {return mVolume;}
 
-CCopasiVector < CMetab > & CCompartment::metabolites() 
-{return *mMetabolites;}
+CCopasiVectorN < CMetab > & CCompartment::metabolites() 
+{return mMetabolites;}
 
 void CCompartment::setName(const string & name) 
 {
@@ -116,7 +118,7 @@ void CCompartment::setVolume(C_FLOAT64 volume) {mVolume = volume;}
 void CCompartment::addMetabolite(CMetab &metabolite)
 {
   metabolite.setCompartment(this);
-  mMetabolites->add(metabolite);
+  mMetabolites.add(metabolite);
 }
 
 C_INT16 CCompartment::isValidName() const

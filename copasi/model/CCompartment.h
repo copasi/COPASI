@@ -11,9 +11,8 @@
 
 #include <string>
 
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
-#include "utilities/CCopasiVector.h"
+#include "utilities/utilities.h"
+#include "utilities/CCopasiVectorN.h"
 #include "CMetab.h"
 #include "CModel.h"
 
@@ -35,7 +34,7 @@ class CCompartment {
    *  @supplierCardinality 0..*
    *  @associates <{CMetab}>
    */
-  CCopasiVector < CMetab > * mMetabolites;
+  CCopasiVectorN < CMetab > mMetabolites;
   // Operations
  public:
   /**
@@ -43,6 +42,12 @@ class CCompartment {
    *  Creates an empty object with mName="compartment" and mVolume=1
    */
   CCompartment();
+
+  /**
+   *  Copy constructor.
+   *  @param "const CCompartment &" src
+   */
+  CCompartment(const CCompartment & src);
 
   /**
    *  Specified constructor. 
@@ -55,7 +60,7 @@ class CCompartment {
   /**
    *  Init
    */
-  void initialize();
+  // void initialize();
     
   /**
    *  Destructor. 
@@ -64,7 +69,7 @@ class CCompartment {
   ~CCompartment();
 
   /**
-   *  Delete
+   *  Cleanup
    */
   void cleanup();
     
@@ -110,7 +115,7 @@ class CCompartment {
   /*
    *
    */
-  CCopasiVector < CMetab > & metabolites();
+  CCopasiVectorN < CMetab > & metabolites();
     
   /*
    *

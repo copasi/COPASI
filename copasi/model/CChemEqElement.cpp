@@ -19,7 +19,9 @@ CChemEqElement::CChemEqElement(const CChemEqElement & src)
   mpMetabolite = src.mpMetabolite;
 }
 
-CChemEqElement::~CChemEqElement() {;}
+CChemEqElement::~CChemEqElement() {}
+
+void CChemEqElement::cleanup() {}
 
 void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity = multiplicity;}
@@ -28,7 +30,11 @@ C_FLOAT64 CChemEqElement::getMultiplicity() const
 {return mMultiplicity;}
 
 void CChemEqElement::setMetabolite(CMetab & metabolite)
-{mpMetabolite = &metabolite;}
+{
+  mpMetabolite = &metabolite;
+  mMetaboliteName = mpMetabolite->getName();
+  mCompartmentName = mpMetabolite->getCompartment()->getName();
+}
 
 CMetab & CChemEqElement::getMetabolite() 
 {

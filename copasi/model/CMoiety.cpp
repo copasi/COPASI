@@ -13,34 +13,33 @@ CMoiety::CMoiety(const string & name) {mName = name;}
 
 CMoiety::~CMoiety() {}
 
-void CMoiety::add(C_FLOAT64 value,
-                  CMetab & metabolite)
+void CMoiety::add(C_FLOAT64 value, CMetab & metabolite)
 {
-  ELEMENT element;
-  element.mValue = value;
-  element.mMetab = &metabolite;
+  CChemEqElement * element = new CChemEqElement;
+  element->setMultiplicity(value);
+  element->setMetabolite(metabolite);
         
   mEquation.push_back(element);
 }
 
-void CMoiety::add(C_FLOAT64 value,
-                  CMetab * metabolite)
+void CMoiety::add(C_FLOAT64 value, CMetab * metabolite)
+{add(value, *metabolite);}
+
+void CMoiety::cleanup() 
 {
-  ELEMENT element;
-  element.mValue = value;
-  element.mMetab = metabolite;
-        
-  mEquation.push_back(element);
+  for(unsigned C_INT32 i=0; i < mEquation.size(); i++)
+    if (mEquation[i]) delete mEquation[i];
+  
+  mEquation.clear();
 }
 
-void CMoiety::cleanup() {mEquation.clear();}
-
+#ifdef XXXX
 void CMoiety::cleanup(const string & name)
 {
   unsigned C_INT32 i;
 
   for (i = 0; i < mEquation.size(); i++)
-    if (mEquation[i].mMetab->getName() == name) break;
+    if (mEquation[i].getName() == name) break;
     
   if (i == mEquation.size()) fatalError();
 
@@ -70,15 +69,15 @@ void CMoiety::change(const string & name,
 
   change(i, value);
 }
+#endif // XXXX
 
 C_FLOAT64 CMoiety::dependentNumber()
 {
   C_FLOAT64 Number = mINumber;
     
   for(unsigned C_INT32 i=1; i < mEquation.size(); i++)
-    Number -= mEquation[i].mValue * 
-      *mEquation[i].mMetab->getConcentration() * 
-      mEquation[i].mMetab->getCompartment()->getVolume();
+    Number -= mEquation[i]->getMultiplicity() * 
+      mEquation[i]->getMetabolite().getNumber();
     
   return Number;
 }
@@ -93,14 +92,16 @@ string CMoiety::getDescription() const
     {
       if (i) 
         {
-	  if (mEquation[i].mValue < 0.0)
+	  if (mEquation[i]->getMultiplicity() < 0.0)
 	    Description += " - ";
 	  else
 	    Description += " + ";
         }
-      if (fabs(mEquation[i].mValue) != 1.0)
-	Description += StringPrint("%3.1f * ", fabs(mEquation[i].mValue));
-      Description += mEquation[i].mMetab->getName();
+      if (fabs(mEquation[i]->getMultiplicity()) != 1.0)
+	Description += StringPrint("%3.1f * ", 
+				   fabs(mEquation[i]->getMultiplicity()));
+      Description += mEquation[i]->getMetaboliteName();
+      Description += "{" + mEquation[i]->getCompartmentName() + "}";
     }
   return Description;
 }
@@ -112,8 +113,8 @@ void CMoiety::setInitialValue()
   mINumber = 0.0;
     
   for (unsigned C_INT32 i=0; i<mEquation.size(); i++)
-    mINumber += mEquation[i].mValue *
-      mEquation[i].mMetab->getInitialNumber();
+    mINumber += mEquation[i]->getMultiplicity() *
+      mEquation[i]->getMetabolite().getInitialNumber();
 
   return;
 }

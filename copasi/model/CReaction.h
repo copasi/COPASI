@@ -254,8 +254,8 @@ class CReaction
    *  Retrieves the chemical structure of the reaction
    *  @return vector < ELEMENT >
    */
-  typedef struct ELEMENT {C_FLOAT64 mValue; string mName;};
-  vector < ELEMENT > getChemStructure() const;
+  // typedef struct ELEMENT {C_FLOAT64 mValue; string mName;};
+  // vector < ELEMENT > getChemStructure() const;
 
   /**
    *  Retrieves a vector of substrates and their multiplicity

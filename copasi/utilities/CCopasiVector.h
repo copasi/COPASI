@@ -214,7 +214,7 @@ class CCopasiVectorP
     {
       C_INT32 Fail = 0;
 
-      for (C_INT32 i = 0; i < size(); i++)
+      for (unsigned C_INT32 i=0; i<size(); i++)
 	if (Fail = (*mTypes)[i]->save(configbuffer)) return Fail;
     
       return Fail;

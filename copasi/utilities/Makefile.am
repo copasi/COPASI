@@ -14,7 +14,7 @@ EXTRA_DIST = \
 	utilities.h \
 	CCopasiException.h	CCopasiException.cpp \
 	CCopasiMessage.h	CCopasiMessage.cpp \
-	CCopasiVector.h \
+	CCopasiVector.h 	CCopasiVectorN.h \
 	CGlobals.h		CGlobals.cpp \
 	CReadConfig.h		CReadConfig.cpp \
 	CVersion.h		CVersion.cpp \

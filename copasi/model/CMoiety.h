@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "CMetab.h"
+#include "CChemEqElement.h"
 
 class CMoiety
 {
@@ -33,8 +34,8 @@ class CMoiety
   C_FLOAT64 mINumber;
 
 
-  typedef struct ELEMENT {C_FLOAT64 mValue; CMetab * mMetab;};
-  vector < ELEMENT > mEquation;
+  // typedef struct ELEMENT {C_FLOAT64 mValue; CMetab * mMetab;};
+  vector < CChemEqElement * > mEquation;
     
   // Operations
  public:

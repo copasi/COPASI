@@ -116,6 +116,7 @@ void CChemEq::addElement(vector < CChemEqElement * > & structure,
     structure[i]->addToMultiplicity(element.getMultiplicity());
 }
 
+#ifdef XXXX
 void CChemEq::setSubstrates(const string & left)
 {
   setChemEqElements(mSubstrates, left, CChemEq::SUBSTRATE);
@@ -131,6 +132,7 @@ void CChemEq::setBalances(const string & left, const string & right)
   setChemEqElements(mBalances, left, CChemEq::SUBSTRATE);
   setChemEqElements(mBalances, right);
 }
+#endif // XXXX
 
 void CChemEq::setChemEqElements(vector < CChemEqElement * > & elements,
 				const string & reaction,
