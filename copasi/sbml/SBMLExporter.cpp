@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/03 16:36:40 $
+   $Date: 2004/12/20 16:32:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -58,10 +58,9 @@ bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilenam
     {
       SBMLWriter_t* writer = SBMLWriter_create();
 
-#ifdef XXXX // :TODO: Bug 178 This needs to be enabled with the next libsbml release
+      // :TODO: Bug 178 This needs to be enabled with the next libsbml release
       SBMLWriter_setProgramName(writer, "COPASI");
       SBMLWriter_setProgramVersion(writer, Copasi->ProgramVersion.getVersion().c_str());
-#endif // XXXX
 
       /* write the document to a file */
       int returnValue = SBMLWriter_writeSBML(writer, (SBMLDocument_t*)sbmlDocument, sbmlFilename.c_str());
