@@ -657,6 +657,16 @@ void COutput::repStability(ofstream &fout)
  */
 void COutput::repMCA(ofstream &fout)
 {
+#if 0
+	if (mSolution->getSolution != SS_FOUND) 
+		return;
+	else {
+		fout << endl << "METABOLIC CONTROL ANALYSIS" << endl;
+		// Output elasticties
+		if (mSolution->)
+		else 
+	}
+#endif
 }
 
 /**
