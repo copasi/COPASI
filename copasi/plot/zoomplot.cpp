@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/zoomplot.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:32:40 $
+   $Author: ssahle $ 
+   $Date: 2005/02/03 15:07:17 $
    End CVS Header */
 
 // taken from the realtime_plot example
@@ -506,7 +506,12 @@ void ZoomPlot::zoomOut()
     return;
 
   _scaleStack.clear();
-  rescale(_initialScale);
+
+  //rescale(_initialScale);
+
+  setAxisAutoScale(QwtPlot::xBottom);
+  setAxisAutoScale(QwtPlot::yLeft);
+  replot();
 
   updateScrollBars();
 
