@@ -1,4 +1,8 @@
+#include <iostream>
+#include <sstream>
+
 #include "CSpecLine.h"
+#include "utilities/CGlobals.h"
 
 CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE;}
 
@@ -137,3 +141,122 @@ bool CBaseEqn::operator==(const CBaseEqn &rhs) const
     }
     return false;
 }
+
+CTempMetab::CTempMetab(const CTempMetab &rhs)
+    : mMetab(rhs.mMetab),
+      mMultiplicity(rhs.mMultiplicity),
+      mNumChange(rhs.mNumChange)
+{}    
+
+CTempMetab *CTempReaction::addMetabolite(CMetab *metab)
+{
+    // First try to find this metabolite on the existing stack
+    for (unsigned C_INT32 i = 0; i < mMetabs.size(); i++)
+    {
+        if (mMetabs[i].getMetab()->getName() == metab->getName())
+        {
+            return &mMetabs[i];
+        }
+    }
+    // If we get here, this metab has not yet been added
+    CTempMetab *tmp_metab = new CTempMetab(metab);
+    mMetabs.push_back(*tmp_metab);
+    return tmp_metab;
+}
+
+void CTempReaction::compile(CModel *model)
+{
+    // Create the reaction
+    CReaction *reaction = new CReaction(mName);// XXX TODO: add the bits necessary
+    // Determine the substrates and products of the reaction
+    CTempMetab *tmp_metab = 0;
+    C_INT32 substrate_mult, product_mult, num_change;
+    for (unsigned C_INT32 i = 0; i < mMetabs.size(); i++)
+    {
+        substrate_mult = mMetabs[i].getMultiplicity();
+        num_change = mMetabs[i].getNumChange();
+        product_mult =  substrate_mult + num_change;
+        if (substrate_mult > 0)
+        {
+            tmp_metab = new CTempMetab(mMetabs[i]);
+            mSubstrates.push_back(*tmp_metab);
+        }
+        if (product_mult > 0)
+        {
+            tmp_metab = new CTempMetab(mMetabs[i]);
+            tmp_metab->setMultiplicity(product_mult);
+            mProducts.push_back(*tmp_metab);
+        }
+    }
+    // Create strings describing the chemical equation
+    ostringstream lhs_desc;
+    ostringstream rhs_desc;
+    C_INT32 mult = 0;
+    bool is_first;
+    is_first = true;
+    for (unsigned C_INT32 i = 0; i < mSubstrates.size(); i++)
+    {
+        mult = mSubstrates[i].getMultiplicity();
+        if (is_first == false)
+        {
+            lhs_desc << "+";
+        }
+        is_first = false;
+        if (mult > 1)
+        {
+            lhs_desc << substrate_mult << "*";
+        }
+        lhs_desc << mSubstrates[i].getMetab()->getName();
+    }
+    is_first = true;
+    for (unsigned C_INT32 i = 0; i < mProducts.size(); i++)
+    {
+        mult = mProducts[i].getMultiplicity();
+        if (is_first == false)
+        {
+            rhs_desc << "+";
+        }
+        is_first = false;
+        if (mult > 1)
+        {
+            rhs_desc << mult + "*";
+        }
+        rhs_desc << mProducts[i].getMetab()->getName();
+    }
+    string chemeqdesc = lhs_desc.str() + "->" + rhs_desc.str();
+    // Set the chemical equation description in the reaction. This
+    // automatically parses the description, extracts the metabolites
+    // and constructs the chemical equations.
+    reaction->setChemEq(chemeqdesc);
+    // Set up the kinetic function, and add it to the database
+    CKinFunction *fun = new CKinFunction();
+    fun->setName(mName);
+    fun->setDescription(mRateDescription);
+    fun->compile();
+    Copasi->FunctionDB.loadedFunctions().add(*fun);
+    // Associate this kinetic function with the reaction
+    reaction->setFunction(mName);
+    // Finally, add the reaction to the model
+    model->getReactions().add(reaction);
+}    
+
+CTempReactionSet::CTempReactionSet() {}
+
+void CTempReactionSet::addReaction(CTempReaction *tempreact)
+{
+    mReactions.push_back(*tempreact);
+}
+
+CTempReaction *CTempReactionSet::findReaction(string name)
+{
+    for (unsigned C_INT32 i = 0; i < mReactions.size(); i++)
+    {
+        if (name == mReactions[i].getName())
+        {
+            return &mReactions[i];
+        }
+    }
+    return 0; // If we get here, we didn't find it
+}
+
+

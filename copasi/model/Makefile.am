@@ -11,8 +11,8 @@ libmodel_a_SOURCES = \
 	CChemEqElement.cpp \
 	CScanInputFlexLexer.cpp \
 	CSpecLine.cpp \
-	CSpec2Model.cpp \
-	CDeTerm.cpp
+	CDeTerm.cpp \
+	CSpec2Model.cpp
 
 EXTRA_DIST = \
 	model.h \
@@ -23,10 +23,10 @@ EXTRA_DIST = \
 	CReaction.h	CReaction.cpp \
 	CChemEq.h	CChemEq.cpp \
 	CChemEqElement.h	CChemEqElement.cpp \
-	CSpecLine.h	CSpecLine.cpp \
 	CScanInputFlexLexer.lpp	CScanInputFlexLexer.cpp \
-	CSpec2Model.h	CSpec2Model.cpp \
-	CDeTerm.h	CDeTerm.cpp
+	CSpecLine.h	CSpecLine.cpp \
+	CDeTerm.h	CDeTerm.cpp \
+	CSpec2Model.h	CSpec2Model.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 

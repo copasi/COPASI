@@ -1,6 +1,7 @@
 %{
 
 #include "CSpecLine.h"
+#include "CDeTerm.h"
 #include <iostream>
 
 %}
@@ -69,8 +70,44 @@ chr .
 			return CSpecLine::FUN;
 }
 
-{ident}				{ // An identifier
-			return CSpecLine::FUN; // :TODO: Is this correct ???
+{eol}				{ // A newline
+			return CDeTerm::NL;
 }
-%%
 
+[+]				{ // A plus
+			return CDeTerm::PLUS;
+}
+
+[-]				{ // A minus
+			return CDeTerm::MINUS;
+}
+
+[(]				{ // A left parenthesis
+			return CDeTerm::LPAREN;
+}
+
+[)]				{ // A right parenthesis
+			return CDeTerm::RPAREN;
+}
+
+[\^]				{ // An exponent
+			return CDeTerm::EXPONENT;
+}
+
+[*]				{ // A multiplication symbol
+			return CDeTerm::MULT;
+}
+
+[/]				{ // A division symbol
+			return CDeTerm::DIV;
+}
+
+{ident}				{ // An identifier
+			return CDeTerm::IDENT; // :TODO: Is this correct ???
+}
+
+{num}				{ // A number
+			return CDeTerm::NUM;
+}
+
+%%

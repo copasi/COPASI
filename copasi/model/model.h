@@ -7,5 +7,6 @@
 #include "CChemEqElement.h"
 #include "CChemEq.h"
 #include "CReaction.h"
-#include "CSpec2Model.h"
 #include "CSpecLine.h"
+#include "CDeTerm.h"
+#include "CSpec2Model.h"

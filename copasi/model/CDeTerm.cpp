@@ -10,13 +10,13 @@ CDeTerm::CDeTerm()
 CDeTerm::~CDeTerm()
 {}
 
-void CDeTerm::setSign(char sign)
+void CDeTerm::setSign(const char *sign)
 {
-    if (sign == '-')
+    if (*sign == '-')
     {
         mSign = -1;
     }
-    else if (sign == '+')
+    else if (*sign == '+')
     {
         mSign = 1;
     }
@@ -72,11 +72,11 @@ void CDeTerm::compile(vector<CNameVal> &rates)
     // we must remove the following '*'. If there is a '/' following, then we merely 
     // replace the multiplier with '1'. So we need the position.
     unsigned C_INT32 pos = 0;
-    // Numbers which are exponents for metabolites should not be used as the multiplier!
-    bool exponent = false;
-    bool found_mult = false, found_rc = false;
+    // Make sure we don't use numbers which are exponents for metabolites as the multiplier!
+    bool is_exponent = false;
+    pair<string,C_INT32> *last_metab;
     vector<pair<Type,string>* >::iterator it = mTokenStack.begin();
-    for (; it != mTokenStack.end(), found_mult == false, found_rc == false; it++, pos++)
+    for (; it != mTokenStack.end(); it++, pos++)
     {
         switch ((*it)->first)
         {
@@ -87,16 +87,19 @@ void CDeTerm::compile(vector<CNameVal> &rates)
             --level;
             break;
         case EXPONENT:
-            exponent = true;
+            is_exponent = true;
             break;
         case NUM:
-            if (exponent)
-                exponent = false;
-            else if ((level == 0) && (exponent == false))
+            if (is_exponent)
+            {
+                is_exponent = false;
+                last_metab->second = atoi((*it)->second.c_str());
+            }
+                
+            else if ((level == 0) && (is_exponent == false))
             {
                 // We've found the multiplier
                 mMultiplier = atof((*it)->second.c_str());
-                found_mult = true;
                 if (pos < mTokenStack.size() - 1)
                 {
                     // Check whether the following token is a '*' or a '/'
@@ -125,6 +128,13 @@ void CDeTerm::compile(vector<CNameVal> &rates)
                         // found the rate
                         mRateConstant = (*it)->second;
                     }
+                    else
+                    {
+                        // If it's not a rate constant, it must be a metabolite
+                        pair<string,C_INT32> *metab_pair = new pair<string,C_INT32>((*it)->second, 1);
+                        mTopLevelMetabolites.push_back(metab_pair);
+                        last_metab = metab_pair;
+                    }
                 }
             }
             break;
@@ -132,4 +142,16 @@ void CDeTerm::compile(vector<CNameVal> &rates)
             break;
         }
     }
+}
+
+string CDeTerm::getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multiplicity)
+{
+    string retstring;
+    if (pos > mTopLevelMetabolites.size())
+    {
+        retstring = "";
+    }
+    multiplicity = mTopLevelMetabolites[pos]->second;
+    retstring =mTopLevelMetabolites[pos]->first;
+    return retstring;
 }

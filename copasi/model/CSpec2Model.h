@@ -5,7 +5,6 @@
 #include <vector>
 #include <list>
 #include "copasi.h"
-#include "model.h"
 #include "CSpecLine.h"
 #include "CDeTerm.h"
 /**
@@ -146,17 +145,46 @@ class CSpec2Model
      */
     void processDeTerms();
     /**
-     *
+     * Create a stack of terms, used by processDeTerms().
+     * @param The string description of the DE.
+     * @return A vector of pointers to CDeTerm describing the stack.
      */
     vector<CDeTerm *> createTermStack(string str);
     /**
-     *
+     * Find a reaction in the model based on its name.
+     * @param str The name of the reaction to find.
+     * @return The reaction found
      */
     CReaction *findReaction(string);
     /**
-     *
+     * Expand any functions found in the rate.
+     * @return The expanded rate.
      */
-    string expandRate(CDeTerm *);
+    string expandRate(CDeTerm *term);
+    /**
+     * Adjusts the level of parentheses encountered; used internally by
+     * createTermStack to determine term boundaries.
+     * @param level The depth of parameters so far
+     * @param The symbol type
+     * @return The adjusted level
+     */
+    C_INT32 adjustLevel(C_INT32 level, C_INT32 type);
+
+    /** 
+     * Add a metabolite to the given reaction, with default values for num_change and multiplicity
+     * @param react The CReaction to which the metabolite is added.
+     * @param metab The metabolite to add
+     */
+    void addMetabolite(CReaction *react, CMetab *metab);
+
+    /**
+     *  Find the metabolite with the given name.
+     * @param mtab_name The name of the metabolite
+     * @return A pointer to the metabolite
+     */
+    CMetab *findMetabolite(string metab_name);
+
+
  private:
     /**
      * The name of the specification file

@@ -1,3 +1,6 @@
+#undef yyFlexLexer
+#define yyFlexLexer CScanInputFlexLexer
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -6,15 +9,12 @@
 #define  COPASI_TRACE_CONSTRUCTION 
 
 #include "copasi.h"
+#include "FlexLexer.h"
 #include "model.h"
 #include "utilities/utilities.h"
+#include "utilities/CGlobals.h"
 #include "CSpecLine.h"
 #include "CDeTerm.h"
-
-#undef yyFlexLexer
-#define yyFlexLexer CScanInputFlexLexer
-
-#include "FlexLexer.h"
 
 CSpec2Model::CSpec2Model() {CONSTRUCTOR_TRACE;}
  
@@ -82,13 +82,13 @@ CModel *CSpec2Model::createModel()
         it++;
     }
     processCompartments();
-    processEQNs();
     processInits();
     processConstants();
     processRates();
+    processEQNs();
 //     processFunctions();
 //     processMoieties();
-//     processDeTerms();
+    processDeTerms();
     return mModel;
 }
 
@@ -165,7 +165,7 @@ void CSpec2Model::processEQNs()
 
 void CSpec2Model::processInits()
 {
-    // Find each INIT line, and determine whether it corresponds to a reactant.
+    // Find each INIT line, and determine whether it corresponds to a metabolite.
     vector<CSpecLine>::iterator it = mSpecLines.begin();
     for ( ; it < mSpecLines.end(); it++)
     {
@@ -178,14 +178,14 @@ void CSpec2Model::processInits()
             vector<CBaseEqn>::iterator vit = find(mDeVector.begin(), mDeVector.end(), tmp);
             if (vit != mDeVector.end())
             {
-                // this does correspond to a reactant.
+                // this _does_ correspond to a metabolite.
                 CMetab metab;
                 metab.setName(metab_name);
                 metab.setCompartment( mModel->getCompartments()[comp_name]);
                 metab.setStatus(METAB_VARIABLE);
                 C_FLOAT64 iconc = atof(contents.c_str());
                 metab.setInitialConcentration(iconc);
-                metab.setConcentration(iconc);    // XXX TODO: is this necessary?
+//                metab.setConcentration(iconc);    // XXX TODO: is this necessary?
 //                mModel.getMetabolites().push_back(&metab); // XXX TODO: Are metabolites also added to a model, or just compartment
                 mModel->getCompartments()[comp_name]->addMetabolite(metab);
             }
@@ -250,67 +250,77 @@ void CSpec2Model::processRates()
     }            
 }
 
-#if 0
 void CSpec2Model::processDeTerms()
 {
+    // We need the number by which each metabolite changes in each
+    // reaction and the number of each present in each reaction. We
+    // also need the rate function for each term.
+
+    // The basic idea: we break the RHS into a vector of terms, and
+    // then analyse each term one by one. For each term, we extract
+    // the rate constant and use it to name the function. The function
+    // is the rate for this reaction, and is the DE term with the
+    // multiplier removed. 
+
+    // For each term, we add to the associated reaction (determined
+    // from the rate constant) the LHS metab and each top-level metab
+    // on the RHS. The addMetabolite() function only adds a metabolite
+    // if it has not previously been added. The multiplicative factor
+    // is used to provide the definitive value for the number by which
+    // the LHS metab changes in this reaction. The multiplicity is
+    // deduced from the number of instances of the metabolite in the
+    // rate.
+
+    C_FLOAT64 num_change = 0; // The multiplicative factor
+    C_INT32 multiplicity = 0;
+    CTempReactionSet trs;
+//    CTempReaction *reaction = 0;
+    CTempMetab *tmp_metab = 0;
+
     vector<CBaseEqn>::iterator it = mDeVector.begin();
     for (; it != mDeVector.end(); it++)
     {
+        // Create a stack of terms on the RHS of the DE.
+        cout << "Creating term stack\n";
         vector<CDeTerm *> termstack = createTermStack(it->getContents());
-        // We'll need the metabolite on the LHS as we go along, so get it now
+        // Get the metabolite on the LHS of the DE
         CMetab *LHSMetab = getLHSMetab(*it);
         // Step through each term of this differential equation.
         vector <CDeTerm *>::iterator termit = termstack.begin();
         for (; termit != termstack.end(); termit++)
         {
+            cout << "In term\n";
             // The rate constant is used to relate this term to a particular reaction.
             string rate_constant = (*termit)->getRateConstant();
-            // Get the multiplicative constant
-            C_FLOAT64 multiplier = (*termit)->getMultiplier();
-            CReaction *reaction = findReaction(rate_constant);
+            num_change = (*termit)->getMultiplier();
+            // Find or create the CTempReaction with this rate constant
+            CTempReaction *reaction = trs.findReaction(rate_constant);
             if (reaction == 0)
             {
-                // This reaction hasn't been created yet. So do it.
-                reaction = new CReaction(rate_constant);// XXX TODO: add the bits necessary
                 string rate = expandRate(*termit);
-                CKinFunction *fun = new CKinFunction();
-                fun->setName(rate_constant);
-                fun->setDescription(rate);
-                fun->compile();
-                Copasi->FunctionDB.add(fun);
-                reaction->setFunction(rate_constant);
-                // Now deduce the participating metabolites, and their multiplicity
-                if (multiplier > 0)
-                {
-                    // The LHS metabolite is created in this reaction. 
-                    // It may be autocatalytic (checked for later), or it 
-                    // may be created by the reaction of other metabolites.
-                    // We begin by assuming the latter.
-                    addMetabolite(reaction, LHSmetab, multiplier, 0);
-                }
-                CMetabolite *metabolite = 0;
-                C_INT32 multiplicity = 0;
-                while ((metabolite = extractTopLevelMetabs(multiplicity)) != 0)
-                {
-                    if (metabolite == LHSMetab)
-                    {
-                        // check if it's autocatalytic
-                        if (multiplier > 0)
-                        {
-                            adjustMetabolite(reaction, metab, multiplier + 1, multiplicity);
-                        }
-                        else
-                        {
-                            addMetabolite(reaction, metabolite, multiplicity);
-                        }
-                    }
-                }
-                else 
-                {
-                    // This reaction has already been created. We only need to set or adjust the 
-                }
+                reaction = new CTempReaction(rate_constant);
+                reaction->setDescription(rate);
+                trs.addReaction(reaction);
+            }
+            // Add the LHS metabolite to the temp reaction
+            tmp_metab = reaction->addMetabolite(LHSMetab);
+            tmp_metab->setNumChange(num_change);
+            // Add the metabolites on the RHS of the DE.
+            CMetab *metabolite = 0;
+            string metabolite_name;
+            unsigned C_INT32 pos = 0;
+            while ((metabolite_name = (*termit)->getTopLevelMetabolite(pos, multiplicity)) == "")
+            {
+                metabolite = findMetabolite(metabolite_name);
+                tmp_metab = reaction->addMetabolite(metabolite);
+                tmp_metab->setMultiplicity(multiplicity);
             }
         }
+    }
+    // Now create proper CReaction's from each of the CTempReact's
+    for (C_INT32 i = 0; i < trs.size(); i++)
+    {
+        trs[i].compile(mModel);
     }
 }
 
@@ -318,33 +328,33 @@ vector<CDeTerm *> CSpec2Model::createTermStack(string str)
 {
     istringstream *strstr = new istringstream(str);
     CScanInputFlexLexer scanner(strstr);
-    C_INT32 type = 1;
-    bool new = true;
+    CDeTerm::Type type;
+    bool isbegin = true;
     C_INT32 level = 0;
-    vector<CDeTerm *> termstack;
+    vector<CDeTerm *> *termstack = new vector<CDeTerm *>;
     CDeTerm *determ;
-    while (type = scanner.yylex())
+    while ((type = static_cast<CDeTerm::Type>(scanner.yylex())))
     {
-        if (new || ( (level == 0) && ( (type == CDeTerm::PLUS) || (type == CDeTerm::MINUS) ) ) )
+        if (isbegin || ( (level == 0) && ( (type == CDeTerm::PLUS) || (type == CDeTerm::MINUS) ) ) )
         {
             // We're only at the beginning of a line once
-            new = false;
+            isbegin = false;
             // Create and set the sign of a CDeTerm
             determ = new CDeTerm();
-            termstack.push_back(determ);
+            termstack->push_back(determ);
             if ((type == CDeTerm::MINUS) || (type == CDeTerm::PLUS))
             {
-                determ.setSign(scanner.YYTEXT());
+                determ->setSign(scanner.YYText());
             }
             else
             {
                 level = adjustLevel(level, type);
-                determ.add(type, scanner.YYTEXT());
+                determ->addElement(type, scanner.YYText());
             }
         }
         else
         {
-            determ.add(scanner.YYTEXT());
+            determ->addElement(type, scanner.YYText());
             level = adjustLevel(level, type);
         }
         if (level < 0)
@@ -353,11 +363,14 @@ vector<CDeTerm *> CSpec2Model::createTermStack(string str)
         }
     }
     // Now, compile each term. i.e. extract the multiplier and rate constant
-    vector<CDeTerm*>::iterator it = termstack.begin();
-    for (; it != termstack.end(); it++)
+    cout << "Created term stack. Compiling...\n";
+    vector<CDeTerm*>::iterator it = termstack->begin();
+    for (; it != termstack->end(); it++)
     {
-        (*it)->compile();
+        (*it)->compile(mRateVector);
     }
+    cout << "Done compiling\n";
+    return *termstack;
 }
 
 C_INT32 CSpec2Model::adjustLevel(C_INT32 level, C_INT32 type)
@@ -368,7 +381,7 @@ C_INT32 CSpec2Model::adjustLevel(C_INT32 level, C_INT32 type)
     }
     else if(type == CDeTerm::RPAREN)
     {
-        level--
+        level--;
     }
     return level;
 }
@@ -378,25 +391,46 @@ CMetab *CSpec2Model::getLHSMetab(CBaseEqn &beqn)
     return mModel->getCompartments()[beqn.getCompartment()]->metabolites()[beqn.getMetabolite()];
 }
 
-string CSpec2Model::expandRate(CDeTerm &term)
+CMetab *CSpec2Model::findMetabolite(string metab_name)
 {
-    // XXX TODO: expand functions and concatenate them
-    // XXX At the moment, we just assume that there are no functions to expand
-    return term.getDescription();
-}
-
-CReaction *CSpec2Model::findReaction(string)
-{
-    try
+    for (unsigned C_INT32 i = 0; i < mModel->getCompartments().size(); i++)
     {
-        CReaction *retval = mModel->getReactions()[string];
-        return retval;
+        for (unsigned C_INT32 j = 0; j < mModel->getCompartments()[i]->metabolites().size(); j++)
+        {
+            if (mModel->getCompartments()[i]->metabolites()[j]->getName() == metab_name)
+            {
+                return mModel->getCompartments()[i]->metabolites()[j];
+            }
+        }
     }
-    catch(CCopasiException);
     return 0;
 }
 
-#endif // 0
+string CSpec2Model::expandRate(CDeTerm *term)
+{
+    // XXX TODO: expand functions and concatenate them
+    // XXX At the moment, we just assume that there are no functions to expand
+    return term->getDescription();
+}
+
+// CReaction *CSpec2Model::findReaction(string search_name)
+// {
+//     CCopasiVectorS<CReaction> &reacts = mModel->getReactions();
+//     for (unsigned C_INT32 i = 0; i < reacts.size(); i++)
+//     {
+//         if (reacts[i]->getName() == search_name)
+//         {
+//             return reacts[i];
+//         }
+//     }
+//     return 0;
+// }
+
+// void CSpec2Model::addMetabolite(CReaction *react, CMetab *metab)
+// {
+//     // Add a metabolite to the reaction.
+//     // Only add it if it hasn't already been added.
+// }
 
 C_INT32 CSpec2Model::parseLine(string) {return 0;}
 

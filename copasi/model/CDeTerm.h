@@ -40,7 +40,7 @@ class CDeTerm
     /**
      * Set the sign
      */
-    void setSign(char sign);
+    void setSign(const char *sign);
     /**
      * Retrieve the sign
      */
@@ -53,6 +53,10 @@ class CDeTerm
      * Remove an element from the stack
      */
     void deleteElement(C_INT32 index);
+    /**
+     * Extract the top level metabolites in this DeTerm
+     */
+    string getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multiplicity);
     /**
      * Return the size of the token stack
      */
@@ -74,6 +78,10 @@ class CDeTerm
      * The stack of tokens making up the term
      */
     vector<pair<Type,string>* > mTokenStack;
+    /**
+     * The top level metabolites in this term. Each metabolite has a name and a multiplicity.
+     */
+    vector<pair<string,C_INT32>*> mTopLevelMetabolites;
     /**
      * The sign
      */

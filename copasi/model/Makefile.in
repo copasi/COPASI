@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -188,10 +188,10 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libmodel.a
 
-libmodel_a_SOURCES =  	CCompartment.cpp 	CMetab.cpp 	CModel.cpp 	CMoiety.cpp 	CReaction.cpp 	CChemEq.cpp 	CChemEqElement.cpp 	CScanInputFlexLexer.cpp 	CSpecLine.cpp 	CSpec2Model.cpp 	CDeTerm.cpp
+libmodel_a_SOURCES =  	CCompartment.cpp 	CMetab.cpp 	CModel.cpp 	CMoiety.cpp 	CReaction.cpp 	CChemEq.cpp 	CChemEqElement.cpp 	CScanInputFlexLexer.cpp 	CSpecLine.cpp 	CDeTerm.cpp 	CSpec2Model.cpp
 
 
-EXTRA_DIST =  	model.h 	CCompartment.h	CCompartment.cpp 	CMetab.h	CMetab.cpp 	CModel.h	CModel.cpp 	CMoiety.h	CMoiety.cpp 	CReaction.h	CReaction.cpp 	CChemEq.h	CChemEq.cpp 	CChemEqElement.h	CChemEqElement.cpp 	CSpecLine.h	CSpecLine.cpp 	CScanInputFlexLexer.lpp	CScanInputFlexLexer.cpp 	CSpec2Model.h	CSpec2Model.cpp 	CDeTerm.h	CDeTerm.cpp
+EXTRA_DIST =  	model.h 	CCompartment.h	CCompartment.cpp 	CMetab.h	CMetab.cpp 	CModel.h	CModel.cpp 	CMoiety.h	CMoiety.cpp 	CReaction.h	CReaction.cpp 	CChemEq.h	CChemEq.cpp 	CChemEqElement.h	CChemEqElement.cpp 	CScanInputFlexLexer.lpp	CScanInputFlexLexer.cpp 	CSpecLine.h	CSpecLine.cpp 	CDeTerm.h	CDeTerm.cpp 	CSpec2Model.h	CSpec2Model.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -212,8 +212,8 @@ libmodel_a_LIBADD =
 libmodel_a_OBJECTS =  CCompartment.$(OBJEXT) CMetab.$(OBJEXT) \
 CModel.$(OBJEXT) CMoiety.$(OBJEXT) CReaction.$(OBJEXT) \
 CChemEq.$(OBJEXT) CChemEqElement.$(OBJEXT) \
-CScanInputFlexLexer.$(OBJEXT) CSpecLine.$(OBJEXT) CSpec2Model.$(OBJEXT) \
-CDeTerm.$(OBJEXT)
+CScanInputFlexLexer.$(OBJEXT) CSpecLine.$(OBJEXT) CDeTerm.$(OBJEXT) \
+CSpec2Model.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -350,7 +350,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

@@ -2,7 +2,11 @@
 #define Copasi_SpecLine
 
 #include <string>
+#include <vector>
 #include "copasi.h"
+
+class CMetab;
+class CModel;
 
 /**
  * CSpecLine
@@ -170,6 +174,64 @@ class CNameVal
      * The value
      */
     C_FLOAT64 mVal;
+};
+
+/**
+ * Class CTempReactionSet contains a vector of CTempReaction, as well as
+ * methods to add or find elements to the vector. CTempReaction holds
+ * temporary information about a reaction - the rate constant, a
+ * string describing the rate and the set of metabolites, for now
+ * described by CTempMetab. It is used while the various parameters of
+ * a reaction are still being determined. When complete, it may easily
+ * be used to construct a CReaction.
+ */
+
+class CTempMetab
+{
+ public:
+    enum Type{UNDEF= 0, SUBSTRATE, PRODUCT, DUAL};
+    CTempMetab(CMetab *metab) : mMetab(metab) {}
+    CTempMetab(const CTempMetab &rhs);
+    CMetab *getMetab() { return mMetab;}
+    C_INT32 getMultiplicity() { return mMultiplicity;}
+    void setMultiplicity(C_INT32 mult) { mMultiplicity = mult;}
+    C_INT32 getNumChange() { return mNumChange;}
+    void setNumChange(C_INT32 num) { mNumChange = num;}
+ private:
+    CMetab *mMetab;
+    C_INT32 mMultiplicity;
+    C_INT32 mNumChange;
+};
+
+class CTempReaction
+{
+ public:
+    CTempReaction(string name) : mName(name) {}
+    string getName() { return mName;}
+    void setDescription(string desc) { mRateDescription = desc;}
+    string getDescription() { return mRateDescription;}
+    CTempMetab *addMetabolite(CMetab *metab);
+    vector <CTempMetab> &getMetabs() { return mMetabs;}
+    void compile(CModel *model);
+ private:
+    string mName;
+    string mRateDescription;
+    vector<CTempMetab> mMetabs;
+    vector<CTempMetab> mSubstrates;
+    vector<CTempMetab> mProducts;
+};
+
+class CTempReactionSet
+{
+ public:
+    CTempReactionSet();
+    void addReaction(CTempReaction *temp_react);
+    CTempReaction *findReaction(string name);
+    vector<CTempReaction> getReactions() {return mReactions;}
+    C_INT32 size() {return mReactions.size();}
+    CTempReaction &operator[](C_INT32 i) { return mReactions[i];}
+ private:
+    vector<CTempReaction> mReactions;
 };
 
 #endif // Copasi_SpecLine
