@@ -4,6 +4,8 @@ bin_PROGRAMS = CopasiUI
 CopasiUI_MOC_SOURCES = \
 	CompartmentsWidget1.moc.cpp \
 	CompartmentsWidget.moc.cpp \
+	FunctionWidget1.moc.cpp \
+	FunctionWidget.moc.cpp \
 	MetabolitesWidget.moc.cpp \
 	MetabolitesWidget1.moc.cpp \
 	MoietyWidget.moc.cpp \
@@ -20,6 +22,8 @@ CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) \
 	Subject.cpp \
         CompartmentsWidget.cpp \
         CompartmentsWidget1.cpp \
+        FunctionWidget.cpp \
+        FunctionWidget1.cpp \
         MetabolitesWidget.cpp \
         MetabolitesWidget1.cpp \
         MoietyWidget.cpp \
@@ -37,6 +41,8 @@ EXTRA_DIST = \
 	Subject.h Subject.cpp \
 	CompartmentsWidget.h CompartmentsWidget.cpp moc_CompartmentsWidget1.cpp \
 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp \
+	FunctionWidget.h FunctionWidget.cpp moc_FunctionWidget1.cpp \
+	FunctionWidget1.h FunctionWidget1.cpp moc_FunctionWidget.cpp \
 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp \
 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp \
 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp \
