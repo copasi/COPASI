@@ -322,6 +322,31 @@ class CEigen {
    */
   C_FLOAT64 getEigen_hierarchy();
 
+  /**
+   * Return number of real eigenvalues	WeiSun 3/28/02
+   */
+  C_FLOAT64 getEigen_nreal();	
+  
+  /**
+   * Return the number of imaginary eigenvalue numbers
+   */
+  C_FLOAT64 getEigen_nimag();
+
+  C_FLOAT64 getEigen_ncplxconj();
+
+  /**
+   * Return the number of eigenvalues with positive real part
+   */
+  C_FLOAT64 getEigen_nposreal();
+
+  /**
+   * Return the number of eigenvalues with negative real part
+   */
+  C_FLOAT64 getEigen_nnegreal();
+
+  C_FLOAT64 * getEigen_i();
+
+  C_FLOAT64 * getEigen_r();
 
 };
 

@@ -319,3 +319,51 @@ void CEigen::quicksort(double *A, double *B, C_INT32 p, C_INT32 r)
       quicksort( A, B, q+1, r );
     }
 }
+
+/**
+ * Return number of real eigenvalues	WeiSun 3/28/02
+ */
+C_FLOAT64 CEigen::getEigen_nreal()
+{
+	return mEigen_nreal;
+}
+
+/**
+ * Return the number of imaginary eigenvalue numbers
+ */
+C_FLOAT64 CEigen::getEigen_nimag()
+{
+	return mEigen_nimag;
+}
+
+C_FLOAT64 CEigen::getEigen_ncplxconj()
+{
+	return mEigen_ncplxconj;
+}
+
+/**
+ * Return the number of eigenvalues with positive real part
+ */
+C_FLOAT64 CEigen::getEigen_nposreal()
+{
+	return mEigen_nposreal;
+}
+
+/**
+ * Return the number of eigenvalues with negative real part
+ */
+C_FLOAT64 CEigen::getEigen_nnegreal()
+{
+	return mEigen_nnegreal;
+}
+
+C_FLOAT64 * CEigen::getEigen_i()
+{
+	return mEigen_i;
+}
+
+C_FLOAT64 * CEigen::getEigen_r()
+{
+	return mEigen_r;
+}
+
