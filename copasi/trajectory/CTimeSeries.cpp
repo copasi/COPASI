@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/09/30 15:27:01 $
+   $Author: ssahle $ 
+   $Date: 2004/09/30 15:49:16 $
    End CVS Header */
 
 #include "CTimeSeries.h"
@@ -64,16 +64,15 @@ bool CTimeSeries::finish()
 {
   //std::cout << mCounter << std::endl;
   erase(mIt, end());
-
   return true;
 }
 
 //*** the methods to retrieve data from the CTimeSeries *******
 
-C_INT32 CTimeSeries::getNumSteps() const
+unsigned C_INT32 CTimeSeries::getNumSteps() const
   {return mIt - begin();}
 
-C_INT32 CTimeSeries::getNumVariables() const
+unsigned C_INT32 CTimeSeries::getNumVariables() const
   {
     if (mpState)
       return mpState->getVariableNumberSize() + 1;
@@ -81,7 +80,7 @@ C_INT32 CTimeSeries::getNumVariables() const
     return 0;
   }
 
-const C_FLOAT64 & CTimeSeries::getData(C_INT32 step, C_INT32 var) const
+const C_FLOAT64 & CTimeSeries::getData(unsigned C_INT32 step, unsigned C_INT32 var) const
   {
     if (step >= getNumSteps()) return mDummyFloat;
 
@@ -92,7 +91,7 @@ const C_FLOAT64 & CTimeSeries::getData(C_INT32 step, C_INT32 var) const
     return mDummyFloat;
   }
 
-const C_FLOAT64 & CTimeSeries::getConcentrationData(C_INT32 step, C_INT32 var) const
+C_FLOAT64 CTimeSeries::getConcentrationData(unsigned C_INT32 step, unsigned C_INT32 var) const
   {
     static C_FLOAT64 tmp;
 
@@ -106,7 +105,7 @@ const C_FLOAT64 & CTimeSeries::getConcentrationData(C_INT32 step, C_INT32 var) c
     return mDummyFloat;
   }
 
-const std::string & CTimeSeries::getTitle(C_INT32 var) const
+const std::string & CTimeSeries::getTitle(unsigned C_INT32 var) const
   {
     if (var < mTitles.size())
       return mTitles[var];

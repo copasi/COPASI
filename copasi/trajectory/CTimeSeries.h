@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 09:06:35 $
+   $Date: 2004/09/30 15:49:16 $
    End CVS Header */
 
 #ifndef TIMESERIES_H
@@ -34,11 +34,11 @@ class CTimeSeries : private std::vector<CState>
 
     //**** get data from time series ***
 
-    C_INT32 getNumSteps() const;
-    C_INT32 getNumVariables() const;
-    const C_FLOAT64 & getData(C_INT32 step, C_INT32 var) const;
-    const C_FLOAT64 & getConcentrationData(C_INT32 step, C_INT32 var) const;
-    const std::string & getTitle(C_INT32 var) const;
+    unsigned C_INT32 getNumSteps() const;
+    unsigned C_INT32 getNumVariables() const;
+    const C_FLOAT64 & getData(unsigned C_INT32 step, unsigned C_INT32 var) const;
+    C_FLOAT64 getConcentrationData(unsigned C_INT32 step, unsigned C_INT32 var) const;
+    const std::string & getTitle(unsigned C_INT32 var) const;
 
   private:
     //C_INT32 mN;
