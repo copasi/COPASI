@@ -94,15 +94,8 @@ const std::string & CCopasiObject::getName() const {return mObjectName;}
 
 const std::string CCopasiObject::getObjectUniqueName() const
   {
-    /* mUniqueName(mObjectName);
-     if (mpObjectParent)
-      mUniqueName(mObjectName+'{'+mpObjectParent->getObjectUniqueName()+'}');
-     else
-      mUniqueName(mObjectName);
-     return mUniqueName;
-    */ if   (mpObjectParent) 
-      //  return mObjectName+'{'+mpObjectParent->getObjectUniqueName()+'}';
-      return mObjectName + " {" + mpObjectParent->getObjectName() + "}";
+    if (mpObjectParent)
+      return mObjectName + " {" + mpObjectParent->getObjectUniqueName() + "}";
     else
       return mObjectName;
   }
