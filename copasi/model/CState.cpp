@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:02 $
+   $Date: 2004/06/23 16:12:46 $
    End CVS Header */
 
 // CSate.cpp
@@ -109,7 +109,7 @@ void CState::load(CReadConfig & configBuffer)
 
   /* Make sure that the state fits the currently loaded model */
   configBuffer.getVariable("State.Model", "string", &Tmp);
-  if (Tmp == Copasi->pModel->getTitle())
+  if (Tmp == Copasi->pModel->getObjectName())
     setModel(Copasi->pModel);
   else
     fatalError();

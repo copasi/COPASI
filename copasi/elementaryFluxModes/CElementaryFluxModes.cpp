@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:02:28 $
+   $Date: 2004/06/23 16:08:39 $
    End CVS Header */
 
 /**
@@ -117,7 +117,7 @@ std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A)
   unsigned C_INT32 j, jmax;
 
   os << "Elementary Flux Modes of Model \""
-  << A.mModel->getTitle() << "\":" << std::endl;
+  << A.mModel->getObjectName() << "\":" << std::endl;
 
   for (i = 0; i < imax; i++)
     {

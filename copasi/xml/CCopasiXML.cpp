@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/10 20:59:35 $
+   $Author: ssahle $ 
+   $Date: 2004/06/23 16:13:40 $
    End CVS Header */
 
 /**
@@ -116,7 +116,7 @@ bool CCopasiXML::saveModel()
 
   CXMLAttributeList Attributes;
   Attributes.add("key", mpModel->getKey());
-  Attributes.add("name", mpModel->getTitle());
+  Attributes.add("name", mpModel->getObjectName());
   Attributes.add("timeUnit", mpModel->getTimeUnit());
   Attributes.add("volumeUnit", mpModel->getVolumeUnit());
   Attributes.add("quantityUnit", mpModel->getQuantityUnit());

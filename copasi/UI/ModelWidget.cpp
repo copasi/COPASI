@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:47 $
+   $Date: 2004/06/23 16:08:16 $
    End CVS Header */
 
 /*******************************************************************
@@ -109,7 +109,7 @@ bool ModelWidget::loadModel(CModel *model)
 {
   bool ret = true;
 
-  LineEdit->setText(FROM_UTF8(model->getTitle()));
+  LineEdit->setText(FROM_UTF8(model->getObjectName()));
   textBrowser->setText(FROM_UTF8(model->getComments()));
   textBrowser->setReadOnly(FALSE);
   ComboBox1->clear();
@@ -155,7 +155,7 @@ bool ModelWidget::saveToModel()
 
   bool success = true;
 
-  if ((const char *)LineEdit->text().utf8() != model->getTitle())
+  if ((const char *)LineEdit->text().utf8() != model->getObjectName())
     {
       model->setTitle((const char *)LineEdit->text().utf8());
       ListViews::notify(ListViews::MODEL, ListViews::RENAME, objKey);
