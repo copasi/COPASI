@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/10 19:30:34 $
+   $Author: ssahle $ 
+   $Date: 2004/06/25 15:06:28 $
    End CVS Header */
 
 /**
@@ -122,8 +122,8 @@ CReport & CCopasiTask::getReport() {return mReport;}
 
 void CCopasiTask::cleanup() {}
 
-void CCopasiTask::setOutputHandler(COutputHandler* pHandler)
+void CCopasiTask::setOutputHandler(CCallbackHandler* pHandler)
 {mpOutputHandler = pHandler;}
 
-COutputHandler* CCopasiTask::getOutputHandlerAddr()
+CCallbackHandler* CCopasiTask::getOutputHandlerAddr()
 {return mpOutputHandler;}

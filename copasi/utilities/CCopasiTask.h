@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:45:02 $
+   $Date: 2004/06/25 15:06:29 $
    End CVS Header */
 
 /**
@@ -24,7 +24,7 @@
 
 class CCopasiProblem;
 class CCopasiMethod;
-class COutputHandler;
+class CCallbackHandler;
 
 class CCopasiTask : public CCopasiContainer
   {
@@ -89,7 +89,7 @@ class CCopasiTask : public CCopasiContainer
     /**
      * The output handler (at this time only for plotting)
      */
-    COutputHandler * mpOutputHandler;
+    CCallbackHandler * mpOutputHandler;
 
   public:
     /**
@@ -212,12 +212,12 @@ class CCopasiTask : public CCopasiContainer
     /**
      * set Output handler
      **/
-    void setOutputHandler(COutputHandler* pHandler);
+    void setOutputHandler(CCallbackHandler* pHandler);
 
     /**
      * get address of output handler
      **/
-    COutputHandler* getOutputHandlerAddr();
+    CCallbackHandler* getOutputHandlerAddr();
   };
 
 #endif // COPASI_CCopasiTask
