@@ -30,12 +30,12 @@ public:
      *  types.
      */
     CKinetics(const string &kiname, 
-               int subs, 
-               int prods, 
-               int mods, 
-               int prm, 
-               double (*ratefunc)(void *,double *, int), 
-               short rev);
+              long subs, 
+              long prods, 
+              long mods, 
+              long prm, 
+              double (*ratefunc)(void *,double *, long), 
+              short rev);
 
     /**
      *  Specific constructor for user defined function.
@@ -51,23 +51,23 @@ public:
     /**
      *  This sets the name of the parameter with the given index
      *  @param "const string" &name
-     *  @param int index
+     *  @param long index
      */
-    void SetParameterName(const string &name, int idx);
+    void SetParameterName(const string &name, long idx);
 
     /**
      *  This sets the name of the modifier with the given index
      *  @param "const string" &name
-     *  @param int index
+     *  @param long index
      */
-    void SetModifierName(const string &name, int idx);
+    void SetModifierName(const string &name, long idx);
 
     /**
      *  This returns the index of the parameter with the given name
      *  @param "const string" &name
-     *  @return int index or -1 if not found
+     *  @return long index or -1 if not found
      */
-    int FindParameter(const string &name);
+    long FindParameter(const string &name);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -75,7 +75,7 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    int Save(CWriteConfig &configbuffer);
+    long Save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -83,7 +83,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    int Load(CReadConfig &configbuffer);
+    long Load(CReadConfig &configbuffer);
 private:
 
     /**
@@ -99,10 +99,10 @@ private:
     /**
      *  The pointer to the rate function
      */
-    double (*mFunction)(void *, double *, int); // pointer to rate function
+    double (*mFunction)(void *, double *, long); // pointer to rate function
 
     /**
-     *  The pointer to a user-defined kinetic type
+     *  The polonger to a user-defined kinetic type
      */
     CKinFunction *mFunct;      // a pointer to a user-defined kinetic type
 

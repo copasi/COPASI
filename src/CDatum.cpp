@@ -27,7 +27,7 @@ CDatum::CDatum()
     mpValue = NULL;
 }
 
-CDatum::CDatum(const string& title, int type, const string& i, const string& j,
+CDatum::CDatum(const string& title, long type, const string& i, const string& j,
                double *pval)
 {
     mTitle = title;
@@ -48,77 +48,79 @@ CDatum& CDatum::operator=(const CDatum &RHS)
     return *this;
 }
 
-int CDatum::Save(CWriteConfig &pconfigbuffer)
+long CDatum::Save(CWriteConfig &pconfigbuffer)
 {
     // this really should be changed to something like Load
     // TO BE DONE SOON
 
     // make sure fp numbers come out in scientific notation
     mFail = pconfigbuffer.SetVariable((string) "Title", 
-                                       (string) "string",
-                                       (void *) &mTitle);
+                                      (string) "string",
+                                      (void *) &mTitle);
     if (mFail) return mFail;
 
     mFail = pconfigbuffer.SetVariable((string) "Type", 
-                                       (string) "int",
-                                       (void *) &mType);
+                                      (string) "long",
+                                      (void *) &mType);
     if (mFail) return mFail;
 
     // there may be 0 or 1 mI and mJ references
     switch (mType)
     {
-        case D_UNDEF:   // Fall through as all have no mI and no mJ
-        case D_T:
-        case D_RT:
-        case D_INTS:
-        case D_FEVAL:
-        case D_JEVAL:
-        case D_SSIZE:
-        case D_RTOL:
-        case D_ATOL:
-        case D_SSRES:
-        case D_UFUNC:
-        case D_DERIV:
-        case D_ENDT:
-        case D_POINT:
-        case D_EIGMR:
-        case D_EIGMI:
-        case D_EIGPR:
-        case D_EIGNR:
-        case D_EIGR:
-        case D_EIGI:
-        case D_EIGC:
-        case D_EIGZ:
-        case D_THIER:
-        case D_STIFF:   break;
-        case D_ICONC:   // Fall through as all have mI but no mJ
-        case D_SCONC:
-        case D_TCONC:
-        case D_SFLUX:
-        case D_TFLUX:
-        case D_VOL:
-        case D_MOIT:
-        case D_TT:
-        case D_EIGVR:
-        case D_EIGVI:   mFail = pconfigbuffer.SetVariable((string) "I", 
-                                                           (string) "string",
-                                                           (void *) &mI);
-                        if (mFail) return mFail;
-                        break;
-        case D_KIN:     // Fall through as all have mI and mJ
-        case D_ELAST:
-        case D_CCC:
-        case D_FCC:
-        case D_EIG:     mFail = pconfigbuffer.SetVariable((string) "I", 
-                                                           (string) "int",
-                                                           (void *) &mI);
-                        if (mFail) return mFail;
-                        mFail = pconfigbuffer.SetVariable((string) "J", 
-                                                           (string) "string",
-                                                           (void *) &mJ);
-                        if (mFail) return mFail;
-                        break;
-        default:        mFail = 1; // we should never get here!
+    case D_UNDEF:   // Fall through as all have no mI and no mJ
+    case D_T:
+    case D_RT:
+    case D_INTS:
+    case D_FEVAL:
+    case D_JEVAL:
+    case D_SSIZE:
+    case D_RTOL:
+    case D_ATOL:
+    case D_SSRES:
+    case D_UFUNC:
+    case D_DERIV:
+    case D_ENDT:
+    case D_POINT:
+    case D_EIGMR:
+    case D_EIGMI:
+    case D_EIGPR:
+    case D_EIGNR:
+    case D_EIGR:
+    case D_EIGI:
+    case D_EIGC:
+    case D_EIGZ:
+    case D_THIER:
+    case D_STIFF:   break;
+    case D_ICONC:   // Fall through as all have mI but no mJ
+    case D_SCONC:
+    case D_TCONC:
+    case D_SFLUX:
+    case D_TFLUX:
+    case D_VOL:
+    case D_MOIT:
+    case D_TT:
+    case D_EIGVR:
+    case D_EIGVI:
+        mFail = pconfigbuffer.SetVariable((string) "I", 
+                                          (string) "string",
+                                          (void *) &mI);
+        if (mFail) return mFail;
+        break;
+    case D_KIN:     // Fall through as all have mI and mJ
+    case D_ELAST:
+    case D_CCC:
+    case D_FCC:
+    case D_EIG:
+        mFail = pconfigbuffer.SetVariable((string) "I", 
+                                          (string) "long",
+                                          (void *) &mI);
+        if (mFail) return mFail;
+        mFail = pconfigbuffer.SetVariable((string) "J", 
+                                          (string) "string",
+                                          (void *) &mJ);
+        if (mFail) return mFail;
+        break;
+    default:        mFail = 1; // we should never get here!
     }
     
     // mpValue is not output as it is set at a different stage
@@ -127,73 +129,74 @@ int CDatum::Save(CWriteConfig &pconfigbuffer)
 }
 
 
-int CDatum::Load(CReadConfig &pconfigbuffer)
+long CDatum::Load(CReadConfig &pconfigbuffer)
 {
     mFail = pconfigbuffer.GetVariable((string) "Title", 
-                                       (string) "string",
-                                       (void *) &mTitle);
+                                      (string) "string",
+                                      (void *) &mTitle);
     if (mFail) return mFail;
 
     mFail = pconfigbuffer.GetVariable((string) "Type", 
-                                       (string) "int",
-                                       (void *) &mType);
+                                      (string) "long",
+                                      (void *) &mType);
     if (mFail) return mFail;
 
     // some types need more input... (mI or mJ)
     switch (mType)
     {
-        case D_UNDEF:   // Fall through as all have no mI and no mJ
-        case D_T:
-        case D_RT:
-        case D_INTS:
-        case D_FEVAL:
-        case D_JEVAL:
-        case D_SSIZE:
-        case D_RTOL:
-        case D_ATOL:
-        case D_SSRES:
-        case D_UFUNC:
-        case D_DERIV:
-        case D_ENDT:
-        case D_POINT:
-        case D_EIGMR:
-        case D_EIGMI:
-        case D_EIGPR:
-        case D_EIGNR:
-        case D_EIGR:
-        case D_EIGI:
-        case D_EIGC:
-        case D_EIGZ:
-        case D_THIER:
-        case D_STIFF:   break;
-        case D_ICONC:   // Fall through as all have mI but no mJ
-        case D_SCONC:
-        case D_TCONC:
-        case D_SFLUX:
-        case D_TFLUX:
-        case D_VOL:
-        case D_MOIT:
-        case D_TT:
-        case D_EIGVR:
-        case D_EIGVI:   mFail = pconfigbuffer.GetVariable((string) "I", 
-                                                           (string) "string",
-                                                           (void *) &mI);
-                        if (mFail) return mFail;
-                        break;
-        case D_KIN:     // Fall through as all have mI and mJ
-        case D_ELAST:
-        case D_CCC:
-        case D_FCC:
-        case D_EIG:     mFail = pconfigbuffer.GetVariable((string) "I", 
-                                                           (string) "int",
-                                                           (void *) &mI);
-                        if (mFail) return mFail;
-                        mFail = pconfigbuffer.GetVariable((string) "J", 
-                                                           (string) "string",
-                                                           (void *) &mJ);
-                        if (mFail) return mFail;
-                        break;
-        default:        mFail = 1; // we should never get here!
+    case D_UNDEF:   // Fall through as all have no mI and no mJ
+    case D_T:
+    case D_RT:
+    case D_INTS:
+    case D_FEVAL:
+    case D_JEVAL:
+    case D_SSIZE:
+    case D_RTOL:
+    case D_ATOL:
+    case D_SSRES:
+    case D_UFUNC:
+    case D_DERIV:
+    case D_ENDT:
+    case D_POINT:
+    case D_EIGMR:
+    case D_EIGMI:
+    case D_EIGPR:
+    case D_EIGNR:
+    case D_EIGR:
+    case D_EIGI:
+    case D_EIGC:
+    case D_EIGZ:
+    case D_THIER:
+    case D_STIFF:   break;
+    case D_ICONC:   // Fall through as all have mI but no mJ
+    case D_SCONC:
+    case D_TCONC:
+    case D_SFLUX:
+    case D_TFLUX:
+    case D_VOL:
+    case D_MOIT:
+    case D_TT:
+    case D_EIGVR:
+    case D_EIGVI:   mFail = pconfigbuffer.GetVariable((string) "I", 
+                                                      (string) "string",
+                                                      (void *) &mI);
+    if (mFail) return mFail;
+    break;
+    case D_KIN:     // Fall through as all have mI and mJ
+    case D_ELAST:
+    case D_CCC:
+    case D_FCC:
+    case D_EIG:
+        mFail = pconfigbuffer.GetVariable((string) "I", 
+                                          (string) "long",
+                                          (void *) &mI);
+        if (mFail) return mFail;
+        mFail = pconfigbuffer.GetVariable((string) "J", 
+                                          (string) "string",
+                                          (void *) &mJ);
+        if (mFail) return mFail;
+        break;
+    default:        mFail = 1; // we should never get here!
     }
 
     return mFail;
@@ -229,12 +232,12 @@ string CDatum::GetJ()
     return mJ;
 }
 
-void CDatum::SetType(int type)
+void CDatum::SetType(long type)
 {
     mType = type;
 }
 
-int CDatum::GetType()
+long CDatum::GetType()
 {
     return mType;
 }

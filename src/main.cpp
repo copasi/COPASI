@@ -12,23 +12,23 @@
 #include "copasi.h"
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
-#include "CCompartment.h"
+#include "CCompartmentVector.h"
 #include "CDatum.h"
-#include "CMetab.h"
+#include "CMetabVector.h"
 // #include "CNodeK.h"
 #include "CKinetics.h"
 #include "CStep.h"
 
-int  TestReadConfig(void);
-int  TestWriteConfig(void);
-int  TestCompartment(void);
-int  TestException(void);
-int  TestDatum(void);
-int  TestMetab(void);
-int  TestMessage(void);
-int  TestReadSample(void);
+long  TestReadConfig(void);
+long  TestWriteConfig(void);
+long  TestCompartment(void);
+long  TestException(void);
+long  TestDatum(void);
+long  TestMetab(void);
+long  TestMessage(void);
+long  TestReadSample(void);
 
-int main(void)
+long main(void)
 {
     cout << "Starting main program." << endl;
     
@@ -56,11 +56,11 @@ int main(void)
     return 0;
 }
 
-int  TestMessage(void)
+long  TestMessage(void)
 {
     try
     {
-        CCopasiMessage(WARNING, "Test %s %d", "string", 5, 3);
+        CCopasiMessage(CCopasiMessage::WARNING, "Test %s %d", "string", 5, 3);
         FatalError();
     }
 
@@ -71,12 +71,12 @@ int  TestMessage(void)
     return 0;
 }
 
-int  TestException()
+long  TestException()
 {
     try
     {
         cout << "Entering exception test." << endl;
-        CCopasiMessage Error(ERROR, "Fatal Error");
+        CCopasiMessage Error(CCopasiMessage::ERROR, "Fatal Error");
         cout << "Leaving exception test." << endl;
     }
     
@@ -99,7 +99,7 @@ int  TestException()
 }
 
 
-int  TestReadConfig(void)
+long  TestReadConfig(void)
 {
     cout << "Entering TestReadConfig." << endl;
     // CReadConfig Default;
@@ -125,7 +125,7 @@ int  TestReadConfig(void)
     return 0;
 }
  
-int  TestWriteConfig(void)
+long  TestWriteConfig(void)
 {
     cout << "Entering TestWriteConfig." << endl;
     // CWriteConfig Default;
@@ -155,7 +155,7 @@ int  TestWriteConfig(void)
 }
    
 
-int TestCompartment(void)
+long TestCompartment(void)
 {
     cout << "Entering TestCompartment." << endl;
     cout << "creating a CCompartment object..." << endl;
@@ -179,10 +179,9 @@ int TestCompartment(void)
 
     CReadConfig Specific((string) "TestCompartment.txt");
     
-    CCompartmentVector ListOut(2);
+    CCompartmentVector ListOut;
 
-    ListOut[0].Load(Specific);
-    ListOut[1].Load(Specific);
+    ListOut.Load(Specific,2);
 
     CWriteConfig VectorOut((string) "TestCompartmentVector.txt");
     ListOut.Save(VectorOut);
@@ -190,14 +189,15 @@ int TestCompartment(void)
 
     CCompartmentVector ListIn;
     CReadConfig VectorIn((string) "TestCompartmentVector.txt");
-    ListIn.Load(VectorIn);
+    ListIn.Load(VectorIn,2);
 
     cout << endl;
     return 0;
 }
 
+#ifdef XXXX
 
-int TestDatum(void)
+long TestDatum(void)
 {
     cout << "Entering TestDatum." << endl;
     double doublevariable;
@@ -227,7 +227,7 @@ int TestDatum(void)
     return 0;
 }
 
-int TestMetab(void)
+long TestMetab(void)
 {
     cout << "Entering TestMetab." << endl;
     cout << "creating a CMetab object..." << endl;
@@ -250,29 +250,42 @@ int TestMetab(void)
     cout << endl;
     return 0;
 }
+#endif
 
-int TestReadSample(void)
+long TestReadSample(void)
 {
+    long size = 0;
+    
     CReadConfig inbuf("sample.gps");
     
     CCompartmentVector Compartments;
-    Compartments.Load(inbuf);
+    
+    inbuf.GetVariable("TotalCompartments", "long", &size,
+                      CReadConfig::LOOP);
+    
+    Compartments.Load(inbuf, size);
     
     CMetabVector Metabolites;
-    Metabolites.Load(inbuf, Compartments);
+
+    inbuf.GetVariable("TotalMetabolites", "long", &size,
+                      CReadConfig::LOOP);
+    Metabolites.Load(inbuf, size);
 
     // CNodeKVector Nodes;
     // Nodes.Load(inbuf);
+#ifdef XXXX
     CStep Step;
     Step.Load(inbuf);
     
     CKinetics Kinetics;
     Kinetics.Load(inbuf);
-    
+#endif     
     CWriteConfig outbuf("copasi.gps");
+#ifdef XXXX
     Step.Save(outbuf);
     Kinetics.Save(outbuf);
-    Metabolites.Save(outbuf, Compartments);
+#endif     
+    Metabolites.Save(outbuf);
     Compartments.Save(outbuf);
     // Nodes.Save(outbuf);
     

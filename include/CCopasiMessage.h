@@ -8,22 +8,22 @@
 
 #include <string>
 
-typedef enum COPASI_MESSAGE_TYPE
-{
-    RAW = 0,
-    TRACE,
-    WARNING,
-    ERROR
-};
-
 /**
  *  This throws an exception with information where the error occured.
  */
-#define FatalError() {CCopasiMessage(ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
+#define FatalError() {CCopasiMessage(CCopasiMessage::ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
 
 class CCopasiMessage
 {
 public:
+    enum COPASI_MESSAGE_TYPE
+    {
+        RAW = 0,
+        TRACE,
+        WARNING,
+        ERROR
+    };
+
     /**
      *  Default consructor. 
      *  This creates a default error messages, which actually does nothing.
@@ -59,7 +59,7 @@ public:
      *  Retrieves thetype of the message.
      *  @return mType
      */
-    COPASI_MESSAGE_TYPE GetType();
+    long GetType();
 
 private:
     /**
@@ -86,6 +86,3 @@ private:
 
 };
 #endif // COPASI_CCopasiMessage
-
-
-

@@ -44,19 +44,19 @@ public:
      * @param "const char" type
      * @param "const char" subtype
      */
-    int AddNode(const char type, const char subtype);
+    long AddNode(const char type, const char subtype);
 
     /**
      * This adds a node of type N_NUMBER to the function tree
      * @param "const double" constant
      */
-    int AddNode(const double constant);
+    long AddNode(const double constant);
 
     /**
      * This adds a node of type N_IDENTIFIER to the function tree
      * @param "const string" &name
      */
-    int AddNode(const string &name);
+    long AddNode(const string &name);
 
     /**
      *  This calculates the value of the fuction tree
@@ -65,7 +65,7 @@ public:
      *  @param int r
      *  @return double
      */
-    double CalcValue(CModel &model, double *s, int r);
+    double CalcValue(CModel &model, double *s, long r);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -73,7 +73,7 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    int Save(CWriteConfig &configbuffer);
+    long Save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -81,19 +81,19 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    int Load(CReadConfig &configbuffer);
+    long Load(CReadConfig &configbuffer);
 
     /**
-     *  This parses the function into a binary tree
+     *  This parses the function longo a binary tree
      */
-    int Parse(void);
+    long Parse(void);
 
     /**
      *  The finds the first occurence of an identifier with the given name
      *  @param "const string" &name
-     *  @return int index of the identifier or -1 if not found
+     *  @return long index of the identifier or -1 if not found
      */
-    int FindId(const string &name);
+    long FindId(const string &name);
 
     /**
      *  This returns the value of mReversible
@@ -109,55 +109,55 @@ public:
 
     /**
      *  This returns the number of substrates in the function
-     *  @return int
+     *  @return long
      */
-    int SubstratesNo(void);
+    long SubstratesNo(void);
 
     /**
      *  This returns the number of products in the function
-     *  @return int
+     *  @return long
      */
-    int ProductsNo(void);
+    long ProductsNo(void);
 
     /**
      *  This returns the number of modifiers in the function
-     *  @return int
+     *  @return long
      */
-    int ModifiersNo(void);
+    long ModifiersNo(void);
 
     /**
      *  This returns the number of parameters in the function
-     *  @return int
+     *  @return long
      */
-    int ParametersNo(void);
+    long ParametersNo(void);
 
     /**
      *  This retrieves the name of the parameter with the given index
-     *  @param int index
+     *  @param long index
      *  @return string
      */
-    string GetParameterName(int i);
+    string GetParameterName(long i);
 
     /**
      *  This retrieves the name of the modifier with the given index
-     *  @param int index
+     *  @param long index
      *  @return string
      */
-    string GetModifierName(int i);
+    string GetModifierName(long i);
 
     /**
      *  This sets the name of the parameter with the given index
      *  @param "const string" &name
-     *  @param int index
+     *  @param long index
      */
-    void SetParameterName(const string &name, int index);
+    void SetParameterName(const string &name, long index);
 
     /**
      *  This sets the name of the modifier with the given index
      *  @param "const string" &name
-     *  @param int index
+     *  @param long index
      */
-    void SetModifierName(const string &name, int index);
+    void SetModifierName(const string &name, long index);
     
     /**
      *  This returns the vector of substrates of the function
@@ -186,16 +186,16 @@ public:
     /**
      *  This sets the type of the identifier with the given name
      *  @param "const string" &name
-     *  @param int type
+     *  @param long type
      */
-    void SetIdentifierType(const string &name, int type);
+    void SetIdentifierType(const string &name, long type);
 
     /**
      *  This retrieves the type of the identifier with the given name
      *  @param "const string" &name
-     *  @return int type
+     *  @return long type
      */
-    int GetIdentifierType(const string &name);
+    long GetIdentifierType(const string &name);
 
 private:
     /**
@@ -206,14 +206,14 @@ private:
     /**
      *  This  connects the nodes to build the binary function tree
      */
-    int ConnectNodes(void);
+    long ConnectNodes(void);
 
     /**
      *  This function is part of the algorithm that builds the binary tree
-     *  @param int priority
+     *  @param long priority
      *  @return CNodeK *
      */
-    CNodeK *ParseExpression(int priority);
+    CNodeK *ParseExpression(long priority);
 
     /**
      *  This function is part of the algorithm that builds the binary tree
@@ -239,13 +239,13 @@ private:
     /**
      *  This indicates whether the function is reversible
      */
-    int mReversible;      // TRUE if this is a reversible type
+    long mReversible;      // TRUE if this is a reversible type
 
 
     /**
      *  Internal variable (We should get rid of this)
      */
-    int nidx;            
+    long nidx;            
 
 
     /**

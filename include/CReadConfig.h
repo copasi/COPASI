@@ -12,11 +12,62 @@
 #include <strstream>
 
 // available operations mode for the configurations buffer
-#define CReadConfig_SEARCH 0x01
-#define CReadConfig_LOOP   0x02
+// #define CReadConfig_SEARCH 0x01
+// #define CReadConfig_LOOP   0x02
 
 class CReadConfig
 {
+// data
+public:
+    enum Mode 
+    {
+        NEXT = 0,
+        SEARCH,
+        LOOP,
+        ALL
+    };
+    
+    
+private:
+    /**
+     *  Initializes the input buffer for reading.
+     *  @return mFail
+     *  @see mFail  
+     */
+    long InitInputBuffer();
+
+    /**
+     *  Look ahead to find the next variable name
+     */
+    string LookAhead();
+
+    /**
+     *  Name of the configuration file.
+     */
+    string mFilename;               // Config File Name
+
+    /**
+     *  Input buffer
+     */
+    strstream mBuffer;
+    
+    /**
+     *  Current line number in the configuration file
+     */
+    long   mLineNumber;             // Current Line Number 
+
+    /**
+     * Mode = CReadConfig::SEARCH
+     */
+    long mMode;
+
+    /**
+     *  Failure status:
+     *  0 = no error
+     *  !0 = error
+     */
+    long    mFail;                   // Failure State
+
 public:
     /**
      *  Default consructor. 
@@ -43,14 +94,14 @@ public:
      *  Set the operations mode for configurations buffer.
      *  @param mode valid modes are: CReadConfig_SEARCH, CReadConfig_LOOP
      */
-    void SetMode(int mode);
+//    void SetMode(long mode);
     
     /**
      *  Returns the failure status.
      *  @return mFail
      *  @see mFail  
      */
-    int Fail();
+    long Fail();
 
     /**
      *  Retrieves a variable from the input file.
@@ -61,9 +112,10 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    int GetVariable(const string& name, 
-                    const string& type,
-                    void * pout);
+    long GetVariable(const string& name, 
+                     const string& type,
+                     void * pout,
+                     enum Mode mode = CReadConfig::NEXT);
 
     /**
      *  Retrieves a variable from the input file.
@@ -76,50 +128,11 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    int GetVariable(const string& name, 
-                    const string& type,
-                    void * pout1,
-                    void * pout2);
-
-private:
-    /**
-     *  Initializes the input buffer for reading.
-     *  @return mFail
-     *  @see mFail  
-     */
-    int InitInputBuffer();
-
-    /**
-     *  Look ahead to find the next variable name
-     */
-    string LookAhead();
-
-    /**
-     *  Name of the configuration file.
-     */
-    string mFilename;               // Config File Name
-
-    /**
-     *  Input buffer
-     */
-    strstream mBuffer;
-    
-   /**
-     *  Current line number in the configuration file
-     */
-    long   mLineNumber;             // Current Line Number 
-
-    /**
-     * Mode = CReadConfig::SEARCH
-     */
-    int mMode;
-
-    /**
-     *  Failure status:
-     *  0 = no error
-     *  !0 = error
-     */
-    int    mFail;                   // Failure State
+    long GetVariable(const string& name, 
+                     const string& type,
+                     void * pout1,
+                     void * pout2,
+                     enum Mode mode = CReadConfig::NEXT);
 };
 #endif // COPASI_CReadConfig
 

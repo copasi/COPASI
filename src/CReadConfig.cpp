@@ -42,24 +42,26 @@ CReadConfig::~CReadConfig(void)
 {
 }
 
-int CReadConfig::Fail()
+long CReadConfig::Fail()
 {
     // return the failure state
     return mFail;
 }
 
 
-int CReadConfig::GetVariable(const string& name, 
-                             const string& type, 
-                             void * pout)
+long CReadConfig::GetVariable(const string& name, 
+                              const string& type, 
+                              void * pout,
+                              enum Mode mode)
 {
     char c[] = " ";
-    int equal = 0;
-    int Mode = mMode;    
+    long equal = 0;
     string Line;
     string Name;
     string Value;
 
+    mode = (mode & CReadConfig::LOOP) ? CReadConfig::ALL: mode;
+    
     // Get the current line 
     while (TRUE)
     {
@@ -82,8 +84,8 @@ int CReadConfig::GetVariable(const string& name,
         // The Compartment keyword is used twice. So we must determine by
         // the context if we have found the correct one in the case the mode
         // is SEARCH.
-        if (Mode & CReadConfig_SEARCH &&
-            name == "Compartment"     &&
+        if (mode & CReadConfig::SEARCH          &&
+            name == "Compartment"  &&
             Name == "Compartment")
         {
             if ( LookAhead() != "Volume" )
@@ -95,14 +97,14 @@ int CReadConfig::GetVariable(const string& name,
         // We found what we are looking for
         if (name == Name) break;
 
-        if (Mode & CReadConfig_SEARCH) 
+        if (mode & CReadConfig::SEARCH) 
         {
             if (mBuffer.eof())
             {
-                if (!(Mode & CReadConfig_LOOP)) FatalError();
+                if (!(mode & CReadConfig::LOOP)) FatalError();
 
                 // Rewind the buffer                
-                Mode ^= CReadConfig_LOOP;
+                mode = CReadConfig::SEARCH;
                 mBuffer.clear();
                 mBuffer.seekg(0);
                 mLineNumber = 0;
@@ -124,10 +126,10 @@ int CReadConfig::GetVariable(const string& name,
         // may be we should check if Value is really a double
         *(double *) pout = atof(Value.c_str());
     }
-    else if ( type == "int" )
+    else if ( type == "long" )
     {
         // may be we should check if Value is really a integer
-        *(int *) pout = atoi(Value.c_str());
+        *(long *) pout = atoi(Value.c_str());
     }
     else
     {
@@ -138,26 +140,27 @@ int CReadConfig::GetVariable(const string& name,
     return mFail;
 }
 
-int CReadConfig::GetVariable(const string& name, 
-                             const string& type, 
-                             void * pout1,
-                             void * pout2)
+long CReadConfig::GetVariable(const string& name, 
+                              const string& type, 
+                              void * pout1,
+                              void * pout2,
+                              enum Mode mode)
 {
     string Value;
     
-    if (mFail = GetVariable(name, "string", &Value))
+    if (mFail = GetVariable(name, "string", &Value, mode))
         return mFail;
     
     if (type == "node")
     {
-        int komma = 0;
+        long komma = 0;
         
         komma = Value.find(",");
         string Type = Value.substr(0, komma);
-        *(int *) pout1 = atoi(Type.c_str());
+        *(long *) pout1 = atoi(Type.c_str());
 
         string Subtype = Value.substr(komma + 1);
-        *(int *) pout2 = atoi(Subtype.c_str());
+        *(long *) pout2 = atoi(Subtype.c_str());
     }
     else
     {
@@ -167,8 +170,9 @@ int CReadConfig::GetVariable(const string& name,
     
     return mFail;
 }
-        
-void CReadConfig::SetMode(int mode)
+
+#ifdef XXXX        
+void CReadConfig::SetMode(long mode)
 {
     switch (mode)
     {
@@ -190,8 +194,9 @@ void CReadConfig::SetMode(int mode)
         break;
     }
 }
+#endif 
 
-int CReadConfig::InitInputBuffer()
+long CReadConfig::InitInputBuffer()
 {
     char c[] = " ";
     
@@ -224,6 +229,3 @@ string CReadConfig::LookAhead()
     
     return Line.substr(0, Line.find("="));
 }
-
-    
-    

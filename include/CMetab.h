@@ -7,12 +7,10 @@
 #ifndef COPASI_CMetab
 #define COPASI_CMetab
 
-#include <vector>
 #include <string>
 
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
-#include "CCompartment.h"
 
 //constants for use with Status
 #define METAB_FIXED	0
@@ -22,6 +20,46 @@
 
 class CMetab
 {
+// Attributes
+private:
+    /**
+     *  Name of the metabolite
+     */
+    string mName;
+
+    /**
+     *  Concentration of the metabolite.
+     */
+    double mConc;
+
+    /**
+     * Initial concentration of the metabolite
+     */
+    double mIConc;
+
+    /**
+     *  Rate of production of this metaboLite
+     *  (here used for rate constant).
+     */
+    double mRate; 
+
+    /**
+     *  Transition time of the metabolite
+     */
+    double mTT;
+
+    /**
+     *  Status of the metabolite.  
+     *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
+     */
+    short mStatus;
+
+    /**
+     *  Name of the compartment the metabolite is located in.
+     */
+    string mCompartment;
+
+// Operations
 public:
     /**
      *  Default constructor
@@ -32,147 +70,61 @@ public:
      *  Specific constructor. 
      *  @param name name of the metabolite.
      */
-    CMetab(const string& name);
+    CMetab(const string & name);
 
     /**
      *  Specific constructor.
      *  @param name name of the metabolite.
      *  @param status status of the metabolite 
      *     (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-     *  @param compartment reference to the compartment the metabolite
-     *     is located.
+     *  @param compartment name of the compartment the metabolite
+     *     is located in.
      */
-    CMetab(const string& name, const short status, CCompartment &compartment);
+    CMetab(const string & compartment, short status, const string & name);
+
+    /**
+     *  Destructor.
+     */
+    ~CMetab();
 
     /**
      *  Assignment operator.
      */
-    CMetab &operator=( const CMetab & );          // overloaded assignment operator
-
-    /**
-     *  Reset the values of a metabolite as if CMetab(string name) was called.
-     */
-    int Reset(const string& name);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return mFail
-     *  @see mFail
-     */
-    int Save(CWriteConfig &configbuffer, 
-             CCompartmentVector &list);
+    CMetab & operator=(const CMetab & rhs);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
      *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return mFail
-     *  @see mFail
+     *  @return Fail
      */
-    int Load(CReadConfig &configbuffer, 
-             CCompartmentVector &list);
-
-    /**
-     *  Returns the failure code.
-     *  @return mFail
-     *  @see mFail
-     */
-    int Fail();
-
-private:
-    /**
-     *  Name of the metabolite
-     */
-    string mName;        // metabolite name
-
-    /**
-     *  Concentration of the metabolite.
-     */
-    double mConc;        // concentration of the metabolite
-
-    /**
-     * Initial concentration of the metabolite
-     */
-    double mIConc;       // initial concentration of the metabolite
-
-    /**
-     *  Rate of production of this metaboLite
-     */
-    double mRate;        // rate of production of this metaboLite 
-                         // (HERE USED FOR RATE CONSTANT)
-
-    /**
-     *  Transition time of the metabolite
-     */
-    double mTT;          // transition time of the metabolite
-
-    /**
-     *  Status of the metabolite 
-     *     (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-     */
-    short  mStatus;       // if external, variable, dependent, etc.
-
-    /**
-     *  Pointer to the compartment the metabolite is located.
-     */
-    CCompartment *Compartment;        // the compartment of this metabolite
-                        // special variables only for ModEx
-    /**
-     *  Failure code.
-     */
-    int    mFail;
-};
-
-class CMetabVector : public vector< CMetab >
-{
-public:
-    /**
-     *  Default constructor. 
-     *  Creates an empty vector with size 0.
-     */
-    CMetabVector();
-
-    /**
-     *  Specific constructor. 
-     *  Creates a vector with size CMetab.
-     *  @param size number of CMetab objects in the vector.
-     */
-    CMetabVector(int size);
+     long Load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
      *  (Which usually has a file attached but may also have socket)
      *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return mFail
-     *  @see mFail
+     *  @return Fail
      */
-    int Save(CWriteConfig &configbuffer,
-             CCompartmentVector &list);
+    long Save(CWriteConfig & configbuffer);
+
 
     /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return mFail
-     *  @see mFail
+     *  Retrieve the name of the metabolite.
      */
-    int Load(CReadConfig &configbuffer,
-             CCompartmentVector &list);
+    string GetName();
     
     /**
-     *  Returns the failure code.
-     *  @return mFail
-     *  @see mFail
+     *  Reset the values of a metabolite as if CMetab(string name) was called.
+     *  @return Fail
      */
-    int Fail();
-
-private:
+    long Reset(const string & name);
 
     /**
-     *  Failure code.
+     *  Set the name of the compartment the metabilite is located in.
+     *  @return Fail
      */
-    int    mFail;
+    long SetCompartment(const string & compartment);
 };
+
 #endif // COPASI_CMetab

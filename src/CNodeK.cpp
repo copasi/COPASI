@@ -68,7 +68,7 @@ void CNodeK::SetRight(CNodeK *pt) {mRight = pt;}
 
 void CNodeK::SetSubtype(const char subtype) {mSubtype = subtype;}
     
-void CNodeK::SetIndex(const int index) {mIndex = index;}
+void CNodeK::SetIndex(const long index) {mIndex = index;}
 
 void CNodeK::SetName(const string &name) {mName = name;}
 
@@ -92,13 +92,13 @@ char CNodeK::GetType(void) {return mType;}
 
 char CNodeK::GetSubtype(void) {return mSubtype;}
 
-int CNodeK::IsLeftValid() {return (int) mLeft;}
+long CNodeK::IsLeftValid() {return (long) mLeft;}
 
-int CNodeK::IsRightValid() {return (int) mRight;}
+long CNodeK::IsRightValid() {return (long) mRight;}
 
-int CNodeK::IsNumber(void) {return mType == N_NUMBER;}
+long CNodeK::IsNumber(void) {return mType == N_NUMBER;}
 
-int CNodeK::IsIdentifier(void)
+long CNodeK::IsIdentifier(void)
 {
     switch (mType)
     {
@@ -111,7 +111,7 @@ int CNodeK::IsIdentifier(void)
     }
 }
 
-int CNodeK::IsOperator(void)
+long CNodeK::IsOperator(void)
 {
     return mType == N_OPERATOR;
 }
@@ -134,7 +134,7 @@ void CNodeK::Function(void)
 }
 
 // calculates the value of this sub-tree (ie with this node as root)
-double CNodeK::Value(const CModel &model, double *s, int r)
+double CNodeK::Value(const CModel &model, double *s, long r)
 {
     // if it is a constant or an identifier just return its value
     if (IsNumber()) return mConstant;
@@ -144,7 +144,7 @@ double CNodeK::Value(const CModel &model, double *s, int r)
     case N_SUBSTRATE:
 //        return s[model.IRow[model.Step[r].Substrate[Index]]];
         FatalError();   // THROW EXCEPTION
-    break;
+        break;
         
     case N_PRODUCT:
 //        return s[model.IRow[model.Step[r].Product[Index]]];
@@ -223,7 +223,7 @@ double CNodeK::Value(const CModel &model, double *s, int r)
     return 0.0;
 }
 
-int CNodeK::RightPrecedence(void)
+long CNodeK::RightPrecedence(void)
 {
     switch (mType)
     {
@@ -247,7 +247,7 @@ int CNodeK::RightPrecedence(void)
     return 0;
 }
 
-int CNodeK::LeftPrecedence(void)
+long CNodeK::LeftPrecedence(void)
 {
     switch (mType)
     {
@@ -270,9 +270,9 @@ int CNodeK::LeftPrecedence(void)
     return 0;
 }
 
-int CNodeK::Save(CWriteConfig &configbuffer)
+long CNodeK::Save(CWriteConfig &configbuffer)
 {
-    int Fail = 0;
+    long Fail = 0;
     
     // the file has already been opened
     // we don't care about exceptions here.
@@ -290,7 +290,7 @@ int CNodeK::Save(CWriteConfig &configbuffer)
     }
     else if (IsIdentifier())
     {
-        if (Fail = configbuffer.SetVariable("Index", "int", &mIndex))
+        if (Fail = configbuffer.SetVariable("Index", "long", &mIndex))
             return Fail;
         if (Fail = configbuffer.SetVariable("Name", "string", &mName))
             return Fail;
@@ -299,9 +299,9 @@ int CNodeK::Save(CWriteConfig &configbuffer)
 }
 
 
-int CNodeK::Load(CReadConfig &configbuffer)
+long CNodeK::Load(CReadConfig &configbuffer)
 {
-    int Fail = 0;
+    long Fail = 0;
     
     if (Fail = configbuffer.GetVariable("Node", "node", &mType, &mSubtype))
         return Fail;
@@ -321,7 +321,7 @@ int CNodeK::Load(CReadConfig &configbuffer)
     }
     else if (mType == N_IDENTIFIER)
     {
-        if (Fail = configbuffer.GetVariable("Index", "int", &mIndex))
+        if (Fail = configbuffer.GetVariable("Index", "long", &mIndex))
             return Fail;
         if (Fail = configbuffer.GetVariable("Name", "string", &mName))
             return Fail;
@@ -335,21 +335,21 @@ CNodeKVector::CNodeKVector()
     this->resize(0);
 }
 
-CNodeKVector::CNodeKVector(int size)
+CNodeKVector::CNodeKVector(long size)
 {
     this->resize(size);
 }
 
-int CNodeKVector::Save(CWriteConfig &configbuffer)
+long CNodeKVector::Save(CWriteConfig &configbuffer)
 {
-    int Fail = 0;
-    int Size = this->size();
+    long Fail = 0;
+    long Size = this->size();
     
-    if (Fail = configbuffer.SetVariable("Nodes", "int",
+    if (Fail = configbuffer.SetVariable("Nodes", "long",
                                         (void *) &Size))
         return Fail;
 
-    for(int i = 0; i < Size; i++)
+    for(long i = 0; i < Size; i++)
     {
 
         if (Fail = (&this->front()+i)->Save(configbuffer))
@@ -360,22 +360,22 @@ int CNodeKVector::Save(CWriteConfig &configbuffer)
     return Fail;
 }
 
-int CNodeKVector::Load(CReadConfig &configbuffer)
+long CNodeKVector::Load(CReadConfig &configbuffer)
 {
-    int Fail = 0;
-    int Size = 0;
+    long Fail = 0;
+    long Size = 0;
     
     configbuffer.SetMode(CReadConfig_SEARCH);
     configbuffer.SetMode(CReadConfig_LOOP);
     
-    if (Fail = configbuffer.GetVariable("Nodes","int",
+    if (Fail = configbuffer.GetVariable("Nodes","long",
                                         (void *) &Size))
         return Fail;
 
     this->resize(Size);
     
     configbuffer.SetMode(-CReadConfig_LOOP);
-    for(int i = 0; i < Size; i++)
+    for(long i = 0; i < Size; i++)
     {
         if (Fail = (&this->front()+i)->Load(configbuffer))
         {

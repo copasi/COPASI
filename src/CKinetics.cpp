@@ -6,17 +6,17 @@
 #include "globals.h"
 #include "CKinetics.h"
 
-double UDKin(void *M, double *s, int r);
+double UDKin(void *M, double *s, long r);
 
-double UDKin(void *M, double *s, int r)
+double UDKin(void *M, double *s, long r)
 {
- double ret = 0.0;
+    double ret = 0.0;
 // CModel *m = (CModel *) M;
 #ifdef _DEBUG
 // assert( m->Step[r].Kinetics->Funct );
 #endif
 // ret = m->Step[r].Kinetics->Funct->CalcValue( m, s, r );
- return ret;
+    return ret;
 }
 
 
@@ -37,11 +37,11 @@ CKinetics::CKinetics()
 
 // this constructor is for built-in kinetic types
 CKinetics::CKinetics(const string &kiname, 
-                     int subs, 
-                     int prods, 
-                     int mods, 
-                     int prm, 
-                     double (*ratefunc)(void *,double *, int), 
+                     long subs, 
+                     long prods, 
+                     long mods, 
+                     long prm, 
+                     double (*ratefunc)(void *,double *, long), 
                      short rev)
 {
     assert(FALSE);
@@ -74,33 +74,33 @@ CKinetics::~CKinetics()
     // if (Modf!=NULL) delete [] Modf;
 }
 
-void CKinetics::SetParameterName(const string &name, int index)
+void CKinetics::SetParameterName(const string &name, long index)
 {
     mFunct->SetParameterName(name, index);
 }
 
-void CKinetics::SetModifierName(const string &name, int index)
+void CKinetics::SetModifierName(const string &name, long index)
 {
     mFunct->SetModifierName(name, index);
 }
 
 // returns the index of the parameter specified
-int CKinetics::FindParameter(const string &name)
+long CKinetics::FindParameter(const string &name)
 {
-    for (int i=0; i<(*mParameters).size(); i++)
+    for (long i=0; i<(*mParameters).size(); i++)
         if ((*mParameters)[i]->GetName() == name) return i;
     return -1;
 }
 
 // this function loads an object from the character buffer
-int CKinetics::Load(CReadConfig &configbuffer)
+long CKinetics::Load(CReadConfig &configbuffer)
 {
-    int Fail = 0;
+    long Fail = 0;
 #ifdef XXXX
-    int SubstrateNo = 0;
-    int ProductNo = 0;
-    int ModifierNo = 0;
-    int ParameterNo = 0;
+    long SubstrateNo = 0;
+    long ProductNo = 0;
+    long ModifierNo = 0;
+    long ParameterNo = 0;
 #endif // XXXX
     
     configbuffer.SetMode(CReadConfig_SEARCH);
@@ -112,25 +112,25 @@ int CKinetics::Load(CReadConfig &configbuffer)
     configbuffer.SetMode(-CReadConfig_SEARCH);
     configbuffer.SetMode(-CReadConfig_LOOP);
 
-    if (Fail = configbuffer.GetVariable("User-defined", "int", &mUserDefined))
+    if (Fail = configbuffer.GetVariable("User-defined", "long", &mUserDefined))
         return Fail;
 
     if (!mUserDefined) return Fail;
 
-    if (Fail = configbuffer.GetVariable("Reversible", "int", &mReversible))
+    if (Fail = configbuffer.GetVariable("Reversible", "long", &mReversible))
         return Fail;
 
 #ifdef XXXX
-    if (Fail = configbuffer.GetVariable("Substrates", "int", &SubstrateNo))
+    if (Fail = configbuffer.GetVariable("Substrates", "long", &SubstrateNo))
         return Fail;
 
-    if (Fail = configbuffer.GetVariable("Products", "int", &ProductNo))
+    if (Fail = configbuffer.GetVariable("Products", "long", &ProductNo))
         return Fail;
 
-    if (Fail = configbuffer.GetVariable("Modifiers", "int", &ModifierNo))
+    if (Fail = configbuffer.GetVariable("Modifiers", "long", &ModifierNo))
         return Fail;
 
-    if (Fail = configbuffer.GetVariable("Constants", "int", &ParameterNo))
+    if (Fail = configbuffer.GetVariable("Constants", "long", &ParameterNo))
         return Fail;
 #endif // XXXX
 
@@ -146,37 +146,37 @@ int CKinetics::Load(CReadConfig &configbuffer)
 }
 
 // this function saves the object to to the CStdioFile
-int CKinetics::Save(CWriteConfig &configbuffer)
+long CKinetics::Save(CWriteConfig &configbuffer)
 {
-    int Fail = 0;
-    int tmp = 0;
+    long Fail = 0;
+    long tmp = 0;
 
     if (Fail = configbuffer.SetVariable("UDKType", "string", &mName))
         return Fail;
 
-    if (Fail = configbuffer.SetVariable("User-defined", "int", &mUserDefined))
+    if (Fail = configbuffer.SetVariable("User-defined", "long", &mUserDefined))
         return Fail;
 
     if (!mUserDefined) return Fail;
 
-    if (Fail = configbuffer.SetVariable("Reversible", "int", &mReversible))
+    if (Fail = configbuffer.SetVariable("Reversible", "long", &mReversible))
         return Fail;
 
 #ifdef XXXX
     tmp = (*mSubstrates).size();
-    if (Fail = configbuffer.SetVariable("Substrates", "int", &tmp))
+    if (Fail = configbuffer.SetVariable("Substrates", "long", &tmp))
         return Fail;
 
     tmp = (*mProducts).size();
-    if (Fail = configbuffer.SetVariable("Products", "int", &tmp))
+    if (Fail = configbuffer.SetVariable("Products", "long", &tmp))
         return Fail;
 
     tmp = (*mModifiers).size();
-    if (Fail = configbuffer.SetVariable("Modifiers", "int", &tmp))
+    if (Fail = configbuffer.SetVariable("Modifiers", "long", &tmp))
         return Fail;
 
     tmp = (*mParameters).size();
-    if (Fail = configbuffer.SetVariable("Constants", "int", &tmp))
+    if (Fail = configbuffer.SetVariable("Constants", "long", &tmp))
         return Fail;
 #endif // XXXX
 

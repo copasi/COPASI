@@ -19,100 +19,87 @@ CMetab::CMetab()
 {
     // initialize everything
     mName       = "metab";
-     mConc       = DefaultConc;
-    mIConc      = DefaultConc;
-    mRate       = 1.0;
-    mTT         = 0.0;
-    mStatus     = METAB_VARIABLE;
-    Compartment = NULL;
-    mFail       = 0;
-}
-
-CMetab::CMetab(const string& name)
-{
-    Reset(name);
-}
-
-CMetab::CMetab(const string& name, const short status, 
-               CCompartment &compartment)
-{
-    mName       = name;
     mConc       = DefaultConc;
     mIConc      = DefaultConc;
     mRate       = 1.0;
     mTT         = 0.0;
-    mStatus     = status;
-    Compartment = &compartment;
-    mFail       = 0;
+    mStatus     = METAB_VARIABLE;
+}
+
+CMetab::CMetab(const string & name)
+{
+    Reset(name);
+}
+
+CMetab::CMetab(const string & name, const short status, 
+               const string & compartment)
+{
+    mName        = name;
+    mConc        = DefaultConc;
+    mIConc       = DefaultConc;
+    mRate        = 1.0;
+    mTT          = 0.0;
+    mStatus      = status;
+    mCompartment = compartment;
 }
 
 // overload assignment operator
 CMetab &CMetab::operator=(const CMetab &RHS)
 {
-    mName       = RHS.mName;
-    mConc       = RHS.mConc;
-    mIConc      = RHS.mIConc;
-    mRate       = RHS.mRate;
-    mTT         = RHS.mTT;
-    mStatus     = RHS.mStatus;
-    Compartment = RHS.Compartment;
-    mFail       = RHS.mFail;
+    mName        = RHS.mName;
+    mConc        = RHS.mConc;
+    mIConc       = RHS.mIConc;
+    mRate        = RHS.mRate;
+    mTT          = RHS.mTT;
+    mStatus      = RHS.mStatus;
+    mCompartment = RHS.mCompartment;
 
     return *this;  // Assignment operator returns left side.
 }
 
-int CMetab::Reset(const string& name)
+CMetab::~CMetab() {}
+
+long CMetab::Reset(const string& name)
 {
     // initialize everything
-    mName       = name;
-    mConc       = mIConc;
-    mRate       = 1.0;
-    mTT         = 0.0;
-    mStatus     = METAB_VARIABLE;
-    Compartment = NULL;
-    mFail       = 0;
+    mName        = name;
+    mConc        = mIConc;
+    mRate        = 1.0;
+    mTT          = 0.0;
+    mStatus      = METAB_VARIABLE;
+    mCompartment = "";
 
-    return mFail;
+    return 0;
 }
 
 
-int CMetab::Load(CReadConfig &configbuffer,
-                 CCompartmentVector &list)
+long CMetab::Load(CReadConfig &configbuffer)
 {
-    mFail = configbuffer.GetVariable("Metabolite", "string",
-                                     (void *) &mName);
-    if (mFail) return mFail;
-    configbuffer.SetMode(-CReadConfig_SEARCH);
+    long Fail = 0;
+    
+    Fail = configbuffer.GetVariable("Metabolite", "string",
+                                    (void *) &mName,
+                                    CReadConfig::SEARCH);
+    if (Fail) return Fail;
 
-    mFail = configbuffer.GetVariable("Concentration", "double",
-                                     (void *) &mIConc);
-    if (mFail) return mFail;
+    Fail = configbuffer.GetVariable("Concentration", "double",
+                                    (void *) &mIConc);
+    if (Fail) return Fail;
 
-    int Index = -1;
-    mFail = configbuffer.GetVariable("Compartment", "int",
-                                     (void *) &Index);
-    if (mFail) return mFail;
+    long Index = -1;
+    Fail = configbuffer.GetVariable("Compartment", "string",
+                                    (void *) &mCompartment);
+    if (Fail) return Fail;
 
-    // sanity check
-    if( Index < 0 )
-    {
-        CCopasiMessage(WARNING, 
-                       "The file specifies a non-existing compartment "
-                       "for '%s'.\nReset to the default compartment.",
-                       mName.c_str());
-        Index = 0;
-    }
-    Compartment = &list[Index];
-
-    int Status;
-    mFail = configbuffer.GetVariable("Type", "int",
-                                     (void *) &Status);
+    long Status;
+    Fail = configbuffer.GetVariable("Type", "long",
+                                    (void *) &Status);
     mStatus = (short) Status;
 
     // sanity check
     if ((mStatus<0) || (mStatus>7))
     {
-        CCopasiMessage(WARNING, 
+        CCopasiMessage(CCopasiMessage::WARNING, 
                        "The file specifies a non-existing type "
                        "for '%s'.\nReset to internal metabolite.",
                        mName.c_str());
@@ -122,96 +109,36 @@ int CMetab::Load(CReadConfig &configbuffer,
     // sanity check
     if ((mStatus!=METAB_MOIETY) && (mIConc < 0.0))
     {
-        CCopasiMessage(WARNING, 
+        CCopasiMessage(CCopasiMessage::WARNING, 
                        "The file specifies a negative concentration "
                        "for '%s'.\nReset to default.",
                        mName.c_str());
         mIConc = DefaultConc;
     }
-    return mFail;
+    return Fail;
 }
 
 
-int CMetab::Save(CWriteConfig &configbuffer,
-                 CCompartmentVector &list)
+long CMetab::Save(CWriteConfig &configbuffer)
 {
-    mFail = configbuffer.SetVariable("Metabolite", "string",
-                                     (void *) &mName);
-    if (mFail) return mFail;
-
-    mFail = configbuffer.SetVariable("Concentration", "double",
-                                     (void *) &mIConc);
-    if (mFail) return mFail;
-
-    int Index = Compartment - &list.front();
-    mFail = configbuffer.SetVariable("Compartment", "int",
-                                     (void *) &Index);
-    if (mFail) return mFail;
-
-    int Status = (int) mStatus;
-    mFail = configbuffer.SetVariable("Type", "int",
-                                     (void *) &Status);
-    return mFail;
-}
-
-CMetabVector::CMetabVector()
-{
-    mFail = 0;
-    this->resize(0);
-}
-
-CMetabVector::CMetabVector(int size)
-{
-    mFail = 0;
-    this->resize(size);
-}
-
-int CMetabVector::Save(CWriteConfig &configbuffer,
-		       CCompartmentVector &list)
-{
-    int Size = this->size();
+    long Fail = 0;
     
-    mFail = configbuffer.SetVariable("TotalMetabolites", "int",
-                                     (void *) &Size);
-    if (mFail) return mFail;
+    Fail = configbuffer.SetVariable("Metabolite", "string",
+                                    (void *) &mName);
+    if (Fail) return Fail;
 
-    for(int i = 0; i < Size; i++)
-    {
+    Fail = configbuffer.SetVariable("Concentration", "double",
+                                    (void *) &mIConc);
+    if (Fail) return Fail;
 
-        if (mFail = (*(&this->front()+i)).Save(configbuffer, list))
-        {
-            break;
-        }
-    }
-    return mFail;
+    Fail = configbuffer.SetVariable("Compartment", "string",
+                                    (void *) &mCompartment);
+    if (Fail) return Fail;
+
+    long Status = (long) mStatus;
+    Fail = configbuffer.SetVariable("Type", "long",
+                                    (void *) &Status);
+    return Fail;
 }
 
-int CMetabVector::Load(CReadConfig &configbuffer,
-		       CCompartmentVector &list)
-{
-    int Size = 0;
-    
-    configbuffer.SetMode(CReadConfig_SEARCH);
-    configbuffer.SetMode(CReadConfig_LOOP);
-    
-    mFail = configbuffer.GetVariable("TotalMetabolites","int",
-                                     (void *) &Size);
-    if (mFail) return mFail;
-    this->resize(Size);
-    
-    configbuffer.SetMode(-CReadConfig_LOOP);
-    for(int i = 0; i < Size; i++)
-    {
-        if (mFail = (*(&this->front()+i)).Load(configbuffer, list))
-        {
-            break;
-        }
-    }
-    
-    return mFail;
-}
-
-int CMetabVector::Fail()
-{
-    return mFail;
-}
+string CMetab::GetName() {return mName;}

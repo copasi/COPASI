@@ -44,7 +44,7 @@ CWriteConfig::~CWriteConfig(void)
     Commit();
 }
 
-int CWriteConfig::Flush(void)
+long CWriteConfig::Flush(void)
 {
     if (Commit())
     {
@@ -58,7 +58,7 @@ int CWriteConfig::Flush(void)
     return mFail;
 }
 
-int CWriteConfig::Commit(void)
+long CWriteConfig::Commit(void)
 {
 #ifdef WIN32
     mOpenMode |= ios::binary;
@@ -82,15 +82,15 @@ int CWriteConfig::Commit(void)
     return mFail;
 }
 
-int CWriteConfig::Fail()
+long CWriteConfig::Fail()
 {
     // return the failure state
     return mFail;
 }
 
-int CWriteConfig::SetVariable(const string name, 
-                              const string type, 
-                              void *pout)
+long CWriteConfig::SetVariable(const string name, 
+                               const string type, 
+                               void *pout)
 {
     mBuffer << name << "=";
     
@@ -103,9 +103,9 @@ int CWriteConfig::SetVariable(const string name,
     {
         mBuffer << *(double *) pout;
     }
-    else if ( type == "int" )
+    else if ( type == "long" )
     {
-        mBuffer << *(int *) pout;
+        mBuffer << *(long *) pout;
     }
     else
     {
@@ -119,17 +119,17 @@ int CWriteConfig::SetVariable(const string name,
     return mFail;
 }
 
-int CWriteConfig::SetVariable(const string name, 
-                              const string type, 
-                              void *pout1, 
-                              void *pout2)
+long CWriteConfig::SetVariable(const string name, 
+                               const string type, 
+                               void *pout1, 
+                               void *pout2)
 {
     mBuffer << name << "=";
     
     // Return the value depending on the type
     if ( type == "node" )
     {
-        mBuffer << (int) (*(char *) pout1) << "," << (int) (*(char *) pout2);
+        mBuffer << (long) (*(char *) pout1) << "," << (long) (*(char *) pout2);
     }
     else
     {

@@ -73,7 +73,7 @@ public:
      *  @param j second string describing the object.
      *  @param pval pointer to double containing the value of the object.
      */
-    CDatum(const string& title, int type, const string& i, const string& j,
+    CDatum(const string& title, long type, const string& i, const string& j,
            double *pval);
 
     /**
@@ -90,7 +90,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    int Save(CWriteConfig &configbuffer);
+    long Save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -99,7 +99,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    int Load(CReadConfig &configbuffer);
+    long Load(CReadConfig &configbuffer);
 
     /**
      *  Sets the value of mpValue with a pointer to a double that has 
@@ -148,14 +148,14 @@ public:
      *  @param type integer code of the type
      *  @see mType
      */
-    void CDatum::SetType(int type);
+    void CDatum::SetType(long type);
 
     /**
      *  Returns the type code of this object.
      *  @return mType
      *  @see mType
      */
-    int CDatum::GetType();
+    long CDatum::GetType();
 
     /**
      *  Sets the title of this object
@@ -184,7 +184,7 @@ private:
      *  This could possibly be changed to a enum set (need to think about
      *  portability issues, related with data alignment
      */
-    int mType;
+    long mType;
 
     /**
      *  First descriptor of the object.
@@ -213,7 +213,7 @@ private:
      *  0 = no error
      *  !0 = error
      */
-    int    mFail;
+    long    mFail;
 };
 
 #endif // COPASI_CDatum

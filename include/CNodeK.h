@@ -107,9 +107,9 @@ public:
     
     /**
      * Setting mIndex the index of a node
-     * @param "const int" index
+     * @param "const long" index
      */
-    void SetIndex(const int index);
+    void SetIndex(const long index);
     
     /**
      * Setting mName the name of a node
@@ -175,7 +175,7 @@ public:
      */
     double Value(const CModel &model, 
                  double *s,            // what is s ???
-                 int r);               // what is r ???
+                 long r);               // what is r ???
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -183,7 +183,7 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    int Save(CWriteConfig &configbuffer);
+    long Save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -191,49 +191,49 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    int Load(CReadConfig &configbuffer);
+    long Load(CReadConfig &configbuffer);
 
     /**
      *  This checks whether mLeft points to a valid CNodeK
      *  @return int 1 or 0
      */
-    int IsLeftValid(void);
+    long IsLeftValid(void);
 
     /**
      *  This checks whether mRight points to a valid CNodeK
      *  @return int 1 or 0
      */
-    int IsRightValid(void);
+    long IsRightValid(void);
 
     /**
      *  This checks whether the node is a number (mType = N_NUMBER)
      *  @return int 1 or 0
      */
-    int IsNumber(void);
+    long IsNumber(void);
 
     /**
      *  This checks whether the node is an identifier (mType = N_IDENTIFIER)
      *  @return int 1 or 0
      */
-    int IsIdentifier(void);
+    long IsIdentifier(void);
 
     /**
      *  This checks whether the node is a operator (mType = N_OPERATOR)
      *  @return int 1 or 0
      */
-    int IsOperator(void);
+    long IsOperator(void);
 
     /**
      *  This returns the right precedence value of a node
      *  @return int
      */
-    int RightPrecedence(void);
+    long RightPrecedence(void);
 
     /**
      *  This returns the left precedence value of a node
      *  @return int
      */
-    int LeftPrecedence(void);
+    long LeftPrecedence(void);
 
 private:
     /**
@@ -270,7 +270,7 @@ private:
     /**
      *  The index of the node for type N_IDENTIFIER
      */
-    int mIndex;       // index for the identitifier in its class
+    long mIndex;       // index for the identitifier in its class
 
     /**
      *  The name of the node for type N_IDENTIFIER
@@ -292,7 +292,7 @@ public:
      *  Creates a vector with size CNodeK objects.
      *  @param size number of CNodeK objects in the vector.
      */
-    CNodeKVector(int size);
+    CNodeKVector(long size);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -300,7 +300,7 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    int Save(CWriteConfig &configbuffer);
+    long Save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -308,7 +308,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    int Load(CReadConfig &configbuffer);
+    long Load(CReadConfig &configbuffer);
     
 };
 

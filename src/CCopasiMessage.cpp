@@ -27,8 +27,8 @@ CCopasiMessage::CCopasiMessage(const COPASI_MESSAGE_TYPE type,
                                const char *format, ...)
 {
 #define INITIALTEXTSIZE 1024
-    int TextSize = INITIALTEXTSIZE;
-    int Printed = 0;
+    long TextSize = INITIALTEXTSIZE;
+    long Printed = 0;
     
     char *Text = NULL;
     
@@ -112,7 +112,7 @@ string CCopasiMessage::GetText(void)
     return mText;
 }
 
-COPASI_MESSAGE_TYPE CCopasiMessage::GetType(void)
+long CCopasiMessage::GetType(void)
 {
     return mType;
 }
@@ -159,4 +159,3 @@ void CCopasiMessage::LineBreak()
         pos += Replace.length();
     }
 }
-

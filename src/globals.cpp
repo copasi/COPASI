@@ -3,10 +3,10 @@
 #include "copasi.h"
 
 // version numbers
-int GepasiVersion;
-int GepasiVersionMajor;
-int GepasiVersionMinor;
-int GepasiVersionDevel;
+long GepasiVersion;
+long GepasiVersionMajor;
+long GepasiVersionMinor;
+long GepasiVersionDevel;
 string VersionString;
 string ArchString;
 string CompiledString;
@@ -18,36 +18,36 @@ string UDKinFileName;
 double DefaultConc = 0.0;
 double DefaultKinConst = 1.0;
 double DefaultEndTime = 10.0;
-int DefaultNewtonLimit = 50;
+long DefaultNewtonLimit = 50;
 double DefaultSSRes = 1.0e-9;
 double DefaultRelTol = 1.0e-6;
 double DefaultAbsTol = 1.0e-12;
-int DefaultAdamsMax = 12;
-int DefaultBDFMax = 5;
+long DefaultAdamsMax = 12;
+long DefaultBDFMax = 5;
 char DefaultTUnit[16] = "s";
 char DefaultCUnit[16] = "mM";
 char DefaultVUnit[16] = "ml";
-int DefaultPoints = 50;
-int DefaultDyn = 1;
-int DefaultSS = 1;
-int DefaultRep = 0;
-int DefaultTitles = 0;
-int DefaultQuotes = 0;
-int DefaultColWidth = 12;
-int DefaultSeparator = (int) ' ';
-int DefaultRepStruct = 0;
-int DefaultRepMCA = 1;
-int DefaultRepComments = 1;
-int DefaultRepStab = 0;
-int DefaultReder = 0;
+long DefaultPolongs = 50;
+long DefaultDyn = 1;
+long DefaultSS = 1;
+long DefaultRep = 0;
+long DefaultTitles = 0;
+long DefaultQuotes = 0;
+long DefaultColWidth = 12;
+long DefaultSeparator = (long) ' ';
+long DefaultRepStruct = 0;
+long DefaultRepMCA = 1;
+long DefaultRepComments = 1;
+long DefaultRepStab = 0;
+long DefaultReder = 0;
 double DefaultDerivFactor = 0.001;
-int DefaultTimeZero = 1;
+long DefaultTimeZero = 1;
 
 void InitGlobals( void )
 {
 #ifdef XXXX
  string Vers;
- int b, devtype;
+ long b, devtype;
 
  // get the version number from the string table
  Vers.LoadString( IDS_VERSION );
@@ -84,7 +84,7 @@ void InitGlobals( void )
 #endif
 }
 
-int ReadDefaultReg( void )
+long ReadDefaultReg( void )
 {
 #ifdef XXXX
  HKEY  hKey1;
@@ -114,7 +114,7 @@ int ReadDefaultReg( void )
  DefaultTitles = 0;
  DefaultQuotes = 0;
  DefaultColWidth = 12;
- DefaultSeparator = (int) ' ';
+ DefaultSeparator = (long) ' ';
  DefaultRepStruct = 0;
  DefaultRepStab = 0;
  DefaultRepMCA = 1;
@@ -239,6 +239,3 @@ ReturnEnd:
 #endif
  return 0;
 }
-
-
-

@@ -21,7 +21,7 @@ CStep::CStep()
 
 
 // create a CStep object with values
-CStep::CStep(string &stepname, int subs, int prods)
+CStep::CStep(string &stepname, long subs, long prods)
 {
     mName = stepname;
     mFlux = 0.0;
@@ -37,14 +37,14 @@ CStep::~CStep()
 
 
 // assign the values to the member variables
-int CStep::Assign(string &stepname, 
-                  string &chemeq, 
-                  string &ktype, 
-                  int subs, 
-                  int prods, 
-                  int mods, 
-                  double flux, 
-                  short rev)
+long CStep::Assign(string &stepname, 
+                   string &chemeq, 
+                   string &ktype, 
+                   long subs, 
+                   long prods, 
+                   long mods, 
+                   double flux, 
+                   short rev)
 {
     mName = stepname;
     mChemEq = chemeq;
@@ -84,7 +84,7 @@ CStep &CStep::operator=(CStep &ptRHS)
 }
 
 // allocate memory for dynamic variables
-void CStep::AllocStep(int subs, int prods)
+void CStep::AllocStep(long subs, long prods)
 {
 }
 
@@ -95,30 +95,30 @@ void CStep::DeAlloc(void)
 }
 
 
-void CStep::AddSubstrate(int index) {mSubstrates.push_back(index);}
+void CStep::AddSubstrate(long index) {mSubstrates.push_back(index);}
 
-void CStep::AddProduct(int index) {mProducts.push_back(index);}
+void CStep::AddProduct(long index) {mProducts.push_back(index);}
 
-void CStep::AddModifier(int index) {mModifiers.push_back(index);}
+void CStep::AddModifier(long index) {mModifiers.push_back(index);}
 
 void CStep::AddParameter(double constant) {mParameters.push_back(constant);}
 
-void CStep::EraseSubstrates(int index) {mSubstrates.erase(0);}
+void CStep::EraseSubstrates(long index) {mSubstrates.erase(0);}
 
-void CStep::EraseProducts(int index) {mProducts.erase(0);}
+void CStep::EraseProducts(long index) {mProducts.erase(0);}
 
-void CStep::EraseModifiers(int index) {mModifiers.erase(0);}
+void CStep::EraseModifiers(long index) {mModifiers.erase(0);}
 
 void CStep::EraseParameters(double constant) {mParameters.erase(0);}
 
 
 
-int CStep::Load(CReadConfig &configbuffer)
+long CStep::Load(CReadConfig &configbuffer)
 {
     char Name[10];
-    int Fail = 0;
-    int Size = 0;
-    int i = 0;
+    long Fail = 0;
+    long Size = 0;
+    long i = 0;
     
     configbuffer.SetMode(CReadConfig_SEARCH);
     configbuffer.SetMode(CReadConfig_LOOP);
@@ -139,27 +139,27 @@ int CStep::Load(CReadConfig &configbuffer)
     if (FALSE) //  (!KinDB.Lookup(mKinType, Kinetics))
     {
         FatalError()
-    }
+            }
 
     if (Fail = configbuffer.GetVariable("Flux", "double", &mFlux))
         return Fail;
     
-    if (Fail = configbuffer.GetVariable("Reversible", "int", &mReversible))
+    if (Fail = configbuffer.GetVariable("Reversible", "long", &mReversible))
         return Fail;
     
-    if (Fail = configbuffer.GetVariable("Substrates", "int", &Size))
+    if (Fail = configbuffer.GetVariable("Substrates", "long", &Size))
         return Fail;
     mSubstrates.resize(Size);
     
-    if (Fail = configbuffer.GetVariable("Products", "int", &Size))
+    if (Fail = configbuffer.GetVariable("Products", "long", &Size))
         return Fail;
     mProducts.resize(Size);
     
-    if (Fail = configbuffer.GetVariable("Modifiers", "int", &Size))
+    if (Fail = configbuffer.GetVariable("Modifiers", "long", &Size))
         return Fail;
     mModifiers.resize(Size);
     
-    if (Fail = configbuffer.GetVariable("Constants", "int", &Size))
+    if (Fail = configbuffer.GetVariable("Constants", "long", &Size))
         return Fail;
     mParameters.resize(Size);
 
@@ -169,7 +169,7 @@ int CStep::Load(CReadConfig &configbuffer)
         Size = snprintf(Name, sizeof(Name), "Subs%d", i);
         if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
 
-        if (Fail = configbuffer.GetVariable(Name, "int", &mSubstrates[i]))
+        if (Fail = configbuffer.GetVariable(Name, "long", &mSubstrates[i]))
             return Fail;
     }
 
@@ -178,7 +178,7 @@ int CStep::Load(CReadConfig &configbuffer)
         Size = snprintf(Name, sizeof(Name), "Prod%d", i);
         if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
 
-        if (Fail = configbuffer.GetVariable(Name, "int", &mProducts[i]))
+        if (Fail = configbuffer.GetVariable(Name, "long", &mProducts[i]))
             return Fail;
     }
 
@@ -187,7 +187,7 @@ int CStep::Load(CReadConfig &configbuffer)
         Size = snprintf(Name, sizeof(Name), "Modf%d", i);
         if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
 
-        if (Fail = configbuffer.GetVariable(Name, "int", &mModifiers[i]))
+        if (Fail = configbuffer.GetVariable(Name, "long", &mModifiers[i]))
             return Fail;
     }
 
@@ -203,14 +203,14 @@ int CStep::Load(CReadConfig &configbuffer)
 }
 
 
-int CStep::Save(CWriteConfig &configbuffer)
+long CStep::Save(CWriteConfig &configbuffer)
 {
     char Name[10];
-    int Fail = 0;
-    int Size = 0;
-    int i = 0;
+    long Fail = 0;
+    long Size = 0;
+    long i = 0;
     
-   if (Fail = configbuffer.SetVariable("Step", "string", &mName))
+    if (Fail = configbuffer.SetVariable("Step", "string", &mName))
         return Fail;
     
     if (Fail = configbuffer.SetVariable("Equation", "string", &mChemEq))
@@ -222,23 +222,23 @@ int CStep::Save(CWriteConfig &configbuffer)
     if (Fail = configbuffer.SetVariable("Flux", "double", &mFlux))
         return Fail;
     
-    if (Fail = configbuffer.SetVariable("Reversible", "int", &mReversible))
+    if (Fail = configbuffer.SetVariable("Reversible", "long", &mReversible))
         return Fail;
     
     Size = mSubstrates.size();
-    if (Fail = configbuffer.SetVariable("Substrates", "int", &Size))
+    if (Fail = configbuffer.SetVariable("Substrates", "long", &Size))
         return Fail;
     
     Size = mProducts.size();
-    if (Fail = configbuffer.SetVariable("Products", "int", &Size))
+    if (Fail = configbuffer.SetVariable("Products", "long", &Size))
         return Fail;
     
     Size = mModifiers.size();
-    if (Fail = configbuffer.SetVariable("Modifiers", "int", &Size))
+    if (Fail = configbuffer.SetVariable("Modifiers", "long", &Size))
         return Fail;
     
     Size = mParameters.size();
-    if (Fail = configbuffer.SetVariable("Constants", "int", &Size))
+    if (Fail = configbuffer.SetVariable("Constants", "long", &Size))
         return Fail;
 
     // read the vectors
@@ -247,7 +247,7 @@ int CStep::Save(CWriteConfig &configbuffer)
         Size = snprintf(Name, sizeof(Name), "Subs%d", i);
         if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
 
-        if (Fail = configbuffer.SetVariable(Name, "int", &mSubstrates[i]))
+        if (Fail = configbuffer.SetVariable(Name, "long", &mSubstrates[i]))
             return Fail;
     }
 
@@ -256,7 +256,7 @@ int CStep::Save(CWriteConfig &configbuffer)
         Size = snprintf(Name, sizeof(Name), "Prod%d", i);
         if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
 
-        if (Fail = configbuffer.SetVariable(Name, "int", &mProducts[i]))
+        if (Fail = configbuffer.SetVariable(Name, "long", &mProducts[i]))
             return Fail;
     }
 
@@ -265,7 +265,7 @@ int CStep::Save(CWriteConfig &configbuffer)
         Size = snprintf(Name, sizeof(Name), "Modf%d", i);
         if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
 
-        if (Fail = configbuffer.SetVariable(Name, "int", &mModifiers[i]))
+        if (Fail = configbuffer.SetVariable(Name, "long", &mModifiers[i]))
             return Fail;
     }
 
@@ -279,3 +279,9 @@ int CStep::Save(CWriteConfig &configbuffer)
     }
     return Fail; 
 }
+
+string CStep::GetChemEq(void) {return mChemEq;}
+
+long CStep::SubstrateNo(void) {return mSubstrates.size()};
+
+CNodeK CStep::Substrate(long index) {return ;

@@ -39,14 +39,14 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    int Flush();
+    long Flush();
 
     /**
      *  Returns the failure status.
      *  @return mFail
      *  @see mFail  
      */
-    int Fail();
+    long Fail();
 
     /**
      *  Writes a variable to the output file.
@@ -57,10 +57,10 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    int SetVariable(string name,
+    long SetVariable(string name,
                     string type, 
                     void *pout);
-    int SetVariable(string name,
+    long SetVariable(string name,
                     string type, 
                     void *pout1, 
                     void *pout2);
@@ -70,7 +70,7 @@ private:
      *  Commits all information to the configuration file. 
      *  This method is called by the destructor.
      */
-    int Commit();
+    long Commit();
 
     /**
      *  Name of the configuration file.
@@ -90,14 +90,14 @@ private:
     /**
      *  Open mode
      */
-    int mOpenMode;
+    long mOpenMode;
                                              
     /**
      *  Failure status:
      *  0 = no error
      *  !0 = error
      */
-    int    mFail;                   // Failure State
+    long    mFail;                   // Failure State
 };
 #endif // COPASI_CWriteConfig
 

@@ -16,41 +16,43 @@
 class CStep
 {
 public:
-    CStep &operator=(CStep &);    // overloaded assignment operator
     CStep();
-    CStep(string &stepname, int subs, int prods);
+    CStep(string &stepname, long subs, long prods);
     ~CStep();
-    int Assign(string &stepname, 
-               string &chemeq, 
-               string &ktype, 
-               int subs, int prods, int mods, 
-               double flux, 
-               short rev);
-//    void SizeParam(int howmany);
-//    void SizeModifier(int howmany);
-    int Save(CWriteConfig &configbuffer);
-    int Load(CReadConfig &configbuffer);
-    void AddSubstrate(int index);
-    void AddProduct(int index);
-    void AddModifier(int index);
+    CStep &operator=(const CStep &);    // overloaded assignment operator
+    long Assign(string &stepname, 
+                string &chemeq, 
+                string &ktype, 
+                long subs, long prods, long mods, 
+                double flux, 
+                short rev);
+    long Save(CWriteConfig &configbuffer);
+    long Load(CReadConfig &configbuffer);
+    void AddSubstrate(long index);
+    void AddProduct(long index);
+    void AddModifier(long index);
     void AddParameter(double constant);
-    void EraseSubstrates(int index);
-    void EraseProducts(int index);
-    void EraseModifiers(int index);
+    void EraseSubstrates(long index);
+    void EraseProducts(long index);
+    void EraseModifiers(long index);
     void EraseParameters(double constant);
+    string GetChemEq(void);
+    long SubstrateNo(void);
+    CNodeK Substrate(long index);
+    
 
 private:
     void DeAlloc(void);
-    void AllocStep(int subs, int prods);
+    void AllocStep(long subs, long prods);
     string mName;                   // step (enzyme) name
     string mChemEq;                 // chemical equation
     CKinetics *mKinetics;           // kinetic function of this step
     string mKinType;                // name of the kinetic type
     double mFlux;                   // net rate through this step
     short mReversible;              // 1 if reaction is reversible
-    vector < int > mSubstrates;    // dynamic array of indexes to substrates
-    vector < int > mProducts;      // dynamic array of indexes to products
-    vector < int > mModifiers;     // dynamic array of indexes to modifiers
+    vector < long > mSubstrates;    // dynamic array of indexes to substrates
+    vector < long > mProducts;      // dynamic array of indexes to products
+    vector < long > mModifiers;     // dynamic array of indexes to modifiers
     vector < double > mParameters; // dynamic array of kinetic parameter values
 };
 #endif // COPASI_CSteb
