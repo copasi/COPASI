@@ -124,7 +124,6 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
               table->setText(j, 3, "definedc");
             }
 
-          //table->setText(j, 3, QString::number(metab->getStatus()));
           table->setText(j, 4, (metab->getCompartment())->getName().c_str());
         }
 
@@ -136,7 +135,6 @@ void MetabolitesWidget::slotTableCurrentChanged(int row, int col, int m , const 
 {
   QString x = table->text(row, col);
   emit name(x);
-  //QMessageBox::information(this, "Compartments Widget",x);
 }
 
 void MetabolitesWidget::slotTableSelectionChanged()
@@ -162,14 +160,12 @@ void MetabolitesWidget::showMessage(QString title, QString text)
 
 void MetabolitesWidget::slotBtnOKClicked()
 {
-  CWriteConfig ModelFile("model.gps");
-  mModel->save(ModelFile);
+  QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
 }
 
 void MetabolitesWidget::slotBtnCancelClicked()
 {
-  QMessageBox::information(this, "Moiety Widget",
-                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
 }
 
 void MetabolitesWidget::resizeEvent(QResizeEvent * re)

@@ -32,6 +32,7 @@
  */
 CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlags f)
     : QWidget(parent, name, f)
+
 {
   mModel = NULL;
   table = new MyTable(0, 2, this, "tblCompartments");
@@ -68,11 +69,9 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
   connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
 
-  //connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
+  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-
   connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
-  //connect(btnOK, SIGNAL(clicked ()), this,SLOT(
 }
 
 void CompartmentsWidget::loadCompartments(CModel *model)
@@ -88,7 +87,6 @@ void CompartmentsWidget::loadCompartments(CModel *model)
           table->removeRow(0);
         }
 
-      /*CWriteConfig *Fun = new CWriteConfig("oo.gps"); */
       CCopasiVectorNS < CCompartment > & compartments =
 
         mModel->getCompartments();
@@ -105,20 +103,6 @@ void CompartmentsWidget::loadCompartments(CModel *model)
           compartn = compartments[j];
           table->setText(j, 0, compartn->getName().c_str());
           table->setText(j, 1, QString::number(compartn->getVolume()));
-          /*Compartment_Name = new QString(compartn->getName().c_str());
-          outstring = table->text(j,0);
-            Fun->setVariable((string) "Compartment",(string) "string", 
-
-          (void *) &outstring);
-            Copasi->FunctionDB.save(*Fun);
-            delete Fun;
-          QMessageBox::information(this, "Moiety 
-
-          Widget",outstring.c_str()); */
-
-          /*CWriteConfig *Mod = new CWriteConfig("try.gps");
-          Copasi->Compartmentfile.save(*Mod);
-          delete Mod; */
         }
     }
 }
@@ -163,36 +147,20 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
  
  ****************************************************************************************/
 
-void CompartmentsWidget::showMessage(QString title, QString text)
-{
-  QMessageBox::about (this, title, text);
-}
-
 void CompartmentsWidget::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Moiety Widget", "kkkk");
-  //CWriteConfig *Fun = new CWriteConfig("oo.gps");
-  //string outstring = "Laber";
-  // Fun->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
-  //Copasi->FunctionDB.save(*Fun);
-  //delete Fun;
-
-  //CWriteConfig ModelFile("model.gps");
-  //CWriteConfig *Mod = new CWriteConfig("model.gps");
-  //CCopasiVectorNS < CCompartment > & compartments =
-
-  mModel->getCompartments();
-  //CCompartment *compartn;
+  QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
 }
 
 void CompartmentsWidget::slotBtnCancelClicked()
 {
+  QMessageBox::information(this, "Compartments Widget", "Do you really want to cancel changes");
   emit signal_emitted(*Compartment_Name);
 }
 
 void CompartmentsWidget::tableValueChanged(int row, int col)
 {
-  CWriteConfig *Mod = new CWriteConfig("try.gps");
+  /*CWriteConfig *Mod = new CWriteConfig("try.gps");
 
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
@@ -211,5 +179,5 @@ void CompartmentsWidget::tableValueChanged(int row, int col)
 
   compartn1->save(*Mod);
   //Copasi->Compartmentfile.save(*Mod);
-  delete Mod;
+  delete Mod; */
 }

@@ -197,12 +197,13 @@ void CompartmentsWidget1::loadName(QString setValue)
 
 void CompartmentsWidget1::slotBtnCancelClicked()
 {
-  //QMessageBox::information(this, "Moiety Widget","Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  QMessageBox::information(this, "Compartments Widget", "Do you really want to cancel changes");
   emit signal_emitted(*Compartment1_Name);
 }
 
 void CompartmentsWidget1::slotBtnOKClicked()
 {
+  QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
   string filename = ((string) name.latin1()) + ".gps";
   CWriteConfig *Com = new CWriteConfig(filename);
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
@@ -213,9 +214,9 @@ void CompartmentsWidget1::slotBtnOKClicked()
   double m1;
   m1 = volume.toDouble();
   compartn1->setVolume((float)m1);
-
-  compartn1->save(*Com);
-  //Copasi->Compartmentfile.save(*Mod);
+  mModel->save(*Com);
+  //compartn1->save(*Com);
+  //Copasi->Model->save(*Com);
   delete Com;
 }
 

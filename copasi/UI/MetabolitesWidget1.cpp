@@ -364,12 +364,13 @@ void MetabolitesWidget1::loadName(QString setValue)
 
 void MetabolitesWidget1::slotBtnCancelClicked()
 {
-  //QMessageBox::information(this, "Moiety Widget","Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel the changes?");
   emit signal_emitted(*Metabolite1_Name);
 }
 
 void MetabolitesWidget1::slotBtnOKClicked()
 {
+  QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel the changes?");
   string filename = ((string) name.latin1()) + ".gps";
   CWriteConfig *Met = new CWriteConfig(filename);
 
@@ -377,17 +378,29 @@ void MetabolitesWidget1::slotBtnOKClicked()
   CMetab *metab;
   metab = metabolites[myValue];
 
-  QString initialConcentration(LineEdit7->text());
+  //for Initial Concentration and Initial Number
+  QString initialConcentration(LineEdit4->text());
   double temp1;
   temp1 = initialConcentration.toDouble();
-  metab->setConcentration((float)temp1);
+  metab->setInitialConcentration((float)temp1);
 
   QString initialNumber(LineEdit5->text());
-  double temp2;
-  temp2 = initialNumber.toDouble();
-  metab->setNumber((float)temp2);
+  int temp2;
+  temp2 = initialNumber.toInt();
+  metab->setInitialNumber(temp2);
+  //if (QString::number(metab->getStatus()) == "0")
 
-  metab->save(*Met);
-  // Copasi->Compartmentfile.save(*Met);
+  if (RadioButton1->isChecked() == TRUE && QString::number(metab->getStatus()) == "0")
+    {
+      metab->setStatus(0);
+    }
+  else
+    {
+      metab->setStatus(1);
+    }
+
+  mModel->save(*Met);
+  //metab->save(*Met);
+  //Copasi->Model->save(*Met);
   delete Met;
 }
