@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 10:36:58 $
+   $Date: 2004/05/27 11:58:29 $
    End CVS Header */
 
 // ReportDefinitionVector.cpp: implementation of the CReportDefinitionVector class.
@@ -64,8 +64,7 @@ bool CReportDefinitionVector::removeReportDefinition(const std::string & key)
 
   this->CCopasiVector<CReportDefinition>::remove(index);
 
-  pdelete(pRep);
+  //pdelete(pRep);  //TODO: propably a memory leak, may be not
 
   return true;
-  //TODO: test
 }
