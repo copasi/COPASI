@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/06 22:05:46 $
+   $Date: 2005/01/31 14:49:18 $
    End CVS Header */
 
 /**
@@ -84,6 +84,12 @@ class CCopasiContainer: public CCopasiObject
     virtual bool add(CCopasiObject * pObject, const bool & adopt = true);
 
     virtual bool remove(CCopasiObject * pObject);
+
+    /**
+     * if there is a CCopasiObjectReference with a double value it is set.
+     * otherwise false is returned
+     */
+    virtual bool setValueOfNamedReference(std::string name, C_FLOAT64 value);
 
   protected:
     virtual void initObjects();

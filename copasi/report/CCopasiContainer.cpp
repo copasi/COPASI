@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:59:51 $
+   $Date: 2005/01/12 15:57:52 $
    End CVS Header */
 
 /**
@@ -155,7 +155,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
 
     if (it->second->isMatrix())
       {
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +    //TODO really?
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +     //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
@@ -213,5 +213,22 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
 
   mObjects.erase(it);
 
+  return true;
+}
+
+bool CCopasiContainer::setValueOfNamedReference(std::string name, C_FLOAT64 value)
+{
+  //const CCopasiObject* tmp = const_cast<CCopasiObject *>(getObject(name));
+
+  std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
+    mObjects.equal_range(name);
+
+  const CCopasiObject* tmp = range.first->second;
+
+  if (!tmp) return false;
+  if (!tmp->isReference()) return false;
+  if (!tmp->isValueDbl()) return false;
+
+  *((C_FLOAT64*)(tmp->getReference())) = value;
   return true;
 }
