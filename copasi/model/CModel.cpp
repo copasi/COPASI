@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.190 $
+   $Revision: 1.191 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 14:01:41 $
+   $Date: 2004/09/10 11:12:44 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -796,7 +796,7 @@ void CModel::setTransitionTimes()
             TransitionTime = mMetabolites[i]->getNumber() / TotalFlux;
 
           mMetabolites[i]->setTransitionTime(TransitionTime);
-          mMetabolites[i]->setRate(TotalFlux);
+          mMetabolites[i]->setNumberRate(TotalFlux);
 
           if (TransitionTime == DBL_MAX || mTransitionTime == DBL_MAX)
             mTransitionTime = DBL_MAX;
@@ -1398,11 +1398,20 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
+  //adapt particle numbers
+  C_INT32 i, imax = mMetabolites.size();
+  for (i = 0; i < imax; ++i)
+    {
+      //update particle numbers
+      mMetabolites[i]->setInitialConcentration(mMetabolites[i]->getInitialConcentration());
+      mMetabolites[i]->setConcentration(mMetabolites[i]->getConcentration());
+    }
+
   return success;
 }
 
 std::string CModel::getQuantityUnit() const
-{return mQuantityUnit;}
+  {return mQuantityUnit;}
 
 const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
   {return mQuantity2NumberFactor;}
