@@ -11,6 +11,8 @@ libutilities_a_SOURCES = \
 	CReadConfig.cpp \
 	CVersion.cpp \
 	CWriteConfig.cpp \
+	CMethodParameter.cpp \
+	CMethodParameterList.cpp \
 	utility.cpp
 
 EXTRA_DIST = \
@@ -25,6 +27,8 @@ EXTRA_DIST = \
 	CReadConfig.h		CReadConfig.cpp \
 	CVersion.h		CVersion.cpp \
 	CWriteConfig.h		CWriteConfig.cpp \
+	CMethodParameter.h	CMethodParameter.cpp \
+	CMethodParameterList.h	CMethodParameterList.cpp \
 	messages.h \
 	utility.h		utility.cpp
 
