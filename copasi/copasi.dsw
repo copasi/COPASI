@@ -123,36 +123,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "matrix"=".\test\matrix.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name function
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name model
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name output
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name steadystate
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name trajectory
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name utilities
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "model"=".\model\model.dsp" - Package Owner=<4>
 
 Package=<5>
