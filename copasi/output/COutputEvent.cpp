@@ -62,7 +62,7 @@ COutputEvent::COutputEvent(CSS_Solution &ss, int time, COutputList *list, ofstre
 void COutputEvent::copy(CTrajectory &tra, COutputList *list, ofstream &fout)
 {
 
-	list->CCopasi_Dyn(fout, mTime);
+	list->copasiDyn(fout, mTime);
 }
 
 /**
@@ -73,7 +73,7 @@ void COutputEvent::copy(CTrajectory &tra, COutputList *list, ofstream &fout)
  */
 void COutputEvent::copy(CSS_Solution &ss, COutputList *list, ofstream &fout)
 {
-	list->CCopasi_SS(fout, mTime);
+	list->copasiSS(fout, mTime);
 }
 
 
@@ -81,7 +81,7 @@ void COutputEvent::copy(CSS_Solution &ss, COutputList *list, ofstream &fout)
  * Clean Up
  */
 
-void COutputEvent::cleanUp()
+void COutputEvent::cleanup()
 {
 	if (mInteractiveTime)
 		delete mInteractiveTime;
@@ -102,6 +102,6 @@ void COutputEvent::cleanUp()
  */
 COutputEvent::~COutputEvent()
 {
-	cleanUp();
+	cleanup();
 }
 

@@ -20,12 +20,12 @@ COutputLine::COutputLine()
   mLine = NULL;
 }
 
-void COutputLine::Init()
+void COutputLine::init()
 {
   mLine = new CCDatum;
 }
 
-void COutputLine::Delete()
+void COutputLine::cleanup()
 {
   if (mLine) delete mLine;
   mLine = NULL;
@@ -36,7 +36,7 @@ void COutputLine::Delete()
  */
 COutputLine::~COutputLine()
 {
-  //	Delete();
+  //	cleanup();
 }
 
 /**
@@ -56,7 +56,7 @@ COutputLine& COutputLine::operator=(const COutputLine &source)
  *  @return mLine
  *  @see mLine
  */
-COutputLine::CCDatum * COutputLine::GetLine() const
+COutputLine::CCDatum * COutputLine::getLine() const
 {
   return mLine;
 }
@@ -65,7 +65,7 @@ COutputLine::CCDatum * COutputLine::GetLine() const
  *  Sets the name of this line, (For example: Interactive time course)
  *  @param title constant reference to a string.
  */
-void COutputLine::SetName(string LineName)
+void COutputLine::setName(string LineName)
 {
   mName = LineName;
 }
@@ -76,7 +76,7 @@ void COutputLine::SetName(string LineName)
  *  @param newDatum constant reference to CDatum.
  *  @see CDatum Class
      */
-void COutputLine::AddDatum(CDatum & newDatum)
+void COutputLine::addDatum(CDatum & newDatum)
 {
   mLine->add(newDatum);
 }
@@ -107,7 +107,7 @@ C_INT32 COutputLine::load(CReadConfig & configbuffer, string &searchName)
 				      &Size, CReadConfig::NEXT)))
     return Fail;
 
-  Init();
+  init();
 
   // Read objects and create the OutputLine
   for (int i = 0; i < Size; i++)
@@ -115,7 +115,7 @@ C_INT32 COutputLine::load(CReadConfig & configbuffer, string &searchName)
       CDatum newItem;
 
       newItem.load(configbuffer);
-      AddDatum(newItem);
+      addDatum(newItem);
     }
 
   return Fail;
@@ -150,7 +150,7 @@ C_INT32 COutputLine::save(CWriteConfig & configbuffer)
 /**
  *	print the titles of the steady-state data file
  */
-void COutputLine::SS_OutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
+void COutputLine::sSOutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
 {
   unsigned C_INT32 i;
   CDatum item;
@@ -176,9 +176,9 @@ void COutputLine::SS_OutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 S
       }
       item = (*mLine)[i];
 		
-      if (item.GetTitle().length() > (unsigned C_INT32) SSColWidth)
-	Title = item.GetTitle().substr(0, SSColWidth);
-      else Title = item.GetTitle();
+      if (item.getTitle().length() > (unsigned C_INT32) SSColWidth)
+	Title = item.getTitle().substr(0, SSColWidth);
+      else Title = item.getTitle();
 		
       if (SSQuotes) fout << "\"" << setw(SSColWidth) << Title << "\"";
       else fout << setw(SSColWidth) <<Title;
@@ -191,7 +191,7 @@ void COutputLine::SS_OutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 S
 /**
  *	print the mpValue of each Object in the steady-state data file
  */
-void COutputLine::SS_OutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
+void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
 {
   unsigned C_INT32 i;
   C_INT32 Type;
@@ -223,34 +223,34 @@ void COutputLine::SS_OutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSC
 	  }
       }
 
-      Type = (*mLine)[i].GetType();
+      Type = (*mLine)[i].getType();
 
       switch (Type)
 	{
 	case 1:	
 	  // Type is C_INT16
-	  Value1 = (C_INT16 *)(*mLine)[i].GetValue();
+	  Value1 = (C_INT16 *)(*mLine)[i].getValue();
 	  if (!Value1)
 	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;  //?? Sign setw(SSColWidth-1)
 	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value1; //?? Sign
 	  break;
 	case 2:
 	  // Type is C_INT32
-	  Value2 = (C_INT32 *)(*mLine)[i].GetValue();
+	  Value2 = (C_INT32 *)(*mLine)[i].getValue();
 	  if (!Value2)
 	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
 	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value2;
 	  break;
 	case 3:
 	  // Type is C_FLOAT32
-	  Value3 = (C_FLOAT32 *)(*mLine)[i].GetValue();
+	  Value3 = (C_FLOAT32 *)(*mLine)[i].getValue();
 	  if (!Value3)
 	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
 	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value3;
 	  break;
 	case 4:
 	  // Type is C_FLOAT64
-	  Value4 = (C_FLOAT64 *)(*mLine)[i].GetValue();
+	  Value4 = (C_FLOAT64 *)(*mLine)[i].getValue();
 	  if (!Value4)
 	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
 	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value4;
@@ -267,7 +267,7 @@ void COutputLine::SS_OutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSC
 /**
  *	print the titles of the time course data file
  */
-void COutputLine::Dyn_OutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) 
+void COutputLine::dynOutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) 
 {
   unsigned C_INT32 i;
   CDatum item;
@@ -293,9 +293,9 @@ void COutputLine::Dyn_OutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16
       }
       item = (*mLine)[i];
 		
-      if (item.GetTitle().length() > (unsigned C_INT16) DynColWidth)
-	Title = item.GetTitle().substr(0, DynColWidth);
-      else Title = item.GetTitle();
+      if (item.getTitle().length() > (unsigned C_INT16) DynColWidth)
+	Title = item.getTitle().substr(0, DynColWidth);
+      else Title = item.getTitle();
 		
       if (DynQuotes) fout << "\"" << setw(DynColWidth) << Title << "\"";
       else fout << setw(DynColWidth) <<Title;
@@ -308,7 +308,7 @@ void COutputLine::Dyn_OutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16
 /**
  *	print the mpValue of each Object in the time course data file
  */
-void COutputLine::Dyn_OutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) 
+void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) 
 {
   unsigned C_INT32 i;
   C_INT32 Type;
@@ -340,34 +340,34 @@ void COutputLine::Dyn_OutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 D
 	  }
       }
 
-      Type = (*mLine)[i].GetType();
+      Type = (*mLine)[i].getType();
 
       switch (Type)
 	{
 	case 1:	
 	  // Type is C_INT16
-	  Value1 = (C_INT16 *)(*mLine)[i].GetValue();
+	  Value1 = (C_INT16 *)(*mLine)[i].getValue();
 	  if (!Value1)
 	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
 	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value1;
 	  break;
 	case 2:
 	  // Type is C_INT32
-	  Value2 = (C_INT32 *)(*mLine)[i].GetValue();
+	  Value2 = (C_INT32 *)(*mLine)[i].getValue();
 	  if (!Value2)
 	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
 	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value2;
 	  break;
 	case 3:
 	  // Type is C_FLOAT32
-	  Value3 = (C_FLOAT32 *)(*mLine)[i].GetValue();
+	  Value3 = (C_FLOAT32 *)(*mLine)[i].getValue();
 	  if (!Value3)
 	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
 	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value3;
 	  break;
 	case 4:
 	  // Type is C_FLOAT64
-	  Value4 = (C_FLOAT64 *)(*mLine)[i].GetValue();
+	  Value4 = (C_FLOAT64 *)(*mLine)[i].getValue();
 	  if (!Value4)
 	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
 	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value4;
@@ -384,13 +384,13 @@ void COutputLine::Dyn_OutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 D
 /**
  *  Complie the mpValue in each output line
  */
-void COutputLine::Compile(string &name, CModel &model)
+void COutputLine::compile(string &name, CModel &model)
 {
   if (!mName.compare(name))
     { // ???? Maybe it isnot necessary after finish whole module
       for (unsigned C_INT32 i = 0; i < mLine->size(); i++)
 	{
-	  (*mLine)[i].CompileDatum(model);
+	  (*mLine)[i].compileDatum(model);
 	}
     }
 }

@@ -40,12 +40,12 @@ COutput::COutput()
   mOutput = NULL;
 }
 
-void COutput::Init()
+void COutput::init()
 {
   mOutput = new CCOutputLine;
 }
 
-void COutput::Delete()
+void COutput::cleanup()
 {
   if (mOutput) delete mOutput;
   mOutput = NULL;
@@ -56,13 +56,13 @@ void COutput::Delete()
  */
 COutput::~COutput()
 {
-  //	Delete();
+  //	cleanup();
 }
 
 /**
  *	Reset output data file and reporting file configure variables
  */
-void COutput::Reset()
+void COutput::reset()
 {
   Dyn = 0;
   DynTitles = 0;
@@ -99,7 +99,7 @@ COutput& COutput::operator=(const COutput &source)
  *  @return mOutput
  *  @see mOutput
  */
-CCOutputLine * COutput::GetList() const
+CCOutputLine * COutput::getList() const
 {
   return mOutput;
 }
@@ -109,9 +109,9 @@ CCOutputLine * COutput::GetList() const
  *  @param newLine constant reference to COutputLine .
  *  @see COutputLine Class
  */
-void COutput::AddLine(COutputLine &newLine)
+void COutput::addLine(COutputLine &newLine)
 {
-  if (!mOutput) Init();
+  if (!mOutput) init();
   mOutput->add(newLine);
 }
 
@@ -126,7 +126,7 @@ C_INT32 COutput::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
 
-  WriteDefaultVar(configbuffer);
+  writeDefaultVar(configbuffer);
 
   if ((Fail = mOutput->save(configbuffer)))
     return Fail;
@@ -147,7 +147,7 @@ C_INT32 COutput::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
 
-  ReadDefaultVar(configbuffer);
+  readDefaultVar(configbuffer);
 	
   string InteractiveTimeCourse = "Interactive time course";
   string TimeCourse = "Time-course output";
@@ -155,15 +155,15 @@ C_INT32 COutput::load(CReadConfig & configbuffer)
 
   COutputLine newLine1;
   newLine1.load(configbuffer, InteractiveTimeCourse);
-  AddLine(newLine1);
+  addLine(newLine1);
 
   COutputLine newLine2;
   newLine2.load(configbuffer, TimeCourse);
-  AddLine(newLine2);
+  addLine(newLine2);
 
   COutputLine newLine3;
   newLine3.load(configbuffer, SteadyState);
-  AddLine(newLine3);
+  addLine(newLine3);
 
   return Fail;
 }
@@ -171,7 +171,7 @@ C_INT32 COutput::load(CReadConfig & configbuffer)
 /**
  *	print the titles of the steady-state data file
  */
-void COutput::SS_OutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
+void COutput::sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
 {
   string Name;
 
@@ -179,7 +179,7 @@ void COutput::SS_OutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparato
     {
       Name = (*mOutput)[i].getName();
       if (Name == SSName)
-	(*mOutput)[i].SS_OutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
+	(*mOutput)[i].sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 
 }
@@ -187,7 +187,7 @@ void COutput::SS_OutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparato
 /**
  *	print mpValue of each Object in the steady-state data file
  */
-void COutput::SS_OutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
+void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
 {
   string Name;
 
@@ -195,14 +195,14 @@ void COutput::SS_OutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator,
     {
       Name = (*mOutput)[i].getName();
       if (Name == SSName)
-	(*mOutput)[i].SS_OutputData(fout, SSSeparator, SSColWidth, SSQuotes);
+	(*mOutput)[i].sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
 /**
  * print the titles of the time couse data file
  */
-void COutput::Dyn_OutputTitles(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
+void COutput::dynOutputTitles(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
 {
   string Name;
 
@@ -210,7 +210,7 @@ void COutput::Dyn_OutputTitles(ofstream &fout, string &DynName, C_INT16 DynSepar
     {
       Name = (*mOutput)[i].getName();
       if (Name == DynName)
-	(*mOutput)[i].Dyn_OutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
+	(*mOutput)[i].dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 
 }
@@ -218,7 +218,7 @@ void COutput::Dyn_OutputTitles(ofstream &fout, string &DynName, C_INT16 DynSepar
 /**
  * print the mpValue of Object in the time course data file
  */
-void COutput::Dyn_OutputData(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
+void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
 {
   string Name;
 
@@ -226,7 +226,7 @@ void COutput::Dyn_OutputData(ofstream &fout, string &DynName, C_INT16 DynSeparat
     {
       Name = (*mOutput)[i].getName();
       if (Name == DynName)
-	(*mOutput)[i].Dyn_OutputData(fout, DynSeparator, DynColWidth, DynQuotes);
+	(*mOutput)[i].dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 
 }
@@ -234,19 +234,19 @@ void COutput::Dyn_OutputData(ofstream &fout, string &DynName, C_INT16 DynSeparat
 /**
  *	Assign the pointer to each datum object in the output
  */
-void COutput::Compile(string &name, CModel &model)
+void COutput::compile(string &name, CModel &model)
 {
 
   for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
     {
-      (*mOutput)[i].Compile(name, model);
+      (*mOutput)[i].compile(name, model);
     }
 }
 
 /**
  *	Output the comments to the output reporting file
  */
-void COutput::Rep_Comments(ofstream &fout)
+void COutput::repComments(ofstream &fout)
 {
 
   fout << Model.getComments() << endl;
@@ -255,7 +255,7 @@ void COutput::Rep_Comments(ofstream &fout)
 /**
  *	Output the model title to the output reporting file
  */
-void COutput::Rep_Title(ofstream &fout)
+void COutput::repTitle(ofstream &fout)
 {
 
   fout << Model.getTitle() << endl << endl;
@@ -264,7 +264,7 @@ void COutput::Rep_Title(ofstream &fout)
 /**
  *	Print each line of the header in the reporting file
  */
-void COutput::Rep_Header_Line(ofstream &fout, int width, string OutStr)
+void COutput::repHeaderLine(ofstream &fout, int width, string OutStr)
 {
   int pre, suf, i;
   string Str = "*";
@@ -290,7 +290,7 @@ void COutput::Rep_Header_Line(ofstream &fout, int width, string OutStr)
 /**
  *	print the header of the reporting file
  */
-void COutput::Rep_Header(ofstream &fout)
+void COutput::repHeader(ofstream &fout)
 {
   string TimeStamp, TimeStr;
   int width, i;
@@ -315,9 +315,9 @@ void COutput::Rep_Header(ofstream &fout)
     fout << "*";
   fout << endl;
 
-  Rep_Header_Line(fout, width+2, VersionString);
-  //Rep_Header_Line(fout, width, ArchString);
-  Rep_Header_Line(fout, width+2, TimeStamp);
+  repHeaderLine(fout, width+2, VersionString);
+  //repHeaderLine(fout, width, ArchString);
+  repHeaderLine(fout, width+2, TimeStamp);
 
   for (i = 0; i < width+4; i++)
     fout << "*";
@@ -328,7 +328,7 @@ void COutput::Rep_Header(ofstream &fout)
 /**
  *	print the parameters of the simulation
  */
-void COutput::Rep_Params(ofstream &fout)
+void COutput::repParams(ofstream &fout)
 {
   string StrOut;
   unsigned C_INT32 i, j;
@@ -374,7 +374,7 @@ void COutput::Rep_Params(ofstream &fout)
 /**
  *	print the structural analysis
  */
-void COutput::Rep_Struct(ofstream &fout)
+void COutput::repStruct(ofstream &fout)
 {
   unsigned C_INT32 i, j;
   // determine the kernel of the stoichiometry matrix
@@ -475,25 +475,25 @@ void COutput::Rep_Struct(ofstream &fout)
 /**
  *	print the results of the stability analysis
  */
-void COutput::Rep_Stability(ofstream &fout)
+void COutput::repStability(ofstream &fout)
 {
 }
 
 /**
  *	print the results of the MCA
  */
-void COutput::Rep_MCA(ofstream &fout)
+void COutput::repMCA(ofstream &fout)
 {
 }
 
 /**
  *	print the titles of the time-course data file
  */
-void COutput::Dyn_OutputTitles(ofstream &fout, string &DynName)
+void COutput::dynOutputTitles(ofstream &fout, string &DynName)
 {
   for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
     {
-      (*mOutput)[i].Dyn_OutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
+      (*mOutput)[i].dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 
 }
@@ -501,11 +501,11 @@ void COutput::Dyn_OutputTitles(ofstream &fout, string &DynName)
 /**
  *	print a line of data (one time point) on the time-course data file
  */
-void COutput::Dyn_OutputData(ofstream &fout, string &DynName)
+void COutput::dynOutputData(ofstream &fout, string &DynName)
 {
   for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
     {
-      (*mOutput)[i].SS_OutputData(fout, DynSeparator, DynColWidth, DynQuotes);
+      (*mOutput)[i].sSOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 
 }
@@ -513,73 +513,73 @@ void COutput::Dyn_OutputData(ofstream &fout, string &DynName)
 /**
  *	print the titles of the steady-state data file
  */
-void COutput::SS_OutputTitles(ofstream &fout, string &SSName)
+void COutput::sSOutputTitles(ofstream &fout, string &SSName)
 {
 
   for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
     {
       if (SSName == (*mOutput)[i].getName())
-	(*mOutput)[i].SS_OutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
+	(*mOutput)[i].sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
 /**
  *	print a line of data (one iteration) on the steady-state data file
  */
-void COutput::SS_OutputData(ofstream &fout, string &SSName)
+void COutput::sSOutputData(ofstream &fout, string &SSName)
 {
   for (unsigned C_INT32 i = 0; i < mOutput->size(); i++)
     {
       if (SSName == (*mOutput)[i].getName())
-	(*mOutput)[i].SS_OutputData(fout, SSSeparator, SSColWidth, SSQuotes);
+	(*mOutput)[i].sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
 /*
  *	print the reporting data file
  */
-void COutput::CCopasi_Rep(ofstream &fout)
+void COutput::copasiRep(ofstream &fout)
 {
-  Rep_Header(fout);
+  repHeader(fout);
 
-  Rep_Title(fout);
+  repTitle(fout);
 
-  if (RepComments) Rep_Comments(fout);
-  if (RepStruct) Rep_Struct(fout);
+  if (RepComments) repComments(fout);
+  if (RepStruct) repStruct(fout);
 #if 0
-  if (RepStab) Rep_Stability(fout);
-  if (RepMCA)	Rep_MCA(fout);
+  if (RepStab) repStability(fout);
+  if (RepMCA)	repMCA(fout);
 #endif
-  Rep_Params(fout);
+  repParams(fout);
 
 }
 
 /*
  * print the steady state data file
  */
-void COutput::CCopasi_SS(ofstream &fout, int time)
+void COutput::copasiSS(ofstream &fout, int time)
 {
   string SSName = "Steady-state output";
 
   if (!time)
   {
-	if (SSTitles) SS_OutputTitles(fout, SSName);
+	if (SSTitles) sSOutputTitles(fout, SSName);
   }
-  else SS_OutputData(fout, SSName);
+  else sSOutputData(fout, SSName);
 }
 
 /*
  * print the time course dynamic data file
  */
-void COutput::CCopasi_Dyn(ofstream &fout, int time)
+void COutput::copasiDyn(ofstream &fout, int time)
 {
   string DynName = "Time-course output";
 
   if (!time) 
   {
-	  if (DynTitles) Dyn_OutputTitles(fout, DynName);
+	  if (DynTitles) dynOutputTitles(fout, DynName);
   }
-  else Dyn_OutputData(fout, DynName);
+  else dynOutputData(fout, DynName);
 }
 
 
@@ -587,7 +587,7 @@ void COutput::CCopasi_Dyn(ofstream &fout, int time)
  *	Read config variables from input configburg buffer
  *  @param configbuffer: reference of the config buffer.
  */
-C_INT32 COutput::ReadDefaultVar(CReadConfig &configbuffer)
+C_INT32 COutput::readDefaultVar(CReadConfig &configbuffer)
 {
   C_INT32	Fail = 0;
 
@@ -692,7 +692,7 @@ C_INT32 COutput::ReadDefaultVar(CReadConfig &configbuffer)
  *	Write output control variables from input configburg buffer
  *  @param configbuffer: reference of the config buffer.
  */
-C_INT32 COutput::WriteDefaultVar(CWriteConfig &configbuffer)
+C_INT32 COutput::writeDefaultVar(CWriteConfig &configbuffer)
 {
   C_INT32	Fail = 0;
 
@@ -777,5 +777,5 @@ CCOutputLine::CCOutputLine() {}
 
 CCOutputLine::~CCOutputLine() {}
 
-C_INT16 CCOutputLine::IsInsertAllowed(const COutputLine & src)
+C_INT16 CCOutputLine::isInsertAllowed(const COutputLine & src)
 {return TRUE;}

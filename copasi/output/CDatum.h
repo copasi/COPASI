@@ -89,31 +89,31 @@ class CDatum
    *  @param object constant reference to a string specifing the name of the 
    *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
    */
-  void CreateObject(const string& Model, const string& IStr, const string& JStr, C_INT32 Type);
+  void createObject(const string& Model, const string& IStr, const string& JStr, C_INT32 Type);
 
   /**
    *  Transfers the Type to the associated member data in each class
    *  @Type object constant reference to a type of the datum, for example,D_TCONC
    */
-  string TransferType(C_INT32 Type);
+  string transferType(C_INT32 Type);
 
   /**
    *  Transfers the associated member data to the Type to  in each class
    *  @Type object constant reference to a type of the datum, for example,D_TCONC
    */
-  C_INT32 GetObjectType(string Object);
+  C_INT32 getObjectType(string Object);
 
   /**
    *  Get the object I string part
    *  @object reference to CDatum object
    */
-  string GetObjectIStr(string object, C_INT16 HasJStr);
+  string getObjectIStr(string object, C_INT16 HasJStr);
 
   /**
    *  Get the object J string part
    *  @object reference to CDatum object
    */
-  string GetObjectJStr(string object);
+  string getObjectJStr(string object);
 
  public:
 
@@ -145,21 +145,21 @@ class CDatum
    *  @return mTitle
    *  @see mTitle
    */
-  string GetTitle() const;
+  string getTitle() const;
 
   /**
    *  Sets the title of this object
    *  @param title constant reference to a string.
    *  @see mTitle
    */
-  void SetTitle(const string& title); 
+  void setTitle(const string& title); 
 
   /**
    *  Returns the value of this object.
    *  @return *mpValue
    *  @see mpValue
    */
-  void* GetValue() const;
+  void* getValue() const;
 
   /**
    *  Sets the value of mpValue with a pointer to a memory location that has 
@@ -167,35 +167,35 @@ class CDatum
    *  @param value constant reference to a void pointer.
    *  @see mpValue
    */
-  void SetValue(void* value);
+  void setValue(void* value);
 
   /**
    *  Returns the type of this object.
    *  @return mType
    *  @see mType
    */	
-  C_INT32 GetType() const;
+  C_INT32 getType() const;
 
   /**
    *  Sets the type of this object
    *  @param type constant reference to a string specifing the type of this object.
    *  @see mType
    */
-  void SetType(const C_INT32 type);
+  void setType(const C_INT32 type);
 
   /**
    *  Returns a string with the name of this object.
    *  @return mObject
    *  @see mObject
    */	
-  string GetObject() const;
+  string getObject() const;
 
   /**
    *  Sets the name of this object
    *  @param object constant reference to a string specifing the type of this object.
    *  @see mobject
    */
-  void SetObject(const string& object);
+  void setObject(const string& object);
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
@@ -223,7 +223,7 @@ class CDatum
   /**
    *  Complie the mpValue in each CDatum
    */
-  void CompileDatum(CModel &Model);
+  void compileDatum(CModel &Model);
 
 };
 

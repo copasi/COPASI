@@ -57,7 +57,7 @@ CDatum& CDatum::operator=(const CDatum &source)
  *  Returns a string with the title of this object.
  *  @return mTitle
  */
-string CDatum::GetTitle() const
+string CDatum::getTitle() const
 {
   return mTitle;
 }
@@ -66,7 +66,7 @@ string CDatum::GetTitle() const
  *  Sets the title of this object
  *  @param title constant reference to a string.
  */
-void CDatum::SetTitle(const string& title)
+void CDatum::setTitle(const string& title)
 {
   mTitle = title;
 }
@@ -75,7 +75,7 @@ void CDatum::SetTitle(const string& title)
  *  Returns the value of this object.
  *  @return *mpValue
  */
-void* CDatum::GetValue() const
+void* CDatum::getValue() const
 {
   return mpValue;
 }
@@ -85,7 +85,7 @@ void* CDatum::GetValue() const
  *  the value of this object.
  *  @param value pointer to a void.
  */
-void CDatum::SetValue(void* value)
+void CDatum::setValue(void* value)
 {
   mpValue = value;
 }
@@ -94,7 +94,7 @@ void CDatum::SetValue(void* value)
  *  Returns the type of this object.
  *  @return mType
  */	
-C_INT32 CDatum::GetType() const
+C_INT32 CDatum::getType() const
 {
   return mType;
 }
@@ -103,7 +103,7 @@ C_INT32 CDatum::GetType() const
  *  Sets the type of this object
  *  @param type constant reference to a string specifing the type of this object.
  */
-void CDatum::SetType(const C_INT32 type)
+void CDatum::setType(const C_INT32 type)
 {
   mType = type;
 }
@@ -112,7 +112,7 @@ void CDatum::SetType(const C_INT32 type)
  *  Returns a string with the name of this object.
  *  @return mObject
  */	
-string CDatum::GetObject() const
+string CDatum::getObject() const
 {
   return mObject;
 }
@@ -121,7 +121,7 @@ string CDatum::GetObject() const
  *  Sets the name of this object
  *  @param object constant reference to a string specifing the type of this object.
  */
-void CDatum::SetObject(const string& object)
+void CDatum::setObject(const string& object)
 {
   mObject = object;
 }
@@ -211,7 +211,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
     }
 
   string Model = "Bakker";
-  CreateObject(Model, IStr, JStr, Type);
+  createObject(Model, IStr, JStr, Type);
 
   return Fail;
 }
@@ -233,7 +233,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
   if ((Fail = configbuffer.setVariable("Title", "string", &mTitle)))
     return Fail;
 	
-  Type = GetObjectType(mObject);
+  Type = getObjectType(mObject);
 	
   // Output Type
   if ((Fail = configbuffer.setVariable("Type", "C_INT32", &Type)))
@@ -277,7 +277,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
     case D_TT:
     case D_EIGVR:
     case D_EIGVI:   
-      IStr = GetObjectIStr(mObject, 0);
+      IStr = getObjectIStr(mObject, 0);
       Fail = configbuffer.setVariable("I", "string", &IStr);
       if (Fail) return Fail;
       break;
@@ -286,11 +286,11 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
     case D_CCC:
     case D_FCC:
     case D_EIG:
-      IStr = GetObjectIStr(mObject, 1);
+      IStr = getObjectIStr(mObject, 1);
       Fail = configbuffer.setVariable("I", "string", &IStr);
       if (Fail) return Fail;
 
-      JStr = GetObjectJStr(mObject);
+      JStr = getObjectJStr(mObject);
       Fail = configbuffer.setVariable("J", "string", &JStr);
       if (Fail) return Fail;
 
@@ -310,7 +310,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
  *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
   */
 
-void CDatum::CreateObject(const string& Model, const string& IStr, const string& JStr, C_INT32 Type)
+void CDatum::createObject(const string& Model, const string& IStr, const string& JStr, C_INT32 Type)
 {
   string member;
 
@@ -373,7 +373,7 @@ void CDatum::CreateObject(const string& Model, const string& IStr, const string&
 
   // Create CMember part
 
-  member = TransferType(Type);
+  member = transferType(Type);
 
   if (!member.length())
     {
@@ -392,7 +392,7 @@ void CDatum::CreateObject(const string& Model, const string& IStr, const string&
  *  Transfers the Type to the associated member data in each class
  *  @Type object constant reference to a type of the datum, for example,D_TCONC
  */
-string CDatum::TransferType(C_INT32 Type)
+string CDatum::transferType(C_INT32 Type)
 {
   string cMemb;
 
@@ -468,7 +468,7 @@ string CDatum::TransferType(C_INT32 Type)
  *  Transfers the associated member data to the Type to  in each class
  *  @Type object constant reference to a type of the datum, for example,D_TCONC
  */
-C_INT32 CDatum::GetObjectType(string Object)
+C_INT32 CDatum::getObjectType(string Object)
 {
   C_INT32 Type = 0;
   C_INT16 Posi = 0;
@@ -524,7 +524,7 @@ C_INT32 CDatum::GetObjectType(string Object)
  *  Get the object I string part
  *  @object reference to CDatum object
  */
-string CDatum::GetObjectIStr(string object, C_INT16 HasJStr)
+string CDatum::getObjectIStr(string object, C_INT16 HasJStr)
 {
   string Metab;
   C_INT16 Posi = 0;
@@ -554,7 +554,7 @@ string CDatum::GetObjectIStr(string object, C_INT16 HasJStr)
  *  Get the object J string part
  *  @object reference to CDatum object
  */
-string CDatum::GetObjectJStr(string object)
+string CDatum::getObjectJStr(string object)
 {
   string Metab;
   C_INT16 Posi = 0;
@@ -579,13 +579,13 @@ string CDatum::GetObjectJStr(string object)
 /**
  *  Complie the mpValue in each CDatum
  */
-void CDatum::CompileDatum(CModel &Model)
+void CDatum::compileDatum(CModel &Model)
 {
   C_INT32 Type = 0;
   string IStr, JStr;
   int Index, Index1;
 
-  Type = GetObjectType(mObject);
+  Type = getObjectType(mObject);
 	
   switch (Type)
     {
@@ -617,7 +617,7 @@ void CDatum::CompileDatum(CModel &Model)
       break;
 #endif
     case D_ICONC:   // Fall through as all have mI but no mJ
-      IStr = GetObjectIStr(mObject, 0);
+      IStr = getObjectIStr(mObject, 0);
       Index = Model.findMetab(IStr);
       if (Index == -1) break;
       mpValue = Model.getMetabolites()[Index]->getIConcAddr();
@@ -625,14 +625,14 @@ void CDatum::CompileDatum(CModel &Model)
       break;
     case D_SCONC:
     case D_TCONC:
-      IStr = GetObjectIStr(mObject, 0);
+      IStr = getObjectIStr(mObject, 0);
       Index = Model.findMetab(IStr);
       if (Index == -1) break;
       mpValue = Model.getMetabolites()[Index]->getConcAddr();
       mType = CFLOAT64;
       break;
     case D_TT:
-      IStr = GetObjectIStr(mObject, 0);
+      IStr = getObjectIStr(mObject, 0);
       Index = Model.findMetab(IStr);
       if (Index == -1) break;
       mpValue = Model.getMetabolites()[Index]->getTTAddr();;
@@ -640,21 +640,21 @@ void CDatum::CompileDatum(CModel &Model)
       break;
     case D_SFLUX:
     case D_TFLUX:
-      IStr = GetObjectIStr(mObject, 0);
+      IStr = getObjectIStr(mObject, 0);
       Index = Model.findStep(IStr);
       if (Index == -1) break;
       mpValue = Model.getReactions()[Index].getFluxAddr();
       mType = CFLOAT64; 
       break;
     case D_VOL:
-      IStr = GetObjectIStr(mObject, 0);
+      IStr = getObjectIStr(mObject, 0);
       Index = Model.findCompartment(IStr);
       if (Index == -1) break;
       mpValue = (*Model.getCompartments())[Index].getVolumeAddr();
       mType = CFLOAT64;
       break;						
     case D_MOIT:
-      IStr = GetObjectIStr(mObject, 0);
+      IStr = getObjectIStr(mObject, 0);
       Index = Model.findMoiety(IStr);
       if (Index == -1) break;
       mpValue = (*Model.getMoieties())[Index].getNumberAddr();
@@ -663,13 +663,13 @@ void CDatum::CompileDatum(CModel &Model)
 #if 0						
     case D_EIGVR:
     case D_EIGVI:   
-      IStr = GetObjectIStr(mObject, 0);
+      IStr = getObjectIStr(mObject, 0);
       break;
 #endif
 
     case D_KIN:     // Fall through as all have mI and mJ
-      IStr = GetObjectIStr(mObject, 1);
-      JStr = GetObjectJStr(mObject);
+      IStr = getObjectIStr(mObject, 1);
+      JStr = getObjectJStr(mObject);
       Index = Model.findStep(IStr);
       if (Index == -1) break;
       Index1 = Model.getReactions()[Index].findPara(JStr);
@@ -679,8 +679,8 @@ void CDatum::CompileDatum(CModel &Model)
       break;
 #if 0
     case D_ELAST:
-      IStr = GetObjectIStr(mObject, 1);
-      JStr = GetObjectJStr(mObject);
+      IStr = getObjectIStr(mObject, 1);
+      JStr = getObjectJStr(mObject);
       Index = outputList.Model.FindStep(IStr);
       Index1 = outputList.Model.FindMetab(JStr);
       if ((Index = -1) || (Index1 = -1))
@@ -689,8 +689,8 @@ void CDatum::CompileDatum(CModel &Model)
       mType = C_FLOAT64;
       break;
     case D_CCC:
-      IStr = GetObjectIStr(mObject, 1);
-      JStr = GetObjectJStr(mObject);
+      IStr = getObjectIStr(mObject, 1);
+      JStr = getObjectJStr(mObject);
       Index = outputList.Model.FindMetab(IStr);
       Index1 = outputList.Model.FindStep(JStr);
       if ((Index == -1) || (Index1 == -1) || (outputList.Model.mMetabolite[Index].Status == METAB_FIXED))
@@ -699,8 +699,8 @@ void CDatum::CompileDatum(CModel &Model)
       mType = C_FLOAT64;
       break;
     case D_FCC:
-      IStr = GetObjectIStr(mObject, 1);
-      JStr = GetObjectJStr(mObject);
+      IStr = getObjectIStr(mObject, 1);
+      JStr = getObjectJStr(mObject);
       Index = outputList.Model.FindMetab(IStr);
       Index1 = outputList.Model.FindMetab(JStr);
       if ((Index == -1) || (Index1 == -1))
@@ -709,9 +709,9 @@ void CDatum::CompileDatum(CModel &Model)
       mType = C_FLOAT64;
       break;
     case D_EIG:
-      IStr = GetObjectIStr(mObject, 1);
+      IStr = getObjectIStr(mObject, 1);
 
-      JStr = GetObjectJStr(mObject);
+      JStr = getObjectJStr(mObject);
 
       break;
 #endif

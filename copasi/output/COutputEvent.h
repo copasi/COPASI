@@ -57,7 +57,7 @@ class COutputEvent
 	/**
 	 *	Clean Up
 	 */
-	void cleanUp();
+	void cleanup();
 
 	/**
 	 *	

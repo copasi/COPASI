@@ -22,7 +22,7 @@ class CCOutput: public CCopasiVector < COutput >
   CCOutput();
   ~CCOutput();
  private:
-  C_INT16 IsInsertAllowed(const COutput & src);
+  C_INT16 isInsertAllowed(const COutput & src);
 };
 
 class COutputList
@@ -57,14 +57,14 @@ class COutputList
    *  @return mList
    *  @see mList
    */
-  CCOutput * GetList() const;
+  CCOutput * getList() const;
 
   /**
    *  Add new OutputLine object to a list
    *  @param newLine constant reference to COutputLine .
    *  @see COutputLine Class
    */
-  void AddOutput(COutput &newOutput);
+  void addOutput(COutput &newOutput);
 
   /**
    *  Saves the contents of the object to a CWriteConfig object.
@@ -73,7 +73,7 @@ class COutputList
    *  @return mFail
    *  @see mFail
    */
-  C_INT32 Save(CWriteConfig & configbuffer);
+  C_INT32 save(CWriteConfig & configbuffer);
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
@@ -84,26 +84,26 @@ class COutputList
    *  @return mFail
    *  @see mFail
    */
-  C_INT32 Load(CReadConfig & configbuffer);
+  C_INT32 load(CReadConfig & configbuffer);
 
-  void Init();
+  void init();
 
-  void Delete();
+  void cleanup();
 
   /*
    * print the time course dynamic data file
    */		
-  void CCopasi_Dyn(ofstream &fout, int time);
+  void copasiDyn(ofstream &fout, int time);
 
   /*
    * print the steady state data file
    */		
-  void CCopasi_SS(ofstream &fout, int time);
+  void copasiSS(ofstream &fout, int time);
 
   /*
    * print the reporting data file
    */
-  void CCopasi_Rep(ofstream &fout);
+  void copasiRep(ofstream &fout);
 
   /**
    *	Assigns model in the Outputlist
@@ -113,7 +113,7 @@ class COutputList
   /**
    *	Assign the pointer to each datum object in the output
    */
-  void Compile(string &name);
+  void compile(string &name);
 
 };
 

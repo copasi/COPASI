@@ -30,16 +30,16 @@ COutputList::~COutputList()
  */
 COutputList::COutputList(CReadConfig &configbuffer)
 {
-  Init();
+  init();
 }
 
 
-void COutputList::Init()
+void COutputList::init()
 {
   mList = new CCOutput;
 }
 
-void COutputList::Delete()
+void COutputList::cleanup()
 {
   if (mList) delete mList;
   mList = NULL;
@@ -52,7 +52,7 @@ void COutputList::Delete()
  *  @return mFail
  *  @see mFail
  */
-C_INT32 COutputList::Save(CWriteConfig & configbuffer)
+C_INT32 COutputList::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
 
@@ -70,14 +70,14 @@ C_INT32 COutputList::Save(CWriteConfig & configbuffer)
  *  @return mFail
  *  @see mFail
  */
-C_INT32 COutputList::Load(CReadConfig & configbuffer)
+C_INT32 COutputList::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
   COutput output;
 
   output.load(configbuffer);
   output.setModel(Model);
-  AddOutput(output);
+  addOutput(output);
 
   return Fail;
 }
@@ -87,7 +87,7 @@ C_INT32 COutputList::Load(CReadConfig & configbuffer)
  *  @return mList
  *  @see mList
  */
-CCOutput * COutputList::GetList() const
+CCOutput * COutputList::getList() const
 {
   return mList;
 }
@@ -97,9 +97,9 @@ CCOutput * COutputList::GetList() const
  *  @param newLine constant reference to COutputLine .
  *  @see COutputLine Class
  */
-void COutputList::AddOutput(COutput &newOutput)
+void COutputList::addOutput(COutput &newOutput)
 {
-  if (!mList) Init();
+  if (!mList) init();
   mList->add(newOutput);
 }
 
@@ -120,42 +120,42 @@ void COutputList::setModel(const CModel &model)
 /*
  *	print the reporting data file
  */
-void COutputList::CCopasi_Rep(ofstream &fout)
+void COutputList::copasiRep(ofstream &fout)
 {
   for (unsigned C_INT32 i = 0; i < mList->size(); i++)
     {
-      (*mList)[i].CCopasi_Rep(fout);
+      (*mList)[i].copasiRep(fout);
     }
 }
 
 /*
  * print the steady state data file
  */
-void COutputList::CCopasi_SS(ofstream &fout, int time)
+void COutputList::copasiSS(ofstream &fout, int time)
 {
   for (unsigned C_INT32 i = 0; i < mList->size(); i++)
     {
-      (*mList)[i].CCopasi_SS(fout, time);
+      (*mList)[i].copasiSS(fout, time);
     }
 }
 
 /*
  * print the time course dynamic data file
  */
-void COutputList::CCopasi_Dyn(ofstream &fout, int time)
+void COutputList::copasiDyn(ofstream &fout, int time)
 {
   for (unsigned C_INT32 i = 0; i < mList->size(); i++)
     {
-      (*mList)[i].CCopasi_Dyn(fout, time);
+      (*mList)[i].copasiDyn(fout, time);
     }
 }
 
-void COutputList::Compile(string &name)
+void COutputList::compile(string &name)
 {
 
   for (unsigned C_INT32 i = 0; i < mList->size(); i++)
     {
-      (*mList)[i].Compile(name, Model);
+      (*mList)[i].compile(name, Model);
     }
 
 }
@@ -164,5 +164,5 @@ CCOutput::CCOutput() {}
 
 CCOutput::~CCOutput() {}
 
-C_INT16 CCOutput::IsInsertAllowed(const COutput & src)
+C_INT16 CCOutput::isInsertAllowed(const COutput & src)
 {return TRUE;}

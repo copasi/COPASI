@@ -54,9 +54,9 @@ class COutputLine
    */
   ~COutputLine();
 
-  void Init();
+  void init();
 
-  void Delete();
+  void cleanup();
 
   /**
    *  Assignement operator. 
@@ -70,14 +70,14 @@ class COutputLine
    *  @return mLine
    *  @see mLine
    */
-  CCDatum * GetLine() const;
+  CCDatum * getLine() const;
 
   /**
    *  Add new data object to a line
    *  @param newDatum constant reference to CDatum.
    *  @see CDatum Class
    */
-  void AddDatum(CDatum & newDatum);
+  void addDatum(CDatum & newDatum);
 
   /**
    *  Saves the contents of the object to a CWriteConfig object.
@@ -107,38 +107,38 @@ class COutputLine
   /**
    *  Complie the mpValue in each output line
    */
-  //void CompileOutputLine(COutputList &outputList);
+  //void compileOutputLine(COutputList &outputList);
 
   /**
    * print the titles of the steady-state data file
    */
-  void SS_OutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+  void sSOutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
   /**
    * print the mpValue of each Object in the steady-state data file
    */
-  void SS_OutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+  void sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
   /**
    * print the titles of the time couse data file
    */
-  void Dyn_OutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+  void dynOutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
   /**
    * print the mpValue of Object in the time course data file
    */
-  void Dyn_OutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+  void dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
   /**
    *  Sets the name of this line, (For example: Interactive time course)
    *  @param title constant reference to a string.
    */
-  void SetName(string LineName);
+  void setName(string LineName);
 
   /**
    *	Assign the pointer to each datum object in the output line
    */
-  void Compile(string &name, CModel &model);
+  void compile(string &name, CModel &model);
 };
 
 #endif // COutputLine

@@ -17,7 +17,7 @@ class CCOutputLine: public CCopasiVector < COutputLine >
   CCOutputLine();
   ~CCOutputLine();
  private:
-  C_INT16 IsInsertAllowed(const COutputLine & src);
+  C_INT16 isInsertAllowed(const COutputLine & src);
 };
 
 
@@ -123,12 +123,12 @@ class COutput
   /**
    *	Reset output data file and reporting file configure variable
    */
-  void Reset();
+  void reset();
 
   /**
    *	Print each line of the header in the reporting file
    */
-  void Rep_Header_Line(ofstream &fout, int width, string OutStr);
+  void repHeaderLine(ofstream &fout, int width, string OutStr);
 
  public:
 
@@ -142,9 +142,9 @@ class COutput
    */
   ~COutput();
 
-  void Init();
+  void init();
 
-  void Delete();
+  void cleanup();
 
   /**
    *  Assignement operator. 
@@ -158,21 +158,21 @@ class COutput
    *  @return mList
    *  @see mList
    */
-  CCOutputLine * GetList() const;
+  CCOutputLine * getList() const;
 
   /**
    *  Add new OutputLine object to a list
    *  @param newLine constant reference to COutputLine .
    *  @see COutputLine Class
    */
-  void AddLine(COutputLine &newLine);
+  void addLine(COutputLine &newLine);
 
   /**
    *  Return the trigger event type of the COutput.
    *  @return mTriggerType
    *  @see mTRiggerType
    */
-  C_INT16 GetTriggerType() const;
+  C_INT16 getTriggerType() const;
 
 #if 0
   /**
@@ -180,7 +180,7 @@ class COutput
    *  @param triggerType constant reference to a integer type.
    *  @see mTriggerType
    */
-  void SetList(const C_INT16 triggerType);
+  void setList(const C_INT16 triggerType);
 #endif
 
   /**
@@ -211,97 +211,97 @@ class COutput
   /**
    * print the titles of the steady-state data file
    */
-  void SS_OutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+  void sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
   /**
    * print the mpValue of Object in the steady-state data file
    */
-  void SS_OutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+  void sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
   /**
    * print the titles of the time couse data file
    */
-  void Dyn_OutputTitles(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+  void dynOutputTitles(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
   /**
    * print the mpValue of Object in the time course data file
    */
-  void Dyn_OutputData(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+  void dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
   /**
    * print the header of the reporting file
    */
-  void Rep_Header(ofstream &fout);
+  void repHeader(ofstream &fout);
 
   /**
    *	Output the comments to the output reporting file
    */
-  void Rep_Comments(ofstream &fout);
+  void repComments(ofstream &fout);
 
   /**
    *	print the parameters of the simulation
    */
-  void Rep_Params(ofstream &fout);
+  void repParams(ofstream &fout);
 	
   /**
    *	print the structural analysis
    */		
-  void Rep_Struct(ofstream &fout); 
+  void repStruct(ofstream &fout); 
 	
   /**
    *	print the results of the stability analysis
    */
-  void Rep_Stability(ofstream &fout); 
+  void repStability(ofstream &fout); 
 	
   /**
    *	print the results of the MCA
    */
-  void Rep_MCA(ofstream &fout); 
+  void repMCA(ofstream &fout); 
 
   /**
    *	print the titles of the time-course data file
    */
-  void Dyn_OutputTitles(ofstream &fout, string &DynName); 
+  void dynOutputTitles(ofstream &fout, string &DynName); 
 	
   /**
    *	print a line of data (one time point) on the time-course data file
    */
-  void Dyn_OutputData(ofstream &fout, string &DynName); 
+  void dynOutputData(ofstream &fout, string &DynName); 
 	
   /**
    *	print the titles of the steady-state data file
    */
-  void SS_OutputTitles(ofstream &fout, string &SSName); 
+  void sSOutputTitles(ofstream &fout, string &SSName); 
 	
   /**
    *	print a line of data (one iteration) on the steady-state data file
    */
-  void SS_OutputData(ofstream &fout, string &SSName); 
+  void sSOutputData(ofstream &fout, string &SSName); 
 
   /**
    *	Output the model title to the output reporting file
    */
-  void Rep_Title(ofstream &fout);
+  void repTitle(ofstream &fout);
 
   /**
    *	Assign the pointer to each datum object in the list
    */
-  void Compile(string &name, CModel &model);
+  void compile(string &name, CModel &model);
 
   /*
    * print the time course dynamic data file
    */		
-  void CCopasi_Dyn(ofstream &fout, int time);
+  void copasiDyn(ofstream &fout, int time);
 
   /*
    * print the steady state data file
    */		
-  void CCopasi_SS(ofstream &fout, int time);
+  void copasiSS(ofstream &fout, int time);
 
   /*
    * print the reporting data file
    */
-  void CCopasi_Rep(ofstream &fout);
+  void copasiRep(ofstream &fout);
 
   /**
    *	Assigns model in the Outputlist
@@ -312,13 +312,13 @@ class COutput
    *	Write output control variables from input configburg buffer
    *  @param configbuffer: reference of the config buffer.
    */
-  C_INT32 WriteDefaultVar(CWriteConfig &configbuffer);
+  C_INT32 writeDefaultVar(CWriteConfig &configbuffer);
 
   /**
    *	Read output control variables from input configburg buffer
    *  @param configbuffer: reference of the config buffer.
    */
-  C_INT32 ReadDefaultVar(CReadConfig &configbuffer);
+  C_INT32 readDefaultVar(CReadConfig &configbuffer);
 
 };
 
