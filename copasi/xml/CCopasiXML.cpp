@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 18:58:50 $
+   $Date: 2005/02/19 02:58:49 $
    End CVS Header */
 
 /**
@@ -24,6 +24,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiVector.h"
+#include "utilities/CSlider.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "function/CFunction.h"
@@ -54,6 +55,7 @@ bool CCopasiXML::save(std::ostream & os)
 
   *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   << std::endl;
+
   *mpOstream << "<!-- generated with COPASI "
   << CCopasiDataModel::Global->getVersion()->getVersion()
   << " (http://www.copasi.org) -->"
@@ -81,6 +83,7 @@ bool CCopasiXML::save(std::ostream & os)
   if (!saveTaskList()) success = false;
   if (!saveReportList()) success = false;
   if (!savePlotList()) success = false;
+  if (!saveGUI()) success = false;
 
   endSaveElement("COPASI");
 
@@ -100,6 +103,7 @@ bool CCopasiXML::load(std::istream & is)
   Parser.setReportList(mpReportList);
   Parser.setTaskList(mpTaskList);
   Parser.setPlotList(mpPlotList);
+  Parser.setGUI(mpGUI);
 
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
@@ -616,6 +620,7 @@ bool CCopasiXML::saveTaskList()
       pTask = (*mpTaskList)[i];
 
       Attributes.erase();
+      Attributes.add("key", pTask->getKey());
       Attributes.add("name", pTask->getObjectName());
       Attributes.add("type", CCopasiTask::XMLType[pTask->getType()]);
       startSaveElement("Task", Attributes);
@@ -824,6 +829,55 @@ bool CCopasiXML::saveReportList()
     }
 
   endSaveElement("ListOfReports");
+
+  return success;
+}
+
+bool CCopasiXML::saveGUI()
+{
+  bool success = true;
+  if (!haveGUI()) return success;
+
+  startSaveElement("GUI");
+
+  if (mpGUI->pSliderList && mpGUI->pSliderList->size())
+    {
+      startSaveElement("ListOfSliders");
+
+      CSlider * pSlider;
+      CXMLAttributeList Attributes;
+
+      Attributes.add("key", "");
+      Attributes.add("associatedEntityKey", "");
+      Attributes.add("objectCN", "");
+      Attributes.add("objectType", "");
+      Attributes.add("objectValue", "");
+      Attributes.add("minValue", "");
+      Attributes.add("maxValue", "");
+      Attributes.add("tickNumber", "");
+      Attributes.add("tickFactor", "");
+
+      unsigned C_INT32 i, imax = mpGUI->pSliderList->size();
+      for (i = 0; i < imax; i++)
+        {
+          pSlider = (*mpGUI->pSliderList)[i];
+          Attributes.setValue(0, pSlider->getKey());
+          Attributes.setValue(1, pSlider->getAssociatedEntityKey());
+          Attributes.setValue(2, pSlider->getSliderObjectCN());
+          Attributes.setValue(3, CSlider::TypeName[pSlider->getSliderType()]);
+          Attributes.setValue(4, pSlider->getSliderValue());
+          Attributes.setValue(5, pSlider->getMinValue());
+          Attributes.setValue(6, pSlider->getMaxValue());
+          Attributes.setValue(7, pSlider->getTickNumber());
+          Attributes.setValue(8, pSlider->getTickFactor());
+
+          saveElement("Slider", Attributes);
+        }
+
+      endSaveElement("ListOfSliders");
+    }
+
+  endSaveElement("GUI");
 
   return success;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 18:58:50 $
+   $Date: 2005/02/19 02:58:49 $
    End CVS Header */
 
 /**
@@ -91,6 +91,12 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     bool saveReportList();
+
+    /**
+     * Save GUI information
+     * @return bool success
+     */
+    bool saveGUI();
 
     /**
      * Save a Parameter.
