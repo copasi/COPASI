@@ -27,6 +27,7 @@ class ObjectBrowser : public QWidget
 
   public:
     objectList* objectItemList;
+    objectList* refreshList;
     ObjectBrowser(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ObjectBrowser();
 
@@ -45,6 +46,7 @@ class ObjectBrowser : public QWidget
     void loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
     // void loadVectors(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
     void updateUI();
+    void loadUI();
   public slots:
     virtual void cancelClicked();
     virtual void listviewChecked(QListViewItem*);

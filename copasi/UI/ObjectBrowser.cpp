@@ -87,6 +87,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(nextButton, cancelButton);
 
   objectItemList = new objectList();
+  refreshList = new objectList();
   loadData();
 }
 
@@ -113,6 +114,14 @@ void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
 
 void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
 {
+  refreshList->insert(pCurrent);
+  ObjectBrowserItem* pTmp = pCurrent;
+  while (pTmp->parent() != NULL)
+    {
+      pTmp = pTmp->parent();
+      refreshList->insert(pTmp);
+    }
+
   if (pCurrent->size() == 0)
     {
       if (pCurrent->isChecked(0) == ALLCHECKED)
@@ -156,6 +165,7 @@ void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
+  refreshList->insert(pCurrent);
   for (int i = 0; i <= pCurrent->size(); i++)
     {
       if (pCurrent->isChecked(i))
@@ -180,6 +190,7 @@ void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
+  refreshList->insert(pCurrent);
   for (int i = 0; i <= pCurrent->size(); i++)
     {
       if (!pCurrent->isChecked(i))
@@ -225,7 +236,8 @@ void ObjectBrowser::loadData()
   itemRoot->setText(0, root->getName().c_str());
   itemRoot->setOpen(true);
   loadChild(itemRoot, root, true);
-  updateUI();
+
+  loadUI();
 }
 
 void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaParent, bool nField)
@@ -340,10 +352,14 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
 
 void ObjectBrowser::updateUI()
 {
-  objectListItem* pCurrent = objectItemList->getRoot();
-  setCheckMark(pCurrent->pItem);
-  for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
+  /*
+    objectListItem* pCurrent = objectItemList->getRoot();
     setCheckMark(pCurrent->pItem);
+    for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
+      setCheckMark(pCurrent->pItem);
+  */
+  for (ObjectBrowserItem* pCurrent = refreshList->pop(); pCurrent != NULL; pCurrent = refreshList->pop())
+    setCheckMark(pCurrent);
 }
 
 void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)
@@ -360,4 +376,12 @@ void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)
       pCurrent->setPixmap(0, *pObjectParts);
       break;
     }
+}
+
+void ObjectBrowser::loadUI()
+{
+  objectListItem* pCurrent = objectItemList->getRoot();
+  setCheckMark(pCurrent->pItem);
+  for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
+    setCheckMark(pCurrent->pItem);
 }
