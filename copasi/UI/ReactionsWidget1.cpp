@@ -33,8 +33,7 @@
 
 using std::cout;
 using std::endl;
-QHeader *tableHeader1;
-QHeader *tableHeader2;
+
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -244,12 +243,12 @@ void ReactionsWidget1::loadName(QString setValue)
   name = setValue;
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
 
-  QHeader *tableHeader1 = table->horizontalHeader();
-  QHeader *tableHeader2 = table->verticalHeader();
-
   CFunction *function;
   CReaction *reactn;
   CChemEq * chemEq;
+
+  QHeader *tableHeader1 = table->horizontalHeader();
+  QHeader *tableHeader2 = table->verticalHeader();
 
   ComboBox1->clear();
   reactn = reactions[(string)setValue];
@@ -509,65 +508,81 @@ void ReactionsWidget1::slotCheckBoxClicked()
 
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
-  QMessageBox::information(this, p2, "inside the comboBox");
   const string & p1 = p2.latin1();
   CFunction * function = Copasi->FunctionDB.findLoadFunction(p1);
   CFunctionParameters &functionParameters = function->getParameters();
+
   int count_substrates = 0;
   int count_products = 0;
   int count_parameters = 0;
-  //CFunctionParameter *functionParameter=new CFunctionParameter();
-
-  //functionParameter = functionParameters.operator[](p1);
-
-  //index using some value and loop thru...
+  int count_modifiers = 0;
 
   string usagetypes[100];
   string substrate_name[100];
   string product_name[100];
+  string modifier_name[100];
   string parameter_name[100];
 
-  unsigned int i;
-  for (i = 0; i < functionParameters.size(); i++)
+  for (unsigned int i = 0; i < functionParameters.size(); i++)
     {
-      //string p3=functionParameters[i]->getName();
       string p4 = functionParameters[i]->getUsage();
       usagetypes[i] = p4;
 
-      if (p4 == "SUBSTRATES")
+      if (p4 == "SUBSTRATE")
         {
           substrate_name[count_substrates] = functionParameters[i]->getName();
           count_substrates++;
         }
-      else if (p4 == "PRODUCTS")
+      else if (p4 == "PRODUCT")
         {
           product_name[count_products] = functionParameters[i]->getName();
           count_products++;
         }
-      else if (p4 == "PARAMETERS")
+      else if (p4 == "MODIFIER")
+        {
+          modifier_name[count_modifiers] = functionParameters[i]->getName();
+          count_modifiers++;
+        }
+
+      else if (p4 == "PARAMETER")
         {
           parameter_name[count_parameters] = functionParameters[i]->getName();
           count_parameters++;
         }
-      //add the variables in the combo box.
-      unsigned int count = 0;
-      //unsigned int total=count_substrates + count_products +   count_parameters;
-      unsigned int total = count_substrates + count_products + count_parameters;
 
-      for (; count < count_substrates; count++)
+      unsigned int count = 0;
+      unsigned int index = count_substrates;
+      QHeader *tableHeader2 = table->verticalHeader();
+
+      for (int index1 = 0; index1 <= (count_products - 1); index1++)
+        {
+          substrate_name[index] = product_name[index1];
+          index++;
+        }
+
+      for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
+        {
+          substrate_name[index] = modifier_name[index1];
+          index++;
+        }
+
+      for (index1 = 0; index1 <= (count_parameters - 1); index1++)
+        {
+          substrate_name[index] = parameter_name[index1];
+          index++;
+        }
+
+      unsigned int length_of_string = index - 1;
+      table->setNumRows(index);
+      for (; count <= length_of_string; count++)
         {
           tableHeader2->setLabel(count, substrate_name[count].c_str());
         }
 
-      for (count = 0; count < count_products; count++)
+      //for clearing the values of the table
+      for (count = 0; count <= length_of_string; count++)
         {
-          tableHeader2->setLabel(count, product_name[count].c_str());
-        }
-      for (count = 0; count < count_parameters; count++)
-        {
-          tableHeader2->setLabel(count, parameter_name[count].c_str());
+          table->clearCell(count, 0);
         }
     }
-
-  //QMessageBox::information(this,m1,"gfgdf");
 }
