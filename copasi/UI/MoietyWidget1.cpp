@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:47 $
+   $Date: 2004/10/08 08:52:18 $
    End CVS Header */
 
 /*******************************************************************
@@ -96,7 +96,7 @@ bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
 
   LineEdit2->setText(QString::number(moiety->getNumber()));
 
-  return true; //TODO really check
+  return true;
 }
 
 bool MoietyWidget1::update(ListViews::ObjectType objectType,
@@ -116,7 +116,6 @@ bool MoietyWidget1::enter(const std::string & key)
   objKey = key;
   CMoiety* moiety = dynamic_cast< CMoiety * >(GlobalKeys.get(objKey));
 
-  //TODO: check if it really is a Moiety
   if (moiety) return loadFromMoiety(moiety);
   else return false;
 }

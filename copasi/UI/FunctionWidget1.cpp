@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/24 13:27:09 $
+   $Date: 2004/10/08 08:50:53 $
    End CVS Header */
 
 /**********************************************************************
@@ -718,7 +718,6 @@ void FunctionWidget1::slotNewButtonClicked()
 
 void FunctionWidget1::slotDeleteButtonClicked()
 {
-  //TODO: let the user confirm
   const CCopasiVectorN < CReaction > * pReactions = NULL;
   unsigned C_INT32 k, kmax, i = 0;
   unsigned C_INT32 imax = 1;
@@ -787,7 +786,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                          // Yes or Enter
+        case 0:                           // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -819,7 +818,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                          // No or Escape
+        case 1:                           // No or Escape
           break;
         }
     }

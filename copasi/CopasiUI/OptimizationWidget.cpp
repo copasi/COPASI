@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/06 16:29:21 $
+   $Author: ssahle $ 
+   $Date: 2004/10/08 08:52:57 $
    End CVS Header */
 
 /********************************************************
@@ -425,7 +425,6 @@ bool OptimizationWidget::enter(const std::string & key)
 {
   objKey = key;
   COptFunction* func = dynamic_cast< COptFunction * >(GlobalKeys.get(key));
-  //TODO: check if it really is a compartment
   pSteadyStateWidget->enter(SteadyStateKey);
   pTrajectoryWidget->enter(TrajectoryKey);
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/22 21:56:56 $
+   $Date: 2004/10/08 08:51:48 $
    End CVS Header */
 
 /*******************************************************************
@@ -264,8 +264,6 @@ bool MetabolitesWidget1::saveToMetabolite()
   if ((const char *)name.utf8() != metab->getObjectName())
     {
       metab->setObjectName((const char *)name.utf8());
-      //TODO: update the reactions (the real thing, not the gui)
-      //      propably not necessary anymore when reaction uses keys instead of names
       protectedNotify(ListViews::METABOLITE, ListViews::RENAME, objKey);
     }
 
@@ -419,7 +417,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                            // Yes or Enter
+    case 0:                             // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -435,7 +433,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                            // No or Escape
+    case 1:                             // No or Escape
       break;
     }
 }
@@ -451,7 +449,6 @@ bool MetabolitesWidget1::update(ListViews::ObjectType objectType,
     case ListViews::MODEL:
     case ListViews::METABOLITE:
     case ListViews::COMPARTMENT:
-      //TODO: check if it really is a compartment
       return loadFromMetabolite(dynamic_cast< CMetab * >(GlobalKeys.get(objKey)));
       break;
 

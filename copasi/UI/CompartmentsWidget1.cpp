@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 18:28:18 $
+   $Author: ssahle $ 
+   $Date: 2004/10/08 08:50:31 $
    End CVS Header */
 
 /*******************************************************************
@@ -158,7 +158,7 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
   LineEdit4->setText(QString::number(compartn->getVolume()));
   LineEdit4->setReadOnly(true);
 
-  return true; //TODO really check
+  return true;
 }
 
 bool CompartmentsWidget1::saveToCompartment()
@@ -171,7 +171,6 @@ bool CompartmentsWidget1::saveToCompartment()
   if ((const char *)name.utf8() != comp->getObjectName())
     {
       comp->setName((const char *)name.utf8());
-      //TODO: update something else in the model?
       protectedNotify(ListViews::COMPARTMENT, ListViews::RENAME, objKey);
     }
 
@@ -184,7 +183,7 @@ bool CompartmentsWidget1::saveToCompartment()
       comp->setInitialVolume(m1);
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, objKey);
     }
-  return true; //TODO: really check
+  return true;
 }
 
 void CompartmentsWidget1::slotBtnCancelClicked()
@@ -295,7 +294,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                     // Yes or Enter
+    case 0:                      // Yes or Enter
       {
         unsigned C_INT32 size = dataModel->getModel()->getCompartments().size();
         unsigned C_INT32 index = dataModel->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -310,7 +309,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                     // No or Escape
+    case 1:                      // No or Escape
       break;
     }
 }
@@ -330,7 +329,6 @@ bool CompartmentsWidget1::update(ListViews::ObjectType objectType, ListViews::Ac
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-      //TODO: check if it really is a compartment
       return loadFromCompartment(dynamic_cast< CCompartment * >(GlobalKeys.get(objKey)));
       break;
 

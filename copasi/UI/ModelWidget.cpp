@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 15:33:56 $
+   $Author: ssahle $ 
+   $Date: 2004/10/08 08:52:36 $
    End CVS Header */
 
 /*******************************************************************
@@ -220,7 +220,6 @@ bool ModelWidget::enter(const std::string & key)
 {
   objKey = key;
   CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(key));
-  //TODO: check if it really is a model
 
   if (model) return loadModel(model);
   else return false;
