@@ -99,6 +99,10 @@ SOURCE=.\CDatum.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CNodeO.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COutput.cpp
 # End Source File
 # Begin Source File
@@ -113,6 +117,14 @@ SOURCE=.\COutputLine.cpp
 
 SOURCE=.\COutputList.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CUDFunction.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUDFunctionDB.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -120,6 +132,10 @@ SOURCE=.\COutputList.cpp
 # Begin Source File
 
 SOURCE=.\CDatum.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CNodeO.h
 # End Source File
 # Begin Source File
 
@@ -136,6 +152,14 @@ SOURCE=.\COutputLine.h
 # Begin Source File
 
 SOURCE=.\COutputList.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUDFunction.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUDFunctionDB.h
 # End Source File
 # Begin Source File
 
