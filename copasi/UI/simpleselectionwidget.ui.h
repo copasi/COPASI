@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/simpleselectionwidget.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/28 13:48:45 $
+   $Author: shoops $ 
+   $Date: 2004/10/28 13:51:12 $
    End CVS Header */
 
 /****************************************************************************
@@ -255,14 +255,14 @@ void SimpleSelectionWidget::populateTree(CModel* model)
       item = new QListViewItem(this->particleFluxSubtree, ("particle_" + name).c_str());
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=ParticleFlux"));
       // create items for the reaction parameters
-      item = new QListViewItem(this->reactionParameterSubtree, react->getObjectName());
+      item = new QListViewItem(this->reactionParameterSubtree, react->getObjectName().c_str());
       const CCopasiParameterGroup& parameters = react->getParameters();
       unsigned int j;
       unsigned int numParameters = parameters.size();
       for (j = 0; j < numParameters;++j)
         {
           CCopasiParameter* parameter = ((CCopasiParameterGroup&)parameters).getParameter(j);
-          QListViewItem* parameterItem = new QListViewItem(item, parameter->getObjectName());
+          QListViewItem* parameterItem = new QListViewItem(item, parameter->getObjectName().c_str());
           treeItems[parameterItem] = (CCopasiObject*)parameter;
         }
     }
