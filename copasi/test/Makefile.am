@@ -51,4 +51,4 @@ installdirs-recursive install-recursive uninstall-recursive  \
 check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
 
 $(SUBDIRS): ../
-        test -d $@ || ln -s ../$@ $@
+	test -d $@ || ln -s ../$@ $@
