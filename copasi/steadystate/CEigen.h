@@ -18,11 +18,7 @@
 
 //include clapack.h for eigenvalue calculations0
 extern "C" {
-  //#include "CLAPACK/clapack.h"       //use CLAPACK
-
-  //use intel-lapack for faster reactions
-  #include "/usr/local/intel-lapack/include/lapack-wrap.h"
-  #include "/usr/local/intel-lapack/include/mkl.h"
+  #include "clapack.h"       //use CLAPACK
 }
 
 
