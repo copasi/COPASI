@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/07/06 16:54:14 $
+   $Date: 2004/09/30 02:59:03 $
    End CVS Header */
 
 /**
@@ -198,8 +198,9 @@ bool CCopasiObject::isStaticString() const
 
 const std::string & CCopasiObject::getKey() const
   {
+    static std::string DefaultKey("");
     std::cout << "*********** CCopasiObject::getKey() should never be called! *********" << std::endl;
-    return "";
+    return DefaultKey;
   }
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
