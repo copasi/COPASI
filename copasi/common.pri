@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.22 $ $Author: mendes $ $Date: 2004/01/30 20:08:30 $  
+# $Revision: 1.23 $ $Author: shoops $ $Date: 2004/02/10 15:17:54 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -100,6 +100,8 @@ contains(BUILD_OS, SunOS) {
 }
  
 contains(BUILD_OS, Linux) {
+  QMAKE_LFLAGS_RELEASE += -static
+
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
