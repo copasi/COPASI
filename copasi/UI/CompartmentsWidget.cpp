@@ -150,17 +150,6 @@ void CompartmentsWidget::showMessage(QString title, QString text)
 
 void CompartmentsWidget::slotBtnOKClicked()
 {
-  /*//QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
-
-  //CWriteConfig FunctionDB1("oo.gps");
-  CWriteConfig ModelFile("model.gps");
-  //CWriteConfig *Fun = new CWriteConfig();
-  string outstring = "Laber";
-  //  mModel->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
-  //mModel->save(ModelFile);
-
-  //Copasi->FunctionDB.save(FunctionDB1); */
-
   CWriteConfig *Fun = new CWriteConfig("oo.gps");
   string outstring = "Laber";
   Fun->setVariable((string) "Compartment", (string) "string", (void *) &outstring);
@@ -169,10 +158,19 @@ void CompartmentsWidget::slotBtnOKClicked()
 
   //CWriteConfig ModelFile("model.gps");
   CWriteConfig *Mod = new CWriteConfig("model.gps");
+  //CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+  CCompartment *compartn;
+
+  //for (C_INT32 j = 0; j < noOfCompartmentsRows; j++)
+  //{
+  //compartn = compartments[1];
+  compartn->setName(outstring);
+  //}
 
   /*string outstring = "Laber";
   mModel->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
   mModel->save(ModelFile); */
+  delete Mod;
 }
 
 /*C_INT32  TestWriteConfig(void)
