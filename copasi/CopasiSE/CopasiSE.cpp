@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
 {
   try
     {
+      CCopasiContainer::init();
       Copasi = new CGlobals;
 
       // Parse the commandline options
@@ -99,7 +100,9 @@ int main(int argc, char *argv[])
       std::cout << Exception.getMessage().getText() << std::endl;
     }
 
-  delete Copasi;
+  pdelete(Copasi);
+  pdelete(CCopasiContainer::Root);
+
   std::cout << "Leaving main program." << std::endl;
   return 0;
 }

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: shoops $ $Date: 2003/06/05 03:41:45 $  
+# $Revision: 1.3 $ $Author: shoops $ $Date: 2003/07/02 14:38:34 $  
 ######################################################################
 
 include(../common.pri)
@@ -44,9 +44,11 @@ contains(BUILD_OS, WIN32) {
          -Wl,-lutilities \
          -Wl,-loutput \
          -Wl,-lfunction \
+         -Wl,-lcopasiXML \
          -Wl,-lmodel
   LIBS += $${tmpLIBS}
-
+  LIBS += -lexpat
+  
   TARGETDEPS += ../lib/libcommandline.a \
                 ../lib/libcopasiXML.a \
                 ../lib/libelementaryFluxModes.a \
