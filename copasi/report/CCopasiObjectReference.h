@@ -45,7 +45,7 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
     // inherited from CCopasiObject. TODO: The hasValue flag needs to be set in the contructors.
     virtual const void * getObjectValueAddress() const {return &mReference;}
 
-    //    virtual print(std::ostream& ostream) {ostream << *mReference;};
+    virtual print(std::ostream& ostream) {ostream << mReference;};
   };
 
 /** @dia:pos 64.092,38.1129 */
