@@ -69,10 +69,13 @@ void Erdos(C_INT32 n, C_INT32 k, CCopasiVector < CGene > &gene)
                     break;
                   }
             }
-          gene[i]->addModifier(gene[l], r250n(2), dr250()*100.0 + 1e-5, dr250()*6.0 + 0.1);
+          //          gene[i]->addModifier(gene[l], r250n(2), dr250()*100.0 + 1e-5, dr250()*6.0 + 0.1);
+          gene[i]->addModifier(gene[l], r250n(2), 1, 1);
         }
-      gene[i]->setRate(dr250()*9.99 + 1e-2);
-      gene[i]->setDegradationRate(gene[i]->getRate()*(dr250()*5.83 + 0.17));
+      //      gene[i]->setRate(dr250()*9.99 + 1e-2);
+      //      gene[i]->setDegradationRate(gene[i]->getRate()*(dr250()*5.83 + 0.17));
+      gene[i]->setRate(1);
+      gene[i]->setDegradationRate(1);
     }
 }
 
