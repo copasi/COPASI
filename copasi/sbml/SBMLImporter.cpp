@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/14 12:22:15 $
+   $Date: 2004/06/15 09:33:27 $
    End CVS Header */
 
 #include <iostream>
@@ -34,8 +34,7 @@
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
  */
-CModel*
-SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) throw(StdException)
+CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) throw(StdException)
 {
   Model* sbmlModel = sbmlDocument->getModel();
   /* Check if there are unit definitions and throw an exception if so. */
