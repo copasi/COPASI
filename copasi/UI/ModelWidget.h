@@ -46,11 +46,13 @@ class ModelWidget : public CopasiWidget
 
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
+    QPushButton* splitModel;
     //QFrame* Line4_3;
 
   public slots:
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
+    virtual void slotBtnSplitClicked();
 
   signals:
 

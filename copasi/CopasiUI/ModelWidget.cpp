@@ -72,11 +72,17 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   cancelChanges->setText(trUtf8("Cancel"));
   Layout5->addWidget(cancelChanges);
 
+  // preliminary
+  splitModel = new QPushButton(this, "irreversible");
+  splitModel->setText(trUtf8("-> irreversible"));
+  ModelWidgetLayout->addWidget(splitModel, 7, 1);
+
   ModelWidgetLayout->addMultiCellLayout(Layout5, 8, 8, 0, 1);
 
   // signals and slots connections
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  connect(splitModel, SIGNAL(clicked()), this, SLOT(slotBtnSplitClicked()));
 }
 
 /*
@@ -143,4 +149,9 @@ void ModelWidget::slotBtnOKClicked()
       mModel->setVolumeUnit(ComboBox2->currentText().latin1());
       mModel->setQuantityUnit(ComboBox3->currentText().latin1());
     }
+}
+
+void ModelWidget::slotBtnSplitClicked()
+{
+  mModel->convert2NonReversible();
 }
