@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/22 01:16:08 $
+   $Author: shoops $ 
+   $Date: 2003/11/25 19:00:00 $
    End CVS Header */
 
 /***********************************************************************
@@ -197,8 +197,14 @@ void FunctionWidget::slotBtnDeleteClicked()
   imax = ToBeDeleted.size();
   if (imax > 0)
     {
-      const CCopasiVectorN < CReaction > & reactions = Copasi->pModel->getReactions();
-      C_INT32 k, kmax = reactions.size();
+      const CCopasiVectorN < CReaction > * pReactions = NULL;
+      unsigned C_INT32 k, kmax = 0;
+
+      if (Copasi->pModel)
+        {
+          pReactions = &Copasi->pModel->getReactions();
+          kmax = pReactions->size();
+        }
 
       QString msg1 = "Cannot delete Function(s). ";
       msg1.append("Following dependencies with listed Reaction(s) exist:\n");
@@ -214,15 +220,16 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if Reactions are dependent on Functions to be deleted */
           if (kmax > 0)
             {
-              const CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(mKeys[ToBeDeleted[i]]);
+              const CFunction* func =
+                dynamic_cast< CFunction * >(CKeyFactory::get(mKeys[ToBeDeleted[i]]));
 
               for (k = 0; k < kmax; k++)
                 {
-                  const CFunction *reacFunc = &(reactions[k]->getFunction());
+                  const CFunction *reacFunc = &((*pReactions)[k]->getFunction());
                   if (func == reacFunc)
                     {
                       reacFound[i] = 1;
-                      msg1.append(reactions[k]->getName().c_str());
+                      msg1.append((*pReactions)[k]->getName().c_str());
                       msg1.append(" ---> ");
                       msg1.append(table->text(ToBeDeleted[i], 0));
                       msg1.append("\n");
@@ -258,7 +265,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if user chooses to deleted Functions */
           switch (choice)
             {
-            case 0:  // Yes or Enter
+            case 0:   // Yes or Enter
               {
                 /* Delete the Functions on which no Reactions are dependent */
                 for (i = 0; i < imax; i++)
@@ -278,7 +285,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   }
                 break;
               }
-            case 1:  // No or Escape
+            case 1:   // No or Escape
               break;
             }
         }
