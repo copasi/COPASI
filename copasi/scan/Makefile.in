@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.2 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -237,13 +237,14 @@ noinst_LIBRARIES = libscan.a
 
 libscan_a_SOURCES = \
 	CScanMethod.cpp \
-	CScanProblem.cpp 
+	CScanProblem.cpp \
+	CScanTask.cpp
 
 
 EXTRA_DIST = \
 	CScanMethod.h	CScanMethod.cpp \
 	CScanProblem.h	CScanProblem.cpp \
-	CScanTask.h
+	CScanTask.h	CScanTask.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -258,11 +259,13 @@ LIBRARIES = $(noinst_LIBRARIES)
 
 libscan_a_AR = $(AR) cru
 libscan_a_LIBADD =
-am_libscan_a_OBJECTS = CScanMethod.$(OBJEXT) CScanProblem.$(OBJEXT)
+am_libscan_a_OBJECTS = CScanMethod.$(OBJEXT) CScanProblem.$(OBJEXT) \
+	CScanTask.$(OBJEXT)
 #>- libscan_a_OBJECTS = $(am_libscan_a_OBJECTS)
-#>+ 4
+#>+ 5
 libscan_a_final_OBJECTS = libscan_a.all_cpp.o 
-libscan_a_nofinal_OBJECTS = CScanMethod.$(OBJEXT) CScanProblem.$(OBJEXT)
+libscan_a_nofinal_OBJECTS = CScanMethod.$(OBJEXT) CScanProblem.$(OBJEXT) \
+	CScanTask.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@libscan_a_OBJECTS = $(libscan_a_nofinal_OBJECTS)
 @KDE_USE_FINAL_TRUE@libscan_a_OBJECTS = $(libscan_a_final_OBJECTS)
 
@@ -273,7 +276,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CScanMethod.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CScanProblem.Po
+	@AMDEP_TRUE@	$(DEPDIR)/CScanProblem.Po $(DEPDIR)/CScanTask.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -341,6 +344,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CScanMethod.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CScanProblem.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CScanTask.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
@@ -399,7 +403,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=libscan.a 
+KDE_DIST=libscan.a scan.dsp 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -528,11 +532,11 @@ force-reedit:
 
 
 #>+ 11
-libscan_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CScanMethod.cpp $(srcdir)/CScanProblem.cpp
+libscan_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CScanMethod.cpp $(srcdir)/CScanProblem.cpp $(srcdir)/CScanTask.cpp
 	@echo 'creating libscan_a.all_cpp.cpp ...'; \
 	rm -f libscan_a.all_cpp.files libscan_a.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> libscan_a.all_cpp.final; \
-	for file in CScanMethod.cpp CScanProblem.cpp ; do \
+	for file in CScanMethod.cpp CScanProblem.cpp CScanTask.cpp ; do \
 	  echo "#include \"$$file\"" >> libscan_a.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libscan_a.all_cpp.final; \
 	done; \
