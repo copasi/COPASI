@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.16 $ $Author: shoops $ $Date: 2005/03/01 18:02:43 $  
+# $Revision: 1.17 $ $Author: shoops $ $Date: 2005/03/01 19:24:56 $  
 ######################################################################
 
 TEMPLATE = app
@@ -27,9 +27,7 @@ COPASI_LIBS = \
          scan \
          steadystate \
          trajectory \
-         utilities
-         
-          
+         utilities                   
 
 contains(BUILD_OS, WIN32) {
   LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
@@ -60,8 +58,10 @@ contains(BUILD_OS, SunOS) {
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
   
+  COPASI_LIBS += randomGenerator
+  
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
-         $$LIBS
+         $${LIBS}
   
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }

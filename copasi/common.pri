@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.42 $ $Author: gauges $ $Date: 2005/02/23 11:32:45 $  
+# $Revision: 1.43 $ $Author: shoops $ $Date: 2005/03/01 19:24:34 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -53,32 +53,37 @@ contains(BUILD_OS, Darwin) {
   INCLUDEPATH += /System/Library/Frameworks/Carbon.framework/Headers
 
   !isEmpty(SBML_PATH){
-    LIBS+=  $${SBML_PATH}/lib/libsbml.a
+    LIBS +=  $${SBML_PATH}/lib/libsbml.a
     INCLUDEPATH += $${SBML_PATH}/include
+  } else {
+    LIBS += -lsbml
   }
 
   !isEmpty(EXPAT_PATH){
     LIBS+=  $${EXPAT_PATH}/lib/libexpat.a
     INCLUDEPATH += $${EXPAT_PATH}/include
+  } else {
+    LIBS += -lexpat
   }
-
 
   contains(CONFIG, qt) {
     !isEmpty(QWT_PATH){
        LIBS+=  $${QWT_PATH}/lib/libqwt.a
        INCLUDEPATH += $${QWT_PATH}/include
+    } else {
+      LIBS += -lqwt
     }
+    
+    LIBS += $(QTDIR)/lib/libqt-mt.a
+  
+    QMAKE_LIBS_QT =
+    QMAKE_LIBS_QT_THREAD = 
   }
 
   LIBS += -framework vecLib
   LIBS += -framework Carbon
   LIBS += -framework QuickTime
   LIBS += -lz
-
-  LIBS += $(QTDIR)/lib/libqt-mt.a
-  
-  QMAKE_LIBS_QT =
-  QMAKE_LIBS_QT_THREAD = 
 }
 
 contains(BUILD_OS, WIN32) {
