@@ -92,7 +92,7 @@ class CFunctionDB
      */
 
     void add
-      (CFunction & function);
+      (CFunction * function);
 
     /**
      *  Delete the function functionName from the database

@@ -136,7 +136,7 @@ CFunction * CFunctionDB::dBLoad(const string & functionName)
 }
 
 void CFunctionDB::add
-  (CFunction & function)
+  (CFunction * function)
 {mLoadedFunctions.add(function); }
 
 // void CFunctionDB::dBDelete(const string & functionName)
