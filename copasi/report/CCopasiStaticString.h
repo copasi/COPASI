@@ -9,11 +9,14 @@
 #ifndef COPASI_CCopasiStaticString
 #define COPASI_CCopasiStaticString
 
+#include "CCopasiObject.h"
 #include <string>
 
-class CCopasiStaticString: public std::string
+class CCopasiStaticString: public CCopasiObject
   {
     // Operations
+  private:
+    std::string strObject;
   public:
     CCopasiStaticString();
 

@@ -5,11 +5,11 @@
 using std::string;
 
 CCopasiStaticString::CCopasiStaticString()
-    : string()
+    : strObject()
 {}
 
 CCopasiStaticString::CCopasiStaticString(const std::string & name)
-    : string(name)
+    : strObject(name)
 {}
 
 CCopasiStaticString::~CCopasiStaticString()
