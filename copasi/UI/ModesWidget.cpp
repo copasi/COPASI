@@ -44,7 +44,7 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(0, "Reversible/Irreversible");
   tableHeader->setLabel(1, "Elementary Mode");
 
-  btnCalculate = new QPushButton("&Calculate/Run", this);
+  btnCalculate = new QPushButton("&Run", this);
   //btnCancel = new QPushButton("&Cancel", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
