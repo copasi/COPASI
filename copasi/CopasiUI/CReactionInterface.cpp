@@ -82,13 +82,14 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
       mValues.resize(imax);
       for (i = 0; i < imax; ++i)
         if (getUsage(i) == "PARAMETER") mValues[i] = rea->getParameterValue(getParameterName(i));
+
+      mValid = true; //assume a reaction is valid before editing
     }
   else
     {
       setFunction("");
+      mValid = false;
     }
-
-  mValid = true; //assume a reaction is valid before editing
 }
 
 void CReactionInterface::writeBackToReaction(CModel & model) const
@@ -197,6 +198,7 @@ void CReactionInterface::clearFunction()
 
 void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction)
 {
+  std::cout << "setChemEqString: " << eq << std::endl;
   //CModel * pModel = (CModel*) (CKeyFactory::get(mReactionReferenceKey)->getObjectAncestor("Model"));
   mChemEqI.setChemEqString(eq);
   findAndSetFunction(newFunction);
