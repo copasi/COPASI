@@ -4,6 +4,7 @@
 #include "model/CModel.h"
 #include "model/CChemEqElement.h"
 #include "utilities/CGlobals.h"
+#include "utilities/CMethodParameter.h"
 #include "function/CFunctionDB.h"
 
 CReactionInterface::CReactionInterface(){emptyString = "";}

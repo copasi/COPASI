@@ -4,6 +4,7 @@
 #include <qtable.h>
 #include <qcombobox.h>
 #include "model/CReaction.h"
+#include "utilities/CMethodParameter.h"
 
 class CReactionInterface;
 
