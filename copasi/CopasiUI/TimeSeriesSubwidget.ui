@@ -114,6 +114,8 @@
     </connection>
 </connections>
 <includes>
+    <include location="local" impldecl="in implementation">qmessagebox.h</include>
+    <include location="local" impldecl="in implementation">qfiledialog.h</include>
     <include location="local" impldecl="in implementation">TimeSeriesSubwidget.ui.h</include>
 </includes>
 <slots>
