@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>686</width>
+            <width>580</width>
             <height>422</height>
         </rect>
     </property>
@@ -19,13 +19,62 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>mTopLabel</cstring>
+                <cstring>layout3</cstring>
             </property>
-            <property name="text">
-                <string></string>
-            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>mTopLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>scaled</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>unscaled</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>mComboScale</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mSaveButton</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Save data to file</string>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
         <widget class="QTabWidget">
             <property name="name">
@@ -106,6 +155,20 @@
         </widget>
     </vbox>
 </widget>
+<connections>
+    <connection>
+        <sender>mComboScale</sender>
+        <signal>activated(int)</signal>
+        <receiver>CMCAResultSubwidget</receiver>
+        <slot>slotScaled()</slot>
+    </connection>
+    <connection>
+        <sender>mSaveButton</sender>
+        <signal>clicked()</signal>
+        <receiver>CMCAResultSubwidget</receiver>
+        <slot>slotSave()</slot>
+    </connection>
+</connections>
 <includes>
     <include location="local" impldecl="in declaration">model/CState.h</include>
     <include location="local" impldecl="in implementation">model/CModel.h</include>
@@ -118,14 +181,17 @@
     <forward>class CMCATask;</forward>
     <forward>class CMCAMethod;</forward>
 </forwards>
+<variables>
+    <variable access="private">const CMCAMethod * mMCAMethod;</variable>
+</variables>
 <slots>
     <slot access="protected">init()</slot>
+    <slot>loadAll( const CMCAMethod * mcaMethod )</slot>
+    <slot>loadElasticities( const CMCAMethod * mcaMethod )</slot>
+    <slot>loadConcentrationCCs( const CMCAMethod * mcaMethod )</slot>
+    <slot>loadFluxCCs( const CMCAMethod * mcaMethod )</slot>
+    <slot access="protected">slotSave()</slot>
+    <slot access="protected">slotScaled()</slot>
 </slots>
-<functions>
-    <function>loadAll( CMCAMethod * mcaMethod )</function>
-    <function>loadElasticities( CMCAMethod * mcaMethod )</function>
-    <function>loadConcentrationCCs( CMCAMethod * mcaMethod )</function>
-    <function>loadFluxCCs( CMCAMethod * mcaMethod )</function>
-</functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/26 15:49:16 $
+   $Date: 2004/11/28 21:04:14 $
    End CVS Header */
 
 /****************************************************************************
@@ -24,12 +24,16 @@
 void CMCAResultSubwidget::init()
 {
   mTopLabel->setText("");
+  mSaveButton->setEnabled(false);
+  mSaveButton->hide();
 }
 
-void CMCAResultSubwidget::loadAll(CMCAMethod * mcaMethod)
+void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
 {
   if (mcaMethod)
     {
+      mMCAMethod = mcaMethod;
+
       this->loadElasticities(mcaMethod);
       if (mcaMethod->isSteadyState())
         {
@@ -48,9 +52,9 @@ void CMCAResultSubwidget::loadAll(CMCAMethod * mcaMethod)
     }
 }
 
-void CMCAResultSubwidget::loadElasticities(CMCAMethod * mcaMethod)
+void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
 {
-  CModel* model = mcaMethod->getModel();
+  const CModel* model = mcaMethod->getModel();
   assert(model);
   unsigned C_INT32 numRows, numCols;
   numRows = model->getTotSteps();
@@ -68,7 +72,7 @@ void CMCAResultSubwidget::loadElasticities(CMCAMethod * mcaMethod)
     {
       header->setLabel(i, FROM_UTF8(model->getMetabolites()[i]->getObjectName()));
     }
-  const CAnnotatedMatrix & elasticities = mcaMethod->getUnscaledElasticities();
+  const CAnnotatedMatrix & elasticities = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledElasticities() : mcaMethod->getUnscaledElasticities();
   if (elasticities.numRows() == 0 || elasticities.numCols() == 0) return;
   for (i = 0; i < numRows;++i)
     {
@@ -79,9 +83,9 @@ void CMCAResultSubwidget::loadElasticities(CMCAMethod * mcaMethod)
     }
 }
 
-void CMCAResultSubwidget::loadConcentrationCCs(CMCAMethod * mcaMethod)
+void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
 {
-  CModel* model = mcaMethod->getModel();
+  const CModel* model = mcaMethod->getModel();
   assert(model);
   unsigned C_INT32 numRows, numCols;
   numRows = model->getIntMetab();
@@ -99,7 +103,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(CMCAMethod * mcaMethod)
     {
       header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
-  const CAnnotatedMatrix & CCCs = mcaMethod->getUnscaledConcentrationCC();
+  const CAnnotatedMatrix & CCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledConcentrationCC() : mcaMethod->getUnscaledConcentrationCC();
   if (CCCs.numRows() == 0 || CCCs.numCols() == 0) return;
   for (i = 0; i < numRows;++i)
     {
@@ -110,9 +114,9 @@ void CMCAResultSubwidget::loadConcentrationCCs(CMCAMethod * mcaMethod)
     }
 }
 
-void CMCAResultSubwidget::loadFluxCCs(CMCAMethod * mcaMethod)
+void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
 {
-  CModel* model = mcaMethod->getModel();
+  const CModel* model = mcaMethod->getModel();
   assert(model);
   unsigned C_INT32 numRows, numCols;
   numCols = numRows = model->getTotSteps();
@@ -130,7 +134,7 @@ void CMCAResultSubwidget::loadFluxCCs(CMCAMethod * mcaMethod)
     {
       header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
-  const CAnnotatedMatrix & FCCs = mcaMethod->getUnscaledFluxCC();
+  const CAnnotatedMatrix & FCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledFluxCC() : mcaMethod->getUnscaledFluxCC();
   if (FCCs.numRows() == 0 || FCCs.numCols() == 0) return;
   for (i = 0; i < numRows;++i)
     {
@@ -139,4 +143,13 @@ void CMCAResultSubwidget::loadFluxCCs(CMCAMethod * mcaMethod)
           mTableFCC->setText(i, j, QString::number(FCCs[i][j]));
         }
     }
+}
+
+void CMCAResultSubwidget::slotSave()
+{
+}
+
+void CMCAResultSubwidget::slotScaled()
+{
+  loadAll(mMCAMethod);
 }
