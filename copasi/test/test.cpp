@@ -37,7 +37,7 @@
 #include "tnt/cmat.h"
 #include "tnt/vec.h"
 #include "tnt/subscript.h"
-#include "steadystate/cmca.h"
+#include "steadystate/CMca.h"
 
 C_INT32  TestReadConfig(void);
 C_INT32  TestWriteConfig(void);
@@ -528,7 +528,7 @@ C_INT32  TestSSSolution(void)
     CSS_Solution ss_soln;
     ss_soln.setModel(&model);
     ss_soln.setNewton(&newton);
-    ss_soln.setTrajectory(&newton);
+    ss_soln.setTrajectory(&traj);
  
     ss_soln.process();
  
