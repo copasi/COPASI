@@ -284,13 +284,13 @@ void SteadyStateWidget::RunTask()
   unsetCursor();
 }
 
-void SteadyStateWidget::setModel(CModel* newModel)
-{
-  if (!CKeyFactory::get(objKey)) return;
-  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
-  steadystateproblem->setModel(newModel);
-}
+//void SteadyStateWidget::setModel(CModel* newModel)
+//{
+//  if (!CKeyFactory::get(objKey)) return;
+//  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+//  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
+//  steadystateproblem->setModel(newModel);
+//}
 
 void SteadyStateWidget::loadSteadyStateTask()
 {

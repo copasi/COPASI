@@ -44,7 +44,7 @@ class SteadyStateWidget : public CopasiWidget
     //   CSteadyStateTask* getSteadyStateTask() const {return mSteadyStateTask;};
 
     void loadSteadyStateTask();
-    void setModel(CModel* newModel);
+    //    void setModel(CModel* newModel);
 
     QFrame* line7;
     QFrame* line6;
