@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:38 $
+   $Date: 2004/08/10 16:07:02 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -37,8 +37,9 @@ std::vector<const CCopasiObject*> MoietyWidget::getObjects() const
 
 void MoietyWidget::init()
 {
+  mExtraLayout->addStretch();
   btnRun = new QPushButton("&Recalculate", this);
-  mHLayout->addWidget(btnRun);
+  mExtraLayout->addWidget(btnRun);
   connect(btnRun, SIGNAL(clicked ()), this,
           SLOT(slotBtnRunClicked()));
 

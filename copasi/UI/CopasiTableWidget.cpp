@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/04 15:48:40 $
+   $Date: 2004/08/10 16:05:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -61,19 +61,25 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       btnOK = new QPushButton("Commit", this);
       btnCancel = new QPushButton("Revert", this);
       btnDelete = new QPushButton("Delete/Undelete", this);
+      btnNew = new QPushButton("New", this);
     }
 
-  mHLayout = new QHBoxLayout(vBoxLayout, 0);
+  vBoxLayout->addSpacing(5);
+  mExtraLayout = new QHBoxLayout(vBoxLayout, 0);
+  vBoxLayout->addSpacing(5);
+
+  QHBoxLayout* mHLayout = new QHBoxLayout(vBoxLayout, 0);
   if (!mRO)
     {
-      mHLayout->addSpacing(32);
-      mHLayout->addSpacing(50);
+      //mHLayout->addSpacing(32);
+      //mHLayout->addSpacing(50);
       mHLayout->addWidget(btnOK);
       mHLayout->addSpacing(5);
       mHLayout->addWidget(btnCancel);
-      mHLayout->addSpacing(30);
+      mHLayout->addStretch();
       mHLayout->addWidget(btnDelete);
-      mHLayout->addSpacing(50);
+      mHLayout->addSpacing(5);
+      mHLayout->addWidget(btnNew);
     }
 
   // signals and slots connections
@@ -95,6 +101,8 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
               SLOT(slotBtnCancelClicked()));
       connect(btnDelete, SIGNAL(clicked ()), this,
               SLOT(slotBtnDeleteClicked()));
+      connect(btnNew, SIGNAL(clicked ()), this,
+              SLOT(slotBtnNewClicked()));
     }
   mIgnoreUpdates = false;
 
@@ -355,6 +363,11 @@ void CopasiTableWidget::slotBtnDeleteClicked()
       btnOK->setEnabled(true);
       btnCancel->setEnabled(true);
     }
+}
+
+void CopasiTableWidget::slotBtnNewClicked()
+{
+  //TODO
 }
 
 //*********** Standard Interface to Copasi Widgets ******************

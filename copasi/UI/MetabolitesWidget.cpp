@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.99 $
+   $Revision: 1.100 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:35 $
+   $Date: 2004/08/10 16:06:38 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -39,8 +39,9 @@ void MetabolitesWidget::init()
 {
   mOT = ListViews::METABOLITE;
   mFlagConc = true;
+  mExtraLayout->addStretch();
   btnToggle = new QPushButton("&Show Numbers", this);
-  mHLayout->addWidget(btnToggle);
+  mExtraLayout->addWidget(btnToggle);
   connect(btnToggle, SIGNAL(clicked ()), this,
           SLOT(slotBtnToggleClicked()));
 
@@ -277,7 +278,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                    // Yes or Enter
+    case 0:                     // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -289,7 +290,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                    // No or Escape
+    case 1:                     // No or Escape
       break;
     }
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:29 $
+   $Date: 2004/08/10 16:05:47 $
    End CVS Header */
 
 /****************************************************************************
@@ -51,6 +51,7 @@ class CopasiTableWidget : public CopasiWidget
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
     virtual void slotBtnDeleteClicked();
+    virtual void slotBtnNewClicked();
 
     //void resizeEvent(QResizeEvent * re);
 
@@ -66,7 +67,9 @@ class CopasiTableWidget : public CopasiWidget
     QPushButton* btnOK;
     QPushButton* btnCancel;
     QPushButton* btnDelete;
-    QHBoxLayout* mHLayout;
+    QPushButton* btnNew;
+    //    QHBoxLayout* mHLayout;
+    QHBoxLayout* mExtraLayout;
     std::vector<std::string> mKeys;
 
     C_INT32 numCols;
