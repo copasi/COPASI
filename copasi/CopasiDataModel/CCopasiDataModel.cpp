@@ -1,15 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/15 23:04:46 $
+   $Date: 2005/02/18 16:15:07 $
    End CVS Header */
 
 #include "copasi.h"
 #include "copasiversion.h"
 #include "CCopasiDataModel.h"
 
+#include "commandline/COptions.h"
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiVector.h"
@@ -20,6 +21,7 @@
 #include "scan/CScanTask.h"
 #include "optimization/COptTask.h"
 #include "steadystate/CMCATask.h"
+#include "steadystate/CMCAMethod.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "xml/CCopasiXML.h"
@@ -35,7 +37,9 @@ CCopasiDataModel::CCopasiDataModel():
     mpTaskList(NULL),
     mpReportDefinitionList(NULL),
     mpPlotDefinitionList(NULL),
-    mChanged(false)
+    mChanged(false),
+    mAutoSaveNeeded(false),
+    pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
                         COPASI_VERSION_MINOR,
@@ -45,10 +49,19 @@ CCopasiDataModel::CCopasiDataModel():
   newModel();
 }
 
+CCopasiDataModel::~CCopasiDataModel()
+{
+  pdelete(mpVersion);
+  pdelete(mpFunctionList);
+  pdelete(mpModel);
+  pdelete(mpTaskList);
+  pdelete(mpReportDefinitionList);
+  pdelete(mpPlotDefinitionList);
+  pdelete(pOldMetabolites);
+}
+
 bool CCopasiDataModel::loadModel(const std::string & fileName)
 {
-  mChanged = false;
-
   std::ifstream File(fileName.c_str());
 
   if (File.fail())
@@ -81,6 +94,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
     }
   else if (!Line.compare(0, 5, "<?xml"))
     {
+      mSaveFileName = fileName;
+
       std::cout << "XML Format" << std::endl;
       File.seekg(0, std::ios_base::beg);
 
@@ -123,10 +138,12 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
 
   if (mpModel) mpModel->setCompileFlag();
 
+  changed(false);
   return true;
 }
 
-bool CCopasiDataModel::saveModel(const std::string & fileName)
+bool CCopasiDataModel::saveModel(const std::string & fileName,
+                                 const bool & autoSave)
 {
   std::string FileName = (fileName != "") ? fileName : mSaveFileName;
 
@@ -148,13 +165,36 @@ bool CCopasiDataModel::saveModel(const std::string & fileName)
   if (os.fail()) return false;
 
   os << tmp.str();
-  return !os.fail();
+  if (os.fail()) return false;
+
+  if (!autoSave) changed(false);
+
+  return true;
+}
+
+bool CCopasiDataModel::autoSave()
+{
+  if (!mAutoSaveNeeded) return true;
+
+  std::string AutoSave;
+  COptions::getValue("Tmp", AutoSave);
+
+#ifdef WIN32
+  AutoSave += "\\";
+#else
+  AutoSave += "/";
+#endif
+
+  AutoSave += "tmp_" + mSaveFileName;
+
+  if (!saveModel(AutoSave, true)) return false;
+
+  mAutoSaveNeeded = false;
+  return true;
 }
 
 bool CCopasiDataModel::newModel(CModel * pModel)
 {
-  mChanged = false;
-
   pdelete(mpModel);
   mpModel = (pModel) ? pModel : new CModel();
 
@@ -169,6 +209,8 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
   pdelete(mpPlotDefinitionList);
   mpPlotDefinitionList = new CCopasiVectorN< CPlotSpecification >;
+
+  changed(false);
 
   return true;
 }
@@ -241,6 +283,8 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 
     case CCopasiTask::mca:
       pTask = new CMCATask(mpTaskList);
+      // :TODO: This must be avoided.
+      static_cast<CMCAMethod *>(pTask->getMethod())->setModel(mpModel);
       break;
 
     default:
@@ -282,7 +326,7 @@ bool CCopasiDataModel::addDefaultTasks()
 CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
 {return mpReportDefinitionList;}
 
-CCopasiVectorN< CPlotSpecification > * CCopasiDataModel::getPlotDefinitionList()
+CCopasiVectorN<CPlotSpecification> * CCopasiDataModel::getPlotDefinitionList()
 {return mpPlotDefinitionList;}
 
 CFunctionDB * CCopasiDataModel::getFunctionList()
@@ -295,270 +339,7 @@ bool CCopasiDataModel::isChanged() const
   {return mChanged;}
 
 void CCopasiDataModel::changed(const bool & changed)
-{mChanged = changed;}
-
-#ifdef XXXX
-DataModel::DataModel()
 {
-  //this->populateData();
-  model = NULL;
-  mChanged = false;
-  trajectorytask = NULL;
-  steadystatetask = NULL;
-  scantask = NULL;
-  reportdefinitions = NULL;
-  plotspecs = NULL;
-  pOptFunction = NULL;
-  mpCMCATask = NULL;
+  mChanged = changed;
+  mAutoSaveNeeded = changed;
 }
-
-bool DataModel::createModel()
-{
-  mChanged = false;
-
-  pdelete(model);
-  model = new CModel();
-  Copasi->pModel = model;
-
-  pdelete(steadystatetask);
-  steadystatetask = new CSteadyStateTask();
-  steadystatetask->getProblem()->setModel(model);
-
-  pdelete(trajectorytask);
-  trajectorytask = new CTrajectoryTask();
-  trajectorytask->getProblem()->setModel(model);
-
-  pdelete(scantask);
-  scantask = new CScanTask();
-  scantask->getProblem()->setModel(model);
-
-  pdelete(mpCMCATask);
-  mpCMCATask = new CMCATask();
-  mpCMCATask->getProblem()->setModel(model);
-  dynamic_cast<CMCAMethod*>(mpCMCATask->getMethod())->setModel(model);
-
-  pdelete(reportdefinitions);
-  reportdefinitions = new CReportDefinitionVector();
-
-  pdelete(plotspecs);
-  plotspecs = new CPlotSpecification();
-
-  pdelete(pOptFunction);
-  pOptFunction = new COptFunction();
-
-  return true;
-}
-
-bool DataModel::loadModel(const char* fileName)
-{
-  mChanged = false;
-
-  std::ifstream File(fileName);
-
-  if (File.fail())
-    {
-      CCopasiMessage Message(CCopasiMessage::RAW,
-                             "File error when opening '%s'.",
-                             fileName);
-      return false;
-    }
-
-  std::string Line;
-  File >> Line;
-
-  if (!Line.compare(0, 8, "Version="))
-    {
-      File.close();
-      pdelete(model);
-      CReadConfig inbuf(fileName);
-      model = new CModel();
-      model->load(inbuf);
-
-      pdelete(steadystatetask);
-      steadystatetask = new CSteadyStateTask();
-      steadystatetask->load(inbuf);
-
-      pdelete(trajectorytask);
-      trajectorytask = new CTrajectoryTask();
-      trajectorytask->load(inbuf);
-
-      pdelete(scantask);
-      scantask = new CScanTask();
-      scantask->getProblem()->setModel(model);
-
-      pdelete(mpCMCATask);
-      mpCMCATask = new CMCATask();
-      mpCMCATask->getProblem()->setModel(model);
-      dynamic_cast<CMCAMethod*>(mpCMCATask->getMethod())->setModel(model);
-
-      pdelete(reportdefinitions);
-      reportdefinitions = new CReportDefinitionVector();
-
-      pdelete(plotspecs);
-      plotspecs = new CPlotSpecification();
-
-      pdelete(pOptFunction);
-      pOptFunction = new COptFunction();
-    }
-  else if (!Line.compare(0, 5, "<?xml"))
-    {
-      std::cout << "XML Format" << std::endl;
-      File.seekg(0, std::ios_base::beg);
-
-      CCopasiXML XML;
-
-      XML.setFunctionList(Copasi->pFunctionDB->loadedFunctions());
-
-      CReportDefinitionVector * pNewReports = new CReportDefinitionVector();
-      XML.setReportList(*pNewReports);
-
-      CCopasiVectorN< CCopasiTask > TaskList;
-      XML.setTaskList(TaskList);
-
-      CPlotSpecification * pNewPlotSpecs = new CPlotSpecification();
-      XML.setPlotList(*pNewPlotSpecs);
-
-      if (!XML.load(File)) return false;
-
-      pdelete(model);
-      model = XML.getModel();
-
-      pdelete(steadystatetask);
-      pdelete(trajectorytask);
-      pdelete(scantask);
-      pdelete(mpCMCATask);
-
-      unsigned C_INT32 i, imax = TaskList.size();
-      for (i = 0; i < imax; i++)
-        {
-          switch (TaskList[i]->getType())
-            {
-            case CCopasiTask::steadyState:
-              steadystatetask = dynamic_cast< CSteadyStateTask * >(TaskList[i]);
-              break;
-
-            case CCopasiTask::timeCourse:
-              trajectorytask = dynamic_cast< CTrajectoryTask * >(TaskList[i]);
-              break;
-
-            case CCopasiTask::scan:
-              scantask = dynamic_cast< CScanTask * >(TaskList[i]);
-              break;
-
-            case CCopasiTask::mca:
-              mpCMCATask = dynamic_cast< CMCATask * >(TaskList[i]);
-              break;
-            }
-        }
-
-      if (!steadystatetask) steadystatetask = new CSteadyStateTask();
-      steadystatetask->getProblem()->setModel(model);
-
-      if (!trajectorytask) trajectorytask = new CTrajectoryTask();
-      trajectorytask->getProblem()->setModel(model);
-
-      if (!scantask) scantask = new CScanTask();
-      scantask->getProblem()->setModel(model);
-
-      if (!mpCMCATask) mpCMCATask = new CMCATask();
-      mpCMCATask->getProblem()->setModel(model);
-      dynamic_cast<CMCAMethod*>(mpCMCATask->getMethod())->setModel(model);
-
-      pdelete(reportdefinitions);
-      reportdefinitions = pNewReports;
-
-      pdelete(plotspecs);
-      plotspecs = pNewPlotSpecs;
-
-      pdelete(pOptFunction);
-      pOptFunction = new COptFunction();
-    }
-
-  if (model) model->setCompileFlag();
-
-  return true;
-}
-
-bool DataModel::saveModel(const char* fileName)
-{
-  if (fileName == NULL) return false;
-
-  model->compileIfNecessary();
-
-  CCopasiXML XML;
-  std::ofstream os(fileName);
-
-  XML.setModel(*model);
-  XML.setReportList(*reportdefinitions);
-
-  CCopasiVectorN< CCopasiTask > TaskList;
-  if (steadystatetask) TaskList.add(steadystatetask);
-  if (trajectorytask) TaskList.add(trajectorytask);
-  if (scantask) TaskList.add(scantask);
-  if (mpCMCATask) TaskList.add(mpCMCATask);
-  XML.setTaskList(TaskList);
-
-  XML.setPlotList(*plotspecs);
-  XML.save(os);
-
-  return true;
-}
-
-bool DataModel::isChanged() const {return mChanged;}
-
-void DataModel::changed(const bool & changed) {mChanged = changed;}
-
-bool DataModel::importSBML(const char* fileName)
-{
-  mChanged = false;
-
-  pdelete(pOptFunction);
-  pOptFunction = new COptFunction();
-
-  SBMLImporter importer;
-  CModel * pModel = importer.readSBML(fileName, Copasi->pFunctionDB);
-
-  if (pModel == NULL) return false;
-
-  pdelete(model);
-  model = pModel;
-
-  Copasi->pModel = model;
-
-  pdelete(steadystatetask);
-  steadystatetask = new CSteadyStateTask();
-  steadystatetask->getProblem()->setModel(model);
-
-  pdelete(trajectorytask);
-  trajectorytask = new CTrajectoryTask();
-  trajectorytask->getProblem()->setModel(model);
-
-  pdelete(scantask);
-  scantask = new CScanTask();
-  scantask->getProblem()->setModel(model);
-
-  pdelete(mpCMCATask);
-  mpCMCATask = new CMCATask();
-  mpCMCATask->getProblem()->setModel(model);
-  dynamic_cast<CMCAMethod*>(mpCMCATask->getMethod())->setModel(model);
-
-  pdelete(reportdefinitions);
-  reportdefinitions = new CReportDefinitionVector();
-
-  pdelete(plotspecs);
-  plotspecs = new CPlotSpecification();
-
-  return true;
-}
-
-bool DataModel::exportSBML(const char* fileName)
-{
-  if (fileName == NULL) return false;
-
-  SBMLExporter exporter;
-
-  exporter.exportSBML(model, fileName);
-
-  return true;
-}
-#endif // XXXX
