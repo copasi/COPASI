@@ -1581,7 +1581,7 @@ void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
 {
   const char * Metabolite;
   std::map< std::string, std::string >::const_iterator MetaboliteKey;
-  CMetab * pMetabolite;
+  //CMetab * pMetabolite;
 
   const char * Stoichiometry;
 
@@ -1596,10 +1596,11 @@ void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
 
       MetaboliteKey = mCommon.KeyMap.find(Metabolite);
       if (MetaboliteKey == mCommon.KeyMap.end()) fatalError();
-      pMetabolite =
-        (CMetab*)(CCopasiContainer*)CKeyFactory::get(MetaboliteKey->second);
+      //pMetabolite =
+      //  (CMetab*)(CCopasiContainer*)CKeyFactory::get(MetaboliteKey->second);
 
-      mCommon.pReaction->addSubstrate(pMetabolite, atof(Stoichiometry));
+      //mCommon.pReaction->addSubstrate(pMetabolite, atof(Stoichiometry));
+      mCommon.pReaction->addSubstrate(MetaboliteKey->second, atof(Stoichiometry));
       break;
 
     default:
@@ -1713,7 +1714,7 @@ void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
 {
   const char * Metabolite;
   std::map< std::string, std::string >::const_iterator MetaboliteKey;
-  CMetab * pMetabolite;
+  //CMetab * pMetabolite;
 
   const char * Stoichiometry;
 
@@ -1728,10 +1729,11 @@ void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
 
       MetaboliteKey = mCommon.KeyMap.find(Metabolite);
       if (MetaboliteKey == mCommon.KeyMap.end()) fatalError();
-      pMetabolite =
-        (CMetab*)(CCopasiContainer*)CKeyFactory::get(MetaboliteKey->second);
+      //pMetabolite =
+      //  (CMetab*)(CCopasiContainer*)CKeyFactory::get(MetaboliteKey->second);
 
-      mCommon.pReaction->addProduct(pMetabolite, atof(Stoichiometry));
+      //mCommon.pReaction->addProduct(pMetabolite, atof(Stoichiometry));
+      mCommon.pReaction->addProduct(MetaboliteKey->second, atof(Stoichiometry));
       break;
 
     default:
@@ -1845,7 +1847,7 @@ void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
 {
   const char * Metabolite;
   std::map< std::string, std::string >::const_iterator MetaboliteKey;
-  CMetab * pMetabolite;
+  //CMetab * pMetabolite;
 
   const char * Stoichiometry;
 
@@ -1860,10 +1862,11 @@ void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
 
       MetaboliteKey = mCommon.KeyMap.find(Metabolite);
       if (MetaboliteKey == mCommon.KeyMap.end()) fatalError();
-      pMetabolite =
-        (CMetab*)(CCopasiContainer*)CKeyFactory::get(MetaboliteKey->second);
+      //pMetabolite =
+      //  (CMetab*)(CCopasiContainer*)CKeyFactory::get(MetaboliteKey->second);
 
-      mCommon.pReaction->addModifier(pMetabolite, atof(Stoichiometry));
+      //mCommon.pReaction->addModifier(pMetabolite, atof(Stoichiometry));
+      mCommon.pReaction->addModifier(MetaboliteKey->second, atof(Stoichiometry));
       break;
 
     default:
@@ -2243,8 +2246,8 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
 #ifdef XXXX
       if (mCommon.SourceParameterKeys.size() > 0)
         {
-          mCommon.pReaction->setParameterKeys(mpFunctionParameter->getName(),
-                                              mCommon.SourceParameterKeys);
+          mCommon.pReaction->setParameterMappingVector(mpFunctionParameter->getName(),
+              mCommon.SourceParameterKeys);
           mCommon.SourceParameterKeys.clear();
         }
 #endif // XXXX
