@@ -57,6 +57,8 @@ class CFunctionDB : public CCopasiContainer
 
     virtual void initObjects();
 
+    bool CFunctionDB::load();
+
     /**
      *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)

@@ -13,6 +13,7 @@
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CMethodParameter.h"
+#include "xml/CCopasiXML.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,
                          const CCopasiContainer * pParent):
@@ -31,6 +32,25 @@ void CFunctionDB::cleanup() {mLoadedFunctions.cleanup();}
 void CFunctionDB::initObjects()
 {
   addObjectReference("File", mFilename);
+}
+
+bool CFunctionDB::load()
+{
+  CCopasiXML XML;
+  ifstream DB(mFilename.c_str());
+  if (DB.fail()) return false;
+  if (!XML.load(DB)) return false;
+
+  CCopasiVectorN< CFunction > * pFunctionList = XML.getFunctionList();
+
+  unsigned C_INT32 i, imax = pFunctionList->size();
+
+  for (i = 0; i < imax; i++)
+    mLoadedFunctions.add((*pFunctionList)[i], true);
+
+  XML.freeFunctionList();
+
+  return true;
 }
 
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
