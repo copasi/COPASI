@@ -35,6 +35,13 @@ MESSAGES Messages[] =
 
     // CReaction
     {MCReaction + 1, "CReaction (1): Function '%s' not found."},
+    {MCReaction + 2, "CReaction (2): In Reaction '%s' the compartment could not be guessed."},
+    {MCReaction + 3, "CReaction (3): Reaction '%s' has no substrates and no products."},
+
+    // CChemEq
+    {MCChemEq + 1, "CChemEq (1): No Substrates and no Products."},
+    {MCChemEq + 2, "CChemEq (2): Substrates in different Compartments."},
+    {MCChemEq + 3, "CChemEq (3): No Substrates and Products are in different compartments."},
 
     //
     {MCMethodParameter + 1, "CMethodParameter (1): Invalid value '%f' for '%s' "
