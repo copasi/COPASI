@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/12/16 16:34:59 $
+   $Date: 2003/12/17 15:19:44 $
    End CVS Header */
 
 /***********************************************************************
@@ -110,6 +110,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
           this, SLOT(slotBtnSwitchColsClicked())); //By G
   connect(table, SIGNAL(currentChanged(int, int)),
           this, SLOT(CurrentValueChanged(int, int))); //By G
+  connect(table, SIGNAL(valueChanged(int, int)),
+          this, SLOT(slotTableValueChanged(int, int))); //
 
   m_SavedRow = 0;
   m_SavedCol = 0;
@@ -275,6 +277,42 @@ void MetabolitesWidget::CurrentValueChanged(int row, int col)
 
   m_SavedCol = col; // Save for a future use
   m_SavedRow = row; // Save for a future use
+}
+
+void MetabolitesWidget::slotTableValueChanged(int row, int col)
+{
+  QCheckTableItem * fixedCB;
+  QTableItem * fCheck;
+  const CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
+  CMetab * obj;
+  //Note: Instead of using obj[row], perhaps find other way to ensure actual match, more checking
+
+  if (col == 3)
+    {
+      obj = objects[row];
+      //if fixed checkbox is selected, then make sure to update status
+      fixedCB = (QCheckTableItem *) table->item(row, col);
+      if (fixedCB->isChecked())
+        {
+          obj->setStatus(CMetab::METAB_FIXED);
+          table->setText(row, 4, "fixed");
+        }
+      else
+        {
+          //handle fixed CBs that have just been unchecked
+          obj->setStatus(CMetab::METAB_DEPENDENT);
+          table->setText(row, 4, "dependent");
+        }
+      /*fCheck = table->item(row,col);
+      dynamic_cast <QCheckTableItem *> (fCheck);
+      if (fCheck)
+            {
+       obj->setStatus(CMetab::METAB_FIXED);
+       table->setText(row, 4, "fixed");
+      }*/
+
+      // may have to keep previous checkbox status to make unchecked independent
+    }
 }
 
 void MetabolitesWidget::slotBtnOKClicked()
@@ -478,7 +516,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:               // Yes or Enter
+        case 0:                // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -491,7 +529,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:               // No or Escape
+        case 1:                // No or Escape
           break;
         }
     }
