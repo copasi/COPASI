@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2003/12/30 12:53:23 $
+   $Date: 2004/10/08 07:11:24 $
    End CVS Header */
 
 /********************************************************
@@ -40,23 +40,22 @@ CBrowserObject::CBrowserObject()
 
 CBrowserObject::~CBrowserObject()
 {
+  ObjectListItem* currentItem = referenceList->getRoot();
+  for (; currentItem != NULL; currentItem = currentItem->pNext)
+    currentItem->pItem->setBrowserObject(NULL);
   pdelete(referenceList);
 }
 
+/**
+ *   Constructs a new ObjectBrowserItem
+ */
 ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList)
     : QListViewItem(parent, after)
 {
-  //here is the ROOT
-  setParent(NULL);
-  setSibling(NULL);
-  setChild(NULL);
-  if (after != NULL)
-    after->setSibling(this);
-
   if (mObject != NULL)
     {
-      ObjectListItem* pTmp = pList->getRoot();
       /* To change
+      ObjectListItem* pTmp = pList->getRoot();
       while (pTmp != NULL)
         {
           if (pTmp->pItem->getObject()->pCopasiObject == mObject) // already be pointed in the list
@@ -66,7 +65,6 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
       if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
         {
           pBrowserObject = pTmp->pItem->getObject();
-          setChild(pTmp->pItem->child());
           pBrowserObject->referenceList->insert(this);
         }
       else
@@ -76,7 +74,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
         newBrowserObject->pCopasiObject = mObject;
         newBrowserObject->mChecked = false;
         pBrowserObject = newBrowserObject;
-        pBrowserObject->referenceList->insert(this);\
+        pBrowserObject->referenceList->insert(this);
       }
     }
   else //this is not an ending node
@@ -96,17 +94,10 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
 ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject, ObjectList* pList)
     : QListViewItem(parent, after)
 {
-  setParent(parent);
-  setSibling(NULL);
-  setChild(NULL);
-  if (parent && !parent->child())
-    parent->setChild(this);
-  if (after != NULL)
-    after->setSibling(this);
   if (mObject != NULL)
     {
-      ObjectListItem* pTmp = pList->getRoot();
       /* To change
+      ObjectListItem* pTmp = pList->getRoot();
       while (pTmp != NULL)
         {
           if (pTmp->pItem->getObject()->pCopasiObject == mObject)
@@ -116,7 +107,6 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
       if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
         {
           pBrowserObject = pTmp->pItem->getObject();
-          setChild(pTmp->pItem->child());
           pBrowserObject->referenceList->insert(this);
         }
       else
@@ -151,12 +141,12 @@ void ObjectBrowserItem::attachKey()
 int ObjectBrowserItem::nUserChecked()
 {
   int condition;
-  if (child())
+  if (firstChild())
     {
-      ObjectBrowserItem* pChild = child();
+      ObjectBrowserItem* pChild = (ObjectBrowserItem *)firstChild();
       condition = pChild->nUserChecked();
 
-      for (; pChild != NULL; pChild = pChild->sibling())
+      for (; pChild != NULL; pChild = (ObjectBrowserItem *)pChild->nextSibling())
         {
           switch (pChild->nUserChecked())
             {
@@ -184,36 +174,6 @@ int ObjectBrowserItem::nUserChecked()
     }
   return condition;
 }
-
-void ObjectBrowserItem::setParent(ObjectBrowserItem* parent)
-{
-  pParent = parent;
-}
-
-void ObjectBrowserItem::setChild(ObjectBrowserItem* child)
-{
-  pChild = child;
-}
-
-void ObjectBrowserItem::setSibling(ObjectBrowserItem* sibling)
-{
-  pSibling = sibling;
-}
-
-ObjectBrowserItem* ObjectBrowserItem::parent() const
-  {
-    return pParent;
-  }
-
-ObjectBrowserItem* ObjectBrowserItem::child() const
-  {
-    return pChild;
-  }
-
-ObjectBrowserItem* ObjectBrowserItem::sibling() const
-  {
-    return pSibling;
-  }
 
 bool ObjectBrowserItem::isChecked() const
   {
@@ -268,6 +228,7 @@ ObjectBrowserItem* ObjectList::pop()
   return returnValue;
 }
 
+/* Caution: ObjectList must be sorted already for this function to work */
 void ObjectList::delDuplicate()
 {
   ObjectListItem* objectLast = getRoot();
@@ -350,7 +311,7 @@ void ObjectList::createBucketIndex(int max)
 {
   index_length = max;
   quickIndex = new bool[max];
-  pointerList = new pObjectBrowserItem[max];
+  pointerList = new ObjectBrowserItem * [max];
   int i = 0;
   for (; i < max; i++)
     quickIndex[i] = false;

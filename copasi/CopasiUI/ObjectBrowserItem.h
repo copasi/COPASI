@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserItem.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/02/26 21:17:13 $
+   $Author: jpahle $ 
+   $Date: 2004/10/08 07:11:24 $
    End CVS Header */
 
 /********************************************************
@@ -56,8 +56,9 @@ class ObjectList;
 /* class CBrowserObject
  define the structure wrapper for a copasiObject
  */
-struct CBrowserObject
+class CBrowserObject
   {
+  public:
     CCopasiObject* pCopasiObject;
     bool mChecked;
     ObjectList* referenceList; //keep pointer to all its referenced items for later update
@@ -73,9 +74,6 @@ class ObjectBrowserItem : public QListViewItem
   private:
     static long KeySpace;
     CBrowserObject* pBrowserObject;
-    ObjectBrowserItem* pParent;
-    ObjectBrowserItem* pChild;
-    ObjectBrowserItem* pSibling;
     objectType mType;
     QString mKey;
 
@@ -95,27 +93,20 @@ class ObjectBrowserItem : public QListViewItem
       return pBrowserObject;
     }
 
-    virtual QString key (int column, bool ascending) const
+    virtual QString key (int C_UNUSED(column), bool C_UNUSED(ascending)) const
       {
         return mKey;
       }
 
     ObjectBrowserItem (QListView * parent = NULL, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
-    ~ObjectBrowserItem()
+    virtual ~ObjectBrowserItem()
     {
-      if (getType() != FIELDATTR) //To avoid cross reference/multi deletion
-        pdelete(pBrowserObject);
+      //      if (getType() != FIELDATTR) //To avoid cross reference/multi deletion
+      pdelete(pBrowserObject);
     }
 
     void attachKey();
-    void setParent(ObjectBrowserItem* parent);
-    void setChild(ObjectBrowserItem* child);
-    void setSibling(ObjectBrowserItem* sibling);
-
-    ObjectBrowserItem* parent() const;
-    ObjectBrowserItem* child() const;
-    ObjectBrowserItem* sibling() const;
 
     void reverseChecked();
     bool isChecked() const;
@@ -162,7 +153,7 @@ class ObjectList
   {
   private:
     bool* quickIndex;
-    ObjectBrowserItem* *pointerList;
+    ObjectBrowserItem **pointerList;
     int index_length;
     ObjectListItem* root;
     int length;
@@ -173,8 +164,8 @@ class ObjectList
     {
       if (index_length != 0)
         {
-          delete [] quickIndex;
-          delete [] pointerList;
+          delete[] quickIndex;
+          delete[] pointerList;
         }
       while (length > 0)
         pop();

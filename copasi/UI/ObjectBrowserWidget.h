@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/07 15:41:09 $
+   $Date: 2004/10/08 07:11:24 $
    End CVS Header */
 
 /********************************************************
@@ -60,10 +60,6 @@ class ObjectBrowserWidget : public QWidget
     QSpacerItem* spacer;
     QTextEdit* ObjectItemText;
 
-    QPixmap *pObjectAll;   // to store the image of locked icon folder
-    QPixmap *pObjectParts;   // to store the image of closed icon folder
-    QPixmap *pObjectNone;     // to store the image of open icon folder
-
     void eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObject*>* outputVector);
     void removeDuplicate(ObjectList* objectItemList);
     void setCheck(ObjectBrowserItem* pCurrent);
@@ -95,6 +91,7 @@ class ObjectBrowserWidget : public QWidget
     std::vector<CCopasiObject*>* mOutputObjectVector;
     pageIndex currentPage;
     void selectObjects(ObjectBrowserItem* browserItem, CCopasiObject* selectObject);
+    void updateSelectedItemsView();
     void cleanup();
   };
 #endif // OBJECTBROWSERWIDGET_H
