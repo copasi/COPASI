@@ -175,17 +175,16 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   C_FLOAT64 substrate_factor = 1;
   // First, find the reaction associated with this index.
   // Keep a pointer to this.
-  CChemEq *chemeq = &mpModel->getReactions()[index]->getChemEq();
+  const CChemEq *chemeq = & mpModel->getReactions()[index]->getChemEq();
   // Iterate through each substrate in the reaction
-  CCopasiVector < CChemEqElement > & substrates =
-    const_cast < CCopasiVector < CChemEqElement > & > (chemeq->getSubstrates());
+  const CCopasiVector < CChemEqElement > & substrates = chemeq->getSubstrates();
 
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       num_ident = static_cast<C_INT32>(substrates[i]->getMultiplicity());
       //std::cout << "Num ident = " << num_ident << std::endl;
       total_substrates += num_ident;
-      number = static_cast<C_INT32> (substrates[i]->getMetabolite().getNumberInt());
+      number =  /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
       lower_bound = number - num_ident;
       //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
       substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
