@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.5 2003/08/14 19:12:21 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.6 2003/08/14 19:16:35 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -40,7 +40,8 @@
  */
 TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
     : CopasiWidget(parent, name, fl),
-    pParent(parent)
+    pParent(parent),
+    bUpdated(false)
 {
   QPixmap image0((const char**) image0_data);
   QPixmap image1((const char**) image1_data);
@@ -267,6 +268,7 @@ void TableDefinition1::setReport(CReport* pNewReport)
 void TableDefinition1::comboTaskChanged(const QString & string)
 {
   int i = 0;
+  bUpdated = true;
 }
 
 void TableDefinition1::slotBtnCancelClicked()
@@ -287,17 +289,20 @@ void TableDefinition1::slotBtnConfirmClicked()
 
 void TableDefinition1::tabButtonClicked()
 {
+  bUpdated = true;
   seperatorEdit->setEnabled(!tabChecked->isChecked());
 }
 
 void TableDefinition1::titleButtonClicked()
 {
   //check for the connection int i =0;
+  bUpdated = true;
 }
 
 void TableDefinition1::appendButtonClicked()
 {
   //check for the connection int i =0;
+  bUpdated = true;
 }
 
 void TableDefinition1::addButtonClicked()
@@ -333,6 +338,7 @@ void TableDefinition1::addButtonClicked()
     {
       itemsTable->insertItem((*pSelectedVector)[i]->getCN().c_str());
       //      selectedList.push_back((*pSelectedVector)[i]);
+      bUpdated = true;
     }
 
   pdelete(pSelectedVector);
@@ -350,6 +356,7 @@ void TableDefinition1::deleteButtonClicked()
       //      selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
       //      int pp = selectedList.size();
       itemsTable->removeItem(selectedIndex);
+      bUpdated = true;
     }
 }
 
@@ -372,6 +379,7 @@ void TableDefinition1::upButtonClicked()
       QString pUpperItemStr(itemsTable->item(selectedIndex - 1)->text());
       itemsTable->changeItem (pUpperItemStr, selectedIndex);
       itemsTable->changeItem (pDownItemStr, selectedIndex - 1);
+      bUpdated = true;
     }
 }
 
@@ -394,6 +402,7 @@ void TableDefinition1::downButtonClicked()
       QString pUpperItemStr(itemsTable->item(selectedIndex)->text());
       itemsTable->changeItem (pUpperItemStr, selectedIndex + 1);
       itemsTable->changeItem (pDownItemStr, selectedIndex);
+      bUpdated = true;
     }
 }
 
@@ -411,8 +420,11 @@ bool TableDefinition1::enter(const std::string & key)
 bool TableDefinition1::leave()
 {
   //let the user confirm?
-  if (QMessageBox::warning(NULL, "Report Definition Save", "Do you want to save the change you have made to this Report Definition ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
-    slotBtnConfirmClicked();
+  if (bUpdated && (QMessageBox::warning(NULL, "Report Definition Save", "Do you want to save the change you have made to this Report Definition ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes))
+    {
+      slotBtnConfirmClicked();
+      bUpdated = false;
+    }
   return true;
 }
 
