@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:09:55 $
+   $Date: 2003/12/30 15:48:14 $
    End CVS Header */
 
 // CReaction
@@ -616,17 +616,35 @@ void CReaction::initializeParameters()
   unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage("PARAMETER");
   unsigned C_INT32 pos;
   std::string name;
-  //  CCopasiParameter param("NoName", CCopasiParameter::DOUBLE);
-  //  param.setValue((C_FLOAT64) 1.0);
 
-  mParameters.clear();
+  /* We have to be more intelligent here because during an XML load we have
+     already the correct parameters */
 
+  /* Add missing parameters with default value 1.0. */
   for (i = 0, pos = 0; i < imax; ++i)
     {
       name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getName();
       //      param.setName(name);
-      mParameters.addParameter(name, CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
+      if (!mParameters.getParameter(name))
+        mParameters.addParameter(name,
+                                 CCopasiParameter::DOUBLE,
+                                 (C_FLOAT64) 1.0);
       mMetabKeyMap[pos - 1][0] = name;
+    }
+
+  /* Remove parameters not fitting current function */
+  CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();
+  CCopasiParameterGroup::index_iterator end = mParameters.endIndex();
+  CFunctionParameter::DataType Type;
+
+  for (; it != end; ++it)
+    {
+      name = (*it)->getName();
+      if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
+        {
+          --it;
+          mParameters.removeParameter(name);
+        }
     }
 
   compileParameters();
