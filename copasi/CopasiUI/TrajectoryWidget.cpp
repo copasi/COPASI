@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:02:17 $
+   $Date: 2004/06/30 11:46:43 $
    End CVS Header */
 
 /********************************************************
@@ -212,10 +212,10 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(bRunTask, SIGNAL(clicked()), this, SLOT(runTrajectoryTask()));
+  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
   //connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
   connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
-  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
   //connect(nStartTime, SIGNAL(textChanged(const QString&)), this, SLOT(StartTimeSlot()));
   //connect(nEndTime, SIGNAL(textChanged(const QString&)), this, SLOT(EndTimeSlot()));
@@ -240,6 +240,8 @@ TrajectoryWidget::~TrajectoryWidget()
 
   pdelete(tt);
 }
+
+//**********************************************************
 
 void TrajectoryWidget::StartTimeSlot()
 {
@@ -293,6 +295,8 @@ void TrajectoryWidget::NumStepsSlot()
   nStepSize->setText(QString::number((end - start) / (C_FLOAT64)steps));
 }
 
+//************************************************************
+
 void TrajectoryWidget::CancelChange()
 {
   loadTrajectoryTask();
@@ -300,55 +304,12 @@ void TrajectoryWidget::CancelChange()
 
 void TrajectoryWidget::CommitChange()
 {
-  CTrajectoryTask* tt =
-    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
-  assert(tt);
-
-  CTrajectoryProblem* trajectoryproblem =
-    dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
-  assert(trajectoryproblem);
-
-  CTrajectoryMethod* trajectorymethod =
-    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
-  assert(trajectorymethod);
-
-  if (trajectoryproblem->getStepSize() != nStepSize->text().toDouble())
-    trajectoryproblem->setStepSize(nStepSize->text().toDouble());
-  else if (trajectoryproblem->getStepNumber() != nStepNumber->text().toLong())
-    trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
-  trajectoryproblem->setStartTime(nStartTime->text().toDouble());
-  trajectoryproblem->setEndTime(nEndTime->text().toDouble());
-
-  if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
-      (const char *)ComboBox1->currentText().utf8())
-    UpdateMethod(false);
-
-  QTableItem * pItem;
-  QString value;
-  QString strname;
-
-  unsigned C_INT32 i;
-  for (i = 0; i < trajectorymethod->size(); i++)
-    {
-      pItem = parameterTable->item(i, 0);
-      value = pItem->text();
-      setParameterValue(trajectorymethod, i, value);
-    }
-
-  loadTrajectoryTask();
+  //  loadTrajectoryTask();
 }
-
-//void TrajectoryWidget::EnableRunTask()
-//{
-//  if (!bExecutable->isChecked())
-//    bRunTask->setEnabled(false);
-//  else
-//    bRunTask->setEnabled(true);
-//}
 
 void TrajectoryWidget::runTrajectoryTask()
 {
-  CommitChange();
+  saveTrajectoryTask();
 
   if (bRunTask->text() != "Run")
     {
@@ -381,6 +342,22 @@ void TrajectoryWidget::runTrajectoryTask()
   unsetCursor();
 }
 
+void TrajectoryWidget::ReportDefinitionClicked()
+{
+  CTrajectoryTask* trajectoryTask =
+    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(objKey));
+  assert(trajectoryTask);
+
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);
+  pSelectDlg->setReport(&trajectoryTask->getReport());
+  pSelectDlg->loadReportDefinitionVector();
+  pSelectDlg->exec();
+
+  delete pSelectDlg;
+}
+
+//**************************************************************************
+
 void TrajectoryWidget::loadTrajectoryTask()
 {
   CTrajectoryTask* tt =
@@ -395,19 +372,21 @@ void TrajectoryWidget::loadTrajectoryTask()
     dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
   assert(trajectorymethod);
 
+  //name
   taskName->setText(tr("Trajectory Task"));
   taskName->setEnabled(false);
 
+  //numbers
   nStepSize->setText(QString::number(trajectoryproblem->getStepSize()));
   nStepNumber->setText(QString::number(trajectoryproblem->getStepNumber()));
   nStartTime->setText(QString::number(trajectoryproblem->getStartTime()));
   nEndTime->setText(QString::number(trajectoryproblem->getEndTime()));
 
+  //method parameters
   loadMethodParameters();
 
+  //method subtype
   ComboBox1->clear ();
-  //std::cout << CTrajectoryMethod::ValidSubTypes << std::endl;
-
   unsigned C_INT32 i;
   for (i = 0; i < CTrajectoryMethod::ValidSubTypes.size(); i++)
     ComboBox1->
@@ -446,6 +425,48 @@ void TrajectoryWidget::loadMethodParameters()
     }
 }
 
+void TrajectoryWidget::saveTrajectoryTask()
+{
+  CTrajectoryTask* tt =
+    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
+  assert(tt);
+
+  CTrajectoryProblem* trajectoryproblem =
+    dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
+  assert(trajectoryproblem);
+
+  CTrajectoryMethod* trajectorymethod =
+    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
+  assert(trajectorymethod);
+
+  //numbers
+  if (trajectoryproblem->getStepSize() != nStepSize->text().toDouble())
+    trajectoryproblem->setStepSize(nStepSize->text().toDouble());
+  else if (trajectoryproblem->getStepNumber() != nStepNumber->text().toLong())
+    trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
+  trajectoryproblem->setStartTime(nStartTime->text().toDouble());
+  trajectoryproblem->setEndTime(nEndTime->text().toDouble());
+
+  //method
+  if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
+      (const char *)ComboBox1->currentText().utf8())
+    UpdateMethod(false);
+
+  QTableItem * pItem;
+  QString value;
+  QString strname;
+
+  unsigned C_INT32 i;
+  for (i = 0; i < trajectorymethod->size(); i++)
+    {
+      pItem = parameterTable->item(i, 0);
+      value = pItem->text();
+      setParameterValue(trajectorymethod, i, value);
+    }
+}
+
+//*********************************************************************
+
 void TrajectoryWidget::UpdateMethod(const bool & update)
 {
   //if (!mTrajectoryTask)
@@ -474,7 +495,7 @@ void TrajectoryWidget::UpdateMethod(const bool & update)
   else
     {
       QMessageBox::warning(this, NULL,
-                           "New method cannot be created by the paramters!",
+                           "New method cannot be created by the parameters!",
                            QMessageBox::Ok, QMessageBox::Cancel);
     }
 
@@ -515,7 +536,7 @@ bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Actio
 
 bool TrajectoryWidget::leave()
 {
-  //let the user confirm?
+  saveTrajectoryTask();
   return true;
 }
 
@@ -528,18 +549,4 @@ bool TrajectoryWidget::enter(const std::string & key)
   loadTrajectoryTask();
 
   return true;
-}
-
-void TrajectoryWidget::ReportDefinitionClicked()
-{
-  CTrajectoryTask* trajectoryTask =
-    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(objKey));
-  assert(trajectoryTask);
-
-  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);
-  pSelectDlg->setReport(&trajectoryTask->getReport());
-  pSelectDlg->loadReportDefinitionVector();
-  pSelectDlg->exec();
-
-  delete pSelectDlg;
 }
