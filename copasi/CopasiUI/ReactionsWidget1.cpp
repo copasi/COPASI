@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.136 $
+   $Revision: 1.137 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/04/07 17:05:02 $
+   $Date: 2004/04/07 17:21:40 $
    End CVS Header */
 
 /*********************************************************************
@@ -261,6 +261,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 void ReactionsWidget1::slotLineEditChanged()
 {
   std::string rName = LineEdit1->text().latin1();
+
   std::string eq = LineEdit2->text().latin1();
 
   //first check if the string is a valid equation
@@ -276,6 +277,7 @@ void ReactionsWidget1::slotLineEditChanged()
 
   // tell the reaction interface
   mRi.setReactionName(rName);
+
   mRi.setChemEqString(eq);
 
   // update the widget
