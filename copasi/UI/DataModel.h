@@ -20,11 +20,10 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
+#include "scan/CScanTask.h"
 #include "utilities/CGlobals.h"
 #include "output/COutputList.h"             //TODO sort out the include dependencies
 
-class CTrajectoryTask;
-class CSteadyStateTask;
 class CReadConfig;
 class CWriteConfig;
 
@@ -105,7 +104,7 @@ class DataModel
     CModel* model;
     CSteadyStateTask* steadystatetask;
     CTrajectoryTask* trajectorytask;
-
+    CScanTask* scantask;
   public:
     DataModel(char* fileName = "DataModel.txt");
 

@@ -247,15 +247,6 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   //pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
   //pTrajectoryWidget->loadTrajectoryTask(/*new CTrajectoryTask()*/);
-  pSteadyStateWidget->enter(SteadyStateKey);
-  pTrajectoryWidget->enter(TrajectoryKey);
-
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
-  CScanProblem* scanProblem = scanTask->getProblem();
-  scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));
-  scanProblem->setTrajectoryTask((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey));
-  scanProblem->setProcessSteadyState(steadyState->isChecked());
-  scanProblem->setProcessTrajectory(trajectory->isChecked());
 
   sExecutable->setEnabled(false);
   scanButton->setEnabled(false);
@@ -537,7 +528,13 @@ void ScanWidget::loadScan(CModel *model)
 
       CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
       CScanProblem *scanProblem = scanTask->getProblem();
+
       scanProblem->setModel(model);
+      scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));
+      scanProblem->setTrajectoryTask((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey));
+      scanProblem->setProcessSteadyState(steadyState->isChecked());
+      scanProblem->setProcessTrajectory(trajectory->isChecked());
+
       //scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
       //scanProblem->setTrajectoryTask(/*pTrajectoryWidget->mTrajectoryTask*/dataModel->getTrajectoryTask());
       //TODO !!!!! does not work right now
@@ -705,6 +702,8 @@ bool ScanWidget::enter(const std::string & key)
 
   scanTaskKey = key;
 
+  pSteadyStateWidget->enter(SteadyStateKey);
+  pTrajectoryWidget->enter(TrajectoryKey);
   loadScan(mModel);
 
   return true;
