@@ -392,7 +392,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     currentWidget = functionWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Steady-State")))
     currentWidget = steadystateWidget;
-  else if (! (value = QString::compare(item->folder()->folderName(), "Trajectory")))
+  else if (! (value = QString::compare(item->folder()->folderName(), "Time Course")))
     currentWidget = trajectoryWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Mass Conservation")))
     currentWidget = moietyWidget;
