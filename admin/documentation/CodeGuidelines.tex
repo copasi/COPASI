@@ -227,11 +227,11 @@ name, \\
 \noindent
 provides access to common options within COPASI. The following values
 will deal with installation dependent settings:
-{\tt CopasiDir}, {\tt Examples}, and {\tt Wizard}. The following code
+{\tt CopasiDir}, {\tt ExampleDir}, and {\tt WizardDir}. The following code
 shows howe to retrieve the location of the examples files for COPASI: \\
 {\tt \scriptsize
-\indent std::string Examples; \\[-4 pt]
-\indent COptions::getValue(``Examples'', Examples); \\
+\indent std::string ExampleDir; \\[-4 pt]
+\indent COptions::getValue(``ExampleDir'', ExampleDir); \\
 }
 \noindent
 To assure that the values are correctly set any main program must
