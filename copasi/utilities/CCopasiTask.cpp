@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/19 09:45:02 $
+   $Author: shoops $ 
+   $Date: 2004/06/10 19:30:34 $
    End CVS Header */
 
 /**
@@ -24,7 +24,7 @@
 
 const std::string CCopasiTask::TypeName[] =
   {
-    "Stead-State",
+    "Steady-State",
     "Time-Course",
     "Scan",
     "Elementary Flux Modes",
@@ -35,12 +35,12 @@ const std::string CCopasiTask::TypeName[] =
 
 const char* CCopasiTask::XMLType[] =
   {
-    "SteadyState",
-    "TimeCourse",
-    "Scan",
-    "FluxMode",
-    "Optimization",
-    "ParameterFitting",
+    "steadyState",
+    "timeCourse",
+    "scan",
+    "fluxMode",
+    "optimization",
+    "parameterFitting",
     NULL
   };
 
