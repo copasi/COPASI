@@ -12,8 +12,8 @@
 
 #include "model/model.h"
 #include "utilities/utilities.h"
-#include "CStochSolver.h"
 #include "CODESolver.h"
+#include "CStochSolver.h"
 
 // #include "COutputEvent.h"
 
@@ -25,7 +25,7 @@ class CTrajectory
      * This may be done by a continuous method, a stochastic method, 
      * or a hybrid of the two. XXX The latter is still to be implemented.
      */
-	 enum MethodType {CONTINUOUS_ODE=1, STOCH_DIRECT, STOCH_NEXTREACTION, MIXED};
+  enum MethodType {CONTINUOUS_ODE=1, STOCH_DIRECT, STOCH_NEXTREACTION, MIXED};
   //Attributes
  private:
 
@@ -42,7 +42,7 @@ class CTrajectory
   /**
    * The stochastic solver
    */
-  CStochSolver *mStochSolver;
+  CStochSolver * mStochSolver;
   /**
    *  The time points
    */
@@ -57,6 +57,15 @@ class CTrajectory
    * The maximum number of points allowed for stochastic simulations
    */
   C_INT32 mMaxPoints;
+
+  //YH: add this for success compilation
+  //YH: please correct if I am wrong
+  /**
+   * The maximum number of steps allowed for stochastic simulations
+   */
+  C_INT32 mMaxSteps;
+
+
   /**
    *  The end time point
    */
@@ -84,12 +93,12 @@ class CTrajectory
    * default constructor
    */
   CTrajectory();
-	
+        
   /*
    * A CTrajectory constructor
-   */	
+   */        
   CTrajectory(CModel * aModel, C_INT32 aPoints,
-	      C_FLOAT64 aEndTime, C_INT32 aMethod);
+              C_FLOAT64 aEndTime, C_INT32 aMethod);
 
   /**
    * Copy constructor
@@ -107,7 +116,7 @@ class CTrajectory
 
   /**
    * destructor
-   */	
+   */        
   ~CTrajectory();
 
   /**
@@ -143,25 +152,25 @@ class CTrajectory
   /**
    * Set the CModel member variable
    * @param aModel a CModel pointer to be set as mCModel
-   */	
+   */        
   void setModel(CModel * aModel);
 
   /**
    *  Get the CModel member variable
    *  @return mCModel
-   */	
+   */        
   CModel * getModel() const;
 
   /**
    * Set the CODESolver member variable
    * @param aSolver a CODESolver pointer to be set as mModel member
-   */	
+   */        
   void setODESolver(CODESolver * aSolver);
 
   /**
    *  Get the CODESolver member variable
    *  @return mODESolver
-   */	
+   */        
   CODESolver * getODESolver() const;
 
   /*
@@ -198,7 +207,7 @@ class CTrajectory
   /*
    * Set the end of time points
    * @param aDouble a double type to be set as mEndTime
-   */	
+   */        
   void setEndTime(const C_FLOAT64 aDouble);
 
   /*
@@ -216,7 +225,7 @@ class CTrajectory
   /*
    * Set the point to the array with the left hand side value
    * @param arrDouble an array of double that will be set as mY
-   */	
+   */        
   void setMY(const C_FLOAT64 * arrDouble);
 
   /*
@@ -240,9 +249,9 @@ class CTrajectory
 
   /*
    * Process the CTrajectory primary function
-   */	
+   */        
   void process();
-	
+        
 };
 
 
