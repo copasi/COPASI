@@ -15,6 +15,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "CopasiDataModel"=.\CopasiDataModel\CopasiDataModel.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "CopasiSE"=.\CopasiSE\CopasiSE.dsp - Package Owner=<4>
 
 Package=<5>
@@ -61,6 +73,18 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name utilities
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CopasiDataModel
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name copasiXML
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sbml
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name plot
     End Project Dependency
 }}}
 
@@ -124,6 +148,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name MathML
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CopasiDataModel
     End Project Dependency
 }}}
 
