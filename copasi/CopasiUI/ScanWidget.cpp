@@ -178,11 +178,12 @@ void ScanWidget::loadScan(CModel *model)
             {
               parameterTable->setNumRows(itemList->size());
               //rowHeader->setLabel(j, itemList(j).c_str());
+
               parameterTable->verticalHeader()->setLabel(j, itemList->getName(j).c_str());
               parameterTable->setText(j, 0, QString::number(itemList->getValue(j)));
             }
           vBox->insertChild(parameterTable);
-          vBox->setSpacing(25);
+          vBox->setSpacing(15);
         }
 
       emit show_me();
