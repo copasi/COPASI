@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:31:46 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/21 04:25:29 $
    End CVS Header */
 
 /**
@@ -75,7 +75,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
     std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
       mObjects.equal_range(Name);
 
-    if (range.first == range.second) return false;
+    if (range.first == range.second) return NULL;
 
     /* We just pick the first one since in real containers the name should be */
     /* unique. The exeption is CCopasiContainer but in those the name is not  */
