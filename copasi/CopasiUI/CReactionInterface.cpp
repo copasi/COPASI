@@ -231,6 +231,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
 
 void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 {
+  unsigned C_INT32 j, jmax;
   unsigned C_INT32 i, imax = mParameters.getNumberOfParametersByUsage(role);
   if (!imax) return;
 
@@ -251,7 +252,12 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
       --pos;
       mNameMap[pos].clear();
       imax = el->size();
-      for (i = 0; i < imax; ++i) mNameMap[pos].push_back((*el)[i]->getMetaboliteName());
+      for (i = 0; i < imax; ++i)
+        {
+          jmax = (*el)[i]->getMultiplicity();
+          for (j = 0; j < jmax; ++j)
+            mNameMap[pos].push_back((*el)[i]->getMetaboliteName());
+        }
     }
   else if (Type == CFunctionParameter::FLOAT64)
     {
