@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:39 $
+   $Date: 2003/10/16 19:44:15 $
    End CVS Header */
 
 /*******************************************************************
@@ -75,9 +75,9 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   //connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadMoietiesNodes(CModel*)));
   //connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 
-  pixelsWide0 = 0;
-  pixelsWide1 = 0;
-  pixelsWide2 = 0;
+  pixelsWide0 = 2;
+  pixelsWide1 = 2;
+  pixelsWide2 = 4;
 }
 
 void MoietyWidget::fillTable() //By G
@@ -91,16 +91,27 @@ void MoietyWidget::fillTable() //By G
   /*Calculate column spacing based on the choosen font*/
   QFont tablefont = QApplication::font(this);
   QFontMetrics fm(tablefont);
-  pixelsWide0 = fm.width(objects[0]->getName().c_str());
-  pixelsWide1 = fm.width(QString::number(objects[0]->getNumber()));
-  pixelsWide2 = fm.width(objects[0]->getDescription().c_str());
 
+  if (jmax)
+    {
+      pixelsWide0 = fm.width(objects[0]->getName().c_str());
+      pixelsWide1 = fm.width(QString::number(objects[0]->getNumber()));
+      pixelsWide2 = fm.width(objects[0]->getDescription().c_str());
+    }
+
+  int k;
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
       table->setText(j, 0, obj->getName().c_str());
+      k = fm.width(obj->getName().c_str());
+      k > pixelsWide0 ? pixelsWide0 = k : 1;
       table->setText(j, 1, QString::number(obj->getNumber()));
+      k = fm.width(QString::number(obj->getNumber()));
+      k > pixelsWide1 ? pixelsWide1 = k : 1;
       table->setText(j, 2, obj->getDescription().c_str());
+      k = fm.width(obj->getDescription().c_str());
+      k > pixelsWide2 ? pixelsWide2 = k : 1;
 
       mKeys[j] = obj->getKey();
     }
