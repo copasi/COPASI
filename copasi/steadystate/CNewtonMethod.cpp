@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/22 10:48:42 $
+   $Date: 2005/02/22 17:24:14 $
    End CVS Header */
 
 #include <algorithm>
@@ -464,10 +464,10 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
           newMaxRate = targetFunction(mdxdt);
-          std::cout << "k: " << k << " i: " << i << " target: " << newMaxRate << std::endl;
+          //std::cout << "k: " << k << " i: " << i << " target: " << newMaxRate << std::endl;
         }
 
-      std::cout << k << "th Newton Step. i = " << i << " maxRate = " << newMaxRate << std::endl;
+      //      std::cout << k << "th Newton Step. i = " << i << " maxRate = " << newMaxRate << std::endl;
 
       if (i == 32)
         {
