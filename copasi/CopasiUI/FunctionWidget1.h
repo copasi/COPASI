@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 07:33:56 $
+   $Date: 2004/09/24 13:27:09 $
    End CVS Header */
 
 /****************************************************************************
@@ -21,7 +21,7 @@
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
-class QButtonGroup;
+class QHButtonGroup;
 class QFrame;
 class QLabel;
 class QLineEdit;
@@ -86,7 +86,7 @@ class FunctionWidget1 : public CopasiWidget
     QPushButton* cancelChanges;
     QPushButton* newFcn;
     QPushButton* deleteFcn;
-    QButtonGroup* ButtonGroup1;
+    QHButtonGroup* ButtonGroup1;
     QRadioButton* RadioButton1;
     QRadioButton* RadioButton2;
     QRadioButton* RadioButton3;

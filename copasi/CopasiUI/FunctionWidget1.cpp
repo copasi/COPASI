@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 07:33:56 $
+   $Date: 2004/09/24 13:27:09 $
    End CVS Header */
 
 /**********************************************************************
@@ -24,7 +24,7 @@
 #include <qwhatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
-#include <qbuttongroup.h>
+#include <qhbuttongroup.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qtoolbar.h>
@@ -70,7 +70,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   TextLabel2 = new QLabel(this, "TextLabel2");
   TextLabel2->setText(trUtf8("Description"));
-
   FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
 
   textBrowser = new QTextEdit(this, "Text Browser");
@@ -80,9 +79,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   Line2 = new QFrame(this, "Line2");
   Line2->setFrameShape(QFrame::HLine);
-  Line2->setFrameShadow(QFrame::Sunken);
-  Line2->setFrameShape(QFrame::HLine);
-
+  //Line2->setFrameShadow(QFrame::Sunken);
+  //Line2->setFrameShape(QFrame::HLine);
   FunctionWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 1);
 
   Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
@@ -107,18 +105,15 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Parameters"));
-
   FunctionWidget1Layout->addWidget(TextLabel4, 5, 0);
 
   Line3 = new QFrame(this, "Line3");
   Line3->setFrameShape(QFrame::HLine);
-  Line3->setFrameShadow(QFrame::Sunken);
-  Line3->setFrameShape(QFrame::HLine);
-
+  //Line3->setFrameShadow(QFrame::Sunken);
+  //Line3->setFrameShape(QFrame::HLine);
   FunctionWidget1Layout->addMultiCellWidget(Line3, 10, 10, 0, 1);
 
   LineEdit1 = new QLineEdit(this, "LineEdit1");
-
   FunctionWidget1Layout->addWidget(LineEdit1, 0, 1);
 
   Table2 = new QTable(this, "Table2");
@@ -127,23 +122,20 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Max"));
   Table2->setNumRows(3);
   Table2->setNumCols(3);
-  Table2->setColumnReadOnly (0, true);  //this restricts users from editing usage description name on the application table
-
+  Table2->setColumnReadOnly (0, true);  //this restricts users from editing usage description name
   FunctionWidget1Layout->addMultiCellWidget(Table2, 8, 9, 1, 1);
   QSpacerItem* spacer = new QSpacerItem(71, 80, QSizePolicy::Minimum, QSizePolicy::Expanding);
   FunctionWidget1Layout->addItem(spacer, 9, 0);
 
   TextLabel5 = new QLabel(this, "TextLabel5");
   TextLabel5->setText(trUtf8("Application"));
-
   FunctionWidget1Layout->addWidget(TextLabel5, 8, 0);
 
-  Line4 = new QFrame(this, "Line4");
-  Line4->setFrameShape(QFrame::HLine);
-  Line4->setFrameShadow(QFrame::Sunken);
-  Line4->setFrameShape(QFrame::HLine);
-
-  FunctionWidget1Layout->addMultiCellWidget(Line4, 7, 7, 0, 1);
+  //Line4 = new QFrame(this, "Line4");
+  //Line4->setFrameShape(QFrame::HLine);
+  //Line4->setFrameShadow(QFrame::Sunken);
+  //Line4->setFrameShape(QFrame::HLine);
+  //FunctionWidget1Layout->addMultiCellWidget(Line4, 7, 7, 0, 1);
 
   Table1 = new QTable(this, "Table1");
   Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Name"));
@@ -153,48 +145,44 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table1->setNumCols(3);
   Table1->setColumnReadOnly (0, true);  //this restricts users from editing parameter name on the parameter table
   Table1->setColumnReadOnly (1, true);
-
   FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 6, 1, 1);
 
-  Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  Line1->setFrameShadow(QFrame::Sunken);
-  Line1->setFrameShape(QFrame::HLine);
+  //Line1 = new QFrame(this, "Line1");
+  //Line1->setFrameShape(QFrame::HLine);
+  //Line1->setFrameShadow(QFrame::Sunken);
+  //Line1->setFrameShape(QFrame::HLine);
+  //FunctionWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 1);
 
-  FunctionWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 1);
   QSpacerItem* spacer_2 = new QSpacerItem(71, 190, QSizePolicy::Minimum, QSizePolicy::Expanding);
   FunctionWidget1Layout->addItem(spacer_2, 6, 0);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Function Name:"));
-
   FunctionWidget1Layout->addWidget(TextLabel1, 0, 0);
 
-  ButtonGroup1 = new QButtonGroup(this, "ButtonGroup1");
-  ButtonGroup1->setFrameShape(QButtonGroup::WinPanel);
-  ButtonGroup1->setMinimumHeight(30);
-  ButtonGroup1->setMaximumHeight(30);
+  //***************+
+  ButtonGroup1 = new QHButtonGroup(this, "ButtonGroup1");
+  //ButtonGroup1->setFrameShape(QButtonGroup::NoFrame);
+  //ButtonGroup1->setMinimumHeight(30);
+  //ButtonGroup1->setMaximumHeight(30);
   ButtonGroup1->setTitle(trUtf8(""));
   ButtonGroup1->setExclusive(TRUE);
   ButtonGroup1->setRadioButtonExclusive(TRUE);
 
   RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
-  RadioButton1->setGeometry(QRect(21, 7, 85, 18));
   RadioButton1->setText(trUtf8("reversible"));
 
   RadioButton2 = new QRadioButton(ButtonGroup1, "RadioButton2");
-  RadioButton2->setGeometry(QRect(146, 7, 90, 18));
   RadioButton2->setText(trUtf8("irreversible"));
 
   RadioButton3 = new QRadioButton(ButtonGroup1, "RadioButton3");
-  RadioButton3->setGeometry(QRect(280, 7, 85, 18));
   RadioButton3->setText(trUtf8("General"));
 
   FunctionWidget1Layout->addWidget(ButtonGroup1, 3, 1);
 
+  //********************
   TextLabel3 = new QLabel(this, "TextLabel3");
   TextLabel3->setText(trUtf8("Function Type"));
-
   FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
 
   setTabOrder(LineEdit1, textBrowser);
@@ -799,7 +787,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                         // Yes or Enter
+        case 0:                          // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -831,7 +819,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                         // No or Escape
+        case 1:                          // No or Escape
           break;
         }
     }
