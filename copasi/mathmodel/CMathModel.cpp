@@ -43,13 +43,13 @@ CMathModel::CMathModel(const CMathModel & src):
 
 CMathModel::~CMathModel()
 {
-  clearList((std::map< std::string, CMathSymbol * > *) & mCompartmentList);
-  clearList((std::map< std::string, CMathSymbol * > *) & mMetabList);
-  clearList((std::map< std::string, CMathSymbol * > *) & mFixedMetabList);
-  clearList((std::map< std::string, CMathSymbol * > *) & mVolumeList);
+  clearList(mCompartmentList);
+  clearList(mMetabList);
+  clearList(mFixedMetabList);
+  clearList(mVolumeList);
   pdelete(mpTime);
-  clearList((std::map< std::string, CMathSymbol * > *) & mFunctionList);
-  clearList((std::map< std::string, CMathSymbol * > *) & mConstantsList);
+  clearList(mFunctionList);
+  clearList(mConstantsList);
   clearEqList();
   pdelete(mpConversionFactor)
 }
@@ -125,7 +125,7 @@ bool CMathModel::buildCompartmentList()
 {
   bool Success = true;
 
-  clearList((std::map< std::string, CMathSymbol * > *) & mCompartmentList);
+  clearList(mCompartmentList);
 
   const CCopasiVector< CCompartment > & List = mpModel->getCompartments();
   unsigned C_INT32 i, imax = List.size();
@@ -145,7 +145,7 @@ bool CMathModel::buildMetabList()
 {
   bool Success = true;
 
-  clearList((std::map< std::string, CMathSymbol * > *) & mMetabList);
+  clearList(mMetabList);
 
   const CCopasiVector< CMetab > & List = mpModel->getMetabolitesX();
   unsigned C_INT32 i, imax = mpModel->getIntMetab();
@@ -165,7 +165,7 @@ bool CMathModel::buildFixedMetabList()
 {
   bool Success = true;
 
-  clearList((std::map< std::string, CMathSymbol * > *) & mFixedMetabList);
+  clearList(mFixedMetabList);
 
   const CCopasiVector< CMetab > & List = mpModel->getMetabolitesX();
   unsigned C_INT32 i, imax = List.size();
@@ -219,7 +219,7 @@ bool CMathModel::buildFunctionList()
 {
   bool Success = true;
 
-  clearList(& mFunctionList);
+  clearList(mFunctionList);
 
   const CCopasiVector< CReaction > & List = mpModel->getReactions();
   unsigned C_INT32 i, imax = List.size();
@@ -244,7 +244,7 @@ bool CMathModel::buildConstantsList()
 {
   bool Success = true;
 
-  clearList((std::map< std::string, CMathSymbol * > *) & mConstantsList);
+  clearList(mConstantsList);
 
   const CCopasiVector< CReaction > & List = mpModel->getReactions();
   unsigned C_INT32 i, imax = List.size();
@@ -269,18 +269,18 @@ bool CMathModel::buildConstantsList()
   return Success;
 }
 
-bool CMathModel::clearList(std::map< std::string, CMathSymbol * > * list)
-{
-  std::map< std::string, CMathSymbol * >::iterator it = list->begin();
-  std::map< std::string, CMathSymbol * >::iterator end = list->end();
+template < class SymbolList > bool CMathModel::clearList(SymbolList & list)
+  {
+    SymbolList::iterator it = list.begin();
+    SymbolList::iterator end = list.end();
 
-  for (; it != end; it++)
-    pdelete(it->second);
+    for (; it != end; it++)
+      pdelete(it->second);
 
-  list->clear();
+    list.clear();
 
-  return true;
-}
+    return true;
+  }
 
 bool CMathModel::compileCompartmentList()
 {

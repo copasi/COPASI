@@ -217,7 +217,7 @@ class CMathModel
     /**
      *
      */
-    bool clearList(std::map< std::string, CMathSymbol * > * list);
+    template < class SymbolList > bool clearList(SymbolList & list);
 
     /**
      *
