@@ -209,9 +209,9 @@ void CTrajectory::process()
     
   // COutputEvent *OutInit = NULL, *OutPoint = NULL, *OutEnd = NULL;
 
-  // OutInit = COutputEvent(TIME_INIT, this);
-  // OutPoint = COutputEvent(TIME_POINT, this);		
-  // OutEnd = COutputEvent(TIME_END, this);
+  // mOutInit = COutputEvent(TIME_INIT, this);
+  // mOutPoint = COutputEvent(TIME_POINT, this);		
+  // mOutEnd = COutputEvent(TIME_END, this);
 
 
   //calculates number of iterations and time intervals
@@ -219,8 +219,8 @@ void CTrajectory::process()
   mTime = 0.0;
 
   // print for the initial time point	
-  // if (OutInit) OutInit.Print();
-  // if (OutPoint) OutPoint.Print();
+  // if (mOutInit) mOutInit->Print();
+  // if (mOutPoint) mOutPoint->Print();
         
   for(C_INT32 i = 0; i < mPoints; i++)
     {
@@ -240,7 +240,7 @@ void CTrajectory::process()
 	
   // if (OutEnd) OutEnd.Print();
 
-  // delete OutInit;
+  // delete OutInit; -> to cleanup
   // delete OutPoint;
   // delete OutEnd;
     
