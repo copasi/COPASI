@@ -135,7 +135,6 @@ class ListViews : public QSplitter, public Observer
     CMathModel *mpMathModel;
     CSteadyStateTask *mSteadyStateTask;
     CTrajectoryTask *mTrajectoryTask;
-    void loadModelNodes(CModel *model);
     void loadSteadyStateTaskNodes(CSteadyStateTask*);
     void loadTrajectoryTaskNodes(CTrajectoryTask* p_trajectorytask);
     void ConstructNodeWidgets();
@@ -189,13 +188,15 @@ class ListViews : public QSplitter, public Observer
     void deleteAllMyChildrens(QListViewItem* me);
     void addItem(QListViewItem* parent, Folder* child);
     void addItem(QListView* parent, Folder* child);
+    void showMessage(QString caption, QString text);
+    void loadModes(QListViewItem*);
     void loadMetabolites(QListViewItem*);
     void loadReactions(QListViewItem*);
     void loadMoieties(QListViewItem*);
     void loadCompartments(QListViewItem*);
     void loadFunction();
-    void loadModes(QListViewItem*);
-    void showMessage(QString caption, QString text);
+  public slots:
+    void loadModelNodes(CModel *model);
   };
 
 #endif

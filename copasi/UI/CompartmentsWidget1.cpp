@@ -200,9 +200,6 @@ void CompartmentsWidget1::slotBtnCancelClicked()
 
 void CompartmentsWidget1::slotBtnOKClicked()
 {
-  //QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
-  //  std::string filename = ((std::string) name.latin1()) + ".gps";
-  //  CWriteConfig *Com = new CWriteConfig(filename);
   const CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
   compartn1 = compartments1[name.latin1()];
@@ -211,11 +208,9 @@ void CompartmentsWidget1::slotBtnOKClicked()
   double m1;
   m1 = volume.toDouble();
   compartn1->setVolume((float)m1);
+  compartn1->setName(std::string(LineEdit1->text()));
+
   emit signal_emitted(*Compartment1_Name);
-  //mModel->save(*Com);
-  //compartn1->save(*Com);
-  //Copasi->Model->save(*Com);
-  //delete Com;
 }
 
 void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & m)

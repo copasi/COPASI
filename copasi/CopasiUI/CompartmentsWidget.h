@@ -38,6 +38,7 @@ class CompartmentsWidget : public QWidget
     //void mousePressEvent(QMouseEvent * e);
     void resizeEvent(QResizeEvent * re);
     QString *Compartment_Name;
+    void repaint_table();
 
   public slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
@@ -45,6 +46,7 @@ class CompartmentsWidget : public QWidget
   signals:
     void name(const QString &);
     void signal_emitted(const QString &);
+    void leaf(CModel*);
 
   protected slots:
     virtual void slotTableSelectionChanged();

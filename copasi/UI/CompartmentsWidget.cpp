@@ -71,10 +71,11 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
   connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(const QString &)));
-
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
+
+  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
 }
 
 void CompartmentsWidget::loadCompartments(CModel *model)
@@ -89,23 +90,7 @@ void CompartmentsWidget::loadCompartments(CModel *model)
         {
           table->removeRow(0);
         }
-
-      const CCopasiVectorNS < CCompartment > & compartments =
-        mModel->getCompartments();
-
-      C_INT32 noOfCompartmentsRows = compartments.size();
-
-      table->setNumRows(noOfCompartmentsRows);
-
-      //Now filling the table.
-      const CCompartment *compartn;
-      C_INT32 j;
-      for (j = 0; j < noOfCompartmentsRows; j++)
-        {
-          compartn = compartments[j];
-          table->setText(j, 0, compartn->getName().c_str());
-          table->setText(j, 1, QString::number(compartn->getVolume()));
-        }
+      repaint_table();
     }
 }
 
@@ -130,6 +115,7 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
       x = name.c_str();
+      emit leaf(mModel);
     }
   emit name(x);
   //QMessageBox::information(this, "Compartments Widget",x);
@@ -145,10 +131,31 @@ void CompartmentsWidget::slotTableSelectionChanged()
     }
 }
 
+void CompartmentsWidget::repaint_table()
+{
+  if (!mModel)
+    return;
+  //repaint()
+  int j;
+  const CCompartment *compartn;
+  const CCopasiVectorNS < CCompartment > & compartments =
+    mModel->getCompartments();
+  C_INT32 noOfCompartmentsRows = compartments.size();
+  table->setNumRows(noOfCompartmentsRows);
+
+  for (j = 0; j < noOfCompartmentsRows; j++)
+    {
+      compartn = compartments[j];
+      table->setText(j, 0, compartn->getName().c_str());
+      table->setText(j, 1, QString::number(compartn->getVolume()));
+    }
+}
+
 void CompartmentsWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
+      repaint_table();
       if (binitialized)
         {
           int newWidth = re->size().width();
