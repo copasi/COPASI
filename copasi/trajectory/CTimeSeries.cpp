@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/30 15:49:16 $
+   $Author: gauges $ 
+   $Date: 2004/10/07 16:56:47 $
    End CVS Header */
 
 #include "CTimeSeries.h"
@@ -111,4 +111,46 @@ const std::string & CTimeSeries::getTitle(unsigned C_INT32 var) const
       return mTitles[var];
     else
       return mDummyString;
+  }
+
+int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, const std::string& separator) const
+  {
+    std::ofstream fileStream(fileName.c_str());
+    std::ostringstream* stringStream = new std::ostringstream();
+    (*stringStream) << "# ";
+    unsigned int counter2;
+    unsigned int maxCount2 = this->getNumVariables();
+    for (counter2 = 0; counter2 < maxCount2;++counter2)
+      {
+        (*stringStream) << this->getTitle(counter2) << separator;
+      }
+    (*stringStream) << std::endl;
+    fileStream << stringStream->str();
+    if (!fileStream.good()) return 1;
+    unsigned int counter;
+    unsigned int maxCount = this->getNumSteps();
+    for (counter = 0; counter < maxCount;++counter)
+      {
+        delete stringStream;
+        stringStream = new std::ostringstream();
+        for (counter2 = 0; counter2 < maxCount2;++counter2)
+          {
+            C_FLOAT64 value;
+            if (writeParticleNumbers)
+              {
+                value = this->getData(counter, counter2);
+              }
+            else
+              {
+                value = this->getConcentrationData(counter, counter2);
+              }
+            (*stringStream) << value << separator;
+          }
+        (*stringStream) << std::endl;
+        fileStream << stringStream->str();
+        if (!fileStream.good()) return 1;
+      }
+    fileStream.close();
+    delete stringStream;
+    return 0;
   }

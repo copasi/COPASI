@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/30 15:49:16 $
+   $Author: gauges $ 
+   $Date: 2004/10/07 16:56:47 $
    End CVS Header */
 
 #ifndef TIMESERIES_H
@@ -31,6 +31,8 @@ class CTimeSeries : private std::vector<CState>
     bool add();
 
     bool finish();
+
+    int save(const std::string& fileName, bool writeConcentrations = false, const std::string& separator = "\t") const;
 
     //**** get data from time series ***
 
