@@ -622,17 +622,15 @@ C_INT32 TestMoiety()
 {
   CMoiety mo("test");
   CCompartment c("comp", 1.0);
-  CCopasiVectorN < CMetab > mv;
-    
-  mv = c.metabolites();
-    
-  mv.add(CMetab("metab 1"));
 
-  c.metabolites().add(CMetab("metab 1"));
-  c.metabolites().add(CMetab("metab 2"));
+  c.metabolites().add(CMetab());
+  c.metabolites().add(CMetab());
     
+  c.metabolites()[0]->setName("metab 1");
   c.metabolites()[0]->setConcentration(5.2);
+  c.metabolites()[1]->setName("metab 2");
   c.metabolites()[1]->setConcentration(2.0);
+
   CMetab m;
   m = *c.metabolites()["metab 2"];
     
@@ -1639,7 +1637,7 @@ C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
     }
     cout << endl;
     cout << "Testing update node\n";
-    for (i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
     {
         cout << "Reset node at top index: ";
         pq.updateNode(pq.topIndex(), 10000);

@@ -77,12 +77,6 @@ class CMetab
   CMetab(const CMetab & src);
 
   /**
-   *  Specific constructor. 
-   *  @param name name of the metabolite.
-   */
-  CMetab(const string & name);
-
-  /**
    *  Specific constructor.
    *  @param name name of the metabolite.
    *  @param status status of the metabolite 
