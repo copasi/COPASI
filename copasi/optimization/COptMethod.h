@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:29:54 $
+   $Date: 2005/03/30 18:45:58 $
    End CVS Header */
 
 /**
@@ -54,12 +54,12 @@ class COptMethod : public CCopasiMethod
     /**
      * A vector of pointers to the update methods for the optimization parameters
      */
-    std::vector< UpdateMethod * > * mpSetCalculateVariable;
+    const std::vector< UpdateMethod * > * mpSetCalculateVariable;
 
     /**
      * A vector of pointers to the optimization parameter
      */
-    std::vector< COptItem * > * mpOptItem;
+    const std::vector< COptItem * > * mpOptItem;
 
     // Operations
   private:
@@ -117,6 +117,19 @@ class COptMethod : public CCopasiMethod
      * @param "COptProblem *" problem
      */
     void setProblem(COptProblem * problem);
+
+  protected:
+    /**
+     * Initialize arrays and pointer.
+     * @return bool success
+     */
+    virtual bool initialize();
+
+    /**
+     * Cleanup arrays and pointers.
+     * @return bool success
+     */
+    virtual bool cleanup();
   };
 
 #include "CRandomSearch.h"
