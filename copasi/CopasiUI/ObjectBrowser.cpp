@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/23 16:32:44 $
+   $Date: 2003/10/24 01:56:26 $
    End CVS Header */
 
 /********************************************************
@@ -491,6 +491,13 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(FIELDATTR);
           currentItem->attachKey();
+
+          if (pSubField)
+            if (pSubField->isContainer()) //container field recursively to find all possible items
+              {
+                loadChild(currentItem, (CCopasiContainer *)pSubField, false); // wont show the attribute and field list
+              }
+
           last = currentItem;
           it++;
         }
@@ -564,8 +571,15 @@ CCopasiObject* ObjectBrowser::getFieldCopasiObject(CCopasiContainer * pCurrent, 
   //  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->begin();
   //  std::map< const std::string, CCopasiObject *>::const_iterator end = pObjectList->end();
 
+  CCopasiObject* pResult;
   while (it != end)
     {
+      if (it->second->isContainer())
+        {
+          pResult = getFieldCopasiObject((CCopasiContainer *)it->second, name);
+          if (pResult)
+            return pResult;
+        }
       if (QString(it->second->getObjectName().c_str()) == name)
         return it->second;
       it++;
