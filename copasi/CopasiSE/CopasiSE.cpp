@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/26 18:39:29 $
+   $Author: ssahle $ 
+   $Date: 2004/05/11 09:52:34 $
    End CVS Header */
 
 // Main
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
       Model.load(CopasiFile);
 
       // Load the output specifications
-      Copasi->pOutputList->load(CopasiFile);
+      //Copasi->pOutputList->load(CopasiFile);//TODO
 
       bool runTrajectory;
       CopasiFile.getVariable("Dynamics", "bool", &runTrajectory,
@@ -123,7 +123,7 @@ void processTrajectory(CModel & model, CReadConfig & copasiFile)
 
   task.getProblem()->setModel(&model);
 
-  std::ofstream TrajectoryFile(Copasi->pOutputList->getTrajectoryFile().c_str());
+  std::ofstream TrajectoryFile("TEST.DAT" /*Copasi->pOutputList->getTrajectoryFile().c_str()*/);
   task.initialize(&TrajectoryFile);
 
   task.process();
@@ -137,7 +137,7 @@ void processSteadyState(CModel & model, CReadConfig & copasiFile)
 
   task.getProblem()->setModel(&model);
 
-  std::ofstream SteadyStateFile(Copasi->pOutputList->getSteadyStateFile().c_str());
+  std::ofstream SteadyStateFile("TEST.DAT" /*Copasi->pOutputList->getSteadyStateFile().c_str()*/);
   task.initialize(&SteadyStateFile);
 
   task.process();
