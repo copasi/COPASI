@@ -120,6 +120,17 @@ CFunctionParameters::getParameterByUsage(const std::string & usage,
     return *mParameters[i];
   }
 
+unsigned C_INT32 CFunctionParameters::getNumberOfParametersByUsage(const std::string & usage) const
+  {
+    unsigned C_INT32 i, imax = mParameters.size();
+    unsigned C_INT32 count = 0;
+
+    for (i = 0; i < imax; i++)
+      if (mParameters[i]->getUsage() == usage) ++count;
+
+    return count;
+  }
+
 void CFunctionParameters::updateUsageRanges()
 {
   unsigned C_INT32 i, imax = mParameters.size();

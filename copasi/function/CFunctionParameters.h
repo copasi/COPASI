@@ -159,6 +159,11 @@ class CFunctionParameters : public CCopasiContainer
         unsigned C_INT32 & pos) const;
 
     /**
+     * gets the number of Parameters with a specific usage
+     */
+    unsigned C_INT32 getNumberOfParametersByUsage(const std::string & usage) const;
+
+    /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CFunctionParameters & d)
