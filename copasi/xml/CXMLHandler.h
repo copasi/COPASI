@@ -10,6 +10,7 @@
 #define COPASI_CXMLHandler
 
 #include <stack>
+#include <string>
 
 #include "expat.h"
 
@@ -73,28 +74,28 @@ class CXMLCharacterDataHandler
      */
     std::string mData;
 
-    /**
-     * The character to be stripped.
-     */
-    std::string mToBeStripped;
-
-    /**
-     * The characters used to replace new lines.
-     */
-    std::string mJoin;
-
     // Operations
   public:
 
     /**
      * Constructor
      */
-    CXMLCharacterDataHandler(const std::string & toBeStripped = "\t\n ",
-                             const std::string & join = " ");
+    CXMLCharacterDataHandler();
 
     /**
      * Destructor
      */
     virtual ~CXMLCharacterDataHandler();
-  }
+
+    /**
+     * Retrieve the data. 
+     * Any sequence of toBeStripped characters is replaced by a single
+     * join character. The default is no stripping.
+     * @param const std::string & toBeStripped (default: "")
+     * @param const std::string & join (default: " ")
+     * @return std::string data
+     */
+    std::string getData(const std::string & toBeStripped = "",
+                        const std::string & join = " ") const;
+  };
 #endif // COPASI_CXMLHandler
