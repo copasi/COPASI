@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/29 13:46:46 $
+   $Date: 2005/03/30 11:50:25 $
    End CVS Header */
 
 /****************************************************************************
@@ -181,7 +181,7 @@ void SliderSettingsDialog::minValueChanged()
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
   if (this->mMinValue == 0.0 && this->mpLogCheckBox->isChecked())
     {
-      QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0. Please set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+      QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0.\nPlease set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
       this->mpLogCheckBox->setChecked(false);
       this->mScaling = CSlider::linear;
     }
@@ -261,6 +261,13 @@ void SliderSettingsDialog::browseButtonPressed()
   if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
     {
       CCopasiObject* object = selection->at(0);
+      if (object && !object->isValueDbl() && !object->isValueInt())
+        {
+          QMessageBox::critical(this, "Invalid Object", "You chose an object that\ndoes not correspond to an integer or float value.\nPlease choose an object that corresponds to an integet or float value.", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          this->mpSlider = NULL;
+          this->mpObjectNameLineEdit->setText("");
+          return;
+        }
       // check if this object already has a slider object
       // if yes, call setSlider with the correct slider object
       // else create a new slider object for this object and add it to the sliders
@@ -380,7 +387,7 @@ void SliderSettingsDialog::logCheckBoxToggled(bool on)
       // check if the minValue is 0.0 if so, issue an error message and uncheck the checkbox again
       if (this->mMinValue == 0.0)
         {
-          QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0. Please set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+          QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0.\nPlease set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
           this->mpLogCheckBox->setChecked(false);
           this->mScaling = CSlider::linear;
         }
