@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 15:31:47 $
+   $Date: 2004/08/06 11:59:43 $
    End CVS Header */
 
 #include "model/CModel.h"
@@ -13,12 +13,14 @@
 CPlotSpecification::CPlotSpecification(const std::string & name,
                                        const CCopasiContainer * pParent,
                                        const CPlotSpecification::Type & type):
-    CPlotItem(name, pParent, type)
+    CPlotItem(name, pParent, type),
+    mActive(true)
 {}
 
 CPlotSpecification::CPlotSpecification(const CPlotSpecification & src,
                                        const CCopasiContainer * pParent):
-    CPlotItem(src, pParent)
+    CPlotItem(src, pParent),
+    mActive(true)
 {}
 
 CPlotSpecification::~CPlotSpecification() {}
@@ -47,6 +49,9 @@ CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::T
 
 bool CPlotSpecification::createDefaultPlot(const CModel* model)
 {
+  mActive = true;
+
+  //TODO cleanup before?
   //title = "Default Data Plot 2D";
 
   /*axes.resize(4);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 15:31:47 $
+   $Date: 2004/08/06 11:59:43 $
    End CVS Header */
 
 /**
@@ -25,6 +25,7 @@ class CPlotSpecification : public CPlotItem
   private:
 
     CCopasiVector<CPlotItem> items;
+    bool mActive;
 
     /**
      * Initialize the contained CCopasiObjects
@@ -51,6 +52,9 @@ class CPlotSpecification : public CPlotItem
     CPlotItem* createItem(const std::string & name, CPlotItem::Type type);
 
     bool createDefaultPlot(const CModel* model);
+
+    void setActive(bool act) {mActive = act;}
+    bool isActive() const {return mActive;}
   };
 
 #endif
