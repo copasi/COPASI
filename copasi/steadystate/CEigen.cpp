@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:13:13 $
+   $Date: 2004/10/06 09:55:34 $
    End CVS Header */
 
 /**
@@ -145,6 +145,8 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
   mN = matrix.numRows();
   initialize();
 
+  if (!mN) return;
+
   // copy the jacobian into mA
   mA = matrix;
 
@@ -262,18 +264,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,          // mSelect,           //NULL,
-         &mN,                         //&n,
+         NULL,           // mSelect,           //NULL,
+         &mN,                          //&n,
          mA.array(),
          & mLDA,
-         & mSdim,                 // output
+         & mSdim,                  // output
          mEigen_r.array(),
          mEigen_i.array(),
          mVS,
          & mLdvs,
          mWork,
          & mLWork,
-         mBWork,                   //NULL
+         mBWork,                    //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();
@@ -281,6 +283,8 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
 
 void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 {
+  if (!mN) return;
+
   C_INT32 mx, mn;            // YH: n is the 4th parameter, not here
   C_INT32 i;
   C_FLOAT64 distt, maxt, tott;
