@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/19 20:50:24 $
+   $Author: chlee $ 
+   $Date: 2004/05/22 22:25:49 $
    End CVS Header */
 
 /**********************************************************************
@@ -434,10 +434,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                                      // The user clicked the Retry again button or pressed Enter
+            case 0:                                       // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                                      // The user clicked the Quit or pressed Escape
+            case 1:                                       // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -868,7 +868,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
   QString msg1 = "Cannot delete Function(s). ";
   msg1.append("Following dependencies with listed Reaction(s) exist:\n");
-  QString msg2 = "Are you sure to delete listed Functions?\n";
+  QString msg2 = "Are you sure to delete listed Function(s)?\n";
   int msg1Empty = 1;
   int msg2Empty = 1;
   //int *reacFound = new int[imax];
@@ -895,6 +895,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
               msg1.append(FROM_UTF8((*pReactions)[k]->getObjectName()));
               msg1.append(" ---> ");
               //msg1.append(table->text(ToBeDeleted[i], 0));
+              msg1.append(FROM_UTF8(pFunction->getObjectName()));
               msg1.append("\n");
               msg1Empty = 0;
               break;
@@ -907,6 +908,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
   if (reacFound == 0)
     {
       //msg2.append(table->text(ToBeDeleted[i], 0));
+      msg2.append(FROM_UTF8(pFunction->getObjectName()));
       msg2.append("\n");
       msg2Empty = 0;
     }
@@ -922,7 +924,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:              // Yes or Enter
+        case 0:               // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -954,7 +956,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:              // No or Escape
+        case 1:               // No or Escape
           break;
         }
     }
