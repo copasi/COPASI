@@ -147,10 +147,6 @@ SOURCE=.\FixedMetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\form1.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\FunctionSymbols.cpp
 # End Source File
 # Begin Source File
@@ -212,10 +208,6 @@ SOURCE=.\moc_DifferentialEquations.cpp
 # Begin Source File
 
 SOURCE=.\moc_FixedMetaboliteSymbols.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_form1.cpp
 # End Source File
 # Begin Source File
 
@@ -598,10 +590,6 @@ InputName=FixedMetaboliteSymbols
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\form1.h
 # End Source File
 # Begin Source File
 
@@ -1321,61 +1309,6 @@ SOURCE=.\Tree.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # End Group
-# Begin Source File
-
-SOURCE=.\form1.ui
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - UICing form1.ui...
-InputDir=.
-InputPath=.\form1.ui
-InputName=form1
-
-BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
-	
-
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - UICing form1.ui...
-InputDir=.
-InputPath=.\form1.ui
-InputName=form1
-
-BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
-	
-
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
 # Begin Source File
 
 SOURCE=.\ScanWidget.moc
