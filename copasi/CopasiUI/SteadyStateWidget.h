@@ -67,12 +67,13 @@ class SteadyStateWidget : public CopasiWidget
     virtual void runFinished(CModel*);
 
   public slots:
-    virtual void CancelChange();
-    virtual void CommitChange();
-    virtual void ExportToFile();
+    virtual void CancelButtonClicked();
+    virtual void CommitButtonClicked();
+    virtual void ExportToFileButtonClicked();
     virtual void parameterValueChanged();
+    virtual void RunButtonChecked();
     virtual void RunButtonClicked();
-    virtual void RunTask();
+    virtual void ReportDefinitionClicked();
 
   protected:
     QGridLayout* SteadyStateWidgetLayout;

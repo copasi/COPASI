@@ -144,14 +144,16 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   SteadyStateWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
 
   // signals and slots connections
-  connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
-  connect(bRunButton, SIGNAL(clicked()), this, SLOT(RunTask()));
+  connect(bRunButton, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
+  connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelButtonClicked()));
+  connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFileButtonClicked()));
+  connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonChecked()));
   //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
-  connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
-  connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
   connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,
           SLOT(loadModelNodes(CModel*)));
+
+  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
   // tab order
   setTabOrder(taskName, bExecutable);
@@ -177,12 +179,12 @@ SteadyStateWidget::~SteadyStateWidget()
   pdelete(mSteadyStateTask);
 }
 
-void SteadyStateWidget::CancelChange()
+void SteadyStateWidget::CancelButtonClicked()
 {
   loadSteadyStateTask();
 }
 
-void SteadyStateWidget::CommitChange()
+void SteadyStateWidget::CommitButtonClicked()
 {
   if (!CKeyFactory::get(objKey))
     return;
@@ -229,7 +231,7 @@ void SteadyStateWidget::CommitChange()
   loadSteadyStateTask();
 }
 
-void SteadyStateWidget::RunButtonClicked()
+void SteadyStateWidget::RunButtonChecked()
 {
   if (!CKeyFactory::get(objKey))
     return;
@@ -245,12 +247,12 @@ void SteadyStateWidget::parameterValueChanged()
   qWarning("SteadyStateWidget::parameterValueChanged(): Not implemented yet!");
 }
 
-void SteadyStateWidget::RunTask()
+void SteadyStateWidget::RunButtonClicked()
 {
   if (!CKeyFactory::get(objKey))
     return;
 
-  CommitChange();
+  CommitButtonClicked();
 
   if (bRunButton->text() != "Run")
     {
@@ -341,7 +343,7 @@ void SteadyStateWidget::loadSteadyStateTask()
     bRunButton->setEnabled(true);
 }
 
-void SteadyStateWidget::ExportToFile()
+void SteadyStateWidget::ExportToFileButtonClicked()
 {
   if (!CKeyFactory::get(objKey)) return;
   QString textFile = QFileDialog::getSaveFileName(
@@ -388,3 +390,6 @@ bool SteadyStateWidget::leave()
   //let the user confirm?
   return true;
 }
+
+void SteadyStateWidget::ReportDefinitionClicked()
+{}
