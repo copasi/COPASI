@@ -7,25 +7,18 @@
  *           It contains the designed abstract interaction between a simulation
  *           subsystem and optimization algorithms. This base class defines
  *           methods by which the simulation subsystem accesses several 
- *           optimization algorithms. 
+ *           optimization algorithms.
+ *  Note: This is an abstract class
  */
 
 #ifndef COPTIMIZER_H
 #define COPTIMIZER_H
 
-
+// YOHE: this is an abstract class that contains many virtual functions 
+// without definitions
+//
 class COptimizer
 {
-  /*
-// data members
-public:
- CString Dll;					// DLL filename
- CString Ini;			      		// INI filename
- CString Help;					// Help filename
- CString Name;				        // Name (descriptive)
- CString Version;				// Version string
- double *Param;					// array for parameter values
-  */
 
   //data member
  private:
@@ -39,20 +32,11 @@ public:
   double *mParam;               // array for parameter values
 
   int mParamNum;                // the number of parameters
-  char mStatbuffer[256];	// static character string for function returns
-  BOOL mArrayCreated;		// True if DLL is in memory
+  //char mStatbuffer[256];	// static character string for function returns
+  //BOOL mArrayCreated;		// True if DLL is in memory
   BOOL mBounds;			// True if method accepts bounds on the parameters
   BOOL mConstraints;		// True if method accepts constraints on the variable
-#endif   // XXXX
-  /*
-   HINSTANCE HLib;	     	// handle to the DLL
-   BOOL DllLoaded;  	      	// True if DLL is in memory
-   int nParam;   		// the number of parameters
-   char statbuffer[256];	// static character string for function returns
-   BOOL ArrayCreated;		// True if DLL is in memory
-   BOOL Bounds;			// True if method accepts bounds on the parameters
-   BOOL Constraints;		// True if method accepts constraints on the variable
-  */
+
 
  // Implementation
  public:
@@ -72,10 +56,18 @@ public:
     */
    BOOL Init( CString &inifile );
 
+
    /**
-    * Return the number of parameters
+    * Set algorithm parameters
     */
-   int CountParameters( void );
+   void SetAlgoParameters( void );
+
+
+   /**
+    * Set a parameter value
+    */
+   void SetParameterValue( int p, double v );
+
 
    /**
     * Get a parameter value
@@ -83,14 +75,29 @@ public:
    double GetParameterValue( int p );
 
    /**
-    * Set a parameter value
+    * Return the number of parameters
     */
-   void SetParameterValue( int p, double v );
+   int CountParameters( void );
+
 
    /**
     * Return the name of a parameter
     */
    char * GetParameterName( int p );
+
+
+   /**
+    * Returns True if this method is capable of handling adjustable parameter 
+    * boundary constraints, False otherwise
+    */
+   virtual BOOL IsBounded( void );
+
+   /**
+    * Return True if the method is capable of handling general constraints, 
+    * False otherwise
+    */
+   virtual BOOL IsConstrained( void );
+
 
    /**
     * Execute the optimization algorithm calling simulation routine 
@@ -98,12 +105,15 @@ public:
     * can give feedback of its progress by the callback function set 
     * with SetCallback.
     */
-   int Optimise( double (*func) (void) );
+   //virtual int Optimise( double (*func) (void) );
+   virtual int Optimise();
+
 
    /**
-    * Set algorithm parameters
+    *  return TRUE if method can do general optimisation
     */
-   void SetAlgoParameters( void );
+   BOOL CanOptimise( void );
+
 
    /**
     * Stores a reference to the procedure that carries out simiulations and
@@ -111,39 +121,52 @@ public:
     * It is noted that this procedure must periodically call the callback 
     * function set with SetCallback.
     */
-   int SolveLsq( double (*func) (double *) );
+   //int SolveLsq( double (*func) (double *) );
+   virtual int SolveLsq();
+
 
    /**
-    * Returns True if this method is capable of handling adjustable parameter 
-    * boundary constraints, False otherwise
-    */
-   BOOL IsBounded( void );
-
-   /**
-    * Return True if the method is capable of handling general constraints, 
-    * False otherwise
-    */
-   BOOL IsConstrained( void );
-
-   /**
-    *  return TRUE if method can do general optimisation
-    */
-   BOOL CanOptimise( void );
-
-   /**
- 
-  * return TRUE if method has specialised least-squares solver
+    * return TRUE if method has specialised least-squares solver
     */
    BOOL SpecialisedLsq( void );
+
 
 };
 
 
-#endif
+#endif  // end of real stuff
 
 
+
+
+// begin old trash
 
 #ifdef XXXX
+
+ 
+  /*     trash  here
+
+  // data members
+  public:
+   CString Dll;					// DLL filename
+   CString Ini;			      		// INI filename
+   CString Help;					// Help filename
+   CString Name;				        // Name (descriptive)
+   CString Version;				// Version string
+   double *Param;					// array for parameter values
+
+   HINSTANCE HLib;	     	// handle to the DLL
+   BOOL DllLoaded;  	      	// True if DLL is in memory
+   int nParam;   		// the number of parameters
+   char statbuffer[256];	// static character string for function returns
+   BOOL ArrayCreated;		// True if DLL is in memory
+   BOOL Bounds;			// True if method accepts bounds on the parameters
+   BOOL Constraints;		// True if method accepts constraints on the variable
+ 
+ */
+
+
+
 
 class COptParam;
 

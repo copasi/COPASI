@@ -68,12 +68,6 @@ char * COptimizer:: GetParameterName( int p )
   return mStatBuffer[p];             // ???????????????????
 }
 
-// Execute the optimization algorithm calling simulation routine (passed as argument)
-// when needed. It is noted that this procedure can give feedback of its progress by 
-// the callback function set with SetCallback
-int COptimizer::Optimise( double (*func) (void) )
-{
-}
 
 //
 void COptimizer::SetAlgoParameters( void )
@@ -82,12 +76,7 @@ void COptimizer::SetAlgoParameters( void )
   DLLSetMethodParam( i, Param[i] );
 }
 
-// Stores a reference to the procedure that carries out simiulations and then executes
-// the optimization algorithm to solve the problem. It is noted that this procedure 
-// must periodically call the callback function set with SetCallback.
-int COptimizer::SolveLsq( double (*func) (double *) )
-{
-}
+
 
 // Returns True if this method is capable of handling adjustable parameter boundary
 // constraints, False otherwise
@@ -105,22 +94,46 @@ BOOL COptimizer::IsConstrained( void )
 }
 
 
+// YOHE: declare it as abstract function in .h file
+//
+// Execute the optimization algorithm calling simulation routine (passed as argument)
+// when needed. It is noted that this procedure can give feedback of its progress by 
+// the callback function set with SetCallback
+//virtual int COptimizer::Optimise( double (*func) (void) )
+virtual int COptimizer::Optimise(void)
+{
+  return 0;
+}
+
 // return TRUE if method can do general optimisation
 BOOL COptimizer::CanOptimise( void )
 {
+  if ( Optimise() == 1 )
+    return TRUE;
+  else
+    return FALSE;
 
-switch( DLLRoutines() )
- {
- case 1:
- case 3:  return TRUE;
- case 2:  return FALSE;
- default: return FALSE;
- }
 }
 
+
+// Stores a reference to the procedure that carries out simiulations and then executes
+// the optimization algorithm to solve the problem. It is noted that this procedure 
+// must periodically call the callback function set with SetCallback.
+//int COptimizer::SolveLsq( double (*func) (double *) )
+virtual int COptimizer::SolveLsq(void)
+{
+  return 0;
+}
+
+
+
+//return TRUE if method has specialised least-squares solver
 BOOL COptimizer::SpecialisedLsq( void )
 {
-
+  if (SolveLsq() == 1)
+    return TRUE;
+  else 
+    return FALSE;
 }
 
 

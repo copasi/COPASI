@@ -33,7 +33,7 @@
 #include "r250.h"
 
 
-class CGA
+class CGA : public Coptimizer 
 {
 private:
 	unsigned int gener;		// number of generations
