@@ -315,6 +315,86 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const vector < CMetab* >
   return Fail;
 }
 
+void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
+{
+  string tmpstr, tmpstr2;
+  C_INT32 i;
+  CCopasiVector < CChemEqElement > rr;
+  CCopasiVectorS < CNodeK > node;
+
+  FixSName(mName, tmpstr);
+  fout << "\t\t\t<reaction name=\"" << tmpstr << "\"";
+  fout << " reversible=\"";
+  if (mReversible)
+    fout << "true";
+  else
+    fout << "false";
+  fout << "\">" << endl;
+  fout << "\t\t\t\t<listOfReactants>" << endl;
+  // check if we need to reference the dummy metabolite
+  rr = mChemEq.getSubstrates();
+  if (rr.size() == 0)
+    fout << "\t\t\t\t\t<specieReference specie=\"_void_\" stoichiometry=\"1\"/>" << endl;
+  else
+    {
+      // write them out
+      for (i = 0; i < rr.size(); i++)
+        {
+          tmpstr2 = rr[i]->getMetaboliteName();
+          FixSName(tmpstr2, tmpstr);
+          fout << "\t\t\t\t\t<specieReference specie=\"" << tmpstr << "\"";
+          fout << " stoichiometry=\"" << rr[i]->getMultiplicity() << "\"/>" << endl;
+        }
+    }
+  fout << "\t\t\t\t</listOfReactants>" << endl;
+  fout << "\t\t\t\t<listOfProducts>" << endl;
+  // check if we need to reference the dummy metabolite
+  rr = mChemEq.getProducts();
+  if (rr.size() == 0)
+    fout << "\t\t\t\t\t<specieReference specie=\"_void_\" stoichiometry=\"1\"/>" << endl;
+  else
+    {
+      // write them out
+      for (i = 0; i < rr.size(); i++)
+        {
+          tmpstr2 = rr[i]->getMetaboliteName();
+          FixSName(tmpstr2, tmpstr);
+          fout << "\t\t\t\t\t<specieReference specie=\"" << tmpstr << "\"";
+          fout << " stoichiometry=\"" << rr[i]->getMultiplicity() << "\"/>" << endl;
+        }
+    }
+  fout << "\t\t\t\t</listOfProducts>" << endl;
+  fout << "\t\t\t\t<kineticLaw formula=\"";
+  // kinetic function string
+  initCallParameterNames();
+  setCallParameterNames();
+  checkCallParameterNames();
+  tmpstr2 = StringPrint("_%ld", r);
+  fout << mFunction->getSBMLString(mCallParameterNames, tmpstr2);
+  cleanupCallParameterNames();
+  fout << "\">" << endl;
+  fout << "\t\t\t\t\t<listOfParameters>" << endl;
+  for (i = 0; i < mId2Parameters.size(); i++)
+    {
+      FixSName(mId2Parameters[i]->mIdentifierName, tmpstr);
+      fout << "\t\t\t\t\t\t<parameter name=\"" + tmpstr;
+      fout << "_" << r << "\" value=\"" << mId2Parameters[i]->mValue << "\"/>" << endl;
+    }
+  fout << "\t\t\t\t\t</listOfParameters>" << endl;
+  fout << "\t\t\t\t</kineticLaw>" << endl;
+  fout << "\t\t\t</reaction>" << endl;
+}
+
+C_INT32 CReaction::getSubstrateNumber(void)
+{
+  return mChemEq.getSubstrates().size();
+}
+
+C_INT32 CReaction::getProductNumber(void)
+{
+  return mChemEq.getProducts().size();
+}
+
 CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Substrates()
 {
   return mId2Substrates;
@@ -815,7 +895,6 @@ void CReaction::cleanupCallParameters()
       if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT16)
         if (mCallParameters[i])
           delete (vector < void * > *) mCallParameters[i];
-
       mCallParameters[i] = NULL;
     }
 
@@ -959,9 +1038,120 @@ void CReaction::checkCallParameters()
     }
 }
 
-unsigned C_INT32
-CReaction::findParameter(const string & name,
-                         CFunctionParameter::DataType & dataType)
+void CReaction::cleanupCallParameterNames()
+{
+  unsigned C_INT32 i, imax = mParameterDescription.size();
+
+  for (i = 0; i < imax; i++)
+    {
+      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT16)
+        if (mCallParameterNames[i])
+          delete (vector < string * > *) mCallParameterNames[i];
+      mCallParameterNames[i] = NULL;
+    }
+
+  mCallParameterNames.clear();
+}
+
+// this function requires that a compile() has already happened
+void CReaction::initCallParameterNames()
+{
+  unsigned C_INT32 i, imax = mParameterDescription.size();
+
+  mCallParameterNames.resize(imax);
+  for (i = 0; i < imax; i++)
+    {
+      mCallParameterNames[i] = NULL;
+      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT16)
+        mCallParameterNames[i] = new vector < string * >;
+    }
+}
+
+void CReaction::setCallParameterNames()
+{
+  unsigned C_INT32 i, imax;
+  unsigned C_INT32 Index;
+  CFunctionParameter::DataType dataType;
+
+  imax = mId2Substrates.size();
+  for (i = 0; i < imax; i++)
+    {
+      Index = findParameter(mId2Substrates[i]->mIdentifierName, dataType);
+      if (dataType < CFunctionParameter::VINT16)
+        mCallParameterNames[Index] =
+          & mId2Substrates[i]->mMetaboliteName;
+      else
+        {
+          ((vector <const string *> *) mCallParameterNames[Index])->
+          push_back(& (mId2Substrates[i]->mMetaboliteName));
+        }
+    }
+
+  imax = mId2Products.size();
+
+  for (i = 0; i < imax; i++)
+    {
+      Index = findParameter(mId2Products[i]->mIdentifierName, dataType);
+      if (dataType < CFunctionParameter::VINT16)
+        mCallParameterNames[Index] =
+          & mId2Products[i]->mMetaboliteName;
+      else
+        ((vector < const string * > *) mCallParameterNames[Index])->
+        push_back(& mId2Products[i]->mMetaboliteName);
+    }
+
+  imax = mId2Modifiers.size();
+
+  for (i = 0; i < imax; i++)
+    {
+      Index = findParameter(mId2Modifiers[i]->mIdentifierName, dataType);
+      if (dataType < CFunctionParameter::VINT16)
+        mCallParameterNames[Index] =
+          & mId2Modifiers[i]->mMetaboliteName;
+      else
+        ((vector < const string * > *) mCallParameterNames[Index])->
+        push_back(& mId2Modifiers[i]->mMetaboliteName);
+    }
+
+  imax = mId2Parameters.size();
+
+  for (i = 0; i < imax; i++)
+    {
+      Index = findParameter(mId2Parameters[i]->mIdentifierName, dataType);
+      if (dataType < CFunctionParameter::VINT16)
+        mCallParameterNames[Index] = &mId2Parameters[i]->mIdentifierName;
+      else
+        ((vector < string * > *) mCallParameterNames[Index])->
+        push_back(&mId2Parameters[i]->mIdentifierName);
+    }
+}
+
+void CReaction::checkCallParameterNames()
+{
+  unsigned C_INT32 i, imax = mParameterDescription.size();
+  unsigned C_INT32 j, jmax;
+  vector < void * > * pVector;
+
+  for (i = 0; i < imax; i++)
+    {
+      if (mCallParameterNames[i] == NULL)
+        fatalError();
+
+      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT16)
+        continue;
+
+      pVector = (vector < void * > *) mCallParameterNames[i];
+
+      jmax = pVector->size();
+
+      for (j = 0; j < jmax; j++)
+        if ((*pVector)[j] == NULL)
+          fatalError();
+    }
+}
+
+unsigned C_INT32 CReaction::findParameter(const string & name,
+    CFunctionParameter::DataType & dataType)
 {
   string VectorName = name.substr(0, name.find_last_of('_'));
   string Name;

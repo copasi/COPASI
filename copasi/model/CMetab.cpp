@@ -213,6 +213,22 @@ C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
   return Fail;
 }
 
+void CMetab::saveSBML(std::ofstream &fout)
+{
+  string str;
+  FixSName(mName, str);
+  fout << "\t\t\t<specie name=\"" << str << "\"";
+  FixSName(getCompartment()->getName(), str);
+  fout << " compartment=\"" + str + "\"";
+  fout << " initialAmount=\"" << mIConcDbl << "\"";
+  fout << " boundaryCondition=\"";
+  if (mStatus == METAB_FIXED)
+    fout << "true";
+  else
+    fout << "false";
+  fout << "\"/>" << endl;
+}
+
 const string & CMetab::getName() const
   {
     return mName;

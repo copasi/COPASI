@@ -118,6 +118,13 @@ class CCompartment
     C_INT32 saveOld(CWriteConfig & configbuffer);
 
     /**
+     *  Saves the contents of the object to a ofstream object.
+     *  Writes the data in SBML file format
+     *  @param "std::ofstream &" fout ofstream that should be already open
+     */
+    void saveSBML(std::ofstream &fout);
+
+    /**
      *  Returns a string with the name of this compartment.
      *  @return mName
      *  @see mName

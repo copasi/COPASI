@@ -275,6 +275,64 @@ C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
   return Fail;
 }
 
+void CModel::saveSBML(std::ofstream &fout)
+{
+  string tmpstr, tmpstr2;
+  C_INT32 i, p, dummy;
+
+  fout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
+  fout << "<!-- Created by COPASI version " << Copasi->ProgramVersion.getVersion() << " -->" << endl;
+  // TODO: add time stamp to the comment string
+  fout << "<sbml xmlns=\"http://www.sbml.org/sbml/level1\" level=\"1\" version=\"1\">" << endl;
+  FixSName(mTitle, tmpstr);
+  fout << "\t<model name=\"" + tmpstr + "\">" << endl;
+  // model notes
+  if (! mComments.empty())
+    {
+      fout << "\t\t<notes>" << endl;
+      fout << "\t\t\t<body xmlns=\"http://www.w3.org/1999/xhtml\">" << endl;
+      tmpstr = mComments;
+      for (i = 0; i != -1; )
+        {
+          p = tmpstr.find_first_of("\r\n");
+          FixXHTML(tmpstr.substr(0, p), tmpstr2);
+          fout << "\t\t\t\t<p>" << tmpstr2 << "</p>" << endl;
+          i = tmpstr.find('\n');
+          tmpstr = tmpstr.substr(i + 1);
+        }
+      fout << "\t\t\t</body>" << endl;
+      fout << "\t\t</notes>" << endl;
+    }
+  fout << "\t\t<listOfCompartments>" << endl;
+  // compartments
+  for (i = 0; i < mCompartments.size(); i++)
+    mCompartments[i]->saveSBML(fout);
+  fout << "\t\t</listOfCompartments>" << endl;
+  fout << "\t\t<listOfSpecies>" << endl;
+  for (i = 0; i < mMetabolites.size(); i++)
+    mMetabolites[i]->saveSBML(fout);
+  // check if any reaction has no substrates or no products
+  // (necessary because SBML l1v1 does not support empty subs or prods)
+  for (dummy = i = 0; (i < mSteps.size()) && (dummy == 0); i++)
+    if ((mSteps[i]->getSubstrateNumber() == 0) || (mSteps[i]->getProductNumber()))
+      dummy = 1;
+  // if there are any, we need a dummy metabolite, let's call it _void !
+  if (dummy)
+    {
+      fout << "\t\t\t<specie name=\"_void_\"";
+      FixSName(mCompartments[0]->getName(), tmpstr);
+      fout << " compartment=\"" << tmpstr << "\"";
+      fout << " initialAmount=\"0.0\" boundaryCondition=\"true\"/>" << endl;
+    }
+  fout << "\t\t</listOfSpecies>" << endl;
+  fout << "\t\t<listOfReactions>" << endl;
+  for (i = 0; i < mSteps.size(); i++)
+    mSteps[i]->saveSBML(fout, i);
+  fout << "\t\t</listOfReactions>" << endl;
+  fout << "\t</model>" << endl;
+  fout << "</sbml>" << endl;
+}
+
 void CModel::compile()
 {
   buildStoi();
@@ -1378,6 +1436,7 @@ C_INT32 CModel::addCompartment(string &name, C_FLOAT64 vol)
 C_INT32 CModel::addReaction(CReaction *r)
 {
   mSteps.add(r);
+  r->compile(mCompartments);
   return mSteps.size();
 }
 

@@ -157,6 +157,13 @@ class CMetab
     C_INT32 saveOld(CWriteConfig & configbuffer);
 
     /**
+     *  Saves the contents of the object to a ofstream object.
+     *  Writes the data in SBML file format
+     *  @param "std::ofstream &" fout ofstream that should be already open
+     */
+    void saveSBML(std::ofstream &fout);
+
+    /**
      *  Sets the name of the metabolite.
      */
     void setName(const string & name);

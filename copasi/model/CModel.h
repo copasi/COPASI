@@ -199,12 +199,18 @@ class CModel
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
-    *  This is saved in the format required by Gepasi 3.21
+     *  This is saved in the format required by Gepasi 3.21
      *  (Which usually has a file attached but may also have socket)
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
     C_INT32 saveOld(CWriteConfig &configBuffer);
+
+    /**
+     *  Saves the contents of the object to a ofstream in SBML format.
+     *  @param "std::ofstream &" fout the file stream (already open)
+     */
+    void saveSBML(std::ofstream &fout);
 
     /**
      *  This function must be called to initialize the vector of Metabolites

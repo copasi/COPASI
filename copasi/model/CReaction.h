@@ -296,6 +296,11 @@ class CReaction
     CCallParameters mCallParameters;
 
     /**
+     *  A pointer to the  call parameters of the rate function of the reaction
+     */
+    CCallParameters mCallParameterNames;
+
+    /**
      *
      */
     C_INT32 mFail;
@@ -363,6 +368,14 @@ class CReaction
     C_INT32 saveOld(CWriteConfig & configbuffer, const vector < CMetab* > &metabolites);
 
     /**
+     *  Saves the contents of the object to a ofstream object.
+     *  Writes the data in SBML file format
+     *  @param "std::ofstream &" fout ofstream that should be already open
+     *  @param C_INT32 r the ordinal number of this reaction (to append to parameters)
+     */
+    void saveSBML(std::ofstream &fout, C_INT32 r = 0);
+
+    /**
      *  Retrieves the vector of substrates
      *  @return "CCopasiVector < CId2Metab > &"
      */
@@ -397,6 +410,22 @@ class CReaction
      *  @return string
      */
     CChemEq & getChemEq();
+
+    /**
+     *  Retrieves the number of substrates of this reaction
+    *  Note: this is the number of different species, not
+    *  not the total number of substrate molecules
+     *  @return C_INT32
+     */
+    C_INT32 getSubstrateNumber(void);
+
+    /**
+     *  Retrieves the number of substrates of this reaction
+    *  Note: this is the number of different species, not
+    *  not the total number of substrate molecules
+     *  @return C_INT32
+     */
+    C_INT32 getProductNumber(void);
 
     /**
      *  Retrieves the chemical structure of the reaction
@@ -598,6 +627,27 @@ class CReaction
      *  Checks if all the Pointers in mCallParameters are !=NULL
      */
     void checkCallParameters();
+
+    /**
+     *
+     */
+    void cleanupCallParameterNames();
+
+    /**
+     *  gets mParameterDescription from mFunction and then creates the vectors inside
+     *  mCallParameterNames (If needed)
+     */
+    void initCallParameterNames();
+
+    /**
+     *
+     */
+    void setCallParameterNames();
+
+    /**
+     *  Checks if all the Pointers in mCallParameters are !=NULL
+     */
+    void checkCallParameterNames();
 
     /**
      *

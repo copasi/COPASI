@@ -126,6 +126,14 @@ C_INT32 CCompartment::saveOld(CWriteConfig & configbuffer)
   return Fail;
 }
 
+void CCompartment::saveSBML(std::ofstream &fout)
+{
+  string str;
+  FixSName(mName, str);
+  fout << "\t\t\t<compartment name=\"" << str << "\"";
+  fout << " volume=\"" << mVolume << "\"/>" << endl;
+}
+
 string CCompartment::getName() const
   {
     return mName;
