@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/24 13:04:19 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:38:19 $
    End CVS Header */
 
 /**
@@ -151,7 +151,7 @@ bool CMathModel::buildMetabList()
   clearList(mMetabList);
 
   const CCopasiVector< CMetab > & List = mpModel->getMetabolitesX();
-  unsigned C_INT32 i, imax = mpModel->getIntMetab();
+  unsigned C_INT32 i, imax = mpModel->getNumVariableMetabs();
 
   CMathVariableMetab * p;
 
@@ -179,7 +179,7 @@ bool CMathModel::buildFixedMetabList()
 
   CMathConstantMetab * p;
 
-  for (i = mpModel->getIntMetab(); i < imax; i++)
+  for (i = mpModel->getNumVariableMetabs(); i < imax; i++)
     {
       if (List[i]->getStatus() == CMetab::METAB_FIXED)
         {

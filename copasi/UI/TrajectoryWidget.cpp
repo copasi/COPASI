@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.87 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/22 10:07:46 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:35:45 $
    End CVS Header */
 
 /********************************************************
@@ -298,7 +298,7 @@ void TrajectoryWidget::checkTimeSeries()
 {
   //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << dataModel->getModel()->getIntMetab() << std::endl;
 
-  if (nStepNumber->text().toLong() * dataModel->getModel()->getIntMetab() > TSMAX)
+  if (nStepNumber->text().toLong() * dataModel->getModel()->getNumVariableMetabs() > TSMAX)
     {
       bStoreTimeSeries->setChecked(false);
       bStoreTimeSeries->setEnabled(false);
