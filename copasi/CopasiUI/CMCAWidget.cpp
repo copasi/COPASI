@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/03/07 15:00:18 $
+   $Author: ssahle $ 
+   $Date: 2005/03/24 16:05:59 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -330,6 +330,7 @@ void CMCAWidget::saveMCATask()
     dynamic_cast<CMCAMethod *>(mcaTask->getMethod());
   assert(mcaMethod);
 
+  CCopasiDataModel::Global->getModel()->compileIfNecessary();
   mcaProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   bool isSteadyStateRequested = taskSteadyState->isChecked();
