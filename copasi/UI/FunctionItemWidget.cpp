@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.2 2003/10/04 15:16:33 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.3 2003/10/04 16:00:39 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,7 +27,8 @@
  *  TRUE to construct a modal dialog.
  */
 FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool modal, WFlags fl)
-    : QDialog(parent, name, modal, fl)
+    : QDialog(parent, name, modal, fl),
+    strFunction("")
 {
   if (!name)
     setName("FunctionItemWidget");
@@ -271,6 +272,8 @@ FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool m
   setTabOrder(buttonPower, buttonCos);
   setTabOrder(buttonCos, buttonConfirm);
   setTabOrder(buttonConfirm, buttonCancel);
+
+  radioDec->setChecked(true);
 }
 
 /*
@@ -324,7 +327,8 @@ void FunctionItemWidget::languageChange()
 
 void FunctionItemWidget::slotButtonClear()
 {
-  qWarning("FunctionItemWidget::slotButtonClear(): Not implemented yet");
+  //qWarning("FunctionItemWidget::slotButtonClear(): Not implemented yet");
+  textFunction->clear();
 }
 
 void FunctionItemWidget::slotRadioDec()
@@ -334,7 +338,11 @@ void FunctionItemWidget::slotRadioDec()
 
 void FunctionItemWidget::slotButton1()
 {
-  qWarning("FunctionItemWidget::slotButton1(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "1");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonItems()
@@ -344,120 +352,231 @@ void FunctionItemWidget::slotButtonItems()
 
 void FunctionItemWidget::slotButton2()
 {
-  qWarning("FunctionItemWidget::slotButton2(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "2");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButton3()
 {
-  qWarning("FunctionItemWidget::slotButton3(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "3");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonConfirm()
 {
-  qWarning("FunctionItemWidget::slotButtonConfirm(): Not implemented yet");
+  strFunction = textFunction->text().latin1();
+  QDialog::done(QDialog::Accepted);
 }
 
 void FunctionItemWidget::slotButton5()
 {
-  qWarning("FunctionItemWidget::slotButton5(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "5");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButton7()
 {
-  qWarning("FunctionItemWidget::slotButton7(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "7");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButton8()
 {
-  qWarning("FunctionItemWidget::slotButton8(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "8");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButton9()
 {
-  qWarning("FunctionItemWidget::slotButton9(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "9");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButton4()
 {
-  qWarning("FunctionItemWidget::slotButton4(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "4");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButton6()
 {
-  qWarning("FunctionItemWidget::slotButton6(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "6");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonSign()
 {
-  qWarning("FunctionItemWidget::slotButtonSign(): Not implemented yet");
+  if (((textFunction->text().latin1())[0] != '+') && ((textFunction->text().latin1())[0] != '-'))
+    // add a '+' or a '-' in front of the expression
+    {
+      int para, index;
+      textFunction->getCursorPosition(&para, &index);
+      textFunction->setText('+' + textFunction->text());
+      index++;
+      textFunction->setCursorPosition(para, index);
+    }
+  else
+    // change sign of the expression
+    {
+      std::string strTemp;
+      if ((textFunction->text().latin1())[0] == '+')
+        {
+          strTemp = textFunction->text().latin1();
+          strTemp[0] = '-';
+          textFunction->setText(strTemp.c_str());
+        }
+      else
+        {
+          strTemp = textFunction->text().latin1();
+          strTemp[0] = '+';
+          textFunction->setText(strTemp.c_str());
+        }
+    }
 }
 
 void FunctionItemWidget::slotButtonAdd()
 {
-  qWarning("FunctionItemWidget::slotButtonAdd(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "+");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonSin()
 {
-  qWarning("FunctionItemWidget::slotButtonSin(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "sin");
+  index += 3;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonLn()
 {
-  qWarning("FunctionItemWidget::slotButtonLn(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "ln");
+  index += 2;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonMin()
 {
-  qWarning("FunctionItemWidget::slotButtonMin(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "-");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonDiv()
 {
-  qWarning("FunctionItemWidget::slotButtonDiv(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "/");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonLog()
 {
-  qWarning("FunctionItemWidget::slotButtonLog(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "log");
+  index += 3;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonMul()
 {
-  qWarning("FunctionItemWidget::slotButtonMul(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "*");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonExp()
 {
-  qWarning("FunctionItemWidget::slotButtonExp(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "exp");
+  index += 3;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonLeftB()
 {
-  qWarning("FunctionItemWidget::slotButtonLeftB(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "(");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonRightB()
 {
-  qWarning("FunctionItemWidget::slotButtonRightB(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + ")");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonPower()
 {
-  qWarning("FunctionItemWidget::slotButtonPower(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "^");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonCos()
 {
-  qWarning("FunctionItemWidget::slotButtonCos(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "cos");
+  index += 3;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButton0()
 {
-  qWarning("FunctionItemWidget::slotButton0(): Not implemented yet");
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  textFunction->setText(textFunction->text() + "0");
+  index++;
+  textFunction->setCursorPosition(para, index);
 }
 
 void FunctionItemWidget::slotButtonCancel()
 {
-  qWarning("FunctionItemWidget::slotButtonCancel(): Not implemented yet");
+  //  qWarning("FunctionItemWidget::slotButtonCancel(): Not implemented yet");
+  QDialog::done(QDialog::Rejected);
 }
