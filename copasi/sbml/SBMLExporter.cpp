@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/14 17:50:31 $
+   $Date: 2004/06/15 08:15:01 $
    End CVS Header */
 
 #include "SBMLExporter.h"
@@ -14,27 +14,44 @@
 
 #include "sbml/ModifierSpeciesReference.h"
 
+SBMLExporter::HTML_HEADER = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n<title>Comments</title>\n</head><body>";
+
+SBMLExporter::HTML_FOOTER = "</body>\n</html>";
+
+/**
+ ** Constructor for the exporter.
+ */
 SBMLExporter::SBMLExporter(): sbmlDocument(NULL)
 {
-  this->HTML_HEADER = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n<title>Comments</title>\n</head><body>";
-
-  this->HTML_FOOTER = "</body>\n</html>";
+  /* nothing to do */
 }
 
+/**
+ ** Destructor for the exporter.
+ */
 SBMLExporter::~SBMLExporter()
 {
+  /* delete the SBMLDocument created if it is not NULL */
   if (this->sbmlDocument != NULL)
     {
       SBMLDocument_free(this->sbmlDocument);
     }
 }
 
-bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilename) throw (StdException)
+/**
+ ** This method takes a copasi CModel object, crerates an SBMLDocument from
+ ** it and writes it to a file. The filename is given as the second
+ ** argument to the function. The function return "true" on success and
+ ** "false" on failure.
+ */
+bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilename, int sbmlLevel, int sbmlVersion) throw (StdException)
 {
-  this->sbmlDocument = this->createSBMLDocumentFromCModel(copasiModel, 2, 1);
+  /* create the SBMLDocument from the copasi model */
+  this->sbmlDocument = this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion);
   if (SBMLDocument_getModel(sbmlDocument) != NULL)
     {
       SBMLWriter_t* writer = SBMLWriter_create();
+      /* write the document to a file */
       int returnValue = SBMLWriter_writeSBML(writer, sbmlDocument, sbmlFilename.c_str());
       SBMLWriter_free(writer);
       if (returnValue == 0)
@@ -48,20 +65,34 @@ bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilenam
     }
   else
     {
+      /* if no SBMLDocument could be created return false */
       return false;
     }
 }
 
-SBMLDocument_t* SBMLExporter::createSBMLDocumentFromCModel(const CModel* copasiModel, int sbmlVersion, int sbmlLevel)
+/**
+ **  This method takes a copasi CModel object and generates a SBMLDocument
+ ** object from it.
+ ** Optionally the method takes two integers that specify the level and the
+ ** version number of the SBMLDocument that will be generated.
+ */
+SBMLDocument_t* SBMLExporter::createSBMLDocumentFromCModel(const CModel* copasiModel, int sbmlLevel, int sbmlVersion)
 {
+  /* create a new document object */
   SBMLDocument_t* sbmlDocument = SBMLDocument_createWith(sbmlLevel, sbmlVersion);
+  /* create the model object from the copasi model */
   Model_t* sbmlModel = this->createSBMLModelFromCModel(copasiModel);
   SBMLDocument_setModel(sbmlDocument, sbmlModel);
   return sbmlDocument;
 }
 
+/**
+ ** This method taked a copasi CModel and generates a SBML Model object
+ **  which is returned. On failure NULL is returned.
+ */
 Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
 {
+  /* create a new model object */
   Model_t* sbmlModel = Model_create();
 
   Model_setId(sbmlModel, copasiModel->getKey().c_str());
@@ -71,8 +102,12 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
     }
   if (copasiModel->getComments().size() != 0)
     {
-      SBase_setNotes((SBase_t*)sbmlModel, (this->HTML_HEADER + copasiModel->getComments() + this->HTML_FOOTER).c_str());
+      SBase_setNotes((SBase_t*)sbmlModel, (SBMLExporter::HTML_HEADER + copasiModel->getComments() + SBMLExporter::HTML_FOOTER).c_str());
     }
+  /* if the copasi volume unit does not correspond to the default SBML volume
+  ** unit, we have to create a UnitDefinition and make it the default in the
+  ** SBML model.
+  */
   if (!(copasiModel->getVolumeUnit() == "l"))
     {
       UnitDefinition_t* uDef = this->createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(copasiModel->getVolumeUnit());
@@ -85,6 +120,10 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
           throw StdException("Error. \"volume\" UnitDefinition is NULL.");
         }
     }
+  /* if the copasi time unit does not correspond to the default SBML time
+  ** unit, we have to create a UnitDefinition and make it the default in the
+  ** SBML model.
+  */
   if (!(copasiModel->getTimeUnit() == "s"))
     {
       UnitDefinition_t* uDef = this->createSBMLTimeUnitDefinitionFromCopasiTimeUnit(copasiModel->getTimeUnit());
@@ -97,6 +136,11 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
           throw StdException("Error. \"time\" UnitDefinition is NULL.");
         }
     }
+  /* if the copasi quantity unit does not correspond to the default SBML
+  ** substance
+  ** unit, we have to create a UnitDefinition and make it the default in the
+  ** SBML model.
+  */
   if (!(copasiModel->getQuantityUnit() == "Mol"))
     {
       UnitDefinition_t* uDef = this->createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(copasiModel->getQuantityUnit());
@@ -109,6 +153,7 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
           throw StdException("Error. \"substance\" UnitDefinition for is NULL.");
         }
     }
+  /* create all compartments */
   for (unsigned int counter = 0; counter < copasiModel->getCompartments().size(); counter++)
     {
       Compartment_t* sbmlCompartment = this->createSBMLCompartmentFromCCompartment(copasiModel->getCompartments()[counter]);
@@ -121,6 +166,7 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
           throw StdException("Error. SBML Compartment is NULL.");
         }
     }
+  /* create all metabolites */
   for (unsigned int counter = 0; counter < copasiModel->getMetabolites().size(); counter++)
     {
       Species_t* sbmlSpecies = this->createSBMLSpeciesFromCMetab(copasiModel->getMetabolites()[counter]);
@@ -133,6 +179,7 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
           throw StdException("Error. SBML Species is NULL.");
         }
     }
+  /* create all reactions */
   for (unsigned int counter = 0; counter < copasiModel->getReactions().size(); counter++)
     {
       Reaction_t* sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter]);
@@ -148,6 +195,11 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
   return sbmlModel;
 }
 
+/**
+ ** This method takes a string that specifies the time unit used in the
+ ** copasi model and returns a pointer to the corresponding SBML
+ ** UnitDefinition object.
+ */
 UnitDefinition_t* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(const std::string u)
 {
   UnitDefinition_t* uDef = UnitDefinition_createWithName("time");
@@ -198,6 +250,11 @@ UnitDefinition_t* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(c
   return uDef;
 }
 
+/**
+ ** This method takes a string that specifies the substance unit used in the
+ ** copasi model and returns a pointer to the corresponding SBML
+ ** UnitDefinition object.
+ */
 UnitDefinition_t* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(const std::string u)
 {
   UnitDefinition_t* uDef = UnitDefinition_createWithName("substance");
@@ -234,6 +291,11 @@ UnitDefinition_t* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuant
   return uDef;
 }
 
+/**
+ ** This method takes a string that specifies the volume unit used in the
+ ** copasi model and returns a pointer to the corresponding SBML
+ ** UnitDefinition object.
+ */
 UnitDefinition_t* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(const std::string u)
 {
   UnitDefinition_t* uDef = UnitDefinition_createWithName("volume");
@@ -270,6 +332,10 @@ UnitDefinition_t* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUn
   return uDef;
 }
 
+/**
+ ** This method takes a pointer to a copasi CCompartment object and creates
+ ** a SBML Compartment. The pointer to the SBML Comprtment is returned.
+ */
 Compartment_t* SBMLExporter::createSBMLCompartmentFromCCompartment(const CCompartment* copasiCompartment)
 {
   Compartment_t* sbmlCompartment = Compartment_create();
@@ -281,6 +347,10 @@ Compartment_t* SBMLExporter::createSBMLCompartmentFromCCompartment(const CCompar
   return sbmlCompartment;
 }
 
+/**
+ ** This method takes a pointer to a copasi CMetab object and creates a SBML 
+ ** Species object. The pointer to the species object is returned.
+ */
 Species_t* SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolite)
 {
   Species_t* sbmlSpecies = Species_create();
@@ -294,13 +364,20 @@ Species_t* SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabol
   return sbmlSpecies;
 }
 
+/**
+ ** This method takes a pointer to a copasi CReaction object and creates an
+ ** SBML Reaction object. The pointer to the created reaction object is
+ ** returned.
+ */
 Reaction_t* SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copasiReaction)
 {
+  /* create a new reaction object */
   Reaction_t* sbmlReaction = Reaction_create();
   Reaction_setId(sbmlReaction, copasiReaction->getKey().c_str());
   Reaction_setName(sbmlReaction, copasiReaction->getObjectName().c_str());
   Reaction_setReversible(sbmlReaction, copasiReaction->isReversible());
   const CChemEq chemicalEquation = copasiReaction->getChemEq();
+  /* Add all substrates */
   for (unsigned int counter = 0; counter < chemicalEquation.getSubstrates().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getSubstrates()[counter];
@@ -310,6 +387,7 @@ Reaction_t* SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copas
       SpeciesReference_setDenominator(sRef, 1);
       Reaction_addReactant(sbmlReaction, sRef);
     }
+  /* Add all products */
   for (unsigned int counter = 0; counter < chemicalEquation.getProducts().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getProducts()[counter];
@@ -319,6 +397,7 @@ Reaction_t* SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copas
       SpeciesReference_setDenominator(sRef, 1);
       Reaction_addProduct(sbmlReaction, sRef);
     }
+  /* Add all modifiers */
   for (unsigned int counter = 0; counter < chemicalEquation.getModifiers().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getModifiers()[counter];
@@ -326,17 +405,28 @@ Reaction_t* SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copas
       ModifierSpeciesReference_setSpecies(sRef, element->getMetaboliteKey().c_str());
       Reaction_addModifier(sbmlReaction, sRef);
     }
+  /* create the kinetic law */
   KineticLaw_t* kLaw = this->createSBMLKineticLawFromCReaction(copasiReaction);
   Reaction_setKineticLaw(sbmlReaction, kLaw);
   return sbmlReaction;
 }
 
+/**
+ ** This method takes a pointer to a copasi CReation object and creates a
+ ** SBML KineticLaw object from the kintik function of the copasi reaction
+ ** object. The pointer to the created KineticLaw is returned.
+ */
 KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copasiReaction)
 {
+  /* create a new KineticLaw */
   KineticLaw_t* kLaw = KineticLaw_create();
+  /* if the copasi CFunction specifies a mass-action kinetic */
   if (copasiReaction->getFunction().getType() == CFunction::MassAction)
     {
       const CMassAction cMassAction = static_cast<const CMassAction>(copasiReaction->getFunction());
+      /* create the ASTNode that multiplies all substrates with the first
+      ** kinetic constant.
+      */
       ASTNode_t* forwardNode = ASTNode_createWithType(AST_TIMES);
 
       ASTNode_t* parameterNode1 = ASTNode_createWithType(AST_NAME);
@@ -350,6 +440,10 @@ KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* c
 
       ASTNode_addChild(forwardNode, parameterNode1);
       ASTNode_addChild(forwardNode, this->createTimesTree(copasiReaction->getChemEq().getSubstrates()));
+      /* if the reaction is reversible, create the ASTNode tree that
+      ** multiplies all products with the second kinetic constant and
+      ** subtract this tree from the tree of the forward reaction.
+      */
       if (cMassAction.isReversible() == TriTrue)
         {
           ASTNode_t* backwardNode = ASTNode_createWithType(AST_TIMES);
@@ -372,6 +466,8 @@ KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* c
         }
       KineticLaw_setMath(kLaw, forwardNode);
     }
+  /* if the copasi CFunction does not specify a mass-action kinetic, it is a
+  ** CKinFunction */
   else
     {
       CKinFunction cKinFunction = static_cast<CKinFunction>(copasiReaction->getFunction());
@@ -397,6 +493,11 @@ KineticLaw_t* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* c
   return kLaw;
 }
 
+/**
+ ** This method creates an ASTNode tree where all the species specified in
+ ** the given vector are multiplied. This is used to create the mass action
+ ** kinetic law.
+ */
 ASTNode_t* SBMLExporter::createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKinFunction& kinFunction, const std::vector< std::vector < std::string > >& vect)
 {
   ASTNode_t* node = ASTNode_create();
@@ -412,6 +513,7 @@ ASTNode_t* SBMLExporter::createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKi
     case N_IDENTIFIER:
       ASTNode_setType(node, AST_NAME);
       CFunctionParameter::DataType dataType;
+      /* resolve the parameter name mapping */
       ASTNode_setName(node, vect[kinFunction.getParameters().findParameterByName(cNodeK.getName(), dataType)][0].c_str());
       break;
     case N_OPERATOR:
@@ -509,6 +611,11 @@ ASTNode_t* SBMLExporter::createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKi
   return node;
 }
 
+/**
+ ** This method creates an ASTNode tree where all the species specified in
+ ** the given vector are multiplied. This is used to create the mass action
+ ** kinetic law.
+ */
 ASTNode_t* SBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& vect, unsigned int pos)
 {
   ASTNode_t* node = NULL;
