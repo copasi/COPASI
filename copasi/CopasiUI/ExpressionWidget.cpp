@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.6 2003/09/19 20:40:49 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.7 2003/09/19 20:53:48 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -10,8 +10,9 @@
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qframe.h>
-#include <qlabel.h>
-#include <qtable.h>
+#include <qlabel.h> 
+//#include <qtable.h>
+#include <qlistbox.h>
 #include <qlineedit.h>
 #include <qtextedit.h>
 #include <qlayout.h>
@@ -21,24 +22,28 @@
 #include "ExpressionWidget.h"
 #include "copasi.h"
 #include "listviews.h"
+#include "ObjectBrowser.h"
 #include "utilities/CGlobals.h"
 #include "utilities/CMethodParameter.h"
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
 #include "report/CKeyFactory.h"
-
-#include "./icons/product.xpm"
-#include "./icons/substrate.xpm"
-#include "./icons/modifier.xpm"
+#include "./icons/scanwidgetbuttonicon.xpm"
 
 /*
  *  Constructs a ExpressionWidget as a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
 ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl),
+    bUpdated(false)
 {
+  QPixmap image0((const char**) image0_data);
+  QPixmap image1((const char**) image1_data);
+  QPixmap image2((const char**) image2_data);
+  QPixmap image3((const char**) image3_data);
+
   if (!name)
     setName("ExpressionWidget");
   ExpressionWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ExpressionWidgetLayout");
@@ -95,9 +100,10 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
 
   ExpressionWidgetLayout->addLayout(layout6, 1, 0);
 
-  itemsTable = new QTable(this, "itemsTable");
-  itemsTable->setNumRows(0);
-  itemsTable->setNumCols(0);
+  //  itemsTable = new QTable(this, "itemsTable");
+  //  itemsTable->setNumRows(0);
+  //  itemsTable->setNumCols(0);
+  itemsTable = new QListBox(this, "itemsTable");
 
   ExpressionWidgetLayout->addWidget(itemsTable, 1, 1);
 
@@ -191,4 +197,105 @@ bool ExpressionWidget::enter(const std::string & key)
 bool ExpressionWidget::loadFromExpression(CFunction*)
 {
   return true;
+}
+
+void ExpressionWidget::addButtonClicked()
+{
+  ObjectBrowser* pSelectedObjects = new ObjectBrowser();
+  std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
+  pSelectedObjects->setOutputVector(pSelectedVector);
+
+  if (pSelectedObjects->exec () == QDialog::Rejected)
+    {
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  if (pSelectedVector->size() == 0)
+    {
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  int i = 0;
+  for (; i < pSelectedVector->size(); i++)
+    if ((*pSelectedVector)[i])
+      break;
+
+  if (i >= pSelectedVector->size()) //no result returned
+    {
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  if (itemsTable->findItem((*pSelectedVector)[i]->getCN().c_str()) == NULL)
+    {
+      itemsTable->insertItem((*pSelectedVector)[i]->getCN().c_str());
+      //      selectedList.push_back((*pSelectedVector)[i]);
+      bUpdated = true;
+    }
+
+  pdelete(pSelectedVector);
+  //  if (addNewScanItem((*pSelectedVector)[i]))
+  //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
+}
+
+void ExpressionWidget::deleteButtonClicked()
+{
+  QListBoxItem* selectedItem = itemsTable->selectedItem ();
+  UINT32 selectedIndex = itemsTable->index(selectedItem);
+  if (selectedItem)
+    {
+      //      std::vector<CCopasiObject*>::iterator it = selectedList.begin();
+      //      selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
+      //      int pp = selectedList.size();
+      itemsTable->removeItem(selectedIndex);
+      bUpdated = true;
+    }
+}
+
+void ExpressionWidget::upButtonClicked()
+{
+  QListBoxItem* selectedItem = itemsTable->selectedItem ();
+  UINT32 selectedIndex = itemsTable->index(selectedItem);
+  if ((selectedItem) && (selectedIndex != 0))
+    {
+      //swap in selectedList
+      //      CCopasiObject* pDownObject = selectedList[selectedIndex];
+      // check for valid of the update object pointer array
+      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
+      //     CCopasiObject* pUpperObject = selectedList[selectedIndex - 1];
+      //      selectedList[selectedIndex] = pUpperObject;
+      //      selectedList[selectedIndex - 1] = pDownObject;
+
+      //swap in ListBox
+      QString pDownItemStr(itemsTable->item(selectedIndex)->text());
+      QString pUpperItemStr(itemsTable->item(selectedIndex - 1)->text());
+      itemsTable->changeItem (pUpperItemStr, selectedIndex);
+      itemsTable->changeItem (pDownItemStr, selectedIndex - 1);
+      bUpdated = true;
+    }
+}
+
+void ExpressionWidget::downButtonClicked()
+{
+  QListBoxItem* selectedItem = itemsTable->selectedItem ();
+  UINT32 selectedIndex = itemsTable->index(selectedItem);
+  if ((selectedItem) && (itemsTable->item(selectedIndex + 1)))
+    {
+      //swap in selectedList
+      //      CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
+      // check for valid of the update object pointer array
+      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
+      //      CCopasiObject* pUpperObject = selectedList[selectedIndex];
+      //      selectedList[selectedIndex + 1] = pUpperObject;
+      //      selectedList[selectedIndex] = pDownObject;
+
+      //swap in ListBox
+      QString pDownItemStr(itemsTable->item(selectedIndex + 1)->text());
+      QString pUpperItemStr(itemsTable->item(selectedIndex)->text());
+      itemsTable->changeItem (pUpperItemStr, selectedIndex + 1);
+      itemsTable->changeItem (pDownItemStr, selectedIndex);
+      bUpdated = true;
+    }
 }

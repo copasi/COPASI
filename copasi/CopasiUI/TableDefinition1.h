@@ -2,7 +2,7 @@
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.5 2003/09/12 03:22:04 lixu1 Exp $)
+($Id: TableDefinition1.h,v 1.6 2003/09/19 20:53:48 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -103,7 +103,6 @@ class TableDefinition1 : public CopasiWidget
     QGridLayout* layout5;
     QGridLayout* frame4Layout;
     QGridLayout* frame5Layout;
-
     QWidget* pParent;
     bool bUpdated;
   };
