@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserDialog.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/07 09:38:38 $
+   $Date: 2004/10/07 15:41:08 $
    End CVS Header */
 
 #ifndef OBJECTBROWSERDIALOG_H
@@ -31,22 +31,22 @@ class ObjectBrowserDialog : public QDialog
     void selectObjects(std::vector<CCopasiObject*>* pObjectVector);
 
   protected:
-    QGridLayout* ObjectBrowserDialogLayout;
     QPushButton* cancelButton;
     QPushButton* okButton;
     QFrame* Line1;
     QSpacerItem* spacer;
     ObjectBrowserWidget* objectBrowserWidget;
+    QGridLayout* ObjectBrowserDialogLayout;
 
   public slots:
-    virtual void cancelClicked();
-    virtual void okClicked();
+    void cancelClicked();
+    void okClicked();
 
   private:
     //    CopasiUI3Window* mparent;
     void cleanup();
 
-  protected:
+    //  protected:
     //    void closeEvent (QCloseEvent * e);
   };
 #endif // OBJECTBROWSERDIALOG_H

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/07 09:38:39 $
+   $Date: 2004/10/07 15:41:09 $
    End CVS Header */
 
 /********************************************************
@@ -25,17 +25,18 @@ Contact: Please contact lixu1@vt.edu.
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QSpacerItem;
 class QPushButton;
 class QListView;
+class QListViewItem;
 class QTextEdit;
 class ObjectBrowserItem;
 class ObjectList;
-class QListViewItem;
 class QFrame;
-class QSpacerItem;
 class CCopasiContainer;
 class CCopasiObject;
 class CopasiUI3Window;
+class QPixmap;
 
 enum pageIndex {LISTVIEWPAGE = 0, SELECTEDITEMPAGE};
 

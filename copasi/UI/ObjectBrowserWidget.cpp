@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/07 09:38:39 $
+   $Date: 2004/10/07 15:41:09 $
    End CVS Header */
 
 /********************************************************
@@ -29,6 +29,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qimage.h>
 #include <qpixmap.h>
 #include <qsimplerichtext.h>
+#include <qframe.h>
 
 #include "copasi.h"
 #include "ObjectBrowserItem.h"
@@ -69,14 +70,25 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFla
     setName("ObjectBrowser");
 
   if (state == 0)
-    {
-      ObjectBrowserLayout = new QGridLayout(this, 1, 1, 0, -1, "ObjectBrowserLayout");
-      ObjectBrowserLayout->setAutoAdd(false);
-    }
+    ObjectBrowserLayout = new QGridLayout(this, 1, 1, 0, -1, "ObjectBrowserLayout");
   else
+    ObjectBrowserLayout = new QGridLayout(this, 2, 4, 0, 6, "ObjectBrowserLayout");
+  ObjectBrowserLayout->setAutoAdd(false);
+  ObjectListView = new QListView(this, "ObjectListView");
+  ObjectListView->addColumn(trUtf8("Object Browser"));
+  ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
+  ObjectListView->setAcceptDrops(FALSE);
+  ObjectListView->setResizeMode(QListView::LastColumn);
+  ObjectListView->setTreeStepSize(19);
+
+  ObjectItemText = new QTextEdit(this, "ObjectItemText");
+  ObjectItemText ->hide();
+
+  ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 3);
+  ObjectBrowserLayout->addMultiCellWidget(ObjectItemText, 0, 0, 0, 3);
+
+  if (state != 0)
     {
-      ObjectBrowserLayout = new QGridLayout(this, 2, 4, 0, 6, "ObjectBrowserLayout");
-      ObjectBrowserLayout->setAutoAdd(false);
       Line1 = new QFrame(this, "Line1");
       Line1->setFrameShape(QFrame::HLine);
       Line1->setFrameShadow(QFrame::Sunken);
@@ -95,32 +107,21 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFla
       toggleViewButton = new QPushButton(this, "toggleViewButton");
       toggleViewButton->setText(trUtf8("Selected Items"));
       ObjectBrowserLayout->addWidget(toggleViewButton, 2, 2);
+
       spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
       ObjectBrowserLayout->addItem(spacer, 2, 1);
-
-      // tab order
-      setTabOrder(ObjectListView, clearButton);
-      setTabOrder(clearButton, toggleViewButton);
-      setTabOrder(toggleViewButton, commitButton);
 
       // signals and slots connections
       connect(clearButton, SIGNAL(clicked()), this, SLOT(clearClicked()));
       connect(toggleViewButton, SIGNAL(clicked()), this, SLOT(toggleViewClicked()));
       connect(commitButton, SIGNAL(clicked()), this, SLOT(commitClicked()));
+
+      // tab order
+      setTabOrder(ObjectListView, clearButton);
+      setTabOrder(clearButton, toggleViewButton);
+      setTabOrder(toggleViewButton, commitButton);
     }
 
-  ObjectListView = new QListView(this, "ObjectListView");
-  ObjectListView->addColumn(trUtf8("Object Browser"));
-  ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
-  ObjectListView->setAcceptDrops(FALSE);
-  ObjectListView->setResizeMode(QListView::LastColumn);
-  ObjectListView->setTreeStepSize(19);
-
-  ObjectItemText = new QTextEdit(this, "ObjectItemText");
-  ObjectItemText ->hide();
-
-  ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 3);
-  ObjectBrowserLayout->addMultiCellWidget(ObjectItemText, 0, 0, 0, 3);
   connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
 
   pObjectAll = new QPixmap((const char**)ptrObjectAll);
@@ -142,22 +143,8 @@ ObjectBrowserWidget::~ObjectBrowserWidget()
 
 void ObjectBrowserWidget::cleanup()
 {
-  pdelete(objectItemList);
-  pdelete(refreshList);
-
-  pdelete(spacer);
-  pdelete(Line1);
-  pdelete(clearButton);
-  pdelete(commitButton);
-  pdelete(toggleViewButton);
-  pdelete(ObjectListView);
-  pdelete(ObjectItemText);
-
-  pdelete(pObjectAll);
-  pdelete(pObjectNone);
-  pdelete(pObjectParts);
-
-  pdelete(ObjectBrowserLayout);
+  delete objectItemList;
+  delete refreshList;
 }
 
 void ObjectBrowserWidget::clearClicked()
