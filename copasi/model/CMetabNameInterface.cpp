@@ -48,6 +48,24 @@ std::string CMetabNameInterface::getMetaboliteKey(const CModel* model, const std
 
 CMetab * CMetabNameInterface::getMetabolite(const CModel* model, const std::string & name)
 {
+  C_INT32 pos = name.find('{');
+
+  if (pos >= 0)
+    {
+      std::string metabName = CMetabNameInterface::extractMetabName(model, name);
+      std::string compName = CMetabNameInterface::extractCompartmentName(model, name);
+      return (model->getCompartments()[compName])->getMetabolites()[metabName];
+    }
+  else
+    {
+      C_INT32 index = model->findMetabByName(name);
+      if (index == -1)
+        return NULL;
+      else
+        return model->getMetabolites()[index];
+    }
+
+  std::string metabName = CMetabNameInterface::extractMetabName(model, name);
   C_INT32 index = model->findMetabByName(name);
   if (index == -1)
     return NULL;
