@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/07 09:33:25 $
+   $Date: 2004/10/08 09:23:35 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -146,6 +146,7 @@ template <class CType> class CVector
      */
     CVector <CType> & operator = (const CVector <CType> & rhs)
     {
+      if (this == &rhs) {std::cout << "===" << std::endl; return *this;}
       if (mRows != rhs.mRows) resize(rhs.mRows);
 
       memcpy(mVector, rhs.mVector, mRows * sizeof(CType));
