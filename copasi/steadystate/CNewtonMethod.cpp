@@ -410,7 +410,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
       for (i = 0; i < mDimension; i++)
         mH[i] = mdxdt[i];
 
-      for (i = 0; (i < 32) && (nmaxrate > mMaxrate); i++)
+      for (i = 0; (i < 32) && (nmaxrate >= mMaxrate); i++)
         {
           for (j = 0; j < mDimension; j++)
             {
@@ -421,7 +421,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,           /* fortran style vector */
+                           mdxdt.array() - 1,            /* fortran style vector */
                            1);
         }
 
@@ -478,7 +478,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,           /* fortran style vector */
+                   mdxdt.array() - 1,            /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)
