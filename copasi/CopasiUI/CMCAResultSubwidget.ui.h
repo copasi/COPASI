@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/30 19:22:08 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:35:45 $
    End CVS Header */
 
 /****************************************************************************
@@ -34,10 +34,10 @@ void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
     {
       mMCAMethod = mcaMethod;
 
-      this->loadElasticities(mcaMethod);
-      if (mcaMethod->isSteadyState())
+      if (mcaMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
         {
-          mTopLabel->setText(QString::null);
+          mTopLabel->setText("Steady State found. All coefficients available.");
+          this->loadElasticities(mcaMethod);
           this->loadConcentrationCCs(mcaMethod);
           this->loadFluxCCs(mcaMethod);
           mTabWidget->setTabEnabled(mTabWidget->page(1), true);
@@ -45,9 +45,18 @@ void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
         }
       else
         {
-          mTopLabel->setText("Not at steady state. Only elasticities available!");
+          this->loadElasticities(mcaMethod);
           mTabWidget->setTabEnabled(mTabWidget->page(1), false);
           mTabWidget->setTabEnabled(mTabWidget->page(2), false);
+
+          if (mcaMethod->getSteadyStateStatus() == CSteadyStateMethod::foundEquilibrium)
+            mTopLabel->setText("Equilibrium steady state. Only elasticities available!");
+
+          if (mcaMethod->getSteadyStateStatus() == CSteadyStateMethod::foundNegative)
+            mTopLabel->setText("Invalid steady state (negative concentrations)!");
+
+          if (mcaMethod->getSteadyStateStatus() == CSteadyStateMethod::notFound)
+            mTopLabel->setText("No steady state found. Only elasticities available!");
         }
     }
 }

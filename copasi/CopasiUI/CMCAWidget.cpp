@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/02 15:22:07 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:35:45 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -218,8 +218,7 @@ void CMCAWidget::runMCATask()
       protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
 
       unsetCursor();
-      //dynamic_cast<CMCAMethod*>(mcaTask->getMethod())->setIsSteadyState(dynamic_cast<CNewtonMethod*>(steadyStateTask->getMethod())->isSteadyState());
-      dynamic_cast<CMCAMethod*>(mcaTask->getMethod())->setIsSteadyState(true); //TODO
+      dynamic_cast<CMCAMethod*>(mcaTask->getMethod())->setSteadyStateStatus(steadyStateTask->getResult());
     }
 
   setCursor(Qt::WaitCursor);
