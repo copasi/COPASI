@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/21 02:14:41 $
+   $Date: 2005/01/21 18:52:50 $
    End CVS Header */
 
 #include <float.h>
@@ -42,10 +42,23 @@ COptItem::COptItem(COptItem & src) :
 COptItem::~COptItem()
 {}
 
+bool COptItem::initialize(const CCopasiObjectName & objectCN)
+{
+  mpGroup->clear();
+
+  mpGroup->addParameter("ObjectCN", CCopasiParameter::STRING, (std::string) objectCN);
+  mpGroup->addParameter("LowerBound", CCopasiParameter::STRING, (std::string) "-inf");
+  mpGroup->addParameter("LowerRelation", CCopasiParameter::STRING, (std::string) "<=");
+  mpGroup->addParameter("UpperBound", CCopasiParameter::STRING, (std::string) "inf");
+  mpGroup->addParameter("UpperRelation", CCopasiParameter::STRING, (std::string) "<=");
+
+  return isValid();
+}
+
 bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
 {
   const CCopasiObject * pObject = RootContainer.getObject(objectCN);
-  if (!pObject || !pObject->isValueDbl()) return false;
+  if (pObject == NULL || !pObject->isValueDbl()) return false;
 
   return mpGroup->setValue(0, (const std::string) objectCN);
 }
@@ -55,11 +68,12 @@ const CCopasiObjectName COptItem::getObjectCN() const
 
 bool COptItem::setLowerBound(const std::string & lowerBound)
 {
-  const CCopasiObject * pObject = RootContainer.getObject(lowerBound);
+  const CCopasiObject * pObject;
 
   if (lowerBound != "-inf" &&
       !isNumber(lowerBound) &&
-      (!pObject || !pObject->isValueDbl())) return false;
+      ((pObject = RootContainer.getObject(lowerBound)) == NULL ||
+       !pObject->isValueDbl())) return false;
 
   return mpGroup->setValue(1, lowerBound);
 }
@@ -79,11 +93,12 @@ const std::string COptItem::getLowerRelation() const
 
 bool COptItem::setUpperBound(const std::string & upperBound)
 {
-  const CCopasiObject * pObject = RootContainer.getObject(upperBound);
+  const CCopasiObject * pObject;
 
   if (upperBound != "inf" &&
       !isNumber(upperBound) &&
-      (!pObject || !pObject->isValueDbl())) return false;
+      ((pObject = RootContainer.getObject(upperBound)) == NULL ||
+       !pObject->isValueDbl())) return false;
 
   return mpGroup->setValue(3, upperBound);
 }

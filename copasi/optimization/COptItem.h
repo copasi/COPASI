@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/21 02:14:22 $
+   $Date: 2005/01/21 18:52:33 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -53,6 +53,13 @@ class COptItem
      * Destructor
      */
     ~COptItem();
+
+    /**
+     * Initialize the optimization item.
+     * @param const CCopasiObjectName & objectCN
+     * @return bool success
+     */
+    bool initialize(const CCopasiObjectName & objectCN);
 
     /**
      * Set the object of the optimization item.
