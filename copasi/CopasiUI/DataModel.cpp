@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/10 12:58:48 $
+   $Author: shoops $ 
+   $Date: 2004/05/29 02:37:52 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -19,6 +19,7 @@ DataModel::DataModel()
   model = NULL;
   mpMathModel = NULL;
   mMathModelUpdateScheduled = false;
+  mChanged = false;
   trajectorytask = NULL;
   steadystatetask = NULL;
   scantask = NULL;
@@ -74,8 +75,10 @@ void DataModel::removeAllChildren(Folder* f)
     }
 }
 
-void DataModel::createModel(const char* fileName)
+void DataModel::createModel()
 {
+  mChanged = false;
+
   pdelete(model);
   model = new CModel();
   Copasi->pModel = model;
@@ -115,12 +118,12 @@ void DataModel::createModel(const char* fileName)
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
   searchFolderList(31)->setObjectKey(pOptFunction->getKey());
-
-  saveModel(fileName);
 }
 
 void DataModel::loadModel(const char* fileName)
 {
+  mChanged = false;
+
   std::ifstream File(fileName);
   std::string Line;
   File >> Line;
@@ -341,3 +344,7 @@ bool DataModel::scheduleMathModelUpdate(const bool & update)
   mMathModelUpdateScheduled = update;
   return true;
 }
+
+bool DataModel::isChanged() const {return mChanged;}
+
+void DataModel::changed(const bool & changed) {mChanged = changed;}

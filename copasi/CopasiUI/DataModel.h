@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.h,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/10 12:58:48 $
+   $Author: shoops $ 
+   $Date: 2004/05/29 02:37:52 $
    End CVS Header */
 
 /****************************************************************************
@@ -117,6 +117,7 @@ class DataModel
     CModel * model;
     CMathModel * mpMathModel;
     bool mMathModelUpdateScheduled;
+    bool mChanged;
 
     CSteadyStateTask* steadystatetask;
     CTrajectoryTask* trajectorytask;
@@ -136,7 +137,7 @@ class DataModel
     void removeAllChildren(Folder* f);
 
     void loadModel(const char* fileName);
-    void createModel(const char* fileName);
+    void createModel();
     void saveModel(const char* fileName);
 
     CModel* getModel() {return model;}
@@ -144,6 +145,9 @@ class DataModel
     CMathModel * getMathModel() {return mpMathModel;}
     bool updateMathModel();
     bool scheduleMathModelUpdate(const bool & update = true);
+
+    bool isChanged() const;
+    void changed(const bool & changed = true);
 
     inline CSteadyStateTask* getSteadyStateTask() {return steadystatetask;}
     inline CTrajectoryTask* getTrajectoryTask() {return trajectorytask;}
