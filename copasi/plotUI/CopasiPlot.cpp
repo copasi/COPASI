@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/17 13:59:26 $
+   $Date: 2004/12/16 14:00:47 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -45,11 +45,9 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
           index = psv->getIndexFromCN(pspec->getItems()[i]->getChannels()[jj]);
 
           for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
-          {if (*it >= index) break;};
+          {if (*it == index) break;};
           if (it == indexTable.end()) //index is not yet in indexTable
-            indexTable.insert(it, index);
-          else if (*it != index)
-            indexTable.insert(it, index);
+            indexTable.push_back(index);
           dataIndices[i][jj] = iterindex;
         }
     }
