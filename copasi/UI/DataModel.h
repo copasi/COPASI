@@ -203,7 +203,7 @@ void DataModel<T>::populateData(char* fileName)
 {
   QString str = QString("Folder ");
   Folder *f = new Folder(0, str);
-  f->setID(0);
+  f->setID(0, true);
   myTree.addRoot(f);
   folderList.append(f);
 
@@ -238,7 +238,7 @@ void DataModel<T>::populateData(char* fileName)
 
       f1 = (parentId == 0) ? new Folder(0, str) : new Folder(parent, str);
 
-      f1->setID(myId);
+      f1->setID(myId, true);
 
       myTree.addSibling(f1, parent);
 

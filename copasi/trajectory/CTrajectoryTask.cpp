@@ -99,10 +99,10 @@ void CTrajectoryTask::initializeReporting(std::ofstream & out)
 void CTrajectoryTask::load(CReadConfig & configBuffer)
 {
   if (configBuffer.getVersion() < "4.0")
-    configBuffer.getVariable("Dynamics", "BOOL", &mRequested,
+    configBuffer.getVariable("Dynamics", "bool", &mRequested,
                              CReadConfig::LOOP);
   else
-    configBuffer.getVariable("RunTrajectory", "BOOL", &mRequested,
+    configBuffer.getVariable("RunTrajectory", "bool", &mRequested,
                              CReadConfig::LOOP);
 
   pdelete(mpProblem);
@@ -130,7 +130,7 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
 
 void CTrajectoryTask::save(CWriteConfig & configBuffer)
 {
-  configBuffer.setVariable("RunTrajectory", "BOOL", &mRequested);
+  configBuffer.setVariable("RunTrajectory", "bool", &mRequested);
 
   mpProblem->save(configBuffer);
 

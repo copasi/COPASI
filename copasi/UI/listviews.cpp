@@ -33,6 +33,8 @@ QPixmap *folderOpen = 0;     // to store the image of open icon folder
 #include "./icons/folderopen.xpm"
 #include "./icons/folderlocked.xpm"
 
+int Folder::mModifier = 0;
+
 //////////////////////////////////////////////////////////////////////
 // Definations of the FolderListItem  class declared in listviews.h
 // -----------------------------------------------------------------
@@ -197,7 +199,7 @@ void ListViews::initFolders()
     for (next = next->child; next != NULL; next = next->sibling)
       {
         if (next->info->getID()) lstFolders.append(next->info);
-        std::cout << next->info->getID() << std::endl;
+        //        std::cout << next->info->getID() << std::endl;
       }
 }
 
@@ -302,6 +304,7 @@ QListViewItem* ListViews::searchNode(int id)
 {
   FolderListItem *item;
   QListViewItemIterator it(folders);
+  std::cout << "Searching Node: " << id << std::endl;
 
   for (; it.current(); ++it)
     {

@@ -47,7 +47,9 @@ CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
 
       if (fileName)
         {
-          dataModel = new DataModel<Folder>((char *)fileName.ascii()); // create the data model
+          // create the data model
+          dataModel = new DataModel<Folder>((char *)fileName.ascii());
+
           splitter = new QSplitter(QSplitter::Vertical, this , "main");
           splitter->show();
           this->setCentralWidget(splitter);

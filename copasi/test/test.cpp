@@ -112,12 +112,12 @@ int main(int argc, char *argv[])
       //      TestMetab();
       //      TestReadSample();
       //      TestNewton();
-      // TestSSSolution();
+      TestSSSolution();
       //YOHE: new test
       //  TestOptimization();
       //      TestEigen();
       //      TestTrajectory();
-      TestTrajectoryTask();
+      //      TestTrajectoryTask();
       //      TestMoiety();
       //      TestKinFunction();
       //      TestMassAction();
@@ -531,7 +531,7 @@ C_INT32 TestMCA(void)
 // by YH
 C_INT32 TestSSSolution(void)
 {
-  CReadConfig inbuf("gps/NewtonTest.gps");
+  CReadConfig inbuf("gps/TestKinetics/MassAction.gps");
   inbuf.getDefaults();
 
   CModel model;
@@ -546,6 +546,7 @@ C_INT32 TestSSSolution(void)
 
   ofstream output("output.txt");
   ss_soln.initializeReporting(output);
+  ss_soln.getMethod()->getValue(0);
 
   ss_soln.process();
 

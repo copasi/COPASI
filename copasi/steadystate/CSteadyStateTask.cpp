@@ -65,10 +65,10 @@ void CSteadyStateTask::initializeReporting(std::ofstream & out)
 void CSteadyStateTask::load(CReadConfig & configBuffer)
 {
   if (configBuffer.getVersion() < "4.0")
-    configBuffer.getVariable("SteadyState", "BOOL", &mRequested,
+    configBuffer.getVariable("SteadyState", "bool", &mRequested,
                              CReadConfig::LOOP);
   else
-    configBuffer.getVariable("RunSteadyState", "BOOL", &mRequested,
+    configBuffer.getVariable("RunSteadyState", "bool", &mRequested,
                              CReadConfig::LOOP);
 
   pdelete(mpProblem);
@@ -94,7 +94,7 @@ void CSteadyStateTask::load(CReadConfig & configBuffer)
 
 void CSteadyStateTask::save(CWriteConfig & configBuffer)
 {
-  configBuffer.setVariable("RunSteadyState", "BOOL", &mRequested);
+  configBuffer.setVariable("RunSteadyState", "bool", &mRequested);
 
   mpProblem->save(configBuffer);
 

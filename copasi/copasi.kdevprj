@@ -57,6 +57,34 @@ install=false
 install_location=
 type=DATA
 
+[ABiochem/CGene.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[ABiochem/CGene.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[ABiochem/Erdos.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[ABiochem/Makefile.am]
+files=ABiochem/CGene.cpp,ABiochem/CGene.h,ABiochem/Erdos.cpp
+type=static_library
+
+[ABiochem/Makefile.in]
+dist=true
+install=false
+install_location=
+type=DATA
+
 [Config for BinMakefileAm]
 addcxxflags=
 bin_program=copasi
@@ -88,18 +116,6 @@ install=false
 install_location=
 type=HEADER
 
-[CopasiUI/CopasiUI]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[CopasiUI/CopasiUI.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
-
 [CopasiUI/DataModel.h]
 dist=true
 install=false
@@ -124,12 +140,6 @@ install=false
 install_location=
 type=SOURCE
 
-[CopasiUI/FunctionWidget1.cpp.~1.5~]
-dist=true
-install=false
-install_location=
-type=DATA
-
 [CopasiUI/FunctionWidget1.h]
 dist=true
 install=false
@@ -137,7 +147,7 @@ install_location=
 type=HEADER
 
 [CopasiUI/Makefile.am]
-files=CopasiUI/CompartmentsWidget1.cpp,CopasiUI/CompartmentsWidget.cpp,CopasiUI/CompartmentsWidget.h,CopasiUI/CompartmentsWidget1.h,CopasiUI/CopasiUI.dsp,CopasiUI/DataModel.h,CopasiUI/MoietyWidget.cpp,CopasiUI/MetabolitesWidget.h,CopasiUI/MetabolitesWidget1.cpp,CopasiUI/MetabolitesWidget1.h,CopasiUI/MoietiesWidget.cpp,CopasiUI/MoietiesWidget.h,CopasiUI/Structures.h,CopasiUI/MoietyWidget.h,CopasiUI/MoietyWidget1.cpp,CopasiUI/MoietyWidget1.h,CopasiUI/MyTable.cpp,CopasiUI/MyTable.h,CopasiUI/Observer.cpp,CopasiUI/Observer.h,CopasiUI/ReactionsWidget.h,CopasiUI/copasiui3window.cpp,CopasiUI/Sample.txt,CopasiUI/Sample2.txt,CopasiUI/Subject.cpp,CopasiUI/Subject.h,CopasiUI/copasiui3window.h,CopasiUI/listviews.cpp,CopasiUI/listviews.h,CopasiUI/main.cpp,CopasiUI/MetabolitesWidget.cpp,CopasiUI/ReactionsWidget1.h,CopasiUI/CopasiUI,CopasiUI/Tree.h,CopasiUI/FunctionWidget.cpp,CopasiUI/FunctionWidget.h,CopasiUI/FunctionWidget1.h,CopasiUI/ReactionsWidget.cpp,CopasiUI/FunctionWidget1.cpp.~1.5~,CopasiUI/trace,CopasiUI/core,CopasiUI/FunctionWidget1.cpp,CopasiUI/ReactionsWidget1.cpp,
+files=CopasiUI/CompartmentsWidget1.cpp,CopasiUI/CompartmentsWidget.cpp,CopasiUI/CompartmentsWidget.h,CopasiUI/CompartmentsWidget1.h,CopasiUI/DataModel.h,CopasiUI/MoietyWidget.cpp,CopasiUI/MetabolitesWidget.h,CopasiUI/MetabolitesWidget1.cpp,CopasiUI/MetabolitesWidget1.h,CopasiUI/MoietiesWidget.cpp,CopasiUI/MoietiesWidget.h,CopasiUI/Structures.h,CopasiUI/MoietyWidget.h,CopasiUI/MoietyWidget1.cpp,CopasiUI/MoietyWidget1.h,CopasiUI/MyTable.cpp,CopasiUI/MyTable.h,CopasiUI/Observer.cpp,CopasiUI/Observer.h,CopasiUI/ReactionsWidget.h,CopasiUI/copasiui3window.cpp,CopasiUI/Sample.txt,CopasiUI/Sample2.txt,CopasiUI/Subject.cpp,CopasiUI/Subject.h,CopasiUI/copasiui3window.h,CopasiUI/listviews.cpp,CopasiUI/listviews.h,CopasiUI/main.cpp,CopasiUI/MetabolitesWidget.cpp,CopasiUI/ReactionsWidget1.h,CopasiUI/Tree.h,CopasiUI/FunctionWidget.cpp,CopasiUI/FunctionWidget.h,CopasiUI/FunctionWidget1.h,CopasiUI/ReactionsWidget.cpp,CopasiUI/core,CopasiUI/FunctionWidget1.cpp,CopasiUI/ReactionsWidget1.cpp
 sub_dirs=icons,
 type=normal
 
@@ -362,20 +372,16 @@ install=false
 install_location=
 type=SOURCE
 
-[CopasiUI/trace]
-dist=true
-install=false
-install_location=
-type=DATA
-
 [General]
+AMChanged=false
 author=shoops
 email=shoops@gandalf
 kdevprj_version=1.3
-lfv_open_groups=
-makefiles=./Makefile.am,integrator/Makefile.am,report/Makefile.am,utilities/Makefile.am,trajectory/Makefile.am,test/Makefile.am,steadystate/Makefile.am,output/Makefile.am,optimization/Makefile.am,model/Makefile.am,function/Makefile.am,elementaryFluxModes/Makefile.am,commandline/Makefile.am,CopasiUI/Makefile.am,CopasiUI/icons/Makefile.am,
+lfv_open_groups=Others,Sources
+makefiles=./Makefile.am,integrator/Makefile.am,report/Makefile.am,utilities/Makefile.am,trajectory/Makefile.am,test/Makefile.am,steadystate/Makefile.am,output/Makefile.am,optimization/Makefile.am,model/Makefile.am,function/Makefile.am,elementaryFluxModes/Makefile.am,commandline/Makefile.am,CopasiUI/Makefile.am,CopasiUI/icons/Makefile.am,ABiochem/Makefile.am,randomGenerator/Makefile.am
 project_name=copasi
 project_type=normal_empty
+showNonProjectFiles=false
 sub_dir=./
 version=
 version_control=CVS
@@ -389,6 +395,9 @@ Sources=*.cpp,*.c,*.cc,*.C,*.cxx,*.ec,*.ecpp,*.lxx,*.l++,*.ll,*.l,
 Translations=*.ts,*.po,
 User Interface=*.ui,*.kdevdlg,*.rc,
 groups=Headers,Sources,GNU,Translations,User Interface,Others
+
+[Makefile.am]
+sub_dirs=ABiochem,randomGenerator
 
 [commandline/CopasiSE.cpp]
 dist=true
@@ -486,15 +495,9 @@ install_location=
 type=HEADER
 
 [elementaryFluxModes/Makefile.am]
-files=elementaryFluxModes/CEFMAlgorithm.cpp,elementaryFluxModes/CEFMAlgorithm.h,elementaryFluxModes/CElementaryFluxModes.cpp,elementaryFluxModes/CFluxMode.cpp,elementaryFluxModes/CFluxMode.h,elementaryFluxModes/CFluxScore.cpp,elementaryFluxModes/CFluxScore.h,elementaryFluxModes/CTableauLine.cpp,elementaryFluxModes/CTableauLine.h,elementaryFluxModes/CTableauMatrix.cpp,elementaryFluxModes/CTableauMatrix.h,elementaryFluxModes/elementaryFluxModes.dsp,elementaryFluxModes/CElementaryFluxModes.h,
+files=elementaryFluxModes/CEFMAlgorithm.cpp,elementaryFluxModes/CEFMAlgorithm.h,elementaryFluxModes/CElementaryFluxModes.cpp,elementaryFluxModes/CFluxMode.cpp,elementaryFluxModes/CFluxMode.h,elementaryFluxModes/CFluxScore.cpp,elementaryFluxModes/CFluxScore.h,elementaryFluxModes/CTableauLine.cpp,elementaryFluxModes/CTableauLine.h,elementaryFluxModes/CTableauMatrix.cpp,elementaryFluxModes/CTableauMatrix.h,elementaryFluxModes/CElementaryFluxModes.h
 sub_dirs=
 type=normal
-
-[elementaryFluxModes/elementaryFluxModes.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [function/CCallParameter.h]
 dist=true
@@ -538,35 +541,11 @@ install=false
 install_location=
 type=SOURCE
 
-[function/CFunctionParameter.cpp.~1.3~]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[function/CFunctionParameter.cpp.~1.4~]
-dist=true
-install=false
-install_location=
-type=DATA
-
 [function/CFunctionParameter.h]
 dist=true
 install=false
 install_location=
 type=HEADER
-
-[function/CFunctionParameter.h.~1.2~]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[function/CFunctionParameter.h.~1.4~]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [function/CFunctionParameters.cpp]
 dist=true
@@ -653,15 +632,9 @@ install_location=
 type=HEADER
 
 [function/Makefile.am]
-files=function/CCallParameter.h,function/CCallParameters.h,function/CFunction.cpp,function/CFunction.h,function/CFunctionParameters.cpp,function/CFunctionParameter.h,function/CUsageRange.cpp,function/CFunctionParameters.h,function/CKinFunction.cpp,function/CKinFunction.h,function/CKinFunctionFlexLexer.cpp,function/CKinFunctionFlexLexer.lpp,function/CMassAction.cpp,function/CMassAction.h,function/CNodeK.cpp,function/CNodeK.h,function/CRange.cpp,function/CRange.h,function/CUsageRange.h,function/function.dsp,function/function.h,function/CFunctionParameter.cpp.~1.4~,function/CFunctionDB.cpp,function/CFunctionDB.h,function/CFunctionParameter.cpp.~1.3~,function/CFunctionParameter.h.~1.4~,function/CFunctionParameter.h.~1.2~,function/CFunctionParameter.cpp,
+files=function/CCallParameter.h,function/CCallParameters.h,function/CFunction.cpp,function/CFunction.h,function/CFunctionParameters.cpp,function/CFunctionParameter.h,function/CUsageRange.cpp,function/CFunctionParameters.h,function/CKinFunction.cpp,function/CKinFunction.h,function/CKinFunctionFlexLexer.cpp,function/CKinFunctionFlexLexer.lpp,function/CMassAction.cpp,function/CMassAction.h,function/CNodeK.cpp,function/CNodeK.h,function/CRange.cpp,function/CRange.h,function/CUsageRange.h,function/function.h,function/CFunctionDB.cpp,function/CFunctionDB.h,function/CFunctionParameter.cpp
 sub_dirs=
 type=normal
-
-[function/function.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [function/function.h]
 dist=true
@@ -873,17 +846,11 @@ install_location=
 type=HEADER
 
 [model/Makefile.am]
-files=model/CChemEqElement.cpp,model/CChemEq.cpp,model/CChemEq.h,model/CScanInputFlexLexer.cpp,model/CChemEqElement.h,model/CCompartment.cpp,model/CCompartment.h,model/CDeTerm.cpp,model/CDeTerm.h,model/CMetab.cpp,model/CMetab.h,model/CModel.h,model/CMoiety.cpp,model/CMoiety.h,model/CReaction.h,model/CScanInputFlexLexer.lpp,model/CSpec2Model.cpp,model/CSpec2Model.h,model/CSpecLine.cpp,model/CSpecLine.h,model/exampleinput,model/model.dsp,model/model.h,model/CReaction.cpp,model/CModel.cpp,model/CState.cpp,model/CState.h,
+files=model/CChemEqElement.cpp,model/CChemEq.cpp,model/CChemEq.h,model/CScanInputFlexLexer.cpp,model/CChemEqElement.h,model/CCompartment.cpp,model/CCompartment.h,model/CDeTerm.cpp,model/CDeTerm.h,model/CMetab.cpp,model/CMetab.h,model/CModel.h,model/CMoiety.cpp,model/CMoiety.h,model/CReaction.h,model/CScanInputFlexLexer.lpp,model/CSpec2Model.cpp,model/CSpec2Model.h,model/CSpecLine.cpp,model/CSpecLine.h,model/exampleinput,model/model.h,model/CReaction.cpp,model/CModel.cpp,model/CState.cpp,model/CState.h
 sub_dirs=
 type=normal
 
 [model/exampleinput]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[model/model.dsp]
 dist=true
 install=false
 install_location=
@@ -1081,21 +1048,67 @@ install_location=
 type=HEADER
 
 [output/Makefile.am]
-files=output/CDatum.cpp,output/CDatum.h,output/CNodeO.cpp,output/CNodeO.h,output/COutput.h,output/COutputEvent.h,output/COutputEvent.cpp,output/COutputLine.cpp,output/COutputLine.h,output/COutputList.cpp,output/COutputList.h,output/CUDFunction.cpp,output/CUDFunction.h,output/CUDFunctionDB.cpp,output/CUDFunctionDB.h,output/output.dsp,output/output.h,output/COutput.cpp,
+files=output/CDatum.cpp,output/CDatum.h,output/CNodeO.cpp,output/CNodeO.h,output/COutput.h,output/COutputEvent.h,output/COutputEvent.cpp,output/COutputLine.cpp,output/COutputLine.h,output/COutputList.cpp,output/COutputList.h,output/CUDFunction.cpp,output/CUDFunction.h,output/CUDFunctionDB.cpp,output/CUDFunctionDB.h,output/output.h,output/COutput.cpp
 sub_dirs=
 type=normal
-
-[output/output.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [output/output.h]
 dist=true
 install=false
 install_location=
 type=HEADER
+
+[randomGenerator/CRandom.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[randomGenerator/CRandom.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[randomGenerator/Cmt19937.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[randomGenerator/Cmt19937.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[randomGenerator/Cr250.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[randomGenerator/Cr250.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[randomGenerator/Makefile.am]
+files=randomGenerator/Cmt19937.cpp,randomGenerator/Cmt19937.h,randomGenerator/Cr250.cpp,randomGenerator/Cr250.h,randomGenerator/CRandom.cpp,randomGenerator/CRandom.h
+type=static_library
+
+[randomGenerator/Makefile.in]
+dist=true
+install=false
+install_location=
+type=DATA
+
+[randomGenerator/randomGenerator.dsp]
+dist=true
+install=false
+install_location=
+type=DATA
 
 [report/CContainer.h]
 dist=true
@@ -1182,21 +1195,9 @@ install_location=
 type=HEADER
 
 [report/Makefile.am]
-files=report/CContainer.h,report/CObject.cpp,report/CObject.h,report/CReport.h,report/CReportItem.cpp,report/CReportItem.h,report/CReportLine.h,report/CReportList.h,report/CRootContainer.cpp,report/CRootContainer.h,report/report.dsp,report/report.plg,report/CObjectTemplate.h,report/CReport.cpp,report/CReportLine.cpp,report/CReportList.cpp,
+files=report/CContainer.h,report/CObject.cpp,report/CObject.h,report/CReport.h,report/CReportItem.cpp,report/CReportItem.h,report/CReportLine.h,report/CReportList.h,report/CRootContainer.cpp,report/CRootContainer.h,report/CObjectTemplate.h,report/CReport.cpp,report/CReportLine.cpp,report/CReportList.cpp
 sub_dirs=
 type=normal
-
-[report/report.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[report/report.plg]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [steadystate/CEigen.cpp]
 dist=true
@@ -1259,15 +1260,9 @@ install_location=
 type=HEADER
 
 [steadystate/Makefile.am]
-files=steadystate/CNewton.cpp,steadystate/CEigen.cpp,steadystate/CEigen.h,steadystate/CJacob.cpp,steadystate/CJacob.h,steadystate/CMca.h,steadystate/CNewton.h,steadystate/CSS_Solution.h,steadystate/CSS_Solution.cpp,steadystate/steadystate.dsp,steadystate/steadystate.h,steadystate/CMca.cpp,
+files=steadystate/CNewton.cpp,steadystate/CEigen.cpp,steadystate/CEigen.h,steadystate/CJacob.cpp,steadystate/CJacob.h,steadystate/CMca.h,steadystate/CNewton.h,steadystate/CSS_Solution.h,steadystate/CSS_Solution.cpp,steadystate/steadystate.h,steadystate/CMca.cpp
 sub_dirs=
 type=normal
-
-[steadystate/steadystate.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [steadystate/steadystate.h]
 dist=true
@@ -1276,7 +1271,7 @@ install_location=
 type=HEADER
 
 [test/Makefile.am]
-files=test/matrix.cpp,test/matrix.dsp,test/test.cpp,test/test.dsp,test/test,
+files=test/matrix.cpp,test/test.cpp
 sub_dirs=
 type=normal
 
@@ -1286,29 +1281,11 @@ install=false
 install_location=
 type=SOURCE
 
-[test/matrix.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[test/test]
-dist=true
-install=false
-install_location=
-type=DATA
-
 [test/test.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
-
-[test/test.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [trajectory/CODESolver.cpp]
 dist=true
@@ -1383,15 +1360,9 @@ install_location=
 type=HEADER
 
 [trajectory/Makefile.am]
-files=trajectory/CStochSolver.cpp,trajectory/CODESolver.cpp,trajectory/CODESolver.h,trajectory/CTrajectory.cpp,trajectory/CStochSolver.h,trajectory/CTrajectory.h,trajectory/Clsoda.cpp,trajectory/Clsoda.h,trajectory/trajectory.dsp,trajectory/trajectory.h,trajectory/CTrajectoryMethod.h,trajectory/CTrajectoryMethod.cpp,trajectory/CTrajectoryProblem.cpp,trajectory/CTrajectoryProblem.h,
+files=trajectory/CStochSolver.cpp,trajectory/CODESolver.cpp,trajectory/CODESolver.h,trajectory/CTrajectory.cpp,trajectory/CStochSolver.h,trajectory/CTrajectory.h,trajectory/Clsoda.cpp,trajectory/Clsoda.h,trajectory/trajectory.h,trajectory/CTrajectoryMethod.h,trajectory/CTrajectoryMethod.cpp,trajectory/CTrajectoryProblem.cpp,trajectory/CTrajectoryProblem.h
 sub_dirs=
 type=normal
-
-[trajectory/trajectory.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [trajectory/trajectory.h]
 dist=true
@@ -1538,7 +1509,7 @@ install_location=
 type=HEADER
 
 [utilities/Makefile.am]
-files=utilities/CIndexedPriorityQueue.cpp,utilities/CCopasiException.cpp,utilities/CCopasiException.h,utilities/CReadConfig.h,utilities/CCopasiVector.h,utilities/CDependencyGraph.cpp,utilities/CDependencyGraph.h,utilities/CGlobals.cpp,utilities/CGlobals.h,utilities/CIndexedPriorityQueue.h,utilities/CRandom.cpp,utilities/CRandom.h,utilities/CVersion.cpp,utilities/CVersion.h,utilities/CWriteConfig.cpp,utilities/CWriteConfig.h,utilities/messages.h,utilities/utilities.dsp,utilities/utilities.h,utilities/utility.cpp,utilities/utility.h,utilities/CMethodParameter.cpp,utilities/CMethodParameter.h,utilities/CMethodParameterList.cpp,utilities/CMethodParameterList.h,utilities/CReadConfig.cpp,utilities/CCopasiMessage.cpp,utilities/CCopasiMessage.h,
+files=utilities/CIndexedPriorityQueue.cpp,utilities/CCopasiException.cpp,utilities/CCopasiException.h,utilities/CReadConfig.h,utilities/CCopasiVector.h,utilities/CDependencyGraph.cpp,utilities/CDependencyGraph.h,utilities/CGlobals.cpp,utilities/CGlobals.h,utilities/CIndexedPriorityQueue.h,utilities/CRandom.cpp,utilities/CRandom.h,utilities/CVersion.cpp,utilities/CVersion.h,utilities/CWriteConfig.cpp,utilities/CWriteConfig.h,utilities/messages.h,utilities/utilities.h,utilities/utility.cpp,utilities/utility.h,utilities/CMethodParameter.cpp,utilities/CMethodParameter.h,utilities/CMethodParameterList.cpp,utilities/CMethodParameterList.h,utilities/CReadConfig.cpp,utilities/CCopasiMessage.cpp,utilities/CCopasiMessage.h
 sub_dirs=
 type=normal
 
@@ -1547,12 +1518,6 @@ dist=true
 install=false
 install_location=
 type=HEADER
-
-[utilities/utilities.dsp]
-dist=true
-install=false
-install_location=
-type=DATA
 
 [utilities/utilities.h]
 dist=true

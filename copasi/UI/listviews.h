@@ -60,13 +60,26 @@ class Folder : public QObject
     // inline void setCaption(const QString &name){fCaption(name);}
     // inline QString getCaption(){return fCaption;}
     inline int getID(){return id;}
-    inline void setID(int id)
+    inline void setID(int id, bool fixed = false)
     {
-      this->id = id;
-      mKey = QString::number(this->id) + fName;
+      mKey = QString::number(id) + "_" + fName;
+      if (fixed)
+        this->id = id;
+      else
+        this->id = id * 1000000 + getModifier();
+
+      std::cout << fName << ": ID = " << this->id << ", Key = " << mKey << std::endl;
     }
-    inline const QString & getKey() const {return mKey;}
+  inline const QString & getKey() const {return mKey;}
     inline QString folderName() {return fName;}
+
+    inline const int & getModifier()
+    {
+      mModifier++;
+      mModifier %= 1000000;
+      std::cout << "Modifier: " << mModifier << std::endl;
+      return mModifier;
+    }
 
     inline int operator==(Folder &folder)
     {
@@ -84,6 +97,7 @@ class Folder : public QObject
     QString fName;
     int id;
     QString mKey;
+    static int mModifier;
   };
 
 class FolderListItem : public QListViewItem

@@ -77,33 +77,33 @@ CEigen::~CEigen() {DESTRUCTOR_TRACE;}
 
 //Get the max eigenvalue real part
 const C_FLOAT64 & CEigen::getEigen_maxrealpart() const
-{
-  return mEigen_maxrealpart;
-}
+  {
+    return mEigen_maxrealpart;
+  }
 
 //Get the max eigenvalue imaginary  part
 const C_FLOAT64 & CEigen::getEigen_maximagpart() const
-{
-  return mEigen_maximagpart;
-}
+  {
+    return mEigen_maximagpart;
+  }
 
 // Get the number of zero eigenvalues
 const C_INT32 & CEigen::getEigen_nzero() const
-{
-  return mEigen_nzero;
-}
+  {
+    return mEigen_nzero;
+  }
 
 //Get the eigenvalue stiffness
 const C_FLOAT64 & CEigen::getEigen_stiffness() const
-{
-  return mEigen_stiffness;
-}
+  {
+    return mEigen_stiffness;
+  }
 
 //Get the eigenvalue hierarchy
 const C_FLOAT64 & CEigen::getEigen_hierarchy() const
-{
-  return mEigen_hierarchy;
-}
+  {
+    return mEigen_hierarchy;
+  }
 
 //initialize variables for eigenvalue calculations
 //
@@ -132,7 +132,6 @@ void CEigen::cleanup()
 void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
 {
   assert (matrix.numRows() == matrix.numCols());
-
   mN = matrix.numRows();
   initialize();
 
@@ -238,7 +237,7 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    *          < 0: if INFO = -i, the i-th argument had an illegal value.
    *          > 0: if INFO = i, and i is
    *             <= N: the QR algorithm failed to compute all the
-   *                   eigenvalues; elements 1:ILO-1 and i+1:N of WR and WI
+   *                   eigenvalues; elements 1:i-1 and i+1:N of WR and WI
    *                   contain those eigenvalues which have converged; if
    *                   JOBVS = 'V', VS contains the matrix which reduces A
    *                   to its partially converged Schur form.
@@ -253,18 +252,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,    // mSelect,           //NULL,
-         &mN,                   //&n,
+         NULL,     // mSelect,           //NULL,
+         &mN,                    //&n,
          mA.array(),
          & mLDA,
-         & mSdim,           // output
+         & mSdim,            // output
          mEigen_r.array(),
          mEigen_i.array(),
          mVS,
          & mLdvs,
          mWork,
          & mLWork,
-         mBWork,               //NULL
+         mBWork,              //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();
@@ -406,41 +405,41 @@ void CEigen::quicksort(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
  * Return number of real eigenvalues WeiSun 3/28/02
  */
 const C_INT32 & CEigen::getEigen_nreal() const
-{
-  return mEigen_nreal;
-}
+  {
+    return mEigen_nreal;
+  }
 
 /**
  * Return the number of imaginary eigenvalue numbers
  */
 const C_INT32 & CEigen::getEigen_nimag() const
-{
-  return mEigen_nimag;
-}
+  {
+    return mEigen_nimag;
+  }
 
 const C_INT32 & CEigen::getEigen_ncplxconj() const
-{
-  return mEigen_ncplxconj;
-}
+  {
+    return mEigen_ncplxconj;
+  }
 
 /**
  * Return the number of eigenvalues with positive real part
  */
 const C_INT32 & CEigen::getEigen_nposreal() const
-{
-  return mEigen_nposreal;
-}
+  {
+    return mEigen_nposreal;
+  }
 
 /**
  * Return the number of eigenvalues with negative real part
  */
 const C_INT32 & CEigen::getEigen_nnegreal() const
-{
-  return mEigen_nnegreal;
-}
+  {
+    return mEigen_nnegreal;
+  }
 
 const CVector< C_FLOAT64 > & CEigen::getEigen_i() const
-{return mEigen_i;}
+  {return mEigen_i;}
 
 const CVector< C_FLOAT64 > & CEigen::getEigen_r() const
-{return mEigen_r;}
+  {return mEigen_r;}
