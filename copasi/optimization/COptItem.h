@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/21 18:52:33 $
+   $Date: 2005/03/18 02:54:18 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -133,7 +133,7 @@ class COptItem
     bool isValid() const;
 
     /**
-     * Check whether the group describes a valit optimization item.
+     * Check whether the group describes a valid optimization item.
      * @param CCopasiParameterGroup & group
      * @return bool isValid
      */
