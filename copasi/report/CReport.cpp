@@ -34,7 +34,7 @@ void CReport::setReportDefinition(CReportDefinition* reportDef)
 const std::string& CReport::getTarget()
 {return mTarget;}
 
-void CReport::setTarget(const std::string target)
+void CReport::setTarget(std::string target)
 {mTarget = target;}
 
 bool CReport::append()

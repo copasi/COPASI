@@ -62,7 +62,7 @@ class CReport : public CCopasiObject
     /**
     sets the reference to the report
     */
-    void setTarget(const std::string target);
+    void setTarget(std::string target);
 
     /**
     Returns whether the Report Tag is appended or not
