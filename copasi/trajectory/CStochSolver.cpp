@@ -404,12 +404,14 @@ set
 
     CCopasiVector<CReaction::CId2Metab> modif = mModel->getReactions()[reaction_index]->getId2Modifiers();
 
-    for (unsigned C_INT32 i = 0; i < subst.size(); i++)
+    unsigned C_INT32 i;
+
+    for (i = 0; i < subst.size(); i++)
       {
         retset->insert((subst[i]->getMetabolite()));
       }
 
-    for (unsigned C_INT32 i = 0; i < modif.size(); i++)
+    for (i = 0; i < modif.size(); i++)
       {
         retset->insert((modif[i]->getMetabolite()));
       }
