@@ -33,7 +33,8 @@
  *  name 'name' and widget flags set to 'f'.
  */
 SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl),
+    pParent(parent)
 {
   if (!name)
     setName("SteadyStateWidget");
@@ -277,7 +278,8 @@ void SteadyStateWidget::RunTask()
                      QMessageBox::NoButton);
       mb.exec();
     }
-  emit runFinished(mSteadyStateTask->getProblem()->getModel());
+  //  emit runFinished(mSteadyStateTask->getProblem()->getModel());
+  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::ADD, dataModel->getModel()->getKey());
 
   unsetCursor();
 }

@@ -154,6 +154,7 @@ bool CompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::Act
   switch (objectType)
     {
     case ListViews::MODEL:
+    case ListViews::STATE:
     case ListViews::METABOLITE:
     case ListViews::COMPARTMENT:
       fillTable();

@@ -32,7 +32,8 @@ Contact: Please contact lixu1@vt.edu.
  *  name 'name' and widget flags set to 'f'.
  */
 TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl),
+    pParent(parent)
 {
   if (!name)
     setName("TrajectoryWidget");
@@ -318,6 +319,8 @@ void TrajectoryWidget::RunTask()
   tt->initializeReporting(output);
 
   tt->process();
+
+  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::ADD, dataModel->getModel()->getKey());
 
   //emit runFinished(dataModel->getTrajectoryTask()->getProblem()->getModel());
 

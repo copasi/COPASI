@@ -389,6 +389,7 @@ bool MetabolitesWidget1::update(ListViews::ObjectType objectType, ListViews::Act
 {
   switch (objectType)
     {
+    case ListViews::STATE:
     case ListViews::MODEL:
       break;
 

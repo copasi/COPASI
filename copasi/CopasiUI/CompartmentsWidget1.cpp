@@ -200,6 +200,7 @@ bool CompartmentsWidget1::update(ListViews::ObjectType objectType, ListViews::Ac
   switch (objectType)
     {
     case ListViews::MODEL:
+    case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
       //TODO: we have to decide how to handle this

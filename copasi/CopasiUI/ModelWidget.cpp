@@ -292,6 +292,7 @@ bool ModelWidget::update(ListViews::ObjectType objectType, ListViews::Action act
 {
   switch (objectType)
     {
+    case ListViews::STATE:
     case ListViews::MODEL:
       break;
 

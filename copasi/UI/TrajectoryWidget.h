@@ -1,10 +1,10 @@
 /********************************************************
- Author: Liang Xu
- Version : 1.xx  <first>
- Description: 
- Date: 02/03 
- Comment : TrajectoryWidget
- Contact: Please contact lixu1@vt.edu.
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 02/03 
+Comment : TrajectoryWidget
+Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #ifndef TRAJECTORYWIDGET_H
 #define TRAJECTORYWIDGET_H
@@ -54,11 +54,11 @@ class TrajectoryWidget : public CopasiWidget
     virtual void RunTask();
     virtual void UpdateMethod();
 
-  protected:
+  private:
+
     std::string objKey;
-
     void loadTrajectoryTask();
-
+    QWidget* pParent;
     QGridLayout* TrajectoryWidgetLayout;
     QHBoxLayout* Layout2;
     QFrame* line8;

@@ -145,6 +145,7 @@ bool MetabolitesWidget::update(ListViews::ObjectType objectType, ListViews::Acti
   switch (objectType)
     {
     case ListViews::MODEL:
+    case ListViews::STATE:
     case ListViews::METABOLITE:
     case ListViews::COMPARTMENT:
       fillTable();

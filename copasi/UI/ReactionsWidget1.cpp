@@ -312,6 +312,7 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType, ListViews::Actio
   switch (objectType)
     {
     case ListViews::MODEL:
+    case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
       //TODO: we have to decide how to handle this

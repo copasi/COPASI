@@ -78,6 +78,7 @@ class SteadyStateWidget : public CopasiWidget
     QGridLayout* SteadyStateWidgetLayout;
     QHBoxLayout* Layout2;
     std::string objKey;
+    QWidget* pParent;
   };
 
 #endif // STEADYSTATEWIDGET_H
