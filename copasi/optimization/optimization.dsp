@@ -63,6 +63,10 @@ SOURCE=.\COptFunction.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COptItem.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptMethod.cpp
 # End Source File
 # Begin Source File
@@ -108,6 +112,10 @@ SOURCE=.\CGA.h
 # Begin Source File
 
 SOURCE=.\COptFunction.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptItem.h
 # End Source File
 # Begin Source File
 
