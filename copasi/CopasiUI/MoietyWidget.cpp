@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/01/08 16:20:59 $
+   $Date: 2004/02/02 20:33:58 $
    End CVS Header */
 
 /*******************************************************************
@@ -179,6 +179,9 @@ void MoietyWidget::slotBtnCalculateClicked()
 {
   if (mModel != NULL)
     mModel->compile();
+
+  loadMoieties(mModel);
+  //ListViews::notify(ListViews::FUNCTION, ListViews::CHANGE);
 }
 
 void MoietyWidget::resizeEvent(QResizeEvent * re)
