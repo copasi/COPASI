@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/22 16:00:02 $
+   $Author: shoops $ 
+   $Date: 2005/03/23 21:17:02 $
    End CVS Header */
 
 /********************************************************
@@ -417,12 +417,13 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   steadystateEditButton->setEnabled(false);
   timeEditButton->setEnabled(false);
 
-  SteadyStateKey = (new CSteadyStateTask(NULL))->getKey();
-  TrajectoryKey = (new CTrajectoryTask(NULL))->getKey();
-  pSteadyStateWidget = new SteadyStateWidget(NULL);
-  pTrajectoryWidget = new TrajectoryWidget(NULL);
-  pSteadyStateWidget->hide();
-  pTrajectoryWidget->hide();
+  // The following breaks COPASI
+  // SteadyStateKey = (new CSteadyStateTask(NULL))->getKey();
+  // TrajectoryKey = (new CTrajectoryTask(NULL))->getKey();
+  // pSteadyStateWidget = new SteadyStateWidget(NULL);
+  // pTrajectoryWidget = new TrajectoryWidget(NULL);
+  // pSteadyStateWidget->hide();
+  // pTrajectoryWidget->hide();
 }
 
 /*
