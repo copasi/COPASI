@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 22:17:44 $
+   $Author: lixu1 $ 
+   $Date: 2003/11/13 18:50:12 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.23 2003/11/12 22:17:44 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.24 2003/11/13 18:50:12 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -273,7 +273,7 @@ void TableDefinition1::loadTableDefinition1()
   titleChecked->setChecked(pReportDefinition->getTitle());
 
   C_INT32 i;
-  for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i++)
+  for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i += 2)
     {
       itemsTable->insertItem((*(pReportDefinition->getBodyAddr()))[i].c_str());
     }
