@@ -8,7 +8,7 @@
 
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
-#include "function/function.h"
+#include "function/CFunction.h"
 #include "randomGenerator/CRandom.h"
 #include "CTrajectoryMethod.h"
 #include "model/CState.h"

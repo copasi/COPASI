@@ -9,8 +9,6 @@
 
 #include <iostream>
 
-#include "output/output.h"
-
 class COutput;
 class COutputList;
 class CSteadyStateTask;

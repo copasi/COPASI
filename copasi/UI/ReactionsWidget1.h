@@ -10,8 +10,8 @@
 #define REACTIONS_WIDGET1_H
 #include <qsplitter.h>
 #include <qvariant.h>
-#include <qlayout.h>
-#include "function/function.h"
+#include <qlayout.h> 
+//#include "function/function.h"
 #include "model/model.h"
 #include "qtable.h"
 #include "MyTable.h"

@@ -13,8 +13,8 @@
 #include "MyTable.h"
 #include "copasi.h"
 #include "model/model.h"
-#include "utilities/CGlobals.h"
-#include "function/function.h"
+#include "utilities/CGlobals.h" 
+//#include "function/function.h"
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;

@@ -23,7 +23,6 @@
 #include "ReactionsWidget1.h"
 #include "listviews.h"
 #include "model/model.h"
-#include "function/function.h"
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"
 #include "utilities/CGlobals.h"

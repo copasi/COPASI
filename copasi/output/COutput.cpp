@@ -21,6 +21,7 @@
 #include "utilities/CGlobals.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CEigen.h"
+#include "output/CUDFunction.h"
 
 /**
  *  Default constructor. 

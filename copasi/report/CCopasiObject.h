@@ -11,6 +11,7 @@
 
 #include <string>
 #include <typeinfo>
+#include "copasi.h"
 
 class CCopasiObjectName;
 class CCopasiContainer;

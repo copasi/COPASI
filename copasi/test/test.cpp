@@ -26,7 +26,7 @@
 #include "model/model.h"
 #include "model/CSpec2Model.h"
 #include "output/output.h"
-#include "function/function.h"
+#include "function/CMassAction.h"
 #include "optimization/COptMethod.h"
 #include "optimization/CRealProblem.h"
 #include "utilities/CGlobals.h"

@@ -9,12 +9,13 @@
 
 #include <string>
 
-#include "copasi.h"
-#include "output/output.h"
+#include "copasi.h" 
+//#include "output/output.h"
 
 class CReadConfig;
 class CWriteConfig;
 template < class CType > class CCopasiVectorN;
+class CUDFunction;
 
 class CUDFunctionDB
   {

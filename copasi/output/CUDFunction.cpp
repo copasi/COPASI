@@ -16,7 +16,6 @@
 
 #include "copasi.h"
 #include "FlexLexer.h"
-#include "function/function.h"
 #include "CNodeO.h"
 #include "CUDFunction.h"
 #include "utilities/CGlobals.h"

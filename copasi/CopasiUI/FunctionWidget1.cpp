@@ -28,7 +28,8 @@
 #include "model/CMetab.h"
 #include "listviews.h"
 #include "utilities/CGlobals.h"
-#include "function/function.h"
+#include "function/CFunction.h"
+#include "function/CFunctionDB.h"
 
 /*
  *  Constructs a FunctionWidget1 which is a child of 'parent', with the 

@@ -2,14 +2,21 @@
 #define COPASI_CGlobals
 
 #include <string>
+#include <vector>
 
-#include "output/COutputList.h"
-#include "model/CMetab.h"
-#include "function/CFunctionDB.h"
+#include "copasi.h"
 #include "CVersion.h"
-#include "output/output.h"
-#include "model/CCompartment.h"
-#include "model/CMoiety.h"
+#include "function/CFunctionDB.h"
+#include "output/CUDFunctionDB.h"
+#include "utilities/CCopasiVector.h"
+#include "model/CMetab.h"
+#include "output/COutputList.h"
+
+//#include "output/output.h"
+//#include "model/CCompartment.h"
+//#include "model/CMoiety.h"
+
+class CModel;
 
 class CGlobals
   {

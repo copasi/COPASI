@@ -11,7 +11,7 @@
 
 #include "copasi.h"
 #include "utilities/utilities.h"
-#include "function/function.h"
+#include "function/CKinFunction.h"
 #include "model/CModel.h"
 #include "CNodeO.h"
 

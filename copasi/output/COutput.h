@@ -9,11 +9,11 @@
 #define COPASI_COutput
 
 #include <iostream>
-#include "COutputLine.h"
-#include "report/CCopasiContainer.h"
+#include "COutputLine.h" 
+//#include "report/CCopasiContainer.h"
 
-class COutputLine;
 class CSteadyStateTask;
+class CCopasiContainer;
 
 class COutput : public CCopasiContainer
   {

@@ -10,7 +10,7 @@
 
 #include "copasi.h"
 #include "model/model.h"
-#include "function/function.h"
+#include "function/CNodeK.h"
 #include "CDatum.h"
 
 class CReadConfig;
@@ -24,12 +24,12 @@ class CNodeO: public CNodeK
      */
     CDatum mDatum;
     /**
-     *  The left branch of the tree originating from tyhis node
+     *  The left branch of the tree originating from this node
      */
     CNodeO * mLeft;
 
     /**
-     *  The right branch of the tree originating from tyhis node
+     *  The right branch of the tree originating from this node
      */
     CNodeO * mRight;
 

@@ -8,10 +8,11 @@
 #define COPASI_CDatum
 
 #include <string>
-
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
-#include "model/CModel.h"
+#include "copasi.h" 
+//#include "utilities/CReadConfig.h"
+//#include "utilities/CWriteConfig.h"
+//#include "model/CModel.h"
+#include "report/CCopasiContainer.h"
 
 // symbols for CDatum type
 #define D_UNDEF 0 // undefined
@@ -60,8 +61,11 @@
 #define CFLOAT32 3
 #define CFLOAT64 4
 
+class CModel;
 class CState;
 class CSteadyStateTask;
+class CReadConfig;
+class CWriteConfig;
 
 class CDatum : public CCopasiContainer
   {

@@ -11,9 +11,10 @@
 #include <string>
 #include <vector>
 
-#include "utilities/CCopasiVector.h" 
-//#include "utilities/utilities.h"
-#include "function/function.h"
+#include "utilities/CCopasiVector.h"
+#include "function/CFunction.h"
+#include "function/CCallParameters.h"
+#include "function/CFunctionParameters.h"
 #include "CMetab.h"
 #include "CChemEq.h"
 #include "CChemEqElement.h"

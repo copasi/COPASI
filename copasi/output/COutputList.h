@@ -13,10 +13,11 @@
 
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
-#include "output/output.h"
 #include "model/model.h"
 
 class CState;
+class COutput;
+class CSteadyStateTask;
 
 class COutputList
   {

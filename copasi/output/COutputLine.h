@@ -12,17 +12,17 @@
 #include <iostream>
 #include <fstream>
 
-#include "output/output.h"
 #include "CDatum.h"
-#include "model/model.h"
 #include "report/CCopasiContainer.h"
+#include "utilities/CCopasiVector.h"
 
-template < class CType > class CCopasiVector;
-template < class CType > class CCopasiVectorS;
 class CState;
 class CSteadyStateTask;
 class CReadConfig;
 class CWriteConfig;
+class CState;
+class CModel;
+class CSteadyStateTask;
 
 class COutputLine : public CCopasiContainer
   {

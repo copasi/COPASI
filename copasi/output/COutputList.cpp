@@ -12,6 +12,7 @@
 
 #include "copasi.h"
 #include "COutputList.h"
+#include "COutput.h"
 
 /**
  * Default constructor.
@@ -89,9 +90,9 @@ C_INT32 COutputList::load(CReadConfig & configbuffer)
  *  @see mList
  */
 const CCopasiVectorS < COutput > & COutputList::getList() const
-{
-  return mList;
-}
+  {
+    return mList;
+  }
 
 /**
  *  Add new OutputLine object to a list

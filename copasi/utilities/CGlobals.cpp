@@ -1,8 +1,10 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
-#include "copasi.h"
-#include "CGlobals.h"
-#include "utilities.h"
+//#include "copasi.h"
+#include "CGlobals.h" 
+//#include "utilities.h"
+
+#include "utilities/CCopasiException.h"
 
 CGlobals::CGlobals():
     DefaultConc(0.0),
