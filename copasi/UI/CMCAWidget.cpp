@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/26 15:17:35 $
+   $Date: 2004/10/28 07:36:03 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -29,6 +29,7 @@
 #include "steadystate/CMCAProblem.h"
 #include "steadystate/CMCAMethod.h"
 #include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CSteadyStateMethod.h"
 #include "model/CModel.h"
 #include "listviews.h"
@@ -202,6 +203,8 @@ void CMCAWidget::runMCATask()
       CSteadyStateTask* steadyStateTask = dataModel->getSteadyStateTask();
       assert(steadyStateTask);
 
+      dynamic_cast<CSteadyStateProblem*>(steadyStateTask->getProblem())->setInitialState(dataModel->getModel()->getInitialState());
+
       steadyStateTask->initialize();
 
       setCursor(Qt::WaitCursor);
@@ -230,6 +233,7 @@ void CMCAWidget::runMCATask()
 
       unsetCursor();
       dynamic_cast<CMCAMethod*>(mMCATask->getMethod())->setIsSteadyState(dynamic_cast<CNewtonMethod*>(steadyStateTask->getMethod())->isSteadyState());
+      std::cout << "steady state: " << dynamic_cast<CNewtonMethod*>(steadyStateTask->getMethod())->isSteadyState() << std::endl;
     }
 
   setCursor(Qt::WaitCursor);
@@ -238,7 +242,7 @@ void CMCAWidget::runMCATask()
 
   try
     {
-      //mMCATask->process();
+      mMCATask->process();
     }
 
   catch (CCopasiException Exception)
@@ -289,6 +293,15 @@ bool CMCAWidget::enter(const std::string & key)
   objKey = key;
 
   loadMCATask();;
+
+  if (dataModel->getModel()->getTotSteps() == 0)
+    {
+      this->bRunButton->setEnabled(false);
+    }
+  else
+    {
+      this->bRunButton->setEnabled(true);
+    }
 
   return true;
 }

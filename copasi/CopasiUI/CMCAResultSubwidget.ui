@@ -110,6 +110,7 @@
     <include location="local" impldecl="in declaration">model/CState.h</include>
     <include location="local" impldecl="in implementation">model/CModel.h</include>
     <include location="local" impldecl="in implementation">steadystate/CMCAMethod.h</include>
+    <include location="local" impldecl="in implementation">qheader.h</include>
     <include location="local" impldecl="in implementation">CMCAResultSubwidget.ui.h</include>
 </includes>
 <forwards>
@@ -121,10 +122,10 @@
     <slot access="protected">init()</slot>
 </slots>
 <functions>
-    <function>loadAll( const CMCAMethod * mcaMethod )</function>
-    <function>loadElasticities( const CMCAMethod * mcaMethod )</function>
-    <function>loadConcentrationCCs( const CMCAMethod * mcaMethod )</function>
-    <function>loadFluxCCs( const CMCAMethod * mcaMethod )</function>
+    <function>loadAll( CMCAMethod * mcaMethod )</function>
+    <function>loadElasticities( CMCAMethod * mcaMethod )</function>
+    <function>loadConcentrationCCs( CMCAMethod * mcaMethod )</function>
+    <function>loadFluxCCs( CMCAMethod * mcaMethod )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

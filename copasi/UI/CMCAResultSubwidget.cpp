@@ -9,7 +9,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Tue Oct 26 17:21:40 2004
+ ** Created: Wed Oct 27 16:02:36 2004
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -27,6 +27,7 @@
 #include <qwhatsthis.h>
 #include "model/CModel.h"
 #include "steadystate/CMCAMethod.h"
+#include "qheader.h"
 #include "CMCAResultSubwidget.ui.h"
 
 /*

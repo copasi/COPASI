@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/26 15:29:11 $
+   $Date: 2004/10/28 07:36:04 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Tue Oct 26 17:21:40 2004
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.cpp,v 1.2 2004/10/26 15:29:11 gauges Exp $)
+ ** Created: Wed Oct 27 16:02:36 2004
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.cpp,v 1.3 2004/10/28 07:36:04 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,6 +27,7 @@
 #include <qwhatsthis.h>
 #include "model/CModel.h"
 #include "steadystate/CMCAMethod.h"
+#include "qheader.h"
 #include "CMCAResultSubwidget.ui.h"
 
 /*
