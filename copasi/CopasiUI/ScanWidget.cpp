@@ -774,6 +774,8 @@ bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
 void ScanWidget::ReportDefinitionClicked()
 {
   CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  pSelectDlg->setReport(scanTask->getReport());
   if (pSelectDlg->exec () == QDialog::Rejected)
     {
       return;

@@ -394,6 +394,9 @@ bool SteadyStateWidget::leave()
 void SteadyStateWidget::ReportDefinitionClicked()
 {
   CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
+  CSteadyStateTask* steadystateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  pSelectDlg->setReport(steadystateTask->getReport());
+
   if (pSelectDlg->exec () == QDialog::Rejected)
     {
       return;
