@@ -76,11 +76,15 @@ void Erdos(C_INT32 n, C_INT32 k, CCopasiVector < CGene > &gene)
     }
 }
 
-void WriteDot(ofstream &fout, char *Title, CCopasiVector < CGene > &gene)
+void WriteDot(char *Title, CCopasiVector < CGene > &gene)
 {
   unsigned C_INT32 i;
   C_INT32 j;
+  char strtmp[1024];
+  ofstream fout;
 
+  sprintf(strtmp, "%s.dot", Title);
+  fout.open(strtmp, ios::out);
   // dot file header
   fout << "digraph \"" << Title << "\" {\n";
   fout << "\tgraph\n\t[\n";
@@ -118,6 +122,7 @@ void WriteDot(ofstream &fout, char *Title, CCopasiVector < CGene > &gene)
           fout << "\t\t[arrowhead=\"tee\"\n\t\tcolor=\"red\"]" << endl;
       }
   fout << "\n}";
+  fout.close();
 }
 
 void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k, CModel &model)
@@ -295,10 +300,15 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
     }
 }
 
-void WriteGepasi(ofstream &fout, char *Title, CModel &model)
+void WriteGepasi(char *Title, CModel &model)
 {
   string linein;
   linein.reserve(100);
+  char strtmp[512];
+  ofstream fout;
+
+  sprintf(strtmp, "%s.gps", Title);
+  fout.open(strtmp, ios::out);
   // first part of the file come from a template
   ifstream fin("templategps");
   getline(fin, linein);
@@ -308,9 +318,12 @@ void WriteGepasi(ofstream &fout, char *Title, CModel &model)
       getline(fin, linein);
     }
   while (linein.find_first_of("----") != 0);
+  fout.close();
   // output the model
-  // model.saveold();
+  CWriteConfig modelBuff(strtmp, ios::app);
+  model.saveOld(modelBuff);
   // last part also comes from the template
+  fout.open(strtmp, ios::app);
   getline(fin, linein);
   do
     {
@@ -318,6 +331,7 @@ void WriteGepasi(ofstream &fout, char *Title, CModel &model)
       getline(fin, linein);
     }
   while (!fin.eof());
+  fout.close();
   fin.close();
 }
 
@@ -326,9 +340,7 @@ C_INT main(C_INT argc, char *argv[])
   C_INT32 n, k, i, tot;
   CCopasiVector < CGene > GeneList;
   char NetTitle[512];
-  char strtmp[1024];
   CModel model;
-  ofstream fo;
 
   Copasi = new CGlobals;
   Copasi->setArguments(argc, argv);
@@ -349,17 +361,11 @@ C_INT main(C_INT argc, char *argv[])
       Erdos(n, k, GeneList);
       // create GraphViz file
       sprintf(NetTitle, "Net%03ld", i + 1);
-      sprintf(strtmp, "%s.dot", NetTitle);
-      fo.open(strtmp, ios::out);
-      WriteDot(fo, NetTitle, GeneList);
-      fo.close();
+      WriteDot(NetTitle, GeneList);
       // create COPASI model
       MakeModel(NetTitle, GeneList, n, k, model);
       // save Gepasi model
-      sprintf(strtmp, "%s.gps", NetTitle);
-      fo.open(strtmp, ios::out);
-      WriteGepasi(fo, NetTitle, model);
-      fo.close();
+      WriteGepasi(NetTitle, model);
       // cleanup model and vectors
       model.cleanup();
       GeneList.cleanup();
