@@ -64,7 +64,7 @@ CopasiUI3Window::CopasiUI3Window():
       if (fileName)
         {
           // create the data model
-          dataModel = new DataModel<Folder>((char *)fileName.ascii());
+          dataModel = new DataModel<Folder>((char *)fileName.latin1());
 
           splitter = new QSplitter(QSplitter::Vertical, this , "main");
           splitter->show();
@@ -123,7 +123,7 @@ void CopasiUI3Window::newDoc()
    
          if (fileName)
            {
-             dataModel = new DataModel<Folder>((char *)fileName.ascii()); // create the data model
+             dataModel = new DataModel<Folder>((char *)fileName.latin1()); // create the data model
              splitter = new QSplitter(QSplitter::Vertical, this , "main");
              splitter->show();
              this->setCentralWidget(splitter);
@@ -146,7 +146,7 @@ void CopasiUI3Window::newDoc()
   if (!dataModel)
     {
       QString fileName = "DataModel.txt";
-      dataModel = new DataModel<Folder>((char *)fileName.ascii()); // create the data model
+      dataModel = new DataModel<Folder>((char *)fileName.latin1()); // create the data model
     }
 
   gpsFile = "temp.gps";
