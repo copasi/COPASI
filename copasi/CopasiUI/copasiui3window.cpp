@@ -151,6 +151,7 @@ void CopasiUI3Window::newDoc()
 
   gpsFile = "temp.gps";
   dataModel->createModel((const char *)gpsFile.utf8());
+  ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
   if (!bobject_browser_open)
     file->setItemEnabled(nobject_browser, true);
   file->setItemEnabled(nexport_menu_SBML, true);
