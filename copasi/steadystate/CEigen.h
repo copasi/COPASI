@@ -12,336 +12,355 @@
 #ifndef COPASI_CEigen
 #define COPASI_CEigen
 
+#include <iostream>
+#include <iomanip>
+
 #include "tnt/tnt.h"
 #include "tnt/cmat.h"
 #include "copasi.h"
 #include <cmath>
 
+using std::ostream;
+using std::endl;
+
 //include clapack.h for eigenvalue calculations
-extern "C" {
-  //#ifdef __cplusplus
-  //#define __old__cplusplus __cplusplus
-  //#undef __cplusplus
-  //#endif
+extern "C"
+  {
 #include "clapack.h"       //use CLAPACK
-  //#ifdef __old__cplusplus
-  //#define __cplusplus __old__cplusplus
-  //#undef __old__cplusplus
-  //#endif
-}
+  }
 
-class CEigen {
- private:
-  // variables for stability analysis
+class CEigen
+  {
+  private:
+    // variables for stability analysis
 
-  /**
-   * the real part of the maximum eigenvalue
-   */
-  C_FLOAT64 mEigen_maxrealpart;
+    /**
+     * the real part of the maximum eigenvalue
+     */
+    C_FLOAT64 mEigen_maxrealpart;
 
-  /**
-   * the imaginary part of the maximum eigenvalue
-   */
-  C_FLOAT64  mEigen_maximagpart;
+    /**
+     * the imaginary part of the maximum eigenvalue
+     */
+    C_FLOAT64 mEigen_maximagpart;
 
-  /**
-   * the number of eigenvalues with positive real part
-   */
-  C_INT32  mEigen_nposreal;
+    /**
+     * the number of eigenvalues with positive real part
+     */
+    C_INT32 mEigen_nposreal;
 
-  /**
-   * the number of eigenvalues with negative real part
-   */
-  C_INT32  mEigen_nnegreal;
+    /**
+     * the number of eigenvalues with negative real part
+     */
+    C_INT32 mEigen_nnegreal;
 
-  /**
-   * the number of real eigenvalues
-   */
-  C_INT32  mEigen_nreal;
+    /**
+     * the number of real eigenvalues
+     */
+    C_INT32 mEigen_nreal;
 
-  /**
-   * the number of imaginary eigenvalue numbers
-   */
-  C_INT32  mEigen_nimag;
+    /**
+     * the number of imaginary eigenvalue numbers
+     */
+    C_INT32 mEigen_nimag;
 
-  /**
-   *
-   */
-  C_INT32 mEigen_ncplxconj;
+    /**
+     *
+     */
+    C_INT32 mEigen_ncplxconj;
 
-  /**
-   * the number of eigenvalues with value of zero
-   */
-  C_INT32  mEigen_nzero;
+    /**
+     * the number of eigenvalues with value of zero
+     */
+    C_INT32 mEigen_nzero;
 
-  /**
-   * the stiffness of eigenvalues
-   */
-  C_FLOAT64  mEigen_stiffness;
+    /**
+     * the stiffness of eigenvalues
+     */
+    C_FLOAT64 mEigen_stiffness;
 
-  /**
-   * the hierary of the eigenvalues
-   */
-  C_FLOAT64  mEigen_hierarchy;
+    /**
+     * the hierary of the eigenvalues
+     */
+    C_FLOAT64 mEigen_hierarchy;
 
-  //there are 15 parameters in the dgees() subroutine
+    /**
+     * The resolution of needed for the stability analysis
+     */
+    C_FLOAT64 mResolution;
 
-  /**
-   * #1: (input) characer*1
-   * = 'N': Schur vectors are not computed
-   * = 'V': Schur vectors are computed
-   */
-  char mJobvs;
+    //there are 15 parameters in the dgees() subroutine
 
-  /**
-   * #2: (input) characer*1
-   * = 'N': Eigenvalues are not ordered
-   * = 'S': Eigenvalues are ordered
-   */
-  char mSort;
+    /**
+     * #1: (input) characer*1
+     * = 'N': Schur vectors are not computed
+     * = 'V': Schur vectors are computed
+     */
+    char mJobvs;
 
+    /**
+     * #2: (input) characer*1
+     * = 'N': Eigenvalues are not ordered
+     * = 'S': Eigenvalues are ordered
+     */
+    char mSort;
 
-  /**
-   * #3: (input) Logical function of two double precision arguments
-   * It must be declared external
-   * = 'S': Select is used to select eigenvalues to sort to the top left
-   * of the Schur form
-   * = 'N': Eigenvalues are ordered Select is not refereced.
-   */
-  //char mSelect;
-  C_INT32 * mSelect;
+    /**
+     * #3: (input) Logical function of two double precision arguments
+     * It must be declared external
+     * = 'S': Select is used to select eigenvalues to sort to the top left
+     * of the Schur form
+     * = 'N': Eigenvalues are ordered Select is not refereced.
+     */ 
+    //char mSelect;
+    C_INT32 * mSelect;
 
-  /**
-   * #4: (input) The order of the matrix A
-   */
-  C_INT32 mN;
+    /**
+     * #4: (input) The order of the matrix A
+     */
+    C_INT32 mN;
 
+    /**
+     * #5: (input/output) The double precision array, dimension (LDA,N)
+     * On entry, the N-by-N matrix A
+     * On exit, A has been overwritten by its real Schur form T
+     * Use a pointer variable here instead of array since we don't know
+     * the dimension yet.
+     */
+    C_FLOAT64 * mA;
 
-  /**
-   * #5: (input/output) The double precision array, dimension (LDA,N)
-   * On entry, the N-by-N matrix A
-   * On exit, A has been overwritten by its real Schur form T
-   * Use a pointer variable here instead of array since we don't know
-   * the dimension yet.
-   */
-  C_FLOAT64 * mA;
+    /**
+     * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
+     */
+    C_INT32 mLDA;
 
+    /**
+     * #7: (output) an integer
+     * if Sort = 'N', its value is 0
+     * if Sort = 'S', its value = number of eigenvalues (after sorting)
+     *                for which mSelect is true.
+     */
+    C_INT32 mSdim;
 
-  /**
-   * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
-   */
-  C_INT32 mLDA;
+    /**
+     * #8: array with dimension (mN)
+     */
+    C_FLOAT64 * mEigen_r;
 
-  /**
-   * #7: (output) an integer
-   * if Sort = 'N', its value is 0
-   * if Sort = 'S', its value = number of eigenvalues (after sorting)
-   *                for which mSelect is true.
-   */
-  C_INT32 mSdim;
+    /**
+     * #9: array with dimension (mN)
+     */
+    C_FLOAT64 * mEigen_i;
 
-  /**
-   * #8: array with dimension (mN)
-   */
-  C_FLOAT64 * mEigen_r;
+    /**
+     * #10: (output) array with dimension (mLdvs, mN)
+     * If mJobvs='V', mVS contains the orthogoanl matrix Z of Schur vectors
+     * If mJobvs='N', mVS is not referenced
+     */
+    C_FLOAT64 * mVS;
 
-  /**
-   * #9: array with dimension (mN)
-   */
-  C_FLOAT64 * mEigen_i;
+    /**
+     * #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
+     * if mJobvs='V', mLdvs >= N.
+     */
+    C_INT32 mLdvs;
 
-  /**
-   * #10: (output) array with dimension (mLdvs, mN)
-   * If mJobvs='V', mVS contains the orthogoanl matrix Z of Schur vectors
-   * If mJobvs='N', mVS is not referenced
-   */
-  C_FLOAT64 * mVS;
+    /**
+     * #12: (workspace/output) double precision array, dimension (mLWork)
+     * On exit, if mInfo=0; mWork(1) contains the optimal mLWork
+     */
+    C_FLOAT64 * mWork;
 
-  /**
-   * #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
-   * if mJobvs='V', mLdvs >= N.
-   */
-  C_INT32 mLdvs;
+    /**
+     * #13: (input) Dimension of array Work, its value >= max(1,3*mN).
+     * For good performance, it must generally be larger
+     */
+    C_INT32 mLWork;
 
-  /**
-   * #12: (workspace/output) double precision array, dimension (mLWork)
-   * On exit, if mInfo=0; mWork(1) contains the optimal mLWork
-   */
-  C_FLOAT64 * mWork;
+    /**
+     * #14: (workspace) Logical array, dimension (N)
+     * Not referenced if mSort = 'N'
+     */
+    C_INT32 * mBWork;
 
-  /**
-   * #13: (input) Dimension of array Work, its value >= max(1,3*mN).
-   * For good performance, it must generally be larger
-   */
-  C_INT32 mLWork;
+    /**
+     * #15: (output) an integer
+     * =0: successful exit
+     * <0: if mInfo=-i, the ith argument had an illegal value
+     * >0: if mInfo=i, and i is
+     *     <=N: the QR algorithm failed to compute all the eigenvalues;
+     *     =N+1: the eigenvalues could not be reordered because some
+     *           eigenvalues were too close to separate (ill-conditioned)
+     *     =N+2: after reordering, roundoff changed values of some
+     *           complex eigenvalues so that leading eigenvalues in the
+     *           Schur form no longer satisfy mSelect=.True. This could
+     *           caused by underflow due to scaling
+     */
+    C_INT32 mInfo;
 
-  /**
-   * #14: (workspace) Logical array, dimension (N)
-   * Not referenced if mSort = 'N'
-   */
-  C_INT32 * mBWork;
+    /**
+     * sorts two arrays using one as the criterion for sorting
+     */
+    C_INT32 qs_partition(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r);
 
+    /**
+     * Do quicksort with 2 arrays of double.
+     * One is the array of the real part of the eigenvalues.
+     * another is the array of the imaginary part of the eigenvalues
+     */
+    void quicksort(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r);
 
-  /**
-   * #15: (output) an integer
-   * =0: successful exit
-   * <0: if mInfo=-i, the ith argument had an illegal value
-   * >0: if mInfo=i, and i is
-   *     <=N: the QR algorithm failed to compute all the eigenvalues;
-   *     =N+1: the eigenvalues could not be reordered because some
-   *           eigenvalues were too close to separate (ill-conditioned)
-   *     =N+2: after reordering, roundoff changed values of some
-   *           complex eigenvalues so that leading eigenvalues in the
-   *           Schur form no longer satisfy mSelect=.True. This could
-   *           caused by underflow due to scaling
-   */
-  C_INT32 mInfo;
+  public:
+    /**
+     * Defaulut constructor
+     */
+    CEigen();
 
+    /**
+     * Destructor
+     */
+    ~CEigen();
 
-  /**
-   * sorts two arrays using one as the criterion for sorting
-   */
-  C_INT32 qs_partition(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r);
+    /**
+     * initialize variables for eigenvalue calculations
+     */
+    void initialize();
 
-  /**
-   * Do quicksort with 2 arrays of double.
-   * One is the array of the real part of the eigenvalues.
-   * another is the array of the imaginary part of the eigenvalues
-   */
-  void quicksort(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r);
+    /**
+     * cleanup()
+     */
+    void cleanup();
 
-  /**
-   *  Calculate various eigenvalue statistics
-   */
-  void statistics(C_FLOAT64 SSRes);
-  
- public:
-  /**
-   * Defaulut constructor
-   */
-  CEigen();
+    /**
+     * Eigenvalue calculations
+     * @param const C_FLOAT64 * matrix
+     * @param const unsigned C_INT32 & dim
+     */
+    void calcEigenValues(const C_FLOAT64 * matrix,
+                         const unsigned C_INT32 & dim);
 
-  /**
-   * Destructor
-   */
-  ~CEigen();
+    /**
+     *  Calculate various eigenvalue statistics
+     */
+    void stabilityAnalysis(const C_FLOAT64 & resolution);
 
-  /**
-   * initialize variables for eigenvalue calculations
-   */
-  void initialize();
+    /**
+     * Get the max eigenvalue real part
+     */
+    const C_FLOAT64 & getEigen_maxrealpart() const;
 
-  /**
-   * cleanup()
-   */
-  void cleanup();
+    /**
+     * Get the max eigenvalue imaginary  part
+     */
+    const C_FLOAT64 & getEigen_maximagpart() const;
 
-  /**
-   * Eigenvalue calculations
-   * @param SSRes the steady state resolution.
-   */
-  void CalcEigenvalues(C_FLOAT64 & SSRes, TNT::Matrix<C_FLOAT64> & ss_jacob);
+    /**
+     * Get the number of zero eigenvalues
+     */
+    const C_INT32 & getEigen_nzero() const;
 
-  /**
-   * Get the max eigenvalue real part
-   */
-  C_FLOAT64  getEigen_maxrealpart();
+    /**
+     * Get the eigenvalue stiffness
+     */
+    const C_FLOAT64 & getEigen_stiffness() const;
 
-  /**
-   * Get the max eigenvalue imaginary  part
-   */
-  C_FLOAT64 getEigen_maximagpart();
+    /**
+     * Get the eigenvalue hierarchy
+     */
+    const C_FLOAT64 & getEigen_hierarchy() const;
 
-  /**
-   * Get the number of zero eigenvalues
-   */
-  C_FLOAT64 getEigen_nzero();
+    /**
+     * Return number of real eigenvalues WeiSun 3/28/02
+     */
+    const C_INT32 & getEigen_nreal() const;
 
-  /**
-   * Get the eigenvalue stiffness
-   */
-  C_FLOAT64 getEigen_stiffness();
+    /**
+     * Return the number of imaginary eigenvalue numbers
+     */
+    const C_INT32 & getEigen_nimag() const;
 
-  /**
-   * Get the eigenvalue hierarchy
-   */
-  C_FLOAT64 getEigen_hierarchy();
+    const C_INT32 & getEigen_ncplxconj() const;
 
-  /**
-   * Return number of real eigenvalues WeiSun 3/28/02
-   */
-  C_FLOAT64 getEigen_nreal();
+    /**
+     * Return the number of eigenvalues with positive real part
+     */
+    const C_INT32 & getEigen_nposreal() const;
 
-  /**
-   * Return the number of imaginary eigenvalue numbers
-   */
-  C_FLOAT64 getEigen_nimag();
+    /**
+     * Return the number of eigenvalues with negative real part
+     */
+    const C_INT32 & getEigen_nnegreal() const;
 
-  C_FLOAT64 getEigen_ncplxconj();
+    const C_FLOAT64 * getEigen_i() const;
 
-  /**
-   * Return the number of eigenvalues with positive real part
-   */
-  C_FLOAT64 getEigen_nposreal();
+    const C_FLOAT64 * getEigen_r() const;
 
-  /**
-   * Return the number of eigenvalues with negative real part
-   */
-  C_FLOAT64 getEigen_nnegreal();
+    // Friend functions
+    friend ostream &operator<<(ostream &os, const CEigen &A)
+    {
+      os << endl;
+      os << "KINETIC STABILITY ANALYSIS";
+      os << endl;
+      os << "The linear stability analysis based on the eigenvalues" << endl;
+      os << "of the Jacobian matrix is only valid for steady states." << endl;
+      os << endl;
+      os << "Summary:" << endl;
+      os << "This steady state ";
 
-  C_FLOAT64 * getEigen_i();
+      // Output statistics
 
-  C_FLOAT64 * getEigen_r();
+      if (A.mEigen_maxrealpart > A.mResolution)
+        os << "is unstable";
+      else if (A.mEigen_maxrealpart < -A.mResolution)
+        os << "is asymptotically stable";
+      else
+        os << "stability is undetermined";
 
-  /**
-   * Get the pointer of max real eigenvalue component for output WeiSun 04/02/02
-   */
-  void * getMaxRealPartAddr();
+      if (A.mEigen_maximagpart > A.mResolution)
+        {
+          os << "," << endl;
+          os << "transient states in its vicinity have oscillatory components";
+        }
 
-  /**
-   * Get the pointer of max real eigenvalue component for output
-   */
-  void * getMaxImagPartAddr();
+      os << endl;
+      os << endl;
 
-  /**
-   * Get the pointer of eigenvalues w/ positive real parts for output
-   */
-  void * getNPosRealAddr();
+      os << "Eigenvalue statistics:" << endl;
+      // Output Max Real Part
+      os << " Largest real part: ";
+      os << setprecision(6) << A.mEigen_maxrealpart << endl;
+      // Output Max imaginary Part
+      os << " Largest absolute imaginary part:  ";
+      os << setprecision(6) << A.mEigen_maximagpart << endl;
+      // Output Eigen-nreal
+      os.unsetf(ios::scientific);
+      os.unsetf(ios::showpoint);
+      os << " " << A.mEigen_nreal;
+      os << " are purely real" << endl;
+      // Output Eigen-nimage
+      os << " " << A.mEigen_nimag;
+      os << " are purely imaginary" << endl;
+      // Output Eigen-ncplxconj
+      os << " " << A.mEigen_ncplxconj;
+      os << " are complex" << endl;
+      // Output Eigen-nzero
+      os << " " << A.mEigen_nzero;
+      os << " are equal to zero" << endl;
+      // Output Eigen-nposreal
+      os << " " << A.mEigen_nposreal;
+      os << " have positive real part" << endl;
+      // Output Eigen-nnegreal
+      os << " " << A.mEigen_nnegreal;
+      os << " have negative real part" << endl;
 
-  /**
-   * Get the pointer of eigenvalues w/ negative real parts for output
-   */
-  void * getNNegRealAddr();
+      // Set point manipulators
+      os.setf(ios::showpoint);
+      // Output Eigne-stiffness
+      os << " stiffness = " << A.mEigen_stiffness << endl;
+      os << " time hierarchy = " << A.mEigen_hierarchy << endl;
 
-  /**
-   * Get the pointer of real eigenvalues for output
-   */
-  void * getNRealAddr();
-
-  /**
-   * Get the pointer of imaginary eigenvalues for output
-   */
-  void * getNImagAddr();
-
-  /**
-   * Get the pointer of complex eigenvalues for output
-   */
-  void * getNCplxConjAddr();
-
-  /**
-   * Get the pointer of zero eigenvalues for output
-   */
-  void * getNZeroAddr();
-
-  /**
-   * Get the pointer of time hierarchy for output
-   */
-  void * getHierarchyAddr();
-
-  /**
-   * Get th epointer of stiffness for output
-   */
-  void * getStiffnessAddr();
-};
+      return os;
+    }
+  };
 
 #endif
