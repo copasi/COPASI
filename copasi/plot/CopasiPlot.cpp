@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:16:38 $
+   $Date: 2005/03/02 17:25:52 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -143,7 +143,7 @@ void MyQwtPlotCurve::myDrawLines(QPainter *painter,
 
 void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec)
 {
-  indexTable.resize(0);
+  indexTable.clear();
 
   C_INT32 jj, jjmax;
   C_INT32 index;
@@ -190,6 +190,18 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
           fatalError();
         }
     }
+
+  /*int j;
+  std::cout << "****** create indices **********" << std::endl;  
+  std::cout << "       indexTable: " << indexTable.size() <<  std::endl;  
+  for (i=0; i<indexTable.size();   ++i)
+    std::cout << "         : " << indexTable[i] <<  std::endl;  
+  std::cout << "       dataIndices: " << dataIndices.size() <<  std::endl;  
+  for (i=0; i<dataIndices.size();   ++i)
+    for (j=0; j<dataIndices[i].size();   ++j)
+      std::cout << "         : " << i << " : " << dataIndices[i][j] <<  std::endl;  
+  */
+
   //the indexTable now has a list of all the indices of the channels that need to be stored
   //internally in the copasiPlot (the channels that are needed for curves, not histograms).
 
@@ -286,13 +298,13 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
             tmpType = *(const unsigned C_INT32*)tmp;
           switch (tmpType)
             {
-            case 0:  //curve
+            case 0:   //curve
               setCurveStyle(crv, QwtCurve::Lines);
               break;
-            case 1:  //points
+            case 1:   //points
               setCurveStyle(crv, QwtCurve::Dots);
               break;
-            case 2:  //symbols
+            case 2:   //symbols
               setCurveStyle(crv, QwtCurve::NoCurve);
               const QColor &c = curveColours[k % 5];
               setCurveSymbol(crv, QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
