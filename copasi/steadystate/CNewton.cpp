@@ -192,6 +192,16 @@ C_INT32 CNewton::getSs_nfunction() const
 // finds out if current state is a valid steady state
 C_INT32 CNewton::isSteadyState( void )
 {
+  return mSs_solution;
+}
+
+
+
+/*
+
+// finds out if current state is a valid steady state
+C_INT32 CNewton::isSteadyState( void )
+{
   unsigned C_INT32 i, dim = mModel->getIndMetab();
   double maxrate;
 
@@ -209,6 +219,7 @@ C_INT32 CNewton::isSteadyState( void )
   return mSs_solution;
 }
 
+*/
 
 
 //similar to SS_Newton() in gepasi except a few modification
