@@ -25,6 +25,19 @@ CGA::CGA()
  mCandX = NULL;
  mWins = NULL;
  
+ vector <COptAlgorithmParameter> *AlgorithmParameters = getMethodParameters();
+ setMethodParameterNumber(3);
+ //AlgorithmParameters->size(3);
+ //#1:
+ (*AlgorithmParameters)[0].setName("Population Size");
+ (*AlgorithmParameters)[0].setValue(100);  // Set a default value
+ //#2:
+ (*AlgorithmParameters)[1].setName("Generation Number");
+ (*AlgorithmParameters)[1].setValue(100.0);  // Set a default value
+ //#3:
+ (*AlgorithmParameters)[2].setName("Mutation Variance");
+ (*AlgorithmParameters)[2].setValue(0.1);  // Set a default value
+
  //initialize();
 
 }
@@ -76,6 +89,9 @@ void CGA::initFirstGeneration()
 
 }
 
+
+#ifdef XXXX
+
 //constructor
 CGA::CGA(int psize,int num, int param)
 {
@@ -90,10 +106,6 @@ CGA::CGA(int psize,int num, int param)
 
 }
 
-
-
-
-#ifdef XXXX
 
 //constructor
 CGA::CGA(int psize,int num, int param)
@@ -658,8 +670,23 @@ int CGA::optimise()
 
  initOptRandom();
 
+ //YOHE: new 
+
+ vector <COptAlgorithmParameter> *AlgmParams = getMethodParameters();
+
+ for(int i=0; i < (getMethodParameterNumber()); i++)
+   {
+     if ( (*AlgmParams)[i].getName() == "Population Size" )
+         mPopSize = (*AlgmParams)[i].getValue();
+     else if ( (*AlgmParams)[i].getName() == "Generation Number" )
+         mGener =  (*AlgmParams)[i].getValue();
+     else if ( (*AlgmParams)[i].getName() == "Mutation Variance" )
+         mMutVar = (*AlgmParams)[i].getValue();
+   }  
+  
+ 
  // initialise the variance for mutations
- setMutVar(0.1);
+ //setMutVar(0.1);
 
  // initialise the update registers
  last_update = 0;

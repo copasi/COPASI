@@ -72,7 +72,7 @@ public:
   /**
    * constructor for initializing population 
    */
-  CGA(int psize,int num,int param); 
+  //CGA(int psize,int num,int param); 
 
   /**
    * Copy constructor

@@ -76,7 +76,8 @@ class COptAlgorithm
     * of its progress by the callback function set with SetCallback.
     */
    virtual int optimise();
-   //int optimise();
+   
+
 
    /**
     * set the number of method parameters
@@ -88,15 +89,11 @@ class COptAlgorithm
     */
    int getMethodParameterNumber(void);
 
-   /**
-    * set a method parameter
-    */
-   void setMethodParameter(int i, COptAlgorithmParameter & aParam);
 
    /**
     * get method parameter that matches a specific index 
     */
-   COptAlgorithmParameter getMethodParameter(int i);
+   vector <COptAlgorithmParameter> * getMethodParameters();
 
    /**
     * set a method parameter

@@ -39,6 +39,11 @@ bool COptAlgorithm::initialize(void)
   if (!mOptAlgmParams.empty())
     mOptAlgmParams.clear();
 
+  for (int i=0; i<mOptAlgmParams.size(); i++)
+    {
+      //    mOptAlgmParams[i] =  
+    }
+
   return true;
 }
 
@@ -66,17 +71,13 @@ int COptAlgorithm::getMethodParameterNumber(void)
   return mParameterNum;
 }
 
-// set method parameter
-void COptAlgorithm::setMethodParameter(int i, COptAlgorithmParameter & aParam)
+
+// get method parameters
+vector <COptAlgorithmParameter> * COptAlgorithm::getMethodParameters()
 {
-  mOptAlgmParams[i] = aParam;
+  return &mOptAlgmParams;
 }
 
-// get method parameter
-COptAlgorithmParameter COptAlgorithm::getMethodParameter(int i)
-{
-  return mOptAlgmParams[i];
-}
 
 // set method parameter value
 void COptAlgorithm::setMethodParameterValue(int i, double value)
