@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.160 $
+   $Revision: 1.161 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/02/26 00:37:52 $
+   $Author: shoops $ 
+   $Date: 2004/03/16 19:00:41 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1819,7 +1819,7 @@ bool CModel::removeCompartment(const std::string & key)
   /* Delete the dependent Metabolites before deleting the Compartment */
   const CCopasiVectorNS <CMetab> &Metabs = pCompartment->getMetabolites();
 
-  for (unsigned C_INT32 i = 0; i < Metabs.size(); i++)
+  for (unsigned C_INT32 i = Metabs.size() - 1; i != C_INVALID_INDEX; i--)
     removeMetabolite(Metabs[i]->getKey());
 
   //Check if Compartment with that name exists
