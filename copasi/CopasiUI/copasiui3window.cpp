@@ -71,9 +71,9 @@ CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSaveAs()
 {
-  gpsFile = QFileDialog::getOpenFileName(
+  gpsFile = QFileDialog::getSaveFileName(
               QString::null, "GPS Files (*.gps)",
-              this, "open file dialog",
+              this, "save file dialog",
               "Choose a file");
 
   if (dataModel && gpsFile)
