@@ -114,6 +114,14 @@ class CFunction
     virtual void save(CWriteConfig & configBuffer);
 
     /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  Output is in Gepasi 3.21 file format.
+     *  @param "CWriteConfig &" configBuffer.
+     *  @return Fail
+     */
+    virtual void saveOld(CWriteConfig & configBuffer);
+
+    /**
      *  Retrieves the name of the function
      *  @return "const string &" name
      */

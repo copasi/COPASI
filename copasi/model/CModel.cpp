@@ -246,11 +246,11 @@ C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
   Size = mCompartments.size();
   if ((Fail = configBuffer.setVariable("TotalCompartments", "C_INT32", &Size)))
     return Fail;
+  if ((Fail = Copasi->FunctionDB.saveOld(configBuffer)))
+    return Fail;
 
 #ifdef XXXX
 
-  if ((Fail = Copasi->FunctionDB.save(configBuffer)))
-    return Fail;
   mCompartments.save(configBuffer);
   mSteps.save(configBuffer);
 #endif

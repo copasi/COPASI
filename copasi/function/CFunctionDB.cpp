@@ -97,6 +97,23 @@ C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
   return Fail;
 }
 
+C_INT32 CFunctionDB::saveOld(CWriteConfig &configbuffer)
+{
+  C_INT32 Size = mLoadedFunctions.size();
+  C_INT32 Fail = 0;
+  C_INT32 i;
+
+  if ((Fail = configbuffer.setVariable("TotalUDKinetics", "C_INT32", &Size)))
+    return Fail;
+
+  // because CCopasiVector does not have saveOld, we will save them one by one
+  for (i = 0; i < Size; i++)
+    if (mLoadedFunctions[i]->getType() == CFunction::UserDefined)
+      mLoadedFunctions[i]->saveOld(configbuffer);
+
+  return Fail;
+}
+
 void CFunctionDB::setFilename(const string & filename)
 {
   mFilename = filename;

@@ -94,6 +94,11 @@ void CKinFunction::load(CReadConfig & configBuffer,
   compile();
 }
 
+void CKinFunction::saveOld(CWriteConfig & configBuffer)
+{
+  CFunction::saveOld(configBuffer);
+}
+
 void CKinFunction::compile()
 {
   mNodes.cleanup();

@@ -75,6 +75,14 @@ class CKinFunction : public CFunction
               CReadConfig::Mode mode = CReadConfig::LOOP);
 
     /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  Output is in Gepasi 3.21 file format.
+     *  @param "CWriteConfig &" configBuffer.
+     *  @return Fail
+     */
+    void saveOld(CWriteConfig & configBuffer);
+
+    /**
      *  Compile a function
      */
     void compile();

@@ -69,6 +69,14 @@ class CFunctionDB
     C_INT32 save(CWriteConfig & configbuffer);
 
     /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  This function uses the file format of Gepasi 3.21
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     */
+    C_INT32 saveOld(CWriteConfig & configbuffer);
+
+    /**
      *
      */
     void setFilename(const string & filename);

@@ -113,6 +113,48 @@ void CFunction::save(CWriteConfig & configBuffer)
   mParameters.save(configBuffer);
 }
 
+void CFunction::saveOld(CWriteConfig & configBuffer)
+{
+  C_INT32 dummy, i, sizem, sizep;
+  unsigned C_INT32 pos;
+  string tmpstr1, tmpstr2;
+
+  if (mType == UserDefined)
+    dummy = 1;
+  else
+    dummy = 0;
+  configBuffer.setVariable("UDKType", "string", &mName);
+  configBuffer.setVariable("User-defined", "C_INT32", &dummy);
+  configBuffer.setVariable("Reversible", "C_INT32", &mReversible);
+  dummy = mUsageDescriptions["SUBSTRATES"]->getLow();
+  configBuffer.setVariable("Substrates", "C_INT32", &dummy);
+  dummy = mUsageDescriptions["PRODUCTS"]->getLow();
+  configBuffer.setVariable("Products", "C_INT32", &dummy);
+  sizem = mParameters.getUsageRanges()["MODIFIER"]->getLow();
+  configBuffer.setVariable("Modifiers", "C_INT32", &sizem);
+  sizep = mParameters.getUsageRanges()["PARAMETER"]->getLow();
+  configBuffer.setVariable("Parameters", "C_INT32", &sizep);
+  for (i = 0, pos = 0; i < sizem; i++)
+    {
+      tmpstr1 = mParameters.getParameterByUsage("MODIFIER", pos).getName();
+      tmpstr2 = StringPrint("Modifier%d", i);
+      configBuffer.setVariable(tmpstr2, "string", &tmpstr1);
+    }
+  for (i = 0, pos = 0; i < sizep; i++)
+    {
+      tmpstr1 = mParameters.getParameterByUsage("PARAMETER", pos).getName();
+      tmpstr2 = StringPrint("Paramter%d", i);
+      configBuffer.setVariable(tmpstr2, "string", &tmpstr1);
+    }
+  configBuffer.setVariable("FunctionName", "string", &mName);
+  configBuffer.setVariable("Description", "string", &mDescription);
+
+  //  unsigned C_INT32 Size = mUsageDescriptions.size();
+  //  configBuffer.setVariable("UsageDescriptionSize", "C_INT32", &Size);
+  //  mUsageDescriptions.save(configBuffer);
+  //  mParameters.save(configBuffer);
+}
+
 void CFunction::setName(const string& name)
 {
   mName = name;
