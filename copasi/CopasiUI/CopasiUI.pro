@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.39 $ $Author: gauges $ $Date: 2004/08/10 14:45:27 $  
+# $Revision: 1.40 $ $Author: ssahle $ $Date: 2004/09/17 13:57:56 $  
 ######################################################################
 
 include(../common.pri)
@@ -211,7 +211,8 @@ SOURCES += \
            SteadyStateWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
-           TrajectoryWidget.cpp
+           TrajectoryWidget.cpp \
+           Tree.cpp
 
 release {
   distribution.path = .
