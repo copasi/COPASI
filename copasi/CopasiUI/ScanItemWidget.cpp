@@ -146,72 +146,55 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 
 void ScanItemWidget::MaxValueChanged(const QString&)
 {
-  // if (pParameter->getIndex("max")!=C_INVALID_INDEX)
   pParameter->setValue("max", mMax->text().toDouble());
 }
 
 void ScanItemWidget::MinValueChanged(const QString&)
 {
-  // if (pParameter->getIndex("min")!=C_INVALID_INDEX)
   pParameter->setValue("min", mMin->text().toDouble());
 }
 
 void ScanItemWidget::DensityValueChanged(const QString&)
 {
-  // if (pParameter->getIndex("incr")!=C_INVALID_INDEX)
   pParameter->setValue("incr", mDensity->text().toDouble());
 }
 
 void ScanItemWidget::IndependentClicked()
 {
-  // if (pParameter->getIndex("Indp")!=C_INVALID_INDEX)
   pParameter->setValue("Indp", mIndependent->text().toUInt());
 }
 
 void ScanItemWidget::LogarithmicClicked()
 {
-  // if (pParameter->getIndex("log")!=C_INVALID_INDEX)
   pParameter->setValue("log", mLogarithmic->text().toUInt());
 }
 
 void ScanItemWidget::RegularGridClicked()
 {
-  // if (pParameter->getIndex("gridType")!=C_INVALID_INDEX)
-  {
-    mMinLabel->setText(tr("Min"));
-    mMaxLabel->setText(tr("Max"));
-    pParameter->setValue("gridType", SD_REGULAR);
-  }
+  mMinLabel->setText(tr("Min"));
+  mMaxLabel->setText(tr("Max"));
+  pParameter->setValue("gridType", SD_REGULAR);
 }
 
 void ScanItemWidget::UniformClicked()
 {
-  // if (pParameter->getIndex("gridType")!=C_INVALID_INDEX)
-  {
-    mMinLabel->setText(tr("Min"));
-    mMaxLabel->setText(tr("Max"));
-    pParameter->setValue("gridType", SD_UNIFORM);
-  }
+  mMinLabel->setText(tr("Min"));
+  mMaxLabel->setText(tr("Max"));
+  pParameter->setValue("gridType", SD_UNIFORM);
 }
 
 void ScanItemWidget::GaussianClicked()
 {
-  // if (pParameter->getIndex("gridType")!=C_INVALID_INDEX)
-  {
-    mMinLabel->setText(tr("Mean"));
-    mMaxLabel->setText(tr("Std.Dev."));
-    pParameter->setValue("gridType", SD_GAUSS);
-  }
+  mMinLabel->setText(tr("Mean"));
+  mMaxLabel->setText(tr("Std.Dev."));
+  pParameter->setValue("gridType", SD_GAUSS);
 }
 
 void ScanItemWidget::PosGaussianClicked()
 {
-  // if (pParameter->getIndex("gridType")!=C_INVALID_INDEX)
-  {
-    mMinLabel->setText(tr("Mean"));
-    mMaxLabel->setText(tr("Std.Dev."));
-    pParameter->setValue("gridType", SD_BOLTZ);
-  }
+  mMinLabel->setText(tr("Mean"));
+  mMaxLabel->setText(tr("Std.Dev."));
+  pParameter->setValue("gridType", SD_BOLTZ);
 }
 
 /*
