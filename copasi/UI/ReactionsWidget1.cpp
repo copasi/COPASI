@@ -136,7 +136,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   table = new QTable(Frame4e, "tblsymbol");
   table->setGeometry(QRect(130, 10, 160, 154));
-  //table->setGeometry(QRect());
 
   table->sortColumn (0, TRUE, TRUE);
   table->setFixedSize(300, 150);
@@ -287,6 +286,7 @@ void ReactionsWidget1::loadName(QString setValue)
   CCopasiVector < CReaction::CId2Metab > & react1z = reactn->getId2Substrates();
   const CCopasiVector < CChemEqElement > * react1 = &reactn->getChemEq().getSubstrates();
   const CChemEqElement *cchem;
+  int z = 0;
 
   for (k = 0; k < react1z.size(); k++)
     {
@@ -296,7 +296,6 @@ void ReactionsWidget1::loadName(QString setValue)
 
       //for the combo box
       QStringList comboEntries1;
-      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
 
       for (l = 0; l < react1->size(); l++)
         {
@@ -306,21 +305,26 @@ void ReactionsWidget1::loadName(QString setValue)
           overall += cchem->getCompartmentName().c_str();
           overall += "}";
           comboEntries1.push_back(overall);
-          //item->setCurrentItem(overall);
         }
 
+      QString temp = comboEntries1[z];
+      //comboEntries1.push_front(temp);
+      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+      item->setCurrentItem(temp);
       //item = QComboTableItem(table, comboEntries1, FALSE);
-      item->setStringList(comboEntries1);
-
+      /*if(comboEntries1.contains(temp)>1)
+      {
+      comboEntries1.remove(temp);
+      }*/ 
+      //item->setStringList(comboEntries1);
+      z++;
       table->setItem(line, 0, item);
-
       line++;
     }
 
   CCopasiVector < CReaction::CId2Metab > & react2z = reactn->getId2Products();
-  //react1z = reactn->getId2Products();
-  // react1 = &reactn->getChemEq().getProducts();
   const CCopasiVector < CChemEqElement > * react2 = &reactn->getChemEq().getProducts();
+  z = 0;
 
   for (k = 0; k < react2z.size(); k++)
     {
@@ -336,19 +340,21 @@ void ReactionsWidget1::loadName(QString setValue)
           overall += "{";
           overall += cchem->getCompartmentName().c_str();
           overall += "}";
-
           comboEntries1.push_back(overall);
         }
 
+      QString temp = comboEntries1[z];
       QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+      item->setCurrentItem(temp);
+      z++;
       table->setItem(line, 0, item);
       line++;
     }
 
   CCopasiVector < CReaction::CId2Metab > & react3z = reactn->getId2Modifiers();
-  //react1z = reactn->getId2Modifiers();
   vector < CMetab * > & Metabolites = mModel->getMetabolites();
   CMetab * Metabolite;
+  z = 0;
 
   for (k = 0; k < react3z.size(); k++)
     {
@@ -364,11 +370,13 @@ void ReactionsWidget1::loadName(QString setValue)
           overall += "{";
           overall += Metabolite->getCompartment()->getName().c_str();
           overall += "}";
-
           comboEntries1.push_back(overall);
         }
 
+      QString temp = comboEntries1[z];
       QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+      item->setCurrentItem(temp);
+      z++;
       table->setItem(line, 0, item);
       line++;
     }
