@@ -30,7 +30,7 @@ CReadConfig::CReadConfig(void)
 CReadConfig::CReadConfig(const string& name)
 {
   // initialize everything
-  mFilename     = name;
+  mFilename     = name;  
   mLineNumber   = 0;
   mMode         = CReadConfig::NEXT;
   mFail         = 0;
@@ -77,6 +77,11 @@ C_INT32 CReadConfig::getVariable(const string& name,
         {
 	  mBuffer.read(c, 1);
 	  if ( *c == '\n' || mBuffer.eof()) break;
+
+	  //YH: here we need to delete ^M carriage return, it is \r
+	  if ( *c == '\r' ) 
+		continue;
+	 
 	  Line += c;
         }
 
@@ -174,6 +179,11 @@ C_INT32 CReadConfig::getVariable(const string& name,
             {
 	      mBuffer.read(c, 1);
 	      if ( *c == '\n' || mBuffer.eof()) break;
+
+	      //YH: here we need to delete ^M carriage return, it is \r
+	      if ( *c == '\r' ) 
+		continue;
+
 	      Line += c;
             }
 
@@ -267,3 +277,5 @@ string CReadConfig::lookAhead()
     
   return Line.substr(0, Line.find("="));
 }
+
+
