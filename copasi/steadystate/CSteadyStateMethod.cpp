@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/07 09:37:04 $
+   $Date: 2004/12/02 17:25:13 $
    End CVS Header */
 
 /**
@@ -148,7 +148,10 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
   if (!steadyStateFound)
     return CSteadyStateMethod::notFound;
 
-  if (steadyStateFound && isEquilibrium(resolution))
+  if (hasNegativeConcentrations(resolution))
+    return CSteadyStateMethod::foundNegative;
+
+  if (isEquilibrium(resolution))
     return CSteadyStateMethod::foundEquilibrium;
 
   return CSteadyStateMethod::found;
@@ -162,15 +165,28 @@ CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::processInternal()
 {return CSteadyStateMethod::notFound;}
 
-bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution)
-{
-  const CCopasiVectorNS < CReaction > & Reaction =
-    mpProblem->getModel()->getReactions();
-  unsigned C_INT32 i, imax = Reaction.size();
+bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
+  {
+    const CCopasiVectorNS < CReaction > & Reaction =
+      mpProblem->getModel()->getReactions();
+    unsigned C_INT32 i, imax = Reaction.size();
 
-  for (i = 0; i < imax; i++)
-    if (Reaction[i]->getFlux() > resolution)
-      return false;
+    for (i = 0; i < imax; i++)
+      if (Reaction[i]->getFlux() > resolution)
+        return false;
 
-  return true;
-}
+    return true;
+  }
+
+bool CSteadyStateMethod::hasNegativeConcentrations(const C_FLOAT64 & resolution) const
+  {
+    const CCopasiVector < CMetab > & Metabs =
+      mpProblem->getModel()->getMetabolites();
+    unsigned C_INT32 i, imax = Metabs.size();
+
+    for (i = 0; i < imax; i++)
+      if (Metabs[i]->getConcentration() < -resolution)
+        return true;
+
+    return false;
+  }

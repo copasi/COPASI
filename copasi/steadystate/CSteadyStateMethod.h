@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/07 09:37:04 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 18:19:25 $
    End CVS Header */
 
 /**
@@ -36,7 +36,8 @@ class CSteadyStateMethod : public CCopasiMethod
     {
       notFound = 0,
       found,
-      foundEquilibrium
+      foundEquilibrium,
+      foundNegative
     };
 
   protected:
@@ -173,7 +174,9 @@ class CSteadyStateMethod : public CCopasiMethod
      * @param const C_FLOAT64 & resolution
      * @retrun bool isEquilibrium
      */
-    bool isEquilibrium(const C_FLOAT64 & resolution);
+    bool isEquilibrium(const C_FLOAT64 & resolution) const;
+
+    bool hasNegativeConcentrations(const C_FLOAT64 & resolution) const;
   };
 
 #include "CNewtonMethod.h"
