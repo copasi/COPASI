@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.171 $
+   $Revision: 1.172 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:51:08 $
+   $Date: 2004/05/19 10:04:43 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -974,7 +974,7 @@ unsigned C_INT32 CModel::getDimension() const
  */
 std::string CModel::getComments() const {return mComments;}
 
-std::string CModel::getKey() const {return mKey;}
+const std::string & CModel::getKey() const {return mKey;}
 
 /**
  *        Return the title of this model
@@ -1490,7 +1490,7 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
   CModel::QuantityUnit Unit = unit;
   bool success = true;
 
-  //TODO use AVOGADRO (defined in copasi.h) !!!!
+  //TODO use AVOGADRO from copasi.h
   switch (Unit)
     {
     case Mol:
@@ -1605,9 +1605,39 @@ CMetab* CModel::createMetabolite(const std::string & name,
   return pMetab;
 }
 
-std::vector<std::string> CModel::removeCompReacKeys(const std::string & key)
+std::set<std::string> CModel::listReactionsDependentOnMetab(const std::string & key)
 {
-  std::vector<std::string> compReacKeys, metabReacKeys;
+  std::set<std::string> Keys;
+  const CCopasiVectorN<CReaction> & Reactions = getReactions();
+  C_INT32 j, jmax = Reactions.size();
+
+  for (j = 0; j < jmax; j++)
+    {
+      const CCopasiVector <CChemEqElement> &Substrates = Reactions[j]->getChemEq().getSubstrates();
+      C_INT32 i, imax = Substrates.size();
+      for (i = 0; i < imax; i++)
+        if (key == Substrates[i]->getMetaboliteKey())
+          Keys.insert(Reactions[j]->getKey());
+
+      const CCopasiVector <CChemEqElement> &Products = Reactions[j]->getChemEq().getProducts();
+      imax = Products.size();
+      for (i = 0; i < imax; i++)
+        if (key == Products[i]->getMetaboliteKey())
+          Keys.insert(Reactions[j]->getKey());
+
+      const CCopasiVector <CChemEqElement> &Modifiers = Reactions[j]->getChemEq().getModifiers();
+      imax = Modifiers.size();
+      for (i = 0; i < imax; i++)
+        if (key == Modifiers[i]->getMetaboliteKey())
+          Keys.insert(Reactions[j]->getKey());
+    }
+
+  return Keys;
+}
+
+std::set<std::string> CModel::listReactionsDependentOnCompartment(const std::string & key)
+{
+  std::set<std::string> compReacKeys, metabReacKeys;
 
   CCompartment* comp = dynamic_cast< CCompartment *>(GlobalKeys.get(key));
   const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
@@ -1615,153 +1645,12 @@ std::vector<std::string> CModel::removeCompReacKeys(const std::string & key)
 
   for (j = 0; j < jmax; j++)
     {
-      metabReacKeys = removeMetabReacKeys(Metabs[j]->getKey());
-      if (compReacKeys.size() == 0)
-        {
-          compReacKeys.resize(metabReacKeys.size());
-          compReacKeys = metabReacKeys;
-        }
-      else
-        {
-          unsigned C_INT32 reacFound = 0;
-          for (unsigned C_INT32 i = 0; i < metabReacKeys.size(); i++)
-            {
-              reacFound = 0;
-              for (unsigned C_INT32 k = 0; k < compReacKeys.size(); k++)
-                {
-                  if (compReacKeys[k] == metabReacKeys[i])
-                    {
-                      reacFound = 1;
-                      break;
-                    }
-                }
-              if (reacFound == 0)
-                {
-                  compReacKeys.resize(compReacKeys.size() + 1);
-                  compReacKeys[compReacKeys.size() - 1] = metabReacKeys[i];
-                }
-            }
-        }
+      metabReacKeys = listReactionsDependentOnMetab(Metabs[j]->getKey());
+      compReacKeys.insert(metabReacKeys.begin(), metabReacKeys.end());
     }
 
   return compReacKeys;
 }
-
-std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
-{
-  std::vector<std::string> Keys;
-  unsigned C_INT32 k = 0;
-  const CCopasiVectorN<CReaction> & Reactions = getReactions();
-  C_INT32 j, reactionChecked, jmax = Reactions.size();
-
-  for (j = 0; j < jmax; j++)
-    {
-      reactionChecked = 0;
-      const CCopasiVector <CChemEqElement> &Substrates = Reactions[j]->getChemEq().getSubstrates();
-      C_INT32 i, imax = Substrates.size();
-      for (i = 0; i < imax; i++)
-        {
-          if (key == Substrates[i]->getMetaboliteKey())
-            {
-              Keys.resize(k + 1);
-              Keys[k++] = Reactions[j]->getKey();
-              reactionChecked = 1;
-              break;
-            }
-        }
-
-      if (reactionChecked == 0)
-        {
-          const CCopasiVector <CChemEqElement> &Products = Reactions[j]->getChemEq().getProducts();
-          imax = Products.size();
-          for (i = 0; i < imax; i++)
-            if (key == Products[i]->getMetaboliteKey())
-              {
-                Keys.resize(k + 1);
-                Keys[k++] = Reactions[j]->getKey();
-                reactionChecked = 1;
-                break;
-              }
-        }
-
-      if (reactionChecked == 0)
-        {
-          const CCopasiVector <CChemEqElement> &Modifiers = Reactions[j]->getChemEq().getModifiers();
-          imax = Modifiers.size();
-          for (i = 0; i < imax; i++)
-            if (key == Modifiers[i]->getMetaboliteKey())
-              {
-                Keys.resize(k + 1);
-                Keys[k++] = Reactions[j]->getKey();
-                reactionChecked = 1;
-                break;
-              }
-        }
-    }
-
-  return Keys;
-}
-
-/*std::string CModel::removeMetabReactions(const std::string & key)
-{
-  std::string EffectedReactions = "Following Reactions will be effected:\n";
-  unsigned C_INT32 reactionFound = 0;
-  const CCopasiVectorN <CReaction> & Reactions = getReactions();
-  C_INT32 j, reactionChecked, jmax = Reactions.size();
- 
-  for (j = 0; j < jmax; j++)
-    {
-      reactionChecked = 0;
-      const CCopasiVector <CChemEqElement> &Substrates = Reactions[j]->getChemEq().getSubstrates();
-      C_INT32 i, imax = Substrates.size();
-      for (i = 0; i < imax; i++)
-        {
-          if (key == Substrates[i]->getMetaboliteKey())
-            {
-              EffectedReactions.append(Reactions[j]->getObjectName());
-              EffectedReactions.append(", ");
-              reactionFound = 1;
-              reactionChecked = 1;
-              break;
-            }
-        }
- 
-      if (reactionChecked == 0)
-        {
-          const CCopasiVector <CChemEqElement> &Products = Reactions[j]->getChemEq().getProducts();
-          imax = Products.size();
-          for (i = 0; i < imax; i++)
-            if (key == Products[i]->getMetaboliteKey())
-              {
-                EffectedReactions.append(Reactions[j]->getObjectName());
-                EffectedReactions.append(", ");
-                reactionFound = 1;
-                reactionChecked = 1;
-                break;
-              }
-        }
- 
-      if (reactionChecked == 0)
-        {
-          const CCopasiVector <CChemEqElement> &Modifiers = Reactions[j]->getChemEq().getModifiers();
-          imax = Modifiers.size();
-          for (i = 0; i < imax; i++)
-            if (key == Modifiers[i]->getMetaboliteKey())
-              {
-                EffectedReactions.append(Reactions[j]->getObjectName().c_str());
-                EffectedReactions.append(", ");
-                reactionFound = 1;
-                reactionChecked = 1;
-                break;
-              }
-        }
-    }
- 
-  if (reactionFound == 1)
-      return EffectedReactions.substr(0, EffectedReactions.length() - 2);    
-  else
-   return NULL;
-}*/
 
 bool CModel::removeMetabolite(const std::string & key)
 {
@@ -1772,9 +1661,10 @@ bool CModel::removeMetabolite(const std::string & key)
     return false;
 
   /* Before deleting the metabolite, delete all the reactions that are dependent */
-  std::vector<std::string> reacKeys = removeMetabReacKeys(key);
-  for (unsigned C_INT32 i = 0; i < reacKeys.size(); i++)
-    removeReaction(reacKeys[i]);
+  std::set<std::string> reacKeys = listReactionsDependentOnMetab(key);
+  std::set<std::string>::const_iterator it, itEnd = reacKeys.end();
+  for (it = reacKeys.begin(); it != itEnd; ++it)
+    removeReaction(*it);
 
   /* Check if metabolite with that name exists */
   unsigned C_INT32 index = mMetabolites.getIndex(pMetabolite);

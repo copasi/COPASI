@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:25:28 $
+   $Date: 2004/05/19 10:04:43 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -15,6 +15,7 @@
 
 #include <map>
 #include <vector>
+#include <set>
 #include <string>
 
 #include "CReaction.h"
@@ -568,7 +569,7 @@ class CModel : public CCopasiContainer
      * Return the key of this model
      * @return string key
      */
-    std::string getKey() const;
+    const std::string & getKey() const;
 
     /**
      * Return the title of this model
@@ -818,7 +819,7 @@ class CModel : public CCopasiContainer
     /**
      * Add a metabolite to the model
      * @param const std::string & name
-     * @param const std::string & compartment (default "")
+     * @param const std::string & compartment 
      * @param const C_FLOAT64 & iconc (default 1.0)
      * @param const CMetab::Status & status (default CMetab::METAB_VARIABL)
      * @return bool success (false if failed)
@@ -833,7 +834,7 @@ class CModel : public CCopasiContainer
     bool removeMetabolite(const std::string & key);
 
     /* Retreives list of Reactions Keys which are dependent on the Metabolite */
-    std::vector<std::string> removeMetabReacKeys(const std::string & key);
+    std::set<std::string> listReactionsDependentOnMetab(const std::string & key);
     //std::string removeMetabReactions(const std::string & key);
 
     /**
@@ -849,7 +850,7 @@ class CModel : public CCopasiContainer
     bool removeCompartment(const std::string & key);
 
     /* Retreives list of Reactions Keys which are dependent on the Compartment*/
-    std::vector<std::string> removeCompReacKeys(const std::string & key);
+    std::set<std::string> listReactionsDependentOnCompartment(const std::string & key);
 
     /**
      * Add a new rection to the model
