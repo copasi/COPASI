@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.155 $
+   $Revision: 1.156 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/12/16 04:57:16 $
+   $Author: gasingh $ 
+   $Date: 2003/12/18 20:13:26 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,7 @@ CModel::CModel(const CModel & src):
 CModel::~CModel()
 {
   CKeyFactory::remove(mKey);
-  //  cleanup();
+  //cleanup();
   DESTRUCTOR_TRACE;
 }
 
@@ -1766,20 +1766,20 @@ bool CModel::removeMetabolite(const std::string & key)
   if (!pMetabolite)
     return false;
 
-  /* Check if metabolite with that name exists */
-  unsigned C_INT32 index = mMetabolites.getIndex(pMetabolite);
-  if (index == C_INVALID_INDEX)
-    return false;
-
   /* Before deleting the metabolite, delete all the reactions that are dependent */
   std::vector<std::string> reacKeys = removeMetabReacKeys(key);
   for (unsigned C_INT32 i = 0; i < reacKeys.size(); i++)
     removeReaction(reacKeys[i]);
 
+  /* Check if metabolite with that name exists */
+  unsigned C_INT32 index = mMetabolites.getIndex(pMetabolite);
+  if (index == C_INVALID_INDEX)
+    return false;
+
   mMetabolites.remove(index);
-  pdelete(pMetabolite);
 
   compile();
+  //pdelete(pMetabolite);
 
   return true;
 }
@@ -1815,19 +1815,25 @@ bool CModel::removeCompartment(const std::string & key)
   if (!pCompartment)
     return false;
 
+  /* Delete the dependent Metabolites before deleting the Compartment */
+  const CCopasiVectorNS <CMetab> &Metabs = pCompartment->getMetabolites();
+
+  //int k = Metabs.size();//testing
+  for (unsigned C_INT32 i = 0; i < Metabs.size(); i++)
+    {
+      //std::string testkey = Metabs[i]->getKey();//testing
+      removeMetabolite(Metabs[i]->getKey());
+    }
+
   //Check if Compartment with that name exists
   unsigned C_INT32 index =
     mCompartments.CCopasiVector< CCompartment >::getIndex(pCompartment);
   if (index == C_INVALID_INDEX)
     return false;
 
-  /* Delete the dependent Metabolites before deleting the Compartment */
-  const CCopasiVectorNS <CMetab> &Metabs = pCompartment->getMetabolites();
-  for (unsigned C_INT32 i = 0; i < Metabs.size(); i++)
-    removeMetabolite(Metabs[i]->getKey());
-
   mCompartments.CCopasiVector< CCompartment >::remove(index);
 
+  //pdelete(pCompartment);
   compile();
   return true;
 }
@@ -1877,7 +1883,9 @@ bool CModel::removeReaction(const std::string & key)
 
   mSteps.CCopasiVector< CReaction >::remove(index);
 
+  //pdelete(pReaction);
   compile();
+
   return true;
 }
 

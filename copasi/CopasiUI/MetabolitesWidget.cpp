@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/18 17:55:21 $
+   $Author: gasingh $ 
+   $Date: 2003/12/18 20:11:51 $
    End CVS Header */
 
 /***********************************************************************
@@ -464,8 +464,10 @@ void MetabolitesWidget::slotBtnDeleteClicked()
   std::vector< unsigned C_INT32 > ToBeDeleted;
 
   for (i = 0; i < imax; i++)
-    if (table->isRowSelected(i, true))
-      ToBeDeleted.push_back(i);
+    {
+      if (table->isRowSelected(i, true))
+        ToBeDeleted.push_back(i);
+    }
 
   imax = ToBeDeleted.size();
   if (imax > 0)
@@ -513,7 +515,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                   // Yes or Enter
+        case 0:                    // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -526,7 +528,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:                   // No or Escape
+        case 1:                    // No or Escape
           break;
         }
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/11/22 01:16:08 $
+   $Date: 2003/12/18 20:08:15 $
    End CVS Header */
 
 /*******************************************************************
@@ -226,8 +226,10 @@ void CompartmentsWidget::slotBtnDeleteClicked()
   std::vector< unsigned C_INT32 > ToBeDeleted;
 
   for (i = 0; i < imax; i++)
-    if (table->isRowSelected(i, true))
-      ToBeDeleted.push_back(i);
+    {
+      if (table->isRowSelected(i, true))
+        ToBeDeleted.push_back(i);
+    }
 
   imax = ToBeDeleted.size();
   if (imax > 0)
@@ -302,7 +304,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:  // Yes or Enter
+        case 0:   // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -315,7 +317,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:  // No or Escape
+        case 1:   // No or Escape
           break;
         }
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/12/15 22:21:30 $
+   $Date: 2003/12/18 20:12:11 $
    End CVS Header */
 
 /***********************************************************************
@@ -188,11 +188,13 @@ void FunctionWidget::slotBtnDeleteClicked()
   std::vector< unsigned C_INT32 > ToBeDeleted;
 
   for (i = 0; i < imax; i++)
-    if (table->isRowSelected(i, true))
-      {
-        if (table->text(i, 1) == "user-defined")
-          ToBeDeleted.push_back(i);
-      }
+    {
+      if (table->isRowSelected(i, true))
+        {
+          if (table->text(i, 1) == "user-defined")
+            ToBeDeleted.push_back(i);
+        }
+    }
 
   imax = ToBeDeleted.size();
   if (imax > 0)
@@ -258,7 +260,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if user chooses to deleted Functions */
           switch (choice)
             {
-            case 0:    // Yes or Enter
+            case 0:     // Yes or Enter
               {
                 /* Delete the Functions on which no Reactions are dependent */
                 for (i = 0; i < imax; i++)
@@ -278,7 +280,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   }
                 break;
               }
-            case 1:    // No or Escape
+            case 1:     // No or Escape
               break;
             }
         }
