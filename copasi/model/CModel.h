@@ -419,7 +419,19 @@ class CModel
    *	Returns the index of the Moiety
    */
   C_INT32 findMoiety(string &Target);
-    
+
+  /**
+   * Returns the mStepsX of this model
+   * @return vector < CStep * > 
+   */
+  vector < CReaction * > & getStepsX();
+
+  /**
+   *  Get the mLU matrix of this model
+   */
+  TNT::Matrix < C_FLOAT64 >& getmLU();
+  
+
 #ifdef XXXX
   /**
    *  Assignement operator. 

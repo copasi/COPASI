@@ -635,3 +635,20 @@ void CModel::initializeMetabolites()
     for (j = 0; j < (*mCompartments)[i].metabolites().size(); j++)
       mMetabolites.push_back(&(*mCompartments)[i].metabolites()[j]);
 }
+
+/**
+ * Returns the mStepsX of this model
+ * @return vector < CStep * > 
+ */
+vector < CReaction * > & CModel::getStepsX()
+{
+	return mStepsX;
+}
+
+/**
+ *  Get the mLU matrix of this model
+ */
+TNT::Matrix < C_FLOAT64 >& CMolde::getmLU()
+{
+	return mLU;
+}
