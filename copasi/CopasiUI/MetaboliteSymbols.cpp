@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/08 22:04:36 $
+   $Author: chlee $ 
+   $Date: 2004/03/04 20:49:57 $
    End CVS Header */
 
 /*******************************************************************
@@ -81,6 +81,8 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   //connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   //connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+
+  table -> setVScrollBarMode(QScrollView::AlwaysOn);
 }
 
 void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
