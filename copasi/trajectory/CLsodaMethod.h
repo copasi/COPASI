@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/19 20:58:58 $
+   $Author: ssahle $ 
+   $Date: 2004/10/06 15:54:18 $
    End CVS Header */
 
 #ifndef COPASI_CLsodaMethod
@@ -75,6 +75,11 @@ class CLsodaMethod : public CTrajectoryMethod
      *  Maximum order for Adams method.
      */
     C_INT32 mAdams;
+
+    /**
+     *  Maximum number of steps for one call of lsoda.
+     */
+    C_INT32 mMaxSteps;
 
     // the following attributes were public in Clsoda.
   private:
