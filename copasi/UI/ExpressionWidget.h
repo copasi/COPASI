@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.9 2003/09/22 04:44:35 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.10 2003/09/22 11:52:41 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -11,7 +11,7 @@
 #define EXPRESSIONWIDGET_H
 
 #include <qvariant.h>
-#include "CopasiWidget.h"
+#include "copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
