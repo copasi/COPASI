@@ -1,14 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/22 10:10:12 $
+   $Author: shoops $ 
+   $Date: 2004/11/23 03:57:38 $
    End CVS Header */
 
-#include "copasi.h"
+#ifdef WIN32
+# pragma warning (disable: 4786)
+# pragma warning (disable: 4243) 
+// warning C4355: 'this' : used in base member initializer list
+# pragma warning (disable: 4355)
+#endif  // WIN32
 
-#include "mathematics.h"
+#include <mathematics.h>
 #include <vector>
 #include <numeric>
 #include <limits.h>
@@ -26,11 +31,6 @@
 #include "model/CState.h"
 #include "model/CCompartment.h"
 #include "model/CModel.h"
-
-#ifdef WIN32
-#define min _cpp_min
-#define max _cpp_max
-#endif // WIN32
 
 C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 {
@@ -137,7 +137,7 @@ const double CStochMethod::step(const double & deltaT,
 
   mNumNumbers = mpCurrentState->getVariableNumberSize();
   mNumbers.resize(mNumNumbers);
-  for (i = 0; i < mNumNumbers; ++i) mNumbers[i] = (C_NUMBER)mpCurrentState->getVariableNumber(i);
+  for (i = 0; i < mNumNumbers; ++i) mNumbers[i] = (C_INT64)mpCurrentState->getVariableNumber(i);
   //TODO also put fixes variables here
 
   for (i = 0; i < mNumNumbers; ++i)
@@ -195,8 +195,8 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   C_FLOAT64 amu = 1; // initially
   //C_INT32 total_substrates = 0;
   C_INT32 num_ident = 0;
-  C_NUMBER number = 0;
-  C_NUMBER lower_bound;
+  C_INT64 number = 0;
+  C_INT64 lower_bound;
   // substrate_factor - The substrates, raised to their multiplicities,
   // multiplied with one another. If there are, e.g. m substrates of type m,
   // and n of type N, then substrate_factor = M^m * N^n.
@@ -436,7 +436,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
   mMaxBalance = maxBalance; std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =  /*INT_MAX*/ LONG_LONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =   /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.

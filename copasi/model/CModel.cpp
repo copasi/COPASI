@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.201 $
+   $Revision: 1.202 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/22 10:08:50 $
+   $Author: shoops $ 
+   $Date: 2004/11/23 03:57:38 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1977,7 +1977,7 @@ std::string CModel::suitableForStochasticSimulation() const
 
     for (i = 0; i < mMetabolites.size(); ++i)
       {
-        if (mMetabolites[i]->getInitialNumber() > LONG_LONG_MAX)
+        if (mMetabolites[i]->getInitialNumber() > LLONG_MAX)
           return "At least one particle number in the inial state is too big.";
       }
 

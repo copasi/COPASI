@@ -1,15 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/22 10:10:12 $
+   $Author: shoops $ 
+   $Date: 2004/11/23 03:57:38 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
 #define COPASI_CStochMethod
-
-#define C_NUMBER long long int
 
 #include <set>
 #include <vector>
@@ -153,7 +151,7 @@ class CStochMethod : public CTrajectoryMethod
     /**
     * This is set to maxint - mMaxSteps*mMaxBalance
     */
-    C_NUMBER mMaxIntBeforeStep;
+    C_INT64 mMaxIntBeforeStep;
 
   protected:
     /**
@@ -234,7 +232,7 @@ class CStochMethod : public CTrajectoryMethod
     /**
      * The particle numbers
      */
-    std::vector <C_NUMBER> mNumbers;
+    std::vector <C_INT64> mNumbers;
 
     unsigned C_INT32 mNumReactions;
     unsigned C_INT32 mNumNumbers;
