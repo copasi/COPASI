@@ -4,7 +4,7 @@ LANGUAGE	= C++
 include(../lib.pri)
 
 LIB= wizard
-CONFIG	+= qt #warn_on release
+CONFIG	+= qt 
 
 #SOURCES	+= main.cpp
 

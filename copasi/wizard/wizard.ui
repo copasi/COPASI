@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>Form1</class>
+<class>WizardDialog</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>Form1</cstring>
+        <cstring>WizardDialog</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -401,31 +401,31 @@ Calculating a Time Course</string>
     <connection>
         <sender>buttonGroup</sender>
         <signal>clicked(int)</signal>
-        <receiver>Form1</receiver>
+        <receiver>WizardDialog</receiver>
         <slot>buttonGroup2_clicked(int)</slot>
     </connection>
     <connection>
         <sender>forwardButton</sender>
         <signal>clicked()</signal>
-        <receiver>Form1</receiver>
+        <receiver>WizardDialog</receiver>
         <slot>forwardButton_clicked()</slot>
     </connection>
     <connection>
         <sender>backButton</sender>
         <signal>clicked()</signal>
-        <receiver>Form1</receiver>
+        <receiver>WizardDialog</receiver>
         <slot>backButton_clicked()</slot>
     </connection>
     <connection>
         <sender>textBrowser</sender>
         <signal>anchorClicked(const QString&amp;,const QString&amp;)</signal>
-        <receiver>Form1</receiver>
+        <receiver>WizardDialog</receiver>
         <slot>textBrowser_anchorClicked(const QString&amp;,const QString&amp;)</slot>
     </connection>
     <connection>
         <sender>cancelButton</sender>
         <signal>clicked()</signal>
-        <receiver>Form1</receiver>
+        <receiver>WizardDialog</receiver>
         <slot>close()</slot>
     </connection>
 </connections>

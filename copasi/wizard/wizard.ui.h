@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/23 14:53:12 $
+   $Author: gauges $ 
+   $Date: 2004/09/23 18:30:54 $
    End CVS Header */
 
 /****************************************************************************
@@ -20,15 +20,15 @@
 
 //char* baseDir="/Users/ralph/wizard/";
 
-char* Form1::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", "TutWiz-Step3.html", "TutWiz-Step4.html", "TutWiz-Step5.html", "TutWiz-Step6.html"};
+char* WizardDialog::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", "TutWiz-Step3.html", "TutWiz-Step4.html", "TutWiz-Step5.html", "TutWiz-Step6.html"};
 
-char* Form1::Error = "<html><head><title>Error</title></head><body><h1>Could not find help files.<br><br>Please set the COPASI_HELP_PATH environment variable to the absolute path that contains the html help files!</h1></body></html>";
+char* WizardDialog::Error = "<html><head><title>Error</title></head><body><h1>Could not find help files.<br><br>Please set the COPASI_HELP_PATH environment variable to the absolute path that contains the html help files!</h1></body></html>";
 
-std::string Form1::helpPath = "";
+std::string WizardDialog::helpPath = "";
 
 QWidget* copasiMainWindow = NULL;
 
-void Form1::buttonGroup2_clicked(int)
+void WizardDialog::buttonGroup2_clicked(int)
 {
   //std::cout << "Selected button: " << this->buttonGroup->selectedId() << std::endl;
   int selectedId = this->buttonGroup->selectedId();
@@ -47,14 +47,14 @@ void Form1::buttonGroup2_clicked(int)
       this->forwardButton->setEnabled(true);
       this->backButton->setEnabled(true);
     }
-  if (Form1::helpPath != "")
+  if (WizardDialog::helpPath != "")
     {
-      QString source = std::string("file://") + Form1::helpPath + std::string("/") + std::string(Form1::texts[this->buttonGroup->selectedId()]);
+      QString source = std::string("file://") + WizardDialog::helpPath + std::string("/") + std::string(WizardDialog::texts[this->buttonGroup->selectedId()]);
       this->textBrowser->setSource(source);
     }
 }
 
-void Form1::init()
+void WizardDialog::init()
 {
   WFlags f = this->getWFlags();
   f = (f | Qt::WStyle_Minimize | Qt::WDestructiveClose);
@@ -63,13 +63,13 @@ void Form1::init()
   if (helpPath != NULL)
     {
       // the next line will hopefully ensure that this works under windows as well.
-      Form1::helpPath = QDir(helpPath).absPath().latin1();
-      QString source = std::string("file://") + Form1::helpPath + std::string("/") + std::string(Form1::texts[0]);
+      WizardDialog::helpPath = QDir(helpPath).absPath().latin1();
+      QString source = std::string("file://") + WizardDialog::helpPath + std::string("/") + std::string(WizardDialog::texts[0]);
       this->textBrowser->setSource(source);
     }
   else
     {
-      this->textBrowser->setText(Form1::Error);;
+      this->textBrowser->setText(WizardDialog::Error);;
     }
 
   this->button1->setStyle("motif");
@@ -86,19 +86,19 @@ void Form1::init()
   this->button6->setBackgroundOrigin(QButton::WindowOrigin);
 }
 
-void Form1::forwardButton_clicked()
+void WizardDialog::forwardButton_clicked()
 {
   this->buttonGroup->setButton(this->buttonGroup->selectedId() + 1);
   this->buttonGroup2_clicked(this->buttonGroup->selectedId());
 }
 
-void Form1::backButton_clicked()
+void WizardDialog::backButton_clicked()
 {
   this->buttonGroup->setButton(this->buttonGroup->selectedId() - 1);
   this->buttonGroup2_clicked(this->buttonGroup->selectedId());
 }
 
-void Form1::textBrowser_anchorClicked(const QString &name, const QString &link)
+void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString &link)
 {
   if (name == "Model Settings")
     {
@@ -137,7 +137,7 @@ void Form1::textBrowser_anchorClicked(const QString &name, const QString &link)
     }
 }
 
-void Form1::setCopasiMainWindow(QWidget * copasiMainWindow)
+void WizardDialog::setCopasiMainWindow(QWidget * copasiMainWindow)
 {
   this->copasiMainWindow = copasiMainWindow;
 }
