@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.h,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/11 14:22:20 $
+   $Date: 2004/06/28 22:23:24 $
    End CVS Header */
 
 /****************************************************************************
@@ -126,6 +126,8 @@ class DataModel
     CPlotSpecVector* plotspecs;
     COptFunction* pOptFunction;
 
+    QApplication *mpApp;
+
   public:
     DataModel();
 
@@ -151,6 +153,9 @@ class DataModel
 
     bool isChanged() const;
     void changed(const bool & changed = true);
+
+    void setQApp(QApplication* app);
+    QApplication* getQApp() const;
 
     inline CSteadyStateTask* getSteadyStateTask() {return steadystatetask;}
     inline CTrajectoryTask* getTrajectoryTask() {return trajectorytask;}

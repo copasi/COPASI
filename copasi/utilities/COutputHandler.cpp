@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/25 15:06:30 $
+   $Date: 2004/06/28 22:26:26 $
    End CVS Header */
 
 #include "copasi.h"
@@ -33,10 +33,18 @@ bool CCallbackHandler::finish()
   return true;
 }
 
-bool CCallbackHandler::init(C_INT32 maxSteps)
+bool CCallbackHandler::init(C_INT32 maxSteps, const std::string & text)
 {
 #ifdef COPASI_DEBUG
   std::cout << "CallbackHandler: init" << std::endl;
+#endif // COPASI_DEBUG
+  return true;
+}
+
+bool CCallbackHandler::reInit(C_INT32 maxSteps, const std::string & text)
+{
+#ifdef COPASI_DEBUG
+  std::cout << "CallbackHandler: reInit" << std::endl;
 #endif // COPASI_DEBUG
   return true;
 }

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.35 $ $Author: shoops $ $Date: 2004/06/24 21:07:20 $  
+# $Revision: 1.36 $ $Author: ssahle $ $Date: 2004/06/28 22:22:45 $  
 ######################################################################
 
 include(../common.pri)
@@ -117,6 +117,7 @@ HEADERS += \
            CopasiTableWidget.h \
            copasiWidget.h \
            copasiui3window.h \
+           CProgressBar.h \
            DataModel.h \
            DifferentialEquations.h \
            FixedMetaboliteSymbols.h \
@@ -173,6 +174,7 @@ SOURCES += \
            CopasiTableWidget.cpp \
            copasiWidget.cpp \
            copasiui3window.cpp \
+           CProgressBar.cpp \
            DataModel.cpp \
            DifferentialEquations.cpp \
            FixedMetaboliteSymbols.cpp \

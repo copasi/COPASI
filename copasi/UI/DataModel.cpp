@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 08:56:39 $
+   $Date: 2004/06/28 22:23:24 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -14,6 +14,7 @@
 #include "qtUtilities.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLExporter.h"
+#include "CProgressBar.h"
 
 DataModel::DataModel()
 {
@@ -84,6 +85,8 @@ void DataModel::createModel()
   pdelete(model);
   model = new CModel();
   Copasi->pModel = model;
+  CProgressBar* tmpBar = new CProgressBar(this);
+  model->setCompileHandler(tmpBar);
   searchFolderList(1)->setObjectKey(model->getKey());
 
   pdelete(mpMathModel);
@@ -136,6 +139,8 @@ void DataModel::loadModel(const char* fileName)
       pdelete(model);
       CReadConfig inbuf(fileName);
       model = new CModel();
+      CProgressBar* tmpBar = new CProgressBar(this);
+      model->setCompileHandler(tmpBar);
       model->load(inbuf);
       searchFolderList(1)->setObjectKey(model->getKey());
 
@@ -197,7 +202,8 @@ void DataModel::loadModel(const char* fileName)
 
       pdelete(model);
       model = XML.getModel();
-      //model->compile();
+      CProgressBar* tmpBar = new CProgressBar(this);
+      model->setCompileHandler(tmpBar);
       searchFolderList(1)->setObjectKey(model->getKey());
 
       pdelete(steadystatetask);
@@ -375,6 +381,8 @@ void DataModel::importSBML(const char* fileName)
       model = new CModel();
     }
 
+  CProgressBar* tmpBar = new CProgressBar(this);
+  model->setCompileHandler(tmpBar);
   Copasi->pModel = model;
   searchFolderList(1)->setObjectKey(model->getKey());
 
@@ -418,3 +426,9 @@ void DataModel::exportSBML(const char* fileName)
 
   exporter.exportSBML(model, fileName);
 }
+
+void DataModel::setQApp(QApplication* app)
+{mpApp = app;}
+
+QApplication* DataModel::getQApp() const
+  {return mpApp;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.185 $
+   $Revision: 1.186 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/25 15:03:15 $
+   $Date: 2004/06/28 22:25:59 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,7 @@
 #include "utilities/CVector.h"
 #include "utilities/CluX.h"
 #include "utilities/utility.h"
+#include "utilities/COutputHandler.h"
 
 #include "clapackwrap.h"
 
@@ -337,15 +338,23 @@ bool CModel::compile()
   for (i = 0; i < imax; i++)
     mSteps[i]->compile(/*mCompartments*/);
 
+  if (mpCompileHandler) mpCompileHandler->init(100, "");
   buildStoi();
   lUDecomposition(LU);
+  if (mpCompileHandler) mpCompileHandler->progress(2);
   setMetabolitesStatus(LU);
+  if (mpCompileHandler) mpCompileHandler->progress(3);
   buildRedStoi();
+  if (mpCompileHandler) mpCompileHandler->progress(4);
   buildL(LU);
+  if (mpCompileHandler) mpCompileHandler->progress(5);
   buildMoieties();
+  if (mpCompileHandler) mpCompileHandler->progress(6);
   buildStateTemplate();
 
   mCompileIsNecessary = false;
+
+  if (mpCompileHandler) mpCompileHandler->finish();
   return true;
 }
 
@@ -358,7 +367,7 @@ bool CModel::compileIfNecessary()
 {
   std::cout << "** compiling a CModel is requested. ";
   if (mCompileIsNecessary)
-    std::cout << "It will be done." << std::endl;
+    std::cout << "It will be done...." << std::endl;
   else
     std::cout << " " << std::endl;
 
@@ -409,8 +418,13 @@ void CModel::buildStoi()
 
   mStoi.resize(imax - j, mSteps.size());
 
+  if (mpCompileHandler) mpCompileHandler->reInit(mStoi.numCols(),
+        "building stoichiometry matrix...");
+
   for (i = 0; i < (unsigned C_INT32) mStoi.numCols(); i++)
     {
+      if (mpCompileHandler) mpCompileHandler->progress(i);
+
       Structure = mSteps[i]->getChemEq().getBalances();
 
       for (j = 0; j < (unsigned C_INT32) mStoi.numRows(); j++)
