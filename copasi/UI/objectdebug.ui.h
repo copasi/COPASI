@@ -39,7 +39,7 @@ else {if (obj->hasValueDbl()) flags += "Dbl"; else flags += "   ";}
       CCopasiContainer* container;
       container = (CCopasiContainer*)obj;
 
-      std::map< const std::string, CCopasiObject *>::const_iterator it = container->getObjects().begin();
+      CCopasiContainer::objectMap::const_iterator it = container->getObjects().begin();
       int cnt = container->getObjects().size();
 
       for (; it != container->getObjects().end(); ++it)
