@@ -138,6 +138,9 @@ void CCompartment::addMetabolite(CMetab &metabolite)
   CMetab *pMetabolite = new CMetab(metabolite);
 
   pMetabolite->setCompartment(this);
+  pMetabolite->setConcentration(pMetabolite->getConcentration());
+  pMetabolite->setInitialConcentration(pMetabolite->getInitialConcentration());
+  // Volume is known now. It is assumed that mConcDbl was available and mNumber needed to be set
   mMetabolites.add(pMetabolite);
 }
 

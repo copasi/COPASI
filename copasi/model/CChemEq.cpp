@@ -99,6 +99,8 @@ CChemEqElement CChemEq::extractElement(const string & input,
 
     if (NameStart != string::npos)
       Element.setMetaboliteName(input.substr(NameStart, NameEnd - NameStart));
+    else
+      Element.setMetaboliteName("");
 
     pos = (End == string::npos) ? End : End + 3;
 
@@ -112,6 +114,9 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
   unsigned C_INT32 i;
 
   string Name = element.getMetaboliteName();
+
+  if (Name == "")
+    return ; // don´t add empty element
 
   for (i = 0; i < structure.size(); i++)
     if (Name == structure[i]->getMetaboliteName())
