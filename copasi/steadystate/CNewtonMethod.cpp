@@ -235,8 +235,9 @@ CNewtonMethod::processNewton (CStateX & steadyState,
       for (i = 0; i < mDimension; i++)
         {
           for (j = 0; j < mDimension; j++)
-            cout << "  " << mJacobian[i * mDimension + j];
-          cout << endl;
+;
+          //cout << "  " << mJacobian[i * mDimension + j];
+          //cout << endl;
         }
 
       /* We use dgetrf_ and dgetrs_ to solve
