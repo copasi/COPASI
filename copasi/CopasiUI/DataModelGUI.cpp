@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/02 09:41:19 $
+   $Author: shoops $ 
+   $Date: 2005/03/02 20:50:25 $
    End CVS Header */
 
 #include "copasi.h"
@@ -231,11 +231,11 @@ void DataModelGUI::updatePlots()
   parent->removeChildren();
 
   //  const CCopasiVector< CPlotSpecification >* objects = mPlotDefinitionList;
-  C_INT32 j, jmax = mPlotDefinitionList.size();
+  C_INT32 j, jmax = CCopasiDataModel::Global->getPlotDefinitionList()->size();
   CPlotSpecification *obj;
   for (j = 0; j < jmax; j++)
     {
-      obj = mPlotDefinitionList[j];
+      obj = (*CCopasiDataModel::Global->getPlotDefinitionList())[j];
       parent->addChild(-1,
                         FROM_UTF8(obj->getObjectName()),
                         obj->CCopasiParameter::getKey());
@@ -257,8 +257,7 @@ bool DataModelGUI::createModel()
 {
   if (!CCopasiDataModel::Global->newModel()) return false;
 
-  *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList) =
-    *CCopasiDataModel::Global->getPlotDefinitionList();
+  mPlotDefinitionList.setPlotDefinitionList(CCopasiDataModel::Global->getPlotDefinitionList());
 
   linkDataModelToGUI();
   return true;
@@ -269,8 +268,7 @@ bool DataModelGUI::loadModel(const char* fileName)
   if (!CCopasiDataModel::Global->loadModel(fileName)) return false;
 
   // getModel()->setCompileFlag();
-  *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList) =
-    *CCopasiDataModel::Global->getPlotDefinitionList();
+  mPlotDefinitionList.setPlotDefinitionList(CCopasiDataModel::Global->getPlotDefinitionList());
 
   linkDataModelToGUI();
   return true;
@@ -278,8 +276,8 @@ bool DataModelGUI::loadModel(const char* fileName)
 
 bool DataModelGUI::saveModel(const char* fileName)
 {
-  *CCopasiDataModel::Global->getPlotDefinitionList() =
-    *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList);
+  assert(mPlotDefinitionList.getPlotDefintionList() ==
+         CCopasiDataModel::Global->getPlotDefinitionList());
 
   return CCopasiDataModel::Global->saveModel(fileName);
 }
@@ -288,8 +286,7 @@ bool DataModelGUI::importSBML(const char* fileName)
 {
   if (!CCopasiDataModel::Global->importSBML(fileName)) return false;
 
-  *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList) =
-    *CCopasiDataModel::Global->getPlotDefinitionList();
+  mPlotDefinitionList.setPlotDefinitionList(CCopasiDataModel::Global->getPlotDefinitionList());
 
   linkDataModelToGUI();
   return true;
@@ -297,8 +294,8 @@ bool DataModelGUI::importSBML(const char* fileName)
 
 bool DataModelGUI::exportSBML(const char* fileName)
 {
-  *CCopasiDataModel::Global->getPlotDefinitionList() =
-    *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList);
+  assert(mPlotDefinitionList.getPlotDefintionList() ==
+         CCopasiDataModel::Global->getPlotDefinitionList());
 
   return CCopasiDataModel::Global->exportSBML(fileName);
 }

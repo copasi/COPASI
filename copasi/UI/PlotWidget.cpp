@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/03/02 20:50:25 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -29,7 +29,7 @@
 std::vector<const CCopasiObject*> PlotWidget::getObjects() const
   {
     CCopasiVector<CPlotSpecification> & tmp =
-      dataModel->getPlotDefinitionList();
+      * CCopasiDataModel::Global->getPlotDefinitionList();
 
     std::vector<const CCopasiObject*> ret;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/25 01:47:52 $
+   $Date: 2005/03/02 20:50:25 $
    End CVS Header */
 
 /********************************************************
@@ -431,9 +431,8 @@ void TrajectoryWidget::runTrajectoryTask()
   assert(trajectoryproblem);
 
   if ((!tt->getReport().getStream())
-      && (dataModel->getPlotDefinitionList().size() == 0)
-      && (!trajectoryproblem->timeSeriesRequested())
-)
+      && (CCopasiDataModel::Global->getPlotDefinitionList()->size() == 0)
+      && (!trajectoryproblem->timeSeriesRequested()))
     {
       QMessageBox::information (NULL, "No output specified",
                                 "No output would be generated from this simulation. \nSpecify a report, a plot, or activate the \"Store time series in memory\" checkbox.");
