@@ -503,7 +503,7 @@ void CStateX::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
 
   for (i = 0; i < dim; i++)
     {
-      /** if y[i] is zero, the derivative will be calculated at a small
+      /** if x[i] is zero, the derivative will be calculated at a small
        *  positive value (no point in considering negative values!).
        *  let's stick with SSRes*(1.0+DerivFactor)
        */
