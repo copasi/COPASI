@@ -208,6 +208,9 @@ void DataModel<T>::loadModel(const char* fileName)
   trajectorytask->load(inbuf);
   trajectorytaskUpdate = true;
   notify(TRAJECTORYTASK);
+
+  Copasi->pOutputList->load(inbuf);
+
   //  steadystatetask->compile();
 }
 
@@ -227,9 +230,7 @@ void DataModel<T>::saveModel(const char* fileName)
   if (trajectorytask != NULL)
     trajectorytask->save(outbuf);
 
-  // pdelete(model);
-  // pdelete(steadystatetask);
-  // pdelete(trajectorytask);
+  Copasi->pOutputList->save(outbuf);
 }
 
 /*void DataModel<T>::saveModel(const char* fileName)

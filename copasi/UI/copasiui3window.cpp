@@ -13,6 +13,8 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
+#include "utilities/CGlobals.h"
+#include "output/COutputList.h"
 
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"
