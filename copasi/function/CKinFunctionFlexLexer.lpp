@@ -15,14 +15,14 @@ ID       [a-zA-Z][a-zA-Z0-9]*
    
 %%
 
-{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?  return N_NUMBER;
- 
-log   |
-LOG   return N_LOG;
-
 log10 |
 LOG10 return N_LOG10;
 
+log   |
+LOG   return N_LOG;
+
+{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?  return N_NUMBER;
+ 
 exp   |
 EXP   return N_EXP;
 
