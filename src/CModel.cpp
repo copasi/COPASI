@@ -231,7 +231,10 @@ void CModel::setMetabolitesStatus()
     C_INT32 i,j,k;
     C_FLOAT64 Sum;
     
-    for (i=0; i<min(mStoi.num_rows(), mStoi.num_cols()); i++)
+    // for (i=0; i<min(mStoi.num_rows(), mStoi.num_cols()); i++)
+	// for compiler
+    C_INT32 imax = (mStoi.num_rows() < mStoi.num_cols()) ? mStoi.num_cols() : mStoi.num_rows();
+    for (i=0; i<imax; i++)
     {
         if (mStoi[i][i] == 0.0) break;
         mMetabolitesX[i]->setStatus(METAB_VARIABLE);
@@ -262,6 +265,7 @@ void CModel::buildRedStoi()
 {
     C_INT32 i,j,k;
     C_FLOAT64 Sum;
+    C_INT32 kmax;		// wei for compiler
 
     mRedStoi.newsize(mMetabolitesInd.size(),mStepsX.size());
     
@@ -269,7 +273,9 @@ void CModel::buildRedStoi()
         for (j=0; j<mRedStoi.num_cols(); j++)
         {
             Sum = 0.0;
-            for (k=0; k<min(i,j+1); k++)
+            //for (k=0; k<min(i,j+1); k++) for compiler
+			kmax = (i < j+1) ? j+1 : i;
+            for (k=0; k<kmax; k++)
                 Sum += mStoi[i][k] * mStoi[k][j];
             if (i<=j) Sum += mStoi[i][j];
             mRedStoi[i][j] = Sum;
@@ -286,7 +292,11 @@ void CModel::buildConsRel()
     
     C_INT32 i,j;
 
-    for (i=0; i<min(mConsRel.num_rows(), mConsRel.num_cols()); i++)
+    C_INT32 imax = (mConsRel.num_rows() < mConsRel.num_cols()) ? 
+		mConsRel.num_cols() : mConsRel.num_rows();
+    
+	// wei for compiler for (i=0; i<min(mConsRel.num_rows(), mConsRel.num_cols()); i++)
+    for (i=0; i<imax; i++)
         mConsRel[i+1][i] = mStoi[i+1][i];
     
     for (j=0; j<mConsRel.num_cols(); j++)
@@ -343,16 +353,19 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
     return;
 }
 
+#if 0
 CCopasiVector<CStep> & CModel::getSteps()
 {
     return *mSteps;
 }
+#endif
 
 void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
     C_INT32 i,j;
-    C_FLOAT64 v[mSteps->size()];
-    
+    //C_FLOAT64 v[mSteps->size()]; Wei
+    C_FLOAT64 *v =new C_FLOAT64[mSteps->size()];
+
     cout << mTitle << endl;
 
     setConcentrations(y);
@@ -405,6 +418,142 @@ C_INT32 CModel::getDepMetab() const
   // return mSteps;   //should not return mSteps
 //}
 
+C_INT32 CModel::getDimension() const
+{
+    return mMetabolitesInd.size();
+}
+
+/**
+ *	Return the comments of this model	Wei Sun 
+ */
+string CModel::getComments() const
+{
+	return mComments;
+}
+
+
+
+/**
+ *	Return the msteps of this model		
+ *	@return CCopasiVector < CStep > * 
+ */
+CCopasiVector < CStep > * CModel::getSteps()
+{
+	return mSteps;
+}
+
+
+/**
+ *	Return the title of this model
+ *	@return string
+ */
+string CModel::getTitle() const
+{
+	return mTitle;
+}
+
+/**
+ *	Return the comments of this model
+ *	@return CCopasiVector < CCompartment > *
+ */
+CCopasiVector < CCompartment > * CModel::getCompartments()
+{
+	return mCompartments;
+}
+
+/**
+ *	Return the metabolites of this model
+ *	@return vector < CMetab * > 
+ */
+vector < CMetab * > & CModel::getMetabolites()
+{
+	return mMetabolites;
+}
+
+/**
+ *  Get the Reduced Stoichiometry Matrix of this Model
+ */
+TNT::Matrix < C_FLOAT64 >& CModel::getRedStoi()
+{
+	return mRedStoi;
+}
+
+/**
+ *	Return the mMoieties of this model	
+ *	@return CCopasiVector < CMoiety > * 
+ */
+CCopasiVector < CMoiety > * CModel::getMoieties()
+{
+	return mMoieties;
+}
+
+/**
+ *	Returns the index of the metab
+ */
+C_INT32 CModel::findMetab(string &Target)
+{
+	int i;
+	string name;
+
+	for(i = 0; i < mMetabolites.size(); i++ )
+	{
+		name = mMetabolites[i]->getName();
+		if( name == Target) return i;
+	}
+
+	return -1;
+}
+
+/**
+ *	Returns the index of the step
+ */
+C_INT32 CModel::findStep(string &Target)
+{
+	int i;
+	string name;
+
+	for(i = 0; i < mSteps->size(); i++ )
+	{
+		name = (*mSteps)[i].getName();
+		if( name == Target) return i;
+	}
+
+	return -1;
+}
+
+/**
+ *	Returns the index of the compartment
+ */
+C_INT32 CModel::findCompartment(string &Target)
+{
+	int i;
+	string name;
+
+	for(i = 0; i < mCompartments->size(); i++ )
+	{
+		name = (*mCompartments)[i].getName();
+		if( name == Target) return i;
+	}
+
+	return -1;
+}
+
+/**
+ *	Returns the index of the Moiety
+ */
+C_INT32 CModel::findMoiety(string &Target)
+{
+	int i;
+	string name;
+
+	for(i = 0; i < mMoieties->size(); i++ )
+	{
+		name = (*mMoieties)[i].getName();
+		if( name == Target) return i;
+	}
+
+	return -1;
+}
 
 
 
