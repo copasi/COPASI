@@ -10,13 +10,14 @@
 
 #include <string>
 #include <vector>
-#include <utility>
 
 #include "utilities/utilities.h"
 #include "function/function.h"
 #include "CMetab.h"
 #include "CChemEq.h"
 #include "CChemEqElement.h"
+
+template < class CType > class CVector;
 
 class CReaction
   {
@@ -499,6 +500,17 @@ class CReaction
      *  @return C_FLOAT64 velocity
      */
     C_FLOAT64 calculate();
+
+    /**
+     * Calculate partial derivative at xi where i is the it met
+     * @param C_FLOAT64 & xi
+     * @param const C_FLOAT64 & derivationFactor
+     * @param const C_FLOAT64 & resolution (unscaled resolution)
+     * @return C_FLOAT64 partial 
+     */
+    C_FLOAT64 calculatePartialDerivative(C_FLOAT64 & xi,
+                                         const C_FLOAT64 & derivationFactor,
+                                         const C_FLOAT64 & resolution);
 
     /**
      *  Retrieves the Compartment Name for substrates, products, and modifiers

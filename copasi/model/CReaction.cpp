@@ -778,6 +778,31 @@ C_FLOAT64 CReaction::calculate()
   return mFlux;
 }
 
+C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 & xi,
+    const C_FLOAT64 & derivationFactor,
+    const C_FLOAT64 & resolution)
+{
+  if (mFunction->dependsOn(&xi, mCallParameters))
+    {
+      C_FLOAT64 store = xi;
+      C_FLOAT64 f1, f2;
+      C_FLOAT64 tmp =
+        (store < resolution) ? resolution * (1.0 + derivationFactor) : store;
+
+      xi = tmp * (1.0 + derivationFactor);
+      f1 = calculate();
+
+      xi = tmp * (1.0 - derivationFactor);
+      f2 = calculate();
+
+      xi = store;
+
+      return *mScalingFactor * (f1 - f2) / (2.0 * tmp * derivationFactor);
+    }
+  else
+    return 0.0;
+}
+
 void CReaction::CId2Metab::setIdentifierName(const std::string & identifierName)
 {
   mIdentifierName = identifierName;
