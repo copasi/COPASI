@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/02/25 14:33:44 $
+   $Author: shoops $ 
+   $Date: 2004/02/26 21:17:13 $
    End CVS Header */
 
 /********************************************************
@@ -44,7 +44,7 @@ class CCopasiObject;
  define the number space for the key
    KEYBASE: represent the base address for key
  */
-#define KEYBASE 100000000
+#define KEYBASE 0
 
 /* Enumerate:
  define 3 types of objects/items in Object Browser
