@@ -20,7 +20,6 @@ using std::vector;
 using std::ostream;
 
 template < class CType >
-
 class CCopasiVector : protected vector < CType * >
   {
   public:
@@ -91,45 +90,45 @@ class CCopasiVector : protected vector < CType * >
      */
 
     virtual void add
-      (const CType & src)
-      {
-        CType * Element = new CType(src);
+    (const CType & src)
+    {
+      CType * Element = new CType(src);
 
-        // This is not very efficient !!!
-        // It results in a lot of resizing of the vector !!!
-        push_back(Element);
-      }
+      // This is not very efficient !!!
+      // It results in a lot of resizing of the vector !!!
+      push_back(Element);
+    }
 
     /**
      *
      */
     virtual void add
-      (CType * src)
-      {
-        // This is not very efficient !!!
-        // It results in a lot of resizing of the vector !!!
-        push_back(src);
-      }
+    (CType * src)
+    {
+      // This is not very efficient !!!
+      // It results in a lot of resizing of the vector !!!
+      push_back(src);
+    }
 
     /**
      *  Removes the index-th element from the vector
      *  @param "const unsigned C_INT32 &" indecx
      */
     virtual void remove
-      (const unsigned C_INT32 & index)
-      {
-        iterator Target = begin() + index;
-        assert(index < vector < CType * >::size());
+    (const unsigned C_INT32 & index)
+    {
+      iterator Target = begin() + index;
+      assert(index < vector < CType * >::size());
 
-        if (*Target)
-          {
-            (*Target)->cleanup();
-            delete *Target;
-            *Target = NULL;
-          }
+      if (*Target)
+        {
+          (*Target)->cleanup();
+          delete *Target;
+          *Target = NULL;
+        }
 
-        erase(Target, Target + 1);
-      }
+      erase(Target, Target + 1);
+    }
 
     /**
      *
@@ -153,7 +152,7 @@ class CCopasiVector : protected vector < CType * >
      *  Retrieves the size of the vector
      *  @return "unsigned C_INT32" size
      */
-    virtual unsigned C_INT32 size() const { return vector < CType * >::size(); }
+    virtual unsigned C_INT32 size() const {return vector < CType * >::size(); }
 
     /**
      *  Resizes the vector
@@ -291,49 +290,49 @@ class CCopasiVectorN
      */
 
     virtual void add
-      (const CType & src)
-      {
-        if (!isInsertAllowed(&src))
-          CCopasiMessage(CCopasiMessage::ERROR,
-                         MCCopasiVector + 2, src.getName().c_str());
+    (const CType & src)
+    {
+      if (!isInsertAllowed(&src))
+        CCopasiMessage(CCopasiMessage::ERROR,
+                       MCCopasiVector + 2, src.getName().c_str());
 
-        CType * Element = new CType(src);
+      CType * Element = new CType(src);
 
-        push_back(Element);
-      }
+      push_back(Element);
+    }
 
     /**
      *
      */
     virtual void add
-      (CType * src)
-      {
-        if (!isInsertAllowed(src))
-          CCopasiMessage(CCopasiMessage::ERROR,
-                         MCCopasiVector + 2, src->getName().c_str());
+    (CType * src)
+    {
+      if (!isInsertAllowed(src))
+        CCopasiMessage(CCopasiMessage::ERROR,
+                       MCCopasiVector + 2, src->getName().c_str());
 
-        // This is not very efficient !!!
-        // It results in a lot of resizing of the vector !!!
-        push_back(src);
-      }
+      // This is not very efficient !!!
+      // It results in a lot of resizing of the vector !!!
+      push_back(src);
+    }
 
     /**
      *
      */
     virtual void remove
-      (const string & name)
-      {
-        unsigned C_INT32 Index = getIndex(name);
+    (const string & name)
+    {
+      unsigned C_INT32 Index = getIndex(name);
 
-        if ((signed) Index == -1)
-          CCopasiMessage(CCopasiMessage::ERROR,
-                         MCCopasiVector + 1, name.c_str());
+      if ((signed) Index == -1)
+        CCopasiMessage(CCopasiMessage::ERROR,
+                       MCCopasiVector + 1, name.c_str());
 
-        CCopasiVector< CType >::remove
-          (Index);
+      CCopasiVector< CType >::remove
+      (Index);
 
-        return;
-      }
+      return;
+    }
 
     /**
      *
@@ -387,7 +386,7 @@ class CCopasiVectorN
           if ((*Target)->getName() == name)
             return i;
 
-        return -1;
+        return - 1;
       }
 
   private:
@@ -395,7 +394,7 @@ class CCopasiVectorN
      *
      */
     virtual C_INT16 isInsertAllowed(const CType * src)
-  { return (getIndex(src->getName()) == (unsigned C_INT32) - 1); }
+  {return (getIndex(src->getName()) == (unsigned C_INT32) - 1); }
   };
 
 template < class CType >
@@ -474,13 +473,13 @@ class CCopasiVectorNS
      *
      */
     CType * operator[](const string &name)
-    { return ((CCopasiVectorN <CType>*) this)->operator [](name); }
+    {return ((CCopasiVectorN <CType>*) this)->operator [](name); }
 
     /**
      *
      */
     const CType * operator[](const string &name) const
-      { return ((CCopasiVectorN <CType>*) this)->operator [](name); }
+      {return ((CCopasiVectorN <CType>*) this)->operator [](name); }
 
   private:
 

@@ -80,7 +80,7 @@ void CMethodParameterList::setType(const string & type) {mType = type; }
 const string &
 CMethodParameterList::getName(const unsigned C_INT32 & index) const
   {
-    return *(CCopasiVector<CMethodParameter>*)this)[index]->getName();
+    return (*(CCopasiVector<CMethodParameter>*)this)[index]->getName();
   }
 
 /**
@@ -113,7 +113,7 @@ void CMethodParameterList::setValue(const string & name,
 const double &
 CMethodParameterList::getValue(const unsigned C_INT32 & index) const
   {
-    return *(CCopasiVector<CMethodParameter>*)this)[index]->getValue();
+    return (*(CCopasiVector<CMethodParameter>*)this)[index]->getValue();
   }
 
 /**
@@ -123,17 +123,19 @@ CMethodParameterList::getValue(const unsigned C_INT32 & index) const
  */
 const double & CMethodParameterList::getValue(const string & name) const
   {
-    return *(CCopasiVectorNS<CMethodParameter>*)this)[name]->getValue();
+    return (*(CCopasiVectorNS<CMethodParameter>*)this)[name]->getValue();
   }
 
 /**
  * Add a parameter to the list
  */
-void CMethodParameterList::add(const string & name,
-   const double & value)
-  {
-    CCopasiVector<CMethodParameter>::add(new CMethodParameter(name, value));
-  }
+void CMethodParameterList::add
+(const string & name,
+ const double & value)
+{
+  CCopasiVector<CMethodParameter>::add
+  (new CMethodParameter(name, value));
+}
 
 /**
  * Load a list of parameters

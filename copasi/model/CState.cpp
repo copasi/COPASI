@@ -67,7 +67,7 @@ CState & CState::operator =(const CStateX & stateX)
       mFixedNumbers.setArray(stateX.getFixedNumberArrayDbl());
     }
 
-  return this;
+  return *this;
 }
 
 CState & CState::operator =(const CState & state)
@@ -86,7 +86,7 @@ CState & CState::operator =(const CState & state)
       mFixedNumbers.setArray(state.getFixedNumberArrayDbl());
     }
 
-  return this;
+  return *this;
 }
 
 void CState::load(CReadConfig & configBuffer)
@@ -391,7 +391,7 @@ CStateX & CStateX::operator =(const CState & state)
       mFixedNumbers.setArray(state.getFixedNumberArrayDbl());
     }
 
-  return this;
+  return *this;
 }
 
 CStateX & CStateX::operator =(const CStateX & stateX)
@@ -411,7 +411,7 @@ CStateX & CStateX::operator =(const CStateX & stateX)
       mFixedNumbers.setArray(stateX.getFixedNumberArrayDbl());
     }
 
-  return this;
+  return *this;
 }
 
 void CStateX::load(CReadConfig & configBuffer)

@@ -122,8 +122,9 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
      * @param "const string &" name 
      * @param "const double &" value (Default = 0.0)
      */
-    void add(const string & name,
-       const double & value = 0.0);
+    void add
+    (const string & name,
+     const double & value = 0.0);
 
     /**
      * Load a list of parameters
