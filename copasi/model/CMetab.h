@@ -146,6 +146,8 @@ class CMetab : public CCopasiContainer
      */
     ~CMetab();
 
+    virtual const void * getObjectValueAddress() const;
+
     /**
      *  Cleanup
      */

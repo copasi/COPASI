@@ -30,7 +30,7 @@ void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Metabolite"),
+    CCopasiContainer(name, pParent, "Metabolite", CCopasiObject::Container | CCopasiObject::ValueDbl),
     mKey(CKeyFactory::add("Metabolite", this)),
     mName(mObjectName),
     mConcDbl(1.0),
@@ -507,3 +507,5 @@ void CMetab::checkConcentrationAndNumber()
       setInitialNumberInt(getInitialNumberInt());
     }
 }
+
+const void * CMetab::getObjectValueAddress() const {return &mConcDbl;}
