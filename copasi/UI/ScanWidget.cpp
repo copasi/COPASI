@@ -154,7 +154,7 @@ void ScanWidget::CancelChangeButton()
 
 void ScanWidget::CommitChangeButton()
 {
-  loadScan(mModel);
+  scanTask->process();
 }
 
 void ScanWidget::ScanButtonClicked()
