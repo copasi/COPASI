@@ -15,6 +15,7 @@
 #include "model/CCompartment.h"
 #include "CDatum.h"
 #include "COutputLine.h"
+#include "steadystate/CSteadyStateTask.h"
 
 using namespace std;
 
@@ -475,16 +476,15 @@ void COutputLine::compile(const string & name, CModel *model, CState *state)
 /**
  *  Assign the pointer to each datum object in the output line for steady state
  */
-void COutputLine::compile(const string & name, CModel * C_UNUSED(model),
-                          CSteadyStateTask * C_UNUSED(soln))
+void COutputLine::compile(const string & name, CModel * model,
+                          CSteadyStateTask * soln)
 {
   if (!mName.compare(name))
     {// ???? Maybe it isnot necessary after finish whole module
 
       for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
         {
-          fatalError(); // :TODO: we need to fix this !!!
-          // mLine[i]->compileDatum(model, soln->getTrajectory(), soln);
+          mLine[i]->compileDatum(model, soln->getState(), soln);
         }
     }
 }
