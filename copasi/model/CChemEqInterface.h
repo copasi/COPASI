@@ -53,6 +53,7 @@ class CChemEqInterface
     //convenience methods:
     static std::string getChemEqString(const CModel * model, const CReaction & rea, bool expanded);
     static void setChemEqFromString(const CModel * model, CReaction & rea, const std::string & ces);
+    static bool isValidEq(const std::string eq);
 
   private:
     static std::string writeElement(const std::string & name, C_FLOAT64 mult, bool expanded);
