@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/08 13:16:15 $
+   $Date: 2004/10/25 13:21:12 $
    End CVS Header */
 
 /****************************************************************************
@@ -116,7 +116,7 @@ void WizardDialog::backButton_clicked()
   this->buttonGroup2_clicked(this->buttonGroup->selectedId());
 }
 
-void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString &link)
+void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString & C_UNUSED(link))
 {
   if (name == "Model Settings")
     {
