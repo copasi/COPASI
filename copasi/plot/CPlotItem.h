@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/06 11:58:36 $
+   $Date: 2004/08/13 09:25:07 $
    End CVS Header */
 
 /**
@@ -74,7 +74,7 @@ class CPlotItem : public CCopasiParameterGroup
      */
     enum Type
     {
-      unset = 0, curve2d,   //for plot items
+      unset = 0, curve2d,    //for plot items
       plot2d, simWiz   //for plot specifications
     };
 
@@ -87,7 +87,7 @@ class CPlotItem : public CCopasiParameterGroup
     /**
      * XML sub type names of methods known to COPASI.
      */
-    static const char* XMLType[];
+    static const std::string XMLType[];
 
     // Attributes
   private:
@@ -138,9 +138,11 @@ class CPlotItem : public CCopasiParameterGroup
      * Returns CCopasiMethod::unset if no match is found.
      * @param (const char * xmlTypeName)
      * @return CCopasiMethod::SubType type
-     */
+     */ 
+    //static
+    //CPlotItem::Type XMLNameToEnum(const char * xmlTypeName);
     static
-    CPlotItem::Type XMLNameToEnum(const char * xmlTypeName);
+    CPlotItem::Type XMLNameToEnum(const std::string& xmlTypeName);
 
     /**
      * Retrieve the type of the method
