@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.154 $
+   $Revision: 1.155 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/12/16 04:45:44 $
+   $Date: 2003/12/16 04:57:16 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1844,6 +1844,8 @@ bool CModel::addReaction(const std::string & name)
       delete pReaction;
       return false;
     }
+
+  compile();
   return true;
 }
 
@@ -1854,6 +1856,7 @@ bool CModel::addReaction(const CReaction & reaction)
 
   mSteps.add(reaction);
   mSteps[reaction.getName()]->compile(mCompartments);
+  compile();
   return true;
 }
 
