@@ -548,15 +548,15 @@ class CReaction
 
     /**
      *  Sets mId2Substrates and mId2Products from the mChemEq
-    *  can be called after setting reaction name and chemical equation
-    *  needs metabolites to already have been created
+     *  can be called after setting reaction name and chemical equation
+     *  needs metabolites to already have been created
      */
     void setReactantsFromChemEq();
 
     /**
      *  Forces compilation of Chemical equation object
      */
-    void CReaction::compileChemEq(CCopasiVectorN < CCompartment > & compartments);
+    void compileChemEq(CCopasiVectorN < CCompartment > & compartments);
 
   private:
     /**

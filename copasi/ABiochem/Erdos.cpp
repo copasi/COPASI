@@ -132,7 +132,7 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
   model.addCompartment(compname, 1.0);
   // create one metabolite for each gene
   for (i = 0; i < n; i++)
-    model.addMetabolite(compname, (const string) gene[i]->getName(), 1.0, 1);
+    model.addMetabolite(compname, gene[i]->getName(), 1.0, 1);
   model.initializeMetabolites();
   // create two reactions for each gene
   for (i = 0; i < n; i++)
@@ -151,7 +151,7 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
       react->setChemEq(streq);
       react->compileChemEq(model.getCompartments());
       sprintf(strname, "basal %d inh %d act (indp)", gene[i]->getNegativeModifiers(),
-               gene[i]->getPositiveModifiers());
+              gene[i]->getPositiveModifiers());
       kiname = strname;
       react->setFunction(kiname);
       //     react->setReactantsFromChemEq();

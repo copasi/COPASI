@@ -359,17 +359,17 @@ class CModel
     /**
      * Returns the index of the metab
      */
-    C_INT32 findMetab(string &Target);
+    C_INT32 findMetab(const string & Target);
 
     /**
      * Returns the index of the step
      */
-    C_INT32 findStep(string &Target);
+    C_INT32 findStep(const string & Target);
 
     /**
      * Returns the index of the compartment
      */
-    C_INT32 findCompartment(string &Target);
+    C_INT32 findCompartment(const string & Target);
 
     /**
      * Returns the index of the Moiety
@@ -439,7 +439,10 @@ class CModel
     * @param iconc initial concentration of metabolite
     * @param status metabolite status (see CMetab for valid values)
      */
-    C_INT32 addMetabolite(string &comp, string &name, C_FLOAT64 iconc, C_INT16 status);
+    C_INT32 addMetabolite(const string & comp,
+                          const string & name,
+                          C_FLOAT64 iconc,
+                          C_INT16 status);
 
     /**
      *  Add a compartment to the model

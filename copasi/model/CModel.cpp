@@ -788,7 +788,7 @@ CCopasiVectorN < CMoiety > & CModel::getMoieties()
 /**
  *        Returns the index of the metab
  */
-C_INT32 CModel::findMetab(string &Target)
+C_INT32 CModel::findMetab(const string & Target)
 {
   unsigned C_INT32 i, s;
   string name;
@@ -806,7 +806,7 @@ C_INT32 CModel::findMetab(string &Target)
 /**
  *        Returns the index of the step
  */
-C_INT32 CModel::findStep(string &Target)
+C_INT32 CModel::findStep(const string & Target)
 {
   unsigned C_INT32 i, s;
   string name;
@@ -824,7 +824,7 @@ C_INT32 CModel::findStep(string &Target)
 /**
  *        Returns the index of the compartment
  */
-C_INT32 CModel::findCompartment(string &Target)
+C_INT32 CModel::findCompartment(const string & Target)
 {
   unsigned C_INT32 i, s;
   string name;
@@ -1277,7 +1277,10 @@ void CModel::setComments(const string comm)
   mComments = comm;
 }
 
-C_INT32 CModel::addMetabolite(string &comp, string &name, C_FLOAT64 iconc, C_INT16 status)
+C_INT32 CModel::addMetabolite(const string & comp,
+                              const string & name,
+                              C_FLOAT64 iconc,
+                              C_INT16 status)
 {
   CMetab metab;
   C_INT32 c;
