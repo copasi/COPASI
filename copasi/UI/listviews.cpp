@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.135 $
+   $Revision: 1.136 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/03 20:20:17 $
+   $Date: 2004/05/06 21:08:22 $
    End CVS Header */
 
 /****************************************************************************
@@ -547,7 +547,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                    //Time course
+      case 23:                                     //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -556,10 +556,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                   //Report
+      case 43:                                    //Report
         return tableDefinition;
         break;
-      case 42:                                   //Plots
+      case 42:                                    //Plots
         return plotWidget;
         break;
       case 5:
@@ -1380,6 +1380,22 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
     default:
       fatalError();
     }
+  return success;
+}
+
+bool ListViews::commit()
+{
+  bool success = true;
+  CopasiWidget * tmp;
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
+  for (; it != ende; ++it)
+    {
+      tmp = dynamic_cast<CopasiWidget *>((*it)->currentWidget);
+      if (tmp && !tmp->leave()) success = false;
+    }
+
   return success;
 }
 
