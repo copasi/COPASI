@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/18 20:29:27 $
+   $Date: 2005/01/20 20:41:16 $
    End CVS Header */
 
 /**
@@ -51,9 +51,9 @@ class COptMethod : public CCopasiMethod
     //These parameters are optimization parameters, not method (algm) parameters
     //they are for the model or calculation function.
     //Their memories are stored in COptProblem. Here are only pointers.
-    CVector< C_FLOAT64 > * mParameters;    // pointer to parameters
-    CVector< C_FLOAT64 > * mParameterMin;  // the minimum values of parameters
-    CVector< C_FLOAT64 > * mParameterMax;  // the maximum values of parameters
+    //    CVector< C_FLOAT64 > * mParameters;    // pointer to parameters
+    //    CVector< C_FLOAT64 > * mParameterMin;  // the minimum values of parameters
+    //    CVector< C_FLOAT64 > * mParameterMax;  // the maximum values of parameters
 
     const bool mBounds;            // True if method accepts bounds on the parameters
 

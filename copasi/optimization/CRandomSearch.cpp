@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:55 $
+   $Date: 2005/01/20 20:41:17 $
    End CVS Header */
 
 /***************************************************************************
@@ -56,7 +56,7 @@ C_INT32 CRandomSearch::optimise()
   bool linear;
   C_FLOAT64 la, x, candx = DBL_MAX;
   C_INT32 i, imax = (C_INT32) getValue("RandomSearch.Iterations");
-  C_INT32 j, jmax = mParameters->size();
+  C_INT32 j, jmax = mOptProblem->getVariableSize();
 
   /* Create a random number generator */
   CRandom::Type Type;
@@ -67,9 +67,10 @@ C_INT32 CRandomSearch::optimise()
 
   assert(pRand);
 
-  C_FLOAT64 * Minimum = mParameterMin->array();
-  C_FLOAT64 * Maximum = mParameterMax->array();
-  C_FLOAT64 * Parameter = mParameters->array();
+  double * Minimum = mOptProblem->getParameterMin().array();
+  double * Maximum = mOptProblem->getParameterMax().array();
+
+  CVector< C_FLOAT64 > & Parameter = mOptProblem->getCalculateVariables();
 
   for (i = 0; i < imax; i++)
     {
@@ -108,18 +109,11 @@ C_INT32 CRandomSearch::optimise()
           if (!mOptProblem->checkFunctionalConstraints())
             continue;
           //set best value
-          mOptProblem->setBestValue(x);
-          std::cout << "Best value (" << i << "): " << x << std::endl;
+          mOptProblem->setSolutionValue(x);
           candx = x;
 
           //store the combination of parameter values
-          mOptProblem->getBestParameter() = *mParameters;
-
-          std::cout << "Best Parameters: (";
-          for (C_INT32 p = 0; p < mOptProblem->getParameterNum(); p++)
-            std::cout << mOptProblem->getParameter(p) << ", ";
-
-          std::cout << ")" << std::endl;
+          mOptProblem->getSolutionVariables() = Parameter;
         }
     }
 

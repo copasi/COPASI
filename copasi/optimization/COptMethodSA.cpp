@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 09:31:04 $
+   $Author: shoops $ 
+   $Date: 2005/01/20 20:41:16 $
    End CVS Header */
 
 /* COptMethodSA code */
@@ -65,7 +65,7 @@ C_INT32 COptMethodSA::optimise()
 {
   C_FLOAT64 la;
   C_INT32 NumSignificantPoint, NumTempChange, NumIteration = (C_INT32) getValue("SimulatedAnnealing.Iterations");
-  C_INT32 j, NumParameter = mParameters->size();
+  C_INT32 j, NumParameter = mOptProblem->getVariableSize();
 
   //variable settings neccessary for SA
   CVector<double> candparameter(NumParameter);  //one-dimentional array of candidate value for parameters
@@ -101,9 +101,10 @@ C_INT32 COptMethodSA::optimise()
 
   assert(pRand);
 
-  double * Minimum = mParameterMin->array();
-  double * Maximum = mParameterMax->array();
-  double * Parameter = mParameters->array();
+  double * Minimum = mOptProblem->getParameterMin().array();
+  double * Maximum = mOptProblem->getParameterMax().array();
+
+  CVector< C_FLOAT64 > & Parameter = mOptProblem->getCalculateVariables();
 
   //dump_datafile_init()
 
@@ -207,18 +208,20 @@ C_INT32 COptMethodSA::optimise()
                           if (!mOptProblem->checkFunctionalConstraints())
                             continue;
 
-                          //set the  best function value
-                          mOptProblem->setBestValue(candFuncValue);
+                          //set the  BestFoundSoFar function value
+                          mOptProblem->setSolutionValue(candFuncValue);
+
+                          //store the combination of the BestFoundSoFar parameter values found so far
+                          mOptProblem->getSolutionVariables() = Parameter;
+
+#ifdef XXXX
                           std::cout << "the Best value (" << NumSignificantPoint << "): " << candFuncValue << std::endl;
-
-                          //store the combination of the best parameter values found so far at current temperature
-                          mOptProblem->getBestParameter() = *mParameters;
-
                           std::cout << "the Best Parameters: (";
                           for (int kk = 0; kk < mOptProblem->getParameterNum(); kk++)
                             std::cout << mOptProblem->getParameter(kk) << ", ";
 
                           std::cout << ")" << std::endl;
+#endif // XXXX
                         }
                     }
                   else

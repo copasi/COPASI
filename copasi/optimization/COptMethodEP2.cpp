@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/23 12:31:29 $
+   $Author: shoops $ 
+   $Date: 2005/01/20 20:41:16 $
    End CVS Header */
 
 /***************************************************************************
@@ -63,7 +63,7 @@ C_INT32 COptMethodEP2::optimise()
 {
   NumGeneration = (C_INT32) getValue("EvolutionaryProgram2.Iterations");
   PopulationSize = (C_INT32) getValue("EvolutionaryProgram2.PopulationSize");
-  NumParameter = mParameters->size();
+  NumParameter = mOptProblem->getVariableSize();
 
   /* Create a random number generator */
   CRandom::Type Type;
@@ -74,11 +74,15 @@ C_INT32 COptMethodEP2::optimise()
 
   assert(pRand);
 
-  double * Minimum = mParameterMin->array();
-  double * Maximum = mParameterMax->array();
+  double * Minimum = mOptProblem->getParameterMin().array();
+  double * Maximum = mOptProblem->getParameterMax().array();
 
+  CVector< C_FLOAT64 > & Parameter = mOptProblem->getCalculateVariables();
+
+#ifdef XXXX
   double **Parameter;
   Parameter = new double * [2 * PopulationSize];
+
   for (int ii = 0; ii < 2*PopulationSize; ii++)
     {
       Parameter[ii] = new double[NumParameter];
@@ -86,6 +90,7 @@ C_INT32 COptMethodEP2::optimise()
 
   for (int dd = 0; dd < 2*PopulationSize; dd++)
     Parameter[dd] = mParameters->array();
+#endif // XXXX
 
   double current_best_value, la;
   int i, j, last_update, u10, u30, u50;
@@ -142,7 +147,7 @@ C_INT32 COptMethodEP2::optimise()
       try
         {
           // calculate its fitness value
-          for (int kk = 0; kk < NumParameter; kk++) {Parameter[i][kk] = individual[i][kk];}
+          for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[i][kk];}
           CandidateValue[i] = mOptProblem->calculate();
         }
       catch (int)
@@ -271,7 +276,7 @@ C_INT32 COptMethodEP2::optimise()
           // evaluate the fitness
           for (int kk = 0; kk < NumParameter; kk++)
             {
-              Parameter[nn][kk] = individual[nn][kk];
+              Parameter[kk] = individual[nn][kk];
             }
           CandidateValue[nn] = mOptProblem->calculate();
         }
@@ -322,7 +327,7 @@ C_INT32 COptMethodEP2::optimise()
               try
                 {
                   // calculate its fitness
-                  for (int kk = 0; kk < NumParameter; kk++) {Parameter[mm][kk] = individual[mm][kk];}
+                  for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[mm][kk];}
                   CandidateValue[mm] = mOptProblem->calculate();
                 }
               catch (int)
@@ -367,7 +372,7 @@ C_INT32 COptMethodEP2::optimise()
                   try
                     {
                       // calculate its fitness
-                      for (int kk = 0; kk < NumParameter; kk++) {Parameter[mm][kk] = individual[mm][kk];}
+                      for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[mm][kk];}
                       CandidateValue[mm] = mOptProblem->calculate();
                     }
                   catch (int)
@@ -412,7 +417,7 @@ C_INT32 COptMethodEP2::optimise()
                       try
                         {
                           // calculate its fitness
-                          for (int kk = 0; kk < NumParameter; kk++) {Parameter[mm][kk] = individual[mm][kk];}
+                          for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[mm][kk];}
                           CandidateValue[mm] = mOptProblem->calculate();
                         }
                       catch (int)
@@ -431,14 +436,14 @@ C_INT32 COptMethodEP2::optimise()
 
   for (int kk = 0; kk < NumParameter; kk++)
     {
-      Parameter[BestFoundSoFar][kk] = individual[BestFoundSoFar][kk];
+      Parameter[kk] = individual[BestFoundSoFar][kk];
     }
 
   //set the  BestFoundSoFar function value
-  mOptProblem->setBestValue(Get_BestFoundSoFar_candidate());
+  mOptProblem->setSolutionValue(Get_BestFoundSoFar_candidate());
 
   //store the combination of the BestFoundSoFar parameter values found so far
-  mOptProblem->getBestParameter() = *mParameters;
+  mOptProblem->getSolutionVariables() = Parameter;
 
   //free memory space
   delete individual;
@@ -514,7 +519,7 @@ void COptMethodEP2::select(int SelectionStrategy)
 
   switch (SelectionStrategy)
     {
-    case 1:     // parent-offspring competition
+    case 1:      // parent-offspring competition
       for (i = PopulationSize; i < 2*PopulationSize; i++)
         {
           // if offspring is fitter keep it
@@ -524,7 +529,7 @@ void COptMethodEP2::select(int SelectionStrategy)
             }
         }
       break;
-    case 2:     // tournament competition
+    case 2:      // tournament competition
       // compete with 20% of the population
       TournamentSize = PopulationSize / 5;
       // but at least one
