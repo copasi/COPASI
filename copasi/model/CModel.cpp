@@ -166,25 +166,36 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
 
 void CModel::buildStoi()
 {
-  vector < CReaction::ELEMENT > Structure;
-  unsigned C_INT32 i,j,k;
+  vector < CChemEqElement * > Structure;
+  unsigned C_INT32 i, j, k, imax;
   string Name;
   
-  mStoi.newsize(mMetabolites.size(), mSteps->size());
+  imax = mMetabolites.size();
+  mMetabolitesX.resize(imax);
+  j = 0;
+  
+  for (i=0; i<imax; i++)
+    if (mMetabolites[i]->getStatus() == METAB_FIXED)
+      mMetabolitesX[imax - ++j] = mMetabolites[i];
+    else
+      mMetabolitesX[i - j] = mMetabolites[i];
+  
+  
+  mStoi.newsize(imax - j, mSteps->size());
     
-  for (i=0; i<mSteps->size(); i++)
+  for (i=0; i<(unsigned C_INT32) mStoi.num_cols(); i++)
     {
-      Structure = (*mSteps)[i].getChemStructure();
+      Structure = (*mSteps)[i].getChemEq().getBalances();
         
-      for (j=0; j<mMetabolites.size(); j++)
+      for (j=0; j<(unsigned C_INT32) mStoi.num_rows(); j++)
         {
           mStoi[j][i] = 0.0;
-          Name = mMetabolites[j]->getName();
+          Name = mMetabolitesX[j]->getName();
 
           for (k=0; k<Structure.size(); k++)
-            if (Structure[k].mName == Name)
+            if (Structure[k]->getMetaboliteName() == Name)
               {
-                mStoi[j][i] = Structure[k].mValue;
+                mStoi[j][i] = Structure[k]->getMultiplicity();
                 break;
               }
         }
@@ -214,7 +225,7 @@ void CModel::lUDecomposition()
   cout << "L" << endl;
   cout << L << endl;
 
-  mMetabolitesX = mMetabolites;
+  // mMetabolitesX = mMetabolites;
     
   mStepsX.resize(mSteps->size());
   for (i=0; i<mSteps->size(); i++)
@@ -224,7 +235,7 @@ void CModel::lUDecomposition()
   // LU decomposition
 
   CMetab *pMetab;
-  for (i = 0; i < mMetabolitesX.size(); i++) 
+  for (i = 0; i < (unsigned C_INT32) rowLU.size(); i++) 
     {
       if (rowLU[i] - 1 > i)
         {
@@ -235,7 +246,7 @@ void CModel::lUDecomposition()
     }
     
   CReaction *pStep;
-  for (i = mStepsX.size(); 0 < i--; ) 
+  for (i = colLU.size(); 0 < i--; ) 
     {
       if (colLU[i]-1 < i)
         {
@@ -322,7 +333,7 @@ void CModel::buildRedStoi()
 
 void CModel::buildL()
 {
-  unsigned C_INT32 size = mMetabolites.size();
+  unsigned C_INT32 size = mStoi.num_rows();
   unsigned C_INT32 i, j, jmax, k;
   TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
   
@@ -346,7 +357,8 @@ void CModel::buildL()
      part of L */
 
   C_FLOAT64 *sum;
-  for (j=0; j<size-1;j++)
+  jmax = (size) ? size - 1: size;
+  for (j=0; j<jmax; j++)
     for (i=j+1; i<size; i++)
     {
         sum = &mL[j][i];
@@ -430,12 +442,19 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
 
   // Set the concentration of the independent metabolites
   for (i=0; i < mMetabolitesInd.size(); i++)
-    mMetabolitesInd[i]->setNumber(y[i]);
-    
+    {
+      mMetabolitesInd[i]->setNumber(y[i]);
+      cout << *mMetabolitesInd[i]->getConcentration() << "  ";
+    }
+  
   // Set the concentration of the dependent metabolites
   for (i=0; i<mMetabolitesDep.size(); i++)
-    mMetabolitesDep[i]->setNumber((*mMoieties)[i].dependentNumber());
-
+    {
+      mMetabolitesDep[i]->setNumber((*mMoieties)[i].dependentNumber());
+      cout << *mMetabolitesDep[i]->getConcentration() << "  ";
+    }
+  cout << endl;
+  
   return;
 }
 
@@ -455,8 +474,6 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
   //FIXME: This should be a member
   C_FLOAT64 * v = new C_FLOAT64[mSteps->size()];
     
-  cout << mTitle << endl;
-
   setConcentrations(y);
     
   // Calculate the velocity vector depending on the step kinetics

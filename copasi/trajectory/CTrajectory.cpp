@@ -225,6 +225,8 @@ void CTrajectory::process()
   for(C_INT32 i = 0; i < mPoints; i++)
     {
       //update the CODESolver from current time to end time
+      cout << mTime << "  ";
+      
       mODESolver->step(mTime, mTime+length);
 
       //update CModel

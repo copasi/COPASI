@@ -62,7 +62,7 @@ class COutputEvent
 	/**
 	 *	
 	 */
-	print();
+	void print();
 
 	/**
 	 * Copy output at the specified time 

@@ -123,7 +123,7 @@ class CMetab
   /**
    *  Retrieve the name of the metabolite.
    */
-  string getName() const;
+  const string & getName() const;
 
   /**
    *

@@ -18,10 +18,10 @@ CReaction::CReaction()
   mReversible = TRUE;
   mFunction = NULL;
 
-  mSubstrates = NULL;
-  mProducts = NULL;
-  mModifiers = NULL;
-  mParameters = NULL;
+  mId2Substrates = NULL;
+  mId2Products = NULL;
+  mId2Modifiers = NULL;
+  mId2Parameters = NULL;
   mCallParameters = NULL;
 }
 
@@ -32,19 +32,19 @@ CReaction::CReaction(const string & name)
   mReversible = TRUE;
   mFunction = NULL;
 
-  mSubstrates = NULL;
-  mProducts = NULL;
-  mModifiers = NULL;
-  mParameters = NULL;
+  mId2Substrates = NULL;
+  mId2Products = NULL;
+  mId2Modifiers = NULL;
+  mId2Parameters = NULL;
   mCallParameters = NULL;
 }
 
 void CReaction::initialize()
 {
-  if (!mSubstrates) mSubstrates = new vector < CId2Metab >;
-  if (!mProducts) mProducts = new vector < CId2Metab >;
-  if (!mModifiers) mModifiers = new vector < CId2Metab >;
-  if (!mParameters) mParameters = new vector < CId2Param >;
+  if (!mId2Substrates) mId2Substrates = new vector < CId2Metab >;
+  if (!mId2Products) mId2Products = new vector < CId2Metab >;
+  if (!mId2Modifiers) mId2Modifiers = new vector < CId2Metab >;
+  if (!mId2Parameters) mId2Parameters = new vector < CId2Param >;
   if (!mCallParameters) mCallParameters = new vector < CCallParameter >;
 }
 
@@ -52,14 +52,14 @@ CReaction::~CReaction() {}
 
 void CReaction::cleanup()
 {
-  if (mSubstrates) delete mSubstrates;
-  mSubstrates = NULL;
-  if (mProducts) delete mProducts;
-  mProducts = NULL;
-  if (mModifiers) delete mModifiers;
-  mModifiers = NULL;
-  if (mParameters) delete mParameters;
-  mParameters = NULL;
+  if (mId2Substrates) delete mId2Substrates;
+  mId2Substrates = NULL;
+  if (mId2Products) delete mId2Products;
+  mId2Products = NULL;
+  if (mId2Modifiers) delete mId2Modifiers;
+  mId2Modifiers = NULL;
+  if (mId2Parameters) delete mId2Parameters;
+  mId2Parameters = NULL;
   if (mCallParameters) delete mCallParameters;
   mCallParameters = NULL;
 }
@@ -71,10 +71,10 @@ CReaction & CReaction::operator=(const CReaction & rhs)
   mFunction    = rhs.mFunction;
   mFlux        = rhs.mFlux;
   mReversible  = rhs.mReversible;
-  mSubstrates  = rhs.mSubstrates;
-  mProducts    = rhs.mProducts;
-  mModifiers   = rhs.mModifiers;
-  mParameters  = rhs.mParameters;
+  mId2Substrates  = rhs.mId2Substrates;
+  mId2Products    = rhs.mId2Products;
+  mId2Modifiers   = rhs.mId2Modifiers;
+  mId2Parameters  = rhs.mId2Parameters;
   mCallParameters = rhs.mCallParameters;
 
   return *this;
@@ -87,14 +87,16 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   string KinType;
     
   initialize();
-    
+  
   if ((Fail = configbuffer.getVariable("Step", "string", &mName,
 				       CReadConfig::SEARCH)))
     return Fail;
-    
-  if ((Fail = configbuffer.getVariable("Equation", "string", &mChemEq)))
+  
+  string ChemEq;
+  if ((Fail = configbuffer.getVariable("Equation", "string", &ChemEq)))
     return Fail;
-    
+  setChemEq(ChemEq);
+  
   if ((Fail = configbuffer.getVariable("KineticType", "string", &KinType)))
     return Fail;
 
@@ -139,81 +141,85 @@ C_INT32 CReaction::save(CWriteConfig & configbuffer)
   if ((Fail = configbuffer.setVariable("Reversible", "C_INT32", &mReversible)))
     return Fail;
     
-  Size = mSubstrates->size();
+  Size = mId2Substrates->size();
   if ((Fail = configbuffer.setVariable("Substrates", "C_INT32", &Size)))
     return Fail;
   for (i = 0; i < Size; i++)
     {
       if ((Fail = configbuffer.setVariable("Identifier", "string",
-					   &(*mSubstrates)[i].mIdentifierName)))
+					   &(*mId2Substrates)[i].mIdentifierName)))
 	return Fail;
       if ((Fail = configbuffer.setVariable("Compartment", "string",
-					   &(*mSubstrates)[i].mCompartmentName)))
+					   &(*mId2Substrates)[i].mCompartmentName)))
 	return Fail;
       if ((Fail = configbuffer.setVariable("Metabolite", "string",
-					   &(*mSubstrates)[i].mMetaboliteName)))
+					   &(*mId2Substrates)[i].mMetaboliteName)))
 	return Fail;
     }
     
-  Size = mProducts->size();
+  Size = mId2Products->size();
   if ((Fail = configbuffer.setVariable("Products", "C_INT32", &Size)))
     return Fail;
   for (i = 0; i < Size; i++)
     {
       if ((Fail = configbuffer.setVariable("Identifier", "string",
-					   &(*mProducts)[i].mIdentifierName)))
+					   &(*mId2Products)[i].mIdentifierName)))
 	return Fail;
       if ((Fail = configbuffer.setVariable("Compartment", "string",
-					   &(*mProducts)[i].mCompartmentName)))
+					   &(*mId2Products)[i].mCompartmentName)))
 	return Fail;
       if ((Fail = configbuffer.setVariable("Metabolite", "string",
-					   &(*mProducts)[i].mMetaboliteName)))
+					   &(*mId2Products)[i].mMetaboliteName)))
 	return Fail;
     }
 
-  Size = mModifiers->size();
+  Size = mId2Modifiers->size();
   if ((Fail = configbuffer.setVariable("Modifiers", "C_INT32", &Size)))
     return Fail;
   for (i = 0; i < Size; i++)
     {
       if ((Fail = configbuffer.setVariable("Identifier", "string",
-					   &(*mModifiers)[i].mIdentifierName)))
+					   &(*mId2Modifiers)[i].mIdentifierName)))
 	return Fail;
       if ((Fail = configbuffer.setVariable("Compartment", "string",
-					   &(*mModifiers)[i].mCompartmentName)))
+					   &(*mId2Modifiers)[i].mCompartmentName)))
 	return Fail;
       if ((Fail = configbuffer.setVariable("Metabolite", "string",
-					   &(*mModifiers)[i].mMetaboliteName)))
+					   &(*mId2Modifiers)[i].mMetaboliteName)))
 	return Fail;
     }
 
-  Size = mParameters->size();
+  Size = mId2Parameters->size();
   if ((Fail = configbuffer.setVariable("Constants", "C_INT32", &Size)))
     return Fail;
   for (i = 0; i < Size; i++)
     {
       if ((Fail = configbuffer.setVariable("Identifier", "string",
-					   &(*mParameters)[i].mIdentifierName)))
+					   &(*mId2Parameters)[i].mIdentifierName)))
 	return Fail;
       if ((Fail = configbuffer.setVariable("Value", "C_FLOAT64",
-					   &(*mParameters)[i].mValue)))
+					   &(*mId2Parameters)[i].mValue)))
 	return Fail;
     }
     
   return Fail; 
 }
 
-vector < CReaction::CId2Metab > &CReaction::substrates() {return *mSubstrates;}
+vector < CReaction::CId2Metab > &CReaction::getId2Substrates() 
+{return *mId2Substrates;}
 
-vector < CReaction::CId2Metab > &CReaction::products() {return *mProducts;}
+vector < CReaction::CId2Metab > &CReaction::getId2Products() 
+{return *mId2Products;}
 
-vector < CReaction::CId2Metab > &CReaction::modifiers() {return *mModifiers;}
+vector < CReaction::CId2Metab > &CReaction::getId2Modifiers() 
+{return *mId2Modifiers;}
 
-vector < CReaction::CId2Param > &CReaction::parameters() {return *mParameters;}
+vector < CReaction::CId2Param > &CReaction::getId2Parameters() 
+{return *mId2Parameters;}
 
 string CReaction::getName() const {return mName;}
 
-string CReaction::getChemEq() const {return mChemEq;}
+CChemEq & CReaction::getChemEq() {return mChemEq;}
 
 CBaseFunction & CReaction::getFunction() {return *mFunction;}
 
@@ -223,7 +229,8 @@ C_INT16 CReaction::isReversible() const {return (mReversible == TRUE);}
 
 void CReaction::setName(const string & name) {mName = name;}
 
-void CReaction::setChemEq(const string & chemEq) {mChemEq = chemEq;}
+void CReaction::setChemEq(const string & chemEq) 
+{mChemEq.setChemicalEquation(chemEq);}
 
 void CReaction::setFlux(C_FLOAT64 flux) {mFlux = flux;}
 
@@ -263,11 +270,11 @@ void CReaction::setIdentifiers()
   unsigned C_INT32 i, j;
   unsigned C_INT32 OldSize;
     
-  for (i = 0; i < mSubstrates->size(); i++)
+  for (i = 0; i < mId2Substrates->size(); i++)
     {
-      if ((*mSubstrates)[i].mIdentifierName == "") continue;
+      if ((*mId2Substrates)[i].mIdentifierName == "") continue;
         
-      Tuple = mFunction->findIdentifier((*mSubstrates)[i].mIdentifierName);
+      Tuple = mFunction->findIdentifier((*mId2Substrates)[i].mIdentifierName);
 
       if ( !(Tuple.first + 1) || !(Tuple.second + 1)) fatalError();
       if ((*mCallParameters)[Tuple.first].getType() 
@@ -283,16 +290,16 @@ void CReaction::setIdentifiers()
         }
         
       (*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
-	(*mSubstrates)[i].mpMetabolite->getConcentration();
+	(*mId2Substrates)[i].mpMetabolite->getConcentration();
     }
 
   /* :TODO: this is broken for "Mass action (irreversible)" */
   if (mFunction->getName() != "Mass action (irreversible)")
-    for (i = 0; i < mProducts->size(); i++)
+    for (i = 0; i < mId2Products->size(); i++)
       {
-	if ((*mProducts)[i].mIdentifierName == "") continue;
+	if ((*mId2Products)[i].mIdentifierName == "") continue;
         
-	Tuple = mFunction->findIdentifier((*mProducts)[i].mIdentifierName);
+	Tuple = mFunction->findIdentifier((*mId2Products)[i].mIdentifierName);
 
 	if ( !(Tuple.first + 1) || !(Tuple.second + 1)) fatalError();
 	if ((*mCallParameters)[Tuple.first].getType()
@@ -308,14 +315,14 @@ void CReaction::setIdentifiers()
 	  }
         
 	(*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
-	  (*mProducts)[i].mpMetabolite->getConcentration();
+	  (*mId2Products)[i].mpMetabolite->getConcentration();
       }
 
-  for (i = 0; i < mModifiers->size(); i++)
+  for (i = 0; i < mId2Modifiers->size(); i++)
     {
-      if ((*mModifiers)[i].mIdentifierName == "") continue;
+      if ((*mId2Modifiers)[i].mIdentifierName == "") continue;
         
-      Tuple = mFunction->findIdentifier((*mModifiers)[i].mIdentifierName);
+      Tuple = mFunction->findIdentifier((*mId2Modifiers)[i].mIdentifierName);
 
       if ( !(Tuple.first + 1) || !(Tuple.second + 1)) fatalError();
       if ((*mCallParameters)[Tuple.first].getType()
@@ -331,14 +338,14 @@ void CReaction::setIdentifiers()
         }
         
       (*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
-	(*mModifiers)[i].mpMetabolite->getConcentration();
+	(*mId2Modifiers)[i].mpMetabolite->getConcentration();
     }
 
-  for (i = 0; i < mParameters->size(); i++)
+  for (i = 0; i < mId2Parameters->size(); i++)
     {
-      if ((*mParameters)[i].mIdentifierName == "") continue;
+      if ((*mId2Parameters)[i].mIdentifierName == "") continue;
         
-      Tuple = mFunction->findIdentifier((*mParameters)[i].mIdentifierName);
+      Tuple = mFunction->findIdentifier((*mId2Parameters)[i].mIdentifierName);
 
       if ( !(Tuple.first + 1) || !(Tuple.second + 1)) fatalError();
       if ((*mCallParameters)[Tuple.first].getType()
@@ -354,7 +361,7 @@ void CReaction::setIdentifiers()
         }
         
       (*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
-	&(*mParameters)[i].mValue;
+	&(*mId2Parameters)[i].mValue;
     }
 }
 
@@ -372,20 +379,20 @@ void CReaction::compile(const CCopasiVector < CCompartment > * compartments)
 {
   unsigned C_INT32 i;
     
-  for (i = 0; i < mSubstrates->size(); i++)
-    (*mSubstrates)[i].mpMetabolite = 
-      &(*compartments)[(*mSubstrates)[i].mCompartmentName].
-      metabolites()[(*mSubstrates)[i].mMetaboliteName];
+  for (i = 0; i < mId2Substrates->size(); i++)
+    (*mId2Substrates)[i].mpMetabolite = 
+      &(*compartments)[(*mId2Substrates)[i].mCompartmentName].
+      metabolites()[(*mId2Substrates)[i].mMetaboliteName];
     
-  for (i = 0; i < mProducts->size(); i++)
-    (*mProducts)[i].mpMetabolite = 
-      &(*compartments)[(*mProducts)[i].mCompartmentName].
-      metabolites()[(*mProducts)[i].mMetaboliteName];
+  for (i = 0; i < mId2Products->size(); i++)
+    (*mId2Products)[i].mpMetabolite = 
+      &(*compartments)[(*mId2Products)[i].mCompartmentName].
+      metabolites()[(*mId2Products)[i].mMetaboliteName];
     
-  for (i = 0; i < mModifiers->size(); i++)
-    (*mModifiers)[i].mpMetabolite = 
-      &(*compartments)[(*mModifiers)[i].mCompartmentName].
-      metabolites()[(*mModifiers)[i].mMetaboliteName];
+  for (i = 0; i < mId2Modifiers->size(); i++)
+    (*mId2Modifiers)[i].mpMetabolite = 
+      &(*compartments)[(*mId2Modifiers)[i].mCompartmentName].
+      metabolites()[(*mId2Modifiers)[i].mMetaboliteName];
     
   initIdentifiers();
   setIdentifiers();
@@ -400,62 +407,62 @@ C_INT32 CReaction::loadNew(CReadConfig & configbuffer)
     
   if ((Fail = configbuffer.getVariable("Substrates", "C_INT32", &Size)))
     return Fail;
-  mSubstrates->resize(Size);
+  mId2Substrates->resize(Size);
   for (i=0; i < Size; i++)
     {
       if ((Fail = configbuffer.getVariable("Identifier", "string",
-					   &(*mSubstrates)[i].mIdentifierName)))
+					   &(*mId2Substrates)[i].mIdentifierName)))
 	return Fail;
       if ((Fail = configbuffer.getVariable("Compartment", "string",
-					   &(*mSubstrates)[i].mCompartmentName)))
+					   &(*mId2Substrates)[i].mCompartmentName)))
 	return Fail;
       if ((Fail = configbuffer.getVariable("Metabolite", "string",
-					   &(*mSubstrates)[i].mMetaboliteName)))
+					   &(*mId2Substrates)[i].mMetaboliteName)))
 	return Fail;
     }
     
   if ((Fail = configbuffer.getVariable("Products", "C_INT32", &Size)))
     return Fail;
-  mProducts->resize(Size);
+  mId2Products->resize(Size);
   for (i=0; i < Size; i++)
     {
       if ((Fail = configbuffer.getVariable("Identifier", "string",
-					   &(*mProducts)[i].mIdentifierName)))
+					   &(*mId2Products)[i].mIdentifierName)))
 	return Fail;
       if ((Fail = configbuffer.getVariable("Compartment", "string",
-					   &(*mProducts)[i].mCompartmentName)))
+					   &(*mId2Products)[i].mCompartmentName)))
 	return Fail;
       if ((Fail = configbuffer.getVariable("Metabolite", "string",
-					   &(*mProducts)[i].mMetaboliteName)))
+					   &(*mId2Products)[i].mMetaboliteName)))
 	return Fail;
     }
 
   if ((Fail = configbuffer.getVariable("Modifiers", "C_INT32", &Size)))
     return Fail;
-  mModifiers->resize(Size);
+  mId2Modifiers->resize(Size);
   for (i = 0; i < Size; i++)
     {
       if ((Fail = configbuffer.getVariable("Identifier", "string",
-					   &(*mModifiers)[i].mIdentifierName)))
+					   &(*mId2Modifiers)[i].mIdentifierName)))
 	return Fail;
       if ((Fail = configbuffer.getVariable("Compartment", "string",
-					   &(*mModifiers)[i].mCompartmentName)))
+					   &(*mId2Modifiers)[i].mCompartmentName)))
 	return Fail;
       if ((Fail = configbuffer.getVariable("Metabolite", "string",
-					   &(*mModifiers)[i].mMetaboliteName)))
+					   &(*mId2Modifiers)[i].mMetaboliteName)))
 	return Fail;
     }
 
   if ((Fail = configbuffer.getVariable("Constants", "C_INT32", &Size)))
     return Fail;
-  mParameters->resize(Size);
+  mId2Parameters->resize(Size);
   for (i = 0; i < Size; i++)
     {
       if ((Fail = configbuffer.getVariable("Identifier", "string",
-					   &(*mParameters)[i].mIdentifierName)))
+					   &(*mId2Parameters)[i].mIdentifierName)))
 	return Fail;
       if ((Fail = configbuffer.getVariable("Value", "C_FLOAT64",
-					   &(*mParameters)[i].mValue)))
+					   &(*mId2Parameters)[i].mValue)))
 	return Fail;
     }
     
@@ -473,89 +480,89 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 
   if ((Fail = configbuffer.getVariable("Substrates", "C_INT32", &Size)))
     return Fail;
-  mSubstrates->resize(Size);
+  mId2Substrates->resize(Size);
     
   if ((Fail = configbuffer.getVariable("Products", "C_INT32", &Size)))
     return Fail;
-  mProducts->resize(Size);
+  mId2Products->resize(Size);
 
   if ((Fail = configbuffer.getVariable("Modifiers", "C_INT32", &Size)))
     return Fail;
-  mModifiers->resize(Size);
+  mId2Modifiers->resize(Size);
 
   if ((Fail = configbuffer.getVariable("Constants", "C_INT32", &Size)))
     return Fail;
-  mParameters->resize(Size);
+  mId2Parameters->resize(Size);
 
-  for (i = 0; i < mSubstrates->size(); i++)
+  for (i = 0; i < mId2Substrates->size(); i++)
     {
       name = StringPrint("Subs%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
 
       if (mFunction->getName().substr(0,11) == "Mass action")
-	(*mSubstrates)[i].mIdentifierName = StringPrint("substrate_%d", i);
+	(*mId2Substrates)[i].mIdentifierName = StringPrint("substrate_%d", i);
       else if (mFunction->callParameters()[0]->identifiers(N_SUBSTRATE).size()
 	       < i + 1)
-	(*mSubstrates)[i].mIdentifierName = "";
+	(*mId2Substrates)[i].mIdentifierName = "";
       else
-	(*mSubstrates)[i].mIdentifierName = mFunction->callParameters()[0]->
+	(*mId2Substrates)[i].mIdentifierName = mFunction->callParameters()[0]->
 	  identifiers(N_SUBSTRATE)[i]->getName();
         
-      (*mSubstrates)[i].mMetaboliteName = 
+      (*mId2Substrates)[i].mMetaboliteName = 
 	Copasi.OldMetabolites[index].getName();
     }
     
-  for (i = 0; i < mProducts->size(); i++)
+  for (i = 0; i < mId2Products->size(); i++)
     {
       name = StringPrint("Prod%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
         
       if (mFunction->getName().substr(0,11) == "Mass action")
-	(*mProducts)[i].mIdentifierName = StringPrint("product_%d", i);
+	(*mId2Products)[i].mIdentifierName = StringPrint("product_%d", i);
       else if (mFunction->callParameters()[0]->identifiers(N_PRODUCT).size()
 	       < i + 1)
-	(*mProducts)[i].mIdentifierName = "";
+	(*mId2Products)[i].mIdentifierName = "";
       else
-	(*mProducts)[i].mIdentifierName = mFunction->callParameters()[0]->
+	(*mId2Products)[i].mIdentifierName = mFunction->callParameters()[0]->
 	  identifiers(N_PRODUCT)[i]->getName();
         
-      (*mProducts)[i].mMetaboliteName = 
+      (*mId2Products)[i].mMetaboliteName = 
 	Copasi.OldMetabolites[index].getName();
     }
     
-  for (i = 0; i < mModifiers->size(); i++)
+  for (i = 0; i < mId2Modifiers->size(); i++)
     {
       name = StringPrint("Modf%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
         
       if (mFunction->callParameters()[0]->identifiers(N_MODIFIER).size()
 	  < i + 1)
-	(*mModifiers)[i].mIdentifierName = "";
+	(*mId2Modifiers)[i].mIdentifierName = "";
       else
-	(*mModifiers)[i].mIdentifierName = mFunction->callParameters()[0]->
+	(*mId2Modifiers)[i].mIdentifierName = mFunction->callParameters()[0]->
 	  identifiers(N_MODIFIER)[i]->getName();
 
-      (*mModifiers)[i].mMetaboliteName = 
+      (*mId2Modifiers)[i].mMetaboliteName = 
 	Copasi.OldMetabolites[index].getName();
     }
     
-  for (i = 0; i < mParameters->size(); i++)
+  for (i = 0; i < mId2Parameters->size(); i++)
     {
       name = StringPrint("Param%d", i);
       configbuffer.getVariable(name, "C_FLOAT64", 
-			       &(*mParameters)[i].mValue);
+			       &(*mId2Parameters)[i].mValue);
       if (mFunction->getName().substr(0,11) == "Mass action")
         {
 	  if (i)
-	    (*mParameters)[i].mIdentifierName = "kp";
+	    (*mId2Parameters)[i].mIdentifierName = "kp";
 	  else
-	    (*mParameters)[i].mIdentifierName = "ks";
+	    (*mId2Parameters)[i].mIdentifierName = "ks";
         }
       else if (mFunction->callParameters()[0]->identifiers(N_KCONSTANT).size()
 	       < i + 1)
-	(*mParameters)[i].mIdentifierName = "";
+	(*mId2Parameters)[i].mIdentifierName = "";
       else
-	(*mParameters)[i].mIdentifierName = mFunction->callParameters()[0]->
+	(*mId2Parameters)[i].mIdentifierName = mFunction->callParameters()[0]->
 	  identifiers(N_KCONSTANT)[i]->getName();
     }
     
@@ -571,6 +578,7 @@ CReaction::CId2Param::CId2Param() {}
 
 CReaction::CId2Param::~CId2Param() {}
 
+#ifdef XXXX
 vector < CReaction::ELEMENT > CReaction::getChemStructure() const
 {
   vector < ELEMENT > Structure;
@@ -578,110 +586,56 @@ vector < CReaction::ELEMENT > CReaction::getChemStructure() const
     
   string Left;
   string Right;
-    
-  string::size_type equal = 0;
-  string::size_type pos = 0;
-    
-  equal = mChemEq.find("=");
-  if (equal == string::npos) 
-    {
-      equal = mChemEq.find("->");
-      Right = mChemEq.substr(equal+2);
-    }
-  else
-    Right = mChemEq.substr(equal+1);
-  Left = mChemEq.substr(0,equal);
 
+  splitChemEq(Left, Right);
+
+  string::size_type pos = 0;
   while (pos != string::npos)
     {
       Element = extractElement(Left, pos);
       Element.mValue *= -1.0; 
-      addElement(Element, Structure);
+      if (Element.mName != "") addElement(Element, Structure);
     }
     
   pos = 0;
   while (pos != string::npos)
     {
       Element = extractElement(Right, pos);
-      addElement(Element, Structure);
+      if (Element.mName != "") addElement(Element, Structure);
     }
     
   return Structure;
 }
-
-CReaction::ELEMENT CReaction::extractElement(const string & input, 
-					     string::size_type & pos) const
-{
-  ELEMENT Element;
-  string Value;
-    
-  string::size_type Start = input.find_first_not_of(" ", pos);
-  string::size_type End = input.find("+", Start);
-  string::size_type Multiplier = input.find("*", Start);
-  string::size_type NameStart;
-  string::size_type NameEnd;
-    
-  if (Multiplier == string::npos || Multiplier > End)
-    {
-      NameStart = Start;
-      Element.mValue = 1.0;
-    }
-  else
-    {
-      NameStart = input.find_first_not_of(" ",Multiplier+1);
-      Value = input.substr(Start, Multiplier - Start);
-      Element.mValue = atof(Value.c_str());
-    }
-    
-  NameEnd = input.find_first_of(" +", NameStart);
-  Element.mName = input.substr(NameStart, NameEnd - NameStart);
-
-  pos = (End == string::npos) ? End: End+1;
-  return Element;
-}
-
-void CReaction::addElement(const ELEMENT & element,
-			   vector < ELEMENT > & structure) const
-{
-  unsigned C_INT32 i;
-
-  for (i=0; i < structure.size(); i++)
-    if (element.mName == structure[i].mName) break;
-    
-  if (i >= structure.size()) 
-    structure.push_back(element);
-  else
-    structure[i].mValue += element.mValue;
-}
+#endif // XXXX
 
 void CReaction::old2New(const vector < CMetab* > & metabolites)
 {
   unsigned C_INT32 i, j;
     
-  for (i = 0; i < mSubstrates->size(); i++)
+  for (i = 0; i < mId2Substrates->size(); i++)
     {
       for (j = 0; j < metabolites.size(); j++)
 	if (metabolites[j]->getName() ==
-	    (*mSubstrates)[i].mMetaboliteName) break;
-      (*mSubstrates)[i].mCompartmentName =
+	    (*mId2Substrates)[i].mMetaboliteName) break;
+      (*mId2Substrates)[i].mCompartmentName =
 	metabolites[j]->getCompartment()->getName();
     }
     
-  for (i = 0; i < mProducts->size(); i++)
+  for (i = 0; i < mId2Products->size(); i++)
     {
       for (j = 0; j < metabolites.size(); j++)
 	if (metabolites[j]->getName() ==
-	    (*mProducts)[i].mMetaboliteName) break;
-      (*mProducts)[i].mCompartmentName =
+	    (*mId2Products)[i].mMetaboliteName) break;
+      (*mId2Products)[i].mCompartmentName =
 	metabolites[j]->getCompartment()->getName();
     }
     
-  for (i = 0; i < mModifiers->size(); i++)
+  for (i = 0; i < mId2Modifiers->size(); i++)
     {
       for (j = 0; j < metabolites.size(); j++)
 	if (metabolites[j]->getName() ==
-	    (*mModifiers)[i].mMetaboliteName) break;
-      (*mModifiers)[i].mCompartmentName =
+	    (*mId2Modifiers)[i].mMetaboliteName) break;
+      (*mId2Modifiers)[i].mCompartmentName =
 	metabolites[j]->getCompartment()->getName();
     }
 }
@@ -731,9 +685,9 @@ C_INT32 CReaction::findPara(string &Target)
   unsigned C_INT32 i;
   string name;
 
-  for(i = 0; i < mParameters->size(); i++ )
+  for(i = 0; i < mId2Parameters->size(); i++ )
     {
-      name = (*mParameters)[i].getIdentifierName();
+      name = (*mId2Parameters)[i].getIdentifierName();
       if( name == Target) return i;
     }
 

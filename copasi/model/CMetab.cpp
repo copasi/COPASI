@@ -147,7 +147,7 @@ C_INT32 CMetab::save(CWriteConfig &configbuffer)
   return Fail;
 }
 
-string CMetab::getName() const {return mName;}
+const string & CMetab::getName() const {return mName;}
 
 C_FLOAT64 * CMetab::getConcentration() {return &mConc;}
 

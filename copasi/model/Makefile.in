@@ -188,10 +188,10 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libmodel.a
 
-libmodel_a_SOURCES =  	CCompartment.cpp 	CMetab.cpp 	CModel.cpp 	CMoiety.cpp 	CReaction.cpp      
+libmodel_a_SOURCES =  	CCompartment.cpp 	CMetab.cpp 	CModel.cpp 	CMoiety.cpp 	CReaction.cpp 	CChemEq.cpp 	CChemEqElement.cpp
 
 
-EXTRA_DIST =  	model.h 	CCompartment.h	CCompartment.cpp 	CMetab.h	CMetab.cpp 	CModel.h	CModel.cpp 	CMoiety.h	CMoiety.cpp 	CReaction.h	CReaction.cpp
+EXTRA_DIST =  	model.h 	CCompartment.h	CCompartment.cpp 	CMetab.h	CMetab.cpp 	CModel.h	CModel.cpp 	CMoiety.h	CMoiety.cpp 	CReaction.h	CReaction.cpp 	CChemEq.h	CChemEq.cpp 	CChemEqElement.h	CChemEqElement.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -210,7 +210,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libmodel_a_LIBADD = 
 libmodel_a_OBJECTS =  CCompartment.$(OBJEXT) CMetab.$(OBJEXT) \
-CModel.$(OBJEXT) CMoiety.$(OBJEXT) CReaction.$(OBJEXT)
+CModel.$(OBJEXT) CMoiety.$(OBJEXT) CReaction.$(OBJEXT) \
+CChemEq.$(OBJEXT) CChemEqElement.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -224,8 +225,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/CCompartment.P .deps/CMetab.P .deps/CModel.P \
-.deps/CMoiety.P .deps/CReaction.P
+DEP_FILES =  .deps/CChemEq.P .deps/CChemEqElement.P .deps/CCompartment.P \
+.deps/CMetab.P .deps/CModel.P .deps/CMoiety.P .deps/CReaction.P
 SOURCES = $(libmodel_a_SOURCES)
 OBJECTS = $(libmodel_a_OBJECTS)
 

@@ -349,11 +349,11 @@ void COutput::Rep_Params(ofstream &fout)
       StrOut = Model.getReactions()[i].getFunction().getName();
       fout << StrOut << ")" << endl;
 
-      for (j = 0; j < Model.getReactions()[i].parameters().size(); j++)
+      for (j = 0; j < Model.getReactions()[i].getId2Parameters().size(); j++)
 	{
 
-	  fout << " " << Model.getReactions()[i].parameters()[j].getIdentifierName() << " =  ";
-	  fout << setprecision(4) << Model.getReactions()[i].parameters()[j].getValue();
+	  fout << " " << Model.getReactions()[i].getId2Parameters()[j].getIdentifierName() << " =  ";
+	  fout << setprecision(4) << Model.getReactions()[i].getId2Parameters()[j].getValue();
 	  fout << endl;
 		
 	}

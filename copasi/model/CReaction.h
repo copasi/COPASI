@@ -15,9 +15,12 @@
 #include "function/CKinFunction.h"
 #include "function/CFunctionDB.h"
 #include "CMetab.h"
+#include "CChemEq.h"
+#include "CChemEqElement.h"
 
 class CReaction
 {
+  
   // Attributes
  private:
   class CId2Metab
@@ -102,52 +105,56 @@ class CReaction
     };
 
   /**
-   *  The name of the step
+   *  The name of the reaction
    */
   string mName;
 
   /**
    *  The chemical equation
    */
-  string mChemEq;
+  CChemEq mChemEq;
 
   /**
-   *  A pointer to the rate function of the step
+   *  A pointer to the rate function of the reaction
    */
   CBaseFunction * mFunction;
 
   /**
-   *  The flux of the step
+   *  The flux of the reaction
    */
   C_FLOAT64 mFlux;
 
   /**
-   *  The reversibility of the step
+   *  The reversibility of the reaction
    */
   C_INT16 mReversible;
 
   /**
-   *  A pointer to the substrates of the step
+   *  A vector of links between the substrates of the reaction 
+   *  and function parameters
    */
-  vector < CId2Metab > * mSubstrates;
+  vector < CId2Metab > * mId2Substrates;
 
   /**
-   *  A pointer to the products of the step 
+   *  A vector of links between the products of the reaction 
+   *  and function parameters
    */
-  vector < CId2Metab > * mProducts;
+  vector < CId2Metab > * mId2Products;
 
   /**
-   *  A pointer to the modifiers of the step
+   *  A vector of links between the modifiers of the reaction 
+   *  and function parameters
    */
-  vector < CId2Metab > * mModifiers;
+  vector < CId2Metab > * mId2Modifiers;
 
   /**
-   *  A pointer to the parameters of the step
+   *  A vector of links between the kinetic parameters of the reaction 
+   *  and function parameters
    */
-  vector < CId2Param > * mParameters;
+  vector < CId2Param > * mId2Parameters;
 
   /**
-   *  A pointer to the  call parameters of the rate function of the step
+   *  A pointer to the  call parameters of the rate function of the reaction
    */
   vector < CCallParameter > * mCallParameters;
 
@@ -155,6 +162,7 @@ class CReaction
    *
    */
   C_INT32 mFail;
+
   // Operations
  public:
   /**
@@ -210,95 +218,116 @@ class CReaction
    *  Retrieves the vector of substrates
    *  @return "vector < CId2Metab > &"
    */
-  vector < CId2Metab > &substrates();
+  vector < CId2Metab > &getId2Substrates();
 
   /**
    *  Retrieves the vector of products
    *  @return "vector < CId2Metab > &"
    */
-  vector < CId2Metab > &products();
+  vector < CId2Metab > &getId2Products();
 
   /**
    *  Retrieves the vector of modifiers
    *  @return "vector < CId2Metab > &"
    */
-  vector < CId2Metab > &modifiers();
+  vector < CId2Metab > &getId2Modifiers();
 
   /**
    *  Retrieves the vector of parameters
    *  @return "vector < CId2Param > &"
    */
-  vector < CId2Param > &parameters();
+  vector < CId2Param > &getId2Parameters();
 
   /**
-   *  Retrieves the name of the step
+   *  Retrieves the name of the reaction
    *  @return string
    */
   string getName() const;
 
   /**
-   *  Retrieves the chemical equation of the step
+   *  Retrieves the chemical equation of the reaction
    *  @return string
    */
-  string getChemEq() const;
+  CChemEq & getChemEq();
 
   /**
-   *  Retrieves the chemical structure of the step
+   *  Retrieves the chemical structure of the reaction
    *  @return vector < ELEMENT >
    */
   typedef struct ELEMENT {C_FLOAT64 mValue; string mName;};
   vector < ELEMENT > getChemStructure() const;
 
   /**
-   *  Retrieves the rate function of the step
+   *  Retrieves a vector of substrates and their multiplicity
+   *  in the chemical reaction.
+   *  @return "vector < CChemEqElement * > &" substrates
+   */
+  vector < CChemEqElement * > & getSubstrates();
+  
+  /**
+   *  Retrieves a vector of products and their multiplicity.
+   *  in the chemical reaction.
+   *  @return "vector < CChemEqElement * > &" products
+   */
+  vector < CChemEqElement * > & getProducts();
+
+  /**
+   *  Retrieves a vector of metabolites and their total balance.
+   *  in the chemical reaction.
+   *  @return "vector < CChemEqElement * > &" products
+   */
+  vector < CChemEqElement * > & getBalances();
+
+  /**
+   *  Retrieves the rate function of the reaction
    *  @return "CBaseFunction &"
    */
   CBaseFunction & getFunction();
 
   /**
-   *  Retrieves the flux of the step
+   *  Retrieves the flux of the reaction
    *  @return C_FLOAT64
    */
   C_FLOAT64 getFlux() const;
 
   /**
-   *  Retrieves whether the step is reversible
+   *  Retrieves whether the reaction is reversible
    *  @return C_INT16
    */
   C_INT16 isReversible() const;
 
   /**
-   *  Sets the name of the step
+   *  Sets the name of the reaction
    *  @param "const string &" name
    */
   void setName(const string & name);
 
   /**
-   *  Sets the chemical equation of the step
+   *  Sets the chemical equation of the reaction
    *  @param "const string &" chemEq
    */
   void setChemEq(const string & chemEq);
 
   /**
-   *  Sets the rate function of the step
+   *  Sets the rate function of the reaction
    *  @param "const string &" functionName
    */
   void setFunction(const string & functionName);
 
   /**
-   *  Sets the flux of the step
+   *  Sets the flux of the reaction
    *  @param C_FLOAT64 flux
    */
   void setFlux(C_FLOAT64 flux);
 
   /**
-   *  Sets whether the step is reversible
+   *  Sets whether the reaction is reversible
    *  @param C_INT16 reversible
    */
   void setReversible(C_INT16 reversible);
 
   /**
-   *  Compile the step, i.e., links the metabolites and parameters with the
+   *  Compile the reaction, i.e., links the metabolites and parameters with the
    *  rate function.
    *  @param "CCopasiVector < CMetab * > &" metabolites
    */
@@ -351,19 +380,6 @@ class CReaction
    *
    */
   void checkIdentifiers();
-
-  /**
-   *
-   */
-  ELEMENT extractElement(const string & input, 
-			 string::size_type & pos) const;
-
-  /**
-   *
-   */
-  void addElement(const ELEMENT & element,
-		  vector < ELEMENT > & structure) const;
-
 };
 
 #endif // COPASI_CReaction

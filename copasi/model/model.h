@@ -4,4 +4,6 @@
 #include "CMetab.h"
 #include "CModel.h"
 #include "CMoiety.h"
+#include "CChemEqElement.h"
+#include "CChemEq.h"
 #include "CReaction.h"

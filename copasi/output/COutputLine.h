@@ -9,6 +9,9 @@
 #ifndef COPASI_COutputLine
 #define COPASI_COutputLine
 
+#include <iostream>
+#include <fstream>
+
 #include "CDatum.h"
 #include "utilities/CCopasiVector.h"
 
