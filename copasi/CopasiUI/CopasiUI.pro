@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.69 $ $Author: gauges $ $Date: 2004/12/10 20:50:09 $  
+# $Revision: 1.70 $ $Author: gauges $ $Date: 2004/12/15 13:26:45 $  
 ######################################################################
 
 include(../common.pri)
@@ -126,7 +126,6 @@ HEADERS += \
            CopasiTableWidget.h \
            copasiWidget.h \
            copasiui3window.h \
-           CPlotSelectionDialog.h \
            CProgressBar.h \
            CTimeSeriesTable.h \
            DataModel.h \
@@ -146,7 +145,6 @@ HEADERS += \
            MoietyWidget1.h \
            MyLineEdit.h \
            listviews.h \
-#           ObjectBrowser.h \
            ObjectBrowserDialog.h \
            ObjectBrowserItem.h \
            ObjectBrowserWidget.h \
@@ -163,8 +161,6 @@ HEADERS += \
            ScanItemWidget.h \
            ScanWidget.h \
            SliderDialog.h \
-           SimpleSelectionDialog.h \
-           SimpleSelectionWidget.h \
            SliderSettingsDialog.h \
            StateWidget.h \
            StateSubwidget.h \
@@ -206,7 +202,6 @@ SOURCES += \
            CopasiTableWidget.cpp \
            copasiWidget.cpp \
            copasiui3window.cpp \
-           CPlotSelectionDialog.cpp \
            CProgressBar.cpp \
            CTimeSeriesTable.cpp \
            DataModel.cpp \
@@ -227,7 +222,6 @@ SOURCES += \
            MoietyWidget.cpp \
            MoietyWidget1.cpp \
            MyLineEdit.cpp \
-#           ObjectBrowser.cpp \
            ObjectBrowserDialog.cpp \
            ObjectBrowserItem.cpp \
            ObjectBrowserWidget.cpp \
@@ -244,8 +238,6 @@ SOURCES += \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
            SliderDialog.cpp \
-           SimpleSelectionDialog.cpp \
-      	   SimpleSelectionWidget.cpp \
            SliderSettingsDialog.cpp \	
            StateWidget.cpp \
            StateSubwidget.cpp \
@@ -261,7 +253,6 @@ SOURCES += \
 # FORMS +=  TimeSeriesSubwidget.ui
 # FORMS +=  StateSubwidget.ui
 # FORMS +=  CMCAResultSubwidget.ui
-# FORMS +=  SimpleSelectionWidget.ui        
 # FORMS +=  SliderSettingsDialog.ui           
 
 release {
