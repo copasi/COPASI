@@ -10,8 +10,10 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
   if (after != NULL)
     after->setSibling(this);
   pCopasiObject = mObject;
-  mChecked = false;
   pList->insert(this);
+
+  nParam = 0;
+  mChecked = new bool(false);
 }
 
 ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject, objectList* pList)
@@ -25,8 +27,10 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
   if (after != NULL)
     after->setSibling(this);
   pCopasiObject = mObject;
-  mChecked = false;
   pList->insert(this);
+
+  nParam = 0;
+  mChecked = new bool(false);
 }
 
 int ObjectBrowserItem::nUserChecked()
@@ -57,7 +61,7 @@ int ObjectBrowserItem::nUserChecked()
     }
   else //it has no child
     {
-      if (isChecked())
+      if (isChecked(0))
         condition = ALLCHECKED;
       else
         condition = NOCHECKED;
@@ -116,14 +120,18 @@ ObjectBrowserItem* ObjectBrowserItem::sibling() const
     return pSibling;
   }
 
-bool ObjectBrowserItem::isChecked() const
+bool ObjectBrowserItem::isChecked(unsigned int i) const
   {
-    return mChecked;
+    if (i > nParam)
+      return mChecked[0];
+    return mChecked[i];
   }
 
-void ObjectBrowserItem::reverseChecked()
+void ObjectBrowserItem::reverseChecked(unsigned int i)
 {
-  mChecked = !mChecked;
+  if (i > nParam)
+    return;
+  mChecked[i] = !mChecked[i];
 }
 
 objectList::objectList()

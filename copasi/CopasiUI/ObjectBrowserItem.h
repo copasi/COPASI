@@ -11,6 +11,8 @@ class CCopasiObject;
 #define ALLCHECKED 1
 #define PARTCHECKED 0
 
+enum objectType {FIELDATTR = 0, OBJECTATTR};
+
 class objectList;
 
 class ObjectBrowserItem : public QListViewItem
@@ -20,7 +22,10 @@ class ObjectBrowserItem : public QListViewItem
     ObjectBrowserItem* pParent;
     ObjectBrowserItem* pChild;
     ObjectBrowserItem* pSibling;
-    bool mChecked;
+    bool* mChecked;
+    objectType mType;
+    unsigned int nParam;
+
   public:
     ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
@@ -34,8 +39,8 @@ class ObjectBrowserItem : public QListViewItem
     ObjectBrowserItem* child() const;
     ObjectBrowserItem* sibling() const;
 
-    void reverseChecked();
-    bool isChecked() const;
+    void reverseChecked(unsigned int i);
+    bool isChecked(unsigned int i) const;
 
     //-1 if this is no user checked
     //0 if this is only partly checked

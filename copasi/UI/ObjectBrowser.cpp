@@ -108,16 +108,16 @@ void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
 
 void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
 {
-  if (pCurrent->isChecked() == ALLCHECKED)
+  if (pCurrent->isChecked(0) == ALLCHECKED)
     {
-      if (pCurrent->isChecked())
-        pCurrent->reverseChecked();
+      if (pCurrent->isChecked(0))
+        pCurrent->reverseChecked(0);
       setUncheck(pCurrent->child());
       return;
     }
   //else no check or partly checked
-  if (!pCurrent->isChecked())
-    pCurrent->reverseChecked();
+  if (!pCurrent->isChecked(0))
+    pCurrent->reverseChecked(0);
   setCheck(pCurrent->child());
   return;
 }
@@ -126,8 +126,8 @@ void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
-  if (pCurrent->isChecked())
-    pCurrent->reverseChecked();
+  if (pCurrent->isChecked(0))
+    pCurrent->reverseChecked(0);
   if (pCurrent->child() != NULL)
     setUncheck(pCurrent->child());
   if (pCurrent->sibling() != NULL)
@@ -138,8 +138,8 @@ void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
-  if (!pCurrent->isChecked())
-    pCurrent->reverseChecked();
+  if (!pCurrent->isChecked(0))
+    pCurrent->reverseChecked(0);
   if (pCurrent->child() != NULL)
     setCheck(pCurrent->child());
   if (pCurrent->sibling() != NULL)
