@@ -9,7 +9,6 @@
 #include "TrajectoryWidget.h"
 #include "trajectory/CTrajectoryTask.h"
 #include <qmessagebox.h>
-#include <QFileDialog.h>
 
 #include <qvariant.h>
 #include <qcheckbox.h>
@@ -22,6 +21,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qfiledialog.h>
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
