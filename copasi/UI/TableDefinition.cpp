@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.11 2003/08/08 15:43:52 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.12 2003/08/08 17:04:23 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -22,7 +22,7 @@
 #include "TableDefinition.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
-#include "scanwidget.h"
+#include "ScanWidget.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
 
