@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 07:43:44 $
+   $Date: 2005/02/16 09:30:54 $
    End CVS Header */
 
 #include <iostream>
@@ -57,7 +57,17 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
     mpDataModel(dataModel),
     mSliderValueChanged(false)
 {
+  this->setWFlags(this->getWFlags() | WStyle_StaysOnTop);
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
+
+  QHBoxLayout* layout2 = new QHBoxLayout(0);
+  layout2->addStretch();
+  this->newSliderButton = new QPushButton(this);
+  this->newSliderButton->setText("new slider");
+  this->newSliderButton->setEnabled(true);
+  layout2->addWidget(this->newSliderButton);
+  layout2->addStretch();
+  mainLayout->addLayout(layout2);
 
   this->scrollView = new QScrollView(this);
   this->scrollView->setResizePolicy(QScrollView::AutoOneFit);
@@ -68,14 +78,6 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   ((QVBoxLayout*)this->sliderBox->layout())->addStretch();
   this->scrollView->addChild(this->sliderBox);
   mainLayout->addWidget(this->scrollView);
-  QHBoxLayout* layout2 = new QHBoxLayout(0);
-  layout2->addStretch();
-  this->newSliderButton = new QPushButton(this);
-  this->newSliderButton->setText("new slider");
-  this->newSliderButton->setEnabled(true);
-  layout2->addWidget(this->newSliderButton);
-  layout2->addStretch();
-  mainLayout->addLayout(layout2);
 
   QHBoxLayout* layout1 = new QHBoxLayout(0);
   layout1->addStretch();
