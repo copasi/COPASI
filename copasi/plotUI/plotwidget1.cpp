@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/15 17:11:54 $
+   $Author: gauges $ 
+   $Date: 2004/10/20 18:14:16 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.23 2004/10/15 17:11:54 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.24 2004/10/20 18:14:16 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -108,11 +108,11 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   startPlotButton = new QPushButton(this, "Commit");
   layout4->addWidget(startPlotButton);
 
-  deletePlotButton = new QPushButton(this, "deletePlotButton");
-  layout4->addWidget(deletePlotButton);
+  deletePlotButton = new QPushButton(/*this*/0, "deletePlotButton");
+  //layout4->addWidget(deletePlotButton);
 
-  addPlotButton = new QPushButton(this, "addPlotButton");
-  layout4->addWidget(addPlotButton);
+  addPlotButton = new QPushButton(/*this*/0, "addPlotButton");
+  //layout4->addWidget(addPlotButton);
 
   resetButton = new QPushButton(this, "Revert");
   layout4->addWidget(resetButton);
