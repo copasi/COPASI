@@ -21,6 +21,7 @@ CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Compartment"),
     mName(mObjectName),
+    mInitialVolume(1.0),
     mVolume(1.0),
     mVolumeInv(1.0),
     mMetabolites("Metabolites", this)
@@ -30,6 +31,7 @@ CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mName(CCopasiContainer::mObjectName),
+    mInitialVolume(src.mInitialVolume),
     mVolume(src.mVolume),
     mVolumeInv(src.mVolumeInv),
     mMetabolites(src.mMetabolites, this)
