@@ -231,7 +231,7 @@ void ReactionsWidget1::loadName(QString setValue)
   ComboBox1->clear();
 
   LineEdit1->setText(reactn->getName().c_str());
-  Reaction1_Name = new QString(reactn->getName().c_str());
+  //  Reaction1_Name = new QString(reactn->getName().c_str());
 
   chemEq = & reactn->getChemEq();
   LineEdit2->setText(chemEq->getChemicalEquationConverted().c_str());
@@ -270,7 +270,7 @@ void ReactionsWidget1::loadName(QString setValue)
     {
       comboEntry = reactn->getFunction().getName().c_str();
       ComboBox1->setCurrentText(comboEntry);
-      //      slotComboBoxSelectionChanged(comboEntry);
+      slotComboBoxSelectionChanged(comboEntry);
     }
   //  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
   //emit sideySignal();
@@ -282,7 +282,7 @@ void ReactionsWidget1::loadName(QString setValue)
 void ReactionsWidget1::slotBtnCancelClicked()
 {
   //QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
-  emit signal_emitted(*Reaction1_Name);
+  emit signal_emitted(name);
 }
 
 /*This slot is connected to the commit changes button.There is a difference between commit
@@ -392,7 +392,7 @@ void ReactionsWidget1::slotBtnOKClicked()
 
   emit updated();
   emit leaf(mModel);
-  emit signal_emitted(*Reaction1_Name);
+  emit signal_emitted(name);
   //   CChemEq * chem;
   //   chem = & reactn1->getChemEq();
   //   chem->setChemicalEquation(chemical_reaction->latin1());
