@@ -552,7 +552,8 @@ void COutput::repSS(ofstream &fout)
     {
       if (model->getMetabolites()[i]->getStatus() == 0) // METAB_FIXED == 0
         rate = 0.0;
-      else rate = mSolution->getSs_dxdt()[i];			// ??? [Model.IRow[i]+1]
+      else
+		  rate = model->getMetabolites()[i]->getRate();			
 		
       // Output Concentration
       fout << "[" << setw(10) << model->getMetabolites()[i]->getName();
@@ -603,7 +604,7 @@ void COutput::repStability(ofstream &fout)
 {
   unsigned C_INT32 i, j;
   CModel *model = Copasi->Model;
-
+/*
   if (mSolution->getSolution() != SS_FOUND)
     {
       fout << "The linear stability analysis based on the eigenvalues" << endl;
@@ -659,16 +660,27 @@ void COutput::repStability(ofstream &fout)
       // Output Eigne-stiffness
       fout << " stiffness = " << mSolution->getEigen()->getEigen_stiffness() << endl;
       fout << " time hierarchy = " << mSolution->getEigen()->getEigen_hierarchy() << endl;
-
+*/
       // Output Jacobian Matrix
       fout << endl << "Jacobian matrix" << endl;
+	  fout << setprecision(6);
       for (i = 0; i < model->getMetabolitesInd().size(); i++)
         {
           for (j = 0; j < model->getMetabolitesInd().size(); j++)
-            fout << setprecision(6) << mSolution->getJacob()->getJacob()[i][j];
+		  {
+			if (mSolution->getJacob()->getJacob()[i][j] >= 0) 
+			{
+				if (j) fout << "  ";
+				else fout << " ";
+			}
+			else {
+				if (j) fout << " ";
+			}
+			fout << mSolution->getJacob()->getJacob()[i][j];
+		  }
           fout << endl;
         }
-
+/*
       // Output Eigenvalus of the Jacibian Matrix
       fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
       for (i = 0; i < model->getMetabolitesInd().size(); i++)
@@ -682,7 +694,7 @@ void COutput::repStability(ofstream &fout)
             }	
         }
       fout << endl;
-    }
+    }*/
 }
 
 /**
@@ -764,7 +776,7 @@ void COutput::copasiRep(ofstream &fout)
   if (RepStruct) repStruct(fout);
   repParams(fout);
   repSS(fout);
-  //if (RepStab) repStability(fout);
+  if (RepStab) repStability(fout);
 #if 0
   if (RepMCA)	repMCA(fout);
 #endif
