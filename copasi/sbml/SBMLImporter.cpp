@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/20 17:46:37 $
+   $Date: 2004/06/21 09:02:23 $
    End CVS Header */
 
 #include <iostream>
@@ -637,7 +637,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               /* first check if the parameter is defined in the reaction */
               for (unsigned int x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
                 {
-                  Parameter* parameter = sbmlModel->getParameter(x);
+                  Parameter* parameter = sbmlReaction->getKineticLaw()->getParameter(x);
                   std::string parameterName;
                   DebugFile << "local parameter " << x << ": " << parameter << std::endl;
                   if (parameter->isSetId())
