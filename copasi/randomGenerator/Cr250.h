@@ -46,68 +46,54 @@ class Cr250 : private CRandom
 
     /**
      * Get a random number in 0 <= n <= Modulus
-     * @return const unsigned C_INT32 & random
+     * @return unsigned C_INT32 random
      */
-    const unsigned C_INT32 & getRandomU();
+    unsigned C_INT32 getRandomU();
 
     /**
      * Get a random number in 0 <= n <= (Modulus & 0x7ffffff)
-     * @return const C_INT32 & random
+     * @return C_INT32 random
      */
-    const C_INT32 & getRandomS();
-
-    /**
-     * Get a random number in 0 <= n <= min (max, Modulus)
-     * @param const unsigned C_INT32 & max
-     * @return const unsigned C_INT32 & random
-     */
-    const unsigned C_INT32 & getRandomU(const unsigned C_INT32 & max);
-
-    /**
-     * Get a random number in 0 <= n <= min (max, (Modulus & 0x7ffffff))
-     * @param const C_INT32 & max
-     * @return const C_INT32 & random
-     */
-    const C_INT32 & getRandomS(const C_INT32 & max);
+    C_INT32 getRandomS();
 
     /**
      * Produces a uniformly distributed random number in 0 <= x <= 1.
-     * @return const C_FLOAT64 & random
+     * @return C_FLOAT64 random
      */
-    const C_FLOAT64 & getRandomCC();
+    C_FLOAT64 getRandomCC();
 
     /**
      * Produces a uniformly distributed random number in 0 <= x < 1.
      * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
      * @return const C_FLOAT64 & random
      */
-    const C_FLOAT64 & getRandomCO();
+    C_FLOAT64 getRandomCO();
 
     /**
      * Produces a uniformly distributed random number in 0 < x < 1.
      * @return const C_FLOAT64 & random
      */
-    const C_FLOAT64 & getRandomOO();
+    C_FLOAT64 getRandomOO();
 
   private:
     /**
      * Number returned by r250() is in the interval 0 <= k <= 65535.
-     * @return const unsigned C_INT32 & random
+     * @return unsigned C_INT32 random
      */
-    inline const unsigned C_INT32 & r250(void);
+    unsigned C_INT32 r250(void);
 
     /**
      * Number returned by r250() is in the interval 0 <= k < max.
      * @param unsigned C_INT16 max
-     * @return const unsigned C_INT32 & random
+     * @return unsigned C_INT32 random
      */
-    const unsigned C_INT32 & r250n(const unsigned C_INT16 & max);
+    unsigned C_INT32 r250n(const unsigned C_INT16 & max);
 
     /**
      * Number returned by dr250() is in range [0,1)
      * @return C_FLOAT64 random
      */
-    const C_FLOAT64 & dr250(void);
+    C_FLOAT64 dr250(void);
 
     /**
      * Linear congruent pseudorandom number generator for initialization.

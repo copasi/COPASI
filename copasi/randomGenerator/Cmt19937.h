@@ -91,48 +91,34 @@ class Cmt19937 : private CRandom
 
     /**
      * Get a random number in 0 <= n <= Modulus
-     * @return const unsigned C_INT32 & random
+     * @return unsigned C_INT32 random
      */
-    const unsigned C_INT32 & getRandomU();
+    unsigned C_INT32 getRandomU();
 
     /**
      * Get a random number in 0 <= n <= (Modulus & 0x7ffffff)
-     * @return const C_INT32 & random
+     * @return C_INT32 random
      */
-    const C_INT32 & getRandomS();
-
-    /**
-     * Get a random number in 0 <= n <= min (max, Modulus)
-     * @param const unsigned C_INT32 & max
-     * @return const unsigned C_INT32 & random
-     */ 
-    // const unsigned C_INT32 & getRandomU(const unsigned C_INT32 & max);
-
-    /**
-     * Get a random number in 0 <= n <= min (max, (Modulus & 0x7ffffff))
-     * @param const C_INT32 & max
-     * @return const C_INT32 & random
-     */ 
-    // const C_INT32 & getRandomS(const C_INT32 & max);
+    C_INT32 getRandomS();
 
     /**
      * Produces a uniformly distributed random number in 0 <= x <= 1.
-     * @return const C_FLOAT64 & random
+     * @return C_FLOAT64 random
      */
-    const C_FLOAT64 & getRandomCC();
+    C_FLOAT64 getRandomCC();
 
     /**
      * Produces a uniformly distributed random number in 0 <= x < 1.
      * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
-     * @return const C_FLOAT64 & random
+     * @return C_FLOAT64 random
      */
-    const C_FLOAT64 & getRandomCO();
+    C_FLOAT64 getRandomCO();
 
     /**
      * Produces a uniformly distributed random number in 0 < x < 1.
-     * @return const C_FLOAT64 & random
+     * @return C_FLOAT64 random
      */
-    const C_FLOAT64 & getRandomOO();
+    C_FLOAT64 getRandomOO();
 
     void init_by_array(unsigned C_INT32 init_key[],
                        C_INT32 key_length);

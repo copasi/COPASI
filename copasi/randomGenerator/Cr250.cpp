@@ -82,42 +82,22 @@ void Cr250::initialize(unsigned C_INT32 seed)
   return;
 }
 
-const unsigned C_INT32 & Cr250::getRandomU()
-{
-  return r250();
-}
+unsigned C_INT32 Cr250::getRandomU()
+{return r250();}
 
-const C_INT32 & Cr250::getRandomS()
-{
-  return mNumberS = r250() & 0x7ffffff;
-}
+C_INT32 Cr250::getRandomS()
+{return r250();}
 
-const unsigned C_INT32 & Cr250::getRandomU(const unsigned C_INT32 & max)
-{
-  return r250n(max + 1);
-}
+C_FLOAT64 Cr250::getRandomCC()
+{return r250() * mModulusInv;}
 
-const C_INT32 & Cr250::getRandomS(const C_INT32 & max)
-{
-  return mNumberS = r250n(max + 1);
-}
+C_FLOAT64 Cr250::getRandomCO()
+{return dr250();}
 
-const C_FLOAT64 & Cr250::getRandomCC()
-{
-  return mFloat = r250() * mModulusInv;
-}
+C_FLOAT64 Cr250::getRandomOO()
+{return (r250() + .5) * mModulusInv1;}
 
-const C_FLOAT64 & Cr250::getRandomCO()
-{
-  return dr250();
-}
-
-const C_FLOAT64 & Cr250::getRandomOO()
-{
-  return mFloat = (r250() + .5) * mModulusInv1;
-}
-
-const unsigned C_INT32 & Cr250::r250(void)
+unsigned C_INT32 Cr250::r250(void)
 {
   register C_INT16 j;
 
@@ -136,7 +116,7 @@ const unsigned C_INT32 & Cr250::r250(void)
   return mNumberU;
 }
 
-const unsigned C_INT32 & Cr250::r250n(const unsigned C_INT16 & max)
+unsigned C_INT32 Cr250::r250n(const unsigned C_INT16 & max)
 {
   register unsigned C_INT16 limit;
 
@@ -149,13 +129,13 @@ const unsigned C_INT32 & Cr250::r250n(const unsigned C_INT16 & max)
     }
   while (mNumberU >= limit);
 
-  return mNumberU %= max;
+  return mNumberU % max;
 }
 
-const C_FLOAT64 & Cr250::dr250()
+C_FLOAT64 Cr250::dr250()
 {
   mNumberU = r250();
-  return mFloat = mNumberU / 65536.;   /* Return a number in [0.0 to 1.0) */
+  return mNumberU / 65536.;   /* Return a number in [0.0 to 1.0) */
 }
 
 unsigned C_INT16 Cr250::myrand()

@@ -1,5 +1,6 @@
 #include <sys/timeb.h>
 #include <math.h>
+#include <algorithm>
 
 #include "copasi.h"
 #include "CRandom.h"
@@ -68,9 +69,9 @@ void CRandom::initialize(unsigned C_INT32 C_UNUSED(seed))
 
 /**
  * Get a random number in 0 <= n <= Modulus
- * @return const unsigned C_INT32 & random
+ * @return unsigned C_INT32 random
  */
-const unsigned C_INT32 & CRandom::getRandomU()
+unsigned C_INT32 CRandom::getRandomU()
 {
   /* Every random number generator has to implement this. */
   fatalError();
@@ -79,133 +80,132 @@ const unsigned C_INT32 & CRandom::getRandomU()
 
 /**
  * Get a random number in 0 <= n <= (Modulus & 0x7ffffff)
- * @return const C_INT32 & random
+ * @return C_INT32 random
  */
-const C_INT32 & CRandom::getRandomS()
+C_INT32 CRandom::getRandomS()
 {
-  return mNumberS = getRandomU() & 0x7ffffff;
+  return getRandomU(std::min(mModulus, (unsigned C_INT32) 0x7ffffff));
+  //  The method below only works for mModulus = 0xffffffff.
+  //  return getRandomU() & 0x7ffffff;
 }
 
 /**
  * Get a random number in 0 <= n <= max
  * Note: max must be smaller than Modulus (no check for performance)
  * @param const unsigned C_INT32 & max
- * @return const unsigned C_INT32 & random
+ * @return unsigned C_INT32 random
  */
-const unsigned C_INT32 & CRandom::getRandomU(const unsigned C_INT32 & max)
+unsigned C_INT32 CRandom::getRandomU(const unsigned C_INT32 & max)
 {
   unsigned C_INT32 Max = max + 1;
-  unsigned C_INT32 Limit = (mModulus / Max) * Max;
+  unsigned C_INT32 Limit = (mModulus / Max) * Max - 1;
+  unsigned C_INT32 NumberU;
 
   do
-    getRandomU();
-  while (mNumberU >= Limit);
+    NumberU = getRandomU();
+  while (NumberU >= Limit);
 
-  return mNumberU %= Max;
+  return NumberU % Max;
 }
 
 /**
  * Get a random number in 0 <= n <= max
  * Note: max must be smaller than Modulus (no check for performance)
  * @param const C_INT32 & max
- * @return const C_INT32 & random
+ * @return C_INT32 random
  */
-const C_INT32 & CRandom::getRandomS(const C_INT32 & max)
+C_INT32 CRandom::getRandomS(const C_INT32 & max)
 {
   unsigned C_INT32 Max = max + 1;
   unsigned C_INT32 Limit = (mModulus / Max) * Max - 1;
+  unsigned C_INT32 NumberU;
 
   do
-    getRandomU();
-  while (mNumberU >= Limit);
+    NumberU = getRandomU();
+  while (NumberU >= Limit);
 
-  return mNumberS = mNumberU % Max;
+  return mNumberU % Max;
 }
 
 /**
  * Produces a uniformly distributed random number in 0 <= x <= 1.
- * @return const C_FLOAT64 & random
+ * @return C_FLOAT64 random
  */
-const C_FLOAT64 & CRandom::getRandomCC()
+C_FLOAT64 CRandom::getRandomCC()
 {
-  return mFloat = getRandomU() * mModulusInv;
+  return getRandomU() * mModulusInv;
 }
 
 /**
  * Produces a uniformly distributed random number in 0 <= x < 1.
  * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
- * @return const C_FLOAT64 & random
+ * @return C_FLOAT64 random
  */
-const C_FLOAT64 & CRandom::getRandomCO()
+C_FLOAT64 CRandom::getRandomCO()
 {
-  return mFloat = getRandomU() * mModulusInv1;
+  return getRandomU() * mModulusInv1;
 }
 
 /**
  * Produces a uniformly distributed random number in 0 < x < 1.
- * @return const C_FLOAT64 & random
+ * @return C_FLOAT64 random
  */
-const C_FLOAT64 & CRandom::getRandomOO()
+C_FLOAT64 CRandom::getRandomOO()
 {
-  return mFloat = (getRandomU() + .5) * mModulusInv1;
+  return (getRandomU() + .5) * mModulusInv1;
 }
 
 /* a normal distribution with mean 0 and S.D. 1 */
 
-const C_FLOAT64 & CRandom::getRandomNormal01()
+C_FLOAT64 CRandom::getRandomNormal01()
 {
-  static char f = 1;
-  static C_FLOAT64 y;
+  static bool HaveValue = true;
+  static C_FLOAT64 SavedValue;
   C_FLOAT64 a, b, s;
-  C_FLOAT64 mean = 0;
-  C_FLOAT64 sd = 1;
 
   /* negate the flag */
-  f = -f;
+  HaveValue = !HaveValue;
+
   /* return the stored number (if one is there) */
-  if (f > 0) return y;
-  for (;;)
+  if (HaveValue) return SavedValue;
+
+  do
     {
-      a = 2.0 * getRandomCO() - 1.0;
-      b = 2.0 * getRandomCO() - 1.0;
+      a = 2.0 * getRandomOO() - 1.0;
+      b = 2.0 * getRandomOO() - 1.0;
       s = a * a + b * b;
-      if ((s < 1.0) && (s != 0)) break;
     }
+  while (s >= 1.0 || s == 0);
+
   s = sqrt(-2.0 * log(s) / s);
+
   // save one of the numbers for the next time
-  y = sd * s * a + mean;
+  SavedValue = s * a;
+
   // and return the other
-  return sd * s*b + mean;
+  return s * b;
 }
 
 /* a normal distribution with mean m and S.D. sd */
 
-const C_FLOAT64 & CRandom::getRandomNormal(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
-{
-  C_FLOAT64 psd;
-  /* force the std.dev. to be positive */
-  psd = fabs(sd);
-  return getRandomNormal01() * psd + mean;
-}
+C_FLOAT64 CRandom::getRandomNormal(const C_FLOAT64 & mean,
+                                   const C_FLOAT64 & sd)
+{return getRandomNormal01() * sd + mean;}
 
 /* a strictly positive normal distribution with mean m and S.D. sd */
 
-const C_FLOAT64 & CRandom::getRandomNormalPositive(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
+C_FLOAT64 CRandom::getRandomNormalPositive(const C_FLOAT64 & mean,
+    const C_FLOAT64 & sd)
 {
-  C_FLOAT64 x, positive_mean, positive_sd;
-  /* force the mean and std.dev. to be positive */
-  positive_mean = fabs(mean);
-  positive_sd = fabs(sd);
-  for (;;)
-    if ((x = getRandomNormal(positive_mean, positive_sd)) > 0.0) return x;
+  C_FLOAT64 x;
+
+  while ((x = getRandomNormal(mean, sd)) < 0);
+
+  return x;
 }
 
 /* a tentative normal distribution in logarithmic space */
 
-const C_FLOAT64 & CRandom::getRandomNormalLog(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
-{
-  C_FLOAT64 positive_sd;
-  /* force the std.dev. to be positive */
-  positive_sd = fabs(sd);
-  return mean * pow(10, getRandomNormal01() * positive_sd);
-}
+C_FLOAT64 CRandom::getRandomNormalLog(const C_FLOAT64 & mean,
+                                      const C_FLOAT64 & sd)
+{return mean * pow(10, getRandomNormal01() * sd);}
