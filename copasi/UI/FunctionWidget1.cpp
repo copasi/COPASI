@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/10/31 21:02:54 $
+   $Date: 2003/11/03 17:44:05 $
    End CVS Header */
 
 /**********************************************************************
@@ -381,53 +381,55 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 //**** Try to get parameters table to display proper texts
 void FunctionWidget1::updateParameters()
 {
-  // ************
-  //CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
-
-  // next step place the text area contents into the function description
-  //***************
-  //func->setDescription(textBrowser->text().latin1());
-  //if (pFunction->getDescription() != textBrowser->text().latin1())
-  //{
-  pFunction->setDescription(textBrowser->text().latin1());
-
-  // compile and retrieve nodes
-  //CKinFunction* kinFunc = (CKinFunction*) func;
-  CKinFunction* kinFunc = (CKinFunction*) pFunction;
-  try
+  if (textBrowser->text().latin1() != pFunction->getDescription())
     {
-      kinFunc->compile();
-      std::vector<CNodeK *> v = kinFunc->getNodes();
+      // ************
+      //CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
 
-      // go through nodes and determine if identifier, if so, then add to parameters
-      //func->getParameters().cleanup();
-      pFunction->getParameters().cleanup();
-      for (int i = 0; i < v.size(); i++)
+      // next step place the text area contents into the function description
+      //***************
+      //func->setDescription(textBrowser->text().latin1());
+      //if (pFunction->getDescription() != textBrowser->text().latin1())
+      //{
+      pFunction->setDescription(textBrowser->text().latin1());
+
+      // compile and retrieve nodes
+      //CKinFunction* kinFunc = (CKinFunction*) func;
+      CKinFunction* kinFunc = (CKinFunction*) pFunction;
+      try
         {
-          if (((CNodeK*)v[i])->isIdentifier())
-            pFunction->addParameter(((CNodeK*)v[i])->getName(), CFunctionParameter::FLOAT64, "PARAMETER");
+          kinFunc->compile();
+          std::vector<CNodeK *> v = kinFunc->getNodes();
+
+          // go through nodes and determine if identifier, if so, then add to parameters
+          //func->getParameters().cleanup();
+          pFunction->getParameters().cleanup();
+          for (int i = 0; i < v.size(); i++)
+            {
+              if (((CNodeK*)v[i])->isIdentifier())
+                pFunction->addParameter(((CNodeK*)v[i])->getName(), CFunctionParameter::FLOAT64, "PARAMETER");
+            }
+          // Call loadFromFunction to display the table
+          loadFromFunction();
         }
-      // Call loadFromFunction to display the table
-      loadFromFunction();
-    }
-  catch (CCopasiException Exception)
-    {
-      switch (QMessageBox::warning(this, "Invalid Function Description",
-                                   "Could not recognize the function description.\n"
-                                   "Please check function and make sure to \n"
-                                   "include operators between variables and coefficients.\n\n",
-                                   "Retry",
-                                   "Quit", 0, 0, 1))
+      catch (CCopasiException Exception)
         {
-        case 0:             // The user clicked the Retry again button or pressed Enter
-          // try again
-          break;
-        case 1:             // The user clicked the Quit or pressed Escape
-          // exit
-          break;
+          switch (QMessageBox::warning(this, "Invalid Function Description",
+                                       "Could not recognize the function description.\n"
+                                       "Please check function and make sure to \n"
+                                       "include operators between variables and coefficients.\n\n",
+                                       "Retry",
+                                       "Quit", 0, 0, 1))
+            {
+            case 0:              // The user clicked the Retry again button or pressed Enter
+              // try again
+              break;
+            case 1:              // The user clicked the Quit or pressed Escape
+              // exit
+              break;
+            }
         }
     }
-  //}
 } //end of function
 
 bool FunctionWidget1::saveToFunction()
@@ -597,7 +599,6 @@ bool FunctionWidget1::saveToFunction()
     }
 
   enter(objKey); //TODO: check if this is necessary
-
   if (changed)
     ListViews::notify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
 
@@ -642,13 +643,10 @@ void FunctionWidget1::updateApplication()
 /*This function is called when the Function Description LineEdit is changed.*/
 void FunctionWidget1::slotFcnDescriptionChanged()
 {
-  //if (textBrowser->text().latin1() != pFunction->getDescription())
-  //{
   // update the parameter widget
   updateParameters();
   // update the application widget
-  //updateApplication();
-  //}
+  updateApplication();
 }
 
 void FunctionWidget1::slotCancelButtonClicked()
@@ -659,7 +657,29 @@ void FunctionWidget1::slotCancelButtonClicked()
 
 void FunctionWidget1::slotCommitButtonClicked()
 {
-  //updateParameters();
+  //update pFunction values
+  if (pFunction->getName() != LineEdit1->text().latin1())
+    pFunction->setName(LineEdit1->text().latin1());
+  // update RadioButtons also ?? in savetoFcn, func obtains radio button values
+  /**** For Radio Buttons ****/
+  if (RadioButton1->isChecked() == true)
+    {
+      pFunction->setReversible(TriTrue);
+    }
+  else if (RadioButton2->isChecked() == true)
+    {
+      pFunction->setReversible(TriFalse);
+    }
+  else
+    {
+      pFunction->setReversible(TriUnspecified);
+    }
+  if (pFunction->getDescription() != textBrowser->text().latin1())
+    {
+      pFunction->setDescription(textBrowser->text().latin1());
+      updateParameters();
+      updateApplication();
+    }
   //let the user confirm?
   saveToFunction();
 }
@@ -713,8 +733,9 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
 
       functParam[row]->setUsage(usage.latin1());
     }
-  // need to updateUsageRanges of CFcnParameters
-  //updateUsageRanges();
+  // Update the usage range to get proper min and max values
+  functParam.updateUsageRanges();
+
   updateApplication();
   //saveToFunction();
 }
