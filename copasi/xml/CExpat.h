@@ -23,13 +23,22 @@ template <class _T>
 class CExpatTemplate
   {
   public:
+    /**
+     * Destroy the parser
+     */
+    void destroy()
+    {
+      if (m_p != NULL)
+        XML_ParserFree(m_p);
+      m_p = NULL;
+    }
 
     /**
      * Default constructor
      */
     CExpatTemplate():
         m_p(NULL)
-    {}
+  {}
 
     /**
      * Destructor
@@ -80,16 +89,6 @@ class CExpatTemplate
 
       XML_SetUserData(m_p, (void *) this);
       return true;
-    }
-
-    /**
-     * Destroy the parser
-     */
-    void destroy()
-    {
-      if (m_p != NULL)
-        XML_ParserFree(m_p);
-      m_p = NULL;
     }
 
     /**
