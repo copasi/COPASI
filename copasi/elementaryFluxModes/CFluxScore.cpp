@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:13 $
+   $Date: 2004/10/11 01:39:58 $
    End CVS Header */
 
 /**
@@ -38,8 +38,9 @@ CFluxScore::CFluxScore(const std::vector < C_FLOAT64 > & fluxMode)
       Score = &mScore[i];
       *Score = 0;
 
-      for (k = 8 * sizeof(int) - 1; k > (unsigned C_INT32) - 1; k--)
+      for (k = 8 * sizeof(int); k > 0;)
         {
+          k--;
           fluxMode[j++] ? (*Score) += 1 << k : 0;
         }
     }
@@ -50,8 +51,9 @@ CFluxScore::CFluxScore(const std::vector < C_FLOAT64 > & fluxMode)
       Score = &mScore[i];
       *Score = 0;
 
-      for (k = 8 * sizeof(int) - 1; k >= 8*sizeof(int) - Remainder; k--)
+      for (k = 8 * sizeof(int); k > 8 * sizeof(int) - Remainder;)
         {
+          k--;
           fluxMode[j++] ? (*Score) += 1 << k : 0;
         }
     }
