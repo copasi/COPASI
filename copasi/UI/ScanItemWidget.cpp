@@ -128,4 +128,8 @@ ScanItemWidget::~ScanItemWidget()
 }
 
 void ScanItemWidget::loadObject()
-{}
+{
+  if (!pObject)
+    return;
+  int i = 0;
+}

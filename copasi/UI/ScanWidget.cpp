@@ -448,6 +448,8 @@ void ScanWidget::loadScan(CModel *model)
 
 void ScanWidget::addNewScanItem(CCopasiObject* pObject)
 {
+  if (!pObject)
+    return;
   emit hide_me();
   int widgetOffset;
   ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
@@ -457,15 +459,18 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   newTitleBar->setFixedSize(QSize(scrollview->visibleWidth(), TITLE_HEIGHT));
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
-  if (pObject)
-    newTitleBar->setText(pObject->getCN().c_str());
+  newTitleBar->setText(pObject->getCN().c_str());
   newTitleBar->setReadOnly(TRUE);
+
   scrollview->addChild(newTitleBar, 0, widgetOffset - TITLE_HEIGHT);
   selectedList.push_back(newTitleBar);
 
   parameterTable->setObject(pObject);
   parameterTable->setFixedWidth(scrollview->visibleWidth());
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
+  parameterTable->setObject(pObject);
+  parameterTable->loadObject();
+
   scrollview->addChild(parameterTable, 0 , widgetOffset);
   scrollview->setVScrollBarMode(QScrollView::Auto);
   scrollview->resizeContents(0, widgetOffset + parameterTable->minimumSizeHint().height());
@@ -543,8 +548,8 @@ void ScanScrollView:: resizeEvent(QResizeEvent * e)
   QScrollView::resizeEvent(e);
   if (!pSelectedList)
     return;
-  int i = 0;
-  for (; i < pSelectedList->size(); i++)
+  int i;
+  for (i = 0; i < pSelectedList->size(); i++)
     {
       (*pSelectedList)[i]->setFixedWidth(visibleWidth());
     }
