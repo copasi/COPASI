@@ -10,12 +10,14 @@
 //////////////////////////////////////////////////////////////////////
 int CopasiWidget::realMinHeight = 0;
 int CopasiWidget::realMinWidth = 0;
-ListViews* CopasiWidget::pListView = NULL;
+
+DataModel* CopasiWidget::dataModel = NULL;
 
 CopasiWidget::CopasiWidget(QWidget * parent, const char * name, WFlags f)
     : QWidget (parent, name, f)
 {
   pListView = (ListViews*)parent;
+  dataModel = ListViews::getDataModel();
   bInitialized = false;
   bSetMinSize = false;
 }
@@ -65,3 +67,12 @@ void CopasiWidget::resizeEvent (QResizeEvent * event)
   resize(w, h);
   // QWidget::resizeEvent (event);
 }
+
+bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+{return true;}
+
+bool CopasiWidget::leave()
+{return true;}
+
+bool CopasiWidget::enter(const std::string & C_UNUSED(key))
+{return true;}

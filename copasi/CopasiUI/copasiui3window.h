@@ -17,7 +17,7 @@ class CopasiUI3Window : public QMainWindow
 
   protected:
 
-    DataModel<Folder>* dataModel; // to keep track of the data model..
+    DataModel* dataModel; // to keep track of the data model..
     QSplitter *splitter; // to hold different views...
     ListViews *listViews; // to create different list views...
 

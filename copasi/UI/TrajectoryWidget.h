@@ -1,13 +1,14 @@
 /********************************************************
-  Author: Liang Xu
-  Version : 1.xx  <first>
-  Description: 
-  Date: 02/03 
-  Comment : TrajectoryWidget
-  Contact: Please contact lixu1@vt.edu.
+ Author: Liang Xu
+ Version : 1.xx  <first>
+ Description: 
+ Date: 02/03 
+ Comment : TrajectoryWidget
+ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #ifndef TRAJECTORYWIDGET_H
 #define TRAJECTORYWIDGET_H
+
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
@@ -35,11 +36,31 @@ class TrajectoryWidget : public CopasiWidget
   public:
     TrajectoryWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TrajectoryWidget();
-    CTrajectoryTask* mTrajectoryTask;
-    void loadTrajectoryTask(CTrajectoryTask *trajectorytask);
-    CTrajectoryTask* getTrajectoryTask() const {return mTrajectoryTask;};
-    void setModel(CModel* newModel);
 
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
+    //void setModel(CModel* newModel);
+
+  signals:
+    //virtual void runFinished(CModel*);
+
+  protected slots:
+    virtual void CancelChange();
+    virtual void CommitChange();
+    virtual void EnableRunTask();
+    virtual void ExportToFile();
+    virtual void RunTask();
+    virtual void UpdateMethod();
+
+  protected:
+    std::string objKey;
+
+    void loadTrajectoryTask();
+
+    QGridLayout* TrajectoryWidgetLayout;
+    QHBoxLayout* Layout2;
     QFrame* line8;
     QTable* parameterTable;
     QLabel* taskNameLabel;
@@ -63,21 +84,6 @@ class TrajectoryWidget : public CopasiWidget
     //    QPushButton* commitChange;
     QPushButton* cancelChange;
     QPushButton* ExportToFileButton;
-
-  signals:
-    virtual void runFinished(CModel*);
-
-  public slots:
-    virtual void CancelChange();
-    virtual void CommitChange();
-    virtual void EnableRunTask();
-    virtual void ExportToFile();
-    virtual void RunTask();
-    virtual void UpdateMethod();
-
-  protected:
-    QGridLayout* TrajectoryWidgetLayout;
-    QHBoxLayout* Layout2;
   };
 
 #endif // TRAJECTORYWIDGET_H

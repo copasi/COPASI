@@ -1,10 +1,10 @@
 /********************************************************
-   Author: Liang Xu
-   Version : 1.xx  <first>
-   Description: 
-   Date: 02/03 
-   Comment : TrajectoryWidget
-   Contact: Please contact lixu1@vt.edu.
+  Author: Liang Xu
+  Version : 1.xx  <first>
+  Description: 
+  Date: 02/03 
+  Comment : TrajectoryWidget
+  Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include <qmessagebox.h>
 #include <qfiledialog.h>
@@ -25,6 +25,7 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "model/CModel.h"
 #include "listviews.h"
+#include "report/CKeyFactory.h"
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -193,9 +194,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
   connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
-  connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,
-          SLOT(loadModelNodes(CModel*)));
-  mTrajectoryTask = NULL;
+
+  //mTrajectoryTask = NULL;
 }
 
 /*
@@ -208,25 +208,23 @@ TrajectoryWidget::~TrajectoryWidget()
 
 void TrajectoryWidget::CancelChange()
 {
-  if (mTrajectoryTask == NULL)
-    return;
-  loadTrajectoryTask(mTrajectoryTask);
+  loadTrajectoryTask();
 }
 
-void TrajectoryWidget::setModel(CModel* newModel)
-{
-  if (mTrajectoryTask == NULL)
-    return;
-  CTrajectoryProblem * trajectoryproblem = mTrajectoryTask->getProblem();
-  trajectoryproblem->setModel(newModel);
-}
+//void TrajectoryWidget::setModel(CModel* newModel)
+//{
+//if (mTrajectoryTask == NULL)
+//  return;
+//  CTrajectoryProblem * trajectoryproblem = dataModel->getTrajectoryTask()->getProblem();
+//  trajectoryproblem->setModel(dataModel->getModel());
+//}
 
 void TrajectoryWidget::CommitChange()
 {
-  if (mTrajectoryTask == NULL)
-    return;
-  CTrajectoryProblem * trajectoryproblem = mTrajectoryTask->getProblem();
-  CTrajectoryMethod* trajectorymethod = mTrajectoryTask->getMethod();
+  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+
+  CTrajectoryProblem * trajectoryproblem = tt->getProblem();
+  CTrajectoryMethod * trajectorymethod = tt->getMethod();
 
   if (trajectoryproblem->getStepSize() != nStepSize->text().toDouble())
     trajectoryproblem->setStepSize(nStepSize->text().toDouble());
@@ -242,7 +240,7 @@ void TrajectoryWidget::CommitChange()
       if (trajectorymethod != NULL)
         {
           trajectorymethod -> setProblem(trajectoryproblem);
-          mTrajectoryTask -> setMethod(trajectorymethod);
+          tt -> setMethod(trajectorymethod);
           pdelete(ptrTmpMethod);
         }
       else
@@ -282,13 +280,11 @@ void TrajectoryWidget::CommitChange()
         }
     }
 
-  loadTrajectoryTask(mTrajectoryTask);
+  loadTrajectoryTask();
 }
 
 void TrajectoryWidget::EnableRunTask()
 {
-  if (mTrajectoryTask == NULL)
-    return;
   if (!bExecutable->isChecked())
     bRunTask->setEnabled(false);
   else
@@ -297,9 +293,6 @@ void TrajectoryWidget::EnableRunTask()
 
 void TrajectoryWidget::RunTask()
 {
-  if (mTrajectoryTask == NULL)
-    return;
-
   CommitChange();
 
   if (bRunTask->text() != "Run")
@@ -310,31 +303,30 @@ void TrajectoryWidget::RunTask()
 
   setCursor(Qt::WaitCursor);
 
-  mTrajectoryTask->getProblem()->getModel()->compile();
-  mTrajectoryTask->getProblem()->
-  setInitialState(mTrajectoryTask->getProblem()->
-                  getModel()->getInitialState());
-  mTrajectoryTask->getProblem()->
-  setStartTime(mTrajectoryTask->getProblem()->getStartTime());
+  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  tt->getProblem()->getModel()->compile();
+  tt->getProblem()->setInitialState(tt->getProblem()->
+                                    getModel()->getInitialState());
+  tt->getProblem()->
+  setStartTime(tt->getProblem()->getStartTime());
 
   std::ofstream output("trajectory.txt");
   output << "# "; // Hack for gnuplot
-  mTrajectoryTask->initializeReporting(output);
+  tt->initializeReporting(output);
 
-  mTrajectoryTask->process();
+  tt->process();
 
-  emit runFinished(mTrajectoryTask->getProblem()->getModel());
+  //emit runFinished(dataModel->getTrajectoryTask()->getProblem()->getModel());
 
   unsetCursor();
 }
 
-void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)
+void TrajectoryWidget::loadTrajectoryTask()
 {
-  if (trajectorytask == NULL)
-    return;
-  mTrajectoryTask = trajectorytask;
-  CTrajectoryProblem* trajectoryproblem = trajectorytask->getProblem();
-  CTrajectoryMethod* trajectorymethod = trajectorytask->getMethod();
+  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+
+  CTrajectoryProblem* trajectoryproblem = tt->getProblem();
+  CTrajectoryMethod* trajectorymethod = tt->getMethod();
 
   taskName->setText(tr("Trajectory Task"));
   taskName->setEnabled(false);
@@ -381,17 +373,18 @@ void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)
 
 void TrajectoryWidget::UpdateMethod()
 {
-  if (!mTrajectoryTask)
-    return;
-  CTrajectoryProblem* trajectoryproblem = mTrajectoryTask->getProblem();
-  CTrajectoryMethod* trajectorymethod = mTrajectoryTask->getMethod();
+  //if (!mTrajectoryTask)
+  //  return;
+  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CTrajectoryProblem* trajectoryproblem = tt->getProblem();
+  CTrajectoryMethod* trajectorymethod = tt->getMethod();
 
   CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
   trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CTrajectoryMethod::Type)ComboBox1->currentItem(), trajectoryproblem);
   if (trajectorymethod != NULL)
     {
       trajectorymethod -> setProblem(trajectoryproblem);
-      mTrajectoryTask -> setMethod(trajectorymethod);
+      tt -> setMethod(trajectorymethod);
       pdelete(ptrTmpMethod);
     }
   else
@@ -400,21 +393,49 @@ void TrajectoryWidget::UpdateMethod()
       trajectorymethod = ptrTmpMethod;
     }
 
-  loadTrajectoryTask(mTrajectoryTask);
+  loadTrajectoryTask();
 }
 
 void TrajectoryWidget::ExportToFile()
 {
-  if (!mTrajectoryTask) return;
   QString textFile = QFileDialog::getSaveFileName(
                        QString::null, "TEXT Files (*.txt)",
                        this, "save file dialog",
                        "Choose a file");
 
-  if (mTrajectoryTask && textFile)
+  if (/*mTrajectoryTask &&*/ textFile)
     {
       textFile += ".txt";
       CWriteConfig outbuf((const char *)textFile.utf8());
-      mTrajectoryTask->save(outbuf);
+      ((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey))->save(outbuf);
     }
+}
+
+bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool TrajectoryWidget::leave()
+{
+  //let the user confirm?
+}
+
+bool TrajectoryWidget::enter(const std::string & key)
+{
+  if (!CKeyFactory::get(key)) return false;
+
+  objKey = key;
+
+  loadTrajectoryTask();
+
+  return true;
 }
