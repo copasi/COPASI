@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 09:13:51 $
+   $Date: 2004/09/30 09:48:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -20,4 +20,5 @@
 
 void StateSubwidget::init()
 {
-  //}
+  //bla
+}
