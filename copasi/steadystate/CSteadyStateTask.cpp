@@ -17,7 +17,7 @@
 
 #include "output/output.h"
 #include "model/CState.h"
-#include "model/cmodel.h"
+#include "model/CModel.h"
 #include "utilities/CGlobals.h"
 
 #define XXXX_Reporting
