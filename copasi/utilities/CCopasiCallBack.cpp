@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CCopasiCallBack.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/30 22:09:43 $
+   $Author: ssahle $ 
+   $Date: 2005/04/03 09:59:07 $
    End CVS Header */
 
 #include "copasi.h"
@@ -31,7 +31,8 @@ CCopasiCallBackItem::CCopasiCallBackItem(const CCopasiCallBackItem & src):
     mpObject(src.mpObject)
 {}
 
-CCopasiCallBackItem::~CCopasiCallBackItem();
+CCopasiCallBackItem::~CCopasiCallBackItem()
+{}
 
 CCopasiCallBack::CCopasiCallBack():
     mCallBackItemList()

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/30 18:45:58 $
+   $Author: ssahle $ 
+   $Date: 2005/04/03 09:58:43 $
    End CVS Header */
 
 /**
@@ -131,4 +131,5 @@ bool COptMethod::initialize()
   return true;
 }
 
-bool COptMethod::cleanup();
+bool COptMethod::cleanup()
+{}
