@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:02 $
+   $Date: 2004/09/09 12:09:41 $
    End CVS Header */
 
 /**
@@ -67,7 +67,7 @@ class CReaction : public CCopasiContainer
     /**
      *  The scaled flux of the reaction
      */
-    C_FLOAT64 mScaledFlux;
+    C_FLOAT64 mParticleFlux;
 
     /**
      *  A Pointer to the scaling factor for the flux to calculate the particle number
@@ -77,9 +77,9 @@ class CReaction : public CCopasiContainer
     const C_FLOAT64 * mScalingFactor;
 
     /**
-     *  The scaling factor. It is compartment volume times a factor for the unit
+     *  The unit conversion factor 
      */
-    const C_FLOAT64 * mScalingFactor2;
+    const C_FLOAT64 * mUnitScalingFactor;
 
     /**
      *  Pointer to the compartment in which the kinetic function is defined.
@@ -151,34 +151,6 @@ class CReaction : public CCopasiContainer
     C_INT32 load(CReadConfig & configbuffer);
 
     /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return mFail
-     *  @see mFail
-     */ 
-    //    C_INT32 save(CWriteConfig & configbuffer);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param CWriteConfig & configbuffer
-     *  @param const CCopasiVectorN< CMetab > & metabolites
-     *  @return mFail
-     *  @see mFail
-     */ 
-    //    C_INT32 saveOld(CWriteConfig & configbuffer,
-    //                    const CCopasiVector< CMetab > & metabolites);
-
-    /**
-     *  Saves the contents of the object to a ofstream object.
-     *  Writes the data in SBML file format
-     *  @param "std::ofstream &" fout ofstream that should be already open
-     *  @param C_INT32 r the ordinal number of this reaction (to append to parameters)
-     */ 
-    //    void saveSBML(std::ofstream &fout, C_INT32 r = 0);
-
-    /**
      *  Retrieves the key of the reaction
      *  @return std::string key
      */
@@ -206,7 +178,7 @@ class CReaction : public CCopasiContainer
      *  Retrieves the scaled flux of the reaction
      *  @return const C_FLOAT64 & scaledFlux
      */
-    const C_FLOAT64 & getScaledFlux() const;
+    const C_FLOAT64 & getParticleFlux() const;
 
     /**
      *  Retrieves whether the reaction is reversible
@@ -336,7 +308,7 @@ class CReaction : public CCopasiContainer
     C_FLOAT64 calculate();
 
     /**
-     * Calculate partial derivative at xi where i is the it met
+     * Calculate partial derivative of the flux 
      * @param C_FLOAT64 & xi
      * @param const C_FLOAT64 & derivationFactor
      * @param const C_FLOAT64 & resolution (unscaled resolution)

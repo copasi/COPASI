@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.104 $
+   $Revision: 1.105 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 14:01:34 $
+   $Date: 2004/09/09 12:09:41 $
    End CVS Header */
 
 // CReaction
@@ -43,9 +43,9 @@ CReaction::CReaction(const std::string & name,
     mChemEq("Chemical Equation", this),
     mpFunction(NULL),
     mFlux(0),
-    mScaledFlux(0),
+    mParticleFlux(0),
     mScalingFactor(&mDefaultScalingFactor),
-    mScalingFactor2(&mDefaultScalingFactor),
+    mUnitScalingFactor(&mDefaultScalingFactor),
     mpFunctionCompartment(NULL),
     //mCompartmentNumber(1),
     mMetabKeyMap(),
@@ -62,9 +62,9 @@ CReaction::CReaction(const CReaction & src,
     mChemEq(src.mChemEq, this),
     mpFunction(src.mpFunction),
     mFlux(src.mFlux),
-    mScaledFlux(src.mScaledFlux),
+    mParticleFlux(src.mParticleFlux),
     mScalingFactor(src.mScalingFactor),
-    mScalingFactor2(src.mScalingFactor2),
+    mUnitScalingFactor(src.mUnitScalingFactor),
     mpFunctionCompartment(src.mpFunctionCompartment),
     mMap(src.mMap),
     mMetabKeyMap(src.mMetabKeyMap),
@@ -338,8 +338,8 @@ const CFunction & CReaction::getFunction() const
 const C_FLOAT64 & CReaction::getFlux() const
   {return mFlux;}
 
-const C_FLOAT64 & CReaction::getScaledFlux() const
-  {return mScaledFlux;}
+const C_FLOAT64 & CReaction::getParticleFlux() const
+  {return mParticleFlux;}
 
 bool CReaction::isReversible() const
   {return mChemEq.getReversibility();}
@@ -839,7 +839,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 C_FLOAT64 CReaction::calculate()
 {
   mFlux = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
-  mScaledFlux = *mScalingFactor2 * mFlux;
+  mParticleFlux = *mUnitScalingFactor * mFlux;
   return mFlux;
 }
 
@@ -855,14 +855,17 @@ C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 & xi,
         (store < resolution) ? resolution * (1.0 + derivationFactor) : store;
 
       xi = tmp * (1.0 + derivationFactor);
-      f1 = calculate();
+      //f1 = calculate();
+      f1 = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
 
       xi = tmp * (1.0 - derivationFactor);
-      f2 = calculate();
+      //f2 = calculate();
+      f2 = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
 
       xi = store;
 
-      return *mScalingFactor * (f1 - f2) / (2.0 * tmp * derivationFactor);
+      return (f1 - f2) / (2.0 * tmp * derivationFactor);
+      //this is d(flow)/d(concentration)
     }
   else
     return 0.0;
@@ -921,9 +924,9 @@ void CReaction::setScalingFactor()
 
   CModel * pModel = (CModel *) getObjectAncestor("Model");
   if (pModel)
-    mScalingFactor2 = & pModel->getQuantity2NumberFactor();
+    mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
   else
-    mScalingFactor2 = & mDefaultScalingFactor;
+    mUnitScalingFactor = & mDefaultScalingFactor;
 }
 
 void CReaction::setCompartment(const CCompartment* comp)
@@ -945,7 +948,7 @@ C_INT32 CReaction::getModifierMolecularity() const
 void CReaction::initObjects()
 {
   addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl);
-  addObjectReference("ScaledFlux", mScaledFlux, CCopasiObject::ValueDbl);
+  addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl);
   //add(&mParameters);
   //add(&mMap);
 }
@@ -970,7 +973,7 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   else
     os << "   mScalingFactor == 0 " << std::endl;
 
-  os << "   mScalingFactor2: " << d.mScalingFactor2 << std::endl;
+  os << "   mUnitScalingFactor: " << d.mUnitScalingFactor << std::endl;
   //os << "   mCompartmentNumber: " << d.mCompartmentNumber << std::endl;
   if (d.mpFunctionCompartment)
     os << "   *mpFunctionCompartment " << d.mpFunctionCompartment->getObjectName() << std::endl;
