@@ -456,7 +456,7 @@ bool TrajectoryWidget::enter(const std::string & key)
 
 void TrajectoryWidget::ReportDefinitionClicked()
 {
-  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect();
+  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
   if (pSelectDlg->exec () == QDialog::Rejected)
     {
       return;

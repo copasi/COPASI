@@ -773,7 +773,7 @@ bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
 
 void ScanWidget::ReportDefinitionClicked()
 {
-  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect();
+  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
   if (pSelectDlg->exec () == QDialog::Rejected)
     {
       return;

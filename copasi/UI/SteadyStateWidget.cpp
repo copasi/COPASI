@@ -1,10 +1,10 @@
 /********************************************************
- Author: Liang Xu
- Version : 1.xx  <first>
- Description: 
- Date: 02/03 
- Comment : SteadyStateWidget
- Contact: Please contact lixu1@vt.edu.
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 02/03 
+Comment : SteadyStateWidget
+Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include <qfiledialog.h>
 
@@ -393,7 +393,7 @@ bool SteadyStateWidget::leave()
 
 void SteadyStateWidget::ReportDefinitionClicked()
 {
-  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect();
+  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
   if (pSelectDlg->exec () == QDialog::Rejected)
     {
       return;
