@@ -7,10 +7,10 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+
 #include <assert.h>
 
-using namespace std ;
-
+#include "copasi.h"
 #include "CReadConfig.h"
 
 // char *InitInputBuffer(char *name);
@@ -100,7 +100,7 @@ int CReadConfig::GetVariable(string name, string type, void * pout)
     }
     else if ( type == "int" )
     {
-        // may be we should check if Value is really a double
+        // may be we should check if Value is really a integer
         *(int *) pout = atoi(szValue);
     }
     else
