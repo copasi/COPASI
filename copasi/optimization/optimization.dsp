@@ -55,11 +55,27 @@ CFG=optimization - Win32 Build
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\CGA.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptFunction.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\COptMethod.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodEP2.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodGA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodHGASA.cpp
 # End Source File
 # Begin Source File
 
@@ -87,11 +103,27 @@ SOURCE=.\CRealProblem.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\CGA.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptFunction.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\COptMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodEP2.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodGA.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodHGASA.h
 # End Source File
 # Begin Source File
 
