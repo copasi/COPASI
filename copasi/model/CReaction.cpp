@@ -128,6 +128,7 @@ C_INT32 CReaction::save(CWriteConfig & C_UNUSED(configbuffer))
 C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
                            const CCopasiVectorN< CMetab > &metabolites)
 {
+  std::string tmp;
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
   C_INT32 i = 0, j = 0, s = 0, c = -1;
@@ -136,7 +137,9 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   s = metabolites.size();
   if ((Fail = configbuffer.setVariable("Step", "string", &mName)))
     return Fail;
-  if ((Fail = configbuffer.setVariable("Equation", "string", &mChemEq)))
+  tmp = mChemEq.getChemicalEquation();
+  tmp = tmp.substr(0, tmp.find(';'));
+  if ((Fail = configbuffer.setVariable("Equation", "string", &tmp)))
     return Fail;
   std::string KinType = mpFunction->getName();
   if ((Fail = configbuffer.setVariable("KineticType", "string", &KinType)))
