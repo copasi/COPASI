@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 09:22:15 $
+   $Date: 2004/09/30 15:46:07 $
    End CVS Header */
 
 #ifndef CTSTABLE
@@ -33,7 +33,7 @@ class CTimeSeriesTable : public QTable
 
   protected:
 
-    QString textForCell(int row, int col);
+    QString textForCell(unsigned int row, unsigned int col);
 
     virtual void paintCell (QPainter * p, int row, int col, const QRect & cr, bool selected)
     {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CTimeSeriesTable.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 09:22:14 $
+   $Date: 2004/09/30 15:46:06 $
    End CVS Header */
 
 #include "CTimeSeriesTable.h"
@@ -22,7 +22,7 @@ void CTimeSeriesTable::setTimeSeries(const CTimeSeries & ts)
   //TODO save old current cell and set afterwards
 }
 
-QString CTimeSeriesTable::textForCell(int row, int col)
+QString CTimeSeriesTable::textForCell(unsigned int row, unsigned int col)
 {
   if (row > mTS->getNumSteps()) return "";
   if (col > mTS->getNumVariables()) return "";

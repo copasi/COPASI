@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 09:04:12 $
+   $Date: 2004/09/30 15:46:38 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -78,7 +78,7 @@ bool TimeSeriesWidget::saveToBackend()
   saveToCompartment();
 }*/
 
-bool TimeSeriesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool TimeSeriesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   /* if (mIgnoreUpdates) return true;
 
@@ -103,7 +103,7 @@ bool TimeSeriesWidget::leave()
   return true;
 }
 
-bool TimeSeriesWidget::enter(const std::string & key)
+bool TimeSeriesWidget::enter(const std::string & C_UNUSED(key))
 {
   return loadFromBackend();
   /*objKey = key;
