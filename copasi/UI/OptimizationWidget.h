@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.h,v 1.1 2003/09/29 04:25:22 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.h,v 1.2 2003/09/30 01:34:17 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,7 +23,7 @@ class QLabel;
 class QListBox;
 class QLineEdit;
 class QTextEdit;
-class CExpression;
+class COptFunction;
 
 class OptimizationWidget : public CopasiWidget
   {
@@ -64,7 +64,7 @@ class OptimizationWidget : public CopasiWidget
     QGridLayout* layout14;
     QHBoxLayout* layout14_2;
 
-    bool loadFromExpression(CExpression*);
+    bool loadFromExpression(COptFunction*);
     std::string objKey;
     bool bUpdated;
 

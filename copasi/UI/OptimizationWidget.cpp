@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.1 2003/09/29 04:25:22 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.2 2003/09/30 01:34:17 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -29,7 +29,7 @@
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
-#include "optimization/CExpression.h"
+#include "optimization/COptFunction.h"
 
 #include "report/CKeyFactory.h"
 #include "./icons/scanwidgetbuttonicon.xpm"
@@ -215,7 +215,7 @@ bool OptimizationWidget::leave()
 bool OptimizationWidget::enter(const std::string & key)
 {
   objKey = key;
-  CExpression* func = (CExpression*)(CCopasiContainer*)CKeyFactory::get(key);
+  COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(key);
   //TODO: check if it really is a compartment
 
   if (func)
@@ -224,10 +224,10 @@ bool OptimizationWidget::enter(const std::string & key)
     return false;
 }
 
-bool OptimizationWidget::loadFromExpression(CExpression*)
+bool OptimizationWidget::loadFromExpression(COptFunction*)
 {
   bUpdated = false;
-  CExpression* func = (CExpression*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
   expressionName->setText(func->getObjectUniqueName().c_str());
   //  expressionText->setText(func-> serialize a function to a std::stream
   return true;
