@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/16 14:03:19 $
+   $Date: 2005/01/20 10:51:20 $
    End CVS Header */
 
 /****************************************************************************
@@ -16,6 +16,7 @@
  *****************************************************************************/
 
 #include "report/CCopasiContainer.h"
+#include "CopasiUI/CCopasiSelectionDialog.h"
 
 bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
@@ -26,28 +27,18 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   lineEditTitle->setText(curve->getTitle().c_str());
 
-  //set the comboboxes for axis selection
-  /*if (curve->xAxis == QwtPlot::xTop) comboXAxis->setCurrentItem(0);
-  else comboXAxis->setCurrentItem(1);
-
-  if (curve->yAxis == QwtPlot::yRight) comboYAxis->setCurrentItem(1);
-  else comboYAxis->setCurrentItem(0);*/
-
-  //std::vector< CCopasiContainer * > LOfC; //dummy
-
-  //set the comboboxes for data channel selection
   //TODO: check if objects exist....
 
-  CCopasiObject* co1 = CCopasiContainer::ObjectFromName(curve->getChannels()[0]);
-  CCopasiObject* co2 = CCopasiContainer::ObjectFromName(curve->getChannels()[1]);
+  mpObjectX = CCopasiContainer::ObjectFromName(curve->getChannels()[0]);
+  mpObjectY = CCopasiContainer::ObjectFromName(curve->getChannels()[1]);
 
-  if ((!co1) || (!co2)) return false;
+  if ((!mpObjectX) || (!mpObjectY)) return false;
 
-  lineEditXName->setText(co1->getObjectDisplayName().c_str());
-  lineEditXCN->setText(co1->getCN().c_str());
+  lineEditXName->setText(mpObjectX->getObjectDisplayName().c_str());
+  //lineEditXCN->setText(co1->getCN().c_str());
 
-  lineEditYName->setText(co2->getObjectDisplayName().c_str());
-  lineEditYCN->setText(co2->getCN().c_str());
+  lineEditYName->setText(mpObjectY->getObjectDisplayName().c_str());
+  //lineEditYCN->setText(co2->getCN().c_str());
 
   //for debugging:
   //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
@@ -62,13 +53,15 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
 bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
   {
+    if (!(mpObjectX && mpObjectY)) return false;
+
     //title
     curve->setTitle((const char*)lineEditTitle->text().utf8());
 
     //channels
     curve->getChannels().resize(0);
-    curve->getChannels().push_back(CPlotDataChannelSpec(std::string((const char*)lineEditXCN->text().utf8())));
-    curve->getChannels().push_back(CPlotDataChannelSpec(std::string((const char*)lineEditYCN->text().utf8())));
+    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX->getCN()));
+    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY->getCN()));
     /* if (!curve) return false;
 
      curve->title = lineEditTitle->text().latin1();
@@ -86,3 +79,64 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
     */
     return true;
   }
+
+void Curve2DWidget::buttonPressedX()
+{
+  if (!mpModel) return;
+  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
+  browseDialog->setModel(mpModel);
+  browseDialog->setSingleSelection(true);
+  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
+  if (mpObjectX)
+    selection->push_back(mpObjectX);
+  browseDialog->setOutputVector(selection);
+
+  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
+    {
+      if (mpObjectX == selection->at(0)) return; //nothing to be done
+      mpObjectX = selection->at(0);
+      if (mpObjectX)
+        lineEditXName->setText(mpObjectX->getObjectDisplayName());
+      else
+        lineEditXName->setText("");
+
+      if (mpObjectX && mpObjectY)
+        lineEditTitle->setText(mpObjectY->getObjectDisplayName()
+                               + "|"
+                               + mpObjectX->getObjectDisplayName());
+      //TODO update tab title
+    }
+}
+
+void Curve2DWidget::buttonPressedY()
+{
+  if (!mpModel) return;
+  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
+  browseDialog->setModel(mpModel);
+  browseDialog->setSingleSelection(true);
+  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
+  if (mpObjectY)
+    selection->push_back(mpObjectY);
+  browseDialog->setOutputVector(selection);
+
+  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
+    {
+      if (mpObjectY == selection->at(0)) return; //nothing to be done
+      mpObjectY = selection->at(0);
+      if (mpObjectY)
+        lineEditYName->setText(mpObjectY->getObjectDisplayName());
+      else
+        lineEditYName->setText("");
+
+      if (mpObjectX && mpObjectY)
+        lineEditTitle->setText(mpObjectY->getObjectDisplayName()
+                               + "|"
+                               + mpObjectX->getObjectDisplayName());
+      //TODO update tab title
+    }
+}
+
+void Curve2DWidget::setModel(const CModel * model)
+{
+  mpModel = model;
+}

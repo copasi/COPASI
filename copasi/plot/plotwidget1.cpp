@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/13 12:46:48 $
+   $Date: 2005/01/20 10:51:20 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.31 2005/01/13 12:46:48 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.32 2005/01/20 10:51:20 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -179,6 +179,7 @@ void PlotWidget1::addCurveTab(const std::string & title,
   item->addChannel(y);
 
   Curve2DWidget * curveWidget = new Curve2DWidget(tabs);
+  curveWidget->setModel(dataModel->getModel());
   curveWidget->LoadFromCurveSpec(item);
   tabs->addTab(curveWidget, item->getTitle().c_str());
 
@@ -360,6 +361,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
   for (i = 0; i < imax; ++i)
     {
       curve = new Curve2DWidget(tabs);
+      curve->setModel(dataModel->getModel());
       curve->LoadFromCurveSpec(curves[i]);
       tabs->addTab(curve, curves[i]->getTitle().c_str());
     }
