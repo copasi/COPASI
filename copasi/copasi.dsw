@@ -44,6 +44,33 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name elementaryFluxModes
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name function
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name model
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name optimization
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name output
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name randomGenerator
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name steadystate
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name trajectory
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name utilities
+    End Project Dependency
 }}}
 
 ###############################################################################
