@@ -2,7 +2,7 @@
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.1 2003/08/13 15:02:00 lixu1 Exp $)
+($Id: TableDefinition1.h,v 1.2 2003/08/14 19:09:31 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -102,7 +102,7 @@ class TableDefinition1 : public CopasiWidget
     QHBoxLayout* layout5_2;
 
     QWidget* pParent;
-    std::vector<CCopasiObject*> selectedList;
+    //    std::vector<CCopasiObject*> selectedList;
   };
 
 #endif // TableDefinition1_H

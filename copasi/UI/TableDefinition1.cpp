@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.3 2003/08/14 17:28:46 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.4 2003/08/14 19:09:31 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -21,6 +21,7 @@
 #include <qlistbox.h>
 #include <qcombobox.h>
 #include <qstring.h>
+#include <qmessagebox.h>
 
 #include "TableDefinition1.h"
 #include "ObjectBrowser.h"
@@ -28,6 +29,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinition.h"
 #include "report/CCopasiObjectName.h"
+#include "report/CCopasiContainer.h"
 #include "ScanWidget.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
@@ -107,7 +109,7 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   //  itemsTable->setVScrollBarMode(QScrollView::Auto);
   //  itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
   //  itemsTable->setSelectedList(&selectedList);
-  selectedList.clear();
+  //  selectedList.clear();
 
   //    itemsTable = new QTable(this, "itemsTable");
   //    itemsTable->setNumRows(0);
@@ -247,7 +249,7 @@ void TableDefinition1::loadTableDefinition1()
 {
   CReportDefinition* pReportDefinition = (CReportDefinition*)CKeyFactory::get(reportKey);
   itemsTable->clear();
-  selectedList.clear();
+  //  selectedList.clear();
 
   C_INT32 i;
   for (i = 0; i < pReportDefinition->getHeaderAddr()->size(); i++)
@@ -327,10 +329,10 @@ void TableDefinition1::addButtonClicked()
       return;
     }
 
-  if (itemsTable->findItem((*pSelectedVector)[i]->getObjectUniqueName().c_str()) == NULL)
+  if (itemsTable->findItem((*pSelectedVector)[i]->getCN().c_str()) == NULL)
     {
-      itemsTable->insertItem((*pSelectedVector)[i]->getObjectUniqueName().c_str());
-      selectedList.push_back((*pSelectedVector)[i]);
+      itemsTable->insertItem((*pSelectedVector)[i]->getCN().c_str());
+      //      selectedList.push_back((*pSelectedVector)[i]);
     }
 
   pdelete(pSelectedVector);
@@ -344,9 +346,9 @@ void TableDefinition1::deleteButtonClicked()
   UINT32 selectedIndex = itemsTable->index(selectedItem);
   if (selectedItem)
     {
-      std::vector<CCopasiObject*>::iterator it = selectedList.begin();
-      selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
-      int pp = selectedList.size();
+      //      std::vector<CCopasiObject*>::iterator it = selectedList.begin();
+      //      selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
+      //      int pp = selectedList.size();
       itemsTable->removeItem(selectedIndex);
     }
 }
@@ -358,12 +360,12 @@ void TableDefinition1::upButtonClicked()
   if ((selectedItem) && (selectedIndex != 0))
     {
       //swap in selectedList
-      CCopasiObject* pDownObject = selectedList[selectedIndex];
+      //      CCopasiObject* pDownObject = selectedList[selectedIndex];
       // check for valid of the update object pointer array
       // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
-      CCopasiObject* pUpperObject = selectedList[selectedIndex - 1];
-      selectedList[selectedIndex] = pUpperObject;
-      selectedList[selectedIndex - 1] = pDownObject;
+      //     CCopasiObject* pUpperObject = selectedList[selectedIndex - 1];
+      //      selectedList[selectedIndex] = pUpperObject;
+      //      selectedList[selectedIndex - 1] = pDownObject;
 
       //swap in ListBox
       QString pDownItemStr(itemsTable->item(selectedIndex)->text());
@@ -380,12 +382,12 @@ void TableDefinition1::downButtonClicked()
   if ((selectedItem) && (itemsTable->item(selectedIndex + 1)))
     {
       //swap in selectedList
-      CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
+      //      CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
       // check for valid of the update object pointer array
       // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
-      CCopasiObject* pUpperObject = selectedList[selectedIndex];
-      selectedList[selectedIndex + 1] = pUpperObject;
-      selectedList[selectedIndex] = pDownObject;
+      //      CCopasiObject* pUpperObject = selectedList[selectedIndex];
+      //      selectedList[selectedIndex + 1] = pUpperObject;
+      //      selectedList[selectedIndex] = pDownObject;
 
       //swap in ListBox
       QString pDownItemStr(itemsTable->item(selectedIndex + 1)->text());
@@ -409,6 +411,8 @@ bool TableDefinition1::enter(const std::string & key)
 bool TableDefinition1::leave()
 {
   //let the user confirm?
+  if (QMessageBox::warning(NULL, "Report Definition Save", "Do you want to save the change you have made to this Report Definition ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+    slotBtnConfirmClicked();
   return true;
 }
 
