@@ -1,7 +1,15 @@
 /**
- *  CSS_Solution.cpp
+ *  File name: CSS_Solution.cpp
  *
+ *  Programmer: Yongqun He 
+ *  Contact email: yohe@vt.edu
+ *  Purpose: This is the .cpp file for the class CSS_Solution. 
+ *           It is to solve the steady state solution problem with different approaches,
+ *           e.g., (1) Newton, (2) Integration (Trajectory), (3) Newton + Integration,
+ *           (4) Backward Integration, (5) Backward integration if all else fails.
  */
+
+
 #include <cmath>
 
 #include "CSS_Solution.h"

@@ -1,6 +1,10 @@
 /**
- *  CNewton.cpp
- *  Note: modified by Yongqun He from GepasiDoc class of the gepasi.
+ *  File name: CNewton.cpp
+ *
+ *  Programmer: Yongqun He 
+ *  Contact email: yohe@vt.edu
+ *  Purpose: This is the .cpp file for the class CNewton. 
+ *           It is an important approach to solve the steady state solution problem
  *
  */
 

@@ -1,7 +1,14 @@
 /**
-  CSS_Solution.h
-
+ *  File name: CSS_Solution.h
+ *
+ *  Programmer: Yongqun He 
+ *  Contact email: yohe@vt.edu
+ *  Purpose: This is the .h file for the class CSS_Solution. 
+ *           It is to solve the steady state solution problem with different approaches,
+ *           e.g., (1) Newton, (2) Integration (Trajectory), (3) Newton + Integration,
+ *           (4) Backward Integration, (5) Backward integration if all else fails.
  */
+
 
 #ifndef CSS_Solution_H
 #define CSS_Solution_H

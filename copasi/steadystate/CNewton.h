@@ -1,8 +1,13 @@
 /**
- *  CNewton.h
- *  Note: modified by Yongqun He from GepasiDoc class of the gepasi.
+ *  File name: CNewton.h
+ *
+ *  Programmer: Yongqun He 
+ *  Contact email: yohe@vt.edu
+ *  Purpose: This is the .h file for the class CNewton. 
+ *           It is an important approach to solve the steady state solution problem
  *
  */
+
 
 #ifndef CNewton_H
 #define CNewton_H
