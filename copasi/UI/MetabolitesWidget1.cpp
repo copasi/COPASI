@@ -327,8 +327,9 @@ void MetabolitesWidget1::loadName(QString setValue)
 
           compt = allcompartments[m];
           //ComboBox1->insertStringList(compt->getName().c_str(),j);
-          ComboBox1->insertItem(compt->getName().c_str(), m - 1);
+          ComboBox1->insertItem(compt->getName().c_str());
         }
+      ComboBox1->setCurrentText(metab->getCompartment()->getName().c_str());
     }
 }
 
