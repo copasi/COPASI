@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/11 16:15:20 $
+   $Author: mkulkarn $ 
+   $Date: 2003/12/11 20:27:56 $
    End CVS Header */
 
 /**
@@ -2662,6 +2662,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       //type = mParser.getAttributeValue("type", papszAttrs);
 
+      // create a new report
+      mCommon.pReport = new CReportDefinition();
       /* We have a new report and add it to the list */
       mCommon.pReportList->add(mCommon.pReport, true);
       mCommon.KeyMap[Key] = mCommon.pReport->getKey();
@@ -2741,12 +2743,10 @@ void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
 
     case Header:
       if (strcmp(pszName, "Header")) fatalError();
-      mCurrentElement = Report;
       break;
 
     case Body:
       if (strcmp(pszName, "Body")) fatalError();
-      mCurrentElement = Report;
       break;
 
       //case Footer:
