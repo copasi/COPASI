@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:20:09 $
+   $Date: 2004/02/20 21:35:15 $
    End CVS Header */
 
 /*
@@ -64,7 +64,18 @@ copasi::COptionParser::COptionParser (void)
 //#########################################################################
 void copasi::COptionParser::parse(int argc, char *argv[], bool call_finalize)
 {
-  for (int i = 1; i < argc; ++i) parse_element(argv[i], i, source_cl);
+  int i = 1;
+
+#ifdef Darwin
+  if (argc > 1)
+    {
+      std::string tmp(argv[1]);
+      if (!tmp.compare(0, 4, "-psn")) i = 2;
+    }
+#endif // Darwin
+
+  for (; i < argc; ++i) parse_element(argv[i], i, source_cl);
+
   if (call_finalize) finalize();
 }
 //#########################################################################
