@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/14 13:45:39 $
+   $Date: 2005/02/27 20:16:38 $
    End CVS Header */
 
 // the plot object for copasi
@@ -21,6 +21,61 @@
 #include "zoomplot.h"
 #include "CHistogram.h" 
 //#include "plotspec.h"
+
+#include <qpainter.h>
+#include <qwt_painter.h>
+#include <qwt_data.h>
+
+class MyQwtCPointerData: public QwtData
+  {
+  public:
+    MyQwtCPointerData(const double *x, const double *y, size_t size);
+    MyQwtCPointerData &operator=(const MyQwtCPointerData &);
+    virtual QwtData *copy() const;
+
+    virtual size_t size() const;
+    virtual double x(size_t i) const;
+    virtual double y(size_t i) const;
+
+    virtual QwtDoubleRect boundingRect() const;
+
+  private:
+    const double *d_x;
+    const double *d_y;
+    size_t d_size;
+  };
+
+class MyQwtPlotCurve : public QwtPlotCurve
+  {
+  public:
+    MyQwtPlotCurve (QwtPlot *parent, const QString &title = QString::null)
+        : QwtPlotCurve(parent, title)
+    {}
+
+    virtual QwtDoubleRect boundingRect () const
+      {
+        if (enabled())
+          return QwtPlotCurve::boundingRect();
+        else
+          return QwtDoubleRect(2.0, 1.0, 0.0, 0.0); //invalid rectangle
+      }
+
+  protected:
+    void myDrawLines(QPainter *painter,
+                     const QwtDiMap &xMap, const QwtDiMap &yMap, int from, int to);
+
+    virtual void MyQwtPlotCurve::drawCurve(QPainter *painter, int style,
+                                           const QwtDiMap &xMap, const QwtDiMap &yMap, int from, int to)
+    {
+      if (style == Lines)
+        myDrawLines(painter, xMap, yMap, from, to);
+      else
+        QwtCurve::drawCurve(painter, style, xMap, yMap, from, to);
+    }
+  };
+
+//*******************************************************
+//*******************************************************
 
 class CPlotSpec2Vector;
 class CPlotSpecification;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/25 13:42:22 $
+   $Date: 2005/02/27 20:16:38 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -21,7 +21,125 @@
 #include "CPlotSpecification.h"
 #include "CopasiUI/qtUtilities.h"
 
-//TODO: put all the stuff to locally store the data in a separate class!
+MyQwtCPointerData::MyQwtCPointerData(const double *x, const double *y,
+                                     size_t size):
+    d_x(x), d_y(y), d_size(size)
+{}
+
+MyQwtCPointerData& MyQwtCPointerData::operator=(const MyQwtCPointerData &data)
+{
+  if (this != &data)
+    {
+      d_x = data.d_x;
+      d_y = data.d_y;
+      d_size = data.d_size;
+    }
+  return *this;
+}
+
+size_t MyQwtCPointerData::size() const
+  {
+    return d_size;
+  }
+
+double MyQwtCPointerData::x(size_t i) const
+  {
+    return d_x[int(i)];
+  }
+
+double MyQwtCPointerData::y(size_t i) const
+  {
+    return d_y[int(i)];
+  }
+
+QwtData *MyQwtCPointerData::copy() const
+  {
+    return new MyQwtCPointerData(d_x, d_y, d_size);
+  }
+
+QwtDoubleRect MyQwtCPointerData::boundingRect() const
+  {
+    const size_t sz = size();
+
+    if (sz <= 0)
+      return QwtDoubleRect(1.0, -1.0, 1.0, -1.0); // invalid
+
+    double minX, maxX, minY, maxY;
+    const double *xIt = d_x;
+    const double *yIt = d_y;
+    const double *end = d_x + sz;
+
+  while (*xIt != *xIt) {xIt++; yIt++;}
+    minX = maxX = *xIt++;
+    minY = maxY = *yIt++;
+
+    while (xIt < end)
+      {
+        const double xv = *xIt++;
+        const double yv = *yIt++;
+
+        if (xv != xv) //NaN
+          continue;
+
+        if (xv < minX)
+          minX = xv;
+        if (xv > maxX)
+          maxX = xv;
+
+        if (yv < minY)
+          minY = yv;
+        if (yv > maxY)
+          maxY = yv;
+      }
+
+    //std::cout << minX <<" " <<maxX <<" " << minY<< "  " << maxY<<  std::endl;
+    return QwtDoubleRect(minX, maxX, minY, maxY);
+  }
+
+//draw the several curves, separated by NaNs.
+void MyQwtPlotCurve::myDrawLines(QPainter *painter,
+                                 const QwtDiMap &xMap, const QwtDiMap &yMap, int from, int to)
+{
+  int to2;
+  do
+    {
+      int i;
+      for (i = from; i <= to; ++i)
+        if (x(i) != x(i)) //NaN
+          break;
+
+      if (i == from)
+        {
+          ++from;
+          continue;
+        }
+
+      to2 = i - 1;
+
+      QPointArray polyline(to2 - from + 1);
+      for (i = from; i <= to2; i++)
+        {
+          int xi = xMap.transform(x(i));
+          int yi = yMap.transform(y(i));
+
+          polyline.setPoint(i - from, xi, yi);
+        }
+
+      QwtPainter::drawPolyline(painter, polyline);
+
+      if (painter->brush().style() != Qt::NoBrush)
+        {
+          closePolyline(xMap, yMap, polyline);
+          painter->setPen(QPen(Qt::NoPen));
+          QwtPainter::drawPolygon(painter, polyline);
+        }
+
+      from = to2 + 2;
+    }
+  while (from < to);
+}
+
+//************************************
 
 void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec)
 {
@@ -141,7 +259,8 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
       pItem = plotspec->getItems()[k];
 
       // set up the curve
-      long crv = insertCurve(FROM_UTF8(pItem->getTitle()));
+      QwtPlotCurve* tmpCurve = new MyQwtPlotCurve(this, FROM_UTF8(pItem->getTitle()));
+      long crv = insertCurve(tmpCurve);
 
       setCurvePen(crv, QPen(curveColours[k % 5]));
       //      setCurveXAxis(crv, plotspec->getItems()[k].xAxis);
@@ -156,14 +275,33 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
 
       tmpType = (CPlotItem::Type)mItemTypes[k];
 
+      const void* tmp;
       switch (tmpType)
         {
         case CPlotItem::curve2d :
+          unsigned C_INT32 tmpType;
+          if (!(tmp = pItem->getValue("Line type")))
+            tmpType = 0; //or error?
+          else
+            tmpType = *(const unsigned C_INT32*)tmp;
+          switch (tmpType)
+            {
+            case 0:  //curve
+              setCurveStyle(crv, QwtCurve::Lines);
+              break;
+            case 1:  //points
+              setCurveStyle(crv, QwtCurve::Dots);
+              break;
+            case 2:  //symbols
+              setCurveStyle(crv, QwtCurve::NoCurve);
+              const QColor &c = curveColours[k % 5];
+              setCurveSymbol(crv, QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
+              break;
+            }
           break;
 
         case CPlotItem::histoItem1d :
           C_FLOAT64 tmpIncr;
-          const void* tmp;
           if (!(tmp = pItem->getValue("increment")))
             tmpIncr = 0.1; //or error?
           else
@@ -173,6 +311,7 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
           mHistoIndices[k] = mHistograms.size() - 1;
 
           setCurveStyle(crv, QwtCurve::Steps);
+          setCurveYAxis(crv, QwtPlot::yRight);
           break;
 
         default :
@@ -224,13 +363,14 @@ void CopasiPlot::updatePlot()
   for (k = 0; k < crvKeys.size(); k++)
     {
       tmpType = (CPlotItem::Type)mItemTypes[k];
-
+      QwtData* tmpData;
       switch (tmpType)
         {
         case CPlotItem::curve2d :
-          curve(crvKeys.at(k))->setRawData(data[dataIndices[k][0]]->data(),
-                                           data[dataIndices[k][1]]->data(),
-                                           ndata);
+          tmpData = new MyQwtCPointerData(data[dataIndices[k][0]]->data(),
+                                          data[dataIndices[k][1]]->data(),
+                                          ndata);
+          curve(crvKeys.at(k))->setData(*tmpData);
           break;
 
         case CPlotItem::histoItem1d :
@@ -311,11 +451,12 @@ void CopasiPlot::toggleCurve(long curveId)
     {
       c->setEnabled(!c->enabled());
 
+      /*
       if (c->enabled())
         c->setAxis(QwtPlot::xBottom, QwtPlot::yLeft);
       else
         c->setAxis(QwtPlot::xTop, QwtPlot::yRight);
-
+      */
       replot();
     }
 }
