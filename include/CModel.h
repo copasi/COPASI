@@ -316,6 +316,13 @@ public:
      */
     void setConcentrations(const C_FLOAT64 *y);
 
+    // Added by CvG
+    /**
+     * Return the vector of steps
+     * @return "CCopasiVector<CStep> *"
+     */
+    CCopasiVector<CStep> *getSteps() const;
+
     // Added by Yongqun He
     /**
      * Get the total steps
