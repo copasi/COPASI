@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.73 $ $Author: ssahle $ $Date: 2004/12/30 15:30:15 $  
+# $Revision: 1.74 $ $Author: ssahle $ $Date: 2005/01/25 12:03:58 $  
 ######################################################################
 
 include(../common.pri)
@@ -153,6 +153,7 @@ HEADERS += \
            objectdebug.h \
            OptimizationItemWidget.h \
            OptimizationWidget.h \
+           ParametersWidget.h \
            ParamFittingItemWidget.h \
            ParamFittingWidget.h \
            parametertable.h \
@@ -230,6 +231,7 @@ SOURCES += \
            objectdebug.cpp \
            OptimizationItemWidget.cpp \
            OptimizationWidget.cpp \
+           ParametersWidget.cpp \
            ParamFittingItemWidget.cpp \
            ParamFittingWidget.cpp \
            parametertable.cpp \
