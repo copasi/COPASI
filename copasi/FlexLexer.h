@@ -1,4 +1,4 @@
-// $Header: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/FlexLexer.h,v 1.2 2002/07/31 17:04:14 shoops Exp $
+// $Header: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/FlexLexer.h,v 1.3 2002/11/18 19:32:41 shoops Exp $
 
 // FlexLexer.h -- define interfaces for lexical analyzer classes generated
 //    by flex
@@ -45,7 +45,6 @@
 // Never included before - need to define base class.
 #define __FLEX_LEXER_H
 
-#include <strstream>
 #include <iostream>
 
 using std::istream;
@@ -59,9 +58,9 @@ extern "C++"
     class FlexLexer
       {
       public:
-        virtual ~FlexLexer() { }
-        const char* YYText() { return yytext; }
-        int YYLeng() { return yyleng; }
+        virtual ~FlexLexer() {}
+        const char* YYText() {return yytext;}
+        int YYLeng() {return yyleng;}
 
         virtual void
 
@@ -85,10 +84,10 @@ extern "C++"
         // Switch to new input/output streams.  A nil stream pointer
         // indicates "keep the current one".
         virtual void switch_streams(istream* new_in = 0,
-                                     ostream* new_out = 0) = 0;
-        int lineno() const { return yylineno; }
-        int debug() const { return yy_flex_debug; }
-        void set_debug(int flag) { yy_flex_debug = flag; }
+                                    ostream* new_out = 0) = 0;
+        int lineno() const {return yylineno;}
+        int debug() const {return yy_flex_debug;}
+        void set_debug(int flag) {yy_flex_debug = flag;}
 
       protected:
         char* yytext;
