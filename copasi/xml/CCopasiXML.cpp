@@ -148,161 +148,161 @@ bool CCopasiXML::saveModel()
 
   if ((imax = mpModel->getReactions().size()) > 0)
     {
-      startSaveElement("ListOfReactions");
-
-      CXMLAttributeList Attr;
-      const CCopasiVector< CChemEqElement > * pReactantList;
-      const CCopasiVectorN< CReaction::CId2Param > * pParamList;
-      unsigned C_INT32 j, jmax;
-
-      std::vector< const CCopasiObject * > ObjectList;
-      unsigned C_INT32 k, kmax;
-
-      Attributes.erase();
-      Attributes.add("key", "");
-      Attributes.add("name", "");
-      Attributes.add("compartment", "");
-      Attributes.add("reversible", "");
-
-      for (i = 0; i < imax; i++)
-        {
-          CReaction * pReaction = mpModel->getReactions()[i];
-
-          Attributes.setValue(0, pReaction->getKey());
-          Attributes.setValue(1, pReaction->getName());
-          if (pReaction->getCompartment())
-            Attributes.setValue(2, pReaction->getCompartment()->getKey());
-          else
-            Attributes.skip(2);
-          Attributes.setValue(3, pReaction->isReversible() ? "true" : "false");
-
-          startSaveElement("Reaction", Attributes);
-
-          Attr.erase();
-          Attr.add("metabolite", "");
-          Attr.add("stoichiometry", "");
-
-          pReactantList = & pReaction->getChemEq().getSubstrates();
-          if ((jmax = pReactantList->size()) > 0)
-            {
-              startSaveElement("ListOfSubstrates");
-
-              for (j = 0; j < jmax; j++)
-                {
-                  Attr.setValue(0,
-                                (*pReactantList)[j]->getMetabolite().getKey());
-                  Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
-
-                  saveElement("Substrate", Attr);
-                }
-
-              endSaveElement("ListOfSubstrates");
-            }
-          startSaveElement("ListOfProducts");
-
-          pReactantList = & pReaction->getChemEq().getProducts();
-          if ((jmax = pReactantList->size()) > 0)
-            {
-              for (j = 0; j < jmax; j++)
-                {
-                  Attr.setValue(0,
-                                (*pReactantList)[j]->getMetabolite().getKey());
-                  Attr.setValue(1,
-                                (*pReactantList)[j]->getMultiplicity());
-
-                  saveElement("Product", Attr);
-                }
-
-              endSaveElement("ListOfProducts");
-            }
-
-          pReactantList = & pReaction->getChemEq().getModifiers();
-          if ((jmax = pReactantList->size()) > 0)
-            {
-              startSaveElement("ListOfModifiers");
-
-              for (j = 0, jmax = pReactantList->size(); j < jmax; j++)
-                {
-                  Attr.setValue(0, (*pReactantList)[j]->getMetabolite().getKey());
-                  Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
-
-                  saveElement("Modifier", Attr);
-                }
-
-              endSaveElement("ListOfModifiers");
-            }
-
-          pParamList = & pReaction->getId2Parameters();
-          if ((jmax = pParamList->size()) > 0)
-            {
-              startSaveElement("ListOfConstants");
-
-              Attr.erase();
-              Attr.add("key", "");
-              Attr.add("name", "");
-              Attr.add("value", "");
-
-              for (j = 0; j < jmax; j++)
-                {
-                  Attr.setValue(0, (*pParamList)[j]->getKey());
-                  Attr.setValue(1, (*pParamList)[j]->getName());
-                  Attr.setValue(2, (*pParamList)[j]->getValue());
-
-                  saveElement("Constant", Attr);
-                }
-
-              endSaveElement("ListOfConstants");
-            }
-
-          if (&pReaction->getFunction())
-            {
-              Attr.erase();
-              Attr.add("function", pReaction->getFunction().getKey());
-              startSaveElement("KineticLaw", Attr);
-
-              startSaveElement("ListOfCallParameters");
-              const CFunctionParameterMap * pMap =
-                &pReaction->getFunctionParameterMap();
-
-              for (j = 0, jmax = pMap->getFunctionParameters().size(); j < jmax; j++)
-                {
-                  Attr.erase();
-                  Attr.add("functionParameter",
-                           pMap->getFunctionParameters()[j]->getKey());
-
-                  startSaveElement("CallParameter", Attr);
-                  ObjectList = pMap->getObjects(j);
-
-                  Attr.erase();
-                  Attr.add("reference", "");
-
-                  for (k = 0, kmax = ObjectList.size(); k < kmax; k++)
-                    {
-                      const CCopasiObject * pObject = ObjectList[k];
-
-                      if (pObject->getObjectType() == "Id2Param")
+      /*      startSaveElement("ListOfReactions");
+       
+            CXMLAttributeList Attr;
+            const CCopasiVector< CChemEqElement > * pReactantList;
+            const CCopasiVectorN< CReaction::CId2Param > * pParamList;
+            unsigned C_INT32 j, jmax;
+       
+            std::vector< const CCopasiObject * > ObjectList;
+            unsigned C_INT32 k, kmax;
+       
+            Attributes.erase();
+            Attributes.add("key", "");
+            Attributes.add("name", "");
+            Attributes.add("compartment", "");
+            Attributes.add("reversible", "");
+       
+            for (i = 0; i < imax; i++)
+              {
+                CReaction * pReaction = mpModel->getReactions()[i];
+       
+                Attributes.setValue(0, pReaction->getKey());
+                Attributes.setValue(1, pReaction->getName());
+                if (pReaction->getCompartment())
+                  Attributes.setValue(2, pReaction->getCompartment()->getKey());
+                else
+                  Attributes.skip(2);
+                Attributes.setValue(3, pReaction->isReversible() ? "true" : "false");
+       
+                startSaveElement("Reaction", Attributes);
+       
+                Attr.erase();
+                Attr.add("metabolite", "");
+                Attr.add("stoichiometry", "");
+       
+                pReactantList = & pReaction->getChemEq().getSubstrates();
+                if ((jmax = pReactantList->size()) > 0)
+                  {
+                    startSaveElement("ListOfSubstrates");
+       
+                    for (j = 0; j < jmax; j++)
+                      {
                         Attr.setValue(0,
-                                      ((CReaction::CId2Param *)
-                                       (CCopasiContainer *) pObject)->getKey());
-                      else if (pObject->getObjectType() == "Metabolite")
+                                      (*pReactantList)[j]->getMetabolite().getKey());
+                        Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
+       
+                        saveElement("Substrate", Attr);
+                      }
+       
+                    endSaveElement("ListOfSubstrates");
+                  }
+                startSaveElement("ListOfProducts");
+       
+                pReactantList = & pReaction->getChemEq().getProducts();
+                if ((jmax = pReactantList->size()) > 0)
+                  {
+                    for (j = 0; j < jmax; j++)
+                      {
                         Attr.setValue(0,
-                                      ((CMetab *)
-                                       (CCopasiContainer *) pObject)->getKey());
-                      else
-                        Attr.setValue(0, "NoKey");
-
-                      saveElement("SourceParameter", Attr);
-                    }
-
-                  endSaveElement("CallParameter");
-                }
-              endSaveElement("ListOfCallParameters");
-
-              endSaveElement("KineticLaw");
-            }
-          endSaveElement("Reaction");
-        }
-      endSaveElement("ListOfReactions");
+                                      (*pReactantList)[j]->getMetabolite().getKey());
+                        Attr.setValue(1,
+                                      (*pReactantList)[j]->getMultiplicity());
+       
+                        saveElement("Product", Attr);
+                      }
+       
+                    endSaveElement("ListOfProducts");
+                  }
+       
+                pReactantList = & pReaction->getChemEq().getModifiers();
+                if ((jmax = pReactantList->size()) > 0)
+                  {
+                    startSaveElement("ListOfModifiers");
+       
+                    for (j = 0, jmax = pReactantList->size(); j < jmax; j++)
+                      {
+                        Attr.setValue(0, (*pReactantList)[j]->getMetabolite().getKey());
+                        Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
+       
+                        saveElement("Modifier", Attr);
+                      }
+       
+                    endSaveElement("ListOfModifiers");
+                  }
+       
+                pParamList = & pReaction->getId2Parameters();
+                if ((jmax = pParamList->size()) > 0)
+                  {
+                    startSaveElement("ListOfConstants");
+       
+                    Attr.erase();
+                    Attr.add("key", "");
+                    Attr.add("name", "");
+                    Attr.add("value", "");
+       
+                    for (j = 0; j < jmax; j++)
+                      {
+                        Attr.setValue(0, (*pParamList)[j]->getKey());
+                        Attr.setValue(1, (*pParamList)[j]->getName());
+                        Attr.setValue(2, (*pParamList)[j]->getValue());
+       
+                        saveElement("Constant", Attr);
+                      }
+       
+                    endSaveElement("ListOfConstants");
+                  }
+       
+                if (&pReaction->getFunction())
+                  {
+                    Attr.erase();
+                    Attr.add("function", pReaction->getFunction().getKey());
+                    startSaveElement("KineticLaw", Attr);
+       
+                    startSaveElement("ListOfCallParameters");
+                    const CFunctionParameterMap * pMap =
+                      &pReaction->getFunctionParameterMap();
+       
+                    for (j = 0, jmax = pMap->getFunctionParameters().size(); j < jmax; j++)
+                      {
+                        Attr.erase();
+                        Attr.add("functionParameter",
+                                 pMap->getFunctionParameters()[j]->getKey());
+       
+                        startSaveElement("CallParameter", Attr);
+                        ObjectList = pMap->getObjects(j);
+       
+                        Attr.erase();
+                        Attr.add("reference", "");
+       
+                        for (k = 0, kmax = ObjectList.size(); k < kmax; k++)
+                          {
+                            const CCopasiObject * pObject = ObjectList[k];
+       
+                            if (pObject->getObjectType() == "Id2Param")
+                              Attr.setValue(0,
+                                            ((CReaction::CId2Param *)
+                                             (CCopasiContainer *) pObject)->getKey());
+                            else if (pObject->getObjectType() == "Metabolite")
+                              Attr.setValue(0,
+                                            ((CMetab *)
+                                             (CCopasiContainer *) pObject)->getKey());
+                            else
+                              Attr.setValue(0, "NoKey");
+       
+                            saveElement("SourceParameter", Attr);
+                          }
+       
+                        endSaveElement("CallParameter");
+                      }
+                    endSaveElement("ListOfCallParameters");
+       
+                    endSaveElement("KineticLaw");
+                  }
+                endSaveElement("Reaction");
+              }
+            endSaveElement("ListOfReactions");*/
     }
   startSaveElement("StateTemplate");
 
