@@ -106,6 +106,14 @@ SOURCE=.\CIndexedPriorityQueue.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CMethodParameter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMethodParameterList.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReadConfig.cpp
 # End Source File
 # Begin Source File
@@ -147,6 +155,14 @@ SOURCE=.\CGlobals.h
 # Begin Source File
 
 SOURCE=.\CIndexedPriorityQueue.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMethodParameter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMethodParameterList.h
 # End Source File
 # Begin Source File
 
