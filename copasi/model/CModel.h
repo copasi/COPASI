@@ -1,14 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 15:33:56 $
+   $Author: ssahle $ 
+   $Date: 2004/10/04 13:38:46 $
    End CVS Header */
-
-// cmodel.h : interface of the CModel class
-//
-/////////////////////////////////////////////////////////////////////////////
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -18,6 +14,7 @@
 #include <set>
 #include <string>
 
+#include "copasi.h"
 #include "CReaction.h"
 #include "CMoiety.h"
 #include "utilities/CVector.h"
@@ -289,8 +286,7 @@ class CModel : public CCopasiContainer
     CCopasiVectorN< CReaction > mStepsInd;
 
     /**
-     *  Vector of fluxes of the reactions.
-     *  Note: The fluxes are the order corresponding to mStepX
+     *  Vectors of fluxes of the reactions.
      */
     CVector< const C_FLOAT64 * > mFluxes;
     CVector< const C_FLOAT64 * > mFluxesX;
@@ -700,8 +696,8 @@ class CModel : public CCopasiContainer
      * The parameter rates must at least provide space mSteps.size() double
      * &param CState * state (input)
      * &param  C_FLOAT64 * rates (output)
-     */
-    void getRates(const CState * state, C_FLOAT64 * rates);
+     */ 
+    //void getRates(const CState * state, C_FLOAT64 * rates);
 
     /**
      * Calculate the rates of the reaction in the given state in 
@@ -709,8 +705,8 @@ class CModel : public CCopasiContainer
      * The parameter rates must at least provide space mStepsX.size() double
      * &param CStateX * stateX (input)
      * &param  C_FLOAT64 * rates (output)
-     */
-    void getRatesX(const CStateX * state, C_FLOAT64 * rates);
+     */ 
+    //void getRatesX(const CStateX * state, C_FLOAT64 * rates);
 
     /**
      * Calculate the changes of particles numbers of the metabolites 
@@ -863,8 +859,8 @@ class CModel : public CCopasiContainer
      * Add a new rection to the model
      * @param const CReaction & reaction
      * @return bool success (false if failed)
-     */
-    bool addReaction(const CReaction & reaction);
+     */ 
+    //bool addReaction(const CReaction & reaction);
 
     /* Remove a reaction from the model*/
     bool removeReaction(const std::string & key);
@@ -901,6 +897,12 @@ class CModel : public CCopasiContainer
      * @param const CState * stateX
      */
     void setStateX(const CStateX * state);
+
+    /**
+     * calculate rates, fluxes, and transition times.
+     * this can be called after setState() / setStateX()
+     */
+    void updateRates();
 
     /**
      * Retreive the state template

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.192 $
+   $Revision: 1.193 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 15:33:56 $
+   $Author: ssahle $ 
+   $Date: 2004/10/04 13:38:46 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1117,12 +1117,9 @@ void CModel::setState(const CState * state)
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
 
-  //  DebugFile << *state << std::endl;
-  /* Set the time */
   mTime = state->getTime();
 
 #ifdef XXXX // This gets enabled when we have dynamic volume changes
-  /* Set the volumes */
   Dbl = state->getVolumeVector();
   for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
     mCompartments[i]->setVolume(*Dbl);
@@ -1132,12 +1129,10 @@ void CModel::setState(const CState * state)
   Dbl = state->getVariableNumberVector().array();
   for (i = 0, imax = getIntMetab(); i < imax; i++, Dbl++)
     mMetabolites[i]->setNumber(*Dbl);
-
   //   DebugFile << "setState " << mTime;
   //   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
   //     DebugFile << " " << mMetabolitesX[i]->getConcentration();
   //   DebugFile << std::endl;
-
   return;
 }
 
@@ -1146,12 +1141,9 @@ void CModel::setStateX(const CStateX * state)
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
 
-  //  DebugFile << *state << std::endl;
-  /* Set the time */
   mTime = state->getTime();
 
 #ifdef XXXX // This gets enabled when we have dynamic volume changes
-
   Dbl = state->getVolumeVector();
   for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
     mCompartments[i]->setVolume(*Dbl);
@@ -1165,52 +1157,70 @@ void CModel::setStateX(const CStateX * state)
   /* We need to update the dependent metabolites by using moieties */
   /* This changes need to be reflected in the current state */
   C_FLOAT64 NumberDbl;
-
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
     {
       NumberDbl = mMoieties[i]->dependentNumber();
       mMetabolitesDep[i]->setNumber(NumberDbl);
       (const_cast<CStateX *>(state))->setDependentNumber(i, NumberDbl);
     }
-
   //   DebugFile << "setStateX " << mTime;
   //   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
   //     DebugFile << " " << mMetabolitesX[i]->getConcentration();
   //   DebugFile << std::endl;
-
   return;
 }
 
 void CModel::updateDepMetabNumbers(CStateX const & state) const
   {
     (const_cast< CModel * >(this))->setStateX(&state);
+    //TODO this could be done more efficiently
   }
+
+void CModel::updateRates()
+{
+  unsigned C_INT32 j, jmax = mSteps.size();
+  for (j = 0; j < jmax; ++j)
+    mSteps[j]->calculate();
+
+  // Calculate ydot = Stoi * v
+  unsigned C_INT32 i, imax = mMetabolitesInd.size() + mMetabolitesDep.size();
+  C_FLOAT64 tmp;
+  for (i = 0; i < imax; ++i)
+    {
+      tmp = 0.0;
+      for (j = 0; j < jmax; ++j)
+        tmp += mStoi[i][j] * *mParticleFluxes[j];
+      mMetabolites[i]->setNumberRate(tmp);
+    }
+
+  //TODO. transition Times
+}
 
 //**********************************************************************
 
-void CModel::getRates(const CState * state, C_FLOAT64 * rates)
+/*void CModel::getRates(const CState * state, C_FLOAT64 * rates)
 {
   setState(state);
-
+ 
   unsigned C_INT32 i, imax;
-
+ 
   for (i = 0, imax = mSteps.size(); i < imax; i++)
     rates[i] = mSteps[i]->calculate();
-
+ 
   return;
 }
-
+ 
 void CModel::getRatesX(const CStateX * state, C_FLOAT64 * rates)
 {
   setStateX(state);
-
+ 
   unsigned C_INT32 i, imax;
-
+ 
   for (i = 0, imax = mStepsX.size(); i < imax; i++)
     rates[i] = mStepsX[i]->calculate();
-
+ 
   return;
-}
+}*/
 
 void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 > & derivatives)
 {
@@ -1232,8 +1242,6 @@ void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 >
       for (j = 0; j < jmax; j++)
         derivatives[i] += mStoi[i][j] * *mParticleFluxes[j];
     }
-
-  return;
 }
 
 void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64 > & derivatives)
@@ -1256,8 +1264,6 @@ void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64
       for (j = 0; j < jmax; j++)
         derivatives[i] += mRedStoi[i][j] * *mParticleFluxesX[j];
     }
-
-  return;
 }
 
 //**********************************************************************
@@ -1624,17 +1630,17 @@ CReaction* CModel::createReaction(const std::string & name)
   return pReaction;
 }
 
-bool CModel::addReaction(const CReaction & reaction)
+/*bool CModel::addReaction(const CReaction & reaction)
 {
   if (mSteps.getIndex(reaction.getObjectName()) != C_INVALID_INDEX)
     return false;
-
+ 
   mSteps.add(reaction);
   mSteps[reaction.getObjectName()]->compile();
-
+ 
   setCompileFlag();
   return true;
-}
+}*/
 
 bool CModel::removeReaction(const std::string & key)
 {
