@@ -283,7 +283,14 @@ public:
      *  Set the vector of particle numbers for independent metabolites
      *  @param C_FLOAT64 & y
      */
-    void SetParticleNoInd(C_FLOAT64 & y);
+    void SetParticleNoInd(C_FLOAT64 & y) const;
+
+    /**
+     *  Get the dimension of the reduced problem
+     *  @return C_INT32 dimension
+     */
+    C_INT32 GetDimension() const;
+
     
 #ifdef XXXX
     /**
