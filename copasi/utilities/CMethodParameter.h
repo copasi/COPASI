@@ -134,6 +134,8 @@ class CParameter: public CCopasiContainer
      */
     const C_FLOAT64 & getValue() const;
 
+    virtual const void * getObjectValueAddress() const;
+
     /**
      * Set the type of the parameter
      * @param const CParameter::Type & type

@@ -102,6 +102,8 @@ bool CParameter::setValue(const bool & value)
 
 const double & CParameter::getValue() const {return mValue;}
 
+const void * CParameter::getObjectValueAddress() const {return &mValue;}
+
 void CParameter::setType(const CParameter::Type & type)
 {mType = type;}
 
