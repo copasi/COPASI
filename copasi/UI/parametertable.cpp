@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/17 09:09:19 $
+   $Date: 2004/12/22 15:52:24 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -52,11 +52,20 @@ void ParameterTable::initTable()
   setNumRows(0);
   verticalHeader()->hide();
   setLeftMargin(0);
-  setSelectionMode(QTable::Single);
+  //setSelectionMode(QTable::Single);
+  setSelectionMode(QTable::NoSelection);
   //setFocusStyle(QTable::FollowStyle);
 
   setNumRows(3);
   setNumCols(3);
+  horizontalHeader()->setLabel(0, "Description");
+  horizontalHeader()->setLabel(1, "Name");
+  horizontalHeader()->setLabel(2, "Value");
+  setColumnStretchable(0, true);
+  setColumnStretchable(1, true);
+  setColumnStretchable(2, true);
+
+  setShowGrid(false);
 }
 
 const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CModel & model,
@@ -152,7 +161,8 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
     {
       // add additional space
       clearCell(rowCounter, 0); clearCell(rowCounter, 1); clearCell(rowCounter, 2);
-      setRowHeight(rowCounter++, 10);
+      setRowReadOnly(rowCounter, true);
+      setRowHeight(rowCounter++, 8);
 
       mIndex2Line[i] = rowCounter;
 
