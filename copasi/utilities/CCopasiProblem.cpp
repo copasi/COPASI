@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 14:41:16 $
+   $Date: 2004/10/04 13:39:34 $
    End CVS Header */
 
 /**
@@ -60,7 +60,7 @@ bool CCopasiProblem::setModel(CModel * pModel)
   return true;
 }
 
-CModel * CCopasiProblem::getModel() {return mpModel;}
+CModel * CCopasiProblem::getModel() const {return mpModel;}
 
 unsigned C_INT32 CCopasiProblem::getVariableSize() const
   {return mCalculateVariables.size();}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 14:41:16 $
+   $Date: 2004/10/04 13:39:34 $
    End CVS Header */
 
 /**
@@ -108,7 +108,7 @@ class CCopasiProblem : public CCopasiParameterGroup
      * Retrieve the model of the problem
      * @result CModel * pModel
      */
-    CModel * getModel();
+    CModel * getModel() const;
 
     /**
      * Retrieve the size of the variable vectors
