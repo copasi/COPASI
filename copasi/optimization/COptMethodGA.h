@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/23 12:31:29 $
+   $Author: shoops $ 
+   $Date: 2005/03/30 14:30:28 $
    End CVS Header */
 
 /**
@@ -13,25 +13,8 @@
 #ifndef COPASI_COptMethodGA
 #define COPASI_COptMethodGA
 
-#define TRUE 1
-#define FALSE 0
-
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-
-// #include <sys/times.h>
-// #include <sys/types.h>
-
-#include "stdio.h"
-#include "stdlib.h"
-#include "stddef.h"
-#include "time.h"
-#include "ctype.h"
-#include "string.h"
-#include "math.h"
-#include "float.h" 
-//#include "r250.h"
+#include "COptMethod.h"
+#include "utilities/CVector.h"
 
 class CRandom;
 
@@ -43,34 +26,14 @@ class COptMethodGA : public COptMethod
     friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
 
     // Operations
-  private:
-
-    int NumGeneration;  // number of generations
-    int PopulationSize;  // size of the population
-    int NumCrossPoint;  // number of crossover points
-
-    double Minimum, Maximum;    //parameter boundary
-
-    int BestFoundSoFar;  // index of the BestFoundSoFar individual
-    int NumParameter;   // number of parameters
-
-    double **individual; // for array of individuals w/ candidate values for the parameters
-    double *CandidateValue; // array of values of objective function f/ individuals
-
-    int *CrossPoint;  // indexes of the crossover points
-    int *WinScore;  // number of WinScore of each individual in the tournament
-
-    /**
-     * Default Constructor
-     */
-    COptMethodGA();
-
   public:
     /**
      * Copy Constructor
      * @param const COptMethodGA & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COptMethodGA(const COptMethodGA & src);
+    COptMethodGA(const COptMethodGA & src,
+                 const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
@@ -81,135 +44,133 @@ class COptMethodGA : public COptMethod
      * Execute the optimization algorithm calling simulation routine 
      * when needed. It is noted that this procedure can give feedback 
      * of its progress by the callback function set with SetCallback.
+     * @ return success;
      */
+    virtual bool optimise();
 
-    /********Declare the prototype of member functions here**************/
+  private:
+    /**
+     * Default Constructor
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    COptMethodGA(const CCopasiContainer * pParent = NULL);
 
-    // define mutation functions
-    void Set_NumParameter (int num);
-    void Set_PopulationSize(int num);
-    void Set_NumGeneration(int num);
-    void Set_murvar(double num);
-    void Set_individual(int i, int j, double num);
-    void Set_CandidateValue(int i, double num);
-    void Set_BestFoundSoFar(int num);
-    // void Set_mutvar(double num);
-    void Set_Minimum(double num);
-    void Set_Maximum(double num);
+    /**
+     * Initialize arrays and pointer.
+     * @return bool success
+     */
+    bool initialize();
 
-    // define access functions
+    /**
+     * Cleanup arrays and pointers.
+     * @return bool success
+     */
+    bool cleanup();
 
-    int Get_NumParameter();
-    double Get_BestFoundSoFar_candidate();
-    int Get_NumGeneration();
-    int Get_PopulationSize();
+    /**
+     * Evaluate the fitness of one individual
+     * @param const CVector< C_FLOAT64 > & individual
+     * @return C_FLOAT64 fitness
+     */
+    C_FLOAT64 evaluate(const CVector< C_FLOAT64 > & individual);
 
-    /***********define functional functions here*************************/
+    /**
+     * Ccopy individual src to position target
+     * @param unsigned C_INT32 from
+     * @param unsigned C_INT32 to
+     * @return bool success
+     */
+    bool copy(unsigned C_INT32 from, unsigned C_INT32 to);
 
-    // evaluate the fitness of one individual
-    //virtual double evaluate(int i);
+    /**
+     * Swap individuals from and to
+     * @param unsigned C_INT32 from
+     * @param unsigned C_INT32 to
+     * @return bool success
+     */
+    bool swap(unsigned C_INT32 from, unsigned C_INT32 to);
 
-    // copy individual o to position d
-    virtual void copy(int o, int d);
+    /**
+     * Mutate one individual
+     * @param unsigned C_INT32 index
+     * @return bool success
+     */
+    bool mutate(unsigned C_INT32 index);
 
-    // swap individuals o and d
-    virtual void swap(int o, int d);
+    /**
+     * @param const CVector< C_FLOAT64 > & parent1
+     * @param const CVector< C_FLOAT64 > & parent2
+     * @param CVector< C_FLOAT64 > & child1
+     * @param CVector< C_FLOAT64 > & child2
+     */
+    bool crossover(const CVector< C_FLOAT64 > & parent1,
+                   const CVector< C_FLOAT64 > & parent2,
+                   CVector< C_FLOAT64 > & child1,
+                   CVector< C_FLOAT64 > & child2);
 
-    // exchange individuals o and d
-    virtual void exchange(int o, int d);
+    /**
+     * Shuffle the parents for breading
+     */
+    bool shuffle();
 
-    //mutate one individual
-    //virtual void mutate(int i);
+    /**
+     * Replicate the individuals with crossover
+     * @return bool success
+     */
+    bool replicate();
 
-    virtual void crossover(int p1, int p2, int c1, int c2);
+    /**
+     * Select surviving population
+     * @return bool success
+     */
+    bool select();
 
-    //virtual void shuffle(void);
+    /**
+     * Find the best individual at this generation
+     * @return unsigned C_INT32 fittest
+     */
+    unsigned C_INT32 fittest();
 
-    // replicate the individuals w/ crossover
-    virtual void replicate(void);
+    /**
+     * Initialise the population
+     * @param unsigned C_INT32 first
+     * @param unsigned C_INT32 last (default: population size)
+     * @return bool success
+     */
+    bool creation(unsigned C_INT32 first, unsigned C_INT32 last = ULONG_MAX);
 
-    // select PopulationSize individuals
-    virtual void select(int method);
+    // Attributes
+  private:
+    // number of generations
+    unsigned C_INT32 mGenerations;
 
-    // check the BestFoundSoFar individual at this NumGenerationation
-    virtual int fittest(void);
+    // size of the population
+    unsigned C_INT32 mPopulationSize;
 
-    // initialise the population
-    //virtual void creation(int l,  int u);
+    CRandom * mpRandom;
 
-    virtual void TrackDataFile(int i);
+    // number of parameters
+    unsigned C_INT32 mVariableSize;
 
-    virtual C_INT32 optimise();
+    // for array of individuals w/ candidate values for the parameters
+    std::vector< CVector < C_FLOAT64 > * > mIndividual;
+
+    CVector< bool > mCrossOverFalse;
+    CVector< bool > mCrossOver;
+
+    // array of values of objective function f/ individuals
+    CVector< C_FLOAT64 > mValue;
+
+    // indexes for shuffling the population
+    CVector< unsigned C_INT32 > mShuffle;
+
+    // number of wins of each individual in the tournament
+    CVector< unsigned C_INT32 > mWins;
+
+    // variance for mutations
+    C_FLOAT64 mMutationVarians;
+
+    unsigned int best;   // index of the best individual
   };
-
-//implementation of mutation functions
-
-inline void COptMethodGA::Set_NumParameter (int num)
-{
-  NumParameter = num;
-}
-
-inline void COptMethodGA::Set_PopulationSize(int num)
-{
-  PopulationSize = num;
-}
-
-inline void COptMethodGA::Set_NumGeneration(int num)
-{
-  NumGeneration = num;
-}
-
-/*
-inline void COptMethodGA::Set_mutvar(double num)
-{
-mutvar=num;
-}
- */
-
-inline void COptMethodGA::Set_Minimum(double num)
-{
-  Minimum = num;
-}
-inline void COptMethodGA::Set_Maximum(double num)
-{
-  Maximum = num;
-}
-
-inline void COptMethodGA::Set_individual(int i, int j, double num)
-{
-  individual[i][j] = num;
-}
-
-inline void COptMethodGA::Set_CandidateValue(int i, double num)
-{
-  CandidateValue[i] = num;
-}
-
-inline void COptMethodGA::Set_BestFoundSoFar(int num)
-{
-  BestFoundSoFar = num;
-}
-
-//implementation of access functions
-
-inline int COptMethodGA::Get_NumParameter()
-{
-  return NumParameter;
-}
-
-inline double COptMethodGA::Get_BestFoundSoFar_candidate()
-{
-  return CandidateValue[BestFoundSoFar];
-}
-
-inline int COptMethodGA::Get_NumGeneration()
-{
-  return NumGeneration;
-}
-
-inline int COptMethodGA::Get_PopulationSize()
-{
-  return PopulationSize;
-}
 
 #endif  // COPASI_COptMethodGA
