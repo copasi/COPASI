@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/09 14:48:28 $
+   $Date: 2004/02/26 21:17:35 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -105,8 +105,8 @@ void CMetab::cleanup() {}
 
 void CMetab::initModel()
 {
-  mpModel = (CModel *) getObjectAncestor("Model");
-  if (!mpModel) mpModel = Copasi->pModel;
+  mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+  if (!mpModel && Copasi) mpModel = Copasi->pModel;
 }
 
 void CMetab::initCompartment(const CCompartment * pCompartment)
