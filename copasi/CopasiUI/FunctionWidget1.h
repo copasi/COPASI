@@ -43,8 +43,6 @@ class QRadioButton;
 
 class QFrame;
 
-class CModel;
-
 class FunctionWidget1 : public QWidget
   {
     Q_OBJECT
@@ -52,13 +50,11 @@ class FunctionWidget1 : public QWidget
   protected:
     QPushButton* cancelChanges;
     QPushButton* commitChanges;
-    CModel *mModel;
     QTable *Table1;
     QTable *Table2;
 
   public:
     FunctionWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadFunction(CModel *model);
     void loadName(QString setValue);
     int isName(QString setValue);
 
