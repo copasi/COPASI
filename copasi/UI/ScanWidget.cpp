@@ -243,11 +243,12 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   pTrajectoryWidget->hide();
 
   pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
-  pTrajectoryWidget->loadTrajectoryTask(new CTrajectoryTask());
+  //pTrajectoryWidget->loadTrajectoryTask(/*new CTrajectoryTask()*/);
+  pTrajectoryWidget->enter((new CTrajectoryTask())->getKey());
 
   CScanProblem* scanProblem = scanTask->getProblem();
   scanProblem->setSteadyStateTask(pSteadyStateWidget->getSteadyStateTask());
-  scanProblem->setTrajectoryTask(pTrajectoryWidget->getTrajectoryTask());
+  //!!!  scanProblem->setTrajectoryTask(pTrajectoryWidget->getTrajectoryTask());
   scanProblem->setProcessSteadyState(steadyState->isChecked());
   scanProblem->setProcessTrajectory(trajectory->isChecked());
 
@@ -506,10 +507,13 @@ void ScanWidget::loadScan(CModel *model)
 
       mModel = model;
       pSteadyStateWidget->setModel(mModel);
-      pTrajectoryWidget->setModel(mModel);
+      //pTrajectoryWidget->setModel(mModel);
 
       CScanProblem *scanProblem = scanTask->getProblem();
       scanProblem->setModel(model);
+      scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
+      scanProblem->setTrajectoryTask(/*pTrajectoryWidget->mTrajectoryTask*/dataModel->getTrajectoryTask());
+      //TODO !!!!! does not work right now
 
       sExecutable->setEnabled(true);
       if (scanTask->isRequested() == true)
