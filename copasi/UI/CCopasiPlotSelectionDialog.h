@@ -1,13 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 20:49:31 $
+   $Date: 2004/12/15 13:30:47 $
    End CVS Header */
 
-#ifndef CPlotSelectionDialog_H__
-#define CPlotSelectionDialog_H__
+#ifndef CCopasiPlotSelectionDialog_H__
+#define CCopasiPlotSelectionDialog_H__
 
 #include "qdialog.h"
 #include <vector>
