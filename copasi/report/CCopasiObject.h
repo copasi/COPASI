@@ -36,7 +36,8 @@ class CCopasiObject
       Reference = 0x10,
       ValueInt = 0x20,
       ValueDbl = 0x40,
-      NonUniqueName = 0x80
+      NonUniqueName = 0x80,
+      StaticString = 0x100
     };
 
   private:

@@ -15,20 +15,17 @@
 class CCopasiStaticString: public CCopasiObject
   {
     // Operations
-  private:
-    std::string strObject;
   public:
-    CCopasiStaticString();
+    CCopasiStaticString(const std::string & name = "",
+                        const CCopasiContainer * pParent = NULL);
 
-    CCopasiStaticString(const std::string & name);
+    CCopasiStaticString(const CCopasiStaticString & src,
+                        const CCopasiContainer * pParent = NULL);
 
     ~CCopasiStaticString();
 
     void cleanup();
 
-    const std::string& getStaticString()
-    {
-      return strObject;
-    }
+    const std::string & getStaticString() const;
   };
 #endif // COPASI_CCopasiStaticString

@@ -2,20 +2,19 @@
 #include <sstream>
 #include "CCopasiStaticString.h"
 
-using std::string;
-
-CCopasiStaticString::CCopasiStaticString()
-    : strObject()
+CCopasiStaticString::CCopasiStaticString(const std::string & name,
+    const CCopasiContainer * pParent):
+    CCopasiObject(name, pParent, "String", CCopasiObject::StaticString)
 {}
 
-CCopasiStaticString::CCopasiStaticString(const std::string & name)
-    : strObject(name)
+CCopasiStaticString::CCopasiStaticString(const CCopasiStaticString & src,
+    const CCopasiContainer * pParent):
+    CCopasiObject(src, pParent)
 {}
 
-CCopasiStaticString::~CCopasiStaticString()
-{
-  cleanup();
-}
+CCopasiStaticString::~CCopasiStaticString() {}
 
-void CCopasiStaticString::cleanup()
-{}
+void CCopasiStaticString::cleanup() {}
+
+const std::string & CCopasiStaticString::getStaticString() const
+  {return getObjectName();}
