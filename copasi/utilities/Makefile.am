@@ -4,6 +4,7 @@ noinst_LIBRARIES = libutilities.a
 libutilities_a_SOURCES = \
 	CCopasiException.cpp \
 	CCopasiMessage.cpp \
+	CCopasiNode.cpp \
 	CDependencyGraph.cpp \
 	CGlobals.cpp \
 	CIndexedPriorityQueue.cpp \
@@ -18,8 +19,9 @@ EXTRA_DIST = \
 	utilities.h \
 	CCopasiException.h	CCopasiException.cpp \
 	CCopasiMessage.h	CCopasiMessage.cpp \
-	CDependencyGraph.h	CDependencyGraph.cpp \
+	CCopasiNode.h		CCopasiNode.cpp \
 	CCopasiVector.h \
+	CDependencyGraph.h	CDependencyGraph.cpp \
 	CGlobals.h		CGlobals.cpp \
 	CIndexedPriorityQueue.h	CIndexedPriorityQueue.cpp \
 	CReadConfig.h		CReadConfig.cpp \
