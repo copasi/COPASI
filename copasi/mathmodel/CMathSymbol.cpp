@@ -16,7 +16,7 @@ std::map< std::string, CMathSymbol * > CMathSymbol::mList;
 std::string & CMathSymbol::alternateName(std::string & name)
 {
   unsigned C_INT32 count = 1;
-  stringstream tmpName;
+  std::stringstream tmpName;
   tmpName << name;
 
   while (mList.count(tmpName.str()))
