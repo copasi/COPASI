@@ -422,6 +422,7 @@ void COutput::repStruct(ofstream &fout)
 
   fout << endl << "REDUCED STOICHIOMETRY MATRIX" << endl;
 
+
   for (i = 0; i < model->getReactions().size(); i++)
     if (i)	fout << setw(4) << i;
     else fout << setw(16) << i;
@@ -444,11 +445,25 @@ void COutput::repStruct(ofstream &fout)
       fout << setw(11) << model->getMetabolitesInd()[i]->getName() << "|";
 
       for (j = 0; j < model->getReactions().size(); j++)
-		fout << setprecision(1) << setw(10) << model->getRedStoi()[i][j];
+	  {
+		fout << setprecision(1);
+		if (j) 
+			// Set Left Justification
+			fout.setf(ios::left);
+		else 
+			fout.setf(ios::right);
+
+		fout << setw(4) << model->getRedStoi()[i][j];
+	  }
       fout << endl;
+	   // Restore Justification
+	  fout.unsetf(ios::right);
+	  fout.setf(ios::left);	
     }
 
-  fout << endl << endl << "INVERSE OF THE REDUCTION MATRIX" << endl;
+  fout << endl << "INVERSE OF THE REDUCTION MATRIX" << endl;
+
+  fout << endl;
 
   // Restore Justification
   fout.unsetf(ios::left);
@@ -456,12 +471,12 @@ void COutput::repStruct(ofstream &fout)
   for (i = 0; i < model->getMetabolitesInd().size(); i++)
     {
       if (i)	fout << setw(4) << i;
-      else fout << setw(15) << i;
+      else fout << setw(16) << i;
     }
 
   fout << endl;
 
-
+  	
   for (i = 0; i < model->getMetabolitesInd().size(); i++)
     if (i) fout << setw(4) << "----";
     else fout << setw(15) << "----";
@@ -475,9 +490,21 @@ void COutput::repStruct(ofstream &fout)
     {
       fout << setw(11) << model->getMetabolites()[i]->getName() << "|";
 
-      //for (j = 0; j < model.getMetabolitesInd().size(); j++)
-      //		fout << setprecision(1) << setw(10) << model.getRedStoi()[i][j];
+      for (j = 0; j < model->getMetabolitesInd().size(); j++)
+	  {
+  		if (j) 
+			// Set Left Justification
+			fout.setf(ios::left);
+		else 
+			fout.setf(ios::right);
+
+		fout << setprecision(1) << setw(4) << model->getML()[i][j];
+
+	  }
       fout << endl;
+	   // Restore Justification
+	  fout.unsetf(ios::right);
+	  fout.setf(ios::left);	
     }
 
   fout << endl;
@@ -517,6 +544,9 @@ void COutput::repSS(ofstream &fout)
       fout << "(chemical equilibrium)" << endl;
   }
 
+  fout.unsetf(ios::left);
+  fout.setf(ios::right);	
+
   // Output concentrations
   for (i = 0; i < model->getTotMetab(); i++)
     {
@@ -527,14 +557,14 @@ void COutput::repSS(ofstream &fout)
       // Output Concentration
       fout << "[" << setw(10) << model->getMetabolites()[i]->getName();
       fout << "] = ";
-      fout << setprecision(6) << model->getMetabolites()[i]->getConcentration(); 
+      fout << setprecision(6) << *model->getMetabolites()[i]->getConcentration(); 
       fout << " " << ConcUnit << ", ";
       // Output Transition time of the metabolite
       fout << "tt = " << setprecision(6) << model->getMetabolites()[i]->getTransitionTime();
       fout << " " << TimeUnit << " " << ", ";
       // Output rate
       fout << "rate = " << setprecision(3) << rate;
-      fout << " " << ConcUnit << "/" << TimeUnit << endl;
+      fout << " " << ConcUnit << "/" << TimeUnit;
 	
       if (*model->getMetabolites()[i]->getConcentration() < 0.0)
         fout << " BOGUS!";
@@ -546,7 +576,7 @@ void COutput::repSS(ofstream &fout)
     {
       fout << "J(" << model->getReactions()[i]->getName() << ") = ";
       fout << setprecision(6) << model->getReactions()[i]->getFlux();
-      fout << ConcUnit << "/" << "TimeUnit" << endl;
+      fout << " " << ConcUnit << "/" << TimeUnit << endl;
     }
 	
   // output user-defined functions
@@ -732,12 +762,12 @@ void COutput::copasiRep(ofstream &fout)
 
   if (RepComments) repComments(fout);
   if (RepStruct) repStruct(fout);
+  repParams(fout);
   repSS(fout);
+  //if (RepStab) repStability(fout);
 #if 0
-  if (RepStab) repStability(fout);
   if (RepMCA)	repMCA(fout);
 #endif
-  repParams(fout);
 
 }
 
