@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+//#include "utilities/CCopasiException.h"
+
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "CModel.h"
@@ -22,6 +24,7 @@ CModel::CModel()
   mCompartments = NULL;
   mSteps        = NULL;
   mMoieties     = NULL;
+  mComments = "";
 
   mpLView = new
     TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
@@ -95,15 +98,15 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   try 
     {
       Fail = configBuffer.getVariable("Comments", "multiline", &mComments,
-				      CReadConfig::SEARCH);
+                                      CReadConfig::SEARCH);
     }
 
   catch (CCopasiException Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
-	mComments = "";
+        mComments = "";
       else
-	throw Exception;
+        throw Exception;
     }
  
   if ((Fail = configBuffer.getVariable("TotalCompartments", "C_INT32", &Size,
