@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/10 20:33:28 $
+   $Date: 2005/03/18 02:56:37 $
    End CVS Header */
 
 /**
@@ -35,7 +35,8 @@ COptProblem::COptProblem(const CCopasiContainer * pParent):
     mCalculateVariablesMin(),
     mCalculateVariablesMax(),
     mpSteadyState(NULL),
-    mpTrajectory(NULL)
+    mpTrajectory(NULL),
+    mOptItemList()
 {
   addGroup("OptimizationItemList");
   addGroup("OptimizationConstraintList");
@@ -53,12 +54,19 @@ COptProblem::COptProblem(const COptProblem& src,
     mCalculateVariablesMin(src.mCalculateVariablesMin),
     mCalculateVariablesMax(src.mCalculateVariablesMax),
     mpSteadyState(src.mpSteadyState),
-    mpTrajectory(src.mpTrajectory)
+    mpTrajectory(src.mpTrajectory),
+    mOptItemList()
 {}
 
 // Destructor
 COptProblem::~COptProblem()
-{}
+{
+  std::vector<COptItem *>::iterator it = mOptItemList.begin();
+  std::vector<COptItem *>::iterator end = mOptItemList.end();
+
+  for (; it != end; ++it)
+    pdelete(*it);
+}
 
 bool COptProblem::setModel(CModel * pModel)
 {
@@ -111,13 +119,13 @@ void COptProblem::setSolutionValue(const C_FLOAT64 & value)
 }
 
 // get the minimum value of parameters
-CVector< C_FLOAT64 > & COptProblem::getParameterMin()
+CVector< const C_FLOAT64 * > & COptProblem::getParameterMin()
 {
   return mCalculateVariablesMin;
 }
 
 // get the maximum value of the parameters
-CVector< C_FLOAT64 > & COptProblem::getParameterMax()
+CVector< const C_FLOAT64 * > & COptProblem::getParameterMax()
 {
   return mCalculateVariablesMax;
 }
@@ -133,26 +141,19 @@ void COptProblem::setProblemType(ProblemType type)
 
 COptItem COptProblem::getOptItem(const unsigned C_INT32 & index)
 {
-  CCopasiParameterGroup * pOptimizationItemList
-  = (CCopasiParameterGroup *) getValue("OptimizationItemList");
-
-  CCopasiParameterGroup * pOptItem
-  = (CCopasiParameterGroup *) pOptimizationItemList->getValue(index);
-
-  if (!pOptItem || !COptItem::isValid(*pOptItem)) fatalError();
-
-  COptItem Item(*pOptItem);
-  return Item;
+  assert (index < mOptItemList.size());
+  return *mOptItemList[index];
 }
 
 const unsigned C_INT32 COptProblem::getOptItemSize() const
-{return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->size();}
+  {return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->size();}
 
 COptItem COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
   unsigned C_INT32 index = getOptItemSize();
   CCopasiParameterGroup * pOptimizationItemList
   = (CCopasiParameterGroup *) getValue("OptimizationItemList");
+
   pOptimizationItemList->addGroup("OptimizationItem");
 
   CCopasiParameterGroup * pOptItem =
@@ -160,12 +161,34 @@ COptItem COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 
   assert(pOptItem != NULL);
 
-  COptItem OptItem(*pOptItem);
-  if (!OptItem.initialize(objectCN)) fatalError();
+  COptItem * pTmp = new COptItem(*pOptItem);
+  if (!pTmp->initialize(objectCN)) fatalError();
 
-  return OptItem;
+  mOptItemList.push_back(pTmp);
+
+  return *pTmp;
+}
+
+bool COptProblem::removeOptItem(const unsigned C_INT32 & index)
+{
+  if (!(index < mOptItemList.size())) return false;
+
+  pdelete(mOptItemList[index]);
+  mOptItemList.erase(mOptItemList.begin() + index);
+
+  return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->removeParameter(index);
 }
 
 bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
                               const unsigned C_INT32 & iTo)
-{return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->swap(iFrom, iTo);}
+{
+  if (!(iFrom < mOptItemList.size()) ||
+      !(iTo < mOptItemList.size()))
+    return false;
+
+  COptItem * pTmp = mOptItemList[iFrom];
+  mOptItemList[iFrom] = mOptItemList[iTo];
+  mOptItemList[iTo] = pTmp;
+
+  return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->swap(iFrom, iTo);
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:40:08 $
+   $Date: 2005/03/18 02:56:37 $
    End CVS Header */
 
 /**
@@ -46,12 +46,12 @@ class COptProblem : public CCopasiProblem
     /**
      * The minimum values of the parameters
      */
-    CVector< C_FLOAT64 > mCalculateVariablesMin;
+    CVector< const C_FLOAT64 * > mCalculateVariablesMin;
 
     /**
      * The maximum values of the parameters
      */
-    CVector< C_FLOAT64 > mCalculateVariablesMax;
+    CVector< const C_FLOAT64 * > mCalculateVariablesMax;
 
     /**
      * Pointer to CSteadyStateTask.  To be used in calculate() to select between
@@ -69,6 +69,8 @@ class COptProblem : public CCopasiProblem
      * The objective function which should be minimized or maximized.
      */
     COptFunction * mpFunction;
+
+    std::vector< COptItem * > mOptItemList;
 
     // Implementation
   public:
@@ -133,15 +135,15 @@ class COptProblem : public CCopasiProblem
 
     /**
      * Retrieve the vector of Minimum values of the parameters
-     * @return CVector< C_FLOAT64 > & parameterMin
+     * @return CVector< const C_FLOAT64 * > & parameterMin
      */
-    CVector< C_FLOAT64 > & getParameterMin();
+    CVector< const C_FLOAT64 * > & getParameterMin();
 
     /**
      * Retrieve the vector of maximum values of the parameters
-     * @return CVector< C_FLOAT64 > & parameterMax
+     * @return CVector< C_FLOAT64 * > & parameterMax
      */
-    CVector< C_FLOAT64 > & getParameterMax();
+    CVector< const C_FLOAT64 * > & getParameterMax();
 
     /**
      * Set problem type : Steady State or Trajectory
@@ -168,6 +170,13 @@ class COptProblem : public CCopasiProblem
      * @return COptItem optItemAdded
      */
     COptItem addOptItem(const CCopasiObjectName & objectCN);
+
+    /**
+     * Remove an optimization items.
+     * @param const unsigned C_INT32 & index
+     * @return bool success
+     */
+    bool removeOptItem(const unsigned C_INT32 & index);
 
     /**
      * Swap two optimization items.
