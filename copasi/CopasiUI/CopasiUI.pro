@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.21 $ $Author: shoops $ $Date: 2003/11/05 14:36:25 $  
+# $Revision: 1.22 $ $Author: shoops $ $Date: 2003/11/07 16:59:55 $  
 ######################################################################
 
 include(../common.pri)
@@ -111,6 +111,7 @@ HEADERS += \
            OptimizationWidget.h \
            parametertable.h \
            PlotWidget.h \
+           qtUtilities.h \
            ReactionsWidget.h \
            ReactionsWidget1.h \
            ScanItemWidget.h \
@@ -167,6 +168,7 @@ SOURCES += \
            OptimizationWidget.cpp \
            parametertable.cpp \
            PlotWidget.cpp \
+           qtUtilities.cpp \
            ReactionsWidget.cpp \
            ReactionsWidget1.cpp \
            ScanItemWidget.cpp \
