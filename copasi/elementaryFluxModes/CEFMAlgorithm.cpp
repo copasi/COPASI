@@ -6,18 +6,21 @@
  * (C) Stefan Hoops 2002
  */
 
+// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CEFMAlgorithm.h"
 #include "CFluxMode.h"
 
 CEFMAlgorithm::CEFMAlgorithm()
 {
+  CONSTRUCTOR_TRACE;
   mCurrentTableau = NULL;
   mNextTableau = NULL;
 }
   
 CEFMAlgorithm::~CEFMAlgorithm()
 {
+  DESTRUCTOR_TRACE;
   pdelete(mCurrentTableau);
   pdelete(mNextTableau);
 }

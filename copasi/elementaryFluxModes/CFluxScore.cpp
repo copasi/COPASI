@@ -6,13 +6,15 @@
  * (C) Stefan Hoops 2002
  */
 
+// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFluxScore.h"
 
-CFluxScore::CFluxScore(){}
+CFluxScore::CFluxScore(){CONSTRUCTOR_TRACE;}
 
 CFluxScore::CFluxScore(const vector < C_FLOAT64 > & fluxMode)
 {
+  CONSTRUCTOR_TRACE;
   unsigned C_INT32 Remainder = fluxMode.size()%(8*sizeof(int));
   unsigned C_INT32 i, imax = fluxMode.size()/(8*sizeof(int));
   unsigned C_INT32 j, k;
@@ -47,7 +49,7 @@ CFluxScore::CFluxScore(const vector < C_FLOAT64 > & fluxMode)
     }
 }
 
-CFluxScore::~CFluxScore(){}
+CFluxScore::~CFluxScore(){DESTRUCTOR_TRACE;}
 
 bool CFluxScore::operator <(const CFluxScore & rhs) const
 {

@@ -8,17 +8,20 @@
 
 #include <iostream>
 
+// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CTableauMatrix.h"
 
 CTableauMatrix::CTableauMatrix() 
 {
+  CONSTRUCTOR_TRACE;
   mFirstIrreversible = mLine.end();
 }
 
 CTableauMatrix::CTableauMatrix(const vector < vector < C_FLOAT64 > > & stoi,
                                C_INT32 reversibleNumber)
 {
+  CONSTRUCTOR_TRACE;
   unsigned C_INT32 ReactionCounter = 0;
   unsigned C_INT32 ReactionNumber = stoi.size();
   
@@ -40,6 +43,7 @@ CTableauMatrix::CTableauMatrix(const vector < vector < C_FLOAT64 > > & stoi,
 
 CTableauMatrix::~CTableauMatrix()
 {
+  DESTRUCTOR_TRACE;
   for (list < const CTableauLine * >::iterator i = mLine.begin();
        i != mLine.end(); i++)
     pdelete(*i);
@@ -81,6 +85,9 @@ void CTableauMatrix::addLine(const CTableauLine * src)
           mLine.push_back(src);
         }
     }
+  else
+    pdelete(src);
+  
 }
 
 void CTableauMatrix::removeLine(const list < const CTableauLine * >::iterator line)

@@ -8,16 +8,18 @@
 
 #include <iostream>
 
+// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CTableauLine.h"
 
-CTableauLine::CTableauLine() {mFluxScore=NULL;} 
+CTableauLine::CTableauLine() {CONSTRUCTOR_TRACE; mFluxScore=NULL;} 
 
 CTableauLine::CTableauLine(const vector <C_FLOAT64> & reaction,
                            bool reversible,
                            const C_INT32 & reactionCounter,
                            const C_INT32 & reactionNumber)
 {
+  CONSTRUCTOR_TRACE;
   mReaction = reaction;
   mReversible = reversible;
   
@@ -32,6 +34,7 @@ CTableauLine::CTableauLine(const C_FLOAT64 & m1,
                            const C_FLOAT64 & m2,
                            const CTableauLine & src2)
 {
+  CONSTRUCTOR_TRACE;
   unsigned C_INT32 i, imax = src1.mReaction.size();
   unsigned C_INT32 j, jmax = src2.mFluxMode.size();
 
@@ -49,7 +52,7 @@ CTableauLine::CTableauLine(const C_FLOAT64 & m1,
   mFluxScore = new CFluxScore(mFluxMode);
 }
 
-CTableauLine::~CTableauLine() {pdelete(mFluxScore);}
+CTableauLine::~CTableauLine() {DESTRUCTOR_TRACE; pdelete(mFluxScore);}
 
 const CFluxScore & CTableauLine::getScore() const
 {

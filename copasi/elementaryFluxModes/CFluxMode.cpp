@@ -6,13 +6,19 @@
  * (C) Stefan Hoops 2002
  */
 
+// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFluxMode.h"
 
-CFluxMode::CFluxMode() {}
+CFluxMode::CFluxMode() {CONSTRUCTOR_TRACE;}
+
+CFluxMode::CFluxMode(const CFluxMode & src) :
+  mReactions(src.mReactions), mReversible(src.mReversible)
+{CONSTRUCTOR_TRACE;}
 
 CFluxMode::CFluxMode(const CTableauLine * line)
 {
+  CONSTRUCTOR_TRACE;
   const vector < C_FLOAT64 > & FluxMode = line->getFluxMode();
   unsigned C_INT32 i, imax = FluxMode.size();
 
@@ -28,7 +34,8 @@ CFluxMode::CFluxMode(const CTableauLine * line)
 
   mReversible = line->isReversible();
 }
-CFluxMode::~CFluxMode() {}
+
+CFluxMode::~CFluxMode() {DESTRUCTOR_TRACE;}
 
 const unsigned C_INT32 &
 CFluxMode::getReaction(const unsigned C_INT32 & index) const

@@ -7,15 +7,16 @@
  *  (C) Stefan Hoops 2002
  */
 
+// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CElementaryFluxModes.h"
 #include "model/model.h"
 #include "tnt/tnt.h"
 #include "tnt/cmat.h"
 
-CElementaryFluxModes::CElementaryFluxModes(){mModel = NULL;}
+CElementaryFluxModes::CElementaryFluxModes(){CONSTRUCTOR_TRACE;mModel = NULL;}
 
-CElementaryFluxModes::~CElementaryFluxModes(){}
+CElementaryFluxModes::~CElementaryFluxModes(){DESTRUCTOR_TRACE;}
 
 void CElementaryFluxModes::calculate(const CModel * model)
 {

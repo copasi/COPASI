@@ -36,6 +36,12 @@ class CFluxMode
   CFluxMode();
 
   /**
+   *  Copy constructor
+   *  @param "const CFluxMode &" src
+   */
+  CFluxMode(const CFluxMode & src);
+
+  /**
    *  Specific constructor
    *  @param "const CTableauLine &" line
    */
