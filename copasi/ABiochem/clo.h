@@ -41,27 +41,32 @@ namespace clo
           constants(1.0),
           coop(1.0),
           genes(10),
-          inputs(2),
+          inputs(20),
+          interaction(0.5),
           positive(0.5),
-          prefix("erdos"),
+          prefix("agn"),
           rates(1.0),
           rewire(0.1),
           seed(0),
-          total(10)
-      { }
+          specific_activation(false),
+          total(10),
+          version(false)
+      {}
 
       double constants;
       double coop;
       int genes;
       int inputs;
+      double interaction;
       double positive;
       std::string prefix;
       double rates;
       double rewire;
       int seed;
+      bool specific_activation;
       int total;
-    }
-; // end options struct
+      bool version;
+    }; // end options struct
 
   /**
    * the following struct is used to record the location
@@ -74,14 +79,16 @@ namespace clo
       size_type coop;
       size_type genes;
       size_type inputs;
+      size_type interaction;
       size_type positive;
       size_type prefix;
       size_type rates;
       size_type rewire;
       size_type seed;
+      size_type specific_activation;
       size_type total;
-    }
-; // end option location struct
+      size_type version;
+    }; // end option location struct
 
   /**
    * if there are any errors while parsing the command
@@ -91,7 +98,7 @@ namespace clo
     {
     public:
       option_error (const std::string &what_arg)
-          : runtime_error(what_arg) { }
+          : runtime_error(what_arg) {}
 
       const char* get_help_comment (void) const;
     };
@@ -106,14 +113,14 @@ namespace clo
     public:
       // constructor
       autoexcept (autothrow id, const std::string &message)
-          : option_error(message), autothrow_(id) { }
+          : option_error(message), autothrow_(id) {}
 
       /**
        * get the autothrow enum member for the autothrow
        * option that caused the exception.
       **/
       autothrow get_autothrow_id (void) const
-        { return autothrow_; }
+        {return autothrow_;}
     private:
       autothrow autothrow_;
     };
@@ -137,15 +144,15 @@ namespace clo
 
       /// get a list of nonoptions from the command line
       const std::vector<std::string>& get_non_options (void) const
-        { return non_options_; }
+        {return non_options_;}
 
       /// get the main options
       const options& get_options (void) const
-        { return options_; }
+        {return options_;}
 
       /// get the main option locations
       const option_locations& get_locations (void) const
-        { return locations_; }
+        {return locations_;}
     private:
       options options_;
       option_locations locations_;
@@ -155,22 +162,25 @@ namespace clo
         option_genes,
         option_inputs,
         option_positive,
+        option_interaction,
         option_rewire,
         option_coop,
         option_rates,
         option_constants,
         option_seed,
-        option_prefix
+        option_prefix,
+        option_specific_activation,
+        option_version
       } openum_;
 
-      enum parser_state { state_option, state_value, state_consume } state_;
+      enum parser_state {state_option, state_value, state_consume} state_;
       std::vector<std::string> non_options_;
-      enum opsource { source_cl, source_cf };
+
+      enum opsource {source_cl, source_cf};
       void parse_element (const char *element, int position, opsource source);
       void parse_short_option (char option, int position, opsource source);
       void parse_long_option (const char *option, int position, opsource source);
       void parse_value (const char *value);
-    }
-; // end clo::parser class
+    }; // end clo::parser class
 } // end clo namespace
 #endif

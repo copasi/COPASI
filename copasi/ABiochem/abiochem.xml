@@ -1,5 +1,5 @@
 <!-- 
-    This file demostrates how to specify options to clo++
+    This file contains the specification of the ABiochem command line for processing with clo++
 -->
 <cloxx>
     <config>
@@ -21,7 +21,7 @@
 	    <comment>the total number of genes</comment>
 	</option>
 
-	<option id="inputs" type="int" default="2">
+	<option id="inputs" type="int" default="20">
             <range min="1"/>
 	    <name>inputs</name>
 	    <name>i</name>
@@ -35,7 +35,16 @@
 	    <name>positive</name>
 	    <name>p</name>
 	    <comment>
-		the probability of inputs being positive
+		the probability of positive inputs
+	    </comment>
+	</option>
+
+	<option id="interaction" type="double" default="0.5">
+            <range min="0.0" max="1.0" />
+	    <name>interaction</name>
+	    <name>I</name>
+	    <comment>
+		the probability of non-additive pairs of inputs
 	    </comment>
 	</option>
 
@@ -83,12 +92,22 @@
 	    </comment>
 	</option>
 
-	<option id="prefix" type="string" default="erdos">
+	<option id="prefix" type="string" default="agn">
 	    <name>prefix</name>
 	    <name>x</name>
 	    <comment>
 		Prefix for filenames
 	    </comment>
+	</option>
+
+	<option id="specific_activation" type="flag">
+	    <name>specific-activation</name>
+	    <comment>use specific activation kinetics</comment>
+	</option>
+
+	<option id="version" type="flag">
+	    <name>version</name>
+	    <comment>output version information and exit</comment>
 	</option>
 
     </options>

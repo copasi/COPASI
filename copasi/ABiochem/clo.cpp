@@ -17,16 +17,19 @@
 namespace
   {
   const char const_usage[] =
-    "  -c, --coop double       the value of Hill coefficients\n"
-    "  -g, --genes int         the total number of genes\n"
-    "  -i, --inputs int        the number of total interactions\n"
-    "  -k, --constants double  the value of inhibition/activation constants\n"
-    "  -p, --positive double   the probability of inputs being positive\n"
-    "  -r, --rates double      the value of rate constants\n"
-    "  -s, --seed int          a seed for the random number generator\n"
-    "  -t, --total int         the total number of networks to generate\n"
-    "  -w, --rewire double     the probability of rewiring links at random\n"
-    "  -x, --prefix string     Prefix for filenames\n";
+    "  --specific-activation     use specific activation kinetics\n"
+    "  --version                 output version information and exit\n"
+    "  -I, --interaction double  the probability of non-additive pairs of inputs\n"
+    "  -c, --coop double         the value of Hill coefficients\n"
+    "  -g, --genes int           the total number of genes\n"
+    "  -i, --inputs int          the number of total interactions\n"
+    "  -k, --constants double    the value of inhibition/activation constants\n"
+    "  -p, --positive double     the probability of positive inputs\n"
+    "  -r, --rates double        the value of rate constants\n"
+    "  -s, --seed int            a seed for the random number generator\n"
+    "  -t, --total int           the total number of networks to generate\n"
+    "  -w, --rewire double       the probability of rewiring links at random\n"
+    "  -x, --prefix string       Prefix for filenames\n";
 
   const char const_help_comment[] =
     "use the -h option for help";
@@ -43,10 +46,8 @@ clo::parser::parser (void)
 //#########################################################################
 void clo::parser::parse (int argc, char *argv[], bool call_finalize)
 {
-  for (int i = 1; i < argc; ++i)
-    parse_element(argv[i], i, source_cl);
-  if (call_finalize)
-    finalize();
+  for (int i = 1; i < argc; ++i) parse_element(argv[i], i, source_cl);
+  if (call_finalize) finalize();
 }
 //#########################################################################
 void clo::parser::finalize (void)
@@ -63,6 +64,8 @@ void clo::parser::finalize (void)
           throw option_error("missing value for 'genes' option");
         case option_inputs:
           throw option_error("missing value for 'inputs' option");
+        case option_interaction:
+          throw option_error("missing value for 'interaction' option");
         case option_positive:
           throw option_error("missing value for 'positive' option");
         case option_prefix:
@@ -73,8 +76,12 @@ void clo::parser::finalize (void)
           throw option_error("missing value for 'rewire' option");
         case option_seed:
           throw option_error("missing value for 'seed' option");
+        case option_specific_activation:
+          throw option_error("missing value for 'specific-activation' option");
         case option_total:
           throw option_error("missing value for 'total' option");
+        case option_version:
+          throw option_error("missing value for 'version' option");
         }
     }
 }
@@ -91,12 +98,10 @@ void clo::parser::parse_element (const char *element, int position, opsource sou
     case state_option:
       if (length >= 2 && element[0] == '-' && element[1] == '-')
         {
-          if (length == 2)
-          { state_ = state_consume; return; }
+          if (length == 2) {state_ = state_consume; return;}
           element += 2;
           const char *value = element;
-          while (*value != 0 && *value != '=')
-            ++value;
+          while (*value != 0 && *value != '=') ++value;
           if (*value == '=')
             {
               std::string selement(element, value - element), svalue(++value);
@@ -104,9 +109,7 @@ void clo::parser::parse_element (const char *element, int position, opsource sou
               parse_long_option(selement.c_str(), position, source);
               if (state_ != state_value)
                 {
-                  std::string error("the '");
-                  error += element;
-                  error += "' option does not take a value";
+                  std::string error("the '"); error += element; error += "' option does not take a value";
                   throw option_error(error);
                 }
 
@@ -158,6 +161,11 @@ void clo::parser::parse_short_option (char option, int position, opsource source
 {
   switch (option)
     {
+    case 'I':
+      openum_ = option_interaction;
+      state_ = state_value;
+      locations_.interaction = position;
+      return;
     case 'c':
       openum_ = option_coop;
       state_ = state_value;
@@ -209,18 +217,14 @@ void clo::parser::parse_short_option (char option, int position, opsource source
       locations_.prefix = position;
       return;
     case 'h':
-      if (source != source_cl)
-        break;
+      if (source != source_cl) break;
       throw autoexcept(autothrow_help, const_usage);
     case '?':
-      if (source != source_cl)
-        break;
+      if (source != source_cl) break;
       throw autoexcept(autothrow_help, const_usage);
     }
 
-  std::string error("unknown option: '");
-  error += option;
-  error += "'";
+  std::string error("unknown option: '"); error += option; error += "'";
   throw option_error(error);
 }
 //#########################################################################
@@ -253,6 +257,13 @@ void clo::parser::parse_long_option (const char *option, int position, opsource 
     {
       openum_ = option_inputs;
       locations_.inputs = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "interaction") == 0)
+    {
+      openum_ = option_interaction;
+      locations_.interaction = position;
       state_ = state_value;
       return;
     }
@@ -291,6 +302,13 @@ void clo::parser::parse_long_option (const char *option, int position, opsource 
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "specific-activation") == 0)
+    {
+      openum_ = option_specific_activation;
+      locations_.specific_activation = position;
+      options_.specific_activation = !options_.specific_activation;
+      return;
+    }
   else if (strcmp(option, "total") == 0)
     {
       openum_ = option_total;
@@ -298,14 +316,19 @@ void clo::parser::parse_long_option (const char *option, int position, opsource 
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "version") == 0)
+    {
+      openum_ = option_version;
+      locations_.version = position;
+      options_.version = !options_.version;
+      return;
+    }
   else if (source == source_cl && strcmp(option, "help") == 0)
     {
       throw autoexcept(autothrow_help, const_usage);
     }
 
-  std::string error("unknown option '");
-  error += option;
-  error += "'";
+  std::string error("unknown option '"); error += option; error += "'";
   throw option_error(error);
 }
 //#########################################################################
@@ -315,16 +338,12 @@ void clo::parser::parse_value (const char *value)
     {
     case option_constants:
       {
-        char *endptr;
-        double tmp = strtod(value, &endptr);
-        while (*endptr != 0 && isspace(*endptr))
-          ++endptr;
+        char *endptr; double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
 
         if (*endptr != 0)
           {
-            std::string error("invalid floating point value '");
-            error += value;
-            error += "'";
+            std::string error("invalid floating point value '"); error += value; error += "'";
             throw option_error(error);
           }
         if (tmp < 0.0)
@@ -336,16 +355,12 @@ void clo::parser::parse_value (const char *value)
       break;
     case option_coop:
       {
-        char *endptr;
-        double tmp = strtod(value, &endptr);
-        while (*endptr != 0 && isspace(*endptr))
-          ++endptr;
+        char *endptr; double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
 
         if (*endptr != 0)
           {
-            std::string error("invalid floating point value '");
-            error += value;
-            error += "'";
+            std::string error("invalid floating point value '"); error += value; error += "'";
             throw option_error(error);
           }
         if (tmp < 0.0)
@@ -357,16 +372,12 @@ void clo::parser::parse_value (const char *value)
       break;
     case option_genes:
       {
-        char *endptr;
-        int tmp = strtol(value, &endptr, 0);
-        while (*endptr != 0 && isspace(*endptr))
-          ++endptr;
+        char *endptr; int tmp = strtol(value, &endptr, 0);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
 
         if (*endptr != 0)
           {
-            std::string error("invalid integer value '");
-            error += value;
-            error += "'";
+            std::string error("invalid integer value '"); error += value; error += "'";
             throw option_error(error);
           }
         if (tmp < 1)
@@ -378,16 +389,12 @@ void clo::parser::parse_value (const char *value)
       break;
     case option_inputs:
       {
-        char *endptr;
-        int tmp = strtol(value, &endptr, 0);
-        while (*endptr != 0 && isspace(*endptr))
-          ++endptr;
+        char *endptr; int tmp = strtol(value, &endptr, 0);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
 
         if (*endptr != 0)
           {
-            std::string error("invalid integer value '");
-            error += value;
-            error += "'";
+            std::string error("invalid integer value '"); error += value; error += "'";
             throw option_error(error);
           }
         if (tmp < 1)
@@ -397,18 +404,35 @@ void clo::parser::parse_value (const char *value)
         options_.inputs = tmp;
       }
       break;
-    case option_positive:
+    case option_interaction:
       {
-        char *endptr;
-        double tmp = strtod(value, &endptr);
-        while (*endptr != 0 && isspace(*endptr))
-          ++endptr;
+        char *endptr; double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
 
         if (*endptr != 0)
           {
-            std::string error("invalid floating point value '");
-            error += value;
-            error += "'";
+            std::string error("invalid floating point value '"); error += value; error += "'";
+            throw option_error(error);
+          }
+        if (tmp < 0.0)
+          {
+            throw option_error("floating point value out of range, 'interaction' min is 0.0");
+          }
+        if (tmp > 1.0)
+          {
+            throw option_error("floating point value out of range, 'interaction' max is 1.0");
+          }
+        options_.interaction = tmp;
+      }
+      break;
+    case option_positive:
+      {
+        char *endptr; double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
+
+        if (*endptr != 0)
+          {
+            std::string error("invalid floating point value '"); error += value; error += "'";
             throw option_error(error);
           }
         if (tmp < 0.0)
@@ -429,16 +453,12 @@ void clo::parser::parse_value (const char *value)
       break;
     case option_rates:
       {
-        char *endptr;
-        double tmp = strtod(value, &endptr);
-        while (*endptr != 0 && isspace(*endptr))
-          ++endptr;
+        char *endptr; double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
 
         if (*endptr != 0)
           {
-            std::string error("invalid floating point value '");
-            error += value;
-            error += "'";
+            std::string error("invalid floating point value '"); error += value; error += "'";
             throw option_error(error);
           }
         if (tmp < 0.0)
@@ -450,16 +470,12 @@ void clo::parser::parse_value (const char *value)
       break;
     case option_rewire:
       {
-        char *endptr;
-        double tmp = strtod(value, &endptr);
-        while (*endptr != 0 && isspace(*endptr))
-          ++endptr;
+        char *endptr; double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
 
         if (*endptr != 0)
           {
-            std::string error("invalid floating point value '");
-            error += value;
-            error += "'";
+            std::string error("invalid floating point value '"); error += value; error += "'";
             throw option_error(error);
           }
         if (tmp < 0.0)
@@ -475,33 +491,27 @@ void clo::parser::parse_value (const char *value)
       break;
     case option_seed:
       {
-        char *endptr;
-        int tmp = strtol(value, &endptr, 0);
-        while (*endptr != 0 && isspace(*endptr))
-          ++endptr;
+        char *endptr; int tmp = strtol(value, &endptr, 0);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
 
         if (*endptr != 0)
           {
-            std::string error("invalid integer value '");
-            error += value;
-            error += "'";
+            std::string error("invalid integer value '"); error += value; error += "'";
             throw option_error(error);
           }
         options_.seed = tmp;
       }
       break;
+    case option_specific_activation:
+      break;
     case option_total:
       {
-        char *endptr;
-        int tmp = strtol(value, &endptr, 0);
-        while (*endptr != 0 && isspace(*endptr))
-          ++endptr;
+        char *endptr; int tmp = strtol(value, &endptr, 0);
+        while (*endptr != 0 && isspace(*endptr)) ++endptr;
 
         if (*endptr != 0)
           {
-            std::string error("invalid integer value '");
-            error += value;
-            error += "'";
+            std::string error("invalid integer value '"); error += value; error += "'";
             throw option_error(error);
           }
         if (tmp < 1)
@@ -510,6 +520,8 @@ void clo::parser::parse_value (const char *value)
           }
         options_.total = tmp;
       }
+      break;
+    case option_version:
       break;
     }
 }
@@ -538,6 +550,9 @@ namespace
     if (name_size <= 6 && name.compare(0, name_size, "inputs", name_size) == 0)
       matches.push_back("inputs");
 
+    if (name_size <= 11 && name.compare(0, name_size, "interaction", name_size) == 0)
+      matches.push_back("interaction");
+
     if (name_size <= 8 && name.compare(0, name_size, "positive", name_size) == 0)
       matches.push_back("positive");
 
@@ -553,17 +568,21 @@ namespace
     if (name_size <= 4 && name.compare(0, name_size, "seed", name_size) == 0)
       matches.push_back("seed");
 
+    if (name_size <= 19 && name.compare(0, name_size, "specific-activation", name_size) == 0)
+      matches.push_back("specific-activation");
+
     if (name_size <= 5 && name.compare(0, name_size, "total", name_size) == 0)
       matches.push_back("total");
+
+    if (name_size <= 7 && name.compare(0, name_size, "version", name_size) == 0)
+      matches.push_back("version");
 
     if (name_size <= 4 && name.compare(0, name_size, "help", name_size) == 0)
       matches.push_back("help");
 
     if (matches.empty())
       {
-        std::string error("unknown option '");
-        error += name;
-        error += "'";
+        std::string error("unknown option '"); error += name; error += "'";
         throw clo::option_error(error);
       }
 
@@ -572,9 +591,7 @@ namespace
         return matches[0];
       }
 
-    std::string error("the option name '");
-    error += name;
-    error += "' is ambiguous";
+    std::string error("the option name '"); error += name; error += "' is ambiguous";
     throw clo::option_error(error);
   }
 } // end anonymous namespace
