@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/27 18:43:34 $
+   $Date: 2005/02/28 16:15:41 $
    End CVS Header */
 
 /**
@@ -5364,7 +5364,7 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
   const char * objectType;
   CSlider::Type ObjectType;
   const char * tmp;
-  C_FLOAT64 ObjectValue;
+  //C_FLOAT64 ObjectValue;
   C_FLOAT64 MinValue;
   C_FLOAT64 MaxValue;
   unsigned C_INT32 TickNumber;
@@ -5379,8 +5379,8 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
       ObjectCN = mParser.getAttributeValue("objectCN", papszAttrs);
       objectType = mParser.getAttributeValue("objectType", papszAttrs);
       ObjectType = (CSlider::Type) mParser.toEnum(objectType, CSlider::TypeName);
-      tmp = mParser.getAttributeValue("objectValue", papszAttrs);
-      ObjectValue = atof(tmp);
+      //tmp = mParser.getAttributeValue("objectValue", papszAttrs);
+      //ObjectValue = atof(tmp);
       tmp = mParser.getAttributeValue("minValue", papszAttrs);
       MinValue = atof(tmp);
       tmp = mParser.getAttributeValue("maxValue", papszAttrs);
@@ -5398,7 +5398,7 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
           pSlider->setAssociatedEntityKey(mCommon.KeyMap.get(AssociatedEntityKey)->getKey());
           pSlider->setSliderObject((std::string) ObjectCN);
           pSlider->setSliderType(ObjectType);
-          pSlider->setSliderValue(ObjectValue);
+          //pSlider->setSliderValue(ObjectValue);
           pSlider->setMinValue(MinValue);
           pSlider->setMaxValue(MaxValue);
           pSlider->setTickNumber(TickNumber);
