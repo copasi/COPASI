@@ -85,7 +85,7 @@ class CStochSolver
      * and initializes that with the given model.
      * @param model A pointer to an instance of CModel
      */
-    void initialize(CModel *model);
+    void initialize(CModel *model, C_FLOAT64 time);
     /**
      * Clean up
      */
@@ -129,6 +129,16 @@ class CStochMethod
      * The sum of the propensities
      */
     C_FLOAT64 mA0;
+
+    /**
+     * The stored propensities for the reactions before the last update
+     */
+    std::vector<C_FLOAT64> mAmuOld;
+    /**
+     * The sum of the propensities before the last update
+     */
+    C_FLOAT64 mA0Old;
+
     /**
      * The random number generator
      */
@@ -158,7 +168,7 @@ class CStochMethod
      * @return mFail
      * @see mFail
      */
-    virtual C_INT32 initMethod() = 0;
+    virtual C_INT32 initMethod(C_FLOAT64 time) = 0;
     /**
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
@@ -184,11 +194,19 @@ class CStochMethod
      * @return The reaction index
      */
     C_INT32 generateReactionIndex();
+
     /**
-     * Generate the putative time taken before a reaction
+     * Generate the putative time taken before any reaction
      * @return The time before the reaction
      */
     C_FLOAT64 generateReactionTime();
+
+    /**
+     * Generate the putative time taken before a special reaction takes place
+     * @return The time before the reaction
+     */
+    C_FLOAT64 generateReactionTime(C_INT32 reaction_index);
+
     /**
      * Update the particle numbers according to which reaction ocurred
      * @return mFail
@@ -244,7 +262,7 @@ class CStochDirectMethod : public CStochMethod
      * @return mFail
      * @see mFail
      */
-    C_INT32 initMethod();
+    C_INT32 initMethod(C_FLOAT64 time);
     /**
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
@@ -302,12 +320,12 @@ class CStochNextReactionMethod: public CStochMethod
      * @return mFail
      * @see mFail
      */
-    C_INT32 initMethod(C_FLOAT64 start_time = 0);
+    C_INT32 initMethod(C_FLOAT64 time);
     /**
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */
-    C_FLOAT64 doStep();
+    C_FLOAT64 doStep(C_FLOAT64 time);
 
   private:
     // Private operations
@@ -331,7 +349,7 @@ class CStochNextReactionMethod: public CStochMethod
      */
 
     set
-      <CMetab> *getDependsOn(C_INT32 reaction_index);
+      <CMetab*> *getDependsOn(C_INT32 reaction_index);
 
     /**
      * Get the set of metaboloites which change number when a given
@@ -340,7 +358,7 @@ class CStochNextReactionMethod: public CStochMethod
      * @return The set of affected metabolites.
      */
     set
-      <CMetab> *getAffects(C_INT32 reaction_index);
+      <CMetab*> *getAffects(C_INT32 reaction_index);
   };
 
 #endif // COPASI_CStochSolver

@@ -66,7 +66,15 @@ void CTrajectory::initialize()
       cout << "In trajectory: performing a stochastic simulation\n";
       mStochSolver = new CStochSolver(mMethod);
       cout << "Initializing the solver\n";
-      mStochSolver->initialize(mModel);
+      mStochSolver->initialize(mModel, mStartTime);
+      break;
+
+    case STOCH_NEXTREACTION:
+      // we're doing a stochastic simulation
+      cout << "In trajectory: performing a stochastic simulation (next reaction)\n";
+      mStochSolver = new CStochSolver(mMethod);
+      cout << "Initializing the solver\n";
+      mStochSolver->initialize(mModel, mStartTime);
       break;
 
     default:
@@ -266,7 +274,7 @@ void CTrajectory::process(ofstream &fout)
     }
   else if (mMethod == STOCH_DIRECT || mMethod == STOCH_NEXTREACTION)
     {
-      C_FLOAT64 time = 0;
+      C_FLOAT64 time = mStartTime;
       C_INT32 step = 0;
 
       while (step < mMaxSteps && time < mEndTime && time >= 0)

@@ -21,18 +21,18 @@ CStochSolver::CStochSolver(C_INT32 method_type)
     mMethod(0)
 {}
 
-void CStochSolver::initialize(CModel *model)
+void CStochSolver::initialize(CModel *model, C_FLOAT64 time)
 {
   if (mMethodType == CTrajectory::STOCH_NEXTREACTION)
     {
-      //        mMethod = new CStochNextReactionMethod(model);
+      mMethod = new CStochNextReactionMethod(model);
     }
   else
     {
       mMethod = new CStochDirectMethod(model);
     }
 
-  mMethod->initMethod();
+  mMethod->initMethod(time);
   cout << "Done initializing stochastic method\n";
 }
 CStochSolver::~CStochSolver() {cleanup(); }
@@ -52,6 +52,8 @@ CStochMethod *CStochSolver::getStochMethod()
 {
   return mMethod;
 }
+
+// *********** CStochMethod *******************
 
 CStochMethod::CStochMethod()
     : mModel(NULL),
@@ -76,11 +78,13 @@ void CStochMethod::cleanup()
 
 C_INT32 CStochMethod::updatePropensities()
 {
+  mA0Old = mA0;
   mA0 = 0;
   //cout << "        updatePropensities: ";
 
   for (unsigned C_INT32 i = 0; i < mModel->getReactions().size(); i++)
     {
+      mAmuOld[i] = mAmu[i];
       calculateAmu(i);
       //cout << mAmu[i] << " ";
       mA0 += mAmu[i];
@@ -226,6 +230,14 @@ C_FLOAT64 CStochMethod::generateReactionTime()
   return -1 * log(rand2) / mA0;
 }
 
+C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
+{
+  C_FLOAT32 rand2 = mRandomGenerator->getUniformRandom();
+  return -1 * log(rand2) / mAmu[reaction_index];
+}
+
+// *************** CStochDirectMethod **********************************
+
 CStochDirectMethod::CStochDirectMethod()
     : CStochMethod()
 {}
@@ -235,13 +247,14 @@ CStochDirectMethod::CStochDirectMethod(CModel *model)
 {}
 CStochDirectMethod::~CStochDirectMethod() {cleanup(); }
 
-C_INT32 CStochDirectMethod::initMethod()
+C_INT32 CStochDirectMethod::initMethod(C_FLOAT64 time)
 {
   // Populate the vector of propensities
 
   for (unsigned C_INT32 i = 0; i < mModel->getReactions().size(); i++)
     {
       mAmu.push_back(0);
+      mAmuOld.push_back(0);
     }
 
   return 0;
@@ -256,6 +269,8 @@ C_FLOAT64 CStochDirectMethod::doStep(C_FLOAT64 initial_time)
   return initial_time + step_time;
 }
 
+// *************** CStochNextReactionMethod ****************************
+
 CStochNextReactionMethod::CStochNextReactionMethod(CModel *model)
     : CStochMethod(model)
 {}
@@ -268,27 +283,30 @@ C_INT32 CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
   for (unsigned C_INT32 i = 0; i < mModel->getReactions().size(); i++)
     {
       mAmu.push_back(0);
+      mAmuOld.push_back(0);
     }
 
   setupDependencyGraph();
+  cout << mDG ;
   updatePropensities();
   setupPriorityQueue(start_time);
   return 0;
 }
 
-C_FLOAT64 CStochNextReactionMethod::doStep()
+C_FLOAT64 CStochNextReactionMethod::doStep(C_FLOAT64 time)
 {
-  C_FLOAT64 time = mPQ.topKey();
+  C_FLOAT64 steptime = mPQ.topKey();
   C_INT32 reaction_index = mPQ.topIndex();
   updateSystemState(reaction_index);
-  updatePriorityQueue(reaction_index, time);
-  return time;
+  updatePropensities(); // ineffective
+  updatePriorityQueue(reaction_index, steptime);
+  return steptime;
 }
 
 void CStochNextReactionMethod::setupDependencyGraph()
 {
-  vector< set<CMetab>* > DependsOn;
-  vector< set<CMetab>* > Affects;
+  vector< set<CMetab*>* > DependsOn;
+  vector< set<CMetab*>* > Affects;
   //    set<CMetab> *tmpdepends = 0;
   //    set<CMetab> *tmpaffects = 0;
   C_INT32 num_reactions = mModel->getReactions().size();
@@ -318,7 +336,7 @@ void CStochNextReactionMethod::setupDependencyGraph()
           // would require operator<() to be defined on the set elements.
 
           set
-            <CMetab>::iterator iter = Affects[i]->begin();
+            <CMetab*>::iterator iter = Affects[i]->begin();
 
           for (; iter != Affects[i]->end(); iter++)
             {
@@ -346,14 +364,12 @@ void CStochNextReactionMethod::setupDependencyGraph()
 
 void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
 {
-  C_INT32 rxn;
   C_FLOAT64 time;
 
   for (unsigned C_INT32 i = 0; i < mModel->getReactions().size(); i++)
     {
-      rxn = generateReactionIndex();
-      time = start_time + generateReactionTime();
-      mPQ.pushPair(rxn, time);
+      time = start_time + generateReactionTime(i);
+      mPQ.pushPair(i, time);
     }
 
   mPQ.buildHeap();
@@ -363,95 +379,50 @@ void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLO
 {
   vector<C_INT32> dep_nodes = mDG.getDependents(reaction_index);
 
+  C_FLOAT64 new_time = time + generateReactionTime(reaction_index);
+  mPQ.updateNode(reaction_index, new_time);
+
   for (unsigned int i = 0; i < dep_nodes.size(); i++)
     {
-      C_FLOAT64 new_time = time + generateReactionTime();
-      mPQ.updateNode(dep_nodes[i], new_time);
+      if (dep_nodes[i] != reaction_index)
+        {
+          C_INT32 index = dep_nodes[i];
+          C_FLOAT64 new_time = time + (mAmuOld[index] / mAmu[index]) * (mPQ.getKey(index) - time);
+          mPQ.updateNode(index, new_time);
+        }
     }
 }
 
 set
-  <CMetab> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
+  <CMetab*> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
   {
     set
-      <CMetab> *retset = new set
-                           <CMetab>;
+      <CMetab*> *retset = new set
+                            <CMetab*>;
 
-    //#if 0    // New way of doing this; supercedes bit #if'ed out
-    // Get chemical equation balances
-    CCopasiVector<CChemEqElement> balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
+    CCopasiVector<CReaction::CId2Metab> subst = mModel->getReactions()[reaction_index]->getId2Substrates();
 
-    for (unsigned C_INT32 i = 0; i < balances.size(); i++)
+    CCopasiVector<CReaction::CId2Metab> modif = mModel->getReactions()[reaction_index]->getId2Modifiers();
+
+    for (unsigned C_INT32 i = 0; i < subst.size(); i++)
       {
-        retset->insert(balances[i]->getMetabolite());
+        retset->insert((subst[i]->getMetabolite()));
       }
 
-    //#endif // 0
-#if 0
-    // Get the reaction associated with this index
-    CReaction *react = mModel->getReactions()[reaction_index];
-
-    // Get the kinetic function associated with the reaction_index'th reaction in the model.
-    CKinFunction *pfunction = dynamic_cast<CKinFunction*>(&react->getFunction());
-
-    if (!pfunction)
+    for (unsigned C_INT32 i = 0; i < modif.size(); i++)
       {
-        // the dynamic cast didn't work
-        CCopasiMessage(CCopasiMessage::ERROR, "Dynamic cast of CFunction to CKinFunction failed");
-        return 0;
+        retset->insert((modif[i]->getMetabolite()));
       }
 
-    // Get the vector of nodes associated with this function
-    CCopasiVectorS<CNodeK> node_vec = pfunction->getNodes();
-
-    CNodeK *tmpnode;
-
-    char subtype;
-
-    CMetab *pmetab = 0;
-
-    // Step through the nodes. If the node is an identifier and corresponds
-    // to a substrate or modifier, then add it to the set.
-
-    for (unsigned C_INT32 i = 0; i < node_vec.size(); i++)
-      {
-        pmetab = 0;
-        tmpnode = node_vec[i];
-
-        if ((tmpnode->getType() == N_IDENTIFIER) &&
-            (((subtype = tmpnode->getSubtype()) == N_SUBSTRATE) ||
-             (subtype == N_MODIFIER)))
-          {
-            // Get the identifier as known to the node.
-            string id_name = tmpnode->getName();
-            // Now try to find this, first amongst the substrates, then the products
-
-            if ((pmetab = react->findSubstrate(id_name)) == 0)
-              {
-                pmetab = react->findModifier(id_name);
-              }
-
-            if (pmetab == 0)
-              {
-                // Uh oh, we haven't found a metabolite corresponding to this node.
-                CCopasiMessage(CCopasiMessage::ERROR, "Couldn't find a substrate or modifier named %s", id_name.c_str());
-              }
-
-            // we found it
-            retset->insert(*pmetab);
-          }
-      }
-
-#endif // 0
     return retset;
   }
 
 set
-  <CMetab> *CStochNextReactionMethod::getAffects(C_INT32 reaction_index)
+  <CMetab*> *CStochNextReactionMethod::getAffects(C_INT32 reaction_index)
   {
     set
-      <CMetab> *retset = new set
-                           <CMetab>;
+      <CMetab*> *retset = new set
+                            <CMetab*>;
 
     // Get the balances  associated with the reaction at this index
     // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
@@ -461,7 +432,7 @@ set
       {
         if (balances[i]->getMultiplicity() != 0)
           {
-            retset->insert(balances[i]->getMetabolite());
+            retset->insert(balances[i]->getMetaboliteAddr());
           }
       }
 
