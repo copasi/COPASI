@@ -41,9 +41,7 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
     mObjectType(src.mObjectType),
     mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
     mObjectFlag(src.mObjectFlag)
-{
-  if (mpObjectParent) mpObjectParent->add(this);
-}
+{if (mpObjectParent) mpObjectParent->add(this);}
 
 CCopasiObject::~CCopasiObject()
 {
