@@ -97,17 +97,16 @@ class CCopasiObject
                           CType & reference)
     {return new CCopasiMatrixReference< CType >(name, pParent, reference);}
 
-    bool isContainer();
+    bool isContainer() const;
 
-    bool isVector();
+    bool isVector() const;
 
-    bool isMatrix();
+    bool isMatrix() const;
 
-    bool isNameVector();
+    bool isNameVector() const;
 
-    bool isReference();
+    bool isReference() const;
 
-  protected:
     virtual void * getReference();
   };
 #endif // COPASI_CCopasiObject

@@ -106,12 +106,17 @@ CCopasiObject::getIndex(const CCopasiObject * C_UNUSED(pObject)) const
 
 void * CCopasiObject::getReference() {return this;}
 
-bool CCopasiObject::isContainer() {return (0 < (mObjectFlag & Container));}
+bool CCopasiObject::isContainer() const
+  {return (0 < (mObjectFlag & Container));}
 
-bool CCopasiObject::isVector() {return (0 < (mObjectFlag & Vector));}
+bool CCopasiObject::isVector() const
+  {return (0 < (mObjectFlag & Vector));}
 
-bool CCopasiObject::isMatrix() {return (0 < (mObjectFlag & Matrix));}
+bool CCopasiObject::isMatrix() const
+  {return (0 < (mObjectFlag & Matrix));}
 
-bool CCopasiObject::isNameVector() {return (0 < (mObjectFlag & NameVector));}
+bool CCopasiObject::isNameVector() const
+  {return (0 < (mObjectFlag & NameVector));}
 
-bool CCopasiObject::isReference() {return (0 < (mObjectFlag & Reference));}
+bool CCopasiObject::isReference() const
+  {return (0 < (mObjectFlag & Reference));}
