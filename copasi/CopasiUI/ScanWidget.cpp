@@ -1,11 +1,14 @@
-/*******************************************************************
- **  $ CopasiUI/ScanWidget.cpp                 
- **  $ Author  : Mudita Singhal
- **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
- ** Scan Widget
- ********************************************************************/
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 06/03 
+Comment : Copasi ScanWidget including:
+
+Contains: front end of Scan Objects from given dataModel,
+
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 #include <qfiledialog.h>
 #include <qvbox.h>
 #include <qvariant.h>

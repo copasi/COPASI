@@ -1,11 +1,15 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\ScanItemWidget.ui'
- **
- ** Created: Thu May 22 10:43:21 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 06/03 
+Comment : Copasi ScanItemWidget including:
+
+Contains: the sub scrollable widget inside the scanwidget
+
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
+
 #include "ScanItemWidget.h"
 #include "ScanWidget.h"
 #include <qvariant.h>
