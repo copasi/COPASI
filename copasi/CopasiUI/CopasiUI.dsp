@@ -86,6 +86,10 @@ SOURCE=.\ConstantSymbols.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CopasiDefaultWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CopasiTableWidget.cpp
 # End Source File
 # Begin Source File
@@ -303,6 +307,10 @@ SOURCE=.\CompartmentSymbols.h
 # Begin Source File
 
 SOURCE=.\ConstantSymbols.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CopasiDefaultWidget.h
 # End Source File
 # Begin Source File
 
