@@ -57,7 +57,7 @@ C_INT32 CWriteConfig::flush(void)
       return mFail;
     }
 
-  mBuffer.seekp(0);
+  mBuffer.str("");  // We need to reset the string buffer.
 
   return mFail;
 }
