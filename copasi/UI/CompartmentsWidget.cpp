@@ -71,7 +71,7 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(table, SIGNAL(valueChanged()), this, SLOT(tableClicked()));
-
+  //connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotTableCurrentChanged()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(loadCompartments(CModel *model)));
   //connect(this, SIGNAL(signal_emitted(CModel *)), (ListViews*)parent, SLOT(loadCompartments(CModel *)));
 }
@@ -173,17 +173,6 @@ void CompartmentsWidget::slotBtnOKClicked()
   CWriteConfig *Mod = new CWriteConfig("model.gps");
   //CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
   //CCompartment *compartn;
-
-  //for (C_INT32 j = 0; j < noOfCompartmentsRows; j++)
-  //{
-  //compartn = compartments[1];
-  //compartn->setName(outstring);
-  //}
-
-  /*string outstring = "Laber";
-  mModel->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
-  mModel->save(ModelFile); */
-  delete Mod;
 }
 
 /*C_INT32  TestWriteConfig(void)
