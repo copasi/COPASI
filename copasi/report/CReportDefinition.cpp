@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/09 14:48:32 $
+   $Date: 2004/06/10 19:29:44 $
    End CVS Header */
 
 /**
@@ -70,3 +70,24 @@ CReportBody* CReportDefinition::getReportBody()
 
 void CReportDefinition::setReportBody(CReportBody *pNewBody)
 {mpBody = pNewBody;}
+
+bool CReportDefinition::setTaskType(const CCopasiTask::Type & taskType)
+{mTaskType = taskType; return true;}
+
+const CCopasiTask::Type & CReportDefinition::getTaskType() const
+  {return mTaskType;}
+
+void CReportDefinition::setSeperator(const CCopasiStaticString& Seperator)
+{mSeperator = Seperator;}
+
+const CCopasiStaticString& CReportDefinition::getSeperator() const
+  {return mSeperator;}
+
+bool CReportDefinition::getTitle() const
+  {return mbTitle;}
+
+void CReportDefinition::setTitle(bool mTitle)
+{mbTitle = mTitle;}
+
+const std::string & CReportDefinition::getKey() const
+  {return mKey;}

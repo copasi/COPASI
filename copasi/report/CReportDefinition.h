@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/19 09:44:08 $
+   $Author: shoops $ 
+   $Date: 2004/06/10 19:29:44 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,11 +17,13 @@
 #ifndef COPASI_CReport_Definition
 #define COPASI_CReport_Definition
 
+#include <string>
+#include <vector>
+
 #include "CCopasiObject.h"
 #include "CCopasiObjectName.h"
 #include "CCopasiStaticString.h"
-#include <string>
-#include <vector>
+#include "utilities/CCopasiTask.h"
 
 class CReportDefinition;
 class CComment;
@@ -37,10 +39,11 @@ class CReportDefinition : public CCopasiObject
   private:
     std::string mKey;
     std::string mComment;
-    std::vector<CCopasiObjectName> mHeaderVector;
-    std::vector<CCopasiObjectName> mFooterVector;
+    CCopasiTask::Type mTaskType;
 
+    std::vector<CCopasiObjectName> mHeaderVector;
     std::vector<CCopasiObjectName> mBodyVector;
+    std::vector<CCopasiObjectName> mFooterVector;
 
     CReportBody *mpBody;
     CCopasiStaticString mSeperator;
@@ -60,80 +63,90 @@ class CReportDefinition : public CCopasiObject
                       const CCopasiContainer * pParent = NULL);
 
     /**
-    *  Destructor.
-    */
+     *  Destructor.
+     */
     ~CReportDefinition();
 
     /**
-    cleanup
-    */
+     *cleanup
+     */
     void cleanup();
 
     /**
-    Returns the comments in the report tag
-    */
+     *Returns the comments in the report tag
+     */
     const std::string & getComment() const
       {
         return mComment;
       }
 
     /**
-    sets the comments in the report tag
-    */
+     *sets the comments in the report tag
+     */
     void setComment(const std::string & comment)
     {
       mComment = comment;
     }
 
     /**
-    gets the body in the report tag
-    */
+     *gets the body in the report tag
+     */
     std::vector<CCopasiObjectName>* getBodyAddr();
 
     /**
-    gets the header in the report tag
-    */
+     *gets the header in the report tag
+     */
     std::vector<CCopasiObjectName>* getHeaderAddr();
 
     /**
-    gets the footer in the report tag
-    */
+     *gets the footer in the report tag
+     */
     std::vector<CCopasiObjectName>* getFooterAddr();
 
     /**
-    gets the Body in the report tag
-    */
+     *gets the Body in the report tag
+     */
     CReportBody* getReportBody();
 
     /**
-    sets the Body in the report tag
-    */
+     *sets the Body in the report tag
+     */
     void setReportBody(CReportBody *pNewBody);
 
-    void setSeperator(const CCopasiStaticString& Seperator)
-    {
-      mSeperator = Seperator;
-    }
+    /**
+     *
+     */
+    bool setTaskType(const CCopasiTask::Type & taskType);
 
-    const CCopasiStaticString& getSeperator() const
-      {
-        return mSeperator;
-      }
+    /**
+     *
+     */
+    const CCopasiTask::Type & getTaskType() const;
 
-    bool getTitle() const
-      {
-        return mbTitle;
-      }
+    /**
+     *
+     */
+    void setSeperator(const CCopasiStaticString& Seperator);
 
-    void setTitle(bool mTitle)
-    {
-      mbTitle = mTitle;
-    }
+    /**
+     *
+     */
+    const CCopasiStaticString& getSeperator() const;
 
-    virtual const std::string & getKey() const
-      {
-        return mKey;
-      }
+    /**
+     *
+     */
+    bool getTitle() const;
+
+    /**
+     *
+     */
+    void setTitle(bool mTitle);
+
+    /**
+     *
+     */
+    virtual const std::string & getKey() const;
   };
 
 #endif
