@@ -85,27 +85,27 @@ enum TriLogic
 #include <sys/timeb.h>
 # ifdef COPASI_MAIN
 #  ifndef Darwin
-struct timeb init_time;
-unsigned C_INT32 last_time = 0;
-unsigned C_INT32 this_time;
+struct timeb C_init_time;
+unsigned C_INT32 C_last_time = 0;
+unsigned C_INT32 C_this_time;
 #  endif // !Darwin
 std::ofstream DebugFile("trace");
 # else
 #  include <fstream>
 #  ifndef Darwin
-extern struct timeb init_time;
-extern unsigned C_INT32 last_time;
-extern unsigned C_INT32 this_time;
+extern struct timeb C_init_time;
+extern unsigned C_INT32 C_last_time;
+extern unsigned C_INT32 C_this_time;
 #  endif // !Darwin
 extern std::ofstream DebugFile;
 # endif // COPASI_MAIN
 # ifndef Darwin
 #  include <iostream>
 #  define TIME_TRACE(f, l) {\
-  ftime(&init_time); \
-  this_time = init_time.time * 1000 + init_time.millitm; \
-  std::cout << f <<"(" << l << "):\t" << this_time - last_time  << std::endl; \
-  last_time = this_time;\
+  ftime(&C_init_time); \
+  C_this_time = C_init_time.time * 1000 + C_init_time.millitm; \
+  std::cout << f <<"(" << l << "):\t" << C_this_time - C_last_time  << std::endl; \
+  C_last_time = C_this_time;\
 }
 # endif // !Darwin
 # if (defined COPASI_TRACE_CONSTRUCTION)
