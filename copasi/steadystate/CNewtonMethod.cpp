@@ -29,6 +29,11 @@ extern "C"
 #undef max
 #endif
 
+#ifdef WIN32
+#define min _cpp_min
+#define max _cpp_max
+#endif // WIN32
+
 CNewtonMethod::CNewtonMethod():
     CSteadyStateMethod(),
     mIpiv(NULL)
@@ -355,7 +360,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,    /* fortran style vector */
+                           mdxdt.array() - 1,     /* fortran style vector */
                            1);
         }
 
@@ -412,7 +417,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,    /* fortran style vector */
+                   mdxdt.array() - 1,     /* fortran style vector */
                    1);
 
   if (mMaxrate > mResolution)

@@ -16,8 +16,8 @@
 #include "utilities/utilities.h"
 
 #ifdef WIN32
-#define max(a , b)  ((a) > (b) ? (a) : (b))
-#define min(a , b)  ((a) < (b) ? (a) : (b))
+#define min _cpp_min
+#define max _cpp_max
 #endif // WIN32
 
 C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
