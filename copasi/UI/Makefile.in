@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.10 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.11 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -244,6 +244,7 @@ CopasiUI_MOC = \
 	MetabolitesWidget1.moc.cpp \
 	MoietyWidget.moc.cpp \
 	MoietyWidget1.moc.cpp \
+	MyLineEdit.moc.cpp \
 	ReactionsWidget.moc.cpp \
 	ReactionsWidget1.moc.cpp \
 	copasiui3window.moc.cpp \
@@ -263,6 +264,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	MetabolitesWidget1.cpp \
 	MoietyWidget.cpp \
 	MoietyWidget1.cpp \
+	MyLineEdit.cpp \
 	ReactionsWidget.cpp \
 	ReactionsWidget1.cpp \
 	copasiui3window.cpp \
@@ -297,6 +299,7 @@ EXTRA_DIST = \
 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp \
 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp \
 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp \
+	MyLineEdit.h MyLineEdit.cpp MyLineEdit.moc.cpp \
 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp \
 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
@@ -361,30 +364,32 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	CompartmentsWidget.moc.$(OBJEXT) FunctionWidget1.moc.$(OBJEXT) \
 	FunctionWidget.moc.$(OBJEXT) MetabolitesWidget.moc.$(OBJEXT) \
 	MetabolitesWidget1.moc.$(OBJEXT) MoietyWidget.moc.$(OBJEXT) \
-	MoietyWidget1.moc.$(OBJEXT) ReactionsWidget.moc.$(OBJEXT) \
-	ReactionsWidget1.moc.$(OBJEXT) copasiui3window.moc.$(OBJEXT) \
-	listviews.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
-	Observer.$(OBJEXT) Subject.$(OBJEXT) \
-	CompartmentsWidget.$(OBJEXT) CompartmentsWidget1.$(OBJEXT) \
-	FunctionWidget.$(OBJEXT) FunctionWidget1.$(OBJEXT) \
-	MetabolitesWidget.$(OBJEXT) MetabolitesWidget1.$(OBJEXT) \
-	MoietyWidget.$(OBJEXT) MoietyWidget1.$(OBJEXT) \
+	MoietyWidget1.moc.$(OBJEXT) MyLineEdit.moc.$(OBJEXT) \
+	ReactionsWidget.moc.$(OBJEXT) ReactionsWidget1.moc.$(OBJEXT) \
+	copasiui3window.moc.$(OBJEXT) listviews.moc.$(OBJEXT) \
+	main.$(OBJEXT) MyTable.$(OBJEXT) Observer.$(OBJEXT) \
+	Subject.$(OBJEXT) CompartmentsWidget.$(OBJEXT) \
+	CompartmentsWidget1.$(OBJEXT) FunctionWidget.$(OBJEXT) \
+	FunctionWidget1.$(OBJEXT) MetabolitesWidget.$(OBJEXT) \
+	MetabolitesWidget1.$(OBJEXT) MoietyWidget.$(OBJEXT) \
+	MoietyWidget1.$(OBJEXT) MyLineEdit.$(OBJEXT) \
 	ReactionsWidget.$(OBJEXT) ReactionsWidget1.$(OBJEXT) \
 	copasiui3window.$(OBJEXT) listviews.$(OBJEXT)
 #>- CopasiUI_OBJECTS = $(am_CopasiUI_OBJECTS)
-#>+ 14
+#>+ 15
 CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	CompartmentsWidget.moc.$(OBJEXT) FunctionWidget1.moc.$(OBJEXT) \
 	FunctionWidget.moc.$(OBJEXT) MetabolitesWidget.moc.$(OBJEXT) \
 	MetabolitesWidget1.moc.$(OBJEXT) MoietyWidget.moc.$(OBJEXT) \
-	MoietyWidget1.moc.$(OBJEXT) ReactionsWidget.moc.$(OBJEXT) \
-	ReactionsWidget1.moc.$(OBJEXT) copasiui3window.moc.$(OBJEXT) \
-	listviews.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
-	Observer.$(OBJEXT) Subject.$(OBJEXT) \
-	CompartmentsWidget.$(OBJEXT) CompartmentsWidget1.$(OBJEXT) \
-	FunctionWidget.$(OBJEXT) FunctionWidget1.$(OBJEXT) \
-	MetabolitesWidget.$(OBJEXT) MetabolitesWidget1.$(OBJEXT) \
-	MoietyWidget.$(OBJEXT) MoietyWidget1.$(OBJEXT) \
+	MoietyWidget1.moc.$(OBJEXT) MyLineEdit.moc.$(OBJEXT) \
+	ReactionsWidget.moc.$(OBJEXT) ReactionsWidget1.moc.$(OBJEXT) \
+	copasiui3window.moc.$(OBJEXT) listviews.moc.$(OBJEXT) \
+	main.$(OBJEXT) MyTable.$(OBJEXT) Observer.$(OBJEXT) \
+	Subject.$(OBJEXT) CompartmentsWidget.$(OBJEXT) \
+	CompartmentsWidget1.$(OBJEXT) FunctionWidget.$(OBJEXT) \
+	FunctionWidget1.$(OBJEXT) MetabolitesWidget.$(OBJEXT) \
+	MetabolitesWidget1.$(OBJEXT) MoietyWidget.$(OBJEXT) \
+	MoietyWidget1.$(OBJEXT) MyLineEdit.$(OBJEXT) \
 	ReactionsWidget.$(OBJEXT) ReactionsWidget1.$(OBJEXT) \
 	copasiui3window.$(OBJEXT) listviews.$(OBJEXT)
 CopasiUI_LDADD = $(LDADD)
@@ -409,8 +414,10 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 	@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget.moc.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget1.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget1.moc.Po $(DEPDIR)/MyTable.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/Observer.Po $(DEPDIR)/ReactionsWidget.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/MoietyWidget1.moc.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/MyLineEdit.Po $(DEPDIR)/MyLineEdit.moc.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/MyTable.Po $(DEPDIR)/Observer.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget.moc.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.moc.Po \
@@ -517,6 +524,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MoietyWidget.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MoietyWidget1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MoietyWidget1.moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MyLineEdit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MyLineEdit.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MyTable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Observer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReactionsWidget.Po@am__quote@
@@ -587,7 +596,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=Structures.h libtool.trace MoietiesWidget.cpp MoietiesWidget.h Sample.txt CopasiUI DataModel.h CopasiUI.dsp Sample2.txt 
+KDE_DIST=Structures.h MoietiesWidget.cpp CopasiUI Sample.txt DataModel.h MoietiesWidget.h trace CopasiUI.dsp Sample2.txt 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 

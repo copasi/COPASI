@@ -10,6 +10,7 @@ CopasiUI_MOC = \
 	MetabolitesWidget1.moc.cpp \
 	MoietyWidget.moc.cpp \
 	MoietyWidget1.moc.cpp \
+	MyLineEdit.moc.cpp \
 	ReactionsWidget.moc.cpp \
 	ReactionsWidget1.moc.cpp \
 	copasiui3window.moc.cpp \
@@ -28,6 +29,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
         MetabolitesWidget1.cpp \
         MoietyWidget.cpp \
         MoietyWidget1.cpp \
+	MyLineEdit.cpp \
         ReactionsWidget.cpp \
         ReactionsWidget1.cpp \
         copasiui3window.cpp \
@@ -60,6 +62,7 @@ EXTRA_DIST = \
 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp \
 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp \
 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp \
+	MyLineEdit.h MyLineEdit.cpp MyLineEdit.moc.cpp \
 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp \
 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
