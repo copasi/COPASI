@@ -521,6 +521,31 @@ void CSS_Solution::afterFindSteadyState()
 }
 
 
+/**
+ *  get mSs_solution
+ *  @return mSs_solution		WeiSun 03/27/02
+ */
+C_INT32 getSolution()
+{
+	return mSs_solution;
+}
+
+/**
+ * Get the pointer of SSRes for output		WeiSun 04/02/02
+ */
+void * CSS_Solution::getSSResAddr()
+{
+  return &mSSRes;
+}
+
+/**
+ * Get the pointer of DerivFactor for output	WeiSun 04/02/02		
+ */
+void * CSS_Solution::getDerivFactorAddr()
+{
+	return &mDerivFactor;
+}
+
 
 
 #ifdef XXXXXX

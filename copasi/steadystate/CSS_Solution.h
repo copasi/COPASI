@@ -323,6 +323,22 @@ class CSS_Solution
   C_FLOAT64 * getSs_x() const;
 
   /**
+   *  get mSs_solution
+   *  @return mSs_solution		WeiSun 03/27/02
+   */
+  C_INT32 getSolution() const;
+
+  /**
+   * Get the pointer of SSRes for output		WeiSun 04/02/02
+   */
+  void * getSSResAddr();
+
+  /**
+   * Get the pointer of DerivFactor for output	WeiSun 04/02/02		
+   */
+  void * getDerivFactorAddr();
+
+  /**
    *  get mSs_dxdt
    *  @return mSs_dxdt
    */
