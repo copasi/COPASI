@@ -38,7 +38,7 @@ CFG=optimization - Win32 Build
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
 # PROP Cmd_Line "nmake /f Makefile"
-# PROP Rebuild_Opt "/a"
+# PROP Rebuild_Opt "clean all"
 # PROP Target_File "../lib/optimization.lib"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""

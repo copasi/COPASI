@@ -38,7 +38,7 @@ CFG=CopasiUI - Win32 Build
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
 # PROP Cmd_Line "nmake"
-# PROP Rebuild_Opt ""
+# PROP Rebuild_Opt "clean all"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 # Begin Target
