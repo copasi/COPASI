@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.139 $
+   $Revision: 1.140 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/13 23:52:12 $
+   $Author: shoops $ 
+   $Date: 2003/11/14 22:09:33 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1723,11 +1723,11 @@ std::vector<std::string> CModel::removeCompReacKeys(const std::string & key)
         }
       else
         {
-          int reacFound = 0;
-          for (int i = 0; i < metabReacKeys.size(); i++)
+          unsigned C_INT32 reacFound = 0;
+          for (unsigned C_INT32 i = 0; i < metabReacKeys.size(); i++)
             {
               reacFound = 0;
-              for (int k = 0; k < compReacKeys.size(); k++)
+              for (unsigned C_INT32 k = 0; k < compReacKeys.size(); k++)
                 {
                   if (compReacKeys[k] == metabReacKeys[i])
                     {
@@ -1750,8 +1750,7 @@ std::vector<std::string> CModel::removeCompReacKeys(const std::string & key)
 std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
 {
   std::vector<std::string> Keys;
-  int k = 0;
-  int reactionFound = 0;
+  unsigned C_INT32 k = 0;
   const CCopasiVectorN<CReaction> & Reactions = getReactions();
   C_INT32 j, reactionChecked, jmax = Reactions.size();
 
@@ -1806,7 +1805,7 @@ std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
 /*std::string CModel::removeMetabReactions(const std::string & key)
 {
   std::string EffectedReactions = "Following Reactions will be effected:\n";
-  int reactionFound = 0;
+  unsigned C_INT32 reactionFound = 0;
   const CCopasiVectorN <CReaction> & Reactions = getReactions();
   C_INT32 j, reactionChecked, jmax = Reactions.size();
  
@@ -1877,7 +1876,7 @@ bool CModel::removeMetabolite(const std::string & key)
 
   /* Before deleting the metabolite, delete all the reactions that are dependent */
   std::vector<std::string> reacKeys = removeMetabReacKeys(key);
-  for (int i = 0; i < reacKeys.size(); i++)
+  for (unsigned C_INT32 i = 0; i < reacKeys.size(); i++)
     removeReaction(reacKeys[i]);
 
   mMetabolites.remove(mMetabolites.getIndex(metab));
@@ -1919,7 +1918,7 @@ bool CModel::removeCompartment(const std::string & key)
 
   /* Delete the dependent Metabolites before deleting the Compartment */
   const CCopasiVectorNS <CMetab> &Metabs = comp->getMetabolites();
-  for (int i = 0; i < Metabs.size(); i++)
+  for (unsigned C_INT32 i = 0; i < Metabs.size(); i++)
     removeMetabolite(Metabs[i]->getKey());
 
   mCompartments.CCopasiVector< CCompartment >::remove(index);

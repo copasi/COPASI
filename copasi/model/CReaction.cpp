@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 22:15:23 $
+   $Date: 2003/11/14 22:09:55 $
    End CVS Header */
 
 // CReaction
@@ -145,7 +145,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
   C_INT32 i = 0, j = 0, s = 0, c = -1;
-  C_INT32 idx, multp;
+  C_INT32 idx, multp = 0;
   char strtmp[32];
   CCopasiVector < CChemEqElement > reactants;
   s = metabolites.size();
