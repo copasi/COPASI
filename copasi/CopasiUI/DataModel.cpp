@@ -61,6 +61,7 @@ void DataModel::createModel(const char* fileName)
 {
   pdelete(model);
   model = new CModel();
+  Copasi->pModel = model;
   searchFolderList(1)->setObjectKey(model->getKey());
 
   pdelete(steadystatetask);
@@ -139,18 +140,18 @@ void DataModel::populateData(char* fileName)
   myTree.addRoot(f);
   folderList.append(f);
 
-  const int MAX = 80;
-  char str1[MAX];
+  // const int MAX = 80;
+  std::string str1;
 
   std::ifstream in(fileName);
 
   while (!in.eof())
     {
-      in.getline(str1, MAX);
-      QString data(str1);
-
+      in >> str1;
       if (str1 == "")
         break;
+
+      QString data(str1.c_str());
 
       int first = data.find(':');
 
