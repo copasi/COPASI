@@ -58,8 +58,18 @@ class CScanProblem
      */
     CCopasiVectorNS < CMethodParameterList > mScanItemList;
 
+    /*
+     * 
+     */
+    CVector<C_FLOAT64*>* pValueAddrMatrix;
+
   public:
     // Operations
+    inline setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
+    {
+      pValueAddrMatrix = pInputValueAddrMatrix;
+    }
+
     inline bool ifSteadyStateTask() {return mProcessSteadyState;}
     inline bool ifTrajectoryTask() {return mProcessTrajectory;}
     inline CSteadyStateTask* getSteadyStateTask() {return mpSteadyState;}
