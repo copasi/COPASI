@@ -162,6 +162,16 @@ class CStateX: public CState
                              const C_FLOAT64 & factor,
                              const C_FLOAT64 & resolution) const;
   protected:
+    /**
+     * Calculate the jacobian of the state and store it in the provided matrix.
+     * @param C_FLOAT64 * jacobian
+     * @param const C_FLOAT64 & factor,
+     * @param const C_FLOAT64 & resolution
+     */
+    virtual void getJacobianProtected(C_FLOAT64 * jacobian,
+                                      const C_FLOAT64 & factor,
+                                      const C_FLOAT64 & resolution);
+
     virtual void cleanup();
   };
 #endif
