@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.11 2003/08/15 13:00:51 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.12 2003/08/15 13:05:05 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -40,8 +40,7 @@
  */
 TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
     : CopasiWidget(parent, name, fl),
-    pParent(parent),
-    bUpdated(false)
+    pParent(parent)
 {
   QPixmap image0((const char**) image0_data);
   QPixmap image1((const char**) image1_data);
@@ -279,6 +278,7 @@ void TableDefinition1::loadTableDefinition1()
       tabChecked->setChecked(false);
       seperatorEdit->setText(pReportDefinition->getSeperator().c_str());
     }
+  bUpdated = false;
 }
 
 void TableDefinition1::setReport(CReport* pNewReport)
@@ -288,7 +288,6 @@ void TableDefinition1::setReport(CReport* pNewReport)
 
 void TableDefinition1::comboTaskChanged(const QString & string)
 {
-  int i = 0;
   bUpdated = true;
 }
 
