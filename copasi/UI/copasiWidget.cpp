@@ -57,11 +57,11 @@ void CopasiWidget::resizeEvent (QResizeEvent * event)
 {
   int w = event->size().width();
   int h = event->size().height();
-  ListViews* qParent = (ListViews*)topLevelWidget();
-  QValueList<int> list = pListView->sizes();
-  pListView->setMinimumSize(realMinWidth + list[0], realMinHeight);
-  if ((qParent->size().width() < realMinWidth || qParent->size().height() < realMinHeight))
-    qParent->setMinimumSize(realMinWidth, realMinHeight);
+  // ListViews* qParent = (ListViews*)topLevelWidget();
+  // QValueList<int> list = pListView->sizes();
+  // pListView->setMinimumSize(realMinWidth+list[0], realMinHeight);
+  // if ((qParent->size().width()<realMinWidth || qParent->size().height()<realMinHeight))
+  //  qParent->setMinimumSize(realMinWidth, realMinHeight);
   resize(w, h);
   // QWidget::resizeEvent (event);
 }
