@@ -1074,8 +1074,8 @@ Depending on wether a steady state was found or not, only the elasticities tab m
 </sect1>
 <sect1 id="usingSliders" xreflabel="Defining and Using Sliders">
 <title>Defining and Using Sliders</title>
-<para>Starting with Copasi Build 11 sliders to change parameter values interactively are available, but so far they are only available for the time course task.</para>
-<para>Per default, the slider dialog is hidden, if you want it to be displayed, you have to activate it by toggling the corresponding menu entry in the <guimenu>tools</guimenu> menu or through the slider button in the toolbar. Depending on what element is selected in the object tree, the dialog will be disabled and a text will be displayed within the dialog that tells you so. If you select a task (or an element below the task) that supports sliders, the dialog will be enabled and display the sliders that are defined for this task.</para>
+<para>Starting with Copasi Build 11 sliders to change parameter values interactively are available. So far they can be used in the time course task and the steady state task.</para>
+<para>Per default, the slider dialog is hidden, if you want it to be displayed, you have to activate it by toggling the corresponding menu entry in the <guimenu>tools</guimenu> menu or through the slider button in the toolbar. Depending on what element is selected in the object tree, the dialog will be disabled and a text will be displayed within the dialog that tells you so. If you select a task (or an element below the task) that supports sliders, the dialog will be enabled and the sliders that are defined for this task will be displayed.</para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
@@ -1098,12 +1098,13 @@ Depending on wether a steady state was found or not, only the elasticities tab m
 </mediaobject>
 </screenshot>
 </para>
+<caution><para>On Mac OS X the slider dialog interferes with file dialogs and other similar dialogs. So before opening a file dialog for loading or saving or similar, either move the slider dialog out of the way, or hide it altogether. If you forget to do so, the slider dialog will probably block the other dialog and you will not be able to make any input.</para></caution>
 <para>
 Once the slider dialog has been activated, you can add new sliders with the <guibutton>new slider</guibutton> button at the top of the slider dialog. To edit the parameters of an already defined slider, just click on the <guibutton>edit</guibutton> button, which is located on the right side of the slider towards the bottom. If you no longer need a slider you have defined, you can close it by clicking on the <guibutton>close</guibutton> button which is the top button on the right side of the slider. 
 Alternatively you can now add and modify existing sliders via a context menu. The context menu can be activated with the right mouse button (CTRL + Mouse button for single button mice on Macs!). If you right click on an existing slider, the menu will offer the possibilities to <guisubmenu>delete</guisubmenu> this slider or to <guisubmenu>edit</guisubmenu> it. If you right click into the dialog window where there is no slider, you will be offered the possility to define a new slider.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sliders_02.png" format="PNG" scale="30" align="center" />
@@ -1115,17 +1116,42 @@ Alternatively you can now add and modify existing sliders via a context menu. Th
   <imagedata fileref="images/Sliders_02.gif" format="GIF">
  </imageobject> -->
  <textobject>
-   <phrase>dialog for the definition of a slider</phrase>
+   <phrase>basic dialog for the definition of a slider</phrase>
  </textobject>
  <caption>
-  <para>slider definition dialog</para>
+  <para>basic slider definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
 Once you are in the dialog for the definition of a new slider, you have to choose an object to manipulate via the slider. This object can be selected from the selection dialog that pops up when you click on the <guibutton>choose object</guibutton> button. The selection tree is the same as the ones you get when <link linkend="plotDefinitions">selecting objects for a plot</link>. The selection dialog also offers an expert mode in case the object you want to manipulate with the slider is not present in the simplified tree. Usually the objects that you want to modify in  the time course simulation are one or several of the reaction parameters. This way you can interactively see how the behavior of your model changes when you change a specific parameter. In combination with plots this is a very powerful way to examine the behavior of your model.</para>
-<para>Once you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. The <guilabel>Object Value</guilabel> field determines the current value of the object that is associated with the slider. In the <guilabel>Number of minor ticks</guilabel> field you specify how many minor ticks your slider will have. And in the <guilabel>Ticksize factor</guilabel> field you specify how many minor ticks make a major tick. Major ticks can be used to coarsely go through the range of the slider wheras minor ticks allow you to step through the range in a more fine grained fashion. Instead of specifying the number of minor ticks, you can specify the size of a minor tick. If you change either of those two values, the other one will be adjusted accordingly. The formula is <!-- <phrase role="math">(Maxium Value - Minimum Value) / number of minor ticks = minor tick size</phrase> -->
+<para>Once you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. Additionally you can specify if the slider shall have a logarithmic scale and if the slider should be used for all tasks that support sliders or only for the task the slider was defined in. Per default sliders have a linear scale and are only defined for the task in which the you create them.
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sliders_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Sliders_03.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>extended dialog for the definition of a slider</phrase>
+ </textobject>
+ <caption>
+  <para>extended slider definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+At the bottom of the dialog there is a button labeled <guilabel>extended options</guilabel>. If you click on this button the label will change to <guilabel>base options</guilabel> and more options that influence the sliders behavior will show up. Clicking the button a second time will hide these options again.
+The extended options contain mostly fields that let you modify how many steps the slider has (see explanation below).
+The <guilabel>Object Value</guilabel> field determines the current value of the object that is associated with the slider. In the <guilabel>Number of minor ticks</guilabel> field you specify how many minor ticks your slider will have. And in the <guilabel>Ticksize factor</guilabel> field you specify how many minor ticks make a major tick. Major ticks can be used to coarsely go through the range of the slider wheras minor ticks allow you to step through the range in a more fine grained fashion. Instead of specifying the number of minor ticks, you can specify the size of a minor tick. If you change either of those two values, the other one will be adjusted accordingly. The formula is <!-- <phrase role="math">(Maxium Value - Minimum Value) / number of minor ticks = minor tick size</phrase> -->
 <!-- <inlineequation> -->
   <mml:math>
     <mml:mrow>
@@ -1150,16 +1176,16 @@ Once you have made all the settings, you confirm the slider definfinition with t
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Sliders_03.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Sliders_04.png" format="PNG" scale="30" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Sliders_04.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
  <!-- <imageobject>
-  <imagedata fileref="images/Sliders_03.gif" format="GIF">
+  <imagedata fileref="images/Sliders_04.gif" format="GIF">
  </imageobject> -->
  <textobject>
    <phrase>slider dialog with three sliders</phrase>
@@ -1174,8 +1200,13 @@ Once you have made all the settings, you confirm the slider definfinition with t
 Each slider shows the name of the object, the current value and the range in its label. If the current value of the slider is outside of the defined range, a corresponding warning will be shown.
 The slider dialog has a checkbox called <guilabel>update automaticaly</guilabel> if this box is checked, Copasi will run the corresponding task each time you release a slider handle after moving it. If you don't want Copasi to automatically run the task each time you change a sliders value, you can uncheck this box and run the task manually by clicking on the <guibutton>run task</guibutton> button.</para>
 If the value of an object for which a slider has been defined changes when a task is run, the slider will automatically show the new value. If the checkbox called <guilabel>update ranges</guilabel> is checked, the sliders will automatically adjust their range if the value falls outside of the defined range. If the new value is larger than the old maximum value, the new maximum will be set to twice the new value. Likewise if the new value falls below the old minumum value, the new minimum will be set to half the current value.
-<para>Modifying a slider is essentially the same as defining a slider. The only difference being that you can not change the object the slider is connceted to. In order to do that, you have to delete the slider and define a new slider for the new object.
+<para>Modifying a slider is essentially the same as defining a slider. The only difference being that you can not change the object the slider is connected to. In order to do that, you have to delete the slider and define a new slider for the new object.
 </para>
+<para>
+Most people will probably use the sliders in combination with the mouse, dragging the sliders pointer to the desired new value. Since this way of using a slider is rather corse, especially if the slider contains a large number of steps, you can also use the keyboard to change a sliders value. In order to do this, the slider you want to maipulate needs to have the keyboard focus. To give the keyboard focus, you have to hit the TAB key several times until the slider is surrounded by a small frame. Once the slider has this frame, you can increment and decrement the sliders value via the cursor and the page up/down keys on the keyboard. The cursor keys are used to change the value in small steps, the page up/down keys can be used to change the value in larger steps (see the explanation for major and minor keys above). 
+</para>
+<caution><para>On Mac OS X, the tab widget does not handle very wide tabs or many tabs well. This problem will be dealt with in upcoming versions of Copasi.</para></caution>
+
 </sect1>
 <sect1 id="tutorialWizard" xreflabel="Using the Tutorial Wizard">
 <title>Using the Tutorial Wizard</title>
