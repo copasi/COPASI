@@ -284,7 +284,7 @@ void OptimizationWidget::addButtonClicked()
       return;
     }
 
-  int i = 0;
+  unsigned int i = 0;
   for (; i < pSelectedVector->size(); i++)
     if ((*pSelectedVector)[i])
       break;
@@ -303,7 +303,6 @@ void OptimizationWidget::addButtonClicked()
 
 void OptimizationWidget::deleteButtonClicked()
 {
-  int pp = selectedList.size();
   if (activeObject < 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
     return;
 
@@ -319,7 +318,7 @@ void OptimizationWidget::deleteButtonClicked()
 
   itemnamesTable->removeItem (activeObject);
 
-  int i = activeObject + 1;
+  unsigned int i = activeObject + 1;
   int offsetY = ((OptimizationItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight;
 
   for (; i < selectedList.size() / 2; i++)
@@ -588,7 +587,7 @@ void OptimizationWidget::mouseSelected(OptimizationItemWidget* pSelected)
   if (selectedList.size() == 0)
     return;
 
-  int i = 1;
+  unsigned int i = 1;
   for (; (i < selectedList.size()) && (pSelected != selectedList[i]); i += 2)
 ;
   if (pSelected != selectedList[i]) //not find
@@ -617,7 +616,8 @@ void OptimizationWidget::slotBtnCancelClicked()
 void OptimizationWidget::slotBtnConfirmClicked()
 {
   COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  for (int i = 0; i < func->mParaList.size(); i++)
+  unsigned i;
+  for (i = 0; i < func->mParaList.size(); i++)
     {
       func->mMinList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerLimit();
       func->mMaxList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperLimit();
