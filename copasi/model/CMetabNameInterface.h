@@ -28,11 +28,14 @@ class CMetabNameInterface
 
     ~CMetabNameInterface();
 
-    static const std::string & getDisplayName(const std::string & key);
-    static const std::string & getDisplayName(const CMetab & metab);
+    static const std::string & getDisplayName(const CModel* model, const std::string & key);
+    static const std::string & getDisplayName(const CModel* model, const CMetab & metab);
 
     static std::string getMetaboliteKey(const CModel* model, const std::string & name);
     static CMetab * getMetabolite(const CModel* model, const std::string & name);
+
+    static bool isUnique(const CModel* model, const std::string & name);
+    static bool doesExist(const CModel* model, const std::string & name);
 
   private:
     static std::string empty_string;

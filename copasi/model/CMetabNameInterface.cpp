@@ -22,16 +22,16 @@ std::string CMetabNameInterface::empty_string = "";
 CMetabNameInterface::~CMetabNameInterface()
 {}
 
-const std::string & CMetabNameInterface::getDisplayName(const std::string & key)
+const std::string & CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key)
 {
   CMetab * metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(key);
   if (metab)
-    return getDisplayName(*metab);
+    return getDisplayName(model, *metab);
   else
     return empty_string;
 }
 
-const std::string & CMetabNameInterface::getDisplayName(const CMetab & metab)
+const std::string & CMetabNameInterface::getDisplayName(const CModel* model, const CMetab & metab)
 {
   return metab.getName();
 }
