@@ -34,10 +34,7 @@ CCompartment::CCompartment(const string & name,
     mMetabolites = NULL;
 }
 
-CCompartment::~CCompartment() 
-{
-    cout << "~CCompartment " << mName << endl;
-}
+CCompartment::~CCompartment() {}
 
 void CCompartment::Delete()
 {
@@ -103,7 +100,7 @@ C_INT32 CCompartment::Save(CWriteConfig & configbuffer)
 
 string CCompartment::GetName() const {return mName;}
 
-C_FLOAT64 CCompartment::GetVolume() {return mVolume;}
+C_FLOAT64 CCompartment::GetVolume() const {return mVolume;}
 
 CCopasiVector < CMetab > & CCompartment::Metabolites() 
 {return *mMetabolites;}
@@ -122,7 +119,7 @@ void CCompartment::AddMetabolite(CMetab &metabolite)
     mMetabolites->Add(metabolite);
 }
 
-C_INT16 CCompartment::IsValidName()
+C_INT16 CCompartment::IsValidName() const
 {
     return (mName.find_first_of("; ") == string::npos);
 }

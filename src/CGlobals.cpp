@@ -10,4 +10,9 @@ CGlobals::CGlobals()
     DefaultConc = 0.0;
 }
 
+CGlobals::~CGlobals()
+{
+    FunctionDB.Delete();
+}
+
 CGlobals Copasi;

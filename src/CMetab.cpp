@@ -72,10 +72,7 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
     return *this;  // Assignment operator returns left side.
 }
 
-CMetab::~CMetab() 
-{
-    cout << "~CMetab " << mName << endl;
-}
+CMetab::~CMetab() {}
 
 C_INT32 CMetab::Reset(const string& name)
 {
@@ -202,6 +199,6 @@ C_INT32 CMetabOld::Load(CReadConfig &configbuffer)
     return Fail;
 }
 
-C_INT32 CMetabOld::GetIndex() {return mCompartment;}
+C_INT32 CMetabOld::GetIndex() const {return mCompartment;}
 
 string CMetabOld::GetName() const {return mName;}

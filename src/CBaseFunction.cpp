@@ -7,7 +7,7 @@
 CBaseFunction::CBaseFunction() 
 {mReversible = FALSE;}
 
-CBaseFunction::~CBaseFunction() {;}
+CBaseFunction::~CBaseFunction() {}
 
 void CBaseFunction::Delete() 
 {
@@ -108,19 +108,21 @@ void CBaseFunction::SetReversible(C_INT16 reversible)
 
 string CBaseFunction::GetName() const {return mName;}
 
-C_INT32 CBaseFunction::GetType() {return mType;}
+C_INT32 CBaseFunction::GetType() const {return mType;}
 
-string CBaseFunction::GetDescription() {return mDescription;}
+string CBaseFunction::GetDescription() const {return mDescription;}
 
-C_INT16 CBaseFunction::IsReversible() {return mReversible;}
+C_INT16 CBaseFunction::IsReversible() const {return mReversible;}
 
 vector < CBaseCallParameter * > & CBaseFunction::CallParameters() 
 {return mCallParameters;}
 
-C_FLOAT64 CBaseFunction::CalcValue(vector < CCallParameter > & callParameters)
+C_FLOAT64 
+CBaseFunction::CalcValue(const vector < CCallParameter > & callParameters) const
 {return 0.0;}
 
-pair < C_INT32, C_INT32 > CBaseFunction::FindIdentifier(const string & name)
+pair < C_INT32, C_INT32 > 
+CBaseFunction::FindIdentifier(const string & name) const
 {
     pair < C_INT32, C_INT32 > Tuple(-1, -1);
     C_INT32 j;
@@ -203,13 +205,13 @@ void CBaseCallParameter::SetCount(unsigned C_INT32 low,
                                   unsigned C_INT32 high)
 {mCount.SetRange(low, high);}
 
-enum CCallParameter::Type CBaseCallParameter::GetType()
+enum CCallParameter::Type CBaseCallParameter::GetType() const
 {return mType;}
 
-unsigned C_INT32 CBaseCallParameter::GetCountLow() 
+unsigned C_INT32 CBaseCallParameter::GetCountLow() const
 {return mCount.GetLow();}
 
-unsigned C_INT32 CBaseCallParameter::GetCountHigh() 
+unsigned C_INT32 CBaseCallParameter::GetCountHigh() const
 {return mCount.GetHigh();}
 
 vector < C_INT32 > & CBaseCallParameter::IdentifierTypes()
@@ -236,11 +238,11 @@ CBaseCallParameter::Identifiers(char identifierType)
 CCallParameter::CCallParameter()
 {mType = VECTOR_DOUBLE;}
 
-CCallParameter::~CCallParameter() {;}
+CCallParameter::~CCallParameter() {}
 
 void CCallParameter::SetType(enum CCallParameter::Type type) {mType = type;}
 
-enum CCallParameter::Type CCallParameter::GetType() {return mType;}
+enum CCallParameter::Type CCallParameter::GetType() const {return mType;}
 
 vector < void * > & CCallParameter::Identifiers() {return mIdentifiers;}
 
@@ -260,17 +262,17 @@ void CRange::SetHigh(unsigned C_INT32 high) {mHigh = high; CheckRange();}
 void CRange::SetRange(unsigned C_INT32 low, unsigned C_INT32 high)
 {mLow = low; mHigh = high; CheckRange();}
 
-unsigned C_INT32 CRange::GetLow() {return mLow;}
+unsigned C_INT32 CRange::GetLow() const {return mLow;}
 
-unsigned C_INT32 CRange::GetHigh() {return mHigh;}
+unsigned C_INT32 CRange::GetHigh() const {return mHigh;}
 
-C_INT16 CRange::IsRange() 
+C_INT16 CRange::IsRange() const
 {
     if (mHigh - mLow) return 1;
     else return 0;
 }
 
-void CRange::CheckRange()
+void CRange::CheckRange() const
 {
     if (mLow > mHigh) 
         CCopasiMessage(CCopasiMessage::ERROR, MCRange + 1, mLow, mHigh);

@@ -58,28 +58,28 @@ public:
      *  @return mMajor
      *  @see mMajor  
      */
-    C_INT32 GetVersionMajor();
+    C_INT32 GetVersionMajor() const;
 
     /**
      *  Returns the minor version number.
      *  @return mMinor
      *  @see mMinor  
      */
-    C_INT32 GetVersionMinor();
+    C_INT32 GetVersionMinor() const;
 
     /**
      *  Returns the development version number.
      *  @return mDevel
      *  @see mDevel  
      */
-    C_INT32 GetVersionDevel();
+    C_INT32 GetVersionDevel() const;
 
     /**
      *  Returns a string with the full version number.
      *  @return mVersion
      *  @see mVersion  
      */
-    const string & GetVersion();
+    const string & GetVersion() const;
 
 
     /** 

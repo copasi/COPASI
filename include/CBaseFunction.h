@@ -71,23 +71,23 @@ public:
     /**
      *
      */
-    unsigned C_INT32 GetLow();
+    unsigned C_INT32 GetLow() const;
     
     /**
      *
      */
-    unsigned C_INT32 GetHigh();
+    unsigned C_INT32 GetHigh() const;
 
     /**
      *
      */
-    C_INT16 IsRange();
+    C_INT16 IsRange() const;
 
 private:
     /**
      *
      */
-    void CheckRange();
+    void CheckRange() const;
 };
 
 /**
@@ -134,7 +134,7 @@ public:
     /**
      *
      */
-    CCallParameter::Type GetType();
+    CCallParameter::Type GetType() const;
 
     /**
      *
@@ -219,19 +219,19 @@ public:
      *  Retrieves the type of the the call parameter
      *  @return enum Type
      */
-    virtual enum CCallParameter::Type GetType();
+    virtual enum CCallParameter::Type GetType() const;
 
     /**
      *  Retrieves the type of the function
      *  @return C_INT32 Count
      */
-    virtual unsigned C_INT32 GetCountLow();
+    virtual unsigned C_INT32 GetCountLow() const;
 
     /**
      *  Retrieves the type of the function
      *  @return C_INT32 Count
      */
-    virtual unsigned C_INT32 GetCountHigh();
+    virtual unsigned C_INT32 GetCountHigh() const;
 
     /**
      *  Retrieves the valis identifier types
@@ -329,7 +329,7 @@ public:
      *  @return Fail
      */
     virtual C_INT32 Load(CReadConfig & configbuffer,
-                         CReadConfig::Mode mode = CReadConfig::LOOP);
+                         CReadConfig::Mode mode = CReadConfig::SEARCH);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -373,19 +373,19 @@ public:
      *  Retrieves the type of the function
      *  @return enum Type
      */
-    virtual C_INT32 GetType();
+    virtual C_INT32 GetType() const;
     
     /**
      *  Retrieves the description of the function
      *  @return string
      */
-    virtual string GetDescription();
+    virtual string GetDescription() const;
     
     /**
      *  Retrieves whether the function is reversible
      *  @return C_INT16
      */
-    virtual C_INT16 IsReversible();
+    virtual C_INT16 IsReversible() const;
     
     /**
      *  Retrieves the vector of allowed identifiers
@@ -397,7 +397,8 @@ public:
      *  Calculates the value of the function
      *  @param "vector < C_FLOAT64 * >" identifiers
      */
-    virtual C_FLOAT64 CalcValue(vector < CCallParameter > & callParameters);
+    virtual C_FLOAT64 
+        CalcValue(const vector < CCallParameter > & callParameters) const;
 
     /**
      *  Returns the index of an identifier. The index specifies the position in
@@ -405,7 +406,7 @@ public:
      *  @param "const string" &name
      *  @return C_INT32
      */
-    virtual pair < C_INT32, C_INT32 > FindIdentifier(const string & name);
+    virtual pair < C_INT32, C_INT32 > FindIdentifier(const string & name) const;
 };
 
 

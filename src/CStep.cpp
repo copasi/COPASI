@@ -215,13 +215,13 @@ vector < CStep::CId2Param > &CStep::Parameters() {return *mParameters;}
 
 string CStep::GetName() const {return mName;}
 
-string CStep::GetChemEq() {return mChemEq;}
+string CStep::GetChemEq() const {return mChemEq;}
 
 CBaseFunction & CStep::GetFunction() {return *mFunction;}
 
-C_FLOAT64 CStep::GetFlux() {return mFlux;}
+C_FLOAT64 CStep::GetFlux() const {return mFlux;}
 
-C_INT16 CStep::IsReversible() {return (mReversible == TRUE);}
+C_INT16 CStep::IsReversible() const {return (mReversible == TRUE);}
 
 void CStep::SetName(const string & name) {mName = name;}
 
@@ -367,7 +367,7 @@ void CStep::CheckIdentifiers()
     }
 }
 
-void CStep::Compile(CCopasiVector < CCompartment > &compartments)
+void CStep::Compile(const CCopasiVector < CCompartment > & compartments)
 {
     C_INT32 i;
     
@@ -632,7 +632,7 @@ void CStep::ExtractMetabNames(const string input,
     }
 }
 
-void CStep::Old2New(vector < CMetab* > & metabolites)
+void CStep::Old2New(const vector < CMetab* > & metabolites)
 {
     C_INT32 i, j;
     

@@ -5,10 +5,14 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CMetab
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "copasi.h"
-
+#include "CGlobals.h"
 #include "CModel.h"
+
 void CModel::AllocModel(C_INT32 nstep, 
                         C_INT32 nmetab, 
                         C_INT32 ingmet, 

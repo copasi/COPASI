@@ -15,6 +15,177 @@
 
 class CModel
 {
+//Attributes
+private:
+    /**
+     * 
+     */
+    // title of the model
+    string mTitle;
+
+
+    /**
+     * 
+     */
+    // Comments
+    string mComments;
+
+    // metabolites
+
+    /**
+     * 
+     */
+    // number of internal metabolites
+    C_INT32 mIntMetab;
+
+    /**
+     * 
+     */
+    // number of independent metabolites
+    C_INT32 mIndMetab;
+
+    /**
+     * 
+     */
+    // number of dependent metabolites
+    C_INT32 mDepMetab;
+
+    /**
+     * 
+     */
+    // number of external metabolites
+    C_INT32 mExtMetab;
+
+    /**
+     * 
+     */
+    // for array of metabolites
+    vector < CMetab > mMetabolite;
+
+    /**
+     * 
+     */
+    // for array of conserved moieties
+    vector < CMetab > mMoiety;
+
+
+    /**
+     * 
+     */
+    // the overall transition time of the pathway
+    C_FLOAT64 mTransTime;
+
+
+    /**
+     * 
+     */
+    // for array of steps
+    vector < CStep > mStep;
+
+    /**
+     * 
+     */
+    // for array of compartments`
+    vector < CCompartment > mCompartment;
+
+    // reaction network
+
+    /**
+     * 
+     */
+    // for the stoichiometry matrix (ptrs for the rows)
+    vector < vector < C_FLOAT32 > > mStoichiometry;
+
+    /**
+     * 
+     */
+    // for the reduced stoichiometry matrix (ptrs for the rows)
+    vector < vector < C_FLOAT32 > > mRedStoi;
+
+    /**
+     * 
+     */
+    // to index rows from primary to secondary matrix notation - Stoi notation to RedStoi
+    vector < C_INT32 > mRow;
+
+    /**
+     * 
+     */
+    // to index cols from primary to secondary matrix notation
+    vector < C_INT32 > mCol;
+
+    /**
+     * 
+     */
+    // to index rows from secondary to primary matrix notation - RedStoi notation to Stoi
+    vector < C_INT32 > mIRow;
+
+    /**
+     * 
+     */
+    // to index cols from secondary to primary matrix notation
+    vector < C_INT32 > mICol;
+
+    /**
+     * 
+     */
+    // for the reaction structure description vectors
+    vector < vector < C_INT32 > > mReactStruct;
+
+    /**
+     * 
+     */
+    // for the array of conservation relations (ptrs to the rows)
+    vector < vector < C_FLOAT32 > > mConsRel;
+
+    /**
+     * 
+     */
+    // multipliers of gauss reduction (IntMet x IntMet)
+    vector < vector < C_FLOAT32 > > mML;
+
+    /**
+     * 
+     */
+    // for the kernel of the stoichiometry matrix (ptrs for the rows)
+    vector < vector < C_FLOAT32 > > mKernel;
+
+    /**
+     * 
+     */
+    // permutation matrix (index of Kernel's rows
+    vector < C_INT32 > mKernelP;
+
+    /**
+     * 
+     */
+    // dimensions of the Kernel matrix
+    C_INT32 mKernelI, mKernelJ;
+
+    /**
+     * 
+     */
+    // rank of the stoichiometry matrix
+    C_INT32 mRank;
+
+    /**
+     * 
+     */
+    // number of reactions in equil at steady state
+    C_INT32 mDetBalance;
+
+    /**
+     * 
+     */
+    // inverse of ml (IntMet x IntMet)
+    vector < vector < C_FLOAT32 > > mLM;
+
+    /**
+     * 
+     */
+    // temporary file for debugging
+    string   mDebugFile;   // temporary file for debugging
+
 public:
     /**
      * 
@@ -281,175 +452,6 @@ private:
     // rebuild the stoichiometry matrix
     void RebuildStoi(C_INT32 flag);
 
-
-    /**
-     * 
-     */
-    // title of the model
-    string mTitle;
-
-
-    /**
-     * 
-     */
-    // Comments
-    string mComments;
-
-    // metabolites
-
-    /**
-     * 
-     */
-    // number of internal metabolites
-    C_INT32 mIntMetab;
-
-    /**
-     * 
-     */
-    // number of independent metabolites
-    C_INT32 mIndMetab;
-
-    /**
-     * 
-     */
-    // number of dependent metabolites
-    C_INT32 mDepMetab;
-
-    /**
-     * 
-     */
-    // number of external metabolites
-    C_INT32 mExtMetab;
-
-    /**
-     * 
-     */
-    // for array of metabolites
-    vector < CMetab > mMetabolite;
-
-    /**
-     * 
-     */
-    // for array of conserved moieties
-    vector < CMetab > mMoiety;
-
-
-    /**
-     * 
-     */
-    // the overall transition time of the pathway
-    C_FLOAT64 mTransTime;
-
-
-    /**
-     * 
-     */
-    // for array of steps
-    vector < CStep > mStep;
-
-    /**
-     * 
-     */
-    // for array of compartments`
-    vector < CCompartment > mCompartment;
-
-    // reaction network
-
-    /**
-     * 
-     */
-    // for the stoichiometry matrix (ptrs for the rows)
-    vector < vector < C_FLOAT32 > > mStoichiometry;
-
-    /**
-     * 
-     */
-    // for the reduced stoichiometry matrix (ptrs for the rows)
-    vector < vector < C_FLOAT32 > > mRedStoi;
-
-    /**
-     * 
-     */
-    // to index rows from primary to secondary matrix notation - Stoi notation to RedStoi
-    vector < C_INT32 > mRow;
-
-    /**
-     * 
-     */
-    // to index cols from primary to secondary matrix notation
-    vector < C_INT32 > mCol;
-
-    /**
-     * 
-     */
-    // to index rows from secondary to primary matrix notation - RedStoi notation to Stoi
-    vector < C_INT32 > mIRow;
-
-    /**
-     * 
-     */
-    // to index cols from secondary to primary matrix notation
-    vector < C_INT32 > mICol;
-
-    /**
-     * 
-     */
-    // for the reaction structure description vectors
-    vector < vector < C_INT32 > > mReactStruct;
-
-    /**
-     * 
-     */
-    // for the array of conservation relations (ptrs to the rows)
-    vector < vector < C_FLOAT32 > > mConsRel;
-
-    /**
-     * 
-     */
-    // multipliers of gauss reduction (IntMet x IntMet)
-    vector < vector < C_FLOAT32 > > mML;
-
-    /**
-     * 
-     */
-    // for the kernel of the stoichiometry matrix (ptrs for the rows)
-    vector < vector < C_FLOAT32 > > mKernel;
-
-    /**
-     * 
-     */
-    // permutation matrix (index of Kernel's rows
-    vector < C_INT32 > mKernelP;
-
-    /**
-     * 
-     */
-    // dimensions of the Kernel matrix
-    C_INT32 mKernelI, mKernelJ;
-
-    /**
-     * 
-     */
-    // rank of the stoichiometry matrix
-    C_INT32 mRank;
-
-    /**
-     * 
-     */
-    // number of reactions in equil at steady state
-    C_INT32 mDetBalance;
-
-    /**
-     * 
-     */
-    // inverse of ml (IntMet x IntMet)
-    vector < vector < C_FLOAT32 > > mLM;
-
-    /**
-     * 
-     */
-    // temporary file for debugging
-    string   mDebugFile;   // temporary file for debugging
 };
 
 #endif // CModel

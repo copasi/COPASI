@@ -30,11 +30,7 @@ public:
     /**
      *
      */
-    ~CCopasiVector() 
-        {
-            delete mTypes;
-            cout << "~CCopasiVector " << endl;
-        }
+    ~CCopasiVector() {delete mTypes;}
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -75,7 +71,8 @@ public:
     void Add(const CType & src)
         {
 	    if ( ! IsInsertAllowed(src) ) FatalError();
-                
+            // This is not very efficient !!!
+            // It results in a lot of resizing of the vector !!!
             mTypes->push_back(src);
         }
 
@@ -141,7 +138,7 @@ public:
     /**
      *
      */
-    C_INT32 Size() {return mTypes->size();}
+    C_INT32 Size() const {return mTypes->size();}
 
 private:
     /**
@@ -153,7 +150,7 @@ private:
     /**
      *
      */
-    C_INT32 GetIndex(const string &name)
+    C_INT32 GetIndex(const string &name) const
         {
             C_INT32 i;
             
@@ -180,17 +177,12 @@ public:
     /**
      *
      */
-    CCopasiVectorP() 
-    {mTypes = new vector < CType >;}
+    CCopasiVectorP() {mTypes = new vector < CType >;}
 
     /**
      *
      */
-    ~CCopasiVectorP() 
-        {
-            delete mTypes;
-            cout << "~CCopasiVectorP " << endl;
-        }
+    ~CCopasiVectorP() {delete mTypes;}
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -200,6 +192,9 @@ public:
      */
     C_INT32 Load(CReadConfig & configbuffer, C_INT32 size)
         {
+            // This is broken
+            FatalError();
+            
             C_INT32 Fail = 0;
             
             mTypes->resize(size);
@@ -231,7 +226,8 @@ public:
     void Add(const CType & src)
         {
 	    if ( ! IsInsertAllowed(src) ) FatalError();
-                
+            // This is not very efficient !!!
+            // It results in a lot of resizing of the vector !!!
             mTypes->push_back(src);
         }
 
@@ -305,7 +301,7 @@ public:
     /**
      *
      */
-    C_INT32 Size() {return mTypes->size();}
+    C_INT32 Size() const {return mTypes->size();}
 
 private:
     /**
@@ -317,7 +313,7 @@ private:
     /**
      *
      */
-    C_INT32 GetIndex(const string &name)
+    C_INT32 GetIndex(const string &name) const
         {
             C_INT32 i;
             

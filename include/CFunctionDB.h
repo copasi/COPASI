@@ -54,6 +54,22 @@ public:
     void Delete();
 
     /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return mFail
+     */
+    C_INT32 Load(CReadConfig & configbuffer);
+
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     */
+    C_INT32 Save(CWriteConfig & configbuffer);
+
+    /**
      *
      */
     void SetFilename(const string & filename);
@@ -61,7 +77,7 @@ public:
     /**
      *
      */
-    string GetFilename();
+    string GetFilename() const;
     
     /**
      *  Load the function functionName from the database

@@ -8,6 +8,6 @@ void CBaseIdentifier::SetName(const string & name) {mName = name;}
 
 void CBaseIdentifier::SetType(char type) {mType = type;}
 
-string CBaseIdentifier::GetName() {return mName;}
+string CBaseIdentifier::GetName() const {return mName;}
 
-char CBaseIdentifier::GetType() {return mType;}
+char CBaseIdentifier::GetType() const {return mType;}

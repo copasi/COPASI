@@ -42,10 +42,7 @@ CWriteConfig::CWriteConfig(const string& name)
 }
 
 
-CWriteConfig::~CWriteConfig(void)
-{
-    Commit();
-}
+CWriteConfig::~CWriteConfig(void) {Commit();}
 
 C_INT32 CWriteConfig::Flush(void)
 {
@@ -139,7 +136,10 @@ C_INT32 CWriteConfig::SetVariable(const string & name,
         // pout1 and pout2 point to chars mType and mSubtype.
         // Therfore, we need this complicated cast.
         mBuffer << (C_INT32) (*(char *) pout1) << "," 
-                << (C_INT32) (*(char *) pout2);
+                << (C_INT32) (*(char *) pout2)
+            //  This will help to debug
+            //  << "\t" << *(char *) pout1 << "," << *(char *) pout2
+            ;
     }
     else
     {

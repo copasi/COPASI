@@ -145,19 +145,11 @@ CCopasiMessage &CCopasiMessage::operator=(CCopasiMessage &RHS)
     return *this;
 }
 
-CCopasiMessage::~CCopasiMessage(void)
-{
-}
+CCopasiMessage::~CCopasiMessage(void) {}
 
-string CCopasiMessage::GetText(void)
-{
-    return mText;
-}
+string CCopasiMessage::GetText(void) {return mText;}
 
-CCopasiMessage::Type CCopasiMessage::GetType(void)
-{
-    return mType;
-}
+CCopasiMessage::Type CCopasiMessage::GetType(void) {return mType;}
 
 string TimeStamp()
 {

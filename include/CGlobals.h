@@ -11,21 +11,37 @@ class CGlobals
 {
 // Attributes
 public:
+    /**
+     *
+     */
     CVersion ProgramVersion;
     
+    /**
+     *
+     */
     CFunctionDB FunctionDB;
+
     /**
      *  This is a hack at the moment to be able to read old configuration files
      */
     CMetabolitesOld OldMetabolites;
     
-    // vector < CMetab * > Metabolites;
-    
+    /**
+     *
+     */
     C_FLOAT64 DefaultConc;
 
 // Operations
 public:
+    /**
+     *
+     */
     CGlobals();
+
+    /**
+     *
+     */
+    ~CGlobals();
 };
 
 extern CGlobals Copasi;

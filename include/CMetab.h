@@ -143,12 +143,14 @@ public:
     /**
      *
      */
-    void SetConcentration(C_FLOAT64 concentration) {mConc = concentration;}
+    void SetConcentration(const C_FLOAT64 concentration) 
+        {mConc = concentration;}
     
     /**
      *
      */
-    void SetCompartment(CCompartment * compartment) {mCompartment = compartment;} 
+    void SetCompartment(CCompartment * compartment) 
+        {mCompartment = compartment;} 
 
     /**
      *  Reset the values of a metabolite as if CMetab(string name) was called.
@@ -187,7 +189,7 @@ private:
     C_INT16 mStatus;
 
     /**
-     *  pointer to the compartment the metabolite is located in.
+     *  Index of the compartment the metabolite is located in.
      */
     C_INT32  mCompartment;
 
@@ -201,7 +203,7 @@ public:
      */
     C_INT32 Load(CReadConfig & configbuffer);
 
-    C_INT32 GetIndex();
+    C_INT32 GetIndex() const;
 
     string GetName() const;
 };
@@ -209,7 +211,7 @@ public:
 class CMetabolitesOld: public CCopasiVector < CMetabOld >
 {
 private:
-    C_INT16 IsInsertAllowed(const CMetabOld & src) {return TRUE;}
+    C_INT16 IsInsertAllowed(const CMetabOld & src) const {return TRUE;}
 };
   
 #endif // COPASI_CMetab

@@ -28,7 +28,7 @@ CKinFunction::CKinFunction(const string & name,
 
 void CKinFunction::Init() {mNodes = new CKinNodes;}
 
-CKinFunction::~CKinFunction() {;}
+CKinFunction::~CKinFunction() {}
 
 void CKinFunction::Delete() 
 {
@@ -175,7 +175,8 @@ C_INT32 CKinFunction::Parse()
     return ConnectNodes();
 }
 
-C_FLOAT64 CKinFunction::CalcValue(vector < CCallParameter > & callParameters)
+C_FLOAT64 
+CKinFunction::CalcValue(vector < CCallParameter > & callParameters) const
 {
     return (*mNodes)[0].GetLeft().Value(callParameters[0].Identifiers());
 }
@@ -211,7 +212,6 @@ C_INT32 CKinFunction::ConnectNodes()
 //  but we don't know its index (pointer only)
         CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2, 
                        GetName().c_str());
-        FatalError();
         errnode = -1;
         errfl++;
     }
@@ -475,24 +475,6 @@ void CKinFunction::InitIdentifiers()
     CallParameters()[0]->SetCount(CallParameters()[0]->Identifiers().size());
 }
 
-pair < C_INT32, C_INT32 > CKinFunction::FindIdentifier(const string & name)
-{
-    pair < C_INT32, C_INT32 > Tuple(-1, -1);
-    C_INT32 j;
-    C_INT32 i;
-    
-    for (j = 0; j < CallParameters().size(); j++)
-        for (i = 0; i < CallParameters()[j]->Identifiers().size(); i ++)
-            if (CallParameters()[j]->Identifiers()[i]->GetName() == name) 
-            {
-                Tuple.first = j;
-                Tuple.second = i;
-                break;
-            }
-
-    return Tuple;
-}
-
 CKinIdentifier::CKinIdentifier() {}
 
 CKinIdentifier::~CKinIdentifier() {} 
@@ -501,4 +483,5 @@ CKinFunction::CKinNodes::CKinNodes() {}
 
 CKinFunction::CKinNodes::~CKinNodes() {}
 
-C_INT16 CKinFunction::CKinNodes::IsInsertAllowed(const CNodeK & src) {return TRUE;}
+C_INT16 CKinFunction::CKinNodes::IsInsertAllowed(const CNodeK & src)
+{return TRUE;}

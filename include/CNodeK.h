@@ -135,31 +135,31 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    C_INT32 Save(CWriteConfig & configbuffer);
+    C_INT32 Save(CWriteConfig & configbuffer) const;
 
     /**
      * Retrieving mType the type of a node
      * @return char
      */
-    char GetType();
+    char GetType() const;
 
     /**
      * Retrieving mSubtype the subtype of a node
      * @return char
      */
-    char GetSubtype();
+    char GetSubtype() const;
 
     /**
      * Retrieving mLeft the left branch of a node
      * @return CNodeK
      */
-    CNodeK & GetLeft();
+    CNodeK & GetLeft() const;
 
     /**
      * Retrieving mName the name of a node
      * @return string
      */
-    CNodeK & GetRight();
+    CNodeK & GetRight() const;
 
     /**
      * Retrieving mName the name of a node
@@ -171,13 +171,13 @@ public:
      * Retrieving value of a node
      * @return C_FLOAT64
      */
-    C_FLOAT64 GetConstant();
+    C_FLOAT64 GetConstant() const;
 
     /**
      * Retrieving index the name of a node
      * @return C_INT32
      */
-    C_INT32 GetIndex();
+    C_INT32 GetIndex() const;
 
     /**
      * Setting mType the subtype of a node
@@ -237,19 +237,19 @@ public:
      *  This checks whether mLeft points to a valid CNodeK
      *  @return int 1 or 0
      */
-    C_INT16 IsLeftValid();
+    C_INT16 IsLeftValid() const;
 
     /**
      *  This checks whether mRight points to a valid CNodeK
      *  @return int 1 or 0
      */
-    C_INT16 IsRightValid();
+    C_INT16 IsRightValid() const;
 
     /**
      *  This checks whether the node is a number (mType = N_NUMBER)
      *  @return int 1 or 0
      */
-    C_INT16 IsNumber();
+    C_INT16 IsNumber() const;
 
     /**
      *  This checks whether the node is an identifier (mType = N_IDENTIFIER)
@@ -261,26 +261,26 @@ public:
      *  This checks whether the node is a operator (mType = N_OPERATOR)
      *  @return int 1 or 0
      */
-    C_INT16 IsOperator();
+    C_INT16 IsOperator() const;
 
     /**
      *  This returns the left precedence value of a node
      *  @return int
      */
-    C_INT16 LeftPrecedence();
+    C_INT16 LeftPrecedence() const;
 
     /**
      *  This returns the right precedence value of a node
      *  @return int
      */
-    C_INT16 RightPrecedence();
+    C_INT16 RightPrecedence() const;
 
     /**
      *  This calculates the value of this sub-tree (ie with this node as root)
      *  @param "vector < C_FLOAT64 * >" &identifiers
      *  @return C_FLOAT64
      */
-    C_FLOAT64 Value(vector < void * > &identifiers);
+    C_FLOAT64 Value(vector < void * > &identifiers) const;
 };
 
 #endif // COPASI_CNodeK

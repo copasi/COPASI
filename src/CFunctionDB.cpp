@@ -25,9 +25,44 @@ void CFunctionDB::Delete()
     mBuiltinFunctions.clear();
 }
 
+C_INT32 CFunctionDB::Load(CReadConfig &configbuffer)
+{
+    CKinFunction * pFunction = NULL;
+    C_INT32 Size = 0;
+    C_INT32 Fail = 0;
+
+    if (Fail = configbuffer.GetVariable("TotalUDKinetics", "C_INT32", &Size,
+                                        CReadConfig::LOOP))
+        return Fail;
+    
+    for (C_INT32 i = 0; i < Size; i++)
+    {
+        // We should really read the function type first before we allocate,
+        // but since we currently have only one type this will do.
+        pFunction = new CKinFunction;
+        if (Fail = pFunction->Load(configbuffer)) return Fail;
+        mLoadedFunctions.Add(pFunction);
+    }
+    return Fail;
+}
+
+C_INT32 CFunctionDB::Save(CWriteConfig &configbuffer)
+{
+    C_INT32 Size = mLoadedFunctions.Size();
+    C_INT32 Fail = 0;
+    
+    if (Fail = configbuffer.SetVariable("TotalUDKinetics", "C_INT32", &Size))
+        return Fail;
+
+    for (C_INT32 i = 0; i < Size; i++)
+        if (Fail = mLoadedFunctions[i]->Save(configbuffer)) return Fail;
+
+    return Fail;
+}
+
 void CFunctionDB::SetFilename(const string & filename) {mFilename = filename;}
     
-string CFunctionDB::GetFilename() {return mFilename;}
+string CFunctionDB::GetFilename() const {return mFilename;}
 
 CBaseFunction & CFunctionDB::DBLoad(const string & functionName) 
 {
@@ -42,7 +77,7 @@ CBaseFunction & CFunctionDB::DBLoad(const string & functionName)
     while (functionName != pFunction->GetName())
     {
         pFunction->Delete();
-        Fail = pFunction->Load(inbuf, CReadConfig::SEARCH);
+        Fail = pFunction->Load(inbuf);
     }
 
     return *mLoadedFunctions[Index];

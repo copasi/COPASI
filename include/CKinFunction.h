@@ -47,12 +47,12 @@ class CKinFunction: public CBaseFunction
 private:
     class CKinNodes: public CCopasiVector < CNodeK >
         {
-        private:
-            C_INT16 IsInsertAllowed(const CNodeK & src);
-            
         public:
             CKinNodes();
             ~CKinNodes();
+
+        private:
+            C_INT16 IsInsertAllowed(const CNodeK & src);
         };
 
     /**
@@ -141,12 +141,7 @@ public:
      *  @param "vector < C_FLOAT64 * >" &identifiers
      *  @return C_FLOAT64
      */
-    C_FLOAT64 CalcValue(vector < CCallParameter > & callParameters);
-
-    /**
-     *
-     */
-    pair < C_INT32, C_INT32 > FindIdentifier(const string & name);
+    C_FLOAT64 CalcValue(vector < CCallParameter > & callParameters) const;
 
 private:
     /**

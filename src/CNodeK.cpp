@@ -86,7 +86,7 @@ C_INT32 CNodeK::Load(CReadConfig & configbuffer)
     return Fail;
 }
 
-C_INT32 CNodeK::Save(CWriteConfig & configbuffer)
+C_INT32 CNodeK::Save(CWriteConfig & configbuffer) const
 {
     C_INT32 Fail = 0;
     
@@ -114,18 +114,18 @@ C_INT32 CNodeK::Save(CWriteConfig & configbuffer)
     return Fail;
 }
 
-char CNodeK::GetType() {return mType;}
+char CNodeK::GetType() const {return mType;}
 
-char CNodeK::GetSubtype() {return mSubtype;}
+char CNodeK::GetSubtype() const {return mSubtype;}
 
-CNodeK & CNodeK::GetLeft()
+CNodeK & CNodeK::GetLeft() const
 {
     if (!mLeft) 
         FatalError(); // Call LeftIsValid first to avoid this!
     return *mLeft;
 }
 
-CNodeK & CNodeK::GetRight()
+CNodeK & CNodeK::GetRight() const
 {
     if (!mRight) 
         FatalError(); // Call RightIsValid first to avoid this!
@@ -145,9 +145,9 @@ string CNodeK::GetName() const
     }
 }
 
-C_FLOAT64 CNodeK::GetConstant() {return mConstant;}
+C_FLOAT64 CNodeK::GetConstant() const {return mConstant;}
 
-C_INT32 CNodeK::GetIndex() {return mIndex;}
+C_INT32 CNodeK::GetIndex() const {return mIndex;}
 
 void CNodeK::SetType(char type) {mType = type;}
 
@@ -167,11 +167,11 @@ void CNodeK::SetConstant(C_FLOAT64 & constant) {mConstant = constant;}
 
 void CNodeK::SetIndex(C_INT32 index) {mIndex = index;}
 
-C_INT16 CNodeK::IsLeftValid() {return (C_INT16) mLeft;}
+C_INT16 CNodeK::IsLeftValid() const {return (C_INT16) mLeft;}
 
-C_INT16 CNodeK::IsRightValid() {return (C_INT16) mRight;}
+C_INT16 CNodeK::IsRightValid() const {return (C_INT16) mRight;}
 
-C_INT16 CNodeK::IsNumber() {return mType == N_NUMBER;}
+C_INT16 CNodeK::IsNumber() const {return mType == N_NUMBER;}
 
 C_INT16 CNodeK::IsIdentifier() const
 {
@@ -186,9 +186,9 @@ C_INT16 CNodeK::IsIdentifier() const
     }
 }
 
-C_INT16 CNodeK::IsOperator() {return mType == N_OPERATOR;}
+C_INT16 CNodeK::IsOperator() const {return mType == N_OPERATOR;}
 
-C_INT16 CNodeK::LeftPrecedence()
+C_INT16 CNodeK::LeftPrecedence() const
 {
     switch (mType)
     {
@@ -211,7 +211,7 @@ C_INT16 CNodeK::LeftPrecedence()
     return 0;
 }
 
-C_INT16 CNodeK::RightPrecedence()
+C_INT16 CNodeK::RightPrecedence() const
 {
     switch (mType)
     {
@@ -235,7 +235,7 @@ C_INT16 CNodeK::RightPrecedence()
     return 0;
 }
 
-C_FLOAT64 CNodeK::Value(vector < void * > & identifiers)
+C_FLOAT64 CNodeK::Value(vector < void * > & identifiers) const
 {
     // if it is a constant or an identifier just return its value
     if (IsNumber()) return mConstant;

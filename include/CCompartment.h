@@ -105,7 +105,7 @@ public:
      *  @return mVolume
      *  @see mVolume
      */
-    C_FLOAT64 GetVolume();
+    C_FLOAT64 GetVolume() const;
 
     /*
      *
@@ -135,7 +135,7 @@ private:
     /*
      *
      */
-    C_INT16 IsValidName();
+    C_INT16 IsValidName() const;
 };
 
 #endif // COPASI_CCompartment

@@ -48,7 +48,8 @@ CMassAction::CMassAction(C_INT16 reversible)
 
 CMassAction::~CMassAction() {Delete();}
 
-C_FLOAT64 CMassAction::CalcValue(vector < CCallParameter > & callParameters)
+C_FLOAT64 
+CMassAction::CalcValue(vector < CCallParameter > & callParameters) const
 {
     C_FLOAT64 Products = 1.0, Substrates = 1.0;
     C_INT32 i;
@@ -56,7 +57,7 @@ C_FLOAT64 CMassAction::CalcValue(vector < CCallParameter > & callParameters)
     for (i = 0; i < callParameters[0].Identifiers().size(); i++)
         Substrates *= *(C_FLOAT64 *) callParameters[0].Identifiers()[i];
 
-    if (IsReversible()) return Substrates;
+    if (!IsReversible()) return Substrates;
     
     for (i = 0; i < callParameters[1].Identifiers().size(); i++)
         Products *= *(C_FLOAT64 *) callParameters[1].Identifiers()[i];
@@ -64,7 +65,7 @@ C_FLOAT64 CMassAction::CalcValue(vector < CCallParameter > & callParameters)
     return Substrates - Products;
 }
 
-pair < C_INT32, C_INT32 > CMassAction::FindIdentifier(const string & name)
+pair < C_INT32, C_INT32 > CMassAction::FindIdentifier(const string & name) const
 {
     pair < C_INT32, C_INT32 > Tuple(-1, -1);
     string::size_type subscript;

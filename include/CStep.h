@@ -225,7 +225,7 @@ public:
      *  Retrieves the chemical equation of the step
      *  @return string
      */
-    string GetChemEq();
+    string GetChemEq() const;
 
     /**
      *  Retrieves the rate function of the step
@@ -237,13 +237,13 @@ public:
      *  Retrieves the flux of the step
      *  @return C_FLOAT64
      */
-    C_FLOAT64 GetFlux();
+    C_FLOAT64 GetFlux() const;
 
     /**
      *  Retrieves whether the step is reversible
      *  @return C_INT16
      */
-    C_INT16 IsReversible();
+    C_INT16 IsReversible() const;
 
     /**
      *  Sets the name of the step
@@ -280,7 +280,7 @@ public:
      *  rate function.
      *  @param "CCopasiVector < CMetab * > &" metabolites
      */
-    void Compile(CCopasiVector < CCompartment > & compartments);
+    void Compile(const CCopasiVector < CCompartment > & compartments);
 
     /**
      *  Calculate the kinetic function
@@ -292,7 +292,7 @@ public:
      *  Retrieves the Compartment Name for substrates, products, and modifiers
      *  @param "vector < CMetab* > &" Metabolites 
      */
-    void Old2New(vector < CMetab* > & metabolites);
+    void Old2New(const vector < CMetab* > & metabolites);
     
 private:
     /**

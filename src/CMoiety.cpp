@@ -5,18 +5,11 @@
 #include "CCopasiMessage.h"
 #include "CMoiety.h"
 
-CMoiety::CMoiety()
-{
-}
+CMoiety::CMoiety() {}
 
-CMoiety::CMoiety(const string & name)
-{
-    mName = name;
-}
+CMoiety::CMoiety(const string & name) {mName = name;}
 
-CMoiety::~CMoiety()
-{
-}
+CMoiety::~CMoiety() {}
 
 void CMoiety::Add(C_FLOAT64 value,
                   CMetab & metabolite)
@@ -38,10 +31,7 @@ void CMoiety::Add(C_FLOAT64 value,
     mEquation.push_back(element);
 }
 
-void CMoiety::Delete()
-{
-    mEquation.clear();
-}
+void CMoiety::Delete() {mEquation.clear();}
 
 void CMoiety::Delete(const string & name)
 {
