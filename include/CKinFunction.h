@@ -120,7 +120,7 @@ public:
     /**
      *  This clears all nodes of the function tree
      */
-    long ClearNodes();
+    void ClearNodes();
 
     /**
      *  This  connects the nodes to build the binary function tree
@@ -143,7 +143,7 @@ public:
     /**
      *
      */
-    long InitIdentifiers();
+    void InitIdentifiers();
 };
 
 #endif // COPASI_CKinFunction

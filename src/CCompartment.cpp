@@ -5,6 +5,8 @@
 //
 // Converted for Copasi by Pedro Mendes
 
+#include <iostream>
+
 #include "copasi.h"
 #include "CCompartment.h"
 #include "utilities.h"

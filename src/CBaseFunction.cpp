@@ -24,7 +24,7 @@ short CBaseFunction::IsReversible() {return mReversible;}
 
 vector < char > & CBaseFunction::IdentifierTypes() {return mTypes;}
 
-vector< CBaseIdentifier * > CBaseFunction::Identifiers(char type = 0)
+vector< CBaseIdentifier * > CBaseFunction::Identifiers(char type)
 {
     vector < CBaseIdentifier * > Identifiers;
     

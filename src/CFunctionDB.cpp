@@ -10,14 +10,18 @@ string CFunctionDB::GetFilename() {return mFilename;}
 
 CKinFunction & CFunctionDB::DBLoad(const string & functionName) 
 {
+    long index = 0;    
+
     CReadConfig inbuf(mFilename);
+
+    return mLoadedFunctions[index];
 }
 
-long CFunctionDB::DBAdd(CKinFunction & function)
+void CFunctionDB::DBAdd(CKinFunction & function)
 {
 }
 
-long CFunctionDB::DBDelete(const string & functionName)
+void CFunctionDB::DBDelete(const string & functionName)
 {
 }
 

@@ -144,7 +144,7 @@ double CKinFunction::CalcValue(vector < double * > & identifiers)
     return mNodes[0].GetLeft().Value(identifiers);
 }
 
-long CKinFunction::ClearNodes() {mNodes.Delete();}
+void CKinFunction::ClearNodes() {mNodes.Delete();}
 
 long CKinFunction::ConnectNodes()
 {
@@ -392,7 +392,7 @@ CNodeK * CKinFunction::ParsePrimary()
     }
 }
 
-long CKinFunction::InitIdentifiers()
+void CKinFunction::InitIdentifiers()
 {
     CIdentifier Identifier;
     long Index;

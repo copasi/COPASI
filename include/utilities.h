@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "copasi.h"
+
 #define INITIALTEXTSIZE 1024
 
 /*

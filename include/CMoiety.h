@@ -30,14 +30,14 @@ public:
     CMoiety();
     CMoiety(const string & name);
     ~CMoiety();
-    long Add(double value, CMetab & metabolite);
-    long Add(double value, CMetab * metabolite);
-    long Delete();
-    long Delete(const string & name);
-    long Delete(long index);
-    long Change(long index,
+    void Add(double value, CMetab & metabolite);
+    void Add(double value, CMetab * metabolite);
+    void Delete();
+    void Delete(const string & name);
+    void Delete(long index);
+    void Change(long index,
 		double value);
-    long Change(const string & name,
+    void Change(const string & name,
 		double value);
     string GetName();
     string GetDescription();

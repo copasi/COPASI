@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <math.h>
 
+#include "copasi.h"
 #include "CCopasiMessage.h"
 #include "CMoiety.h"
 
@@ -16,7 +18,7 @@ CMoiety::~CMoiety()
 {
 }
 
-long CMoiety::Add(double value,
+void CMoiety::Add(double value,
              CMetab & metabolite)
 {
     ELEMENT element;
@@ -26,7 +28,7 @@ long CMoiety::Add(double value,
     mEquation.push_back(element);
 }
 
-long CMoiety::Add(double value,
+void CMoiety::Add(double value,
              CMetab * metabolite)
 {
     ELEMENT element;
@@ -36,12 +38,12 @@ long CMoiety::Add(double value,
     mEquation.push_back(element);
 }
 
-long CMoiety::Delete()
+void CMoiety::Delete()
 {
     mEquation.clear();
 }
 
-long CMoiety::Delete(const string & name)
+void CMoiety::Delete(const string & name)
 {
     int i;
 
@@ -53,18 +55,18 @@ long CMoiety::Delete(const string & name)
     Delete(i);
 }
 
-long CMoiety::Delete(long index)
+void CMoiety::Delete(long index)
 {
     mEquation.erase(&mEquation[index], &mEquation[index+1]);
 }
 
-long CMoiety::Change(long index,
+void CMoiety::Change(long index,
 		     double value)
 {
     mEquation[index].Value = value;
 }
 
-long CMoiety::Change(const string & name,
+void CMoiety::Change(const string & name,
 		     double value)
 {
     int i;

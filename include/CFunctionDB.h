@@ -60,14 +60,14 @@ public:
      *  @param CKinFunction &function
      *  @return long Fail
      */
-    long DBAdd(CKinFunction & function);
+    void DBAdd(CKinFunction & function);
 
     /**
      *  Delete the function functionName from the database
      *  @param "const string" &functionName
      *  @return long Fail
      */
-    long DBDelete(const string & functionName);
+    void DBDelete(const string & functionName);
 
     /**
      *  Search for a function among the loaded functions. If no

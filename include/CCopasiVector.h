@@ -2,6 +2,7 @@
 #define COPASI_CCopasiVector
 
 #include <vector>
+#include <iostream>
 
 #include "CCopasiMessage.h"
 #include "CReadConfig.h"
@@ -65,7 +66,7 @@ public:
     /**
      *
      */
-    long Add(CType src)
+    void Add(CType src)
         {
 	    if ( ! IsInsertAllowed(src) ) FatalError();
                 
@@ -75,26 +76,21 @@ public:
     /**
      *
      */
-    long Delete() {mTypes.clear();}
+    void Delete() {mTypes.clear();}
     
     /**
      *
      */
-    long Delete(long index)
+    void Delete(long index)
         {
             if ( 0 <= index && index < Size() )
-            {
                 mTypes.erase(&mTypes[index], &mTypes[index+1]);
-                return 0;
-            }
-    
-            return 1;
         }
 
     /**
      *
      */
-    long Delete(const string & name)
+    void Delete(const string & name)
         {
             long Index = GetIndex(name);
             if ( Index == -1 ) FatalError();
@@ -104,16 +100,16 @@ public:
 
     CType &operator[](long index) 
         {
-            if ( 0 <= index && index < Size() ) return mTypes[index];
-            FatalError();
+            if (index < 0 || Size() <= index) FatalError();
+            return mTypes[index];
         }   
 
     CType operator[](long index) const    
         {
-            if ( 0 <= index && index < Size() ) return mTypes[index];
-            FatalError();
-        }   
-
+            if (index < 0 || Size() <= index) FatalError();
+            return mTypes[index];
+        }
+    
     CType &operator[](const string &name) 
         {
             long Index = GetIndex(name);

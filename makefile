@@ -8,7 +8,7 @@ CFLAGS = -g -I$(INCDIR) -DGCC
 LIBS        = -lnsl 
 
 SRCDIR = ./src
-OBJDIR = ./obj
+OBJDIR = ./o
 INCDIR = ./include
 
 include include.mak
@@ -32,7 +32,7 @@ dependencies: $(SRCDIR)/*.cpp
 	> ./dependencies
 
 clean:  
-	rm -f test *.txt dependencies
+	rm -f $(PRG) *.txt dependencies
 	rm -rf debug release $(OBJDIR)
 #	rm -rf doc 
 
