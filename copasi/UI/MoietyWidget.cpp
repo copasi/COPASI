@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/12/18 21:10:24 $
+   $Date: 2004/01/07 21:32:33 $
    End CVS Header */
 
 /*******************************************************************
@@ -84,6 +84,8 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
 
   //connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadMoietiesNodes(CModel*)));
   //connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
+
+  connect(btnCalculate, SIGNAL(clicked ()), this, SLOT(slotBtnCalculateClicked()));
 
   pixelsWide0 = 2;
   pixelsWide1 = 2;
@@ -171,6 +173,12 @@ void MoietyWidget::slotTableSelectionChanged()
     {
       table->setFocus();
     }
+}
+
+void MoietyWidget::slotBtnCalculateClicked()
+{
+  if (mModel != NULL)
+    mModel->compile();
 }
 
 void MoietyWidget::resizeEvent(QResizeEvent * re)

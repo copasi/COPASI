@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/12/18 21:10:24 $
+   $Date: 2004/01/07 21:32:33 $
    End CVS Header */
 
 /****************************************************************************
@@ -52,6 +52,7 @@ class MoietyWidget : public CopasiWidget
 
   public slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+    virtual void slotBtnCalculateClicked();
 
   signals:
     void name(const QString &);
