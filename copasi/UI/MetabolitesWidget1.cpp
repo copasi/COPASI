@@ -213,39 +213,10 @@ int MetabolitesWidget1::isName(QString setValue)
       return 0;
     }
 
-  CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
-
-  //Now filling the table.
-  CMetab *metab1;
-
-  int i = 0;
-  int myValue = -1;
-
-  for (; i < metabolites.size(); i++)
+  if (mModel->getMetabolites().getIndex((std::string) setValue) != C_INVALID_INDEX)
     {
-      metab1 = metabolites[i];
-      int value = QString::compare(metab1->getName().c_str(), setValue);
-
-      if (!value)
-        {
-          myValue = i;
-          break;
-        }
-    }
-
-  if (myValue != -1)
-    {
-      metab1 = metabolites[myValue];
-      //metab1 = metabolites[(std::string)setValue];
-
-      if (metab1 != NULL)
-        {
-          loadName(setValue);
-          //metab1=NULL;
-          return 1;
-        }
-      else
-        return 0;
+      loadName(setValue);
+      return 1;
     }
 
   return 0;

@@ -81,12 +81,13 @@ int MoietyWidget1::isName(QString setValue)
       return 0;
     }
 
-  const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
-  C_INT32 noOfMoietyRows = moieties.size();
-  CMoiety *moiety1;
-  moiety1 = moieties[(std::string) setValue];
+  //  const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
+  //  C_INT32 noOfMoietyRows = moieties.size();
+  //  CMoiety *moiety1;
 
-  if (moiety1 != NULL)
+  //  moiety1 = moieties[(std::string) setValue];
+  //  if (moiety1 != NULL)
+  if (mModel->getMoieties().getIndex((std::string) setValue) != C_INVALID_INDEX)
     {
       loadName(setValue);
       return 1;

@@ -134,10 +134,11 @@ int CompartmentsWidget1::isName(QString setValue)
       return 0;
     }
 
-  name = setValue;
-  const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+  //  name = setValue;
+  //  const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
-  if (compartments[(std::string) setValue] != NULL)
+  //  if (compartments[(std::string) setValue] != NULL)
+  if (mModel->getCompartments().getIndex((std::string) setValue) != C_INVALID_INDEX)
     {
       loadName(setValue);
       return 1;

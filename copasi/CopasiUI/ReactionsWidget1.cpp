@@ -179,12 +179,7 @@ int ReactionsWidget1::isName(QString setValue)
       return 0;
     }
 
-  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-
-  CReaction *reactn1;
-  reactn1 = reactions[(std::string) setValue];
-
-  if (reactn1 != NULL)
+  if (mModel->getReactions().getIndex((std::string) setValue) != C_INVALID_INDEX)
     {
       loadName(setValue);
       return 1;
