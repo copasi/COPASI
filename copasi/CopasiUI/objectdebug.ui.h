@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/30 12:20:53 $
+   $Date: 2004/10/05 16:14:05 $
    End CVS Header */
 
 /****************************************************************************
@@ -27,8 +27,8 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   QListViewItem * element;
 
   std::string cn = obj->getCN();
-  std::vector< CCopasiContainer * > ListOfContainer; //dummy
-  CCopasiObject* testObj = CCopasiContainer::ObjectFromName(ListOfContainer, cn);
+  //std::vector< CCopasiContainer * > ListOfContainer; //dummy
+  CCopasiObject* testObj = CCopasiContainer::ObjectFromName(cn);
 
   QString flags;
   if (obj->isContainer()) flags += "C"; else flags += " ";

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 09:32:36 $
+   $Date: 2004/10/05 16:10:16 $
    End CVS Header */
 
 /**
@@ -218,13 +218,12 @@ bool CScanProblem::initialize()
 
   InitScan();
 
-  std::vector< CCopasiContainer * > ListOfContainer;
+  //std::vector< CCopasiContainer * > ListOfContainer;
 
   unsigned C_INT32 i;
   for (i = 0; i < Size; i++)
     {
-      pObject = CCopasiContainer::ObjectFromName(ListOfContainer,
-                ((CCopasiParameter *) getScanItem(i))->getObjectName());
+      pObject = CCopasiContainer::ObjectFromName(((CCopasiParameter *) getScanItem(i))->getObjectName());
       if (!pObject) fatalError();
       if (!pObject->isValueDbl()) fatalError();
 

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:49 $
+   $Date: 2004/10/05 16:13:04 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.40 2004/09/17 13:51:49 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.41 2004/10/05 16:13:04 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -269,13 +269,14 @@ void TableDefinition1::loadTableDefinition1()
   titleChecked->setChecked(pReportDefinition->getTitle());
 
   //object list
-  std::vector< CCopasiContainer * > ListOfContainer; //dummy
+  //std::vector< CCopasiContainer * > ListOfContainer; //dummy
   unsigned C_INT32 i;
   // i+=2; is due to skip to show the separator
   for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i += 2)
     {
       new MyListBoxItem(itemsTable,
-                        FROM_UTF8(CCopasiContainer::ObjectFromName(ListOfContainer, (*(pReportDefinition->getBodyAddr()))[i])->getObjectUniqueName()),
+                        FROM_UTF8(CCopasiContainer::ObjectFromName((*(pReportDefinition->getBodyAddr()))[i])
+                                  ->getObjectUniqueName()),
                         (*(pReportDefinition->getBodyAddr()))[i]);
     }
   comboTask->setEnabled(true);
