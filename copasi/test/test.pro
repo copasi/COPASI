@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2003/07/02 14:32:30 $  
+# $Revision: 1.6 $ $Author: shoops $ $Date: 2003/08/13 15:39:13 $  
 ######################################################################
 
 include(../common.pri)
@@ -45,6 +45,7 @@ contains(BUILD_OS, WIN32) {
          -Wl,-lrandomGenerator \
          -Wl,-lutilities \
          -Wl,-loutput \
+         -Wl,-lreport \
          -Wl,-lfunction \
          -Wl,-lmodel
   LIBS += $${tmpLIBS}
