@@ -7,8 +7,8 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "CChemEqElement.h"
 #include "utilities/utilities.h"
+#include "CChemEqElement.h"
 #include "CCompartment.h"
 CChemEqElement::CChemEqElement() {CONSTRUCTOR_TRACE; mpMetabolite = NULL; }
 

@@ -9,6 +9,7 @@
 
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
+#include "utilities/utilities.h"
 #include "CTrajectoryMethod.h"
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"

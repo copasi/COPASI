@@ -5,9 +5,11 @@
 #include <iostream>
 #include <assert.h>
 
-#include "CReadConfig.h"
-#include "CWriteConfig.h"
-#include "CCopasiMessage.h"
+class CReadConfig;
+
+class CWriteConfig;
+
+class CCopasiMessage;
 
 template < class CType >
 

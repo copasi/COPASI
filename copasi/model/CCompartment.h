@@ -11,8 +11,12 @@
 
 #include <string>
 
-#include "utilities/utilities.h"
+class CReadConfig;
+
+class CWriteConfig;
+
 #include "CMetab.h"
+#include "utilities/CCopasiVector.h"
 
 class CCompartment
   {

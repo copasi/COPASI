@@ -8,6 +8,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
+#include "utilities/utilities.h"
 #include "model/model.h"
 #include "CJacob.h"
 
@@ -38,7 +39,7 @@ CJacob::CJacob(int rows, int cols)
 /**
  * Destructor
  */
-CJacob::~CJacob() {DESTRUCTOR_TRACE;}
+CJacob::~CJacob() {DESTRUCTOR_TRACE; }
 
 /**
  * evaluates the Jacobian matrix
@@ -60,10 +61,12 @@ void CJacob::jacobEval(const C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
 
   // Arrays to store function value
   Src = new C_FLOAT64[dim];
-  for (i=0; i<dim; i++)
+
+  for (i = 0; i < dim; i++)
     Src[i] = src[i];
 
   f1 = new C_FLOAT64[dim];
+
   f2 = new C_FLOAT64[dim];
 
   // iterate over all metabolites
@@ -76,15 +79,21 @@ void CJacob::jacobEval(const C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
 
       store = Src[i];
 
-      if (store < res) temp = res * K1;
-      else temp = store;
+      if (store < res)
+        temp = res * K1;
+      else
+        temp = store;
 
       Src[i] = temp * K1;
+
       mModel->lSODAEval(dim, 0, Src, f1);
+
       mNfunction++;
 
       Src[i] = temp * K2;
+
       mModel->lSODAEval(dim, 0, Src, f2);
+
       mNfunction++;
 
       for (j = 0; j < dim; j++)
@@ -98,7 +107,9 @@ void CJacob::jacobEval(const C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
 
   // clear memory
   delete [] Src;
+
   delete [] f1;
+
   delete [] f2;
 
   mNjacob++;
@@ -161,5 +172,5 @@ void CJacob::setModel(CModel * model)  // wsun  03/19/02
   mModel = model;
 
   unsigned C_INT32 dim = mModel->getIndMetab();
-  mJacob.newsize(dim,dim);
+  mJacob.newsize(dim, dim);
 }

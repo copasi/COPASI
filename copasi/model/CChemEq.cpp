@@ -8,6 +8,7 @@
 
 #include "copasi.h"
 #include "CChemEq.h"
+#include "utilities/utilities.h"
 CChemEq::CChemEq(){CONSTRUCTOR_TRACE; }
 
 CChemEq::CChemEq(const CChemEq & src)

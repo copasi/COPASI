@@ -9,9 +9,9 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
+#include "utilities/utilities.h"
 #include "FlexLexer.h"
 #include "model.h"
-#include "utilities/utilities.h"
 #include "utilities/CGlobals.h"
 #include "CSpec2Model.h"
 #include "CSpecLine.h"

@@ -9,18 +9,19 @@
 
 #include <string>
 
-#include "copasi.h"
-#include "utilities/utilities.h"
-
 class CCompartment;
+
+class CReadConfig;
+
+class CWriteConfig;
+
+class CMetabOld;
 
 //constants for use with Status
 #define METAB_FIXED 0
 #define METAB_VARIABLE 1
 #define METAB_DEPENDENT 2
 #define METAB_MOIETY 7
-
-class CMetabOld;
 
 class CMetab
   {
@@ -252,7 +253,7 @@ class CMetab
       os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << endl;
 
       if (d.mCompartment)
-        os << "        mCompartment == " << d << endl;
+        os << "        mCompartment == " << d.mCompartment << endl;
       else
         os << "        mCompartment == 0 " << endl;
 

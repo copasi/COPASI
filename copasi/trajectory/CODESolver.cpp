@@ -28,6 +28,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
+#include "utilities/utilities.h"
 #include "model/CCompartment.h"
 #include "CODESolver.h"
 
@@ -39,9 +40,9 @@ C_FLOAT64 CODESolver::mRtolDefault;
 CODESolver::CODESolver()
 {
   /* set version number */
-  mVersion.setVersion(1,0,101);
+  mVersion.setVersion(1, 0, 101);
   // initialize everything
-  mName   = "Not selected";
+  mName = "Not selected";
   mMethod = 0;
   mY = NULL;
   mLsoda = NULL;
@@ -68,12 +69,14 @@ void CODESolver::initialize(CModel & model,
   mDim = n;
   mState = 1;
   mMethod = method;
+
   switch (mMethod)
     {
     case 1:
       mName = "LSODA";
       mLsoda = new Clsoda;
       break;
+
     default:
       mName = "Not selected";
       break;
@@ -84,29 +87,38 @@ void CODESolver::cleanup()
 {
   switch (mMethod)
     {
-    case 1:  // LSODA
+    case 1:   // LSODA
       mLsoda->lsoda_freevectors();
       delete mLsoda;
       mLsoda = NULL;
       mName = "Not selected";
       mMethod = 0;
       break;
-    default: break;
+
+    default:
+      break;
     }
+
   mState = -1; // so that calls without initialize() fail
 }
-
-string CODESolver::getName() {return mName;}
+string CODESolver::getName() { return mName; }
 
 C_INT32 CODESolver::step(C_FLOAT64 t, C_FLOAT64 et)
 {
   switch (mMethod)
     {
-    case 1: //LSODA
-      if ((mState<1) || (mState>2)) return mState;
+    case 1:  //LSODA
+
+      if ((mState < 1) || (mState > 2))
+        return mState;
+
       lSODAStep(t, et);
-      if ((mState<1) || (mState>2)) return mState;
-      else return 0;
+
+      if ((mState < 1) || (mState > 2))
+        return mState;
+      else
+        return 0;
+
     default:
       return -99;
     }
@@ -117,6 +129,7 @@ C_INT32 CODESolver::load(CReadConfig & configbuffer)
   C_INT32 Fail = 0;
 
   /* get version from ReadConfig */
+
   if (configbuffer.getVersion() < "4")
     {
       /* old Gepasi file, so integrator is LSODA for sure */
@@ -127,24 +140,27 @@ C_INT32 CODESolver::load(CReadConfig & configbuffer)
     {
       /* read method number */
       Fail = configbuffer.getVariable("ODESolver", "C_INT32",
-                                      (void *) &mMethod,
+                                      (void *) & mMethod,
                                       CReadConfig::SEARCH);
       /* if no method number is found, assume LSODA for now */
+
       if (Fail)
         {
           mMethod = 1;
           mName = "LSODA";
         }
     }
+
   switch (mMethod)
     {
     case 1:
       // loadLSODAParameters(configbuffer);
       break;
 
-    default: /* TODO: generate an error message */
+    default:  /* TODO: generate an error message */
       fatalError();
     }
+
   return Fail;
 }
 
@@ -153,18 +169,21 @@ C_INT32 CODESolver::save(CWriteConfig & configbuffer)
   C_INT32 Fail = 0;
 
   /* method */
+
   if ((Fail = configbuffer.setVariable("ODESolver", "C_INT32",
-                                       (void *) &mMethod)))
+                                       (void *) & mMethod)))
     return Fail;
+
   switch (mMethod)
     {
     case 1:
       // saveLSODAParameters(configbuffer);
       break;
 
-    default: /* TODO: generate an error message */
+    default:  /* TODO: generate an error message */
       fatalError();
     }
+
   return Fail;
 }
 
@@ -173,26 +192,30 @@ C_INT32 CODESolver::loadLSODAParameters(CReadConfig & configbuffer)
   C_INT32 Fail = 0;
 
   if ((Fail = configbuffer.getVariable("RelativeTolerance", "C_FLOAT64",
-                                       (void *) &mRtolDefault,
+                                       (void *) & mRtolDefault,
                                        CReadConfig::LOOP)))
     return Fail;
+
   if ((Fail = configbuffer.getVariable("AbsoluteTolerance", "C_FLOAT64",
-                                       (void *) &mAtolDefault)))
+                                       (void *) & mAtolDefault)))
     return Fail;
+
   if ((Fail = configbuffer.getVariable("AdamsMaxOrder", "C_INT32",
-                                       (void *) &mAdamsDefault)))
+                                       (void *) & mAdamsDefault)))
     return Fail;
-  if (mAdamsDefault<2)
+
+  if (mAdamsDefault < 2)
     mAdamsDefault = 2;
-  else if (mAdamsDefault>12)
+  else if (mAdamsDefault > 12)
     mAdamsDefault = 12;
 
   if ((Fail = configbuffer.getVariable("BDFMaxOrder", "C_INT32",
-                                       (void *) &mBDFDefault)))
+                                       (void *) & mBDFDefault)))
     return Fail;
-  if (mBDFDefault<2)
+
+  if (mBDFDefault < 2)
     mBDFDefault = 2;
-  else if (mBDFDefault>5)
+  else if (mBDFDefault > 5)
     mBDFDefault = 5;
 
   return Fail;
@@ -202,29 +225,29 @@ C_INT32 CODESolver::lSODAStep(C_FLOAT64 t, C_FLOAT64 et)
 {
   mTime = t;
   mEndt = et;
-  mLsoda->lsoda(mModel,           // the function evaluator
-                mDim,             // number of variables
-                mY - 1,           // the array of current concentrations
-                                  // fortran style vector !!!
-                &mTime,           // the current time
-                mEndt,            // the final time
-                1,                // scalar error control
-                (&mRtol) - 1,     // relative tolerance array
-                                  // fortran style vector !!!
-                (&mAtol) - 1,     // absolute tolerance array
-                                  // fortran style vector !!!
-                1,                // output by overshoot & interpolatation
-                &mState,          // the state control variable
-                1,                // optional inputs are being used
-                2,                // jacobian calculated internally
-                0,0,0,            // options left at default values
-                10000,            // max iterations for each lsoda call
-                0,                // another value left at the default
-                mAdams,           // max order for Adams method
-                mBDF,             // max order for BDF method
-                0.0,0.0,0.0,0.0); // more options left at default values
+  mLsoda->lsoda(mModel,            // the function evaluator
+                mDim,              // number of variables
+                mY - 1,            // the array of current concentrations
+                // fortran style vector !!!
+                &mTime,            // the current time
+                mEndt,             // the final time
+                1,                 // scalar error control
+                (&mRtol) - 1,      // relative tolerance array
+                // fortran style vector !!!
+                (&mAtol) - 1,      // absolute tolerance array
+                // fortran style vector !!!
+                1,                 // output by overshoot & interpolatation
+                &mState,           // the state control variable
+                1,                 // optional inputs are being used
+                2,                 // jacobian calculated internally
+                0, 0, 0,             // options left at default values
+                10000,             // max iterations for each lsoda call
+                0,                 // another value left at the default
+                mAdams,            // max order for Adams method
+                mBDF,              // max order for BDF method
+                0.0, 0.0, 0.0, 0.0); // more options left at default values
 
-  if ((mState!=1) && (mState!=2))
+  if ((mState != 1) && (mState != 2))
     {
       mLsoda->lsoda_freevectors(); // freevectors is part of LSODA
       return mState;
@@ -232,9 +255,13 @@ C_INT32 CODESolver::lSODAStep(C_FLOAT64 t, C_FLOAT64 et)
 
   // copy some lsoda counters
   intst = (C_FLOAT64) mLsoda->nst;
+
   nfeval = (C_FLOAT64) mLsoda->nfe;
+
   njeval = (C_FLOAT64) mLsoda->nje;
+
   stsize = mLsoda->h;
+
   return 0;
 }
 
@@ -243,16 +270,20 @@ C_INT32 CODESolver::saveLSODAParameters(CWriteConfig & configbuffer)
   C_INT32 Fail = 0;
 
   if ((Fail = configbuffer.setVariable("RelativeTolerance", "C_FLOAT64",
-                                       (void *) &mRtolDefault)))
+                                       (void *) & mRtolDefault)))
     return Fail;
+
   if ((Fail = configbuffer.setVariable("AbsoluteTolerance", "C_FLOAT64",
-                                       (void *) &mAtolDefault)))
+                                       (void *) & mAtolDefault)))
     return Fail;
+
   if ((Fail = configbuffer.setVariable("AdamsMaxOrder", "C_INT32",
-                                       (void *) &mAdamsDefault)))
+                                       (void *) & mAdamsDefault)))
     return Fail;
+
   if ((Fail = configbuffer.setVariable("BDFMaxOrder", "C_INT32",
-                                       (void *) &mBDFDefault)))
+                                       (void *) & mBDFDefault)))
     return Fail;
+
   return Fail;
 }

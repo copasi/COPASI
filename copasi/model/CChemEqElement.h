@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include "utilities/CCopasiVector.h"
 #include "CMetab.h"
 
 class CChemEqElement

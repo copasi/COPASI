@@ -11,6 +11,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
+#include "utilities/utilities.h"
 #include "CNewton.h"
 #include "tnt/lu.h"
 
