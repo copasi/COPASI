@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/23 17:02:53 $
+   $Author: shoops $ 
+   $Date: 2005/01/10 16:39:46 $
    End CVS Header */
 
 /**
@@ -67,7 +67,8 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mpMethod(NULL),
     mReport(),
     mpOutputHandler(NULL),
-    mpProgressHandler(NULL)
+    mpProgressHandler(NULL),
+    mpSliders(NULL)
 {}
 
 CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
@@ -81,7 +82,8 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mpMethod(NULL),
     mReport(),
     mpOutputHandler(NULL),
-    mpProgressHandler(NULL)
+    mpProgressHandler(NULL),
+    mpSliders(NULL)
 {}
 
 CCopasiTask::CCopasiTask(const CCopasiTask & src,
@@ -94,7 +96,8 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mpMethod(NULL),
     mReport(src.mReport),
     mpOutputHandler(NULL),
-    mpProgressHandler(NULL)
+    mpProgressHandler(NULL),
+    mpSliders(NULL)
 {}
 
 CCopasiTask::~CCopasiTask()
@@ -102,6 +105,7 @@ CCopasiTask::~CCopasiTask()
   GlobalKeys.remove(mKey);
   pdelete(mpProblem);
   pdelete(mpMethod);
+  pdelete(mpSliders);
 }
 
 //const std::string & CCopasiTask::getName() const {return getObjectName();}
@@ -150,3 +154,6 @@ CCallbackHandler* CCopasiTask::getOutputHandlerAddr()
 
 void CCopasiTask::setProgressHandler(CCallbackHandler* pHandler)
 {mpProgressHandler = pHandler;}
+
+CCopasiParameterGroup * CCopasiTask::getSliders()
+{return mpSliders;}
