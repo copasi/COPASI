@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/03 20:20:17 $
+   $Date: 2004/05/04 18:32:08 $
    End CVS Header */
 
 /**********************************************************************
@@ -434,10 +434,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                                 // The user clicked the Retry again button or pressed Enter
+            case 0:                                  // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                                 // The user clicked the Quit or pressed Escape
+            case 1:                                  // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -855,7 +855,6 @@ void FunctionWidget1::slotCommitButtonClicked()
 
 void FunctionWidget1::slotDeleteButtonClicked()
 {
-#ifdef commentout
   //TODO: let the user confirm
   const CCopasiVectorN < CReaction > * pReactions = NULL;
   unsigned C_INT32 k, kmax, i = 0;
@@ -893,7 +892,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             {
               //reacFound[i] = 1;
               reacFound = 1;
-              msg1.append((*pReactions)[k]->getName().);
+              msg1.append(FROM_UTF8((*pReactions)[k]->getName()));
               msg1.append(" ---> ");
               //msg1.append(table->text(ToBeDeleted[i], 0));
               msg1.append("\n");
@@ -923,7 +922,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:         // Yes or Enter
+        case 0:          // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -932,7 +931,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             if (reacFound == 0)
               {
                 unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
-                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getName().);
+                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getName());
                 //if ((index != NULL) && (size != NULL)) {
                 Copasi->pFunctionDB->removeFunction(objKey);
                 //Copasi->pFunctionDB->loadedFunctions()[min(index,20 - 1)];
@@ -955,7 +954,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:         // No or Escape
+        case 1:          // No or Escape
           break;
         }
     }
@@ -972,7 +971,6 @@ void FunctionWidget1::slotDeleteButtonClicked()
     }
 
   //delete[] reacFound;
-#endif
 }
 
 void FunctionWidget1::slotTableValueChanged(int row, int col)
