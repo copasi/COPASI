@@ -1,15 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:54 $
+   $Date: 2003/11/06 04:35:35 $
    End CVS Header */
-
-#include <iostream>
 
 #ifndef COPASI_CVector
 #define COPASI_CVector
+
+#include <iostream>
+#include <stdarg.h>
+
+#include "copasi.h"
 
 /**
  * Template class CVector < class CType >
@@ -61,10 +64,35 @@ template <class CType> class CVector
     }
 
     /**
+     * Initializing constructor
+     * @param const unsigned C_INT32 & rows
+     * @parma CType first
+     * @param ... (rows - 1 arguments of CType)
+     */
+    CVector(const unsigned C_INT32 & rows, CType first, ...):
+        mRows(rows),
+        mVector(NULL)
+    {
+      if (mRows)
+        {
+          mVector = new CType[mRows];
+          mVector[0] = first;
+
+          va_list value = NULL;
+          va_start(value, first);
+
+          for (unsigned C_INT32 i = 1; i < mRows; i++)
+            mVector[i] = va_arg(value, CType);
+
+          va_end(value);
+        }
+    }
+
+    /**
      * Destructor.
      */
     ~CVector()
-    {if (mVector) delete [] mVector;}
+  {if (mVector) delete [] mVector;}
 
     /**
      * The number of elements stored in the vector.
