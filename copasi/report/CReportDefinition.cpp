@@ -20,7 +20,8 @@ CReportDefinition::CReportDefinition():
     mKey(CKeyFactory::add("CReportDefinition", this)),
     mComment(""),
     mpBody(new CReportBody),
-    mSeperator("/t")
+    mSeperator("/t"),
+    mbTitle(false)
 {}
 
 CReportDefinition::~CReportDefinition()

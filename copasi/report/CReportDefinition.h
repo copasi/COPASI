@@ -32,6 +32,7 @@ class CReportDefinition : public CCopasiObject
     std::vector<CCopasiObjectName> mFooterVector;
     CReportBody *mpBody;
     std::string mSeperator;
+    bool mbTitle;
 
   public:
     /**
@@ -93,6 +94,16 @@ class CReportDefinition : public CCopasiObject
     std::string getSeperator()
     {
       return mSeperator;
+    }
+
+    bool getTitle()
+    {
+      return mbTitle;
+    }
+
+    bool setTitle(bool mTitle)
+    {
+      mbTitle = mTitle;
     }
 
     inline std::string & getKey()
