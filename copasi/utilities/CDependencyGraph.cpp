@@ -1,4 +1,5 @@
 #include "CDependencyGraph.h"
+#include <algorithm>
 
 CDependencyGraphNode::CDependencyGraphNode(C_INT32 node_number)
     : mNodeNumber(node_number)
@@ -9,7 +10,11 @@ CDependencyGraphNode::~CDependencyGraphNode()
 
 void CDependencyGraphNode::addDependent(C_INT32 node_num)
 {
-    mDependents.push_back(node_num);
+    // Ensure that the same node is not added twice
+    if (find(mDependents.begin(), mDependents.end(), node_num) == mDependents.end())
+    {
+        mDependents.push_back(node_num);
+    }
 }
 
 const vector<C_INT32> & CDependencyGraphNode::getDependents()
@@ -33,7 +38,7 @@ void CDependencyGraph::addDependent(C_INT32 node, C_INT32 dependent)
 
 const vector<C_INT32> & CDependencyGraph::getDependents(C_INT32 node)
 {
-    mNodes[node].getDependents();
+    return mNodes[node].getDependents();
 }
 
 #ifdef TEST_DEPENDENCY_GRAPH
@@ -42,8 +47,8 @@ int main(int argc, char **argv)
 {
     const C_INT32 NNODES = 4;
     const C_INT32 NDEPS = 4;
-    C_INT32 inarr[NNODES][NDEPS] = {{0,1,2,3},
-                                     {1,2,3,0},
+    C_INT32 inarr[NNODES][NDEPS] = {{0,1,2,0},
+                                     {1,1,3,0},
                                      {2,3,0,1},
                                      {3,0,1,2}};
     cout << "Creating dependency graph\n";
@@ -60,7 +65,7 @@ int main(int argc, char **argv)
         }
         cout << endl << endl;
     }
-    // Display the vector of dependnents for each node
+    // Display the vector of dependents for each node
     for (i = 0; i < NNODES; i++)
     {
         j = 0;
