@@ -454,6 +454,8 @@ void CReaction::compile(const CCopasiVectorNS < CCompartment > & compartments)
 {
   unsigned C_INT32 i;
 
+  mChemEq.compile(compartments);
+
   for (i = 0; i < mId2Substrates.size(); i++)
     mId2Substrates[i]->mpMetabolite =
       compartments[mId2Substrates[i]->mCompartmentName]->
@@ -480,7 +482,6 @@ void CReaction::compile(const CCopasiVectorNS < CCompartment > & compartments)
       checkCallParameterObjects();
     }
 
-  mChemEq.compile(compartments);
   setScalingFactor();
 }
 
