@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:27 $
+   $Date: 2004/12/06 19:59:09 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -64,7 +64,11 @@ MESSAGES Messages[] =
      "applicable, since more than one compartment is involved."},
 
     // XML Package
-    {MCXML + 1, "XML (1:) Required attribute '%s' not found (line: '%d')."},
+    {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
+    {MCXML + 2, "XML (2): XML error (line: '%d', column: '%d'): '%s'."},
+
+    // CCopasiMessage
+    {MCCopasiMessage + 1, "Message (1): No more messages."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
