@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:54 $
+   $Author: chlee $ 
+   $Date: 2003/12/18 21:10:24 $
    End CVS Header */
 
 /****************************************************************************
@@ -36,6 +36,7 @@ class MoietyWidget : public CopasiWidget
 
   protected:
     CModel *mModel;
+    QPushButton *btnCalculate;
     MyTable *table;
     bool binitialized;
 

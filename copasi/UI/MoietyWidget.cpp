@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:57:35 $
+   $Author: chlee $ 
+   $Date: 2003/12/18 21:10:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -58,6 +58,17 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(0, "Name");
   tableHeader->setLabel(1, "Number");
   tableHeader->setLabel(2, "Equation");
+
+  btnCalculate = new QPushButton("&Run", this);
+
+  QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
+
+  //To match the Table left Vertical Header Column Width.
+  hBoxLayout->addSpacing(32);
+
+  hBoxLayout->addSpacing(50);
+  hBoxLayout->addWidget(btnCalculate);
+  hBoxLayout->addSpacing(50);
 
   table->setReadOnly(true);
   table->sortColumn (0, true, true);
