@@ -170,7 +170,6 @@ CNewton * CSS_Solution::getNewton() const
   return mNewton;
 }
 
-/*
 //set mEigen
 void CSS_Solution::setEigen(CEigen * aEigen)
 {
@@ -183,7 +182,6 @@ CEigen * CSS_Solution::getEigen() const
 {
   return mEigen;
 }
-*/
 
 
 //set mModel
