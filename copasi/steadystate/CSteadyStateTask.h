@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:59:34 $
+   $Date: 2004/10/09 14:41:47 $
    End CVS Header */
 
 /**
@@ -147,6 +147,8 @@ class CSteadyStateTask : public CCopasiTask
      * @return const CEigen * eigenValues
      */
     const CEigen * getEigenValuesReduced() const;
+
+    const CSteadyStateMethod::ReturnCode & getResult() const {return mResult;}
 
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os,
