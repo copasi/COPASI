@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/10 12:56:35 $
+   $Date: 2004/06/22 16:12:43 $
    End CVS Header */
 
 /**
@@ -18,10 +18,7 @@
 #include "CScanProblem.h"
 #include "CScanMethod.h"
 #include "utilities/CGlobals.h"
-#include "utilities/readwrite.h" 
-//#include "output/COutputEvent.h"
-//#include "output/COutputList.h"
-//#include "output/COutput.h"
+#include "utilities/CReadConfig.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 18:38:04 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:05:48 $
    End CVS Header */
 
 /**
@@ -16,7 +16,7 @@
 #ifndef COPASI_CFunctionParameters
 #define COPASI_CFunctionParameters
 
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "CFunctionParameter.h"
 #include "CUsageRange.h"
@@ -88,8 +88,8 @@ class CFunctionParameters : public CCopasiContainer
      *  (Which usually has a file attached but may also have socket)
      *  @param "CWriteConfig &" configBuffer
      *  @return Fail
-     */
-    void save(CWriteConfig & configBuffer);
+     */ 
+    //    void save(CWriteConfig & configBuffer);
 
     /**
      *  Add a parameter to the parameter list

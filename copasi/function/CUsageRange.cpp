@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CUsageRange.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:18:34 $
+   $Date: 2004/06/22 16:06:03 $
    End CVS Header */
 
 /**
@@ -41,12 +41,12 @@ void CUsageRange::load(CReadConfig & configBuffer,
   CRange::load(configBuffer);
 }
 
-void CUsageRange::save(CWriteConfig & configBuffer)
+/*void CUsageRange::save(CWriteConfig & configBuffer)
 {
   std::string tmp = getObjectName();
   configBuffer.setVariable("Usage", "string", &tmp);
   CRange::save(configBuffer);
-}
+}*/
 
 bool CUsageRange::setUsage(const std::string & usage)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:52 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:06:03 $
    End CVS Header */
 
 /*  CNodeK
@@ -21,8 +21,8 @@
 #include <string>
 #include <vector>
 
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
+#include "utilities/CReadConfig.h" 
+//#include "utilities/CWriteConfig.h"
 #include "CCallParameters.h"
 
 // symbols for CNodeK types and values
@@ -167,16 +167,16 @@ class CNodeK
      *  (Which usually has a file attached but may also have socket)
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
-     */
-    C_INT32 save(CWriteConfig & configbuffer) const;
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer) const;
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
      *  This writes the information in Gepasi 3.21 file format
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
-     */
-    C_INT32 saveOld(CWriteConfig & configbuffer) const;
+     */ 
+    //    C_INT32 saveOld(CWriteConfig & configbuffer) const;
 
     /**
      *  Returns a string that contains the equation defined from

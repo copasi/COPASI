@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/Attic/CMca.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:59:02 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:13:14 $
    End CVS Header */
 
 /*****************************************************************************
@@ -19,7 +19,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/utility.h"
 #include "model/CModel.h"
 #include "CMca.h"
@@ -488,14 +488,14 @@ std::vector <C_FLOAT64> CMca::getSsx()
  *  @param pconfigbuffer reference to a CWriteConfig object.
  *  @return mFail
  *  @see mFail
- */
-C_INT32 CMca::save(CWriteConfig & configbuffer)
+ */ 
+/*C_INT32 CMca::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
-
+ 
   if ((Fail = configbuffer.setVariable("SSMCAUnscaled", "C_INT16",
                                        &mSSReder)))
     return Fail;
-
+ 
   return Fail;
-}
+}*/

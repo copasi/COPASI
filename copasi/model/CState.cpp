@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/18 16:53:12 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:11:02 $
    End CVS Header */
 
 // CSate.cpp
@@ -150,49 +150,49 @@ void CState::load(CReadConfig & configBuffer)
   return;
 }
 
-void CState::save(CWriteConfig & configBuffer) const
+/*void CState::save(CWriteConfig & configBuffer) const
   {
     std::string Tmp;
     C_FLOAT64 Dbl;
     C_INT32 Size;
     unsigned C_INT32 i;
-
+ 
     Tmp = mpModel->getTitle();
     configBuffer.setVariable("State.Model", "string", &Tmp);
-
+ 
     configBuffer.setVariable("State.Time", "C_FLOAT64", &mTime);
-
+ 
     Size = mVolumes.size();
     configBuffer.setVariable("State.VolumeSize", "C_INT32", &Size);
-
+ 
     for (i = 0; i < (unsigned C_INT32) Size; i++)
       {
         Tmp = StringPrint("State.Volume[%ld]", i);
         configBuffer.setVariable(Tmp, "C_FLOAT64", &mVolumes[i]);
       }
-
+ 
     Size = mFixedNumbers.size();
     configBuffer.setVariable("State.FixedNumberSize", "C_INT32", &Size);
-
+ 
     for (i = 0; i < mFixedNumbers.size(); i++)
       {
         Dbl = mFixedNumbers.getDbl(i);
         Tmp = StringPrint("State.FixedNumber[%ld]", i);
         configBuffer.setVariable(Tmp, "C_FLOAT64", & Dbl);
       }
-
+ 
     Size = mVariableNumbers.size();
     configBuffer.setVariable("State.VariableNumberSize", "C_INT32", &Size);
-
+ 
     for (i = 0; i < mVariableNumbers.size(); i++)
       {
         Dbl = mVariableNumbers.getDbl(i);
         Tmp = StringPrint("State.VariableNumber[%ld]", i);
         configBuffer.setVariable(Tmp, "C_FLOAT64", & Dbl);
       }
-
+ 
     return;
-  }
+  }*/
 
 void CState::setTime(const C_FLOAT64 & time) {mTime = time;}
 
@@ -462,13 +462,13 @@ void CStateX::load(CReadConfig & configBuffer)
   return;
 }
 
-void CStateX::save(CWriteConfig & configBuffer)
+/*void CStateX::save(CWriteConfig & configBuffer)
 {
   CState State(*this);
   State.save(configBuffer);
-
+ 
   return;
-}
+}*/
 
 void CStateX::setModel(const CModel * pModel)
 {

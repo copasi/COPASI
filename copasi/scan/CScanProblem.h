@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/14 22:13:59 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:12:42 $
    End CVS Header */
 
 /**
@@ -23,7 +23,7 @@
 #include "utilities/CCopasiVector.h"
 
 class CModel;
-class CWriteConfig;
+//class CWriteConfig;
 class CReadConfig;
 class CTrajectoryTask;
 class CSteadyStateTask;

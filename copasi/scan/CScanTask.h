@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/10 12:56:35 $
+   $Date: 2004/06/22 16:12:44 $
    End CVS Header */
 
 /**
@@ -17,8 +17,8 @@
 #ifndef COPASI_CScanTask
 #define COPASI_CScanTask
 
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
+#include "utilities/CReadConfig.h" 
+//#include "utilities/CWriteConfig.h"
 #include "CScanMethod.h"
 #include "utilities/CVector.h"
 #include "CScanProblem.h"

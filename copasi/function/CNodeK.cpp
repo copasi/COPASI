@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:47 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:06:02 $
    End CVS Header */
 
 // CNodeK.cpp : classes for function tree
@@ -15,7 +15,7 @@
 
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
 
@@ -127,18 +127,18 @@ C_INT32 CNodeK::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-C_INT32 CNodeK::save(CWriteConfig & C_UNUSED(configbuffer)) const
+/*C_INT32 CNodeK::save(CWriteConfig & C_UNUSED(configbuffer)) const
   {
     C_INT32 Fail = 0;
 #ifdef XXXX
-
+ 
     // the file has already been opened
     // we don't care about exceptions here.
     // They should be caught by the calling function
     // First the Type and subtype
     if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
       return Fail;
-
+ 
     // leave the Left & Right pointers out
     // value of the constant if one
     if (mType == N_NUMBER)
@@ -156,12 +156,12 @@ C_INT32 CNodeK::save(CWriteConfig & C_UNUSED(configbuffer)) const
 #endif // XXXX
     return Fail;
   }
-
+ 
 C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
   {
     C_INT32 Fail = 0;
     char dummy = N_NOP;
-
+ 
     if (isIdentifier())
       {
         if ((Fail = configbuffer.setVariable("Node", "node", &mSubtype, &dummy)))
@@ -185,7 +185,7 @@ C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
           return Fail;
       }
     return Fail;
-  }
+  }*/
 
 std::string CNodeK::getExplicitFunctionString(const std::vector< std::vector< std::string > > & callParameterNames,
     const std::string &r)

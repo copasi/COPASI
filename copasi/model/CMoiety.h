@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 08:22:50 $
+   $Date: 2004/06/22 16:11:01 $
    End CVS Header */
 
 /**
@@ -78,8 +78,8 @@ class CMoiety : public CCopasiContainer
      *  This saves the data in Gepasi 3.21 file format
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
-     */
-    C_INT32 saveOld(CWriteConfig & configBuffer);
+     */ 
+    //    C_INT32 saveOld(CWriteConfig & configBuffer);
 
     /**
      * Add a metabolite to a moiety

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/17 20:57:51 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:13:16 $
    End CVS Header */
 
 /**
@@ -141,6 +141,6 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
 /**
  * Save a steady state problem
  * @param "CWriteConfig &" configBuffer
- */
-void CSteadyStateProblem::save(CWriteConfig & C_UNUSED(configBuffer)) const
-  {fatalError();}
+ */ 
+/*void CSteadyStateProblem::save(CWriteConfig & C_UNUSED(configBuffer)) const
+  {fatalError();}*/

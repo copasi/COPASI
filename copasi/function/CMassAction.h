@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:51 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:06:02 $
    End CVS Header */
 
 /**
@@ -66,8 +66,8 @@ class CMassAction : public CFunction
      *  Returns a string containing the explicit function in SBML format
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
-     */
-    std::string getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames, const std::string &r) const;
+     */ 
+    //    std::string getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames, const std::string &r) const;
 
     /**
      *  Calculates the value of the function

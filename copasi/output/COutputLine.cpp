@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutputLine.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:14:21 $
+   $Date: 2004/06/22 16:11:48 $
    End CVS Header */
 
 /*****************************************************************************
@@ -19,7 +19,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "model/CCompartment.h"
 #include "CDatum.h"
@@ -138,27 +138,27 @@ C_INT32 COutputLine::load(CReadConfig & configbuffer, std::string &searchName)
  *  @param pconfigbuffer reference to a CWriteConfig object.
  *  @return mFail
  *  @see mFail
- */
-C_INT32 COutputLine::save(CWriteConfig & configbuffer)
+ */ 
+/*C_INT32 COutputLine::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
-
+ 
   Size = mLine.size();
   std::string tmp = getObjectName();
   if ((Fail = configbuffer.setVariable(tmp, "string", NULL)))
     return Fail;
-
+ 
   if ((Fail = configbuffer.setVariable("Items", "C_INT32", &Size)))
     return Fail;
-
+ 
   // Output each datum in this line
   //Fail = mLine->save(configbuffer);
-
+ 
   mLine.save(configbuffer);
-
+ 
   return Fail;
-}
+}*/
 
 /**
  * print the titles of the steady-state data file

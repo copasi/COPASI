@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutputList.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:42 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:11:50 $
    End CVS Header */
 
 /*****************************************************************************
@@ -78,8 +78,8 @@ class COutputList
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
      *  @see mFail
-     */
-    C_INT32 save(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.

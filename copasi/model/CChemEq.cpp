@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 20:29:38 $
+   $Date: 2004/06/22 16:10:59 $
    End CVS Header */
 
 // CChemEqElement
@@ -17,7 +17,7 @@
 #include <math.h>
 #include "copasi.h"
 #include "CChemEq.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "CMetabNameInterface.h"
 

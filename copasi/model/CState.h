@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/18 16:53:12 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:11:02 $
    End CVS Header */
 
 /**
@@ -24,7 +24,7 @@
 #include "CParticleNumberList.h"
 
 class CReadConfig;
-class CWriteConfig;
+//class CWriteConfig;
 class CModel;
 class CStateX;
 
@@ -106,8 +106,8 @@ class CState
     /**
      * Save a state
      * @param "CWriteConfig &" configBuffer
-     */
-    virtual void save(CWriteConfig & configBuffer) const;
+     */ 
+    //    virtual void save(CWriteConfig & configBuffer) const;
 
     /**
      *
@@ -296,8 +296,8 @@ class CStateX: public CState
      * Save a state
      * @param "CWriteConfig &" configBuffer
      * @param "const CState * pState
-     */
-    virtual void save(CWriteConfig & configBuffer);
+     */ 
+    //    virtual void save(CWriteConfig & configBuffer);
 
     /**
      *

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:18:34 $
+   $Date: 2004/06/22 16:05:48 $
    End CVS Header */
 
 /**
@@ -113,7 +113,7 @@ void CKinFunction::load(CReadConfig & configBuffer,
 }
 #endif // XXXX
 
-void CKinFunction::saveOld(CWriteConfig & configBuffer)
+/*void CKinFunction::saveOld(CWriteConfig & configBuffer)
 {
   C_INT32 i, size;
   CFunction::saveOld(configBuffer);
@@ -121,13 +121,13 @@ void CKinFunction::saveOld(CWriteConfig & configBuffer)
   configBuffer.setVariable("Nodes", "C_INT32", &size);
   for (i = 0; i < size; i++)
     mNodes[i]->saveOld(configBuffer);
-}
+}*/
 
-std::string CKinFunction::getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
+/*std::string CKinFunction::getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
                                         const std::string &r) const
   {
     return mNodes[0]->getExplicitFunctionString(callParameterNames, r);
-  }
+  }*/
 
 bool CKinFunction::createObjList()
 {
@@ -151,7 +151,7 @@ bool CKinFunction::createObjList()
                 try
                   {
                     mpObj = (CCopasiObject*)CCopasiContainer::Root->getObject(mToken);
-                    if (!mpObj->isValueDbl() && !mpObj->isValueDbl()
+                    if (!mpObj->isValueDbl() && !mpObj->isValueDbl() //TODO: is Vector???
                         || mpObj->isMatrix())
                       {
                         mpObj = NULL;
@@ -270,7 +270,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                    // this is an error
+        case N_NOP:                                     // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

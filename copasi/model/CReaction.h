@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:42:32 $
+   $Date: 2004/06/22 16:11:02 $
    End CVS Header */
 
 /**
@@ -30,7 +30,7 @@
 #include "CCompartment.h"
 
 //template < class CType > class CVector;
-class CWriteConfig;
+//class CWriteConfig;
 class CReadConfig;
 
 /** @dia:pos 129.788,76.3337 */
@@ -156,8 +156,8 @@ class CReaction : public CCopasiContainer
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
      *  @see mFail
-     */
-    C_INT32 save(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -166,17 +166,17 @@ class CReaction : public CCopasiContainer
      *  @param const CCopasiVectorN< CMetab > & metabolites
      *  @return mFail
      *  @see mFail
-     */
-    C_INT32 saveOld(CWriteConfig & configbuffer,
-                    const CCopasiVector< CMetab > & metabolites);
+     */ 
+    //    C_INT32 saveOld(CWriteConfig & configbuffer,
+    //                    const CCopasiVector< CMetab > & metabolites);
 
     /**
      *  Saves the contents of the object to a ofstream object.
      *  Writes the data in SBML file format
      *  @param "std::ofstream &" fout ofstream that should be already open
      *  @param C_INT32 r the ordinal number of this reaction (to append to parameters)
-     */
-    void saveSBML(std::ofstream &fout, C_INT32 r = 0);
+     */ 
+    //    void saveSBML(std::ofstream &fout, C_INT32 r = 0);
 
     /**
      *  Retrieves the key of the reaction

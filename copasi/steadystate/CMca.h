@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/Attic/CMca.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:48 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:13:15 $
    End CVS Header */
 
 /*****************************************************************************
@@ -171,7 +171,7 @@ class CMca
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
      *  @see mFail
-     */
-    C_INT32 save(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
   };
 #endif // COPASI_CMca

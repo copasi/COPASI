@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/03 20:47:27 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:13:13 $
    End CVS Header */
 
 /**
@@ -20,7 +20,7 @@
 
 #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiMessage.h"
 
 #include "CEigen.h"
@@ -262,18 +262,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,         // mSelect,           //NULL,
-         &mN,                        //&n,
+         NULL,          // mSelect,           //NULL,
+         &mN,                         //&n,
          mA.array(),
          & mLDA,
-         & mSdim,                // output
+         & mSdim,                 // output
          mEigen_r.array(),
          mEigen_i.array(),
          mVS,
          & mLdvs,
          mWork,
          & mLWork,
-         mBWork,                  //NULL
+         mBWork,                   //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();

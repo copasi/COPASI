@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/16 16:13:11 $
+   $Date: 2004/06/22 16:05:47 $
    End CVS Header */
 
 /**
@@ -146,23 +146,23 @@ class CFunction : public CCopasiContainer
      *  (Which usually has a file attached but may also have socket)
      *  @param "CWriteConfig &" configBuffer.
      *  @return Fail
-     */
-    virtual void save(CWriteConfig & configBuffer);
+     */ 
+    //    virtual void save(CWriteConfig & configBuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
      *  Output is in Gepasi 3.21 file format.
      *  @param "CWriteConfig &" configBuffer.
      *  @return Fail
-     */
-    virtual void saveOld(CWriteConfig & configBuffer);
+     */ 
+    //    virtual void saveOld(CWriteConfig & configBuffer);
 
     /**
      *  Returns a string containing the explicit function in SBML format
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
-     */
-    virtual std::string getSBMLString(const std::vector< std::vector < std::string> > & callParameterNames, const std::string &r) const;
+     */ 
+    //    virtual std::string getSBMLString(const std::vector< std::vector < std::string> > & callParameterNames, const std::string &r) const;
 
     /**
      *  Retrieves the key of the function

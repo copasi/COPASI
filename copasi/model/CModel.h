@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/11 14:25:59 $
+   $Date: 2004/06/22 16:11:01 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -406,8 +406,8 @@ class CModel : public CCopasiContainer
      *  (Which usually has a file attached but may also have socket)
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
-     */
-    C_INT32 save(CWriteConfig &configBuffer);
+     */ 
+    //    C_INT32 save(CWriteConfig &configBuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -415,14 +415,14 @@ class CModel : public CCopasiContainer
      *  (Which usually has a file attached but may also have socket)
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
-     */
-    C_INT32 saveOld(CWriteConfig &configBuffer);
+     */ 
+    //    C_INT32 saveOld(CWriteConfig &configBuffer);
 
     /**
      *  Saves the contents of the object to a ofstream in SBML format.
      *  @param "std::ofstream &" fout the file stream (already open)
-     */
-    void saveSBML(std::ofstream &fout);
+     */ 
+    //    void saveSBML(std::ofstream &fout);
 
     /**
      *  This function must be called to initialize the vector of Metabolites

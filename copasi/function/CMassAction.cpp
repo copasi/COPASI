@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:47 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:06:02 $
    End CVS Header */
 
 /**
@@ -93,13 +93,13 @@ CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
   return (unsigned C_INT32) - 1;
 }*/
 
-std::string CMassAction::getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
+/*std::string CMassAction::getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
                                        const std::string &r) const
   {
     std::string sf, tmpstr;
     unsigned C_INT32 i, imax;
     const std::vector<std::string> * pFactors;
-
+ 
     pFactors = &(callParameterNames[1]);   // first substr.
     imax = pFactors->size();   // NoSubstrates
     if (imax)
@@ -111,10 +111,10 @@ std::string CMassAction::getSBMLString(const std::vector< std::vector< std::stri
             sf += "*" + tmpstr;
           }
       }
-
+ 
     if (isReversible() == TriFalse)
       return sf;
-
+ 
     pFactors = &(callParameterNames[3]);
     imax = pFactors->size();
     if (imax)
@@ -126,9 +126,9 @@ std::string CMassAction::getSBMLString(const std::vector< std::vector< std::stri
             sf += "*" + tmpstr;
           }
       }
-
+ 
     return sf;
-  }
+  }*/
 
 C_FLOAT64 CMassAction::calcValue(const CCallParameterPointers & callParameters) const
   {

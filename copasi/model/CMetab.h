@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:36:46 $
+   $Date: 2004/06/22 16:11:00 $
    End CVS Header */
 
 /**
@@ -22,7 +22,7 @@
 
 class CCompartment;
 class CReadConfig;
-class CWriteConfig;
+//class CWriteConfig;
 class CMetabOld;
 class CModel;
 
@@ -168,23 +168,23 @@ class CMetab : public CCopasiContainer
      *  (Which usually has a file attached but may also have socket)
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
-     */
-    C_INT32 save(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
      *  This saves the data in Gepasi 3.21 file format
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
-     */
-    C_INT32 saveOld(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 saveOld(CWriteConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a ofstream object.
      *  Writes the data in SBML file format
      *  @param "std::ofstream &" fout ofstream that should be already open
-     */
-    void saveSBML(std::ofstream &fout);
+     */ 
+    //    void saveSBML(std::ofstream &fout);
 
     /**
      * Sets the name of the metabolite.
@@ -412,8 +412,8 @@ class CMetabOld : public CCopasiContainer
     /**
      *  This function is only defined for completeness. We really never going 
      *  to save objects of class CMetabOld.
-     */
-    C_INT32 save(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
 
     C_INT32 getIndex() const;
 

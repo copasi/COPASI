@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/16 16:13:11 $
+   $Date: 2004/06/22 16:05:47 $
    End CVS Header */
 
 /**
@@ -199,7 +199,7 @@ void CFunction::load(CReadConfig & configBuffer,
   guessModifierUsageRange();
 }
 
-void CFunction::save(CWriteConfig & configBuffer)
+/*void CFunction::save(CWriteConfig & configBuffer)
 {
   std::string tmp;
   configBuffer.setVariable("FunctionType", "C_INT32", &mType);
@@ -207,20 +207,20 @@ void CFunction::save(CWriteConfig & configBuffer)
   configBuffer.setVariable("FunctionName", "string", &tmp);
   configBuffer.setVariable("Description", "string", &mDescription);
   configBuffer.setVariable("Reversible", "C_INT32", &mReversible);
-
+ 
   unsigned C_INT32 Size = mUsageDescriptions.size();
   configBuffer.setVariable("UsageDescriptionSize", "C_INT32", &Size);
   mUsageDescriptions.save(configBuffer);
   mParameters.save(configBuffer);
 }
-
+ 
 void CFunction::saveOld(CWriteConfig & configBuffer)
 {
   C_INT32 dummy, i, sizem, sizep;
   unsigned C_INT32 pos;
   std::string tmpstr1, tmpstr2;
   CCopasiVectorNS < CUsageRange > tmpusage;
-
+ 
   if (mType == UserDefined)
     dummy = 1;
   else
@@ -257,11 +257,11 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   tmpstr1 = getObjectName();
   configBuffer.setVariable("FunctionName", "string", &tmpstr1);
   configBuffer.setVariable("Description", "string", &mDescription);
-}
+}*/
 
-std::string CFunction::getSBMLString(const std::vector< std::vector< std::string > > & C_UNUSED(callParameterNames),
+/*std::string CFunction::getSBMLString(const std::vector< std::vector< std::string > > & C_UNUSED(callParameterNames),
                                      const std::string & C_UNUSED(r)) const
-  {return "0";}
+  {return "0";}*/
 
 const std::string & CFunction::getKey() const {return mKey;}
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:42:31 $
+   $Date: 2004/06/22 16:11:01 $
    End CVS Header */
 
 // CReaction
@@ -24,7 +24,7 @@
 #include "CReaction.h"
 #include "CCompartment.h"
 #include "CModel.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/utility.h"
@@ -133,15 +133,15 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-C_INT32 CReaction::save(CWriteConfig & C_UNUSED(configbuffer))
-{return 0;}
+//C_INT32 CReaction::save(CWriteConfig & C_UNUSED(configbuffer))
+//{return 0;}
 
-C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
+/*C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
                            const CCopasiVector< CMetab > &metabolites)
 {
   std::string tmp;
   C_FLOAT64 Dbl;
-
+ 
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
   C_INT32 i = 0, j = 0, s = 0, c = -1;
@@ -154,7 +154,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
     return Fail;
   tmp = "TODO";  // mChemEq.getChemicalEquation();
   // CChemEqInterface is not guaranteed to write a chemical equation that gepasi will understand
-
+ 
   tmp = tmp.substr(0, tmp.find(';'));
   if ((Fail = configbuffer.setVariable("Equation", "string", &tmp)))
     return Fail;
@@ -163,7 +163,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
     return Fail;
   if ((Fail = configbuffer.setVariable("Flux", "C_FLOAT64", &mFlux)))
     return Fail;
-
+ 
   bool revers = mChemEq.getReversibility();
   if ((Fail = configbuffer.setVariable("Reversible", "bool", &revers)))
     return Fail;
@@ -248,14 +248,14 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
         return Fail;
     }
   return 0;
-}
+}*/
 
-void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
+/*void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
 {
   std::string tmpstr, tmpstr2;
   unsigned C_INT32 i;
   CCopasiVector < CChemEqElement > rr;
-
+ 
   FixSName(getObjectName(), tmpstr);
   fout << "\t\t\t<reaction name=\"" << tmpstr << "\"";
   fout << " reversible=\"";
@@ -298,7 +298,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
         }
     }
   fout << "\t\t\t\t</listOfProducts>" << std::endl;
-
+ 
   fout << "\t\t\t\t<kineticLaw formula=\"";
   // kinetic function string
   tmpstr2 = StringPrint("_%ld", r);
@@ -314,7 +314,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
   fout << "\t\t\t\t\t</listOfParameters>" << std::endl;
   fout << "\t\t\t\t</kineticLaw>" << std::endl;
   fout << "\t\t\t</reaction>" << std::endl;
-}
+}*/
 
 //C_INT32 CReaction::getSubstrateNumber() const
 //  {return mChemEq.getSubstrates().size();}

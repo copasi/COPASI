@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:32:27 $
+   $Date: 2004/06/22 16:05:47 $
    End CVS Header */
 
 /**
@@ -19,7 +19,7 @@
 #include <string>
 #include <iostream>
 
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "report/CCopasiContainer.h"
 
 /** @dia:pos 15.1888,24.6765 */
@@ -122,8 +122,8 @@ class CFunctionParameter : public CCopasiContainer
      * (Which usually has a file attached but may also have socket)
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
-     */
-    virtual void save(CWriteConfig & configbuffer);
+     */ 
+    //    virtual void save(CWriteConfig & configbuffer);
 
     /**
      *  Retrieves the key of the function parameter.

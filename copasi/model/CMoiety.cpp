@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 08:22:50 $
+   $Date: 2004/06/22 16:11:01 $
    End CVS Header */
 
 #include <stdio.h>
@@ -15,7 +15,7 @@
 #include "utilities/CCopasiMessage.h"
 #include "CMoiety.h"
 #include "CCompartment.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
 #include "CMetabNameInterface.h"
@@ -25,7 +25,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(GlobalKeys.add("Moiety", this)),        //By G
+    mKey(GlobalKeys.add("Moiety", this)),         //By G
     mNumber(0),
     mINumber(0),
     mEquation("Equation", this)
@@ -34,7 +34,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Moiety", this)),        //By G
+    mKey(GlobalKeys.add("Moiety", this)),         //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation, this)
@@ -159,11 +159,11 @@ void * CMoiety::getNumberAddr()
 
 /**
  * Saves in Gepasi 3.21 format
- */
-C_INT32 CMoiety::saveOld(CWriteConfig & configBuffer)
+ */ 
+/*C_INT32 CMoiety::saveOld(CWriteConfig & configBuffer)
 {
   C_INT32 c = 0, t = 7, Fail = 0;
-
+ 
   Fail = configBuffer.setVariable("Metabolite", "string", (void *) & mEquation);
   if (Fail)
     return Fail;
@@ -176,4 +176,4 @@ C_INT32 CMoiety::saveOld(CWriteConfig & configBuffer)
     return Fail;
   Fail = configBuffer.setVariable("Type", "C_INT32", (void *) & t);
   return Fail;
-}
+}*/

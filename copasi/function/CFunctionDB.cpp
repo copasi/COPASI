@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 15:00:42 $
+   $Date: 2004/06/22 16:05:47 $
    End CVS Header */
 
 /**
@@ -123,40 +123,40 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
   return Fail;
 }
 
-C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
+/*C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
 {
   C_INT32 Size = mLoadedFunctions.size();
   C_INT32 Fail = 0;
-
+ 
   if ((Fail = configbuffer.setVariable("TotalKinetics", "C_INT32", &Size)))
     return Fail;
-
+ 
   mLoadedFunctions.save(configbuffer);
-
+ 
   return Fail;
 }
-
+ 
 C_INT32 CFunctionDB::saveOld(CWriteConfig &configbuffer)
 {
   C_INT32 Size;
   C_INT32 Fail = 0;
   C_INT32 i, j;
-
+ 
   Size = mLoadedFunctions.size();
   for (i = j = 0; i < Size; i++)
     if (mLoadedFunctions[i]->getType() == CFunction::UserDefined)
       j++;
-
+ 
   if ((Fail = configbuffer.setVariable("TotalUDKinetics", "C_INT32", &j)))
     return Fail;
-
+ 
   // because CCopasiVector does not have saveOld, we will save them one by one
   for (i = 0; i < Size; i++)
     if (mLoadedFunctions[i]->getType() == CFunction::UserDefined)
       mLoadedFunctions[i]->saveOld(configbuffer);
-
+ 
   return Fail;
-}
+}*/
 
 void CFunctionDB::setFilename(const std::string & filename)
 {mFilename = filename;}

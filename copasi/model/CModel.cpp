@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.178 $
+   $Revision: 1.179 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/11 14:25:57 $
+   $Date: 2004/06/22 16:11:00 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -328,52 +328,52 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   return Fail;
 }
 
-C_INT32 CModel::save(CWriteConfig & configBuffer)
+/*C_INT32 CModel::save(CWriteConfig & configBuffer)
 {
   C_INT32 Size;
   C_INT32 Fail = 0;
   std::string tmp = getObjectName();
-
+ 
   if ((Fail = configBuffer.setVariable("Title", "string", &tmp)))
     return Fail;
-
+ 
   if ((Fail = configBuffer.setVariable("Comments", "multiline", &mComments)))
     return Fail;
-
+ 
   if ((Fail = configBuffer.setVariable("ConcentrationUnit",
                                        "string",
                                        &mQuantityUnit)))
     return Fail;
-
+ 
   if ((Fail = configBuffer.setVariable("InitialTime", "C_FLOAT64", &mInitialTime)))
     return Fail;
-
+ 
   Size = mCompartments.size();
-
+ 
   if ((Fail = configBuffer.setVariable("TotalCompartments", "C_INT32", &Size)))
     return Fail;
-
+ 
   mCompartments.save(configBuffer);
-
+ 
   if ((Fail = Copasi->pFunctionDB->save(configBuffer)))
     return Fail;
-
+ 
   Size = mSteps.size();
-
+ 
   if ((Fail = configBuffer.setVariable("TotalSteps", "C_INT32", &Size)))
     return Fail;
-
+ 
   mSteps.save(configBuffer);
-
+ 
   return Fail;
 }
-
+ 
 C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
 {
   C_INT32 i, Size;
   C_INT32 Fail = 0;
   std::string tmp = getObjectName();
-
+ 
   if ((Fail = configBuffer.setVariable("Title", "string", &tmp)))
     return Fail;
   Size = mMetabolites.size();
@@ -405,14 +405,14 @@ C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
   if ((Fail = configBuffer.setVariable("Comments", "multiline", &mComments)))
     return Fail;
   return Fail;
-}
+}*/
 
-void CModel::saveSBML(std::ofstream &fout)
+/*void CModel::saveSBML(std::ofstream &fout)
 {
   std::string tmpstr, tmpstr2;
   C_INT32 p, dummy;
   unsigned C_INT32 i;
-
+ 
   fout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
   fout << "<!-- Created by COPASI version " << Copasi->ProgramVersion.getVersion() << " -->" << std::endl;
   // TODO: add time stamp to the comment string
@@ -465,7 +465,7 @@ void CModel::saveSBML(std::ofstream &fout)
   fout << "\t\t</listOfReactions>" << std::endl;
   fout << "\t</model>" << std::endl;
   fout << "</sbml>" << std::endl;
-}
+}*/
 
 bool CModel::compile()
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CUDFunctionDB.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:25:58 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:11:53 $
    End CVS Header */
 
 /*****************************************************************************
@@ -17,7 +17,7 @@
 
 #include <string>
 
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 
 class CUDFunction;
@@ -67,8 +67,8 @@ class CUDFunctionDB
      *  (Which usually has a file attached but may also have socket)
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
-     */
-    C_INT32 save(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Add the function to the database

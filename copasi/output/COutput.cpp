@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutput.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 14:18:15 $
+   $Date: 2004/06/22 16:11:46 $
    End CVS Header */
 
 /*****************************************************************************
@@ -24,7 +24,7 @@
 #include "COutput.h"
 #include "CUDFunction.h"
 #include "CUDFunctionDB.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/CCopasiException.h" 
 //#include "model/model.h"
@@ -199,17 +199,17 @@ void COutput::addDatum(std::string nameOfLine,
  *  @param pconfigbuffer reference to a CWriteConfig object.
  *  @return mFail
  *  @see mFail
- */
-C_INT32 COutput::save(CWriteConfig & configbuffer)
+ */ 
+/*C_INT32 COutput::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
-
+ 
   writeDefaultVar(configbuffer);
-
+ 
   mOutputLines.save(configbuffer);
-
+ 
   return Fail;
-}
+}*/
 
 /**
  *  Loads an object with data coming from a CReadConfig object.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/21 14:31:24 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:05:49 $
    End CVS Header */
 
 /**
@@ -20,7 +20,7 @@
 
 #include "CFunction.h"
 #include "CNodeK.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 
 class CCopasiObject;
 
@@ -98,16 +98,16 @@ class CKinFunction : public CFunction
      *  Output is in Gepasi 3.21 file format.
      *  @param "CWriteConfig &" configBuffer.
      *  @return Fail
-     */
-    void saveOld(CWriteConfig & configBuffer);
+     */ 
+    //    void saveOld(CWriteConfig & configBuffer);
 
     /**
      *  Returns a string containing the explicit function in SBML format
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
-     */
-    std::string getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
-                              const std::string &r) const;
+     */ 
+    //    std::string getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
+    //                             const std::string &r) const;
 
     /**
      *  Compile a function

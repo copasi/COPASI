@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/03/18 03:50:38 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:13:38 $
    End CVS Header */
 
 /**
@@ -20,8 +20,8 @@
 #include <string>
 
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
+#include "utilities/CReadConfig.h" 
+//#include "utilities/CWriteConfig.h"
 #include "model/CState.h"
 
 class CModel;

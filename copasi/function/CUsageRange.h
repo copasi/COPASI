@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CUsageRange.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:18:34 $
+   $Date: 2004/06/22 16:06:03 $
    End CVS Header */
 
 /**
@@ -70,8 +70,8 @@ class CUsageRange : public CRange
      * (Which usually has a file attached but may also have socket)
      *  @param configBuffer reference to a CWriteConfig object.
      *  @return Fail
-     */
-    virtual void save(CWriteConfig & configBuffer);
+     */ 
+    //    virtual void save(CWriteConfig & configBuffer);
 
     /**
      *  Retrieves the usage of the range

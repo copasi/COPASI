@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/07 16:57:40 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:13:16 $
    End CVS Header */
 
 /**
@@ -21,8 +21,8 @@
 
 #include "model/CState.h"
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
+#include "utilities/CReadConfig.h" 
+//#include "utilities/CWriteConfig.h"
 
 class CSteadyStateProblem: public CCopasiProblem
   {
@@ -121,8 +121,8 @@ class CSteadyStateProblem: public CCopasiProblem
     /**
      * Save a trajectory problem
      * @param "CWriteConfig &" configBuffer
-     */
-    void save(CWriteConfig & configBuffer) const;
+     */ 
+    //    void save(CWriteConfig & configBuffer) const;
 
   private:
     /**

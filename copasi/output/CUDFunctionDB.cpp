@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CUDFunctionDB.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/25 18:21:19 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:11:52 $
    End CVS Header */
 
 /*****************************************************************************
@@ -16,7 +16,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "CUDFunctionDB.h"
 #include "CUDFunction.h"
 
@@ -80,21 +80,21 @@ C_INT32 CUDFunctionDB::load(CReadConfig & configbuffer)
  *  (Which usually has a file attached but may also have socket)
  *  @param pconfigbuffer reference to a CWriteConfig object.
  *  @return mFail
- */
-C_INT32 CUDFunctionDB::save(CWriteConfig & configbuffer)
+ */ 
+/*C_INT32 CUDFunctionDB::save(CWriteConfig & configbuffer)
 {
   C_INT32 Size = mUDFunctions.size();
   C_INT32 Fail = 0;
-
+ 
   if ((Fail = configbuffer.setVariable("TotalOutputFunctions",
                                        "C_INT32", &Size)))
     return Fail;
-
+ 
   for (C_INT32 i = 0; i < Size; i++)
     mUDFunctions[i]->save(configbuffer);
-
+ 
   return Fail;
-}
+}*/
 
 /**
  *  Add the function to the database

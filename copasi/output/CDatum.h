@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CDatum.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:14:20 $
+   $Date: 2004/06/22 16:11:45 $
    End CVS Header */
 
 /*****************************************************************************
@@ -233,8 +233,8 @@ class CDatum : public CCopasiContainer
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
      *  @see mFail
-     */
-    C_INT32 save(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Dummy method.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CUDFunction.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:43 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:11:52 $
    End CVS Header */
 
 /*****************************************************************************
@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "function/CKinFunction.h"
 #include "model/CModel.h"
 #include "CNodeO.h"

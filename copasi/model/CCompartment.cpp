@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:36:45 $
+   $Date: 2004/06/22 16:10:59 $
    End CVS Header */
 
 // CCompartment
@@ -19,7 +19,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
@@ -93,7 +93,7 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-C_INT32 CCompartment::save(CWriteConfig & configbuffer)
+/*C_INT32 CCompartment::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
   std::string tmp = getObjectName();
@@ -110,11 +110,11 @@ C_INT32 CCompartment::save(CWriteConfig & configbuffer)
   mMetabolites.save(configbuffer);
   return Fail;
 }
-
+ 
 C_INT32 CCompartment::saveOld(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
-
+ 
   std::string tmp = getObjectName();
   if ((Fail = configbuffer.setVariable("Compartment", "string",
                                        (void *) & tmp)))
@@ -123,15 +123,15 @@ C_INT32 CCompartment::saveOld(CWriteConfig & configbuffer)
                                        (void *) & mVolume)))
     return Fail;
   return Fail;
-}
+}*/
 
-void CCompartment::saveSBML(std::ofstream &fout)
+/*void CCompartment::saveSBML(std::ofstream &fout)
 {
   std::string str;
   FixSName(getObjectName(), str);
   fout << "\t\t\t<compartment name=\"" << str << "\"";
   fout << " volume=\"" << mVolume << "\"/>" << std::endl;
-}
+}*/
 
 const std::string & CCompartment::getKey() const {return mKey;}
 

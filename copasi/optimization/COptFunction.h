@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:52 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:11:23 $
    End CVS Header */
 
 /********************************************************
@@ -19,7 +19,7 @@ Contact: Please contact lixu1@vt.edu.
 #define COPASI_COptExpression
 
 #include "function/CKinFunction.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
@@ -29,7 +29,7 @@ class COptProblem;
 
 class COptFunction: public CCopasiContainer
   {
-  public:        //function
+  public:         //function
     std::vector<CCopasiObject*> mParaList;
     std::vector<std::string> mMinList;
     std::vector<std::string> mMaxList;
@@ -51,7 +51,7 @@ class COptFunction: public CCopasiContainer
     inline std::string getKey()
     {return mKey;}
 
-  public:        // constructor and deconstuctor
+  public:         // constructor and deconstuctor
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")

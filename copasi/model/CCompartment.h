@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:36:45 $
+   $Date: 2004/06/22 16:11:00 $
    End CVS Header */
 
 /**
@@ -24,7 +24,7 @@
 #include "CMetab.h"
 
 class CReadConfig;
-class CWriteConfig;
+//class CWriteConfig;
 
 /** @dia:pos 128.756,34.703 */
 class CCompartment : public CCopasiContainer
@@ -109,8 +109,8 @@ class CCompartment : public CCopasiContainer
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
      *  @see mFail
-     */
-    C_INT32 save(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -118,15 +118,15 @@ class CCompartment : public CCopasiContainer
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
      *  @see mFail
-     */
-    C_INT32 saveOld(CWriteConfig & configbuffer);
+     */ 
+    //    C_INT32 saveOld(CWriteConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a ofstream object.
      *  Writes the data in SBML file format
      *  @param "std::ofstream &" fout ofstream that should be already open
-     */
-    void saveSBML(std::ofstream &fout);
+     */ 
+    //    void saveSBML(std::ofstream &fout);
 
     /**
      *  Returns a string with the name of this compartment.
