@@ -1,0 +1,230 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>OptimizationItemWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>OptimizationItemWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>390</width>
+            <height>173</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Optimization Item</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>textLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>Parameter</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="5" column="2">
+            <property name="name">
+                <cstring>layout13</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>lineLower</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonLowerEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>edit</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QComboBox" row="2" column="1">
+            <item>
+                <property name="text">
+                    <string>&lt;</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>&lt;=</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>==</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>comboBoxUpperOp</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="0">
+            <property name="name">
+                <cstring>textLabel3</cstring>
+            </property>
+            <property name="text">
+                <string>Upper</string>
+            </property>
+        </widget>
+        <widget class="QComboBox" row="5" column="1">
+            <item>
+                <property name="text">
+                    <string>&gt;</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>&gt;=</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>==</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>comboBoxLowerOp</cstring>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="6" column="2">
+            <property name="name">
+                <cstring>checkLowerInf</cstring>
+            </property>
+            <property name="text">
+                <string>- Inf</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="2" column="2">
+            <property name="name">
+                <cstring>layout14</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>lineUpper</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonUpperEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>edit</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLabel" row="5" column="0">
+            <property name="name">
+                <cstring>textLabel4</cstring>
+            </property>
+            <property name="text">
+                <string>Lower</string>
+            </property>
+        </widget>
+        <widget class="Line" row="4" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>line10</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="3" column="2">
+            <property name="name">
+                <cstring>checkUpperInf</cstring>
+            </property>
+            <property name="text">
+                <string>+ Inf</string>
+            </property>
+        </widget>
+        <widget class="Line" row="1" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>line11</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>ObjectName</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>checkUpperInf</sender>
+        <signal>clicked()</signal>
+        <receiver>OptimizationItemWidget</receiver>
+        <slot>slotPosInfClicked()</slot>
+    </connection>
+    <connection>
+        <sender>checkLowerInf</sender>
+        <signal>clicked()</signal>
+        <receiver>OptimizationItemWidget</receiver>
+        <slot>slotNegInfClicked()</slot>
+    </connection>
+    <connection>
+        <sender>buttonUpperEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>OptimizationItemWidget</receiver>
+        <slot>slotUpperEdit()</slot>
+    </connection>
+    <connection>
+        <sender>buttonLowerEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>OptimizationItemWidget</receiver>
+        <slot>slotLowerEdit()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>ObjectName</tabstop>
+    <tabstop>comboBoxUpperOp</tabstop>
+    <tabstop>lineUpper</tabstop>
+    <tabstop>buttonUpperEdit</tabstop>
+    <tabstop>checkUpperInf</tabstop>
+    <tabstop>comboBoxLowerOp</tabstop>
+    <tabstop>lineLower</tabstop>
+    <tabstop>buttonLowerEdit</tabstop>
+    <tabstop>checkLowerInf</tabstop>
+</tabstops>
+<slots>
+    <slot>slotPosInfClicked()</slot>
+    <slot>slotLowerEdit()</slot>
+    <slot>slotNegInfClicked()</slot>
+    <slot>slotUpperEdit()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
