@@ -6,7 +6,7 @@
 #include "model/model.h"
 #include "steadystate/steadystate.h"
 class ListViews;
-
+class QToolButton;
 class CopasiUI3Window : public QMainWindow
   {
     Q_OBJECT
@@ -31,6 +31,9 @@ class CopasiUI3Window : public QMainWindow
 
   private:
     QString gpsFile;
+    QToolButton* msave_button;
+    QPopupMenu * file;
+    int nsave_menu_id;
     void createToolBar();
     void createMenuBar();
   };

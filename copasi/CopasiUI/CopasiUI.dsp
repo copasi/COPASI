@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 mkl_lapack.lib mkl_p3.lib mkl_c.lib function.lib model.lib output.lib report.lib trajectory.lib utilities.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt302.lib $(QTDIR)\lib\qtmain.lib mkl_lapack.lib mkl_p3.lib mkl_c.lib steadystate.lib utilities.lib function.lib model.lib output.lib report.lib trajectory.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt302.lib $(QTDIR)\lib\qtmain.lib mkl_lapack.lib mkl_p3.lib mkl_c.lib steadystate.lib utilities.lib function.lib model.lib output.lib report.lib trajectory.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt302.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /pdbtype:sept /libpath:"../Debug" /libpath:"$(CBLAS_LIB)/ia32/lib"
+# ADD LINK32 mkl_lapack.lib mkl_p3.lib mkl_c.lib function.lib model.lib output.lib report.lib trajectory.lib utilities.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt307.lib $(QTDIR)\lib\qtmain.lib mkl_lapack.lib mkl_p3.lib mkl_c.lib steadystate.lib utilities.lib function.lib model.lib output.lib report.lib trajectory.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt307.lib $(QTDIR)\lib\qtmain.lib mkl_lapack.lib mkl_p3.lib mkl_c.lib steadystate.lib utilities.lib function.lib model.lib output.lib report.lib trajectory.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt307.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /pdbtype:sept /libpath:"../Debug" /libpath:"$(CBLAS_LIB)/ia32/lib"
 # SUBTRACT LINK32 /profile /pdb:none /incremental:no /nodefaultlib
 
 !ENDIF 
@@ -768,7 +768,7 @@ SOURCE=..\elementaryFluxModes\CElementaryFluxModes.moc
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - MOCing CElementaryFluxModes.cpp...
-InputDir=\Documents and Settings\msinghal\DESKTOP\copasi_dev\copasi\elementaryFluxModes
+InputDir=\GRA\copasi_dev\copasi\elementaryFluxModes
 InputPath=..\elementaryFluxModes\CElementaryFluxModes.moc
 InputName=CElementaryFluxModes
 
@@ -781,7 +781,7 @@ InputName=CElementaryFluxModes
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - MOCing CElementaryFluxModes.cpp...
-InputDir=\Documents and Settings\msinghal\DESKTOP\copasi_dev\copasi\elementaryFluxModes
+InputDir=\GRA\copasi_dev\copasi\elementaryFluxModes
 InputPath=..\elementaryFluxModes\CElementaryFluxModes.moc
 InputName=CElementaryFluxModes
 

@@ -136,6 +136,19 @@ void CopasiUI3Window::slotFileOpen()
 
   if (dataModel && gpsFile)
     dataModel->loadModel((const char *)gpsFile.utf8());
+
+  CReadConfig inbuf((const char *)gpsFile.utf8());
+
+  if (inbuf.getVersion() < "4.0")
+    {
+      msave_button->setEnabled(false);
+      file->setItemEnabled(nsave_menu_id, false);
+    }
+  else
+    {
+      msave_button->setEnabled(true);
+      file->setItemEnabled(nsave_menu_id, true);
+    }
 }
 
 /***************CopasiUI3Window::slotFileSave()*****************
@@ -226,6 +239,9 @@ void CopasiUI3Window::createToolBar()
 
       QWhatsThis::add
       (toolb, toolTip[j]);
+
+      if (j == 1)
+        msave_button = toolb;
     }
 
   toolb = QWhatsThis::whatsThisButton(tbMain);
@@ -273,7 +289,7 @@ void CopasiUI3Window::createMenuBar()
   QKeySequence hotKey[5] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_P};
   int fileSeperator[5] = {0, 0, 0, 0, 1};
 
-  QPopupMenu * file = new QPopupMenu(this);
+  file = new QPopupMenu(this);
   menuBar()->insertItem("&File", file);
 
   for (int j = 0; j < 5; j++)
@@ -287,6 +303,8 @@ void CopasiUI3Window::createMenuBar()
                             this, slotFileName[j], hotKey[j]);
 
       file->setWhatsThis(id, toolTip[j]);
+      if (j == 2)
+        nsave_menu_id = id;
     }
 
   file->insertSeparator();
