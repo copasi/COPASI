@@ -34,14 +34,15 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
     : QWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(0, 3, this, "tblConstantSymbols");
+  table = new MyTable(0, 4, this, "tblConstantSymbols");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Symbol");
   tableHeader->setLabel(1, "Constant");
-  tableHeader->setLabel(2, "Value");
+  tableHeader->setLabel(2, "Reaction");
+  tableHeader->setLabel(3, "Value");
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
@@ -57,8 +58,8 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
   hBoxLayout->addWidget(btnCancel);
   hBoxLayout->addSpacing(50);
 
-  table->sortColumn (0, true, true);
-  table->setSorting (true);
+  table->sortColumn(2, true, true);
+  table->setSorting(true);
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
@@ -91,6 +92,7 @@ void ConstantSymbols::loadConstantSymbols(CMathModel *model)
         {
           pConstant = it->second;
           table->setText(index, 0, it->first.c_str());
+#ifdef XXXX
           std::map< std::string, CCopasiObject * > selection = CMathConstantParameter::getSelection();
           std::map<std::string, CCopasiObject * >::iterator it1 = selection.begin();;
           std::map< std::string, CCopasiObject * >::iterator end1 = selection.end();
@@ -104,9 +106,13 @@ void ConstantSymbols::loadConstantSymbols(CMathModel *model)
           QComboTableItem * item1 = new QComboTableItem(table, comboEntries1, false);
           item1->setCurrentItem(pConstant->getObject()->getName().c_str());
           table->setItem(index, 1, item1);
-          table->setText(index, 2, QString::number(pConstant->getValue()));
+#endif // XXXX
+          table->setText(index, 1, pConstant->getObject()->getName().c_str());
+          table->setText(index, 2, pConstant->getReaction().c_str());
+          table->setText(index, 3, QString::number(pConstant->getValue()));
           index++;
         }
+      table->sortColumn(2, true, true);
     }
 }
 

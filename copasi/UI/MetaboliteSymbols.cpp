@@ -42,11 +42,11 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Symbol");
   tableHeader->setLabel(1, "Metabolite");
-  tableHeader->setLabel(2, "Initial Concentration");
-  tableHeader->setLabel(3, "Initial Particle No.");
-  tableHeader->setLabel(4, "Concentration");
-  tableHeader->setLabel(5, "Particle No.");
-  tableHeader->setLabel(6, "Compartment");
+  tableHeader->setLabel(2, "Compartment");
+  tableHeader->setLabel(3, "Initial Concentration");
+  tableHeader->setLabel(4, "Initial Particle No.");
+  tableHeader->setLabel(5, "Concentration");
+  tableHeader->setLabel(6, "Particle No.");
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
@@ -97,11 +97,11 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
 
           table->setText(index, 0, it->first.c_str());
           table->setText(index, 1, variableMetab->getObject()->getName().c_str());
-          table->setText(index, 2, QString::number(variableMetab->getInitialConcentration()));
-          table->setText(index, 3, QString::number(variableMetab->getInitialParticleNumber()));
-          table->setText(index, 4, QString::number(variableMetab->getConcentration()));
-          table->setText(index, 5, QString::number(variableMetab->getParticleNumber()));
-          //table->setText(index, 6,variableMetab->getCompartment().getName().c_str());
+          table->setText(index, 2, variableMetab->getCompartment().getName().c_str());
+          table->setText(index, 3, QString::number(variableMetab->getInitialConcentration()));
+          table->setText(index, 4, QString::number(variableMetab->getInitialParticleNumber()));
+          table->setText(index, 5, QString::number(variableMetab->getConcentration()));
+          table->setText(index, 6, QString::number(variableMetab->getParticleNumber()));
           index++;
         }
 

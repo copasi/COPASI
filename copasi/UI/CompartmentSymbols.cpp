@@ -97,6 +97,7 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
           constantCompart = it->second;
           table->setText(index, 0, it->first.c_str());
 
+#ifdef XXXX
           const CCopasiVectorNS < CCompartment > &list1 = mModel->getModel()->getCompartments();
           for (int m = 0; m < list1.size(); m++)
             {
@@ -106,7 +107,9 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
           QComboTableItem * item1 = new QComboTableItem(table, comboEntries2, false);
           item1->setCurrentItem(constantCompart->getObject()->getName().c_str());
           table->setItem(index, 1, item1);
-
+#endif // XXXX
+          table->setText(index, 1,
+                         constantCompart->getObject()->getName().c_str());
           table->setText(index, 2, QString::number(constantCompart->getValue()));
 
           table->setText(index, 3, QString::number(constantCompart->getTransientValue()));

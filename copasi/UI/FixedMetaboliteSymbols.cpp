@@ -34,10 +34,10 @@ FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * nam
 
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Symbol");
-  tableHeader->setLabel(1, "Fixed Metabolite");
-  tableHeader->setLabel(2, "Concentration");
-  tableHeader->setLabel(3, "Particle No.");
-  tableHeader->setLabel(4, "Compartment");
+  tableHeader->setLabel(1, "Metabolite");
+  tableHeader->setLabel(2, "Compartment");
+  tableHeader->setLabel(3, "Concentration");
+  tableHeader->setLabel(4, "Particle No.");
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
@@ -89,10 +89,9 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
           table->setText(index, 0, constantMetab->getName().c_str());
           CCopasiObject *metabObject = constantMetab->getObject();
           table->setText(index, 1, metabObject->getName().c_str());
-          table->setText(index, 2, QString::number(constantMetab->getConcentration()));
-          table->setText(index, 3, QString::number(constantMetab->getParticleNumber()));
-          //CMathConstantCompartment &Compartment = constantMetab->getCompartment();
-          table->setText(index, 4, constantMetab->getCompartment().getName().c_str());
+          table->setText(index, 2, constantMetab->getCompartment().getName().c_str());
+          table->setText(index, 3, QString::number(constantMetab->getConcentration()));
+          table->setText(index, 4, QString::number(constantMetab->getParticleNumber()));
           index++;
         }
 
