@@ -291,7 +291,11 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
       while (it < end)
         {
           current = *it;
-          ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, current, objectItemList);
+          CCopasiObject* pSubField = getFieldCopasiObject(current, currentField->getObjectName().c_str());
+
+          ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, pSubField, objectItemList);
+          //          ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, current, objectItemList);
+
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(FIELDATTR);
           last = currentItem;
@@ -303,14 +307,14 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
 
 void ObjectBrowser::updateUI()
 {
-  /*
-    objectListItem* pCurrent = objectItemList->getRoot();
+  objectListItem* pCurrent = objectItemList->getRoot();
+  setCheckMark(pCurrent->pItem);
+  for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
     setCheckMark(pCurrent->pItem);
-    for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
-      setCheckMark(pCurrent->pItem);
+  /*
+    for (ObjectBrowserItem* pCurrent = refreshList->pop(); pCurrent != NULL; pCurrent = refreshList->pop())
+      setCheckMark(pCurrent);
   */
-  for (ObjectBrowserItem* pCurrent = refreshList->pop(); pCurrent != NULL; pCurrent = refreshList->pop())
-    setCheckMark(pCurrent);
 }
 
 void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)
@@ -335,4 +339,19 @@ void ObjectBrowser::loadUI()
   setCheckMark(pCurrent->pItem);
   for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
     setCheckMark(pCurrent->pItem);
+}
+
+CCopasiObject* ObjectBrowser::getFieldCopasiObject(CCopasiObject* pCurrent, const char* name)
+{
+  std::vector<CCopasiObject *> pObjectList = ((CCopasiContainer*)pCurrent)->getObjects();
+  std::vector<CCopasiObject *>::iterator it = pObjectList.begin();
+  std::vector<CCopasiObject *>::iterator end = pObjectList.end();
+
+  while (it < end)
+    {
+      if (QString((*it)->getObjectName().c_str()) == name)
+        return *it;
+      it++;
+    }
+  return NULL;
 }
