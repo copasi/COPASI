@@ -599,7 +599,7 @@ void CModel::buildL()
 
   for (i = 0; i < size; i++)
     for (j = 0; j < jmax; j++)
-      mL[i][j] = L(i + 1, j + 1);
+      mL[i][j] = L(i, j);
 
   /* We complete L so that it is a square matrix */
   for (i = 0; i < size; i++)

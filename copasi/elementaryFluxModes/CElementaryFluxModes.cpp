@@ -52,7 +52,7 @@ void CElementaryFluxModes::calculate(const CModel * model)
   /* Build the transpose of the stoichiometry matrix, */
   /* sort reversible reactions to the top, count them */
   /* and keep track of the rearrangement */
-  for (row = 0; row < numRows; )
+  for (row = 0; row < numRows; row++)
     {
       if (Reaction[row]->isReversible())
         {
@@ -64,10 +64,8 @@ void CElementaryFluxModes::calculate(const CModel * model)
 
       mIndex[Insert] = row;
 
-      row++; /* Since ModelStoi is accessed fortran style hereafter. */
-
       for (col = 0; col < numCols; col++)
-        Stoi[Insert][col] = ModelStoi(row, col + 1);
+        Stoi[Insert][col] = ModelStoi(row, col);
     }
 
   /* Now do the calculation */

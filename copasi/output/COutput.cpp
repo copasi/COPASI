@@ -517,7 +517,7 @@ void COutput::repStruct(ofstream &fout)
           else
             fout.setf(ios::right);
 
-          fout << setprecision(1) << setw(4) << Inverse(i + 1, j + 1);
+          fout << setprecision(1) << setw(4) << Inverse(i, j);
 
           //fout << setprecision(1) << setw(4) << model->getML()[i][j];
         }

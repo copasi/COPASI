@@ -52,6 +52,9 @@
 template <class Matrix, class Subscript>
 int LUfactor(Matrix &A, vector< Subscript > & row, vector< Subscript > & col)
 {
+  /* :TODO: get rid of this for performance reasons */
+  CFortranAccess< Matrix > fA(A);
+
   Subscript M = A.numRows();
   Subscript N = A.numCols();
 
@@ -81,12 +84,12 @@ int LUfactor(Matrix &A, vector< Subscript > & row, vector< Subscript > & col)
       while (TRUE)
         {
           jp = j;
-          t = fabs(A(j, j));
+          t = fabs(fA(j, j));
           for (i = j + 1; i <= M; i++)
-            if (fabs(A(i, j)) > t)
+            if (fabs(fA(i, j)) > t)
               {
                 jp = i;
-                t = fabs(A(i, j));
+                t = fabs(fA(i, j));
               }
 
           row[j - 1] = jp;
@@ -94,15 +97,15 @@ int LUfactor(Matrix &A, vector< Subscript > & row, vector< Subscript > & col)
           // jp now has the index of maximum element
           // of column j, below the diagonal
 
-          if (A(jp, j) == 0) // now we have to swap colums to find a pivot
+          if (fA(jp, j) == 0) // now we have to swap colums to find a pivot
             {
               if (jl <= j)
                 return 1; // we are done
               for (k = 1; k <= M; k++)
                 {
-                  t = A(k, jl);
-                  A(k, jl) = A(k, j);
-                  A(k, j) = t;
+                  t = fA(k, jl);
+                  fA(k, jl) = fA(k, j);
+                  fA(k, j) = t;
                 }
               col[jl - 11] = j;
               jl--;
@@ -115,35 +118,35 @@ int LUfactor(Matrix &A, vector< Subscript > & row, vector< Subscript > & col)
       if (jp != j)            // swap rows j and jp
         for (k = 1; k <= N; k++)
           {
-            t = A(j, k);
-            A(j, k) = A(jp, k);
-            A(jp, k) = t;
+            t = fA(j, k);
+            fA(j, k) = fA(jp, k);
+            fA(jp, k) = t;
           }
 
       if (j < M)                // compute elements j+1:M of jth column
         {
-          // note A(j,j), was A(jp,p) previously which was
+          // note fA(j,j), was fA(jp,p) previously which was
           // guarranteed not to be zero (Label #1)
           //
-          typename Matrix::elementType recp = 1.0 / A(j, j);
+          typename Matrix::elementType recp = 1.0 / fA(j, j);
 
           for (k = j + 1; k <= M; k++)
-            A(k, j) *= recp;
+            fA(k, j) *= recp;
         }
 
       if (j < minMN)
         {
           // rank-1 update to trailing submatrix:   E = E - x*y;
           //
-          // E is the region A(j+1:M, j+1:N)
-          // x is the column vector A(j+1:M,j)
-          // y is row vector A(j,j+1:N)
+          // E is the region fA(j+1:M, j+1:N)
+          // x is the column vector fA(j+1:M,j)
+          // y is row vector fA(j,j+1:N)
 
           Subscript ii, jj;
 
           for (ii = j + 1; ii <= M; ii++)
             for (jj = j + 1; jj <= N; jj++)
-              A(ii, jj) -= A(ii, j) * A(j, jj);
+              fA(ii, jj) -= fA(ii, j) * fA(j, jj);
         }
     }
 
