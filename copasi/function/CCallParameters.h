@@ -1,5 +1,5 @@
 /**
- * CCallParameters
+ * CFunctionParameterMap
  * 
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2002
@@ -23,20 +23,24 @@ class CCallParameterPointers : public std::vector< const void * >
   {};
 
 /**
- * CCallParameters         
+ * CFunctionParameterMap         
  *
  * This class describes how a reaction fills the call parameters of a function.
  * It is generated from a CFunctionParameters object.
  * The reaction provides what exactly is to be passed as function parameters.
  */
-class CCallParameters
+class CFunctionParameterMap
   {
   public:
+
+    CFunctionParameterMap();
+
+    CFunctionParameterMap(const CFunctionParameterMap & src);
 
     /**
      * Creates a CallParameters object.
      */
-    CCallParameters(const CFunctionParameters & src);  //calls initializeFromFunctionParameters()
+    CFunctionParameterMap(const CFunctionParameters & src);  //calls initializeFromFunctionParameters()
 
     /**
      * Sets a specific parameter. Works only if the parameter is no vector
@@ -58,6 +62,9 @@ class CCallParameters
      */
     void initializeFromFunctionParameters(const CFunctionParameters & src);
 
+    C_INT32 findParameterByName(const std::string & name,
+                                CFunctionParameter::DataType & dataType) const;
+
   private:
 
     /**
@@ -65,6 +72,7 @@ class CCallParameters
      */
     void clearCallParameters();
 
+  public:   // TODO preliminary
     /**
      * Create the mPointers and mObjects vectors with
      * type information from the CFunctionParameters object.
@@ -75,6 +83,7 @@ class CCallParameters
      * Check if all pointers are !=NULL.
      */
     void checkCallParameters() const;
+  private:
 
     /**
      * This is a vector of pointers to the data that is passed to a function
@@ -90,7 +99,14 @@ class CCallParameters
     /**
      * The CFunctionParameters object provides the data types of the call parameters
      */
-    const CFunctionParameters* mpFunctionParameters;
+    CFunctionParameters mFunctionParameters;
+
+    // these are preliminary
+  public:
+    CCallParameterPointers & getPointers() {return mPointers;};
+    CCallParameterPointers & getObjects() {return mObjects;};
+    const CCallParameterPointers & getObjects() const {return mObjects;};
+    const CFunctionParameters & getFunctionParameters() const {return mFunctionParameters;};
   };
 
 #endif // COPASI_CCallParameters

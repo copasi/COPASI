@@ -23,7 +23,8 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   if (obj->isVector()) flags += "V"; else flags += " ";
   if (obj->isNameVector()) flags += "N"; else flags += " ";
   if (obj->isReference()) flags += "R"; else flags += " ";
-  if (obj->hasValue()) flags += "Val"; else flags += "   ";
+  if (obj->hasValueInt()) flags += "Int";
+else {if (obj->hasValueDbl()) flags += "Dbl"; else flags += "   ";}
 
   element = new QListViewItem((QListViewItem*)parent, obj->getName().c_str(),
                                obj->getObjectType().c_str(),

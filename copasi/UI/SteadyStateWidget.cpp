@@ -190,19 +190,19 @@ void SteadyStateWidget::CommitChange()
       strname = (steadystatemethod->getName(i)).c_str();
       switch (steadystatemethod->getType((const char *)strname.utf8()))
         {
-        case CMethodParameter::DOUBLE:
+        case CParameter::DOUBLE:
           steadystatemethod->setValue((const char *)strname.utf8(),
                                       substrate.toDouble());
           break;
-        case CMethodParameter::INT:
+        case CParameter::INT:
           steadystatemethod->setValue((const char *)strname.utf8(),
                                       (C_INT32) substrate.toInt());
           break;
-        case CMethodParameter::UINT:
+        case CParameter::UINT:
           steadystatemethod->setValue((const char *)strname.utf8(),
                                       (unsigned C_INT32) substrate.toUInt());
           break;
-        case CMethodParameter::BOOL:;
+        case CParameter::BOOL:;
           steadystatemethod->setValue((const char *)strname.utf8(),
                                       (bool) substrate.toUShort());
           break;

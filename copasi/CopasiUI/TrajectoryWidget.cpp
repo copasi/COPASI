@@ -247,19 +247,19 @@ void TrajectoryWidget::CommitChange()
       strname = (trajectorymethod->getName(i)).c_str();
       switch (trajectorymethod->getType((const char *)strname.utf8()))
         {
-        case CMethodParameter::DOUBLE:
+        case CParameter::DOUBLE:
           trajectorymethod->setValue((const char *)strname.utf8(),
                                      substrate.toDouble());
           break;
-        case CMethodParameter::INT:
+        case CParameter::INT:
           trajectorymethod->setValue((const char *)strname.utf8(),
                                      (C_INT32)substrate.toInt());
           break;
-        case CMethodParameter::UINT:
+        case CParameter::UINT:
           trajectorymethod->setValue((const char *)strname.utf8(),
                                      (unsigned C_INT32)substrate.toUInt());
           break;
-        case CMethodParameter::BOOL:;
+        case CParameter::BOOL:;
           trajectorymethod->setValue((const char *)strname.utf8(),
                                      bool(substrate.toUShort()));
           break;

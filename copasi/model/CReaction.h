@@ -259,8 +259,8 @@ class CReaction : public CCopasiContainer
      *  The description of the function parameters.
      *  This is a copy of the information in the CFunction object.
      *  It describes which parameters need to be passed to the function.
-     */
-    CFunctionParameters mParameterDescription;
+     */ 
+    //CFunctionParameters mParameterDescription;
 
     /**
      *  The flux of the reaction
@@ -332,14 +332,19 @@ class CReaction : public CCopasiContainer
 
     /**
      *  A pointer to the  call parameters of the rate function of the reaction
-     */
-    CCallParameterPointers mCallParameters;
+     */ 
+    //CCallParameterPointers mCallParameters;
 
     /**
      * A list of pointers to the call parameter objects of the rate function
      * of the reaction
+     */ 
+    //CCallParameterPointers mCallParameterObjects;
+
+    /**
+     *  This describes the mapping of the Metabs and Params to the function parameters
      */
-    CCallParameterPointers mCallParameterObjects;
+    CFunctionParameterMap mMap;
 
     /**
      *
@@ -611,7 +616,7 @@ class CReaction : public CCopasiContainer
       else
         os << "   mpFunction == 0 " << std::endl;
 
-      os << "   mParameterDescription: " << std::endl << d.mParameterDescription;
+      //os << "   mParameterDescription: " << std::endl << d.mParameterDescription;
       os << "   mFlux: " << d.mFlux << std::endl;
 
       if (d.mScalingFactor)
@@ -669,14 +674,14 @@ class CReaction : public CCopasiContainer
 
     /**
      *
-     */
-    void cleanupCallParameters();
+     */ 
+    //void cleanupCallParameters();
 
     /**
      *  gets mParameterDescription from mpFunction and then creates the vectors inside
      *  mCallParameters (If needed)
-     */
-    void initCallParameters();
+     */ 
+    //void initCallParameters();
 
     /**
      *
@@ -685,19 +690,19 @@ class CReaction : public CCopasiContainer
 
     /**
      *  Checks if all the Pointers in mCallParameters are !=NULL
-     */
-    void checkCallParameters() const;
+     */ 
+    //void checkCallParameters() const;
 
     /**
      *
-     */
-    void cleanupCallParameterObjects();
+     */ 
+    //void cleanupCallParameterObjects();
 
     /**
      *  gets mParameterDescription from mpFunction and then creates the vectors inside
      *  mCallParameterObjects (If needed)
-     */
-    void initCallParameterObjects();
+     */ 
+    //void initCallParameterObjects();
 
     /**
      *
@@ -706,14 +711,14 @@ class CReaction : public CCopasiContainer
 
     /**
      *  Checks if all the Pointers in mCallParameters are !=NULL
-     */
-    void checkCallParameterObjects() const;
+     */ 
+    //void checkCallParameterObjects() const;
 
     /**
      *
-     */
-    unsigned C_INT32 findParameter(const std::string & name,
-                                   CFunctionParameter::DataType & dataType) const;
+     */ 
+    //unsigned C_INT32 findParameter(const std::string & name,
+    //                               CFunctionParameter::DataType & dataType) const;
 
     /**
      *  Returns the max number of elements for the specified usage

@@ -1,10 +1,22 @@
 #include "CCallParameters.h"
 
-void CCallParameters::initializeFromFunctionParameters(const CFunctionParameters & src)
+CFunctionParameterMap::CFunctionParameterMap():
+    mPointers(),
+    mObjects(),
+    mFunctionParameters()
+{};
+
+CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
+    mPointers(src.mPointers),
+    mObjects(src.mObjects),
+    mFunctionParameters(src.mFunctionParameters)
+{};
+
+void CFunctionParameterMap::initializeFromFunctionParameters(const CFunctionParameters & src)
 {
   clearCallParameters();
 
-  mpFunctionParameters = &src;
+  mFunctionParameters = CFunctionParameters(src);
   /* TODO: may be we should copy the function parameters here. the call parameters can only be
      destroyed if we have the type information. So the CCallparameter object is save when the 
      function changes. But what about the reaction? Should it copy the function? (Then CCallParams
@@ -13,15 +25,13 @@ void CCallParameters::initializeFromFunctionParameters(const CFunctionParameters
   initCallParameters();
 }
 
-void CCallParameters::clearCallParameters()
+void CFunctionParameterMap::clearCallParameters()
 {
-  if (!mpFunctionParameters) return;
-
-  unsigned C_INT32 i, imax = mpFunctionParameters->size();
+  unsigned C_INT32 i, imax = mFunctionParameters.size();
 
   for (i = 0; i < imax; i++)
     {
-      if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
+      if (mFunctionParameters[i]->getType() >= CFunctionParameter::VINT32)
         {
           if (mObjects[i])
             delete (std::vector< CCopasiObject * > *) mObjects[i];
@@ -30,22 +40,20 @@ void CCallParameters::clearCallParameters()
             delete (std::vector< void * > *) mPointers[i];
         }
     }
-  mPointer.clear();
+  mPointers.clear();
   mObjects.clear();
 }
 
-void CCallParameters::initCallParameters()
+void CFunctionParameterMap::initCallParameters()
 {
-  if (!mpFunctionParameters) fatalError();
-
-  unsigned C_INT32 i, imax = mpFunctionParameters->size();
+  unsigned C_INT32 i, imax = mFunctionParameters.size();
 
   mPointers.resize(imax);
   mObjects.resize(imax);
 
   for (i = 0; i < imax; i++)
     {
-      if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
+      if (mFunctionParameters[i]->getType() >= CFunctionParameter::VINT32)
         {
           if (mObjects[i])
             delete (std::vector< CCopasiObject * > *) mObjects[i];
@@ -56,7 +64,7 @@ void CCallParameters::initCallParameters()
             delete (std::vector< void * > *) mPointers[i];
           mPointers[i] = NULL;
 
-          switch (*mpFunctionParameters)[i]->getType())
+          switch (mFunctionParameters[i]->getType())
             {
             case CFunctionParameter::VINT32:
               mPointers[i] = new std::vector< C_INT32 * >;
@@ -79,9 +87,9 @@ void CCallParameters::initCallParameters()
     }
 }
 
-void CCallParameters::checkCallParameters() const
+void CFunctionParameterMap::checkCallParameters() const
   {
-    unsigned C_INT32 i, imax = mpFunctionParameters->size();
+    unsigned C_INT32 i, imax = mFunctionParameters.size();
     unsigned C_INT32 j, jmax;
     const std::vector< const void * > * pVector;
 
@@ -92,7 +100,7 @@ void CCallParameters::checkCallParameters() const
         if (mObjects[i] == NULL)
           fatalError();
 
-        if ((*mpFunctionParameters)[i]->getType() < CFunctionParameter::VINT32)
+        if (mFunctionParameters[i]->getType() < CFunctionParameter::VINT32)
           continue;
 
         pVector = (const std::vector<const void * > *) mPointers[i];
@@ -111,34 +119,33 @@ void CCallParameters::checkCallParameters() const
       }
   }
 
-void CCallParameters::setCallParameter(const std::string paramName, const CCopasiObject* obj)
+void CFunctionParameterMap::setCallParameter(const std::string paramName, const CCopasiObject* obj)
 {
   CFunctionParameter::DataType type;
   C_INT32 index = findParameterByName(paramName, type);
 
-  if (type >= CFunctionParameter::VINT32) fatal(); // is a vector
+  if (type >= CFunctionParameter::VINT32) fatalError(); // is a vector
 
   // TODO: check type of object
   mObjects[index] = obj;
 
-  // TODO: that does not work yet. CCopasiObject does not provide value
-  mPointers[index] = obj->getValueAddr();
+  mPointers[index] = obj->getObjectValueAddress();
 }
 
-C_INT32 CCallParameters::findParameterByName(const std::string & name,
+C_INT32 CFunctionParameterMap::findParameterByName(const std::string & name,
     CFunctionParameter::DataType & dataType) const
   {
     std::string VectorName = name.substr(0, name.find_last_of('_'));
     std::string Name;
-    unsigned C_INT32 i, imax = mpFunctionParameters->size();
+    unsigned C_INT32 i, imax = mFunctionParameters.size();
 
     for (i = 0; i < imax; i++)
       {
-        Name = (*mpFunctionParameters)[i]->getName();
+        Name = mFunctionParameters[i]->getName();
 
         if (Name == name || Name == VectorName)
           {
-            dataType = (*mpFunctionParameters)[i]->getType();
+            dataType = mFunctionParameters[i]->getType();
             return i;
           }
       }
