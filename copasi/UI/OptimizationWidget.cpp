@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.6 2003/09/30 05:14:13 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.7 2003/10/05 04:54:45 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -188,6 +188,11 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
 
   nTitleHeight = fontMetrics().height() + 6;
+  expressionName->setText("Optimization Task");
+  expressionName->setEnabled(false);
+
+  expressionText->setText("-inf|Function  <|<=|== Optimization Item <|<=|== +inf|Function");
+  expressionText->setEnabled(false);
 }
 
 /*
