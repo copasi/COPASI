@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2003/05/30 18:07:07 $  
+# $Revision: 1.12 $ $Author: shoops $ $Date: 2003/05/30 18:46:11 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -12,7 +12,6 @@ isEmpty(BUILD_OS) {
 }
 DEFINES += $${BUILD_OS}
 message("Configuring for $${BUILD_OS}.")
-QMAKE_QMAKE = $(QTDIR)/bin/qmake
 
 # Common configuration settings
 CONFIG += exceptions
@@ -20,6 +19,8 @@ CONFIG += rtti
 CONFIG += thread
 
 !contains(BUILD_OS, WIN32) {
+  QMAKE_QMAKE = $(QTDIR)/bin/qmake
+  
   # The character # (hex 23) can not be escaped we therefore create 
   # a variable containing it
   HASH = $$system(echo "\\043")
@@ -44,6 +45,7 @@ contains(BUILD_OS, Darwin) {
 }
 
 contains(BUILD_OS, WIN32) {
+  QMAKE_QMAKE = $(QTDIR)\bin\qmake.exe
   DEFINES -= UNICODE 
   debug {
     QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
