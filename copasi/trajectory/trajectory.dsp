@@ -108,6 +108,10 @@ SOURCE=.\CTrajectoryMethod.cpp
 
 SOURCE=.\CTrajectoryProblem.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CTrajectoryTask.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -115,6 +119,10 @@ SOURCE=.\CTrajectoryProblem.cpp
 # Begin Source File
 
 SOURCE=.\Clsoda.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CLsodaMethod.h
 # End Source File
 # Begin Source File
 
@@ -135,6 +143,10 @@ SOURCE=.\CTrajectoryMethod.h
 # Begin Source File
 
 SOURCE=.\CTrajectoryProblem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTrajectoryTask.h
 # End Source File
 # Begin Source File
 
