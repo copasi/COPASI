@@ -94,9 +94,8 @@ class CReaction : public CCopasiContainer
 
     /**
      *  This describes the mapping of the Metabs to the function parameters. Here the
-     *  names of the metabolites (as in the chemical equation) are stored.
-     */ 
-    //    std::vector< std::vector< std::string > > mMetabNameMap;
+     *  keys of the metabolites (as in the chemical equation) are stored.
+     */
     std::vector< std::vector< std::string > > mMetabKeyMap;
 
     /**
@@ -261,15 +260,15 @@ class CReaction : public CCopasiContainer
      * Add a modifier to the reaction
      * @param const std::string &name
      * @return bool success
-     */
-    bool addModifier(const std::string &name);
+     */ 
+    //bool addModifier(const std::string &name);
 
     /**
      * Remove a modifier form the reaction
      * @param const std::string &name
      * @return bool success
-     */
-    bool deleteModifier(const std::string &name);
+     */ 
+    //bool deleteModifier(const std::string &name);
 
     /**
      * Sets the rate function of the reaction
@@ -302,9 +301,20 @@ class CReaction : public CCopasiContainer
      * @param const std::string & parameterName
      * @param const std::vetor< std::string > & sourceKeys
      * @return bool succes
+     */ 
+    //bool setParameterKeys(const std::string & parameterName,
+    //                      const std::vector< std::string > & sourceKeys);
+
+    /**
+     *  sets a function parameter->metab mapping.
      */
-    bool setParameterKeys(const std::string & parameterName,
-                          const std::vector< std::string > & sourceKeys);
+    void setParameterMapping(C_INT32 index, const std::string & key);
+    void addParameterMapping(C_INT32 index, const std::string & key);
+    void setParameterMapping(const std::string & parameterName, const std::string & key);
+    void addParameterMapping(const std::string & parameterName, const std::string & key);
+
+    void setParameterMappingVector(const std::string & parameterName,
+                                   const std::vector<std::string> & keys);
 
     /**
      *  Clears a function parameter->metab mapping (only for vector parameters).
@@ -312,39 +322,12 @@ class CReaction : public CCopasiContainer
     void clearParameterMapping(const std::string & parameterName);
     void clearParameterMapping(C_INT32 index);
 
-#ifdef XXXX
-    /**
-     *  Maps a function parameter to a metab (only for non vector parameters).
-     */
-    void setParameterMapping(const std::string & parameterName, const std::string & metabName);
-    void setParameterMapping(C_INT32 index, const std::string & metabName);
-
-    /**
-     *  Maps a function parameter to a metab (only for vector parameters).
-     */
-    void addParameterMapping(const std::string & parameterName, const std::string & metabName);
-    void addParameterMapping(C_INT32 index, const std::string & metabName);
-
-    /**
-     *  Maps a function parameter to some metabs (the size of the vector must be 1 if the
-     *  parameter is not a vector).
-     */
-    void setParameterMapping(const std::string & parameterName, const std::vector<std::string> & metabNames);
-    //void setParameterMapping(C_INT32 index, const std::vector<std::string> & metabNames);
-
-    std::vector<std::string> getParameterMappingName(const std::string & parameterName) const;
-
-    const std::vector<std::string> & getParameterMappingName(C_INT32 index) const;
-
-    const std::vector< std::vector<std::string> > & getParameterMappings() const
-      {return mMetabKeyMap;}
-#endif // XXXX
     const std::vector< std::vector<std::string> > getParameterMappingName() const;
 
     const std::vector< std::vector<std::string> > & getParameterMappings() const
       {return mMetabKeyMap;}
 
-    std::vector<const CMetab *> getParameterMappingMetab(const std::string & parameterName) const;
+    //std::vector<const CMetab *> getParameterMappingMetab(const std::string & parameterName) const;
     std::vector<const CMetab *> getParameterMappingMetab(C_INT32 index) const;
 
     /**
@@ -459,25 +442,25 @@ class CReaction : public CCopasiContainer
     /**
      *  used by compile(). It finds the reference to the transient concentration in the
      *  metabolite and tells mMap about it.
-     */
-    void setParameterMapping(const std::string & parameterName, const CMetab & metab);
+     */ 
+    //void setParameterMapping(const std::string & parameterName, const CMetab & metab);
 
     /**
      *  It set the key for a parameter mapping
      *  metabolite and tells mKeyMap about it.
-     */
-    void setParameterMappingKey(const std::string & parameterName, const CMetab & metab);
+     */ 
+    //    void setParameterMappingKey(const std::string & parameterName, const CMetab & metab);
 
     /**
      *  used by compile(). It finds the reference to the transient concentration in the
      *  metabolite and tells mMap about it.
-     */
-    void addParameterMapping(const std::string & parameterName, const CMetab & metab);
+     */ 
+    //void addParameterMapping(const std::string & parameterName, const CMetab & metab);
 
     /**
      *  It adds a key to a Metabolite to the parameter map.
-     */
-    void addParameterMappingKey(const std::string & parameterName, const CMetab & metab);
+     */ 
+    //    void addParameterMappingKey(const std::string & parameterName, const CMetab & metab);
 
     /**
      *
