@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 15:54:50 $
+   $Date: 2005/02/24 16:40:11 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetScan.ui'
  **
- ** Created: Di Feb 22 15:02:59 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetScan.cpp,v 1.1 2005/02/22 15:54:50 ssahle Exp $)
+ ** Created: Do Feb 24 12:57:47 2005
+ **      by: The User Interface Compiler ($Id: CScanWidgetScan.cpp,v 1.2 2005/02/24 16:40:11 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,6 +23,7 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qtoolbutton.h>
+#include <qcheckbox.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
@@ -93,9 +94,12 @@ CScanWidgetScan::CScanWidgetScan(QWidget* parent, const char* name, WFlags fl)
   layout2->addWidget(labelMax, 0, 2);
   frameLayout->addLayout(layout2);
 
+  checkBoxLog = new QCheckBox(frame, "checkBoxLog");
+  frameLayout->addWidget(checkBoxLog);
+
   CScanWidgetScanLayout->addWidget(frame, 0, 0);
   languageChange();
-  resize(QSize(447, 120).expandedTo(minimumSizeHint()));
+  resize(QSize(446, 147).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -124,4 +128,5 @@ void CScanWidgetScan::languageChange()
   labelNumber->setText(tr("Intervals"));
   labelMin->setText(tr("min"));
   labelMax->setText(tr("max"));
+  checkBoxLog->setText(tr("logarithmic scan"));
 }

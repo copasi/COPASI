@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetScan.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/22 23:23:59 $
+   $Author: ssahle $ 
+   $Date: 2005/02/24 16:40:11 $
    End CVS Header */
 
 /****************************************************************************
@@ -90,6 +90,9 @@ bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel*
   if (!(tmp = pg->getValue("Maximum"))) return false;
   lineEditMax->setText(QString::number(*(C_FLOAT64*)tmp));
 
+  if (!(tmp = pg->getValue("log"))) return false;
+  checkBoxLog->setChecked(*(bool*)tmp);
+
   return true;
 }
 
@@ -104,6 +107,7 @@ bool CScanWidgetScan::saveToScanItem(CScanProblem * pg) const
 
     tmp->setValue("Minimum", lineEditMin->text().toDouble());
     tmp->setValue("Maximum", lineEditMax->text().toDouble());
+    tmp->setValue("log", checkBoxLog->isChecked());
 
     return true;
   }

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>447</width>
-            <height>120</height>
+            <width>446</width>
+            <height>147</height>
         </rect>
     </property>
     <property name="caption">
@@ -156,6 +156,14 @@
                             </property>
                         </widget>
                     </grid>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkBoxLog</cstring>
+                    </property>
+                    <property name="text">
+                        <string>logarithmic scan</string>
+                    </property>
                 </widget>
             </vbox>
         </widget>
