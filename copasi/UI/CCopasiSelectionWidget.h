@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 11:21:53 $
+   $Date: 2004/12/10 12:45:09 $
    End CVS Header */
 
 #ifndef CCopasiSelectionWidget_H__
@@ -32,6 +32,7 @@ class CCopasiSelectionWidget: public QWidgetStack
     virtual bool isSingleSelection() const;
     virtual void setExpertMode(bool expertMode);
     virtual bool expertMode() const;
+    virtual void commit();
 
   protected:
     CCopasiSimpleSelectionTree* mpSimpleTree;
