@@ -150,7 +150,7 @@ void CCopasiMessage::LineBreak()
     string Replace("\n>                           < ");
     string::size_type pos = 0;
     
-    while (true)
+    while (TRUE)
     {
         pos = mText.find(Search, pos);
         if (pos == string::npos) break;

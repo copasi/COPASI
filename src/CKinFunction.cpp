@@ -518,7 +518,7 @@ void CKinFunction::SetModifierName(const string &name, int index)
 }
 
 // sets the type of an Identifier
-void CKinFunction::SetIdentifierType(string &name, int type)
+void CKinFunction::SetIdentifierType(const string &name, int type)
 {
     char Type;
     vector <CNodeK *> Array;
@@ -565,7 +565,7 @@ void CKinFunction::SetIdentifierType(string &name, int type)
 }
 
 // returns the type of an Identifier
-int CKinFunction::GetIdentifierType(string &name)
+int CKinFunction::GetIdentifierType(const string &name)
 {
     // search for the first node with this identifier
     for (int i=1; i<mNodes.size(); i++)

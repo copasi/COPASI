@@ -53,7 +53,7 @@ public:
     int Fail();
 
     /**
-     *  Retrieves the next variable from the input file.
+     *  Retrieves a variable from the input file.
      *  @param name name of the variable to be retrieved.
      *  @param type type of the variable to be retrieved.
      *  @param *pout pointer to the location where the retrieved variable 
@@ -64,6 +64,18 @@ public:
     int GetVariable(const string& name, 
                     const string& type,
                     void * pout);
+
+    /**
+     *  Retrieves a variable from the input file.
+     *  @param name name of the variable to be retrieved.
+     *  @param type type of the variable to be retrieved.
+     *  @param *pout1 pointer to the location where the first part of the 
+     *                retrieved variable is stored.
+     *  @param *pout2 pointer to the location where the second part of the 
+     *                retrieved variable is stored.
+     *  @return mFail
+     *  @see mFail  
+     */
     int GetVariable(const string& name, 
                     const string& type,
                     void * pout1,

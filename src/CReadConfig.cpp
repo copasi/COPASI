@@ -61,14 +61,14 @@ int CReadConfig::GetVariable(const string& name,
     string Value;
 
     // Get the current line 
-    while (true)
+    while (TRUE)
     {
 
         Line.erase();
 
         // Read a line form the input buffer
         mLineNumber++;
-        while (true)
+        while (TRUE)
         {
             mBuffer.read(c, 1);
             if ( *c == '\n' || mBuffer.eof()) break;
@@ -199,7 +199,7 @@ int CReadConfig::InitInputBuffer()
     ifstream File(mFilename.c_str());
     if (File.fail()) FatalError();
 
-    while (true)
+    while (TRUE)
     {
         File.read(c, 1);
         if (File.eof()) break;

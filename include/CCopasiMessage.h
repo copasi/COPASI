@@ -17,7 +17,7 @@ typedef enum COPASI_MESSAGE_TYPE
 };
 
 /**
- *  This troughs an exception with information where the error occured.
+ *  This throws an exception with information where the error occured.
  */
 #define FatalError() {CCopasiMessage(ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
 

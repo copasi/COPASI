@@ -228,11 +228,8 @@ int CNodeK::RightPrecedence(void)
     switch (mType)
     {
     case N_NUMBER:
-    case N_SUBSTRATE:
-    case N_PRODUCT:
-    case N_MODIFIER:
-    case N_KCONSTANT: return 6;
-    case N_FUNCTION:  return 4;
+    case N_IDENTIFIER: return 6;
+    case N_FUNCTION:   return 4;
     }
 
     // if we got here then it is an operator
@@ -255,9 +252,7 @@ int CNodeK::LeftPrecedence(void)
     switch (mType)
     {
     case N_NUMBER:
-    case N_SUBSTRATE:
-    case N_PRODUCT:
-    case N_MODIFIER:
+    case N_IDENTIFIER:
     case N_FUNCTION:   return 5;
     }
     // if we got here then it is an operator
