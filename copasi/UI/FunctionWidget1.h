@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/24 19:44:21 $
+   $Date: 2003/10/27 17:43:03 $
    End CVS Header */
 
 /****************************************************************************
@@ -52,7 +52,7 @@ class FunctionWidget1 : public CopasiWidget
     virtual void slotFcnDescriptionChanged();
 
   protected:
-    bool loadFromFunction(CFunction*);
+    bool loadFromFunction(CFunction* = NULL);
     void updateParameters();
     void updateApplication();
     bool saveToFunction();

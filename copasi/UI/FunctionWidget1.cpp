@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/24 19:44:21 $
+   $Date: 2003/10/27 17:43:03 $
    End CVS Header */
 
 /**********************************************************************
@@ -204,8 +204,13 @@ FunctionWidget1::~FunctionWidget1() {pdelete(pFunction);}
 
 bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be const
 {
-  pdelete(pFunction);
-  pFunction = CFunction::createFunction(func);
+  if (func)
+    {
+      pdelete(pFunction);
+      pFunction = CFunction::createFunction(func);
+    }
+  else if (!pFunction)
+    fatalError();
 
   C_INT32 i, j;
 
@@ -396,10 +401,10 @@ void FunctionWidget1::updateParameters()
                                    "Retry",
                                    "Quit", 0, 0, 1))
         {
-        case 0:       // The user clicked the Retry again button or pressed Enter
+        case 0:        // The user clicked the Retry again button or pressed Enter
           // try again
           break;
-        case 1:       // The user clicked the Quit or pressed Escape
+        case 1:        // The user clicked the Quit or pressed Escape
           // exit
           break;
         }
