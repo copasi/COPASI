@@ -94,6 +94,10 @@ SOURCE=.\CCopasiMessage.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CDependencyGraph.cpp
 # End Source File
 # Begin Source File
@@ -142,6 +146,14 @@ SOURCE=.\CCopasiMessage.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiTree.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CCopasiVector.h
 # End Source File
 # Begin Source File
@@ -158,6 +170,14 @@ SOURCE=.\CIndexedPriorityQueue.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CluX.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMatrix.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CMethodParameter.h
 # End Source File
 # Begin Source File
@@ -167,6 +187,10 @@ SOURCE=.\CMethodParameterList.h
 # Begin Source File
 
 SOURCE=.\CReadConfig.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CVector.h
 # End Source File
 # Begin Source File
 
