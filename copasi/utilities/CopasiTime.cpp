@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/09/15 20:47:51 $
+   $Date: 2004/09/15 20:49:35 $
    End CVS Header */
 
 #include "CopasiTime.h"
@@ -57,7 +57,6 @@ C_INT32 CopasiTimePoint::getCurrentTime_msec()
   LARGE_INTEGER SystemTime;
   GetSystemTimeAsFileTime((FILETIME *) &SystemTime);
 
-  C_INT32 MiliSeconds = (SystemTime.QuadPart / 10000) & 0x7fffffff;
-  return MiliSeconds;
+  return (SystemTime.QuadPart / 10000) & 0x3fffffff;
 }
 #endif
