@@ -204,6 +204,21 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
   return pFunction;
 }
 
+bool CFunctionDB::addFunction(const std::string & name)
+{
+  if (mLoadedFunctions.getIndex(name) != C_INVALID_INDEX)
+    return false;
+
+  CFunction * pFunction = new CFunction(name);
+
+  if (!mLoadedFunctions.add(pFunction, true))
+    {
+      delete pFunction;
+      return false;
+    }
+  return true;
+}
+
 CFunction * CFunctionDB::add(const CFunction & function)
 {
   if (mLoadedFunctions.getIndex(function.getName()) != C_INVALID_INDEX)
