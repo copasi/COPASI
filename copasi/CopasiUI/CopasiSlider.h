@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/25 15:15:58 $
+   $Date: 2005/03/09 12:13:27 $
    End CVS Header */
 
 #ifndef CopasiSlider_H__
@@ -45,6 +45,7 @@ class CopasiSlider: public QHBox
     CCopasiObject* object() const;
     void setObject(CCopasiObject* object);
     CSlider* getCSlider() const;
+    void updateLabel();
 
   public slots:
     void sliderValueChanged(int value);
@@ -69,7 +70,6 @@ class CopasiSlider: public QHBox
     bool mValueOutOfRange;
 
     void updateSliderData();
-    void updateLabel();
   };
 
 #endif // CopasiSlider_H__

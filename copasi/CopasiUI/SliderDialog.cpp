@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/08 15:26:38 $
+   $Date: 2005/03/09 12:13:28 $
    End CVS Header */
 
 #include <iostream>
@@ -193,9 +193,9 @@ void SliderDialog::removeSlider()
               break;
             }
         }
-      std::vector<QWidget*> v = this->sliderMap[this->currentFolderId];
-      std::vector<QWidget*>::iterator it = v.begin();
-      std::vector<QWidget*>::iterator end = v.end();
+      std::vector<QWidget*>* v = &this->sliderMap[this->currentFolderId];
+      std::vector<QWidget*>::iterator it = v->begin();
+      std::vector<QWidget*>::iterator end = v->end();
       while (it != end)
         {
           if (*it == this->currSlider)
@@ -205,9 +205,9 @@ void SliderDialog::removeSlider()
           ++it;
         }
       assert(it != end);
-      this->sliderMap[this->currentFolderId].erase(it);
-      this->sliderBox->layout()->remove(this->currSlider);
-      this->currSlider = NULL;
+      v->erase(it);
+      ((QVBoxLayout*)this->sliderBox->layout())->remove(this->currSlider);
+      pdelete(this->currSlider);
     }
 }
 
@@ -224,6 +224,7 @@ void SliderDialog::editSlider()
   pSettingsDialog->disableObjectChoosing(true);
   pSettingsDialog->setSlider(this->currSlider->getCSlider());
   pSettingsDialog->exec();
+  this->currSlider->updateLabel();
   delete pSettingsDialog;
   delete pVector;
 }
@@ -261,7 +262,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
   this->currSlider = new CopasiSlider(pSlider, this->sliderBox);
   this->sliderMap[this->currentFolderId].push_back(this->currSlider);
   this->currSlider->setHidden(true);
-  ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 1, this->currSlider);
+  ((QVBoxLayout*)this->sliderBox->layout())->add(this->currSlider);
   connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
   connect(this->currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
   connect(this->currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
@@ -315,6 +316,10 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
     {
       this->setEnabled(false);
     }
+  else
+    {
+      this->setEnabled(true);
+    }
 
   this->clearSliderBox();
 
@@ -330,6 +335,7 @@ void SliderDialog::fillSliderBox()
     {
       std::vector<CSlider*>* pVector = this->getCSlidersForCurrentFolderId();
       // maybe other program parts have added or deleted some sliders
+      // actually this is not correct. Even if the vector sizes are the same, it could be that just as many sliders have been deleted as newly generated.
       unsigned int i, j, maxSliders, maxWidgets;
       maxWidgets = v.size();
       maxSliders = pVector->size();
