@@ -423,7 +423,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
   if (endEq <= startMetab)  // empty equation string
     {
       //debugging
-      cout << "Empty equation string\n";
+      std::cout << "Empty equation string\n";
       return false;
     }
 
@@ -432,7 +432,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
   if (sep1 != sep3)
     {
       //debugging
-      cout << "Multiple separators found\n";
+      std::cout << "Multiple separators found\n";
       return false;
     }
 
@@ -441,7 +441,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
   if (sep2 != sep3)
     {
       //debugging
-      cout << "Multiple separators found\n";
+      std::cout << "Multiple separators found\n";
       return false;
     }
 
@@ -451,7 +451,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
       if (sep2 < 0)
         {
           //debugging
-          cout << "no separator found\n";
+          std::cout << "no separator found\n";
           return false;
         }
       else
@@ -462,7 +462,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
       if (sep2 >= 0)
         {
           //debugging
-          cout << "two separators found\n";
+          std::cout << "two separators found\n";
           return false;
         }
     }
@@ -472,7 +472,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
   if (sep2 != sep3)
     {
       //debugging
-      cout << "found more than one \";\"\n";
+      std::cout << "found more than one \";\"\n";
       return false;
     }
 
@@ -482,7 +482,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
   if (sep2 <= sep1)
     {
       //debugging
-      cout << "found \";\" on the LHS of the equation\n";
+      std::cout << "found \";\" on the LHS of the equation\n";
       return false;
     }
 
@@ -516,13 +516,13 @@ bool CChemEqInterface::isValidEq(const std::string eq)
       else if (sep3 > sep2)
         {
           //debugging
-          cout << "shouldn't have \"+\" beyond \";\" \n";
+          std::cout << "shouldn't have \"+\" beyond \";\" \n";
           return false;  // shouldn't have "+" beyond ";"
         }
       else if (sep3 + 2 == endEq)  // missing product
         {
           //debugging
-          cout << "missing product\n";
+          std::cout << "missing product\n";
           return false;
         }
       else if (startMetab == sep1)   // no substrates specified, so cross over to the product side
@@ -550,7 +550,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
       if (startMetab < 0)  // this happens if the last metabolite is missing after a *, but there is one or more white spaces after *
         {
           // debugging
-          cout << "missing metabolite name after *\n";
+          std::cout << "missing metabolite name after *\n";
           return false;
         }
 
@@ -561,7 +561,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
       if (!CMetabNameInterface::isValidMetabName(unit))
         {
           //debugging
-          cout << "Not a valid metabolite name: (" << unit << ")\n";
+          std::cout << "Not a valid metabolite name: (" << unit << ")\n";
           return false;
         }
 
@@ -574,7 +574,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
       if ((startMetab == sep1) || (startMetab == sep2))  // this means a metabolite is missing after a "+"
         {
           //debugging
-          cout << "substrate/product missing\n";
+          std::cout << "substrate/product missing\n";
           return false;
         }
     }
