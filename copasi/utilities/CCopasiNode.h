@@ -70,7 +70,7 @@ template < class Data > class CCopasiNode
        * Destructor.
        * Note: Within a tree the parent of this node has to be corrected.
        */
-      ~CCopasiNode() {deleteChildren();}
+      virtual ~CCopasiNode() {deleteChildren();}
 
       /**
        * Retreive the data of the Node.
