@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:17:20 $
+   $Date: 2005/02/28 17:28:29 $
    End CVS Header */
 
 /****************************************************************************
@@ -32,14 +32,16 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   //TODO: check if objects exist....
 
-  mpObjectX = CCopasiContainer::ObjectFromName(curve->getChannels()[0]);
-  mpObjectY = CCopasiContainer::ObjectFromName(curve->getChannels()[1]);
+  mpObjectX = mpObjectY = NULL;
+  if (curve->getChannels().size() >= 1)
+    mpObjectX = CCopasiContainer::ObjectFromName(curve->getChannels()[0]);
+  if (curve->getChannels().size() >= 2)
+    mpObjectY = CCopasiContainer::ObjectFromName(curve->getChannels()[1]);
 
-  if ((!mpObjectX) || (!mpObjectY)) return false;
-
-  lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
-
-  lineEditYName->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
+  if (mpObjectX)
+    lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+  if (mpObjectY)
+    lineEditYName->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
 
   const void* tmp;
 
@@ -59,15 +61,15 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
 bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
   {
-    if (!(mpObjectX && mpObjectY)) return false;
+    //if (!(mpObjectX && mpObjectY)) return false;
 
     //title
     curve->setTitle((const char*)lineEditTitle->text().utf8());
 
     //channels
     curve->getChannels().resize(0);
-    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX->getCN()));
-    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY->getCN()));
+    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : std::string("")));
+    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : std::string("")));
 
     curve->setValue("Line type", (unsigned C_INT32)comboBoxType->currentItem());
 
