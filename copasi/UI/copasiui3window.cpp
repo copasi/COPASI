@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/06 19:56:27 $
+   $Date: 2004/05/06 21:15:00 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -105,6 +105,8 @@ CopasiUI3Window::CopasiUI3Window():
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSaveAs(QString str)
 {
+  ListViews::commit();
+
   QString tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.gps)",
                 this, "save file dialog",
                 "Choose a file");
@@ -275,6 +277,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSave()
 {
+  ListViews::commit();
+
   std::ifstream File(gpsFile.utf8());
   std::string Line;
   File >> Line;
@@ -300,6 +304,8 @@ void CopasiUI3Window::slotFileSave()
 
 void CopasiUI3Window::slotQuit()
 {
+  ListViews::commit();
+
   int choice = 0;
 
   if (gpsFile)
@@ -544,6 +550,8 @@ void CopasiUI3Window::slotImportSBML()
 
 void CopasiUI3Window::slotExportSBML()
 {
+  ListViews::commit();
+
   QString SBMLFile = QFileDialog::getSaveFileName(
                        QString::null, "SBML Files (*.sbml)",
                        this, "export file dialog",
