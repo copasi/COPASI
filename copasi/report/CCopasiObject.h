@@ -36,6 +36,8 @@ class CCopasiObject
 
     static const unsigned C_INT32 Reference;
 
+    static const unsigned C_INT32 Value;
+
     std::string mObjectName;
 
   private:
@@ -45,6 +47,8 @@ class CCopasiObject
     CCopasiContainer * mpObjectParent;
 
     unsigned C_INT32 mObjectFlag;
+
+    static const C_FLOAT64 DummyValue;
 
     //Operations
   protected:
@@ -62,6 +66,8 @@ class CCopasiObject
     virtual ~CCopasiObject();
 
     virtual const std::string & getName() const;
+
+    // virtual const C_FLOAT64 & getValue() const; //TODO do we need getType() also?
 
     const std::string & getObjectName() const;
 
@@ -109,6 +115,8 @@ class CCopasiObject
     bool isNameVector() const;
 
     bool isReference() const;
+
+    bool hasValue() const;
 
     virtual void * getReference();
   };
