@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 12:58:30 $
+   $Date: 2004/05/26 15:50:29 $
    End CVS Header */
 
 #include <string>
@@ -434,11 +434,6 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(const std::str
     const std::vector<std::string> & names = mChemEqI.getListOfNames(role);
     const std::vector<C_FLOAT64> & mults = mChemEqI.getListOfMultiplicities(role);
 
-    //if (role == "SUBSTRATE") el = &(mpChemEq->getSubstrates());
-    //else if (role == "PRODUCT") el = &(mpChemEq->getProducts());
-    //else if (role == "MODIFIER") el = &(mpChemEq->getModifiers());
-    //else fatalError();
-
     unsigned C_INT32 j, jmax;
     unsigned C_INT32 i, imax = names.size();
 
@@ -447,7 +442,7 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(const std::str
     for (i = 0; i < imax; ++i)
       {
         if (role == "MODIFIER") jmax = 1;
-        else jmax = mults[i];
+        else jmax = (C_INT32)mults[i];
 
         for (j = 0; j < jmax; ++j)
           ret.push_back(names[i]);
