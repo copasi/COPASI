@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 11:01:17 $
+   $Date: 2004/06/23 09:31:04 $
    End CVS Header */
 
 /* COptMethodSA code */
@@ -23,7 +23,7 @@
 #define FALSE 0
 
 #include <vector>
-#include <math.h>
+#include "mathematics.h"
 
 #include "copasi.h"
 #include "COptMethod.h"

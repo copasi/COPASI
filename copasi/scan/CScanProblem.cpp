@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:12:41 $
+   $Date: 2004/06/23 09:32:36 $
    End CVS Header */
 
 /**
@@ -24,7 +24,7 @@
 #include "utilities/CReadConfig.h" 
 //#include "utilities/CWriteConfig.h"
 #include "CScanProblem.h"
-#include "math.h"
+#include "mathematics.h"
 #include "randomGenerator/CRandom.h"
 #include "randomGenerator/Cr250.h"
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:38 $
+   $Author: ssahle $ 
+   $Date: 2004/06/23 09:31:04 $
    End CVS Header */
 
 /**
@@ -33,7 +33,7 @@
 
 #include <string>
 #include <vector>
-#include <math.h>
+#include "mathematics.h"
 #include <float.h>
 
 #include "COptProblem.h"

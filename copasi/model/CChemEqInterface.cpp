@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/14 13:49:05 $
+   $Date: 2004/06/23 09:30:45 $
    End CVS Header */
 
-#include <math.h>
+#include "mathematics.h"
 
 #include "copasi.h"
 #include "CChemEqInterface.h"

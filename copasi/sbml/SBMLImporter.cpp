@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/22 12:47:45 $
+   $Author: ssahle $ 
+   $Date: 2004/06/23 09:32:16 $
    End CVS Header */
 
 #include <iostream>
@@ -11,7 +11,7 @@
 #include <sstream>
 #include <map>
 
-#include <math.h>
+#include "mathematics.h"
 
 #include "model/CModel.h"
 #include "model/CCompartment.h"

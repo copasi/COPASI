@@ -1,13 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:01 $
+   $Date: 2004/06/23 09:30:45 $
    End CVS Header */
 
 #include <stdio.h>
-#include <math.h>
+#include "mathematics.h"
 
 #define  COPASI_TRACE_CONSTRUCTION
 
@@ -25,7 +25,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(GlobalKeys.add("Moiety", this)),         //By G
+    mKey(GlobalKeys.add("Moiety", this)),          //By G
     mNumber(0),
     mINumber(0),
     mEquation("Equation", this)
@@ -34,7 +34,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Moiety", this)),         //By G
+    mKey(GlobalKeys.add("Moiety", this)),          //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation, this)

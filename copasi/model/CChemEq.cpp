@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:10:59 $
+   $Date: 2004/06/23 09:30:45 $
    End CVS Header */
 
 // CChemEqElement
@@ -14,7 +14,7 @@
 
 #define  COPASI_TRACE_CONSTRUCTION
 
-#include <math.h>
+#include "mathematics.h"
 #include "copasi.h"
 #include "CChemEq.h"
 #include "utilities/CReadConfig.h"

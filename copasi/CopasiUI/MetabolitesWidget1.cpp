@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/05/26 02:37:55 $
+   $Author: ssahle $ 
+   $Date: 2004/06/23 09:29:29 $
    End CVS Header */
 
 /*******************************************************************
@@ -14,7 +14,7 @@
  ** information obtained from the data model about the individual
  ** Metabolites----It is the second level of Metabolites
  ********************************************************************/
-#include <math.h>
+#include "mathematics.h"
 
 #include <qgroupbox.h>
 #include <qlabel.h>
@@ -408,7 +408,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                 // Yes or Enter
+    case 0:                  // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -424,7 +424,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                 // No or Escape
+    case 1:                  // No or Escape
       break;
     }
 }
