@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/06 19:58:13 $
+   $Date: 2005/01/05 18:03:02 $
    End CVS Header */
 
 /**
@@ -92,12 +92,17 @@ class CCopasiMessage
 
   public:
     /**
-     *  This function retrieves the last message created in COPASI.
-     *  Consecutive calls allow for the retrieval of all generated 
-     *  messages. If no more messages are on the stack
-     *  @return CCopasiMessage
+     * This function retrieves the last message created in COPASI.
+     * Consecutive calls allow for the retrieval of all generated 
+     * messages. If no more messages are on the stack
+     * @return CCopasiMessage
      */
     static CCopasiMessage getLastMessage();
+
+    /**
+     * This function clears the message stack.
+     */
+    static void clearStack();
 
     /**
      *  Default consructor. 
