@@ -44,6 +44,10 @@ class CRandom
     ~CRandom();
     // 
     /**
+     * Get a random number between 1 and modulus
+     */
+    C_INT32 getRandom();
+    /**
      * Produces a uniformly distributed random number in the range (0,1]
      */
     C_FLOAT64 getUniformRandom();
@@ -54,10 +58,6 @@ class CRandom
      * The seed is set to the given value, or set from the system time.
      */
     void initialize(C_INT32 seed);
-    /**
-     * Get a random number between 1 and modulus
-     */
-    C_INT32 getRandom();
     // private attributes
     /**
      * The current random number
