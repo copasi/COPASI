@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/06 13:01:02 $
+   $Author: shoops $ 
+   $Date: 2005/04/06 13:55:55 $
    End CVS Header */
 
 /**
@@ -183,13 +183,17 @@ bool CKeyFactory::addFix(const std::string & key, CCopasiObject * pObject)
 
 bool CKeyFactory::remove(const std::string & key)
 {
-  if (key.length() == 0) return false;
+  unsigned C_INT32 pos = key.length();
+  if (pos == 0) return false;
 
-  unsigned C_INT32 pos = key.length() - 1;
+  --pos;
   while (isDigit(key[pos]) && pos) --pos;
 
   std::string Prefix = key.substr(0, pos);
-  unsigned C_INT32 index = atoi(key.substr(pos + 1).c_str());
+
+  unsigned C_INT32 index = 0;
+  if (pos + 1 < key.length())
+    index = atoi(key.substr(pos + 1).c_str());
 
   std::map< std::string, CKeyFactory::HashTable >::iterator it =
     mKeyTable.find(Prefix);
