@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:32 $
+   $Date: 2004/02/18 20:44:22 $
    End CVS Header */
 
 /**
@@ -61,10 +61,9 @@ const std::string & CVersion::getVersion() const
 
 void CVersion::setString()
 {
-  /* if it is a development version, set a string with 3 numbers */
-  if (mDevel < 300L)
-    mVersion = StringPrint("%d.%d.%d", mMajor, mMinor, mDevel);
-  /* otherwise just major and minor */
-  else
-    mVersion = StringPrint("%d.%d", mMajor, mMinor);
+#ifdef COPASI_DEBUG
+  mVersion = StringPrint("%d.%d Debug %d++", mMajor, mMinor, mDevel);
+#else
+  mVersion = StringPrint("%d.%d Build %d", mMajor, mMinor, mDevel);
+#endif
 }
