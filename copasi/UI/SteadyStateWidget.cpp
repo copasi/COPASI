@@ -21,7 +21,8 @@
 #include <qwhatsthis.h>
 
 #include "SteadyStateWidget.h"
-#include "steadystate/steadystate.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
 
 SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl)
@@ -153,7 +154,8 @@ void SteadyStateWidget::CommitChange()
   QTableItem * pItem;
   QString substrate;
   QString strname;
-  for (int i = 0; i < steadystatemethod->size(); i++)
+  unsigned C_INT32 i;
+  for (i = 0; i < steadystatemethod->size(); i++)
     {
       pItem = parameterTable->item(i, 0);
       substrate = pItem->text();
@@ -161,16 +163,20 @@ void SteadyStateWidget::CommitChange()
       switch (steadystatemethod->getType((const char *)strname.utf8()))
         {
         case CMethodParameter::DOUBLE:
-          steadystatemethod->setValue((const char *)strname.utf8(), substrate.toDouble());
+          steadystatemethod->setValue((const char *)strname.utf8(),
+                                      substrate.toDouble());
           break;
         case CMethodParameter::INT:
-          steadystatemethod->setValue((const char *)strname.utf8(), (C_INT32)substrate.toInt());
+          steadystatemethod->setValue((const char *)strname.utf8(),
+                                      (C_INT32) substrate.toInt());
           break;
         case CMethodParameter::UINT:
-          steadystatemethod->setValue((const char *)strname.utf8(), (unsigned C_INT32)substrate.toUInt());
+          steadystatemethod->setValue((const char *)strname.utf8(),
+                                      (unsigned C_INT32) substrate.toUInt());
           break;
         case CMethodParameter::BOOL:;
-          steadystatemethod->setValue((const char *)strname.utf8(), bool(substrate.toUShort()));
+          steadystatemethod->setValue((const char *)strname.utf8(),
+                                      (bool) substrate.toUShort());
           break;
         }
     }
@@ -235,7 +241,8 @@ void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)
   parameterTable->setNumRows(steadystatemethod->size());
   QHeader *rowHeader = parameterTable->verticalHeader();
 
-  for (int i = 0; i < steadystatemethod->size(); i++)
+  int i;
+  for (i = 0; i < steadystatemethod->size(); i++)
     {
       strname = (steadystatemethod->getName(i)).c_str();
       rowHeader->setLabel(i, tr(strname));

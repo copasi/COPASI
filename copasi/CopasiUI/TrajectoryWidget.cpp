@@ -18,8 +18,9 @@
 #include <qwhatsthis.h>
 
 #include "TrajectoryWidget.h"
-#include "trajectory/trajectory.h" 
-/*
+#include "trajectory/CTrajectoryTask.h"
+
+/**
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
@@ -156,7 +157,8 @@ void TrajectoryWidget::CommitChange()
   QTableItem * pItem;
   QString substrate;
   QString strname;
-  for (int i = 0; i < trajectorymethod->size(); i++)
+  unsigned C_INT32 i;
+  for (i = 0; i < trajectorymethod->size(); i++)
     {
       pItem = parameterTable->item(i, 0);
       substrate = pItem->text();
@@ -218,7 +220,8 @@ void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)
   parameterTable->setNumRows(trajectorymethod->size());
   QHeader *rowHeader = parameterTable->verticalHeader();
 
-  for (int i = 0; i < trajectorymethod->size(); i++)
+  unsigned C_INT32 i;
+  for (i = 0; i < trajectorymethod->size(); i++)
     {
       strname = (trajectorymethod->getName(i)).c_str();
       rowHeader->setLabel(i, tr(strname));
