@@ -358,14 +358,16 @@ void ScanWidget::loadScan(CModel *model)
 void ScanWidget::addNewScanItem(CCopasiObject* pObject)
 {
   emit hide_me();
-  parameterTable = new ScanItemWidget(this, "parameterTable");
   int widgetOffset;
-
-  QFrame* newTitleBar = new QFrame(this);
-  newTitleBar->setPaletteBackgroundColor(darkGray);
-  newTitleBar->setPaletteForegroundColor(darkGray);
-
+  parameterTable = new ScanItemWidget(this, "parameterTable");
   widgetOffset = TITLE_HEIGHT + nSelectedObjects * (parameterTable->minimumSizeHint().height() + TITLE_HEIGHT);
+
+  QFrame* newTitleBar = new QFrame(this, "newTitleBar");
+  newTitleBar->setGeometry(QRect(0, 0, scrollview->visibleWidth(), TITLE_HEIGHT));
+  newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
+  newTitleBar->setFrameShape(QFrame::HLine);
+  newTitleBar->setFrameShadow(QFrame::Plain);
+  newTitleBar->setLineWidth(0);
   scrollview->addChild(newTitleBar, 0, widgetOffset - TITLE_HEIGHT);
 
   parameterTable->setFixedWidth(scrollview->visibleWidth());
@@ -373,6 +375,7 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   scrollview->addChild(parameterTable, 0 , widgetOffset);
   scrollview->setVScrollBarMode(QScrollView::Auto);
   scrollview->resizeContents(0, widgetOffset + parameterTable->minimumSizeHint().height());
+
   nSelectedObjects++;
   emit show_me();
 }
