@@ -248,13 +248,13 @@ template < class CType >
        *
        */
       value_type operator[](unsigned C_INT32 index)
-    {return ((CCopasiVector <CType>*) this)->operator [](index);}
+    {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
        *
        */
       const value_type operator[](unsigned C_INT32 index) const
-      {return ((CCopasiVector <CType>*) this)->operator [](index);}
+      {return ((CCopasiVector <CType>*) this)->operator[](index);}
     };
 
 template < class CType >
@@ -339,13 +339,13 @@ template < class CType >
        *
        */
       value_type operator[](unsigned C_INT32 index)
-    {return ((CCopasiVector <CType>*) this)->operator [](index);}
+    {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
        *
        */
       const value_type operator[](unsigned C_INT32 index) const
-      {return ((CCopasiVector <CType>*) this)->operator [](index);}
+      {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
        *
@@ -467,25 +467,25 @@ template < class CType >
        *
        */
       value_type operator[](unsigned C_INT32 index)
-    {return ((CCopasiVector <CType>*) this)->operator [](index);}
+    {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
        *
        */
       const value_type operator[](unsigned C_INT32 index) const
-      {return ((const CCopasiVector <CType>) *this)[index];}
+      {return ((const CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
        *
        */
       value_type operator[](const std::string &name)
-      {return ((CCopasiVectorN <CType>*) this)->operator [](name);}
+      {return ((CCopasiVectorN <CType>*) this)->operator[](name);}
 
       /**
        *
        */
       const value_type operator[](const std::string &name) const
-      {return ((CCopasiVectorN <CType>*) this)->operator [](name);}
+      {return ((CCopasiVectorN <CType>*) this)->operator[](name);}
 
     private:
 
