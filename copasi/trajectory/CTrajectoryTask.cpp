@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 09:07:30 $
+   $Date: 2004/10/06 09:50:56 $
    End CVS Header */
 
 /**
@@ -146,17 +146,15 @@ bool CTrajectoryTask::process()
   pMethod->setCurrentState(mpState);
   pMethod->setProblem(pProblem);
 
-  CVector< C_FLOAT64 > Derivatives(mpState->getVariableNumberSize());
-
-  pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
+  bool flagStopped = false;
+  C_FLOAT64 handlerFactor = 1000 / (pProblem->getEndTime() - pProblem->getStartTime());
+  if (mpProgressHandler) mpProgressHandler->init(1000, "performing simulation...", true);
+  pProblem->getModel()->setState(mpState);
+  pProblem->getModel()->updateRates();
   mReport.printHeader();
-
-  pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
   mReport.printBody();
-
   if (mpOutputHandler) mpOutputHandler->init();
   if (mTimeSeriesRequested) mTimeSeries.init(pProblem->getStepNumber(), mpState);
-
   if (mpOutputHandler) mpOutputHandler->doOutput();
   if (mTimeSeriesRequested) mTimeSeries.add();
 
@@ -167,9 +165,10 @@ bool CTrajectoryTask::process()
 
   ActualStepSize = pMethod->step(StepSize, mpState);
 
-  pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
+  if (mpProgressHandler) flagStopped = mpProgressHandler->progress((Time - pProblem->getStartTime()) * handlerFactor);
+  pProblem->getModel()->setState(mpState);
+  pProblem->getModel()->updateRates();
   mReport.printBody();
-
   if (mpOutputHandler) mpOutputHandler->doOutput();
   if (mTimeSeriesRequested) mTimeSeries.add();
 
@@ -180,11 +179,13 @@ bool CTrajectoryTask::process()
     }
 #endif // XXXX_Event
 
-  while (Time < EndTime)
+  while ((Time < EndTime) && (!flagStopped))
     {
       ActualStepSize = pMethod->step(StepSize);
 
-      pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
+      if (mpProgressHandler) flagStopped = mpProgressHandler->progress((Time - pProblem->getStartTime()) * handlerFactor);
+      pProblem->getModel()->setState(mpState);
+      pProblem->getModel()->updateRates();
       mReport.printBody();
       if (mpOutputHandler) mpOutputHandler->doOutput();
       if (mTimeSeriesRequested) mTimeSeries.add();
@@ -197,15 +198,18 @@ bool CTrajectoryTask::process()
 #endif // XXXX_Event
     }
 
-  while (Time < pProblem->getEndTime())
+  while ((Time < pProblem->getEndTime()) && (!flagStopped))
     {
       ActualStepSize = pMethod->step(pProblem->getEndTime() - Time);
 
-#ifdef  XXXX_Event
-      pProblem->getModel()->getDerivatives(mpState, Derivatives);
+      if (mpProgressHandler) flagStopped = mpProgressHandler->progress((Time - pProblem->getStartTime()) * handlerFactor);
+      pProblem->getModel()->setState(mpState);
+      pProblem->getModel()->updateRates();
       mReport.printBody();
+      if (mpOutputHandler) mpOutputHandler->doOutput();
       if (mTimeSeriesRequested) mTimeSeries.add();
 
+#ifdef  XXXX_Event
       if (ActualStepSize != (pProblem->getEndTime() - Time))
         {
           /* Here we will do conditional event processing */
@@ -215,12 +219,11 @@ bool CTrajectoryTask::process()
 
   pProblem->setEndState(new CState(*mpState));
 
-  pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
+  if (mpProgressHandler) mpProgressHandler->finish();
+  pProblem->getModel()->setState(mpState);
+  pProblem->getModel()->updateRates();
   mReport.printFooter();
-
-  if (mpOutputHandler) mpOutputHandler->doOutput();
   if (mpOutputHandler) mpOutputHandler->finish();
-  if (mTimeSeriesRequested) mTimeSeries.add();
   if (mTimeSeriesRequested) mTimeSeries.finish();
 
   return true;
