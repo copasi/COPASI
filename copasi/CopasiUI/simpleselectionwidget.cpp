@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/simpleselectionwidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/04 18:50:55 $
+   $Date: 2004/10/06 06:40:57 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'simpleselectionwidget.ui'
  **
- ** Created: Mon Oct 4 20:18:43 2004
- **      by: The User Interface Compiler ($Id: simpleselectionwidget.cpp,v 1.1 2004/10/04 18:50:55 gauges Exp $)
+ ** Created: Wed Oct 6 10:44:25 2004
+ **      by: The User Interface Compiler ($Id: simpleselectionwidget.cpp,v 1.2 2004/10/06 06:40:57 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -90,6 +90,13 @@ SimpleSelectionWidget::SimpleSelectionWidget(QWidget* parent, const char* name, 
   // signals and slots connections
   connect(moveUpButton, SIGNAL(clicked()), this, SLOT(moveUpButton_clicked()));
   connect(moveDownButton, SIGNAL(clicked()), this, SLOT(moveDownButton_clicked()));
+
+  // tab order
+  setTabOrder(itemTree, selectedItemsBox);
+  setTabOrder(selectedItemsBox, addButton);
+  setTabOrder(addButton, deleteButton);
+  setTabOrder(deleteButton, moveUpButton);
+  setTabOrder(moveUpButton, moveDownButton);
   init();
 }
 
