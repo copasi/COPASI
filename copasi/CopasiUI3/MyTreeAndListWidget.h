@@ -26,17 +26,20 @@ public:
 	//~MyTreeAndListWidget()
 	CModel* getModel()
 	{
-		return &mModel;
+		return mModel;
 	}
+	void loadNodes(CModel *model);
 
 protected:
-	CModel mModel;
-	QListViewItem* initializeTree();
-	
+	CModel *mModel;
 	QListView *ListView1;
 	QMultiLineEdit *bigWidget;
 	MetabolitesWidget *metabolitesWidget;
 	ReactionsWidget *reactionsWidget;
+
+	void ConstructNodeWidgets();
+	QListViewItem* initializeTree();
+	void changingFromReactions();
 
 protected slots:
     virtual void slotTreeSelectionChanged(QListViewItem*);

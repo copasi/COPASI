@@ -5,6 +5,7 @@
 
 
 
+
 /* XPM */
  
 
@@ -119,16 +120,7 @@ QPixmap *folderOpen = 0;
 MyTreeAndListWidget::MyTreeAndListWidget( QWidget *parent, const char *name )
     : QSplitter( Qt::Horizontal, parent, name )
 {
-    try
-	{
-		CReadConfig inbuf("gps/bakker.gps");
-		mModel.load(inbuf);
-	}
-	catch (CCopasiException Exception)
-    {
-      cout << Exception.getMessage().getText() << endl;
-    }
-
+    
 	if ( !name )
 	setName( "MyTreeAndListWidget" );
         
@@ -147,25 +139,42 @@ MyTreeAndListWidget::MyTreeAndListWidget( QWidget *parent, const char *name )
     bigWidget = new QMultiLineEdit( this );
     bigWidget->setText( "This widget will get all the remaining space" );
     bigWidget->setFrameStyle( QFrame::Panel | QFrame::Plain );
-	bigWidget->setReadOnly(TRUE);
-
-	//Constructing the Metabolites Widget
-	metabolitesWidget = new MetabolitesWidget( &mModel, this );
-	metabolitesWidget->hide();
-
-
-	//Constructing the Reactions Widget
-	reactionsWidget = new ReactionsWidget( this );
-	reactionsWidget->hide();
-	
-	   
+	bigWidget->setReadOnly(FALSE);
+		
+	ConstructNodeWidgets();
+		   
 	// signals and slots connections
     connect( ListView1, SIGNAL( selectionChanged(QListViewItem*) ), this, SLOT( slotTreeSelectionChanged(QListViewItem*) ) );
-	
 	
 	//Selecting up the default item.
 	ListView1->setSelected ( defaultItem, TRUE ) ;
 		
+}
+
+/**
+*/
+void MyTreeAndListWidget::ConstructNodeWidgets()
+{
+	if (mModel != NULL)
+	{
+		//Constructing the Metabolites Widget
+		metabolitesWidget = new MetabolitesWidget( this );
+		metabolitesWidget->hide();
+
+
+		//Constructing the Reactions Widget
+		reactionsWidget = new ReactionsWidget( this );
+		reactionsWidget->hide();
+	}
+}
+	
+void MyTreeAndListWidget::loadNodes(CModel *model)
+{
+	if (model != NULL)
+	{
+		metabolitesWidget->loadMetabolites(model);
+		reactionsWidget->loadReactions(model);
+	}
 }
 
 
@@ -175,7 +184,6 @@ MyTreeAndListWidget::MyTreeAndListWidget( QWidget *parent, const char *name )
 QListViewItem* MyTreeAndListWidget::initializeTree()
 {
 	
-
 	ListView1->addColumn( tr( "Select One" ) );
     ListView1->header()->setLabel( ListView1->header()->count() - 1, *folderLocked, tr( "Select One" ) );
 	ListView1->setRootIsDecorated ( TRUE );
@@ -348,18 +356,15 @@ void MyTreeAndListWidget::slotTreeSelectionChanged(QListViewItem* item)
 	static QWidget* lastWidget = NULL;
 	static QWidget* currentWidget = bigWidget;
 	
-	
-	//qWarning( "CopasiUI2DialogBase::slotTreeSelectionChanged(QListViewItem*): Not implemented yet!" );
-	
-	/*QMessageBox::information( this, "CopasiUI Application",
-                              "Hi!!\n"
-                              "I am inside MyTreeAndListWidget::slotTreeSelectionChanged.\n"
-							  "You clicked: " + item->text(0));*/
 		
 	item->setPixmap( 0, *folderOpen );
 	if (lastSelection)
 	{
 		lastSelection->setPixmap( 0, *folderClosed );
+		if(lastSelection->text(0) == "Reactions")
+		{
+			changingFromReactions();
+		}
 	}
 	lastSelection = item;
 
@@ -400,4 +405,8 @@ void MyTreeAndListWidget::slotTreeSelectionChanged(QListViewItem* item)
 }
 
 
-	
+void MyTreeAndListWidget::changingFromReactions()
+{
+	QMessageBox::information( this, "Tree and List Widget",
+		"Changing from Reactions.(Inside MyTreeAndListWidget::changingFromReactions())" );	
+}
