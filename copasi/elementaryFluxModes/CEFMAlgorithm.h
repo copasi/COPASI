@@ -26,6 +26,8 @@ class CEFMAlgorithm
    */
   CTableauMatrix * mNextTableau;
 
+  /** @link dependency */
+  /*#  CFluxMode lnkCFluxMode; */
   // Operations
  public:    
   /**

@@ -24,6 +24,7 @@ class CElementaryFluxModes
  private:  
   /**
    *  The resulting elementary flux modes
+   * @supplierCardinality 0..*
    */
   vector < CFluxMode > mFluxModes;
 
@@ -38,6 +39,8 @@ class CElementaryFluxModes
    */
   const CModel *mModel;
 
+  /** @link dependency */
+  /*#  CEFMAlgorithm lnkCEFMAlgorithm; */
   //Operations
  public:    
   /**

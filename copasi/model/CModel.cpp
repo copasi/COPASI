@@ -151,6 +151,8 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   for (i = 0; i < mSteps.size(); i++)
     mSteps[i]->compile(mCompartments);
 
+  Copasi->OldMetabolites.cleanup();
+  
   return Fail;
 }
 
