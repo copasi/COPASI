@@ -3,7 +3,37 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "CopasiUI3"=".\CopasiUI\CopasiUI.dsp" - Package Owner=<4>
+Project: "ABiochem"=.\ABiochem\ABiochem.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name model
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name utilities
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name function
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name output
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name steadystate
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name trajectory
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "CopasiUI3"=.\CopasiUI\CopasiUI.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -33,7 +63,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "elementaryFluxModes"=".\elementaryFluxModes\elementaryFluxModes.dsp" - Package Owner=<4>
+Project: "elementaryFluxModes"=.\elementaryFluxModes\elementaryFluxModes.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -45,7 +75,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "function"=".\function\function.dsp" - Package Owner=<4>
+Project: "function"=.\function\function.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -57,7 +87,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "matrix"=".\test\matrix.dsp" - Package Owner=<4>
+Project: "matrix"=.\test\matrix.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -87,7 +117,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "model"=".\model\model.dsp" - Package Owner=<4>
+Project: "model"=.\model\model.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -102,7 +132,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "optimization"=".\OPTIMIZATION\optimization.dsp" - Package Owner=<4>
+Project: "optimization"=.\OPTIMIZATION\optimization.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -114,7 +144,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "output"=".\output\output.dsp" - Package Owner=<4>
+Project: "output"=.\output\output.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -126,7 +156,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "steadystate"=".\steadystate\steadystate.dsp" - Package Owner=<4>
+Project: "steadystate"=.\steadystate\steadystate.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -138,7 +168,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "test"=".\test\test.dsp" - Package Owner=<4>
+Project: "test"=.\test\test.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -171,7 +201,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "trajectory"=".\trajectory\trajectory.dsp" - Package Owner=<4>
+Project: "trajectory"=.\trajectory\trajectory.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -183,7 +213,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "utilities"=".\utilities\utilities.dsp" - Package Owner=<4>
+Project: "utilities"=.\utilities\utilities.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
