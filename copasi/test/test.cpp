@@ -678,9 +678,9 @@ C_INT32 TestOptimization(void)
   int MethodType;
   //double RangeParameter[NumParameter][2];
   cout << "TestOptimization() begins --- " << endl;
-  // COptMethod * CRand = COptMethod::createMethod();
+  COptMethod * CRand = COptMethod::createMethod();
   //  COptMethod * CRand = COptMethod::createMethod(COptMethod::SimulatedAnnealing);
-  COptMethod * CRand = COptMethod::createMethod(COptMethod::GeneticAlgorithm);
+  //  COptMethod * CRand = COptMethod::createMethod(COptMethod::GeneticAlgorithm);
 
   CRealProblem *CReal = new CRealProblem();
   CRand->setProblem(CReal);
