@@ -97,7 +97,15 @@ SOURCE=.\CompartmentsWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CompartmentsWidget.moc.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CompartmentsWidget1.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CompartmentsWidget1.moc.cpp
 # End Source File
 # Begin Source File
 
@@ -105,7 +113,15 @@ SOURCE=.\copasiui3window.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\copasiui3window.moc.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\listviews.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\listviews.moc.cpp
 # End Source File
 # Begin Source File
 
@@ -117,47 +133,15 @@ SOURCE=.\MetabolitesWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\MetabolitesWidget.moc.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\MetabolitesWidget1.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\moc_CompartmentsWidget.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_CompartmentsWidget1.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_copasiui3window.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_listviews.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_MetabolitesWidget.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_MetabolitesWidget1.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_MoietyWidget.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_MoietyWidget1.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_ReactionsWidget.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_ReactionsWidget1.cpp
+SOURCE=.\MetabolitesWidget1.moc.cpp
 # End Source File
 # Begin Source File
 
@@ -165,7 +149,15 @@ SOURCE=.\MoietyWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\MoietyWidget.moc.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\MoietyWidget1.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MoietyWidget1.moc.cpp
 # End Source File
 # Begin Source File
 
@@ -181,7 +173,15 @@ SOURCE=.\ReactionsWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ReactionsWidget.moc.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ReactionsWidget1.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReactionsWidget1.moc.cpp
 # End Source File
 # Begin Source File
 
@@ -198,26 +198,26 @@ SOURCE=.\CompartmentsWidget.h
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\CompartmentsWidget.h
 InputName=CompartmentsWidget
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\CompartmentsWidget.h
 InputName=CompartmentsWidget
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
@@ -231,26 +231,26 @@ SOURCE=.\CompartmentsWidget1.h
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget1.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\CompartmentsWidget1.h
 InputName=CompartmentsWidget1
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget1.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\CompartmentsWidget1.h
 InputName=CompartmentsWidget1
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
@@ -260,18 +260,110 @@ InputName=CompartmentsWidget1
 # Begin Source File
 
 SOURCE=.\copasiui3window.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
+InputDir=.
+InputPath=.\copasiui3window.h
+InputName=copasiui3window
+
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
+InputDir=.
+InputPath=.\copasiui3window.h
+InputName=copasiui3window
+
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\DataModel.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\listviews.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
+InputDir=.
+InputPath=.\listviews.h
+InputName=listviews
+
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
+InputDir=.
+InputPath=.\listviews.h
+InputName=listviews
+
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\MetabolitesWidget.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
+InputDir=.
+InputPath=.\MetabolitesWidget.h
+InputName=MetabolitesWidget
+
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
+InputDir=.
+InputPath=.\MetabolitesWidget.h
+InputName=MetabolitesWidget
+
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -280,26 +372,26 @@ SOURCE=.\MetabolitesWidget1.h
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MetabolitesWidget1.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\MetabolitesWidget1.h
 InputName=MetabolitesWidget1
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MetabolitesWidget1.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\MetabolitesWidget1.h
 InputName=MetabolitesWidget1
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
@@ -312,21 +404,9 @@ SOURCE=.\MoietiesWidget.h
 
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
 
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MoietiesWidget.h...
-InputDir=.
-InputPath=.\MoietiesWidget.h
-InputName=MoietiesWidget
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-# PROP Ignore_Default_Tool 1
 
 !ENDIF 
 
@@ -338,26 +418,26 @@ SOURCE=.\MoietyWidget.h
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MoietyWidget.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\MoietyWidget.h
 InputName=MoietyWidget
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MoietyWidget.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\MoietyWidget.h
 InputName=MoietyWidget
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
@@ -371,26 +451,26 @@ SOURCE=.\MoietyWidget1.h
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MoietyWidget1.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\MoietyWidget1.h
 InputName=MoietyWidget1
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MoietyWidget1.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\MoietyWidget1.h
 InputName=MoietyWidget1
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
@@ -400,10 +480,32 @@ InputName=MoietyWidget1
 # Begin Source File
 
 SOURCE=.\MyTable.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\Observer.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -412,26 +514,26 @@ SOURCE=.\ReactionsWidget.h
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing ReactionsWidget.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\ReactionsWidget.h
 InputName=ReactionsWidget
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing ReactionsWidget.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\ReactionsWidget.h
 InputName=ReactionsWidget
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
@@ -445,26 +547,26 @@ SOURCE=.\ReactionsWidget1.h
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing ReactionsWidget1.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\ReactionsWidget1.h
 InputName=ReactionsWidget1
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing ReactionsWidget1.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\ReactionsWidget1.h
 InputName=ReactionsWidget1
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
@@ -474,180 +576,37 @@ InputName=ReactionsWidget1
 # Begin Source File
 
 SOURCE=.\Subject.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\Tree.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # End Group
-# Begin Source File
-
-SOURCE=.\CompartmentsWidget.moc
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget.cpp...
-InputDir=.
-InputPath=.\CompartmentsWidget.moc
-InputName=CompartmentsWidget
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget.cpp...
-InputDir=.
-InputPath=.\CompartmentsWidget.moc
-InputName=CompartmentsWidget
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\CompartmentsWidget1.moc
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget1.cpp...
-InputDir=.
-InputPath=.\CompartmentsWidget1.moc
-InputName=CompartmentsWidget1
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget1.cpp...
-InputDir=.
-InputPath=.\CompartmentsWidget1.moc
-InputName=CompartmentsWidget1
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\listviews.moc
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing listviews.cpp...
-InputDir=.
-InputPath=.\listviews.moc
-InputName=listviews
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing listviews.cpp...
-InputDir=.
-InputPath=.\listviews.moc
-InputName=listviews
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\MetabolitesWidget1.moc
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MetabolitesWidget1.cpp...
-InputDir=.
-InputPath=.\MetabolitesWidget1.moc
-InputName=MetabolitesWidget1
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MetabolitesWidget1.cpp...
-InputDir=.
-InputPath=.\MetabolitesWidget1.moc
-InputName=MetabolitesWidget1
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_MoietyWidget1.moc
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing moc_MoietyWidget1.cpp...
-InputDir=.
-InputPath=.\moc_MoietyWidget1.moc
-InputName=moc_MoietyWidget1
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing moc_MoietyWidget1.cpp...
-InputDir=.
-InputPath=.\moc_MoietyWidget1.moc
-InputName=moc_MoietyWidget1
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
 # End Target
 # End Project
