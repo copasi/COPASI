@@ -5,19 +5,19 @@ if [ x"$#" = x1 ]; then
 
   case x"$1" in 
   xWIN32)
-    zip CopasiUI-$build.zip CopasiUI.exe 
+    zip CopasiUI-$build-$1.zip CopasiUI.exe 
     ;;
 
   xDarwin)
-    tar -czf CopasiUI-$build.tar.gz CopasiUI.app
+    tar -czf CopasiUI-$build-$1.tar.gz CopasiUI.app
     ;;
 
   xLinux|xSunOS)
-    tar -czf CopasiUI-$build.tar.gz CopasiUI
+    tar -czf CopasiUI-$build-$1.tar.gz CopasiUI
     ;;
   esac
 
-  scp CopasiUI-$build.* calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/$1
+  scp CopasiUI-$build-$1.* calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/$1
 else
   echo usage: mkbuild.sh BUILD_OS
 fi
