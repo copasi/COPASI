@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/04 17:37:57 $
+   $Date: 2004/01/09 16:02:39 $
    End CVS Header */
 
 /**
@@ -181,14 +181,17 @@ bool CCopasiContainer::add(CCopasiObject * pObject,
 
 bool CCopasiContainer::remove(CCopasiObject * pObject)
 {
-  std::pair< objectMap::iterator, objectMap::iterator > range =
-    mObjects.equal_range(pObject->getObjectName());
-  objectMap::iterator it;
-
-  for (it = range.first; it != range.second; ++it)
+  objectMap::iterator it = mObjects.begin();
+  objectMap::iterator end = mObjects.end();
+  /*
+    std::pair< objectMap::iterator, objectMap::iterator > range =
+      mObjects.equal_range(pObject->getObjectName());
+    objectMap::iterator it;
+  */
+  for (; it != end; ++it)
     if (it->second == pObject) break;
 
-  if (it == range.second) return false;
+  if (it == end) return false;
 
   mObjects.erase(it);
 
