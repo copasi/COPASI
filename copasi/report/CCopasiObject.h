@@ -36,7 +36,8 @@ class CCopasiObject
 
     static const unsigned C_INT32 Reference;
 
-    static const unsigned C_INT32 Value;
+    static const unsigned C_INT32 ValueInt;
+    static const unsigned C_INT32 ValueDbl;
 
     std::string mObjectName;
 
@@ -67,7 +68,7 @@ class CCopasiObject
 
     virtual const std::string & getName() const;
 
-    // virtual const C_FLOAT64 & getValue() const; //TODO do we need getType() also?
+    virtual const void * getObjectValueAddress() const;
 
     const std::string & getObjectName() const;
 
@@ -116,7 +117,8 @@ class CCopasiObject
 
     bool isReference() const;
 
-    bool hasValue() const;
+    bool hasValueInt() const;
+    bool hasValueDbl() const;
 
     virtual void * getReference();
   };

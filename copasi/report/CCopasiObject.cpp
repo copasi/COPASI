@@ -18,7 +18,8 @@ const unsigned C_INT32 CCopasiObject::Vector = 0x2;
 const unsigned C_INT32 CCopasiObject::Matrix = 0x4;
 const unsigned C_INT32 CCopasiObject::NameVector = 0x8;
 const unsigned C_INT32 CCopasiObject::Reference = 0x10;
-const unsigned C_INT32 CCopasiObject::Value = 0x20;
+const unsigned C_INT32 CCopasiObject::ValueInt = 0x20;
+const unsigned C_INT32 CCopasiObject::ValueDbl = 0x40;
 
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
 
@@ -83,7 +84,7 @@ CCopasiObject::getObject(const CCopasiObjectName & C_UNUSED(cn)) const
 
 const std::string & CCopasiObject::getName() const {return mObjectName;}
 
-//const C_FLOAT64 & CCopasiObject::getValue() const {return DummyValue; /*TODO or throw exception? */}
+const void * CCopasiObject::getObjectValueAddress() const {return &DummyValue; /*TODO or throw exception? */}
 
 const std::string & CCopasiObject::getObjectName() const {return mObjectName;}
 
@@ -130,5 +131,8 @@ bool CCopasiObject::isNameVector() const
 bool CCopasiObject::isReference() const
   {return (0 < (mObjectFlag & Reference));}
 
-bool CCopasiObject::hasValue() const
-  {return (0 < (mObjectFlag & Value));}
+bool CCopasiObject::hasValueInt() const
+  {return (0 < (mObjectFlag & ValueInt));}
+
+bool CCopasiObject::hasValueDbl() const
+  {return (0 < (mObjectFlag & ValueDbl));}
