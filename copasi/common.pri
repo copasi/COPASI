@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.30 $ $Author: shoops $ $Date: 2004/10/28 18:40:04 $  
+# $Revision: 1.31 $ $Author: shoops $ $Date: 2004/11/17 16:33:51 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -101,13 +101,30 @@ contains(BUILD_OS, SunOS) {
     LIBS += -llapack -lblas -lF77 -lfl
     LIBS += -L$${CLAPACK_PATH}/lib
   } else {
-    error( "CLAPACK_PATH must be specified" )
+    !isEmpty(LAPACK_PATH) {
+      message("Using lapack.")
+      DEFINES += USE_CLAPACK
+      INCLUDEPATH += $${LAPACK_PATH}/include
+      LIBS += -llapack -lblas  -lg2c
+      LIBS += -L$${LAPACK_PATH}/lib
+    } else {
+      error( "Either CLAPACK_PATH or LAPACK_PATH must be specified" )
+    }
+  }
+  !isEmpty(EXPAT_PATH){
+      LIBS+=  -L$${EXPAT_PATH}/lib
+      INCLUDEPATH += $${EXPAT_PATH}/include
+  }
+  !isEmpty(SBML_PATH){
+      LIBS+=  -L$${SBML_PATH}/lib
+      INCLUDEPATH += $${SBML_PATH}/include
   }
   LIBS += -lSM
+  LIBS += -lsbml -lexpat
 }
  
 contains(BUILD_OS, Linux) {
-  QMAKE_LFLAGS_RELEASE += -static
+  QMAKE_LFLAGS += -static
 
   LIBS += -lsbml -lexpat
 
@@ -119,6 +136,13 @@ contains(BUILD_OS, Linux) {
 #      error( "QWT_PATH must be specified" )
 #  }
   !isEmpty(EXPAT_PATH){
+      LIBS+=  -L$${EXPAT_PATH}/lib
+      INCLUDEPATH += $${EXPAT_PATH}/include
+  }
+  !isEmpty(SBML_PATH){
+      LIBS+=  -L$${SBML_PATH}/lib
+      INCLUDEPATH += $${SBML_PATH}/include
+  }  !isEmpty(EXPAT_PATH){
       LIBS+=  -L$${EXPAT_PATH}/lib
       INCLUDEPATH += $${EXPAT_PATH}/include
   }
