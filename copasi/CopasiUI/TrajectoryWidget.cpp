@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/07 17:00:41 $
+   $Date: 2003/11/14 22:15:00 $
    End CVS Header */
 
 /********************************************************
@@ -308,17 +308,19 @@ void TrajectoryWidget::runTrajectoryTask()
       else
         output.open(tt->getReport()->getTarget().c_str(), std::ios_base::out);
     }
+
   if (output.is_open())
     {
       output << "# "; // Hack for gnuplot
       tt->initializeReporting(output);
     }
-  else //ask if user insists on proceeding
+  //ask if user insists on proceeding
+  else if (QMessageBox::information (NULL, "No output specified,",
+                                     "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running trajectory task with no output?",
+                                     QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
     {
-      if (QMessageBox::information (NULL, "No output specified,",
-                                    "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running trajectory task with no output?",
-                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-        return;
+      unsetCursor();
+      return;
     }
 
   // std::ofstream output("trajectory.txt");
