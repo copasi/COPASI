@@ -405,6 +405,19 @@ void CReaction::setParameterMapping(C_INT32 index, const std::string & metabName
   mMetabNameMap[index][0] = metabName;
 }
 
+void CReaction::setParameterMapping(const std::string & parameterName,
+                                    const std::vector<std::string> & metabNames)
+{
+  if (!mpFunction) fatalError();
+  CFunctionParameter::DataType type;
+  unsigned C_INT32 index;
+  index = mMap.findParameterByName(parameterName, type);
+  if (type != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
+  mMetabNameMap[index] = metabNames;
+
+  return;
+}
+
 void CReaction::clearParameterMapping(const std::string & parameterName)
 {
   if (!mpFunction) fatalError();
