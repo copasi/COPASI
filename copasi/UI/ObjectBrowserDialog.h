@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/06 16:29:20 $
+   $Date: 2004/10/07 07:41:00 $
    End CVS Header */
 
 #ifndef OBJECTBROWSERDIALOG_H
@@ -12,29 +12,41 @@
 #include <qdialog.h>
 #include <vector>
 
-class QGridLayout;
-class CopasiUI3Window;
+class QPushButton;
 class ObjectBrowserWidget;
+class QGridLayout;
+class QFrame;
+class QSpacerItem;
+class CopasiUI3Window;
 class CCopasiObject;
 
 class ObjectBrowserDialog : public QDialog
   {
     Q_OBJECT
-  private:
-    CopasiUI3Window* mparent;
 
-  public:
-    ObjectBrowserDialog(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
-    ~ObjectBrowserDialog();
-    void cleanup();
-    void setOutputVector(std::vector<CCopasiObject*>* pObjectVector);
+  protected:
+    QPushButton* cancelButton;
+    QPushButton* okButton;
+    QFrame* Line1;
+    QSpacerItem* spacer;
+    QGridLayout* ObjectBrowserDialogLayout;
     ObjectBrowserWidget* objectBrowserWidget;
 
   public slots:
-    virtual void nextClicked(int);
+    virtual void cancelClicked();
+    virtual void okClicked();
+
+  public:
+    ObjectBrowserDialog(QWidget* parent = 0, const char* name = 0, bool modal = true);
+    virtual ~ObjectBrowserDialog();
+    void cleanup();
+    void setOutputVector(std::vector<CCopasiObject*>* pObjectVector);
+    void selectObjects(std::vector<CCopasiObject*>* pObjectVector);
+
+  private:
+    CopasiUI3Window* mparent;
 
   protected:
     void closeEvent (QCloseEvent * e);
-    QGridLayout* ObjectBrowserDialogLayout;
   };
 #endif // OBJECTBROWSERDIALOG_H

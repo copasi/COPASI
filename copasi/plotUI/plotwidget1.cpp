@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/06 16:29:22 $
+   $Date: 2004/10/07 07:41:01 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.20 2004/10/06 16:29:22 jpahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.21 2004/10/07 07:41:01 jpahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -208,7 +208,7 @@ void PlotWidget1::addCurveGroupBox()
     }
 
   //pdelete(pBrowser);
-  //pBrowser = new ObjectBrowser();
+  //pBrowser = new ObjectBrowserDialog();
 
   std::vector<CCopasiObject*>* pVector2 = new std::vector<CCopasiObject*>();
   pBrowser2->setOutputVector(pVector2);
