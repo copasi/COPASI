@@ -11,7 +11,7 @@
 //? Do I need to call super() ? find out
 
 //  Default constructor
-CRealProblem::CRealProblem()
+CRealProblem::CRealProblem() : COptProblem()
 {}
 
 // Destructor
@@ -58,7 +58,7 @@ C_FLOAT64 CRealProblem::calculate()
     }
 
   //set the best value as the fitness;
-  setBestValue(fitness);
-
+  //setBestValue(fitness);
+  //cout<<"fitness is:\t"<<fitness;
   return fitness;
 }

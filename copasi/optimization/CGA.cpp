@@ -49,7 +49,7 @@ CGA::CGA()
 }
 
 // initialize function
-void CGA::initialize()
+bool CGA::initialize()
 {
   unsigned int i;
 
@@ -86,6 +86,8 @@ void CGA::initialize()
     }
 
   initFirstGeneration();
+
+  return 0;
 }
 
 // initialize the first generation
@@ -158,8 +160,8 @@ CGA& CGA::operator=(const CGA& source)
 }
 
 // clean up
-void CGA::cleanup()
-{}
+int CGA::cleanup()
+{ return 0; }
 
 //destructor
 CGA::~CGA()
@@ -427,7 +429,7 @@ void CGA::crossover(unsigned int p1, unsigned int p2, unsigned int c1, unsigned 
               mIndV[c2][j] = mIndV[p2][j];
             }
 
-          return ;
+          return;
         }
 
       // chose first point
@@ -518,7 +520,7 @@ void CGA::select(int method)
 
   switch (method)
     {
-    case 1:    // parent-offspring competition
+    case 1:     // parent-offspring competition
 
       for (i = mPopSize; i < 2*mPopSize; i++)
         {
@@ -530,7 +532,7 @@ void CGA::select(int method)
 
       break;
 
-    case 2:    // tournament competition
+    case 2:     // tournament competition
       // compete with 20% of the population
       nopp = mPopSize / 5;
       // but at least one

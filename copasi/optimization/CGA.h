@@ -77,7 +77,7 @@ class CGA : public COptAlgorithm
     /**
      * initialize function
      */
-    void initialize();
+    bool initialize();
 
     /**
      * initialize the first generation
@@ -87,7 +87,7 @@ class CGA : public COptAlgorithm
     /**
      * clean up 
      */
-    void cleanup();
+    int cleanup();
 
     /**Declare the prototype of member functions ***/
 
@@ -148,7 +148,7 @@ class CGA : public COptAlgorithm
     /**
      * get the parameter number
      */
-    int getParamNum() ;
+    int getParamNum();
 
     /**
      * get the best candidate
@@ -158,12 +158,12 @@ class CGA : public COptAlgorithm
     /**
      * get generation number
      */
-    unsigned int getGeneration() ;
+    unsigned int getGeneration();
 
     /**
      * get population size
      */
-    int getPopSize() ;
+    int getPopSize();
 
     /*****define functional functions here**********/
 

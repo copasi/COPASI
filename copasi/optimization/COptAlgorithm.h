@@ -18,130 +18,127 @@
 #include <copasi.h>
 #include <vector>
 
-#include "COptProblem.h"
+class COptProblem;
+
 #include "COptAlgorithmParameter.h"
 
-// YOHE: this is an abstract class that contains many virtual functions 
+// YOHE: this is an abstract class that contains many virtual functions
 // without definitions
 //
 class COptAlgorithm
-{
+  {
+    //data member
+  private:
 
-  //data member
- private:
-  
-  COptProblem * mOptProblem;  // pointer to remote problem
+    //These parameters are optimization parameters, not method (algm) parameters
+    //they are for the model or calculation function.
+    //Their memories are stored in COptProblem. Here are only pointers.
+    double * mParameters;       // pointer to parameters
+    unsigned int mParameterNum;          // the number of parameters
+    double * mParameterMin;     // the minimum values of parameters
+    double * mParameterMax;     // the maximum values of parameters
 
-  //These parameters are optimization parameters, not method (algm) parameters
-  //they are for the model or calculation function. 
-  //Their memories are stored in COptProblem. Here are only pointers.
-  double * mParameters;       // pointer to parameters
-  unsigned int mParameterNum;          // the number of parameters
-  double * mParameterMin;     // the minimum values of parameters
-  double * mParameterMax;     // the maximum values of parameters
+    vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
 
-  vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
+    string mMethodVersion;      // Method Version string, yes
+    string mMethodName;       // method Name (descriptive)
+    bool mBounds;      // True if method accepts bounds on the parameters
 
-  string mMethodVersion;      // Method Version string, yes
-  string mMethodName;	      // method Name (descriptive)
-  bool mBounds;		      // True if method accepts bounds on the parameters
+    //rohan: modified 7/26
+  protected:
+    COptProblem * mOptProblem;  // pointer to remote problem
 
-  // Implementation
- public:
+    // Implementation
+  public:
 
-  /**
-   * Default constructor
-   */
-  COptAlgorithm();
+    /**
+     * Default constructor
+     */
+    COptAlgorithm();
 
-  /**
-   * Destructor
-   */
-  virtual ~COptAlgorithm();
-  //~COptAlgorithm();
+    /**
+     * Destructor
+     */
+    virtual ~COptAlgorithm();
 
-  /**
-   * Copy constructor
-   * @param source a COptAlgorithm object for copy
-   */
-  COptAlgorithm(const COptAlgorithm& source);
+    /**
+     * Copy constructor
+     * @param source a COptAlgorithm object for copy
+     */
+    COptAlgorithm(const COptAlgorithm & source);
 
-  /**
-   * Object assignment overloading
-   * @param source a COptAlgorithm object for copy
-   * @return an assigned COptAlgorithm object
-   */
-  COptAlgorithm& operator=(const COptAlgorithm& source);
+    /**
+     * Object assignment overloading
+     * @param source a COptAlgorithm object for copy
+     * @return an assigned COptAlgorithm object
+     */
+    COptAlgorithm& operator=(const COptAlgorithm & source);
 
+    /**
+     * clean up memory
+     */
+    virtual int cleanup(void);
 
+    /**
+     * Initialization of private variables
+     */
+    virtual bool initialize(void);
 
-  /**
-   * clean up memory
-   */
-  int cleanup(void);
+    /**
+     * Execute the optimization algorithm calling simulation routine 
+     * when needed. It is noted that this procedure can give feedback 
+     * of its progress by the callback function set with SetCallback.
+     */
+    virtual int optimise();
 
-  /**
-   * Initialization of private variables
-   */
-  bool initialize(void);
+    /**
+     * set the number of method parameters
+     */
+    void setMethodParameterNumber(int aNum);
 
-  /**
-   * Execute the optimization algorithm calling simulation routine 
-   * when needed. It is noted that this procedure can give feedback 
-   * of its progress by the callback function set with SetCallback.
-   */
-  virtual int optimise();
-   
+    /**
+     * get the number of method parameters
+     */
+    unsigned int getMethodParameterNumber(void);
 
+    /**
+     * get method parameter that matches a specific index 
+     */
+    vector <COptAlgorithmParameter> & getMethodParameters();
 
-  /**
-   * set the number of method parameters
-   */
-  void setMethodParameterNumber(int aNum);
+    /**
+     * set a method parameter
+     */
+    void setMethodParameterValue(int i, double value);
 
-  /**
-   * get the number of method parameters
-   */
-  unsigned int getMethodParameterNumber(void);
+    /**
+     * get method parameter that matches a specific index 
+     */
+    double getMethodParameterValue(int i);
 
+    /**
+     * get method parameter name
+     */
+    string getMethodParameterName(int i);
 
-  /**
-   * get method parameter that matches a specific index 
-   */
-  vector <COptAlgorithmParameter> & getMethodParameters();
+    /**
+     * get method name
+     */
+    string getMethodName(void);
 
-  /**
-   * set a method parameter
-   */
-  void setMethodParameterValue(int i, double value);
+    /**
+     * get method version
+     */
+    string getMethodVersion(void);
 
-  /**
-   * get method parameter that matches a specific index 
-   */
-  double getMethodParameterValue(int i);
+    /**
+     * Returns True if this method is capable of handling adjustable parameter 
+     * boundary constraints, False otherwise
+     */ 
+    //virtual bool isBounded(void);
+    bool isBounded(void);
 
-  /**
-   * get method parameter name
-   */
-  string getMethodParameterName(int i);
+    void setProblem(COptProblem * problem);
+  };
 
-  /**
-   * get method name
-   */
-  string getMethodName(void);
-
-  /**
-   * get method version
-   */
-  string getMethodVersion(void);
-   
-  /**
-   * Returns True if this method is capable of handling adjustable parameter 
-   * boundary constraints, False otherwise
-   */
-  //virtual bool isBounded( void );
-  bool isBounded( void );
-
-};
-
-#endif  // the end 
+#endif  // the end

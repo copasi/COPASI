@@ -13,6 +13,8 @@
 #include "copasi.h"
 #include "COptAlgorithmParameter.h"
 
+using namespace std;
+
 //Default constructor
 COptAlgorithmParameter::COptAlgorithmParameter()
 {

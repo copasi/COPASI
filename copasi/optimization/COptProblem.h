@@ -1,10 +1,10 @@
 /**
  *  File name: COptProblem.h
  *
- *  Programmer: Yongqun He 
+ *  Programmer: Yongqun He
  *  Contact email: yohe@vt.edu
- *  Purpose: This is the header file of the COptProblem class. 
- *           It specifies the optimization problem with its own members and 
+ *  Purpose: This is the header file of the COptProblem class.
+ *           It specifies the optimization problem with its own members and
  *           functions. It's used by COptAlgorithm class and COptimization class
  */
 
@@ -14,21 +14,30 @@
 #include <string>
 #include <copasi.h>
 #include <vector>
-
-//
+#include "steadystate/CSS_Solution.h"
+#include "trajectory/CTrajectory.h"
 
 class COptProblem
   {
     //data member
 
   private:
-
     double * mParameterValues;  // pointer to parameters
     int mParameterNum;          // the number of parameters
     double mBestValue;          // the best result of the problem
     double * mBestParameters;   // the parameters leading the best result
     double * mParameterMin;     // the minimum values of parameters
     double * mParameterMax;     // the maximum values of parameters
+    /**
+     * Pointer to CSS_Solution.  To be used in calculate() to select between
+     * trajectory and steady state method
+     */
+    CSS_Solution * steady_state;
+    /**
+     * Pointer to CTrajectory.  To be used in calculate() to select between
+     * trajectory and steady state method
+     */
+    CTrajectory * trajectory;
 
     // Implementation
 
@@ -123,9 +132,24 @@ class COptProblem
     double getBestValue();
 
     /*
+     * set one parameter in the array of best values -- overloaded function
+     */
+    void setBestParameter(int i, double value);
+
+    /*
+     * get one parameter from the array -- overloaded function
+     */
+    double getBestValue(int i);
+
+    /*
      * set the minimum value of parameters
      */
     void setParameterMin(double * aDouble);
+
+    /*
+     * set minimum value in an array
+     */
+    void setParameterMin(int, double);
 
     /*
      * get the minimum value of parameters
@@ -133,14 +157,29 @@ class COptProblem
     double * getParameterMin();
 
     /*
+     * get minimum from array
+     */
+    double getParameterMin(int);
+
+    /*
      * set the maximum value of the paramters
      */
     void setParameterMax(double * aDouble);
 
     /*
+     * set maximum in an array
+     */
+    void setParameterMax(int, double);
+
+    /*
      * get the maximum value of the parameters
      */
     double * getParameterMax();
+
+    /*
+     * get maximum value from array
+     */
+    double getParameterMax(int);
   };
 
 #endif  // the end

@@ -10,14 +10,13 @@
 
 #include "COptProblem.h"
 
-// double * mParameterValues;        // pointer to parameters
-
 //  Default constructor
 COptProblem::COptProblem()
 {
   mParameterValues = NULL;
   mParameterNum = 0;
   mBestValue = 0.0;
+  mBestParameters = NULL;   // array of best values
   mParameterMin = NULL;     // the minimum values of parameters
   mParameterMax = NULL;     // the maximum values of parameters
   initialize();
@@ -30,9 +29,11 @@ COptProblem::~COptProblem()
 // copy constructor
 COptProblem::COptProblem(const COptProblem& source)
 {
+  // :TODO: this is broken !!!
   mParameterValues = source.mParameterValues;
   mParameterNum = source.mParameterNum;
   mBestValue = source.mBestValue;
+  mBestParameters = source.mBestParameters;
   mParameterMin = source.mParameterMin;     // the minimum values of parameters
   mParameterMax = source.mParameterMax;
 }
@@ -47,6 +48,7 @@ COptProblem & COptProblem::operator = (const COptProblem& source)
       mParameterValues = source.mParameterValues;
       mParameterNum = source.mParameterNum;
       mBestValue = source.mBestValue;
+      mBestParameters = source.mBestParameters;
       mParameterMin = source.mParameterMin;     // the minimum values of parameters
       mParameterMax = source.mParameterMax;
     }
@@ -57,17 +59,21 @@ COptProblem & COptProblem::operator = (const COptProblem& source)
 //clean up memory
 void COptProblem::cleanup(void)
 {
-  mParameterValues = NULL;
-  mParameterNum = 0;
-  mBestValue = 0.0;
+  pfree(mParameterValues);
+  pfree(mBestParameters);
+  pfree(mParameterMin);
+  pfree(mParameterMax);
 }
 
 //  Initialization of private variables
 void COptProblem::initialize(void)
 {
+  cleanup();
+
   mParameterValues = new double[mParameterNum];
-  mParameterMin = new double;
-  mParameterMax = new double;
+  mBestParameters = new double[mParameterNum];
+  mParameterMin = new double[mParameterNum];
+  mParameterMax = new double[mParameterNum];
 }
 
 // check constraints : unimplemented - always returns true
@@ -113,6 +119,7 @@ double COptProblem::getParameter(int aNum)
 void COptProblem::setParameterNum(int aNum)
 {
   mParameterNum = aNum;
+  initialize();
 }
 
 // get parameter number
@@ -133,10 +140,28 @@ double COptProblem::getBestValue()
   return mBestValue;
 }
 
+//set best value in array
+void COptProblem::setBestParameter(int i, double value)
+{
+  mBestParameters[i] = value;
+}
+
+//get best value from array
+double COptProblem::getBestValue(int i)
+{
+  return mBestParameters[i];
+}
+
 // set the minimum value of parameters
 void COptProblem::setParameterMin(double * aDouble)
 {
   mParameterMin = aDouble;
+}
+
+// set individual minimum value
+void COptProblem::setParameterMin(int i, double value)
+{
+  mParameterMin[i] = value;
 }
 
 // get the minimum value of parameters
@@ -145,14 +170,32 @@ double * COptProblem::getParameterMin()
   return mParameterMin;
 }
 
+// get minimum value from array
+double COptProblem::getParameterMin(int i)
+{
+  return mParameterMin[i];
+}
+
 // set the maximum value of the paramters
 void COptProblem::setParameterMax(double * aDouble)
 {
   mParameterMax = aDouble;
 }
 
+// set individual array element
+void COptProblem::setParameterMax(int i, double value)
+{
+  mParameterMax[i] = value;
+}
+
 // get the maximum value of the parameters
 double * COptProblem::getParameterMax()
 {
   return mParameterMax;
+}
+
+// get individual element from array
+double COptProblem::getParameterMax(int i)
+{
+  return mParameterMax[i];
 }

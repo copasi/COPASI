@@ -32,6 +32,7 @@
 #include "tnt/cmat.h"
 #include "tnt/vec.h"
 #include "tnt/subscript.h"
+#include "randomGenerator/CRandom.h"
 
 using namespace std;
 
@@ -106,7 +107,7 @@ C_INT main(C_INT argc, char *argv[])
       //      TestNewton();
       //      TestSSSolution();
       //YOHE: new test
-      //      TestOptimization();
+      TestOptimization();
       //      TestEigen();
       //      TestTrajectory();
       //      TestStochDirectMethod();
@@ -120,11 +121,11 @@ C_INT main(C_INT argc, char *argv[])
       //      TestMCA();
       //      TestOutputEvent();
       //      MakeFunctionDB();
+      //ConvertFunctionDB();
       // ConvertFunctionDB();
-
       //      TestRandom(10000, 100);
       //      Testr250();
-      Testmt19937();
+      //      Testmt19937();
 
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
@@ -623,12 +624,47 @@ C_INT32 TestEigen(void)
   return 0;
 }
 
-/*
-//yohe: test optimization -- 03/27/02
+//rohan: test optimization -- 09/20/02
 //
-C_INT32  TestOptimization(void)
+C_INT32 TestOptimization(void)
 {
+  int i, temp_random;
   cout << "TestOptimization() begins --- " << endl;
+  COptAlgorithm * CRand = new COptAlgorithmRand();
+
+  CRealProblem *CReal = new CRealProblem();
+  CRand->setProblem(CReal);
+  //CRandom *testRand = new CRandom(2);
+  //CRandom *rand;
+  //CRandom::Type t;
+  //t=CRandom::r250;
+  //rand = CRandom::createGenerator(t,2);
+
+  // set parameter numbers....
+  CReal->setParameterNum(5);
+
+  // set the individual parameters
+
+  CRand->setMethodParameterValue(0, 100000);
+
+  for (i = 0; i < 5; i++)
+    {
+      CReal->setParameterMin(i, -5);
+      CReal->setParameterMax(i, 2);
+    }
+
+  CRand->optimise();
+  cout << "result---best values";
+  for (int i = 0; i < 5; i++)
+    {
+      cout << CReal->getBestValue(i);
+      cout << "\n";
+    }
+  return 0;
+}
+
+/*
+ 
     C_INT32 size = 0;
     C_INT32 i;
  
@@ -655,10 +691,6 @@ C_INT32  TestOptimization(void)
     //opt.Set_mn(-10.0);
     //opt.Set_mx(10.0);
     //ga.Optimise();
- 
-    return 0;
- 
-}
  
  */
 
@@ -1667,6 +1699,11 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
 }
 #endif // XXXX
 
+/* //-- commented out because of error...8/22
+=======
+ 
+>>>>>>> 1.56
+ 
 C_INT32 TestDependencyGraph()
 {
   cout << "Testing dependency graph\n";
@@ -1678,21 +1715,21 @@ C_INT32 TestDependencyGraph()
                                   {3, 0, 1, 2}};
   CDependencyGraph dg;
   unsigned C_INT32 i = 0, j = 0;
-
+ 
   for (i = 0; i < NNODES; i++)
     {
       cout << "Adding node " << i << " with dependents ";
       dg.addNode(i);
-
+ 
       for (j = 0; j < NDEPS; j++)
         {
           cout << inarr[i][j] << " ";
           dg.addDependent(i, inarr[i][j]);
         }
-
+ 
       cout << endl;
     }
-
+ 
   // Display the vector of dependents for each node
   for (i = 0; i < NNODES; i++)
     {
@@ -1700,19 +1737,21 @@ C_INT32 TestDependencyGraph()
       cout << "Node: " << i << " Dependents: ";
       const set <C_INT32> depvec = dg.getDependents(i);
       set <C_INT32>::const_iterator jit = depvec.begin();
-
+ 
       while (jit != depvec.end())
         {
           cout << *jit << " ";
           jit++;
         }
-
+ 
       cout << endl;
     }
-
+ 
   cout << "Done testing dependency graph\n\n";
   return 0;
 }
+ 
+ */
 
 #ifdef XXXX
 C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)

@@ -6,7 +6,8 @@ liboptimization_a_SOURCES = \
 	COptAlgorithm.cpp \
 	COptAlgorithmParameter.cpp \
 	COptProblem.cpp \
-	CRealProblem.cpp
+	CRealProblem.cpp \
+	COptAlgorithmRand.cpp
 
 EXTRA_DIST = \
 	CGA.h				CGA.cpp \
@@ -14,6 +15,7 @@ EXTRA_DIST = \
 	COptAlgorithmParameter.h	COptAlgorithmParameter.cpp \
 	COptProblem.h			COptProblem.cpp \
 	CRealProblem.h			CRealProblem.cpp \
+      COptAlgorithmRand.h		COptAlgorithmRand.cpp \
 	optimization.h
 
 ####### kdevelop will overwrite this part!!! (end)############

@@ -5,3 +5,4 @@
 #include "COptAlgorithmParameter.h"
 #include "COptProblem.h"
 #include "CRealProblem.h"
+#include "COptAlgorithmRand.h"

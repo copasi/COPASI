@@ -11,7 +11,9 @@
  */
 #include <math.h>
 #include "COptAlgorithm.h"
+#include "COptProblem.h"
 
+using namespace std;
 
 // Default constructor
 COptAlgorithm::COptAlgorithm()
@@ -24,7 +26,7 @@ COptAlgorithm::COptAlgorithm()
   mParameterMin = NULL;     // the minimum values of parameters
   mParameterMax = NULL;     // the maximum values of parameters
 
-  for (unsigned int i=0; i<mOptAlgmParams.size(); i++)
+  for (unsigned int i = 0; i < mOptAlgmParams.size(); i++)
     {
       mOptAlgmParams[i].setName("unknown");
       mOptAlgmParams[i].setValue(0.0);
@@ -33,17 +35,26 @@ COptAlgorithm::COptAlgorithm()
   mMethodVersion = "0";
   mMethodName = "Unknown";
   mBounds = false;
-
 }
 
 //YOHE: seems "virtual" cannot be outside of class declaration
 COptAlgorithm::~COptAlgorithm()
 { }
 
-
 // copy constructor
-COptAlgorithm::COptAlgorithm(const COptAlgorithm& source)
+COptAlgorithm::COptAlgorithm(const COptAlgorithm& source):
+    mParameters(source.mParameters),
+    mParameterNum(source.mParameterNum),
+    mParameterMin(source.mParameterMin),
+    mParameterMax(source.mParameterMax),
+    mOptAlgmParams(source.mOptAlgmParams),
+
+    mMethodVersion(source.mMethodVersion),
+    mMethodName(source.mMethodName),
+    mBounds(source.mBounds),
+    mOptProblem(source.mOptProblem)
 {
+  /*
   mOptProblem = source.mOptProblem;
   mParameters = source.mParameters;
   mParameterNum = source.mParameterNum;
@@ -52,8 +63,9 @@ COptAlgorithm::COptAlgorithm(const COptAlgorithm& source)
   mOptAlgmParams = source.mOptAlgmParams;
 
   mMethodVersion = source.mMethodVersion;
-  mMethodName = source.mMethodName;	
-  mBounds = source.mBounds;		
+  mMethodName = source.mMethodName; 
+  mBounds = source.mBounds;  
+  */
 }
 
 // Object assignment overloading,
@@ -71,13 +83,12 @@ COptAlgorithm & COptAlgorithm::operator = (const COptAlgorithm& source)
       mOptAlgmParams = source.mOptAlgmParams;
 
       mMethodVersion = source.mMethodVersion;
-      mMethodName = source.mMethodName;	
-      mBounds = source.mBounds;	
+      mMethodName = source.mMethodName;
+      mBounds = source.mBounds;
     }
 
   return *this;
 }
-
 
 // Initialization of private variables
 bool COptAlgorithm::initialize(void)
@@ -103,10 +114,14 @@ bool COptAlgorithm::initialize(void)
 //clean up mem
 int COptAlgorithm::cleanup(void)
 {
-  if (mOptProblem) mOptProblem = NULL;
-  if (mParameters) mParameters = NULL;
-  if (mParameterMin) mParameterMin = NULL;
-  if (mParameterMax) mParameterMax = NULL;
+  if (mOptProblem)
+    mOptProblem = NULL;
+  if (mParameters)
+    mParameters = NULL;
+  if (mParameterMin)
+    mParameterMin = NULL;
+  if (mParameterMax)
+    mParameterMax = NULL;
 
   if (!mOptAlgmParams.empty())
     mOptAlgmParams.clear();
@@ -114,11 +129,15 @@ int COptAlgorithm::cleanup(void)
   return 0;
 }
 
-
 // set the number of method parameters
 void COptAlgorithm::setMethodParameterNumber(int aNum)
 {
   mParameterNum = aNum;
+}
+
+void COptAlgorithm::setProblem(COptProblem * problem)
+{
+  mOptProblem = problem;
 }
 
 // get method parameter number
@@ -127,13 +146,11 @@ unsigned int COptAlgorithm::getMethodParameterNumber(void)
   return mParameterNum;
 }
 
-
 // get method parameters
 vector <COptAlgorithmParameter> & COptAlgorithm::getMethodParameters()
 {
   return mOptAlgmParams;
 }
-
 
 // set method parameter value
 void COptAlgorithm::setMethodParameterValue(int i, double value)
@@ -171,7 +188,6 @@ bool COptAlgorithm::isBounded(void)
 {
   return mBounds;
 }
-
 
 // YOHE: declare it as a virtual function in COptAlgorithm.h file
 //
