@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.132 $
+   $Revision: 1.133 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/01/15 20:19:32 $
+   $Date: 2004/02/02 21:50:56 $
    End CVS Header */
 
 /****************************************************************************
@@ -546,7 +546,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                 //Time course
+      case 23:                                  //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -555,10 +555,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                //Report
+      case 43:                                 //Report
         return tableDefinition;
         break;
-      case 42:                                //Plots
+      case 42:                                 //Plots
         return plotWidget;
         break;
       case 5:
@@ -1284,10 +1284,12 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
 
       // 1 == modelWidget
       //reset active to the Model Widget,
-      folders->clearSelection();
-      folders->setSelected(searchListViewItem(1), true);
-      slotFolderChanged(searchListViewItem(1));
-
+      if (action == ADD)
+        {
+          folders->clearSelection();
+          folders->setSelected(searchListViewItem(1), true);
+          slotFolderChanged(searchListViewItem(1));
+        }
       break;
     case STATE:
       //  optimizationWidget->update(objectType, action, key);
