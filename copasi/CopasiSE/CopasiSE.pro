@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2005/02/10 19:14:28 $  
+# $Revision: 1.10 $ $Author: gauges $ $Date: 2005/02/15 12:39:53 $  
 ######################################################################
 
 TEMPLATE = app
@@ -69,6 +69,29 @@ contains(BUILD_OS, SunOS) {
   LIBS -= -Wl,--start-group
   LIBS -= -Wl,--end-group
 }  
+
+contains(BUILD_OS, Darwin){
+  LIBS -= -Wl,--start-group
+  LIBS -= -Wl,--end-group
+  LIBS -= -lplot
+  LIBS += ../lib/libplot.a
+  LIBS -= -lrandomGenerator
+  LIBS += -lrandomGenerator 
+  LIBS -= -lreport
+  LIBS += -lreport
+  LIBS -= -lcopasiXML
+  LIBS += -lcopasiXML
+  LIBS -= -lfunction
+  LIBS += -lfunction
+  LIBS -= -lscan
+  LIBS += -lscan
+  LIBS -= -lsteadystate
+  LIBS += -lsteadystate
+  LIBS -= -lutilities
+  LIBS += -lutilities
+  
+}
+
 
 # Input
 HEADERS += 
