@@ -325,6 +325,10 @@ void FunctionWidget1::loadName(QString setValue)
               Table2->setText(j, 2, "NA");
               break;
 
+            case - 1:
+              Table2->setText(j, 2, "infinity");
+              break;
+
             default:
               Table2->setText(j, 2, QString::number(functUsage[j]->getHigh()));
             }
@@ -360,23 +364,23 @@ void FunctionWidget1::loadName(QString setValue)
           cancelChanges->setEnabled(TRUE);
         }
 
-      if (funct->isReversible() == -1)
+      switch (funct->isReversible())
         {
+        case TriUnspecified:
+          RadioButton3->setEnabled(TRUE);
+          RadioButton3->setChecked(TRUE);
+          break;
+
+        case TriFalse:
+          RadioButton2->setEnabled(TRUE);
+          RadioButton2->setChecked(TRUE);
+          break;
+
+        case TriTrue:
           RadioButton1->setEnabled(TRUE);
           RadioButton1->setChecked(TRUE);
+          break;
         }
-      else
-        if (funct->isReversible() == TRUE)
-          {
-            RadioButton2->setEnabled(TRUE);
-            RadioButton2->setChecked(TRUE);
-          }
-        else
-          if (funct->isReversible() == FALSE)
-            {
-              RadioButton3->setEnabled(TRUE);
-              RadioButton3->setChecked(TRUE);
-            }
     }
 
 } //end of function
