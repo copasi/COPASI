@@ -525,35 +525,44 @@ void CModel::setRates(const C_FLOAT64 * y)
 
 void CModel::setTransitionTimes()
 {
-  unsigned C_INT32 i, imax = getIndMetab();
-  unsigned C_INT32 j, jmax = mStepsX.size();
+  unsigned C_INT32 i, imax = mMetabolites.size();
+  unsigned C_INT32 j, jmax = mSteps.size();
+  unsigned C_INT32 k;
+  
   C_FLOAT64 TotalFlux, PartialFlux;
   C_FLOAT64 TransitionTime;
   
   mTransitionTime = 0.0;
   
-  for(i=0; i<imax; i++)
+  for(i=0, k=0; i+k<imax; i++)
     {
+      if (METAB_FIXED == mMetabolites[i+k]->getStatus())
+        {
+          i--;
+          k++;
+          continue;
+        }
+      
       TotalFlux = 0.0;
       for (j=0; j<jmax; j++)
         {
-          PartialFlux = mRedStoi[i][j] * *mFluxesX[j];
+          PartialFlux = mStoi[i][j] * *mFluxes[j];
           if (PartialFlux > 0.0) TotalFlux += PartialFlux;
         }
 
       if (TotalFlux == 0.0)
         for (j=0; j<jmax; j++)
           {
-            PartialFlux = - mRedStoi[i][j] * *mFluxesX[j];
+            PartialFlux = - mStoi[i][j] * *mFluxes[j];
             if (PartialFlux > 0.0) TotalFlux += PartialFlux;
           }
         
       if (TotalFlux == 0.0)
         TransitionTime = DBL_MAX;
       else
-        TransitionTime = mMetabolitesInd[i]->getNumber() / TotalFlux;
+        TransitionTime = mMetabolites[i+k]->getNumber() / TotalFlux;
 
-      mMetabolitesInd[i]->setTransitionTime(TransitionTime);
+      mMetabolites[i+k]->setTransitionTime(TransitionTime);
 
       if (TransitionTime == DBL_MAX || mTransitionTime == DBL_MAX)
         mTransitionTime = DBL_MAX;

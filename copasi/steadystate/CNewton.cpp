@@ -208,7 +208,8 @@ void CNewton::process(void)
 
       // LU decomposition of Jacobian
       info = TNT::LU_factor(LU, rowLU);
-      // dgefa(mSs_jacob, dim, mSs_ipvt, &info);
+      // Gepasi: dgefa(mSs_jacob, dim, mSs_ipvt, &info);
+      // COPASI: dgetrf(???) to get rid of TNT for performance reasons
 
       if (info != 0)
         {
@@ -220,7 +221,8 @@ void CNewton::process(void)
 
       // solve mSs_jacob . x = mSs_h for x (result in mSs_dxdt) ????
       TNT::LU_solve(LU, rowLU, mSs_dxdt);
-      // dgesl(mSs_jacob, mModel->getIndMetab(), mSs_ipvt, mSs_dxdt, 0);
+      // Gepasi: dgesl(mSs_jacob, mModel->getIndMetab(), mSs_ipvt, mSs_dxdt, 0);
+      // COPASI: dgetrf(???) to get rid of TNT for performance reasons
 
       nmaxrate = maxrate * 1.001;
       // copy values of increment to mSs_h

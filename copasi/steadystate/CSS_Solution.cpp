@@ -290,8 +290,8 @@ void CSS_Solution::process(ofstream &fout)
         {
           pdelete(mSs_x);
           mSs_x = mModel->getNumbers();
-          afterFindSteadyState();
-          mSs_solution = SS_FOUND;
+          
+          if (isSteadyState()) afterFindSteadyState();
         }
     }
 
