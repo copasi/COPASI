@@ -57,7 +57,11 @@ class CGlobals
   ~CGlobals();
 };
 
-extern CGlobals Copasi;
+#ifdef __MAIN
+CGlobals *Copasi = NULL;
+#else
+extern CGlobals *Copasi;
+#endif // __MAIN
 
 #endif // COPASI_CGlobals
 

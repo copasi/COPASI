@@ -24,4 +24,4 @@ CGlobals::~CGlobals()
   FunctionDB.cleanup();
 }
 
-CGlobals Copasi;
+// CGlobals Copasi;

@@ -188,16 +188,16 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libutilities.a
 
-libutilities_a_SOURCES =  	CCopasiException.cpp 	CCopasiMessage.cpp 	CGlobals.cpp 	CReadConfig.cpp 	CVersion.cpp 	CWriteConfig.cpp 	utility.cpp
+libutilities_a_SOURCES =  	CCopasiException.cpp 	CCopasiMessage.cpp 	CDependencyGraph.cpp 	CGlobals.cpp 	CIndexedPriorityQueue.cpp 	CRandom.cpp 	CReadConfig.cpp 	CVersion.cpp 	CWriteConfig.cpp 	utility.cpp
 
 
-EXTRA_DIST =  	utilities.h 	CCopasiException.h	CCopasiException.cpp 	CCopasiMessage.h	CCopasiMessage.cpp 	CCopasiVector.h 	CCopasiVectorN.h 	CGlobals.h		CGlobals.cpp 	CReadConfig.h		CReadConfig.cpp 	CVersion.h		CVersion.cpp 	CWriteConfig.h		CWriteConfig.cpp 	messages.h 	utility.h		utility.cpp
+EXTRA_DIST =  	utilities.h 	CCopasiException.h	CCopasiException.cpp 	CCopasiMessage.h	CCopasiMessage.cpp 	CDependencyGraph.h	CDependencyGraph.cpp 	CCopasiVector.h 	CGlobals.h		CGlobals.cpp 	CIndexedPriorityQueue.h	CIndexedPriorityQueue.cpp 	CRandom.h		CRandom.cpp 	CReadConfig.h		CReadConfig.cpp 	CVersion.h		CVersion.cpp 	CWriteConfig.h		CWriteConfig.cpp 	messages.h 	utility.h		utility.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
 
 # set the include path found by configure
-INCLUDES = $(all_includes) -I$(top_srcdir)/copasi
+INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -210,7 +210,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libutilities_a_LIBADD = 
 libutilities_a_OBJECTS =  CCopasiException.$(OBJEXT) \
-CCopasiMessage.$(OBJEXT) CGlobals.$(OBJEXT) CReadConfig.$(OBJEXT) \
+CCopasiMessage.$(OBJEXT) CDependencyGraph.$(OBJEXT) CGlobals.$(OBJEXT) \
+CIndexedPriorityQueue.$(OBJEXT) CRandom.$(OBJEXT) CReadConfig.$(OBJEXT) \
 CVersion.$(OBJEXT) CWriteConfig.$(OBJEXT) utility.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
@@ -223,10 +224,11 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/CCopasiException.P .deps/CCopasiMessage.P \
-.deps/CGlobals.P .deps/CReadConfig.P .deps/CVersion.P \
+.deps/CDependencyGraph.P .deps/CGlobals.P .deps/CIndexedPriorityQueue.P \
+.deps/CRandom.P .deps/CReadConfig.P .deps/CVersion.P \
 .deps/CWriteConfig.P .deps/utility.P
 SOURCES = $(libutilities_a_SOURCES)
 OBJECTS = $(libutilities_a_OBJECTS)

@@ -38,7 +38,13 @@ CWriteConfig::CWriteConfig(const string& name)
   mBuffer.setf(ios::scientific);
   mBuffer.precision(16);
 
-  setVariable("Version", "string", &Copasi.ProgramVersion.getVersion());
+  if (Copasi) 
+    setVariable("Version", "string", &Copasi->ProgramVersion.getVersion());
+  else
+    {
+      string Version("4.0.0");
+      setVariable("Version", "string", &Version);
+    }
 }
 
 
