@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/06 14:45:05 $
+   $Date: 2004/07/09 15:44:03 $
    End CVS Header */
 
 /**
@@ -83,6 +83,7 @@ class CPlotItem : public CCopasiParameterGroup
 
     // Attributes
   private:
+
     /**
      * The type of the method
      */
@@ -99,6 +100,11 @@ class CPlotItem : public CCopasiParameterGroup
      * Default constructor
      */
     CPlotItem();
+
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
 
   protected:
     /**
@@ -187,6 +193,11 @@ class CPlotSpecification : public CPlotItem
      * Default constructor
      */
     CPlotSpecification();
+
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
 
   protected:
     /**

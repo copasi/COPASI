@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/06 14:45:05 $
+   $Date: 2004/07/09 15:44:02 $
    End CVS Header */
 
 /**
@@ -19,7 +19,7 @@
 #include "CCopasiMethod.h"
 #include "CCopasiMessage.h"
 
-const std::string CCopasiMethod::SubTypeName[] =
+const std::string CPlotItem::TypeName[] =
   {
     "Not set",
     "Random Search",
@@ -32,7 +32,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     ""
   };
 
-const char* CCopasiMethod::XMLSubType[] =
+const char* CPlotItem::XMLSubType[] =
   {
     "NotSet",
     "RandomSearch",
@@ -45,24 +45,22 @@ const char* CCopasiMethod::XMLSubType[] =
     NULL
   };
 
-//    std::string mType;
-
-CCopasiMethod::SubType CCopasiMethod::TypeNameToEnum(const std::string & subTypeName)
+CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName)
 {
   unsigned C_INT32 i = 0;
-  while (SubTypeName[i] != subTypeName && SubTypeName[i] != "") i++;
+  while (TypeName[i] != typeName && TypeName[i] != "") i++;
 
-  if (CCopasiMethod::SubTypeName[i] != "") return (CCopasiMethod::SubType) i;
-  else return CCopasiMethod::unset;
+  if (CPlotItem::TypeName[i] != "") return (CPlotItem::Type) i;
+  else return CPlotItem::unset;
 }
 
-CCopasiMethod::SubType CCopasiMethod::XMLNameToEnum(const char * xmlTypeName)
+CPlotItem::Type CPlotItem::XMLNameToEnum(const char * xmlTypeName)
 {
   unsigned C_INT32 i = 0;
-  while (strcmp(xmlTypeName, XMLSubType[i]) && XMLSubType[i]) i++;
+  while (strcmp(xmlTypeName, XMLType[i]) && XMLType[i]) i++;
 
-  if (XMLSubType[i]) return (CCopasiMethod::SubType) i;
-  else return CCopasiMethod::unset;
+  if (XMLType[i]) return (CPlotItem::Type) i;
+  else return CPlotItem::unset;
 }
 
 CCopasiMethod::CCopasiMethod():
