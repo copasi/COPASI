@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:20:37 $
+   $Date: 2005/02/25 01:51:46 $
    End CVS Header */
 
 // Main
@@ -24,6 +24,7 @@
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiTask.h"
+#include "utilities/CCopasiProblem.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
 #include "function/CFunctionDB.h"
@@ -103,6 +104,8 @@ int main(int argc, char *argv[])
       for (i = 0; i < imax; i++)
         if (TaskList[i]->isScheduled())
           {
+            TaskList[i]->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+
             TaskList[i]->initialize();
             TaskList[i]->process();
             TaskList[i]->restore();
