@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 17:00:02 $
+   $Date: 2004/05/04 21:05:09 $
    End CVS Header */
 
 // the plot object for copasi
@@ -27,7 +27,9 @@ class CopasiPlot : public ZoomPlot
   {
     Q_OBJECT
   public:
-    CopasiPlot(CPlotSpec* plotspec, QWidget* parent = 0);
+    CopasiPlot(const CPlotSpec* plotspec, QWidget* parent = 0);
+
+    bool initFromSpec(const CPlotSpec* plotspec);
 
     ~CopasiPlot();
 
@@ -73,7 +75,7 @@ class CopasiPlot : public ZoomPlot
     std::vector<std::vector<C_INT32> > dataIndices;
 
     // populate indexTable and dataIndices
-    void createIndices();
+    void createIndices(const CPlotSpec* pspec);
 
     // the starting row in the data file to read data from
     //int startRow;
@@ -82,7 +84,7 @@ class CopasiPlot : public ZoomPlot
     //std::streampos pos;
 
     // the spec of this plot
-    CPlotSpec* ptspec;
+    //CPlotSpec* ptspec;
 
     // whether zooming is enabled
     bool zoomOn;

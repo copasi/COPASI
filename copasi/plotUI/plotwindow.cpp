@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 17:03:28 $
+   $Date: 2004/05/04 21:05:09 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -37,7 +37,7 @@ class PrintFilter: public QwtPlotPrintFilter
 
 //-----------------------------------------------------------------------------
 
-PlotWindow::PlotWindow(CPlotSpec* ptrSpec)
+PlotWindow::PlotWindow(const CPlotSpec* ptrSpec)
 {
   // set up the GUI - the toolbar
   QToolBar * plotTools = new QToolBar(this, "plot operations");
@@ -59,27 +59,8 @@ PlotWindow::PlotWindow(CPlotSpec* ptrSpec)
 
   plotTools->setStretchableWidget(new QWidget(plotTools));
 
-  /*CurveSpec* cs1 = new CurveSpec("sin", 0, 1);
-  CurveSpec* cs2 = new CurveSpec("cos", 0, 2);
-  CurveSpec* cs3 = new CurveSpec("log", 0, 3);
-
-  std::vector<int> vindices;
-  vindices.push_back(0);
-  vindices.push_back(1);
-  vindices.push_back(3);
-  vindices.push_back(4);
-
-  std::vector<CurveSpec*> crvspecs;
-  crvspecs.push_back(cs1);
-  crvspecs.push_back(cs2);
-  crvspecs.push_back(cs3);
-
-  ptspec = new PlotTaskSpec(targetfile, "Copasi plot", vindices, crvspecs);*/
-
   plot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(plot);
-
-  //timer = new QTimer();
 
   //connect(appendPlot, SIGNAL(clicked()), this, SLOT(append()));
   connect(autoUpdateButton, SIGNAL(toggled(bool)), this, SLOT(autoUpdate(bool)));
@@ -87,6 +68,11 @@ PlotWindow::PlotWindow(CPlotSpec* ptrSpec)
   connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
   connect(plot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
   //connect(timer, SIGNAL(timeout()), this, SLOT(append()));
+}
+
+bool PlotWindow::initFromSpec(const CPlotSpec* ptrSpec)
+{
+  plot->initFromSpec(ptrSpec);
 }
 
 //-----------------------------------------------------------------------------

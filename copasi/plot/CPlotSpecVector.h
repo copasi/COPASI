@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/27 15:36:30 $
+   $Date: 2004/05/04 21:05:08 $
    End CVS Header */
 
 #if !defined PLOTSPEC_VECTOR
@@ -71,6 +71,7 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
     bool initPlottingFromStream();
     bool initPlottingFromObjects();
     bool doPlotting();
+    bool finishPlotting();
 
     void cleanup();
 
