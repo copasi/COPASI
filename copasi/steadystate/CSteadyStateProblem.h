@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/05 12:31:06 $
+   $Date: 2005/02/27 20:34:21 $
    End CVS Header */
 
 /**
@@ -32,6 +32,11 @@ class CSteadyStateProblem: public CCopasiProblem
      *  The initial state, i.e., the starting conditions of the trajectroy.
      */
     CState mInitialState;
+
+    /**
+     *  was a initial state set?
+     */
+    bool mHasInitialState;
 
   public:
     // Operations
@@ -85,6 +90,16 @@ class CSteadyStateProblem: public CCopasiProblem
      * @return "const CState &" pInitialState
      */
     const CState & getInitialState() const;
+
+    /**
+     * was an initial state set?
+     */
+    bool hasInitialState() const;
+
+    /**
+     * clear the initial state. The initial state of the model will be used
+     */
+    void clearInitialState();
 
     /**
      * Set whether the jacobian is requested.

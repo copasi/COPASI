@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/16 17:12:57 $
+   $Date: 2005/02/27 20:32:53 $
    End CVS Header */
 
 /**
@@ -47,6 +47,10 @@ class CTrajectoryTask : public CCopasiTask
      * whether the time series should be stored in mTimeSeries
      */
     bool mTimeSeriesRequested;
+
+    enum OutputFlag {NO_OUTPUT = 0, OUTPUT, OUTPUT_COMPLETE};
+
+    OutputFlag mDoOutput;
 
   public:
     /**
@@ -110,6 +114,11 @@ class CTrajectoryTask : public CCopasiTask
      * 
      */
     virtual bool processSimple(bool singleStep = false);
+
+    /**
+     * Process the task (called by Scan task)
+     */
+    virtual bool processForScan(bool useInitialConditions, bool doOutput);
 
     /**
      * Set the method type applied to solve the task

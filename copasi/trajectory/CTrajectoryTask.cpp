@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:57 $
+   $Author: ssahle $ 
+   $Date: 2005/02/27 20:32:53 $
    End CVS Header */
 
 /**
@@ -34,7 +34,8 @@
 CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::timeCourse, pParent),
     mpState(NULL),
-    mTimeSeriesRequested(true)
+    mTimeSeriesRequested(true),
+    mDoOutput(OUTPUT_COMPLETE)
 {
   mpProblem = new CTrajectoryProblem(this);
   mpMethod =
@@ -50,42 +51,6 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     mpState(src.mpState),
     mTimeSeriesRequested(src.mTimeSeriesRequested)
 {fatalError();}*/
-
-/*CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
-                                 CTrajectoryMethod::SubType subType,
-                                 const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::timeCourse, pParent),
-    mpState(NULL),
-    mTimeSeriesRequested(true)
-{
-  mpProblem = pProblem;
-  mpProblem->setObjectParent(this);
-  mpMethod =
-    CTrajectoryMethod::createTrajectoryMethod(subType,
-        (CTrajectoryProblem *) mpProblem);
-  mpMethod->setObjectParent(this);
-}*/
-
-/*CTrajectoryTask::CTrajectoryTask(CModel * pModel,
-                                 C_FLOAT64 starttime, C_FLOAT64 endtime,
-                                 unsigned C_INT32 stepnumber,
-                                 CTrajectoryMethod::SubType subType,
-                                 const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::timeCourse, pParent),
-    mpState(NULL),
-    mTimeSeriesRequested(true)
-{
-  mpProblem = new CTrajectoryProblem(this);
-  ((CTrajectoryProblem *) mpProblem)->setModel(pModel);
-  ((CTrajectoryProblem *) mpProblem)->setStartTime(starttime);
-  ((CTrajectoryProblem *) mpProblem)->setEndTime(endtime);
-  ((CTrajectoryProblem *) mpProblem)->setStepNumber(stepnumber);
- 
-  mpMethod =
-    CTrajectoryMethod::createTrajectoryMethod(subType,
-        (CTrajectoryProblem *) mpProblem);
-  mpMethod->setObjectParent(this);
-}*/
 
 CTrajectoryTask::~CTrajectoryTask()
 {
@@ -159,13 +124,23 @@ bool CTrajectoryTask::process()
   bool flagStopped = false;
   C_FLOAT64 handlerFactor = 1000 / (pProblem->getEndTime() - pProblem->getStartTime());
   if (mpProgressHandler) mpProgressHandler->init(1000, "performing simulation...", true);
-  pProblem->getModel()->setState(mpState);
-  pProblem->getModel()->updateRates();
-  mReport.printHeader();
-  if (mpOutputHandler) mpOutputHandler->init();
-  if (mTimeSeriesRequested) mTimeSeries.init(pProblem->getStepNumber(), mpState);
 
-  if (outputStartTime <= Time)
+  if (mDoOutput)
+    {
+      pProblem->getModel()->setState(mpState);
+      pProblem->getModel()->updateRates();
+    }
+
+  if (mDoOutput == OUTPUT_COMPLETE)
+    {
+      pProblem->getModel()->setState(mpState);
+      pProblem->getModel()->updateRates();
+      mReport.printHeader();
+      if (mpOutputHandler) mpOutputHandler->init();
+      if (mTimeSeriesRequested) mTimeSeries.init(pProblem->getStepNumber(), mpState);
+    }
+
+  if ((outputStartTime <= Time) && (mDoOutput))
     {
       mReport.printBody();
       if (mpOutputHandler) mpOutputHandler->doOutput();
@@ -176,7 +151,7 @@ bool CTrajectoryTask::process()
 
   if (mpProgressHandler) flagStopped = mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
 
-  if (outputStartTime <= Time)
+  if ((outputStartTime <= Time) && (mDoOutput))
     {
       pProblem->getModel()->setState(mpState);
       pProblem->getModel()->updateRates();
@@ -198,7 +173,7 @@ bool CTrajectoryTask::process()
 
       if (mpProgressHandler) flagStopped = mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
 
-      if (outputStartTime <= Time)
+      if ((outputStartTime <= Time) && (mDoOutput))
         {
           pProblem->getModel()->setState(mpState);
           pProblem->getModel()->updateRates();
@@ -220,7 +195,7 @@ bool CTrajectoryTask::process()
 
       if (mpProgressHandler) flagStopped = mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
 
-      if (outputStartTime <= Time)
+      if ((outputStartTime <= Time) && (mDoOutput))
         {
           pProblem->getModel()->setState(mpState);
           pProblem->getModel()->updateRates();
@@ -241,9 +216,54 @@ bool CTrajectoryTask::process()
   if (mpProgressHandler) mpProgressHandler->finish();
   pProblem->getModel()->setState(mpState);
   pProblem->getModel()->updateRates();
-  mReport.printFooter();
-  if (mpOutputHandler) mpOutputHandler->finish();
-  if (mTimeSeriesRequested) mTimeSeries.finish();
+
+  if ((outputStartTime <= Time) && (mDoOutput))
+    {
+      mReport.printFooter();
+      if (mpOutputHandler) mpOutputHandler->finish();
+      if (mTimeSeriesRequested) mTimeSeries.finish();
+    }
+
+  return true;
+}
+
+//virtual
+bool CTrajectoryTask::processForScan(bool useInitialConditions, bool doOutput)
+{
+  assert(mpProblem /*&& mpMethod*/);
+
+  CTrajectoryProblem* pProblem =
+    dynamic_cast<CTrajectoryProblem *>(mpProblem);
+  assert(pProblem);
+
+  //set flag for output
+  OutputFlag storeOutput = mDoOutput;
+  if (doOutput)
+    mDoOutput = OUTPUT;
+  else
+    mDoOutput = NO_OUTPUT;
+
+  //handle initial conditions
+  CState storeState;
+  if (!useInitialConditions)
+    {
+      storeState = pProblem->getInitialState();
+      pProblem->getModel()->setTime(pProblem->getInitialState().getTime());
+      pProblem->setInitialState(pProblem->getModel()->getState());
+      // pProblem->getInitialState().setTime(storeState.getTime());
+    }
+
+  //switch off time series storage
+  bool storeTS = pProblem->timeSeriesRequested();
+  pProblem->setTimeSeriesRequested(false);
+
+  //do the calculation
+  process();
+
+  //restore ...
+  if (!useInitialConditions) pProblem->setInitialState(storeState);
+  mDoOutput = storeOutput;
+  pProblem->setTimeSeriesRequested(storeTS);
 
   return true;
 }

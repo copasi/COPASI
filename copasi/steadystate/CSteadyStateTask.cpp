@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:57 $
+   $Author: ssahle $ 
+   $Date: 2005/02/27 20:34:21 $
    End CVS Header */
 
 /**
@@ -120,9 +120,9 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
 
   //init states
   pdelete(mpSteadyState);
-  mpSteadyState = new CState(pProblem->getInitialState());
+  mpSteadyState = new CState(pProblem->getModel()->getInitialState());
   pdelete(mpSteadyStateX);
-  mpSteadyStateX = new CStateX(pProblem->getInitialState());
+  mpSteadyStateX = new CStateX(pProblem->getModel()->getInitialStateX());
 
   mCalculateReducedSystem = (pProblem->getModel()->getNumDependentMetabs() != 0);
 
@@ -167,6 +167,39 @@ bool CSteadyStateTask::process()
 
   mReport.printBody();
   mReport.printFooter();
+
+  return (mResult != CSteadyStateMethod::notFound);
+}
+
+bool CSteadyStateTask::processForScan(bool useInitialConditions, bool doOutput)
+{
+  assert(mpProblem && mpMethod);
+
+  CSteadyStateProblem* pProblem =
+    dynamic_cast<CSteadyStateProblem *>(mpProblem);
+  assert(pProblem);
+
+  CSteadyStateMethod* pMethod =
+    dynamic_cast<CSteadyStateMethod *>(mpMethod);
+  assert(pMethod);
+
+  CState store;
+  if (!useInitialConditions)
+    {
+      store = pProblem->getInitialState();
+      pProblem->setInitialState(pProblem->getModel()->getState());
+    }
+
+  mResult = pMethod->process(mpSteadyState,
+                             mpSteadyStateX,
+                             pProblem,
+                             mJacobian,
+                             mJacobianX,
+                             mpEigenValues,
+                             mpEigenValuesX,
+                             mpProgressHandler);
+
+  if (!useInitialConditions) pProblem->setInitialState(store);
 
   return (mResult != CSteadyStateMethod::notFound);
 }

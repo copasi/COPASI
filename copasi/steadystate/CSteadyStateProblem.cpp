@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:25:27 $
+   $Author: ssahle $ 
+   $Date: 2005/02/27 20:34:21 $
    End CVS Header */
 
 /**
@@ -29,7 +29,8 @@
  */
 CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::steadyState, pParent),
-    mInitialState()
+    mInitialState(),
+    mHasInitialState(false)
 {
   addParameter("JacobianRequested", CCopasiParameter::BOOL, true);
   addParameter("StabilityAnalysisRequested", CCopasiParameter::BOOL, true);
@@ -43,7 +44,8 @@ CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
 CSteadyStateProblem::CSteadyStateProblem(const CSteadyStateProblem & src,
     const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
-    mInitialState(src.mInitialState)
+    mInitialState(src.mInitialState),
+    mHasInitialState(src.mHasInitialState)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -78,6 +80,7 @@ void CSteadyStateProblem::setInitialState(const CState & initialState)
 {
   mInitialState = initialState;
   mpModel = const_cast<CModel *>(mInitialState.getModel());
+  mHasInitialState = true;
 }
 
 /**
@@ -88,6 +91,7 @@ void CSteadyStateProblem::setInitialState(const CStateX & initialState)
 {
   mInitialState = initialState;
   mpModel = const_cast<CModel *>(mInitialState.getModel());
+  mHasInitialState = true;
 }
 
 /**
@@ -96,6 +100,12 @@ void CSteadyStateProblem::setInitialState(const CStateX & initialState)
  */
 const CState & CSteadyStateProblem::getInitialState() const
   {return mInitialState;}
+
+bool CSteadyStateProblem::hasInitialState() const
+  {return mHasInitialState;}
+
+void CSteadyStateProblem::clearInitialState()
+{mHasInitialState = false;}
 
 /**
  * Set whether the jacobian is requested.
@@ -136,6 +146,7 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
     {
       mpModel = CCopasiDataModel::Global->getModel();
       mInitialState = mpModel->getInitialState();
+      mHasInitialState = false;
       configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
                                getValue("StabilityAnalysisRequested"),
                                CReadConfig::LOOP);
