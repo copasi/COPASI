@@ -16,6 +16,7 @@
 #include "CMetab.h"
 #include "CChemEq.h"
 #include "CChemEqElement.h"
+#include "CCompartment.h"
 
 template < class CType > class CVector;
 
@@ -248,7 +249,7 @@ class CReaction : public CCopasiContainer
     /**
      *  A pointer to the rate function of the reaction
      */
-    CFunction * mpFunction;
+    const CFunction * mpFunction;
 
     /**
      *  The description of the function parameters.
@@ -281,8 +282,16 @@ class CReaction : public CCopasiContainer
 
     /**
      *  The number of compartments the reaction takes place in 
+     */ 
+    //C_INT32 mCompartmentNumber;
+
+    /**
+     *  Pointer to the compartment in which the kinetic function is defined.
+     *  (the kinetic function gives a rate as concentration/time unit. If there is
+     *  more than one compartment involved it must be specified to which volume
+     *  the concentration change refers)
      */
-    C_INT32 mCompartmentNumber;
+    const CCompartment * mpFunctionCompartment;
 
     /**
      *  The reversibility of the reaction
@@ -437,7 +446,7 @@ class CReaction : public CCopasiContainer
      *  Retrieves the chemical equation of the reaction
      *  @return string
      */
-    CChemEq & getChemEq();
+    const CChemEq & getChemEq() const;
 
     /**
      *  Retrieves the number of substrates of this reaction
@@ -445,7 +454,7 @@ class CReaction : public CCopasiContainer
     *  not the total number of substrate molecules
      *  @return C_INT32
      */
-    C_INT32 getSubstrateNumber(void);
+    C_INT32 getSubstrateNumber() const;
 
     /**
      *  Retrieves the number of substrates of this reaction
@@ -453,7 +462,7 @@ class CReaction : public CCopasiContainer
     *  not the total number of substrate molecules
      *  @return C_INT32
      */
-    C_INT32 getProductNumber(void);
+    C_INT32 getProductNumber() const;
 
     /**
      *  Retrieves the chemical structure of the reaction
@@ -466,7 +475,7 @@ class CReaction : public CCopasiContainer
      *  Retrieves the rate function of the reaction
      *  @return "CBaseFunction &"
      */
-    CFunction & getFunction();
+    const CFunction & getFunction() const;
 
     /**
      *  Retrieves the flux of the reaction
@@ -515,7 +524,7 @@ class CReaction : public CCopasiContainer
      *  rate function.
      *  @param "CCopasiVectorNS < CCompartment > &" compartments
      */
-    void compile(CCopasiVectorNS < CCompartment > & compartments);
+    void compile(const CCopasiVectorNS < CCompartment > & compartments);
 
     /**
      *  Calculate the kinetic function
@@ -548,27 +557,37 @@ class CReaction : public CCopasiContainer
     /**
      * Returns the index of the parameter
      */
-    C_INT32 findPara(std::string &Target);
+    C_INT32 findPara(std::string &Target) const;
 
     /**
      * Find an pointer to a substrate corresponding to the given identifier name.
      * @param ident_name The identifier name to search by
      * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
      */
-    const CMetab * findSubstrate(std::string ident_name);
+    const CMetab * findSubstrate(std::string ident_name) const;
 
     /**
      * Find an pointer to a modifier corresponding to the given identifier name.
      * @param ident_name The identifier name to search by
      * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
      */
-    const CMetab * findModifier(std::string ident_name);
+    const CMetab * findModifier(std::string ident_name) const;
+
+    /**
+     * Sets the Compartment related to the kinetic function
+     */
+    void setFunctionCompartment(const CCompartment* comp);
+
+    /**
+     * Gets the Compartment related to the kinetic function
+     */
+    const CCompartment* getFunctionCompartment() const;
 
     /**
      *  Retrieves the number of compartments the reaction is acting in.
      *  @return "unsigned C_INT32" the compartment number
-     */
-    unsigned C_INT32 getCompartmentNumber() const;
+     */ 
+    //unsigned C_INT32 getCompartmentNumber() const;
 
     /**
      * insert operator
@@ -594,7 +613,11 @@ class CReaction : public CCopasiContainer
         os << "   mScalingFactor == 0 " << std::endl;
 
       os << "   mScalingFactor2: " << d.mScalingFactor2 << std::endl;
-      os << "   mCompartmentNumber: " << d.mCompartmentNumber << std::endl;
+      //os << "   mCompartmentNumber: " << d.mCompartmentNumber << std::endl;
+      if (d.mpFunctionCompartment)
+        os << "   *mpFunctionCompartment " << d.mpFunctionCompartment->getName() << std::endl;
+      else
+        os << "   mpFunctionCompartment == 0 " << std::endl;
       os << "   mReversible: " << d.mReversible << std::endl;
       os << "   mId2Substrates" << std::endl;
       os << d.mId2Substrates;
@@ -620,7 +643,7 @@ class CReaction : public CCopasiContainer
     /**
      *  Forces compilation of Chemical equation object
      */
-    void compileChemEq(CCopasiVectorN < CCompartment > & compartments);
+    void compileChemEq(const CCopasiVectorN < CCompartment > & compartments);
 
   private:
     /**
@@ -652,7 +675,7 @@ class CReaction : public CCopasiContainer
     /**
      *  Checks if all the Pointers in mCallParameters are !=NULL
      */
-    void checkCallParameters();
+    void checkCallParameters() const;
 
     /**
      *
@@ -673,20 +696,20 @@ class CReaction : public CCopasiContainer
     /**
      *  Checks if all the Pointers in mCallParameters are !=NULL
      */
-    void checkCallParameterNames();
+    void checkCallParameterNames() const;
 
     /**
      *
      */
     unsigned C_INT32 findParameter(const std::string & name,
-                                   CFunctionParameter::DataType & dataType);
+                                   CFunctionParameter::DataType & dataType) const;
 
     /**
      *  Returns the max number of elements for the specified usage
      *  @param "const string" & usage
      *  @return unsigned C_INT32 size
      */
-    unsigned C_INT32 usageRangeSize(const std::string & usage);
+    unsigned C_INT32 usageRangeSize(const std::string & usage) const;
 
     /**
      * Sets the scaling factor of the for the fluxes

@@ -33,7 +33,8 @@ CReaction::CReaction(const std::string & name,
     mScaledFlux(0),
     mScalingFactor(&mDefaultScalingFactor),
     mScalingFactor2(&mDefaultScalingFactor),
-    mCompartmentNumber(1),
+    mpFunctionCompartment(NULL),
+    //mCompartmentNumber(1),
     mReversible(true),
     mId2Substrates("Substrates", this),
     mId2Products("Products", this),
@@ -54,7 +55,8 @@ CReaction::CReaction(const CReaction & src,
     mScaledFlux(src.mScaledFlux),
     mScalingFactor(src.mScalingFactor),
     mScalingFactor2(src.mScalingFactor2),
-    mCompartmentNumber(src.mCompartmentNumber),
+    mpFunctionCompartment(src.mpFunctionCompartment),
+    //mCompartmentNumber(src.mCompartmentNumber),
     mReversible(src.mReversible),
     mId2Substrates(src.mId2Substrates, this),
     mId2Products(src.mId2Products, this),
@@ -374,15 +376,15 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
   fout << "\t\t\t</reaction>" << std::endl;
 }
 
-C_INT32 CReaction::getSubstrateNumber(void)
-{
-  return mChemEq.getSubstrates().size();
-}
+C_INT32 CReaction::getSubstrateNumber() const
+  {
+    return mChemEq.getSubstrates().size();
+  }
 
-C_INT32 CReaction::getProductNumber(void)
-{
-  return mChemEq.getProducts().size();
-}
+C_INT32 CReaction::getProductNumber() const
+  {
+    return mChemEq.getProducts().size();
+  }
 
 CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Substrates()
 {
@@ -409,15 +411,15 @@ const std::string & CReaction::getName() const
     return mName;
   }
 
-CChemEq & CReaction::getChemEq()
-{
-  return mChemEq;
-}
+const CChemEq & CReaction::getChemEq() const
+  {
+    return mChemEq;
+  }
 
-CFunction & CReaction::getFunction()
-{
-  return *mpFunction;
-}
+const CFunction & CReaction::getFunction() const
+  {
+    return *mpFunction;
+  }
 
 const C_FLOAT64 & CReaction::getFlux() const
   {
@@ -458,24 +460,24 @@ void CReaction::setFunction(const std::string & functionName)
   initCallParameters();
 }
 
-void CReaction::compile(CCopasiVectorNS < CCompartment > & compartments)
+void CReaction::compile(const CCopasiVectorNS < CCompartment > & compartments)
 {
   unsigned C_INT32 i;
 
   for (i = 0; i < mId2Substrates.size(); i++)
     mId2Substrates[i]->mpMetabolite =
       compartments[mId2Substrates[i]->mCompartmentName]->
-      metabolites()[mId2Substrates[i]->mMetaboliteName];
+      getMetabolites()[mId2Substrates[i]->mMetaboliteName];
 
   for (i = 0; i < mId2Products.size(); i++)
     mId2Products[i]->mpMetabolite =
       compartments[mId2Products[i]->mCompartmentName]->
-      metabolites()[mId2Products[i]->mMetaboliteName];
+      getMetabolites()[mId2Products[i]->mMetaboliteName];
 
   for (i = 0; i < mId2Modifiers.size(); i++)
     mId2Modifiers[i]->mpMetabolite =
       compartments[mId2Modifiers[i]->mCompartmentName]->
-      metabolites()[mId2Modifiers[i]->mMetaboliteName];
+      getMetabolites()[mId2Modifiers[i]->mMetaboliteName];
 
   initCallParameters();
   setCallParameters();
@@ -887,21 +889,21 @@ const C_FLOAT64 & CReaction::CId2Param::getValue() const
 /**
  * Returns the index of the parameter
  */
-C_INT32 CReaction::findPara(std::string &Target)
-{
-  unsigned C_INT32 i;
-  std::string name;
+C_INT32 CReaction::findPara(std::string &Target) const
+  {
+    unsigned C_INT32 i;
+    std::string name;
 
-  for (i = 0; i < mId2Parameters.size(); i++)
-    {
-      name = mId2Parameters[i]->getIdentifierName();
+    for (i = 0; i < mId2Parameters.size(); i++)
+      {
+        name = mId2Parameters[i]->getIdentifierName();
 
-      if (name == Target)
-        return i;
-    }
+        if (name == Target)
+          return i;
+      }
 
-  return - 1;
-}
+    return - 1;
+  }
 
 void CReaction::cleanupCallParameters()
 {
@@ -1013,29 +1015,29 @@ void CReaction::setCallParameters()
     }
 }
 
-void CReaction::checkCallParameters()
-{
-  unsigned C_INT32 i, imax = mParameterDescription.size();
-  unsigned C_INT32 j, jmax;
-  std::vector< void * > * pVector;
+void CReaction::checkCallParameters() const
+  {
+    unsigned C_INT32 i, imax = mParameterDescription.size();
+    unsigned C_INT32 j, jmax;
+    const std::vector< const void * > * pVector;
 
-  for (i = 0; i < imax; i++)
-    {
-      if (mCallParameters[i] == NULL)
-        fatalError();
-
-      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT32)
-        continue;
-
-      pVector = (std::vector< void * > *) mCallParameters[i];
-
-      jmax = pVector->size();
-
-      for (j = 0; j < jmax; j++)
-        if ((*pVector)[j] == NULL)
+    for (i = 0; i < imax; i++)
+      {
+        if (mCallParameters[i] == NULL)
           fatalError();
-    }
-}
+
+        if (mParameterDescription[i]->getType() < CFunctionParameter::VINT32)
+          continue;
+
+        pVector = (const std::vector<const void * > *) mCallParameters[i];
+
+        jmax = pVector->size();
+
+        for (j = 0; j < jmax; j++)
+          if ((*pVector)[j] == NULL)
+            fatalError();
+      }
+  }
 
 void CReaction::cleanupCallParameterNames()
 {
@@ -1125,107 +1127,107 @@ void CReaction::setCallParameterNames()
     }
 }
 
-void CReaction::checkCallParameterNames()
-{
-  unsigned C_INT32 i, imax = mParameterDescription.size();
-  unsigned C_INT32 j, jmax;
-  std::vector< void * > * pVector;
+void CReaction::checkCallParameterNames() const
+  {
+    unsigned C_INT32 i, imax = mParameterDescription.size();
+    unsigned C_INT32 j, jmax;
+    const std::vector< const void * > * pVector;
 
-  for (i = 0; i < imax; i++)
-    {
-      if (mCallParameterNames[i] == NULL)
-        fatalError();
-
-      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT32)
-        continue;
-
-      pVector = (std::vector< void * > *) mCallParameterNames[i];
-
-      jmax = pVector->size();
-
-      for (j = 0; j < jmax; j++)
-        if ((*pVector)[j] == NULL)
+    for (i = 0; i < imax; i++)
+      {
+        if (mCallParameterNames[i] == NULL)
           fatalError();
-    }
-}
+
+        if (mParameterDescription[i]->getType() < CFunctionParameter::VINT32)
+          continue;
+
+        pVector = (const std::vector< const void * > *) mCallParameterNames[i];
+
+        jmax = pVector->size();
+
+        for (j = 0; j < jmax; j++)
+          if ((*pVector)[j] == NULL)
+            fatalError();
+      }
+  }
 
 unsigned C_INT32 CReaction::findParameter(const std::string & name,
-    CFunctionParameter::DataType & dataType)
-{
-  std::string VectorName = name.substr(0, name.find_last_of('_'));
-  std::string Name;
-  unsigned C_INT32 i, imax = mParameterDescription.size();
+    CFunctionParameter::DataType & dataType) const
+  {
+    std::string VectorName = name.substr(0, name.find_last_of('_'));
+    std::string Name;
+    unsigned C_INT32 i, imax = mParameterDescription.size();
 
-  for (i = 0; i < imax; i++)
-    {
-      Name = mParameterDescription[i]->getName();
+    for (i = 0; i < imax; i++)
+      {
+        Name = mParameterDescription[i]->getName();
 
-      if (Name == name || Name == VectorName)
-        {
-          dataType = mParameterDescription[i]->getType();
-          return i;
-        }
-    }
+        if (Name == name || Name == VectorName)
+          {
+            dataType = mParameterDescription[i]->getType();
+            return i;
+          }
+      }
 
-  fatalError()
-  return 0;
-}
+    fatalError()
+    return 0;
+  }
 
-unsigned C_INT32 CReaction::usageRangeSize(const std::string & usage)
-{
-  CUsageRange * pUsageRange = NULL;
-  C_INT32 Size = 0;
+unsigned C_INT32 CReaction::usageRangeSize(const std::string & usage) const
+  {
+    const CUsageRange * pUsageRange = NULL;
+    C_INT32 Size = 0;
 
-  try
-    {
-      pUsageRange = mParameterDescription.getUsageRanges()[usage];
-    }
+    try
+      {
+        pUsageRange = mParameterDescription.getUsageRanges()[usage];
+      }
 
-  catch (CCopasiException Exception)
-    {
-      if ((MCCopasiVector + 1) != Exception.getMessage().getNumber())
-        throw Exception;
+    catch (CCopasiException Exception)
+      {
+        if ((MCCopasiVector + 1) != Exception.getMessage().getNumber())
+          throw Exception;
 
-      pUsageRange = NULL;
-    }
+        pUsageRange = NULL;
+      }
 
-  if (pUsageRange)
-    Size = std::max(pUsageRange->getLow(), pUsageRange->getHigh());
+    if (pUsageRange)
+      Size = std::max(pUsageRange->getLow(), pUsageRange->getHigh());
 
-  return Size;
-}
+    return Size;
+  }
 
 // Added by cvg
-const CMetab * CReaction::findSubstrate(std::string ident_name)
-{
-  for (unsigned C_INT32 i = 0; i < mId2Substrates.size(); i++)
-    {
-      if (mId2Substrates[i]->mIdentifierName == ident_name)
-        {
-          // found it
-          return mId2Substrates[i]->mpMetabolite;
-        }
-    }
-  // If we get here, we found nothing
-  return NULL;
-}
+const CMetab * CReaction::findSubstrate(std::string ident_name) const
+  {
+    for (unsigned C_INT32 i = 0; i < mId2Substrates.size(); i++)
+      {
+        if (mId2Substrates[i]->mIdentifierName == ident_name)
+          {
+            // found it
+            return mId2Substrates[i]->mpMetabolite;
+          }
+      }
+    // If we get here, we found nothing
+    return NULL;
+  }
 
-const CMetab * CReaction::findModifier(std::string ident_name)
-{
-  for (unsigned C_INT32 i = 0; i < mId2Modifiers.size(); i++)
-    {
-      if (mId2Modifiers[i]->mIdentifierName == ident_name)
-        {
-          // found it
-          return mId2Modifiers[i]->mpMetabolite;
-        }
-    }
+const CMetab * CReaction::findModifier(std::string ident_name) const
+  {
+    for (unsigned C_INT32 i = 0; i < mId2Modifiers.size(); i++)
+      {
+        if (mId2Modifiers[i]->mIdentifierName == ident_name)
+          {
+            // found it
+            return mId2Modifiers[i]->mpMetabolite;
+          }
+      }
 
-  // If we get here, we found nutting
-  return 0;
-}
+    // If we get here, we found nutting
+    return 0;
+  }
 
-unsigned C_INT32 CReaction::getCompartmentNumber() const
+/*unsigned C_INT32 CReaction::getCompartmentNumber() const
   {
     const CCopasiVector < CChemEqElement > & Balances
     = mChemEq.getBalances();
@@ -1233,32 +1235,43 @@ unsigned C_INT32 CReaction::getCompartmentNumber() const
     unsigned C_INT32 j, jmax;
     unsigned C_INT32 Number;
     std::vector<const CCompartment *> Compartments;
-
+ 
     for (i = 0, Number = 0; i < imax; i++)
       {
         for (j = 0, jmax = Compartments.size(); j < jmax; j++)
           if (Compartments[j] == Balances[i]->getMetabolite().getCompartment())
             break;
-
+ 
         if (j == jmax)
           {
             Number ++;
             Compartments.push_back(Balances[i]->getMetabolite().getCompartment());
           }
       }
-
+ 
     return Number;
-  }
+  }*/
 
 void CReaction::setScalingFactor()
 {
-  if (1 == getCompartmentNumber())
+  if (mpFunctionCompartment)
     {
-      mScalingFactor = & mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getVolume();
+      // should propably check if the compartment appears in the chemical equation
+      mScalingFactor = & mpFunctionCompartment->getVolume();
     }
   else
     {
-      mScalingFactor = &mDefaultScalingFactor;
+      try
+      {mScalingFactor = & mChemEq.CheckAndGetFunctionCompartment()->getVolume();}
+      catch (CCopasiException Exc)
+        {
+          unsigned C_INT32 nr = Exc.getMessage().getNumber();
+          if ((MCChemEq + 2 == nr) || (MCChemEq + 3 == nr))
+            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2, getName().c_str());
+          if (MCChemEq + 1 == nr)
+            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 3, getName().c_str());
+          throw;
+        }
     }
 
   mScalingFactor2 =
@@ -1304,7 +1317,13 @@ void CReaction::setReactantsFromChemEq()
     }
 }
 
-void CReaction::compileChemEq(CCopasiVectorN < CCompartment > & compartments)
+void CReaction::compileChemEq(const CCopasiVectorN < CCompartment > & compartments)
 {
   mChemEq.compile(compartments);
 }
+
+void CReaction::setFunctionCompartment(const CCompartment* comp)
+{mpFunctionCompartment = comp;}
+
+const CCompartment* CReaction::getFunctionCompartment() const
+  {return mpFunctionCompartment;}
