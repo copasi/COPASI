@@ -38,7 +38,10 @@ CCopasiObject::CCopasiObject(const std::string & name,
     mObjectType(type),
     mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
     mObjectFlag(flag)
-{}
+{
+  if (mpObjectParent)
+    if (mpObjectParent->isContainer()) mpObjectParent->add(this);
+}
 
 CCopasiObject::CCopasiObject(const CCopasiObject & src,
                              const CCopasiContainer * pParent):
@@ -46,9 +49,16 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
     mObjectType(src.mObjectType),
     mpObjectParent(const_cast<CCopasiContainer *>(pParent ? pParent : src.mpObjectParent)),
     mObjectFlag(src.mObjectFlag)
-{}
+{
+  if (mpObjectParent)
+    if (mpObjectParent->isContainer()) mpObjectParent->add(this);
+}
 
-CCopasiObject::~CCopasiObject() {}
+CCopasiObject::~CCopasiObject()
+{
+  if (mpObjectParent)
+    if (mpObjectParent->isContainer()) mpObjectParent->remove(this);
+}
 
 CCopasiObjectName CCopasiObject::getCN() const
   {

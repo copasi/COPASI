@@ -28,8 +28,9 @@ CCopasiContainer::CCopasiContainer(const CCopasiContainer & src,
 
 CCopasiContainer::~CCopasiContainer()
 {
-  std::vector< CCopasiObject * >::iterator it = mObjects.begin();
-  std::vector< CCopasiObject * >::iterator end = mObjects.end();
+  std::vector< CCopasiObject * > Objects(mObjects);
+  std::vector< CCopasiObject * >::iterator it = Objects.begin();
+  std::vector< CCopasiObject * >::iterator end = Objects.end();
 
   for (; it < end; it++)
     if ((*it)->isReference()) pdelete(*it);
@@ -39,14 +40,18 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
   {
     if (cn == "") return this;
 
-    std::vector< CCopasiObject * >::const_iterator it = mObjects.begin();
-    std::vector< CCopasiObject * >::const_iterator end = mObjects.end();
-
     std::string Name = cn.getObjectName();
     std::string Type = cn.getObjectType();
 
-    for (; it < end; it++)
-      if ((*it)->getObjectName() == Name && (*it)->getObjectType() == Type) break;
+    if (mObjectName == Name && mObjectType == Type)
+      return getObject(cn.getRemainder());
+
+    std::vector< CCopasiObject * >::const_iterator it = mObjects.begin();
+    std::vector< CCopasiObject * >::const_iterator end = mObjects.end();
+
+    while (it != end &&
+           (*it)->getObjectName() != Name &&
+           (*it)->getObjectType() != Type) it++;
 
     if (it == end) return NULL;
 
@@ -82,8 +87,27 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
 
 void CCopasiContainer::initObjects() {}
 
-void CCopasiContainer::add(CCopasiObject * object)
-{mObjects.push_back(object);}
+void CCopasiContainer::add(CCopasiObject * pObject)
+{
+  std::cout << getCN() << " adds " << pObject->getObjectType() << "="
+  << pObject->getObjectName() << std::endl;
+  mObjects.push_back(pObject);
+}
+
+void CCopasiContainer::remove(CCopasiObject * pObject)
+{
+  std::vector< CCopasiObject * >::iterator it = mObjects.begin();
+  std::vector< CCopasiObject * >::iterator end = mObjects.end();
+
+  while (it < end && *it != pObject) it++;
+
+  if (it != end)
+    {
+      std::cout << getCN() << " removes " << pObject->getObjectType() << "="
+      << pObject->getObjectName() << std::endl;
+      mObjects.erase(it, it + 1);
+    }
+}
 
 CCopasiContainer CRootContainer::mRoot("Root");
 

@@ -37,11 +37,11 @@ class CCopasiObject
     static const unsigned C_INT32 Reference;
 
     static const unsigned C_INT32 ValueInt;
+
     static const unsigned C_INT32 ValueDbl;
 
     std::string mObjectName;
 
-  private:
     std::string mObjectType;
 
     /** @dia:route 8,0; h,23.7081,53.1343,15.3196,2.55372,40.5964 */
@@ -49,6 +49,7 @@ class CCopasiObject
 
     unsigned C_INT32 mObjectFlag;
 
+  private:
     static const C_FLOAT64 DummyValue;
 
     //Operations
