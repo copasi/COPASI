@@ -79,11 +79,6 @@ BSC32=bscmake.exe
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
-# Begin Special Build Tool
-SOURCE="$(InputPath)"
-PostBuild_Desc=copy
-PostBuild_Cmds=copy Debug\*.lib ..\Debug
-# End Special Build Tool
 
 !ENDIF 
 
