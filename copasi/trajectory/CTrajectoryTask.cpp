@@ -79,12 +79,12 @@ CTrajectoryTask::CTrajectoryTask(CModel * pModel,
 
 CTrajectoryTask::~CTrajectoryTask()
 {
-  CKeyFactory::remove(mKey);
   cleanup();
 }
 
 void CTrajectoryTask::cleanup()
 {
+  CKeyFactory::remove(mKey);
   pdelete(mpProblem);
   pdelete(mpMethod);
   pdelete(mpState);
