@@ -1,4 +1,3 @@
-
 #include <qlayout.h>
 #include <qtoolbutton.h>
 #include <qwhatsthis.h>
@@ -35,7 +34,9 @@ CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
   setCaption("Copasi ");
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
-
+  file->setItemEnabled(nexport_menu_SBML, false);
+  file->setItemEnabled(nsave_menu_id, false);
+  file->setItemEnabled(nsaveas_menu_id, false);
   dataModel = NULL; // the datamodel tobe used
   splitter = NULL;  // the splittler for sepearting diff views
 
@@ -150,6 +151,8 @@ void CopasiUI3Window::slotFileOpen()
           msave_button->setEnabled(true);
           file->setItemEnabled(nsave_menu_id, true);
         }
+      file->setItemEnabled(nexport_menu_SBML, true);
+      file->setItemEnabled(nsaveas_menu_id, true);
     }
 }
 
@@ -263,8 +266,8 @@ void CopasiUI3Window::createToolBar()
 void CopasiUI3Window::createMenuBar()
 {
   //modified on 5th feb : Ankur (left for further modification...later
-  QPixmap icon[5] = {fileopen, fileopen, filesave, filesave, fileprint};
-  const char* toolTip[5];
+  QPixmap icon[7] = {fileopen, fileopen, filesave, filesave, fileopen, filesave, fileprint};
+  const char* toolTip[7];
 
   toolTip[0] = "Click this button to open a <em>new file</em>. <br>"
                "You can also select the <b>Open</b> command "
@@ -283,18 +286,28 @@ void CopasiUI3Window::createMenuBar()
                "You can also select the <b>Save</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[4] = "Click this button to print the file you "
+  toolTip[4] = "Click this button to import a SBML file you "
+               "are editing. You will be prompted for a file name.\n"
+               "You can also select the <b>Import SBML</b> command "
+               "from the <b>File</b> menu.</p>";
+  toolTip[5] = "Click this button to export a SBML file you "
+               "are editing. You will be prompted for a file name.\n"
+               "You can also select the <b>Export SBML</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[6] = "Click this button to print the file you "
                "are editing.\n You can also select the Print "
                "command from the File menu.";
-  const char* iconName[5] = {"&New", "&Open", "&Save", "&SaveAs", "&Print"};
-  const char* slotFileName[5] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotFilePrint())};
-  QKeySequence hotKey[5] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_P};
-  int fileSeperator[5] = {0, 0, 0, 0, 1};
+
+  const char* iconName[7] = {"&New", "&Open", "&Save", "&SaveAs", "&Import SBML", "&Export SBML", "&Print"};
+  const char* slotFileName[7] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotFilePrint())};
+  QKeySequence hotKey[7] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_P};
+  int fileSeperator[7] = {0, 0, 0, 0, 0, 0, 1};
 
   file = new QPopupMenu(this);
   menuBar()->insertItem("&File", file);
 
-  for (int j = 0; j < 5; j++)
+  for (int j = 0; j < 7; j++)
     {
       if (fileSeperator[j] == 1)
         file->insertSeparator();
@@ -307,6 +320,10 @@ void CopasiUI3Window::createMenuBar()
       file->setWhatsThis(id, toolTip[j]);
       if (j == 2)
         nsave_menu_id = id;
+      if (j == 3)
+        nsaveas_menu_id = id;
+      if (j == 5)
+        nexport_menu_SBML = id;
     }
 
   file->insertSeparator();
@@ -322,4 +339,30 @@ void CopasiUI3Window::createMenuBar()
   help->insertItem("About &Qt", this, SLOT(aboutQt()));
   help->insertSeparator();
   help->insertItem("What's &This", this, SLOT(whatsThis()), SHIFT + Key_F1);
+}
+
+void CopasiUI3Window::slotImportSBML()
+{
+  QString SBMLFile = QFileDialog::getOpenFileName(
+                       QString::null, "SBML Files (*.sbml)",
+                       this, "import file dialog",
+                       "Choose a file");
+
+  if (SBMLFile)
+    {
+      CReadConfig inbuf((const char *)SBMLFile.utf8());
+    }
+}
+
+void CopasiUI3Window::slotExportSBML()
+{
+  QString SBMLFile = QFileDialog::getSaveFileName(
+                       QString::null, "SBML Files (*.sbml)",
+                       this, "export file dialog",
+                       "Choose a file");
+  if (gpsFile && SBMLFile)
+    {
+      std::ofstream outputfile((const char *)SBMLFile.utf8());
+      dataModel->getModel()->saveSBML(outputfile);
+    }
 }

@@ -1180,7 +1180,7 @@ void ListViews::loadTrajectoryTaskNodes(CTrajectoryTask* trajectorytask)
       QListViewItem* loadNode; // to load the tree with that stuff
 
       // UPDATE THE METABOLITES STUFF..
-      //      trajectoryWidget->loadTrajectoryTask(trajectorytask);
+      trajectoryWidget->loadTrajectoryTask(trajectorytask);
       loadNode = searchNode("Trajectory");
 
       if (loadNode)

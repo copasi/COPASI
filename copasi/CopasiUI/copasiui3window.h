@@ -28,6 +28,8 @@ class CopasiUI3Window : public QMainWindow
     void slotFileSaveAs();
     void newDoc();
     void slotFilePrint();
+    void slotImportSBML();
+    void slotExportSBML();
     void about();
     void aboutQt();
 
@@ -36,6 +38,8 @@ class CopasiUI3Window : public QMainWindow
     QToolButton* msave_button;
     QPopupMenu * file;
     int nsave_menu_id;
+    int nsaveas_menu_id;
+    int nexport_menu_SBML;
     void createToolBar();
     void createMenuBar();
   };
