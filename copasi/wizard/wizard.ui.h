@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/08 12:49:22 $
+   $Date: 2004/10/08 13:05:31 $
    End CVS Header */
 
 /****************************************************************************
@@ -57,20 +57,28 @@ void WizardDialog::init()
   WFlags f = this->getWFlags();
   f = (f | Qt::WStyle_Minimize | Qt::WDestructiveClose);
   this->setWFlags(f);
+  const char* tmp = getenv("COPASI_HELP_PATH");
+  std::string helpPath;
+  if (tmp)
+    {
+      helpPath = tmp;
+    }
+
 #if defined(Q_OS_MACX)
   CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
   CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,
                         kCFURLPOSIXPathStyle);
-  const char *helpPath = (std::string(CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding())) + "/Contents/Resources/").c_str();
+  helpPath = std::string(CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding())) + "/Contents/Resources/";
+#endif
+
+#if defined(Q_OS_WIN32)
 
 #endif
-#if defined(Q_OS_LINUX)
-  const char* helpPath = getenv("COPASI_HELP_PATH");
-#endif
-  if (helpPath != NULL)
+
+  if (!helpPath.empty())
     {
       // the next line will hopefully ensure that this works under windows as well.
-      WizardDialog::helpPath = QDir(helpPath).absPath().latin1();
+      WizardDialog::helpPath = QDir(helpPath.c_str()).absPath().latin1();
       QString source = "file://" + WizardDialog::helpPath + "/" + WizardDialog::texts[0];
       this->textBrowser->setSource(source);
     }
