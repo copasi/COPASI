@@ -402,10 +402,10 @@ void MetabolitesWidget1::slotBtnOKClicked()
   else
     {
       QString initialNumber(LineEdit5->text());
-      int temp2;
-      temp2 = initialNumber.toInt();
-      if (temp2 != metab->getInitialNumberInt())
-        metab->setInitialNumberInt(temp2);
+      C_FLOAT64 temp2;
+      temp2 = initialNumber.toDouble();
+      if (temp2 != metab->getInitialNumberDbl())
+        metab->setInitialNumberDbl(temp2);
     }
 
   //if (QString::number(metab->getStatus()) == "0")
