@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.7 2003/09/19 20:53:48 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.9 2003/09/19 21:02:02 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -135,6 +135,14 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
   ExpressionWidgetLayout->addMultiCellWidget(frame5, 0, 0, 0, 1);
   languageChange();
   clearWState(WState_Polished);
+
+  connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
+  connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
+  connect(upButton, SIGNAL(clicked()), this, SLOT(upButtonClicked()));
+  connect(downButton, SIGNAL(clicked()), this, SLOT(downButtonClicked()));
+
+  connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotBtnConfirmClicked()));
+  connect(cancelButton, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
 }
 
 /*
@@ -179,6 +187,11 @@ bool ExpressionWidget::update(ListViews::ObjectType objectType, ListViews::Actio
 bool ExpressionWidget::leave()
 {
   //let the user confirm?
+  if (bUpdated && (QMessageBox::warning(NULL, "Report Definition Save", "Do you want to save the change you have made to this Report Definition ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes))
+    {
+      slotBtnConfirmClicked();
+      bUpdated = false;
+    }
   return true;
 }
 
@@ -299,3 +312,9 @@ void ExpressionWidget::downButtonClicked()
       bUpdated = true;
     }
 }
+
+void ExpressionWidget::slotBtnCancelClicked()
+{}
+
+void ExpressionWidget::slotBtnConfirmClicked()
+{}
