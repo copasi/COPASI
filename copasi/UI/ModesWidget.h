@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/16 18:33:12 $
+   $Author: ssahle $ 
+   $Date: 2004/09/26 21:51:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -35,24 +35,23 @@ class ModesWidget : public CopasiWidget
     Q_OBJECT
 
   protected:
-    CModel *mModel;
+    //CModel *mModel;
     CElementaryFluxModes *modes;
-    //MyTable *table;
     QListView *listView;
     QPushButton *btnCalculate;
     bool binitialized;
 
   public:
     ModesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadModes(CModel *model);
+    void loadModes();
     void resizeEvent(QResizeEvent * re);
 
     virtual bool enter(const std::string & key = "");
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
   signals:
-    void signal_emitted(const QString &);
-    void name(const QString&);
+    //void signal_emitted(const QString &);
+    //void name(const QString&);
 
   protected slots:
 
