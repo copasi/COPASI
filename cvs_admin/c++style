@@ -1,10 +1,10 @@
-ASTYLE=/home/cvs/copasi_dev/cvs_admin/astyle
-GAWK=/usr/bin/gawk
-MV=/bin/mv
+ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
+GAWK=gawk
+MV=mv
 
-# ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
-# GAWK=gawk
-# MV=mv
+# ASTYLE=/home/cvs/copasi_dev/cvs_admin/astyle
+# GAWK=/usr/bin/gawk
+# MV=/bin/mv
 
 $ASTYLE --mode=c \
         --style=gnu \
@@ -38,11 +38,14 @@ $0 !~ "^$" {
   gsub(/^\*/, " *")
         
   $0 = gensub(/ +;/, ";", "g")
+  $0 = gensub(/;([a-zA-Z0-9])/, "; \\1", "g")
+  $0 = gensub(/([^ ]) +}/, "\\1}", "g")
 
-  printf "%s\n", gensub(/;([^ }])/, "; \\1", "g")
+  printf "%s\n", $0
 
   if ($0 ~ "{$") lastOpenBracket = 1
   else lastOpenBracket = 0
 }
 ' > $1.tmp && \
-$MV -f $1.tmp $1
+less $1.tmp && rm $1.tmp
+# $MV -f $1.tmp $1
