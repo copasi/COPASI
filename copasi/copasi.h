@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/24 21:38:50 $
+   $Date: 2005/01/28 16:13:41 $
    End CVS Header */
 
 // copasi.h
@@ -71,7 +71,9 @@
 # define max _cpp_max
 #else
 # define C_INT64 long long int
-# define LLONG_MAX LONG_LONG_MAX
+# ifndef LLONG_MAX
+#  define  LLONG_MAX LONG_LONG_MAX
+# endif
 # define LLONG_CONST(n) n ## LL
 # define C_INT32 long
 # define C_INT16 short
