@@ -251,7 +251,9 @@ class CReaction : public CCopasiContainer
     CFunction * mpFunction;
 
     /**
-     *  The description of the function parameters
+     *  The description of the function parameters.
+     *  This is a copy of the information in the CFunction object.
+     *  It describes which parameters need to be passed to the function.
      */
     CFunctionParameters mParameterDescription;
 

@@ -218,7 +218,7 @@ void CTempReaction::setIdentifiers(const CDeTerm *deTerm)
 
   for (i = 0; i < imax; i++)
     if (TokenStack[i]->first == CDeTerm::IDENT)
-      mIdentifiers.push_back(TokenStack[i]->second);
+      mIdentifiers.insert(TokenStack[i]->second);
 
   return;
 }
@@ -318,7 +318,7 @@ void CTempReaction::compile(CModel *model,
 
   // Create the reaction
   CReaction *reaction = new CReaction(mName);
-  // XXX TODO: add the bits necessary
+
   // Set the chemical equation description in the reaction. This
   // automatically parses the description, extracts the metabolites
   // and constructs the chemical equations.
@@ -328,50 +328,52 @@ void CTempReaction::compile(CModel *model,
   CKinFunction *fun = new CKinFunction();
   fun->setName(mName);
   fun->setDescription(mRateDescription);
+
   // Parse the identifiers to specify the function parameters and the
-  // Is2... stuff of the reaction
-  std::string *name;
+  // Id2... stuff of the reaction
+  std::string name;
   CFunctionParameters & Parameters = fun->getParameters();
   int index;
   CReaction::CId2Param *id2Param;
   CReaction::CId2Metab *id2Metab;
 
-  unsigned C_INT32 i;
-  for (i = 0; i < mIdentifiers.size(); i++)
+  std::set<std::string>::const_iterator it = mIdentifiers.begin();
+  for (; it != mIdentifiers.end(); it++)
     {
-      name = &mIdentifiers[i];
-      index = model->findMetab(*name);
+      //pName = &mIdentifiers[i];
+      name = *it;
+      index = model->findMetab(name);
 
       if (-1 == index) // A parameter
         {
           id2Param = new CReaction::CId2Param();
-          id2Param->setIdentifierName(*name);
-          id2Param->setValue(getParameterValue(*name, rates, constants));
-          Parameters.add(*name, CFunctionParameter::FLOAT64, "PARAMETER");
-          // was ist mit id2param ?
+          id2Param->setIdentifierName(name);
+          id2Param->setValue(getParameterValue(name, rates, constants));
+          Parameters.add(name, CFunctionParameter::FLOAT64, "PARAMETER");
+          reaction->getId2Parameters().add(id2Param);
         }
       else
         {
           id2Metab = new CReaction::CId2Metab();
-          id2Metab->setIdentifierName(*name);
+          id2Metab->setIdentifierName(name);
           id2Metab->setMetaboliteName(model->getMetabolites()[index]->getName());
           id2Metab->setCompartmentName(model->getMetabolites()[index]->getCompartment()->getName());
 
-          if (isIn(mSubstrates, *name))
+          if (isIn(mSubstrates, name))
             {
-              Parameters.add(*name, CFunctionParameter::FLOAT64, "SUBSTRATE");
+              Parameters.add(name, CFunctionParameter::FLOAT64, "SUBSTRATE");
               reaction->getId2Substrates().add(id2Metab);
             }
-          else if (isIn(mProducts, *name))
+          else if (isIn(mProducts, name))
             {
-              Parameters.add(*name, CFunctionParameter::FLOAT64, "PRODUCT");
+              Parameters.add(name, CFunctionParameter::FLOAT64, "PRODUCT");
               reaction->getId2Products().add(id2Metab);
             }
           else // is Modifier
             {
-              Parameters.add(*name, CFunctionParameter::FLOAT64, "MODIFIER");
+              Parameters.add(name, CFunctionParameter::FLOAT64, "MODIFIER");
               reaction->getId2Modifiers().add(id2Metab);
-            }  //todo: Fehler, wenn ein metab 2 mal eingefügt wird
+            }
         }
     }
 

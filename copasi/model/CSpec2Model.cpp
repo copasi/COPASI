@@ -333,34 +333,37 @@ void CSpec2Model::processDeTerms()
               //reaction->setIdentifiers(*termit);
               trs.addReaction(reaction);
               reaction = trs.findReaction(rate_constant);
+
+              CMetab *metabolite = 0;
+              std::string metabolite_name;
+              unsigned C_INT32 pos = 0;
+
+              while ("" != (metabolite_name = (*termit)->getTopLevelMetabolite(pos++, multiplicity)))
+                {
+                  if ((metabolite = findMetabolite(metabolite_name)))
+                    {
+                      tmp_metab = reaction->addMetabolite(metabolite);
+                      tmp_metab->setMultiplicity(multiplicity + tmp_metab->getMultiplicity());
+                    }
+                  else
+                    {
+                      // top level metabolite of CDeTerm is not in the list of metabolites. what to do?
+                    }
+                }
+            }
+          else // not a new reaction
+            {
+              // check
             }
 
           // Add the LHS metabolite to the temp reaction
           tmp_metab = reaction->addMetabolite(LHSMetab);
           tmp_metab->setNumChange(num_change + tmp_metab->getNumChange());
-
-          // Add the metabolites on the RHS of the DE.
-
-          // todo: this is only necessary once. it should be checked if all reactions with the same rate const are identical
-          CMetab *metabolite = 0;
-
-          std::string metabolite_name;
-
-          unsigned C_INT32 pos = 0;
-
-          while ("" != (metabolite_name = (*termit)->getTopLevelMetabolite(pos++, multiplicity)))
-            {
-              if ((metabolite = findMetabolite(metabolite_name)))
-                {
-                  tmp_metab = reaction->addMetabolite(metabolite);
-                  tmp_metab->setMultiplicity(multiplicity);
-                }
-            }
         }
     }
 
   // Now create proper CReaction's from each of the CTempReact's
-  mModel->initializeMetabolites();
+  mModel->initializeMetabolites(); //necessary?
 
   for (C_INT32 i = 0; i < trs.size(); i++)
     {

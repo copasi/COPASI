@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 #include "copasi.h"
 
 #include "model/CMetab.h"
@@ -25,14 +26,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,       // Comments
-      DE,        // Differential equations
-      EQN,       // Moiety specification equations
-      INIT,       // Initializations
-      CNST,       // Constant assignments
-      VOL,       // Volume assignment
-      CPT,       // Compartment volume assignments
-      RATE,       // Rate constant assignments
+      CMNT,        // Comments
+      DE,         // Differential equations
+      EQN,        // Moiety specification equations
+      INIT,        // Initializations
+      CNST,        // Constant assignments
+      VOL,        // Volume assignment
+      CPT,        // Compartment volume assignments
+      RATE,        // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 
@@ -163,7 +164,7 @@ class CNameVal
      */
     CNameVal(std::string name, C_FLOAT64 val): mName(name), mVal(val) {};
 
-    /*
+    /**
      * Destructor
      */
     ~CNameVal() {};
@@ -247,15 +248,15 @@ class CTempReaction
                  const std::vector< CNameVal> & rates,
                  const std::vector< CNameVal> & constants);
 
-    void create_substrates_and_products_lists();
-    std::string getChemEquation() const;
-    void setIdentifiers(const CDeTerm *deTerm);
-
   private:
     bool isIn(std::vector< CTempMetab> & metabs, const std::string & target);
     C_FLOAT64 getParameterValue(const std::string & name,
                                 const std::vector< CNameVal> & rates,
                                 const std::vector< CNameVal> & constants);
+
+    void create_substrates_and_products_lists();
+    std::string getChemEquation() const;
+    void setIdentifiers(const CDeTerm *deTerm);
 
   private:
     std::string mName;
@@ -266,7 +267,10 @@ class CTempReaction
     std::vector< CTempMetab> mSubstrates;
     /** @dia:route 9,3; h,42.6964,37.023,48.4754,38.2278,51.4155 */
     std::vector< CTempMetab> mProducts;
-    std::vector< std::string> mIdentifiers;
+    /**
+     * a list of identifiers in mRateDescription. Every identifier is in it only once
+     */
+    std::set<std::string> mIdentifiers;
 
     friend std::ostream & operator<<(std::ostream & os, const CTempReaction & r)
     {
