@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 16:32:40 $
+   $Author: ssahle $ 
+   $Date: 2004/12/28 15:20:53 $
    End CVS Header */
 
 #include "copasi.h"
@@ -278,27 +278,27 @@ UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit
   Unit* unit;
   if (u == "ml")
     {
-      unit = new Unit(UNIT_KIND_LITER, 1, -3);
+      unit = new Unit(UNIT_KIND_LITRE, 1, -3);
     }
   else if (u == "\xc2\xb5l")
     {
-      unit = new Unit(UNIT_KIND_LITER, 1, -6);
+      unit = new Unit(UNIT_KIND_LITRE, 1, -6);
     }
   else if (u == "nl")
     {
-      unit = new Unit(UNIT_KIND_LITER, 1, -9);
+      unit = new Unit(UNIT_KIND_LITRE, 1, -9);
     }
   else if (u == "pl")
     {
-      unit = new Unit(UNIT_KIND_LITER, 1, -12);
+      unit = new Unit(UNIT_KIND_LITRE, 1, -12);
     }
   else if (u == "fl")
     {
-      unit = new Unit(UNIT_KIND_LITER, 1, -15);
+      unit = new Unit(UNIT_KIND_LITRE, 1, -15);
     }
   else if (u == "m3")
     {
-      unit = new Unit(UNIT_KIND_METER, 3, 1);
+      unit = new Unit(UNIT_KIND_METRE, 3, 1);
     }
   else
     {
@@ -332,7 +332,7 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolit
   Species* sbmlSpecies = new Species();
   sbmlSpecies->setId(copasiMetabolite->getKey().c_str());
   sbmlSpecies->setName(copasiMetabolite->getObjectName().c_str());
-  sbmlSpecies->setBoundaryCondition(false);
+  sbmlSpecies->setBoundaryCondition(copasiMetabolite->getStatus() == CMetab::METAB_FIXED);
   sbmlSpecies->setConstant(copasiMetabolite->getStatus() == CMetab::METAB_FIXED);
   sbmlSpecies->setCompartment(copasiMetabolite->getCompartment()->getKey().c_str());
   sbmlSpecies->setInitialConcentration(copasiMetabolite->getInitialConcentration());
