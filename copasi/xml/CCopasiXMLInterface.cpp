@@ -12,6 +12,7 @@
 #include "CCopasiXMLInterface.h"
 #include "model/CModel.h"
 #include "utilities/CMethodParameter.h"
+#include "report/CReportDefinition.h"
 
 std::string CCopasiXMLInterface::encode(const std::string & str)
 {
@@ -78,7 +79,7 @@ CCopasiXMLInterface::CCopasiXMLInterface():
     mpModel(NULL),
     mpFunctionList(NULL),
     //    mpTaskList(NULL),
-    //    mpReportList(NULL),
+    mpReportList(NULL),
     mpIstream(NULL),
     mpOstream(NULL),
     mIndent()
@@ -153,14 +154,15 @@ bool CCopasiXMLInterface::freeTaskList()
   //  pdelete(mpTaskList);
   return true;
 }
+#endif // XXXX
 
-bool CCopasiXMLInterface::setReportList(const CCopasiVectorN< CCopasiReport > & reportList)
+bool CCopasiXMLInterface::setReportList(const CCopasiVectorN< CReportDefinition > & reportList)
 {
-  mpReportList = const_cast<CCopasiVectorN< CCopasiReport > *>(&reportList);
+  mpReportList = const_cast<CCopasiVectorN< CReportDefinition > *>(&reportList);
   return true;
 }
 
-CCopasiVectorN< CCopasiReport > * CCopasiXMLInterface::getReportList() const
+CCopasiVectorN< CReportDefinition > * CCopasiXMLInterface::getReportList() const
   {return mpReportList;}
 
 bool CCopasiXMLInterface::haveReportList() const
@@ -168,10 +170,9 @@ bool CCopasiXMLInterface::haveReportList() const
 
 bool CCopasiXMLInterface::freeReportList()
 {
-  //  pdelete(mpReportList);
+  pdelete(mpReportList);
   return true;
 }
-#endif // XXXX
 
 bool CCopasiXMLInterface::saveData(const std::string & data)
 {

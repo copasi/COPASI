@@ -17,7 +17,7 @@ class CModel;
 template <class CType> class CCopasiVectorN;
 class CFunction;
 class CCopasiTask;
-class CCopasiReport;
+class CReportDefinition;
 class CXMLAttributeList;
 
 /**
@@ -55,8 +55,8 @@ class CCopasiXMLInterface
     /**
      * Pointer to a vector of reports which has been loaded or is to be saved.
      * The ownership is handed to the user.
-     */ 
-    // CCopasiVectorN< CCopasiReport > * mpReportList;
+     */
+    CCopasiVectorN< CReportDefinition > * mpReportList;
 
     /**
      * A pointer to the input stream
@@ -193,13 +193,13 @@ class CCopasiXMLInterface
      * @param const CCopasiVectorN< CCopasiReport > & reportList
      * @return bool success
      */
-    bool setReportList(const CCopasiVectorN< CCopasiReport > & reportList);
+    bool setReportList(const CCopasiVectorN< CReportDefinition > & reportList);
 
     /**
      * Retreive the report list.
      * @return CCopasiVectorN< CCopasiReport > * reportList
      */
-    CCopasiVectorN< CCopasiReport > * getReportList() const;
+    CCopasiVectorN< CReportDefinition > * getReportList() const;
 
     /**
      * Retreive whether the XML contains a report list.
