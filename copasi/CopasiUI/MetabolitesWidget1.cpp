@@ -191,14 +191,26 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   Layout7->addWidget(cancelChanges);
 
   MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 11, 11, 0, 3);
-  connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
-  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
-  connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(const QString &)));
+
+  // OK button
+  connect(commitChanges, SIGNAL(clicked()),
+          this, SLOT(slotBtnOKClicked()));
+  // Cancel button
+  connect(cancelChanges, SIGNAL(clicked()),
+          this, SLOT(slotBtnCancelClicked()));
+  //
+  connect(this, SIGNAL(signal_emitted(const QString &)),
+          (ListViews*)parent,
+          SLOT(slotMetaboliteTableChanged(const QString &)));
+  //
+  connect(this, SIGNAL(leaf(CModel*)),
+          (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
+  //
+  connect(this, SIGNAL(updated()),
+          (ListViews*)parent, SLOT(dataModelUpdated()));
 
   //  connect(ComboBox1, SIGNAL(activated(const QString &)), (ListViews*)parent, SLOT(slotCompartmentSelected(const QString &)));
   //  connect(LineEdit4, SIGNAL(selectionChanged()), (ListViews*)parent, SLOT(slotCompartmentSelected()));
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 /*
@@ -247,7 +259,7 @@ void MetabolitesWidget1::loadName(QString setValue)
 
   CMetab *metab;
 
-  int i = 0;
+  unsigned C_INT32 i = 0;
   myValue = -1;
 
   for (; i < metabolites.size(); i++)
@@ -308,7 +320,7 @@ void MetabolitesWidget1::loadName(QString setValue)
         }
 
       ComboBox1->setDuplicatesEnabled (false);
-      int m;
+      unsigned C_INT32 m;
       for (m = 0; m < allcompartments.size(); m++)
         {
           //showMessage("mudita","It comes here");
@@ -337,36 +349,42 @@ void MetabolitesWidget1::slotBtnCancelClicked()
 void MetabolitesWidget1::slotBtnOKClicked()
 {
   //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit the changes?");
-  CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
-  CMetab *metab;
-  metab = metabolites[myValue];
+  CMetab * metab = mModel->getMetabolites()[myValue];
+
+  QString name(LineEdit1->text());
+  if (name.latin1() != metab->getName())
+    metab->setName(name.latin1());
 
   //for Initial Concentration and Initial Number
   QString initialConcentration(LineEdit4->text());
   double temp1;
   temp1 = initialConcentration.toDouble();
-  metab->setInitialConcentration((float)temp1);
+  if (temp1 != metab->getInitialConcentration())
+    metab->setInitialConcentration(temp1);
+  else
+    {
+      QString initialNumber(LineEdit5->text());
+      int temp2;
+      temp2 = initialNumber.toInt();
+      if (temp2 != metab->getInitialNumberInt())
+        metab->setInitialNumberInt(temp2);
+    }
 
-  QString initialNumber(LineEdit5->text());
-  int temp2;
-  temp2 = initialNumber.toInt();
-  metab->setInitialNumberInt(temp2);
   //if (QString::number(metab->getStatus()) == "0")
 
-  if (RadioButton1->isChecked() == true && QString::number(metab->getStatus()) == "0")
+  if (RadioButton1->isChecked() == true)
     {
-      metab->setStatus(0);
+      metab->setStatus(CMetab::METAB_FIXED);
     }
   else
     {
-      metab->setStatus(1);
+      metab->setStatus(CMetab::METAB_VARIABLE);
     }
 
-  metab->setName(std::string(LineEdit1->text()));
-  name = LineEdit1->text();
+  loadName(name);
 
   emit updated();
   emit leaf(mModel);
 
-  emit signal_emitted(*Metabolite1_Name);
+  //  emit signal_emitted(*Metabolite1_Name);
 }
