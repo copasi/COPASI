@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:39 $
+   $Date: 2004/09/17 13:58:24 $
    End CVS Header */
 
 /********************************************************
@@ -401,6 +401,8 @@ void OptimizationWidget::languageChange()
 bool OptimizationWidget::update(ListViews::ObjectType objectType,
                                 ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:
