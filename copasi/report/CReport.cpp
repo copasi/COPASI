@@ -99,7 +99,7 @@ void CReport::printFooter()
 void CReport::compile(const std::vector< CCopasiContainer * > * pListOfContainer)
 {
   // check if there is a Report Definition Defined
-  if (!mReportDef)
+  if (!mpReportDef)
     return;
   generateObjectsFromName(pListOfContainer, headerObjectList, mpReportDef->getHeaderAddr());
   generateObjectsFromName(pListOfContainer, bodyObjectList, mpReportDef->getBodyAddr());
