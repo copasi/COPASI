@@ -13,14 +13,6 @@
 #include "CCopasiObject.h"
 #include "CCopasiContainer.h"
 
-const unsigned C_INT32 CCopasiObject::Container = 0x1;
-const unsigned C_INT32 CCopasiObject::Vector = 0x2;
-const unsigned C_INT32 CCopasiObject::Matrix = 0x4;
-const unsigned C_INT32 CCopasiObject::NameVector = 0x8;
-const unsigned C_INT32 CCopasiObject::Reference = 0x10;
-const unsigned C_INT32 CCopasiObject::ValueInt = 0x20;
-const unsigned C_INT32 CCopasiObject::ValueDbl = 0x40;
-
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
 
 CCopasiObject::CCopasiObject():
@@ -93,13 +85,20 @@ CCopasiObject::getObject(const CCopasiObjectName & C_UNUSED(cn)) const
 
 const std::string & CCopasiObject::getName() const {return mObjectName;}
 
-const std::string CCopasiObject::getObjectUniqueName() const
+const std::string
+CCopasiObject::getObjectUniqueNameEx(const bool & isParent) const
   {
-    if (mpObjectParent)
-      return mObjectName + " {" + mpObjectParent->getObjectUniqueName() + "}";
-    else
-      return mObjectName;
+    if (isParent && isVector())
+      return mpObjectParent->getObjectUniqueNameEx();
+
+    if (mpObjectParent && 0 < (mObjectFlag & NonUniqueName))
+      return mObjectName + "{" + mpObjectParent->getObjectUniqueNameEx() + "}";
+
+    return mObjectName;
   }
+
+const std::string CCopasiObject::getObjectUniqueName() const
+{return getObjectUniqueNameEx(false);}
 
 const void * CCopasiObject::getObjectValueAddress() const {return &DummyValue; /*TODO or throw exception? */}
 

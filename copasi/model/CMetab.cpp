@@ -30,7 +30,10 @@ void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Metabolite", CCopasiObject::Container | CCopasiObject::ValueDbl),
+    CCopasiContainer(name, pParent, "Metabolite",
+                     CCopasiObject::Container |
+                     CCopasiObject::ValueDbl |
+                     CCopasiObject::NonUniqueName),
     mKey(CKeyFactory::add("Metabolite", this)),
     mConcDbl(1.0),
     mIConcDbl(1.0),

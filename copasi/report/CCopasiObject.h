@@ -27,19 +27,17 @@ class CCopasiObject
 
     //Attributes
   protected:
-    static const unsigned C_INT32 Container;
-
-    static const unsigned C_INT32 Vector;
-
-    static const unsigned C_INT32 Matrix;
-
-    static const unsigned C_INT32 NameVector;
-
-    static const unsigned C_INT32 Reference;
-
-    static const unsigned C_INT32 ValueInt;
-
-    static const unsigned C_INT32 ValueDbl;
+    enum Flag
+    {
+      Container = 0x1,
+      Vector = 0x2,
+      Matrix = 0x4,
+      NameVector = 0x8,
+      Reference = 0x10,
+      ValueInt = 0x20,
+      ValueDbl = 0x40,
+      NonUniqueName = 0x80
+    };
 
   private:
     std::string mObjectName;
@@ -64,6 +62,8 @@ class CCopasiObject
                   const CCopasiContainer * pParent = NULL,
                   const std::string & type = "CN",
                   const unsigned C_INT32 & flag = 0);
+
+    virtual const std::string getObjectUniqueNameEx(const bool & isParent = true) const;
 
   public:
     CCopasiObject(const CCopasiObject & src,
