@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/23 17:04:17 $
+   $Author: shoops $ 
+   $Date: 2004/12/01 15:45:14 $
    End CVS Header */
 
 /**
@@ -3840,7 +3840,7 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
   std::string sType;
   std::string sValue;
 
-  void* value;
+  void * pValue = NULL;
   CCopasiParameter::Type type;
 
   double d;
@@ -3860,25 +3860,25 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
         {
           type = CCopasiParameter::DOUBLE;
           double d = atof(sValue.c_str());
-          value = &d;
+          pValue = &d;
         }
       else if (sType == "unsignedFloat")
         {
           type = CCopasiParameter::UDOUBLE;
           d = atof(sValue.c_str());
-          value = &d;
+          pValue = &d;
         }
       else if (sType == "integer")
         {
           type = CCopasiParameter::INT;
           i = atoi(sValue.c_str());
-          value = &i;
+          pValue = &i;
         }
       else if (sType == "unsignedInteger")
         {
           type = CCopasiParameter::UINT;
           ui = atoi(sValue.c_str());
-          value = &ui;
+          pValue = &ui;
         }
       else if (sType == "bool")
         {
@@ -3891,18 +3891,18 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
             {
               b = true;
             }
-          value = &b;
+          pValue = &b;
         }
       else if (sType == "string")
         {
           type = CCopasiParameter::STRING;
-          value = &sValue;
+          pValue = &sValue;
         }
       else
         {
           fatalError();
         }
-      mCommon.pCurrentParameter = new CCopasiParameter(name, type, value);
+      mCommon.pCurrentParameter = new CCopasiParameter(name, type, pValue);
       break;
     default:
       fatalError();
