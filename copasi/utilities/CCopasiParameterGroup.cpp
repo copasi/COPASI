@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/30 15:43:07 $
+   $Date: 2003/12/30 17:19:47 $
    End CVS Header */
 
 /**
@@ -125,8 +125,8 @@ bool CCopasiParameterGroup::removeParameter(const std::string & name)
       index_iterator it =
         ((parameterGroup *) mpValue)->begin() + index;
 
-      ((parameterGroup *) mpValue)->erase(it, it + 1);
       pdelete(*it);
+      ((parameterGroup *) mpValue)->erase(it, it + 1);
 
       return true;
     }
@@ -141,8 +141,8 @@ bool CCopasiParameterGroup::removeParameter(const unsigned C_INT32 & index)
       index_iterator it =
         ((parameterGroup *) mpValue)->begin() + index;
 
-      ((parameterGroup *) mpValue)->erase(it, it + 1);
       pdelete(*it);
+      ((parameterGroup *) mpValue)->erase(it, it + 1);
 
       return true;
     }
