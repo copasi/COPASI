@@ -99,6 +99,10 @@ SOURCE=..\..\copasi\steadystate\CJacob.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CMca.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\copasi\steadystate\CNewton.cpp
 # End Source File
 # Begin Source File
@@ -112,6 +116,10 @@ SOURCE=..\..\copasi\steadystate\CSS_Solution.cpp
 # Begin Source File
 
 SOURCE=..\..\copasi\steadystate\CJacob.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMca.h
 # End Source File
 # Begin Source File
 
