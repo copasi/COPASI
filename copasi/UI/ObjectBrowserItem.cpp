@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:40 $
+   $Author: lixu1 $ 
+   $Date: 2003/12/02 05:01:16 $
    End CVS Header */
 
 /********************************************************
@@ -56,26 +56,28 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
   if (mObject != NULL)
     {
       ObjectListItem* pTmp = pList->getRoot();
-      while (pTmp != NULL)
-        {
-          if (pTmp->pItem->getObject()->pCopasiObject == mObject) // already be pointed in the list
-            break;
-          pTmp = pTmp->pNext;
-        }
-      if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
-        {
-          pBrowserObject = pTmp->pItem->getObject();
-          setChild(pTmp->pItem->child());
-          pBrowserObject->referenceList->insert(this);
-        }
-      else
-        {
-          CBrowserObject* newBrowserObject = new CBrowserObject();
-          newBrowserObject->pCopasiObject = mObject;
-          newBrowserObject->mChecked = false;
-          pBrowserObject = newBrowserObject;
-          pBrowserObject->referenceList->insert(this);
-        }
+      /*
+         while (pTmp != NULL)
+           {
+             if (pTmp->pItem->getObject()->pCopasiObject == mObject) // already be pointed in the list
+               break;
+             pTmp = pTmp->pNext;
+           }
+         if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
+           {
+             pBrowserObject = pTmp->pItem->getObject();
+             setChild(pTmp->pItem->child());
+             pBrowserObject->referenceList->insert(this);
+           }
+         else
+      */
+      {
+        CBrowserObject* newBrowserObject = new CBrowserObject();
+        newBrowserObject->pCopasiObject = mObject;
+        newBrowserObject->mChecked = false;
+        pBrowserObject = newBrowserObject;
+        pBrowserObject->referenceList->insert(this);
+      }
     }
   else //this is not an ending node
     {
@@ -104,26 +106,28 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
   if (mObject != NULL)
     {
       ObjectListItem* pTmp = pList->getRoot();
-      while (pTmp != NULL)
-        {
-          if (pTmp->pItem->getObject()->pCopasiObject == mObject)
-            break;
-          pTmp = pTmp->pNext;
-        }
-      if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
-        {
-          pBrowserObject = pTmp->pItem->getObject();
-          setChild(pTmp->pItem->child());
-          pBrowserObject->referenceList->insert(this);
-        }
-      else
-        {
-          CBrowserObject* newBrowserObject = new CBrowserObject();
-          newBrowserObject->pCopasiObject = mObject;
-          newBrowserObject->mChecked = false;
-          pBrowserObject = newBrowserObject;
-          pBrowserObject->referenceList->insert(this);
-        }
+      /*
+            while (pTmp != NULL)
+              {
+                if (pTmp->pItem->getObject()->pCopasiObject == mObject)
+                  break;
+                pTmp = pTmp->pNext;
+              }
+            if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
+              {
+                pBrowserObject = pTmp->pItem->getObject();
+                setChild(pTmp->pItem->child());
+                pBrowserObject->referenceList->insert(this);
+              }
+            else
+      */
+      {
+        CBrowserObject* newBrowserObject = new CBrowserObject();
+        newBrowserObject->pCopasiObject = mObject;
+        newBrowserObject->mChecked = false;
+        pBrowserObject = newBrowserObject;
+        pBrowserObject->referenceList->insert(this);
+      }
     }
   else //this is not an ending node
     {
