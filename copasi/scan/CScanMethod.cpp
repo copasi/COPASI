@@ -99,7 +99,7 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
       //start with min value - give 0 as first param in setscanparametervalue
       setScanParameterValue(0, s, top);
 
-      for (i = 1; i < scanProblem->getScanItemParameter(i, "density"); i++)
+      for (i = 1; i < scanProblem->getScanItemParameter(s, "density"); i++)
         {
           if (s != 0)
             scan(next, false);
