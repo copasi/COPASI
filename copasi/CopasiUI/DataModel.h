@@ -18,6 +18,8 @@
 #include "listviews.h"
 #include "Subject.h"
 
+#include "trajectory/CTrajectoryTask.h"
+
 class CTrajectoryTask;
 class CSteadyStateTask;
 class CModel;
