@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/11/17 21:43:01 $
+   $Author: ssahle $ 
+   $Date: 2004/12/02 13:36:31 $
    End CVS Header */
 
 /*******************************************************************
@@ -456,6 +456,12 @@ bool CopasiTableWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListV
 bool CopasiTableWidget::leave()
 {
   saveTable();
+
+  //this is not strictly necessary if you actually leave the widget
+  //but the leave() method is also used to force a commit - even if the widget
+  //is still visible afterwards
+  fillTable();
+
   return true;
 }
 
