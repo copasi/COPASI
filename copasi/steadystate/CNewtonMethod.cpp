@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:59:33 $
+   $Date: 2004/10/06 15:53:02 $
    End CVS Header */
 
 #include <algorithm>
@@ -50,6 +50,8 @@ CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
                CCopasiParameter::UINT, (unsigned C_INT32) 12);
   addParameter("Newton.LSODA.BDFMaxOrder",
                CCopasiParameter::UINT, (unsigned C_INT32) 5);
+  addParameter("Newton.LSODA.MaxStepsInternal",
+               CCopasiParameter::UINT, (unsigned C_INT32) 10000);
 }
 
 CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
@@ -203,21 +205,26 @@ CNewtonMethod::processInternal()
                                   * (unsigned C_INT32 *) getValue("Newton.LSODA.AdamsMaxOrder"));
       pTrajectoryMethod->setValue("LSODA.BDFMaxOrder",
                                   * (unsigned C_INT32 *) getValue("Newton.LSODA.BDFMaxOrder"));
+      pTrajectoryMethod->setValue("LSODA.MaxStepsInternal",
+                                  * (unsigned C_INT32 *) getValue("Newton.LSODA.MaxStepsInternal"));
 
       pTrajectory->initialize();
     }
 
+  bool stepLimitReached = false;
   C_FLOAT64 EndTime;
   if (mUseIntegration)
     {
-      for (EndTime = 1; EndTime < 1.0e5; EndTime *= 10)
+      std::cout << "Try integrating ..." << std::endl;
+      for (EndTime = 1; EndTime < 1.0e10; EndTime *= 10)
         {
+          std::cout << "   integrating up to " << EndTime << std::endl;
+
           pTrajectoryProblem->setInitialState(mpProblem->getInitialState()); //TODO: on second run do not start from the beginning
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
-
           try
             {
-              pTrajectory->process();
+              stepLimitReached = !pTrajectory->processSimple(true); //single step
             }
           catch (CCopasiException Exception)
             {
@@ -242,6 +249,12 @@ CNewtonMethod::processInternal()
               if (returnCode == CNewtonMethod::found)
               {return returnProcess(true, mFactor, mResolution);}
             }
+
+          if (stepLimitReached)
+            {
+              std::cout << "Step limit reached at Endtime " << EndTime << std::endl;
+              break;
+            }
         }
     }
 
@@ -252,7 +265,7 @@ CNewtonMethod::processInternal()
           pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
                                          + EndTime);
-          pTrajectory->process();
+          pTrajectory->processSimple();
 
           *mpSteadyStateX = *pTrajectory->getState();
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
@@ -294,6 +307,8 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
   C_INT info = 0;
   char T = 'T'; /* difference between fortran's and c's matrix storrage */
   C_INT one = 1;
+
+  std::cout << "processNewton called" << std::endl;
 
   for (k = 0; k < mIterationLimit && mMaxrate > mScaledResolution; k++)
     {
@@ -427,9 +442,11 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                           /* fortran style vector */
+                           mdxdt.array() - 1,                            /* fortran style vector */
                            1);
         }
+
+      std::cout << k << "th Newton Step. i = " << i << " maxRate = " << nmaxrate << std::endl;
 
       if (i == 32)
         {
@@ -494,7 +511,7 @@ bool CNewtonMethod::isSteadyState()
   if (mDimension == 0) return true;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                           /* fortran style vector */
+                   mdxdt.array() - 1,                            /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)
