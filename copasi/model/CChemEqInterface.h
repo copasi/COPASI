@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 19:42:51 $
+   $Date: 2004/09/22 17:34:28 $
    End CVS Header */
 
 #ifndef CCHEMEQINTERFACE_H
@@ -64,25 +64,29 @@ class CChemEqInterface
     //convenience methods:
     static std::string getChemEqString(const CModel * model, const CReaction & rea, bool expanded);
     static void setChemEqFromString(const CModel * model, CReaction & rea, const std::string & ces);
-    static bool isValidEq(const std::string eq);
+    static bool isValidEq(const std::string & eq);
 
   private:
     static std::string writeElement(const std::string & name, C_FLOAT64 mult, bool expanded);
     static bool splitChemEq(const std::string & input,
                             std::string & left, std::string & right, std::string & mod);
 
-    static void setElements(std::vector<std::string> & names,
+    static bool setElements(std::vector<std::string> & names,
                             std::vector<C_FLOAT64> & mults,
                             const std::string & reaction,
                             const bool modif = false);
 
-    static void extractElement(const std::string & input,
+    static bool extractElement(const std::string & input,
                                std::string::size_type & pos,
                                std::string & name, C_FLOAT64 & mult);
 
-    static void extractModifier(const std::string & input,
+    static bool extractModifier(const std::string & input,
                                 std::string::size_type & pos,
                                 std::string & name);
+
+    static bool isValidEqPart(const std::string & s);
+
+    static bool checkFirstLevel(const std::string & eq);
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 09:30:45 $
+   $Date: 2004/09/22 17:34:27 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -72,6 +72,7 @@ void CChemEqInterface::setChemEqString(const std::string & ces)
   std::string Substrates, Products, Modifiers;
 
   //cleanup();
+  if (!checkFirstLevel(ces)) return;
   mReversibility = splitChemEq(ces, Substrates, Products, Modifiers);
 
   setElements(mSubstrateNames, mSubstrateMult, Substrates);
@@ -209,9 +210,9 @@ bool CChemEqInterface::splitChemEq(const std::string & input,
   std::string::size_type equal = std::string::npos;
   std::string rightTmp;
   bool reversibility;
+
   std::string Separator[] = {"->", "=", ""};
   unsigned C_INT32 i = 0;
-
   while (*Separator != "" && equal == std::string::npos)
     equal = input.find(Separator[i++]);
 
@@ -237,7 +238,7 @@ bool CChemEqInterface::splitChemEq(const std::string & input,
   return reversibility;
 }
 
-void CChemEqInterface::setElements(std::vector<std::string> & names,
+bool CChemEqInterface::setElements(std::vector<std::string> & names,
                                    std::vector<C_FLOAT64> & mults,
                                    const std::string & reaction,
                                    const bool modif)
@@ -253,9 +254,14 @@ void CChemEqInterface::setElements(std::vector<std::string> & names,
   while (pos != std::string::npos)
     {
       if (!modif)
-        extractElement(reaction, pos, name, mult);
+        {
+          if (!extractElement(reaction, pos, name, mult)) return false;
+        }
       else
-      {extractModifier(reaction, pos, name); mult = 1.0;}
+        {
+          if (!extractModifier(reaction, pos, name)) return false;
+          mult = 1.0;
+        }
 
       if (name != "")
         {
@@ -263,43 +269,76 @@ void CChemEqInterface::setElements(std::vector<std::string> & names,
           mults.push_back(mult);
         }
     }
+  return true; //success
 }
 
-void CChemEqInterface::extractElement(const std::string & input,
+bool CChemEqInterface::extractElement(const std::string & input,
                                       std::string::size_type & pos,
                                       std::string & name, C_FLOAT64 & mult)
 {
   std::string Value;
 
   std::string::size_type Start = input.find_first_not_of(" ", pos);
-  std::string::size_type End = input.find(" + ", Start);
-  std::string::size_type Multiplier = input.find("*", Start);
-  std::string::size_type NameStart;
-  std::string::size_type NameEnd;
-
-  if (Multiplier == std::string::npos || Multiplier > End)
+  if (Start == std::string::npos) //empty
     {
-      NameStart = Start;
+      name = ""; pos = std::string::npos;
+      return true;
+    }
+
+  std::string::size_type End = input.find(" + ", Start);
+  std::string::size_type eee = input.find_last_not_of(" ", End) + 1;
+  std::string part = input.substr(Start, eee - Start);
+
+  //part now contains the term we want to analyze
+  std::cout << "    part " << part << std::endl;
+
+  std::string::size_type Multiplier = part.find("*", Start);
+  std::string::size_type Multiplier2 = part.find("*", Multiplier + 1);
+  if (Multiplier2 != std::string::npos)
+    {
+      std::cout << "found 2 \"*\" in one term\n";
+      return false;
+    }
+
+  std::string::size_type NameStart;
+  if (Multiplier == std::string::npos)
+    {
+      NameStart = 0;
       mult = 1.0;
     }
   else
     {
-      NameStart = input.find_first_not_of(" ", Multiplier + 1);
-      Value = input.substr(Start, Multiplier - Start);
+      NameStart = part.find_first_not_of(" ", Multiplier + 1);
+      Value = part.substr(0, Multiplier);
       mult = atof(Value.c_str());
+      //TODO check if Value really contains a valid number
+
+      if (NameStart == std::string::npos)
+        {
+          std::cout << "no metab name after \"*\" \n";
+          return false;
+        }
     }
 
-  NameEnd = input.find_first_of(" ", NameStart);
+  std::string::size_type NameEnd = part.find_last_not_of(" ") + 1;
+  std::string nameString = part.substr(NameStart, NameEnd - NameStart);
 
-  if (NameStart != std::string::npos)
-    name = input.substr(NameStart, NameEnd - NameStart);
+  //nameString now contains the metab name of the term we want to analyze
+  std::cout << "    nameString " << nameString << std::endl;
+
+  if (!CMetabNameInterface::isValidMetabName(nameString))
+    {
+      std::cout << "invalid  metab name  \n";
+      return false;
+    }
   else
-    name = "";
+    name = nameString;
 
   pos = (End == std::string::npos) ? End : End + 3;
+  return true; //success
 }
 
-void CChemEqInterface::extractModifier(const std::string & input,
+bool CChemEqInterface::extractModifier(const std::string & input,
                                        std::string::size_type & pos,
                                        std::string & name)
 {
@@ -318,6 +357,7 @@ void CChemEqInterface::extractModifier(const std::string & input,
     name = "";
 
   pos = (End == std::string::npos) ? End : End + 1;
+  return true;
 }
 
 C_INT32 CChemEqInterface::getMolecularity(const std::string & role) const
@@ -438,186 +478,102 @@ void CChemEqInterface::setChemEqFromString(const CModel * model, CReaction & rea
   cei.writeToChemEq(model, rea.getChemEq());
 }
 
-/*static*/
-bool CChemEqInterface::isValidEq(const std::string eq)
+//static
+bool CChemEqInterface::isValidEqPart(const std::string & s)
 {
-  //TODO: tidy up all the debugging output, and insert code to bring up message boxes as appropriate
+  return true;
+}
 
+/*static*/
+bool CChemEqInterface::isValidEq(const std::string & eq)
+{
   // a valid equation should be in the format of (metab + (metab)*) (= | ->) (metab (+ metab)*) (; (modifieer)*)
   // metab here can include moiety
-  C_INT16 startMetab, endMetab, endEq, sep1, sep2, sep3;  // the positions of various characters looked for
-  std::string unit;                                                                 // a unit in the equation to be checked
 
-  startMetab = eq.find_first_not_of(" ");  // the starting position of the first metabolite, also the equation
-  endEq = eq.find_last_not_of(" ") + 1;
+  if (!checkFirstLevel(eq)) return false;
 
-  if (endEq <= startMetab)  // empty equation string
+  // it should be save now to split the string
+  std::string substrates, products, modifiers;
+  bool reversibility = splitChemEq(eq, substrates, products, modifiers);
+
+  if (!isValidEqPart(substrates))
+    {
+      //debugging
+      std::cout << "substrates part not valid\n";
+      return false;
+    }
+
+  if (!isValidEqPart(products))
+    {
+      //debugging
+      std::cout << "products part not valid\n";
+      return false;
+    }
+
+  // next check if each metabolite name is valid
+
+  return true;
+}
+
+//static
+bool CChemEqInterface::checkFirstLevel(const std::string & eq)
+{
+  std::string::size_type startMetab = eq.find_first_not_of(" ");  // the starting position of the first metabolite, also the equation
+  if (startMetab == std::string::npos)  // empty equation string
     {
       //debugging
       std::cout << "Empty equation string\n";
       return false;
     }
 
-  sep1 = eq.find("->");
-  sep3 = eq.rfind("->");
-  if (sep1 != sep3)
+  std::string::size_type sep1 = eq.find("->");
+  std::string::size_type sep2 = eq.find("=");
+
+  if ((sep1 == std::string::npos) && (sep2 == std::string::npos))
     {
-      //debugging
-      std::cout << "Multiple separators found\n";
+      std::cout << "no separator found\n";
       return false;
     }
 
-  sep2 = eq.find("=");
-  sep3 = eq.rfind("=");
-  if (sep2 != sep3)
+  if ((sep1 != std::string::npos) && (sep2 != std::string::npos))
     {
-      //debugging
-      std::cout << "Multiple separators found\n";
+      std::cout << "both -> and = found \n";
       return false;
     }
 
-  // one of the separators must be present but not both
-  if (sep1 < 0)
+  if (sep2 != std::string::npos)
+    sep1 = sep2; //now sep1 holds the position of the separator
+
+  std::string::size_type sep3 = eq.find("->", sep1 + 1);
+  if (sep3 != std::string::npos)
     {
-      if (sep2 < 0)
-        {
-          //debugging
-          std::cout << "no separator found\n";
-          return false;
-        }
-      else
-        sep1 = sep2;
+      std::cout << "extra -> found " << sep1 << " " << sep3 << std::endl;
+      return false;
     }
-  else
+
+  sep3 = eq.find("=", sep1 + 1);
+  if (sep3 != std::string::npos)
     {
-      if (sep2 >= 0)
-        {
-          //debugging
-          std::cout << "two separators found\n";
-          return false;
-        }
+      std::cout << "extra = found " << sep1 << " " << sep3 << std::endl;
+      return false;
     }
+
+  //now look for ";"
 
   sep2 = eq.find(";");
   sep3 = eq.rfind(";");
+
   if (sep2 != sep3)
     {
-      //debugging
       std::cout << "found more than one \";\"\n";
       return false;
     }
 
-  if (sep2 < 0)
-    sep2 = endEq;
-
   if (sep2 <= sep1)
     {
-      //debugging
       std::cout << "found \";\" on the LHS of the equation\n";
       return false;
     }
-
-  // next check if each metabolite name is valid
-
-  //very clumsy code, but hopefully does the job
-  while (startMetab < sep2)  // the equation up to the modifiers, if any
-    {
-      sep3 = eq.find(" + ", startMetab);
-
-      if (sep3 < 0)  // no "+" in the remaining equation
-        {
-          if (startMetab < sep1)  // i.e. still on the substrate side, so only one substrate (left)
-            {
-              endMetab = sep1;
-              sep3 = sep1 - 1; // -1 because of the search at the end of the loop
-            }
-          else if (startMetab == sep1)   // no substrates in the equation, and only one product (or none)
-            {
-              startMetab = eq.find_first_not_of(">", sep1 + 1); // to account for the different lengths of "->" and "="
-              startMetab = eq.find_first_not_of(" ", startMetab);  // and then get rid of the white spaces before metabolites
-
-              if ((startMetab < 0) || (startMetab == sep2))   //i.e. an empty equation, though possibly with modifiers
-                {
-                  std::cout << "empty equation\n";
-                  return false;
-                }
-
-              endMetab = sep2;
-              sep3 = sep2 - 1;   // -1 because of the search at the end of the loop (in order to skip ";")
-            }
-          else  // only one product (left)
-            {
-              endMetab = sep2;
-              sep3 = sep2 - 1;
-            }
-        }
-      else if (sep3 > sep2)
-        {
-          //debugging
-          std::cout << "shouldn't have \"+\" beyond \";\" \n";
-          return false;  // shouldn't have "+" beyond ";"
-        }
-      else if (sep3 + 2 == endEq)  // missing product
-        {
-          //debugging
-          std::cout << "missing product\n";
-          return false;
-        }
-      else if (startMetab == sep1)   // no substrates specified, so cross over to the product side
-        {
-          startMetab = eq.find_first_not_of(">", sep1 + 1); // to account for the different lengths of "->" and "="
-          startMetab = eq.find_first_not_of(" ", startMetab);  // and then get rid of the white spaces before metabolites
-          endMetab = sep3;
-        }
-      else if ((startMetab < sep1) && (sep3 > sep1))  // the next "+" is on the product side but we are still looking at the substrates
-        {
-          endMetab = sep1;
-          sep3 = endMetab - 1;
-        }
-      else
-        endMetab = sep3;
-
-      // adjust the starting position to allow for moiety
-      C_INT16 star = eq.find("*", startMetab);
-
-      if ((star >= 0) && (star < endMetab))
-        startMetab = eq.find_first_not_of(" ", star + 1);
-
-      // note that if the last substrate name is missing after an *, the error detected might be invalid metabolite name or missing substrate
-
-      if (startMetab < 0)  // this happens if the last metabolite is missing after a *, but there is one or more white spaces after *
-        {
-          // debugging
-          std::cout << "missing metabolite name after *\n";
-          return false;
-        }
-
-      unit = eq.substr(startMetab, endMetab - startMetab);
-      // debugging
-      //cout<<"metabolite name: ("<<unit<<")\n";
-
-      if (!CMetabNameInterface::isValidMetabName(unit))
-        {
-          // debugging
-          std::cout << "Not a valid metabolite name: (" << unit << ")\n";
-          return false;
-        }
-
-      startMetab = eq.find_first_not_of(">", sep3 + 2);  // to account for the different lengths of "->" and "="
-      startMetab = eq.find_first_not_of(" ", startMetab);
-
-      if (startMetab < 0)  // this can happen if the end of the equation is already reached
-        break;
-
-      if ((startMetab == sep1) || (startMetab == sep2))  // this means a metabolite is missing after a "+"
-        {
-          //debugging
-          std::cout << "missing substrate/product\n";
-          return false;
-        }
-    }
-
-  // no checks for modifiers, since nothing to check against modifier names
 
   return true;
 }
