@@ -19,7 +19,6 @@ CGlobals::CGlobals():
     {
       ProgramVersion.setVersion(4, 0, 101);
       pFunctionDB->setFilename("FunctionDB.gps");
-      pFunctionDB->initialize();
       pModel = NULL;
     }
 

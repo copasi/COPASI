@@ -11,14 +11,27 @@
 #include "CMassAction.h"
 #include "output/CUDFunction.h"
 #include "utilities/CCopasiException.h"
+#include "report/CCopasiObjectReference.h"
 
-CFunctionDB::CFunctionDB() {CONSTRUCTOR_TRACE;}
-
-void CFunctionDB::initialize() {}
+CFunctionDB::CFunctionDB(const std::string & name,
+                         const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "FunctionDB"),
+    mFilename(),
+    mLoadedFunctions("Functions", this)
+{
+  initObjects();
+  CONSTRUCTOR_TRACE;
+}
 
 CFunctionDB::~CFunctionDB() {cleanup(); DESTRUCTOR_TRACE;}
 
 void CFunctionDB::cleanup() {mLoadedFunctions.cleanup();}
+
+void CFunctionDB::initObjects()
+{
+  addObjectReference("File", mFilename);
+  CCopasiContainer::add(&mLoadedFunctions);
+}
 
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 {

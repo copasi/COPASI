@@ -10,13 +10,14 @@
 
 #include <string>
 
+#include "report/CCopasiContainer.h"
 #include "utilities/readwrite.h"
 #include "utilities/CCopasiVector.h"
 
 class CFunction;
 
 /** @dia:pos 106.082,17.0878 */
-class CFunctionDB
+class CFunctionDB : public CCopasiContainer
   {
     // Attributes
 
@@ -37,17 +38,15 @@ class CFunctionDB
 
   public:
     /**
-     *
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: RootContainer)
      */
-    CFunctionDB();
+    CFunctionDB(const std::string & name = "NoName",
+                const CCopasiContainer * pParent = &RootContainer);
 
     /**
-     *
-     */
-    void initialize();
-
-    /**
-     *
+     * Destructor
      */
     ~CFunctionDB();
 
@@ -55,6 +54,8 @@ class CFunctionDB
      *
      */
     void cleanup();
+
+    virtual void initObjects();
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
