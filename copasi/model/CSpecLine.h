@@ -250,6 +250,8 @@ class CTempReaction
 
   private:
     bool isIn(std::vector< CTempMetab> & metabs, const std::string & target);
+
+    static
     C_FLOAT64 getParameterValue(const std::string & name,
                                 const std::vector< CNameVal> & rates,
                                 const std::vector< CNameVal> & constants);

@@ -65,8 +65,8 @@ class CSpec2Model
 
     /**
      * Prints the input file, used to test that input was correctly read
-     */
-    void printInput();
+     */ 
+    //void printInput();
   private:
     // Private operations
 

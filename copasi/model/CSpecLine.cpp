@@ -417,13 +417,18 @@ bool CTempReaction::isIn(std::vector<CTempMetab> & metabs, const std::string & t
 
 C_FLOAT64 CTempReaction::getParameterValue(const std::string & name,
     const std::vector<CNameVal> & rates,
-    const std::vector<CNameVal> & C_UNUSED(constants))
+    const std::vector<CNameVal> & constants)
 {
   unsigned i, imax = rates.size();
 
   for (i = 0; i < imax; i++)
     if (name == rates[i].getName())
       return rates[i].getVal();
+
+  imax = constants.size();
+  for (i = 0; i < imax; i++)
+    if (name == constants[i].getName())
+      return constants[i].getVal();
 
   return 0;
 }

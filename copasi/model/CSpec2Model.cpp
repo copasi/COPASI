@@ -50,29 +50,29 @@ C_INT32 CSpec2Model::addFileContents()
   return 0;
 }
 
-void CSpec2Model::printInput()
-{
-  std::cout << "\n\n\n";
-  //     std::cout << "What we read: \n";
-  //     std::vector<string>::iterator it = mSpecContents.begin();
-  //     int cnt = mSpecContents.size();
-  //     std::cout << "There were " << cnt << " lines." << std::endl;
-  //     int linecount = 0;
-  //     while (it <  mSpecContents.end())
-  //     {
-  //         std::cout << "Line " << linecount++ << ": ";
-  //         std::cout << *it++ << std::endl;
-  //}
-  std::vector<CSpecLine>::iterator it = mSpecLines.begin();
-  std::cout << std::endl;
+//void CSpec2Model::printInput()
+//{
+//  std::cout << "\n\n\n";
+//     std::cout << "What we read: \n";
+//     std::vector<string>::iterator it = mSpecContents.begin();
+//     int cnt = mSpecContents.size();
+//     std::cout << "There were " << cnt << " lines." << std::endl;
+//     int linecount = 0;
+//     while (it <  mSpecContents.end())
+//     {
+//         std::cout << "Line " << linecount++ << ": ";
+//         std::cout << *it++ << std::endl;
+//}
+//  std::vector<CSpecLine>::iterator it = mSpecLines.begin();
+//  std::cout << std::endl;
 
-  while (it < mSpecLines.end())
-    {
-      std::cout << "Type = " << CSpecLine::convertedType(it->getType());
-      std::cout << " Contents = " << it->getString() << std::endl;
-      it++;
-    }
-}
+//  while (it < mSpecLines.end())
+//    {
+//      std::cout << "Type = " << CSpecLine::convertedType(it->getType());
+//      std::cout << " Contents = " << it->getString() << std::endl;
+//      it++;
+//}
+//}
 
 CModel *CSpec2Model::createModel()
 {
@@ -91,7 +91,7 @@ CModel *CSpec2Model::createModel()
 
   //printInput();
 
-  mModel->setQuantityUnit("mol");
+  mModel->setQuantityUnit("mmol");
 
   processCompartments();
   processEQNs();
@@ -103,6 +103,11 @@ CModel *CSpec2Model::createModel()
   processDeTerms();
   mModel->initializeMetabolites();
   mModel->compile();
+
+  int i;    // should that not be in CModel::compile ?
+  for (i = 0; i < mModel->getReactions().size(); i++)
+    mModel->getReactions()[i]->compile(mModel->getCompartments());
+
   return mModel;
 }
 
