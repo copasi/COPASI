@@ -96,6 +96,10 @@ SOURCE=.\CCopasiObject.cpp
 
 SOURCE=.\CCopasiObjectName.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CKeyFactory.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -115,6 +119,10 @@ SOURCE=.\CCopasiObjectName.h
 # Begin Source File
 
 SOURCE=.\CCopasiObjectReference.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CKeyFactory.h
 # End Source File
 # End Group
 # End Target
