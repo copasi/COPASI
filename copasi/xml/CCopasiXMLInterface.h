@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/03 02:31:23 $
+   $Date: 2004/12/03 16:20:04 $
    End CVS Header */
 
 /**
@@ -378,7 +378,8 @@ class CXMLAttributeList
       Value << value;
 
       mAttributeList.push_back(name);
-      mAttributeList.push_back(CCopasiXMLInterface::encode(Value.str()));
+      mAttributeList.push_back(CCopasiXMLInterface::encode(Value.str(),
+                               CCopasiXMLInterface::attribute));
 
       mSaveList.push_back(true);
 
@@ -424,7 +425,9 @@ class CXMLAttributeList
       std::ostringstream Value;
       Value << value;
 
-      mAttributeList[2 * index + 1] = CCopasiXMLInterface::encode(Value.str());
+      mAttributeList[2 * index + 1] =
+        CCopasiXMLInterface::encode(Value.str(),
+                                    CCopasiXMLInterface::attribute);
       mSaveList[index] = true;
 
       return true;
@@ -443,7 +446,9 @@ class CXMLAttributeList
       std::ostringstream Value;
       Value << value;
 
-      mAttributeList[2 * index + 1] = CCopasiXMLInterface::encode(Value.str());
+      mAttributeList[2 * index + 1] =
+        CCopasiXMLInterface::encode(Value.str(),
+                                    CCopasiXMLInterface::attribute);
       mSaveList[index] = true;
 
       return true;
