@@ -18,8 +18,6 @@
 #include "listviews.h"
 #include "Subject.h"
 
-#include "trajectory/CTrajectoryTask.h"
-
 class CTrajectoryTask;
 class CSteadyStateTask;
 class CModel;
@@ -176,9 +174,14 @@ void DataModel<T>::createModel(const char* fileName)
   notify(MODEL);
 
   steadystatetask = new CSteadyStateTask();
-  steadystatetask->setModel(model);
+  steadystatetask->getProblem()->setModel(model);
   steadystatetaskUpdate = true;
   notify(STEADYSTATETASK);
+
+  trajectorytask = new CTrajectoryTask();
+  trajectorytask->getProblem()->setModel(model);
+  trajectorytaskUpdate = true;
+  notify(TRAJECTORYTASK);
 
   saveModel(fileName);
 }
