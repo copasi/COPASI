@@ -461,9 +461,12 @@ void ReactionsWidget1::slotCheckBoxClicked()
       chemical_reaction = chemical_reaction.replace(i, 2, "=");
       reversible = TriTrue;
     }
-  const std::string chemEq3 = chemical_reaction.latin1();
-  //chemEq1->setChemicalEquation(chemEq3); //is this really necessary?
-  reactn1->setChemEq(chemEq3);
+  if (chemical_reaction.length())
+    {
+      const std::string chemEq3 = chemical_reaction.latin1();
+      //chemEq1->setChemicalEquation(chemEq3); //is this really necessary?
+      reactn1->setChemEq(chemEq3);
+    }
 
   LineEdit2->setText(chemEq1->getChemicalEquationConverted().c_str());
 
@@ -671,7 +674,8 @@ void ReactionsWidget1::slotLineEditChanged()
   chemEq1 = & reactn1->getChemEq();
   //bool status;
   //status = chemEq1->setChemicalEquation(changed_chemical_reaction); //is this necessary?
-  reactn1->setChemEq(changed_chemical_reaction);
+  if (changed_chemical_reaction.length())
+    reactn1->setChemEq(changed_chemical_reaction);
   if (reactn1->isReversible() == true)
     {
       CheckBox->setChecked(true);
