@@ -1,13 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/24 18:39:26 $
+   $Date: 2005/01/24 18:52:30 $
    End CVS Header */
 
 #include <sstream>
 
+#include "copasi.h"
 #include "CopasiTime.h"
 #include "utility.h"
 
@@ -46,7 +47,7 @@ C_INT64 CopasiTimePoint::getCurrentTime_msec()
   gettimeofday(&ttt, 0);
   long long int time;
   time = ttt.tv_sec * 1000 + ttt.tv_usec / 1000;
-  return time & 0x7fffffffffffffff;
+  return time & LLONG_MAX;
 }
 #else
 
@@ -59,7 +60,7 @@ C_INT64 CopasiTimePoint::getCurrentTime_msec()
   LARGE_INTEGER SystemTime;
   GetSystemTimeAsFileTime((FILETIME *) &SystemTime);
 
-  return (SystemTime.QuadPart / 10000) & MAXLONGLONG;
+  return (SystemTime.QuadPart / 10000) & LLONG_MAX;
 }
 #endif
 
@@ -100,7 +101,7 @@ std::string CCopasiTimeVariable::isoFormat() const
     std::stringstream Iso;
     bool first = true;
 
-    if (mTime < 0)
+    if (mTime < 0LL)
       {
         CCopasiTimeVariable Tmp(-mTime);
         Iso << "-";
@@ -109,17 +110,17 @@ std::string CCopasiTimeVariable::isoFormat() const
         return Iso.str();
       }
 
-    if (mTime >= 86400000000)
+    if (mTime >= 86400000000LL)
       {
         Iso << LL2String(getDays()) << ":";
         first = false;
       }
 
-    if (mTime >= 3600000000)
+    if (mTime >= 3600000000LL)
       Iso << LL2String(getHours(true), first ? 0 : 2) << ":";
-    if (mTime >= 60000000)
+    if (mTime >= 60000000LL)
       Iso << LL2String(getMinutes(true), first ? 0 : 2) << ":";
-    if (mTime >= 1000000)
+    if (mTime >= 1000000LL)
       Iso << LL2String(getSeconds(true), first ? 0 : 2) << ".";
     else
       Iso << "0.";
@@ -165,7 +166,7 @@ C_INT64 CCopasiTimeVariable::getMinutes(const bool & bounded) const
 C_INT64 CCopasiTimeVariable::getHours(const bool & bounded) const
   {
     C_INT64 Hours =
-      (mTime - (mTime % 3600000000)) / 3600000000;
+      (mTime - (mTime % 3600000000LL)) / 3600000000LL;
 
     if (bounded) return Hours % 24;
     else return Hours;
@@ -174,7 +175,7 @@ C_INT64 CCopasiTimeVariable::getHours(const bool & bounded) const
 C_INT64 CCopasiTimeVariable::getDays() const
   {
     C_INT64 Days =
-      (mTime - (mTime % 86400000000)) / 86400000000;
+      (mTime - (mTime % 86400000000LL)) / 86400000000LL;
 
     return Days;
   }
