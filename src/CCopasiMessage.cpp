@@ -4,9 +4,11 @@
 // (C) Stefan Hoops 2001
 
 #include <string>
+#include <iostream>
 
 #include <time.h>
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "copasi.h"
 #include "CCopasiMessage.h"
@@ -21,10 +23,38 @@ CCopasiMessage::CCopasiMessage(void)
     mType     = RAW;
 }
 
-CCopasiMessage::CCopasiMessage(string text, enum COPASI_MESSAGE_TYPE type)
+CCopasiMessage::CCopasiMessage(COPASI_MESSAGE_TYPE type, 
+                               const char *format, ...)
 {
+#define INITIALTEXTSIZE 1024
+    int TextSize = INITIALTEXTSIZE;
+    int Printed = -1;
     
+    char *Text = NULL;
     
+    va_list Arguments = NULL;
+    va_start(Arguments, format);
+    
+    Text = (char *) calloc(TextSize + 1, sizeof(char));
+    Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
+
+    while (Printed < 0 || TextSize < Printed)
+    {
+        pfree(Text);
+        
+        TextSize = (Printed > 0) ? Printed : TextSize * 2;
+        Text = (char *) calloc(TextSize + 1, sizeof(char));
+        
+        Printed = vsnprintf(Text, TextSize, format, Arguments);
+    }
+    va_end(Arguments);
+
+    if (Text) Handler(type, (string) Text);
+    pfree(Text);
+}
+
+void CCopasiMessage::Handler(COPASI_MESSAGE_TYPE type, string Text)
+{
     mType     = type;
     switch (mType)
     {
@@ -46,11 +76,18 @@ CCopasiMessage::CCopasiMessage(string text, enum COPASI_MESSAGE_TYPE type)
         mText += "< ";
         break;
     }
-    
-    // initialize everything
-    mText += text;
+    mText += Text;
 
-    if (mType == ERROR) throw CCopasiException(this);
+    LineBreak();
+    
+    if (mType == ERROR) 
+    {
+        throw CCopasiException(this);
+    }
+    else
+    {
+        cout << mText << endl;
+    }
 }
 
 // overload assignment operator
@@ -61,6 +98,7 @@ CCopasiMessage &CCopasiMessage::operator=(CCopasiMessage &RHS)
     
     return *this;
 }
+
 CCopasiMessage::~CCopasiMessage(void)
 {
 }
@@ -70,7 +108,7 @@ string CCopasiMessage::GetText(void)
     return mText;
 }
 
-enum COPASI_MESSAGE_TYPE CCopasiMessage::GetType(void)
+COPASI_MESSAGE_TYPE CCopasiMessage::GetType(void)
 {
     return mType;
 }
@@ -98,7 +136,23 @@ string TimeStamp()
     {
         sprintf(str, "0000-00-00 00:00:00");
     }
-    
 
     return (string) str;
 }
+
+void CCopasiMessage::LineBreak()
+{
+    string Search("\n");
+    string Replace("\n>                           < ");
+    string::size_type pos = 0;
+    
+    while (true)
+    {
+        pos = mText.find(Search, pos);
+        if (pos == string::npos) break;
+
+        mText.replace(pos, Search.length(), Replace);
+        pos += Replace.length();
+    }
+}
+

@@ -20,7 +20,8 @@ public:
     CCopasiException();
 
     /**
-     *  Default consructor. 
+     *  Specific consructor. Creates a exception with a message.
+     *  @param pmessage pointer to a CCopasiMessage object.
      */
     CCopasiException(CCopasiMessage *pmessage);
 

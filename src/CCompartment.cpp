@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "copasi.h"
 #include "CReadConfig.h"
@@ -34,7 +35,7 @@ CCompartment::~CCompartment(void)
 }
 
 // overload assignment operator
-CCompartment& CCompartment::operator=(CCompartment &RHS)
+CCompartment& CCompartment::operator=(const CCompartment &RHS)
 {
     mVolume = RHS.mVolume;
     mName   = "";          // do we need this
@@ -71,29 +72,93 @@ int CCompartment::Fail()
     return mFail;
 }
 
-int CCompartment::Load(CReadConfig &pconfigbuffer)
+int CCompartment::Load(CReadConfig &configbuffer)
 {
-    mFail = pconfigbuffer.GetVariable((string) "Compartment", 
-                                       (string) "string",
-                                       (void *) &mName);
+    mFail = configbuffer.GetVariable((string) "Compartment", 
+                                     (string) "string",
+                                     (void *) &mName);
     if (mFail) return mFail;
 
-    mFail = pconfigbuffer.GetVariable((string) "Volume", 
-                                       (string) "double",
-                                       (void *) &mVolume);
+    configbuffer.SetMode(-CReadConfig_SEARCH);
+    mFail = configbuffer.GetVariable((string) "Volume", 
+                                     (string) "double",
+                                     (void *) &mVolume);
     return mFail;
 }
 
 
-int CCompartment::Save( CWriteConfig &pconfigbuffer )
+int CCompartment::Save(CWriteConfig &configbuffer)
 {
-    mFail = pconfigbuffer.SetVariable((string) "Compartment",
-                                       (string) "string",
-                                       (void *) &mName);
+    mFail = configbuffer.SetVariable((string) "Compartment",
+                                     (string) "string",
+                                     (void *) &mName);
     if (mFail) return mFail;
 
-    mFail = pconfigbuffer.SetVariable((string) "Volume", 
-                                       (string) "double",
-                                       (void *) &mVolume);
+    mFail = configbuffer.SetVariable((string) "Volume", 
+                                     (string) "double",
+                                     (void *) &mVolume);
     return mFail;
 }
+
+CCompartmentVector::CCompartmentVector()
+{
+    mFail = 0;
+    this->resize(0);
+}
+
+CCompartmentVector::CCompartmentVector(int size)
+{
+    mFail = 0;
+    this->resize(size);
+}
+
+int CCompartmentVector::Save(CWriteConfig &configbuffer)
+{
+    int Size = this->size();
+    
+    mFail = configbuffer.SetVariable((string) "TotalCompartments",
+                                     (string) "int",
+                                     (void *) &Size);
+    if (mFail) return mFail;
+
+    for(int i = 0; i < Size; i++)
+    {
+
+        if (mFail = (*(&this->front()+i)).Save(configbuffer))
+        {
+            break;
+        }
+    }
+    return mFail;
+}
+
+int CCompartmentVector::Load(CReadConfig &configbuffer)
+{
+    int Size = 0;
+    
+    configbuffer.SetMode(CReadConfig_SEARCH);
+    configbuffer.SetMode(CReadConfig_LOOP);
+    
+    mFail = configbuffer.GetVariable((string) "TotalCompartments",
+                                     (string) "int",
+                                     (void *) &Size);
+    if (mFail) return mFail;
+    this->resize(Size);
+    
+    configbuffer.SetMode(-CReadConfig_LOOP);
+    for(int i = 0; i < Size; i++)
+    {
+        if (mFail = (*(&this->front()+i)).Load(configbuffer))
+        {
+            break;
+        }
+    }
+    
+    return mFail;
+}
+
+int CCompartmentVector::Fail()
+{
+    return mFail;
+}
+

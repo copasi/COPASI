@@ -38,13 +38,13 @@ CDatum::CDatum(const string& title, int type, const string& i, const string& j,
 }
 
 // overload assignment operator
-CDatum& CDatum::operator=(CDatum &ptRHS)
+CDatum& CDatum::operator=(const CDatum &RHS)
 {
-    mTitle = ptRHS.mTitle;
-    mType = ptRHS.mType;
-    mI = ptRHS.mI;
-    mJ = ptRHS.mJ;
-    mpValue = ptRHS.mpValue;
+    mTitle = RHS.mTitle;
+    mType = RHS.mType;
+    mI = RHS.mI;
+    mJ = RHS.mJ;
+    mpValue = RHS.mpValue;
     return *this;
 }
 

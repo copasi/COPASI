@@ -20,8 +20,8 @@ CReadConfig::CReadConfig(void)
 {
     // initialize everything
     mFilename     = "";
-    mpBufferBegin = NULL;
     mLineNumber   = 0;
+    mMode         = 0;
     mFail         = 0;
 
     InitInputBuffer();
@@ -31,8 +31,8 @@ CReadConfig::CReadConfig(string name)
 {
     // initialize everything
     mFilename     = name;
-    mpBufferBegin = NULL;
     mLineNumber   = 0;
+    mMode         = 0;
     mFail         = 0;
 
     InitInputBuffer();
@@ -40,18 +40,6 @@ CReadConfig::CReadConfig(string name)
 
 CReadConfig::~CReadConfig(void)
 {
-    Free();
-}
-
-CReadConfig::Free(void)
-{
-    // if the buffer is initialized we free it and reset the buffer pointer
-    if (mpBufferBegin)
-    {
-        free(mpBufferBegin);
-        mpBufferBegin = NULL;
-    }
-    return mFail;
 }
 
 int CReadConfig::Fail()
@@ -63,110 +51,152 @@ int CReadConfig::Fail()
 
 int CReadConfig::GetVariable(string name, string type, void * pout)
 {
-    char* szLine = NULL;
-    char* szName = NULL;
-    char* szValue= NULL;
-
-    // Assure that the config buffer is initialized
-    assert( mpBufferBegin != NULL ); 
-    
-    // For error messages we keep track of the current line number
-    mLineNumber++;
+    char c[] = " ";
+    int equal = 0;
+    int Mode = mMode;    
+    string Line;
+    string Name;
+    string Value;
 
     // Get the current line 
-    szLine = strdup(strtok(mpBufferPos, "\n"));
-    // Move pointer to the beginning of the next line
-    mpBufferPos += strlen(szLine) + 1;
-    
-    // We expect lines in the format Name=Value
-    szName  = strtok(szLine, "=");
-    szValue = szName + strlen(szName) + 1;
-    
-    // Assure that we have the name we are looking for
-    if ( name != szName )
+    while (true)
     {
-        mFail = 1; // Error
-    }
+        // For error messages we keep track of the current line number
+        // but mBuffer >> is to smart and skips empty lines.
+        // while(mBuffer.peek() == '\n') 
+        // {
+        //     mLineNumber++;
+        //     mBuffer.seekg(1, ios::cur);
+        // }
+        mLineNumber++;
 
+        Line.erase();
+        while (true)
+        {
+            mBuffer.read(c, 1);
+            if ( *c == '\n' || mBuffer.eof()) break;
+            Line += c;
+        }
+
+        // mBuffer >> Line;
+
+        equal = Line.find('=');
+        Name  = Line.substr(0, equal);
+        Value = Line.substr(equal + 1);
+
+        if (Mode & CReadConfig_SEARCH &&
+            name == "Compartment"     &&
+            Name == "Compartment")
+        {
+            if ( LookAhead() != "Volume" )
+            {
+                Name = "<CONTINUE>";
+            }
+        }
+
+        if (name == Name) break;
+
+        if (Mode & CReadConfig_SEARCH) 
+        {
+            if (mBuffer.eof())
+            {
+                if (!(Mode & CReadConfig_LOOP)) FatalError();
+                // Rewind the buffer                
+                Mode ^= CReadConfig_LOOP;
+                mBuffer.clear();
+                mBuffer.seekg(0);
+                mLineNumber = 0;
+            }
+        //    mBuffer.seekg(1, ios::cur); // Skip line break
+            continue;
+        }
+        
+        FatalError();
+    }
+    
+    // mBuffer.seekg(1, ios::cur);         // Skip line break
     // Return the value depending on the type
     if ( type == "string" )
     {
-        *(string *) pout = szValue;
+        *(string *) pout = Value;
     }
     else if ( type == "double" )
     {
         // may be we should check if Value is really a double
-        *(double *) pout = atof(szValue);
+        *(double *) pout = atof(Value.c_str());
     }
     else if ( type == "int" )
     {
         // may be we should check if Value is really a integer
-        *(int *) pout = atoi(szValue);
+        *(int *) pout = atoi(Value.c_str());
     }
     else
     {
+        FatalError();
         mFail = 1; //Error
     }
     
     // We free the line allocated through strdup
-    if (szLine) free(szLine);
+    // pfree(szLine);
     return mFail;
+}
+
+void CReadConfig::SetMode(int mode)
+{
+    switch (mode)
+    {
+    case  CReadConfig_SEARCH:
+        mMode |= CReadConfig_SEARCH;
+        break;
+    case -CReadConfig_SEARCH:
+        if (mMode & CReadConfig_SEARCH) mMode ^= CReadConfig_SEARCH;
+        break;
+    case  CReadConfig_LOOP:
+        mMode |= CReadConfig_LOOP;
+        break;
+    case -CReadConfig_LOOP:
+        if (mMode & CReadConfig_LOOP) mMode ^= CReadConfig_LOOP;
+        break;
+    default:
+        // Invalid Mode
+        FatalError();
+        break;
+    }
 }
 
 int CReadConfig::InitInputBuffer()
 {
-    long FileSize = 0;
-
-    // get the file size of the configuration file
-    FileSize = GetFileSize(mFilename.c_str());
-    if (FileSize == 0)
-    {
-        mFail = 1;  // Error
-    }
-    // allocate and zero the configuration buffer 
-    // add 1 to FileSize for zero terminator
-    if (!(mpBufferBegin = (char *) calloc(FileSize + 1, sizeof(char))))
-    {
-        mFail = 1;  // Error
-    }
-    // initialze the position pointer to the beginning of the buffer
-    mpBufferPos = mpBufferBegin;
-
+    char c[] = " ";
+    
     // read the configuration file into the configuration buffer
     ifstream File(mFilename.c_str());
-    File.read(mpBufferBegin, FileSize);
-    if (FileSize != File.gcount())
-    {
-        mFail = 1;  // Error
-    }
-    File.close();
+    if (File.fail()) FatalError();
 
+    while (true)
+    {
+        File.read(c, 1);
+        if (File.eof()) break;
+        if (File.fail()) FatalError();
+        mBuffer << c;
+    }
+    File.clear();
+    
+    File.close();
+    if (File.fail()) FatalError();
+    
     return mFail;
 }
 
-static long GetFileSize(const char *name)
+string CReadConfig::LookAhead()
 {
-    long ByteCnt = 0;
+    streampos pos = mBuffer.tellg();
     
-    // open the bytes in the configuration file
-    ifstream File(name);
-    // check whether we were successful
-    if (File.fail())
-    {
-        cout << "Error initilizing configuration file: " 
-             << name << endl;
-        return 0;
-    }
+    string Line;
+    mBuffer >> Line;
+    mBuffer.seekg(pos);
     
-    // count the bytes of the configuration file
-    while (!File.eof()) 
-    {
-        File.get();
-        ByteCnt++;
-    } 
-    File.close();
-    
-    // we overcounted the EOF therefore the byte count is reduced by 1
-    return ByteCnt-1;
+    return Line.substr(0, Line.find("="));
 }
 
+    
+    

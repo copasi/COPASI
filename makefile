@@ -14,25 +14,25 @@ LIBS        = -lnsl
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CFLAGS) -c $< -o $@
 
-all: 	test doc/html/index.html
+all: 	test \
+	doc/html/index.html
 
 OBJS	= $(OBJDIR)/CCompartment.o \
 	  $(OBJDIR)/CDatum.o \
 	  $(OBJDIR)/CCopasiMessage.o \
 	  $(OBJDIR)/CCopasiException.o \
+	  $(OBJDIR)/CMetab.o \
 	  $(OBJDIR)/CReadConfig.o  \
 	  $(OBJDIR)/CWriteConfig.o  \
+	  $(OBJDIR)/globals.o  \
           $(OBJDIR)/main.o
 
 test: 	dependencies $(OBJDIR) $(OBJS)
 	$(CXX) $(CFLAGS) -o test $(OBJS)
 
-dependencies: $(SRCDIR)/*.cpp $(INCDIR)/*.h
-	@touch ./dependencies
-	makedepend -f./dependencies -- $(CFLAGS) \
-	-I/usr/lib/gcc-lib/i386-slackware-linux/egcs-2.91.66/include  \
-	-I/usr/include/g++-2 -- $^
-	@rm ./dependencies.bak
+dependencies: $(SRCDIR)/*.cpp
+	$(CC) -I./include -MM $^ | sed -e 's?\(.*\)\.o:?$(OBJDIR)/\1.o:?' \
+	> ./dependencies
 
 doc/html/index.html: $(INCDIR)/*.h
 	doxygen test.dox
@@ -41,10 +41,9 @@ $(OBJDIR):
 	@test \( -d obj \) || mkdir $(OBJDIR)
 
 clean:  
-	rm -f test test.txt dependencies 
-	rm -r -f Debug
-	rm -r -f Release
-	rm -r -f $(OBJDIR)
+	rm -f test *.txt dependencies
+	rm -rf debug release $(OBJDIR)
+#	rm -rf doc 
 
 include ./dependencies
 

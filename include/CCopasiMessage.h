@@ -1,8 +1,8 @@
 /**
- *  CReadConfig class. A more elaborate class description.
+ *  CCopasiMessage class. A more elaborate class description.
  */
 
-// New Class based on pmutils read functionality
+// New Class for COPASI message handling
 // (C) Stefan Hoops 2001
 
 
@@ -17,22 +17,25 @@ typedef enum COPASI_MESSAGE_TYPE
     ERROR
 };
 
+#define FatalError() {CCopasiMessage(ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
+
 class CCopasiMessage
 {
 public:
     /**
      *  Default consructor. 
-     *  This creates a default error messages.
-     *  "Unexpected Error".
+     *  This creates a default error messages, which actually does nothing.
      */
     CCopasiMessage();
 
     /**
      *  Specified consructor. 
-     *  This creates the error messages specified as the argument.
-     *  @param text error messages.
+     *  This creates a formated message.
+     *  @param type message type (RAW|TRACE|WARNING|ERROR)
+     *  @param format printf like format string.
+     *  @param ... arguments like in printf
      */
-    CCopasiMessage(string text, enum COPASI_MESSAGE_TYPE type);
+    CCopasiMessage(COPASI_MESSAGE_TYPE type, const char *format, ... );
 
     /**
      *  Destructor. 
@@ -45,28 +48,42 @@ public:
     CCopasiMessage &operator=(CCopasiMessage &);
 
     /**
-     *  Retrieves the error message.
+     *  Retrieves the text of the message.
      *  @return mMessage
      */
     string GetText();
 
     /**
-     *  Retrieves the error message.
-     *  @return mMessage
+     *  Retrieves thetype of the message.
+     *  @return mType
      */
-    enum COPASI_MESSAGE_TYPE GetType();
+    COPASI_MESSAGE_TYPE GetType();
 
 private:
     /**
-     *  Name of the configuration file.
+     *  The actual constructor of a message.
+     *  @param type message type (RAW|TRACE|WARNING|ERROR)
+     *  @param text message text
+     */
+    void Handler(COPASI_MESSAGE_TYPE type, string text);
+    
+    /**
+     *  Inserts line breaks in the message text.
+     */
+    void LineBreak();
+    
+    /**
+     *  Message text.
      */
     string mText;               // Message text
 
     /**
-     *  Name of the configuration file.
+     *  Message type.
      */
     COPASI_MESSAGE_TYPE mType;  // Message type
 
 };
 #endif // COPASI_CCopasiMessage
+
+
 

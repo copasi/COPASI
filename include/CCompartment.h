@@ -36,7 +36,7 @@ public:
      *  Copies the contents from one CCompartment object to another.
      *  @param ptRHS reference to the recipient object.
      */
-    CCompartment &operator=(CCompartment &);
+    CCompartment &operator=(const CCompartment &);
 
     /**
      *  Returns a string with the name of this compartment.
@@ -67,22 +67,22 @@ public:
     void SetVolume(double volume);
 
     /**
-     *  Saves the contents of the object to an output stream.
-     *  (output stream is usually a file but can also be a socket)
-     *  @param pfout pointer to the output stream (ostream).
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
      *  @see mFail
      */
-    int Save(CWriteConfig &pconfigbuffer);
+    int Save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer pointer to a CReadConfig object.
+     *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return mFail
      *  @see mFail
      */
-    int Load(CReadConfig &pconfigbuffer);
+    int Load(CReadConfig &configbuffer);
 
     /**
      *  Returns the failure code.
@@ -107,4 +107,54 @@ private:
      */
     int    mFail;
 };
+
+class CCompartmentVector : public vector< CCompartment >
+{
+public:
+    /**
+     *  Default constructor. 
+     *  Creates an empty vector with size 0.
+     */
+    CCompartmentVector();
+
+    /**
+     *  Specific constructor. 
+     *  Creates a vector with size CCompartment.
+     *  @param size number of CCompartment objectss in the vector.
+     */
+    CCompartmentVector(int size);
+
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     *  @see mFail
+     */
+    int Save(CWriteConfig &configbuffer);
+
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return mFail
+     *  @see mFail
+     */
+    int Load(CReadConfig &configbuffer);
+    
+    /**
+     *  Returns the failure code.
+     *  @return mFail
+     *  @see mFail
+     */
+    int Fail();
+
+private:
+
+    /**
+     *  Failure code.
+     */
+    int    mFail;
+};
 #endif // COPASI_CComparment
+

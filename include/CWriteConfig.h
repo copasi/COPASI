@@ -15,8 +15,8 @@ class CWriteConfig
 public:
     /**
      *  Default consructor. 
-     *  This opens the configuration file using a the default filename 
-     *  "test.txt".
+     *  This creates a configuration buffer without assigning a filename. 
+     *  It is currently useless.
      */
      CWriteConfig();
 
@@ -30,39 +30,41 @@ public:
 
     /**
      *  Destructor. 
-     *  The destructor calls the method Free().
+     *  The destructor calls the method Flush().
      */
     ~CWriteConfig();
 
     /**
-     *  Flush the output buffer
+     *  Flush the output buffer to the configuration file.
+     *  @return mFail
+     *  @see mFail  
      */
-    Flush();
+    int Flush();
 
     /**
      *  Returns the failure status.
      *  @return mFail
      *  @see mFail  
      */
-    Fail();
+    int Fail();
 
     /**
-     *  Retrieves the next variable from the output file.
-     *  @param name name of the variable to be retrieved.
-     *  @param type type of the variable to be retrieved.
-     *  @param *pout pointer to the location where the retrieved variable 
+     *  Writes a variable to the output file.
+     *  @param name name of the variable to be written.
+     *  @param type type of the variable to be written.
+     *  @param *pout pointer to the location where the variable 
      *               is stored.
      *  @return mFail
      *  @see mFail  
      */
-    SetVariable(string name, string type, void * pout);
+    int SetVariable(string name, string type, void * pout);
 
 private:
     /**
      *  Commits all information to the configuration file. 
      *  This method is called by the destructor.
      */
-    Commit();
+    int Commit();
 
     /**
      *  Name of the configuration file.

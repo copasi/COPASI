@@ -82,25 +82,25 @@ public:
      *  Copies the contents from one CDatum object to another.
      *  @param ptRHS reference to the recipient object.
      */
-    CDatum& operator=(CDatum &ptRHS);
+    CDatum& operator=(const CDatum &RHS);
 
     /**
-     *  Saves the contents of the object to an output stream.
-     *  (output stream is usually a file but can also be a socket)
-     *  @param pfout pointer to the output stream (ostream).
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
      *  @see mFail
      */
-    int Save(CWriteConfig &pconfigbuffer);
+    int Save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer pointer to a CReadConfig object.
+     *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return mFail
      *  @see mFail
      */
-    int Load(CReadConfig &pconfigbuffer);
+    int Load(CReadConfig &configbuffer);
 
     /**
      *  Sets the value of mpValue with a pointer to a double that has 

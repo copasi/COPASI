@@ -9,15 +9,22 @@
 #ifndef COPASI_CReadConfig
 #define COPASI_CReadConfig
 
+#include <strstream>
+
+// available operations mode for the configurations buffer
+#define CReadConfig_SEARCH 0x01
+#define CReadConfig_LOOP   0x02
+
 class CReadConfig
 {
 public:
     /**
-     *  Default constructor. 
-     *  This opens the configuration file using a the default filename 
-     *  "test.txt".
+     *  Default consructor. 
+     *  This creates a configuration buffer for input assigning a filename. 
+     *  It is currently useless.
      */
     CReadConfig();
+
     /**
      *  Specified constructor. 
      *  This opens the configuration file using the filename specified 
@@ -25,22 +32,26 @@ public:
      *  @param name name of the confguration file. 
      */
     CReadConfig(string name);
+
     /**
      *  Destructor. 
      *  The destructor calls the method Free().
      */
     ~CReadConfig();
+
     /**
-     *  Frees all allocated memory. 
-     *  This method is called by the destructor.
+     *  Set the operations mode for configurations buffer.
+     *  @param mode valid modes are: CReadConfig_SEARCH, CReadConfig_LOOP
      */
-    Free();
+    void SetMode(int mode);
+    
     /**
      *  Returns the failure status.
      *  @return mFail
      *  @see mFail  
      */
-    Fail();
+    int Fail();
+
     /**
      *  Retrieves the next variable from the input file.
      *  @param name name of the variable to be retrieved.
@@ -50,29 +61,41 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    GetVariable(string name, string type, void * pout);
+    int GetVariable(string name, string type, void * pout);
 
 private:
     /**
      *  Initializes the input buffer for reading.
+     *  @return mFail
+     *  @see mFail  
      */
-    InitInputBuffer();
+    int InitInputBuffer();
+
+    /**
+     *  Look ahead to find the next variable name
+     */
+    string LookAhead();
+
     /**
      *  Name of the configuration file.
      */
     string mFilename;               // Config File Name
+
     /**
-     *  Begin of the input buffer
+     *  Input buffer
      */
-    char*  mpBufferBegin;           // Input Buffer
-    /**
-     *  Current position in the input buffer
-     */
-    char*  mpBufferPos;             // Current Position
-    /**
+    strstream mBuffer;
+    
+   /**
      *  Current line number in the configuration file
      */
     long   mLineNumber;             // Current Line Number 
+
+    /**
+     * Mode = CReadConfig::SEARCH
+     */
+    int mMode;
+
     /**
      *  Failure status:
      *  0 = no error

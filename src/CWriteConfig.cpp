@@ -23,7 +23,7 @@ CWriteConfig::CWriteConfig(void)
     mFail         = 0;
 
     mBuffer.setf(ios::scientific); 
-    
+    mBuffer.precision(16);
 }
 
 CWriteConfig::CWriteConfig(string name)
@@ -34,7 +34,8 @@ CWriteConfig::CWriteConfig(string name)
     mLineNumber   = 0;
     mFail         = 0;
 
-    mBuffer.setf(ios::scientific); 
+    mBuffer.setf(ios::scientific);
+    mBuffer.precision(16);
 }
 
 
@@ -43,15 +44,21 @@ CWriteConfig::~CWriteConfig(void)
     Commit();
 }
 
-CWriteConfig::Flush(void)
+int CWriteConfig::Flush(void)
 {
-    Commit();
+    if (Commit())
+    {
+        FatalError();
+        return mFail;
+    }
     
     mBuffer.freeze(0);
     mBuffer.seekp(0);
+
+    return mFail;
 }
 
-CWriteConfig::Commit(void)
+int CWriteConfig::Commit(void)
 {
 #ifdef WIN32
     mOpenMode |= ios::binary;
@@ -60,12 +67,14 @@ CWriteConfig::Commit(void)
     ofstream ConfigFile(mFileName.c_str(), mOpenMode );
     if (ConfigFile.fail())
     {
+        FatalError();
         return mFail = 1;
     }
 
     ConfigFile.write(mBuffer.str(), mBuffer.pcount());
     if (ConfigFile.fail())
     {
+        FatalError();
         return mFail = 1;
     }
 
@@ -98,6 +107,7 @@ int CWriteConfig::SetVariable(string name, string type, void * pout)
     }
     else
     {
+        FatalError();
         mFail = 1; //Error
     }
     
