@@ -23,7 +23,6 @@ class TableDefinition : public CopasiWidget
     Q_OBJECT
 
   protected:
-    bool bIsNoReportDef;
     MyTable* table;
     QPushButton* btnOK;
     QPushButton* btnCancel;

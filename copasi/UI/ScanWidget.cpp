@@ -765,12 +765,10 @@ bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
   switch (objectType)
     {
     case ListViews::MODEL:
-      break;
-    case ListViews::REPORT:
       // check if there is a list of Report Defs
       CReportDefinitionVector* pReportDefinitionVector;
       pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
-      if (pReportDefinitionVector->size() > 0)
+      if (pReportDefinitionVector)
         reportDefinitionButton->setEnabled(true);
       break;
     default:

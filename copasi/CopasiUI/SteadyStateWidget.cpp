@@ -383,13 +383,11 @@ bool SteadyStateWidget::update(ListViews::ObjectType objectType, ListViews::Acti
   switch (objectType)
     {
     case ListViews::FUNCTION:
-    case ListViews::MODEL:
       break;
-    case ListViews::REPORT:
-      // check if there is a list of Report Defs
+    case ListViews::MODEL:
       CReportDefinitionVector* pReportDefinitionVector;
       pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
-      if (pReportDefinitionVector->size() > 0)
+      if (pReportDefinitionVector)
         reportDefinitionButton->setEnabled(true);
       break;
     default:

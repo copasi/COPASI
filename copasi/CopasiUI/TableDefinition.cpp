@@ -37,9 +37,7 @@
  *  for more information about these flags.
  */
 TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
-    : CopasiWidget(parent, name, f),
-    bIsNoReportDef(true)
-
+    : CopasiWidget(parent, name, f)
 {
   binitialized = true;
   table = new MyTable(this, "tblTableDefinition");
@@ -113,13 +111,6 @@ void TableDefinition::createNewObject()
     }
   table->setText(table->numRows() - 1, 0, name.c_str());
   table->setNumRows(table->numRows());
-
-  if (bIsNoReportDef)
-    {
-      bIsNoReportDef = false;
-      ListViews::notify(ListViews::REPORT, ListViews::CHANGE);
-    }
-
   ListViews::notify(ListViews::REPORT, ListViews::ADD);
 }
 
