@@ -131,8 +131,8 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(mUniformRadio, mGaussianRadio);
   setTabOrder(mGaussianRadio, mPosGaussianRadio);
 
-  connect(mMin, SIGNAL(textChanged(const QString&)), this, SLOT(MaxValueChanged(const QString&)));
-  connect(mMax, SIGNAL(textChanged(const QString&)), this, SLOT(MinValueChanged(const QString&)));
+  connect(mMin, SIGNAL(textChanged(const QString&)), this, SLOT(MinValueChanged(const QString&)));
+  connect(mMax, SIGNAL(textChanged(const QString&)), this, SLOT(MaxValueChanged(const QString&)));
   connect(mDensity, SIGNAL(textChanged(const QString&)), this, SLOT(DensityValueChanged(const QString&)));
   connect(mIndependent, SIGNAL(clicked()), this, SLOT(IndependentClicked()));
   connect(mLogarithmic, SIGNAL(clicked()), this, SLOT(LogarithmicClicked()));
@@ -147,6 +147,11 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 void ScanItemWidget::MaxValueChanged(const QString&)
 {
   pParameter->setValue("max", mMax->text().toDouble());
+  /*  for verfication
+   if (pParameter->getIndex("max")==C_INVALID_INDEX)
+    return;
+   double max = pParameter->getValue("max");
+  */
 }
 
 void ScanItemWidget::MinValueChanged(const QString&)
@@ -157,16 +162,31 @@ void ScanItemWidget::MinValueChanged(const QString&)
 void ScanItemWidget::DensityValueChanged(const QString&)
 {
   pParameter->setValue("incr", mDensity->text().toDouble());
+  /*  for verfication
+   if (pParameter->getIndex("incr")==C_INVALID_INDEX)
+    return;
+   double toDouble = pParameter->getValue("incr");
+  */
 }
 
 void ScanItemWidget::IndependentClicked()
 {
-  pParameter->setValue("Indp", mIndependent->text().toUInt());
+  pParameter->setValue("Indp", mIndependent->isChecked());
+  /*  for verfication
+   if (pParameter->getIndex("Indp")==C_INVALID_INDEX)
+    return;
+   bool Indp = pParameter->getValue("Indp");
+  */
 }
 
 void ScanItemWidget::LogarithmicClicked()
 {
-  pParameter->setValue("log", mLogarithmic->text().toUInt());
+  pParameter->setValue("log", mLogarithmic->isChecked());
+  /*  for verfication
+   if (pParameter->getIndex("log")==C_INVALID_INDEX)
+    return;
+   bool Indp = pParameter->getValue("log");
+  */
 }
 
 void ScanItemWidget::RegularGridClicked()
