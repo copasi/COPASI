@@ -1,12 +1,12 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2005/02/08 23:21:22 $  
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2005/02/08 23:32:04 $  
 ######################################################################
 
 TEMPLATE = app
 
-include(../common.pri)
-
 CONFIG -= qt
+
+include(../common.pri)
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
@@ -27,25 +27,26 @@ contains(BUILD_OS, WIN32) {
           ../lib/trajectory.lib \
           ../lib/utilities.lib
 } else {
-  # The order of objects is important 
-  OBJECTS += ../lib/libmodel.a \
-             ../lib/libcommandline.a \
-             ../lib/libelementaryFluxModes.a \
-             ../lib/libmathmodel.a \
-             ../lib/liboptimization.a \
-             ../lib/libscan.a \
-             ../lib/libsteadystate.a \
-             ../lib/libtrajectory.a \
-             ../lib/librandomGenerator.a \
-             ../lib/libutilities.a \
-             ../lib/liboutput.a \
-             ../lib/libreport.a \
-             ../lib/libfunction.a \
-             ../lib/libcopasiXML.a \
-             ../lib/libmodel.a
+  LIBS = -L../lib \
+         -Wl,--start-group \
+         -lcommandline \
+         -lcopasiXML \
+         -lelementaryFluxModes \
+         -lfunction \
+         -lmathmodel \
+         -lmodel \
+         -loptimization \
+         -lplot \
+         -lrandomGenerator \
+         -lreport \
+         -lsbmlimport \
+         -lscan \
+         -lsteadystate \
+         -ltrajectory \
+         -lutilities \
+         -Wl,--end-group \
+         $${LIBS}
 
-  LIBS += -lexpat
-  
   TARGETDEPS += ../lib/libcommandline.a \
                 ../lib/libcopasiXML.a \
                 ../lib/libelementaryFluxModes.a \
@@ -53,7 +54,7 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libmathmodel.a \
                 ../lib/libmodel.a \
                 ../lib/liboptimization.a \
-                ../lib/liboutput.a \
+                ../lib/libplot.a \
                 ../lib/librandomGenerator.a \
                 ../lib/libreport.a \
                 ../lib/libscan.a \
