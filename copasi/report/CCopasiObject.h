@@ -12,6 +12,7 @@
 #include <string>
 #include <typeinfo>
 #include "copasi.h"
+#include <iostream>
 
 class CCopasiObjectName;
 class CCopasiContainer;
@@ -69,6 +70,8 @@ class CCopasiObject
                   const CCopasiContainer * pParent = NULL);
 
     virtual ~CCopasiObject();
+
+    virtual print(std::ostream& ostream) {};
 
     virtual const std::string & getName() const;
 
