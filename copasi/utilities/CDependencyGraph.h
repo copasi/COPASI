@@ -7,6 +7,8 @@
  * CDependencyGraphNode describes a node in the dependency graph.
  */
 using std::vector;
+using std::ostream;
+using std::endl;
 
 class CDependencyGraphNode
   {
