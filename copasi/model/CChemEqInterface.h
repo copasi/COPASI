@@ -30,7 +30,7 @@ class CChemEqInterface
     ~CChemEqInterface();
 
     std::string getChemEqString(bool expanded) const;
-    bool setChemEqString(const std::string & ces);
+    void setChemEqString(const std::string & ces);
 
     bool loadFromChemEq(const CModel * model, const CChemEq & ce);
     bool writeToChemEq(const CModel * model, CChemEq & ce) const;
