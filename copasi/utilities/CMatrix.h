@@ -288,38 +288,16 @@ class CUpperTriangularView
     ~CUpperTriangularView() {}
 
     /**
-     * Retrieve a matrix element using the indexing style of the matrix.
-     * @param const unsigned C_INT32 & row
-     * @param const unsigned C_INT32 & col
-     * @return elementType element
+     * The number of rows of the matrix.
+     * @return unsigned C_INT32 rows
      */
-    inline elementType operator()(const unsigned C_INT32 & row,
-                                  const unsigned C_INT32 & col) const
-    {
-      if (row < col)
-      return mA(row, col);
-      else
-        return mZero;
-      }
-    };
+    unsigned C_INT32 numRows() const {return mA.numRows();}
 
-template <class Matrix>
-class CLowerTriangularView
-{
-public:
-  typedef typename Matrix::elementType elementType;
-
-private:
-  const Matrix & mA;
-  elementType mZero;
-
-public:
-  CLowerTriangularView(const Matrix & A, const elementType zero):
-        mA(A),
-        mZero(zero)
-    {}
-
-    ~CLowerTriangularView() {}
+    /**
+     * The number of columns of the matrix
+     * @return unsigned C_INT32 cols
+     */
+    unsigned C_INT32 numCols() const {return mA.numCols();}
 
     /**
      * Retrieve a matrix element using the indexing style of the matrix.
@@ -331,33 +309,135 @@ public:
                                   const unsigned C_INT32 & col) const
     {
       if (row > col)
-      return mA(row, col);
+      return mZero;
       else
-        return mZero;
+        return mA(row, col);
       }
-    };
+
+      /**
+       * Output stream operator
+       * @param ostream & os
+       * @param const CUpperTriangularView< Matrix > & A
+       * @retrun ostream & os
+       */
+      friend ostream &operator<<(ostream &os,
+                                 const CUpperTriangularView< Matrix > & A)
+        {
+          unsigned C_INT32 i, imax = A.numRows();
+          unsigned C_INT32 j, jmax = A.numCols();
+          os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+
+          for (i = 0; i < imax; i++)
+            {
+              for (j = 0; j < jmax; j++)
+                cout << "  " << A(i, j);
+              cout << endl;
+            }
+          return os;
+        }
+  };
+
+template <class Matrix>
+class CLowerTriangularView
+  {
+  public:
+    typedef typename Matrix::elementType elementType;
+
+  private:
+    const Matrix & mA;
+    elementType mZero;
+
+  public:
+    CLowerTriangularView(const Matrix & A, const elementType zero):
+        mA(A),
+        mZero(zero)
+    {}
+
+    ~CLowerTriangularView() {}
+
+    /**
+     * The number of rows of the matrix.
+     * @return unsigned C_INT32 rows
+     */
+    unsigned C_INT32 numRows() const {return mA.numRows();}
+
+    /**
+     * The number of columns of the matrix
+     * @return unsigned C_INT32 cols
+     */
+    unsigned C_INT32 numCols() const {return mA.numCols();}
+
+    /**
+     * Retrieve a matrix element using the indexing style of the matrix.
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return elementType element
+     */
+    inline elementType operator()(const unsigned C_INT32 & row,
+                                  const unsigned C_INT32 & col) const
+    {
+      if (row < col)
+      return mZero;
+      else
+        return mA(row, col);
+      }
+
+      /**
+       * Output stream operator
+       * @param ostream & os
+       * @param const CLowerTriangularView< Matrix > & A
+       * @retrun ostream & os
+       */
+      friend ostream &operator<<(ostream &os,
+                                 const CLowerTriangularView< Matrix > & A)
+        {
+          unsigned C_INT32 i, imax = A.numRows();
+          unsigned C_INT32 j, jmax = A.numCols();
+          os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+
+          for (i = 0; i < imax; i++)
+            {
+              for (j = 0; j < jmax; j++)
+                cout << "  " << A(i, j);
+              cout << endl;
+            }
+          return os;
+        }
+  };
 
 template <class Matrix>
 class CUnitUpperTriangularView
-{
-public:
-  typedef typename Matrix::elementType elementType;
+  {
+  public:
+    typedef typename Matrix::elementType elementType;
 
-private:
-  const Matrix & mA;
-  elementType mZero;
-  elementType mUnit;
+  private:
+    const Matrix & mA;
+    elementType mZero;
+    elementType mUnit;
 
-public:
-  CUnitUpperTriangularView(const Matrix & A,
-                           const elementType zero,
-                           const elementType unit):
+  public:
+    CUnitUpperTriangularView(const Matrix & A,
+                             const elementType zero,
+                             const elementType unit):
         mA(A),
         mZero(zero),
         mUnit(unit)
     {}
 
     ~CUnitUpperTriangularView() {}
+
+    /**
+     * The number of rows of the matrix.
+     * @return unsigned C_INT32 rows
+     */
+    unsigned C_INT32 numRows() const {return mA.numRows();}
+
+    /**
+     * The number of columns of the matrix
+     * @return unsigned C_INT32 cols
+     */
+    unsigned C_INT32 numCols() const {return mA.numCols();}
 
     /**
      * Retrieve a matrix element  using the indexing style of the matrix.
@@ -375,29 +455,63 @@ public:
         else
           return mUnit;
         }
-      };
+
+        /**
+         * Output stream operator
+         * @param ostream & os
+         * @param const CUnitUpperTriangularView< Matrix > & A
+         * @retrun ostream & os
+         */
+        friend ostream &operator<<(ostream &os,
+                                   const CUnitUpperTriangularView< Matrix > & A)
+          {
+            unsigned C_INT32 i, imax = A.numRows();
+            unsigned C_INT32 j, jmax = A.numCols();
+            os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+
+            for (i = 0; i < imax; i++)
+              {
+                for (j = 0; j < jmax; j++)
+                  cout << "  " << A(i, j);
+                cout << endl;
+              }
+            return os;
+          }
+  };
 
 template <class Matrix>
 class CUnitLowerTriangularView
-{
-public:
-  typedef typename Matrix::elementType elementType;
+  {
+  public:
+    typedef typename Matrix::elementType elementType;
 
-private:
-  const Matrix & mA;
-  elementType mZero;
-  elementType mUnit;
+  private:
+    const Matrix & mA;
+    elementType mZero;
+    elementType mUnit;
 
-public:
-  CUnitLowerTriangularView(const Matrix & A,
-                           const elementType zero,
-                           const elementType unit):
+  public:
+    CUnitLowerTriangularView(const Matrix & A,
+                             const elementType zero,
+                             const elementType unit):
         mA(A),
         mZero(zero),
         mUnit(unit)
     {}
 
     ~CUnitLowerTriangularView() {}
+
+    /**
+     * The number of rows of the matrix.
+     * @return unsigned C_INT32 rows
+     */
+    unsigned C_INT32 numRows() const {return mA.numRows();}
+
+    /**
+     * The number of columns of the matrix
+     * @return unsigned C_INT32 cols
+     */
+    unsigned C_INT32 numCols() const {return mA.numCols();}
 
     /**
      * Retrieve a matrix element using the indexing style of the matrix.
@@ -415,21 +529,55 @@ public:
         else
           return mUnit;
         }
-      };
+
+        /**
+         * Output stream operator
+         * @param ostream & os
+         * @param const CUnitLowerTriangularView< Matrix > & A
+         * @retrun ostream & os
+         */
+        friend ostream &operator<<(ostream &os,
+                                   const CUnitLowerTriangularView< Matrix > & A)
+          {
+            unsigned C_INT32 i, imax = A.numRows();
+            unsigned C_INT32 j, jmax = A.numCols();
+            os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+
+            for (i = 0; i < imax; i++)
+              {
+                for (j = 0; j < jmax; j++)
+                  cout << "  " << A(i, j);
+                cout << endl;
+              }
+            return os;
+          }
+  };
 
 template <class Matrix>
 class CTransposeView
-{
-public:
-  typedef typename Matrix::elementType elementType;
+  {
+  public:
+    typedef typename Matrix::elementType elementType;
 
-private:
-  const Matrix & mA;
+  private:
+    const Matrix & mA;
 
-public:
-  CTransposeView(const Matrix & A): mA(A) {}
+  public:
+    CTransposeView(const Matrix & A): mA(A) {}
 
     ~CTransposeView() {}
+
+    /**
+     * The number of rows of the matrix.
+     * @return unsigned C_INT32 rows
+     */
+    unsigned C_INT32 numRows() const {return mA.numCols();}
+
+    /**
+     * The number of columns of the matrix
+     * @return unsigned C_INT32 cols
+     */
+    unsigned C_INT32 numCols() const {return mA.numRows();}
 
     /**
      * Retrieve a matrix element using the indexing style of the matrix.
@@ -440,5 +588,28 @@ public:
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
     {return mA(col, row);}
+
+    /**
+     * Output stream operator
+     * @param ostream & os
+     * @param const CTransposeView< Matrix > & A
+     * @retrun ostream & os
+     */
+    friend ostream &operator<<(ostream &os,
+                               const CTransposeView< Matrix > & A)
+    {
+      unsigned C_INT32 i, imax = A.numRows();
+      unsigned C_INT32 j, jmax = A.numCols();
+      os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+
+      for (i = 0; i < imax; i++)
+        {
+          for (j = 0; j < jmax; j++)
+            cout << "  " << A(i, j);
+          cout << endl;
+        }
+      return os;
+    }
   };
+
 #endif // COPASI_CMatrix
