@@ -43,11 +43,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   setCaption(trUtf8("FunctionWidget1"));
   FunctionWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "FunctionWidget1Layout");
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Function Name:"));
-
-  FunctionWidget1Layout->addWidget(TextLabel1, 0, 0);
-
   TextLabel2 = new QLabel(this, "TextLabel2");
   TextLabel2->setText(trUtf8("Description"));
 
@@ -76,29 +71,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
 
   FunctionWidget1Layout->addMultiCellLayout(Layout1, 11, 11, 0, 1);
 
-  ButtonGroup1 = new QButtonGroup(this, "ButtonGroup1");
-  ButtonGroup1->setFrameShape(QButtonGroup::WinPanel);
-  ButtonGroup1->setTitle(trUtf8(""));
-  ButtonGroup1->setExclusive(TRUE);
-
-  QWidget* privateLayoutWidget = new QWidget(ButtonGroup1, "Layout2");
-  privateLayoutWidget->setGeometry(QRect(70, 20, 400, 20));
-  Layout2 = new QHBoxLayout(privateLayoutWidget, 0, 6, "Layout2");
-
-  RadioButton1 = new QRadioButton(privateLayoutWidget, "RadioButton1");
-  RadioButton1->setText(trUtf8("reversible"));
-  Layout2->addWidget(RadioButton1);
-
-  RadioButton2 = new QRadioButton(privateLayoutWidget, "RadioButton2");
-  RadioButton2->setText(trUtf8("irreversible"));
-  Layout2->addWidget(RadioButton2);
-
-  RadioButton3 = new QRadioButton(privateLayoutWidget, "RadioButton3");
-  RadioButton3->setText(trUtf8("General"));
-  Layout2->addWidget(RadioButton3);
-
-  FunctionWidget1Layout->addWidget(ButtonGroup1, 3, 1);
-
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Parameters"));
 
@@ -119,9 +91,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Description"));
   Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Min"));
   Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Max"));
-  Table2->setNumRows(Table2->numRows() + 1); Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("1"));
-  Table2->setNumRows(Table2->numRows() + 1); Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("2"));
-  Table2->setNumRows(Table2->numRows() + 1); Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("3"));
   Table2->setNumRows(3);
   Table2->setNumCols(3);
 
@@ -140,25 +109,15 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   Line4->setFrameShape(QFrame::HLine);
 
   FunctionWidget1Layout->addMultiCellWidget(Line4, 7, 7, 0, 1);
-  QSpacerItem* spacer_2 = new QSpacerItem(71, 190, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  FunctionWidget1Layout->addItem(spacer_2, 6, 0);
 
   Table1 = new QTable(this, "Table1");
   Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Name"));
   Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Data Type"));
   Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Description"));
-  Table1->setNumRows(Table1->numRows() + 1); Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("1"));
-  Table1->setNumRows(Table1->numRows() + 1); Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("2"));
-  Table1->setNumRows(Table1->numRows() + 1); Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("3"));
   Table1->setNumRows(3);
   Table1->setNumCols(3);
 
   FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 6, 1, 1);
-
-  TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Function Type"));
-
-  FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
 
   Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
@@ -166,6 +125,38 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   Line1->setFrameShape(QFrame::HLine);
 
   FunctionWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 1);
+  QSpacerItem* spacer_2 = new QSpacerItem(71, 190, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  FunctionWidget1Layout->addItem(spacer_2, 6, 0);
+
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Function Name:"));
+
+  FunctionWidget1Layout->addWidget(TextLabel1, 0, 0);
+
+  ButtonGroup1 = new QButtonGroup(this, "ButtonGroup1");
+  ButtonGroup1->setFrameShape(QButtonGroup::WinPanel);
+  ButtonGroup1->setTitle(trUtf8(""));
+  ButtonGroup1->setExclusive(TRUE);
+  ButtonGroup1->setRadioButtonExclusive(TRUE);
+
+  RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
+  RadioButton1->setGeometry(QRect(71, 21, 129, 18));
+  RadioButton1->setText(trUtf8("reversible"));
+
+  RadioButton2 = new QRadioButton(ButtonGroup1, "RadioButton2");
+  RadioButton2->setGeometry(QRect(206, 21, 128, 18));
+  RadioButton2->setText(trUtf8("irreversible"));
+
+  RadioButton3 = new QRadioButton(ButtonGroup1, "RadioButton3");
+  RadioButton3->setGeometry(QRect(340, 21, 129, 18));
+  RadioButton3->setText(trUtf8("General"));
+
+  FunctionWidget1Layout->addWidget(ButtonGroup1, 3, 1);
+
+  TextLabel3 = new QLabel(this, "TextLabel3");
+  TextLabel3->setText(trUtf8("Function Type"));
+
+  FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
 
   // signals and slots connections
   /*** For Cancel Button Clicked ***/
