@@ -485,16 +485,11 @@ void ReactionsWidget1::slotCheckBoxClicked()
 
   ComboBox1->insertStringList(comboEntries, -1);
   QString comboValue = ComboBox1->currentText();
-  comboUpdate(comboValue);
+  slotComboBoxSelectionChanged(comboValue);
   //QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
 }
 
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
-{
-  comboUpdate(p2);
-}
-
-void ReactionsWidget1::comboUpdate(QString p2)
 {
   const string & p1 = p2.latin1();
   CFunction * function = Copasi->FunctionDB.findLoadFunction(p1);
