@@ -101,7 +101,6 @@ class ListViews : public QSplitter
     void ConstructNodeWidgets();
 
     void clearItem(QListViewItem *);
-    void resetCurrentWidgetToModel();
     void clearParentItem(QListViewItem *); // for the top level items to be cleared..
 
     void setupFolders();
@@ -172,6 +171,9 @@ class ListViews : public QSplitter
     ModesWidget *modesWidget;
     ModelWidget *modelWidget;
     TableDefinition *tableDefinition;
+
+  signals:
+    resetWidget(QListViewItem*);
   };
 
 #endif

@@ -195,6 +195,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   connect(folders, SIGNAL(pressed(QListViewItem*)),
           this, SLOT(slotFolderChanged(QListViewItem*)));
 
+  connect(this, SIGNAL(resetWidget(QListViewItem*)), (ListViews*)folders, SIGNAL(pressed(QListViewItem*)));
   attach();
 }
 
@@ -1126,7 +1127,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
 
-      resetCurrentWidgetToModel();
+      emit resetWidget(searchListViewItem(1)); // 1 == modelWidget
       break;
     case STATE:
       //        scanWidget->update(objectType, action, key);
@@ -1190,25 +1191,4 @@ void ListViews::slotHideWidget()
 void ListViews::slotShowWidget()
 {
   currentWidget->show();
-}
-
-void ListViews::resetCurrentWidgetToModel()
-{
-  QListViewItem* modelItem = searchListViewItem(1); // 1 == modelWidget
-  if (modelItem->childCount() != 0)
-    modelItem->setPixmap(0, *folderOpen);
-  FolderListItem *item = (FolderListItem*)modelItem;
-  currentWidget = findWidgetFromItem(item);
-  std::string itemKey = item->folder()->getObjectKey();
-
-  if (currentWidget) ((CopasiWidget*)currentWidget)->enter(itemKey);
-
-  if (lastWidget != currentWidget)
-    {
-      if (lastWidget) lastWidget->hide();
-      if (currentWidget) currentWidget->show();
-    }
-
-  lastWidget = currentWidget;
-  lastKey = itemKey;
 }
