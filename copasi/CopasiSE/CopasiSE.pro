@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2005/02/08 23:32:04 $  
+# $Revision: 1.9 $ $Author: shoops $ $Date: 2005/02/10 19:14:28 $  
 ######################################################################
 
 TEMPLATE = app
@@ -62,6 +62,13 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libtrajectory.a \
                 ../lib/libutilities.a
 }
+
+contains(BUILD_OS, SunOS) {
+  QMAKE_LFLAGS += -z rescan
+
+  LIBS -= -Wl,--start-group
+  LIBS -= -Wl,--end-group
+}  
 
 # Input
 HEADERS += 

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.78 $ $Author: shoops $ $Date: 2005/02/09 14:24:04 $  
+# $Revision: 1.79 $ $Author: shoops $ $Date: 2005/02/10 19:14:28 $  
 ######################################################################
 
 include(../common.pri)
@@ -117,14 +117,9 @@ contains(BUILD_OS, Linux) {
 }
 
 contains(BUILD_OS, SunOS) {
-  release {
-    LIBS += -Wl,-lqt-mt \
-            -Wl,-lpthread
-  }
+  QMAKE_LFLAGS += -z rescan
 
   LIBS += -lICE -ldl
-
-  QMAKE_LFLAGS += -z rescan
 
   LIBS -= -Wl,--start-group
   LIBS -= -Wl,--end-group
