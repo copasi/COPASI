@@ -87,6 +87,10 @@ SOURCE=.\CCopasiXMLParser.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiXMLVersion.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CExpat.h
 # End Source File
 # Begin Source File
