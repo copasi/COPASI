@@ -426,13 +426,17 @@ C_INT32 TestTrajectory(void)
   model.save(outbuf);
   
   Copasi->OutputList.load(inbuf);
-  
+  Copasi->OutputList.save(outbuf);
+
   CTrajectory traj(&model, 20, 10.0, 1);
 
   traj.load(inbuf);
+  traj.save(outbuf);
   traj.getODESolver()->load(inbuf);
   traj.getODESolver()->loadLSODAParameters(inbuf);
-  traj.process();
+  ofstream output("output.txt");
+  
+  traj.process(output);
   traj.cleanup();
 
   return 0;
@@ -546,7 +550,9 @@ C_INT32  TestSSSolution(void)
  
     //do we need set ss_soln.mJacob model here????
  
-    ss_soln.process();
+    ofstream output("output.txt");
+    
+    ss_soln.process(output);
  
     return 0;
 }
@@ -604,10 +610,10 @@ C_INT32  TestOptimization(void)
     ss_soln.process();
     */
 
-    COptimizer opt;
+    //    COptimizer opt;
 
 
-    opt.process();
+    // opt.process();
  
     return 0;
 
