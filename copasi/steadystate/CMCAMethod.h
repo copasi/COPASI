@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 15:29:57 $
+   $Date: 2004/10/26 15:15:46 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -54,6 +54,10 @@ class CMCAMethod: public CCopasiMethod
      * Modulation factor for finite differences derivation
      */
     C_FLOAT64 mFactor;
+
+    C_FLOAT64 mSteadyStateResolution;
+
+    bool mIsSteadyState;
 
   public:
     /**
@@ -164,6 +168,12 @@ class CMCAMethod: public CCopasiMethod
      * Return the mSSx vector for calculate time mca
      */
     std::vector <C_FLOAT64> getSsx();
+
+    void setIsSteadyState(bool isSteadyState);
+
+    void setFactor(C_FLOAT64 factor);
+
+    void setSteadyStateResolution(C_FLOAT64 factor);
 
     /**
      *  Saves the SSReder of the object to a CWriteConfig object.

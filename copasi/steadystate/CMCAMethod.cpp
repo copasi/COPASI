@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/26 11:31:12 $
+   $Date: 2004/10/26 15:15:45 $
    End CVS Header */
 
 #include <cmath>
@@ -28,8 +28,11 @@
 CMCAMethod::CMCAMethod(const CCopasiContainer* pParent): CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent)
 {
   CONSTRUCTOR_TRACE;
-  addParameter("MCA.GFactor",
+  addParameter("MCA.ModulationFactor",
                CCopasiParameter::UDOUBLE, 1.0e-009);
+  mFactor = 1.0e-9;
+  mIsSteadyState = false;
+  mSteadyStateResolution = mFactor;
 }
 
 /**
@@ -39,8 +42,8 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent): CCopasiMethod(CCopasiTa
 CMCAMethod::CMCAMethod(const CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent): CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent)
 {
   CONSTRUCTOR_TRACE;
-  addParameter("MCA.GFactor",
-               CCopasiParameter::UDOUBLE, 1.0e-009);
+  addParameter("MCA.ModulationFactor",
+               CCopasiParameter::UDOUBLE, factor);
 
   mpModel = &model;
 
@@ -50,6 +53,8 @@ CMCAMethod::CMCAMethod(const CModel & model, C_FLOAT64 factor, const CCopasiCont
   mSsx.resize(mpModel->getIndMetab() + 1);
 
   mFactor = factor;
+  mIsSteadyState = false;
+  mSteadyStateResolution = mFactor;
 }
 
 /**
@@ -504,5 +509,30 @@ std::vector <C_FLOAT64> CMCAMethod::getSsx()
 
 bool CMCAMethod::process()
 {
-  return false;
+  // check if current state is a steady state
+  // if not, calculate TimeMCA only
+  if (mIsSteadyState)
+    {
+      CalculateMCA(mIsSteadyState, mSteadyStateResolution);
+    }
+  else
+    {
+      CalculateTimeMCA(mSteadyStateResolution);
+    }
+  return true;
+}
+
+void CMCAMethod::setIsSteadyState(bool isSteadyState)
+{
+  this->mIsSteadyState = isSteadyState;
+}
+
+void CMCAMethod::setFactor(C_FLOAT64 factor)
+{
+  this->mFactor = factor;
+}
+
+void CMCAMethod::setSteadyStateResolution(C_FLOAT64 resolution)
+{
+  this->mSteadyStateResolution = resolution;
 }
