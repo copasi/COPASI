@@ -91,7 +91,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    int Save(ostream* pfout);
+    int Save(CWriteConfig* pconfigbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.

@@ -7,13 +7,11 @@
 
 #include <iostream>
 #include <string>
-// #include <sstream>
 
-using namespace std ;
-
+#include "copasi.h"
 #include "CReadConfig.h"
+#include "CWriteConfig.h"
 #include "CCompartment.h"
-
 
 CCompartment::CCompartment(void)
 {
@@ -87,17 +85,15 @@ int CCompartment::Load(CReadConfig *pconfigbuffer)
 }
 
 
-int CCompartment::Save( ostream *pout )
+int CCompartment::Save( CWriteConfig *pconfigbuffer )
 {
-    // this really should be changed to something like Load
+    mFail = pconfigbuffer->SetVariable((string) "Compartment",
+                                       (string) "string",
+                                       (void *) &mName);
+    if (mFail) return mFail;
 
-    // we don't care about exceptions here.
-    // They should be caught by the calling function
-    // make sure fp numbers come out in scientific notation
-    pout->setf( ios::scientific ); 
-    // compartment objects are just a name and a volume
-    *pout << "Compartment=" << mName << endl;
-    *pout << "Volume=" << mVolume << endl;
-
+    mFail = pconfigbuffer->SetVariable((string) "Volume", 
+                                       (string) "double",
+                                       (void *) &mVolume);
     return mFail;
 }

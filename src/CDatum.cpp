@@ -12,9 +12,9 @@
 #include <iostream>
 #include <string>
 
-using namespace std ;
-
+#include "copasi.h"
 #include "CReadConfig.h"
+#include "CWriteConfig.h"
 #include "CDatum.h"
 
 
@@ -48,16 +48,21 @@ CDatum& CDatum::operator=(CDatum &ptRHS)
     return *this;
 }
 
-int CDatum::Save(ostream* pout)
+int CDatum::Save(CWriteConfig *pconfigbuffer)
 {
     // this really should be changed to something like Load
     // TO BE DONE SOON
 
     // make sure fp numbers come out in scientific notation
-    pout->setf( ios::scientific ); 
+    mFail = pconfigbuffer->SetVariable((string) "Title", 
+                                       (string) "string",
+                                       (void *) &mTitle);
+    if (mFail) return mFail;
 
-    *pout << "Title=" << mTitle << endl;
-    *pout << "Type=" << mType << endl;
+    mFail = pconfigbuffer->SetVariable((string) "Type", 
+                                       (string) "int",
+                                       (void *) &mType);
+    if (mFail) return mFail;
 
     // there may be 0 or 1 mI and mJ references
     switch (mType)
@@ -95,14 +100,23 @@ int CDatum::Save(ostream* pout)
         case D_MOIT:
         case D_TT:
         case D_EIGVR:
-        case D_EIGVI:   *pout << "I=" << mI << endl;
+        case D_EIGVI:   mFail = pconfigbuffer->SetVariable((string) "I", 
+                                                           (string) "string",
+                                                           (void *) &mI);
+                        if (mFail) return mFail;
                         break;
         case D_KIN:     // Fall through as all have mI and mJ
         case D_ELAST:
         case D_CCC:
         case D_FCC:
-        case D_EIG:     *pout << "I=" << mI << endl;
-                        *pout << "J=" << mJ << endl;
+        case D_EIG:     mFail = pconfigbuffer->SetVariable((string) "I", 
+                                                           (string) "int",
+                                                           (void *) &mI);
+                        if (mFail) return mFail;
+                        mFail = pconfigbuffer->SetVariable((string) "J", 
+                                                           (string) "string",
+                                                           (void *) &mJ);
+                        if (mFail) return mFail;
                         break;
         default:        mFail = 1; // we should never get here!
     }

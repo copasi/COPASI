@@ -117,7 +117,7 @@ int TestCompartment(void)
     cout << "creating a CCompartment object..." << endl;
     CCompartment c;
     cout << "Opening an output stream" << endl;
-    ofstream of("test.txt");
+    CWriteConfig of("test.txt");
     c.Save(&of);
 	    
     CCompartment *d = NULL;
@@ -128,8 +128,6 @@ int TestCompartment(void)
     d[0].Save(&of);
 
     c=d[0];
-
-    of.close();
 
     delete [] d;
 
@@ -149,9 +147,8 @@ int TestDatum(void)
     cout << "creating a CDatum object..." << endl;
     CDatum d((string)"[medicarpin]t", D_TCONC, (string)"medicarpin", (string)"", &doublevariable);
     cout << "Opening an output stream" << endl;
-    ofstream of("test2.txt");
+    CWriteConfig of("test2.txt");
     d.Save(&of);
-    of.close();
 
     CReadConfig Specific((string) "test2.txt");
     CDatum* e;
@@ -160,9 +157,9 @@ int TestDatum(void)
     Specific.Free();
     e[1] = e[0];
     cout << "Opening another output stream" << endl;
-    ofstream of2("test3.txt");
+    CWriteConfig of2("test3.txt");
     e[1].Save(&of2);
-    of2.close();
+
     delete [] e;
 
     return 0;
