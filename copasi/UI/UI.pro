@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.25 $ $Author: shoops $ $Date: 2004/02/19 03:00:41 $  
+# $Revision: 1.26 $ $Author: shoops $ $Date: 2004/02/19 03:33:50 $  
 ######################################################################
 
 include(../common.pri)
@@ -88,6 +88,8 @@ contains(BUILD_OS, WIN32) {
 
 contains(BUILD_OS, SunOS) {
   LIBS += -lICE -ldl
+  LIBS -= -Wl,-lXft \ 
+          -Wl,-lXcursor 
 }  
 
 # Input
