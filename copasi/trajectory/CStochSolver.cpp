@@ -156,8 +156,10 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
         new_num = bal->getMetabolite().getNumber() + bal->getMultiplicity();
         bal->getMetabolite().setNumber(new_num);
     }
+
     // Update the model to take into account the new particle numbers
-    mModel->setConcentrations();
+    /* :TODO: setConcentrations takes an array of particle numbers !!! */
+    // mModel->setConcentrations();
     return 0;
 }
 
@@ -329,7 +331,7 @@ set<CMetab> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
     {
         retset->insert(balances[i].getMetabolite());
     }
-#endif 0
+#endif // 0
 //#if 0
     // Get the reaction associated with this index
     CReaction *react = mModel->getReactions()[reaction_index];
