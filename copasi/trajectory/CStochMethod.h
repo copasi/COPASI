@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/19 20:58:58 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:59:51 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -229,8 +229,8 @@ class CStochMethod : public CTrajectoryMethod
      */
     std::vector <C_INT32> mNumbers;
 
-    C_INT32 mNumReactions;
-    C_INT32 mNumNumbers;
+    unsigned C_INT32 mNumReactions;
+    unsigned C_INT32 mNumNumbers;
   };
 
 //#include "CStochDirectMethod.h"

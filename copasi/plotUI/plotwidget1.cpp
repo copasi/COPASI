@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 17:02:56 $
+   $Date: 2004/04/19 08:56:06 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.6 2004/01/14 17:02:56 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.7 2004/04/19 08:56:06 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -285,7 +285,7 @@ bool PlotWidget1::enter(const std::string & key)
 
 //-----------------------------------------------------------------------------
 
-bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {//TODO: check list:
