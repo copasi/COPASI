@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/25 10:52:14 $
+   $Author: stupe $ 
+   $Date: 2005/01/25 21:56:50 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -110,12 +110,12 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, WFlags fl)
   connect(revertButton, SIGNAL(clicked()), this, SLOT(revertPressed()));
 
   connect(listView, SIGNAL(clicked(QListViewItem*, const QPoint &, int)),
-           this, SLOT(editItem(QListViewItem*, const QPoint &, int)));
+          this, SLOT(editItem(QListViewItem*, const QPoint &, int)));
 
   connect(listView, SIGNAL(returnPressed(QListViewItem*)),
-           this, SLOT(editItem(QListViewItem*)));
+          this, SLOT(editItem(QListViewItem*)));
   connect(listView, SIGNAL(spacePressed(QListViewItem*)),
-           this, SLOT(editItem(QListViewItem*)));
+          this, SLOT(editItem(QListViewItem*)));
 }
 
 /*
@@ -185,6 +185,8 @@ bool ParametersWidget::loadFromModel()
 
 bool ParametersWidget::saveToModel() const
   {
+    // please check this -- I added this because of compilation error - sameer
+    return true;
   }
 
 //slot
