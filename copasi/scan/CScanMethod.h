@@ -13,6 +13,7 @@
 #include "utilities/CMethodParameterList.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "report/CReport.h"
 
 class CScanProblem;
 class CSteadyStateTask;
@@ -68,7 +69,7 @@ class CScanMethod
     /**
      *  The main scan method.
      */
-    void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*call_back_report)());
+    void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
   };
 
 #endif // COPASI_CTrajectoryMethod

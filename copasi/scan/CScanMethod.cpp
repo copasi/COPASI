@@ -31,12 +31,12 @@ CScanMethod * CScanMethod::createMethod() {return new CScanMethod;}
 CScanMethod::CScanMethod()
 {}
 
-CScanMethod::CScanMethod(const CScanMethod & src)
+CScanMethod::CScanMethod(const CScanMethod & C_UNUSED(src))
 {}
 
 CScanMethod::~CScanMethod(){}
 
-void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*call_back_report)())
+void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport)
 {
   unsigned C_INT32 scanDimension = scanProblem->getListSize();
   unsigned C_INT32 i, next, top;
@@ -83,12 +83,12 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*call_back_r
       //different from SD_REGULR by initial value
       for (i = 0; i < scanProblem->getScanItemParameter(s, "density"); i++)
         {
-          if (s != 0) scan(next, false, call_back_report);
+          if (s != 0) scan(next, false, pCallback, pReport);
           else
             // some function
             {
               simulate();
-              call_back_report();
+              pCallback(pReport);
             }
           scanProblem->setScanParameterValue(i, s, top);
         }
@@ -100,12 +100,12 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*call_back_r
       for (i = 1; i <= scanProblem->getScanItemParameter(s, "density"); i++)
         {
           if (s != 0)
-            scan(next, false, call_back_report);
+            scan(next, false, pCallback, pReport);
           else
             // some function
             {
               simulate();
-              call_back_report();
+              pCallback(pReport);
             }
           scanProblem->setScanParameterValue(i, s, top);
         }

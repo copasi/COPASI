@@ -24,13 +24,12 @@ class CScanTask : public CCopasiContainer
     //Attributes
   private:
 
-    static CReport * mReport;
+    CReport * mReport;
+
     /**
      * Flag indicating whether the task shall be executed by CopasiSE
      */
     bool mRequested;
-
-    static void call_back_report();
 
     /**
      * A pointer to the problem to be integrated.
