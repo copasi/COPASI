@@ -279,7 +279,7 @@ void SteadyStateWidget::RunTask()
       mb.exec();
     }
   //  emit runFinished(mSteadyStateTask->getProblem()->getModel());
-  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::ADD, dataModel->getModel()->getKey());
+  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
 
   unsetCursor();
 }

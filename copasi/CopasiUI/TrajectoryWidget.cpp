@@ -320,7 +320,7 @@ void TrajectoryWidget::RunTask()
 
   tt->process();
 
-  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::ADD, dataModel->getModel()->getKey());
+  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
 
   //emit runFinished(dataModel->getTrajectoryTask()->getProblem()->getModel());
 
