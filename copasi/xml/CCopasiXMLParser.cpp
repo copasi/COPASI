@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/05 10:06:15 $
+   $Author: shoops $ 
+   $Date: 2004/10/21 17:25:52 $
    End CVS Header */
 
 /**
@@ -1049,7 +1049,18 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
     case Comment:
       if (strcmp(pszName, "Comment")) fatalError();
       mCommon.Comment = mParser.getCharacterData();
-      // mCommon.pModel->setComments(mParser.getCharacterData());
+
+      {
+        // remove leading whitepsaces
+        std::string::size_type pos = mCommon.Comment.find_first_not_of("\x0a\x0d\t ");
+        if (pos != 0) mCommon.Comment.erase(0, pos);
+
+        // remove trailing whitepsace
+        pos = mCommon.Comment.find_last_not_of("\x0a\x0d\t ");
+        if (pos < mCommon.Comment.length())
+          mCommon.Comment = mCommon.Comment.substr(0, pos + 1);
+      }
+
       mParser.popElementHandler();
       mCurrentElement = -1;
 
