@@ -1473,16 +1473,18 @@ C_INT32 CModel::addMetabolite(const std::string & comp,
   C_INT32 c;
 
   c = findCompartment(comp);
-  if (c == -1)
-    return - 1;
-  if (findMetab(name) != -1)
-    return - 1;
+
+  if (c == -1) return - 1;
+  if (findMetab(name) != -1) return - 1;
+
   metab.setModel(this);
   metab.setCompartment(mCompartments[c]);
   metab.setName(name);
   metab.setStatus(status);
   metab.setInitialConcentration(iconc);
   mCompartments[c]->addMetabolite(metab);
+  mMetabolites.add(mCompartments[c]->getMetabolites()[name]);
+
   return 0;
 }
 
@@ -1492,9 +1494,9 @@ C_INT32 CModel::addCompartment(std::string &name, C_FLOAT64 vol)
   if (findCompartment(name) == -1)
     {
       //  cpt = new CCompartment(name, vol);
-      CCompartment *cpt = new CCompartment();
-      cpt->setName(name);
-      cpt->setVolume(vol);
+      CCompartment cpt;
+      cpt.setName(name);
+      cpt.setVolume(vol);
 
       mCompartments.add(cpt);
       return mCompartments.size();
