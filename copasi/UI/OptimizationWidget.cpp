@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/18 16:45:24 $
+   $Date: 2003/10/18 16:59:49 $
    End CVS Header */
 
 /********************************************************
@@ -823,12 +823,11 @@ void OptimizationWidget::slotBtnConfirmClicked()
       func->mMinOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerOper());
       func->mMaxOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperOper());
     }
-  //  func->compile();
+
   bool up;
-  try
+  for (i = 0; i < func->mParaList.size(); i++)
     {
-      int i;
-      for (i = 0; i < func->mParaList.size(); i++)
+      try
         {
           if (func->mMinList[i] != "-inf")
             {
@@ -848,35 +847,34 @@ void OptimizationWidget::slotBtnConfirmClicked()
               // will automatically call the compile function for CKinFunction
             }
         }
-    }
-  catch (CCopasiException Exception)
-    {
-      i--; //restore i value
-      std::string warning_msg = "Invalid function expression. with common name<";
-      warning_msg += func->mParaList[i]->getCN().c_str();
-      if (up)
-        warning_msg += ">\n Please check the upper bound function again \n";
-      else
-        warning_msg += ">\n Please check the lower bound function again \n";
-      warning_msg += "Do you still want to keep your input ? \nPress <Yes> to keep.";
-
-      if (QMessageBox::warning(this, "Invalid Function Input",
-                               warning_msg.c_str(),
-                               QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+      catch (CCopasiException Exception)
         {
-          activeObject = i;
+          std::string warning_msg = "Invalid function expression. with common name<";
+          warning_msg += func->mParaList[i]->getCN().c_str();
           if (up)
-            {
-              func->mMaxList[i] = "";
-              ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineUpper->setText("");
-            }
+            warning_msg += ">\n Please check the upper bound function again \n";
           else
+            warning_msg += ">\n Please check the lower bound function again \n";
+          warning_msg += "Do you still want to keep your input ? \nPress <Yes> to keep.";
+
+          if (QMessageBox::warning(this, "Invalid Function Input",
+                                   warning_msg.c_str(),
+                                   QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
             {
-              func->mMinList[i] = "";
-              ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineLower->setText("");
-            }
-        }
-    }
+              activeObject = i;
+              if (up)
+                {
+                  func->mMaxList[i] = "";
+                  ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineUpper->setText("");
+                }
+              else
+                {
+                  func->mMinList[i] = "";
+                  ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineLower->setText("");
+                }
+            } //end of if
+        } //end of catch
+    } //end of for
 }
 
 void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)
