@@ -5,17 +5,52 @@
 	};
 	objectVersion = 38;
 	objects = {
-		014CEA460018CE2711CA2923 = {
+		1996A67D07D6A31B00A80068 = {
+			children = (
+				1996A93A07D6A3C900A80068,
+				1996A94C07D6A3C900A80068,
+				1996A95107D6A3C900A80068,
+				1996A95507D6A3C900A80068,
+				1996AA3507D6A3CA00A80068,
+				1996AA4507D6A3CA00A80068,
+				1996AA6207D6A3CA00A80068,
+				1996AA7107D6A3CA00A80068,
+				1996AA7607D6A3CA00A80068,
+				1996AA9A07D6A3CA00A80068,
+				1996AAB707D6A3CA00A80068,
+				1996AAB807D6A3CA00A80068,
+				1996AAD407D6A3CA00A80068,
+				1996AAD707D6A3CA00A80068,
+				1996AAE007D6A3CA00A80068,
+				1996AAF607D6A3CA00A80068,
+				1996AB0307D6A3CA00A80068,
+				1996AB0C07D6A3CA00A80068,
+				1996AB2107D6A3CA00A80068,
+				1996AB2507D6A3CA00A80068,
+				1996AB3E07D6A3CA00A80068,
+				1996AB6A07D6A3CA00A80068,
+				1996AB8407D6A3CA00A80068,
+				1996A93907D6A3C900A80068,
+				1996A94307D6A3C900A80068,
+				1996A94607D6A3C900A80068,
+				1996A94B07D6A3C900A80068,
+				1996AA2F07D6A3CA00A80068,
+				1996AA4407D6A3CA00A80068,
+				1996AA5F07D6A3CA00A80068,
+				1996AA6107D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			refType = 4;
+		};
+		1996A67F07D6A31B00A80068 = {
 			buildRules = (
 			);
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				OPTIMIZATION_CFLAGS = "-O0";
 			};
 			isa = PBXBuildStyle;
 			name = Development;
 		};
-		014CEA470018CE2711CA2923 = {
+		1996A68007D6A31B00A80068 = {
 			buildRules = (
 			);
 			buildSettings = {
@@ -24,2225 +59,4109 @@
 			isa = PBXBuildStyle;
 			name = Deployment;
 		};
-//010
-//011
-//012
-//013
-//014
-//020
-//021
-//022
-//023
-//024
-		0249A662FF388D9811CA2CEA = {
-			children = (
-				0249A663FF388D9811CA2CEA,
-				EDE70CBCC5B04B760352A85A,
-				EDE70CBEC5B04C890352A85A,
-				EDE70D79C5B077FB0352A85A,
-				EDE70D87C5B079460352A85A,
-				EDE70E1AC5B079760352A85A,
-				EDE70E2DC5B0798D0352A85A,
-				ED523390046DA93A03C9C501,
-			);
-			isa = PBXGroup;
-			name = "External Frameworks and Libraries";
-			refType = 4;
-		};
-		0249A663FF388D9811CA2CEA = {
-			isa = PBXFileReference;
-			name = "libstdc++.a";
-			path = "/usr/lib/libstdc++.a";
-			refType = 0;
-		};
-//020
-//021
-//022
-//023
-//024
-//080
-//081
-//082
-//083
-//084
-		08FB7793FE84155DC02AAC07 = {
+		1996A68107D6A31B00A80068 = {
 			buildStyles = (
-				014CEA460018CE2711CA2923,
-				014CEA470018CE2711CA2923,
+				1996A67F07D6A31B00A80068,
+				1996A68007D6A31B00A80068,
 			);
+			hasScannedForEncodings = 1;
 			isa = PBXProject;
-			mainGroup = 08FB7794FE84155DC02AAC07;
+			mainGroup = 1996A67D07D6A31B00A80068;
 			projectDirPath = "";
 			targets = (
-				ED5DCB0E047A9DD803B0BD8E,
+				1996AB9207D6A54600A80068,
 			);
 		};
-		08FB7794FE84155DC02AAC07 = {
+		1996A93907D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = clapackwrap.h;
+			refType = 4;
+		};
+		1996A93A07D6A3C900A80068 = {
 			children = (
-				EDE70F5EC5B07C7C0352A85A,
-				ED523117046DA6DE03C9C501,
-				ED523180046DA6DE03C9C501,
-				EDACF9A90475B8F50352A85A,
-				ED5231AB046DA6DE03C9C501,
-				ED5DC9FD047712BB03B0BD8E,
-				ED5231BB046DA6DE03C9C501,
-				ED5231CB046DA6DE03C9C501,
-				ED1507B005C5C6C103AD62C7,
-				ED5231E4046DA6DE03C9C501,
-				ED5231EE046DA6DE03C9C501,
-				ED5231FB046DA6DE03C9C501,
-				ED523205046DA6DE03C9C501,
-				ED523215046DA6DE03C9C501,
-				ED52322B046DA6DE03C9C501,
-				ED52324D046DA6DE03C9C501,
-				C6859E8C029090F304C91782,
-				0249A662FF388D9811CA2CEA,
-				1AB674ADFE9D54B511CA2CBB,
-				EDE70F54C5B07C7C0352A85A,
-				ED523116046DA6DE03C9C501,
-				ED523190046DA6DE03C9C501,
-				ED5DCA230477C3D203B0BD8E,
-				ED1507AF05C5C69B03AD62C7,
-			);
-			isa = PBXGroup;
-			name = copasi;
-			refType = 4;
-		};
-//080
-//081
-//082
-//083
-//084
-//1A0
-//1A1
-//1A2
-//1A3
-//1A4
-		1AB674ADFE9D54B511CA2CBB = {
-			children = (
-			);
-			isa = PBXGroup;
-			name = Products;
-			refType = 4;
-		};
-//1A0
-//1A1
-//1A2
-//1A3
-//1A4
-//C60
-//C61
-//C62
-//C63
-//C64
-		C6859E8B029090EE04C91782 = {
-			isa = PBXFileReference;
-			path = copasi.1;
-			refType = 4;
-		};
-		C6859E8C029090F304C91782 = {
-			children = (
-				C6859E8B029090EE04C91782,
-			);
-			isa = PBXGroup;
-			name = Documentation;
-			refType = 4;
-		};
-//C60
-//C61
-//C62
-//C63
-//C64
-//ED0
-//ED1
-//ED2
-//ED3
-//ED4
-		ED1507AF05C5C69B03AD62C7 = {
-			isa = PBXFileReference;
-			path = common.pri;
-			refType = 4;
-		};
-		ED1507B005C5C6C103AD62C7 = {
-			children = (
-				ED1507B105C5C6C103AD62C7,
-				ED1507B205C5C6C103AD62C7,
-				ED1507B305C5C6C103AD62C7,
-				ED1507B405C5C6C103AD62C7,
-				ED1507B505C5C6C103AD62C7,
-				ED1507B605C5C6C103AD62C7,
-				ED1507B705C5C6C103AD62C7,
-				ED1507B805C5C6C103AD62C7,
-				ED1507B905C5C6C103AD62C7,
-				ED1507BA05C5C6C103AD62C7,
-				ED1507BB05C5C6C103AD62C7,
-				ED1507BC05C5C6C103AD62C7,
-				ED1507BE05C5C6C103AD62C7,
-				ED1507BF05C5C6C103AD62C7,
-				ED1507C005C5C6C103AD62C7,
-				ED1507C105C5C6C103AD62C7,
-				ED1507C205C5C6C103AD62C7,
-				ED1507C305C5C6C103AD62C7,
-				ED1507C405C5C6C103AD62C7,
-				ED1507C505C5C6C103AD62C7,
-				ED1507C605C5C6C103AD62C7,
-			);
-			isa = PBXGroup;
-			path = plot;
-			refType = 2;
-		};
-		ED1507B105C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = CopasiPlot.cpp;
-			refType = 4;
-		};
-		ED1507B205C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = CopasiPlot.h;
-			refType = 4;
-		};
-		ED1507B305C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = CPlotSpec.cpp;
-			refType = 4;
-		};
-		ED1507B405C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = CPlotSpec.h;
-			refType = 4;
-		};
-		ED1507B505C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = CPlotSpecVector.cpp;
-			refType = 4;
-		};
-		ED1507B605C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = CPlotSpecVector.h;
-			refType = 4;
-		};
-		ED1507B705C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = curve2dwidget.cpp;
-			refType = 4;
-		};
-		ED1507B805C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = curve2dwidget.h;
-			refType = 4;
-		};
-		ED1507B905C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = curve2dwidget.ui;
-			refType = 4;
-		};
-		ED1507BA05C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = curve2dwidget.ui.h;
-			refType = 4;
-		};
-		ED1507BB05C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = doublerect.cpp;
-			refType = 4;
-		};
-		ED1507BC05C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = doublerect.h;
-			refType = 4;
-		};
-		ED1507BE05C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = plot.pro;
-			refType = 4;
-		};
-		ED1507BF05C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = plotspec.h;
-			refType = 4;
-		};
-		ED1507C005C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = plotwidget1.cpp;
-			refType = 4;
-		};
-		ED1507C105C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = plotwidget1.h;
-			refType = 4;
-		};
-		ED1507C205C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = plotwidget1.ui;
-			refType = 4;
-		};
-		ED1507C305C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = plotwindow.cpp;
-			refType = 4;
-		};
-		ED1507C405C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = plotwindow.h;
-			refType = 4;
-		};
-		ED1507C505C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = zoomplot.cpp;
-			refType = 4;
-		};
-		ED1507C605C5C6C103AD62C7 = {
-			isa = PBXFileReference;
-			path = zoomplot.h;
-			refType = 4;
-		};
-		ED1507CA05C60F4503AD62C7 = {
-			isa = PBXFileReference;
-			path = CChemEqInterface.cpp;
-			refType = 4;
-		};
-		ED1507CB05C60F4503AD62C7 = {
-			isa = PBXFileReference;
-			path = CChemEqInterface.h;
-			refType = 4;
-		};
-		ED1507CC05C60F4503AD62C7 = {
-			isa = PBXFileReference;
-			path = CMetabNameInterface.cpp;
-			refType = 4;
-		};
-		ED1507CD05C60F4503AD62C7 = {
-			isa = PBXFileReference;
-			path = CMetabNameInterface.h;
-			refType = 4;
-		};
-		ED523116046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = copasi.h;
-			refType = 4;
-		};
-		ED523117046DA6DE03C9C501 = {
-			children = (
-				ED523118046DA6DE03C9C501,
-				ED523119046DA6DE03C9C501,
-				ED52311B046DA6DE03C9C501,
-				ED52311C046DA6DE03C9C501,
-				ED52311D046DA6DE03C9C501,
-				ED52311E046DA6DE03C9C501,
-				ED52311F046DA6DE03C9C501,
-				ED523120046DA6DE03C9C501,
-				ED523123046DA6DE03C9C501,
-				ED523124046DA6DE03C9C501,
-				ED523125046DA6DE03C9C501,
-				ED523126046DA6DE03C9C501,
-				ED523127046DA6DE03C9C501,
-				ED523128046DA6DE03C9C501,
-				ED523129046DA6DE03C9C501,
-				ED52312A046DA6DE03C9C501,
-				ED52312B046DA6DE03C9C501,
-				ED52312C046DA6DE03C9C501,
-				ED52312D046DA6DE03C9C501,
-				ED52312E046DA6DE03C9C501,
-				ED52312F046DA6DE03C9C501,
-				ED523130046DA6DE03C9C501,
-				ED523131046DA6DE03C9C501,
-				ED523132046DA6DE03C9C501,
-				ED523133046DA6DE03C9C501,
-				ED523135046DA6DE03C9C501,
-				ED523144046DA6DE03C9C501,
-				ED523145046DA6DE03C9C501,
-				ED523146046DA6DE03C9C501,
-				ED523149046DA6DE03C9C501,
-				ED52314A046DA6DE03C9C501,
-				ED52314B046DA6DE03C9C501,
-				ED52314C046DA6DE03C9C501,
-				ED52314E046DA6DE03C9C501,
-				ED52314F046DA6DE03C9C501,
-				ED523150046DA6DE03C9C501,
-				ED523151046DA6DE03C9C501,
-				ED523152046DA6DE03C9C501,
-				ED523153046DA6DE03C9C501,
-				ED523154046DA6DE03C9C501,
-				ED523155046DA6DE03C9C501,
-				ED523156046DA6DE03C9C501,
-				ED523157046DA6DE03C9C501,
-				ED523158046DA6DE03C9C501,
-				ED523159046DA6DE03C9C501,
-				ED52315B046DA6DE03C9C501,
-				ED52315C046DA6DE03C9C501,
-				ED52315D046DA6DE03C9C501,
-				ED52315E046DA6DE03C9C501,
-				ED52315F046DA6DE03C9C501,
-				ED523160046DA6DE03C9C501,
-				ED523162046DA6DE03C9C501,
-				ED523163046DA6DE03C9C501,
-				ED523164046DA6DE03C9C501,
-				ED523165046DA6DE03C9C501,
-				ED523167046DA6DE03C9C501,
-				ED523168046DA6DE03C9C501,
-				ED523169046DA6DE03C9C501,
-				ED52316A046DA6DE03C9C501,
-				ED52316B046DA6DE03C9C501,
-				ED52316C046DA6DE03C9C501,
-				ED52316D046DA6DE03C9C501,
-				ED52316E046DA6DE03C9C501,
-				ED52316F046DA6DE03C9C501,
-				ED523173046DA6DE03C9C501,
-				ED523174046DA6DE03C9C501,
-				ED523175046DA6DE03C9C501,
-				ED523176046DA6DE03C9C501,
-				ED523178046DA6DE03C9C501,
-				ED523179046DA6DE03C9C501,
-				ED52317A046DA6DE03C9C501,
-				ED52317B046DA6DE03C9C501,
-				ED52317C046DA6DE03C9C501,
-				ED52317D046DA6DE03C9C501,
-				ED52317F046DA6DE03C9C501,
-			);
-			isa = PBXGroup;
-			path = CopasiUI;
-			refType = 4;
-		};
-		ED523118046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CompartmentsWidget.cpp;
-			refType = 4;
-		};
-		ED523119046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CompartmentsWidget.h;
-			refType = 4;
-		};
-		ED52311B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CompartmentsWidget1.cpp;
-			refType = 4;
-		};
-		ED52311C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CompartmentsWidget1.h;
-			refType = 4;
-		};
-		ED52311D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CompartmentSymbols.cpp;
-			refType = 4;
-		};
-		ED52311E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CompartmentSymbols.h;
-			refType = 4;
-		};
-		ED52311F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ConstantSymbols.cpp;
-			refType = 4;
-		};
-		ED523120046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ConstantSymbols.h;
-			refType = 4;
-		};
-		ED523123046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = copasiui3window.cpp;
-			refType = 4;
-		};
-		ED523124046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = copasiui3window.h;
-			refType = 4;
-		};
-		ED523125046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = copasiWidget.cpp;
-			refType = 4;
-		};
-		ED523126046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = copasiWidget.h;
-			refType = 4;
-		};
-		ED523127046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CReactionInterface.cpp;
-			refType = 4;
-		};
-		ED523128046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CReactionInterface.h;
-			refType = 4;
-		};
-		ED523129046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = DataModel.h;
-			refType = 4;
-		};
-		ED52312A046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = DifferentialEquations.cpp;
-			refType = 4;
-		};
-		ED52312B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = DifferentialEquations.h;
-			refType = 4;
-		};
-		ED52312C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = FixedMetaboliteSymbols.cpp;
-			refType = 4;
-		};
-		ED52312D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = FixedMetaboliteSymbols.h;
-			refType = 4;
-		};
-		ED52312E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = FunctionSymbols.cpp;
-			refType = 4;
-		};
-		ED52312F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = FunctionSymbols.h;
-			refType = 4;
-		};
-		ED523130046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = FunctionWidget.cpp;
-			refType = 4;
-		};
-		ED523131046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = FunctionWidget.h;
-			refType = 4;
-		};
-		ED523132046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = FunctionWidget1.cpp;
-			refType = 4;
-		};
-		ED523133046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = FunctionWidget1.h;
-			refType = 4;
-		};
-		ED523135046DA6DE03C9C501 = {
-			children = (
-				ED523136046DA6DE03C9C501,
-				ED523137046DA6DE03C9C501,
-				ED523138046DA6DE03C9C501,
-				ED523139046DA6DE03C9C501,
-				ED52313A046DA6DE03C9C501,
-				ED52313B046DA6DE03C9C501,
-				ED52313C046DA6DE03C9C501,
-				ED52313D046DA6DE03C9C501,
-				ED52313E046DA6DE03C9C501,
-				ED52313F046DA6DE03C9C501,
-				ED523140046DA6DE03C9C501,
-				ED523141046DA6DE03C9C501,
-				ED523142046DA6DE03C9C501,
-				ED523143046DA6DE03C9C501,
-			);
-			isa = PBXGroup;
-			path = icons;
-			refType = 4;
-		};
-		ED523136046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = fileopen.xpm;
-			refType = 4;
-		};
-		ED523137046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = fileprint.xpm;
-			refType = 4;
-		};
-		ED523138046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = filesave.xpm;
-			refType = 4;
-		};
-		ED523139046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = folderclosed.xpm;
-			refType = 4;
-		};
-		ED52313A046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = folderlocked.xpm;
-			refType = 4;
-		};
-		ED52313B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = folderopen.xpm;
-			refType = 4;
-		};
-		ED52313C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = locked.xpm;
-			refType = 4;
-		};
-		ED52313D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = modifier.xpm;
-			refType = 4;
-		};
-		ED52313E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = objectAll.xpm;
-			refType = 4;
-		};
-		ED52313F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = objectNone.xpm;
-			refType = 4;
-		};
-		ED523140046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = objectParts.xpm;
-			refType = 4;
-		};
-		ED523141046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = product.xpm;
-			refType = 4;
-		};
-		ED523142046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = substrate.xpm;
-			refType = 4;
-		};
-		ED523143046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = unlocked.xpm;
-			refType = 4;
-		};
-		ED523144046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = listviews.cpp;
-			refType = 4;
-		};
-		ED523145046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = listviews.h;
-			refType = 4;
-		};
-		ED523146046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = main.cpp;
-			refType = 4;
-		};
-		ED523149046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MetabolitesWidget.cpp;
-			refType = 4;
-		};
-		ED52314A046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MetabolitesWidget.h;
-			refType = 4;
-		};
-		ED52314B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MetabolitesWidget1.cpp;
-			refType = 4;
-		};
-		ED52314C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MetabolitesWidget1.h;
-			refType = 4;
-		};
-		ED52314E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MetaboliteSymbols.cpp;
-			refType = 4;
-		};
-		ED52314F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MetaboliteSymbols.h;
-			refType = 4;
-		};
-		ED523150046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ModelWidget.cpp;
-			refType = 4;
-		};
-		ED523151046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ModelWidget.h;
-			refType = 4;
-		};
-		ED523152046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ModesWidget.cpp;
-			refType = 4;
-		};
-		ED523153046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ModesWidget.h;
-			refType = 4;
-		};
-		ED523154046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MoietiesWidget.cpp;
-			refType = 4;
-		};
-		ED523155046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MoietiesWidget.h;
-			refType = 4;
-		};
-		ED523156046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MoietyWidget.cpp;
-			refType = 4;
-		};
-		ED523157046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MoietyWidget.h;
-			refType = 4;
-		};
-		ED523158046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MoietyWidget1.cpp;
-			refType = 4;
-		};
-		ED523159046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MoietyWidget1.h;
-			refType = 4;
-		};
-		ED52315B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MyLineEdit.cpp;
-			refType = 4;
-		};
-		ED52315C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MyLineEdit.h;
-			refType = 4;
-		};
-		ED52315D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MyTable.cpp;
-			refType = 4;
-		};
-		ED52315E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = MyTable.h;
-			refType = 4;
-		};
-		ED52315F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ObjectBrowser.cpp;
-			refType = 4;
-		};
-		ED523160046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ObjectBrowser.h;
-			refType = 4;
-		};
-		ED523162046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ObjectBrowserItem.cpp;
-			refType = 4;
-		};
-		ED523163046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ObjectBrowserItem.h;
-			refType = 4;
-		};
-		ED523164046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = objectdebug.cpp;
-			refType = 4;
-		};
-		ED523165046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = objectdebug.h;
-			refType = 4;
-		};
-		ED523167046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = objectdebug.ui.h;
-			refType = 4;
-		};
-		ED523168046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = Observer.cpp;
-			refType = 4;
-		};
-		ED523169046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = Observer.h;
-			refType = 4;
-		};
-		ED52316A046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = parametertable.cpp;
-			refType = 4;
-		};
-		ED52316B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = parametertable.h;
-			refType = 4;
-		};
-		ED52316C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ReactionsWidget.cpp;
-			refType = 4;
-		};
-		ED52316D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ReactionsWidget.h;
-			refType = 4;
-		};
-		ED52316E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ReactionsWidget1.cpp;
-			refType = 4;
-		};
-		ED52316F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ReactionsWidget1.h;
-			refType = 4;
-		};
-		ED523173046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ScanWidget.cpp;
-			refType = 4;
-		};
-		ED523174046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = ScanWidget.h;
-			refType = 4;
-		};
-		ED523175046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = SteadyStateWidget.cpp;
-			refType = 4;
-		};
-		ED523176046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = SteadyStateWidget.h;
-			refType = 4;
-		};
-		ED523178046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = StretchTable.cpp;
-			refType = 4;
-		};
-		ED523179046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = StretchTable.h;
-			refType = 4;
-		};
-		ED52317A046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = Subject.cpp;
-			refType = 4;
-		};
-		ED52317B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = Subject.h;
-			refType = 4;
-		};
-		ED52317C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = TrajectoryWidget.cpp;
-			refType = 4;
-		};
-		ED52317D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = TrajectoryWidget.h;
-			refType = 4;
-		};
-		ED52317F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = Tree.h;
-			refType = 4;
-		};
-		ED523180046DA6DE03C9C501 = {
-			children = (
-				ED523181046DA6DE03C9C501,
-				ED523182046DA6DE03C9C501,
-				ED523183046DA6DE03C9C501,
-				ED523184046DA6DE03C9C501,
-				ED523185046DA6DE03C9C501,
-				ED523186046DA6DE03C9C501,
-				ED523187046DA6DE03C9C501,
-				ED523188046DA6DE03C9C501,
-				ED523189046DA6DE03C9C501,
-				ED52318A046DA6DE03C9C501,
-				ED52318B046DA6DE03C9C501,
-				ED52318C046DA6DE03C9C501,
-				ED5DCA2B0477D48403B0BD8E,
-			);
-			isa = PBXGroup;
-			path = elementaryFluxModes;
-			refType = 4;
-		};
-		ED523181046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CEFMAlgorithm.cpp;
-			refType = 4;
-		};
-		ED523182046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CEFMAlgorithm.h;
-			refType = 4;
-		};
-		ED523183046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CElementaryFluxModes.cpp;
-			refType = 4;
-		};
-		ED523184046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CElementaryFluxModes.h;
-			refType = 4;
-		};
-		ED523185046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CFluxMode.cpp;
-			refType = 4;
-		};
-		ED523186046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CFluxMode.h;
-			refType = 4;
-		};
-		ED523187046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CFluxScore.cpp;
-			refType = 4;
-		};
-		ED523188046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CFluxScore.h;
-			refType = 4;
-		};
-		ED523189046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTableauLine.cpp;
-			refType = 4;
-		};
-		ED52318A046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTableauLine.h;
-			refType = 4;
-		};
-		ED52318B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTableauMatrix.cpp;
-			refType = 4;
-		};
-		ED52318C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTableauMatrix.h;
-			refType = 4;
-		};
-		ED523190046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = FlexLexer.h;
-			refType = 4;
-		};
-		ED5231AB046DA6DE03C9C501 = {
-			children = (
-				ED5231AC046DA6DE03C9C501,
-				ED5231AD046DA6DE03C9C501,
-				ED5231AE046DA6DE03C9C501,
-				ED5231AF046DA6DE03C9C501,
-				ED5231B0046DA6DE03C9C501,
-				ED5231B1046DA6DE03C9C501,
-				ED5231B2046DA6DE03C9C501,
-				ED5231B3046DA6DE03C9C501,
-				ED5231B4046DA6DE03C9C501,
-				ED5231B5046DA6DE03C9C501,
-				ED5231B6046DA6DE03C9C501,
-				ED5231B7046DA6DE03C9C501,
-				ED5DCA290477D23503B0BD8E,
-			);
-			isa = PBXGroup;
-			path = mathmodel;
-			refType = 4;
-		};
-		ED5231AC046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathConstant.cpp;
-			refType = 4;
-		};
-		ED5231AD046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathConstant.h;
-			refType = 4;
-		};
-		ED5231AE046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathEq.cpp;
-			refType = 4;
-		};
-		ED5231AF046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathEq.h;
-			refType = 4;
-		};
-		ED5231B0046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathModel.cpp;
-			refType = 4;
-		};
-		ED5231B1046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathModel.h;
-			refType = 4;
-		};
-		ED5231B2046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathNode.cpp;
-			refType = 4;
-		};
-		ED5231B3046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathNode.h;
-			refType = 4;
-		};
-		ED5231B4046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathSymbol.cpp;
-			refType = 4;
-		};
-		ED5231B5046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathSymbol.h;
-			refType = 4;
-		};
-		ED5231B6046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathVariable.cpp;
-			refType = 4;
-		};
-		ED5231B7046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMathVariable.h;
-			refType = 4;
-		};
-		ED5231BB046DA6DE03C9C501 = {
-			children = (
-				ED5231BE046DA6DE03C9C501,
-				ED5231BF046DA6DE03C9C501,
-				ED5231C0046DA6DE03C9C501,
-				ED5231C1046DA6DE03C9C501,
-				ED5231C2046DA6DE03C9C501,
-				ED5231C3046DA6DE03C9C501,
-				ED5231C4046DA6DE03C9C501,
-				ED5231C5046DA6DE03C9C501,
-				ED5231C6046DA6DE03C9C501,
-				ED5231C7046DA6DE03C9C501,
-				ED5DCA2F0477D8E903B0BD8E,
-			);
-			isa = PBXGroup;
-			path = optimization;
-			refType = 4;
-		};
-		ED5231BE046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COptMethod.cpp;
-			refType = 4;
-		};
-		ED5231BF046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COptMethod.h;
-			refType = 4;
-		};
-		ED5231C0046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COptProblem.cpp;
-			refType = 4;
-		};
-		ED5231C1046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COptProblem.h;
-			refType = 4;
-		};
-		ED5231C2046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CRandomSearch.cpp;
-			refType = 4;
-		};
-		ED5231C3046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CRandomSearch.h;
-			refType = 4;
-		};
-		ED5231C4046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CRandomSearchMaster.cpp;
-			refType = 4;
-		};
-		ED5231C5046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CRandomSearchMaster.h;
-			refType = 4;
-		};
-		ED5231C6046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CRealProblem.cpp;
-			refType = 4;
-		};
-		ED5231C7046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CRealProblem.h;
-			refType = 4;
-		};
-		ED5231CB046DA6DE03C9C501 = {
-			children = (
-				ED5231CC046DA6DE03C9C501,
-				ED5231CD046DA6DE03C9C501,
-				ED5231CE046DA6DE03C9C501,
-				ED5231CF046DA6DE03C9C501,
-				ED5231D0046DA6DE03C9C501,
-				ED5231D1046DA6DE03C9C501,
-				ED5231D2046DA6DE03C9C501,
-				ED5231D3046DA6DE03C9C501,
-				ED5231D4046DA6DE03C9C501,
-				ED5231D5046DA6DE03C9C501,
-				ED5231D6046DA6DE03C9C501,
-				ED5231D7046DA6DE03C9C501,
-				ED5231D8046DA6DE03C9C501,
-				ED5231D9046DA6DE03C9C501,
-				ED5231DA046DA6DE03C9C501,
-				ED5231DB046DA6DE03C9C501,
-				ED5231DF046DA6DE03C9C501,
-				ED5DCA2E0477D62703B0BD8E,
-			);
-			isa = PBXGroup;
-			path = output;
-			refType = 4;
-		};
-		ED5231CC046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CDatum.cpp;
-			refType = 4;
-		};
-		ED5231CD046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CDatum.h;
-			refType = 4;
-		};
-		ED5231CE046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CNodeO.cpp;
-			refType = 4;
-		};
-		ED5231CF046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CNodeO.h;
-			refType = 4;
-		};
-		ED5231D0046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COutput.cpp;
-			refType = 4;
-		};
-		ED5231D1046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COutput.h;
-			refType = 4;
-		};
-		ED5231D2046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COutputEvent.cpp;
-			refType = 4;
-		};
-		ED5231D3046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COutputEvent.h;
-			refType = 4;
-		};
-		ED5231D4046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COutputLine.cpp;
-			refType = 4;
-		};
-		ED5231D5046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COutputLine.h;
-			refType = 4;
-		};
-		ED5231D6046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COutputList.cpp;
-			refType = 4;
-		};
-		ED5231D7046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = COutputList.h;
-			refType = 4;
-		};
-		ED5231D8046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CUDFunction.cpp;
-			refType = 4;
-		};
-		ED5231D9046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CUDFunction.h;
-			refType = 4;
-		};
-		ED5231DA046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CUDFunctionDB.cpp;
-			refType = 4;
-		};
-		ED5231DB046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CUDFunctionDB.h;
-			refType = 4;
-		};
-		ED5231DF046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = output.h;
-			refType = 4;
-		};
-		ED5231E4046DA6DE03C9C501 = {
-			children = (
-				ED5231E5046DA6DE03C9C501,
-				ED5231E6046DA6DE03C9C501,
-				ED5231E7046DA6DE03C9C501,
-				ED5231E8046DA6DE03C9C501,
-				ED5231E9046DA6DE03C9C501,
-				ED5231EA046DA6DE03C9C501,
-				ED5DCA310477DAAF03B0BD8E,
-			);
-			isa = PBXGroup;
-			path = randomGenerator;
-			refType = 4;
-		};
-		ED5231E5046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = Cmt19937.cpp;
-			refType = 4;
-		};
-		ED5231E6046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = Cmt19937.h;
-			refType = 4;
-		};
-		ED5231E7046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = Cr250.cpp;
-			refType = 4;
-		};
-		ED5231E8046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = Cr250.h;
-			refType = 4;
-		};
-		ED5231E9046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CRandom.cpp;
-			refType = 4;
-		};
-		ED5231EA046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CRandom.h;
-			refType = 4;
-		};
-		ED5231EE046DA6DE03C9C501 = {
-			children = (
-				ED5231EF046DA6DE03C9C501,
-				ED5231F0046DA6DE03C9C501,
-				ED5231F1046DA6DE03C9C501,
-				ED5231F2046DA6DE03C9C501,
-				ED5231F3046DA6DE03C9C501,
-				ED5231F4046DA6DE03C9C501,
-				ED5231F5046DA6DE03C9C501,
-				ED5231F6046DA6DE03C9C501,
-				ED5231F7046DA6DE03C9C501,
-			);
-			isa = PBXGroup;
-			path = report;
-			refType = 4;
-		};
-		ED5231EF046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiContainer.cpp;
-			refType = 4;
-		};
-		ED5231F0046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiContainer.h;
-			refType = 4;
-		};
-		ED5231F1046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiObject.cpp;
-			refType = 4;
-		};
-		ED5231F2046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiObject.h;
-			refType = 4;
-		};
-		ED5231F3046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiObjectName.cpp;
-			refType = 4;
-		};
-		ED5231F4046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiObjectName.h;
-			refType = 4;
-		};
-		ED5231F5046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiObjectReference.h;
-			refType = 4;
-		};
-		ED5231F6046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CKeyFactory.cpp;
-			refType = 4;
-		};
-		ED5231F7046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CKeyFactory.h;
-			refType = 4;
-		};
-		ED5231FB046DA6DE03C9C501 = {
-			children = (
-				ED5231FC046DA6DE03C9C501,
-				ED5231FD046DA6DE03C9C501,
-				ED5231FE046DA6DE03C9C501,
-				ED5231FF046DA6DE03C9C501,
-				ED523200046DA6DE03C9C501,
-				ED523201046DA6DE03C9C501,
-			);
-			isa = PBXGroup;
-			path = scan;
-			refType = 4;
-		};
-		ED5231FC046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CScanMethod.cpp;
-			refType = 4;
-		};
-		ED5231FD046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CScanMethod.h;
-			refType = 4;
-		};
-		ED5231FE046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CScanProblem.cpp;
-			refType = 4;
-		};
-		ED5231FF046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CScanProblem.h;
-			refType = 4;
-		};
-		ED523200046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CScanTask.cpp;
-			refType = 4;
-		};
-		ED523201046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CScanTask.h;
-			refType = 4;
-		};
-		ED523205046DA6DE03C9C501 = {
-			children = (
-				ED523206046DA6DE03C9C501,
-				ED523207046DA6DE03C9C501,
-				ED523208046DA6DE03C9C501,
-				ED523209046DA6DE03C9C501,
-				ED52320A046DA6DE03C9C501,
-				ED52320B046DA6DE03C9C501,
-				ED52320C046DA6DE03C9C501,
-				ED52320D046DA6DE03C9C501,
-				ED52320E046DA6DE03C9C501,
-				ED52320F046DA6DE03C9C501,
-				ED523210046DA6DE03C9C501,
-				ED523211046DA6DE03C9C501,
-			);
-			isa = PBXGroup;
-			path = steadystate;
-			refType = 4;
-		};
-		ED523206046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CEigen.cpp;
-			refType = 4;
-		};
-		ED523207046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CEigen.h;
-			refType = 4;
-		};
-		ED523208046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMca.cpp;
-			refType = 4;
-		};
-		ED523209046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMca.h;
-			refType = 4;
-		};
-		ED52320A046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CNewtonMethod.cpp;
-			refType = 4;
-		};
-		ED52320B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CNewtonMethod.h;
-			refType = 4;
-		};
-		ED52320C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CSteadyStateMethod.cpp;
-			refType = 4;
-		};
-		ED52320D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CSteadyStateMethod.h;
-			refType = 4;
-		};
-		ED52320E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CSteadyStateProblem.cpp;
-			refType = 4;
-		};
-		ED52320F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CSteadyStateProblem.h;
-			refType = 4;
-		};
-		ED523210046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CSteadyStateTask.cpp;
-			refType = 4;
-		};
-		ED523211046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CSteadyStateTask.h;
-			refType = 4;
-		};
-		ED523215046DA6DE03C9C501 = {
-			children = (
-				ED523216046DA6DE03C9C501,
-				ED523217046DA6DE03C9C501,
-				ED523218046DA6DE03C9C501,
-				ED523219046DA6DE03C9C501,
-				ED52321A046DA6DE03C9C501,
-				ED52321B046DA6DE03C9C501,
-				ED52321C046DA6DE03C9C501,
-				ED52321D046DA6DE03C9C501,
-				ED52321E046DA6DE03C9C501,
-				ED52321F046DA6DE03C9C501,
-				ED523220046DA6DE03C9C501,
-				ED523221046DA6DE03C9C501,
-				ED523222046DA6DE03C9C501,
-				ED523223046DA6DE03C9C501,
-				ED523224046DA6DE03C9C501,
-				ED523225046DA6DE03C9C501,
-				ED523226046DA6DE03C9C501,
-				ED523227046DA6DE03C9C501,
-			);
-			isa = PBXGroup;
-			path = trajectory;
-			refType = 4;
-		};
-		ED523216046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CHybridMethod.cpp;
-			refType = 4;
-		};
-		ED523217046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CHybridMethod.h;
-			refType = 4;
-		};
-		ED523218046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CHybridNextReactionRKMethod.cpp;
-			refType = 4;
-		};
-		ED523219046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CHybridNextReactionRKMethod.h;
-			refType = 4;
-		};
-		ED52321A046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CLsodaMethod.cpp;
-			refType = 4;
-		};
-		ED52321B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CLsodaMethod.h;
-			refType = 4;
-		};
-		ED52321C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CStochDirectMethod.cpp;
-			refType = 4;
-		};
-		ED52321D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CStochDirectMethod.h;
-			refType = 4;
-		};
-		ED52321E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CStochMethod.cpp;
-			refType = 4;
-		};
-		ED52321F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CStochMethod.h;
-			refType = 4;
-		};
-		ED523220046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CStochNextReactionMethod.cpp;
-			refType = 4;
-		};
-		ED523221046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CStochNextReactionMethod.h;
-			refType = 4;
-		};
-		ED523222046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTrajectoryMethod.cpp;
-			refType = 4;
-		};
-		ED523223046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTrajectoryMethod.h;
-			refType = 4;
-		};
-		ED523224046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTrajectoryProblem.cpp;
-			refType = 4;
-		};
-		ED523225046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTrajectoryProblem.h;
-			refType = 4;
-		};
-		ED523226046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTrajectoryTask.cpp;
-			refType = 4;
-		};
-		ED523227046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CTrajectoryTask.h;
-			refType = 4;
-		};
-		ED52322B046DA6DE03C9C501 = {
-			children = (
-				ED52322C046DA6DE03C9C501,
-				ED52322D046DA6DE03C9C501,
-				ED52322E046DA6DE03C9C501,
-				ED52322F046DA6DE03C9C501,
-				ED523230046DA6DE03C9C501,
-				ED523231046DA6DE03C9C501,
-				ED523232046DA6DE03C9C501,
-				ED523233046DA6DE03C9C501,
-				ED523234046DA6DE03C9C501,
-				ED523235046DA6DE03C9C501,
-				ED523236046DA6DE03C9C501,
-				ED523237046DA6DE03C9C501,
-				ED523238046DA6DE03C9C501,
-				ED523239046DA6DE03C9C501,
-				ED52323A046DA6DE03C9C501,
-				ED52323F046DA6DE03C9C501,
-				ED523240046DA6DE03C9C501,
-				ED523241046DA6DE03C9C501,
-				ED523242046DA6DE03C9C501,
-				ED523243046DA6DE03C9C501,
-				ED523244046DA6DE03C9C501,
-				ED523245046DA6DE03C9C501,
-				ED523248046DA6DE03C9C501,
-				ED523249046DA6DE03C9C501,
-				ED52324B046DA6DE03C9C501,
-				ED52324C046DA6DE03C9C501,
-			);
-			isa = PBXGroup;
-			path = utilities;
-			refType = 4;
-		};
-		ED52322C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiException.cpp;
-			refType = 4;
-		};
-		ED52322D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiException.h;
-			refType = 4;
-		};
-		ED52322E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiMessage.cpp;
-			refType = 4;
-		};
-		ED52322F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiMessage.h;
-			refType = 4;
-		};
-		ED523230046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiNode.h;
-			refType = 4;
-		};
-		ED523231046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiTree.h;
-			refType = 4;
-		};
-		ED523232046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiVector.h;
-			refType = 4;
-		};
-		ED523233046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CDependencyGraph.cpp;
-			refType = 4;
-		};
-		ED523234046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CDependencyGraph.h;
-			refType = 4;
-		};
-		ED523235046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CGlobals.cpp;
-			refType = 4;
-		};
-		ED523236046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CGlobals.h;
-			refType = 4;
-		};
-		ED523237046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CIndexedPriorityQueue.cpp;
-			refType = 4;
-		};
-		ED523238046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CIndexedPriorityQueue.h;
-			refType = 4;
-		};
-		ED523239046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CluX.h;
-			refType = 4;
-		};
-		ED52323A046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMatrix.h;
-			refType = 4;
-		};
-		ED52323F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CReadConfig.cpp;
-			refType = 4;
-		};
-		ED523240046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CReadConfig.h;
-			refType = 4;
-		};
-		ED523241046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CVector.h;
-			refType = 4;
-		};
-		ED523242046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CVersion.cpp;
-			refType = 4;
-		};
-		ED523243046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CVersion.h;
-			refType = 4;
-		};
-		ED523244046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CWriteConfig.cpp;
-			refType = 4;
-		};
-		ED523245046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CWriteConfig.h;
-			refType = 4;
-		};
-		ED523248046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = messages.h;
-			refType = 4;
-		};
-		ED523249046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = readwrite.h;
-			refType = 4;
-		};
-		ED52324B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = utility.cpp;
-			refType = 4;
-		};
-		ED52324C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = utility.h;
-			refType = 4;
-		};
-		ED52324D046DA6DE03C9C501 = {
-			children = (
-				ED52324E046DA6DE03C9C501,
-				ED52324F046DA6DE03C9C501,
-				ED523250046DA6DE03C9C501,
-				ED523251046DA6DE03C9C501,
-				ED523252046DA6DE03C9C501,
-				ED523253046DA6DE03C9C501,
-				ED7804E804B0B3FA0352A85A,
-				ED7804E904B0B3FA0352A85A,
-				ED7804EB04B0B3FA0352A85A,
-			);
-			isa = PBXGroup;
-			path = xml;
-			refType = 4;
-		};
-		ED52324E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiXML.cpp;
-			refType = 4;
-		};
-		ED52324F046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiXML.h;
-			refType = 4;
-		};
-		ED523250046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiXMLInterface.cpp;
-			refType = 4;
-		};
-		ED523251046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CCopasiXMLInterface.h;
-			refType = 4;
-		};
-		ED523252046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CExpat.cpp;
-			refType = 4;
-		};
-		ED523253046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CExpat.h;
-			refType = 4;
-		};
-		ED523390046DA93A03C9C501 = {
-			isa = PBXFrameworkReference;
-			name = vecLib.framework;
-			path = /System/Library/Frameworks/vecLib.framework;
-			refType = 0;
-		};
-		ED5DC9FD047712BB03B0BD8E = {
-			children = (
-				ED5DC9FE047712BB03B0BD8E,
-				ED5DC9FF047712BB03B0BD8E,
-				ED5DCA00047712BB03B0BD8E,
-				ED5DCA01047712BB03B0BD8E,
-				ED1507CA05C60F4503AD62C7,
-				ED1507CB05C60F4503AD62C7,
-				ED5DCA02047712BB03B0BD8E,
-				ED5DCA03047712BB03B0BD8E,
-				ED5DCA04047712BB03B0BD8E,
-				ED5DCA05047712BB03B0BD8E,
-				ED5DCA06047712BB03B0BD8E,
-				ED5DCA07047712BB03B0BD8E,
-				ED1507CC05C60F4503AD62C7,
-				ED1507CD05C60F4503AD62C7,
-				ED5DCA08047712BB03B0BD8E,
-				ED5DCA09047712BB03B0BD8E,
-				ED5DCA0A047712BB03B0BD8E,
-				ED5DCA0B047712BB03B0BD8E,
-				ED5DCA0C047712BB03B0BD8E,
-				ED5DCA0D047712BB03B0BD8E,
-				ED5DCA0E047712BB03B0BD8E,
-				ED5DCA0F047712BB03B0BD8E,
-				ED5DCA10047712BB03B0BD8E,
-				ED5DCA11047712BB03B0BD8E,
-				ED5DCA12047712BB03B0BD8E,
-				ED5DCA13047712BB03B0BD8E,
-				ED5DCA14047712BB03B0BD8E,
-				ED5DCA15047712BB03B0BD8E,
-				ED5DCA16047712BB03B0BD8E,
-				ED5DCA17047712BB03B0BD8E,
-				ED5DCA1D047712BB03B0BD8E,
-				ED5DCA2D0477D54103B0BD8E,
-			);
-			isa = PBXGroup;
-			path = model;
-			refType = 2;
-		};
-		ED5DC9FE047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CChemEq.cpp;
-			refType = 4;
-		};
-		ED5DC9FF047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CChemEq.h;
-			refType = 4;
-		};
-		ED5DCA00047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CChemEqElement.cpp;
-			refType = 4;
-		};
-		ED5DCA01047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CChemEqElement.h;
-			refType = 4;
-		};
-		ED5DCA02047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CCompartment.cpp;
-			refType = 4;
-		};
-		ED5DCA03047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CCompartment.h;
-			refType = 4;
-		};
-		ED5DCA04047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CDeTerm.cpp;
-			refType = 4;
-		};
-		ED5DCA05047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CDeTerm.h;
-			refType = 4;
-		};
-		ED5DCA06047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CMetab.cpp;
-			refType = 4;
-		};
-		ED5DCA07047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CMetab.h;
-			refType = 4;
-		};
-		ED5DCA08047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CModel.cpp;
-			refType = 4;
-		};
-		ED5DCA09047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CModel.h;
-			refType = 4;
-		};
-		ED5DCA0A047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CMoiety.cpp;
-			refType = 4;
-		};
-		ED5DCA0B047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CMoiety.h;
-			refType = 4;
-		};
-		ED5DCA0C047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CParticleNumberList.cpp;
-			refType = 4;
-		};
-		ED5DCA0D047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CParticleNumberList.h;
-			refType = 4;
-		};
-		ED5DCA0E047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CReaction.cpp;
-			refType = 4;
-		};
-		ED5DCA0F047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CReaction.h;
-			refType = 4;
-		};
-		ED5DCA10047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CScanInputFlexLexer.cpp;
-			refType = 4;
-		};
-		ED5DCA11047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CScanInputFlexLexer.lpp;
-			refType = 4;
-		};
-		ED5DCA12047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CSpec2Model.cpp;
-			refType = 4;
-		};
-		ED5DCA13047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CSpec2Model.h;
-			refType = 4;
-		};
-		ED5DCA14047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CSpecLine.cpp;
-			refType = 4;
-		};
-		ED5DCA15047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CSpecLine.h;
-			refType = 4;
-		};
-		ED5DCA16047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CState.cpp;
-			refType = 4;
-		};
-		ED5DCA17047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = CState.h;
-			refType = 4;
-		};
-		ED5DCA1D047712BB03B0BD8E = {
-			isa = PBXFileReference;
-			path = model.h;
-			refType = 4;
-		};
-		ED5DCA230477C3D203B0BD8E = {
-			isa = PBXFileReference;
-			path = lib.pri;
-			refType = 4;
-		};
-		ED5DCA290477D23503B0BD8E = {
-			isa = PBXFileReference;
-			path = mathmodel.pro;
-			refType = 4;
-		};
-		ED5DCA2A0477D3E203B0BD8E = {
-			isa = PBXFileReference;
-			path = commandline.pro;
-			refType = 4;
-		};
-		ED5DCA2B0477D48403B0BD8E = {
-			isa = PBXFileReference;
-			path = elementaryFluxModes.pro;
-			refType = 4;
-		};
-		ED5DCA2C0477D4EF03B0BD8E = {
-			isa = PBXFileReference;
-			path = function.pro;
-			refType = 4;
-		};
-		ED5DCA2D0477D54103B0BD8E = {
-			isa = PBXFileReference;
-			path = model.pro;
-			refType = 4;
-		};
-		ED5DCA2E0477D62703B0BD8E = {
-			isa = PBXFileReference;
-			path = output.pro;
-			refType = 4;
-		};
-		ED5DCA2F0477D8E903B0BD8E = {
-			isa = PBXFileReference;
-			path = optimization.pro;
-			refType = 4;
-		};
-		ED5DCA310477DAAF03B0BD8E = {
-			isa = PBXFileReference;
-			path = randomGenerator.pro;
-			refType = 4;
-		};
-		ED5DCB0E047A9DD803B0BD8E = {
-			buildArgumentsString = $ACTION;
-			buildPhases = (
-			);
-			buildSettings = {
-				PRODUCT_NAME = CopasiUI;
-				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
-			};
-			buildToolPath = /usr/bin/gnumake;
-			buildWorkingDirectory = .;
-			dependencies = (
-			);
-			isa = PBXLegacyTarget;
-			name = CopasiUI;
-			productName = CopasiUI;
-			settingsToExpand = 6;
-			settingsToPassInEnvironment = 287;
-			settingsToPassOnCommandLine = 280;
-			shouldUseHeadermap = 0;
-		};
-		ED7804E804B0B3FA0352A85A = {
-			isa = PBXFileReference;
-			path = CCopasiXMLParser.cpp;
-			refType = 4;
-		};
-		ED7804E904B0B3FA0352A85A = {
-			isa = PBXFileReference;
-			path = CCopasiXMLParser.h;
-			refType = 4;
-		};
-		ED7804EB04B0B3FA0352A85A = {
-			isa = PBXFileReference;
-			path = CXMLHandler.h;
-			refType = 4;
-		};
-		EDACF9A90475B8F50352A85A = {
-			children = (
-				EDACF9AA0475B8F50352A85A,
-				EDACF9AB0475B8F50352A85A,
-				EDACF9AC0475B8F50352A85A,
-				EDACF9AD0475B8F50352A85A,
-				EDACF9AE0475B8F50352A85A,
-				EDACF9AF0475B8F50352A85A,
-				EDACF9B00475B8F50352A85A,
-				EDACF9B10475B8F50352A85A,
-				EDACF9B20475B8F50352A85A,
-				EDACF9B30475B8F50352A85A,
-				EDACF9B40475B8F50352A85A,
-				EDACF9B50475B8F50352A85A,
-				EDACF9B60475B8F50352A85A,
-				EDACF9B70475B8F50352A85A,
-				EDACF9B80475B8F50352A85A,
-				EDACF9B90475B8F50352A85A,
-				EDACF9BA0475B8F50352A85A,
-				EDACF9BB0475B8F50352A85A,
-				EDACF9BC0475B8F50352A85A,
-				EDACF9BD0475B8F50352A85A,
-				EDACF9BE0475B8F50352A85A,
-				EDACF9BF0475B8F50352A85A,
-				ED5DCA2C0477D4EF03B0BD8E,
-			);
-			isa = PBXGroup;
-			path = function;
-			refType = 2;
-		};
-		EDACF9AA0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CCallParameters.cpp;
-			refType = 4;
-		};
-		EDACF9AB0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CCallParameters.h;
-			refType = 4;
-		};
-		EDACF9AC0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CFunction.cpp;
-			refType = 4;
-		};
-		EDACF9AD0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CFunction.h;
-			refType = 4;
-		};
-		EDACF9AE0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CFunctionDB.cpp;
-			refType = 4;
-		};
-		EDACF9AF0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CFunctionDB.h;
-			refType = 4;
-		};
-		EDACF9B00475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CFunctionParameter.cpp;
-			refType = 4;
-		};
-		EDACF9B10475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CFunctionParameter.h;
-			refType = 4;
-		};
-		EDACF9B20475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CFunctionParameters.cpp;
-			refType = 4;
-		};
-		EDACF9B30475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CFunctionParameters.h;
-			refType = 4;
-		};
-		EDACF9B40475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CKinFunction.cpp;
-			refType = 4;
-		};
-		EDACF9B50475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CKinFunction.h;
-			refType = 4;
-		};
-		EDACF9B60475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CKinFunctionFlexLexer.cpp;
-			refType = 4;
-		};
-		EDACF9B70475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CKinFunctionFlexLexer.lpp;
-			refType = 4;
-		};
-		EDACF9B80475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CMassAction.cpp;
-			refType = 4;
-		};
-		EDACF9B90475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CMassAction.h;
-			refType = 4;
-		};
-		EDACF9BA0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CNodeK.cpp;
-			refType = 4;
-		};
-		EDACF9BB0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CNodeK.h;
-			refType = 4;
-		};
-		EDACF9BC0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CRange.cpp;
-			refType = 4;
-		};
-		EDACF9BD0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CRange.h;
-			refType = 4;
-		};
-		EDACF9BE0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CUsageRange.cpp;
-			refType = 4;
-		};
-		EDACF9BF0475B8F50352A85A = {
-			isa = PBXFileReference;
-			path = CUsageRange.h;
-			refType = 4;
-		};
-		EDE70CBCC5B04B760352A85A = {
-			isa = PBXFileReference;
-			name = libexpat.a;
-			path = /usr/local/lib/libexpat.a;
-			refType = 0;
-		};
-		EDE70CBEC5B04C890352A85A = {
-			isa = PBXFileReference;
-			name = libqt.a;
-			path = /usr/local/qt/lib/libqt.a;
-			refType = 0;
-		};
-		EDE70D79C5B077FB0352A85A = {
-			isa = PBXFrameworkReference;
-			name = AGL.framework;
-			path = /System/Library/Frameworks/AGL.framework;
-			refType = 0;
-		};
-		EDE70D87C5B079460352A85A = {
-			isa = PBXFrameworkReference;
-			name = Carbon.framework;
-			path = /System/Library/Frameworks/Carbon.framework;
-			refType = 0;
-		};
-		EDE70E1AC5B079760352A85A = {
-			isa = PBXFrameworkReference;
-			name = OpenGL.framework;
-			path = /System/Library/Frameworks/OpenGL.framework;
-			refType = 0;
-		};
-		EDE70E2DC5B0798D0352A85A = {
-			isa = PBXFrameworkReference;
-			name = QuickTime.framework;
-			path = /System/Library/Frameworks/QuickTime.framework;
-			refType = 0;
-		};
-		EDE70F54C5B07C7C0352A85A = {
-			isa = PBXFileReference;
-			path = copasi.pro;
-			refType = 4;
-		};
-		EDE70F5EC5B07C7C0352A85A = {
-			children = (
-				EDE70F61C5B07C7C0352A85A,
-				EDE70F62C5B07C7C0352A85A,
-				EDE70F64C5B07C7C0352A85A,
-				EDE70F63C5B07C7C0352A85A,
-				EDE70F65C5B07C7C0352A85A,
-				EDE70F66C5B07C7C0352A85A,
-				ED5DCA2A0477D3E203B0BD8E,
+				1996A93C07D6A3C900A80068,
+				1996A93D07D6A3C900A80068,
+				1996A93E07D6A3C900A80068,
+				1996A93F07D6A3C900A80068,
+				1996A94007D6A3C900A80068,
+				1996A94107D6A3C900A80068,
+				1996A94207D6A3C900A80068,
 			);
 			isa = PBXGroup;
 			path = commandline;
 			refType = 4;
 		};
-		EDE70F61C5B07C7C0352A85A = {
+		1996A93C07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = commandline.pro;
+			refType = 4;
+		};
+		1996A93D07D6A3C900A80068 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = copasi.cpp;
 			refType = 4;
 		};
-		EDE70F62C5B07C7C0352A85A = {
+		1996A93E07D6A3C900A80068 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = COptionParser.cpp;
 			refType = 4;
 		};
-		EDE70F63C5B07C7C0352A85A = {
+		1996A93F07D6A3C900A80068 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = COptionParser.h;
 			refType = 4;
 		};
-		EDE70F64C5B07C7C0352A85A = {
+		1996A94007D6A3C900A80068 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = COptionParser.xml;
 			refType = 4;
 		};
-		EDE70F65C5B07C7C0352A85A = {
+		1996A94107D6A3C900A80068 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = COptions.cpp;
 			refType = 4;
 		};
-		EDE70F66C5B07C7C0352A85A = {
+		1996A94207D6A3C900A80068 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = COptions.h;
 			refType = 4;
 		};
+		1996A94307D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = common.pri;
+			refType = 4;
+		};
+		1996A94607D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = copasi.h;
+			refType = 4;
+		};
+		1996A94B07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = copasi.pro;
+			refType = 4;
+		};
+		1996A94C07D6A3C900A80068 = {
+			children = (
+				1996A94D07D6A3C900A80068,
+				1996A94E07D6A3C900A80068,
+				1996A94F07D6A3C900A80068,
+				1996A95007D6A3C900A80068,
+			);
+			isa = PBXGroup;
+			path = CopasiDataModel;
+			refType = 4;
+		};
+		1996A94D07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiDataModel.cpp;
+			refType = 4;
+		};
+		1996A94E07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiDataModel.h;
+			refType = 4;
+		};
+		1996A94F07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiDataModel.dsp;
+			refType = 4;
+		};
+		1996A95007D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiDataModel.pro;
+			refType = 4;
+		};
+		1996A95107D6A3C900A80068 = {
+			children = (
+				1996A95207D6A3C900A80068,
+				1996A95307D6A3C900A80068,
+				1996A95407D6A3C900A80068,
+			);
+			isa = PBXGroup;
+			path = CopasiSE;
+			refType = 4;
+		};
+		1996A95207D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiSE.cpp;
+			refType = 4;
+		};
+		1996A95307D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiSE.dsp;
+			refType = 4;
+		};
+		1996A95407D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiSE.pro;
+			refType = 4;
+		};
+		1996A95507D6A3C900A80068 = {
+			children = (
+				1996A95607D6A3C900A80068,
+				1996A95707D6A3C900A80068,
+				1996A95807D6A3C900A80068,
+				1996A95907D6A3C900A80068,
+				1996A95A07D6A3C900A80068,
+				1996A95B07D6A3C900A80068,
+				1996A95C07D6A3C900A80068,
+				1996A95D07D6A3C900A80068,
+				1996A95E07D6A3C900A80068,
+				1996A95F07D6A3C900A80068,
+				1996A96007D6A3C900A80068,
+				1996A96107D6A3C900A80068,
+				1996A96207D6A3C900A80068,
+				1996A96307D6A3C900A80068,
+				1996A96407D6A3C900A80068,
+				1996A96507D6A3C900A80068,
+				1996A96607D6A3C900A80068,
+				1996A96707D6A3C900A80068,
+				1996A96807D6A3C900A80068,
+				1996A96907D6A3C900A80068,
+				1996A96A07D6A3C900A80068,
+				1996A96B07D6A3C900A80068,
+				1996A96C07D6A3C900A80068,
+				1996A96D07D6A3C900A80068,
+				1996A96E07D6A3C900A80068,
+				1996A96F07D6A3C900A80068,
+				1996A97007D6A3C900A80068,
+				1996A97107D6A3C900A80068,
+				1996A97207D6A3C900A80068,
+				1996A97307D6A3C900A80068,
+				1996A97407D6A3C900A80068,
+				1996A97507D6A3C900A80068,
+				1996A97607D6A3C900A80068,
+				1996A97707D6A3C900A80068,
+				1996A97807D6A3C900A80068,
+				1996A97907D6A3C900A80068,
+				1996A97A07D6A3C900A80068,
+				1996A97B07D6A3C900A80068,
+				1996A97C07D6A3C900A80068,
+				1996A97D07D6A3C900A80068,
+				1996A97E07D6A3C900A80068,
+				1996A97F07D6A3C900A80068,
+				1996A98007D6A3C900A80068,
+				1996A98107D6A3C900A80068,
+				1996A98207D6A3C900A80068,
+				1996A98307D6A3C900A80068,
+				1996A98407D6A3C900A80068,
+				1996A98507D6A3C900A80068,
+				1996A98607D6A3C900A80068,
+				1996A98707D6A3C900A80068,
+				1996A98807D6A3C900A80068,
+				1996A98907D6A3C900A80068,
+				1996A98A07D6A3C900A80068,
+				1996A98B07D6A3C900A80068,
+				1996A98C07D6A3C900A80068,
+				1996A98D07D6A3C900A80068,
+				1996A98E07D6A3C900A80068,
+				1996A98F07D6A3C900A80068,
+				1996A99007D6A3C900A80068,
+				1996A99107D6A3C900A80068,
+				1996A99207D6A3C900A80068,
+				1996A99307D6A3C900A80068,
+				1996A99407D6A3C900A80068,
+				1996A99507D6A3C900A80068,
+				1996A99607D6A3C900A80068,
+				1996A99707D6A3C900A80068,
+				1996A99807D6A3C900A80068,
+				1996A99907D6A3C900A80068,
+				1996A99A07D6A3C900A80068,
+				1996A99B07D6A3C900A80068,
+				1996A99C07D6A3C900A80068,
+				1996A99D07D6A3C900A80068,
+				1996A99E07D6A3C900A80068,
+				1996A99F07D6A3C900A80068,
+				1996A9A007D6A3C900A80068,
+				1996A9A107D6A3C900A80068,
+				1996A9A207D6A3C900A80068,
+				1996A9A307D6A3C900A80068,
+				1996A9A407D6A3C900A80068,
+				1996A9A507D6A3C900A80068,
+				1996A9A607D6A3C900A80068,
+				1996A9A707D6A3C900A80068,
+				1996A9A807D6A3C900A80068,
+				1996A9A907D6A3C900A80068,
+				1996A9AA07D6A3CA00A80068,
+				1996A9AB07D6A3CA00A80068,
+				1996A9AC07D6A3CA00A80068,
+				1996A9AD07D6A3CA00A80068,
+				1996A9AE07D6A3CA00A80068,
+				1996A9AF07D6A3CA00A80068,
+				1996A9B007D6A3CA00A80068,
+				1996A9B107D6A3CA00A80068,
+				1996A9B207D6A3CA00A80068,
+				1996A9B307D6A3CA00A80068,
+				1996A9CB07D6A3CA00A80068,
+				1996A9CC07D6A3CA00A80068,
+				1996A9CD07D6A3CA00A80068,
+				1996A9CE07D6A3CA00A80068,
+				1996A9CF07D6A3CA00A80068,
+				1996A9D007D6A3CA00A80068,
+				1996A9D107D6A3CA00A80068,
+				1996A9D207D6A3CA00A80068,
+				1996A9D307D6A3CA00A80068,
+				1996A9D407D6A3CA00A80068,
+				1996A9D507D6A3CA00A80068,
+				1996A9D607D6A3CA00A80068,
+				1996A9D707D6A3CA00A80068,
+				1996A9D807D6A3CA00A80068,
+				1996A9D907D6A3CA00A80068,
+				1996A9DA07D6A3CA00A80068,
+				1996A9DB07D6A3CA00A80068,
+				1996A9DC07D6A3CA00A80068,
+				1996A9DD07D6A3CA00A80068,
+				1996A9DE07D6A3CA00A80068,
+				1996A9DF07D6A3CA00A80068,
+				1996A9E007D6A3CA00A80068,
+				1996A9E107D6A3CA00A80068,
+				1996A9E207D6A3CA00A80068,
+				1996A9E307D6A3CA00A80068,
+				1996A9E407D6A3CA00A80068,
+				1996A9E507D6A3CA00A80068,
+				1996A9E607D6A3CA00A80068,
+				1996A9E707D6A3CA00A80068,
+				1996A9E807D6A3CA00A80068,
+				1996A9E907D6A3CA00A80068,
+				1996A9EA07D6A3CA00A80068,
+				1996A9EB07D6A3CA00A80068,
+				1996A9EC07D6A3CA00A80068,
+				1996A9ED07D6A3CA00A80068,
+				1996A9EE07D6A3CA00A80068,
+				1996A9EF07D6A3CA00A80068,
+				1996A9F007D6A3CA00A80068,
+				1996A9F107D6A3CA00A80068,
+				1996A9F207D6A3CA00A80068,
+				1996A9F307D6A3CA00A80068,
+				1996A9F407D6A3CA00A80068,
+				1996A9F507D6A3CA00A80068,
+				1996A9F607D6A3CA00A80068,
+				1996A9F707D6A3CA00A80068,
+				1996A9F807D6A3CA00A80068,
+				1996A9F907D6A3CA00A80068,
+				1996A9FA07D6A3CA00A80068,
+				1996A9FB07D6A3CA00A80068,
+				1996A9FC07D6A3CA00A80068,
+				1996A9FD07D6A3CA00A80068,
+				1996A9FE07D6A3CA00A80068,
+				1996A9FF07D6A3CA00A80068,
+				1996AA0007D6A3CA00A80068,
+				1996AA0107D6A3CA00A80068,
+				1996AA0207D6A3CA00A80068,
+				1996AA0307D6A3CA00A80068,
+				1996AA0407D6A3CA00A80068,
+				1996AA0507D6A3CA00A80068,
+				1996AA0607D6A3CA00A80068,
+				1996AA0707D6A3CA00A80068,
+				1996AA0807D6A3CA00A80068,
+				1996AA0907D6A3CA00A80068,
+				1996AA0A07D6A3CA00A80068,
+				1996AA0B07D6A3CA00A80068,
+				1996AA0C07D6A3CA00A80068,
+				1996AA0D07D6A3CA00A80068,
+				1996AA0E07D6A3CA00A80068,
+				1996AA0F07D6A3CA00A80068,
+				1996AA1007D6A3CA00A80068,
+				1996AA1107D6A3CA00A80068,
+				1996AA1207D6A3CA00A80068,
+				1996AA1307D6A3CA00A80068,
+				1996AA1407D6A3CA00A80068,
+				1996AA1507D6A3CA00A80068,
+				1996AA1607D6A3CA00A80068,
+				1996AA1707D6A3CA00A80068,
+				1996AA1807D6A3CA00A80068,
+				1996AA1907D6A3CA00A80068,
+				1996AA1A07D6A3CA00A80068,
+				1996AA1B07D6A3CA00A80068,
+				1996AA1C07D6A3CA00A80068,
+				1996AA1D07D6A3CA00A80068,
+				1996AA1E07D6A3CA00A80068,
+				1996AA1F07D6A3CA00A80068,
+				1996AA2007D6A3CA00A80068,
+				1996AA2107D6A3CA00A80068,
+				1996AA2207D6A3CA00A80068,
+				1996AA2307D6A3CA00A80068,
+				1996AA2407D6A3CA00A80068,
+				1996AA2507D6A3CA00A80068,
+				1996AA2607D6A3CA00A80068,
+				1996AA2707D6A3CA00A80068,
+				1996AA2807D6A3CA00A80068,
+				1996AA2907D6A3CA00A80068,
+				1996AA2A07D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = CopasiUI;
+			refType = 4;
+		};
+		1996A95607D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = AboutDialog.cpp;
+			refType = 4;
+		};
+		1996A95707D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = AboutDialog.h;
+			refType = 4;
+		};
+		1996A95807D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiPlotSelectionDialog.cpp;
+			refType = 4;
+		};
+		1996A95907D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiPlotSelectionDialog.h;
+			refType = 4;
+		};
+		1996A95A07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiSelectionDialog.cpp;
+			refType = 4;
+		};
+		1996A95B07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiSelectionDialog.h;
+			refType = 4;
+		};
+		1996A95C07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiSelectionWidget.cpp;
+			refType = 4;
+		};
+		1996A95D07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiSelectionWidget.h;
+			refType = 4;
+		};
+		1996A95E07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiSimpleSelectionTree.cpp;
+			refType = 4;
+		};
+		1996A95F07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiSimpleSelectionTree.h;
+			refType = 4;
+		};
+		1996A96007D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ChemEqValidator.h;
+			refType = 4;
+		};
+		1996A96107D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAResultSubwidget.cpp;
+			refType = 4;
+		};
+		1996A96207D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAResultSubwidget.h;
+			refType = 4;
+		};
+		1996A96307D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAResultSubwidget.ui;
+			refType = 4;
+		};
+		1996A96407D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAResultSubwidget.ui.h;
+			refType = 4;
+		};
+		1996A96507D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAResultWidget.cpp;
+			refType = 4;
+		};
+		1996A96607D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAResultWidget.h;
+			refType = 4;
+		};
+		1996A96707D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAWidget.cpp;
+			refType = 4;
+		};
+		1996A96807D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAWidget.h;
+			refType = 4;
+		};
+		1996A96907D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CompartmentsWidget.cpp;
+			refType = 4;
+		};
+		1996A96A07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CompartmentsWidget.h;
+			refType = 4;
+		};
+		1996A96B07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CompartmentsWidget.ui;
+			refType = 4;
+		};
+		1996A96C07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CompartmentsWidget1.cpp;
+			refType = 4;
+		};
+		1996A96D07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CompartmentsWidget1.h;
+			refType = 4;
+		};
+		1996A96E07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CompartmentSymbols.cpp;
+			refType = 4;
+		};
+		1996A96F07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CompartmentSymbols.h;
+			refType = 4;
+		};
+		1996A97007D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ConstantSymbols.cpp;
+			refType = 4;
+		};
+		1996A97107D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ConstantSymbols.h;
+			refType = 4;
+		};
+		1996A97207D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiDefaultWidget.cpp;
+			refType = 4;
+		};
+		1996A97307D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiDefaultWidget.h;
+			refType = 4;
+		};
+		1996A97407D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiSlider.cpp;
+			refType = 4;
+		};
+		1996A97507D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiSlider.h;
+			refType = 4;
+		};
+		1996A97607D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiTableWidget.cpp;
+			refType = 4;
+		};
+		1996A97707D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiTableWidget.h;
+			refType = 4;
+		};
+		1996A97807D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "CopasiUI-Static.dsp";
+			refType = 4;
+		};
+		1996A97907D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiUI.dsp;
+			refType = 4;
+		};
+		1996A97A07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiUI.pro;
+			refType = 4;
+		};
+		1996A97B07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = copasiui3window.cpp;
+			refType = 4;
+		};
+		1996A97C07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = copasiui3window.h;
+			refType = 4;
+		};
+		1996A97D07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = copasiWidget.cpp;
+			refType = 4;
+		};
+		1996A97E07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = copasiWidget.h;
+			refType = 4;
+		};
+		1996A97F07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CPlotSelectionDialog.cpp;
+			refType = 4;
+		};
+		1996A98007D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CPlotSelectionDialog.h;
+			refType = 4;
+		};
+		1996A98107D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CProgressBar.cpp;
+			refType = 4;
+		};
+		1996A98207D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CProgressBar.h;
+			refType = 4;
+		};
+		1996A98307D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReportDefinitionSelect.cpp;
+			refType = 4;
+		};
+		1996A98407D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReportDefinitionSelect.h;
+			refType = 4;
+		};
+		1996A98507D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReportDefinitionSelect.ui;
+			refType = 4;
+		};
+		1996A98607D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanContainerWidget.cpp;
+			refType = 4;
+		};
+		1996A98707D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanContainerWidget.h;
+			refType = 4;
+		};
+		1996A98807D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetBreak.cpp;
+			refType = 4;
+		};
+		1996A98907D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetBreak.h;
+			refType = 4;
+		};
+		1996A98A07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetBreak.ui;
+			refType = 4;
+		};
+		1996A98B07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetBreak.ui.h;
+			refType = 4;
+		};
+		1996A98C07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetRandom.cpp;
+			refType = 4;
+		};
+		1996A98D07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetRandom.h;
+			refType = 4;
+		};
+		1996A98E07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetRandom.ui;
+			refType = 4;
+		};
+		1996A98F07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetRandom.ui.h;
+			refType = 4;
+		};
+		1996A99007D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetRepeat.cpp;
+			refType = 4;
+		};
+		1996A99107D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetRepeat.h;
+			refType = 4;
+		};
+		1996A99207D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetRepeat.ui;
+			refType = 4;
+		};
+		1996A99307D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetRepeat.ui.h;
+			refType = 4;
+		};
+		1996A99407D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetScan.cpp;
+			refType = 4;
+		};
+		1996A99507D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetScan.h;
+			refType = 4;
+		};
+		1996A99607D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetScan.ui;
+			refType = 4;
+		};
+		1996A99707D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetScan.ui.h;
+			refType = 4;
+		};
+		1996A99807D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetTask.cpp;
+			refType = 4;
+		};
+		1996A99907D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetTask.h;
+			refType = 4;
+		};
+		1996A99A07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetTask.ui;
+			refType = 4;
+		};
+		1996A99B07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanWidgetTask.ui.h;
+			refType = 4;
+		};
+		1996A99C07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTimeSeriesTable.cpp;
+			refType = 4;
+		};
+		1996A99D07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTimeSeriesTable.h;
+			refType = 4;
+		};
+		1996A99E07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CUpDownSubwidget.cpp;
+			refType = 4;
+		};
+		1996A99F07D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CUpDownSubwidget.h;
+			refType = 4;
+		};
+		1996A9A007D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CUpDownSubwidget.ui;
+			refType = 4;
+		};
+		1996A9A107D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CUpDownSubwidget.ui.h;
+			refType = 4;
+		};
+		1996A9A207D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = DataModel.txt.h;
+			refType = 4;
+		};
+		1996A9A307D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = DataModelGUI.cpp;
+			refType = 4;
+		};
+		1996A9A407D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = DataModelGUI.h;
+			refType = 4;
+		};
+		1996A9A507D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = DifferentialEquations.cpp;
+			refType = 4;
+		};
+		1996A9A607D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = DifferentialEquations.h;
+			refType = 4;
+		};
+		1996A9A707D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FixedMetaboliteSymbols.cpp;
+			refType = 4;
+		};
+		1996A9A807D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FixedMetaboliteSymbols.h;
+			refType = 4;
+		};
+		1996A9A907D6A3C900A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionItemWidget.cpp;
+			refType = 4;
+		};
+		1996A9AA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionItemWidget.h;
+			refType = 4;
+		};
+		1996A9AB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionItemWidget.ui;
+			refType = 4;
+		};
+		1996A9AC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionSymbols.cpp;
+			refType = 4;
+		};
+		1996A9AD07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionSymbols.h;
+			refType = 4;
+		};
+		1996A9AE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionWidget.cpp;
+			refType = 4;
+		};
+		1996A9AF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionWidget.h;
+			refType = 4;
+		};
+		1996A9B007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionWidget1.cpp;
+			refType = 4;
+		};
+		1996A9B107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionWidget1.h;
+			refType = 4;
+		};
+		1996A9B207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionWidget1.ui;
+			refType = 4;
+		};
+		1996A9B307D6A3CA00A80068 = {
+			children = (
+				1996A9B407D6A3CA00A80068,
+				1996A9B507D6A3CA00A80068,
+				1996A9B607D6A3CA00A80068,
+				1996A9B707D6A3CA00A80068,
+				1996A9B807D6A3CA00A80068,
+				1996A9B907D6A3CA00A80068,
+				1996A9BA07D6A3CA00A80068,
+				1996A9BB07D6A3CA00A80068,
+				1996A9BC07D6A3CA00A80068,
+				1996A9BD07D6A3CA00A80068,
+				1996A9BE07D6A3CA00A80068,
+				1996A9BF07D6A3CA00A80068,
+				1996A9C007D6A3CA00A80068,
+				1996A9C107D6A3CA00A80068,
+				1996A9C207D6A3CA00A80068,
+				1996A9C307D6A3CA00A80068,
+				1996A9C407D6A3CA00A80068,
+				1996A9C507D6A3CA00A80068,
+				1996A9C607D6A3CA00A80068,
+				1996A9C707D6A3CA00A80068,
+				1996A9C807D6A3CA00A80068,
+				1996A9C907D6A3CA00A80068,
+				1996A9CA07D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = icons;
+			refType = 4;
+		};
+		1996A9B407D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = closeSlider.xpm;
+			refType = 4;
+		};
+		1996A9B507D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = copasi_beta.xpm;
+			refType = 4;
+		};
+		1996A9B607D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = copasi_beta_background.xpm;
+			refType = 4;
+		};
+		1996A9B707D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = copasi_icon.png;
+			refType = 4;
+		};
+		1996A9B807D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = copasi_icon_small.png;
+			refType = 4;
+		};
+		1996A9B907D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = editSlider.xpm;
+			refType = 4;
+		};
+		1996A9BA07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = filenew.xpm;
+			refType = 4;
+		};
+		1996A9BB07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = fileopen.xpm;
+			refType = 4;
+		};
+		1996A9BC07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = fileprint.xpm;
+			refType = 4;
+		};
+		1996A9BD07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = filesave.xpm;
+			refType = 4;
+		};
+		1996A9BE07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = folderclosed.xpm;
+			refType = 4;
+		};
+		1996A9BF07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = folderlocked.xpm;
+			refType = 4;
+		};
+		1996A9C007D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = folderopen.xpm;
+			refType = 4;
+		};
+		1996A9C107D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = locked.xpm;
+			refType = 4;
+		};
+		1996A9C207D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = modifier.xpm;
+			refType = 4;
+		};
+		1996A9C307D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = objectAll.xpm;
+			refType = 4;
+		};
+		1996A9C407D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = objectNone.xpm;
+			refType = 4;
+		};
+		1996A9C507D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = objectParts.xpm;
+			refType = 4;
+		};
+		1996A9C607D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = product.xpm;
+			refType = 4;
+		};
+		1996A9C707D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = scanwidgetbuttonicon.xpm;
+			refType = 4;
+		};
+		1996A9C807D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = showSliders.xpm;
+			refType = 4;
+		};
+		1996A9C907D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = substrate.xpm;
+			refType = 4;
+		};
+		1996A9CA07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = unlocked.xpm;
+			refType = 4;
+		};
+		1996A9CB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = listviews.cpp;
+			refType = 4;
+		};
+		1996A9CC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = listviews.h;
+			refType = 4;
+		};
+		1996A9CD07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = main.cpp;
+			refType = 4;
+		};
+		1996A9CE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MetabolitesWidget.cpp;
+			refType = 4;
+		};
+		1996A9CF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MetabolitesWidget.h;
+			refType = 4;
+		};
+		1996A9D007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MetabolitesWidget1.cpp;
+			refType = 4;
+		};
+		1996A9D107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MetabolitesWidget1.h;
+			refType = 4;
+		};
+		1996A9D207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MetabolitesWidget1.ui;
+			refType = 4;
+		};
+		1996A9D307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MetaboliteSymbols.cpp;
+			refType = 4;
+		};
+		1996A9D407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MetaboliteSymbols.h;
+			refType = 4;
+		};
+		1996A9D507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ModelWidget.cpp;
+			refType = 4;
+		};
+		1996A9D607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ModelWidget.h;
+			refType = 4;
+		};
+		1996A9D707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ModesWidget.cpp;
+			refType = 4;
+		};
+		1996A9D807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ModesWidget.h;
+			refType = 4;
+		};
+		1996A9D907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MoietyWidget.cpp;
+			refType = 4;
+		};
+		1996A9DA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MoietyWidget.h;
+			refType = 4;
+		};
+		1996A9DB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MoietyWidget1.cpp;
+			refType = 4;
+		};
+		1996A9DC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MoietyWidget1.h;
+			refType = 4;
+		};
+		1996A9DD07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MoietyWidget1.ui;
+			refType = 4;
+		};
+		1996A9DE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MyLineEdit.cpp;
+			refType = 4;
+		};
+		1996A9DF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MyLineEdit.h;
+			refType = 4;
+		};
+		1996A9E007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ObjectBrowser.ui;
+			refType = 4;
+		};
+		1996A9E107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ObjectBrowserDialog.cpp;
+			refType = 4;
+		};
+		1996A9E207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ObjectBrowserDialog.h;
+			refType = 4;
+		};
+		1996A9E307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ObjectBrowserItem.cpp;
+			refType = 4;
+		};
+		1996A9E407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ObjectBrowserItem.h;
+			refType = 4;
+		};
+		1996A9E507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ObjectBrowserWidget.cpp;
+			refType = 4;
+		};
+		1996A9E607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ObjectBrowserWidget.h;
+			refType = 4;
+		};
+		1996A9E707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = objectdebug.cpp;
+			refType = 4;
+		};
+		1996A9E807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = objectdebug.h;
+			refType = 4;
+		};
+		1996A9E907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = objectdebug.ui;
+			refType = 4;
+		};
+		1996A9EA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = objectdebug.ui.h;
+			refType = 4;
+		};
+		1996A9EB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = OptimizationItemWidget.cpp;
+			refType = 4;
+		};
+		1996A9EC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = OptimizationItemWidget.h;
+			refType = 4;
+		};
+		1996A9ED07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = OptimizationItemWidget.ui;
+			refType = 4;
+		};
+		1996A9EE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = OptimizationWidget.cpp;
+			refType = 4;
+		};
+		1996A9EF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = OptimizationWidget.h;
+			refType = 4;
+		};
+		1996A9F007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = OptimizationWidget.ui;
+			refType = 4;
+		};
+		1996A9F107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ParametersWidget.cpp;
+			refType = 4;
+		};
+		1996A9F207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ParametersWidget.h;
+			refType = 4;
+		};
+		1996A9F307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = parametertable.cpp;
+			refType = 4;
+		};
+		1996A9F407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = parametertable.h;
+			refType = 4;
+		};
+		1996A9F507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ParamFittingItemWidget.cpp;
+			refType = 4;
+		};
+		1996A9F607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ParamFittingItemWidget.h;
+			refType = 4;
+		};
+		1996A9F707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ParamFittingWidget.cpp;
+			refType = 4;
+		};
+		1996A9F807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ParamFittingWidget.h;
+			refType = 4;
+		};
+		1996A9F907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = PlotWidget.cpp;
+			refType = 4;
+		};
+		1996A9FA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = PlotWidget.h;
+			refType = 4;
+		};
+		1996A9FB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = qtUtilities.cpp;
+			refType = 4;
+		};
+		1996A9FC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = qtUtilities.h;
+			refType = 4;
+		};
+		1996A9FD07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ReactionsWidget.cpp;
+			refType = 4;
+		};
+		1996A9FE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ReactionsWidget.h;
+			refType = 4;
+		};
+		1996A9FF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ReactionsWidget1.cpp;
+			refType = 4;
+		};
+		1996AA0007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ReactionsWidget1.h;
+			refType = 4;
+		};
+		1996AA0107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ReactionsWidget1.ui;
+			refType = 4;
+		};
+		1996AA0207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "README-Linux";
+			refType = 4;
+		};
+		1996AA0307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = Sample.txt;
+			refType = 4;
+		};
+		1996AA0407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = Sample2.txt;
+			refType = 4;
+		};
+		1996AA0507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ScanItemWidget.cpp;
+			refType = 4;
+		};
+		1996AA0607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ScanItemWidget.h;
+			refType = 4;
+		};
+		1996AA0707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ScanScrollView.cpp;
+			refType = 4;
+		};
+		1996AA0807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ScanScrollView.h;
+			refType = 4;
+		};
+		1996AA0907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ScanWidget.cpp;
+			refType = 4;
+		};
+		1996AA0A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ScanWidget.h;
+			refType = 4;
+		};
+		1996AA0B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SliderDialog.cpp;
+			refType = 4;
+		};
+		1996AA0C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SliderDialog.h;
+			refType = 4;
+		};
+		1996AA0D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SliderSettingsDialog.cpp;
+			refType = 4;
+		};
+		1996AA0E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SliderSettingsDialog.h;
+			refType = 4;
+		};
+		1996AA0F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SliderSettingsDialog.ui;
+			refType = 4;
+		};
+		1996AA1007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SliderSettingsDialog.ui.h;
+			refType = 4;
+		};
+		1996AA1107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = StateSubwidget.cpp;
+			refType = 4;
+		};
+		1996AA1207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = StateSubwidget.h;
+			refType = 4;
+		};
+		1996AA1307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = StateSubwidget.ui;
+			refType = 4;
+		};
+		1996AA1407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = StateSubwidget.ui.h;
+			refType = 4;
+		};
+		1996AA1507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = StateWidget.cpp;
+			refType = 4;
+		};
+		1996AA1607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = StateWidget.h;
+			refType = 4;
+		};
+		1996AA1707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SteadyStateWidget.cpp;
+			refType = 4;
+		};
+		1996AA1807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SteadyStateWidget.h;
+			refType = 4;
+		};
+		1996AA1907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SteadyStateWidget.ui;
+			refType = 4;
+		};
+		1996AA1A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TableDefinition.cpp;
+			refType = 4;
+		};
+		1996AA1B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TableDefinition.h;
+			refType = 4;
+		};
+		1996AA1C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = tabledefinition.ui;
+			refType = 4;
+		};
+		1996AA1D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TableDefinition1.cpp;
+			refType = 4;
+		};
+		1996AA1E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TableDefinition1.h;
+			refType = 4;
+		};
+		1996AA1F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TimeSeriesSubwidget.cpp;
+			refType = 4;
+		};
+		1996AA2007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TimeSeriesSubwidget.h;
+			refType = 4;
+		};
+		1996AA2107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TimeSeriesSubwidget.ui;
+			refType = 4;
+		};
+		1996AA2207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TimeSeriesSubwidget.ui.h;
+			refType = 4;
+		};
+		1996AA2307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TimeSeriesWidget.cpp;
+			refType = 4;
+		};
+		1996AA2407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TimeSeriesWidget.h;
+			refType = 4;
+		};
+		1996AA2507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TrajectoryWidget.cpp;
+			refType = 4;
+		};
+		1996AA2607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TrajectoryWidget.h;
+			refType = 4;
+		};
+		1996AA2707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = TrajectoryWidget.ui;
+			refType = 4;
+		};
+		1996AA2807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = Tree.cpp;
+			refType = 4;
+		};
+		1996AA2907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = Tree.h;
+			refType = 4;
+		};
+		1996AA2A07D6A3CA00A80068 = {
+			children = (
+				1996AA2B07D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = wizard;
+			refType = 4;
+		};
+		1996AA2B07D6A3CA00A80068 = {
+			children = (
+				1996AA2C07D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = help_html;
+			refType = 4;
+		};
+		1996AA2C07D6A3CA00A80068 = {
+			children = (
+			);
+			isa = PBXGroup;
+			path = figures;
+			refType = 4;
+		};
+		1996AA2F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = copasiversion.h;
+			refType = 4;
+		};
+		1996AA3507D6A3CA00A80068 = {
+			children = (
+				1996AA3607D6A3CA00A80068,
+				1996AA3707D6A3CA00A80068,
+				1996AA3807D6A3CA00A80068,
+				1996AA3907D6A3CA00A80068,
+				1996AA3A07D6A3CA00A80068,
+				1996AA3B07D6A3CA00A80068,
+				1996AA3C07D6A3CA00A80068,
+				1996AA3D07D6A3CA00A80068,
+				1996AA3E07D6A3CA00A80068,
+				1996AA3F07D6A3CA00A80068,
+				1996AA4007D6A3CA00A80068,
+				1996AA4107D6A3CA00A80068,
+				1996AA4207D6A3CA00A80068,
+				1996AA4307D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = elementaryFluxModes;
+			refType = 4;
+		};
+		1996AA3607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CEFMAlgorithm.cpp;
+			refType = 4;
+		};
+		1996AA3707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CEFMAlgorithm.h;
+			refType = 4;
+		};
+		1996AA3807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CElementaryFluxModes.cpp;
+			refType = 4;
+		};
+		1996AA3907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CElementaryFluxModes.h;
+			refType = 4;
+		};
+		1996AA3A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFluxMode.cpp;
+			refType = 4;
+		};
+		1996AA3B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFluxMode.h;
+			refType = 4;
+		};
+		1996AA3C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFluxScore.cpp;
+			refType = 4;
+		};
+		1996AA3D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFluxScore.h;
+			refType = 4;
+		};
+		1996AA3E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTableauLine.cpp;
+			refType = 4;
+		};
+		1996AA3F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTableauLine.h;
+			refType = 4;
+		};
+		1996AA4007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTableauMatrix.cpp;
+			refType = 4;
+		};
+		1996AA4107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTableauMatrix.h;
+			refType = 4;
+		};
+		1996AA4207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = elementaryFluxModes.dsp;
+			refType = 4;
+		};
+		1996AA4307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = elementaryFluxModes.pro;
+			refType = 4;
+		};
+		1996AA4407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FlexLexer.h;
+			refType = 4;
+		};
+		1996AA4507D6A3CA00A80068 = {
+			children = (
+				1996AA4607D6A3CA00A80068,
+				1996AA4707D6A3CA00A80068,
+				1996AA4807D6A3CA00A80068,
+				1996AA4907D6A3CA00A80068,
+				1996AA4A07D6A3CA00A80068,
+				1996AA4B07D6A3CA00A80068,
+				1996AA4C07D6A3CA00A80068,
+				1996AA4D07D6A3CA00A80068,
+				1996AA4E07D6A3CA00A80068,
+				1996AA4F07D6A3CA00A80068,
+				1996AA5007D6A3CA00A80068,
+				1996AA5107D6A3CA00A80068,
+				1996AA5207D6A3CA00A80068,
+				1996AA5307D6A3CA00A80068,
+				1996AA5407D6A3CA00A80068,
+				1996AA5507D6A3CA00A80068,
+				1996AA5607D6A3CA00A80068,
+				1996AA5707D6A3CA00A80068,
+				1996AA5807D6A3CA00A80068,
+				1996AA5907D6A3CA00A80068,
+				1996AA5A07D6A3CA00A80068,
+				1996AA5B07D6A3CA00A80068,
+				1996AA5C07D6A3CA00A80068,
+				1996AA5D07D6A3CA00A80068,
+				1996AA5E07D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = function;
+			refType = 4;
+		};
+		1996AA4607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCallParameters.cpp;
+			refType = 4;
+		};
+		1996AA4707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCallParameters.h;
+			refType = 4;
+		};
+		1996AA4807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFunction.cpp;
+			refType = 4;
+		};
+		1996AA4907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFunction.h;
+			refType = 4;
+		};
+		1996AA4A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFunctionDB.cpp;
+			refType = 4;
+		};
+		1996AA4B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFunctionDB.h;
+			refType = 4;
+		};
+		1996AA4C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFunctionParameter.cpp;
+			refType = 4;
+		};
+		1996AA4D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFunctionParameter.h;
+			refType = 4;
+		};
+		1996AA4E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFunctionParameters.cpp;
+			refType = 4;
+		};
+		1996AA4F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CFunctionParameters.h;
+			refType = 4;
+		};
+		1996AA5007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CKinFunction.cpp;
+			refType = 4;
+		};
+		1996AA5107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CKinFunction.h;
+			refType = 4;
+		};
+		1996AA5207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CKinFunctionFlexLexer.cpp;
+			refType = 4;
+		};
+		1996AA5307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CKinFunctionFlexLexer.lpp;
+			refType = 4;
+		};
+		1996AA5407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMassAction.cpp;
+			refType = 4;
+		};
+		1996AA5507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMassAction.h;
+			refType = 4;
+		};
+		1996AA5607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CNodeK.cpp;
+			refType = 4;
+		};
+		1996AA5707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CNodeK.h;
+			refType = 4;
+		};
+		1996AA5807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRange.cpp;
+			refType = 4;
+		};
+		1996AA5907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRange.h;
+			refType = 4;
+		};
+		1996AA5A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CUsageRange.cpp;
+			refType = 4;
+		};
+		1996AA5B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CUsageRange.h;
+			refType = 4;
+		};
+		1996AA5C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = function.dsp;
+			refType = 4;
+		};
+		1996AA5D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = function.pro;
+			refType = 4;
+		};
+		1996AA5E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = FunctionDB.xml.h;
+			refType = 4;
+		};
+		1996AA5F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = lib.pri;
+			refType = 4;
+		};
+		1996AA6107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = mathematics.h;
+			refType = 4;
+		};
+		1996AA6207D6A3CA00A80068 = {
+			children = (
+				1996AA6307D6A3CA00A80068,
+				1996AA6407D6A3CA00A80068,
+				1996AA6507D6A3CA00A80068,
+				1996AA6607D6A3CA00A80068,
+				1996AA6707D6A3CA00A80068,
+				1996AA6807D6A3CA00A80068,
+				1996AA6907D6A3CA00A80068,
+				1996AA6A07D6A3CA00A80068,
+				1996AA6B07D6A3CA00A80068,
+				1996AA6C07D6A3CA00A80068,
+				1996AA6D07D6A3CA00A80068,
+				1996AA6E07D6A3CA00A80068,
+				1996AA6F07D6A3CA00A80068,
+				1996AA7007D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = mathmodel;
+			refType = 4;
+		};
+		1996AA6307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathConstant.cpp;
+			refType = 4;
+		};
+		1996AA6407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathConstant.h;
+			refType = 4;
+		};
+		1996AA6507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathEq.cpp;
+			refType = 4;
+		};
+		1996AA6607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathEq.h;
+			refType = 4;
+		};
+		1996AA6707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathModel.cpp;
+			refType = 4;
+		};
+		1996AA6807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathModel.h;
+			refType = 4;
+		};
+		1996AA6907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathNode.cpp;
+			refType = 4;
+		};
+		1996AA6A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathNode.h;
+			refType = 4;
+		};
+		1996AA6B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathSymbol.cpp;
+			refType = 4;
+		};
+		1996AA6C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathSymbol.h;
+			refType = 4;
+		};
+		1996AA6D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathVariable.cpp;
+			refType = 4;
+		};
+		1996AA6E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMathVariable.h;
+			refType = 4;
+		};
+		1996AA6F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = mathmodel.dsp;
+			refType = 4;
+		};
+		1996AA7007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = mathmodel.pro;
+			refType = 4;
+		};
+		1996AA7107D6A3CA00A80068 = {
+			children = (
+				1996AA7207D6A3CA00A80068,
+				1996AA7307D6A3CA00A80068,
+				1996AA7407D6A3CA00A80068,
+				1996AA7507D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = mml;
+			refType = 4;
+		};
+		1996AA7207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = MathML.dsp;
+			refType = 4;
+		};
+		1996AA7307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = mml.pro;
+			refType = 4;
+		};
+		1996AA7407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = qtmmlwidget.cpp;
+			refType = 4;
+		};
+		1996AA7507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = qtmmlwidget.h;
+			refType = 4;
+		};
+		1996AA7607D6A3CA00A80068 = {
+			children = (
+				1996AA7707D6A3CA00A80068,
+				1996AA7807D6A3CA00A80068,
+				1996AA7907D6A3CA00A80068,
+				1996AA7A07D6A3CA00A80068,
+				1996AA7B07D6A3CA00A80068,
+				1996AA7C07D6A3CA00A80068,
+				1996AA7D07D6A3CA00A80068,
+				1996AA7E07D6A3CA00A80068,
+				1996AA7F07D6A3CA00A80068,
+				1996AA8007D6A3CA00A80068,
+				1996AA8107D6A3CA00A80068,
+				1996AA8207D6A3CA00A80068,
+				1996AA8307D6A3CA00A80068,
+				1996AA8407D6A3CA00A80068,
+				1996AA8507D6A3CA00A80068,
+				1996AA8607D6A3CA00A80068,
+				1996AA8707D6A3CA00A80068,
+				1996AA8807D6A3CA00A80068,
+				1996AA8907D6A3CA00A80068,
+				1996AA8A07D6A3CA00A80068,
+				1996AA8B07D6A3CA00A80068,
+				1996AA8C07D6A3CA00A80068,
+				1996AA8D07D6A3CA00A80068,
+				1996AA8E07D6A3CA00A80068,
+				1996AA8F07D6A3CA00A80068,
+				1996AA9007D6A3CA00A80068,
+				1996AA9107D6A3CA00A80068,
+				1996AA9207D6A3CA00A80068,
+				1996AA9307D6A3CA00A80068,
+				1996AA9407D6A3CA00A80068,
+				1996AA9507D6A3CA00A80068,
+				1996AA9607D6A3CA00A80068,
+				1996AA9707D6A3CA00A80068,
+				1996AA9807D6A3CA00A80068,
+				1996AA9907D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = model;
+			refType = 4;
+		};
+		1996AA7707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CChemEq.cpp;
+			refType = 4;
+		};
+		1996AA7807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CChemEq.h;
+			refType = 4;
+		};
+		1996AA7907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CChemEqElement.cpp;
+			refType = 4;
+		};
+		1996AA7A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CChemEqElement.h;
+			refType = 4;
+		};
+		1996AA7B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CChemEqInterface.cpp;
+			refType = 4;
+		};
+		1996AA7C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CChemEqInterface.h;
+			refType = 4;
+		};
+		1996AA7D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCompartment.cpp;
+			refType = 4;
+		};
+		1996AA7E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCompartment.h;
+			refType = 4;
+		};
+		1996AA7F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CDeTerm.cpp;
+			refType = 4;
+		};
+		1996AA8007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CDeTerm.h;
+			refType = 4;
+		};
+		1996AA8107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMetab.cpp;
+			refType = 4;
+		};
+		1996AA8207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMetab.h;
+			refType = 4;
+		};
+		1996AA8307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMetabNameInterface.cpp;
+			refType = 4;
+		};
+		1996AA8407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMetabNameInterface.h;
+			refType = 4;
+		};
+		1996AA8507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CModel.cpp;
+			refType = 4;
+		};
+		1996AA8607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CModel.h;
+			refType = 4;
+		};
+		1996AA8707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMoiety.cpp;
+			refType = 4;
+		};
+		1996AA8807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMoiety.h;
+			refType = 4;
+		};
+		1996AA8907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReaction.cpp;
+			refType = 4;
+		};
+		1996AA8A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReaction.h;
+			refType = 4;
+		};
+		1996AA8B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReactionInterface.cpp;
+			refType = 4;
+		};
+		1996AA8C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReactionInterface.h;
+			refType = 4;
+		};
+		1996AA8D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanInputFlexLexer.cpp;
+			refType = 4;
+		};
+		1996AA8E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanInputFlexLexer.lpp;
+			refType = 4;
+		};
+		1996AA8F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSpec2Model.cpp;
+			refType = 4;
+		};
+		1996AA9007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSpec2Model.h;
+			refType = 4;
+		};
+		1996AA9107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSpecLine.cpp;
+			refType = 4;
+		};
+		1996AA9207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSpecLine.h;
+			refType = 4;
+		};
+		1996AA9307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CState.cpp;
+			refType = 4;
+		};
+		1996AA9407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CState.h;
+			refType = 4;
+		};
+		1996AA9507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = exampleinput;
+			refType = 4;
+		};
+		1996AA9607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = exampleinput.complete;
+			refType = 4;
+		};
+		1996AA9707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = model.dsp;
+			refType = 4;
+		};
+		1996AA9807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = model.h;
+			refType = 4;
+		};
+		1996AA9907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = model.pro;
+			refType = 4;
+		};
+		1996AA9A07D6A3CA00A80068 = {
+			children = (
+				1996AA9B07D6A3CA00A80068,
+				1996AA9C07D6A3CA00A80068,
+				1996AA9D07D6A3CA00A80068,
+				1996AA9E07D6A3CA00A80068,
+				1996AA9F07D6A3CA00A80068,
+				1996AAA007D6A3CA00A80068,
+				1996AAA107D6A3CA00A80068,
+				1996AAA207D6A3CA00A80068,
+				1996AAA307D6A3CA00A80068,
+				1996AAA407D6A3CA00A80068,
+				1996AAA507D6A3CA00A80068,
+				1996AAA607D6A3CA00A80068,
+				1996AAA707D6A3CA00A80068,
+				1996AAA807D6A3CA00A80068,
+				1996AAA907D6A3CA00A80068,
+				1996AAAA07D6A3CA00A80068,
+				1996AAAB07D6A3CA00A80068,
+				1996AAAC07D6A3CA00A80068,
+				1996AAAD07D6A3CA00A80068,
+				1996AAAE07D6A3CA00A80068,
+				1996AAAF07D6A3CA00A80068,
+				1996AAB007D6A3CA00A80068,
+				1996AAB107D6A3CA00A80068,
+				1996AAB207D6A3CA00A80068,
+				1996AAB307D6A3CA00A80068,
+				1996AAB407D6A3CA00A80068,
+				1996AAB507D6A3CA00A80068,
+				1996AAB607D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = optimization;
+			refType = 4;
+		};
+		1996AA9B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CGA.cpp;
+			refType = 4;
+		};
+		1996AA9C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CGA.h;
+			refType = 4;
+		};
+		1996AA9D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptFunction.cpp;
+			refType = 4;
+		};
+		1996AA9E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptFunction.h;
+			refType = 4;
+		};
+		1996AA9F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptItem.cpp;
+			refType = 4;
+		};
+		1996AAA007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptItem.h;
+			refType = 4;
+		};
+		1996AAA107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethod.cpp;
+			refType = 4;
+		};
+		1996AAA207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethod.h;
+			refType = 4;
+		};
+		1996AAA307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethodEP2.cpp;
+			refType = 4;
+		};
+		1996AAA407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethodEP2.h;
+			refType = 4;
+		};
+		1996AAA507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethodGA.cpp;
+			refType = 4;
+		};
+		1996AAA607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethodGA.h;
+			refType = 4;
+		};
+		1996AAA707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethodHGASA.cpp;
+			refType = 4;
+		};
+		1996AAA807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethodHGASA.h;
+			refType = 4;
+		};
+		1996AAA907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethodSA.cpp;
+			refType = 4;
+		};
+		1996AAAA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptMethodSA.h;
+			refType = 4;
+		};
+		1996AAAB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptProblem.cpp;
+			refType = 4;
+		};
+		1996AAAC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptProblem.h;
+			refType = 4;
+		};
+		1996AAAD07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptTask.cpp;
+			refType = 4;
+		};
+		1996AAAE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COptTask.h;
+			refType = 4;
+		};
+		1996AAAF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRandomSearch.cpp;
+			refType = 4;
+		};
+		1996AAB007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRandomSearch.h;
+			refType = 4;
+		};
+		1996AAB107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRandomSearchMaster.cpp;
+			refType = 4;
+		};
+		1996AAB207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRandomSearchMaster.h;
+			refType = 4;
+		};
+		1996AAB307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRealProblem.cpp;
+			refType = 4;
+		};
+		1996AAB407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRealProblem.h;
+			refType = 4;
+		};
+		1996AAB507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = optimization.dsp;
+			refType = 4;
+		};
+		1996AAB607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = optimization.pro;
+			refType = 4;
+		};
+		1996AAB707D6A3CA00A80068 = {
+			children = (
+			);
+			isa = PBXGroup;
+			path = output;
+			refType = 4;
+		};
+		1996AAB807D6A3CA00A80068 = {
+			children = (
+				1996AAB907D6A3CA00A80068,
+				1996AABA07D6A3CA00A80068,
+				1996AABB07D6A3CA00A80068,
+				1996AABC07D6A3CA00A80068,
+				1996AABD07D6A3CA00A80068,
+				1996AABE07D6A3CA00A80068,
+				1996AABF07D6A3CA00A80068,
+				1996AAC007D6A3CA00A80068,
+				1996AAC107D6A3CA00A80068,
+				1996AAC207D6A3CA00A80068,
+				1996AAC307D6A3CA00A80068,
+				1996AAC407D6A3CA00A80068,
+				1996AAC507D6A3CA00A80068,
+				1996AAC607D6A3CA00A80068,
+				1996AAC707D6A3CA00A80068,
+				1996AAC807D6A3CA00A80068,
+				1996AAC907D6A3CA00A80068,
+				1996AACA07D6A3CA00A80068,
+				1996AACB07D6A3CA00A80068,
+				1996AACC07D6A3CA00A80068,
+				1996AACD07D6A3CA00A80068,
+				1996AACE07D6A3CA00A80068,
+				1996AACF07D6A3CA00A80068,
+				1996AAD007D6A3CA00A80068,
+				1996AAD107D6A3CA00A80068,
+				1996AAD207D6A3CA00A80068,
+				1996AAD307D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = plot;
+			refType = 4;
+		};
+		1996AAB907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CHistogram.cpp;
+			refType = 4;
+		};
+		1996AABA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CHistogram.h;
+			refType = 4;
+		};
+		1996AABB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiPlot.cpp;
+			refType = 4;
+		};
+		1996AABC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiPlot.h;
+			refType = 4;
+		};
+		1996AABD07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COutputHandlerPlot.cpp;
+			refType = 4;
+		};
+		1996AABE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COutputHandlerPlot.h;
+			refType = 4;
+		};
+		1996AABF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CPlotItem.cpp;
+			refType = 4;
+		};
+		1996AAC007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CPlotItem.h;
+			refType = 4;
+		};
+		1996AAC107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CPlotSpec2Vector.cpp;
+			refType = 4;
+		};
+		1996AAC207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CPlotSpec2Vector.h;
+			refType = 4;
+		};
+		1996AAC307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CPlotSpecification.cpp;
+			refType = 4;
+		};
+		1996AAC407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CPlotSpecification.h;
+			refType = 4;
+		};
+		1996AAC507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = curve2dwidget.ui;
+			refType = 4;
+		};
+		1996AAC607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = curve2dwidget.ui.h;
+			refType = 4;
+		};
+		1996AAC707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = doublerect.cpp;
+			refType = 4;
+		};
+		1996AAC807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = doublerect.h;
+			refType = 4;
+		};
+		1996AAC907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = HistoWidget.ui;
+			refType = 4;
+		};
+		1996AACA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = HistoWidget.ui.h;
+			refType = 4;
+		};
+		1996AACB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = plot.dsp;
+			refType = 4;
+		};
+		1996AACC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = plot.pro;
+			refType = 4;
+		};
+		1996AACD07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = plotwidget1.cpp;
+			refType = 4;
+		};
+		1996AACE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = plotwidget1.h;
+			refType = 4;
+		};
+		1996AACF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = plotwidget1.ui;
+			refType = 4;
+		};
+		1996AAD007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = plotwindow.cpp;
+			refType = 4;
+		};
+		1996AAD107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = plotwindow.h;
+			refType = 4;
+		};
+		1996AAD207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = zoomplot.cpp;
+			refType = 4;
+		};
+		1996AAD307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = zoomplot.h;
+			refType = 4;
+		};
+		1996AAD407D6A3CA00A80068 = {
+			children = (
+				1996AAD507D6A3CA00A80068,
+				1996AAD607D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = pvmtest;
+			refType = 4;
+		};
+		1996AAD507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = pvmtest.cpp;
+			refType = 4;
+		};
+		1996AAD607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = pvmtest.pro;
+			refType = 4;
+		};
+		1996AAD707D6A3CA00A80068 = {
+			children = (
+				1996AAD807D6A3CA00A80068,
+				1996AAD907D6A3CA00A80068,
+				1996AADA07D6A3CA00A80068,
+				1996AADB07D6A3CA00A80068,
+				1996AADC07D6A3CA00A80068,
+				1996AADD07D6A3CA00A80068,
+				1996AADE07D6A3CA00A80068,
+				1996AADF07D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = randomGenerator;
+			refType = 4;
+		};
+		1996AAD807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = Cmt19937.cpp;
+			refType = 4;
+		};
+		1996AAD907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = Cmt19937.h;
+			refType = 4;
+		};
+		1996AADA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = Cr250.cpp;
+			refType = 4;
+		};
+		1996AADB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = Cr250.h;
+			refType = 4;
+		};
+		1996AADC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRandom.cpp;
+			refType = 4;
+		};
+		1996AADD07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CRandom.h;
+			refType = 4;
+		};
+		1996AADE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = randomGenerator.dsp;
+			refType = 4;
+		};
+		1996AADF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = randomGenerator.pro;
+			refType = 4;
+		};
+		1996AAE007D6A3CA00A80068 = {
+			children = (
+				1996AAE107D6A3CA00A80068,
+				1996AAE207D6A3CA00A80068,
+				1996AAE307D6A3CA00A80068,
+				1996AAE407D6A3CA00A80068,
+				1996AAE507D6A3CA00A80068,
+				1996AAE607D6A3CA00A80068,
+				1996AAE707D6A3CA00A80068,
+				1996AAE807D6A3CA00A80068,
+				1996AAE907D6A3CA00A80068,
+				1996AAEA07D6A3CA00A80068,
+				1996AAEB07D6A3CA00A80068,
+				1996AAEC07D6A3CA00A80068,
+				1996AAED07D6A3CA00A80068,
+				1996AAEE07D6A3CA00A80068,
+				1996AAEF07D6A3CA00A80068,
+				1996AAF007D6A3CA00A80068,
+				1996AAF107D6A3CA00A80068,
+				1996AAF207D6A3CA00A80068,
+				1996AAF307D6A3CA00A80068,
+				1996AAF407D6A3CA00A80068,
+				1996AAF507D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = report;
+			refType = 4;
+		};
+		1996AAE107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiContainer.cpp;
+			refType = 4;
+		};
+		1996AAE207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiContainer.h;
+			refType = 4;
+		};
+		1996AAE307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiObject.cpp;
+			refType = 4;
+		};
+		1996AAE407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiObject.h;
+			refType = 4;
+		};
+		1996AAE507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiObjectName.cpp;
+			refType = 4;
+		};
+		1996AAE607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiObjectName.h;
+			refType = 4;
+		};
+		1996AAE707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiObjectReference.h;
+			refType = 4;
+		};
+		1996AAE807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiStaticString.cpp;
+			refType = 4;
+		};
+		1996AAE907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiStaticString.h;
+			refType = 4;
+		};
+		1996AAEA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CKeyFactory.cpp;
+			refType = 4;
+		};
+		1996AAEB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CKeyFactory.h;
+			refType = 4;
+		};
+		1996AAEC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReport.cpp;
+			refType = 4;
+		};
+		1996AAED07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReport.h;
+			refType = 4;
+		};
+		1996AAEE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReportBody.cpp;
+			refType = 4;
+		};
+		1996AAEF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReportBody.h;
+			refType = 4;
+		};
+		1996AAF007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReportDefinition.cpp;
+			refType = 4;
+		};
+		1996AAF107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReportDefinition.h;
+			refType = 4;
+		};
+		1996AAF207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReportDefinitionVector.cpp;
+			refType = 4;
+		};
+		1996AAF307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReportDefinitionVector.h;
+			refType = 4;
+		};
+		1996AAF407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = report.dsp;
+			refType = 4;
+		};
+		1996AAF507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = report.pro;
+			refType = 4;
+		};
+		1996AAF607D6A3CA00A80068 = {
+			children = (
+				1996AAF707D6A3CA00A80068,
+				1996AAF807D6A3CA00A80068,
+				1996AAF907D6A3CA00A80068,
+				1996AAFA07D6A3CA00A80068,
+				1996AAFB07D6A3CA00A80068,
+				1996AAFC07D6A3CA00A80068,
+				1996AAFD07D6A3CA00A80068,
+				1996AAFE07D6A3CA00A80068,
+				1996AAFF07D6A3CA00A80068,
+				1996AB0007D6A3CA00A80068,
+				1996AB0107D6A3CA00A80068,
+				1996AB0207D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = sbml;
+			refType = 4;
+		};
+		1996AAF707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ConverterASTNode.cpp;
+			refType = 4;
+		};
+		1996AAF807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = ConverterASTNode.h;
+			refType = 4;
+		};
+		1996AAF907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = sbml.dsp;
+			refType = 4;
+		};
+		1996AAFA07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = sbml.pro;
+			refType = 4;
+		};
+		1996AAFB07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SBMLExporter.cpp;
+			refType = 4;
+		};
+		1996AAFC07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SBMLExporter.h;
+			refType = 4;
+		};
+		1996AAFD07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SBMLImporter.cpp;
+			refType = 4;
+		};
+		1996AAFE07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = SBMLImporter.h;
+			refType = 4;
+		};
+		1996AAFF07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = StdException.cpp;
+			refType = 4;
+		};
+		1996AB0007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = StdException.h;
+			refType = 4;
+		};
+		1996AB0107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = UnitConversionFactory.cpp;
+			refType = 4;
+		};
+		1996AB0207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = UnitConversionFactory.hpp;
+			refType = 4;
+		};
+		1996AB0307D6A3CA00A80068 = {
+			children = (
+				1996AB0407D6A3CA00A80068,
+				1996AB0507D6A3CA00A80068,
+				1996AB0607D6A3CA00A80068,
+				1996AB0707D6A3CA00A80068,
+				1996AB0807D6A3CA00A80068,
+				1996AB0907D6A3CA00A80068,
+				1996AB0A07D6A3CA00A80068,
+				1996AB0B07D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = scan;
+			refType = 4;
+		};
+		1996AB0407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanMethod.cpp;
+			refType = 4;
+		};
+		1996AB0507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanMethod.h;
+			refType = 4;
+		};
+		1996AB0607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanProblem.cpp;
+			refType = 4;
+		};
+		1996AB0707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanProblem.h;
+			refType = 4;
+		};
+		1996AB0807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanTask.cpp;
+			refType = 4;
+		};
+		1996AB0907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CScanTask.h;
+			refType = 4;
+		};
+		1996AB0A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = scan.dsp;
+			refType = 4;
+		};
+		1996AB0B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = scan.pro;
+			refType = 4;
+		};
+		1996AB0C07D6A3CA00A80068 = {
+			children = (
+				1996AB0D07D6A3CA00A80068,
+				1996AB0E07D6A3CA00A80068,
+				1996AB0F07D6A3CA00A80068,
+				1996AB1007D6A3CA00A80068,
+				1996AB1107D6A3CA00A80068,
+				1996AB1207D6A3CA00A80068,
+				1996AB1307D6A3CA00A80068,
+				1996AB1407D6A3CA00A80068,
+				1996AB1507D6A3CA00A80068,
+				1996AB1607D6A3CA00A80068,
+				1996AB1707D6A3CA00A80068,
+				1996AB1807D6A3CA00A80068,
+				1996AB1907D6A3CA00A80068,
+				1996AB1A07D6A3CA00A80068,
+				1996AB1B07D6A3CA00A80068,
+				1996AB1C07D6A3CA00A80068,
+				1996AB1D07D6A3CA00A80068,
+				1996AB1E07D6A3CA00A80068,
+				1996AB1F07D6A3CA00A80068,
+				1996AB2007D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = steadystate;
+			refType = 4;
+		};
+		1996AB0D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CEigen.cpp;
+			refType = 4;
+		};
+		1996AB0E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CEigen.h;
+			refType = 4;
+		};
+		1996AB0F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMca.cpp;
+			refType = 4;
+		};
+		1996AB1007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMca.h;
+			refType = 4;
+		};
+		1996AB1107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAMethod.cpp;
+			refType = 4;
+		};
+		1996AB1207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAMethod.h;
+			refType = 4;
+		};
+		1996AB1307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAProblem.cpp;
+			refType = 4;
+		};
+		1996AB1407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCAProblem.h;
+			refType = 4;
+		};
+		1996AB1507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCATask.cpp;
+			refType = 4;
+		};
+		1996AB1607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMCATask.h;
+			refType = 4;
+		};
+		1996AB1707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CNewtonMethod.cpp;
+			refType = 4;
+		};
+		1996AB1807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CNewtonMethod.h;
+			refType = 4;
+		};
+		1996AB1907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSteadyStateMethod.cpp;
+			refType = 4;
+		};
+		1996AB1A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSteadyStateMethod.h;
+			refType = 4;
+		};
+		1996AB1B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSteadyStateProblem.cpp;
+			refType = 4;
+		};
+		1996AB1C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSteadyStateProblem.h;
+			refType = 4;
+		};
+		1996AB1D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSteadyStateTask.cpp;
+			refType = 4;
+		};
+		1996AB1E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSteadyStateTask.h;
+			refType = 4;
+		};
+		1996AB1F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = steadystate.dsp;
+			refType = 4;
+		};
+		1996AB2007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = steadystate.pro;
+			refType = 4;
+		};
+		1996AB2107D6A3CA00A80068 = {
+			children = (
+				1996AB2207D6A3CA00A80068,
+				1996AB2307D6A3CA00A80068,
+				1996AB2407D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = test;
+			refType = 4;
+		};
+		1996AB2207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = test.cpp;
+			refType = 4;
+		};
+		1996AB2307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = test.dsp;
+			refType = 4;
+		};
+		1996AB2407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = test.pro;
+			refType = 4;
+		};
+		1996AB2507D6A3CA00A80068 = {
+			children = (
+				1996AB2607D6A3CA00A80068,
+				1996AB2707D6A3CA00A80068,
+				1996AB2807D6A3CA00A80068,
+				1996AB2907D6A3CA00A80068,
+				1996AB2A07D6A3CA00A80068,
+				1996AB2B07D6A3CA00A80068,
+				1996AB2C07D6A3CA00A80068,
+				1996AB2D07D6A3CA00A80068,
+				1996AB2E07D6A3CA00A80068,
+				1996AB2F07D6A3CA00A80068,
+				1996AB3007D6A3CA00A80068,
+				1996AB3107D6A3CA00A80068,
+				1996AB3207D6A3CA00A80068,
+				1996AB3307D6A3CA00A80068,
+				1996AB3407D6A3CA00A80068,
+				1996AB3507D6A3CA00A80068,
+				1996AB3607D6A3CA00A80068,
+				1996AB3707D6A3CA00A80068,
+				1996AB3807D6A3CA00A80068,
+				1996AB3907D6A3CA00A80068,
+				1996AB3A07D6A3CA00A80068,
+				1996AB3B07D6A3CA00A80068,
+				1996AB3C07D6A3CA00A80068,
+				1996AB3D07D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = trajectory;
+			refType = 4;
+		};
+		1996AB2607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CHybridMethod.cpp;
+			refType = 4;
+		};
+		1996AB2707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CHybridMethod.h;
+			refType = 4;
+		};
+		1996AB2807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CHybridNextReactionRKMethod.cpp;
+			refType = 4;
+		};
+		1996AB2907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CHybridNextReactionRKMethod.h;
+			refType = 4;
+		};
+		1996AB2A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CLsodaMethod.cpp;
+			refType = 4;
+		};
+		1996AB2B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CLsodaMethod.h;
+			refType = 4;
+		};
+		1996AB2C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CStochDirectMethod.cpp;
+			refType = 4;
+		};
+		1996AB2D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CStochDirectMethod.h;
+			refType = 4;
+		};
+		1996AB2E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CStochMethod.cpp;
+			refType = 4;
+		};
+		1996AB2F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CStochMethod.h;
+			refType = 4;
+		};
+		1996AB3007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CStochNextReactionMethod.cpp;
+			refType = 4;
+		};
+		1996AB3107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CStochNextReactionMethod.h;
+			refType = 4;
+		};
+		1996AB3207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTauLeapMethod.cpp;
+			refType = 4;
+		};
+		1996AB3307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTauLeapMethod.h;
+			refType = 4;
+		};
+		1996AB3407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTimeSeries.cpp;
+			refType = 4;
+		};
+		1996AB3507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTimeSeries.h;
+			refType = 4;
+		};
+		1996AB3607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTrajectoryMethod.cpp;
+			refType = 4;
+		};
+		1996AB3707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTrajectoryMethod.h;
+			refType = 4;
+		};
+		1996AB3807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTrajectoryProblem.cpp;
+			refType = 4;
+		};
+		1996AB3907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTrajectoryProblem.h;
+			refType = 4;
+		};
+		1996AB3A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTrajectoryTask.cpp;
+			refType = 4;
+		};
+		1996AB3B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CTrajectoryTask.h;
+			refType = 4;
+		};
+		1996AB3C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = trajectory.dsp;
+			refType = 4;
+		};
+		1996AB3D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = trajectory.pro;
+			refType = 4;
+		};
+		1996AB3E07D6A3CA00A80068 = {
+			children = (
+				1996AB3F07D6A3CA00A80068,
+				1996AB4007D6A3CA00A80068,
+				1996AB4107D6A3CA00A80068,
+				1996AB4207D6A3CA00A80068,
+				1996AB4307D6A3CA00A80068,
+				1996AB4407D6A3CA00A80068,
+				1996AB4507D6A3CA00A80068,
+				1996AB4607D6A3CA00A80068,
+				1996AB4707D6A3CA00A80068,
+				1996AB4807D6A3CA00A80068,
+				1996AB4907D6A3CA00A80068,
+				1996AB4A07D6A3CA00A80068,
+				1996AB4B07D6A3CA00A80068,
+				1996AB4C07D6A3CA00A80068,
+				1996AB4D07D6A3CA00A80068,
+				1996AB4E07D6A3CA00A80068,
+				1996AB4F07D6A3CA00A80068,
+				1996AB5007D6A3CA00A80068,
+				1996AB5107D6A3CA00A80068,
+				1996AB5207D6A3CA00A80068,
+				1996AB5307D6A3CA00A80068,
+				1996AB5407D6A3CA00A80068,
+				1996AB5507D6A3CA00A80068,
+				1996AB5607D6A3CA00A80068,
+				1996AB5707D6A3CA00A80068,
+				1996AB5807D6A3CA00A80068,
+				1996AB5907D6A3CA00A80068,
+				1996AB5A07D6A3CA00A80068,
+				1996AB5B07D6A3CA00A80068,
+				1996AB5C07D6A3CA00A80068,
+				1996AB5D07D6A3CA00A80068,
+				1996AB5E07D6A3CA00A80068,
+				1996AB5F07D6A3CA00A80068,
+				1996AB6007D6A3CA00A80068,
+				1996AB6107D6A3CA00A80068,
+				1996AB6207D6A3CA00A80068,
+				1996AB6307D6A3CA00A80068,
+				1996AB6407D6A3CA00A80068,
+				1996AB6507D6A3CA00A80068,
+				1996AB6607D6A3CA00A80068,
+				1996AB6707D6A3CA00A80068,
+				1996AB6807D6A3CA00A80068,
+				1996AB6907D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = utilities;
+			refType = 4;
+		};
+		1996AB3F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CAnnotatedMatrix.cpp;
+			refType = 4;
+		};
+		1996AB4007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CAnnotatedMatrix.h;
+			refType = 4;
+		};
+		1996AB4107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiException.cpp;
+			refType = 4;
+		};
+		1996AB4207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiException.h;
+			refType = 4;
+		};
+		1996AB4307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiMessage.cpp;
+			refType = 4;
+		};
+		1996AB4407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiMessage.h;
+			refType = 4;
+		};
+		1996AB4507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiMethod.cpp;
+			refType = 4;
+		};
+		1996AB4607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiMethod.h;
+			refType = 4;
+		};
+		1996AB4707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiNode.h;
+			refType = 4;
+		};
+		1996AB4807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiParameter.cpp;
+			refType = 4;
+		};
+		1996AB4907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiParameter.h;
+			refType = 4;
+		};
+		1996AB4A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiParameterGroup.cpp;
+			refType = 4;
+		};
+		1996AB4B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiParameterGroup.h;
+			refType = 4;
+		};
+		1996AB4C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiProblem.cpp;
+			refType = 4;
+		};
+		1996AB4D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiProblem.h;
+			refType = 4;
+		};
+		1996AB4E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiTask.cpp;
+			refType = 4;
+		};
+		1996AB4F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiTask.h;
+			refType = 4;
+		};
+		1996AB5007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiTree.h;
+			refType = 4;
+		};
+		1996AB5107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiVector.h;
+			refType = 4;
+		};
+		1996AB5207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CDependencyGraph.cpp;
+			refType = 4;
+		};
+		1996AB5307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CDependencyGraph.h;
+			refType = 4;
+		};
+		1996AB5407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CIndexedPriorityQueue.cpp;
+			refType = 4;
+		};
+		1996AB5507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CIndexedPriorityQueue.h;
+			refType = 4;
+		};
+		1996AB5607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CluX.h;
+			refType = 4;
+		};
+		1996AB5707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CMatrix.h;
+			refType = 4;
+		};
+		1996AB5807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiTime.cpp;
+			refType = 4;
+		};
+		1996AB5907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CopasiTime.h;
+			refType = 4;
+		};
+		1996AB5A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COutputHandler.cpp;
+			refType = 4;
+		};
+		1996AB5B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = COutputHandler.h;
+			refType = 4;
+		};
+		1996AB5C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReadConfig.cpp;
+			refType = 4;
+		};
+		1996AB5D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CReadConfig.h;
+			refType = 4;
+		};
+		1996AB5E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSlider.cpp;
+			refType = 4;
+		};
+		1996AB5F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CSlider.h;
+			refType = 4;
+		};
+		1996AB6007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CVector.h;
+			refType = 4;
+		};
+		1996AB6107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CVersion.cpp;
+			refType = 4;
+		};
+		1996AB6207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CVersion.h;
+			refType = 4;
+		};
+		1996AB6307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CWriteConfig.cpp;
+			refType = 4;
+		};
+		1996AB6407D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CWriteConfig.h;
+			refType = 4;
+		};
+		1996AB6507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = messages.h;
+			refType = 4;
+		};
+		1996AB6607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = utilities.dsp;
+			refType = 4;
+		};
+		1996AB6707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = utilities.pro;
+			refType = 4;
+		};
+		1996AB6807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = utility.cpp;
+			refType = 4;
+		};
+		1996AB6907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = utility.h;
+			refType = 4;
+		};
+		1996AB6A07D6A3CA00A80068 = {
+			children = (
+				1996AB6B07D6A3CA00A80068,
+				1996AB7E07D6A3CA00A80068,
+				1996AB7F07D6A3CA00A80068,
+				1996AB8007D6A3CA00A80068,
+				1996AB8107D6A3CA00A80068,
+				1996AB8207D6A3CA00A80068,
+				1996AB8307D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = wizard;
+			refType = 4;
+		};
+		1996AB6B07D6A3CA00A80068 = {
+			children = (
+				1996AB6C07D6A3CA00A80068,
+				1996AB7807D6A3CA00A80068,
+				1996AB7907D6A3CA00A80068,
+				1996AB7A07D6A3CA00A80068,
+				1996AB7B07D6A3CA00A80068,
+				1996AB7C07D6A3CA00A80068,
+				1996AB7D07D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = help_html;
+			refType = 4;
+		};
+		1996AB6C07D6A3CA00A80068 = {
+			children = (
+				1996AB6D07D6A3CA00A80068,
+				1996AB6E07D6A3CA00A80068,
+				1996AB6F07D6A3CA00A80068,
+				1996AB7007D6A3CA00A80068,
+				1996AB7107D6A3CA00A80068,
+				1996AB7207D6A3CA00A80068,
+				1996AB7307D6A3CA00A80068,
+				1996AB7407D6A3CA00A80068,
+				1996AB7507D6A3CA00A80068,
+				1996AB7607D6A3CA00A80068,
+				1996AB7707D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = figures;
+			refType = 4;
+		};
+		1996AB6D07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = DefaultPlotAdded.jpg;
+			refType = 4;
+		};
+		1996AB6E07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = ModelSettingsDialog.jpg;
+			refType = 4;
+		};
+		1996AB6F07D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = ObjectBrowserSelection.jpg;
+			refType = 4;
+		};
+		1996AB7007D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = ObjectBrowserTree.jpg;
+			refType = 4;
+		};
+		1996AB7107D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = PlotDefinition.jpg;
+			refType = 4;
+		};
+		1996AB7207D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = PlotWindow.jpg;
+			refType = 4;
+		};
+		1996AB7307D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = ReactionDialog.jpg;
+			refType = 4;
+		};
+		1996AB7407D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = ReactionOverview.jpg;
+			refType = 4;
+		};
+		1996AB7507D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = ReactionOverviewEmpty.jpg;
+			refType = 4;
+		};
+		1996AB7607D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = ReportDefinitionDialog.jpg;
+			refType = 4;
+		};
+		1996AB7707D6A3CA00A80068 = {
+			isa = PBXFileReference;
+			path = TimeCourseDialog.jpg;
+			refType = 4;
+		};
+		1996AB7807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "TutWiz-Step1.html";
+			refType = 4;
+		};
+		1996AB7907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "TutWiz-Step2.html";
+			refType = 4;
+		};
+		1996AB7A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "TutWiz-Step3.html";
+			refType = 4;
+		};
+		1996AB7B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "TutWiz-Step4.html";
+			refType = 4;
+		};
+		1996AB7C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "TutWiz-Step5.html";
+			refType = 4;
+		};
+		1996AB7D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "TutWiz-Step6.html";
+			refType = 4;
+		};
+		1996AB7E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = wizard.cpp;
+			refType = 4;
+		};
+		1996AB7F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = wizard.dsp;
+			refType = 4;
+		};
+		1996AB8007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = wizard.h;
+			refType = 4;
+		};
+		1996AB8107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = wizard.pro;
+			refType = 4;
+		};
+		1996AB8207D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = wizard.ui;
+			refType = 4;
+		};
+		1996AB8307D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = wizard.ui.h;
+			refType = 4;
+		};
+		1996AB8407D6A3CA00A80068 = {
+			children = (
+				1996AB8507D6A3CA00A80068,
+				1996AB8607D6A3CA00A80068,
+				1996AB8707D6A3CA00A80068,
+				1996AB8807D6A3CA00A80068,
+				1996AB8907D6A3CA00A80068,
+				1996AB8A07D6A3CA00A80068,
+				1996AB8B07D6A3CA00A80068,
+				1996AB8C07D6A3CA00A80068,
+				1996AB8D07D6A3CA00A80068,
+				1996AB8E07D6A3CA00A80068,
+				1996AB8F07D6A3CA00A80068,
+				1996AB9007D6A3CA00A80068,
+				1996AB9107D6A3CA00A80068,
+			);
+			isa = PBXGroup;
+			path = xml;
+			refType = 4;
+		};
+		1996AB8507D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiXML.cpp;
+			refType = 4;
+		};
+		1996AB8607D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiXML.h;
+			refType = 4;
+		};
+		1996AB8707D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiXMLInterface.cpp;
+			refType = 4;
+		};
+		1996AB8807D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiXMLInterface.h;
+			refType = 4;
+		};
+		1996AB8907D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiXMLParser.cpp;
+			refType = 4;
+		};
+		1996AB8A07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiXMLParser.h;
+			refType = 4;
+		};
+		1996AB8B07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CCopasiXMLVersion.h;
+			refType = 4;
+		};
+		1996AB8C07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CExpat.cpp;
+			refType = 4;
+		};
+		1996AB8D07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CExpat.h;
+			refType = 4;
+		};
+		1996AB8E07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = copasi.xsd;
+			refType = 4;
+		};
+		1996AB8F07D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = copasiXML.dsp;
+			refType = 4;
+		};
+		1996AB9007D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CXMLHandler.h;
+			refType = 4;
+		};
+		1996AB9107D6A3CA00A80068 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = xml.pro;
+			refType = 4;
+		};
+		1996AB9207D6A54600A80068 = {
+			buildArgumentsString = $ACTION;
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = COPASI;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			buildToolPath = /usr/bin/gnumake;
+			buildWorkingDirectory = /Users/shoops/development/copasi_dev;
+			dependencies = (
+			);
+			isa = PBXLegacyTarget;
+			name = COPASI;
+			passBuildSettingsInEnvironment = 1;
+			productName = all;
+			settingsToExpand = 6;
+			settingsToPassInEnvironment = 287;
+			settingsToPassOnCommandLine = 280;
+		};
 	};
-	rootObject = 08FB7793FE84155DC02AAC07;
+	rootObject = 1996A68107D6A31B00A80068;
 }
