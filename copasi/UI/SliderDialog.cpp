@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/23 21:12:26 $
+   $Author: shoops $ 
+   $Date: 2005/03/23 21:30:51 $
    End CVS Header */
 
 #include <iostream>
@@ -516,6 +516,7 @@ void SliderDialog::runTimeCourse()
   CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
   if (p)
     {
+      p->getTrajectoryWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
       p->getTrajectoryWidget()->runTrajectoryTask();
     }
 }
