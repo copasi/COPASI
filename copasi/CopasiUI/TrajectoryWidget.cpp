@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:46 $
+   $Date: 2003/11/21 16:51:24 $
    End CVS Header */
 
 /********************************************************
@@ -301,18 +301,6 @@ void TrajectoryWidget::runTrajectoryTask()
   CTrajectoryTask* tt =
     dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
   assert(tt);
-
-  CTrajectoryProblem* trajectoryproblem =
-    dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
-  assert(trajectoryproblem);
-
-  CTrajectoryMethod* trajectorymethod =
-    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
-  assert(trajectorymethod);
-
-  trajectoryproblem->getModel()->compile();
-  trajectoryproblem->
-  setInitialState(trajectoryproblem->getModel()->getInitialState());
 
   tt->initialize();
 
