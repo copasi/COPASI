@@ -3,7 +3,6 @@
 #include "copasi.h"
 #include "CStochSolver.h"
 #include "CTrajectory.h"
-#include "model/model.h"
 
 CStochSolver::CStochSolver()
     : mMethodType(CTrajectory::STOCH_DIRECT),
@@ -94,7 +93,8 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
     // Keep a pointer to this.
     CChemEq *chemeq = &mModel->getReactions()[index]->getChemEq();
     // Iterate through each substrate in the reaction 
-    CCopasiVector<CChemEqElement> &substrates = chemeq->getSubstrates();
+    CCopasiVector < CChemEqElement > & substrates = 
+		const_cast < CCopasiVector < CChemEqElement > & > (chemeq->getSubstrates());
     for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       // :TODO: getMultiplicity is not necessarily integer!
@@ -189,8 +189,9 @@ C_INT32 CStochDirectMethod::updateSystemState(C_INT32 rxn)
     // in the reaction.) Then step through each balance, using its 
     // multiplicity to calculate a new value for the associated 
     // metabolite. Finally, update the metabolite.
-    CCopasiVector <CChemEqElement> &balances = 
-        mModel->getReactions()[rxn]->getChemEq().getBalances();
+    CCopasiVector <CChemEqElement> & balances = 
+        const_cast < CCopasiVector <CChemEqElement> & > 
+		(mModel->getReactions()[rxn]->getChemEq().getBalances());
     CChemEqElement *bal = 0;
     C_FLOAT32 new_num;
     for (unsigned C_INT32 i = 0; i < balances.size(); i++)

@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../copasi" /I "../.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../copasi" /I "../.." /I "$(CBLAS_LIB)/include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -69,7 +69,7 @@ PostBuild_Cmds=copy Release\*.lib ..\Release
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../../copasi" /I "../.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "../../copasi" /I "../.." /I "$(CBLAS_LIB)/include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -95,15 +95,19 @@ PostBuild_Cmds=copy Debug\*.lib ..\Debug
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\copasi\trajectory\Clsoda.cpp
+SOURCE=.\Clsoda.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\trajectory\CODESolver.cpp
+SOURCE=.\CODESolver.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\trajectory\CTrajectory.cpp
+SOURCE=.\CStochSolver.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTrajectory.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -111,19 +115,19 @@ SOURCE=..\..\copasi\trajectory\CTrajectory.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\copasi\trajectory\Clsoda.h
+SOURCE=.\Clsoda.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\trajectory\CODESolver.h
+SOURCE=.\CODESolver.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\trajectory\CStochSolver.h
+SOURCE=.\CStochSolver.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\trajectory\CTrajectory.h
+SOURCE=.\CTrajectory.h
 # End Source File
 # Begin Source File
 

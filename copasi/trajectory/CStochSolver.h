@@ -2,9 +2,8 @@
 #define COPASI_CStochSolver
 
 #include "utilities/utilities.h"
-
-class CModel;
-class CRandom;
+#include "utilities/CRandom.h"
+#include "model/model.h"
 
 /**
  * CStochSolver

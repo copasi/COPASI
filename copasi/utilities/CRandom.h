@@ -33,7 +33,7 @@ class CRandom
  public:
     // Lifecycle methods
     /**
-     * Named constructor.
+     * Default/Named constructor.
      * Seeds the random number generator with the given seed.
      * @param seed The seed to use
      */

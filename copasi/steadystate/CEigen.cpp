@@ -205,14 +205,14 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
           mSelect,           //NULL,   
 	 &mN,                //&n,    
           mA,                    
-         &(int)mLDA,            
-         &(int)mSdim,        // output
+         (int *) & mLDA,            
+         (int *) & mSdim,        // output
           mEigen_r,         
           mEigen_i,               
           mVS,              
-         &(int)mLdvs,       
+         (int *) & mLdvs,       
           mWork,            
-         &(int)mLWork,               
+         (int *) & mLWork,               
           mBWork,            //NULL
          &mInfo);            //output
 
