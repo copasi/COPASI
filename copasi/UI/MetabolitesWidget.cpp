@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/02/06 19:29:52 $
+   $Date: 2004/02/23 22:07:52 $
    End CVS Header */
 
 /***********************************************************************
@@ -155,6 +155,7 @@ void MetabolitesWidget::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
+
       table->setText(j, 0, obj->getName().c_str());
 
       if (btn_flag == 0) //By G
@@ -535,7 +536,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                        // Yes or Enter
+            case 0:                         // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -548,7 +549,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                        // No or Escape
+            case 1:                         // No or Escape
               break;
             }
         }
@@ -599,19 +600,25 @@ void MetabolitesWidget::resizeEvent(QResizeEvent * re)
         {
           int newWidth = re->size().width();
           newWidth -= 35; //Accounting for the left (vertical) header width.
-          float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0, weight3 = 3.0 , weight4 = 3.0;
-          float weightSum = weight0 + weight1 + weight2 + weight3 + weight4;
-          int w0, w1, w2, w3 , w4;
+          //float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0, weight3 = 2.0 , weight4 = 3.0;
+          float weight0 = 2.5, weight1 = 3.0, weight2 = 3.0, weight3 = 2.0 , weight4 = 3.0, weight5 = 3.5;
+          //float weightSum = weight0 + weight1 + weight2 + weight3 + weight4;
+          float weightSum = weight0 + weight1 + weight2 + weight3 + weight4 + weight5;
+          int w0, w1, w2, w3 , w4, w5;
           w0 = newWidth * (weight0 / weightSum);
           w1 = newWidth * (weight1 / weightSum);
           w2 = newWidth * (weight2 / weightSum);
           w3 = newWidth * (weight3 / weightSum);
-          w4 = newWidth - w0 - w1 - w2 - w3;
+          //w4 = newWidth - w0 - w1 - w2 - w3;
+          w4 = newWidth * (weight4 / weightSum);
+          w5 = newWidth - w0 - w1 - w2 - w3 - w4;
+
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);
           table->setColumnWidth(2, w2);
           table->setColumnWidth(3, w3);
           table->setColumnWidth(4, w4);
+          table->setColumnWidth(5, w5);
           binitialized = false;
         }
       else
