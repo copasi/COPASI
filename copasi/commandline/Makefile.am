@@ -45,7 +45,7 @@ LIBS = \
 	-Wl,-lfunction \
 	-Wl,-lutilities \
 	-Wl,-lreport \
-	-llapack -lblas -lg2c -lfl
+	-llapack -lblas -lF77 -lfl
 
 
 #  Use this for standard clapack
