@@ -10,6 +10,7 @@
 #define DELETE 2
 #define MODEL 3
 #define STEADYSTATETASK 4
+#define TRAJECTORYTASK 5
 
 #include <qptrlist.h>
 #include <fstream>
@@ -17,10 +18,10 @@
 #include "listviews.h"
 #include "Subject.h"
 
+class CTrajectoryTask;
 class CSteadyStateTask;
-class CWriteConfig;
-class CReadConfig;
 class CModel;
+class CReadConfig;
 class Folder;
 
 template <class T> class DataModel: public Subject
@@ -31,8 +32,10 @@ template <class T> class DataModel: public Subject
     QPtrList<T> folderList;  // to keep track of the number of the object in the tree...
     CModel* model;
     CSteadyStateTask* steadystatetask;
+    CTrajectoryTask* trajectorytask;
     bool modelUpdate;
     bool steadystatetaskUpdate;
+    bool trajectorytaskUpdate;
 
   protected:
     T* searchFolderList(int id);
@@ -53,11 +56,16 @@ template <class T> class DataModel: public Subject
     void saveModel(const char* fileName);
     inline CModel* getModel(){return model;}
     inline CSteadyStateTask* getSteadyStateTask(){return steadystatetask;}
+    inline CTrajectoryTask* getTrajectoryTask() {return trajectorytask;}
+
     inline void setModelUpdate(bool value){modelUpdate = value;}
     inline bool getModelUpdate(){return modelUpdate;}
 
     inline void setSteadyStateTaskUpdate(bool value){steadystatetaskUpdate = value;}
     inline bool getSteadyStateTaskUpdate() {return steadystatetaskUpdate;}
+
+    inline void setTrajectoryTaskUpdate(bool value) {trajectorytaskUpdate = value;}
+    inline bool getTrajectoryTaskUpdate() {return trajectorytaskUpdate;}
 
     // inline int getStatus(){return STATUS;}
     inline Node<T>* getRoot(){return myTree.getRoot();}
@@ -71,9 +79,11 @@ DataModel<T>::DataModel(char* fileName)
   // this->STATUS=0;
   last = NULL;
   model = NULL;
+  trajectorytask = NULL;
   steadystatetask = NULL;
   modelUpdate = false;
   steadystatetaskUpdate = false;
+  trajectorytaskUpdate = false;
 }
 
 template <class T>
@@ -129,14 +139,17 @@ void DataModel<T>::removeData(T* i)
 
   if (node)
     {
-      last = node;
-      notify(DELETE);
+      Node<T>* newNode = new Node<T>;
+      *newNode = *node;
 
+      last = newNode;
       myTree.deleteNode(i);
       folderList.remove(i);
     }
+  else
+    last = NULL;
 
-  last = NULL;
+  notify(DELETE);
 }
 
 /*
@@ -163,6 +176,13 @@ void DataModel<T>::loadModel(const char* fileName)
   steadystatetask->load(inbuf);
   steadystatetaskUpdate = true;
   notify(STEADYSTATETASK);
+
+  pdelete(trajectorytask);
+  trajectorytask = new CTrajectoryTask();
+  trajectorytask->load(inbuf);
+  trajectorytaskUpdate = true;
+  notify(TRAJECTORYTASK);
+
   //  steadystatetask->compile();
 }
 
@@ -178,8 +198,13 @@ void DataModel<T>::saveModel(const char* fileName)
 
   if (steadystatetask != NULL)
     steadystatetask->save(outbuf);
+
+  if (trajectorytask != NULL)
+    trajectorytask->save(outbuf);
+
   pdelete(model);
   pdelete(steadystatetask);
+  pdelete(trajectorytask);
 }
 
 /*void DataModel<T>::saveModel(const char* fileName)
@@ -200,7 +225,7 @@ void DataModel<T>::populateData(char* fileName)
 {
   QString str = QString("Folder ");
   Folder *f = new Folder(0, str);
-  f->setID(0, true);
+  f->setID(0);
   myTree.addRoot(f);
   folderList.append(f);
 
@@ -235,7 +260,7 @@ void DataModel<T>::populateData(char* fileName)
 
       f1 = (parentId == 0) ? new Folder(0, str) : new Folder(parent, str);
 
-      f1->setID(myId, true);
+      f1->setID(myId);
 
       myTree.addSibling(f1, parent);
 

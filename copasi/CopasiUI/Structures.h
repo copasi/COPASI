@@ -15,6 +15,7 @@
 #include "copasi.h"
 #include "model/model.h"
 #include "steadystate/steadystate.h"
+#include "trajectory/trajectory.h"
 
 class Structures
   {
