@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.213 $
+   $Revision: 1.214 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:25:26 $
+   $Date: 2005/02/28 15:32:51 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1082,6 +1082,31 @@ bool CModel::buildStateTemplate()
 
   return success;
 }
+
+CState CModel::getState() const
+  {
+    unsigned C_INT32 i, imax;
+    CState s(this);
+
+    /* Set the time */
+    s.setTime(mTime);
+
+    /* Set the volumes */
+    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s.getVolumeVector().array());
+    for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
+      *Dbl = mCompartments[i]->getVolume();
+
+    /* Set the variable Metabolites */
+    Dbl = const_cast<C_FLOAT64 *>(s.getVariableNumberVector().array());
+    for (i = 0, imax = getNumVariableMetabs(); i < imax; i++, Dbl++)
+      *Dbl = mMetabolites[i]->getNumber();
+
+    /* Set the fixed Metabolites */
+    Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVector().array());
+    for (i = getNumVariableMetabs(), imax = getNumMetabs(); i < imax; i++, Dbl++)
+      *Dbl = mMetabolites[i]->getNumber();
+    return s;
+  }
 
 CState CModel::getInitialState() const
   {
