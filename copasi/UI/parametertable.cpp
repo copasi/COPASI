@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:29 $
+   $Date: 2003/12/12 16:56:53 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -233,10 +233,10 @@ QWidget *ComboItem::createEditor() const
   {
     //std::cout << "createEditor(combo)" << std::endl;
     // create an editor - a combobox in our case
-    ((ComboItem*)this)->cb = new QComboBox(table()->viewport());
+    ((ComboItem*)this)->cb = new QComboBox(false, table()->viewport());
     QObject::connect(cb, SIGNAL(activated(int)), table(), SLOT(doValueChanged()));
     cb->insertStringList(mSL);
-    if (text() != "add metabolite") cb->setCurrentText(text());
+    cb->setCurrentText(text());
     return cb;
   }
 
