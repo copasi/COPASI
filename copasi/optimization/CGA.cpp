@@ -16,6 +16,8 @@
 #include "copasi.h"
 #include "CGA.h"
 
+using namespace std;
+
 //default constructor
 CGA::CGA()
 {
@@ -520,7 +522,7 @@ void CGA::select(int method)
 
   switch (method)
     {
-    case 1:     // parent-offspring competition
+    case 1:      // parent-offspring competition
 
       for (i = mPopSize; i < 2*mPopSize; i++)
         {
@@ -532,7 +534,7 @@ void CGA::select(int method)
 
       break;
 
-    case 2:     // tournament competition
+    case 2:      // tournament competition
       // compete with 20% of the population
       nopp = mPopSize / 5;
       // but at least one

@@ -98,6 +98,10 @@ SOURCE=.\COptAlgorithmParameter.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COptAlgorithmRand.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptProblem.cpp
 # End Source File
 # Begin Source File
@@ -119,6 +123,10 @@ SOURCE=.\COptAlgorithm.h
 # Begin Source File
 
 SOURCE=.\COptAlgorithmParameter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptAlgorithmRand.h
 # End Source File
 # Begin Source File
 

@@ -18,6 +18,8 @@
 #include <copasi.h>
 #include <vector>
 
+using std::vector;
+
 class COptProblem;
 
 #include "COptAlgorithmParameter.h"
