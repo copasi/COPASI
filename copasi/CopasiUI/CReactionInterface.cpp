@@ -71,16 +71,22 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
   //pdelete(mpChemEq);
   mChemEqI.loadFromChemEq(&model, rea->getChemEq());
 
-  mpFunction = &(rea->getFunction());
-  pdelete(mpParameters)
-  mpParameters = new CFunctionParameters(mpFunction->getParameters());
+  if (&(rea->getFunction()))
+    {
+      mpFunction = &(rea->getFunction());
+      pdelete(mpParameters)
+      mpParameters = new CFunctionParameters(mpFunction->getParameters());
+      loadNameMap(model, *rea);
 
-  loadNameMap(model, *rea);
-
-  C_INT32 i, imax = size();
-  mValues.resize(imax);
-  for (i = 0; i < imax; ++i)
-    if (getUsage(i) == "PARAMETER") mValues[i] = rea->getParameterValue(getParameterName(i));
+      C_INT32 i, imax = size();
+      mValues.resize(imax);
+      for (i = 0; i < imax; ++i)
+        if (getUsage(i) == "PARAMETER") mValues[i] = rea->getParameterValue(getParameterName(i));
+    }
+  else
+    {
+      setFunction("");
+    }
 
   mValid = true; //assume a reaction is valid before editing
 }
