@@ -10,7 +10,9 @@
 #ifndef CTRAJECTORY_H
 #define CTRAJECTORY_H
 
+#include <iostream>
 #include "model/model.h"
+#include "output/output.h"
 #include "utilities/utilities.h"
 #include "CODESolver.h"
 #include "CStochSolver.h"
@@ -77,6 +79,26 @@ class CTrajectory
    *  the method to use
    */
   C_INT32 mMethod;
+
+  /**
+   * Initial Output Event
+   */
+  COutputEvent *mOutInit;
+  
+  /**
+   * Any Point Output Event from beginning to end
+   */
+  COutputEvent *mOutPoint;
+
+  /**
+   * End Phase Output Event
+   */
+  COutputEvent *mOutEnd;
+
+  /**
+   * if the report is to include output at time zero
+   */
+  C_INT16	mOutputTimeZero;
 
   //Operations
  public:
@@ -241,8 +263,9 @@ class CTrajectory
 
   /*
    * Process the CTrajectory primary function
+   * @param ofstream &fout
    */	
-  void process();
+  void process(ofstream &fout);
 	
 };
 

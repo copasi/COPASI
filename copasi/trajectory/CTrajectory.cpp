@@ -9,6 +9,7 @@
 
 
 #include "copasi.h"
+#include "utilities/CGlobals.h"
 #include "CTrajectory.h"
 
 
@@ -24,6 +25,11 @@ CTrajectory::CTrajectory()
   mModel = NULL;
   mODESolver = NULL;
   mStochSolver = 0;
+
+  mOutInit = NULL;
+  mOutPoint = NULL;
+  mOutEnd = NULL;
+
 }
 	
 
@@ -67,6 +73,10 @@ CTrajectory & CTrajectory::operator = (const CTrajectory& source)
       mEndTime = source.mEndTime; 	
     }
 
+  mOutInit = NULL;
+  mOutPoint = NULL;
+  mOutEnd = NULL;
+
   initialize(source.mModel);
     
   return *this;
@@ -102,7 +112,11 @@ void CTrajectory::initialize(CModel * aModel)
     default:
       fatalError();
     }
-    
+
+  mOutInit = new COutputEvent(*this, 0);
+  mOutPoint = new COutputEvent(*this, mPoints);
+  mOutEnd = new COutputEvent(*this, mEndTime);
+  
   return;
 }
 
@@ -141,6 +155,10 @@ C_INT32 CTrajectory::load(CReadConfig & configbuffer)
   if((Fail = configbuffer.getVariable("Points", "C_INT32",
 				      (void *) &mPoints)))
     return Fail;
+
+  if ((Fail = configbuffer.getVariable("OutputTimeZero", "C_INT16",
+				      (void *) &mOutputTimeZero)))
+    return Fail;
   
   return Fail;
 }
@@ -155,6 +173,10 @@ C_INT32 CTrajectory::save(CWriteConfig & configbuffer)
   
   if((Fail = configbuffer.setVariable("Points", "C_FLOAT64",
 				      (void *) &mPoints)))
+    return Fail;
+
+  if((Fail = configbuffer.setVariable("OutputTimeZero", "C_INT16",
+				      (void *) &mOutputTimeZero)))
     return Fail;
 
   return Fail;
@@ -244,7 +266,7 @@ C_FLOAT64 * CTrajectory::getMY() const
   return mY;
 }
 
-void CTrajectory::process()
+void CTrajectory::process(ofstream &fout)
 {
   // mODESolver->initialize(* mModel, mY, mN, mMethod);
     
@@ -253,6 +275,9 @@ void CTrajectory::process()
   // mOutInit = COutputEvent(TIME_INIT, this);
   // mOutPoint = COutputEvent(TIME_POINT, this);		
   // mOutEnd = COutputEvent(TIME_END, this);
+
+	//print for the initial time point	
+	if (mOutInit) mOutInit->print(*this, Copasi->OutputList, fout);
 
     // The trajectory can be calculated using the ODE solver, 
     // one of the stochastic solver, or a hybrid method (as yet unimplemented)
@@ -271,6 +296,14 @@ void CTrajectory::process()
             //update the CODESolver from current time to end time
             cout << mTime << "  ";
       
+			//print for current time point in the outputEvent
+			if (!mOutputTimeZero)
+			{
+				if (mTime != 0)
+					if (mOutPoint) mOutPoint->print(*this, Copasi->OutputList, fout);      
+			}
+			else if (mOutPoint) mOutPoint->print(*this, Copasi->OutputList, fout);      
+
             mODESolver->step(mTime, mTime+length);
 
             //update CModel
