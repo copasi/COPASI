@@ -1,14 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/19 08:57:46 $
+   $Date: 2004/06/25 15:04:42 $
    End CVS Header */
 
 #include "copasi.h"
-#include "CReportDefinition.h"
-#include "CReportBody.h"
+#include "CReportDefinition.h" 
+//#include "CReportBody.h"
 #include "CReport.h"
 #include "CCopasiContainer.h"
 

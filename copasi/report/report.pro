@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: lixu1 $ $Date: 2003/09/10 01:08:12 $  
+# $Revision: 1.7 $ $Author: ssahle $ $Date: 2004/06/25 15:05:32 $  
 ######################################################################
 
 LIB = report
@@ -14,8 +14,8 @@ HEADERS += CCopasiContainer.h \
 		   CReportDefinition.h \
 		   CReportDefinitionVector.h \
 		   CKeyFactory.h \
-		   CReport.h \
-		   CReportBody.h
+		   CReport.h 
+		#   CReportBody.h
 
 SOURCES += CCopasiContainer.cpp \
            CCopasiObject.cpp \
@@ -24,5 +24,5 @@ SOURCES += CCopasiContainer.cpp \
 		   CReportDefinition.cpp \
 		   CReportDefinitionVector.cpp \
 	       CKeyFactory.cpp \
-		   CReport.cpp \
-		   CReportBody.cpp 
+		   CReport.cpp 
+		#   CReportBody.cpp 
