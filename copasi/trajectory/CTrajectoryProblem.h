@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:14 $
+   $Date: 2003/11/06 21:36:50 $
    End CVS Header */
 
 /**
@@ -70,7 +70,7 @@ class CTrajectoryProblem : public CCopasiProblem
 
     /**
      * Default constructor.
-     * @paramconst CCopasiContainer * pParent (default: NULL)
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
     CTrajectoryProblem(const CCopasiContainer * pParent = NULL);
 
@@ -81,19 +81,6 @@ class CTrajectoryProblem : public CCopasiProblem
      */
     CTrajectoryProblem(const CTrajectoryProblem & src,
                        const CCopasiContainer * pParent = NULL);
-
-#ifdef XXXX
-    /**
-     *  special constructor. Allows simple definition of a TrajectoryProblem
-     *  @param "CModel *" pmodel
-     *  @param "C_FLOAT64" starttime
-     *  @param "C_FLOAT64" endtime
-     *  @param "unsigned C_INT32" stepnumber : number of steps
-     */
-    CTrajectoryProblem(CModel * pmodel,
-                       C_FLOAT64 starttime, C_FLOAT64 endtime,
-                       unsigned C_INT32 stepnumber = 200);
-#endif // XXXX
 
     /**
      *  Destructor.
