@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/13 23:52:11 $
+   $Author: shoops $ 
+   $Date: 2003/11/20 15:04:07 $
    End CVS Header */
 
 /*******************************************************************
@@ -254,31 +254,31 @@ void ReactionsWidget::slotBtnCancelClicked()
 
 void ReactionsWidget::slotBtnDeleteClicked()
 {
-  if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
+  unsigned C_INT32 i, imax = table->numRows() - 1;
+  std::vector< unsigned C_INT32 > ToBeDeleted;
+
+  for (i = 0; i < imax; i++)
+    if (table->isRowSelected(i, true))
+      ToBeDeleted.push_back(i);
+
+  int choice = QMessageBox::warning(this, "Confirm Delete",
+                                    "Delete Selected Rows?",
+                                    "Yes", "No", 0, 0, 1);
+
+  switch (choice)
     {
-      int j = table->currentRow();
-      if (table->isRowSelected(j, true)) //True for Completely selected rows.
+    case 0:     // Yes or Enter
+      for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
         {
-          int choice = QMessageBox::warning(this, "Confirm Delete",
-                                            "Delete Selected Rows?",
-                                            //"Only Fully Selected Rows will be deleted." ,
-                                            "Yes", "No", 0, 0, 1);
-          switch (choice)
-            {
-            case 0:    // Yes or Enter
-              {
-                //QString name(table->text(j, 0));
-                table->removeSelectedRows(true);
-                dataModel->getModel()->removeReaction(mKeys[j]);
-                ListViews::notify(ListViews::REACTION, ListViews::DELETE, mKeys[j]);
-                break;
-              }
-            case 1:    // No or Escape
-              {
-                break;
-              }
-            }
+          dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
+          table->removeRow(ToBeDeleted[i]);
         }
+      ListViews::notify(ListViews::REACTION, ListViews::DELETE);
+
+      break;
+
+    default:     // No or Escape
+      break;
     }
 }
 
