@@ -35,6 +35,7 @@
 #include "mathmodel/CMathModel.h"
 #include "utilities/CCopasiNode.h"
 #include "utilities/CCopasiTree.h"
+#include "mathmodel/CMathNode.h"
 
 using namespace std;
 
@@ -437,23 +438,27 @@ C_INT32 TestReadSample(void)
 
 C_INT32 TestCopasiTree(void)
 {
-  CCopasiTree< CCopasiNode< void * > > * tree = new CCopasiTree< CCopasiNode< void * > >;
-  CCopasiTree< CCopasiNode< void * > >::iterator it;
-  CCopasiTree< CCopasiNode< void * > >::iterator end = tree->end();
+  CCopasiTree< CMathNode > * tree = new CCopasiTree< CMathNode >;
+  CCopasiTree< CMathNode >::iterator it;
+  CCopasiTree< CMathNode >::iterator end = tree->end();
 
-  CCopasiNode< void * > * n = new CCopasiNode< void * >[5];
+  CMathNode * n0 = new CMathNode();
+  CMathNode * n1 = new CMathNode();
+  CMathNode * n2 = new CMathNode();
+  CMathNode * n3 = new CMathNode();
+  CMathNode * n4 = new CMathNode();
 
-  std::cout << tree->attachNode(&n[0]) << std::endl;
-  std::cout << tree->attachNode(&n[1]) << std::endl;
-  std::cout << tree->attachNode(&n[4], &n[0]) << std::endl;
-  std::cout << tree->attachNode(&n[2], &n[0], &n[0]) << std::endl;
-  std::cout << tree->attachNode(&n[3], &n[0], &n[2]) << std::endl;
+  std::cout << tree->attachNode(n0) << std::endl;
+  std::cout << tree->attachNode(n1) << std::endl;
+  std::cout << tree->attachNode(n4, n0) << std::endl;
+  std::cout << tree->attachNode(n2, n0, n0) << std::endl;
+  std::cout << tree->attachNode(n3, n0, n2) << std::endl;
 
   for (it = tree->begin(); it != end; ++it)
     std::cout << &*it << " ";
   std::cout << std::endl;
 
-  std::cout << tree->moveNode(&n[0]) << std::endl;
+  std::cout << tree->moveNode(n0) << std::endl;
 
   for (it = tree->begin(); it != end; ++it)
     std::cout << &*it << " ";
