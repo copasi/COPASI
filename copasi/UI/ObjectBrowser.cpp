@@ -186,9 +186,9 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
       current = *it;
       ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
       last = currentItem;
-      if (current->isContainer())
+      if (current->isContainer() && !current->isVector())
         {
-          currentItem->setText(0, current->getObjectType().c_str());
+          currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(CONTAINERATTR);
           loadChild(currentItem, (CCopasiContainer*) current);
         }
