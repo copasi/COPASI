@@ -53,32 +53,56 @@ int COptAlgorithm::cleanup(void)
   return 0;
 }
 
+
+// set the number of method parameters
+void COptAlgorithm::setMethodParameterNumber(int aNum)
+{
+  mParameterNum = aNum;
+}
+
+// get method parameter number
 int COptAlgorithm::getMethodParameterNumber(void)
 {
   return mParameterNum;
 }
 
+// set method parameter
+void COptAlgorithm::setMethodParameter(int i, COptAlgorithmParameter & aParam)
+{
+  mOptAlgmParams[i] = aParam;
+}
 
-void COptAlgorithm::setMethodParameter(int i, double value)
+// get method parameter
+COptAlgorithmParameter COptAlgorithm::getMethodParameter(int i)
+{
+  return mOptAlgmParams[i];
+}
+
+// set method parameter value
+void COptAlgorithm::setMethodParameterValue(int i, double value)
 {
   mOptAlgmParams[i].setValue(value);
 }
 
-double COptAlgorithm::getMethodParameter(int i)
+// get method parameter value
+double COptAlgorithm::getMethodParameterValue(int i)
 {
   return mOptAlgmParams[i].getValue();
 }
 
+// get method parameter name
 string COptAlgorithm::getMethodParameterName(int i)
 {
   return mOptAlgmParams[i].getName();
 }
 
+// get method name
 string COptAlgorithm::getMethodName(void)
 {
   return mMethodName;
 }
 
+// get method version
 string COptAlgorithm::getMethodVersion(void)
 {
   return mMethodVersion;

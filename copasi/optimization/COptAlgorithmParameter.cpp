@@ -23,6 +23,26 @@ COptAlgorithmParameter::COptAlgorithmParameter()
 COptAlgorithmParameter::~COptAlgorithmParameter()
 { }
 
+// copy constructor
+COptAlgorithmParameter::COptAlgorithmParameter(const COptAlgorithmParameter& source)
+{
+  mName = source.mName;
+  mValue = source.mValue;
+}
+
+// Object assignment overloading,
+COptAlgorithmParameter & COptAlgorithmParameter::operator = (const COptAlgorithmParameter& source)
+{
+  if(this != &source)
+    {
+      mName = source.mName;
+      mValue = source.mValue;
+    }
+    
+  return *this;
+}
+
+
 //set name
 //param: aName a string to be set as mName
 void COptAlgorithmParameter:: setName(string aName)

@@ -37,6 +37,21 @@ class COptAlgorithmParameter
     */
    ~COptAlgorithmParameter();
 
+  /**
+   * Copy constructor
+   * @param source a COptAlgorithmParameter object for copy
+   */
+  COptAlgorithmParameter(const COptAlgorithmParameter& source);
+
+  /**
+   * Object assignment overloading
+   * @param source a COptAlgorithmParameter object for copy
+   * @return an assigned COptAlgorithmParameter object
+   */
+  COptAlgorithmParameter& operator=(const COptAlgorithmParameter& source);
+
+
+
    /**
     * set name
     * @param aName a string to be set as mName

@@ -42,9 +42,9 @@ class COptAlgorithm
 
   vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
 
-  string mMethodVersion;                  // Method Version string, yes
-  string mMethodName;		          // method Name (descriptive)
-  bool mBounds;		    // True if method accepts bounds on the parameters
+  string mMethodVersion;      // Method Version string, yes
+  string mMethodName;	      // method Name (descriptive)
+  bool mBounds;		      // True if method accepts bounds on the parameters
 
   // Implementation
  public:
@@ -79,6 +79,11 @@ class COptAlgorithm
    //int optimise();
 
    /**
+    * set the number of method parameters
+    */
+   void setMethodParameterNumber(int aNum);
+
+   /**
     * get the number of method parameters
     */
    int getMethodParameterNumber(void);
@@ -86,12 +91,22 @@ class COptAlgorithm
    /**
     * set a method parameter
     */
-   void setMethodParameter(int i, double value);
+   void setMethodParameter(int i, COptAlgorithmParameter & aParam);
 
    /**
     * get method parameter that matches a specific index 
     */
-   double getMethodParameter(int i);
+   COptAlgorithmParameter getMethodParameter(int i);
+
+   /**
+    * set a method parameter
+    */
+   void setMethodParameterValue(int i, double value);
+
+   /**
+    * get method parameter that matches a specific index 
+    */
+   double getMethodParameterValue(int i);
 
    /**
     * get method parameter name
