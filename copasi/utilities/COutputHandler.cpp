@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/07/07 08:08:26 $
+   $Author: ssahle $ 
+   $Date: 2004/10/06 09:47:58 $
    End CVS Header */
 
 #include <iostream>
@@ -34,7 +34,7 @@ bool CCallbackHandler::finish()
   return true;
 }
 
-bool CCallbackHandler::init(C_INT32 maxSteps, const std::string & text)
+bool CCallbackHandler::init(C_INT32 maxSteps, const std::string & text, bool cancelButton)
 {
 #ifdef COPASI_DEBUG
   std::cout << "CallbackHandler: init" << std::endl;
