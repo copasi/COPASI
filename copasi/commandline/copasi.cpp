@@ -15,7 +15,7 @@ C_INT main(C_INT argc, char *argv[])
 {
   unsigned C_INT32 i, imax;
 
-  cout << "Starting main program." << endl;
+  std::cout << "Starting main program." << std::endl;
   Copasi = new CGlobals;
 
   try
@@ -93,10 +93,10 @@ C_INT main(C_INT argc, char *argv[])
 
   catch (CCopasiException Exception)
     {
-      cout << Exception.getMessage().getText() << endl;
+      std::cout << Exception.getMessage().getText() << std::endl;
     }
 
   delete Copasi;
-  cout << "Leaving main program." << endl;
+  std::cout << "Leaving main program." << std::endl;
   return 0;
 }

@@ -11,6 +11,10 @@
  * cxx_source_file variable.
  **/
 
+#ifdef WIN32
+#define strcasecmp _stricmp
+#endif
+
 #include "COptionParser.h"
 #include <cstring>
 #include <cstdlib>
@@ -165,7 +169,7 @@ void copasi::COptionParser::finalize (void)
 //#########################################################################
 void copasi::COptionParser::parse_element (const char *element, int position, opsource source)
 {
-  std::size_t length = strlen(element);
+  size_t length = strlen(element);
 
   switch (state_)
     {
