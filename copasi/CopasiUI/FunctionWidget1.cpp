@@ -187,6 +187,10 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
 int FunctionWidget1::isName(QString setValue)
 {
   int i;
+  if (mModel == NULL)
+    {
+      return 0;
+    }
 
   CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
   C_INT32 noOfFunctionsRows = Functions.size();
@@ -225,9 +229,21 @@ int FunctionWidget1::isName(QString setValue)
   return 0;
 }
 
+void FunctionWidget1::loadFunction(CModel *model)
+{
+  if (model != NULL)
+    {
+      mModel = model;
+    }
+}
+
 void FunctionWidget1::loadName(QString setValue)
 {
   int i, j;
+  if (mModel == NULL)
+    {
+      return;
+    }
 
   CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
 
