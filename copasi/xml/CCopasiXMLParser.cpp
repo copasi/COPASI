@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/26 18:58:55 $
+   $Date: 2005/02/27 18:43:34 $
    End CVS Header */
 
 /**
@@ -5375,7 +5375,7 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
     case Slider:
       if (strcmp(pszName, "Slider")) fatalError();
       Key = mParser.getAttributeValue("key", papszAttrs);
-      AssociatedEntityKey = mParser.getAttributeValue("AssociatedEntityKey", papszAttrs);
+      AssociatedEntityKey = mParser.getAttributeValue("associatedEntityKey", papszAttrs);
       ObjectCN = mParser.getAttributeValue("objectCN", papszAttrs);
       objectType = mParser.getAttributeValue("objectType", papszAttrs);
       ObjectType = (CSlider::Type) mParser.toEnum(objectType, CSlider::TypeName);
