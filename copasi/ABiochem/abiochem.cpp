@@ -19,6 +19,9 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "tnt/tnt.h"
+#include "tnt/cmat.h"
+
 #include "utilities/utilities.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "model/model.h"
@@ -171,7 +174,6 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
   r = 2 * n;
   // set the title and comments
   model.setTitle(Title);
-  sprintf(comments, "Model of a random gene network following a Erdos-Renyi topology\nwith %ld genes and %ld input connections each.\n\nCreated automatically by the A-Biochem system", n, k);
   model.setComments(comments);
   // add one compartment to the model
   model.addCompartment(compname, 1.0);
@@ -339,6 +341,46 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
     }
 }
 
+void GraphMetrics(CCopasiVector < CGene > &gene)
+{
+  C_INT32 i, j, l, n;
+  TNT::Matrix<C_FLOAT64> Adj;
+  CEigen *eigen;
+  C_FLOAT64 ssRes, *eigen_r, *eigen_i;
+
+  n = gene.size();
+  // we start by creating the adjacency matrix
+  Adj.newsize(n, n);
+  for (i = 0; i < n; i++)
+    {
+      for (j = 0; j < n; j++)
+        Adj[i][j] = 0.0;
+      for (j = 0; j < gene[i]->getModifierNumber(); j++)
+        {
+          for (l = 0; l < n; l++)
+            if (gene[i]->getModifier(j) == gene[l])
+              {
+                if (gene[i]->getModifierType(j) == 0)
+                  Adj[l][i] = -1.0;
+                else
+                  Adj[l][i] = 1.0;
+                break;
+              }
+        }
+    }
+  // calculate eigenvalues
+  eigen = new CEigen();
+  ssRes = 1e-9;
+  eigen->CalcEigenvalues(ssRes, Adj);
+  eigen_r = eigen->getEigen_r();
+  eigen_i = eigen->getEigen_i();
+  for (i = 0; i < n; i++)
+;
+  // std::cout << "Eigen[" << i << "]=" << eigen_r[i] << " i " << eigen_i[i] << endl;
+  // fprintf(stderr,"Eigen[%ld]=%lg + i*(%lg\n)", i, eigen_r[i], eigen_i[i]);
+  delete eigen;
+}
+
 void WriteGepasi(char *Title, CModel &model)
 {
   string linein;
@@ -442,6 +484,25 @@ void WriteGepasi(char *Title, CModel &model)
   fin.close();
 }
 
+void WriteSBML(char *Title, CModel &model)
+{
+#ifdef XXXX
+  string linein;
+  linein.reserve(100);
+  char strtmp[1024], mtitle[512];
+  ofstream fout;
+  CWriteConfig *modelBuff;
+  C_INT32 i, nmetab;
+  vector < CMetab * > Metab;
+
+  sprintf(mtitle, "%s.xml", Title);
+  fout.open(mtitle, ios::out | ios::trunc);
+  // write the SBML !
+  model.saveSBML(fout);
+  fout.close();
+#endif
+}
+
 C_INT main(C_INT argc, char *argv[])
 {
   C_INT32 n, k, i, j, tot, seed;
@@ -468,7 +529,7 @@ C_INT main(C_INT argc, char *argv[])
       k = options.inputs;
       prefix = options.prefix;
       positive = options.positive;
-      rewiring = 0.03; // this needs to come from cmd line
+      rewiring = options.rewire;
     }
   catch (clo::autoexcept &e)
     {
@@ -502,6 +563,8 @@ C_INT main(C_INT argc, char *argv[])
       // that are really needed for this model
       for (j = 0; j < n; j++)
         MakeKinType(Copasi->FunctionDB, GeneList[j]->getModifierNumber(), GeneList[j]->getPositiveModifiers());
+      // calculate several metrics
+      GraphMetrics(GeneList);
       // create graph files
       WriteDot(NetTitle, GeneList);
       WritePajek(NetTitle, GeneList);
@@ -511,6 +574,8 @@ C_INT main(C_INT argc, char *argv[])
       MakeModel(NetTitle, comments, GeneList, n, k, model);
       // save Gepasi model
       WriteGepasi(NetTitle, model);
+      // save SBML file
+      WriteSBML(NetTitle, model);
       // cleanup model and vectors
       model.cleanup();
       GeneList.cleanup();
