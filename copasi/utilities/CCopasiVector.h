@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:21:03 $
+   $Date: 2004/06/22 16:01:08 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -24,7 +24,7 @@
 #include "utilities/CCopasiTask.h"
 
 class CReadConfig;
-class CWriteConfig;
+//class CWriteConfig;
 
 template < class CType > class CCopasiVector:
         protected std::vector< CType * >, public CCopasiContainer
@@ -347,20 +347,20 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
        *  (Which usually has a file attached but may also have socket)
        *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
        */
-      virtual void save(CWriteConfig & configbuffer)
+      /*virtual void save(CWriteConfig & configbuffer)
       {
         unsigned C_INT32 i, imax = size();
         iterator Target = begin();
 
         for (i = 0; i < imax; i++, Target++)
           (*Target)->save(configbuffer);
-      }
+      }*/
 
       /**
        *
        */
       value_type & operator[](unsigned C_INT32 index)
-    {return ((CCopasiVector <CType>*) this)->operator[](index);}
+      {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
        *
@@ -596,20 +596,20 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
        *  (Which usually has a file attached but may also have socket)
        *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
        */
-      virtual void save(CWriteConfig & configbuffer)
+      /*virtual void save(CWriteConfig & configbuffer)
       {
         unsigned C_INT32 i, imax = size();
         iterator Target = begin();
 
         for (i = 0; i < imax; i++, Target++)
           (*Target)->save(configbuffer);
-      }
+      }*/
 
       /**
        *
        */
       value_type & operator[](unsigned C_INT32 index)
-    {return ((CCopasiVector <CType>*) this)->operator[](index);}
+      {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
        *

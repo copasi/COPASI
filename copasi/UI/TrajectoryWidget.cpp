@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:42:42 $
+   $Date: 2004/06/22 16:02:17 $
    End CVS Header */
 
 /********************************************************
@@ -483,17 +483,17 @@ void TrajectoryWidget::UpdateMethod(const bool & update)
 
 void TrajectoryWidget::ExportToFile()
 {
-  QString textFile = QFileDialog::getSaveFileName(
-                       QString::null, "TEXT Files (*.txt)",
-                       this, "save file dialog",
-                       "Choose a file");
-
-  if (/*mTrajectoryTask &&*/ textFile)
-    {
-      textFile += ".txt";
-      CWriteConfig outbuf((const char *)textFile.utf8());
-      //      ((CTrajectoryTask*)(CCopasiContainer*)GlobalKeys.get(objKey))->save(outbuf);
-    }
+  /*  QString textFile = QFileDialog::getSaveFileName(
+                         QString::null, "TEXT Files (*.txt)",
+                         this, "save file dialog",
+                         "Choose a file");
+   
+    if (textFile)
+      {
+        textFile += ".txt";
+        CWriteConfig outbuf((const char *)textFile.utf8());
+        //      ((CTrajectoryTask*)(CCopasiContainer*)GlobalKeys.get(objKey))->save(outbuf);
+      }*/
 }
 
 bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))

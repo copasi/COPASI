@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/08 20:59:55 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 16:01:07 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -17,7 +17,7 @@
 class CCopasiParameterGroup;
 
 class CReadConfig;
-class CWriteConfig;
+//class CWriteConfig;
 
 /**
  *  CCopasiParameter class.

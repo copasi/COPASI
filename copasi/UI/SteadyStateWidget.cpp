@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:41:57 $
+   $Date: 2004/06/22 16:02:17 $
    End CVS Header */
 
 /********************************************************
@@ -356,20 +356,20 @@ void SteadyStateWidget::loadSteadyStateTask()
 
 void SteadyStateWidget::ExportToFileButtonClicked()
 {
-  if (!dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey))) return;
-  QString textFile = QFileDialog::getSaveFileName(
-                       QString::null, "TEXT Files (*.txt)",
-                       this, "save file dialog",
-                       "Choose a file");
-
-  if (textFile)
-    {
-      textFile += ".txt";
-      CWriteConfig outbuf((const char *)textFile.utf8());
-      CSteadyStateTask* mSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
-      //      mSteadyStateTask->save(outbuf);
-    }
+  /*  if (!dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey))) return;
+    QString textFile = QFileDialog::getSaveFileName(
+                         QString::null, "TEXT Files (*.txt)",
+                         this, "save file dialog",
+                         "Choose a file");
+   
+    if (textFile)
+      {
+        textFile += ".txt";
+        CWriteConfig outbuf((const char *)textFile.utf8());
+        CSteadyStateTask* mSteadyStateTask =
+          dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
+        //      mSteadyStateTask->save(outbuf);
+      }*/
 }
 
 bool SteadyStateWidget::enter(const std::string & key)
