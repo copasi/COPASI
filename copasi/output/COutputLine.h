@@ -115,7 +115,7 @@ class COutputLine : public CCopasiContainer
     /**
      *  Dummy method.
      */
-    std::string & getName() const {return mName;}
+    const std::string & getName() const {return mName;}
 
     /**
      *  Complie the mpValue in each output line
