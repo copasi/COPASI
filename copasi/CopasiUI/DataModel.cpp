@@ -1,15 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/02/26 03:16:32 $
+   $Author: ssahle $ 
+   $Date: 2004/04/06 14:54:52 $
    End CVS Header */
 
 #include "DataModel.h"
 #include "DataModel.txt.h"
 #include "function/CFunctionDB.h"
 #include "mathmodel/CMathModel.h"
+#include "plot/COutputHandlerPlot.h"
 
 DataModel::DataModel()
 {
@@ -91,6 +92,8 @@ void DataModel::createModel(const char* fileName)
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->getProblem()->setModel(model);
+  COutputHandler* tmpHandler = new COutputHandlerPlot();
+  trajectorytask->setOutputHandler(tmpHandler);
   searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //23=Time course
 
   pdelete(scantask);
@@ -136,6 +139,8 @@ void DataModel::loadModel(const char* fileName)
       pdelete(trajectorytask);
       trajectorytask = new CTrajectoryTask();
       trajectorytask->load(inbuf);
+      COutputHandler* tmpHandler = new COutputHandlerPlot();
+      trajectorytask->setOutputHandler(tmpHandler);
       searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
       pdelete(scantask);

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2004/01/15 16:28:40 $  
+# $Revision: 1.6 $ $Author: ssahle $ $Date: 2004/04/06 14:56:09 $  
 ######################################################################
 
 LIB = plot
@@ -11,6 +11,7 @@ HEADERS += plotwidget1.h \
            zoomplot.h \
            CopasiPlot.h \
            plotspec.h \
+           COutputHandlerPlot.h \
            CPlotSpec.h \
            CPlotSpecVector.h \
            plotwindow.h  \
@@ -20,6 +21,7 @@ SOURCES += CopasiPlot.cpp \
            doublerect.cpp \
            plotwidget1.cpp \
            plotwindow.cpp \
+           COutputHandlerPlot.cpp \
            CPlotSpec.cpp \
            CPlotSpecVector.cpp \
            zoomplot.cpp \

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: shoops $ $Date: 2003/10/30 17:59:28 $  
+# $Revision: 1.3 $ $Author: ssahle $ $Date: 2004/04/06 15:01:19 $  
 ######################################################################
 
 LIB = utilities
@@ -21,6 +21,7 @@ HEADERS += CCopasiException.h \
            CIndexedPriorityQueue.h \
            CluX.h \
            CMatrix.h \
+           COutputHandler.h \
            CReadConfig.h \
            CVector.h \
            CVersion.h \
@@ -39,6 +40,7 @@ SOURCES += CCopasiException.cpp \
            CDependencyGraph.cpp \
            CGlobals.cpp \
            CIndexedPriorityQueue.cpp \
+           COutputHandler.cpp \
            CReadConfig.cpp \
            CVersion.cpp \
            CWriteConfig.cpp \

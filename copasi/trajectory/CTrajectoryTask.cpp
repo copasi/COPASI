@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/26 21:17:57 $
+   $Author: ssahle $ 
+   $Date: 2004/04/06 14:57:22 $
    End CVS Header */
 
 /**
@@ -31,6 +31,7 @@
 #include "utilities/CGlobals.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
+#include "utilities/COutputHandler.h"
 
 #define XXXX_Reporting
 
@@ -153,6 +154,8 @@ bool CTrajectoryTask::process()
   pProblem->getModel()->getDerivatives(mpState, Derivatives);
   mReport.printBody();
 
+  if (mpOutputHandler) mpOutputHandler->init();
+
   C_FLOAT64 StepSize = pProblem->getStepSize();
   C_FLOAT64 ActualStepSize;
   const C_FLOAT64 & Time = mpState->getTime();
@@ -176,6 +179,7 @@ bool CTrajectoryTask::process()
 
       pProblem->getModel()->getDerivatives(mpState, Derivatives);
       mReport.printBody();
+      if (mpOutputHandler) mpOutputHandler->doOutput();
 
 #ifdef  XXXX_Event
       if (ActualStepSize != StepSize)
@@ -204,6 +208,8 @@ bool CTrajectoryTask::process()
 
   pProblem->getModel()->getDerivatives(mpState, Derivatives);
   mReport.printFooter();
+
+  if (mpOutputHandler) mpOutputHandler->finish();
 
   return true;
 }
