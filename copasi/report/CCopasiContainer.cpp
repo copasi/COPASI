@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 16:02:39 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:24:58 $
    End CVS Header */
 
 /**
@@ -112,6 +112,17 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
 
     while (it != range.second && it->second->getObjectType() != Type) ++it;
 
+    //debug
+    /*
+    std::cout << "Container::getObject(); this->getObjectName(): " << getObjectName() << " CN: " << cn << std::endl;
+    objectMap::const_iterator dit, ditEnd=mObjects.end();
+    for (dit=mObjects.begin(); dit != ditEnd; ++dit)
+      std::cout << "   " << dit->first << " (Name: " << dit->second->getObjectName() << ", Type: " << dit->second->getObjectType() << ")" << std::endl;
+    ditEnd=range.second;
+    for (dit=range.first; dit != ditEnd; ++dit)
+      std::cout << " * " << dit->first << " (Name: " << dit->second->getObjectName() << ", Type: " << dit->second->getObjectType() << ")" << std::endl;
+    */
+
     if (it == range.second)
       {
         if (Type == "String")
@@ -124,7 +135,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
 
     if (it->second->isNameVector() || it->second->isVector())
       {
-        pObject = it->second->getObject("[" + cn.getName() + "]");
+        pObject = it->second->getObject("[" + cn.getName(0) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
           return pObject;
@@ -137,7 +148,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
 
     if (it->second->isMatrix())
       {
-        pObject = it->second->getObject("[" + cn.getName() + "]" +
+        pObject = it->second->getObject("[" + cn.getName(0) + "]" +  //TODO really?
                                         "[" + cn.getName(1) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)

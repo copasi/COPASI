@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/19 08:59:03 $
+   $Date: 2004/05/13 13:24:58 $
    End CVS Header */
 
 // ReportDefinitionVector.cpp: implementation of the CReportDefinitionVector class.
@@ -43,7 +43,7 @@ bool CReportDefinitionVector::addReportDefinition(const std::string name, const 
 {
   unsigned C_INT32 i;
   for (i = 0; i < size(); i++)
-    if ((*this)[i]->getName() == name)
+    if ((*this)[i]->getObjectName() == name)
       return false; // duplicate name
 
   CReportDefinition* pNewReportDef = new CReportDefinition(name, this);

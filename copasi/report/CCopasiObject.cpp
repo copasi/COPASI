@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/07 19:50:27 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:24:58 $
    End CVS Header */
 
 /**
@@ -91,7 +91,7 @@ const CCopasiObject *
 CCopasiObject::getObject(const CCopasiObjectName & C_UNUSED(cn)) const
   {return NULL;}
 
-const std::string & CCopasiObject::getName() const {return mObjectName;}
+//const std::string & CCopasiObject::getName() const {return mObjectName;}
 
 const std::string
 CCopasiObject::getObjectUniqueNameEx(const bool & isParent) const
