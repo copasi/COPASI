@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SimpleSelectionDialog.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/08 09:00:57 $
+   $Date: 2004/11/02 16:57:43 $
    End CVS Header */
 
 #ifndef SimpleSelectionDialog_H__
@@ -48,6 +48,7 @@ class SimpleSelectionDialog: public QDialog
     virtual ~SimpleSelectionDialog();
     void setOutputVector(std::vector<CCopasiObject*>* outputVector);
     void setModel(CModel* model);
+    void setSingleSelection(bool singleSelectionMode);
   };
 
 #endif /* SimpleSelectionDialog_H__ */

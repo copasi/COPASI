@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SimpleSelectionDialog.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/28 13:48:45 $
+   $Date: 2004/11/02 16:57:42 $
    End CVS Header */
 
 #include "SimpleSelectionDialog.h"
@@ -137,4 +137,9 @@ void SimpleSelectionDialog::modeButton_clicked()
       this->mainLayout->insertWidget(0, this->mainWidget);
       this->mainWidget->setHidden(false);
     }
+}
+
+void SimpleSelectionDialog::setSingleSelection(bool singleSelectionMode)
+{
+  this->simpleSelectionWidget->setSingleSelection(singleSelectionMode);
 }
