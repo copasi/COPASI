@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/12/03 15:21:34 $
+   $Date: 2003/12/05 18:24:35 $
    End CVS Header */
 
 /***********************************************************************
@@ -22,6 +22,7 @@
 #include <qwidget.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
+#include <qcombobox.h>
 
 #include "MyTable.h"
 #include "model/CModel.h"
@@ -129,8 +130,12 @@ void MetabolitesWidget::fillTable()
 
   // ComboBox options (compartment)
   QStringList compartmentType;
-  compartmentType.push_back("compartment");
-
+  //compartmentType.push_back("compartment");
+  const CCopasiVector < CCompartment > & compartments = dataModel->getModel()->getCompartments();
+  for (j = 0; j < compartments.size(); j++)
+    {
+      compartmentType.push_back(compartments[j]->getName().c_str());
+    }
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
@@ -150,26 +155,27 @@ void MetabolitesWidget::fillTable()
       //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
       //table->setText(j, 4, obj->getCompartment()->getName().c_str());
 
-      table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
+      //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
       //create list of data types (for combobox)
+
       // col. 3
-      /*QComboTableItem * item = new QComboTableItem(table, statusType, false);
+      QComboTableItem * item = new QComboTableItem(table, statusType, false);
       // next line not doable because Table Item takes in one string not stringlist, not combo
       //QTableItem * item = new QTableItem(table, QTableItem::WhenCurrent, statusType);
       // next line causing some probs: 103 errors ComboItem undeclared identifier
       //ComboItem * item = new ComboItem(table, QTableItem::WhenCurrent, statusType);
 
       //item->setText(CMetab::StatusName[obj->getStatus()].c_str());
-      //item->setText("variable");
+      table->setItem(j, 3, item);
 
-      table->setItem(j, 3, item);*/
-
-      //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
-      table->setText(j, 4, obj->getCompartment()->getName().c_str());
+      table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
+      //table->setText(j, 4, obj->getCompartment()->getName().c_str());
       // col. 4
-      QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
+      //QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
+      item = new QComboTableItem(table, compartmentType, false);
       //ComboItem * item = new ComboItem(table, QTableItem::WhenCurrent, statusType);
       table->setItem(j, 4, item);
+      table->setText(j, 4, "Test");
       /*item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
       item->setText(usage);
       if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
@@ -438,7 +444,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:          // Yes or Enter
+        case 0:           // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -451,7 +457,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:          // No or Escape
+        case 1:           // No or Escape
           break;
         }
     }
