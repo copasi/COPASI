@@ -91,7 +91,7 @@ C_INT main(void)
       // TestModel();
       // TestLU();
       // TestMCA();
-      // TestOutputEvent();	
+      // TestOutputEvent();        
     }
 
   catch (CCopasiException Exception)
@@ -431,7 +431,7 @@ C_INT32 TestMCA(void)
     model.buildStoi();
     model.lUDecomposition();
     model.setMetabolitesStatus();
-    model.buildRedStoi();	
+    model.buildRedStoi();        
     
     CMca mMCA();
     return 0;
