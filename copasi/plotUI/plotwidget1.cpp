@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/10 12:54:12 $
+   $Date: 2004/05/27 13:26:53 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.9 2004/05/10 12:54:12 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.10 2004/05/27 13:26:53 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -95,7 +95,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 
   layout4 = new QHBoxLayout(0, 0, 6, "layout4");
 
-  startPlotButton = new QPushButton(this, "startPlotButton");
+  startPlotButton = new QPushButton(this, "Commit");
   layout4->addWidget(startPlotButton);
 
   deletePlotButton = new QPushButton(this, "deletePlotButton");
@@ -104,7 +104,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   addPlotButton = new QPushButton(this, "addPlotButton");
   layout4->addWidget(addPlotButton);
 
-  resetButton = new QPushButton(this, "resetButton");
+  resetButton = new QPushButton(this, "Revert");
   layout4->addWidget(resetButton);
   layout19->addLayout(layout4);
   layout20->addLayout(layout19);
@@ -264,27 +264,34 @@ void PlotWidget1::addCurveGroupBox()
   //pdelete(pBrowser2);
   pdelete(pVector1);
   pdelete(pVector2);
-
-  /*
-    Curve2DWidget * curve = new Curve2DWidget(tabs);
-    curveWidgetVector.push_back(curve);
-    //    curve->LoadFromCurveSpec(&*it, channelNames);  //TODO somehow tell the curve widget about the channel names
-    tabs->addTab(curve, "test");
-  */ 
-  //TODO: check for some maximum number of curves
 }
 
 //-----------------------------------------------------------------------------
 
 void PlotWidget1::removeCurveGroupBox()
 {
+  //which tab to delete
   C_INT32 index = tabs->currentPageIndex();
+
+  //erase the curve spec
+  CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
+  unsigned C_INT32 i;
+  std::vector<Curve2DSpec>::iterator it, itEnd;
+  itEnd = pspec->getCurves().end();
+  for (it = pspec->getCurves().begin(), i = 0; (it != itEnd)&(i < index); ++it, ++i);
+  if (it != itEnd) pspec->getCurves().erase(it);
+
+  //recreate the tabs
+  loadFromPlotSpec(pspec);
+
+  /*
   delete curveWidgetVector[index];
 
   std::vector<Curve2DWidget*>::iterator it;
   C_INT32 i;
   for (it = curveWidgetVector.begin(), i = 0; (it != curveWidgetVector.end())&(i < index); ++it, ++i);
   if (it != curveWidgetVector.end()) curveWidgetVector.erase(it);
+  */
 }
 
 //-----------------------------------------------------------------------------
@@ -334,6 +341,8 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpec *pspec)
 {
   if (!pspec) return false;
 
+  C_INT32 oldIndex = tabs->currentPageIndex();
+
   Curve2DWidget* curve;
   const std::vector<Curve2DSpec> & curves = pspec->getCurves();
 
@@ -355,6 +364,9 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpec *pspec)
       curve->LoadFromCurveSpec(&*it, channelNames);
       tabs->addTab(curve, it->title.c_str());
     }
+
+  tabs->setCurrentPage(oldIndex);
+
   return true; //TODO really check
 }
 
