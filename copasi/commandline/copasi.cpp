@@ -6,16 +6,24 @@
 #ifdef WIN32
 # include <windows.h>
 # include <winbase.h>
+# include <direct.h>
+# define getcwd _getcwd
 # ifdef ERROR
 #  undef ERROR
 # endif
+#else
+# include <unistd.h>
 #endif
 
+#include <stdlib.h>
+
 #define COPASI_MAIN
+#define COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "COptionParser.h"
+#include "COptions.h"
 
 C_INT32 TestOptimization(void);
 
@@ -23,6 +31,11 @@ C_INT main(C_INT argc, char *argv[])
 {
   unsigned C_INT32 i, imax;
   char PrgName[512];
+  char Cwd[512];
+  char *HOME;
+
+  getcwd(Cwd, 512);
+  HOME = getenv("HOME");
 
 #ifdef WIN32
   GetModuleFileName(NULL, PrgName, 512);
@@ -51,14 +64,14 @@ C_INT main(C_INT argc, char *argv[])
       const std::vector<std::string> &non_options =
         parser.get_non_options();
 
-      std::cout << "libdir \t'" << options.libdir << "' "
-      << locations.libdir << std::endl;
+      std::cout << "CopsiDir \t'" << options.CopasiDir << "' "
+      << locations.CopasiDir << std::endl;
       std::cout << "SystemFunctionDB \t'" << options.SystemFunctionDB << "' "
       << locations.SystemFunctionDB << std::endl;
       std::cout << "UserFunctionDB \t'" << options.UserFunctionDB << "' "
       << locations.UserFunctionDB << std::endl;
-      std::cout << "configFile \t'" << options.configFile << "' "
-      << locations.configFile << std::endl;
+      std::cout << "ConfigFile \t'" << options.ConfigFile << "' "
+      << locations.ConfigFile << std::endl;
       std::cout << "save \t'" << options.save << "' "
       << locations.save << std::endl;
       std::cout << "ImportSBML \t'" << options.ImportSBML << "' "
@@ -85,6 +98,8 @@ C_INT main(C_INT argc, char *argv[])
 
       for (i = 0, imax = non_options.size(); i < imax; i++)
         std::cout << non_options[i] << std::endl;
+
+      COptions::init(argc, argv);
     }
 
   catch (copasi::autoexcept &e)

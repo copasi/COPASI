@@ -25,17 +25,18 @@
 namespace
   {
   const char const_usage[] =
+    "  --home string              Your home directory.\n"
     "  --rc string                The configuration file for copasi.\n"
     "  --systemFunctionDB string  A write protected database of kinetic\n"
     "                             functions.\n"
     "  --userFunctionDB string    The user extensible database of kinetic\n"
     "                             functions.\n"
     "  -b, --bool bool            A bool test.\n"
+    "  -c, --copasidir string     The location of suplementary files for copasi.\n"
     "  -d, --default string       The SBML file to export.\n"
     "  -e, --exportSBML string    The SBML file to export.\n"
     "  -f, --flag                 A flag test.\n"
     "  -i, --importSBML string    A SBML file to import.\n"
-    "  -l, --libdir string        The location of suplementary files for copasi.\n"
     "  -s, --save string          The file the model is saved in after work.\n";
 
   const char const_help_comment[] =
@@ -145,22 +146,24 @@ void copasi::COptionParser::finalize (void)
         {
         case option_Bool:
           throw option_error("missing value for 'bool' option");
+        case option_ConfigFile:
+          throw option_error("missing value for 'rc' option");
+        case option_CopasiDir:
+          throw option_error("missing value for 'copasidir' option");
         case option_Default:
           throw option_error("missing value for 'default' option");
         case option_ExportSBML:
           throw option_error("missing value for 'exportSBML' option");
         case option_Flag:
           throw option_error("missing value for 'flag' option");
+        case option_Home:
+          throw option_error("missing value for 'home' option");
         case option_ImportSBML:
           throw option_error("missing value for 'importSBML' option");
         case option_SystemFunctionDB:
           throw option_error("missing value for 'systemFunctionDB' option");
         case option_UserFunctionDB:
           throw option_error("missing value for 'userFunctionDB' option");
-        case option_configFile:
-          throw option_error("missing value for 'rc' option");
-        case option_libdir:
-          throw option_error("missing value for 'libdir' option");
         case option_save:
           throw option_error("missing value for 'save' option");
         }
@@ -257,6 +260,16 @@ void copasi::COptionParser::parse_short_option (char option, int position, opsou
       state_ = state_value;
       locations_.Bool = position;
       return;
+    case 'c':
+      if (source != source_cl) break;
+      if (locations_.CopasiDir)
+        {
+          throw option_error("the 'copasidir' option is only allowed once");
+        }
+      openum_ = option_CopasiDir;
+      state_ = state_value;
+      locations_.CopasiDir = position;
+      return;
     case 'd':
       openum_ = option_Default;
       state_ = state_value;
@@ -292,16 +305,6 @@ void copasi::COptionParser::parse_short_option (char option, int position, opsou
       openum_ = option_ImportSBML;
       state_ = state_value;
       locations_.ImportSBML = position;
-      return;
-    case 'l':
-      if (source != source_cl) break;
-      if (locations_.libdir)
-        {
-          throw option_error("the 'libdir' option is only allowed once");
-        }
-      openum_ = option_libdir;
-      state_ = state_value;
-      locations_.libdir = position;
       return;
     case 's':
       if (locations_.save)
@@ -344,6 +347,17 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       state_ = state_value;
       return;
     }
+  else if (source == source_cl && strcmp(option, "copasidir") == 0)
+    {
+      if (locations_.CopasiDir)
+        {
+          throw option_error("the 'copasidir' option is only allowed once");
+        }
+      openum_ = option_CopasiDir;
+      locations_.CopasiDir = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "default") == 0)
     {
       openum_ = option_Default;
@@ -374,6 +388,17 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       options_.Flag = !options_.Flag;
       return;
     }
+  else if (source == source_cl && strcmp(option, "home") == 0)
+    {
+      if (locations_.Home)
+        {
+          throw option_error("the 'home' option is only allowed once");
+        }
+      openum_ = option_Home;
+      locations_.Home = position;
+      state_ = state_value;
+      return;
+    }
   else if (source == source_cl && strcmp(option, "importSBML") == 0)
     {
       if (locations_.ImportSBML)
@@ -385,25 +410,14 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       state_ = state_value;
       return;
     }
-  else if (source == source_cl && strcmp(option, "libdir") == 0)
-    {
-      if (locations_.libdir)
-        {
-          throw option_error("the 'libdir' option is only allowed once");
-        }
-      openum_ = option_libdir;
-      locations_.libdir = position;
-      state_ = state_value;
-      return;
-    }
   else if (source == source_cl && strcmp(option, "rc") == 0)
     {
-      if (locations_.configFile)
+      if (locations_.ConfigFile)
         {
           throw option_error("the 'rc' option is only allowed once");
         }
-      openum_ = option_configFile;
-      locations_.configFile = position;
+      openum_ = option_ConfigFile;
+      locations_.ConfigFile = position;
       state_ = state_value;
       return;
     }
@@ -482,6 +496,16 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.Bool = bvalue;
       }
       break;
+    case option_ConfigFile:
+      {
+        options_.ConfigFile = value;
+      }
+      break;
+    case option_CopasiDir:
+      {
+        options_.CopasiDir = value;
+      }
+      break;
     case option_Default:
       {
         std::string svalue(value);
@@ -506,6 +530,11 @@ void copasi::COptionParser::parse_value (const char *value)
       break;
     case option_Flag:
       break;
+    case option_Home:
+      {
+        options_.Home = value;
+      }
+      break;
     case option_ImportSBML:
       {
         options_.ImportSBML = value;
@@ -519,16 +548,6 @@ void copasi::COptionParser::parse_value (const char *value)
     case option_UserFunctionDB:
       {
         options_.UserFunctionDB = value;
-      }
-      break;
-    case option_configFile:
-      {
-        options_.configFile = value;
-      }
-      break;
-    case option_libdir:
-      {
-        options_.libdir = value;
       }
       break;
     case option_save:
@@ -553,6 +572,9 @@ namespace
     if (name_size <= 4 && name.compare("bool") == 0)
       matches.push_back("bool");
 
+    if (name_size <= 9 && name.compare("copasidir") == 0)
+      matches.push_back("copasidir");
+
     if (name_size <= 7 && name.compare("default") == 0)
       matches.push_back("default");
 
@@ -562,11 +584,11 @@ namespace
     if (name_size <= 4 && name.compare("flag") == 0)
       matches.push_back("flag");
 
+    if (name_size <= 4 && name.compare("home") == 0)
+      matches.push_back("home");
+
     if (name_size <= 10 && name.compare("importSBML") == 0)
       matches.push_back("importSBML");
-
-    if (name_size <= 6 && name.compare("libdir") == 0)
-      matches.push_back("libdir");
 
     if (name_size <= 2 && name.compare("rc") == 0)
       matches.push_back("rc");

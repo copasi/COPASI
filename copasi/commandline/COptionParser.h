@@ -43,22 +43,22 @@ namespace copasi
     {
       options(void) :
           Bool(true),
+          ConfigFile("~/.copasirc"),
           Flag(true),
           SystemFunctionDB("FunctionDB.cps"),
-          UserFunctionDB("~/FunctionDB.cps"),
-          configFile("~/.copasirc"),
-          libdir("copasi/lib")
+          UserFunctionDB("~/FunctionDB.cps")
       {}
 
       bool Bool;
+      std::string ConfigFile;
+      std::string CopasiDir;
       std::map<std::string, std::string> Default;
       std::string ExportSBML;
       bool Flag;
+      std::string Home;
       std::string ImportSBML;
       std::string SystemFunctionDB;
       std::string UserFunctionDB;
-      std::string configFile;
-      std::string libdir;
       std::string save;
     }; // end options struct
 
@@ -70,14 +70,15 @@ namespace copasi
     {
       typedef int size_type;
       size_type Bool;
+      size_type ConfigFile;
+      size_type CopasiDir;
       size_type Default;
       size_type ExportSBML;
       size_type Flag;
+      size_type Home;
       size_type ImportSBML;
       size_type SystemFunctionDB;
       size_type UserFunctionDB;
-      size_type configFile;
-      size_type libdir;
       size_type save;
     }; // end option location struct
 
@@ -153,8 +154,9 @@ namespace copasi
 
       enum options_enum
       {
-        option_configFile,
-        option_libdir,
+        option_ConfigFile,
+        option_CopasiDir,
+        option_Home,
         option_SystemFunctionDB,
         option_UserFunctionDB,
         option_save,

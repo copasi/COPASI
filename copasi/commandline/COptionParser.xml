@@ -15,9 +15,9 @@
    <variable name="cxx_source_file" value="COptionParser.cpp"></variable>
  </config>
  <options>
-   <option id="configFile" 
+   <option id="ConfigFile" 
            type="string" 
-           mandatory="no" 
+           mandatory="no"
            strict="yes"
            location="commandline" 
            default="~/.copasirc"
@@ -25,16 +25,24 @@
     <name>rc</name> 
     <comment>The configuration file for copasi.</comment>
    </option>
-   <option id="libdir" 
+   <option id="CopasiDir" 
            type="string" 
            mandatory="no" 
            strict="yes" 
            location="commandline" 
-           default="copasi/lib"
            hidden="no">
-    <name>libdir</name>
-    <name>l</name>
+    <name>copasidir</name>
+    <name>c</name>
     <comment>The location of suplementary files for copasi.</comment>
+   </option>
+   <option id="Home" 
+           type="string" 
+           mandatory="no" 
+           strict="yes" 
+           location="commandline" 
+           hidden="no">
+    <name>home</name>
+    <comment>Your home directory.</comment>
    </option>
    <option id="SystemFunctionDB" 
            type="string" 
