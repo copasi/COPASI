@@ -28,7 +28,7 @@ class ObjectBrowser : public QWidget
 
   public:
     objectList* objectItemList;
-    objectList* refreshList;
+    //    objectList* refreshList;
     ObjectBrowser(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ObjectBrowser();
     std::vector<QString*> strBuffer;

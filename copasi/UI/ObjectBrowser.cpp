@@ -87,7 +87,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(nextButton, cancelButton);
 
   objectItemList = new objectList();
-  refreshList = new objectList();
+  //  refreshList = new objectList();
   loadData();
   std::vector<QString*> strBuffer;
 }
@@ -98,7 +98,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
 ObjectBrowser::~ObjectBrowser()
 {
   delete objectItemList;
-  delete refreshList;
+  // delete refreshList;
   strBuffer.clear();
   // no need to delete child widgets, Qt does it all for us
 }
@@ -118,13 +118,13 @@ void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
 
 void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
 {
-  refreshList->insert(pCurrent);
+  //  refreshList->insert(pCurrent);
   ObjectBrowserItem* pTmp = pCurrent;
-  while (pTmp->parent() != NULL)
-    {
-      pTmp = pTmp->parent();
-      refreshList->insert(pTmp);
-    }
+  //  while (pTmp->parent() != NULL)
+  //    {
+  //      pTmp = pTmp->parent();
+  //      refreshList->insert(pTmp);
+  //}
 
   if (pCurrent->isChecked() == ALLCHECKED)
     {
@@ -144,7 +144,7 @@ void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
-  refreshList->insert(pCurrent);
+  //  refreshList->insert(pCurrent);
   if (pCurrent->isChecked())
     pCurrent->reverseChecked();
 
@@ -159,7 +159,7 @@ void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
-  refreshList->insert(pCurrent);
+  //  refreshList->insert(pCurrent);
 
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
