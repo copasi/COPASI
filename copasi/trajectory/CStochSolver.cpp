@@ -2,29 +2,41 @@
 
 #include "copasi.h"
 #include "CStochSolver.h"
+#include "CTrajectory.h"
 #include "model/model.h"
 
 CStochSolver::CStochSolver()
-    : mMethod(0),
+    : mMethodType(CTrajectory::STOCH_DIRECT),
+      mMethod(0)
 {
 }
 
-void CStochSolver::initialize(std::string method_name, CModel *model)
+CStochSolver::CStochSolver(C_INT32 method_type)
+    : mMethodType(method_type),
+      mMethod(0)
+{}
+
+void CStochSolver::initialize(CModel *model)
 {
-    CStochSolver::Type method;
-    if (method_name == "DIRECT" || method_name == "direct" || method_name == "Direct")
+    if (mMethodType == CTrajectory::STOCH_NEXTREACTION)
     {
-        // Only have one type implemented so far
-        mMethodType = CStochSolver::DIRECT;
+        mMethod = new CStochNextReactionMethod(model);
+    }
+    else
+    {
         mMethod = new CStochDirectMethod(model);
     }
-    else if (method_name == "NEXTREACTION" || method_name == "nextreaction" || method_name == "NextReaction")
-    {
-        mMethodType = CStochSolver::NEXTREACTION;
-        // must still implement this
-        // mMethod = new CStochNextReactionMethod(model);
-    }
     mMethod->initMethod();
+}
+
+void CStochSolver::cleanup()
+{
+    if (mMethod)
+    {
+        mMethod.cleanup();
+        delete mMethod;
+    }
+    mMethod = 0;
 }
 
 CStochMethod *CStochSolver::getStochMethod()
@@ -37,6 +49,12 @@ CStochMethod::CStochMethod(CModel *model)
       mFail(0)
 {
     mRandomGenerator = new CRandom();
+}
+
+CStochMethod::cleanup()
+{
+    delete mRandomGenerator;
+    mRandomGenerator = 0;
 }
 
 C_INT32 CStochMethod::updatePropensities()

@@ -33,9 +33,8 @@ class CRandom;
  *
  * C_INT32 step = 0;
  * C_FLOAT32 time = 0;
- * C_INT32 retval = 0;
- * CStochSolver solver();
- * solver.Initialize(method, model, total_time, total_steps);
+ * CStochSolver solver(method);
+ * solver.initialize(model);
  * while (step < total_steps && time < total_time && time >= 0)
  * {
  *     time = solver->GetMethod()->DoStep(time);
@@ -48,18 +47,12 @@ class CStochMethod;
 
 class CStochSolver
 {
- public:
-  /**
-   * The types of method which may be used.
-   * So far, only Gillespie's direct method has been implemented.
-   */
-  enum Type {DIRECT=0, NEXTREACTION};
  private:
   // Private attributes
   /**
    * The type of the stochastic solver method
    */
-  Type mMethodType;
+  C_INT32 mMethodType;
   /**
    * A pointer to the method used
    */
@@ -81,16 +74,24 @@ class CStochSolver
    */
   CStochSolver();
   /**
+   * The named constructor, giving a method to use
+   * @param method An integer specifying the method to use
+   */
+  CStochSolver(C_INT32 method)
+  /**
    * The destructor
    */
   ~CStochSolver();
   /**
    * This initializes the solver, creates an instance of the method, 
    * and initializes that with the given model.
-   * @param method The type of the method to use.
    * @param model A pointer to an instance of CModel 
    */
-  void initialize(std::string method, CModel *model);
+  void initialize(CModel *model);
+  /**
+   * Clean up 
+   */
+  void cleanup();
   // Operations methods
   /**
    * Returns a pointer to the instance of the solver method.
@@ -150,6 +151,7 @@ class CStochMethod
    * Destructor
    */
   virtual ~CStochMethod();
+  void cleanup();
   // Operations
   /**
    * Initialize the method
@@ -234,7 +236,7 @@ class CStochDirectMethod: public CStochMethod
   C_INT32 getReaction();
   /**
    * Get the time taken by the reaction
-   * @return the time takenfor this reaction
+   * @return the time taken for this reaction
    */
   C_FLOAT64 getTime();
   /**
@@ -257,7 +259,7 @@ class CStochDirectMethod: public CStochMethod
  * occurs in the proper place.
  */
 
-//----- ---------NOT COMPLETE YET------------------------------------------------
+//--------------NOT COMPLETE YET------------------------------------------------
 
 class CStochNextReactionMethod: public CStochMethod
 {
