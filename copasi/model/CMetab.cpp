@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 22:15:22 $
+   $Date: 2003/11/14 22:10:45 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -527,7 +527,9 @@ void CMetab::checkConcentrationAndNumber()
     }
 }
 #endif
-const void * CMetab::getObjectValueAddress() const {return &mConcDbl;}
+
+void * CMetab::getReference() const
+  {return const_cast<C_FLOAT64 *>(&mConcDbl);}
 
 std::ostream & operator<<(std::ostream &os, const CMetab & d)
 {

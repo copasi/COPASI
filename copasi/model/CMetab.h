@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/04 20:30:04 $
+   $Date: 2003/11/14 22:10:45 $
    End CVS Header */
 
 /**
@@ -149,7 +149,7 @@ class CMetab : public CCopasiContainer
      */
     ~CMetab();
 
-    virtual const void * getObjectValueAddress() const;
+    virtual void * getReference() const;
 
     /**
      *  Cleanup

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:30 $
+   $Date: 2003/11/14 22:15:26 $
    End CVS Header */
 
 #include "copasi.h"
@@ -158,7 +158,7 @@ void CFunctionParameterMap::setCallParameter(const std::string paramName, const 
   // TODO: check type of object
   mObjects[index] = obj;
 
-  mPointers[index] = obj->getObjectValueAddress();
+  mPointers[index] = obj->getReference();
 }
 
 void CFunctionParameterMap::addCallParameter(const std::string paramName, const CCopasiObject* obj)
@@ -171,7 +171,7 @@ void CFunctionParameterMap::addCallParameter(const std::string paramName, const 
   // TODO: check type of object
   ((std::vector<const CCopasiObject*> *)mObjects[index])->push_back(obj);
 
-  ((std::vector<const C_FLOAT64*> *)mPointers[index])->push_back((const C_FLOAT64*)obj->getObjectValueAddress());
+  ((std::vector<const C_FLOAT64*> *)mPointers[index])->push_back((const C_FLOAT64*)obj->getReference());
 }
 
 void CFunctionParameterMap::clearCallParameter(const std::string paramName)
