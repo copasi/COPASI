@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 09:43:43 $
+   $Date: 2004/06/28 14:37:38 $
    End CVS Header */
 
 /**
@@ -96,10 +96,18 @@ const std::string & CReportDefinition::getKey() const
 
 void CReportDefinition::addTableElement(const std::string & cn)
 {
-  CCopasiStaticString Seperator;
-  Seperator = "\t";
-  CCopasiObjectName SeperatorCN(Seperator.getCN());
+  bool isFirst = false;
+  if ((mHeaderVector.size() == 0) && (mBodyVector.size() == 0))
+    isFirst = true;
+
+  CCopasiObjectName SeperatorCN(mSeperator.getCN());
   CCopasiObjectName Title;
+
+  if (!isFirst)
+    {
+      mHeaderVector.push_back(SeperatorCN);
+      mBodyVector.push_back(SeperatorCN);
+    }
 
   std::vector< CCopasiContainer * > ListOfContainer;
 
@@ -121,10 +129,7 @@ void CReportDefinition::addTableElement(const std::string & cn)
         Title =
           CCopasiStaticString(pSelectedObject->getObjectName()).getCN();
 
-      getHeaderAddr()->push_back(Title);
-      getBodyAddr()->push_back(pSelectedObject->getCN());
-
-      getHeaderAddr()->push_back(SeperatorCN);
-      getBodyAddr()->push_back(SeperatorCN);
+      mHeaderVector.push_back(Title);
+      mBodyVector.push_back(pSelectedObject->getCN());
     }
 }
