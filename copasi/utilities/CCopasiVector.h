@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:21 $
+   $Date: 2003/11/03 21:49:12 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -251,9 +251,13 @@ template < class CType > class CCopasiVector:
 
           return C_INVALID_INDEX;
         }
-
+#ifdef WIN32
+      friend std::ostream &operator << (std::ostream &os,
+                                        const CCopasiVector<CType> & d);
+#else
       friend std::ostream &operator << <>(std::ostream &os,
                                           const CCopasiVector<CType> & d);
+#endif // WIN32
     };
 
 template < class CType > class CCopasiVectorS: public CCopasiVector < CType >

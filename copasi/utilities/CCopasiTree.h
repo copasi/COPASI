@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:20 $
+   $Date: 2003/11/03 21:49:12 $
    End CVS Header */
 
 /**
@@ -302,8 +302,13 @@ template < class _Node > class CCopasiTree
         return pNode->getParent()->removeChild(pNode);
       }
 
+#ifdef WIN32
+      friend std::ostream & operator << (std::ostream & os,
+                                         const CCopasiTree< _Node > & A);
+#else
       friend std::ostream & operator << <>(std::ostream & os,
                                            const CCopasiTree< _Node > & A);
+#endif // WIN32
     };
 
 template <class _Node>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:22 $
+   $Date: 2003/11/03 21:49:11 $
    End CVS Header */
 
 #include <iostream>
@@ -163,8 +163,13 @@ template <class CType> class CVector
      * @param const CVector< CType > & A
      * @retrun ostream & os
      */
+#ifdef WIN32
+    friend std::ostream &operator << (std::ostream &os,
+                                      const CVector< CType > & A);
+#else
     friend std::ostream &operator << <> (std::ostream &os,
                                          const CVector< CType > & A);
+#endif // WIN32
   };
 
 template <class CType>
