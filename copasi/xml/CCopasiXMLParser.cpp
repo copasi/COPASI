@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/18 20:00:44 $
+   $Author: gauges $ 
+   $Date: 2004/11/23 17:04:17 $
    End CVS Header */
 
 /**
@@ -29,6 +29,7 @@
 #include "utilities/CCopasiParameter.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CMCATask.h"
 #include "scan/CScanTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "plot/CPlotSpecification.h"
@@ -3270,7 +3271,6 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
       if (strcmp(pszName, "Task")) fatalError();
       // create a new CCopasiTask element depending on the type
       mCommon.pCurrentTask = new CCopasiTask();
-      //name=mParser.getAttributeValue("name",papszAttrs);
       sType = mParser.getAttributeValue("type", papszAttrs);
       type = CCopasiTask::XMLNameToEnum(sType.c_str());
       switch (type)
@@ -3292,6 +3292,9 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           break;
         case CCopasiTask::parameterFitting:
           mCommon.pCurrentTask = NULL;
+          break;
+        case CCopasiTask::mca:
+          mCommon.pCurrentTask = new CMCATask();
           break;
         default:
           fatalError();
