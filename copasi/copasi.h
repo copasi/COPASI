@@ -7,6 +7,10 @@
 #ifndef COPASI_copasi
 #define COPASI_copasi
 
+#ifdef WIN32
+# pragma warning (disable: 4786)
+#endif  // WIN32
+
 #include <assert.h>
 #include <fstream>
 
