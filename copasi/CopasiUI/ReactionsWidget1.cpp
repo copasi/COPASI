@@ -533,19 +533,32 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   unsigned int z = 0;
   unsigned int line = 0;
   QStringList comboEntries1;
-
+  QStringList substrates;
+  QStringList products;
   QString chemical_reaction = LineEdit2->text();
+  //QString chemical_reaction1=chemical_reaction.simplifyWhiteSpace();
   //int i = chemical_reaction.find ("->", 0, TRUE);
-  QStringList individual_substrates = QStringList::split (" ", chemical_reaction, FALSE);
-  QString try1 = individual_substrates[1];
+  unsigned int start = 0;
+  QStringList individual_elements = QStringList::split (" ", chemical_reaction, FALSE);
+  for (unsigned int m = 0; m <= individual_elements.size() - 1; m++)
+    {
+      substrates[start] = individual_elements[m];
+      //QMessageBox::information(this, individual_elements[m].c_str(), "substrates ");
+      if (individual_elements[m] == "->")
+        {
+          m++;
+          start = 0;
+          products[start] = individual_elements[m];
+          QString try1 = products[start];
+          QMessageBox::information(this, try1, "products ");
+        }
+      start++;
+    }
 
-  QString try2 = individual_substrates[2];
-  QMessageBox::information(this, try1, "first");
-  QMessageBox::information(this, try2, "second");
-  //QStringList individual_products=QStringList::split (" ", chemical_reaction, FALSE);
+  //QStringList individual_products=QStringList::split (" ", chemical_reaction1, FALSE);
   //QString try1=individual_products[0];
 
-  /* chemical_reaction = chemical_reaction.replace(i, 2, "=");
+  /* chemical_reaction = chemical_reaction1.replace(i, 2, "=");
    LineEdit2->setText(chemical_reaction);
 
   comboEntries1.push_back(overall);
