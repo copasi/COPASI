@@ -188,30 +188,42 @@ void CTrajectoryTask::process()
   pdelete(mpState);
   mpState = new CState(mpProblem->getInitialState());
 
-  if (mpOutInit || mpOutPoint || mpOutEnd)
-    Copasi->pOutputList->compile("Time-course output",
-                                 mpProblem->getModel(),
-                                 mpState);
+  mReport->compile();
+  /*
+    if (mpOutInit || mpOutPoint || mpOutEnd)
+      Copasi->pOutputList->compile("Time-course output",
+                                   mpProblem->getModel(),
+                                   mpState);
+  */
 
   mpMethod->setCurrentState(mpState);
   mpMethod->setProblem(mpProblem);
 
   CVector< C_FLOAT64 > Derivatives(mpState->getVariableNumberSize());
+
+  mpProblem->getModel()->getDerivatives(mpState, Derivatives);
+  mReport->printHeader();
+  /* need to be commented off
   if (mpOutInit)
     {
-      /* Correct output depends on the model being updated */
-      /* We should try to avoid this in the future         */
+      // Correct output depends on the model being updated 
+      // We should try to avoid this in the future         
       mpProblem->getModel()->getDerivatives(mpState, Derivatives);
       mpOutInit->print(*Copasi->pOutputList, *mpOut);
     }
+  */
 
+  mpProblem->getModel()->getDerivatives(mpState, Derivatives);
+  mReport->printBody();
+  /* need to be commented off
   if (mpOutPoint)
     {
-      /* Correct output depends on the model being updated */
-      /* We should try to avoid this in the future         */
+      // Correct output depends on the model being updated 
+      // We should try to avoid this in the future         
       mpProblem->getModel()->getDerivatives(mpState, Derivatives);
       mpOutPoint->print(*Copasi->pOutputList, *mpOut);
     }
+  */
 
   C_FLOAT64 StepSize = mpProblem->getStepSize();
   C_FLOAT64 ActualStepSize;
@@ -219,13 +231,18 @@ void CTrajectoryTask::process()
   C_FLOAT64 EndTime = mpProblem->getEndTime() - StepSize;
 
   ActualStepSize = mpMethod->step(StepSize, mpState);
+
+  mpProblem->getModel()->getDerivatives(mpState, Derivatives);
+  mReport->printBody();
+  /*
   if (mpOutPoint)
     {
-      /* Correct output depends on the model being updated */
-      /* We should try to avoid this in the future         */
+      // Correct output depends on the model being updated 
+      // We should try to avoid this in the future         
       mpProblem->getModel()->getDerivatives(mpState, Derivatives);
       mpOutPoint->print(*Copasi->pOutputList, *mpOut);
     }
+  */
 
 #ifdef  XXXX_Event
   if (ActualStepSize != StepSize)
@@ -238,13 +255,17 @@ void CTrajectoryTask::process()
     {
       ActualStepSize = mpMethod->step(StepSize);
 
-      if (mpOutPoint)
-        {
-          /* Correct output depends on the model being updated */
-          /* We should try to avoid this in the future         */
-          mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-          mpOutPoint->print(*Copasi->pOutputList, *mpOut);
-        }
+      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
+      mReport->printBody();
+      /*
+            if (mpOutPoint)
+              {
+                // Correct output depends on the model being updated 
+                // We should try to avoid this in the future         
+                mpProblem->getModel()->getDerivatives(mpState, Derivatives);
+                mpOutPoint->print(*Copasi->pOutputList, *mpOut);
+              }
+      */
 
 #ifdef  XXXX_Event
       if (ActualStepSize != StepSize)
@@ -259,13 +280,17 @@ void CTrajectoryTask::process()
       ActualStepSize = mpMethod->step(mpProblem->getEndTime() - Time);
 
 #ifdef  XXXX_Event
-      if (mpOutPoint)
-        {
-          /* Correct output depends on the model being updated */
-          /* We should try to avoid this in the future         */
-          mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-          mpOutPoint->print(*Copasi->pOutputList, *mpOut);
-        }
+      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
+      mReport->printBody();
+      /*
+            if (mpOutPoint)
+              {
+                // Correct output depends on the model being updated 
+                // We should try to avoid this in the future         
+                mpProblem->getModel()->getDerivatives(mpState, Derivatives);
+                mpOutPoint->print(*Copasi->pOutputList, *mpOut);
+              }
+      */
 
       if (ActualStepSize != (mpProblem->getEndTime() - Time))
         {
@@ -276,11 +301,15 @@ void CTrajectoryTask::process()
 
   mpProblem->setEndState(new CState(*mpState));
 
-  if (mpOutEnd)
-    {
-      /* Correct output depends on the model being updated */
-      /* We should try to avoid this in the future         */
-      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpOutEnd->print(*Copasi->pOutputList, *mpOut);
-    }
+  mpProblem->getModel()->getDerivatives(mpState, Derivatives);
+  mReport->printFooter();
+  /*
+    if (mpOutEnd)
+      {
+        // Correct output depends on the model being updated 
+        // We should try to avoid this in the future         
+        mpProblem->getModel()->getDerivatives(mpState, Derivatives);
+        mpOutEnd->print(*Copasi->pOutputList, *mpOut);
+      }
+  */
 }

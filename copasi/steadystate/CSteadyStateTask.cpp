@@ -166,10 +166,16 @@ void CSteadyStateTask::process()
   pdelete(mpEigenValues);
   mpEigenValues = new CEigen();
 
+  //to compile the report Objects
+  mReport->compile();
+  //need to be commented off
+  /*
   if (mpOutEnd)
     Copasi->pOutputList->compile("Steady-state output",
                                  mpProblem->getModel(),
                                  this);
+  */
+  mReport->printHeader();
 
   mpMethod->setProblem(mpProblem);
 
@@ -177,9 +183,13 @@ void CSteadyStateTask::process()
                               mpProblem->getInitialState(),
                               mJacobian,
                               mpEigenValues);
-
+  //to print the footer
+  mReport->printFooter();
+  //need to be commented off
+  /*
   if (mpOutEnd)
     mpOutEnd->print(*this, *Copasi->pOutputList, *mpOut);
+  */
 
   return;
 }

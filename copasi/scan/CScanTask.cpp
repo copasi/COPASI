@@ -65,8 +65,14 @@ void CScanTask::initializeReporting(std::ostream & out)
 {
   pdelete(mpOutEnd);
   mpOut = & out;
+  // added by Liang for Scan Report
+  mReport->compile();
+
+  // for Steadystate Report
   if (mpProblem->ifSteadyStateTask())
     mpProblem->getSteadyStateTask()->initializeReporting(out);
+
+  // for Trajectory Report
   if (mpProblem->ifTrajectoryTask())
     mpProblem->getTrajectoryTask()->initializeReporting(out);
 }
@@ -108,6 +114,9 @@ void CScanTask::process()
   mpMethod->setProblem(mpProblem);
   mpProblem->InitScan();
 
+  mReport->compile();
+  mReport->printHeader();
+
   if ((mpProblem->getSteadyStateTask() != NULL) && mpProblem->processSteadyState())
     {
       mpProblem->getSteadyStateTask()->getProblem()->getModel()->compile();
@@ -128,6 +137,7 @@ void CScanTask::process()
 
   //  if (mpOutEnd)
   //    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
+  mReport->printFooter();
 
   return;
 }
