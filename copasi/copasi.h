@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:16:33 $
+   $Author: ssahle $ 
+   $Date: 2004/05/18 12:04:43 $
    End CVS Header */
 
 // copasi.h
@@ -14,6 +14,8 @@
 
 #ifndef COPASI_copasi
 #define COPASI_copasi
+
+#define AVOGADRO 6.0221367e23
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
