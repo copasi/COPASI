@@ -150,7 +150,7 @@ void CompartmentsWidget::showMessage(QString title, QString text)
 
 void CompartmentsWidget::slotBtnOKClicked()
 {
-  //QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
+  /*//QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
 
   //CWriteConfig FunctionDB1("oo.gps");
   CWriteConfig ModelFile("model.gps");
@@ -159,7 +159,20 @@ void CompartmentsWidget::slotBtnOKClicked()
   //  mModel->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
   //mModel->save(ModelFile);
 
-  //Copasi->FunctionDB.save(FunctionDB1);
+  //Copasi->FunctionDB.save(FunctionDB1); */
+
+  CWriteConfig *Fun = new CWriteConfig("oo.gps");
+  string outstring = "Laber";
+  Fun->setVariable((string) "Compartment", (string) "string", (void *) &outstring);
+  Copasi->FunctionDB.save(*Fun);
+  delete Fun;
+
+  //CWriteConfig ModelFile("model.gps");
+  CWriteConfig *Mod = new CWriteConfig("model.gps");
+
+  /*string outstring = "Laber";
+  mModel->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
+  mModel->save(ModelFile); */
 }
 
 /*C_INT32  TestWriteConfig(void)
