@@ -37,8 +37,13 @@ class ObjectBrowser : public QWidget
     QPushButton* backButton;
     QListView* ObjectListView;
 
-    void setCheck(ObjectBrowserItem* pCurrent);
-    void setUncheck(ObjectBrowserItem* pCurrent);
+    /*
+     isSibling describe the level we need to overlook sibling
+     0: overlook sibling
+     else: n>0 or n<0, includign sibling
+    */
+    void setCheck(ObjectBrowserItem* pCurrent, int isSibling);
+    void setUncheck(ObjectBrowserItem* pCurrent, int isSibling);
     void clickToReverseCheck(ObjectBrowserItem* pCurrent);
     void setCheckMark(ObjectBrowserItem* pCurrent);
 

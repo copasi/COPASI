@@ -128,45 +128,56 @@ void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
     {
       if (pCurrent->isChecked())
         pCurrent->reverseChecked();
-      setUncheck(pCurrent->child());
+      if (pCurrent->getType() == FIELDATTR)
+        setUncheck(pCurrent->child(), 1);
+      else // container or objects
+        setUncheck(pCurrent->child(), -1);
       return;
     }
   //else no check or partly checked
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
-  setCheck(pCurrent->child());
+  if (pCurrent->getType() == FIELDATTR)
+    setCheck(pCurrent->child(), 1);
+  else
+    setCheck(pCurrent->child(), -1);
   return;
 }
 
-void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
+void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent, int isSibling)
 {
   if (pCurrent == NULL)
     return;
   //  refreshList->insert(pCurrent);
+  if (isSibling >= 0)
+    isSibling--;
+
   if (pCurrent->isChecked())
     pCurrent->reverseChecked();
 
   if (pCurrent->child() != NULL)
-    setUncheck(pCurrent->child());
+    setUncheck(pCurrent->child(), isSibling);
 
-  if (pCurrent->sibling() != NULL)
-    setUncheck(pCurrent->sibling());
+  if ((pCurrent->sibling() != NULL) && (isSibling != 0))
+    setUncheck(pCurrent->sibling(), isSibling);
 }
 
-void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
+void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent, int isSibling)
 {
   if (pCurrent == NULL)
     return;
   //  refreshList->insert(pCurrent);
+  if (isSibling >= 0)
+    isSibling--;
 
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
 
   if (pCurrent->child() != NULL)
-    setCheck(pCurrent->child());
+    setCheck(pCurrent->child(), isSibling);
 
-  if (pCurrent->sibling() != NULL)
-    setCheck(pCurrent->sibling());
+  if ((pCurrent->sibling() != NULL) && isSibling != 0)
+    setCheck(pCurrent->sibling(), isSibling);
 }
 
 void ObjectBrowser::backClicked()
