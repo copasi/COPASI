@@ -388,6 +388,6 @@ void MetabolitesWidget1::slotBtnOKClicked()
   metab->setNumber((float)temp2);
 
   metab->save(*Met);
-  Copasi->Compartmentfile.save(*Met);
+  // Copasi->Compartmentfile.save(*Met);
   delete Met;
 }
