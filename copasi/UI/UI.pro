@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.67 $ $Author: shoops $ $Date: 2004/11/19 21:26:29 $  
+# $Revision: 1.68 $ $Author: gauges $ $Date: 2004/12/10 15:14:10 $  
 ######################################################################
 
 include(../common.pri)
@@ -107,6 +107,9 @@ contains(BUILD_OS, SunOS) {
 # Input
 HEADERS += \
            AboutDialog.h \
+           CCopasiSelectionDialog.h \
+           CCopasiSelectionWidget.h \
+           CCopasiSimpleSelectionTree.h \
            ChemEqValidator.h \
            CMCAWidget.h \
            CMCAResultSubwidget.h \
@@ -184,6 +187,9 @@ HEADERS += \
 
 SOURCES += \
            AboutDialog.cpp \
+           CCopasiSelectionDialog.cpp \
+           CCopasiSelectionWidget.cpp \
+           CCopasiSimpleSelectionTree.cpp \
            CMCAWidget.cpp \
            CMCAResultSubwidget.cpp \
            CMCAResultWidget.cpp \
