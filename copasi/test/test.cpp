@@ -657,7 +657,7 @@ C_INT32 TestEigen(void)
 //
 C_INT32 TestOptimization(void)
 {
-  int i, temp_random;
+  int i;
   cout << "TestOptimization() begins --- " << endl;
   COptAlgorithm * CRand = new COptAlgorithmRand();
 
