@@ -1,9 +1,8 @@
 /****************************************************************************
- **  $ CopasiUI/MetabolitesWidget.h               
+ **  $ CopasiUI/ConstantSymbols.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Metabolites Widget, i.e the First level 
- ** of Metabolites.
+ ** This is the header file for the Constant Symbols
  *****************************************************************************/
 
 #ifndef CONSTANT_SYMBOLS_H

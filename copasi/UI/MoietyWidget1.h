@@ -1,11 +1,10 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\MoietyWidget1.ui'
- **
- ** Created: Tue Mar 4 01:38:30 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ **  $ CopasiUI/MoietyWidget1.h               
+ **  $ Author  : Mudita Singhal
+ **  
+ ** This is the header file for the Moiety Widget, i.e the second level 
+ ** of Moieties.
+ *****************************************************************************/
 #ifndef MOIETYWIDGET1_H
 #define MOIETYWIDGET1_H
 

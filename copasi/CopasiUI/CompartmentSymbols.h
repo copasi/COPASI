@@ -1,9 +1,8 @@
 /****************************************************************************
- **  $ CopasiUI/MetabolitesWidget.h               
+ **  $ CopasiUI/CompartmentSymbols.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Metabolites Widget, i.e the First level 
- ** of Metabolites.
+ ** This is the header file for the Compartment Symbols
  *****************************************************************************/
 
 #ifndef COMPARTMENT_SYMBOLS_H

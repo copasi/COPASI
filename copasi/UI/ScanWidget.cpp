@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\TrajectoryWidget.ui'
+/*******************************************************************
+ **  $ CopasiUI/ScanWidget.cpp                 
+ **  $ Author  : Mudita Singhal
  **
- ** Created: Sun Mar 2 20:34:14 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ ** This file is used to create the GUI FrontPage for the 
+ ** information obtained from the data model about the 
+ ** Scan Widget
+ ********************************************************************/
 #include <qfiledialog.h>
 
 #include <qvariant.h>

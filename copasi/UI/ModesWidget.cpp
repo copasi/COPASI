@@ -4,7 +4,7 @@
  **
  ** This file is used to create the GUI FrontPage for the 
  ** information obtained from the data model about the 
- ** Compartments----It is Basically the First level of Compartments
+ ** Modes Widget
  ********************************************************************/
 
 #include <qlayout.h>

@@ -4,7 +4,7 @@
  **
  ** This file is used to create the GUI FrontPage for the  information
  ** obtained from the data model about the Metabolites----It is 
- ** Basically the First level of Metabolites.
+ ** the First level of Metabolites.
  ************************************************************************/
 #include <qlayout.h>
 #include <qwidget.h>

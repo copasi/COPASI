@@ -235,10 +235,6 @@ SOURCE=.\ModesWidget.moc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MoietiesWidget.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\MoietyWidget.cpp
 # End Source File
 # Begin Source File
@@ -795,19 +791,6 @@ InputName=ModesWidget
 	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\MoietiesWidget.h
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 !ENDIF 
 

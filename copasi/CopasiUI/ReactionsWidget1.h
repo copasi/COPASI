@@ -1,11 +1,11 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\ReactionsWidget1.ui'
+ **  $ CopasiUI/ReactionsWidget1.h               
+ **  $ Author  : Mudita Singhal
+ **  
+ ** This is the header file for the Reactions Widget, i.e the second level 
+ ** of Reactions.
  **
- ** Created: Tue Mar 4 02:07:42 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ *****************************************************************************/
 #ifndef REACTIONS_WIDGET1_H
 #define REACTIONS_WIDGET1_H
 #include <qsplitter.h>

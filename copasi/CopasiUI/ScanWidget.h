@@ -1,11 +1,9 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\SteadyStateWidget.ui'
- **
- ** Created: Sun Mar 2 20:14:23 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ **  $ CopasiUI/ScanWidget.h               
+ **  $ Author  : Mudita Singhal
+ **  
+ ** This is the header file for the Scan Widget
+ *****************************************************************************/
 #ifndef SCANWIDGET_H
 #define SCANWIDGET_H
 

@@ -1,11 +1,10 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\CompartmentsWidget1.ui'
- **
- ** Created: Mon Mar 3 17:06:25 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ **  $ CopasiUI/CompartmentsWidget1.h               
+ **  $ Author  : Mudita Singhal
+ **  
+ ** This is the header file for the Compartments Widget1, i.e the second level 
+ ** of Compartments.
+ *****************************************************************************/
 #ifndef COMPARTMENTSWIDGET1_H
 #define COMPARTMENTSWIDGET1_H
 

@@ -1,9 +1,8 @@
 /****************************************************************************
- **  $ CopasiUI/MetabolitesWidget.h               
+ **  $ CopasiUI/FunctionSymbols.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Metabolites Widget, i.e the First level 
- ** of Metabolites.
+ ** This is the header file for the Function Symbols
  *****************************************************************************/
 
 #ifndef FUNCTION_SYMBOLS_H

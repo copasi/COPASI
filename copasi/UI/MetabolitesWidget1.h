@@ -1,11 +1,10 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\MetabolitesWidget1.ui'
- **
- ** Created: Tue Mar 4 00:54:02 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ **  $ CopasiUI/MetaboliteWidget.h               
+ **  $ Author  : Mudita Singhal
+ **  
+ ** This is the header file for the Metabolite Widget, i.e the second level 
+ ** of Metabolites.
+ *****************************************************************************/
 #ifndef METABOLITESWIDGET1_H
 #define METABOLITESWIDGET1_H
 

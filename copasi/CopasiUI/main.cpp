@@ -1,6 +1,4 @@
-
 #include <qapplication.h>
-
 #define COPASI_MAIN
 #include "copasiui3window.h"
 #include "utilities/CGlobals.h"

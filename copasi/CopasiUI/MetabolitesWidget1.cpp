@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\MetabolitesWidget1.ui'
+/*******************************************************************
+ **  $ CopasiUI/MetaboliteWidget1.cpp                 
+ **  $ Author  : Mudita Singhal
  **
- ** Created: Tue Mar 4 00:54:02 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ ** This file is used to create the GUI FrontPage for the 
+ ** information obtained from the data model about the individual
+ ** Metabolites----It is the second level of Metabolites
+ ********************************************************************/
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>

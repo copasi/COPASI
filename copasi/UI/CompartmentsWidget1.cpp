@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\CompartmentsWidget1.ui'
+/*******************************************************************
+ **  $ CopasiUI/CompartmentsWidget1.cpp                 
+ **  $ Author  : Mudita Singhal
  **
- ** Created: Mon Mar 3 17:06:25 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ ** This file is used to create the GUI FrontPage for the 
+ ** information obtained from the data model about the individual
+ ** Compartments----It is the second level of Compartments
+ ********************************************************************/
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
