@@ -482,6 +482,57 @@ class CReaction
      */
     unsigned C_INT32 getCompartmentNumber();
 
+    /**
+     * insert operator
+     */
+    friend ostream & operator<<(ostream &os, const CReaction & d)
+    {
+      os << "CReaction:  " << d.getName() << endl;
+
+      os << "   mChemEq " << endl;
+      os << d.mChemEq;
+
+      if (d.mFunction)
+        os << "   *mFunction " << d.mFunction->getName() << endl;
+      else
+        os << "   mFunction == 0 " << endl;
+
+      os << "   mParameterDescription: " << endl << d.mParameterDescription ;
+
+      os << "   mFlux: " << d.mFlux << endl;
+
+      if (d.mScalingFactor)
+        os << "   *mScalingFactor " << *(d.mScalingFactor) << endl;
+      else
+        os << "   mFunction == 0 " << endl;
+
+      os << "   mCompartmentNumber: " << d.mCompartmentNumber << endl;
+
+      os << "   mReversible: " << d.mReversible << endl;
+
+      os << "   mId2Substrates" << endl;
+
+      os << d.mId2Substrates;
+
+      os << "   mId2Products" << endl;
+
+      os << d.mId2Products;
+
+      os << "   mId2Modifiers" << endl;
+
+      os << d.mId2Modifiers;
+
+      os << "   mId2Parameters" << endl;
+
+      os << d.mId2Parameters;
+
+      os << "   mFail: " << d.mFail << endl;
+
+      os << "----CReaction" << endl;
+
+      return os;
+    }
+
   private:
     /**
      *
@@ -530,11 +581,6 @@ class CReaction
      * Set the scaling factor of the for the fluxes
      */
     void setScalingFactor();
-
-    /**
-     * insert operator
-     */
-    friend ostream & operator<<(ostream &os, const CReaction & d);
   };
 
 #endif // COPASI_CReaction

@@ -7,6 +7,8 @@
 
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
+#include "CFunctionParameter.h"
+#include "CFunctionParameters.h"
 #include "CFunction.h"
 
 CFunction::CFunction()

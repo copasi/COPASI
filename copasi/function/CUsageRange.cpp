@@ -30,13 +30,3 @@ void CUsageRange::save(CWriteConfig & configBuffer)
 void CUsageRange::setUsage(const string & usage){mUsage = usage; }
 const string & CUsageRange::getUsage() const { return mUsage; }
 const string & CUsageRange::getName() const { return mUsage; }
-
-ostream & operator<<(ostream &os, const CUsageRange & d)
-{
-  os << "CUsageRange: "
-  << " mLow " << d.getLow()
-  << " mHigh " << d.getHigh()
-  << " mUsage " << d.mUsage << endl;
-
-  return os;
-}

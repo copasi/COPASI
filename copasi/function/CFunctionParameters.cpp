@@ -178,13 +178,3 @@ void CFunctionParameters::updateUsageRanges()
         }
     }
 }
-
-ostream & operator<<(ostream &os, const CFunctionParameters & d)
-{
-  os << "++++CFunctionParameters: " << endl;
-  os << "    CFunctionParameters.mParameters " << endl << d.mParameters ;
-  os << "    CFunctionParameters.mUsageRanges " << endl << d.mUsageRanges ;
-  os << "----CFunctionParameters " << endl;
-
-  return os;
-}

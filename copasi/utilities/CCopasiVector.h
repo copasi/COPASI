@@ -157,6 +157,23 @@ class CCopasiVector : protected vector < CType * >
       for (i = OldSize; i < size; i++, Target++)
         *Target = new CType;
     }
+
+    friend ostream &operator<<(ostream &os, const CCopasiVector<CType> & d)
+    {
+      os << "   +++Vektor;  size: " << d.size() << endl;
+
+      unsigned int i;
+
+      for (i = 0; i < d.size(); i++)
+        os << "   " << *(d[i]);
+
+      if (d.size() == 0)
+        os << "   empty" << endl;
+
+      os << "   ---Vektor" << endl;
+
+      return os;
+    }
   };
 
 template < class CType >
@@ -458,23 +475,5 @@ class CCopasiVectorNS
      * @directed*/
     /*# int lnkCCopasiVectorS; */
   };
-
-template <class CType>
-ostream &operator<<(ostream &os, const CCopasiVector<CType> & d)
-{
-  os << "   +++Vektor;  size: " << d.size() << endl;
-
-  unsigned int i;
-
-  for (i = 0; i < d.size(); i++)
-    os << "   " << *(d[i]);
-
-  if (d.size() == 0)
-    os << "   empty" << endl;
-
-  os << "   ---Vektor" << endl;
-
-  return os;
-}
 
 #endif // COPASI_CCopasiVector

@@ -82,7 +82,15 @@ class CUsageRange : public CRange
     /**
     * insert operator
     */
-    friend ostream & operator<<(ostream &os, const CUsageRange & d);
+    friend ostream & operator<<(ostream &os, const CUsageRange & d)
+    {
+      os << "CUsageRange: "
+      << " mLow " << d.getLow()
+      << " mHigh " << d.getHigh()
+      << " mUsage " << d.mUsage << endl;
+
+      return os;
+    }
   };
 
 #endif // COPASI_CUsageRange

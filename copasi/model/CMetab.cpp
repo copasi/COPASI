@@ -352,20 +352,3 @@ void CMetab::setRate(const C_FLOAT64 & rate)
   //  calculateTransitionTime();
 }
 void CMetab::calculateTransitionTime(void) {mTT = mConcDbl / mRate; }
-
-ostream & operator<<(ostream &os, const CMetab & d)
-{
-  os << "    ++++CMetab: " << d.mName << endl;
-  os << "        mConcDbl " << d.mConcDbl << " mIConcDbl " << d.mIConcDbl << endl;
-  os << "        mNumber " << d.mNumber << " mINumber " << d.mINumber << endl;
-  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << endl;
-
-  if (d.mCompartment)
-    os << "        *mCompartment " << d.mCompartment->getName() << endl;
-  else
-    os << "        mCompartment == 0 " << endl;
-
-  os << "    ----CMetab " << endl;
-
-  return os;
-}

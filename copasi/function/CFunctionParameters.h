@@ -147,16 +147,24 @@ class CFunctionParameters
     CFunctionParameter & getParameterByUsage(const string & usage,
         unsigned C_INT32 & pos);
 
+    /**
+     * insert operator
+     */
+    friend ostream & operator<<(ostream &os, const CFunctionParameters & d)
+    {
+      os << "++++CFunctionParameters: " << endl;
+      os << "    CFunctionParameters.mParameters " << endl << d.mParameters ;
+      os << "    CFunctionParameters.mUsageRanges " << endl << d.mUsageRanges ;
+      os << "----CFunctionParameters " << endl;
+
+      return os;
+    }
+
   private:
     /**
      *  Update usage ranges
      */
     void updateUsageRanges();
-
-    /**
-     * insert operator
-     */
-    friend ostream & operator<<(ostream &os, const CFunctionParameters & d);
   };
 
 #endif // COPASI_CFunctionParameters

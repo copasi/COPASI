@@ -73,13 +73,3 @@ CFunctionParameter::setType(const CFunctionParameter::DataType & type)
 const CFunctionParameter::DataType &
 CFunctionParameter::getType() const
   { return mType; }
-
-ostream & operator<<(ostream &os, const CFunctionParameter & d)
-{
-  os << "CFunctionParameter: "
-  << d.mName
-  << " mType " << d.mType
-  << " mUsage " << d.mUsage << endl;
-
-  return os;
-}

@@ -154,6 +154,16 @@ class CCompartment
      */
     void * getVolumeAddr();
 
+    friend ostream & operator<<(ostream &os, const CCompartment & d)
+    {
+      os << "++++CCompartment: " << d.mName << " mVolume " << d.mVolume
+      << " mVolumeInv " << d.mVolumeInv << endl;
+      os << "    CCompartment.mMetabolites " << endl << d.mMetabolites ;
+      os << "----CCompartment " << endl;
+
+      return os;
+    }
+
   private:
 
     /*
@@ -164,7 +174,6 @@ class CCompartment
     /**
      * insert operator
      */
-    friend ostream & operator<<(ostream &os, const CCompartment & d);
   };
 
 #endif // COPASI_CCompartment

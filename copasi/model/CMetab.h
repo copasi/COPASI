@@ -241,6 +241,26 @@ class CMetab
      */
     void setRate(const C_FLOAT64 & rate);
 
+    /**
+     * insert operator
+     */
+    friend ostream & operator<<(ostream &os, const CMetab & d)
+    {
+      os << "    ++++CMetab: " << d.mName << endl;
+      os << "        mConcDbl " << d.mConcDbl << " mIConcDbl " << d.mIConcDbl << endl;
+      os << "        mNumber " << d.mNumber << " mINumber " << d.mINumber << endl;
+      os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << endl;
+
+      if (d.mCompartment)
+        os << "        mCompartment == " << d << endl;
+      else
+        os << "        mCompartment == 0 " << endl;
+
+      os << "    ----CMetab " << endl;
+
+      return os;
+    }
+
   private:
     /**
      *  Calculate transition time
@@ -251,11 +271,6 @@ class CMetab
      *
      */
     C_INT16 isValidName();
-
-    /**
-     * insert operator
-     */
-    friend ostream & operator<<(ostream &os, const CMetab & d);
   };
 
 class CMetabOld

@@ -941,7 +941,7 @@ void CModel::setInitialState(const CState * state)
   Dbl = state->getNumbersDbl();
 
   for (i = 0, imax = mMetabolites.size(); i < imax; i++, Dbl++)
-    *const_cast<C_FLOAT64 *>(&mMetabolites[i]->getInitialConcentration())
+    *const_cast<C_FLOAT64*>(&mMetabolites[i]->getInitialConcentration())
     = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv();
 
   /* We are not using the set method since it automatically updates the
