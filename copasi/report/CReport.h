@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/04 17:34:23 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:57:46 $
    End CVS Header */
 
 /****************************************************************************
@@ -114,7 +114,7 @@ class CReport : public CCopasiContainer
     /**
      * returns the target of the Report Tag
      */
-    const std::string& getTarget();
+    const std::string& getTarget() const;
 
     /**
      * sets the reference to the report
@@ -124,7 +124,7 @@ class CReport : public CCopasiContainer
     /**
      * Returns whether the Report Tag is appended or not
      */
-    bool append();
+    bool append() const;
 
     /**
      * sets the append attribute if the report tag

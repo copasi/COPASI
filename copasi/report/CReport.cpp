@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/04 17:34:23 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:57:46 $
    End CVS Header */
 
 #include "copasi.h"
@@ -61,14 +61,14 @@ CReportDefinition* CReport::getReportDefinition()
 void CReport::setReportDefinition(CReportDefinition* reportDef)
 {mpReportDef = reportDef;}
 
-const std::string& CReport::getTarget()
-{return mTarget;}
+const std::string& CReport::getTarget() const
+  {return mTarget;}
 
 void CReport::setTarget(std::string target)
 {mTarget = target;}
 
-bool CReport::append()
-{return mAppend;}
+bool CReport::append() const
+  {return mAppend;}
 
 void CReport::setAppend(bool append)
 {mAppend = append;}
