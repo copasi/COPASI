@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.55 $ $Author: gauges $ $Date: 2004/10/26 11:36:02 $  
+# $Revision: 1.56 $ $Author: shoops $ $Date: 2004/10/27 14:10:48 $  
 ######################################################################
 
 include(../common.pri)
@@ -87,7 +87,7 @@ contains(BUILD_OS, WIN32) {
 
 release {
   contains(BUILD_OS, Linux) {   
-    LIBS += -Wl,-lqt \
+    LIBS += -Wl,-lqt-mt \
             -Wl,-lXcursor \
             -Wl,-lXft \
             -Wl,-lfontconfig \
@@ -95,7 +95,7 @@ release {
   }
 
   contains(BUILD_OS, SunOS) {
-    LIBS += -Wl,-lqt \
+    LIBS += -Wl,-lqt-mt \
             -Wl,-lfontconfig \
             -Wl,-lpthread
   }
