@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:25:26 $
+   $Date: 2005/03/16 18:36:51 $
    End CVS Header */
 
 #include <iostream>
@@ -335,19 +335,37 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
 
 bool CMetab::setValueOfNamedReference(std::string name, C_FLOAT64 value)
 {
+  bool updateMoities = false;
+
   if (name == "InitialConcentration")
-  {setInitialConcentration(value); return true;}
+    {
+      setInitialConcentration(value);
+      updateMoities = true;
+    }
+  else if (name == "InitialParticleNumber")
+    {
+      setInitialNumber(value);
+      updateMoities = true;
+    }
+  else if (name == "Concentration")
+    setConcentration(value);
+  else if (name == "ParticleNumber")
+    setNumber(value);
+  else
+    return CCopasiContainer::setValueOfNamedReference(name, value);
 
-  if (name == "InitialParticleNumber")
-  {setInitialNumber(value); return true;}
+  if (updateMoities)
+    {
+      /* We need to update the initial values for moieties */
+      CCopasiVectorN < CMoiety > & Moieties =
+        *const_cast< CCopasiVectorN < CMoiety > * >(&mpModel->getMoieties());
+      unsigned C_INT32 i, imax = Moieties.size();
 
-  if (name == "Concentration")
-  {setConcentration(value); return true;}
+      for (i = 0; i < imax; i++)
+        Moieties[i]->setInitialValue();
+    }
 
-  if (name == "ParticleNumber")
-  {setNumber(value); return true;}
-
-  return CCopasiContainer::setValueOfNamedReference(name, value);
+  return true;
 }
 
 std::string CMetab::getObjectDisplayName(bool regular, bool richtext) const
