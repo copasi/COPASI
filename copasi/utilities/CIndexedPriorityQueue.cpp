@@ -1,6 +1,6 @@
 #include "copasi.h"
 #include "utilities.h"
-#include "CPriorityQueue.h"
+#include "CIndexedPriorityQueue.h"
 
 CIndexedPriorityQueue::CIndexedPriorityQueue()
 {}
@@ -135,21 +135,6 @@ void CIndexedPriorityQueue::updateAux(C_INT32 pos)
 
 int main(int argc, char **argv)
 {
-    // First test the PairCompare function
-    pair<C_FLOAT64, C_INT32> pr1(123.456, 1), pr2(345.678, 2);
-    CPairCompare<double, int> pc;
-    cout << "For pair1 =  (" << pr1.first << ", " << pr1.second << "), pair 2 = (" << pr2.first << ", " << pr2.second << ")\n";
-    cout << "Pair compare reports that ";
-    if (pc(pr1, pr2) == false)
-    {
-        cout << "pair1 < pair2\n";
-    }
-    else
-    {
-        cout << "pair1 > pair2\n";
-        return -1;
-    }
-
     // Generates a vector of pairs, with a size given by the first argument. Each element is added to a priority queue.
     if (argc != 2)
     {

@@ -102,6 +102,14 @@ class CIndexedPriorityQueue
      */
     void updateNode(C_INT32 index, C_FLOAT64 key);
 
+    /**
+     * Overloads the [] operator
+     * @return Returns the 
+     */
+    C_FLOAT64 operator[](C_INT32 pos)
+        {
+            return mHeap[pos].mKey;
+        }
  private:
     // Private operations
     /**
@@ -169,37 +177,5 @@ class CIndexedPriorityQueue
 
 
 
-
-template <class CType1, class CType2>
-class CPriorityQueue : public priority_queue< pair<CType1, CType2>, vector<pair<CType1, CType2> >, CPairCompare<CType1, CType2> >
-{
- public:
-    /**
-     * Constructor
-     */
-    CPriorityQueue() : priority_queue<pair<CType1, CType2>, vector<pair<CType1, CType2> >, CPairCompare<CType1, CType2> >() {}
-    /**
-     * Destructor
-     */
-    ~CPriorityQueue() {};
-    /**
-     * Add a pair, indexed on the first value, to the head of the queue.
-     */
-    void addPair(const pair<CType1, CType2>& pr) 
-        {
-            push(pr);
-        }
-    /**
-     * Retrieve the pair at the top of the queue (i.e. with the highest priority). 
-     * This is also removed from the priority queue (which is not normally done 
-     * with the usual priority queue top() function).
-     */
-    pair<CType1, CType2> getTop() 
-        {
-            pair<CType1, CType2> pr = top();
-            pop();
-            return pr;
-        }
-};
 
 #endif // COPASI_CPriorityQueue
