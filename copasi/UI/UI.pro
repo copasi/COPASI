@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.41 $ $Author: ssahle $ $Date: 2004/09/20 18:55:48 $  
+# $Revision: 1.42 $ $Author: gauges $ $Date: 2004/09/23 13:37:09 $  
 ######################################################################
 
 include(../common.pri)
@@ -8,6 +8,7 @@ TEMPLATE = app
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
+
 
 contains(BUILD_OS, WIN32) {
   COPASI_LIBS += ../lib/commandline.lib \
@@ -24,7 +25,8 @@ contains(BUILD_OS, WIN32) {
           ../lib/steadystate.lib \
           ../lib/trajectory.lib \
           ../lib/utilities.lib \
-          ../lib/plot.lib
+          ../lib/plot.lib \
+          ../lib/wizard.lib
 
   LIBS += $$COPASI_LIBS
   LIBS += $(QTDIR)/lib/qwt.lib
@@ -59,7 +61,8 @@ contains(BUILD_OS, WIN32) {
               ../lib/libutilities.a \
               ../lib/libreport.a \
               ../lib/libfunction.a \
-              ../lib/libmodel.a
+              ../lib/libmodel.a \
+              ../lib/libwizard.a
 
   LIBS += -lqwt \
           -lsbml 
@@ -83,7 +86,8 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libsteadystate.a \
                 ../lib/libtrajectory.a \
                 ../lib/libutilities.a \
-                ../lib/libplot.a
+                ../lib/libplot.a \
+                ../lib/libwizard.a
 }
 
 release {

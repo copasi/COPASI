@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/09/23 11:30:19 $
+   $Date: 2004/09/23 13:37:09 $
    End CVS Header */
 
 /****************************************************************************
@@ -25,6 +25,8 @@ char* Form1::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", "TutWiz-Step3
 char* Form1::Error = "<html><head><title>Error</title></head><body><h1>Could not find help files.<br><br>Please set the COPASI_HELP_PATH environment variable to the absolute path that contains the html help files!</h1></body></html>";
 
 std::string Form1::helpPath = "";
+
+QWidget* copasiMainWindow = NULL;
 
 void Form1::buttonGroup2_clicked(int)
 {
@@ -54,6 +56,9 @@ void Form1::buttonGroup2_clicked(int)
 
 void Form1::init()
 {
+  WFlags f = this->getWFlags();
+  f = (f | Qt::WStyle_Minimize | Qt::WDestructiveClose);
+  this->setWFlags(f);
   char* helpPath = getenv("COPASI_HELP_PATH");
   if (helpPath != NULL)
     {
@@ -97,15 +102,18 @@ void Form1::textBrowser_anchorClicked(const QString &name, const QString &link)
 {
   if (name == "Model Settings")
     {
-      QMessageBox::information(this, "Info", "I am the model settings dialog!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(1, "");
+      //QMessageBox::information(this, "Info", "I am the model settings dialog!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Reaction Overview")
     {
-      QMessageBox::information(this, "Info", "I am the reaction overview!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(114, "");
+      //QMessageBox::information(this, "Info", "I am the reaction overview!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Report Definition")
     {
-      QMessageBox::information(this, "Info", "I am the report definition dialog!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(43, "");
+      //QMessageBox::information(this, "Info", "I am the report definition dialog!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Step 1")
     {
@@ -114,19 +122,22 @@ void Form1::textBrowser_anchorClicked(const QString &name, const QString &link)
     }
   else if (name == "Time Course")
     {
-      QMessageBox::information(this, "Info", "I am the time course dialog!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(23, "");
+      //QMessageBox::information(this, "Info", "I am the time course dialog!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Plot Definition Overview")
     {
-      QMessageBox::information(this, "Info", "I am the plot definition overview!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(42, "");
+      //QMessageBox::information(this, "Info", "I am the plot definition overview!", QMessageBox::Yes | QMessageBox::Default);
     }
   else
     {
+      QMessageBox::warning(this, "Error", "Sorry. I don't know this link!", QMessageBox::Ok | QMessageBox::Default);
       std::cerr << "Unknown anchor: " << name << std::endl;
     }
 }
 
-void Form1::cancelButton_clicked()
+void Form1::setCopasiMainWindow(QWidget * copasiMainWindow)
 {
-  exit(0);
+  this->copasiMainWindow = copasiMainWindow;
 }

@@ -11,9 +11,9 @@ CONFIG	+= qt #warn_on release
 FORMS	= wizard.ui
 
 unix {
-  UI_DIR = .ui
-  MOC_DIR = .moc
-  OBJECTS_DIR = .obj
+  UI_DIR = .
+  MOC_DIR = .
+  OBJECTS_DIR = .
 }
 
 
