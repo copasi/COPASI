@@ -16,6 +16,67 @@
 #include "CFunctionDB.h"
 #include "CMetab.h"
 
+/**
+ * CStepMetab class 
+ *
+ * Collects the properties of each participating metabolite in a
+ * reaction step. CStep stores a vector of these.
+ */
+class CStepMetab
+{
+// Attributes
+ private:
+    /**
+     * A pointer to the metabolite
+     */
+    CMetab *mMetabolite;
+    /**
+     * The number of identical educts of this type present in the
+     * reaction. This has value 0 if the metabolite is only present as
+     * a product.
+     */
+    C_INT32 mNumIdent;
+    /**
+     * The number by which this metabolite changes in each reaction of
+     * this type.
+     */
+    C_INT32 mNumChange;
+ public:
+// Lifecycle   
+    /**
+     * Default constructor
+     */
+    CStepMetab();
+    /**
+     * Named constructor
+     * @param metab A pointer to a CMetab
+     * @param num_ident The identical number of these elements reacting
+     * @param num_change The number by which this metabolite changes in this reaction.
+     */
+    CStepMetab(CMetab *metab, C_INT32 num_ident, C_INT32 num_change);
+    /**
+     * Destructor
+     */
+    ~CStepMetab();
+// Operations   
+    /**
+     * Retrieve a pointer to the metabolite
+     * @return mMetabolite
+     */
+    CMetab *GetMetab();
+    /**
+     * Get the identical number of this metabolite reacting
+     * @return mNumIdent
+     */
+    C_INT32 GetNumIdent();
+    /**
+     * Get the number by which this metabolite changes in a reaction
+     * @return mNumChange
+     */
+    C_INT32 GetNumChange();
+};
+
+
 class CStep
 {
 // Attributes
@@ -169,7 +230,7 @@ public:
     void cleanup();
     
     /**
-     *  Assignement operator
+     *  Assignment operator
      */
     CStep & operator=(const CStep & rhs);
 
