@@ -149,7 +149,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   folders->header()->setClickEnabled(false);
   folders->setRootIsDecorated(true);
   folders->addColumn("Select");
-  folders->setMinimumWidth(160);
+  //  folders->setMinimumWidth(160);
 
   //  int c = folders->columnWidth(col_index);
   //  folders->setColumnWidth(col_index, c);
@@ -175,7 +175,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   //bigWidget->setFixedWidth(620);
   this->moveToFirst(folders);
   this->moveToLast(bigWidget);
-  this->setResizeMode(folders, QSplitter::KeepSize);
+  this->setResizeMode(folders, QSplitter::Stretch);
 
   //  This section defines few of the variables that will be used in the code
   lastSelection = NULL;          // keeps track of the node that was selected last..to change the icon type

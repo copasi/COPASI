@@ -6,6 +6,8 @@
 #define COPASI_WIDGET_H
 #include "qwidget.h"
 
+class ListViews;
+
 class CopasiWidget : public QWidget
   {
   public:
@@ -14,9 +16,10 @@ class CopasiWidget : public QWidget
     void resizeEvent (QResizeEvent *);
   public slots:
     virtual void resize (int w, int h);
-  public:
+  private:
     static int realMinWidth;
     static int realMinHeight;
+    static ListViews* pListView;
   private:
     bool bInitialized;
   };
