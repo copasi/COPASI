@@ -1,13 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 15:25:44 $
+   $Date: 2004/09/09 14:01:05 $
    End CVS Header */
-
-// cmetab.cpp : implementation of the CMetab class
-//
 
 #include <iostream>
 #include <string>
@@ -24,19 +21,20 @@
 #include "CModel.h"
 #include "CMetab.h"
 
+//static
 const CCompartment * CMetab::mpParentCompartment = NULL;
 
+//static
 const std::string CMetab::StatusName[] =
   {"fixed", "independent", "dependent", "unused", ""};
 
+//static
 const char * CMetab::XMLStatus[] =
   {"fixed", "variable", "variable", "variable", NULL};
 
+//static
 void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 {mpParentCompartment = parentCompartment;}
-
-/////////////////////////////////////////////////////////////////////////////
-// CMetab
 
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
@@ -137,8 +135,6 @@ void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
 
 const C_FLOAT64 & CMetab::getTransitionTime() const {return mTT;}
 
-bool CMetab::setName(const std::string & name) {return setObjectName(name);}
-
 bool CMetab::setObjectParent(const CCopasiContainer * pParent)
 {
   CCopasiObject::setObjectParent(pParent);
@@ -188,15 +184,115 @@ void CMetab::setCompartment(const CCompartment * compartment)
 
 void CMetab::setModel(CModel * model) {mpModel = model;}
 
-//bool CMetab::isValidName(const std::string &name) const
-//  {return (name.find_first_of("; ") == std::string::npos);}
-
 void CMetab::initObjects()
 {
   addObjectReference("Concentration", mConc, CCopasiObject::ValueDbl);
   addObjectReference("InitialConcentration", mIConc, CCopasiObject::ValueDbl);
   addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
 }
+
+// non-member
+bool operator<(const CMetab &lhs, const CMetab &rhs)
+{
+  // Do the comparison based on the name
+
+  if (lhs.getObjectName() < rhs.getObjectName())
+    {
+      return true;
+    }
+  else
+    {
+      return false;
+    }
+}
+
+/**
+ * Return rate of production of this metaboLite
+ */
+const C_FLOAT64 & CMetab::getRate() const
+  {return mRate;}
+
+void CMetab::setRate(const C_FLOAT64 & rate)
+{
+  //converts particles/time  to concentration/time
+  mRate = rate * getCompartment()->getVolumeInv()
+          * mpModel->getNumber2QuantityFactor();
+}
+
+void * CMetab::getReference() const
+  {return const_cast<C_FLOAT64 *>(&mConc);}
+
+std::ostream & operator<<(std::ostream &os, const CMetab & d)
+{
+  os << "    ++++CMetab: " << d.getObjectName() << std::endl;
+  os << "        mConc " << d.mConc << " mIConc " << d.mIConc << std::endl;
+  os << "        mNumber " << d.mNumber << " mINumber " << d.mINumber << std::endl;
+  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << std::endl;
+
+  if (d.mpCompartment)
+    os << "        mpCompartment == " << d.mpCompartment << std::endl;
+  else
+    os << "        mpCompartment == 0 " << std::endl;
+
+  if (d.mpModel)
+    os << "        mpModel == " << d.mpModel << std::endl;
+  else
+    os << "        mpModel == 0 " << std::endl;
+
+  os << "    ----CMetab " << std::endl;
+
+  return os;
+}
+
+C_INT32 CMetab::load(CReadConfig &configbuffer)
+{
+  C_INT32 Fail = 0;
+
+  std::string tmp;
+  Fail = configbuffer.getVariable("Metabolite", "string",
+                                  (void *) & tmp,
+                                  CReadConfig::SEARCH);
+
+  if (Fail)
+    return Fail;
+  setObjectName(tmp);
+
+  Fail = configbuffer.getVariable("InitialConcentration", "C_FLOAT64",
+                                  (void *) & mIConc);
+
+  setInitialConcentration(mIConc);
+  setConcentration(mIConc);
+
+  Fail = configbuffer.getVariable("Type", "C_INT16",
+                                  (void *) & mStatus);
+
+  if (Fail)
+    return Fail;
+
+  // sanity check
+  if ((mStatus < 0) || (mStatus > 7))
+    {
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     "The file specifies a non-existing type "
+                     "for '%s'.\nReset to internal metabolite.",
+                     getObjectName().c_str());
+      mStatus = CMetab::METAB_VARIABLE;
+    }
+
+  // sanity check
+  if ((mStatus != METAB_MOIETY) && (mIConc < 0.0))
+    {
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     "The file specifies a negative concentration "
+                     "for '%s'.\nReset to default.",
+                     getObjectName().c_str());
+      mIConc = 1.0;
+    }
+
+  return Fail;
+}
+
+//******************* CMetabOld ***************************************************
 
 CMetabOld::CMetabOld(const std::string & name,
                      const CCopasiContainer * pParent):
@@ -273,132 +369,3 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 }
 
 C_INT32 CMetabOld::getIndex() const {return mCompartment;}
-//const std::string & CMetabOld::getName() const {return getObjectName();}
-
-/**
- * Returns the address of mIConc  Wei Sun
- */
-void * CMetab::getIConcAddr()
-{
-  return &mIConc;
-}
-
-/**
- * Returns the address of mConc
- */
-void * CMetab::getConcAddr()
-{
-  return &mConc;
-}
-
-/**
- * Returns the address of mTT
- */
-void * CMetab::getTTAddr()
-{
-  return &mTT;
-}
-
-// non-member
-bool operator<(const CMetab &lhs, const CMetab &rhs)
-{
-  // Do the comparison based on the name
-
-  if (lhs.getObjectName() < rhs.getObjectName())
-    {
-      return true;
-    }
-  else
-    {
-      return false;
-    }
-}
-
-/**
- * Return rate of production of this metaboLite
- */
-const C_FLOAT64 & CMetab::getRate() const
-  {
-    return mRate;
-  }
-
-void CMetab::setRate(const C_FLOAT64 & rate)
-{
-  mRate = rate * getCompartment()->getVolumeInv()
-          * mpModel->getNumber2QuantityFactor();
-  //  calculateTransitionTime();
-}
-void CMetab::calculateTransitionTime(void) {mTT = mConc / mRate;}
-
-void * CMetab::getReference() const
-  {return const_cast<C_FLOAT64 *>(&mConc);}
-
-std::ostream & operator<<(std::ostream &os, const CMetab & d)
-{
-  os << "    ++++CMetab: " << d.getObjectName() << std::endl;
-  os << "        mConc " << d.mConc << " mIConc " << d.mIConc << std::endl;
-  os << "        mNumber " << d.mNumber << " mINumber " << d.mINumber << std::endl;
-  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << std::endl;
-
-  if (d.mpCompartment)
-    os << "        mpCompartment == " << d.mpCompartment << std::endl;
-  else
-    os << "        mpCompartment == 0 " << std::endl;
-
-  if (d.mpModel)
-    os << "        mpModel == " << d.mpModel << std::endl;
-  else
-    os << "        mpModel == 0 " << std::endl;
-
-  os << "    ----CMetab " << std::endl;
-
-  return os;
-}
-
-C_INT32 CMetab::load(CReadConfig &configbuffer)
-{
-  C_INT32 Fail = 0;
-
-  std::string tmp;
-  Fail = configbuffer.getVariable("Metabolite", "string",
-                                  (void *) & tmp,
-                                  CReadConfig::SEARCH);
-
-  if (Fail)
-    return Fail;
-  setObjectName(tmp);
-
-  Fail = configbuffer.getVariable("InitialConcentration", "C_FLOAT64",
-                                  (void *) & mIConc);
-
-  setInitialConcentration(mIConc);
-  setConcentration(mIConc);
-
-  Fail = configbuffer.getVariable("Type", "C_INT16",
-                                  (void *) & mStatus);
-
-  if (Fail)
-    return Fail;
-
-  // sanity check
-  if ((mStatus < 0) || (mStatus > 7))
-    {
-      CCopasiMessage(CCopasiMessage::WARNING,
-                     "The file specifies a non-existing type "
-                     "for '%s'.\nReset to internal metabolite.",
-                     getObjectName().c_str());
-      mStatus = CMetab::METAB_VARIABLE;
-    }
-
-  // sanity check
-  if ((mStatus != METAB_MOIETY) && (mIConc < 0.0))
-    {
-      CCopasiMessage(CCopasiMessage::WARNING,
-                     "The file specifies a negative concentration "
-                     "for '%s'.\nReset to default.",
-                     getObjectName().c_str());
-      mIConc = 1.0;
-    }
-
-  return Fail;
-}

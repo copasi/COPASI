@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:00 $
+   $Date: 2004/09/09 14:01:05 $
    End CVS Header */
 
 /**
@@ -82,8 +82,8 @@ class CMetab : public CCopasiContainer
     C_FLOAT64 mINumber;
 
     /**
-     *  Rate of production of this metaboLite
-     *  (here used for rate constant).
+     *  Rate of production of this metabolite
+     *  (concentration/time).
      */
     C_FLOAT64 mRate;
 
@@ -164,36 +164,6 @@ class CMetab : public CCopasiContainer
     C_INT32 load(CReadConfig & configbuffer);
 
     /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
-     */ 
-    //    C_INT32 save(CWriteConfig & configbuffer);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  This saves the data in Gepasi 3.21 file format
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
-     */ 
-    //    C_INT32 saveOld(CWriteConfig & configbuffer);
-
-    /**
-     *  Saves the contents of the object to a ofstream object.
-     *  Writes the data in SBML file format
-     *  @param "std::ofstream &" fout ofstream that should be already open
-     */ 
-    //    void saveSBML(std::ofstream &fout);
-
-    /**
-     * Sets the name of the metabolite.
-     * @param const std::string & name
-     * @return bool Success
-     */
-    bool setName(const std::string & name);
-
-    /**
      * Sets the parent of the metabolite;
      * @param const CCopasiContainer * pParent
      * @return bool success
@@ -205,12 +175,6 @@ class CMetab : public CCopasiContainer
      * @return std::string key
      */
     virtual const std::string & getKey() const;
-
-    /**
-     *  Retrieve the name of the metabolite.
-     * @return const std::string & name
-     */ 
-    //    const std::string & getName() const;
 
     /**
      *
@@ -295,21 +259,6 @@ class CMetab : public CCopasiContainer
     const C_FLOAT64 & getTransitionTime() const;
 
     /**
-     * Returns the address of mIConc  Wei Sun
-     */
-    void * getIConcAddr();
-
-    /**
-     * Returns the address of mConc
-     */
-    void * getConcAddr();
-
-    /**
-     * Returns the address of mTT
-     */
-    void * getTTAddr();
-
-    /**
      * Return rate of production of this metaboLite
      */
     const C_FLOAT64 & getRate() const;
@@ -332,16 +281,6 @@ class CMetab : public CCopasiContainer
     static void setParentCompartment(const CCompartment * parentCompartment);
 
   private:
-    /**
-     *  Calculate transition time
-     */
-    void calculateTransitionTime(void);
-
-    /**
-     * Check whether the name is valid.
-     */
-    bool isValidName(const std::string & name) const;
-
     /**
      * Initialize the contained CCopasiObjects
      */
