@@ -11,7 +11,7 @@ class CCopasiObject;
 #define ALLCHECKED 1
 #define PARTCHECKED 0
 
-enum objectType {FIELDATTR = 0, OBJECTATTR};
+enum objectType {FIELDATTR = 0, OBJECTATTR, CONTAINERATTR};
 
 class objectList;
 
@@ -42,6 +42,10 @@ class ObjectBrowserItem : public QListViewItem
     void reverseChecked(unsigned int i);
     bool isChecked(unsigned int i) const;
 
+    void setObjectType(objectType newType)
+    {
+      mType = newType;
+    }
     //-1 if this is no user checked
     //0 if this is only partly checked
     //1 if this is full checked

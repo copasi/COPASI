@@ -23,6 +23,10 @@
 #include "./icons/objectParts.xpm"
 #include "./icons/objectNone.xpm"
 
+#include "report/CCopasiObject.h"
+#include "report/CCopasiObjectName.h"
+#include "report/CCopasiContainer.h"
+
 QPixmap *pObjectAll = 0;   // to store the image of locked icon folder
 QPixmap *pObjectParts = 0;   // to store the image of closed icon folder
 QPixmap *pObjectNone = 0;     // to store the image of open icon folder
@@ -158,101 +162,90 @@ void ObjectBrowser::nextClicked()
 
 void ObjectBrowser::loadData()
 {
-  /* //testing data
-      ObjectBrowserItem * item_2 = new ObjectBrowserItem(ObjectListView, 0 , NULL, objectItemList);
-      item_2->setOpen(TRUE);
-      ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_2, 0 , NULL, objectItemList);
-      ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_3, 0 , NULL, objectItemList);
-      ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_4, 0 , NULL, objectItemList);
-      ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_5, 0 , NULL, objectItemList);
-      ObjectBrowserItem * item = new ObjectBrowserItem(item_6, 0 , NULL, objectItemList);
-      item->setText(0, trUtf8("Initial Volumn"));
-      item = new ObjectBrowserItem(item_6, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Transient Volumn"));
-      item = new ObjectBrowserItem(item_6, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Metabolite List"));
-      item_6->setText(0, trUtf8("Compartment_1"));
-      ObjectBrowserItem * item_7 = new ObjectBrowserItem(item_5, item_6, NULL, objectItemList);
-      item = new ObjectBrowserItem(item_7, item_6, NULL, objectItemList);
-      item->setText(0, trUtf8("Initial Volumn"));
-      item = new ObjectBrowserItem(item_7, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Transient Volumn"));
-      item = new ObjectBrowserItem(item_7, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Metabolite List"));
-      item_7->setText(0, trUtf8("Compartment_2"));
-      ObjectBrowserItem * item_8 = new ObjectBrowserItem(item_5, item_7, NULL, objectItemList);
-      item = new ObjectBrowserItem(item_8, item_7, NULL, objectItemList);
-      item->setText(0, trUtf8("Initial Volumn"));
-      item = new ObjectBrowserItem(item_8, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Transient Volumn"));
-      item = new ObjectBrowserItem(item_8, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Metabolite List"));
-      item_8->setText(0, trUtf8("Compartment_3"));
-      item_5->setText(0, trUtf8("Compartment List"));
-      ObjectBrowserItem * item_9 = new ObjectBrowserItem(item_4, item_5, NULL, objectItemList);
-      ObjectBrowserItem * item_10 = new ObjectBrowserItem(item_9, item_5, NULL, objectItemList);
-      item = new ObjectBrowserItem(item_10, item_5, NULL, objectItemList);
-      item->setText(0, trUtf8("Compartment_1"));
-      item = new ObjectBrowserItem(item_10, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Compartment_2"));
-      item = new ObjectBrowserItem(item_10, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Compartment_3"));
-      item_10->setText(0, trUtf8("Initial Volumn"));
-      ObjectBrowserItem * item_11 = new ObjectBrowserItem(item_9, item_10, NULL, objectItemList);
-      item = new ObjectBrowserItem(item_11, item_10, NULL, objectItemList);
-      item->setText(0, trUtf8("Compartment_1"));
-      item = new ObjectBrowserItem(item_11, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Compartment_2"));
-      item = new ObjectBrowserItem(item_11, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Compartment_3"));
-      item_11->setText(0, trUtf8("Transient Volumn"));
-      ObjectBrowserItem * item_12 = new ObjectBrowserItem(item_9, item_11, NULL, objectItemList);
-      item = new ObjectBrowserItem(item_12, item_11, NULL, objectItemList);
-      item->setText(0, trUtf8("Compartment_1"));
-      item = new ObjectBrowserItem(item_12, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Compartment_2"));
-      item = new ObjectBrowserItem(item_12, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Compartment_3"));
-      item_12->setText(0, trUtf8("Metabolites"));
-      item_9->setText(0, trUtf8("Field"));
-      item_4->setText(0, trUtf8("Compartments"));
-      item = new ObjectBrowserItem(item_3, item_4, NULL, objectItemList);
-      item->setText(0, trUtf8("Metabolites"));
-      item = new ObjectBrowserItem(item_3, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Moieties"));
-      item = new ObjectBrowserItem(item_3, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Reactions"));
-      item_3->setText(0, trUtf8("Model"));
-      ObjectBrowserItem * item_13 = new ObjectBrowserItem(item_2, item_3, NULL, objectItemList);
-      item = new ObjectBrowserItem(item_13, item_3, NULL, objectItemList);
-      item->setText(0, trUtf8("Steady State Task"));
-      item = new ObjectBrowserItem(item_13, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Trajectory Task"));
-      item = new ObjectBrowserItem(item_13, item, NULL, objectItemList);
-      item->setText(0, trUtf8("Scan Task"));
-      item_13->setText(0, trUtf8("Task"));
-      ObjectBrowserItem * item_14 = new ObjectBrowserItem(item_2, item_13, NULL, objectItemList);
-      item = new ObjectBrowserItem(item_14, 0, NULL, objectItemList);
-      item->setText(0, trUtf8("Function 1"));
-      item_14->setText(0, trUtf8("Functions"));
-      item_2->setText(0, trUtf8("Copasi Root"));
-  */
-
-  ObjectBrowserItem * item_1 = new ObjectBrowserItem(ObjectListView, 0, NULL, objectItemList);
-  ObjectBrowserItem * item_2 = new ObjectBrowserItem(item_1, 0, NULL, objectItemList);
-  ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_1, item_2, NULL, objectItemList);
-  ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_1, item_3, NULL, objectItemList);
-  ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_2, 0, NULL, objectItemList);
-  ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_2, item_5, NULL, objectItemList);
-  item_1->setOpen(true);
-  item_1->setText(0, trUtf8("Root"));
-  item_2->setText(0, trUtf8("Model"));
-  item_3->setText(0, trUtf8("Task"));
-  item_4->setText(0, trUtf8("Function"));
-  item_5->setText(0, trUtf8("Metabolites"));
-  item_6->setText(0, trUtf8("Reaction"));
-
+  CCopasiContainer* root = &CRootContainer::ref();
+  ObjectBrowserItem * itemRoot = new ObjectBrowserItem(ObjectListView, 0, root, objectItemList);
+  itemRoot->setText(0, root->getName().c_str());
+  itemRoot->setOpen(true);
+  loadChild(itemRoot, root);
   updateUI();
+}
+
+void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaParent)
+{
+  // ObjectBrowserItem* parent=itemRoot;
+  ObjectBrowserItem* last = NULL;
+  CCopasiObject* current = NULL;
+
+  std::vector<CCopasiObject *> pObjectList = copaParent->getObjects();
+  std::vector<CCopasiObject *>::iterator it = pObjectList.begin();
+  std::vector<CCopasiObject *>::iterator end = pObjectList.end();
+
+  while (it < end)
+    {
+      current = *it;
+      ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
+      last = currentItem;
+      if (current->isContainer())
+        {
+          currentItem->setText(0, current->getObjectType().c_str());
+          currentItem->setObjectType(CONTAINERATTR);
+          loadChild(currentItem, (CCopasiContainer*)current);
+        }
+      else
+        {
+          currentItem->setText(0, current->getObjectName().c_str());
+          currentItem->setObjectType(OBJECTATTR);
+          if (current->isVector())
+            loadVectors(currentItem, current);
+          QString st1(current->getObjectName().c_str());
+          bool test = current->isVector();
+          test = current->isMatrix();
+          test = current->isNameVector();
+          test = current->isReference();
+
+          //   loadChild(currentItem, current);
+        }
+      it++;
+    }
+}
+
+void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiObject* copaParent)
+{
+  ObjectBrowserItem* last = NULL;
+  CCopasiObject* current = NULL;
+  /*
+   CCopasiVectorNS<CCopasiObject *> pObjectList=((CCopasiContainer*)copaParent)->getObjects();
+   CCopasiVectorNS<CCopasiObject *>::iterator it = pObjectList.begin();
+   CCopasiVectorNS<CCopasiObject *>::iterator end = pObjectList.end();
+   
+    while (it<end) 
+    {
+     current=*it;
+     ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
+     last=currentItem;
+     if (current->isContainer())
+     {
+     currentItem->setText(0, current->getObjectType().c_str());
+     currentItem->setObjectType(CONTAINERATTR);
+     loadChild(currentItem, (CCopasiContainer*)current);
+     }
+     else
+     {
+     currentItem->setText(0, current->getObjectName().c_str());
+     currentItem->setObjectType(OBJECTATTR);
+     if (current->isVector())
+      loadVectors(currentItem, current);
+     QString st1(current->getObjectName().c_str());
+     bool test = current->isVector();
+     test = current->isMatrix();
+     test = current->isNameVector();
+     test = current->isReference();
+   
+  //   loadChild(currentItem, current);
+     }
+     it++;
+    }
+  */
 }
 
 void ObjectBrowser::updateUI()

@@ -19,7 +19,8 @@ class QListView;
 class ObjectBrowserItem;
 class objectList;
 class QListViewItem;
-
+class CCopasiContainer;
+class CCopasiObject;
 class ObjectBrowser : public QWidget
   {
     Q_OBJECT
@@ -38,7 +39,10 @@ class ObjectBrowser : public QWidget
     void setUncheck(ObjectBrowserItem* pCurrent);
     void clickToReverseCheck(ObjectBrowserItem* pCurrent);
     void setCheckMark(ObjectBrowserItem* pCurrent);
+
     void loadData();
+    void loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaParent);
+    void loadVectors(ObjectBrowserItem* parent, CCopasiObject* copaParent);
     void updateUI();
   public slots:
     virtual void cancelClicked();
