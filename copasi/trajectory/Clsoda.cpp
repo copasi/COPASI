@@ -3089,6 +3089,6 @@ void Clsoda::eval(C_INT32 n,
                   C_FLOAT64 * y,
                   C_FLOAT64 * ydot)
 {
-  mModel->lSODAEval(n, t, y, ydot);
+  mModel->lSODAEval(n, t, y + 1, ydot + 1);
   return;
 }

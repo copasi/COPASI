@@ -46,11 +46,11 @@ class CODESolver
   /**
    *  Relative tolerance.
    */
-  C_FLOAT64 mRtol[2];
+  C_FLOAT64 mRtol;
   /**
    *  Absolute tolerance.
    */
-  C_FLOAT64 mAtol[2];
+  C_FLOAT64 mAtol;
   /**
    *  Maximum order for BDF method.
    */

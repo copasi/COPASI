@@ -187,12 +187,15 @@ C_INT32 CODESolver::lSODAStep(C_FLOAT64 t, C_FLOAT64 et)
   mEndt = et;
   mLsoda->lsoda(mModel,           // the function evaluator
 		mDim,             // number of variables
-		mY,               // the array of current concentrations
+		mY - 1,           // the array of current concentrations
+		                  // fortran style vector !!!
 		&mTime,           // the current time 
 		mEndt,            // the final time
 		1,                // scalar error control
-		mRtol,            // relative tolerance array
-		mAtol,            // absolute tolerance array
+		(&mRtol) - 1,     // relative tolerance array
+		                  // fortran style vector !!!
+		(&mAtol) - 1,     // absolute tolerance array
+		                  // fortran style vector !!!
 		1,                // output by overshoot & interpolatation
 		&mState,          // the state control variable
 		1,                // optional inputs are being used
