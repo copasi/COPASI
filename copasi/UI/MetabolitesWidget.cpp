@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.110 $
+   $Revision: 1.111 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:06 $
+   $Date: 2005/01/24 16:21:49 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -68,10 +68,26 @@ void MetabolitesWidget::init()
   table->setColumnReadOnly (7, true);
 }
 
+void MetabolitesWidget::showHeaders()
+{
+  /* <-- to show the units for the quantities */
+
+  QHeader *tableHeader = table->horizontalHeader();
+  tableHeader->setLabel(2, "Initial Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + \
+                        FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+  tableHeader->setLabel(3, "Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + \
+                        FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+
+  tableHeader->setLabel(7, "Rate\n(/" + \
+                        FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")");
+  /* --> */
+}
+
 void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
   const CMetab* pMetab = (const CMetab*)obj;
+  showHeaders();
 
   //1: name
 
@@ -302,7 +318,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                              // Yes or Enter
+    case 0:                               // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -314,7 +330,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                              // No or Escape
+    case 1:                               // No or Escape
       break;
     }
 }

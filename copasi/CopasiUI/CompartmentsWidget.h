@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/24 08:18:35 $
+   $Author: anuragr $ 
+   $Date: 2005/01/24 16:21:25 $
    End CVS Header */
 
 /****************************************************************************
@@ -31,6 +31,8 @@ class CompartmentsWidget : public CopasiTableWidget
     {init();}
 
   protected:
+    void showHeaders();
+    /* updates the headers with unit info */
 
     /**
      * This initializes the widget 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/11/18 19:17:48 $
+   $Date: 2005/01/24 16:23:33 $
    End CVS Header */
 
 /*******************************************************************
@@ -25,6 +25,7 @@
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathConstant.h"
 #include "model/CCompartment.h"
+#include "model/CModel.h"
 #include "qtUtilities.h"
 
 /**
@@ -89,6 +90,11 @@ FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * nam
 
 void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
 {
+  QHeader *tableHeader = table->horizontalHeader();
+  tableHeader->setLabel(3, "Concentration\n(" \
+                        + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/"\
+                        + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+
   dataModel->updateMathModel();
 
   if (model != NULL)

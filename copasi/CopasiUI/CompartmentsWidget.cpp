@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.93 $
+   $Revision: 1.94 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:05 $
+   $Date: 2005/01/24 16:25:09 $
    End CVS Header */
 
 /*******************************************************************
@@ -51,10 +51,24 @@ void CompartmentsWidget::init()
   //table->QTable::setNumRows(1);
 
   //Setting table headers
+
   QHeader *tableHeader = table->horizontalHeader();
+
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Volume");
+}
+
+void CompartmentsWidget::showHeaders()
+{
+  QHeader *tableHeader = table->horizontalHeader();
+  tableHeader->setLabel(0, "Status");
+  tableHeader->setLabel(1, "Name");
+  if (dataModel->getModel())
+    {
+      std::string str = dataModel->getModel()->getVolumeUnit();
+      tableHeader->setLabel(2, "Volume\n(" + FROM_UTF8(str) + ")");
+    }
 }
 
 void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -63,6 +77,7 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
   const CCompartment* pComp = (const CCompartment*)obj;
   table->setText(row, 1, FROM_UTF8(pComp->getObjectName()));
   table->setText(row, 2, QString::number(pComp->getVolume()));
+  showHeaders();
 }
 
 void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -199,7 +214,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                 // Yes or Enter
+    case 0:                  // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -211,7 +226,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                 // No or Escape
+    case 1:                  // No or Escape
       break;
     }
 }

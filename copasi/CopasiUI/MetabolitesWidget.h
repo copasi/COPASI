@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:07 $
+   $Date: 2005/01/24 16:20:54 $
    End CVS Header */
 
 /****************************************************************************
@@ -42,6 +42,11 @@ class MetabolitesWidget : public CopasiTableWidget
      * This initializes the widget 
      */
     virtual void init();
+
+    /**
+     * shows units for the quantities 
+     */
+    void showHeaders();
 
     /**
      * returns a list of objects that should be displayed
