@@ -50,6 +50,8 @@ class CCopasiContainer: public CCopasiObject
 
     virtual ~CCopasiContainer();
 
+    virtual const std::string getObjectUniqueName() const;
+
     static void init();
 
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
@@ -59,8 +61,6 @@ class CCopasiContainer: public CCopasiObject
     bool add(CCopasiObject * pObject);
 
     bool remove(CCopasiObject * pObject);
-
-    const std::string getObjectUniqueName() const;
 
   protected:
     virtual void initObjects();
