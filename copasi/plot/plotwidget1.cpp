@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:20 $
+   $Date: 2004/05/10 12:54:12 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.8 2004/05/06 20:03:20 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.9 2004/05/10 12:54:12 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -30,6 +30,7 @@
 #include "plotwindow.h"
 #include "CPlotSpec.h"
 #include "report/CKeyFactory.h"
+#include "CopasiUI/ObjectBrowser.h"
 
 //temporary
 #include <math.h>
@@ -160,11 +161,116 @@ void PlotWidget1::languageChange()
 
 void PlotWidget1::addCurveGroupBox()
 {
-  Curve2DWidget * curve = new Curve2DWidget(tabs);
-  curveWidgetVector.push_back(curve);
-  //    curve->LoadFromCurveSpec(&*it, channelNames);  //TODO somehow tell the curve widget about the channel names
-  tabs->addTab(curve, "test");
+  ObjectBrowser* pBrowser1 = new ObjectBrowser();
+  ObjectBrowser* pBrowser2 = new ObjectBrowser();
 
+  std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
+  pBrowser1->setOutputVector(pVector1);
+
+  if (pBrowser1->exec () == QDialog::Rejected)
+    {
+      pdelete(pBrowser1);
+      pdelete(pVector1);
+      return;
+    }
+
+  if (pVector1->size() == 0)
+    {
+      pdelete(pBrowser1);
+      pdelete(pVector1);
+      return;
+    }
+
+  //pdelete(pBrowser);
+  //pBrowser = new ObjectBrowser();
+
+  std::vector<CCopasiObject*>* pVector2 = new std::vector<CCopasiObject*>();
+  pBrowser2->setOutputVector(pVector2);
+
+  if (pBrowser2->exec () == QDialog::Rejected)
+    {
+      pdelete(pBrowser2);
+      pdelete(pVector1);
+      pdelete(pVector2);
+      return;
+    }
+
+  if (pVector1->size() == 0)
+    {
+      pdelete(pBrowser2);
+      pdelete(pVector1);
+      pdelete(pVector2);
+      return;
+    }
+
+  std::string cn;
+  std::vector<std::string> objects1, objects2;
+  unsigned C_INT32 i;
+  std::vector<std::string>::const_iterator sit;
+
+  for (i = 0; i < pVector1->size(); i++)
+    if ((*pVector1)[i])
+      {
+        cn = (*pVector1)[i]->getCN();
+        for (sit = objects1.begin(); sit != objects1.end(); ++sit)
+          if (*sit == cn) break;
+        if (sit == objects1.end())
+          {
+            objects1.push_back(cn);
+            std::cout << "***" << cn << std::endl;
+          }
+      }
+
+  for (i = 0; i < pVector2->size(); i++)
+    if ((*pVector2)[i])
+      {
+        cn = (*pVector2)[i]->getCN();
+        for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+          if (*sit == cn) break;
+        if (sit == objects2.end())
+          {
+            objects2.push_back(cn);
+            std::cout << "---" << cn << std::endl;
+          }
+      }
+
+  CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
+  if (!pspec) return;
+
+  if (objects1.size() == 1)
+    {
+      for (i = 0; i < objects2.size(); ++i)
+        pspec->getCurves().push_back(Curve2DSpec("***", objects1[0], objects2[i])); //TODO title
+    }
+  else if (objects2.size() == 1)
+    {
+      for (i = 0; i < objects1.size(); ++i)
+        pspec->getCurves().push_back(Curve2DSpec("***", objects1[i], objects2[0])); //TODO title
+    }
+  else
+    {
+      unsigned C_INT32 imax;
+      if (objects1.size() > objects2.size())
+        imax = objects2.size();
+      else
+        imax = objects1.size();
+
+      for (i = 0; i < imax; ++i)
+        pspec->getCurves().push_back(Curve2DSpec("***", objects1[i], objects2[i])); //TODO title
+    }
+
+  loadFromPlotSpec(pspec);
+  //pdelete(pBrowser1);
+  //pdelete(pBrowser2);
+  pdelete(pVector1);
+  pdelete(pVector2);
+
+  /*
+    Curve2DWidget * curve = new Curve2DWidget(tabs);
+    curveWidgetVector.push_back(curve);
+    //    curve->LoadFromCurveSpec(&*it, channelNames);  //TODO somehow tell the curve widget about the channel names
+    tabs->addTab(curve, "test");
+  */ 
   //TODO: check for some maximum number of curves
 }
 
@@ -272,6 +378,8 @@ bool PlotWidget1::saveToPlotSpec()
 }
 
 //-----------------------------------------------------------------------------
+
+//TODO:  save a copy!
 
 bool PlotWidget1::enter(const std::string & key)
 {
