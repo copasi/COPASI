@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/29 01:51:37 $
+   $Date: 2004/12/29 19:01:37 $
    End CVS Header */
 
 /**********************************************************************
@@ -63,6 +63,8 @@
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
     CopasiWidget(parent, name, fl),
     objKey(""),
+    mMmlWidget(NULL),
+    mScrollView(NULL),
     pFunction(NULL)
 {
   if (!name)
@@ -193,8 +195,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   TextLabel3->setText(trUtf8("Function Type"));
   FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
 
-  mMmlWidget = NULL;
-
   setTabOrder(LineEdit1, textBrowser);
   setTabOrder(textBrowser, RadioButton1);
   setTabOrder(RadioButton1, RadioButton2);
@@ -216,7 +216,12 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
 }
 
-FunctionWidget1::~FunctionWidget1() {pdelete(pFunction);}
+FunctionWidget1::~FunctionWidget1()
+{
+  pdelete(mMmlWidget);
+  pdelete(mScrollView);
+  pdelete(pFunction);
+}
 
 bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
 {
@@ -850,7 +855,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                   // Yes or Enter
+        case 0:                                    // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -867,7 +872,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                   // No or Escape
+        case 1:                                    // No or Escape
           break;
         }
     }
