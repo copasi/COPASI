@@ -1,6 +1,8 @@
 #include <qapplication.h>
 #define COPASI_MAIN
-#include "copasiui3window.h"
+#include "copasiui3window.h" 
+//#include "objectdebug.h"
+
 #include "utilities/CGlobals.h"
 #include "function/CFunctionDB.h"
 
@@ -19,6 +21,9 @@ int main(int argc, char **argv)
 
   window.resize(800, 600);
   window.show();
+
+  //ObjectDebug objwindow;
+  //objwindow.show();
 
   return a.exec();
 }

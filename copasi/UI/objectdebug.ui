@@ -1,0 +1,86 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>ObjectDebug</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>ObjectDebug</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>480</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Copasi Object Tree</string>
+    </property>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>UpdateButton</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>410</x>
+                <y>430</y>
+                <width>141</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>update</string>
+        </property>
+    </widget>
+    <widget class="QListView">
+        <column>
+            <property name="text">
+                <string>Column 1</string>
+            </property>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizable">
+                <bool>true</bool>
+            </property>
+        </column>
+    <item>
+        <property name="text">
+            <string>New Item</string>
+        </property>
+        <property name="pixmap">
+            <pixmap></pixmap>
+        </property>
+    </item>
+        <property name="name">
+            <cstring>ListOfObjects</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>581</width>
+                <height>410</height>
+            </rect>
+        </property>
+    </widget>
+</widget>
+<connections>
+    <connection>
+        <sender>UpdateButton</sender>
+        <signal>clicked()</signal>
+        <receiver>ObjectDebug</receiver>
+        <slot>update()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">objectdebug.ui.h</include>
+</includes>
+<slots>
+    <slot specifier="non virtual">update()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">addObjectRecursive( QWidget * parent, void * obj )</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
