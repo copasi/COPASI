@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/26 18:39:29 $
+   $Author: ssahle $ 
+   $Date: 2004/12/16 17:15:20 $
    End CVS Header */
 
 /**
@@ -211,7 +211,7 @@ C_FLOAT64 COptProblem::getParameterMax(C_INT32 i)
 void COptProblem::setProblemType(ProblemType t)
 {
   if (t == SteadyState)
-    mpSteadyState = new CSteadyStateTask();
+    mpSteadyState = new CSteadyStateTask(/*this*/NULL);
   if (t == Trajectory)
-    mpTrajectory = new CTrajectoryTask();
+    mpTrajectory = new CTrajectoryTask(/*this*/NULL);
 }
