@@ -89,7 +89,6 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   objectItemList = new objectList();
   //  refreshList = new objectList();
   loadData();
-  std::vector<QString*> strBuffer;
 }
 
 /*
@@ -99,7 +98,6 @@ ObjectBrowser::~ObjectBrowser()
 {
   delete objectItemList;
   // delete refreshList;
-  strBuffer.clear();
   // no need to delete child widgets, Qt does it all for us
 }
 
