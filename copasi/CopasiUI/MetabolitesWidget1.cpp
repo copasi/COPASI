@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.93 $
+   $Revision: 1.94 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 13:51:11 $
+   $Date: 2004/09/10 11:07:59 $
    End CVS Header */
 
 /*******************************************************************
@@ -142,15 +142,23 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   mEditTransitionTime->setEnabled(FALSE);
   MetabolitesWidget1Layout->addWidget(mEditTransitionTime, 8, 3);
 
+  mLblRate = new QLabel(this, "mLblRate");
+  mLblRate->setText(trUtf8("Rate of concentration change"));
+  MetabolitesWidget1Layout->addWidget(mLblRate, 9, 2);
+
+  mEditRate = new QLineEdit(this, "mEditRate");
+  mEditRate->setEnabled(FALSE);
+  MetabolitesWidget1Layout->addWidget(mEditRate, 9, 3);
+
   QSpacerItem* spacer_3 = new QSpacerItem(470, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addMultiCell(spacer_3, 9, 9, 0, 3);
+  MetabolitesWidget1Layout->addMultiCell(spacer_3, 10, 10, 0, 3);
 
   Line3 = new QFrame(this, "Line3");
   Line3->setFrameShape(QFrame::HLine);
   Line3->setFrameShadow(QFrame::Sunken);
   Line3->setFrameShape(QFrame::HLine);
 
-  MetabolitesWidget1Layout->addMultiCellWidget(Line3, 10, 10, 0, 3);
+  MetabolitesWidget1Layout->addMultiCellWidget(Line3, 11, 11, 0, 3);
 
   Layout7 = new QHBoxLayout(0, 0, 6, "Layout7");
 
@@ -170,7 +178,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   deleteMetaboliteBtn->setText(trUtf8("Delete"));
   Layout7->addWidget(deleteMetaboliteBtn);
 
-  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 11, 11, 0, 3);
+  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 12, 12, 0, 3);
 
   setTabOrder(mEditName, mComboCompartment);
   setTabOrder(mComboCompartment, mCheckStatus);
@@ -225,6 +233,9 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
 
   mEditTransitionTime->setText(QString::number(metab->getTransitionTime()));
   mEditTransitionTime->setReadOnly(true);
+
+  mEditRate->setText(QString::number(metab->getConcentrationRate()));
+  mEditRate->setReadOnly(true);
 
   if (metab->getStatus() == CMetab::METAB_FIXED)
     mCheckStatus->setChecked(true);
@@ -412,7 +423,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                         // Yes or Enter
+    case 0:                          // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -428,7 +439,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                         // No or Escape
+    case 1:                          // No or Escape
       break;
     }
 }

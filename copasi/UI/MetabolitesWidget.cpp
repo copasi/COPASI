@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/10 16:06:38 $
+   $Date: 2004/09/10 11:07:59 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -45,7 +45,7 @@ void MetabolitesWidget::init()
   connect(btnToggle, SIGNAL(clicked ()), this,
           SLOT(slotBtnToggleClicked()));
 
-  numCols = 7;
+  numCols = 8;
   table->setNumCols(numCols);
   //table->QTable::setNumRows(1);
 
@@ -58,11 +58,13 @@ void MetabolitesWidget::init()
   tableHeader->setLabel(4, "Fixed");
   tableHeader->setLabel(5, "Status");
   tableHeader->setLabel(6, "Compartment");
+  tableHeader->setLabel(7, "Rate");
 
   //this restricts users from editing concentration values on the table
   table->setColumnReadOnly (3, true);
   //this restricts users from editing status values on the table
   table->setColumnReadOnly (5, true);
+  table->setColumnReadOnly (7, true);
 }
 
 void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -73,16 +75,18 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   //1: name
   table->setText(row, 1, FROM_UTF8(pMetab->getObjectName()));
 
-  //2,3: Concentrations, Numbers
+  //2,3,7: Concentrations, Numbers
   if (mFlagConc)
     {
       table->setText(row, 2, QString::number(pMetab->getInitialConcentration()));
       table->setText(row, 3, QString::number(pMetab->getConcentration()));
+      table->setText(row, 7, QString::number(pMetab->getConcentrationRate()));
     }
   else
     {
       table->setText(row, 2, QString::number(pMetab->getInitialNumber()));
       table->setText(row, 3, QString::number(pMetab->getNumber()));
+      table->setText(row, 7, QString::number(pMetab->getNumberRate()));
     }
 
   //4: Fixed
@@ -155,7 +159,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
 
 void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  //2,3: Concentrations, Numbers
+  //2,3,7: Concentrations, Numbers
   if (exc != 2)
     {
       if (mFlagConc)
@@ -194,6 +198,9 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
           item->setCurrentItem(FROM_UTF8(compartments[0]->getObjectName()));
         }
     }
+
+  //7: Rate
+  table->setText(row, 7, "");
 }
 
 QString MetabolitesWidget::defaultObjectName() const
@@ -278,7 +285,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                     // Yes or Enter
+    case 0:                      // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -290,7 +297,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                     // No or Escape
+    case 1:                      // No or Escape
       break;
     }
 }
@@ -316,6 +323,7 @@ void MetabolitesWidget::slotBtnToggleClicked()
     {
       tableHeader->setLabel(2, "Initial Number");
       tableHeader->setLabel(3, "Number");
+      tableHeader->setLabel(7, "Number rate");
       btnToggle->setText("&Show Concentrations");
       mFlagConc = false;
     }
@@ -323,6 +331,7 @@ void MetabolitesWidget::slotBtnToggleClicked()
     {
       tableHeader->setLabel(2, "Initial Concentration");
       tableHeader->setLabel(3, "Concentration");
+      tableHeader->setLabel(7, "Concentration rate");
       btnToggle->setText("&Show Numbers");
       mFlagConc = true;
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:36 $
+   $Date: 2004/09/10 11:07:59 $
    End CVS Header */
 
 /****************************************************************************
@@ -80,6 +80,8 @@ class MetabolitesWidget1 : public CopasiWidget
     QLineEdit* mEditNumber;
     QLabel* mLblTransitionTime;
     QLineEdit* mEditTransitionTime;
+    QLabel* mLblRate;
+    QLineEdit* mEditRate;
     QFrame* Line3;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
