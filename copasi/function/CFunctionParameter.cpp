@@ -10,7 +10,7 @@
 #include "CFunctionParameter.h"
 
 const std::string CFunctionParameter::DataTypeName[] =
-  {"Integer", "Double", "Vector of Integer", "Vector of Double"};
+  {"Integer", "Double", "Vector of Integer", "Vector of Double", ""};
 
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):
