@@ -20,19 +20,20 @@ class CChemEq : public CCopasiContainer
     enum MetaboliteRole
     {
       PRODUCT = 0,
-      SUBSTRATE
+      SUBSTRATE,
+      MODIFIER
     };
 
     // Attributes
 
   private:
     /**
-     * The chemical equation
-     */
-    std::string mChemicalEquation;
+     * The chemical equation 
+     */ 
+    //std::string mChemicalEquation;
 
     /**
-     * Indicates whetrer the chemical equation is reversible
+     * Indicates whether the chemical equation is reversible
      */
     bool mReversible;
 
@@ -51,6 +52,11 @@ class CChemEq : public CCopasiContainer
      */
     /** @dia:route 3,33; h,52.2128,95.8644,50.1417,105.481,45.5713 */
     CCopasiVector < CChemEqElement > mProducts;
+
+    /**
+     *  A vector of modifiers in the chemical reaction. 
+     */
+    CCopasiVector < CChemEqElement > mModifiers;
 
     /**
      *  A vector of metabolites and their total balance in the chemical reaction
@@ -90,7 +96,7 @@ class CChemEq : public CCopasiContainer
     void cleanup();
 
     /**
-     *  Compile
+     *  calls compile() for all ChemEqElements
      *  @param "CCopasiVectorN < CCompartment > &" compartments
      */
     void compile(const CCopasiVectorN < CCompartment > & compartments);
@@ -101,6 +107,9 @@ class CChemEq : public CCopasiContainer
     *  @return "bool" returns reversibility of reaction (TRUE if reversible)
      */
     bool setChemicalEquation(const std::string & chemicalEquation);
+
+    void setReversibility(bool revers) {mReversible = revers;}
+    bool getReversibility() const {return mReversible;}
 
     /**
      *  Retrieves the chemical equation with multipliers.
@@ -114,6 +123,16 @@ class CChemEq : public CCopasiContainer
      *  @return "const string" ChemicalEquationConverted
      */
     const std::string getChemicalEquationConverted() const;
+
+    /**
+     *  add a substrate, product, or modifier by name. The Metabolite need not exist
+     */
+    void addMetaboliteByName(const std::string & name, const C_FLOAT64 mult, const MetaboliteRole role);
+
+    /**
+     *  add a substrate, product, or modifier. 
+     */
+    void addMetabolite(CMetab & metab, const C_FLOAT64 mult, const MetaboliteRole role);
 
     /**
      *  Retrieves the vector of substrates and their multiplicity 
@@ -130,16 +149,23 @@ class CChemEq : public CCopasiContainer
     const CCopasiVector < CChemEqElement > & getProducts() const;
 
     /**
-     *  Retrieves the vector of metabolites and their total balance 
+     *  Retrieves the vector of Modifiers and their multiplicity
+     */
+    const CCopasiVector < CChemEqElement > & getModifiers() const;
+
+    /**
+     *  Retrieves the vector of metabolites and their total balance
      *  in the chemical reaction.
      *  @return "vector < CChemEqElement * > &" balances
      */
     const CCopasiVector < CChemEqElement > & getBalances() const;
 
+    //const getExpandedMetaboliteList
+
     /**
      *  Returns true if a chemical equation has already been set
-     */
-    bool initialized() const;
+     */ 
+    //bool initialized() const;
 
     /**
      * Returns the number of comparments the chemical equation is associated
@@ -168,6 +194,8 @@ class CChemEq : public CCopasiContainer
      */
     CChemEqElement extractElement(const std::string & input,
                                   std::string::size_type & pos) const;
+    CChemEqElement extractModifier(const std::string & input,
+                                   std::string::size_type & pos) const;
 
     /**
      *  Adds an element to the vector given by structure. The element is
@@ -189,8 +217,8 @@ class CChemEq : public CCopasiContainer
      */
     void setChemEqElements(CCopasiVector < CChemEqElement > & elements,
                            const std::string & reaction,
-                           CChemEq::MetaboliteRole role =
-                             CChemEq::PRODUCT);
+                           CChemEq::MetaboliteRole role = CChemEq::PRODUCT,
+                           const bool modif = false);
 
     /**
      *  Compile the ChemEqElement, i.e., the pointer to the metabolite
@@ -211,9 +239,10 @@ class CChemEq : public CCopasiContainer
      *  This function splits the chemical equation into a left and a right
      *  @param "string &" left (substrate side)
      *  @param "string &" right (product side)
-    *  @return "bool" returns reversibility of reaction (TRUE if reversible)
+     *  @return "bool" returns reversibility of reaction (TRUE if reversible)
      */
-    bool splitChemEq(std::string & left, std::string & right) const;
+    bool splitChemEq(const std::string & input,
+                     std::string & left, std::string & right, std::string & mod) const;
 
     friend std::ostream & operator<<(std::ostream &os, const CChemEq & d)
     {
