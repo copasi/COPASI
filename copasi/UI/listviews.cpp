@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.159 $
+   $Revision: 1.160 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/11/04 15:54:10 $
+   $Author: gauges $ 
+   $Date: 2004/11/09 15:37:05 $
    End CVS Header */
 
 /****************************************************************************
@@ -152,14 +152,18 @@ void FolderListItem::deleteSubFolders()
 {
   QListViewItem * tmp;
   for (tmp = firstChild(); tmp; tmp = firstChild())
-    delete tmp;
+    {
+      delete tmp;
+    }
 }
 
 const IndexedNode * FolderListItem::folder() const
-{return mpFolder;}
+  {return mpFolder;}
 
 QString FolderListItem::key(int, bool) const
-  {return mpFolder->getSortKey();}
+  {
+    return mpFolder->getSortKey();
+  }
 
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
@@ -433,7 +437,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                  //Report
+      case 43:                   //Report
         return tableDefinition;
         break;
       case 42:
@@ -627,7 +631,6 @@ bool ListViews::updateAllListviews(C_INT32 id) //static
   for (; it != ende; ++it)
     {
       item = (*it)->findListViewItem(id, "");
-
       item->deleteSubFolders();
       item->createSubFolders();
     }
@@ -814,6 +817,8 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
   dataModel->updateFunctions();
   updateAllListviews(5);
+  //FolderListItem* item=(*(mListOfListViews.begin()))->findListViewItem(5,"");
+  //item->firstChild();
 
   dataModel->updateReportDefinitions();
   updateAllListviews(43);
