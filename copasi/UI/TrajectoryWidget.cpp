@@ -459,7 +459,7 @@ void TrajectoryWidget::ReportDefinitionClicked()
   CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
   CTrajectoryTask* trajectoryTask = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
   pSelectDlg->setReport(trajectoryTask->getReport());
-
+  pSelectDlg->loadReportDefinitionVector();
   if (pSelectDlg->exec () == QDialog::Rejected)
     {
       return;

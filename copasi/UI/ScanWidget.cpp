@@ -776,6 +776,7 @@ void ScanWidget::ReportDefinitionClicked()
   CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   pSelectDlg->setReport(scanTask->getReport());
+  pSelectDlg->loadReportDefinitionVector();
   if (pSelectDlg->exec () == QDialog::Rejected)
     {
       return;

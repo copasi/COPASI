@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.12 2003/08/19 20:47:12 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.13 2003/08/19 21:32:07 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -92,8 +92,6 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(confirmClicked()));
   connect(jumpButton, SIGNAL(clicked()), this, SLOT(jumpToEdit()));
-
-  loadReportDefinitionVector();
 }
 
 /*
@@ -127,6 +125,26 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
   C_INT32 i;
   for (i = 0; i < pReportDefinitionVector->getReportDefinitionsAddr()->size(); i++)
     reportDefinitionNameList->insertItem((*(pReportDefinitionVector->getReportDefinitionsAddr()))[i]->getName().c_str());
+
+  if (!mpReport->getReportDefinition())
+    {
+      C_INT32 row;
+      row = reportDefinitionNameList->currentItem();
+      mpReport->setReportDefinintion((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]);
+      mpReport->setAppend(appendChecked->isChecked());
+      mpReport->setTarget(targetEdit->text().latin1());
+    }
+  else
+    {
+      C_INT32 i;
+      // no use to compare the last one
+      for (i = reportDefinitionNameList->count() - 1; i >= 1; i--)
+        if (reportDefinitionNameList->text(i) == mpReport->getReportDefinition()->getName().c_str())
+          break;
+      reportDefinitionNameList->setCurrentItem(i);
+      appendChecked->setChecked(mpReport->append());
+      targetEdit->setText(mpReport->getTarget().c_str());
+    }
 }
 
 void CReportDefinitionSelect::cancelClicked()
@@ -152,7 +170,9 @@ void CReportDefinitionSelect::confirmClicked()
 }
 
 void CReportDefinitionSelect::cleanup()
-{}
+{
+  mpReport = NULL;
+}
 
 void CReportDefinitionSelect::jumpToEdit()
 {

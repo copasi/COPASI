@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.6 2003/08/19 18:19:23 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.7 2003/08/19 21:34:06 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -11,7 +11,7 @@
 #define CREPORTDEFINITIONSELECT_H
 
 #include <qvariant.h>
-#include <qdialog.h>
+#include <qDialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -37,6 +37,9 @@ class CReportDefinitionSelect : public QDialog
     void setReport(CReport* newReport);
     CReport* mpReport;
 
+    void cleanup();
+    void loadReportDefinitionVector();
+
     QPushButton* confirmButton;
     QPushButton* cancelButton;
     QFrame* frame5;
@@ -48,8 +51,6 @@ class CReportDefinitionSelect : public QDialog
     QPushButton* jumpButton;
 
   protected:
-    void cleanup();
-    void loadReportDefinitionVector();
     QGridLayout* CReportDefinitionSelectLayout;
     QGridLayout* frame5Layout;
 
