@@ -74,7 +74,7 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
 
     virtual CCopasiObject * getObject(const CCopasiObjectName & cn)
     {
-      return new CCopasiObjectReference< typename CType::elementType >
+      return new CCopasiObjectReference< CType::elementType >
       (mObjectName + cn,
        getObjectParent(),
        mReference[cn.getIndex()]);
@@ -114,7 +114,7 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
 
     virtual CCopasiObject * getObject(const CCopasiObjectName & cn)
     {
-      return new CCopasiObjectReference< typename CType::elementType >
+      return new CCopasiObjectReference< CType::elementType >
       (mObjectName + cn,
        getObjectParent(),
        mReference(cn.getIndex(),
