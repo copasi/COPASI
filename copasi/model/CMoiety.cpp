@@ -115,7 +115,7 @@ void CMoiety::setInitialValue()
   mINumber = 0;
 
   for (unsigned C_INT32 i = 0; i < mEquation.size(); i++)
-    mINumber += ((C_INT32) mEquation[i]->getMultiplicity()) *
+    mINumber += mEquation[i]->getMultiplicity() *
                 mEquation[i]->getMetabolite().getInitialNumberDbl();
   return;
 }
