@@ -22,8 +22,8 @@
 #define XXXX_Reporting
 
 CSteadyStateTask::CSteadyStateTask():
-    mpProblem(NULL),
-    mpMethod(NULL),
+    mpProblem(new CSteadyStateProblem),
+    mpMethod(CSteadyStateMethod::createSteadyStateMethod()),
     mRequested(false),
     mpSteadyState(NULL),
     mpEigenValues(NULL),
@@ -75,6 +75,7 @@ void CSteadyStateTask::load(CReadConfig & configBuffer)
   mpProblem = new CSteadyStateProblem();
   mpProblem->load(configBuffer);
 
+  pdelete(mpMethod);
   if (configBuffer.getVersion() < "4.0")
     {
       mpMethod = CSteadyStateMethod::createSteadyStateMethod();
@@ -108,13 +109,19 @@ CSteadyStateProblem * CSteadyStateTask::getProblem()
 {return mpProblem;}
 
 void CSteadyStateTask::setProblem(CSteadyStateProblem * pProblem)
-{mpProblem = pProblem;}
+{
+  pdelete(mpProblem);
+  mpProblem = pProblem;
+}
 
 CSteadyStateMethod * CSteadyStateTask::getMethod()
 {return mpMethod;}
 
 void CSteadyStateTask::setMethod(CSteadyStateMethod * pMethod)
-{mpMethod = pMethod;}
+{
+  pdelete(mpMethod);
+  mpMethod = pMethod;
+}
 
 void CSteadyStateTask::setRequested(const bool & requested)
 {mRequested = requested;}
@@ -140,7 +147,7 @@ void CSteadyStateTask::process()
     fatalError();
 
   pdelete(mpSteadyState);
-  mpSteadyState = new CState(mpProblem->getInitialState());
+  mpSteadyState = new CState(*mpProblem->getInitialState());
 
   mJacobian.resize(mpSteadyState->getVariableNumberSize(),
                    mpSteadyState->getVariableNumberSize());
@@ -149,19 +156,19 @@ void CSteadyStateTask::process()
   mpEigenValues = new CEigen();
 
   if (mpOutEnd)
-    Copasi->pOutputList->compile("Steady-state output",
-                                 mpProblem->getModel(),
-                                 this);
+    Copasi->OutputList.compile("Steady-state output",
+                               mpProblem->getModel(),
+                               this);
 
   mpMethod->setProblem(mpProblem);
 
   mResult = mpMethod->process(*mpSteadyState,
-                              mpProblem->getInitialState(),
+                              *mpProblem->getInitialState(),
                               mJacobian,
                               mpEigenValues);
 
   if (mpOutEnd)
-    mpOutEnd->print(*this, *Copasi->pOutputList, *mpOut);
+    mpOutEnd->print(*this, Copasi->OutputList, *mpOut);
 
   return;
 }
