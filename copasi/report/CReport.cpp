@@ -67,17 +67,58 @@ void CReport::printFooter()
   // for loop print out mpReportDef->getFooter()
 }
 
-void CReport::compile()
+// Compile the List of Report Objects;
+// Support Parellel
+
+void CReport::compile(const std::vector< CCopasiContainer * > * pListOfContainer)
 {
-  CCopasiContainer* pCopasiObject;
   int i;
-  for (i = 0; i < mpReportDef->getBodyAddr()->size(); i++)
+  CCopasiObject* pSelected;
+
+  // if no specified container list
+  if (!pListOfContainer)
+    for (i = 0; i < mpReportDef->getBodyAddr()->size(); i++)
+      {
+        pSelected = NULL;
+        pSelected =
+          (CCopasiObject*)CCopasiContainer::Root->getObject((*(mpReportDef->getBodyAddr()))[i]);
+        if (pSelected)
+          objectList.push_back(pSelected);
+      }
+  else
     {
-      CCopasiObject* pSelected =
-        (CCopasiObject*)CCopasiContainer::Root->getObject((*(mpReportDef->getBodyAddr()))[i]);
-      objectList.push_back(pSelected);
+      CCopasiContainer* pCopasiObject;
+      int containerIndex;
+      for (i = 0; i < mpReportDef->getBodyAddr()->size(); i++)
+        {
+          //favor to search the list of container first
+          pSelected = NULL;
+          for (containerIndex = 0; containerIndex < pListOfContainer->size(); containerIndex++)
+            {
+              pCopasiObject = (*pListOfContainer)[containerIndex];
+              pSelected =
+                (CCopasiObject*)pCopasiObject->getObject((*(mpReportDef->getBodyAddr()))[i]);
+              if (pSelected)
+                {
+                  objectList.push_back(pSelected);
+                  break;
+                }
+            }
+          // if not find search the root
+          if (!pSelected)
+            {
+              pSelected =
+                (CCopasiObject*)CCopasiContainer::Root->getObject((*(mpReportDef->getBodyAddr()))[i]);
+              // has been deleted all where
+              if (pSelected)
+                objectList.push_back(pSelected);
+            }
+        }
     }
 }
 
 void CReport::printBody(CReport * pReport)
-{if (pReport) pReport->printBody();}
+{
+  if (pReport)
+    pReport->printBody();
+}

@@ -50,7 +50,7 @@ class CReport : public CCopasiObject
     /**
     returns the reference of the Report Tag
     */
-    void compile();
+    void compile(const std::vector< CCopasiContainer * > * pListOfContainer = NULL);
 
     /**
     sets the reference to the report
