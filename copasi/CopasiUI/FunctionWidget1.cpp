@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/11/21 21:02:31 $
+   $Date: 2003/12/03 15:21:34 $
    End CVS Header */
 
 /**********************************************************************
@@ -291,11 +291,13 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 
       // col. 2
       item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
+      //item->setText("Text Text");
       item->setText(usage);
 
       if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
       if (usage == "PRODUCT") item->setPixmap(*pProduct);
       if (usage == "MODIFIER") item->setPixmap(*pModifier);
+      //Table1->setText(j,2,"Test Text");
       Table1->setItem(j, 2, item);
     }
 
@@ -403,10 +405,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                         // The user clicked the Retry again button or pressed Enter
+            case 0:                          // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                         // The user clicked the Quit or pressed Escape
+            case 1:                          // The user clicked the Quit or pressed Escape
               // exit
               break;
             }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/10/31 22:49:45 $
+   $Author: chlee $ 
+   $Date: 2003/12/03 15:21:33 $
    End CVS Header */
 
 /****************************************************************************
@@ -31,6 +31,7 @@ class MetabolitesWidget : public CopasiWidget
 
   protected:
     MyTable * table;
+    //QTable * table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
     QPushButton *btnDelete;
