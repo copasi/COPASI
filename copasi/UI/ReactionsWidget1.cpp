@@ -82,7 +82,7 @@ ReactionsWidget1::ReactionsWidget1( QWidget *parent, const char * name, WFlags f
 
 	//Frame for 3rd Row
 	Frame4c = new QFrame(Frame3, "Frame4c" );
-   gridLayout1->addWidget(Frame4c,2,0,0);
+    gridLayout1->addWidget(Frame4c,2,0,0);
 	QHBoxLayout *hBoxLayout4c = new QHBoxLayout( Frame4c, 0 );
 	hBoxLayout4c->addSpacing(15);
 
@@ -98,7 +98,7 @@ ReactionsWidget1::ReactionsWidget1( QWidget *parent, const char * name, WFlags f
 
 	//Frame for 4th Row
 	Frame4d = new QFrame( Frame3, "Frame4d" );
-   gridLayout1->addWidget(Frame4d,3,0,0);
+    gridLayout1->addWidget(Frame4d,3,0,0);
 	QHBoxLayout *hBoxLayout4d = new QHBoxLayout( Frame4d, 0 );
 	hBoxLayout4d->addSpacing(15);
 	
@@ -133,7 +133,7 @@ ReactionsWidget1::ReactionsWidget1( QWidget *parent, const char * name, WFlags f
 	//Frame for 5th Row
 	Frame4e = new QFrame(Frame3, "Frame4e" );
 	Frame4e->setGeometry( QRect( 0, 0, 740, 120 )); 
-   gridLayout1->addMultiCellWidget(Frame4e,4,5,0,0,0);
+    gridLayout1->addMultiCellWidget(Frame4e,4,5,0,0,0);
 
 	TextLabel5 = new QLabel( Frame4e, "Symbol Definition" );
     TextLabel5->setGeometry( QRect( 10, 40, 90, 50 )); 
@@ -152,7 +152,7 @@ ReactionsWidget1::ReactionsWidget1( QWidget *parent, const char * name, WFlags f
 
 	//Frame for 6th Row
 	Frame4f = new QFrame(Frame3, "Frame4f" );
-   gridLayout1->addWidget(Frame4f,6,0,0);
+    gridLayout1->addWidget(Frame4f,6,0,0);
 	QHBoxLayout *hBoxLayout4f = new QHBoxLayout( Frame4f, 0 );
 	hBoxLayout4f->addSpacing(15);
 
@@ -171,7 +171,7 @@ ReactionsWidget1::ReactionsWidget1( QWidget *parent, const char * name, WFlags f
 	
 	//Frame for 7th Row
 	Frame4g = new QFrame(Frame3, "Frame4g" );
-   gridLayout1->addWidget(Frame4g,7,0,0);
+    gridLayout1->addWidget(Frame4g,7,0,0);
 	QHBoxLayout *hBoxLayout4g = new QHBoxLayout( Frame4g, 0 );
 	hBoxLayout4g->addSpacing(15);
 	
@@ -190,7 +190,7 @@ ReactionsWidget1::ReactionsWidget1( QWidget *parent, const char * name, WFlags f
 	//for the commit and cancel buttons
         
 	Frame4h= new QFrame( Frame3, "Frame4h" );
-   gridLayout1->addWidget(Frame4h,8,0,0);
+    gridLayout1->addWidget(Frame4h,8,0,0);
 	QHBoxLayout *hBoxLayout4h = new QHBoxLayout( Frame4h, 0 );
 	hBoxLayout4h->addSpacing(15);
 
@@ -204,6 +204,9 @@ ReactionsWidget1::ReactionsWidget1( QWidget *parent, const char * name, WFlags f
    
 }
 
+
+/*This function is used to connect this class to the listviews 
+    class to basically choose the right widget to display   */
 int ReactionsWidget1::isName(QString setValue)
 {
 
@@ -223,13 +226,17 @@ int ReactionsWidget1::isName(QString setValue)
 	if(reactn1 !=NULL)
 	{	
 		loadName(setValue);
-		//reactn1=NULL;
 		return 1;
 	}
 	else
 		return 0;
 }
 
+
+
+
+
+/*This function is to load the model for the reactions*/
 void ReactionsWidget1::loadReactions(CModel *model)
 {
 	if (model != NULL)
@@ -238,6 +245,12 @@ void ReactionsWidget1::loadReactions(CModel *model)
 	}
 }
 
+
+
+
+
+/* This function loads the reactions widget when its name is 
+   clicked in the tree   */
 void ReactionsWidget1::loadName(QString setValue)
 {
 	
@@ -253,159 +266,143 @@ void ReactionsWidget1::loadName(QString setValue)
 		CChemEq * chemEq;
 		CFunction *function;
 
-	/*	int i=0;			
-		int myValue=-1;
-		for(;i<reactions.size();i++)
-			{
-				reactn = reactions[i];
-                int value=QString::compare(reactn->getName().c_str(),setValue);   
-                if(!value)
-                {
-					myValue=i;
-					break;
-				}
-			}
 
-		if(myValue != -1)
-		{
-		reactn = reactions[myValue];*/
-
-
-			reactn = reactions[(string)setValue];
+		reactn = reactions[(string)setValue];
 		
 
-			LineEdit1->setText(reactn->getName().c_str());
+		LineEdit1->setText(reactn->getName().c_str());
 
-		    chemEq = & reactn->getChemEq();
-			LineEdit2->setText(chemEq->getChemicalEquation().c_str());
+		chemEq = & reactn->getChemEq();
+	    LineEdit2->setText(chemEq->getChemicalEquation().c_str());
 			
-			LineEdit3->setText(QString::number(reactn->getFlux()));
+		LineEdit3->setText(QString::number(reactn->getFlux()));
 
 	
-			for (C_INT32  j = 0; j < noOfReactionsRows ; j++)
-			{
-			reactn = reactions[j];
-			function = &reactn->getFunction();
-			ComboBox1->insertItem(function->getName().c_str(),j-1);
+		for (C_INT32  j = 0; j < noOfReactionsRows ; j++)
+		{
+		   int m=-1;
+		   reactn = reactions[j];
+		   function = &reactn->getFunction();
+		   ComboBox1->insertItem(function->getName().c_str(),m);
 
-			if(reactn->isReversible() == TRUE)
+		   if(reactn->isReversible() == TRUE)
 			{
 				checkBox->setChecked(TRUE);
 			}
 
 			
-	table->setNumCols( 1 );
-	QHeader *tableHeader1 = table->horizontalHeader();
-	QHeader *tableHeader2 = table->verticalHeader();
-    CCopasiVector < CReaction::CId2Metab> & react3 = reactn->getId2Modifiers();
-	if(	react3.size()!=0)
-	{
-	table->setNumRows( 5 );
-	tableHeader2->setLabel(3,"ParameterName");
-    tableHeader2->setLabel(4,"ParameterValue");
-	}
-	else
-	{
-	table->setNumRows( 4 );
-	tableHeader2->setLabel(2,"ParameterName");
-    tableHeader2->setLabel(3,"ParameterValue");
-	};
+	   table->setNumCols( 1 );
+	   QHeader *tableHeader1 = table->horizontalHeader();
+	   QHeader *tableHeader2 = table->verticalHeader();
+       CCopasiVector < CReaction::CId2Metab> & react3 = reactn->getId2Modifiers();
+	   if(	react3.size()!=0)
+	   {
+	     table->setNumRows( 5 );
+	     tableHeader2->setLabel(3,"ParameterName");
+         tableHeader2->setLabel(4,"ParameterValue");
+	   }
+	   else
+	   { 
+	    table->setNumRows( 4 );
+	    tableHeader2->setLabel(2,"ParameterName");
+        tableHeader2->setLabel(3,"ParameterValue");
+	   };
 
-	//Setting table headers
+	  //Setting table headers
 
-	tableHeader1->setLabel(0, "Value");
-	tableHeader2->setLabel(0,"Substrates");
-    tableHeader2->setLabel(1,"Products");
-	table->setColumnWidth (0, 200); 
+	  tableHeader1->setLabel(0, "Value");
+	  tableHeader2->setLabel(0,"Substrates");
+      tableHeader2->setLabel(1,"Products");
+	  table->setColumnWidth (0, 200); 
 	
-	QString overall2="{";
-	QString overall4="}";
+	  QString overall2="{";
+	  QString overall4="}";
 
-	CCopasiVector < CReaction::CId2Metab > & react1 = reactn->getId2Substrates();
-	C_INT32 noOfReact1s =react1.size();
-	for ( int k = 0;k <noOfReact1s; ++k )
-	{
-	QString overall1=react1[k]->getMetaboliteName().c_str();
-	QString & overall1_2=overall1.operator+=(overall2) ;
-    QString overall3=react1[k]->getCompartmentName().c_str();
-	QString & overall3_4=overall3.operator+=(overall4) ;
-	QString & overall=overall1_2.operator+=(overall3_4) ;
-	//for the combo box
-	QStringList comboEntries1;
-    comboEntries1= overall;
-    QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE );
-    table->setItem( 0, 0, item );
-    }
+	  CCopasiVector < CReaction::CId2Metab > & react1 = reactn->getId2Substrates();
+	  C_INT32 noOfReact1s =react1.size();
+	  for ( int k = 0;k <noOfReact1s; ++k )
+	  {
+	    QString overall1=react1[k]->getMetaboliteName().c_str();
+	    QString & overall1_2=overall1.operator+=(overall2) ;
+		QString overall3=react1[k]->getCompartmentName().c_str();
+		QString & overall3_4=overall3.operator+=(overall4) ;
+		QString & overall=overall1_2.operator+=(overall3_4) ;
+		//for the combo box
+		QStringList comboEntries1;
+		comboEntries1= overall;
+		QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE );
+		table->setItem( 0, 0, item );
+	  }
 	
 
 
-	CCopasiVector < CReaction::CId2Metab> & react2 = reactn->getId2Products();
-	C_INT32 noOfReact2s =react2.size();
-	for ( k = 0;k <noOfReact2s; ++k )
-	{
-	QString overall1=react2[k]->getMetaboliteName().c_str();
-	QString & overall1_2=overall1.operator+=(overall2) ;
-	QString overall3=react2[k]->getCompartmentName().c_str();
-    QString & overall3_4=overall3.operator+=(overall4) ;
-    QString & overall=overall1_2.operator+=(overall3_4) ;
-	//for the combo box
-	QStringList comboEntries2;
-    comboEntries2= overall;
-    QComboTableItem * item = new QComboTableItem(table, comboEntries2, FALSE );
-    table->setItem( 1, 0, item );
-    }
+	  CCopasiVector < CReaction::CId2Metab> & react2 = reactn->getId2Products();
+	  C_INT32 noOfReact2s =react2.size();
+	  for ( k = 0;k <noOfReact2s; ++k )
+	  {
+			QString overall1=react2[k]->getMetaboliteName().c_str();
+			QString & overall1_2=overall1.operator+=(overall2) ;
+			QString overall3=react2[k]->getCompartmentName().c_str();
+			QString & overall3_4=overall3.operator+=(overall4) ;
+			QString & overall=overall1_2.operator+=(overall3_4) ;
+			//for the combo box
+			QStringList comboEntries2;
+			comboEntries2= overall;
+			QComboTableItem * item = new QComboTableItem(table, comboEntries2, FALSE );
+			table->setItem( 1, 0, item );
+	  }
 
 
-	int i=2;
+		int i=2;
 		C_INT32 noOfReact3s =react3.size();
-	if(	noOfReact3s!=0)
-	{
-	tableHeader2->setLabel(i,"Modifiers");
-	i++;
-	for (k = 0;k <noOfReact3s; ++k )
-	{
-	QString overall1=react3[k]->getMetaboliteName().c_str();
-	QString & overall1_2=overall1.operator+=(overall2) ;
-	QString overall3=react3[k]->getCompartmentName().c_str();
-    QString & overall3_4=overall3.operator+=(overall4) ;
-    QString & overall=overall1_2.operator+=(overall3_4) ;
+		if(	noOfReact3s!=0)
+		{	
+			tableHeader2->setLabel(i,"Modifiers");
+			i++;
+			for (k = 0;k <noOfReact3s; ++k )
+			{
+				QString overall1=react3[k]->getMetaboliteName().c_str();
+				QString & overall1_2=overall1.operator+=(overall2) ;
+				QString overall3=react3[k]->getCompartmentName().c_str();
+				QString & overall3_4=overall3.operator+=(overall4) ;
+				QString & overall=overall1_2.operator+=(overall3_4) ;
 	
 	
-	//for the combo box
-	QStringList comboEntries3;
-    comboEntries3= overall;
-    QComboTableItem * item = new QComboTableItem(table, comboEntries3, FALSE );
-    table->setItem( 2, 0, item );
+				//for the combo box
+				QStringList comboEntries3;
+				comboEntries3= overall;
+			    QComboTableItem * item = new QComboTableItem(table, comboEntries3, FALSE );
+				table->setItem( 2, 0, item );
+			}
+		}
+
+		CCopasiVector < CReaction::CId2Param > & react4 = reactn->getId2Parameters();
+		C_INT32 noOfReact4s =react4.size();
+		for ( k = 0;k <noOfReact4s; ++k )
+			{
+				//for the combo box
+				QStringList comboEntries4;
+				comboEntries4= react4[k]->getIdentifierName().c_str();
+				QComboTableItem * item = new QComboTableItem(table, comboEntries4, FALSE );
+				table->setItem( i, 0, item );
+			}
+	
+
+	
+		CCopasiVector < CReaction::CId2Param > & react5 = reactn->getId2Parameters();
+		C_INT32 noOfReact5s =react5.size();
+		for (k = 0;k <noOfReact5s; ++k )
+			{
+				//for the combo box
+				QStringList comboEntries5;
+				comboEntries5= QString::number(react5[k]->getValue());
+				QComboTableItem * item = new QComboTableItem(table, comboEntries5, FALSE );
+				table->setItem( i+1, 0, item );
+			}
+
+
 	}
-	}
-
-	CCopasiVector < CReaction::CId2Param > & react4 = reactn->getId2Parameters();
-	C_INT32 noOfReact4s =react4.size();
-	for ( k = 0;k <noOfReact4s; ++k )
-	{
-	//for the combo box
-	QStringList comboEntries4;
-    comboEntries4= react4[k]->getIdentifierName().c_str();
-    QComboTableItem * item = new QComboTableItem(table, comboEntries4, FALSE );
-    table->setItem( i, 0, item );
-    }
-	
-
-	
-	CCopasiVector < CReaction::CId2Param > & react5 = reactn->getId2Parameters();
-	C_INT32 noOfReact5s =react5.size();
-	for (k = 0;k <noOfReact5s; ++k )
-	{
-	//for the combo box
-	QStringList comboEntries5;
-    comboEntries5= QString::number(react5[k]->getValue());
-    QComboTableItem * item = new QComboTableItem(table, comboEntries5, FALSE );
-    table->setItem( i+1, 0, item );
-    }
-
 
 }
 
-}
-
-	
+///end of all the functions

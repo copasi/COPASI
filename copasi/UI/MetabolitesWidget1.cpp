@@ -210,6 +210,9 @@ MetabolitesWidget1::MetabolitesWidget1( QWidget *parent, const char * name, WFla
    
 }
 
+/*This function is used to connect this class to the listviews 
+    class to basically choose the correct widget to display   */
+	
 int MetabolitesWidget1::isName(QString setValue)
 {
 
@@ -256,6 +259,7 @@ int MetabolitesWidget1::isName(QString setValue)
 
 
 
+/*this function is used to load the model before loading the widget*/
 void MetabolitesWidget1::loadMetabolites(CModel *model)
 {
 	if (model != NULL)
@@ -269,7 +273,8 @@ void MetabolitesWidget1::loadMetabolites(CModel *model)
 
 
 
-
+/* This function loads the metabolites widget when its name is 
+   clicked in the tree   */
 void MetabolitesWidget1::loadName(QString setValue)
 {
 	
