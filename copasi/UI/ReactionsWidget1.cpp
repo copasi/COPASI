@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/09 14:48:24 $
+   $Date: 2004/04/06 23:37:17 $
    End CVS Header */
 
 /*********************************************************************
@@ -215,6 +215,8 @@ bool ReactionsWidget1::saveToReaction()
 
   //this writes all changes to the reaction
   mRi.writeBackToReaction(*(dataModel->getModel()));
+
+  dataModel->getModel()->compile();
 
   //this tells the gui what it needs to know.
   if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
