@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/24 21:06:17 $
+   $Date: 2005/01/28 16:13:09 $
    End CVS Header */
 
 #include <sstream>
+#include <time.h>
 
 #include "copasi.h"
 #include "CopasiTime.h"
@@ -89,8 +90,7 @@ C_INT64 CCopasiTimeVariable::getMicroSeconds(const bool & bounded) const
 
 C_INT64 CCopasiTimeVariable::getMilliSeconds(const bool & bounded) const
   {
-    C_INT64 MilliSeconds =
-      (mTime - (mTime % LLONG_CONST(1000))) / LLONG_CONST(1000);
+    C_INT64 MilliSeconds = mTime / LLONG_CONST(1000);
 
     if (bounded) return MilliSeconds % LLONG_CONST(1000);
     else return MilliSeconds;
@@ -98,8 +98,7 @@ C_INT64 CCopasiTimeVariable::getMilliSeconds(const bool & bounded) const
 
 C_INT64 CCopasiTimeVariable::getSeconds(const bool & bounded) const
   {
-    C_INT64 Seconds =
-      (mTime - (mTime % LLONG_CONST(1000000))) / LLONG_CONST(1000000);
+    C_INT64 Seconds = mTime / LLONG_CONST(1000000);
 
     if (bounded) return Seconds % LLONG_CONST(60);
     else return Seconds;
@@ -107,8 +106,7 @@ C_INT64 CCopasiTimeVariable::getSeconds(const bool & bounded) const
 
 C_INT64 CCopasiTimeVariable::getMinutes(const bool & bounded) const
   {
-    C_INT64 Minutes =
-      (mTime - (mTime % LLONG_CONST(60000000))) / LLONG_CONST(60000000);
+    C_INT64 Minutes = mTime / LLONG_CONST(60000000);
 
     if (bounded) return Minutes % LLONG_CONST(60);
     else return Minutes;
@@ -116,8 +114,7 @@ C_INT64 CCopasiTimeVariable::getMinutes(const bool & bounded) const
 
 C_INT64 CCopasiTimeVariable::getHours(const bool & bounded) const
   {
-    C_INT64 Hours =
-      (mTime - (mTime % LLONG_CONST(3600000000))) / LLONG_CONST(3600000000);
+    C_INT64 Hours = mTime / LLONG_CONST(3600000000);
 
     if (bounded) return Hours % LLONG_CONST(24);
     else return Hours;
@@ -125,8 +122,7 @@ C_INT64 CCopasiTimeVariable::getHours(const bool & bounded) const
 
 C_INT64 CCopasiTimeVariable::getDays() const
   {
-    C_INT64 Days =
-      (mTime - (mTime % LLONG_CONST(86400000000))) / LLONG_CONST(86400000000);
+    C_INT64 Days = mTime / LLONG_CONST(86400000000);
 
     return Days;
   }
@@ -158,6 +154,29 @@ CCopasiTimeVariable CCopasiTimeVariable::getCurrentWallTime()
   return SystemTime.QuadPart / LLONG_CONST(10);
 }
 #endif
+
+CCopasiTimeVariable CCopasiTimeVariable::getCPUTime()
+{
+#ifdef WIN32
+  LARGE_INTEGER CreationTime;
+  LARGE_INTEGER ExitTime;
+  LARGE_INTEGER KernelTime;
+  LARGE_INTEGER UserTime;
+
+  GetProcessTimes(GetCurrentProcess(),
+                  (FILETIME *) &CreationTime,
+                  (FILETIME *) &ExitTime,
+                  (FILETIME *) &KernelTime,
+                  (FILETIME *) &UserTime);
+
+  return UserTime.QuadPart / LLONG_CONST(10);
+
+#else
+  // :TODO: replace with a function with higher resolution
+  return (C_INT64) clock() * LLONG_CONST(1000000) / (C_INT64) CLOCKS_PER_SEC;
+}
+#endif
+}
 
 std::string CCopasiTimeVariable::LL2String(const C_INT64 & value,
     const C_INT32 & digits)

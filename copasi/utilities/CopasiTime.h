@@ -1,15 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/24 21:06:07 $
+   $Date: 2005/01/28 16:13:09 $
    End CVS Header */
 
 #ifndef COPASI_time
-#define COPASI_time 
+#define COPASI_time
+
 /**
- *
+ * This class is for handling execution time related values. 
+ * static methods for retreiving wall clock and CPU time are
+ * provided.
  */
 class CCopasiTimeVariable
   {
@@ -130,6 +133,12 @@ class CCopasiTimeVariable
      * @return CCopasiTimeVariable time
      */
     static CCopasiTimeVariable getCurrentWallTime();
+
+    /**
+     * Retrieve the current cpu time used since the start of the process.
+     * @return CCopasiTimeVariable time
+     */
+    static CCopasiTimeVariable getCPUTime();
 
   private:
     /**
