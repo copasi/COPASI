@@ -718,54 +718,6 @@ void CModel::buildMoieties()
   return;
 }
 
-#ifndef COPASI_DEPRECATED
-void CModel::setNumbersDblAndUpdateConcentrations(const C_FLOAT64 * y)
-{
-  unsigned C_INT32 i, imax;
-
-  // Set the concentration of the independent metabolites
-  imax = mMetabolitesInd.size();
-
-  for (i = 0; i < imax; i++)
-    mMetabolitesInd[i]->setNumberDbl(y[i]);
-
-  // Set the concentration of the dependent metabolites
-  imax = mMetabolitesDep.size();
-
-  for (i = 0; i < imax; i++)
-    mMetabolitesDep[i]->setNumberDbl(mMoieties[i]->dependentNumber());
-
-  // Calculate the velocity vector depending on the step kinetics
-  imax = mStepsX.size();
-
-  for (i = 0; i < imax; i++)
-    mStepsX[i]->calculate();
-
-  return;
-}
-#endif // COPASI_DEPRECATED
-
-#ifndef COPASI_DEPRECATED
-void CModel::setRates(const C_FLOAT64 * y)
-{
-  unsigned C_INT32 i, imax;
-
-  // Set the rate of the independent metabolites
-  imax = mMetabolitesInd.size();
-
-  for (i = 0; i < imax; i++)
-    mMetabolitesInd[i]->setRate(y[i]);
-
-  // Set the rate of the dependent metabolites
-  imax = mMetabolitesDep.size();
-
-  for (i = 0; i < imax; i++)
-    mMetabolitesDep[i]->setRate(mMoieties[i]->dependentRate());
-
-  return;
-}
-#endif // COPASI_DEPRECATED
-
 void CModel::setTransitionTimes()
 {
   unsigned C_INT32 i, imax = mMetabolites.size();
@@ -832,26 +784,6 @@ std::vector < CReaction * > & CModel::getReactionsX()
   return mStepsX;
 }
 
-#ifndef COPASI_DEPRECATED
-void CModel::lSODAEval(C_INT32 n, C_FLOAT64 C_UNUSED(t), C_FLOAT64 * y, C_FLOAT64 * ydot)
-{
-  unsigned C_INT32 i, j;
-
-  setNumbersDblAndUpdateConcentrations(y);
-
-  // Calculate ydot = RedStoi * v
-
-  for (i = 0; i < (unsigned C_INT32) n; i++)
-    {
-      ydot[i] = 0.0;
-
-      for (j = 0; j < mSteps.size(); j++)
-        ydot[i] += mRedStoi[i][j] * *mFluxesX[j];
-    }
-
-  return;
-}
-#endif // COPASI_DEPRECATED
 std::vector < CMetab * > & CModel::getMetabolitesInd(){return mMetabolitesInd;}
 std::vector < CMetab * > & CModel::getMetabolitesDep(){return mMetabolitesDep;}
 std::vector < CMetab * > & CModel::getMetabolitesX(){return mMetabolitesX;}
@@ -876,43 +808,15 @@ unsigned C_INT32 CModel::getDepMetab() const
   return mMetabolitesDep.size();
 }
 
-#ifndef COPASI_DEPRECATED
-C_FLOAT64 * CModel::getInitialNumbersDbl() const
+// Added by Yongqun He
+/**
+ * Get the total steps
+ *
+ */
+unsigned C_INT32 CModel::getTotSteps()
 {
-  C_INT32 i, imax = mMetabolitesInd.size();
-
-  C_FLOAT64 * y = new C_FLOAT64[imax];
-
-  for (i = 0; i < imax; i++)
-  y[i] = mMetabolitesInd[i]->getInitialNumberDbl();
-
-  return y;
+  return mSteps.size();   //should not return mSteps
 }
-#endif // COPASI_DEPRECATED
-
-#ifndef COPASI_DEPRECATED
-C_FLOAT64 * CModel::getNumbersDbl() const
-  {
-    C_INT32 i, imax = mMetabolitesInd.size();
-
-    C_FLOAT64 * y = new C_FLOAT64[imax];
-
-    for (i = 0; i < imax; i++)
-    y[i] = mMetabolitesInd[i]->getNumberDbl();
-
-    return y;
-  }
-#endif // COPASI_DEPRECATED
-
-  // Added by Yongqun He
-  /**
-   * Get the total steps
-   *
-   */
-  unsigned C_INT32 CModel::getTotSteps()
-    {
-      return mSteps.size();   //should not return mSteps
-    }
 
 unsigned C_INT32 CModel::getDimension() const
 {

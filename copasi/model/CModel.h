@@ -376,44 +376,6 @@ class CModel
      */
     unsigned C_INT32 getDepMetab() const;
 
-#ifndef COPASI_DEPRECATED
-    /**
-     *  This functions returns a pointer to a vector of the initial particle
-     *  numbers of the independent metabolites. 
-     *  Note: After ussage the memory has to be released with delete [] y.
-     *  @return C_FLOAT64 * y
-     */
-    C_FLOAT64 * getInitialNumbersDbl() const;
-#endif // COPASI_DEPRECATED
-
-#ifndef COPASI_DEPRECATED
-    /**
-     *  This functions returns a pointer to a vector of the current particle
-     *  numbers of the independent metabolites. 
-     *  Note: After ussage the memory has to be released with delete [] y.
-     *  @return C_FLOAT64 * y
-     */
-    C_FLOAT64 * getNumbersDbl() const;
-#endif // COPASI_DEPRECATED
-
-#ifndef COPASI_DEPRECATED
-    /**
-     *  Set the concentration of all metabolites as a result of the particle
-     *  number of the independent metabolites
-     *  param C_FLOAT64 & y
-     */
-    void setNumbersDblAndUpdateConcentrations(const C_FLOAT64 *y);
-#endif // COPASI_DEPRECATED
-
-#ifndef COPASI_DEPRECATED
-    /**
-     *  Set the rate for all internal metabolites and the
-     *  transistion time of the model.
-     *  param C_FLOAT64 & y
-     */
-    void setRates(const C_FLOAT64 *y);
-#endif // COPASI_DEPRECATED
-
     /**
      *  Set the transition times for all internal metabolites and the
      *  transistion time of the model.
