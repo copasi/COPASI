@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/26 12:18:13 $
+   $Date: 2004/08/05 12:58:58 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <stdarg.h>
+#include "copasi.h"
 
 /**
  * Template class CVector < class CType >
