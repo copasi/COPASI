@@ -74,12 +74,6 @@ template < class Data > class CCopasiNode
 
       /**
        * Retreive the data of the Node.
-       * @return Data & data
-       */
-      virtual Data & getData() = NULL;
-
-      /**
-       * Retreive the data of the Node.
        * @return Data data
        */
       virtual Data getData() const = NULL;
