@@ -32,9 +32,11 @@
 #include "float.h"
 #include "r250.h"
 
+#include "COptimizer.h"
 
-class CGA : public Coptimizer 
-{
+
+class CGA : public COptimizer {
+//class CGA {
 private:
 	unsigned int gener;		// number of generations
 	unsigned int popsize;		// size of the population
@@ -59,7 +61,7 @@ public:
 
 	CGA(); //default constructor
 	CGA(int psize,int num,int param); //initialize population
-	virtual ~CGA();//destructor
+	~CGA();//destructor
 
 /********Declare the prototype of member functions here**************/
 
@@ -86,113 +88,51 @@ public:
 /***********define functional functions here*************************/
 
         //Set the random seed with time
-	virtual int OptRandomInit();
+	//virtual int OptRandomInit();
+	int OptRandomInit();
 
 	// evaluate the fitness of one individual
-	virtual double evaluate( unsigned int i );
-
+	//virtual double evaluate( unsigned int i );
+	double evaluate( unsigned int i );
 
 	// copy individual o to position d
-	virtual void copy( unsigned int o, unsigned int d );
+	//virtual void copy( unsigned int o, unsigned int d );
+	void copy( unsigned int o, unsigned int d );
 
 
 	// swap individuals o and d
-	virtual void swap( unsigned int o, unsigned int d );
+	//virtual void swap( unsigned int o, unsigned int d );
+	void swap( unsigned int o, unsigned int d );
 
 
 	//mutate one individual
-	virtual void mutate( unsigned int i );
+	//virtual void mutate( unsigned int i );
+	void mutate( unsigned int i );
 
 
-	virtual void crossover( unsigned int p1, unsigned int p2, unsigned int c1, unsigned int c2 );
+	void crossover( unsigned int p1, unsigned int p2, unsigned int c1, unsigned int c2 );
 
 
-	virtual void shuffle( void );
+	void shuffle( void );
 
 	// replicate the individuals w/ crossover
-	virtual void replicate( void );
+	void replicate( void );
 
 	// select popsize individuals
-	virtual void select( int method );
+	void select( int method );
 
 	// check the best individual at this generation
-	virtual unsigned int fittest( void );
+	unsigned int fittest( void );
 
 	// initialise the population
-	virtual void creation( unsigned int l, unsigned int u );
+	void creation( unsigned int l, unsigned int u );
 
-	virtual void dump_data( unsigned int i );
+	void dump_data( unsigned int i );
+
+        int Optimise();
 
 };
 
-//implementation of mutation functions
-
-inline void CGA::Set_nparam (int num)
-{
-nparam=num;
-}
-
-inline void CGA::Set_popsize(int num)
-{
-popsize=num;
-}
-
-
-inline void CGA::Set_gener(int num)
-{
-gener=num;
-}
-
-
-inline void CGA::Set_mutvar( double num)
-{
-mutvar=num;
-}
-inline void CGA::Set_mn( double num)
-{
-mn=num;
-}
-inline void CGA::Set_mx( double num)
-{
-mx=num;
-}
-
-inline void CGA::Set_indv(int i,int j,double num)
-{
-indv[i][j]=num;
-}
-
-inline void CGA::Set_candx(int i, double num)	
-{
-candx[i]=num;
-}
-
-inline void CGA::Set_best(unsigned int num)
-{
-best=num;
-}
-
-//implementation of access functions
-
-inline int CGA::Get_nparam() 
-{
-return nparam;
-}
-
-inline double CGA::Get_best_candidate() 
-{
-return candx[best];
-}
-
-inline int CGA::Get_gener() 
-{
-return gener;
-}
-
-inline int CGA::Get_popsize() 
-{
-return popsize;
-}
 
 
 #endif //

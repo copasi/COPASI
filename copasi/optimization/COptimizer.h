@@ -14,6 +14,9 @@
 #ifndef COPTIMIZER_H
 #define COPTIMIZER_H
 
+#include <string>
+#include <copasi.h>
+
 // YOHE: this is an abstract class that contains many virtual functions 
 // without definitions
 //
@@ -25,17 +28,19 @@ class COptimizer
   
   // YOHE: These data members were originally public,
   // but it's better to use them as private
-  String mIni;			// INI filename
-  String mHelp;			// Help filename
-  String mName;		        // Name (descriptive)
-  String mVersion;              // Version string
+  string mIni;			// INI filename
+  string mHelp;			// Help filename
+  string mName;		        // Name (descriptive)
+  string mVersion;              // Version string
   double *mParam;               // array for parameter values
 
   int mParamNum;                // the number of parameters
-  //char mStatbuffer[256];	// static character string for function returns
+  char mStatBuffer[256];	// static character string for function returns
   //BOOL mArrayCreated;		// True if DLL is in memory
-  BOOL mBounds;			// True if method accepts bounds on the parameters
-  BOOL mConstraints;		// True if method accepts constraints on the variable
+
+  //YOHE: changed all "BOOL" to "bool" because bool is a C++ data type
+  bool mBounds;			// True if method accepts bounds on the parameters
+  bool mConstraints;		// True if method accepts constraints on the variable
 
 
  // Implementation
@@ -49,13 +54,13 @@ class COptimizer
    /**
     * Destructor
     */
-   ~COptimizer();
+   virtual ~COptimizer();
 
    /**
     * Initialization of private variables
     */
-   BOOL Init( CString &inifile );
-
+   //bool Init( CString &inifile );
+   bool Init(string &inifile );
 
    /**
     * Set algorithm parameters
@@ -90,13 +95,13 @@ class COptimizer
     * Returns True if this method is capable of handling adjustable parameter 
     * boundary constraints, False otherwise
     */
-   virtual BOOL IsBounded( void );
+   virtual bool IsBounded( void );
 
    /**
     * Return True if the method is capable of handling general constraints, 
     * False otherwise
     */
-   virtual BOOL IsConstrained( void );
+   virtual bool IsConstrained( void );
 
 
    /**
@@ -106,13 +111,13 @@ class COptimizer
     * with SetCallback.
     */
    //virtual int Optimise( double (*func) (void) );
-   virtual int Optimise();
-
+   //   virtual int Optimise();
+   virtual int  Optimise();
 
    /**
     *  return TRUE if method can do general optimisation
     */
-   BOOL CanOptimise( void );
+   bool CanOptimise( void );
 
 
    /**
@@ -128,7 +133,7 @@ class COptimizer
    /**
     * return TRUE if method has specialised least-squares solver
     */
-   BOOL SpecialisedLsq( void );
+   bool SpecialisedLsq( void );
 
 
 };

@@ -9,11 +9,9 @@
  */
 
 
-
 #include "CGA.h"
 
 /******************The following is implementation of various functions*********/
-
 CGA::CGA()
 {
 
@@ -29,6 +27,7 @@ CGA::CGA(int psize,int num, int param)
 {
 
  unsigned int i,j;
+
 
  popsize=psize;
  gener=num;
@@ -79,6 +78,74 @@ delete wins;
 delete candx;
 }
 
+//implementation of mutation functions
+
+void CGA::Set_nparam (int num)
+{
+nparam=num;
+}
+
+void CGA::Set_popsize(int num)
+{
+popsize=num;
+}
+
+
+void CGA::Set_gener(int num)
+{
+gener=num;
+}
+
+
+void CGA::Set_mutvar( double num)
+{
+mutvar=num;
+}
+void CGA::Set_mn( double num)
+{
+mn=num;
+}
+void CGA::Set_mx( double num)
+{
+mx=num;
+}
+
+void CGA::Set_indv(int i,int j,double num)
+{
+indv[i][j]=num;
+}
+
+void CGA::Set_candx(int i, double num)	
+{
+candx[i]=num;
+}
+
+void CGA::Set_best(unsigned int num)
+{
+best=num;
+}
+
+//implementation of access functions
+
+int CGA::Get_nparam() 
+{
+return nparam;
+}
+
+double CGA::Get_best_candidate() 
+{
+return candx[best];
+}
+
+int CGA::Get_gener() 
+{
+return gener;
+}
+
+int CGA::Get_popsize() 
+{
+return popsize;
+}
 
 int CGA::OptRandomInit()
 {
@@ -92,10 +159,10 @@ int CGA::OptRandomInit()
 double CGA::evaluate( unsigned int i )
 {
  int j;
- bool outside_range = FALSE;
+ //bool outside_range = FALSE;
  double fitness;
  double fitness0;
- double tmp; 
+ //double tmp; 
 
  // evaluate the fitness
  try
@@ -125,7 +192,7 @@ void CGA::copy( unsigned int o, unsigned int d )
  candx[d] = candx[o];
 }
 
-// swap individuals o and d
+// swap individuals o and d
 void CGA::swap( unsigned int o, unsigned int d )
 {
  int i;
@@ -383,8 +450,13 @@ void CGA::dump_data( unsigned int i )
 // main.cc changed to optimise function
 //main(int argc, char *argv[])
 //
-void CGA::Optimise(int argc, char *argv[])
+//void CGA::Optimise(int argc, char *argv[])
+int CGA::Optimise()
 {
+
+  //YOHE: this will be changed
+  int argc = 4;
+  char * argv[4];
 
  unsigned int i, last_update, u100, u300, u500, fr;
  double bx;

@@ -9,7 +9,6 @@
  *           methods by which the simulation subsystem accesses several 
  *           optimization algorithms. 
  */
-
 #include <math.h>
 #include "COptimizer.h"
 
@@ -23,17 +22,17 @@ COptimizer::COptimizer()
   //reset numeric parameters
   mParamNum = 0;
   //reset the static character buffer
-  mStatBuffer[0] = '\0';
+  //mStatBuffer[0] = '\0';
 
 }
 
-// Destructor
+//YOHE: seems virtual cannot be outside of class declaration
 COptimizer::~COptimizer()
 {
 }
 
 // Initialization of private variables
-BOOL COptimizer::Init( CString &inifile )
+bool COptimizer::Init( string &inifile )
 {
 
 }
@@ -41,19 +40,19 @@ BOOL COptimizer::Init( CString &inifile )
 //
 int COptimizer::CountParameters( void )
 {
-  return nParam;
+  return mParamNum;
 }
 
 //
 double COptimizer::GetParameterValue( int p )
 { 
-  return Param[p];
+  return mParam[p];
 }
 
 //
 void COptimizer::SetParameterValue( int p, double v )
 {
- Param[p] = v;
+ mParam[p] = v;
 
 }
 
@@ -65,22 +64,22 @@ char * COptimizer:: GetParameterName( int p )
   //return DLLParameterName( p, statbuffer );
 
   //new:  
-  return mStatBuffer[p];             // ???????????????????
+  return & mStatBuffer[p];             // ???????????????????
 }
 
 
 //
 void COptimizer::SetAlgoParameters( void )
 {
- for(int i=0; i<nParam; i++ )
-  DLLSetMethodParam( i, Param[i] );
+  //for(int i=0; i<mParamNum; i++ )
+   //  DLLSetMethodParam( i, mParam[i] );
 }
 
 
 
 // Returns True if this method is capable of handling adjustable parameter boundary
 // constraints, False otherwise
-BOOL COptimizer::IsBounded( void )
+bool COptimizer::IsBounded( void )
 {
   return mBounds;
 
@@ -88,7 +87,7 @@ BOOL COptimizer::IsBounded( void )
 
 // Return True if the method is capable of handling general constraints, 
 // False otherwise
-BOOL COptimizer::IsConstrained( void )
+bool COptimizer::IsConstrained( void )
 {
   return mConstraints;
 }
@@ -100,13 +99,13 @@ BOOL COptimizer::IsConstrained( void )
 // when needed. It is noted that this procedure can give feedback of its progress by 
 // the callback function set with SetCallback
 //virtual int COptimizer::Optimise( double (*func) (void) )
-virtual int COptimizer::Optimise(void)
+int COptimizer::Optimise(void)
 {
   return 0;
 }
 
 // return TRUE if method can do general optimisation
-BOOL COptimizer::CanOptimise( void )
+bool COptimizer::CanOptimise( void )
 {
   if ( Optimise() == 1 )
     return TRUE;
@@ -120,7 +119,7 @@ BOOL COptimizer::CanOptimise( void )
 // the optimization algorithm to solve the problem. It is noted that this procedure 
 // must periodically call the callback function set with SetCallback.
 //int COptimizer::SolveLsq( double (*func) (double *) )
-virtual int COptimizer::SolveLsq(void)
+int COptimizer::SolveLsq(void)
 {
   return 0;
 }
@@ -128,7 +127,7 @@ virtual int COptimizer::SolveLsq(void)
 
 
 //return TRUE if method has specialised least-squares solver
-BOOL COptimizer::SpecialisedLsq( void )
+bool COptimizer::SpecialisedLsq( void )
 {
   if (SolveLsq() == 1)
     return TRUE;
