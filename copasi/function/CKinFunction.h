@@ -13,121 +13,124 @@
 #include "utilities/utilities.h"
 
 class CKinFunction : public CFunction
-{
-  // Attributes
- private:
-  /**
-   *  The vector of nodes of the binary tree of the function
-   *  @supplierCardinality 0..*
-   *  @associates <{CNodeK}>
-   */
-  CCopasiVectorS < CNodeK > mNodes;
+  {
+    // Attributes
 
-  /**
-   *  Internal variable
-   */
-  unsigned C_INT32 mNidx;
+  private:
+    /**
+     *  The vector of nodes of the binary tree of the function
+     *  @supplierCardinality 0..*
+     *  @associates <{CNodeK}>
+     */
+    CCopasiVectorS < CNodeK > mNodes;
 
-  // Operations  
- public:    
-  /**
-   *  Default constructor
-   */
-  CKinFunction();
+    /**
+     *  Internal variable
+     */
+    unsigned C_INT32 mNidx;
 
-  /**
-   *  Copy constructor
-   *  @param "const CFunction &" src
-   */
-  CKinFunction(const CFunction & src);
+    // Operations
 
-  /**
-   *  Copy constructor
-   *  @param "const CKinFunction &" src
-   */
-  CKinFunction(const CKinFunction & src);
+  public:
+    /**
+     *  Default constructor
+     */
+    CKinFunction();
 
-  /**
-   *  This creates a kinetic function with a name an description
-   *  @param "const string" &name
-   *  @param "const string" &description
-   */
-  CKinFunction(const string & name,
-               const string & description);
+    /**
+     *  Copy constructor
+     *  @param "const CFunction &" src
+     *  @param "CReadConfig *" configBuffer (Default = NULL)
+     */
+    CKinFunction(const CFunction & src, CReadConfig * configBuffer = NULL);
 
-  /**
-   *  Destructor
-   */
-  ~CKinFunction();
+    /**
+     *  Copy constructor
+     *  @param "const CKinFunction &" src
+     */
+    CKinFunction(const CKinFunction & src);
 
-  /**
-   *  Cleanup
-   */
-  void cleanup();
+    /**
+     *  This creates a kinetic function with a name an description
+     *  @param "const string" &name
+     *  @param "const string" &description
+     */
+    CKinFunction(const string & name,
+                 const string & description);
 
-  /**
-   *  Loads an object with data coming from a CReadConfig object.
-   *  (CReadConfig object reads an input stream)
-   *  @param pconfigbuffer reference to a CReadConfig object.
-   *  @return Fail
-   */
-  void load(CReadConfig & configbuffer,
-            CReadConfig::Mode mode = CReadConfig::LOOP);
+    /**
+     *  Destructor
+     */
+    ~CKinFunction();
 
-  /**
-   *  Compile a function
-   */
-  void compile();
-  
-  /**
-   *  This parses the function into a binary tree
-   */
-  C_INT32 parse();
+    /**
+     *  Cleanup
+     */
+    void cleanup();
 
-  /**
-   *  Calculates the value of the function
-   *  @param "vector < void * >" identifiers
-   *  @return "C_FLOAT64" result
-   */
-  virtual C_FLOAT64 
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return Fail
+     */
+    void load(CReadConfig & configbuffer,
+              CReadConfig::Mode mode = CReadConfig::LOOP);
+
+    /**
+     *  Compile a function
+     */
+    void compile();
+
+    /**
+     *  This parses the function into a binary tree
+     */
+    C_INT32 parse();
+
+    /**
+     *  Calculates the value of the function
+     *  @param "vector < void * >" identifiers
+     *  @return "C_FLOAT64" result
+     */
+    virtual C_FLOAT64
     calcValue(const CCallParameters & callParameters) const;
 
-  /**
-   *  Retreives the nodes of the function
-   */
-  CCopasiVectorS < CNodeK > & getNodes();
-  
- private:
+    /**
+     *  Retreives the nodes of the function
+     */
+    CCopasiVectorS < CNodeK > & getNodes();
 
-  /**
-   *  This  connects the nodes to build the binary function tree
-   */
-  C_INT32 connectNodes();
+  private:
 
-  /**
-   *  This function is part of the algorithm that builds the binary tree
-   *  @param C_INT16 priority
-   *  @return CNodeK *
-   */
-  CNodeK * parseExpression(C_INT16 priority);
+    /**
+     *  This  connects the nodes to build the binary function tree
+     */
+    C_INT32 connectNodes();
 
-  /**
-   *  This function is part of the algorithm that builds the binary tree
-   *  @return CNodeK *
-   */
-  CNodeK * parsePrimary();
+    /**
+     *  This function is part of the algorithm that builds the binary tree
+     *  @param C_INT16 priority
+     *  @return CNodeK *
+     */
+    CNodeK * parseExpression(C_INT16 priority);
 
-  /**
-   *  This function creates the parameter description for older file versions
-   */
-  void createParameters();
+    /**
+     *  This function is part of the algorithm that builds the binary tree
+     *  @return CNodeK *
+     */
+    CNodeK * parsePrimary();
 
-  /**
-   *  This function assignes the appropriate indezes to nodes of type identifier
-   *  so that the value of the matching call parameter is returned when 
-   *  calculating the function.
-   */
-  void initIdentifierNodes();
-};
+    /**
+     *  This function creates the parameter description for older file versions
+     */
+    void createParameters();
+
+    /**
+     *  This function assignes the appropriate indezes to nodes of type identifier
+     *  so that the value of the matching call parameter is returned when 
+     *  calculating the function.
+     */
+    void initIdentifierNodes();
+  };
 
 #endif // COPASI_CKinFunction

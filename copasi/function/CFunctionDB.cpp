@@ -47,7 +47,8 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
         case CFunction::PreDefined:
 
         case CFunction::UserDefined:
-          pFunction = new CKinFunction(Function);
+          pFunction = new CKinFunction(Function, & configbuffer);
+
           break;
 
         default:

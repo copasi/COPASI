@@ -19,14 +19,27 @@
 #include "CKinFunction.h"
 
 CKinFunction::CKinFunction() : CFunction()
-{  
+{
   CONSTRUCTOR_TRACE;
   setType(CFunction::UserDefined);
 }
 
-CKinFunction::CKinFunction(const CFunction & src) : CFunction(src)
+CKinFunction::CKinFunction(const CFunction & src,
+                           CReadConfig * configBuffer) : CFunction(src)
 {
   CONSTRUCTOR_TRACE;
+
+  if (configBuffer)
+    if (configBuffer->getVersion() < "4")
+      {
+        unsigned C_INT32 Size;
+        configBuffer->getVariable("Nodes", "C_INT32", &Size);
+
+        mNodes.load(*configBuffer, Size);
+        createParameters();
+        mNodes.cleanup();
+      }
+
   compile();
 }
 
@@ -45,9 +58,9 @@ CKinFunction::CKinFunction(const string & name,
   setName(name);
   setDescription(description);
 }
-#endif // XXXX
 
-CKinFunction::~CKinFunction() {cleanup(); DESTRUCTOR_TRACE;}
+#endif // XXXX
+CKinFunction::~CKinFunction() {cleanup(); DESTRUCTOR_TRACE; }
 
 void CKinFunction::cleanup()
 {
@@ -63,6 +76,7 @@ void CKinFunction::load(CReadConfig & configBuffer,
   // For older file version the parameters have to be build from information
   // dependend on the function type. Luckilly, only user defined functions are
   // the only ones occuring in those files.
+
   if (configBuffer.getVersion() < "4")
     {
       unsigned C_INT32 Size;
@@ -94,37 +108,82 @@ C_INT32 CKinFunction::parse()
   mNodes.add(CNodeK(N_ROOT, N_NOP));
 
   // call the lexical analyser successively until done
+
   while (i)
     {
       i = Scanner.yylex();
+
       switch (i)
         {
-        case N_IDENTIFIER: mNodes.add(CNodeK(Scanner.YYText())); break;
-        case N_NUMBER:     mNodes.add(CNodeK(atof(Scanner.YYText()))); break;
-        case '+':          mNodes.add(CNodeK(N_OPERATOR, '+')); break;
-        case '-':          mNodes.add(CNodeK(N_OPERATOR, '-')); break;
-        case '*':          mNodes.add(CNodeK(N_OPERATOR, '*')); break;
-        case '/':          mNodes.add(CNodeK(N_OPERATOR, '/')); break;
-        case '^':          mNodes.add(CNodeK(N_OPERATOR, '^')); break;
-        case '(':          mNodes.add(CNodeK(N_OPERATOR, '(')); break;
-        case ')':          mNodes.add(CNodeK(N_OPERATOR, ')')); break;
-        case N_LOG:        mNodes.add(CNodeK(N_FUNCTION, N_LOG)); break;
-        case N_LOG10:      mNodes.add(CNodeK(N_FUNCTION, N_LOG10)); break;
-        case N_EXP:        mNodes.add(CNodeK(N_FUNCTION, N_EXP)); break;
-        case N_SIN:        mNodes.add(CNodeK(N_FUNCTION, N_SIN)); break;
-        case N_COS:        mNodes.add(CNodeK(N_FUNCTION, N_COS)); break;
-        case N_NOP:        // this is an error
-	  mNodes.cleanup();
+        case N_IDENTIFIER:
+          mNodes.add(CNodeK(Scanner.YYText()));
+          break;
+
+        case N_NUMBER:
+          mNodes.add(CNodeK(atof(Scanner.YYText())));
+          break;
+
+        case '+':
+          mNodes.add(CNodeK(N_OPERATOR, '+'));
+          break;
+
+        case '-':
+          mNodes.add(CNodeK(N_OPERATOR, '-'));
+          break;
+
+        case '*':
+          mNodes.add(CNodeK(N_OPERATOR, '*'));
+          break;
+
+        case '/':
+          mNodes.add(CNodeK(N_OPERATOR, '/'));
+          break;
+
+        case '^':
+          mNodes.add(CNodeK(N_OPERATOR, '^'));
+          break;
+
+        case '(':
+          mNodes.add(CNodeK(N_OPERATOR, '('));
+          break;
+
+        case ')':
+          mNodes.add(CNodeK(N_OPERATOR, ')'));
+          break;
+
+        case N_LOG:
+          mNodes.add(CNodeK(N_FUNCTION, N_LOG));
+          break;
+
+        case N_LOG10:
+          mNodes.add(CNodeK(N_FUNCTION, N_LOG10));
+          break;
+
+        case N_EXP:
+          mNodes.add(CNodeK(N_FUNCTION, N_EXP));
+          break;
+
+        case N_SIN:
+          mNodes.add(CNodeK(N_FUNCTION, N_SIN));
+          break;
+
+        case N_COS:
+          mNodes.add(CNodeK(N_FUNCTION, N_COS));
+          break;
+
+        case N_NOP:         // this is an error
+          mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
-	  return 0;
+          return 0;
         }
     }
+
   return 0;
 }
 
 C_FLOAT64 CKinFunction::calcValue(const CCallParameters & callParameters) const
-{return mNodes[0]->getLeft().value(callParameters);}
+{ return mNodes[0]->getLeft().value(callParameters); }
 
 C_INT32 CKinFunction::connectNodes()
 {
@@ -136,7 +195,8 @@ C_INT32 CKinFunction::connectNodes()
   mNidx = 1;
 
   // point all Left & Right to the root node
-  for (i=1; i<mNodes.size(); i++)
+
+  for (i = 1; i < mNodes.size(); i++)
     {
       mNodes[i]->setLeft(mNodes[0]);
       mNodes[i]->setRight(mNodes[0]);
@@ -154,81 +214,95 @@ C_INT32 CKinFunction::connectNodes()
       //  errnode should index the node in error
       //  but we don't know its index (pointer only)
       CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2,
-		     getName().c_str());
+                     getName().c_str());
       errnode = -1;
       errfl++;
     }
 
-  for (i=1; i<mNodes.size() && !errfl; i++)
+  for (i = 1; i < mNodes.size() && !errfl; i++)
     {
       switch (mNodes[i]->getType())
         {
         case N_OPERATOR:
-	  if (!mNodes[i]->isLeftValid()      ||
-	      !mNodes[i]->isRightValid()     ||
-	      &mNodes[i]->getLeft()  == mNodes[0] ||
-	      &mNodes[i]->getRight() == mNodes[0])
-	    if (mNodes[i]->getSubtype() != '(' &&
-		mNodes[i]->getSubtype() != ')')
-	      {
-		if (!errfl)
-		  {
-		    // sprintf(errstr, "ERROR - incorrect number of operands");
-		    fatalError();
-		    errnode = i;
-		  }
-		errfl++;
-	      }
-	  if (!errfl)
+
+          if (!mNodes[i]->isLeftValid() ||
+              !mNodes[i]->isRightValid() ||
+              &mNodes[i]->getLeft() == mNodes[0] ||
+              &mNodes[i]->getRight() == mNodes[0])
+            if (mNodes[i]->getSubtype() != '(' &&
+                mNodes[i]->getSubtype() != ')')
+              {
+                if (!errfl)
+                  {
+                    // sprintf(errstr, "ERROR - incorrect number of operands");
+                    fatalError();
+                    errnode = i;
+                  }
+
+                errfl++;
+              }
+
+          if (!errfl)
             {
-	      if (mNodes[i]->isLeftValid()    &&
-		  mNodes[i]->getLeft().isOperator() &&
-		  mNodes[i]->getLeft().getSubtype() == '(' )
+              if (mNodes[i]->isLeftValid() &&
+                  mNodes[i]->getLeft().isOperator() &&
+                  mNodes[i]->getLeft().getSubtype() == '(')
                 {
-		  //           sprintf(errstr, "ERROR - missing operand");
-		  fatalError();
-		  errnode = -1;
-		  errfl++;
+                  //           sprintf(errstr, "ERROR - missing operand");
+                  fatalError();
+                  errnode = -1;
+                  errfl++;
                 }
-	      if (mNodes[i]->isRightValid()    &&
-		  mNodes[i]->getRight().isOperator() &&
-		  mNodes[i]->getRight().getSubtype() == ')' )
+
+              if (mNodes[i]->isRightValid() &&
+                  mNodes[i]->getRight().isOperator() &&
+                  mNodes[i]->getRight().getSubtype() == ')')
                 {
-		  //           sprintf(errstr, "ERROR - missing operand");
-		  fatalError();
-		  errnode = -1;
-		  errfl++;
+                  //           sprintf(errstr, "ERROR - missing operand");
+                  fatalError();
+                  errnode = -1;
+                  errfl++;
                 }
             }
-	  break;
+
+          break;
+
         case N_IDENTIFIER:
-	  if (mNodes[i]->isLeftValid() ||
-	      mNodes[i]->isRightValid()  )
+
+          if (mNodes[i]->isLeftValid() ||
+              mNodes[i]->isRightValid())
             {
-	      if (!errfl)
+              if (!errfl)
                 {
-		  //           sprintf(errstr, "ERROR - unexpected identifier");
-		  fatalError();
-		  errnode = -1;
+                  //           sprintf(errstr, "ERROR - unexpected identifier");
+                  fatalError();
+                  errnode = -1;
                 }
-	      ++errfl;
+
+              ++errfl;
             }
-	  break;
+
+          break;
+
         case N_NUMBER:
-	  if (mNodes[i]->isLeftValid() ||
-	      mNodes[i]->isRightValid()  )
+
+          if (mNodes[i]->isLeftValid() ||
+              mNodes[i]->isRightValid())
             {
-	      if (!errfl)
+              if (!errfl)
                 {
-		  //           sprintf(errstr, "ERROR - unexpected constant");
-		  fatalError();
-		  errnode = -1;
+                  //           sprintf(errstr, "ERROR - unexpected constant");
+                  fatalError();
+                  errnode = -1;
                 }
-	      ++errfl;
+
+              ++errfl;
             }
-	  break;
+
+          break;
         }
     }
+
   // return
   return errfl;
 }
@@ -242,33 +316,38 @@ CNodeK * CKinFunction::parseExpression(C_INT16 priority)
   C_INT32 op;
 
   lhs = parsePrimary();
-  if (!lhs) return NULL;
 
-  while( mNidx < mNodes.size() &&
-	 mNodes[mNidx]->isOperator() &&
-	 priority < mNodes[mNidx]->leftPrecedence())
+  if (!lhs)
+    return NULL;
+
+  while (mNidx < mNodes.size() &&
+          mNodes[mNidx]->isOperator() &&
+          priority < mNodes[mNidx]->leftPrecedence())
     {
       op = mNidx;
       rhs = NULL;
       ++mNidx;
       rhs = parseExpression(mNodes[op]->rightPrecedence());
+
       if (!rhs)
         {
-	  if (!errfl)
+          if (!errfl)
             {
-	      //    sprintf(errstr, "ERROR - unexpected operator");
-	      fatalError();
-	      errnode = op;
+              //    sprintf(errstr, "ERROR - unexpected operator");
+              fatalError();
+              errnode = op;
             }
-	  ++errfl;
+
+          ++errfl;
         }
       else
         {
-	  mNodes[op]->setLeft(lhs);
-	  mNodes[op]->setRight(rhs);
-	  lhs = mNodes[op] ;
+          mNodes[op]->setLeft(lhs);
+          mNodes[op]->setRight(rhs);
+          lhs = mNodes[op] ;
         }
     }
+
   return lhs;
 }
 
@@ -283,6 +362,7 @@ CNodeK * CKinFunction::parsePrimary()
   npt = NULL;
 
   //    if (Node[mNidx]==NULL)
+
   if (mNidx >= mNodes.size())
     {
       //  if (!errfl) // execute only if no previous error
@@ -309,113 +389,137 @@ CNodeK * CKinFunction::parsePrimary()
       npt = mNodes[mNidx];
       ++mNidx;
       return npt;
-    case '(': ++mNidx;
+
+    case '(':
+      ++mNidx;
       npt = parseExpression(0);
-      if (mNidx < mNodes.size()      &&
-	  mNodes[mNidx]->isOperator() &&
-	  mNodes[mNidx]->getSubtype() == ')')
+
+      if (mNidx < mNodes.size() &&
+          mNodes[mNidx]->isOperator() &&
+          mNodes[mNidx]->getSubtype() == ')')
         {
-	  ++mNidx;
-	  return npt;
+          ++mNidx;
+          return npt;
         }
       else
         {
-	  if (!errfl) // execute only if no previous error
+          if (!errfl) // execute only if no previous error
             {
-	      //             sprintf(errstr, "ERROR - right bracket missing");
-	      errnode = mNidx;
+              //             sprintf(errstr, "ERROR - right bracket missing");
+              errnode = mNidx;
             }
-	  errfl++;
+
+          errfl++;
         }
+
     case '+':
+
     case '-':
+
     case N_LOG:
+
     case N_LOG10:
+
     case N_EXP:
+
     case N_SIN:
-    case N_COS:   op = mNidx; primary = NULL;
+
+    case N_COS:
+      op = mNidx;
+      primary = NULL;
       ++mNidx;
       primary = parsePrimary();
-      if (primary==NULL)
+
+      if (primary == NULL)
         {
-	  if (!errfl)
+          if (!errfl)
             {
-	      //                  sprintf(errstr, "ERROR - missing operator");
-	      errnode = op;
+              //                  sprintf(errstr, "ERROR - missing operator");
+              errnode = op;
             }
-	  ++errfl;
+
+          ++errfl;
         }
       else
         {
-	  npt = mNodes[op];
-	  // unary operators are taken as functions
-	  mNodes[op]->setType(N_FUNCTION);
-	  mNodes[op]->setLeft(primary);
-	  mNodes[op]->setRight(NULL);
-	  return mNodes[op];
+          npt = mNodes[op];
+          // unary operators are taken as functions
+          mNodes[op]->setType(N_FUNCTION);
+          mNodes[op]->setLeft(primary);
+          mNodes[op]->setRight(NULL);
+          return mNodes[op];
         }
-    default:  return NULL;
+
+    default:
+      return NULL;
     }
-  if (mNidx < mNodes.size()      &&
+
+  if (mNidx < mNodes.size() &&
       mNodes[mNidx]->isOperator() &&
       mNodes[mNidx]->getSubtype() == '(')
     {
       ++mNidx;
-      if (mNidx < mNodes.size()      &&
-	  mNodes[mNidx]->isOperator() &&
-	  mNodes[mNidx]->getSubtype() == ')')
+
+      if (mNidx < mNodes.size() &&
+          mNodes[mNidx]->isOperator() &&
+          mNodes[mNidx]->getSubtype() == ')')
         {
-	  mNodes[mNidx]->setLeft(npt);
-	  mNodes[mNidx]->setRight(NULL);
-	  return mNodes[mNidx];
+          mNodes[mNidx]->setLeft(npt);
+          mNodes[mNidx]->setRight(NULL);
+          return mNodes[mNidx];
         }
-      else parseExpression(0);
+      else
+        parseExpression(0);
     }
 }
 
 void CKinFunction::createParameters()
 {
-
   CCopasiVectorN < CFunctionParameter > Substrates;
   CCopasiVectorN < CFunctionParameter > Products;
   CCopasiVectorN < CFunctionParameter > Modifiers;
   CCopasiVectorN < CFunctionParameter > Parameters;
 
   unsigned C_INT32 i, imax = mNodes.size();
-  
+
   CFunctionParameter Parameter;
   Parameter.setType(CFunctionParameter::FLOAT64);
-  
-  for (i=0; i<imax; i++)
+
+  for (i = 0; i < imax; i++)
     {
       if (mNodes[i]->getType() == N_IDENTIFIER)
         {
           try
             {
               Parameter.setName(mNodes[i]->getName());
-              
+
               switch (mNodes[i]->getSubtype())
                 {
                 case N_SUBSTRATE:
                   Parameter.setUsage("SUBSTRATE");
                   Substrates.add(Parameter);
                   break;
+
                 case N_PRODUCT:
                   Parameter.setUsage("PRODUCT");
                   Products.add(Parameter);
                   break;
+
                 case N_MODIFIER:
                   Parameter.setUsage("MODIFIER");
                   Modifiers.add(Parameter);
                   break;
+
                 case N_KCONSTANT:
                   Parameter.setUsage("PARAMETER");
                   Parameters.add(Parameter);
                   break;
+
                 case N_NOP:
                   Parameter.setUsage("UNKNOWN");
                   Parameters.add(Parameter);
                   break;
+
                 default:
                   fatalError();
                 }
@@ -430,21 +534,24 @@ void CKinFunction::createParameters()
     }
 
   imax = Substrates.size();
-  for (i=0; i<imax; i++)
-      getParameters().add(Substrates[i]);
+
+  for (i = 0; i < imax; i++)
+    getParameters().add(Substrates[i]);
 
   imax = Products.size();
-  for (i=0; i<imax; i++)
-      getParameters().add(Products[i]);
+
+  for (i = 0; i < imax; i++)
+    getParameters().add(Products[i]);
 
   imax = Modifiers.size();
-  for (i=0; i<imax; i++)
-      getParameters().add(Modifiers[i]);
+
+  for (i = 0; i < imax; i++)
+    getParameters().add(Modifiers[i]);
 
   imax = Parameters.size();
-  for (i=0; i<imax; i++)
-      getParameters().add(Parameters[i]);
 
+  for (i = 0; i < imax; i++)
+    getParameters().add(Parameters[i]);
 }
 
 void CKinFunction::initIdentifierNodes()
@@ -456,35 +563,47 @@ void CKinFunction::initIdentifierNodes()
 
   unsigned C_INT32 i, imax = getParameters().size();
   unsigned C_INT32 j, jmax = mNodes.size();
-  
-  for (j=0; j<jmax; j++)
+
+  for (j = 0; j < jmax; j++)
     {
-      if (mNodes[j]->getType() != N_IDENTIFIER) continue;
+      if (mNodes[j]->getType() != N_IDENTIFIER)
+        continue;
+
       IdentifierName = mNodes[j]->getName();
-      
-      for (i=0; i<imax; i++)
+
+      for (i = 0; i < imax; i++)
         {
           ParameterName = getParameters()[i]->getName();
-          if (IdentifierName != ParameterName) continue;
-          
+
+          if (IdentifierName != ParameterName)
+            continue;
+
           mNodes[j]->setIndex(i);
+
           break;
-          
+
           // We really do not need the usage information in the binary
-          // tree anymore. 
+          // tree anymore.
           Usage = getParameters()[i]->getUsage();
-          if      (Usage == "SUBSTRATE") mNodes[j]->setSubtype(N_SUBSTRATE);
-          else if (Usage == "PRODUCT")   mNodes[j]->setSubtype(N_PRODUCT);
-          else if (Usage == "MODIFIER")  mNodes[j]->setSubtype(N_MODIFIER);
-          else if (Usage == "PARAMETER") mNodes[j]->setSubtype(N_KCONSTANT);
-          else if (Usage == "UNKNOWN")   mNodes[j]->setSubtype(N_NOP);
-          else    fatalError();
-          
+
+          if (Usage == "SUBSTRATE")
+            mNodes[j]->setSubtype(N_SUBSTRATE);
+          else if (Usage == "PRODUCT")
+            mNodes[j]->setSubtype(N_PRODUCT);
+          else if (Usage == "MODIFIER")
+            mNodes[j]->setSubtype(N_MODIFIER);
+          else if (Usage == "PARAMETER")
+            mNodes[j]->setSubtype(N_KCONSTANT);
+          else if (Usage == "UNKNOWN")
+            mNodes[j]->setSubtype(N_NOP);
+          else
+            fatalError();
+
           break;
         }
-      if (i == imax) fatalError();
+
+      if (i == imax)
+        fatalError();
     }
 }
-
-CCopasiVectorS < CNodeK > & CKinFunction::getNodes() {return mNodes;}
-
+CCopasiVectorS < CNodeK > & CKinFunction::getNodes() { return mNodes; }
