@@ -33,18 +33,10 @@ $FROMPBM = "/usr/local/bin/netpbm/pnmtopng";
 # operations to carry out on image
 $PBMOPS = "/usr/local/bin/netpbm/pnmcrop -verbose";
 
-$counter = 0;
-unlink( "layout.log" );
-
-# processing
-while( defined($gfile = <*.$GRAPHEXTENSION>) )
-{
-	$counter++;
-	print "$counter, $gfile ";
+$gfile = $ARGV[0];
 
 	# read statistics first
-	$statfile = $gfile;
-	$statfile =~ s/\.$GRAPHEXTENSION/\.netstat/;
+	$statfile = $gfile . ".netstat";
 	open( STATFILE, "$statfile" );
 	$vertex = 0;
 	@stats = <STATFILE>;
@@ -58,10 +50,9 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	  }
 	}
 
-	$psfile = $gfile;
-	$psfile =~ s/\.$GRAPHEXTENSION/\.eps/;
-	$pngfilen = $gfile;
-    $pngfilen =~ s/\.$GRAPHEXTENSION/\.n\.png/;
+	$psfile = $gfile . ".eps";
+	$pngfilen = $gfile . ".n.png";
+	$gfile .= ".dot";
     # don't bother laying out if more than 500 vertices
     if ($vertex < 500)
 	{
@@ -160,11 +151,11 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	print( HTFILE "<body>\n");
 	print( HTFILE "<div id=\"topmenu\">\n<center>\n");
 	print( HTFILE "<a href=\"http://www.vbi.vt.edu/~mendes\">Biochemical Networks Modeling Group</a> |\n");
-	print( HTFILE "<a href=\"..\..\">Artificial Gene Networks Home</a> |\n");
-	print( HTFILE "<a href=\"..\">Data set index</a> |\n");
+	print( HTFILE "<a href=\"../index.html\">AGN project Home</a> |\n");
+	print( HTFILE "<a href=\"index.html\">Data set index</a>\n");
 	print( HTFILE "</center></div>\n");
 	print( HTFILE "<div id=\"main\">\n<center>\n");
-	print( HTFILE "<h1>Artificial Gene Network $gfile</h1>\n");
+	print( HTFILE "<h1>Artificial Gene Network <em>$gfile</em></h1>\n");
 	print( HTFILE "<p>Generated with: <code>$cline</code></p>\n");
 	print( HTFILE "<div id=\"menu\">\n");
 	print( HTFILE "<a href=\"#neato\">Force field layout</a> |\n");
@@ -208,8 +199,3 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	# cleanup the mess
 	unlink($bfile);
 	unlink($b1file);
-}
-
-unlink("offset.txt");
-unlink("temp.plt");
-unlink("tmp.gvz");
