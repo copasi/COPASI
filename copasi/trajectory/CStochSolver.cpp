@@ -206,7 +206,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
       bi->mMetabAddr->setNumberInt(new_num);
     }
 
-  set
+  const set
     <C_INT32> & dep_nodes = mDG.getDependents(rxn);
 
   set
@@ -325,7 +325,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
       for (j = 0; j < bbb.size(); j++)
         {
           bb.mMetabAddr = bbb[j]->getMetaboliteAddr();
-          bb.mBalance = floor(bbb[j]->getMultiplicity() + 0.5);
+          bb.mBalance = static_cast<C_INT32>(floor(bbb[j]->getMultiplicity() + 0.5));
 
           if ((bb.mMetabAddr->getStatus()) != METAB_FIXED)
             {
@@ -469,7 +469,7 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
 
 void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time)
 {
-  set
+  const set
     <C_INT32> & dep_nodes = mDG.getDependents(reaction_index);
 
   C_FLOAT64 new_time = time + generateReactionTime(reaction_index);
