@@ -665,7 +665,7 @@ void ListViews::deleteAllMyChildrens(QListViewItem* me)
   while (myChild)
     {
       if (myChild == lastSelection)
-        lastSelection == NULL;
+        lastSelection = NULL;
 
       nextChild = myChild;
       myChild = myChild->nextSibling();
