@@ -197,7 +197,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   // signals and slots connections
   //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
-  connect(bRunTask, SIGNAL(clicked()), this, SLOT(RunTask()));
+  connect(bRunTask, SIGNAL(clicked()), this, SLOT(runTrajectoryTask()));
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
   connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
@@ -303,7 +303,7 @@ void TrajectoryWidget::EnableRunTask()
     bRunTask->setEnabled(true);
 }
 
-void TrajectoryWidget::RunTask()
+void TrajectoryWidget::runTrajectoryTask()
 {
   CommitChange();
 

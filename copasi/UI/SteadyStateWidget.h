@@ -1,10 +1,10 @@
 /********************************************************
- Author: Liang Xu
- Version : 1.xx  <first>
- Description: 
- Date: 02/03 
- Comment : SteadyStateWidget
- Contact: Please contact lixu1@vt.edu.
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 02/03 
+Comment : SteadyStateWidget
+Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #ifndef STEADYSTATEWIDGET_H
 #define STEADYSTATEWIDGET_H
@@ -72,7 +72,7 @@ class SteadyStateWidget : public CopasiWidget
     virtual void ExportToFileButtonClicked();
     virtual void parameterValueChanged();
     virtual void RunButtonChecked();
-    virtual void RunButtonClicked();
+    virtual void runSteadyStateTask();
     virtual void ReportDefinitionClicked();
 
   protected:

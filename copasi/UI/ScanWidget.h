@@ -130,7 +130,7 @@ class ScanWidget : public CopasiWidget
     virtual void upButtonClicked();
     virtual void downButtonClicked();
 
-    virtual void ScanButtonClicked();
+    virtual void runScanTask();
     virtual void SteadyStateButtonClicked();
     virtual void TrajectoryButtonClicked();
 

@@ -226,7 +226,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(upButton, SIGNAL(clicked()), this, SLOT(upButtonClicked()));
   connect(downButton, SIGNAL(clicked()), this, SLOT(downButtonClicked()));
 
-  connect(scanButton, SIGNAL(clicked()), this, SLOT(ScanButtonClicked()));
+  connect(scanButton, SIGNAL(clicked()), this, SLOT(runScanTask()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
   connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
@@ -503,7 +503,7 @@ void ScanWidget::ScanCheckBoxClicked()
   scanButton->setEnabled(sExecutable->isChecked());
 }
 
-void ScanWidget::ScanButtonClicked()
+void ScanWidget::runScanTask()
 {
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   if (scanTask->getReport()->getTarget() != "")

@@ -150,7 +150,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   SteadyStateWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
 
   // signals and slots connections
-  connect(bRunButton, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
+  connect(bRunButton, SIGNAL(clicked()), this, SLOT(runSteadyStateTask()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelButtonClicked()));
   connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFileButtonClicked()));
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonChecked()));
@@ -254,7 +254,7 @@ void SteadyStateWidget::parameterValueChanged()
   qWarning("SteadyStateWidget::parameterValueChanged(): Not implemented yet!");
 }
 
-void SteadyStateWidget::RunButtonClicked()
+void SteadyStateWidget::runSteadyStateTask()
 {
   if (!CKeyFactory::get(objKey))
     return;

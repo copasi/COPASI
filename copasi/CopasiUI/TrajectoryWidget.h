@@ -51,7 +51,7 @@ class TrajectoryWidget : public CopasiWidget
     virtual void CommitChange();
     virtual void EnableRunTask();
     virtual void ExportToFile();
-    virtual void RunTask();
+    virtual void runTrajectoryTask();
     virtual void UpdateMethod();
     virtual void ReportDefinitionClicked();
 
