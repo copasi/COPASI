@@ -277,8 +277,25 @@ void CState::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                          const C_FLOAT64 & factor,
                          const C_FLOAT64 & resolution) const
 {
-  CState tmp(*this);
-  tmp.getJacobianProtected(jacobian, factor, resolution);
+  const CMatrix< C_FLOAT64 > & Stoi = mpModel->getStoi();
+  unsigned C_INT32 mNo = Stoi.numRows();
+  unsigned C_INT32 rNo = Stoi.numCols();
+
+  CMatrix< C_FLOAT64 > E(rNo, mNo);
+  getElasticityMatrix(E, factor, resolution);
+
+  unsigned C_INT32 i, j, k;
+  C_FLOAT64 * sum;
+
+  for (i = 0; i < mNo; i++)
+  for (j = 0; j < mNo; j++)
+    {
+      sum = &jacobian(i, j);
+        *sum = 0.0;
+
+        for (k = 0; k < rNo; k++)
+          *sum += Stoi(i, k) * E(k, j);
+      }
 }
 
 void CState::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
@@ -327,6 +344,32 @@ void CState::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
 
   // We need this to reset the model (a bad hack)
   const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
+
+  return;
+}
+
+void CState::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
+                                 const C_FLOAT64 & factor,
+                                 const C_FLOAT64 & resolution) const
+{
+  const_cast<CModel *>(mpModel)->setState(this);
+  const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
+  unsigned C_INT32 i, imax = Reactions.size();
+
+  vector< CMetab * > & Metabolites =
+    const_cast<CModel *>(mpModel)->getMetabolites();
+  unsigned C_INT32 j, jmax = mpModel->getIntMetab();
+
+  C_FLOAT64 * x;
+
+  for (j = 0; j < jmax; j++)
+  {
+    x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
+
+      for (i = 0; i < imax; i++)
+        elasticityMatrix(i, j) =
+          Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
+    }
 
   return;
 }
@@ -476,8 +519,40 @@ void CStateX::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                           const C_FLOAT64 & factor,
                           const C_FLOAT64 & resolution) const
 {
-  CStateX tmp(*this);
-  tmp.getJacobianProtected(jacobian, factor, resolution);
+  const CModel::CLinkMatrixView & L = mpModel->getL();
+  unsigned C_INT32 mNo = L.numRows();
+  unsigned C_INT32 iNo = L.numCols();
+
+  const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
+  unsigned C_INT32 rNo = redStoi.numCols();
+
+  CMatrix< C_FLOAT64 > E(rNo, mNo);
+  getElasticityMatrix(E, factor, resolution);
+
+  CMatrix< C_FLOAT64 > tmp(rNo, iNo);
+
+  unsigned C_INT32 i, j, k;
+  C_FLOAT64 * sum;
+
+  for (i = 0; i < rNo; i++)
+  for (j = 0; j < iNo; j++)
+    {
+      sum = &tmp(i, j);
+        *sum = E(i, j);
+
+        for (k = iNo; k < mNo; k++)
+          *sum += E(i, k) * L(k, j);
+      }
+
+  for (i = 0; i < iNo; i++)
+  for (j = 0; j < iNo; j++)
+    {
+      sum = &jacobian(i, j);
+        *sum = 0.0;
+
+        for (k = 0; k < rNo; k++)
+          *sum += redStoi(i, k) * tmp(k, j);
+      }
 }
 
 void CStateX::updateDependentNumbers()

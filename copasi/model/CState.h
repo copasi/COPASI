@@ -236,14 +236,26 @@ class CState
     void setVolumeVector(const CVector< C_FLOAT64 > & vektor);
 
     /**
-     * Calculate the jacobian of the state and store it in the provided matrix.
-     * @param C_FLOAT64 * jacobian
+     * Calculates the jacobian of the state and stores it in the provided 
+     * matrix.
+     * @param CMatrix< C_FLOAT64 > & jacobian
      * @param const C_FLOAT64 & factor,
      * @param const C_FLOAT64 & resolution
      */
     virtual void getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                              const C_FLOAT64 & factor,
                              const C_FLOAT64 & resolution) const;
+
+    /**
+     * Calculates the elasticity Matrix of the state and stores it in the 
+     * provided matrix.
+     * @param CMatrix< C_FLOAT64 > & elasticityMatrix
+     * @param const C_FLOAT64 & factor,
+     * @param const C_FLOAT64 & resolution
+     */
+    virtual void getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
+                                     const C_FLOAT64 & factor,
+                                     const C_FLOAT64 & resolution) const;
 
     friend std::ostream & operator << (std::ostream & os, const CState & A)
     {
@@ -259,7 +271,7 @@ class CState
   protected:
     /**
      * Calculate the jacobian of the state and store it in the provided matrix.
-     * @param C_FLOAT64 * jacobian
+     * @param CMatrix< C_FLOAT64 > & jacobian
      * @param const C_FLOAT64 & factor,
      * @param const C_FLOAT64 & resolution
      */
