@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:32:27 $
+   $Date: 2004/06/16 16:13:11 $
    End CVS Header */
 
 /**
@@ -226,6 +226,7 @@ class CFunction : public CCopasiContainer
      *  Retrives the of the usage description of 
      */
     virtual CCopasiVectorNS < CUsageRange > & getUsageDescriptions();
+    virtual const CCopasiVectorNS < CUsageRange > & getUsageDescriptions() const;
 
     /**
      *  Retrieves the position of a parameter in the function call

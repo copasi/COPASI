@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 09:32:26 $
+   $Date: 2004/06/16 16:13:11 $
    End CVS Header */
 
 /**
@@ -267,8 +267,6 @@ const std::string & CFunction::getKey() const {return mKey;}
 
 bool CFunction::setName(const std::string& name) {return setObjectName(name);}
 
-//const std::string & CFunction::getName() const {return getObjectName();}
-
 void CFunction::setDescription(const std::string & description) {mDescription = description;}
 
 const std::string & CFunction::getDescription() const {return mDescription;}
@@ -289,8 +287,8 @@ const CFunctionParameters & CFunction::getParameters() const
 CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
 {return mUsageDescriptions;}
 
-//unsigned C_INT32 CFunction::getParameterPosition(const std::string & name) const
-//{return mParameters[0] - mParameters[name];}
+const CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions() const
+  {return mUsageDescriptions;}
 
 C_FLOAT64 CFunction::calcValue(const CCallParameterPointers & C_UNUSED(callParameters)) const
   {return 0.0;}
