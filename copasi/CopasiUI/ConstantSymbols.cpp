@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:42 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:05 $
    End CVS Header */
 
 /*******************************************************************
@@ -45,7 +45,7 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(this, "tblConstantSymbols");
+  table = new QTable(this, "tblConstantSymbols");
   table->setNumCols(4);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MyTable.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/07 13:08:33 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:11 $
    End CVS Header */
 
 #ifndef MY_TABLE_H
@@ -24,7 +24,7 @@ class MyTable: public QTable
   public:
     MyTable (QWidget * parent = 0, const char * name = 0);
     //void mousePressEvent(QMouseEvent *mpe);
-    void keyPressEvent (QKeyEvent * e);
+    //void keyPressEvent (QKeyEvent * e);
 
   public slots:
     //virtual void setNumCols(int c);
@@ -42,7 +42,7 @@ class MyTable: public QTable
     //std::vector<double> exactColumnWidth;
 
   signals:
-    void delKeyPressed();
+    //  void delKeyPressed();
   };
 
 #endif

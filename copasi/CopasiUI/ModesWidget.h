@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/26 21:51:51 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:08 $
    End CVS Header */
 
 /****************************************************************************
@@ -20,10 +20,10 @@
 #ifndef MODES_WIDGET_H
 #define MODES_WIDGET_H
 
-//#include <qtable.h>
+#include <qtable.h>
 #include <qlistview.h>
-#include <qpushbutton.h>
-#include "MyTable.h"
+#include <qpushbutton.h> 
+//#include "MyTable.h"
 #include "copasi.h"
 #include "copasiWidget.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"

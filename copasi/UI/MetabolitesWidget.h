@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/11/04 19:52:28 $
+   $Date: 2004/11/11 21:14:07 $
    End CVS Header */
 
 /****************************************************************************
@@ -34,6 +34,7 @@ class MetabolitesWidget : public CopasiTableWidget
     virtual void slotBtnToggleClicked();
 
   protected:
+
     bool mFlagConc;
     QPushButton* btnToggle;
 
@@ -77,16 +78,6 @@ class MetabolitesWidget : public CopasiTableWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const;
-
-    /**
-        * reset the column width variables of the table
-        */
-    virtual void resetColWidth();
-
-    /**
-        * update the width related variables (called from the function fillTable)
-        */
-    virtual void checkColumnWidth(const CCopasiObject* obj);
   };
 
 #endif

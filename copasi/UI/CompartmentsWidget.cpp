@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:27 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:05 $
    End CVS Header */
 
 /*******************************************************************
@@ -23,7 +23,7 @@
 #include <qpushbutton.h>
 #include <qaction.h>
 
-#include "MyTable.h"
+//#include "MyTable.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "listviews.h"
@@ -199,7 +199,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                // Yes or Enter
+    case 0:                 // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -211,7 +211,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                // No or Escape
+    case 1:                 // No or Escape
       break;
     }
 }

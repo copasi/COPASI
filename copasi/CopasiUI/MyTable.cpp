@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyTable.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/07 13:08:33 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:06 $
    End CVS Header */
 
 #include <iostream>
@@ -11,7 +11,8 @@
 #include "copasi.h"
 #include <qmessagebox.h>
 #include "MyTable.h"
-#include <qstyle.h> 
+#include <qstyle.h>
+
 //#include "listviews.h"
 
 MyTable::MyTable(QWidget * parent, const char * name)
@@ -29,17 +30,21 @@ MyTable::MyTable(QWidget * parent, const char * name)
 }
  
  */
-void MyTable::keyPressEvent (QKeyEvent * e)
+
+/*void MyTable::keyPressEvent (QKeyEvent * e)
 {
+ 
   QTable::keyPressEvent(e);
   Qt::Key k = Qt::Key_Delete;
   //Process Delete Key
-
+ 
   if (e->key() == k)
     {
       emit delKeyPressed();
     }
-}
+ 
+}*/
+
 /*
 void MyTable::resizeEvent(QResizeEvent* e)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/31 15:49:03 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:06 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -15,7 +15,7 @@
 #include <qpushbutton.h>
 #include <qaction.h>
 
-#include "MyTable.h"
+//#include "MyTable.h"
 #include "model/CModel.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"

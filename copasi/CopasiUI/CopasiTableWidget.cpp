@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/11/04 19:52:58 $
+   $Date: 2004/11/11 21:14:05 $
    End CVS Header */
 
 /*******************************************************************
@@ -22,8 +22,8 @@
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
+#include <qtable.h>
 
-#include "MyTable.h"
 #include "model/CModel.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
@@ -36,7 +36,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   mRO = ro;
 
   //here the table is initialized
-  table = new MyTable(this, "table");
+  table = new QTable(this, "table");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
@@ -54,6 +54,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       table->hideColumn(0);
     }
   resizeTable(1);
+  flagtoAdjust = true;
 
   //here the buttons are defined
   if (!mRO)
@@ -91,7 +92,16 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
           this, SLOT(slotValueChanged(int, int)));
   //connect(table, SIGNAL(currentChanged(int, int)),
   //        this, SLOT(slotCurrentChanged(int, int)));
-  connect(table, SIGNAL(delKeyPressed()), this, SLOT(slotTableDelKey()));
+
+  // <update_comment>
+
+  /** The connect with slotTableDelKey has been replaced by the scheme
+   ** where CopasiTableWidget catches delKeyEvent itself (overriding keyPressEvent). This, along with
+   ** removal of MyTable, is being done because CopasiTableWidget was the
+   ** class which connected a slot to delKeyEvent */
+
+  //connect(table, SIGNAL(delKeyPressed()), this, SLOT(slotTableDelKey()));
+  //<update_comment>
 
   if (!mRO)
     {
@@ -122,7 +132,6 @@ void CopasiTableWidget::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       mFlagRO[j] = false;
-      checkColumnWidth(objects[j]);
       tableLineFromObject(objects[j], j);
       mKeys[j] = objects[j]->getKey();
       mFlagChanged[j] = false;
@@ -132,9 +141,25 @@ void CopasiTableWidget::fillTable()
       updateRow(j);
     }
 
-  //clear last line
+  //clear last line and adjust column width of the table
   for (i = 0; i < numCols; ++i)
-    table->clearCell(jmax, i);
+    {
+      table->clearCell(jmax, i);
+
+      /* the logic for not adjusting in a certain cases
+       * is implemented here */
+
+      if (flagtoAdjust == true)
+        {
+          table->adjustColumn(i);
+        }
+    }
+
+  /* The following logic ensures that width is justified on basis of
+   * first feed of the equation either through manual entry or file load 
+   */
+  if (table->numRows() > 2)
+    flagtoAdjust = false;
 
   mFlagRO[jmax] = false;
   mKeys[jmax] = "";
@@ -298,7 +323,7 @@ void CopasiTableWidget::slotTableDelKey()
 
 void CopasiTableWidget::resizeTable(const unsigned C_INT32 numRows)
 {
-  table->QTable::setNumRows(numRows);
+  table->setNumRows(numRows);
   mKeys.resize(numRows);
   mFlagChanged.resize(numRows);
   mFlagDelete.resize(numRows);
@@ -425,13 +450,16 @@ bool CopasiTableWidget::enter(const std::string & C_UNUSED(key))
   return true;
 }
 
-void CopasiTableWidget::resetColWidth ()
+void CopasiTableWidget::keyPressEvent (QKeyEvent * e)
 {
-  std::cout << "**** resetColWidth: method of CopasiTableWidget should never be called ****" << std::endl;
-}
+  Qt::Key k = Qt::Key_Delete;
+  //Process Delete Key
 
-void CopasiTableWidget::checkColumnWidth (const CCopasiObject* obj)
-{std::cout << "**** checkColWidth: method of CopasiTableWidget should never be called ****" << std::endl;}
+  if (e->key() == k)
+    {
+      slotTableDelKey();
+    }
+}
 
 void CopasiTableWidget::init()
 {std::cout << "**** init: method of CopasiTableWidget should never be called ****" << std::endl;}

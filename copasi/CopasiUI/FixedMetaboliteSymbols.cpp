@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:44 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:05 $
    End CVS Header */
 
 /*******************************************************************
@@ -46,7 +46,7 @@ FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * nam
     : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(this, "tblFixedMetaboliteSymbols");
+  table = new QTable(this, "tblFixedMetaboliteSymbols");
   table->setNumCols(5);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);

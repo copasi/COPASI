@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/11/04 19:52:49 $
+   $Date: 2004/11/11 21:14:07 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,15 +19,15 @@
 
 #include <vector>
 
-//#include <qtable.h>
+#include <qtable.h>
 #include "copasi.h"
 #include "copasiWidget.h"
 
 class QPushButton;
 class QGridLayout;
-class QTable;
+//class QTable;
 class QHBoxLayout;
-class MyTable;
+//class MyTable;
 class CCopasiObject;
 
 class CopasiTableWidget : public CopasiWidget
@@ -63,7 +63,8 @@ class CopasiTableWidget : public CopasiWidget
     QString createNewName(const QString name);
     void resizeTable(const unsigned C_INT32 numRows);
 
-    MyTable* table;
+    QTable* table;
+
     QPushButton* btnOK;
     QPushButton* btnCancel;
     QPushButton* btnDelete;
@@ -74,11 +75,6 @@ class CopasiTableWidget : public CopasiWidget
 
     C_INT32 numCols;
 
-    std::vector<C_INT32> colWidth;
-
-    // colWidth 'protected' so that the width can be filled by
-    // any subclass.
-
     std::vector<bool> mFlagChanged;
     std::vector<bool> mFlagDelete;
     std::vector<bool> mFlagNew;
@@ -88,6 +84,11 @@ class CopasiTableWidget : public CopasiWidget
     //bool mIgnoreUpdates;
     bool mRO;
     ListViews::ObjectType mOT;
+
+    /**
+     The flag to be set if columns in the table need to be justified 
+    */
+    bool flagtoAdjust;
 
     //These are the methods that need to be implemented by specialized widgets:
 
@@ -133,15 +134,11 @@ class CopasiTableWidget : public CopasiWidget
     virtual QString defaultObjectName() const = 0;
 
     /**
-        * update the width related variables (called from the function fillTable)
+        * to catch the delKeyEvent 
         */
-    virtual void checkColumnWidth(const CCopasiObject* obj);
-
-    /**
-        * reset the column width variables of the table
-        */
-
-    virtual void resetColWidth ();
+    virtual void keyPressEvent (QKeyEvent * e);
+  signals:
+    void delKeyPressed();
   };
 
 #endif

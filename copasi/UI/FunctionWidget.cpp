@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 13:51:10 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:05 $
    End CVS Header */
 
 #include "FunctionWidget.h"
@@ -15,7 +15,7 @@
 #include <qpushbutton.h>
 #include <qaction.h>
 
-#include "MyTable.h"
+//#include "MyTable.h"
 #include "function/CFunctionDB.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
@@ -170,7 +170,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                   // Yes or Enter
+    case 0:                    // Yes or Enter
       {
         //first delete reactions
         std::set<std::string>::const_iterator it, itEnd = totalEffectedReacKeys.end();
@@ -190,7 +190,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
         break;
       }
-    case 1:                   // No or Escape
+    case 1:                    // No or Escape
       break;
     }
 }

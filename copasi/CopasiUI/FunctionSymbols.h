@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 15:24:04 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:07 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,7 +19,7 @@
 #include <qtable.h>
 #include <qpushbutton.h>
 
-#include "MyTable.h"
+//#include "MyTable.h"
 #include "copasi.h"
 #include "copasiWidget.h"
 
@@ -31,7 +31,7 @@ class FunctionSymbols : public CopasiWidget
 
   protected:
     CMathModel * mModel;
-    MyTable * table;
+    QTable * table;
     //QPushButton *btnOK;
     //QPushButton *btnCancel;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:45 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:05 $
    End CVS Header */
 
 /*******************************************************************
@@ -48,7 +48,7 @@ FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(this, "tblFunctionSymbols");
+  table = new QTable(this, "tblFunctionSymbols");
   table->setNumCols(3);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);

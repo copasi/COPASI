@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 14:45:27 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:07 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,8 +17,8 @@
 #define CONSTANT_SYMBOLS_H
 
 #include <qtable.h>
-#include <qpushbutton.h>
-#include "MyTable.h"
+#include <qpushbutton.h> 
+//#include "MyTable.h"
 #include "copasi.h"
 #include "copasiWidget.h"
 class CMathModel;
@@ -29,7 +29,7 @@ class ConstantSymbols : public CopasiWidget
 
   protected:
     CMathModel * mModel;
-    MyTable * table;
+    QTable * table;
     //QPushButton *btnOK;
     //QPushButton *btnCancel;
 

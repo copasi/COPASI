@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/19 07:23:33 $
+   $Author: anuragr $ 
+   $Date: 2004/11/11 21:14:06 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -15,7 +15,7 @@
 #include <qpushbutton.h>
 #include <qaction.h>
 
-#include "MyTable.h"
+//#include "MyTable.h"
 #include "model/CModel.h"
 #include "model/CMoiety.h"
 #include "listviews.h"

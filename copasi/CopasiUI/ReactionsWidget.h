@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/11/04 19:52:38 $
+   $Date: 2004/11/11 21:14:12 $
    End CVS Header */
 
 #ifndef REACTIONS_WIDGET_H
@@ -64,17 +64,6 @@ class ReactionsWidget : public CopasiTableWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const;
-
-    /**
-        * update the width related variables (called from the function fillTable)
-        */
-    virtual void checkColumnWidth(const CCopasiObject* obj);
-
-    /**
-        * reset the column width variables of the table
-        */
-
-    virtual void resetColWidth ();
   };
 
 #endif
