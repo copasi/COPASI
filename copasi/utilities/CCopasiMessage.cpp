@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:35:31 $
+   $Author: ssahle $ 
+   $Date: 2004/05/26 12:18:13 $
    End CVS Header */
 
 // CCopasiMessage
@@ -43,7 +43,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
 
   char *Text = NULL;
 
-  va_list Arguments = NULL;
+  va_list Arguments; // = NULL;
   va_start(Arguments, format);
 
   Text = new char[TextSize + 1];
@@ -86,7 +86,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
   if (!Messages[i].Text)
     fatalError();
 
-  va_list Arguments = NULL;
+  va_list Arguments; // = NULL;
 
   va_start(Arguments, number);
 

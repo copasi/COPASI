@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:35:32 $
+   $Author: ssahle $ 
+   $Date: 2004/05/26 12:18:37 $
    End CVS Header */
 
 #include <math.h>
@@ -21,7 +21,7 @@ std::string StringPrint(const char * format, ...)
 
   char *Text = NULL;
 
-  va_list Arguments = NULL;
+  va_list Arguments; // = NULL;
   va_start(Arguments, format);
 
   Text = new char[TextSize + 1];

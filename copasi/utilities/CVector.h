@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/27 03:11:25 $
+   $Author: ssahle $ 
+   $Date: 2004/05/26 12:18:13 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -77,7 +77,7 @@ template <class CType> class CVector
           mVector = new CType[mRows];
           mVector[0] = first;
 
-          va_list values = NULL;
+          va_list values; // = NULL;
           va_start(values, first);
 
 #if (CType ==  SubType)
