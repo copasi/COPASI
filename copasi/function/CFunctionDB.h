@@ -107,7 +107,15 @@ class CFunctionDB : public CCopasiContainer
      */
     CFunction * add(const CFunction & function);
 
-    bool CFunctionDB::addFunction(const std::string & name);
+    /**
+     *  Add the function to the database
+     *  @param const std::string & name
+    *  @param const CFunction::Type & type (Default: CFunction::Base)
+     *  @return bool success
+     */ 
+    //bool addFunction(const std::string & name,
+    // const CFunction::Type &type = CFunction::Base);
+    bool addFunction(const std::string & name);
 
     /**
      *  Delete the function functionName from the database

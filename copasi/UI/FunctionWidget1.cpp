@@ -541,24 +541,8 @@ bool FunctionWidget1::saveToFunction()
 /*This function is called when the Function Description LineEdit is changed.*/
 void FunctionWidget1::slotFcnDescriptionChanged()
 {
-  std::string eq = textBrowser->text().latin1();
-
-  //first check if the string is a valid equation
-  /*if (!CChemEqInterface::isValidEq(eq))
-    {
-      //TODO: bring up a message window??
-      //debugging
-      std::cout << "Not a valid equation!\n\n";
-      return;  // abort further processing
-    }
-  //  else  //debugging
-  //    cout<<"Valid equation\n\n";
-
-  // tell the reaction interface
-  mRi.setChemEqString(eq);
-
   // update the widget
-  //updateParameters();*/
+  updateParameters();
 }
 
 void FunctionWidget1::slotCancelButtonClicked()
@@ -569,8 +553,6 @@ void FunctionWidget1::slotCancelButtonClicked()
 
 void FunctionWidget1::slotCommitButtonClicked()
 {
-  // Call function to add params from desc field into param table
-  //updateParameters();  **** Move this to slotFcnDescChanged()
   //let the user confirm?
   saveToFunction();
 }

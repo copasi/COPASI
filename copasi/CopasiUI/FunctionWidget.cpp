@@ -94,6 +94,7 @@ void FunctionWidget::createNewObject()
 {
   std::string name = "function_0";
   int i = 0;
+  //while (!Copasi->pFunctionDB->addFunction(name, CFunction::UserDefined))
   while (!Copasi->pFunctionDB->addFunction(name))
     {
       i++;
