@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/01/14 17:00:02 $
+   $Author: shoops $ 
+   $Date: 2004/01/15 16:55:06 $
    End CVS Header */
 
 #include <qarray.h>
@@ -151,9 +151,9 @@ void CopasiPlot::updatePlot()
   unsigned C_INT32 k;
   for (k = 0; k < crvKeys.size(); k++)
     {
-      curve(crvKeys[k])->setRawData(data[dataIndices[k][0]]->data(),
-                                    data[dataIndices[k][1]]->data(),
-                                    ndata);
+      curve(crvKeys.at(k))->setRawData(data[dataIndices[k][0]]->data(),
+                                       data[dataIndices[k][1]]->data(),
+                                       ndata);
       //drawCurveInterval(crvKeys[k], 0, ndata-1);
     }
   replot();

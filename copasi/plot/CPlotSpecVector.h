@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/01/14 16:59:29 $
+   $Author: shoops $ 
+   $Date: 2004/01/15 16:55:06 $
    End CVS Header */
 
 #if !defined PLOTSPEC_VECTOR
@@ -15,7 +15,8 @@
 #include "utilities/CCopasiVector.h" 
 //#include "CPlotSpec.h"
 
-class CPlotSpec;
+#include "CPlotSpec.h"
+;
 class PlotWindow;
 
 class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
