@@ -22,6 +22,14 @@
 template <class _T>
 class CExpatTemplate
   {
+    // Attributes
+  protected:
+
+    /**
+     * The expat parser 
+     */
+    XML_Parser m_p;
+
   public:
     /**
      * Destroy the parser
@@ -816,14 +824,6 @@ class CExpatTemplate
       _T *pThis = static_cast <_T *>((CExpatTemplate <_T> *) pUserData);
       pThis->onEndDoctypeDecl();
     }
-
-    // Attributes
-  protected:
-
-    /**
-     * The expat parser 
-     */
-    XML_Parser m_p;
   };
 
 /**
