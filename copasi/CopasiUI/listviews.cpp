@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.128 $
+   $Revision: 1.129 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:38 $
+   $Date: 2004/01/05 19:20:55 $
    End CVS Header */
 
 /****************************************************************************
@@ -544,7 +544,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                             //Time course
+      case 23:                              //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -553,10 +553,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                            //Report
+      case 43:                             //Report
         return tableDefinition;
         break;
-      case 42:                            //Plots
+      case 42:                             //Plots
         return plotWidget;
         break;
       case 5:
@@ -1181,7 +1181,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       metaboliteSymbols->update(objectType, action, key);
       fixedMetaboliteSymbols->update(objectType, action, key);
       compartmentsWidget1->update(objectType, action, key);
-      //        constantSymbols->update(objectType, action, key);
+      constantSymbols->update(objectType, action, key);
       //        moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
       //        modesWidget->update(objectType, action, key);
@@ -1209,7 +1209,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       metaboliteSymbols->update(objectType, action, key);
       //        fixedMetaboliteSymbols->update(objectType, action, key);
       compartmentsWidget1->update(objectType, action, key);
-      //        constantSymbols->update(objectType, action, key);
+      constantSymbols->update(objectType, action, key);
       //        moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
       //        modesWidget->update(objectType, action, key);
