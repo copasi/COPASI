@@ -154,6 +154,38 @@ void CMethodParameterList::load(CReadConfig & configBuffer,
   CCopasiVectorNS<CMethodParameter>::load(configBuffer, Size);
 }
 
+void CMethodParameterList::loadSpecific(CReadConfig & configBuffer,
+                                        const std::string & name,
+                                        const std::string & type,
+                                        CReadConfig::Mode mode)
+{
+  std::string tmpName = "empty";
+  std::string tmpType = "empty";
+  try
+    {
+      while (!((tmpName == name) && (tmpType == type)))
+        {
+          configBuffer.getVariable("MethodParameterListName", "string", &tmpName, mode);
+          configBuffer.getVariable("MethodParameterListType", "string", &tmpType);
+        }
+      // we found it
+      mName = tmpName;
+      mType = tmpType;
+      C_INT32 Size = 0;
+      configBuffer.getVariable("MethodParameterListSize", "C_INT32", &Size);
+
+      CCopasiVectorNS<CMethodParameter>::load(configBuffer, Size);
+    }
+
+  catch (CCopasiException Exception)
+    {
+      if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
+;   // not found; do nothing. The parameter list is not changed.
+      else
+        throw Exception;
+    }
+}
+
 /**
  * Save a list of parameters
  * @param "CWriteConfig &" configBuffer
@@ -203,6 +235,7 @@ CMethodParameterList::search(CReadConfig & configBuffer,
   catch (CCopasiException Exception)
     {
       pdelete(list);
+      // MCMethodParameterList???
       if ((MCMethodParameterList + 1) == Exception.getMessage().getNumber())
 ;
       else

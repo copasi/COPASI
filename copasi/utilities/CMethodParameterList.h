@@ -134,6 +134,19 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
                       CReadConfig::Mode mode = CReadConfig::SEARCH);
 
     /**
+     * Load a list of parameters with specific name and type
+     * this replaces the search() method
+     * @param "CReadConfig &" configBuffer
+     * @param "std::string" name
+     * @param "std::string" type
+     * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)
+     */
+    virtual void loadSpecific(CReadConfig & configBuffer,
+                              const std::string & name,
+                              const std::string & type,
+                              CReadConfig::Mode mode = CReadConfig::SEARCH);
+
+    /**
      * Save a list of parameters
      * @param "CWriteConfig &" configBuffer
      */
