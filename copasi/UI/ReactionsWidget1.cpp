@@ -228,9 +228,6 @@ void ReactionsWidget1::loadName(QString setValue)
 
   const CChemEq * chemEq;
 
-  QHeader *tableHeader1 = table->horizontalHeader();
-  QHeader *tableHeader2 = table->verticalHeader();
-
   ComboBox1->clear();
 
   LineEdit1->setText(reactn->getName().c_str());
@@ -266,7 +263,7 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   table->setNumCols(1);
-  tableHeader1->setLabel(0, "Value");
+  table->horizontalHeader()->setLabel(0, "Value");
   table->setColumnWidth (0, 200);
 
   if (&reactn->getFunction())
@@ -294,11 +291,51 @@ void ReactionsWidget1::slotBtnCancelClicked()
 void ReactionsWidget1::slotBtnOKClicked()
 {
   /*This code is to save the changes in the reaction*/
-  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-  CReaction *reactn2;
-  reactn2 = reactions[(std::string)name.latin1()];
-  reactn2->setName(std::string(LineEdit1->text()));
-  name = LineEdit1->text();
+  CReaction *pReaction = mModel->getReactions()[name.latin1()];
+  if (pReaction->setName(LineEdit1->text().latin1()))
+    name = LineEdit1->text();
+
+  pReaction->setChemEq(LineEdit1->text().latin1());
+  pReaction->setFunction(ComboBox1->currentText().latin1());
+  CCopasiVector< CReaction::CId2Metab > & Substrates =
+    pReaction->getId2Substrates();
+  CCopasiVector< CReaction::CId2Metab > & Products =
+    pReaction->getId2Products();
+  CCopasiVector< CReaction::CId2Metab > & Modifiers =
+    pReaction->getId2Modifiers();
+  CCopasiVector< CReaction::CId2Param > & Parameters =
+    pReaction->getId2Parameters();
+
+  const CFunctionParameters & Variables =
+    pReaction->getFunction().getParameters();
+
+  unsigned C_INT32 i, imax = Variables.size();
+  CReaction::CId2Metab Metabolite;
+  CReaction::CId2Param Parameter;
+  const CCopasiVectorN< CMetab > & MetaboliteList = mModel->getMetabolites();
+  for (i = 0; i < imax; i++)
+    {
+      if (Variables[i]->getUsage() == "PARAMETER")
+        {
+          Parameter.setIdentifierName(table->verticalHeader()->label(i).latin1());
+          Parameter.setValue(table->text(i, 0).toDouble());
+          Parameters.add(Parameter);
+        }
+      else
+        {
+          Metabolite.setIdentifierName(table->verticalHeader()->label(i).latin1());
+          Metabolite.setMetaboliteName(table->text(i, 0).latin1());
+          Metabolite.setCompartmentName(MetaboliteList[table->text(i, 0).latin1()]->getCompartment()->getName());
+
+          if (Variables[i]->getUsage() == "SUBSTRATE")
+            Substrates.add(Metabolite);
+          else if (Variables[i]->getUsage() == "PRODUCT")
+            Products.add(Metabolite);
+          else if (Variables[i]->getUsage() == "MODIFIER")
+            Modifiers.add(Metabolite);
+        }
+    }
+
   emit updated();
   emit leaf(mModel);
   emit signal_emitted(*Reaction1_Name);
