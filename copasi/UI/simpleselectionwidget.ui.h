@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/simpleselectionwidget.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/03 16:15:36 $
+   $Author: gauges $ 
+   $Date: 2004/11/06 10:40:50 $
    End CVS Header */
 
 /****************************************************************************
@@ -153,39 +153,47 @@ bool SimpleSelectionWidget::treeHasSelection()
 std::vector<CCopasiObject*>* SimpleSelectionWidget::getTreeSelection()
 {
   std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
-  // go through the whole tree and check for selected items.
-  // if the selected item has children, add all children that are leaves
-  // if the selected item is a leave, add it directly
-  QListViewItemIterator it(this->itemTree);
-  QListViewItem* currentItem = it.current();
-  while (currentItem)
+  if (this->mSingleSelect && this->itemTree->selectedItem())
     {
-      if (currentItem->isSelected())
+      selection->push_back(this->treeItems[this->itemTree->selectedItem()]);
+    }
+  else
+    {
+      // go through the whole tree and check for selected items.
+      // if the selected item has children, add all children that are leaves
+      // and are connected to an object.
+      // If the item is a leave and is connected to an object, add it directly
+      QListViewItemIterator it(this->itemTree);
+      QListViewItem* currentItem = it.current();
+      while (currentItem)
         {
-          if (currentItem->childCount() == 0)
+          if (currentItem->isSelected())
             {
-              if (this->treeItems.find(currentItem) != this->treeItems.end())
+              if (currentItem->childCount() == 0)
                 {
-                  selection->push_back(this->treeItems[currentItem]);
-                }
-            }
-          else
-            {
-              QListViewItemIterator it2(currentItem);
-              QListViewItem* tmpItem = it2.current();
-              while (tmpItem)
-                {
-                  if ((tmpItem->childCount() == 0) && (this->treeItems.find(tmpItem) != this->treeItems.end()))
+                  if (this->treeItems.find(currentItem) != this->treeItems.end())
                     {
                       selection->push_back(this->treeItems[currentItem]);
                     }
-                  ++it2;
-                  tmpItem = it2.current();
+                }
+              else
+                {
+                  QListViewItemIterator it2(currentItem);
+                  QListViewItem* tmpItem = it2.current();
+                  while (tmpItem)
+                    {
+                      if ((tmpItem->childCount() == 0) && (this->treeItems.find(tmpItem) != this->treeItems.end()))
+                        {
+                          selection->push_back(this->treeItems[currentItem]);
+                        }
+                      ++it2;
+                      tmpItem = it2.current();
+                    }
                 }
             }
+          ++it;
+          currentItem = it.current();
         }
-      ++it;
-      currentItem = it.current();
     }
   return selection;
 }
@@ -559,11 +567,29 @@ void SimpleSelectionWidget::setSingleSelection(bool singleSelection)
           this->selectObjects(v);
           delete v;
         }
+      // go through the tree and make all items that are not connected to
+      // a CCopasiObject not selectable
+      QListViewItemIterator it = QListViewItemIterator(this->itemTree);
+      while (it.current())
+        {
+          if (this->treeItems.find(it.current()) == this->treeItems.end())
+            {
+              it.current()->setSelected(false);
+              it.current()->setSelectable(false);
+            }
+          ++it;
+        }
     }
   if (!singleSelection && mSingleSelect)
     {
       // add the selected tree item to the list
       this->addButtonClicked();
+      QListViewItemIterator it = QListViewItemIterator(this->itemTree);
+      while (it.current())
+        {
+          it.current()->setSelectable(true);
+          ++it;
+        }
     }
   this->mSingleSelect = singleSelection;
   if (this->mSingleSelect)
