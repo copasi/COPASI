@@ -36,6 +36,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "commandline"=".\commandline\commandline.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "elementaryFluxModes"=".\elementaryFluxModes\elementaryFluxModes.dsp" - Package Owner=<4>
 
 Package=<5>
