@@ -186,6 +186,13 @@ C_INT32 CTrajectory::getArrSize() const
   return mN;
 }
 
+
+//calculate the time lenghth
+C_FLOAT64 CTrajectory::calcTimeLength()
+{
+  return mEndTime/mPoints;
+}
+
 	
 void CTrajectory::setEndTime(const C_FLOAT64 aDouble)
 {
