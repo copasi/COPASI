@@ -11,5 +11,3 @@ CGlobals::CGlobals()
 }
 
 CGlobals Copasi;
-
-

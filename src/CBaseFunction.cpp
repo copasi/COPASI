@@ -1,35 +1,46 @@
+#include <typeinfo>
+
 #include "CBaseFunction.h"
+#include "CKinFunction.h"
 #include "utilities.h"
 
 CBaseFunction::CBaseFunction() 
-{
-    mCallParameters = NULL;
-    mReversible = FALSE;
-}
-
-void CBaseFunction::Init() 
-{
-    C_INT32 i;
-    
-    if (!mCallParameters ) mCallParameters = new vector < CBaseCallParameter >;
-    for (i = 0; i < mCallParameters->size(); i++)
-        (*mCallParameters)[i].Init();
-}
+{mReversible = FALSE;}
 
 CBaseFunction::~CBaseFunction() {;}
 
 void CBaseFunction::Delete() 
 {
-    if (mCallParameters)
+
+    for (C_INT32 i=0; i < mCallParameters.size(); i++)
     {
-        for (C_INT32 i=0; i < mCallParameters->size(); i++)
-            (*mCallParameters)[i].Delete();
-        
-        delete mCallParameters;
-        mCallParameters = NULL;
+        if (mCallParameters[i])
+        {
+            mCallParameters[i]->Delete();
+            mCallParameters[i] = NULL;
+        }
     }
+    
+    mCallParameters.clear();
 }
 
+void CBaseFunction::Copy(const CBaseFunction &in)
+{
+    CBaseCallParameter *pCallParameter;
+    
+    mType = in.mType;
+    mName = in.mName;
+    mDescription = in.mDescription;
+    mReversible = in.mReversible;
+
+    for( C_INT32 i = 0; i < in.mCallParameters.size(); i++)
+    {
+        pCallParameter = new CBaseCallParameter;
+        pCallParameter->Copy(*in.mCallParameters[i]);
+        mCallParameters.push_back(pCallParameter);
+    }
+}
+    
 C_INT32 CBaseFunction::Load(CReadConfig & configbuffer,
                             CReadConfig::Mode mode)
 {
@@ -95,7 +106,7 @@ void CBaseFunction::SetDescription(const string & description)
 void CBaseFunction::SetReversible(C_INT16 reversible) 
 {mReversible = reversible;}
 
-string CBaseFunction::GetName() {return mName;}
+string CBaseFunction::GetName() const {return mName;}
 
 C_INT32 CBaseFunction::GetType() {return mType;}
 
@@ -103,80 +114,10 @@ string CBaseFunction::GetDescription() {return mDescription;}
 
 C_INT16 CBaseFunction::IsReversible() {return mReversible;}
 
-vector < CBaseCallParameter > & CBaseFunction::CallParameters() 
-{return *mCallParameters;}
+vector < CBaseCallParameter * > & CBaseFunction::CallParameters() 
+{return mCallParameters;}
 
-CBaseCallParameter::CBaseCallParameter()
-{
-    mType = CCallParameter::VECTOR_DOUBLE;
-    mCount = -1;
-    
-    mIdentifierTypes = NULL;
-    mIdentifiers = NULL;
-}
-
-void CBaseCallParameter::Init()
-{
-    if (!mIdentifierTypes) mIdentifierTypes = new vector < C_INT32 >;
-    if (!mIdentifierTypes->size()) mIdentifierTypes->push_back(0);
-    
-    if (!mIdentifiers) mIdentifiers = new vector < CBaseIdentifier >;
-}
-
-CBaseCallParameter::~CBaseCallParameter() {;}
-
-void CBaseCallParameter::Delete()
-{
-    if (mIdentifierTypes) delete mIdentifierTypes;
-    mIdentifierTypes = NULL;
-    
-    if (mIdentifiers) delete mIdentifiers;
-    mIdentifiers = NULL;
-}
-
-C_INT32 CBaseCallParameter::NoIdentifiers(char identifierType)
-{
-    if (identifierType) 
-    {
-        C_INT32 Count = 0;
-	for (C_INT32 i = 0; i < mIdentifiers->size(); i ++)
-	    if ((*mIdentifiers)[i].GetType() == identifierType) Count++;
-        return Count;
-    }
-    else
-        return mIdentifiers->size();
-}
-
-void CBaseCallParameter::SetType(enum CCallParameter::Type type)
-{mType = type;}
-
-void CBaseCallParameter::SetCount() {mCount = mIdentifiers->size();}
-
-void CBaseCallParameter::SetCount(C_INT32 count) {mCount = count;}
-
-enum CCallParameter::Type CBaseCallParameter::GetType()
-{return mType;}
-
-C_INT32 CBaseCallParameter::GetCount() 
-{return mCount;}
-
-vector < C_INT32 > & CBaseCallParameter::IdentifierTypes()
-{return *mIdentifierTypes;}
-
-vector < CBaseIdentifier * > 
-CBaseCallParameter::Identifiers(char identifierType)
-{
-    vector < CBaseIdentifier * > Identifiers;
-
-    for (C_INT32 i = 0; i < mIdentifiers->size(); i ++)
-        if (!identifierType ||
-	    (*mIdentifiers)[i].GetType() == identifierType) 
-	    Identifiers.push_back(&(*mIdentifiers)[i]);
-
-    return Identifiers;
-}
-
-C_FLOAT64 CBaseFunction::CalcValue(vector < CCallParameter > callParameters)
+C_FLOAT64 CBaseFunction::CalcValue(vector < CCallParameter > & callParameters)
 {return 0.0;}
 
 pair < C_INT32, C_INT32 > CBaseFunction::FindIdentifier(const string & name)
@@ -185,9 +126,9 @@ pair < C_INT32, C_INT32 > CBaseFunction::FindIdentifier(const string & name)
     C_INT32 j;
     C_INT32 i;
     
-    for (j = 0; j < mCallParameters->size(); j++)
-        for (i = 0; i < (*mCallParameters)[j].mIdentifiers->size(); i ++)
-            if ((*(*mCallParameters)[j].mIdentifiers)[i].GetName() == name) 
+    for (j = 0; j < mCallParameters.size(); j++)
+        for (i = 0; i < mCallParameters[j]->mIdentifiers.size(); i ++)
+            if (mCallParameters[j]->mIdentifiers[i]->GetName() == name) 
             {
                 Tuple.first = j;
                 Tuple.second = i;
@@ -197,27 +138,140 @@ pair < C_INT32, C_INT32 > CBaseFunction::FindIdentifier(const string & name)
     return Tuple;
 }
 
-CCallParameter::CCallParameter()
+
+/*** CBaseCallParameter ***/
+
+CBaseCallParameter::CBaseCallParameter()
 {
-    mType = VECTOR_DOUBLE;
-    mIdentifiers = NULL;
+    mType = CCallParameter::VECTOR_DOUBLE;
+    mCount.SetRange(CRange::UNSPECIFIED, CRange::UNSPECIFIED);
+
+    mIdentifierTypes.push_back(0);
 }
 
-void CCallParameter::Init()
+CBaseCallParameter::~CBaseCallParameter() {}
+
+void CBaseCallParameter::Delete()
 {
-    if (!mIdentifiers) mIdentifiers = new vector < void * >;
+    for (C_INT32 i = 0; i < mIdentifiers.size(); i++ )
+        if (mIdentifiers[i]) delete mIdentifiers[i];
+    
+    mIdentifiers.clear();
 }
+
+void CBaseCallParameter::Copy(const CBaseCallParameter & in)
+{
+    CBaseIdentifier * pIdentifier;
+    
+    mType = in.mType;
+    mCount = in.mCount;
+    mIdentifierTypes = in.mIdentifierTypes;
+
+    for (C_INT32 i = 0; i < in.mIdentifiers.size(); i++)
+    {
+        pIdentifier = new CBaseIdentifier;
+//        memcpy(pIdentifier, in.mIdentifiers[i], sizeof(CBaseIdentifier));
+        pIdentifier->SetName(in.mIdentifiers[i]->GetName());
+        pIdentifier->SetType(in.mIdentifiers[i]->GetType());
+        mIdentifiers.push_back(pIdentifier);
+    }
+}
+
+C_INT32 CBaseCallParameter::NoIdentifiers(char identifierType)
+{
+    if (identifierType) 
+    {
+        C_INT32 Count = 0;
+	for (C_INT32 i = 0; i < mIdentifiers.size(); i ++)
+	    if (mIdentifiers[i]->GetType() == identifierType) Count++;
+        return Count;
+    }
+    else
+        return mIdentifiers.size();
+}
+
+void CBaseCallParameter::SetType(enum CCallParameter::Type type)
+{mType = type;}
+
+void CBaseCallParameter::SetCount() 
+{mCount.SetRange(mIdentifiers.size(), mIdentifiers.size());}
+
+void CBaseCallParameter::SetCount(unsigned C_INT32 count) 
+{mCount.SetRange(count, count);}
+
+void CBaseCallParameter::SetCount(unsigned C_INT32 low,
+                                  unsigned C_INT32 high)
+{mCount.SetRange(low, high);}
+
+enum CCallParameter::Type CBaseCallParameter::GetType()
+{return mType;}
+
+unsigned C_INT32 CBaseCallParameter::GetCountLow() 
+{return mCount.GetLow();}
+
+unsigned C_INT32 CBaseCallParameter::GetCountHigh() 
+{return mCount.GetHigh();}
+
+vector < C_INT32 > & CBaseCallParameter::IdentifierTypes()
+{return mIdentifierTypes;}
+
+vector < CBaseIdentifier * > & CBaseCallParameter::Identifiers()
+ {return mIdentifiers;}
+
+vector < CBaseIdentifier * > 
+CBaseCallParameter::Identifiers(char identifierType)
+{
+    vector < CBaseIdentifier * > Identifiers;
+
+    for (C_INT32 i = 0; i < mIdentifiers.size(); i ++)
+        if (mIdentifiers[i]->GetType() == identifierType) 
+	    Identifiers.push_back(mIdentifiers[i]);
+
+    return Identifiers;
+}
+
+
+/*** CCallParameter ***/
+
+CCallParameter::CCallParameter()
+{mType = VECTOR_DOUBLE;}
 
 CCallParameter::~CCallParameter() {;}
-
-void CCallParameter::Delete() 
-{
-    if (mIdentifiers) delete mIdentifiers;
-    mIdentifiers = NULL;
-}
 
 void CCallParameter::SetType(enum CCallParameter::Type type) {mType = type;}
 
 enum CCallParameter::Type CCallParameter::GetType() {return mType;}
 
-vector < void * > & CCallParameter::Identifiers() {return *mIdentifiers;}
+vector < void * > & CCallParameter::Identifiers() {return mIdentifiers;}
+
+
+/*** CRange ***/
+
+CRange::CRange() {mLow = mHigh = CRange::UNSPECIFIED;}
+
+CRange::CRange(unsigned C_INT32 low, unsigned C_INT32 high) 
+{mLow = low; mHigh = high; CheckRange();}
+
+CRange::~CRange() {}
+
+void CRange::SetLow(unsigned C_INT32 low) {mLow = low; CheckRange();} 
+void CRange::SetHigh(unsigned C_INT32 high) {mHigh = high; CheckRange();}
+
+void CRange::SetRange(unsigned C_INT32 low, unsigned C_INT32 high)
+{mLow = low; mHigh = high; CheckRange();}
+
+unsigned C_INT32 CRange::GetLow() {return mLow;}
+
+unsigned C_INT32 CRange::GetHigh() {return mHigh;}
+
+C_INT16 CRange::IsRange() 
+{
+    if (mHigh - mLow) return 1;
+    else return 0;
+}
+
+void CRange::CheckRange()
+{
+    if (mLow > mHigh) 
+        CCopasiMessage(CCopasiMessage::ERROR, MCRange + 1, mLow, mHigh);
+}

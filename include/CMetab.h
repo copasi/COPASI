@@ -123,7 +123,7 @@ public:
     /**
      *  Retrieve the name of the metabolite.
      */
-    string GetName();
+    string GetName() const;
 
     /**
      *
@@ -203,13 +203,13 @@ public:
 
     C_INT32 GetIndex();
 
-    string GetName();
+    string GetName() const;
 };
 
 class CMetabolitesOld: public CCopasiVector < CMetabOld >
 {
 private:
-    C_INT16 IsInsertAllowed(CMetabOld src) {return TRUE;}
+    C_INT16 IsInsertAllowed(const CMetabOld & src) {return TRUE;}
 };
   
 #endif // COPASI_CMetab

@@ -104,7 +104,8 @@ C_INT32 CMetab::Load(CReadConfig &configbuffer)
     Fail = configbuffer.GetVariable("Concentration", "C_FLOAT64",
                                     (void *) &mIConc);
     if (Fail) return Fail;
-
+    mConc = mIConc;
+    
     Fail = configbuffer.GetVariable("Type", "C_INT16",
                                     (void *) &mStatus);
     if (Fail) return Fail;
@@ -149,7 +150,7 @@ C_INT32 CMetab::Save(CWriteConfig &configbuffer)
     return Fail;
 }
 
-string CMetab::GetName() {return mName;}
+string CMetab::GetName() const {return mName;}
 
 C_INT16 CMetab::IsValidName()
 {
@@ -168,7 +169,7 @@ C_INT32 CMetabOld::Load(CReadConfig &configbuffer)
     Fail = configbuffer.GetVariable("Concentration", "C_FLOAT64",
                                     (void *) &mIConc);
     if (Fail) return Fail;
-
+    
     C_INT32 Index = -1;
     Fail = configbuffer.GetVariable("Compartment", "C_INT32",
                                     (void *) &mCompartment);
@@ -203,4 +204,4 @@ C_INT32 CMetabOld::Load(CReadConfig &configbuffer)
 
 C_INT32 CMetabOld::GetIndex() {return mCompartment;}
 
-string CMetabOld::GetName() {return mName;}
+string CMetabOld::GetName() const {return mName;}

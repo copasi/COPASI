@@ -101,11 +101,11 @@ C_INT32 CCompartment::Save(CWriteConfig & configbuffer)
     return Fail;
 }
 
-string CCompartment::GetName() {return mName;}
+string CCompartment::GetName() const {return mName;}
 
 C_FLOAT64 CCompartment::GetVolume() {return mVolume;}
 
-CCopasiVector < CMetab > & CCompartment::GetMetabolites() 
+CCopasiVector < CMetab > & CCompartment::Metabolites() 
 {return *mMetabolites;}
 
 void CCompartment::SetName(const string & name) 

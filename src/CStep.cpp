@@ -9,6 +9,7 @@
 #include "copasi.h"
 #include "CGlobals.h"
 #include "CStep.h"
+#include "CCompartment.h"
 #include "utilities.h"
 
 CStep::CStep()
@@ -212,7 +213,7 @@ vector < CStep::CId2Metab > &CStep::Modifiers() {return *mModifiers;}
 
 vector < CStep::CId2Param > &CStep::Parameters() {return *mParameters;}
 
-string CStep::GetName() {return mName;}
+string CStep::GetName() const {return mName;}
 
 string CStep::GetChemEq() {return mChemEq;}
 
@@ -242,18 +243,15 @@ void CStep::InitIdentifiers()
     
     if (!mFunction) FatalError();
 
-    for (i = 0; i < mCallParameters->size(); i++)
-        (*mCallParameters)[i].Delete();
     mCallParameters->clear();
     
     mCallParameters->resize(mFunction->CallParameters().size());
     for (i = 0; i < mCallParameters->size(); i++)
     {
-        (*mCallParameters)[i].Init();
         (*mCallParameters)[i].
-            SetType(mFunction->CallParameters()[i].GetType());
+            SetType(mFunction->CallParameters()[i]->GetType());
 
-        Count = mFunction->CallParameters()[i].GetCount();
+        Count = mFunction->CallParameters()[i]->GetCountLow();
         (*mCallParameters)[i].Identifiers().resize(Count);
         for (C_INT32 j = 0; j < Count; j++)
             (*mCallParameters)[i].Identifiers()[j] = NULL;
@@ -264,52 +262,97 @@ void CStep::SetIdentifiers()
 {
     pair < C_INT32, C_INT32 > Tuple;
     
-    C_INT32 i;
+    C_INT32 i, j;
+    C_INT32 OldSize;
     
     for (i = 0; i < mSubstrates->size(); i++)
     {
+        if ((*mSubstrates)[i].mIdentifierName == "") continue;
+        
         Tuple = mFunction->FindIdentifier((*mSubstrates)[i].mIdentifierName);
 
         if (Tuple.first < 0 || Tuple.second < 0) FatalError();
         if ((*mCallParameters)[Tuple.first].GetType() 
             != CCallParameter::VECTOR_DOUBLE) FatalError();
-                                                     
+
+        if ((OldSize = (*mCallParameters)[Tuple.first].Identifiers().size()) <
+            Tuple.second + 1)
+        {
+            (*mCallParameters)[Tuple.first].Identifiers().
+                resize(Tuple.second + 1);
+            for( j = OldSize; j < Tuple.second + 1; j++)
+                (*mCallParameters)[Tuple.first].Identifiers()[j] = NULL;
+        }
+        
         (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
             (*mSubstrates)[i].mpMetabolite->GetConcentration();
     }
     
     for (i = 0; i < mProducts->size(); i++)
     {
+        if ((*mProducts)[i].mIdentifierName == "") continue;
+        
         Tuple = mFunction->FindIdentifier((*mProducts)[i].mIdentifierName);
 
         if (Tuple.first < 0 || Tuple.second < 0) FatalError();
         if ((*mCallParameters)[Tuple.first].GetType ()
             != CCallParameter::VECTOR_DOUBLE) FatalError();
                                                      
+        if ((OldSize = (*mCallParameters)[Tuple.first].Identifiers().size())
+            < Tuple.second + 1)
+        {
+            (*mCallParameters)[Tuple.first].Identifiers().
+                resize(Tuple.second + 1);
+            for( j = OldSize; j < Tuple.second + 1; j++)
+                (*mCallParameters)[Tuple.first].Identifiers()[j] = NULL;
+        }
+        
         (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
             (*mProducts)[i].mpMetabolite->GetConcentration();
     }
 
     for (i = 0; i < mModifiers->size(); i++)
     {
+        if ((*mModifiers)[i].mIdentifierName == "") continue;
+        
         Tuple = mFunction->FindIdentifier((*mModifiers)[i].mIdentifierName);
 
         if (Tuple.first < 0 || Tuple.second < 0) FatalError();
         if ((*mCallParameters)[Tuple.first].GetType()
             != CCallParameter::VECTOR_DOUBLE) FatalError();
                                                      
+        if ((OldSize = (*mCallParameters)[Tuple.first].Identifiers().size())
+            < Tuple.second + 1)
+        {
+            (*mCallParameters)[Tuple.first].Identifiers().
+                resize(Tuple.second + 1);
+            for( j = OldSize; j < Tuple.second + 1; j++)
+                (*mCallParameters)[Tuple.first].Identifiers()[j] = NULL;
+        }
+        
         (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
             (*mModifiers)[i].mpMetabolite->GetConcentration();
     }
 
     for (i = 0; i < mParameters->size(); i++)
     {
+        if ((*mParameters)[i].mIdentifierName == "") continue;
+        
         Tuple = mFunction->FindIdentifier((*mParameters)[i].mIdentifierName);
 
         if (Tuple.first < 0 || Tuple.second < 0) FatalError();
         if ((*mCallParameters)[Tuple.first].GetType()
             != CCallParameter::VECTOR_DOUBLE) FatalError();
                                                      
+        if ((OldSize = (*mCallParameters)[Tuple.first].Identifiers().size())
+            < Tuple.second + 1)
+        {
+            (*mCallParameters)[Tuple.first].Identifiers().
+                resize(Tuple.second + 1);
+            for( j = OldSize; j < Tuple.second + 1; j++)
+                (*mCallParameters)[Tuple.first].Identifiers()[j] = NULL;
+        }
+        
         (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
             &(*mParameters)[i].mValue;
     }
@@ -324,8 +367,25 @@ void CStep::CheckIdentifiers()
     }
 }
 
-void CStep::Compile(CCopasiVector < CMetab * > &metabolites)
+void CStep::Compile(CCopasiVector < CCompartment > &compartments)
 {
+    C_INT32 i;
+    
+    for (i = 0; i < mSubstrates->size(); i++)
+        (*mSubstrates)[i].mpMetabolite = 
+            &compartments[(*mSubstrates)[i].mCompartmentName].
+            Metabolites()[(*mSubstrates)[i].mMetaboliteName];
+    
+    for (i = 0; i < mProducts->size(); i++)
+        (*mProducts)[i].mpMetabolite = 
+            &compartments[(*mProducts)[i].mCompartmentName].
+            Metabolites()[(*mProducts)[i].mMetaboliteName];
+    
+    for (i = 0; i < mModifiers->size(); i++)
+        (*mModifiers)[i].mpMetabolite = 
+            &compartments[(*mModifiers)[i].mCompartmentName].
+            Metabolites()[(*mModifiers)[i].mMetaboliteName];
+    
     InitIdentifiers();
     SetIdentifiers();
     CheckIdentifiers();
@@ -342,9 +402,6 @@ C_INT32 CStep::LoadNew(CReadConfig & configbuffer)
     mSubstrates->resize(Size);
     for (i=0; i < Size; i++)
     {
-//        Size = snprintf(Name, sizeof(Name), "Subs%d", i);
-//        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
         if (Fail = configbuffer.GetVariable("Identifier", "string",
                                             &(*mSubstrates)[i].mIdentifierName))
             return Fail;
@@ -433,30 +490,52 @@ C_INT32 CStep::LoadOld(CReadConfig & configbuffer)
     {
         name = StringPrint("Subs%d", i);
         configbuffer.GetVariable(name, "C_INT32", &index);
-        (*mSubstrates)[i].mIdentifierName = mFunction->CallParameters()[0].
-            Identifiers(N_SUBSTRATE)[i]->GetName();
 
-        (*mSubstrates)[i].mMetaboliteName = StringPrint("%d", index);
+        if (mFunction->GetName().substr(0,11) == "Mass action")
+            (*mSubstrates)[i].mIdentifierName = StringPrint("substrate_%d", i);
+        else if (mFunction->CallParameters()[0]->Identifiers(N_SUBSTRATE).size()
+                < i + 1)
+            (*mSubstrates)[i].mIdentifierName = "";
+        else
+            (*mSubstrates)[i].mIdentifierName = mFunction->CallParameters()[0]->
+                Identifiers(N_SUBSTRATE)[i]->GetName();
+        
+        (*mSubstrates)[i].mMetaboliteName = 
+            Copasi.OldMetabolites[index].GetName();
     }
     
     for (i = 0; i < mProducts->size(); i++)
     {
         name = StringPrint("Prod%d", i);
         configbuffer.GetVariable(name, "C_INT32", &index);
-        (*mProducts)[i].mIdentifierName = mFunction->CallParameters()[0].
-            Identifiers(N_PRODUCT)[i]->GetName();
-
-        (*mProducts)[i].mMetaboliteName = StringPrint("%d", index);
+        
+        if (mFunction->GetName().substr(0,11) == "Mass action")
+            (*mProducts)[i].mIdentifierName = StringPrint("product_%d", i);
+        else if (mFunction->CallParameters()[0]->Identifiers(N_PRODUCT).size()
+                < i + 1)
+            (*mProducts)[i].mIdentifierName = "";
+        else
+            (*mProducts)[i].mIdentifierName = mFunction->CallParameters()[0]->
+                Identifiers(N_PRODUCT)[i]->GetName();
+        
+        (*mProducts)[i].mMetaboliteName = 
+            Copasi.OldMetabolites[index].GetName();
     }
     
     for (i = 0; i < mModifiers->size(); i++)
     {
         name = StringPrint("Modf%d", i);
         configbuffer.GetVariable(name, "C_INT32", &index);
-        (*mModifiers)[i].mIdentifierName = mFunction->CallParameters()[0].
-            Identifiers(N_MODIFIER)[i]->GetName();
+        
+        if (mFunction->CallParameters()[0]->Identifiers(N_MODIFIER).size()
+                < i + 1)
+            (*mModifiers)[i].mIdentifierName = "";
+        else
+            (*mModifiers)[i].mIdentifierName = mFunction->CallParameters()[0]->
+                Identifiers(N_MODIFIER)[i]->GetName();
 
-        (*mModifiers)[i].mMetaboliteName = StringPrint("%d", index);
+        (*mModifiers)[i].mMetaboliteName = 
+            Copasi.OldMetabolites[index].GetName();
     }
     
     for (i = 0; i < mParameters->size(); i++)
@@ -464,7 +543,18 @@ C_INT32 CStep::LoadOld(CReadConfig & configbuffer)
         name = StringPrint("Param%d", i);
         configbuffer.GetVariable(name, "C_FLOAT64", 
                                  &(*mParameters)[i].mValue);
-        (*mParameters)[i].mIdentifierName = mFunction->CallParameters()[0].
+        if (mFunction->GetName().substr(0,11) == "Mass action")
+        {
+            if (i)
+                (*mParameters)[i].mIdentifierName = "kp";
+            else
+                (*mParameters)[i].mIdentifierName = "ks";
+        }
+        else if (mFunction->CallParameters()[0]->Identifiers(N_KCONSTANT).size()
+                < i + 1)
+            (*mParameters)[i].mIdentifierName = "";
+        else
+            (*mParameters)[i].mIdentifierName = mFunction->CallParameters()[0]->
             Identifiers(N_KCONSTANT)[i]->GetName();
     }
     
@@ -479,3 +569,102 @@ CStep::CId2Metab::~CId2Metab() {}
 CStep::CId2Param::CId2Param() {}
 
 CStep::CId2Param::~CId2Param() {}
+
+void CStep::ParseChemEq()
+{
+    string Left;
+    string Right;
+    
+    string::size_type equal = 0;
+    
+    equal = mChemEq.find("=");
+    if (equal == string::npos) 
+    {
+        equal = mChemEq.find("->");
+        Right = mChemEq.substr(equal+2);
+    }
+    else
+        Right = mChemEq.substr(equal+1);
+    Left = mChemEq.substr(0,equal);
+
+    ExtractMetabNames(Left, *mSubstrates);
+    ExtractMetabNames(Right, *mProducts);
+}
+
+void CStep::ExtractMetabNames(const string input,
+                              vector < CId2Metab > &output)
+{
+    string::size_type plus = 0;
+    string::size_type namestart = 0;
+    string::size_type nameend = 0;
+    
+    string ValidName =
+        "-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_,()";
+
+    C_INT32 Count = 0;
+    C_INT32 i;
+
+    for (Count = 0; (plus != string::npos && Count < output.size()); Count++)
+    {
+        namestart = input.find_first_of(ValidName,plus);
+        nameend = input.find_first_not_of(ValidName,namestart);
+        plus = input.find("+",namestart);
+        
+        /* Check whether we have a multiplier */
+        if (plus > input.find_first_of(ValidName,nameend))
+        {
+            /* The multiplier is assumed to be the first and is ignored */
+            namestart = input.find_first_of(ValidName,nameend);
+            nameend = input.find_first_not_of(ValidName,namestart);
+        }
+
+        output[Count].mMetaboliteName = input.substr(namestart,nameend);
+
+        for (i = 0; i < Copasi.OldMetabolites.Size(); i++)
+            if (Copasi.OldMetabolites[i].GetName()
+                == output[Count].mMetaboliteName)
+                break;
+
+        if (i >= Copasi.OldMetabolites.Size()) FatalError();
+
+//        output[Count].mCompartmentName = 
+//            Copasi.OldMetabolites[i].GetCompartment()->GetName();
+    }
+}
+
+void CStep::Old2New(vector < CMetab* > & metabolites)
+{
+    C_INT32 i, j;
+    
+    for (i = 0; i < mSubstrates->size(); i++)
+    {
+        for (j = 0; j < metabolites.size(); j++)
+            if (metabolites[j]->GetName() ==
+                (*mSubstrates)[i].mMetaboliteName) break;
+        (*mSubstrates)[i].mCompartmentName =
+            metabolites[j]->GetCompartment()->GetName();
+    }
+    
+    for (i = 0; i < mProducts->size(); i++)
+    {
+        for (j = 0; j < metabolites.size(); j++)
+            if (metabolites[j]->GetName() ==
+                (*mProducts)[i].mMetaboliteName) break;
+        (*mProducts)[i].mCompartmentName =
+            metabolites[j]->GetCompartment()->GetName();
+    }
+    
+    for (i = 0; i < mModifiers->size(); i++)
+    {
+        for (j = 0; j < metabolites.size(); j++)
+            if (metabolites[j]->GetName() ==
+                (*mModifiers)[i].mMetaboliteName) break;
+        (*mModifiers)[i].mCompartmentName =
+            metabolites[j]->GetCompartment()->GetName();
+    }
+}
+
+C_FLOAT64 CStep::Calculate() 
+{
+    return mFunction->CalcValue(*mCallParameters);
+}

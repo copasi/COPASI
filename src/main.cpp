@@ -288,15 +288,13 @@ C_INT32 TestReadSample(void)
     C_INT32 size = 0;
     C_INT32 i;
     
-    CMetabolitesOld OldMetabolites;
-    
-    CReadConfig inbuf("gps/chem1.gps");
+    CReadConfig inbuf("gps/BakkerComp.gps");
  
     if (inbuf.GetVersion() < "4")
     {
         inbuf.GetVariable("TotalMetabolites", "C_INT32", &size,
                           CReadConfig::LOOP);
-        OldMetabolites.Load(inbuf, size);
+        Copasi.OldMetabolites.Load(inbuf, size);
     }
     
     CCopasiVector< CCompartment > Compartments;
@@ -309,16 +307,19 @@ C_INT32 TestReadSample(void)
     {
         // Create the correct compartment / metabolite relationships
         CMetab Metabolite;
-        for (i = 0; i < OldMetabolites.Size(); i++)
+        for (i = 0; i < Copasi.OldMetabolites.Size(); i++)
         {
-            Metabolite = OldMetabolites[i];
+            Metabolite = Copasi.OldMetabolites[i];
             
-            Compartments[OldMetabolites[i].GetIndex()].
+            Compartments[Copasi.OldMetabolites[i].GetIndex()].
                 AddMetabolite(Metabolite);
         }
     }
 
-    vector < CMetab * > Metabolites = InitMetabolites(Compartments);
+    // This will be come part of the model
+    vector < CMetab * > Metabolites;
+    Metabolites = InitMetabolites(Compartments);
+
     CCopasiVector < CKinFunction > Functions;
     inbuf.GetVariable("TotalUDKinetics", "C_INT32", &size,
                       CReadConfig::LOOP);
@@ -332,42 +333,70 @@ C_INT32 TestReadSample(void)
                       CReadConfig::LOOP);
     Steps.Load(inbuf, size);
     
+    // For old input file versions we need to fill the compartments
     if (inbuf.GetVersion() < "4")
+        for (i = 0; i < Steps.Size(); i++)
+            Steps[i].Old2New(Metabolites);
+            
+    for (i = 0; i < Steps.Size(); i++)
     {
-        // Create the correct step-substrate / metabolite relationships
-        // Create the correct step-product / metabolite relationships  
-        // Create the correct step-modifier / metabolite relationships  
+        Steps[i].Compile(Compartments);
+        cout << "Step[" << i << "] = " << Steps[i].Calculate() << endl;
     }
-
+    
+    
     CWriteConfig outbuf("copasi.gps");
     size = Compartments.Size();
     outbuf.SetVariable("TotalCompartments", "C_INT32", &size);
     Compartments.Save(outbuf);
-    size = Functions.Size();
+    size = Copasi.FunctionDB.LoadedFunctions().Size();
     outbuf.SetVariable("TotalUDKinetics", "C_INT32", &size);
-    Functions.Save(outbuf);
-    
+    Copasi.FunctionDB.LoadedFunctions().Save(outbuf);
+    size = Steps.Size();
+    outbuf.SetVariable("TotalSteps", "C_INT32", &size);
+    Steps.Save(outbuf);
+        
     outbuf.Flush();
 
     CReadConfig inbuf2("copasi.gps");
     Compartments.Delete();
     Functions.Delete();
+    Copasi.FunctionDB.Delete();
+    Copasi.FunctionDB.Init();
+    Steps.Delete();
     
+        
     inbuf2.GetVariable("TotalCompartments", "C_INT32", &size,
                        CReadConfig::LOOP);
     Compartments.Load(inbuf2,size);
     inbuf2.GetVariable("TotalUDKinetics", "C_INT32", &size,
                        CReadConfig::LOOP);
     Functions.Load(inbuf2, size);
-
+    
+    for (i = 0; i < Functions.Size(); i++)
+        Copasi.FunctionDB.Add(Functions[i]);
+    
+    inbuf2.GetVariable("TotalSteps", "C_INT32", &size,
+                      CReadConfig::LOOP);
+    Steps.Load(inbuf2, size);
+    
+    for (i = 0; i < Steps.Size(); i++)
+    {
+        Steps[i].Compile(Compartments);
+        cout << "Step[" << i << "] = " << Steps[i].Calculate() << endl;
+    }
+    
     CWriteConfig outbuf2("copasi2.gps");
     size = Compartments.Size();
     outbuf2.SetVariable("TotalCompartments", "C_INT32", &size);
     Compartments.Save(outbuf2);
-    size = Functions.Size();
+    size = Copasi.FunctionDB.LoadedFunctions().Size();
     outbuf2.SetVariable("TotalUDKinetics", "C_INT32", &size);
-    Functions.Save(outbuf2);
-    
+    Copasi.FunctionDB.LoadedFunctions().Save(outbuf2);
+    size = Steps.Size();
+    outbuf2.SetVariable("TotalSteps", "C_INT32", &size);
+    Steps.Save(outbuf2);
+        
     return 0;
 }
 
@@ -377,20 +406,20 @@ C_INT32 TestMoiety()
     CCompartment c("comp", 1.0);
     CCopasiVector < CMetab > mv;
     
-    mv = c.GetMetabolites();
+    mv = c.Metabolites();
     
     mv.Add(CMetab("metab 1"));
 
-    c.GetMetabolites().Add(CMetab("metab 1"));
-    c.GetMetabolites().Add(CMetab("metab 2"));
+    c.Metabolites().Add(CMetab("metab 1"));
+    c.Metabolites().Add(CMetab("metab 2"));
     
-    c.GetMetabolites()[0].SetConcentration(5.2);
-    c.GetMetabolites()[1].SetConcentration(2.0);
-    CMetab m = c.GetMetabolites()["metab 2"];
+    c.Metabolites()[0].SetConcentration(5.2);
+    c.Metabolites()[1].SetConcentration(2.0);
+    CMetab m = c.Metabolites()["metab 2"];
     
-    mo.Add(-2000, c.GetMetabolites()[0]);
-    mo.Add(3, c.GetMetabolites()[1]);
-    mo.Add(0, c.GetMetabolites()[1]);
+    mo.Add(-2000, c.Metabolites()[0]);
+    mo.Add(3, c.Metabolites()[1]);
+    mo.Add(0, c.Metabolites()[1]);
     
     C_FLOAT64 Value=mo.Value();
     string Description = mo.GetDescription();
@@ -413,7 +442,8 @@ C_INT32 TestKinFunction()
     
     f.Parse();
     f.SetIdentifierType("a", N_SUBSTRATE);
-    
+    f.SetIdentifierType("b", N_PRODUCT);
+
     C_FLOAT64 a = 4;
     C_FLOAT64 b = 1;
     
@@ -452,8 +482,8 @@ InitMetabolites(CCopasiVector < CCompartment > & compartments)
     vector < CMetab * > Metabolites;
 
     for (C_INT32 i = 0; i < compartments.Size(); i++)
-        for (C_INT32 j = 0; j < compartments[i].GetMetabolites().Size(); j++)
-            Metabolites.push_back(&compartments[i].GetMetabolites()[j]);
+        for (C_INT32 j = 0; j < compartments[i].Metabolites().Size(); j++)
+            Metabolites.push_back(&compartments[i].Metabolites()[j]);
     
     return Metabolites;
 }
@@ -461,10 +491,8 @@ InitMetabolites(CCopasiVector < CCompartment > & compartments)
 C_INT32 TestBaseFunction()
 {
     CBaseFunction BaseFunction;
-    BaseFunction.Init();
     
     BaseFunction.CallParameters().resize(3);
-    BaseFunction.Init();
     
     BaseFunction.Delete();
     
@@ -1001,9 +1029,9 @@ C_INT32 MakeFunctionEntry(const string &name,
     C_INT32 i;
     
     CKinFunction f;
-
+    f.Init();
+    
     functions.Add(f);
-    functions[Index].Init();
 
     functions[Index].SetName(name);
     functions[Index].SetDescription(description);

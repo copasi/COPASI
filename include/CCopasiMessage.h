@@ -8,9 +8,13 @@
 
 #include <string>
 
-typedef struct MESSAGES {unsigned C_INT32 No; char * Text;};
+typedef struct MESSAGES {unsigned C_INT32 No; char * Text;} Message;
 
-#define MCKinFunction 5200
+#define MCopasiBase        5000
+#define MCReadConfig       5100
+#define MCWriteConfig      5200
+#define MCRange            5300
+#define MCKinFunction      5400
 
 /**
  *  This throws an exception with information where the error occured.
@@ -41,8 +45,8 @@ public:
      *  @param format printf like format string.
      *  @param ... arguments like in printf
      */
-    CCopasiMessage(CCopasiMessage::Type type, const char *format, ... );
-    CCopasiMessage(CCopasiMessage::Type type, unsigned C_INT32 number, ...);
+    CCopasiMessage(Type type, const char *format, ... );
+    CCopasiMessage(Type type, unsigned C_INT32 number, ...);
     
     /**
      *  Destructor. 

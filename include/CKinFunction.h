@@ -26,7 +26,7 @@ public:
     /*
      *  The nodes which access the same identifier.
      */
-    vector < CNodeK * > * mNodes;
+    vector < CNodeK * > mNodes;
 
 // Operations
 public:
@@ -36,51 +36,11 @@ public:
     CKinIdentifier();
                     
     /**
-     *  Init
-     */
-    void Init();
-            
-    /**
      *  Destructor
      */
     ~CKinIdentifier();
-
-    /**
-     *  Delete
-     */
-    void Delete();
 };
 
-class CKinCallParameter: public CBaseCallParameter
-{
-    friend class CKinFunction;
-// Attributes
-private:
-    vector < CKinIdentifier > * mIdentifiers;
-
-// Operations
-public:
-    /**
-     *  Default constructor
-     */
-    CKinCallParameter();
-
-    /**
-     *  Init
-     */
-    void Init();
-            
-    /**
-     *  Destructor
-     */
-    ~CKinCallParameter();
-
-    /**
-     *  Delete
-     */
-    void Delete();
-};
-    
 class CKinFunction: public CBaseFunction
 {
 // Attributes
@@ -88,7 +48,7 @@ private:
     class CKinNodes: public CCopasiVector < CNodeK >
         {
         private:
-            C_INT16 IsInsertAllowed(CNodeK src);
+            C_INT16 IsInsertAllowed(const CNodeK & src);
             
         public:
             CKinNodes();
@@ -100,11 +60,6 @@ private:
      */
     CKinNodes * mNodes;
     
-    /**
-     *  The vector of pointers to the identifiers to the function
-     */
-    vector < CKinCallParameter > * mCallParameters;
-
     /**
      *  Internal variable
      */
@@ -128,8 +83,8 @@ public:
     /**
      *  Init
      */
-    void Init();
-            
+    Init();
+    
     /**
      *  Destructor
      */
@@ -141,12 +96,18 @@ public:
     void Delete();
 
     /**
+     *  Copy
+     */
+    void Copy(const CKinFunction & in);
+
+    /**
      *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    C_INT32 Load(CReadConfig & configbuffer);
+    C_INT32 Load(CReadConfig & configbuffer,
+                 CReadConfig::Mode mode = CReadConfig::LOOP);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -160,7 +121,7 @@ public:
      *  This retrieves the node tree of the function
      *  @return "CCopasiVector < CNodeK > &"
      */
-    CCopasiVector < CNodeK > & Nodes();
+    CKinNodes & Nodes();
 
     /**
      *  This sets the type of an identifier

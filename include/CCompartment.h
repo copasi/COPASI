@@ -98,7 +98,7 @@ public:
      *  @return mName
      *  @see mName
      */
-    string GetName();
+    string GetName() const;
 
     /**
      *  Returns a C_FLOAT64 with the volume of this compartment.
@@ -110,7 +110,7 @@ public:
     /*
      *
      */
-    CCopasiVector < CMetab > & GetMetabolites();
+    CCopasiVector < CMetab > & Metabolites();
     
     /*
      *

@@ -219,7 +219,7 @@ public:
      *  Retrieves the name of the step
      *  @return string
      */
-    string GetName();
+    string GetName() const;
 
     /**
      *  Retrieves the chemical equation of the step
@@ -280,8 +280,20 @@ public:
      *  rate function.
      *  @param "CCopasiVector < CMetab * > &" metabolites
      */
-    void Compile(CCopasiVector < CMetab * > & metabolites);
+    void Compile(CCopasiVector < CCompartment > & compartments);
 
+    /**
+     *  Calculate the kinetic function
+     *  @return C_FLOAT64 velocity
+     */
+    C_FLOAT64 Calculate();
+
+    /**
+     *  Retrieves the Compartment Name for substrates, products, and modifiers
+     *  @param "vector < CMetab* > &" Metabolites 
+     */
+    void Old2New(vector < CMetab* > & metabolites);
+    
 private:
     /**
      *
@@ -308,6 +320,16 @@ private:
      */
     void CheckIdentifiers();
 
+    /**
+     *
+     */
+    void ParseChemEq();
+
+    /**
+     *
+     */
+    void ExtractMetabNames(const string input,
+                           vector < CId2Metab > &output);
 };
 
 #endif // COPASI_CSteb

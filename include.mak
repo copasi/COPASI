@@ -16,6 +16,7 @@ OBJS	= $(OBJDIR)/CGlobals.o \
 	  $(OBJDIR)/CMoiety.o \
 	  $(OBJDIR)/CFunctionDB.o \
 	  $(OBJDIR)/CStep.o \
+	  $(OBJDIR)/CMassAction.o \
 	  $(OBJDIR)/utilities.o \
 	  $(OBJDIR)/main.o
 

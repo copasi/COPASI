@@ -23,9 +23,14 @@ private:
     string mFilename;
 
     /**
+     *  Builtin Functions
+     */
+    vector < CBaseFunction * > mBuiltinFunctions;
+
+    /**
      *  Vector of the currently loaded functions
      */
-    CCopasiVector < CKinFunction > * mLoadedFunctions;
+    CCopasiVectorP < CBaseFunction * > mLoadedFunctions;
 // Operations
 public:
     /**
@@ -63,7 +68,7 @@ public:
      *  @param "const string" &functionName
      *  @return CKinFunction &
      */
-    CKinFunction & DBLoad(const string & functionName);
+    CBaseFunction & DBLoad(const string & functionName);
 
     /**
      *  Add the function to the database
@@ -86,7 +91,13 @@ public:
      *  @param "const string" &functionName
      *  @return CKinFunction &
      */
-    CKinFunction & FindFunction(const string & functionName);
+    CBaseFunction & FindFunction(const string & functionName);
+
+    /**
+     *  Retrieves the vector of loades functions.
+     *  @return "CCopasiVector < CKinFunction > &" LoadedFunctions
+     */
+    CCopasiVectorP < CBaseFunction * > & LoadedFunctions();
 };
 
 #endif // COPASI_CFunctionDB

@@ -13,35 +13,20 @@ C_INT16 DefinedInsertAllowed(CNodeK src);
 CKinFunction::CKinFunction()
 {
     SetType(CBaseFunction::USERDEFINED);
-    
-    mCallParameters = NULL;
     mNodes = NULL;
 }
 
-void CKinFunction::Init()
-{
-    SetReversible(FALSE);
-
-    if (!mCallParameters )
-        mCallParameters = new vector < CKinCallParameter >(1);
-    (*mCallParameters)[0].Init();
-
-    if (!mNodes) mNodes = new CKinNodes;
-}
-    
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
     SetType(CBaseFunction::USERDEFINED);
-    
-    mCallParameters = NULL;
     mNodes = NULL;
 
     SetName(name);
     SetDescription(description);
-    
-    Init();
 }
+
+CKinFunction::Init() {mNodes = new CKinNodes;}
 
 CKinFunction::~CKinFunction() {;}
 
@@ -50,36 +35,35 @@ void CKinFunction::Delete()
     if (mNodes) delete mNodes;
     mNodes = NULL;
     
-    if (mCallParameters) 
-    {
-        (*mCallParameters)[0].Delete();
-        delete mCallParameters;
-    }
-    mCallParameters = NULL;
+    CBaseFunction::Delete();
 }
 
-C_INT32 CKinFunction::Load(CReadConfig & configbuffer)
+void CKinFunction::Copy(const CKinFunction & in)
+{
+    CBaseFunction::Copy(in);
+
+    for (C_INT32 i = 0; i < in.mNodes->Size(); i++)
+        mNodes->Add((*in.mNodes)[i]);
+    
+    mNidx = in.mNidx;    
+
+    ConnectNodes();
+    InitIdentifiers();
+
+}
+
+C_INT32 CKinFunction::Load(CReadConfig & configbuffer,
+                           CReadConfig::Mode mode)
 {
     string TmpString;
     C_INT32 Size = 0;
     C_INT32 Index = 0;
     C_INT32 Fail = 0;
     
+    if (Fail = CBaseFunction::Load(configbuffer,mode)) return Fail;
+    
     Init();
     
-    if (Fail = CBaseFunction::Load(configbuffer)) return Fail;
-    
-#ifdef XXXX
-    if (Fail = configbuffer.GetVariable("FunctionName", "string", &TmpString,
-                                        CReadConfig::LOOP))
-        return Fail;
-    SetName(TmpString);
-    
-    if (Fail = configbuffer.GetVariable("Description", "string", &TmpString))
-        return Fail;
-    SetDescription(TmpString);
-#endif // XXXX
-
     if (Fail = configbuffer.GetVariable("Nodes", "C_INT32", &Size))
         return Fail;
 
@@ -120,7 +104,7 @@ C_INT32 CKinFunction::Save(CWriteConfig & configbuffer)
     return Fail;
 }
 
-CCopasiVector < CNodeK > & CKinFunction::Nodes() {return *mNodes;}
+CKinFunction::CKinNodes & CKinFunction::Nodes() {return *mNodes;}
 
 void CKinFunction::SetIdentifierType(const string & name,
                                      char identifierType)
@@ -134,11 +118,11 @@ void CKinFunction::SetIdentifierType(const string & name,
                        GetName().c_str());
 
     for (C_INT32 i = 0; 
-         i < (*(*mCallParameters)[Index.first].
-              mIdentifiers)[Index.second].mNodes->size();
+         i < ((CKinIdentifier *) CallParameters()[Index.first]->
+              Identifiers()[Index.second])->mNodes.size();
          i++)
-        (*(*(*mCallParameters)[Index.first].
-           mIdentifiers)[Index.second].mNodes)[i]->SetSubtype(identifierType);
+        ((CKinIdentifier *) CallParameters()[Index.first]->
+           Identifiers()[Index.second])->mNodes[i]->SetSubtype(identifierType);
 }
 
 C_INT32 CKinFunction::Parse()
@@ -448,13 +432,26 @@ CNodeK * CKinFunction::ParsePrimary()
 
 void CKinFunction::InitIdentifiers()
 {
-    CKinIdentifier Identifier;
+    CKinIdentifier* pIdentifier;
+    CBaseCallParameter* pCallParameter = new CBaseCallParameter;
+    
+    pCallParameter->IdentifierTypes().push_back(N_SUBSTRATE);
+    pCallParameter->IdentifierTypes().push_back(N_PRODUCT);
+    pCallParameter->IdentifierTypes().push_back(N_MODIFIER);
+    pCallParameter->IdentifierTypes().push_back(N_KCONSTANT);
+    
     C_INT32 i;
 
     pair < C_INT32, C_INT32 > Index;
 
-    (*mCallParameters)[0].Delete();
-    (*mCallParameters)[0].Init();
+    for (i = 0; i < CallParameters().size(); i++)
+    {
+        CallParameters()[i]->Delete();
+        delete CallParameters()[i];
+    }
+
+    CallParameters().clear();
+    CallParameters().push_back(pCallParameter);
     
     for(i = 0; i < mNodes->Size(); i++)
     {
@@ -463,41 +460,19 @@ void CKinFunction::InitIdentifiers()
             Index = FindIdentifier((*mNodes)[i].GetName());
             if ( Index.first == -1 )
             {
-                Identifier.SetName((*mNodes)[i].GetName());
-                (*mCallParameters)[0].mIdentifiers->push_back(Identifier);
-                Index.second = (*mCallParameters)[0].mIdentifiers->size()-1;
-                (*(*mCallParameters)[0].mIdentifiers)[Index.second].Init();
+                pIdentifier = new CKinIdentifier;
+                pIdentifier->SetName((*mNodes)[i].GetName());
+                pIdentifier->SetType((*mNodes)[i].GetSubtype());
+                Index.second = CallParameters()[0]->Identifiers().size();
+                CallParameters()[0]->Identifiers().push_back(pIdentifier);
             }
             (*mNodes)[i].SetIndex(Index.second);
-            (*(*mCallParameters)[0].mIdentifiers)[Index.second].
-                mNodes->push_back(&(*mNodes)[i]);
+            ((CKinIdentifier *) CallParameters()[0]->
+             Identifiers()[Index.second])->
+                mNodes.push_back(&(*mNodes)[i]);
         }
     }
-    (*mCallParameters)[0].SetCount((*mCallParameters)[0].mIdentifiers->size());
-}
-
-CKinCallParameter::CKinCallParameter()
-{
-    mIdentifiers = NULL;
-}
-
-void CKinCallParameter::Init()
-{
-    CBaseCallParameter::Init();
-    
-    if (!mIdentifiers) mIdentifiers = new vector < CKinIdentifier >;
-    for (C_INT32 i = 0; i < mIdentifiers->size(); i++)
-        (*mIdentifiers)[i].Init();
-
-    if (&IdentifierTypes()) 
-    {
-        IdentifierTypes().resize(5);
-        IdentifierTypes()[0] = 0;
-        IdentifierTypes()[1] = N_SUBSTRATE;
-        IdentifierTypes()[2] = N_PRODUCT;
-        IdentifierTypes()[3] = N_MODIFIER;
-        IdentifierTypes()[4] = N_KCONSTANT;
-    }
+    CallParameters()[0]->SetCount(CallParameters()[0]->Identifiers().size());
 }
 
 pair < C_INT32, C_INT32 > CKinFunction::FindIdentifier(const string & name)
@@ -506,9 +481,9 @@ pair < C_INT32, C_INT32 > CKinFunction::FindIdentifier(const string & name)
     C_INT32 j;
     C_INT32 i;
     
-    for (j = 0; j < mCallParameters->size(); j++)
-        for (i = 0; i < (*mCallParameters)[j].mIdentifiers->size(); i ++)
-            if ((*(*mCallParameters)[j].mIdentifiers)[i].GetName() == name) 
+    for (j = 0; j < CallParameters().size(); j++)
+        for (i = 0; i < CallParameters()[j]->Identifiers().size(); i ++)
+            if (CallParameters()[j]->Identifiers()[i]->GetName() == name) 
             {
                 Tuple.first = j;
                 Tuple.second = i;
@@ -518,42 +493,12 @@ pair < C_INT32, C_INT32 > CKinFunction::FindIdentifier(const string & name)
     return Tuple;
 }
 
-CKinCallParameter::~CKinCallParameter() {;}
+CKinIdentifier::CKinIdentifier() {}
 
-void CKinCallParameter::Delete()
-{
-    if (mIdentifiers)
-    {
-        for (C_INT32 i = 0; i < mIdentifiers->size(); i++)
-            (*mIdentifiers)[i].Delete();
-        
-        delete mIdentifiers;
-    }
-    mIdentifiers = NULL;
+CKinIdentifier::~CKinIdentifier() {} 
 
-    CBaseCallParameter::Delete();
-}
+CKinFunction::CKinNodes::CKinNodes() {}
 
-CKinIdentifier::CKinIdentifier() 
-{
-    mNodes = NULL;
-}
+CKinFunction::CKinNodes::~CKinNodes() {}
 
-void CKinIdentifier::Init()
-{
-    if (!mNodes) mNodes = new vector < CNodeK * >;
-}
-
-CKinIdentifier::~CKinIdentifier() {;} 
-
-void CKinIdentifier::Delete()
-{
-    if (mNodes) delete mNodes;
-    mNodes = NULL;
-}
-
-CKinFunction::CKinNodes::CKinNodes() {;}
-
-CKinFunction::CKinNodes::~CKinNodes() {;}
-
-C_INT16 CKinFunction::CKinNodes::IsInsertAllowed(CNodeK src) {return TRUE;}
+C_INT16 CKinFunction::CKinNodes::IsInsertAllowed(const CNodeK & src) {return TRUE;}

@@ -1,68 +1,80 @@
 #include "CFunctionDB.h"
+#include "CMassAction.h"
 
-CFunctionDB::CFunctionDB() {mLoadedFunctions = NULL;}
+CFunctionDB::CFunctionDB() {}
 
 void CFunctionDB::Init() 
 {
-    if (!mLoadedFunctions)
-        mLoadedFunctions = new CCopasiVector < CKinFunction >;
-
-    for (long i = 0; i < mLoadedFunctions->Size(); i++)
-        (*mLoadedFunctions)[i].Init();
+    CMassAction *MassActionReversible   = new CMassAction(TRUE);
+    mBuiltinFunctions.push_back((CBaseFunction *)MassActionReversible);
+    
+    CMassAction *MassActionIrreversible = new CMassAction(FALSE);
+    mBuiltinFunctions.push_back((CBaseFunction *)MassActionIrreversible);
 }
 
 CFunctionDB::~CFunctionDB() {}
 
 void CFunctionDB::Delete()
 {
-    if (mLoadedFunctions)
-    {
-        for (long i = 0; i < mLoadedFunctions->Size(); i++)
-            (*mLoadedFunctions)[i].Delete();
-        delete mLoadedFunctions;
-    }
-    mLoadedFunctions = NULL;
+    C_INT32 i;
+    
+    mLoadedFunctions.Delete();
+    
+    for (i = 0; i < mBuiltinFunctions.size(); i++)
+        delete mBuiltinFunctions[i];
+    mBuiltinFunctions.clear();
 }
 
 void CFunctionDB::SetFilename(const string & filename) {mFilename = filename;}
     
 string CFunctionDB::GetFilename() {return mFilename;}
 
-CKinFunction & CFunctionDB::DBLoad(const string & functionName) 
+CBaseFunction & CFunctionDB::DBLoad(const string & functionName) 
 {
-    C_INT32 Index = mLoadedFunctions->Size();
+    C_INT32 Index = mLoadedFunctions.Size();
     C_INT32 Fail = 0;
     
-    mLoadedFunctions->Add(CKinFunction());
+    CKinFunction *pFunction = new CKinFunction;
+    mLoadedFunctions.Add(pFunction);
     
     CReadConfig inbuf(mFilename);
     
-    while (functionName != (*mLoadedFunctions)[Index].GetName())
+    while (functionName != pFunction->GetName())
     {
-        (*mLoadedFunctions)[Index].Delete();
-        Fail = (*mLoadedFunctions)[Index].Load(inbuf);
+        pFunction->Delete();
+        Fail = pFunction->Load(inbuf, CReadConfig::SEARCH);
     }
 
-    return (*mLoadedFunctions)[Index];
+    return *mLoadedFunctions[Index];
 }
 
 void CFunctionDB::Add(CKinFunction & function)
 {
-    mLoadedFunctions->Add(function);
+    CKinFunction *Function = new CKinFunction;
+    Function->Init();
+    Function->Copy(function);
+        
+    mLoadedFunctions.Add(Function);
 }
 
 void CFunctionDB::DBDelete(const string & functionName)
 {
 }
 
-CKinFunction & CFunctionDB::FindFunction(const string & functionName)
+CBaseFunction & CFunctionDB::FindFunction(const string & functionName)
 {
     C_INT32 i;
     
-    for (i = 0; i < mLoadedFunctions->Size(); i++)
-        if (functionName == (*mLoadedFunctions)[i].GetName())
-            return (*mLoadedFunctions)[i];
+    for (i = 0; i < mLoadedFunctions.Size(); i++)
+        if (functionName == mLoadedFunctions[i]->GetName())
+            return *mLoadedFunctions[i];
 
+    for (i = 0; i < mBuiltinFunctions.size(); i++)
+        if (functionName == mBuiltinFunctions[i]->GetName())
+            return *mBuiltinFunctions[i];
+    
     return DBLoad(functionName);
 }
 
+CCopasiVectorP < CBaseFunction * > & CFunctionDB::LoadedFunctions()
+{return mLoadedFunctions;}

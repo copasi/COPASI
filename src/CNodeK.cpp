@@ -132,7 +132,7 @@ CNodeK & CNodeK::GetRight()
     return *mRight;
 }
 
-string CNodeK::GetName() 
+string CNodeK::GetName() const
 {
     static unsigned C_INT32 ctr = 0;
     char name[9];
@@ -173,7 +173,7 @@ C_INT16 CNodeK::IsRightValid() {return (C_INT16) mRight;}
 
 C_INT16 CNodeK::IsNumber() {return mType == N_NUMBER;}
 
-C_INT16 CNodeK::IsIdentifier()
+C_INT16 CNodeK::IsIdentifier() const
 {
     switch (mType)
     {

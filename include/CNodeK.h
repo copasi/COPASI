@@ -165,7 +165,7 @@ public:
      * Retrieving mName the name of a node
      * @return string
      */
-    string GetName();
+    string GetName() const;
 
     /**
      * Retrieving value of a node
@@ -255,7 +255,7 @@ public:
      *  This checks whether the node is an identifier (mType = N_IDENTIFIER)
      *  @return int 1 or 0
      */
-    C_INT16 IsIdentifier();
+    C_INT16 IsIdentifier() const;
 
     /**
      *  This checks whether the node is a operator (mType = N_OPERATOR)
