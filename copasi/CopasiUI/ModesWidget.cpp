@@ -38,7 +38,8 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   mModel = NULL;
   binitialized = true;
 
-  table = new MyTable(0, 2, this, "tblCompartments");
+  table = new MyTable(this, "tblCompartments");
+  table->setNumCols(2);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);

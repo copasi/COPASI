@@ -39,8 +39,9 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   mModel = NULL;
   binitialized = true;
 
-  table = new MyTable(0, 3, this, "tblMoieties");
+  table = new MyTable(this, "tblMoieties");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
+  table->setNumCols(3);
   table->setNumRows(-1);
   vBoxLayout->addWidget(table);
 

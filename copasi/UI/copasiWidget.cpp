@@ -22,9 +22,6 @@ CopasiWidget::CopasiWidget(QWidget * parent, const char * name, WFlags f)
   bSetMinSize = false;
 }
 
-CopasiWidget::~CopasiWidget()
-{}
-
 void CopasiWidget::resize (int w, int h)
 {
   if (!bInitialized)

@@ -36,7 +36,9 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
     : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(0, 7, this, "tblMetaboliteSymbols");
+  table = new MyTable(this, "tblMetaboliteSymbols");
+  table->setNumCols(7);
+  table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 

@@ -41,7 +41,8 @@ TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
 
 {
   binitialized = true;
-  table = new MyTable(0, 2, this, "tblTableDefinition");
+  table = new MyTable(this, "tblTableDefinition");
+  table->setNumCols(2);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);

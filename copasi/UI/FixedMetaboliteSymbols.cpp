@@ -37,7 +37,9 @@ FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * nam
     : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(0, 5, this, "tblFixedMetaboliteSymbols");
+  table = new MyTable(this, "tblFixedMetaboliteSymbols");
+  table->setNumCols(5);
+  table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 

@@ -1,10 +1,10 @@
 /********************************************************
-   Author: Liang Xu
-   Version : 1.xx  <first>
-   Description: 
-   Date: 04/03 
-   Comment : CopasiWidget: Provide base class for all widget: for resizable/minimize
-   Contact: Please contact lixu1@vt.edu.
+  Author: Liang Xu
+  Version : 1.xx  <first>
+  Description: 
+  Date: 04/03 
+  Comment : CopasiWidget: Provide base class for all widget: for resizable/minimize
+  Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #if !defined COPASI_WIDGET_H
@@ -18,7 +18,6 @@ class CopasiWidget : public QWidget
   {
   public:
     CopasiWidget(QWidget * parent = 0, const char * name = 0, WFlags f = 0);
-    virtual ~CopasiWidget();
     virtual void resizeEvent (QResizeEvent *);
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();

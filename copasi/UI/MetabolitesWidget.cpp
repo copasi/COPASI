@@ -39,7 +39,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
 {
   binitialized = true;
 
-  table = new MyTable(0, 5, this, "tblMetabolites");
+  table = new MyTable(this, "tblMetabolites");
+  table->setNumCols(5);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);

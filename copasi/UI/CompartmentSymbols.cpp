@@ -37,7 +37,9 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
     : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(0, 5, this, "tblComapartmentSymbols");
+  table = new MyTable(this, "tblComapartmentSymbols");
+  table->setNumCols(5);
+  table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 

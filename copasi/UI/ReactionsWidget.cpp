@@ -43,7 +43,8 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
 {
   binitialized = true;
 
-  table = new MyTable(0, 2, this, "tblReactions");
+  table = new MyTable(this, "tblReactions");
+  table->setNumCols(2);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
