@@ -1,35 +1,38 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2003/05/19 14:48:06 $  
+# $Revision: 1.5 $ $Author: shoops $ $Date: 2003/05/20 01:53:58 $  
 ######################################################################
 
-# In the case the OS is not specified we make a guess.
-isEmpty(OS) {
-  win32: {
-    OS = WIN32
+# In the case the BUILD_OS is not specified we make a guess.
+isEmpty(BUILD_OS) {
+  win32 {
+    BUILD_OS = WIN32
   } else {
-    OS = $$system(uname)
+    BUILD_OS = $$system(uname)
   }
 }
-DEFINES += $${OS}
+DEFINES += $${BUILD_OS}
 
 # Common configuration settings
 CONFIG += exceptions
 CONFIG += rtti
 CONFIG += thread
 
-# The character # (hex 23) can not be escaped we therefore create a variable containing it
-HASH = $$system(echo "\\043")
-contains(HASH, \\043){
-  HASH = $$system(echo -e "\\043")
+!contains(BUILD_OS, WIN32) {
+  # The character # (hex 23) can not be escaped we therefore create 
+  # a variable containing it
+  HASH = $$system(echo "\\043")
+  contains(HASH, \\043){
+    HASH = $$system(echo -e "\\043")
+  }
+
+  myLex = \
+          $(LEX) -t $< | \
+          sed -e 's/class istream;/$${HASH}include "copasi.h"/' \
+              -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+              -e 's/$${HASH}include <unistd.h>/using namespace std;/' > $@
 }
 
-myLex = \
-        $(LEX) -t $< | \
-        sed -e 's/class istream;/$${HASH}include "copasi.h"/' \
-            -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
-            -e 's/$${HASH}include <unistd.h>/using namespace std;/' > $@
-
-contains(OS, Darwin) {
+contains(BUILD_OS, Darwin) {
   INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
   LIBS += -framework vecLib
   LIBS += -framework Carbon
@@ -38,19 +41,20 @@ contains(OS, Darwin) {
   CONFIG -= thread
 }
 
-contains(OS, WIN32) {
+contains(BUILD_OS, WIN32) {
   DEFINES -= UNICODE
+  QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
 
   !isEmpty(MKL_PATH) {
+    DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
-    LIBS += -lmkl_lapack -lmkl_p3 -lg2c -lpthread
-    LIBS +=  -L$${MKL_PATH}/lib/32
+    LIBS += # mkl_lapack.lib mkl_p3.lib
+    LIBS += # -L$${MKL_PATH}/lib/32"
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
       INCLUDEPATH += $${CLAPACK_PATH}/include
-      LIBS += -llapack -lblas -lF77 -lfl
-      LIBS +=  -L$${CLAPACK_PATH}/lib
+      LIBS += $${CLAPACK_PATH}/lib/clapack.lib
     } else {
       error( "Either MKL_PATH or CLAPACK_PATH must be specified )
     }
@@ -58,25 +62,26 @@ contains(OS, WIN32) {
 
   !isEmpty(EXPAT_PATH) {
       INCLUDEPATH += $${EXPAT_PATH}/Source/lib
-      LIBS += -lexpat -L$${EXPAT_PATH}/StaticLibs
+      LIBS += $${EXPAT_PATH}/StaticLibs/libexpat.lib
     } else {
       error( "EXPAT_PATH must be specified )
     }
 } 
 
-contains(OS, SunOS) {
+contains(BUILD_OS, SunOS) {
   !isEmpty(CLAPACK_PATH) {
     DEFINES += USE_CLAPACK
     INCLUDEPATH += $${CLAPACK_PATH}/include
     LIBS += -llapack -lblas -lF77 -lfl
-    LIBS +=  -L$${CLAPACK_PATH}/lib
+    LIBS += -L$${CLAPACK_PATH}/lib
   } else {
     error( "CLAPACK_PATH must be specified )
   }
 }
  
-contains(OS, Linux) {
+contains(BUILD_OS, Linux) {
   !isEmpty(MKL_PATH) {
+    DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
     LIBS += -lmkl_lapack -lmkl_p3 -lg2c -lpthread
     LIBS +=  -L$${MKL_PATH}/lib/32
@@ -85,7 +90,7 @@ contains(OS, Linux) {
       DEFINES += USE_CLAPACK
       INCLUDEPATH += $${CLAPACK_PATH}/include
       LIBS += -llapack -lblas -lF77 -lfl
-      LIBS +=  -L$${CLAPACK_PATH}/lib
+      LIBS += -L$${CLAPACK_PATH}/lib
     } else {
       error( "Either MKL_PATH or CLAPACK_PATH must be specified )
     }

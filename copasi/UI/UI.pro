@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: shoops $ $Date: 2003/05/19 12:45:54 $  
+# $Revision: 1.2 $ $Author: shoops $ $Date: 2003/05/20 01:53:58 $  
 ######################################################################
 
 include(../common.pri)
@@ -9,26 +9,42 @@ TEMPLATE = app
 DEPENDPATH += .. 
 INCLUDEPATH += ..
 
-# The order of libs is important 
-tmpLIBS = $${LIBS}
-LIBS = -L../lib \
-       -Wl,-lelementaryFluxModes \
-       -Wl,-lcopasiXML \
-       -Wl,-lmathmodel \
-       -Wl,-lmodel \
-       -Wl,-lfunction \
-       -Wl,-loutput \
-       -Wl,-lreport \
-       -Wl,-loptimization \
-       -Wl,-lscan \
-       -Wl,-lsteadystate \
-       -Wl,-ltrajectory \
-       -Wl,-lrandomGenerator \
-       -Wl,-lutilities \
-       -Wl,-loutput \
-       -Wl,-lfunction \
-       -Wl,-lmodel
-LIBS += $${tmpLIBS}
+contains(BUILD_OS, WIN32) {
+  LIBS += ../lib/copasiXML.lib \
+          ../lib/elementaryFluxModes.lib \
+          ../lib/function.lib \
+          ../lib/mathmodel.lib \
+          ../lib/model.lib \
+          ../lib/optimization.lib \
+          ../lib/output.lib \
+          ../lib/randomGenerator.lib \
+          ../lib/report.lib \
+          ../lib/scan.lib \
+          ../lib/steadystate.lib \
+          ../lib/trajectory.lib \
+          ../lib/utilities.lib
+} else {
+  # The order of libs is important 
+  tmpLIBS = $${LIBS}
+  LIBS = -L../lib \
+         -Wl,-lelementaryFluxModes \
+         -Wl,-lcopasiXML \
+         -Wl,-lmathmodel \
+         -Wl,-lmodel \
+         -Wl,-lfunction \
+         -Wl,-loutput \
+         -Wl,-lreport \
+         -Wl,-loptimization \
+         -Wl,-lscan \
+         -Wl,-lsteadystate \
+         -Wl,-ltrajectory \
+         -Wl,-lrandomGenerator \
+         -Wl,-lutilities \
+         -Wl,-loutput \
+         -Wl,-lfunction \
+         -Wl,-lmodel
+  LIBS += $${tmpLIBS}
+}
 
 # Input
 HEADERS += CompartmentsWidget.h \
@@ -57,8 +73,6 @@ HEADERS += CompartmentsWidget.h \
            MyTable.h \
            ObjectBrowser.h \
            ObjectBrowserItem.h \
-           objectdebug.h \
-           objectdebug.ui.h \
            Observer.h \
            parametertable.h \
            ReactionsWidget.h \
@@ -106,7 +120,6 @@ SOURCES += CompartmentsWidget.cpp \
            MyTable.cpp \
            ObjectBrowser.cpp \
            ObjectBrowserItem.cpp \
-           objectdebug.cpp \
            Observer.cpp \
            parametertable.cpp \
            ReactionsWidget.cpp \
