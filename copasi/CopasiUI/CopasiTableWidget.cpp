@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:05 $
+   $Author: stupe $ 
+   $Date: 2004/11/17 21:43:01 $
    End CVS Header */
 
 /*******************************************************************
@@ -63,6 +63,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       btnCancel = new QPushButton("Revert", this);
       btnDelete = new QPushButton("Delete/Undelete", this);
       btnNew = new QPushButton("New", this);
+      btnClear = new QPushButton("Clear", this);
     }
 
   vBoxLayout->addSpacing(5);
@@ -78,6 +79,8 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       mHLayout->addSpacing(5);
       mHLayout->addWidget(btnCancel);
       mHLayout->addStretch();
+      mHLayout->addWidget(btnClear);
+      mHLayout->addSpacing(5);
       mHLayout->addWidget(btnDelete);
       mHLayout->addSpacing(5);
       mHLayout->addWidget(btnNew);
@@ -111,6 +114,8 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
               SLOT(slotBtnCancelClicked()));
       connect(btnDelete, SIGNAL(clicked ()), this,
               SLOT(slotBtnDeleteClicked()));
+      connect(btnClear, SIGNAL(clicked ()), this,
+              SLOT(slotBtnClearClicked()));
       connect(btnNew, SIGNAL(clicked ()), this,
               SLOT(slotBtnNewClicked()));
     }
@@ -378,6 +383,16 @@ void CopasiTableWidget::slotBtnCancelClicked()
 {
   if (dataModel->getModel())
     fillTable();
+}
+
+void CopasiTableWidget::slotBtnClearClicked()
+{
+  int rowCount = table->numRows() - 1;
+  for (int i = 0; i < rowCount; i++)
+    {
+      table->selectRow(i);
+    }
+  CopasiTableWidget::slotBtnDeleteClicked();
 }
 
 void CopasiTableWidget::slotBtnDeleteClicked()
