@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/17 12:57:09 $
+   $Date: 2003/10/21 14:08:35 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -14,6 +14,7 @@
 #include <qmenubar.h>
 #include <qapplication.h>
 #include <qmessagebox.h>
+#include <qregexp.h>
 
 #include "copasiui3window.h"
 #include "listviews.h"
@@ -87,17 +88,18 @@ CopasiUI3Window::CopasiUI3Window():
  ** Descripton:- This method is called when the users clicks on the save as 
  **              option in the menu File 
  *******************************************************************************************/
-void CopasiUI3Window::slotFileSaveAs()
+void CopasiUI3Window::slotFileSaveAs(QString str)
 {
-  gpsFile = QFileDialog::getSaveFileName(
-              QString::null, "GPS Files (*.gps)",
-              this, "save file dialog",
-              "Choose a file");
+  QString tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.COPASIxml)",
+                this, "save file dialog",
+                "Choose a file");
 
-  if (dataModel && gpsFile)
+  if (dataModel && tmp)
     {
-      //      gpsFile += ".gps";
-      dataModel->saveModel((const char *)gpsFile.utf8());
+      if (!tmp.endsWith(".COPASIxml")) tmp += ".COPASIxml";
+
+      dataModel->saveModel(tmp.latin1());
+      gpsFile = tmp;
     }
 } //cout<<"it comes in filesave as...";}
 
@@ -146,8 +148,8 @@ void CopasiUI3Window::newDoc()
   if (!dataModel)
     dataModel = new DataModel(); // create the data model
 
-  gpsFile = "temp.gps";
-  dataModel->createModel((const char *)gpsFile.utf8());
+  gpsFile = "temp.COPASIxml";
+  dataModel->createModel(gpsFile.latin1());
   ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
   if (!bobject_browser_open)
     file->setItemEnabled(nobject_browser, true);
@@ -210,12 +212,15 @@ void CopasiUI3Window::slotFileSave()
 {
   if (dataModel && gpsFile)
     {
-      CReadConfig inbuf((const char *)gpsFile.utf8());
-      if (inbuf.getVersion() < "4.0" ||
-          gpsFile == QString::fromLatin1("temp.gps"))
-        slotFileSaveAs();
+      if (gpsFile.endsWith(".gps") ||
+          gpsFile == QString::fromLatin1("temp.COPASIxml"))
+        {
+          QString tmp(gpsFile);
+          tmp.replace(QRegExp("\\.gps$"), ".COPASIxml");
+          slotFileSaveAs(tmp);
+        }
       else
-        dataModel->saveModel((const char *)gpsFile.utf8());
+        dataModel->saveModel(gpsFile.latin1());
     }
 }
 
