@@ -1,15 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/18 02:54:18 $
+   $Date: 2005/03/30 14:26:21 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
 #define COPASI_COptItem
 
+#include <vector>
+
 #include "report/CCopasiObject.h"
+#include "report/CCopasiContainer.h"
 
 class CCopasiParameterGroup;
 class CCopasiObjectName;
@@ -127,6 +130,12 @@ class COptItem
     const std::string getUpperRelation() const;
 
     /**
+     * Retrieve the update method
+     * @return UpdateMethod * pUpdateMethod
+     */
+    UpdateMethod * getUpdateMethod() const;
+
+    /**
      * Check the validity of the optimization item.
      * @return bool isValid
      */
@@ -142,9 +151,18 @@ class COptItem
     /**
      * Compile the optimization item. This function must be called 
      * before any of the check functions are called.
+     * @param const std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
      */
-    bool compile();
+    bool compile(const std::vector< CCopasiContainer * > listOfContainer =
+                   CCopasiContainer::EmptyList);
+
+    /**
+     * This functions check whether the current value is within the limits
+     * of the optimization item.
+     * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
+     */
+    C_INT32 checkConstraint() const;
 
     /**
      * This functions check whether the value is within the limits
@@ -152,21 +170,21 @@ class COptItem
      * @param const C_FLOAT64 & value
      * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
      */
-    C_INT32 checkConstraint(const C_FLOAT64 & value);
+    C_INT32 checkConstraint(const C_FLOAT64 & value) const;
 
     /**
      * Checks whether the value fulfills the lower bound constraint.
      * @param const C_FLOAT64 & value
      * @return bool fulfills
      */
-    bool checkLowerBound(const C_FLOAT64 & value);
+    bool checkLowerBound(const C_FLOAT64 & value) const;
 
     /**
      * Checks whether the value fulfills the upper bound constraint.
      * @param const C_FLOAT64 & value
      * @return bool fulfills
      */
-    bool checkUpperBound(const C_FLOAT64 & value);
+    bool checkUpperBound(const C_FLOAT64 & value) const;
 
     /**
      * Retrieve the value of the optimization object.
@@ -178,13 +196,15 @@ class COptItem
      * Retrieve the value of the lower bound.
      * @return const C_FLOAT64 * lowerBoundValue
      */
-    const C_FLOAT64 * getLowerBoundValue() const;
+    inline const C_FLOAT64 * COptItem::getLowerBoundValue() const
+      {return mpLowerBound;}
 
     /**
      * Retrieve the value of the upper bound.
      * @return const C_FLOAT64 * upperBoundValue
      */
-    const C_FLOAT64 * getUpperBoundValue() const;
+    inline const C_FLOAT64 * COptItem::getUpperBoundValue() const
+      {return mpUpperBound;}
 
     //Attributes:
   private:
@@ -192,6 +212,11 @@ class COptItem
      * A pointer to the parameter group which stores the information.
      */
     CCopasiParameterGroup * mpGroup;
+
+    /**
+     * A pointer to the object value
+     */
+    UpdateMethod * mpMethod;
 
     /**
      * A pointer to the object value

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/21 18:52:50 $
+   $Date: 2005/03/30 14:26:21 $
    End CVS Header */
 
 #include <float.h>
@@ -14,11 +14,12 @@
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
 #include "utilities/CCopasiParameterGroup.h"
-
+#include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
 
 COptItem::COptItem(CCopasiParameterGroup & group) :
     mpGroup(&group),
+    mpMethod(NULL),
     mpObjectValue(NULL),
     mpLowerBound(NULL),
     mLowerBound(0.0),
@@ -30,6 +31,7 @@ COptItem::COptItem(CCopasiParameterGroup & group) :
 
 COptItem::COptItem(COptItem & src) :
     mpGroup(src.mpGroup),
+    mpMethod(src.mpMethod),
     mpObjectValue(src.mpObjectValue),
     mpLowerBound(src.mpLowerBound),
     mLowerBound(src.mLowerBound),
@@ -58,13 +60,17 @@ bool COptItem::initialize(const CCopasiObjectName & objectCN)
 bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
 {
   const CCopasiObject * pObject = RootContainer.getObject(objectCN);
-  if (pObject == NULL || !pObject->isValueDbl()) return false;
+  if (pObject == NULL || !pObject->isValueDbl())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, objectCN.c_str());
+      return false;
+    }
 
   return mpGroup->setValue(0, (const std::string) objectCN);
 }
 
 const CCopasiObjectName COptItem::getObjectCN() const
-{return *(std::string*) mpGroup->getValue(0);}
+  {return *(std::string*) mpGroup->getValue(0);}
 
 bool COptItem::setLowerBound(const std::string & lowerBound)
 {
@@ -73,23 +79,31 @@ bool COptItem::setLowerBound(const std::string & lowerBound)
   if (lowerBound != "-inf" &&
       !isNumber(lowerBound) &&
       ((pObject = RootContainer.getObject(lowerBound)) == NULL ||
-       !pObject->isValueDbl())) return false;
+       !pObject->isValueDbl()))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, lowerBound.c_str());
+      return false;
+    }
 
   return mpGroup->setValue(1, lowerBound);
 }
 
 const std::string COptItem::getLowerBound() const
-{return *(std::string*) mpGroup->getValue(1);}
+  {return *(std::string*) mpGroup->getValue(1);}
 
 bool COptItem::setLowerRelation(const std::string & lowerRel)
 {
-  if (lowerRel != "<" && lowerRel != "<=") return false;
+  if (lowerRel != "<" && lowerRel != "<=")
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, lowerRel.c_str());
+      return false;
+    }
 
   return mpGroup->setValue(2, lowerRel);
 }
 
 const std::string COptItem::getLowerRelation() const
-{return *(std::string*) mpGroup->getValue(2);}
+  {return *(std::string*) mpGroup->getValue(2);}
 
 bool COptItem::setUpperBound(const std::string & upperBound)
 {
@@ -98,23 +112,34 @@ bool COptItem::setUpperBound(const std::string & upperBound)
   if (upperBound != "inf" &&
       !isNumber(upperBound) &&
       ((pObject = RootContainer.getObject(upperBound)) == NULL ||
-       !pObject->isValueDbl())) return false;
+       !pObject->isValueDbl()))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, upperBound.c_str());
+      return false;
+    }
 
   return mpGroup->setValue(3, upperBound);
 }
 
 const std::string COptItem::getUpperBound() const
-{return *(std::string*) mpGroup->getValue(3);}
+  {return *(std::string*) mpGroup->getValue(3);}
 
 bool COptItem::setUpperRelation(const std::string & upperRel)
 {
-  if (upperRel != "<" && upperRel != "<=") return false;
+  if (upperRel != "<" && upperRel != "<=")
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, upperRel.c_str());
+      return false;
+    }
 
   return mpGroup->setValue(4, upperRel);
 }
 
 const std::string COptItem::getUpperRelation() const
-{return *(std::string*) mpGroup->getValue(4);}
+  {return *(std::string*) mpGroup->getValue(4);}
+
+UpdateMethod * COptItem::getUpdateMethod() const
+  {return mpMethod;}
 
 bool COptItem::isValid() const
   {
@@ -152,15 +177,26 @@ bool COptItem::isValid(CCopasiParameterGroup & group)
   return tmp.isValid();
 }
 
-bool COptItem::compile()
+bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
   std::string Bound;
   const CCopasiObject *pObject;
 
-  if ((pObject = RootContainer.getObject(getObjectCN())) != NULL &&
+  mpMethod = NULL;
+  mpObjectValue = NULL;
+  if ((pObject =
+         CCopasiContainer::ObjectFromName(listOfContainer,
+                                          getObjectCN())) != NULL &&
       pObject->isValueDbl())
     mpObjectValue = (C_FLOAT64 *) pObject->getReference();
+  if (!mpObjectValue)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, getObjectCN().c_str());
+      return false;
+    }
+  mpMethod = pObject->getUpdateMethod();
 
+  mpLowerBound = NULL;
   Bound = getLowerBound();
   if (Bound == "-inf")
     {
@@ -172,14 +208,21 @@ bool COptItem::compile()
       mLowerBound = strtod(Bound.c_str(), NULL);
       mpLowerBound = &mLowerBound;
     }
-  else if ((pObject = RootContainer.getObject(Bound)) != NULL &&
+  else if ((pObject =
+              CCopasiContainer::ObjectFromName(listOfContainer,
+                                               Bound)) != NULL &&
            pObject->isValueDbl())
     mpLowerBound = (C_FLOAT64 *) pObject->getReference();
-  else return false;
+  if (!mpLowerBound) return false;
+  {
+    CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, Bound.c_str());
+    return false;
+  }
 
   if (getLowerRelation() == "<") mpLowerRel = less;
   else mpLowerRel = lessOrEqual;
 
+  mpUpperBound = NULL;
   Bound = getUpperBound();
   if (Bound == "inf")
     {
@@ -191,10 +234,16 @@ bool COptItem::compile()
       mUpperBound = strtod(Bound.c_str(), NULL);
       mpUpperBound = &mUpperBound;
     }
-  else if ((pObject = RootContainer.getObject(Bound)) != NULL &&
+  else if ((pObject =
+              CCopasiContainer::ObjectFromName(listOfContainer,
+                                               Bound)) != NULL &&
            pObject->isValueDbl())
     mpUpperBound = (C_FLOAT64 *) pObject->getReference();
-  else return false;
+  if (!mpUpperBound)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, Bound.c_str());
+      return false;
+    }
 
   if (getUpperRelation() == "<") mpUpperRel = less;
   else mpUpperRel = lessOrEqual;
@@ -202,18 +251,25 @@ bool COptItem::compile()
   return true;
 }
 
-C_INT32 COptItem::checkConstraint(const C_FLOAT64 & value)
-{
-  if (!mpLowerRel(*mpLowerBound, value)) return - 1;
-  if (!mpUpperRel(value, *mpUpperBound)) return 1;
-  return 0;
-}
+C_INT32 COptItem::checkConstraint() const
+  {
+    if (!mpLowerRel(*mpLowerBound, *mpObjectValue)) return - 1;
+    if (!mpUpperRel(*mpObjectValue, *mpUpperBound)) return 1;
+    return 0;
+  }
 
-bool COptItem::checkLowerBound(const C_FLOAT64 & value)
+C_INT32 COptItem::checkConstraint(const C_FLOAT64 & value) const
+  {
+    if (!mpLowerRel(*mpLowerBound, value)) return - 1;
+    if (!mpUpperRel(value, *mpUpperBound)) return 1;
+    return 0;
+  }
+
+bool COptItem::checkLowerBound(const C_FLOAT64 & value) const
 {return mpLowerRel(*mpLowerBound, value);}
 
-bool COptItem::checkUpperBound(const C_FLOAT64 & value)
-{return mpUpperRel(value, *mpUpperBound);}
+bool COptItem::checkUpperBound(const C_FLOAT64 & value) const
+  {return mpUpperRel(value, *mpUpperBound);}
 
 bool COptItem::less(const C_FLOAT64 & val1, const C_FLOAT64 & val2)
 {return (val1 < val2);}
@@ -223,9 +279,3 @@ bool COptItem::lessOrEqual(const C_FLOAT64 & val1, const C_FLOAT64 & val2)
 
 const C_FLOAT64 * COptItem::getObjectValue() const
   {return mpObjectValue;}
-
-const C_FLOAT64 * COptItem::getLowerBoundValue() const
-  {return mpLowerBound;}
-
-const C_FLOAT64 * COptItem::getUpperBoundValue() const
-  {return mpUpperBound;}
