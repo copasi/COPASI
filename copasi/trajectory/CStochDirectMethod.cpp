@@ -1,3 +1,5 @@
+#include "copasi.h"
+
 #include "CStochDirectMethod.h"
 
 CStochDirectMethod::CStochDirectMethod()

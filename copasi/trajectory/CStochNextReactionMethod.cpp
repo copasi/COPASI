@@ -1,3 +1,4 @@
+#include "copasi.h"
 #include "CStochNextReactionMethod.h"
 
 CStochNextReactionMethod::CStochNextReactionMethod()
