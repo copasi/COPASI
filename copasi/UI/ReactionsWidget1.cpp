@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.154 $
+   $Revision: 1.155 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/11 02:16:44 $
+   $Author: ssahle $ 
+   $Date: 2004/12/19 19:59:28 $
    End CVS Header */
 
 /*********************************************************************
@@ -100,17 +100,17 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   Line2->setFrameShape(QFrame::HLine);
   ReactionsWidget1Layout->addMultiCellWidget(Line2, 6, 7, 0, 3);
 
-  Line1 = new QFrame(this, "Line1");
+  /*Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
   Line1->setFrameShadow(QFrame::Sunken);
   Line1->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line1, 11, 11, 0, 3);
+  ReactionsWidget1Layout->addMultiCellWidget(Line1, 11, 11, 0, 3);*/
 
-  Line3 = new QFrame(this, "Line3");
+  /*Line3 = new QFrame(this, "Line3");
   Line3->setFrameShape(QFrame::HLine);
   Line3->setFrameShadow(QFrame::Sunken);
   Line3->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line3, 1, 1, 0, 3);
+  ReactionsWidget1Layout->addMultiCellWidget(Line3, 1, 1, 0, 3);*/
 
   // kinetics line
   TextLabel6 = new QLabel(this, "TextLabel6");
@@ -330,7 +330,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                     // Yes or Enter
+        case 0:                      // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -362,7 +362,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                            // No or Escape
+        default:                             // No or Escape
           break;
         }
       //}
