@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 09:19:10 $
+   $Date: 2004/10/14 21:20:59 $
    End CVS Header */
 
 /**
@@ -128,7 +128,8 @@ bool CTrajectoryTask::initialize(std::ostream * pOstream)
   //  if (!pProblem->
   //      setInitialState(pProblem->getModel()->getInitialState()))
   //    success = false;
-  pProblem->setInitialState(pProblem->getModel()->getInitialState());
+
+  //pProblem->setInitialState(pProblem->getModel()->getInitialState());
 
   return success;
 }
