@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
- **
- ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.13 2003/10/06 02:03:49 lixu1 Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 09/19
+Comment : OptimizationWidget for UI of the optimization function
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 
 #include <qvariant.h>
 #include <qpushbutton.h>

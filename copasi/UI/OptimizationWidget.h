@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form interface generated from reading ui file '.\OptimizationWidget.ui'
- **
- ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.h,v 1.4 2003/09/30 04:52:03 lixu1 Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 09/19
+Comment : OptimizationWidget for embeded widget for limit of the optimization function
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 
 #ifndef OptimizationWidget_H
 #define OptimizationWidget_H

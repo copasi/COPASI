@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
- **
- ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.27 2003/09/18 23:31:17 lixu1 Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 08/15
+Comment : CReportDefinitionSelect to select the report definition for one task
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 
 #include "CReportDefinitionSelect.h"
 

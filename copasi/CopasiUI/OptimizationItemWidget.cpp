@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
- **
- ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.15 2003/10/06 02:03:49 lixu1 Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 10/01
+Comment : OptimizationItemWidget for embeded widget for limit of the optimization function
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 
 #include "OptimizationItemWidget.h"
 #include "ScanItemWidget.h"

@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form interface generated from reading ui file '.\FunctionItemWidget.ui'
- **
- ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.h,v 1.6 2003/10/05 01:13:38 lixu1 Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 09/29
+Comment : FunctionItemWidget for editing of the optimization function
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 
 #ifndef FUNCTIONITEMWIDGET_H
 #define FUNCTIONITEMWIDGET_H
