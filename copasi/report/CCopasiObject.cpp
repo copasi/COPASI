@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/10/21 17:49:02 $
+   $Date: 2004/10/21 17:56:53 $
    End CVS Header */
 
 /**
@@ -34,7 +34,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
                              const CCopasiContainer * pParent,
                              const std::string & type,
                              const unsigned C_INT32 & flag):
-    mObjectName(name),
+    mObjectName((name == "") ? "No Name" : name),
     mObjectType(type),
     mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
     mObjectFlag(flag)
@@ -45,10 +45,10 @@ CCopasiObject::CCopasiObject(const std::string & name,
 
 CCopasiObject::CCopasiObject(const CCopasiObject & src,
                              const CCopasiContainer * pParent):
-    mObjectName(src.mObjectName),
-    mObjectType(src.mObjectType),
-    mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
-    mObjectFlag(src.mObjectFlag)
+mObjectName(src.mObjectName),
+mObjectType(src.mObjectType),
+mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
+mObjectFlag(src.mObjectFlag)
 {if (mpObjectParent) mpObjectParent->add(this);}
 
 CCopasiObject::~CCopasiObject()
