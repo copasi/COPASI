@@ -95,19 +95,23 @@ SOURCE=.\CEigen.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\steadystate\CJacob.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CMca.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\steadystate\CNewton.cpp
+SOURCE=.\CNewtonMethod.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\steadystate\CSS_Solution.cpp
+SOURCE=.\CSteadyStateMethod.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSteadyStateProblem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSteadyStateTask.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -119,19 +123,23 @@ SOURCE=.\CEigen.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\steadystate\CJacob.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\CMca.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\steadystate\CNewton.h
+SOURCE=.\CNewtonMethod.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\steadystate\CSS_Solution.h
+SOURCE=.\CSteadyStateMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSteadyStateProblem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSteadyStateTask.h
 # End Source File
 # Begin Source File
 
