@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.18 2003/08/12 02:43:14 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.19 2003/08/12 02:45:37 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -133,9 +133,10 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   frame4Layout->addWidget(seperatorLabel, 2, 0);
 
   comboTask = new QComboBox(FALSE, frame4, "comboTask");
+  comboTask->insertItem ("Scan Task");
   comboTask->insertItem ("Trajectory Task");
   comboTask->insertItem ("SteadyState Task");
-  comboTask->insertItem ("Scan Task");
+  comboTask->setEnabled(false);
 
   frame4Layout->addWidget(comboTask, 0, 1);
 
@@ -240,6 +241,7 @@ void TableDefinition::languageChange()
 /*This function is to load the model for the table*/
 void TableDefinition::loadTableDefinition()
 {
+  comboTask->setEnabled(true);
   seperatorEdit->setEnabled(false);
   tabChecked->setChecked(true);
 }
