@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:20:30 $
+   $Author: ssahle $ 
+   $Date: 2005/01/25 13:29:39 $
    End CVS Header */
 
 /*******************************************************************
@@ -58,6 +58,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   mLblName = new QLabel(this, "mLblName");
   mLblName->setText(trUtf8("Metabolite Name"));
+  mLblName->setAlignment(int(QLabel::AlignVCenter
+                             | QLabel::AlignRight));
   MetabolitesWidget1Layout->addWidget(mLblName, 0, 0);
 
   mEditName = new QLineEdit(this, "mEditName");
@@ -65,6 +67,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   mLblCompartment = new QLabel(this, "mLblCompartment");
   mLblCompartment->setText(trUtf8("Compartment"));
+  mLblCompartment->setAlignment(int(QLabel::AlignVCenter
+                                    | QLabel::AlignRight));
   MetabolitesWidget1Layout->addWidget(mLblCompartment, 1, 0);
 
   mComboCompartment = new QComboBox(FALSE, this, "mComboCompartment");
@@ -72,6 +76,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   mLblInitStatus = new QLabel(this, "mLblInitStatus");
   mLblInitStatus->setText(trUtf8("Metabolite status"));
+  mLblInitStatus->setAlignment(int(QLabel::AlignVCenter
+                                   | QLabel::AlignRight));
   MetabolitesWidget1Layout->addWidget(mLblInitStatus, 3, 0);
 
   mCheckStatus = new QCheckBox(this, "mCheckStatus");
@@ -103,8 +109,9 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addWidget(mLblNumber, 5, 2);
 
   mLblInitConcentration = new QLabel(this, "mLblInitConcentration");
-  mLblInitConcentration->setText(trUtf8("Initial  Concentration\n"));
-
+  mLblInitConcentration->setText(trUtf8("Concentration\n"));
+  mLblInitConcentration->setAlignment(int(QLabel::AlignVCenter
+                                          | QLabel::AlignRight));
   MetabolitesWidget1Layout->addWidget(mLblInitConcentration, 6, 0);
 
   mEditInitConcentration = new MyLineEdit(this, "mEditInitConcentration");
@@ -117,6 +124,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   mLblInitNumber = new QLabel(this, "mLblInitNumber");
   mLblInitNumber->setText(trUtf8("Particle Number"));
+  mLblInitNumber->setAlignment(int(QLabel::AlignVCenter
+                                   | QLabel::AlignRight));
   MetabolitesWidget1Layout->addWidget(mLblInitNumber, 7, 0);
 
   mEditInitNumber = new MyLineEdit(this, "mEditInitNumber");
@@ -131,6 +140,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   mLblTransitionTime = new QLabel(this, "mLblTransitionTime");
   mLblTransitionTime->setText(trUtf8("Transition Time"));
+  mLblTransitionTime->setAlignment(int(QLabel::WordBreak | QLabel::AlignVCenter
+                                       | QLabel::AlignRight));
   MetabolitesWidget1Layout->addWidget(mLblTransitionTime, 8, 1);
 
   mEditTransitionTime = new QLineEdit(this, "mEditTransitionTime");
@@ -139,6 +150,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   mLblRate = new QLabel(this, "mLblRate");
   mLblRate->setText(trUtf8("Concentration rate"));
+  mLblRate->setAlignment(int(QLabel::AlignVCenter
+                             | QLabel::AlignRight));
   MetabolitesWidget1Layout->addWidget(mLblRate, 9, 1);
 
   mEditRate = new QLineEdit(this, "mEditRate");
@@ -155,7 +168,9 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   mReactionsLabel = new QLabel(this, "ReactionsLabel");
   mReactionsLabel->setText("Reactions\naffecting this\nmetabolite");
-  mReactionsLabel->setAlignment(Qt::AlignTop);
+  mReactionsLabel->setAlignment(int(QLabel::AlignTop
+                                    | QLabel::AlignRight));
+  //mReactionsLabel->setAlignment(Qt::AlignTop);
   MetabolitesWidget1Layout->addWidget(mReactionsLabel, 11, 0);
 
   mReactionsTable = new QTable(this, "ReactionsTable");
@@ -238,13 +253,10 @@ MetabolitesWidget1::~MetabolitesWidget1()
    clicked in the tree   */
 bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
 {
-  mLblInitConcentration->setText("Initial  Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
+  mLblInitConcentration->setText("Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
                                  "/" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
 
-  mLblConcentration->setText("Transient Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
-                             "/" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
-
-  mLblTransitionTime->setText("Transition Time\n(" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")");
+  mLblTransitionTime->setText("Transition Time (" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")");
 
   mLblRate->setText("Rate of concentration change\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
                     "/(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))");
@@ -479,11 +491,11 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                     // Yes or Enter
+    case 0:                                      // Yes or Enter
       {
-        unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
+        unsigned C_INT32 size = dataModel->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
-        unsigned C_INT32 index = Copasi->pModel->getMetabolites().getIndex(GlobalKeys.get(objKey));
+        unsigned C_INT32 index = dataModel->getModel()->getMetabolites().getIndex(GlobalKeys.get(objKey));
         /*for (i = 0; i < imax; i++)
                {
                  dataModel->getModel()->removeMetabolite(keys[i]);
@@ -491,7 +503,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         dataModel->getModel()->removeMetabolite(objKey);
         if (size > 1)
           {
-            enter(Copasi->pModel->getMetabolites()[std::min(index, size - 2)]->getKey());
+            enter(dataModel->getModel()->getMetabolites()[std::min(index, size - 2)]->getKey());
             //for (i = 0; i < imax; i++)
           }
         else
@@ -502,7 +514,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                     // No or Escape
+    case 1:                                      // No or Escape
       break;
     }
 }
