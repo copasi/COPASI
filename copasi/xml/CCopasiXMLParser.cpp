@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 12:37:05 $
+   $Author: ssahle $ 
+   $Date: 2004/08/10 16:14:37 $
    End CVS Header */
 
 /**
@@ -3783,7 +3783,7 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
           fatalError();
           break;
         }
-      mCommon.pCurrentParameterGroup->addParameter(mCommon.pCurrentParameter->getName(), mCommon.pCurrentParameter->getType(), mCommon.pCurrentParameter->getValue());
+      mCommon.pCurrentParameterGroup->addParameter(mCommon.pCurrentParameter->getObjectName(), mCommon.pCurrentParameter->getType(), mCommon.pCurrentParameter->getValue());
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = ParameterGroup;
       break;
@@ -3938,7 +3938,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
             {
               fatalError();
             }
-          mCommon.pCurrentTask->getMethod()->setName(name);
+          mCommon.pCurrentTask->getMethod()->setObjectName(name);
         }
       return;
       break;

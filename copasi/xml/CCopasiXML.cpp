@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 10:58:57 $
+   $Author: ssahle $ 
+   $Date: 2004/08/10 16:14:37 $
    End CVS Header */
 
 /**
@@ -617,7 +617,7 @@ bool CCopasiXML::saveTaskList()
       CCopasiMethod *tMethod = pTask->getMethod();
 
       Attributes.erase();
-      Attributes.add("name", tMethod->CCopasiParameter::getName());
+      Attributes.add("name", tMethod->CCopasiParameter::getObjectName());
       Attributes.add("type", CCopasiMethod::XMLSubType[tMethod->getSubType()]);
       startSaveElement("Method", Attributes);
       saveParameterGroup(* (std::vector<CCopasiParameter *> *) tMethod->CCopasiParameter::getValue());
