@@ -112,7 +112,7 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
 
   RadioButton3 = new QRadioButton(ButtonGroup1, "RadioButton3");
   RadioButton3->setGeometry(QRect(350, 15, 87, 20));
-  RadioButton3->setText(trUtf8("unknown"));
+  RadioButton3->setText(trUtf8("General"));
 
   // fourth Row
   QHBoxLayout *hBoxLayout5a = new QHBoxLayout(Frame5, 0);

@@ -5,7 +5,7 @@
 0:5:Prefereneces
 1:11:Data File
 1:12:Method
-3:21:BioChem
+3:21:Biochem
 21:211:Compartments
 21:212:Metabolites
 21:213:Moieties

@@ -97,7 +97,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
 
   RadioButton2 = new QRadioButton(ButtonGroup1, "RadioButton2");
   RadioButton2->setGeometry(QRect(100, 30, 87, 20));
-  RadioButton2->setText(trUtf8("Non-Fixed"));
+  RadioButton2->setText(trUtf8("Variable"));
 
   //Frame for 4th Row
   Frame4d = new QFrame(Frame2, "Frame4d");

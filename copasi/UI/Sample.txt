@@ -2,7 +2,7 @@
 1:11:Data File
 1:12:Method
 0:2:Model
-2:21:BioChem
+2:21:Biochem
 21:211:Compartments
 21:212:Metabolites
 21:213:Moiety
