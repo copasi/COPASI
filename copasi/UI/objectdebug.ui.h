@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/03 16:15:36 $
+   $Author: ssahle $ 
+   $Date: 2004/11/18 15:35:09 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,6 +43,7 @@ else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
   element = new QListViewItem((QListViewItem*)parent, FROM_UTF8(obj->getObjectName()),
                               FROM_UTF8(obj->getObjectType()),
                               flags,
+                              FROM_UTF8(obj->getObjectDisplayName()),
                               FROM_UTF8(obj->getObjectUniqueName()),
                               FROM_UTF8(obj->getCN()));
 
@@ -114,6 +115,7 @@ void ObjectDebug::init()
   ListOfObjects->clear();
   ListOfObjects->addColumn("Type", -1);
   ListOfObjects->addColumn("Flags", -1);
+  ListOfObjects->addColumn("Display name", -1);
   ListOfObjects->addColumn("Unique name", -1);
   ListOfObjects->addColumn("CN", -1);
 }
