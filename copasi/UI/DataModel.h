@@ -35,7 +35,7 @@ template <class T> class DataModel: public Subject
   public:
 
     //DataModel();
-    DataModel(char* fileName = "Sample.txt");
+    DataModel(char* fileName = "DataModel.txt");
 
     void populateData(char* fileName);
 

@@ -43,7 +43,7 @@ CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
     {
       // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
       //"Choose a file");
-      QString fileName = "Sample.txt";
+      QString fileName = "DataModel.txt";
 
       if (fileName)
         {
@@ -89,7 +89,7 @@ void CopasiUI3Window::newDoc()
      {
        // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
        //"Choose a file");
-       QString fileName = "Sample.txt";
+       QString fileName = "DataModel.txt";
 
        if (fileName)
          {
