@@ -367,3 +367,83 @@ C_FLOAT64 * CEigen::getEigen_r()
 	return mEigen_r;
 }
 
+/**
+ * Get the pointer of max real eigenvalue component for output		WeiSun 04/02/02
+ */
+void * CEigen::getMaxRealPartAddr()
+{
+  return &mEigen_maxrealpart;
+}
+
+/**
+ * Get the pointer of max real eigenvalue component for output		
+ */
+void *CEigen::getMaxImagPartAddr()
+{
+	return &mEigen_maximagpart;
+}
+
+/**
+ * Get the pointer of eigenvalues w/ positive real parts for output
+ */
+void *CEigen::getNPosRealAddr()
+{
+	return &mEigen_nposreal;
+}
+
+/**
+ * Get the pointer of eigenvalues w/ negative real parts for output
+ */
+void *CEigen::getNNegRealAddr()
+{
+	return &mEigen_nnegreal;
+}
+
+/**
+ * Get the pointer of real eigenvalues for output
+ */
+void *CEigen::getNRealAddr()
+{
+	return &mEigen_nreal;
+}
+
+/**
+ * Get the pointer of imaginary eigenvalues for output
+ */
+void *CEigen::getNImagAddr()
+{
+	return &mEigen_nimag;
+}
+
+/**
+ * Get the pointer of complex eigenvalues for output
+ */
+void *CEigen::getNCplxConjAddr()
+{
+	return &mEigen_ncplxconj;
+}
+
+/**
+ * Get the pointer of zero eigenvalues for output
+ */
+void *CEigen::getNZeroAddr()
+{
+	return &mEigen_nzero;
+}
+
+/**
+ * Get the pointer of time hierarchy for output
+ */
+void *CEigen::getHierarchyAddr()
+{
+	return &mEigen_hierarchy;
+}
+
+/**
+ * Get th epointer of stiffness for output
+ */
+void *CEigen::getStiffnessAddr()
+{
+	return &mEigen_stiffness;
+}
+
