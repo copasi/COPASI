@@ -162,14 +162,6 @@ SOURCE=.\MetabolitesWidget1.moc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\moc_MyLineEdit.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\moc_ReactionsWidget1.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\MoietyWidget.cpp
 # End Source File
 # Begin Source File
@@ -190,6 +182,10 @@ SOURCE=.\MyLineEdit.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\MyLineEdit.moc.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\MyTable.cpp
 # End Source File
 # Begin Source File
@@ -207,6 +203,10 @@ SOURCE=.\ReactionsWidget.moc.cpp
 # Begin Source File
 
 SOURCE=.\ReactionsWidget1.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReactionsWidget1.moc.cpp
 # End Source File
 # Begin Source File
 
@@ -578,13 +578,13 @@ InputName=MyLineEdit
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing MyLineEdit.h...
+# Begin Custom Build - $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\MyLineEdit.h
 InputName=MyLineEdit
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
@@ -621,13 +621,13 @@ InputName=ReactionsWidget
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing ReactionsWidget.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\ReactionsWidget.h
 InputName=ReactionsWidget
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
@@ -654,13 +654,13 @@ InputName=ReactionsWidget1
 !ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing ReactionsWidget1.h...
+# Begin Custom Build -  $(InputName).h -> $(InputName).moc.cpp
 InputDir=.
 InputPath=.\ReactionsWidget1.h
 InputName=ReactionsWidget1
 
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+"$(InputDir)\$(InputName).moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc.cpp
 
 # End Custom Build
 
