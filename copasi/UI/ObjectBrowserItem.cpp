@@ -58,7 +58,7 @@ int ObjectBrowserItem::nUserChecked()
                 condition = PARTCHECKED;
               break;
             case PARTCHECKED:
-              if (condition == NOCHECKED)
+              if (condition == NOCHECKED || condition == ALLCHECKED)
                 condition = PARTCHECKED;
               break;
             case NOCHECKED:
