@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: mkulkarn $ 
-   $Date: 2004/01/05 20:09:04 $
+   $Date: 2004/01/16 20:29:26 $
    End CVS Header */
 
 /**
@@ -84,6 +84,7 @@ bool CCopasiXML::load(std::istream & is)
   Parser.setFunctionList(mpFunctionList);
   Parser.setModel(mpModel);
   Parser.setReportList(mpReportList);
+  Parser.setTaskList(mpTaskList);
 
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
@@ -103,6 +104,7 @@ bool CCopasiXML::load(std::istream & is)
   mpFunctionList = Parser.getFunctionList();
   mpModel = Parser.getModel();
   mpReportList = Parser.getReportList();
+  mpTaskList = Parser.getTaskList();
 
   return success;
 }
@@ -494,7 +496,7 @@ bool CCopasiXML::saveTaskList()
   bool success = true;
   if (!haveTaskList()) return success;
 
-  /*unsigned C_INT32 i,j, imax = mpTaskList->size(),jmax;
+  unsigned C_INT32 i, j, imax = mpTaskList->size(), jmax;
 
   if (!imax) return success;
 
@@ -508,79 +510,77 @@ bool CCopasiXML::saveTaskList()
       pTask = (*mpTaskList)[i];
 
       Attributes.erase();
-   Attributes.add("name",pTask->getName());
-      Attributes.add("type",CCopasiTask::XMLType[pTask->getType()]);
+      Attributes.add("name", pTask->getName());
+      Attributes.add("type", CCopasiTask::XMLType[pTask->getType()]);
       startSaveElement("Task", Attributes);
 
       // Report Element
-   CReport tReport = pTask->getReport();
-   Attributes.erase();
-   // **** whats reference??
-   //Attributes.add("reference",tReport->);
-   Attributes.add("target",tReport->getTarget());
-   Attributes.add("append",tReport->append());
-   startSaveElement("Report",Attributes);
-   endSaveElement("Report");
+      CReport tReport = pTask->getReport();
+      Attributes.erase();
+      // **** whats reference??
+      //Attributes.add("reference",tReport->);
+      Attributes.add("target", tReport.getTarget());
+      Attributes.add("append", tReport.append());
+      startSaveElement("Report", Attributes);
+      endSaveElement("Report");
 
-   //Problem Element
-   CCopasiProblem *tProblem = pTask->getProblem();
-   startSaveElement("Problem");
+      //Problem Element
+      CCopasiProblem *tProblem = pTask->getProblem();
+      startSaveElement("Problem");
 
-   Attributes.erase();
-   Attributes.add("type",CCopasiTask::XMLType[pTask->getType()]);
-   startSaveElement("InitialState",Attributes);
-   endSaveElement("InitialState");
+      Attributes.erase();
+      Attributes.add("type", CCopasiTask::XMLType[pTask->getType()]);
+      startSaveElement("InitialState", Attributes);
+      endSaveElement("InitialState");
 
-   // how do u know if its a parameter/ parameter group??
-   // *** is this a list ???
-   Attributes.erase();
-   Attributes.add("name",tProblem->getName());
-   Attributes.add("type",CCopasiProblem::XMLType[tProblem->getType()]);
-   Attributes.add("value",tProblem->getValue());
-   startSaveElement("Parameter",Attributes); 
-   endSaveElement("Parameter");
-   
-   parameterGroup tparamGroup;
-   // get the parameter group ????
-   jmax = tparamGroup.size();
-   Attributes.erase();
-   Attributes.add("name",tProblem->getName());
-   startSaveElement("ParameterGroup",Attributes);
-   for(j = 0; j < jmax; j++)
-   {
-  Attributes.erase();
-   //fill stuff
-  Attributes.add("name",tparamGroup[i]->getName());
-  Attributes.add("type",tparamGroup[i]->getType());
-  Attributes.add("value",tparamGroup[i]->getValue());
-  startSaveElement("Parameter",Attributes);
-  endSaveElement("Parameter");
-   }
-   endSaveElement("ParameterGroup");
+      // how do u know if its a parameter/ parameter group??
+      // *** is this a list ???
+      Attributes.erase();
+      Attributes.add("name", tProblem->getName(i));
+      Attributes.add("type", CCopasiProblem::XMLType[tProblem->getType()]);
+      Attributes.add("value", tProblem->getValue(i));
+      startSaveElement("Parameter", Attributes);
+      endSaveElement("Parameter");
+
+      CCopasiParameterGroup::parameterGroup tparamGroup;
+      // get the parameter group ????
+      jmax = tparamGroup.size();
+      Attributes.erase();
+      Attributes.add("name", tProblem->getName(i));
+      startSaveElement("ParameterGroup", Attributes);
+      for (j = 0; j < jmax; j++)
+        {
+          Attributes.erase();
+          //fill stuff
+          Attributes.add("name", tparamGroup[i]->getName());
+          Attributes.add("type", tparamGroup[i]->getType());
+          Attributes.add("value", tparamGroup[i]->getValue());
+          startSaveElement("Parameter", Attributes);
+          endSaveElement("Parameter");
+        }
+      endSaveElement("ParameterGroup");
       endSaveElement("Problem");
 
-   // Method Element
-   CCopasiMethod *tMethod = pTask->getMethod();
-   Attributes.erase();
-   Attributes.add("name", tMethod->getName());
-   Attributes.add("type", CCopasiTask::XMLType[tMethod->getType()]);
-   startSaveElement("Method",Attributes);
-   //is this a list??
-   Attributes.erase();
-   Attributes.add("name",tMethod->getName());
-   Attributes.add("type",CCopasiTask::XMLType[tMethod->getType()]);
-   Attributes.add("value", tMethod->getValue());
-   startSaveElement("Parameter",Attributes);
-   endSaveElement("Parameter");
+      // Method Element
+      CCopasiMethod *tMethod = pTask->getMethod();
+      Attributes.erase();
+      Attributes.add("name", tMethod->getName(i));
+      Attributes.add("type", CCopasiTask::XMLType[tMethod->getType()]);
+      startSaveElement("Method", Attributes);
+      //is this a list??
+      Attributes.erase();
+      Attributes.add("name", tMethod->getName(i));
+      Attributes.add("type", CCopasiTask::XMLType[tMethod->getType()]);
+      Attributes.add("value", tMethod->getValue(i));
+      startSaveElement("Parameter", Attributes);
+      endSaveElement("Parameter");
       endSaveElement("Method");
 
-           
       endSaveElement("Task");
     }
 
   endSaveElement("ListOfTasks");
 
-  */
   return success;
 }
 

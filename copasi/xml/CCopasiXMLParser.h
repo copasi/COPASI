@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 21:24:43 $
+   $Author: mkulkarn $ 
+   $Date: 2004/01/16 20:28:54 $
    End CVS Header */
 
 /**
@@ -89,8 +89,8 @@ struct SCopasiXMLParserCommon
     /**
      * Pointer to a vector of tasks which has been loaded or is to be saved.
      * The ownership is handed to the user.
-     */ 
-    // CCopasiVectorN< CCopasiTask > * pTaskList;
+     */
+    CCopasiVectorN< CCopasiTask > * pTaskList;
 
     /**
      * Pointer to a vector of reports which has been loaded or is to be saved.
@@ -1932,6 +1932,19 @@ class CCopasiXMLParser : public CExpat
      * @return CCopasiVectorN< CReportDefinition > * pReportList
      */
     CCopasiVectorN< CReportDefinition > * CCopasiXMLParser::getReportList() const;
+
+    //Mrinmayee
+    /**
+        * Set the list of loaded tasks
+        * @param CCopasiVectorN< CCopasiTask > * pTaskList
+        */
+    void setTaskList(CCopasiVectorN< CCopasiTask > * pTaskList);
+
+    /**
+     * Retrieve the list of loaded functions
+     * @return CCopasiVectorN< CTask > * pTaskList
+     */
+    CCopasiVectorN< CCopasiTask > * getTaskList() const;
   };
 
 #endif // COPASI_CCopasiXMLParser
