@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/05 18:19:09 $
+   $Date: 2005/01/09 03:37:10 $
    End CVS Header */
 
 /**
@@ -34,6 +34,9 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"
+
+#define START_ELEMENT   -1
+#define UNKNOWN_ELEMENT -2
 
 #ifdef COPASI_TEMPLATE
 CCopasiXMLParser::TEMPLATEElement::TEMPLATEElement(CCopasiXMLParser & parser,
@@ -72,7 +75,8 @@ void CCopasiXMLParser::TEMPLATEElement::start(const XML_Char *pszName,
 #endif // XXXX
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -86,7 +90,7 @@ void CCopasiXMLParser::TEMPLATEElement::end(const XML_Char *pszName)
     case TEMPLATE:
       if (strcmp(pszName, "TEMPLATE")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -95,6 +99,9 @@ void CCopasiXMLParser::TEMPLATEElement::end(const XML_Char *pszName)
     case etc:
       if (strcmp(pszName, "etc")) fatalError();
       mCurrentElement = TEMPLATE;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -258,7 +265,7 @@ void CCopasiXMLParser::UnknownElement::end(const XML_Char *pszName)
     {
     case Unknown:
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       {
         CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 3,
                                pszName, mLineNumber);
@@ -320,7 +327,8 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -337,7 +345,7 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
   if (!strcmp(pszName, "COPASI"))
     {
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
     }
   else
     pdelete(mpCurrentHandler);
@@ -381,7 +389,8 @@ void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -395,7 +404,7 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
     case ListOfFunctions:
       if (strcmp(pszName, "ListOfFunctions")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -404,6 +413,9 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
     case Function:
       if (strcmp(pszName, "Function")) fatalError();
       mCurrentElement = ListOfFunctions;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -546,7 +558,8 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -562,7 +575,7 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
       if (!mCommon.mExistingFunction)
         mCommon.pFunction->setDescription(mCommon.FunctionDescription);
 
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
 
       /* Tell the parent element we are done. */
@@ -576,6 +589,9 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
     case ListOfParameterDescriptions:
       if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
       mCurrentElement = Function;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -618,7 +634,8 @@ void CCopasiXMLParser::MathMLElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -632,7 +649,7 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
     case MathML:
       if (strcmp(pszName, "MathML")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -644,6 +661,9 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
       mCommon.Comment = "";
       mCurrentElement = MathML;
 
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -661,7 +681,7 @@ CCopasiXMLParser::TextElement::~TextElement()
 {}
 
 void CCopasiXMLParser::TextElement::start(const XML_Char *pszName,
-    const XML_Char ** C_UNUSED(papszAttrs))
+    const XML_Char ** papszAttrs)
 {
   mCurrentElement++; /* We should always be on the next element */
 
@@ -674,7 +694,8 @@ void CCopasiXMLParser::TextElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -688,11 +709,14 @@ void CCopasiXMLParser::TextElement::end(const XML_Char *pszName)
     case Text:
       if (strcmp(pszName, "Text")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mCommon.Comment = mParser.getCharacterData("\x0a\x0d\t ", "");
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -737,7 +761,8 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::start(const XML_Char 
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -783,7 +808,7 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
             }
         }
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -792,6 +817,9 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
     case ParameterDescription:
       if (strcmp(pszName, "ParameterDescription")) fatalError();
       mCurrentElement = ListOfParameterDescriptions;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -874,7 +902,8 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -888,10 +917,13 @@ void CCopasiXMLParser::ParameterDescriptionElement::end(const XML_Char *pszName)
     case ParameterDescription:
       if (strcmp(pszName, "ParameterDescription")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -995,7 +1027,8 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1014,7 +1047,7 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
     case Model:
       if (strcmp(pszName, "Model")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -1055,6 +1088,9 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
       mCurrentElement = Model;
       break;
 
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -1074,7 +1110,7 @@ CCopasiXMLParser::CommentElement::~CommentElement()
 }
 
 void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
-    const XML_Char ** C_UNUSED(papszAttrs))
+    const XML_Char ** papszAttrs)
 {
   mCurrentElement++; /* We should always be on the next element */
 
@@ -1089,7 +1125,8 @@ void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1116,7 +1153,7 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
       }
 
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       pdelete(mpCurrentHandler);
 
@@ -1126,6 +1163,9 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
 
     case Ignore:
       mCurrentElement = Comment;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1171,7 +1211,8 @@ void CCopasiXMLParser::ListOfCompartmentsElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1185,7 +1226,7 @@ void CCopasiXMLParser::ListOfCompartmentsElement::end(const XML_Char *pszName)
     case ListOfCompartments:
       if (strcmp(pszName, "ListOfCompartments")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -1194,6 +1235,9 @@ void CCopasiXMLParser::ListOfCompartmentsElement::end(const XML_Char *pszName)
     case Compartment:
       if (strcmp(pszName, "Compartment")) fatalError();
       mCurrentElement = ListOfCompartments;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1241,7 +1285,8 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1255,10 +1300,13 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
     case Compartment:
       if (strcmp(pszName, "Compartment")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1303,7 +1351,8 @@ void CCopasiXMLParser::ListOfMetabolitesElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1317,7 +1366,7 @@ void CCopasiXMLParser::ListOfMetabolitesElement::end(const XML_Char *pszName)
     case ListOfMetabolites:
       if (strcmp(pszName, "ListOfMetabolites")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -1326,6 +1375,9 @@ void CCopasiXMLParser::ListOfMetabolitesElement::end(const XML_Char *pszName)
     case Metabolite:
       if (strcmp(pszName, "Metabolite")) fatalError();
       mCurrentElement = ListOfMetabolites;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1386,7 +1438,8 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1400,10 +1453,13 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
     case Metabolite:
       if (strcmp(pszName, "Metabolite")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1449,7 +1505,8 @@ void CCopasiXMLParser::ListOfReactionsElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1463,7 +1520,7 @@ void CCopasiXMLParser::ListOfReactionsElement::end(const XML_Char *pszName)
     case ListOfReactions:
       if (strcmp(pszName, "ListOfReactions")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -1472,6 +1529,9 @@ void CCopasiXMLParser::ListOfReactionsElement::end(const XML_Char *pszName)
     case Reaction:
       if (strcmp(pszName, "Reaction")) fatalError();
       mCurrentElement = ListOfReactions;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1601,7 +1661,8 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1620,7 +1681,7 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
     case Reaction:
       if (strcmp(pszName, "Reaction")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -1645,6 +1706,9 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
     case KineticLaw:
       if (strcmp(pszName, "KineticLaw")) fatalError();
       mCurrentElement = Reaction;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1689,7 +1753,8 @@ void CCopasiXMLParser::ListOfSubstratesElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1703,7 +1768,7 @@ void CCopasiXMLParser::ListOfSubstratesElement::end(const XML_Char *pszName)
     case ListOfSubstrates:
       if (strcmp(pszName, "ListOfSubstrates")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -1712,6 +1777,9 @@ void CCopasiXMLParser::ListOfSubstratesElement::end(const XML_Char *pszName)
     case Substrate:
       if (strcmp(pszName, "Substrate")) fatalError();
       mCurrentElement = ListOfSubstrates;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1757,7 +1825,8 @@ void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1771,10 +1840,13 @@ void CCopasiXMLParser::SubstrateElement::end(const XML_Char *pszName)
     case Substrate:
       if (strcmp(pszName, "Substrate")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1819,7 +1891,8 @@ void CCopasiXMLParser::ListOfProductsElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1833,7 +1906,7 @@ void CCopasiXMLParser::ListOfProductsElement::end(const XML_Char *pszName)
     case ListOfProducts:
       if (strcmp(pszName, "ListOfProducts")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -1842,6 +1915,9 @@ void CCopasiXMLParser::ListOfProductsElement::end(const XML_Char *pszName)
     case Product:
       if (strcmp(pszName, "Product")) fatalError();
       mCurrentElement = ListOfProducts;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1887,7 +1963,8 @@ void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1901,10 +1978,13 @@ void CCopasiXMLParser::ProductElement::end(const XML_Char *pszName)
     case Product:
       if (strcmp(pszName, "Product")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -1949,7 +2029,8 @@ void CCopasiXMLParser::ListOfModifiersElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -1963,7 +2044,7 @@ void CCopasiXMLParser::ListOfModifiersElement::end(const XML_Char *pszName)
     case ListOfModifiers:
       if (strcmp(pszName, "ListOfModifiers")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -1972,6 +2053,9 @@ void CCopasiXMLParser::ListOfModifiersElement::end(const XML_Char *pszName)
     case Modifier:
       if (strcmp(pszName, "Modifier")) fatalError();
       mCurrentElement = ListOfModifiers;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2017,7 +2101,8 @@ void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2031,10 +2116,13 @@ void CCopasiXMLParser::ModifierElement::end(const XML_Char *pszName)
     case Modifier:
       if (strcmp(pszName, "Modifier")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2079,7 +2167,8 @@ void CCopasiXMLParser::ListOfConstantsElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2093,7 +2182,7 @@ void CCopasiXMLParser::ListOfConstantsElement::end(const XML_Char *pszName)
     case ListOfConstants:
       if (strcmp(pszName, "ListOfConstants")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -2102,6 +2191,9 @@ void CCopasiXMLParser::ListOfConstantsElement::end(const XML_Char *pszName)
     case Constant:
       if (strcmp(pszName, "Constant")) fatalError();
       mCurrentElement = ListOfConstants;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2151,7 +2243,8 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2165,10 +2258,13 @@ void CCopasiXMLParser::ConstantElement::end(const XML_Char *pszName)
     case Constant:
       if (strcmp(pszName, "Constant")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2224,7 +2320,8 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2238,7 +2335,7 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
     case KineticLaw:
       if (strcmp(pszName, "KineticLaw")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -2247,6 +2344,9 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
     case ListOfCallParameters:
       if (strcmp(pszName, "ListOfCallParameters")) fatalError();
       mCurrentElement = KineticLaw;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2291,7 +2391,8 @@ void CCopasiXMLParser::ListOfCallParametersElement::start(const XML_Char *pszNam
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2305,7 +2406,7 @@ void CCopasiXMLParser::ListOfCallParametersElement::end(const XML_Char *pszName)
     case ListOfCallParameters:
       if (strcmp(pszName, "ListOfCallParameters")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -2314,6 +2415,9 @@ void CCopasiXMLParser::ListOfCallParametersElement::end(const XML_Char *pszName)
     case CallParameter:
       if (strcmp(pszName, "CallParameter")) fatalError();
       mCurrentElement = ListOfCallParameters;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2369,7 +2473,8 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2391,7 +2496,7 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
         }
 
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -2400,6 +2505,9 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
     case SourceParameter:
       if (strcmp(pszName, "SourceParameter")) fatalError();
       mCurrentElement = CallParameter;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2448,7 +2556,8 @@ void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2462,10 +2571,13 @@ void CCopasiXMLParser::SourceParameterElement::end(const XML_Char *pszName)
     case SourceParameter:
       if (strcmp(pszName, "SourceParameter")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2512,7 +2624,8 @@ void CCopasiXMLParser::StateTemplateElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2526,7 +2639,7 @@ void CCopasiXMLParser::StateTemplateElement::end(const XML_Char *pszName)
     case StateTemplate:
       if (strcmp(pszName, "StateTemplate")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -2535,6 +2648,9 @@ void CCopasiXMLParser::StateTemplateElement::end(const XML_Char *pszName)
     case StateTemplateVariable:
       if (strcmp(pszName, "StateTemplateVariable")) fatalError();
       mCurrentElement = StateTemplate;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2592,7 +2708,8 @@ void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszNa
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2606,10 +2723,13 @@ void CCopasiXMLParser::StateTemplateVariableElement::end(const XML_Char *pszName
     case StateTemplateVariable:
       if (strcmp(pszName, "StateTemplateVariable")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2649,7 +2769,8 @@ void CCopasiXMLParser::InitialStateElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -2707,10 +2828,13 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
       if (it != end || !Values.fail() || !Values.eof()) fatalError();
 
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -2741,6 +2865,7 @@ void CCopasiXMLParser::ListOfPlotItemsElement::start(const XML_Char * pszName,
     case ListOfPlotItems:
       if (strcmp(pszName, "ListOfPlotItems")) fatalError();
       break;
+
     case PlotItem:
       if (strcmp(pszName, "PlotItem")) fatalError();
       // If we do not have a plot specification element handler, we create one
@@ -2751,8 +2876,10 @@ void CCopasiXMLParser::ListOfPlotItemsElement::start(const XML_Char * pszName,
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -2765,9 +2892,10 @@ void CCopasiXMLParser::ListOfPlotItemsElement::end(const XML_Char * pszName)
     case ListOfPlotItems:
       if (strcmp(pszName, "ListOfPlotItems")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
+
     case PlotItem:
       if (strcmp(pszName, "PlotItem")) fatalError();
       /*std::cout << "Number of Channels in current plot item: " << mCommon.pCurrentPlotItem->getChannels().size() << std::endl;
@@ -2778,6 +2906,10 @@ void CCopasiXMLParser::ListOfPlotItemsElement::end(const XML_Char * pszName)
       mCommon.pCurrentPlotItem = mCommon.pCurrentPlot;
       mCurrentElement = ListOfPlotItems;
       break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -2805,6 +2937,7 @@ void CCopasiXMLParser::ListOfChannelsElement::start(const XML_Char * pszName,
     case ListOfChannels:
       if (strcmp(pszName, "ListOfChannels")) fatalError();
       break;
+
     case ChannelSpec:
       if (strcmp(pszName, "ChannelSpec")) fatalError();
       if (!mpCurrentHandler)
@@ -2814,8 +2947,10 @@ void CCopasiXMLParser::ListOfChannelsElement::start(const XML_Char * pszName,
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -2828,9 +2963,10 @@ void CCopasiXMLParser::ListOfChannelsElement::end(const XML_Char * pszName)
     case ListOfChannels:
       if (strcmp(pszName, "ListOfChannels")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
+
     case ChannelSpec:
       if (strcmp(pszName, "ChannelSpec")) fatalError();
       mCommon.pCurrentPlotItem->getChannels().push_back(*(mCommon.pCurrentChannelSpec));
@@ -2839,6 +2975,10 @@ void CCopasiXMLParser::ListOfChannelsElement::end(const XML_Char * pszName)
       mCommon.pCurrentChannelSpec = NULL;
       mCurrentElement = ListOfChannels;
       break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -2870,6 +3010,7 @@ void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
           mCommon.pPlotList = new CCopasiVectorN<CPlotSpecification>;
         }
       break;
+
     case PlotSpecification:
       if (strcmp(pszName, "PlotSpecification")) fatalError();
       // If we do not have a plot specification element handler, we create one
@@ -2880,8 +3021,10 @@ void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -2894,9 +3037,10 @@ void CCopasiXMLParser::ListOfPlotsElement::end(const XML_Char * pszName)
     case ListOfPlots:
       if (strcmp(pszName, "ListOfPlots")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
+
     case PlotSpecification:
       if (strcmp(pszName, "PlotSpecification")) fatalError();
       // add mCommon.pCurrentPlot to the listOfPlots and set
@@ -2907,6 +3051,10 @@ void CCopasiXMLParser::ListOfPlotsElement::end(const XML_Char * pszName)
       mCommon.pCurrentPlotItem = NULL;
       mCurrentElement = ListOfPlots;
       break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -2962,9 +3110,11 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
+
   if (mpCurrentHandler)
     mParser.pushElementHandler(mpCurrentHandler);
 
@@ -2980,8 +3130,11 @@ void CCopasiXMLParser::ChannelSpecElement::end(const XML_Char *pszName)
     case ChannelSpec:
       if (strcmp(pszName, "ChannelSpec")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -3047,9 +3200,11 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
+
   if (mpCurrentHandler)
     mParser.pushElementHandler(mpCurrentHandler);
 
@@ -3065,7 +3220,7 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
     case PlotItem:
       if (strcmp(pszName, "PlotItem")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
 
@@ -3088,6 +3243,9 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
         {
           mCurrentElement = PlotItem;
         }
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -3156,6 +3314,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
             }
         }
       break;
+
     case ListOfPlotItems:
       if (!strcmp(pszName, "ListOfPlotItems"))
         {
@@ -3167,9 +3326,11 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
+
   if (mpCurrentHandler)
     mParser.pushElementHandler(mpCurrentHandler);
 
@@ -3186,7 +3347,7 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
       if (!strcmp(pszName, "PlotSpecification"))
         {
           mParser.popElementHandler();
-          mCurrentElement = -1;
+          mCurrentElement = START_ELEMENT;
           mParser.onEndElement(pszName);
         }
       break;
@@ -3217,6 +3378,9 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
         {
           mCurrentElement = PlotSpecification;
         }
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -3250,6 +3414,7 @@ void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char * pszName,
           mCommon.pTaskList = new CCopasiVectorN<CCopasiTask>;
         }
       break;
+
     case Task:
       if (strcmp(pszName, "Task")) fatalError();
       /* If we do not have a task element handler, we create one */
@@ -3260,8 +3425,10 @@ void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char * pszName,
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -3274,9 +3441,10 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
     case ListOfTasks:
       if (strcmp(pszName, "ListOfTasks")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
+
     case Task:
       if (strcmp(pszName, "Task")) fatalError();
       // add mCommon.pCurrentTask to the listOfTasks and set
@@ -3285,6 +3453,10 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
       mCommon.pCurrentTask = NULL;
       mCurrentElement = ListOfTasks;
       break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -3348,6 +3520,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
         }
       return;
       break;
+
     case Report:
       if (!strcmp(pszName, "Report"))
         {
@@ -3382,9 +3555,11 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
+
   if (mpCurrentHandler)
     mParser.pushElementHandler(mpCurrentHandler);
 
@@ -3400,7 +3575,7 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
     case Task:
       if (strcmp(pszName, "Task")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.onEndElement(pszName);
       break;
 
@@ -3417,6 +3592,9 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
     case Method:
       if (strcmp(pszName, "Method")) fatalError();
       mCurrentElement = Task;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -3460,8 +3638,10 @@ void CCopasiXMLParser::ReportInstanceElement::start(const XML_Char* pszName, con
         }
       mCommon.taskReferenceMap[reference].push_back(mCommon.pCurrentTask);
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 }
@@ -3472,10 +3652,14 @@ void CCopasiXMLParser::ReportInstanceElement::end(const XML_Char* pszName)
     {
     case Report:
       if (strcmp(pszName, "Report")) fatalError();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
       break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -3508,6 +3692,7 @@ void CCopasiXMLParser::ProblemElement::start(const XML_Char *pszName,
       {}
       return;
       break;
+
     case Parameter:
       if (!strcmp(pszName, "Parameter"))
         {
@@ -3520,6 +3705,7 @@ void CCopasiXMLParser::ProblemElement::start(const XML_Char *pszName,
           mpCurrentHandler = mpParameterHandler;
         }
       break;
+
     case ParameterGroup:
       if (!strcmp(pszName, "ParameterGroup"))
         {
@@ -3532,6 +3718,7 @@ void CCopasiXMLParser::ProblemElement::start(const XML_Char *pszName,
           mpCurrentHandler = mpParameterGroupHandler;
         }
       break;
+
     case InitialState:
       if (!strcmp(pszName, "InitialState"))
         {
@@ -3542,10 +3729,13 @@ void CCopasiXMLParser::ProblemElement::start(const XML_Char *pszName,
           mpCurrentHandler = mpInitialStateHandler;
         }
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
+
   if (mpCurrentHandler)
     mParser.pushElementHandler(mpCurrentHandler);
 
@@ -3559,10 +3749,11 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
     {
     case Problem:
       if (strcmp(pszName, "Problem")) fatalError();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
       break;
+
     case Parameter:
       if (strcmp(pszName, "Parameter")) fatalError();
       // add the parameter in mCommon.pCurrentParameter to the Problem of
@@ -3614,6 +3805,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = Problem;
       break;
+
     case ParameterGroup:
       if (strcmp(pszName, "ParameterGroup")) fatalError();
       // add the parameter in mCommon.pCurrentParameter to the Problem of
@@ -3650,6 +3842,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = Problem;
       break;
+
     case InitialState:
       if (strcmp(pszName, "InitialState")) fatalError();
       // get the string that corresponds to initial state from
@@ -3659,6 +3852,10 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
       mCommon.Comment = "";
       mCurrentElement = Problem;
       break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -3674,7 +3871,8 @@ CCopasiXMLParser::ProblemInitialStateElement::ProblemInitialStateElement(CCopasi
 CCopasiXMLParser::ProblemInitialStateElement::~ProblemInitialStateElement()
 {}
 
-void CCopasiXMLParser::ProblemInitialStateElement::start(const XML_Char* pszName, const XML_Char** C_UNUSED(papszAttrs))
+void CCopasiXMLParser::ProblemInitialStateElement::start(const XML_Char* pszName,
+    const XML_Char** papszAttrs)
 {
   mCurrentElement++; /* We should always be on the next element */
 
@@ -3684,10 +3882,13 @@ void CCopasiXMLParser::ProblemInitialStateElement::start(const XML_Char* pszName
       if (strcmp(pszName, "InitialState")) fatalError();
       mParser.enableCharacterDataHandler(true);
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
+
   return;
 }
 
@@ -3698,10 +3899,14 @@ void CCopasiXMLParser::ProblemInitialStateElement::end(const XML_Char* pszName)
     case InitialState:
       if (strcmp(pszName, "InitialState")) fatalError();
       mCommon.Comment = mParser.getCharacterData("\x0a\x0d\t ", "");
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
       break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -3742,6 +3947,7 @@ void CCopasiXMLParser::ParameterGroupElement::start(const XML_Char *pszName,
           return;
         }
       break;
+
     case Parameter:
       if (!strcmp(pszName, "Parameter"))
         {
@@ -3760,8 +3966,10 @@ void CCopasiXMLParser::ParameterGroupElement::start(const XML_Char *pszName,
           mpCurrentHandler = mpParameterGroupHandler;
         }
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   if (mpCurrentHandler)
@@ -3779,7 +3987,7 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
 
       mCommon.pCurrentParameter = mCommon.ParameterGroupStack.top();
       mCommon.ParameterGroupStack.pop();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
@@ -3793,6 +4001,9 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
       pdelete(mCommon.pCurrentParameter);
 
       mCurrentElement = ParameterGroup;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -3883,8 +4094,10 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
         }
       mCommon.pCurrentParameter = new CCopasiParameter(name, type, pValue);
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -3896,10 +4109,14 @@ void CCopasiXMLParser::ParameterElement::end(const XML_Char *pszName)
     {
     case Parameter:
       if (strcmp(pszName, "Parameter")) fatalError();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
       break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -3951,6 +4168,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
         }
       return;
       break;
+
     case Parameter:
       if (!strcmp(pszName, "Parameter"))
         {
@@ -3963,6 +4181,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
           mpCurrentHandler = mpParameterHandler;
         }
       break;
+
     case ParameterGroup:
       if (!strcmp(pszName, "ParameterGroup"))
         {
@@ -3975,8 +4194,10 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
           mpCurrentHandler = mpParameterGroupHandler;
         }
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   if (mpCurrentHandler)
@@ -3992,10 +4213,11 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
     {
     case Method:
       if (strcmp(pszName, "Method")) fatalError();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
       mParser.onEndElement(pszName);
       break;
+
     case Parameter:
       if (strcmp(pszName, "Parameter")) fatalError();
       // add the parameter in mCommon.pCurrentParameter to the Problem of
@@ -4048,6 +4270,7 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = Method;
       break;
+
     case ParameterGroup:
       if (strcmp(pszName, "ParameterGroup")) fatalError();
       // add the parameter in mCommon.pCurrentParameter to the Problem of
@@ -4084,6 +4307,10 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = Method;
       break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
     default:
       fatalError();
       break;
@@ -4125,11 +4352,11 @@ void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
       /* Push the report element handler on the stack and call it. */
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
-
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -4157,7 +4384,7 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
     case ListOfReports:
       if (strcmp(pszName, "ListOfReports")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       // here would be a good place to resolve the report reference
       // issues
       it = mCommon.taskReferenceMap.begin();
@@ -4193,6 +4420,9 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
 
     case Report:
       mCurrentElement = ListOfReports;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -4349,8 +4579,10 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
           mpCurrentHandler = mpTableElement;
         }
       break;
+
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   if (mpCurrentHandler)
@@ -4368,7 +4600,7 @@ void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
     {
     case Report:
       if (strcmp(pszName, "Report")) fatalError();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
 
       // Tell the parent element we are done.
@@ -4398,6 +4630,9 @@ void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
     case Table:
       if (strcmp(pszName, "Table")) fatalError();
       mCurrentElement = Report;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -4460,7 +4695,8 @@ void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   /* Push the Text element handler on the stack and call it. */
@@ -4480,7 +4716,7 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
     case Header:
       if (strcmp(pszName, "Header")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -4508,6 +4744,9 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
       mCommon.reportReferenceMap[mCommon.Comment].push_back(std::make_pair(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
       mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(""));
       mCurrentElement = Header;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -4570,7 +4809,8 @@ void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   /* Push the Text element handler on the stack and call it. */
@@ -4590,7 +4830,7 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
     case Body:
       if (strcmp(pszName, "Body")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -4618,6 +4858,9 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
       mCommon.reportReferenceMap[mCommon.Comment].push_back(std::make_pair(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
       mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(""));
       mCurrentElement = Body;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -4680,7 +4923,8 @@ void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   /* Push the Text element handler on the stack and call it. */
@@ -4700,7 +4944,7 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
     case Footer:
       if (strcmp(pszName, "Footer")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -4728,6 +4972,9 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
       mCommon.reportReferenceMap[mCommon.Comment].push_back(std::make_pair(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
       mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(""));
       mCurrentElement = Footer;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -4775,7 +5022,8 @@ void CCopasiXMLParser::TableElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
   return;
@@ -4788,7 +5036,7 @@ void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
     case Table:
       if (strcmp(pszName, "Table")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -4799,6 +5047,9 @@ void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
       mCommon.pReport->addTableElement(mCommon.Comment);
       mCommon.Comment = "";
       mCurrentElement = Table;
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
@@ -4834,7 +5085,8 @@ void CCopasiXMLParser::ObjectElement::start(const XML_Char *pszName,
       break;
 
     default:
-      fatalError();
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -4848,10 +5100,13 @@ void CCopasiXMLParser::ObjectElement::end(const XML_Char *pszName)
     case Object:
       if (strcmp(pszName, "Object")) fatalError();
       mParser.popElementHandler();
-      mCurrentElement = -1;
+      mCurrentElement = START_ELEMENT;
 
       // Tell the parent element we are done.
       mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
       break;
 
     default:
