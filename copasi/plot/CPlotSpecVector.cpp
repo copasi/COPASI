@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 11:59:10 $
+   $Date: 2004/06/23 16:13:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -231,12 +231,12 @@ bool CPlotSpecVector::compile()
   std::vector<CCopasiObjectName>::const_iterator it = mObjectNames.begin();
   for (; it != mObjectNames.end(); ++it)
     {
-      std::cout << "CPlotSpecVector::compile  " << *it << std::endl;
+      //std::cout << "CPlotSpecVector::compile  " << *it << std::endl;
 
       pSelected = CCopasiContainer::ObjectFromName(ListOfContainer, *it);
       if (!pSelected)
         {
-          std::cout << "Object not found!" << std::endl;
+          //std::cout << "Object not found!" << std::endl;
           return false;
         }
 
@@ -244,7 +244,7 @@ bool CPlotSpecVector::compile()
 
       //TODO check hasValue()
 
-      std::cout << "    compile: " << pSelected->getObjectName() << std::endl;
+      //std::cout << "    compile: " << pSelected->getObjectName() << std::endl;
 
       mObjects.push_back(pSelected);
     }
