@@ -11,7 +11,6 @@ copasi_LDADD = \
 	./utilities/libutilities.a 
 
 SUBDIRS = \
-	ABiochem \
 	commandline\
 	elementaryFluxModes \
 	function \
