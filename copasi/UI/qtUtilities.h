@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/03 20:20:23 $
+   $Date: 2005/01/06 17:02:24 $
    End CVS Header */
 
 #ifndef COPASI_qtUtilities
@@ -63,6 +63,6 @@ bool setParameterValue(CCopasiParameterGroup * group,
 /**
  * Convert a utf8 encoded std::string to a QString
  */
-#define FROM_UTF8(__x) QString::fromUtf8(__x.c_str())
+#define FROM_UTF8(__x) QString::fromUtf8((__x).c_str())
 
 #endif // COPASI_qtUtilities
