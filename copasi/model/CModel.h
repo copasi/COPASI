@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 16:11:36 $
+   $Date: 2004/06/24 11:47:22 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -446,8 +446,7 @@ class CModel : public CCopasiContainer
      *  Compile the model if necessary
      */
     bool compileIfNecessary();
-    bool compile2();
-    bool compile();
+    bool forceCompile();
 
     /**
      *  Build the Stoichiometry Matrix from the chemical equations of the steps
@@ -927,6 +926,9 @@ class CModel : public CCopasiContainer
     bool hasReversibleReaction() const;
 
   private:
+
+    bool compile();
+
     /**
      * Initialize the contained CCopasiObjects
      */

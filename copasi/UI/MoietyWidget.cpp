@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 14:00:31 $
+   $Date: 2004/06/24 11:46:27 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -80,7 +80,7 @@ void MoietyWidget::deleteObjects(const std::vector<std::string> & keys)
 
 void MoietyWidget::slotBtnRunClicked()
 {
-  dataModel->getModel()->compile2();
+  dataModel->getModel()->compileIfNecessary();
   fillTable();
 
   mIgnoreUpdates = true; //to avoid recursive calls

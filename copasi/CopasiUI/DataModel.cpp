@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 14:00:30 $
+   $Date: 2004/06/24 11:45:35 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -248,7 +248,7 @@ void DataModel::loadModel(const char* fileName)
       tmpHandler->setPlotSpecVectorAddress(plotspecs);
     }
 
-  model->compile2();
+  model->setCompileFlag();
 
   pdelete(mpMathModel);
   mpMathModel = new CMathModel();

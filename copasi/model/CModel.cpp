@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.182 $
+   $Revision: 1.183 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 16:12:17 $
+   $Date: 2004/06/24 11:47:21 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ CModel::CModel():
 
   initializeMetabolites();
 
-  compile2();
+  forceCompile();
 
   /* This following 2 lines added by Liang Xu
   Becaues of the failure to initialize the parameter when creating a new models
@@ -144,7 +144,7 @@ CModel::CModel(const CModel & src):
 
   initializeMetabolites();
 
-  compile2();
+  forceCompile();
   initObjects();
 }
 
@@ -324,11 +324,11 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   Copasi->pOldMetabolites->cleanup();
 
-  compile2();
+  setCompileFlag();
   return Fail;
 }
 
-bool CModel::compile2()
+bool CModel::compile()
 {
   CMatrix< C_FLOAT64 > LU;
 
@@ -344,14 +344,9 @@ bool CModel::compile2()
   buildMoieties();
   buildStateTemplate();
 
-  std::cout << "CModel::compile2() called, mCompileIsNecessary: " << mCompileIsNecessary << std::endl;
-
   mCompileIsNecessary = false;
   return true;
 }
-
-//bool CModel::compile()
-//{}
 
 void CModel::setCompileFlag(bool flag)
 {
@@ -360,9 +355,19 @@ void CModel::setCompileFlag(bool flag)
 
 bool CModel::compileIfNecessary()
 {
+  std::cout << "** compiling a CModel is requested. ";
   if (mCompileIsNecessary)
-    return compile2();
+    std::cout << "It will be done.";
+
+  if (mCompileIsNecessary)
+    return compile();
   return true;
+}
+
+bool CModel::forceCompile()
+{
+  setCompileFlag();
+  return compileIfNecessary();
 }
 
 void CModel::buildStoi()
@@ -1614,7 +1619,7 @@ bool CModel::addReaction(const CReaction & reaction)
     return false;
 
   mSteps.add(reaction);
-  mSteps[reaction.getObjectName()]->compile(/*mCompartments*/);
+  mSteps[reaction.getObjectName()]->compile();
 
   setCompileFlag();
   return true;

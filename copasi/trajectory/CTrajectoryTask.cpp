@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 14:02:57 $
+   $Date: 2004/06/24 11:48:49 $
    End CVS Header */
 
 /**
@@ -124,7 +124,7 @@ bool CTrajectoryTask::initialize(std::ostream * pOstream)
 
   if (!mReport.open(pOstream)) success = false;
   if (!mReport.compile()) success = false;
-  if (!pProblem->getModel()->compile2()) success = false;
+  if (!pProblem->getModel()->compileIfNecessary()) success = false;
   //  if (!pProblem->
   //      setInitialState(pProblem->getModel()->getInitialState()))
   //    success = false;

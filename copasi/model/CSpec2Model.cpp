@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/14 13:45:37 $
+   $Date: 2004/06/24 11:47:31 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -87,7 +87,7 @@ CModel *CSpec2Model::createModel()
   processMoieties();
   processDeTerms();
   mModel->initializeMetabolites();
-  mModel->compile();
+  mModel->setCompileFlag();
 
   unsigned int i;    // should that not be in CModel::compile ?
   for (i = 0; i < mModel->getReactions().size(); i++)

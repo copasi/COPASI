@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/07 08:58:46 $
+   $Date: 2004/06/24 11:46:27 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -144,6 +144,8 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
                             ListViews::CHANGE, "");
         }
     } //TODO check if changing the compartment of a metabolite really works
+
+  dataModel->getModel()->setCompileFlag(); //TODO: check if really necessary
 }
 
 void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
@@ -271,7 +273,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                 // Yes or Enter
+    case 0:                  // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -283,7 +285,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                 // No or Escape
+    case 1:                  // No or Escape
       break;
     }
 }

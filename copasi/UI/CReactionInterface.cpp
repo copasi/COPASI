@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/26 15:50:29 $
+   $Date: 2004/06/24 11:45:16 $
    End CVS Header */
 
 #include <string>
@@ -133,15 +133,14 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
                 jmax = mNameMap[i].size();
                 for (j = 0; j < jmax; ++j)
                   rea->addParameterMapping(i, CMetabNameInterface::getMetaboliteKey(&model, mNameMap[i][j]));
-                //rea->addParameterMapping(i, model.getMetabolites()[model.findMetab(mNameMap[i][j])]->getKey());
               }
             else
               rea->setParameterMapping(i, CMetabNameInterface::getMetaboliteKey(&model, mNameMap[i][0]));
-            //rea->setParameterMapping(i, model.getMetabolites()[model.findMetab(mNameMap[i][0])]->getKey());
           }
       }
 
-    rea->compile(/*model.getCompartments()*/);
+    rea->compile();
+    model.setCompileFlag(); //TODO: check if really necessary
   }
 
 void CReactionInterface::setFunction(const std::string & fn, bool force)
