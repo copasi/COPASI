@@ -72,49 +72,56 @@ C_FLOAT64 * CEigen::getWork() const
 void CEigen::CalcEigenvalues( void )
 {
 
-  /*
+ 
  int res;
  char jobvs = 'N';
  char sort = 'N';
+
  long int lda;
  long int sdim;
- long int n, pz, mx, mn;
+ int n, pz, mx, mn;        // YH: don't use "long" any more
  long int ldvs = 1;
  double *work;
  long int lwork = 4096;
  long int info;
  int i, j;
  double distt, maxt, tott;
+
  // the dimension of the matrix
  n = Model.IndMetab;
  lda = n>1 ? n : 1;
+
  // create the matrices
  work = new double[lwork];
+
  // copy the jacobian into J
  for( i=0; i<n; i++ )
   for( j=0; j<n; j++ )
    eigen_jacob[i*n+j] = ss_jacob[i+1][j+1];
+
  // calculate the eigenvalues
- res = dgees_( &jobvs,
-              &sort,
-                          NULL,
-                          &n,
-                  eigen_jacob,
-                          &lda,
-                          &sdim,
-                          eigen_r,
-                  eigen_i,
-                          NULL,
-                          &ldvs,
-                          work,
-                  &lwork,
-                          NULL,
-                          &info);
+ res = dgees_( &jobvs,                     //ok
+              &sort,                       //ok
+                          NULL,            //ok
+                          &n,              //ok
+                  eigen_jacob,             //ok
+                          &lda,            //ok
+                          &sdim,           //ok
+                          eigen_r,         //????? 8
+                  eigen_i,                 //????? 9
+                          NULL,            //ok
+                          &ldvs,           //ok
+                          work,            //ok
+                  &lwork,                  //ok
+                          NULL,            //ok
+                          &info);          //ok
+
  // release the work array
  delete [] work;
  // initialise variables
  eigen_nreal = eigen_nimag = eigen_nposreal = eigen_nnegreal =
  eigen_nzero = eigen_ncplxconj = 0.0;
+
  // sort the eigenvalues
  qsort( eigen_r, eigen_i, 0, n-1 );
  // search for the number of positive real parts
@@ -181,7 +188,7 @@ void CEigen::CalcEigenvalues( void )
   }
  eigen_hierarchy = distt / tott / (n-1);
 
-  */
+ 
 
 }
 

@@ -18,7 +18,11 @@
 
 //include clapack.h for eigenvalue calculations0
 extern "C" {
-#include "CLAPACK/clapack.h"
+  //#include "CLAPACK/clapack.h"       //use CLAPACK
+
+  //use intel-lapack for faster reactions
+  #include "/usr/local/intel-lapack/include/lapack-wrap.h"
+  #include "/usr/local/intel-lapack/include/mkl.h"
 }
 
 
@@ -187,16 +191,14 @@ class CEigen {
 
 
   /**
-   * Set the Work
+   * #12: Set the Work
    */
-  void CEigen::setWork(C_FLOAT64 * aWork);
+  void setWork(C_FLOAT64 * aWork);
 
   /**
-   * Get the Work
+   * #12: Get the Work
    */
-  C_FLOAT64 * CEigen::getWork() const;
-
-
+  C_FLOAT64 * getWork() const;
 
 
   /**
@@ -205,6 +207,105 @@ class CEigen {
   void CalcEigenvalues();
 
 
+  //there are 15 parameters in the dgees() subroutine
+
+  /**
+   * #1: (input) characer*1
+   */
+  //char mJobvs;
+
+ /**
+   * #2: (input) characer*1
+   */
+  //char mSort;
+
+  /**
+   * #3: (input) Logical function of two double precision arguments
+   */
+  //char mSelect;
+
+  /**
+   * #4: (input) The order of the matrix A 
+   */
+  //C_INT32 mN;
+
+ 
+  /**
+   * #5: (input/output) The double precision array, dimension (LDA,N)
+   */
+  //C_FLOAT64 * mA;
+
+
+  /**
+   * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
+   */
+  //C_INT32 mLDA;
+
+  /**
+   * #7: (output) an integer
+   */
+  //C_INT32 mSdim;
+
+  /**
+   * #8: array with dimension (mN)
+   */
+  //C_FLOAT64 * mWR;
+
+  /**
+   * #9: array with dimension (mN)
+   */
+  //C_FLOAT64 * mWI;
+
+  /**
+   * #10: (output) array with dimension (mLdvs, mN)
+   */
+  //C_FLOAT64 * mVS;
+
+  /**
+   * #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
+   */
+  //C_INT32 mLdvs;
+
+  /**
+   * #12: (workspace/output) double precision array, dimension (mLWork)
+   */
+  //C_FLOAT64 * mWork;
+
+  /**
+   * #13: (input) Dimension of array Work, its value >= max(1,3*mN).
+   */
+  //C_INT32 mLWork;
+
+  /**
+   * #14: (workspace) Logical array, dimension (N)
+   */
+  //C_INT32 * mBWork;
+
+
+  /**
+   * #15: (output) an integer
+   */
+  //C_INT32 mInfo;
+
+
+  /*
+
+// variables for stability analysis
+ double                 *eigen_r;
+ double                 *eigen_i;
+ double                 *eigen_jacob;
+ double                 eigen_maxrealpart;
+ double                 eigen_maximagpart;
+ double                 eigen_nposreal;
+ double                 eigen_nnegreal;
+ double                 eigen_nreal;
+ double                 eigen_nimag;
+ double                 eigen_ncplxconj;
+ double                 eigen_nzero;
+ double                 eigen_stiffness;
+ double                 eigen_hierarchy;
+
+  */
 
 
 };
