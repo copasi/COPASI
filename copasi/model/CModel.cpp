@@ -503,7 +503,9 @@ C_INT32 CModel::getDepMetab() const
 C_FLOAT64 * CModel::getInitialNumbers()
 {
   C_INT32 i, imax = mMetabolitesInd.size();
-  C_FLOAT64 * y = new C_FLOAT64[i];
+
+  // C_FLOAT64 * y = new C_FLOAT64[i];
+  C_FLOAT64 * y = new C_FLOAT64[imax];      //YH: i think it should be imax here
 
   for (i=0; i<imax; i++)
     y[i] = mMetabolitesInd[i]->getInitialNumber();
