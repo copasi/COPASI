@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.106 $
+   $Revision: 1.107 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/25 13:29:39 $
+   $Date: 2005/02/07 18:32:53 $
    End CVS Header */
 
 /*******************************************************************
@@ -31,6 +31,7 @@
 #include <qmessagebox.h>
 #include <qvalidator.h>
 #include <qtable.h>
+#include <qhbox.h>
 
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
@@ -176,11 +177,15 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   mReactionsTable = new QTable(this, "ReactionsTable");
   mReactionsTable->setNumCols(2);
   mReactionsTable->setNumRows(2);
+  mReactionsTable->verticalHeader()->hide();
   mReactionsTable->setLeftMargin(0);
-  mReactionsTable->horizontalHeader()->setLabel(0, "Name");
-  mReactionsTable->horizontalHeader()->setLabel(1, "chemical equation");
+  mReactionsTable->horizontalHeader()->hide();
+  mReactionsTable->setTopMargin(0);
+  mReactionsTable->setShowGrid(false);
+  //mReactionsTable->horizontalHeader()->setLabel(0, "Name");
+  //mReactionsTable->horizontalHeader()->setLabel(1, "chemical equation");
   mReactionsTable->setReadOnly(true);
-  mReactionsTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+  mReactionsTable->setSizePolicy(QSizePolicy::Maximum /*Preferred*/, QSizePolicy::Maximum);
   MetabolitesWidget1Layout->addMultiCellWidget(mReactionsTable, 11, 11, 1, 2);
 
   QSpacerItem* spacer_3 = new QSpacerItem(470, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -389,8 +394,10 @@ bool MetabolitesWidget1::saveToMetabolite()
 bool MetabolitesWidget1::loadReactionsTable()
 {
   std::set<std::string> reactions = dataModel->getModel()->listReactionsDependentOnMetab(objKey);
-  mReactionsTable->setNumRows(reactions.size());
-  if (reactions.size() == 0) mReactionsTable->setNumRows(1);
+  mReactionsTable->setNumRows(0);
+  mReactionsTable->setNumRows(reactions.size() + 1);
+  if (reactions.size() < 2) mReactionsTable->setNumRows(3);
+  mReactionsTable->setText(0, 0, "none     ");
 
   std::set<std::string>::const_iterator it, itEnd = reactions.end();
   C_INT32 i;
@@ -398,9 +405,12 @@ bool MetabolitesWidget1::loadReactionsTable()
   for (it = reactions.begin(), i = 0; it != itEnd; ++it, ++i)
     {
       pReac = dynamic_cast< CReaction * >(GlobalKeys.get(*it));
-      mReactionsTable->setText(i, 0, FROM_UTF8(pReac->getObjectName()));
+      mReactionsTable->setText(i, 0, FROM_UTF8(pReac->getObjectName()) + ": ");
       mReactionsTable->setText(i, 1, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pReac, false)));
     }
+  mReactionsTable->adjustColumn(0);
+  mReactionsTable->adjustColumn(1);
+
   return true;
 }
 
@@ -491,7 +501,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                      // Yes or Enter
+    case 0:                                       // Yes or Enter
       {
         unsigned C_INT32 size = dataModel->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -514,7 +524,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                      // No or Escape
+    case 1:                                       // No or Escape
       break;
     }
 }
