@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/02/24 15:26:06 $
+   $Date: 2004/02/25 12:49:59 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.30 2004/02/24 15:26:06 jpahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.31 2004/02/25 12:49:59 jpahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -488,8 +488,8 @@ void TableDefinition1::downButtonClicked()
       //swap in ListBox
       QString pDownItemStr(itemsTable->item(selectedIndex + 1)->text());
       QString pUpperItemStr(itemsTable->item(selectedIndex)->text());
-      itemsTable->changeItem (pUpperItemStr, selectedIndex + 1);
       itemsTable->changeItem (pDownItemStr, selectedIndex);
+      itemsTable->changeItem (pUpperItemStr, selectedIndex + 1);
       bUpdated = true;
     }
 }
