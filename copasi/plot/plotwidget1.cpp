@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/03 10:04:17 $
+   $Author: gauges $ 
+   $Date: 2004/12/10 20:52:31 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.27 2004/12/03 10:04:17 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.28 2004/12/10 20:52:31 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,7 +32,7 @@
 #include "CPlotSpecification.h"
 #include "report/CKeyFactory.h" 
 //#include "CopasiUI/SimpleSelectionDialog.h"
-#include "CopasiUI/CPlotSelectionDialog.h"
+#include "CopasiUI/CCopasiPlotSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
 #include "CopasiUI/DataModelGUI.h" 
 //temporary
@@ -194,7 +194,7 @@ void PlotWidget1::addCurveGroupBox()
   //SimpleSelectionDialog* pBrowser2 = new SimpleSelectionDialog();
   //pBrowser2->setCaption("Choose objects to plot on Y-Axis");
 
-  CPlotSelectionDialog* pBrowser = new CPlotSelectionDialog();
+  CCopasiPlotSelectionDialog* pBrowser = new CCopasiPlotSelectionDialog();
   std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
   std::vector<CCopasiObject*>* pVector2 = new std::vector<CCopasiObject*>();
   pBrowser->setOutputVectors(pVector1, pVector2);
