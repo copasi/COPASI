@@ -41,8 +41,6 @@ class ReactionsWidget1 : public QWidget
     void loadName(QString setValue);
     int isName(QString setValue);
     void loadReactions(CModel *model);
-    //const CFunction *function1;
-    QString *Reaction1_Name;
     QString name;
 
     QLabel* TextLabel4;
