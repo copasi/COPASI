@@ -4,7 +4,10 @@
 #include "CGlobals.h"
 #include "utilities.h"
 
-CGlobals::CGlobals()
+CGlobals::CGlobals():
+    DefaultConc(0.0),
+    DefaultVolume(1.0)
+
 {
   try
     {
@@ -12,9 +15,6 @@ CGlobals::CGlobals()
       FunctionDB.setFilename("FunctionDB.gps");
       FunctionDB.initialize();
       Model = NULL;
-
-      DefaultConc = 0.0;
-      DefaultVolume = 1.0;
     }
 
   catch (CCopasiException Exception)

@@ -30,7 +30,7 @@ class CGlobals
      *
      */
     CUDFunctionDB UDFunctionDB;
-    CCompartment Compartmentfile;
+    // CCompartment Compartmentfile;
 
     /**
      *  This is a hack at the moment to be able to read old configuration files
