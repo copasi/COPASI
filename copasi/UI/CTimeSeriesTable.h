@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/30 15:46:07 $
+   $Author: gauges $ 
+   $Date: 2004/10/07 16:58:39 $
    End CVS Header */
 
 #ifndef CTSTABLE
@@ -29,7 +29,9 @@ class CTimeSeriesTable : public QTable
     }
 
     void setTimeSeries(const CTimeSeries & ts);
+    const CTimeSeries* getTimeSeries();
     void showConcentrations(bool conc = true);
+    bool doShowConcentrations() const;
 
   protected:
 

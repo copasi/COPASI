@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CTimeSeriesTable.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/04 09:52:35 $
+   $Author: gauges $ 
+   $Date: 2004/10/07 16:58:39 $
    End CVS Header */
 
 #include "CTimeSeriesTable.h"
@@ -39,3 +39,13 @@ void CTimeSeriesTable::showConcentrations(bool conc)
   mFlagConc = conc;
   hide(); show(); //TODO: ugly!
 }
+
+const CTimeSeries* CTimeSeriesTable::getTimeSeries()
+{
+  return mTS;
+}
+
+bool CTimeSeriesTable::doShowConcentrations() const
+  {
+    return this->mFlagConc;
+  }
