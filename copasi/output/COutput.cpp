@@ -360,10 +360,10 @@ void COutput::repParams(ofstream &fout, CModel & model)
 
   fout << endl << "COMPARTMENTS" << endl;
 
-  for( i=0; i< model.getCompartments().size(); i++ )
+  for( i=0; i< model.getCompartments()->size(); i++ )
     {
-      fout << "V(" << model.getCompartments()[i]->getName() << ") =  ";
-      fout << setprecision(4) << model.getCompartments()[i]->getVolume();
+      fout << "V(" << (*model.getCompartments())[i].getName() << ") =  ";
+      fout << setprecision(4) << (*model.getCompartments())[i].getVolume();
       fout << endl;
     }		
 
