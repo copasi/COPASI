@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/06 14:56:46 $
+   $Date: 2004/05/13 13:25:35 $
    End CVS Header */
 
 #if !defined OUTPUT_HANDLER_PLOT
@@ -21,6 +21,7 @@ class COutputHandlerPlot : public COutputHandler
   {
   public:
     //   COutputHandlerPlot();
+    virtual ~COutputHandlerPlot() {};
 
     virtual bool init();
     virtual bool doOutput();
