@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:03 $
+   $Date: 2003/11/26 18:39:28 $
    End CVS Header */
 
 /**
@@ -21,7 +21,7 @@
 #include "utilities/CVector.h"
 #include "model/CState.h"
 
-class CNewtonMethod : private CSteadyStateMethod
+class CNewtonMethod : public CSteadyStateMethod
   {
     friend CSteadyStateMethod *
     CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType);

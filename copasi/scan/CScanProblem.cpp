@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:45 $
+   $Date: 2003/11/26 18:39:28 $
    End CVS Header */
 
 /**
@@ -243,7 +243,7 @@ bool CScanProblem::calculate()
   if ((mpSteadyState != NULL) && processSteadyState())
     {
       // std::cout << "COptProblem: mpSteadyState";
-      getSteadyStateTask()->getProblem()->
+      ((CSteadyStateProblem *) getSteadyStateTask()->getProblem())->
       setInitialState(getSteadyStateTask()->getProblem()->getModel()
                       ->getInitialState());
       mpSteadyState->process();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.159 $
+   $Revision: 1.160 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:46 $
+   $Date: 2003/11/26 18:39:29 $
    End CVS Header */
 
 /********************************************************
@@ -567,18 +567,24 @@ void ScanWidget::loadScan()
   CScanProblem *scanProblem = scanTask->getProblem();
   mModel = scanProblem->getModel();
 
-  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey);
+  CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast< CSteadyStateTask * >(CKeyFactory::get(SteadyStateKey));
+  assert(mSteadyStateTask);
+
   CSteadyStateProblem * mSteadystateproblem =
-    mSteadyStateTask->getProblem();
+    (CSteadyStateProblem *) mSteadyStateTask->getProblem();
   mSteadystateproblem->setModel(mModel);
 
-  CTrajectoryTask* mTrajectoryTask = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey);
+  CTrajectoryTask* mTrajectoryTask =
+    dynamic_cast< CTrajectoryTask * >(CKeyFactory::get(TrajectoryKey));
+  assert(mTrajectoryTask);
+
   CTrajectoryProblem * mTrajectoryproblem =
     (CTrajectoryProblem *) mTrajectoryTask->getProblem();
   mTrajectoryproblem->setModel(mModel);
 
-  scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));
-  scanProblem->setTrajectoryTask((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey));
+  scanProblem->setSteadyStateTask(mSteadyStateTask);
+  scanProblem->setTrajectoryTask(mTrajectoryTask);
   scanProblem->setProcessSteadyState(steadyState->isChecked());
   scanProblem->setProcessTrajectory(trajectory->isChecked());
 

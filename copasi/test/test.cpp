@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:44 $
+   $Date: 2003/11/26 18:39:28 $
    End CVS Header */
 
 // Main
@@ -631,7 +631,7 @@ C_INT32 TestSSSolution(void)
   //  ss_soln.setModel(&model);
 
   ofstream output("output.txt");
-  ss_soln.initializeReporting(output);
+  ss_soln.initialize(&output);
   ss_soln.getMethod()->getValue(0);
 
   ss_soln.process();

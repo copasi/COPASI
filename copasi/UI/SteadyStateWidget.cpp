@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/07 17:00:41 $
+   $Date: 2003/11/26 18:39:29 $
    End CVS Header */
 
 /********************************************************
@@ -202,12 +202,17 @@ void SteadyStateWidget::CancelButtonClicked()
 
 void SteadyStateWidget::CommitButtonClicked()
 {
-  if (!CKeyFactory::get(objKey))
-    return;
+  CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast<CSteadyStateTask *>(CKeyFactory::get(objKey));
+  assert(mSteadyStateTask);
 
-  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
-  CSteadyStateMethod* steadystatemethod = mSteadyStateTask->getMethod();
+  CSteadyStateProblem* steadystateproblem =
+    dynamic_cast<CSteadyStateProblem *>(mSteadyStateTask->getProblem());
+  assert(steadystateproblem);
+
+  CSteadyStateMethod* steadystatemethod =
+    dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
+  assert(steadystatemethod);
 
   bool bJacobian = taskJacobian->isChecked ();
   bool bStatistics = taskStability->isChecked ();
@@ -248,9 +253,6 @@ void SteadyStateWidget::parameterValueChanged()
 
 void SteadyStateWidget::runSteadyStateTask()
 {
-  if (!CKeyFactory::get(objKey))
-    return;
-
   CommitButtonClicked();
 
   if (bRunButton->text() != "Run")
@@ -259,25 +261,13 @@ void SteadyStateWidget::runSteadyStateTask()
       return;
     }
 
-  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  mSteadyStateTask->getProblem()->getModel()->compile();
-  mSteadyStateTask->getProblem()->
-  setInitialState(mSteadyStateTask->getProblem()->getModel()->getInitialState());
+  CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast<CSteadyStateTask *>(CKeyFactory::get(objKey));
+  assert(mSteadyStateTask);
 
-  //  std::ofstream output("steadystate.txt");
-  //  mSteadyStateTask->initializeReporting(output);
+  mSteadyStateTask->initialize();
 
-  std::ofstream output;
-  if (mSteadyStateTask->getReport()->getTarget() != "")
-    {
-      if (mSteadyStateTask->getReport()->append())
-        output.open(mSteadyStateTask->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);
-      else
-        output.open(mSteadyStateTask->getReport()->getTarget().c_str(), std::ios_base::out);
-    }
-  if (output.is_open())
-    mSteadyStateTask->initializeReporting(output);
-  else //ask if user insists on proceeding
+  if (!mSteadyStateTask->getReport()->getStream())
     {
       if (QMessageBox::information (NULL, "No output specified,",
                                     "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running steadystate task with no output?",
@@ -302,6 +292,7 @@ void SteadyStateWidget::runSteadyStateTask()
                      QMessageBox::NoButton);
       mb.exec();
     }
+
   //  emit runFinished(mSteadyStateTask->getProblem()->getModel());
   ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
 
@@ -318,11 +309,17 @@ void SteadyStateWidget::runSteadyStateTask()
 
 void SteadyStateWidget::loadSteadyStateTask()
 {
-  //  if (steadystatetask == NULL)
-  //   return;
-  CSteadyStateTask* steadystatetask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  CSteadyStateProblem * steadystateproblem = steadystatetask->getProblem();
-  CSteadyStateMethod* steadystatemethod = steadystatetask->getMethod();
+  CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast<CSteadyStateTask *>(CKeyFactory::get(objKey));
+  assert(mSteadyStateTask);
+
+  CSteadyStateProblem* steadystateproblem =
+    dynamic_cast<CSteadyStateProblem *>(mSteadyStateTask->getProblem());
+  assert(steadystateproblem);
+
+  CSteadyStateMethod* steadystatemethod =
+    dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
+  assert(steadystatemethod);
 
   taskName->setText(tr("Steady State Task"));
   taskName->setEnabled(false);

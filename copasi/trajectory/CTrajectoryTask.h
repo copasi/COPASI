@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:44 $
+   $Date: 2003/11/26 18:39:27 $
    End CVS Header */
 
 /**
@@ -37,11 +37,6 @@ class CTrajectoryTask : public CCopasiTask
      * A pointer to the current state of the integration.
      */
     CState * mpState;
-
-    /**
-     * Produces the output. time=0 for init, time=1 for point, time=2 for end.
-     */ 
-    //    void printOutput(const C_INT32 time);
 
   public:
     /**

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:47 $
+   $Date: 2003/11/26 18:39:29 $
    End CVS Header */
 
 // Main
@@ -138,7 +138,7 @@ void processSteadyState(CModel & model, CReadConfig & copasiFile)
   task.getProblem()->setModel(&model);
 
   std::ofstream SteadyStateFile(Copasi->pOutputList->getSteadyStateFile().c_str());
-  task.initializeReporting(SteadyStateFile);
+  task.initialize(&SteadyStateFile);
 
   task.process();
 }
