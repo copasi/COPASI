@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/30 15:19:07 $
+   $Date: 2003/10/30 20:32:43 $
    End CVS Header */
 
 /**
@@ -151,7 +151,8 @@ bool CKinFunction::createObjList()
                 try
                   {
                     mpObj = (CCopasiObject*)CCopasiContainer::Root->getObject(mToken);
-                    if (mpObj->getObjectType() != "Variable")
+                    if (!mpObj->isValueDbl() && !mpObj->isValueDbl()
+                        || mpObj->isMatrix())
                       {
                         mpObj = NULL;
                       }
@@ -269,7 +270,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                 // this is an error
+        case N_NOP:                                  // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
