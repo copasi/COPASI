@@ -1,6 +1,6 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = copasi tnt
+SUBDIRS = copasi
 
 EXTRA_DIST = AUTHORS COPYING ChangeLog INSTALL README TODO copasi.doxygen 
 
