@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:18 $
+   $Author: ssahle $ 
+   $Date: 2005/02/14 13:43:31 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.33 2005/01/31 14:49:18 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.34 2005/02/14 13:43:31 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,16 +18,21 @@
 #include "plotwidget1.h"
 
 #include <qvariant.h>
-#include <qframe.h>
-#include <qlabel.h>
-#include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qlayout.h>
-#include <qtabwidget.h>
+#include <qcombobox.h>
+#include <qlineedit.h>
 #include <qcheckbox.h>
+#include <qlabel.h>
+#include <qframe.h>
+#include <qtabwidget.h>
+#include <qwidget.h>
+#include <qtoolbutton.h>
+#include <qlayout.h> 
+//#include <qtooltip.h>
+//#include <qwhatsthis.h>
 
 #include "curve2dwidget.h"
+#include "HistoWidget.h"
 #include "plotwindow.h"
 #include "CPlotSpecification.h"
 #include "report/CKeyFactory.h"
@@ -48,94 +53,143 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 {
   if (!name)
     setName("PlotWidget1");
+
   PlotWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "PlotWidget1Layout");
 
-  layout20 = new QVBoxLayout(0, 0, 6, "layout20");
+  //********** title ********************
 
-  layout5 = new QHBoxLayout(0, 0, 6, "layout5");
+  labelTitle = new QLabel(this, "labelTitle");
+  labelTitle->setText(tr("Plot title"));
+  labelTitle->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  PlotWidget1Layout->addWidget(labelTitle, 0, 0);
 
-  titleLabel = new QLabel(this, "titleLabel");
-  layout5->addWidget(titleLabel);
+  layoutTitle = new QHBoxLayout(0, 0, 6, "layoutTitle");
 
   titleLineEdit = new QLineEdit(this, "titleLineEdit");
-  layout5->addWidget(titleLineEdit);
+  layoutTitle->addWidget(titleLineEdit);
 
-  //activeLabel = new QLabel(this, "active?");
-  //layout5->addWidget(activeLabel);
+  activeCheckBox = new QCheckBox(this, "activeCheckBox");
+  activeCheckBox->setText(tr("active?"));
+  layoutTitle->addWidget(activeCheckBox);
 
-  activeCheckBox = new QCheckBox("active?", this, "activeCheckBox");
-  layout5->addWidget(activeCheckBox);
-  layout20->addLayout(layout5);
+  PlotWidget1Layout->addLayout(layoutTitle, 0, 1);
 
-  layout19 = new QVBoxLayout(0, 0, 6, "layout19");
+  //********** type **********************
 
-  line2 = new QFrame(this, "line2");
-  line2->setFrameShape(QFrame::HLine);
-  line2->setFrameShadow(QFrame::Sunken);
-  line2->setFrameShape(QFrame::HLine);
-  layout19->addWidget(line2);
+  labelType = new QLabel(this, "labelType");
+  labelType->setText(tr("Type"));
+  labelType->setEnabled(TRUE);
+  labelType->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  PlotWidget1Layout->addWidget(labelType, 1, 0);
 
-  layout18 = new QVBoxLayout(0, 0, 6, "layout18");
+  comboType = new QComboBox(FALSE, this, "comboType");
+  comboType->clear();
+  comboType->insertItem(tr("2D Plot"));
+  comboType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, comboType->sizePolicy().hasHeightForWidth()));
+  PlotWidget1Layout->addWidget(comboType, 1, 1);
 
-  layout17 = new QHBoxLayout(0, 0, 6, "layout17");
+  //************ scales ******************
 
-  curveSpecLabel = new QLabel(this, "curveSpecLabel");
-  layout17->addWidget(curveSpecLabel);
-  QSpacerItem* spacer = new QSpacerItem(51, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout17->addItem(spacer);
+  labelScale = new QLabel(this, "lableScale");
+  labelScale->setText(tr("Axis scales"));
+  labelScale->setEnabled(FALSE);
+  labelScale->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  PlotWidget1Layout->addWidget(labelScale, 2, 0);
 
-  addCurveButton = new QPushButton(this, "addCurveButton");
-  layout17->addWidget(addCurveButton);
+  checkLogX = new QCheckBox(this, "checkLogX");
+  checkLogX->setText(tr("log X-axis"));
+  checkLogX->setEnabled(FALSE);
+  PlotWidget1Layout->addWidget(checkLogX, 2, 1);
 
-  deleteCurveButton = new QPushButton(this, "deleteCurveButton");
-  layout17->addWidget(deleteCurveButton);
-  layout18->addLayout(layout17);
+  checkLogY = new QCheckBox(this, "checkLogY");
+  checkLogY->setText(tr("log Y-axis"));
+  checkLogY->setEnabled(FALSE);
+  PlotWidget1Layout->addWidget(checkLogY, 3, 1);
+
+  //*********** line *******************
+
+  line1 = new QFrame(this, "line1");
+  line1->setFrameShape(QFrame::HLine);
+  line1->setFrameShadow(QFrame::Sunken);
+  line1->setFrameShape(QFrame::HLine);
+  PlotWidget1Layout->addMultiCellWidget(line1, 4, 4, 0, 1);
+
+  //************ curves ***************
+
+  labelCurves = new QLabel(this, "lableCurves");
+  labelCurves->setText(tr("Curve specifications"));
+  labelCurves->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  PlotWidget1Layout->addWidget(labelCurves, 5, 0);
+
+  layoutCurves = new QHBoxLayout(0, 0, 6, "layoutCurves");
+  spacerCurves = new QSpacerItem(257, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layoutCurves->addItem(spacerCurves);
+
+  addCurveButton = new QToolButton(this, "addCurveButton");
+  addCurveButton->setText(tr("New curve..."));
+  layoutCurves->addWidget(addCurveButton);
+
+  addHistoButton = new QToolButton(this, "addCurveButton");
+  addHistoButton->setText(tr("New histogram..."));
+  layoutCurves->addWidget(addHistoButton);
+
+  deleteCurveButton = new QToolButton(this, "deleteCurveButton");
+  deleteCurveButton->setText(tr("Delete curve"));
+  layoutCurves->addWidget(deleteCurveButton);
+
+  PlotWidget1Layout->addLayout(layoutCurves, 5, 1);
+
+  //************** tabs *****************
 
   tabs = new QTabWidget(this, "tabs");
-  //tabs = new MyQTabWidget(this, "tabs");
-  layout18->addWidget(tabs);
-  layout19->addLayout(layout18);
+  tabs->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)3, 0, 0, tabs->sizePolicy().hasHeightForWidth()));
+  tabs->setTabPosition(QTabWidget::Top);
+  tabs->setTabShape(QTabWidget::Rounded);
+  PlotWidget1Layout->addMultiCellWidget(tabs, 6, 6, 0, 1);
 
-  line3 = new QFrame(this, "line3");
-  line3->setFrameShape(QFrame::HLine);
-  line3->setFrameShadow(QFrame::Sunken);
-  line3->setFrameShape(QFrame::HLine);
-  layout19->addWidget(line3);
+  //********** line *************************
 
-  layout4 = new QHBoxLayout(0, 0, 6, "layout4");
+  lineButtons = new QFrame(this, "lineButtons");
+  lineButtons->setFrameShape(QFrame::HLine);
+  lineButtons->setFrameShadow(QFrame::Sunken);
+  lineButtons->setFrameShape(QFrame::HLine);
+  PlotWidget1Layout->addMultiCellWidget(lineButtons, 7, 7, 0, 1);
+
+  //*********** buttons *****************
+
+  layoutButtons = new QHBoxLayout(0, 0, 6, "layoutButtons");
 
   startPlotButton = new QPushButton(this, "Commit");
-  layout4->addWidget(startPlotButton);
+  startPlotButton->setText(tr("Commit"));
+  layoutButtons->addWidget(startPlotButton);
 
-  deletePlotButton = new QPushButton(/*this*/0, "deletePlotButton");
+  //deletePlotButton = new QPushButton(/*this*/0, "deletePlotButton");
+  //deletePlotButton->setText(tr("Delete Plot"));
   //layout4->addWidget(deletePlotButton);
 
-  addPlotButton = new QPushButton(/*this*/0, "addPlotButton");
+  //addPlotButton = new QPushButton(/*this*/0, "addPlotButton");
+  //addPlotButton->setText(tr("New Plot"));
   //layout4->addWidget(addPlotButton);
 
   resetButton = new QPushButton(this, "Revert");
-  layout4->addWidget(resetButton);
-  layout19->addLayout(layout4);
-  layout20->addLayout(layout19);
+  resetButton->setText(tr("Revert"));
+  layoutButtons->addWidget(resetButton);
 
-  PlotWidget1Layout->addLayout(layout20, 0, 0);
-  languageChange();
+  PlotWidget1Layout->addMultiCellLayout(layoutButtons, 8, 8, 0, 1);
+
   //resize(QSize(508, 505).expandedTo(minimumSizeHint()));
 
   //TODO: adjust tab order? - mostly fine
 
   // signals and slots connections
-  connect(addCurveButton, SIGNAL(clicked()), this, SLOT(addCurveGroupBox()));
-  connect(deleteCurveButton, SIGNAL(clicked()), this, SLOT(removeCurveGroupBox()));
+  connect(addCurveButton, SIGNAL(clicked()), this, SLOT(addCurveSlot()));
+  connect(addHistoButton, SIGNAL(clicked()), this, SLOT(addHistoSlot()));
+  connect(deleteCurveButton, SIGNAL(clicked()), this, SLOT(removeCurve()));
   connect(startPlotButton, SIGNAL(clicked()), this, SLOT(startPlot()));
-  connect(deletePlotButton, SIGNAL(clicked()), this, SLOT(deletePlot()));
-  connect(addPlotButton, SIGNAL(clicked()), this, SLOT(addPlot()));
+  //connect(deletePlotButton, SIGNAL(clicked()), this, SLOT(deletePlot()));
+  //connect(addPlotButton, SIGNAL(clicked()), this, SLOT(addPlot()));
   connect(resetButton, SIGNAL(clicked()), this, SLOT(resetPlot()));
-
-  //TODO: this is for debugging only.
-  //channelNames += "time";
-  //channelNames += "X-Data";
-  //channelNames += "Y-Data";
+  connect(comboType, SIGNAL(activated(int)), this, SLOT(typeChanged()));
 
   //mpPlotSpec = new CPlotSpecification;
 }
@@ -145,30 +199,22 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
  *  Destroys the object and frees any allocated resources
  */
 PlotWidget1::~PlotWidget1()
-{
-  // no need to delete child widgets, Qt does it all for us
-}
+{}
 
 //-----------------------------------------------------------------------------
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void PlotWidget1::languageChange()
+
+//the slot...
+void PlotWidget1::addCurveSlot()
 {
-  setCaption(tr("PlotWidget1"));
-  titleLabel->setText(tr("Title"));
-  titleLineEdit->setText(tr("Copasi"));
-  curveSpecLabel->setText(tr("Curve Specification"));
-  addCurveButton->setText(tr("New Curve"));
-  deleteCurveButton->setText(tr("Delete Curve"));
-  startPlotButton->setText(tr("Commit"));
-  deletePlotButton->setText(tr("Delete Plot"));
-  addPlotButton->setText(tr("New Plot"));
-  resetButton->setText(tr("Revert"));
+  if (mType == CPlotItem::plot2d)
+    addCurve2D();
 }
 
-//-----------------------------------------------------------------------------
+void PlotWidget1::addHistoSlot()
+{
+  if (mType == CPlotItem::plot2d)
+    addHisto1D();
+}
 
 void PlotWidget1::addCurveTab(const std::string & title,
                               const CPlotDataChannelSpec & x,
@@ -186,7 +232,7 @@ void PlotWidget1::addCurveTab(const std::string & title,
   delete item;
 }
 
-void PlotWidget1::addCurveGroupBox()
+void PlotWidget1::addCurve2D()
 {
   CCopasiPlotSelectionDialog* pBrowser = new CCopasiPlotSelectionDialog();
   std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
@@ -290,9 +336,30 @@ void PlotWidget1::addCurveGroupBox()
   pdelete(pVector2);
 }
 
+void PlotWidget1::addHisto1DTab(const std::string & title,
+                                const CPlotDataChannelSpec & x)
+{
+  CPlotItem* item = new CPlotItem(title, NULL, CPlotItem::histoItem1d);
+  item->addChannel(x);
+
+  HistoWidget * curveWidget = new HistoWidget(tabs);
+  curveWidget->setModel(dataModel->getModel());
+  curveWidget->LoadFromCurveSpec(item);
+  tabs->addTab(curveWidget, item->getTitle().c_str());
+
+  delete item;
+}
+
+void PlotWidget1::addHisto1D()
+{
+  C_INT32 storeTab = tabs->count();
+  addHisto1DTab("Test", CPlotDataChannelSpec());
+  tabs->setCurrentPage(storeTab);
+}
+
 //-----------------------------------------------------------------------------
 
-void PlotWidget1::removeCurveGroupBox()
+void PlotWidget1::removeCurve()
 {
   delete tabs->currentPage();
 }
@@ -339,6 +406,32 @@ void PlotWidget1::plotFinished()
   // ...and enable all other input fields
 }
 
+void PlotWidget1::typeChanged()
+{
+  CPlotItem::Type newType;
+
+  switch (comboType->currentItem())
+    {
+    case 0 :
+      newType = CPlotItem::plot2d;
+      break;
+    default :
+      fatalError();
+    }
+
+  if (mType == newType)
+    return; //do nothing
+
+  mType = newType;
+
+  //clear tabWidget
+  while (tabs->currentPage()) delete tabs->currentPage();
+
+  //TODO: perhaps create empty tab
+}
+
+//-----------------------------------------------------------------------------
+
 bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
 {
   if (!pspec) return false;
@@ -349,21 +442,43 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
   //active?
   activeCheckBox->setChecked(pspec->isActive());
 
+  //type
+  mType = pspec->getType();
+  switch (mType)
+    {
+    case CPlotItem::plot2d :
+      comboType->setCurrentItem(0);
+      break;
+      break;
+    default:
+      fatalError();
+    }
+
   C_INT32 oldIndex = tabs->currentPageIndex();
 
   //clear tabWidget
   while (tabs->currentPage()) delete tabs->currentPage();
 
   //reconstruct tabWidget from curve specs
-  Curve2DWidget* curve;
   const CCopasiVector<CPlotItem> & curves = pspec->getItems();
   unsigned C_INT32 i, imax = curves.size();
   for (i = 0; i < imax; ++i)
     {
-      curve = new Curve2DWidget(tabs);
-      curve->setModel(dataModel->getModel());
-      curve->LoadFromCurveSpec(curves[i]);
-      tabs->addTab(curve, curves[i]->getTitle().c_str());
+      if (curves[i]->getType() == CPlotItem::curve2d)
+        {
+          Curve2DWidget* curve = new Curve2DWidget(tabs);
+          curve->setModel(dataModel->getModel());
+          curve->LoadFromCurveSpec(curves[i]);
+          tabs->addTab(curve, curves[i]->getTitle().c_str());
+        }
+
+      if (curves[i]->getType() == CPlotItem::histoItem1d)
+        {
+          HistoWidget* histo = new HistoWidget(tabs);
+          histo->setModel(dataModel->getModel());
+          histo->LoadFromCurveSpec(curves[i]);
+          tabs->addTab(histo, curves[i]->getTitle().c_str());
+        }
     }
 
   tabs->setCurrentPage(oldIndex);
@@ -394,8 +509,19 @@ bool PlotWidget1::saveToPlotSpec()
   imax = tabs->count();
   for (i = 0; i < imax; ++i)
     {
-      item = pspec->createItem("dummyname", CPlotItem::curve2d);
-      dynamic_cast<Curve2DWidget*>(tabs->page(i))->SaveToCurveSpec(item);
+      Curve2DWidget* tmpCurve2D = dynamic_cast<Curve2DWidget*>(tabs->page(i));
+      if (tmpCurve2D)
+        {
+          item = pspec->createItem("dummyname", CPlotItem::curve2d);
+          tmpCurve2D->SaveToCurveSpec(item);
+        }
+
+      HistoWidget* tmpHisto = dynamic_cast<HistoWidget*>(tabs->page(i));
+      if (tmpHisto)
+        {
+          item = pspec->createItem("dummyname", CPlotItem::histoItem1d);
+          tmpHisto->SaveToCurveSpec(item);
+        }
     }
 
   //TODO: CopasiParameters
