@@ -209,7 +209,10 @@ bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
 
     C_INT32 i, imax = size();
     for (i = 0; i < imax; ++i)
-      if (mParameters[i] != rhs.mParameters[i]) return false;
-
+      {
+        if (mParameters[i]->getName() != rhs.mParameters[i]->getName()) return false;
+        if (mParameters[i]->getType() != rhs.mParameters[i]->getType()) return false;
+        if (mParameters[i]->getUsage() != rhs.mParameters[i]->getUsage()) return false;
+      }
     return true;
   }
