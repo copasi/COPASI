@@ -956,7 +956,7 @@ C_INT32 MakeFunctionDB()
   parameter.push_back("L");
   parameter.push_back("Ki");
   MakeFunctionEntry("Allosteric inhibition (MWC)",
-                    "V*substrate*(1+substrate/Ks)^(n-1)/(Ks*(L*(1+Inhibitor/Ki)^n+(1+substrate/Ks)^n))",
+                    "V*substrate*(Ks+substrate)^(n-1)/(L*(Ks*(1+Inhibitor/Ki))^n+(Ks+substrate)^n)",
                     FALSE,
                     modifier,
                     parameter,
