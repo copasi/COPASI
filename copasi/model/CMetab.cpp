@@ -298,3 +298,10 @@ bool operator<(const CMetab &lhs, const CMetab &rhs)
     }
 }
 
+/**
+ * Return rate of production of this metaboLite
+ */ 
+C_FLOAT64 CMetab::getRate()
+{
+	return mRate;
+}

@@ -226,6 +226,11 @@ class CMetab
    */
   void * getTTAddr();
 
+  /**
+   * Return rate of production of this metaboLite
+   */ 
+  C_FLOAT64 getRate();
+  
  private:
 
   /*
