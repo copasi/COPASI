@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 10:58:56 $
+   $Author: ssahle $ 
+   $Date: 2004/12/17 14:49:17 $
    End CVS Header */
 
 #include "model/CModel.h"
@@ -14,13 +14,14 @@ CPlotSpecification::CPlotSpecification(const std::string & name,
                                        const CCopasiContainer * pParent,
                                        const CPlotSpecification::Type & type):
     CPlotItem(name, pParent, type),
+    items("Curves", this),
     mActive(true)
 {}
 
 CPlotSpecification::CPlotSpecification(const CPlotSpecification & src,
                                        const CCopasiContainer * pParent):
     CPlotItem(src, pParent),
-    items(src.getItems()),
+    items(src.getItems(), this),
     mActive(true)
 {}
 
