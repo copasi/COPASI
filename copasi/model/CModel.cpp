@@ -33,8 +33,8 @@
 #include "utilities/CVector.h"
 #include "utilities/CluX.h"
 #include "utilities/utility.h"
-#include "utilities/CMethodParameter.h"
-#include "CopasiUI/CReactionInterface.h"
+#include "utilities/CMethodParameter.h" 
+// #include "CopasiUI/CReactionInterface.h"
 
 #include "clapackwrap.h"
 
@@ -1812,6 +1812,7 @@ CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
     return * mList[index];
   }
 
+#ifdef XXXX
 bool CModel::convert2NonReversible()
 {
   bool ret = true;
@@ -1887,3 +1888,4 @@ bool CModel::convert2NonReversible()
 
   return ret;
 }
+#endif // XXXX
