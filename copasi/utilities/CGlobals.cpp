@@ -1,9 +1,6 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
-//#include "copasi.h"
-#include "CGlobals.h" 
-//#include "utilities.h"
-
+#include "CGlobals.h"
 #include "utilities/CCopasiException.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"

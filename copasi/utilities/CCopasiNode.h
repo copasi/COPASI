@@ -32,9 +32,9 @@ template < class _Data > class CCopasiNode
       CCopasiNode< Data > * mpChild;
 
       /**
-       * A pointer to the first sibbling of the node.
+       * A pointer to the first sibling of the node.
        */
-      CCopasiNode< Data > * mpSibbling;
+      CCopasiNode< Data > * mpSibling;
 
       // Operations
     public:
@@ -45,7 +45,7 @@ template < class _Data > class CCopasiNode
       CCopasiNode(CCopasiNode< Data > * pParent = NULL):
           mpParent(pParent),
           mpChild(NULL),
-          mpSibbling(NULL)
+          mpSibling(NULL)
       {}
 
       /**
@@ -55,7 +55,7 @@ template < class _Data > class CCopasiNode
       CCopasiNode(const CCopasiNode< Data > & src):
           mpParent(src.mpParent),
           mpChild(src.mpChild),
-          mpSibbling(src.mpSibbling)
+          mpSibling(src.mpSibling)
       {}
 
       /**
@@ -66,7 +66,7 @@ template < class _Data > class CCopasiNode
       CCopasiNode(const Data & data, CCopasiNode< Data > * pParent = NULL):
           mpParent(pParent),
           mpChild(NULL),
-          mpSibbling(NULL)
+          mpSibling(NULL)
       {}
 
       /**
@@ -116,12 +116,12 @@ template < class _Data > class CCopasiNode
 
         if (pAfter == this)
           {
-            pChild->setSibbling(mpChild);
+            pChild->setSibling(mpChild);
             mpChild = NULL;
           }
 
         if (mpChild)
-          return mpChild->addSibbling(pChild, pAfter);
+          return mpChild->addSibling(pChild, pAfter);
 
         mpChild = pChild;
         mpChild->setParent(this);
@@ -139,9 +139,9 @@ template < class _Data > class CCopasiNode
         if (!pChild) return false;           // Nothing to remove.
 
         if (mpChild != pChild)
-          return mpChild->removeSibbling(pChild);
+          return mpChild->removeSibling(pChild);
 
-        mpChild = mpChild->getSibbling();
+        mpChild = mpChild->getSibling();
         return true;
       }
 
@@ -158,80 +158,80 @@ template < class _Data > class CCopasiNode
       const CCopasiNode< Data > * getChild() const {return mpChild;}
 
       /**
-       * Add a sibbling to a node.
-       * If pAfter == this the sibbling will be inserted at the fornt of the list
-       * of sibblings.
-       * @param CCopasiNode< Data > * pSibbling
+       * Add a sibling to a node.
+       * If pAfter == this the sibling will be inserted at the fornt of the list
+       * of siblings.
+       * @param CCopasiNode< Data > * pSibling
        * @param CCopasiNode< Data > * pAfter 
-       *        (default: NULL appended to the list of sibblings)
+       *        (default: NULL appended to the list of siblings)
        * @return bool Success
        */
-      bool addSibbling(CCopasiNode< Data > * pSibbling,
-                       CCopasiNode< Data > * pAfter = NULL)
+      bool addSibling(CCopasiNode< Data > * pSibling,
+                      CCopasiNode< Data > * pAfter = NULL)
       {
-        if (!pSibbling) return false;        // Nothing to insert.
+        if (!pSibling) return false;        // Nothing to insert.
 
         if (this == pAfter)
           {
-            pSibbling->setParent(mpParent);
-            pSibbling->setSibbling(mpSibbling);
-            mpSibbling = pSibbling;
+            pSibling->setParent(mpParent);
+            pSibling->setSibling(mpSibling);
+            mpSibling = pSibling;
             return true;
           }
 
         CCopasiNode< Data > * pTmp = this;
-        while (pTmp != pAfter && pTmp->getSibbling())
-          pTmp = pTmp->getSibbling();
+        while (pTmp != pAfter && pTmp->getSibling())
+          pTmp = pTmp->getSibling();
 
         if (pTmp == pAfter || pAfter == NULL)
-          return pTmp->addSibbling(pSibbling, pTmp);
+          return pTmp->addSibling(pSibling, pTmp);
         else
           return false;                      // Insertion point no found.
       }
 
       /**
        * Remove a siblling.
-       * @param CCopasiNode< Data > * pSibbling
+       * @param CCopasiNode< Data > * pSibling
        * @return bool Success
        */
-      bool removeSibbling(CCopasiNode< Data > * pSibbling)
+      bool removeSibling(CCopasiNode< Data > * pSibling)
       {
-        if (!pSibbling) return false;        // Nothing to remove.
+        if (!pSibling) return false;        // Nothing to remove.
 
-        if (this == pSibbling)
+        if (this == pSibling)
           {
             if (mpParent)
-              mpParent->removeChild(pSibbling);
+              mpParent->removeChild(pSibling);
             else
               return false;                  // Root can not be removed
           }
 
         CCopasiNode< Data > * pTmp = this;
-        CCopasiNode< Data > * pTmpSibbling = this->mpSibbling;
+        CCopasiNode< Data > * pTmpSibling = this->mpSibling;
 
-        while (pTmpSibbling != pSibbling && pTmpSibbling != NULL)
+        while (pTmpSibling != pSibling && pTmpSibling != NULL)
           {
-            pTmp = pTmpSibbling;
-            pTmpSibbling = pTmpSibbling->getSibbling();
+            pTmp = pTmpSibling;
+            pTmpSibling = pTmpSibling->getSibling();
           }
 
-        if (pTmpSibbling)
-          return pTmp->setSibbling(pSibbling->getSibbling());
+        if (pTmpSibling)
+          return pTmp->setSibling(pSibling->getSibling());
         else
-          return false;                      // We did not find pSibbling.
+          return false;                      // We did not find pSibling.
       }
 
       /**
-       * Retreive the sibbling of a node.
-       * @return CCopasiNode< Data > * pSibbling
+       * Retreive the sibling of a node.
+       * @return CCopasiNode< Data > * pSibling
        */
-    CCopasiNode< Data > * getSibbling() {return mpSibbling;}
+    CCopasiNode< Data > * getSibling() {return mpSibling;}
 
       /**
-       * Retreive the sibbling of a node.
-       * @return const CCopasiNode< Data > * pSibbling
+       * Retreive the sibling of a node.
+       * @return const CCopasiNode< Data > * pSibling
        */
-      const CCopasiNode< Data > * getSibbling() const {return mpSibbling;}
+      const CCopasiNode< Data > * getSibling() const {return mpSibling;}
 
     protected:
       /**
@@ -256,13 +256,13 @@ template < class _Data > class CCopasiNode
         return true;
       }
       /**
-       * Set the sibbling of a node.
-       * @param CCopasiNode< Data > * pSibbling
+       * Set the sibling of a node.
+       * @param CCopasiNode< Data > * pSibling                     
        * @return bool Success
        */
-      bool setSibbling(CCopasiNode< Data > * pSibbling)
+      bool setSibling(CCopasiNode< Data > * pSibling)
       {
-        mpSibbling = pSibbling;
+        mpSibling = pSibling;
         return true;
       }
 

@@ -118,22 +118,22 @@ template < class _Node > class CCopasiTree
 
           /**
            * Return the first node after the children of the current node.
-           * This might be a sibbling or an ancestor.
+           * This might be a sibling or an ancestor.
            * @return Node * pastChildren
            */
           Node * pastChildren()
           {
             Node * pastChildren = NULL;
 
-            if (mCurrent->getSibbling())
-              pastChildren = (Node *) mCurrent->getSibbling();
+            if (mCurrent->getSibling())
+              pastChildren = (Node *) mCurrent->getSibling();
             else
               {
                 Node * pTmp = (Node *) mCurrent->getParent();
 
                 while (pTmp)
                   {
-                    if ((pastChildren = (Node *) pTmp->getSibbling()))
+                    if ((pastChildren = (Node *) pTmp->getSibling()))
                       break;
 
                     pTmp = (Node *) pTmp->getParent();
@@ -303,7 +303,7 @@ template < class _Node > class CCopasiTree
         for (; it != end && &*it != NULL; ++it)
           os << &*it << ": parent: " << it->getParent()
           << ", child: " << it->getChild()
-          << ", sibbling: " << it->getSibbling() << std::endl;
+          << ", sibling: " << it->getSibling() << std::endl;
 
         os << std::endl;
         return os;

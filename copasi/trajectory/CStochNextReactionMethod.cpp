@@ -3,6 +3,7 @@
 #include "CTrajectoryMethod.h"
 #include "model/CCompartment.h"
 #include "model/CModel.h"
+
 CStochNextReactionMethod::CStochNextReactionMethod()
     : CStochMethod()
 {}
