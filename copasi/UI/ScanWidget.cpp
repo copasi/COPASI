@@ -158,7 +158,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   scrollview = new ScanScrollView(this, 0, 0);
   scrollview->setVScrollBarMode(QScrollView::Auto);
-
+  scrollview->setSelectedList(&selectedList);
   //  for (int temp = 1; temp <= 6; temp++)
   //    addNewScanItem(NULL);
 
@@ -529,6 +529,7 @@ void ScanWidget::viewMousePressEvent(QMouseEvent* e)
 ScanScrollView::ScanScrollView(QWidget* parent, const char* name, WFlags fl)
     : QScrollView(parent, name, fl)
 {
+  pSelectedList = NULL;
   mParent = (ScanWidget*)parent;
 }
 
@@ -536,4 +537,21 @@ void ScanScrollView::contentsMousePressEvent(class QMouseEvent *e)
 {
   QScrollView::contentsMousePressEvent(e);
   mParent->viewMousePressEvent(e);
+}
+void ScanScrollView:: resizeEvent(QResizeEvent * e)
+{
+  QScrollView::resizeEvent(e);
+  if (!pSelectedList)
+    return;
+  int i = 0;
+  for (; i < pSelectedList->size(); i++)
+    {
+      (*pSelectedList)[i]->setFixedWidth(visibleWidth());
+    }
+  //
+}
+
+void ScanScrollView::setSelectedList(std::vector<QWidget*>* pNewSelectedList)
+{
+  pSelectedList = pNewSelectedList;
 }

@@ -39,10 +39,12 @@ class ScanScrollView: public QScrollView
     Q_OBJECT
   private:
     ScanWidget* mParent;
-
+    std::vector<QWidget*>* pSelectedList;
   public:
+    void setSelectedList(std::vector<QWidget*>* pNewSelectedList);
     ScanScrollView(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     virtual void contentsMousePressEvent (QMouseEvent * e);
+    virtual void resizeEvent (QResizeEvent * e);
   };
 
 class ScanWidget : public CopasiWidget
