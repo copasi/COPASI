@@ -1,7 +1,7 @@
 #ifndef OBJECT_BROWSER_ITEM_H
 #define OBJECT_BROWSER_ITEM_H
 
-#include "QlistView.h"
+#include "qlistview.h"
 
 class QListViewItem;
 class QListView;
