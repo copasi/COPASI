@@ -14,14 +14,14 @@ LIBS        = -lnsl
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CFLAGS) -c $< -o $@
 
-all: 	test 
+all: 	test doc/html/index.html
 
 OBJS	= $(OBJDIR)/CCompartment.o \
 	  $(OBJDIR)/CReadConfig.o  \
 	  $(OBJDIR)/CDatum.o \
           $(OBJDIR)/main.o
 
-test: 	dependencies mkdir $(OBJS)
+test: 	dependencies $(OBJDIR) $(OBJS)
 	$(CXX) $(CFLAGS) -o test $(OBJS)
 
 SRCS =  $(SRCDIR)/main.cpp \
@@ -36,7 +36,10 @@ dependencies: $(SRCS) $(INCDIR)/*.h
 	-I/usr/include/g++-2 -- $^
 	@rm ./dependencies.bak
 
-mkdir:  
+doc/html/index.html: $(INCDIR)/*.h
+	doxygen test.dox
+
+$(OBJDIR): 
 	@test \( -d obj \) || mkdir $(OBJDIR)
 
 clean:  
