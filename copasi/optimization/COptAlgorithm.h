@@ -18,7 +18,8 @@
 #include <copasi.h>
 #include <vector>
 
-#include "optimization.h"
+#include "COptProblem.h"
+#include "COptAlgorithmParameter.h"
 
 // YOHE: this is an abstract class that contains many virtual functions 
 // without definitions
@@ -30,8 +31,8 @@ class COptAlgorithm
  private:
   
   COptProblem * mOptProblem;  // pointer to remote problem
-  double * mParameters;        // pointer to parameters
-  int mParameterNum;           // the number of parameters
+  double * mParameters;       // pointer to parameters
+  int mParameterNum;          // the number of parameters
   double * mParameterMin;     // the minimum values of parameters
   double * mParameterMax;     // the maximum values of parameters
   vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
@@ -52,6 +53,7 @@ class COptAlgorithm
     * Destructor
     */
    virtual ~COptAlgorithm();
+   //~COptAlgorithm();
 
    /**
     * clean up memory
@@ -69,7 +71,7 @@ class COptAlgorithm
     * of its progress by the callback function set with SetCallback.
     */
    virtual int optimise();
-  
+   //int optimise();
 
    /**
     * get the number of method parameters
@@ -107,6 +109,8 @@ class COptAlgorithm
     */
    //virtual bool isBounded( void );
    bool isBounded( void );
+
+
 };
 
 

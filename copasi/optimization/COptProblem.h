@@ -24,7 +24,11 @@ class COptProblem
  private:
   
   double * mParameterValues;        // pointer to parameters
- 
+  int mParameterNum;          // the number of parameters
+  double * mParameterMin;     // the minimum values of parameters
+  double * mParameterMax;     // the maximum values of parameters
+
+
   // Implementation
  public:
 
@@ -66,7 +70,7 @@ class COptProblem
    /**
     * calculate function for optimization
     */
-   void calculate(); 
+   virtual void calculate(); 
 
  
    /**

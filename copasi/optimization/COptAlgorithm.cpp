@@ -28,7 +28,7 @@ COptAlgorithm::COptAlgorithm()
   mBounds = false;
 }
 
-//YOHE: seems virtual cannot be outside of class declaration
+//YOHE: seems "virtual" cannot be outside of class declaration
 COptAlgorithm::~COptAlgorithm()
 { }
 
@@ -38,6 +38,8 @@ bool COptAlgorithm::initialize(void)
   
   if (!mOptAlgmParams.empty())
     mOptAlgmParams.clear();
+
+  return true;
 }
 
 //clean up mem
@@ -98,7 +100,7 @@ bool COptAlgorithm::isBounded( void )
 // the callback function set with SetCallback
 //virtual int COptAlgorithm::Optimise( double (*func) (void) )
 int COptAlgorithm::optimise(void)
-{
+{  
   return 0;
 }
 
