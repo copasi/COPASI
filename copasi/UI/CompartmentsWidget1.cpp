@@ -1,11 +1,11 @@
-/**********************************************************************
- **  $ CopasiUI/CompartmentsWidget1.cpp                 
- **  $ Author  : Mudita Singhal
-
- ** This file is used to create the GUI FrontPage for the  information 
- ** obtained from the data model about the Compartments----It is 
- ** Basically the Second level of Compartments.
- ***********************************************************************/
+/****************************************************************************
+ ** Form implementation generated from reading ui file '.\CompartmentsWidget1.ui'
+ **
+ ** Created: Mon Mar 3 17:06:25 2003
+ **      by:  The User Interface Compiler (uic)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
@@ -23,113 +23,110 @@
 #include "listviews.h"
 
 /*
- *  Constructs a CompartmentsWidget which is a child of 'parent', with the 
+ *  Constructs a CompartmentsWidget1 which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
- *
  */
-
-CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
-
+CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFlags fl)
+    : QWidget(parent, name, fl)
 {
-  //This is to make the Main Frame of the page
-  //The Main layout used is the Vertical Layout
-  QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0);
-  Frame1 = new QFrame(this, "Frame1");
-  Frame1->setFrameShape(QFrame::Box);
-  Frame1->setFrameShadow(QFrame::Plain);
-  vboxLayout->addWidget(Frame1);
-  QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
-  vboxLayout1->addSpacing(1);
+  if (!name)
+    setName("CompartmentsWidget1");
+  resize(644, 478);
+  QFont f(font());
+  f.setFamily("Times New Roman");
+  setFont(f);
+  setCaption(trUtf8("CompartmentsWidget1"));
+  CompartmentsWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "CompartmentsWidget1Layout");
 
-  //This Frame had to be added because of the border around the frame
-  //The grid Layout is used for this frame
-  Frame3 = new QFrame(Frame1, "Frame3");
-  vboxLayout1->addWidget(Frame3);
-  QGridLayout *gridLayout = new QGridLayout(Frame3, 0);
+  LineEdit4 = new QLineEdit(this, "LineEdit4");
+  LineEdit4->setEnabled(FALSE);
+  LineEdit4->setReadOnly(TRUE);
 
-  //All the other frames(rows) are embeded in it
-  Frame2 = new QFrame(Frame3, "Frame2");
-  gridLayout->addWidget(Frame2, 0, 0, 0);
-  QVBoxLayout *verticalLayout1 = new QVBoxLayout(Frame2, 0);
-  verticalLayout1->addSpacing(25);
+  CompartmentsWidget1Layout->addWidget(LineEdit4, 3, 1);
 
-  //Frame for Ist Row
-  Frame4a = new QFrame(Frame2, "Frame4a");
-  verticalLayout1->addWidget(Frame4a);
-  QHBoxLayout *hBoxLayout4a = new QHBoxLayout(Frame4a, 0);
-  hBoxLayout4a->addSpacing(15);
+  LineEdit1 = new QLineEdit(this, "LineEdit1");
 
-  TextLabel1 = new QLabel("Compartment Name", Frame4a);
-  hBoxLayout4a->addWidget(TextLabel1);
-  hBoxLayout4a->addSpacing(17);
-  LineEdit1 = new QLineEdit("", Frame4a);
-  hBoxLayout4a->addWidget(LineEdit1);
-  hBoxLayout4a->addSpacing(60);
+  CompartmentsWidget1Layout->addWidget(LineEdit1, 0, 1);
 
-  verticalLayout1->addSpacing(85);
-  Frame4_2 = new QFrame(Frame2, "Frame4_2");
-  verticalLayout1->addWidget(Frame4_2);
-  QHBoxLayout *hBoxLayout4_2 = new QHBoxLayout(Frame4_2, 0);
+  TextLabel2 = new QLabel(this, "TextLabel2");
+  TextLabel2->setText(trUtf8("Initial  Volume"));
 
-  //Frame for 2nd left hand side Row
-  Frame4c = new QFrame(Frame4_2, "Frame4c");
-  hBoxLayout4_2->addWidget(Frame4c);
-  QHBoxLayout *hBoxLayout4c = new QHBoxLayout(Frame4c, 0);
-  hBoxLayout4c->addSpacing(15);
+  CompartmentsWidget1Layout->addWidget(TextLabel2, 2, 0);
 
-  TextLabel3 = new QLabel("Initial  Volume", Frame4c);
-  hBoxLayout4c->addWidget(TextLabel3);
-  hBoxLayout4c->addSpacing(43);
+  TextLabel2_2 = new QLabel(this, "TextLabel2_2");
+  TextLabel2_2->setText(trUtf8("Transient Volume"));
 
-  LineEdit3 = new QLineEdit("", Frame4c);
-  LineEdit3->setGeometry(QRect(150, 90, 121, 21));
-  hBoxLayout4c->addWidget(LineEdit3);
-  hBoxLayout4c->addSpacing(20);
+  CompartmentsWidget1Layout->addWidget(TextLabel2_2, 3, 0);
 
-  //Frame for 2nd right hand side subpart
-  Frame4d = new QFrame(Frame4_2, "Frame4d");
-  hBoxLayout4_2->addWidget(Frame4d);
-  QHBoxLayout *hBoxLayout4d = new QHBoxLayout(Frame4d, 0);
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Compartment Name"));
 
-  TextLabel4 = new QLabel("Transient Volume", Frame4d);
-  hBoxLayout4d->addWidget(TextLabel4);
-  hBoxLayout4d->addSpacing(5);
-  LineEdit4 = new QLineEdit("", Frame4d);
-  hBoxLayout4d->addWidget(LineEdit4);
-  LineEdit4->setEnabled(false);
-  hBoxLayout4d->addSpacing(20);
+  CompartmentsWidget1Layout->addWidget(TextLabel1, 0, 0);
 
-  //Frame for 3rd Row
-  Frame4b = new QFrame(Frame2, "Frame4b");
-  verticalLayout1->addWidget(Frame4b);
-  QHBoxLayout *hBoxLayout4b = new QHBoxLayout(Frame4b, 0);
+  Line4 = new QFrame(this, "Line4");
+  Line4->setFrameShape(QFrame::HLine);
+  Line4->setFrameShadow(QFrame::Sunken);
+  Line4->setFrameShape(QFrame::HLine);
 
-  TextLabel2 = new QLabel("Metabolite Name", Frame4b);
-  hBoxLayout4b->addWidget(TextLabel2);
-  //hBoxLayout4b->addSpacing(-36);
+  CompartmentsWidget1Layout->addMultiCellWidget(Line4, 1, 1, 0, 1);
 
-  ListBox1 = new QListBox(Frame4b, "ListBox1");
-  // ListBox1->setGeometry(QRect(120, 40, 31, 41));
-  hBoxLayout4b->addWidget(ListBox1);
-  hBoxLayout4b->addSpacing(287);
+  Line4_2 = new QFrame(this, "Line4_2");
+  Line4_2->setFrameShape(QFrame::HLine);
+  Line4_2->setFrameShadow(QFrame::Sunken);
+  Line4_2->setFrameShape(QFrame::HLine);
 
-  Frame4_1 = new QFrame(Frame2, "Frame4_1");
-  verticalLayout1->addWidget(Frame4_1);
-  QHBoxLayout *hBoxLayout4_1 = new QHBoxLayout(Frame4_1, 0);
+  CompartmentsWidget1Layout->addMultiCellWidget(Line4_2, 4, 4, 0, 1);
 
-  commitChanges = new QPushButton("&Commit Changes", Frame4_1);
-  cancelChanges = new QPushButton("&Cancel Changes", Frame4_1);
+  ListBox1 = new QListBox(this, "ListBox1");
 
-  hBoxLayout4_1->addWidget(commitChanges);
-  hBoxLayout4_1->addWidget(cancelChanges);
+  CompartmentsWidget1Layout->addMultiCellWidget(ListBox1, 5, 6, 1, 1);
+  QSpacerItem* spacer = new QSpacerItem(131, 270, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  CompartmentsWidget1Layout->addItem(spacer, 6, 0);
 
+  TextLabel3 = new QLabel(this, "TextLabel3");
+  TextLabel3->setText(trUtf8("Metabolite Name"));
+
+  CompartmentsWidget1Layout->addWidget(TextLabel3, 5, 0);
+
+  LineEdit3 = new QLineEdit(this, "LineEdit3");
+  LineEdit3->setFrameShape(QLineEdit::LineEditPanel);
+  LineEdit3->setFrameShadow(QLineEdit::Sunken);
+
+  CompartmentsWidget1Layout->addWidget(LineEdit3, 2, 1);
+
+  Layout5 = new QHBoxLayout(0, 0, 6, "Layout5");
+
+  commitChanges = new QPushButton(this, "commitChanges");
+  commitChanges->setText(trUtf8("Commit Changes"));
+  Layout5->addWidget(commitChanges);
+
+  cancelChanges = new QPushButton(this, "cancelChanges");
+  cancelChanges->setText(trUtf8("Cancel Changes"));
+  Layout5->addWidget(cancelChanges);
+
+  CompartmentsWidget1Layout->addMultiCellLayout(Layout5, 8, 8, 0, 1);
+
+  Line4_3 = new QFrame(this, "Line4_3");
+  Line4_3->setFrameShape(QFrame::HLine);
+  Line4_3->setFrameShadow(QFrame::Sunken);
+  Line4_3->setFrameShape(QFrame::HLine);
+
+  CompartmentsWidget1Layout->addMultiCellWidget(Line4_3, 7, 7, 0, 1);
+
+  // signals and slots connections
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
-  connect(ListBox1, SIGNAL(selected(const QString &)), this, SLOT(slotListBoxCurrentChanged(const QString &)));
+  connect(ListBox1, SIGNAL(selected(const QString&)), this, SLOT(slotListBoxCurrentChanged(const QString&)));
   connect(this, SIGNAL(name_changed(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
-
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
+}
+
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+CompartmentsWidget1::~CompartmentsWidget1()
+{
+  // no need to delete child widgets, Qt does it all for us
 }
 
 /*This function is used to connect this class to the listviews
@@ -183,7 +180,6 @@ void CompartmentsWidget1::loadName(QString setValue)
   const CCopasiVectorNS < CMetab > & Metabs = compartn->getMetabolites();
   C_INT32 noOfMetabolitesRows = Metabs.size();
   const CMetab *mtb;
-  ListBox1->setFixedSize(100, 150);
   ListBox1->setAutoScrollBar(true);
   ListBox1->clear();
 
