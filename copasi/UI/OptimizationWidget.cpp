@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/18 16:40:17 $
+   $Date: 2003/10/18 16:45:24 $
    End CVS Header */
 
 /********************************************************
@@ -858,77 +858,76 @@ void OptimizationWidget::slotBtnConfirmClicked()
         warning_msg += ">\n Please check the upper bound function again \n";
       else
         warning_msg += ">\n Please check the lower bound function again \n";
-      warning_msg += Do you still want to keep your input ? \nPress <Yes> to keep.";
+      warning_msg += "Do you still want to keep your input ? \nPress <Yes> to keep.";
 
-                     if (QMessageBox::warning(this, "Invalid Function Input",
-                     warning_msg.c_str(),
-                     QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-                     {
-                     activeObject = i;
-                     if (up)
-                     {
-                     func->mMaxList[i] = "";
-                     ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineUpper->setText("");
-                   }
-                     else
-                     {
-                     func->mMinList[i] = "";
-                     ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineLower->setText("");
-                   }
-                   }
-                   }
-                   }
+      if (QMessageBox::warning(this, "Invalid Function Input",
+                               warning_msg.c_str(),
+                               QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        {
+          activeObject = i;
+          if (up)
+            {
+              func->mMaxList[i] = "";
+              ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineUpper->setText("");
+            }
+          else
+            {
+              func->mMinList[i] = "";
+              ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineLower->setText("");
+            }
+        }
+    }
+}
 
-                     void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)
-                     {
-                     if (selectedList.size() == 0)
-                     return;
+void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)
+{
+  if (selectedList.size() == 0)
+    return;
+  emit hide_me();
+  if (activeObject >= 0)
+    {
+      QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+      activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+    }
 
-                     emit hide_me();
-                     if (activeObject >= 0)
-                     {
-                     QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
-                     activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-                   }
+  activeObject = e->y() / (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight);
+  if (itemnamesTable->currentItem() != -1)
+    itemnamesTable->setSelected(itemnamesTable->currentItem(), false);
+  itemnamesTable->setSelected(activeObject, true);
 
-                     activeObject = e->y() / (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight);
-                     if (itemnamesTable->currentItem() != -1)
-                     itemnamesTable->setSelected(itemnamesTable->currentItem(), false);
-                     itemnamesTable->setSelected(activeObject, true);
+  if (activeObject >= selectedList.size() / 2)
+    {
+      emit show_me();
+      activeObject = -1;
+      return;
+    }
 
-                     if (activeObject >= selectedList.size() / 2)
-                     {
-                     emit show_me();
-                     activeObject = -1;
-                     return;
-                   }
+  QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  emit show_me();
+}
 
-                     QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
-                     activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-                     emit show_me();
-                   }
+const std::string OptimizationWidget::getKey()
+{
+  return objKey;
+}
 
-                     const std::string OptimizationWidget::getKey()
-                     {
-                     return objKey;
-                   }
+void OptimizationWidget::steadystateEditing()
+{
+  pSteadyStateWidget->show();
+}
 
-                     void OptimizationWidget::steadystateEditing()
-                     {
-                     pSteadyStateWidget->show();
-                   }
+void OptimizationWidget::timeEditing()
+{
+  pTrajectoryWidget->show();
+}
 
-                     void OptimizationWidget::timeEditing()
-                     {
-                     pTrajectoryWidget->show();
-                   }
+void OptimizationWidget::steadystateEnable()
+{
+  steadystateEditButton->setEnabled(steadystateCheck->isChecked());
+}
 
-                     void OptimizationWidget::steadystateEnable()
-                     {
-                     steadystateEditButton->setEnabled(steadystateCheck->isChecked());
-                   }
-
-                     void OptimizationWidget::timeEnable()
-                     {
-                     timeEditButton->setEnabled(timeCheck->isChecked());
-                   }
+void OptimizationWidget::timeEnable()
+{
+  timeEditButton->setEnabled(timeCheck->isChecked());
+}
