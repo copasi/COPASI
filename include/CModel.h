@@ -13,6 +13,8 @@
 #include "CMoiety.h"
 #include "tnt/tnt.h"
 #include "tnt/cmat.h"
+template < class CType > class CCopasiVector;
+class CCompartment;
 
 class CModel
 {
@@ -32,6 +34,8 @@ private:
 
     /**
      *  for array of compartments
+     *  @supplierCardinality 0..*
+     *  @associates <{CCompartment}>
      */
     CCopasiVector < CCompartment > * mCompartments;
 
@@ -45,6 +49,8 @@ private:
     
     /**
      *  for array of steps
+     *  @supplierCardinality 0..*
+     *  @associates <{CStep}>
      */
     CCopasiVector < CStep > * mSteps;
     vector < CStep * > mStepsX;
@@ -52,6 +58,8 @@ private:
     
     /**
      *  for array of conserved moieties
+     *  @supplierCardinality 0..*
+     *  @associates <{CMoiety}>
      */
     CCopasiVector < CMoiety > * mMoieties;
 

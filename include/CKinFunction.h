@@ -41,20 +41,20 @@ public:
     ~CKinIdentifier();
 };
 
+class CKinNodes: public CCopasiVector < CNodeK >
+{
+    public:
+        CKinNodes();
+        ~CKinNodes();
+
+    private:
+        C_INT16 IsInsertAllowed(const CNodeK & src);
+};
+
 class CKinFunction: public CBaseFunction
 {
 // Attributes
 private:
-    class CKinNodes: public CCopasiVector < CNodeK >
-        {
-        public:
-            CKinNodes();
-            ~CKinNodes();
-
-        private:
-            C_INT16 IsInsertAllowed(const CNodeK & src);
-        };
-
     /**
      *  The vector of nodes of the binary tree of the function
      */

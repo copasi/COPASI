@@ -104,7 +104,7 @@ C_INT32 CKinFunction::Save(CWriteConfig & configbuffer)
     return Fail;
 }
 
-CKinFunction::CKinNodes & CKinFunction::Nodes() {return *mNodes;}
+CKinNodes & CKinFunction::Nodes() {return *mNodes;}
 
 void CKinFunction::SetIdentifierType(const string & name,
                                      char identifierType)
@@ -479,9 +479,9 @@ CKinIdentifier::CKinIdentifier() {}
 
 CKinIdentifier::~CKinIdentifier() {} 
 
-CKinFunction::CKinNodes::CKinNodes() {}
+CKinNodes::CKinNodes() {}
 
-CKinFunction::CKinNodes::~CKinNodes() {}
+CKinNodes::~CKinNodes() {}
 
-C_INT16 CKinFunction::CKinNodes::IsInsertAllowed(const CNodeK & src)
+C_INT16 CKinNodes::IsInsertAllowed(const CNodeK & src)
 {return TRUE;}

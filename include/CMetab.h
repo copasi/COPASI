@@ -218,7 +218,13 @@ public:
 
 class CMetabolitesOld: public CCopasiVector < CMetabOld >
 {
-private:
+private:    
+    /**
+     * @supplierCardinality 0..*
+     * @associates <{CMetabOld}>
+     */
+    // CCopasiVector < CMetabOld > self;
+
     C_INT16 IsInsertAllowed(const CMetabOld & src) const {return TRUE;}
 };
   

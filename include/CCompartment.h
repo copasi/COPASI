@@ -15,9 +15,9 @@
 #include "CWriteConfig.h"
 #include "CCopasiVector.h"
 #include "CMetab.h"
+#include "CModel.h"
 
-class CCompartment
-{
+class CCompartment {
 // Attributes
 private:
     /**
@@ -32,10 +32,10 @@ private:
 
     /**
      *  Metabolites located in the compartment.
+     *  @supplierCardinality 0..*
+     *  @associates <{CMetab}>
      */
     CCopasiVector < CMetab > * mMetabolites;
-    
-    
 // Operations
 public:
     /**
