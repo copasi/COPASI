@@ -135,8 +135,8 @@ void CopasiUI3Window::slotFilePrint()
 void CopasiUI3Window::about()
 {
   QMessageBox::about(this, "Qt Application Example",
-                      "This example demonstrates simple use of "
-                      "QMainWindow,\nQMenuBar and QToolBar.");
+                     "This example demonstrates simple use of "
+                     "QMainWindow,\nQMenuBar and QToolBar.");
 }
 
 /***************CopasiUI3Window::aboutQt()******
@@ -162,9 +162,10 @@ void CopasiUI3Window::createToolBar()
 
   // put something in it
   QPixmap icon[3] = {fileopen, filesave, fileprint};
-  char* iconName[3] = {"Open", "Save", "Print"};
-  char* slotFileName[3] = {SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFilePrint())};
-  char* toolTip[3];
+  const char* iconName[3] = {"Open", "Save", "Print"};
+  const char* slotFileName[3] = {SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFilePrint())};
+
+  const char* toolTip[3];
 
   toolTip[0] = "Click this button to open a <em>new file</em>. <br>"
                "You can also select the <b>Open</b> command "
@@ -184,7 +185,7 @@ void CopasiUI3Window::createToolBar()
   for (int j = 0; j < 3; j++)
     {
       toolb = new QToolButton(icon[j], iconName[j], QString::null,
-                               this, slotFileName[j], tbMain);
+                              this, slotFileName[j], tbMain);
 
       QWhatsThis::add
         (toolb, toolTip[j]);
@@ -194,8 +195,8 @@ void CopasiUI3Window::createToolBar()
 
   QWhatsThis::add
     (toolb, "This is a <b>What's This</b> button "
-      "It enables the user to ask for help "
-      "about widgets on the screen.");
+     "It enables the user to ask for help "
+     "about widgets on the screen.");
 }
 
 /***************CopasiUI3Window::createMenuBar()**********************************
@@ -208,7 +209,7 @@ void CopasiUI3Window::createMenuBar()
 {
   //modified on 5th feb : Ankur (left for further modification...later
   QPixmap icon[5] = {fileopen, fileopen, filesave, filesave, fileprint};
-  char* toolTip[5];
+  const char* toolTip[5];
 
   toolTip[0] = "Click this button to open a <em>new file</em>. <br>"
                "You can also select the <b>Open</b> command "
@@ -230,8 +231,8 @@ void CopasiUI3Window::createMenuBar()
   toolTip[4] = "Click this button to print the file you "
                "are editing.\n You can also select the Print "
                "command from the File menu.";
-  char* iconName[5] = {"&New", "&Open", "&Save", "&SaveAs", "&Print"};
-  char* slotFileName[5] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotFilePrint())};
+  const char* iconName[5] = {"&New", "&Open", "&Save", "&SaveAs", "&Print"};
+  const char* slotFileName[5] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotFilePrint())};
   QKeySequence hotKey[5] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_P};
   int fileSeperator[5] = {0, 0, 0, 0, 1};
 
@@ -246,7 +247,7 @@ void CopasiUI3Window::createMenuBar()
       int id;
 
       id = file->insertItem(icon[j], iconName[j],
-                             this, slotFileName[j], hotKey[j]);
+                            this, slotFileName[j], hotKey[j]);
 
       file->setWhatsThis(id, toolTip[j]);
     }

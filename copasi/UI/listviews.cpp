@@ -273,7 +273,7 @@ QListViewItem* ListViews::searchNode(int id)
   return NULL;
 }
 
-/************************ListViews::searchNode(char* name)--------------------->
+/************************ListViews::searchNode(const char* name)--------------------->
  **
  ** Parameters:- int :- the id of the object to be searched
  **
@@ -281,7 +281,7 @@ QListViewItem* ListViews::searchNode(int id)
  ** Description:-This method is used to search a particular node in the 
  ** tree with input parameter as folder name
  ********************************************************************************/
-QListViewItem* ListViews::searchNode(char* name)
+QListViewItem* ListViews::searchNode(const char* name)
 {
   FolderListItem *item;
   QListViewItemIterator it(folders);
@@ -384,7 +384,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     {
       switch (item->folder()->getID())
         {
-        case 21 :         // for showing addition...of new components..
+        case 21 :          // for showing addition...of new components..
 
           // deleteAllMyChildrens(i); //is used if u want to delete all mychildrens
 
@@ -471,7 +471,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:          // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:           // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
 
           if ((node = dataModel->getData()) != NULL)
@@ -493,7 +493,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:        // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:         // WHEN ANY DATA IS DELETED FROM THE TREE
           // showMessage("Ankur","It comes in delete");
 
           if ((node = dataModel->getData()) != NULL)
@@ -501,12 +501,12 @@ void ListViews::update(Subject* theChangedSubject, int status)
             // if present than check whether it is the top level node or child of one of
             // the top level node
             // if topleve node than call clearParentItem else call clearItem
-            if (it = searchNode(node->info->getID()))
+            if ((it = searchNode(node->info->getID())))
               (node->parent->info->getID() == 0) ? clearParentItem(it) : clearItem(it);
 
           break;
 
-        case MODEL:          // new model is loaded.
+        case MODEL:           // new model is loaded.
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();

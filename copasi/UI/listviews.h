@@ -115,7 +115,7 @@ class ListViews : public QSplitter, public Observer
 
     QListViewItem* searchNode(Folder*);
     QListViewItem* searchNode(int); // search by folder id
-    QListViewItem* searchNode(char*); // searfch by folder name
+    QListViewItem* searchNode(const char*); // searfch by folder name
     int searchNode(QListViewItem* me);
 
     // the variables used in the code...
