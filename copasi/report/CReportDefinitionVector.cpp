@@ -11,7 +11,7 @@
 CReportDefinitionVector::CReportDefinitionVector(const std::string & name,
     const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "TrajectoryTask", CCopasiObject::Container),
-    mKey(CKeyFactory::add("SteadyStateTask", this))
+    mKey(CKeyFactory::add("CReportDefinitionVector", this))
 {}
 
 CReportDefinitionVector::~CReportDefinitionVector()
