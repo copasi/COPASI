@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2004/12/29 15:07:44 $  
+# $Revision: 1.9 $ $Author: shoops $ $Date: 2005/02/08 16:32:20 $  
 ######################################################################
 
 include(common.pri)
@@ -8,6 +8,7 @@ TEMPLATE = subdirs
 
 # First build the libs
 SUBDIRS =  commandline
+SUBDIRS += CopasiDataModel
 SUBDIRS += elementaryFluxModes
 SUBDIRS += function
 SUBDIRS += mathmodel
@@ -25,6 +26,7 @@ SUBDIRS += trajectory
 SUBDIRS += utilities
 SUBDIRS += xml
 SUBDIRS += wizard
+
 # Now the excecutables
 SUBDIRS += CopasiUI
 #SUBDIRS += CopasiSE
