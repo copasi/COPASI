@@ -182,6 +182,10 @@ SOURCE=.\Observer.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\OptimizationItemWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\OptimizationWidget.cpp
 # End Source File
 # Begin Source File
@@ -347,6 +351,10 @@ SOURCE=.\ObjectBrowserItem.h
 # Begin Source File
 
 SOURCE=.\Observer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptimizationItemWidget.h
 # End Source File
 # Begin Source File
 
