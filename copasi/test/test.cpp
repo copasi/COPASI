@@ -115,12 +115,12 @@ C_INT main(C_INT argc, char *argv[])
       //      TestMetab();
       //      TestReadSample();
       //      TestNewton();
-      //      TestSSSolution();
+      TestSSSolution();
       //YOHE: new test
       //      TestOptimization();
       //      TestEigen();
       //      TestTrajectory();
-      TestTrajectoryTask();
+      //      TestTrajectoryTask();
       //      TestStochDirectMethod();
       //      TestMoiety();
       //      TestKinFunction();
