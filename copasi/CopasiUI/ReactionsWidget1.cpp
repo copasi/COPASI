@@ -442,13 +442,22 @@ void ReactionsWidget1::slotCheckBoxClicked()
   string chemEq2 = chemEq1->getChemicalEquationConverted();
   QString chemical_reaction = chemEq2.c_str();
   TriLogic reversible;
-  if (checkBox->isChecked() == FALSE)
+  if (reactn1->isReversible())
+    {
+      reversible = TriTrue;
+    }
+  else
+    {
+      reversible = TriFalse;
+    }
+
+  if (checkBox->isChecked() == FALSE && reactn1->isReversible() == TRUE)
     {
       int i = chemical_reaction.find ("=", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 1, "->");
       reversible = TriFalse;
     }
-  else
+  else if (checkBox->isChecked() == TRUE && reactn1->isReversible() == FALSE)
     {
       int i = chemical_reaction.find ("->", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 2, "=");
@@ -476,7 +485,9 @@ void ReactionsWidget1::slotCheckBoxClicked()
     }
 
   ComboBox1->insertStringList(comboEntries, -1);
-  QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
+  QString comboValue = ComboBox1->currentText();
+  comboUpdate(comboValue);
+  //QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
 }
 
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
@@ -841,4 +852,5 @@ void ReactionsWidget1::slotLineEditChanged()
     {
       checkBox->setChecked(FALSE);
     }
+  slotCheckBoxClicked();
 }
