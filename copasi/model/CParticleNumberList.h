@@ -3,6 +3,7 @@
 
 #include "utilities/CVector.h"
 
+/** @dia:pos 83.9479,-19.4621 */
 class CParticleNumberList
   {
   protected:

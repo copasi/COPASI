@@ -13,6 +13,7 @@
 #include "utilities/CCopasiVector.h"
 #include "CMetab.h"
 
+/** @dia:pos 12.8337,93.7809 */
 class CChemEqElement
   {
     //  Attributes
@@ -36,6 +37,7 @@ class CChemEqElement
     /**
      *  A pointer to the metabolite
      */
+    /** @dia:route 2,105; h,45.5713,93.7809,123.645,92.0961,117.263 */
     CMetab * mpMetabolite;
 
     // Operations

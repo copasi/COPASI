@@ -22,6 +22,7 @@ class CModel;
 #define METAB_DEPENDENT 2
 #define METAB_MOIETY 7
 
+/** @dia:pos 80.8289,51.5961 */
 class CMetab
   {
     // Attributes
@@ -72,17 +73,20 @@ class CMetab
      *  pointer to the compartment the metabolite is located in.
      *  The metab needs to know about volumes.
      */
+    /** @dia:route 15,11; h,158.906,38.003,165.545,54.2961,117.263 */
     CCompartment * mCompartment;
 
     /**
      *  pointer to the model the metabolite is located in.
      *  The metab needs to know about the unit for concentrations.
      */
+    /** @dia:route 15,38; h,117.263,55.8961,169.801,44.1423,177.081 */
     const CModel * mpModel;
 
     /**
      * This the default parent compartmnet used on creation
      */
+    /** @dia:route 13,13; h,158.906,37.003,168.277,55.0961,117.263 */
     static const CCompartment *mpParentCompartment;
 
     // Operations
@@ -345,6 +349,7 @@ class CMetab
     C_INT16 isValidName();
   };
 
+/** @dia:pos 51.7045,51.8004 */
 class CMetabOld
   {
     friend class CMetab;

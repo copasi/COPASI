@@ -26,6 +26,7 @@ enum ProblemType
   Trajectory
 };
 
+/** @dia:pos -4.4,4.15 */
 class COptProblem
   {
     //data member

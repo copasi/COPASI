@@ -5,6 +5,8 @@
 #ifndef COPASI_CRandomSearchMaster
 #define COPASI_CRandomSearchMaster
 
+/** @dia:pos 18.05,34.05 */
+/** @dia:route COptMethod; v,46.9608,16.35,33,32.3332,34.05 */
 class CRandomSearchMaster : public COptMethod
   {
     friend COptMethod * COptMethod::createMethod(COptMethod::Type type);

@@ -18,6 +18,7 @@ class CWriteConfig;
 #include "CMetab.h"
 #include "utilities/CCopasiVector.h"
 
+/** @dia:pos 128.756,33.503 */
 class CCompartment
   {
     // Attributes
@@ -43,6 +44,7 @@ class CCompartment
      *  @supplierCardinality 0..*
      *  @associates <{CMetab}>
      */
+    /** @dia:route 3,9; h,128.756,34.203,126.793,53.4961,117.263 */
     CCopasiVectorNS < CMetab > mMetabolites;
     // Operations
 

@@ -22,6 +22,7 @@ class CStateX;
 
 template <class CType> class CMatrix;
 
+/** @dia:pos 127.601,-24.3708 */
 class CState
   {
     friend class CStateX;
@@ -31,6 +32,7 @@ class CState
     /**
      *
      */
+    /** @dia:route 0,2; h,177.081,30.2423,172.597,-24.3708,169.315 */
     const CModel * mpModel;
 
     /**
@@ -48,11 +50,13 @@ class CState
     /**
      *
      */
+    /** @dia:route 2,0; h,118.692,-19.4621,125.683,-24.3708,127.601 */
     CParticleNumberList mFixedNumbers;
 
     /**
      *
      */
+    /** @dia:route 9,0; h,118.692,-17.5621,125.683,-24.3708,127.601 */
     CParticleNumberList mVariableNumbers;
 
     // Operations
@@ -280,6 +284,8 @@ class CState
                                       const C_FLOAT64 & resolution);
   };
 
+/** @dia:pos 127.547,11.4075 */
+/** @dia:route CState; v,148.458,9.42919,13.5356,148.667,11.4075 */
 class CStateX: public CState
   {
     friend class CState;
@@ -292,6 +298,7 @@ class CStateX: public CState
     /**
      *
      */
+    /** @dia:route 13,0; h,118.692,-15.9621,125.604,11.4075,127.547 */
     CParticleNumberList mDependentNumbers;
 
     // Operations

@@ -15,7 +15,8 @@ class CDeTerm;
  * 
  * This class represents a line of input from the spec file. It contains
  * a type identifier and a string, representing the actual input.
- */
+ */ 
+/** @dia:pos 55.814,11.5496 */
 class CSpecLine
   {
   public:
@@ -24,14 +25,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,     // Comments
-      DE,      // Differential equations
-      EQN,     // Moiety specification equations
-      INIT,     // Initializations
-      CNST,     // Constant assignments
-      VOL,     // Volume assignment
-      CPT,     // Compartment volume assignments
-      RATE,     // Rate constant assignments
+      CMNT,      // Comments
+      DE,       // Differential equations
+      EQN,      // Moiety specification equations
+      INIT,      // Initializations
+      CNST,      // Constant assignments
+      VOL,      // Volume assignment
+      CPT,      // Compartment volume assignments
+      RATE,      // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 
@@ -103,6 +104,7 @@ class CSpecLine
  * It stores the LHS metabolite, the compartment this is in, and the RHS string.
  */
 
+/** @dia:pos 44.726,-0.362133 */
 class CBaseEqn
   {
   public:
@@ -152,6 +154,7 @@ class CBaseEqn
  * CNameVal is used as an intermediate in processing the spec input.
  */
 
+/** @dia:pos 57.926,25.0669 */
 class CNameVal
   {
   public:
@@ -198,6 +201,7 @@ class CNameVal
  * be used to construct a CReaction.
  */
 
+/** @dia:pos 23.1588,35.123 */
 class CTempMetab
   {
   public:
@@ -212,6 +216,7 @@ class CTempMetab
     void setNumChange(const C_INT32 num) {mNumChange = num;}
 
   private:
+    /** @dia:route 2,2; h,117.263,51.5961,123.99,35.123,42.6964 */
     const CMetab *mMetab;
     C_INT32 mMultiplicity;
     C_INT32 mNumChange;
@@ -225,6 +230,7 @@ class CTempMetab
     }
   };
 
+/** @dia:pos 51.4155,37.5278 */
 class CTempReaction
   {
   public:
@@ -251,8 +257,11 @@ class CTempReaction
   private:
     std::string mName;
     std::string mRateDescription;
+    /** @dia:route 17,3; h,42.6964,40.423,48.4754,38.2278,51.4155 */
     std::vector< CTempMetab> mMetabs;
+    /** @dia:route 13,3; h,42.6964,38.823,48.4754,38.2278,51.4155 */
     std::vector< CTempMetab> mSubstrates;
+    /** @dia:route 9,3; h,42.6964,37.023,48.4754,38.2278,51.4155 */
     std::vector< CTempMetab> mProducts;
     std::vector< std::string> mIdentifiers;
 
@@ -280,6 +289,7 @@ class CTempReaction
     }
   };
 
+/** @dia:pos 96.4407,39.6026 */
 class CTempReactionSet
   {
   public:
@@ -291,6 +301,7 @@ class CTempReactionSet
     CTempReaction &operator[](C_INT32 i) {return mReactions[i];}
 
   private:
+    /** @dia:route 2,0; h,88.8259,37.5278,93.7594,39.6026,96.4407 */
     std::vector< CTempReaction> mReactions;
   };
 

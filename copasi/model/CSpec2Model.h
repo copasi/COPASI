@@ -29,6 +29,7 @@
  * model = sprecreader.createModel();
  */
 
+/** @dia:pos 87.8692,-0.359781 */
 class CSpec2Model
   {
   public:
@@ -196,27 +197,33 @@ class CSpec2Model
     /**
      * The contents again, annotated
      */
+    /** @dia:route 22,2; h,87.8692,7.34022,85.8737,11.5496,80.6844 */
     std::vector< CSpecLine> mSpecLines;
     /**
      * The differential equation contents, for further processing
      */
+    /** @dia:route 9,0; h,80.6844,1.53787,85.8737,-0.359781,87.8692 */
     std::vector< CBaseEqn> mDeVector;
     /**
      * The moiety equation contents, for further processing
      */
+    /** @dia:route 2,0; h,80.6844,-0.362133,85.8737,-0.359781,87.8692 */
     std::vector< CBaseEqn> mMoietyVector;
     /**
      * The constants, which are later plugged into rates or moiety equations
      */
+    /** @dia:route 2,40; h,80.6844,25.0669,85.8737,14.5402,87.8692 */
     std::vector< CNameVal> mConstVector;
     /**
      * The rate constants, used later to create reactions and 
      * to parse the differential equations.
      */
+    /** @dia:route 9,40; h,80.6844,26.9669,85.8737,14.5402,87.8692 */
     std::vector< CNameVal> mRateVector;
     /**
      * A pointer to the model being constructed.
      */
+    /** @dia:route 8,7; h,177.081,32.1423,125.418,23.8402,117.914 */
     CModel *mModel;
   };
 

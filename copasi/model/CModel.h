@@ -17,10 +17,12 @@ class CState;
 class CStateX;
 template <class CType> class CVector;
 
+/** @dia:pos 177.081,30.2423 */
 class CModel
   {
     //Attributes
   public:
+    /** @dia:pos 129.758,65.0298 */
     class CLinkMatrixView
       {
       public:
@@ -28,6 +30,7 @@ class CModel
 
       private:
         const CMatrix< C_FLOAT64 > & mA;
+        /** @dia:route 39,3; h,117.263,65.6961,127.49,65.7298,129.758 */
         const std::vector< CMetab * > & mIndependent;
         static const elementType mZero;
         static const elementType mUnit;
@@ -123,26 +126,31 @@ class CModel
      *  @supplierCardinality 0..*
      *  @associates <{CCompartment}>
      */
+    /** @dia:route 2,18; h,158.906,33.503,167.042,36.1423,177.081 */
     CCopasiVectorNS < CCompartment > mCompartments;
 
     /**
      *  Vector of reference to metabolites
      */
+    /** @dia:route 29,44; h,117.263,61.6961,171.362,46.7423,177.081 */
     std::vector< CMetab * > mMetabolites;
 
     /**
      *  Vector of reference to metabolites in reduced model representation
      */
+    /** @dia:route 17,44; h,117.263,56.6961,171.362,46.7423,177.081 */
     std::vector< CMetab * > mMetabolitesX;
 
     /**
      *  Vector of reference to independent metabolites
      */
+    /** @dia:route 21,44; h,117.263,58.2961,171.362,46.7423,177.081 */
     std::vector< CMetab * > mMetabolitesInd;
 
     /**
      *  Vector of reference to dependent metabolites
      */
+    /** @dia:route 25,44; h,117.263,60.0961,171.362,46.7423,177.081 */
     std::vector< CMetab * > mMetabolitesDep;
 
     /**
@@ -150,16 +158,19 @@ class CModel
      *  @supplierCardinality 0..*
      *  @associates <{CReaction}>
      */
+    /** @dia:route 154,2; h,177.081,90.7423,175.231,75.5337,169.81 */
     CCopasiVectorNS < CReaction > mSteps;
 
     /**
      *  Vector of reference to reactions in reduced model representation.
      */
+    /** @dia:route 154,9; h,177.081,90.7423,175.231,77.4337,169.81 */
     std::vector< CReaction * > mStepsX;
 
     /**
      *  Vector of reference to independend reactions.
      */
+    /** @dia:route 154,13; h,177.081,90.7423,175.231,79.0337,169.81 */
     std::vector< CReaction * > mStepsInd;
 
     /**
@@ -181,6 +192,7 @@ class CModel
      *  @supplierCardinality 0..*
      *  @associates <{CMoiety}>
      */
+    /** @dia:route 178,7; h,177.081,100.342,174.433,136.262,81.1982 */
     CCopasiVectorN < CMoiety > mMoieties;
 
     /**
@@ -216,6 +228,7 @@ class CModel
     /**
      *   This is used to return a view to L
      */
+    /** @dia:route 98,2; h,177.081,68.3423,165.341,65.0298,160.278 */
     CLinkMatrixView mLView;
 
     /**

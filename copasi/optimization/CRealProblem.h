@@ -32,16 +32,15 @@
 #include "COptProblem.h"
 
 //
-
+/** @dia:pos 3.05,34.05 */
+/** @dia:route COptProblem; v,9.3288,30.75,32.7,9.3472,34.05 */
 class CRealProblem : public COptProblem
   {
     //data member
     //no real variables defined here, but the base class has many members
-
   private:
 
     // Implementation
-
   public:
 
     /**

@@ -10,6 +10,8 @@ class CRandom;
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
 //
+/** @dia:pos 48.05,34.05 */
+/** @dia:route COptMethod; v,46.9608,16.35,33,59.1652,34.05 */
 class CRandomSearch : public COptMethod
   {
     friend COptMethod * COptMethod::createMethod(COptMethod::Type type);

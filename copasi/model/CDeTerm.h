@@ -8,6 +8,7 @@
  * This class describes a term in the differential equation.
  */
 
+/** @dia:pos 29.688,68.0665 */
 class CDeTerm
   {
   public:

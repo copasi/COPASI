@@ -25,6 +25,7 @@ template < class CType > class CVector;
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
 //
+/** @dia:pos 36.4,4.15 */
 class COptMethod : public CMethodParameterList
   {
   public:
@@ -45,6 +46,7 @@ class COptMethod : public CMethodParameterList
      */
     COptMethod::Type mTypeEnum;
 
+    /** @dia:route 0,2; h,36.4,4.15,33.95,4.15,23.0576 */
     COptProblem * mOptProblem;        // pointer to remote problem
 
     //These parameters are optimization parameters, not method (algm) parameters

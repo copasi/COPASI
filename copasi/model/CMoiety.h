@@ -14,6 +14,7 @@
 #include "CMetab.h"
 #include "CChemEqElement.h"
 
+/** @dia:pos 52.1566,116.062 */
 class CMoiety
   {
     // Attributes
@@ -37,6 +38,7 @@ class CMoiety
      *  Vector of linear dependent CChemEqElement
      * @supplierCardinality 0..*
      */
+    /** @dia:route 7,3; h,45.5713,110.781,50.1417,116.762,52.1566 */
     CCopasiVector < CChemEqElement > mEquation;
 
     // Operations

@@ -19,12 +19,14 @@
 
 template < class CType > class CVector;
 
+/** @dia:pos 135.488,75.5337 */
 class CReaction
   {
     // Attributes
 
   public:
 
+    /** @dia:pos 93.3703,97.2451 */
     class CId2Metab
       {
         friend class CReaction;
@@ -49,6 +51,7 @@ class CReaction
         /**
          *  A pointer to the metabolite
          */
+        /** @dia:route 97,2; h,117.263,88.8961,131.334,97.2451,126.108 */
         CMetab *mpMetabolite;
 
       public:
@@ -134,6 +137,7 @@ class CReaction
         }
       };
 
+    /** @dia:pos 93.7456,113.598 */
     class CId2Param
       {
         friend class CReaction;
@@ -228,6 +232,7 @@ class CReaction
     /**
      *  The chemical equation
      */
+    /** @dia:route 2,5; h,88.6464,95.1644,91.3136,127.734,135.488 */
     CChemEq mChemEq;
 
     /**
@@ -276,24 +281,28 @@ class CReaction
      *  A vector of links between the substrates of the reaction 
      *  and function parameters
      */
+    /** @dia:route 20,9; h,135.488,82.2337,133.093,99.1451,126.108 */
     CCopasiVector < CId2Metab > mId2Substrates;
 
     /**
      *  A vector of links between the products of the reaction 
      *  and function parameters
      */
+    /** @dia:route 20,13; h,135.488,82.2337,133.093,100.745,126.108 */
     CCopasiVector < CId2Metab > mId2Products;
 
     /**
      *  A vector of links between the modifiers of the reaction 
      *  and function parameters
      */
+    /** @dia:route 20,17; h,135.488,82.2337,133.093,102.545,126.108 */
     CCopasiVector < CId2Metab > mId2Modifiers;
 
     /**
      *  A vector of links between the kinetic parameters of the reaction 
      *  and function parameters
      */
+    /** @dia:route 84,2; h,135.488,108.034,133.093,113.598,125.427 */
     CCopasiVector < CId2Param > mId2Parameters;
 
     /**

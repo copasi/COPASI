@@ -12,6 +12,7 @@
 
 #include "CChemEqElement.h"
 
+/** @dia:pos 52.2128,95.1644 */
 class CChemEq
   {
   public:
@@ -39,6 +40,7 @@ class CChemEq
      * @supplierCardinality 0..*
      * @label Substrates
      */
+    /** @dia:route 3,29; h,52.2128,95.8644,50.1417,103.881,45.5713 */
     CCopasiVector < CChemEqElement > mSubstrates;
 
     /**
@@ -46,6 +48,7 @@ class CChemEq
      * @supplierCardinality 0..*
      * @label Products
      */
+    /** @dia:route 3,33; h,52.2128,95.8644,50.1417,105.481,45.5713 */
     CCopasiVector < CChemEqElement > mProducts;
 
     /**
@@ -53,6 +56,7 @@ class CChemEq
      * @supplierCardinality 0..*
      * @label Stoichiometry
      */
+    /** @dia:route 3,37; h,52.2128,95.8644,50.1417,107.081,45.5713 */
     CCopasiVector < CChemEqElement > mBalances;
 
     // Operations
