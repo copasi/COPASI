@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2003/10/23 19:51:03 $
+   $Author: shoops $ 
+   $Date: 2003/10/24 19:44:21 $
    End CVS Header */
 
 /****************************************************************************
@@ -31,12 +31,15 @@ class QTable;
 class CFunction;
 class MyLineEdit;
 
+class CFunction;
+
 class FunctionWidget1 : public CopasiWidget
   {
     Q_OBJECT
 
   public:
     FunctionWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
+    virtual ~FunctionWidget1();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
@@ -96,6 +99,8 @@ class FunctionWidget1 : public CopasiWidget
     QString app_High;
     int int_Low;
     int int_High;
+
+    CFunction * pFunction;
   };
 
 #endif // FunctionWidget1

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2003/10/23 19:51:03 $
+   $Author: shoops $ 
+   $Date: 2003/10/24 19:44:21 $
    End CVS Header */
 
 /**********************************************************************
@@ -56,9 +56,10 @@
  *  Constructs a FunctionWidget1 which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
-FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl),
-    objKey("")
+FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
+    CopasiWidget(parent, name, fl),
+    objKey(""),
+    pFunction(NULL)
 {
   if (!name)
     setName("FunctionWidget1");
@@ -199,8 +200,13 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   connect(textBrowser, SIGNAL(edited()), this, SLOT(slotFcnDescriptionChanged()));
 }
 
+FunctionWidget1::~FunctionWidget1() {pdelete(pFunction);}
+
 bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be const
 {
+  pdelete(pFunction);
+  pFunction = CFunction::createFunction(func);
+
   C_INT32 i, j;
 
   QPixmap * pProduct = new QPixmap((const char**)product_xpm);
@@ -390,10 +396,10 @@ void FunctionWidget1::updateParameters()
                                    "Retry",
                                    "Quit", 0, 0, 1))
         {
-        case 0:      // The user clicked the Retry again button or pressed Enter
+        case 0:       // The user clicked the Retry again button or pressed Enter
           // try again
           break;
-        case 1:      // The user clicked the Quit or pressed Escape
+        case 1:       // The user clicked the Quit or pressed Escape
           // exit
           break;
         }
