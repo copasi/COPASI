@@ -786,7 +786,7 @@ if AC_TRY_EVAL(ac_link) && test -s conftest; then
 else
   echo "configure: failed program was:" >&AC_FD_CC
   cat conftest.$ac_ext >&AC_FD_CC
-  ac_qt_libraries="NO"
+#  ac_qt_libraries="NO"
 fi
 rm -f conftest*
 CXXFLAGS="$ac_cxxflags_safe"
