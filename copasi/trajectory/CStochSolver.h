@@ -1,11 +1,11 @@
 #ifndef COPASI_CStochSolver
 #define COPASI_CStochSolver
 
-#include "utilities/utilities.h"
-#include "utilities/CRandom.h"
+#include "utilities/utilities.h" 
+//#include "utilities/CRandom.h"
 #include "model/model.h"
-#include <set>
-#include <queue>
+#include <set> 
+//#include <queue>
 
 using std::set
 

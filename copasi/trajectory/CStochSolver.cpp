@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <vector>
+#include <numeric>
 #include <set>
 
 #include "utilities/utilities.h"
@@ -193,39 +194,35 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   // multiplicity to calculate a new value for the associated
   // metabolite. Finally, update the metabolite.
 
-  CStochBalance bal;
+  //CStochBalance bal;
   C_INT32 new_num;
-  unsigned C_INT32 i;
 
-  for (i = 0; i < mLocalBalances[rxn].size(); i++)
+  vector<CStochBalance> & bals = mLocalBalances[rxn];
+  vector<CStochBalance>::const_iterator bi;
+
+  for (bi = bals.begin(); bi != bals.end(); bi++)
     {
-      bal = mLocalBalances[rxn][i]; // iterator?
-      new_num = bal.mMetabAddr->getNumberInt() + bal.mBalance;
-      bal.mMetabAddr->setNumberInt(new_num);
+      new_num = bi->mMetabAddr->getNumberInt() + bi->mBalance;
+      bi->mMetabAddr->setNumberInt(new_num);
     }
 
-  vector<C_INT32> dep_nodes = mDG.getDependents(rxn);
+  set
+    <C_INT32> & dep_nodes = mDG.getDependents(rxn);
 
-  for (i = 0; i < dep_nodes.size(); i++)
+  set
+    <C_INT32>::const_iterator it;
+
+  for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
     {
-      unsigned int ii = dep_nodes[i];
+      unsigned int ii = *it;
       mAmuOld[ii] = mAmu[ii] ;
       calculateAmu(ii);
     }
 
   mA0Old = mA0;
+
   mA0 = 0;
-
-  for (i = 0; i < mModel->getReactions().size(); i++)
-    {
-      mA0 += mAmu[i];
-    }
-
-  //cout << "Reaktion " << rxn << " new state: " ;
-  //for (int j = 0 ; j < 2 ; j++)
-  //  cout << mModel->getMetabolites()[j]->getNumberInt() << "  ";
-
-  //cout << endl;
+  mA0 = accumulate(mAmu.begin(), mAmu.end(), mA0);
 
   return 0;
 }
@@ -453,7 +450,6 @@ C_FLOAT64 CStochNextReactionMethod::doStep(C_FLOAT64 time)
   C_FLOAT64 steptime = mPQ.topKey();
   C_INT32 reaction_index = mPQ.topIndex();
   updateSystemState(reaction_index);
-  //updatePropensities(); // ineffective
   updatePriorityQueue(reaction_index, steptime);
   return steptime;
 }
@@ -473,16 +469,21 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
 
 void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time)
 {
-  vector<C_INT32> dep_nodes = mDG.getDependents(reaction_index);
+  set
+    <C_INT32> & dep_nodes = mDG.getDependents(reaction_index);
 
   C_FLOAT64 new_time = time + generateReactionTime(reaction_index);
+
   mPQ.updateNode(reaction_index, new_time);
 
-  for (unsigned int i = 0; i < dep_nodes.size(); i++)
+  set
+    <C_INT32>::const_iterator di;
+
+  for (di = dep_nodes.begin(); di != dep_nodes.end(); di++)
     {
-      if (dep_nodes[i] != reaction_index)
+      if (*di != reaction_index)
         {
-          C_INT32 index = dep_nodes[i];
+          C_INT32 index = *di;
           C_FLOAT64 new_time = time + (mAmuOld[index] / mAmu[index]) * (mPQ.getKey(index) - time);
           mPQ.updateNode(index, new_time);
         }

@@ -237,6 +237,22 @@ const CTrajectory::MethodType & CTrajectory::getMethod() const
     return mMethod;
   }
 
+void dummy_out(CModel* model, double time)
+{
+  static int ccc = 0;
+
+  if (100 == (ccc++))
+    {
+      ccc = 0;
+      cout << " " << time << " ";
+
+      for (int j = 0 ; j < 5 ; j++)
+        cout << model->getMetabolites()[j]->getNumberInt() << "  ";
+
+      cout << endl;
+    }
+}
+
 void CTrajectory::process(ofstream &fout)
 {
   mModel->setNumbersDblAndUpdateConcentrations(mY);
@@ -280,8 +296,7 @@ void CTrajectory::process(ofstream &fout)
       while (step < mMaxSteps && time < mEndTime && time >= 0)
         {
           time = mStochSolver->getStochMethod()->doStep(time);
-          //cout << "Step: " << step << "       Time: " << time << endl;
-          cout << " " << time << " ";
+          dummy_out(mModel, time);
           step++;
         }
     }
