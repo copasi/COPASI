@@ -27,7 +27,8 @@ CopasiUI_MOC = \
 	ObjectBrowser.moc.cpp \
 	copasiui3window.moc.cpp \
 	listviews.moc.cpp \
-	objectdebug.moc.cpp 
+	objectdebug.moc.cpp \
+	parametertable.moc.cpp 
 
 CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	main.cpp \
@@ -62,7 +63,9 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
         copasiui3window.cpp \
 	copasiWidget.cpp \
         listviews.cpp \
-	objectdebug.cpp
+	objectdebug.cpp \
+	parametertable.cpp \
+	CReactionInterface.cpp
 
 CopasiUI_DEPENDENCIES = $(CopasiUI_LIBS) check_LIBS
 
@@ -115,7 +118,8 @@ EXTRA_DIST = \
 	ObjectBrowserItem.h ObjectBrowserItem.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
 	copasiWidget.h copasiWidget.cpp \
-	listviews.h listviews.cpp moc_listviews.cpp
+	listviews.h listviews.cpp moc_listviews.cpp \
+	CReactionInterface.h CReactionInterface.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 
@@ -140,7 +144,7 @@ LIBS = $(LIB_QT) \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-llapack -lblas -lF77 -lfl
+	-llapack -lblas -lg2c -lfl
 
 #  Use this for standard clapack
 #	-llapack -lblas -lF77 -lfl
