@@ -21,7 +21,7 @@ CVersion::~CVersion()
  /* get out of here!*/
 }
 
-CVersion::CVersion(long major, long minor, long devel)
+CVersion::SetVersion(long major, long minor, long devel)
 {
     mMajor = major;
     mMinor = minor;
@@ -61,3 +61,4 @@ CVersion::SetString()
     mVersion = StringPrint("%d.%d", mMajor, 
                            mMinor);
 }
+

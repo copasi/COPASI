@@ -8,7 +8,7 @@
 #define COPASI_CVersion
 
 #include <string>
-#include "Copasi.h"
+#include "copasi.h"
 
 class CVersion  
 {
@@ -45,18 +45,8 @@ public:
     /**
      *  Default consructor. 
      *  This creates a version object without any version info.
-     *  It is of no use, the specified constructor should always be used. 
      */
 	CVersion();
-
-    /**
-     *  Specified consructor. 
-     *  This creates a version object and sets the version numbers 
-     *  @param major major version number. 
-     *  @param minor minoor version number. 
-     *  @param devel development version number. 
-     */
-	CVersion(long major, long minor, long devel);
 
     /**
      *  Destructor. 
@@ -91,6 +81,15 @@ public:
      */
     string GetVersion();
 
+
+    /** 
+     *  Sets a version number 
+     *  @param major major version number. 
+     *  @param minor minoor version number. 
+     *  @param devel development version number. 
+     */
+	SetVersion(long major, long minor, long devel);
+
 private:
     /**
      *  Creates the version string.
@@ -99,3 +98,5 @@ private:
 };
 
 #endif // COPASI_CVersion
+
+
