@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.99 $
+   $Revision: 1.100 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/22 12:55:43 $
+   $Author: ssahle $ 
+   $Date: 2004/11/29 18:19:03 $
    End CVS Header */
 
 /*******************************************************************
@@ -39,6 +39,7 @@
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 #include "utilities/CGlobals.h"
+#include "MyLineEdit.h"
 
 /*
  *  Constructs a MetabolitesWidget1 which is a child of 'parent', with the 
@@ -69,8 +70,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
-  Line1->setFrameShadow(QFrame::Sunken);
-  Line1->setFrameShape(QFrame::HLine);
+  //Line1->setFrameShadow(QFrame::Sunken);
+  //Line1->setFrameShape(QFrame::HLine);
   MetabolitesWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 3);
 
   mLblInitStatus = new QLabel(this, "mLblInitStatus");
@@ -93,8 +94,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   Line2 = new QFrame(this, "Line2");
   Line2->setFrameShape(QFrame::HLine);
-  Line2->setFrameShadow(QFrame::Sunken);
-  Line2->setFrameShape(QFrame::HLine);
+  //Line2->setFrameShadow(QFrame::Sunken);
+  //Line2->setFrameShape(QFrame::HLine);
 
   MetabolitesWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 3);
 
@@ -102,7 +103,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   mLblInitConcentration->setText(trUtf8("Initial  Concentration"));
   MetabolitesWidget1Layout->addWidget(mLblInitConcentration, 6, 0);
 
-  mEditInitConcentration = new QLineEdit(this, "mEditInitConcentration");
+  mEditInitConcentration = new MyLineEdit(this, "mEditInitConcentration");
   mEditInitConcentration->setValidator(new QDoubleValidator(mEditInitConcentration));
   MetabolitesWidget1Layout->addWidget(mEditInitConcentration, 6, 1);
 
@@ -118,7 +119,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   mLblInitNumber->setText(trUtf8("Initial  Number"));
   MetabolitesWidget1Layout->addWidget(mLblInitNumber, 7, 0);
 
-  mEditInitNumber = new QLineEdit(this, "mEditInitNumber");
+  mEditInitNumber = new MyLineEdit(this, "mEditInitNumber");
   mEditInitNumber->setValidator(new QDoubleValidator(mEditInitNumber));
   MetabolitesWidget1Layout->addWidget(mEditInitNumber, 7, 1);
 
@@ -151,9 +152,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   Line3 = new QFrame(this, "Line3");
   Line3->setFrameShape(QFrame::HLine);
-  Line3->setFrameShadow(QFrame::Sunken);
-  Line3->setFrameShape(QFrame::HLine);
-
+  //Line3->setFrameShadow(QFrame::Sunken);
+  //Line3->setFrameShape(QFrame::HLine);
   MetabolitesWidget1Layout->addMultiCellWidget(Line3, 11, 11, 0, 3);
 
   Layout7 = new QHBoxLayout(0, 0, 6, "Layout7");
@@ -195,6 +195,12 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
           this, SLOT(slotBtnNewClicked()));
   connect(deleteMetaboliteBtn, SIGNAL(clicked()),
           this, SLOT(slotBtnDeleteClicked()));
+
+  connect(mEditInitConcentration, SIGNAL(edited()), this, SLOT(slotConcChanged()));
+  connect(mEditInitNumber, SIGNAL(edited()), this, SLOT(slotNumberChanged()));
+  connect(mComboCompartment, SIGNAL(edited()), this, SLOT(slotCompChanged()));
+
+  //mChanged = false;
 }
 
 /*
@@ -217,15 +223,15 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
   mEditName->setText(FROM_UTF8(metab->getObjectName()));
   //Metabolite1_Name = new QString(metab->getObjectName().);
 
-  mEditInitConcentration->setText(QString::number(metab->getInitialConcentration()));
+  mEditInitConcentration->setText(QString::number(metab->getInitialConcentration(), 'g', 10));
 
-  mEditConcentration->setText(QString::number(metab->getConcentration()));
+  mEditConcentration->setText(QString::number(metab->getConcentration(), 'g', 10));
   mEditConcentration->setReadOnly(true);
 
-  mEditNumber->setText(QString::number(metab->getNumber()));
+  mEditNumber->setText(QString::number(metab->getNumber(), 'g', 10));
   mEditNumber->setReadOnly(true);
 
-  mEditInitNumber->setText(QString::number(metab->getInitialNumber()));
+  mEditInitNumber->setText(QString::number(metab->getInitialNumber(), 'g', 10));
 
   mEditTransitionTime->setText(QString::number(metab->getTransitionTime()));
   mEditTransitionTime->setReadOnly(true);
@@ -250,6 +256,7 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
     }
   mComboCompartment->setCurrentText(FROM_UTF8(metab->getCompartment()->getObjectName()));
 
+  //mChanged = false;
   return true;
 }
 
@@ -284,15 +291,15 @@ bool MetabolitesWidget1::saveToMetabolite()
   QString initialConcentration(mEditInitConcentration->text());
   double temp1;
   temp1 = initialConcentration.toDouble();
-  if (fabs(temp1 - metab->getInitialConcentration()) > 1e-10)
+  if (fabs(temp1 - metab->getInitialConcentration()) > 1e-40)
     {
       metab->setInitialConcentration(temp1);
-      metab->setConcentration(temp1);
+      metab->setConcentration(temp1); //TODO ??
       protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
       dataModel->getModel()->setCompileFlag();
     }
 
-  else
+  /*else
     {
       QString initialNumber(mEditInitNumber->text());
       C_FLOAT64 temp2;
@@ -300,11 +307,11 @@ bool MetabolitesWidget1::saveToMetabolite()
       if (fabs(temp2 - metab->getInitialNumber()) > 1e-3) //TODO: this is extremely ugly
         {
           metab->setInitialNumber(temp2);
-          metab->setNumber(temp2);
+          metab->setNumber(temp2); //TODO ??
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
           dataModel->getModel()->setCompileFlag();
         }
-    }
+    }*/
 
   //fixed?
   if (mCheckStatus->isChecked() == true)
@@ -327,6 +334,7 @@ bool MetabolitesWidget1::saveToMetabolite()
     }
   enter(objKey); //this is a hack to update the initial number when the initial concentration has changed and vice versa
 
+  //mChanged = false;
   return true; //TODO: really check
 }
 
@@ -417,7 +425,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                               // Yes or Enter
+    case 0:                                // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -440,9 +448,38 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                               // No or Escape
+    case 1:                                // No or Escape
       break;
     }
+}
+
+void MetabolitesWidget1::slotConcChanged()
+{
+  CMetab* metab = dynamic_cast< CMetab * >(GlobalKeys.get(objKey));
+  if (!metab) return;
+
+  C_FLOAT64 tmp = mEditInitConcentration->text().toDouble();
+  mEditInitNumber->setText(QString::number(tmp
+                           * metab->getCompartment()->getVolume()
+                           * dataModel->getModel()->getQuantity2NumberFactor(), 'g', 10));
+  //mChanged = true;
+}
+
+void MetabolitesWidget1::slotNumberChanged()
+{
+  CMetab* metab = dynamic_cast< CMetab * >(GlobalKeys.get(objKey));
+  if (!metab) return;
+
+  C_FLOAT64 tmp = mEditInitNumber->text().toDouble();
+  mEditInitConcentration->setText(QString::number(tmp
+                                  * metab->getCompartment()->getVolumeInv()
+                                  * dataModel->getModel()->getNumber2QuantityFactor(), 'g', 10));
+}
+
+void MetabolitesWidget1::slotCompChanged()
+{
+  CMetab* metab = dynamic_cast< CMetab * >(GlobalKeys.get(objKey));
+  if (!metab) return;
 }
 
 bool MetabolitesWidget1::update(ListViews::ObjectType objectType,
