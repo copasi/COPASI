@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.27 $ $Author: shoops $ $Date: 2004/09/29 04:02:58 $  
+# $Revision: 1.28 $ $Author: shoops $ $Date: 2004/10/24 02:42:42 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -15,6 +15,7 @@ message("Configuring for $${BUILD_OS}.")
 
 TARGETDEPS += Makefile
 DEFINES+=XML_STATIC
+DEFINES+=LIBSBML_STATIC
 
 # Common configuration settings
 CONFIG += exceptions
@@ -91,7 +92,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include"
     QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include"
     QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${SBML_PATH}\lib"
-    LIBS += libsbml.lib libexpat-compat.lib
+    LIBS += libsbml.lib
   } else {
     error( "SBML_PATH must be specified" )
   }

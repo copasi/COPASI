@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.52 $ $Author: gauges $ $Date: 2004/10/21 15:09:02 $  
+# $Revision: 1.53 $ $Author: shoops $ $Date: 2004/10/24 02:42:42 $  
 ######################################################################
 
 include(../common.pri)
@@ -30,7 +30,7 @@ contains(BUILD_OS, WIN32) {
 
   LIBS += $$COPASI_LIBS
   LIBS += $(QTDIR)/lib/qwt.lib
-  LIBS += libsbml.lib libexpat-compat.lib
+  LIBS += libsbml.lib
   
   TARGETDEPS += $$COPASI_LIBS
 
