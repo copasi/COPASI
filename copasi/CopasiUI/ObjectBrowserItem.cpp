@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserItem.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/12/02 15:54:36 $
+   $Author: jpahle $ 
+   $Date: 2003/12/30 12:53:23 $
    End CVS Header */
 
 /********************************************************
@@ -271,13 +271,13 @@ ObjectBrowserItem* ObjectList::pop()
 void ObjectList::delDuplicate()
 {
   ObjectListItem* objectLast = getRoot();
-  ObjectListItem* objectNext = objectLast->pNext;
+  ObjectListItem* objectNext = (objectLast != NULL) ? objectLast->pNext : NULL;
   for (; objectNext != NULL; objectNext = objectNext->pNext)
     {
       if (objectLast->pItem->key(0, 0) == objectNext->pItem->key(0, 0)) //delete the current item
         {
           objectLast->pNext = objectNext->pNext;
-          objectNext->pNext->pLast = objectLast;
+          if (objectNext->pNext) objectNext->pNext->pLast = objectLast;
           pdelete(objectNext);
           length--;
           objectNext = objectLast;
@@ -308,6 +308,14 @@ void ObjectList::sortList()
 //please do call createQuickIndex() first
 bool ObjectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the sort order
 {
+  if (getRoot() == NULL) //list is empty
+    {
+      ObjectListItem* pNewItem = new ObjectListItem(pItem, NULL, NULL);
+      root = pNewItem;
+      length++;
+      return true;
+    }
+
   if (pItem->key(0, 0) < getRoot()->pItem->key(0, 0)) //insert at the front
     {
       ObjectListItem* pNewItem = new ObjectListItem(pItem, root, NULL);
@@ -354,7 +362,7 @@ void ObjectList::createBucketIndex(int max)
       if (quickIndex[tmpIndex]) //delete
         {
           pDel = pHead;
-          pHead->pLast->pNext = pHead->pNext;
+          if (pHead->pLast) pHead->pLast->pNext = pHead->pNext; else root = pHead->pNext;
           if (pHead->pNext)
             pHead->pNext->pLast = pHead->pLast;
           pHead = pHead->pNext;
