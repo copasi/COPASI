@@ -188,10 +188,10 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libsteadystate.a
 
-libsteadystate_a_SOURCES =  	CJacob.cpp 	CMca.cpp 	CNewton.cpp 	CSS_Solution.cpp 
+libsteadystate_a_SOURCES =  	CJacob.cpp 	CMca.cpp 	CNewton.cpp 	CSS_Solution.cpp 	CEigen.cpp
 
 
-EXTRA_DIST =  	steadystate.h 	CJacob.h CJacob.cpp 	CMca.h CMca.cpp 	CNewton.h CNewton.cpp 	CSS_Solution.h	CSS_Solution.cpp 
+EXTRA_DIST =  	steadystate.h 	CJacob.h CJacob.cpp 	CMca.h CMca.cpp 	CNewton.h CNewton.cpp 	CSS_Solution.h	CSS_Solution.cpp 	CEigen.h CEigen.cpp 
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -210,7 +210,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libsteadystate_a_LIBADD = 
 libsteadystate_a_OBJECTS =  CJacob.$(OBJEXT) CMca.$(OBJEXT) \
-CNewton.$(OBJEXT) CSS_Solution.$(OBJEXT)
+CNewton.$(OBJEXT) CSS_Solution.$(OBJEXT) CEigen.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -222,9 +222,9 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/CJacob.P .deps/CMca.P .deps/CNewton.P \
+DEP_FILES =  .deps/CEigen.P .deps/CJacob.P .deps/CMca.P .deps/CNewton.P \
 .deps/CSS_Solution.P
 SOURCES = $(libsteadystate_a_SOURCES)
 OBJECTS = $(libsteadystate_a_OBJECTS)
