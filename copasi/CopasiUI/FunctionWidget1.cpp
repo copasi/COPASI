@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/04 18:32:08 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 13:31:56 $
    End CVS Header */
 
 /**********************************************************************
@@ -434,10 +434,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                                  // The user clicked the Retry again button or pressed Enter
+            case 0:                                   // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                                  // The user clicked the Quit or pressed Escape
+            case 1:                                   // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -744,12 +744,12 @@ bool FunctionWidget1::saveToFunction()
     {
       for (j = 0; j < functUsage.size(); j++)
         {
-          if (index = pfunctUsage.getIndex(functUsage[j]->getName()) == NULL) //TODO  what´s that?
+          if ((index = pfunctUsage.getIndex(functUsage[j]->getName())) == C_INVALID_INDEX)
             // the lines below occurs if new functionParameter does not exist in pfunctParam
             {
               changed = true;
               // remove the extra parameter in functParam
-              functUsage.remove(functUsage[j]->getName());
+              functUsage.CCopasiVector<CUsageRange>::remove(index);
             }
         }
     }
@@ -922,7 +922,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:          // Yes or Enter
+        case 0:           // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -954,7 +954,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:          // No or Escape
+        case 1:           // No or Escape
           break;
         }
     }
