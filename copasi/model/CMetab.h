@@ -19,14 +19,31 @@ class CMetabOld;
 class CModel;
 
 //constants for use with Status
-#define METAB_FIXED 0
-#define METAB_VARIABLE 1
-#define METAB_DEPENDENT 2
+// #define METAB_FIXED 0
+// #define METAB_VARIABLE 1
+// #define METAB_DEPENDENT 2
 #define METAB_MOIETY 7
 
 /** @dia:pos 80.8289,51.5961 */
 class CMetab : public CCopasiContainer
   {
+  public:
+    /**
+     *  The valid states for metabolites
+     */
+    enum Status
+    {
+      METAB_FIXED = 0,
+      METAB_VARIABLE,
+      METAB_DEPENDENT
+    };
+
+  public:
+    /**
+     * String representation od the states
+     */
+    static const std::string StatusName[];
+
     // Attributes
   private:
     /**
@@ -129,7 +146,7 @@ class CMetab : public CCopasiContainer
      */
     void cleanup();
     void initModel();
-    void initCompartment();
+    void initCompartment(CCompartment * pCompartment);
 
     /**
      *  Assignment operator.

@@ -320,23 +320,21 @@ void MetabolitesWidget1::loadName(QString setValue)
       RadioButton4->setChecked(false);
       RadioButton5->setChecked(false);
 
-      if (QString::number(metab->getStatus()) == "0")
+      if (metab->getStatus() == CMetab::METAB_FIXED)
         {
           RadioButton1->setChecked(true);
           RadioButton3->setChecked(true);
         }
-      else
-        if (QString::number(metab->getStatus()) == "1")
-          {
-            RadioButton2->setChecked(true);
-            RadioButton4->setChecked(true);
-          }
-        else
-          if (QString::number(metab->getStatus()) == "2")
-            {
-              RadioButton2->setChecked(true);
-              RadioButton5->setChecked(true);
-            }
+      else if (metab->getStatus() == CMetab::METAB_VARIABLE)
+        {
+          RadioButton2->setChecked(true);
+          RadioButton4->setChecked(true);
+        }
+      else if (metab->getStatus() == CMetab::METAB_DEPENDENT)
+        {
+          RadioButton2->setChecked(true);
+          RadioButton5->setChecked(true);
+        }
 
       ComboBox1->setDuplicatesEnabled (false);
 

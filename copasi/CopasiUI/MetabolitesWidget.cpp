@@ -84,7 +84,7 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
           table->removeRow(0);
         }
 
-      CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
+      CCopasiVectorN< CMetab > metabolites(mModel->getMetabolites());
       C_INT32 noOfMetabolitesRows = metabolites.size();
       table->setNumRows(noOfMetabolitesRows);
 
@@ -107,6 +107,9 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
 
           table->setText(j, 2, QString::number(metab->getNumberDbl()));
 
+          table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
+
+#ifdef XXXX
           if (QString::number(metab->getStatus()) == "0")
             {
               table->setText(j, 3, "defineda");
@@ -119,8 +122,8 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
             {
               table->setText(j, 3, "definedc");
             }
-
-          table->setText(j, 4, (metab->getCompartment())->getName().c_str());
+#endif // XXXX
+          table->setText(j, 4, metab->getCompartment()->getName().c_str());
         }
 
       //table->sortColumn(0,true,true);

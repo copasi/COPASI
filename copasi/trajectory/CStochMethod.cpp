@@ -377,7 +377,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
           bb.mMetabAddr = bbb[j]->getMetaboliteAddr();
           bb.mBalance = static_cast<C_INT32>(floor(bbb[j]->getMultiplicity() + 0.5));
 
-          if ((bb.mMetabAddr->getStatus()) != METAB_FIXED)
+          if ((bb.mMetabAddr->getStatus()) != CMetab::METAB_FIXED)
             {
               if (bb.mBalance > maxBalance) maxBalance = bb.mBalance;
               mLocalBalances[i].push_back(bb);
@@ -443,7 +443,7 @@ std::set<CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
   for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
       if (fabs(balances[i]->getMultiplicity()) >= 0.1)
-        if (balances[i]->getMetaboliteAddr()->getStatus() != METAB_FIXED)
+        if (balances[i]->getMetaboliteAddr()->getStatus() != CMetab::METAB_FIXED)
           {
             retset->insert(balances[i]->getMetaboliteAddr());
             std::cout << " " << balances[i]->getMetaboliteName() << ":" << (int)(balances[i]->getMetaboliteAddr());

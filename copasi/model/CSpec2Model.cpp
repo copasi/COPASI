@@ -208,7 +208,7 @@ void CSpec2Model::processInits()
               C_FLOAT64 iconc = atof(contents.c_str());
               //metab.setInitialConcentration(iconc);
               //mModel->getCompartments()[comp_name]->addMetabolite(metab);
-              mModel->addMetabolite(comp_name, metab_name, iconc, METAB_VARIABLE);
+              mModel->addMetabolite(comp_name, metab_name, iconc, CMetab::METAB_VARIABLE);
             }
           else
             {
@@ -248,7 +248,7 @@ void CSpec2Model::processConstants()
           std::cout << "Added constant " << const_name << " with value " << val << std::endl;
 
           //             CMetab *metab = new CMetab(metab_name);
-          //             metab->setStatus(METAB_FIXED);
+          //             metab->setStatus(CMetab::METAB_FIXED);
           //             metab->setInitialConcentration(atof(contents.c_str()));
           //             metab->setConcentration(atof(contents.c_str()));
           //             mModel->getMetabolites().push_back(metab); // XXX TODO: is this the right place to store these?
@@ -481,10 +481,10 @@ void CSpec2Model::processMoieties()
                                            contents));
 
           metab.setName(moiety_name);
-          //metab.setStatus(METAB_DEPENDENT);
+          //metab.setStatus(CMetab::METAB_DEPENDENT);
           // :TODO: metab.setInitialConcentration(iconc);
           //mModel->getCompartments()[compartment_name]->addMetabolite(metab);
-          mModel->addMetabolite(compartment_name, moiety_name, 0, METAB_DEPENDENT);
+          mModel->addMetabolite(compartment_name, moiety_name, 0, CMetab::METAB_DEPENDENT);
           std::cout << "Added moiety " << moiety_name
           << ", " << compartment_name
           << ", " << contents << std::endl;

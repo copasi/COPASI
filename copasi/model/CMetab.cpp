@@ -15,6 +15,9 @@
 
 const CCompartment * CMetab::mpParentCompartment = NULL;
 
+const std::string CMetab::StatusName[] =
+  {"fixed", "independent", "dependent"};
+
 void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 {mpParentCompartment = parentCompartment;}
 
@@ -34,7 +37,7 @@ CMetab::CMetab(const std::string & name,
     mStatus(METAB_VARIABLE)
 {
   initModel();
-  initCompartment();
+  initCompartment(NULL);
 
   CONSTRUCTOR_TRACE;
 }
@@ -52,7 +55,7 @@ CMetab::CMetab(const CMetab & src,
     mStatus(src.mStatus)
 {
   initModel();
-  initCompartment();
+  initCompartment(src.mpCompartment);
 
   CONSTRUCTOR_TRACE;
 }
@@ -83,9 +86,10 @@ void CMetab::initModel()
   if (!mpModel) mpModel = Copasi->Model;
 }
 
-void CMetab::initCompartment()
+void CMetab::initCompartment(CCompartment * pCompartment)
 {
   mpCompartment = (CCompartment *) getObjectAncestor("Compartment");
+  if (!mpCompartment) mpCompartment = pCompartment;
   if (!mpCompartment)
     mpCompartment = const_cast<CCompartment *>(mpParentCompartment);
 }
@@ -352,7 +356,7 @@ CMetabOld::CMetabOld(const std::string & name,
     CCopasiContainer(name, pParent, "Old Metabolite"),
     mName(mObjectName),
     mIConc(Copasi->DefaultConc),
-    mStatus(METAB_VARIABLE),
+    mStatus(CMetab::METAB_VARIABLE),
     mCompartment()
 {CONSTRUCTOR_TRACE;}
 

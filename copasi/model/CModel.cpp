@@ -385,7 +385,7 @@ void CModel::buildStoi()
   // We reorder mMetabolitesX so that the fixed metabolites appear at the end.
 
   for (i = 0; i < imax; i++)
-    if (mMetabolites[i]->getStatus() == METAB_FIXED)
+    if (mMetabolites[i]->getStatus() == CMetab::METAB_FIXED)
       mMetabolitesX[imax - ++j] = mMetabolites[i];
     else
       mMetabolitesX[i - j] = mMetabolites[i];
@@ -537,7 +537,7 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
       if (LU[i][i] == 0.0)
         break;
 
-      mMetabolitesX[i]->setStatus(METAB_VARIABLE);
+      mMetabolitesX[i]->setStatus(CMetab::METAB_VARIABLE);
     }
 
   mMetabolitesInd.resize(i, false);
@@ -560,7 +560,7 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
       if (Sum == 0.0)
         break;
 
-      mMetabolitesX[j]->setStatus(METAB_DEPENDENT);
+      mMetabolitesX[j]->setStatus(CMetab::METAB_DEPENDENT);
     }
 
   mMetabolitesDep.resize(j - i, false);
@@ -570,7 +570,7 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
   //  mMetabolitesDep.insert(mMetabolitesDep.begin(), &mMetabolitesX[i], &mMetabolitesX[j]);
 
   for (k = j; k < LU.numRows(); k++)
-    mMetabolitesX[k]->setStatus(METAB_FIXED);
+    mMetabolitesX[k]->setStatus(CMetab::METAB_FIXED);
 
   return;
 }
@@ -776,7 +776,7 @@ void CModel::setTransitionTimes()
     {
       TotalFlux = 0.0;
 
-      if (METAB_FIXED == mMetabolites[i]->getStatus())
+      if (CMetab::METAB_FIXED == mMetabolites[i]->getStatus())
         mMetabolites[i]->setTransitionTime(DBL_MAX);
       else
         {
