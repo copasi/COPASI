@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/25 15:03:15 $
+   $Date: 2004/09/09 12:08:33 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -294,8 +294,8 @@ class CModel : public CCopasiContainer
      */
     CVector< const C_FLOAT64 * > mFluxes;
     CVector< const C_FLOAT64 * > mFluxesX;
-    CVector< const C_FLOAT64 * > mScaledFluxes;
-    CVector< const C_FLOAT64 * > mScaledFluxesX;
+    CVector< const C_FLOAT64 * > mParticleFluxes;
+    CVector< const C_FLOAT64 * > mParticleFluxesX;
 
     /**
      * The initial time for modeling (default = 0)
@@ -411,29 +411,6 @@ class CModel : public CCopasiContainer
     C_INT32 load(CReadConfig &configBuffer);
 
     /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
-     */ 
-    //    C_INT32 save(CWriteConfig &configBuffer);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  This is saved in the format required by Gepasi 3.21
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
-     */ 
-    //    C_INT32 saveOld(CWriteConfig &configBuffer);
-
-    /**
-     *  Saves the contents of the object to a ofstream in SBML format.
-     *  @param "std::ofstream &" fout the file stream (already open)
-     */ 
-    //    void saveSBML(std::ofstream &fout);
-
-    /**
      *  This function must be called to initialize the vector of Metabolites
      *  after finishing adding metabolites to compartments.
      */
@@ -486,8 +463,8 @@ class CModel : public CCopasiContainer
 
     /**
      *  This calculate the right hand side (ydot) of the ODE for LSODA
-     */
-    void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
+     */ 
+    //void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
 
     /**
      * Return the metabolites of this model
@@ -711,7 +688,7 @@ class CModel : public CCopasiContainer
      * and volumes in reduced model representation.
      * @param const CStateX * initialStateX
      */
-    void setInitialState (const CStateX * state);
+    void setInitialStateX (const CStateX * state);
 
     /**
      * Calculate the rates of the reaction in the given state.
@@ -728,7 +705,7 @@ class CModel : public CCopasiContainer
      * &param CStateX * stateX (input)
      * &param  C_FLOAT64 * rates (output)
      */
-    void getRates(CStateX * state, C_FLOAT64 * rates);
+    void getRatesX(CStateX * state, C_FLOAT64 * rates);
 
     /**
      * Calculate the changes of particles numbers of the metabolites 
@@ -738,7 +715,7 @@ class CModel : public CCopasiContainer
      * &param CState * state (input)
      * &param CVector< C_FLOAT64 > & derivatives (output)
      */
-    void getDerivatives(CState * state, CVector< C_FLOAT64 > & derivatives);
+    void getDerivatives_particles(const CState * state, CVector< C_FLOAT64 > & derivatives);
 
     /**
      * Calculate the changes of particles numbers of the metabolites 
@@ -748,7 +725,7 @@ class CModel : public CCopasiContainer
      * &param CStateX * stateX (input)
      * &param CVector< C_FLOAT64 > & derivatives (output)
      */
-    void getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives);
+    void getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64 > & derivatives);
 
     /**
      * Set the unit for volumes. If copasi recognises 
@@ -918,7 +895,7 @@ class CModel : public CCopasiContainer
      * given stateX in reduced model representation.
      * @param const CState * stateX
      */
-    void setState(const CStateX * state);
+    void setStateX(const CStateX * state);
 
     /**
      * Retreive the state template

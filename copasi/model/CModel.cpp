@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.187 $
+   $Revision: 1.188 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/29 09:31:35 $
+   $Date: 2004/09/09 12:08:33 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -70,8 +70,8 @@ CModel::CModel():
     mStepsInd("Independent Reactions", this),
     mFluxes(),
     mFluxesX(),
-    mScaledFluxes(),
-    mScaledFluxesX(),
+    mParticleFluxes(),
+    mParticleFluxesX(),
     mInitialTime(0),
     mTime(0),
     mTransitionTime(0),
@@ -122,8 +122,8 @@ CModel::CModel(const CModel & src):
     mStepsInd(src.mStepsInd, this),
     mFluxes(src.mFluxes),
     mFluxesX(src.mFluxesX),
-    mScaledFluxes(src.mScaledFluxes),
-    mScaledFluxesX(src.mScaledFluxesX),
+    mParticleFluxes(src.mParticleFluxes),
+    mParticleFluxesX(src.mParticleFluxesX),
     mInitialTime(src.mInitialTime),
     mTime(src.mTime),
     mTransitionTime(src.mTransitionTime),
@@ -173,23 +173,8 @@ void CModel::cleanup()
   mMetabolitesDep.resize(0);
   mFluxes.resize(0);
   mFluxesX.resize(0);
-  mScaledFluxes.resize(0);
-  mScaledFluxesX.resize(0);
-
-  /*
-    mStepsX.resize(0);
-    mStepsInd.resize(0);
-   
-    mMetabolites.resize(0);
-    mMetabolitesX.resize(0);
-    mMetabolitesInd.resize(0);
-    mMetabolitesDep.resize(0);
-   
-    mFluxes.resize(0);
-    mFluxesX.resize(0);
-    mScaledFluxes.resize(0);
-    mScaledFluxesX.resize(0);
-  */
+  mParticleFluxes.resize(0);
+  mParticleFluxesX.resize(0);
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -408,12 +393,12 @@ void CModel::buildStoi()
     mMetabolites[i] = mMetabolitesX[i];
 
   mFluxes.resize(mSteps.size());
-  mScaledFluxes.resize(mSteps.size());
+  mParticleFluxes.resize(mSteps.size());
 
   for (i = 0; i < mSteps.size(); i++)
     {
       mFluxes[i] = & mSteps[i]->getFlux();
-      mScaledFluxes[i] = & mSteps[i]->getScaledFlux();
+      mParticleFluxes[i] = & mSteps[i]->getParticleFlux();
     }
 
   mStoi.resize(imax - j, mSteps.size());
@@ -520,12 +505,12 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 #endif
 
   mFluxesX.resize(mStepsX.size());
-  mScaledFluxesX.resize(mStepsX.size());
+  mParticleFluxesX.resize(mStepsX.size());
 
   for (i = 0; i < mStepsX.size(); i++)
     {
       mFluxesX[i] = &mStepsX[i]->getFlux();
-      mScaledFluxesX[i] = &mStepsX[i]->getScaledFlux();
+      mParticleFluxesX[i] = &mStepsX[i]->getParticleFlux();
     }
 
   return;
@@ -790,7 +775,7 @@ void CModel::setTransitionTimes()
         {
           for (j = 0; j < jmax; j++)
             {
-              PartialFlux = mStoi[i][j] * *mScaledFluxes[j];
+              PartialFlux = mStoi[i][j] * *mParticleFluxes[j];
 
               if (PartialFlux > 0.0)
                 TotalFlux += PartialFlux;
@@ -799,7 +784,7 @@ void CModel::setTransitionTimes()
           if (TotalFlux == 0.0)
             for (j = 0; j < jmax; j++)
               {
-                PartialFlux = - mStoi[i][j] * *mScaledFluxes[j];
+                PartialFlux = - mStoi[i][j] * *mParticleFluxes[j];
 
                 if (PartialFlux > 0.0)
                   TotalFlux += PartialFlux;
@@ -1096,7 +1081,7 @@ void CModel::setInitialState(const CState * state)
   return;
 }
 
-void CModel::setInitialState(const CStateX * state)
+void CModel::setInitialStateX(const CStateX * state)
 {
   unsigned C_INT32 i, imax;
 
@@ -1156,7 +1141,7 @@ void CModel::setState(const CState * state)
   return;
 }
 
-void CModel::setState(const CStateX * state)
+void CModel::setStateX(const CStateX * state)
 {
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
@@ -1198,7 +1183,7 @@ void CModel::setState(const CStateX * state)
 
 void CModel::updateDepMetabNumbers(CStateX const & state) const
   {
-    (const_cast< CModel * >(this))->setState(&state);
+    (const_cast< CModel * >(this))->setStateX(&state);
   }
 
 //**********************************************************************
@@ -1215,9 +1200,9 @@ void CModel::getRates(CState * state, C_FLOAT64 * rates)
   return;
 }
 
-void CModel::getRates(CStateX * state, C_FLOAT64 * rates)
+void CModel::getRatesX(CStateX * state, C_FLOAT64 * rates)
 {
-  setState(state);
+  setStateX(state);
 
   unsigned C_INT32 i, imax;
 
@@ -1227,7 +1212,7 @@ void CModel::getRates(CStateX * state, C_FLOAT64 * rates)
   return;
 }
 
-void CModel::getDerivatives(CState * state, CVector< C_FLOAT64 > & derivatives)
+void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 > & derivatives)
 {
   setState(state);
 
@@ -1245,15 +1230,15 @@ void CModel::getDerivatives(CState * state, CVector< C_FLOAT64 > & derivatives)
       derivatives[i] = 0.0;
 
       for (j = 0; j < jmax; j++)
-        derivatives[i] += mStoi[i][j] * *mScaledFluxes[j];
+        derivatives[i] += mStoi[i][j] * *mParticleFluxes[j];
     }
 
   return;
 }
 
-void CModel::getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives)
+void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64 > & derivatives)
 {
-  setState(state);
+  setStateX(state);
 
   unsigned C_INT32 i, imax = mMetabolitesInd.size();
   unsigned C_INT32 j, jmax = mStepsX.size();
@@ -1269,7 +1254,7 @@ void CModel::getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives)
       derivatives[i] = 0.0;
 
       for (j = 0; j < jmax; j++)
-        derivatives[i] += mRedStoi[i][j] * *mScaledFluxesX[j];
+        derivatives[i] += mRedStoi[i][j] * *mParticleFluxesX[j];
     }
 
   return;
@@ -1679,7 +1664,7 @@ void CModel::initObjects()
   //  add(&mStepsInd);
   addVectorReference("Fluxes", mFluxes, CCopasiObject::ValueDbl);
   //  addVectorReference("Reduced Model Fluxes", mFluxesX);
-  addVectorReference("Scaled Fluxes", mScaledFluxes, CCopasiObject::ValueDbl);
+  addVectorReference("Particle Fluxes", mParticleFluxes, CCopasiObject::ValueDbl);
   //  addVectorReference("Reduced Model Scaled Fluxes", mScaledFluxesX);
   // addObjectReference("Transition Time", mTransitionTime);
   addMatrixReference("Stoichiometry", mStoi, CCopasiObject::ValueDbl);
