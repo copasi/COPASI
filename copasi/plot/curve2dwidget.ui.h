@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:19 $
+   $Date: 2004/05/27 13:26:07 $
    End CVS Header */
 
 /****************************************************************************
@@ -14,6 +14,8 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
+
+#include "report/CCopasiContainer.h"
 
 bool Curve2DWidget::LoadFromCurveSpec(const Curve2DSpec * curve, const QStringList & channels)
 {
@@ -28,17 +30,22 @@ bool Curve2DWidget::LoadFromCurveSpec(const Curve2DSpec * curve, const QStringLi
   if (curve->yAxis == QwtPlot::yRight) comboYAxis->setCurrentItem(1);
   else comboYAxis->setCurrentItem(0);
 
+  std::vector< CCopasiContainer * > ListOfContainer; //dummy
+
   //set the comboboxes for data channel selection
   comboXData->insertStringList(channels);
-  comboXData->setCurrentText(curve->mChannels[0].object.c_str());
+  comboXData->setCurrentText(CCopasiContainer::ObjectFromName(ListOfContainer, curve->mChannels[0].object)->getObjectUniqueName().c_str());
 
   comboYData->insertStringList(channels);
-  comboYData->setCurrentText(curve->mChannels[1].object.c_str());
+  comboYData->setCurrentText(CCopasiContainer::ObjectFromName(ListOfContainer, curve->mChannels[1].object)->getObjectUniqueName().c_str());
 
   //for debugging:
-  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
-  std::cout << "  title: " << curve->title << std::endl;
-  std::cout << "  " << curve->mChannels.size() << "  " << curve->mChannels[0].object << "  " << curve->mChannels[1].object << std::endl;
+  //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
+  //  std::cout << "  title: " << curve->title << std::endl;
+  //  std::cout << "  " << curve->mChannels.size() << "  " << curve->mChannels[0].object << "  " << curve->mChannels[1].object << std::endl;
+
+  //  std::string sss = CCopasiContainer::ObjectFromName(ListOfContainer, curve->mChannels[0].object)->getObjectUniqueName().c_str();
+  //  std::cout << "uni : " << sss << " *** " << std::endl;
 
   return true;
 }
