@@ -53,6 +53,7 @@ C_INT32 TestFunctionDB(void);
 C_INT32 TestMassAction(void);
 C_INT32 TestBaseFunction(void);
 C_INT32 TestModel(void);
+C_INT32 TestMathModel(void);
 C_INT32 TestLU();
 C_INT32 TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
 C_INT32 TestTrajectory(void);
@@ -119,7 +120,7 @@ int main(int argc, char *argv[])
       //YOHE: new test
       //  TestOptimization();
       //      TestEigen();
-      TestCopasiTree();
+      //      TestCopasiTree();
       //      TestTrajectory();
       //      TestTrajectoryTask();
       //      TestMoiety();
@@ -128,6 +129,7 @@ int main(int argc, char *argv[])
       //      TestFunctionDB();
       //      TestBaseFunction();
       //      TestModel();
+      TestMathModel();
       //      TestLU();
       //      TestMCA();
       //      TestOutputEvent();
@@ -1402,6 +1404,17 @@ C_INT32 TestModel()
   return 0;
 }
 
+C_INT32 TestMathModel(void)
+{
+  CReadConfig inbuf("gps/YeastGlycolysis.gps");
+  CModel m;
+  m.load(inbuf);
+
+  CMathModel math;
+  math.setModel(&m);
+
+  return 0;
+}
 C_INT32 TestLU()
 {
   unsigned C_INT32 i;
