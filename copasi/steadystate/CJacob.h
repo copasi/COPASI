@@ -34,7 +34,7 @@ class CJacob {
   /**
    * 
    */
-  CModel mModel;
+  CModel * mModel;
 
  public:
   /**
@@ -97,7 +97,7 @@ class CJacob {
   /**
    * Set the Model
    */
-  void setModel(CModel model);
+  void setModel(CModel & model);
 };
 
 #endif

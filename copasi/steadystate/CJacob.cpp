@@ -48,7 +48,7 @@ void CJacob::jacobEval(C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
 {
   C_FLOAT64 K1, K2, K3;
   C_FLOAT64 *f1, *f2, store, temp;
-  int i, j;
+  int i, j, dim = mModel->getIndMetab();
 
   // constants for differentiation by finite differences
   K1 = 1 + factor;
@@ -56,11 +56,11 @@ void CJacob::jacobEval(C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
   K3 = 2 * factor;
 
   // Arrays to store function value
-  f1 = new C_FLOAT64[mJacob.num_rows()];
-  f2 = new C_FLOAT64[mJacob.num_rows()];
+  f1 = new C_FLOAT64[dim];
+  f2 = new C_FLOAT64[dim];
 	
   // iterate over all metabolites
-  for (i = 0; i < mJacob.num_rows(); i++)
+  for (i = 0; i < dim; i++)
     {
       /** if y[i] is zero, the derivative will be calculated at a small 
        *  positive value (no point in considering negative values!). 
@@ -73,15 +73,15 @@ void CJacob::jacobEval(C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
       else temp = store;
 		
       src[i] = temp * K1;
-      mModel.lSODAEval(0, 0, src, f1);
+      mModel->lSODAEval(dim, 0, src, f1);
 			
       mNfunction++;
 
       src[i] = temp * K2;
-      mModel.lSODAEval(0, 0, src, f1);
+      mModel->lSODAEval(dim, 0, src, f2);
       mNfunction++;
 
-      for (j = 0; j < mJacob.num_rows(); j++) 
+      for (j = 0; j < dim; j++) 
 	mJacob[i][j] = (f1[j] - f2[j]) / (temp * K3);
 		
       src[i] = store;
@@ -145,11 +145,11 @@ void CJacob::setNjacob(C_INT32 jacob)
 /**
  * Set the Model
  */
-void CJacob::setModel(CModel model)
+void CJacob::setModel(CModel & model)
 {
   /* :TODO: we need a copy constructor here */
-  mModel = model;
+  mModel = &model;
 
-  unsigned C_INT32 dim = mModel.getIndMetab();
+  unsigned C_INT32 dim = mModel->getIndMetab();
   mJacob.newsize(dim,dim);
 }
