@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.152 $
+   $Revision: 1.153 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/15 17:14:53 $
+   $Author: gauges $ 
+   $Date: 2004/10/22 08:52:08 $
    End CVS Header */
 
 /*********************************************************************
@@ -330,7 +330,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                   // Yes or Enter
+        case 0:                    // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -342,7 +342,15 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             //dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
             dataModel->getModel()->removeReaction(objKey);
             //enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index, size - 1)]->getKey());
-            enter(Copasi->pModel->getReactions()[std::min(index, size - 2)]->getKey());
+
+            // this invalidates the reaction interface
+            // so that the writeBackToReactionFunction is not called
+            // after deleting a reaction.
+            mRi.setFunction("", true);
+            if (size > 1)
+              {
+                enter(Copasi->pModel->getReactions()[std::min(index, size - 2)]->getKey());
+              }
             //dataModel->getModel()->removeReaction(objKey);
             // table->removeRow(ToBeDeleted[i]);
             //}
@@ -354,7 +362,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                          // No or Escape
+        default:                           // No or Escape
           break;
         }
       //}

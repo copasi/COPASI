@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.154 $
+   $Revision: 1.155 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/15 17:16:20 $
+   $Author: gauges $ 
+   $Date: 2004/10/22 08:52:08 $
    End CVS Header */
 
 /****************************************************************************
@@ -415,7 +415,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:             //Report
+      case 43:              //Report
         return tableDefinition;
         break;
       case 42:
@@ -678,8 +678,77 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   switch (objectType)
     {
     case METABOLITE:
+      switch (action)
+        {
+        case CHANGE:
+          break;
+        case RENAME:
+          break;
+        case ADD:
+          break;
+        case DELETE:
+          // check if it was the last metabolite, if yes,
+          // make the metabolite table the current widget
+          if (dataModel)
+            {
+              unsigned int numMetabolites = dataModel->getModel()->getMetabolites().size();
+              if (numMetabolites == 0)
+                {
+                  ListViews::switchAllListViewsToWidget(112, "");
+                }
+            }
+          break;
+        default:
+          break;
+        }
     case COMPARTMENT:
+      switch (action)
+        {
+        case CHANGE:
+          break;
+        case RENAME:
+          break;
+        case ADD:
+          break;
+        case DELETE:
+          // check if it was the last comaprtment, if yes,
+          // make the compartment table the current widget
+          if (dataModel)
+            {
+              unsigned int numCompartments = dataModel->getModel()->getCompartments().size();
+              if (numCompartments == 0)
+                {
+                  ListViews::switchAllListViewsToWidget(111, "");
+                }
+            }
+          break;
+        default:
+          break;
+        }
     case REACTION:
+      switch (action)
+        {
+        case CHANGE:
+          break;
+        case RENAME:
+          break;
+        case ADD:
+          break;
+        case DELETE:
+          // check if it was the last reaction, if yes,
+          // make the reaction table the current widget
+          if (dataModel)
+            {
+              unsigned int numReactions = dataModel->getModel()->getReactions().size();
+              if (numReactions == 0)
+                {
+                  ListViews::switchAllListViewsToWidget(114, "");
+                }
+            }
+          break;
+        default:
+          break;
+        }
     case FUNCTION:
     case REPORT:
     case PLOT:
