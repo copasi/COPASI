@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/19 09:01:38 $
+   $Date: 2004/10/19 09:38:13 $
    End CVS Header */
 
 /****************************************************************************
@@ -25,7 +25,7 @@ void TimeSeriesSubWidget::saveDataToFile()
   int failed = 0;
   if (timeSeries)
     {
-      const QCursor& oldCursor = cursor();
+      QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
       failed = timeSeries->save(fileName, !(this->table()->doShowConcentrations()), "\t");
       setCursor(oldCursor);
