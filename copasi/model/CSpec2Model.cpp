@@ -305,29 +305,29 @@ void CSpec2Model::processDeTerms()
 
   std::vector<CBaseEqn>::iterator it = mDeVector.begin();
 
-  for (; it != mDeVector.end(); it++)
+  for (; it != mDeVector.end(); it++)  //every DE in File
     {
       // Create a stack of terms on the RHS of the DE.
-      std::cout << "Creating term stack\n";
+      std::cout << endl << "Creating term stack\n";
       std::vector<CDeTerm *> termstack = createTermStack(it->getContents());
       // Get the metabolite on the LHS of the DE
       CMetab *LHSMetab = getLHSMetab(*it);
-      std::cout << LHSMetab->getName() << std::endl;
+      std::cout << endl << "LHS-Name: " << LHSMetab->getName() << std::endl;
       // Step through each term of this differential equation.
       std::vector <CDeTerm *>::iterator termit = termstack.begin();
 
-      for (; termit != termstack.end(); termit++)
+      for (; termit != termstack.end(); termit++)  //every Term in DE
         {
-          std::cout << "In term\n";
           // The rate constant is used to relate this term to a particular reaction.
           std::string rate_constant = (*termit)->getRateConstant();
           num_change = (*termit)->getSign() * (*termit)->getMultiplier();
-          std::cout << rate_constant << " num_change: " << num_change << std::endl;
+          std::cout << "In term " << rate_constant << " num_change: " << num_change << std::endl;
           // Find or create the CTempReaction with this rate constant
           CTempReaction *reaction = trs.findReaction(rate_constant);
 
           if (reaction == 0)
             {
+              std::cout << "new reaction" << endl;
               std::string rate = expandRate(*termit);
               reaction = new CTempReaction(rate_constant);
               reaction->setDescription(rate);

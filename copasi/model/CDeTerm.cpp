@@ -34,13 +34,11 @@ void CDeTerm::addElement(Type type, std::string token)
   mTokenStack.push_back(new std::pair<Type, std::string>(type, token.substr(Begin, End - Begin + 1)));
 }
 
-void CDeTerm::deleteElement(C_INT32 index)
+void CDeTerm::deleteElement(std::vector< std::pair <Type, std::string>*>::iterator it)
 {
-  std::vector< std::pair <Type, std::string>*>::iterator it = mTokenStack.begin() + index;
-
   if (*it)
     {
-      delete mTokenStack[index];
+      delete (*it);
       mTokenStack.erase(it);
     }
 }
@@ -77,14 +75,14 @@ void CDeTerm::compile(std::vector<CNameVal> &rates)
   // For the multiplicative constant:
   // If it's at the end position, then we must remove the preceding '*', otherwise
   // we must remove the following '*'. If there is a '/' following, then we merely
-  // replace the multiplier with '1'. So we need the position.
-  unsigned C_INT32 pos = 0;
+  // replace the multiplier with '1'.
+
   // Make sure we don't use numbers which are exponents for metabolites as the multiplier!
   bool is_exponent = false;
   std::pair< std::string, C_INT32> *last_metab;
   std::vector< std::pair< Type, std::string>* >::iterator it = mTokenStack.begin();
 
-  for (; it != mTokenStack.end(); it++, pos++)
+  for (; it < mTokenStack.end(); it++)
     {
       switch ((*it)->first)
         {
@@ -116,20 +114,30 @@ void CDeTerm::compile(std::vector<CNameVal> &rates)
               // We've found the multiplier
               mMultiplier = atof((*it)->second.c_str());
 
-              if (pos < mTokenStack.size() - 1)
+              if ((it + 1) < mTokenStack.end())
                 {
                   // Check whether the following token is a '*' or a '/'
 
-                  if (mTokenStack[pos]->first == MULT)
+                  if ((*(it + 1))->first == MULT)
                     {
                       // Call delete twice, to remove the multiplier and '*'
-                      deleteElement(pos);
-                      deleteElement(pos);
+                      deleteElement(it);
+                      deleteElement(it);
                     }
-                  else if (mTokenStack[pos]->first == DIV)
+                  else if ((*(it + 1))->first == DIV)
                     {
                       // Replace the multiplier with 1
-                      mTokenStack[pos]->second = "1";
+                      (*it)->second = "1";
+                    }
+                }
+              else
+                {// we are at the end of the termstack.
+                  if ((*(it - 1))->first == MULT)
+                    {
+                      // Call delete twice, to remove the multiplier and '*'
+                      it--;
+                      deleteElement(it);
+                      deleteElement(it);
                     }
                 }
             }

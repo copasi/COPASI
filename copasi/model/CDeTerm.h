@@ -59,7 +59,7 @@ class CDeTerm
     /**
      * Remove an element from the stack
      */
-    void deleteElement(C_INT32 index);
+    void deleteElement(std::vector< std::pair <Type, std::string>*>::iterator it);
     /**
      * Extract the top level metabolites in this DeTerm
      */
