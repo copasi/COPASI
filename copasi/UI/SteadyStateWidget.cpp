@@ -1,12 +1,14 @@
 /****************************************************************************
-<<<<<<< SteadyStateWidget.cpp
  ** Form implementation generated from reading ui file '.\SteadyStateWidget.ui'
  **
- ** Created: Thu Feb 13 12:57:19 2003
+ ** Created: Sun Mar 2 13:39:33 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
+#include "SteadyStateWidget.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
 
 #include <qvariant.h>
 #include <qcheckbox.h>
@@ -20,107 +22,140 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
-#include "SteadyStateWidget.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
-
+/*
+ *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f'.
+ */
 SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl)
 {
-  mSteadyStateTask = NULL;
   if (!name)
     setName("SteadyStateWidget");
-  resize(655, 639);
+  resize(532, 527);
+  setMinimumSize(QSize(0, 0));
+  QFont f(font());
+  f.setFamily("Times New Roman");
+  setFont(f);
   setCaption(trUtf8("SteadyStateWidget"));
-
-  line8 = new QFrame(this, "line8");
-  line8->setGeometry(QRect(11, 71, 568, 16));
-  line8->setFrameShape(QFrame::HLine);
-  line8->setFrameShadow(QFrame::Sunken);
-  line8->setFrameShape(QFrame::HLine);
+  SteadyStateWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "SteadyStateWidgetLayout");
 
   line7 = new QFrame(this, "line7");
-  line7->setGeometry(QRect(11, 162, 568, 16));
   line7->setFrameShape(QFrame::HLine);
   line7->setFrameShadow(QFrame::Sunken);
   line7->setFrameShape(QFrame::HLine);
 
-  taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
-  taskDescriptionLabel->setGeometry(QRect(10, 108, 90, 20));
-  taskDescriptionLabel->setText(trUtf8("Task Description"));
+  SteadyStateWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 6);
+  QSpacerItem* spacer = new QSpacerItem(500, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  SteadyStateWidgetLayout->addMultiCell(spacer, 7, 7, 0, 6);
+  QSpacerItem* spacer_2 = new QSpacerItem(490, 22, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  SteadyStateWidgetLayout->addMultiCell(spacer_2, 5, 5, 0, 6);
+  QSpacerItem* spacer_3 = new QSpacerItem(390, 22, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  SteadyStateWidgetLayout->addMultiCell(spacer_3, 3, 3, 0, 4);
+  QSpacerItem* spacer_4 = new QSpacerItem(500, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  SteadyStateWidgetLayout->addMultiCell(spacer_4, 1, 1, 0, 6);
+  QSpacerItem* spacer_5 = new QSpacerItem(500, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  SteadyStateWidgetLayout->addMultiCell(spacer_5, 11, 11, 0, 6);
 
-  taskJacobian = new QRadioButton(this, "taskJacobian");
-  taskJacobian->setGeometry(QRect(105, 109, 186, 18));
-  taskJacobian->setText(trUtf8("Jacobian"));
+  Layout6 = new QHBoxLayout(0, 0, 6, "Layout6");
 
-  taskStability = new QRadioButton(this, "taskStability");
-  taskStability->setGeometry(QRect(297, 109, 185, 18));
-  taskStability->setText(trUtf8("Stability Analysis"));
+  bRunButton = new QPushButton(this, "bRunButton");
+  bRunButton->setText(trUtf8("Run"));
+  Layout6->addWidget(bRunButton);
+  bRunButton->setEnabled(false);
+
+  commitChange = new QPushButton(this, "commitChange");
+  commitChange->setText(trUtf8("Commit Change"));
+  Layout6->addWidget(commitChange);
+
+  cancelChange = new QPushButton(this, "cancelChange");
+  cancelChange->setText(trUtf8("Cancel Change"));
+  Layout6->addWidget(cancelChange);
+
+  SteadyStateWidgetLayout->addMultiCellLayout(Layout6, 12, 12, 0, 6);
+  QSpacerItem* spacer_6 = new QSpacerItem(490, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  SteadyStateWidgetLayout->addMultiCell(spacer_6, 9, 9, 0, 6);
 
   line6 = new QFrame(this, "line6");
-  line6->setGeometry(QRect(11, 398, 578, 16));
   line6->setFrameShape(QFrame::HLine);
   line6->setFrameShadow(QFrame::Sunken);
   line6->setFrameShape(QFrame::HLine);
 
+  SteadyStateWidgetLayout->addMultiCellWidget(line6, 10, 10, 0, 6);
+
+  line8 = new QFrame(this, "line8");
+  line8->setFrameShape(QFrame::HLine);
+  line8->setFrameShadow(QFrame::Sunken);
+  line8->setFrameShape(QFrame::HLine);
+
+  SteadyStateWidgetLayout->addMultiCellWidget(line8, 2, 2, 0, 6);
+
   taskNameLabel = new QLabel(this, "taskNameLabel");
-  taskNameLabel->setGeometry(QRect(12, 15, 90, 19));
   taskNameLabel->setText(trUtf8("Task Name"));
 
-  QWidget* privateLayoutWidget = new QWidget(this, "Layout5");
-  privateLayoutWidget->setGeometry(QRect(10, 440, 570, 25));
-  Layout5 = new QHBoxLayout(privateLayoutWidget, 0, 6, "Layout5");
+  SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
 
-  bRunButton = new QPushButton(privateLayoutWidget, "bRunButton");
-  bRunButton->setText(trUtf8("Run"));
-  Layout5->addWidget(bRunButton);
+  taskJacobian = new QRadioButton(this, "taskJacobian");
+  taskJacobian->setText(trUtf8("Jacobian"));
 
-  commitChange = new QPushButton(privateLayoutWidget, "commitChange");
-  commitChange->setText(trUtf8("Commit Change"));
-  Layout5->addWidget(commitChange);
+  SteadyStateWidgetLayout->addWidget(taskJacobian, 4, 1);
 
-  cancelChange = new QPushButton(privateLayoutWidget, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel Change"));
-  Layout5->addWidget(cancelChange);
+  taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
+  taskDescriptionLabel->setText(trUtf8("Task Description"));
 
-  taskName = new QLineEdit(this, "taskName");
-  taskName->setGeometry(QRect(102, 15, 240, 20));
+  SteadyStateWidgetLayout->addWidget(taskDescriptionLabel, 4, 0);
 
   parameterValueLabel = new QLabel(this, "parameterValueLabel");
-  parameterValueLabel->setGeometry(QRect(14, 205, 80, 160));
   parameterValueLabel->setText(trUtf8("Parameter value"));
 
-  parameterTable = new QTable(this, "parameterTable");
-  parameterTable->setGeometry(QRect(100, 205, 484, 160));
+  SteadyStateWidgetLayout->addWidget(parameterValueLabel, 8, 0);
+  QSpacerItem* spacer_7 = new QSpacerItem(61, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  SteadyStateWidgetLayout->addItem(spacer_7, 4, 2);
 
+  taskStability = new QRadioButton(this, "taskStability");
+  taskStability->setText(trUtf8("Stability Analysis"));
+
+  SteadyStateWidgetLayout->addMultiCellWidget(taskStability, 4, 4, 3, 5);
+  QSpacerItem* spacer_8 = new QSpacerItem(61, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  SteadyStateWidgetLayout->addItem(spacer_8, 4, 6);
+
+  bExecutable = new QCheckBox(this, "bExecutable");
+  bExecutable->setText(trUtf8("Task Executable"));
+
+  SteadyStateWidgetLayout->addMultiCellWidget(bExecutable, 0, 0, 5, 6);
+
+  taskName = new QLineEdit(this, "taskName");
+  taskName->setFrameShape(QLineEdit::LineEditPanel);
+  taskName->setFrameShadow(QLineEdit::Sunken);
+
+  SteadyStateWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 3);
+  QSpacerItem* spacer_9 = new QSpacerItem(61, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  SteadyStateWidgetLayout->addItem(spacer_9, 0, 4);
+
+  parameterTable = new QTable(this, "parameterTable");
   parameterTable->setNumRows(0);
   parameterTable->setNumCols(1);
-
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
 
-  bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setGeometry(QRect(399, 15, 141, 21));
-  bExecutable->setText(trUtf8("Task Executable"));
+  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 8, 8, 1, 4);
 
   // signals and slots connections
-  connect(taskName, SIGNAL(textChanged(const QString&)), this, SLOT(taskNameChanged()));
-  connect(taskJacobian, SIGNAL(stateChanged(int)), this, SLOT(methodJacob()));
-  connect(taskStability, SIGNAL(stateChanged(int)), this, SLOT(methodStability()));
-  connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
+  connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
+  connect(bRunButton, SIGNAL(clicked()), this, SLOT(RunTask()));
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
-  connect(bRunButton, SIGNAL(clicked()), this, SLOT(RunTask()));
-  connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
+  connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
 
   // tab order
+  setTabOrder(taskName, bExecutable);
   setTabOrder(bExecutable, taskJacobian);
   setTabOrder(taskJacobian, taskStability);
   setTabOrder(taskStability, parameterTable);
-  setTabOrder(parameterTable, taskName);
-  setTabOrder(taskName, bRunButton);
+  setTabOrder(parameterTable, bRunButton);
   setTabOrder(bRunButton, commitChange);
   setTabOrder(commitChange, cancelChange);
+
+  mSteadyStateTask = NULL;
 }
 
 /*
@@ -183,18 +218,10 @@ void SteadyStateWidget::CommitChange()
   loadSteadyStateTask(mSteadyStateTask);
 }
 
-void SteadyStateWidget::methodJacob()
-{
-  qWarning("SteadyStateWidget::methodJacob(): Not implemented yet!");
-}
-
-void SteadyStateWidget::methodStability()
-{
-  qWarning("SteadyStateWidget::methodStability(): Not implemented yet!");
-}
-
 void SteadyStateWidget::RunButtonClicked()
 {
+  if (mSteadyStateTask == NULL)
+    return;
   if (!bExecutable->isChecked())
     bRunButton->setEnabled(false);
   else
@@ -211,11 +238,6 @@ void SteadyStateWidget::RunTask()
   if (mSteadyStateTask == NULL)
     return;
   mSteadyStateTask->process();
-}
-
-void SteadyStateWidget::taskNameChanged()
-{
-  qWarning("SteadyStateWidget::taskNameChanged(): Not implemented yet!");
 }
 
 void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)

@@ -36,7 +36,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="Line" row="6" column="0" rowspan="1" colspan="10">
+        <widget class="Line" row="6" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>line7</cstring>
             </property>
@@ -50,7 +50,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <spacer row="7" column="0" rowspan="1" colspan="10">
+        <spacer row="7" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>spacer7_6</cstring>
             </property>
@@ -67,7 +67,7 @@
                 </size>
             </property>
         </spacer>
-        <spacer row="5" column="0" rowspan="1" colspan="10">
+        <spacer row="5" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>spacer7_3</cstring>
             </property>
@@ -84,7 +84,7 @@
                 </size>
             </property>
         </spacer>
-        <spacer row="3" column="0" rowspan="1" colspan="9">
+        <spacer row="3" column="0" rowspan="1" colspan="5">
             <property name="name">
                 <cstring>spacer7_4</cstring>
             </property>
@@ -101,7 +101,7 @@
                 </size>
             </property>
         </spacer>
-        <spacer row="1" column="0" rowspan="1" colspan="10">
+        <spacer row="1" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>spacer7_2</cstring>
             </property>
@@ -118,7 +118,7 @@
                 </size>
             </property>
         </spacer>
-        <spacer row="11" column="0" rowspan="1" colspan="10">
+        <spacer row="11" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>spacer7_7</cstring>
             </property>
@@ -135,7 +135,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QLayoutWidget" row="12" column="0" rowspan="1" colspan="10">
+        <widget class="QLayoutWidget" row="12" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>Layout6</cstring>
             </property>
@@ -175,7 +175,7 @@
                 </widget>
             </hbox>
         </widget>
-        <spacer row="9" column="0" rowspan="1" colspan="10">
+        <spacer row="9" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>spacer7_5</cstring>
             </property>
@@ -192,7 +192,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="Line" row="10" column="0" rowspan="1" colspan="10">
+        <widget class="Line" row="10" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>line6</cstring>
             </property>
@@ -206,15 +206,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QCheckBox" row="0" column="9">
-            <property name="name">
-                <cstring>bExecutable</cstring>
-            </property>
-            <property name="text">
-                <string>Task Executable</string>
-            </property>
-        </widget>
-        <widget class="Line" row="2" column="0" rowspan="1" colspan="10">
+        <widget class="Line" row="2" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>line8</cstring>
             </property>
@@ -228,40 +220,6 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <spacer row="4" column="6">
-            <property name="name">
-                <cstring>Spacer31_3</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>60</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="8" column="8" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>Spacer22</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>140</width>
-                    <height>258</height>
-                </size>
-            </property>
-        </spacer>
         <widget class="QLabel" row="0" column="0">
             <property name="name">
                 <cstring>taskNameLabel</cstring>
@@ -270,7 +228,81 @@
                 <string>Task Name</string>
             </property>
         </widget>
-        <widget class="QLineEdit" row="0" column="5" rowspan="1" colspan="3">
+        <widget class="QRadioButton" row="4" column="1">
+            <property name="name">
+                <cstring>taskJacobian</cstring>
+            </property>
+            <property name="text">
+                <string>Jacobian</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="4" column="0">
+            <property name="name">
+                <cstring>taskDescriptionLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Task Description</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="8" column="0">
+            <property name="name">
+                <cstring>parameterValueLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Parameter value</string>
+            </property>
+        </widget>
+        <spacer row="4" column="2">
+            <property name="name">
+                <cstring>Spacer12</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>61</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QRadioButton" row="4" column="3" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>taskStability</cstring>
+            </property>
+            <property name="text">
+                <string>Stability Analysis</string>
+            </property>
+        </widget>
+        <spacer row="4" column="6">
+            <property name="name">
+                <cstring>Spacer12_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>61</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QCheckBox" row="0" column="5" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>bExecutable</cstring>
+            </property>
+            <property name="text">
+                <string>Task Executable</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>taskName</cstring>
             </property>
@@ -281,23 +313,24 @@
                 <enum>Sunken</enum>
             </property>
         </widget>
-        <widget class="QRadioButton" row="4" column="5">
+        <spacer row="0" column="4">
             <property name="name">
-                <cstring>taskJacobian</cstring>
+                <cstring>Spacer14</cstring>
             </property>
-            <property name="text">
-                <string>Jacobian</string>
+            <property name="orientation">
+                <enum>Horizontal</enum>
             </property>
-        </widget>
-        <widget class="QLabel" row="4" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>taskDescriptionLabel</cstring>
+            <property name="sizeType">
+                <enum>Expanding</enum>
             </property>
-            <property name="text">
-                <string>Task Description</string>
+            <property name="sizeHint">
+                <size>
+                    <width>61</width>
+                    <height>21</height>
+                </size>
             </property>
-        </widget>
-        <widget class="QTable" row="8" column="5" rowspan="1" colspan="3">
+        </spacer>
+        <widget class="QTable" row="8" column="1" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>parameterTable</cstring>
             </property>
@@ -308,73 +341,6 @@
                 <number>3</number>
             </property>
         </widget>
-        <widget class="QRadioButton" row="4" column="7" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>taskStability</cstring>
-            </property>
-            <property name="text">
-                <string>Stability Analysis</string>
-            </property>
-        </widget>
-        <spacer row="0" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>Spacer34</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>21</width>
-                    <height>21</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="4" column="2" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>Spacer34_2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>21</width>
-                    <height>21</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLabel" row="8" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>parameterValueLabel</cstring>
-            </property>
-            <property name="text">
-                <string>Parameter value</string>
-            </property>
-        </widget>
-        <spacer row="8" column="2" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>Spacer34_3</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>21</width>
-                    <height>220</height>
-                </size>
-            </property>
-        </spacer>
     </grid>
 </widget>
 <connections>
@@ -419,9 +385,6 @@
     <tabstop>commitChange</tabstop>
     <tabstop>cancelChange</tabstop>
 </tabstops>
-<includes>
-    <include location="local" impldecl="in implementation">SteadyStateWidget.ui.h</include>
-</includes>
 <slots>
     <slot>CancelChange()</slot>
     <slot>CommitChange()</slot>

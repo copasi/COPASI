@@ -1,19 +1,16 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\SteadyStateWidget.ui'
  **
- ** Created: Thu Feb 13 12:57:19 2003
+ ** Created: Sun Mar 2 13:39:33 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 #ifndef STEADYSTATEWIDGET_H
 #define STEADYSTATEWIDGET_H
-
 #include "copasi.h"
-
 #include <qvariant.h>
 #include <qwidget.h>
-
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -38,33 +35,31 @@ class SteadyStateWidget : public QWidget
     CSteadyStateTask *mSteadyStateTask;
     void loadSteadyStateTask(CSteadyStateTask* steadystatetask);
 
-    QFrame* line8;
     QFrame* line7;
-    QLabel* taskDescriptionLabel;
-    QRadioButton* taskJacobian;
-    QRadioButton* taskStability;
-    QFrame* line6;
-    QLabel* taskNameLabel;
     QPushButton* bRunButton;
     QPushButton* commitChange;
     QPushButton* cancelChange;
-    QLineEdit* taskName;
+    QFrame* line6;
+    QFrame* line8;
+    QLabel* taskNameLabel;
+    QRadioButton* taskJacobian;
+    QLabel* taskDescriptionLabel;
     QLabel* parameterValueLabel;
-    QTable* parameterTable;
+    QRadioButton* taskStability;
     QCheckBox* bExecutable;
+    QLineEdit* taskName;
+    QTable* parameterTable;
 
   public slots:
     virtual void CancelChange();
     virtual void CommitChange();
-    virtual void methodJacob();
-    virtual void methodStability();
     virtual void RunButtonClicked();
     virtual void parameterValueChanged();
     virtual void RunTask();
-    virtual void taskNameChanged();
 
   protected:
-    QHBoxLayout* Layout5;
+    QGridLayout* SteadyStateWidgetLayout;
+    QHBoxLayout* Layout6;
   };
 
 #endif // STEADYSTATEWIDGET_H
