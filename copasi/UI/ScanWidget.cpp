@@ -463,6 +463,8 @@ void ScanWidget::ScanCheckBoxClicked()
 void ScanWidget::ScanButtonClicked()
 {
   scanTask->process();
+  std::ofstream output("scan.txt");
+  scanTask->initializeReporting(output);
 }
 
 void ScanWidget::SteadyStateButtonClicked()

@@ -14,6 +14,7 @@
 
 class CScanProblem;
 class CScanMethod;
+class COutputEvent;
 
 class CScanTask
   {
@@ -37,7 +38,12 @@ class CScanTask
     /**
      * Pointer to the output stream for reporting
      */
-    std::ostream * mpOut;
+    std::ofstream * mpOut;
+
+    /**
+     * End Phase Output Event
+     */
+    COutputEvent *mpOutEnd;
 
     //Operations
   public:
@@ -66,7 +72,7 @@ class CScanTask
      * Initilize the reporting feature
      * @param ofstream & out
      */
-    void initializeReporting(std::ostream & out);
+    void initializeReporting(std::ofstream & out);
 
     /**
      * Loads parameters for this solver with data coming from a

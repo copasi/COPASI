@@ -5,25 +5,28 @@
  * of a problem and a method.
  *  
  */
-
 #include "copasi.h"
 #include "CScanTask.h"
 #include "CScanProblem.h"
 #include "CScanMethod.h"
+#include "utilities/CGlobals.h"
 #include "utilities/readwrite.h"
+#include "output/COutputEvent.h"
+#include "output/COutputList.h"
+#include "output/COutput.h"
 
 CScanTask::CScanTask():
     mRequested(true),
     mpProblem(new CScanProblem),
     mpMethod(CScanMethod::createMethod()),
-    mpOut(NULL)
+    mpOutEnd(NULL)
 {}
 
 CScanTask::CScanTask(const CScanTask & src):
     mRequested(src.mRequested),
     mpProblem(new CScanProblem(*src.mpProblem)),
     mpMethod(new CScanMethod(*src.mpMethod)),
-    mpOut(src.mpOut)
+    mpOutEnd(src.mpOutEnd)
 {}
 
 CScanTask::~CScanTask()
@@ -33,11 +36,15 @@ void CScanTask::cleanup()
 {
   pdelete(mpProblem);
   pdelete(mpMethod);
-  pdelete(mpOut);
+  pdelete(mpOutEnd);
 }
 
-void CScanTask::initializeReporting(std::ostream & C_UNUSED(out))
-{}
+void CScanTask::initializeReporting(std::ofstream & out)
+{
+  pdelete(mpOutEnd);
+  mpOut = & out;
+  mpOutEnd = new COutputEvent();
+}
 
 void CScanTask::load(CReadConfig & configBuffer)
 {
@@ -46,7 +53,7 @@ void CScanTask::load(CReadConfig & configBuffer)
 
 void CScanTask::save(CWriteConfig & configBuffer)
 {
-  // mpProblem->save(configBuffer);
+  mpProblem->save(configBuffer);
 }
 
 void CScanTask::setRequested(const bool & requested)
@@ -83,6 +90,9 @@ void CScanTask::process()
   if (i >= 0)
     // execute many simulations
     mpMethod->scan(i, true);
+
+  if (mpOutEnd)
+    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
 
   return;
 }
