@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.20 2003/09/18 03:12:54 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.21 2003/09/18 03:17:36 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -98,6 +98,7 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(confirmClicked()));
   connect(jumpButton, SIGNAL(clicked()), this, SLOT(jumpToReportDefinitionEdit()));
+  connect(browseButton, SIGNAL(clicked()), this, SLOT(jumpToFileBrowser()));
 }
 
 /*
@@ -217,7 +218,9 @@ void CReportDefinitionSelect::jumpToReportDefinitionEdit()
 }
 
 void CReportDefinitionSelect::jumpToFileBrowser()
-{}
+{
+  int i = 0;
+}
 
 void CReportDefinitionSelect::setReport(CReport* newReport)
 {
