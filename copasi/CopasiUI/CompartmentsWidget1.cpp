@@ -214,10 +214,9 @@ void CompartmentsWidget1::slotBtnOKClicked()
   compartn1->setName(std::string(LineEdit1->text()));
   name = LineEdit1->text();
 
-  emit signal_emitted(*Compartment1_Name);
-
   emit updated();
   emit leaf(mModel);
+  emit signal_emitted(*Compartment1_Name);
 }
 
 void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & m)

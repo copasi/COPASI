@@ -394,6 +394,5 @@ void MetabolitesWidget1::slotBtnOKClicked()
 
   emit updated();
   emit leaf(mModel);
-
-  //  emit signal_emitted(*Metabolite1_Name);
+  emit signal_emitted(*Metabolite1_Name);
 }

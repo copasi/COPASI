@@ -416,9 +416,9 @@ void ReactionsWidget1::slotBtnOKClicked()
   reactn2 = reactions[(std::string)name.latin1()];
   reactn2->setName(std::string(LineEdit1->text()));
   name = LineEdit1->text();
-  emit signal_emitted(*Reaction1_Name);
   emit updated();
   emit leaf(mModel);
+  emit signal_emitted(*Reaction1_Name);
   //   CChemEq * chem;
   //   chem = & reactn1->getChemEq();
   //   chem->setChemicalEquation(chemical_reaction->latin1());
