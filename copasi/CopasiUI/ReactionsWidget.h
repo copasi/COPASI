@@ -14,6 +14,8 @@
 #include "copasi.h"
 #include "copasiWidget.h"
 
+#include "CReactionInterface.h"
+
 class CModel;
 class QPushButton;
 class QGridLayout;
@@ -31,6 +33,8 @@ class ReactionsWidget : public CopasiWidget
     bool binitialized;
     std::vector<std::string> mKeys;
 
+    CReactionInterface mRi;
+
   public:
     ReactionsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
     void resizeEvent(QResizeEvent * re);
@@ -47,9 +51,16 @@ class ReactionsWidget : public CopasiWidget
     virtual void slotBtnCancelClicked();
     virtual void tableValueChanged(int, int);
 
+    virtual void MyCurrentChanged(int, int);
+
   private:
     void fillTable();
     void createNewObject();
+
+    int m_SavedCol;
+    int m_SavedRow;
+    int prev_row;
+    int prev_col;
   };
 
 #endif

@@ -45,9 +45,16 @@ class CompartmentsWidget : public CopasiWidget
     virtual void slotBtnCancelClicked();
     virtual void tableValueChanged(int, int);
 
+    virtual void MyCurrentChanged(int, int);
+
   private:
     void fillTable();
     void createNewObject();
+
+    int m_SavedCol;
+    int m_SavedRow;
+    int prev_row;
+    int prev_col;
   };
 
 #endif

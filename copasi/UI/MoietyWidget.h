@@ -31,11 +31,15 @@ class MoietyWidget : public CopasiWidget
     MyTable *table;
     bool binitialized;
 
+    std::vector<std::string> mKeys; //By G
+
   public:
     MoietyWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
     void loadMoieties(CModel *model);
     void resizeEvent(QResizeEvent * re);
     void repaint_table();
+
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key); //By G
 
   public slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
@@ -50,6 +54,7 @@ class MoietyWidget : public CopasiWidget
     virtual void slotTableSelectionChanged();
 
   private:
+    void fillTable(); //By G
     void showMessage(QString caption, QString text);
   };
 

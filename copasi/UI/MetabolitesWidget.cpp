@@ -6,6 +6,8 @@
  ** obtained from the data model about the Metabolites----It is 
  ** the First level of Metabolites.
  ************************************************************************/
+#include <math.h>
+
 #include "MetabolitesWidget.h"
 
 #include <qlayout.h>
@@ -47,13 +49,14 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
 
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Name");
-  tableHeader->setLabel(1, "Concentration");
-  tableHeader->setLabel(2, "Number");
+  tableHeader->setLabel(1, "Initial Concentration");
+  tableHeader->setLabel(2, "Concentration");
   tableHeader->setLabel(3, "Status");
   tableHeader->setLabel(4, "Compartment");
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
+  btnSwitchCols = new QPushButton("&Show Numbers", this); //By G
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -64,6 +67,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   hBoxLayout->addWidget(btnOK);
   hBoxLayout->addSpacing(5);
   hBoxLayout->addWidget(btnCancel);
+  hBoxLayout->addSpacing(5);
+  hBoxLayout->addWidget(btnSwitchCols);
   hBoxLayout->addSpacing(50);
 
   table->sortColumn (0, true, true);
@@ -79,6 +84,17 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
           this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()),
           this, SLOT(slotBtnCancelClicked()));
+
+  connect(btnSwitchCols, SIGNAL(clicked ()),
+          this, SLOT(slotBtnSwitchColsClicked())); //By G
+  connect(table, SIGNAL(currentChanged(int, int)),
+          this, SLOT(MyCurrentChanged(int, int))); //By G
+
+  m_SavedRow = 0;
+  m_SavedCol = 0;
+  prev_row = 0;
+  prev_col = 0;
+  btn_flag = 0;
 }
 
 void MetabolitesWidget::fillTable()
@@ -93,11 +109,20 @@ void MetabolitesWidget::fillTable()
     {
       obj = objects[j];
       table->setText(j, 0, obj->getName().c_str());
-      table->setText(j, 1, QString::number(obj->getConcentration()));
-      table->setText(j, 2, QString::number(obj->getNumberDbl()));
+
+      if (btn_flag == 0) //By G
+        {
+          table->setText(j, 1, QString::number(obj->getInitialConcentration()));
+          table->setText(j, 2, QString::number(obj->getConcentration()));
+        }
+      else
+        {
+          table->setText(j, 1, QString::number(obj->getInitialNumberDbl()));
+          table->setText(j, 2, QString::number(obj->getNumberDbl()));
+        }
+
       table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
       table->setText(j, 4, obj->getCompartment()->getName().c_str());
-
       mKeys[j] = obj->getKey();
     }
   table->setText(jmax, 1, "");
@@ -148,8 +173,156 @@ void MetabolitesWidget::slotTableSelectionChanged()
   if (!table->hasFocus()) table->setFocus();
 }
 
+void MetabolitesWidget::MyCurrentChanged(int row, int col)
+{
+  //  at this point you know old values !
+  prev_row = m_SavedRow;
+  prev_col = m_SavedCol;
+
+  m_SavedCol = col; // Save for a future use
+  m_SavedRow = row; // Save for a future use
+}
+
 void MetabolitesWidget::slotBtnOKClicked()
-{}
+{
+  CMetab *obj;
+  const CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
+  C_INT32 j, jmax = objects.size();
+  int *renamed = new int[jmax];
+  int *changed = new int[jmax];
+
+  table->setCurrentCell(jmax, 0);
+  double temp1;
+  C_FLOAT64 temp2;
+
+  for (j = 0; j < jmax; ++j)
+    {
+      obj = objects[j];
+      renamed[j] = 0;
+      changed[j] = 0;
+
+      //name
+      QString name(table->text(j, 0));
+      if (name.latin1() != obj->getName())
+        {
+          obj->setName(name.latin1());
+          renamed[j] = 1;
+        }
+
+      //for Initial Concentration and Initial Number
+      if (btn_flag == 0)
+        {
+          QString initialConcentration(table->text(j, 1));
+          temp1 = initialConcentration.toDouble();
+          if (fabs(temp1 - obj->getInitialConcentration()) > 1e-10)
+            {
+              obj->setInitialConcentration(temp1);
+
+              QString Concentration(table->text(j, 2));
+              temp1 = Concentration.toDouble();
+              obj->setConcentration(temp1);
+
+              changed[j] = 1;
+            }
+        }
+      else
+        {
+          QString initialNumber(table->text(j, 1));
+          temp2 = initialNumber.toDouble();
+          if (fabs(temp2 - obj->getInitialNumberDbl()) > 1e-3) //TODO: this is extremely ugly
+            {
+              obj->setInitialNumberDbl(temp2);
+
+              QString Number(table->text(j, 2));
+              temp2 = Number.toDouble();
+              obj->setNumberDbl(temp2);
+
+              changed[j] = 1;
+            }
+        }
+
+      //fixed?
+      QString status(table->text(j, 3));
+      if (status.latin1() != CMetab::StatusName[obj->getStatus()])
+        {
+          if (obj->getStatus() != CMetab::METAB_FIXED)
+            obj->setStatus(CMetab::METAB_FIXED);
+          else
+            obj->setStatus(CMetab::METAB_VARIABLE);
+
+          changed[j] = 1;
+        }
+
+      //compartment
+      QString Compartment(table->text(j, 4));
+      if (Compartment.latin1() != obj->getCompartment()->getName())
+        {
+          dataModel->getModel()->getCompartments()[Compartment.latin1()]->addMetabolite(*obj);
+          dataModel->getModel()->getCompartments()[obj->getCompartment()->getName()]->getMetabolites().remove(obj->getName());
+          dataModel->getModel()->initializeMetabolites();
+          ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+
+          changed[j] = 1;
+        }
+    }
+
+  for (j = 0; j < jmax; ++j)
+    {
+      obj = objects[j];
+      if (renamed[j] == 1)
+        ListViews::notify(ListViews::METABOLITE, ListViews::RENAME, obj->getKey());
+
+      if (changed[j] == 1)
+        ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, obj->getKey());
+    }
+
+  table->setCurrentCell(prev_row, prev_col);
+
+  delete renamed;
+  delete changed;
+
+  return; //TODO: really check
+}
+
+void MetabolitesWidget::slotBtnSwitchColsClicked() //By G
+{
+  const CMetab *obj;
+  const CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
+  C_INT32 j, jmax = objects.size();
+  table->setNumRows(jmax);
+  mKeys.resize(jmax);
+
+  QHeader *tableHeader = table->horizontalHeader();
+
+  if (btn_flag == 0)
+    {
+      tableHeader->setLabel(1, "Initial Number");
+      tableHeader->setLabel(2, "Number");
+      btnSwitchCols->setText("&Show Concentrations");
+      btn_flag = 1;
+
+      for (j = 0; j < jmax; ++j)
+        {
+          obj = objects[j];
+          table->setText(j, 1, QString::number(obj->getInitialNumberDbl()));
+          table->setText(j, 2, QString::number(obj->getNumberDbl()));
+        }
+    }
+  else
+    {
+      tableHeader->setLabel(1, "Initial Concentration");
+      tableHeader->setLabel(2, "Concentration");
+      btnSwitchCols->setText("&Show Numbers");
+      btn_flag = 0;
+
+      for (j = 0; j < jmax; ++j)
+        {
+          obj = objects[j];
+          table->setText(j, 1, QString::number(obj->getInitialConcentration()));
+          table->setText(j, 2, QString::number(obj->getConcentration()));
+        }
+    }
+}
 
 void MetabolitesWidget::slotBtnCancelClicked()
 {}

@@ -22,6 +22,8 @@
 #include "model/CMoiety.h"
 #include "listviews.h"
 
+#include "report/CKeyFactory.h"
+
 /*
  *  Constructs a MoietyWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -68,8 +70,9 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   MoietyWidget1Layout->addWidget(LineEdit3, 1, 1);
   QSpacerItem* spacer = new QSpacerItem(430, 171, QSizePolicy::Expanding, QSizePolicy::Minimum);
   MoietyWidget1Layout->addMultiCell(spacer, 3, 3, 0, 1);
-  connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(const QString &)));
 
+  // signals and slots connections
+  connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(const QString &)));
   connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadMoietiesNodes(CModel*)));
   connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
@@ -78,7 +81,7 @@ MoietyWidget1::~MoietyWidget1()
 {}
 
 /*This function is used to connect this class to the listviews
-    class to basically choose the right widget to display   */
+class to basically choose the right widget to display   */
 int MoietyWidget1::isName(QString setValue)
 {
   if (mModel == NULL)
@@ -110,9 +113,21 @@ void MoietyWidget1::loadMoieties(CModel *model)
     }
 }
 
+/* This function loads the compartments widget when its name is
+  clicked in the tree   */
+bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
+{
+  textBrowser->setText(moiety->getDescription().c_str());
+
+  LineEdit3->setText(moiety->getName().c_str());
+
+  LineEdit2->setText(QString::number(moiety->getNumber()));
+
+  return true; //TODO really check
+}
+
 /* This function loads the moiety widget when its name is
    clicked in the tree   */
-
 void MoietyWidget1::loadName(QString setValue)
 {
   if (mModel == NULL)
@@ -126,7 +141,7 @@ void MoietyWidget1::loadName(QString setValue)
   textBrowser->setText(moiety->getDescription().c_str());
   //ListBox1->insertItem(moiety->getDescription().c_str());
 
-  /*  CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
+  /*CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
   C_INT32 noOfMetabolitesRows = Metabs.size();
   CMetab *mtb;
   ListBox1->setFixedSize(100, 150);
@@ -134,12 +149,10 @@ void MoietyWidget1::loadName(QString setValue)
   ListBox1->clear();
 
   for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
-    {
-      mtb = Metabs[j];
-      ListBox1->insertItem(mtb->getName().c_str());
-    }
-
-  */
+  {
+     mtb = Metabs[j];
+     ListBox1->insertItem(mtb->getName().c_str());
+  }*/
 
   LineEdit3->setText(moiety->getName().c_str());
   Moiety1_Name = new QString(moiety->getName().c_str());
@@ -157,6 +170,42 @@ void MoietyWidget1::slotBtnOKClicked()
 {
   QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
   // emit signal_emitted(*Compartment1_Name);
+}
+
+bool MoietyWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      //TODO: check if it really is a compartment
+      if (CKeyFactory::get(objKey)) return loadFromMoiety((CMoiety*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      break;
+    case ListViews::STATE:
+      break;
+    case ListViews::COMPARTMENT:
+      break;
+    case ListViews::METABOLITE:
+      break;
+    default:
+      break;
+    }
+  return true;
+}
+
+bool MoietyWidget1::leave()
+{
+  //let the user confirm?
+  return true;
+}
+
+bool MoietyWidget1::enter(const std::string & key)
+{
+  objKey = key;
+  CMoiety* moiety = (CMoiety*)(CCopasiContainer*)CKeyFactory::get(objKey);
+
+  //TODO: check if it really is a Moiety
+  if (moiety) return loadFromMoiety(moiety);
+  else return false;
 }
 
 ///end of all the functions

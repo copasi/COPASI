@@ -43,6 +43,11 @@ class MoietyWidget1 : public CopasiWidget
     QLineEdit* LineEdit3;
     QTextBrowser* textBrowser;
 
+    //By G
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
   protected slots:
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
@@ -54,6 +59,9 @@ class MoietyWidget1 : public CopasiWidget
 
   protected:
     QGridLayout* MoietyWidget1Layout;
+
+    bool loadFromMoiety(const CMoiety *); //By
+    std::string objKey; //By G
   };
 
 #endif // MOIETYWIDGET1_H

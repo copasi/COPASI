@@ -11,9 +11,12 @@
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
 
+#include "report/CKeyFactory.h"//By G
+
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
+    mKey(CKeyFactory::add("Moiety", this)), //By G
     mNumber(0),
     mINumber(0),
     mEquation("Equation", this)
@@ -22,6 +25,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mKey(CKeyFactory::add("Moiety", this)), //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation, this)
@@ -62,6 +66,8 @@ C_FLOAT64 CMoiety::dependentRate()
 
   return Rate * mEquation[0]->getMetabolite().getCompartment()->getVolume();
 }
+
+std::string CMoiety::getKey() const {return mKey;} //By G
 
 const std::string & CMoiety::getName() const {return getObjectName();}
 

@@ -67,6 +67,26 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   //connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
+void MoietyWidget::fillTable() //By G
+{
+  const CMoiety *obj;
+  const CCopasiVectorN < CMoiety > & objects = dataModel->getModel()->getMoieties();
+  C_INT32 j, jmax = objects.size();
+  table->setNumRows(jmax);
+  mKeys.resize(jmax);
+
+  for (j = 0; j < jmax; ++j)
+    {
+      obj = objects[j];
+      table->setText(j, 0, obj->getName().c_str());
+      table->setText(j, 1, QString::number(obj->getNumber()));
+      table->setText(j, 2, obj->getDescription().c_str());
+
+      mKeys[j] = obj->getKey();
+    }
+  table->setText(jmax, 1, "");
+}
+
 void MoietyWidget::loadMoieties(CModel *model)
 {
   if (model != NULL)
@@ -211,4 +231,21 @@ void MoietyWidget::slotTableCurrentChanged(int row, int col, int m , const QPoin
 void MoietyWidget::showMessage(QString title, QString text)
 {
   QMessageBox::about (this, title, text);
+}
+
+bool MoietyWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      fillTable();
+      break;
+    case ListViews::STATE:
+    case ListViews::METABOLITE:
+    case ListViews::COMPARTMENT:
+
+    default:
+      break;
+    }
+  return true;
 }

@@ -37,6 +37,9 @@ class CMoiety : public CCopasiContainer
     /** @dia:route 7,3; h,45.5713,110.781,50.1417,116.762,52.1566 */
     CCopasiVector < CChemEqElement > mEquation;
 
+    //unique key for one obj
+    std::string mKey; //By G
+
     // Operations
   public:
     /**
@@ -141,6 +144,12 @@ class CMoiety : public CCopasiContainer
      * Returns the address of mNumber
      */
     void * getNumberAddr();
+
+    /**
+        *  Returns a string with the name of this compartment.
+        *  @return std::string key
+        */
+    std::string getKey() const; //By G
   };
 
 #endif // COPASI_CMoiety

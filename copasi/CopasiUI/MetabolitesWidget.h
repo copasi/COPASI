@@ -25,6 +25,7 @@ class MetabolitesWidget : public CopasiWidget
     MyTable * table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
+    QPushButton *btnSwitchCols; //By G
     bool binitialized;
     std::vector<std::string> mKeys;
 
@@ -44,9 +45,18 @@ class MetabolitesWidget : public CopasiWidget
     virtual void slotBtnCancelClicked();
     virtual void tableValueChanged(int, int);
 
+    virtual void slotBtnSwitchColsClicked(); //By G
+    virtual void MyCurrentChanged(int, int); //By G
+
   private:
     void fillTable();
     void createNewObject();
+
+    int m_SavedCol; //By G
+    int m_SavedRow; //By G
+    int prev_row; //By G
+    int prev_col; //By G
+    int btn_flag; //By G
   };
 
 #endif

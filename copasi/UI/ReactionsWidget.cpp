@@ -81,6 +81,14 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
           this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()),
           this, SLOT(slotBtnCancelClicked()));
+
+  connect(table, SIGNAL(currentChanged(int, int)),
+          this, SLOT(MyCurrentChanged(int, int)));
+
+  m_SavedRow = 0;
+  m_SavedCol = 0;
+  prev_row = 0;
+  prev_col = 0;
 }
 
 void ReactionsWidget::fillTable()
@@ -142,8 +150,87 @@ void ReactionsWidget::slotTableSelectionChanged()
   if (!table->hasFocus()) table->setFocus();
 }
 
+void ReactionsWidget::MyCurrentChanged(int row, int col)
+{
+  //  at this point you know old values !
+  prev_row = m_SavedRow;
+  prev_col = m_SavedCol;
+
+  m_SavedCol = col; // Save for a future use
+  m_SavedRow = row; // Save for a future use
+}
+
 void ReactionsWidget::slotBtnOKClicked()
-{}
+{
+  CReaction *obj;
+  CCopasiVectorN < CReaction > & objects = dataModel->getModel()->getReactions();
+  C_INT32 j, jmax = objects.size();
+
+  int *changed = new int[jmax];
+
+  table->setCurrentCell(jmax, 0);
+  for (j = 0; j < jmax; ++j)
+    {
+      obj = objects[j];
+      changed[j] = 0;
+
+      // this loads the reaction into a CReactionInterface object.
+      // the gui works on this object and later writes back the changes to the reaction
+      mRi.initFromReaction(*(dataModel->getModel()), obj->getKey());
+
+      //first check if new metabolites need to be created
+      bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
+
+      //name
+      QString name(table->text(j, 0));
+      if (name.latin1() != obj->getName())
+        {
+          mRi.setReactionName(name.latin1());
+          changed[j] = 1;
+        }
+
+      //equation
+      QString equation(table->text(j, 1));
+      std::string eq = equation.latin1();
+      if (eq != obj->getChemEq().getName())
+        {
+          //first check if the string is a valid equation
+          if (!CChemEqInterface::isValidEq(eq))
+            std::cout << "Not a valid equation!\n\n";
+          else
+            {
+              // tell the reaction interface
+              mRi.setChemEqString(eq);
+              changed[j] = 1;
+            }
+        }
+
+      //this writes all changes to the reaction
+      mRi.writeBackToReaction(*(dataModel->getModel()));
+
+      //this tells the gui what it needs to know.
+      if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
+
+      // update the widget
+      table->setText(j, 0, mRi.getReactionName().c_str());
+      table->setText(j, 1, mRi.getChemEqString().c_str());
+    }
+
+  for (j = 0; j < jmax; ++j)
+    {
+      if (changed[j] == 1)
+        {
+          obj = objects[j];
+          ListViews::notify(ListViews::REACTION, ListViews::CHANGE, obj->getKey());
+        }
+    }
+
+  table->setCurrentCell(prev_row, prev_col);
+
+  delete changed;
+
+  return; //TODO: really check
+}
 
 void ReactionsWidget::slotBtnCancelClicked()
 {}

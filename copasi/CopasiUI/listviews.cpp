@@ -526,7 +526,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:               //Time course
+      case 23:                //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -535,7 +535,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:              //Report
+      case 43:               //Report
         return tableDefinition;
         break;
       case 5:
@@ -632,7 +632,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
       }
 
   // enter new widget
-  if (newWidget) ((CopasiWidget*)newWidget)->enter(itemKey);
+  if (newWidget)
+    ((CopasiWidget*)newWidget)->enter(itemKey);
 
   // fall back
   if (!newWidget)
@@ -927,7 +928,7 @@ void ListViews::loadMoietiesToDataModel()
       obj = objects[j];
       f = new Folder(parent, obj->getName().c_str());
       f->setID(parent->getID());
-      //f->setObjectKey(obj->getKey()); //TODO: give moieties a key
+      f->setObjectKey(obj->getKey()); //TODO: give moieties a key
       dataModel->addData(parent, f);
     }
 }

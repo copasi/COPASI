@@ -77,6 +77,14 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
           SLOT(slotBtnOKClicked()));
   connect(table, SIGNAL(valueChanged(int , int)),
           this, SLOT(tableValueChanged(int, int)));
+
+  connect(table, SIGNAL(currentChanged(int, int)),
+          this, SLOT(MyCurrentChanged(int, int)));
+
+  m_SavedRow = 0;
+  m_SavedCol = 0;
+  prev_row = 0;
+  prev_col = 0;
 }
 
 void CompartmentsWidget::fillTable()
@@ -137,8 +145,63 @@ void CompartmentsWidget::slotTableSelectionChanged()
   if (!table->hasFocus()) table->setFocus();
 }
 
+void CompartmentsWidget::MyCurrentChanged(int row, int col)
+{
+  //  at this point you know old values !
+  prev_row = m_SavedRow;
+  prev_col = m_SavedCol;
+
+  m_SavedCol = col; // Save for a future use
+  m_SavedRow = row; // Save for a future use
+}
+
 void CompartmentsWidget::slotBtnOKClicked()
-{}
+{
+  CCompartment *obj;
+  CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
+  C_INT32 j, jmax = objects.size();
+
+  int *changed = new int[jmax];
+
+  table->setCurrentCell(jmax, 0);
+  for (j = 0; j < jmax; ++j)
+    {
+      obj = objects[j];
+      changed[j] = 0;
+
+      //name
+      QString name(table->text(j, 0));
+      if (name.latin1() != obj->getName())
+        {
+          obj->setName(name.latin1());
+          changed[j] = 1;
+        }
+
+      //volume
+      QString volumeSave = QString::number(obj->getVolume());
+      QString volume(table->text(j, 1));
+      if (volume != volumeSave)
+        {
+          double m1;
+          m1 = volume.toDouble();
+          obj->setInitialVolume(m1);
+          changed[j] = 1;
+        }
+    }
+
+  for (j = 0; j < jmax; ++j)
+    {
+      if (changed[j] == 1)
+        {
+          obj = objects[j];
+          ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, obj->getKey());
+        }
+    }
+  table->setCurrentCell(prev_row, prev_col);
+
+  delete changed;
+  return; //TODO: really check
+}
 
 void CompartmentsWidget::slotBtnCancelClicked()
 {}
