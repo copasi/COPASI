@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 21:58:34 $
+   $Date: 2004/10/04 13:47:32 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.18 2004/09/20 21:58:34 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.19 2004/10/04 13:47:32 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,7 +32,8 @@
 #include "CPlotSpecification.h"
 #include "report/CKeyFactory.h"
 #include "CopasiUI/ObjectBrowser.h"
-
+#include "model/CMetabNameInterface.h"
+#include "CopasiUI/DataModelGUI.h" 
 //temporary
 #include "mathematics.h"
 
@@ -265,12 +266,12 @@ void PlotWidget1::addCurveGroupBox()
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
-      {addCurveTab("***", objects1[0], objects2[i]);}
+      {addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectUniqueName() , objects1[0], objects2[i]);}
     }
   else if (objects2.size() == 1)
     {
       for (i = 0; i < objects1.size(); ++i)
-      {addCurveTab("***", objects1[i], objects2[0]);}
+      {addCurveTab(CCopasiContainer::ObjectFromName(objects1[i])->getObjectUniqueName(), objects1[i], objects2[0]);}
     }
   else
     {
@@ -281,7 +282,11 @@ void PlotWidget1::addCurveGroupBox()
         imax = objects1.size();
 
       for (i = 0; i < imax; ++i)
-      {addCurveTab("***", objects1[i], objects2[i]);}
+        {
+          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectUniqueName()
+                      + " / " + CCopasiContainer::ObjectFromName(objects1[i])->getObjectUniqueName() ,
+                      objects1[i], objects2[i]);
+        }
     }
 
   //pdelete(pBrowser1);
