@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/03/07 15:00:19 $
+   $Author: ssahle $ 
+   $Date: 2005/03/17 10:22:48 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -29,7 +29,7 @@
 
 std::vector<const CCopasiObject*> MoietyWidget::getObjects() const
   {
-    const CCopasiVectorN<CMoiety>& tmp = CCopasiDataModel::Global->getModel()->getMoieties();
+    const CCopasiVector<CMoiety>& tmp = CCopasiDataModel::Global->getModel()->getMoieties();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
