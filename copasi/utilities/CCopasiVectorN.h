@@ -11,7 +11,7 @@
 
 
 template < class CType >
-class CCopasiVectorN : protected vector < CType * >
+class CCopasiVectorNBase : protected vector < CType * >
 {
  public:
   typedef CType* value_type;
@@ -29,12 +29,12 @@ class CCopasiVectorN : protected vector < CType * >
   /**
    *  Default constructor
    */
-  CCopasiVectorN() : vector < CType * > (){} 
+  CCopasiVectorNBase() : vector < CType * > (){} 
 
   /**
    *  Copy constructor
    */
-  CCopasiVectorN(const CCopasiVectorN < CType > & src) :
+  CCopasiVectorNBase(const CCopasiVectorNBase < CType > & src) :
     vector < CType * > (src)
     {
       unsigned C_INT32 i, imax = size();
@@ -48,7 +48,7 @@ class CCopasiVectorN : protected vector < CType * >
   /**
    *  Destructor
    */
-  virtual ~CCopasiVectorN() {cleanup();}
+  virtual ~CCopasiVectorNBase() {cleanup();}
 
   /**
    *  Cleanup
@@ -64,6 +64,101 @@ class CCopasiVectorN : protected vector < CType * >
       clear();
     }
   
+  /**
+   *
+   */
+  virtual void add(const CType & src)
+    {
+      // This is not very efficient !!!
+      // It results in a lot of resizing of the vector !!!
+      CType * Element = new CType(src);
+      
+      push_back(Element);
+    }
+
+  /**
+   *
+   */
+  virtual void add(CType * src)
+    {
+      // This is not very efficient !!!
+      // It results in a lot of resizing of the vector !!!
+      push_back(src);
+    }
+
+  /**
+   *  Removes the index-th element from the vector
+   *  @param "const unsigned C_INT32 &" indecx
+   */
+  virtual void remove(const unsigned C_INT32 & index)
+    {
+      iterator Target = begin() + index;
+      assert(index < size());
+
+      (*Target)->cleanup();
+      delete *Target;
+      erase(Target, Target + 1);
+    }
+
+  /**
+   *
+   */
+  CType * & operator[](unsigned C_INT32 index) 
+    {
+      assert(index < size());
+      return *(begin() + index);
+    }   
+
+  /**
+   *
+   */
+  const CType * & operator[](unsigned C_INT32 index) const
+    {
+      assert(index < size());
+      return *(begin() + index);
+    }   
+
+  /**
+   *
+   */
+  virtual unsigned C_INT32 size() const 
+    {
+      return vector < CType * >::size();
+    }
+};
+
+template < class CType >
+class CCopasiVectorN : public CCopasiVectorNBase < CType >
+{
+ public:
+  typedef CType* value_type;
+  typedef value_type* pointer;
+  typedef const value_type* const_pointer;
+  typedef value_type* iterator;
+  typedef const value_type* const_iterator;
+  typedef value_type& reference;
+  typedef const value_type& const_reference;
+  typedef size_t size_type;
+  typedef ptrdiff_t difference_type;
+ 
+  // Operations
+ public:
+  /**
+   *  Default constructor
+   */
+  CCopasiVectorN() : CCopasiVectorNBase < CType > (){} 
+
+  /**
+   *  Copy constructor
+   */
+  CCopasiVectorN(const CCopasiVectorN < CType > & src) :
+      CCopasiVectorNBase < CType > (src) {}
+
+  /**
+   *  Destructor
+   */
+  virtual ~CCopasiVectorN() {cleanup();}
+
   /**
    *  Loads an object with data coming from a CReadConfig object.
    *  (CReadConfig object reads an input stream)
@@ -114,6 +209,17 @@ class CCopasiVectorN : protected vector < CType * >
     }
 
   /**
+   *
+   */
+  virtual void add(CType * src)
+    {
+      if ( ! isInsertAllowed(*src) ) fatalError();
+      // This is not very efficient !!!
+      // It results in a lot of resizing of the vector !!!
+      push_back(src);
+    }
+
+  /**
    *  Removes the index-th element from the vector
    *  @param "const unsigned C_INT32 &" indecx
    */
@@ -138,20 +244,18 @@ class CCopasiVectorN : protected vector < CType * >
       return remove(Index);
     }
 
-  CType * operator[](const string &name) 
-    {
-      C_INT32 Index = getIndex(name);
-      if ( Index == -1 ) fatalError();
-            
-      return *(begin() + Index);
-    }   
-
+  /**
+   *
+   */
   CType * & operator[](unsigned C_INT32 index) 
     {
       assert(index < size());
       return *(begin() + index);
     }   
 
+  /**
+   *
+   */
   const CType * & operator[](unsigned C_INT32 index) const
     {
       assert(index < size());
@@ -161,10 +265,13 @@ class CCopasiVectorN : protected vector < CType * >
   /**
    *
    */
-  unsigned C_INT32 size() const 
+  CType * operator[](const string &name) 
     {
-      return vector < CType * >::size();
-    }
+      C_INT32 Index = getIndex(name);
+      if ( Index == -1 ) fatalError();
+            
+      return *(begin() + Index);
+    }   
 
  private:
   /**
@@ -176,7 +283,7 @@ class CCopasiVectorN : protected vector < CType * >
   /**
    *
    */
-  unsigned C_INT32 getIndex(const string &name) const
+  virtual unsigned C_INT32 getIndex(const string &name) const
     {
       unsigned C_INT32 i,imax = size();
       const_iterator Target = begin();

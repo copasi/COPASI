@@ -162,6 +162,7 @@ class CCopasiVector
     }
 };
 
+#ifdef XXXX
 template < class CType > 
 class CCopasiVectorP
 {
@@ -324,4 +325,5 @@ class CCopasiVectorP
       return -1;
     }
 };
+#endif // XXXX
 #endif // COPASI_CCopasiVector

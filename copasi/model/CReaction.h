@@ -12,8 +12,9 @@
 #include <vector>
 #include <utility>
 
-#include "function/CKinFunction.h"
-#include "function/CFunctionDB.h"
+
+#include "utilities/utilities.h"
+#include "function/function.h"
 #include "CMetab.h"
 #include "CChemEq.h"
 #include "CChemEqElement.h"

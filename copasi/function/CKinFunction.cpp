@@ -26,7 +26,11 @@ CKinFunction::CKinFunction(const string & name,
   setDescription(description);
 }
 
-void CKinFunction::initialize() {mNodes = new CKinNodes;}
+void CKinFunction::initialize() 
+{
+  cleanup();
+  mNodes = new CKinNodes;
+}
 
 CKinFunction::~CKinFunction() {}
 

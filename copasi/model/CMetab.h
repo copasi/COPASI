@@ -10,9 +10,7 @@
 #include <string>
 
 #include "copasi.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
-#include "utilities/CCopasiVector.h"
+#include "utilities/utilities.h"
 
 class CCompartment;
 

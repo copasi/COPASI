@@ -16,6 +16,7 @@
 #include "function/function.h"
 #include "trajectory/trajectory.h"
 #include "steadystate/steadystate.h"
+#include "utilities/CGlobals.h"
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
 #include "tnt/cmat.h"
@@ -606,14 +607,14 @@ C_INT32 TestKinFunction()
 }
 
 vector < CMetab * > 
-InitMetabolites(CCopasiVector < CCompartment > & compartments)
+InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
 {
   vector < CMetab * > Metabolites;
 
   for (unsigned C_INT32 i = 0; i < compartments.size(); i++)
     for (unsigned C_INT32 j = 0;
-         j < compartments[i].metabolites().size(); j++)
-      Metabolites.push_back(compartments[i].metabolites()[j]);
+         j < compartments[i]->metabolites().size(); j++)
+      Metabolites.push_back(compartments[i]->metabolites()[j]);
     
   return Metabolites;
 }

@@ -8,7 +8,6 @@
 #include <vector>
 #include <string>
 
-#include "utilities/CCopasiVectorN.h"
 #include "CReaction.h"
 #include "CMoiety.h"
 #include "tnt/tnt.h"

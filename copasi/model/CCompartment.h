@@ -11,9 +11,7 @@
 
 #include <string>
 
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
-#include "utilities/CCopasiVectorN.h"
+#include "utilities/utilities.h"
 #include "CMetab.h"
 
 class CCompartment {

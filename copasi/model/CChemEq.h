@@ -36,17 +36,17 @@ class CChemEq
   /**
    *  A vector of substrates and their multiplicity in the chemical reaction
    */
-  vector < CChemEqElement * > mSubstrates;
+  CCopasiVectorNBase < CChemEqElement > mSubstrates;
   
   /**
    *  A vector of products and their multiplicity in the chemical reaction
    */
-  vector < CChemEqElement * > mProducts;
+  CCopasiVectorNBase < CChemEqElement > mProducts;
 
   /**
    *  A vector of metabolites and their total balance in the chemical reaction
    */
-  vector < CChemEqElement * > mBalances;
+  CCopasiVectorNBase < CChemEqElement > mBalances;
 
   // Operations
  public:
@@ -57,6 +57,7 @@ class CChemEq
   
   /**
    *  Copy constructor
+   *  @param "const CChemEq &" src
    */
   CChemEq(const CChemEq & src);
   
@@ -78,32 +79,37 @@ class CChemEq
   
   /**
    *  Retrieves the chemical equation with multipliers.
+   *  @return "const string &" ChemicalEquation
    */
   const string & getChemicalEquation() const;
   
   /**
    *  Retrieves the converted form of chemical equation.
    *  This does not contain any multipliers.
+   *  @return "const string &" ChemicalEquationConverted
    */
   const string & getChemicalEquationConverted() const;
 
   /**
    *  Retrieves the vector of substrates and their multiplicity 
    *  in the chemical reaction.
+   *  @return "vector < CChemEqElement * > &" substrates
    */
-  const vector < CChemEqElement * > & getSubstrates();
+  const CCopasiVectorNBase < CChemEqElement > & getSubstrates();
 
   /**
    *  Retrieves the vector of products and their multiplicity 
    *  in the chemical reaction.
+   *  @return "vector < CChemEqElement * > &" products
    */
-  const vector < CChemEqElement * > & getProducts();
+  const CCopasiVectorNBase < CChemEqElement > & getProducts();
 
   /**
    *  Retrieves the vector of metabolites and their total balance 
    *  in the chemical reaction.
+   *  @return "vector < CChemEqElement * > &" balances
    */
-  const vector < CChemEqElement * > & getBalances();
+  const CCopasiVectorNBase < CChemEqElement > & getBalances();
 
  private:
   /**
@@ -121,34 +127,22 @@ class CChemEq
   /**
    *  Adds an element to the vector given by structure. The element is
    *  either SUBSTRATE or PRODUCT.
-   *  @param "vector < CChemEqElement * > &" structure
+   *  @param "CCopasiVectorNBase < CChemEqElement > &" structure
    *  @param "const CChemEqElement &" element
    *  @param "CChemEq::MetaboliteRole" role (
    */
-  void addElement(vector < CChemEqElement * > & structure,
+  void addElement(CCopasiVectorNBase < CChemEqElement > & structure,
 		  const CChemEqElement & element,
 		  CChemEq::MetaboliteRole role = CChemEq::PRODUCT);
 
   /**
-   *  This function creates the vector < CChemEqElement * > mSubstrates
-   */
-  void setSubstrates(const string & eqn);
-  
-  /**
-   *  This function creates the vector < CChemEqElement * > mProducts
-   */
-  void setProducts(const string & eqn);
-
-  /**
-   *  This function creates the vector < CChemEqElement * > mBalances
-   */
-  void setBalances(const string & left, const string & right);
-
-  /**
    *  This is the called by setSubstrates, setProducts, and setBalances.
    *  It realy does the work.
+   *  @param "CCopasiVectorNBase < CChemEqElement > &" elements
+   *  @param "const string &" reaction
+   *  @param "CChemEq::MetaboliteRole" role (default: CChemEq::PRODUCT
    */
-  void setChemEqElements(vector < CChemEqElement * > & elements,
+  void setChemEqElements(CCopasiVectorNBase < CChemEqElement > & elements,
 			 const string & reaction,
 			 CChemEq::MetaboliteRole role = 
 			 CChemEq::PRODUCT);
@@ -163,12 +157,15 @@ class CChemEq
 			     vector < CMetab * > & metabolites);
 
   /**
-   *  This function releases the vector < CChemEqElement * > mSubstrates
+   *  This function frees a vector of CChemEqElement
+   *  @param "vector < CChemEqElement * > &" elements
    */
   void cleanupChemEqElements(vector < CChemEqElement * > & elements);
   
   /**
    *  This function splits the chemical equation into a left and a right
+   *  @param "string &" left (substrate side)
+   *  @param "string &" right (product side)
    */
   void splitChemEq(string & left, string & right) const;
 

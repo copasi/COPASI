@@ -22,9 +22,9 @@ CChemEq::~CChemEq(){cleanup();}
 
 void CChemEq::cleanup()
 {
-  cleanupChemEqElements(mSubstrates);
-  cleanupChemEqElements(mProducts);
-  cleanupChemEqElements(mBalances);
+  mSubstrates.cleanup();
+  mProducts.cleanup();
+  mBalances.cleanup();
 }
 
 void CChemEq::setChemicalEquation(const string & chemicalEquation)
@@ -52,13 +52,13 @@ const string & CChemEq::getChemicalEquation() const
 const string & CChemEq::getChemicalEquationConverted() const
 {return mChemicalEquationConverted;}
 
-const vector < CChemEqElement * > & CChemEq::getSubstrates()
+const CCopasiVectorNBase < CChemEqElement > & CChemEq::getSubstrates()
 {return mSubstrates;}
 
-const vector < CChemEqElement * > & CChemEq::getProducts()
+const CCopasiVectorNBase < CChemEqElement > & CChemEq::getProducts()
 {return mProducts;}
 
-const vector < CChemEqElement * > & CChemEq::getBalances()
+const CCopasiVectorNBase < CChemEqElement > & CChemEq::getBalances()
 {return mBalances;}
 
 CChemEqElement CChemEq::extractElement(const string & input, 
@@ -93,7 +93,7 @@ CChemEqElement CChemEq::extractElement(const string & input,
   return Element;
 }
 
-void CChemEq::addElement(vector < CChemEqElement * > & structure,
+void CChemEq::addElement(CCopasiVectorNBase < CChemEqElement > & structure,
 			 const CChemEqElement & element,
 			 CChemEq::MetaboliteRole role)
 {
@@ -108,7 +108,7 @@ void CChemEq::addElement(vector < CChemEqElement * > & structure,
       CChemEqElement * Element = new CChemEqElement(element);
       if (role == CChemEq::SUBSTRATE) 
 	Element->setMultiplicity(- Element->getMultiplicity());
-      structure.push_back(Element);
+      structure.add(Element);
     }
   else if (role == CChemEq::SUBSTRATE) 
     structure[i]->addToMultiplicity(- element.getMultiplicity());
@@ -116,25 +116,8 @@ void CChemEq::addElement(vector < CChemEqElement * > & structure,
     structure[i]->addToMultiplicity(element.getMultiplicity());
 }
 
-#ifdef XXXX
-void CChemEq::setSubstrates(const string & left)
-{
-  setChemEqElements(mSubstrates, left, CChemEq::SUBSTRATE);
-}
-  
-void CChemEq::setProducts(const string & right)
-{
-  setChemEqElements(mProducts, right);
-}
-
-void CChemEq::setBalances(const string & left, const string & right)
-{
-  setChemEqElements(mBalances, left, CChemEq::SUBSTRATE);
-  setChemEqElements(mBalances, right);
-}
-#endif // XXXX
-
-void CChemEq::setChemEqElements(vector < CChemEqElement * > & elements,
+void CChemEq::setChemEqElements(CCopasiVectorNBase < CChemEqElement > 
+                                & elements,
 				const string & reaction,
 				CChemEq::MetaboliteRole role)
 {
@@ -144,12 +127,14 @@ void CChemEq::setChemEqElements(vector < CChemEqElement * > & elements,
     addElement(elements, extractElement(reaction, pos), role);
 }
 
+#ifdef XXXX
 void CChemEq::cleanupChemEqElements(vector < CChemEqElement * > & elements)
 {
   for (unsigned C_INT32 i=0; i<elements.size(); i++)
     free(elements[i]);
   elements.clear();
 }
+#endif // XXXX
 
 void CChemEq::splitChemEq(string & left, string & right) const
 {

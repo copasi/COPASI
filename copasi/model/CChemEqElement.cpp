@@ -8,6 +8,7 @@
 #include "copasi.h"
 #include "CChemEqElement.h"
 #include "utilities/utilities.h"
+#include "CCompartment.h"
 
 CChemEqElement::CChemEqElement() {mpMetabolite = NULL;}
 

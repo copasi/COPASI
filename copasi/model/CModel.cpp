@@ -17,6 +17,7 @@
 #include "tnt/luX.h"
 #include "tnt/triang.h"
 #include "tnt/transv.h"
+#include "utilities/CGlobals.h"
 
 CModel::CModel()
 {
@@ -182,7 +183,7 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
 
 void CModel::buildStoi()
 {
-  vector < CChemEqElement * > Structure;
+  CCopasiVectorNBase < CChemEqElement > Structure;
   unsigned C_INT32 i, j, k, imax;
   string Name;
   

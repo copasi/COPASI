@@ -6,4 +6,3 @@
 #include "CKinFunction.h"
 #include "CMassAction.h"
 #include "CNodeK.h"
-#include "lexkk.h"

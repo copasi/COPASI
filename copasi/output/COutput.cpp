@@ -14,6 +14,7 @@
 #include "COutput.h"
 #include "utilities/utilities.h"
 #include "model/model.h"
+#include "utilities/CGlobals.h"
 
 /**
  *  Default constructor. 
