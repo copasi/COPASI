@@ -1,3 +1,21 @@
+######################################################################
+# $Revision: 1.3 $ $Author: shoops $ $Date: 2003/05/19 12:45:53 $  
+######################################################################
+
+# In the case the OS is not specified we make a guess.
+isEmpty(OS) {
+  win32: {
+    OS = win32
+  } else {
+    OS = $$system(uname)
+  }
+}
+
+# Common configuration settings
+CONFIG += exceptions
+CONFIG += rtti
+CONFIG += thread
+
 # The character # (hex 23) can not be escaped we therefore create a variable containing it
 HASH = $$system(echo "\\043")
 contains(HASH, \\043){
@@ -12,12 +30,7 @@ myLex = \
 
 contains(OS, Darwin) {
   INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
-}
-
-win32{
-  OS = win32
-} else {
-  OS = $$system(uname)
+  LIBS += -l/System/Library/Frameworks/vecLib.framework/vecLib
 }
 
 contains(OS, win32) {
@@ -52,7 +65,7 @@ contains(OS, SunOS) {
     DEFINES += USE_CLAPACK
     INCLUDEPATH += $${CLAPACK_PATH}/include
     LIBS += -llapack -lblas -lF77 -lfl
-    LIBS +=  $${CLAPACK_PATH}/lib
+    LIBS +=  -L$${CLAPACK_PATH}/lib
   } else {
     error( "CLAPACK_PATH must be specified )
   }

@@ -1,10 +1,11 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: shoops $ $Date: 2003/05/19 00:39:55 $  
+# $Revision: 1.2 $ $Author: shoops $ $Date: 2003/05/19 12:45:54 $  
 ######################################################################
 
 LIB = xml
 include(../lib.pri)
 
+TARGET = copasiXML
 
 # Input
 HEADERS += CCopasiXML.h \
