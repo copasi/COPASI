@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/24 08:21:10 $
+   $Author: shoops $ 
+   $Date: 2004/05/24 20:21:54 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -64,10 +64,10 @@ void MoietyWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT3
 {}
 
 QString MoietyWidget::defaultObjectName() const
-  {}
+  {return "";}
 
 CCopasiObject* MoietyWidget::createNewObject(const std::string & name)
-{}
+{return NULL;}
 
 void MoietyWidget::deleteObjects(const std::vector<std::string> & keys)
 {}
