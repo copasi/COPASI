@@ -78,6 +78,10 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   ExportFileButton->setText(trUtf8("Export To File"));
   Layout2->addWidget(ExportFileButton);
 
+  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
+  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
+  Layout2->addWidget(reportDefinitionButton);
+
   SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 7, 7, 0, 2);
 
   line6 = new QFrame(this, "line6");
@@ -155,8 +159,9 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   setTabOrder(taskJacobian, taskStability);
   setTabOrder(taskStability, parameterTable);
   setTabOrder(parameterTable, bRunButton);
-  //  setTabOrder(bRunButton, commitChange);
   setTabOrder(bRunButton, cancelChange);
+  setTabOrder(cancelChange, ExportFileButton);
+  setTabOrder(ExportFileButton, reportDefinitionButton);
 
   //  mSteadyStateTask = NULL;
 }

@@ -59,9 +59,9 @@ class SteadyStateWidget : public CopasiWidget
     QLineEdit* taskName;
     QTable* parameterTable;
     QPushButton* bRunButton;
-    //    QPushButton* commitChange;
     QPushButton* cancelChange;
     QPushButton* ExportFileButton;
+    QPushButton* reportDefinitionButton;
 
   signals:
     virtual void runFinished(CModel*);
