@@ -332,9 +332,10 @@ class CReaction : public CCopasiContainer
     CCallParameters mCallParameters;
 
     /**
-     *  A pointer to the  call parameters of the rate function of the reaction
+     * A list of pointers to the call parameter objects of the rate function
+     * of the reaction
      */
-    CCallParameters mCallParameterNames;
+    CCallParameters mCallParameterObjects;
 
     /**
      *
@@ -434,7 +435,8 @@ class CReaction : public CCopasiContainer
      *  Retrieves the vector of parameters
      *  @return "CCopasiVector < CId2Param > &"
      */
-    CCopasiVector < CId2Param > &getId2Parameters();
+    const CCopasiVector < CId2Param > & getId2Parameters() const;
+    CCopasiVector < CId2Param > & getId2Parameters();
 
     /**
      *  Retrieves the name of the reaction
@@ -645,6 +647,10 @@ class CReaction : public CCopasiContainer
      */
     void compileChemEq(const CCopasiVectorN < CCompartment > & compartments);
 
+    /**
+     * Retrieve the list of CallParameterObjects()
+     */
+    const CCallParameters & getCallParameterObjects() const;
   private:
     /**
      *
@@ -680,23 +686,23 @@ class CReaction : public CCopasiContainer
     /**
      *
      */
-    void cleanupCallParameterNames();
+    void cleanupCallParameterObjects();
 
     /**
      *  gets mParameterDescription from mpFunction and then creates the vectors inside
-     *  mCallParameterNames (If needed)
+     *  mCallParameterObjects (If needed)
      */
-    void initCallParameterNames();
+    void initCallParameterObjects();
 
     /**
      *
      */
-    void setCallParameterNames();
+    void setCallParameterObjects();
 
     /**
      *  Checks if all the Pointers in mCallParameters are !=NULL
      */
-    void checkCallParameterNames() const;
+    void checkCallParameterObjects() const;
 
     /**
      *
