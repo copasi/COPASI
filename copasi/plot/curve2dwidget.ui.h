@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/28 17:28:29 $
+   $Author: shoops $ 
+   $Date: 2005/03/01 18:13:39 $
    End CVS Header */
 
 /****************************************************************************
@@ -68,8 +68,8 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
 
     //channels
     curve->getChannels().resize(0);
-    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : std::string("")));
-    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : std::string("")));
+    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
+    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("")));
 
     curve->setValue("Line type", (unsigned C_INT32)comboBoxType->currentItem());
 
