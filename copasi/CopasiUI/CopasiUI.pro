@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.74 $ $Author: ssahle $ $Date: 2005/01/25 12:03:58 $  
+# $Revision: 1.75 $ $Author: shoops $ $Date: 2005/02/08 23:08:02 $  
 ######################################################################
 
 include(../common.pri)
@@ -39,27 +39,27 @@ contains(BUILD_OS, WIN32) {
     distribution.extra = bash ../../admin/mkbuild.sh $${BUILD_OS}
   }
 } else {
-  # The order of objects is important 
-  OBJECTS +=  ../lib/libcommandline.a \
-              ../lib/libelementaryFluxModes.a \
-              ../lib/libcopasiXML.a \
-              ../lib/libmathmodel.a \
-              ../lib/libmodel.a \
-              ../lib/libfunction.a \
-              ../lib/libreport.a \
-              ../lib/liboptimization.a \
-              ../lib/libsbmlimport.a \
-              ../lib/libscan.a \
-              ../lib/libsteadystate.a \
-              ../lib/libtrajectory.a \
-              ../lib/librandomGenerator.a \
-              ../lib/libplot.a \
-              ../lib/libutilities.a \
-              ../lib/libreport.a \
-              ../lib/libfunction.a \
-              ../lib/libmodel.a \
-              ../lib/libwizard.a \
-              ../lib/libmml.a
+  LIBS = -L../lib \
+         -Wl,--start-group \
+         -lcommandline \
+         -lcopasiXML \
+         -lelementaryFluxModes \
+         -lfunction \
+         -lmathmodel \
+         -lmml \
+         -lmodel \
+         -loptimization \
+         -lplot \
+         -lrandomGenerator \
+         -lreport \
+         -lsbmlimport \
+         -lscan \
+         -lsteadystate \
+         -ltrajectory \
+         -lutilities \
+         -lwizard \
+         -Wl,--end-group \
+         $${LIBS}
 
   LIBS += -lqwt \
           -lsbml 
@@ -93,6 +93,32 @@ contains(BUILD_OS, Linux) {
           -Wl,-lXft \
           -Wl,-lfontconfig \
           -Wl,-lpthread
+
+  release {
+    dynamic_LFLAGS = $${QMAKE_LFLAGS}
+    dynamic_LFLAGS -= -static
+
+    dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic 
+    dynamic_LIBS -= -Wl,-lqt-mt
+    dynamic_LIBS -= -Wl,-lXcursor
+    dynamic_LIBS -= -Wl,-lXft
+    dynamic_LIBS -= -Wl,-lfontconfig
+    dynamic_LIBS -= -Wl,-lpthread
+ 
+    dynamic.target   = CopasiUI-dynamic
+    dynamic.depends  = CopasiUI
+    dynamic.commands = \
+      $(LINK) $${dynamic_LFLAGS} -L$(QTDIR)/lib -L/usr/X11R6/lib \
+              -o $@ $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${dynamic_LIBS} \
+              -Wl,--start-group -Wl,-Bstatic \
+              -lqt-mt -lXrender -lXrandr -lXcursor -lXinerama -lXft \ 
+              -lfreetype -lfontconfig -lSM -lICE -lXext -lX11 -lm \
+              -Wl,--end-group -Wl,-Bdynamic \
+              -ldl -lpthread && \
+              strip $@
+
+    QMAKE_EXTRA_UNIX_TARGETS += dynamic
+  }
 }
 
 release {
