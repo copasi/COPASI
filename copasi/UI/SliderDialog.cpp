@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 14:48:39 $
+   $Date: 2004/11/05 16:18:39 $
    End CVS Header */
 
 #include <iostream>
@@ -305,7 +305,9 @@ void SliderDialog::runTask()
 {
   if (this->taskMap.find(this->currentFolderId) != this->taskMap.end())
     {
+      this->setEnabled(false);
       ((this)->*(this->taskMap[this->currentFolderId]))();
+      this->setEnabled(true);
     }
 }
 
