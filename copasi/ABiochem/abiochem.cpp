@@ -187,7 +187,7 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
   model.addCompartment(compname, 1.0);
   // create one metabolite for each gene
   for (i = 0; i < n; i++)
-    model.addMetabolite(compname, gene[i]->getName(), 1.0, 1);
+    model.addMetabolite(gene[i]->getName(), compname, 1.0, 1);
   model.initializeMetabolites();
   // create two reactions for each gene
   for (i = 0; i < n; i++)
