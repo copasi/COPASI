@@ -3,7 +3,7 @@ all: 	$(PRG)
 OBJS	= $(OBJDIR)/CGlobals.o \
 	  $(OBJDIR)/CCopasiException.o \
 	  $(OBJDIR)/CCopasiMessage.o \
-          $(OBJDIR)/CVersion.o
+          $(OBJDIR)/CVersion.o \
 	  $(OBJDIR)/CReadConfig.o \
 	  $(OBJDIR)/CWriteConfig.o \
 	  $(OBJDIR)/CBaseIdentifier.o \
@@ -18,6 +18,7 @@ OBJS	= $(OBJDIR)/CGlobals.o \
 	  $(OBJDIR)/CStep.o \
 	  $(OBJDIR)/utilities.o \
 	  $(OBJDIR)/main.o
+
 
 
 
