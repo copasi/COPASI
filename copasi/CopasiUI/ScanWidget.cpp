@@ -92,6 +92,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   eTrajectory = new QToolButton(this, "eTrajectory");
   eTrajectory->setText(trUtf8("Edit Trajectory"));
+
   Layout4_2->addWidget(eTrajectory);
   Layout4->addLayout(Layout4_2);
 
@@ -244,9 +245,14 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
   pTrajectoryWidget->loadTrajectoryTask(new CTrajectoryTask());
 
-  eSteadyState->setEnabled(steadyState->isChecked());
-  eTrajectory->setEnabled(trajectory->isChecked());
+  sExecutable->setEnabled(false);
   scanButton->setEnabled(false);
+
+  steadyState->setEnabled(false);
+  eSteadyState->setEnabled(false);
+
+  trajectory->setEnabled(false);
+  eTrajectory->setEnabled(false);
 }
 
 void ScanWidget::SteadyStateEditing()
@@ -484,10 +490,17 @@ void ScanWidget::loadScan(CModel *model)
       scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
       scanProblem->setTrajectoryTask(pTrajectoryWidget->mTrajectoryTask);
 
+      sExecutable->setEnabled(true);
       if (scanTask->isRequested() == true)
-        sExecutable->setChecked(true);
+        {
+          sExecutable->setChecked(true);
+          scanButton->setEnabled(true);
+        }
       else
-        sExecutable->setChecked(false);
+        {
+          sExecutable->setChecked(false);
+          scanButton->setEnabled(false);
+        }
 
       if (scanProblem->processTrajectory() == true)
         trajectory->setChecked(true);
