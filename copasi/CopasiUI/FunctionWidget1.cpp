@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/27 17:43:03 $
+   $Author: chlee $ 
+   $Date: 2003/10/27 17:48:08 $
    End CVS Header */
 
 /**********************************************************************
@@ -198,6 +198,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
   connect(textBrowser, SIGNAL(edited()), this, SLOT(slotFcnDescriptionChanged()));
+  // connect(textBrowser, SIGNAL(edited()), this, SLOT(slotFcnDescriptionChanged()));
 }
 
 FunctionWidget1::~FunctionWidget1() {pdelete(pFunction);}
@@ -401,10 +402,10 @@ void FunctionWidget1::updateParameters()
                                    "Retry",
                                    "Quit", 0, 0, 1))
         {
-        case 0:        // The user clicked the Retry again button or pressed Enter
+        case 0:         // The user clicked the Retry again button or pressed Enter
           // try again
           break;
-        case 1:        // The user clicked the Quit or pressed Escape
+        case 1:         // The user clicked the Quit or pressed Escape
           // exit
           break;
         }
@@ -518,29 +519,30 @@ bool FunctionWidget1::saveToFunction()
       if (ParametersChanged)
         {
           changed = true;
-          CUsageRange Application;
-          functUsage.cleanup();
+          updateApplication();
+          /*CUsageRange Application;
+                functUsage.cleanup();
 
-          Application.setUsage("SUBSTRATES");
-          if (functParam.getUsageRanges().getIndex("SUBSTRATE") == C_INVALID_INDEX)
-            Application.setRange(0, CRange::Infinity);
-          else
-            Application.setRange(functParam.getUsageRanges()["SUBSTRATE"]->getLow(),
-                                 functParam.getUsageRanges()["SUBSTRATE"]->getHigh());
-          functUsage.add(Application);
+                Application.setUsage("SUBSTRATES");
+                if (functParam.getUsageRanges().getIndex("SUBSTRATE") == C_INVALID_INDEX)
+                  Application.setRange(0, CRange::Infinity);
+                else
+                  Application.setRange(functParam.getUsageRanges()["SUBSTRATE"]->getLow(),
+                                       functParam.getUsageRanges()["SUBSTRATE"]->getHigh());
+                functUsage.add(Application);
 
-          Application.setUsage("PRODUCTS");
-          if (functParam.getUsageRanges().getIndex("PRODUCT") == C_INVALID_INDEX)
-            Application.setRange(0, CRange::Infinity);
-          else
-            Application.setRange(functParam.getUsageRanges()["PRODUCT"]->getLow(),
-                                 functParam.getUsageRanges()["PRODUCT"]->getHigh());
-          functUsage.add(Application);
+                Application.setUsage("PRODUCTS");
+                if (functParam.getUsageRanges().getIndex("PRODUCT") == C_INVALID_INDEX)
+                  Application.setRange(0, CRange::Infinity);
+                else
+                  Application.setRange(functParam.getUsageRanges()["PRODUCT"]->getLow(),
+                                       functParam.getUsageRanges()["PRODUCT"]->getHigh());
+                functUsage.add(Application);*/
         }
       else
         {
           /***** for Table 2: Applications table *****/
-          /*C_INT32 noOfApplns =
+          C_INT32 noOfApplns =
             std::min(functUsage.size(), (unsigned C_INT32) Table2->numRows());
 
           //  Table2->setNumRows(noOfApplns);
@@ -564,14 +566,13 @@ bool FunctionWidget1::saveToFunction()
                   int_High = app_High.toInt();
                 }
 
-              /***** there is no setName  here ????? ****** /
+              /***** there is no setName  here ????? ******/
               functUsage[j]->setUsage(app_Desc.latin1());
 
               functUsage[j]->setLow(int_Low);
 
               functUsage[j]->setHigh(int_High);
-            }*/
-          updateApplication();
+            }
         }
     }
 
@@ -586,42 +587,33 @@ bool FunctionWidget1::saveToFunction()
 void FunctionWidget1::updateApplication()
 {
   CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  //CFunctionParameters &functParam = func ->getParameters();
+  CFunctionParameters &functParam = pFunction->getParameters();
 
-  C_INT32 j;
+  //CCopasiVectorNS < CUsageRange > & functUsage = pFunction ->getUsageDescriptions();
+  CCopasiVectorNS < CUsageRange > & functUsage = func ->getUsageDescriptions();
 
-  CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
-  /***** for Table 2: Applications table *****/
-  C_INT32 noOfApplns =
-    std::min(functUsage.size(), (unsigned C_INT32) Table2->numRows());
+  CUsageRange Application;
+  functUsage.cleanup();
 
-  //  Table2->setNumRows(noOfApplns);
+  Application.setUsage("SUBSTRATES");
+  if (functParam.getUsageRanges().getIndex("SUBSTRATE") == C_INVALID_INDEX)
+    Application.setRange(0, CRange::Infinity);
+  else
+    Application.setRange(functParam.getUsageRanges()["SUBSTRATE"]->getLow(),
+                         functParam.getUsageRanges()["SUBSTRATE"]->getHigh());
+  functUsage.add(Application);
 
-  for (j = 0; j < noOfApplns; j++)
-    {
-      //app_Desc = new QString(Table2->text(j,0));
-      app_Desc = Table2->text(j, 0);
-      //app_Low=new QString(Table2->text(j,1));
-      app_Low = Table2->text(j, 1);
-      int_Low = app_Low.toInt();
-      app_High = Table2->text(j, 2);
-      //app_High = new QString(Table2->text(j,2));
+  Application.setUsage("PRODUCTS");
+  if (functParam.getUsageRanges().getIndex("PRODUCT") == C_INVALID_INDEX)
+    Application.setRange(0, CRange::Infinity);
+  else
+    Application.setRange(functParam.getUsageRanges()["PRODUCT"]->getLow(),
+                         functParam.getUsageRanges()["PRODUCT"]->getHigh());
+  functUsage.add(Application);
 
-      if (QString::compare(app_High, "NA") == 0)
-        {
-          int_High = 0;
-        }
-      else
-        {
-          int_High = app_High.toInt();
-        }
-
-      /***** there is no setName  here ????? ******/
-      functUsage[j]->setUsage(app_Desc.latin1());
-
-      functUsage[j]->setLow(int_Low);
-
-      functUsage[j]->setHigh(int_High);
-    }
+  // reload
+  //loadFromFunction();
 }
 
 /*This function is called when the Function Description LineEdit is changed.*/
@@ -630,8 +622,6 @@ void FunctionWidget1::slotFcnDescriptionChanged()
   //  if (textbrowser.getText() ==
   // update the widget
   updateParameters();
-  //updateApplication();
-  //saveToFunction();
 }
 
 void FunctionWidget1::slotCancelButtonClicked()
@@ -677,6 +667,8 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
       Table1->setPixmap(row, 2, *pPixMap);
       Table1->setRowHeight(row, Table1->rowHeight(row)); // updateCell()
     }
+  updateApplication();
+  //saveToFunction();
 }
 
 bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
