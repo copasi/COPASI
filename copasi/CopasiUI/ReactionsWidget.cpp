@@ -212,7 +212,7 @@ void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QP
     {
       std::string name = "Reaction";
       int i = 0;
-      CReaction newReaction;
+      CReaction newReaction(name);
       while (mModel->addReaction(newReaction) == -1)
         {
           i++;

@@ -185,6 +185,7 @@ int ReactionsWidget1::isName(QString setValue)
   if (mModel->getReactions().getIndex((std::string) setValue) != C_INVALID_INDEX)
     {
       loadName(setValue);
+      name = setValue;
       return 1;
     }
   else
@@ -388,7 +389,8 @@ void ReactionsWidget1::loadName(QString setValue)
       table->setText(line, 0, QString::number(react4z[k]->getValue()));
       line++;
     }
-  ComboBox1->setCurrentText(reactn->getFunction().getName().c_str());
+  if (&reactn->getFunction())
+    ComboBox1->setCurrentText(reactn->getFunction().getName().c_str());
 
   //  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
   //emit sideySignal();
