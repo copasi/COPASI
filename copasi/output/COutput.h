@@ -141,7 +141,7 @@ class COutput
    */
   void repHeaderLine(ofstream &fout, int width, string OutStr);
 
-  int COutput::CheckEquilibrium();
+  int CheckEquilibrium();
 
  public:
 

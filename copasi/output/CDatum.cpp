@@ -320,7 +320,7 @@ void CDatum::createObject(const string& IStr, const string& JStr, C_INT32 Type)
 
   // Create CModel part
   mObject.append("CModel = \"");
-  mObject.append(Copasi->pModel->getTitle());
+  mObject.append(Copasi->Model->getTitle());
   mObject.append("\", ");
 
   // Create CMetab part

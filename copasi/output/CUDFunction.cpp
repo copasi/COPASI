@@ -5,12 +5,19 @@
 *****************************************************************************/
 
 #define COPASI_TRACE_CONSTRUCTION
+
+#undef yyFlexLexer
+#define yyFlexLexer CKinFunctionFlexLexer
+
+#include <sstream>
 #include <iostream>
+
 #include "copasi.h"
-#include "utilities/CGlobals.h"
-#include "function/lexkk.h"
+#include "function/FlexLexer.h"
+#include "function/function.h"
 #include "CNodeO.h"
 #include "CUDFunction.h"
+#include "utilities/CGlobals.h"
 
 /**
  *  Default constructor
@@ -426,3 +433,49 @@ CNodeO * CUDFunction::parsePrimary()
 }
 
 CCopasiVectorS < CNodeO > & CUDFunction::getNodes() {return mNodes;}
+
+void CUDFunction::compile()
+{
+  mNodes.cleanup();
+  parse();
+  connectNodes();
+}
+
+C_INT32 CUDFunction::parse()
+{
+  int i = 1;
+  istringstream buffer(getDescription());
+  CKinFunctionFlexLexer Scanner((istream *) &buffer);
+
+  // add the root node
+  mNodes.add(CNodeO(N_ROOT, N_NOP));
+
+  // call the lexical analyser successively until done
+  while (i)
+    {
+      i = Scanner.yylex();
+      switch (i)
+        {
+        case N_IDENTIFIER: mNodes.add(CNodeO(Scanner.YYText())); break;
+        case N_NUMBER:     mNodes.add(CNodeO(atof(Scanner.YYText()))); break;
+        case '+':          mNodes.add(CNodeO(N_OPERATOR, '+')); break;
+        case '-':          mNodes.add(CNodeO(N_OPERATOR, '-')); break;
+        case '*':          mNodes.add(CNodeO(N_OPERATOR, '*')); break;
+        case '/':          mNodes.add(CNodeO(N_OPERATOR, '/')); break;
+        case '^':          mNodes.add(CNodeO(N_OPERATOR, '^')); break;
+        case '(':          mNodes.add(CNodeO(N_OPERATOR, '(')); break;
+        case ')':          mNodes.add(CNodeO(N_OPERATOR, ')')); break;
+        case N_LOG:        mNodes.add(CNodeO(N_FUNCTION, N_LOG)); break;
+        case N_LOG10:      mNodes.add(CNodeO(N_FUNCTION, N_LOG10)); break;
+        case N_EXP:        mNodes.add(CNodeO(N_FUNCTION, N_EXP)); break;
+        case N_SIN:        mNodes.add(CNodeO(N_FUNCTION, N_SIN)); break;
+        case N_COS:        mNodes.add(CNodeO(N_FUNCTION, N_COS)); break;
+        case N_NOP:        // this is an error
+	  mNodes.cleanup();
+          /* :TODO: create a valid error message returning the eroneous node */
+          fatalError();
+	  return 0;
+        }
+    }
+  return 0;
+}

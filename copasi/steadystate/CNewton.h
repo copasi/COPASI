@@ -243,7 +243,7 @@ class CNewton
    *  retrieve the mSs_solution
    *  @return C_INT32
    */
-  C_INT32 CNewton::getSs_solution( void ) const;
+  C_INT32 getSs_solution( void ) const;
 
 
   /**

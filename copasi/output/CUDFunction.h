@@ -81,6 +81,15 @@ class CUDFunction: public CKinFunction
   void load(CReadConfig & configbuffer,
             CReadConfig::Mode mode = CReadConfig::LOOP);
 
+  /**
+   *  Compile a function
+   */
+  void compile();
+  
+  /**
+   *  This parses the function into a binary tree
+   */
+  C_INT32 parse();
 
   /**
    * Calculate the value of this user defined function

@@ -74,7 +74,7 @@ void CNewton::initialize()
   mSs_h = new C_FLOAT64[dim];
   mSs_ipvt = new C_INT32[dim];
 
-  mSs_jacob.setModel(*mModel);
+  mSs_jacob.setModel(mModel);
 }
 
 

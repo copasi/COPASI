@@ -113,102 +113,102 @@ const CDatum & CNodeO::getDatum() const {return mDatum;}
  */
 C_FLOAT64 CNodeO::value()
 {
-	char NodeType, NodeSubtype;
+  char NodeType, NodeSubtype;
 
-	NodeType = getType();
-	NodeSubtype = getSubtype();
+  NodeType = getType();
+  NodeSubtype = getSubtype();
 
-	// if it is a constant or a variable just return its value
-	if(NodeType == N_NUMBER) 
-		return getConstant();
+  // if it is a constant or a variable just return its value
+  if(NodeType == N_NUMBER) 
+    return getConstant();
 
-	switch (NodeType)
-	{
-	case N_IDENTIFIER :
-			C_INT32 Type;
-			C_INT16 *Value1;
-			C_INT32 *Value2;
-			C_FLOAT32 *Value3;
-			C_FLOAT64 *Value4;
-			C_FLOAT64 Value;
+  switch (NodeType)
+    {
+    case N_IDENTIFIER :
+      C_INT32 Type;
+      C_INT16 *Value1;
+      C_INT32 *Value2;
+      C_FLOAT32 *Value3;
+      C_FLOAT64 *Value4;
+      C_FLOAT64 Value;
 			
-			mDatum.compileDatum(Copasi->pModel, NULL, NULL);
-			Type = mDatum.getType();
-			switch (Type)
-			{
-				case 1:
-					Value1 = (C_INT16 *)mDatum.getValue();
-					Value = (C_FLOAT64) *Value1;
-					break;
-				case 2:
-					Value2 = (C_INT32 *)mDatum.getValue();
-					Value = (C_FLOAT64) *Value2;
-					break;
-				case 3:
-					Value3 = (C_FLOAT32 *)mDatum.getValue();
-					Value = (C_FLOAT64) *Value3;
-					break;
-				case 4:
-					Value4 = (C_FLOAT64 *)mDatum.getValue();
-					Value = (C_FLOAT64) *Value4;
-					break;
-			}
-			return Value;
-			break;
+      mDatum.compileDatum(Copasi->Model, NULL, NULL);
+      Type = mDatum.getType();
+      switch (Type)
+        {
+        case 1:
+          Value1 = (C_INT16 *)mDatum.getValue();
+          Value = (C_FLOAT64) *Value1;
+          break;
+        case 2:
+          Value2 = (C_INT32 *)mDatum.getValue();
+          Value = (C_FLOAT64) *Value2;
+          break;
+        case 3:
+          Value3 = (C_FLOAT32 *)mDatum.getValue();
+          Value = (C_FLOAT64) *Value3;
+          break;
+        case 4:
+          Value4 = (C_FLOAT64 *)mDatum.getValue();
+          Value = (C_FLOAT64) *Value4;
+          break;
+        }
+      return Value;
+      break;
         
     case N_OPERATOR:
-				switch (NodeSubtype)
-				{
-					case '+':
-						return mLeft->value() + mRight->value();
+      switch (NodeSubtype)
+        {
+        case '+':
+          return mLeft->value() + mRight->value();
 
-					case '-': 
-						return mLeft->value() - mRight->value();
+        case '-': 
+          return mLeft->value() - mRight->value();
 
-					case '*': 
-						return mLeft->value() * mRight->value();
+        case '*': 
+          return mLeft->value() * mRight->value();
         
-					case '/': 
-						return mLeft->value() / mRight->value();
+        case '/': 
+          return mLeft->value() / mRight->value();
         
-					case '^': 
-						return pow(mLeft->value(), mRight->value());
+        case '^': 
+          return pow(mLeft->value(), mRight->value());
         
-					default: 
-						fatalError();   // THROW EXCEPTION
-						return 0.0;
-				}
-				break;
+        default: 
+          fatalError();   // THROW EXCEPTION
+          return 0.0;
+        }
+      break;
 
     case N_FUNCTION:
-				switch (NodeSubtype)
-				{
-					case '+': 
-						return mLeft->value();
+      switch (NodeSubtype)
+        {
+        case '+': 
+          return mLeft->value();
 
-					case '-': 
-						return - mLeft->value();
+        case '-': 
+          return - mLeft->value();
 
-					case N_EXP: 
-						return exp(mLeft->value());
+        case N_EXP: 
+          return exp(mLeft->value());
 
-					case N_LOG: 
-						return log(mLeft->value());
+        case N_LOG: 
+          return log(mLeft->value());
 
-					case N_LOG10: 
-						return log10(mLeft->value());
+        case N_LOG10: 
+          return log10(mLeft->value());
 
-					case N_SIN: 
-						return sin(mLeft->value());
+        case N_SIN: 
+          return sin(mLeft->value());
 
-					case N_COS: 
-						return cos(mLeft->value());
+        case N_COS: 
+          return cos(mLeft->value());
 
-					default: 
-						fatalError();   // THROW EXCEPTION
-						return 0.0;    
-				}
-				break;
+        default: 
+          fatalError();   // THROW EXCEPTION
+          return 0.0;    
+        }
+      break;
 
     default: 
       fatalError();   // THROW EXCEPTION
@@ -251,7 +251,7 @@ CNodeO & CNodeO::getRight() const
  */
 void CNodeO::setLeft(CNodeO & left)
 {
-	mLeft = &left;
+  mLeft = &left;
 }
 
 /**
@@ -260,7 +260,7 @@ void CNodeO::setLeft(CNodeO & left)
  */
 void CNodeO::setLeft(CNodeO * pleft)
 {
-	mLeft = pleft;
+  mLeft = pleft;
 }
 
 /**
@@ -269,7 +269,7 @@ void CNodeO::setLeft(CNodeO * pleft)
  */
 void CNodeO::setRight(CNodeO & right)
 {
-	mRight = &right;
+  mRight = &right;
 }
 
 /**
@@ -278,6 +278,6 @@ void CNodeO::setRight(CNodeO & right)
  */
 void CNodeO::setRight(CNodeO * pright)
 {
-	mRight = pright;
+  mRight = pright;
 }
 

@@ -270,7 +270,7 @@ void COutput::compile(string &name, CModel *model, CSS_Solution *soln)
  */
 void COutput::repComments(ofstream &fout)
 {
-  fout << Copasi->pModel->getComments() << endl;
+  fout << Copasi->Model->getComments() << endl;
 }
 
 /**
@@ -278,7 +278,7 @@ void COutput::repComments(ofstream &fout)
  */
 void COutput::repTitle(ofstream &fout)
 {
-  fout << Copasi->pModel->getTitle() << endl << endl;
+  fout << Copasi->Model->getTitle() << endl << endl;
 }
 
 /**
@@ -351,7 +351,7 @@ void COutput::repParams(ofstream &fout)
 {
   string StrOut;
   unsigned C_INT32 i, j;
-  CModel *model = Copasi->pModel;	
+  CModel *model = Copasi->Model;	
 
   StrOut = "KINETIC PARAMETERS";
   fout << endl << StrOut << endl;
@@ -397,7 +397,7 @@ void COutput::repParams(ofstream &fout)
 void COutput::repStruct(ofstream &fout)
 {
   unsigned C_INT32 i, j;
-  CModel *model = Copasi->pModel;
+  CModel *model = Copasi->Model;
 
   // determine the kernel of the stoichiometry matrix
   //model.getKernel();
@@ -499,68 +499,69 @@ void COutput::repStruct(ofstream &fout)
  */
 void COutput::repSS(ofstream &fout)
 {
-	double rate;
-	CModel *model = Copasi->pModel;
+  C_INT32 i;
+  double rate;
+  CModel *model = Copasi->Model;
 
-	if (mSolution->getSolution() != SS_FOUND)
-	{
-		fout << endl; 
-		fout << "A STEADY STATE COULD NOT BE FOUND.\n(below are the last unsuccessful trial values)";
-		fout << endl;
-	}
-	else {
-		fout << endl << "STEADY STATE SOLUTION" << endl;
-		if (CheckEquilibrium())
-			fout << "(chemical equilibrium)" << endl;
-	}
+  if (mSolution->getSolution() != SS_FOUND)
+    {
+      fout << endl; 
+      fout << "A STEADY STATE COULD NOT BE FOUND.\n(below are the last unsuccessful trial values)";
+      fout << endl;
+    }
+  else {
+    fout << endl << "STEADY STATE SOLUTION" << endl;
+    if (CheckEquilibrium())
+      fout << "(chemical equilibrium)" << endl;
+  }
 
-	// Output concentrations
-	for (int i = 0; i < model->getTotMetab(); i++)
-	{
-		if (model->getMetabolites()[i]->getStatus == 0) // METAB_FIXED == 0
-			rate = 0.0;
-		else rate = mSolution->getSs_dxdt()[i];			// ??? [Model.IRow[i]+1]
+  // Output concentrations
+  for (i = 0; i < model->getTotMetab(); i++)
+    {
+      if (model->getMetabolites()[i]->getStatus() == 0) // METAB_FIXED == 0
+        rate = 0.0;
+      else rate = mSolution->getSs_dxdt()[i];			// ??? [Model.IRow[i]+1]
 		
-		// Output Concentration
-		fout << "[" << setw(10) << model->getMetabolites()[i]->getName();
-		fout << "] = ";
-		fout << setprecision(6) << model->getMetabolites()[i]->getConcentration(); 
-		fout << " " << ConcUnit << ", ";
-		// Output Transition time of the metabolite
-		fout << "tt = " << setprecision(6) << model->getMetabolites()[i]->getTransitionTime();
-		fout << " " << TimeUnit << " " << ", ";
-		// Output rate
-		fout << "rate = " << setprecision(3) << rate;
-		fout << " " << ConcUnit << "/" << TimeUnit << endl;
+      // Output Concentration
+      fout << "[" << setw(10) << model->getMetabolites()[i]->getName();
+      fout << "] = ";
+      fout << setprecision(6) << model->getMetabolites()[i]->getConcentration(); 
+      fout << " " << ConcUnit << ", ";
+      // Output Transition time of the metabolite
+      fout << "tt = " << setprecision(6) << model->getMetabolites()[i]->getTransitionTime();
+      fout << " " << TimeUnit << " " << ", ";
+      // Output rate
+      fout << "rate = " << setprecision(3) << rate;
+      fout << " " << ConcUnit << "/" << TimeUnit << endl;
 	
-		if (*model->getMetabolites()[i]->getConcentration() < 0.0)
-			fout << " BOGUS!";
-		fout << endl;
-	}
+      if (*model->getMetabolites()[i]->getConcentration() < 0.0)
+        fout << " BOGUS!";
+      fout << endl;
+    }
 
-	// output fluxes
-	for (i = 0; i < model->getTotSteps(); i++)
-	{
-		fout << "J(" << model->getReactions()[i]->getName() << ") = ";
-		fout << setprecision(6) << model->getReactions()[i]->getFlux();
-		fout << ConcUnit << "/" << "TimeUnit" << endl;
-	}
+  // output fluxes
+  for (i = 0; i < model->getTotSteps(); i++)
+    {
+      fout << "J(" << model->getReactions()[i]->getName() << ") = ";
+      fout << setprecision(6) << model->getReactions()[i]->getFlux();
+      fout << ConcUnit << "/" << "TimeUnit" << endl;
+    }
 	
-	// output user-defined functions
-	int size = Copasi->UDFunctionDB.getFunctions().size();
-	CUDFunction pFunct;
-	if ( size > 0)
-	{
-		fout << endl;
-		for (int i = 0; i < size; i++)
-		{
-			// calculate the flux of this step
-			fout << Copasi->UDFunctionDB.getFunctions()[i]->getName();
-			fout << " =";
-			fout << setprecision(6) << Copasi->UDFunctionDB.getFunctions()[i]->getValue();
-			fout << endl;
-		}
-	}
+  // output user-defined functions
+  int size = Copasi->UDFunctionDB.getFunctions().size();
+  CUDFunction pFunct;
+  if ( size > 0)
+    {
+      fout << endl;
+      for (i = 0; i < size; i++)
+        {
+          // calculate the flux of this step
+          fout << Copasi->UDFunctionDB.getFunctions()[i]->getName();
+          fout << " =";
+          fout << setprecision(6) << Copasi->UDFunctionDB.getFunctions()[i]->getValue();
+          fout << endl;
+        }
+    }
 }
 
 /**
@@ -568,88 +569,88 @@ void COutput::repSS(ofstream &fout)
  */
 void COutput::repStability(ofstream &fout)
 {
-	CModel *model = Copasi->pModel;
+  unsigned C_INT32 i, j;
+  CModel *model = Copasi->Model;
 
-	if (mSolution->getSolution() != SS_FOUND)
-	{
-		fout << "The linear stability analysis based on the eigenvalues" << endl;
-		fout << "of the Jacobian matrix is only valid for steady states." << endl;
-	}
-	else 
-	{
-		fout << endl << "KINETIC STABILITY ANALYSIS" << endl << endl;
-		fout << "Summary:" << endl;
-		fout << "This steady state ";
+  if (mSolution->getSolution() != SS_FOUND)
+    {
+      fout << "The linear stability analysis based on the eigenvalues" << endl;
+      fout << "of the Jacobian matrix is only valid for steady states." << endl;
+    }
+  else 
+    {
+      fout << endl << "KINETIC STABILITY ANALYSIS" << endl << endl;
+      fout << "Summary:" << endl;
+      fout << "This steady state ";
 
-		// Output statistics
-		if (mSolution->getEigen()->getEigen_maxrealpart() > mSolution->getSSRes())
-			fout << "is unstable";
-		else {
-			if (mSolution->getEigen()->getEigen_maxrealpart() < -mSolution->getSSRes())
-				fout << "is asymptotically stable";
-			else fout << "stability is undetermined";
-		}
+      // Output statistics
+      if (mSolution->getEigen()->getEigen_maxrealpart() > mSolution->getSSRes())
+        fout << "is unstable";
+      else {
+        if (mSolution->getEigen()->getEigen_maxrealpart() < -mSolution->getSSRes())
+          fout << "is asymptotically stable";
+        else fout << "stability is undetermined";
+      }
 
-		if (mSolution->getEigen()->getEigen_maximagpart() > mSolution->getSSRes())
-		{
-			fout << "," << endl;
-			fout << "transient states in its vicinity have oscillatory components" << endl;
-		}
+      if (mSolution->getEigen()->getEigen_maximagpart() > mSolution->getSSRes())
+        {
+          fout << "," << endl;
+          fout << "transient states in its vicinity have oscillatory components" << endl;
+        }
 			
-		fout << endl;
-		fout << "Eigenvalue statistics:" << endl;
-		// Output Max Real Part
-		fout << "Largest real part: "; 
-		fout << setprecision(6) << mSolution->getEigen()->getEigen_maxrealpart() << endl;
-		// Output Max imaginary Part
-		fout << "Largest absolute imaginary part: ";
-		fout << setprecision(6) << mSolution->getEigen()->getEigen_maximagpart();
-		// Output Eigen-nreal
-		fout << setprecision(1) << mSolution->getEigen()->getEigen_nreal();
-		fout << " are purely real" << endl;
-		// Output Eigen-nimage
-		fout << setprecision(1) << mSolution->getEigen()->getEigen_nimag();
-		fout << " are purely imaginary" << endl;
-		// Output Eigen-ncplxconj
-		fout << setprecision(1) << mSolution->getEigen()->getEigen_ncplxconj();
-		fout << " are complex" << endl;
-		// Output Eigen-nzero
-		fout << setprecision(1) << mSolution->getEigen()->getEigen_nzero();
-		fout << " are equal to zero" << endl;
-		// Output Eigen-nposreal
-		fout << setprecision(1) << mSolution->getEigen()->getEigen_nposreal();
-		fout << " have positive real part" << endl;
-		// Output Eigen-nnegreal
-		fout << setprecision(1) << mSolution->getEigen()->getEigen_nnegreal();
-		fout << " have negative real part" << endl;
-		// Output Eigne-stiffness
-		fout << " stiffness = " << mSolution->getEigen()->getEigen_stiffness() << endl;
-		fout << " time hierarchy = " << mSolution->getEigen()->getEigen_hierarchy() << endl;
+      fout << endl;
+      fout << "Eigenvalue statistics:" << endl;
+      // Output Max Real Part
+      fout << "Largest real part: "; 
+      fout << setprecision(6) << mSolution->getEigen()->getEigen_maxrealpart() << endl;
+      // Output Max imaginary Part
+      fout << "Largest absolute imaginary part: ";
+      fout << setprecision(6) << mSolution->getEigen()->getEigen_maximagpart();
+      // Output Eigen-nreal
+      fout << setprecision(1) << mSolution->getEigen()->getEigen_nreal();
+      fout << " are purely real" << endl;
+      // Output Eigen-nimage
+      fout << setprecision(1) << mSolution->getEigen()->getEigen_nimag();
+      fout << " are purely imaginary" << endl;
+      // Output Eigen-ncplxconj
+      fout << setprecision(1) << mSolution->getEigen()->getEigen_ncplxconj();
+      fout << " are complex" << endl;
+      // Output Eigen-nzero
+      fout << setprecision(1) << mSolution->getEigen()->getEigen_nzero();
+      fout << " are equal to zero" << endl;
+      // Output Eigen-nposreal
+      fout << setprecision(1) << mSolution->getEigen()->getEigen_nposreal();
+      fout << " have positive real part" << endl;
+      // Output Eigen-nnegreal
+      fout << setprecision(1) << mSolution->getEigen()->getEigen_nnegreal();
+      fout << " have negative real part" << endl;
+      // Output Eigne-stiffness
+      fout << " stiffness = " << mSolution->getEigen()->getEigen_stiffness() << endl;
+      fout << " time hierarchy = " << mSolution->getEigen()->getEigen_hierarchy() << endl;
 
-		// Output Jacobian Matrix
-		fout << endl << "Jacobian matrix" << endl;
-		for (int i = 0; i < model->getMetabolitesInd().size(); i++)
-		{
-			for (int j = 0; j < model->getMetabolitesInd().size(); j++)
-				fout << setprecision(6) << mSolution->getJacob()->getJacob()[i][j];
-			fout << endl;
-		}
+      // Output Jacobian Matrix
+      fout << endl << "Jacobian matrix" << endl;
+      for (i = 0; i < model->getMetabolitesInd().size(); i++)
+        {
+          for (j = 0; j < model->getMetabolitesInd().size(); j++)
+            fout << setprecision(6) << mSolution->getJacob()->getJacob()[i][j];
+          fout << endl;
+        }
 
-		// Output Eigenvalus of the Jacibian Matrix
-		fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
-		for (i = 0; i < model->getMetabolitesInd().size(); i++)
-		{
-			if (mSolution->getEigen()->getEigen_i()[i] == 0.0)
-				fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
-			else 
-			{
-				fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
-				fout << " + " << setprecision(6) << mSolution->getEigen()->getEigen_i()[i];
-			}	
-		}
-		fout << endl;
-	}
-
+      // Output Eigenvalus of the Jacibian Matrix
+      fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
+      for (i = 0; i < model->getMetabolitesInd().size(); i++)
+        {
+          if (mSolution->getEigen()->getEigen_i()[i] == 0.0)
+            fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
+          else 
+            {
+              fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
+              fout << " + " << setprecision(6) << mSolution->getEigen()->getEigen_i()[i];
+            }	
+        }
+      fout << endl;
+    }
 }
 
 /**
@@ -978,8 +979,8 @@ int COutput::CheckEquilibrium()
 	int Equilibrium;
 
 	// find the highest concentration rate
-	for( i=0, hr = 0.0; i < Copasi->pModel->getTotSteps(); i++)
-		if ( (tmp=fabs(Copasi->pModel->getReactions()[i]->getFlux())) > hr )
+	for( i=0, hr = 0.0; i < Copasi->Model->getTotSteps(); i++)
+		if ( (tmp=fabs(Copasi->Model->getReactions()[i]->getFlux())) > hr )
 			hr = tmp;
 
 	// true if in chemical equilibrium

@@ -62,7 +62,7 @@ class CNodeO: public CNodeK
   /**
    * Destructor
    */
-  ~CNodeO();
+  virtual ~CNodeO();
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
