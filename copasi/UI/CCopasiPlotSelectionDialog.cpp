@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/13 13:27:16 $
+   $Date: 2004/12/16 13:23:12 $
    End CVS Header */
 
 #include "CCopasiPlotSelectionDialog.h"
@@ -19,6 +19,8 @@
 #include "report/CCopasiObject.h"
 #include "copasi.h"
 #include "qlayout.h"
+#include "qmessagebox.h"
+#include "qtUtilities.h"
 
 CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, WFlags f):
     QDialog(parent, name, modal, f)
@@ -127,6 +129,30 @@ void CCopasiPlotSelectionDialog::slotOKButtonClicked()
   // fill the selection vectors
   this->mpXAxisSelectionWidget->commit();
   this->mpYAxisSelectionWidget->commit();
+  std::string message = "";
+  bool showWarning = false;
+  if (this->mpXAxisOutputVector->empty())
+    {
+      message += "X Axis";
+      showWarning = true;
+    }
+  if (this->mpYAxisOutputVector->empty())
+    {
+      if (showWarning)
+        {
+          message += " and ";
+        }
+      showWarning = true;
+      message += "Y Axis";
+    }
+  if (showWarning)
+    {
+      message = "You did not select anything for the " + message + "!\nDo you want to procceed anyway?";
+      if (QMessageBox::warning(this, "Empty Selection", FROM_UTF8(message), QMessageBox::Yes | QMessageBox::Escape, QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+        {
+          return;
+        }
+    }
   QDialog::done(QDialog::Accepted);
 }
 
