@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.150 $
+   $Revision: 1.151 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/23 15:00:44 $
+   $Date: 2004/09/30 09:04:38 $
    End CVS Header */
 
 /****************************************************************************
@@ -41,6 +41,7 @@
 #include "ReactionsWidget.h"
 #include "ReactionsWidget1.h"
 #include "SteadyStateWidget.h"
+#include "StateWidget.h"
 #include "ScanWidget.h"
 #include "OptimizationWidget.h"
 #include "TableDefinition.h"
@@ -322,6 +323,9 @@ void ListViews::ConstructNodeWidgets()
   steadystateWidget = new SteadyStateWidget(this);
   steadystateWidget->hide();
 
+  stateWidget = new StateWidget(this);
+  stateWidget->hide();
+
   scanWidget = new ScanWidget(this);
   scanWidget->hide();
 
@@ -387,6 +391,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 21:
         return steadystateWidget;
         break;
+      case 211:
+        return stateWidget;
+        break;
       case 221:
         return modesWidget;
         break;
@@ -405,7 +412,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:         //Report
+      case 43:          //Report
         return tableDefinition;
         break;
       case 42:
