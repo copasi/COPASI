@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:16 $
+   $Author: gauges $ 
+   $Date: 2005/02/16 13:25:40 $
    End CVS Header */
 
 #include <cmath>
@@ -24,11 +24,12 @@ CopasiSlider::CopasiSlider(CCopasiObject* object, QWidget* parent): QVBox(parent
   this->mpLabel = new QLabel(this);
   this->mpLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   this->mpSlider = new QSlider(Qt::Horizontal, this);
+
   this->mpSlider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   this->updateSliderData();
-
   connect(this->mpSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
   connect(this->mpSlider, SIGNAL(sliderReleased()), this, SLOT(qSliderReleased()));
+  connect(this->mpSlider, SIGNAL(sliderPressed()), this, SLOT(qSliderPressed()));
 }
 
 CopasiSlider::~CopasiSlider()
@@ -269,6 +270,11 @@ void CopasiSlider::sliderValueChanged(int value)
 void CopasiSlider::qSliderReleased()
 {
   emit sliderReleased();
+}
+
+void CopasiSlider::qSliderPressed()
+{
+  emit sliderPressed();
 }
 
 CCopasiParameter::Type CopasiSlider::type() const
