@@ -239,6 +239,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   Copasi->OldMetabolites.cleanup();
 
+  compile();
   return Fail;
 }
 
