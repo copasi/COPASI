@@ -57,6 +57,7 @@ public:
 	QFrame* Frame4b;
 	QFrame* Frame4c;
 	QFrame* Frame4d;
+	QFrame* Frame4;
 
 };
 

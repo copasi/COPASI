@@ -72,17 +72,22 @@ CompartmentsWidget1::CompartmentsWidget1( QWidget *parent, const char * name, WF
 	
 	TextLabel2= new QLabel( "Metabolite Name",Frame4b );
     hBoxLayout4b->addWidget( TextLabel2);
-    hBoxLayout4b->addSpacing(-40);
+    hBoxLayout4b->addSpacing(40);
 	
-	/*ComboBox1 = new QComboBox( Frame4b, "ComboBox1" );
-    hBoxLayout4b->addWidget(ComboBox1);
-	hBoxLayout4b->addSpacing(20);*/
-
 	ListBox1 = new QListBox( Frame4b, "ListBox1" );
-ListBox1->setGeometry( QRect( 120, 40, 31, 41 ) );
-    hBoxLayout4b->addWidget(ListBox1);
-	
+	ListBox1->setGeometry( QRect( 120, 40, 31, 41 ) );
+	hBoxLayout4b->addWidget(ListBox1);
 	hBoxLayout4b->addSpacing(20);
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -178,29 +183,19 @@ void CompartmentsWidget1::loadName(QString setValue)
 			LineEdit1->setText(compartn->getName().c_str());
 			
 			
-		/* PREVIOUS CODE.....CHANGES BEING MADE...
 		
-		  CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
-			C_INT32 noOfMetabolitesRows = Metabs.size();
-			CMetab *mtb;
-			for (C_INT32  j = 0; j < noOfMetabolitesRows; j++)
-			{
-			C_INT32  c=-1;
-			mtb = Metabs[j];
-			ComboBox1->insertItem(mtb->getName().c_str(),c);
-			c++;
-			}*/
 
  
 			CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
 			C_INT32 noOfMetabolitesRows = Metabs.size();
 			CMetab *mtb;
+	ListBox1->setFixedSize(100,150);
+			ListBox1->setAutoScrollBar(true);
+		
 			for (C_INT32  j = 0; j < noOfMetabolitesRows; j++)
 			{
-			C_INT32  c=-1;
 			mtb = Metabs[j];
-			ListBox1->insertItem(mtb->getName().c_str(),c);
-			c++;
+			ListBox1->insertItem(mtb->getName().c_str());
 			}
 
 

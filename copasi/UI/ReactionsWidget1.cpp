@@ -320,7 +320,7 @@ void ReactionsWidget1::loadName(QString setValue)
 
 
 //CCopasiVector < CReaction::CId2Metab > & react1 = reactn->getId2Substrates();
-		/*const CCopasiVector < CChemEqElement > &react1 = reactn->getChemEq().getSubstrates();
+		const CCopasiVector < CChemEqElement > &react1 = reactn->getChemEq().getSubstrates();
 	  	for ( int k = 0;k <react1.size(); ++k );
 		{
 	    QString overall1=react1[k]->getMetaboliteName().c_str();
@@ -333,7 +333,7 @@ void ReactionsWidget1::loadName(QString setValue)
 		comboEntries1= overall;
 		QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE );
 		table->setItem( 0, 0, item );
-	  }*/
+	  }
 	
 
 
