@@ -91,19 +91,10 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 
   parameterTable = new QTable(this, "parameterTable");
   parameterTable->setGeometry(QRect(100, 205, 484, 160));
-  QHeader *rowHeader = parameterTable->verticalHeader();
-  parameterTable->setNumRows(10);
+
+  parameterTable->setNumRows(0);
   parameterTable->setNumCols(1);
-  rowHeader->setLabel(0, tr("UseNewton:mUseNewton"));
-  rowHeader->setLabel(1, tr("UseIntegration:mUseIntegration"));
-  rowHeader->setLabel(2, tr("UseBackIntegration:mUseBackIntegration"));
-  rowHeader->setLabel(3, tr("IterationLimit:mIterationLimit"));
-  rowHeader->setLabel(4, tr("DerivationFactor:mFactor"));
-  rowHeader->setLabel(5, tr("Resolution:mResolution:"));
-  rowHeader->setLabel(6, tr("LSODA.RelativeTolerance:"));
-  rowHeader->setLabel(7, tr("LSODA.AbsoluteTolerance:"));
-  rowHeader->setLabel(8, tr("LSODA.AdamsMaxOrder:"));
-  rowHeader->setLabel(9, tr("LSODA.BDFMaxOrder:"));
+
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
 
@@ -148,7 +139,42 @@ void SteadyStateWidget::CancelChange()
 
 void SteadyStateWidget::CommitChange()
 {
-  qWarning("SteadyStateWidget::CommitChange(): Not implemented yet!");
+  if (mSteadyStateTask == NULL)
+    return;
+  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
+  CSteadyStateMethod* steadystatemethod = mSteadyStateTask->getMethod();
+
+  bool bJacobian = taskJacobian->isChecked ();
+  bool bStatistics = taskStability->isChecked ();
+
+  steadystateproblem->setJacobianRequested(bJacobian);
+  steadystateproblem->setStabilityAnalysisRequested(bStatistics);
+
+  QTableItem * pItem;
+  QString substrate;
+  QString strname;
+  for (int i = 0; i < steadystatemethod->size(); i++)
+    {
+      pItem = parameterTable->item(i, 0);
+      substrate = pItem->text();
+      strname = (steadystatemethod->getName(i)).c_str();
+      switch (steadystatemethod->getType((const char *)strname.utf8()))
+        {
+        case CMethodParameter::DOUBLE:
+          steadystatemethod->setValue((const char *)strname.utf8(), substrate.toDouble());
+          break;
+        case CMethodParameter::INT:
+          steadystatemethod->setValue((const char *)strname.utf8(), substrate.toInt());
+          break;
+        case CMethodParameter::UINT:
+          steadystatemethod->setValue((const char *)strname.utf8(), substrate.toUInt());
+          break;
+        case CMethodParameter::BOOL:;
+          steadystatemethod->setValue((const char *)strname.utf8(), bool(substrate.toUShort()));
+          break;
+        }
+    }
+  loadSteadyStateTask(mSteadyStateTask);
 }
 
 void SteadyStateWidget::methodJacob()
@@ -203,56 +229,25 @@ void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)
   taskStability->setChecked(bStatistics);
 
   QTableItem * pItem;
+  QString substrate;
+  QString strname;
 
-  QString substrates1;
-  substrates1 = QString::number(steadystatemethod->getValue("Newton.UseNewton"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates1);
-  parameterTable->setItem(0, 0, pItem);
+  parameterTable->setNumRows(steadystatemethod->size());
+  QHeader *rowHeader = parameterTable->verticalHeader();
 
-  QString substrates2;
-  substrates2 = QString::number(steadystatemethod->getValue("Newton.UseIntegration"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates2);
-  parameterTable->setItem(1, 0, pItem);
+  for (int i = 0; i < steadystatemethod->size(); i++)
+    {
+      strname = (steadystatemethod->getName(i)).c_str();
+      rowHeader->setLabel(i, tr(strname));
+    }
 
-  QString substrates3;
-  substrates3 = QString::number(steadystatemethod->getValue("Newton.UseBackIntegration"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates3);
-  parameterTable->setItem(2, 0, pItem);
-
-  QString substrates4;;
-  substrates4 = QString::number(steadystatemethod->getValue("Newton.IterationLimit"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates4);
-  parameterTable->setItem(3, 0, pItem);
-
-  QString substrates5;
-  substrates5 = QString::number(steadystatemethod->getValue("Newton.DerivationFactor"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates5);
-  parameterTable->setItem(4, 0, pItem);
-
-  QString substrates6;
-  substrates6 = QString::number(steadystatemethod->getValue("Newton.Resolution"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates6);
-  parameterTable->setItem(5, 0, pItem);
-
-  QString substrates7;
-  substrates7 = QString::number(steadystatemethod->getValue("Newton.LSODA.RelativeTolerance"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates7);
-  parameterTable->setItem(6, 0, pItem);
-
-  QString substrates8;
-  substrates8 = QString::number(steadystatemethod->getValue("Newton.LSODA.AbsoluteTolerance"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates8);
-  parameterTable->setItem(7, 0, pItem);
-
-  QString substrates9;
-  substrates9 = QString::number(steadystatemethod->getValue("Newton.LSODA.AdamsMaxOrder"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates9);
-  parameterTable->setItem(8, 0, pItem);
-
-  QString substrates10;
-  substrates10 = QString::number(steadystatemethod->getValue("Newton.LSODA.BDFMaxOrder"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates10);
-  parameterTable->setItem(9, 0, pItem);
+  for (i = 0; i < steadystatemethod->size(); i++)
+    {
+      strname = (steadystatemethod->getName(i)).c_str();
+      substrate = QString::number(steadystatemethod->getValue((const char *)strname.utf8()));
+      pItem = new QTableItem (parameterTable, QTableItem::Always, substrate);
+      parameterTable->setItem(i, 0, pItem);
+    }
 
   if (!bExecutable->isChecked())
     bRunButton->setEnabled(false);

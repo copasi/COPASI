@@ -103,22 +103,6 @@
             </rect>
         </property>
     </spacer>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>nStepNumber_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>403</x>
-                <y>147</y>
-                <width>121</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-    </widget>
     <widget class="QTable">
         <property name="name">
             <cstring>parameterTable</cstring>
@@ -322,22 +306,6 @@
             <string>Step Size</string>
         </property>
     </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>nStepSize_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>101</x>
-                <y>147</y>
-                <width>121</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-    </widget>
     <widget class="QCheckBox">
         <property name="name">
             <cstring>bExecutable</cstring>
@@ -487,6 +455,38 @@
             </widget>
         </hbox>
     </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>nStartTime</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>101</x>
+                <y>147</y>
+                <width>121</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>nEndTime</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>400</x>
+                <y>140</y>
+                <width>121</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+    </widget>
 </widget>
 <connections>
     <connection>
@@ -507,10 +507,17 @@
         <receiver>TrajectoryWidget</receiver>
         <slot>RunTask()</slot>
     </connection>
+    <connection>
+        <sender>bExecutable</sender>
+        <signal>clicked()</signal>
+        <receiver>TrajectoryWidget</receiver>
+        <slot>EnableRunTask()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>CancelChange()</slot>
     <slot>CommitChange()</slot>
+    <slot>EnableRunTask()</slot>
     <slot>RunTask()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
