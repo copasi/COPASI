@@ -4,55 +4,49 @@
  **  
  ** This is the header file for the Metabolites Widget, i.e the First level 
  ** of Metabolites.
- *****************************************************************************/ 
-/*
- resizeEvent functions modified 
- Goal: to memorize the user change and expand according
- comments: Liang Xu 
- */
+ *****************************************************************************/
+
 #ifndef METABOLITES_WIDGET_H
 #define METABOLITES_WIDGET_H
 
-#include "MyTable.h"
-#include "copasi.h"
 #include <qtable.h>
-#include <qpushbutton.h>
+#include "copasi.h"
 #include "copasiWidget.h"
 
-class CModel;
+class QPushButton;
+class QTable;
+class MyTable;
 
 class MetabolitesWidget : public CopasiWidget
   {
     Q_OBJECT
 
   protected:
-    CModel * mModel;
     MyTable * table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
     bool binitialized;
-
-  public slots:
-    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
-
-  signals:
-    void name(const QString &);
-    void leaf(CModel*);
-    void updated();
+    std::vector<std::string> mKeys;
 
   public:
     MetabolitesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadMetabolites(CModel *model);
     void resizeEvent(QResizeEvent * re);
-    void repaint_table();
+
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
 
   protected slots:
+    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+
+    virtual void slotTableSelectionChanged();
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
-    virtual void slotTableSelectionChanged();
+    virtual void tableValueChanged(int, int);
 
   private:
-    void showMessage(QString caption, QString text);
+    void fillTable();
+    void createNewObject();
   };
 
 #endif

@@ -6,16 +6,18 @@
  ** obtained from the data model about the Metabolites----It is 
  ** the First level of Metabolites.
  ************************************************************************/
+#include "MetabolitesWidget.h"
+
 #include <qlayout.h>
 #include <qwidget.h>
-#include <qmessagebox.h>
-#include <qfont.h>
+#include <qpushbutton.h>
 
-#include "MetabolitesWidget.h"
-#include "model/CMetab.h"
+#include "MyTable.h"
 #include "model/CModel.h"
-#include "utilities/CMethodParameter.h"
+#include "model/CMetab.h"
+#include "model/CCompartment.h"
 #include "listviews.h"
+#include "report/CKeyFactory.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -35,7 +37,6 @@
 MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
 {
-  mModel = NULL;
   binitialized = true;
 
   table = new MyTable(0, 5, this, "tblMetabolites");
@@ -71,100 +72,103 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
           this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent,
-          SLOT(slotMetaboliteTableChanged(const QString &)));
-  connect(table, SIGNAL(selectionChanged ()), this,
-          SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this,
-          SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this,
-          SLOT(slotBtnCancelClicked()));
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent,
-          SLOT(loadMetabolitesNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent,
-          SLOT(dataModelUpdated()));
+  connect(table, SIGNAL(selectionChanged ()),
+          this, SLOT(slotTableSelectionChanged ()));
+  connect(btnOK, SIGNAL(clicked ()),
+          this, SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()),
+          this, SLOT(slotBtnCancelClicked()));
 }
 
-void MetabolitesWidget::loadMetabolites(CModel *model)
+void MetabolitesWidget::fillTable()
 {
-  if (model != NULL)
+  const CMetab *obj;
+  const CCopasiVectorN < CMetab > & objects = dataModel->getModel()->getMetabolites();
+  C_INT32 j, jmax = objects.size();
+  table->setNumRows(jmax);
+  mKeys.resize(jmax);
+
+  for (j = 0; j < jmax; ++j)
     {
-      mModel = model;
+      obj = objects[j];
+      table->setText(j, 0, obj->getName().c_str());
+      table->setText(j, 1, QString::number(obj->getConcentration()));
+      table->setText(j, 2, QString::number(obj->getNumberDbl()));
+      table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
+      table->setText(j, 4, obj->getCompartment()->getName().c_str());
 
-      //Emptying the table
-      int numberOfRows = table->numRows();
-      int i;
-      for (i = 0; i < numberOfRows; i++)
-        {
-          table->removeRow(0);
-        }
-
-      repaint_table();
-      //table->sortColumn(0,true,true);
+      mKeys[j] = obj->getKey();
     }
+  table->setText(jmax, 1, "");
+  table->setText(jmax, 2, "");
+  table->setText(jmax, 3, "");
+  table->setText(jmax, 4, "");
 }
 
-void MetabolitesWidget::slotTableCurrentChanged(int row, int col,
-    int m , const QPoint & n)
+//**************************************************************************
+
+void MetabolitesWidget::createNewObject()
+{}
+
+void MetabolitesWidget::slotTableCurrentChanged(int row,
+    int C_UNUSED(col),
+    int C_UNUSED(m) ,
+    const QPoint & C_UNUSED(n))
 {
-  if (row >= table->numRows() || row < 0)
-    return;
-  QString x = table->text(row, 0);
+  if (row >= table->numRows() || row < 0) return;
+
   if (row == table->numRows() - 1)
     {
-      const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
-      C_INT32 noOfCompartmentsRows = compartments.size();
-
-      if (noOfCompartmentsRows <= 0) //You have to create a Compartment first,
-        return;
-
-      std::string name = "metabolite";
-
-      int i = 0;
-      while (mModel->addMetabolite(compartments[0]->getName(),
-                                   name,
-                                   1, CMetab::METAB_VARIABLE) == -1)
-        {
-          i++;
-          name = "metabolite";
-          name += "_";
-          name += QString::number(i).latin1();
-        }
-
-      table->setNumRows(table->numRows());
-      table->setText(row, 0, name.c_str());
-      x = name.c_str();
-      emit updated();
-      emit leaf(mModel);
+      //TODO: create a new Object
     }
-  emit name(x);
+
+  pListView->switchToOtherWidget(mKeys[row]);
 }
 
 void MetabolitesWidget::slotTableSelectionChanged()
 {
-  if (!table->hasFocus())
-    {
-      table->setFocus();
-    }
+  if (!table->hasFocus()) table->setFocus();
 }
-
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
 
 void MetabolitesWidget::slotBtnOKClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
-}
+{}
 
 void MetabolitesWidget::slotBtnCancelClicked()
+{}
+
+void MetabolitesWidget::tableValueChanged(int C_UNUSED(row),
+    int C_UNUSED(col))
+{}
+
+bool MetabolitesWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::METABOLITE:
+    case ListViews::COMPARTMENT:
+      fillTable();
+      break;
+
+    default:
+      break;
+    }
+  return true;
 }
+
+bool MetabolitesWidget::leave()
+{
+  //does nothing.
+  return true;
+}
+
+bool MetabolitesWidget::enter(const std::string & key)
+{
+  //does nothing.
+  return true;
+}
+
+//*******************************************************************************************
 
 void MetabolitesWidget::resizeEvent(QResizeEvent * re)
 {
@@ -249,56 +253,4 @@ void MetabolitesWidget::resizeEvent(QResizeEvent * re)
         }
     }
   CopasiWidget::resizeEvent(re);
-}
-
-void MetabolitesWidget::repaint_table()
-{
-  if (!mModel)
-    return;
-  //repaint()
-  CCopasiVectorN< CMetab > metabolites(mModel->getMetabolites());
-  C_INT32 noOfMetabolitesRows = metabolites.size();
-  table->setNumRows(noOfMetabolitesRows);
-
-  //Now filling the table.
-  CMetab *metab;
-  C_INT32 j;
-  for (j = 0; j < noOfMetabolitesRows; j++)
-    {
-      metab = metabolites[j];
-      table->setText(j, 0, metab->getName().c_str());
-
-      /*double m=(*(metab->getConcentration()));
-      QString *m1;
-      //QString ms = m1.setNum(m,'g',6);
-         m1=  QString::setNum(m,'g',6);            
-      table->setText(j, 1,*m1);
-       
-      //table->setText(j, 1,ms); */
-      table->setText(j, 1, QString::number(metab->getConcentration()));
-
-      table->setText(j, 2, QString::number(metab->getNumberDbl()));
-
-      table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
-
-#ifdef XXXX
-      if (QString::number(metab->getStatus()) == "0")
-        {
-          table->setText(j, 3, "defineda");
-        }
-      else if (QString::number(metab->getStatus()) == "1")
-        {
-          table->setText(j, 3, "definedb");
-        }
-      else if (QString::number(metab->getStatus()) == "2")
-        {
-          table->setText(j, 3, "definedc");
-        }
-#endif // XXXX
-      table->setText(j, 4, metab->getCompartment()->getName().c_str());
-    }
-  table->setText(noOfMetabolitesRows, 1, "");
-  table->setText(noOfMetabolitesRows, 2, "");
-  table->setText(noOfMetabolitesRows, 3, "");
-  table->setText(noOfMetabolitesRows, 4, "");
 }

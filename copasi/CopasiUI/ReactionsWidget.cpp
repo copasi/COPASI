@@ -7,15 +7,21 @@
  ** the First level of Reactions.
  ********************************************************************/
 
+#include "ReactionsWidget.h"
+
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
-#include "listviews.h"
-#include "ReactionsWidget.h"
 #include <qfont.h>
-#include "model/CModel.h"
+#include <qpushbutton.h>
+
+#include "MyTable.h"
+#include "model/CModel.h" 
+//#include "model/CMetab.h"
+//#include "model/CCompartment.h"
 #include "model/CReaction.h"
-#include "utilities/CMethodParameter.h"
+#include "listviews.h"
+#include "report/CKeyFactory.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree.
@@ -34,7 +40,6 @@
 ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
 {
-  mModel = NULL;
   binitialized = true;
 
   table = new MyTable(0, 2, this, "tblReactions");
@@ -66,68 +71,100 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(const QString &)));
-  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadReactionsNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
+  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
+          this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  connect(table, SIGNAL(selectionChanged ()),
+          this, SLOT(slotTableSelectionChanged ()));
+  connect(btnOK, SIGNAL(clicked ()),
+          this, SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()),
+          this, SLOT(slotBtnCancelClicked()));
 }
 
-void ReactionsWidget::loadReactions(CModel *model)
+void ReactionsWidget::fillTable()
 {
-  if (model != NULL)
+  const CReaction *obj;
+  const CCopasiVectorN < CReaction > & objects = dataModel->getModel()->getReactions();
+  C_INT32 j, jmax = objects.size();
+  table->setNumRows(jmax);
+  mKeys.resize(jmax);
+
+  for (j = 0; j < jmax; ++j)
     {
-      mModel = model;
-      //Emptying the table
-      int numberOfRows = table->numRows();
-      int i;
-      for (i = 0; i < numberOfRows; i++)
-        {
-          table->removeRow(0);
-        }
-      repaint_table();
+      obj = objects[j];
+      table->setText(j, 0, obj->getName().c_str());
+      table->setText(j, 1, obj->getChemEq().getChemicalEquation().c_str());
+
+      mKeys[j] = obj->getKey();
     }
+  table->setText(jmax, 1, "");
 }
 
-void ReactionsWidget::repaint_table()
-{
-  if (!mModel)
-    return;
-  // Now filling the table.
-  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-  C_INT32 noOfReactionsRows = reactions.size();
+//**************************************************************************
 
-  table->setNumRows(noOfReactionsRows);
-  CReaction *reactn;
-  C_INT32 j;
-  for (j = 0; j < noOfReactionsRows; j++)
+void ReactionsWidget::createNewObject()
+{}
+
+void ReactionsWidget::slotTableCurrentChanged(int row,
+    int C_UNUSED(col),
+    int C_UNUSED(m) ,
+    const QPoint & C_UNUSED(n))
+{
+  if (row >= table->numRows() || row < 0) return;
+
+  if (row == table->numRows() - 1)
     {
-      reactn = reactions[j];
-      table->setText(j, 0, reactn->getName().c_str());
-      table->setText(j, 1, reactn->getChemEq().getChemicalEquation().c_str());
+      //TODO: create a new Object
     }
-  table->setText(noOfReactionsRows, 1, "");
-}
 
-void ReactionsWidget::slotBtnOKClicked()
-{
-  //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
-}
-
-void ReactionsWidget::slotBtnCancelClicked()
-{
-  //QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
+  pListView->switchToOtherWidget(mKeys[row]);
 }
 
 void ReactionsWidget::slotTableSelectionChanged()
 {
-  if (!table->hasFocus())
-    {
-      table->setFocus();
-    }
+  if (!table->hasFocus()) table->setFocus();
 }
+
+void ReactionsWidget::slotBtnOKClicked()
+{}
+
+void ReactionsWidget::slotBtnCancelClicked()
+{}
+
+void ReactionsWidget::tableValueChanged(int C_UNUSED(row),
+                                        int C_UNUSED(col))
+{}
+
+bool ReactionsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::METABOLITE:
+    case ListViews::COMPARTMENT:
+    case ListViews::REACTION:
+      fillTable();
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool ReactionsWidget::leave()
+{
+  //does nothing.
+  return true;
+}
+
+bool ReactionsWidget::enter(const std::string & key)
+{
+  //does nothing.
+  return true;
+}
+
+//*******************************************************************************************
 
 void ReactionsWidget::resizeEvent(QResizeEvent * re)
 {
@@ -206,35 +243,4 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
         }
     }
   CopasiWidget::resizeEvent(re);
-}
-
-void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
-{
-  if (row >= table->numRows() || row < 0)
-    return;
-  QString x = table->text(row, 0);
-  if (row == table->numRows() - 1)
-    {
-      std::string name = "Reaction";
-      int i = 0;
-      CReaction newReaction(name);
-      while (mModel->addReaction(newReaction) == -1)
-        {
-          i++;
-          name = "Reaction";
-          name += "_";
-          name += QString::number(i).latin1();
-          newReaction.setName(name);
-        }
-      table->setNumRows(table->numRows());
-      table->setText(row, 0, name.c_str());
-      x = name.c_str();
-      emit updated();
-      emit leaf(mModel);
-    }
-  emit name(x);
-}
-unsigned int ReactionsWidget::numTableRows()
-{
-  return table->numRows();
 }

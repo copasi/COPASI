@@ -4,16 +4,12 @@
  **  
  ** This is the header file for the Metabolite Widget, i.e the second level 
  ** of Metabolites.
- *****************************************************************************/ 
-/*
- reimplement UI to automatically change internal components size
- Author: Liang Xu
- */
+ *****************************************************************************/
 #ifndef METABOLITESWIDGET1_H
 #define METABOLITESWIDGET1_H
 
-#include <qvariant.h>
-#include <qwidget.h>
+#include "copasiWidget.h"
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -24,8 +20,6 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QRadioButton;
-class CModel;
-#include "copasiWidget.h"
 
 class MetabolitesWidget1 : public CopasiWidget
   {
@@ -34,12 +28,25 @@ class MetabolitesWidget1 : public CopasiWidget
   public:
     MetabolitesWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~MetabolitesWidget1();
-    CModel *mModel;
-    void loadMetabolites(CModel *model);
-    void loadName(QString setValue);
-    int isName(QString setValue);
-    QString *Metabolite1_Name;
 
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
+  protected slots:
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
+
+  protected:
+    bool loadFromMetabolite(const CMetab*);
+    bool saveToMetabolite();
+    std::string objKey;
+
+    //Widgets
+    QGridLayout* MetabolitesWidget1Layout;
+    QGridLayout* ButtonGroup2Layout;
+    QGridLayout* ButtonGroup3Layout;
+    QHBoxLayout* Layout7;
     QLabel* TextLabel4;
     QLabel* TextLabel5;
     QLineEdit* LineEdit1;
@@ -68,27 +75,6 @@ class MetabolitesWidget1 : public CopasiWidget
     QLabel* TextLabel7;
     QLabel* TextLabel1;
     QLabel* TextLabel2;
-
-    int myValue;
-    QString name;
-
-  protected slots:
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnOKClicked();
-
-  signals:
-    void signal_emitted(const QString &);
-    void leaf(CModel*);
-    void updated();
-
-  private:
-    void showMessage(QString caption, QString text);
-
-  protected:
-    QGridLayout* MetabolitesWidget1Layout;
-    QGridLayout* ButtonGroup2Layout;
-    QGridLayout* ButtonGroup3Layout;
-    QHBoxLayout* Layout7;
   };
 
 #endif // METABOLITESWIDGET1_H

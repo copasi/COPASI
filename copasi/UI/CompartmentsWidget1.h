@@ -4,16 +4,10 @@
  **  
  ** This is the header file for the Compartments Widget1, i.e the second level 
  ** of Compartments.
- *****************************************************************************/ 
-/*
- reimplement UI to automatically change internal components size
- Author: Liang Xu
- */
+ *****************************************************************************/
 #ifndef COMPARTMENTSWIDGET1_H
 #define COMPARTMENTSWIDGET1_H
 
-#include <qvariant.h>
-#include <qwidget.h>
 #include "copasiWidget.h"
 
 class QVBoxLayout;
@@ -25,7 +19,6 @@ class QLineEdit;
 class QListBox;
 class QListBoxItem;
 class QPushButton;
-class CModel;
 
 class CompartmentsWidget1 : public CopasiWidget
   {
@@ -34,13 +27,25 @@ class CompartmentsWidget1 : public CopasiWidget
   public:
     CompartmentsWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~CompartmentsWidget1();
-    CModel *mModel;
-    void loadCompartments(CModel *model);
-    void loadName(QString setValue);
-    int isName(QString setValue);
-    QString *Compartment1_Name;
-    QString name;
 
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
+  protected slots:
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
+    virtual void slotListBoxCurrentChanged(const QString &);
+
+  protected:
+    bool loadFromCompartment(const CCompartment *);
+    bool saveToCompartment();
+    std::string objKey;
+
+    QString volumeSave;
+
+    QGridLayout* CompartmentsWidget1Layout;
+    QHBoxLayout* Layout5;
     QLineEdit* LineEdit4;
     QLineEdit* LineEdit1;
     QLabel* TextLabel2;
@@ -54,21 +59,6 @@ class CompartmentsWidget1 : public CopasiWidget
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
     QFrame* Line4_3;
-
-  public slots:
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnOKClicked();
-    virtual void slotListBoxCurrentChanged(const QString &);
-
-  signals:
-    void name_changed(const QString &);
-    void signal_emitted(const QString &);
-    void leaf(CModel*);
-    void updated();
-
-  protected:
-    QGridLayout* CompartmentsWidget1Layout;
-    QHBoxLayout* Layout5;
   };
 
 #endif // COMPARTMENTSWIDGET1_H

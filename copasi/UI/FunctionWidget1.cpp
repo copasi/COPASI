@@ -22,7 +22,9 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include <qmessagebox.h>
+#include <qtextbrowser.h>
+#include <qmessagebox.h> 
+//#include <qpixmap.h>
 #include "copasi.h"
 #include "FunctionWidget1.h"
 #include "model/CMetab.h"
@@ -32,12 +34,11 @@
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
+#include "report/CKeyFactory.h"
 
 #include "./icons/product.xpm"
 #include "./icons/substrate.xpm"
-#include "./icons/modifier.xpm" 
-//#include "./icons/locked.xpm"
-//#include "./icons/unlocked.xpm"
+#include "./icons/modifier.xpm"
 #include "parametertable.h" // just for the table item widgets
 
 /*
@@ -179,77 +180,14 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(commitChanges, cancelChanges);
 
   // signals and slots connections
-  /*** For Cancel Button Clicked ***/
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
-  connect(this, SIGNAL(signalCancelButtonClicked(const QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(const QString &)));
-  /*** For Commit Button Clicked ***/
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
-  //connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent
-  connect(this, SIGNAL(informUpdated()), (ListViews*)parent, SLOT(dataModelUpdated()));
-  connect(this, SIGNAL(update()), (ListViews*)parent, SLOT(loadFunction()));
-
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
 }
 
-int FunctionWidget1::isName(QString setValue)
+bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be const
 {
-  CCopasiVectorNS< CFunction > & Functions = Copasi->pFunctionDB->loadedFunctions();
-  C_INT32 noOfFunctionsRows = Functions.size();
-  //Now filling the table.
-
-  CFunction *funct1;
-  //int i = 0;
-  /*  myValue = -1;
-   
-    for (i = 0; i < Functions.size(); i++)
-      {
-        funct1 = Functions[i];
-        int value = QString::compare(funct1->getName().c_str(), setValue);
-   
-        if (!value)
-          {
-            myValue = i;
-            break;
-          }
-      }
-  */
-  funct1 = Copasi->pFunctionDB->findFunction(setValue.latin1());
-  if (funct1)
-    {
-      loadName(setValue);
-      return 1;
-    }
-  else
-    return 0;
-}
-
-void FunctionWidget1::loadName(QString setValue)
-{
-  int i, j;
-
-  //  CCopasiVectorNS< CFunction > & Functions = Copasi->pFunctionDB->loadedFunctions();
-
-  //Now filling the table.
-
-  mName = setValue;
-  CFunction *funct = Copasi->pFunctionDB->findFunction(setValue.latin1());
-  //int i = 0;
-  //int myValue=-1;
-  /*
-    myValue = -1;
-   
-    for (i = 0; i < Functions.size(); i++)
-      {
-        funct = Functions[i];
-        int value = QString::compare(funct->getName().c_str(), setValue);
-   
-        if (!value)
-          {
-            myValue = i;
-            break;
-          }
-      }
-  */
+  C_INT32 i, j;
 
   QPixmap * pProduct = new QPixmap((const char**)product_xpm);
   QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
@@ -261,198 +199,191 @@ void FunctionWidget1::loadName(QString setValue)
   QColor paraColor(210, 210, 255);
   QColor color;
 
-  if (funct)
+  // list of usages for combobox
+  QStringList Usages;
+  Usages += "SUBSTRATE";
+  Usages += "PRODUCT";
+  Usages += "MODIFIER";
+  Usages += "PARAMETER";
+  QString usage, qUsage;
+
+  // for Name and Description text boxes
+  LineEdit1->setText(func->getName().c_str());
+  textBrowser->setText(func->getDescription().c_str());
+  //  Function_Name = new QString(funct->getName().c_str());
+
+  //TODO: the following is unnecessary
+  //Emptying the tables
+  int numberOfRows1 = Table1->numRows();
+  int numberOfRows2 = Table2->numRows();
+
+  for (i = 0; i < numberOfRows1; i++)
     {
-      // list of usages for combobox
-      QStringList Usages;
-      Usages += "SUBSTRATE";
-      Usages += "PRODUCT";
-      Usages += "MODIFIER";
-      Usages += "PARAMETER";
-      QString usage, qUsage;
+      Table1->removeRow(0);
+    }
 
-      // for Name and Description text boxes
-      LineEdit1->setText(funct->getName().c_str());
-      textBrowser->setText(funct->getDescription().c_str());
-      Function_Name = new QString(funct->getName().c_str());
+  for (i = 0; i < numberOfRows2; i++)
+    {
+      Table2->removeRow(0);
+    }
 
-      //Emptying the tables
-      int numberOfRows1 = Table1->numRows();
-      int numberOfRows2 = Table2->numRows();
+  const CFunctionParameters &functParam = func->getParameters();
+  C_INT32 noOffunctParams = functParam.size();
+  Table1->setNumRows(noOffunctParams);
 
-      for (i = 0; i < numberOfRows1; i++)
+  //create list of data types (for combobox)
+  QStringList functionType;
+  for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
+    functionType.push_back(CFunctionParameter::DataTypeName[i].c_str());
+
+  for (j = 0; j < noOffunctParams; j++)
+    {
+      usage = functParam[j]->getUsage().c_str();
+      if (usage == "SUBSTRATE") {qUsage = "Substrate"; color = subsColor;}
+      else if (usage == "PRODUCT") {qUsage = "Product"; color = prodColor;}
+      else if (usage == "MODIFIER") {qUsage = "Modifier"; color = modiColor;}
+      else if (usage == "PARAMETER") {qUsage = "Parameter"; color = paraColor;}
+      else {qUsage = "unknown"; color = QColor(255, 20, 20);}
+
+      // col. 0
+      Table1->setItem(j, 0, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
+                      functParam[j]->getName().c_str()));
+
+      // col. 1
+      QString temp = CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str();
+      ComboItem * item = new ComboItem(Table1, QTableItem::WhenCurrent, color, functionType);
+      Table1->setItem(j, 1, item);
+      item->setText(temp);
+
+      // col. 2
+      item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
+      item->setText(usage);
+      if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
+      if (usage == "PRODUCT") item->setPixmap(*pProduct);
+      if (usage == "MODIFIER") item->setPixmap(*pModifier);
+      Table1->setItem(j, 2, item);
+    }
+
+  // for application table
+  CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
+
+  C_INT32 noOfApplns = functUsage.size();
+
+  Table2->setNumRows(noOfApplns);
+
+  for (j = 0; j < noOfApplns; j++)
+    {
+      Table2->setText(j, 0, functUsage[j]->getName().c_str());
+      Table2->setText(j, 1, QString::number(functUsage[j]->getLow()));
+
+      switch (functUsage[j]->getHigh())
         {
-          Table1->removeRow(0);
-        }
-
-      for (i = 0; i < numberOfRows2; i++)
-        {
-          Table2->removeRow(0);
-        }
-
-      CFunctionParameters &functParam = funct->getParameters();
-      C_INT32 noOffunctParams = functParam.size();
-      Table1->setNumRows(noOffunctParams);
-      // for parameters table
-
-      //int j;
-
-      //create list of data types (for combobox)
-      QStringList functionType;
-      for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
-        functionType.push_back(CFunctionParameter::DataTypeName[i].c_str());
-
-      for (j = 0; j < noOffunctParams; j++)
-        {
-          usage = functParam[j]->getUsage().c_str();
-          if (usage == "SUBSTRATE") {qUsage = "Substrate"; color = subsColor;}
-          else if (usage == "PRODUCT") {qUsage = "Product"; color = prodColor;}
-          else if (usage == "MODIFIER") {qUsage = "Modifier"; color = modiColor;}
-          else if (usage == "PARAMETER") {qUsage = "Parameter"; color = paraColor;}
-          else {qUsage = "unknown"; color = QColor(255, 20, 20);}
-
-          // col. 0
-          Table1->setItem(j, 0, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
-                          functParam[j]->getName().c_str()));
-
-          // col. 1
-          QString temp = CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str();
-          ComboItem * item = new ComboItem(Table1, QTableItem::WhenCurrent, color, functionType);
-          Table1->setItem(j, 1, item);
-          item->setText(temp);
-
-          // col. 2
-          item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
-          item->setText(usage);
-          if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
-          if (usage == "PRODUCT") item->setPixmap(*pProduct);
-          if (usage == "MODIFIER") item->setPixmap(*pModifier);
-          Table1->setItem(j, 2, item);
-        }
-
-      // for application table
-      CCopasiVectorNS < CUsageRange > & functUsage = funct->getUsageDescriptions();
-
-      C_INT32 noOfApplns = functUsage.size();
-
-      Table2->setNumRows(noOfApplns);
-
-      for (j = 0; j < noOfApplns; j++)
-        {
-          Table2->setText(j, 0, functUsage[j]->getName().c_str());
-          Table2->setText(j, 1, QString::number(functUsage[j]->getLow()));
-
-          switch (functUsage[j]->getHigh())
-            {
-            case 0:
-              Table2->setText(j, 2, "NA");
-              break;
-
-            case - 1:
-              Table2->setText(j, 2, "infinity");
-              break;
-
-            default:
-              Table2->setText(j, 2, QString::number(functUsage[j]->getHigh()));
-            }
-        }
-
-      /***********  RADIO BUTTONS ***********************/
-      /*** if function is predefined ****/
-      /*** disables some widgets so user cannot make changes **/
-      if (funct->getType() == CFunction::MassAction ||
-          funct->getType() == CFunction::PreDefined)
-        {
-          RadioButton1->setEnabled(false);
-          RadioButton2->setEnabled(false);
-          RadioButton3->setEnabled(false);
-          commitChanges->setEnabled(false);
-          cancelChanges->setEnabled(false);
-          LineEdit1->setReadOnly(true);
-          textBrowser->setReadOnly(true);
-          Table1->setReadOnly(true);
-          Table2->setReadOnly(true);
-        }
-
-      /*** if function is user-defined *****/
-      else
-        {
-          RadioButton1->setEnabled(true);
-          RadioButton2->setEnabled(true);
-          RadioButton3->setEnabled(true);
-          LineEdit1->setReadOnly(false);
-          textBrowser->setReadOnly(false);
-          Table1->setReadOnly(false);
-          Table2->setReadOnly(false);
-          commitChanges->setEnabled(true);
-          cancelChanges->setEnabled(true);
-        }
-
-      switch (funct->isReversible())
-        {
-        case TriUnspecified:
-          RadioButton3->setEnabled(true);
-          RadioButton3->setChecked(true);
+        case 0:
+          Table2->setText(j, 2, "NA");
           break;
 
-        case TriFalse:
-          RadioButton2->setEnabled(true);
-          RadioButton2->setChecked(true);
+        case - 1:
+          Table2->setText(j, 2, "infinity");
           break;
 
-        case TriTrue:
-          RadioButton1->setEnabled(true);
-          RadioButton1->setChecked(true);
-          break;
+        default:
+          Table2->setText(j, 2, QString::number(functUsage[j]->getHigh()));
         }
     }
+
+  /***********  RADIO BUTTONS ***********************/
+  /*** if function is predefined ****/
+  /*** disables some widgets so user cannot make changes **/
+  if (func->getType() == CFunction::MassAction ||
+      func->getType() == CFunction::PreDefined)
+    {
+      RadioButton1->setEnabled(false);
+      RadioButton2->setEnabled(false);
+      RadioButton3->setEnabled(false);
+      commitChanges->setEnabled(false);
+      cancelChanges->setEnabled(false);
+      LineEdit1->setReadOnly(true);
+      textBrowser->setReadOnly(true);
+      Table1->setReadOnly(true);
+      Table2->setReadOnly(true);
+    }
+
+  /*** if function is user-defined *****/
+  else
+    {
+      RadioButton1->setEnabled(true);
+      RadioButton2->setEnabled(true);
+      RadioButton3->setEnabled(true);
+      LineEdit1->setReadOnly(false);
+      textBrowser->setReadOnly(false);
+      Table1->setReadOnly(false);
+      Table2->setReadOnly(false);
+      commitChanges->setEnabled(true);
+      cancelChanges->setEnabled(true);
+    }
+
+  switch (func->isReversible())
+    {
+    case TriUnspecified:
+      RadioButton3->setEnabled(true);
+      RadioButton3->setChecked(true);
+      break;
+
+    case TriFalse:
+      RadioButton2->setEnabled(true);
+      RadioButton2->setChecked(true);
+      break;
+
+    case TriTrue:
+      RadioButton1->setEnabled(true);
+      RadioButton1->setChecked(true);
+      break;
+    }
+  return true;
 } //end of function
 
-void FunctionWidget1::slotCancelButtonClicked()
+bool FunctionWidget1::saveToFunction()
 {
-  //QMessageBox::information(this, "Function Widget1", "Cancel changes to Widget");
-  emit signalCancelButtonClicked(*Function_Name);
-}
+  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  if (!func) return false;
 
-void FunctionWidget1::slotCommitButtonClicked()
-{
-  int i, j;
+  C_INT32 i, j;
+  bool changed = false;
+
   CFunctionParameter::DataType Type;
   bool ParametersChanged = false;
-  //QMessageBox::information(this, "Function Widget1", "Saving changes to Widget");
-
-  //   CWriteConfig * sFunctionDB = new CWriteConfig("FunctionDB1.gps");
-
-  //  CCopasiVectorNS< CFunction > & Functions = Copasi->pFunctionDB->loadedFunctions();
-  //  CFunction *funct;
-  //  funct = Functions[myValue];
 
   /**** for Name and Description ****/
-  CFunction * pFunction = Copasi->pFunctionDB->findFunction(mName.latin1());
-  CFunctionParameters &functParam = pFunction->getParameters();
-  CCopasiVectorNS < CUsageRange > & functUsage = pFunction->getUsageDescriptions();
+  CFunctionParameters &functParam = func->getParameters();
+  CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
 
-  if (mName != LineEdit1->text())
+  if (func->getName() != LineEdit1->text().latin1())
     {
-      mName = LineEdit1->text();
-      pFunction->setName(mName.latin1());
+      func->setName(LineEdit1->text().latin1());
+      ListViews::notify(ListViews::FUNCTION, ListViews::RENAME, objKey);
     }
 
   /**** For Radio Buttons ****/
   if (RadioButton1->isChecked() == true)
     {
-      pFunction->setReversible(TriTrue);
+      func->setReversible(TriTrue);
+      changed = true;
     }
   else if (RadioButton2->isChecked() == true)
     {
-      pFunction->setReversible(TriFalse);
+      func->setReversible(TriFalse);
+      changed = true;
     }
   else
-    pFunction->setReversible(TriUnspecified);
-
-  if (pFunction->getDescription() != textBrowser->text().latin1())
     {
-      pFunction->setDescription(textBrowser->text().latin1());
+      func->setReversible(TriUnspecified);
+      changed = true;
+    }
+
+  if (func->getDescription() != textBrowser->text().latin1())
+    {
+      func->setDescription(textBrowser->text().latin1());
+      changed = true;
 
       CUsageRange Application;
       functUsage.cleanup();
@@ -478,12 +409,6 @@ void FunctionWidget1::slotCommitButtonClicked()
       /***** for Table 1: Parameters table *****/
       C_INT32 noOffunctParams =
         std::min(functParam.size(), (unsigned C_INT32) Table1->numRows());
-
-      //  Table1->setNumRows(noOffunctParams);
-
-      // for parameters table
-
-      //int j;
 
       for (j = 0; j < noOffunctParams; j++)
         {
@@ -523,6 +448,7 @@ void FunctionWidget1::slotCommitButtonClicked()
 
       if (ParametersChanged)
         {
+          changed = true;
           CUsageRange Application;
           functUsage.cleanup();
 
@@ -579,10 +505,24 @@ void FunctionWidget1::slotCommitButtonClicked()
         }
     }
 
-  loadName(mName);
+  enter(objKey); //TODO: check if this is necessary
 
-  emit informUpdated();
-  emit update();
+  if (changed)
+    ListViews::notify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
+
+  return true;
+}
+
+void FunctionWidget1::slotCancelButtonClicked()
+{
+  //TODO: let the user confirm
+  enter(objKey); // reload
+}
+
+void FunctionWidget1::slotCommitButtonClicked()
+{
+  //let the user confirm?
+  saveToFunction();
 }
 
 void FunctionWidget1::slotTableValueChanged(int row, int col)
@@ -615,4 +555,33 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
       Table1->setPixmap(row, 2, *pPixMap);
       Table1->setRowHeight(row, Table1->rowHeight(row)); // updateCell()
     }
+}
+
+bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool FunctionWidget1::leave()
+{
+  //let the user confirm?
+  return saveToFunction();
+}
+
+bool FunctionWidget1::enter(const std::string & key)
+{
+  objKey = key;
+  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(key);
+  //TODO: check if it really is a compartment
+
+  if (func) return loadFromFunction(func);
+  else return false;
 }

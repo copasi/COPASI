@@ -10,20 +10,15 @@
 
 #include <qlayout.h>
 #include <qwidget.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
-#include "model/CMetab.h"
-#include <qvariant.h>
-#include <qtable.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
-#include "utilities/CGlobals.h"
+
+#include "MyTable.h"
+#include "model/CModel.h"
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
-#include "listviews.h" 
+#include "listviews.h"
+#include "report/CKeyFactory.h"
+
 /**
  *  Constructs a Widget for the Functions subsection of the tree for 
  *  displaying the functions.
@@ -56,47 +51,28 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-  /*** for connecting first and second level function widget ****/
+
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
           this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)),
-          (ListViews*)parent, SLOT(slotFunctionTableChanged(const QString &)));
   connect(table, SIGNAL(selectionChanged ()),
           this, SLOT(slotTableSelectionChanged ()));
-
-  connect(this, SIGNAL(informUpdated()), (ListViews*)parent, SLOT(dataModelUpdated()));
-  connect(this, SIGNAL(update()), (ListViews*)parent, SLOT(loadFunction()));
 }
 
-void FunctionWidget::loadFunction()
+void FunctionWidget::fillTable()
 {
-  //Emptying the table
-  int numberOfRows = table->numRows();
-  int i;
-  for (i = 0; i < numberOfRows; i++)
+  const CFunction *obj;
+  const CCopasiVectorN < CFunction > & objects = Copasi->pFunctionDB->loadedFunctions();
+  C_INT32 j, jmax = objects.size();
+  table->setNumRows(jmax);
+  mKeys.resize(jmax);
+
+  for (j = 0; j < jmax; ++j)
     {
-      table->removeRow(0);
-    }
+      obj = objects[j];
+      table->setText(j, 0, obj->getName().c_str());
 
-  //Now filling the table.
-  repaint_table();
-}
-
-void FunctionWidget::repaint_table()
-{
-  CCopasiVectorNS< CFunction > & Functions =
-    Copasi->pFunctionDB->loadedFunctions();
-
-  C_INT32 noOfFunctionsRows = Functions.size();
-  table->setNumRows(noOfFunctionsRows);
-  CFunction *funct;
-  C_INT32 j;
-  for (j = 0; j < noOfFunctionsRows; j++)
-    {
-      funct = Functions[j];
-      table->setText(j, 0, funct->getName().c_str());
       QString ftype;
-      switch (funct->getType())
+      switch (obj->getType())
         {
         case 1:
         case 2:
@@ -107,53 +83,69 @@ void FunctionWidget::repaint_table()
           break;
         }
       table->setText(j, 1, ftype);
+
+      mKeys[j] = obj->getKey();
     }
-  table->setText(noOfFunctionsRows, 1, "");
+  table->setText(jmax, 1, "");
 }
 
-void FunctionWidget::setFocus()
+//**************************************************************************
+
+void FunctionWidget::createNewObject()
+{}
+
+void FunctionWidget::slotTableCurrentChanged(int row,
+    int C_UNUSED(col),
+    int C_UNUSED(m) ,
+    const QPoint & C_UNUSED(n))
 {
-  QWidget::setFocus();
-  table->setFocus();
+  if (row >= table->numRows() || row < 0) return;
+
+  if (row == table->numRows() - 1)
+    {
+      //TODO: create a new Object
+    }
+
+  pListView->switchToOtherWidget(mKeys[row]);
 }
 
 void FunctionWidget::slotTableSelectionChanged()
 {
-  if (!table->hasFocus())
-    {
-      table->setFocus();
-    }
+  if (!table->hasFocus()) table->setFocus();
 }
 
-void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
+void FunctionWidget::tableValueChanged(int C_UNUSED(row),
+                                       int C_UNUSED(col))
+{}
+
+bool FunctionWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (row >= table->numRows() || row < 0)
-    return;
-  QString x = table->text(row, col);
-  if (row == table->numRows() - 1)
+  switch (objectType)
     {
-      std::string name = "Function";
-      CKinFunction newFunction;;
-      newFunction.setType(CFunction::UserDefined);
+    case ListViews::FUNCTION:
+    case ListViews::MODEL:
+      fillTable();
+      break;
 
-      int i = 0;
-      while (Copasi->pFunctionDB->findFunction(name) != NULL)
-        {
-          i++;
-          name = "Function";
-          name += "_";
-          name += QString::number(i).latin1();
-        }
-      newFunction.setName(name);
-      Copasi->pFunctionDB->add(newFunction);
-      table->setNumRows(table->numRows());
-      table->setText(row, 0, name.c_str());
-      x = name.c_str();
-      emit informUpdated();
-      emit update();
+    default:
+      break;
     }
-  emit name(x);
+  return true;
 }
+
+bool FunctionWidget::leave()
+{
+  //does nothing.
+  return true;
+}
+
+bool FunctionWidget::enter(const std::string & key)
+{
+  //does nothing.
+  return true;
+}
+
+//*******************************************************************************************
 
 void FunctionWidget::resizeEvent(QResizeEvent * re)
 {

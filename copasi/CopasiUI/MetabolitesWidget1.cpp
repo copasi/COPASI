@@ -22,6 +22,7 @@
 #include "model/CModel.h"
 #include "utilities/CMethodParameter.h"
 #include "listviews.h"
+#include "report/CKeyFactory.h"
 
 /*
  *  Constructs a MetabolitesWidget1 which is a child of 'parent', with the 
@@ -227,19 +228,6 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   // Cancel button
   connect(cancelChanges, SIGNAL(clicked()),
           this, SLOT(slotBtnCancelClicked()));
-  //
-  connect(this, SIGNAL(signal_emitted(const QString &)),
-          (ListViews*)parent,
-          SLOT(slotMetaboliteTableChanged(const QString &)));
-  //
-  connect(this, SIGNAL(leaf(CModel*)),
-          (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
-  //
-  connect(this, SIGNAL(updated()),
-          (ListViews*)parent, SLOT(dataModelUpdated()));
-
-  //  connect(ComboBox1, SIGNAL(activated(const QString &)), (ListViews*)parent, SLOT(slotCompartmentSelected(const QString &)));
-  //  connect(LineEdit4, SIGNAL(selectionChanged()), (ListViews*)parent, SLOT(slotCompartmentSelected()));
 }
 
 /*
@@ -250,178 +238,175 @@ MetabolitesWidget1::~MetabolitesWidget1()
   // no need to delete child widgets, Qt does it all for us
 }
 
-int MetabolitesWidget1::isName(QString setValue)
-{
-  if (mModel == NULL)
-    {
-      return 0;
-    }
-
-  if (mModel->getMetabolites().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
-    {
-      loadName(setValue);
-      return 1;
-    }
-
-  return 0;
-}
-
-/*this function is used to load the model before loading the widget*/
-void MetabolitesWidget1::loadMetabolites(CModel *model)
-{
-  if (model != NULL)
-    {
-      mModel = model;
-    }
-}
-
 /* This function loads the metabolites widget when its name is
    clicked in the tree   */
-void MetabolitesWidget1::loadName(QString setValue)
+bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
 {
-  if (mModel == NULL)
+  CCopasiVectorNS< CCompartment > & allcompartments = dataModel->getModel()->getCompartments();
+  CCompartment *compt;
+  ComboBox1->clear();
+  LineEdit1->setText(metab->getName().c_str());
+  //Metabolite1_Name = new QString(metab->getName().c_str());
+
+  LineEdit4->setText(QString::number(metab->getInitialConcentration()));
+
+  LineEdit7->setText(QString::number(metab->getConcentration()));
+  LineEdit7->setReadOnly(true);
+
+  LineEdit8->setText(QString::number(metab->getNumberDbl()));
+  LineEdit8->setReadOnly(true);
+
+  LineEdit5->setText(QString::number(metab->getInitialNumberDbl()));
+
+  LineEdit9->setText(QString::number(metab->getTransitionTime()));
+  LineEdit9->setReadOnly(true);
+  RadioButton1->setChecked(false);
+  RadioButton2->setChecked(false);
+  RadioButton3->setChecked(false);
+  RadioButton4->setChecked(false);
+  RadioButton5->setChecked(false);
+
+  if (metab->getStatus() == CMetab::METAB_FIXED)
     {
-      return;
+      RadioButton1->setChecked(true);
+      RadioButton3->setChecked(true);
+    }
+  else if (metab->getStatus() == CMetab::METAB_VARIABLE)
+    {
+      RadioButton2->setChecked(true);
+      RadioButton4->setChecked(true);
+    }
+  else if (metab->getStatus() == CMetab::METAB_DEPENDENT)
+    {
+      RadioButton2->setChecked(true);
+      RadioButton5->setChecked(true);
     }
 
-  CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
-
-  CMetab *metab;
-
-  unsigned C_INT32 i = 0;
-  myValue = -1;
-
-  for (; i < metabolites.size(); i++)
+  ComboBox1->setDuplicatesEnabled (false);
+  unsigned C_INT32 m;
+  for (m = 0; m < allcompartments.size(); m++)
     {
-      metab = metabolites[i];
-      int value = QString::compare(metab->getName().c_str(), setValue);
+      //showMessage("mudita","It comes here");
 
-      if (!value)
-        {
-          myValue = i;
-          break;
-        }
+      compt = allcompartments[m];
+      //ComboBox1->insertStringList(compt->getName().c_str(),j);
+      ComboBox1->insertItem(compt->getName().c_str());
     }
+  ComboBox1->setCurrentText(metab->getCompartment()->getName().c_str());
 
-  if (myValue != -1)
-    {
-      metab = metabolites[myValue];
-      name = setValue;
-
-      CCopasiVectorNS< CCompartment > & allcompartments = mModel->getCompartments();
-      CCompartment *compt;
-      ComboBox1->clear();
-      LineEdit1->setText(metab->getName().c_str());
-      Metabolite1_Name = new QString(metab->getName().c_str());
-
-      LineEdit4->setText(QString::number(metab->getInitialConcentration()));
-
-      LineEdit7->setText(QString::number(metab->getConcentration()));
-      LineEdit7->setReadOnly(true);
-
-      LineEdit8->setText(QString::number(metab->getNumberDbl()));
-      LineEdit8->setReadOnly(true);
-
-      LineEdit5->setText(QString::number(metab->getInitialNumberDbl()));
-
-      LineEdit9->setText(QString::number(metab->getTransitionTime()));
-      LineEdit9->setReadOnly(true);
-      RadioButton1->setChecked(false);
-      RadioButton2->setChecked(false);
-      RadioButton3->setChecked(false);
-      RadioButton4->setChecked(false);
-      RadioButton5->setChecked(false);
-
-      if (metab->getStatus() == CMetab::METAB_FIXED)
-        {
-          RadioButton1->setChecked(true);
-          RadioButton3->setChecked(true);
-        }
-      else if (metab->getStatus() == CMetab::METAB_VARIABLE)
-        {
-          RadioButton2->setChecked(true);
-          RadioButton4->setChecked(true);
-        }
-      else if (metab->getStatus() == CMetab::METAB_DEPENDENT)
-        {
-          RadioButton2->setChecked(true);
-          RadioButton5->setChecked(true);
-        }
-
-      ComboBox1->setDuplicatesEnabled (false);
-      unsigned C_INT32 m;
-      for (m = 0; m < allcompartments.size(); m++)
-        {
-          //showMessage("mudita","It comes here");
-
-          compt = allcompartments[m];
-          //ComboBox1->insertStringList(compt->getName().c_str(),j);
-          ComboBox1->insertItem(compt->getName().c_str());
-        }
-      ComboBox1->setCurrentText(metab->getCompartment()->getName().c_str());
-    }
+  return true;
 }
 
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
-
-void MetabolitesWidget1::slotBtnCancelClicked()
+bool MetabolitesWidget1::saveToMetabolite()
 {
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel the changes?");
-  emit signal_emitted(*Metabolite1_Name);
-}
+  //find pointer to metab from key
+  CMetab* metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  if (!metab) return false;
 
-void MetabolitesWidget1::slotBtnOKClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit the changes?");
-  CMetab * metab = mModel->getMetabolites()[myValue];
-
+  //name
   QString name(LineEdit1->text());
   if (name.latin1() != metab->getName())
-    metab->setName(name.latin1());
+    {
+      metab->setName(name.latin1());
+      //TODO: update the reactions (the real thing, not the gui)
+      //      propably not necessary anymore when reaction uses keys instead of names
+      ListViews::notify(ListViews::METABOLITE, ListViews::RENAME, objKey);
+    }
 
+  //compartment
   QString Compartment = ComboBox1->currentText();
   if (Compartment.latin1() != metab->getCompartment()->getName())
     {
-      mModel->getCompartments()[Compartment.latin1()]->addMetabolite(*metab);
-      mModel->getCompartments()[metab->getCompartment()->getName()]->getMetabolites().remove(metab->getName());
-      mModel->initializeMetabolites();
+      dataModel->getModel()->getCompartments()[Compartment.latin1()]->addMetabolite(*metab);
+      dataModel->getModel()->getCompartments()[metab->getCompartment()->getName()]->getMetabolites().remove(metab->getName());
+      dataModel->getModel()->initializeMetabolites();
+      //ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
+      ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+      ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
     }
 
   //for Initial Concentration and Initial Number
   QString initialConcentration(LineEdit4->text());
   double temp1;
   temp1 = initialConcentration.toDouble();
-  if (temp1 != metab->getInitialConcentration())
-    metab->setInitialConcentration(temp1);
+  if (fabs(temp1 - metab->getInitialConcentration()) > 1e-10)
+    {
+      metab->setInitialConcentration(temp1);
+      ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+    }
+
   else
     {
       QString initialNumber(LineEdit5->text());
       C_FLOAT64 temp2;
       temp2 = initialNumber.toDouble();
-      if (temp2 != metab->getInitialNumberDbl())
-        metab->setInitialNumberDbl(temp2);
+      if (fabs(temp2 - metab->getInitialNumberDbl()) > 1e-3) //TODO: this is extremely ugly
+        {
+          metab->setInitialNumberDbl(temp2);
+          ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+        }
     }
 
-  //if (QString::number(metab->getStatus()) == "0")
-
+  //fixed?
   if (RadioButton1->isChecked() == true)
     {
-      metab->setStatus(CMetab::METAB_FIXED);
+      if (metab->getStatus() != CMetab::METAB_FIXED)
+        {
+          metab->setStatus(CMetab::METAB_FIXED);
+          ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+        }
     }
   else
     {
-      metab->setStatus(CMetab::METAB_VARIABLE);
+      if (metab->getStatus() != CMetab::METAB_VARIABLE)
+        {
+          metab->setStatus(CMetab::METAB_VARIABLE);
+          ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+        }
     }
 
-  loadName(name);
+  enter(objKey); //this is a hack to update the initial number when the initial concentration has changed and vice versa
 
-  emit updated();
-  emit leaf(mModel);
-  emit signal_emitted(*Metabolite1_Name);
+  return true; //TODO: really check
+}
+
+void MetabolitesWidget1::slotBtnCancelClicked()
+{
+  //let the user confirm
+  enter(objKey); // reload
+}
+
+void MetabolitesWidget1::slotBtnOKClicked()
+{
+  //let the user confirm?
+  saveToMetabolite();
+}
+
+bool MetabolitesWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool MetabolitesWidget1::leave()
+{
+  //let the user confirm?
+  return saveToMetabolite();
+}
+
+bool MetabolitesWidget1::enter(const std::string & key)
+{
+  objKey = key;
+  CMetab* metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(key);
+  //TODO: check if it really is a compartment
+
+  if (metab) return loadFromMetabolite(metab);
+  else return false;
 }

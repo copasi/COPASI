@@ -4,18 +4,10 @@
  **  
  ** This is the header file for Function Widget1, i.e the Second  level 
  ** widget which shows detailed description of an individual function
- *****************************************************************************/ 
-/*
- reimplement UI to automatically change internal components size
- Author: Liang Xu
- */
+ *****************************************************************************/
 #ifndef FUNCTION_WIDGET1_H
 #define FUNCTION_WIDGET1_H
-#include <qtextbrowser.h>
-#include <qsplitter.h>
-#include <qvariant.h>
-#include <qtable.h>
-#include "MyTable.h"
+
 #include "copasiWidget.h"
 
 class QVBoxLayout;
@@ -28,6 +20,7 @@ class QLineEdit;
 class QPushButton;
 class QRadioButton;
 class QTable;
+class CFunction;
 
 class FunctionWidget1 : public CopasiWidget
   {
@@ -35,23 +28,25 @@ class FunctionWidget1 : public CopasiWidget
 
   public:
     FunctionWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadName(QString setValue);
-    int isName(QString setValue);
 
-    QString mName;
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
 
-    QString *Function_Name;
-    QString *new_Name;
-    QString *new_Description;
-    QString param_Type;
-    QString param_Name;
-    QString param_Usage;
-    QString app_Desc;
-    QString app_Low;
-    QString app_High;
-    int int_Low;
-    int int_High;
+  protected slots:
+    virtual void slotCancelButtonClicked();
+    virtual void slotCommitButtonClicked();
+    virtual void slotTableValueChanged(int row, int col);
 
+  protected:
+    bool loadFromFunction(CFunction*);
+    bool saveToFunction();
+    std::string objKey;
+
+    //Widgets
+    QGridLayout* FunctionWidget1Layout;
+    QHBoxLayout* Layout1;
+    QHBoxLayout* Layout2;
     QLabel* TextLabel1;
     QLabel* TextLabel2;
     QTextBrowser* textBrowser;
@@ -72,20 +67,22 @@ class FunctionWidget1 : public CopasiWidget
     QLabel* TextLabel3;
     QFrame* Line1;
 
-  protected slots:
-    virtual void slotCancelButtonClicked();
-    virtual void slotCommitButtonClicked();
-    virtual void slotTableValueChanged(int row, int col);
+    void loadName(QString setValue);
+    int isName(QString setValue);
 
-  signals:
-    void signalCancelButtonClicked(const QString &);
-    void informUpdated();
-    void update();
+    QString mName;
 
-  protected:
-    QGridLayout* FunctionWidget1Layout;
-    QHBoxLayout* Layout1;
-    QHBoxLayout* Layout2;
+    QString *Function_Name;
+    QString *new_Name;
+    QString *new_Description;
+    QString param_Type;
+    QString param_Name;
+    QString param_Usage;
+    QString app_Desc;
+    QString app_Low;
+    QString app_High;
+    int int_Low;
+    int int_High;
   };
 
 #endif // FunctionWidget1

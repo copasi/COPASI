@@ -6,52 +6,42 @@
  ** widget which shows the table of function names and types
  *****************************************************************************/
 
-/*
- resize functions modified 
- Goal: to memorize the user change and expand according
- comments: Liang Xu 
- */
-
 #ifndef FUNCTIONWIDGET_H
 #define FUNCTIONWIDGET_H
-#include <qvariant.h>
-#include <qwidget.h>
-#include <qpushbutton.h>
-#include "MyTable.h"
+
+#include <qtable.h>
 #include "copasi.h"
-#include "utilities/CGlobals.h"
 #include "copasiWidget.h"
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+
 class QTable;
-class CModel;
-class CGlobals;
+class MyTable;
 
 class FunctionWidget : public CopasiWidget
   {
     Q_OBJECT
+
   protected:
     MyTable *table;
     bool binitialized;
+    std::vector<std::string> mKeys;
 
   public:
     FunctionWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadFunction();
-    void setFocus();
     void resizeEvent(QResizeEvent * re);
-    void repaint_table();
 
-  public slots:
-    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
 
   protected slots:
-    virtual void slotTableSelectionChanged();
+    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
-  signals:
-    void name(const QString &);
-    void informUpdated();
-    void update();
+    virtual void slotTableSelectionChanged();
+    virtual void tableValueChanged(int, int);
+
+  private:
+    void fillTable();
+    void createNewObject();
   };
 
 #endif

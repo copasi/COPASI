@@ -29,6 +29,8 @@
 #include "utilities/CGlobals.h"
 #include "utilities/CMethodParameter.h"
 #include "parametertable.h"
+#include "report/CKeyFactory.h"
+#include "MyLineEdit.h"
 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
@@ -175,93 +177,47 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
 
   //connect(table, SIGNAL(signalChanged(int, int, Qstring)), this, SLOT(slotTableChanged(int, int, QString)));
-
-  connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(const QString &)));
-  connect(this, SIGNAL(new_reaction()), (ListViews*)parent, SLOT(slotNewReaction()));
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadReactionsNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 ReactionsWidget1::~ReactionsWidget1()
 {}
 
-/*This function is used to connect this class to the listviews
-    class to basically choose the right widget to display   */
-int ReactionsWidget1::isName(QString setValue)
-{
-  if (mpModel == NULL)
-    {
-      return 0;
-    }
-
-  if (mpModel->getReactions().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
-    {
-      loadName(setValue);
-      name = setValue;
-      return 1;
-    }
-  else
-    return 0;
-}
-
-/*This function is to load the model for the reactions*/
-void ReactionsWidget1::loadReactions(CModel *model)
-{
-  if (model != NULL)
-    {
-      mpModel = model;
-    }
-}
-
 /* This function loads the reactions widget when its name is
    clicked in the tree   */
-void ReactionsWidget1::loadName(QString setValue)
+bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 {
-  name = setValue;
-
-  if (mpModel == NULL)
-    {
-      return;
-    }
-
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
-  mRi.initFromReaction(setValue.latin1(), *mpModel);
+  mRi.initFromReaction(reaction->getName(), *(dataModel->getModel()));
 
   // update the widget.
   FillWidgetFromRI();
+
+  return true; //TODO: really check
 }
 
-/*This slot is activated when the cancel button is clicked.It basically cancels any changes that
-  are made.It does this by emiiting a signal whcih si connected to the listviews and it reloads 
-  the widget with the initial values.*/
-void ReactionsWidget1::slotBtnCancelClicked()
-{
-  //QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
-  //TODO: reinsert some confirmation by user (see line above).
-  loadName(name); //reloads the reaction
-
-  //emit signal_emitted(name); // don´t know what this is for.
-}
-
-/*This slot is connected to the commit changes button.There is a difference between commit
-  changes and save changes using the icon on the toolbar, but I am not sure  what each one 
-  does and what is the difference between them.Have to ask Dr Hoops about it.*/
-void ReactionsWidget1::slotBtnOKClicked()
+bool ReactionsWidget1::saveToReaction()
 {
   //this writes all changes to the reaction
-  mRi.writeBackToReaction(*mpModel);
+  mRi.writeBackToReaction(*(dataModel->getModel()));
 
   //this tells the gui what it needs to know.
-  /* TODO: tell the gui about name change of a reaction and changed chemical equation.
-  also tell the gui if the reaction was new. */
-  emit updated();
-  emit leaf(mpModel);
-  emit signal_emitted(name);
+  ListViews::notify(ListViews::REACTION, ListViews::CHANGE, objKey);
+
+  //TODO: detect rename events (mRi.writeBackToReaction has to do this)
 }
 
-/*This slot is activated when the check box is clicked.It needs to have functionality to
-  make and update changes in the "Chemical Reaction" Text box and the "Kinetics" Combobox.*/
+void ReactionsWidget1::slotBtnCancelClicked()
+{
+  //let the user confirm
+  enter(objKey); // reload
+}
+
+void ReactionsWidget1::slotBtnOKClicked()
+{
+  //let the user confirm?
+  saveToReaction();
+}
 
 void ReactionsWidget1::slotCheckBoxClicked()
 {
@@ -293,10 +249,7 @@ void ReactionsWidget1::slotLineEditChanged()
 }
 
 void ReactionsWidget1::slotBtnNewClicked()
-{
-  // QMessageBox::information(this, "Reactions Widget", "adding a new reaction");
-  emit new_reaction();
-}
+{}
 
 void ReactionsWidget1::FillWidgetFromRI()
 {
@@ -351,4 +304,36 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 
   // update the widget
   FillWidgetFromRI();
+}
+
+bool ReactionsWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::COMPARTMENT:
+    case ListViews::METABOLITE:
+      //TODO: we have to decide how to handle this
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool ReactionsWidget1::leave()
+{
+  //TODO: let the user confirm?
+  return saveToReaction();
+}
+
+bool ReactionsWidget1::enter(const std::string & key)
+{
+  objKey = key;
+  CReaction* reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(key);
+  //TODO: check if it really is a compartment
+
+  if (reac) return loadFromReaction(reac);
+  else return false;
 }

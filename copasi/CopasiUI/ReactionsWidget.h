@@ -5,58 +5,51 @@
  ** This is the header file for the Reactions Widget, i.e the First level 
  ** of Reactions.
  **
- *****************************************************************************/ 
-/*
- resizeEvent functions modified 
- Goal: to memorize the user change and expand according
- comments: Liang Xu 
- */
+ *****************************************************************************/
+
 #ifndef REACTIONS_WIDGET_H
 #define REACTIONS_WIDGET_H
 
 #include <qtable.h>
-#include <qpushbutton.h>
-#include "MyTable.h"
-#include "copasi.h" 
-//#include "model/model.h"
+#include "copasi.h"
 #include "copasiWidget.h"
 
 class CModel;
+class QPushButton;
+class QGridLayout;
+class QTable;
+class MyTable;
 
 class ReactionsWidget : public CopasiWidget
   {
     Q_OBJECT
 
   protected:
-    CModel *mModel;
     MyTable *table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
     bool binitialized;
+    std::vector<std::string> mKeys;
 
   public:
     ReactionsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadReactions(CModel *model);
-    //void mousePressEvent(QMouseEvent * e);
     void resizeEvent(QResizeEvent * re);
-    void repaint_table();
-    unsigned int numTableRows();
 
-  signals:
-    void name(const QString &);
-    void leaf(CModel*);
-    void updated();
-
-  public slots:
-    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
 
   protected slots:
+    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+
     virtual void slotTableSelectionChanged();
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
+    virtual void tableValueChanged(int, int);
 
   private:
-    void showMessage(QString caption, QString text);
+    void fillTable();
+    void createNewObject();
   };
 
 #endif

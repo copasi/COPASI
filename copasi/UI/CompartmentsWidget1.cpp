@@ -22,6 +22,7 @@
 #include "model/CCompartment.h"
 #include "utilities/CMethodParameter.h"
 #include "listviews.h"
+#include "report/CKeyFactory.h"
 
 /*
  *  Constructs a CompartmentsWidget1 which is a child of 'parent', with the 
@@ -114,11 +115,6 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(ListBox1, SIGNAL(selected(const QString&)), this, SLOT(slotListBoxCurrentChanged(const QString&)));
-  connect(this, SIGNAL(name_changed(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(const QString &)));
-  connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(const QString &)));
-
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadCompartmentsNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 /*
@@ -129,54 +125,11 @@ CompartmentsWidget1::~CompartmentsWidget1()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*This function is used to connect this class to the listviews
-    class to basically choose the right widget to display   */
-int CompartmentsWidget1::isName(const QString setValue)
-{
-  if (mModel == NULL)
-    {
-      return 0;
-    }
-
-  //  const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
-
-  //  if (compartments[(std::string) setValue] != NULL)
-  if (mModel->getCompartments().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
-    {
-      loadName(setValue);
-      name = setValue;
-      return 1;
-    }
-  else
-    return 0;
-}
-
-/*This function is to load the model for the compartments*/
-void CompartmentsWidget1::loadCompartments(CModel *model)
-{
-  if (model != NULL)
-    {
-      mModel = model;
-    }
-}
-
 /* This function loads the compartments widget when its name is
   clicked in the tree   */
-void CompartmentsWidget1::loadName(const QString setValue)
+bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
 {
-  if (mModel == NULL)
-    {
-      return;
-    }
-
-  const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
-
-  const CCompartment *compartn;
-
-  compartn = compartments[(std::string)setValue.latin1()];
-
   LineEdit1->setText(compartn->getName().c_str());
-  Compartment1_Name = new QString(compartn->getName().c_str());
 
   const CCopasiVectorNS < CMetab > & Metabs = compartn->getMetabolites();
   C_INT32 noOfMetabolitesRows = Metabs.size();
@@ -190,38 +143,86 @@ void CompartmentsWidget1::loadName(const QString setValue)
       ListBox1->insertItem(mtb->getName().c_str());
     }
 
-  LineEdit3->setText(QString::number(compartn->getInitialVolume()));
+  volumeSave = QString::number(compartn->getInitialVolume());
+  LineEdit3->setText(volumeSave);
 
   LineEdit4->setText(QString::number(compartn->getVolume()));
   LineEdit4->setReadOnly(true);
+
+  return true; //TODO really check
+}
+
+bool CompartmentsWidget1::saveToCompartment()
+{
+  CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  if (!comp) return false;
+
+  //name
+  QString name(LineEdit1->text());
+  if (name.latin1() != comp->getName())
+    {
+      comp->setName(name.latin1());
+      //TODO: update something else in the model?
+      ListViews::notify(ListViews::COMPARTMENT, ListViews::RENAME, objKey);
+    }
+
+  //volume
+  QString volume(LineEdit3->text());
+  if (volume != volumeSave)
+    {
+      double m1;
+      m1 = volume.toDouble();
+      comp->setInitialVolume(m1);
+      ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, objKey);
+    }
+  return true; //TODO: really check
 }
 
 void CompartmentsWidget1::slotBtnCancelClicked()
 {
-  //QMessageBox::information(this, "Compartments Widget", "Do you really want to cancel changes");
-  emit signal_emitted(*Compartment1_Name);
+  //let the user confirm
+  enter(objKey); // reload
 }
 
 void CompartmentsWidget1::slotBtnOKClicked()
 {
-  const CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
-  CCompartment *compartn1;
-  compartn1 = compartments1[name.latin1()];
-
-  QString volume(LineEdit3->text());
-  double m1;
-  m1 = volume.toDouble();
-  compartn1->setInitialVolume(m1);
-  compartn1->setName(std::string(LineEdit1->text().latin1()));
-  name = LineEdit1->text();
-
-  emit updated();
-  emit leaf(mModel);
-  emit signal_emitted(*Compartment1_Name);
+  //let the user confirm?
+  saveToCompartment();
 }
 
 void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & m)
 {
-  emit name_changed(m);
+  //TODO do not really know what to do here. May be switch to metabolite widget?
 }
-//last function ends
+
+bool CompartmentsWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::COMPARTMENT:
+    case ListViews::METABOLITE:
+      //TODO: we have to decide how to handle this
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool CompartmentsWidget1::leave()
+{
+  //let the user confirm?
+  return saveToCompartment();
+}
+
+bool CompartmentsWidget1::enter(const std::string & key)
+{
+  objKey = key;
+  CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(key);
+  //TODO: check if it really is a compartment
+
+  if (comp) return loadFromCompartment(comp);
+  else return false;
+}

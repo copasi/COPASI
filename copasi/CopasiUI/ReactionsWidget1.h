@@ -7,22 +7,11 @@
  **
  *****************************************************************************/
 
-/*
- reimplement UI to automatically change internal components size
- Author: Liang Xu
- */
 #ifndef REACTIONS_WIDGET1_H
 #define REACTIONS_WIDGET1_H
-#include <qsplitter.h>
-#include <qvariant.h>
-#include <qlayout.h>
-#include "qtable.h"
-#include "MyTable.h"
-#include "MyLineEdit.h"
+
 #include "copasiWidget.h"
 #include "CReactionInterface.h"
-#include "utilities/CMethodParameter.h" 
-//#include "parametertable.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -34,9 +23,7 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class ParameterTable;
-
-class CModel;
-class CReaction;
+class MyLineEdit;
 
 class ReactionsWidget1 : public CopasiWidget
   {
@@ -45,14 +32,32 @@ class ReactionsWidget1 : public CopasiWidget
   public:
     ReactionsWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ReactionsWidget1();
-    CModel *mpModel;
+
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
+  protected slots:
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
+    virtual void slotBtnNewClicked();
+    virtual void slotCheckBoxClicked();
+    virtual void slotComboBoxSelectionChanged(const QString &);
+    virtual void slotLineEditChanged();
+
+    //  public slots:
+    virtual void slotTableChanged(int index, int sub, QString newValue);
+
+  protected:
+    bool loadFromReaction(const CReaction* reaction);
+    bool saveToReaction();
+    void FillWidgetFromRI();
+
+    std::string objKey;
     CReactionInterface mRi;
 
-    void loadName(QString setValue);
-    int isName(QString setValue);
-    void loadReactions(CModel *model);
-    QString name;
-
+    QGridLayout* ReactionsWidget1Layout;
+    QHBoxLayout* Layout1;
     QLabel* TextLabel4;
     QLabel* TextLabel7;
     QPushButton* commitChanges;
@@ -73,33 +78,8 @@ class ReactionsWidget1 : public CopasiWidget
     QLabel* TextLabel5;
     QPushButton* newKinetics;
     QCheckBox* CheckBox;
-    //CReaction *reactn1;
 
-    //int num_substrates;
-    //int num_products;
-    //int numrows;
-  protected slots:
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnOKClicked();
-    virtual void slotBtnNewClicked();
-    virtual void slotCheckBoxClicked();
-    virtual void slotComboBoxSelectionChanged(const QString &);
-    virtual void slotLineEditChanged();
-
-  public slots:
-    virtual void slotTableChanged(int index, int sub, QString newValue);
-
-    void FillWidgetFromRI();
-
-  signals:
-    void signal_emitted(const QString &);
-    void new_reaction();
-    void leaf(CModel*);
-    void updated();
-
-  protected:
-    QGridLayout* ReactionsWidget1Layout;
-    QHBoxLayout* Layout1;
+    //QString name;
   };
 
 #endif // REACTIONSWIDGET1_H
