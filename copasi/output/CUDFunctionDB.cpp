@@ -16,7 +16,10 @@
 /**
  *
  */
-CUDFunctionDB::CUDFunctionDB() {}
+CUDFunctionDB::CUDFunctionDB():
+    mNameStr(""),
+    mItems(0)
+{}
 
 /**
  *
