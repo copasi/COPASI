@@ -33,7 +33,7 @@ void CFunctionDB::cleanup()
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 {
   CFunction Function;
-  CFunction * pFunction;
+  CFunction * pFunction = NULL;
 
   C_INT32 Size = 0;
   C_INT32 Fail = 0;
@@ -133,7 +133,6 @@ CFunction * CFunctionDB::dBLoad(const string & functionName)
 {
   CFunction Function;
   CFunction * pFunction = NULL;
-  C_INT32 Index = mLoadedFunctions.size();
 
   CReadConfig inbuf(mFilename);
 
