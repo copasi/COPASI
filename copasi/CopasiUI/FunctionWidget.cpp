@@ -92,7 +92,21 @@ void FunctionWidget::fillTable()
 //**************************************************************************
 
 void FunctionWidget::createNewObject()
-{}
+{
+  std::string name = "function_0";
+  int i = 0;
+  while (!Copasi->pFunctionDB->add(name))
+    {
+      i++;
+      name = "function_";
+      name += QString::number(i).latin1();
+    }
+  table->setText(table->numRows() - 1, 0, name.c_str());
+  table->setNumRows(table->numRows());
+  //emit updated();
+  //emit leaf(mModel);
+  ListViews::notify(ListViews::FUNCTION, ListViews::ADD);
+}
 
 void FunctionWidget::slotTableCurrentChanged(int row,
     int C_UNUSED(col),
