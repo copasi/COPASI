@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 18:38:04 $
+   $Author: chlee $ 
+   $Date: 2003/11/07 20:32:44 $
    End CVS Header */
 
 /**********************************************************************
@@ -398,10 +398,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                // The user clicked the Retry again button or pressed Enter
+            case 0:                 // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                // The user clicked the Quit or pressed Escape
+            case 1:                 // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -418,28 +418,28 @@ void FunctionWidget1::updateParameters()
     }
 }
 
-bool FunctionWidget1::saveToFunction()
+/*bool FunctionWidget1::saveToFunction()
 {
   CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
   if (!func) return false;
-
+ 
   C_INT32 i, j;
   bool changed = false;
-
+ 
   CFunctionParameter::DataType Type;
   bool ParametersChanged = false;
-
-  /**** for Name and Description ****/
+ 
+  /**** for Name and Description **** /
   CFunctionParameters &functParam = func->getParameters();
   CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
-
+ 
   if (func->getName() != LineEdit1->text().latin1())
     {
       func->setName(LineEdit1->text().latin1());
       ListViews::notify(ListViews::FUNCTION, ListViews::RENAME, objKey);
     }
-
-  /**** For Radio Buttons ****/
+ 
+  /**** For Radio Buttons **** /
   if (RadioButton1->isChecked() == true)
     {
       func->setReversible(TriTrue);
@@ -455,15 +455,15 @@ bool FunctionWidget1::saveToFunction()
       func->setReversible(TriUnspecified);
       changed = true;
     }
-
+ 
   if (func->getDescription() != textBrowser->text().latin1())
     {
       func->setDescription(textBrowser->text().latin1());
       changed = true;
-
+ 
       CUsageRange Application;
       functUsage.cleanup();
-
+ 
       Application.setUsage("SUBSTRATES");
       if (functParam.getUsageRanges().getIndex("SUBSTRATE") == C_INVALID_INDEX)
         Application.setRange(0, CRange::Infinity);
@@ -471,7 +471,7 @@ bool FunctionWidget1::saveToFunction()
         Application.setRange(functParam.getUsageRanges()["SUBSTRATE"]->getLow(),
                              functParam.getUsageRanges()["SUBSTRATE"]->getHigh());
       functUsage.add(Application);
-
+ 
       Application.setUsage("PRODUCTS");
       if (functParam.getUsageRanges().getIndex("PRODUCT") == C_INVALID_INDEX)
         Application.setRange(0, CRange::Infinity);
@@ -482,32 +482,32 @@ bool FunctionWidget1::saveToFunction()
     }
   else
     {
-      /***** for Table 1: Parameters table *****/
+      /***** for Table 1: Parameters table ***** /
       C_INT32 noOffunctParams =
         std::min(functParam.size(), (unsigned C_INT32) Table1->numRows());
-
+ 
       for (j = 0; j < noOffunctParams; j++)
         {
           //param_Name = new QString(Table1->text(j,0));
           // param_Name = Table1->text(j, 0);
-
-          /****** conv enumerated types ???? *****/
+ 
+          /****** conv enumerated types ???? ***** /
           //Table1->setText(j, 1, enumname[functParam[j]->getType()]);
           param_Type = Table1->text(j, 1);
-
+ 
           //param_Usage = new QString(Table1->text(j,2));
           param_Usage = Table1->text(j, 2);
-
-          /***** set new values *****/
-          /**** enum ??? ****/
+ 
+          /***** set new values ***** /
+          /**** enum ??? **** /
           //functParam[j]->setType(param_Type);
-
+ 
           for (i = 0; i < 4; i++)
             {
               if (param_Type.latin1() == CFunctionParameter::DataTypeName[i])
                 Type = (CFunctionParameter::DataType) i;
             }
-
+ 
           // functParam[j]->setName(param_Name.latin1());
           if (functParam[j]->getType() != Type)
             {
@@ -521,14 +521,14 @@ bool FunctionWidget1::saveToFunction()
             }
           functParam.updateUsageRanges();
         }
-
+ 
       if (ParametersChanged)
         {
           changed = true;
           updateApplication();
           /*CUsageRange Application;
                 functUsage.cleanup();
-
+ 
                 Application.setUsage("SUBSTRATES");
                 if (functParam.getUsageRanges().getIndex("SUBSTRATE") == C_INVALID_INDEX)
                   Application.setRange(0, CRange::Infinity);
@@ -536,25 +536,25 @@ bool FunctionWidget1::saveToFunction()
                   Application.setRange(functParam.getUsageRanges()["SUBSTRATE"]->getLow(),
                                        functParam.getUsageRanges()["SUBSTRATE"]->getHigh());
                 functUsage.add(Application);
-
+ 
                 Application.setUsage("PRODUCTS");
                 if (functParam.getUsageRanges().getIndex("PRODUCT") == C_INVALID_INDEX)
                   Application.setRange(0, CRange::Infinity);
                 else
                   Application.setRange(functParam.getUsageRanges()["PRODUCT"]->getLow(),
                                        functParam.getUsageRanges()["PRODUCT"]->getHigh());
-                functUsage.add(Application);*/ 
+                functUsage.add(Application);* / 
           //Write back changed pFunction to current function
           // func = pFunction;
         }
       else
         {
-          /***** for Table 2: Applications table *****/
+          /***** for Table 2: Applications table ***** /
           C_INT32 noOfApplns =
             std::min(functUsage.size(), (unsigned C_INT32) Table2->numRows());
-
+ 
           //  Table2->setNumRows(noOfApplns);
-
+ 
           for (j = 0; j < noOfApplns; j++)
             {
               //app_Desc = new QString(Table2->text(j,0));
@@ -564,7 +564,7 @@ bool FunctionWidget1::saveToFunction()
               int_Low = app_Low.toInt();
               app_High = Table2->text(j, 2);
               //app_High = new QString(Table2->text(j,2));
-
+ 
               if (QString::compare(app_High, "NA") == 0)
                 {
                   int_High = 0;
@@ -573,18 +573,62 @@ bool FunctionWidget1::saveToFunction()
                 {
                   int_High = app_High.toInt();
                 }
-
-              /***** there is no setName  here ????? ******/
+ 
+              /***** there is no setName  here ????? ****** /
               functUsage[j]->setUsage(app_Desc.latin1());
-
+ 
               functUsage[j]->setLow(int_Low);
-
+ 
               functUsage[j]->setHigh(int_High);
             }
         }
     }
-
+ 
   enter(objKey); //TODO: check if this is necessary
+  if (changed)
+    ListViews::notify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
+ 
+  return true;
+}*/
+
+bool FunctionWidget1::saveToFunction()
+{
+  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  if (!func) return false;
+
+  bool changed = false;
+
+  if (func->getName() != pFunction->getName())
+    {
+      func->setName(pFunction->getName());
+    }
+  CFunctionParameters &functParam = func->getParameters();
+  CFunctionParameters &pfunctParam = pFunction->getParameters();
+
+  /*for (int i=0; i < pfunctParam.size(); i++)
+  {
+   // check if function parameter exists in pFunctionParameter
+   CFunctionParameter *p = functParam[pfunctParam[i]->getName()];
+   if (p)  // match found
+   //if (functParam[pfunctParam[i]->getName()])
+   {
+    // update usage and type
+    p->setUsage(functParam[i]->getUsage());
+    //functParam[pfunctParam[i]->getName()]->setUsage(functParam[i]->getUsage());
+   } else {// match not found
+    changed = true;
+    functParam.add(*pfunctParam[i]);
+   }
+  }*/
+  if (func->getDescription() != pFunction->getDescription())
+    {
+      changed = true;
+      try
+        {
+          func->setDescription(pFunction->getDescription());
+        }
+      catch (CCopasiException Exception){}}
+
   if (changed)
     ListViews::notify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
 
