@@ -81,6 +81,10 @@ SOURCE=.\CReportBody.cpp
 
 SOURCE=.\CReportDefinition.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\ReportDefinitionVector.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -116,6 +120,10 @@ SOURCE=.\CReportBody.h
 # Begin Source File
 
 SOURCE=.\CReportDefinition.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReportDefinitionVector.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
