@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/05 21:23:07 $
+   $Date: 2003/12/11 15:59:16 $
    End CVS Header */
 
 /**
@@ -362,7 +362,7 @@ bool CCopasiXML::saveModel()
   endSaveElement("StateTemplate");
 
   Attributes.erase();
-  Attributes.add("type", "initial");
+  Attributes.add("type", "initialState");
   startSaveElement("InitialState", Attributes);
   CState InitialState = mpModel->getInitialState();
 
