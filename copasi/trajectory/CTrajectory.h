@@ -12,6 +12,7 @@
 
 #include "model/model.h"
 #include "utilities/utilities.h"
+#include "CStochSolver.h"
 #include "CODESolver.h"
 
 // #include "COutputEvent.h"
@@ -24,7 +25,7 @@ class CTrajectory
      * This may be done by a continuous method, a stochastic method, 
      * or a hybrid of the two. XXX The latter is still to be implemented.
      */
-    enum MethodType {CONTINUOUS_ODE=1, STOCH_DIRECT, STOCH_NEXTREACTION, MIXED)
+	 enum MethodType {CONTINUOUS_ODE=1, STOCH_DIRECT, STOCH_NEXTREACTION, MIXED};
   //Attributes
  private:
 

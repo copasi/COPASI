@@ -77,7 +77,7 @@ class CStochSolver
    * The named constructor, giving a method to use
    * @param method An integer specifying the method to use
    */
-  CStochSolver(C_INT32 method)
+  CStochSolver(C_INT32 method);
   /**
    * The destructor
    */
