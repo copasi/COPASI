@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/14 15:20:43 $
+   $Date: 2004/06/16 16:14:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -55,13 +55,18 @@ class FunctionWidget1 : public CopasiWidget
     virtual void slotFcnDescriptionChanged();
 
   protected:
-    bool loadFromFunction(CFunction* = NULL);
+    bool loadFromFunction(const CFunction* = NULL);
     bool loadParameterTable(const CFunctionParameters & params);
     bool loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages);
+    bool loadReversibility(TriLogic rev);
     void updateParameters();
     void updateApplication();
     bool saveToFunction();
+    bool copyFunctionContentsToFunction(const CFunction* src, CFunction* target);
+
     std::string objKey;
+    bool flagRO;
+    bool flagChanged;
 
     //Widgets
     QGridLayout* FunctionWidget1Layout;
@@ -69,8 +74,8 @@ class FunctionWidget1 : public CopasiWidget
     QHBoxLayout* Layout2;
     QLabel* TextLabel1;
     QLabel* TextLabel2;
-    QTextBrowser* textBrowser;
-    //MyLineEdit* textBrowser;
+    QTextEdit* textBrowser;
+
     QFrame* Line2;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
