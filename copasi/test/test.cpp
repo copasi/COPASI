@@ -44,6 +44,7 @@
 #include "utilities/CCopasiTree.h"
 #include "mathmodel/CMathNode.h"
 #include "xml/CCopasiXMLInterface.h"
+#include "xml/CCopasiXML.h"
 
 using namespace std;
 
@@ -144,11 +145,11 @@ int main(int argc, char *argv[])
       //      TestMCA();
       //      TestOutputEvent();
       //      MakeFunctionDB();
-      //      ConvertFunctionDB();
+      ConvertFunctionDB();
       //      TestRandom(10000, 100);
       //      Testr250();
       //      Testmt19937();
-      //  TestCopasiObject();
+      //      TestCopasiObject();
 
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
@@ -156,7 +157,7 @@ int main(int argc, char *argv[])
 
       //      TestElementaryFluxMode();
 
-      TestCopasiXML();
+      //      TestCopasiXML();
     }
 
   catch (CCopasiException Exception)
@@ -341,7 +342,14 @@ C_INT32 TestCopasiObject(void)
   model.load(inbuf);
   model.compile();
 
-  cout << model.getCompartments()["compartment"]->getCN() << endl;
+  CCopasiObjectName cn = model.getCompartments()["compartment"]->getCN();
+
+  cout << cn << endl;
+
+  CCompartment * pCompartment =
+    (CCompartment *) (CCopasiContainer *) RootContainer.getObject(cn);
+
+  cout << *pCompartment << endl;
   return 0;
 }
 
@@ -1588,49 +1596,57 @@ C_INT32 ConvertFunctionDB(void)
 {
   CFunctionDB FunctionDB;
 
-  FunctionDB.setFilename("FunctionDBold.gps");
+  FunctionDB.setFilename("FunctionDB.gps");
 
-  // FunctionDB.findLoadFunction("Mass action (reversible)");
-  // FunctionDB.findLoadFunction("Mass action (irreversible)");
-
+  FunctionDB.findLoadFunction("Allosteric inhibition (MWC)");
+  FunctionDB.findLoadFunction("Allosteric inhibition (empirical)");
+  FunctionDB.findLoadFunction("Catalytic activation (irrev)");
+  FunctionDB.findLoadFunction("Catalytic activation (rev)");
+  FunctionDB.findLoadFunction("Competitive inhibition (irr)");
+  FunctionDB.findLoadFunction("Competitive inhibition (rev)");
   FunctionDB.findLoadFunction("Constant flux (irreversible)");
   FunctionDB.findLoadFunction("Constant flux (reversible)");
   FunctionDB.findLoadFunction("Henri-Michaelis-Menten (irreversible)");
-  FunctionDB.findLoadFunction("Reversible Michaelis-Menten");
-  FunctionDB.findLoadFunction("Substrate inhibition (rev)");
-  FunctionDB.findLoadFunction("Substrate inhibition (irr)");
-  FunctionDB.findLoadFunction("Substrate activation (irr)");
-  FunctionDB.findLoadFunction("Competitive inhibition (rev)");
-  FunctionDB.findLoadFunction("Competitive inhibition (irr)");
-  FunctionDB.findLoadFunction("Uncompetitive inhibition (rev)");
-  FunctionDB.findLoadFunction("Uncompetitive inhibition (irr)");
-  FunctionDB.findLoadFunction("Noncompetitive inhibition (rev)");
-  FunctionDB.findLoadFunction("Noncompetitive inhibition (irr)");
-  FunctionDB.findLoadFunction("Mixed inhibition (rev)");
-  FunctionDB.findLoadFunction("Mixed inhibition (irr)");
-  FunctionDB.findLoadFunction("Specific activation (rev)");
-  FunctionDB.findLoadFunction("Specific activation (irrev)");
-  FunctionDB.findLoadFunction("Catalytic activation (rev)");
-  FunctionDB.findLoadFunction("Catalytic activation (irrev)");
-  FunctionDB.findLoadFunction("Mixed activation (rev)");
-  FunctionDB.findLoadFunction("Mixed activation (irrev)");
+  FunctionDB.findLoadFunction("Hill Cooperativity");
   FunctionDB.findLoadFunction("Hyperbolic modifier (irrev)");
   FunctionDB.findLoadFunction("Hyperbolic modifier (rev)");
-  FunctionDB.findLoadFunction("Allosteric inhibition (MWC)");
-  FunctionDB.findLoadFunction("Allosteric inhibition (empirical)");
-  FunctionDB.findLoadFunction("Hill Cooperativity");
-  FunctionDB.findLoadFunction("Reversible Hill");
+  FunctionDB.findLoadFunction("Iso Uni Uni");
+  FunctionDB.findLoadFunction("Mass action (irreversible)");
+  FunctionDB.findLoadFunction("Mass action (reversible)");
+  FunctionDB.findLoadFunction("Mixed activation (irrev)");
+  FunctionDB.findLoadFunction("Mixed activation (rev)");
+  FunctionDB.findLoadFunction("Mixed inhibition (irr)");
+  FunctionDB.findLoadFunction("Mixed inhibition (rev)");
+  FunctionDB.findLoadFunction("Noncompetitive inhibition (irr)");
+  FunctionDB.findLoadFunction("Noncompetitive inhibition (rev)");
+  FunctionDB.findLoadFunction("Ordered Bi Bi");
+  FunctionDB.findLoadFunction("Ordered Bi Uni");
+  FunctionDB.findLoadFunction("Ordered Uni Bi");
+  FunctionDB.findLoadFunction("Ping Pong Bi Bi");
   FunctionDB.findLoadFunction("Reversible Hill 1 modifier");
   FunctionDB.findLoadFunction("Reversible Hill 2 modifiers");
+  FunctionDB.findLoadFunction("Reversible Hill");
+  FunctionDB.findLoadFunction("Reversible Michaelis-Menten");
+  FunctionDB.findLoadFunction("Specific activation (irrev)");
+  FunctionDB.findLoadFunction("Specific activation (rev)");
+  FunctionDB.findLoadFunction("Substrate activation (irr)");
+  FunctionDB.findLoadFunction("Substrate inhibition (irr)");
+  FunctionDB.findLoadFunction("Substrate inhibition (rev)");
+  FunctionDB.findLoadFunction("Uncompetitive inhibition (irr)");
+  FunctionDB.findLoadFunction("Uncompetitive inhibition (rev)");
   FunctionDB.findLoadFunction("Uni Uni");
-  FunctionDB.findLoadFunction("Iso Uni Uni");
-  FunctionDB.findLoadFunction("Ordered Uni Bi");
-  FunctionDB.findLoadFunction("Ordered Bi Uni");
-  FunctionDB.findLoadFunction("Ordered Bi Bi");
-  FunctionDB.findLoadFunction("Ping Pong Bi Bi");
 
-  CWriteConfig out("FunctionDBnew.gps");
-  FunctionDB.save(out);
+  //  CWriteConfig out("FunctionDBnew.gps");
+  //  FunctionDB.save(out);
+
+  CCopasiXML xml;
+
+  xml.setFunctionList(FunctionDB.loadedFunctions());
+  ofstream os("FunctionDB.xml");
+
+  cout << "Writing XML ... ";
+  xml.save(os);
+  cout << "done!" << endl;
   return 0;
 }
 
@@ -1945,5 +1961,6 @@ C_INT32 TestCopasiXML()
 
   string tmp = CCopasiXMLInterface::encode("a&sdhjkl<>\"'");
   tmp = CCopasiXMLInterface::encode("мнопр");
+
   return 0;
 }
