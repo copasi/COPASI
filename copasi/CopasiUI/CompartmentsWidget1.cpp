@@ -126,10 +126,6 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
-
-  connect(ListBox1, SIGNAL(selected(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
-  connect(LineEdit1, SIGNAL(textChanged(const QString &)), this, SLOT(NameChanged(const QString &)));
-  connect(LineEdit3, SIGNAL(textChanged(const QString &)), this, SLOT(VolumeChanged(const QString &)));
 }
 
 /*This function is used to connect this class to the listviews
@@ -141,8 +137,8 @@ int CompartmentsWidget1::isName(QString setValue)
       return 0;
     }
 
-  CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
   name = setValue;
+  CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
   if (compartments[(string) setValue] != NULL)
     {
@@ -206,44 +202,21 @@ void CompartmentsWidget1::slotBtnCancelClicked()
 }
 
 void CompartmentsWidget1::slotBtnOKClicked()
-{}
-
-void CompartmentsWidget1::NameChanged(const QString & name)
 {
-  CWriteConfig *Mod = new CWriteConfig("mudita.gps");
-
+  string filename = name + ".gps";
+  CWriteConfig *Com = new CWriteConfig(filename);
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
-  compartn1 = compartments1[2];
+  compartn1 = compartments1[(string)name];
 
-  // Structures *mud1 = new Structures();
-  string x = name.latin1();
-
-  compartn1->setName(x);
-
-  compartn1->save(*Mod);
-  //Copasi->Compartmentfile.save(*Mod);
-  delete Mod;
-}
-
-void CompartmentsWidget1::VolumeChanged(const QString & volume)
-{
-  CWriteConfig *Mod = new CWriteConfig("mudita.gps");
-
-  CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
-  CCompartment *compartn1;
-  compartn1 = compartments1[2];
-
-  //Structures *mud1 = new Structures();
-
+  QString volume(LineEdit3->text());
   double m1;
-  m1 = volume.toDouble(0);
-
+  m1 = volume.toDouble();
   compartn1->setVolume((float)m1);
 
-  compartn1->save(*Mod);
+  compartn1->save(*Com);
   //Copasi->Compartmentfile.save(*Mod);
-  delete Mod;
+  delete Com;
 }
 
 //last function ends
