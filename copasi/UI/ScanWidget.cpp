@@ -370,7 +370,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(trajectory, SIGNAL(clicked()), this, SLOT(TrajectoryButtonClicked()));
   connect(sExecutable, SIGNAL(clicked()), this, SLOT(ScanButtonClicked()));
 
-  connect(ObjectListBox, SIGNAL(clicked(QListBoxItem*)), this, SLOT(clicked(QListBoxItem*)));
+  connect(ObjectListBox, SIGNAL(clicked(QListBoxItem*)), this, SLOT(ListBoxClicked(QListBoxItem*)));
+  connect(ObjectListBox, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(ListBoxDoubleClicked(QListBoxItem*)));
 
   connect(eSteadyState, SIGNAL(clicked()), this, SLOT(SteadyStateEditing()));
   connect(eTrajectory, SIGNAL(clicked()), this, SLOT(TrajectoryEditing()));
@@ -491,6 +492,9 @@ void ScanWidget::deleteButtonClicked()
   nSelectedObjects--;
   scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
   emit show_me();
+
+  if (activeObject >= 0)
+    ListBoxClicked(ObjectListBox->item(activeObject));
 }
 
 void ScanWidget::upButtonClicked()
@@ -520,7 +524,14 @@ void ScanWidget::upButtonClicked()
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
   activeTitle->setText(pObjectDown->getObjectUniqueName().c_str());
 
+  //Update ListBox
+  QString tmp = ObjectListBox->text (activeObject);
+  ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject + 1) , activeObject);
+  ObjectListBox->changeItem (NULL, tmp, activeObject + 1);
+
   emit show_me();
+  if (activeObject >= 0)
+    ListBoxClicked(ObjectListBox->item(activeObject));
 }
 
 void ScanWidget::downButtonClicked()
@@ -547,7 +558,14 @@ void ScanWidget::downButtonClicked()
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
   activeTitle->setText(pObjectUp->getObjectUniqueName().c_str());
 
+  //Update ListBox
+  QString tmp = ObjectListBox->text (activeObject);
+  ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject - 1) , activeObject);
+  ObjectListBox->changeItem (NULL, tmp, activeObject - 1);
+
   emit show_me();
+  if (activeObject >= 0)
+    ListBoxClicked(ObjectListBox->item(activeObject));
 }
 
 void ScanWidget::CancelChangeButton()
@@ -677,9 +695,15 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   emit show_me();
 }
 
-void ScanWidget::clicked(QListBoxItem * item)
+void ScanWidget::ListBoxDoubleClicked(QListBoxItem * item)
 {
-  if (item) //select an object
+  if (ObjectListBox->index(item) == nSelectedObjects)
+    addButtonClicked();
+}
+
+void ScanWidget::ListBoxClicked(QListBoxItem * item)
+{
+  if (nSelectedObjects && ObjectListBox->index(item) >= 0) //select an object
     {
       double newActiveObject = ObjectListBox->index(item) + 0.5;
       QPoint point(0, newActiveObject * (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + TITLE_HEIGHT));

@@ -121,7 +121,8 @@ class ScanWidget : public CopasiWidget
 
     virtual void SteadyStateEditing();
     virtual void TrajectoryEditing();
-    virtual void clicked (QListBoxItem * item);
+    virtual void ListBoxClicked (QListBoxItem * item);
+    virtual void ListBoxDoubleClicked (QListBoxItem* item);
 
   public:
     void mouseSelected(ScanItemWidget* pSelected);
