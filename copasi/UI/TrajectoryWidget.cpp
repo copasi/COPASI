@@ -177,7 +177,7 @@ void TrajectoryWidget::CommitChange()
     }
   else
     {
-      QMessageBox::warning(this, NULL, "The method has not yet been handled!", QMessageBox::Ok, QMessageBox::Cancel);
+      QMessageBox::warning(this, NULL, "The method has not been handled yet!", QMessageBox::Ok, QMessageBox::Cancel);
       trajectorymethod = ptrTmpMethod;
     }
 
@@ -292,7 +292,7 @@ void TrajectoryWidget::UpdateMethod()
     }
   else
     {
-      QMessageBox::warning(this, NULL, "The method has not yet been handled!", QMessageBox::Ok, QMessageBox::Cancel);
+      QMessageBox::warning(this, NULL, "The method has not been handled yet!", QMessageBox::Ok, QMessageBox::Cancel);
       trajectorymethod = ptrTmpMethod;
     }
 
