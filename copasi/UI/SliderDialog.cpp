@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/17 14:36:15 $
+   $Author: shoops $ 
+   $Date: 2005/01/10 16:40:30 $
    End CVS Header */
 
 #include <iostream>
@@ -292,9 +292,10 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
           // create CopasiSlider objects, add them to the map and reset maxCount
           CCopasiTask* task = this->getTaskForFolderId(this->currentFolderId);
           assert(task);
-          CCopasiProblem* problem = task->getProblem();
-          assert(problem);
-          CCopasiParameterGroup* sliderGroup = (CCopasiParameterGroup*)problem->getParameter("sliders");
+          //          CCopasiProblem* problem = task->getProblem();
+          //          assert(problem);
+          //          CCopasiParameterGroup* sliderGroup = (CCopasiParameterGroup*)problem->getParameter("sliders");
+          CCopasiParameterGroup* sliderGroup = task->getSliders();
           if (sliderGroup && sliderGroup->size() != 0)
             {
               maxCount = sliderGroup->size();
@@ -407,13 +408,15 @@ void SliderDialog::addSliderToTask(CopasiSlider* slider)
   // if not, create it
   CCopasiTask* task = this->getTaskForFolderId(this->currentFolderId);
   assert(task);
-  CCopasiProblem* problem = task->getProblem();
-  assert(problem);
-  CCopasiParameter* parameter = problem->getParameter("sliders");
+  //  CCopasiProblem* problem = task->getProblem();
+  //  assert(problem);
+  //  CCopasiParameter* parameter = problem->getParameter("sliders");
+  CCopasiParameter* parameter = task->getSliders();
   if (!parameter)
     {
-      problem->addGroup("sliders");
-      parameter = problem->getParameter("sliders");
+      parameter = new CCopasiParameterGroup("sliders");
+      //      problem->addGroup("sliders");
+      //      parameter = problem->getParameter("sliders");
     }
   else
     {
@@ -442,9 +445,10 @@ void SliderDialog::deleteSliderFromTask(CopasiSlider* slider)
   // if yes, delete it
   CCopasiTask* task = this->getTaskForFolderId(this->currentFolderId);
   assert(task);
-  CCopasiProblem* problem = task->getProblem();
-  assert(problem);
-  CCopasiParameter* parameter = problem->getParameter("sliders");
+  //  CCopasiProblem* problem = task->getProblem();
+  //  assert(problem);
+  //  CCopasiParameter* parameter = problem->getParameter("sliders");
+  CCopasiParameter* parameter = task->getSliders();
   if (!parameter)
     {
       return;
