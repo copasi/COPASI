@@ -59,7 +59,7 @@ CModel::CModel():
     mMetabolitesInd("Independent Metabolites", this),
     mMetabolitesDep("Dependent Metabolites", this),
     mSteps("Reactions", this),
-    mStepsX("Reduced Mode Reactions", this),
+    mStepsX("Reduced Model Reactions", this),
     mStepsInd("Independent Reactions", this),
     mFluxes(),
     mFluxesX(),
@@ -74,9 +74,20 @@ CModel::CModel():
     mL(),
     mLView(mL, mMetabolitesInd),
     mQuantity2NumberFactor(1.0),
-    mNumber2QuantityFactor(1.0)
+    mNumber2QuantityFactor(1.0),
+    mStateTemplate()
 {
   initObjects();
+
+  unsigned C_INT32 i, imax = mSteps.size();
+
+  for (i = 0; i < imax; i++)
+    mSteps[i]->compile(mCompartments);
+
+  initializeMetabolites();
+
+  compile();
+
   CONSTRUCTOR_TRACE;
 }
 
@@ -109,7 +120,9 @@ CModel::CModel(const CModel & src):
     mL(src.mL),
     mLView(mL, mMetabolitesInd),
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
-    mNumber2QuantityFactor(src.mNumber2QuantityFactor)
+    mNumber2QuantityFactor(src.mNumber2QuantityFactor),
+    mStateTemplate()
+
 {
   CONSTRUCTOR_TRACE;
 
@@ -447,6 +460,7 @@ void CModel::compile()
   buildRedStoi();
   buildL(LU);
   buildMoieties();
+  buildStateTemplate();
 }
 
 void CModel::buildStoi()
@@ -1075,6 +1089,28 @@ const CCopasiVectorN< CReaction > & CModel::getStepsX() const {return mStepsX;}
 /* only used in steadystate/CMca.cpp */
 const CModel::CLinkMatrixView & CModel::getL() const
   {return mLView;}
+
+const CModel::CStateTemplate & CModel::getStateTemplate() const
+  {return mStateTemplate;}
+
+bool CModel::buildStateTemplate()
+{
+  bool success = false;
+
+  mStateTemplate.cleanup();
+
+  mStateTemplate.add(getKey()); // Time
+
+  unsigned C_INT32 i, imax;
+
+  for (i = 0, imax = mCompartments.size(); i < imax; i++)
+    mStateTemplate.add(mCompartments[i]->getKey());
+
+  for (i = 0, imax = mMetabolites.size(); i < imax; i++)
+    mStateTemplate.add(mMetabolites[i]->getKey());
+
+  return success;
+}
 
 CState CModel::getInitialState() const
   {
@@ -1709,9 +1745,9 @@ CModel::CStateTemplate::~CStateTemplate() {cleanup();}
 
 bool CModel::CStateTemplate::cleanup()
 {
-  std::vector< std::pair< std::string, const std::string * > * >::iterator it =
+  std::vector< std::pair< std::string, std::string > * >::iterator it =
     mList.begin();
-  std::vector< std::pair< std::string, const std::string * > * >::iterator End =
+  std::vector< std::pair< std::string, std::string > * >::iterator End =
     mList.end();
 
   for (; it != End; ++it)
@@ -1731,9 +1767,9 @@ bool CModel::CStateTemplate::cleanup()
 
 bool CModel::CStateTemplate::add(const std::string & objectKey)
 {
-  std::pair< std::string, const std::string * > * pAdd =
-    new std::pair< std::string, const std::string * >
-    (CKeyFactory::add("StateVariable", NULL), &objectKey);
+  std::pair< std::string, std::string > * pAdd =
+    new std::pair< std::string, std::string >
+    (CKeyFactory::add("StateVariable", NULL), objectKey);
 
   mList.push_back(pAdd);
 
@@ -1754,6 +1790,5 @@ unsigned C_INT32 CModel::CStateTemplate::size() const {return mList.size();}
 std::pair< std::string, std::string >
 CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
   {
-    return std::pair< std::string, std::string >
-    (mList[index]->first, *mList[index]->second);
+    return * mList[index];
   }

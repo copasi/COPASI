@@ -148,7 +148,7 @@ class CModel : public CCopasiContainer
         /**
          * The list of template variables.
          */
-        std::vector< std::pair< std::string, const std::string * > * > mList;
+        std::vector< std::pair< std::string, std::string > * > mList;
 
         /**
          * A map to allow finding the object a state variable relates to.
@@ -868,7 +868,7 @@ class CModel : public CCopasiContainer
 
     /**
      * Retreive the state template
-     * @retrun const CModel::CStateTemplate & stateTemplate
+     * @return const CModel::CStateTemplate & stateTemplate
      */
     const CModel::CStateTemplate & getStateTemplate() const;
 
