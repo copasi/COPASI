@@ -16,6 +16,7 @@
 #include "FlexLexer.h"
 #include "CKinFunction.h"
 #include "utilities/CCopasiException.h"
+#include "report/CCopasiContainer.h"
 
 CKinFunction::CKinFunction(const std::string & name,
                            const CCopasiContainer * pParent):
@@ -171,7 +172,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                        // this is an error
+        case N_NOP:                         // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -585,8 +586,17 @@ void CKinFunction::initIdentifierNodes()
 
   for (j = 0; j < jmax; j++)
     {
-      if (mNodes[j]->getType() != N_IDENTIFIER)
+      if (mNodes[j]->getType() != N_OBJECT)
+        {
+          //(CCopasiObject*)CCopasiContainer::Root->getObject(objName);
+          //if want to support a distributed system refer to report/CReport
+          //just a pointer to a object, not to a real node
+          mNodes[j]->setLeft((CNodeK*)CCopasiContainer::Root->getObject(mNodes[j]->getName()));
+          continue;
+        }
+      else if (mNodes[j]->getType() != N_IDENTIFIER)
         continue;
+
       IdentifierName = mNodes[j]->getName();
       subidx = prodidx = modfidx = constidx = -1;
       for (i = 0; i < imax; i++)

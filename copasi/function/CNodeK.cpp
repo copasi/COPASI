@@ -479,7 +479,7 @@ C_FLOAT64 CNodeK::value(const CCallParameterPointers & callParameters) const
     switch (mType)
       {
       case N_OBJECT:
-        return 1;
+        return *(double*)((CCopasiObject*)mLeft)->getReference();
         break;
       case N_IDENTIFIER :
         return * (C_FLOAT64 *) callParameters[mIndex];
