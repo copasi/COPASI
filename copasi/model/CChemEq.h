@@ -200,6 +200,11 @@ class CChemEq : public CCopasiContainer
      */
     const CCompartment* CheckAndGetFunctionCompartment() const;
 
+    /**
+     *  exchanges products and substrates
+     */
+    void reverse();
+
   private:
     /**
      *  Extracts the next element of the input string starting at position pos.

@@ -479,3 +479,11 @@ const CCompartment* CChemEq::CheckAndGetFunctionCompartment() const
         return NULL;
       }
   }
+
+void CChemEq::reverse()
+{
+  CCopasiVector<CChemEqElement> dummy;
+  dummy = mSubstrates;
+  mSubstrates = mProducts;
+  mProducts = dummy;
+}
