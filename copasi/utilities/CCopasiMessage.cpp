@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/14 04:14:04 $
+   $Date: 2005/04/06 12:57:46 $
    End CVS Header */
 
 // CCopasiMessage
@@ -202,7 +202,7 @@ void CCopasiMessage::handler(const bool & _throw)
 
   mMessageDeque.push_back(*this);
 
-  if (mType == ERROR)
+  if (mType == EXCEPTION)
     {
 #ifdef COPASI_DEBUG
       DebugFile << mText << std::endl;
