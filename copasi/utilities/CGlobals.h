@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CGlobals.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/10 12:57:21 $
+   $Date: 2004/05/24 14:18:51 $
    End CVS Header */
 
 #ifndef COPASI_CGlobals
@@ -17,7 +17,7 @@
 template < class CType > class CCopasiVectorS;
 class CMetabOld;
 class CFunctionDB;
-class CUDFunctionDB;
+//class CUDFunctionDB;
 class CModel;
 //class COutputList;
 class CReportDefinitionVector;
@@ -40,8 +40,8 @@ class CGlobals
 
     /**
      *
-     */
-    CUDFunctionDB * pUDFunctionDB;
+     */ 
+    //CUDFunctionDB * pUDFunctionDB;
     // CCompartment Compartmentfile;
 
     /**

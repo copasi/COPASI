@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutput.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 08:36:06 $
+   $Date: 2004/05/24 14:18:15 $
    End CVS Header */
 
 /*****************************************************************************
@@ -674,23 +674,23 @@ void COutput::repSS(std::ostream &fout) const
       }
 
     // output user-defined functions
-    unsigned C_INT32 size = Copasi->pUDFunctionDB->getFunctions().size();
+    /*   unsigned C_INT32 size = Copasi->pUDFunctionDB->getFunctions().size();
 
-    CUDFunction pFunct;
+       CUDFunction pFunct;
 
-    if (size > 0)
-      {
-        fout << std::endl;
+       if (size > 0)
+         {
+           fout << std::endl;
 
-        for (i = 0; i < size; i++)
-          {
-            // calculate the flux of this step
-            fout << Copasi->pUDFunctionDB->getFunctions()[i]->getObjectName();
-            fout << " =";
-            fout << std::setprecision(6) << Copasi->pUDFunctionDB->getFunctions()[i]->getValue();
-            fout << std::endl;
-          }
-      }
+           for (i = 0; i < size; i++)
+             {
+               // calculate the flux of this step
+               fout << Copasi->pUDFunctionDB->getFunctions()[i]->getObjectName();
+               fout << " =";
+               fout << std::setprecision(6) << Copasi->pUDFunctionDB->getFunctions()[i]->getValue();
+               fout << std::endl;
+             }
+         }*/
   }
 
 /**

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:18:33 $
+   $Date: 2004/05/24 14:18:15 $
    End CVS Header */
 
 /**
@@ -16,8 +16,8 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFunctionDB.h"
-#include "CMassAction.h"
-#include "output/CUDFunction.h"
+#include "CMassAction.h" 
+//#include "output/CUDFunction.h"
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiObjectReference.h"
 #include "xml/CCopasiXML.h"
@@ -194,7 +194,8 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
       break;
 
     case CFunction::Expression:
-      pFunction = new CUDFunction(Function);
+      fatalError(); //disabled
+      //pFunction = new CUDFunction(Function);
       break;
 
     default:
