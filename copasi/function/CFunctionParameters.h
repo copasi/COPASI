@@ -140,6 +140,10 @@ class CFunctionParameters
 
     /**
      *  Retrieves the first parameter with the specified usage after pos
+     *  In a normal situation pos is set to 0 for the first call. 
+     *  It is increment by the method to allow subsequent searches to start
+     *  after the last found item. This is usefull if several parameters 
+     *  with the same usage exist.
      *  @param "const string &" usage
      *  @param "unsigned C_INT32 &" pos (first call should be with 0)
      *  @return "CFunctionParameter &" usageRange

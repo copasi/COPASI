@@ -259,6 +259,9 @@ void CReaction::setReversible(bool reversible)
 void CReaction::setFunction(const string & functionName)
 {
   mFunction = Copasi->FunctionDB.findLoadFunction(functionName);
+  if (!mFunction)
+    CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
+
   initCallParameters();
 }
 

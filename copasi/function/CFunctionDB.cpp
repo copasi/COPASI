@@ -168,11 +168,15 @@ CFunction * CFunctionDB::dBLoad(const string & functionName)
     }
   catch (CCopasiException Exception)
     {
+      pdelete(pFunction);
+      // We ignore:
+      // CCopasiVector (2): Object '%s' allready exists.
       if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
         throw Exception;
+      pFunction = mLoadedFunctions[Function.getName()];
     }
 
-  return mLoadedFunctions[Index];
+  return pFunction;
 }
 
 void CFunctionDB::add

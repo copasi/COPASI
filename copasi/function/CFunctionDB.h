@@ -89,7 +89,7 @@ class CFunctionDB
     /**
      *  Load the function functionName from the database
      *  @param "const string" &functionName
-     *  @return CKinFunction &
+     *  @return CFunction * function (NULL if function can not be loaded)
      */
     CFunction * dBLoad(const string & functionName);
 
@@ -98,7 +98,6 @@ class CFunctionDB
      *  @param CKinFunction &function
      *  @return C_INT32 Fail
      */
-
     void add
       (CFunction * function);
 
@@ -122,7 +121,7 @@ class CFunctionDB
      *  function is found the database is searched and the apropriate 
      *  function is loaded.
      *  @param "const string" &functionName
-     *  @return CFunction *
+     *  @return CFunction * function (NULL if function is not found)
      */
     CFunction * findLoadFunction(const string & functionName);
 
