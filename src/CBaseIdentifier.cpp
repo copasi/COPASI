@@ -11,5 +11,3 @@ void CBaseIdentifier::SetType(char type) {mType = type;}
 string CBaseIdentifier::GetName() {return mName;}
 
 char CBaseIdentifier::GetType() {return mType;}
-
-

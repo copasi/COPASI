@@ -27,14 +27,14 @@ private:
      *  The vector of nodes of the binary tree of the function
      */
     class CNodes: public CCopasiVector < CNodeK >
-      {
-      private:
-	short IsInsertAllowed(CNodeK src) {return TRUE;}
-      } mNodes;
+        {
+        private:
+            short IsInsertAllowed(CNodeK src) {return TRUE;}
+        } mNodes;
 
     class CIdentifier: public CBaseIdentifier
         {
-        // Attributes
+            // Attributes
         public:
             /*
              *  The nodes which access the same identifier.
@@ -103,20 +103,13 @@ public:
     long Parse();
 
     /**
-     *  The finds the identifier with the given name
-     *  @param "const string" &name
-     *  @return long index of the identifier or -1 if not found
-     */
-    long FindIdentifier(const string & name);
-
-    /**
      *  This calculates the value of this sub-tree (ie with this node as root)
      *  @param "vector < double * >" &identifiers
      *  @return double
      */
     double CalcValue(vector < double * > &identifiers);
 
-  private:
+private:
     /**
      *  This clears all nodes of the function tree
      */

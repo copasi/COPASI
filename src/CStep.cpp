@@ -116,13 +116,13 @@ long CStep::Save(CWriteConfig & configbuffer)
     for (i = 0; i < Size; i++)
     {
         if (Fail = configbuffer.SetVariable("Identifier", "string",
-                                            &mSubstrates[i].Identifier))
+                                            &mSubstrates[i].mIdentifierName))
             return Fail;
         if (Fail = configbuffer.SetVariable("Metabolite", "string",
-                                            &mSubstrates[i].Metabolite))
+                                            &mSubstrates[i].mMetaboliteName))
             return Fail;
         if (Fail = configbuffer.SetVariable("Compartment", "string",
-                                            &mSubstrates[i].Compartment))
+                                            &mSubstrates[i].mCompartmentName))
             return Fail;
     }
     
@@ -132,13 +132,13 @@ long CStep::Save(CWriteConfig & configbuffer)
     for (i = 0; i < Size; i++)
     {
         if (Fail = configbuffer.SetVariable("Identifier", "string",
-                                            &mProducts[i].Identifier))
+                                            &mProducts[i].mIdentifierName))
             return Fail;
         if (Fail = configbuffer.SetVariable("Metabolite", "string",
-                                            &mProducts[i].Metabolite))
+                                            &mProducts[i].mMetaboliteName))
             return Fail;
         if (Fail = configbuffer.SetVariable("Compartment", "string",
-                                            &mProducts[i].Compartment))
+                                            &mProducts[i].mCompartmentName))
             return Fail;
     }
 
@@ -148,13 +148,13 @@ long CStep::Save(CWriteConfig & configbuffer)
     for (i = 0; i < Size; i++)
     {
         if (Fail = configbuffer.SetVariable("Identifier", "string",
-                                            &mModifiers[i].Identifier))
+                                            &mModifiers[i].mIdentifierName))
             return Fail;
         if (Fail = configbuffer.SetVariable("Metabolite", "string",
-                                            &mModifiers[i].Metabolite))
+                                            &mModifiers[i].mMetaboliteName))
             return Fail;
         if (Fail = configbuffer.SetVariable("Compartment", "string",
-                                            &mModifiers[i].Compartment))
+                                            &mModifiers[i].mCompartmentName))
             return Fail;
     }
 
@@ -164,23 +164,23 @@ long CStep::Save(CWriteConfig & configbuffer)
     for (i = 0; i < Size; i++)
     {
         if (Fail = configbuffer.SetVariable("Identifier", "string",
-                                            &mParameters[i].Identifier))
+                                            &mParameters[i].mIdentifierName))
             return Fail;
         if (Fail = configbuffer.SetVariable("Value", "double",
-                                            &mParameters[i].Value))
+                                            &mParameters[i].mValue))
             return Fail;
     }
     
     return Fail; 
 }
 
-vector < CStep::ID2METAB > &CStep::Substrates() {return mSubstrates;}
+vector < CStep::CId2Metab > &CStep::Substrates() {return mSubstrates;}
 
-vector < CStep::ID2METAB > &CStep::Products() {return mProducts;}
+vector < CStep::CId2Metab > &CStep::Products() {return mProducts;}
 
-vector < CStep::ID2METAB > &CStep::Modifiers() {return mModifiers;}
+vector < CStep::CId2Metab > &CStep::Modifiers() {return mModifiers;}
 
-vector < CStep::ID2PARAM > &CStep::Parameters() {return mParameters;}
+vector < CStep::CId2Param > &CStep::Parameters() {return mParameters;}
 
 string CStep::GetName() {return mName;}
 
@@ -222,20 +222,20 @@ void CStep::SetIdentifiers()
     long i;
     
     for (i = 0; i < mSubstrates.size(); i++)
-        mIdentifiers[mFunction->FindIdentifier(mSubstrates[i].Identifier)] =
-            mSubstrates[i].pMetabolite->GetConcentration();
+        mIdentifiers[mFunction->FindIdentifier(mSubstrates[i].mIdentifierName)] =
+            mSubstrates[i].mpMetabolite->GetConcentration();
     
     for (i = 0; i < mProducts.size(); i++)
-        mIdentifiers[mFunction->FindIdentifier(mProducts[i].Identifier)] =
-            mProducts[i].pMetabolite->GetConcentration();
+        mIdentifiers[mFunction->FindIdentifier(mProducts[i].mIdentifierName)] =
+            mProducts[i].mpMetabolite->GetConcentration();
 
     for (i = 0; i < mModifiers.size(); i++)
-        mIdentifiers[mFunction->FindIdentifier(mModifiers[i].Identifier)] =
-            mModifiers[i].pMetabolite->GetConcentration();
+        mIdentifiers[mFunction->FindIdentifier(mModifiers[i].mIdentifierName)] =
+            mModifiers[i].mpMetabolite->GetConcentration();
 
     for (i = 0; i < mParameters.size(); i++)
-        mIdentifiers[mFunction->FindIdentifier(mParameters[i].Identifier)] =
-            &mParameters[i].Value;
+        mIdentifiers[mFunction->FindIdentifier(mParameters[i].mIdentifierName)] =
+            &mParameters[i].mValue;
 }
 
 void CStep::CheckIdentifiers()
@@ -266,13 +266,13 @@ long CStep::LoadNew(CReadConfig & configbuffer)
 //        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
 
         if (Fail = configbuffer.GetVariable("Identifier", "string",
-                                            &mSubstrates[i].Identifier))
+                                            &mSubstrates[i].mIdentifierName))
             return Fail;
         if (Fail = configbuffer.GetVariable("Metabolite", "string",
-                                            &mSubstrates[i].Metabolite))
+                                            &mSubstrates[i].mMetaboliteName))
             return Fail;
         if (Fail = configbuffer.GetVariable("Compartment", "string",
-                                            &mSubstrates[i].Compartment))
+                                            &mSubstrates[i].mCompartmentName))
             return Fail;
    }
     
@@ -282,13 +282,13 @@ long CStep::LoadNew(CReadConfig & configbuffer)
     for (i=0; i < Size; i++)
     {
         if (Fail = configbuffer.GetVariable("Identifier", "string",
-                                            &mProducts[i].Identifier))
+                                            &mProducts[i].mIdentifierName))
             return Fail;
         if (Fail = configbuffer.GetVariable("Metabolite", "string",
-                                            &mProducts[i].Metabolite))
+                                            &mProducts[i].mMetaboliteName))
             return Fail;
         if (Fail = configbuffer.GetVariable("Compartment", "string",
-                                            &mProducts[i].Compartment))
+                                            &mProducts[i].mCompartmentName))
             return Fail;
     }
 
@@ -298,13 +298,13 @@ long CStep::LoadNew(CReadConfig & configbuffer)
     for (i = 0; i < Size; i++)
     {
         if (Fail = configbuffer.GetVariable("Identifier", "string",
-                                            &mModifiers[i].Identifier))
+                                            &mModifiers[i].mIdentifierName))
             return Fail;
         if (Fail = configbuffer.GetVariable("Metabolite", "string",
-                                            &mModifiers[i].Metabolite))
+                                            &mModifiers[i].mMetaboliteName))
             return Fail;
         if (Fail = configbuffer.GetVariable("Compartment", "string",
-                                            &mModifiers[i].Compartment))
+                                            &mModifiers[i].mCompartmentName))
             return Fail;
     }
 
@@ -314,10 +314,10 @@ long CStep::LoadNew(CReadConfig & configbuffer)
     for (i = 0; i < Size; i++)
     {
         if (Fail = configbuffer.GetVariable("Identifier", "string",
-                                            &mParameters[i].Identifier))
+                                            &mParameters[i].mIdentifierName))
             return Fail;
         if (Fail = configbuffer.GetVariable("Value", "double",
-                                            &mParameters[i].Value))
+                                            &mParameters[i].mValue))
             return Fail;
     }
     

@@ -10,21 +10,28 @@ short DefinedInsertAllowed(CNodeK src);
 
 CKinFunction::CKinFunction() 
 {
-  SetReversible(FALSE);
-  IdentifierTypes().resize(5);
-  IdentifierTypes()[0] = 0;
-  IdentifierTypes()[1] = N_SUBSTRATE;
-  IdentifierTypes()[2] = N_PRODUCT;
-  IdentifierTypes()[3] = N_MODIFIER;
-  IdentifierTypes()[4] = N_KCONSTANT;
+    SetReversible(FALSE);
+    IdentifierTypes().resize(5);
+    IdentifierTypes()[0] = 0;
+    IdentifierTypes()[1] = N_SUBSTRATE;
+    IdentifierTypes()[2] = N_PRODUCT;
+    IdentifierTypes()[3] = N_MODIFIER;
+    IdentifierTypes()[4] = N_KCONSTANT;
 }
 
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
+    SetReversible(FALSE);
+    IdentifierTypes().resize(5);
+    IdentifierTypes()[0] = 0;
+    IdentifierTypes()[1] = N_SUBSTRATE;
+    IdentifierTypes()[2] = N_PRODUCT;
+    IdentifierTypes()[3] = N_MODIFIER;
+    IdentifierTypes()[4] = N_KCONSTANT;
+
     SetName(name);
     SetDescription(description);
-    SetReversible(FALSE);
 }
 
 long CKinFunction::Load(CReadConfig & configbuffer)
@@ -82,7 +89,7 @@ long CKinFunction::Save(CWriteConfig & configbuffer)
 CCopasiVector < CNodeK > & CKinFunction::Nodes() {return mNodes;}
 
 void CKinFunction::SetIdentifierType(const string & name,
-                                char identifierType)
+                                     char identifierType)
 {
     long Index = 0;
     
@@ -139,13 +146,6 @@ long CKinFunction::Parse()
     InitIdentifiers();
     
     return ConnectNodes();
-}
-
-long CKinFunction::FindIdentifier(const string & name)
-{
-    for (long i=0; i<mIdentifiers.size(); i++)
-        if (mIdentifiers[i].GetName() == name) return i;
-    return -1;
 }
 
 double CKinFunction::CalcValue(vector < double * > & identifiers)
@@ -424,5 +424,3 @@ void CKinFunction::InitIdentifiers()
         }
     }
 }
-
-// short CCopasiVector < CNodeK >::IsInsertAllowed(CNodeK src) {return TRUE;}

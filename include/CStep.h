@@ -19,22 +19,27 @@
 class CStep
 {
 // Attributes
-public:
-    typedef struct ID2METAB
-    {
-        string Identifier;
-        string Metabolite;
-        string Compartment;
-        CMetab *pMetabolite;
-    };
-    
-    typedef struct ID2PARAM
-    {
-        string Identifier;
-        double Value;
-    };
-    
 private:
+    class CId2Metab
+    {
+    friend CStep;
+    // Attributes
+    private:
+        string mIdentifierName;
+        string mMetaboliteName;
+        string mCompartmentName;
+        CMetab *mpMetabolite;
+    };
+    
+    class CId2Param
+    {
+    friend CStep;
+    // Attributes
+    private:
+        string mIdentifierName;
+        double mValue;
+    };
+    
     /**
      *
      */
@@ -63,22 +68,22 @@ private:
     /**
      *
      */
-    vector < ID2METAB > mSubstrates;
+    vector < CId2Metab > mSubstrates;
 
     /**
      *
      */
-    vector < ID2METAB > mProducts;
+    vector < CId2Metab > mProducts;
 
     /**
      *
      */
-    vector < ID2METAB > mModifiers;
+    vector < CId2Metab > mModifiers;
 
     /**
      *
      */
-    vector < ID2PARAM > mParameters;
+    vector < CId2Param > mParameters;
 
     /**
      *
@@ -124,22 +129,22 @@ public:
     /**
      *
      */
-    vector < ID2METAB > &Substrates();
+    vector < CId2Metab > &Substrates();
 
     /**
      *
      */
-    vector < ID2METAB > &Products();
+    vector < CId2Metab > &Products();
 
     /**
      *
      */
-    vector < ID2METAB > &Modifiers();
+    vector < CId2Metab > &Modifiers();
 
     /**
      *
      */
-    vector < ID2PARAM > &Parameters();
+    vector < CId2Param > &Parameters();
 
     /**
      *

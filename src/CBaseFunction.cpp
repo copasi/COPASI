@@ -63,4 +63,3 @@ long CBaseFunction::FindIdentifier(const string & name)
     
     return -1;
 }
-

@@ -17,11 +17,11 @@ class CBaseFunction
 {
 // Attributes
 public:
-  typedef enum Type
+    enum Type
     {
-      BASIC = 0,
-      USERDIFINED,
-      BUILIN
+        BASIC = 0,
+        USERDIFINED,
+        BUILIN
     };
   
 private:

@@ -33,7 +33,7 @@ public:
     /**
      *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @param "CReadConfig &" configbuffer reference to a CReadConfig object.
      *  @return Fail
      */
     long Load(CReadConfig & configbuffer, long size)
@@ -50,7 +50,7 @@ public:
     /**
      *  Saves the contents of the object to a CWriteConfig object.
      *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
     long Save(CWriteConfig & configbuffer)
