@@ -1,0 +1,41 @@
+ASTYLE=/home/cvs/copasi_dev/cvs_admin/astyle
+GAWK=/usr/bin/gawk
+MV=/bin/mv
+
+$ASTYLE --style=gnu \
+        --one-line=keep-blocks \
+        --pad=oper \
+        --break-blocks \
+        --convert-tabs \
+        --indent-preprocessor \
+        --min-conditional=0 \
+        < $1 |\
+$GAWK -- '
+BEGIN {
+  lastEmpty = 0
+  lastOpenBracket = 0
+}
+
+$0 ~ "^$" {
+  if (lastOpenBracket == 0) {
+    lastEmpty = 1
+  }
+}
+
+$0 !~ "^$" {
+  if (lastEmpty == 1) {
+    if ($0 !~ "};$" && $0 !~ "}$") printf "\n"
+    lastEmpty = 0
+  }
+
+  gsub(/\( +/, "(")
+  gsub(/ +)/, ")")
+  gsub(/^\*/, " *")
+
+  printf "%s\n", gensub(/;([^ ])/, "; \\1", "g")
+  
+  if ($0 ~ "{$") lastOpenBracket = 1
+  else lastOpenBracket = 0
+}
+' > $1.tmp && \
+$MV -f $1.tmp $1

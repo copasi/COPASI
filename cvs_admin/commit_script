@@ -1,0 +1,20 @@
+#! /bin/sh
+echo $$ called as: $0 $@ >> /home/cvs/copasi_dev/cvs_admin/commit_script.out
+my_dir="$1"
+shift
+
+for my_file in $@; do
+  if [ "`basename $my_file`" != "`basename $my_file .h`" -o \
+       "`basename $my_file`" != "`basename $my_file .cpp`" ]; then
+    echo "  processing $my_file" >> /home/cvs/copasi_dev/cvs_admin/commit_script.out
+    if [ -e "`basename $my_file`" ]; then
+      /home/cvs/copasi_dev/cvs_admin/c++style $my_file
+
+      if [ "`basename $my_file`" != "`basename $my_file .moc.cpp`" ]; then
+        /home/cvs/copasi_dev/cvs_admin/moc_edit $my_file
+      fi
+    fi
+  fi
+done
+
+rm -f *.tmp

@@ -1,0 +1,7 @@
+SED=/usr/bin/sed
+MV=/bin/mv
+
+$SED -e '/** Created:/d' \
+     -e '/**      by:/d' \
+     -e 's/moc from 3.0.[0-9]*/moc from 3.0.*/' < $1 > $1.tmp && \
+$MV -f $1.tmp $1
