@@ -15,11 +15,12 @@
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
-#include "optimization/optimization.h"
+#include "optimization/COptMethod.h"
+#include "optimization/CRealProblem.h"
 
 C_INT32 TestOptimization(void);     //yohe: new
 
-C_INT main(C_INT argc, char *argv[])
+int main(int argc, char *argv[])
 {
   cout << "Starting main program." << endl;
   Copasi = new CGlobals;
@@ -44,7 +45,7 @@ C_INT32 TestOptimization(void)
 {
   int i;
   cout << "TestOptimization() begins --- " << endl;
-  COptAlgorithm * CRand = new COptAlgorithmRand();
+  COptMethod * CRand = COptMethod::createMethod();
 
   CRealProblem *CReal = new CRealProblem();
   CRand->setProblem(CReal);
@@ -74,5 +75,7 @@ C_INT32 TestOptimization(void)
       cout << CReal->getBestValue(i);
       cout << "\n";
     }
+
+  pdelete(CRand);
   return 0;
 }

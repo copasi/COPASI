@@ -21,7 +21,8 @@
 #include "model/CSpec2Model.h"
 #include "output/output.h"
 #include "function/function.h"
-#include "optimization/optimization.h"
+#include "optimization/COptMethod.h"
+#include "optimization/CRealProblem.h"
 #include "utilities/CGlobals.h"
 #include "randomGenerator/CRandom.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -79,7 +80,7 @@ C_INT32 TestDependencyGraph();
 C_INT32 TestIndexedPriorityQueue(C_INT32);
 C_INT32 TestSpec2Model();
 
-C_INT main(C_INT argc, char *argv[])
+int main(int argc, char *argv[])
 {
   cout << "Starting main program." << endl;
   Copasi = new CGlobals;
@@ -110,9 +111,9 @@ C_INT main(C_INT argc, char *argv[])
       //      TestMetab();
       //      TestReadSample();
       //      TestNewton();
-      TestSSSolution();
+      //      TestSSSolution();
       //YOHE: new test
-      //      TestOptimization();
+      TestOptimization();
       //      TestEigen();
       //      TestTrajectory();
       //      TestTrajectoryTask();
@@ -527,7 +528,7 @@ C_INT32 TestMCA(void)
 // by YH
 C_INT32 TestSSSolution(void)
 {
-  CReadConfig inbuf("gps/TestKinetics/MassAction.gps");
+  CReadConfig inbuf("gps/NewtonTest.gps");
   inbuf.getDefaults();
 
   CModel model;
@@ -591,7 +592,7 @@ C_INT32 TestOptimization(void)
 {
   int i;
   cout << "TestOptimization() begins --- " << endl;
-  COptAlgorithm * CRand = new COptAlgorithmRand();
+  COptMethod * CRand = COptMethod::createMethod();
 
   CRealProblem *CReal = new CRealProblem();
   CRand->setProblem(CReal);
@@ -621,6 +622,8 @@ C_INT32 TestOptimization(void)
       cout << CReal->getBestValue(i);
       cout << "\n";
     }
+
+  pdelete(CRand);
   return 0;
 }
 
