@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.12 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -39,7 +39,7 @@ oldincludedir = /usr/include
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-top_builddir = ..
+top_builddir = ../..
 
 ACLOCAL = @ACLOCAL@
 AUTOCONF = @AUTOCONF@
@@ -233,69 +233,97 @@ qt_libraries = @qt_libraries@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
 
-bin_PROGRAMS = copasi
-copasi_SOURCES = main.cpp 
+bin_PROGRAMS = pvmtest
 
-copasi_LDADD = \
-	./function/libfunction.a \
-	./output/liboutput.a \
-	./model/libmodel.a \
-	./steadystate/libsteadystate.a \
-	./trajectory/libtrajectory.a \
-	./utilities/libutilities.a 
+pvmtest_SOURCES = \
+	pvmtest.cpp
 
 
-SUBDIRS = \
-	commandline\
-	elementaryFluxModes \
-	function \
-	output \
-	model \
-	optimization \
-	randomGenerator \
-	steadystate \
-	trajectory \
-	utilities \
-	CopasiUI \
-	test \
-	pvmtest
+pvmtest_DEPENDENCIES = $(pvmtest_LIBS) check_LIBS
+
+pvmtest_LIBS = \
+	../elementaryFluxModes \
+	../model \
+	../function \
+	../output \
+	../optimization \
+	../randomGenerator \
+	../steadystate \
+	../trajectory \
+	../utilities
 
 
-EXTRA_DIST = \
-	main.cpp \
-	copasi.h \
-	FlexLexer.h
 
+# matrix_SOURCES = matrix.cpp
+EXTRA_DIST = pvmtest.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 
 # set the include path found by configure
-INCLUDES = $(all_includes) -I$(top_srcdir)/copasi
+INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
-copasi_LDFLAGS = $(all_libraries)
-subdir = copasi
+LIBS = \
+	-Wl,-lelementaryFluxModes \
+	-Wl,-lmodel \
+	-Wl,-lfunction \
+	-Wl,-loutput \
+	-Wl,-loptimization \
+	-Wl,-lsteadystate \
+	-Wl,-ltrajectory \
+	-Wl,-lrandomGenerator \
+	-Wl,-lutilities \
+	-Wl,-loutput \
+	-Wl,-lfunction \
+	-Wl,-lmodel \
+	-llapack \
+	-lblas \
+	-lF77 \
+	-lfl
+
+
+#  Use this for standard clapack
+#	-llapack \
+	#	-lblas \
+	#	-lF77 \
+	#	-lfl
+
+#  Use this for the intel performance library under linux
+#	-lmkl_lapack \
+	#	-lmkl_p3 \
+	#	-lg2c \
+	#	-lpthread \
+	# the library search path.
+LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
+	-L../elementaryFluxModes \
+	-L../function \
+	-L../model \
+	-L../output \
+	-L../optimization \
+	-L../randomGenerator \
+	-L../steadystate \
+	-L../trajectory \
+	-L../utilities
+
+subdir = copasi/pvmtest
 mkinstalldirs = $(SHELL) $(top_srcdir)/admin/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-bin_PROGRAMS = copasi$(EXEEXT)
+bin_PROGRAMS = pvmtest$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
-am_copasi_OBJECTS = main.$(OBJEXT)
-#>- copasi_OBJECTS = $(am_copasi_OBJECTS)
+am_pvmtest_OBJECTS = pvmtest.$(OBJEXT)
+#>- pvmtest_OBJECTS = $(am_pvmtest_OBJECTS)
 #>+ 1
-copasi_OBJECTS = main.$(OBJEXT)
-copasi_DEPENDENCIES = ./function/libfunction.a ./output/liboutput.a \
-	./model/libmodel.a ./steadystate/libsteadystate.a \
-	./trajectory/libtrajectory.a ./utilities/libutilities.a
+pvmtest_OBJECTS = pvmtest.$(OBJEXT)
+pvmtest_LDADD = $(LDADD)
+pvmtest_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/main.Po
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/pvmtest.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -315,19 +343,13 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(copasi_SOURCES)
-
-RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
-	uninstall-info-recursive all-recursive install-data-recursive \
-	install-exec-recursive installdirs-recursive install-recursive \
-	uninstall-recursive check-recursive installcheck-recursive
+DIST_SOURCES = $(pvmtest_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(copasi_SOURCES)
+SOURCES = $(pvmtest_SOURCES)
 
-#>- all: all-recursive
+#>- all: all-am
 #>+ 1
-all: docs-am  all-recursive
+all: docs-am  all-am
 
 .SUFFIXES:
 .SUFFIXES: .cpp .lo .o .obj
@@ -342,11 +364,11 @@ distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 #>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --gnu  copasi/Makefile
+#>- $(AUTOMAKE) --gnu  copasi/pvmtest/Makefile
 #>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/Makefile.in
+	$(AUTOMAKE) --gnu  copasi/pvmtest/Makefile
+	cd $(top_srcdir) && perl admin/am_edit copasi/pvmtest/Makefile.in
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
 	CONFIG_HEADERS= CONFIG_LINKS= \
@@ -375,9 +397,9 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-copasi$(EXEEXT): $(copasi_OBJECTS) $(copasi_DEPENDENCIES) 
-	@rm -f copasi$(EXEEXT)
-	$(CXXLINK) $(copasi_LDFLAGS) $(copasi_OBJECTS) $(copasi_LDADD) $(LIBS)
+pvmtest$(EXEEXT): $(pvmtest_OBJECTS) $(pvmtest_DEPENDENCIES) 
+	@rm -f pvmtest$(EXEEXT)
+	$(CXXLINK) $(pvmtest_LDFLAGS) $(pvmtest_OBJECTS) $(pvmtest_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -385,7 +407,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/pvmtest.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
@@ -410,61 +432,6 @@ distclean-depend:
 CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-$(RECURSIVE_TARGETS):
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	echo "Making $$target in $$subdir"; \
-	if test "$$subdir" = "."; then \
-	dot_seen=yes; \
-	local_target="$$target-am"; \
-	else \
-	local_target="$$target"; \
-	fi; \
-	(cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	|| case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	$(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-mostlyclean-recursive clean-recursive distclean-recursive \
-	maintainer-clean-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	dot_seen=no; \
-	case "$@" in \
-	distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
-	*) list='$(SUBDIRS)' ;; \
-	esac; \
-	rev=''; for subdir in $$list; do \
-	if test "$$subdir" = "."; then :; else \
-	rev="$$subdir $$rev"; \
-	fi; \
-	done; \
-	rev="$$rev ."; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	echo "Making $$target in $$subdir"; \
-	if test "$$subdir" = "."; then \
-	local_target="$$target-am"; \
-	else \
-	local_target="$$target"; \
-	fi; \
-	(cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	|| case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
-	done
-
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
@@ -476,15 +443,10 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	END { for (i in files) print i; }'`; \
 	mkid -fID $$unique $(LISP)
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	if test "$$subdir" = .; then :; else \
-	test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-	fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
@@ -502,14 +464,9 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 
-#>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-#>+ 4
-KDE_DIST=copasi.dsp copasi.dsw ABiochem.dsw define.test pack.sh copasi copasi.kdevses copasi.kdevprj 
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
-DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
-
-
-top_distdir = ..
+top_distdir = ../..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
@@ -528,35 +485,22 @@ distdir: $(DISTFILES)
 	|| exit 1; \
 	fi; \
 	done
-	for subdir in $(SUBDIRS); do \
-	if test "$$subdir" = .; then :; else \
-	test -d $(distdir)/$$subdir \
-	|| mkdir $(distdir)/$$subdir \
-	|| exit 1; \
-	(cd $$subdir && \
-	$(MAKE) $(AM_MAKEFLAGS) \
-	top_distdir="$(top_distdir)" \
-	distdir=../$(distdir)/$$subdir \
-	distdir) \
-	|| exit 1; \
-	fi; \
-	done
 check-am: all-am
-check: check-recursive
+check: check-am
 all-am: Makefile $(PROGRAMS)
-installdirs: installdirs-recursive
-installdirs-am:
+
+installdirs:
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 
-install: install-recursive
-install-exec: install-exec-recursive
-install-data: install-data-recursive
-uninstall: uninstall-recursive
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	`test -z '$(STRIP)' || \
@@ -571,24 +515,24 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-#>- clean: clean-recursive
+#>- clean: clean-am
 #>+ 1
-clean: kde-rpo-clean  clean-recursive
+clean: kde-rpo-clean  clean-am
 
 #>- clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 #>+ 1
 clean-am: clean-final  clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 
-distclean: distclean-recursive
+distclean: distclean-am
 
 distclean-am: clean-am distclean-compile distclean-depend \
 	distclean-generic distclean-libtool distclean-tags
 
-dvi: dvi-recursive
+dvi: dvi-am
 
 dvi-am:
 
-info: info-recursive
+info: info-am
 
 info-am:
 
@@ -596,42 +540,38 @@ install-data-am:
 
 install-exec-am: install-binPROGRAMS
 
-install-info: install-info-recursive
+install-info: install-info-am
 
 install-man:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
 uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 
-uninstall-info: uninstall-info-recursive
-
-.PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am check check-am clean \
-	clean-binPROGRAMS clean-generic clean-libtool clean-recursive \
-	distclean distclean-compile distclean-depend distclean-generic \
-	distclean-libtool distclean-recursive distclean-tags distdir \
-	dvi dvi-am dvi-recursive info info-am info-recursive install \
+.PHONY: GTAGS all all-am check check-am clean clean-binPROGRAMS \
+	clean-generic clean-libtool distclean distclean-compile \
+	distclean-depend distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am info info-am install \
 	install-am install-binPROGRAMS install-data install-data-am \
-	install-data-recursive install-exec install-exec-am \
-	install-exec-recursive install-info install-info-am \
-	install-info-recursive install-man install-recursive \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am installdirs-recursive maintainer-clean \
-	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	mostlyclean-recursive tags tags-recursive uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-info-am \
-	uninstall-info-recursive uninstall-recursive
+	install-exec install-exec-am install-info install-info-am \
+	install-man install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool tags uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-info-am
 
+
+check_LIBS:
+	@for d in $(pvmtest_LIBS); do (cd $$d && make); done
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
@@ -642,38 +582,31 @@ docs-am:
 #>+ 2
 apidox-am:
 
-#>+ 9
+#>+ 2
 apidox: apidox-am
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-		echo "Making apidox in $$subdir"; \
-		if test "$$subdir" != "."; then \
-			(cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) apidox) || exit 1; \
-		fi ;\
-	done
 
 #>+ 6
 force-reedit:
 		cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/Makefile.in
+	$(AUTOMAKE) --gnu  copasi/pvmtest/Makefile
+	cd $(top_srcdir) && perl admin/am_edit copasi/pvmtest/Makefile.in
 
 
 #>+ 11
-copasi.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/main.cpp
-	@echo 'creating copasi.all_cpp.cpp ...'; \
-	rm -f copasi.all_cpp.files copasi.all_cpp.final; \
-	echo "#define KDE_USE_FINAL 1" >> copasi.all_cpp.final; \
-	for file in main.cpp ; do \
-	  echo "#include \"$$file\"" >> copasi.all_cpp.files; \
-	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> copasi.all_cpp.final; \
+pvmtest.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/pvmtest.cpp
+	@echo 'creating pvmtest.all_cpp.cpp ...'; \
+	rm -f pvmtest.all_cpp.files pvmtest.all_cpp.final; \
+	echo "#define KDE_USE_FINAL 1" >> pvmtest.all_cpp.final; \
+	for file in pvmtest.cpp ; do \
+	  echo "#include \"$$file\"" >> pvmtest.all_cpp.files; \
+	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> pvmtest.all_cpp.final; \
 	done; \
-	cat copasi.all_cpp.final copasi.all_cpp.files > copasi.all_cpp.cpp; \
-	rm -f copasi.all_cpp.final copasi.all_cpp.files
+	cat pvmtest.all_cpp.final pvmtest.all_cpp.files > pvmtest.all_cpp.cpp; \
+	rm -f pvmtest.all_cpp.final pvmtest.all_cpp.files
 
 #>+ 3
 clean-final:
-	-rm -f copasi.all_cpp.cpp
+	-rm -f pvmtest.all_cpp.cpp
 
 #>+ 2
 final:

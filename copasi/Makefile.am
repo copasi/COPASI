@@ -22,7 +22,8 @@ SUBDIRS = \
 	trajectory \
 	utilities \
 	CopasiUI \
-	test 
+	test \
+	pvmtest
 
 EXTRA_DIST = \
 	main.cpp \
