@@ -85,7 +85,7 @@ CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
   return (unsigned C_INT32) - 1;
 }*/
 
-std::string CMassAction::getSBMLString(const CCallParameters & callParameterNames, const std::string &r) const
+std::string CMassAction::getSBMLString(const CCallParameterPointers & callParameterNames, const std::string &r) const
   {
     std::string sf, tmpstr;
     unsigned C_INT32 i, imax;
@@ -121,7 +121,7 @@ std::string CMassAction::getSBMLString(const CCallParameters & callParameterName
     return sf;
   }
 
-C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
+C_FLOAT64 CMassAction::calcValue(const CCallParameterPointers & callParameters) const
   {
     unsigned C_INT32 i, imax;
     C_FLOAT64 **Factor;
@@ -156,7 +156,7 @@ C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
   }
 
 bool CMassAction::dependsOn(const void * parameter,
-                            const CCallParameters & callParameters) const
+                            const CCallParameterPointers & callParameters) const
   {
     if (parameter == callParameters[0]) return true;
 

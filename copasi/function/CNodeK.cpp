@@ -179,7 +179,7 @@ C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
     return Fail;
   }
 
-std::string CNodeK::getExplicitFunctionString(const CCallParameters & callParameterNames, const std::string &r)
+std::string CNodeK::getExplicitFunctionString(const CCallParameterPointers & callParameterNames, const std::string &r)
 {
   char fstr[256];
   switch (mType)
@@ -470,7 +470,7 @@ C_INT16 CNodeK::rightPrecedence() const
     return 0;
   }
 
-C_FLOAT64 CNodeK::value(const CCallParameters & callParameters) const
+C_FLOAT64 CNodeK::value(const CCallParameterPointers & callParameters) const
   {
     // if it is a constant or an identifier just return its value
     if (isNumber())

@@ -178,7 +178,7 @@ class CNodeK
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      *  @return string
      */
-    std::string getExplicitFunctionString(const CCallParameters & callParameterNames, const std::string &r);
+    std::string getExplicitFunctionString(const CCallParameterPointers & callParameterNames, const std::string &r);
 
     /**
      * Retrieving mType the type of a node
@@ -330,7 +330,7 @@ class CNodeK
      *  @param "vector < C_FLOAT64 * >" &identifiers
      *  @return C_FLOAT64
      */
-    C_FLOAT64 value(const CCallParameters & callParameters) const;
+    C_FLOAT64 value(const CCallParameterPointers & callParameters) const;
   };
 
 #endif // COPASI_CNodeK

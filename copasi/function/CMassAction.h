@@ -59,7 +59,7 @@ class CMassAction : public CFunction
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      */
-    std::string getSBMLString(const CCallParameters & callParameterNames, const std::string &r) const;
+    std::string getSBMLString(const CCallParameterPointers & callParameterNames, const std::string &r) const;
 
     /**
      *  Calculates the value of the function
@@ -67,7 +67,7 @@ class CMassAction : public CFunction
      *  @return "C_FLOAT64" result
      */
     virtual C_FLOAT64
-    calcValue(const CCallParameters & callParameters) const;
+    calcValue(const CCallParameterPointers & callParameters) const;
 
     /**
      * Returns whether the function depends on the given parameter
@@ -76,7 +76,7 @@ class CMassAction : public CFunction
      * &param bool dependsOn
      */
     virtual bool dependsOn(const void * parameter,
-                           const CCallParameters & callParameters) const;
+                           const CCallParameterPointers & callParameters) const;
   };
 
 #endif // COPASI_CMassAction

@@ -168,7 +168,7 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   configBuffer.setVariable("Description", "string", &mDescription);
 }
 
-std::string CFunction::getSBMLString(const CCallParameters & C_UNUSED(callParameterNames),
+std::string CFunction::getSBMLString(const CCallParameterPointers & C_UNUSED(callParameterNames),
                                      const std::string & C_UNUSED(r)) const
   {
     return "0";
@@ -232,11 +232,11 @@ CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
 //unsigned C_INT32 CFunction::getParameterPosition(const std::string & name) const
 //{return mParameters[0] - mParameters[name];}
 
-C_FLOAT64 CFunction::calcValue(const CCallParameters & C_UNUSED(callParameters)) const
+C_FLOAT64 CFunction::calcValue(const CCallParameterPointers & C_UNUSED(callParameters)) const
   {return 0.0;}
 
 bool CFunction::dependsOn(const void * C_UNUSED(parameter),
-                          const CCallParameters & C_UNUSED(callParameters)) const
+                          const CCallParameterPointers & C_UNUSED(callParameters)) const
   {return false;}
 
 void CFunction::addUsage(const std::string& usage, C_INT32 low, C_INT32 high)

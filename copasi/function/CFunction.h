@@ -131,7 +131,7 @@ class CFunction : public CCopasiContainer
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      */
-    virtual std::string getSBMLString(const CCallParameters & callParameterNames, const std::string &r) const;
+    virtual std::string getSBMLString(const CCallParameterPointers & callParameterNames, const std::string &r) const;
 
     /**
      *  Retrieves the name of the function
@@ -202,7 +202,7 @@ class CFunction : public CCopasiContainer
      *  @param const CCallParameters & callParameters
      *  @return "C_FLOAT64" result
      */
-    virtual C_FLOAT64 calcValue(const CCallParameters & callParameters) const;
+    virtual C_FLOAT64 calcValue(const CCallParameterPointers & callParameters) const;
 
     /**
      * Returns whether the function depends on the given parameter
@@ -211,7 +211,7 @@ class CFunction : public CCopasiContainer
      * &param bool dependsOn
      */
     virtual bool dependsOn(const void * C_UNUSED(parameter),
-                           const CCallParameters & C_UNUSED(callParameters)) const;
+                           const CCallParameterPointers & C_UNUSED(callParameters)) const;
 
     /**
      *  Adds one usage descriptiont

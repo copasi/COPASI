@@ -107,7 +107,7 @@ void CKinFunction::saveOld(CWriteConfig & configBuffer)
     mNodes[i]->saveOld(configBuffer);
 }
 
-std::string CKinFunction::getSBMLString(const CCallParameters & callParameterNames, const std::string &r) const
+std::string CKinFunction::getSBMLString(const CCallParameterPointers & callParameterNames, const std::string &r) const
   {
     return mNodes[0]->getExplicitFunctionString(callParameterNames, r);
   }
@@ -170,7 +170,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                   // this is an error
+        case N_NOP:                    // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -195,13 +195,13 @@ void CKinFunction::setDescription(const std::string& description)
   initIdentifierNodes();
 }
 
-C_FLOAT64 CKinFunction::calcValue(const CCallParameters & callParameters) const
+C_FLOAT64 CKinFunction::calcValue(const CCallParameterPointers & callParameters) const
   {
     return mNodes[0]->getLeft().value(callParameters);
   }
 
 bool CKinFunction::dependsOn(const void * parameter,
-                             const CCallParameters & callParameters) const
+                             const CCallParameterPointers & callParameters) const
   {
     std::vector< const void * >::const_iterator it = callParameters.begin();
     std::vector< const void * >::const_iterator end = callParameters.end();
