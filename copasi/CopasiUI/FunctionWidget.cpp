@@ -118,6 +118,8 @@ void FunctionWidget::slotTableCurrentChanged(int row,
   if (row == table->numRows() - 1)
     {
       //TODO: create a new Object
+      std::cout << "Create new Reaction" << std::endl;
+      createNewObject();
     }
 
   pListView->switchToOtherWidget(mKeys[row]);
