@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:32:01 $
+   $Date: 2005/03/02 09:51:20 $
    End CVS Header */
 
 /**
@@ -239,7 +239,7 @@ bool CScanMethod::cleanupScanItems()
   unsigned C_INT32 i, imax = mScanItems.size();
   for (i = 0; i < imax; ++i) if (mScanItems[i]) delete mScanItems[i];
 
-  mScanItems.resize(0);
+  mScanItems.clear();
   return true;
 }
 

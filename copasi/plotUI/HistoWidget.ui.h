@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/HistoWidget.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/17 14:47:29 $
+   $Date: 2005/03/02 09:50:49 $
    End CVS Header */
 
 /****************************************************************************
@@ -83,7 +83,7 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
     curve->setTitle((const char*)lineEditTitle->text().utf8());
 
     //channels
-    curve->getChannels().resize(0);
+    curve->getChannels().clear();
     curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX->getCN()));
 
     //other parameters: TODO

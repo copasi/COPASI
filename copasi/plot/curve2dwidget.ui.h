@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/01 18:13:39 $
+   $Author: ssahle $ 
+   $Date: 2005/03/02 09:50:35 $
    End CVS Header */
 
 /****************************************************************************
@@ -67,7 +67,7 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
     curve->setTitle((const char*)lineEditTitle->text().utf8());
 
     //channels
-    curve->getChannels().resize(0);
+    curve->getChannels().clear();
     curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
     curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("")));
 
