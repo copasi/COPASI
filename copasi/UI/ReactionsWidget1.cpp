@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.148 $
+   $Revision: 1.149 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/20 18:55:48 $
+   $Author: gauges $ 
+   $Date: 2004/09/23 18:28:18 $
    End CVS Header */
 
 /*********************************************************************
@@ -159,12 +159,11 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   ReactionsWidget1Layout->addItem(spacer, 9, 0);
 
   setTabOrder(LineEdit1, LineEdit2);
-  setTabOrder(LineEdit2, ComboBox1);
+  setTabOrder(LineEdit2, CheckBox);
+  setTabOrder(CheckBox, ComboBox1);
   setTabOrder(ComboBox1, newKinetics);
-  setTabOrder(newKinetics, CheckBox);
-  setTabOrder(CheckBox, table);
-  setTabOrder(table, LineEdit3);
-  setTabOrder(LineEdit3, commitChanges);
+  setTabOrder(newKinetics, table);
+  setTabOrder(table, commitChanges);
   setTabOrder(commitChanges, cancelChanges);
   setTabOrder(cancelChanges, newReaction);
   setTabOrder(newReaction, deleteReaction); //TODO !!!!!
@@ -330,7 +329,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:               // Yes or Enter
+        case 0:                // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -354,7 +353,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                      // No or Escape
+        default:                       // No or Escape
           break;
         }
       //}

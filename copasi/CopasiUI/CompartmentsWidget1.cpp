@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/22 21:56:55 $
+   $Author: gauges $ 
+   $Date: 2004/09/23 18:28:18 $
    End CVS Header */
 
 /*******************************************************************
@@ -109,6 +109,14 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
 
   Line4_3 = new QFrame(this, "Line4_3");
   CompartmentsWidget1Layout->addMultiCellWidget(Line4_3, 7, 7, 0, 1);
+
+  setTabOrder(LineEdit1, LineEdit3);
+  setTabOrder(LineEdit3, LineEdit4);
+  setTabOrder(LineEdit4, ListBox1);
+  setTabOrder(ListBox1, commitChanges);
+  setTabOrder(commitChanges, cancelChanges);
+  setTabOrder(cancelChanges, newCompartmentBtn);
+  setTabOrder(newCompartmentBtn, deleteCompartmentBtn);
 
   // signals and slots connections
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
@@ -287,7 +295,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                    // Yes or Enter
+    case 0:                     // Yes or Enter
       {
         unsigned C_INT32 size = dataModel->getModel()->getCompartments().size();
         unsigned C_INT32 index = dataModel->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -302,7 +310,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                    // No or Escape
+    case 1:                     // No or Escape
       break;
     }
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.168 $
+   $Revision: 1.169 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/20 07:34:52 $
+   $Author: gauges $ 
+   $Date: 2004/09/23 18:28:18 $
    End CVS Header */
 
 /********************************************************
@@ -219,15 +219,15 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   // tab order
   setTabOrder(taskName, sExecutable);
-  setTabOrder(sExecutable, trajectory);
-  setTabOrder(trajectory, steadyState);
-  setTabOrder(steadyState, addButton);
+  setTabOrder(sExecutable, steadyState);
+  setTabOrder(steadyState, trajectory);
+  setTabOrder(trajectory, addButton);
   setTabOrder(addButton, deleteButton);
   setTabOrder(deleteButton, upButton);
   setTabOrder(upButton, downButton);
-  setTabOrder(downButton, ObjectListBox);
-  setTabOrder(ObjectListBox, scrollview);
-  setTabOrder(scrollview, sExecutable);
+  setTabOrder(downButton, scrollview);
+  setTabOrder(scrollview, ObjectListBox);
+  setTabOrder(ObjectListBox, scanButton);
   setTabOrder(scanButton, cancelChange);
   setTabOrder(cancelChange, reportDefinitionButton);
 
