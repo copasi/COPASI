@@ -16,6 +16,8 @@
 #include <vector>
 
 #include "utilities/CVector.h"
+#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiVector.h"
 
 class CSteadyStateTask;
 class CTrajectoryTask;
@@ -30,8 +32,15 @@ enum ProblemType
 class COptProblem
   {
     //data member
-
   private:
+
+    CCopasiVectorNS < CMethodParameterList > mOptItemList;
+
+    /**
+     * The best result of the problem
+     */
+    C_FLOAT64 mBestValue;
+
     /**
      * The paramters for wich the optimization function has to be calculated
      */
@@ -46,11 +55,6 @@ class COptProblem
      * The maximum values of the parameters
      */
     CVector< C_FLOAT64 > mParameterMax;
-
-    /**
-     * The best result of the problem
-     */
-    C_FLOAT64 mBestValue;
 
     /**
      * The parameters leading to the best result

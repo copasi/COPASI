@@ -9,6 +9,8 @@
  *           methods by which the simulation subsystem accesses several 
  *           optimization algorithms.
  *  Note: This is an abstract class
+
+ ****** Modified by Liang Xu
  */
 
 #ifndef COPASI_COptMethod

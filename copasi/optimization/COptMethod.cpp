@@ -42,9 +42,9 @@ COptMethod::COptMethod(const bool & bounds):
     CMethodParameterList(),
     mTypeEnum(COptMethod::RandomSearch),
     mOptProblem(NULL),
-    mParameters(NULL),
-    mParameterMin(NULL),
-    mParameterMax(NULL),
+    //    mParameters(NULL),
+    //    mParameterMin(NULL),
+    //    mParameterMax(NULL),
     mBounds(bounds)
 {CONSTRUCTOR_TRACE;}
 
@@ -52,9 +52,9 @@ COptMethod::COptMethod(const COptMethod & src):
     CMethodParameterList(src),
     mTypeEnum(src.mTypeEnum),
     mOptProblem(src.mOptProblem),
-    mParameters(src.mParameters),
-    mParameterMin(src.mParameterMin),
-    mParameterMax(src.mParameterMax),
+    //    mParameters(src.mParameters),
+    //    mParameterMin(src.mParameterMin),
+    //    mParameterMax(src.mParameterMax),
     mBounds(src.mBounds)
 {CONSTRUCTOR_TRACE;}
 
@@ -65,11 +65,7 @@ COptMethod::~COptMethod()
 void COptMethod::setProblem(COptProblem * problem)
 {
   assert(problem);
-
   mOptProblem = problem;
-  mParameters = & mOptProblem->getParameter();
-  mParameterMin = & mOptProblem->getParameterMin();
-  mParameterMax = & mOptProblem->getParameterMax();
 }
 
 // Returns True if this method is capable of handling adjustable parameter boundary

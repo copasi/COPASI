@@ -11,13 +11,17 @@ COptFunction::COptFunction(const std::string & name, const CCopasiContainer * pP
     : CKinFunction(name, pParent),
     mpMethod(new COptMethod),
     mpProblem(new COptProblem)
-{}
+{
+  mpMethod->setProblem(mpProblem);
+}
 
 COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer, const CCopasiContainer * pParent)
     : CKinFunction(src, configBuffer, pParent) ,
     mpMethod(src.mpMethod),
     mpProblem(src.mpProblem)
-{}
+{
+  mpMethod->setProblem(mpProblem);
+}
 
 COptFunction::~COptFunction()
 {
