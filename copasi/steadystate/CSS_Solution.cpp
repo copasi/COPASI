@@ -16,7 +16,7 @@
 #include "model/CModel.h"
 
 //don't consider CEigen class now, do it later
-//#include "CEigen.h"
+#include "CEigen.h"
 
 //default constructor
 CSS_Solution::CSS_Solution()
@@ -88,7 +88,10 @@ void CSS_Solution::initialize()
   unsigned C_INT32 dim = mModel->getIndMetab();
 
   mNewton = new CNewton();
-  mModel = new CModel();
+
+  //yohe:comment it out, should be set before 03/15/02
+  //mModel = new CModel();  
+
   //mEigen = new CEigen();
   mTraj = new CTrajectory();
   mJacob = new CJacob();
@@ -327,7 +330,8 @@ void CSS_Solution::process(void)
   //lsoda_state = 1;                //YH: comment out
   //mSs_njacob = mSs_nfunction = 0;
 
-  initialize();
+  //yohe: comment it out on 3/15/02
+  //initialize();
 
   // use the damped Newton method
   if((mOption==0) || (mOption==2)) 
