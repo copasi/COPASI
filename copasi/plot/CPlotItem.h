@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:11 $
+   $Date: 2004/08/06 11:58:36 $
    End CVS Header */
 
 /**
@@ -37,27 +37,31 @@ class CPlotDataChannelSpec : public CCopasiObjectName
     /**
      * Should autoscaling be attempted?
      */
-    bool autoscale;
+    bool minAutoscale;
+    bool maxAutoscale;
 
     CPlotDataChannelSpec()
         : CCopasiObjectName(),
         min(0.0),
         max(0.0),
-        autoscale(true)
+        minAutoscale(true),
+        maxAutoscale(true)
     {}
 
     CPlotDataChannelSpec(const CCopasiObjectName & obj)
         : CCopasiObjectName(obj),
         min(0.0),
         max(0.0),
-        autoscale(true)
+        minAutoscale(true),
+        maxAutoscale(true)
     {}
 
     CPlotDataChannelSpec(const CCopasiObjectName & obj, C_FLOAT64 minimum, C_FLOAT64 maximum)
         : CCopasiObjectName(obj),
         min(minimum),
         max(maximum),
-        autoscale(false)
+        minAutoscale(false),
+        maxAutoscale(false)
     {}};
 
 //****************************************************************************************
