@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/03 14:45:50 $
+   $Date: 2005/02/25 15:15:58 $
    End CVS Header */
 
 /****************************************************************************
@@ -20,12 +20,12 @@
 
 #include <cmath>
 
-CopasiSlider* SliderSettingsDialog::getSlider()
+CSlider* SliderSettingsDialog::getSlider()
 {
   return this->mpSlider;
 }
 
-void SliderSettingsDialog::setSlider(CopasiSlider * slider)
+void SliderSettingsDialog::setSlider(CSlider * slider)
 {
   unsigned int i;
   unsigned int iMax = this->mDefinedSliders.size();
@@ -41,7 +41,7 @@ void SliderSettingsDialog::setSlider(CopasiSlider * slider)
   if (found)
     {
       this->mpSlider = slider;
-      this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->object()->getCN()));
+      this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getCN()));
       this->mpObjectBrowseButton->hide();
       this->updateInputFields();
       this->updateInputFieldsValues();
@@ -55,26 +55,26 @@ void SliderSettingsDialog::setSlider(CopasiSlider * slider)
     }
 }
 
-void SliderSettingsDialog::setDefinedSliders(std::vector<CopasiSlider *> sliderVect)
+void SliderSettingsDialog::setDefinedSliders(std::vector<CSlider *> sliderVect)
 {
   this->mDefinedSliders = sliderVect;
 }
 
 void SliderSettingsDialog::updateInputFieldsValues()
 {
-  this->mValue = this->mpSlider->value();
+  this->mValue = this->mpSlider->getSliderValue();
   this->mpObjectValueEdit->setText(QString::number(this->mValue));
 
-  this->mMinValue = this->mpSlider->minValue();
+  this->mMinValue = this->mpSlider->getMinValue();
   this->mpMinValueEdit->setText(QString::number(this->mMinValue));
 
-  this->mMaxValue = this->mpSlider->maxValue();
+  this->mMaxValue = this->mpSlider->getMaxValue();
   this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
 
-  this->mNumMinorTicks = this->mpSlider->numMinorTicks();
+  this->mNumMinorTicks = this->mpSlider->getTickNumber();
   this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
 
-  this->mMinorMajorFactor = this->mpSlider->minorMajorFactor();
+  this->mMinorMajorFactor = this->mpSlider->getTickFactor();
   this->mpMinorMajorFactorEdit->setText(QString::number(this->mMinorMajorFactor));
 
   this->numMinorTicksChanged();
@@ -234,14 +234,14 @@ void SliderSettingsDialog::browseButtonPressed()
       // check if this object already has a slider object
       // if yes, call setSlider with the correct slider object
       // else create a new slider object for this object and add it to the sliders
-      if (this->mpSlider && this->mpSlider->object() == object) return;
+      if (this->mpSlider && this->mpSlider->getSliderObject() == object) return;
       unsigned C_INT32 i;
       unsigned C_INT32 iMax = this->mDefinedSliders.size();
       unsigned C_INT32 found = iMax;
       unsigned C_INT32 sliderFound = iMax;
       for (i = 0; i < iMax;++i)
         {
-          if (this->mDefinedSliders[i]->object() == object)
+          if (this->mDefinedSliders[i]->getSliderObject() == object)
             {
               found = i;
               if (sliderFound)
@@ -269,11 +269,12 @@ void SliderSettingsDialog::browseButtonPressed()
         }
       else
         {
-          this->mpSlider = new CopasiSlider(object, NULL);
+          this->mpSlider = new CSlider();
+          this->mpSlider->setSliderObject(object);
           this->updateInputFields();
           this->updateInputFieldsValues();
         }
-      this->mpObjectNameLineEdit->setText(FROM_UTF8(this->mpSlider->object()->getCN()));
+      this->mpObjectNameLineEdit->setText(FROM_UTF8(this->mpSlider->getSliderObject()->getCN()));
     }
   else
     {
@@ -296,7 +297,7 @@ void SliderSettingsDialog::updateSlider()
 {
   if (this->mpSlider)
     {
-      if (this->mMinValue < this->mpSlider->maxValue())
+      if (this->mMinValue < this->mpSlider->getMaxValue())
         {
           this->mpSlider->setMinValue(this->mMinValue);
           this->mpSlider->setMaxValue(this->mMaxValue);
@@ -306,8 +307,8 @@ void SliderSettingsDialog::updateSlider()
           this->mpSlider->setMaxValue(this->mMaxValue);
           this->mpSlider->setMinValue(this->mMinValue);
         }
-      this->mpSlider->setValue(this->mValue);
-      this->mpSlider->setNumMinorTicks(this->mNumMinorTicks);
-      this->mpSlider->setMinorMajorFactor(this->mMinorMajorFactor);
+      this->mpSlider->setSliderValue(this->mValue);
+      this->mpSlider->setTickNumber(this->mNumMinorTicks);
+      this->mpSlider->setTickFactor(this->mMinorMajorFactor);
     }
 }

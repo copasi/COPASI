@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 15:15:08 $
+   $Date: 2005/02/25 15:15:58 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Fri Dec 10 13:52:15 2004
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.2 2004/12/10 15:15:08 gauges Exp $)
+ ** Created: Fri Feb 25 13:09:28 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.3 2005/02/25 15:15:58 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -22,7 +22,7 @@
 #include <qdialog.h>
 #include <vector>
 #include <string>
-#include "CopasiSlider.h"
+#include "utilities/CSlider.h"
 #include "copasi.h"
 
 class QVBoxLayout;
@@ -60,21 +60,21 @@ class SliderSettingsDialog : public QDialog
     QPushButton* mpOkButton;
     QPushButton* mpCancelButton;
 
-    virtual CopasiSlider* getSlider();
-    virtual void setSlider(CopasiSlider * slider);
-    virtual void setDefinedSliders(std::vector< CopasiSlider * > sliderVect);
+    virtual CSlider* getSlider();
+    virtual void setSlider(CSlider * slider);
+    virtual void setDefinedSliders(std::vector< CSlider * > sliderVect);
     virtual void setModel(CModel * model);
     virtual void disableObjectChoosing(bool disableChoosing);
     virtual void updateSlider();
 
   signals:
-    void sliderChanged(CopasiSlider* slider);
+    void sliderChanged(CSlider* slider);
 
   protected:
     CModel* mpModel;
     C_INT32 mCurrentTaskId;
-    CopasiSlider* mpSlider;
-    std::vector< CopasiSlider* > mDefinedSliders;
+    CSlider* mpSlider;
+    std::vector< CSlider* > mDefinedSliders;
     unsigned int mNumMinorTicks;
     unsigned int mMinorMajorFactor;
     double mValue;

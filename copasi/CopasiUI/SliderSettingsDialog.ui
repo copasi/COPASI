@@ -349,7 +349,7 @@
 </tabstops>
 <includes>
     <include location="global" impldecl="in declaration">vector</include>
-    <include location="local" impldecl="in declaration">CopasiSlider.h</include>
+    <include location="local" impldecl="in declaration">utilities/CSlider.h</include>
     <include location="local" impldecl="in declaration">copasi.h</include>
     <include location="global" impldecl="in declaration">string</include>
     <include location="local" impldecl="in implementation">qtUtilities.h</include>
@@ -368,8 +368,8 @@
 <variables>
     <variable>CModel* mpModel;</variable>
     <variable>C_INT32 mCurrentTaskId;</variable>
-    <variable>CopasiSlider* mpSlider;</variable>
-    <variable>std::vector&lt; CopasiSlider* &gt; mDefinedSliders;</variable>
+    <variable>CSlider* mpSlider;</variable>
+    <variable>std::vector&lt; CSlider* &gt; mDefinedSliders;</variable>
     <variable>unsigned int mNumMinorTicks</variable>
     <variable>unsigned int mMinorMajorFactor</variable>
     <variable>double mValue</variable>
@@ -378,7 +378,7 @@
     <variable>double mMinorTickSize</variable>
 </variables>
 <signals>
-    <signal>sliderChanged(CopasiSlider* slider)</signal>
+    <signal>sliderChanged(CSlider* slider)</signal>
 </signals>
 <slots>
     <slot access="protected">okButtonPressed()</slot>
@@ -392,9 +392,9 @@
     <slot access="protected">browseButtonPressed()</slot>
 </slots>
 <functions>
-    <function returnType="CopasiSlider*">getSlider()</function>
-    <function>setSlider(CopasiSlider * slider )</function>
-    <function>setDefinedSliders(std::vector&lt; CopasiSlider * &gt; sliderVect )</function>
+    <function returnType="CSlider*">getSlider()</function>
+    <function>setSlider(CSlider * slider )</function>
+    <function>setDefinedSliders(std::vector&lt; CSlider * &gt; sliderVect )</function>
     <function access="protected">updateInputFieldsValues()</function>
     <function access="protected">updateInputFields()</function>
     <function access="protected">init()</function>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/18 09:58:02 $
+   $Date: 2005/02/25 15:15:58 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -28,6 +28,7 @@ class QPopupMenu;
 class DataModelGUI;
 class CopasiSlider;
 class CCopasiTask;
+class CSlider;
 
 class SliderDialog: public QDialog
   {
@@ -36,7 +37,7 @@ class SliderDialog: public QDialog
   public:
     SliderDialog(QWidget* parent, DataModelGUI* dataModel);
     virtual ~SliderDialog();
-    void addSlider(CopasiSlider* slider, C_INT32 folderId);
+    void addSlider(CSlider* slider);
     void setCurrentFolderId(C_INT32 id);
 
   protected:
@@ -48,7 +49,7 @@ class SliderDialog: public QDialog
     QVBox* sliderBox;
     QPopupMenu* contextMenu;
     CopasiSlider* currSlider;
-    std::map<C_INT32 , std::vector< CopasiSlider* > > sliderMap;
+    //std::map<C_INT32 , std::vector< CopasiSlider* > > sliderMap;
     std::map < C_INT32 , void(SliderDialog::*)() > taskMap;
     C_INT32 currentFolderId;
 
@@ -74,10 +75,13 @@ class SliderDialog: public QDialog
     virtual void closeEvent(QCloseEvent* e);
 
     virtual void setDataModel(DataModelGUI* dataModel);
-    virtual void addSliderToTask(CopasiSlider* slider);
-    virtual void deleteSliderFromTask(CopasiSlider* slider);
+    //virtual void addSliderToTask(CopasiSlider* slider);
+    //virtual void deleteSliderFromTask(CopasiSlider* slider);
     virtual CCopasiTask* getTaskForFolderId(C_INT32 folderId);
     virtual void updateAllSliders();
+    std::vector<CSlider*>* getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const;
+    CopasiSlider* findCopasiSliderForCSlider(CSlider* pCSlider);
+    CSlider* equivalentSliderExists(CSlider* pCSlider);
 
   protected slots:
     void removeSlider(CopasiSlider* slider);
