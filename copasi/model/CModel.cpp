@@ -1670,7 +1670,10 @@ bool CModel::addMetabolite(const std::string & name,
 {
   unsigned C_INT32 Index;
 
-  if (compartment == "" && mCompartments.size() != 0)
+  if (mCompartments.size() == 0)
+    addCompartment("compartment_0");
+
+  if (compartment == "")
     Index = 0;
   else if ((Index = mCompartments.getIndex(compartment)) == C_INVALID_INDEX)
     return false;
@@ -1685,14 +1688,14 @@ bool CModel::addMetabolite(const std::string & name,
   // pMetab->setModel(this);
   // pMetab->setCompartment(mCompartments[Index]);
 
-  pMetab->setStatus(status);
-  pMetab->setInitialConcentration(iconc);
-
   if (!mCompartments[Index]->addMetabolite(pMetab))
     {
       delete pMetab;
       return false;
     }
+
+  pMetab->setStatus(status);
+  pMetab->setInitialConcentration(iconc);
 
   return mMetabolites.add(pMetab);
 }
@@ -1701,19 +1704,21 @@ bool CModel::addCompartment(const std::string & name,
                             const C_FLOAT64 & volume)
 {
   // check if there is already a volume with this name
-  if (mCompartments.getIndex(name) == C_INVALID_INDEX)
-    {
-      //  cpt = new CCompartment(name, vol);
-      CCompartment cpt;
-      cpt.setName(name);
-      cpt.setInitialVolume(volume);
-      cpt.setVolume(volume);
-
-      mCompartments.add(cpt);
-      return mCompartments.add(cpt);
-    }
-  else
+  if (mCompartments.getIndex(name) != C_INVALID_INDEX)
     return false;
+
+  CCompartment * cpt = new CCompartment(name);
+
+  cpt->setInitialVolume(volume);
+  cpt->setVolume(volume);
+
+  if (!mCompartments.add(cpt, true))
+    {
+      delete cpt;
+      return false;
+    }
+
+  return true;
 }
 
 bool CModel::addReaction(const std::string & name)
