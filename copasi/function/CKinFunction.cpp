@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/21 14:31:24 $
+   $Author: shoops $ 
+   $Date: 2003/10/21 18:34:24 $
    End CVS Header */
 
 /**
@@ -26,6 +26,7 @@
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObject.h"
+#include "utilities/utility.h"
 
 CKinFunction::CKinFunction(const std::string & name,
                            const CCopasiContainer * pParent):
@@ -131,7 +132,7 @@ std::string CKinFunction::getSBMLString(const std::vector< std::vector< std::str
 bool CKinFunction::createObjList()
 {
   std::string mDescription = CFunction::getDescription();
-  char buffer[256];
+  //  char buffer[256];
   std::string mTarget = "";
   std::string mToken = "";
   CCopasiObject* mpObj;
@@ -160,7 +161,8 @@ bool CKinFunction::createObjList()
                   if (mpObj) // find the object
                     {
                       mToken = "";
-                      mTarget += itoa(ObjList.size(), buffer, 10);
+                      mTarget += StringPrint("%d", ObjList.size());
+                      //  mTarget += itoa(ObjList.size(), buffer, 10);
                       ObjList.push_back(mpObj);
                       mpObj = NULL;
                       mTarget += mDescription[i]; // add '>'
@@ -263,7 +265,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                             // this is an error
+        case N_NOP:                              // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
