@@ -200,7 +200,6 @@ C_INT32 CUDFunction::connectNodes()
 
   for (i = 1; i < mNodes.size(); i++)
     {
-      CNodeO *npt = mNodes[i];
       mNodes[i]->setLeft(mNodes[0]);
       mNodes[i]->setRight(mNodes[0]);
     }
@@ -559,7 +558,7 @@ C_INT32 CUDFunction::parse()
           mNodes.add(CNodeO(N_FUNCTION, N_COS));
           break;
 
-        case N_NOP:          // this is an error
+        case N_NOP:           // this is an error
           mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

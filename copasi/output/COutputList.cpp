@@ -29,7 +29,7 @@ COutputList::~COutputList()
  * Read config variables from input configburg buffer
  *  @param configbuffer: reference of the config buffer.
  */
-COutputList::COutputList(CReadConfig &configbuffer)
+COutputList::COutputList(CReadConfig & C_UNUSED(configbuffer))
 {
   init();
 }
@@ -151,7 +151,8 @@ void COutputList::compile(const string & name, CModel *model, CState *state)
 /**
  * Assign the pointer to each datum object for steady state
  */
-void COutputList::compile(const string & name, CModel *model, CSS_Solution *soln)
+void COutputList::compile(const string & name, CModel *model,
+                          CSS_Solution *soln)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {

@@ -407,7 +407,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 
   return Fail;
 }
-C_INT32 CMetabOld::save(CWriteConfig & configbuffer){ return 0; }
+C_INT32 CMetabOld::save(CWriteConfig & C_UNUSED(configbuffer)){ return 0; }
 C_INT32 CMetabOld::getIndex() const { return mCompartment; }
 string CMetabOld::getName() const { return mName; }
 

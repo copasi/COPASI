@@ -58,7 +58,7 @@ unsigned C_INT32 CRandom::getSystemSeed()
   return ((init_time.time & 0xffff) + 1) * 1000 + init_time.millitm;
 }
 
-void CRandom::initialize(unsigned C_INT32 seed)
+void CRandom::initialize(unsigned C_INT32 C_UNUSED(seed))
 {
   /* Every random number generator has to implement this. */
   fatalError();

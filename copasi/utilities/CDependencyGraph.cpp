@@ -11,7 +11,7 @@ using namespace std;
 CDependencyGraphNode::CDependencyGraphNode()
 {}
 
-CDependencyGraphNode::CDependencyGraphNode(C_INT32 node_number)
+CDependencyGraphNode::CDependencyGraphNode(C_INT32 C_UNUSED(node_number))
 {}
 
 CDependencyGraphNode::~CDependencyGraphNode()
@@ -30,8 +30,7 @@ void CDependencyGraphNode::addDependent(C_INT32 node_num)
 
 //const vector<C_INT32> & CDependencyGraphNode::getDependents()
 
-const set
-  <C_INT32> & CDependencyGraphNode::getDependents()
+const set <C_INT32> & CDependencyGraphNode::getDependents()
   {
     return mDependents;
   }
@@ -50,12 +49,11 @@ void CDependencyGraph::addNode(C_INT32 node)
 
 void CDependencyGraph::addDependent(C_INT32 node, C_INT32 dependent)
 {
-  addNode(node) ;
+  addNode(node);
   mNodes[node].addDependent(dependent);
 }
 
-const set
-  <C_INT32> & CDependencyGraph::getDependents(C_INT32 node)
+const set <C_INT32> & CDependencyGraph::getDependents(C_INT32 node)
   {
     return mNodes[node].getDependents();
   }
@@ -95,16 +93,14 @@ int main(int argc, char **argv)
       cout << "Node: " << i << " Dependents: ";
       //      vector<C_INT32> depvec = dg.getDependents(i);
 
-      set
-        <C_INT32> depset = dg.getDependents(i);
+      set <C_INT32> depset = dg.getDependents(i);
 
       //      while (j < depvec.size())
       //        {
       //          cout << depvec[j] << " ";
       //          j++;
       //        }
-      for (set
-           <C_INT32>::iterator iter = depset.begin(); iter != depset.end(); iter++)
+      for (set <C_INT32>::iterator iter = depset.begin(); iter != depset.end(); iter++)
         {
           cout << *iter << " ";
         }

@@ -78,7 +78,7 @@ void CStochMethod::cleanup()
   mRandomGenerator = 0;
 }
 
-C_INT32 CStochMethod::initMethod(C_FLOAT64 start_time)
+C_INT32 CStochMethod::initMethod(C_FLOAT64 C_UNUSED(start_time))
 {
   // Populate the vector of propensities
 
@@ -437,7 +437,7 @@ C_INT32 CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
   return 0;
 }
 
-C_FLOAT64 CStochNextReactionMethod::doStep(C_FLOAT64 time)
+C_FLOAT64 CStochNextReactionMethod::doStep(C_FLOAT64 C_UNUSED(time))
 {
   C_FLOAT64 steptime = mPQ.topKey();
   C_INT32 reaction_index = mPQ.topIndex();

@@ -764,7 +764,7 @@ void COutput::repStability(ofstream &fout)
 /**
  * print the results of the MCA
  */
-void COutput::repMCA(ofstream &fout)
+void COutput::repMCA(ofstream & C_UNUSED(fout))
 {
 #if 0
 
@@ -785,7 +785,7 @@ void COutput::repMCA(ofstream &fout)
 /**
  * print the titles of the time-course data file
  */
-void COutput::dynOutputTitles(ofstream &fout, string &DynName)
+void COutput::dynOutputTitles(ofstream &fout, string & C_UNUSED(DynName))
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -796,7 +796,7 @@ void COutput::dynOutputTitles(ofstream &fout, string &DynName)
 /**
  * print a line of data (one time point) on the time-course data file
  */
-void COutput::dynOutputData(ofstream &fout, string &DynName)
+void COutput::dynOutputData(ofstream &fout, string & C_UNUSED(DynName))
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {

@@ -117,7 +117,7 @@ C_INT32 CNodeK::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-C_INT32 CNodeK::save(CWriteConfig & configbuffer) const
+C_INT32 CNodeK::save(CWriteConfig & C_UNUSED(configbuffer)) const
   {
     C_INT32 Fail = 0;
 #ifdef XXXX

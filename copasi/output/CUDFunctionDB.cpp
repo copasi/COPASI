@@ -1,17 +1,16 @@
 /*****************************************************************************
-* PROGRAM NAME: CUDFunctionDB.h
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: Define the user defined function DB object to hold all the user
-*		   defined function				
-*****************************************************************************/
+ * PROGRAM NAME: CUDFunctionDB.h
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: Define the user defined function DB object to hold all the user
+ *     defined function    
+ *****************************************************************************/
 
-#define  COPASI_TRACE_CONSTRUCTION 
+#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "output/output.h"
 #include "utilities/utilities.h"
 #include "CUDFunctionDB.h"
-
 
 /**
  *
@@ -26,7 +25,7 @@ CUDFunctionDB::~CUDFunctionDB() {}
 /**
  *
  */
-void CUDFunctionDB::cleanup() {mUDFunctions.cleanup();}
+void CUDFunctionDB::cleanup() {mUDFunctions.cleanup(); }
 
 /**
  *  Loads an object with data coming from a CReadConfig object.
@@ -37,8 +36,8 @@ void CUDFunctionDB::cleanup() {mUDFunctions.cleanup();}
 C_INT32 CUDFunctionDB::load(CReadConfig & configbuffer)
 {
   CUDFunction * udFunction = NULL;
-  C_INT32	Fail = 0;
-  
+  C_INT32 Fail = 0;
+
   if (configbuffer.getVersion() < "4")
     {
       if ((Fail = configbuffer.getVariable("User-defined functions",
@@ -50,10 +49,10 @@ C_INT32 CUDFunctionDB::load(CReadConfig & configbuffer)
         return Fail;
     }
   else
-      if ((Fail = configbuffer.getVariable("TotalOutputFunctions", "C_INT32",
-                                           &mItems)))
-        return Fail;
-    
+    if ((Fail = configbuffer.getVariable("TotalOutputFunctions", "C_INT32",
+                                         &mItems)))
+      return Fail;
+
   // Load each user defined function
   for (C_INT32 i = 0; i < mItems; i++)
     {
@@ -61,7 +60,7 @@ C_INT32 CUDFunctionDB::load(CReadConfig & configbuffer)
       udFunction->load(configbuffer);
       mUDFunctions.add(udFunction);
     }
-  
+
   return Fail;
 }
 
@@ -82,7 +81,7 @@ C_INT32 CUDFunctionDB::save(CWriteConfig & configbuffer)
 
   for (C_INT32 i = 0; i < Size; i++)
     mUDFunctions[i]->save(configbuffer);
-  
+
   return Fail;
 }
 
@@ -91,25 +90,24 @@ C_INT32 CUDFunctionDB::save(CWriteConfig & configbuffer)
  *  @param CUDFunction &function
  *  @return C_INT32 Fail
  */
-void CUDFunctionDB::add(CUDFunction & function)
-{
-}
-
+void CUDFunctionDB::add
+  (CUDFunction & C_UNUSED(function))
+{}
 
 /**
  * Get the number of user defined functions
  */
 C_INT16 CUDFunctionDB::getItems() const
-{
-	return mItems;
-}
-  
+  {
+    return mItems;
+  }
+
 /**
  * Set the number of user defined funcstion
  */
 void CUDFunctionDB::setItems(const C_INT16 items)
 {
-	mItems = items;
+  mItems = items;
 }
 
 /**
@@ -117,5 +115,5 @@ void CUDFunctionDB::setItems(const C_INT16 items)
  */
 CCopasiVectorN < CUDFunction > & CUDFunctionDB::getFunctions()
 {
-	return mUDFunctions;
+  return mUDFunctions;
 }

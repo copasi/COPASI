@@ -394,7 +394,7 @@ bool CTempReaction::isIn(vector<CTempMetab> & metabs, const string & target)
 
 C_FLOAT64 CTempReaction::getParameterValue(const string & name,
     const vector<CNameVal> & rates,
-    const vector<CNameVal> & constants)
+    const vector<CNameVal> & C_UNUSED(constants))
 {
   unsigned i, imax = rates.size();
 

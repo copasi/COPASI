@@ -33,7 +33,7 @@ COutputEvent::COutputEvent(int time)
  * User defined constructor. 
  *  @param time refers to the output interval
  */
-COutputEvent::COutputEvent(CSS_Solution &ss)
+COutputEvent::COutputEvent(CSS_Solution & C_UNUSED(ss))
 {
   //mTime = time;
   mTime = 0;    // wsun steady state just output one line data

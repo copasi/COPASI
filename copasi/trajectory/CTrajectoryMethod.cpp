@@ -100,7 +100,8 @@ void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
  *  @param "const double &" deltaT
  *  @return "const double" actualDeltaT
  */
-const double CTrajectoryMethod::step(const double & deltaT) { return 0.0; }
+const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
+{ return 0.0; }
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
@@ -111,6 +112,6 @@ const double CTrajectoryMethod::step(const double & deltaT) { return 0.0; }
  *  @param "const CState *" initialState
  *  @return "const double &" actualDeltaT
  */
-const double CTrajectoryMethod::step(const double & deltaT,
-                                     const CState * initialState)
+const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT),
+                                     const CState * C_UNUSED(initialState))
 { return 0.0; }

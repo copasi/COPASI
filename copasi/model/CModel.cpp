@@ -280,7 +280,8 @@ C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
 void CModel::saveSBML(std::ofstream &fout)
 {
   string tmpstr, tmpstr2;
-  C_INT32 i, p, dummy;
+  C_INT32 p, dummy;
+  unsigned C_INT32 i;
 
   fout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
   fout << "<!-- Created by COPASI version " << Copasi->ProgramVersion.getVersion() << " -->" << endl;
@@ -294,7 +295,7 @@ void CModel::saveSBML(std::ofstream &fout)
       fout << "\t\t<notes>" << endl;
       fout << "\t\t\t<body xmlns=\"http://www.w3.org/1999/xhtml\">" << endl;
       tmpstr = mComments;
-      for (i = 0; i != -1; )
+      for (i = 0; i != (unsigned C_INT32) - 1; )
         {
           p = tmpstr.find_first_of("\r\n");
           FixXHTML(tmpstr.substr(0, p), tmpstr2);
@@ -792,7 +793,7 @@ vector < CReaction * > & CModel::getReactionsX()
 }
 
 #ifndef COPASI_DEPRECATED
-void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CModel::lSODAEval(C_INT32 n, C_FLOAT64 C_UNUSED(t), C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
   unsigned C_INT32 i, j;
 

@@ -156,7 +156,8 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   configBuffer.setVariable("Description", "string", &mDescription);
 }
 
-string CFunction::getSBMLString(const CCallParameters & callParameterNames, const string &r)
+string CFunction::getSBMLString(const CCallParameters & C_UNUSED(callParameterNames),
+                                const string & C_UNUSED(r))
 {
   return "0";
 }
@@ -216,7 +217,7 @@ unsigned C_INT32 CFunction::getParameterPosition(const string & name)
   return mParameters[0] - mParameters[name];
 }
 
-C_FLOAT64 CFunction::calcValue(const CCallParameters & callParameters) const
+C_FLOAT64 CFunction::calcValue(const CCallParameters & C_UNUSED(callParameters)) const
   {
     return 0.0;
   }
