@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:36:25 $
+   $Date: 2004/06/10 19:35:20 $
    End CVS Header */
 
 /**
@@ -19,6 +19,9 @@
 #define COPASI_CCopasiXML
 
 #include "CCopasiXMLInterface.h"
+
+class CCopasiParameter;
+class CCopasiParameterGroup;
 
 class CCopasiXML : public CCopasiXMLInterface
   {
@@ -72,6 +75,20 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     bool saveReportList();
+
+    /**
+     * Save a Parameter.
+     * @param const CCopasiParameter & parameter
+     * @return bool success
+     */
+    bool saveParameter(const CCopasiParameter & parameter);
+
+    /**
+     * Save a Parameter Group.
+     * @param const CCopasiParameterGroup::parameterGroup & group
+     * @return bool success
+     */
+    bool saveParameterGroup(const std::vector< CCopasiParameter * > & group);
 
     /**
      * Build a list of functions.

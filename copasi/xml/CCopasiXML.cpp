@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/19 01:01:45 $
+   $Date: 2004/06/10 19:35:20 $
    End CVS Header */
 
 /**
@@ -496,7 +496,7 @@ bool CCopasiXML::saveTaskList()
   bool success = true;
   if (!haveTaskList()) return success;
 
-  unsigned C_INT32 i, j, imax = mpTaskList->size(), jmax;
+  unsigned C_INT32 i, imax = mpTaskList->size();
 
   if (!imax) return success;
 
@@ -515,67 +515,105 @@ bool CCopasiXML::saveTaskList()
       startSaveElement("Task", Attributes);
 
       // Report Element
-      CReport tReport = pTask->getReport();
-      Attributes.erase();
-
-      //Attributes.add("reference",tReport->);
-      Attributes.add("target", tReport.getTarget());
-      Attributes.add("append", tReport.append());
-      startSaveElement("Report", Attributes);
-      endSaveElement("Report");
+      CReport & tReport = pTask->getReport();
+      if (tReport.getReportDefinition())
+        {
+          Attributes.erase();
+          Attributes.add("reference", tReport.getReportDefinition()->getKey());
+          Attributes.add("target", tReport.getTarget());
+          Attributes.add("append", tReport.append());
+          saveElement("Report", Attributes);
+        }
 
       //Problem Element
       CCopasiProblem *tProblem = pTask->getProblem();
+
+      Attributes.erase();
       startSaveElement("Problem");
-
-      Attributes.erase();
-      Attributes.add("type", CCopasiTask::XMLType[pTask->getType()]);
-      startSaveElement("InitialState", Attributes);
-      endSaveElement("InitialState");
-
-      // how do u know if its a parameter/ parameter group??
-      Attributes.erase();
-      Attributes.add("name", tProblem->getName(i));
-      Attributes.add("type", CCopasiProblem::XMLType[tProblem->getType()]);
-      Attributes.add("value", tProblem->getValue(i));
-      startSaveElement("Parameter", Attributes);
-      endSaveElement("Parameter");
-
-      CCopasiParameterGroup::parameterGroup tparamGroup;
-      jmax = tparamGroup.size();
-      Attributes.erase();
-      Attributes.add("name", tProblem->getName(i));
-      startSaveElement("ParameterGroup", Attributes);
-      for (j = 0; j < jmax; j++)
-        {
-          Attributes.erase();
-          Attributes.add("name", tparamGroup[i]->getObjectName());
-          Attributes.add("type", tparamGroup[i]->getType());
-          Attributes.add("value", tparamGroup[i]->getValue());
-          startSaveElement("Parameter", Attributes);
-          endSaveElement("Parameter");
-        }
-      endSaveElement("ParameterGroup");
+      saveParameterGroup(* (std::vector<CCopasiParameter *> *) tProblem->CCopasiParameter::getValue());
       endSaveElement("Problem");
 
       // Method Element
       CCopasiMethod *tMethod = pTask->getMethod();
+
       Attributes.erase();
-      Attributes.add("name", tMethod->getName(i));
-      Attributes.add("type", CCopasiTask::XMLType[tMethod->getType()]);
+      Attributes.add("name", tMethod->CCopasiParameter::getName());
+      Attributes.add("type", CCopasiMethod::XMLSubType[tMethod->getSubType()]);
       startSaveElement("Method", Attributes);
-      Attributes.erase();
-      Attributes.add("name", tMethod->getName(i));
-      Attributes.add("type", CCopasiTask::XMLType[tMethod->getType()]);
-      Attributes.add("value", tMethod->getValue(i));
-      startSaveElement("Parameter", Attributes);
-      endSaveElement("Parameter");
+      saveParameterGroup(* (std::vector<CCopasiParameter *> *) tMethod->CCopasiParameter::getValue());
       endSaveElement("Method");
 
       endSaveElement("Task");
     }
 
   endSaveElement("ListOfTasks");
+
+  return success;
+}
+
+bool CCopasiXML::saveParameter(const CCopasiParameter & parameter)
+{
+  bool success = true;
+
+  CXMLAttributeList Attributes;
+
+  Attributes.add("name", parameter.getObjectName());
+
+  CCopasiParameter::Type Type = parameter.getType();
+  Attributes.add("type", CCopasiParameter::XMLType[Type]);
+
+  switch (parameter.getType())
+    {
+    case CCopasiParameter::DOUBLE:
+    case CCopasiParameter::UDOUBLE:
+      Attributes.add("value", * (C_FLOAT64 *) parameter.getValue());
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::INT:
+      Attributes.add("value", * (C_INT32 *) parameter.getValue());
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::UINT:
+      Attributes.add("value", * (unsigned C_INT32 *) parameter.getValue());
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::BOOL:
+      Attributes.add("value", * (bool *) parameter.getValue());
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::STRING:
+      Attributes.add("value", * (std::string *) parameter.getValue());
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::GROUP:
+      if (!startSaveElement("ParameterGroup", Attributes)) success = false;
+      if (!saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *) parameter.getValue())) success = false;
+      if (!endSaveElement("ParameterGroup")) success = false;
+      break;
+
+    case CCopasiParameter::INVALID:
+    default:
+      success = false;
+      break;
+    }
+
+  return success;
+}
+
+bool CCopasiXML::saveParameterGroup(const std::vector< CCopasiParameter * > & group)
+{
+  bool success = true;
+
+  std::vector< CCopasiParameter * >::const_iterator it = group.begin();
+  std::vector< CCopasiParameter * >::const_iterator end = group.end();
+
+  for (; it != end; ++it)
+    if (!saveParameter(**it)) success = false;
 
   return success;
 }
@@ -599,14 +637,34 @@ bool CCopasiXML::saveReportList()
     {
       pReport = (*mpReportList)[i];
 
+      //      if (pReport->isTable())
+      //        {
+      //Table is not yet implemented
+      /*Attributes.erase();
+        Attributes.add("seperator",);
+        Attributes.add("printTitle",);
+        startSaveElement("Table",Attributes);
+        // *** Add stuff here
+        Attributes.erase();
+        Attributes.add("cn",);
+        startSaveElement("Object",Attributes);
+        endSaveElement("Object");
+        endSaveElement("Table");*/ 
+      //}
+      //      else
+      //        {
       Attributes.erase();
       Attributes.add("key", pReport->getKey());
       Attributes.add("name", pReport->getObjectName());
-      //Attributes.add("taskType", pReport->getTaskType());
+      Attributes.add("taskType", pReport->getTaskType());
       startSaveElement("Report", Attributes);
 
       startSaveElement("Comment");
+      Attributes.erase();
+      Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
+      startSaveElement("body", Attributes);
       saveData(pReport->getComment());
+      endSaveElement("body");
       endSaveElement("Comment");
 
       std::vector <CCopasiObjectName> *header = pReport->getHeaderAddr();
@@ -615,79 +673,83 @@ bool CCopasiXML::saveReportList()
           startSaveElement("Header");
           for (j = 0; j < header->size(); j++)
             {
-              if ((*header)[j].getObjectType() == "string")
+              if ((*header)[j].getObjectType() == "html")
                 {
                   //Write in Text
-                  startSaveElement("Text");
-                  saveData((*header)[j]);
-                  endSaveElement("Text");
+                  startSaveElement("html");
+                  Attributes.erase();
+                  Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
+                  startSaveElement("body", Attributes);
+                  saveData((*header)[j].getObjectName());
+                  endSaveElement("body");
+                  endSaveElement("html");
                 }
               else
                 {
                   //Write in Object
                   Attributes.erase();
                   Attributes.add("cn", (*header)[j]);
-                  startSaveElement("Object", Attributes);
-                  endSaveElement("Object");
+                  saveElement("Object", Attributes);
                 }
             }
           endSaveElement("Header");
         }
+
       std::vector <CCopasiObjectName> *body = pReport->getBodyAddr();
       if (body->size())
         {
           startSaveElement("Body");
-          startSaveElement("Complex");
           for (j = 0; j < body->size(); j++)
             {
-              if ((*body)[j].getObjectType() == "String")
+              if ((*body)[j].getObjectType() == "html")
                 {
                   //Write in Text
-                  startSaveElement("Text");
-                  saveData((*body)[j].getName(0)); //TODO check
-                  endSaveElement("Text");
+                  startSaveElement("html");
+                  Attributes.erase();
+                  Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
+                  startSaveElement("body", Attributes);
+                  saveData((*body)[j].getObjectName()); //TODO check
+                  endSaveElement("body");
+                  endSaveElement("html");
                 }
               else
                 {
                   //Write in Object
                   Attributes.erase();
                   Attributes.add("cn", (*body)[j]);
-                  startSaveElement("Object", Attributes);
-                  endSaveElement("Object");
+                  saveElement("Object", Attributes);
                 }
             }
-
-          //Table is not yet implemented
-          /*Attributes.erase();
-            Attributes.add("seperator",);
-            Attributes.add("printTitle",);
-            startSaveElement("Table",Attributes);
-            // *** Add stuff here
-            Attributes.erase();
-            Attributes.add("cn",);
-            startSaveElement("Object",Attributes);
-            endSaveElement("Object");
-            endSaveElement("Table");*/
-
-          endSaveElement("Complex");
           endSaveElement("Body");
         }
-      //footer is not yet implented
 
-      /*startSaveElement("Footer");
-      // *** Add stuff here
-       Attributes.erase();
-       Attributes.add("cn",);
-          startSaveElement("Object",Attributes);
-       endSaveElement("Object");
-          startSaveElement("Text");
-        // *** Add here
-       saveData();
-       endSaveElement("Text");
-          startSaveElement("Report");
-            endSaveElement("Report")
-
-      endSaveElement("Footer");*/
+      std::vector <CCopasiObjectName> *footer = pReport->getFooterAddr();
+      if (footer->size())
+        {
+          startSaveElement("Footer");
+          for (j = 0; j < footer->size(); j++)
+            {
+              if ((*footer)[j].getObjectType() == "html")
+                {
+                  //Write in Text
+                  startSaveElement("html");
+                  Attributes.erase();
+                  Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
+                  startSaveElement("body", Attributes);
+                  saveData((*footer)[j].getObjectName()); //TODO check
+                  endSaveElement("body");
+                  endSaveElement("html");
+                }
+              else
+                {
+                  //Write in Object
+                  Attributes.erase();
+                  Attributes.add("cn", (*footer)[j]);
+                  saveElement("Object", Attributes);
+                }
+            }
+          endSaveElement("Footer");
+        }
 
       endSaveElement("Report");
     }
