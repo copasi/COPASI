@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:17 $
+   $Author: ssahle $ 
+   $Date: 2005/02/04 13:18:17 $
    End CVS Header */
 
 /****************************************************************************
@@ -29,10 +29,11 @@ class QPushButton;
 class QRadioButton;
 class QTable;
 class QTextEdit;
+class QWidgetStack;
 class CFunction;
 //class MyLineEdit;
 
-//class QtMmlWidget;
+class QtMmlWidget;
 
 class CFunction;
 class CFunctionParameters;
@@ -102,8 +103,9 @@ class FunctionWidget1 : public CopasiWidget
     QLabel* TextLabel3;
     QFrame* Line1;
 
-    //    QtMmlWidget* mMmlWidget;
-    //    QScrollView* mScrollView;
+    QWidgetStack* mStack;
+    QtMmlWidget* mMmlWidget;
+    QScrollView* mScrollView;
 
     CFunction * pFunction;
   };

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:17 $
+   $Author: ssahle $ 
+   $Date: 2005/02/04 13:18:16 $
    End CVS Header */
 
 /**********************************************************************
@@ -32,6 +32,7 @@
 #include <qframe.h>
 #include <qtextbrowser.h>
 #include <qmessagebox.h>
+#include <qwidgetstack.h>
 #include <stdlib.h>
 #include <algorithm>
 
@@ -63,8 +64,6 @@
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
     CopasiWidget(parent, name, fl),
     objKey(""),
-    //    mMmlWidget(NULL),
-    //    mScrollView(NULL),
     pFunction(NULL)
 {
   if (!name)
@@ -72,105 +71,55 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   setCaption(trUtf8("FunctionWidget1"));
   FunctionWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "FunctionWidget1Layout");
 
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Formula"));
-  FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
+  //******** name *************
 
-  textBrowser = new QTextEdit(this, "Text Browser");
-  textBrowser->setTabChangesFocus(true);
-  textBrowser->setTextFormat(PlainText);
-  FunctionWidget1Layout->addWidget(textBrowser, 1, 1);
-
-  Line2 = new QFrame(this, "Line2");
-  Line2->setFrameShape(QFrame::HLine);
-  //Line2->setFrameShadow(QFrame::Sunken);
-  //Line2->setFrameShape(QFrame::HLine);
-  FunctionWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 1);
-
-  Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
-
-  commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("Commit"));
-  Layout1->addWidget(commitChanges);
-
-  cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Revert"));
-  Layout1->addWidget(cancelChanges);
-
-  newFcn = new QPushButton(this, "newFcn");
-  newFcn->setText(trUtf8("New"));
-  Layout1->addWidget(newFcn);
-
-  deleteFcn = new QPushButton(this, "deleteFcn");
-  deleteFcn->setText(trUtf8("Delete"));
-  Layout1->addWidget(deleteFcn);
-
-  FunctionWidget1Layout->addMultiCellLayout(Layout1, 11, 11, 0, 1);
-
-  TextLabel4 = new QLabel(this, "TextLabel4");
-  TextLabel4->setText(trUtf8("Parameters"));
-  FunctionWidget1Layout->addWidget(TextLabel4, 5, 0);
-
-  Line3 = new QFrame(this, "Line3");
-  Line3->setFrameShape(QFrame::HLine);
-  //Line3->setFrameShadow(QFrame::Sunken);
-  //Line3->setFrameShape(QFrame::HLine);
-  FunctionWidget1Layout->addMultiCellWidget(Line3, 10, 10, 0, 1);
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Function Name"));
+  TextLabel1->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
+  FunctionWidget1Layout->addWidget(TextLabel1, 0, 0);
 
   LineEdit1 = new QLineEdit(this, "LineEdit1");
   FunctionWidget1Layout->addWidget(LineEdit1, 0, 1);
 
-  Table2 = new QTable(this, "Table2");
-  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Description"));
-  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Min"));
-  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Max"));
-  Table2->setNumRows(3);
-  Table2->setNumCols(3);
-  Table2->setColumnReadOnly (0, true);  //this restricts users from editing usage description name
-  Table2->verticalHeader()->hide();
-  Table2->setLeftMargin(0);
-  Table2->setColumnStretchable(2, true);
-  FunctionWidget1Layout->addMultiCellWidget(Table2, 8, 9, 1, 1);
-  QSpacerItem* spacer = new QSpacerItem(71, 80, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  FunctionWidget1Layout->addItem(spacer, 9, 0);
+  //******** description *************
 
-  TextLabel5 = new QLabel(this, "TextLabel5");
-  TextLabel5->setText(trUtf8("Application"));
-  FunctionWidget1Layout->addWidget(TextLabel5, 8, 0);
+  TextLabel2 = new QLabel(this, "TextLabel2");
+  TextLabel2->setText(trUtf8("Formula"));
+  TextLabel2->setAlignment(int(QLabel::AlignTop
+                               | QLabel::AlignRight));
+  FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
 
-  //Line4 = new QFrame(this, "Line4");
-  //Line4->setFrameShape(QFrame::HLine);
-  //Line4->setFrameShadow(QFrame::Sunken);
-  //Line4->setFrameShape(QFrame::HLine);
-  //FunctionWidget1Layout->addMultiCellWidget(Line4, 7, 7, 0, 1);
+  //the stack
+  mStack = new QWidgetStack(this, "Stack");
 
-  Table1 = new QTable(this, "Table1");
-  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Name"));
-  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Data Type"));
-  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Description"));
-  Table1->setNumRows(3);
-  Table1->setNumCols(3);
-  Table1->setColumnReadOnly (0, true);  //this restricts users from editing parameter name on the parameter table
-  Table1->setColumnReadOnly (1, true);
-  Table1->verticalHeader()->hide();
-  Table1->setLeftMargin(0);
-  Table1->setColumnStretchable(0, true);
-  FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 6, 1, 1);
+  textBrowser = new QTextEdit(mStack, "Text Browser");
+  textBrowser->setTabChangesFocus(true);
+  textBrowser->setTextFormat(PlainText);
+  mStack->addWidget(textBrowser, 0);
 
-  //Line1 = new QFrame(this, "Line1");
-  //Line1->setFrameShape(QFrame::HLine);
-  //Line1->setFrameShadow(QFrame::Sunken);
-  //Line1->setFrameShape(QFrame::HLine);
-  //FunctionWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 1);
+  mScrollView = new QScrollView(mStack, "mmlScrollView");
+  mStack->addWidget(mScrollView, 1);
 
-  QSpacerItem* spacer_2 = new QSpacerItem(71, 190, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  FunctionWidget1Layout->addItem(spacer_2, 6, 0);
+  mMmlWidget = new QtMmlWidget(mScrollView->viewport());
+  mMmlWidget->setBaseFontPointSize(this->fontInfo().pointSize());
+  mMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Function Name"));
-  FunctionWidget1Layout->addWidget(TextLabel1, 0, 0);
+  mScrollView->addChild(mMmlWidget);
+  mScrollView->setResizePolicy(QScrollView::AutoOne);
+  //mScrollView->show();
 
-  //***************+
+  FunctionWidget1Layout->addWidget(mStack, 1, 1);
+  mStack->raiseWidget(0);
+
+  //********************
+
+  TextLabel3 = new QLabel(this, "TextLabel3");
+  TextLabel3->setText(trUtf8("Function Type"));
+  TextLabel3->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
+  FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
+
   ButtonGroup1 = new QHButtonGroup(this, "ButtonGroup1");
   //ButtonGroup1->setFrameShape(QButtonGroup::NoFrame);
   //ButtonGroup1->setMinimumHeight(30);
@@ -190,10 +139,114 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   FunctionWidget1Layout->addWidget(ButtonGroup1, 3, 1);
 
-  //********************
-  TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Function Type"));
-  FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
+  //***************************************
+
+  Line2 = new QFrame(this, "Line2");
+  Line2->setFrameShape(QFrame::HLine);
+  //Line2->setFrameShadow(QFrame::Sunken);
+  //Line2->setFrameShape(QFrame::HLine);
+  FunctionWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 1);
+
+  //******* parameters table ********************************
+
+  TextLabel4 = new QLabel(this, "TextLabel4");
+  TextLabel4->setText(trUtf8("Parameters"));
+  TextLabel4->setAlignment(int(QLabel::AlignTop
+                               | QLabel::AlignRight));
+  FunctionWidget1Layout->addWidget(TextLabel4, 5, 0);
+
+  //QSpacerItem* spacer_2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  //FunctionWidget1Layout->addItem(spacer_2, 6, 0);
+
+  Table1 = new QTable(this, "Table1");
+  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Name"));
+  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Data Type"));
+  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Description"));
+  Table1->setNumRows(3);
+  Table1->setNumCols(3);
+  Table1->setColumnReadOnly (0, true);  //this restricts users from editing parameter name on the parameter table
+  Table1->setColumnReadOnly (1, true);
+  Table1->verticalHeader()->hide();
+  Table1->setLeftMargin(0);
+  Table1->setColumnStretchable(0, true);
+  Table1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+  FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 5, 1, 1);
+
+  QSpacerItem* spacer3 = new QSpacerItem(0, 15, QSizePolicy::Minimum, QSizePolicy::Maximum);
+  FunctionWidget1Layout->addItem(spacer3, 6, 1);
+
+  //******** applications table *******************************
+
+  TextLabel5 = new QLabel(this, "TextLabel5");
+  TextLabel5->setText(trUtf8("Application"));
+  TextLabel5->setAlignment(int(QLabel::AlignTop
+                               | QLabel::AlignRight));
+  FunctionWidget1Layout->addWidget(TextLabel5, 7, 0);
+
+  //QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  //FunctionWidget1Layout->addItem(spacer, 8, 0);
+
+  Table2 = new QTable(this, "Table2");
+  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Description"));
+  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Min"));
+  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Max"));
+  Table2->setNumRows(3);
+  Table2->setNumCols(3);
+  Table2->setColumnReadOnly (0, true);  //this restricts users from editing usage description name
+  Table2->verticalHeader()->hide();
+  Table2->setLeftMargin(0);
+  Table2->setColumnStretchable(2, true);
+  Table2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+  FunctionWidget1Layout->addMultiCellWidget(Table2, 7, 7, 1, 1);
+
+  QSpacerItem* spacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  FunctionWidget1Layout->addItem(spacer2, 10, 1);
+
+  //***************************************
+
+  Line3 = new QFrame(this, "Line3");
+  Line3->setFrameShape(QFrame::HLine);
+  //Line3->setFrameShadow(QFrame::Sunken);
+  //Line3->setFrameShape(QFrame::HLine);
+  FunctionWidget1Layout->addMultiCellWidget(Line3, 11, 11, 0, 1);
+
+  //****** buttons *********************************
+
+  Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
+
+  commitChanges = new QPushButton(this, "commitChanges");
+  commitChanges->setText(trUtf8("Commit"));
+  Layout1->addWidget(commitChanges);
+
+  cancelChanges = new QPushButton(this, "cancelChanges");
+  cancelChanges->setText(trUtf8("Revert"));
+  Layout1->addWidget(cancelChanges);
+
+  newFcn = new QPushButton(this, "newFcn");
+  newFcn->setText(trUtf8("New"));
+  Layout1->addWidget(newFcn);
+
+  deleteFcn = new QPushButton(this, "deleteFcn");
+  deleteFcn->setText(trUtf8("Delete"));
+  Layout1->addWidget(deleteFcn);
+
+  FunctionWidget1Layout->addMultiCellLayout(Layout1, 12, 12, 0, 1);
+
+  //*******************************************
+
+  //Line4 = new QFrame(this, "Line4");
+  //Line4->setFrameShape(QFrame::HLine);
+  //Line4->setFrameShadow(QFrame::Sunken);
+  //Line4->setFrameShape(QFrame::HLine);
+  //FunctionWidget1Layout->addMultiCellWidget(Line4, 7, 7, 0, 1);
+
+  //Line1 = new QFrame(this, "Line1");
+  //Line1->setFrameShape(QFrame::HLine);
+  //Line1->setFrameShadow(QFrame::Sunken);
+  //Line1->setFrameShape(QFrame::HLine);
+  //FunctionWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 1);
+
+  //***************+
 
   setTabOrder(LineEdit1, textBrowser);
   setTabOrder(textBrowser, RadioButton1);
@@ -218,8 +271,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
 FunctionWidget1::~FunctionWidget1()
 {
-  //  pdelete(mMmlWidget);
-  //  pdelete(mScrollView);
+  //pdelete(mMmlWidget);
+  //pdelete(mScrollView);
   pdelete(pFunction);
 }
 
@@ -418,9 +471,9 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   flagChanged = false;
 
   //MathML widget
-  /*std::ostringstream mml;
-  pFunction->writeMathML(mml);
-  mMmlWidget->setContent(FROM_UTF8(mml.str()));*/
+  //std::ostringstream mml;
+  //pFunction->writeMathML(mml);
+  //mMmlWidget->setContent(FROM_UTF8(mml.str()));
 
   return true;
 }
@@ -855,7 +908,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                      // Yes or Enter
+        case 0:                                       // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -872,7 +925,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                      // No or Escape
+        case 1:                                       // No or Escape
           break;
         }
     }
@@ -883,7 +936,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
                          "OK", 0, 0, 0, 1);
 }
 
-//************************  standard interface to copasi widgets *********************************
+//************************  standard interface to copasi widgets ******************
 
 bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
@@ -906,7 +959,7 @@ bool FunctionWidget1::leave()
 {
   if (isValid)
     saveToFunction();
-  //  mScrollView->hide();
+  //mScrollView->hide();
   return true;
 }
 
@@ -917,14 +970,6 @@ bool FunctionWidget1::enter(const std::string & key)
 
   //debug
   //func->writeMathML(std::cout);
-
-  /*  if (!mScrollView) mScrollView = new QScrollView();
-    mScrollView->resize(400, 200);
-   
-    if (!mMmlWidget) mMmlWidget = new QtMmlWidget(mScrollView);
-    mScrollView->addChild(mMmlWidget);
-    mScrollView->setResizePolicy(QScrollView::AutoOneFit);
-    mScrollView->show();*/
 
   if (func) return loadFromFunction(func);
   else return false;
