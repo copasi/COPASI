@@ -9,6 +9,7 @@
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
+#include "report/CCopasiObjectReference.h"
 #include "CCompartment.h"
 #include "CMetab.h"
 
@@ -20,7 +21,9 @@ void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 /////////////////////////////////////////////////////////////////////////////
 // CMetab
 
-CMetab::CMetab(const CModel * pModel)
+CMetab::CMetab(const CModel * pModel):
+    CCopasiContainer("NoName", NULL, "Metabolite"),
+    mName(CCopasiContainer::mObjectName)
 {
   if (pModel)
     mpModel = pModel;
@@ -29,10 +32,10 @@ CMetab::CMetab(const CModel * pModel)
 
   // initialize everything
   CONSTRUCTOR_TRACE;
-  mName = "metab";
 
-  if (!isValidName())
+  if (!isValidName("metab"))
     fatalError();
+  mName = "metab";
 
   mConcDbl = Copasi->DefaultConc;
   mIConcDbl = Copasi->DefaultConc;
@@ -44,10 +47,12 @@ CMetab::CMetab(const CModel * pModel)
   mCompartment = const_cast<CCompartment *>(mpParentCompartment);
 }
 
-CMetab::CMetab(const CMetab & src)
+CMetab::CMetab(const CMetab & src):
+    CCopasiContainer(src),
+    mName(CCopasiContainer::mObjectName)
 {
   CONSTRUCTOR_TRACE;
-  mName = src.mName;
+
   mConcDbl = src.mConcDbl;
   mIConcDbl = src.mIConcDbl;
   mNumberInt = src.mNumberInt;
@@ -57,32 +62,6 @@ CMetab::CMetab(const CMetab & src)
   mStatus = src.mStatus;
   mCompartment = src.mCompartment;
   mpModel = src.mpModel;
-}
-
-#ifdef XXXX
-CMetab::CMetab(const std::string & name)
-{
-  CONSTRUCTOR_TRACE;
-  reset(name);
-}
-
-#endif // XXXX
-
-// overload assignment operator
-CMetab &CMetab::operator=(const CMetab &RHS)
-{
-  mName = RHS.mName;
-  mConcDbl = RHS.mConcDbl;
-  mIConcDbl = RHS.mIConcDbl;
-  mNumberInt = RHS.mNumberInt;
-  mINumberInt = RHS.mINumberInt;
-  mRate = RHS.mRate;
-  mTT = RHS.mTT;
-  mStatus = RHS.mStatus;
-  mCompartment = RHS.mCompartment;
-  mpModel = RHS.mpModel;
-
-  return *this;  // Assignment operator returns left side.
 }
 
 CMetab &CMetab::operator=(const CMetabOld &RHS)
@@ -220,46 +199,46 @@ void CMetab::saveSBML(std::ofstream &fout)
 }
 
 const std::string & CMetab::getName() const
-{
-  return mName;
-}
+  {
+    return mName;
+  }
 
 const C_FLOAT64 & CMetab::getConcentration() const
-{
-  return mConcDbl;
-}
+  {
+    return mConcDbl;
+  }
 
 const C_INT32 & CMetab::getNumberInt() const
-{
-  return mNumberInt;
-}
+  {
+    return mNumberInt;
+  }
 
 C_FLOAT64 CMetab::getNumberDbl() const
-{
-  return mConcDbl * mCompartment->getVolume()
-  * mpModel->getQuantity2NumberFactor();
-}
+  {
+    return mConcDbl * mCompartment->getVolume()
+    * mpModel->getQuantity2NumberFactor();
+  }
 
 const C_FLOAT64 & CMetab::getInitialConcentration() const
-{
-  return mIConcDbl;
-}
+  {
+    return mIConcDbl;
+  }
 
 const C_INT32 & CMetab::getInitialNumberInt() const
-{
-  return mINumberInt;
-}
+  {
+    return mINumberInt;
+  }
 
 C_FLOAT64 CMetab::getInitialNumberDbl() const
-{
-  return mIConcDbl * mCompartment->getVolume()
-  * mpModel->getQuantity2NumberFactor();
-}
+  {
+    return mIConcDbl * mCompartment->getVolume()
+    * mpModel->getQuantity2NumberFactor();
+  }
 
 const C_INT16 & CMetab::getStatus() const
-{
-  return mStatus;
-}
+  {
+    return mStatus;
+  }
 
 CCompartment * CMetab::getCompartment()
 {
@@ -267,9 +246,9 @@ CCompartment * CMetab::getCompartment()
 }
 
 const CModel * CMetab::getModel() const
-{
-  return mpModel;
-}
+  {
+    return mpModel;
+  }
 
 void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
 {
@@ -347,12 +326,23 @@ void CMetab::setModel(CModel * model)
   mpModel = model;
 }
 
-C_INT16 CMetab::isValidName()
+bool CMetab::isValidName(const std::string &name) const
+  {
+    return (name.find_first_of("; ") == std::string::npos);
+  }
+
+void CMetab::initObjects()
 {
-  return (mName.find_first_of("; ") == std::string::npos);
+  addObjectReference("Name", mName);
+  addObjectReference("Concentration", mConcDbl);
+  addObjectReference("InitialConcentration", mIConcDbl);
+  addObjectReference("TransitionTime", mTT);
 }
+
 CMetabOld::CMetabOld() {CONSTRUCTOR_TRACE;}
+
 CMetabOld::~CMetabOld() {DESTRUCTOR_TRACE;}
+
 void CMetabOld::cleanup(){}
 
 C_INT32 CMetabOld::load(CReadConfig &configbuffer)

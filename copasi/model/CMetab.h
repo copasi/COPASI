@@ -10,6 +10,8 @@
 #include <string>
 #include <iostream>
 
+#include "report/CCopasiContainer.h"
+
 class CCompartment;
 class CReadConfig;
 class CWriteConfig;
@@ -23,14 +25,14 @@ class CModel;
 #define METAB_MOIETY 7
 
 /** @dia:pos 80.8289,51.5961 */
-class CMetab
+class CMetab : public CCopasiContainer
   {
     // Attributes
   private:
     /**
      *  Name of the metabolite
      */
-    std::string mName;
+    std::string & mName;
 
     /**
      *  Concentration of the metabolite as double.
@@ -120,11 +122,6 @@ class CMetab
      *  Cleanup
      */
     void cleanup();
-
-    /**
-     *  Assignment operator.
-     */
-    CMetab & operator=(const CMetab & rhs);
 
     /**
      *  Assignment operator.
@@ -343,10 +340,15 @@ class CMetab
      */
     void calculateTransitionTime(void);
 
-    /*
-     *
+    /**
+     * Check whether the name is valid.
      */
-    C_INT16 isValidName();
+    bool isValidName(const std::string & name) const;
+
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
   };
 
 /** @dia:pos 51.7045,51.8004 */
