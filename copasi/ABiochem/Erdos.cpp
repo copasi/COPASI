@@ -52,7 +52,7 @@ void Erdos(C_INT32 n, C_INT32 k, CCopasiVector < CGene > &gene)
   gene.resize(n);
   for (i = 0; i < n; i++)
     {
-      sprintf(gn, "G%d", i + 1);
+      sprintf(gn, "G%ld", i + 1);
       gene[i]->setName(gn);
     }
   for (i = 0; i < n; i++)
@@ -128,7 +128,7 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
   r = 2 * n;
   // set the title and comments
   model.setTitle(Title);
-  sprintf(comments, "Model of a random gene network following a Erdos-Renyi topology\nwith %d genes and %d input connections each.\n\nCreated automatically by the A-Biochem system", n, k);
+  sprintf(comments, "Model of a random gene network following a Erdos-Renyi topology\nwith %ld genes and %ld input connections each.\n\nCreated automatically by the A-Biochem system", n, k);
   model.setComments(comments);
   // add one compartment to the model
   model.addCompartment(compname, 1.0);
@@ -152,7 +152,7 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
         }
       react->setChemEq(streq);
       react->compileChemEq(model.getCompartments());
-      sprintf(strname, "basal %d inh %d act (indp)", gene[i]->getNegativeModifiers(),
+      sprintf(strname, "basal %ld inh %ld act (indp)", gene[i]->getNegativeModifiers(),
               gene[i]->getPositiveModifiers());
       kiname = strname;
       react->setFunction(kiname);
@@ -161,9 +161,9 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
       for (j = 0, pos = neg = 1; j < s; j++)
         {
           if (gene[i]->getModifierType(j) == 0)
-            sprintf(strname, "I%d", neg++);
+            sprintf(strname, "I%ld", neg++);
           else
-            sprintf(strname, "A%d", pos++);
+            sprintf(strname, "A%ld", pos++);
           id2metab.setIdentifierName(strname);
           id2metab.setMetaboliteName(gene[i]->getModifier(j)->getName());
           react->getId2Modifiers().add(id2metab);
@@ -177,13 +177,13 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
         {
           if (gene[i]->getModifierType(j) == 0)
             {
-              sprintf(strname, "Ki%d", neg);
-              sprintf(strname2, "ni%d", neg++);
+              sprintf(strname, "Ki%ld", neg);
+              sprintf(strname2, "ni%ld", neg++);
             }
           else
             {
-              sprintf(strname, "Ka%d", pos);
-              sprintf(strname2, "na%d", pos++);
+              sprintf(strname, "Ka%ld", pos);
+              sprintf(strname2, "na%ld", pos++);
             }
           id2param.setIdentifierName(strname);
           id2param.setValue(gene[i]->getK(j));
@@ -231,7 +231,7 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
   string equation;
 
   // make name
-  sprintf(tmpstr, "basal %d inh %d act (indp)", k - p, p);
+  sprintf(tmpstr, "basal %ld inh %ld act (indp)", k - p, p);
   kiname = tmpstr;
   if (db.findFunction(kiname) == NULL)
     {
@@ -245,17 +245,17 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
       for (i = 0, j = 1; i < p; i++, j++)
         {
           if (i == 0)
-            sprintf(tmpstr, "(1+Ka%d/A%d)^na%d", j, j, j);
+            sprintf(tmpstr, "(1+Ka%ld/A%ld)^na%ld", j, j, j);
           else
-            sprintf(tmpstr, "*(1+Ka%d/A%d)^na%d", j, j, j);
+            sprintf(tmpstr, "*(1+Ka%ld/A%ld)^na%ld", j, j, j);
           equation += tmpstr;
         }
       for (j = 1; i < k; i++, j++)
         {
           if (i == 0)
-            sprintf(tmpstr, "(1+I%d/Ki%d)^ni%d", j, j, j);
+            sprintf(tmpstr, "(1+I%ld/Ki%ld)^ni%ld", j, j, j);
           else
-            sprintf(tmpstr, "*(1+I%d/Ki%d)^ni%d", j, j, j);
+            sprintf(tmpstr, "*(1+I%ld/Ki%ld)^ni%ld", j, j, j);
           equation += tmpstr;
         }
       equation += ")";
@@ -266,25 +266,25 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
       funct->addParameter(pname, CFunctionParameter::FLOAT64, "PARAMETER");
       for (i = 0, j = 1; i < p; i++, j++)
         {
-          sprintf(tmpstr, "Ka%d", j);
+          sprintf(tmpstr, "Ka%ld", j);
           pname = tmpstr;
           funct->addParameter(pname, CFunctionParameter::FLOAT64, "PARAMETER");
-          sprintf(tmpstr, "na%d", j);
+          sprintf(tmpstr, "na%ld", j);
           pname = tmpstr;
           funct->addParameter(pname, CFunctionParameter::FLOAT64, "PARAMETER");
-          sprintf(tmpstr, "A%d", j);
+          sprintf(tmpstr, "A%ld", j);
           pname = tmpstr;
           funct->addParameter(pname, CFunctionParameter::FLOAT64, "MODIFIER");
         }
       for (j = 1; i < k; i++, j++)
         {
-          sprintf(tmpstr, "Ki%d", j);
+          sprintf(tmpstr, "Ki%ld", j);
           pname = tmpstr;
           funct->addParameter(pname, CFunctionParameter::FLOAT64, "PARAMETER");
-          sprintf(tmpstr, "ni%d", j);
+          sprintf(tmpstr, "ni%ld", j);
           pname = tmpstr;
           funct->addParameter(pname, CFunctionParameter::FLOAT64, "PARAMETER");
-          sprintf(tmpstr, "I%d", j);
+          sprintf(tmpstr, "I%ld", j);
           pname = tmpstr;
           funct->addParameter(pname, CFunctionParameter::FLOAT64, "MODIFIER");
         }
@@ -319,7 +319,7 @@ C_INT main(C_INT argc, char *argv[])
       // build the gene network
       Erdos(n, k, GeneList);
       // create GraphViz file
-      sprintf(NetTitle, "Net%03d", i + 1);
+      sprintf(NetTitle, "Net%03ld", i + 1);
       sprintf(strtmp, "%s.dot", NetTitle);
       ofstream fo(strtmp);
       WriteDot(fo, NetTitle, GeneList);
