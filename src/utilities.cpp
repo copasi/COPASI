@@ -555,54 +555,6 @@ void JEval( double *y, double **ydot )
   else temp = store;
   y[i] = temp*K1;
   //FEval( 0, 0, y, f1 );
-  mModel->lSODAEval(0, 0, y, f1 );
- {
-  ydot[i+1] = 0.0;
-  // for( j=0; j<mModel->TotStep; j++ )
-  for( j=0; j<mModel->getTotSteps(); j++ )  //from Y.H.
-   {
-   if( mModel->Stoichiometry[mModel->Row[i]][mModel->Col[j]] != 0.0 )
-      ydot[i+1] += mModel->Stoichiometry[mModel->Row[i]][mModel->Col[j]]
-          * (*(mModel->Step[mModel->Col[j]].Kinetics->Function))((void *)mModel, &y[1], mModel->Col[j]);
-  }
-//  ydot[i+1] *= mModel->Compartment[mModel->Metabolite[mModel->Row[i]].Compart].Volume;
- }
- for( k=0; i<mModel->getIntMetab(); i++, k++)
- {
-  ydot[i+1] = 0.0;
-  for( j=0; j<mModel->getIndMetab(); j++)
-   ydot[i+1] -= mModel->ConsRel[i][j] * ydot[j+1];
-//  y[i+1] = mModel->Moiety[k].IConc;
-//  for( j=0; j<mModel->getIndMetab(); j++)
-//   y[i+1] -= mModel->ConsRel[i][j] * y[j+1];
- }
-}
-
-
-// evaluates the Jacobian matrix
-void JEval( double *y, double **ydot )
-{
- register int i, j;
- double store, temp, *f1, *f2;
- double K1, K2, K3;
- // constants for differentiation by finite differences
- K1 = 1 + mDerivFactor;
- K2 = 1 - mDerivFactor;
- K3 = 2 * mDerivFactor;
- // arrays to store function values
- f1 = new double[mModel->getIntMetab()+1];
- f2 = new double[mModel->getIntMetab()+1];
- // iterate over all metabolites
- for( i=1; i<mModel->getIndMetab()+1; i++ )
- {
-  // if y[i] is zero, the derivative will be calculated at a small
-  // positive value (no point in considering negative values!).
-  // let's stick with mSSRes*(1.0+mDerivFactor)
-  store = y[i];
-  if( store < mSSRes ) temp = mSSRes*K1;
-  else temp = store;
-  y[i] = temp*K1;
-  //FEval( 0, 0, y, f1 );
   mModel->lSODAEval(0, 0, y, f1);
   ss_nfunction++;
   y[i] = temp*K2;

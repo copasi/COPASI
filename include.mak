@@ -18,6 +18,8 @@ OBJS	= \
           $(OBJDIR)/CReadConfig.o \
           $(OBJDIR)/CStep.o \
           $(OBJDIR)/CTrajectory.o \
+          $(OBJDIR)/CNewton.o \
+          $(OBJDIR)/CSS_Solution.o \
           $(OBJDIR)/CVersion.o \
           $(OBJDIR)/CWriteConfig.o \
           $(OBJDIR)/Clsoda.o \

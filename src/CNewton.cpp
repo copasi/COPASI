@@ -142,7 +142,7 @@ C_INT32 CNewton::isSteadyState( void )
  return mSs_solution;
 }
 
-/*
+
 
 // set mDerivFactor
 void CNewton::setDerivFactor(C_FLOAT64 aDouble)
@@ -156,7 +156,6 @@ C_FLOAT64 CNewton::getDerivFactor() const
   return mDerivFactor;
 }
 
-*/
 
 
 // inilialize pointers
@@ -352,8 +351,8 @@ void CNewton::JEval( double *y, double **ydot )
  delete [] f1;
  delete [] f2;
 
- //Yongqun He: no plan to use a counter of JEval() yet. Maybe later.
- // Ss_njacob++;
+ //Yongqun He: no plan to count the JEval() yet. Maybe later. 
+ //ss_njacob++;
 }
 
 
