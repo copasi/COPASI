@@ -296,6 +296,26 @@
 			path = zoomplot.h;
 			refType = 4;
 		};
+		ED1507CA05C60F4503AD62C7 = {
+			isa = PBXFileReference;
+			path = CChemEqInterface.cpp;
+			refType = 4;
+		};
+		ED1507CB05C60F4503AD62C7 = {
+			isa = PBXFileReference;
+			path = CChemEqInterface.h;
+			refType = 4;
+		};
+		ED1507CC05C60F4503AD62C7 = {
+			isa = PBXFileReference;
+			path = CMetabNameInterface.cpp;
+			refType = 4;
+		};
+		ED1507CD05C60F4503AD62C7 = {
+			isa = PBXFileReference;
+			path = CMetabNameInterface.h;
+			refType = 4;
+		};
 		ED523116046DA6DE03C9C501 = {
 			isa = PBXFileReference;
 			path = copasi.h;
@@ -1546,10 +1566,6 @@
 				ED523238046DA6DE03C9C501,
 				ED523239046DA6DE03C9C501,
 				ED52323A046DA6DE03C9C501,
-				ED52323B046DA6DE03C9C501,
-				ED52323C046DA6DE03C9C501,
-				ED52323D046DA6DE03C9C501,
-				ED52323E046DA6DE03C9C501,
 				ED52323F046DA6DE03C9C501,
 				ED523240046DA6DE03C9C501,
 				ED523241046DA6DE03C9C501,
@@ -1641,26 +1657,6 @@
 			path = CMatrix.h;
 			refType = 4;
 		};
-		ED52323B046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMethodParameter.cpp;
-			refType = 4;
-		};
-		ED52323C046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMethodParameter.h;
-			refType = 4;
-		};
-		ED52323D046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMethodParameterList.cpp;
-			refType = 4;
-		};
-		ED52323E046DA6DE03C9C501 = {
-			isa = PBXFileReference;
-			path = CMethodParameterList.h;
-			refType = 4;
-		};
 		ED52323F046DA6DE03C9C501 = {
 			isa = PBXFileReference;
 			path = CReadConfig.cpp;
@@ -1726,7 +1722,6 @@
 				ED523253046DA6DE03C9C501,
 				ED7804E804B0B3FA0352A85A,
 				ED7804E904B0B3FA0352A85A,
-				ED7804EA04B0B3FA0352A85A,
 				ED7804EB04B0B3FA0352A85A,
 			);
 			isa = PBXGroup;
@@ -1775,12 +1770,16 @@
 				ED5DC9FF047712BB03B0BD8E,
 				ED5DCA00047712BB03B0BD8E,
 				ED5DCA01047712BB03B0BD8E,
+				ED1507CA05C60F4503AD62C7,
+				ED1507CB05C60F4503AD62C7,
 				ED5DCA02047712BB03B0BD8E,
 				ED5DCA03047712BB03B0BD8E,
 				ED5DCA04047712BB03B0BD8E,
 				ED5DCA05047712BB03B0BD8E,
 				ED5DCA06047712BB03B0BD8E,
 				ED5DCA07047712BB03B0BD8E,
+				ED1507CC05C60F4503AD62C7,
+				ED1507CD05C60F4503AD62C7,
 				ED5DCA08047712BB03B0BD8E,
 				ED5DCA09047712BB03B0BD8E,
 				ED5DCA0A047712BB03B0BD8E,
@@ -2012,11 +2011,6 @@
 		ED7804E904B0B3FA0352A85A = {
 			isa = PBXFileReference;
 			path = CCopasiXMLParser.h;
-			refType = 4;
-		};
-		ED7804EA04B0B3FA0352A85A = {
-			isa = PBXFileReference;
-			path = CXMLHandler.cpp;
 			refType = 4;
 		};
 		ED7804EB04B0B3FA0352A85A = {
