@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 PROJECT_NAME           = Copasi
 PROJECT_NUMBER         = 1.0
-OUTPUT_DIRECTORY       = "C:/Documents and Settings/shoops/My Documents/projects/copasi_dev/doc"
+OUTPUT_DIRECTORY       = ./doc
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = YES
