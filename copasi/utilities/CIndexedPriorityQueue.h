@@ -28,7 +28,7 @@ class PQNode
     /**
      * insert operator
      */
-    friend ostream & operator<<(ostream &os, const PQNode & d)
+    friend std::ostream & operator<<(std::ostream &os, const PQNode & d)
     {
       os << "  " << d.mIndex << ": " << d.mKey << " ";
       return os;
