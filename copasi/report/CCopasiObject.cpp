@@ -55,7 +55,8 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
 
 CCopasiObject::~CCopasiObject()
 {
-  if (mpObjectParent) mpObjectParent->remove(this);
+  if (mpObjectParent)
+    mpObjectParent->remove(this);
 }
 
 CCopasiObjectName CCopasiObject::getCN() const
