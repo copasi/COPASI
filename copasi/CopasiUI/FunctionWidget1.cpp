@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:46 $
+   $Author: shoops $ 
+   $Date: 2004/05/19 20:50:24 $
    End CVS Header */
 
 /**********************************************************************
@@ -434,10 +434,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                                     // The user clicked the Retry again button or pressed Enter
+            case 0:                                      // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                                     // The user clicked the Quit or pressed Escape
+            case 1:                                      // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -922,7 +922,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:             // Yes or Enter
+        case 0:              // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -937,7 +937,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
                 //Copasi->pFunctionDB->loadedFunctions()[min(index,20 - 1)];
                 // enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index,size-1,less<double>())]->getKey());
                 // two values from min should work but it doesn't asks for 3 values, sample API http://wwwasd.web.cern.ch/wwwasd/lhc++/RW/stdlibcr/min_9233.htm
-                enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index, size - 1)]->getKey());
+                enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index, size - 2)]->getKey());
                 //pListView->switchToOtherWidget(Copasi->pFunctionDB->loadedFunctions()[min(index,size - 1)]);
                 //table->removeRow(ToBeDeleted[i]);
                 //}
@@ -954,7 +954,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:             // No or Escape
+        case 1:              // No or Escape
           break;
         }
     }
