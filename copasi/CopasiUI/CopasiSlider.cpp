@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/20 04:10:04 $
+   $Author: gauges $ 
+   $Date: 2005/03/23 18:58:37 $
    End CVS Header */
 
 #include <math.h>
@@ -65,9 +65,8 @@ void CopasiSlider::updateSliderData()
       this->mpQSlider->setTickInterval(1);
       this->mpQSlider->setLineStep(1);
       this->mpQSlider->setPageStep(this->mpCSlider->getTickFactor());
-      int value = (int)floor(((this->mpCSlider->getSliderValue() - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5);
       disconnect(this->mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
-      this->mpQSlider->setValue(value);
+      this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
       connect(this->mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
       this->updateLabel();
     }
@@ -80,15 +79,13 @@ C_FLOAT64 CopasiSlider::value() const
 
 void CopasiSlider::setValue(C_FLOAT64 value)
 {
-  double minValue = this->mpCSlider->getMinValue();
-
   this->mpCSlider->setSliderValue(value);
 
   /* reget value in case it was outside range and got set to minValue or
    * maxValue */
   value = this->mpCSlider->getSliderValue();
 
-  this->mpQSlider->setValue((int)floor(((value - minValue) / this->minorTickInterval()) + 0.5));
+  this->mpQSlider->setValue(this->calculatePositionFromValue(value));
 
   this->updateLabel();
 }
@@ -114,7 +111,7 @@ void CopasiSlider::setNumMinorTicks(unsigned C_INT32 numMinorTicks)
   this->mpCSlider->setTickNumber(numMinorTicks);
   // set maxValue and value of slider
   this->mpQSlider->setMaxValue(numMinorTicks);
-  this->mpQSlider->setValue((int)floor(((this->mpCSlider->getSliderValue() - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5));
+  this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
 }
 
 unsigned C_INT32 CopasiSlider::numMinorTicks() const
@@ -147,7 +144,7 @@ void CopasiSlider::setMaxValue(C_FLOAT64 value)
 {
   this->mpCSlider->setMaxValue(value);
 
-  this->mpQSlider->setValue((int)floor(((this->mpCSlider->getSliderValue() - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5));
+  this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
 
   this->updateLabel();
 }
@@ -156,7 +153,7 @@ void CopasiSlider::setMinValue(C_FLOAT64 value)
 {
   this->mpCSlider->setMinValue(value);
 
-  this->mpQSlider->setValue((int)floor(((this->mpCSlider->getSliderValue() - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5));
+  this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
 
   this->updateLabel();
 }
@@ -190,8 +187,7 @@ void CopasiSlider::updateLabel()
 
 void CopasiSlider::sliderValueChanged(int value)
 {
-  this->mpCSlider->setSliderValue(this->mpCSlider->getMinValue() + value * this->minorTickInterval(),
-                                  false);
+  this->mpCSlider->setSliderValue(this->calculateValueFromPosition(value), false);
 
   this->updateLabel();
 
@@ -254,3 +250,41 @@ CSlider* CopasiSlider::getCSlider() const
   {
     return this->mpCSlider;
   }
+
+C_FLOAT64 CopasiSlider::calculateValueFromPosition(int position)
+{
+  double value;
+  double exponent;
+  switch (this->mpCSlider->getScaling())
+    {
+    case CSlider::linear:
+      value = this->mpCSlider->getMinValue() + position * this->minorTickInterval();
+      break;
+    case CSlider::logarithmic:
+      exponent = (log10(this->mpCSlider->getMaxValue() - this->mpCSlider->getMinValue()) * position) / this->mpCSlider->getTickNumber();
+      value = this->mpCSlider->getMinValue() + (pow(10, exponent)) - 1;
+      break;
+    default:
+      value = 0.0;
+      break;
+    }
+  return value;
+}
+
+int CopasiSlider::calculatePositionFromValue(C_FLOAT64 value)
+{
+  int position;
+  switch (this->mpCSlider->getScaling())
+    {
+    case CSlider::linear:
+      position = (int)floor(((this->mpCSlider->getSliderValue() - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5);
+      break;
+    case CSlider::logarithmic:
+
+      position = (int)floor((log10(value + 1 - this->mpCSlider->getMinValue()) * this->mpCSlider->getTickNumber()) / (log10(this->mpCSlider->getMaxValue() - this->mpCSlider->getMinValue())));
+      break;
+    default:
+      position = 0;
+    }
+  return position;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/09 14:16:16 $
+   $Date: 2005/03/23 18:58:36 $
    End CVS Header */
 
 /**
@@ -858,6 +858,7 @@ bool CCopasiXML::saveGUI()
       Attributes.add("maxValue", "");
       Attributes.add("tickNumber", "");
       Attributes.add("tickFactor", "");
+      Attributes.add("scaling", "");
 
       unsigned C_INT32 i, imax = mpGUI->pSliderList->size();
       for (i = 0; i < imax; i++)
@@ -872,6 +873,7 @@ bool CCopasiXML::saveGUI()
           Attributes.setValue(6, pSlider->getMaxValue());
           Attributes.setValue(7, pSlider->getTickNumber());
           Attributes.setValue(8, pSlider->getTickFactor());
+          Attributes.setValue(9, pSlider->convertScaleToScaleName(pSlider->getScaling()));
           saveElement("Slider", Attributes);
         }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/10 12:07:40 $
+   $Date: 2005/03/23 18:58:36 $
    End CVS Header */
 
 /**
@@ -5368,6 +5368,7 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
   C_FLOAT64 MaxValue;
   unsigned C_INT32 TickNumber;
   unsigned C_INT32 TickFactor;
+  const char* scaling;
 
   switch (mCurrentElement)
     {
@@ -5389,22 +5390,32 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
       tmp = mParser.getAttributeValue("tickFactor", papszAttrs, "100");
       TickFactor = atoi(tmp);
 
-      // This is always the case if the XML is conforming to the schema.
-      if (mCommon.KeyMap.get(AssociatedEntityKey))
-        {
-          pSlider = new CSlider;
-          mCommon.KeyMap.addFix(Key, pSlider);
-          pSlider->setAssociatedEntityKey(mCommon.KeyMap.get(AssociatedEntityKey)->getKey());
-          pSlider->setSliderObject((std::string) ObjectCN);
-          pSlider->setSliderType(ObjectType);
-          pSlider->setMaxValue(MaxValue);
-          pSlider->setMinValue(MinValue);
-          pSlider->setSliderValue(ObjectValue);
-          pSlider->setTickNumber(TickNumber);
-          pSlider->setTickFactor(TickFactor);
+      scaling = mParser.getAttributeValue("scaling", papszAttrs, "linear");
 
-          mCommon.pGUI->pSliderList->add(pSlider, true);
+      // This is always the case if the XML is conforming to the schema.
+
+      //if (mCommon.KeyMap.get(AssociatedEntityKey))
+      //  {
+      pSlider = new CSlider;
+      mCommon.KeyMap.addFix(Key, pSlider);
+      if (strncmp(AssociatedEntityKey, "", 1))
+        {
+          pSlider->setAssociatedEntityKey(mCommon.KeyMap.get(AssociatedEntityKey)->getKey());
         }
+      else
+        {
+          pSlider->setAssociatedEntityKey("");
+        }
+      pSlider->setSliderObject((std::string) ObjectCN);
+      pSlider->setSliderType(ObjectType);
+      pSlider->setMaxValue(MaxValue);
+      pSlider->setMinValue(MinValue);
+      pSlider->setSliderValue(ObjectValue);
+      pSlider->setTickNumber(TickNumber);
+      pSlider->setTickFactor(TickFactor);
+      pSlider->setScaling(pSlider->convertScaleNameToScale(scaling));
+      mCommon.pGUI->pSliderList->add(pSlider, true);
+      //}
       break;
 
     default:

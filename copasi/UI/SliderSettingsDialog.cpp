@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/11 08:17:52 $
+   $Date: 2005/03/23 18:58:37 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Fri Mar 11 10:15:32 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.4 2005/03/11 08:17:52 gauges Exp $)
+ ** Created: Wed Mar 23 09:04:46 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.5 2005/03/23 18:58:37 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -21,6 +21,8 @@
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qlineedit.h>
+#include <qcheckbox.h>
+#include <qframe.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
@@ -66,65 +68,90 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
   mpLayout11->addWidget(mpObjectBrowseButton);
   SliderSettingsDialogLayout->addLayout(mpLayout11);
 
-  layout9 = new QGridLayout(0, 1, 1, 0, 6, "layout9");
-
-  mpMinorMajorFactorLabel = new QLabel(this, "mpMinorMajorFactorLabel");
-
-  layout9->addWidget(mpMinorMajorFactorLabel, 0, 3);
-
-  mpMaxValueLabel = new QLabel(this, "mpMaxValueLabel");
-
-  layout9->addWidget(mpMaxValueLabel, 1, 3);
-
-  mpNumMinorTicksLabel = new QLabel(this, "mpNumMinorTicksLabel");
-
-  layout9->addWidget(mpNumMinorTicksLabel, 2, 3);
-
-  mpNumMinorTicksEdit = new QLineEdit(this, "mpNumMinorTicksEdit");
-  mpNumMinorTicksEdit->setAlignment(int(QLineEdit::AlignRight));
-
-  layout9->addWidget(mpNumMinorTicksEdit, 2, 4);
-
-  mpMinorTickSizeEdit = new QLineEdit(this, "mpMinorTickSizeEdit");
-  mpMinorTickSizeEdit->setAlignment(int(QLineEdit::AlignRight));
-
-  layout9->addWidget(mpMinorTickSizeEdit, 2, 1);
-
-  mpMinorTickSizeLabel = new QLabel(this, "mpMinorTickSizeLabel");
-
-  layout9->addWidget(mpMinorTickSizeLabel, 2, 0);
+  layout5 = new QHBoxLayout(0, 0, 6, "layout5");
 
   mpMinValueLabel = new QLabel(this, "mpMinValueLabel");
-
-  layout9->addWidget(mpMinValueLabel, 1, 0);
-
-  mpObjectValueEdit = new QLineEdit(this, "mpObjectValueEdit");
-  mpObjectValueEdit->setAlignment(int(QLineEdit::AlignRight));
-
-  layout9->addWidget(mpObjectValueEdit, 0, 1);
-
-  mpMinorMajorFactorEdit = new QLineEdit(this, "mpMinorMajorFactorEdit");
-  mpMinorMajorFactorEdit->setAlignment(int(QLineEdit::AlignRight));
-
-  layout9->addWidget(mpMinorMajorFactorEdit, 0, 4);
-  mpSpacer1 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
-  layout9->addItem(mpSpacer1, 1, 2);
+  layout5->addWidget(mpMinValueLabel);
 
   mpMinValueEdit = new QLineEdit(this, "mpMinValueEdit");
   mpMinValueEdit->setAlignment(int(QLineEdit::AlignRight));
+  layout5->addWidget(mpMinValueEdit);
+  mpSpacer1 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+  layout5->addItem(mpSpacer1);
 
-  layout9->addWidget(mpMinValueEdit, 1, 1);
+  mpMaxValueLabel = new QLabel(this, "mpMaxValueLabel");
+  layout5->addWidget(mpMaxValueLabel);
 
   mpMaxValueEdit = new QLineEdit(this, "mpMaxValueEdit");
   mpMaxValueEdit->setAlignment(int(QLineEdit::AlignRight));
+  layout5->addWidget(mpMaxValueEdit);
+  SliderSettingsDialogLayout->addLayout(layout5);
 
-  layout9->addWidget(mpMaxValueEdit, 1, 4);
+  layout10 = new QHBoxLayout(0, 0, 6, "layout10");
 
-  mpObjectValueLabel = new QLabel(this, "mpObjectValueLabel");
+  mpLogCheckBox = new QCheckBox(this, "mpLogCheckBox");
+  layout10->addWidget(mpLogCheckBox);
+
+  mpGlobalCheckBox = new QCheckBox(this, "mpGlobalCheckBox");
+  layout10->addWidget(mpGlobalCheckBox);
+  mpSpacer1_2_2 = new QSpacerItem(200, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+  layout10->addItem(mpSpacer1_2_2);
+  SliderSettingsDialogLayout->addLayout(layout10);
+
+  layout9 = new QHBoxLayout(0, 0, 6, "layout9");
+
+  mpExtendedOptionsButton = new QPushButton(this, "mpExtendedOptionsButton");
+  layout9->addWidget(mpExtendedOptionsButton);
+  spacer6 = new QSpacerItem(300, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout9->addItem(spacer6);
+  SliderSettingsDialogLayout->addLayout(layout9);
+
+  mpExtendedOptionsFrame = new QFrame(this, "mpExtendedOptionsFrame");
+  mpExtendedOptionsFrame->setFrameShape(QFrame::NoFrame);
+  mpExtendedOptionsFrame->setFrameShadow(QFrame::Raised);
+  mpExtendedOptionsFrameLayout = new QGridLayout(mpExtendedOptionsFrame, 1, 1, 11, 6, "mpExtendedOptionsFrameLayout");
+
+  mpMinorMajorFactorLabel = new QLabel(mpExtendedOptionsFrame, "mpMinorMajorFactorLabel");
+
+  mpExtendedOptionsFrameLayout->addWidget(mpMinorMajorFactorLabel, 1, 0);
+
+  mpNumMinorTicksLabel = new QLabel(mpExtendedOptionsFrame, "mpNumMinorTicksLabel");
+
+  mpExtendedOptionsFrameLayout->addWidget(mpNumMinorTicksLabel, 0, 0);
+
+  mpNumMinorTicksEdit = new QLineEdit(mpExtendedOptionsFrame, "mpNumMinorTicksEdit");
+  mpNumMinorTicksEdit->setAlignment(int(QLineEdit::AlignRight));
+
+  mpExtendedOptionsFrameLayout->addWidget(mpNumMinorTicksEdit, 0, 1);
+
+  mpMinorTickSizeEdit = new QLineEdit(mpExtendedOptionsFrame, "mpMinorTickSizeEdit");
+  mpMinorTickSizeEdit->setAlignment(int(QLineEdit::AlignRight));
+
+  mpExtendedOptionsFrameLayout->addWidget(mpMinorTickSizeEdit, 0, 4);
+
+  mpObjectValueEdit = new QLineEdit(mpExtendedOptionsFrame, "mpObjectValueEdit");
+  mpObjectValueEdit->setAlignment(int(QLineEdit::AlignRight));
+
+  mpExtendedOptionsFrameLayout->addWidget(mpObjectValueEdit, 1, 4);
+
+  mpMinorMajorFactorEdit = new QLineEdit(mpExtendedOptionsFrame, "mpMinorMajorFactorEdit");
+  mpMinorMajorFactorEdit->setAlignment(int(QLineEdit::AlignRight));
+
+  mpExtendedOptionsFrameLayout->addWidget(mpMinorMajorFactorEdit, 1, 1);
+  mpSpacer1_3 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+  mpExtendedOptionsFrameLayout->addItem(mpSpacer1_3, 1, 2);
+  mpSpacer1_2 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+  mpExtendedOptionsFrameLayout->addItem(mpSpacer1_2, 0, 2);
+
+  mpObjectValueLabel = new QLabel(mpExtendedOptionsFrame, "mpObjectValueLabel");
   mpObjectValueLabel->setMargin(0);
 
-  layout9->addWidget(mpObjectValueLabel, 0, 0);
-  SliderSettingsDialogLayout->addLayout(layout9);
+  mpExtendedOptionsFrameLayout->addWidget(mpObjectValueLabel, 1, 3);
+
+  mpMinorTickSizeLabel = new QLabel(mpExtendedOptionsFrame, "mpMinorTickSizeLabel");
+
+  mpExtendedOptionsFrameLayout->addWidget(mpMinorTickSizeLabel, 0, 3);
+  SliderSettingsDialogLayout->addWidget(mpExtendedOptionsFrame);
 
   mpLayout2 = new QHBoxLayout(0, 0, 6, "mpLayout2");
 
@@ -136,39 +163,45 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
   mpLayout2->addWidget(mpCancelButton);
   SliderSettingsDialogLayout->addLayout(mpLayout2);
   languageChange();
-  resize(QSize(611, 234).expandedTo(minimumSizeHint()));
+  resize(QSize(486, 279).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
-  connect(mpMinValueEdit, SIGNAL(returnPressed()), this, SLOT(minValueChanged()));
-  connect(mpMaxValueEdit, SIGNAL(returnPressed()), this, SLOT(maxValueChanged()));
-  connect(mpMinorTickSizeEdit, SIGNAL(returnPressed()), this, SLOT(minorTickSizeChanged()));
-  connect(mpNumMinorTicksEdit, SIGNAL(returnPressed()), this, SLOT(numMinorTicksChanged()));
-  connect(mpObjectValueEdit, SIGNAL(returnPressed()), this, SLOT(objectValueChanged()));
-  connect(mpOkButton, SIGNAL(clicked()), this, SLOT(okButtonPressed()));
   connect(mpCancelButton, SIGNAL(clicked()), this, SLOT(cancelButtonPressed()));
-  connect(mpMinValueEdit, SIGNAL(lostFocus()), this, SLOT(minValueChanged()));
-  connect(mpMaxValueEdit, SIGNAL(lostFocus()), this, SLOT(maxValueChanged()));
+  connect(mpOkButton, SIGNAL(clicked()), this, SLOT(okButtonPressed()));
+  connect(mpObjectValueEdit, SIGNAL(returnPressed()), this, SLOT(objectValueChanged()));
   connect(mpObjectValueEdit, SIGNAL(lostFocus()), this, SLOT(objectValueChanged()));
-  connect(mpMinorTickSizeEdit, SIGNAL(lostFocus()), this, SLOT(minorTickSizeChanged()));
-  connect(mpNumMinorTicksEdit, SIGNAL(lostFocus()), this, SLOT(numMinorTicksChanged()));
-  connect(mpObjectBrowseButton, SIGNAL(clicked()), this, SLOT(browseButtonPressed()));
   connect(mpObjectValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
-  connect(mpMinValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpMinorTickSizeEdit, SIGNAL(returnPressed()), this, SLOT(minorTickSizeChanged()));
+  connect(mpMinorTickSizeEdit, SIGNAL(lostFocus()), this, SLOT(minorTickSizeChanged()));
   connect(mpMinorTickSizeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
   connect(mpMinorMajorFactorEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
-  connect(mpMaxValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpNumMinorTicksEdit, SIGNAL(returnPressed()), this, SLOT(numMinorTicksChanged()));
+  connect(mpNumMinorTicksEdit, SIGNAL(lostFocus()), this, SLOT(numMinorTicksChanged()));
   connect(mpNumMinorTicksEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpMinValueEdit, SIGNAL(returnPressed()), this, SLOT(minValueChanged()));
+  connect(mpMinValueEdit, SIGNAL(lostFocus()), this, SLOT(minValueChanged()));
+  connect(mpMinValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpMaxValueEdit, SIGNAL(returnPressed()), this, SLOT(maxValueChanged()));
+  connect(mpMaxValueEdit, SIGNAL(lostFocus()), this, SLOT(maxValueChanged()));
+  connect(mpMaxValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpObjectBrowseButton, SIGNAL(clicked()), this, SLOT(browseButtonPressed()));
+  connect(mpExtendedOptionsButton, SIGNAL(clicked()), this, SLOT(extendedOptionsClicked()));
+  connect(mpLogCheckBox, SIGNAL(toggled(bool)), this, SLOT(logCheckBoxToggled(bool)));
 
   // tab order
-  setTabOrder(mpOkButton, mpCancelButton);
-  setTabOrder(mpCancelButton, mpObjectBrowseButton);
-  setTabOrder(mpObjectBrowseButton, mpObjectValueEdit);
-  setTabOrder(mpObjectValueEdit, mpMinorMajorFactorEdit);
-  setTabOrder(mpMinorMajorFactorEdit, mpMinValueEdit);
+  setTabOrder(mpObjectNameLineEdit, mpObjectBrowseButton);
+  setTabOrder(mpObjectBrowseButton, mpMinValueEdit);
   setTabOrder(mpMinValueEdit, mpMaxValueEdit);
-  setTabOrder(mpMaxValueEdit, mpMinorTickSizeEdit);
-  setTabOrder(mpMinorTickSizeEdit, mpNumMinorTicksEdit);
+  setTabOrder(mpMaxValueEdit, mpLogCheckBox);
+  setTabOrder(mpLogCheckBox, mpGlobalCheckBox);
+  setTabOrder(mpGlobalCheckBox, mpExtendedOptionsButton);
+  setTabOrder(mpExtendedOptionsButton, mpNumMinorTicksEdit);
+  setTabOrder(mpNumMinorTicksEdit, mpMinorTickSizeEdit);
+  setTabOrder(mpMinorTickSizeEdit, mpMinorMajorFactorEdit);
+  setTabOrder(mpMinorMajorFactorEdit, mpObjectValueEdit);
+  setTabOrder(mpObjectValueEdit, mpOkButton);
+  setTabOrder(mpOkButton, mpCancelButton);
   init();
 }
 
@@ -189,18 +222,21 @@ void SliderSettingsDialog::languageChange()
   setCaption(tr("Slider Settings"));
   mpObjectLabel->setText(tr("Object:"));
   mpObjectBrowseButton->setText(tr("choose object"));
-  mpMinorMajorFactorLabel->setText(tr("Ticksize factor:"));
+  mpMinValueLabel->setText(tr("Minimum Value:"));
+  mpMinValueEdit->setText(tr("0.0"));
   mpMaxValueLabel->setText(tr("Maximum Value:"));
+  mpMaxValueEdit->setText(tr("100.0"));
+  mpLogCheckBox->setText(tr("logarithmic"));
+  mpGlobalCheckBox->setText(tr("use for all tasks"));
+  mpExtendedOptionsButton->setText(tr("more options"));
+  mpMinorMajorFactorLabel->setText(tr("Ticksize factor:"));
   mpNumMinorTicksLabel->setText(tr("Number of Minor Ticks:"));
   mpNumMinorTicksEdit->setText(tr("10.0"));
   mpMinorTickSizeEdit->setText(tr("1.0"));
-  mpMinorTickSizeLabel->setText(tr("Minor Ticksize:"));
-  mpMinValueLabel->setText(tr("Minimum Value:"));
   mpObjectValueEdit->setText(tr("50.0"));
   mpMinorMajorFactorEdit->setText(tr("10.0"));
-  mpMinValueEdit->setText(tr("0.0"));
-  mpMaxValueEdit->setText(tr("100.0"));
   mpObjectValueLabel->setText(tr("Object Value:"));
+  mpMinorTickSizeLabel->setText(tr("Minor Ticksize:"));
   mpOkButton->setText(tr("OK"));
   mpCancelButton->setText(tr("Cancel"));
 }

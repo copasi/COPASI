@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/11 08:17:52 $
+   $Date: 2005/03/23 18:58:37 $
    End CVS Header */
 
 /****************************************************************************
@@ -78,6 +78,15 @@ void SliderSettingsDialog::updateInputFieldsValues()
   this->mpMinorMajorFactorEdit->setText(QString::number(this->mMinorMajorFactor));
 
   this->numMinorTicksChanged();
+
+  if (this->mpSlider->getScaling() == CSlider::logarithmic)
+    {
+      this->mpLogCheckBox->setChecked(true);
+    }
+  else
+    {
+      this->mpLogCheckBox->setChecked(false);
+    }
 }
 
 void SliderSettingsDialog::updateInputFields()
@@ -91,6 +100,8 @@ void SliderSettingsDialog::updateInputFields()
       this->mpMinorTickSizeEdit->setEnabled(true);
       this->mpNumMinorTicksEdit->setEnabled(true);
       this->mpObjectValueEdit->setEnabled(true);
+      this->mpLogCheckBox->setEnabled(true);
+      this->mpGlobalCheckBox->setEnabled(true);
     }
   else
     {
@@ -100,6 +111,8 @@ void SliderSettingsDialog::updateInputFields()
       this->mpMinorTickSizeEdit->setEnabled(false);
       this->mpNumMinorTicksEdit->setEnabled(false);
       this->mpObjectValueEdit->setEnabled(false);
+      this->mpLogCheckBox->setEnabled(false);
+      this->mpGlobalCheckBox->setEnabled(false);
     }
 }
 
@@ -142,7 +155,7 @@ void SliderSettingsDialog::minorTickSizeChanged()
 void SliderSettingsDialog::numMinorTicksChanged()
 {
   // adjust minorTickSize
-  this-> mNumMinorTicks = this->mpNumMinorTicksEdit->text().toUInt();
+  this->mNumMinorTicks = this->mpNumMinorTicksEdit->text().toUInt();
   if (this->mNumMinorTicks == 1)
     {
       this->mNumMinorTicks = 1;
@@ -213,6 +226,8 @@ void SliderSettingsDialog::init()
 {
   this->mpSlider = NULL;
   this->mChanged = false;
+  this->mpExtendedOptionsFrame->hide();
+  this->mpExtendedOptionsButton->setText("extended options");
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
   mpMaxValueEdit->setValidator(new QDoubleValidator(this));
@@ -326,10 +341,38 @@ void SliderSettingsDialog::updateSlider()
       this->mpSlider->setSliderValue(this->mValue);
       this->mpSlider->setTickNumber(this->mNumMinorTicks);
       this->mpSlider->setTickFactor(this->mMinorMajorFactor);
+      this->mpSlider->setScaling(this->mScaling);
     }
 }
 
 void SliderSettingsDialog::lineEditChanged()
 {
   this->mChanged = true;
+}
+
+void SliderSettingsDialog::extendedOptionsClicked()
+{
+  if (this->mpExtendedOptionsFrame->isHidden())
+    {
+      this->mpExtendedOptionsButton->setText("base options");
+      this->mpExtendedOptionsFrame->show();
+    }
+  else
+    {
+      this->mpExtendedOptionsButton->setText("extended options");
+      this->mpExtendedOptionsFrame->hide();
+    }
+}
+
+void SliderSettingsDialog::logCheckBoxToggled(bool on)
+{
+  this->mChanged = true;
+  if (on)
+    {
+      this->mScaling = CSlider::logarithmic;
+    }
+  else
+    {
+      this->mScaling = CSlider::linear;
+    }
 }

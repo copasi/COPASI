@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/11 13:22:06 $
+   $Date: 2005/03/23 18:58:37 $
    End CVS Header */
 
 #ifndef CopasiSlider_H__
@@ -69,6 +69,9 @@ class CopasiSlider: public QHBox
     QToolButton* mpCloseButton;
     QToolButton* mpEditButton;
     bool mValueOutOfRange;
+
+    int calculatePositionFromValue(C_FLOAT64 value);
+    C_FLOAT64 calculateValueFromPosition(int position);
   };
 
 #endif // CopasiSlider_H__

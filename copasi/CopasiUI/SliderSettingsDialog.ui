@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>611</width>
-            <height>234</height>
+            <width>486</width>
+            <height>279</height>
         </rect>
     </property>
     <property name="caption">
@@ -83,67 +83,13 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout9</cstring>
+                <cstring>layout5</cstring>
             </property>
-            <grid>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="0" column="3">
-                    <property name="name">
-                        <cstring>mpMinorMajorFactorLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Ticksize factor:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="3">
-                    <property name="name">
-                        <cstring>mpMaxValueLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Maximum Value:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="3">
-                    <property name="name">
-                        <cstring>mpNumMinorTicksLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Number of Minor Ticks:</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="2" column="4">
-                    <property name="name">
-                        <cstring>mpNumMinorTicksEdit</cstring>
-                    </property>
-                    <property name="text">
-                        <string>10.0</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignRight</set>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="2" column="1">
-                    <property name="name">
-                        <cstring>mpMinorTickSizeEdit</cstring>
-                    </property>
-                    <property name="text">
-                        <string>1.0</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignRight</set>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
-                    <property name="name">
-                        <cstring>mpMinorTickSizeLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Minor Ticksize:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
+                <widget class="QLabel">
                     <property name="name">
                         <cstring>mpMinValueLabel</cstring>
                     </property>
@@ -151,29 +97,18 @@
                         <string>Minimum Value:</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="0" column="1">
+                <widget class="QLineEdit">
                     <property name="name">
-                        <cstring>mpObjectValueEdit</cstring>
+                        <cstring>mpMinValueEdit</cstring>
                     </property>
                     <property name="text">
-                        <string>50.0</string>
+                        <string>0.0</string>
                     </property>
                     <property name="alignment">
                         <set>AlignRight</set>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="0" column="4">
-                    <property name="name">
-                        <cstring>mpMinorMajorFactorEdit</cstring>
-                    </property>
-                    <property name="text">
-                        <string>10.0</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignRight</set>
-                    </property>
-                </widget>
-                <spacer row="1" column="2">
+                <spacer>
                     <property name="name">
                         <cstring>mpSpacer1</cstring>
                     </property>
@@ -190,18 +125,15 @@
                         </size>
                     </property>
                 </spacer>
-                <widget class="QLineEdit" row="1" column="1">
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>mpMinValueEdit</cstring>
+                        <cstring>mpMaxValueLabel</cstring>
                     </property>
                     <property name="text">
-                        <string>0.0</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignRight</set>
+                        <string>Maximum Value:</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="1" column="4">
+                <widget class="QLineEdit">
                     <property name="name">
                         <cstring>mpMaxValueEdit</cstring>
                     </property>
@@ -212,7 +144,195 @@
                         <set>AlignRight</set>
                     </property>
                 </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout10</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>mpLogCheckBox</cstring>
+                    </property>
+                    <property name="text">
+                        <string>logarithmic</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>mpGlobalCheckBox</cstring>
+                    </property>
+                    <property name="text">
+                        <string>use for all tasks</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>mpSpacer1_2_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Fixed</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>200</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout9</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpExtendedOptionsButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>more options</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer6</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>300</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <widget class="QFrame">
+            <property name="name">
+                <cstring>mpExtendedOptionsFrame</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>mpMinorMajorFactorLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ticksize factor:</string>
+                    </property>
+                </widget>
                 <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>mpNumMinorTicksLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Number of Minor Ticks:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>mpNumMinorTicksEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>10.0</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="4">
+                    <property name="name">
+                        <cstring>mpMinorTickSizeEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>1.0</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="4">
+                    <property name="name">
+                        <cstring>mpObjectValueEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>50.0</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>mpMinorMajorFactorEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>10.0</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignRight</set>
+                    </property>
+                </widget>
+                <spacer row="1" column="2">
+                    <property name="name">
+                        <cstring>mpSpacer1_3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Fixed</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="0" column="2">
+                    <property name="name">
+                        <cstring>mpSpacer1_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Fixed</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel" row="1" column="3">
                     <property name="name">
                         <cstring>mpObjectValueLabel</cstring>
                     </property>
@@ -221,6 +341,14 @@
                     </property>
                     <property name="text">
                         <string>Object Value:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="3">
+                    <property name="name">
+                        <cstring>mpMinorTickSizeLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Minor Ticksize:</string>
                     </property>
                 </widget>
             </grid>
@@ -258,34 +386,10 @@
 </widget>
 <connections>
     <connection>
-        <sender>mpMinValueEdit</sender>
-        <signal>returnPressed()</signal>
+        <sender>mpCancelButton</sender>
+        <signal>clicked()</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>minValueChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpMaxValueEdit</sender>
-        <signal>returnPressed()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>maxValueChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpMinorTickSizeEdit</sender>
-        <signal>returnPressed()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>minorTickSizeChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpNumMinorTicksEdit</sender>
-        <signal>returnPressed()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>numMinorTicksChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpObjectValueEdit</sender>
-        <signal>returnPressed()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>objectValueChanged()</slot>
+        <slot>cancelButtonPressed()</slot>
     </connection>
     <connection>
         <sender>mpOkButton</sender>
@@ -294,22 +398,10 @@
         <slot>okButtonPressed()</slot>
     </connection>
     <connection>
-        <sender>mpCancelButton</sender>
-        <signal>clicked()</signal>
+        <sender>mpObjectValueEdit</sender>
+        <signal>returnPressed()</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>cancelButtonPressed()</slot>
-    </connection>
-    <connection>
-        <sender>mpMinValueEdit</sender>
-        <signal>lostFocus()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>minValueChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpMaxValueEdit</sender>
-        <signal>lostFocus()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>maxValueChanged()</slot>
+        <slot>objectValueChanged()</slot>
     </connection>
     <connection>
         <sender>mpObjectValueEdit</sender>
@@ -318,34 +410,22 @@
         <slot>objectValueChanged()</slot>
     </connection>
     <connection>
-        <sender>mpMinorTickSizeEdit</sender>
-        <signal>lostFocus()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>minorTickSizeChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpNumMinorTicksEdit</sender>
-        <signal>lostFocus()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>numMinorTicksChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpObjectBrowseButton</sender>
-        <signal>clicked()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>browseButtonPressed()</slot>
-    </connection>
-    <connection>
         <sender>mpObjectValueEdit</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
         <slot>lineEditChanged()</slot>
     </connection>
     <connection>
-        <sender>mpMinValueEdit</sender>
-        <signal>textChanged(const QString&amp;)</signal>
+        <sender>mpMinorTickSizeEdit</sender>
+        <signal>returnPressed()</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>lineEditChanged()</slot>
+        <slot>minorTickSizeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMinorTickSizeEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>minorTickSizeChanged()</slot>
     </connection>
     <connection>
         <sender>mpMinorTickSizeEdit</sender>
@@ -360,10 +440,16 @@
         <slot>lineEditChanged()</slot>
     </connection>
     <connection>
-        <sender>mpMaxValueEdit</sender>
-        <signal>textChanged(const QString&amp;)</signal>
+        <sender>mpNumMinorTicksEdit</sender>
+        <signal>returnPressed()</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>lineEditChanged()</slot>
+        <slot>numMinorTicksChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpNumMinorTicksEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>numMinorTicksChanged()</slot>
     </connection>
     <connection>
         <sender>mpNumMinorTicksEdit</sender>
@@ -371,17 +457,75 @@
         <receiver>SliderSettingsDialog</receiver>
         <slot>lineEditChanged()</slot>
     </connection>
+    <connection>
+        <sender>mpMinValueEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>minValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMinValueEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>minValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMinValueEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>lineEditChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMaxValueEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>maxValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMaxValueEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>maxValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMaxValueEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>lineEditChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpObjectBrowseButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>browseButtonPressed()</slot>
+    </connection>
+    <connection>
+        <sender>mpExtendedOptionsButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>extendedOptionsClicked()</slot>
+    </connection>
+    <connection>
+        <sender>mpLogCheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>logCheckBoxToggled(bool)</slot>
+    </connection>
 </connections>
 <tabstops>
-    <tabstop>mpOkButton</tabstop>
-    <tabstop>mpCancelButton</tabstop>
+    <tabstop>mpObjectNameLineEdit</tabstop>
     <tabstop>mpObjectBrowseButton</tabstop>
-    <tabstop>mpObjectValueEdit</tabstop>
-    <tabstop>mpMinorMajorFactorEdit</tabstop>
     <tabstop>mpMinValueEdit</tabstop>
     <tabstop>mpMaxValueEdit</tabstop>
-    <tabstop>mpMinorTickSizeEdit</tabstop>
+    <tabstop>mpLogCheckBox</tabstop>
+    <tabstop>mpGlobalCheckBox</tabstop>
+    <tabstop>mpExtendedOptionsButton</tabstop>
     <tabstop>mpNumMinorTicksEdit</tabstop>
+    <tabstop>mpMinorTickSizeEdit</tabstop>
+    <tabstop>mpMinorMajorFactorEdit</tabstop>
+    <tabstop>mpObjectValueEdit</tabstop>
+    <tabstop>mpOkButton</tabstop>
+    <tabstop>mpCancelButton</tabstop>
 </tabstops>
 <includes>
     <include location="global" impldecl="in declaration">vector</include>
@@ -413,6 +557,7 @@
     <variable>CSlider* mpSlider;</variable>
     <variable>C_INT32 mCurrentTaskId;</variable>
     <variable>CModel* mpModel;</variable>
+    <variable>CSlider::Scale mScaling;</variable>
 </variables>
 <signals>
     <signal>sliderChanged(CSlider* slider)</signal>
@@ -428,6 +573,8 @@
     <slot access="protected">minorMajorFactorChanged()</slot>
     <slot access="protected">browseButtonPressed()</slot>
     <slot>lineEditChanged()</slot>
+    <slot access="protected">extendedOptionsClicked()</slot>
+    <slot access="protected">logCheckBoxToggled( bool on )</slot>
 </slots>
 <functions>
     <function returnType="CSlider *">getSlider()</function>

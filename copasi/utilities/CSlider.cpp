@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/20 04:10:05 $
+   $Author: gauges $ 
+   $Date: 2005/03/23 18:58:37 $
    End CVS Header */
 
 #include "copasi.h"
@@ -15,6 +15,9 @@
 
 const char * CSlider::TypeName[] =
   {"float", "unsignedFloat", "integer", "unsignedInteger", NULL};
+
+const char * CSlider::ScaleName[] =
+  {"linear", "logarithmic", "undefined", NULL};
 
 CSlider::CSlider(const std::string & name,
                  const CCopasiContainer * pParent):
@@ -28,7 +31,8 @@ CSlider::CSlider(const std::string & name,
     mMaxValue(0),
     mTickNumber(1000),
     mTickFactor(100),
-    mSync(true)
+    mSync(true),
+    mScaling(CSlider::linear)
 {}
 
 CSlider::CSlider(const CSlider & src,
@@ -43,7 +47,8 @@ CSlider::CSlider(const CSlider & src,
     mMaxValue(src.mMaxValue),
     mTickNumber(src.mTickNumber),
     mTickFactor(src.mTickFactor),
-    mSync(src.mSync)
+    mSync(src.mSync),
+    mScaling(src.mScaling)
 {}
 
 CSlider::~CSlider()
@@ -217,3 +222,36 @@ bool CSlider::setTickFactor(const unsigned C_INT32 tickFactor)
 
 const unsigned C_INT32 CSlider::getTickFactor() const
   {return mTickFactor;}
+
+CSlider::Scale CSlider::getScaling() const
+  {
+    return this->mScaling;
+  }
+
+bool CSlider::setScaling(CSlider::Scale scaling)
+{
+  this->mScaling = scaling;
+  return true;
+}
+
+CSlider::Scale CSlider::convertScaleNameToScale(const char* scaleName)
+{
+  if (!strncmp("linear", scaleName, 7))
+    {
+      return CSlider::linear;
+    }
+  else if (!strncmp("logarithmic", scaleName, 12))
+    {
+      return CSlider::logarithmic;
+    }
+  else
+    {
+      return CSlider::undefinedScale;
+    }
+}
+
+const char* CSlider::convertScaleToScaleName(Scale scale)
+{
+  if (scale < 0 || scale > CSlider::undefinedScale) return ScaleName[undefinedScale];
+  return ScaleName[scale];
+}

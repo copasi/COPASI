@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/20 04:10:05 $
+   $Author: gauges $ 
+   $Date: 2005/03/23 18:58:37 $
    End CVS Header */
 
 #ifndef COPASI_CSlider
@@ -21,9 +21,19 @@ class CSlider : public CCopasiContainer
     enum Type {Float = 0, UnsignedFloat, Integer, UnsignedInteger};
 
     /**
+     *  Enum of valid scales
+     */
+    enum Scale {linear = 0, logarithmic, undefinedScale};
+
+    /**
      * String representation of valid quantity units
      */
     static const char * TypeName[];
+
+    /**
+     * String representation of valid scalings
+     */
+    static const char * ScaleName[];
 
     // Operations
   public:
@@ -182,6 +192,17 @@ class CSlider : public CCopasiContainer
     const unsigned C_INT32 getTickFactor() const;
 
     /**
+     * Set the scaling for the CSlider.
+     */
+    bool setScaling(Scale scaling);
+
+    /**
+     * Retrieve the scaling of the slider.
+     * @return Scale scaling
+     */
+    Scale getScaling() const;
+
+    /**
      * Reset the minimum and maximum value to defaults. For the minimum this is
      * half the current value. For the maximum this is twice the current value.
      */
@@ -207,6 +228,18 @@ class CSlider : public CCopasiContainer
      * Set the objects value to the value stored in CSlider.
      */
     void writeToObject();
+
+    /**
+     * Converts the scaling name to the corresponding enum.
+     * @return CSlider::Scale 
+     */
+    Scale convertScaleNameToScale(const char* scaleName);
+
+    /**
+     * Converts the scaling name to the corresponding enum.
+     * @return const char* scaleName 
+     */
+    const char* convertScaleToScaleName(Scale scale);
 
     // Attributes
   private:
@@ -259,6 +292,11 @@ class CSlider : public CCopasiContainer
      * Wether the CSlider's value is always in sync with its object's value.
      */
     bool mSync;
+
+    /**
+     * The scaling of the slider.
+     */
+    Scale mScaling;
   };
 
 #endif

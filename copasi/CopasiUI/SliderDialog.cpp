@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/20 04:10:05 $
+   $Author: gauges $ 
+   $Date: 2005/03/23 18:58:37 $
    End CVS Header */
 
 #include <iostream>
@@ -23,6 +23,7 @@
 #include "qtooltip.h"
 #include "qpopupmenu.h"
 #include "qlayout.h"
+#include "qmessagebox.h"
 
 #include "SliderDialog.h"
 #include "copasiui3window.h"
@@ -179,7 +180,14 @@ void SliderDialog::createNewSlider()
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       CSlider* pCSlider = pSettingsDialog->getSlider();
-      pCSlider->setAssociatedEntityKey(this->getTaskForFolderId(this->currentFolderId)->getKey());
+      if (pSettingsDialog->mpGlobalCheckBox->isChecked())
+        {
+          pCSlider->setAssociatedEntityKey("");
+        }
+      else
+        {
+          pCSlider->setAssociatedEntityKey(this->getTaskForFolderId(this->currentFolderId)->getKey());
+        }
       if (pCSlider)
         {
           if (!this->equivalentSliderExists(pCSlider))
@@ -189,8 +197,12 @@ void SliderDialog::createNewSlider()
             }
           else
             {
-              // update the slider
-              this->currSlider->update();
+              // show a message dialog
+              if (QMessageBox::information(NULL, "Slider Exists", "A slider for this object already exists.\nDo you want to update this slider?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape, QMessageBox::NoButton) == QMessageBox::Yes)
+                {
+                  // update the slider
+                  this->currSlider->update();
+                }
             }
         }
     }
@@ -249,6 +261,14 @@ void SliderDialog::editSlider()
 
   pSettingsDialog->setSlider(this->currSlider->getCSlider());
   pSettingsDialog->exec();
+  if (pSettingsDialog->mpGlobalCheckBox->isChecked())
+    {
+      this->currSlider->getCSlider()->setAssociatedEntityKey("");
+    }
+  else
+    {
+      this->currSlider->getCSlider()->setAssociatedEntityKey(this->getTaskForFolderId(this->currentFolderId)->getKey());
+    }
   this->currSlider->updateSliderData();
   delete pSettingsDialog;
   delete pVector;
@@ -290,6 +310,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
       this->setCurrentSlider(new CopasiSlider(pSlider, this->sliderBox));
       this->currSlider->installEventFilter(this);
       this->currSlider->setHidden(true);
+      this->currSlider->updateSliderData();
       this->sliderMap[this->currentFolderId].push_back(this->currSlider);
       ((QVBoxLayout*)this->sliderBox->layout())->add(this->currSlider);
       connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
@@ -429,6 +450,10 @@ void SliderDialog::fillSliderBox()
       widget->setHidden(true);
       ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(0, widget);
       this->setCurrentSlider(dynamic_cast<CopasiSlider*>(widget));
+      if (this->currSlider)
+        {
+          this->currSlider->updateSliderData();
+        }
       widget->setHidden(false);
     }
 }
@@ -570,7 +595,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
     for (i = 0; i < maxSliders;++i)
       {
         CSlider* pSlider = (*pSliderList)[i];
-        if (pSlider->getAssociatedEntityKey() == pObject->getKey())
+        if (pSlider->getAssociatedEntityKey() == std::string("") || pSlider->getAssociatedEntityKey() == pObject->getKey())
           {
             pVector->push_back(pSlider);
           }
