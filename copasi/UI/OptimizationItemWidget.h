@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.3 2003/10/04 18:55:20 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.4 2003/10/06 00:38:02 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -56,7 +56,7 @@ class OptimizationItemWidget : public QWidget
     setItemLowerLimit(std::string strLowerLimit);
 
     CCopasiObject* getCopasiObject();
-    void setCopasiObjecPtr (CCopasiObject* sourceObject);
+    void setCopasiObjectPtr (CCopasiObject* sourceObject);
 
   public slots:
     virtual void slotPosInfClicked();
