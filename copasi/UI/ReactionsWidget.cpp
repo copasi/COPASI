@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:41:56 $
+   $Date: 2004/05/13 13:00:49 $
    End CVS Header */
 
 /*******************************************************************
@@ -118,7 +118,7 @@ void ReactionsWidget::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
-      table->setText(j, 0, FROM_UTF8(obj->getName()));
+      table->setText(j, 0, FROM_UTF8(obj->getObjectName()));
       table->setText(j, 1, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *obj, false)));
 
       mKeys[j] = obj->getKey();
@@ -288,7 +288,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:       // Yes or Enter
+            case 0:        // Yes or Enter
               {
                 for (i = ToBeDeleted.size(); 0 < i;)
                   {
@@ -304,7 +304,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
                 break;
               }
 
-            default:              // No or Escape
+            default:               // No or Escape
               break;
             }
         }

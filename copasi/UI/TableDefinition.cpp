@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:41:57 $
+   $Date: 2004/05/13 13:00:50 $
    End CVS Header */
 
 /*******************************************************************
@@ -100,7 +100,7 @@ void TableDefinition::fillTable()
 
   for (j = 0; j < jmax; ++j)
     {
-      table->setText(j, 0, FROM_UTF8((*objects)[j]->getName()));
+      table->setText(j, 0, FROM_UTF8((*objects)[j]->getObjectName()));
       table->setText(j, 1, FROM_UTF8((*objects)[j]->getComment()));
       mKeys[j] = (*objects)[j]->getKey();
     }

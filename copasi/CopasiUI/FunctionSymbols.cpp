@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:17 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:00:46 $
    End CVS Header */
 
 /*******************************************************************
@@ -117,12 +117,12 @@ void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
           table->setText(index, 0, FROM_UTF8(it->first));
 
           CFunction *metabObject = (CFunction *)mathSymbol->getObject();
-          table->setText(index, 1, FROM_UTF8(metabObject->getName()));
+          table->setText(index, 1, FROM_UTF8(metabObject->getObjectName()));
           QStringList functionType;
           CFunctionParameters &functParam = metabObject->getParameters();
           for (int j = 0; j < functParam.size(); j++)
             {
-              functionType.push_back(FROM_UTF8(functParam[j]->getName()));
+              functionType.push_back(FROM_UTF8(functParam[j]->getObjectName()));
             }
           QComboTableItem * item = new QComboTableItem(table, functionType, false);
           table->setItem(index, 2, item);

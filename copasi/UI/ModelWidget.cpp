@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:40:01 $
+   $Date: 2004/05/13 13:00:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -235,12 +235,12 @@ bool ModelWidget::convert2NonReversible()
 
         //create the two new reactions
         reac1 = new CReaction(*reac0, &steps);
-        rn1 = reac1->getName() + " (forward)";
+        rn1 = reac1->getObjectName() + " (forward)";
         reac1->setName(rn1);
         steps.add(reac1);
 
         reac2 = new CReaction(*reac0, &steps);
-        rn2 = reac2->getName() + " (backward)";
+        rn2 = reac2->getObjectName() + " (backward)";
         reac2->setName(rn2);
         steps.add(reac2);
 
@@ -248,7 +248,7 @@ bool ModelWidget::convert2NonReversible()
         ri2.initFromReaction(*model, reac2->getKey());
 
         //set the new function
-        fn = reac0->getFunction().getName();
+        fn = reac0->getFunction().getObjectName();
         std::cout << fn << "  " << std::endl;
 
         if (fn == "Mass action (reversible)")
@@ -285,7 +285,7 @@ bool ModelWidget::convert2NonReversible()
 
         //remove the old reaction
         //mSteps.remove(reac0->getName());
-        reactionsToDelete.push_back(reac0->getName());
+        reactionsToDelete.push_back(reac0->getObjectName());
       }
 
   imax = reactionsToDelete.size();

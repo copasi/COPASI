@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:40:01 $
+   $Date: 2004/05/13 13:00:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -193,8 +193,8 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
   CCopasiVectorNS< CCompartment > & allcompartments = dataModel->getModel()->getCompartments();
   CCompartment *compt;
   mComboCompartment->clear();
-  mEditName->setText(FROM_UTF8(metab->getName()));
-  //Metabolite1_Name = new QString(metab->getName().);
+  mEditName->setText(FROM_UTF8(metab->getObjectName()));
+  //Metabolite1_Name = new QString(metab->getObjectName().);
 
   mEditInitConcentration->setText(QString::number(metab->getInitialConcentration()));
 
@@ -223,10 +223,10 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
       //showMessage("mudita","It comes here");
 
       compt = allcompartments[m];
-      //mComboCompartment->insertStringList(compt->getName().,j);
-      mComboCompartment->insertItem(FROM_UTF8(compt->getName()));
+      //mComboCompartment->insertStringList(compt->getObjectName().,j);
+      mComboCompartment->insertItem(FROM_UTF8(compt->getObjectName()));
     }
-  mComboCompartment->setCurrentText(FROM_UTF8(metab->getCompartment()->getName()));
+  mComboCompartment->setCurrentText(FROM_UTF8(metab->getCompartment()->getObjectName()));
 
   return true;
 }
@@ -239,7 +239,7 @@ bool MetabolitesWidget1::saveToMetabolite()
 
   //name
   QString name(mEditName->text());
-  if ((const char *)name.utf8() != metab->getName())
+  if ((const char *)name.utf8() != metab->getObjectName())
     {
       metab->setName((const char *)name.utf8());
       //TODO: update the reactions (the real thing, not the gui)
@@ -249,11 +249,11 @@ bool MetabolitesWidget1::saveToMetabolite()
 
   //compartment
   QString Compartment = mComboCompartment->currentText();
-  if ((const char *)Compartment.utf8() != metab->getCompartment()->getName())
+  if ((const char *)Compartment.utf8() != metab->getCompartment()->getObjectName())
     {
-      std::string CompartmentToRemove = metab->getCompartment()->getName();
+      std::string CompartmentToRemove = metab->getCompartment()->getObjectName();
       dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(metab);
-      dataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getName());
+      dataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getObjectName());
       dataModel->getModel()->initializeMetabolites();
       //ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
       ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.136 $
+   $Revision: 1.137 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/06 21:08:22 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:00:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -547,7 +547,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                     //Time course
+      case 23:                                      //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -556,10 +556,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                    //Report
+      case 43:                                     //Report
         return tableDefinition;
         break;
-      case 42:                                    //Plots
+      case 42:                                     //Plots
         return plotWidget;
         break;
       case 5:
@@ -898,7 +898,7 @@ void ListViews::loadPlotsToDataModel()   //TODO
   for (j = 0; j < jmax; j++)
     {
       obj = (*objects)[j];
-      f = new Folder(parent, FROM_UTF8(obj->getName()));
+      f = new Folder(parent, FROM_UTF8(obj->getObjectName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);
@@ -923,7 +923,7 @@ void ListViews::loadReportDefinition()
   for (j = 0; j < jmax; j++)
     {
       obj = (*objects)[j];
-      f = new Folder(parent, FROM_UTF8(obj->getName()));
+      f = new Folder(parent, FROM_UTF8(obj->getObjectName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);
@@ -945,7 +945,7 @@ void ListViews::loadCompartmentsToDataModel()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      f = new Folder(parent, FROM_UTF8(obj->getName()));
+      f = new Folder(parent, FROM_UTF8(obj->getObjectName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);
@@ -969,7 +969,7 @@ void ListViews::loadMetabolitesToDataModel()
     {
       metab = metabolites[j];
 
-      //f = new Folder(parent, metab->getName().);
+      //f = new Folder(parent, metab->getObjectName().);
       f = new Folder(parent, FROM_UTF8(CMetabNameInterface::getDisplayName(dataModel->getModel(), *metab)));
       f->setID(parent->getID());
       f->setObjectKey(metab->getKey());
@@ -992,7 +992,7 @@ void ListViews::loadReactionsToDataModel()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      f = new Folder(parent, FROM_UTF8(obj->getName()));
+      f = new Folder(parent, FROM_UTF8(obj->getObjectName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f); // TODO: do we really want to add this to the datamodel here?
@@ -1015,7 +1015,7 @@ void ListViews::loadMoietiesToDataModel()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      f = new Folder(parent, FROM_UTF8(obj->getName()));
+      f = new Folder(parent, FROM_UTF8(obj->getObjectName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey()); //TODO: give moieties a key
       dataModel->addData(parent, f);
@@ -1036,7 +1036,7 @@ void ListViews::loadFunctionsToDataModel()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      f = new Folder(parent, FROM_UTF8(obj->getName()));
+      f = new Folder(parent, FROM_UTF8(obj->getObjectName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);

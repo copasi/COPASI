@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:41:56 $
+   $Date: 2004/05/13 13:00:48 $
    End CVS Header */
 
 /*******************************************************************
@@ -97,7 +97,7 @@ void PlotWidget::fillTable()
 
   for (j = 0; j < jmax; ++j)
     {
-      table->setText(j, 0, FROM_UTF8((*objects)[j]->getName()));
+      table->setText(j, 0, FROM_UTF8((*objects)[j]->getObjectName()));
       //TODO table->setText(j, 1, (*objects)[j]->getComment().);
       mKeys[j] = (*objects)[j]->getKey();
     }

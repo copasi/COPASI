@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:40:00 $
+   $Date: 2004/05/13 13:00:46 $
    End CVS Header */
 
 /***********************************************************************
@@ -103,7 +103,7 @@ void FunctionWidget::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
-      table->setText(j, 0, FROM_UTF8(obj->getName()));
+      table->setText(j, 0, FROM_UTF8(obj->getObjectName()));
 
       QString ftype;
       switch (obj->getType())
@@ -152,7 +152,7 @@ void FunctionWidget::slotBtnOKClicked() //By G
 
       //Allow change in name if type is 'user-defined'.
       QString name(table->text(j, 0));
-      if ((const char *)name.utf8() != obj->getName())
+      if ((const char *)name.utf8() != obj->getObjectName())
         {
           QString type(table->text(j, 1));
           if (type == "user-defined")
@@ -161,7 +161,7 @@ void FunctionWidget::slotBtnOKClicked() //By G
               renamed[j] = 1;
             }
           else
-            table->setText(j, 0, FROM_UTF8(obj->getName()));
+            table->setText(j, 0, FROM_UTF8(obj->getObjectName()));
         }
     }
 
@@ -232,7 +232,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   if (func == reacFunc)
                     {
                       reacFound[i] = 1;
-                      msg1.append(FROM_UTF8((*pReactions)[k]->getName()));
+                      msg1.append(FROM_UTF8((*pReactions)[k]->getObjectName()));
                       msg1.append(" ---> ");
                       msg1.append(table->text(ToBeDeleted[i], 0));
                       msg1.append("\n");
@@ -261,7 +261,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if user chooses to deleted Functions */
           switch (choice)
             {
-            case 0:          // Yes or Enter
+            case 0:           // Yes or Enter
               {
                 /* Delete the Functions on which no Reactions are dependent */
                 for (i = 0; i < imax; i++)
@@ -281,7 +281,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   }
                 break;
               }
-            case 1:          // No or Escape
+            case 1:           // No or Escape
               break;
             }
         }

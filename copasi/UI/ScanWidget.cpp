@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.164 $
+   $Revision: 1.165 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:25 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:00:49 $
    End CVS Header */
 
 /********************************************************
@@ -355,7 +355,7 @@ void ScanWidget::deleteButtonClicked()
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   if (((CScanProblem *)scanTask->getProblem())->getListSize() > 0)  // for reloading
     ((CScanProblem *)scanTask->getProblem())->
-    removeScanItem(pScanObject->CCopasiParameter::getName());
+    removeScanItem(pScanObject-> /*CCopasiParameter::*/getObjectName());
   scrollview->removeChild(selectedList[2*activeObject]);
   scrollview->removeChild(selectedList[2*activeObject + 1]);
 
@@ -438,13 +438,13 @@ void ScanWidget::upButtonClicked()
   //lower one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(FROM_UTF8(pScanObjectUp->CCopasiParameter::getName()));
+  activeTitle->setText(FROM_UTF8(pScanObjectUp-> /*CCopasiParameter::*/getObjectName()));
 
   //activate
   //upper one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(FROM_UTF8(pScanObjectDown->CCopasiParameter::getName()));
+  activeTitle->setText(FROM_UTF8(pScanObjectDown-> /*CCopasiParameter::*/getObjectName()));
 
   //Update ListBox
   QString tmp = ObjectListBox->text (activeObject);
@@ -481,12 +481,12 @@ void ScanWidget::downButtonClicked()
   //upper one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(FROM_UTF8(pObjectDown->CCopasiParameter::getName()));
+  activeTitle->setText(FROM_UTF8(pObjectDown-> /*CCopasiParameter::*/getObjectName()));
 
   //bottom one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(FROM_UTF8(pObjectUp->CCopasiParameter::getName()));
+  activeTitle->setText(FROM_UTF8(pObjectUp-> /*CCopasiParameter::*/getObjectName()));
 
   //Update ListBox
   QString tmp = ObjectListBox->text (activeObject);

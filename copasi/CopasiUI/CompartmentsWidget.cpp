@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:38:20 $
+   $Date: 2004/05/13 12:58:30 $
    End CVS Header */
 
 /*******************************************************************
@@ -115,7 +115,7 @@ void CompartmentsWidget::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
-      table->setText(j, 0, FROM_UTF8(obj->getName()));
+      table->setText(j, 0, FROM_UTF8(obj->getObjectName()));
       table->setText(j, 1, QString::number(obj->getVolume()));
       mKeys[j] = obj->getKey();
     }
@@ -188,7 +188,7 @@ void CompartmentsWidget::slotBtnOKClicked()
 
           //name
           QString name(table->text(j, 0));
-          if ((const char *)name.utf8() != obj->getName())
+          if ((const char *)name.utf8() != obj->getObjectName())
             {
               obj->setName((const char *)name.utf8());
               changed[j] = 1;
@@ -266,7 +266,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                   unsigned C_INT32 k;
                   for (k = 0; k < noOfMetabs; k++)
                     {
-                      effectedMetabList.append(FROM_UTF8(Metabs[k]->getName()));
+                      effectedMetabList.append(FROM_UTF8(Metabs[k]->getObjectName()));
                       effectedMetabList.append(", ");
                     }
 
@@ -284,7 +284,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                         {
                           CReaction* reac =
                             dynamic_cast< CReaction *>(GlobalKeys.get(effectedReacKeys[k]));
-                          effectedReacList.append(FROM_UTF8(reac->getName()));
+                          effectedReacList.append(FROM_UTF8(reac->getObjectName()));
                           effectedReacList.append(", ");
                         }
 
@@ -317,7 +317,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:          // Yes or Enter
+            case 0:           // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -330,7 +330,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:          // No or Escape
+            case 1:           // No or Escape
               break;
             }
         }

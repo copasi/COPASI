@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:38:21 $
+   $Date: 2004/05/13 12:58:30 $
    End CVS Header */
 
 /*******************************************************************
@@ -140,7 +140,7 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
 {
   if (!compartn) return false;
 
-  LineEdit1->setText(FROM_UTF8(compartn->getName()));
+  LineEdit1->setText(FROM_UTF8(compartn->getObjectName()));
 
   const CCopasiVectorNS < CMetab > & Metabs = compartn->getMetabolites();
   C_INT32 noOfMetabolitesRows = Metabs.size();
@@ -151,7 +151,7 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
   for (j = 0; j < noOfMetabolitesRows; j++)
     {
       mtb = Metabs[j];
-      ListBox1->insertItem(FROM_UTF8(mtb->getName()));
+      ListBox1->insertItem(FROM_UTF8(mtb->getObjectName()));
     }
 
   volumeSave = QString::number(compartn->getInitialVolume());
@@ -170,7 +170,7 @@ bool CompartmentsWidget1::saveToCompartment()
 
   //name
   QString name(LineEdit1->text());
-  if ((const char *)name.utf8() != comp->getName())
+  if ((const char *)name.utf8() != comp->getObjectName())
     {
       comp->setName((const char *)name.utf8());
       //TODO: update something else in the model?

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:19 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:00:48 $
    End CVS Header */
 
 /*******************************************************************
@@ -109,7 +109,7 @@ void MoietyWidget::fillTable() //By G
 
   if (jmax)
     {
-      pixelsWide0 = fm.width(FROM_UTF8(objects[0]->getName()));
+      pixelsWide0 = fm.width(FROM_UTF8(objects[0]->getObjectName()));
       pixelsWide1 = fm.width(QString::number(objects[0]->getNumber()));
       pixelsWide2 = fm.width(FROM_UTF8(objects[0]->getDescription()));
     }
@@ -118,8 +118,8 @@ void MoietyWidget::fillTable() //By G
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
-      table->setText(j, 0, FROM_UTF8(obj->getName()));
-      k = fm.width(FROM_UTF8(obj->getName()));
+      table->setText(j, 0, FROM_UTF8(obj->getObjectName()));
+      k = fm.width(FROM_UTF8(obj->getObjectName()));
       k > pixelsWide0 ? pixelsWide0 = k : 1;
       table->setText(j, 1, QString::number(obj->getNumber()));
       k = fm.width(QString::number(obj->getNumber()));
@@ -164,7 +164,7 @@ void MoietyWidget::repaint_table()
   for (j = 0; j < noOfMoietyRows; j++)
     {
       moiety = moieties[j];
-      table->setText(j, 0, FROM_UTF8(moiety->getName()));
+      table->setText(j, 0, FROM_UTF8(moiety->getObjectName()));
       table->setText(j, 1, QString::number(moiety->getNumber()));
       table->setText(j, 2, FROM_UTF8(moiety->getDescription()));
     }

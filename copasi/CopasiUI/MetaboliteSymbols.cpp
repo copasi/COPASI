@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:18 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:00:46 $
    End CVS Header */
 
 /*******************************************************************
@@ -112,7 +112,7 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
           variableMetab = it->second;
 
           table->setText(index, 0, FROM_UTF8(it->first));
-          table->setText(index, 1, FROM_UTF8(variableMetab->getObject()->getName()));
+          table->setText(index, 1, FROM_UTF8(variableMetab->getObject()->getObjectName()));
           table->setText(index, 2, FROM_UTF8(variableMetab->getCompartment().getName()));
           table->setText(index, 3, QString::number(variableMetab->getInitialConcentration()));
           table->setText(index, 4, QString::number(variableMetab->getInitialParticleNumber()));

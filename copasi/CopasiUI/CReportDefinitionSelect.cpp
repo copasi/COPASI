@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:15 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 12:58:30 $
    End CVS Header */
 
 /********************************************************
@@ -144,7 +144,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
   unsigned C_INT32 i;
   for (i = 0; i < pReportDefinitionVector->size(); i++)
     reportDefinitionNameList->
-    insertItem(FROM_UTF8((*(pReportDefinitionVector))[i]->getName()));
+    insertItem(FROM_UTF8((*(pReportDefinitionVector))[i]->getObjectName()));
 
   // if it is an empty list
   if (reportDefinitionNameList->count() == 0)
@@ -178,7 +178,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       C_INT32 i;
       // no use to compare the last one
       for (i = reportDefinitionNameList->count() - 1; i >= 1; i--)
-        if (reportDefinitionNameList->text(i) == FROM_UTF8(mpReport->getReportDefinition()->getName()))
+        if (reportDefinitionNameList->text(i) == FROM_UTF8(mpReport->getReportDefinition()->getObjectName()))
           break;
       reportDefinitionNameList->setCurrentItem(i);
       appendChecked->setChecked(mpReport->append());

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 20:03:59 $
+   $Date: 2004/05/13 12:58:30 $
    End CVS Header */
 
 #include <string>
@@ -52,7 +52,7 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
     unsigned C_INT32 i, imax = pFunctionVector->size();
 
     for (i = 0; i < imax; ++i)
-      ret.push_back((*pFunctionVector)[i]->getName());
+      ret.push_back((*pFunctionVector)[i]->getObjectName());
     delete pFunctionVector;
 
     /* //Here is for verification
@@ -74,7 +74,7 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
   const CReaction *rea;
   rea = dynamic_cast< CReaction *>(GlobalKeys.get(key));
 
-  mReactionName = rea->getName();
+  mReactionName = rea->getObjectName();
 
   //pdelete(mpChemEq);
   mChemEqI.loadFromChemEq(&model, rea->getChemEq());
@@ -116,7 +116,7 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
     mChemEqI.writeToChemEq(&model, rea->getChemEq());
 
     // TODO. check if function has changed since it was set in the R.I.
-    rea->setFunction(mpFunction->getName());
+    rea->setFunction(mpFunction->getObjectName());
 
     unsigned C_INT32 j, jmax;
     unsigned C_INT32 i, imax = size();
@@ -170,7 +170,7 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
       if (getUsage(i) == "PARAMETER")
         {
           for (j = 0; j < jmax; ++j)
-            if ((*oldParameters)[j]->getName() == getParameterName(i)) break;
+            if ((*oldParameters)[j]->getObjectName() == getParameterName(i)) break;
 
           if (j == jmax) mValues[i] = 0.1;
           else mValues[i] = oldValues[j];

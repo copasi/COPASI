@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:40:01 $
+   $Date: 2004/05/13 13:00:47 $
    End CVS Header */
 
 /***********************************************************************
@@ -144,7 +144,7 @@ void MetabolitesWidget::fillTable()
 
   for (j = 0; j < compartments.size(); j++)
     {
-      compartmentType.push_back(FROM_UTF8(compartments[j]->getName()));
+      compartmentType.push_back(FROM_UTF8(compartments[j]->getObjectName()));
     }
 
   /* QComboBox * statusComboBox; //= new QComboBox(NULL , "");
@@ -187,7 +187,7 @@ void MetabolitesWidget::fillTable()
       // col. 5
       QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
       table->setItem(j, 5, item);
-      item->setCurrentItem(FROM_UTF8(obj->getCompartment()->getName()));
+      item->setCurrentItem(FROM_UTF8(obj->getCompartment()->getObjectName()));
 
       mKeys[j] = obj->getKey();
     }
@@ -305,7 +305,7 @@ void MetabolitesWidget::slotBtnOKClicked()
 
           //name
           QString name(table->text(j, 0));
-          if ((const char *)name.utf8() != obj->getName())
+          if ((const char *)name.utf8() != obj->getObjectName())
             {
               obj->setName((const char *)name.utf8());
               renamed[j] = 1;
@@ -357,7 +357,7 @@ void MetabolitesWidget::slotBtnOKClicked()
 
           //compartment
           QString Compartment(table->text(j, 5));
-          if ((const char *)Compartment.utf8() != obj->getCompartment()->getName())
+          if ((const char *)Compartment.utf8() != obj->getCompartment()->getObjectName())
             {
               unsigned C_INT32 index =
                 dataModel->getModel()->
@@ -368,8 +368,8 @@ void MetabolitesWidget::slotBtnOKClicked()
                   getCompartments()[(const char *)Compartment.utf8()]->
                   addMetabolite(*obj);
                   dataModel->getModel()->
-                  getCompartments()[obj->getCompartment()->getName()]->
-                  getMetabolites().remove(obj->getName());
+                  getCompartments()[obj->getCompartment()->getObjectName()]->
+                  getMetabolites().remove(obj->getObjectName());
                   dataModel->getModel()->initializeMetabolites();
                   ListViews::notify(ListViews::COMPARTMENT,
                                     ListViews::CHANGE, "");
@@ -480,7 +480,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
                   for (unsigned C_INT32 j = 0; j < effectedReacKeys.size(); j++)
                     {
                       CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(effectedReacKeys[j]));
-                      effectedReacList.append(FROM_UTF8(reac->getName()));
+                      effectedReacList.append(FROM_UTF8(reac->getObjectName()));
                       effectedReacList.append(", ");
                     }
 
@@ -506,7 +506,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                                // Yes or Enter
+            case 0:                                 // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -519,7 +519,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                                // No or Escape
+            case 1:                                 // No or Escape
               break;
             }
         }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:14 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 12:58:31 $
    End CVS Header */
 
 /*******************************************************************
@@ -108,7 +108,7 @@ bool ConstantSymbols::loadConstantSymbols(CMathModel *model)
         {
           pConstant = it->second;
           table->setText(index, 0, FROM_UTF8(it->first));
-          table->setText(index, 1, FROM_UTF8(pConstant->getObject()->getName()));
+          table->setText(index, 1, FROM_UTF8(pConstant->getObject()->getObjectName()));
           table->setText(index, 2, FROM_UTF8(pConstant->getReaction()));
           table->setText(index, 3, QString::number(pConstant->getValue()));
           index++;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:40:00 $
+   $Date: 2004/05/13 13:00:46 $
    End CVS Header */
 
 /**********************************************************************
@@ -245,10 +245,10 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 
   // for Name and Description text boxes
   //****************
-  //LineEdit1->setText(func->getName().);
-  LineEdit1->setText(FROM_UTF8(pFunction->getName()));
+  //LineEdit1->setText(func->getObjectName().);
+  LineEdit1->setText(FROM_UTF8(pFunction->getObjectName()));
   //textBrowser->setText(FROM_UTF8(func->getDescription()));
-  //  Function_Name = new QString(FROM_UTF8(funct->getName()));
+  //  Function_Name = new QString(FROM_UTF8(funct->getObjectName()));
 
   /* Insert line breaks in the function description */
   std::string desc = pFunction->getDescription();
@@ -308,7 +308,7 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 
       // col. 0
       Table1->setItem(j, 0, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
-                      FROM_UTF8(functParam[j]->getName())));
+                      FROM_UTF8(functParam[j]->getObjectName())));
 
       // col. 1
       QString temp = FROM_UTF8(CFunctionParameter::DataTypeName[functParam[j]->getType()]);
@@ -339,7 +339,7 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 
   for (j = 0; j < noOfApplns; j++)
     {
-      Table2->setText(j, 0, FROM_UTF8(functUsage[j]->getName()));
+      Table2->setText(j, 0, FROM_UTF8(functUsage[j]->getObjectName()));
       Table2->setText(j, 1, QString::number(functUsage[j]->getLow()));
 
       switch (functUsage[j]->getHigh())
@@ -434,10 +434,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                                    // The user clicked the Retry again button or pressed Enter
+            case 0:                                     // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                                    // The user clicked the Quit or pressed Escape
+            case 1:                                     // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -470,7 +470,7 @@ bool FunctionWidget1::saveToFunction()
   CFunctionParameters &functParam = func->getParameters();
   CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
 
-  if (func->getName() != (const char *)LineEdit1->text().utf8())
+  if (func->getObjectName() != (const char *)LineEdit1->text().utf8())
     {
       func->setName((const char *)LineEdit1->text().utf8());
       ListViews::notify(ListViews::FUNCTION, ListViews::RENAME, objKey);
@@ -636,10 +636,10 @@ bool FunctionWidget1::saveToFunction()
 
   bool changed = false;
 
-  if (func->getName() != pFunction->getName())
+  if (func->getObjectName() != pFunction->getObjectName())
     {
       changed = true;
-      func->setName(pFunction->getName());
+      func->setName(pFunction->getObjectName());
     }
   if (func->isReversible() != pFunction->isReversible())
     {
@@ -669,7 +669,7 @@ bool FunctionWidget1::saveToFunction()
   for (i = 0; i < pfunctParam.size(); i++)
     {
       // check if function parameter exists in pFunctionParameter
-      if ((index = functParam.findParameterByName(pfunctParam[i]->getName(),
+      if ((index = functParam.findParameterByName(pfunctParam[i]->getObjectName(),
                    Type)) != C_INVALID_INDEX)
         // match found
         {
@@ -678,7 +678,7 @@ bool FunctionWidget1::saveToFunction()
               changed = true;
               // update usage
               functParam[index]->setUsage(pfunctParam[i]->getUsage());
-              //functParam[pfunctParam[i]->getName()]->setUsage(functParam[i]->getUsage());
+              //functParam[pfunctParam[i]->getObjectName()]->setUsage(functParam[i]->getUsage());
             }
           if (functParam[index]->getType() != pfunctParam[i]->getType())
             {
@@ -697,13 +697,13 @@ bool FunctionWidget1::saveToFunction()
     {
       for (j = 0; j < functParam.size(); j++)
         {
-          if ((index = pfunctParam.findParameterByName(functParam[j]->getName(),
+          if ((index = pfunctParam.findParameterByName(functParam[j]->getObjectName(),
                        Type)) == C_INVALID_INDEX)
             // the lines below occurs if new functionParameter does not exist in pfunctParam
             {
               changed = true;
               // remove the extra parameter in functParam
-              functParam.remove(functParam[j]->getName());
+              functParam.remove(functParam[j]->getObjectName());
             }
         }
     }
@@ -715,21 +715,21 @@ bool FunctionWidget1::saveToFunction()
   for (i = 0; i < pfunctUsage.size(); i++)
     {
       // check if function usage exists in pFunctionUsage
-      if ((index = functUsage.getIndex(pfunctUsage[i]->getName())) != C_INVALID_INDEX)
+      if ((index = functUsage.getIndex(pfunctUsage[i]->getObjectName())) != C_INVALID_INDEX)
         // match found
         {
           // update min and max values for corresponding usage descriptions
-          if (pfunctUsage[i]->getLow() != functUsage[pfunctUsage[i]->getName()]->getLow())
+          if (pfunctUsage[i]->getLow() != functUsage[pfunctUsage[i]->getObjectName()]->getLow())
             {
               changed = true;
-              functUsage[pfunctUsage[i]->getName()]->setLow(pfunctUsage[i]->getLow());
+              functUsage[pfunctUsage[i]->getObjectName()]->setLow(pfunctUsage[i]->getLow());
               // same as
               // functUsage[index]->setLow(pfunctUsage[i]->getLow());
             }
-          if (pfunctUsage[i]->getHigh() != functUsage[pfunctUsage[i]->getName()]->getHigh())
+          if (pfunctUsage[i]->getHigh() != functUsage[pfunctUsage[i]->getObjectName()]->getHigh())
             {
               changed = true;
-              functUsage[pfunctUsage[i]->getName()]->setHigh(pfunctUsage[i]->getHigh());
+              functUsage[pfunctUsage[i]->getObjectName()]->setHigh(pfunctUsage[i]->getHigh());
               // same as
               // functUsage[index]->setHigh(pfunctUsage[i]->getHigh());
             }
@@ -744,7 +744,7 @@ bool FunctionWidget1::saveToFunction()
     {
       for (j = 0; j < functUsage.size(); j++)
         {
-          if ((index = pfunctUsage.getIndex(functUsage[j]->getName())) == C_INVALID_INDEX)
+          if ((index = pfunctUsage.getIndex(functUsage[j]->getObjectName())) == C_INVALID_INDEX)
             // the lines below occurs if new functionParameter does not exist in pfunctParam
             {
               changed = true;
@@ -811,7 +811,7 @@ void FunctionWidget1::slotCancelButtonClicked()
 void FunctionWidget1::slotCommitButtonClicked()
 {
   //update pFunction values
-  if (pFunction->getName() != (const char *)LineEdit1->text().utf8())
+  if (pFunction->getObjectName() != (const char *)LineEdit1->text().utf8())
     pFunction->setName((const char *)LineEdit1->text().utf8());
   // update RadioButtons also ?? in savetoFcn, func obtains radio button values
   /**** For Radio Buttons ****/
@@ -892,7 +892,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             {
               //reacFound[i] = 1;
               reacFound = 1;
-              msg1.append(FROM_UTF8((*pReactions)[k]->getName()));
+              msg1.append(FROM_UTF8((*pReactions)[k]->getObjectName()));
               msg1.append(" ---> ");
               //msg1.append(table->text(ToBeDeleted[i], 0));
               msg1.append("\n");
@@ -922,7 +922,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:            // Yes or Enter
+        case 0:             // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -931,7 +931,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             if (reacFound == 0)
               {
                 unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
-                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getName());
+                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
                 //if ((index != NULL) && (size != NULL)) {
                 Copasi->pFunctionDB->removeFunction(objKey);
                 //Copasi->pFunctionDB->loadedFunctions()[min(index,20 - 1)];
@@ -948,13 +948,13 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //for (i = 0; i < imax; i++)
             //  {
             //if (reacFound[i] == 0)
-            if (reacFound = 0)
+            if (reacFound == 0) //changed from "=" to "=="
               ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, objKey);
 
             //}
             break;
           }
-        case 1:            // No or Escape
+        case 1:             // No or Escape
           break;
         }
     }
