@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.7 2003/10/05 04:47:47 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.8 2003/10/06 04:07:05 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -479,32 +479,64 @@ void FunctionItemWidget::slotButton6()
 
 void FunctionItemWidget::slotButtonSign()
 {
-  if (((textFunction->text().latin1())[0] != '+') && ((textFunction->text().latin1())[0] != '-'))
+  /* here is the sign function that makes to change only the first sign of the function;
+      like a -> a+
+       a+/- -> a-/+
+  */
+  std::string strTemp;
+  strTemp = textFunction->text().latin1();
+  if ((strTemp[strTemp.length() - 1] != '+') && (strTemp[strTemp.length() - 1] != '-'))
     // add a '+' or a '-' in front of the expression
     {
-      int para, index;
-      textFunction->getCursorPosition(&para, &index);
-      textFunction->setText('+' + textFunction->text());
-      index++;
-      textFunction->setCursorPosition(para, index);
+      textFunction->setText(textFunction->text() + '+');
     }
   else
     // change sign of the expression
     {
-      std::string strTemp;
-      if ((textFunction->text().latin1())[0] == '+')
+      if (strTemp[strTemp.length() - 1] == '+')
         {
-          strTemp = textFunction->text().latin1();
-          strTemp[0] = '-';
+          strTemp[strTemp.length() - 1] = '-';
           textFunction->setText(strTemp.c_str());
         }
       else
         {
-          strTemp = textFunction->text().latin1();
-          strTemp[0] = '+';
+          strTemp[strTemp.length() - 1] = '+';
           textFunction->setText(strTemp.c_str());
         }
     }
+  textFunction->moveCursor(QTextEdit::MoveEnd, false);
+
+  /* here is the sign function that makes to change only the first sign of the function;
+      like a -> +a
+       +/-a -> -/+a
+   
+    if (((textFunction->text().latin1())[0] != '+') && ((textFunction->text().latin1())[0] != '-'))
+      // add a '+' or a '-' in front of the expression
+      {
+        int para, index;
+        textFunction->getCursorPosition(&para, &index);
+        textFunction->setText('+' + textFunction->text());
+        index++;
+        textFunction->setCursorPosition(para, index);
+      }
+    else
+      // change sign of the expression
+      {
+        std::string strTemp;
+        if ((textFunction->text().latin1())[0] == '+')
+          {
+            strTemp = textFunction->text().latin1();
+            strTemp[0] = '-';
+            textFunction->setText(strTemp.c_str());
+          }
+        else
+          {
+            strTemp = textFunction->text().latin1();
+            strTemp[0] = '+';
+            textFunction->setText(strTemp.c_str());
+          }
+      }
+  */
 }
 
 void FunctionItemWidget::slotButtonAdd()
