@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/26 21:17:57 $
+   $Date: 2003/12/04 17:35:08 $
    End CVS Header */
 
 /**
@@ -104,7 +104,11 @@ bool CCopasiTask::initialize(std::ostream * C_UNUSED(pOstream)) {return true;}
 
 bool CCopasiTask::process() {return true;}
 
-bool CCopasiTask::restore() {return true;}
+bool CCopasiTask::restore()
+{
+  mReport.close();
+  return true;
+}
 
 CCopasiProblem * CCopasiTask::getProblem() {return mpProblem;}
 
