@@ -60,5 +60,5 @@ int COptFunction::addItem(CCopasiObject* pObject)
   mParaList.push_back(pObject);
   mMinList.push_back("-inf");
   mMaxList.push_back("+inf");
-  return mParaList.size();
+  return mParaList.size() - 1;
 }
