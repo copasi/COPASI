@@ -58,11 +58,12 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
 {
   bool found = false;
   unsigned C_INT32 i;
-  std::string metabname;
+  CCopasiVectorN< CMetab > metabs = model->getMetabolites();
+  std::string metabName;
 
-  for (i = 0; i < model.mMetabolites.size(); i++)
+  for (i = 0; i < metabs.size(); i++)
     {
-      metabName = model.mMetabolites[i]->getName();
+      metabName = metabs[i]->getName();
       if (metabName == name)
         {
           if (found)
