@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/21 23:05:25 $
+   $Author: shoops $ 
+   $Date: 2005/03/22 03:24:22 $
    End CVS Header */
 
 /**
@@ -116,7 +116,7 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
       }
   };
 
-template<>
+template<> inline
 CCopasiObjectReference<C_FLOAT64>::CCopasiObjectReference(const std::string & name,
     const CCopasiContainer * pParent,
     referenceType & reference,
@@ -131,7 +131,7 @@ CCopasiObjectReference<C_FLOAT64>::CCopasiObjectReference(const std::string & na
   setUpdateMethod(this, &CCopasiObjectReference<C_FLOAT64>::updateMethod);
 }
 
-template<>
+template<> inline
 CCopasiObjectReference<C_INT32>::CCopasiObjectReference(const std::string & name,
     const CCopasiContainer * pParent,
     referenceType & reference,
@@ -146,7 +146,7 @@ CCopasiObjectReference<C_INT32>::CCopasiObjectReference(const std::string & name
   setUpdateMethod(this, &CCopasiObjectReference<C_INT32>::updateMethod);
 }
 
-template<>
+template<> inline
 CCopasiObjectReference<bool>::CCopasiObjectReference(const std::string & name,
     const CCopasiContainer * pParent,
     referenceType & reference,
