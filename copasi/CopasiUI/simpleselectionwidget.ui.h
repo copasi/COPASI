@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/simpleselectionwidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/04 18:50:56 $
+   $Author: shoops $ 
+   $Date: 2004/10/07 15:13:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -60,7 +60,7 @@ void SimpleSelectionWidget::addButtonClicked()
       //const std::string name=object->getCN();
       QListViewItem* lvitem = this->findListViewItem(object);
       const std::string name = lvitem->text(0);
-      QListBoxText* item = new QListBoxText(this->selectedItemsBox, name);
+      QListBoxText* item = new QListBoxText(this->selectedItemsBox, name.c_str());
 
       this->selectedItemsBox->setSelected(item, true);
       this->selectedObjects[item] = object;
@@ -297,9 +297,9 @@ void SimpleSelectionWidget::populateTree(CModel* model)
             }
         }
       name = "[" + name + "]";
-      item = new QListViewItem(this->initialConcentrationSubtree, name + "(t=0)");
+      item = new QListViewItem(this->initialConcentrationSubtree, (name + "(t=0)").c_str());
       treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=InitialConcentration"));
-      item = new QListViewItem(this->transientConcentrationSubtree, name + "(t)");
+      item = new QListViewItem(this->transientConcentrationSubtree, (name + "(t)").c_str());
       treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Concentration"));
       /*
       item=new QListViewItem(name+"(t=0)");
@@ -319,9 +319,9 @@ void SimpleSelectionWidget::populateTree(CModel* model)
       const CReaction* react = reactions[counter];
       std::string name = react->getObjectName();
       name = "flux(" + name + ")";
-      item = new QListViewItem(this->concentrationFluxSubtree, name);
+      item = new QListViewItem(this->concentrationFluxSubtree, name.c_str());
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=Flux"));
-      item = new QListViewItem(this->particleFluxSubtree, "particle_" + name);
+      item = new QListViewItem(this->particleFluxSubtree, ("particle_" + name).c_str());
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=ParticleFlux"));
     }
 }

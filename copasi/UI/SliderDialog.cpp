@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/07 12:07:07 $
+   $Author: shoops $ 
+   $Date: 2004/10/07 15:13:51 $
    End CVS Header */
 
 #include "SliderDialog.h"
@@ -419,7 +419,7 @@ void CopasiSlider::updateLabel()
   labelString += "] {";
   labelString += this->numberToString(this->value());
   labelString += "}";
-  this->label->setText(labelString);
+  this->label->setText(labelString.c_str());
 }
 
 std::string CopasiSlider::numberToString(double number) const
