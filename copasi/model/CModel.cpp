@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.151 $
+   $Revision: 1.152 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/04 17:31:54 $
+   $Date: 2003/12/12 22:20:54 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1767,6 +1767,7 @@ bool CModel::removeMetabolite(const std::string & key)
     removeReaction(reacKeys[i]);
 
   mMetabolites.remove(index);
+  pdelete(pMetabolite);
 
   compile();
 
