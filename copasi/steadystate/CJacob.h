@@ -1,9 +1,9 @@
 /*****************************************************************************
-* PROGRAM NAME: CJacob.h
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: Declare the CJacob Class, its value is updated in steadyState()
-*	       and output in Rep_Stability()			
-*****************************************************************************/
+ * PROGRAM NAME: CJacob.h
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: Declare the CJacob Class, its value is updated in steadyState()
+ *        and output in Rep_Stability()
+ *****************************************************************************/
 
 #ifndef COPASI_CJacob
 #define COPASI_CJacob
@@ -22,17 +22,17 @@ class CJacob {
   TNT::Matrix <C_FLOAT64> mJacob;
 
   /**
-   *	auxiliary counter for func. evals
+   * auxiliary counter for func. evals
    */
-  C_INT32	mNfunction;	
+  C_INT32 mNfunction;
 
   /**
    *  auxiliary counter for jacob. evals
    */
-  C_INT32	mNjacob; 
+  C_INT32 mNjacob;
 
   /**
-   * 
+   *
    */
   CModel * mModel;
 
@@ -57,12 +57,12 @@ class CJacob {
 
   /**
    * evaluates the Jacobian matrix
-   * @param src is the pointer of an array used for evaluating 
+   * @param src is the pointer of an array used for evaluating
    * the Jacob Matrix
    * @param factor is modulation factor for finite differences derivation
    * @param res is the resolution of steady state
    */
-  void jacobEval(C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res);
+  void jacobEval(const C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res);
 
   /**
    * return the Jacobian matrix
@@ -97,7 +97,7 @@ class CJacob {
   /**
    * Set the Model
    */
-  void setModel(CModel * model);			// wsun 3/19/02
+  void setModel(CModel * model);   // wsun 3/19/02
 };
 
 #endif

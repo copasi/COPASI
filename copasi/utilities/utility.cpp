@@ -1,5 +1,8 @@
 #include <math.h>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
+#include "copasi.h"
 #include "utility.h"
 
 string StringPrint( const char * format, ... )
@@ -359,7 +362,6 @@ void dgesl(C_FLOAT64 ** a,
       t = -b[k];
       daxpy(k-1, t, a[k], 1, b, 1);
     }
-
 }
 
 C_INT32 idamax(C_INT32 n, 

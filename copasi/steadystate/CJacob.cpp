@@ -1,19 +1,22 @@
 /*****************************************************************************
-* PROGRAM NAME: CJacob.cpp
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: Implement the CJacob Class, its value is updated in steadyState()
-*	       and output in Rep_Stability()			
-*****************************************************************************/
+ * PROGRAM NAME: CJacob.cpp
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: Implement the CJacob Class, its value is updated in steadyState()
+ *        and output in Rep_Stability()
+ *****************************************************************************/
+
+#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "model/model.h"
 #include "CJacob.h"
 
 /**
- * Defaulut constructor
+ * Default constructor
  */
 CJacob::CJacob()
 {
+  CONSTRUCTOR_TRACE;
   mNfunction = 0;
   mNjacob = 0;
 }
@@ -25,6 +28,7 @@ CJacob::CJacob()
  */
 CJacob::CJacob(int rows, int cols)
 {
+  CONSTRUCTOR_TRACE;
   mNfunction = 0;
   mNjacob = 0;
 
@@ -32,23 +36,21 @@ CJacob::CJacob(int rows, int cols)
 }
 
 /**
- * Deconstructor
+ * Destructor
  */
-CJacob::~CJacob()
-{
-}
+CJacob::~CJacob() {DESTRUCTOR_TRACE;}
 
 /**
  * evaluates the Jacobian matrix
- * @param src is the pointer of an array used for evaluating 
+ * @param src is the pointer of an array used for evaluating
  * the Jacob Matrix
  * @param factor is modulation factor for finite differences derivation
  * @param res is the resolution of steady state
  */
-void CJacob::jacobEval(C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
+void CJacob::jacobEval(const C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
 {
   C_FLOAT64 K1, K2, K3;
-  C_FLOAT64 *f1, *f2, store, temp;
+  C_FLOAT64 *Src, *f1, *f2, store, temp;
   int i, j, dim = mModel->getIndMetab();
 
   // constants for differentiation by finite differences
@@ -57,38 +59,45 @@ void CJacob::jacobEval(C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
   K3 = 2 * factor;
 
   // Arrays to store function value
+  Src = new C_FLOAT64[dim];
+  for (i=0; i<dim; i++)
+    Src[i] = src[i];
+
   f1 = new C_FLOAT64[dim];
   f2 = new C_FLOAT64[dim];
-	
+
   // iterate over all metabolites
   for (i = 0; i < dim; i++)
     {
-      /** if y[i] is zero, the derivative will be calculated at a small 
-       *  positive value (no point in considering negative values!). 
+      /** if y[i] is zero, the derivative will be calculated at a small
+       *  positive value (no point in considering negative values!).
        *  let's stick with SSRes*(1.0+DerivFactor)
        */
-		
-      store = src[i];
+
+      store = Src[i];
 
       if (store < res) temp = res * K1;
       else temp = store;
-		
-      src[i] = temp * K1;
-      mModel->lSODAEval(dim, 0, src, f1);
-			
+
+      Src[i] = temp * K1;
+      mModel->lSODAEval(dim, 0, Src, f1);
       mNfunction++;
 
-      src[i] = temp * K2;
-      mModel->lSODAEval(dim, 0, src, f2);
+      Src[i] = temp * K2;
+      mModel->lSODAEval(dim, 0, Src, f2);
       mNfunction++;
 
-      for (j = 0; j < dim; j++) 
-	mJacob[i][j] = (f1[j] - f2[j]) / (temp * K3);
-		
-      src[i] = store;
+      for (j = 0; j < dim; j++)
+        mJacob[j][i] = (f1[j] - f2[j]) / (temp * K3);
+
+      Src[i] = store;
     }
 
+  // We have to reset the model
+  mModel->lSODAEval(dim, 0, Src, f2);
+
   // clear memory
+  delete [] Src;
   delete [] f1;
   delete [] f2;
 
@@ -110,7 +119,7 @@ void CJacob::setJacob(int rows, int cols)
 {
   mJacob.newsize(rows, cols);
 }
-	
+
 /**
  * return the counter of func. evals
  */
@@ -146,7 +155,7 @@ void CJacob::setNjacob(C_INT32 jacob)
 /**
  * Set the Model
  */
-void CJacob::setModel(CModel * model)		// wsun  03/19/02
+void CJacob::setModel(CModel * model)  // wsun  03/19/02
 {
   /* :TODO: we need a copy constructor here */
   mModel = model;

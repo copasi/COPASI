@@ -1,9 +1,9 @@
 /**
  *  File name: CSS_Solution.h
  *
- *  Programmer: Yongqun He 
+ *  Programmer: Yongqun He
  *  Contact email: yohe@vt.edu
- *  Purpose: This is the .h file for the class CSS_Solution. 
+ *  Purpose: This is the .h file for the class CSS_Solution.
  *           It is to solve the steady state solution problem with different approaches,
  *           e.g., (1) Newton, (2) Integration (Trajectory), (3) Newton + Integration,
  *           (4) Backward Integration, (5) Backward integration if all else fails.
@@ -46,7 +46,7 @@
  */
 #define DefaultNewtonLimit 1
 //Note: they may not be 1.0, check where it comes from orignially (Y.H.)
-#define DefaultSSRes 1.0 
+#define DefaultSSRes 1.0
 #define DefaultDerivFactor 1.0
 
 class CNewton;
@@ -59,6 +59,52 @@ class CSS_Solution
  private:
 
   /**
+   *  variable for steady-state solution
+   *  its result is either SS_FOUND or SS_NOT_FOUND
+   */
+  C_INT32 mSs_solution;
+
+  /**
+   * The steady state resolution
+   */
+  C_FLOAT64 mSSRes;
+
+  /**
+   *  Limit of iterations used by the Newton method
+   */
+  C_INT32 mNewtonLimit;
+
+  /**
+   *  The derivation factor used in the Jacobian
+   */
+  C_FLOAT64 mDerivFactor;
+
+  /**
+   *  Whether to use the Newton Method
+   */
+  C_INT32 mUseNewton;
+
+  /**
+   *  Whether to use the Integration Method
+   */
+  C_INT32 mUseIntegration;
+
+  /**
+   *  Whether to use the Back-Integration Method
+   */
+  C_INT32 mUseBackIntegration;
+
+  /**
+   *  The coordinats of the steady-state solution
+   */
+  C_FLOAT64 * mSs_x;
+
+  /**
+   *  The time derivative of the steady-state solution
+   */
+  TNT::Vector < C_FLOAT64 > mSs_dxdt;
+
+  /**
    *  The CModel to work with
    */
   CModel * mModel;
@@ -67,65 +113,6 @@ class CSS_Solution
    *  The CNewton to work with
    */
   CNewton * mNewton;
-
-  /**
-   *  The CEigen to work with
-   */
-  CEigen * mEigen;
-
-  /**
-   *  variable for steady-state solution
-   */
-  C_FLOAT64 * mSs_x; 
-
-  /**
-   *  variable for steady-state solution
-   */
-  C_FLOAT64 * mY_traj;
-
-  /**
-   *  variable for steady-state solution
-   */
-  TNT::Vector < C_FLOAT64 > mSs_dxdt;
-
-  /**
-   * The steady state resolution
-   */
-  C_FLOAT64 mSSRes;
-
-
-  // variables for steady-state solution
-  //add more variables here
-
-  /**
-   *  variable for steady-state solution
-   */
-  C_INT32 mSs_nfunction; 
-
-  /**
-   *  variable for steady-state back integer
-   */
-  C_INT32 mSSBackInt; 
-
-  /**
-   *  The flux of the reaction
-   */
-  C_FLOAT64 mFlux;
-
-  /**
-   *  variable for steady-state solution
-   *  its result is either SS_FOUND or SS_NOT_FOUND
-   */
-  C_INT32 mSs_solution;
-
-  C_FLOAT64 mDerivFactor;
-
-  //more variables
-  C_FLOAT64 mNjeval;
-
-  C_FLOAT64 mNfeval;
-  
-  C_INT32 mSs_njacob;
 
   /**
    *  The CTrajectory to work with
@@ -138,39 +125,22 @@ class CSS_Solution
   CJacob * mJacob;
 
   /**
-   *  The option to choose from 0-normal 1-Integr.only 2-Newton only 3-back.integr.only
+   *  The CEigen to work with
    */
-  C_INT32 mOption;
-  //same as an int in GepasiDoc: int SSStrategy;
+  CEigen * mEigen;
 
   /**
    * SteadyState Output Event
    */
   COutputEvent *mSSOutput;
-
-
-
   //Operations
  public:
 
 
   /**
-   * default constructor 
+   * default constructor
    */
   CSS_Solution();
-
-  /**
-   * copy constructor 
-   * @param source a CSS_Solution object for copy
-   */
-  CSS_Solution(const CSS_Solution& source);
-
-  /**
-   * Object assignment overloading 
-   * @param source a CSS_Solution object for copy
-   * @return an assigned CSS_Solution object
-   */
-  CSS_Solution& operator=(const CSS_Solution& source);
 
   /**
    *  destructor
@@ -188,13 +158,13 @@ class CSS_Solution
   void cleanup(void);
 
   /**
-   *  Loads parameters for this solver with data coming from a 
+   *  Loads parameters for this solver with data coming from a
    *  CReadConfig object. (CReadConfig object reads an input stream)
    *  @param configbuffer reference to a CReadConfig object.
    *  @return mFail
    *  @see mFail
    */
-  C_INT32 load(CReadConfig & configbuffer);
+  void load(CReadConfig & configbuffer);
 
   /**
    *  Saves the parameters of the solver to a CWriteConfig object.
@@ -203,45 +173,55 @@ class CSS_Solution
    *  @return mFail
    *  @see mFail
    */
-  C_INT32 save(CWriteConfig & configbuffer);
+  void save(CWriteConfig & configbuffer);
 
   /**
-   *  set mOption
-   *  @param anOption that's an int
+   *  Set whether to use the Newton Method
+   *  @param "const C_INT32 &" useNewton
    */
-  void setOption(C_INT32 anOption);
+  void setUseNewton(const C_INT32 & useNewton);
 
   /**
-   * get option
-   * @return int mOption 
+   *  Retreives whether to use the Newton Method
+   *  @return "const C_INT32 &" useNewton
    */
-  C_INT32 getOption() const;
+  const C_INT32 & getUseNewton() const;
 
+  /**
+   *  Set whether to use the Integration Method
+   *  @param "const C_INT32 &" useIntegration
+   */
+  void setUseIntegration(const C_INT32 & useIntegration);
+
+  /**
+   *  Retreives whether to use the Intgration Method
+   *  @return "const C_INT32 &" useIntegration
+   */
+  const C_INT32 & getUseIntegration() const;
+
+  /**
+   *  Set whether to use the Back-Integration Method
+   *  @param "const C_INT32 &" useBackIntegration
+   */
+  void setUseBackIntegration(const C_INT32 & useBackIntegration);
+
+  /**
+   *  Retreives whether to use the Back-Intgration Method
+   *  @return "const C_INT32 &" useBackIntegration
+   */
+  const C_INT32 & getUseBackIntegration() const;
 
   /**
    * set mSSRes
-   * @param aDouble a double value 
+   * @param aDouble a double value
    */
   void setSSRes(C_FLOAT64 aDouble);
 
   /**
    * get mSSRes
-   * @return int mOption 
+   * @return int mOption
    */
   C_FLOAT64 getSSRes() const;
-
-
-  /**
-   *  Sets the flux of the reaction
-   *  @param C_FLOAT64 flux
-   */
-  //void setFlux(C_FLOAT64 flux);
-
-  /**
-   *  Retrieves the flux of the reaction
-   *  @return C_FLOAT64
-   */
-  //C_FLOAT64 getFlux() const;
 
   /**
    *  set CModel
@@ -256,22 +236,10 @@ class CSS_Solution
   CModel * getModel() const;
 
   /**
-   *  set CNewton
-   *  @param aNewton, CNewton pointer to be set as mNewton
-   */
-  void setNewton(CNewton * aNewton);
-
-  /**
    *  get CNewton
    *  @return mNewton private member
    */
   CNewton * getNewton() const;
-
-  /**
-   *  set CEigen
-   *  @param aEigen, CNewton pointer to be set as mNewton
-   */
-  void setEigen(CEigen * aEigen);
 
   /**
    *  get CEigen
@@ -280,34 +248,10 @@ class CSS_Solution
   CEigen * getEigen() const;
 
   /**
-   *  set CTrajectory pointer
-   *  @param aTraj, a CTrajectory pointer to be set as mTraj
-   */
-  void setTrajectory(CTrajectory * aTraj);
-
-  /**
    *  get CTrajectory pointer
    *  @return mTraj
    */
   CTrajectory * getTrajectory() const;
-
-  /**
-   *  set mY_traj
-   *  @param aXnew is the double to be set as mY_traj
-   */
-  void setY_traj(C_FLOAT64 * aY);
-
-  /**
-   *  get mY_traj
-   *  @return mY_traj
-   */
-  C_FLOAT64 * getY_traj() const;
-
-  /**
-   *  set mJacob
-   *  @param aJ is the CJocob pointer to be set as mJacob
-   */
-  void setJacob(CJacob * aJ);
 
   /**
    *  get mJacob
@@ -316,32 +260,10 @@ class CSS_Solution
   CJacob * getJacob() const;
 
   /**
-   *  set mXx_x
-   *  @param aX is the double to be set as mXx_s
-   */
-  void setSs_x(C_FLOAT64 * aX);
-
-  /**
    *  get mSs_x
    *  @return mSs_x
    */
-  C_FLOAT64 * getSs_x() const;
-
-  /**
-   *  get mSs_solution
-   *  @return mSs_solution		WeiSun 03/27/02
-   */
-  C_INT32 getSolution() const;
-
-  /**
-   * Get the pointer of SSRes for output		WeiSun 04/02/02
-   */
-  void * getSSResAddr();
-
-  /**
-   * Get the pointer of DerivFactor for output	WeiSun 04/02/02		
-   */
-  void * getDerivFactorAddr();
+  const C_FLOAT64 * getSs_x() const;
 
   /**
    *  get mSs_dxdt
@@ -349,12 +271,26 @@ class CSS_Solution
    */
   const TNT::Vector < C_FLOAT64 > & getSs_dxdt() const;
 
+  /**
+   *  get mSs_solution
+   *  @return mSs_solution  WeiSun 03/27/02
+   */
+  C_INT32 getSolution() const;
+
+  /**
+   * Get the pointer of SSRes for output  WeiSun 04/02/02
+   */
+  void * getSSResAddr();
+
+  /**
+   * Get the pointer of DerivFactor for output WeiSun 04/02/02
+   */
+  void * getDerivFactorAddr();
 
   /**
    *  to process the primary function of this class
    */
   void process(ofstream &fout);
-
 
   /**
    *  Process after the steady state is found
@@ -364,37 +300,13 @@ class CSS_Solution
   /**
    *  Analyze steady state
    */
-  void steadyState(void);  
+  void steadyState(void);
 
   /**
    *  Check if it is steady state
    *  @return an int acting like a bool
    */
-  //C_INT32 isSteadyState( void );
-
-  
-  /**
-   *  Check if it is steady state after processing trajectory
-   *  It's based on if (mY[i]-mY_old[i])/delta(t) < mSSRes
-   *  @return an int acting like a bool
-   */
-  C_INT32 isSteadyStateAfterTrajectory();
-
+  C_INT32 isSteadyState();
 };
 
-
-
 #endif // COPASI_CSS_Solution
-
-
-
-
-
-
-
-
-
-
-
-
-

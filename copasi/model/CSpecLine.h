@@ -31,9 +31,19 @@ class CSpecLine
         };
 
     /**
+     * Default constructor
+     */
+    CSpecLine();
+
+    /**
      * The named constructor
      */
     CSpecLine(C_INT32 type, string contents);
+
+    /**
+     * Destructor
+     */
+    ~CSpecLine();
 
     /**
      * Retrieve the type.

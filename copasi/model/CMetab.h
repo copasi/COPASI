@@ -264,6 +264,16 @@ class CMetabOld
   // Operations
  public:
   /**
+   *  Default constructor
+   */
+  CMetabOld();
+
+  /**
+   *  Destructor.
+   */
+  ~CMetabOld();
+
+  /**
    *  cleanup()
    */
   void cleanup();

@@ -1,3 +1,5 @@
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "utilities.h"
 #include "CIndexedPriorityQueue.h"

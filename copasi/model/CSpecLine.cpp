@@ -1,9 +1,13 @@
 #include "CSpecLine.h"
 
+CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE;}
+
 CSpecLine::CSpecLine(C_INT32 type, string contents) 
     :mType(type), 
      mContents(contents) 
-{}
+{CONSTRUCTOR_TRACE;}
+
+CSpecLine::~CSpecLine() {DESTRUCTOR_TRACE;}
 
 string CSpecLine::convertedType(int type)
 {

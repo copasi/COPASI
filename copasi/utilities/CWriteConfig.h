@@ -65,6 +65,11 @@ class CWriteConfig
 		      const void * pout1, 
 		      const void * pout2);
 
+  /**
+   *  Save various default values
+   */
+  void setDefaults();
+  
  private:
   /**
    *  Commits all information to the configuration file. 

@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "CCopasiMessage.h"
 #include "messages.h"

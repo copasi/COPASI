@@ -7,12 +7,15 @@
 
 #include <iostream>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "CCompartment.h"
 #include "utilities/utilities.h"
 
 CCompartment::CCompartment()
 {
+  CONSTRUCTOR_TRACE;
   // initialize everything
   mName   = "compartment";
   mVolume = 1.0;
@@ -20,6 +23,7 @@ CCompartment::CCompartment()
 
 CCompartment::CCompartment(const CCompartment & src)
 {
+  CONSTRUCTOR_TRACE;
   mName        = src.mName;
   mVolume      = src.mVolume;
 
@@ -32,13 +36,14 @@ CCompartment::CCompartment(const CCompartment & src)
 CCompartment::CCompartment(const string & name,
                            C_FLOAT64 volume)
 {
+  CONSTRUCTOR_TRACE;
   // initialize everything
   mName   = name;
   if (!isValidName()) fatalError();
   mVolume = volume;
 }
 
-CCompartment::~CCompartment() {}
+CCompartment::~CCompartment() {DESTRUCTOR_TRACE;}
 
 // void CCompartment::initialize() {}
 

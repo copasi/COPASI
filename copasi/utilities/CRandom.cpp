@@ -1,3 +1,6 @@
+#define  COPASI_TRACE_CONSTRUCTION 
+
+#include "copasi.h"
 #include "CRandom.h"
 #include <time.h>
 #include <cmath>

@@ -7,6 +7,8 @@
 #include <math.h>
 #include <iostream>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "CDatum.h"
 #include "CNodeO.h"

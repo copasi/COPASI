@@ -12,6 +12,8 @@
 #include <sstream>
 #include <iostream>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "function/FlexLexer.h"
 #include "function/function.h"

@@ -10,10 +10,12 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "CGlobals.h"
-#include "copasi.h"
-#include "CWriteConfig.h"
+#define  COPASI_TRACE_CONSTRUCTION 
 
+#include "copasi.h"
+#include "CGlobals.h"
+#include "CWriteConfig.h"
+#include "trajectory/CODESolver.h"
 
 CWriteConfig::CWriteConfig(void)
 {
@@ -48,7 +50,10 @@ CWriteConfig::CWriteConfig(const string& name)
 }
 
 
-CWriteConfig::~CWriteConfig(void) {commit();}
+CWriteConfig::~CWriteConfig(void) 
+{
+  commit();
+}
 
 C_INT32 CWriteConfig::flush(void)
 {
@@ -86,6 +91,11 @@ C_INT32 CWriteConfig::commit(void)
 
   mOpenMode |= ios::app;
   return mFail;
+}
+
+void CWriteConfig::setDefaults()
+{
+  CODESolver::saveLSODAParameters(*this);
 }
 
 C_INT32 CWriteConfig::fail()

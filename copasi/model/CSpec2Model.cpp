@@ -2,6 +2,9 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "model.h"
 #include "utilities/utilities.h"
@@ -13,16 +16,15 @@
 
 #include "function/FlexLexer.h"
 
-CSpec2Model::CSpec2Model()
-{}
-
+CSpec2Model::CSpec2Model() {CONSTRUCTOR_TRACE;}
+ 
 CSpec2Model::CSpec2Model(std::string filename)
 {
+  CONSTRUCTOR_TRACE;
     mSpecFileName = filename;
 }
 
-CSpec2Model::~CSpec2Model()
-{}
+CSpec2Model::~CSpec2Model() {DESTRUCTOR_TRACE;}
 
 C_INT32 CSpec2Model::addFileContents()
 {

@@ -99,13 +99,12 @@ class COutputList
   /**
    *	Assign the pointer to each datum object for time couse
    */
-  void compile(string &name, CModel * model, CTrajectory *traj);
+  void compile(const string & name, CModel * model, CTrajectory *traj);
 
   /**
    *	Assign the pointer to each datum object for steady state
    */
-  void compile(string &name, CModel *model, CSS_Solution *soln);
-
+  void compile(const string & name, CModel *model, CSS_Solution *soln);
 };
 
 #endif	//COutputList

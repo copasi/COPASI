@@ -5,6 +5,8 @@
 
 #include <string>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "CCopasiException.h"
 

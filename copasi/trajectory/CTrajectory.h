@@ -1,9 +1,9 @@
 /**
  *  File name: CTrajactory.h
  *
- *  Research Programmer: Yongqun He 
+ *  Research Programmer: Yongqun He
  *  Contact email: yohe@vt.edu
- *  Purpose: This is the .h file for the class CTrajectory. 
+ *  Purpose: This is the .h file for the class CTrajectory.
  *           It is to solve the trajectory time course problem of copasi
  */
 
@@ -22,13 +22,14 @@
 class CTrajectory
 {
  public:
-    /**
-     * The types of method used to calculate the trajectory. 
-     * This may be done by a continuous method, a stochastic method, 
-     * or a hybrid of the two. XXX The latter is still to be implemented.
-     */
-  enum MethodType {CONTINUOUS_ODE=1, STOCH_DIRECT, STOCH_NEXTREACTION, MIXED};
-  
+  /**
+   * The types of method used to calculate the trajectory.
+   * This may be done by a continuous method, a stochastic method,
+   * or a hybrid of the two. XXX The latter is still to be implemented.
+   */
+  enum MethodType {UNDEFINED = 0,
+                   CONTINUOUS_ODE, STOCH_DIRECT, STOCH_NEXTREACTION, MIXED};
+
   //Attributes
  private:
 
@@ -60,6 +61,12 @@ class CTrajectory
    * The maximum number of points allowed for stochastic simulations
    */
   C_INT32 mMaxPoints;
+
+  /**
+   *  The start time point
+   */
+  C_FLOAT64 mStartTime;
+
   /**
    *  The end time point
    */
@@ -78,13 +85,13 @@ class CTrajectory
   /**
    *  the method to use
    */
-  C_INT32 mMethod;
+  CTrajectory::MethodType mMethod;
 
   /**
    * Initial Output Event
    */
   COutputEvent *mOutInit;
-  
+
   /**
    * Any Point Output Event from beginning to end
    */
@@ -98,7 +105,7 @@ class CTrajectory
   /**
    * if the report is to include output at time zero
    */
-  C_INT16	mOutputTimeZero;
+  C_INT16 mOutputTimeZero;
 
   //Operations
  public:
@@ -107,46 +114,25 @@ class CTrajectory
    * default constructor
    */
   CTrajectory();
-	
-  /*
-   * A CTrajectory constructor
-   */	
-  CTrajectory(CModel * aModel, C_INT32 aPoints,
-	      C_FLOAT64 aEndTime, C_INT32 aMethod);
-
-  /**
-   * Copy constructor
-   * @param source a CTrajectory object for copy
-   */
-  CTrajectory(const CTrajectory& source);
-
-  /**
-   * Object assignment overloading
-   * @param source a CTrajectory object for copy
-   * @return an assigned CTrajectory object
-   */
-  CTrajectory& operator=(const CTrajectory& source);
-
 
   /**
    * destructor
-   */	
+   */
   ~CTrajectory();
 
   /**
    * initialize()
    * @param CModel * aModel
    */
-  void initialize(CModel * aModel);
-        
+  void initialize();
+
   /**
    * cleanup()
    */
   void cleanup();
-        
 
   /**
-   *  Loads parameters for this solver with data coming from a 
+   *  Loads parameters for this solver with data coming from a
    *  CReadConfig object. (CReadConfig object reads an input stream)
    *  @param configbuffer reference to a CReadConfig object.
    *  @return mFail
@@ -166,25 +152,19 @@ class CTrajectory
   /**
    * Set the CModel member variable
    * @param aModel a CModel pointer to be set as mCModel
-   */	
+   */
   void setModel(CModel * aModel);
 
   /**
    *  Get the CModel member variable
    *  @return mCModel
-   */	
+   */
   CModel * getModel() const;
-
-  /**
-   * Set the CODESolver member variable
-   * @param aSolver a CODESolver pointer to be set as mModel member
-   */	
-  void setODESolver(CODESolver * aSolver);
 
   /**
    *  Get the CODESolver member variable
    *  @return mODESolver
-   */	
+   */
   CODESolver * getODESolver() const;
 
   /*
@@ -199,29 +179,18 @@ class CTrajectory
    */
   C_INT32 getPoints() const;
 
-  /*
-   * Set the size of array mY, can be obtained from CModel (how??)
-   * @param anInt an int passed to be set as mN
+  /**
+   *  Set the starting point of the trajectory
+   *  @param "const C_FLOAT64 &" time (Default: 0)
+   *  @param "const C_FLOAT64 *" particleNumbers (Default: Models Initial Val.)
    */
-  void setArrSize(const C_INT32 anInt);
-
-  /*
-   * Get the mY array size
-   * @return mN
-   */
-  C_INT32 getArrSize() const;
-
-  /*
-   * calculate the time lenghth
-   * @return mN
-   */
-  C_FLOAT64 calcTimeLength();
-
+  void setStartingPoint(const C_FLOAT64 & time = 0,
+                        const C_FLOAT64 * particleNumbers = NULL);
 
   /*
    * Set the end of time points
    * @param aDouble a double type to be set as mEndTime
-   */	
+   */
   void setEndTime(const C_FLOAT64 aDouble);
 
   /*
@@ -237,37 +206,21 @@ class CTrajectory
   const C_FLOAT64 & getTime() const;
 
   /*
-   * Set the point to the array with the left hand side value
-   * @param arrDouble an array of double that will be set as mY
-   */	
-  void setMY(const C_FLOAT64 * arrDouble);
-
-  /*
-   * Get the point to the array with the left hand side value
-   * @return mY
-   */
-  C_FLOAT64 * getMY() const;
-
-  /*
    * Set the method to use
    * @param anInt an int type that will set as mTypeOfSolver
    */
-  void setMethod(const C_INT32 anInt);
+  void setMethod(const CTrajectory::MethodType & anInt);
 
   /*
    * Get the type of solver
    * @return mTypeOfSolver
    */
-  C_INT32 getMethod() const;
-
+  const CTrajectory::MethodType & getMethod() const;
 
   /*
    * Process the CTrajectory primary function
    * @param ofstream &fout
-   */	
+   */
   void process(ofstream &fout);
-	
 };
-
-
 #endif //CTRAJECOTRY_H

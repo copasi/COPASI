@@ -346,10 +346,18 @@ class CModel
   /**
    *  This functions returns a pointer to a vector of the initial particle
    *  numbers of the independent metabolites. 
-   *  Note: After ussage the memory has to be released with free(y).
+   *  Note: After ussage the memory has to be released with delete [] y.
    *  @return C_FLOAT64 * y
    */
   C_FLOAT64 * getInitialNumbers();
+  
+  /**
+   *  This functions returns a pointer to a vector of the current particle
+   *  numbers of the independent metabolites. 
+   *  Note: After ussage the memory has to be released with delete [] y.
+   *  @return C_FLOAT64 * y
+   */
+  C_FLOAT64 * getNumbers();
   
   /**
    *  Set the concentration of all metabolites as a result of the particle

@@ -1,3 +1,6 @@
+#define  COPASI_TRACE_CONSTRUCTION 
+
+#include "copasi.h"
 #include "CDependencyGraph.h"
 #include <algorithm>
 

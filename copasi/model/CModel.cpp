@@ -14,6 +14,8 @@
 
 //#include "utilities/CCopasiException.h"
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "CModel.h"
@@ -25,6 +27,7 @@
 
 CModel::CModel()
 {
+  CONSTRUCTOR_TRACE;
   mComments = "";
 
   mpLView = new
@@ -37,6 +40,7 @@ CModel::CModel()
 
 CModel::CModel(const CModel & src)
 {
+  CONSTRUCTOR_TRACE;
   mpLView = new
     TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
   
@@ -64,6 +68,7 @@ CModel::~CModel()
   delete mpInverseLView;
   
   cleanup();
+  DESTRUCTOR_TRACE;
 }
 
 void CModel::cleanup()
@@ -595,6 +600,18 @@ C_FLOAT64 * CModel::getInitialNumbers()
 
   for (i=0; i<imax; i++)
     y[i] = mMetabolitesInd[i]->getInitialNumber();
+  
+  return y;
+}
+
+C_FLOAT64 * CModel::getNumbers()
+{
+  C_INT32 i, imax = mMetabolitesInd.size();
+
+  C_FLOAT64 * y = new C_FLOAT64[imax];
+
+  for (i=0; i<imax; i++)
+    y[i] = mMetabolitesInd[i]->getNumber();
   
   return y;
 }

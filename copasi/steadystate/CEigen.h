@@ -1,9 +1,9 @@
 /**
  *  File name: CEigen.h
  *
- *  Programmer: Yongqun He 
+ *  Programmer: Yongqun He
  *  Contact email: yohe@vt.edu
- *  Purpose: This is the .h file for the class CEigen. 
+ *  Purpose: This is the .h file for the class CEigen.
  *           It is to calculate eigenvalues and eigenvectors of a matrix.
  *           It mainly uses the dgees_() subroutine of CLAPACK
  *
@@ -16,9 +16,8 @@
 #include "tnt/cmat.h"
 #include "copasi.h"
 #include <cmath>
-//#include "clapack.h"
 
-//include clapack.h for eigenvalue calculations0
+//include clapack.h for eigenvalue calculations
 extern "C" {
   //#ifdef __cplusplus
   //#define __old__cplusplus __cplusplus
@@ -31,79 +30,59 @@ extern "C" {
   //#endif
 }
 
-/*
-extern "C" void DGEES(char *JOBVS, char *SORT, int *SELECT, int *N, double *A, int *LDA, int *SDIM, double *WR, double *WI, double *VS, int *LDVS, double *WORK, int *LWORK, int *BWORK, int *INFO);
-*/
-
-/*
-extern "C" int dgees_(char *jobvs, char *sort, L_fp select, long int *n,
-        double *a, long int *lda, long int *sdim, double *wr,
-        double *wi, double *vs, long int *ldvs, double *work,
-        long int *lwork, long int *bwork, long int *info);
-*/
-
 class CEigen {
-
  private:
+  // variables for stability analysis
+
   /**
-   * A Matrix, 
-   * If input is a TNT matrix, a transformation of it to arrays will 
-   * be performed
+   * the real part of the maximum eigenvalue
    */
-  //TNT::Matrix <C_FLOAT64> mMatrix;
- 
- // variables for stability analysis
- 
- /**
-  * the real part of the maximum eigenvalue
-  */
- C_FLOAT64 mEigen_maxrealpart;
+  C_FLOAT64 mEigen_maxrealpart;
 
-/**
-  * the imaginary part of the maximum eigenvalue
-  */
- C_FLOAT64  mEigen_maximagpart;
+  /**
+   * the imaginary part of the maximum eigenvalue
+   */
+  C_FLOAT64  mEigen_maximagpart;
 
-/**
-  * the number of eigenvalues with positive real part
-  */
- C_FLOAT64  mEigen_nposreal;
+  /**
+   * the number of eigenvalues with positive real part
+   */
+  C_INT32  mEigen_nposreal;
 
-/**
-  * the number of eigenvalues with negative real part
-  */
- C_FLOAT64  mEigen_nnegreal;
+  /**
+   * the number of eigenvalues with negative real part
+   */
+  C_INT32  mEigen_nnegreal;
 
-/**
-  * the number of real eigenvalues
-  */
- C_FLOAT64  mEigen_nreal;
+  /**
+   * the number of real eigenvalues
+   */
+  C_INT32  mEigen_nreal;
 
-/**
-  * the number of imaginary eigenvalue numbers
-  */
- C_FLOAT64  mEigen_nimag;
+  /**
+   * the number of imaginary eigenvalue numbers
+   */
+  C_INT32  mEigen_nimag;
 
-/**
-  * 
-  */
- C_FLOAT64 mEigen_ncplxconj;
+  /**
+   *
+   */
+  C_INT32 mEigen_ncplxconj;
 
-/**
-  * the number of eigenvalues with value of zero
-  */
- C_FLOAT64  mEigen_nzero;
+  /**
+   * the number of eigenvalues with value of zero
+   */
+  C_INT32  mEigen_nzero;
 
-/**
-  * the stiffness of eigenvalues
-  */
- C_FLOAT64  mEigen_stiffness;
+  /**
+   * the stiffness of eigenvalues
+   */
+  C_FLOAT64  mEigen_stiffness;
 
-/**
-  * the hierary of the eigenvalues
-  */
- C_FLOAT64  mEigen_hierarchy;
-
+  /**
+   * the hierary of the eigenvalues
+   */
+  C_FLOAT64  mEigen_hierarchy;
 
   //there are 15 parameters in the dgees() subroutine
 
@@ -114,30 +93,30 @@ class CEigen {
    */
   char mJobvs;
 
- /**
+  /**
    * #2: (input) characer*1
-   * = 'N': Eigenvalues are not ordered  
-   * = 'S': Eigenvalues are ordered 
+   * = 'N': Eigenvalues are not ordered
+   * = 'S': Eigenvalues are ordered
    */
   char mSort;
- 
+
 
   /**
    * #3: (input) Logical function of two double precision arguments
    * It must be declared external
    * = 'S': Select is used to select eigenvalues to sort to the top left
-   * of the Schur form 
+   * of the Schur form
    * = 'N': Eigenvalues are ordered Select is not refereced.
    */
   //char mSelect;
   C_INT32 * mSelect;
 
   /**
-   * #4: (input) The order of the matrix A 
+   * #4: (input) The order of the matrix A
    */
   C_INT32 mN;
 
- 
+
   /**
    * #5: (input/output) The double precision array, dimension (LDA,N)
    * On entry, the N-by-N matrix A
@@ -165,7 +144,6 @@ class CEigen {
    * #8: array with dimension (mN)
    */
   C_FLOAT64 * mEigen_r;
-
 
   /**
    * #9: array with dimension (mN)
@@ -210,9 +188,9 @@ class CEigen {
    * <0: if mInfo=-i, the ith argument had an illegal value
    * >0: if mInfo=i, and i is
    *     <=N: the QR algorithm failed to compute all the eigenvalues;
-   *     =N+1: the eigenvalues could not be reordered because some 
+   *     =N+1: the eigenvalues could not be reordered because some
    *           eigenvalues were too close to separate (ill-conditioned)
-   *     =N+2: after reordering, roundoff changed values of some 
+   *     =N+2: after reordering, roundoff changed values of some
    *           complex eigenvalues so that leading eigenvalues in the
    *           Schur form no longer satisfy mSelect=.True. This could
    *           caused by underflow due to scaling
@@ -220,92 +198,59 @@ class CEigen {
   C_INT32 mInfo;
 
 
-  /** 
-   * sorts two arrays using one as the criterion for sorting 
+  /**
+   * sorts two arrays using one as the criterion for sorting
    */
-  C_INT32 qs_partition(double *A, double *B, C_INT32 p, C_INT32 r);
+  C_INT32 qs_partition(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r);
 
-  /** 
-   * Do quicksort with 2 arrays of double. 
+  /**
+   * Do quicksort with 2 arrays of double.
    * One is the array of the real part of the eigenvalues.
    * another is the array of the imaginary part of the eigenvalues
    */
-  void quicksort(double *A, double *B, C_INT32 p, C_INT32 r);
+  void quicksort(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r);
 
-
+  /**
+   *  Calculate various eigenvalue statistics
+   */
+  void statistics(C_FLOAT64 SSRes);
+  
  public:
   /**
    * Defaulut constructor
-   */ 
-  CEigen();
-
-  /**
-   * User defined constructor
-   * @param rows is the max row number of the Matrix
-   * @param cols is the max column number of the Matrix
    */
-  //CEigen(C_INT32 rows, C_INT32 cols);
+  CEigen();
 
   /**
    * Destructor
    */
-
   ~CEigen();
 
-
- /**
+  /**
    * initialize variables for eigenvalue calculations
    */
-
   void initialize();
 
- 
   /**
-   * return the matrix
+   * cleanup()
    */
-  //TNT::Matrix < C_FLOAT64 > getMatrix();
-
-  /**
-   * Set the Matrix
-   */
-  //void setMatrix(C_INT32 rows, C_INT32 cols);
-
-
-  /**
-   * #12: Set the Work
-   */
-  void setWork(C_FLOAT64 * aWork);
-
-  /**
-   * #12: Get the Work
-   */
-  C_FLOAT64 * getWork() const;
-
-
-  /**
-   * #: Set the mN
-   */
-  void setN(C_INT32  aN);
-
+  void cleanup();
 
   /**
    * Eigenvalue calculations
    * @param SSRes the steady state resolution.
    */
-  void CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64> ss_jacob);
-
+  void CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64> & ss_jacob);
 
   /**
    * Get the max eigenvalue real part
    */
   C_FLOAT64  getEigen_maxrealpart();
 
-
   /**
    * Get the max eigenvalue imaginary  part
    */
   C_FLOAT64 getEigen_maximagpart();
-
 
   /**
    * Get the number of zero eigenvalues
@@ -323,10 +268,10 @@ class CEigen {
   C_FLOAT64 getEigen_hierarchy();
 
   /**
-   * Return number of real eigenvalues	WeiSun 3/28/02
+   * Return number of real eigenvalues WeiSun 3/28/02
    */
-  C_FLOAT64 getEigen_nreal();	
-  
+  C_FLOAT64 getEigen_nreal();
+
   /**
    * Return the number of imaginary eigenvalue numbers
    */
@@ -349,12 +294,12 @@ class CEigen {
   C_FLOAT64 * getEigen_r();
 
   /**
-   * Get the pointer of max real eigenvalue component for output		WeiSun 04/02/02
+   * Get the pointer of max real eigenvalue component for output WeiSun 04/02/02
    */
   void * getMaxRealPartAddr();
 
   /**
-   * Get the pointer of max real eigenvalue component for output		
+   * Get the pointer of max real eigenvalue component for output
    */
   void * getMaxImagPartAddr();
 
@@ -400,12 +345,3 @@ class CEigen {
 };
 
 #endif
-
-
-
-
-
-
-
-
-

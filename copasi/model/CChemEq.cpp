@@ -4,13 +4,16 @@
 // (C) Stefan Hoops 2001
 //
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "CChemEq.h"
 
-CChemEq::CChemEq(){};
+CChemEq::CChemEq(){CONSTRUCTOR_TRACE;}
 
 CChemEq::CChemEq(const CChemEq & src)
 {
+  CONSTRUCTOR_TRACE;
   mChemicalEquation = src.mChemicalEquation;
   mChemicalEquationConverted = src.mChemicalEquationConverted;
   mSubstrates = src.mSubstrates;
@@ -18,7 +21,7 @@ CChemEq::CChemEq(const CChemEq & src)
   mBalances = src.mBalances;
 }
 
-CChemEq::~CChemEq(){cleanup();}
+CChemEq::~CChemEq(){cleanup(); DESTRUCTOR_TRACE;}
 
 void CChemEq::cleanup()
 {

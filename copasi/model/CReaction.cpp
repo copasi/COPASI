@@ -6,6 +6,8 @@
 // Converted for Copasi by Stefan Hoops
 
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "CReaction.h"
@@ -19,6 +21,7 @@
 
 CReaction::CReaction()
 {
+  CONSTRUCTOR_TRACE;
   mFlux = 0.0;
   mReversible = TRUE;
   mFunction = NULL;
@@ -26,6 +29,7 @@ CReaction::CReaction()
 
 CReaction::CReaction(const CReaction & src)
 {
+  CONSTRUCTOR_TRACE;
   mName = src.mName;
   mFlux = src.mFlux;
   mReversible = src.mReversible;
@@ -40,13 +44,14 @@ CReaction::CReaction(const CReaction & src)
 
 CReaction::CReaction(const string & name)
 {
+  CONSTRUCTOR_TRACE;
   mName = name;
   mFlux = 0.0;
   mReversible = TRUE;
   mFunction = NULL;
 }
 
-CReaction::~CReaction() {cleanup();}
+CReaction::~CReaction() {cleanup(); DESTRUCTOR_TRACE;}
 
 void CReaction::cleanup()
 {

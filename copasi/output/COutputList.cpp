@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "COutputList.h"
 
@@ -141,9 +143,8 @@ void COutputList::copasiDyn(ofstream &fout, int time)
 /**
  * Assign the mpvalue in CDatum for each type
  */
-void COutputList::compile(string &name, CModel *model, CTrajectory *traj)
+void COutputList::compile(const string & name, CModel *model, CTrajectory *traj)
 {
-
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
       mList[i]->compile(name, model, traj);
@@ -155,7 +156,7 @@ void COutputList::compile(string &name, CModel *model, CTrajectory *traj)
 /**
  *	Assign the pointer to each datum object for steady state
  */
-void COutputList::compile(string &name, CModel *model, CSS_Solution *soln)
+void COutputList::compile(const string & name, CModel *model, CSS_Solution *soln)
 {
 
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)

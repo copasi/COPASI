@@ -5,22 +5,25 @@
 //
 
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "CChemEqElement.h"
 #include "utilities/utilities.h"
 #include "CCompartment.h"
 
-CChemEqElement::CChemEqElement() {mpMetabolite = NULL;}
+CChemEqElement::CChemEqElement() {CONSTRUCTOR_TRACE; mpMetabolite = NULL;}
 
 CChemEqElement::CChemEqElement(const CChemEqElement & src)
 {
+  CONSTRUCTOR_TRACE;
   mMetaboliteName = src.mMetaboliteName;
   mCompartmentName = src.mCompartmentName;
   mMultiplicity = src.mMultiplicity;
   mpMetabolite = NULL;
 }
 
-CChemEqElement::~CChemEqElement() {}
+CChemEqElement::~CChemEqElement() {DESTRUCTOR_TRACE;}
 
 void CChemEqElement::cleanup() {}
 

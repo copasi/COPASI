@@ -1,9 +1,9 @@
 /**
  *  File name: CNewton.h
  *
- *  Programmer: Yongqun He 
+ *  Programmer: Yongqun He
  *  Contact email: yohe@vt.edu
- *  Purpose: This is the .h file for the class CNewton. 
+ *  Purpose: This is the .h file for the class CNewton.
  *           It is an important approach to solve the steady state solution problem
  *
  */
@@ -34,7 +34,7 @@
 #define SS_ITERATION_LIMIT 4
 
 //Note: they may not be 1.0, check where it comes from orignially (Y.H.)
-#define DefaultSSRes 1.0 
+#define DefaultSSRes 1.0
 #define DefaultDerivFactor 1.0
 
 class CNewton
@@ -82,7 +82,7 @@ class CNewton
 
   CJacob mSs_jacob;
 
-  C_INT32 * mSs_ipvt;
+  // C_INT32 * mSs_ipvt;
 
   int mSs_solution;
 
@@ -93,40 +93,6 @@ class CNewton
    */
   C_INT32 mSs_nfunction;
 
-  /**
-   *  private function, evaluate the balance equations
-   */
-  //void FEval(int num, double time, double *y, double *ydot );
-
-  /**
-   *  private function, evaluate the Jacobian matrix
-   */
-  void JEval( double *y, double **ydot );
-
-
-  /*
-  // the following functions are from gepasi and have not been used:
-
-  //copy from  void CGepasiDoc::ResetVariables( void )
-  NewtonLimit = DefaultNewtonLimit;
-
-  //copy from BOOL CGepasiDoc::OnSaveDocument(LPCTSTR lpszPathName)
-  f1.WriteString(LPCTSTR(OutStr));
-  OutStr.Format("NewtonLimit=%d\n",NewtonLimit);
-
-  //copy from int CGepasiDoc::BufferToVars(char *buffer)
-  if( (buffpt = PointPastNewLine( buffpt, line )) == NULL ) goto ErrorExit;
-  fields = sscanf( buffpt, "NewtonLimit=%d\n", &NewtonLimit);
-  if( ScanfFailed( fields, 1, line ) ) goto ErrorExit;
-  // sanity check
-  if( NewtonLimit < 2 )
-  {
-  PMMessageBox( IDS_WARN_NEWTON, MB_ICONINFORMATION | MB_OK );
-  NewtonLimit = DefaultNewtonLimit;
-  }
-
-  */
-
   //Operations
  public:
 
@@ -136,35 +102,15 @@ class CNewton
   CNewton();
 
   /**
-   * constructor
-   * @param anInt is an int set as mNewtonLimit
-   */
-  CNewton(C_INT32 anInt);
-
-  /**
-   * copy constructor
-   * @param source a CNewton object for copy
-   */
-  CNewton(const CNewton& source);
-
-  /**
-   * Object assignment overloading
-   * @param source a CNewton object for copy
-   * @return an assigned CNewton object
-   */
-  CNewton& operator=(const CNewton& source);
-
-  /**
    *  destructor
    */
   ~CNewton();
 
   /**
-   * initialize mSs_x and mSs_xnew
-   * it may be changed later and got directly from steady state class
+   *  Set the starting point of the Newton method
+   *  @param "const C_FLOAT64 *" particleNumbers (Default: Models Initial Val.)
    */
-  void init_Ss_x(void);
-
+  void setStartingPoint(const C_FLOAT64 * particleNumbers = NULL);
 
   /**
    *  set CModel
@@ -195,19 +141,18 @@ class CNewton
    *  @param aInt an int set as the private mSs_nfunction
    */
   void setSs_nfunction(C_INT32 aInt);
- 
+
   /**
    *  get mSs_nfunction
    *  @return mSs_nfunction, the private mSs_nfunction int
    */
   C_INT32 getSs_nfunction() const;
-    
 
   /**
    *  get mSs_xnew
    *  @return mSs_xnew, the private mSs_xnew double pointer
    */
-  C_FLOAT64 * getSs_xnew() const;
+  const C_FLOAT64 * getSs_xnew() const;
 
   /**
    *  get mSs_dxdt
@@ -232,19 +177,18 @@ class CNewton
    *  @param C_INT32 limit
    */
   void setNewtonLimit(C_INT32 limit);
-  
+
   /**
    *  retrieve the iteration limit
    *  @return C_INT32 limit
    */
   C_INT32 getNewtonLimit() const;
-  
+
   /**
    *  retrieve the mSs_solution
    *  @return C_INT32
    */
-  C_INT32 getSs_solution( void ) const;
-
+  C_INT32 getSs_solution(void) const;
 
   /**
    *  to process the primary function of this class
@@ -256,12 +200,11 @@ class CNewton
    */
   void cleanup(void);
 
-
   /**
    * finds out if current state is a valid steady state
    *  destroys the contents of matrix ss_dxdt
    */
-  C_INT32 isSteadyState( void );
+  C_INT32 isSteadyState(void);
 
   //private:   //YH: set as public now because my testSSSolution() is using it.
   /**
@@ -271,5 +214,3 @@ class CNewton
 
 };
 #endif // COPASI_CNewton
-
-

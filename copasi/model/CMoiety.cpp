@@ -1,25 +1,28 @@
 #include <stdio.h>
 #include <math.h>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "utilities/CCopasiMessage.h"
 #include "CMoiety.h"
 #include "CCompartment.h"
 #include "utilities/utilities.h"
 
-CMoiety::CMoiety() {}
+CMoiety::CMoiety() {CONSTRUCTOR_TRACE;}
 
 CMoiety::CMoiety(const CMoiety & src) 
 {
+  CONSTRUCTOR_TRACE;
   mName = src.mName;
   mNumber = src.mNumber;
   mINumber = src.mINumber;
   mEquation = CCopasiVector < CChemEqElement >(src.mEquation);
 }
 
-CMoiety::CMoiety(const string & name) {mName = name;}
+CMoiety::CMoiety(const string & name) {CONSTRUCTOR_TRACE; mName = name;}
 
-CMoiety::~CMoiety() {}
+CMoiety::~CMoiety() {DESTRUCTOR_TRACE;}
 
 void CMoiety::add(C_FLOAT64 value, CMetab & metabolite)
 {
@@ -34,44 +37,6 @@ void CMoiety::add(C_FLOAT64 value, CMetab * metabolite)
 {add(value, *metabolite);}
 
 void CMoiety::cleanup() {mEquation.cleanup();}
-
-#ifdef XXXX
-void CMoiety::cleanup(const string & name)
-{
-  unsigned C_INT32 i;
-
-  for (i = 0; i < mEquation.size(); i++)
-    if (mEquation[i].getName() == name) break;
-    
-  if (i == mEquation.size()) fatalError();
-
-  cleanup(i);
-}
-
-void CMoiety::cleanup(C_INT32 index)
-{
-  mEquation.erase(&mEquation[index], &mEquation[index+1]);
-}
-
-void CMoiety::change(C_INT32 index,
-		     C_FLOAT64 value)
-{
-  mEquation[index].mValue = value;
-}
-
-void CMoiety::change(const string & name,
-		     C_FLOAT64 value)
-{
-  unsigned C_INT32 i;
-
-  for (i = 0; i < mEquation.size(); i++)
-    if (mEquation[i].mMetab->getName() == name) break;
-    
-  if (i == mEquation.size()) fatalError();
-
-  change(i, value);
-}
-#endif // XXXX
 
 C_FLOAT64 CMoiety::dependentNumber()
 {

@@ -35,7 +35,14 @@ EXTRA_DIST = \
 INCLUDES= $(all_includes) -I$(top_srcdir)/copasi
 
 .lpp.cpp:
-	$(LEX) -t $< | grep -v unistd.h > $@
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e '/#include <unistd.h>/d' > $@
 
 %.cpp: %.lpp
-	$(LEX) -t $< | grep -v unistd.h > $@
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e '/#include <unistd.h>/d' > $@
+

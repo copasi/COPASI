@@ -10,9 +10,13 @@
 
 #include <assert.h>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "CCopasiMessage.h"
 #include "CReadConfig.h"
+#include "model/model.h"
+#include "trajectory/CODESolver.h"
 
 // char *initInputBuffer(char *name);
 // static C_INT32 GetFileSize(const char *name);
@@ -36,7 +40,7 @@ CReadConfig::CReadConfig(const string& name)
   mFail         = 0;
 
   initInputBuffer();
-    
+  
   getVariable("Version", "string", &mVersion);
 }
 
@@ -51,6 +55,11 @@ C_INT32 CReadConfig::fail()
 }
 
 string CReadConfig::getVersion() {return mVersion;}
+
+void CReadConfig::getDefaults()
+{
+  CODESolver::loadLSODAParameters(*this);
+}
 
 C_INT32 CReadConfig::getVariable(const string& name, 
                                  const string& type, 

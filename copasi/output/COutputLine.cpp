@@ -8,6 +8,8 @@
 #include <fstream>
 #include <iomanip>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "model/CCompartment.h"			
 #include "CDatum.h"
@@ -408,7 +410,7 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 Dy
 /**
  *  Assign the pointer to each datum object in the output line for time course
  */
-void COutputLine::compile(string &name, CModel *model, CTrajectory *traj)
+void COutputLine::compile(const string & name, CModel *model, CTrajectory *traj)
 {
   if (!mName.compare(name))
     { // ???? Maybe it isnot necessary after finish whole module
@@ -422,7 +424,7 @@ void COutputLine::compile(string &name, CModel *model, CTrajectory *traj)
 /**
  *  Assign the pointer to each datum object in the output line for steady state
  */
-void COutputLine::compile(string &name, CModel *model, CSS_Solution *soln)
+void COutputLine::compile(const string & name, CModel *model, CSS_Solution *soln)
 {
   if (!mName.compare(name))
     { // ???? Maybe it isnot necessary after finish whole module

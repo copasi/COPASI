@@ -3,6 +3,8 @@
 * PROGRAMMER: Wei Sun	wsun@vt.edu
 * PURPOSE: COutputEvent Class Implemention
 *****************************************************************************/
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "output.h"
 // #include "COutputEvent.h"

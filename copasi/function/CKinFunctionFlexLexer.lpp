@@ -1,6 +1,5 @@
 /* scanner for kinetic functions */
 
-/* remember to comment out the #include <unistd.h> */
 %option outfile="CKinFunctionFlexLexer.cpp"
 %option prefix="CKinFunction"
 %option noyywrap
@@ -8,7 +7,6 @@
 %option c++
 
 %{
-#include "copasi.h"
 #include "CNodeK.h"
 %}
 

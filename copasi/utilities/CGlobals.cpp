@@ -1,3 +1,6 @@
+#define  COPASI_TRACE_CONSTRUCTION 
+
+#include "copasi.h"
 #include "CGlobals.h"
 #include "utilities.h"
 
@@ -22,6 +25,7 @@ CGlobals::CGlobals()
 CGlobals::~CGlobals()
 {
   FunctionDB.cleanup();
+  OldMetabolites.cleanup();
 }
 
 void CGlobals::setArguments(C_INT argc, char *argv[])

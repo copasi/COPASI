@@ -65,7 +65,7 @@ using namespace std ;
 #  include <fstream>
    extern std::ofstream DebugFile;
 # endif // COPASI_MAIN
-# if (defined COPASI_TRACE_CONSTRUCTION && !defined WIN32)
+# if (defined COPASI_TRACE_CONSTRUCTION)
 #  include <typeinfo>
 #  define CONSTRUCTOR_TRACE \
     {DebugFile << "Construct: " << typeid(*this).name() \

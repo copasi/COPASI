@@ -7,6 +7,8 @@
 #include <string>
 #include <malloc.h>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "CDatum.h"
 #include "utilities/CGlobals.h"

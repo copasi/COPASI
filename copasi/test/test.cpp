@@ -99,7 +99,6 @@ C_INT main(C_INT argc, char *argv[])
 //YOHE: new test
 //      TestOptimization();
 //      TestEigen();
-
 //      TestTrajectory();
 //      TestMoiety();
 //      TestKinFunction();
@@ -405,8 +404,8 @@ C_INT32 TestOutputEvent(void)
   //oList.CCopasi_Dyn(fout1);
   //oList.CCopasi_Rep(fout2);
 
-  CTrajectory traj(&model, 20, 10.0, 1);
-
+  CTrajectory traj;
+  traj.setModel(&model);
   //  COutputEvent event(traj, 0, &oList, fout1);
 
   traj.cleanup();
@@ -425,32 +424,30 @@ C_INT32 TestTrajectory(void)
   string InputFile(Copasi->Arguments[1]);
   string OutputFile(Copasi->Arguments[2]);
   CReadConfig inbuf(InputFile);
+  inbuf.getDefaults();
   CWriteConfig outbuf(OutputFile);
+  outbuf.setDefaults();
   CModel model;
+
 
   // COutput output;
   // output.load(inbuf);
   
   model.load(inbuf);
-  model.buildStoi();
-  model.lUDecomposition();
-  model.setMetabolitesStatus();
-  model.buildRedStoi();
-  model.buildL();
-  model.buildMoieties();
+  model.compile();
   model.save(outbuf);
   
   Copasi->OutputList.load(inbuf);
   Copasi->OutputList.save(outbuf);
 
-  CTrajectory traj(&model, 20, 10.0, 1);
-
+  CTrajectory traj;
+  traj.setModel(&model);
   traj.load(inbuf);
   traj.save(outbuf);
+  traj.initialize();
   traj.getODESolver()->load(inbuf);
-  traj.getODESolver()->loadLSODAParameters(inbuf);
   ofstream output("output.txt");
-  
+
   traj.process(output);
   traj.cleanup();
 
@@ -511,8 +508,8 @@ C_INT32  TestNewton(void)
  
     //how to get mSs_x, mSs_new, mSs_dxdt, mSs_h, mSs_jacob, mSs_ipvt
     //and mSs_solution??? or don't need to care about them here??
-    newton.init_Ss_x();
- 
+
+    newton.setStartingPoint();
     newton.process();
  
     return 0;
@@ -522,49 +519,20 @@ C_INT32  TestNewton(void)
 // by YH
 C_INT32  TestSSSolution(void)
 {
-//    C_INT32 size = 0;
-//    C_INT32 i;
- 
-    //CReadConfig inbuf("gps/BakkerComp.gps");
     CReadConfig inbuf("gps/NewtonTest.gps");
-    //CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
+    inbuf.getDefaults();
+
     CModel model;
     model.load(inbuf);
     model.compile();
  
-    model.getReactions().size();
-
-    //set up CNewton object and pass to CSS_Solution
-    CNewton newton;
-    newton.setModel(model);
-    // newton.initialize();
-    newton.setDerivFactor(0.1);
-    newton.setSSRes(1.0e-9);
-    newton.setNewtonLimit(50);
-    newton.setSs_nfunction(0);
-    newton.init_Ss_x();
-
-    CTrajectory traj(&model, 20, 10.0, 1);
-    traj.load(inbuf);
-    traj.getODESolver()->load(inbuf);
-    traj.getODESolver()->loadLSODAParameters(inbuf);
- 
+    Copasi->OutputList.load(inbuf);
+    
     CSS_Solution ss_soln;
-
+    ss_soln.load(inbuf);
     ss_soln.setModel(&model);
-
-    //Yohe: new change 03/22/02 
-    ss_soln.setSSRes(1.0e-9);  //I cannot get it from load, I don't know why
-
-
-    //yohe: new added on 03/15/02
     ss_soln.initialize();
 
-    ss_soln.setNewton(&newton);
-    ss_soln.setTrajectory(&traj);
- 
-    //do we need set ss_soln.mJacob model here????
- 
     ofstream output("output.txt");
     
     ss_soln.process(output);
@@ -595,8 +563,6 @@ C_INT32  TestEigen(void)
   C_FLOAT64 ssRes = 0.0;
 
 
-  myEigen.setN(3);
-  myEigen.initialize();
   myEigen.CalcEigenvalues(ssRes, matrix);
 
   cout << "!!! Yongqun Testing: the max eigenvalue real part is: "<<myEigen.getEigen_maxrealpart()<<endl;
@@ -1673,7 +1639,7 @@ C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
     }
     cout << endl;
     cout << "Testing update node\n";
-    for (int i = 0; i < size; i++)
+    for (i = 0; i < size; i++)
     {
         cout << "Reset node at top index: ";
         pq.updateNode(pq.topIndex(), 10000);

@@ -144,12 +144,12 @@ class COutputLine
   /**
    *  Assign the pointer to each datum object in the output line for time course
    */
-  void compile(string &name, CModel *model, CTrajectory *traj);
+  void compile(const string & name, CModel *model, CTrajectory *traj);
 
   /**
    *  Assign the pointer to each datum object in the output line for steady State
    */
-  void compile(string &name, CModel *model, CSS_Solution *soln);
+  void compile(const string & name, CModel *model, CSS_Solution *soln);
 
 };
 

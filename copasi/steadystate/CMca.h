@@ -1,9 +1,9 @@
 /*****************************************************************************
-* PROGRAM NAME: CJacob.h
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: Declare the CMca Class, its value is updated in simulation running
-*	       and outputed in Rep_MCA()			
-*****************************************************************************/
+ * PROGRAM NAME: CJacob.h
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: Declare the CMca Class, its value is updated in simulation running
+ *        and outputed in Rep_MCA()
+ *****************************************************************************/
 
 #ifndef COPASI_CMca
 #define COPASI_CMca
@@ -42,7 +42,7 @@ class CMca
   C_INT16 mSSReder;
 
   /**
-   * If need to evaluate the elasticites, ss_x 
+   * If need to evaluate the elasticites, ss_x
    * will be assigned in calculateTimeMCA()
    */
   vector <C_FLOAT64> mSsx;
@@ -97,13 +97,13 @@ class CMca
 
   /**
    * Initialize mDxv with the unscaled elasticities
-   * @param src is newtown variable, (is ss_x in Gespasi project) 
+   * @param src is newtown variable, (is ss_x in Gespasi project)
    * @param res is the resolution of steady state
    */
   void initDxv(C_FLOAT64 res);
 
   /**
-   *	Calculates the flux-control coefficients
+   * Calculates the flux-control coefficients
    *  @param refer to the condition
    */
   void CalcFCC(int condition);
@@ -125,7 +125,7 @@ class CMca
   /**
    * the steady state MCA entry point
    * @param ss_solution refer to steady-state solution
-   * @param refer to the resolution 
+   * @param refer to the resolution
    */
   int CalculateMCA(int ss_solution, int res);
 
@@ -134,7 +134,7 @@ class CMca
    */
   void init();
 
-  /** 
+  /**
    * Read SSMCAUnscaled from configuration file
    */
   C_INT32 load(CReadConfig & configBuffer);
@@ -143,7 +143,7 @@ class CMca
    * Scales the coefficients (i.e. Kacser format, rather than Reder)
    * @param refer to the condition
    * @param refer to the resolution
-   */	
+   */
   void ScaleMCA(int condition, int res);
 
   /**

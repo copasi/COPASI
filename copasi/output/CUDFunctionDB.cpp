@@ -5,6 +5,8 @@
 *		   defined function				
 *****************************************************************************/
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "output/output.h"
 #include "utilities/utilities.h"

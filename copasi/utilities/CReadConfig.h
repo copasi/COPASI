@@ -98,7 +98,12 @@ class CReadConfig
    * Retrieves the version string of the configbuffer
    */
   string getVersion();
-    
+
+  /**
+   * Load various system wide default values
+   */
+  void getDefaults();
+  
   /**
    *  Returns the failure status.
    *  @return mFail

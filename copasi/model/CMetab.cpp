@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "CCompartment.h"
@@ -16,6 +18,7 @@
 CMetab::CMetab()
 {
   // initialize everything
+  CONSTRUCTOR_TRACE;
   mName       = "metab";
   if (!isValidName()) fatalError();
   mConc       = Copasi->DefaultConc;
@@ -28,6 +31,7 @@ CMetab::CMetab()
 
 CMetab::CMetab(const CMetab & src)
 {
+  CONSTRUCTOR_TRACE;
   mName        = src.mName;
   mConc        = src.mConc;
   mIConc       = src.mIConc;
@@ -39,22 +43,9 @@ CMetab::CMetab(const CMetab & src)
 
 CMetab::CMetab(const string & name)
 {
+  CONSTRUCTOR_TRACE;
   reset(name);
 }
-
-#ifdef XXXX
-CMetab::CMetab(const string & name, const C_INT16 status, 
-               CCompartment & compartment)
-{
-  mName        = name;
-  mConc        = Copasi.DefaultConc;
-  mIConc       = Copasi.DefaultConc;
-  mRate        = 1.0;
-  mTT          = 0.0;
-  mStatus      = status;
-  mCompartment = &compartment;
-}
-#endif // XXXX
 
 // overload assignment operator
 CMetab &CMetab::operator=(const CMetab &RHS)
@@ -83,7 +74,7 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
   return *this;  // Assignment operator returns left side.
 }
 
-CMetab::~CMetab() {}
+CMetab::~CMetab() {DESTRUCTOR_TRACE;}
 
 C_INT32 CMetab::reset(const string& name)
 {
@@ -212,6 +203,10 @@ C_INT16 CMetab::isValidName()
 {
   return (mName.find_first_of("; ") == string::npos);
 }
+
+CMetabOld::CMetabOld() {CONSTRUCTOR_TRACE;}
+
+CMetabOld::~CMetabOld() {DESTRUCTOR_TRACE;}
 
 void  CMetabOld::cleanup(){}
 

@@ -6,9 +6,9 @@
   Pedro Mendes March 27, 2001
 */
 
-/* 
-   Added a call to Sleep function and a global variable to hold
-   the time to Sleep.                    Pedro Mendes 15/8/1996
+/*
+  Added a call to Sleep function and a global variable to hold
+  the time to Sleep.                    Pedro Mendes 15/8/1996
 */
 
 /*
@@ -89,6 +89,8 @@
 #include "mem.h"
 #endif
 
+#define  COPASI_TRACE_CONSTRUCTION
+
 #include "copasi.h"
 #include "model/CCompartment.h"
 #include "Clsoda.h"
@@ -101,84 +103,7 @@
 
 static const C_INT32 mord[3] = {0, 12, 5};
 static const C_FLOAT64 sm1[13] = {0., 0.5, 0.575, 0.55, 0.45, 0.35, 0.25,
-				  0.2, 0.15, 0.1, 0.075, 0.05, 0.025};
-
-/* functions accessible from other blocks */
-// void xsetf(C_INT32  mflag);
-// void intdy(C_FLOAT64 t, C_INT32 k, C_FLOAT64 *dky, C_INT32 * iflag);
-
-/* internal functions */
-// static void terminate(C_INT32 *istate);
-// static void terminate2(C_FLOAT64 *y, C_FLOAT64 *t);
-// static void freevectors(void);
-// static void successreturn(C_FLOAT64 *y, C_FLOAT64 *t, C_INT32 itask,
-//                           C_INT32 ihit, C_FLOAT64 tcrit, C_INT32 *istate);
-// static void stoda(C_INT32 neq, C_FLOAT64 *y, 
-//                   void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
-// static void endstoda(void);
-// static void prja(C_INT32 neq, C_FLOAT64 *y,
-//                  void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
-// static void correction(C_INT32 neq, C_FLOAT64 *y,
-//                        void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *),
-//                        C_INT32 *corflag,
-//                        C_FLOAT64 pnorm, C_FLOAT64 *del, C_FLOAT64 *delp,
-//                        C_FLOAT64 *told, C_INT32 *ncf, 
-//                        C_FLOAT64 *rh, C_INT32 *m);
-// static void resetcoeff(void);
-// static void methodswitch(C_FLOAT64 dsm, C_FLOAT64 pnorm, C_FLOAT64 *pdh, 
-//                          C_FLOAT64 *rh);
-// static void ewset(C_INT32 itol, C_FLOAT64 * rtol, 
-//                   C_FLOAT64 * atol, C_FLOAT64  * ycur);
-// static C_FLOAT64 vmnorm(C_INT32 n, C_FLOAT64 * v, C_FLOAT64 * w);
-// static void cfode(C_INT32 meth);
-// static void scaleh(C_FLOAT64 * rh, C_FLOAT64 * pdh);
-// static void orderswitch(C_FLOAT64 * rhup, C_FLOAT64 dsm, 
-//                         C_FLOAT64 * pdh, C_FLOAT64 * rh, C_INT32 * orderflag);
-// static C_FLOAT64 fnorm(C_INT32 n, C_FLOAT64 ** a, C_FLOAT64 * w);
-// static void corfailure(C_FLOAT64 * told, C_FLOAT64 * rh, 
-//                        C_INT32 * ncf, C_INT32 * corflag);
-// static void solsy(C_FLOAT64 * y);
-
-/* new static variable to enable optional printing (see comments) */
-// static C_INT32 prfl = 1;
-
-/* newly added static variables */
-/* _ml was originally ml - changed to avoid conflict with one external ml */
-// static C_INT32 _ml, mu;
-// static C_INT32 mord[3] = { 0, 12, 5 };
-// static C_FLOAT64 sqrteta, *yp1, *yp2;
-// static C_FLOAT64 sm1[13] = { 0., 0.5, 0.575, 0.55, 0.45, 0.35, 0.25,
-//                              0.2, 0.15, 0.1, 0.075, 0.05, 0.025 };
-
-/* variables accessible from other routines */
-// C_FLOAT64 hu, tn, h, tsw, tolsf;
-// C_INT32 nst, nfe, nje, nqu, nq, imxer, mused, meth;
-
-/* static variables for lsoda() */
-// static C_FLOAT64 ccmax, el0, hmin, hmxi, rc;
-// static C_INT32 illin = 0, init = 0, mxstep, mxhnil, nhnil, ntrep = 0,
-//     nslast, nyh, ierpj, iersl, jcur, jstart, kflag, l,
-//     miter, maxord, maxcor, msbp, mxncf, n;
-// static C_FLOAT64 pdnorm;
-// static C_INT32 ixpr = 0, jtyp, mxordn, mxords;
-
-/* no static variable for prja(), solsy() */
-/* static variables for stoda() */
-
-// static C_FLOAT64 conit, crate, el[14], elco[13][14], hold, rmax,
-//     tesco[13][4];
-// static C_INT32 ialth, ipup, lmax, meo, nslp;
-// static C_FLOAT64 pdest, pdlast, ratio, cm1[13], cm2[6];
-// static C_INT32 icount, irflag;
-
-/* static variable for block data */
-// static C_INT32 mesflg = 1;
-
-/* static variables for various vectors and the Jacobian. */
-// static C_FLOAT64 **yh=(C_FLOAT64**)NULL, **wm=(C_FLOAT64**)NULL, 
-//     *ewt=(C_FLOAT64*)NULL, *savf=(C_FLOAT64*)NULL, 
-//     *acor=(C_FLOAT64*)NULL;
-// static C_INT32 *ipvt=(C_INT32*)NULL;
+                                  0.2, 0.15, 0.1, 0.075, 0.05, 0.025};
 
 /*
   The following are useful statistics.
@@ -219,7 +144,7 @@ Clsoda::~Clsoda()
 }
 
 /*
-   free allocated vectors
+  free allocated vectors
 */
 
 /* this function has to be called by the upper level function
@@ -228,11 +153,11 @@ Clsoda::~Clsoda()
 void Clsoda::lsoda_freevectors(void)
 {
   C_INT32 i, lenyh;
-  if(yh != (C_FLOAT64**) NULL)
+  if (yh != (C_FLOAT64**) NULL)
     {
       lenyh = 1 + max(mxordn, mxords);
-      for(i=1; i<=lenyh; i++) mem_free((void *) yh[i]);
-      for(i=1; i<=nyh; i++) mem_free((void *) wm[i]);
+      for (i=1; i<=lenyh; i++) mem_free((void *) yh[i]);
+      for (i=1; i<=nyh; i++) mem_free((void *) wm[i]);
       mem_free((void *) yh);
       yh = (C_FLOAT64**) NULL;
       mem_free((void *) wm);
@@ -257,7 +182,7 @@ void Clsoda::freevectors(void)
 }
 
 /*
-   Terminate lsoda due to illegal input.
+  Terminate lsoda due to illegal input.
 */
 
 void Clsoda::terminate(C_INT32 *istate)
@@ -276,7 +201,7 @@ void Clsoda::terminate(C_INT32 *istate)
 
 
 /*
-   Terminate lsoda due to various error conditions.
+  Terminate lsoda due to various error conditions.
 */
 
 
@@ -295,17 +220,17 @@ void Clsoda::terminate2(C_FLOAT64 *y,
 
 
 /*
-   The following block handles all successful returns from lsoda.
-   If itask != 1, y is loaded from yh and t is set accordingly.
-   *Istate is set to 2, the illegal input counter is zeroed, and the
-   optional outputs are loaded into the work arrays before returning.
+  The following block handles all successful returns from lsoda.
+  If itask != 1, y is loaded from yh and t is set accordingly.
+  *Istate is set to 2, the illegal input counter is zeroed, and the
+  optional outputs are loaded into the work arrays before returning.
 */
 
 void Clsoda::successreturn(C_FLOAT64 *y,
                            C_FLOAT64 *t,
                            C_INT32 itask,
-                           C_INT32 ihit, 
-                           C_FLOAT64 tcrit, 
+                           C_INT32 ihit,
+                           C_FLOAT64 tcrit,
                            C_INT32 *istate)
 {
   C_INT32 i;
@@ -323,8 +248,8 @@ void Clsoda::successreturn(C_FLOAT64 *y,
 
 
 /*
-   In this version all memory allocated using malloc is freed upon exit.
-   Therefore *istate = 2 and *istate = 3 will not work.
+  In this version all memory allocated using malloc is freed upon exit.
+  Therefore *istate = 2 and *istate = 3 will not work.
 */
 
 void Clsoda::lsoda (CModel *model,
@@ -351,22 +276,22 @@ void Clsoda::lsoda (CModel *model,
                     C_FLOAT64 rwork6,
                     C_FLOAT64 rwork7)
   /*
-   If the user does not supply any of these values, the calling program
-   should initialize those untouched working variables to zero.
+    If the user does not supply any of these values, the calling program
+    should initialize those untouched working variables to zero.
 
-   _ml = iwork1
-   mu = iwork2
-   ixpr = iwork5
-   mxstep = iwork6
-   mxhnil = iwork7
-   mxordn = iwork8
-   mxords = iwork9
+    _ml = iwork1
+    mu = iwork2
+    ixpr = iwork5
+    mxstep = iwork6
+    mxhnil = iwork7
+    mxordn = iwork8
+    mxords = iwork9
 
-   tcrit = rwork1
-   h0 = rwork5
-   hmax = rwork6
-   hmin = rwork7
-*/
+    tcrit = rwork1
+    h0 = rwork5
+    hmax = rwork6
+    hmin = rwork7
+  */
 {
   /* I had to introduce the model here so that callback function Eval works
      correctly */
@@ -390,42 +315,42 @@ void Clsoda::lsoda (CModel *model,
     If *istate = 1 and tout = t, return immediately.
   */
 
-  if (*istate < 1 || *istate > 3) 
+  if (*istate < 1 || *istate > 3)
     {
       if (prfl)
-	printf("\nlsoda -- illegal istate = %ld", *istate);
+        printf("\nlsoda -- illegal istate = %ld", *istate);
       terminate(istate);
       return;
     }
-  if (itask < 1 || itask > 5) 
+  if (itask < 1 || itask > 5)
     {
       if (prfl)
-	printf("\nlsoda -- illegal itask = %ld", itask);
+        printf("\nlsoda -- illegal itask = %ld", itask);
       terminate(istate);
       return;
     }
-  if (init == 0 && (*istate == 2 || *istate == 3)) 
+  if (init == 0 && (*istate == 2 || *istate == 3))
     {
       if (prfl)
-	printf("\nlsoda -- istate > 1 but lsoda not initialized");
+        printf("\nlsoda -- istate > 1 but lsoda not initialized");
       terminate(istate);
       return;
     }
-  if (*istate == 1) 
+  if (*istate == 1)
     {
       init = 0;
-      if (tout == *t) 
+      if (tout == *t)
         {
-	  ntrep++;
-	  if (ntrep < 5)
-	    return;
-	  if (prfl) 
+          ntrep++;
+          if (ntrep < 5)
+            return;
+          if (prfl)
             {
-	      printf("\nlsoda -- repeated calls with"
-		     " istate = 1 and tout = t");
-	      printf("\n         run aborted.. apparent infinite loop");
+              printf("\nlsoda -- repeated calls with"
+                     " istate = 1 and tout = t");
+              printf("\n         run aborted.. apparent infinite loop");
             }
-	  return;
+          return;
         }
     }
 
@@ -439,63 +364,63 @@ void Clsoda::lsoda (CModel *model,
     jt, _ml, and mu.
   */
 
-  if (*istate == 1 || *istate == 3) 
+  if (*istate == 1 || *istate == 3)
     {
       ntrep = 0;
-      if (neq <= 0) 
+      if (neq <= 0)
         {
-	  if (prfl)
-	    printf("\nlsoda -- neq = %ld is less than 1", neq);
-	  terminate(istate);
-	  return;
+          if (prfl)
+            printf("\nlsoda -- neq = %ld is less than 1", neq);
+          terminate(istate);
+          return;
         }
-      if (*istate == 3 && neq > n) 
+      if (*istate == 3 && neq > n)
         {
-	  if (prfl)
-	    printf("\nlsoda -- istate = 3 and neq increased");
-	  terminate(istate);
-	  return;
+          if (prfl)
+            printf("\nlsoda -- istate = 3 and neq increased");
+          terminate(istate);
+          return;
         }
       n = neq;
-      if (itol < 1 || itol > 4) 
+      if (itol < 1 || itol > 4)
         {
-	  if (prfl)
-	    printf("\nlsoda -- itol = %ld illegal", itol);
-	  terminate(istate);
-	  return;
+          if (prfl)
+            printf("\nlsoda -- itol = %ld illegal", itol);
+          terminate(istate);
+          return;
         }
-      if (iopt < 0 || iopt > 1) 
+      if (iopt < 0 || iopt > 1)
         {
-	  if (prfl)
-	    printf("\nlsoda -- iopt = %ld illegal", iopt);
-	  terminate(istate);
-	  return;
+          if (prfl)
+            printf("\nlsoda -- iopt = %ld illegal", iopt);
+          terminate(istate);
+          return;
         }
-      if (jt == 3 || jt < 1 || jt > 5) 
+      if (jt == 3 || jt < 1 || jt > 5)
         {
-	  if (prfl)
-	    printf("\nlsoda -- jt = %ld illegal", jt);
-	  terminate(istate);
-	  return;
+          if (prfl)
+            printf("\nlsoda -- jt = %ld illegal", jt);
+          terminate(istate);
+          return;
         }
       jtyp = jt;
-      if (jt > 2) 
+      if (jt > 2)
         {
-	  _ml = iwork1;
-	  mu = iwork2;
-	  if (_ml < 0 || _ml >= n) 
+          _ml = iwork1;
+          mu = iwork2;
+          if (_ml < 0 || _ml >= n)
             {
-	      if (prfl)
-		printf("\nlsoda -- _ml = %ld not between 1 and neq", _ml);
-	      terminate(istate);
-	      return;
+              if (prfl)
+                printf("\nlsoda -- _ml = %ld not between 1 and neq", _ml);
+              terminate(istate);
+              return;
             }
-	  if (mu < 0 || mu >= n) 
+          if (mu < 0 || mu >= n)
             {
-	      if (prfl)
-		printf("\nlsoda -- mu = %ld not between 1 and neq", mu);
-	      terminate(istate);
-	      return;
+              if (prfl)
+                printf("\nlsoda -- mu = %ld not between 1 and neq", mu);
+              terminate(istate);
+              return;
             }
         }
 
@@ -503,106 +428,106 @@ void Clsoda::lsoda (CModel *model,
 
       /* Default options.   */
 
-      if (iopt == 0) 
+      if (iopt == 0)
         {
-	  ixpr = 0;
-	  mxstep = mxstp0;
-	  mxhnil = mxhnl0;
-	  hmxi = 0.;
-	  hmin = 0.;
-	  if (*istate == 1) 
+          ixpr = 0;
+          mxstep = mxstp0;
+          mxhnil = mxhnl0;
+          hmxi = 0.;
+          hmin = 0.;
+          if (*istate == 1)
             {
-	      h0 = 0.;
-	      mxordn = mord[1];
-	      mxords = mord[2];
+              h0 = 0.;
+              mxordn = mord[1];
+              mxords = mord[2];
             }
         }        /*   end if (iopt == 0)   */
 
       /* Optional inputs.   */
 
       else {             /*   if (iopt = 1)  */
-	ixpr = iwork5;
-	if (ixpr < 0 || ixpr > 2) 
-	  {
-	    if (prfl)
-	      printf("\nlsoda -- ixpr = %ld is illegal", ixpr);
-	    terminate(istate);
-	    return;
-	  }
-	mxstep = iwork6;
-	if (mxstep < 0) 
-	  {
-	    if (prfl)
-	      printf("\nlsoda -- mxstep < 0");
-	    terminate(istate);
-	    return;
-	  }
-	if (mxstep == 0)
-	  mxstep = mxstp0;
-	mxhnil = iwork7;
-	if (mxhnil < 0) 
-	  {
-	    if (prfl)
-	      printf("\nlsoda -- mxhnil < 0");
-	    terminate(istate);
-	    return;
-	  }
-	if (*istate == 1) 
-	  {
-	    h0 = rwork5;
-	    mxordn = iwork8;
-	    if (mxordn < 0) 
-	      {
-		if (prfl)
-		  printf("\nlsoda -- mxordn = %ld is less than 0", mxordn);
-		terminate(istate);
-		return;
-	      }
-	    if (mxordn == 0)
-	      mxordn = 100;
-	    mxordn = min(mxordn, mord[1]);
-	    mxords = iwork9;
-	    if (mxords < 0) 
-	      {
-		if (prfl)
-		  printf("\nlsoda -- mxords = %ld is less than 0", mxords);
-		terminate(istate);
-		return;
-	      }
-	    if (mxords == 0)
-	      mxords = 100;
-	    mxords = min(mxords, mord[2]);
-	    if ((tout - *t) * h0 < 0.) 
-	      {
-		if (prfl) 
-		  {
-		    printf("\nlsoda -- tout = %g behind t = %g", tout, *t);
-		    printf("\n         integration direction is given by %g",
-			   h0);
-		  }
-		terminate(istate);
-		return;
-	      }
-	  }         /*  end if (*istate == 1)  */
-	hmax = rwork6;
-	if (hmax < 0.) 
-	  {
-	    if (prfl)
-	      printf("\nlsoda -- hmax < 0.");
-	    terminate(istate);
-	    return;
-	  }
-	hmxi = 0.;
-	if (hmax > 0)
-	  hmxi = 1. / hmax;
-	hmin = rwork7;
-	if (hmin < 0.) 
-	  {
-	    if (prfl)
-	      printf("\nlsoda -- hmin < 0.");
-	    terminate(istate);
-	    return;
-	  }
+        ixpr = iwork5;
+        if (ixpr < 0 || ixpr > 2)
+          {
+            if (prfl)
+              printf("\nlsoda -- ixpr = %ld is illegal", ixpr);
+            terminate(istate);
+            return;
+          }
+        mxstep = iwork6;
+        if (mxstep < 0)
+          {
+            if (prfl)
+              printf("\nlsoda -- mxstep < 0");
+            terminate(istate);
+            return;
+          }
+        if (mxstep == 0)
+          mxstep = mxstp0;
+        mxhnil = iwork7;
+        if (mxhnil < 0)
+          {
+            if (prfl)
+              printf("\nlsoda -- mxhnil < 0");
+            terminate(istate);
+            return;
+          }
+        if (*istate == 1)
+          {
+            h0 = rwork5;
+            mxordn = iwork8;
+            if (mxordn < 0)
+              {
+                if (prfl)
+                  printf("\nlsoda -- mxordn = %ld is less than 0", mxordn);
+                terminate(istate);
+                return;
+              }
+            if (mxordn == 0)
+              mxordn = 100;
+            mxordn = min(mxordn, mord[1]);
+            mxords = iwork9;
+            if (mxords < 0)
+              {
+                if (prfl)
+                  printf("\nlsoda -- mxords = %ld is less than 0", mxords);
+                terminate(istate);
+                return;
+              }
+            if (mxords == 0)
+              mxords = 100;
+            mxords = min(mxords, mord[2]);
+            if ((tout - *t) * h0 < 0.)
+              {
+                if (prfl)
+                  {
+                    printf("\nlsoda -- tout = %g behind t = %g", tout, *t);
+                    printf("\n         integration direction is given by %g",
+                           h0);
+                  }
+                terminate(istate);
+                return;
+              }
+          }         /*  end if (*istate == 1)  */
+        hmax = rwork6;
+        if (hmax < 0.)
+          {
+            if (prfl)
+              printf("\nlsoda -- hmax < 0.");
+            terminate(istate);
+            return;
+          }
+        hmxi = 0.;
+        if (hmax > 0)
+          hmxi = 1. / hmax;
+        hmin = rwork7;
+        if (hmin < 0.)
+          {
+            if (prfl)
+              printf("\nlsoda -- hmin < 0.");
+            terminate(istate);
+            return;
+          }
       }      /*   end else   */      /*   end iopt = 1   */
     }    /*   end if (*istate == 1 || *istate == 3)   */
   /*
@@ -610,11 +535,11 @@ void Clsoda::lsoda (CModel *model,
 
     Also allocate memory for yh, wm, ewt, savf, acor, ipvt.
   */
-  if (*istate == 1) 
+  if (*istate == 1)
     {
       /*
-	If memory were not freed, *istate = 3 need not reallocate memory.
-	Hence this section is not executed by *istate = 3.
+        If memory were not freed, *istate = 3 need not reallocate memory.
+        Hence this section is not executed by *istate = 3.
       */
       sqrteta = sqrt(ETA);
       meth = 1;
@@ -622,120 +547,120 @@ void Clsoda::lsoda (CModel *model,
       lenyh = 1 + max(mxordn, mxords);
 
       yh = (C_FLOAT64 **) mem_malloc((1 + lenyh) * sizeof(*yh));
-      if (yh == NULL) 
+      if (yh == NULL)
         {
-	  if (prfl)
-	    printf("\nlsoda -- insufficient memory for your problem");
-	  terminate(istate);
-	  return;
+          if (prfl)
+            printf("\nlsoda -- insufficient memory for your problem");
+          terminate(istate);
+          return;
         }
       for (i = 1 ; i <= lenyh ; i++)
-	yh[i] = (C_FLOAT64 *) mem_malloc((1 + nyh) * sizeof(C_FLOAT64));
+        yh[i] = (C_FLOAT64 *) mem_malloc((1 + nyh) * sizeof(C_FLOAT64));
 
       wm = (C_FLOAT64 **) mem_malloc((1 + nyh) * sizeof(*wm));
-      if (wm == NULL) 
+      if (wm == NULL)
         {
-	  mem_free(yh);
-	  if (prfl)
-	    printf("\nlsoda -- insufficient memory for your problem");
-	  terminate(istate);
-	  return;
+          mem_free(yh);
+          if (prfl)
+            printf("\nlsoda -- insufficient memory for your problem");
+          terminate(istate);
+          return;
         }
       for (i = 1 ; i <= nyh ; i++)
-	wm[i] = (C_FLOAT64 *) mem_malloc((1 + nyh) * sizeof(C_FLOAT64));
+        wm[i] = (C_FLOAT64 *) mem_malloc((1 + nyh) * sizeof(C_FLOAT64));
 
       ewt = (C_FLOAT64 *) mem_malloc((1 + nyh) * sizeof(C_FLOAT64));
-      if (ewt == NULL) 
+      if (ewt == NULL)
         {
-	  mem_free(yh);
-	  mem_free(wm);
-	  if (prfl)
-	    printf("\nlsoda -- insufficient memory for your problem");
-	  terminate(istate);
-	  return;
+          mem_free(yh);
+          mem_free(wm);
+          if (prfl)
+            printf("\nlsoda -- insufficient memory for your problem");
+          terminate(istate);
+          return;
         }
 
       savf = (C_FLOAT64 *) mem_malloc((1 + nyh) * sizeof(C_FLOAT64));
-      if (savf == NULL) 
+      if (savf == NULL)
         {
-	  mem_free(yh);
-	  mem_free(wm);
-	  mem_free(ewt);
-	  if (prfl)
-	    printf("\nlsoda -- insufficient memory for your problem");
-	  terminate(istate);
-	  return;
+          mem_free(yh);
+          mem_free(wm);
+          mem_free(ewt);
+          if (prfl)
+            printf("\nlsoda -- insufficient memory for your problem");
+          terminate(istate);
+          return;
         }
 
       /*
-	printf("\nLSODA Block B - before acor alloc");
-	printf("\n -  low = %lf, ampl = %lf, dens = %d",
-	sparam[24].low, sparam[24].ampl, sparam[24].dens);
-	printf("\nlow = %Fp", &sparam[24].low);
-	printf("\nacor = %Fp", acor);
+        printf("\nLSODA Block B - before acor alloc");
+        printf("\n -  low = %lf, ampl = %lf, dens = %d",
+        sparam[24].low, sparam[24].ampl, sparam[24].dens);
+        printf("\nlow = %Fp", &sparam[24].low);
+        printf("\nacor = %Fp", acor);
       */
       acor = (C_FLOAT64 *) mem_malloc((1 + nyh) * sizeof(C_FLOAT64));
-      if (acor == NULL) 
+      if (acor == NULL)
         {
-	  mem_free(yh);
-	  mem_free(wm);
-	  mem_free(ewt);
-	  mem_free(savf);
-	  if (prfl)
-	    printf("\nlsoda -- insufficient memory for your problem");
-	  terminate(istate);
-	  return;
+          mem_free(yh);
+          mem_free(wm);
+          mem_free(ewt);
+          mem_free(savf);
+          if (prfl)
+            printf("\nlsoda -- insufficient memory for your problem");
+          terminate(istate);
+          return;
         }
 
       ipvt = (C_INT32 *) mem_malloc((1 + nyh) * sizeof(C_INT32));
-      if (ipvt == NULL) 
+      if (ipvt == NULL)
         {
-	  mem_free(yh);
-	  mem_free(wm);
-	  mem_free(ewt);
-	  mem_free(savf);
-	  mem_free(acor);
-	  if (prfl)
-	    printf("\nlsoda -- insufficient memory for your problem");
-	  terminate(istate);
-	  return;
+          mem_free(yh);
+          mem_free(wm);
+          mem_free(ewt);
+          mem_free(savf);
+          mem_free(acor);
+          if (prfl)
+            printf("\nlsoda -- insufficient memory for your problem");
+          terminate(istate);
+          return;
         }
     }
   /*
     Check rtol and atol for legality.
   */
-  if (*istate == 1 || *istate == 3) 
+  if (*istate == 1 || *istate == 3)
     {
       rtoli = rtol[1];
       atoli = atol[1];
-      for (i = 1 ; i <= n ; i++) 
+      for (i = 1 ; i <= n ; i++)
         {
-	  if (itol >= 3)
-	    rtoli = rtol[i];
-	  if (itol == 2 || itol == 4)
-	    atoli = atol[i];
-	  if (rtoli < 0.) 
+          if (itol >= 3)
+            rtoli = rtol[i];
+          if (itol == 2 || itol == 4)
+            atoli = atol[i];
+          if (rtoli < 0.)
             {
-	      if (prfl)
-		printf("\nlsoda -- rtol = %g is less than 0.", rtoli);
-	      terminate(istate);
-	      freevectors();
-	      return;
+              if (prfl)
+                printf("\nlsoda -- rtol = %g is less than 0.", rtoli);
+              terminate(istate);
+              freevectors();
+              return;
             }
-	  if (atoli < 0.) 
+          if (atoli < 0.)
             {
-	      if (prfl)
-		printf("\nlsoda -- atol = %g is less than 0.", atoli);
-	      terminate(istate);
-	      freevectors();
-	      return;
+              if (prfl)
+                printf("\nlsoda -- atol = %g is less than 0.", atoli);
+              terminate(istate);
+              freevectors();
+              return;
             }
         }     /*   end for   */
     }   /*   end if (*istate == 1 || *istate == 3)   */
   /*
     If *istate = 3, set flag to signal parameter changes to stoda.
   */
-  if (*istate == 3) 
+  if (*istate == 3)
     {
       jstart = -1;
     }
@@ -747,24 +672,24 @@ void Clsoda::lsoda (CModel *model,
     and the calculation of the initial step size.
     The error weights in ewt are inverted after being loaded.
   */
-  if (*istate == 1) 
+  if (*istate == 1)
     {
       tn = *t;
       tsw = *t;
       maxord = mxordn;
-      if (itask == 4 || itask == 5) 
+      if (itask == 4 || itask == 5)
         {
-	  tcrit = rwork1;
-	  if ((tcrit - tout) * (tout - *t)  < 0.) 
+          tcrit = rwork1;
+          if ((tcrit - tout) * (tout - *t)  < 0.)
             {
-	      if (prfl)
-		printf("\nlsoda -- itask = 4 or 5 and tcrit behind tout");
-	      terminate(istate);
-	      freevectors();
-	      return;
+              if (prfl)
+                printf("\nlsoda -- itask = 4 or 5 and tcrit behind tout");
+              terminate(istate);
+              freevectors();
+              return;
             }
-	  if (h0 != 0. && (*t + h0 - tcrit) * h0 > 0.)
-	    h0 = tcrit - *t;
+          if (h0 != 0. && (*t + h0 - tcrit) * h0 > 0.)
+            h0 = tcrit - *t;
         }
       jstart = 0;
       nhnil = 0;
@@ -780,107 +705,107 @@ void Clsoda::lsoda (CModel *model,
       msbp = 20;
       mxncf = 10;
       /*
-	Initial call to f.
+        Initial call to f.
       */
       eval(neq, *t, y, yh[2]);
       nfe = 1;
       /*
-	Load the initial value vector in yh.
+        Load the initial value vector in yh.
       */
       yp1 = yh[1];
       for (i = 1 ; i <= n ; i++)
-	yp1[i] = y[i];
+        yp1[i] = y[i];
       /*
-	Load and invert the ewt array.  (h is temporarily set to 1.)
+        Load and invert the ewt array.  (h is temporarily set to 1.)
       */
       nq = 1;
       h = 1.;
       ewset(itol, rtol, atol, y);
       for (i=1 ; i<=n ; i++)
-        
+
         {
-	  if (ewt[i]<=0.)
+          if (ewt[i]<=0.)
             {
-	      if (prfl)
-		printf("\nlsoda -- ewt[%ld] = %g <= 0.", i, ewt[i]);
-	      terminate(istate);
-	      return;
+              if (prfl)
+                printf("\nlsoda -- ewt[%ld] = %g <= 0.", i, ewt[i]);
+              terminate(istate);
+              return;
             }
-	  ewt[i] = 1. / ewt[i];
+          ewt[i] = 1. / ewt[i];
         }
 
       /*
-	The coding below computes the step size, h0, to be attempted on the
-	first step, unless the user has supplied a value for this.
-	First check that tout - *t differs significantly from zero.
-	A scalar tolerance quantity tol is computed, as max(rtol[i])
-	if this is positive, or max(atol[i]/fabs(y[i])) otherwise, adjusted
-	so as to be between 100*ETA and 0.001.
-	Then the computed value h0 is given by
+        The coding below computes the step size, h0, to be attempted on the
+        first step, unless the user has supplied a value for this.
+        First check that tout - *t differs significantly from zero.
+        A scalar tolerance quantity tol is computed, as max(rtol[i])
+        if this is positive, or max(atol[i]/fabs(y[i])) otherwise, adjusted
+        so as to be between 100*ETA and 0.001.
+        Then the computed value h0 is given by
 
-	h0^(-2) = 1. / (tol * w0^2) + tol * (norm(f))^2
+        h0^(-2) = 1. / (tol * w0^2) + tol * (norm(f))^2
 
-	where   w0     = max(fabs(*t), fabs(tout)),
-	f      = the initial value of the vector f(t,y), and
-	norm() = the weighted vector norm used throughout, given by
-	the vmnorm function routine, and weighted by the
-	tolerances initially loaded into the ewt array.
+        where   w0     = max(fabs(*t), fabs(tout)),
+        f      = the initial value of the vector f(t,y), and
+        norm() = the weighted vector norm used throughout, given by
+        the vmnorm function routine, and weighted by the
+        tolerances initially loaded into the ewt array.
 
-	The sign of h0 is inferred from the initial values of tout and *t.
-	fabs(h0) is made < fabs(tout-*t) in any case.
+        The sign of h0 is inferred from the initial values of tout and *t.
+        fabs(h0) is made < fabs(tout-*t) in any case.
       */
-      if (h0 == 0.) 
+      if (h0 == 0.)
         {
-	  tdist = fabs(tout - *t);
-	  w0 = max(fabs(*t), fabs(tout));
-	  if (tdist < 2. * ETA * w0) 
+          tdist = fabs(tout - *t);
+          w0 = max(fabs(*t), fabs(tout));
+          if (tdist < 2. * ETA * w0)
             {
-	      if (prfl)
-		printf("\nlsoda -- tout too close to " 
-		       "t to start integration\n ");
-	      terminate(istate);
-	      freevectors();
-	      return;
+              if (prfl)
+                printf("\nlsoda -- tout too close to "
+                       "t to start integration\n ");
+              terminate(istate);
+              freevectors();
+              return;
             }
-	  tol = rtol[1];
-	  if (itol > 2) 
+          tol = rtol[1];
+          if (itol > 2)
             {
-	      for (i = 2 ; i <= n ; i++)
-		tol = max(tol, rtol[i]);
+              for (i = 2 ; i <= n ; i++)
+                tol = max(tol, rtol[i]);
             }
-	  if (tol <= 0.) 
+          if (tol <= 0.)
             {
-	      atoli = atol[1];
-	      for (i = 1 ; i <= n ; i++) 
+              atoli = atol[1];
+              for (i = 1 ; i <= n ; i++)
                 {
-		  if (itol == 2 || itol == 4)
-		    atoli = atol[i];
-		  ayi = fabs(y[i]);
-		  if (ayi != 0.)
-		    tol = max(tol, atoli / ayi);
+                  if (itol == 2 || itol == 4)
+                    atoli = atol[i];
+                  ayi = fabs(y[i]);
+                  if (ayi != 0.)
+                    tol = max(tol, atoli / ayi);
                 }
             }
-	  tol = max(tol, 100. * ETA);
-	  tol = min(tol, 0.001);
-	  sum = vmnorm(n, yh[2], ewt);
-	  sum = 1. / (tol * w0 * w0) + tol * sum * sum;
-	  h0 = 1. / sqrt(sum);
-	  h0 = min(h0, tdist);
-	  h0 = h0 * ((tout - *t >= 0.) ? 1. : -1.);
+          tol = max(tol, 100. * ETA);
+          tol = min(tol, 0.001);
+          sum = vmnorm(n, yh[2], ewt);
+          sum = 1. / (tol * w0 * w0) + tol * sum * sum;
+          h0 = 1. / sqrt(sum);
+          h0 = min(h0, tdist);
+          h0 = h0 * ((tout - *t >= 0.) ? 1. : -1.);
         }                 /*   end if (h0 == 0.)   */
       /*
-	Adjust h0 if necessary to meet hmax bound.
+        Adjust h0 if necessary to meet hmax bound.
       */
       rh = fabs(h0) * hmxi;
       if (rh > 1.)
-	h0 /= rh;
+        h0 /= rh;
       /*
-	Load h with h0 and scale yh[2] by h0.
+        Load h with h0 and scale yh[2] by h0.
       */
       h = h0;
       yp1 = yh[2];
       for (i = 1 ; i <= n ; i++)
-	yp1[i] *= h0;
+        yp1[i] *= h0;
     }         /* if (*istate == 1)   */
 
   /*
@@ -888,115 +813,115 @@ void Clsoda::lsoda (CModel *model,
     The next code block is for continuation calls only (*istate = 2 or 3)
     and is to check stop conditions before taking a step.
   */
-  if (*istate == 2 || *istate == 3) 
+  if (*istate == 2 || *istate == 3)
     {
       nslast = nst;
-      switch (itask) 
+      switch (itask)
         {
         case 1 :
-	  if ((tn - tout) * h >= 0.) 
+          if ((tn - tout) * h >= 0.)
             {
-	      intdy(tout, 0, y, &iflag);
-	      if (iflag != 0) 
+              intdy(tout, 0, y, &iflag);
+              if (iflag != 0)
                 {
-		  if (prfl)
-		    printf("\nlsoda -- trouble from intdy,"
-			   " itask = %ld, tout = %g",
-			   itask, tout);
-		  terminate(istate);
-		  freevectors();
-		  return;
+                  if (prfl)
+                    printf("\nlsoda -- trouble from intdy,"
+                           " itask = %ld, tout = %g",
+                           itask, tout);
+                  terminate(istate);
+                  freevectors();
+                  return;
                 }
-	      *t = tout;
-	      *istate = 2;
-	      illin = 0;
-	      freevectors();
-	      return;
+              *t = tout;
+              *istate = 2;
+              illin = 0;
+              freevectors();
+              return;
             }
-	  break;
+          break;
         case 2 :
-	  break;
+          break;
         case 3 :
-	  tp = tn - hu * (1. + 100. * ETA);
-	  if ((tp - tout) * h > 0.) 
+          tp = tn - hu * (1. + 100. * ETA);
+          if ((tp - tout) * h > 0.)
             {
-	      if (prfl)
-		printf("\nlsoda -- itask = %ld and tout behind tcur - hu",
-		       itask);
-	      terminate(istate);
-	      freevectors();
-	      return;
+              if (prfl)
+                printf("\nlsoda -- itask = %ld and tout behind tcur - hu",
+                       itask);
+              terminate(istate);
+              freevectors();
+              return;
             }
-	  if ((tn - tout) * h < 0.)
-	    break;
-	  successreturn(y, t, itask, ihit, tcrit, istate);
-	  return;
+          if ((tn - tout) * h < 0.)
+            break;
+          successreturn(y, t, itask, ihit, tcrit, istate);
+          return;
         case 4 :
-	  tcrit = rwork1;
-	  if ((tn - tcrit) * h > 0.) 
+          tcrit = rwork1;
+          if ((tn - tcrit) * h > 0.)
             {
-	      if (prfl)
-		printf("\nlsoda -- itask = 4 or 5 and tcrit behind tcur");
-	      terminate(istate);
-	      freevectors();
-	      return;
+              if (prfl)
+                printf("\nlsoda -- itask = 4 or 5 and tcrit behind tcur");
+              terminate(istate);
+              freevectors();
+              return;
             }
-	  if ((tcrit - tout) * h < 0.) 
+          if ((tcrit - tout) * h < 0.)
             {
-	      if (prfl)
-		printf("\nlsoda -- itask = 4 or 5 and tcrit behind tout");
-	      terminate(istate);
-	      freevectors();
-	      return;
+              if (prfl)
+                printf("\nlsoda -- itask = 4 or 5 and tcrit behind tout");
+              terminate(istate);
+              freevectors();
+              return;
             }
-	  if ((tn - tout) * h >= 0.) 
+          if ((tn - tout) * h >= 0.)
             {
-	      intdy(tout, 0, y, &iflag);
-	      if (iflag != 0) 
+              intdy(tout, 0, y, &iflag);
+              if (iflag != 0)
                 {
-		  if (prfl)
-		    printf("\nlsoda -- trouble from intdy,"
-			   " itask = %ld, tout = %g",
-			   itask, tout);
-		  terminate(istate);
-		  freevectors();
-		  return;
+                  if (prfl)
+                    printf("\nlsoda -- trouble from intdy,"
+                           " itask = %ld, tout = %g",
+                           itask, tout);
+                  terminate(istate);
+                  freevectors();
+                  return;
                 }
-	      *t = tout;
-	      *istate = 2;
-	      illin = 0;
-	      freevectors();
-	      return;
+              *t = tout;
+              *istate = 2;
+              illin = 0;
+              freevectors();
+              return;
             }
         case 5 :
-	  if (itask == 5) 
+          if (itask == 5)
             {
-	      tcrit = rwork1;
-	      if ((tn - tcrit) * h > 0.) 
+              tcrit = rwork1;
+              if ((tn - tcrit) * h > 0.)
                 {
-		  if (prfl)
-		    printf("\nlsoda -- itask = 4 or 5" 
-			   " and tcrit behind tcur");
-		  terminate(istate);
-		  freevectors();
-		  return;
+                  if (prfl)
+                    printf("\nlsoda -- itask = 4 or 5"
+                           " and tcrit behind tcur");
+                  terminate(istate);
+                  freevectors();
+                  return;
                 }
             }
-	  hmx = fabs(tn) + fabs(h);
-	  ihit = fabs(tn - tcrit) <= (100. * ETA * hmx);
-	  if (ihit) 
+          hmx = fabs(tn) + fabs(h);
+          ihit = fabs(tn - tcrit) <= (100. * ETA * hmx);
+          if (ihit)
             {
-	      *t = tcrit;
-	      successreturn(y, t, itask, ihit, tcrit, istate);
-	      return;
+              *t = tcrit;
+              successreturn(y, t, itask, ihit, tcrit, istate);
+              return;
             }
-	  tnext = tn + h * (1. + 4. * ETA);
-	  if ((tnext - tcrit) * h <= 0.)
-	    break;
-	  h = (tcrit - tn) * (1. - 4. * ETA);
-	  if (*istate == 2)
-	    jstart = -2;
-	  break;
+          tnext = tn + h * (1. + 4. * ETA);
+          if ((tnext - tcrit) * h <= 0.)
+            break;
+          h = (tcrit - tn) * (1. - 4. * ETA);
+          if (*istate == 2)
+            jstart = -2;
+          break;
         }      /*   end switch   */
     }      /*   end if (*istate == 2 || *istate == 3)   */
 
@@ -1011,263 +936,263 @@ void Clsoda::lsoda (CModel *model,
     start of problem).  Check for too much accuracy being requested, and
     check for h below the roundoff level in *t.
   */
-  while (1) 
+  while (1)
     {
-      if (*istate != 1 || nst != 0) 
+      if (*istate != 1 || nst != 0)
         {
-	  if ((nst - nslast) >= mxstep) 
+          if ((nst - nslast) >= mxstep)
             {
-	      if (prfl)
-		printf("\nlsoda -- %ld steps taken before reaching tout",
-		       mxstep);
-	      *istate = -1;
-	      terminate2(y, t);
-	      return;
+              if (prfl)
+                printf("\nlsoda -- %ld steps taken before reaching tout",
+                       mxstep);
+              *istate = -1;
+              terminate2(y, t);
+              return;
             }
-	  ewset(itol, rtol, atol, yh[1]);
-	  for (i = 1 ; i <= n ; i++) 
+          ewset(itol, rtol, atol, yh[1]);
+          for (i = 1 ; i <= n ; i++)
             {
-	      if (ewt[i] <= 0.) 
+              if (ewt[i] <= 0.)
                 {
-		  if (prfl)
-		    printf("\nlsoda -- ewt[%ld] = %g <= 0.", i, ewt[i]);
-		  *istate = -6;
-		  terminate2(y, t);
-		  return;
+                  if (prfl)
+                    printf("\nlsoda -- ewt[%ld] = %g <= 0.", i, ewt[i]);
+                  *istate = -6;
+                  terminate2(y, t);
+                  return;
                 }
-	      ewt[i] = 1. / ewt[i];
+              ewt[i] = 1. / ewt[i];
             }
         }
       tolsf = ETA * vmnorm(n, yh[1], ewt);
-      if (tolsf > 0.01) 
+      if (tolsf > 0.01)
         {
-	  tolsf = tolsf * 200.;
-	  if (nst == 0) 
+          tolsf = tolsf * 200.;
+          if (nst == 0)
             {
-	      if (prfl) 
+              if (prfl)
                 {
-		  printf("\nlsoda -- at start of problem,"
-			 " too much accuracy");
-		  printf("\n         requested for precision of machine,");
-		  printf("\n         suggested scaling factor = %g", tolsf);
+                  printf("\nlsoda -- at start of problem,"
+                         " too much accuracy");
+                  printf("\n         requested for precision of machine,");
+                  printf("\n         suggested scaling factor = %g", tolsf);
                 }
-	      terminate(istate);
-	      freevectors();
-	      return;
+              terminate(istate);
+              freevectors();
+              return;
             }
-	  if (prfl) 
+          if (prfl)
             {
-	      printf("\nlsoda -- at t = %g, too much accuracy requested",
-		     *t);
-	      printf("\n         for precision of machine, suggested");
-	      printf("\n         scaling factor = %g", tolsf);
+              printf("\nlsoda -- at t = %g, too much accuracy requested",
+                     *t);
+              printf("\n         for precision of machine, suggested");
+              printf("\n         scaling factor = %g", tolsf);
             }
-	  *istate = -2;
-	  terminate2(y, t);
-	  return;
+          *istate = -2;
+          terminate2(y, t);
+          return;
         }
-      if ((tn + h) == tn) 
+      if ((tn + h) == tn)
         {
-	  nhnil++;
-	  if (nhnil <= mxhnil) 
+          nhnil++;
+          if (nhnil <= mxhnil)
             {
-	      if (prfl) 
+              if (prfl)
                 {
-		  printf("\nlsoda -- warning..internal t = %g and h = %g are",
-			 tn, h);
-		  printf("\n         such that in the machine,"
-			 " t + h = t on the next step");
-		  printf("\n         solver will continue anyway.");
+                  printf("\nlsoda -- warning..internal t = %g and h = %g are",
+                         tn, h);
+                  printf("\n         such that in the machine,"
+                         " t + h = t on the next step");
+                  printf("\n         solver will continue anyway.");
                 }
-	      if ((nhnil == mxhnil) && prfl) 
+              if ((nhnil == mxhnil) && prfl)
                 {
-		  printf("\nlsoda -- above warning has been issued %ld times,",
-			 nhnil);
-		  printf("\n         it will not be issued again"
-			 " for this problem");
+                  printf("\nlsoda -- above warning has been issued %ld times,",
+                         nhnil);
+                  printf("\n         it will not be issued again"
+                         " for this problem");
                 }
             }
         }
 
       /*
-	Call stoda
+        Call stoda
       */
       stoda(neq, y);
       /*      in Win32 systems it seems that a sleep call is needed */
       /*      to yield some control? */
       /*      Sleep(0); */
       /*
-	Print extra information
+        Print extra information
       */
       if ((ixpr == 2) && prfl)
-        
+
         {
-	  printf("\nmeth= %ld,   order= %ld,   nfe= %ld,   nje= %ld",
-		 meth, nq, nfe, nje);
-	  printf("\nt= %20.15e,   h= %20.15e,   nst=%ld", tn, h, nst);
+          printf("\nmeth= %ld,   order= %ld,   nfe= %ld,   nje= %ld",
+                 meth, nq, nfe, nje);
+          printf("\nt= %20.15e,   h= %20.15e,   nst=%ld", tn, h, nst);
         }
 
 
-      if (kflag == 0) 
+      if (kflag == 0)
         {
 
-	  /*
-	    Block f.
-	    The following block handles the case of a successful return from the
-	    core integrator (kflag = 0).
-	    If a method switch was just made, record tsw, reset maxord,
-	    set jstart to -1 to signal stoda to complete the switch,
-	    and do extra printing of data if ixpr != 0.
-	    Then, in any case, check for stop conditions.
-	  */
-	  init = 1;
-	  if (meth != mused) 
+          /*
+            Block f.
+            The following block handles the case of a successful return from the
+            core integrator (kflag = 0).
+            If a method switch was just made, record tsw, reset maxord,
+            set jstart to -1 to signal stoda to complete the switch,
+            and do extra printing of data if ixpr != 0.
+            Then, in any case, check for stop conditions.
+          */
+          init = 1;
+          if (meth != mused)
             {
-	      tsw = tn;
-	      maxord = mxordn;
-	      if (meth == 2)
-		maxord = mxords;
-	      jstart = -1;
-	      if (ixpr && prfl) 
+              tsw = tn;
+              maxord = mxordn;
+              if (meth == 2)
+                maxord = mxords;
+              jstart = -1;
+              if (ixpr && prfl)
                 {
-		  if (meth == 2)
-		    printf("\nlsoda -- a switch to the stiff"
-			   " method has occurred");
-		  if (meth == 1)
-		    printf("\nlsoda -- a switch to the nonstiff method"
-			   " has occurred");
-		  printf("\n         at t = %g, tentative step size h = %g,"
-			 " step nst = %ld",
-			 tn, h, nst);
+                  if (meth == 2)
+                    printf("\nlsoda -- a switch to the stiff"
+                           " method has occurred");
+                  if (meth == 1)
+                    printf("\nlsoda -- a switch to the nonstiff method"
+                           " has occurred");
+                  printf("\n         at t = %g, tentative step size h = %g,"
+                         " step nst = %ld",
+                         tn, h, nst);
                 }
             }         /*   end if (meth != mused)   */
-	  /*
-	    itask = 1.
-	    If tout has been reached, interpolate.
-	  */
-	  if (itask == 1) 
+          /*
+            itask = 1.
+            If tout has been reached, interpolate.
+          */
+          if (itask == 1)
             {
-	      if ((tn - tout) * h < 0.)
-		continue;
-	      intdy(tout, 0, y, &iflag);
-	      *t = tout;
-	      *istate = 2;
-	      illin = 0;
-	      freevectors();
-	      return;
+              if ((tn - tout) * h < 0.)
+                continue;
+              intdy(tout, 0, y, &iflag);
+              *t = tout;
+              *istate = 2;
+              illin = 0;
+              freevectors();
+              return;
             }
-	  /*
-	    itask = 2.
-	  */
-	  if (itask == 2) 
+          /*
+            itask = 2.
+          */
+          if (itask == 2)
             {
-	      successreturn(y, t, itask, ihit, tcrit, istate);
-	      return;
+              successreturn(y, t, itask, ihit, tcrit, istate);
+              return;
             }
-	  /*
-	    itask = 3.
-	    Jump to exit if tout was reached.
-	  */
-	  if (itask == 3) 
+          /*
+            itask = 3.
+            Jump to exit if tout was reached.
+          */
+          if (itask == 3)
             {
-	      if ((tn - tout) * h >= 0.) 
+              if ((tn - tout) * h >= 0.)
                 {
-		  successreturn(y, t, itask, ihit, tcrit, istate);
-		  return;
+                  successreturn(y, t, itask, ihit, tcrit, istate);
+                  return;
                 }
-	      continue;
+              continue;
             }
-	  /*
-	    itask = 4.
-	    See if tout or tcrit was reached.  Adjust h if necessary.
-	  */
-	  if (itask == 4) 
+          /*
+            itask = 4.
+            See if tout or tcrit was reached.  Adjust h if necessary.
+          */
+          if (itask == 4)
             {
-	      if ((tn - tout) * h >= 0.) 
+              if ((tn - tout) * h >= 0.)
                 {
-		  intdy(tout, 0, y, &iflag);
-		  *t = tout;
-		  *istate = 2;
-		  illin = 0;
-		  freevectors();
-		  return;
+                  intdy(tout, 0, y, &iflag);
+                  *t = tout;
+                  *istate = 2;
+                  illin = 0;
+                  freevectors();
+                  return;
                 }
-	      else 
+              else
                 {
-		  hmx = fabs(tn) + fabs(h);
-		  ihit = fabs(tn - tcrit) <= (100. * ETA * hmx);
-		  if (ihit) 
+                  hmx = fabs(tn) + fabs(h);
+                  ihit = fabs(tn - tcrit) <= (100. * ETA * hmx);
+                  if (ihit)
                     {
-		      successreturn(y, t, itask, ihit, tcrit, istate);
-		      return;
+                      successreturn(y, t, itask, ihit, tcrit, istate);
+                      return;
                     }
-		  tnext = tn + h * (1. + 4. * ETA);
-		  if ((tnext - tcrit) * h <= 0.)
-		    continue;
-		  h = (tcrit - tn) * (1. - 4. * ETA);
-		  jstart = -2;
-		  continue;
+                  tnext = tn + h * (1. + 4. * ETA);
+                  if ((tnext - tcrit) * h <= 0.)
+                    continue;
+                  h = (tcrit - tn) * (1. - 4. * ETA);
+                  jstart = -2;
+                  continue;
                 }
             }      /*   end if (itask == 4)   */
-	  /*
-	    itask = 5.
-	    See if tcrit was reached and jump to exit.
-	  */
-	  if (itask == 5) 
+          /*
+            itask = 5.
+            See if tcrit was reached and jump to exit.
+          */
+          if (itask == 5)
             {
-	      hmx = fabs(tn) + fabs(h);
-	      ihit = fabs(tn - tcrit) <= (100. * ETA * hmx);
-	      successreturn(y, t, itask, ihit, tcrit, istate);
-	      return;
+              hmx = fabs(tn) + fabs(h);
+              ihit = fabs(tn - tcrit) <= (100. * ETA * hmx);
+              successreturn(y, t, itask, ihit, tcrit, istate);
+              return;
             }
         }   /*   end if (kflag == 0)   */
       /*
-	kflag = -1, error test failed repeatedly or with fabs(h) = hmin.
-	kflag = -2, convergence failed repeatedly or with fabs(h) = hmin.
+        kflag = -1, error test failed repeatedly or with fabs(h) = hmin.
+        kflag = -2, convergence failed repeatedly or with fabs(h) = hmin.
       */
-      if (kflag == -1 || kflag == -2) 
+      if (kflag == -1 || kflag == -2)
         {
-	  if (prfl)
-	    printf("\nlsoda -- at t = %g and step size h = %g, the", tn, h);
-	  if (kflag == -1) 
+          if (prfl)
+            printf("\nlsoda -- at t = %g and step size h = %g, the", tn, h);
+          if (kflag == -1)
             {
-	      if (prfl) 
+              if (prfl)
                 {
-		  printf("\n         error test failed repeatedly or");
-		  printf("\n         with fabs(h) = hmin");
+                  printf("\n         error test failed repeatedly or");
+                  printf("\n         with fabs(h) = hmin");
                 }
-	      *istate = -4;
+              *istate = -4;
             }
-	  if (kflag == -2) 
+          if (kflag == -2)
             {
-	      if (prfl) 
+              if (prfl)
                 {
-		  printf("\n         corrector convergence " 
-			 " failed repeatedly or");
-		  printf("\n         with fabs(h) = hmin");
+                  printf("\n         corrector convergence "
+                         " failed repeatedly or");
+                  printf("\n         with fabs(h) = hmin");
                 }
-	      *istate = -5;
+              *istate = -5;
             }
-	  big = 0.;
-	  imxer = 1;
-	  for (i = 1 ; i <= n ; i++) 
+          big = 0.;
+          imxer = 1;
+          for (i = 1 ; i <= n ; i++)
             {
-	      size = fabs(acor[i]) * ewt[i];
-	      if (big < size) 
+              size = fabs(acor[i]) * ewt[i];
+              if (big < size)
                 {
-		  big = size;
-		  imxer = i;
+                  big = size;
+                  imxer = i;
                 }
             }
-	  terminate2(y, t);
-	  return;
+          terminate2(y, t);
+          return;
         }     /*   end if (kflag == -1 || kflag == -2)   */
     }   /*   end while   */
 
 }     /*   end lsoda   */
 
 
-void Clsoda::stoda(C_INT32 neq, 
+void Clsoda::stoda(C_INT32 neq,
                    C_FLOAT64 *y)
 {
   C_INT32 corflag, orderflag;
@@ -1283,6 +1208,7 @@ void Clsoda::stoda(C_INT32 neq,
     indicator miter, when this is != 0, and hence is independent
     of the type of chord method used, or the Jacobian structure.
     Communication with stoda is done with the following variables:
+
 
     jstart = an integer used for input only, with the following
     values and meanings:
@@ -1324,7 +1250,7 @@ void Clsoda::stoda(C_INT32 neq,
     the next increase.
     cfode is called to get the needed coefficients for both methods.
   */
-  if (jstart == 0) 
+  if (jstart == 0)
     {
       lmax = maxord + 1;
       nq = 1;
@@ -1338,7 +1264,7 @@ void Clsoda::stoda(C_INT32 neq,
       nslp = 0;
       ipup = miter;
       /*
-	Initialize switching parameters.  meth = 1 is assumed initially.
+        Initialize switching parameters.  meth = 1 is assumed initially.
       */
       icount = 20;
       irflag = 0;
@@ -1347,10 +1273,10 @@ void Clsoda::stoda(C_INT32 neq,
       ratio = 5.;
       cfode(2);
       for (i = 1 ; i <= 5 ; i++)
-	cm2[i] = tesco[i][2] * elco[i][i+1];
+        cm2[i] = tesco[i][2] * elco[i][i+1];
       cfode(1);
       for (i = 1 ; i <= 12 ; i++)
-	cm1[i] = tesco[i][2] * elco[i][i+1];
+        cm1[i] = tesco[i][2] * elco[i][i+1];
       resetcoeff();
     }     /*   end if (jstart == 0)   */
   /*
@@ -1364,33 +1290,33 @@ void Clsoda::stoda(C_INT32 neq,
     If h or meth is being changed, ialth is reset to l = nq + 1
     to prevent further changes in h for that many steps.
   */
-  if (jstart == -1) 
+  if (jstart == -1)
     {
       ipup = miter;
       lmax = maxord + 1;
       if (ialth == 1)
-	ialth = 2;
-      if (meth != mused) 
+        ialth = 2;
+      if (meth != mused)
         {
-	  cfode(meth);
-	  ialth = l;
-	  resetcoeff();
+          cfode(meth);
+          ialth = l;
+          resetcoeff();
         }
-      if (h != hold) 
+      if (h != hold)
         {
-	  rh = h / hold;
-	  h = hold;
-	  scaleh(&rh, &pdh);
+          rh = h / hold;
+          h = hold;
+          scaleh(&rh, &pdh);
         }
     }      /*   if (jstart == -1)   */
 
-  if (jstart == -2) 
+  if (jstart == -2)
     {
-      if (h != hold) 
+      if (h != hold)
         {
-	  rh = h / hold;
-	  h = hold;
-	  scaleh(&rh, &pdh);
+          rh = h / hold;
+          h = hold;
+          scaleh(&rh, &pdh);
         }
     }     /*   if (jstart == -2)   */
 
@@ -1404,238 +1330,238 @@ void Clsoda::stoda(C_INT32 neq,
     In any case, prja is called at least every msbp steps.
   */
 
-  while (1) 
+  while (1)
     {
-      while (1) 
+      while (1)
         {
-	  if (fabs(rc - 1.) > ccmax)
-	    ipup = miter;
-	  if (nst >= nslp + msbp)
-	    ipup = miter;
-	  tn += h;
-	  for (j = nq ; j >= 1 ; j--)
-	    for (i1 = j ; i1 <= nq ; i1++) 
-	      {
-		yp1 = yh[i1];
-		yp2 = yh[i1+1];
-		for (i = 1 ; i <= n ; i++)
-		  yp1[i] += yp2[i];
-	      }
-	  pnorm = vmnorm(n, yh[1], ewt);
+          if (fabs(rc - 1.) > ccmax)
+            ipup = miter;
+          if (nst >= nslp + msbp)
+            ipup = miter;
+          tn += h;
+          for (j = nq ; j >= 1 ; j--)
+            for (i1 = j ; i1 <= nq ; i1++)
+              {
+                yp1 = yh[i1];
+                yp2 = yh[i1+1];
+                for (i = 1 ; i <= n ; i++)
+                  yp1[i] += yp2[i];
+              }
+          pnorm = vmnorm(n, yh[1], ewt);
 
-	  correction(neq, y, &corflag, pnorm, &del, &delp, &told, &ncf,
-		     &rh, &m);
-	  if (corflag == 0)
-	    break;
-	  if (corflag == 1) 
+          correction(neq, y, &corflag, pnorm, &del, &delp, &told, &ncf,
+                     &rh, &m);
+          if (corflag == 0)
+            break;
+          if (corflag == 1)
             {
-	      rh = max(rh, hmin / fabs(h));
-	      scaleh(&rh, &pdh);
-	      continue;
+              rh = max(rh, hmin / fabs(h));
+              scaleh(&rh, &pdh);
+              continue;
             }
-	  if (corflag == 2) 
+          if (corflag == 2)
             {
-	      kflag = -2;
-	      hold = h;
-	      jstart = 1;
-	      return;
+              kflag = -2;
+              hold = h;
+              jstart = 1;
+              return;
             }
         }      /*   end inner while (corrector loop)   */
       /*
-	The corrector has converged.  jcur is set to 0
-	to signal that the Jacobian involved may need updating later.
-	The local error test is done now.
+        The corrector has converged.  jcur is set to 0
+        to signal that the Jacobian involved may need updating later.
+        The local error test is done now.
       */
       jcur = 0;
       if (m == 0)
-	dsm = del / tesco[nq][2];
+        dsm = del / tesco[nq][2];
       if (m > 0)
-	dsm = vmnorm(n, acor, ewt) / tesco[nq][2];
-      if (dsm <= 1.) 
+        dsm = vmnorm(n, acor, ewt) / tesco[nq][2];
+      if (dsm <= 1.)
         {
-	  /*
-	    After a successful step, update the yh array.
-	    Decrease icount by 1, and if it is -1, consider switching methods.
-	    If a method switch is made, reset various parameters,
-	    rescale the yh array, and exit.  If there is no switch,
-	    consider changing h if ialth = 1.  Otherwise decrease ialth by 1.
-	    If ialth is then 1 and nq < maxord, then acor is saved for
-	    use in a possible order increase on the next step.
-	    If a change in h is considered, an increase or decrease in order
-	    by one is considered also.  A change in h is made only if it is by
-	    a factor of at least 1.1.  If not, ialth is set to 3 to prevent
-	    testing for that many steps.
-	  */
-	  kflag = 0;
-	  nst++;
-	  hu = h;
-	  nqu = nq;
-	  mused = meth;
-	  for (j = 1 ; j <= l ; j++) 
+          /*
+            After a successful step, update the yh array.
+            Decrease icount by 1, and if it is -1, consider switching methods.
+            If a method switch is made, reset various parameters,
+            rescale the yh array, and exit.  If there is no switch,
+            consider changing h if ialth = 1.  Otherwise decrease ialth by 1.
+            If ialth is then 1 and nq < maxord, then acor is saved for
+            use in a possible order increase on the next step.
+            If a change in h is considered, an increase or decrease in order
+            by one is considered also.  A change in h is made only if it is by
+            a factor of at least 1.1.  If not, ialth is set to 3 to prevent
+            testing for that many steps.
+          */
+          kflag = 0;
+          nst++;
+          hu = h;
+          nqu = nq;
+          mused = meth;
+          for (j = 1 ; j <= l ; j++)
             {
-	      yp1 = yh[j];
-	      r = el[j];
-	      for (i = 1 ; i <= n ; i++)
-		yp1[i] += r * acor[i];
+              yp1 = yh[j];
+              r = el[j];
+              for (i = 1 ; i <= n ; i++)
+                yp1[i] += r * acor[i];
             }
-	  icount--;
-	  if (icount < 0) 
+          icount--;
+          if (icount < 0)
             {
-	      methodswitch(dsm, pnorm, &pdh, &rh);
-	      if (meth != mused) 
+              methodswitch(dsm, pnorm, &pdh, &rh);
+              if (meth != mused)
                 {
-		  rh = max(rh, hmin / fabs(h));
-		  scaleh(&rh, &pdh);
-		  rmax = 10.;
-		  endstoda();
-		  break;
+                  rh = max(rh, hmin / fabs(h));
+                  scaleh(&rh, &pdh);
+                  rmax = 10.;
+                  endstoda();
+                  break;
                 }
             }
-	  /*
-	    No method switch is being made.  Do the usual step/order selection.
-	  */
-	  ialth--;
-	  if (ialth == 0) 
+          /*
+            No method switch is being made.  Do the usual step/order selection.
+          */
+          ialth--;
+          if (ialth == 0)
             {
-	      rhup = 0.;
-	      if (l != lmax) 
+              rhup = 0.;
+              if (l != lmax)
                 {
-		  yp1 = yh[lmax];
-		  for (i = 1 ; i <= n ; i++)
-		    savf[i] = acor[i] - yp1[i];
-		  dup = vmnorm(n, savf, ewt) / tesco[nq][3];
-		  exup = 1. / (C_FLOAT64) (l + 1);
-		  rhup = 1. / (1.4 * pow(dup, exup) + 0.0000014);
+                  yp1 = yh[lmax];
+                  for (i = 1 ; i <= n ; i++)
+                    savf[i] = acor[i] - yp1[i];
+                  dup = vmnorm(n, savf, ewt) / tesco[nq][3];
+                  exup = 1. / (C_FLOAT64) (l + 1);
+                  rhup = 1. / (1.4 * pow(dup, exup) + 0.0000014);
                 }
-	      orderswitch(&rhup, dsm, &pdh, &rh, &orderflag);
-	      /*
-		No change in h or nq.
-	      */
-	      if (orderflag == 0) 
+              orderswitch(&rhup, dsm, &pdh, &rh, &orderflag);
+              /*
+                No change in h or nq.
+              */
+              if (orderflag == 0)
                 {
-		  endstoda();
-		  break;
+                  endstoda();
+                  break;
                 }
-	      /*
-		h is changed, but not nq.
-	      */
-	      if (orderflag == 1) 
+              /*
+                h is changed, but not nq.
+              */
+              if (orderflag == 1)
                 {
-		  rh = max(rh, hmin / fabs(h));
-		  scaleh(&rh, &pdh);
-		  rmax = 10.;
-		  endstoda();
-		  break;
+                  rh = max(rh, hmin / fabs(h));
+                  scaleh(&rh, &pdh);
+                  rmax = 10.;
+                  endstoda();
+                  break;
                 }
-	      /*
-		both nq and h are changed.
-	      */
-	      if (orderflag == 2) 
+              /*
+                both nq and h are changed.
+              */
+              if (orderflag == 2)
                 {
-		  resetcoeff();
-		  rh = max(rh, hmin / fabs(h));
-		  scaleh(&rh, &pdh);
-		  rmax = 10.;
-		  endstoda();
-		  break;
+                  resetcoeff();
+                  rh = max(rh, hmin / fabs(h));
+                  scaleh(&rh, &pdh);
+                  rmax = 10.;
+                  endstoda();
+                  break;
                 }
             }            /*   end if (ialth == 0)   */
-	  if (ialth > 1 || l == lmax) 
+          if (ialth > 1 || l == lmax)
             {
-	      endstoda();
-	      break;
+              endstoda();
+              break;
             }
-	  yp1 = yh[lmax];
-	  for (i = 1 ; i <= n ; i++)
-	    yp1[i] = acor[i];
-	  endstoda();
-	  break;
+          yp1 = yh[lmax];
+          for (i = 1 ; i <= n ; i++)
+            yp1[i] = acor[i];
+          endstoda();
+          break;
         }       /*   end if (dsm <= 1.)   */
       /*
-	The error test failed.  kflag keeps track of multiple failures.
-	Restore tn and the yh array to their previous values, and prepare
-	to try the step again.  Compute the optimum step size for this or
-	one lower.  After 2 or more failures, h is forced to decrease
-	by a factor of 0.2 or less.
+        The error test failed.  kflag keeps track of multiple failures.
+        Restore tn and the yh array to their previous values, and prepare
+        to try the step again.  Compute the optimum step size for this or
+        one lower.  After 2 or more failures, h is forced to decrease
+        by a factor of 0.2 or less.
       */
-      else 
+      else
         {
-	  kflag--;
-	  tn = told;
-	  for (j = nq ; j >= 1 ; j--)
-	    for (i1 = j ; i1 <= nq ; i1++) 
-	      {
-		yp1 = yh[i1];
-		yp2 = yh[i1+1];
-		for (i = 1 ; i <= n ; i++)
-		  yp1[i] -= yp2[i];
-	      }
-	  rmax = 2.;
-	  if (fabs(h) <= hmin * 1.00001) 
+          kflag--;
+          tn = told;
+          for (j = nq ; j >= 1 ; j--)
+            for (i1 = j ; i1 <= nq ; i1++)
+              {
+                yp1 = yh[i1];
+                yp2 = yh[i1+1];
+                for (i = 1 ; i <= n ; i++)
+                  yp1[i] -= yp2[i];
+              }
+          rmax = 2.;
+          if (fabs(h) <= hmin * 1.00001)
             {
-	      kflag = -1;
-	      hold = h;
-	      jstart = 1;
-	      break;
+              kflag = -1;
+              hold = h;
+              jstart = 1;
+              break;
             }
-	  if (kflag > -3) 
+          if (kflag > -3)
             {
-	      rhup = 0.;
-	      orderswitch(&rhup, dsm, &pdh, &rh, &orderflag);
-	      if (orderflag == 1 || orderflag == 0) 
+              rhup = 0.;
+              orderswitch(&rhup, dsm, &pdh, &rh, &orderflag);
+              if (orderflag == 1 || orderflag == 0)
                 {
-		  if (orderflag == 0)
-		    rh = min(rh, 0.2);
-		  rh = max(rh, hmin / fabs(h));
-		  scaleh(&rh, &pdh);
+                  if (orderflag == 0)
+                    rh = min(rh, 0.2);
+                  rh = max(rh, hmin / fabs(h));
+                  scaleh(&rh, &pdh);
                 }
-	      if (orderflag == 2) 
+              if (orderflag == 2)
                 {
-		  resetcoeff();
-		  rh = max(rh, hmin / fabs(h));
-		  scaleh(&rh, &pdh);
+                  resetcoeff();
+                  rh = max(rh, hmin / fabs(h));
+                  scaleh(&rh, &pdh);
                 }
-	      continue;
+              continue;
             }     /*   if (kflag > -3)   */
-	  /*
-	    Control reaches this section if 3 or more failures have occurred.
-	    If 10 failures have occurred, exit with kflag = -1.
-	    It is assumed that the derivatives that have accumulated in the
-	    yh array have errors of the wrong order.  Hence the first
-	    derivative is recomputed, and the order is set to 1.  Then
-	    h is reduced by a factor of 10, and the step is retried,
-	    until it succeeds or h reaches hmin.
-	  */
-	  else 
+          /*
+            Control reaches this section if 3 or more failures have occurred.
+            If 10 failures have occurred, exit with kflag = -1.
+            It is assumed that the derivatives that have accumulated in the
+            yh array have errors of the wrong order.  Hence the first
+            derivative is recomputed, and the order is set to 1.  Then
+            h is reduced by a factor of 10, and the step is retried,
+            until it succeeds or h reaches hmin.
+          */
+          else
             {
-	      if (kflag == -10) 
+              if (kflag == -10)
                 {
-		  kflag = -1;
-		  hold = h;
-		  jstart = 1;
-		  break;
+                  kflag = -1;
+                  hold = h;
+                  jstart = 1;
+                  break;
                 }
-	      else 
+              else
                 {
-		  rh = 0.1;
-		  rh = max(hmin / fabs(h) , rh);
-		  h *= rh;
-		  yp1 = yh[1];
-		  for (i = 1 ; i <= n ; i++)
-		    y[i] = yp1[i];
-		  eval(neq, tn, y, savf);
-		  nfe++;
-		  yp1 = yh[2];
-		  for (i = 1 ; i <= n ; i++)
-		    yp1[i] = h * savf[i];
-		  ipup = miter;
-		  ialth = 5;
-		  if (nq == 1)
-		    continue;
-		  nq = 1;
-		  l = 2;
-		  resetcoeff();
-		  continue;
+                  rh = 0.1;
+                  rh = max(hmin / fabs(h) , rh);
+                  h *= rh;
+                  yp1 = yh[1];
+                  for (i = 1 ; i <= n ; i++)
+                    y[i] = yp1[i];
+                  eval(neq, tn, y, savf);
+                  nfe++;
+                  yp1 = yh[2];
+                  for (i = 1 ; i <= n ; i++)
+                    yp1[i] = h * savf[i];
+                  ipup = miter;
+                  ialth = 5;
+                  if (nq == 1)
+                    continue;
+                  nq = 1;
+                  l = 2;
+                  resetcoeff();
+                  continue;
                 }
             }     /*   end else -- kflag <= -3 */
         }     /*   end error failure handling   */
@@ -1645,29 +1571,29 @@ void Clsoda::stoda(C_INT32 neq,
 
 
 void Clsoda::ewset(C_INT32 itol,
-                   C_FLOAT64 * rtol, 
+                   C_FLOAT64 * rtol,
                    C_FLOAT64 * atol,
                    C_FLOAT64  * ycur)
 {
   C_INT32 i;
 
-  switch (itol) 
+  switch (itol)
     {
     case 1 :
       for (i = 1 ; i <= n ; i++)
-	ewt[i] = rtol[1] * fabs(ycur[i]) + atol[1];
+        ewt[i] = rtol[1] * fabs(ycur[i]) + atol[1];
       break;
     case 2 :
       for (i = 1 ; i <= n ; i++)
-	ewt[i] = rtol[1] * fabs(ycur[i]) + atol[i];
+        ewt[i] = rtol[1] * fabs(ycur[i]) + atol[i];
       break;
     case 3 :
       for (i = 1 ; i <= n ; i++)
-	ewt[i] = rtol[i] * fabs(ycur[i]) + atol[1];
+        ewt[i] = rtol[i] * fabs(ycur[i]) + atol[1];
       break;
     case 4 :
       for (i = 1 ; i <= n ; i++)
-	ewt[i] = rtol[i] * fabs(ycur[i]) + atol[i];
+        ewt[i] = rtol[i] * fabs(ycur[i]) + atol[i];
       break;
     }
 
@@ -1675,12 +1601,12 @@ void Clsoda::ewset(C_INT32 itol,
 
 
 /*
-   xsetf sets the flag to control the printing of messages by lsoda.
-   mflag = 0 means do not print (danger.. this risks losing valuable
-	     information).
-   mflag = 1 means print (the default)
-   A call to xsetf may be made at any time and will take effect
-   immediately.
+  xsetf sets the flag to control the printing of messages by lsoda.
+  mflag = 0 means do not print (danger.. this risks losing valuable
+  information).
+  mflag = 1 means print (the default)
+  A call to xsetf may be made at any time and will take effect
+  immediately.
 */
 void Clsoda::xsetf(C_INT32 mflag)
 {
@@ -1692,47 +1618,47 @@ void Clsoda::intdy(C_FLOAT64 t,
                    C_FLOAT64 *dky,
                    C_INT32 * iflag)
   /*
-   intdy computes interpolated values of the k-th derivative of the
-   dependent variable vector y, and stores it in dky.  This routine
-   is called within the package with k = 0 and *t = tout, but may
-   also be called by the user for any k up to the current order.
-   (See detailed instructions in the usage documentation.)
+    intdy computes interpolated values of the k-th derivative of the
+    dependent variable vector y, and stores it in dky.  This routine
+    is called within the package with k = 0 and *t = tout, but may
+    also be called by the user for any k up to the current order.
+    (See detailed instructions in the usage documentation.)
 
-   The computed values in dky are gotten by interpolation using the
-   Nordsieck history array yh.  This array corresponds uniquely to a
-   vector-valued polynomial of degree nqcur or less, and dky is set
-   to the k-th derivative of this polynomial at t.
-   The formula for dky is
+    The computed values in dky are gotten by interpolation using the
+    Nordsieck history array yh.  This array corresponds uniquely to a
+    vector-valued polynomial of degree nqcur or less, and dky is set
+    to the k-th derivative of this polynomial at t.
+    The formula for dky is
 
-	     q
-   dky[i] = sum c[k][j] * (t - tn)^(j-k) * h^(-j) * yh[j+1][i]
-	    j=k
+    q
+    dky[i] = sum c[k][j] * (t - tn)^(j-k) * h^(-j) * yh[j+1][i]
+    j=k
 
-   where c[k][j] = j*(j-1)*...*(j-k+1), q = nqcur, tn = tcur, h = hcur.
-   The quantities nq = nqcur, l = nq+1, n = neq, tn, and h are declared
-   static globally.  The above sum is done in reverse order.
-   *iflag is returned negative if either k or t is out of bounds.
-*/
+    where c[k][j] = j*(j-1)*...*(j-k+1), q = nqcur, tn = tcur, h = hcur.
+    The quantities nq = nqcur, l = nq+1, n = neq, tn, and h are declared
+    static globally.  The above sum is done in reverse order.
+    *iflag is returned negative if either k or t is out of bounds.
+    */
 
 {
   C_INT32 i, ic, j, jj, jp1;
   C_FLOAT64 c, r, s, tp;
 
   *iflag = 0;
-  if (k < 0 || k > nq) 
+  if (k < 0 || k > nq)
     {
       if (prfl)
-	printf("\nintdy -- k = %ld illegal", k);
+        printf("\nintdy -- k = %ld illegal", k);
       *iflag = -1;
       return;
     }
   tp = tn - hu - 100. * ETA * (tn + hu);
-  if ((t - tp) * (t - tn) > 0.) 
+  if ((t - tp) * (t - tn) > 0.)
     {
-      if (prfl) 
+      if (prfl)
         {
-	  printf("\nintdy -- t = %g illegal", t);
-	  printf("\n         t not in interval tcur - hu to tcur");
+          printf("\nintdy -- t = %g illegal", t);
+          printf("\n         t not in interval tcur - hu to tcur");
         }
       *iflag = -2;
       return;
@@ -1746,16 +1672,16 @@ void Clsoda::intdy(C_FLOAT64 t,
   yp1 = yh[l];
   for (i = 1 ; i <= n ; i++)
     dky[i] = c * yp1[i];
-  for (j = nq - 1 ; j >= k ; j--) 
+  for (j = nq - 1 ; j >= k ; j--)
     {
       jp1 = j + 1;
       ic = 1;
       for (jj = jp1 - k ; jj <= j ; jj++)
-	ic *= jj;
+        ic *= jj;
       c = (C_FLOAT64) ic;
       yp1 = yh[jp1];
       for (i = 1 ; i <= n ; i++)
-	dky[i] = c * yp1[i] + s * dky[i];
+        dky[i] = c * yp1[i] + s * dky[i];
     }
   if (k == 0)
     return;
@@ -1803,7 +1729,7 @@ void Clsoda::cfode(C_INT32 meth)
     size at order nq-1 if k = 1, at order nq if k = 2, and at order
     nq+1 if k = 3.
   */
-  if (meth == 1) 
+  if (meth == 1)
     {
       elco[1][1] = 1.;
       elco[1][2] = 1.;
@@ -1813,52 +1739,52 @@ void Clsoda::cfode(C_INT32 meth)
       tesco[12][3] = 0.;
       pc[1] = 1.;
       rqfac = 1.;
-      for (nq = 2 ; nq <= 12 ; nq++) 
+      for (nq = 2 ; nq <= 12 ; nq++)
         {
-	  /*
-	    The pc array will contain the coefficients of the polynomial
+          /*
+            The pc array will contain the coefficients of the polynomial
 
-	    p(x) = (x+1)*(x+2)*...*(x+nq-1).
+            p(x) = (x+1)*(x+2)*...*(x+nq-1).
 
-	    Initially, p(x) = 1.
-	  */
-	  rq1fac = rqfac;
-	  rqfac = rqfac / (C_FLOAT64) nq;
-	  nqm1 = nq - 1;
-	  fnqm1 = (C_FLOAT64) nqm1;
-	  nqp1 = nq + 1;
-	  /*
-	    Form coefficients of p(x)*(x+nq-1).
-	  */
-	  pc[nq] = 0.;
-	  for (i = nq ; i >= 2 ; i--)
-	    pc[i] = pc[i-1] + fnqm1 * pc[i];
-	  pc[1] = fnqm1 * pc[1];
-	  /*
-	    Compute integral, -1 to 0, of p(x) and x*p(x).
-	  */
-	  pint = pc[1];
-	  xpin = pc[1] / 2.;
-	  tsign = 1.;
-	  for (i = 2 ; i <= nq ; i++) 
+            Initially, p(x) = 1.
+          */
+          rq1fac = rqfac;
+          rqfac = rqfac / (C_FLOAT64) nq;
+          nqm1 = nq - 1;
+          fnqm1 = (C_FLOAT64) nqm1;
+          nqp1 = nq + 1;
+          /*
+            Form coefficients of p(x)*(x+nq-1).
+          */
+          pc[nq] = 0.;
+          for (i = nq ; i >= 2 ; i--)
+            pc[i] = pc[i-1] + fnqm1 * pc[i];
+          pc[1] = fnqm1 * pc[1];
+          /*
+            Compute integral, -1 to 0, of p(x) and x*p(x).
+          */
+          pint = pc[1];
+          xpin = pc[1] / 2.;
+          tsign = 1.;
+          for (i = 2 ; i <= nq ; i++)
             {
-	      tsign = -tsign;
-	      pint += tsign * pc[i] / (C_FLOAT64) i;
-	      xpin += tsign * pc[i] / (C_FLOAT64) (i + 1);
+              tsign = -tsign;
+              pint += tsign * pc[i] / (C_FLOAT64) i;
+              xpin += tsign * pc[i] / (C_FLOAT64) (i + 1);
             }
-	  /*
-	    Store coefficients in elco and tesco.
-	  */
-	  elco[nq][1] = pint * rq1fac;
-	  elco[nq][2] = 1.;
-	  for (i = 2 ; i <= nq ; i++)
-	    elco[nq][i+1] = rq1fac * pc[i] / (C_FLOAT64) i;
-	  agamq = rqfac * xpin;
-	  ragq = 1. / agamq;
-	  tesco[nq][2] = ragq;
-	  if (nq < 12)
-	    tesco[nqp1][1] = ragq * rqfac / (C_FLOAT64) nqp1;
-	  tesco[nqm1][3] = ragq;
+          /*
+            Store coefficients in elco and tesco.
+          */
+          elco[nq][1] = pint * rq1fac;
+          elco[nq][2] = 1.;
+          for (i = 2 ; i <= nq ; i++)
+            elco[nq][i+1] = rq1fac * pc[i] / (C_FLOAT64) i;
+          agamq = rqfac * xpin;
+          ragq = 1. / agamq;
+          tesco[nq][2] = ragq;
+          if (nq < 12)
+            tesco[nqp1][1] = ragq * rqfac / (C_FLOAT64) nqp1;
+          tesco[nqm1][3] = ragq;
         }      /*   end for   */
       return;
     }      /*   end if (meth == 1)   */
@@ -1875,22 +1801,22 @@ void Clsoda::cfode(C_INT32 meth)
 
     Initially, p(x) = 1.
   */
-  for (nq = 1 ; nq <= 5 ; nq++) 
+  for (nq = 1 ; nq <= 5 ; nq++)
     {
       fnq = (C_FLOAT64) nq;
       nqp1 = nq + 1;
       /*
-	Form coefficients of p(x)*(x+nq).
+        Form coefficients of p(x)*(x+nq).
       */
       pc[nqp1] = 0.;
       for (i = nq + 1 ; i >= 2 ; i--)
-	pc[i] = pc[i-1] + fnq * pc[i];
+        pc[i] = pc[i-1] + fnq * pc[i];
       pc[1] *= fnq;
       /*
-	Store coefficients in elco and tesco.
+        Store coefficients in elco and tesco.
       */
       for (i = 1 ; i <= nqp1 ; i++)
-	elco[nq][i] = pc[i] / pc[2];
+        elco[nq][i] = pc[i] / pc[2];
       elco[nq][2] = 1.;
       tesco[nq][1] = rq1fac;
       tesco[nq][2] = ((C_FLOAT64) nqp1) / elco[nq][1];
@@ -1920,23 +1846,23 @@ void Clsoda::scaleh(C_FLOAT64 * rh,
     If this reduces h, set irflag to 1 so that if there are roundoff
     problems later, we can assume that is the cause of the trouble.
   */
-  if (meth == 1) 
+  if (meth == 1)
     {
       irflag = 0;
       *pdh = max(fabs(h) * pdlast, 0.000001);
-      if ((*rh * *pdh * 1.00001) >= sm1[nq]) 
+      if ((*rh * *pdh * 1.00001) >= sm1[nq])
         {
-	  *rh = sm1[nq] / *pdh;
-	  irflag = 1;
+          *rh = sm1[nq] / *pdh;
+          irflag = 1;
         }
     }
   r = 1.;
-  for (j = 2 ; j <= l ; j++) 
+  for (j = 2 ; j <= l ; j++)
     {
       r *= *rh;
       yp1 = yh[j];
       for (i = 1 ; i <= n ; i++)
-	yp1[i] *= r;
+        yp1[i] *= r;
     }
   h *= *rh;
   rc *= *rh;
@@ -1970,46 +1896,46 @@ void Clsoda::prja(C_INT32 neq,
   /*
     If miter = 2, make n calls to f to approximate J.
   */
-  if (miter != 2) 
+  if (miter != 2)
     {
       if (prfl)
-	printf("\nprja -- miter != 2");
+        printf("\nprja -- miter != 2");
       return;
     }
 
-  if (miter == 2) 
+  if (miter == 2)
     {
       fac = vmnorm(n, savf, ewt);
       r0 = 1000. * fabs(h) * ETA * ((C_FLOAT64) n) * fac;
       if (r0 == 0.)
-	r0 = 1.;
-      for (j = 1 ; j <= n ; j++) 
+        r0 = 1.;
+      for (j = 1 ; j <= n ; j++)
         {
-	  yj = y[j];
-	  r = max(sqrteta * fabs(yj), r0 / ewt[j]);
-	  y[j] += r;
-	  fac = -hl0 / r;
-	  eval(neq, tn, y, acor);
-	  for (i = 1 ; i <= n ; i++)
-	    wm[i][j] = (acor[i] - savf[i]) * fac;
-	  y[j] = yj;
+          yj = y[j];
+          r = max(sqrteta * fabs(yj), r0 / ewt[j]);
+          y[j] += r;
+          fac = -hl0 / r;
+          eval(neq, tn, y, acor);
+          for (i = 1 ; i <= n ; i++)
+            wm[i][j] = (acor[i] - savf[i]) * fac;
+          y[j] = yj;
         }
       nfe += n;
       /*
-	Compute norm of Jacobian.
+        Compute norm of Jacobian.
       */
       pdnorm = fnorm(n, wm, ewt) / fabs(hl0);
       /*
-	Add identity matrix.
+        Add identity matrix.
       */
       for (i = 1 ; i <= n ; i++)
-	wm[i][i] += 1.;
+        wm[i][i] += 1.;
       /*
-	Do LU decomposition on P.
+        Do LU decomposition on P.
       */
       dgefa(wm, n, ipvt, &ier);
       if (ier != 0)
-	ierpj = 1;
+        ierpj = 1;
       return;
     }
 
@@ -2020,12 +1946,12 @@ C_FLOAT64 Clsoda::vmnorm(C_INT32 n,
                          C_FLOAT64 * v,
                          C_FLOAT64 * w)
   /*
-   This function routine computes the weighted max-norm
-   of the vector of length n contained in the array v, with weights
-   contained in the array w of length n.
+    This function routine computes the weighted max-norm
+    of the vector of length n contained in the array v, with weights
+    contained in the array w of length n.
 
-   vmnorm = max(i = 1, ..., n) fabs(v[i]) * w[i].
-*/
+    vmnorm = max(i = 1, ..., n) fabs(v[i]) * w[i].
+  */
 {
   C_INT32 i;
   C_FLOAT64 vm;
@@ -2042,24 +1968,24 @@ C_FLOAT64 Clsoda::fnorm(C_INT32 n,
                         C_FLOAT64 ** a,
                         C_FLOAT64 * w)
   /*
-   This subroutine computes the norm of a full n by n matrix,
-   stored in the array a, that is consistent with the weighted max-norm
-   on vectors, with weights stored in the array w.
+    This subroutine computes the norm of a full n by n matrix,
+    stored in the array a, that is consistent with the weighted max-norm
+    on vectors, with weights stored in the array w.
 
-      fnorm = max(i=1,...,n) (w[i] * sum(j=1,...,n) fabs(a[i][j]) / w[j])
-*/
+    fnorm = max(i=1,...,n) (w[i] * sum(j=1,...,n) fabs(a[i][j]) / w[j])
+  */
 
 {
   C_INT32 i, j;
   C_FLOAT64 an, sum, *ap1;
 
   an = 0.;
-  for (i = 1; i <= n ; i++) 
+  for (i = 1; i <= n ; i++)
     {
       sum = 0.;
       ap1 = a[i];
       for (j = 1 ; j <= n ; j++)
-	sum += fabs(ap1[j]) / w[j];
+        sum += fabs(ap1[j]) / w[j];
       an = max(an, sum * w[i]);
     }
   return an;
@@ -2079,9 +2005,9 @@ void Clsoda::correction(C_INT32 neq,
                         C_INT32 *m)
   /*
    *corflag = 0 : corrector converged,
-	      1 : step size to be reduced, redo prediction,
-	      2 : corrector cannot converge, failure flag.
-*/
+   1 : step size to be reduced, redo prediction,
+   2 : corrector cannot converge, failure flag.
+  */
 {
   C_INT32 i;
   C_FLOAT64 rm, rate, dcon;
@@ -2107,141 +2033,141 @@ void Clsoda::correction(C_INT32 neq,
     preprocessed before starting the corrector iteration.  ipup is set
     to 0 as an indicator that this has been done.
   */
-  while (1) 
+  while (1)
     {
-      if (*m == 0) 
+      if (*m == 0)
         {
-	  if (ipup > 0) 
+          if (ipup > 0)
             {
-	      prja(neq, y);
-	      ipup = 0;
-	      rc = 1.;
-	      nslp = nst;
-	      crate = 0.7;
-	      if (ierpj != 0) 
+              prja(neq, y);
+              ipup = 0;
+              rc = 1.;
+              nslp = nst;
+              crate = 0.7;
+              if (ierpj != 0)
                 {
-		  corfailure(told, rh, ncf, corflag);
-		  return;
+                  corfailure(told, rh, ncf, corflag);
+                  return;
                 }
             }
-	  for (i = 1 ; i <= n ; i++)
-	    acor[i] = 0.;
+          for (i = 1 ; i <= n ; i++)
+            acor[i] = 0.;
         }   /*   end if (*m == 0)   */
-      if (miter == 0) 
+      if (miter == 0)
         {
-	  /*
-	    In case of functional iteration, update y directly from
-	    the result of the last function evaluation.
-	  */
-	  yp1 = yh[2];
-	  for (i = 1 ; i <= n ; i++) 
+          /*
+            In case of functional iteration, update y directly from
+            the result of the last function evaluation.
+          */
+          yp1 = yh[2];
+          for (i = 1 ; i <= n ; i++)
             {
-	      savf[i] = h * savf[i] - yp1[i];
-	      y[i] = savf[i] - acor[i];
+              savf[i] = h * savf[i] - yp1[i];
+              y[i] = savf[i] - acor[i];
             }
-	  *del = vmnorm(n, y, ewt);
-	  yp1 = yh[1];
-	  for (i = 1 ; i <= n ; i++) 
+          *del = vmnorm(n, y, ewt);
+          yp1 = yh[1];
+          for (i = 1 ; i <= n ; i++)
             {
-	      y[i] = yp1[i] + el[1] * savf[i];
-	      acor[i] = savf[i];
+              y[i] = yp1[i] + el[1] * savf[i];
+              acor[i] = savf[i];
             }
         }      /*   end functional iteration   */
       /*
-	In the case of the chord method, compute the corrector error,
-	and solve the linear system with that as right-hand side and
-	P as coefficient matrix.
+        In the case of the chord method, compute the corrector error,
+        and solve the linear system with that as right-hand side and
+        P as coefficient matrix.
       */
-      else 
+      else
         {
-	  yp1 = yh[2];
-	  for (i = 1 ; i <= n ; i++)
-	    y[i] = h * savf[i] - (yp1[i] + acor[i]);
-	  solsy(y);
-	  *del = vmnorm(n, y, ewt);
-	  yp1 = yh[1];
-	  for (i = 1 ; i <= n ; i++) 
+          yp1 = yh[2];
+          for (i = 1 ; i <= n ; i++)
+            y[i] = h * savf[i] - (yp1[i] + acor[i]);
+          solsy(y);
+          *del = vmnorm(n, y, ewt);
+          yp1 = yh[1];
+          for (i = 1 ; i <= n ; i++)
             {
-	      acor[i] += y[i];
-	      y[i] = yp1[i] + el[1] * acor[i];
+              acor[i] += y[i];
+              y[i] = yp1[i] + el[1] * acor[i];
             }
         }   /*   end chord method   */
       /*
-	Test for convergence.  If *m > 0, an estimate of the convergence
-	rate constant is stored in crate, and this is used in the test.
+        Test for convergence.  If *m > 0, an estimate of the convergence
+        rate constant is stored in crate, and this is used in the test.
 
-	We first check for a change of iterates that is the size of
-	roundoff error.  If this occurs, the iteration has converged, and a
-	new rate estimate is not formed.
-	In all other cases, force at least two iterations to estimate a
-	local Lipschitz constant estimate for Adams method.
-	On convergence, form pdest = local maximum Lipschitz constant
-	estimate.  pdlast is the most recent nonzero estimate.
+        We first check for a change of iterates that is the size of
+        roundoff error.  If this occurs, the iteration has converged, and a
+        new rate estimate is not formed.
+        In all other cases, force at least two iterations to estimate a
+        local Lipschitz constant estimate for Adams method.
+        On convergence, form pdest = local maximum Lipschitz constant
+        estimate.  pdlast is the most recent nonzero estimate.
       */
       if (*del <= 100. * pnorm * ETA)
-	break;
-      if (*m != 0 || meth != 1) 
+        break;
+      if (*m != 0 || meth != 1)
         {
-	  if (*m != 0) 
+          if (*m != 0)
             {
-	      rm = 1024.0;
-	      if (*del <= (1024. * *delp))
-		rm = *del / *delp;
-	      rate = max(rate, rm);
-	      crate = max(0.2 * crate, rm);
+              rm = 1024.0;
+              if (*del <= (1024. * *delp))
+                rm = *del / *delp;
+              rate = max(rate, rm);
+              crate = max(0.2 * crate, rm);
             }
-	  dcon = *del * min(1., 1.5 * crate) / (tesco[nq][2] * conit);
-	  if (dcon <= 1.) 
+          dcon = *del * min(1., 1.5 * crate) / (tesco[nq][2] * conit);
+          if (dcon <= 1.)
             {
-	      pdest = max(pdest, rate / fabs(h * el[1]));
-	      if (pdest != 0.)
-		pdlast = pdest;
-	      break;
+              pdest = max(pdest, rate / fabs(h * el[1]));
+              if (pdest != 0.)
+                pdlast = pdest;
+              break;
             }
         }
       /*
-	The corrector iteration failed to converge.
-	If miter != 0 and the Jacobian is out of date, prja is called for
-	the next try.   Otherwise the yh array is retracted to its values
-	before prediction, and h is reduced, if possible.  If h cannot be
-	reduced or mxncf failures have occured, exit with corflag = 2.
+        The corrector iteration failed to converge.
+        If miter != 0 and the Jacobian is out of date, prja is called for
+        the next try.   Otherwise the yh array is retracted to its values
+        before prediction, and h is reduced, if possible.  If h cannot be
+        reduced or mxncf failures have occured, exit with corflag = 2.
       */
       (*m)++;
-      if (*m == maxcor || (*m >= 2 && *del > 2. * *delp)) 
+      if (*m == maxcor || (*m >= 2 && *del > 2. * *delp))
         {
-	  if (miter == 0 || jcur == 1) 
+          if (miter == 0 || jcur == 1)
             {
-	      corfailure(told, rh, ncf, corflag);
-	      return;
+              corfailure(told, rh, ncf, corflag);
+              return;
             }
-	  ipup = miter;
-	  /*
-	    Restart corrector if Jacobian is recomputed.
-	  */
-	  *m = 0;
-	  rate = 0.;
-	  *del = 0.;
-	  yp1 = yh[1];
-	  for (i = 1 ; i <= n ; i++)
-	    y[i] = yp1[i];
-	  eval(neq, tn, y, savf);
-	  nfe++;
+          ipup = miter;
+          /*
+            Restart corrector if Jacobian is recomputed.
+          */
+          *m = 0;
+          rate = 0.;
+          *del = 0.;
+          yp1 = yh[1];
+          for (i = 1 ; i <= n ; i++)
+            y[i] = yp1[i];
+          eval(neq, tn, y, savf);
+          nfe++;
         }
       /*
-	Iterate corrector.
+        Iterate corrector.
       */
-      else 
+      else
         {
-	  *delp = *del;
-	  eval(neq, tn, y, savf);
-	  nfe++;
+          *delp = *del;
+          eval(neq, tn, y, savf);
+          nfe++;
         }
     }   /*   end while   */
 }       /*   end correction   */
 
 
 void Clsoda::corfailure(C_FLOAT64 * told,
-                        C_FLOAT64 * rh, 
+                        C_FLOAT64 * rh,
                         C_INT32 * ncf,
                         C_INT32 * corflag)
 {
@@ -2251,14 +2177,14 @@ void Clsoda::corfailure(C_FLOAT64 * told,
   rmax = 2.;
   tn = *told;
   for (j = nq ; j >= 1 ; j--)
-    for (i1 = j ; i1 <= nq ; i1++) 
+    for (i1 = j ; i1 <= nq ; i1++)
       {
-	yp1 = yh[i1];
-	yp2 = yh[i1+1];
-	for (i = 1 ; i <= n ; i++)
-	  yp1[i] -= yp2[i];
+        yp1 = yh[i1];
+        yp2 = yh[i1+1];
+        for (i = 1 ; i <= n ; i++)
+          yp1[i] -= yp2[i];
       }
-  if (fabs(h) <= hmin * 1.00001 || *ncf == mxncf) 
+  if (fabs(h) <= hmin * 1.00001 || *ncf == mxncf)
     {
       *corflag = 2;
       return;
@@ -2272,20 +2198,20 @@ void Clsoda::corfailure(C_FLOAT64 * told,
 
 void Clsoda::solsy(C_FLOAT64 * y)
   /*
-   This routine manages the solution of the linear system arising from
-   a chord iteration.  It is called if miter != 0.
-   If miter is 2, it calls dgesl to accomplish this.
-   If miter is 5, it calls dgbsl.
+    This routine manages the solution of the linear system arising from
+    a chord iteration.  It is called if miter != 0.
+    If miter is 2, it calls dgesl to accomplish this.
+    If miter is 5, it calls dgbsl.
 
-   y = the right-hand side vector on input, and the solution vector
-       on output.
-*/
+    y = the right-hand side vector on input, and the solution vector
+    on output.
+  */
 {
   iersl = 0;
-  if (miter != 2) 
+  if (miter != 2)
     {
       if (prfl)
-	printf("\nsolsy -- miter != 2");
+        printf("\nsolsy -- miter != 2");
       return;
     }
 
@@ -2297,7 +2223,7 @@ void Clsoda::solsy(C_FLOAT64 * y)
 
 
 void Clsoda::methodswitch(C_FLOAT64 dsm,
-                          C_FLOAT64 pnorm, 
+                          C_FLOAT64 pnorm,
                           C_FLOAT64 *pdh,
                           C_FLOAT64 *rh)
 {
@@ -2322,46 +2248,46 @@ void Clsoda::methodswitch(C_FLOAT64 dsm,
     Compare the two step sizes to decide whether to switch.
     The step size advantage must be at least ratio = 5 to switch.
   */
-  if (meth == 1) 
+  if (meth == 1)
     {
       if (nq > 5)
-	return;
-      if (dsm <= (100. * pnorm * ETA) || pdest == 0.) 
+        return;
+      if (dsm <= (100. * pnorm * ETA) || pdest == 0.)
         {
-	  if (irflag == 0)
-	    return;
-	  rh2 = 2.;
-	  nqm2 = min(nq, mxords);
+          if (irflag == 0)
+            return;
+          rh2 = 2.;
+          nqm2 = min(nq, mxords);
         }
-      else 
+      else
         {
-	  exsm = 1. / (C_FLOAT64) l;
-	  rh1 = 1. / (1.2 * pow(dsm, exsm) + 0.0000012);
-	  rh1it = 2. * rh1;
-	  *pdh = pdlast * fabs(h);
-	  if ((*pdh * rh1) > 0.00001)
-	    rh1it = sm1[nq] / *pdh;
-	  rh1 = min(rh1, rh1it);
-	  if (nq > mxords) 
+          exsm = 1. / (C_FLOAT64) l;
+          rh1 = 1. / (1.2 * pow(dsm, exsm) + 0.0000012);
+          rh1it = 2. * rh1;
+          *pdh = pdlast * fabs(h);
+          if ((*pdh * rh1) > 0.00001)
+            rh1it = sm1[nq] / *pdh;
+          rh1 = min(rh1, rh1it);
+          if (nq > mxords)
             {
-	      nqm2 = mxords;
-	      lm2 = mxords + 1;
-	      exm2 = 1. / (C_FLOAT64) lm2;
-	      lm2p1 = lm2 + 1;
-	      dm2 = vmnorm(n, yh[lm2p1], ewt) / cm2[mxords];
-	      rh2 = 1. / (1.2 * pow(dm2, exm2) + 0.0000012);
+              nqm2 = mxords;
+              lm2 = mxords + 1;
+              exm2 = 1. / (C_FLOAT64) lm2;
+              lm2p1 = lm2 + 1;
+              dm2 = vmnorm(n, yh[lm2p1], ewt) / cm2[mxords];
+              rh2 = 1. / (1.2 * pow(dm2, exm2) + 0.0000012);
             }
-	  else 
+          else
             {
-	      dm2 = dsm * (cm1[nq] / cm2[nq]);
-	      rh2 = 1. / (1.2 * pow(dm2, exsm) + 0.0000012);
-	      nqm2 = nq;
+              dm2 = dsm * (cm1[nq] / cm2[nq]);
+              rh2 = 1. / (1.2 * pow(dm2, exsm) + 0.0000012);
+              nqm2 = nq;
             }
-	  if (rh2 < ratio * rh1)
-	    return;
+          if (rh2 < ratio * rh1)
+            return;
         }
       /*
-	The method switch test passed.  Reset relevant quantities for bdf.
+        The method switch test passed.  Reset relevant quantities for bdf.
       */
       *rh = rh2;
       icount = 20;
@@ -2383,7 +2309,7 @@ void Clsoda::methodswitch(C_FLOAT64 dsm,
     roundoff pollution, we stay with bdf.
   */
   exsm = 1. / (C_FLOAT64) l;
-  if (mxordn < nq) 
+  if (mxordn < nq)
     {
       nqm1 = mxordn;
       lm1 = mxordn + 1;
@@ -2392,7 +2318,7 @@ void Clsoda::methodswitch(C_FLOAT64 dsm,
       dm1 = vmnorm(n, yh[lm1p1], ewt) / cm1[mxordn];
       rh1 = 1. / (1.2 * pow(dm1, exm1) + 0.0000012);
     }
-  else 
+  else
     {
       dm1 = dsm * (cm2[nq] / cm1[nq]);
       rh1 = 1. / (1.2 * pow(dm1, exsm) + 0.0000012);
@@ -2426,8 +2352,8 @@ void Clsoda::methodswitch(C_FLOAT64 dsm,
 
 
 /*
-   This routine returns from stoda to lsoda.  Hence freevectors() is
-   not executed.
+  This routine returns from stoda to lsoda.  Hence freevectors() is
+  not executed.
 */
 
 void Clsoda::endstoda(void)
@@ -2445,23 +2371,23 @@ void Clsoda::endstoda(void)
 
 
 void Clsoda::orderswitch(C_FLOAT64 * rhup,
-                         C_FLOAT64 dsm, 
+                         C_FLOAT64 dsm,
                          C_FLOAT64 * pdh,
                          C_FLOAT64 * rh,
                          C_INT32 * orderflag)
   /*
-   Regardless of the success or failure of the step, factors
-   rhdn, rhsm, and rhup are computed, by which h could be multiplied
-   at order nq - 1, order nq, or order nq + 1, respectively.
-   In the case of a failure, rhup = 0. to avoid an order increase.
-   The largest of these is determined and the new order chosen
-   accordingly.  If the order is to be increased, we compute one
-   additional scaled derivative.
+    Regardless of the success or failure of the step, factors
+    rhdn, rhsm, and rhup are computed, by which h could be multiplied
+    at order nq - 1, order nq, or order nq + 1, respectively.
+    In the case of a failure, rhup = 0. to avoid an order increase.
+    The largest of these is determined and the new order chosen
+    accordingly.  If the order is to be increased, we compute one
+    additional scaled derivative.
 
-   orderflag = 0  : no change in h or nq,
-	       1  : change in h but not nq,
-	       2  : change in both h and nq.
-*/
+    orderflag = 0  : no change in h or nq,
+    1  : change in h but not nq,
+    2  : change in both h and nq.
+  */
 
 {
   C_INT32 newq, i;
@@ -2473,7 +2399,7 @@ void Clsoda::orderswitch(C_FLOAT64 * rhup,
   rhsm = 1. / (1.2 * pow(dsm, exsm) + 0.0000012);
 
   rhdn = 0.;
-  if (nq != 1) 
+  if (nq != 1)
     {
       ddn = vmnorm(n, yh[l], ewt) / tesco[nq][1];
       exdn = 1. / (C_FLOAT64) nq;
@@ -2482,79 +2408,79 @@ void Clsoda::orderswitch(C_FLOAT64 * rhup,
   /*
     If meth = 1, limit rh accordinfg to the stability region also.
   */
-  if (meth == 1) 
+  if (meth == 1)
     {
       *pdh = max(fabs(h) * pdlast, 0.000001);
       if (l < lmax)
-	*rhup = min(*rhup, sm1[l] / *pdh);
+        *rhup = min(*rhup, sm1[l] / *pdh);
       rhsm = min(rhsm, sm1[nq] / *pdh);
       if (nq > 1)
-	rhdn = min(rhdn, sm1[nq-1] / *pdh);
+        rhdn = min(rhdn, sm1[nq-1] / *pdh);
       pdest = 0.;
     }
-  if (rhsm >= *rhup) 
+  if (rhsm >= *rhup)
     {
-      if (rhsm >= rhdn) 
+      if (rhsm >= rhdn)
         {
-	  newq = nq;
-	  *rh = rhsm;
+          newq = nq;
+          *rh = rhsm;
         }
-      else 
+      else
         {
-	  newq = nq - 1;
-	  *rh = rhdn;
-	  if (kflag < 0 && *rh > 1.)
-	    *rh = 1.;
+          newq = nq - 1;
+          *rh = rhdn;
+          if (kflag < 0 && *rh > 1.)
+            *rh = 1.;
         }
     }
-  else 
+  else
     {
-      if (*rhup <= rhdn) 
+      if (*rhup <= rhdn)
         {
-	  newq = nq - 1;
-	  *rh = rhdn;
-	  if (kflag < 0 && *rh > 1.)
-	    *rh = 1.;
+          newq = nq - 1;
+          *rh = rhdn;
+          if (kflag < 0 && *rh > 1.)
+            *rh = 1.;
         }
-      else 
+      else
         {
-	  *rh = *rhup;
-	  if (*rh >= 1.1) 
+          *rh = *rhup;
+          if (*rh >= 1.1)
             {
-	      r = el[l] / (C_FLOAT64) l;
-	      nq = l;
-	      l = nq + 1;
-	      yp1 = yh[l];
-	      for (i = 1 ; i <= n ; i++)
-		yp1[i] = acor[i] * r;
-	      *orderflag = 2;
-	      return;
+              r = el[l] / (C_FLOAT64) l;
+              nq = l;
+              l = nq + 1;
+              yp1 = yh[l];
+              for (i = 1 ; i <= n ; i++)
+                yp1[i] = acor[i] * r;
+              *orderflag = 2;
+              return;
             }
-	  else 
+          else
             {
-	      ialth = 3;
-	      return;
+              ialth = 3;
+              return;
             }
         }
     }
   /*
     If meth = 1 and h is restricted by stability, bypass 10 percent test.
   */
-  if (meth == 1) 
+  if (meth == 1)
     {
       if ((*rh * *pdh * 1.00001) < sm1[newq])
-	if (kflag == 0 && *rh < 1.1) 
-	  {
-	    ialth = 3;
-	    return;
-	  }
+        if (kflag == 0 && *rh < 1.1)
+          {
+            ialth = 3;
+            return;
+          }
     }
-  else 
+  else
     {
-      if (kflag == 0 && *rh < 1.1) 
+      if (kflag == 0 && *rh < 1.1)
         {
-	  ialth = 3;
-	  return;
+          ialth = 3;
+          return;
         }
     }
   if (kflag <= -2)
@@ -2564,7 +2490,7 @@ void Clsoda::orderswitch(C_FLOAT64 * rhup,
     In any case h is reset according to rh and the yh array is rescaled.
     Then exit or redo the step.
   */
-  if (newq == nq) 
+  if (newq == nq)
     {
       *orderflag = 1;
       return;
@@ -2578,9 +2504,9 @@ void Clsoda::orderswitch(C_FLOAT64 * rhup,
 
 void Clsoda::resetcoeff(void)
   /*
-   The el vector and related constants are reset
-   whenever the order nq is changed, or at the start of the problem.
-*/
+    The el vector and related constants are reset
+    whenever the order nq is changed, or at the start of the problem.
+  */
 {
   C_INT32 i;
   C_FLOAT64 *ep1;
@@ -2595,9 +2521,10 @@ void Clsoda::resetcoeff(void)
 
 void Clsoda::eval(C_INT32 n,
                   C_FLOAT64 t,
-                  C_FLOAT64 * y,
-                  C_FLOAT64 * ydot)
+                  C_FLOAT64 * y,    /* Fortran style vector */
+                  C_FLOAT64 * ydot) /* Fortran style vector */
 {
+  /* We need C style vectors here */
   mModel->lSODAEval(n, t, y + 1, ydot + 1);
   return;
 }

@@ -28,7 +28,7 @@
  * of CModel, which it passes to CStochMethod. This then extracts
  * parameters from the model relevant to the simulation.
  *
- * Prototypical use: This would be done from an instance of CTrajectory, 
+ * Prototypical use: This would be done from an instance of CTrajectory,
  * which would call each step up to the maximum step number of maximum time.
  *
  * C_INT32 step = 0;
@@ -48,15 +48,15 @@ class CStochMethod;
 class CStochSolver
 {
  private:
-    // Private attributes
-    /**
-     * The type of the stochastic solver method
-     */
-    C_INT32 mMethodType;
+  // Private attributes
+  /**
+   * The type of the stochastic solver method
+   */
+  C_INT32 mMethodType;
   /**
    * A pointer to the method used
    */
-  CStochMethod *mMethod; 
+  CStochMethod *mMethod;
  public:
   // Lifecycle methods
   /**
@@ -68,20 +68,20 @@ class CStochSolver
    * @param method An integer specifying the method to use
    */
   CStochSolver(C_INT32 method);
-  
+
   /**
    * The destructor
    */
   ~CStochSolver();
 
   /**
-   * This initializes the solver, creates an instance of the method, 
+   * This initializes the solver, creates an instance of the method,
    * and initializes that with the given model.
-   * @param model A pointer to an instance of CModel 
+   * @param model A pointer to an instance of CModel
    */
   void initialize(CModel *model);
   /**
-   * Clean up 
+   * Clean up
    */
   void cleanup();
   // Operations methods
@@ -109,7 +109,7 @@ class CStochSolver
 
 class CStochMethod
 {
- protected:    
+ protected:
   // Protected attributes
   /**
    * A pointer to the instance of CModel being used.
@@ -196,7 +196,7 @@ class CStochMethod
    */
   C_INT32 CalculateCmu(C_INT32 index);
   /**
-   * Determine the value of one of the hmu's 
+   * Determine the value of one of the hmu's
    * @param index The position in the vector of this value of Cmu
    * @return mFail
    * @see mFail
@@ -226,7 +226,7 @@ class CStochDirectMethod : public CStochMethod
    * Named constructor
    */
   CStochDirectMethod(CModel *model);
-  /** 
+  /**
    * Destructor
    */
   ~CStochDirectMethod();
@@ -261,18 +261,18 @@ class CStochDirectMethod : public CStochMethod
 class CStochNextReactionMethod: public CStochMethod
 {
  private:
-    // Private attributes
+  // Private attributes
   /**
-   * The graph of reactions and their dependent reactions. When a reaction is 
+   * The graph of reactions and their dependent reactions. When a reaction is
    * executed, the propensities for each of its dependents must be updated.
    */
-    CDependencyGraph mDG;
+  CDependencyGraph mDG;
 
   /**
    * The set of putative reactions and associated times at which each reaction occurs.
    * This is represented as a priority queue, indexed on the reaction time.
    */
-    CIndexedPriorityQueue mPQ;
+  CIndexedPriorityQueue mPQ;
  public:
   // Lifecycle methods
   /**
@@ -284,7 +284,7 @@ class CStochNextReactionMethod: public CStochMethod
    * Named constructor
    */
   CStochNextReactionMethod(CModel *model);
-  /** 
+  /**
    * Destructor
    */
   ~CStochNextReactionMethod();

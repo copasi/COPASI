@@ -4,6 +4,9 @@
  * (C) Pedro Mendes 2001
  */
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
+#include "copasi.h"
 #include "CVersion.h"
 #include "utilities.h"
 

@@ -1,12 +1,14 @@
 /*****************************************************************************
-* PROGRAM NAME: CMca.cpp
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: Implement the CMca Class, its value is updated in simulation running
-*	       and outputed in Rep_MCA()			
-*****************************************************************************/
+ * PROGRAM NAME: CMca.cpp
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: Implement the CMca Class, its value is updated in simulation running
+ *        and outputed in Rep_MCA()
+ *****************************************************************************/
 
 #include <cmath>      //for fabs()
 #include <limits.h>
+
+#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/utilities.h"
@@ -20,9 +22,7 @@
 /**
  * Defaulut constructor
  */
-CMca::CMca()
-{
-}
+CMca::CMca() {CONSTRUCTOR_TRACE;}
 
 /**
  * User defined constructor
@@ -30,6 +30,7 @@ CMca::CMca()
  */
 CMca::CMca(CModel model, C_FLOAT64 factor)
 {
+  CONSTRUCTOR_TRACE;
   Model = model;
 
   mDxv.newsize(Model.getTotSteps(), Model.getIndMetab());
@@ -45,6 +46,7 @@ CMca::CMca(CModel model, C_FLOAT64 factor)
  */
 CMca::~CMca()
 {
+  DESTRUCTOR_TRACE;
   delSsipvt();
 }
 
@@ -84,20 +86,20 @@ TNT::Matrix < C_FLOAT64 > CMca::getGamma()
 }
 
 /**
- *	Clear Dxv with zeros
+ * Clear Dxv with zeros
  */
 void CMca::clearDxv()
 {
   register int i, j;
 
-  for(i = 0; i < mDxv.num_rows(); i++)
-    for(j = 0; j < mDxv.num_cols(); j++ )
+  for (i = 0; i < mDxv.num_rows(); i++)
+    for (j = 0; j < mDxv.num_cols(); j++)
       mDxv[i][j] = 0.0;
 }
 
 /**
  * Initialize mDxv with the unscaled elasticities
- * @param src is newtown variable, (is ss_x in Gespasi project) 
+ * @param src is newtown variable, (is ss_x in Gespasi project)
  * @param res is the resolution of steady state
  */
 void CMca::initDxv(C_FLOAT64 res)
@@ -114,15 +116,15 @@ void CMca::initDxv(C_FLOAT64 res)
   // Arrays to store function value
   f1 = new C_FLOAT64[mDxv.num_rows()];
   f2 = new C_FLOAT64[mDxv.num_rows()];
-	
+
   // load Dxv with elasticities
-  for (j = 0; j < mDxv.num_cols(); j++)  
+  for (j = 0; j < mDxv.num_cols(); j++)
     {
       /**
-       * if src[i+1] (x_ss[i+1]) is zero, the derivative will be calculated at a small 
-       * positive value (no point in considering negative values!). 
+       * if src[i+1] (x_ss[i+1]) is zero, the derivative will be calculated at a small
+       * positive value (no point in considering negative values!).
        * let's stick with res*K1 (SSRes)
-       */	
+       */
       store = mSsx[j+1];
       if (store < res) temp = res * K1;
       else temp = store;
@@ -131,16 +133,16 @@ void CMca::initDxv(C_FLOAT64 res)
       mSsx[j+1] = temp * K1;
       // Calcualte the fluxes
       for (i = 0; i < mDxv.num_rows(); i++)
-	f1[i] = Model.getReactions()[i]->calculate();
+        f1[i] = Model.getReactions()[i]->calculate();
       // now X-dx
       mSsx[j+1] = temp * K2;
       // calculate the fluxes
       for (i = 0; i < mDxv.num_rows(); i++)
-	f2[i] = Model.getReactions()[i]->calculate();
+        f2[i] = Model.getReactions()[i]->calculate();
 
       // set column j of Dxv
-      for( i = 0; i < mDxv.num_rows(); i++ )
-	mDxv[i][j] = (f1[i]-f2[i])/(temp*K3);
+      for (i = 0; i < mDxv.num_rows(); i++)
+        mDxv[i][j] = (f1[i]-f2[i])/(temp*K3);
 
       // restore the value of (src[i])ss_x[i]
       mSsx[j+1] = store;
@@ -152,7 +154,7 @@ void CMca::initDxv(C_FLOAT64 res)
 }
 
 /**
- *	Calculates the flux-control coefficients
+ * Calculates the flux-control coefficients
  *  @param refer to the condition when calculating
  */
 void CMca::CalcFCC(int condition)
@@ -162,18 +164,18 @@ void CMca::CalcFCC(int condition)
   if (condition == MCA_SINGULAR)
     {
       for (i = 0; i < mFcc.num_rows(); i++)
-	for (j = 0; j < mFcc.num_cols(); j++)
-	  mFcc[i][j] = 0.0;
+        for (j = 0; j < mFcc.num_cols(); j++)
+          mFcc[i][j] = 0.0;
     }
   else {
     // mFcc = I + mDxv * mGamma
     for (i = 0; i < mFcc.num_rows(); i++)
       for (j = 0; j < mFcc.num_cols(); j++)
-	{
-	  mFcc[i][j] = (i == j) ? 1.0 :0.0;
-	  for (k = 0; k < mDxv.num_cols(); k++)
-	    mFcc[i][j] += mDxv[i][k] * mGamma[k][j];
-	}
+        {
+          mFcc[i][j] = (i == j) ? 1.0 :0.0;
+          for (k = 0; k < mDxv.num_cols(); k++)
+            mFcc[i][j] += mDxv[i][k] * mGamma[k][j];
+        }
   }
 }
 
@@ -211,22 +213,22 @@ int CMca::CalcGamma()
   for (i = 0; i < Model.getIndMetab(); i++)
     for (j = 0; j < Model.getIndMetab(); j++)
       {
-	aux1[i][j] = 0.0;
-	for (k = 0; k < Model.getTotSteps(); k++)
-	  aux1[i][j] += (C_FLOAT64) Model.getRedStoi()[i][k] * mDxv[k][j];
+        aux1[i][j] = 0.0;
+        for (k = 0; k < Model.getTotSteps(); k++)
+          aux1[i][j] += (C_FLOAT64) Model.getRedStoi()[i][k] * mDxv[k][j];
       }
 
   // aux2 = aux1 * m1 (shifting indices for dgefa)
   for (i = 0; i < Model.getIndMetab(); i++)
     for (j = 0; j < Model.getIndMetab(); j++)
       {
-	aux2[i+1][j+1] = 0.0;
-	for (k = 0; k < Model.getIndMetab(); k++)
-	  aux2[i+1][j+1] += aux1[i][k] * Model.getL()(k+1,j+1); //???
+        aux2[i+1][j+1] = 0.0;
+        for (k = 0; k < Model.getIndMetab(); k++)
+          aux2[i+1][j+1] += aux1[i][k] * Model.getL()(k+1,j+1); //???
       }
 
   // LU decomposition if aux2 (for inversion)
-  //	dgefa -> luX??
+  // dgefa -> luX??
   dgefa(aux2, Model.getIndMetab(), mSsipvt, &info);
 
   if (info != 0)
@@ -234,11 +236,11 @@ int CMca::CalcGamma()
       // matrix is singular
       // return now (mGamma[i][j] = 0)
       // delete matrices
-      for(i = 0; i < dim; i++)
-	{
-	  free((void *) aux1[i]);
-	  free((void *) aux2[i]);
-	}
+      for (i = 0; i < dim; i++)
+        {
+          free((void *) aux1[i]);
+          free((void *) aux2[i]);
+        }
       free((void *) aux1);
       free((void *) aux2);
 
@@ -249,7 +251,7 @@ int CMca::CalcGamma()
   for (i = 0; i < Model.getIndMetab(); i++)
     for (j = 0; j < Model.getIndMetab(); j++)
       aux1[i+1][j+1] = (i == j)? 1.0 : 0.0;
-	
+
   // now invert aux2 (result in aux1)
   for (i = 0; i < Model.getIndMetab(); i++)
     dgesl(aux2, Model.getIndMetab(), mSsipvt, aux1[i+1], 1);
@@ -257,19 +259,19 @@ int CMca::CalcGamma()
   for (i = 0; i < Model.getIndMetab(); i++)
     for (j = 0; j < Model.getIndMetab(); j++)
       {
-	aux2[i][j] = 0.0;
-	for (k = 0; k < Model.getIndMetab(); k++)
-	  aux2[i][j] -= (C_FLOAT64)Model.getmLU()[i][k] * aux1[k+1][j+1];
+        aux2[i][j] = 0.0;
+        for (k = 0; k < Model.getIndMetab(); k++)
+          aux2[i][j] -= (C_FLOAT64)Model.getmLU()[i][k] * aux1[k+1][j+1];
       }
-	
+
   // mGamma = aux2 *RedStoi
   for (i = 0; i < Model.getIndMetab(); i++)
     for (j = 0; j < Model.getTotSteps(); j++)
       for (k = 0; k < Model.getIndMetab(); k++)
-	mGamma[i][j] += aux2[i][k] * (C_FLOAT64) Model.getRedStoi()[k][j];
+        mGamma[i][j] += aux2[i][k] * (C_FLOAT64) Model.getRedStoi()[k][j];
 
   // delete matrices
-  for(i = 0; i < dim; i++)
+  for (i = 0; i < dim; i++)
     {
       free((void *) aux1[i]);
       free((void *) aux2[i]);
@@ -296,7 +298,6 @@ void CMca::delSsipvt()
   free((void *) mSsipvt);
 }
 
-
 /**
  * Initialize the MCA matrices: mDxv, mFcc, mGamma
  */
@@ -311,7 +312,7 @@ void CMca::init()
 /**
  * the steady state MCA entry point
  * @param ss_solution refer to steady-state solution
- * @param refer to the resolution 
+ * @param refer to the resolution
  */
 int CMca::CalculateMCA(int ss_solution, int res)
 {
@@ -328,22 +329,22 @@ int CMca::CalculateMCA(int ss_solution, int res)
 
   ret = CalcGamma();
   CalcFCC(ret);
-	
+
   if (!mSSReder) ScaleMCA(ret, res);
 
   return ret;
 }
 
-/** 
+/**
  * Read SSMCAUnscaled from configuration file
  */
 C_INT32 CMca::load(CReadConfig & configBuffer)
 {
-  C_INT32	Fail = 0;
+  C_INT32 Fail = 0;
 
   if ((Fail = configBuffer.getVariable("SSMCAUnscaled", "C_INT16",
-				       (void *) &mSSReder,
-				       CReadConfig::LOOP)))
+                                       (void *) &mSSReder,
+                                       CReadConfig::LOOP)))
     return Fail;
 
   return Fail;
@@ -353,51 +354,50 @@ C_INT32 CMca::load(CReadConfig & configBuffer)
  * Scales the coefficients (i.e. Kacser format, rather than Reder)
  * @param refer to the condition
  * @param refer to the resolution
- */	
+ */
 void CMca::ScaleMCA(int condition, int res)
 {
   register int i, j;
 
   // if previous calcutations failed return now
-  if( condition != MCA_OK ) return;
+  if (condition != MCA_OK) return;
 
   // Scale Dxv
-  for(i = 0; i < Model.getTotSteps(); i++)
-    for(j = 0; j < Model.getTotMetab(); j++)
+  for (i = 0; i < Model.getTotSteps(); i++)
+    for (j = 0; j < Model.getTotMetab(); j++)
       {
-	// change the use of Col[] and Row[] to mSteps and mMetabolites
-	// change the use of ICol[] and IRow[] to mStepsX and mMetabolitesX
-	if( fabs( Model.getReactions()[i]->getFlux() ) >= res )
-	  {
-	    mDxv[i][j] *=   *Model.getMetabolites()[j]->getConcentration()
-	      * Model.getMetabolites()[j]->getCompartment()->getVolume()
-	      / Model.getReactions()[i]->getFlux();
-	  }
-	else mDxv[i][j] = DBL_MAX;
+        // change the use of Col[] and Row[] to mSteps and mMetabolites
+        // change the use of ICol[] and IRow[] to mStepsX and mMetabolitesX
+        if (fabs(Model.getReactions()[i]->getFlux()) >= res)
+          {
+            mDxv[i][j] *=   *Model.getMetabolites()[j]->getConcentration()
+              * Model.getMetabolites()[j]->getCompartment()->getVolume()
+              / Model.getReactions()[i]->getFlux();
+          }
+        else mDxv[i][j] = DBL_MAX;
       }
 
   // Scale Gamma
-  for(i = 0; i < Model.getIndMetab(); i++)
-    for(j = 0; j < Model.getTotSteps(); j++)
+  for (i = 0; i < Model.getIndMetab(); i++)
+    for (j = 0; j < Model.getTotSteps(); j++)
       {
-	if( fabs(*Model.getMetabolites()[i]->getConcentration()) >= res)
-	  mGamma[i][j] *=   Model.getReactions()[j]->getFlux() 
-	    / (*Model.getMetabolites()[i]->getConcentration() 
-	       *
-	       Model.getMetabolites()[j]->getCompartment()->getVolume());
-	else mGamma[i][j] = DBL_MAX;
+        if (fabs(*Model.getMetabolites()[i]->getConcentration()) >= res)
+          mGamma[i][j] *=   Model.getReactions()[j]->getFlux()
+            / (*Model.getMetabolites()[i]->getConcentration()
+               *
+               Model.getMetabolites()[j]->getCompartment()->getVolume());
+        else mGamma[i][j] = DBL_MAX;
       }
 
   // Scale FCC
-  for(i = 0; i < Model.getTotSteps(); i++)
-    for(j = 0; j < Model.getTotSteps(); j++)
+  for (i = 0; i < Model.getTotSteps(); i++)
+    for (j = 0; j < Model.getTotSteps(); j++)
       {
-	if( fabs( Model.getReactions()[i]->getFlux()  ) >= res )
-	  mFcc[i][j] *=   Model.getReactions()[j]->getFlux()  
-	    / Model.getReactions()[i]->getFlux();
-	else mFcc[i][j] = DBL_MAX;
+        if (fabs(Model.getReactions()[i]->getFlux()) >= res)
+          mFcc[i][j] *=   Model.getReactions()[j]->getFlux()
+            / Model.getReactions()[i]->getFlux();
+        else mFcc[i][j] = DBL_MAX;
       }
-
 }
 
 /**
@@ -411,8 +411,8 @@ void CMca::CalculateTimeMCA(int res)
   mSsx.resize(Model.getTotMetab());
 
   //copy concentrations to ss_x
-  for(i = 0; i < Model.getTotMetab(); i++)
-    mSsx[i+1] = *Model.getMetabolites()[i]->getConcentration() * 
+  for (i = 0; i < Model.getTotMetab(); i++)
+    mSsx[i+1] = *Model.getMetabolites()[i]->getConcentration() *
       Model.getMetabolites()[i]->getCompartment()->getVolume();
 
   // calculate the elasticites
@@ -421,17 +421,15 @@ void CMca::CalculateTimeMCA(int res)
   // scale the elasticities if needed
   if (mSSReder == 0)
     {
-      for(i = 0; i < Model.getTotSteps(); i++)
-	for(j = 0; j < Model.getTotMetab(); j++)
-	  {
-	    if( fabs( Model.getReactions()[i]->getFlux() ) >= res )
-	      mDxv[i][j] *= *Model.getMetabolites()[j]->getConcentration() / 
-		Model.getReactions()[i]->getFlux();
-	    else mDxv[i][j] = DBL_MAX;
-	  }
-
+      for (i = 0; i < Model.getTotSteps(); i++)
+        for (j = 0; j < Model.getTotMetab(); j++)
+          {
+            if (fabs(Model.getReactions()[i]->getFlux()) >= res)
+              mDxv[i][j] *= *Model.getMetabolites()[j]->getConcentration() /
+                Model.getReactions()[i]->getFlux();
+            else mDxv[i][j] = DBL_MAX;
+          }
     }
-
 }
 
 /**
@@ -454,7 +452,7 @@ C_INT32 CMca::save(CWriteConfig & configbuffer)
   C_INT32 Fail = 0;
 
   if ((Fail = configbuffer.setVariable("SSMCAUnscaled", "C_INT16",
-				       &mSSReder)))
+                                       &mSSReder)))
     return Fail;
 
   return Fail;

@@ -10,6 +10,8 @@
 #include <string>
 #include <time.h>
 
+#define  COPASI_TRACE_CONSTRUCTION 
+
 #include "copasi.h"
 #include "COutput.h"
 #include "utilities/utilities.h"
@@ -240,7 +242,7 @@ void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparato
 /**
  *	Assign the pointer to each datum object for time course
  */
-void COutput::compile(string &name, CModel *model, CTrajectory *traj)
+void COutput::compile(const string & name, CModel *model, CTrajectory *traj)
 {
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
@@ -252,7 +254,7 @@ void COutput::compile(string &name, CModel *model, CTrajectory *traj)
 /**
  *	Assign the pointer to each datum object for steady state
  */
-void COutput::compile(string &name, CModel *model, CSS_Solution *soln)
+void COutput::compile(const string & name, CModel *model, CSS_Solution *soln)
 {
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
