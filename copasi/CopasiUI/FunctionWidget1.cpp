@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/11/20 20:34:33 $
+   $Date: 2003/11/21 16:37:33 $
    End CVS Header */
 
 /**********************************************************************
@@ -116,6 +116,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Max"));
   Table2->setNumRows(3);
   Table2->setNumCols(3);
+  Table2->setColumnReadOnly (0, true);  //this restricts users from editing usage description name on the application table
 
   FunctionWidget1Layout->addMultiCellWidget(Table2, 8, 9, 1, 1);
   QSpacerItem* spacer = new QSpacerItem(71, 80, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -400,10 +401,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                       // The user clicked the Retry again button or pressed Enter
+            case 0:                        // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                       // The user clicked the Quit or pressed Escape
+            case 1:                        // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -624,12 +625,15 @@ bool FunctionWidget1::saveToFunction()
           // handle exception
         }
     }
+
+  // ** Parameter Table update of function **
   CFunctionParameters &functParam = func->getParameters();
   CFunctionParameters &pfunctParam = pFunction->getParameters();
   CFunctionParameter::DataType Type;
   unsigned C_INT32 index;
+  int i, j;
 
-  for (int i = 0; i < pfunctParam.size(); i++)
+  for (i = 0; i < pfunctParam.size(); i++)
     {
       // check if function parameter exists in pFunctionParameter
       if ((index = functParam.findParameterByName(pfunctParam[i]->getName(),
@@ -658,7 +662,7 @@ bool FunctionWidget1::saveToFunction()
   // remove extra parameters existing in functParam, compare functParam to pfunctParam
   if (pfunctParam.size() != functParam.size())
     {
-      for (int j = 0; j < functParam.size(); j++)
+      for (j = 0; j < functParam.size(); j++)
         {
           if ((index = pfunctParam.findParameterByName(functParam[j]->getName(),
                        Type)) == C_INVALID_INDEX)
@@ -670,17 +674,51 @@ bool FunctionWidget1::saveToFunction()
             }
         }
     }
-  // Application Table update of function
+
+  // ** Application Table update of function **
   CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
   CCopasiVectorNS < CUsageRange > & pfunctUsage = pFunction->getUsageDescriptions();
 
-  //Clear funcUsage
-  functUsage.cleanup();
-
-  for (int k = 0; k < pfunctUsage.size(); k++)
+  for (i = 0; i < pfunctUsage.size(); i++)
     {
-      // add pfunctUsage values to functUsage
-      functUsage.add(*pfunctUsage[k]);
+      // check if function usage exists in pFunctionUsage
+      if (index = functUsage.getIndex(pfunctUsage[i]->getName()) != C_INVALID_INDEX)
+        // match found
+        {
+          // update min and max values for corresponding usage descriptions
+          if (pfunctUsage[i]->getLow() != functUsage[pfunctUsage[i]->getName()]->getLow())
+            {
+              changed = true;
+              functUsage[pfunctUsage[i]->getName()]->setLow(pfunctUsage[i]->getLow());
+              // same as
+              // functUsage[index]->setLow(pfunctUsage[i]->getLow());
+            }
+          if (pfunctUsage[i]->getHigh() != functUsage[pfunctUsage[i]->getName()]->getHigh())
+            {
+              changed = true;
+              functUsage[pfunctUsage[i]->getName()]->setHigh(pfunctUsage[i]->getHigh());
+              // same as
+              // functUsage[index]->setHigh(pfunctUsage[i]->getHigh());
+            }
+        } else
+        {// match not found
+          changed = true;
+          functUsage.add(*pfunctUsage[i]);
+        }
+    }
+  // remove extra usage existing in functUsage, compare functUsage to pfunctUsage
+  if (pfunctUsage.size() != functUsage.size())
+    {
+      for (j = 0; j < functUsage.size(); j++)
+        {
+          if (index = pfunctUsage.getIndex(functUsage[j]->getName()) == NULL)
+            // the lines below occurs if new functionParameter does not exist in pfunctParam
+            {
+              changed = true;
+              // remove the extra parameter in functParam
+              functUsage.remove(functUsage[j]->getName());
+            }
+        }
     }
 
   if (changed)
@@ -837,11 +875,11 @@ void FunctionWidget1::slotAppTableValueChanged(int row, int col)
   CFunctionParameters &functParam = pFunction->getParameters();
   CCopasiVectorNS < CUsageRange > & functUsage = pFunction->getUsageDescriptions();
 
-  if (col == 0)
+  /*if (col == 0)
     {
       app_Desc = Table2->text(row, col);
       functUsage[row]->setUsage(app_Desc.latin1());
-    }
+    }*/ // Application Description should be restricted from change 
 
   if (col == 1)
     {
