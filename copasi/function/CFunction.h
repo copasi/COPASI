@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:47 $
+   $Date: 2004/12/22 10:50:31 $
    End CVS Header */
 
 /**
@@ -268,6 +268,8 @@ class CFunction : public CCopasiContainer
     virtual void addParameter(const std::string & name,
                               const CFunctionParameter::DataType & type,
                               const std::string & usage);
+
+    virtual void writeMathML(std::ostream & out) const;
 
   protected:
 

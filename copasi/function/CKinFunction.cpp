@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:48 $
+   $Date: 2004/12/22 10:50:31 $
    End CVS Header */
 
 /**
@@ -270,7 +270,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                     // this is an error
+        case N_NOP:                                      // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -771,3 +771,10 @@ void CKinFunction::cleanupNodes()
   mNodes.clear();
   return;
 }
+
+void CKinFunction::writeMathML(std::ostream & out) const
+  {
+    out << "<math>" << std::endl;
+    mNodes[0]->getLeft().writeMathML(out, 0);
+    out << "</math>" << std::endl;
+  }

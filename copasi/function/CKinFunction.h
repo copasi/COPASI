@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:49 $
+   $Date: 2004/12/22 10:50:31 $
    End CVS Header */
 
 /**
@@ -93,21 +93,7 @@ class CKinFunction : public CFunction
               CReadConfig::Mode mode = CReadConfig::LOOP);
 #endif // XXXX
 
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  Output is in Gepasi 3.21 file format.
-     *  @param "CWriteConfig &" configBuffer.
-     *  @return Fail
-     */ 
-    //    void saveOld(CWriteConfig & configBuffer);
-
-    /**
-     *  Returns a string containing the explicit function in SBML format
-     *  @param "vector < void * >" callParameters
-    *  @param "const string &" r a suffix for parameter names (usually reaction number)
-     */ 
-    //    std::string getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
-    //                             const std::string &r) const;
+    virtual void writeMathML(std::ostream & out) const;
 
     /**
      *  Compile a function

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:47 $
+   $Date: 2004/12/22 10:50:31 $
    End CVS Header */
 
 /**
@@ -326,3 +326,8 @@ void CFunction::guessModifierUsageRange()
   else
   {addUsage("MODIFIER", imax, CRange::NoRange);}
 }
+
+void CFunction::writeMathML(std::ostream & out) const
+  {
+    out << "!!!" << std::endl;
+  }

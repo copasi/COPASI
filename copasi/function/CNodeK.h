@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:06:03 $
+   $Date: 2004/12/22 10:50:31 $
    End CVS Header */
 
 /*  CNodeK
@@ -163,22 +163,6 @@ class CNodeK
     C_INT32 load(CReadConfig & configbuffer);
 
     /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
-     */ 
-    //    C_INT32 save(CWriteConfig & configbuffer) const;
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  This writes the information in Gepasi 3.21 file format
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
-     */ 
-    //    C_INT32 saveOld(CWriteConfig & configbuffer) const;
-
-    /**
      *  Returns a string that contains the equation defined from
     *  this node downwards. The function contains explicit names
     *  of node identifiers, rather than the abstract symbol.
@@ -188,6 +172,8 @@ class CNodeK
      */
     std::string getExplicitFunctionString(const std::vector< std::vector< std::string > > & callParameterNames,
                                           const std::string &r);
+
+    void writeMathML(std::ostream & out, C_INT32 level) const;
 
     /**
      * Retrieving mType the type of a node
