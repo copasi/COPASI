@@ -32,6 +32,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name randomGenerator
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name report
+    End Project Dependency
 }}}
 
 ###############################################################################
