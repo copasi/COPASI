@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:53 $
+   $Author: gauges $ 
+   $Date: 2004/09/23 15:33:57 $
    End CVS Header */
 
 /****************************************************************************
@@ -45,12 +45,10 @@ class ModelWidget : public CopasiWidget
   protected slots:
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
-    virtual void slotBtnSplitClicked();
 
   protected:
     bool loadModel(CModel *model);
     bool saveToModel();
-    bool convert2NonReversible();
     std::string objKey;
 
     QGridLayout* ModelWidgetLayout;
@@ -68,7 +66,6 @@ class ModelWidget : public CopasiWidget
 
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
-    QPushButton* splitModel;
   };
 
 #endif // MODELWIDGET_H

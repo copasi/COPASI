@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 12:27:28 $
+   $Author: gauges $ 
+   $Date: 2004/09/23 15:33:56 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -401,6 +401,11 @@ class CModel : public CCopasiContainer
      * Cleanup 
      */
     void cleanup();
+
+    /**
+     * Converts the set of reactions to a set of reaction where all reactions are irreversible.
+    */
+    bool convert2NonReversible();
 
     /**
      *  Loads an object with data coming from a CReadConfig object.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.191 $
+   $Revision: 1.192 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/10 11:12:44 $
+   $Author: gauges $ 
+   $Date: 2004/09/23 15:33:56 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@
 #include "utilities/CluX.h"
 #include "utilities/utility.h"
 #include "utilities/COutputHandler.h"
-
+#include "CopasiUI/CReactionInterface.h"
 #include "clapackwrap.h"
 
 const char * CModel::VolumeUnitName[] =
@@ -1655,6 +1655,98 @@ bool CModel::removeReaction(const std::string & key)
 
   setCompileFlag();
   return true;
+}
+
+bool CModel::convert2NonReversible()
+{
+  //TODO check if there are any reversible reactions
+  //TODO warn the user
+  //TODO tell the gui about changes
+  //TODO generate report ?
+
+  bool ret = true;
+
+  std::vector<std::string> reactionsToDelete;
+
+  CReaction *reac0, *reac1, *reac2;
+  CReactionInterface ri1, ri2;
+  std::string fn, rn1, rn2;
+
+  //CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
+  //if (!model) return false;
+
+  CCopasiVectorN< CReaction > & steps = this->getReactions();
+
+  unsigned C_INT32 i, imax = steps.size();
+  for (i = 0; i < imax; ++i)
+    if (steps[i]->isReversible())
+      {
+        ret = false;
+        reac0 = steps[i];
+        std::cout << i << "  ";
+
+        //create the two new reactions
+        reac1 = new CReaction(*reac0, &steps);
+        rn1 = reac1->getObjectName() + " (forward)";
+        reac1->setName(rn1);
+        steps.add(reac1);
+
+        reac2 = new CReaction(*reac0, &steps);
+        rn2 = reac2->getObjectName() + " (backward)";
+        reac2->setName(rn2);
+        steps.add(reac2);
+
+        ri1.initFromReaction(*this, reac1->getKey());
+        ri2.initFromReaction(*this, reac2->getKey());
+
+        //set the new function
+        fn = reac0->getFunction().getObjectName();
+        std::cout << fn << "  " << std::endl;
+
+        if (fn == "Mass action (reversible)")
+          {
+            ri1.setReversibility(false, "Mass action (irreversible)");
+            ri2.reverse(false, "Mass action (irreversible)");
+          }
+        else if (fn == "Constant flux (reversible)")
+          {
+            ri1.setReversibility(false, "Constant flux (irreversible)");
+            ri2.reverse(false, "Constant flux (irreversible)");
+          }
+        else
+          {
+            //ri1.setReversibility(false);
+            ri2.reverse(false, "Mass action (irreversible)");
+          }
+
+        ri1.writeBackToReaction(*this);
+        ri2.writeBackToReaction(*this);
+
+        //set the kinetic parameters
+
+        if (fn == "Mass action (reversible)")
+          {
+            reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
+            reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
+            ret = true;
+          }
+        else
+          {
+            reac2->setParameterValue("k1", 0);
+          }
+
+        //remove the old reaction
+        //mSteps.remove(reac0->getName());
+        reactionsToDelete.push_back(reac0->getObjectName());
+      }
+
+  imax = reactionsToDelete.size();
+  for (i = 0; i < imax; ++i)
+    steps.remove(reactionsToDelete[i]);
+
+  //protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
+
+  return ret;
 }
 
 //**********************************************************************

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:47 $
+   $Author: gauges $ 
+   $Date: 2004/09/23 15:33:56 $
    End CVS Header */
 
 /*******************************************************************
@@ -84,16 +84,12 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   Layout5->addWidget(cancelChanges);
 
   // preliminary
-  splitModel = new QPushButton(this, "irreversible");
-  splitModel->setText(trUtf8("Convert All Reactions to Irreversible"));
-  ModelWidgetLayout->addWidget(splitModel, 7, 1);
 
   ModelWidgetLayout->addMultiCellLayout(Layout5, 8, 8, 0, 1);
 
   // signals and slots connections
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
-  connect(splitModel, SIGNAL(clicked()), this, SLOT(slotBtnSplitClicked()));
 }
 
 /*
@@ -195,103 +191,6 @@ void ModelWidget::slotBtnOKClicked()
 {
   //let the user confirm?
   saveToModel();
-}
-
-void ModelWidget::slotBtnSplitClicked()
-{
-  convert2NonReversible();
-}
-
-bool ModelWidget::convert2NonReversible()
-{
-  //TODO check if there are any reversible reactions
-  //TODO warn the user
-  //TODO tell the gui about changes
-  //TODO generate report ?
-
-  bool ret = true;
-
-  std::vector<std::string> reactionsToDelete;
-
-  CReaction *reac0, *reac1, *reac2;
-  CReactionInterface ri1, ri2;
-  std::string fn, rn1, rn2;
-
-  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
-  if (!model) return false;
-
-  CCopasiVectorN< CReaction > & steps = model->getReactions();
-
-  unsigned C_INT32 i, imax = steps.size();
-  for (i = 0; i < imax; ++i)
-    if (steps[i]->isReversible())
-      {
-        ret = false;
-        reac0 = steps[i];
-        std::cout << i << "  ";
-
-        //create the two new reactions
-        reac1 = new CReaction(*reac0, &steps);
-        rn1 = reac1->getObjectName() + " (forward)";
-        reac1->setName(rn1);
-        steps.add(reac1);
-
-        reac2 = new CReaction(*reac0, &steps);
-        rn2 = reac2->getObjectName() + " (backward)";
-        reac2->setName(rn2);
-        steps.add(reac2);
-
-        ri1.initFromReaction(*model, reac1->getKey());
-        ri2.initFromReaction(*model, reac2->getKey());
-
-        //set the new function
-        fn = reac0->getFunction().getObjectName();
-        std::cout << fn << "  " << std::endl;
-
-        if (fn == "Mass action (reversible)")
-          {
-            ri1.setReversibility(false, "Mass action (irreversible)");
-            ri2.reverse(false, "Mass action (irreversible)");
-          }
-        else if (fn == "Constant flux (reversible)")
-          {
-            ri1.setReversibility(false, "Constant flux (irreversible)");
-            ri2.reverse(false, "Constant flux (irreversible)");
-          }
-        else
-          {
-            //ri1.setReversibility(false);
-            ri2.reverse(false, "Mass action (irreversible)");
-          }
-
-        ri1.writeBackToReaction(*model);
-        ri2.writeBackToReaction(*model);
-
-        //set the kinetic parameters
-
-        if (fn == "Mass action (reversible)")
-          {
-            reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
-            reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
-            ret = true;
-          }
-        else
-          {
-            reac2->setParameterValue("k1", 0);
-          }
-
-        //remove the old reaction
-        //mSteps.remove(reac0->getName());
-        reactionsToDelete.push_back(reac0->getObjectName());
-      }
-
-  imax = reactionsToDelete.size();
-  for (i = 0; i < imax; ++i)
-    steps.remove(reactionsToDelete[i]);
-
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
-
-  return ret;
 }
 
 bool ModelWidget::update(ListViews::ObjectType objectType,
