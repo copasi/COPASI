@@ -1,5 +1,7 @@
 #include "ObjectBrowserItem.h"
 
+long ObjectBrowserItem::KeySpace = 1;
+
 ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList)
     : QListViewItem(parent, after)
 {
@@ -31,6 +33,11 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
 
   nParam = 0;
   mChecked = new bool(false);
+}
+
+void ObjectBrowserItem::attachKey()
+{
+  mKey = QString::number(KeySpace++);
 }
 
 int ObjectBrowserItem::nUserChecked()
@@ -160,4 +167,13 @@ void objectList::insert(ObjectBrowserItem* pItem)
 objectListItem* objectList::getRoot()
 {
   return root;
+}
+
+objectListItem* objectList::pop()
+{
+  if (length == 0) return NULL;
+  objectListItem* returnValue = root;
+  root = root->pNext;
+  length--;
+  return returnValue;
 }

@@ -18,6 +18,7 @@ class objectList;
 class ObjectBrowserItem : public QListViewItem
   {
   private:
+    static long KeySpace;
     CCopasiObject* pCopasiObject;
     ObjectBrowserItem* pParent;
     ObjectBrowserItem* pChild;
@@ -25,12 +26,16 @@ class ObjectBrowserItem : public QListViewItem
     bool* mChecked;
     objectType mType;
     unsigned int nParam;
+    QString mKey;
 
   public:
+
+    inline const QString & getKey() const {return mKey;}
     ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
     ~ObjectBrowserItem() {}
 
+    void attachKey();
     void setParent(ObjectBrowserItem* parent);
     void setChild(ObjectBrowserItem* child);
     void setSibling(ObjectBrowserItem* sibling);
@@ -72,6 +77,7 @@ class objectList
     objectList();
     void insert(ObjectBrowserItem* pItem);
     objectListItem* getRoot();
+    objectListItem* pop();
   };
 
 #endif

@@ -177,6 +177,8 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
 
+  objectList* childStack = new objectList();
+
   std::vector<CCopasiObject *> pObjectList = copaParent->getObjects();
   std::vector<CCopasiObject *>::iterator it = pObjectList.begin();
   std::vector<CCopasiObject *>::iterator end = pObjectList.end();
@@ -203,7 +205,6 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
           test = current->isMatrix();
           test = current->isNameVector();
           test = current->isReference();
-
           //   loadChild(currentItem, current);
         }
       it++;
