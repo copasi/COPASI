@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 11:47:31 $
+   $Date: 2004/09/09 14:02:06 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -458,7 +458,7 @@ void CSpec2Model::processMoieties()
                                            moiety_name,
                                            contents));
 
-          metab.setName(moiety_name);
+          metab.setObjectName(moiety_name);
           mModel->createMetabolite(moiety_name, compartment_name, 0, CMetab::METAB_DEPENDENT);
           std::cout << "Added moiety " << moiety_name
           << ", " << compartment_name
