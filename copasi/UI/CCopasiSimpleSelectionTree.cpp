@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 12:44:17 $
+   $Date: 2004/12/10 15:11:22 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -21,6 +21,9 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->setSelectionMode(QListView::Extended);
   this->setSortColumn(-1);
   this->setRootIsDecorated(true);
+  this->addColumn("Column 1");
+  this->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, this->sizePolicy().hasHeightForWidth()));
+  this->expertSubtree = new QListViewItem(this, "expert");
   this->reactionSubtree = new QListViewItem(this, "reactions");
   this->particleFluxSubtree = new QListViewItem(this->reactionSubtree, "particle fluxes");
   this->concentrationFluxSubtree = new QListViewItem(this->reactionSubtree, "concentration fluxes");
@@ -33,7 +36,6 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->initialConcentrationSubtree = new QListViewItem(this->metaboliteSubtree, "initial concentrations");
 
   this->timeSubtree = new QListViewItem(this, "time");
-  this->expertSubtree = new QListViewItem(this, "expert");
 }
 
 CCopasiSimpleSelectionTree::~CCopasiSimpleSelectionTree()
