@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:12 $
+   $Date: 2004/08/05 15:31:48 $
    End CVS Header */
 
 // the plot object for copasi
@@ -46,9 +46,6 @@ class CopasiPlot : public ZoomPlot
     // this method reads data to append to existing curves
     void appendPlot();
 
-    // adds/removes curves as necessary; otherwise simply display the existing curves
-    //void reload2Plot(CPlotSpec* ptspec, std::vector<int> deletedCurveIndices);
-
     void takeData(const std::vector<C_FLOAT64> & dataVector);
     void updatePlot();
 
@@ -62,8 +59,6 @@ class CopasiPlot : public ZoomPlot
     void toggleCurve(long curveId);
 
   private:
-    //std::istream* sourcefile;
-
     // a vector that contains pointers to vectors of data in the selected columns
     std::vector<QMemArray<double>* > data;
 

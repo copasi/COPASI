@@ -1,15 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:11 $
+   $Date: 2004/08/05 15:31:45 $
    End CVS Header */
-
-//#include "copasi.h"
-//#include "model/CModel.h"
-
-//#include "report/CKeyFactory.h"
 
 #include "CPlotItem.h"
 

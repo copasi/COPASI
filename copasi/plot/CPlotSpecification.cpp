@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:12 $
+   $Date: 2004/08/05 15:31:47 $
    End CVS Header */
 
 #include "model/CModel.h"
@@ -34,10 +34,6 @@ void CPlotSpecification::initObjects()
 
 CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::Type type)
 {
-  // check if there is already a volume with this name
-  //if (items.getIndex(name) != C_INVALID_INDEX)
-  //  return NULL; //it is not a name vector
-
   CPlotItem * itm = new CPlotItem(name, NULL, type);
 
   if (!items.add(itm, true))

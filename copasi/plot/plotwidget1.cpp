@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:15 $
+   $Date: 2004/08/05 15:31:48 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.14 2004/08/05 12:54:15 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.15 2004/08/05 15:31:48 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -178,8 +178,6 @@ void PlotWidget1::addCurveTab(const std::string & title,
 
 void PlotWidget1::addCurveGroupBox()
 {
-  CPlotSpecification *mpPlotSpec;
-
   ObjectBrowser* pBrowser1 = new ObjectBrowser();
   ObjectBrowser* pBrowser2 = new ObjectBrowser();
 
@@ -255,8 +253,6 @@ void PlotWidget1::addCurveGroupBox()
 
   //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
   //if (!pspec) return;
-
-  CPlotItem * plItem;
 
   if (objects1.size() == 1)
     {

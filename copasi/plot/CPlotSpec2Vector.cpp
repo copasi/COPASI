@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:11 $
+   $Date: 2004/08/05 15:31:46 $
    End CVS Header */
 
 #include "copasi.h"
@@ -187,8 +187,6 @@ C_INT32 CPlotSpec2Vector::getIndexFromCN(const CCopasiObjectName & name)
 
 bool CPlotSpec2Vector::compile()
 {
-  bool success = true;
-
   mObjects.clear();
 
   CCopasiObject* pSelected;
