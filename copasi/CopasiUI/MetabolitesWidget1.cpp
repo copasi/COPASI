@@ -21,7 +21,7 @@
 
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
-#include "model/CMetab.h"
+#include "model/model.h"
 #include "listviews.h"
 
 /*

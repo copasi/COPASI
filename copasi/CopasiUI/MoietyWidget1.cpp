@@ -6,7 +6,6 @@
  ** obtained from the data model about the Moiety----It is Basically 
  ** the Second level of Moieties.
  ********************************************************************/
-#include "MoietyWidget1.h"
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
@@ -14,8 +13,13 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include "listviews.h"
-#include <qfont.h> 
+#include <qfont.h>
+
+#include "copasi.h"
+#include "utilities/utilities.h"
+#include "MoietyWidget1.h"
+#include "model/model.h"
+#include "listviews.h" 
 /*
  *  Constructs a MoietyWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.

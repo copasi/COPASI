@@ -10,11 +10,12 @@
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
-#include "CompartmentsWidget.h"
-#include "listviews.h"
-#include "model/CMetab.h"
 #include <qfont.h>
-#include "utilities/CGlobals.h"
+
+#include "CompartmentsWidget.h"
+#include "model/CCompartment.h"
+#include "listviews.h" 
+// #include "utilities/CGlobals.h"
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.

@@ -20,12 +20,9 @@
 #include "DataModel.h"
 #include "Observer.h"
 #include "Tree.h"
-#include "copasi.h"
-#include "model/model.h"
 
-#include "copasi.h"
-
-// #include "MetabolitesWidget.h"
+#include "copasi.h" 
+// #include "model/model.h"
 
 class MetabolitesWidget;
 
@@ -46,6 +43,7 @@ class CompartmentsWidget1;
 class MoietyWidget1;
 
 class FunctionWidget1;
+
 #include "./icons/folderclosed.xpm"
 #include "./icons/folderopen.xpm"
 #include "./icons/folderlocked.xpm"

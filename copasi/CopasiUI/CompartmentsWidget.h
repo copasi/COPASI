@@ -13,7 +13,6 @@
 #include <qpushbutton.h>
 #include "MyTable.h"
 #include "copasi.h"
-#include "model/model.h"
 #include "Structures.h"
 
 class CModel;

@@ -6,7 +6,6 @@
  ** obtained from the data model about the Compartments----It is 
  ** Basically the Second level of Compartments.
  ***********************************************************************/
-#include "CompartmentsWidget1.h"
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
@@ -15,9 +14,14 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include "listviews.h"
 #include <qlistbox.h>
 #include <qfont.h>
+
+#include "copasi.h"
+#include "utilities/utilities.h"
+#include "CompartmentsWidget1.h"
+#include "model/model.h"
+#include "listviews.h"
 
 /*
  *  Constructs a CompartmentsWidget which is a child of 'parent', with the 

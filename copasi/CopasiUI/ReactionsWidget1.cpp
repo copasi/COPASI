@@ -7,7 +7,6 @@
  ** the Second level of Reactions.
  **********************************************************************/
 
-#include "ReactionsWidget1.h"
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -19,9 +18,13 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qcheckbox.h>
-#include "listviews.h"
-#include "model/CChemEqElement.h"
 #include <qfont.h>
+
+#include "copasi.h"
+#include "utilities/utilities.h"
+#include "ReactionsWidget1.h"
+#include "listviews.h"
+#include "model/model.h"
 #include "function/function.h" 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
