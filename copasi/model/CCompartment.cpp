@@ -6,6 +6,7 @@
 // Converted for Copasi by Pedro Mendes
 
 #include <iostream>
+#include <float.h>
 
 #define  COPASI_TRACE_CONSTRUCTION
 
