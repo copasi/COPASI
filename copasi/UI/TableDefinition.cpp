@@ -20,6 +20,7 @@
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinition.h"
+#include "report/CCopasiStaticString.h"
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
@@ -91,7 +92,7 @@ void TableDefinition::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       table->setText(j, 0, (*objects)[j]->getName().c_str());
-      table->setText(j, 1, (*objects)[j]->getComment().c_str());
+      table->setText(j, 1, (*objects)[j]->getComment().getStaticString().c_str());
       mKeys[j] = (*objects)[j]->getKey();
     }
   table->setText(jmax, 1, "");

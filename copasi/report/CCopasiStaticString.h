@@ -25,5 +25,10 @@ class CCopasiStaticString: public CCopasiObject
     ~CCopasiStaticString();
 
     void cleanup();
+
+    const std::string& getStaticString()
+    {
+      return strObject;
+    }
   };
 #endif // COPASI_CCopasiStaticString

@@ -64,7 +64,7 @@ class CReportDefinition : public CCopasiObject
     /**
     Returns the comments in the report tag
     */
-    const CCopasiStaticString& getComment()
+    CCopasiStaticString& getComment()
     {
       return mComment;
     }
@@ -72,7 +72,7 @@ class CReportDefinition : public CCopasiObject
     /**
     sets the comments in the report tag
     */
-    void setComment(const CCopasiStaticString comment)
+    void setComment(const CCopasiStaticString& comment)
     {
       mComment = comment;
     }
@@ -102,12 +102,12 @@ class CReportDefinition : public CCopasiObject
     */
     void setReportBody(CReportBody *pNewBody);
 
-    void setSeperator(const CCopasiStaticString Seperator)
+    void setSeperator(const CCopasiStaticString& Seperator)
     {
       mSeperator = Seperator;
     }
 
-    const CCopasiStaticString getSeperator()
+    CCopasiStaticString& getSeperator()
     {
       return mSeperator;
     }

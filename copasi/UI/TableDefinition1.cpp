@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.16 2003/09/10 01:26:55 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.17 2003/09/10 18:58:53 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -260,7 +260,7 @@ void TableDefinition1::loadTableDefinition1()
   itemsTable->clear();
 
   nameEdit->setText(pReportDefinition->getObjectName().c_str());
-  commentEdit->setText(pReportDefinition->getComment().c_str());
+  commentEdit->setText(pReportDefinition->getComment().getStaticString().c_str());
   titleChecked->setChecked(pReportDefinition->getTitle());
 
   C_INT32 i;
@@ -268,7 +268,7 @@ void TableDefinition1::loadTableDefinition1()
     itemsTable->insertItem((*(pReportDefinition->getBodyAddr()))[i].c_str());
   comboTask->setEnabled(true);
 
-  if (pReportDefinition->getSeperator() == "/t")
+  if (pReportDefinition->getSeperator().getStaticString() == "/t")
     {
       seperatorEdit->setEnabled(false);
       tabChecked->setChecked(true);
@@ -277,7 +277,7 @@ void TableDefinition1::loadTableDefinition1()
     {
       seperatorEdit->setEnabled(true);
       tabChecked->setChecked(false);
-      seperatorEdit->setText(pReportDefinition->getSeperator().c_str());
+      seperatorEdit->setText(pReportDefinition->getSeperator().getStaticString().c_str());
     }
   bUpdated = false;
 }
