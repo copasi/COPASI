@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:53 $
+   $Author: ssahle $ 
+   $Date: 2004/06/07 14:02:34 $
    End CVS Header */
 
 /**
@@ -18,6 +18,8 @@
 
 #include <sstream>
 #include <string>
+
+#include "copasi.h"
 
 // available operations mode for the configurations buffer
 // #define CReadConfig_SEARCH 0x01
