@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.210 $
+   $Revision: 1.211 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 19:16:34 $
+   $Date: 2005/01/31 15:45:19 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1407,6 +1407,7 @@ bool CModel::setVolumeUnit(const CModel::VolumeUnit & unit)
 
   switch (unit)
     {
+    case m3:
     case l:
     case ml:
     case microl:
