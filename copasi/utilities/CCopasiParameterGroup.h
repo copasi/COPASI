@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/09/30 15:28:29 $
+   $Date: 2005/01/06 14:35:50 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -29,7 +29,7 @@ class CCopasiParameterGroup: public CCopasiParameter
     typedef CCopasiContainer::objectMap::iterator name_iterator;
 
     // Operations
-  private:
+  protected:
     /**
      * Default constructor
      */
