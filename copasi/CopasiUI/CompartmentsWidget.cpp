@@ -101,18 +101,17 @@ void CompartmentsWidget::createNewObject()
   {
     std::string name = "compartment_0";
     int i = 0;
-    while (dataModel->getModel()->addCompartment(name) == -1)
+    while (!dataModel->getModel()->addCompartment(name))
       {
         i++;
-        name = "compartment";
-        name += "_";
+        name = "compartment_";
         name += QString::number(i).latin1();
       }
     table->setText(table->numRows() - 1, 0, name.c_str());
     table->setNumRows(table->numRows());
     //emit updated();
     //emit leaf(mModel);
-    ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE);
+    ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD);
   }
 }
 

@@ -105,9 +105,21 @@ void ReactionsWidget::fillTable()
 
 void ReactionsWidget::createNewObject()
 {
-  CReaction * reac = new CReaction("New Reaction", &dataModel->getModel()->getReactions());
-  dataModel->getModel()->getReactions().add(reac);
-  ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");   //TODO: more specific
+  {
+    std::string name = "reaction_0";
+    int i = 0;
+    while (!dataModel->getModel()->addReaction(name))
+      {
+        i++;
+        name = "reaction_";
+        name += QString::number(i).latin1();
+      }
+    table->setText(table->numRows() - 1, 0, name.c_str());
+    table->setNumRows(table->numRows());
+    //emit updated();
+    //emit leaf(mModel);
+    ListViews::notify(ListViews::REACTION, ListViews::ADD);
+  }
 }
 
 void ReactionsWidget::slotTableCurrentChanged(int row,

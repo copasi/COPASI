@@ -108,7 +108,23 @@ void MetabolitesWidget::fillTable()
 //**************************************************************************
 
 void MetabolitesWidget::createNewObject()
-{}
+{
+  {
+    std::string name = "metabolite_0";
+    int i = 0;
+    while (!dataModel->getModel()->addMetabolite(name))
+      {
+        i++;
+        name = "metabolite_";
+        name += QString::number(i).latin1();
+      }
+    table->setText(table->numRows() - 1, 0, name.c_str());
+    table->setNumRows(table->numRows());
+    //emit updated();
+    //emit leaf(mModel);
+    ListViews::notify(ListViews::METABOLITE, ListViews::ADD);
+  }
+}
 
 void MetabolitesWidget::slotTableCurrentChanged(int row,
     int C_UNUSED(col),
