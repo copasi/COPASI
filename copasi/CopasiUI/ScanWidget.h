@@ -71,6 +71,9 @@ class ScanWidget : public CopasiWidget
     virtual void ScanButtonClicked();
     virtual void SteadyStateButtonClicked();
     virtual void TrajectoryButtonClicked();
+
+    virtual void SteadyStateEditing();
+    virtual void TrajectoryEditing();
   };
 
 #endif

@@ -151,8 +151,17 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(trajectory, SIGNAL(clicked()), this, SLOT(TrajectoryButtonClicked()));
   connect(sExecutable, SIGNAL(clicked()), this, SLOT(ScanButtonClicked()));
 
+  connect(eSteadyState, SIGNAL(clicked()), this, SLOT(SteadyStateEditing()));
+  connect(eTrajectory, SIGNAL(clicked()), this, SLOT(TrajectoryEditing()));
+
   scanTask = NULL;
 }
+
+void ScanWidget::SteadyStateEditing()
+{}
+
+void ScanWidget::TrajectoryEditing()
+{}
 
 ScanWidget::~ScanWidget()
 {
