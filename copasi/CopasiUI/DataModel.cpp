@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/25 13:27:40 $
+   $Date: 2004/10/28 07:33:49 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -21,6 +21,7 @@
 #include "plot/CPlotSpec2Vector.h"
 #include "optimization/COptFunction.h"
 #include "xml/CCopasiXML.h"
+#include "steadystate/CMCAMethod.h"
 
 DataModel::DataModel()
 {
@@ -59,6 +60,7 @@ void DataModel::createModel()
   pdelete(mpCMCATask);
   mpCMCATask = new CMCATask();
   mpCMCATask->getProblem()->setModel(model);
+  dynamic_cast<CMCAMethod*>(mpCMCATask->getMethod())->setModel(model);
 
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
@@ -101,6 +103,7 @@ void DataModel::loadModel(const char* fileName)
       pdelete(mpCMCATask);
       mpCMCATask = new CMCATask();
       mpCMCATask->getProblem()->setModel(model);
+      dynamic_cast<CMCAMethod*>(mpCMCATask->getMethod())->setModel(model);
 
       pdelete(reportdefinitions);
       reportdefinitions = new CReportDefinitionVector();
@@ -173,6 +176,7 @@ void DataModel::loadModel(const char* fileName)
 
       if (!mpCMCATask) mpCMCATask = new CMCATask();
       mpCMCATask->getProblem()->setModel(model);
+      dynamic_cast<CMCAMethod*>(mpCMCATask->getMethod())->setModel(model);
 
       pdelete(reportdefinitions);
       reportdefinitions = pNewReports;
@@ -251,6 +255,7 @@ void DataModel::importSBML(const char* fileName)
   pdelete(mpCMCATask);
   mpCMCATask = new CMCATask();
   mpCMCATask->getProblem()->setModel(model);
+  dynamic_cast<CMCAMethod*>(mpCMCATask->getMethod())->setModel(model);
 
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
