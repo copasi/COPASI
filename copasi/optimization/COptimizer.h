@@ -30,7 +30,7 @@ public:
   //data member
  private:
   
-  // These data members were originally public,
+  // YOHE: These data members were originally public,
   // but it's better to use them as private
   String mIni;			// INI filename
   String mHelp;			// Help filename
@@ -43,12 +43,12 @@ public:
   BOOL mArrayCreated;		// True if DLL is in memory
   BOOL mBounds;			// True if method accepts bounds on the parameters
   BOOL mConstraints;		// True if method accepts constraints on the variable
-
+#endif   // XXXX
   /*
    HINSTANCE HLib;	     	// handle to the DLL
    BOOL DllLoaded;  	      	// True if DLL is in memory
-   int nParam;   			// the number of parameters
-   char statbuffer[256];		// static character string for function returns
+   int nParam;   		// the number of parameters
+   char statbuffer[256];	// static character string for function returns
    BOOL ArrayCreated;		// True if DLL is in memory
    BOOL Bounds;			// True if method accepts bounds on the parameters
    BOOL Constraints;		// True if method accepts constraints on the variable
@@ -93,29 +93,29 @@ public:
    char * GetParameterName( int p );
 
    /**
-    * Execute the optimization algorithm calling simulation routine (passed as argument)
-    * when needed. It is noted that this proceduexecute the optimization algorithm calling simulation routine (passed as argument)
-    * when needed. It is noted that this procedure can give feedback of its progress by 
-    * the callback function set with SetCallbackre can give feedback of its progress by 
-    * the callback function set with SetCallback
+    * Execute the optimization algorithm calling simulation routine 
+    * (passed as argument)when needed. It is noted that this procedure 
+    * can give feedback of its progress by the callback function set 
+    * with SetCallback.
     */
    int Optimise( double (*func) (void) );
 
    /**
-    * 
+    * Set algorithm parameters
     */
    void SetAlgoParameters( void );
 
    /**
-    * Stores a reference to the procedure that carries out simiulations and then executes
-    * the optimization algorithm to solve the problem. It is noted that this procedure 
-    * must periodically call the callback function set with SetCallback.
+    * Stores a reference to the procedure that carries out simiulations and
+    * then executes the optimization algorithm to solve the problem. 
+    * It is noted that this procedure must periodically call the callback 
+    * function set with SetCallback.
     */
    int SolveLsq( double (*func) (double *) );
 
    /**
-    * Returns True if this method is capable of handling adjustable parameter boundary
-    * constraints, False otherwise
+    * Returns True if this method is capable of handling adjustable parameter 
+    * boundary constraints, False otherwise
     */
    BOOL IsBounded( void );
 
@@ -131,7 +131,8 @@ public:
    BOOL CanOptimise( void );
 
    /**
-    * return TRUE if method has specialised least-squares solver
+ 
+  * return TRUE if method has specialised least-squares solver
     */
    BOOL SpecialisedLsq( void );
 

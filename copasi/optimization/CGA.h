@@ -28,27 +28,51 @@ extern "C" unsigned int r250n(unsigned n);
 extern "C" double rnormal01( void );
 
 // global variables
-int debug;				// 1 if output is to be written
-unsigned int gener;			// number of generations
-unsigned int popsize;		        // size of the population
-int ncross;				// number of crossover points
-double mutvar;				// variance for mutations
-double mutprob;				// probability of mutations
-unsigned int best;			// index of the best individual
-int nparam;				// number of parameters
-int nconstr;				// number of constraints
-double tau1;				// parameter for updating variances
-double tau2;				// parameter for updating variances
-COptParam **parameter;		        // array of parameters being searched
-COptParam **constraint;		        // array of constraints
-double **indv;				// for array of individuals w/ candidate values for the parameters
-double *candx;				// array of values of objective function f/ individuals
-unsigned int *crp;			// indexes of the crossover points
-unsigned int *midx;			// indexes for shuffling the population
-unsigned int *wins;			// number of wins of each individual in the tournament
-double (*f) (void);			// pointer to function evaluations
-void (*callback) (double);	        // pointer to callback function
+int debug;		        // 1 if output is to be written
+unsigned int gener;	      	// number of generations
+unsigned int popsize;		// size of the population
+int ncross;			// number of crossover points
+double mutvar;			// variance for mutations
+double mutprob;			// probability of mutations
+unsigned int best;		// index of the best individual
+int nparam;			// number of parameters
+int nconstr;			// number of constraints
+double tau1;			// parameter for updating variances
+double tau2;			// parameter for updating variances
+COptParam **parameter;		// array of parameters being searched
+COptParam **constraint;		// array of constraints
+double **indv;			// for array of individuals w/ candidate values for the parameters
+double *candx;			// array of values of objective function f/ individuals
+unsigned int *crp;		// indexes of the crossover points
+unsigned int *midx;		// indexes for shuffling the population
+unsigned int *wins;		// number of wins of each individual in the tournament
+double (*f) (void);		// pointer to function evaluations
+void (*callback) (double);	// pointer to callback function
 
+
+
+
+
+void OptDLLName( char *name );
+int OptDLLInit();
+char * OptDLLParameterName( int p, char *name );
+int OptDLLParameterNumber( void );
+void OptDLLSetMethodParameter( int n, double p );
+int OptDLLVersion( void );
+int OptDLLIsConstrained( void );
+int OptDLLIsBounded( void );
+int OptDLLSolveLsq( double (*feval) (double *) );
+void OptDLLSetCallback( void (*cb) (double) );
+void OptDLLClearMemory( void );
+int OptDLLRoutines( void );
+int OptDLLCreateArrays( int p, int c, int r );
+void OptDLLSetOptParam( int i, COptParam *pr );
+void OptDLLSetConstr( int i, COptParam *pr );
+double OptDLLGetOptParameter( int i );
+double OptDLLGetObjF( void );
+int OptDLLOptimise( double (*feval) (void) );
+
+/*   //see above
 
 extern "C" __declspec( dllexport ) void OptDLLName( char *name );
 extern "C" __declspec( dllexport ) int OptDLLInit();
@@ -68,6 +92,8 @@ extern "C" __declspec( dllexport ) void OptDLLSetConstr( int i, COptParam *pr );
 extern "C" __declspec( dllexport ) double OptDLLGetOptParameter( int i );
 extern "C" __declspec( dllexport ) double OptDLLGetObjF( void );
 extern "C" __declspec( dllexport ) int OptDLLOptimise( double (*feval) (void) );
+
+*/
 
 
 // evaluate the fitness of one individual
@@ -102,10 +128,6 @@ void creation( unsigned int l, unsigned int u );
 void dump_data_init( void );
 
 void dump_data( unsigned int i );
-
-//listed above
-//extern "C" __declspec( dllexport ) int OptDLLOptimise( double (*feval) (void) );
-
 
 
 #endif 
