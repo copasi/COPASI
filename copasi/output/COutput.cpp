@@ -17,6 +17,7 @@
 #include "utilities/utilities.h"
 #include "model/model.h"
 #include "utilities/CGlobals.h"
+#include "tnt/transv.h"
 
 /**
  *  Default constructor. 
@@ -468,7 +469,7 @@ void COutput::repStruct(ofstream &fout)
   // Restore Justification
   fout.unsetf(ios::left);
 
-  for (i = 0; i < model->getMetabolitesInd().size(); i++)
+  for (i = 0; i < model->getIntMetab(); i++)
     {
       if (i)	fout << setw(4) << i;
       else fout << setw(16) << i;
@@ -477,7 +478,7 @@ void COutput::repStruct(ofstream &fout)
   fout << endl;
 
   	
-  for (i = 0; i < model->getMetabolitesInd().size(); i++)
+  for (i = 0; i < model->getIntMetab(); i++)
     if (i) fout << setw(4) << "----";
     else fout << setw(15) << "----";
 
@@ -486,11 +487,35 @@ void COutput::repStruct(ofstream &fout)
   // Set Left Justification
   fout.setf(ios::left);
 
-  for (i = 0; i < model->getMetabolitesInd().size(); i++)
-    {
-      fout << setw(11) << model->getMetabolitesInd()[i]->getName() << "|";
+  // Create a arry to store name from 
+  vector < string > inverse;
 
-      for (j = 0; j < model->getMetabolitesInd().size(); j++)
+  for (i = 0 ; i < model->getMetabolitesInd().size(); i++)	
+	  inverse.push_back(model->getMetabolitesInd()[i]->getName());
+  for (j = 0 ; j < model->getDepMetab(); j++)	
+	   inverse.push_back(model->getMetabolitesDep()[j]->getName());
+
+  TNT::Matrix < C_FLOAT64 > Inverse;
+  TNT::Matrix < C_FLOAT64 > ml;
+
+  ml = model->getML();
+
+  TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
+    *InverseLView;  
+
+  InverseLView = & TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >(ml);
+
+  Inverse.newsize(InverseLView->num_rows(), InverseLView->num_cols());
+
+  for (i = 0; i < InverseLView->num_rows(); i++)
+	  for (int j = 0; j < InverseLView->num_cols(); j++)
+		  Inverse[i][j] = InverseLView->array()(j+1, i+1);
+
+  for (i = 0; i < model->getIntMetab(); i++)
+    {
+      fout << setw(11) << inverse[i] << "|";
+
+      for (j = 0; j < model->getIntMetab(); j++)
 	  {
   		if (j) 
 			// Set Left Justification
@@ -498,8 +523,8 @@ void COutput::repStruct(ofstream &fout)
 		else 
 			fout.setf(ios::right);
 
-		fout << setprecision(1) << setw(4) << model->getML()[i][j];
-
+		fout << setprecision(1) << setw(4) << Inverse[i][j];
+		//fout << setprecision(1) << setw(4) << model->getML()[i][j];
 	  }
       fout << endl;
 	   // Restore Justification
@@ -604,7 +629,7 @@ void COutput::repStability(ofstream &fout)
 {
   unsigned C_INT32 i, j;
   CModel *model = Copasi->Model;
-/*
+
   if (mSolution->getSolution() != SS_FOUND)
     {
       fout << "The linear stability analysis based on the eigenvalues" << endl;
@@ -632,35 +657,44 @@ void COutput::repStability(ofstream &fout)
         }
 			
       fout << endl;
-      fout << "Eigenvalue statistics:" << endl;
+      fout << endl << "Eigenvalue statistics:" << endl;
       // Output Max Real Part
-      fout << "Largest real part: "; 
+      fout << " Largest real part: "; 
       fout << setprecision(6) << mSolution->getEigen()->getEigen_maxrealpart() << endl;
       // Output Max imaginary Part
-      fout << "Largest absolute imaginary part: ";
-      fout << setprecision(6) << mSolution->getEigen()->getEigen_maximagpart();
+      fout << " Largest absolute imaginary part:  ";
+      fout << setprecision(6) << mSolution->getEigen()->getEigen_maximagpart() << endl;
       // Output Eigen-nreal
-      fout << setprecision(1) << mSolution->getEigen()->getEigen_nreal();
+	  fout.unsetf(ios::scientific);
+	  fout.unsetf(ios::showpoint);   
+      fout << " " << mSolution->getEigen()->getEigen_nreal();
       fout << " are purely real" << endl;
       // Output Eigen-nimage
-      fout << setprecision(1) << mSolution->getEigen()->getEigen_nimag();
+      fout << " " << mSolution->getEigen()->getEigen_nimag();
       fout << " are purely imaginary" << endl;
       // Output Eigen-ncplxconj
-      fout << setprecision(1) << mSolution->getEigen()->getEigen_ncplxconj();
+      fout << " " << mSolution->getEigen()->getEigen_ncplxconj();
       fout << " are complex" << endl;
       // Output Eigen-nzero
-      fout << setprecision(1) << mSolution->getEigen()->getEigen_nzero();
+      fout << " " << mSolution->getEigen()->getEigen_nzero();
       fout << " are equal to zero" << endl;
       // Output Eigen-nposreal
-      fout << setprecision(1) << mSolution->getEigen()->getEigen_nposreal();
+      fout << " " << mSolution->getEigen()->getEigen_nposreal();
       fout << " have positive real part" << endl;
       // Output Eigen-nnegreal
-      fout << setprecision(1) << mSolution->getEigen()->getEigen_nnegreal();
+      fout << " " << mSolution->getEigen()->getEigen_nnegreal();
       fout << " have negative real part" << endl;
+
+	  // Set point manipulators
+	  fout.setf(ios::showpoint);
       // Output Eigne-stiffness
       fout << " stiffness = " << mSolution->getEigen()->getEigen_stiffness() << endl;
       fout << " time hierarchy = " << mSolution->getEigen()->getEigen_hierarchy() << endl;
-*/
+
+	  // Set Float manipulators
+	  fout.setf(ios::scientific, ios::floatfield);
+	  fout.setf(ios::showpoint);
+
       // Output Jacobian Matrix
       fout << endl << "Jacobian matrix" << endl;
 	  fout << setprecision(6);
@@ -680,7 +714,8 @@ void COutput::repStability(ofstream &fout)
 		  }
           fout << endl;
         }
-/*
+
+
       // Output Eigenvalus of the Jacibian Matrix
       fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
       for (i = 0; i < model->getMetabolitesInd().size(); i++)
@@ -692,9 +727,10 @@ void COutput::repStability(ofstream &fout)
               fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
               fout << " + " << setprecision(6) << mSolution->getEigen()->getEigen_i()[i];
             }	
+		  fout << endl;
         }
       fout << endl;
-    }*/
+    }
 }
 
 /**
