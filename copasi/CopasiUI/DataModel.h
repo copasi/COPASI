@@ -48,7 +48,7 @@ class Folder : public QObject
 
     void setID(int id, bool fixed = false)
     {
-      mKey = QString::number(id) + "_" + fName;
+      mSortKey = QString::number(id) + "_" + fName;
 
       if (fixed)
         this->id = id;
@@ -56,9 +56,9 @@ class Folder : public QObject
         this->id = id * 1000000 + getModifier();
     }
 
-    //const QString & getKey() const {return mKey;}
+  const QString & getSortKey() const {return mSortKey;}
 
-  const std::string & getObjectKey() const {return mObjectKey;}
+    const std::string & getObjectKey() const {return mObjectKey;}
     void setObjectKey(const std::string & key) {mObjectKey = key;}
 
     const QString & getDisplayString() const {return mDisplayString;}
@@ -89,7 +89,7 @@ class Folder : public QObject
     QString mDisplayString;
     std::string mObjectKey; // from KeyFactory
     int id;
-    QString mKey;
+    QString mSortKey;
 
     static int mModifier;
   };

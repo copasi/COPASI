@@ -125,6 +125,10 @@ void FolderListItem::insertSubFolders(const QObjectList *lst)
     (void)new FolderListItem(this, f);
 }
 
+Folder * FolderListItem::folder() {return myFolder;}
+QString FolderListItem::key(int, bool) const
+  {return myFolder->getSortKey();}
+
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
 // Definations of the ListViews class as declared in listviews.h
@@ -512,13 +516,13 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:   //Time course
+      case 23:    //Time course
         return trajectoryWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:  //Report
+      case 43:   //Report
         return tableDefinition;
         break;
       case 5:

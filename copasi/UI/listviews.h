@@ -62,8 +62,8 @@ class FolderListItem : public QListViewItem
     FolderListItem(QListView *parent, Folder *f);
     FolderListItem(FolderListItem *parent, Folder *f);
     void insertSubFolders(const QObjectList *lst);
-    Folder *folder() {return myFolder;}
-    //QString key(int, bool) const {return myFolder->getKey();} //TODO what about the arguments
+    Folder *folder();
+    QString key(int, bool) const;
 
   protected:
     Folder *myFolder;
