@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/10/21 17:25:52 $
+   $Date: 2004/11/18 20:00:44 $
    End CVS Header */
 
 /**
@@ -722,6 +722,14 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
 
           UsageDescription.setUsage("PRODUCTS");
           if ((index = pUsageRanges->getIndex("PRODUCT")) != C_INVALID_INDEX)
+            {
+              UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
+                                        (*pUsageRanges)[index]->getHigh());
+              mCommon.pFunction->getUsageDescriptions().add(UsageDescription);
+            }
+
+          UsageDescription.setUsage("MODIFIERS");
+          if ((index = pUsageRanges->getIndex("MODIFIER")) != C_INVALID_INDEX)
             {
               UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
                                         (*pUsageRanges)[index]->getHigh());
