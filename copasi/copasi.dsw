@@ -180,6 +180,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "report"=".\report\report.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "steadystate"=".\steadystate\steadystate.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -226,6 +238,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name optimization
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name report
     End Project Dependency
 }}}
 
