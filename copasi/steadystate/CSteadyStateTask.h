@@ -97,6 +97,8 @@ class CSteadyStateTask : public CCopasiContainer
      */
     ~CSteadyStateTask();
 
+    inline CReport* getReport() {return mReport;};
+
     /**
      * Initilize the reporting feature
      * @param ofstream & out

@@ -68,6 +68,8 @@ class CScanTask : public CCopasiContainer
       pValueAddrMatrix = pInputValueAddrMatrix;
     }
 
+    inline CReport* getReport() {return mReport;};
+
     inline std::string getKey() const {return mKey;}
     /**
      * default constructor

@@ -194,6 +194,8 @@ class CTrajectoryTask : public CCopasiContainer
      */
     void process();
 
+    inline CReport* getReport() {return mReport;};
+
   private:
     /**
      * cleanup()
