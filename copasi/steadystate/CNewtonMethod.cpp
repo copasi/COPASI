@@ -26,16 +26,16 @@ CNewtonMethod::CNewtonMethod(const std::string & name,
   mTypeEnum = CSteadyStateMethod::Newton;
   setType(CSteadyStateMethod::TypeName[mTypeEnum]);
 
-  add("Newton.UseNewton", 1, CMethodParameter::BOOL);
-  add("Newton.UseIntegration", 1, CMethodParameter::BOOL);
-  add("Newton.UseBackIntegration", 1, CMethodParameter::BOOL);
-  add("Newton.IterationLimit", 50, CMethodParameter::UINT);
+  add("Newton.UseNewton", 1, CParameter::BOOL);
+  add("Newton.UseIntegration", 1, CParameter::BOOL);
+  add("Newton.UseBackIntegration", 1, CParameter::BOOL);
+  add("Newton.IterationLimit", 50, CParameter::UINT);
   add("Newton.DerivationFactor", 1.0e-003);
   add("Newton.Resolution", 1.0e-009);
   add("Newton.LSODA.RelativeTolerance", 1.0e-012);
   add("Newton.LSODA.AbsoluteTolerance", 1.0e-006);
-  add("Newton.LSODA.AdamsMaxOrder", 12, CMethodParameter::UINT);
-  add("Newton.LSODA.BDFMaxOrder", 5, CMethodParameter::UINT);
+  add("Newton.LSODA.AdamsMaxOrder", 12, CParameter::UINT);
+  add("Newton.LSODA.BDFMaxOrder", 5, CParameter::UINT);
 }
 
 CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
@@ -421,7 +421,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,             /* fortran style vector */
+                           mdxdt.array() - 1,              /* fortran style vector */
                            1);
         }
 
@@ -478,7 +478,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,             /* fortran style vector */
+                   mdxdt.array() - 1,              /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

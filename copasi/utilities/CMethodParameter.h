@@ -1,13 +1,13 @@
 /**
- *  CMethodParameter class.
+ *  CParameter class.
  *  This class is used to describe method paramters. This class is intended
  *  to be used with integration or optimization methods.
  *  
  *  Created for Copasi by Stefan Hoops 2002
  */
 
-#ifndef COPASI_CMethodParameter
-#define COPASI_CMethodParameter
+#ifndef COPASI_CParameter
+#define COPASI_CParameter
 
 #include <string>
 
@@ -16,7 +16,7 @@
 class CReadConfig;
 class CWriteConfig;
 
-class CMethodParameter: public CCopasiContainer
+class CParameter: public CCopasiContainer
   {
     // Attributes
   public:
@@ -45,7 +45,7 @@ class CMethodParameter: public CCopasiContainer
     /**
      * The type of the parameter
      */
-    CMethodParameter::Type mType;
+    CParameter::Type mType;
 
     // Operations
 
@@ -57,36 +57,36 @@ class CMethodParameter: public CCopasiContainer
      * @param const CCopasiContainer * pParent (default: NULL)
      * @param const std::string & objectType (default: "Method Parameter")
      */
-    CMethodParameter(const std::string & name = "NoName",
-                     const CCopasiContainer * pParent = NULL,
-                     const std::string & objectType = "Method Parameter");
+    CParameter(const std::string & name = "NoName",
+               const CCopasiContainer * pParent = NULL,
+               const std::string & objectType = "Method Parameter");
 
     /**
      * Copy constructor
-     * @param "const CMethodParameter &" src
+     * @param "const CParameter &" src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMethodParameter(const CMethodParameter & src,
-                     const CCopasiContainer * pParent = NULL);
+    CParameter(const CParameter & src,
+               const CCopasiContainer * pParent = NULL);
 
     /**
      * Specific constructor
      * @param const string & name
      * @param const C_FLOAT64 & value
-     * @param const CMethodParameter::Type & type
+     * @param const CParameter::Type & type
      * @param const CCopasiContainer * pParent (default: NULL)
      * @param const std::string & objectType (default: "Method Parameter")
      */
-    CMethodParameter(const std::string & name,
-                     const C_FLOAT64 & value,
-                     const Type & type,
-                     const CCopasiContainer * pParent = NULL,
-                     const std::string & objectType = "Method Parameter");
+    CParameter(const std::string & name,
+               const C_FLOAT64 & value,
+               const Type & type,
+               const CCopasiContainer * pParent = NULL,
+               const std::string & objectType = "Method Parameter");
 
     /**
      * Destructor
      */
-    ~CMethodParameter();
+    ~CParameter();
 
     /**
      * Set name of the parameter
@@ -136,15 +136,15 @@ class CMethodParameter: public CCopasiContainer
 
     /**
      * Set the type of the parameter
-     * @param const CMethodParameter::Type & type
+     * @param const CParameter::Type & type
      */
-    void setType(const CMethodParameter::Type & type);
+    void setType(const CParameter::Type & type);
 
     /**
      * Retrieve the type of the parameter.
-     * @return CMethodParameter::Type & type
+     * @return CParameter::Type & type
      */
-    const CMethodParameter::Type & getType() const;
+    const CParameter::Type & getType() const;
 
     /**
      * Check whether the value corresponds to the type
@@ -171,4 +171,4 @@ class CMethodParameter: public CCopasiContainer
     void cleanup();
   };
 
-#endif // COPASI_CMethodParameter
+#endif // COPASI_CParameter

@@ -21,7 +21,7 @@ Message;
 #define MCMassAction          MCopasiBase + 700
 #define MCMethodParameterList MCopasiBase + 800
 #define MCReaction            MCopasiBase + 900
-#define MCMethodParameter     MCopasiBase + 1000
+#define MCParameter           MCopasiBase + 1000
 #define MCChemEq              MCopasiBase + 1100
 #define MCTrajectoryMethod    MCopasiBase + 1200
 

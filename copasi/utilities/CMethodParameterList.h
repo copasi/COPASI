@@ -34,7 +34,7 @@ class CMethodParameterList : public CCopasiContainer
     /**
      * The list of method parameters for this method
      */
-    CCopasiVectorNS < CMethodParameter > mMethodParameters;
+    CCopasiVectorNS < CParameter > mMethodParameters;
 
     // Operations
   public:
@@ -51,7 +51,7 @@ class CMethodParameterList : public CCopasiContainer
 
     /**
      * Copy constructor
-     * @param "const CMethodParameter &" src
+     * @param "const CParameter &" src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CMethodParameterList(const CMethodParameterList & src,
@@ -95,13 +95,13 @@ class CMethodParameterList : public CCopasiContainer
      * Retrieve the type of the given method
      * @return " const string &" type
      */
-    const CMethodParameter::Type & getType(const unsigned C_INT32 & index);
+    const CParameter::Type & getType(const unsigned C_INT32 & index);
 
     /**
      * Retrieve the type of the given method
      * @return " const string &" type
      */
-    const CMethodParameter::Type & getType(const std::string & name);
+    const CParameter::Type & getType(const std::string & name);
 
     /**
      * Set the type of the method
@@ -177,7 +177,7 @@ class CMethodParameterList : public CCopasiContainer
      */
     void add(const std::string & name,
              const double & value = 0.0,
-             const CMethodParameter::Type & type = CMethodParameter::DOUBLE);
+             const CParameter::Type & type = CParameter::DOUBLE);
 
     /**
      * Load a list of parameters

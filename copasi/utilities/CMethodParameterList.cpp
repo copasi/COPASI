@@ -78,14 +78,14 @@ const std::string & CMethodParameterList::getType() const {return mType;}
  * Retrieve the type of the given method
  * @return " const string &" type
  */
-const CMethodParameter::Type & CMethodParameterList::getType(const unsigned C_INT32 & index)
+const CParameter::Type & CMethodParameterList::getType(const unsigned C_INT32 & index)
 {return mMethodParameters[index]->getType();}
 
 /**
  * Retrieve the type of the given method
  * @return " const string &" type
  */
-const CMethodParameter::Type & CMethodParameterList::getType(const std::string & name)
+const CParameter::Type & CMethodParameterList::getType(const std::string & name)
 {return mMethodParameters[name]->getType();}
 
 /**
@@ -172,8 +172,8 @@ const double & CMethodParameterList::getValue(const std::string & name) const
  */
 void CMethodParameterList::add(const std::string & name,
                                const double & value,
-                               const CMethodParameter::Type & type)
-{mMethodParameters.add(CMethodParameter(name, value, type));}
+                               const CParameter::Type & type)
+{mMethodParameters.add(CParameter(name, value, type));}
 
 /**
  * Load a list of parameters

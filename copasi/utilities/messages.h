@@ -44,7 +44,7 @@ MESSAGES Messages[] =
     {MCChemEq + 3, "CChemEq (3): No Substrates and Products are in different compartments."},
 
     // CMethodParameter
-    {MCMethodParameter + 1, "CMethodParameter (1): Invalid value '%f' for '%s' "
+    {MCParameter + 1, "CMethodParameter (1): Invalid value '%f' for '%s' "
      "which is of type '%s'."},
 
     // CTrajectoryMethod

@@ -1,6 +1,6 @@
 /***************************************************************************
-                   CRandomSearch.cpp  -  Random Optimizer
-                      -------------------
+                  CRandomSearch.cpp  -  Random Optimizer
+                     -------------------
 
 Programmer           : Rohan Luktuke
 email                : rluktuke@vt.edu
@@ -23,9 +23,9 @@ CRandomSearch::CRandomSearch():
   mTypeEnum = COptMethod::RandomSearch;
   setType(COptMethod::TypeName[mTypeEnum]);
 
-  add("RandomSearch.Iterations", 100000, CMethodParameter::UINT);
-  add("RandomSearch.RandomGenerator.Type", CRandom::mt19937, CMethodParameter::INT);
-  add("RandomSearch.RandomGenerator.Seed", 0, CMethodParameter::INT);
+  add("RandomSearch.Iterations", 100000, CParameter::UINT);
+  add("RandomSearch.RandomGenerator.Type", CRandom::mt19937, CParameter::INT);
+  add("RandomSearch.RandomGenerator.Seed", 0, CParameter::INT);
 }
 
 CRandomSearch::CRandomSearch(const CRandomSearch & src):

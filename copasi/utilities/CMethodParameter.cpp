@@ -1,5 +1,5 @@
 /**
- *  CMethodParameter class.
+ *  CParameter class.
  *  This class is used to describe method paramters. This class is intended
  *  to be used with integration or optimization methods.
  *  
@@ -14,7 +14,7 @@
 #include "CWriteConfig.h"
 #include "CCopasiMessage.h"
 
-const std::string CMethodParameter::TypeName[] =
+const std::string CParameter::TypeName[] =
   {
     "float",
     "integer",
@@ -22,41 +22,41 @@ const std::string CMethodParameter::TypeName[] =
     "bool"
   };
 
-CMethodParameter::CMethodParameter(const std::string & name,
-                                   const CCopasiContainer * pParent,
-                                   const std::string & objectType):
-    CCopasiContainer(name, pParent, objectType),
+CParameter::CParameter(const std::string & name,
+                       const CCopasiContainer * pParent,
+                       const std::string & objectType):
+    CCopasiContainer(name, pParent, objectType, CCopasiObject::Container | CCopasiObject::ValueDbl),
     mName(mObjectName),
     mValue(0),
-    mType(CMethodParameter::DOUBLE)
+    mType(CParameter::DOUBLE)
 {}
 
-CMethodParameter::CMethodParameter(const CMethodParameter & src,
-                                   const CCopasiContainer * pParent):
+CParameter::CParameter(const CParameter & src,
+                       const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mName(mObjectName),
     mValue(src.mValue),
     mType(src.mType)
 {}
 
-CMethodParameter::CMethodParameter(const std::string & name,
-                                   const double & value,
-                                   const CMethodParameter::Type & type,
-                                   const CCopasiContainer * pParent,
-                                   const std::string & objectType):
-    CCopasiContainer(name, pParent, objectType),
+CParameter::CParameter(const std::string & name,
+                       const double & value,
+                       const CParameter::Type & type,
+                       const CCopasiContainer * pParent,
+                       const std::string & objectType):
+    CCopasiContainer(name, pParent, objectType, CCopasiObject::Container | CCopasiObject::ValueDbl),
     mName(mObjectName),
     mValue(value),
     mType(type)
 {assert(isValidValue(value));}
 
-CMethodParameter::~CMethodParameter() {}
+CParameter::~CParameter() {}
 
-void CMethodParameter::setName(const std::string & name) {mName = name;}
+void CParameter::setName(const std::string & name) {mName = name;}
 
-const std::string & CMethodParameter::getName() const {return mName;}
+const std::string & CParameter::getName() const {return mName;}
 
-bool CMethodParameter::setValue(const double & value)
+bool CParameter::setValue(const double & value)
 {
   if (isValidValue(value))
     {
@@ -67,9 +67,9 @@ bool CMethodParameter::setValue(const double & value)
     return false;
 }
 
-bool CMethodParameter::setValue(const C_INT32 & value)
+bool CParameter::setValue(const C_INT32 & value)
 {
-  if (mType == CMethodParameter::INT)
+  if (mType == CParameter::INT)
     {
       mValue = (C_INT32) value;
       return true;
@@ -78,9 +78,9 @@ bool CMethodParameter::setValue(const C_INT32 & value)
     return false;
 }
 
-bool CMethodParameter::setValue(const unsigned C_INT32 & value)
+bool CParameter::setValue(const unsigned C_INT32 & value)
 {
-  if (mType == CMethodParameter::UINT)
+  if (mType == CParameter::UINT)
     {
       mValue = (unsigned C_INT32) value;
       return true;
@@ -89,9 +89,9 @@ bool CMethodParameter::setValue(const unsigned C_INT32 & value)
     return false;
 }
 
-bool CMethodParameter::setValue(const bool & value)
+bool CParameter::setValue(const bool & value)
 {
-  if (mType == CMethodParameter::BOOL)
+  if (mType == CParameter::BOOL)
     {
       mValue = (bool) value;
       return true;
@@ -100,34 +100,34 @@ bool CMethodParameter::setValue(const bool & value)
     return false;
 }
 
-const double & CMethodParameter::getValue() const {return mValue;}
+const double & CParameter::getValue() const {return mValue;}
 
-void CMethodParameter::setType(const CMethodParameter::Type & type)
+void CParameter::setType(const CParameter::Type & type)
 {mType = type;}
 
-const CMethodParameter::Type & CMethodParameter::getType() const
+const CParameter::Type & CParameter::getType() const
   {return mType;}
 
-bool CMethodParameter::isValidValue(const C_FLOAT64 & value) const
+bool CParameter::isValidValue(const C_FLOAT64 & value) const
   {
     switch (mType)
       {
-      case CMethodParameter::DOUBLE:
+      case CParameter::DOUBLE:
         return true;
         break;
 
-      case CMethodParameter::INT:
+      case CParameter::INT:
         if ((C_FLOAT64) LONG_MIN <= value &&
             (C_FLOAT64) LONG_MAX >= value)
           return true;
         break;
 
-      case CMethodParameter::UINT:
+      case CParameter::UINT:
         if (0.0 <= value && value <= (C_FLOAT64) ULONG_MAX)
           return true;
         break;
 
-      case CMethodParameter::BOOL:
+      case CParameter::BOOL:
         if (0.0 == value || 1.0 == value)
           return true;
         break;
@@ -139,23 +139,23 @@ bool CMethodParameter::isValidValue(const C_FLOAT64 & value) const
     return false;
   }
 
-void CMethodParameter::load(CReadConfig & configBuffer)
+void CParameter::load(CReadConfig & configBuffer)
 {
   configBuffer.getVariable("MethodParameterName", "string", &mName);
   configBuffer.getVariable("MethodParameterValue", "C_FLOAT64", &mValue);
 
   if (!isValidValue(mValue))
-    CCopasiMessage(CCopasiMessage::ERROR, MCMethodParameter + 1,
+    CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 1,
                    mValue, mName.c_str(), TypeName[mType].c_str());
 
   return;
 }
 
-void CMethodParameter::save(CWriteConfig & configBuffer) const
+void CParameter::save(CWriteConfig & configBuffer) const
   {
     configBuffer.setVariable("MethodParameterName", "string", &mName);
     configBuffer.setVariable("MethodParameterValue", "C_FLOAT64", &mValue);
 
     return;
   }
-void CMethodParameter::cleanup() {}
+void CParameter::cleanup() {}
