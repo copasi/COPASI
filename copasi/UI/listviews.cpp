@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.122 $
+   $Revision: 1.123 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/22 18:13:01 $
+   $Date: 2003/10/27 19:18:30 $
    End CVS Header */
 
 /****************************************************************************
@@ -537,7 +537,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                        //Time course
+      case 23:                         //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -546,7 +546,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                       //Report
+      case 43:                        //Report
         return tableDefinition;
         break;
       case 5:
@@ -673,12 +673,12 @@ void ListViews::slotFolderChanged(QListViewItem *i)
         it.current()->setPixmap(0, *folderClosed);
     }
 
-  QPixmap *icon = (QPixmap *)i->pixmap(0);
+  QPixmap *icon = (QPixmap *)item->pixmap(0);
   QImage image1 = icon->convertToImage ();
   QImage image2 = folderLocked->convertToImage ();
 
   if (image1 != image2)
-    i->setPixmap(0, *folderOpen);
+    item->setPixmap(0, *folderOpen);
 }
 
 void ListViews::switchToOtherWidget(const std::string & key)
