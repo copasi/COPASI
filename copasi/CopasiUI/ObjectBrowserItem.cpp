@@ -5,39 +5,39 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
 {
   //here is the ROOT
   setParent(NULL);
-  setBrother(NULL);
+  setSibling(NULL);
   setChild(NULL);
   if (after != NULL)
-    after->setBrother(this);
+    after->setSibling(this);
   pCopasiObject = mObject;
-  mchecked = true;
+  mChecked = false;
 }
 
 ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject)
     : QListViewItem(parent, after)
 {
   setParent(parent);
-  setBrother(NULL);
+  setSibling(NULL);
   setChild(NULL);
   if (parent != NULL)
     parent->setChild(this);
   if (after != NULL)
-    after->setBrother(this);
+    after->setSibling(this);
   pCopasiObject = mObject;
-  mchecked = true;
+  mChecked = false;
 }
 
-int ObjectBrowserItem::UserChecked(ObjectBrowserItem* pCurrent)
+int ObjectBrowserItem::UserChecked()
 {
   int condition;
-  if (pCurrent->isChecked())
+  if (isChecked())
     condition = ALLCHECKED;
   else
     condition = NOCHECKED;
 
-  if (pCurrent->brother() != NULL)
+  if (sibling() != NULL)
     {
-      switch (UserChecked(pCurrent->brother()))
+      switch (sibling()->UserChecked())
         {
         case ALLCHECKED:
           if (condition == NOCHECKED)
@@ -53,9 +53,9 @@ int ObjectBrowserItem::UserChecked(ObjectBrowserItem* pCurrent)
           break;
         }
     }
-  if (pCurrent->child() != NULL)
+  if (child() != NULL)
     {
-      switch (UserChecked(pCurrent->child()))
+      switch (child()->UserChecked())
         {
         case ALLCHECKED:
           if (condition == NOCHECKED)
@@ -74,19 +74,19 @@ int ObjectBrowserItem::UserChecked(ObjectBrowserItem* pCurrent)
   return condition;
 }
 
-void ObjectBrowserItem::setParent(ObjectBrowserItem* parent)
+ObjectBrowserItem::setParent(ObjectBrowserItem* parent)
 {
   pParent = parent;
 }
 
-void ObjectBrowserItem::setChild(ObjectBrowserItem* child)
+ObjectBrowserItem::setChild(ObjectBrowserItem* child)
 {
   pChild = child;
 }
 
-void ObjectBrowserItem::setBrother(ObjectBrowserItem* brother)
+ObjectBrowserItem::setSibling(ObjectBrowserItem* sibling)
 {
-  pBrother = brother;
+  pSibling = sibling;
 }
 
 ObjectBrowserItem* ObjectBrowserItem::parent() const
@@ -99,17 +99,17 @@ ObjectBrowserItem* ObjectBrowserItem::child() const
     return pChild;
   }
 
-ObjectBrowserItem* ObjectBrowserItem::brother() const
+ObjectBrowserItem* ObjectBrowserItem::sibling() const
   {
-    return pBrother;
+    return pSibling;
   }
 
 bool ObjectBrowserItem::isChecked() const
   {
-    return mchecked;
+    return mChecked;
   }
 
 void ObjectBrowserItem::reverseChecked()
 {
-  mchecked = !mchecked;
+  mChecked = !mChecked;
 }

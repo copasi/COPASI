@@ -97,8 +97,10 @@ void ObjectBrowser::cancelClicked()
   qWarning("ObjectBrowser::cancelClicked(): Not implemented yet!");
 }
 
-void ObjectBrowser::listviewChecked(ObjectBrowserItem*)
+void ObjectBrowser::listviewChecked(ObjectBrowserItem* pCurrent)
 {
+  //   if (pCurrent->UserChecked()==NOCHECKED)
+  // if (pCurrent->UserChecked()==
 }
 
 void ObjectBrowser::backClicked()

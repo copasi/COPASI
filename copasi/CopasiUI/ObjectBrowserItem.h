@@ -17,20 +17,20 @@ class ObjectBrowserItem : public QListViewItem
     CCopasiObject* pCopasiObject;
     ObjectBrowserItem* pParent;
     ObjectBrowserItem* pChild;
-    ObjectBrowserItem* pBrother;
-    bool mchecked;
+    ObjectBrowserItem* pSibling;
+    bool mChecked;
   public:
     ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject);
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject);
     ~ObjectBrowserItem() {}
 
-    void setParent(ObjectBrowserItem* parent);
-    void setChild(ObjectBrowserItem* child);
-    void setBrother(ObjectBrowserItem* brother);
+    setParent(ObjectBrowserItem* parent);
+    setChild(ObjectBrowserItem* child);
+    setSibling(ObjectBrowserItem* sibling);
 
     ObjectBrowserItem* parent() const;
     ObjectBrowserItem* child() const;
-    ObjectBrowserItem* brother() const;
+    ObjectBrowserItem* sibling() const;
 
     void reverseChecked();
     bool isChecked() const;
@@ -38,7 +38,47 @@ class ObjectBrowserItem : public QListViewItem
     //-1 if this is no user checked
     //0 if this is only partly checked
     //1 if this is full checked
-    int UserChecked(ObjectBrowserItem* pCurrent);
+    int UserChecked();
   };
 
+struct objectListItem
+  {
+    objectListItem(ObjectBrowserItem* item, objectListItem* next)
+    {
+      pItem = item;
+      pNext = next;
+    }
+    ObjectBrowserItem* pItem;
+    objectListItem* pNext;
+  };
+
+class objectList
+  {
+  private:
+    static objectListItem* root;
+    int length;
+  public:
+    objectList()
+    {
+      length = 0;
+    }
+    void insert(ObjectBrowserItem* pItem)
+    {
+      int i = 0;
+      objectListItem* pNewItem = new objectListItem(pItem, NULL);
+      if (length == 0)
+        {
+          root = pNewItem;
+          length++;
+          return;
+        }
+      objectListItem* pCurrent = root;
+      for (; i < length; i++)
+        pCurrent = pCurrent->pNext;
+      pCurrent->pNext = pNewItem;
+      length++;
+    }
+  };
+
+objectListItem* objectList::root = NULL;
 #endif
