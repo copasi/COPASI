@@ -45,7 +45,7 @@ class ScanWidget : public QWidget
     QCheckBox* taskStability;
     QCheckBox* bExecutable;
     QLineEdit* taskName;
-    QTable* parameterTable;
+    QTable* parameterTable, *parameterTable1;
     QPushButton* bRunButton;
     QPushButton* commitChange;
     QPushButton* cancelChange;

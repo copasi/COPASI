@@ -7,7 +7,7 @@
  ** Scan Widget
  ********************************************************************/
 #include <qfiledialog.h>
-
+#include <qvbox.h>
 #include <qvariant.h>
 #include <qcheckbox.h>
 #include <qframe.h>
@@ -18,7 +18,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-
+#include <qscrollview.h>
 #include "ScanWidget.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
@@ -97,13 +97,24 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
 
   ScanWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
 
-  parameterTable = new QTable(this, "parameterTable");
-  parameterTable->setNumRows(0);
-  parameterTable->setNumCols(1);
-  QHeader *colHeader = parameterTable->horizontalHeader();
-  colHeader->setLabel(0, tr("Value"));
+  QScrollView *scrollview = new QScrollView(this, 0, 0);
+  QVBox *vBox = new QVBox(this, 0);
+  for (int temp = 1; temp <= 7; temp++)
+    {
+      parameterTable = new QTable(this, "parameterTable");
+      parameterTable->setNumRows(5);
+      parameterTable->setNumCols(5);
+      QHeader *colHeader = parameterTable->horizontalHeader();
+      colHeader->setLabel(0, tr("Value"));
+      vBox->insertChild(parameterTable);
+      vBox->setSpacing(25);
+    }
 
-  ScanWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
+  //QScrollBar * scrollbar=new QScrollBar(Orientation::Vertical,scrollview,0);
+  scrollview->addChild(vBox);
+  //ScanWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
+  ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
+  //ScanWidgetLayout->addItem(vBoxLayout);
 
   taskStability = new QCheckBox(this, "taskStability");
   taskStability->setText(trUtf8("Trajectory"));
