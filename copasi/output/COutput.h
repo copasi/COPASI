@@ -111,6 +111,21 @@ class COutput
   C_INT16		RepComments;		 
 
   /**
+   *	Concentration Unit
+   */
+  string		ConcUnit;
+
+  /**
+   *	Time Unit
+   */
+  string		TimeUnit;
+
+  /**
+   * Pointer to a ss_solution when each 
+   **/
+  CSS_Solution  *mSolution;
+
+  /**
    * the mathematical model 
    * :TODO: this should be removed SH
    */
@@ -125,6 +140,8 @@ class COutput
    *	Print each line of the header in the reporting file
    */
   void repHeaderLine(ofstream &fout, int width, string OutStr);
+
+  int COutput::CheckEquilibrium();
 
  public:
 
@@ -212,7 +229,7 @@ class COutput
   /**
    * print the mpValue of Object in the steady-state data file
    */
-  void sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+  void sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes, C_INT32 ss_solution);
 
   /**
    * print the titles of the time couse data file
@@ -232,17 +249,17 @@ class COutput
   /**
    *	Output the comments to the output reporting file
    */
-  void repComments(ofstream &fout, const CModel & model);
+  void repComments(ofstream &fout);
 
   /**
    *	print the parameters of the simulation
    */
-  void repParams(ofstream &fout, CModel & model);
+  void repParams(ofstream &fout);
 	
   /**
    *	print the structural analysis
    */		
-  void repStruct(ofstream &fout, CModel & model); 
+  void repStruct(ofstream &fout); 
 	
   /**
    *	print the results of the stability analysis
@@ -272,12 +289,12 @@ class COutput
   /**
    *	print a line of data (one iteration) on the steady-state data file
    */
-  void sSOutputData(ofstream &fout, string &SSName); 
+  void sSOutputData(ofstream &fout, string &SSName, C_INT32 ss_solution); 
 
   /**
    *	Output the model title to the output reporting file
    */
-  void repTitle(ofstream &fout, const CModel & model);
+  void repTitle(ofstream &fout);
 
   /**
    *	Assign the pointer to each datum object for time course
@@ -297,12 +314,12 @@ class COutput
   /*
    * print the steady state data file
    */		
-  void copasiSS(ofstream &fout);
+  void copasiSS(ofstream &fout, C_INT32 ss_solution);
 
   /*
    * print the reporting data file
    */
-  void copasiRep(ofstream &fout, CModel & model);
+  void copasiRep(ofstream &fout);
 
   /**
    *	Write output control variables from input configburg buffer
@@ -315,12 +332,11 @@ class COutput
    *  @param configbuffer: reference of the config buffer.
    */
   C_INT32 readDefaultVar(CReadConfig &configbuffer);
-#if 0
- /**
-  * print the results of the steady-state simulation
-  */
- void repSS(ofstream &fout, CModel & model, CSS_Solution ssSolution);
-#endif
+
+  /**
+   * print the results of the steady-state simulation
+   */
+  void repSS(ofstream &fout);
 
 
 };

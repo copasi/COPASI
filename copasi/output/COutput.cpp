@@ -39,6 +39,7 @@ COutput::COutput()
   RepComments = 1;	//???? No such configure variable in *.GPS files
 
   //  mOutput = NULL;
+  mSolution = NULL;
 }
 
 void COutput::init()
@@ -51,6 +52,7 @@ void COutput::cleanup()
   //  if (mOutput) delete mOutput;
   //  mOutput = NULL;
   mOutput.cleanup();
+  mSolution->cleanup();
 }
 
 /**
@@ -93,6 +95,9 @@ COutput& COutput::operator=(const COutput &source)
 {
   mOutput = source.mOutput;
 
+  mSolution = source.mSolution;
+  ConcUnit = source.ConcUnit;
+  TimeUnit = source.TimeUnit;
   return *this;
 }
 
@@ -188,7 +193,7 @@ void COutput::sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator
 /**
  *	print mpValue of each Object in the steady-state data file
  */
-void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
+void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes, C_INT32 ss_solution) 
 {
   string Name;
 
@@ -196,7 +201,7 @@ void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, 
     {
       Name = mOutput[i]->getName();
       if (Name == SSName)
-	mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
+		mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes, ss_solution);
     }
 }
 
@@ -251,26 +256,29 @@ void COutput::compile(string &name, CModel *model, CSS_Solution *soln)
 {
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
-    {
+  {
       mOutput[i]->compile(name, model, soln);
-    }
+  }
+
+  mSolution = soln;
+
 }
 
 
 /**
  *	Output the comments to the output reporting file
  */
-void COutput::repComments(ofstream &fout, const CModel & model)
+void COutput::repComments(ofstream &fout)
 {
-  fout << model.getComments() << endl;
+  fout << Copasi->pModel->getComments() << endl;
 }
 
 /**
  *	Output the model title to the output reporting file
  */
-void COutput::repTitle(ofstream &fout, const CModel & model)
+void COutput::repTitle(ofstream &fout)
 {
-  fout << model.getTitle() << endl << endl;
+  fout << Copasi->pModel->getTitle() << endl << endl;
 }
 
 /**
@@ -318,7 +326,6 @@ void COutput::repHeader(ofstream &fout)
   TimeStamp = TimeStr.substr(0, TimeStr.length()-1);
 
   string VersionString = "Copasi Version " + Copasi->ProgramVersion.getVersion();
-
   width = (VersionString.length() > TimeStamp.length()) ? VersionString.length():TimeStamp.length();
   // width = max(width, ArchString.length());
 
@@ -340,10 +347,11 @@ void COutput::repHeader(ofstream &fout)
 /**
  *	print the parameters of the simulation
  */
-void COutput::repParams(ofstream &fout, CModel & model)
+void COutput::repParams(ofstream &fout)
 {
   string StrOut;
   unsigned C_INT32 i, j;
+  CModel *model = Copasi->pModel;	
 
   StrOut = "KINETIC PARAMETERS";
   fout << endl << StrOut << endl;
@@ -352,31 +360,31 @@ void COutput::repParams(ofstream &fout, CModel & model)
   fout.setf(ios::scientific, ios::floatfield);
   fout.setf(ios::showpoint);
 	
-  for (i = 0; i < model.getReactions().size(); i++)
+  for (i = 0; i < model->getReactions().size(); i++)
     {
 	  
-      StrOut = model.getReactions()[i]->getName();
+      StrOut = model->getReactions()[i]->getName();
       fout << StrOut << " (";
 
-      StrOut = model.getReactions()[i]->getFunction().getName();
+      StrOut = model->getReactions()[i]->getFunction().getName();
       fout << StrOut << ")" << endl;
 
-      for (j = 0; j < model.getReactions()[i]->getId2Parameters().size(); j++)
-	{
+      for (j = 0; j < model->getReactions()[i]->getId2Parameters().size(); j++)
+	  {
 
-	  fout << " " << model.getReactions()[i]->getId2Parameters()[j]->getIdentifierName() << " =  ";
-	  fout << setprecision(4) << model.getReactions()[i]->getId2Parameters()[j]->getValue();
-	  fout << endl;
+		fout << " " << model->getReactions()[i]->getId2Parameters()[j]->getIdentifierName() << " =  ";
+		fout << setprecision(4) << model->getReactions()[i]->getId2Parameters()[j]->getValue();
+		fout << endl;
 		
-	}
+	  }
     }
 
   fout << endl << "COMPARTMENTS" << endl;
 
-  for( i=0; i< model.getCompartments().size(); i++ )
+  for( i=0; i< model->getCompartments().size(); i++ )
     {
-      fout << "V(" << model.getCompartments()[i]->getName() << ") =  ";
-      fout << setprecision(4) << model.getCompartments()[i]->getVolume();
+      fout << "V(" << model->getCompartments()[i]->getName() << ") =  ";
+      fout << setprecision(4) << model->getCompartments()[i]->getVolume();
       fout << endl;
     }		
 
@@ -386,37 +394,39 @@ void COutput::repParams(ofstream &fout, CModel & model)
 /**
  *	print the structural analysis
  */
-void COutput::repStruct(ofstream &fout, CModel & model)
+void COutput::repStruct(ofstream &fout)
 {
   unsigned C_INT32 i, j;
+  CModel *model = Copasi->pModel;
+
   // determine the kernel of the stoichiometry matrix
   //model.getKernel();
 
   fout << endl << "STRUCTURAL ANALYSIS" << endl;
 
-  if (model.getDimension() > 0)
+  if (model->getDimension() > 0)
     {
-      fout << endl << "Rank of the stoichiometry matrix: " << model.getDimension() << endl;
+      fout << endl << "Rank of the stoichiometry matrix: " << model->getDimension() << endl;
     }
 
   fout << endl << "key for step (column) numbers: "<< endl;
 
-  for (i = 0; i < model.getReactions().size(); i++)
+  for (i = 0; i < model->getReactions().size(); i++)
     {
       fout << setw(2) << i << " - ";
-      fout << model.getReactions()[i]->getName();
+      fout << model->getReactions()[i]->getName();
       fout << endl;
     }
 
   fout << endl << "REDUCED STOICHIOMETRY MATRIX" << endl;
 
-  for (i = 0; i < model.getReactions().size(); i++)
+  for (i = 0; i < model->getReactions().size(); i++)
     if (i)	fout << setw(4) << i;
     else fout << setw(16) << i;
 
   fout << endl;
 
-  for (i = 0; i < model.getReactions().size(); i++)
+  for (i = 0; i < model->getReactions().size(); i++)
     {
       if (i) fout << setw(4) << "----";
       else fout << setw(15) << "----";
@@ -427,12 +437,12 @@ void COutput::repStruct(ofstream &fout, CModel & model)
   // Set Left Justification
   fout.setf(ios::left);
 
-  for (i = 0; i < model.getMetabolitesInd().size(); i++)
+  for (i = 0; i < model->getMetabolitesInd().size(); i++)
     {
-      fout << setw(11) << model.getMetabolitesInd()[i]->getName() << "|";
+      fout << setw(11) << model->getMetabolitesInd()[i]->getName() << "|";
 
-      for (j = 0; j < model.getReactions().size(); j++)
-		fout << setprecision(1) << setw(10) << model.getRedStoi()[i][j];
+      for (j = 0; j < model->getReactions().size(); j++)
+		fout << setprecision(1) << setw(10) << model->getRedStoi()[i][j];
       fout << endl;
     }
 
@@ -441,7 +451,7 @@ void COutput::repStruct(ofstream &fout, CModel & model)
   // Restore Justification
   fout.unsetf(ios::left);
 
-  for (i = 0; i < model.getMetabolitesInd().size(); i++)
+  for (i = 0; i < model->getMetabolitesInd().size(); i++)
     {
       if (i)	fout << setw(4) << i;
       else fout << setw(15) << i;
@@ -450,7 +460,7 @@ void COutput::repStruct(ofstream &fout, CModel & model)
   fout << endl;
 
 
-  for (i = 0; i < model.getMetabolitesInd().size(); i++)
+  for (i = 0; i < model->getMetabolitesInd().size(); i++)
     if (i) fout << setw(4) << "----";
     else fout << setw(15) << "----";
 
@@ -459,9 +469,9 @@ void COutput::repStruct(ofstream &fout, CModel & model)
   // Set Left Justification
   fout.setf(ios::left);
 
-  for (i = 0; i < model.getMetabolitesInd().size(); i++)
+  for (i = 0; i < model->getMetabolitesInd().size(); i++)
     {
-      fout << setw(11) << model.getMetabolites()[i]->getName() << "|";
+      fout << setw(11) << model->getMetabolites()[i]->getName() << "|";
 
       //for (j = 0; j < model.getMetabolitesInd().size(); j++)
       //		fout << setprecision(1) << setw(10) << model.getRedStoi()[i][j];
@@ -470,29 +480,29 @@ void COutput::repStruct(ofstream &fout, CModel & model)
 
   fout << endl;
 
-  if (model.getMoieties().size() > 0)
+  if (model->getMoieties().size() > 0)
     {
       fout << endl << "CONSERVATION RELATIONSHIPS" << endl;
 		
-      for (i = 0; i < model.getMoieties().size(); i++)
-	{
-	  fout << model.getMoieties()[i]->getDescription() << " = " ;
-	  fout << model.getMoieties()[i]->getNumber() << endl;
+      for (i = 0; i < model->getMoieties().size(); i++)
+	  {
+		fout << model->getMoieties()[i]->getDescription() << " = " ;
+		fout << model->getMoieties()[i]->getNumber() << endl;
 
-	}
+	  }
     }
   fout << endl;
 }
 
-#if 0
 /**
  * print the results of the steady-state simulation
  */
-void COutput::repSS(ofstream &fout, CModel & model, CSS_Solution &ssSolution)
+void COutput::repSS(ofstream &fout)
 {
 	double rate;
+	CModel *model = Copasi->pModel;
 
-	if (ssSolution.getSolution() != 0)  // SS_FOUND = 0 
+	if (mSolution->getSolution() != SS_FOUND)
 	{
 		fout << endl; 
 		fout << "A STEADY STATE COULD NOT BE FOUND.\n(below are the last unsuccessful trial values)";
@@ -500,44 +510,44 @@ void COutput::repSS(ofstream &fout, CModel & model, CSS_Solution &ssSolution)
 	}
 	else {
 		fout << endl << "STEADY STATE SOLUTION" << endl;
-		if (ssSolution.getEquilibrium())
+		if (CheckEquilibrium())
 			fout << "(chemical equilibrium)" << endl;
 	}
 
 	// Output concentrations
-	for (int i = 0; i < model.getTotMetab(); i++)
+	for (int i = 0; i < model->getTotMetab(); i++)
 	{
-		if (model.getMetabolites()[i]->getStatus == 0) // METAB_FIXED == 0
-			rate = 0.0
-		else rate = ssSolution.getSsdxdt()[i];			// ??? [Model.IRow[i]+1]
+		if (model->getMetabolites()[i]->getStatus == 0) // METAB_FIXED == 0
+			rate = 0.0;
+		else rate = mSolution->getSs_dxdt()[i];			// ??? [Model.IRow[i]+1]
 		
 		// Output Concentration
-		fout << "[" << setw(10) << model.getMetabolites()[i]->getName();
+		fout << "[" << setw(10) << model->getMetabolites()[i]->getName();
 		fout << "] = ";
-		fout << setprecision(6) << model.getMetabolites()[i]->getConcentration(); 
+		fout << setprecision(6) << model->getMetabolites()[i]->getConcentration(); 
 		fout << " " << ConcUnit << ", ";
 		// Output Transition time of the metabolite
-		fout << "tt = " << setprecision(6) << model.getMetabolites()[i]->getTT();
+		fout << "tt = " << setprecision(6) << model->getMetabolites()[i]->getTransitionTime();
 		fout << " " << TimeUnit << " " << ", ";
 		// Output rate
 		fout << "rate = " << setprecision(3) << rate;
 		fout << " " << ConcUnit << "/" << TimeUnit << endl;
 	
-		if (model.getMetabolites()[i]->getConcentration() < 0.0)
+		if (*model->getMetabolites()[i]->getConcentration() < 0.0)
 			fout << " BOGUS!";
 		fout << endl;
 	}
 
 	// output fluxes
-	for (int i = 0; i < model.getTotSteps(); i++)
+	for (i = 0; i < model->getTotSteps(); i++)
 	{
-		fout << "J(" << model.getReactions()[i]->getName() << ") = ";
-		fout << setprecision(6) << model.getReactions()[i]->getFlux();
+		fout << "J(" << model->getReactions()[i]->getName() << ") = ";
+		fout << setprecision(6) << model->getReactions()[i]->getFlux();
 		fout << ConcUnit << "/" << "TimeUnit" << endl;
 	}
 	
 	// output user-defined functions
-	int size = Copasi.UDFunctionDB.getFunctions().size();
+	int size = Copasi->UDFunctionDB.getFunctions().size();
 	CUDFunction pFunct;
 	if ( size > 0)
 	{
@@ -545,14 +555,13 @@ void COutput::repSS(ofstream &fout, CModel & model, CSS_Solution &ssSolution)
 		for (int i = 0; i < size; i++)
 		{
 			// calculate the flux of this step
-			fout << Copasi.UDFunctionDB.getFunctions()[i]->getName();
+			fout << Copasi->UDFunctionDB.getFunctions()[i]->getName();
 			fout << " =";
-			fout << setprecision(6) << Copasi.UDFunctionDB.getFunctions()[i]->getValue();
+			fout << setprecision(6) << Copasi->UDFunctionDB.getFunctions()[i]->getValue();
 			fout << endl;
 		}
 	}
 }
-#endif
 
 /**
  *	print the results of the stability analysis
@@ -587,7 +596,7 @@ void COutput::dynOutputData(ofstream &fout, string &DynName)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      mOutput[i]->sSOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
+      mOutput[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 
 }
@@ -608,45 +617,46 @@ void COutput::sSOutputTitles(ofstream &fout, string &SSName)
 /**
  *	print a line of data (one iteration) on the steady-state data file
  */
-void COutput::sSOutputData(ofstream &fout, string &SSName)
+void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT32 ss_solution)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
       if (SSName == mOutput[i]->getName())
-	mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
+	mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes, ss_solution);
     }
 }
 
 /*
  *	print the reporting data file
  */
-void COutput::copasiRep(ofstream &fout, CModel & model)
+void COutput::copasiRep(ofstream &fout)
 {
   repHeader(fout);
 
-  repTitle(fout, model);
+  repTitle(fout);
 
-  if (RepComments) repComments(fout, model);
-  if (RepStruct) repStruct(fout, model);
+  if (RepComments) repComments(fout);
+  if (RepStruct) repStruct(fout);
+  repSS(fout);
 #if 0
   if (RepStab) repStability(fout);
   if (RepMCA)	repMCA(fout);
 #endif
-  repParams(fout, model);
+  repParams(fout);
 
 }
 
 /*
  * print the steady state data file
  */
-void COutput::copasiSS(ofstream &fout)
+void COutput::copasiSS(ofstream &fout, C_INT32 ss_solution)
 {
   string SSName = "Steady-state output";
 
   if (SS)
   {
 	if (SSTitles) sSOutputTitles(fout, SSName);
-	sSOutputData(fout, SSName);
+	sSOutputData(fout, SSName, ss_solution);
   }
 }
 
@@ -676,9 +686,19 @@ C_INT32 COutput::readDefaultVar(CReadConfig &configbuffer)
 {
   C_INT32	Fail = 0;
 
+  if ((Fail = configbuffer.getVariable("TimeUnit", "string",
+				       (void *) &TimeUnit,
+				       CReadConfig::LOOP)))
+    return Fail;
+
+  if ((Fail = configbuffer.getVariable("ConcentrationUnit", "string",
+				       (void *) &ConcUnit,
+				       CReadConfig::SEARCH)))
+    return Fail;
+
   if ((Fail = configbuffer.getVariable("Dynamics", "C_INT16",
 				       (void *) &Dyn,
-				       CReadConfig::LOOP)))
+				       CReadConfig::SEARCH)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("SteadyState", "C_INT16",
@@ -781,6 +801,14 @@ C_INT32 COutput::writeDefaultVar(CWriteConfig &configbuffer)
 {
   C_INT32	Fail = 0;
 
+  if ((Fail = configbuffer.setVariable("TimeUnit", "string",
+				       &TimeUnit)))
+    return Fail;
+
+  if ((Fail = configbuffer.setVariable("ConcentrationUnit", "string",
+				       &ConcUnit)))
+    return Fail;
+
   if ((Fail = configbuffer.setVariable("Dynamics", "C_INT16",
 				       &Dyn)))
     return Fail;
@@ -848,4 +876,24 @@ C_INT32 COutput::writeDefaultVar(CWriteConfig &configbuffer)
   // Note:: there is no variable controlling comments output
   //		  in current configure file
   return Fail;
+}
+
+
+int COutput::CheckEquilibrium()
+{
+	int i;
+	double hr, tmp;
+	int Equilibrium;
+
+	// find the highest concentration rate
+	for( i=0, hr = 0.0; i < Copasi->pModel->getTotSteps(); i++)
+		if ( (tmp=fabs(Copasi->pModel->getReactions()[i]->getFlux())) > hr )
+			hr = tmp;
+
+	// true if in chemical equilibrium
+    if (hr < mSolution->getSSRes())
+		Equilibrium = 1;
+	else Equilibrium = 0;
+
+	return 0;
 }
