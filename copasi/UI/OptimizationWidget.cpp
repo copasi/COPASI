@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.5 2003/09/30 04:52:03 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.6 2003/09/30 05:14:13 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -100,25 +100,32 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   layout14 = new QGridLayout(0, 1, 1, 0, 6, "layout14");
 
   downButton = new QPushButton(this, "downButton");
+  downButton->setText(trUtf8(""));
   downButton->setPixmap(image1);
   layout14->addWidget(downButton, 1, 1);
 
   deleteButton = new QPushButton(this, "deleteButton");
+  deleteButton->setText(trUtf8(""));
   deleteButton->setPixmap(image0);
+
   layout14->addWidget(deleteButton, 0, 1);
 
   addButton = new QPushButton(this, "addButton");
+  addButton->setText(trUtf8(""));
   addButton->setPixmap(image2);
   layout14->addWidget(addButton, 0, 0);
 
   //manually change to add icon for alignment need
   upButton = new QPushButton(this, "upButton");
+  upButton->setText(trUtf8(""));
   upButton->setPixmap(image3);
   layout14->addWidget(upButton, 1, 0);
-  layout15->addLayout(layout14);
 
   itemnamesTable = new QListBox(this, "itemnamesTable");
-  layout15->addWidget(itemnamesTable);
+  itemnamesTable->insertItem(trUtf8("click here to add new item"));
+  layout14->addMultiCellWidget(itemnamesTable, 2, 2, 0, 1);
+
+  layout15->addLayout(layout14);
   layout16->addLayout(layout15);
 
   itemsTable = new ScanScrollView(this, 0, 0);
