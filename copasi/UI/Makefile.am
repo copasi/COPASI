@@ -50,8 +50,8 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	MyLineEdit.cpp \
         ReactionsWidget.cpp \
         ReactionsWidget1.cpp \
-	SteadyStateWidget.cpp \
 	ScanWidget.cpp \
+	SteadyStateWidget.cpp \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
         copasiui3window.cpp \
@@ -98,6 +98,7 @@ EXTRA_DIST = \
 	MyLineEdit.h MyLineEdit.cpp MyLineEdit.moc.cpp \
 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp \
 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp \
+	ScanWidget.h ScanWidget.cpp ScanWidget.moc.cpp \
 	SteadyStateWidget.h SteadyStateWidget.cpp SteadyStateWidget.moc.cpp \
 	ScanWidget.h ScanWidget.cpp ScanWidget.moc.cpp \
 	StretchTable.h StretchTable.cpp \

@@ -254,9 +254,11 @@ CopasiUI_MOC = \
 	ReactionsWidget.moc.cpp \
 	ReactionsWidget1.moc.cpp \
 	SteadyStateWidget.moc.cpp \
+	ScanWidget.moc.cpp \
 	TrajectoryWidget.moc.cpp \
 	copasiui3window.moc.cpp \
-	listviews.moc.cpp
+	listviews.moc.cpp \
+	objectdebug.moc.cpp 
 
 
 CopasiUI_SOURCES = $(CopasiUI_MOC) \
@@ -282,11 +284,13 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	MyLineEdit.cpp \
         ReactionsWidget.cpp \
         ReactionsWidget1.cpp \
+	ScanWidget.cpp \
 	SteadyStateWidget.cpp \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
         copasiui3window.cpp \
-        listviews.cpp
+        listviews.cpp \
+	objectdebug.cpp
 
 
 CopasiUI_DEPENDENCIES = $(CopasiUI_LIBS) check_LIBS
@@ -298,6 +302,7 @@ CopasiUI_LIBS = \
 	../function \
 	../output \
 	../optimization \
+	../scan \
 	../randomGenerator \
 	../report \
 	../steadystate \
@@ -329,7 +334,9 @@ EXTRA_DIST = \
 	MyLineEdit.h MyLineEdit.cpp MyLineEdit.moc.cpp \
 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp \
 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp \
+	ScanWidget.h ScanWidget.cpp ScanWidget.moc.cpp \
 	SteadyStateWidget.h SteadyStateWidget.cpp SteadyStateWidget.moc.cpp \
+	ScanWidget.h ScanWidget.cpp ScanWidget.moc.cpp \
 	StretchTable.h StretchTable.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
@@ -349,6 +356,8 @@ LIBS = $(LIB_QT) \
 	-Wl,-lfunction \
 	-Wl,-loutput \
 	-Wl,-lreport \
+	-Wl,-loptimization \
+	-Wl,-lscan \
 	-Wl,-lsteadystate \
 	-Wl,-ltrajectory \
 	-Wl,-lrandomGenerator \
@@ -356,10 +365,7 @@ LIBS = $(LIB_QT) \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-llapack \
-	-lblas \
-	-lF77 \
-	-lfl
+	-llapack -lblas -lF77 -lfl
 
 
 #  Use this for standard clapack
@@ -372,10 +378,11 @@ LIBS = $(LIB_QT) \
 LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
 	-L../function \
-        -L../mathmodel \
+	-L../mathmodel \
 	-L../model \
 	-L../output \
 	-L../optimization \
+	-L../scan \
 	-L../randomGenerator \
 	-L../report \
 	-L../steadystate \
@@ -401,8 +408,9 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	MoietyWidget.moc.$(OBJEXT) MoietyWidget1.moc.$(OBJEXT) \
 	MyLineEdit.moc.$(OBJEXT) ReactionsWidget.moc.$(OBJEXT) \
 	ReactionsWidget1.moc.$(OBJEXT) SteadyStateWidget.moc.$(OBJEXT) \
-	TrajectoryWidget.moc.$(OBJEXT) copasiui3window.moc.$(OBJEXT) \
-	listviews.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
+	ScanWidget.moc.$(OBJEXT) TrajectoryWidget.moc.$(OBJEXT) \
+	copasiui3window.moc.$(OBJEXT) listviews.moc.$(OBJEXT) \
+	objectdebug.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
 	Observer.$(OBJEXT) Subject.$(OBJEXT) \
 	CompartmentsWidget.$(OBJEXT) CompartmentsWidget1.$(OBJEXT) \
 	CompartmentSymbols.$(OBJEXT) ConstantSymbols.$(OBJEXT) \
@@ -413,9 +421,10 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	MetaboliteSymbols.$(OBJEXT) ModesWidget.$(OBJEXT) \
 	MoietyWidget.$(OBJEXT) MoietyWidget1.$(OBJEXT) \
 	MyLineEdit.$(OBJEXT) ReactionsWidget.$(OBJEXT) \
-	ReactionsWidget1.$(OBJEXT) SteadyStateWidget.$(OBJEXT) \
-	StretchTable.$(OBJEXT) TrajectoryWidget.$(OBJEXT) \
-	copasiui3window.$(OBJEXT) listviews.$(OBJEXT)
+	ReactionsWidget1.$(OBJEXT) ScanWidget.$(OBJEXT) \
+	SteadyStateWidget.$(OBJEXT) StretchTable.$(OBJEXT) \
+	TrajectoryWidget.$(OBJEXT) copasiui3window.$(OBJEXT) \
+	listviews.$(OBJEXT) objectdebug.$(OBJEXT)
 CopasiUI_OBJECTS = $(am_CopasiUI_OBJECTS)
 CopasiUI_LDADD = $(LDADD)
 CopasiUI_LDFLAGS =
@@ -460,6 +469,7 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.Po \
 @AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ScanWidget.Po $(DEPDIR)/ScanWidget.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/SteadyStateWidget.Po \
 @AMDEP_TRUE@	$(DEPDIR)/SteadyStateWidget.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/StretchTable.Po $(DEPDIR)/Subject.Po \
@@ -468,7 +478,8 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/copasiui3window.Po \
 @AMDEP_TRUE@	$(DEPDIR)/copasiui3window.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/listviews.Po $(DEPDIR)/listviews.moc.Po \
-@AMDEP_TRUE@	$(DEPDIR)/main.Po
+@AMDEP_TRUE@	$(DEPDIR)/main.Po $(DEPDIR)/objectdebug.Po \
+@AMDEP_TRUE@	$(DEPDIR)/objectdebug.moc.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -574,6 +585,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReactionsWidget.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReactionsWidget1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReactionsWidget1.moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ScanWidget.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ScanWidget.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/SteadyStateWidget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/SteadyStateWidget.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/StretchTable.Po@am__quote@
@@ -585,6 +598,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/listviews.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/listviews.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/objectdebug.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/objectdebug.moc.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
