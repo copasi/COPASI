@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyLineEdit.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:39 $
+   $Author: chlee $ 
+   $Date: 2003/10/23 19:15:50 $
    End CVS Header */
 
 #include <qmessagebox.h>
@@ -20,5 +20,6 @@ MyLineEdit::MyLineEdit(const QString & contents, QWidget * parent, const char * 
 void MyLineEdit::focusOutEvent(QFocusEvent *fe)
 {
   //QMessageBox::information(this, "got it", "yipeee ");
+  QLineEdit::focusOutEvent(fe);
   emit edited();
 }
