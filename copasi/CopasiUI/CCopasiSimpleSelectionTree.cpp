@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 15:11:22 $
+   $Date: 2004/12/13 13:27:16 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -344,7 +344,17 @@ void CCopasiSimpleSelectionTree::selectObjects(std::vector<CCopasiObject *> * ob
                                    FROM_UTF8(object->getObjectDisplayName()));
           treeItems[item] = object;
         }
-      item->setSelected(true);
+      // open the whole branch that contains item.
+      QListViewItem* parent = item->parent();
+      if (parent && !(parent->isOpen()))
+        {
+          while (parent)
+            {
+              parent->setOpen(true);
+              parent = parent->parent();
+            }
+        }
+      this->setSelected(item, true);
     }
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiPlotSelectionDialog.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 20:49:31 $
+   $Date: 2004/12/13 13:27:16 $
    End CVS Header */
 
 #include "CCopasiPlotSelectionDialog.h"
@@ -86,6 +86,7 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
   this->mpXAxisSelectionBox->layout()->add(this->mpXAxisSelectionWidget);
 
   this->mpYAxisSelectionWidget = new CCopasiSelectionWidget(this->mpYAxisSelectionBox);
+  this->mpYAxisSelectionWidget->setSingleSelection(false);
   this->mpYAxisSelectionWidget->setOutputVector(this->mpYAxisOutputVector);
   this->mpYAxisSelectionBox->layout()->add(this->mpYAxisSelectionWidget);
 

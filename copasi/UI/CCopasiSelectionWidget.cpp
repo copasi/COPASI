@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 20:51:16 $
+   $Date: 2004/12/13 13:27:16 $
    End CVS Header */
 
 #include <iostream>
@@ -51,14 +51,29 @@ void CCopasiSelectionWidget::setSingleSelection(bool singleSelection)
   if (this->mSingleSelect == singleSelection) return;
   this->mSingleSelect = singleSelection;
   this->mpSimpleTree->clearSelection();
-  this->mpSimpleTree->setSelectionMode(QListView::Single);
-  if (this->mpObjectBrowser)
+  if (this->mSingleSelect)
     {
-      /* this needs to be implemented first !
-         
-      this->mpObjectBrowser->setSingleSelection(true);
+      this->mpSimpleTree->setSelectionMode(QListView::Single);
+      if (this->mpObjectBrowser)
+        {
+          /* this needs to be implemented first !
 
-      */
+             this->mpObjectBrowser->setSingleSelection(true);
+
+           */
+        }
+    }
+  else
+    {
+      this->mpSimpleTree->setSelectionMode(QListView::Extended);
+      if (this->mpObjectBrowser)
+        {
+          /* this needs to be implemented first !
+
+             this->mpObjectBrowser->setSingleSelection(true);
+
+           */
+        }
     }
 }
 
