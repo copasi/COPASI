@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.28 $ $Author: shoops $ $Date: 2004/10/24 02:42:42 $  
+# $Revision: 1.29 $ $Author: shoops $ $Date: 2004/10/27 17:24:29 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -55,7 +55,6 @@ contains(BUILD_OS, WIN32) {
   DEFINES -= UNICODE 
   debug {
     QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
-    QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"libcmt.lib"
   }
   release {
     QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"libcmt"
@@ -83,7 +82,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_CXXFLAGS_DEBUG   += -I"$${EXPAT_PATH}\Source\lib"
     QMAKE_CXXFLAGS_RELEASE += -I"$${EXPAT_PATH}\Source\lib"
     QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
-    LIBS += libexpat.lib
+    LIBS += libexpatMT.lib
   } else {
     error( "EXPAT_PATH must be specified" )
   }
