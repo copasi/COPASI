@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/16 20:33:02 $
+   $Date: 2005/03/17 19:58:34 $
    End CVS Header */
 
 /**
@@ -78,12 +78,25 @@ CScanItem::CScanItem(const CCopasiParameterGroup* si)
   mpValue = tmpObject;
 }
 
+unsigned C_INT32 CScanItem::getNumSteps() const {return mNumSteps;};
+
+void CScanItem::restoreValue() const
+  {
+    if (mpValue)
+      mpValue->setObjectValue(mStoreValue);
+  };
+
+void CScanItem::storeValue()
+{if (mpValue) mStoreValue = * (C_FLOAT64 *) mpValue->getReference();};
+
 void CScanItem::reset()
 {
   mIndex = 0;
   mFlagFinished = false;
   this->step(); //purely virtual
 }
+
+bool CScanItem::isFinished() const {return mFlagFinished;};
 
 //*******
 
@@ -134,7 +147,7 @@ void CScanItemLinear::step()
   if (mIndex > mNumSteps)
     mFlagFinished = true;
 
-  mpValue->getObjectParent()->setValueOfNamedReference(mpValue->getObjectName(), Value);
+  mpValue->setObjectValue(Value);
   ++mIndex;
 
   //std::cout << "SILinear " << mMin + (mIndex-1)*mFaktor<< std::endl;
@@ -174,20 +187,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:   //uniform
+        case 0:    //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:   //normal
+        case 1:    //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:   //poisson
+        case 2:    //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
@@ -195,7 +208,7 @@ void CScanItemRandom::step()
         }
     }
 
-  mpValue->getObjectParent()->setValueOfNamedReference(mpValue->getObjectName(), Value);
+  mpValue->setObjectValue(Value);
   ++mIndex;
 }
 
