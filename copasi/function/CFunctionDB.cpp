@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:46 $
+   $Date: 2003/10/16 18:55:55 $
    End CVS Header */
 
 /**
@@ -23,6 +23,8 @@
 // #include "report/CKeyFactory.h"
 #include "utilities/CMethodParameter.h"
 #include "xml/CCopasiXML.h"
+
+#include "FunctionDB.xml.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,
                          const CCopasiContainer * pParent):
@@ -50,7 +52,9 @@ void CFunctionDB::initObjects()
 bool CFunctionDB::load()
 {
   CCopasiXML XML;
-  std::ifstream DB(mFilename.c_str());
+  std::stringstream DB;
+  DB.str(FunctionDBxml);
+  //  std::ifstream DB(mFilename.c_str());
   if (DB.fail()) return false;
   if (!XML.load(DB)) return false;
 
