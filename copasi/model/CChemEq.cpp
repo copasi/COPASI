@@ -65,19 +65,29 @@ bool CChemEq::setChemicalEquation(const string & chemicalEquation)
 }
 
 const string & CChemEq::getChemicalEquation() const
-  { return mChemicalEquation; }
+  {
+    return mChemicalEquation;
+  }
 
 const string & CChemEq::getChemicalEquationConverted() const
-  { return mChemicalEquationConverted; }
+  {
+    return mChemicalEquationConverted;
+  }
 
 const CCopasiVector < CChemEqElement > & CChemEq::getSubstrates()
-{ return mSubstrates; }
+{
+  return mSubstrates;
+}
 
 const CCopasiVector < CChemEqElement > & CChemEq::getProducts()
-{ return mProducts; }
+{
+  return mProducts;
+}
 
 const CCopasiVector < CChemEqElement > & CChemEq::getBalances()
-{ return mBalances; }
+{
+  return mBalances;
+}
 
 CChemEqElement CChemEq::extractElement(const string & input,
                                        string::size_type & pos) const

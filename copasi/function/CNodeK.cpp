@@ -19,6 +19,7 @@ CNodeK::CNodeK()
   mRight = NULL;
   mConstant = 0.0;
   mIndex = -1;
+  mOldIndex = -1;
 }
 
 CNodeK::CNodeK(const CNodeK & src)
@@ -31,6 +32,7 @@ CNodeK::CNodeK(const CNodeK & src)
   mConstant = src.mConstant;
   mName = src.mName;
   mIndex = src.mIndex;
+  mOldIndex = src.mOldIndex;
 }
 
 CNodeK::CNodeK(char type, char subtype)
@@ -42,6 +44,7 @@ CNodeK::CNodeK(char type, char subtype)
   mRight = NULL;
   mConstant = 0.0;
   mIndex = -1;
+  mOldIndex = -1;
 }
 
 CNodeK::CNodeK(const string & name)
@@ -54,6 +57,7 @@ CNodeK::CNodeK(const string & name)
   mConstant = 0.0;
   mName = name;
   mIndex = -1;
+  mOldIndex = -1;
 }
 
 CNodeK::CNodeK(C_FLOAT64 constant)
@@ -65,9 +69,16 @@ CNodeK::CNodeK(C_FLOAT64 constant)
   mRight = NULL;
   mConstant = constant;
   mIndex = -1;
+  mOldIndex = -1;
 }
-void CNodeK::cleanup() {}
-CNodeK::~CNodeK() {DESTRUCTOR_TRACE; }
+
+void CNodeK::cleanup()
+{}
+
+CNodeK::~CNodeK()
+{
+  DESTRUCTOR_TRACE;
+}
 
 C_INT32 CNodeK::load(CReadConfig & configbuffer)
 {
@@ -138,9 +149,18 @@ C_INT32 CNodeK::save(CWriteConfig & configbuffer) const
 C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
   {
     C_INT32 Fail = 0;
+    char dummy = N_NOP;
 
-    if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
-      return Fail;
+    if (isIdentifier())
+      {
+        if ((Fail = configbuffer.setVariable("Node", "node", &mSubtype, &dummy)))
+          return Fail;
+      }
+    else
+      {
+        if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
+          return Fail;
+      }
     if (mType == N_NUMBER)
       {
         if ((Fail = configbuffer.setVariable("Value", "C_FLOAT64", &mConstant)))
@@ -148,7 +168,7 @@ C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
       }
     else if (isIdentifier())
       {
-        if ((Fail = configbuffer.setVariable("Index", "C_INT32", &mIndex)))
+        if ((Fail = configbuffer.setVariable("Index", "C_INT32", &mOldIndex)))
           return Fail;
         if ((Fail = configbuffer.setVariable("Name", "string", &mName)))
           return Fail;
@@ -187,7 +207,6 @@ string CNodeK::getName() const
 
     static unsigned C_INT ctr = 0;
     char name[9];
-
     if (isIdentifier())
       return mName;
     else
@@ -251,6 +270,11 @@ void CNodeK::setConstant(C_FLOAT64 & constant)
 void CNodeK::setIndex(C_INT32 index)
 {
   mIndex = index;
+}
+
+void CNodeK::setOldIndex(C_INT32 oldindex)
+{
+  mOldIndex = oldindex;
 }
 
 C_INT16 CNodeK::isLeftValid() const
@@ -330,7 +354,6 @@ C_INT16 CNodeK::rightPrecedence() const
       case N_FUNCTION:
         return 4;
       }
-
     // if we got here then it is an operator
     switch (mSubtype)
       {
@@ -356,71 +379,54 @@ C_FLOAT64 CNodeK::value(const CCallParameters & callParameters) const
     // if it is a constant or an identifier just return its value
     if (isNumber())
       return mConstant;
-
     switch (mType)
       {
       case N_OBJECT:
         return 1;
         break;
-
       case N_IDENTIFIER :
         return * (C_FLOAT64 *) callParameters[mIndex];
         break;
-
       case N_OPERATOR:
         switch (mSubtype)
           {
           case '+':
             return mLeft->value(callParameters) + mRight->value(callParameters);
-
           case '-':
             return mLeft->value(callParameters) - mRight->value(callParameters);
-
           case '*':
             return mLeft->value(callParameters) * mRight->value(callParameters);
-
           case '/':
             return mLeft->value(callParameters) / mRight->value(callParameters);
-
           case '^':
             return pow(mLeft->value(callParameters), mRight->value(callParameters));
-
           default:
             fatalError();   // THROW EXCEPTION
             return 0.0;
           }
         break;
-
       case N_FUNCTION:
         switch (mSubtype)
           {
           case '+':
             return mLeft->value(callParameters);
-
           case '-':
             return - mLeft->value(callParameters);
-
           case N_EXP:
             return exp(mLeft->value(callParameters));
-
           case N_LOG:
             return log(mLeft->value(callParameters));
-
           case N_LOG10:
             return log10(mLeft->value(callParameters));
-
           case N_SIN:
             return sin(mLeft->value(callParameters));
-
           case N_COS:
             return cos(mLeft->value(callParameters));
-
           default:
             fatalError();   // THROW EXCEPTION
             return 0.0;
           }
         break;
-
       default:
         fatalError();   // THROW EXCEPTION
         return 0.0;

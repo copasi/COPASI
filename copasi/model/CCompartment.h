@@ -109,6 +109,15 @@ class CCompartment
     C_INT32 save(CWriteConfig & configbuffer);
 
     /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  Writes the data in Gepasi 3.21 file format
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     *  @see mFail
+     */
+    C_INT32 saveOld(CWriteConfig & configbuffer);
+
+    /**
      *  Returns a string with the name of this compartment.
      *  @return mName
      *  @see mName
@@ -164,7 +173,7 @@ class CCompartment
     {
       os << "++++CCompartment: " << d.mName << " mVolume " << d.mVolume
       << " mVolumeInv " << d.mVolumeInv << endl;
-      os << "    CCompartment.mMetabolites " << endl << d.mMetabolites ;
+      os << "    CCompartment.mMetabolites " << endl << d.mMetabolites;
       os << "----CCompartment " << endl;
 
       return os;

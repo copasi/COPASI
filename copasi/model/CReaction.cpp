@@ -227,29 +227,153 @@ C_INT32 CReaction::save(CWriteConfig & configbuffer)
   return Fail;
 }
 
+C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const vector < CMetab* > &metabolites)
+{
+  C_INT32 Fail = 0;
+  C_INT32 Size = 0;
+  C_INT32 i = 0, j = 0, s = 0, c = -1;
+  char strtmp[32];
+  CCopasiVector < CChemEqElement > reactants;
+  s = metabolites.size();
+  if ((Fail = configbuffer.setVariable("Step", "string", &mName)))
+    return Fail;
+  if ((Fail = configbuffer.setVariable("Equation", "string", &mChemEq)))
+    return Fail;
+  string KinType = mFunction->getName();
+  if ((Fail = configbuffer.setVariable("KineticType", "string", &KinType)))
+    return Fail;
+  if ((Fail = configbuffer.setVariable("Flux", "C_FLOAT64", &mFlux)))
+    return Fail;
+  if ((Fail = configbuffer.setVariable("Reversible", "bool", &mReversible)))
+    return Fail;
+  Size = mChemEq.getSubstrates().size();
+  if ((Fail = configbuffer.setVariable("Substrates", "C_INT32", &Size)))
+    return Fail;
+  Size = mChemEq.getProducts().size();
+  if ((Fail = configbuffer.setVariable("Products", "C_INT32", &Size)))
+    return Fail;
+  Size = mId2Modifiers.size();
+  if ((Fail = configbuffer.setVariable("Modifiers", "C_INT32", &Size)))
+    return Fail;
+  Size = mId2Parameters.size();
+  if ((Fail = configbuffer.setVariable("Constants", "C_INT32", &Size)))
+    return Fail;
+  reactants = mChemEq.getSubstrates();
+  Size = reactants.size();
+  for (i = 0; i < Size; i++)
+    {
+      for (j = 0, c = -1; j < s; j++)
+        if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
+          {
+            c = j;
+            break;
+          }
+      if (c == -1)
+        return -1;
+      sprintf(strtmp, "Subs%d", i);
+      if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
+        return Fail;
+    }
+  reactants = mChemEq.getProducts();
+  Size = reactants.size();
+  for (i = 0; i < Size; i++)
+    {
+      for (j = 0, c = -1; j < s; j++)
+        if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
+          {
+            c = j;
+            break;
+          }
+      if (c == -1)
+        return -1;
+      sprintf(strtmp, "Prod%d", i);
+      if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
+        return Fail;
+    }
+  Size = mId2Modifiers.size();
+  for (i = 0; i < Size; i++)
+    {
+      for (j = 0, c = -1; j < s; j++)
+        if (mId2Modifiers[i]->mMetaboliteName == metabolites[j]->getName())
+          {
+            c = j;
+            break;
+          }
+      if (c == -1)
+        return -1;
+      sprintf(strtmp, "Modf%d", i);
+      if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
+        return Fail;
+    }
+  Size = mId2Parameters.size();
+  for (i = 0; i < Size; i++)
+    {
+      sprintf(strtmp, "Param%d", i);
+      if ((Fail = configbuffer.setVariable(strtmp, "C_FLOAT64", (void *) & mId2Parameters[i]->mValue)))
+        return Fail;
+    }
+  return Fail;
+}
+
 CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Substrates()
-{ return mId2Substrates; }
+{
+  return mId2Substrates;
+}
 
 CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Products()
-{ return mId2Products; }
+{
+  return mId2Products;
+}
 
 CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Modifiers()
-{ return mId2Modifiers; }
+{
+  return mId2Modifiers;
+}
 
 CCopasiVector < CReaction::CId2Param > &CReaction::getId2Parameters()
-{ return mId2Parameters; }
-const string & CReaction::getName() const { return mName; }
-CChemEq & CReaction::getChemEq() { return mChemEq; }
-CFunction & CReaction::getFunction() { return *mFunction; }
-const C_FLOAT64 & CReaction::getFlux() const { return mFlux; }
-bool CReaction::isReversible() const { return (mReversible == TRUE); }
-void CReaction::setName(const string & name) {mName = name; }
+{
+  return mId2Parameters;
+}
+
+const string & CReaction::getName() const
+  {
+    return mName;
+  }
+
+CChemEq & CReaction::getChemEq()
+{
+  return mChemEq;
+}
+
+CFunction & CReaction::getFunction()
+{
+  return *mFunction;
+}
+
+const C_FLOAT64 & CReaction::getFlux() const
+  {
+    return mFlux;
+  }
+
+bool CReaction::isReversible() const
+  {
+    return (mReversible == TRUE);
+  }
+
+void CReaction::setName(const string & name)
+{
+  mName = name;
+}
 
 void CReaction::setChemEq(const string & chemEq)
 {
   mReversible = mChemEq.setChemicalEquation(chemEq);
 }
-void CReaction::setFlux(C_FLOAT64 flux) {mFlux = flux; }
+
+void CReaction::setFlux(C_FLOAT64 flux)
+{
+  mFlux = flux;
+}
 
 void CReaction::setReversible(bool reversible)
 {
@@ -285,13 +409,9 @@ void CReaction::compile(CCopasiVectorNS < CCompartment > & compartments)
       metabolites()[mId2Modifiers[i]->mMetaboliteName];
 
   initCallParameters();
-
   setCallParameters();
-
   checkCallParameters();
-
   mChemEq.compile(compartments);
-
   setScalingFactor();
 }
 
@@ -528,9 +648,15 @@ CReaction::CId2Metab::CId2Metab(const CId2Metab & src)
   mCompartmentName = src.mCompartmentName;
   mpMetabolite = NULL;
 }
-CReaction::CId2Metab::~CId2Metab() {}
-void CReaction::CId2Metab::cleanup() {}
-CReaction::CId2Param::CId2Param() {}
+
+CReaction::CId2Metab::~CId2Metab()
+{}
+
+void CReaction::CId2Metab::cleanup()
+{}
+
+CReaction::CId2Param::CId2Param()
+{}
 
 CReaction::CId2Param::CId2Param(const CId2Param & src)
 {
@@ -891,7 +1017,6 @@ CMetab * CReaction::findSubstrate(string ident_name)
           return mId2Substrates[i]->mpMetabolite;
         }
     }
-
   // If we get here, we found nothing
   return NULL;
 }

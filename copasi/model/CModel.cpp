@@ -239,7 +239,7 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
 
 C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
 {
-  C_INT32 Size;
+  C_INT32 i, Size;
   C_INT32 Fail = 0;
 
   if ((Fail = configBuffer.setVariable("Title", "string", &mTitle)))
@@ -258,13 +258,18 @@ C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
     return Fail;
   if ((Fail = Copasi->FunctionDB.saveOld(configBuffer)))
     return Fail;
-
-#ifdef XXXX
-
-  mCompartments.save(configBuffer);
-  mSteps.save(configBuffer);
-#endif
-
+  Size = mMetabolites.size();
+  for (i = 0; i < Size; i++)
+    mMetabolites[i]->saveOld(configBuffer);
+  Size = mMoieties.size();
+  for (i = 0; i < Size; i++)
+    mMoieties[i]->saveOld(configBuffer);
+  Size = mSteps.size();
+  for (i = 0; i < Size; i++)
+    mSteps[i]->saveOld(configBuffer, getMetabolites());
+  Size = mCompartments.size();
+  for (i = 0; i < Size; i++)
+    mCompartments[i]->saveOld(configBuffer);
   if ((Fail = configBuffer.setVariable("Comments", "multiline", &mComments)))
     return Fail;
   return Fail;

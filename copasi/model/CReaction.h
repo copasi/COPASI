@@ -354,6 +354,15 @@ class CReaction
     C_INT32 save(CWriteConfig & configbuffer);
 
     /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     *  @see mFail
+     */
+    C_INT32 saveOld(CWriteConfig & configbuffer, const vector < CMetab* > &metabolites);
+
+    /**
      *  Retrieves the vector of substrates
      *  @return "CCopasiVector < CId2Metab > &"
      */

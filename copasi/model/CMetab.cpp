@@ -183,7 +183,40 @@ C_INT32 CMetab::save(CWriteConfig &configbuffer)
 
   return Fail;
 }
-const string & CMetab::getName() const { return mName; }
+
+C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
+{
+  C_INT32 c, i, s, Fail = 0;
+  CCopasiVector < CCompartment > cpts;
+
+  Fail = configbuffer.setVariable("Metabolite", "string", (void *) & mName);
+  if (Fail)
+    return Fail;
+  Fail = configbuffer.setVariable("Concentration", "C_FLOAT64", (void *) & mIConcDbl);
+  if (Fail)
+    return Fail;
+  // we need to find the index of the compartment in the vector of compartments. ugly code!
+  cpts = mpModel->getCompartments();
+  s = cpts.size();
+  for (i = 0, c = -1; i < s; i++)
+    if (cpts[i] == mCompartment)
+      {
+        c = i;
+        break;
+      }
+  if (c == -1)
+    return -1;
+  Fail = configbuffer.setVariable("Compartment", "C_INT32", (void *) & c);
+  if (Fail)
+    return Fail;
+  Fail = configbuffer.setVariable("Type", "C_INT16", (void *) & mStatus);
+  return Fail;
+}
+
+const string & CMetab::getName() const
+  {
+    return mName;
+  }
 
 const C_FLOAT64 & CMetab::getConcentration() const
   {
@@ -200,7 +233,11 @@ C_FLOAT64 CMetab::getNumberDbl() const
     return mConcDbl * mCompartment->getVolume()
            * mpModel->getQuantity2NumberFactor();
   }
-const C_FLOAT64 & CMetab::getInitialConcentration() const { return mIConcDbl; }
+
+const C_FLOAT64 & CMetab::getInitialConcentration() const
+  {
+    return mIConcDbl;
+  }
 
 const C_INT32 & CMetab::getInitialNumberInt() const
   {
@@ -212,14 +249,36 @@ C_FLOAT64 CMetab::getInitialNumberDbl() const
     return mIConcDbl * mCompartment->getVolume()
            * mpModel->getQuantity2NumberFactor();
   }
-const C_INT16 & CMetab::getStatus() const { return mStatus; }
-CCompartment * CMetab::getCompartment() { return mCompartment; }
-CModel * CMetab::getModel() { return mpModel; }
+
+const C_INT16 & CMetab::getStatus() const
+  {
+    return mStatus;
+  }
+
+CCompartment * CMetab::getCompartment()
+{
+  return mCompartment;
+}
+
+CModel * CMetab::getModel()
+{
+  return mpModel;
+}
 
 void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
-{mTT = transitionTime; }
-const C_FLOAT64 & CMetab::getTransitionTime() { return mTT; }
-void CMetab::setName(const string & name) {mName = name; }
+{
+  mTT = transitionTime;
+}
+
+const C_FLOAT64 & CMetab::getTransitionTime()
+{
+  return mTT;
+}
+
+void CMetab::setName(const string & name)
+{
+  mName = name;
+}
 
 // ***** set quantities ********
 
@@ -266,7 +325,11 @@ void CMetab::setInitialNumberDbl(const C_FLOAT64 initialNumber)
 }
 
 //  ******************
-void CMetab::setStatus(const C_INT16 status) {mStatus = status; }
+
+void CMetab::setStatus(const C_INT16 status)
+{
+  mStatus = status;
+}
 
 void CMetab::setCompartment(CCompartment * compartment)
 {

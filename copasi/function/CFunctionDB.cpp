@@ -99,11 +99,16 @@ C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
 
 C_INT32 CFunctionDB::saveOld(CWriteConfig &configbuffer)
 {
-  C_INT32 Size = mLoadedFunctions.size();
+  C_INT32 Size;
   C_INT32 Fail = 0;
-  C_INT32 i;
+  C_INT32 i, j;
 
-  if ((Fail = configbuffer.setVariable("TotalUDKinetics", "C_INT32", &Size)))
+  Size = mLoadedFunctions.size();
+  for (i = j = 0; i < Size; i++)
+    if (mLoadedFunctions[i]->getType() == CFunction::UserDefined)
+      j++;
+
+  if ((Fail = configbuffer.setVariable("TotalUDKinetics", "C_INT32", &j)))
     return Fail;
 
   // because CCopasiVector does not have saveOld, we will save them one by one

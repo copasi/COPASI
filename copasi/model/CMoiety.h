@@ -63,6 +63,14 @@ class CMoiety
     ~CMoiety();
 
     /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  This saves the data in Gepasi 3.21 file format
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return Fail
+     */
+    C_INT32 saveOld(CWriteConfig & configBuffer);
+
+    /**
      *
      */
     void add

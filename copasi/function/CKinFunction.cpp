@@ -162,7 +162,7 @@ C_INT32 CKinFunction::parse()
           mNodes.add(pNode);
           break;
 
-        case N_NOP:             // this is an error
+        case N_NOP:              // this is an error
           mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -558,40 +558,52 @@ void CKinFunction::initIdentifierNodes()
   // BaseParameters = &getParameters().getParameters();
 
   string IdentifierName, ParameterName, Usage;
-
   unsigned C_INT32 i, imax = getParameters().size();
   unsigned C_INT32 j, jmax = mNodes.size();
+  C_INT32 subidx, prodidx, modfidx, constidx;
 
+  subidx = prodidx = modfidx = constidx = 0;
   for (j = 0; j < jmax; j++)
     {
       if (mNodes[j]->getType() != N_IDENTIFIER)
         continue;
-
       IdentifierName = mNodes[j]->getName();
-
       for (i = 0; i < imax; i++)
         {
           ParameterName = getParameters()[i]->getName();
-
           if (IdentifierName != ParameterName)
             continue;
-
           mNodes[j]->setIndex(i);
 
-          break;
-
           // We really do not need the usage information in the binary
-          // tree anymore.
+          // tree anymore, but we still put it there to allow saving
+          //in the old format
           Usage = getParameters()[i]->getUsage();
 
           if (Usage == "SUBSTRATE")
-            mNodes[j]->setSubtype(N_SUBSTRATE);
+            {
+              mNodes[j]->setSubtype(N_SUBSTRATE);
+              mNodes[j]->setOldIndex(subidx);
+              subidx++;
+            }
           else if (Usage == "PRODUCT")
-            mNodes[j]->setSubtype(N_PRODUCT);
+            {
+              mNodes[j]->setSubtype(N_PRODUCT);
+              mNodes[j]->setOldIndex(prodidx);
+              prodidx++;
+            }
           else if (Usage == "MODIFIER")
-            mNodes[j]->setSubtype(N_MODIFIER);
+            {
+              mNodes[j]->setSubtype(N_MODIFIER);
+              mNodes[j]->setOldIndex(modfidx);
+              modfidx++;
+            }
           else if (Usage == "PARAMETER")
-            mNodes[j]->setSubtype(N_KCONSTANT);
+            {
+              mNodes[j]->setSubtype(N_KCONSTANT);
+              mNodes[j]->setOldIndex(constidx);
+              constidx++;
+            }
           else if (Usage == "UNKNOWN")
             mNodes[j]->setSubtype(N_NOP);
           else

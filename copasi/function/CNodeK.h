@@ -87,7 +87,17 @@ class CNodeK
      *  The index of the node for type N_IDENTIFIER
      */
     C_INT32 mIndex;
+
+    /**
+     *  The index in old Gepasi format
+     */
+    C_INT32 mOldIndex;
+
+    /**
+     *  WHAT IS THIS FOR??? PLEASE ADD COMMENT!
+     */
     int attribute1;
+
     // Operations
   public:
     /**
@@ -249,6 +259,13 @@ class CNodeK
      * @param C_INT32 &index
      */
     void setIndex(C_INT32 index);
+
+    /**
+     * Setting the old index 
+    * (Gepasi format, each type is indexed separately)
+     * @param C_INT32 &index
+     */
+    void setOldIndex(C_INT32 oldindex);
 
     /**
      *  This checks whether mLeft points to a valid CNodeK

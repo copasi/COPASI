@@ -102,27 +102,49 @@ C_INT32 CCompartment::save(CWriteConfig & configbuffer)
   if ((Fail = configbuffer.setVariable("Compartment", "string",
                                        (void *) & mName)))
     return Fail;
-
   if ((Fail = configbuffer.setVariable("Volume", "C_FLOAT64",
                                        (void *) & mVolume)))
     return Fail;
-
   C_INT32 size = mMetabolites.size();
-
   if ((Fail = configbuffer.setVariable("MetabolitesNo", "C_INT32",
                                        (void *) & size)))
     return Fail;
-
   mMetabolites.save(configbuffer);
-
   return Fail;
 }
-string CCompartment::getName() const { return mName; }
-const C_FLOAT64 & CCompartment::getVolume() const { return mVolume; }
-const C_FLOAT64 & CCompartment::getVolumeInv() const { return mVolumeInv; }
+
+C_INT32 CCompartment::saveOld(CWriteConfig & configbuffer)
+{
+  C_INT32 Fail = 0;
+
+  if ((Fail = configbuffer.setVariable("Compartment", "string",
+                                       (void *) & mName)))
+    return Fail;
+  if ((Fail = configbuffer.setVariable("Volume", "C_FLOAT64",
+                                       (void *) & mVolume)))
+    return Fail;
+  return Fail;
+}
+
+string CCompartment::getName() const
+  {
+    return mName;
+  }
+
+const C_FLOAT64 & CCompartment::getVolume() const
+  {
+    return mVolume;
+  }
+
+const C_FLOAT64 & CCompartment::getVolumeInv() const
+  {
+    return mVolumeInv;
+  }
 
 CCopasiVectorNS < CMetab > & CCompartment::metabolites()
-{ return mMetabolites; }
+{
+  return mMetabolites;
+}
 
 void CCompartment::setName(const string & name)
 {

@@ -133,7 +133,7 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   sizem = mParameters.getUsageRanges()["MODIFIER"]->getLow();
   configBuffer.setVariable("Modifiers", "C_INT32", &sizem);
   sizep = mParameters.getUsageRanges()["PARAMETER"]->getLow();
-  configBuffer.setVariable("Parameters", "C_INT32", &sizep);
+  configBuffer.setVariable("Constants", "C_INT32", &sizep);
   for (i = 0, pos = 0; i < sizem; i++)
     {
       tmpstr1 = mParameters.getParameterByUsage("MODIFIER", pos).getName();
