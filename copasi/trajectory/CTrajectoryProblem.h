@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/06 21:36:50 $
+   $Date: 2004/03/18 03:50:38 $
    End CVS Header */
 
 /**
@@ -31,29 +31,9 @@ class CTrajectoryProblem : public CCopasiProblem
     // Attributes
   private:
     /**
-     *  The number of steps to calculate
-     */
-    unsigned C_INT32 mStepNumber;
-
-    /**
-     *  The size of each step
-     */
-    double mStepSize;
-
-    /**
      *  Indicate whether the step number or step size was set last.
      */
     bool mStepNumberSetLast;
-
-    /**
-     *  The start time of the trajectory
-     */
-    double mStartTime;
-
-    /**
-     *  The end time of the trajectory
-     */
-    double mEndTime;
 
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy.
@@ -107,39 +87,39 @@ class CTrajectoryProblem : public CCopasiProblem
 
     /**
      * Set the size a integration step the trajectory method should do.
-     * @param "const double &" stepSize
+     * @param "const C_FLOAT64 &" stepSize
      */
-    void setStepSize(const double & stepSize);
+    void setStepSize(const C_FLOAT64 & stepSize);
 
     /**
      * Retrieve the size a integration step the trajectory method should do.
-     * @return "const double &" stepSize
+     * @return "const C_FLOAT64 &" stepSize
      */
-    const double & getStepSize() const;
+    const C_FLOAT64 & getStepSize() const;
 
     /**
      * Set the start time.
-     * @param "const double &" startTime
+     * @param "const C_FLOAT64 &" startTime
      */
-    void setStartTime(const double & startTime);
+    void setStartTime(const C_FLOAT64 & startTime);
 
     /**
      * Retrieve the start time.
-     * @return "const double &" startTime
+     * @return "const C_FLOAT64 &" startTime
      */
-    const double & getStartTime() const;
+    const C_FLOAT64 & getStartTime() const;
 
     /**
      * Set the end time.
-     * @param "const double &" endTime
+     * @param "const C_FLOAT64 &" endTime
      */
-    void setEndTime(const double & endTime);
+    void setEndTime(const C_FLOAT64 & endTime);
 
     /**
      * Retrieve the end time.
-     * @return "const double &" endTime
+     * @return "const C_FLOAT64 &" endTime
      */
-    const double & getEndTime() const;
+    const C_FLOAT64 & getEndTime() const;
 
     /**
      * Set the initial state of the problem.
@@ -184,12 +164,6 @@ class CTrajectoryProblem : public CCopasiProblem
      */
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
-
-    /**
-     * Save a trajectory problem
-     * @param "CWriteConfig &" configBuffer
-     */
-    void save(CWriteConfig & configBuffer) const;
 
   private:
     /**
