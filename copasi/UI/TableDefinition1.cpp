@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/24 13:53:30 $
+   $Author: anuragr $ 
+   $Date: 2005/03/09 23:51:56 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.44 2005/02/24 13:53:30 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.45 2005/03/09 23:51:56 anuragr Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -41,6 +41,7 @@
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiStaticString.h"
 #include "report/CReport.h"
+#include "report/CReportDefinitionVector.h"
 #include "ScanWidget.h"
 #include "qtUtilities.h"
 
@@ -78,6 +79,12 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
 
   cancelButton = new QPushButton(this, "cancelButton");
   layout14->addWidget(cancelButton);
+
+  newReportButton = new QPushButton(this, "newReportButton");
+  layout14->addWidget(newReportButton);
+
+  delReportButton = new QPushButton(this, "delReportButton");
+  layout14->addWidget(delReportButton);
 
   TableDefinitionLayout->addMultiCellLayout(layout14, 3, 3, 0, 1);
 
@@ -221,6 +228,8 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
 
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotBtnConfirmClicked()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  connect(newReportButton, SIGNAL(clicked()), this, SLOT(newReportClicked()));
+  connect(delReportButton, SIGNAL(clicked()), this, SLOT(delReportClicked()));
 
   connect(comboTask, SIGNAL(activated(const QString &)), this, SLOT(comboTaskChanged(const QString &)));
 }
@@ -240,6 +249,9 @@ void TableDefinition1::languageChange()
   setCaption(tr("Reports"));
   confirmButton->setText(tr("Commit"));
   cancelButton->setText(tr("Revert"));
+  delReportButton->setText(tr("Delete"));
+  newReportButton->setText(tr("New"));
+
   itemsLabel->setText(tr("Items"));
   upButton->setText(QString::null);
   downButton->setText(QString::null);
@@ -296,6 +308,33 @@ void TableDefinition1::loadTableDefinition1()
       separatorEdit->setText(FROM_UTF8(pReportDefinition->getSeparator().getStaticString()));
     }
   bUpdated = false;
+}
+
+void TableDefinition1::newReportClicked()
+{
+  std::string nname = "report";
+  int i = 0;
+  CReportDefinition* pRep;
+  while (!(pRep = CCopasiDataModel::Global->getReportDefinitionList()->createReportDefinition(nname, "")))
+    {
+      i++;
+      nname = "report";
+      nname += (const char *)QString::number(i).utf8();
+    }
+
+  protectedNotify(ListViews::REPORT, ListViews::ADD);
+  enter(pRep->getKey());
+}
+
+void TableDefinition1::delReportClicked()
+{
+  if (!CCopasiDataModel::Global->getModel())
+    return;
+
+  //dataModel->getPlotDefinitionList().removePlotSpec(objKey);
+  CCopasiDataModel::Global->getReportDefinitionList()->removeReportDefinition(reportKey);
+
+  ListViews::notify(ListViews::REPORT, ListViews::DELETE, reportKey);
 }
 
 void TableDefinition1::slotBtnCancelClicked()

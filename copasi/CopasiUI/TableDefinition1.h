@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/29 16:12:30 $
+   $Author: anuragr $ 
+   $Date: 2005/03/09 23:52:06 $
    End CVS Header */
 
 /****************************************************************************
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.11 2004/06/29 16:12:30 ssahle Exp $)
+($Id: TableDefinition1.h,v 1.12 2005/03/09 23:52:06 anuragr Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -74,7 +74,11 @@ class TableDefinition1 : public CopasiWidget
     virtual void upButtonClicked();
     virtual void downButtonClicked();
 
+    virtual void newReportClicked();
+    virtual void delReportClicked();
+
     virtual void comboTaskChanged(const QString & string);
+
   public:
     TableDefinition1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TableDefinition1();
@@ -103,6 +107,8 @@ class TableDefinition1 : public CopasiWidget
     QFrame* bodyField;
     QPushButton* confirmButton;
     QPushButton* cancelButton;
+    QPushButton* newReportButton;
+    QPushButton* delReportButton;
     QLabel* itemsLabel;
     QPushButton* upButton;
     QPushButton* downButton;
