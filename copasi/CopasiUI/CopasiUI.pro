@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.17 $ $Author: lixu1 $ $Date: 2003/09/29 04:24:04 $  
+# $Revision: 1.18 $ $Author: lixu1 $ $Date: 2003/09/29 04:34:58 $  
 ######################################################################
 
 include(../common.pri)
@@ -102,7 +102,7 @@ HEADERS += CompartmentsWidget.h \
            ReactionsWidget1.h \
            ScanItemWidget.h \
            ScanWidget.h \
-		   optimizationWidget.h \
+		   OptimizationWidget.h \
 		   FunctionItemWidget.h \
 		   OptimizationItemWidget.h \
            SteadyStateWidget.h \
@@ -156,7 +156,7 @@ SOURCES += CompartmentsWidget.cpp \
            ReactionsWidget1.cpp \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
-		   optimizationWidget.cpp \
+		   OptimizationWidget.cpp \
 		   FunctionItemWidget.cpp \
 		   OptimizationItemWidget.cpp \
            SteadyStateWidget.cpp \
