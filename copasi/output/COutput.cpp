@@ -12,8 +12,8 @@
 
 #include "copasi.h"
 #include "COutput.h"
-#include "utilities/CGlobals.h"
-#include "model/CCompartment.h"
+#include "utilities/utilities.h"
+#include "model/model.h"
 
 /**
  *  Default constructor. 
@@ -644,14 +644,24 @@ C_INT32 COutput::ReadDefaultVar(CReadConfig &configbuffer)
 				       CReadConfig::SEARCH)))
     return Fail;
 
-  if ((Fail = configbuffer.getVariable("RepComments", "C_INT16",
-				       (void *) &RepComments,
-				       CReadConfig::SEARCH)))
-    return Fail;
-
+  try 
+    {
+      Fail = configbuffer.getVariable("RepComments", "C_INT16",
+				      (void *) &RepComments,
+				      CReadConfig::SEARCH);
+    }
+  
+  catch (CCopasiException Exception)
+    {
+      if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
+	RepComments = 0;
+      else
+	throw Exception;
+    }
+  
   if ((Fail = configbuffer.getVariable("RepStructuralAnalysis", "C_INT16",
 				       (void *) &RepStruct,
-				       CReadConfig::SEARCH)))
+				       CReadConfig::LOOP)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("RepStabilityAnalysis", "C_INT16",

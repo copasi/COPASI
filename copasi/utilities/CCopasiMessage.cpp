@@ -141,7 +141,8 @@ CCopasiMessage &CCopasiMessage::operator=(CCopasiMessage &RHS)
 {
   mText   = RHS.mText;
   mType   = RHS.mType;
-    
+  mNumber = RHS.mNumber;
+  
   return *this;
 }
 
@@ -150,6 +151,8 @@ CCopasiMessage::~CCopasiMessage(void) {}
 string CCopasiMessage::getText(void) {return mText;}
 
 CCopasiMessage::Type CCopasiMessage::getType(void) {return mType;}
+
+unsigned C_INT32 CCopasiMessage::getNumber(void) {return mNumber;}
 
 string TimeStamp()
 {

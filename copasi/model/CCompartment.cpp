@@ -123,3 +123,8 @@ C_INT16 CCompartment::isValidName() const
 {
   return (mName.find_first_of("; ") == string::npos);
 }
+
+void * CCompartment::getVolumeAddr()
+{
+  return &mVolume;
+}

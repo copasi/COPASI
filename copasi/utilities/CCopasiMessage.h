@@ -70,6 +70,12 @@ class CCopasiMessage
    */
   CCopasiMessage::Type getType();
 
+  /**
+   *  Retrieves the number of the message.
+   *  @return mNumber
+   */
+  unsigned C_INT32 getNumber();
+
  private:
   /**
    *  The actual constructor of a message.
