@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/12 13:22:41 $
+   $Author: ssahle $ 
+   $Date: 2004/08/13 09:24:06 $
    End CVS Header */
 
 /**
@@ -2946,7 +2946,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       // create a new CPlotSpecification element depending on the type
       name = mParser.getAttributeValue("name", papszAttrs);
       sType = mParser.getAttributeValue("type", papszAttrs);
-      mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, CPlotItem::TypeNameToEnum(sType));
+      mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, CPlotItem::XMLNameToEnum(sType));
       //std::cout << "Created Item for Plot @" << mCommon.pCurrentPlot << ": " << mCommon.pCurrentPlotItem << std::endl;
       return;
       break;
@@ -3056,7 +3056,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
       name = mParser.getAttributeValue("name", papszAttrs);
       mCommon.pCurrentPlot->setObjectName(name);
       sType = mParser.getAttributeValue("type", papszAttrs);
-      mCommon.pCurrentPlot->setType(CPlotItem::TypeNameToEnum(sType));
+      mCommon.pCurrentPlot->setType(CPlotItem::XMLNameToEnum(sType));
       active = mParser.getAttributeValue("active", papszAttrs, "true");
 
       mCommon.pCurrentPlot->setActive(active);
