@@ -13,6 +13,7 @@
 #include "CCopasiXML.h"
 
 #include "utilities/CCopasiVector.h"
+#include "utilities/CMethodParameter.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "function/CFunction.h"

@@ -9,6 +9,7 @@
  */
 
 #include "copasi.h"
+
 #include "CTrajectoryTask.h"
 #include "CTrajectoryProblem.h"
 #include "CTrajectoryMethod.h"

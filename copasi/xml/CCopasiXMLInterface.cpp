@@ -11,6 +11,7 @@
 #include "copasi.h"
 #include "CCopasiXMLInterface.h"
 #include "model/CModel.h"
+#include "utilities/CMethodParameter.h"
 
 std::string CCopasiXMLInterface::encode(const std::string & str)
 {

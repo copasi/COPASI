@@ -4,6 +4,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+#include "copasi.h"
+
 #include <string>
 #include <vector>
 #include <limits.h>
@@ -17,7 +19,6 @@
 // #define DEBUG_MATRIX
 
 #define  COPASI_TRACE_CONSTRUCTION
-#include "copasi.h"
 #include "CCompartment.h"
 #include "CMetab.h"
 #include "CModel.h"
@@ -421,7 +422,7 @@ void CModel::saveSBML(std::ofstream &fout)
   // (necessary because SBML l1v1 does not support empty subs or prods)
   for (dummy = i = 0; (i < mSteps.size()) && (dummy == 0); i++)
     if ((mSteps[i]->getChemEq().getSubstrates().size() == 0)
-         || (mSteps[i]->getChemEq().getProducts().size() == 0))
+        || (mSteps[i]->getChemEq().getProducts().size() == 0))
       dummy = 1;
   // if there are any, we need a dummy metabolite, let's call it _void !
   if (dummy)

@@ -123,7 +123,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
 }
 
 C_INT32 CReaction::save(CWriteConfig & configbuffer)
-{}
+{return 0;}
 
 C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
                            const CCopasiVectorN< CMetab > &metabolites)
@@ -212,8 +212,8 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
       sprintf(strtmp, "Param%ld", i);
       if ((Fail = configbuffer.setVariable(strtmp, "C_FLOAT64", (void *) & mParameters[i]->getValue())))
         return Fail;
-    }
-  return Fail;*/
+    } */
+  return 0;
 }
 
 void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
