@@ -87,6 +87,7 @@
 				ED5DC9FD047712BB03B0BD8E,
 				ED5231BB046DA6DE03C9C501,
 				ED5231CB046DA6DE03C9C501,
+				ED1507B005C5C6C103AD62C7,
 				ED5231E4046DA6DE03C9C501,
 				ED5231EE046DA6DE03C9C501,
 				ED5231FB046DA6DE03C9C501,
@@ -101,6 +102,7 @@
 				ED523116046DA6DE03C9C501,
 				ED523190046DA6DE03C9C501,
 				ED5DCA230477C3D203B0BD8E,
+				ED1507AF05C5C69B03AD62C7,
 			);
 			isa = PBXGroup;
 			name = copasi;
@@ -156,6 +158,144 @@
 //ED2
 //ED3
 //ED4
+		ED1507AF05C5C69B03AD62C7 = {
+			isa = PBXFileReference;
+			path = common.pri;
+			refType = 4;
+		};
+		ED1507B005C5C6C103AD62C7 = {
+			children = (
+				ED1507B105C5C6C103AD62C7,
+				ED1507B205C5C6C103AD62C7,
+				ED1507B305C5C6C103AD62C7,
+				ED1507B405C5C6C103AD62C7,
+				ED1507B505C5C6C103AD62C7,
+				ED1507B605C5C6C103AD62C7,
+				ED1507B705C5C6C103AD62C7,
+				ED1507B805C5C6C103AD62C7,
+				ED1507B905C5C6C103AD62C7,
+				ED1507BA05C5C6C103AD62C7,
+				ED1507BB05C5C6C103AD62C7,
+				ED1507BC05C5C6C103AD62C7,
+				ED1507BE05C5C6C103AD62C7,
+				ED1507BF05C5C6C103AD62C7,
+				ED1507C005C5C6C103AD62C7,
+				ED1507C105C5C6C103AD62C7,
+				ED1507C205C5C6C103AD62C7,
+				ED1507C305C5C6C103AD62C7,
+				ED1507C405C5C6C103AD62C7,
+				ED1507C505C5C6C103AD62C7,
+				ED1507C605C5C6C103AD62C7,
+			);
+			isa = PBXGroup;
+			path = plot;
+			refType = 2;
+		};
+		ED1507B105C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CopasiPlot.cpp;
+			refType = 4;
+		};
+		ED1507B205C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CopasiPlot.h;
+			refType = 4;
+		};
+		ED1507B305C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CPlotSpec.cpp;
+			refType = 4;
+		};
+		ED1507B405C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CPlotSpec.h;
+			refType = 4;
+		};
+		ED1507B505C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CPlotSpecVector.cpp;
+			refType = 4;
+		};
+		ED1507B605C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CPlotSpecVector.h;
+			refType = 4;
+		};
+		ED1507B705C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = curve2dwidget.cpp;
+			refType = 4;
+		};
+		ED1507B805C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = curve2dwidget.h;
+			refType = 4;
+		};
+		ED1507B905C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = curve2dwidget.ui;
+			refType = 4;
+		};
+		ED1507BA05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = curve2dwidget.ui.h;
+			refType = 4;
+		};
+		ED1507BB05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = doublerect.cpp;
+			refType = 4;
+		};
+		ED1507BC05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = doublerect.h;
+			refType = 4;
+		};
+		ED1507BE05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plot.pro;
+			refType = 4;
+		};
+		ED1507BF05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotspec.h;
+			refType = 4;
+		};
+		ED1507C005C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwidget1.cpp;
+			refType = 4;
+		};
+		ED1507C105C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwidget1.h;
+			refType = 4;
+		};
+		ED1507C205C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwidget1.ui;
+			refType = 4;
+		};
+		ED1507C305C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwindow.cpp;
+			refType = 4;
+		};
+		ED1507C405C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwindow.h;
+			refType = 4;
+		};
+		ED1507C505C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = zoomplot.cpp;
+			refType = 4;
+		};
+		ED1507C605C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = zoomplot.h;
+			refType = 4;
+		};
 		ED523116046DA6DE03C9C501 = {
 			isa = PBXFileReference;
 			path = copasi.h;
