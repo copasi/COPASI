@@ -565,6 +565,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   //  if (pObject->isContainer())
   scanTask->getProblem()->addScanItem(CMethodParameterList(pObject->getCN().c_str(), (CCopasiContainer*)pObject, pObject->getObjectType()));
   parameterTable->setObject(scanTask->getProblem()->getScanItem(nSelectedObjects - 1));
+  parameterTable->loadObject();
   emit show_me();
   return true;
 }
