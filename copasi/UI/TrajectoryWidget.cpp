@@ -270,7 +270,7 @@ void TrajectoryWidget::RunTask()
   mTrajectoryTask->getProblem()->
   setStartTime(mTrajectoryTask->getProblem()->getStartTime());
 
-  std::ofstream output("output.txt");
+  std::ofstream output("trajectory.txt");
   mTrajectoryTask->initializeReporting(output);
 
   mTrajectoryTask->process();

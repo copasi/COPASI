@@ -234,7 +234,7 @@ void SteadyStateWidget::RunTask()
   mSteadyStateTask->getProblem()->
   setInitialState(mSteadyStateTask->getProblem()->getModel()->getInitialState());
 
-  std::ofstream output("output.txt");
+  std::ofstream output("steadystate.txt");
   mSteadyStateTask->initializeReporting(output);
 
   mSteadyStateTask->process();
