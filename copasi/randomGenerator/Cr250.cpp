@@ -44,7 +44,7 @@
  * Seeds the random number generator with the given seed.
  * @param C_INT32 seed (default system seed)
  */
-Cr250::Cr250(C_INT32 seed):
+Cr250::Cr250(unsigned C_INT32 seed):
     mIndex(0)
 {
   mModulus = 65536;
@@ -70,12 +70,6 @@ void Cr250::initialize(C_INT32 seed)
 
   mIndex = 0;
   mSeed = seed;
-
-  if (!mSeed)
-    {
-      initBuffer();
-      return;
-    }
 
   /* Fill the r250 buffer with 15-bit values */
   for (j = 0; j < 250; j++)

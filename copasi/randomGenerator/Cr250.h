@@ -14,6 +14,8 @@
 
 class Cr250 : public CRandom
   {
+    friend CRandom * CRandom::createGenerator(CRandom::Type type,
+        unsigned C_INT32 seed = 0);
     // Attributes
   private:
     static unsigned C_INT32 mInitialBuffer[250];
@@ -25,14 +27,15 @@ class Cr250 : public CRandom
     unsigned C_INT16 mBuffer[250];
 
     // Operations
-  public:
+  private:
     /**
      * Default/Named constructor.
      * Seeds the random number generator with the given seed.
-     * @param C_INT32 seed (default system seed)
+     * @param C_INT32 seed 
      */
-    Cr250(C_INT32 seed = 0);
+    Cr250(unsigned C_INT32 seed);
 
+  public:
     /**
      * The destructor.
      */

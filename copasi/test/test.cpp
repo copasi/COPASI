@@ -1795,7 +1795,7 @@ C_INT32 TestElementaryFluxMode(void)
 
 C_INT32 Testr250(void)
 {
-  CRandom * rand = new Cr250();
+  CRandom * rand = CRandom::createGenerator(CRandom::R250, 12345);
 
   C_INT32 i, j = 0;
   for (i = 0; i < 2000; i++)
@@ -1809,5 +1809,6 @@ C_INT32 Testr250(void)
         }
     }
 
+  delete rand;
   return 0;
 }

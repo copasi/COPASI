@@ -1,22 +1,55 @@
 #ifndef COPASI_CRandom
 #define COPASI_CRandom
 
+#include <string>
+
 class CRandom
   {
+    friend class Cr250;
+
     // Attributes
+  public:
+    /**
+     *  The valid types of a function
+     */
+    enum Type
+    {
+      R250 = 0
+    };
+
+  public:
+    static const string TypeName[];
+
   protected:
+    CRandom::Type mType;
     unsigned C_INT32 mNumber;
     C_FLOAT64 mFloat;
     unsigned C_INT32 mModulus;
 
     // Operations
-  public:
+  private:
     /**
      * Default/Named constructor.
      * Seeds the random number generator with the given seed.
      * @param C_INT32 seed (default implementation dependent seed)
      */
     CRandom(C_INT32 seed = 0);
+
+    /**
+     * get a system dependend seed (hopefully random)
+     */
+    static unsigned C_INT32 getSystemSeed();
+
+  public:
+    /**
+     * Create a Generator. 
+     * Note: the returned object has to be released after use with delete
+     * @param CRandom::Type type
+     * @param const C_INT32 & seed (default system generated seed)
+     * @return CRandom * randomGenerator
+     */
+    static CRandom * createGenerator(CRandom::Type type,
+                                     unsigned C_INT32 seed = 0);
 
     /**
      * The destructor.

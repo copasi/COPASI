@@ -61,14 +61,14 @@ CStochMethod::CStochMethod()
     : mModel(NULL),
     mFail(0)
 {
-  mRandomGenerator = new Cr250();
+  mRandomGenerator = CRandom::createGenerator(CRandom::R250);
 }
 
 CStochMethod::CStochMethod(CModel *model)
     : mModel(model),
     mFail(0)
 {
-  mRandomGenerator = new Cr250();
+  mRandomGenerator = CRandom::createGenerator(CRandom::R250);
 }
 CStochMethod::~CStochMethod() {cleanup(); }
 
