@@ -29,6 +29,8 @@ class CTrajectoryTask;
 
 class SteadyStateWidget;
 
+class TrajectoryWidget;
+
 class MetabolitesWidget;
 
 class ReactionsWidget;
@@ -137,6 +139,8 @@ class ListViews : public QSplitter, public Observer
     CSteadyStateTask *mSteadyStateTask;
     CTrajectoryTask *mTrajectoryTask;
     void loadModelNodes(CModel *model);
+    void loadSteadyStateTaskNodes(CSteadyStateTask*);
+    void loadTrajectoryTaskNodes(CTrajectoryTask* p_trajectorytask);
     void ConstructNodeWidgets();
 
     void clearItem(QListViewItem *);
@@ -157,6 +161,7 @@ class ListViews : public QSplitter, public Observer
     QMultiLineEdit *bigWidget;
 
     SteadyStateWidget *steadystateWidget;
+    TrajectoryWidget *trajectoryWidget;
     MetabolitesWidget *metabolitesWidget;
     ReactionsWidget *reactionsWidget;
     CompartmentsWidget *compartmentsWidget;

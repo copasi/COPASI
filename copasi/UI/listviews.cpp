@@ -24,6 +24,7 @@
 #include "FunctionWidget1.h"
 #include "ModesWidget.h"
 #include "SteadyStateWidget.h"
+#include "TrajectoryWidget.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -168,6 +169,8 @@ ListViews::ListViews(QWidget *parent, const char *name)
   currentWidget = bigWidget; // keeps track of the currentWidget in use
   lastWidget = bigWidget; // keeps track of the lastWidget that was used
   mModel = NULL;             // keeps track of the model that is used..
+  mSteadyStateTask = NULL;
+  mTrajectoryTask = NULL;
 
   // establishes the communication betweent the folders clicked and the routine called....
   connect(folders, SIGNAL(pressed(QListViewItem*)),
@@ -362,7 +365,6 @@ void ListViews::slotFolderChanged(QListViewItem *i)
       lastSelection->setPixmap(0, *folderClosed);
 
   lastSelection = i;
-  std::cout << "lastSelection: " << lastSelection << std::endl;
 
   // get the qlistview item in form of folderlistitem...
   FolderListItem *item = (FolderListItem*)i;
@@ -389,7 +391,16 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   else if (! (value = QString::compare(item->folder()->folderName(), "Functions")))
     currentWidget = functionWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Steady-State")))
-    currentWidget = steadystateWidget;
+    {
+      if (mSteadyStateTask != NULL)
+        currentWidget = steadystateWidget;
+    }
+  else if (! (value = QString::compare(item->folder()->folderName(), "Trajectory")))
+    {
+      if (mTrajectoryTask != NULL)
+        currentWidget = trajectoryWidget;
+    }
+
   else if (! (value = QString::compare(item->folder()->folderName(), "Mass Conservation")))
     currentWidget = moietyWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Elementary Modes")))
@@ -475,13 +486,16 @@ void ListViews::setDataModel(DataModel<Folder>* dm)
 
   // get the model information and than construct the nodes and load them
   mModel = dataModel->getModel();
-
+  this->loadModelNodes(mModel);
   this->ConstructNodeWidgets();
-
   loadFunction();
-  this->loadNodes(mModel);
-
   dataModel->setModelUpdate(false);
+
+  //added by Liang Xu
+  mSteadyStateTask = dataModel->getSteadyStateTask();
+  mTrajectoryTask = dataModel->getTrajectoryTask();
+  this->loadSteadyStateTaskNodes(mSteadyStateTask);
+  this->loadTrajectoryTaskNodes(mTrajectoryTask);
 }
 
 /***********ListViews::update(Subject* theChangedSubject,int status)----------->
@@ -546,12 +560,17 @@ void ListViews::update(Subject* theChangedSubject, int status)
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
-
-          this->loadNodes(mModel);
+          this->loadModelNodes(mModel);
           break;
 
         case STEADYSTATETASK:
-          steadystateWidget->loadSteadyStateTask(dataModel->getSteadyStateTask());
+          mSteadyStateTask = dataModel->getSteadyStateTask();
+          this->loadSteadyStateTaskNodes(mSteadyStateTask);
+          break;
+
+        case TRAJECTORYTASK:
+          mTrajectoryTask = dataModel->getTrajectoryTask();
+          this->loadTrajectoryTaskNodes(mTrajectoryTask);
           break;
         }
     }
@@ -663,7 +682,7 @@ void ListViews::deleteAllMyChildrens(QListViewItem* me)
  ** Returns  :-  void(Nothing)
  ** Description:-This method is used to load the nodes with the information
  ***********************************************************/
-void ListViews::loadNodes(CModel *model)
+void ListViews::loadModelNodes(CModel *model)
 {
   if (model != NULL)
     {
@@ -793,9 +812,12 @@ void ListViews::ConstructNodeWidgets()
     functionWidget = new FunctionWidget(this);
     functionWidget->hide();
 
-    //Construction od the Steady-state Widget
+    //Constructing the SteadyStateTask Widget
     steadystateWidget = new SteadyStateWidget(this);
     steadystateWidget->hide();
+
+    trajectoryWidget = new TrajectoryWidget(this);
+    trajectoryWidget->hide();
 
     //Constructing the Reactions Widget1
     reactionsWidget1 = new ReactionsWidget1(this);
@@ -1132,4 +1154,52 @@ void ListViews::slotNewReaction()
   if (currentWidget)
     currentWidget->show();
   lastWidget = currentWidget;
+}
+
+void ListViews::loadSteadyStateTaskNodes(CSteadyStateTask* steadystatetask)
+{
+  if (steadystatetask != NULL)
+    {
+      QListViewItem* loadNode; // to load the tree with that stuff
+
+      // UPDATE THE METABOLITES STUFF..
+      steadystateWidget->loadSteadyStateTask(steadystatetask);
+      loadNode = searchNode("Steady-State");
+
+      if (loadNode)
+        {
+          if (loadNode->isSelected())
+            {
+              currentWidget->hide();
+              steadystateWidget->show();
+              currentWidget = steadystateWidget;
+            }
+          loadNode = NULL;
+        }
+      dataModel->setSteadyStateTaskUpdate(false);
+    }
+}
+
+void ListViews::loadTrajectoryTaskNodes(CTrajectoryTask* trajectorytask)
+{
+  if (trajectorytask != NULL)
+    {
+      QListViewItem* loadNode; // to load the tree with that stuff
+
+      // UPDATE THE METABOLITES STUFF..
+      //      trajectoryWidget->loadTrajectoryTask(trajectorytask);
+      loadNode = searchNode("Steady-State");
+
+      if (loadNode)
+        {
+          if (loadNode->isSelected())
+            {
+              currentWidget->hide();
+              trajectoryWidget->show();
+              currentWidget = trajectoryWidget;
+            }
+          loadNode = NULL;
+        }
+      dataModel->setTrajectoryTaskUpdate(false);
+    }
 }
