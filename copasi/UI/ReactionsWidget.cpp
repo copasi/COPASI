@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:49 $
+   $Author: shoops $ 
+   $Date: 2004/05/19 00:59:54 $
    End CVS Header */
 
 /*******************************************************************
@@ -132,7 +132,7 @@ void ReactionsWidget::createNewObject()
 {
   std::string name = "reaction_0";
   int i = 0;
-  while (!dataModel->getModel()->addReaction(name))
+  while (!dataModel->getModel()->createReaction(name))
     {
       i++;
       name = "reaction_";
@@ -288,7 +288,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:        // Yes or Enter
+            case 0:         // Yes or Enter
               {
                 for (i = ToBeDeleted.size(); 0 < i;)
                   {
@@ -304,7 +304,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
                 break;
               }
 
-            default:               // No or Escape
+            default:                // No or Escape
               break;
             }
         }
