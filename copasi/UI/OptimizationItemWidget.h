@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/17 02:07:13 $
+   $Date: 2003/10/18 14:59:27 $
    End CVS Header */
 
 /********************************************************
@@ -38,7 +38,7 @@ class OptimizationItemWidget : public QWidget
     Q_OBJECT
 
   public:
-    OptimizationItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    OptimizationItemWidget(OptimizationWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~OptimizationItemWidget();
     OptimizationWidget* mpParent;
 

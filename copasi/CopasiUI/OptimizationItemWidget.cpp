@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/17 02:07:13 $
+   $Date: 2003/10/18 14:59:27 $
    End CVS Header */
 
 /********************************************************
@@ -38,9 +38,9 @@ Contact: Please contact lixu1@vt.edu.
  *  Constructs a OptimizationItemWidget as a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
-OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name, WFlags fl)
+OptimizationItemWidget::OptimizationItemWidget(OptimizationWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl),
-    mpParent((OptimizationWidget*)parent)
+    mpParent(parent)
 {
   if (!name)
     setName("OptimizationItemWidget");
