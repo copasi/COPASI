@@ -11,11 +11,6 @@
 
 #include "CEigen.h"
 
-extern "C" int dgees_(char *jobvs, char *sort, L_fp select, long int *n,
-        double *a, long int *lda, long int *sdim, double *wr,
-        double *wi, double *vs, long int *ldvs, double *work,
-        long int *lwork, long int *bwork, long int *info);
-
 /**
  * Defaulut constructor
  */
@@ -62,6 +57,8 @@ void CEigen::setMatrix(int rows, int cols)
 // eigenvalue calculations
 void CEigen::CalcEigenvalues( void )
 {
+
+  /*
  int res;
  char jobvs = 'N';
  char sort = 'N';
@@ -169,6 +166,9 @@ void CEigen::CalcEigenvalues( void )
    tott += fabs( 1/eigen_r[i] );
   }
  eigen_hierarchy = distt / tott / (n-1);
+
+  */
+
 }
 
 

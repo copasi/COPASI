@@ -14,16 +14,11 @@
 #include "tnt/tnt.h"
 #include "tnt/cmat.h"
 #include "copasi.h"
-#include "cmath.h"
 
 //include clapack.h for eigenvalue calculations0
-#include "clapack.h"
-
-extern "C" int dgees_(char *jobvs, char *sort, L_fp select, long int *n,
-        double *a, long int *lda, long int *sdim, double *wr,
-        double *wi, double *vs, long int *ldvs, double *work,
-        long int *lwork, long int *bwork, long int *info);
-
+extern "C" {
+#include "CLAPACK/clapack.h"
+}
 
 class CEigen {
 
@@ -46,7 +41,7 @@ class CEigen {
    * @param rows is the max row number of the Matrix
    * @param cols is the max column number of the Matrix
    */
-  CMatrx(int rows, int cols);
+  CEigen(int rows, int cols);
 
 
   /**
