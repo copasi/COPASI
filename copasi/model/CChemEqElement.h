@@ -26,8 +26,8 @@ class CChemEqElement : public CCopasiContainer
 
     /**
      *  The name of the compartment the element is located in
-     */
-    std::string mCompartmentName;
+     */ 
+    //std::string mCompartmentName;
 
     /**
      *  The multiplizity of the metabolite
@@ -96,8 +96,8 @@ class CChemEqElement : public CCopasiContainer
     /**
      *  Retrieves the address of the metabolite of the element.
      *  @return "CMetab *" metabolite
-     */
-    CMetab * getMetaboliteAddr() const;
+     */ 
+    //CMetab * getMetaboliteAddr() const;
 
     /**
      *  Set the name of the element.
@@ -114,14 +114,14 @@ class CChemEqElement : public CCopasiContainer
     /**
      *  Set the name of the element.
      *  @param "const string &" name
-     */
-    void setCompartmentName(const std::string & compartmentName);
+     */ 
+    //void setCompartmentName(const std::string & compartmentName);
 
     /**
      *  Retrieves the name of the element.
      *  @return "const string &" name
-     */
-    const std::string & getCompartmentName() const;
+     */ 
+    //const std::string & getCompartmentName() const;
 
     /**
      *  Add to the multiplicity of the element.
@@ -143,8 +143,9 @@ class CChemEqElement : public CCopasiContainer
 
     friend std::ostream & operator<<(std::ostream &os, const CChemEqElement & d)
     {
-      os << "CChemEqElement: [" << d.mCompartmentName << "]  " << d.mMultiplicity <<
-      " * " << d.mMetaboliteName << std::endl;
+      //os << "CChemEqElement: [" << d.mCompartmentName << "]  " << d.mMultiplicity <<
+      //" * " << d.mMetaboliteName << std::endl;
+      os << "CChemEqElement: " << d.mMultiplicity << " * " << d.mMetaboliteName << std::endl;
 
       if (d.mpMetabolite)
         os << "      mpMetabolite " << d.mpMetabolite->getName() << std::endl;
