@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.15 2003/09/10 15:01:36 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.16 2003/09/17 20:59:57 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,6 +20,7 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
+#include "utilities/CCopasiException.h"
 #include "listviews.h"
 #include "DataModel.h"
 #include "report/CReportDefinitionVector.h"
@@ -126,6 +127,26 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
   for (i = 0; i < pReportDefinitionVector->size(); i++)
     reportDefinitionNameList->insertItem((*(pReportDefinitionVector))[i]->getName().c_str());
 
+  // if it is an empty list
+  if (reportDefinitionNameList->count() == 0)
+    {
+      try
+        {
+          std::string name = "ReportDefinition_0";
+          dataModel->getReportDefinitionVectorAddr()->addReportDefinition(name, "");
+          reportDefinitionNameList->insertItem (name.c_str());
+          reportDefinitionNameList->setCurrentItem(1);
+          mpReport->setReportDefinition((*dataModel->getReportDefinitionVectorAddr())[0]); //first one report definition
+          mpReport->setAppend(appendChecked->isChecked());
+          mpReport->setTarget(targetEdit->text().latin1());
+          ListViews::notify(ListViews::REPORT, ListViews::CHANGE, "");
+          jumpToEdit();
+        }
+      catch (CCopasiException Exception)
+      {}
+      return;
+    }
+
   if (!mpReport->getReportDefinition())
     {
       C_INT32 row;
@@ -133,6 +154,8 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(targetEdit->text().latin1());
+      jumpToEdit();
+      return;
     }
   else
     {
@@ -150,7 +173,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
 void CReportDefinitionSelect::cancelClicked()
 {
   cleanup();
-  close();
+  delete this;
 }
 
 void CReportDefinitionSelect::confirmClicked()
@@ -166,7 +189,7 @@ void CReportDefinitionSelect::confirmClicked()
   mpReport->setAppend(appendChecked->isChecked());
   mpReport->setTarget(targetEdit->text().latin1());
   cleanup();
-  close();
+  delete this;
 }
 
 void CReportDefinitionSelect::cleanup()

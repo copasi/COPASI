@@ -155,6 +155,7 @@ bool TableDefinition::update(ListViews::ObjectType objectType, ListViews::Action
     case ListViews::COMPARTMENT:
     case ListViews::REPORT:
       fillTable();
+      break;
     default:
       break;
     }

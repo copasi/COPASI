@@ -32,6 +32,7 @@ class TableDefinition : public CopasiWidget
   public:
     TableDefinition(QWidget *parent, const char * name = 0, WFlags f = 0);
     void resizeEvent(QResizeEvent * re);
+    void createNewObject();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
@@ -47,7 +48,6 @@ class TableDefinition : public CopasiWidget
 
   private:
     void fillTable();
-    void createNewObject();
   };
 
 #endif
