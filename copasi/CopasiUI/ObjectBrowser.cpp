@@ -179,7 +179,27 @@ void ObjectBrowser::backClicked()
 
 void ObjectBrowser::nextClicked()
 {
-  qWarning("ObjectBrowser::nextClicked(): Not implemented yet!");
+  ObjectBrowserItem* rootItem = objectItemList->getRoot()->pItem;
+  objectList* outputList = new objectList();
+  export(rootItem, outputList);
+  delete outputList;
+}
+
+void ObjectBrowser::export(ObjectBrowserItem* pCurrent, objectList* outputList)
+{
+  if (pCurrent->child())
+    {
+      ObjectBrowserItem* pChild = pCurrent->child();
+      for (; pChild != NULL; pChild = pChild->sibling())
+        if (pChild->getType() != FIELDATTR)
+          export(pChild, outputList);
+    }
+  else //it has no child
+    {
+      if (pCurrent->isChecked() && (pCurrent->getType() != FIELDATTR))
+        outputList->insert(pCurrent);
+      // else skip current item
+    }
 }
 
 void ObjectBrowser::loadData()

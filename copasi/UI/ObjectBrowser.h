@@ -37,6 +37,7 @@ class ObjectBrowser : public QWidget
     QPushButton* backButton;
     QListView* ObjectListView;
 
+    void export(ObjectBrowserItem* pCurrent, objectList* outputList);
     /*
      isSibling describe the level we need to overlook sibling
      0: overlook sibling

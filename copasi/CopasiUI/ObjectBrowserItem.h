@@ -15,9 +15,8 @@ enum objectType {FIELDATTR = 0, OBJECTATTR, CONTAINERATTR};
 
 class objectList;
 
-class browserObject
+struct browserObject
   {
-  public:
     CCopasiObject* pCopasiObject;
     bool mChecked;
     objectList* referenceList;
@@ -37,7 +36,6 @@ class ObjectBrowserItem : public QListViewItem
     QString mKey;
 
   public:
-
     browserObject* getObject()
     {
       return pBrowserObject;
@@ -52,7 +50,10 @@ class ObjectBrowserItem : public QListViewItem
 
     ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
-    ~ObjectBrowserItem() {}
+    ~ObjectBrowserItem()
+    {
+      delete pBrowserObject;
+    }
 
     void attachKey();
     void setParent(ObjectBrowserItem* parent);

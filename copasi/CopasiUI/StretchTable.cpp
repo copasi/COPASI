@@ -24,6 +24,12 @@ StretchTable::StretchTable(int numRows, int numCols,
   setNumRows(numRows);
 }
 
+StretchTable::~StretchTable()
+{
+  delete[] minColWidth;
+  delete[] binitialized;
+}
+
 void StretchTable::DisableColWidthUpdate()
 {
   systemUpdate = true;
