@@ -16,6 +16,7 @@
 #include <qheader.h>
 #include <qmessagebox.h>
 #include <qmultilineedit.h>
+
 #include "copasi.h"
 #include "DataModel.h"
 #include "Observer.h"
@@ -23,40 +24,28 @@
 
 //public QLineEdit:
 // #include "model/model.h"
+
 class CSteadyStateTask;
-
 class CTrajectoryTask;
-
-class SteadyStateWidget;
-
-class TrajectoryWidget;
-
-class MetabolitesWidget;
-class MetaboliteSymbols;
-class FixedMetaboliteSymbols;
-
-class ReactionsWidget;
-
-class CompartmentsWidget;
-
 class CompartmentSymbols;
-class ConstantSymbols;
-
-class MoietyWidget;
-
-class FunctionWidget;
-class FunctionSymbols;
-
-class ReactionsWidget1;
-
-class MetabolitesWidget1;
-
 class CompartmentsWidget1;
-
-class MoietyWidget1;
-
+class CompartmentsWidget;
+class ConstantSymbols;
+class FixedMetaboliteSymbols;
+class FunctionSymbols;
 class FunctionWidget1;
+class FunctionWidget;
+class CMathModel;
+class MetaboliteSymbols;
+class MetabolitesWidget1;
+class MetabolitesWidget;
 class ModesWidget;
+class MoietyWidget1;
+class MoietyWidget;
+class ReactionsWidget1;
+class ReactionsWidget;
+class SteadyStateWidget;
+class TrajectoryWidget;
 
 class Folder : public QObject
   {
@@ -142,6 +131,7 @@ class ListViews : public QSplitter, public Observer
     virtual void slotNewReaction();
   protected:
     CModel *mModel;  // the re to the model...
+    CMathModel *mpMathModel;
     CSteadyStateTask *mSteadyStateTask;
     CTrajectoryTask *mTrajectoryTask;
     void loadModelNodes(CModel *model);

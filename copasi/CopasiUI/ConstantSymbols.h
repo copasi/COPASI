@@ -9,18 +9,20 @@
 #ifndef CONSTANT_SYMBOLS_H
 #define CONSTANT_SYMBOLS_H
 
-#include "MyTable.h"
-#include "copasi.h"
-#include "model/model.h"
 #include <qtable.h>
 #include <qpushbutton.h>
+
+#include "MyTable.h"
+#include "copasi.h"
+
+class CMathModel;
 
 class ConstantSymbols : public QWidget
   {
     Q_OBJECT
 
   protected:
-    CModel * mModel;
+    CMathModel * mModel;
     MyTable * table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
@@ -30,7 +32,7 @@ class ConstantSymbols : public QWidget
 
   public:
     ConstantSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadConstantSymbols(CModel *model);
+    void loadConstantSymbols(CMathModel *model);
     void resizeEvent(QResizeEvent * re);
 
   protected slots:

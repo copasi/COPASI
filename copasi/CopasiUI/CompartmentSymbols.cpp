@@ -69,7 +69,7 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-void CompartmentSymbols::loadCompartmentSymbols(CModel *model)
+void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
 {
   if (model != NULL)
     {
@@ -83,11 +83,8 @@ void CompartmentSymbols::loadCompartmentSymbols(CModel *model)
           table->removeRow(0);
         }
 
-      CMathModel *mathmodel = new CMathModel();
-      mathmodel->setModel(mModel);
-      const CModel *nModel = mathmodel->getModel();
-
-      std::map< std::string, CMathConstantCompartment * > compartList = mathmodel->getCompartmentList();
+      std::map< std::string, CMathConstantCompartment * > compartList =
+        mModel->getCompartmentList();
       std::map<std::string, CMathConstantCompartment * >::iterator it;
       CMathConstantCompartment * constantCompart;
 

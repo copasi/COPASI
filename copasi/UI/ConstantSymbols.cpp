@@ -67,7 +67,7 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-void ConstantSymbols::loadConstantSymbols(CModel *model)
+void ConstantSymbols::loadConstantSymbols(CMathModel *model)
 {
   if (model != NULL)
     {
@@ -75,25 +75,30 @@ void ConstantSymbols::loadConstantSymbols(CModel *model)
       //Emptying the table
       int numberOfRows = table->numRows();
       for (int i = 0; i < numberOfRows; i++)
-        {
-          table->removeRow(0);
-        }
+        table->removeRow(0);
 
-      CMathModel *mathmodel = new CMathModel();
-      mathmodel->setModel(mModel);
-      const CModel *nModel = mathmodel->getModel();
-
-      std::map< std::string, CCopasiObject * > selection = CMathConstantParameter::getSelection();
-      std::map<std::string, CCopasiObject * >::iterator it;
-      CCopasiObject * constantObject;
-      C_INT32 noOfMetaboliteRows = selection.size();
-      table->setNumRows(noOfMetaboliteRows);
+      CMathConstantParameter * pConstant;
+      std::map< std::string, CMathConstantParameter * > & List =
+        mModel->getConstantsList();
+      std::map< std::string, CMathConstantParameter * >::iterator it =
+        List.begin();
+      std::map< std::string, CMathConstantParameter * >::iterator end =
+        List.end();
+      //       std::map< std::string, CCopasiObject * > selection =
+      //         CMathConstantParameter::getSelection();
+      //       std::map<std::string, CCopasiObject * >::iterator it;
+      //       CCopasiObject * constantObject;
+      //       C_INT32 noOfMetaboliteRows = selection.size();
+      table->setNumRows(List.size());
       int index = 0;
-      for (it = selection.begin(); it != selection.end();++it)
+      for (; it != end; ++it)
         {
           //QMessageBox::information(this, "key",it->first.c_str());
-          constantObject = it->second;
-          table->setText(index, 0, constantObject->getName().c_str());
+          pConstant = it->second;
+          table->setText(index, 0, pConstant->getName().c_str());
+          table->setText(index, 1, pConstant->getObject()->getName().c_str());
+          table->setText(index, 2, QString::number(pConstant->getValue()));
+
           //CCopasiObject *metabObject=constantObject->getObject();
           //table->setText(index, 1, metabObject->getName().c_str());
           //table->setText(index, 2, QString::number(constantObject->getValue()));

@@ -72,7 +72,7 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-void MetaboliteSymbols::loadMetaboliteSymbols(CModel *model)
+void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
 {
   if (model != NULL)
     {
@@ -85,11 +85,7 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CModel *model)
           table->removeRow(0);
         }
 
-      CMathModel *mathmodel = new CMathModel();
-      mathmodel->setModel(mModel);
-      const CModel *nModel = mathmodel->getModel();
-
-      std::map< std::string, CMathVariableMetab * > metabList = mathmodel->getMetabList();
+      std::map< std::string, CMathVariableMetab * > metabList = mModel->getMetabList();
       std::map<std::string, CMathVariableMetab * >::iterator it;
       CMathVariableMetab * variableMetab;
 

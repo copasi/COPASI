@@ -69,7 +69,7 @@ FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-void FunctionSymbols::loadFunctionSymbols(CModel *model)
+void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
 {
   if (model != NULL)
     {
@@ -82,12 +82,10 @@ void FunctionSymbols::loadFunctionSymbols(CModel *model)
           table->removeRow(0);
         }
 
-      CMathModel *mathmodel = new CMathModel();
-      mathmodel->setModel(mModel);
-      const CModel *nModel = mathmodel->getModel();
       Copasi->pFunctionDB->loadedFunctions();
 
-      std::map< std::string, CMathSymbol * > functionList = mathmodel->getFunctionList();
+      std::map< std::string, CMathSymbol * > functionList =
+        mModel->getFunctionList();
       std::map<std::string, CMathSymbol * >::iterator it;
       CMathSymbol * mathSymbol;
 
@@ -96,7 +94,6 @@ void FunctionSymbols::loadFunctionSymbols(CModel *model)
       int index = 0;
       for (it = functionList.begin(); it != functionList.end();++it)
         {
-          QMessageBox::information(this, "key", it->first.c_str());
           mathSymbol = it->second;
           table->setText(index, 0, mathSymbol->getName().c_str());
           CCopasiObject *metabObject = mathSymbol->getObject();

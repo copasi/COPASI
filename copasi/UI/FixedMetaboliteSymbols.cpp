@@ -1,6 +1,7 @@
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
+
 #include "FixedMetaboliteSymbols.h"
 #include "listviews.h"
 #include "mathmodel/CMathModel.h"
@@ -62,7 +63,7 @@ FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * nam
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CModel *model)
+void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
 {
   if (model != NULL)
     {
@@ -73,11 +74,8 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CModel *model)
           table->removeRow(0);
         }
 
-      CMathModel *mathmodel = new CMathModel();
-      mathmodel->setModel(mModel);
-      const CModel *nModel = mathmodel->getModel();
-
-      std::map< std::string, CMathConstantMetab * > metabList = mathmodel->getFixedMetabList();
+      std::map< std::string, CMathConstantMetab * > metabList =
+        mModel->getFixedMetabList();
       std::map<std::string, CMathConstantMetab * >::iterator it;
       CMathConstantMetab * constantMetab;
 

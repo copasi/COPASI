@@ -11,26 +11,27 @@
  ** model about the tree
  **********************************************************************/
 
-#include "listviews.h"
-#include "MetabolitesWidget.h"
-#include "ReactionsWidget.h"
-#include "CompartmentsWidget.h"
 #include "CompartmentSymbols.h"
-#include "ConstantSymbols.h"
-#include "FunctionSymbols.h"
-#include "MoietyWidget.h"
-#include "FunctionWidget.h"
-#include "ReactionsWidget1.h"
-#include "MetabolitesWidget1.h"
-#include "MetaboliteSymbols.h"
-#include "FixedMetaboliteSymbols.h"
+#include "CompartmentsWidget.h"
 #include "CompartmentsWidget1.h"
-#include "MoietyWidget1.h"
+#include "ConstantSymbols.h"
+#include "FixedMetaboliteSymbols.h"
+#include "FunctionSymbols.h"
+#include "FunctionWidget.h"
 #include "FunctionWidget1.h"
+#include "MetaboliteSymbols.h"
+#include "MetabolitesWidget.h"
+#include "MetabolitesWidget1.h"
 #include "ModesWidget.h"
+#include "MoietyWidget.h"
+#include "MoietyWidget1.h"
+#include "ReactionsWidget.h"
+#include "ReactionsWidget1.h"
 #include "SteadyStateWidget.h"
 #include "TrajectoryWidget.h"
 #include "function/CFunctionDB.h"
+#include "mathmodel/CMathModel.h"
+#include "listviews.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -129,8 +130,9 @@ void FolderListItem::insertSubFolders(const QObjectList *lst)
  **               set up all the requirement and intialization of the 
  **               components in the code.
  ************************************************************/
-ListViews::ListViews(QWidget *parent, const char *name)
-    : QSplitter(Qt::Horizontal, parent, name)
+ListViews::ListViews(QWidget *parent, const char *name):
+    QSplitter(Qt::Horizontal, parent, name),
+    mpMathModel(NULL)
 {
   // creates the image to be displayed when folder is closed/locked/open
   folderLocked = new QPixmap((const char**)folderlocked);
@@ -697,11 +699,15 @@ void ListViews::loadModelNodes(CModel *model)
     {
       QListViewItem* loadNode; // to load the tree with that stuff
       // UPDATE THE METABOLITES STUFF..
-      fixedMetaboliteSymbols->loadFixedMetaboliteSymbols(model);
-      metaboliteSymbols->loadMetaboliteSymbols(model);
-      functionSymbols->loadFunctionSymbols(model);
-      constantSymbols->loadConstantSymbols(model);
-      compartmentSymbols->loadCompartmentSymbols(model);
+      pdelete(mpMathModel);
+      mpMathModel = new CMathModel;
+      mpMathModel->setModel(model);
+
+      fixedMetaboliteSymbols->loadFixedMetaboliteSymbols(mpMathModel);
+      metaboliteSymbols->loadMetaboliteSymbols(mpMathModel);
+      functionSymbols->loadFunctionSymbols(mpMathModel);
+      constantSymbols->loadConstantSymbols(mpMathModel);
+      compartmentSymbols->loadCompartmentSymbols(mpMathModel);
       metabolitesWidget->loadMetabolites(model);
       metabolitesWidget1->loadMetabolites(model);
       loadNode = searchNode("Metabolites");

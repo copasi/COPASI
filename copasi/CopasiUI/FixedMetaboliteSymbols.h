@@ -9,21 +9,22 @@
 #ifndef FIXED_METABOLITE_SYMBOLS_H
 #define FIXED_METABOLITE_SYMBOLS_H
 
-#include "MyTable.h"
-#include "copasi.h"
-#include "model/model.h"
-#include "mathmodel/CMathModel.h"
-#include "mathmodel/CMathConstant.h"
 #include <qtable.h>
 #include <qpushbutton.h>
+
+#include "MyTable.h"
+#include "copasi.h"
+
+class CMathModel;
+class CMathConstant;
+class CMathConstantMetab;
 
 class FixedMetaboliteSymbols : public QWidget
   {
     Q_OBJECT
 
   protected:
-    const CModel * mModel;
-    CMathModel *mathmodel;
+    CMathModel * mModel;
     CMathConstantMetab *metablist;
     MyTable * table;
     QPushButton *btnOK;
@@ -34,7 +35,7 @@ class FixedMetaboliteSymbols : public QWidget
 
   public:
     FixedMetaboliteSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadFixedMetaboliteSymbols(CModel *model);
+    void loadFixedMetaboliteSymbols(CMathModel *model);
     void resizeEvent(QResizeEvent * re);
 
   protected slots:
