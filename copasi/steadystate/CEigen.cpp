@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:14 $
+   $Date: 2003/11/03 20:47:27 $
    End CVS Header */
 
 /**
@@ -262,18 +262,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,        // mSelect,           //NULL,
-         &mN,                       //&n,
+         NULL,         // mSelect,           //NULL,
+         &mN,                        //&n,
          mA.array(),
          & mLDA,
-         & mSdim,               // output
+         & mSdim,                // output
          mEigen_r.array(),
          mEigen_i.array(),
          mVS,
          & mLdvs,
          mWork,
          & mLWork,
-         mBWork,                 //NULL
+         mBWork,                  //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();
@@ -453,3 +453,69 @@ const CVector< C_FLOAT64 > & CEigen::getEigen_i() const
 
 const CVector< C_FLOAT64 > & CEigen::getEigen_r() const
   {return mEigen_r;}
+
+std::ostream &operator<<(std::ostream &os, const CEigen &A)
+{
+  os << std::endl;
+  os << "KINETIC STABILITY ANALYSIS";
+  os << std::endl;
+  os << "The linear stability analysis based on the eigenvalues" << std::endl;
+  os << "of the Jacobian matrix is only valid for steady states." << std::endl;
+  os << std::endl;
+  os << "Summary:" << std::endl;
+  os << "This steady state ";
+
+  // Output statistics
+
+  if (A.mEigen_maxrealpart > A.mResolution)
+    os << "is unstable";
+  else if (A.mEigen_maxrealpart < -A.mResolution)
+    os << "is asymptotically stable";
+  else
+    os << "stability is undetermined";
+
+  if (A.mEigen_maximagpart > A.mResolution)
+    {
+      os << "," << std::endl;
+      os << "transient states in its vicinity have oscillatory components";
+    }
+
+  os << std::endl;
+  os << std::endl;
+
+  os << "Eigenvalue statistics:" << std::endl;
+  // Output Max Real Part
+  os << " Largest real part: ";
+  os << std::setprecision(6) << A.mEigen_maxrealpart << std::endl;
+  // Output Max imaginary Part
+  os << " Largest absolute imaginary part:  ";
+  os << std::setprecision(6) << A.mEigen_maximagpart << std::endl;
+  // Output Eigen-nreal
+  os.unsetf(std::ios_base::scientific);
+  os.unsetf(std::ios_base::showpoint);
+  os << " " << A.mEigen_nreal;
+  os << " are purely real" << std::endl;
+  // Output Eigen-nimage
+  os << " " << A.mEigen_nimag;
+  os << " are purely imaginary" << std::endl;
+  // Output Eigen-ncplxconj
+  os << " " << A.mEigen_ncplxconj;
+  os << " are complex" << std::endl;
+  // Output Eigen-nzero
+  os << " " << A.mEigen_nzero;
+  os << " are equal to zero" << std::endl;
+  // Output Eigen-nposreal
+  os << " " << A.mEigen_nposreal;
+  os << " have positive real part" << std::endl;
+  // Output Eigen-nnegreal
+  os << " " << A.mEigen_nnegreal;
+  os << " have negative real part" << std::endl;
+
+  // Set point manipulators
+  os.setf(std::ios_base::showpoint);
+  // Output Eigne-stiffness
+  os << " stiffness = " << A.mEigen_stiffness << std::endl;
+  os << " time hierarchy = " << A.mEigen_hierarchy << std::endl;
+
+  return os;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CDeTerm.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:50 $
+   $Date: 2003/11/03 20:47:20 $
    End CVS Header */
 
 #include "copasi.h"
@@ -234,3 +234,25 @@ std::string CDeTerm::getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multip
 
     return retstring;
   }
+
+std::ostream & operator<<(std::ostream &os, const CDeTerm & d)
+{
+  os << "RateConstant =   " << d.mRateConstant << std::endl
+  << "Sign =           " << d.mSign << std::endl
+  << "StoiCoeficient = " << d.mMultiplier << std::endl;
+  os << "TokenStack :" << std::endl;
+
+  unsigned int i;
+
+  for (i = 0; i < d.mTokenStack.size(); i++)
+    os << "  " << i << ": Type = '" << d.mTokenStack[i]->first
+    << "', String = '" << d.mTokenStack[i]->second << "'" << std::endl;
+
+  os << "Metabolites :" << std::endl;
+
+  for (i = 0; i < d.mTopLevelMetabolites.size(); i++)
+    os << "  " << i << ": Metabolite = '" << d.mTopLevelMetabolites[i]->first
+    << "', Multiplicity = '" << d.mTopLevelMetabolites[i]->second << "'" << std::endl;
+
+  return os;
+}

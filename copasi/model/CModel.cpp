@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.133 $
+   $Revision: 1.134 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/10/31 22:49:45 $
+   $Author: shoops $ 
+   $Date: 2003/11/03 20:47:22 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1866,3 +1866,19 @@ bool CModel::hasReversibleReaction() const
 
     return false;
   }
+
+std::ostream &operator<<(std::ostream &os,
+                         const CModel::CLinkMatrixView & A)
+{
+  unsigned C_INT32 i, imax = A.numRows();
+  unsigned C_INT32 j, jmax = A.numCols();
+  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
+
+  for (i = 0; i < imax; i++)
+    {
+      for (j = 0; j < jmax; j++)
+        os << "  " << A(i, j);
+      os << std::endl;
+    }
+  return os;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:50 $
+   $Date: 2003/11/03 20:47:19 $
    End CVS Header */
 
 // CChemEqElement
@@ -234,3 +234,20 @@ C_INT32 CChemEq::getMolecularity(const MetaboliteRole role) const
 
     return ccc;
   }
+
+std::ostream & operator<<(std::ostream &os, const CChemEq & d)
+{
+  os << "CChemEq:" << std::endl;
+  //os << "   mChemicalEquation:          " << d.getChemicalEquation() << std::endl;
+  //os << "   mChemicalEquationConverted: " << d.getChemicalEquationConverted() << std::endl;
+
+  os << "   mSubstrates:" << std::endl;
+  os << d.mSubstrates;
+  os << "   mProducts:" << std::endl;
+  os << d.mProducts;
+  os << "   mBalances:" << std::endl;
+  os << d.mBalances;
+
+  os << "----CChemEq" << std::endl;
+  return os;
+}

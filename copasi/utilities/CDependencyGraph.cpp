@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:31 $
+   $Date: 2003/11/03 20:47:30 $
    End CVS Header */
 
 #define  COPASI_TRACE_CONSTRUCTION
@@ -113,3 +113,28 @@ int main(int argc, char **argv)
 }
 
 #endif // TEST_DEPENDENCY_GRAPH
+
+std::ostream & operator<<(std::ostream &os,
+                          const CDependencyGraphNode & d)
+{
+  std::set <C_INT32>::const_iterator it;
+  for (it = d.mDependents.begin(); it != d.mDependents.end(); it++)
+    os << *it << "  ";
+
+  os << std::endl;
+
+  return os;
+}
+
+std::ostream & operator<<(std::ostream &os,
+                          const CDependencyGraph & d)
+{
+  unsigned int i;
+
+  for (i = 0; i < d.mNodes.size(); i++)
+    os << d.mNodes[i];
+
+  os << std::endl;
+
+  return os;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/30 20:40:12 $
+   $Author: shoops $ 
+   $Date: 2003/11/03 20:47:20 $
    End CVS Header */
 
 // CCompartment
@@ -199,4 +199,14 @@ void CCompartment::initObjects()
 void * CCompartment::getVolumeAddr()
 {
   return &mVolume;
+}
+
+std::ostream & operator<<(std::ostream &os, const CCompartment & d)
+{
+  os << "++++CCompartment: " << d.getObjectName() << " mVolume " << d.mVolume
+  << " mVolumeInv " << d.mVolumeInv << std::endl;
+  os << "    CCompartment.mMetabolites " << std::endl << d.mMetabolites;
+  os << "----CCompartment " << std::endl;
+
+  return os;
 }

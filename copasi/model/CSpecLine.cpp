@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:50 $
+   $Date: 2003/11/03 20:47:25 $
    End CVS Header */
 
 #include <iostream>
@@ -445,4 +445,35 @@ C_FLOAT64 CTempReaction::getParameterValue(const std::string & name,
       return constants[i].getVal();
 
   return 0;
+}
+
+std::ostream & operator<<(std::ostream &os, const CTempMetab & m)
+{
+  os << "Name = '" << m.mMetab->getName();
+  os << "', Multiplicty = '" << m.mMultiplicity;
+  os << "', Change = '" << m.mNumChange << "'";
+  return os;
+}
+
+std::ostream & operator<<(std::ostream & os, const CTempReaction & r)
+{
+  os << "TempReaction = '" << r.mName << "'" << std::endl;
+  os << "  Rate       = '" << r.mRateDescription << "'" << std::endl;
+  unsigned int i;
+  os << "  Metabolites:" << std::endl;
+
+  for (i = 0; i < r.mMetabs.size(); i++)
+    os << "    " << i << ": " << r.mMetabs[i] << std::endl;
+
+  os << "  Substrates: " << std::endl;
+
+  for (i = 0; i < r.mSubstrates.size(); i++)
+    os << "    " << i << ": " << r.mSubstrates[i] << std::endl;
+
+  os << "  Products:   " << std::endl;
+
+  for (i = 0; i < r.mProducts.size(); i++)
+    os << "    " << i << ": " << r.mProducts[i] << std::endl;
+
+  return os;
 }

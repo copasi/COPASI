@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:21 $
+   $Date: 2003/11/03 20:47:32 $
    End CVS Header */
 
 #ifndef COPASI_CPriorityQueue
@@ -224,31 +224,5 @@ class CIndexedPriorityQueue
      */
     std::vector<C_INT32> mIndexPointer;
   };
-
-std::ostream & operator<<(std::ostream &os, const PQNode & d)
-{
-  os << "(" << d.mIndex << ", " << d.mKey << ")";
-  return os;
-}
-
-std::ostream & operator<<(std::ostream &os, const CIndexedPriorityQueue & d)
-{
-  unsigned C_INT32 i;
-
-  os << "PQ: " << std::endl;
-
-  std::vector <PQNode>::const_iterator it;
-  os << "  mHeap: " << std::endl;
-  for (it = d.mHeap.begin(); it != d.mHeap.end(); it++)
-    os << *it << std::endl;
-  os << "  mIndexPointer: " << std::endl;
-  for (i = 0; i < d.mIndexPointer.size(); i++)
-    os << d.mIndexPointer[i] << " ";
-  os << std::endl;
-
-  os << std::endl;
-
-  return os;
-}
 
 #endif // COPASI_CPriorityQueue

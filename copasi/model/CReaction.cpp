@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/30 20:40:12 $
+   $Author: shoops $ 
+   $Date: 2003/11/03 20:47:24 $
    End CVS Header */
 
 // CReaction
@@ -934,4 +934,35 @@ void CReaction::initObjects()
   addObjectReference("ScaledFlux", mScaledFlux, CCopasiObject::ValueDbl);
   //add(&mParameters);
   //add(&mMap);
+}
+
+std::ostream & operator<<(std::ostream &os, const CReaction & d)
+{
+  os << "CReaction:  " << d.getName() << std::endl;
+
+  os << "   mChemEq " << std::endl;
+  os << d.mChemEq;
+
+  if (d.mpFunction)
+    os << "   *mpFunction " << d.mpFunction->getName() << std::endl;
+  else
+    os << "   mpFunction == 0 " << std::endl;
+
+  //os << "   mParameterDescription: " << std::endl << d.mParameterDescription;
+  os << "   mFlux: " << d.mFlux << std::endl;
+
+  if (d.mScalingFactor)
+    os << "   *mScalingFactor " << *(d.mScalingFactor) << std::endl;
+  else
+    os << "   mScalingFactor == 0 " << std::endl;
+
+  os << "   mScalingFactor2: " << d.mScalingFactor2 << std::endl;
+  //os << "   mCompartmentNumber: " << d.mCompartmentNumber << std::endl;
+  if (d.mpFunctionCompartment)
+    os << "   *mpFunctionCompartment " << d.mpFunctionCompartment->getName() << std::endl;
+  else
+    os << "   mpFunctionCompartment == 0 " << std::endl;
+  os << "----CReaction" << std::endl;
+
+  return os;
 }

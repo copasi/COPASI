@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:19 $
+   $Date: 2003/11/03 20:47:20 $
    End CVS Header */
 
 /**
@@ -226,15 +226,5 @@ class CCompartment : public CCopasiContainer
      */
     void initObjects();
   };
-
-std::ostream & operator<<(std::ostream &os, const CCompartment & d)
-{
-  os << "++++CCompartment: " << d.getObjectName() << " mVolume " << d.mVolume
-  << " mVolumeInv " << d.mVolumeInv << std::endl;
-  os << "    CCompartment.mMetabolites " << std::endl << d.mMetabolites;
-  os << "----CCompartment " << std::endl;
-
-  return os;
-}
 
 #endif // COPASI_CCompartment

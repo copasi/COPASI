@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:20 $
+   $Date: 2003/11/03 20:47:26 $
    End CVS Header */
 
 /**
@@ -435,28 +435,5 @@ class CStateX: public CState
                                       const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution);
   };
-
-std::ostream & operator << (std::ostream & os, const CState & A)
-{
-  os << "State: " << std::endl;
-  os << "  Time:     " << A.mTime << std::endl;
-  os << "  Volumes:  " << A.mVolumes << std::endl;
-  os << "  Fixed:    " << A.mFixedNumbers << std::endl;
-  os << "  Variable: " << A.mVariableNumbers << std::endl;
-
-  return os;
-}
-
-std::ostream & operator << (std::ostream & os, const CStateX & A)
-{
-  os << "StateX" << std::endl;
-  os << "  Time:        " << A.mTime << std::endl;
-  os << "  Volumes:     " << A.mVolumes << std::endl;
-  os << "  Fixed:       " << A.mFixedNumbers << std::endl;
-  os << "  Independend: " << A.mVariableNumbers << std::endl;
-  os << "  Dependend:   " << A.mDependentNumbers << std::endl;
-
-  return os;
-}
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:19 $
+   $Date: 2003/11/03 20:47:21 $
    End CVS Header */
 
 /**
@@ -459,27 +459,5 @@ class CMetabOld : public CCopasiContainer
  * instance CMetab in a set of CMetab.
  */
 bool operator< (const CMetab &lhs, const CMetab &rhs);
-
-std::ostream & operator<<(std::ostream &os, const CMetab & d)
-{
-  os << "    ++++CMetab: " << d.getObjectName() << std::endl;
-  os << "        mConcDbl " << d.mConcDbl << " mIConcDbl " << d.mIConcDbl << std::endl;
-  os << "        mNumberInt " << d.mNumberInt << " mINumberInt " << d.mINumberInt << std::endl;
-  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << std::endl;
-
-  if (d.mpCompartment)
-    os << "        mpCompartment == " << d.mpCompartment << std::endl;
-  else
-    os << "        mpCompartment == 0 " << std::endl;
-
-  if (d.mpModel)
-    os << "        mpModel == " << d.mpModel << std::endl;
-  else
-    os << "        mpModel == 0 " << std::endl;
-
-  os << "    ----CMetab " << std::endl;
-
-  return os;
-}
 
 #endif // COPASI_CMetab

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:20 $
+   $Date: 2003/11/03 20:47:26 $
    End CVS Header */
 
 /**
@@ -152,11 +152,5 @@ createMatrixReference(const std::string & name,
                       CType & reference,
                       const unsigned C_INT32 & flag = 0)
 {return new CCopasiMatrixReference< CType >(name, pParent, reference, flag);}
-
-std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
-{
-  os << o.mObjectName << std::endl;
-  return os;
-}
 
 #endif // COPASI_CCopasiObject

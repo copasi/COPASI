@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:20 $
+   $Date: 2003/11/03 20:47:25 $
    End CVS Header */
 
 #ifndef Copasi_SpecLine
@@ -34,14 +34,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,           // Comments
-      DE,            // Differential equations
-      EQN,           // Moiety specification equations
-      INIT,           // Initializations
-      CNST,           // Constant assignments
-      VOL,           // Volume assignment
-      CPT,           // Compartment volume assignments
-      RATE,           // Rate constant assignments
+      CMNT,            // Comments
+      DE,             // Differential equations
+      EQN,            // Moiety specification equations
+      INIT,            // Initializations
+      CNST,            // Constant assignments
+      VOL,            // Volume assignment
+      CPT,            // Compartment volume assignments
+      RATE,            // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 
@@ -295,36 +295,5 @@ class CTempReactionSet
     /** @dia:route 2,0; h,88.8259,37.5278,93.7594,39.6026,96.4407 */
     std::vector< CTempReaction> mReactions;
   };
-
-std::ostream & operator<<(std::ostream &os, const CTempMetab & m)
-{
-  os << "Name = '" << m.mMetab->getName();
-  os << "', Multiplicty = '" << m.mMultiplicity;
-  os << "', Change = '" << m.mNumChange << "'";
-  return os;
-}
-
-std::ostream & operator<<(std::ostream & os, const CTempReaction & r)
-{
-  os << "TempReaction = '" << r.mName << "'" << std::endl;
-  os << "  Rate       = '" << r.mRateDescription << "'" << std::endl;
-  unsigned int i;
-  os << "  Metabolites:" << std::endl;
-
-  for (i = 0; i < r.mMetabs.size(); i++)
-    os << "    " << i << ": " << r.mMetabs[i] << std::endl;
-
-  os << "  Substrates: " << std::endl;
-
-  for (i = 0; i < r.mSubstrates.size(); i++)
-    os << "    " << i << ": " << r.mSubstrates[i] << std::endl;
-
-  os << "  Products:   " << std::endl;
-
-  for (i = 0; i < r.mProducts.size(); i++)
-    os << "    " << i << ": " << r.mProducts[i] << std::endl;
-
-  return os;
-}
 
 #endif // Copasi_SpecLine

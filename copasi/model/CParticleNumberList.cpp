@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CParticleNumberList.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:51 $
+   $Date: 2003/11/03 20:47:23 $
    End CVS Header */
 
 // CParticleNumberList.cpp
@@ -109,4 +109,14 @@ void CParticleNumberList::setVector(const CVector< C_FLOAT64 > & vector)
       mInt[i] = (C_INT32) vector[i];
       mDbl[i] = vector[i];
     }
+}
+
+std::ostream & operator << (std::ostream & os,
+                            const CParticleNumberList & A)
+{
+  os << "Particle List: " << std::endl;
+  os << "  Dbl: " << A.mDbl << std::endl;
+  os << "  Int: " << A.mInt << std::endl;
+
+  return os;
 }

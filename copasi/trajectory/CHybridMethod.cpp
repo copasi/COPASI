@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:07 $
+   $Date: 2003/11/03 20:47:29 $
    End CVS Header */
 
 /**
@@ -76,13 +76,13 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:          // non-integer stoichometry
+    case - 3:           // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-    case - 2:          // reversible reaction exists
+    case - 2:           // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-    case - 1:          // more than one compartment involved
+    case - 1:           // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;
       // Error: Hybrid simulation impossible
@@ -1407,7 +1407,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:          // Everything !!!
+    case 0:           // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getName() << " Method: " /* << mMethod */
       << std::endl;
@@ -1514,7 +1514,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:           // Variable values only
+    case 1:            // Variable values only
       os << "mTime: " << mpCurrentState->getTime() << std::endl;
       os << "oldState: ";
       for (i = 0; i < mDim; i++)
@@ -1590,4 +1590,27 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
     }
   os << "outputDebug(" << level << ") ************************************************* END" << std::endl;
   return;
+}
+
+std::ostream & operator<<(std::ostream & os, const StochFlag & d)
+{
+  os << "StochFlag " << std::endl;
+  os << "  index: " << d.index << " value: " << d.value << std::endl;
+  if (d.prev != NULL)
+    os << "  prevIndex: " << d.prev->index << " prevPointer: " << d.prev << std::endl;
+  else
+    os << "  prevPointer: NULL" << std::endl;
+  if (d.next != NULL)
+    os << "  nextIndex: " << d.next->index << " nextPointer: " << d.next << std::endl;
+  else
+    os << "  nextPointer: NULL" << std::endl;
+  return os;
+}
+
+std::ostream & operator<<(std::ostream & os, const Balance & d)
+{
+  os << "Balance" << std::endl;
+  os << "  index: " << d.index << " balance: " << d.balance
+  << " metabPointer: " << d.metabolitePointer << std::endl;
+  return os;
 }

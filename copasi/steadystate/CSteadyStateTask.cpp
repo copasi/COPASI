@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:05 $
+   $Date: 2003/11/03 20:47:28 $
    End CVS Header */
 
 /**
@@ -180,4 +180,26 @@ void CSteadyStateTask::process()
   */
 
   return;
+}
+
+std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
+{
+  os << std::endl;
+
+  if (A.mResult == CSteadyStateMethod::notFound)
+    {
+      os << "A STEADY STATE COULD NOT BE FOUND." << std::endl;
+      os << "(below are the last unsuccessful trial values)";
+    }
+  else
+    {
+      os << "STEADY STATE SOLUTION";
+
+      if (A.mResult == CSteadyStateMethod::foundEquilibrium)
+        os << " (chemical equilibrium)";
+    }
+
+  os << std::endl;
+
+  return os;
 }

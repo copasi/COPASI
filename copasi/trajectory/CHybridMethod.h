@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:20 $
+   $Date: 2003/11/03 20:47:29 $
    End CVS Header */
 
 /**
@@ -630,28 +630,5 @@ class CHybridMethod : private CTrajectoryMethod
   };
 
 #include "CHybridNextReactionRKMethod.h"
-
-std::ostream & operator<<(std::ostream & os, const StochFlag & d)
-{
-  os << "StochFlag " << std::endl;
-  os << "  index: " << d.index << " value: " << d.value << std::endl;
-  if (d.prev != NULL)
-    os << "  prevIndex: " << d.prev->index << " prevPointer: " << d.prev << std::endl;
-  else
-    os << "  prevPointer: NULL" << std::endl;
-  if (d.next != NULL)
-    os << "  nextIndex: " << d.next->index << " nextPointer: " << d.next << std::endl;
-  else
-    os << "  nextPointer: NULL" << std::endl;
-  return os;
-}
-
-std::ostream & operator<<(std::ostream & os, const Balance & d)
-{
-  os << "Balance" << std::endl;
-  os << "  index: " << d.index << " balance: " << d.balance
-  << " metabPointer: " << d.metabolitePointer << std::endl;
-  return os;
-}
 
 #endif // COPASI_CHybridMethod

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:14 $
+   $Date: 2003/11/03 20:47:19 $
    End CVS Header */
 
 /**
@@ -93,43 +93,7 @@ class CElementaryFluxModes
     unsigned C_INT32 getFluxModeSize() const;
 
     // Friend functions
-    friend std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A)
-    {
-      /* Get the reactions from the model */
-      const CCopasiVectorNS < CReaction > & Reaction = A.mModel->getReactions();
-
-      unsigned C_INT32 i, imax = A.mFluxModes.size();
-      unsigned C_INT32 j, jmax;
-
-      os << "Elementary Flux Modes of Model \""
-      << A.mModel->getTitle() << "\":" << std::endl;
-
-      for (i = 0; i < imax; i++)
-        {
-          os << " Mode " << i + 1 << ":  ";
-
-          if (A.mFluxModes[i].isReversible())
-            os << "(reversible)";
-          else
-            os << "(irreversible)";
-
-          os << std::endl;
-
-          jmax = A.mFluxModes[i].size();
-
-          for (j = 0; j < jmax; j++)
-            {
-              os << "   " << A.mFluxModes[i].getMultiplier(j) << " * "
-              << Reaction[A.mIndex[A.mFluxModes[i].getReaction(j)]]
-              ->getName()
-              << std::endl;
-            }
-
-          os << std::endl;
-        }
-
-      return os;
-    }
+    friend std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A);
   };
 
 #endif //COPASI_CElementaryFluxModes

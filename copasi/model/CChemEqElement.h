@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:19 $
+   $Date: 2003/11/03 20:47:19 $
    End CVS Header */
 
 /**
@@ -133,13 +133,5 @@ class CChemEqElement : public CCopasiContainer
     friend std::ostream & operator<<(std::ostream &os,
                                      const CChemEqElement & d);
   };
-
-std::ostream & operator<<(std::ostream &os, const CChemEqElement & d)
-{
-  os << "CChemEqElement: " << d.mMultiplicity
-  << " * " << d.mMetaboliteKey << std::endl;
-
-  return os;
-}
 
 #endif // COPASI_CChemEqElement

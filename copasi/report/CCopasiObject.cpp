@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/30 20:25:12 $
+   $Author: shoops $ 
+   $Date: 2003/11/03 20:47:26 $
    End CVS Header */
 
 /**
@@ -194,3 +194,9 @@ bool CCopasiObject::isValueInt() const
 
 bool CCopasiObject::isValueDbl() const
   {return (0 < (mObjectFlag & ValueDbl));}
+
+std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
+{
+  os << o.mObjectName << std::endl;
+  return os;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/30 20:40:12 $
+   $Author: shoops $ 
+   $Date: 2003/11/03 20:47:21 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -529,3 +529,25 @@ void CMetab::checkConcentrationAndNumber()
 }
 #endif
 const void * CMetab::getObjectValueAddress() const {return &mConcDbl;}
+
+std::ostream & operator<<(std::ostream &os, const CMetab & d)
+{
+  os << "    ++++CMetab: " << d.getObjectName() << std::endl;
+  os << "        mConcDbl " << d.mConcDbl << " mIConcDbl " << d.mIConcDbl << std::endl;
+  os << "        mNumberInt " << d.mNumberInt << " mINumberInt " << d.mINumberInt << std::endl;
+  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << std::endl;
+
+  if (d.mpCompartment)
+    os << "        mpCompartment == " << d.mpCompartment << std::endl;
+  else
+    os << "        mpCompartment == 0 " << std::endl;
+
+  if (d.mpModel)
+    os << "        mpModel == " << d.mpModel << std::endl;
+  else
+    os << "        mpModel == 0 " << std::endl;
+
+  os << "    ----CMetab " << std::endl;
+
+  return os;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:31 $
+   $Date: 2003/11/03 20:47:31 $
    End CVS Header */
 
 #define  COPASI_TRACE_CONSTRUCTION
@@ -244,3 +244,29 @@ int main(int argc, char **argv)
 }
 
 #endif // TEST_PRIORITY_QUEUE
+
+std::ostream & operator<<(std::ostream &os, const PQNode & d)
+{
+  os << "(" << d.mIndex << ", " << d.mKey << ")";
+  return os;
+}
+
+std::ostream & operator<<(std::ostream &os, const CIndexedPriorityQueue & d)
+{
+  unsigned C_INT32 i;
+
+  os << "PQ: " << std::endl;
+
+  std::vector <PQNode>::const_iterator it;
+  os << "  mHeap: " << std::endl;
+  for (it = d.mHeap.begin(); it != d.mHeap.end(); it++)
+    os << *it << std::endl;
+  os << "  mIndexPointer: " << std::endl;
+  for (i = 0; i < d.mIndexPointer.size(); i++)
+    os << d.mIndexPointer[i] << " ";
+  os << std::endl;
+
+  os << std::endl;
+
+  return os;
+}

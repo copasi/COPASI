@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:51 $
+   $Date: 2003/11/03 20:47:25 $
    End CVS Header */
 
 // CSate.cpp
@@ -396,6 +396,17 @@ void CState::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
     return;
   }
 
+std::ostream & operator << (std::ostream & os, const CState & A)
+{
+  os << "State: " << std::endl;
+  os << "  Time:     " << A.mTime << std::endl;
+  os << "  Volumes:  " << A.mVolumes << std::endl;
+  os << "  Fixed:    " << A.mFixedNumbers << std::endl;
+  os << "  Variable: " << A.mVariableNumbers << std::endl;
+
+  return os;
+}
+
 /**************************/
 /* Code for class CStateX */
 /**************************/
@@ -664,3 +675,15 @@ void CStateX::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
     //    DebugFile << "Elasiticity Matrix: " << elasticityMatrix << std::endl;
     return;
   }
+
+std::ostream & operator << (std::ostream & os, const CStateX & A)
+{
+  os << "StateX" << std::endl;
+  os << "  Time:        " << A.mTime << std::endl;
+  os << "  Volumes:     " << A.mVolumes << std::endl;
+  os << "  Fixed:       " << A.mFixedNumbers << std::endl;
+  os << "  Independend: " << A.mVariableNumbers << std::endl;
+  os << "  Dependend:   " << A.mDependentNumbers << std::endl;
+
+  return os;
+}

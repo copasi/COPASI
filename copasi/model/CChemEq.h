@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 19:28:19 $
+   $Date: 2003/11/03 20:47:19 $
    End CVS Header */
 
 /**
@@ -286,22 +286,5 @@ class CChemEq : public CCopasiContainer
 
     friend std::ostream & operator<<(std::ostream &os, const CChemEq & d);
   };
-
-std::ostream & operator<<(std::ostream &os, const CChemEq & d)
-{
-  os << "CChemEq:" << std::endl;
-  //os << "   mChemicalEquation:          " << d.getChemicalEquation() << std::endl;
-  //os << "   mChemicalEquationConverted: " << d.getChemicalEquationConverted() << std::endl;
-
-  os << "   mSubstrates:" << std::endl;
-  os << d.mSubstrates;
-  os << "   mProducts:" << std::endl;
-  os << d.mProducts;
-  os << "   mBalances:" << std::endl;
-  os << d.mBalances;
-
-  os << "----CChemEq" << std::endl;
-  return os;
-}
 
 #endif // COPASI_CChemEq
