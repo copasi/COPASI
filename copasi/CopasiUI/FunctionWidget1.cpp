@@ -166,6 +166,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   /*** For Commit Button Clicked ***/
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
   //connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent
+  connect(this, SIGNAL(informUpdated()), (ListViews*)parent, SLOT(dataModelUpdated()));
+  connect(this, SIGNAL(update()), (ListViews*)parent, SLOT(loadFunction()));
 }
 
 int FunctionWidget1::isName(QString setValue)
@@ -469,4 +471,6 @@ void FunctionWidget1::slotCommitButtonClicked()
 
   Copasi->pFunctionDB->save(*sFunctionDB);
   delete sFunctionDB;
+  emit informUpdated();
+  emit update();
 }

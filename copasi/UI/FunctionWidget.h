@@ -44,7 +44,8 @@ class FunctionWidget : public QWidget
 
   signals:
     void name(const QString &);
-    void leaf();
+    void informUpdated();
+    void update();
   };
 
 #endif

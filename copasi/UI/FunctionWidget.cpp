@@ -61,6 +61,9 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
           (ListViews*)parent, SLOT(slotFunctionTableChanged(const QString &)));
   connect(table, SIGNAL(selectionChanged ()),
           this, SLOT(slotTableSelectionChanged ()));
+
+  connect(this, SIGNAL(informUpdated()), (ListViews*)parent, SLOT(dataModelUpdated()));
+  connect(this, SIGNAL(update()), (ListViews*)parent, SLOT(loadFunction()));
 }
 
 void FunctionWidget::loadFunction()
@@ -139,7 +142,8 @@ void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPo
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
       x = name.c_str();
-      emit leaf();
+      emit update();
+      emit informUpdated();
     }
   emit name(x);
 }
@@ -148,6 +152,7 @@ void FunctionWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
+      repaint_table();
       if (binitialized)
         {
           int newWidth = re->size().width();

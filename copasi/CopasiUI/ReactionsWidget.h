@@ -36,16 +36,15 @@ class ReactionsWidget : public QWidget
     void resizeEvent(QResizeEvent * re);
     void repaint_table();
 
-  public slots:
-    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
-
   signals:
     void name(const QString &);
     void leaf(CModel*);
     void updated();
 
-  protected slots:
+  public slots:
+    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
+  protected slots:
     virtual void slotTableSelectionChanged();
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();

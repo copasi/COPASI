@@ -74,7 +74,8 @@ class FunctionWidget1 : public QWidget
 
   signals:
     void signalCancelButtonClicked(const QString &);
-    void leaf();
+    void informUpdated();
+    void update();
 
   protected:
     QGridLayout* FunctionWidget1Layout;
