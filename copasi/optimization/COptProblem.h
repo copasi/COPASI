@@ -13,7 +13,11 @@
 
 #include <string>
 #include <copasi.h>
-#include <vector>
+#include <vector> 
+/*
+#include "steadystate/CSteadyStateTask.h"
+#include "trajectory/CTrajectoryTask.h"
+ */
 
 class CSteadyStateTask;
 class CTrajectoryTask;
