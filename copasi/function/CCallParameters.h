@@ -105,11 +105,12 @@ class CFunctionParameterMap
     CFunctionParameters mFunctionParameters;
 
     // these are preliminary
-    CCallParameterPointers & getObjects() {return mObjects;};
   public:
-    const CCallParameterPointers & getObjects() const {return mObjects;};
-    CCallParameterPointers & getPointers() {return mPointers;};
-    const CFunctionParameters & getFunctionParameters() const {return mFunctionParameters;};
+    CCallParameterPointers & getPointers();
+    CCallParameterPointers & getObjects();
+    std::vector< const CCopasiObject * > getObjects(const unsigned C_INT32 & index) const;
+    const CCallParameterPointers & getObjects() const;
+    const CFunctionParameters & getFunctionParameters() const;
   };
 
 #endif // COPASI_CCallParameters

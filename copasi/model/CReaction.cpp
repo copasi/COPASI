@@ -264,6 +264,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
         }
     }
   fout << "\t\t\t\t</listOfProducts>" << std::endl;
+
   fout << "\t\t\t\t<kineticLaw formula=\"";
   // kinetic function string
   tmpstr2 = StringPrint("_%ld", r);
@@ -787,10 +788,10 @@ void CReaction::setScalingFactor()
     mScalingFactor2 = & mDefaultScalingFactor;
 }
 
-void CReaction::setFunctionCompartment(const CCompartment* comp)
+void CReaction::setCompartment(const CCompartment* comp)
 {mpFunctionCompartment = comp;}
 
-const CCompartment* CReaction::getFunctionCompartment() const
+const CCompartment* CReaction::getCompartment() const
   {return mpFunctionCompartment;}
 
 const CCallParameterPointers & CReaction::getCallParameterObjects() const

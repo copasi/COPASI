@@ -330,18 +330,20 @@ class CReaction : public CCopasiContainer
     /**
      * Sets the Compartment related to the kinetic function
      */
-    void setFunctionCompartment(const CCompartment* comp);
+    void setCompartment(const CCompartment* comp);
 
     /**
      * Gets the Compartment related to the kinetic function
      */
-    const CCompartment* getFunctionCompartment() const;
+    const CCompartment* getCompartment() const;
 
     /**
      *  Retrieves the number of compartments the reaction is acting in.
      *  @return "unsigned C_INT32" the compartment number
      */
     unsigned C_INT32 getCompartmentNumber() const;
+
+    const CFunctionParameterMap & getFunctionParameterMap() const {return mMap;}
 
     /**
      * insert operator
