@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.155 $
+   $Revision: 1.156 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/22 08:52:08 $
+   $Date: 2004/10/22 12:55:43 $
    End CVS Header */
 
 /****************************************************************************
@@ -415,7 +415,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:              //Report
+      case 43:               //Report
         return tableDefinition;
         break;
       case 42:
@@ -701,6 +701,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
         default:
           break;
         }
+      break;
     case COMPARTMENT:
       switch (action)
         {
@@ -725,6 +726,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
         default:
           break;
         }
+      break;
     case REACTION:
       switch (action)
         {
@@ -749,6 +751,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
         default:
           break;
         }
+      break;
     case FUNCTION:
     case REPORT:
     case PLOT:

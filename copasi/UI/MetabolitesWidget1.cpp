@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.98 $
+   $Revision: 1.99 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/22 08:52:07 $
+   $Date: 2004/10/22 12:55:43 $
    End CVS Header */
 
 /*******************************************************************
@@ -417,7 +417,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                              // Yes or Enter
+    case 0:                               // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -432,11 +432,15 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
             enter(Copasi->pModel->getMetabolites()[std::min(index, size - 2)]->getKey());
             //for (i = 0; i < imax; i++)
           }
+        else
+          {
+            enter("");
+          }
         protectedNotify(ListViews::METABOLITE, ListViews::DELETE, objKey);
         //TODO notify about reactions
         break;
       }
-    case 1:                              // No or Escape
+    case 1:                               // No or Escape
       break;
     }
 }
