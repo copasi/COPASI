@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/01/08 20:41:52 $
+   $Date: 2004/01/08 22:04:36 $
    End CVS Header */
 
 /*******************************************************************
@@ -86,6 +86,8 @@ FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
 
 void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
 {
+  dataModel->updateMathModel();
+
   if (model != NULL)
     {
       mModel = model;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/01/08 20:53:33 $
+   $Date: 2004/01/08 22:04:36 $
    End CVS Header */
 
 /*******************************************************************
@@ -83,6 +83,8 @@ DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name,
 
 void DifferentialEquations::loadDifferentialEquations(CMathModel * mathModel)
 {
+  dataModel->updateMathModel();
+
   if (mathModel != NULL)
     {
       std::map< std::string, CMathVariableMetab * > & MetabList =

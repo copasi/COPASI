@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/01/08 20:41:52 $
+   $Date: 2004/01/08 22:04:36 $
    End CVS Header */
 
 /*******************************************************************
@@ -84,6 +84,8 @@ FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * nam
 
 void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
 {
+  dataModel->updateMathModel();
+
   if (model != NULL)
     {
       mModel = model;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/01/08 20:41:53 $
+   $Date: 2004/01/08 22:04:36 $
    End CVS Header */
 
 /*******************************************************************
@@ -84,6 +84,8 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
 
 void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
 {
+  dataModel->updateMathModel();
+
   if (model != NULL)
     {
       mModel = model;
