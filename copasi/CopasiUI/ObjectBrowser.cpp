@@ -321,11 +321,7 @@ void ObjectBrowser::eXport(ObjectBrowserItem* pCurrent, ObjectList* outputList)
     {
       if (pCurrent->isChecked() && (pCurrent->getType() != FIELDATTR))
         {
-          ObjectBrowserItem* pCopyCurrent = new ObjectBrowserItem();
-          browserObject* pCopybrowserObject = new browserObject();
-          pCopyCurrent->setObject(pCopybrowserObject);
-          pCopybrowserObject->pCopasiObject = pCurrent->getObject()->pCopasiObject;
-          outputList->insert(pCopyCurrent);
+          ObjectBrowserItem* pCopyCurrent = new ObjectBrowserItem(pCurrent, 0, pCurrent->getObject()->pCopasiObject, outputList);
         }
       // else skip current item
     }

@@ -241,8 +241,8 @@ void ScanWidget::addButtonClicked()
 
   if (pSelectedList->len() <= 0)
     {
+      delete pSelectedObjects;
       delete pSelectedList;
-      //      delete pSelectedObjects;
       return;
     }
 
@@ -253,13 +253,13 @@ void ScanWidget::addButtonClicked()
 
   if (!pSelectedList->getRoot()) //no result returned
     {
-      //      delete pSelectedObjects;
+      delete pSelectedObjects;
       delete pSelectedList;
       return;
     }
 
   addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
-  //  delete pSelectedObjects;
+  delete pSelectedObjects;
   delete pSelectedList;
 }
 
