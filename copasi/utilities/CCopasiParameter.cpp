@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/13 13:47:59 $
+   $Author: ssahle $ 
+   $Date: 2005/01/03 13:05:20 $
    End CVS Header */
 
 /**
@@ -68,10 +68,10 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                                    const std::string & objectType):
     CCopasiContainer(name, pParent, objectType,
                      CCopasiObject::Container |
-                     ((type == DOUBLE || type == UDOUBLE) ?
-                      CCopasiObject::ValueDbl :
+                     ((type == DOUBLE || type == UDOUBLE) ? CCopasiObject::ValueDbl :
                       ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
-                       (type == BOOL) ? CCopasiObject::ValueBool : 0))),
+                       ((type == STRING) ? CCopasiObject::ValueString :
+                        (type == BOOL) ? CCopasiObject::ValueBool : 0)))),
     mKey(GlobalKeys.add(objectType, this)),
     mType(type),
     mSize(0),
@@ -179,7 +179,7 @@ void * CCopasiParameter::createValue(const void * pValue)
         mpValue = new std::string(* (std::string *) pValue);
       else mpValue = new std::string;
       mSize = sizeof(std::string);
-      addObjectReference("Value", * (std::string *) mpValue);
+      addObjectReference("Value", * (std::string *) mpValue, CCopasiObject::ValueString);
       break;
 
     case CCopasiParameter::GROUP:
