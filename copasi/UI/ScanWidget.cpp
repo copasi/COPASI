@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.173 $
+   $Revision: 1.174 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/14 17:13:57 $
+   $Date: 2004/12/30 15:31:02 $
    End CVS Header */
 
 /********************************************************
@@ -355,9 +355,9 @@ void ScanWidget::deleteButtonClicked()
   //   return;
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  if (((CScanProblem *)scanTask->getProblem())->getListSize() > 0)  // for reloading
-    ((CScanProblem *)scanTask->getProblem())->
-    removeScanItem(pScanObject-> /*CCopasiParameter::*/getObjectName());
+  //  if (((CScanProblem *)scanTask->getProblem())->getListSize() > 0)  // for reloading
+  //    ((CScanProblem *)scanTask->getProblem())->
+  //    removeScanItem(pScanObject-> /*CCopasiParameter::*/getObjectName());
   scrollview->removeChild(selectedList[2*activeObject]);
   scrollview->removeChild(selectedList[2*activeObject + 1]);
 
@@ -392,116 +392,116 @@ void ScanWidget::deleteButtonClicked()
     }
 
   activeObject--;
-  if ((activeObject >= 0) && (((CScanProblem *)scanTask->getProblem())->getListSize() > 0))
-    {
-      CCopasiObject* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
-      ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
-      activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-      //      activeTitle->setText(pObject->getObjectUniqueName().);
-      activeTitle->setText(FROM_UTF8(pScanObject->getCN()));
-    }
-  nSelectedObjects--;
-  scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
-
-  if ((selectedList.size() > 0) && (((CScanProblem *)scanTask->getProblem())->getListSize() > 0))
-    {
-      ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
-    }
-
-  emit show_me();
-
-  if (activeObject >= 0)
-    ListBoxClicked(ObjectListBox->item(activeObject));
-
-  // to verify the size of the mparameterlist in ScanProblem
-  // scanTask->getProblem()->paraCount();
+  /*  if ((activeObject >= 0) && (((CScanProblem *)scanTask->getProblem())->getListSize() > 0))
+      {
+        CCopasiObject* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
+        ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+        activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+        //      activeTitle->setText(pObject->getObjectUniqueName().);
+        activeTitle->setText(FROM_UTF8(pScanObject->getCN()));
+      }
+    nSelectedObjects--;
+    scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
+   
+    if ((selectedList.size() > 0) && (((CScanProblem *)scanTask->getProblem())->getListSize() > 0))
+      {
+        ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+      }
+   
+    emit show_me();
+   
+    if (activeObject >= 0)
+      ListBoxClicked(ObjectListBox->item(activeObject));
+   
+    // to verify the size of the mparameterlist in ScanProblem
+    // scanTask->getProblem()->paraCount();*/
 }
 
 void ScanWidget::upButtonClicked()
 {
-  if (activeObject <= 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
-    return;
-
-  emit hide_me();
-  ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
-
-  CCopasiParameterGroup* pScanObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
-  CCopasiParameterGroup* pScanObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
-  CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject - 1));
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject));
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
-  activeObject--;
-
-  //deactivate
-  //lower one
-  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(FROM_UTF8(pScanObjectUp-> /*CCopasiParameter::*/getObjectName()));
-
-  //activate
-  //upper one
-  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(FROM_UTF8(pScanObjectDown-> /*CCopasiParameter::*/getObjectName()));
-
-  //Update ListBox
-  QString tmp = ObjectListBox->text (activeObject);
-  ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject + 1) , activeObject);
-  ObjectListBox->changeItem (NULL, tmp, activeObject + 1);
-
-  ((CScanProblem *)scanTask->getProblem())->swapScanItem(activeObject + 1, activeObject);
-
-  ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
-  emit show_me();
-  if (activeObject >= 0)
-    ListBoxClicked(ObjectListBox->item(activeObject));
+  /*  if (activeObject <= 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
+      return;
+   
+    emit hide_me();
+    ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+   
+    CCopasiParameterGroup* pScanObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
+    CCopasiParameterGroup* pScanObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
+    CScanTask* scanTask =
+      dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+   
+    ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject - 1));
+    ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject));
+    ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
+    ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
+    activeObject--;
+   
+    //deactivate
+    //lower one
+    ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
+    activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+    activeTitle->setText(FROM_UTF8(pScanObjectUp-> getObjectName()));
+   
+    //activate
+    //upper one
+    activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+    activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+    activeTitle->setText(FROM_UTF8(pScanObjectDown-> getObjectName()));
+   
+    //Update ListBox
+    QString tmp = ObjectListBox->text (activeObject);
+    ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject + 1) , activeObject);
+    ObjectListBox->changeItem (NULL, tmp, activeObject + 1);
+   
+    ((CScanProblem *)scanTask->getProblem())->swapScanItem(activeObject + 1, activeObject);
+   
+    ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+    emit show_me();
+    if (activeObject >= 0)
+      ListBoxClicked(ObjectListBox->item(activeObject));*/
 }
 
 void ScanWidget::downButtonClicked()
 {
-  if (activeObject < 0 || activeObject >= selectedList.size() / 2 - 1)  // not a valid entry
-    return;
-
-  emit hide_me();
-
-  ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
-
-  activeObject++;
-  CCopasiParameterGroup* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
-  CCopasiParameterGroup* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
-  CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject - 1));
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject));
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
-
-  //upper one
-  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(FROM_UTF8(pObjectDown-> /*CCopasiParameter::*/getObjectName()));
-
-  //bottom one
-  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(FROM_UTF8(pObjectUp-> /*CCopasiParameter::*/getObjectName()));
-
-  //Update ListBox
-  QString tmp = ObjectListBox->text (activeObject);
-  ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject - 1) , activeObject);
-  ObjectListBox->changeItem (NULL, tmp, activeObject - 1);
-
-  ((CScanProblem *)scanTask->getProblem())->swapScanItem(activeObject - 1, activeObject);
-
-  ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
-
-  emit show_me();
-  if (activeObject >= 0)
-    ListBoxClicked(ObjectListBox->item(activeObject));
+  /*  if (activeObject < 0 || activeObject >= selectedList.size() / 2 - 1)  // not a valid entry
+      return;
+   
+    emit hide_me();
+   
+    ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+   
+    activeObject++;
+    CCopasiParameterGroup* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
+    CCopasiParameterGroup* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
+    CScanTask* scanTask =
+      dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+    ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject - 1));
+    ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject));
+    ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
+    ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
+   
+    //upper one
+    ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
+    activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+    activeTitle->setText(FROM_UTF8(pObjectDown-> getObjectName()));
+   
+    //bottom one
+    activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+    activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+    activeTitle->setText(FROM_UTF8(pObjectUp-> getObjectName()));
+   
+    //Update ListBox
+    QString tmp = ObjectListBox->text (activeObject);
+    ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject - 1) , activeObject);
+    ObjectListBox->changeItem (NULL, tmp, activeObject - 1);
+   
+    ((CScanProblem *)scanTask->getProblem())->swapScanItem(activeObject - 1, activeObject);
+   
+    ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+   
+    emit show_me();
+    if (activeObject >= 0)
+      ListBoxClicked(ObjectListBox->item(activeObject));*/
 }
 
 void ScanWidget::CancelChangeButton()
@@ -557,7 +557,7 @@ void ScanWidget::SteadyStateButtonClicked()
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   CScanProblem *scanProblem = ((CScanProblem *)scanTask->getProblem());
-  scanProblem->setProcessSteadyState(steadyState->isChecked());
+  //  scanProblem->setProcessSteadyState(steadyState->isChecked());
   eSteadyState->setEnabled(steadyState->isChecked());
 }
 
@@ -566,7 +566,7 @@ void ScanWidget::TrajectoryButtonClicked()
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   CScanProblem *scanProblem = ((CScanProblem *)scanTask->getProblem());
-  scanProblem->setProcessTrajectory(trajectory->isChecked());
+  //  scanProblem->setProcessTrajectory(trajectory->isChecked());
   eTrajectory->setEnabled(trajectory->isChecked());
   if (trajectory->isChecked())
     {}}
@@ -616,82 +616,82 @@ void ScanWidget::loadScan()
       scanButton->setEnabled(false);
     }*/
   steadyState->setEnabled(true);
-  if (scanProblem->processTrajectory())
-    trajectory->setChecked(true);
-  else
-    trajectory->setChecked(false);
+  //  if (scanProblem->processTrajectory())
+  //    trajectory->setChecked(true);
+  //  else
+  //    trajectory->setChecked(false);
 
   trajectory->setEnabled(true);
-  if (scanProblem->processSteadyState())
-    steadyState->setChecked(true);
-  else
-    steadyState->setChecked(false);
+  //  if (scanProblem->processSteadyState())
+  //    steadyState->setChecked(true);
+  //  else
+  //    steadyState->setChecked(false);
 
-  if (((CScanProblem *)scanTask->getProblem())->getListSize() == 0)
-    {
-      activeObject = ObjectListBox->count() - 1; //because of the empty item
-      activeObject --;  // list base start from 1, but list base start from 0;
-      while (activeObject >= 0)
-        deleteButtonClicked();
-      ObjectListBox->clear();
-      ObjectListBox->insertItem(trUtf8("click here to add new item"));
-    }
+  /*  if (((CScanProblem *)scanTask->getProblem())->getListSize() == 0)
+      {
+        activeObject = ObjectListBox->count() - 1; //because of the empty item
+        activeObject --;  // list base start from 1, but list base start from 0;
+        while (activeObject >= 0)
+          deleteButtonClicked();
+        ObjectListBox->clear();
+        ObjectListBox->insertItem(trUtf8("click here to add new item"));
+      }*/
 }
 
 bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 {
-  if (!pObject)
-    return false;
-
-  CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  if (((CScanProblem *)scanTask->getProblem())->bExisted(pObject->getCN()))
-    return false;
-
-  int widgetOffset;
-  int ScanItemWidgetWidth;
-  emit hide_me();
-
-  if (selectedList.size() > 0)
-    {
-      ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
-    }
-  //by default isFirstWidget is set as false,
-  ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
-  ScanItemWidgetWidth = scrollview->visibleWidth();
-
-  widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
-
-  ScanLineEdit* newTitleBar = new ScanLineEdit(this, "newTitleBar");
-  newTitleBar->setFixedSize(QSize(ScanItemWidgetWidth, nTitleHeight));
-  newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
-  newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
-
-  newTitleBar->setText(FROM_UTF8(pObject->getCN()));
-  newTitleBar->setReadOnly(TRUE);
-
-  scrollview->addChild(newTitleBar, 0, widgetOffset - nTitleHeight);
-  selectedList.push_back(newTitleBar);
-
-  parameterTable->setFixedWidth(ScanItemWidgetWidth);
-  parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
-
-  scrollview->addChild(parameterTable, 0 , widgetOffset);
-  scrollview->setVScrollBarMode(QScrollView::Auto);
-  scrollview->resizeContents(ScanItemWidgetWidth, widgetOffset + parameterTable->minimumSizeHint().height());
-  selectedList.push_back(parameterTable);
-
-  nSelectedObjects++;
-  //  if (pObject->isContainer())
-  ((CScanProblem *)scanTask->getProblem())->addScanItem(pObject->getCN());
-  parameterTable->setScanObject(((CScanProblem *)scanTask->getProblem())->
-                                getScanItem(nSelectedObjects - 1));
-  parameterTable->setCopasiObject(pObject);
-  parameterTable->loadObject();
-
-  ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
-
-  emit show_me();
+  /*  if (!pObject)
+      return false;
+   
+    CScanTask* scanTask =
+      dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+    if (((CScanProblem *)scanTask->getProblem())->bExisted(pObject->getCN()))
+      return false;
+   
+    int widgetOffset;
+    int ScanItemWidgetWidth;
+    emit hide_me();
+   
+    if (selectedList.size() > 0)
+      {
+        ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+      }
+    //by default isFirstWidget is set as false,
+    ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
+    ScanItemWidgetWidth = scrollview->visibleWidth();
+   
+    widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
+   
+    ScanLineEdit* newTitleBar = new ScanLineEdit(this, "newTitleBar");
+    newTitleBar->setFixedSize(QSize(ScanItemWidgetWidth, nTitleHeight));
+    newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
+    newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
+   
+    newTitleBar->setText(FROM_UTF8(pObject->getCN()));
+    newTitleBar->setReadOnly(TRUE);
+   
+    scrollview->addChild(newTitleBar, 0, widgetOffset - nTitleHeight);
+    selectedList.push_back(newTitleBar);
+   
+    parameterTable->setFixedWidth(ScanItemWidgetWidth);
+    parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
+   
+    scrollview->addChild(parameterTable, 0 , widgetOffset);
+    scrollview->setVScrollBarMode(QScrollView::Auto);
+    scrollview->resizeContents(ScanItemWidgetWidth, widgetOffset + parameterTable->minimumSizeHint().height());
+    selectedList.push_back(parameterTable);
+   
+    nSelectedObjects++;
+    //  if (pObject->isContainer())
+    ((CScanProblem *)scanTask->getProblem())->addScanItem(pObject->getCN());
+    parameterTable->setScanObject(((CScanProblem *)scanTask->getProblem())->
+                                  getScanItem(nSelectedObjects - 1));
+    parameterTable->setCopasiObject(pObject);
+    parameterTable->loadObject();
+   
+    ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+   
+    emit show_me();*/
   return true;
 }
 
