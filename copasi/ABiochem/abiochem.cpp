@@ -41,6 +41,8 @@ extern "C" void r250_init(int seed);
 extern "C" unsigned int r250n(unsigned n);
 extern "C" double dr250();
 
+#define LARGE_GRAPH 1500
+
 using namespace std;
 
 void WriteDot(char *Title, CCopasiVector < CGene > &gene)
@@ -147,7 +149,7 @@ void WriteDistri(char *Title, CCopasiVector < CGene > &gene)
   // now write the data in a gnuplot file
   sprintf(strtmp, "%s.distri.plt", Title);
   fout.open(strtmp, ios::out);
-  fout << "set data style linespoints" << endl;
+  //  fout << "set data style linespoints" << endl;
   fout << "set linestyle 1 lw 2\nset linestyle 2 lw 2\nset linestyle 3 lw 2" << endl;
   fout << "set title \'degree distribution for " << Title << "'" << endl;
   fout << "set xlabel \'# of links\'" << endl;
@@ -488,6 +490,8 @@ C_FLOAT64 cluster(CCopasiVector < CGene > &gene, C_INT32 g)
   CGene *ptG;
   // create the neighborhood
   n = gene[g]->getModifierNumber();
+  if (n <= 1)
+    return 0.0;
   for (i = 0; i < n; i++)
     neighbors.add(gene[g]->getModifier(i));
   // count the number of links within the neighborhood
@@ -500,7 +504,7 @@ C_FLOAT64 cluster(CCopasiVector < CGene > &gene, C_INT32 g)
           // increment if this modifier is in the neighborhood
           // but it is not itself
           if (ptG != neighbors[i])
-            for (k = 0; k < m; k++)
+            for (k = 0; k < n; k++)
               if (ptG == neighbors[k])
                 edges++;
         }
@@ -558,29 +562,32 @@ void GraphMetrics(CCopasiVector < CGene > &gene, C_INT32 tedges, char *Title)
   // TODO: linear regression on positive real parts
   delete eigen;
 #endif
-  // find the diameter
-  diameter = 0;
-  dist = new C_INT32 * [n];
-  for (i = 0; i < n; i++)
+
+  if (n < LARGE_GRAPH)
     {
-      dist[i] = new C_INT32[n];
-      l = SSSP(gene, i, dist[i]);
-      if (l > diameter)
-        diameter = l;
-    }
-  fout << "diameter\t" << diameter << endl;
-  // calculate total and mean path lengths
-  mpl.reserve(n);
-  for (i = 0; i < n; i++)
-    {
-      cpl = 0.0;
-      for (j = 0; j < n; j++)
-        cpl += dist[i][j];
-      cll = (C_FLOAT64) (n - 1) / cpl;
-      cpl /= n - 1;
-      mpl.push_back(cpl);
-      tpl.push_back(cll);
-      // cout << gene[i]->getName() << " " << cll << endl;
+      // find the diameter
+      diameter = 0;
+      dist = new C_INT32 * [n];
+      for (i = 0; i < n; i++)
+        {
+          dist[i] = new C_INT32[n];
+          l = SSSP(gene, i, dist[i]);
+          if (l > diameter)
+            diameter = l;
+        }
+      fout << "diameter\t" << diameter << endl;
+      // calculate total and mean path lengths
+      mpl.reserve(n);
+      for (i = 0; i < n; i++)
+        {
+          cpl = 0.0;
+          for (j = 0; j < n; j++)
+            cpl += dist[i][j];
+          cll = (C_FLOAT64) (n - 1) / cpl;
+          cpl /= n - 1;
+          mpl.push_back(cpl);
+          tpl.push_back(cll);
+        }
     }
   // find the degree centers
   for (id = od = idcenter = odcenter = i = 0; i < n; i++)
@@ -606,56 +613,57 @@ void GraphMetrics(CCopasiVector < CGene > &gene, C_INT32 tedges, char *Title)
   fout << "out-degree center\t" << gene[odcenter]->getName() << endl;
   fout << "center's out-degree\t" << od << endl;
   fout << "center's relative out-degree\t" << cl << endl;
-  // find the closeness center, degree centralization,
-  // and closeness centralization
-  for (cll = 0.0, clcenter = -1, i = 0; i < n; i++)
+  if (n < LARGE_GRAPH)
     {
-      if (tpl[i] > cll)
+      // find the closeness center, degree centralization,
+      // and closeness centralization
+      for (cll = 0.0, clcenter = -1, i = 0; i < n; i++)
         {
-          cll = tpl[i];
-          clcenter = i;
+          if (tpl[i] > cll)
+            {
+              cll = tpl[i];
+              clcenter = i;
+            }
         }
-    }
-  for (netcl = 0.0, i = 0; i < n; i++)
-    netcl += cll - tpl[i];
-  netcl /= ((C_FLOAT64)n - 1.0) * ((C_FLOAT64)n - 2.0) / (2.0 * (C_FLOAT64)n - 3.0);
-  fout << "closeness center\t" << gene[clcenter]->getName() << endl;
-  fout << "center's relative closeness\t" << cll << endl;
-  fout << "network closeness centralization\t" << netcl << endl;
-  // calculate betweeness centralities
-  b.reserve(n);
-  Betweeness(gene, b);
-  //
-  for (cbl = 0.0, i = 0; i < n; i++)
-    {
-      if (b[i] > cbl)
+      for (netcl = 0.0, i = 0; i < n; i++)
+        netcl += cll - tpl[i];
+      netcl /= ((C_FLOAT64)n - 1.0) * ((C_FLOAT64)n - 2.0) / (2.0 * (C_FLOAT64)n - 3.0);
+      fout << "closeness center\t" << gene[clcenter]->getName() << endl;
+      fout << "center's relative closeness\t" << cll << endl;
+      fout << "network closeness centralization\t" << netcl << endl;
+      // calculate betweeness centralities
+      b.reserve(n);
+      Betweeness(gene, b);
+      //
+      for (cbl = 0.0, i = 0; i < n; i++)
         {
-          cbl = b[i];
-          bcenter = i;
+          if (b[i] > cbl)
+            {
+              cbl = b[i];
+              bcenter = i;
+            }
         }
+      for (netbc = 0.0, i = 0; i < n; i++)
+        netbc += cbl - b[i];
+      fout << "betweenness center\t" << gene[bcenter]->getName() << endl;
+      fout << "center's relative betweenness\t" << cbl << endl;
+      fout << "network betweenness centralization\t" << netbc << endl;
+      // calculate characteristic path length
+      sort(mpl.begin(), mpl.end());
+      if (n / 2 == 0)
+        cpl = (mpl[n / 2] + mpl[1 + n / 2]) * 0.5;
+      else
+        cpl = mpl[n / 2];
+      fout << "characteristic path length\t" << cpl << endl;
+      // calculate clustering coefficients
+      for (acc = 0.0, i = 0; i < n; i++)
+        {
+          tmp = cluster(gene, i);
+          acc += tmp;
+        }
+      acc /= n;
+      fout << "average clustering coefficient\t" << acc << endl;
     }
-  for (netbc = 0.0, i = 0; i < n; i++)
-    netbc += cbl - b[i];
-  fout << "betweenness center\t" << gene[bcenter]->getName() << endl;
-  fout << "center's relative betweenness\t" << cbl << endl;
-  fout << "network betweenness centralization\t" << netbc << endl;
-  // calculate characteristic path length
-  sort(mpl.begin(), mpl.end());
-  //  for(i=0; i<n; i++) cout << "mpl" << i << " " << mpl[i] << endl;
-  if (n / 2 == 0)
-    cpl = (mpl[n / 2] + mpl[1 + n / 2]) * 0.5;
-  else
-    cpl = mpl[n / 2];
-  fout << "characteristic path length\t" << cpl << endl;
-  // calculate clustering coefficients
-  for (acc = 0.0, i = 0; i < n; i++)
-    {
-      tmp = cluster(gene, i);
-      // cout << tmp << endl;
-      acc += tmp;
-    }
-  acc /= n;
-  fout << "average clustering coefficient\t" << acc << endl;
   fout.close();
 }
 

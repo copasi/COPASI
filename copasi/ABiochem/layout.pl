@@ -44,6 +44,11 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 {
 	$counter++;
 	print "$counter, $gfile ";
+
+	# read statistics first
+	$statfile = $gfile;
+	$statfile =~ s/\.$GRAPHEXTENSION/\.netstat/;
+
 	# Layout the graph into postscript
 	$psfile = $gfile;
 	$psfile =~ s/\.$GRAPHEXTENSION/\.eps/;

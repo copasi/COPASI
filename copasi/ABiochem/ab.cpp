@@ -77,6 +77,8 @@ void MakeGeneNetwork(C_INT32 n,
     ipg = 1;
   // the number of links added for each new gene
   links = (k - ipg * ancestors) / (n - ancestors);
+  if (links > ancestors)
+    links = ancestors;
   // create and name genes
   gene.resize(n);
   prob.reserve(n);
@@ -128,7 +130,11 @@ void MakeGeneNetwork(C_INT32 n,
           for (l = 0; l < i; l++)
             if (mp < prob[l])
               break;
-          gene[i]->addModifier(gene[l], l, modf, 1.0, 1.0);
+          // chose which way the link goes
+          if (dr250() < 0.5)
+            gene[l]->addModifier(gene[i], i, modf, 1.0, 1.0);
+          else
+            gene[i]->addModifier(gene[l], l, modf, 1.0, 1.0);
         }
       gene[i]->setRate(1.0);
       gene[i]->setDegradationRate(1.0);
@@ -196,5 +202,5 @@ void MakeGeneNetwork(C_INT32 n,
         }
     }
 #endif
-  sprintf(comments, "Model of a scale-free gene network using the Albert-Barabasi algorithm\nwith %ld genes, %ld total input connections, and probability of rewiring %lg.\n\nCreated automatically by the A-Biochem system", n, (ipg*ancestors + links*(n - ancestors)), r);
+  sprintf(comments, "Model of a scale-free gene network using the Albert-Barabasi algorithm\nwith %ld genes (%ld seeds), %ld total input connections.\n\nCreated automatically by the A-Biochem system", n, ancestors, (ipg*ancestors + links*(n - ancestors)));
 }
