@@ -50,8 +50,8 @@ fi
 
 (
 dnl to prevent calling aclocal, automake and configure again
- touch aclocal.m4 
  touch configure.in
+ touch aclocal.m4 
  touch Makefile.in
  touch configure
 

@@ -1656,8 +1656,8 @@ fi
 
 
 (
- touch aclocal.m4
  touch configure.in
+ touch aclocal.m4
  touch Makefile.in
  touch configure
 
