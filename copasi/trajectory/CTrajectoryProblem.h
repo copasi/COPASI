@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/07 09:31:44 $
+   $Author: shoops $ 
+   $Date: 2005/03/23 21:18:08 $
    End CVS Header */
 
 /**
@@ -76,8 +76,9 @@ class CTrajectoryProblem : public CCopasiProblem
     /**
      * Set the number of time steps the trajectory method should integrate.
      * @param "const unsigned C_INT32 &" stepNumber
+     * @parem bool success
      */
-    void setStepNumber(const unsigned C_INT32 & stepNumber);
+    bool setStepNumber(const unsigned C_INT32 & stepNumber);
 
     /**
      * Retrieve the number of time steps the trajectory method should integrate.
@@ -88,8 +89,9 @@ class CTrajectoryProblem : public CCopasiProblem
     /**
      * Set the size a integration step the trajectory method should do.
      * @param "const C_FLOAT64 &" stepSize
+     * @parem bool success
      */
-    void setStepSize(const C_FLOAT64 & stepSize);
+    bool setStepSize(const C_FLOAT64 & stepSize);
 
     /**
      * Retrieve the size a integration step the trajectory method should do.
@@ -100,8 +102,9 @@ class CTrajectoryProblem : public CCopasiProblem
     /**
      * Set the start time.
      * @param "const C_FLOAT64 &" startTime
+     * @parem bool success
      */
-    void setStartTime(const C_FLOAT64 & startTime);
+    bool setStartTime(const C_FLOAT64 & startTime);
 
     /**
      * Retrieve the start time.
@@ -112,8 +115,9 @@ class CTrajectoryProblem : public CCopasiProblem
     /**
      * Set the end time.
      * @param "const C_FLOAT64 &" endTime
+     * @parem bool success
      */
-    void setEndTime(const C_FLOAT64 & endTime);
+    bool setEndTime(const C_FLOAT64 & endTime);
 
     /**
      * Retrieve the end time.
@@ -190,8 +194,11 @@ class CTrajectoryProblem : public CCopasiProblem
   private:
     /**
      * This function synchronizes step size and number
+     * @parem bool success
      */
-    void sync();
+    bool sync();
+
+    virtual void initObjects();
   };
 
 #endif // COPASI_CTrajectoryProblem
