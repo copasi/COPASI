@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:20 $
+   $Date: 2003/11/12 16:43:30 $
    End CVS Header */
 
 /**
@@ -79,6 +79,8 @@ C_FLOAT64 * CCopasiProblem::getSolutionVariables()
 
 C_FLOAT64 * CCopasiProblem::getSolutionResults()
 {return mSolutionResults.array();}
+
+bool CCopasiProblem::initialize() {return true;}
 
 bool CCopasiProblem::calculate() {return true;}
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:21 $
+   $Date: 2003/11/12 16:43:31 $
    End CVS Header */
 
 /**
@@ -142,7 +142,14 @@ class CCopasiProblem : public CCopasiParameterGroup
     C_FLOAT64 * getSolutionResults();
 
     /**
-     * Do the calculattin based on CalculateVariables and fill
+     * Do all neccessary initialization so that calls to caluclate will 
+     * be successful. This is called once from CCopasiTask::process()
+     * @result bool succes
+     */
+    virtual bool initialize();
+
+    /**
+     * Do the calculatting based on CalculateVariables and fill
      * CalculateResults with the results. 
      * @result bool succes
      */
