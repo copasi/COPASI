@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:38 $
+   $Date: 2005/01/06 19:19:40 $
    End CVS Header */
 
 #ifndef COPASI_utilities
@@ -14,6 +14,13 @@
 #include <stdarg.h>
 
 #define INITIALTEXTSIZE 1024
+
+/**
+ * Check whether the given string represents a number
+ * @param const std::string & str
+ * @return bool isNumber
+ */
+bool isNumber(const std::string & str);
 
 /**
  *  sprintf like function for strings

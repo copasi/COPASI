@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 09:35:38 $
+   $Author: shoops $ 
+   $Date: 2005/01/06 19:19:40 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -13,6 +13,17 @@
 
 #include "copasi.h"
 #include "utility.h"
+
+bool isNumber(const std::string & str)
+{
+  if (str.find_first_of("+-.0123456789")) return false;
+
+  char * Tail;
+  double Value = strtod(str.c_str(), & Tail);
+
+  if (*Tail) return false;
+  return true;
+}
 
 std::string StringPrint(const char * format, ...)
 {
