@@ -312,10 +312,10 @@ void MetabolitesWidget1::loadName(QString setValue)
       LineEdit7->setText(QString::number(metab->getConcentration()));
       LineEdit7->setReadOnly(true);
 
-      LineEdit8->setText(QString::number(metab->getNumber()));
+      LineEdit8->setText(QString::number(metab->getNumberInt()));
       LineEdit8->setReadOnly(true);
 
-      LineEdit5->setText(QString::number(metab->getInitialNumber()));
+      LineEdit5->setText(QString::number(metab->getInitialNumberInt()));
 
       LineEdit9->setText(QString::number(metab->getTransitionTime()));
       LineEdit9->setReadOnly(true);
@@ -389,7 +389,7 @@ void MetabolitesWidget1::slotBtnOKClicked()
   QString initialNumber(LineEdit5->text());
   int temp2;
   temp2 = initialNumber.toInt();
-  metab->setInitialNumber(temp2);
+  metab->setInitialNumberInt(temp2);
   //if (QString::number(metab->getStatus()) == "0")
 
   if (RadioButton1->isChecked() == TRUE && QString::number(metab->getStatus()) == "0")
