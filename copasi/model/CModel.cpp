@@ -728,7 +728,6 @@ void CModel::setTransitionTimes()
 {
   unsigned C_INT32 i, imax = mMetabolites.size();
   unsigned C_INT32 j, jmax = mSteps.size();
-  unsigned C_INT32 k;
 
   C_FLOAT64 TotalFlux, PartialFlux;
   C_FLOAT64 TransitionTime;
