@@ -108,7 +108,7 @@ C_INT32 CNodeO::load(CReadConfig & configbuffer)
 
   return Fail;
 }
-const CDatum & CNodeO::getDatum() const { return mDatum; }
+const CDatum & CNodeO::getDatum() const {return mDatum;}
 
 /**
  * Calculates the value of this sub-tree
@@ -220,19 +220,19 @@ C_FLOAT64 CNodeO::value()
   fatalError();   // THROW EXCEPTION
   return 0.0;
 }
-C_INT16 CNodeO::isLeftValid() const { return (C_INT16) mLeft; }
-C_INT16 CNodeO::isRightValid() const { return (C_INT16) mRight; }
+C_INT16 CNodeO::isLeftValid() const {return (mLeft != NULL);}
+C_INT16 CNodeO::isRightValid() const {return (mRight != NULL);}
 
 /**
  * Retrieving mLeft the left branch of a node
  * @return CNodeO
  */
 CNodeO & CNodeO::getLeft() const
-  {
-    if (!mLeft)
-      fatalError(); // Call LeftIsValid first to avoid this!
-    return *mLeft;
-  }
+{
+  if (!mLeft)
+  fatalError(); // Call LeftIsValid first to avoid this!
+  return *mLeft;
+}
 
 /**
  * Retrieving mRight the left branch of a node
@@ -241,18 +241,18 @@ CNodeO & CNodeO::getLeft() const
 CNodeO & CNodeO::getRight() const
   {
     if (!mRight)
-      fatalError(); // Call RightIsValid first to avoid this!
+    fatalError(); // Call RightIsValid first to avoid this!
     return *mRight;
   }
 
-/**
- * Setting mLeft the pointer to the left branch
- * @param CNodeO &left
- */
-void CNodeO::setLeft(CNodeO & left)
-{
-  mLeft = &left;
-}
+  /**
+   * Setting mLeft the pointer to the left branch
+   * @param CNodeO &left
+   */
+  void CNodeO::setLeft(CNodeO & left)
+    {
+      mLeft = &left;
+    }
 
 /**
  * Setting mLeft the pointer to the left branch
