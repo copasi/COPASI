@@ -1,5 +1,9 @@
 @echo off 
 
+echo @echo off > config.status.bat
+echo echo running: configure.bat %1 %2 %3 %4 %5 %6 %7 %8 %9 >> config.status.bat
+echo configure.bat %1 %2 %3 %4 %5 %6 %7 %8 %9 >> config.status.bat
+
 if '%1' == '--enable-debug'        goto DEBUG
 if '%1' == '--disable-debug'       goto RELEASE
 set cps_release=debug
@@ -44,8 +48,8 @@ qmake "CONFIG+=%cps_release%" %1 %2
 
 cd ..
 
-echo @echo off > config.status.bat
-echo cd copasi >> config.status.bat
-echo echo qmake "CONFIG+=%cps_release%" %1 %2 >> config.status.bat
-echo qmake "CONFIG+=%cps_release%" %1 %2 >> config.status.bat
-echo cd .. >> config.status.bat
+rem echo @echo off > config.status.bat
+rem echo cd copasi >> config.status.bat
+rem echo echo qmake "CONFIG+=%cps_release%" %1 %2 >> config.status.bat
+rem echo qmake "CONFIG+=%cps_release%" %1 %2 >> config.status.bat
+rem echo cd .. >> config.status.bat
