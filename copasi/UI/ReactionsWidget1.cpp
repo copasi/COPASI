@@ -384,9 +384,8 @@ void ReactionsWidget1::loadName(QString setValue)
       table->setText(line, 0, QString::number(react4z[k]->getValue()));
       line++;
     }
-
   ComboBox1->setCurrentText(reactn->getFunction().getName().c_str());
-  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
+  //  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
   //emit sideySignal();
 }
 
