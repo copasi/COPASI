@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/30 09:06:35 $
+   $Author: shoops $ 
+   $Date: 2004/09/30 15:27:01 $
    End CVS Header */
 
 #include "CTimeSeries.h"
@@ -12,9 +12,10 @@
 
 CTimeSeries::CTimeSeries()
     : mIt(begin()),
-    mpState(NULL)
-{
-}
+    mpState(NULL),
+    mDummyString(""),
+    mDummyFloat(0)
+{}
 
 bool CTimeSeries::init(C_INT32 n, CState * pState)
 {
@@ -37,6 +38,8 @@ bool CTimeSeries::init(C_INT32 n, CState * pState)
   for (i = 0; i < imax; ++i)
     mFactors[i + 1] = mpState->getModel()->getNumber2QuantityFactor()
                       * mpState->getModel()->getMetabolites()[i]->getCompartment()->getVolumeInv();
+
+  return true;
 }
 
 bool CTimeSeries::add()
@@ -53,12 +56,16 @@ bool CTimeSeries::add()
   *mIt = *mpState;
 
   ++mIt;
+
+  return true;
 }
 
 bool CTimeSeries::finish()
 {
   //std::cout << mCounter << std::endl;
   erase(mIt, end());
+
+  return true;
 }
 
 //*** the methods to retrieve data from the CTimeSeries *******
@@ -87,11 +94,14 @@ const C_FLOAT64 & CTimeSeries::getData(C_INT32 step, C_INT32 var) const
 
 const C_FLOAT64 & CTimeSeries::getConcentrationData(C_INT32 step, C_INT32 var) const
   {
+    static C_FLOAT64 tmp;
+
     if (step >= getNumSteps()) return mDummyFloat;
 
     if (var == 0) return (*this)[step].getTime();
 
-    if (var < getNumVariables()) return (*this)[step].getVariableNumber(var - 1) * mFactors[var];
+    if (var < getNumVariables())
+      return tmp = (*this)[step].getVariableNumber(var - 1) * mFactors[var];
 
     return mDummyFloat;
   }
