@@ -923,10 +923,10 @@ const CCopasiVectorN< CReaction > & CModel::getReactionsX() const {return mSteps
  *        Return the metabolites of this model
  *        @return vector < CMetab * >
  */
-const CCopasiVectorN< CMetab > & CModel::getMetabolites() const {return mMetabolites;}
-CCopasiVectorN< CMetab > & CModel::getMetabolitesInd() {return mMetabolitesInd;}
-CCopasiVectorN< CMetab > & CModel::getMetabolitesDep() {return mMetabolitesDep;}
-const CCopasiVectorN< CMetab > & CModel::getMetabolitesX() const
+const CCopasiVector< CMetab > & CModel::getMetabolites() const {return mMetabolites;}
+CCopasiVector< CMetab > & CModel::getMetabolitesInd() {return mMetabolitesInd;}
+CCopasiVector< CMetab > & CModel::getMetabolitesDep() {return mMetabolitesDep;}
+const CCopasiVector< CMetab > & CModel::getMetabolitesX() const
   {return mMetabolitesX;}
 
 unsigned C_INT32 CModel::getTotMetab() const
@@ -997,7 +997,7 @@ const CCopasiVectorN < CMoiety > & CModel::getMoieties() const
 /**
  *        Returns the index of the metab
  */
-C_INT32 CModel::findMetab(const std::string & Target) const
+C_INT32 CModel::findMetabByName(const std::string & Target) const
   {
     unsigned C_INT32 i, s;
     std::string name;
@@ -1007,6 +1007,21 @@ C_INT32 CModel::findMetab(const std::string & Target) const
       {
         name = mMetabolites[i]->getName();
         if (name == Target)
+          return i;
+      }
+    return - 1;
+  }
+
+C_INT32 CModel::findMetabByKey(const std::string & Target) const
+  {
+    unsigned C_INT32 i, s;
+    std::string key;
+
+    s = mMetabolites.size();
+    for (i = 0; i < s; i++)
+      {
+        key = mMetabolites[i]->getKey();
+        if (key == Target)
           return i;
       }
     return - 1;
@@ -1710,7 +1725,7 @@ C_INT32 CModel::addMetabolite(const std::string & comp,
   c = findCompartment(comp);
 
   if (c == -1) return - 1;
-  if (findMetab(name) != -1) return - 1;
+  if (mCompartments[c]->getMetabolites().getIndex(name) != -1) return - 1;
 
   metab.setModel(this);
   metab.setCompartment(mCompartments[c]);
@@ -1766,7 +1781,7 @@ const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mZero = 0.0;
 const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
 
 CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-    const CCopasiVectorN< CMetab > & independent):
+    const CCopasiVector< CMetab > & independent):
     mA(A),
     mIndependent(independent)
 {CONSTRUCTOR_TRACE;}
@@ -1778,7 +1793,7 @@ CModel::CLinkMatrixView &
 CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView & rhs)
 {
   const_cast< CMatrix< C_FLOAT64 > &>(mA) = rhs.mA;
-  const_cast< CCopasiVectorN< CMetab > &>(mIndependent) = rhs.mIndependent;
+  const_cast< CCopasiVector< CMetab > &>(mIndependent) = rhs.mIndependent;
 
   return *this;
 }

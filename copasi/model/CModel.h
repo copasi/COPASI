@@ -64,7 +64,7 @@ class CModel : public CCopasiContainer
       private:
         const CMatrix< C_FLOAT64 > & mA;
         /** @dia:route 39,3; h,117.263,65.6961,127.49,65.7298,129.758 */
-        const CCopasiVectorN< CMetab > & mIndependent;
+        const CCopasiVector< CMetab > & mIndependent;
         static const elementType mZero;
         static const elementType mUnit;
 
@@ -75,7 +75,7 @@ class CModel : public CCopasiContainer
          * @param const CCopasiVectorN< CMetab > & independent
          */
         CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-                        const CCopasiVectorN< CMetab > & independent);
+                        const CCopasiVector< CMetab > & independent);
 
         /**
          * Destructor.
@@ -252,25 +252,25 @@ class CModel : public CCopasiContainer
      *  Vector of reference to metabolites
      */
     /** @dia:route 29,44; h,117.263,61.6961,171.362,46.7423,177.081 */
-    CCopasiVectorN< CMetab > mMetabolites;
+    CCopasiVector< CMetab > mMetabolites;
 
     /**
      *  Vector of reference to metabolites in reduced model representation
      */
     /** @dia:route 17,44; h,117.263,56.6961,171.362,46.7423,177.081 */
-    CCopasiVectorN< CMetab > mMetabolitesX;
+    CCopasiVector< CMetab > mMetabolitesX;
 
     /**
      *  Vector of reference to independent metabolites
      */
     /** @dia:route 21,44; h,117.263,58.2961,171.362,46.7423,177.081 */
-    CCopasiVectorN< CMetab > mMetabolitesInd;
+    CCopasiVector< CMetab > mMetabolitesInd;
 
     /**
      *  Vector of reference to dependent metabolites
      */
     /** @dia:route 25,44; h,117.263,60.0961,171.362,46.7423,177.081 */
-    CCopasiVectorN< CMetab > mMetabolitesDep;
+    CCopasiVector< CMetab > mMetabolitesDep;
 
     /**
      *  for array of steps
@@ -479,25 +479,25 @@ class CModel : public CCopasiContainer
      * Return the metabolites of this model
      * @return CCopasiVectorN< CMetab > & metabolites
      */
-    const CCopasiVectorN< CMetab > & getMetabolites() const;
+    const CCopasiVector< CMetab > & getMetabolites() const;
 
     /**
      * Retrieves the vector of independent metabolites.
      * @return vector < CMetab * > metabolites
      */
-    CCopasiVectorN< CMetab > & getMetabolitesInd();
+    CCopasiVector< CMetab > & getMetabolitesInd();
 
     /**
      * Retrieves the vector of dependent metabolites.
      * @return vector < CMetab * > metabolites
      */
-    CCopasiVectorN< CMetab > & getMetabolitesDep();
+    CCopasiVector< CMetab > & getMetabolitesDep();
 
     /**
      * Retrieves the vector of metabolites at it is used in the reduced model.
      * @return const CCopasiVectorN< CMetab > &metabolites
      */
-    const CCopasiVectorN< CMetab > & getMetabolitesX() const;
+    const CCopasiVector< CMetab > & getMetabolitesX() const;
 
     /**
      *  Get the number of total metabolites
@@ -645,7 +645,12 @@ class CModel : public CCopasiContainer
     /**
      * Returns the index of the metab
      */
-    C_INT32 findMetab(const std::string & Target) const;
+    C_INT32 findMetabByName(const std::string & Target) const;
+
+    /**
+     * Returns the index of the metab
+     */
+    C_INT32 findMetabByKey(const std::string & Target) const;
 
     /**
      * Returns the index of the step
