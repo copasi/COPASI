@@ -210,7 +210,7 @@ void CompartmentsWidget1::slotBtnOKClicked()
   QString volume(LineEdit3->text());
   double m1;
   m1 = volume.toDouble();
-  compartn1->setVolume((float)m1);
+  compartn1->setInitialVolume(m1);
   compartn1->setName(std::string(LineEdit1->text()));
   name = LineEdit1->text();
 
