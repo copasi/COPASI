@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/17 15:08:27 $
+   $Date: 2004/06/22 09:30:01 $
    End CVS Header */
 
 /**********************************************************************
@@ -412,14 +412,6 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
 
 bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunction* target)
 {
-  //Description
-  try
-    {
-      target->setDescription(src->getDescription());
-    }
-  catch (CCopasiException Exception)
-  {}
-
   //Parameters
   CFunctionParameters &functParam = target->getParameters();
   const CFunctionParameters &pfunctParam = src->getParameters();
@@ -478,6 +470,14 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
     {
       tarU.add(*srcU[i]);
     }
+
+  //Description
+  try
+    {
+      target->setDescription(src->getDescription());
+    }
+  catch (CCopasiException Exception)
+  {}
 
   return true;
 }
@@ -798,7 +798,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                   // Yes or Enter
+        case 0:                    // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -830,7 +830,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                   // No or Escape
+        case 1:                    // No or Escape
           break;
         }
     }
