@@ -328,6 +328,13 @@ void TrajectoryWidget::RunTask()
       output << "# "; // Hack for gnuplot
       tt->initializeReporting(output);
     }
+  else //ask if user insists on proceeding
+    {
+      if (QMessageBox::information (NULL, "No output specified,",
+                                    "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running trajectory task with no output?",
+                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        return;
+    }
 
   // std::ofstream output("trajectory.txt");
   // tt->initializeReporting(output);

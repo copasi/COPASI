@@ -511,6 +511,13 @@ void ScanWidget::ScanButtonClicked()
       std::ofstream output(scanTask->getReport()->getTarget().c_str());
       scanTask->initializeReporting(output);
     }
+  else //ask if user insists on proceeding
+    {
+      if (QMessageBox::information (NULL, "No output specified,",
+                                    "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running scan task with no output?",
+                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        return;
+    }
 
   //prepare for the output value addr
   valueAddrMatrix.resize(nSelectedObjects);

@@ -280,6 +280,13 @@ void SteadyStateWidget::RunButtonClicked()
       std::ofstream output(mSteadyStateTask->getReport()->getTarget().c_str());
       mSteadyStateTask->initializeReporting(output);
     }
+  else //ask if user insists on proceeding
+    {
+      if (QMessageBox::information (NULL, "No output specified,",
+                                    "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running steadystate task with no output?",
+                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        return;
+    }
 
   setCursor(Qt::WaitCursor);
 
