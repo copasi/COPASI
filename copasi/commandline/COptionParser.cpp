@@ -12,6 +12,7 @@
  **/
 
 #ifdef WIN32
+#pragma warning (disable: 4786)
 #define strcasecmp _stricmp
 #endif
 
@@ -82,11 +83,7 @@ void copasi::COptionParser::parse(const char * fileName)
     {
       try
         {
-          /* Take care of dos and unix style line ending */
-          File.getline(LineBuffer, 1024, 0xa);
-          if (LineBuffer[strlen(LineBuffer) - 1] == 0xd)
-            LineBuffer[strlen(LineBuffer) - 1] = '\0';
-
+          File.getline(LineBuffer, 1024);
           LineCounter++;
 
           if (File.eof()) break;
@@ -97,6 +94,13 @@ void copasi::COptionParser::parse(const char * fileName)
 
               throw option_error(error.str());
             }
+
+#ifndef WIN32
+          /* Take care of dos and unix style line ending under UNIX */
+          /* A case where MS has the better implementation */
+          if (LineBuffer[max(strlen(LineBuffer) - 1, 0)] == 0xd)
+            LineBuffer[strlen(LineBuffer) - 1] = '\0';
+#endif  // not WIN32
 
           Line = LineBuffer;
 
