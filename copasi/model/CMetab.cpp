@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 14:15:05 $
+   $Date: 2004/09/10 11:17:50 $
    End CVS Header */
 
 #include <iostream>
@@ -208,15 +208,24 @@ void CMetab::initObjects()
 /**
  * Return rate of production of this metaboLite
  */
-const C_FLOAT64 & CMetab::getRate() const
+const C_FLOAT64 & CMetab::getConcentrationRate() const
   {return mRate;}
 
-void CMetab::setRate(const C_FLOAT64 & rate)
+C_FLOAT64 CMetab::getNumberRate() const
+  {
+    return mRate * getCompartment()->getVolume()
+    * mpModel->getQuantity2NumberFactor();
+  }
+
+void CMetab::setNumberRate(const C_FLOAT64 & rate)
 {
   //converts particles/time to concentration/time
   mRate = rate * getCompartment()->getVolumeInv()
           * mpModel->getNumber2QuantityFactor();
 }
+
+void CMetab::setConcentrationRate(const C_FLOAT64 & rate)
+{mRate = rate;}
 
 void * CMetab::getReference() const
   {return const_cast<C_FLOAT64 *>(&mConc);}

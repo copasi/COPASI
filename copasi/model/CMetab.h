@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 14:15:05 $
+   $Date: 2004/09/10 11:17:50 $
    End CVS Header */
 
 /**
@@ -261,13 +261,15 @@ class CMetab : public CCopasiContainer
     /**
      * Return rate of production of this metaboLite
      */
-    const C_FLOAT64 & getRate() const;
+    const C_FLOAT64 & getConcentrationRate() const;
+    C_FLOAT64 getNumberRate() const;
 
     /**
      *  Set the rate (dmConc/dt)
      *  @param "const C_FLOAT64 &" rate (unit: particle/time)
      */
-    void setRate(const C_FLOAT64 & rate);
+    void setConcentrationRate(const C_FLOAT64 & rate);
+    void setNumberRate(const C_FLOAT64 & rate);
 
     /**
      * insert operator
