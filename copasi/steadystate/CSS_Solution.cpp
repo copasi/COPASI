@@ -22,10 +22,13 @@ CSS_Solution::CSS_Solution()
   mNewton = NULL;
   mModel = NULL;
   mTraj = NULL;
+  mJacob = NULL;
   mOption = 0;    //0 means normal
 
   mSs_nfunction = 0;
+  mDerivFactor = 0;
   mY_traj = NULL;
+  mSs_x = NULL;
   //mSs_dxdt = NULL;
 }
 
@@ -36,8 +39,11 @@ CSS_Solution::CSS_Solution(const CSS_Solution& source)
   mNewton = source.mNewton;
   mModel = source.mModel;
   mTraj = source.mTraj;
+  mJacob = source.mJacob;
+  mDerivFactor = source.mDerivFactor;
   mOption = source.mOption;
   mY_traj = source.mY_traj;
+  mSs_x = source.mSs_x;
   mSs_dxdt = source.mSs_dxdt;
 }
 
@@ -50,8 +56,11 @@ CSS_Solution& CSS_Solution::operator=(const CSS_Solution& source)
       mNewton = source.mNewton;
       mModel = source.mModel;
       mTraj = source.mTraj;
+      mJacob = source.mJacob;
+      mDerivFactor = source.mDerivFactor;
       mOption = source.mOption;
       mY_traj = source.mY_traj;
+      mSs_x = source.mSs_x;
       mSs_dxdt = source.mSs_dxdt;
 
     }
@@ -76,8 +85,10 @@ void CSS_Solution::initialize()
   mNewton = new CNewton();
   mModel = new CModel();
   mTraj = new CTrajectory();
+  mJacob = new CJacob();
   
   mY_traj = new C_FLOAT64[dim];
+  mSs_x = new C_FLOAT64[dim];
   mSs_dxdt.newsize(dim);
   
 }
@@ -89,6 +100,9 @@ void CSS_Solution::cleanup(void)
 
   if (mY_traj) delete [] mY_traj;
   mY_traj = NULL;
+
+  if (mSs_x) delete [] mSs_x;
+  mSs_x = NULL;
 
   // if (mSs_dxdt) delete [] mSs_dxdt;
   // mSs_dxdt = NULL;
@@ -149,6 +163,20 @@ CTrajectory *  CSS_Solution::getTrajectory() const
 }
 
 
+//set mJacob
+void CSS_Solution::setJacob(CJacob * aJ)
+{
+  mJacob = aJ;
+}
+
+
+//get mJacob
+CJacob * CSS_Solution::getJacob() const
+{
+  return mJacob;
+}
+
+
 //set mSs_xnew
 void  CSS_Solution::setY_traj(C_FLOAT64 * aY)
 {
@@ -160,6 +188,26 @@ C_FLOAT64 * CSS_Solution::getY_traj() const
 {
   return mY_traj;
 }
+
+
+  /**
+   *  set mXx_x
+   *  @param aX is the double to be set as mXx_s
+   */
+void CSS_Solution::setSs_x(C_FLOAT64 * aX)
+{
+  mSs_x = aX;
+}
+
+  /**
+   *  get mSs_x
+   *  @return mSs_x
+   */
+C_FLOAT64 * CSS_Solution::getSs_x() const
+{
+  return mSs_x;
+}
+
 
    
 // get mSs_dxdt
@@ -182,9 +230,25 @@ C_INT32 CSS_Solution::load(CReadConfig & configbuffer)
                                       (void *) &mSSBackInt)))
     return Fail;
   
+
+  //YH: to allow both "SSResoltion" and "SSResolution" formats
   if((Fail = configbuffer.getVariable("SSResoltion", "C_FLOAT64",
                                       (void *) &mSSRes,
                                       CReadConfig::LOOP)))
+    return Fail;
+
+  if((Fail = configbuffer.getVariable("SSResolution", "C_FLOAT64",
+                                      (void *) &mSSRes,
+                                      CReadConfig::LOOP)))
+    return Fail;
+
+
+  if((Fail = configbuffer.getVariable("DerivationFactor", "C_FLOAT64",
+                                      (void *) &mDerivFactor,
+                                      CReadConfig::LOOP)))
+    return Fail;
+
+  if ((Fail = configbuffer.getVariable("Flux", "C_FLOAT64", &mFlux)))
     return Fail;
 
   return Fail;
@@ -202,13 +266,25 @@ C_INT32 CSS_Solution::save(CWriteConfig & configbuffer)
                                       (void *) &mSSBackInt)))
     return Fail;
   
+  //YH: to allow both "SSResoltion" and "SSResolution" formats
   if((Fail = configbuffer.setVariable("SSResoltion", "C_FLOAT64",
                                       (void *) &mSSRes )))
     return Fail;
 
+  if((Fail = configbuffer.setVariable("SSResolution", "C_FLOAT64",
+                                      (void *) &mSSRes )))
+    return Fail;
+
+
+  if((Fail = configbuffer.setVariable("DerivationFactor", "C_FLOAT64",
+                                      (void *) &mDerivFactor )))
+    return Fail;
+
+  if ((Fail = configbuffer.setVariable("Flux", "C_FLOAT64", &mFlux)))
+    return Fail;
 
   return Fail;
-  if(mNewton) delete mNewton;
+  //if(mNewton) delete mNewton;
 
 }
 
@@ -239,6 +315,8 @@ void CSS_Solution::process(void)
       //ftot += (double) mSs_nfunction;     // ??
       //jtot += (double) mSs_njacob;        // ??
 
+      mSs_x = mNewton->getSs_xnew();
+
       if(mNewton->isSteadyState())
         afterFindSteadyState();
     }
@@ -255,8 +333,9 @@ void CSS_Solution::process(void)
 
           mTraj -> process();
 
-          // after trajectory process, get trajectory.mY
-          setY_traj(mTraj->getMY());
+	  // after trajectory process, get trajectory.mY
+	  setY_traj(mTraj->getMY());
+	  mSs_x = mY_traj;
 
           //compare old and new mY and check isSteadyState()
           if( isSteadyStateAfterTrajectory() )
@@ -270,7 +349,7 @@ void CSS_Solution::process(void)
               mNewton->process();
 
               // update count of function and jacobian evaluations
-              // is it needed, anyway?
+	      // is it needed, anyway?
               //ftot += (double) mSs_nfunction;
               //jtot += (double) mSs_njacob;
 
@@ -299,9 +378,10 @@ void CSS_Solution::process(void)
 
           mTraj -> process();
 
-          // after trajectory process, get trajectory.mY
-          setY_traj(mTraj->getMY());
-
+	  // after trajectory process, get trajectory.mY
+	  setY_traj(mTraj->getMY());
+	  mSs_x = mY_traj;
+	  
           //compare old and new mY and check isSteadyState()
           if( isSteadyStateAfterTrajectory() )
                 afterFindSteadyState();
@@ -341,10 +421,13 @@ void CSS_Solution::afterFindSteadyState()
 {
 
   //evaluate the jacobian
+  mJacob->jacobEval(mSs_x, mDerivFactor, mSSRes);
 
   //calculate the eigenvalues of the jacobian
+  // ??????????????//
 
   //copy the concentrations back to the model
+  mModel->setConcentrations(mSs_x);
 
   //calculate the fluxes
   
@@ -373,8 +456,8 @@ C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT6
   for (int i=0; i < arrSize; i++)
     {
       if ( fabs( (newY[i]-oldY[i])/timeLength ) > mSSRes) {
-        mSs_solution = SS_NOT_FOUND;
-        return mSs_solution;
+	mSs_solution = SS_NOT_FOUND;
+	return mSs_solution;
       }
     }
 

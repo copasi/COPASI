@@ -16,6 +16,7 @@
 #include "copasi.h"
 #include "model/model.h"
 #include "CNewton.h"
+#include "CJacob.h"
 
 #include "trajectory/CTrajectory.h"
 // #include <cmath>
@@ -68,7 +69,7 @@ class CSS_Solution
   /**
    *  variable for steady-state solution
    */
-  //C_FLOAT64 * mSs_x;
+  C_FLOAT64 * mSs_x; 
 
   /**
    *  variable for steady-state solution
@@ -100,10 +101,17 @@ class CSS_Solution
   C_INT32 mSSBackInt; 
 
   /**
+   *  The flux of the reaction
+   */
+  C_FLOAT64 mFlux;
+
+  /**
    *  variable for steady-state solution
    *  its result is either SS_FOUND or SS_NOT_FOUND
    */
   C_INT32 mSs_solution;
+
+  C_FLOAT64 mDerivFactor;
 
   //more variables
   C_FLOAT64 mNjeval;
@@ -116,6 +124,11 @@ class CSS_Solution
    *  The CTrajectory to work with
    */
   CTrajectory * mTraj;
+
+  /**
+   *  The CJacob to work with
+   */
+  CJacob * mJacob;
 
   /**
    *  The option to choose from 0-normal 1-Integr.only 2-Newton only 3-back.integr.only
@@ -194,6 +207,18 @@ class CSS_Solution
   C_INT32 getOption() const;
 
   /**
+   *  Sets the flux of the reaction
+   *  @param C_FLOAT64 flux
+   */
+  //void setFlux(C_FLOAT64 flux);
+
+  /**
+   *  Retrieves the flux of the reaction
+   *  @return C_FLOAT64
+   */
+  //C_FLOAT64 getFlux() const;
+
+  /**
    *  set CModel
    *  @param aModel is the CModel set as mModel
    */
@@ -241,7 +266,30 @@ class CSS_Solution
    */
   C_FLOAT64 * getY_traj() const;
 
-  
+  /**
+   *  set mJacob
+   *  @param aJ is the CJocob pointer to be set as mJacob
+   */
+  void setJacob(CJacob * aJ);
+
+  /**
+   *  get mJacob
+   *  @return mY_traj
+   */
+  CJacob * getJacob() const;
+
+  /**
+   *  set mXx_x
+   *  @param aX is the double to be set as mXx_s
+   */
+  void setSs_x(C_FLOAT64 * aX);
+
+  /**
+   *  get mSs_x
+   *  @return mSs_x
+   */
+  C_FLOAT64 * getSs_x() const;
+
   /**
    *  get mSs_dxdt
    *  @return mSs_dxdt
