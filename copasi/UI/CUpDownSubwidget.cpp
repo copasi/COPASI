@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CUpDownSubwidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/04 13:12:53 $
+   $Date: 2005/04/04 14:33:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CUpDownSubwidget.ui'
  **
- ** Created: Mo Apr 4 15:11:11 2005
- **      by: The User Interface Compiler ($Id: CUpDownSubwidget.cpp,v 1.2 2005/04/04 13:12:53 ssahle Exp $)
+ ** Created: Mo Apr 4 16:12:03 2005
+ **      by: The User Interface Compiler ($Id: CUpDownSubwidget.cpp,v 1.3 2005/04/04 14:33:18 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,7 +18,6 @@
 #include "CUpDownSubwidget.h"
 
 #include <qvariant.h>
-#include <qpushbutton.h>
 #include <qtoolbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
@@ -28,6 +27,21 @@
 
 #include "CUpDownSubwidget.ui.h"
 static const unsigned char image0_data[] =
+  {
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, 0x0f,
+    0x08, 0x06, 0x00, 0x00, 0x00, 0x3b, 0xd6, 0x95, 0x4a, 0x00, 0x00, 0x00,
+    0x49, 0x49, 0x44, 0x41, 0x54, 0x28, 0x91, 0x63, 0x60, 0xc0, 0x0f, 0xfe,
+    0xe3, 0x93, 0x64, 0x22, 0xa0, 0x19, 0x2f, 0xc0, 0xa7, 0xb9, 0x1a, 0x8d,
+    0xc6, 0x00, 0x8c, 0x78, 0x34, 0x23, 0x3b, 0x19, 0xab, 0x3a, 0x5c, 0x36,
+    0xa3, 0xdb, 0x86, 0xd5, 0x76, 0x5c, 0x36, 0x63, 0x0b, 0x28, 0x0c, 0xb5,
+    0x54, 0x0f, 0x30, 0x5c, 0x01, 0x84, 0x21, 0x8e, 0xcd, 0xd9, 0xf8, 0xe2,
+    0x16, 0x45, 0x3d, 0x45, 0xce, 0x26, 0x04, 0x06, 0x26, 0x85, 0x0d, 0x62,
+    0xcd, 0x00, 0x45, 0x20, 0x07, 0xf8, 0x42, 0xf7, 0xee, 0xa6, 0x00, 0x00,
+    0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
+  };
+
+static const unsigned char image1_data[] =
   {
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
     0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, 0x0f,
@@ -47,21 +61,6 @@ static const unsigned char image0_data[] =
     0xd9, 0x1a, 0xf2, 0x8d, 0xee, 0xb7, 0x78, 0x02, 0x70, 0x5e, 0x38, 0xa5,
     0x65, 0x64, 0xc3, 0xb6, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44,
     0xae, 0x42, 0x60, 0x82
-  };
-
-static const unsigned char image1_data[] =
-  {
-    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
-    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, 0x0f,
-    0x08, 0x06, 0x00, 0x00, 0x00, 0x3b, 0xd6, 0x95, 0x4a, 0x00, 0x00, 0x00,
-    0x49, 0x49, 0x44, 0x41, 0x54, 0x28, 0x91, 0x63, 0x60, 0xc0, 0x0f, 0xfe,
-    0xe3, 0x93, 0x64, 0x22, 0xa0, 0x19, 0x2f, 0xc0, 0xa7, 0xb9, 0x1a, 0x8d,
-    0xc6, 0x00, 0x8c, 0x78, 0x34, 0x23, 0x3b, 0x19, 0xab, 0x3a, 0x5c, 0x36,
-    0xa3, 0xdb, 0x86, 0xd5, 0x76, 0x5c, 0x36, 0x63, 0x0b, 0x28, 0x0c, 0xb5,
-    0x54, 0x0f, 0x30, 0x5c, 0x01, 0x84, 0x21, 0x8e, 0xcd, 0xd9, 0xf8, 0xe2,
-    0x16, 0x45, 0x3d, 0x45, 0xce, 0x26, 0x04, 0x06, 0x26, 0x85, 0x0d, 0x62,
-    0xcd, 0x00, 0x45, 0x20, 0x07, 0xf8, 0x42, 0xf7, 0xee, 0xa6, 0x00, 0x00,
-    0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
   };
 
 static const unsigned char image2_data[] =
@@ -100,42 +99,36 @@ CUpDownSubwidget::CUpDownSubwidget(QWidget* parent, const char* name, WFlags fl)
   setFocusPolicy(QWidget::WheelFocus);
   CUpDownSubwidgetLayout = new QVBoxLayout(this, 0, 0, "CUpDownSubwidgetLayout");
 
-  layout2 = new QGridLayout(0, 1, 1, 0, 6, "layout2");
+  layout3 = new QGridLayout(0, 1, 1, 0, 6, "layout3");
 
-  buttonDel = new QPushButton(this, "buttonDel");
-  buttonDel->setMaximumSize(QSize(20, 20));
-  buttonDel->setPixmap(image0);
+  toolButtonUp = new QToolButton(this, "toolButtonUp");
+  toolButtonUp->setMaximumSize(QSize(20, 20));
+  toolButtonUp->setIconSet(QIconSet(image0));
 
-  layout2->addWidget(buttonDel, 0, 0);
+  layout3->addWidget(toolButtonUp, 0, 1);
 
-  toolButton1 = new QToolButton(this, "toolButton1");
-  toolButton1->setMaximumSize(QSize(20, 20));
-  toolButton1->setIconSet(QIconSet(image0));
+  toolButtonDel = new QToolButton(this, "toolButtonDel");
+  toolButtonDel->setMaximumSize(QSize(20, 20));
+  toolButtonDel->setIconSet(QIconSet(image1));
 
-  layout2->addWidget(toolButton1, 1, 0);
+  layout3->addWidget(toolButtonDel, 0, 0);
 
-  buttonUp = new QPushButton(this, "buttonUp");
-  buttonUp->setMaximumSize(QSize(20, 20));
-  buttonUp->setPixmap(image1);
+  toolButtonDown = new QToolButton(this, "toolButtonDown");
+  toolButtonDown->setMaximumSize(QSize(20, 20));
+  toolButtonDown->setIconSet(QIconSet(image2));
 
-  layout2->addWidget(buttonUp, 0, 1);
-
-  buttonDown = new QPushButton(this, "buttonDown");
-  buttonDown->setMaximumSize(QSize(20, 20));
-  buttonDown->setPixmap(image2);
-
-  layout2->addWidget(buttonDown, 1, 1);
-  CUpDownSubwidgetLayout->addLayout(layout2);
-  spacer = new QSpacerItem(20, 50, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  layout3->addWidget(toolButtonDown, 1, 1);
+  CUpDownSubwidgetLayout->addLayout(layout3);
+  spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   CUpDownSubwidgetLayout->addItem(spacer);
   languageChange();
-  resize(QSize(124, 117).expandedTo(minimumSizeHint()));
+  resize(QSize(124, 146).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
-  connect(buttonDel, SIGNAL(clicked()), this, SLOT(slotDel()));
-  connect(buttonDown, SIGNAL(clicked()), this, SLOT(slotDown()));
-  connect(buttonUp, SIGNAL(clicked()), this, SLOT(slotUp()));
+  connect(toolButtonDel, SIGNAL(clicked()), this, SLOT(slotDel()));
+  connect(toolButtonUp, SIGNAL(clicked()), this, SLOT(slotUp()));
+  connect(toolButtonDown, SIGNAL(clicked()), this, SLOT(slotDown()));
   init();
 }
 
@@ -154,8 +147,7 @@ CUpDownSubwidget::~CUpDownSubwidget()
 void CUpDownSubwidget::languageChange()
 {
   setCaption(tr("Form2"));
-  buttonDel->setText(QString::null);
-  toolButton1->setText(QString::null);
-  buttonUp->setText(QString::null);
-  buttonDown->setText(QString::null);
+  toolButtonUp->setText(QString::null);
+  toolButtonDel->setText(QString::null);
+  toolButtonDown->setText(QString::null);
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CUpDownSubwidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 15:54:51 $
+   $Date: 2005/04/04 14:33:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -42,14 +42,14 @@ void CUpDownSubwidget::setIndex(int index, bool isFirst, bool isLast)
 {
   mIndex = index;
   if ((mIndex == 0) || (isFirst))
-    buttonUp->setEnabled(false);
+    toolButtonUp->setEnabled(false);
   else
-    buttonUp->setEnabled(true);
+    toolButtonUp->setEnabled(true);
 
   if (isLast)
-    buttonDown->setEnabled(false);
+    toolButtonDown->setEnabled(false);
   else
-    buttonDown->setEnabled(true);
+    toolButtonDown->setEnabled(true);
 }
 
 int CUpDownSubwidget::getIndex() const
