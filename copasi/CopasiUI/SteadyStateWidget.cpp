@@ -54,7 +54,13 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
   bRunButton = new QPushButton(this, "bRunButton");
-  bRunButton->setText(trUtf8("Run"));
+
+  if (parent == NULL)
+    bRunButton->setText(trUtf8("OK"));
+  else
+    bRunButton->setText(trUtf8("Run"));
+
+  //  bRunButton->setText(trUtf8("Run"));
   bRunButton->setEnabled((parent == NULL));
   Layout2->addWidget(bRunButton);
 
@@ -233,6 +239,12 @@ void SteadyStateWidget::RunTask()
   if (mSteadyStateTask == NULL)
     return;
   CommitChange();
+
+  if (bRunButton->text() != "Run")
+    {
+      hide();
+      return;
+    }
 
   mSteadyStateTask->getProblem()->getModel()->compile();
   mSteadyStateTask->getProblem()->

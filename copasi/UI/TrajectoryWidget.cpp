@@ -143,7 +143,12 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
   bRunTask = new QPushButton(this, "bRunTask");
-  bRunTask->setText(trUtf8("Run"));
+
+  if (parent == NULL)
+    bRunTask->setText(trUtf8("OK"));
+  else
+    bRunTask->setText(trUtf8("Run"));
+
   bRunTask->setEnabled(parent == NULL);
   Layout2->addWidget(bRunTask);
 
@@ -296,6 +301,13 @@ void TrajectoryWidget::RunTask()
     return;
 
   CommitChange();
+
+  if (bRunTask->text() != "Run")
+    {
+      hide();
+      return;
+    }
+
   setCursor(Qt::WaitCursor);
 
   mTrajectoryTask->getProblem()->getModel()->compile();
