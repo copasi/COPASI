@@ -77,7 +77,7 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   connect(btnCancel, SIGNAL(clicked ()), this,
           SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent,
-          SLOT(loadModelNodes(CModel*)));
+          SLOT(loadMetabolitesNodes(CModel*)));
   connect(this, SIGNAL(updated()), (ListViews*)parent,
           SLOT(dataModelUpdated()));
 }

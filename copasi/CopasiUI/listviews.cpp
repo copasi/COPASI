@@ -702,6 +702,95 @@ void ListViews::deleteAllMyChildrens(QListViewItem* me)
     }
 }
 
+void ListViews::loadCompartmentsNodes(CModel *model)
+{
+  compartmentsWidget->loadCompartments(model);
+  compartmentsWidget1->loadCompartments(model);
+  QListViewItem* loadNode; // to load the tree with that stuff
+  // UPDATE THE METABOLITES STUFF..
+  pdelete(mpMathModel);
+  mpMathModel = new CMathModel;
+  mpMathModel->setModel(model);
+  loadNode = searchNode("Compartments");
+  if (loadNode)
+    {
+      this->loadCompartments(loadNode);
+
+      if (loadNode->isSelected())
+        if (loadNode->childCount() != 0)
+          loadNode->setPixmap(0, *folderOpen);
+
+      loadNode = NULL;
+    }
+  dataModel->setModelUpdate(false);
+}
+void ListViews::loadReactionsNodes(CModel* model)
+{
+  reactionsWidget->loadReactions(model);
+  reactionsWidget1->loadReactions(model);
+  QListViewItem* loadNode; // to load the tree with that stuff
+  // UPDATE THE METABOLITES STUFF..
+  pdelete(mpMathModel);
+  mpMathModel = new CMathModel;
+  mpMathModel->setModel(model);
+  loadNode = searchNode("Reactions");
+  if (loadNode)
+    {
+      this->loadReactions(loadNode);
+
+      if (loadNode->isSelected())
+        if (loadNode->childCount() != 0)
+          loadNode->setPixmap(0, *folderOpen);
+
+      loadNode = NULL;
+    }
+  dataModel->setModelUpdate(false);
+}
+void ListViews::loadMetabolitesNodes(CModel* model)
+{
+  metabolitesWidget->loadMetabolites(model);
+  metabolitesWidget1->loadMetabolites(model);
+  QListViewItem* loadNode; // to load the tree with that stuff
+  // UPDATE THE METABOLITES STUFF..
+  pdelete(mpMathModel);
+  mpMathModel = new CMathModel;
+  mpMathModel->setModel(model);
+  loadNode = searchNode("Metabolites");
+  if (loadNode)
+    {
+      this->loadMetabolites(loadNode);
+
+      if (loadNode->isSelected())
+        if (loadNode->childCount() != 0)
+          loadNode->setPixmap(0, *folderOpen);
+      loadNode = NULL;
+    }
+  dataModel->setModelUpdate(false);
+}
+void ListViews::loadMoietiesNodes(CModel* model)
+{
+  moietyWidget->loadMoieties(model);
+  moietyWidget1->loadMoieties(model);
+  QListViewItem* loadNode; // to load the tree with that stuff
+  // UPDATE THE METABOLITES STUFF..
+  pdelete(mpMathModel);
+  mpMathModel = new CMathModel;
+  mpMathModel->setModel(model);
+
+  loadNode = searchNode("Moiety");
+  if (loadNode)
+    {
+      this->loadMoieties(loadNode);
+
+      if (loadNode->isSelected())
+        if (loadNode->childCount() != 0)
+          loadNode->setPixmap(0, *folderOpen);
+
+      loadNode = NULL;
+    }
+  dataModel->setModelUpdate(false);
+}
+
 /***********ListViews::loadNodes(CModel *model)-------->
  **
  ** Parameters:- CModel* :- The model that needs to be loaded by the widgets
@@ -725,81 +814,19 @@ void ListViews::loadModelNodes(CModel *model)
       compartmentSymbols->loadCompartmentSymbols(mpMathModel);
       differentialEquations->loadDifferentialEquations(mpMathModel);
 
-      metabolitesWidget->loadMetabolites(model);
-      metabolitesWidget1->loadMetabolites(model);
-      loadNode = searchNode("Metabolites");
-
-      if (loadNode)
-        {
-          this->loadMetabolites(loadNode);
-
-          if (loadNode->isSelected())
-            if (loadNode->childCount() != 0)
-              loadNode->setPixmap(0, *folderOpen);
-
-          loadNode = NULL;
-        }
-
+      loadMetabolitesNodes(model);
       // UPDATE THE REACTIONS STUFF..
-      reactionsWidget->loadReactions(model);
-
-      reactionsWidget1->loadReactions(model);
-
-      loadNode = searchNode("Reactions");
-
-      if (loadNode)
-        {
-          this->loadReactions(loadNode);
-
-          if (loadNode->isSelected())
-            if (loadNode->childCount() != 0)
-              loadNode->setPixmap(0, *folderOpen);
-
-          loadNode = NULL;
-        }
-
+      loadReactionsNodes(model);
       // UPDATE THE COMPARTMENTS STUFF..
-      compartmentsWidget->loadCompartments(model);
-
-      compartmentsWidget1->loadCompartments(model);
-
-      loadNode = searchNode("Compartments");
-
-      if (loadNode)
-        {
-          this->loadCompartments(loadNode);
-
-          if (loadNode->isSelected())
-            if (loadNode->childCount() != 0)
-              loadNode->setPixmap(0, *folderOpen);
-
-          loadNode = NULL;
-        }
-
+      loadCompartmentsNodes(model);
       // UPDATE THE MOIETIES STUFF..
-      moietyWidget->loadMoieties(model);
-
-      moietyWidget1->loadMoieties(model);
-
-      loadNode = searchNode("Moiety");
-
-      if (loadNode)
-        {
-          this->loadMoieties(loadNode);
-
-          if (loadNode->isSelected())
-            if (loadNode->childCount() != 0)
-              loadNode->setPixmap(0, *folderOpen);
-
-          loadNode = NULL;
-        }
+      loadMoietiesNodes(model);
 
       // UPDATE THE FUNCTIONS STUFF..
       this->loadFunction();
 
       // Load the Elementary Modes
       modesWidget->loadModes(model);
-
       //second level of mass conservation
       loadNode = searchNode("Mass Conservation");
 
@@ -1073,30 +1100,25 @@ void ListViews::loadCompartments(QListViewItem* i)
  *************************************************************************/
 void ListViews::loadFunction()
 {
-  QListViewItem * i = searchNode("Functions");
-
   functionWidget->loadFunction();
 
   // If the model is not updated or "Functions" node does not exist than return.
+  QListViewItem * i = searchNode("Functions");
   if (!dataModel->getModelUpdate() || !i)
     return;
 
   FolderListItem *item = (FolderListItem*)i;
-
   if (i->childCount() != 0)
     deleteAllMyChildrens(i); // is used if u want to delete all mychildrens
 
   Folder* p, *f;
 
   p = item->folder();
-
   int myId = item->folder()->getID();
-
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
   //  myId = 10 * myId;
 
   CCopasiVectorNS< CFunction > & Functions = Copasi->pFunctionDB->loadedFunctions();
-
   C_INT32 noOfFunctionsRows = Functions.size();
 
   //Now filling the table.
@@ -1113,6 +1135,7 @@ void ListViews::loadFunction()
   if (i->isSelected())
     if (i->childCount() != 0)
       i->setPixmap(0, *folderOpen);
+  dataModel->setModelUpdate(false);
 }
 
 /***********ListViews::showMessage(QString caption,QString text)------------------------>

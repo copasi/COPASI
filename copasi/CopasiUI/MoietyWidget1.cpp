@@ -68,7 +68,7 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   MoietyWidget1Layout->addMultiCell(spacer, 3, 3, 0, 1);
   connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(const QString &)));
 
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
+  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadMoietiesNodes(CModel*)));
   connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 

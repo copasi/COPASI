@@ -116,7 +116,7 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   connect(this, SIGNAL(name_changed(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(const QString &)));
   connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(const QString &)));
 
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
+  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadCompartmentsNodes(CModel*)));
   connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 

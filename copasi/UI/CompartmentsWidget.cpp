@@ -80,9 +80,8 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   connect(table, SIGNAL(valueChanged(int , int)),
           this, SLOT(tableValueChanged(int, int)));
   connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent,
-          SLOT(loadModelNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent,
-          SLOT(dataModelUpdated()));
+          SLOT(loadCompartmentsNodes(CModel*)));
+  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 void CompartmentsWidget::loadCompartments(CModel *model)
