@@ -1,5 +1,5 @@
-// Main 
-// 
+// Main
+//
 // (C) Pedro Mendes 2000
 //
 
@@ -17,6 +17,7 @@
 
 #include "utilities/utilities.h"
 #include "model/model.h"
+#include "model/CSpec2Model.h"
 #include "output/output.h"
 #include "function/function.h"
 #include "trajectory/trajectory.h"
@@ -30,38 +31,38 @@
 #include "tnt/vec.h"
 #include "tnt/subscript.h"
 
-C_INT32  TestReadConfig(void);
-C_INT32  TestWriteConfig(void);
-C_INT32  TestCompartment(void);
-C_INT32  TestException(void);
-C_INT32  TestDatum(void);
-C_INT32  TestMetab(void);
-C_INT32  TestMessage(void);
-C_INT32  TestReadSample(void);
-C_INT32  TestMoiety(void);
-C_INT32  TestKinFunction(void);
-C_INT32  TestFunctionDB(void);
-C_INT32  TestMassAction(void);
-C_INT32  TestBaseFunction(void);
-C_INT32  TestModel(void);
-C_INT32  TestLU();
-C_INT32  TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
-C_INT32  TestTrajectory(void);
-C_INT32  TestStochDirectMethod(void);
-C_INT32  TestNewton(void);
-C_INT32  TestSSSolution(void);
-C_INT32  TestEigen(void);
-C_INT32  TestOptimization(void);     //yohe: new
-C_INT32  TestElementaryFluxMode(void);
+C_INT32 TestReadConfig(void);
+C_INT32 TestWriteConfig(void);
+C_INT32 TestCompartment(void);
+C_INT32 TestException(void);
+C_INT32 TestDatum(void);
+C_INT32 TestMetab(void);
+C_INT32 TestMessage(void);
+C_INT32 TestReadSample(void);
+C_INT32 TestMoiety(void);
+C_INT32 TestKinFunction(void);
+C_INT32 TestFunctionDB(void);
+C_INT32 TestMassAction(void);
+C_INT32 TestBaseFunction(void);
+C_INT32 TestModel(void);
+C_INT32 TestLU();
+C_INT32 TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
+C_INT32 TestTrajectory(void);
+C_INT32 TestStochDirectMethod(void);
+C_INT32 TestNewton(void);
+C_INT32 TestSSSolution(void);
+C_INT32 TestEigen(void);
+C_INT32 TestOptimization(void);     //yohe: new
+C_INT32 TestElementaryFluxMode(void);
 
-C_INT32  ConvertFunctionDB(void);
-C_INT32  MakeFunctionDB(void);
-C_INT32  MakeFunctionEntry(const string &name,
-                           const string &description,
-                           TriLogic reversible,
-                           vector < string > modifier,
-                           vector < string > parameter,
-                           CCopasiVectorNS <CKinFunction> &functions);
+C_INT32 ConvertFunctionDB(void);
+C_INT32 MakeFunctionDB(void);
+C_INT32 MakeFunctionEntry(const string &name,
+                          const string &description,
+                          TriLogic reversible,
+                          vector < string > modifier,
+                          vector < string > parameter,
+                          CCopasiVectorNS <CKinFunction> &functions);
 
 vector < CMetab * >
 InitMetabolites(CCopasiVector < CCompartment > & compartment);
@@ -78,7 +79,7 @@ C_INT main(C_INT argc, char *argv[])
   cout << "Starting main program." << endl;
   Copasi = new CGlobals;
   Copasi->setArguments(argc, argv);
-  
+
   try
     {
       cout << "sizeof(long) = " << sizeof(long) << endl;
@@ -87,41 +88,40 @@ C_INT main(C_INT argc, char *argv[])
       cout << "sizeof(double) = " << sizeof(double) << endl;
       cout << "sizeof(float) = " << sizeof(float) << endl;
 
-        
-//      TestException();
-//      TestMessage();
-       
-//      TestWriteConfig();
-//      TestReadConfig();
-//      TestCompartment();
-//      TestDatum();
-//      TestMetab();
-//      TestReadSample();
-//      TestNewton();
-//      TestSSSolution();
-//YOHE: new test
-//      TestOptimization();
-//      TestEigen();
-//      TestTrajectory();
-//      TestStochDirectMethod();
-//      TestMoiety();
-//      TestKinFunction();
-//      TestMassAction();
-//      TestFunctionDB();
-//      TestBaseFunction();
-//      TestModel();
-//      TestLU();
-//      TestMCA();
-//      TestOutputEvent();        
-//      MakeFunctionDB();
-//      ConvertFunctionDB();
-      
-//      TestRandom(10000, 100);
-//      TestDependencyGraph();
-//      TestIndexedPriorityQueue(7);
+      //      TestException();
+      //      TestMessage();
+
+      //      TestWriteConfig();
+      //      TestReadConfig();
+      //      TestCompartment();
+      //      TestDatum();
+      //      TestMetab();
+      //      TestReadSample();
+      //      TestNewton();
+      //      TestSSSolution();
+      //YOHE: new test
+      //      TestOptimization();
+      //      TestEigen();
+      //      TestTrajectory();
+      //      TestStochDirectMethod();
+      //      TestMoiety();
+      //      TestKinFunction();
+      //      TestMassAction();
+      //      TestFunctionDB();
+      //      TestBaseFunction();
+      //      TestModel();
+      //      TestLU();
+      //      TestMCA();
+      //      TestOutputEvent();
+      //      MakeFunctionDB();
+      //      ConvertFunctionDB();
+
+      //      TestRandom(10000, 100);
+      //      TestDependencyGraph();
+      //      TestIndexedPriorityQueue(7);
       TestSpec2Model();
-    
-//      TestElementaryFluxMode();
+
+      //      TestElementaryFluxMode();
     }
 
   catch (CCopasiException Exception)
@@ -134,7 +134,7 @@ C_INT main(C_INT argc, char *argv[])
   return 0;
 }
 
-C_INT32  TestMessage(void)
+C_INT32 TestMessage(void)
 {
   try
     {
@@ -144,12 +144,13 @@ C_INT32  TestMessage(void)
 
   catch (CCopasiException Exception)
     {
-        std::cout << Exception.getMessage().getText() << std::endl;
+      std::cout << Exception.getMessage().getText() << std::endl;
     }
+
   return 0;
 }
 
-C_INT32  TestException()
+C_INT32 TestException()
 {
   try
     {
@@ -157,7 +158,7 @@ C_INT32  TestException()
       CCopasiMessage Error(CCopasiMessage::ERROR, "Fatal Error");
       cout << "Leaving exception test." << endl;
     }
-    
+
   catch (CCopasiException Exception)
     {
       cout << "Entering fatal error handling." << endl;
@@ -169,70 +170,68 @@ C_INT32  TestException()
 
   catch (char *str)
     {
-      cout << "Caugth other exception" <<endl;
+      cout << "Caugth other exception" << endl;
     }
-    
+
   cout << endl;
   return 0;
 }
 
-
-C_INT32  TestReadConfig(void)
+C_INT32 TestReadConfig(void)
 {
   cout << "Entering TestReadConfig." << endl;
   // CReadConfig Default;
   CReadConfig Specific((string) "TestWriteConfig.txt");
   string outstring = "";
-  Specific.getVariable((string) "Compartment", 
-                       (string) "string", 
+  Specific.getVariable((string) "Compartment",
+                       (string) "string",
                        (void *) &outstring);
   C_FLOAT64 outdouble = 0;
-  Specific.getVariable((string) "Volume", 
-                       (string) "C_FLOAT64", 
+  Specific.getVariable((string) "Volume",
+                       (string) "C_FLOAT64",
                        (void *) &outdouble);
-  Specific.getVariable((string) "Compartment", 
-                       (string) "string", 
+  Specific.getVariable((string) "Compartment",
+                       (string) "string",
                        (void *) &outstring);
-  Specific.getVariable((string) "Volume", 
-                       (string) "C_FLOAT64", 
+  Specific.getVariable((string) "Volume",
+                       (string) "C_FLOAT64",
                        (void *) &outdouble);
   // Default.free();
   // Specific.free();
-    
+
   cout << endl;
   return 0;
 }
- 
-C_INT32  TestWriteConfig(void)
+
+C_INT32 TestWriteConfig(void)
 {
   cout << "Entering TestWriteConfig." << endl;
   // CWriteConfig Default;
   CWriteConfig Specific((string) "TestWriteConfig.txt");
   string outstring = "Laber";
-  Specific.setVariable((string) "Compartment", 
-                       (string) "string", 
+  Specific.setVariable((string) "Compartment",
+                       (string) "string",
                        (void *) &outstring);
   Specific.flush();
   C_FLOAT64 outdouble = 1.03e3;
-  Specific.setVariable((string) "Volume", 
-                       (string) "C_FLOAT64", 
+  Specific.setVariable((string) "Volume",
+                       (string) "C_FLOAT64",
                        (void *) &outdouble);
   Specific.flush();
-    
+
   outstring = "Blubber";
-  Specific.setVariable((string) "Compartment", 
-                       (string) "string", 
+  Specific.setVariable((string) "Compartment",
+                       (string) "string",
                        (void *) &outstring);
   outdouble = 1.03e3;
-  Specific.setVariable((string) "Junk", 
-                       (string) "C_FLOAT64", 
+  Specific.setVariable((string) "Junk",
+                       (string) "C_FLOAT64",
                        (void *) &outdouble);
   Specific.flush();
-    
+
   cout << endl;
   return 0;
 }
-   
 
 C_INT32 TestCompartment(void)
 {
@@ -252,15 +251,15 @@ C_INT32 TestCompartment(void)
   d[0].save(of);
   of.flush();
 
-  c=d[0];
+  c = d[0];
 
   delete [] d;
 
   CReadConfig Specific((string) "TestCompartment.txt");
-    
+
   CCopasiVectorNS < CCompartment > ListOut;
 
-  ListOut.load(Specific,2);
+  ListOut.load(Specific, 2);
 
   CWriteConfig VectorOut((string) "TestCompartmentVector.txt");
   ListOut.save(VectorOut);
@@ -270,7 +269,7 @@ C_INT32 TestCompartment(void)
 
   CReadConfig VectorIn((string) "TestCompartmentVector.txt");
 
-  ListIn.load(VectorIn,2);
+  ListIn.load(VectorIn, 2);
 
   cout << endl;
   return 0;
@@ -283,15 +282,15 @@ C_INT32 TestDatum(void)
   cout << "Entering TestDatum." << endl;
   C_FLOAT64 doublevariable;
   cout << "creating a CDatum object..." << endl;
-  CDatum d((string)"[medicarpin]t", 
-           D_TCONC, 
-           (string)"medicarpin", 
+  CDatum d((string)"[medicarpin]t",
+           D_TCONC,
+           (string)"medicarpin",
            (string)"", &doublevariable);
   cout << "Opening an output stream" << endl;
   CWriteConfig of("TestDatum1.txt");
   d.save(of);
   of.flush();
-    
+
   CReadConfig Specific((string) "TestDatum1.txt");
   CDatum* e;
   e = new CDatum[2];
@@ -321,22 +320,23 @@ C_INT32 TestMetab(void)
 
   cout << "Opening an output stream" << endl;
   CWriteConfig of("TestMetab.txt");
-  c.save(of,ListIn);
+  c.save(of, ListIn);
   of.flush();
 
   CMetab d;
   CReadConfig inf("TestMetab.txt");
-  d.load(inf,ListIn);
-    
+  d.load(inf, ListIn);
+
   cout << endl;
   return 0;
 }
+
 #endif
 
 C_INT32 TestReadSample(void)
 {
   C_INT32 size = 0;
-     
+
   CReadConfig inbuf("gps/bakker.gps");
   CModel model;
   model.load(inbuf);
@@ -350,10 +350,10 @@ C_INT32 TestReadSample(void)
   size = model.getMetabolitesInd().size();
   C_FLOAT64 *y;
   y = new double[size];
-    
+
   odeSolver.initialize(model, y, size);
   odeSolver.step(0.0, 1.0);
-    
+
   CWriteConfig outbuf("copasi.gps");
   model.save(outbuf);
   outbuf.flush();
@@ -364,21 +364,21 @@ C_INT32 TestReadSample(void)
   CReadConfig inbuf2("copasi.gps");
   CModel model2;
   model2.load(inbuf2);
-    
+
   CWriteConfig outbuf2("copasi2.gps");
   model2.save(outbuf2);
   outbuf2.flush();
-    
+
   return 0;
 }
 
 C_INT32 TestOutputEvent(void)
 {
-//  C_INT32 size = 0;
+  //  C_INT32 size = 0;
 
   cout << "Entering TestOutputEvent." << endl;
 
-  ofstream  fout, fout1, fout2;
+  ofstream fout, fout1, fout2;
   //fout.open("TestSS.out");
   fout1.open("TestDyn.out");
   //fout2.open("TestRep.out");
@@ -393,7 +393,7 @@ C_INT32 TestOutputEvent(void)
   model.buildRedStoi();
   model.buildL();
   model.buildMoieties();
-    
+
   COutputList oList;
 
   oList.load(inbuf);
@@ -424,7 +424,6 @@ C_INT32 TestOutputEvent(void)
   return 0;
 }
 
-
 C_INT32 TestTrajectory(void)
 {
   string InputFile(Copasi->Arguments[1]);
@@ -435,14 +434,13 @@ C_INT32 TestTrajectory(void)
   outbuf.setDefaults();
   CModel model;
 
-
   // COutput output;
   // output.load(inbuf);
-  
+
   model.load(inbuf);
   model.compile();
   model.save(outbuf);
-  
+
   Copasi->OutputList.load(inbuf);
   Copasi->OutputList.save(outbuf);
 
@@ -453,7 +451,7 @@ C_INT32 TestTrajectory(void)
   traj.initialize();
   traj.getODESolver()->load(inbuf);
   ofstream output("output.txt");
-  
+
   cout << "Running trajectory\n";
   traj.process(output);
   traj.cleanup();
@@ -463,162 +461,158 @@ C_INT32 TestTrajectory(void)
 
 C_INT32 TestStochDirectMethod(void)
 {
-    cout << "Testing stoch direct method\n";
-    string InputFile(Copasi->Arguments[1]);
-    string OutputFile(Copasi->Arguments[2]);
-    CReadConfig inbuf(InputFile);
-    inbuf.getDefaults();
+  cout << "Testing stoch direct method\n";
+  string InputFile(Copasi->Arguments[1]);
+  string OutputFile(Copasi->Arguments[2]);
+  CReadConfig inbuf(InputFile);
+  inbuf.getDefaults();
 
-    cout << "Creating model\n";
-    CModel model;
-    model.load(inbuf);
-    model.compile();
-  
-    cout << "Creating trajectory\n";
-    CTrajectory traj;
-    cout << "Setting model\n";
-    traj.setModel(&model);
-    cout << "Setting method\n";
-    traj.setMethod(CTrajectory::STOCH_DIRECT); // method 2 corresponds to the direct method
-    cout << "Setting end time\n";
-    traj.setEndTime(1.0);
-    cout << "Setting max points\n";
-    traj.setMaxSteps(100);
-    cout << "Initializing trajectory\n"; 
-    traj.initialize();
+  cout << "Creating model\n";
+  CModel model;
+  model.load(inbuf);
+  model.compile();
 
-    ofstream output("output.txt");
-  
-    cout << "Running trajectory\n";
-    traj.process(output);
-    traj.cleanup();
+  cout << "Creating trajectory\n";
+  CTrajectory traj;
+  cout << "Setting model\n";
+  traj.setModel(&model);
+  cout << "Setting method\n";
+  traj.setMethod(CTrajectory::STOCH_DIRECT); // method 2 corresponds to the direct method
+  cout << "Setting end time\n";
+  traj.setEndTime(1.0);
+  cout << "Setting max points\n";
+  traj.setMaxSteps(100);
+  cout << "Initializing trajectory\n";
+  traj.initialize();
 
-    return 0;
+  ofstream output("output.txt");
+
+  cout << "Running trajectory\n";
+  traj.process(output);
+  traj.cleanup();
+
+  return 0;
 }
 
 C_INT32 TestMCA(void)
 {
-    cout << "Entering TestReport." << endl;
+  cout << "Entering TestReport." << endl;
 
-    CReadConfig inbuf("gps/DANNY.gps");
+  CReadConfig inbuf("gps/DANNY.gps");
 
-    CModel model;
-    model.load(inbuf);
-    model.buildStoi();
-    model.lUDecomposition();
-    model.setMetabolitesStatus();
-    model.buildRedStoi();        
-    
-    CMca mMCA();
-    return 0;
+  CModel model;
+  model.load(inbuf);
+  model.buildStoi();
+  model.lUDecomposition();
+  model.setMetabolitesStatus();
+  model.buildRedStoi();
+
+  CMca mMCA();
+  return 0;
 }
 
-
 // by YH
-C_INT32  TestNewton(void)
+C_INT32 TestNewton(void)
 {
-//    C_INT32 size = 0;
-//    C_INT32 i;
- 
-    CReadConfig inbuf("gps/NewtonTest.gps");
-    //   CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
-    CModel model;
-    model.load(inbuf);
-    model.compile();
- 
-    model.getReactions().size();
-    
-    //set up CNewton object and pass to CSS_Solution
-    CNewton newton;
-    newton.setModel(model);
-    // newton.initialize();
- 
-    //get mDerivFactor, mSSRes, and mNewtonLimit,
-    //or may use their default values
-    //YOHE: new test 03/22/02
-    //newton.setDerivFactor(0.1);
-    newton.setDerivFactor(0.003);
-    cout << "setDerivFactor(0.003)" <<endl;
-    newton.setSSRes(1.0e-9);
-    newton.setNewtonLimit(50);
-    //cout << "newton DerivFactor, SSRes, and NewtonLimit are: " 
-    //     << newton.getDerivFactor()<<", "<<newton.getSSRes()<<", "
-    //     << newton.getNewtonLimit()<<endl;
+  //    C_INT32 size = 0;
+  //    C_INT32 i;
 
-    //how to get ss_nfunction?
-    newton.setSs_nfunction(0);
- 
-    //how to get mSs_x, mSs_new, mSs_dxdt, mSs_h, mSs_jacob, mSs_ipvt
-    //and mSs_solution??? or don't need to care about them here??
+  CReadConfig inbuf("gps/NewtonTest.gps");
+  //   CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
+  CModel model;
+  model.load(inbuf);
+  model.compile();
 
-    newton.setStartingPoint();
-    newton.process();
- 
-    return 0;
+  model.getReactions().size();
+
+  //set up CNewton object and pass to CSS_Solution
+  CNewton newton;
+  newton.setModel(model);
+  // newton.initialize();
+
+  //get mDerivFactor, mSSRes, and mNewtonLimit,
+  //or may use their default values
+  //YOHE: new test 03/22/02
+  //newton.setDerivFactor(0.1);
+  newton.setDerivFactor(0.003);
+  cout << "setDerivFactor(0.003)" << endl;
+  newton.setSSRes(1.0e-9);
+  newton.setNewtonLimit(50);
+  //cout << "newton DerivFactor, SSRes, and NewtonLimit are: "
+  //     << newton.getDerivFactor()<<", "<<newton.getSSRes()<<", "
+  //     << newton.getNewtonLimit()<<endl;
+
+  //how to get ss_nfunction?
+  newton.setSs_nfunction(0);
+
+  //how to get mSs_x, mSs_new, mSs_dxdt, mSs_h, mSs_jacob, mSs_ipvt
+  //and mSs_solution??? or don't need to care about them here??
+
+  newton.setStartingPoint();
+  newton.process();
+
+  return 0;
 }
- 
- 
+
 // by YH
-C_INT32  TestSSSolution(void)
+C_INT32 TestSSSolution(void)
 {
-    CReadConfig inbuf("gps/TestKinetics/MassAction.gps");
-    inbuf.getDefaults();
+  CReadConfig inbuf("gps/TestKinetics/MassAction.gps");
+  inbuf.getDefaults();
 
-    CModel model;
-    model.load(inbuf);
-    model.compile();
- 
-    Copasi->OutputList.load(inbuf);
-    
-    CSS_Solution ss_soln;
-    ss_soln.load(inbuf);
-    ss_soln.setModel(&model);
-    ss_soln.initialize();
+  CModel model;
+  model.load(inbuf);
+  model.compile();
 
-    ofstream output("output.txt");
-    
-    ss_soln.process(output);
- 
-    return 0;
+  Copasi->OutputList.load(inbuf);
+
+  CSS_Solution ss_soln;
+  ss_soln.load(inbuf);
+  ss_soln.setModel(&model);
+  ss_soln.initialize();
+
+  ofstream output("output.txt");
+
+  ss_soln.process(output);
+
+  return 0;
 }
 
 //by YH
 //first, test matrix A = [-1 4 -2; -3 4 0; -3 1 3].
 //the eig(A)=[1.0 2.0 3.0].
-// 
-C_INT32  TestEigen(void)
+//
+C_INT32 TestEigen(void)
 {
-  cout<<endl<<"Begin to TestEigen ..."<<endl<<endl;
-  cout<<"Note: Testing Sample: matrix[-1 4 -2; -3 4 0; -3 1 3]"<<endl;
-  cout<<"Note: According MatLab, the result for the sample: eig(A)=[1.0 2.0 3.0]"<<endl;
-  cout<<"--- The results from my program are  shown below:"<<endl;
-  
+  cout << endl << "Begin to TestEigen ..." << endl << endl;
+  cout << "Note: Testing Sample: matrix[-1 4 -2; -3 4 0; -3 1 3]" << endl;
+  cout << "Note: According MatLab, the result for the sample: eig(A)=[1.0 2.0 3.0]" << endl;
+  cout << "--- The results from my program are  shown below:" << endl;
+
   CEigen myEigen;
 
   //initialize matrix
-  TNT::Matrix<C_FLOAT64> matrix(3, 3, 
-                           " -1 4 -2 "
-                           " -3 4  0 "
-                           " -3 1  3 ");
+  TNT::Matrix<C_FLOAT64> matrix(3, 3,
+                                " -1 4 -2 "
+                                " -3 4  0 "
+                                " -3 1  3 ");
   //TNT::Matrix<C_FLOAT64> matrix=[-1 4 -2; -3 4 0; -3 1 3] ;
   // SSResoltion=1.000000e-009 (from NewtonTest_yhtest.gps)
   C_FLOAT64 ssRes = 0.0;
 
-
   myEigen.CalcEigenvalues(ssRes, matrix);
 
-  cout << "!!! Yongqun Testing: the max eigenvalue real part is: "<<myEigen.getEigen_maxrealpart()<<endl;
-  cout << "!!! Yongqun Testing: the max eigenvalue imag part is: "<<myEigen.getEigen_maximagpart()<<endl;
-  cout << "!!! Yongqun Testing: the stiffness  is: "<<myEigen.getEigen_stiffness() << endl;
-  cout << "!!! Yongqun Testing: the eigen hierarchy is: "<<myEigen.getEigen_hierarchy() << endl;
-  cout << "!!! Yongqun Testing: the number of positive real  is: "<<myEigen.getEigen_nposreal()<<endl;
-  cout << "!!! Yongqun Testing: the num of negative real is: "<<myEigen.getEigen_nnegreal()<<endl<<endl;
+  cout << "!!! Yongqun Testing: the max eigenvalue real part is: " << myEigen.getEigen_maxrealpart() << endl;
+  cout << "!!! Yongqun Testing: the max eigenvalue imag part is: " << myEigen.getEigen_maximagpart() << endl;
+  cout << "!!! Yongqun Testing: the stiffness  is: " << myEigen.getEigen_stiffness() << endl;
+  cout << "!!! Yongqun Testing: the eigen hierarchy is: " << myEigen.getEigen_hierarchy() << endl;
+  cout << "!!! Yongqun Testing: the number of positive real  is: " << myEigen.getEigen_nposreal() << endl;
+  cout << "!!! Yongqun Testing: the num of negative real is: " << myEigen.getEigen_nnegreal() << endl << endl;
 
-  cout<<"Leaving TestEigen() function ..."<<endl<<endl;
+  cout << "Leaving TestEigen() function ..." << endl << endl;
 
   return 0;
 }
-
 
 /*
 //yohe: test optimization -- 03/27/02
@@ -639,14 +633,14 @@ C_INT32  TestOptimization(void)
    
     COptimizer * opt = new COptimizer();
     opt->Optimise();
-
+ 
     //polymorphism, late binding
     CGA ga;
     COptimizer * optPtr = &ga;
     cout << "TestOptimization() begins new test --- " << endl;
     opt->Optimise();
     optPtr->Optimise();
-
+ 
     //CGA ga;
     //opt.Set_nparam (100);
     //opt.Set_mn(-10.0);
@@ -654,11 +648,10 @@ C_INT32  TestOptimization(void)
     //ga.Optimise();
  
     return 0;
-
+ 
 }
-
-*/
-
+ 
+ */
 
 C_INT32 TestMoiety()
 {
@@ -667,7 +660,7 @@ C_INT32 TestMoiety()
 
   c.metabolites().add(CMetab());
   c.metabolites().add(CMetab());
-    
+
   c.metabolites()[0]->setName("metab 1");
   c.metabolites()[0]->setConcentration(5.2);
   c.metabolites()[1]->setName("metab 2");
@@ -675,19 +668,19 @@ C_INT32 TestMoiety()
 
   CMetab m;
   m = *c.metabolites()["metab 2"];
-    
+
   mo.add(-2000, c.metabolites()[0]);
   mo.add(3, c.metabolites()[1]);
   mo.add(0, c.metabolites()[1]);
-    
+
   //    C_FLOAT64 Value=mo.value();
   string Description = mo.getDescription();
-    
+
   // mo.change("metab 2", 2);
-    
+
   mo.cleanup();
   //    Value=mo.value();
-    
+
   return 0;
 }
 
@@ -695,44 +688,44 @@ C_INT32 TestKinFunction()
 {
   cout << "Testing CKinFunction\n";
   CKinFunction f;
-    
+
   f.setName("test");
   f.setDescription("(a-b)*(a+b)/5");
   f.getParameters().add("a", CFunctionParameter::FLOAT64, "UNKNOWN");
   f.getParameters().add("b", CFunctionParameter::FLOAT64, "UNKNOWN");
-  
+
   f.compile();
   cout << "f(a,b) = (a-b)*(a+b)/5" << endl;
-  
+
   //  f.setIdentifierType("a", N_SUBSTRATE);
   //  f.setIdentifierType("b", N_PRODUCT);
 
   C_FLOAT64 a = 4;
   C_FLOAT64 b = 1;
-    
+
   CCallParameters CallParameters;
 
   CallParameters.resize(2);
-    
+
   CallParameters[0] = &a;
   CallParameters[1] = &b;
-    
+
   C_FLOAT64 r = f.calcValue(CallParameters);
 
   cout << "f(a,b) = " << f.getDescription() << endl;
   cout << "f(" << a << "," << b << ") = " << r << endl;
-    
+
   CWriteConfig out("TestKinFunction.gps");
   f.save(out);
   f.cleanup();
-    
+
   out.flush();
-    
+
   CReadConfig in("TestKinFunction.gps");
   CKinFunction g;
-    
+
   g.load(in);
-    
+
   a = 5;
   r = g.calcValue(CallParameters);
   cout << "f(" << a << "," << b << ") = " << r << endl;
@@ -745,7 +738,7 @@ vector < CMetab * >
 InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
 {
   vector < CMetab * > Metabolites;
-
+ 
   for (unsigned C_INT32 i = 0; i < compartments.size(); i++)
     for (unsigned C_INT32 j = 0;
          j < compartments[i]->metabolites().size(); j++)
@@ -753,16 +746,16 @@ InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
     
   return Metabolites;
 }
-*/
+ */
 
 C_INT32 TestBaseFunction()
 {
   CFunction BaseFunction;
-    
+
   //  BaseFunction.callParameters().resize(3);
-    
+
   BaseFunction.cleanup();
-    
+
   return 0;
 }
 
@@ -1282,7 +1275,7 @@ C_INT32 MakeFunctionDB()
   functions.save(db);
 
   functions.cleanup();
-    
+
   return 0;
 }
 
@@ -1295,7 +1288,7 @@ C_INT32 MakeFunctionEntry(const string &name,
 {
   C_INT32 Index = functions.size();
   unsigned C_INT32 i;
-    
+
   CKinFunction f;
 
   functions.add(f);
@@ -1309,38 +1302,44 @@ C_INT32 MakeFunctionEntry(const string &name,
   pair < C_INT32, C_INT32 > Tuple(0, 0);
 
   Tuple = functions[Index]->findIdentifier("substrate");
-  if (0 <= Tuple.first && 0 <= Tuple.second )
+
+  if (0 <= Tuple.first && 0 <= Tuple.second)
     functions[Index]->setIdentifierType("substrate", N_SUBSTRATE);
-        
+
   Tuple = functions[Index]->findIdentifier("substratea");
-  if (0 <= Tuple.first && 0 <= Tuple.second )
+
+  if (0 <= Tuple.first && 0 <= Tuple.second)
     functions[Index]->setIdentifierType("substratea", N_SUBSTRATE);
-        
+
   Tuple = functions[Index]->findIdentifier("substrateb");
-  if (0 <= Tuple.first && 0 <= Tuple.second )
+
+  if (0 <= Tuple.first && 0 <= Tuple.second)
     functions[Index]->setIdentifierType("substrateb", N_SUBSTRATE);
-        
+
   Tuple = functions[Index]->findIdentifier("product");
-  if (0 <= Tuple.first && 0 <= Tuple.second )
+
+  if (0 <= Tuple.first && 0 <= Tuple.second)
     functions[Index]->setIdentifierType("product", N_PRODUCT);
-        
+
   Tuple = functions[Index]->findIdentifier("productp");
-  if (0 <= Tuple.first && 0 <= Tuple.second )
+
+  if (0 <= Tuple.first && 0 <= Tuple.second)
     functions[Index]->setIdentifierType("productp", N_PRODUCT);
-        
+
   Tuple = functions[Index]->findIdentifier("productq");
-  if (0 <= Tuple.first && 0 <= Tuple.second )
+
+  if (0 <= Tuple.first && 0 <= Tuple.second)
     functions[Index]->setIdentifierType("productq", N_PRODUCT);
-        
 
   for (i = 0; i < modifier.size(); i++)
     functions[Index]->setIdentifierType(modifier[i], N_MODIFIER);
 
   for (i = 0; i < parameter.size(); i++)
     functions[Index]->setIdentifierType(parameter[i], N_KCONSTANT);
-            
+
   return 0;
 }
+
 #endif // XXXX
 
 C_INT32 TestModel()
@@ -1357,109 +1356,131 @@ C_INT32 TestLU()
 {
   unsigned C_INT32 i;
   C_INT32 t;
-    
-  TNT::Matrix < C_FLOAT64 > A(4,3);
-    
-  A(1,1) =  1.0; A(1,2) = -2.0; A(1,3) =  0.0;
-  A(2,1) = -1.0; A(2,2) =  2.0; A(2,3) =  1.0;
-  A(3,1) =  0.0; A(3,2) =  0.0; A(3,3) =  2.0;
-  A(4,1) =  0.0; A(4,2) =  0.0; A(4,3) = -3.0;
-    
+
+  TNT::Matrix < C_FLOAT64 > A(4, 3);
+
+  A(1, 1) = 1.0;
+  A(1, 2) = -2.0;
+  A(1, 3) = 0.0;
+  A(2, 1) = -1.0;
+  A(2, 2) = 2.0;
+  A(2, 3) = 1.0;
+  A(3, 1) = 0.0;
+  A(3, 2) = 0.0;
+  A(3, 3) = 2.0;
+  A(4, 1) = 0.0;
+  A(4, 2) = 0.0;
+  A(4, 3) = -3.0;
+
   TNT::Vector < unsigned C_INT32 > rowLU(4);
   TNT::Vector < unsigned C_INT32 > colLU(3);
-    
+
   vector < C_INT32 > row(4);
-  for (i = 0; i < row.size(); i++) row[i] = i;
+
+  for (i = 0; i < row.size(); i++)
+    row[i] = i;
+
   vector < C_INT32 > rowi = row;
-    
+
   vector < C_INT32 > col(3);
-  for (i = 0; i < col.size(); i++) col[i] = i;
+
+  for (i = 0; i < col.size(); i++)
+    col[i] = i;
+
   vector < C_INT32 > coli = col;
 
   cout << A << endl;
 
   TNT::LUX_factor(A, rowLU, colLU);
-    
+
   //colLU(3) = 2;
-    
+
   cout << A << endl;
+
   cout << rowLU << endl;
+
   cout << colLU << endl;
 
-  for (i = 0; i < row.size(); i++) 
+  for (i = 0; i < row.size(); i++)
     {
       if (rowLU[i] - 1 > i)
         {
           t = row[i];
-          row[i] = row[rowLU[i]-1];
-          row[rowLU[i]-1] = t;
+          row[i] = row[rowLU[i] - 1];
+          row[rowLU[i] - 1] = t;
         }
     }
-    
-  for (i = rowi.size(); 0 < i--; ) 
+
+  for (i = rowi.size(); 0 < i--; )
     {
-      if (rowLU[i]-1 > i)
+      if (rowLU[i] - 1 > i)
         {
           t = rowi[i];
-          rowi[i] = rowi[rowLU[i]-1];
-          rowi[rowLU[i]-1] = t;
+          rowi[i] = rowi[rowLU[i] - 1];
+          rowi[rowLU[i] - 1] = t;
         }
     }
-    
-  for (i = col.size(); 0 < i--; ) 
+
+  for (i = col.size(); 0 < i--; )
     {
-      if (colLU[i]-1 < i)
+      if (colLU[i] - 1 < i)
         {
           t = col[i];
-          col[i] = col[colLU[i]-1];
-          col[colLU[i]-1] = t;
+          col[i] = col[colLU[i] - 1];
+          col[colLU[i] - 1] = t;
         }
     }
-    
-  for (i = 0; i < coli.size(); i++) 
+
+  for (i = 0; i < coli.size(); i++)
     {
       if (colLU[i] - 1 < i)
         {
           t = coli[i];
-          coli[i] = coli[colLU[i]-1];
-          coli[colLU[i]-1] = t;
+          coli[i] = coli[colLU[i] - 1];
+          coli[colLU[i] - 1] = t;
         }
     }
-    
+
   for (i = 0; i < row.size(); i++)
     cout << row[i] << ' ';
+
   cout << endl;
+
   for (i = 0; i < rowi.size(); i++)
     cout << rowi[i] << ' ';
+
   cout << endl;
-    
+
   for (i = 0; i < col.size(); i++)
     cout << col[i] << ' ';
+
   cout << endl;
+
   for (i = 0; i < coli.size(); i++)
     cout << coli[i] << ' ';
+
   cout << endl;
-    
+
   return 0;
 }
 
-C_INT32  TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *))
+C_INT32 TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *))
 {
   C_INT32 n = 99;
   C_FLOAT64 d = 99.99;
   C_FLOAT64 * pd = &d;
-    
+
   (*f)(n, d, pd, pd);
 
   return 0;
 }
 
-C_INT32  TestMassAction(void)
+C_INT32 TestMassAction(void)
 {
   string Usage;
-  
+
   CUsageRange Src;
-  Src.setRange(1,0);
+  Src.setRange(1, 0);
   Src.setUsage("parameter");
 
   CUsageRange Copy(Src);
@@ -1468,7 +1489,7 @@ C_INT32  TestMassAction(void)
   CUsageRange * pCopy = new CUsageRange(Src);
   Usage = "";
   Usage = pCopy->getUsage();
-  
+
   CMassAction Reversible(TriTrue);
   CMassAction Irreversible(TriFalse);
 
@@ -1480,23 +1501,23 @@ C_INT32  TestMassAction(void)
   return 0;
 }
 
-C_INT32  TestFunctionDB(void) 
+C_INT32 TestFunctionDB(void)
 {
   CFunctionDB FunctionDB;
-  
+
   FunctionDB.setFilename("FunctionDB.gps");
   FunctionDB.initialize();
 
   CFunction * pFunction;
   pFunction = FunctionDB.findFunction("Henri-Michaelis-Menten (irreversible)");
-  
+
   return 0;
 }
 
 C_INT32 ConvertFunctionDB(void)
 {
   CFunctionDB FunctionDB;
-  
+
   FunctionDB.setFilename("FunctionDB.gps");
   FunctionDB.initialize();
 
@@ -1546,182 +1567,217 @@ C_INT32 ConvertFunctionDB(void)
 
 C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
 {
-    C_INT32 npoints = num_points;
-    C_INT32 nbins = num_bins;
-    cout << "Testing random number generator\n\n";
-    cout << "Dropping " << npoints << " points into " << nbins << " bins.\n";
+  C_INT32 npoints = num_points;
+  C_INT32 nbins = num_bins;
+  cout << "Testing random number generator\n\n";
+  cout << "Dropping " << npoints << " points into " << nbins << " bins.\n";
 
-    // initialize the rng
-    CRandom generator;
-    vector <C_INT32> store;
-    for (C_INT32 i = 0; i < nbins; i++)
-    {
-        store.push_back(0);
-    }
-    vector <C_FLOAT64> random_nums;
-    C_INT32 j = 0;
-    for (j = 0; j < npoints; j++)
-    {
-        C_FLOAT64 rnd = generator.getUniformRandom();
-        C_INT32 k = static_cast<C_INT32> (rnd * nbins);
-        if (k >= nbins) {cout << " k too big \n"; exit(2);}
-        else if (k < 0.0) {cout << " k too small \n"; exit(2);}
-        store[k] += 1;
-        random_nums.push_back(rnd);
-    }
-    ofstream fout("test_random.dat");
-    cout << "Generated " << j << " points\n";
-    fout << "# Generated " << j << " points\n";
-    C_FLOAT64 min = pow(2.0,63), max = 0, mean = 0;
-    for (C_INT32 l = 0; l < nbins; l++)
-    {
-        fout << l << "  " << store[l] << endl;
-        if (store[l] > max) max = store[l];
-        if (store[l] < min) min = store[l];
-        mean += store[l];
-    }
-    cout << "Total points = " << setprecision (12) << mean << endl,
-    mean = mean / nbins;
-    C_FLOAT64 deviation = ((max - mean) > (mean - min))?(max-mean):(mean-min);
-    deviation = deviation / mean;
-    cout << "Average = " << setprecision (12) << mean << "  Deviation = " << deviation << endl;
-    fout << "#Average = " << setprecision (12) << mean << "  Deviation = " << deviation << endl;
+  // initialize the rng
+  CRandom generator;
+  vector <C_INT32> store;
 
-    // Check for repeats
-    cout << "Searching for repeats...\n";
-    vector<C_FLOAT64>::iterator it = random_nums.begin();
-    C_FLOAT64 tmp;
-    C_INT32 repeats = 0;
-    C_INT32 cnt = 0;
-    while (it != random_nums.end())
+  for (C_INT32 i = 0; i < nbins; i++)
     {
-        tmp = *it;
-        if (find(random_nums.begin(), random_nums.end(), tmp) != it)
+      store.push_back(0);
+    }
+
+  vector <C_FLOAT64> random_nums;
+  C_INT32 j = 0;
+
+  for (j = 0; j < npoints; j++)
+    {
+      C_FLOAT64 rnd = generator.getUniformRandom();
+      C_INT32 k = static_cast<C_INT32> (rnd * nbins);
+
+      if (k >= nbins)
+      {cout << " k too big \n"; exit(2); }
+      else if (k < 0.0)
+      {cout << " k too small \n"; exit(2); }
+
+      store[k] += 1;
+      random_nums.push_back(rnd);
+    }
+
+  ofstream fout("test_random.dat");
+  cout << "Generated " << j << " points\n";
+  fout << "# Generated " << j << " points\n";
+  C_FLOAT64 min = pow(2.0, 63), max = 0, mean = 0;
+
+  for (C_INT32 l = 0; l < nbins; l++)
+    {
+      fout << l << "  " << store[l] << endl;
+
+      if (store[l] > max)
+        max = store[l];
+
+      if (store[l] < min)
+        min = store[l];
+
+      mean += store[l];
+    }
+
+  cout << "Total points = " << setprecision (12) << mean << endl,
+  mean = mean / nbins;
+  C_FLOAT64 deviation = ((max - mean) > (mean - min)) ? (max - mean) : (mean - min);
+  deviation = deviation / mean;
+  cout << "Average = " << setprecision (12) << mean << "  Deviation = " << deviation << endl;
+  fout << "#Average = " << setprecision (12) << mean << "  Deviation = " << deviation << endl;
+
+  // Check for repeats
+  cout << "Searching for repeats...\n";
+  vector<C_FLOAT64>::iterator it = random_nums.begin();
+  C_FLOAT64 tmp;
+  C_INT32 repeats = 0;
+  C_INT32 cnt = 0;
+
+  while (it != random_nums.end())
+    {
+      tmp = *it;
+
+      if (find(random_nums.begin(), random_nums.end(), tmp) != it)
         {
-            repeats++;
-            CCopasiMessage(CCopasiMessage::WARNING, " Testing random generator: found %d'th repeat value = %g at  pos %d", repeats, *it, cnt);
+          repeats++;
+          CCopasiMessage(CCopasiMessage::WARNING, " Testing random generator: found %d'th repeat value = %g at  pos %d", repeats, *it, cnt);
         }
-        cnt++;
-        it++;
+
+      cnt++;
+      it++;
     }
-    if (repeats)
+
+  if (repeats)
     {
-        CCopasiMessage(CCopasiMessage::ERROR, "Testing random number generator: found %d repeats in %d numbers\n", repeats, npoints);
+      CCopasiMessage(CCopasiMessage::ERROR, "Testing random number generator: found %d repeats in %d numbers\n", repeats, npoints);
     }
-    else
+  else
     {
-        cout << "Random number generator test: Success - No repeats found" << endl;
+      cout << "Random number generator test: Success - No repeats found" << endl;
     }
-    return 0;
+
+  return 0;
 }
 
 C_INT32 TestDependencyGraph()
 {
-    cout << "Testing dependency graph\n";
-    const unsigned C_INT32 NNODES = 4;
-    const unsigned C_INT32 NDEPS = 4;
-    C_INT32 inarr[NNODES][NDEPS] = {{0,1,2,0},
-                                     {1,1,3,0},
-                                     {2,3,0,1},
-                                     {3,0,1,2}};
-    CDependencyGraph dg;
-    unsigned C_INT32 i=0, j=0;
-    for (i = 0; i < NNODES; i++)
+  cout << "Testing dependency graph\n";
+  const unsigned C_INT32 NNODES = 4;
+  const unsigned C_INT32 NDEPS = 4;
+  C_INT32 inarr[NNODES][NDEPS] = {{0, 1, 2, 0},
+                                  {1, 1, 3, 0},
+                                  {2, 3, 0, 1},
+                                  {3, 0, 1, 2}};
+  CDependencyGraph dg;
+  unsigned C_INT32 i = 0, j = 0;
+
+  for (i = 0; i < NNODES; i++)
     {
-        cout << "Adding node " << i << " with dependents ";
-        dg.addNode(i);
-        for(j = 0; j < NDEPS; j++)
+      cout << "Adding node " << i << " with dependents ";
+      dg.addNode(i);
+
+      for (j = 0; j < NDEPS; j++)
         {
-            cout << inarr[i][j] << " ";
-            dg.addDependent(i, inarr[i][j]);
+          cout << inarr[i][j] << " ";
+          dg.addDependent(i, inarr[i][j]);
         }
-        cout << endl;
+
+      cout << endl;
     }
-    // Display the vector of dependents for each node
-    for (i = 0; i < NNODES; i++)
+
+  // Display the vector of dependents for each node
+  for (i = 0; i < NNODES; i++)
     {
-        j = 0;
-        cout << "Node: " << i << " Dependents: ";
-        vector<C_INT32> depvec = dg.getDependents(i);
-        while (j < depvec.size())
+      j = 0;
+      cout << "Node: " << i << " Dependents: ";
+      vector<C_INT32> depvec = dg.getDependents(i);
+
+      while (j < depvec.size())
         {
-            cout << depvec[j] << " ";
-            j++;
+          cout << depvec[j] << " ";
+          j++;
         }
-        cout << endl;
+
+      cout << endl;
     }
-    cout <<  "Done testing dependency graph\n\n";
-    return 0;
+
+  cout << "Done testing dependency graph\n\n";
+  return 0;
 }
 
 C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
 {
-    cout << "Testing CIndexedPriorityQueue\n";
-    int size = in_size;
-	int i,j;
-    cout << "Creating priority queue of size " << size << endl;
-    CIndexedPriorityQueue pq;
-    CRandom *rand = new CRandom(1);
-    C_FLOAT64 rndval;
-    cout << "Unordered input:\n";
-    for (i = 0; i < size ; i++)
+  cout << "Testing CIndexedPriorityQueue\n";
+  int size = in_size;
+  int i, j;
+  cout << "Creating priority queue of size " << size << endl;
+  CIndexedPriorityQueue pq;
+  CRandom *rand = new CRandom(1);
+  C_FLOAT64 rndval;
+  cout << "Unordered input:\n";
+
+  for (i = 0; i < size ; i++)
     {
-        rndval = rand->getUniformRandom();
-        cout << "element " << i << ":" << rndval << endl;
-        pq.pushPair(i, rndval);
+      rndval = rand->getUniformRandom();
+      cout << "element " << i << ":" << rndval << endl;
+      pq.pushPair(i, rndval);
     }
-    cout << "Building heap\n";
-    pq.buildHeap();
-    // Display the priority queue
-    cout << "\nPriority Queue:\n";
-    for (j = 0; j < size; j++) 
+
+  cout << "Building heap\n";
+  pq.buildHeap();
+  // Display the priority queue
+  cout << "\nPriority Queue:\n";
+
+  for (j = 0; j < size; j++)
     {
-        cout << " " << j << "-" << setprecision (5) << pq[j];
+      cout << " " << j << "-" << setprecision (5) << pq[j];
     }
-    cout << endl;
-    cout << "Testing update node\n";
-    for (i = 0; i < size; i++)
+
+  cout << endl;
+  cout << "Testing update node\n";
+
+  for (i = 0; i < size; i++)
     {
-        cout << "Reset node at top index: ";
-        pq.updateNode(pq.topIndex(), 10000);
-        cout << "New queue = ";
-        for (j = 0; j < size; j++) cout << " " << j << "-" << setprecision(5) << pq[j] << setprecision(6);
-        cout << endl;
+      cout << "Reset node at top index: ";
+      pq.updateNode(pq.topIndex(), 10000);
+      cout << "New queue = ";
+
+      for (j = 0; j < size; j++)
+        cout << " " << j << "-" << setprecision(5) << pq[j] << setprecision(6);
+
+      cout << endl;
     }
-    cout << "Done testing CIndexedPriorityQueue\n\n";    
-    return 0;
+
+  cout << "Done testing CIndexedPriorityQueue\n\n";
+  return 0;
 }
 
 C_INT32 TestSpec2Model()
 {
-    cout << "Testing CSpec2Model\n";
-    string filename = "exampleinput";
-    CSpec2Model specreader(filename);
-    CModel *model;
-    // create a model
-    model = specreader.createModel();
-    // Test that we read the input file correctly
-    specreader.printInput();
-    cout << "Done testing CSpec2Model\n";
-    return 0;
+  cout << "Testing CSpec2Model\n";
+  string filename = "./copasi/model/exampleinput";
+  CSpec2Model specreader(filename);
+  CModel *model;
+  // create a model
+  model = specreader.createModel();
+  // Test that we read the input file correctly
+  specreader.printInput();
+  cout << "Done testing CSpec2Model\n";
+  return 0;
 }
 
 C_INT32 TestElementaryFluxMode(void)
 {
-    CReadConfig inbuf("gps/TestKinetics/ElementaryFluxModes.gps");
-    inbuf.getDefaults();
-  
-    CModel Model;
-    Model.load(inbuf);
-    Model.compile();
+  CReadConfig inbuf("gps/TestKinetics/ElementaryFluxModes.gps");
+  inbuf.getDefaults();
 
-    CElementaryFluxModes FluxModes;
-    
-    FluxModes.calculate(&Model);
+  CModel Model;
+  Model.load(inbuf);
+  Model.compile();
 
-    ofstream output("ElementaryFluxModes.txt");
-    output << FluxModes; 
-    
+  CElementaryFluxModes FluxModes;
+
+  FluxModes.calculate(&Model);
+
+  ofstream output("ElementaryFluxModes.txt");
+  output << FluxModes;
+
   return 0;
 }
-
