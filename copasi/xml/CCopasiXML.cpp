@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:12:26 $
+   $Author: shoops $ 
+   $Date: 2004/05/19 01:01:45 $
    End CVS Header */
 
 /**
@@ -709,7 +709,7 @@ bool CCopasiXML::buildFunctionList()
     {
       CFunction * pFunction =
         const_cast< CFunction * >(&mpModel->getReactions()[i]->getFunction());
-      FunctionMap[pFunction->getKey()] = pFunction;
+      if (pFunction) FunctionMap[pFunction->getKey()] = pFunction;
     }
 
   CCopasiVectorN< CFunction > * pFunctionList = new CCopasiVectorN< CFunction >;
