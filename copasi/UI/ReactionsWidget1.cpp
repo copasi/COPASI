@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.139 $
+   $Revision: 1.140 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:24 $
+   $Author: ssahle $ 
+   $Date: 2004/05/06 19:57:07 $
    End CVS Header */
 
 /*********************************************************************
@@ -210,6 +210,8 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
 bool ReactionsWidget1::saveToReaction()
 {
+  if (!mRi.isValid()) return false; //TODO: may be warn the user ?
+
   //first check if new metabolites need to be created
   bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
 
@@ -315,8 +317,10 @@ void ReactionsWidget1::FillWidgetFromRI()
   if (mRi.getFunctionName() != "")
     {
       ComboBox1->setCurrentText(FROM_UTF8(mRi.getFunctionName()));
-      table->updateTable(mRi);
+      table->updateTable(mRi, *dataModel->getModel());
     }
+  else
+    table->initTable();
 
   //TODO isValid()
   commitChanges->setEnabled(mRi.isValid());

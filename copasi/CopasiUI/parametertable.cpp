@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:21 $
+   $Author: ssahle $ 
+   $Date: 2004/05/06 19:57:07 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -14,6 +14,8 @@
 
 #include "parametertable.h"
 #include "CReactionInterface.h"
+#include "model/CModel.h"
+#include "model/CMetabNameInterface.h"
 #include "qtUtilities.h"
 
 #include "./icons/product.xpm"
@@ -47,6 +49,7 @@ ParameterTable::ParameterTable(QWidget * parent, const char * name)
 
 void ParameterTable::initTable()
 {
+  setNumRows(0);
   verticalHeader()->hide();
   setLeftMargin(0);
   setSelectionMode(QTable::Single);
@@ -56,7 +59,63 @@ void ParameterTable::initTable()
   setNumCols(3);
 }
 
-void ParameterTable::updateTable(const CReactionInterface & ri)
+const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CModel & model,
+    const CReactionInterface & ri)
+{
+  std::vector<std::string> ret;
+
+  ret.push_back("unknown");
+
+  //first all the metabs in the model
+  unsigned C_INT32 i, imax = model.getMetabolites().size();
+  for (i = 0; i < imax; ++i)
+    ret.push_back(CMetabNameInterface::getDisplayName(&model, *model.getMetabolites()[i]));
+
+  //now all the metabs from the ReactionInterface (that have not yet been committed to the model)
+  std::vector<std::string> lll;
+  std::vector<std::string>::const_iterator sourceIt, sourceItEnd;
+  std::vector<std::string>::const_iterator searchIt, searchItEnd;
+
+  lll = ri.getListOfMetabs("SUBSTRATE");
+  sourceItEnd = lll.end();
+  for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
+    {
+      searchItEnd = ret.end();
+      for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
+        if (*searchIt == *sourceIt)
+          break;
+      if (searchIt == searchItEnd) //that means new metab name is not in model yet
+        ret.push_back(*sourceIt);
+    }
+
+  lll = ri.getListOfMetabs("PRODUCT");
+  sourceItEnd = lll.end();
+  for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
+    {
+      searchItEnd = ret.end();
+      for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
+        if (*searchIt == *sourceIt)
+          break;
+      if (searchIt == searchItEnd) //that means new metab name is not in model yet
+        ret.push_back(*sourceIt);
+    }
+
+  lll = ri.getListOfMetabs("MODIFIER");
+  sourceItEnd = lll.end();
+  for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
+    {
+      searchItEnd = ret.end();
+      for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
+        if (*searchIt == *sourceIt)
+          break;
+      if (searchIt == searchItEnd) //that means new metab name is not in model yet
+        ret.push_back(*sourceIt);
+    }
+
+  return ret;
+}
+
+void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & model)
 {
   C_INT32 i, imax = ri.size();
   C_INT32 j, jmax;
@@ -123,8 +182,13 @@ void ParameterTable::updateTable(const CReactionInterface & ri)
       if ((usage == "SUBSTRATE") || (usage == "PRODUCT") || (usage == "MODIFIER"))
         {
           // get the list of possible metabs (for the combo box)
-          if (!ri.isLocked(i))
-            vectorOfStrings2QStringList(ri.getListOfMetabs(usage), qsl);
+          if (usage == "MODIFIER") //get all metabs; modifiers are never locked
+            vectorOfStrings2QStringList(getListOfAllMetabNames(model, ri), qsl);
+          else //only get the modifiers from the ChemEq
+            {
+              if (!ri.isLocked(i))
+                vectorOfStrings2QStringList(ri.getListOfMetabs(usage), qsl);
+            }
 
           metabNames = &(ri.getMetabs(i));
 
