@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/16 14:32:33 $
+   $Date: 2004/06/16 14:39:06 $
    End CVS Header */
 
 #include <iostream>
@@ -677,17 +677,41 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           if (nodeName.find("substrate_") == 0)
             {
               std::string speciesKey = nodeName.substr(10);
-              copasiReaction->setParameterMapping(nodeName, this->speciesMap[speciesKey]->getKey());
+              CMetab* cM = this->speciesMap[speciesKey];
+              if (cM != NULL)
+                {
+                  copasiReaction->setParameterMapping(nodeName, cM->getKey());
+                }
+              else
+                {
+                  throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
+                }
             }
           else if (nodeName.find("product_") == 0)
             {
               std::string speciesKey = nodeName.substr(8);
-              copasiReaction->setParameterMapping(nodeName, this->speciesMap[speciesKey]->getKey());
+              CMetab* cM = this->speciesMap[speciesKey];
+              if (cM != NULL)
+                {
+                  copasiReaction->setParameterMapping(nodeName, cM->getKey());
+                }
+              else
+                {
+                  throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
+                }
             }
           else if (nodeName.find("modifier_") == 0)
             {
               std::string speciesKey = nodeName.substr(9);
-              copasiReaction->setParameterMapping(nodeName, this->speciesMap[speciesKey]->getKey());
+              CMetab* cM = this->speciesMap[speciesKey];
+              if (cM != NULL)
+                {
+                  copasiReaction->setParameterMapping(nodeName, cM->getKey());
+                }
+              else
+                {
+                  throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
+                }
             }
           else
             {
