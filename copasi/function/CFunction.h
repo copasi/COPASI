@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:49 $
+   $Date: 2003/10/22 18:58:58 $
    End CVS Header */
 
 /**
@@ -98,6 +98,13 @@ class CFunction : public CCopasiContainer
      */
     static CFunction *
     createFunction(CFunction::Type type = CFunction::Base);
+
+    /**
+     * Create a function of the specified type.
+     * Note: the returned object has to be released after use with delete.
+     */
+    static CFunction *
+    createFunction(const CFunction * pFunction);
 
     /**
      * Default constructor

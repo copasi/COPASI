@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:46 $
+   $Date: 2003/10/22 18:58:58 $
    End CVS Header */
 
 /**
@@ -26,6 +26,39 @@ const std::string CFunction::TypeName[] =
 
 const char* CFunction::XMLType[] =
   {"Base", "MassAction", "PreDefined", "UserDefined", "Expression", NULL};
+
+CFunction * CFunction::createFunction(const CFunction * pFunction)
+{
+  CFunction * pNewFunction = NULL;
+
+  switch (pFunction->getType())
+    {
+    case Base:
+      pNewFunction = new CFunction(* (CFunction *) pFunction);
+      break;
+
+    case MassAction:
+      pNewFunction = new CMassAction(* (CMassAction *) pFunction);
+      break;
+
+    case PreDefined:
+      pNewFunction = new CKinFunction(* (CKinFunction *) pFunction);
+      pNewFunction->setType(PreDefined);
+      break;
+
+    case UserDefined:
+      pNewFunction = new CKinFunction(* (CKinFunction *) pFunction);
+      break;
+
+    case Expression:
+      //      pFunction = new
+      //      break;
+
+    default:
+      fatalError();
+    }
+  return pNewFunction;
+}
 
 CFunction * CFunction::createFunction(enum CFunction::Type type)
 {
