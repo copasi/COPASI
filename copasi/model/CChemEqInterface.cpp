@@ -383,10 +383,16 @@ bool CChemEqInterface::createNonExistingMetabs(CModel * model) const
 
     itEnd = metabs.end();
 
+    std::string compName;
     for (it = metabs.begin(); it != itEnd; ++it)
-      model->addMetabolite(CMetabNameInterface::extractCompartmentName(model, *it),
-                           CMetabNameInterface::extractMetabName(model, *it),
-                           0.1, CMetab::METAB_VARIABLE);
+      {
+        compName = CMetabNameInterface::extractCompartmentName(model, *it);
+        if (model->getCompartments().getIndex(compName) == C_INVALID_INDEX)
+          model->addCompartment(compName, 1);
+        model->addMetabolite(CMetabNameInterface::extractMetabName(model, *it),
+                             compName,
+                             0.1, CMetab::METAB_VARIABLE);
+      }
 
     return ret;
   }
