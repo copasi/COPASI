@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/05 15:22:39 $
+   $Date: 2004/10/05 15:29:40 $
    End CVS Header */
 
 /**
@@ -107,7 +107,7 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
 );
     }
 
-    virtual void * getReference() {return &mReference;}
+    virtual void * getReference() const {return &mReference;}
   };
 
 /** @dia:pos 64.092,50.0714 */
@@ -159,6 +159,6 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
        isValueDbl() ? CCopasiObject::ValueDbl : (CCopasiObject::Flag) 0);
     }
 
-    virtual void * getReference() {return &mReference;}
+    virtual void * getReference() const {return &mReference;}
   };
 #endif // COPASI_CCopasiObjectReference
