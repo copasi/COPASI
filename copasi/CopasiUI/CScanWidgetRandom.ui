@@ -124,6 +124,11 @@
                                     <string>Normal distribution</string>
                                 </property>
                             </item>
+                            <item>
+                                <property name="text">
+                                    <string>Poisson distribution</string>
+                                </property>
+                            </item>
                             <property name="name">
                                 <cstring>comboBoxType</cstring>
                             </property>
@@ -183,6 +188,12 @@
         <receiver>CScanWidgetRandom</receiver>
         <slot>slotChooseObject()</slot>
     </connection>
+    <connection>
+        <sender>comboBoxType</sender>
+        <signal>activated(int)</signal>
+        <receiver>CScanWidgetRandom</receiver>
+        <slot>changeType()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in declaration">utilities/CCopasiParameterGroup.h</include>
@@ -195,6 +206,7 @@
 </variables>
 <slots>
     <slot access="protected">slotChooseObject()</slot>
+    <slot access="protected">changeType()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

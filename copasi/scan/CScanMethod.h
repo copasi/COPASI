@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:32:01 $
+   $Date: 2005/03/04 15:17:41 $
    End CVS Header */
 
 /**
@@ -100,6 +100,7 @@ class CScanItemRandom: public CScanItem
   private:
     C_FLOAT64 mMin, mMax, mFaktor;
     CRandom* mRg;
+    unsigned C_INT32 mRandomType;
     bool mLog;
   public:
     CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg);

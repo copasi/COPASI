@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetRandom.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:27:39 $
+   $Date: 2005/03/04 15:18:06 $
    End CVS Header */
 
 //comboBoxType linear| normal
@@ -115,3 +115,38 @@ bool CScanWidgetRandom::saveToScanItem(CScanProblem * pg) const
 
     return true;
   }
+
+void CScanWidgetRandom::changeType()
+{
+  C_INT32 type = comboBoxType->currentItem();
+
+  if (type == 0) //uniform
+    {
+      lineEditMin->setEnabled(true);
+      lineEditMax->setEnabled(true);
+
+      labelMin->setText("min");
+      labelMax->setText("max");
+    }
+
+  if (type == 1) //normal
+    {
+      lineEditMin->setEnabled(true);
+      lineEditMax->setEnabled(true);
+
+      labelMin->setText("mean");
+      labelMax->setText("standard deviation");
+    }
+
+  if (type == 2) //poisson
+    {
+      lineEditMin->setEnabled(true);
+      lineEditMax->setEnabled(false);
+
+      labelMin->setText("mean");
+      labelMax->setText("");
+    }
+
+  //TODO: handle log: rename standard deviation -> sd factor,
+  //                  disable poisson?
+}

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetRandom.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:27:39 $
+   $Date: 2005/03/04 15:18:06 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetRandom.ui'
  **
- ** Created: Sa Feb 26 19:16:34 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetRandom.cpp,v 1.1 2005/02/27 20:27:39 ssahle Exp $)
+ ** Created: Fr Mär 4 11:19:17 2005
+ **      by: The User Interface Compiler ($Id: CScanWidgetRandom.cpp,v 1.2 2005/03/04 15:18:06 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -104,6 +104,7 @@ CScanWidgetRandom::CScanWidgetRandom(QWidget* parent, const char* name, WFlags f
 
   // signals and slots connections
   connect(buttonObject, SIGNAL(clicked()), this, SLOT(slotChooseObject()));
+  connect(comboBoxType, SIGNAL(activated(int)), this, SLOT(changeType()));
   init();
 }
 
@@ -128,6 +129,7 @@ void CScanWidgetRandom::languageChange()
   comboBoxType->clear();
   comboBoxType->insertItem(tr("Uniform distribution"));
   comboBoxType->insertItem(tr("Normal distribution"));
+  comboBoxType->insertItem(tr("Poisson distribution"));
   labelType->setText(tr("Type"));
   labelMin->setText(tr("min"));
   labelMax->setText(tr("max"));
