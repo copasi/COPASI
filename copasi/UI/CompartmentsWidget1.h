@@ -57,7 +57,7 @@ class CompartmentsWidget1 : public QWidget
     void loadName(QString setValue);
     int isName(QString setValue);
     QString *Compartment1_Name;
-
+    QString name;
     QLineEdit* LineEdit1;
     QLineEdit* LineEdit3;
     QLineEdit* LineEdit4;

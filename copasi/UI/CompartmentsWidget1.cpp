@@ -142,6 +142,7 @@ int CompartmentsWidget1::isName(QString setValue)
     }
 
   CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+  name = setValue;
 
   if (compartments[(string) setValue] != NULL)
     {
@@ -206,37 +207,44 @@ void CompartmentsWidget1::slotBtnCancelClicked()
 
 void CompartmentsWidget1::slotBtnOKClicked()
 {
+}
+
+void CompartmentsWidget1::NameChanged(const QString & name)
+{
   CWriteConfig *Mod = new CWriteConfig("mudita.gps");
 
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
   compartn1 = compartments1[2];
 
-  Structures *mud1 = new Structures();
-  string x = mud1.cmpt_name;
-  QString & volume;
-  volume = mud1.cmpt_volume;
-  double m1;
-  m1 = volume.toDouble(0);
+  // Structures *mud1 = new Structures();
+  string x = name;
 
   compartn1->setName(x);
-  compartn1->setVolume((float)m1);
 
   compartn1->save(*Mod);
   //Copasi->Compartmentfile.save(*Mod);
   delete Mod;
 }
 
-void CompartmentsWidget1::NameChanged(const QString & name)
-{
-  Structures *mud1 = new Structures();
-  mud1.cmpt_name = name;
-}
-
 void CompartmentsWidget1::VolumeChanged(const QString & volume)
 {
-  Structures *mud1 = new Structures();
-  mud1.cmpt_volume = volume;
+  CWriteConfig *Mod = new CWriteConfig("mudita.gps");
+
+  CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
+  CCompartment *compartn1;
+  compartn1 = compartments1[2];
+
+  //Structures *mud1 = new Structures();
+
+  double m1;
+  m1 = volume.toDouble(0);
+
+  compartn1->setVolume((float)m1);
+
+  compartn1->save(*Mod);
+  //Copasi->Compartmentfile.save(*Mod);
+  delete Mod;
 }
 
 //last function ends
