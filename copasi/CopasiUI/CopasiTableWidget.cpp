@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/17 14:48:32 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /*******************************************************************
@@ -26,7 +26,7 @@
 
 #include "model/CModel.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 
@@ -129,7 +129,7 @@ void CopasiTableWidget::fillTable()
 {
   std::vector<const CCopasiObject*> objects = getObjects();
 
-  //  const CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
+  //  const CCopasiVectorN < CCompartment > & objects = CCopasiDataModel::Global->getModel()->getCompartments();
   C_INT32 i, j, jmax = objects.size();
 
   resizeTable(jmax + 1);
@@ -185,7 +185,7 @@ void CopasiTableWidget::saveTable()
 {
   if (mRO) return;
 
-  if (!dataModel->getModel())
+  if (!CCopasiDataModel::Global->getModel())
     return;
 
   bool flagDelete = false;
@@ -381,7 +381,7 @@ void CopasiTableWidget::slotBtnOKClicked()
 
 void CopasiTableWidget::slotBtnCancelClicked()
 {
-  if (dataModel->getModel())
+  if (CCopasiDataModel::Global->getModel())
     fillTable();
 }
 

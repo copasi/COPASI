@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/15 12:31:58 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:51 $
    End CVS Header */
 
 /********************************************************
@@ -30,6 +30,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qmessagebox.h>
 
 #include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "qtUtilities.h"
 
 #include "SteadyStateWidget.h"
@@ -240,7 +241,7 @@ void SteadyStateWidget::CommitButtonClicked()
     dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
   assert(steadystatemethod);
 
-  steadystateproblem->setInitialState(dataModel->getModel()->getInitialState());
+  steadystateproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   bool bJacobian = taskJacobian->isChecked ();
   bool bStatistics = taskStability->isChecked ();
@@ -281,7 +282,7 @@ void SteadyStateWidget::parameterValueChanged()
 
 void SteadyStateWidget::runSteadyStateTask()
 {
-  if (dataModel->isChanged())
+  if (CCopasiDataModel::Global->isChanged())
     {
       const QApplication* qApp = dataModel->getQApp();
       if (qApp)
@@ -321,7 +322,7 @@ void SteadyStateWidget::runSteadyStateTask()
         {
           const CState *currentState = mSteadyStateTask->getState();
           if (currentState)
-            (dataModel->getModel())->setInitialState(currentState);
+            (CCopasiDataModel::Global->getModel())->setInitialState(currentState);
         }
     }
 
@@ -338,7 +339,7 @@ void SteadyStateWidget::runSteadyStateTask()
 
   tmpBar->finish(); pdelete(tmpBar);
 
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
 
   unsetCursor();
 
@@ -421,7 +422,7 @@ bool SteadyStateWidget::update(ListViews::ObjectType objectType, ListViews::Acti
       break;
     case ListViews::MODEL:
       CReportDefinitionVector* pReportDefinitionVector;
-      pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+      pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
       if (pReportDefinitionVector)
         reportDefinitionButton->setEnabled(true);
       break;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/18 11:02:51 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:51 $
    End CVS Header */
 
 #include <iostream>
@@ -27,7 +27,7 @@
 #include "copasiui3window.h"
 #include "TrajectoryWidget.h"
 #include "SliderSettingsDialog.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "CopasiSlider.h"
 #include "mathematics.h"
 #include "utilities/CCopasiTask.h"
@@ -153,7 +153,7 @@ void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
 void SliderDialog::createNewSlider()
 {
   SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
-  pSettingsDialog->setModel(this->mpDataModel->getModel());
+  pSettingsDialog->setModel(CCopasiDataModel::Global->getModel());
   // set the list of sliders that is already known
   pSettingsDialog->setDefinedSliders(this->sliderMap[this->currentFolderId]);
 
@@ -219,7 +219,7 @@ void SliderDialog::removeSlider()
 void SliderDialog::editSlider()
 {
   SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
-  pSettingsDialog->setModel(this->mpDataModel->getModel());
+  pSettingsDialog->setModel(CCopasiDataModel::Global->getModel());
   // set the list of sliders that is already known
   pSettingsDialog->setDefinedSliders(this->sliderMap[this->currentFolderId]);
 
@@ -445,7 +445,7 @@ CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
   switch (folderId)
     {
     case 23:
-      task = static_cast<CCopasiTask*>(mpDataModel->getTrajectoryTask());
+      task = dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       break;
     default:
       task = NULL;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:16:47 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -25,7 +25,7 @@
 #include "steadystate/CEigen.h"
 #include <sstream>
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 void StateSubwidget::init()
 {
@@ -159,26 +159,26 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
 void StateSubwidget::showUnits()
 {
   DataModelGUI* dataModel = ListViews::getDataModel();
-  dataModel->getModel()->getVolumeUnit();
+  CCopasiDataModel::Global->getModel()->getVolumeUnit();
 
   concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 1, tr("Transition Time\n("\
-      + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
 
   concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 2, tr("Rate\n(per "\
-      + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
 
   concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 3, tr("Concentration\n("\
-      + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")"));
+      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")"));
 
   numbersTable->horizontalHeader()->setLabel(numbersTable->numCols() - 1, tr("Transition Time\n("\
-      + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
   numbersTable->horizontalHeader()->setLabel(numbersTable->numCols() - 2, tr("Rate\n(per "\
-      + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
 
   tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 2, tr("Particle flux\n("\
-                                          + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+                                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
   tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 3, tr("Flux\n(particles/"\
-                                          + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+                                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
 }
 
 bool StateSubwidget::loadAll(const CSteadyStateTask * task)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.159 $
+   $Revision: 1.160 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/03 12:28:21 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /*********************************************************************
@@ -33,12 +33,12 @@
 #include "utilities/CCopasiVector.h"
 #include "ReactionsWidget1.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "parametertable.h"
 #include "report/CKeyFactory.h"
 #include "MyLineEdit.h"
@@ -204,12 +204,12 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
   if (!reaction) return false;
 
   TextLabel8->setText(trUtf8("Flux ("
-                             + FROM_UTF8(dataModel->getModel()->getQuantityUnit())
-                             + "/" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+                             + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit())
+                             + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
-  mRi.initFromReaction(*(dataModel->getModel()), reaction->getKey());
+  mRi.initFromReaction(*(CCopasiDataModel::Global->getModel()), reaction->getKey());
 
   // update the widget.
   FillWidgetFromRI();
@@ -224,14 +224,14 @@ bool ReactionsWidget1::saveToReaction()
   if (!mRi.isValid()) return false;
 
   //first check if new metabolites need to be created
-  bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
+  bool createdMetabs = mRi.createMetabolites(*(CCopasiDataModel::Global->getModel()));
 
   mRi.setReactionName((const char *)LineEdit1->text().utf8());
 
   //this writes all changes to the reaction
-  mRi.writeBackToReaction(*(dataModel->getModel()));
+  mRi.writeBackToReaction(*(CCopasiDataModel::Global->getModel()));
 
-  //dataModel->getModel()->compile();
+  //CCopasiDataModel::Global->getModel()->compile();
 
   //this tells the gui what it needs to know.
   if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
@@ -300,7 +300,7 @@ void ReactionsWidget1::slotBtnNewClicked()
 {
   std::string name = "reaction_0";
   int i = 0;
-  while (!dataModel->getModel()->createReaction(name))
+  while (!CCopasiDataModel::Global->getModel()->createReaction(name))
     {
       i++;
       name = "reaction_";
@@ -309,14 +309,14 @@ void ReactionsWidget1::slotBtnNewClicked()
   //table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
   //table->setNumRows(table->numRows());
   protectedNotify(ListViews::REACTION, ListViews::ADD);
-  enter(dataModel->getModel()->getReactions()[name]->getKey());
+  enter(CCopasiDataModel::Global->getModel()->getReactions()[name]->getKey());
   //pListView->switchToOtherWidget(mKeys[row]);
 }
 
 // Just added 5/18/04
 void ReactionsWidget1::slotBtnDeleteClicked()
 {
-  if (dataModel->getModel())
+  if (CCopasiDataModel::Global->getModel())
     {
       //unsigned C_INT32 i, imax = table->numRows() - 1;
       //std::vector< unsigned C_INT32 > ToBeDeleted;
@@ -344,18 +344,18 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                          // Yes or Enter
+        case 0:                           // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
                 i--;*/ 
-            //unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
-            unsigned C_INT32 size = dataModel->getModel()->getReactions().size();
-            //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
-            unsigned C_INT32 index = dataModel->getModel()->getReactions().getIndex(mRi.getReactionName());
-            //dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
-            dataModel->getModel()->removeReaction(objKey);
-            //enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index, size - 1)]->getKey());
+            //unsigned C_INT32 size = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().size();
+            unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getReactions().size();
+            //unsigned C_INT32 index = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
+            unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getReactions().getIndex(mRi.getReactionName());
+            //CCopasiDataModel::Global->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
+            CCopasiDataModel::Global->getModel()->removeReaction(objKey);
+            //enter(CCopasiDataModel::Global->pFunctionDB->loadedFunctions()[std::min(index, size - 1)]->getKey());
 
             // this invalidates the reaction interface
             // so that the writeBackToReactionFunction is not called
@@ -363,9 +363,9 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             mRi.setFunction("", true);
             if (size > 1)
               {
-                enter(dataModel->getModel()->getReactions()[std::min(index, size - 2)]->getKey());
+                enter(CCopasiDataModel::Global->getModel()->getReactions()[std::min(index, size - 2)]->getKey());
               }
-            //dataModel->getModel()->removeReaction(objKey);
+            //CCopasiDataModel::Global->getModel()->removeReaction(objKey);
             // table->removeRow(ToBeDeleted[i]);
             //}
 
@@ -376,7 +376,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                 // No or Escape
+        default:                                  // No or Escape
           break;
         }
       //}
@@ -416,7 +416,7 @@ void ReactionsWidget1::FillWidgetFromRI()
       ComboBox1->setCurrentText(FROM_UTF8(mRi.getFunctionName()));
       QToolTip::add(ComboBox1, FROM_UTF8(mRi.getFunctionDescription()));
 
-      table->updateTable(mRi, *dataModel->getModel());
+      table->updateTable(mRi, *CCopasiDataModel::Global->getModel());
     }
   else
     table->initTable();
@@ -457,7 +457,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   int i = 0;
   CFunction* pFunc;
-  while (!(pFunc = Copasi->pFunctionDB->createFunction(nname, CFunction::UserDefined)))
+  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(nname, CFunction::UserDefined)))
     {
       i++;
       nname = name;

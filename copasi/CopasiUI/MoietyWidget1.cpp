@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 08:52:18 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /*******************************************************************
@@ -29,7 +29,7 @@
 #include "model/CModel.h"
 #include "model/CMoiety.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "qtUtilities.h"
 #include "report/CKeyFactory.h"
 
@@ -90,7 +90,7 @@ bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
 {
   if (!moiety) return false;
 
-  textBrowser->setText(FROM_UTF8(moiety->getDescription(dataModel->getModel())));
+  textBrowser->setText(FROM_UTF8(moiety->getDescription(CCopasiDataModel::Global->getModel())));
 
   LineEdit3->setText(FROM_UTF8(moiety->getObjectName()));
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:42 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /********************************************************
@@ -32,7 +32,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "qtUtilities.h"
 #include "CReportDefinitionSelect.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiException.h"
 #include "report/CReportDefinitionVector.h"
 #include "report/CReport.h"
@@ -141,7 +141,7 @@ void CReportDefinitionSelect::languageChange()
 void CReportDefinitionSelect::loadReportDefinitionVector()
 {
   DataModelGUI* dataModel = ListViews::getDataModel();
-  CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+  CReportDefinitionVector* pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
   unsigned C_INT32 i;
   for (i = 0; i < pReportDefinitionVector->size(); i++)
     reportDefinitionNameList->
@@ -151,10 +151,10 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
   if (reportDefinitionNameList->count() == 0)
     {
       std::string name = "ReportDefinition_0";
-      dataModel->getReportDefinitionVectorAddr()->createReportDefinition(name, "");
+      CCopasiDataModel::Global->getReportDefinitionList()->createReportDefinition(name, "");
       reportDefinitionNameList->insertItem(FROM_UTF8(name));
       reportDefinitionNameList->setCurrentItem(1);
-      mpReport->setReportDefinition((*dataModel->getReportDefinitionVectorAddr())[0]); //first one report definition
+      mpReport->setReportDefinition((*CCopasiDataModel::Global->getReportDefinitionList())[0]); //first one report definition
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget((const char *)targetEdit->text().utf8());
       ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
@@ -200,7 +200,7 @@ void CReportDefinitionSelect::confirmClicked()
     //exception made here
     return;
   DataModelGUI* dataModel = ListViews::getDataModel();
-  CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+  CReportDefinitionVector* pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
   mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
@@ -219,7 +219,7 @@ void CReportDefinitionSelect::cleanup()
 void CReportDefinitionSelect::jumpToReportDefinitionEdit()
 {
   DataModelGUI* dataModel = ListViews::getDataModel();
-  CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+  CReportDefinitionVector* pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
   pListView->switchToOtherWidget(0, (*pReportDefinitionVector)[row]->getKey());

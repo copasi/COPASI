@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/07 18:32:53 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /*******************************************************************
@@ -38,7 +38,7 @@
 #include "model/CModel.h"
 #include "model/CChemEqInterface.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 #include "utilities/CGlobals.h"
@@ -258,17 +258,17 @@ MetabolitesWidget1::~MetabolitesWidget1()
    clicked in the tree   */
 bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
 {
-  mLblInitConcentration->setText("Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
-                                 "/" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+  mLblInitConcentration->setText("Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
+                                 "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
 
-  mLblTransitionTime->setText("Transition Time (" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")");
+  mLblTransitionTime->setText("Transition Time (" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")");
 
-  mLblRate->setText("Rate of concentration change\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
-                    "/(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))");
+  mLblRate->setText("Rate of concentration change\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
+                    "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
 
   if (!metab) return false;
 
-  CCopasiVectorNS< CCompartment > & allcompartments = dataModel->getModel()->getCompartments();
+  CCopasiVectorNS< CCompartment > & allcompartments = CCopasiDataModel::Global->getModel()->getCompartments();
   CCompartment *compt;
   mComboCompartment->clear();
   mEditName->setText(FROM_UTF8(metab->getObjectName()));
@@ -332,9 +332,9 @@ bool MetabolitesWidget1::saveToMetabolite()
   if ((const char *)Compartment.utf8() != metab->getCompartment()->getObjectName())
     {
       std::string CompartmentToRemove = metab->getCompartment()->getObjectName();
-      dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(metab);
-      dataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getObjectName());
-      dataModel->getModel()->initializeMetabolites();
+      CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(metab);
+      CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getObjectName());
+      CCopasiDataModel::Global->getModel()->initializeMetabolites();
       //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
       protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
@@ -349,7 +349,7 @@ bool MetabolitesWidget1::saveToMetabolite()
       metab->setInitialConcentration(temp1);
       metab->setConcentration(temp1); //TODO ??
       protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-      dataModel->getModel()->setCompileFlag();
+      CCopasiDataModel::Global->getModel()->setCompileFlag();
     }
 
   /*else
@@ -362,7 +362,7 @@ bool MetabolitesWidget1::saveToMetabolite()
           metab->setInitialNumber(temp2);
           metab->setNumber(temp2); //TODO ??
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-          dataModel->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }*/
 
@@ -373,7 +373,7 @@ bool MetabolitesWidget1::saveToMetabolite()
         {
           metab->setStatus(CMetab::METAB_FIXED);
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-          dataModel->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }
   else
@@ -382,7 +382,7 @@ bool MetabolitesWidget1::saveToMetabolite()
         {
           metab->setStatus(CMetab::METAB_VARIABLE);
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-          dataModel->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }
   enter(objKey); //this is a hack to update the initial number when the initial concentration has changed and vice versa
@@ -393,7 +393,7 @@ bool MetabolitesWidget1::saveToMetabolite()
 
 bool MetabolitesWidget1::loadReactionsTable()
 {
-  std::set<std::string> reactions = dataModel->getModel()->listReactionsDependentOnMetab(objKey);
+  std::set<std::string> reactions = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(objKey);
   mReactionsTable->setNumRows(0);
   mReactionsTable->setNumRows(reactions.size() + 1);
   if (reactions.size() < 2) mReactionsTable->setNumRows(3);
@@ -406,7 +406,7 @@ bool MetabolitesWidget1::loadReactionsTable()
     {
       pReac = dynamic_cast< CReaction * >(GlobalKeys.get(*it));
       mReactionsTable->setText(i, 0, FROM_UTF8(pReac->getObjectName()) + ": ");
-      mReactionsTable->setText(i, 1, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pReac, false)));
+      mReactionsTable->setText(i, 1, FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pReac, false)));
     }
   mReactionsTable->adjustColumn(0);
   mReactionsTable->adjustColumn(1);
@@ -428,13 +428,13 @@ void MetabolitesWidget1::slotBtnOKClicked()
 
 void MetabolitesWidget1::slotBtnNewClicked()
 {
-  if (dataModel->getModel()->getCompartments().size() == 0)
-    dataModel->getModel()->createCompartment("compartment");
+  if (CCopasiDataModel::Global->getModel()->getCompartments().size() == 0)
+    CCopasiDataModel::Global->getModel()->createCompartment("compartment");
 
   std::string name = "metabolite";
   int i = 0;
   CMetab* pMetab;
-  while (!(pMetab = dataModel->getModel()->createMetabolite(name, "", 1.0, CMetab::METAB_VARIABLE)))
+  while (!(pMetab = CCopasiDataModel::Global->getModel()->createMetabolite(name, "", 1.0, CMetab::METAB_VARIABLE)))
     {
       i++;
       name = "metabolite_";
@@ -446,7 +446,7 @@ void MetabolitesWidget1::slotBtnNewClicked()
 
 void MetabolitesWidget1::slotBtnDeleteClicked()
 {
-  if (!dataModel->getModel())
+  if (!CCopasiDataModel::Global->getModel())
     return;
 
   QString metabList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
@@ -463,7 +463,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
   //CMetab* metab =
   //  dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
 
-  std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnMetab(objKey);
+  std::set<std::string> effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(objKey);
 
   if (effectedReacKeys.size() > 0)
     {
@@ -501,19 +501,19 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                       // Yes or Enter
+    case 0:                                        // Yes or Enter
       {
-        unsigned C_INT32 size = dataModel->getModel()->getMetabolites().size();
+        unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
-        unsigned C_INT32 index = dataModel->getModel()->getMetabolites().getIndex(GlobalKeys.get(objKey));
+        unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getMetabolites().getIndex(GlobalKeys.get(objKey));
         /*for (i = 0; i < imax; i++)
                {
-                 dataModel->getModel()->removeMetabolite(keys[i]);
+                 CCopasiDataModel::Global->getModel()->removeMetabolite(keys[i]);
                }*/
-        dataModel->getModel()->removeMetabolite(objKey);
+        CCopasiDataModel::Global->getModel()->removeMetabolite(objKey);
         if (size > 1)
           {
-            enter(dataModel->getModel()->getMetabolites()[std::min(index, size - 2)]->getKey());
+            enter(CCopasiDataModel::Global->getModel()->getMetabolites()[std::min(index, size - 2)]->getKey());
             //for (i = 0; i < imax; i++)
           }
         else
@@ -524,7 +524,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                       // No or Escape
+    case 1:                                        // No or Escape
       break;
     }
 }
@@ -537,7 +537,7 @@ void MetabolitesWidget1::slotConcChanged()
   C_FLOAT64 tmp = mEditInitConcentration->text().toDouble();
   mEditInitNumber->setText(QString::number(tmp
                            * metab->getCompartment()->getVolume()
-                           * dataModel->getModel()->getQuantity2NumberFactor(), 'g', 10));
+                           * CCopasiDataModel::Global->getModel()->getQuantity2NumberFactor(), 'g', 10));
   //mChanged = true;
 }
 
@@ -549,7 +549,7 @@ void MetabolitesWidget1::slotNumberChanged()
   C_FLOAT64 tmp = mEditInitNumber->text().toDouble();
   mEditInitConcentration->setText(QString::number(tmp
                                   * metab->getCompartment()->getVolumeInv()
-                                  * dataModel->getModel()->getNumber2QuantityFactor(), 'g', 10));
+                                  * CCopasiDataModel::Global->getModel()->getNumber2QuantityFactor(), 'g', 10));
 }
 
 void MetabolitesWidget1::slotCompChanged()

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:25:09 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /*******************************************************************
@@ -29,11 +29,11 @@
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
   {
-    CCopasiVectorN<CCompartment>& tmp = dataModel->getModel()->getCompartments();
+    CCopasiVectorN<CCompartment>& tmp = CCopasiDataModel::Global->getModel()->getCompartments();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -64,9 +64,9 @@ void CompartmentsWidget::showHeaders()
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
-  if (dataModel->getModel())
+  if (CCopasiDataModel::Global->getModel())
     {
-      std::string str = dataModel->getModel()->getVolumeUnit();
+      std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnit();
       tableHeader->setLabel(2, "Volume\n(" + FROM_UTF8(str) + ")");
     }
 }
@@ -103,7 +103,7 @@ QString CompartmentsWidget::defaultObjectName() const
 {
   std::string name = "compartment_0";
   int i = 0;
-  while (!dataModel->getModel()->createCompartment(name))
+  while (!CCopasiDataModel::Global->getModel()->createCompartment(name))
     {
       i++;
       name = "compartment_";
@@ -119,7 +119,7 @@ CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CCompartment* pCom;
-  while (!(pCom = dataModel->getModel()->createCompartment(nname)))
+  while (!(pCom = CCopasiDataModel::Global->getModel()->createCompartment(nname)))
     {
       i++;
       nname = name;
@@ -131,7 +131,7 @@ CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
 
 void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dataModel->getModel())
+  if (!CCopasiDataModel::Global->getModel())
     return;
 
   if (keys.size() == 0)
@@ -170,7 +170,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedMetabList.append(FROM_UTF8(comp->getObjectName()));
           effectedMetabList.append("\n");
 
-          std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnCompartment(keys[i]);
+          std::set<std::string> effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnCompartment(keys[i]);
           if (effectedReacKeys.size() > 0)
             {
               reacFound = 1;
@@ -214,11 +214,11 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                  // Yes or Enter
+    case 0:                   // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
-            dataModel->getModel()->removeCompartment(keys[i]);
+            CCopasiDataModel::Global->getModel()->removeCompartment(keys[i]);
           }
 
         for (i = 0; i < imax; i++)
@@ -226,7 +226,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                  // No or Escape
+    case 1:                   // No or Escape
       break;
     }
 }

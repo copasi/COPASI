@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:05 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #include "FunctionWidget.h"
@@ -21,12 +21,12 @@
 #include "DataModelGUI.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 
 std::vector<const CCopasiObject*> FunctionWidget::getObjects() const
   {
-    CCopasiVectorN<CFunction>& tmp = Copasi->pFunctionDB->loadedFunctions();
+    CCopasiVectorN<CFunction>& tmp = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -100,7 +100,7 @@ CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CFunction* pFunc;
-  while (!(pFunc = Copasi->pFunctionDB->createFunction(nname, CFunction::UserDefined)))
+  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(nname, CFunction::UserDefined)))
     {
       i++;
       nname = name;
@@ -112,7 +112,7 @@ CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
 
 void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dataModel->getModel())
+  if (!CCopasiDataModel::Global->getModel())
     return;
 
   if (keys.size() == 0)
@@ -132,7 +132,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
       //CMetab* metab =
       //  dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
 
-      std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnFunction(keys[i]);
+      std::set<std::string> effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnFunction(keys[i]);
 
       if (effectedReacKeys.size() > 0)
         {
@@ -170,13 +170,13 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                    // Yes or Enter
+    case 0:                     // Yes or Enter
       {
         //first delete reactions
         std::set<std::string>::const_iterator it, itEnd = totalEffectedReacKeys.end();
         for (it = totalEffectedReacKeys.begin(); it != itEnd; ++it)
           {
-            dataModel->getModel()->removeReaction(*it);
+            CCopasiDataModel::Global->getModel()->removeReaction(*it);
             ListViews::notify(ListViews::REACTION, ListViews::DELETE, *it);
           }
 
@@ -184,13 +184,13 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
         for (i = 0; i < imax; i++)
           {
-            Copasi->pFunctionDB->removeFunction(keys[i]);
+            CCopasiDataModel::Global->getFunctionList()->removeFunction(keys[i]);
             ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, keys[i]);
           }
 
         break;
       }
-    case 1:                    // No or Escape
+    case 1:                     // No or Escape
       break;
     }
 }

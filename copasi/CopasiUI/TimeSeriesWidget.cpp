@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/04 09:53:25 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:51 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -12,7 +12,7 @@
 
 #include "TimeSeriesWidget.h"
 #include "TimeSeriesSubwidget.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "CTimeSeriesTable.h"
 
@@ -57,7 +57,8 @@ TimeSeriesWidget::~TimeSeriesWidget()
 
 bool TimeSeriesWidget::loadFromBackend()
 {
-  mCentralWidget->table()->setTimeSeries(dataModel->getTrajectoryTask()->getTimeSeries());
+  //  mCentralWidget->table()->setTimeSeries(CCopasiDataModel::Global->getTrajectoryTask()->getTimeSeries());
+  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
   return true;
 }
 

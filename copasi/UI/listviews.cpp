@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.168 $
+   $Revision: 1.169 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/25 12:01:16 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /****************************************************************************
@@ -22,6 +22,7 @@
 #include <qimage.h>
 
 #include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "CompartmentSymbols.h"
 #include "CompartmentsWidget.h"
 #include "CompartmentsWidget1.h"
@@ -489,7 +490,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                           //Report
+      case 43:                            //Report
         return tableDefinition;
         break;
       case 42:
@@ -763,7 +764,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           // make the metabolite table the current widget
           if (dataModel)
             {
-              unsigned int numMetabolites = dataModel->getModel()->getMetabolites().size();
+              unsigned int numMetabolites = CCopasiDataModel::Global->getModel()->getMetabolites().size();
               if (numMetabolites == 0)
                 {
                   ListViews::switchAllListViewsToWidget(112, "");
@@ -788,7 +789,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           // make the compartment table the current widget
           if (dataModel)
             {
-              unsigned int numCompartments = dataModel->getModel()->getCompartments().size();
+              unsigned int numCompartments = CCopasiDataModel::Global->getModel()->getCompartments().size();
               if (numCompartments == 0)
                 {
                   ListViews::switchAllListViewsToWidget(111, "");
@@ -813,7 +814,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           // make the reaction table the current widget
           if (dataModel)
             {
-              unsigned int numReactions = dataModel->getModel()->getReactions().size();
+              unsigned int numReactions = CCopasiDataModel::Global->getModel()->getReactions().size();
               if (numReactions == 0)
                 {
                   ListViews::switchAllListViewsToWidget(114, "");
@@ -827,7 +828,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
     case FUNCTION:
     case REPORT:
     case PLOT:
-      if (dataModel) dataModel->changed();
+      if (dataModel) CCopasiDataModel::Global->changed();
       break;
 
     case MODEL:
@@ -835,7 +836,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
         {
         case CHANGE:
         case RENAME:
-          if (dataModel) dataModel->changed();
+          if (dataModel) CCopasiDataModel::Global->changed();
           break;
         case ADD:
         case DELETE:

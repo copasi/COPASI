@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/02/15 22:41:34 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -21,9 +21,10 @@
 #include <qwhatsthis.h>
 #include <qmessagebox.h>
 
-#include "DataModelGUI.h"
 #include "qtUtilities.h"
 
+#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "CMCAWidget.h"
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAProblem.h"
@@ -190,7 +191,7 @@ void CMCAWidget::parameterValueChanged()
 void CMCAWidget::runMCATask()
 {
   saveMCATask();
-  if (dataModel->isChanged())
+  if (CCopasiDataModel::Global->isChanged())
     {
       const QApplication* qApp = dataModel->getQApp();
       if (qApp)
@@ -198,7 +199,7 @@ void CMCAWidget::runMCATask()
           CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
           if (mainWidget)
             {
-              dataModel->autoSave();
+              CCopasiDataModel::Global->autoSave();
               /*
                           if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
                             {
@@ -228,10 +229,11 @@ void CMCAWidget::runMCATask()
   // set the resolution of the mca task
   if (mcaProblem->isSteadyStateRequested())
     {
-      CSteadyStateTask* steadyStateTask = dataModel->getSteadyStateTask();
+      CSteadyStateTask* steadyStateTask =
+        dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
       assert(steadyStateTask);
 
-      dynamic_cast<CSteadyStateProblem*>(steadyStateTask->getProblem())->setInitialState(dataModel->getModel()->getInitialState());
+      dynamic_cast<CSteadyStateProblem*>(steadyStateTask->getProblem())->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
       steadyStateTask->initialize();
 
@@ -257,7 +259,7 @@ void CMCAWidget::runMCATask()
 
       tmpBar->finish(); pdelete(tmpBar);
 
-      protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+      protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
 
       unsetCursor();
       dynamic_cast<CMCAMethod*>(mcaTask->getMethod())->setSteadyStateStatus(steadyStateTask->getResult());
@@ -285,7 +287,7 @@ void CMCAWidget::runMCATask()
 
   //tmpBar->finish(); pdelete(tmpBar);
 
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
 
   unsetCursor();
 
@@ -335,10 +337,13 @@ void CMCAWidget::saveMCATask()
   QString value;
 
   unsigned int k;
-  if (this->dataModel->getSteadyStateTask())
-    {
-      numSteadyStateParameters = this->dataModel->getSteadyStateTask()->getMethod()->size();
-    }
+
+  CSteadyStateTask * pSteadyStateTask =
+    dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+  assert(pSteadyStateTask);
+
+  numSteadyStateParameters = pSteadyStateTask->getMethod()->size();
+
   if (this->taskSteadyState->isChecked())
     {
       for (k = 0; k < numMCAParameters; k++)
@@ -346,9 +351,9 @@ void CMCAWidget::saveMCATask()
           value = parameterTable->text(k, 0);
           setParameterValue(mcaMethod, k, value);
         }
-      if (this->dataModel->getSteadyStateTask() && this->dataModel->getSteadyStateTask()->getMethod())
+      if (pSteadyStateTask && pSteadyStateTask->getMethod())
         {
-          CSteadyStateMethod* sMethod = dynamic_cast<CSteadyStateMethod*>(this->dataModel->getSteadyStateTask()->getMethod());
+          CSteadyStateMethod* sMethod = dynamic_cast<CSteadyStateMethod*>(pSteadyStateTask->getMethod());
           for (k = 0; k < numSteadyStateParameters; k++)
             {
               value = parameterTable->text(k + numMCAParameters, 0);
@@ -374,7 +379,7 @@ bool CMCAWidget::enter(const std::string & key)
 
   loadMCATask();;
 
-  if (dataModel->getModel()->getTotSteps() == 0)
+  if (CCopasiDataModel::Global->getModel()->getTotSteps() == 0)
     {
       this->bRunButton->setEnabled(false);
     }
@@ -397,7 +402,7 @@ bool CMCAWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UN
       break;
     case ListViews::MODEL:
       CReportDefinitionVector* pReportDefinitionVector;
-      pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+      pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
       if (pReportDefinitionVector)
         reportDefinitionButton->setEnabled(true);
       break;
@@ -471,10 +476,13 @@ void CMCAWidget::initParameterTable()
   QHeader *rowHeader = parameterTable->verticalHeader();
 
   unsigned int k;
-  if (this->dataModel->getSteadyStateTask())
-    {
-      numSteadyStateParameters = this->dataModel->getSteadyStateTask()->getMethod()->size();
-    }
+
+  CSteadyStateTask * pSteadyStateTask =
+    dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+  assert(pSteadyStateTask);
+
+  numSteadyStateParameters = pSteadyStateTask->getMethod()->size();
+
   if (this->taskSteadyState->isChecked())
     {
       parameterTable->setNumRows(numMCAParameters + numSteadyStateParameters);
@@ -488,9 +496,9 @@ void CMCAWidget::initParameterTable()
           pItem = new QTableItem (parameterTable, QTableItem::Always, value);
           parameterTable->setItem(k, 0, pItem);
         }
-      if (this->dataModel->getSteadyStateTask() && this->dataModel->getSteadyStateTask()->getMethod())
+      if (pSteadyStateTask && pSteadyStateTask->getMethod())
         {
-          CSteadyStateMethod* sMethod = dynamic_cast<CSteadyStateMethod*>(this->dataModel->getSteadyStateTask()->getMethod());
+          CSteadyStateMethod* sMethod = dynamic_cast<CSteadyStateMethod*>(pSteadyStateTask->getMethod());
           for (k = 0; k < numSteadyStateParameters; k++)
             {
               strname = FROM_UTF8(sMethod->getName(k));

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/18 19:17:56 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /*******************************************************************
@@ -22,7 +22,7 @@
 #include "FunctionSymbols.h"
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathSymbol.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "function/CFunctionDB.h"
@@ -101,7 +101,7 @@ void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
       //Emptying the table
       table->setNumRows(0);
 
-      Copasi->pFunctionDB->loadedFunctions();
+      CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
 
       std::map< std::string, CMathSymbol * > functionList = mModel->getFunctionList();
       std::map<std::string, CMathSymbol * >::iterator it;

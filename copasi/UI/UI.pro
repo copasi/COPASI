@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.81 $ $Author: shoops $ $Date: 2005/02/16 19:15:32 $  
+# $Revision: 1.82 $ $Author: shoops $ $Date: 2005/02/18 16:26:50 $  
 ######################################################################
 
 include(../common.pri)
@@ -11,13 +11,17 @@ INCLUDEPATH += ..
 
 
 contains(BUILD_OS, WIN32) {
-  COPASI_LIBS += ../lib/commandline.lib \
+  COPASI_LIBS += \
+          ../lib/commandline.lib \
+          ../lib/copasiDM.lib \
           ../lib/copasiXML.lib \
           ../lib/elementaryFluxModes.lib \
           ../lib/function.lib \
           ../lib/mathmodel.lib \
+          ../lib/mml.lib \
           ../lib/model.lib \
           ../lib/optimization.lib \
+          ../lib/plot.lib \
           ../lib/randomGenerator.lib \
           ../lib/report.lib \
           ../lib/sbmlimport.lib \
@@ -25,9 +29,7 @@ contains(BUILD_OS, WIN32) {
           ../lib/steadystate.lib \
           ../lib/trajectory.lib \
           ../lib/utilities.lib \
-          ../lib/plot.lib \
-          ../lib/wizard.lib \
-          ../lib/mml.lib
+          ../lib/wizard.lib
 
   LIBS += $$COPASI_LIBS
   
@@ -41,6 +43,7 @@ else {
   LIBS = -L../lib \
          -Wl,--start-group \
          -lcommandline \
+         -lcopasiDM \
          -lcopasiXML \
          -lelementaryFluxModes \
          -lfunction \
@@ -65,6 +68,7 @@ else {
   }
 
   TARGETDEPS += ../lib/libcommandline.a \
+                ../lib/libcopasiDM.a \
                 ../lib/libcopasiXML.a \
                 ../lib/libelementaryFluxModes.a \
                 ../lib/libfunction.a \

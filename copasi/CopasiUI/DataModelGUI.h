@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/06 20:08:10 $
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -11,13 +11,12 @@
 
 #include <qobject.h>
 
-#include "DataModel.h"
-
 #include "Tree.h"
+#include "plot/CPlotSpec2Vector.h"
 
 class CMathModel;
 
-class DataModelGUI : public DataModel
+class DataModelGUI
   {
   private:
     IndexedTree mTree; // create the  object of the tree
@@ -28,6 +27,8 @@ class DataModelGUI : public DataModel
     QApplication *mpApp;
 
     void linkDataModelToGUI();
+
+    CPlotSpec2Vector mPlotDefinitionList;
 
   public:
     DataModelGUI();
@@ -51,6 +52,8 @@ class DataModelGUI : public DataModel
 
     bool importSBML(const char* fileName);
     bool exportSBML(const char* fileName);
+
+    CPlotSpec2Vector & getPlotDefinitionList();
 
     CMathModel * getMathModel() {return mpMathModel;}
     bool updateMathModel();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.175 $
+   $Revision: 1.176 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/04 17:18:37 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:51 $
    End CVS Header */
 
 /********************************************************
@@ -43,7 +43,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "scan/CScanMethod.h"
 #include "model/CModel.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "ScanItemWidget.h"
 #include "ObjectBrowserDialog.h"
 #include "ObjectBrowserItem.h"
@@ -529,7 +529,7 @@ void ScanWidget::runScanTask()
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   if (!scanTask) return;
 
-  ((CScanProblem*)(scanTask->getProblem()))->createDebugScan(dataModel->getModel());
+  ((CScanProblem*)(scanTask->getProblem()))->createDebugScan(CCopasiDataModel::Global->getModel());
 
   scanTask->initialize(NULL);
 
@@ -553,7 +553,7 @@ void ScanWidget::runScanTask()
   tmpBar->finish(); pdelete(tmpBar);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE,
-                  dataModel->getModel()->getKey());
+                  CCopasiDataModel::Global->getModel()->getKey());
 
   unsetCursor();
 
@@ -581,7 +581,7 @@ void ScanWidget::runScanTask()
 
   scanTask->process();
 
-  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
   unsetCursor();
 }
 
@@ -823,7 +823,7 @@ bool ScanWidget::leave()
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   if (!scanTask) return false;
 
-  ((CScanProblem*)(scanTask->getProblem()))->createDebugScan(dataModel->getModel());
+  ((CScanProblem*)(scanTask->getProblem()))->createDebugScan(CCopasiDataModel::Global->getModel());
   return true;
 }
 
@@ -836,7 +836,7 @@ bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UN
     case ListViews::MODEL:
       // check if there is a list of Report Defs
       CReportDefinitionVector* pReportDefinitionVector;
-      pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+      pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
       if (pReportDefinitionVector)
         reportDefinitionButton->setEnabled(true);
       break;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/31 14:49:17 $
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #include <stdexcept>
@@ -16,7 +16,7 @@
 #include "copasiui3window.h"
 #include "objectdebug.h"
 
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "commandline/COptionParser.h"
@@ -25,13 +25,11 @@
 
 int main(int argc, char **argv)
 {
+  // Create the root container.
   CCopasiContainer::init();
 
-  Copasi = new CGlobals;
-  Copasi->pFunctionDB->load();
-  Copasi->ProgramVersion.setVersion(COPASI_VERSION_MAJOR,
-                                    COPASI_VERSION_MINOR,
-                                    COPASI_VERSION_BUILD);
+  // Create the global data model.
+  CCopasiDataModel::Global = new CCopasiDataModel;
 
   // Parse the commandline options
   try
@@ -58,7 +56,7 @@ int main(int argc, char **argv)
 
   a.exec();
 
-  pdelete(Copasi);
+  pdelete(CCopasiDataModel::Global);
   pdelete(CCopasiContainer::Root);
 
   return 0;

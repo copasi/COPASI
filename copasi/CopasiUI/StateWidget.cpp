@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/01/28 19:25:05 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:51 $
    End CVS Header */
 
 #include <qpushbutton.h>
@@ -12,7 +12,7 @@
 
 #include "StateWidget.h"
 #include "StateSubwidget.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "model/CModel.h"
@@ -71,9 +71,12 @@ StateWidget::~StateWidget()
 bool StateWidget::loadFromBackend()
 {
   mCentralWidget->showUnits();
-  if (!dataModel->getSteadyStateTask()) return false;
-  if (!dataModel->getSteadyStateTask()->getState()) return false;
-  return mCentralWidget->loadAll(dataModel->getSteadyStateTask());
+  CSteadyStateTask * pSteadyStateTask
+  = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+
+  if (!pSteadyStateTask) return false;
+  if (!pSteadyStateTask->getState()) return false;
+  return mCentralWidget->loadAll(pSteadyStateTask);
 }
 
 bool StateWidget::saveToBackend()
@@ -122,5 +125,5 @@ void StateWidget::runSetInitialState()
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get("Task_2"));
   const CState *currentState = mSteadyStateTask->getState();
   if (currentState)
-    dataModel->getModel()->setInitialState(currentState);
+    CCopasiDataModel::Global->getModel()->setInitialState(currentState);
 }

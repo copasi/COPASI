@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/02/15 22:41:34 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -20,6 +20,7 @@
 #include "model/CMoiety.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 #include "qmessagebox.h"
@@ -28,7 +29,7 @@
 
 std::vector<const CCopasiObject*> MoietyWidget::getObjects() const
   {
-    const CCopasiVectorN<CMoiety>& tmp = dataModel->getModel()->getMoieties();
+    const CCopasiVectorN<CMoiety>& tmp = CCopasiDataModel::Global->getModel()->getMoieties();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -64,7 +65,7 @@ void MoietyWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT3
   if (!obj) return;
   const CMoiety* pMoi = (const CMoiety*)obj;
   table->setText(row, 1, FROM_UTF8(pMoi->getObjectName()));
-  table->setText(row, 2, FROM_UTF8(pMoi->getDescription(dataModel->getModel())));
+  table->setText(row, 2, FROM_UTF8(pMoi->getDescription(CCopasiDataModel::Global->getModel())));
   table->setText(row, 3, QString::number(pMoi->getNumber()));
 }
 
@@ -85,7 +86,7 @@ void MoietyWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys)
 
 void MoietyWidget::slotBtnRunClicked()
 {
-  if (dataModel->isChanged())
+  if (CCopasiDataModel::Global->isChanged())
     {
       const QApplication* qApp = dataModel->getQApp();
       if (qApp)
@@ -93,7 +94,7 @@ void MoietyWidget::slotBtnRunClicked()
           CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
           if (mainWidget)
             {
-              dataModel->autoSave();
+              CCopasiDataModel::Global->autoSave();
               /*if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
                 {
                   mainWidget->saveFile();
@@ -102,7 +103,7 @@ void MoietyWidget::slotBtnRunClicked()
             }
         }
     }
-  dataModel->getModel()->compileIfNecessary();
+  CCopasiDataModel::Global->getModel()->compileIfNecessary();
   fillTable();
 
   mIgnoreUpdates = true; //to avoid recursive calls

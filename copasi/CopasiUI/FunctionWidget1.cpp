@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.112 $
+   $Revision: 1.113 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/07 18:53:42 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /**********************************************************************
@@ -38,13 +38,13 @@
 
 #include "copasi.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "FunctionWidget1.h"
 #include "qtUtilities.h"
 #include "parametertable.h" // just for the table item widgets
 #include "model/CMetab.h"
 #include "model/CModel.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiException.h"
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
@@ -827,10 +827,10 @@ void FunctionWidget1::slotCommitButtonClicked()
     {
       std::set<std::string> dependentReactions;
 
-      if (dataModel && dataModel->getModel())
+      if (dataModel && CCopasiDataModel::Global->getModel())
         {
           dependentReactions =
-            dataModel->getModel()->listReactionsDependentOnFunction(objKey);
+            CCopasiDataModel::Global->getModel()->listReactionsDependentOnFunction(objKey);
         }
       else
         return;
@@ -890,7 +890,7 @@ void FunctionWidget1::slotNewButtonClicked()
   std::string name = "function_0";
   int i = 0;
   CFunction* pFunc;
-  while (!(pFunc = Copasi->pFunctionDB->createFunction(name, CFunction::UserDefined)))
+  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefined)))
     {
       i++;
       name = "function_";
@@ -904,10 +904,10 @@ void FunctionWidget1::slotDeleteButtonClicked()
 {
   std::set<std::string> dependentReactions;
 
-  if (dataModel && dataModel->getModel())
+  if (dataModel && CCopasiDataModel::Global->getModel())
     {
       dependentReactions =
-        dataModel->getModel()->listReactionsDependentOnFunction(objKey);
+        CCopasiDataModel::Global->getModel()->listReactionsDependentOnFunction(objKey);
     }
 
   QString msg1 = "Cannot delete Function(s). ";
@@ -950,16 +950,16 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                           // Yes or Enter
+        case 0:                                            // Yes or Enter
           {
             if (reacFound == 0)
               {
-                unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
-                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(mpFunction->getObjectName());
+                unsigned C_INT32 size = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().size();
+                unsigned C_INT32 index = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
 
-                Copasi->pFunctionDB->removeFunction(objKey);
+                CCopasiDataModel::Global->getFunctionList()->removeFunction(objKey);
 
-                enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index, size - 2)]->getKey());
+                enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 2)]->getKey());
               }
 
             if (reacFound == 0) //changed from "=" to "=="
@@ -967,7 +967,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                           // No or Escape
+        case 1:                                            // No or Escape
           break;
         }
     }

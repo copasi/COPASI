@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/15 12:32:29 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:51 $
    End CVS Header */
 
 /********************************************************
@@ -38,6 +38,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "model/CModel.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "CReportDefinitionSelect.h"
 #include "MyLineEdit.h"
@@ -366,9 +367,9 @@ void TrajectoryWidget::NumStepsSlot()
 
 void TrajectoryWidget::checkTimeSeries()
 {
-  //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << dataModel->getModel()->getIntMetab() << std::endl;
+  //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << CCopasiDataModel::Global->getModel()->getIntMetab() << std::endl;
 
-  if (nStepNumber->text().toLong() * dataModel->getModel()->getNumVariableMetabs() > TSMAX)
+  if (nStepNumber->text().toLong() * CCopasiDataModel::Global->getModel()->getNumVariableMetabs() > TSMAX)
     {
       bStoreTimeSeries->setChecked(false);
       bStoreTimeSeries->setEnabled(false);
@@ -395,7 +396,7 @@ void TrajectoryWidget::CommitChange()
 
 void TrajectoryWidget::runTrajectoryTask()
 {
-  if (dataModel->isChanged())
+  if (CCopasiDataModel::Global->isChanged())
     {
       const QApplication* qApp = dataModel->getQApp();
       if (qApp)
@@ -430,7 +431,7 @@ void TrajectoryWidget::runTrajectoryTask()
   assert(trajectoryproblem);
 
   if ((!tt->getReport().getStream())
-      && (dataModel->getPlotSpecVectorAddr()->size() == 0)
+      && (dataModel->getPlotDefinitionList().size() == 0)
       && (!trajectoryproblem->timeSeriesRequested())
 )
     {
@@ -445,7 +446,7 @@ void TrajectoryWidget::runTrajectoryTask()
   assert(trajectorymethod);
   if (trajectorymethod->getSubType() != CCopasiMethod::deterministic)
     {
-      std::string message = dataModel->getModel()->suitableForStochasticSimulation();
+      std::string message = CCopasiDataModel::Global->getModel()->suitableForStochasticSimulation();
       if (message != "")
         {
           QMessageBox::information (NULL, "Stochastic simulation not possible",
@@ -465,7 +466,7 @@ void TrajectoryWidget::runTrajectoryTask()
         {
           const CState *currentState = tt->getState();
           if (currentState)
-            (dataModel->getModel())->setInitialState(currentState);
+            (CCopasiDataModel::Global->getModel())->setInitialState(currentState);
         }
     }
   catch (CCopasiException Exception)
@@ -479,7 +480,7 @@ void TrajectoryWidget::runTrajectoryTask()
   tmpBar->finish(); pdelete(tmpBar);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE,
-                  dataModel->getModel()->getKey());
+                  CCopasiDataModel::Global->getModel()->getKey());
 
   unsetCursor();
 }
@@ -607,7 +608,7 @@ void TrajectoryWidget::saveTrajectoryTask()
   trajectoryproblem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
 
   //set initial state
-  trajectoryproblem->setInitialState(dataModel->getModel()->getInitialState());
+  trajectoryproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   //method
   if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/09 01:07:38 $
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -23,13 +23,13 @@
 #include "model/CReaction.h"
 #include "model/CReactionInterface.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 
 std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
   {
-    CCopasiVectorN<CReaction>& tmp = dataModel->getModel()->getReactions();
+    CCopasiVectorN<CReaction>& tmp = CCopasiDataModel::Global->getModel()->getReactions();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -66,12 +66,12 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 
   const CReaction* pRea = (const CReaction*)obj;
 
-  table->horizontalHeader()->setLabel(4, "Flux\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
-                                      "/" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")");
+  table->horizontalHeader()->setLabel(4, "Flux\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
+                                      "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")");
 
   table->setText(row, 1, FROM_UTF8(pRea->getObjectName()));
 
-  table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pRea, false)));
+  table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pRea, false)));
 
   if (&(pRea->getFunction()))
     {
@@ -88,7 +88,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
   CReactionInterface ri;
-  ri.initFromReaction(*(dataModel->getModel()), obj->getKey());
+  ri.initFromReaction(*(CCopasiDataModel::Global->getModel()), obj->getKey());
 
   QString equation(table->text(row, 2));
   if ((const char *)equation.utf8() != ri.getChemEqString())
@@ -107,10 +107,10 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
     }
 
   //first check if new metabolites need to be created
-  bool createdMetabs = ri.createMetabolites(*(dataModel->getModel()));
+  bool createdMetabs = ri.createMetabolites(*(CCopasiDataModel::Global->getModel()));
   //this writes all changes to the reaction
-  ri.writeBackToReaction(*(dataModel->getModel()));
-  //dataModel->getModel()->compile();
+  ri.writeBackToReaction(*(CCopasiDataModel::Global->getModel()));
+  //CCopasiDataModel::Global->getModel()->compile();
   //this tells the gui what it needs to know.
   if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
 }
@@ -134,7 +134,7 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CReaction* pRea;
-  while (!(pRea = dataModel->getModel()->createReaction(nname)))
+  while (!(pRea = CCopasiDataModel::Global->getModel()->createReaction(nname)))
     {
       i++;
       nname = name;
@@ -146,7 +146,7 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
 
 void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dataModel->getModel())
+  if (!CCopasiDataModel::Global->getModel())
     return;
 
   if (keys.size() == 0)
@@ -155,7 +155,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++)
     {
-      dataModel->getModel()->removeReaction(keys[i]);
+      CCopasiDataModel::Global->getModel()->removeReaction(keys[i]);
       ListViews::notify(ListViews::REACTION, ListViews::DELETE, keys[i]);
     }
 }

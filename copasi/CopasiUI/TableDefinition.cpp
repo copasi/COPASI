@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/02 15:55:36 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:51 $
    End CVS Header */
 
 #include "TableDefinition.h"
@@ -18,7 +18,7 @@
 //#include "MyTable.h"
 #include "model/CModel.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
 #include "report/CCopasiStaticString.h"
@@ -32,7 +32,7 @@
 std::vector<const CCopasiObject*> TableDefinition::getObjects() const
   {
     CCopasiVector< CReportDefinition >* tmp =
-      dataModel->getReportDefinitionVectorAddr();
+      CCopasiDataModel::Global->getReportDefinitionList();
 
     std::vector<const CCopasiObject*> ret;
 
@@ -87,7 +87,7 @@ CCopasiObject* TableDefinition::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CReportDefinition* pRep;
-  while (!(pRep = dataModel->getReportDefinitionVectorAddr()->createReportDefinition(nname, "")))
+  while (!(pRep = CCopasiDataModel::Global->getReportDefinitionList()->createReportDefinition(nname, "")))
     {
       i++;
       nname = name;
@@ -99,35 +99,27 @@ CCopasiObject* TableDefinition::createNewObject(const std::string & name)
 
 void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dataModel->getModel())
+  if (!CCopasiDataModel::Global->getModel())
     return;
 
   if (keys.size() == 0)
     return;
 
   unsigned C_INT32 i, imax = keys.size();
+  unsigned C_INT32 j, jmax = CCopasiDataModel::Global->getTaskList()->size();
+
   for (i = 0; i < imax; i++)
     {
       //check where the report is used...
       CReportDefinition* rd = dynamic_cast< CReportDefinition * >(GlobalKeys.get(keys[i]));
       if (!rd) break;
 
-      if (dataModel->getTrajectoryTask()->getReport().getReportDefinition() == rd)
-        dataModel->getTrajectoryTask()->getReport().setReportDefinition(NULL);
-
-      if (dataModel->getSteadyStateTask()->getReport().getReportDefinition() == rd)
-        dataModel->getSteadyStateTask()->getReport().setReportDefinition(NULL);
-
-      if (dataModel->getMCATask()->getReport().getReportDefinition() == rd)
-        dataModel->getMCATask()->getReport().setReportDefinition(NULL);
-
-      if (dataModel->getScanTask()->getReport().getReportDefinition() == rd)
-        dataModel->getScanTask()->getReport().setReportDefinition(NULL);
-
-      //TODO: add other tasks...
+      for (j = 0; j < jmax; j++)
+        if ((*CCopasiDataModel::Global->getTaskList())[j]->getReport().getReportDefinition() == rd)
+          (*CCopasiDataModel::Global->getTaskList())[j]->getReport().setReportDefinition(NULL);
 
       //remove the report
-      dataModel->getReportDefinitionVectorAddr()->removeReportDefinition(keys[i]);
+      CCopasiDataModel::Global->getReportDefinitionList()->removeReportDefinition(keys[i]);
       ListViews::notify(ListViews::REPORT, ListViews::DELETE, keys[i]);
     }
 }

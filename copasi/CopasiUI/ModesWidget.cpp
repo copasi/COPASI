@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/17 14:49:12 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /*******************************************************************
@@ -24,6 +24,7 @@
 #include "ModesWidget.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "qtUtilities.h"
 #include "qmessagebox.h"
 #include "qapplication.h"
@@ -73,7 +74,7 @@ void ModesWidget::loadModes()
 {
   listView->clear();
 
-  CModel* model = dataModel->getModel();
+  CModel* model = CCopasiDataModel::Global->getModel();
   QListViewItem* item;
 
   if (modes)
@@ -140,7 +141,7 @@ void ModesWidget::slotTableSelectionChanged()
 
 void ModesWidget::slotBtnCalculateClicked()
 {
-  if (dataModel->isChanged())
+  if (CCopasiDataModel::Global->isChanged())
     {
       const QApplication* qApp = dataModel->getQApp();
       if (qApp)
@@ -148,7 +149,7 @@ void ModesWidget::slotBtnCalculateClicked()
           CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
           if (mainWidget)
             {
-              dataModel->autoSave();
+              CCopasiDataModel::Global->autoSave();
               /*
                        if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
                          {
@@ -160,7 +161,7 @@ void ModesWidget::slotBtnCalculateClicked()
     }
   pdelete(modes);
   modes = new CElementaryFluxModes();
-  modes->calculate(dataModel->getModel());
+  modes->calculate(CCopasiDataModel::Global->getModel());
   loadModes();
 }
 

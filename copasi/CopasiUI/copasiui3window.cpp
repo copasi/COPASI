@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.118 $
+   $Revision: 1.119 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/16 13:28:28 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
+
+#include <vector>
 
 #include <qlayout.h>
 #include <qtoolbutton.h>
@@ -15,14 +17,17 @@
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qregexp.h>
+
 #include "AboutDialog.h"
 
 #include "copasiui3window.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "ObjectBrowserDialog.h"
-#include <vector>
-#include "utilities/CGlobals.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CVersion.h"
+
 #include "utilities/CCopasiException.h"
 #include "model/CModel.h"
 #include "commandline/COptionParser.h"
@@ -65,7 +70,7 @@ CopasiUI3Window::CopasiUI3Window():
   closeFlag = 0;
   newFlag = 0;
   QString Title = "COPASI (";
-  Title += FROM_UTF8(Copasi->ProgramVersion.getVersion());
+  Title += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
   Title += " test version)";
   setCaption(Title);
   createToolBar(); // creates a tool bar
@@ -148,7 +153,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
       dataModel->saveModel(tmp.utf8());
       setCursor(oldCursor);
 
-      dataModel->changed(false);
+      CCopasiDataModel::Global->changed(false);
 
       gpsFile = tmp;
     }
@@ -167,21 +172,21 @@ void CopasiUI3Window::newDoc()
   if (newFlag == 0) newFlag = 1;
   else ListViews::commit();
 
-  if (dataModel && dataModel->isChanged())
+  if (dataModel && CCopasiDataModel::Global->isChanged())
     {
       switch (QMessageBox::information(this, "COPASI",
                                        "The document contains unsaved changes\n"
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                      // Discard clicked or Alt+D pressed
+        case 1:                                                       // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                      // Cancel clicked or Escape pressed
+        case 2:                                                       // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -194,7 +199,7 @@ void CopasiUI3Window::newDoc()
 
   gpsFile = "";
   dataModel->createModel();
-  ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
+  ListViews::notify(ListViews::MODEL, ListViews::ADD, CCopasiDataModel::Global->getModel()->getKey());
   if (!bobject_browser_open)
     //mpFileMenu->setItemEnabled(nobject_browser, true);
     mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
@@ -231,27 +236,27 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   if (newFile)
     {
-      if (dataModel && dataModel->isChanged())
+      if (dataModel && CCopasiDataModel::Global->isChanged())
         {
           switch (QMessageBox::information(this, "COPASI",
                                            "The document contains unsaved changes\n"
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                      // Discard clicked or Alt+D pressed
+            case 1:                                                       // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                      // Cancel clicked or Escape pressed
+            case 2:                                                       // Cancel clicked or Escape pressed
               return;
               break;
             }
 
           ListViews::notify(ListViews::MODEL, ListViews::DELETE,
-                            dataModel->getModel()->getKey());
+                            CCopasiDataModel::Global->getModel()->getKey());
         }
 
       ListViews::switchAllListViewsToWidget(0, "");
@@ -306,14 +311,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
-      if (!dataModel->getModel())
+      if (!CCopasiDataModel::Global->getModel())
         {
           newDoc();
           gpsFile = newFile;
         }
 
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
-                        dataModel->getModel()->getKey());
+                        CCopasiDataModel::Global->getModel()->getKey());
 
       //if (!bobject_browser_open)
       //  mpFileMenu->setItemEnabled(nobject_browser, true);
@@ -375,7 +380,7 @@ void CopasiUI3Window::slotFileSave()
       dataModel->saveModel(gpsFile.utf8());
       setCursor(oldCursor);
 
-      dataModel->changed(false);
+      CCopasiDataModel::Global->changed(false);
     }
 }
 
@@ -383,21 +388,21 @@ void CopasiUI3Window::slotQuit()
 {
   ListViews::commit();
 
-  if (dataModel && dataModel->isChanged())
+  if (dataModel && CCopasiDataModel::Global->isChanged())
     {
       switch (QMessageBox::information(this, "COPASI",
                                        "The document contains unsaved changes\n"
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                      // Discard clicked or Alt+D pressed
+        case 1:                                                       // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                      // Cancel clicked or Escape pressed
+        case 2:                                                       // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -412,21 +417,21 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
 {
   if (closeFlag == 0)
     {
-      if (dataModel && dataModel->isChanged())
+      if (dataModel && CCopasiDataModel::Global->isChanged())
         {
           switch (QMessageBox::information(this, "COPASI",
                                            "The document contains unsaved changes\n"
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                      // Discard clicked or Alt+D pressed
+            case 1:                                                       // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                      // Cancel clicked or Escape pressed
+            case 2:                                                       // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -457,7 +462,7 @@ void CopasiUI3Window::slotFilePrint()
 void CopasiUI3Window::about()
 {
   QString Title = "COPASI (";
-  Title += FROM_UTF8(Copasi->ProgramVersion.getVersion());
+  Title += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
   Title += ")";
   AboutDialog* aboutDialog = new AboutDialog(this);
   aboutDialog->setCaption(Title);
@@ -664,27 +669,27 @@ void CopasiUI3Window::slotImportSBML()
 
   if (SBMLFile)
     {
-      if (dataModel && dataModel->isChanged())
+      if (dataModel && CCopasiDataModel::Global->isChanged())
         {
           switch (QMessageBox::information(this, "COPASI",
                                            "The document contains unsaved changes\n"
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                      // Discard clicked or Alt+D pressed
+            case 1:                                                       // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                      // Cancel clicked or Escape pressed
+            case 2:                                                       // Cancel clicked or Escape pressed
               return;
               break;
             }
 
           ListViews::notify(ListViews::MODEL, ListViews::DELETE,
-                            dataModel->getModel()->getKey());
+                            CCopasiDataModel::Global->getModel()->getKey());
         }
 
       ListViews::switchAllListViewsToWidget(0, "");
@@ -722,7 +727,7 @@ void CopasiUI3Window::slotImportSBML()
         }
 
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
-                        dataModel->getModel()->getKey());
+                        CCopasiDataModel::Global->getModel()->getKey());
 
       //if (!bobject_browser_open)
       //  mpFileMenu->setItemEnabled(nobject_browser, true);
@@ -759,7 +764,7 @@ void CopasiUI3Window::slotExportSBML()
 
 void CopasiUI3Window::slotConvertToIrreversible()
 {
-  CModel* model = dataModel->getModel();
+  CModel* model = CCopasiDataModel::Global->getModel();
   if (!model) return;
 
   ListViews::commit();

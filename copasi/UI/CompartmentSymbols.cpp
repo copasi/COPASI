@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:24:17 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /*******************************************************************
@@ -27,6 +27,7 @@
 #include "model/CModel.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -94,8 +95,8 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
 {
   QHeader *tableHeader = table->horizontalHeader();
 
-  tableHeader->setLabel(2, "Initial Volume\n(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
-  tableHeader->setLabel(3, "Volume\n(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+  tableHeader->setLabel(2, "Initial Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  tableHeader->setLabel(3, "Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
 
   dataModel->updateMathModel();
 

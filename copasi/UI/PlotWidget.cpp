@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:06 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -23,18 +23,19 @@
 #include "report/CCopasiStaticString.h"
 #include "qtUtilities.h"
 #include "plot/CPlotSpec2Vector.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "DataModelGUI.h"
 
 std::vector<const CCopasiObject*> PlotWidget::getObjects() const
   {
-    CCopasiVector<CPlotSpecification>* tmp =
-      dataModel->getPlotSpecVectorAddr();
+    CCopasiVector<CPlotSpecification> & tmp =
+      dataModel->getPlotDefinitionList();
 
     std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = tmp->size();
+    C_INT32 i, imax = tmp.size();
     for (i = 0; i < imax; ++i)
-      ret.push_back((*tmp)[i]);
+      ret.push_back(tmp[i]);
 
     return ret;
   }
@@ -116,14 +117,14 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CPlotSpecification* pPl;
-  while (!(pPl = dataModel->getPlotSpecVectorAddr()->createPlotSpec(nname, CPlotItem::plot2d)))
+  while (!(pPl = dataModel->getPlotDefinitionList().createPlotSpec(nname, CPlotItem::plot2d)))
     {
       i++;
       nname = name;
       nname += (const char *)QString::number(i).utf8();
     }
 
-  //pPl->createDefaultPlot(dataModel->getModel());
+  //pPl->createDefaultPlot(CCopasiDataModel::Global->getModel());
 
   //std::cout << " *** created PlotSpecification: " << nname << " : " << pPl->CCopasiParameter::getKey() << std::endl;
   return pPl;
@@ -131,7 +132,7 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
 
 void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dataModel->getModel())
+  if (!CCopasiDataModel::Global->getModel())
     return;
 
   if (keys.size() == 0)
@@ -140,7 +141,7 @@ void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++)
     {
-      dataModel->getPlotSpecVectorAddr()->removePlotSpec(keys[i]);
+      dataModel->getPlotDefinitionList().removePlotSpec(keys[i]);
       ListViews::notify(ListViews::PLOT, ListViews::DELETE, keys[i]);
     }
 }
@@ -152,14 +153,14 @@ void PlotWidget::slotBtnDefaultClicked()
   std::string nname = "ConcentrationPlot";
   int i = 0;
   CPlotSpecification* pPl;
-  while (!(pPl = dataModel->getPlotSpecVectorAddr()->createPlotSpec(nname, CPlotItem::plot2d)))
+  while (!(pPl = dataModel->getPlotDefinitionList().createPlotSpec(nname, CPlotItem::plot2d)))
     {
       i++;
       nname = "ConcentrationPlot";
       nname += (const char *)QString::number(i).utf8();
     }
 
-  pPl->createDefaultPlot(dataModel->getModel());
+  pPl->createDefaultPlot(CCopasiDataModel::Global->getModel());
   ListViews::notify(ListViews::PLOT, ListViews::ADD, pPl->CCopasiParameter::getKey());
 
   //std::cout << " *** created PlotSpecification: " << nname << " : " << pPl->CCopasiParameter::getKey() << std::endl;

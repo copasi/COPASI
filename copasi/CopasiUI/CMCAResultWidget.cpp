@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/28 07:47:21 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -11,7 +11,7 @@
 
 #include "CMCAResultWidget.h"
 #include "CMCAResultSubwidget.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAMethod.h"
 #include "qtUtilities.h"
@@ -44,7 +44,11 @@ CMCAResultWidget::~CMCAResultWidget()
   clicked in the tree   */
 bool CMCAResultWidget::loadFromBackend()
 {
-  mCentralWidget->loadAll(dynamic_cast<CMCAMethod*>(dataModel->getMCATask()->getMethod()));
+  CMCATask * pTask =
+    dynamic_cast<CMCATask *>((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]);
+  if (!pTask) return false;
+
+  mCentralWidget->loadAll(dynamic_cast<CMCAMethod*>(pTask->getMethod()));
   return true;
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.114 $
+   $Revision: 1.115 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/02/07 15:11:10 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -19,13 +19,13 @@
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "listviews.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 
 std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
   {
-    CCopasiVector<CMetab>& tmp = dataModel->getModel()->getMetabolites();
+    CCopasiVector<CMetab>& tmp = CCopasiDataModel::Global->getModel()->getMetabolites();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -75,13 +75,13 @@ void MetabolitesWidget::showHeaders()
   QHeader *tableHeader = table->horizontalHeader();
   if (mFlagConc)
     {
-      tableHeader->setLabel(2, "Initial Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + \
-                            FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
-      tableHeader->setLabel(3, "Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + \
-                            FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+      tableHeader->setLabel(2, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+                            FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+      tableHeader->setLabel(3, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+                            FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
 
-      tableHeader->setLabel(7, "Rate\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
-                            "/(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))");
+      tableHeader->setLabel(7, "Rate\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
+                            "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
     }
   else
     {
@@ -132,7 +132,7 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
 
   //6: Compartment
   QStringList compartmentType;
-  const CCopasiVector < CCompartment > & compartments = dataModel->getModel()->getCompartments();
+  const CCopasiVector < CCompartment > & compartments = CCopasiDataModel::Global->getModel()->getCompartments();
   for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
     compartmentType.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
   QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
@@ -158,7 +158,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
       if (pMetab->getStatus() != CMetab::METAB_FIXED)
         {
           pMetab->setStatus(CMetab::METAB_FIXED);
-          dataModel->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }
   else
@@ -166,7 +166,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
       if (pMetab->getStatus() == CMetab::METAB_FIXED)
         {
           pMetab->setStatus(CMetab::METAB_VARIABLE);
-          dataModel->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }
 
@@ -176,28 +176,28 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
       && (Compartment != ""))
     {
       std::string CompartmentToRemove = pMetab->getCompartment()->getObjectName();
-      dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
-      dataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pMetab->getObjectName());
-      dataModel->getModel()->initializeMetabolites();
+      CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
+      CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pMetab->getObjectName());
+      CCopasiDataModel::Global->getModel()->initializeMetabolites();
       //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
       ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, "");
       ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
 
-      /*unsigned C_INT32 index = dataModel->getModel()->
+      /*unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->
                                getCompartments().getIndex((const char *)Compartment.utf8());
       if (index != C_INVALID_INDEX)
         {
-          dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
-          dataModel->getModel()->
+          CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
+          CCopasiDataModel::Global->getModel()->
           getCompartments()[pMetab->getCompartment()->getObjectName()]->
           getMetabolites().remove(pMetab->getObjectName());
-          dataModel->getModel()->initializeMetabolites();
+          CCopasiDataModel::Global->getModel()->initializeMetabolites();
           ListViews::notify(ListViews::COMPARTMENT,
                             ListViews::CHANGE, "");
         }*/
     } //TODO check if changing the compartment of a metabolite really works. NO!!!
 
-  dataModel->getModel()->setCompileFlag(); //TODO: check if really necessary
+  CCopasiDataModel::Global->getModel()->setCompileFlag(); //TODO: check if really necessary
 }
 
 void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
@@ -231,7 +231,7 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
   if (exc != 6)
     {
       QStringList compartmentType;
-      const CCopasiVector < CCompartment > & compartments = dataModel->getModel()->getCompartments();
+      const CCopasiVector < CCompartment > & compartments = CCopasiDataModel::Global->getModel()->getCompartments();
       if (true /*compartments.size()*/)
         {
           for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
@@ -253,13 +253,13 @@ QString MetabolitesWidget::defaultObjectName() const
 
 CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
 {
-  if (dataModel->getModel()->getCompartments().size() == 0)
-    dataModel->getModel()->createCompartment("compartment");
+  if (CCopasiDataModel::Global->getModel()->getCompartments().size() == 0)
+    CCopasiDataModel::Global->getModel()->createCompartment("compartment");
 
   std::string nname = name;
   int i = 0;
   CMetab* pMetab;
-  while (!(pMetab = dataModel->getModel()->createMetabolite(nname, "", 1.0, CMetab::METAB_VARIABLE)))
+  while (!(pMetab = CCopasiDataModel::Global->getModel()->createMetabolite(nname, "", 1.0, CMetab::METAB_VARIABLE)))
     {
       i++;
       nname = name;
@@ -271,7 +271,7 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
 
 void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!dataModel->getModel())
+  if (!CCopasiDataModel::Global->getModel())
     return;
 
   if (keys.size() == 0)
@@ -290,7 +290,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
       //CMetab* metab =
       //  dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
 
-      std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnMetab(keys[i]);
+      std::set<std::string> effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(keys[i]);
 
       if (effectedReacKeys.size() > 0)
         {
@@ -328,11 +328,11 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                  // Yes or Enter
+    case 0:                                   // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
-            dataModel->getModel()->removeMetabolite(keys[i]);
+            CCopasiDataModel::Global->getModel()->removeMetabolite(keys[i]);
           }
 
         for (i = 0; i < imax; i++)
@@ -340,7 +340,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                  // No or Escape
+    case 1:                                   // No or Escape
       break;
     }
 }

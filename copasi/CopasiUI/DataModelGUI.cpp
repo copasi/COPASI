@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/25 12:01:52 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 #include "copasi.h"
@@ -26,14 +26,14 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
 #include "trajectory/CTrajectoryTask.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 //int Folder::smModifier = 0;
 
 //*****************************************************************************
 
-DataModelGUI::DataModelGUI()
-    : DataModel()
+DataModelGUI::DataModelGUI():
+    mPlotDefinitionList()
 {
   this->populateData();
   mpMathModel = NULL;
@@ -47,31 +47,33 @@ void DataModelGUI::linkDataModelToGUI()
   //TODO: delete old handler
   //progress bar
   CProgressBar* tmpBar = new CProgressBar(this);
-  model->setCompileHandler(tmpBar);
+  CCopasiDataModel::Global->getModel()->setCompileHandler(tmpBar);
 
   //output handler
   COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-  tmpHandler->setPlotSpecVectorAddress(plotspecs);
-  trajectorytask->setOutputHandler(tmpHandler);
-  scantask->setOutputHandler(tmpHandler);
+  tmpHandler->setPlotSpecVectorAddress(& mPlotDefinitionList);
+  (*CCopasiDataModel::Global->getTaskList())["Time-Course"]->setOutputHandler(tmpHandler);
+  (*CCopasiDataModel::Global->getTaskList())["Scan"]->setOutputHandler(tmpHandler);
 
   //math model
   pdelete(mpMathModel);
   mpMathModel = new CMathModel();
-  mpMathModel->setModel(model);
+  mpMathModel->setModel(CCopasiDataModel::Global->getModel());
 
   //connect the folder tree with the backend objects
-  mTree.findNodeFromId(1).setObjectKey(model->getKey());
-  mTree.findNodeFromId(21).setObjectKey(steadystatetask->getKey());
-  mTree.findNodeFromId(23).setObjectKey(trajectorytask->getKey());
-  mTree.findNodeFromId(24).setObjectKey(mpCMCATask->getKey());
+  mTree.findNodeFromId(1).setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
+  mTree.findNodeFromId(21).setObjectKey((*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
+  mTree.findNodeFromId(23).setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
+  mTree.findNodeFromId(24).setObjectKey((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]->getKey());
+
 #ifdef COPASI_DEBUG
-  mTree.findNodeFromId(31).setObjectKey(scantask->getKey());
-  mTree.findNodeFromId(32).setObjectKey(pOptFunction->getKey());
-  mTree.findNodeFromId(115).setObjectKey(model->getKey());
+  mTree.findNodeFromId(31).setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
+  //  mTree.findNodeFromId(32).setObjectKey(pOptFunction->getKey());
+  mTree.findNodeFromId(115).setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
 #endif // COPASI_DEBUG
-  mTree.findNodeFromId(43).setObjectKey(reportdefinitions->getKey());
-  mTree.findNodeFromId(42).setObjectKey(plotspecs->getKey());
+
+  mTree.findNodeFromId(43).setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());
+  mTree.findNodeFromId(42).setObjectKey(mPlotDefinitionList.getKey());
 
   ListViews::setDataModel(this);
 }
@@ -115,8 +117,8 @@ void DataModelGUI::updateCompartments()
 
   parent.removeChildren();
 
-  if (model == NULL) return;
-  const CCopasiVectorN< CCompartment > & objects = model->getCompartments();
+  if (CCopasiDataModel::Global->getModel() == NULL) return;
+  const CCopasiVectorN< CCompartment > & objects = CCopasiDataModel::Global->getModel()->getCompartments();
   C_INT32 j, jmax = objects.size();
   CCompartment *obj;
   for (j = 0; j < jmax; j++)
@@ -134,15 +136,14 @@ void DataModelGUI::updateMetabolites()
 
   parent.removeChildren();
 
-  if (model == NULL) return;
-  const CCopasiVector< CMetab > & objects = model->getMetabolites();
+  const CCopasiVector< CMetab > & objects = CCopasiDataModel::Global->getModel()->getMetabolites();
   C_INT32 j, jmax = objects.size();
   CMetab *metab;
   for (j = 0; j < jmax; j++)
     {
       metab = objects[j];
       parent.addChild(-1,
-                       FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metab)),
+                       FROM_UTF8(CMetabNameInterface::getDisplayName(CCopasiDataModel::Global->getModel(), *metab)),
                        metab->getKey());
     }
 }
@@ -153,8 +154,7 @@ void DataModelGUI::updateReactions()
 
   parent.removeChildren();
 
-  if (model == NULL) return;
-  const CCopasiVectorN< CReaction > & objects = model->getReactions();
+  const CCopasiVectorN< CReaction > & objects = CCopasiDataModel::Global->getModel()->getReactions();
   C_INT32 j, jmax = objects.size();
   CReaction *obj;
   for (j = 0; j < jmax; j++)
@@ -172,8 +172,8 @@ void DataModelGUI::updateMoieties()
 
   parent.removeChildren();
 
-  if (model == NULL) return;
-  const CCopasiVectorN< CMoiety > & objects = model->getMoieties();
+  const CCopasiVectorN< CMoiety > & objects = CCopasiDataModel::Global->getModel()->getMoieties();
+
   C_INT32 j, jmax = objects.size();
   CMoiety *obj;
   for (j = 0; j < jmax; j++)
@@ -191,8 +191,7 @@ void DataModelGUI::updateFunctions()
 
   parent.removeChildren();
 
-  //if (model == NULL) return;
-  const CCopasiVectorN< CFunction > & objects = Copasi->pFunctionDB->loadedFunctions();
+  const CCopasiVectorN< CFunction > & objects = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
   C_INT32 j, jmax = objects.size();
   CFunction *obj;
   for (j = 0; j < jmax; j++)
@@ -210,8 +209,7 @@ void DataModelGUI::updateReportDefinitions()
 
   parent.removeChildren();
 
-  //if (model == NULL) return;
-  const CCopasiVector< CReportDefinition >* objects = getReportDefinitionVectorAddr();
+  const CCopasiVector< CReportDefinition >* objects = CCopasiDataModel::Global->getReportDefinitionList();
   C_INT32 j, jmax = objects->size();
   CReportDefinition *obj;
   for (j = 0; j < jmax; j++)
@@ -229,13 +227,12 @@ void DataModelGUI::updatePlots()
 
   parent.removeChildren();
 
-  //if (model == NULL) return;
-  const CCopasiVector< CPlotSpecification >* objects = getPlotSpecVectorAddr();
-  C_INT32 j, jmax = objects->size();
+  //  const CCopasiVector< CPlotSpecification >* objects = mPlotDefinitionList;
+  C_INT32 j, jmax = mPlotDefinitionList.size();
   CPlotSpecification *obj;
   for (j = 0; j < jmax; j++)
     {
-      obj = (*objects)[j];
+      obj = mPlotDefinitionList[j];
       parent.addChild(-1,
                        FROM_UTF8(obj->getObjectName()),
                        obj->CCopasiParameter::getKey());
@@ -254,7 +251,10 @@ const IndexedNode & DataModelGUI::getNode(const int & id) const
 
 bool DataModelGUI::createModel()
 {
-  if (!DataModel::createModel()) return false;
+  if (!CCopasiDataModel::Global->newModel()) return false;
+
+  *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList) =
+    *CCopasiDataModel::Global->getPlotDefinitionList();
 
   linkDataModelToGUI();
   return true;
@@ -262,21 +262,30 @@ bool DataModelGUI::createModel()
 
 bool DataModelGUI::loadModel(const char* fileName)
 {
-  if (!DataModel::loadModel(fileName)) return false;
+  if (!CCopasiDataModel::Global->loadModel(fileName)) return false;
 
-  // model->setCompileFlag();
+  // getModel()->setCompileFlag();
+  *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList) =
+    *CCopasiDataModel::Global->getPlotDefinitionList();
+
   linkDataModelToGUI();
   return true;
 }
 
 bool DataModelGUI::saveModel(const char* fileName)
 {
-  return DataModel::saveModel(fileName);
+  *CCopasiDataModel::Global->getPlotDefinitionList() =
+    *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList);
+
+  return CCopasiDataModel::Global->saveModel(fileName);
 }
 
 bool DataModelGUI::importSBML(const char* fileName)
 {
-  if (!DataModel::importSBML(fileName)) return false;
+  if (!CCopasiDataModel::Global->importSBML(fileName)) return false;
+
+  *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList) =
+    *CCopasiDataModel::Global->getPlotDefinitionList();
 
   linkDataModelToGUI();
   return true;
@@ -284,14 +293,20 @@ bool DataModelGUI::importSBML(const char* fileName)
 
 bool DataModelGUI::exportSBML(const char* fileName)
 {
-  return DataModel::exportSBML(fileName);
+  *CCopasiDataModel::Global->getPlotDefinitionList() =
+    *static_cast<CCopasiVectorN<class CPlotSpecification> *>(& mPlotDefinitionList);
+
+  return CCopasiDataModel::Global->exportSBML(fileName);
 }
+
+CPlotSpec2Vector & DataModelGUI::getPlotDefinitionList()
+{return mPlotDefinitionList;}
 
 //************** Math model ***********************************************
 
 bool DataModelGUI::updateMathModel()
 {
-  if (mMathModelUpdateScheduled) mpMathModel->setModel(model);
+  if (mMathModelUpdateScheduled) mpMathModel->setModel(CCopasiDataModel::Global->getModel());
 
   mMathModelUpdateScheduled = false;
   return true;

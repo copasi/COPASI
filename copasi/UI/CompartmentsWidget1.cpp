@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/07 18:53:12 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:26:50 $
    End CVS Header */
 
 /*******************************************************************
@@ -34,7 +34,7 @@
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
-#include "DataModelGUI.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 /*
  *  Constructs a CompartmentsWidget1 which is a child of 'parent', with the 
@@ -187,8 +187,8 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
   LineEdit4->setReadOnly(true);
 
   /* <---for displaying units in the Widget */
-  TextLabel2_2->setText("Transient Volume\n(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
-  TextLabel2->setText("Initial  Volume\n(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+  TextLabel2_2->setText("Transient Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  TextLabel2->setText("Initial  Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
   /* ---> */
 
   return true;
@@ -234,7 +234,7 @@ void CompartmentsWidget1::slotBtnNewClicked()
   std::string name = "compartment_0";
   int i = 0;
   CCompartment* pCom;
-  while (!(pCom = dataModel->getModel()->createCompartment(name)))
+  while (!(pCom = CCopasiDataModel::Global->getModel()->createCompartment(name)))
     {
       i++;
       name = "compartment_";
@@ -246,7 +246,7 @@ void CompartmentsWidget1::slotBtnNewClicked()
 
 void CompartmentsWidget1::slotBtnDeleteClicked()
 {
-  if (!dataModel->getModel())
+  if (!CCopasiDataModel::Global->getModel())
     return;
 
   CCompartment* comp = dynamic_cast< CCompartment *>(GlobalKeys.get(objKey));
@@ -283,7 +283,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
       effectedMetabList.append(FROM_UTF8(comp->getObjectName()));
       effectedMetabList.append("\n");
 
-      std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnCompartment(objKey);
+      std::set<std::string> effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnCompartment(objKey);
       if (effectedReacKeys.size() > 0)
         {
           reacFound = 1;
@@ -327,25 +327,25 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                          // Yes or Enter
+    case 0:                           // Yes or Enter
       {
-        unsigned C_INT32 size = dataModel->getModel()->getCompartments().size();
-        unsigned C_INT32 index = dataModel->getModel()->getCompartments().getIndex(comp->getObjectName());
+        unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getCompartments().size();
+        unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getCompartments().getIndex(comp->getObjectName());
         /*for (i = 0; i < imax; i++)
           {
-            dataModel->getModel()->removeCompartment(keys[i]);
+            CCopasiDataModel::Global->getModel()->removeCompartment(keys[i]);
           }*/
-        dataModel->getModel()->removeCompartment(objKey);
+        CCopasiDataModel::Global->getModel()->removeCompartment(objKey);
         //for (i = 0; i < imax; i++)
         if (size > 1)
           {
-            enter(dataModel->getModel()->getCompartments()[std::min(index, size - 2)]->getKey());
+            enter(CCopasiDataModel::Global->getModel()->getCompartments()[std::min(index, size - 2)]->getKey());
           }
         protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, objKey);
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                          // No or Escape
+    case 1:                           // No or Escape
       break;
     }
 }
