@@ -59,7 +59,7 @@ void COutputEvent::print(CTrajectory &tra, COutputList list, ofstream &fout)
  */
 void COutputEvent::print(CSS_Solution &ss, COutputList list, ofstream &fout)
 {
-	list.copasiSS(fout);
+	list.copasiSS(fout, ss.getSolution());
 }
 
 
