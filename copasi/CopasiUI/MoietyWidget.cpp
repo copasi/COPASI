@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/24 20:21:54 $
+   $Author: ssahle $ 
+   $Date: 2004/06/07 08:59:26 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -36,6 +36,11 @@ std::vector<const CCopasiObject*> MoietyWidget::getObjects() const
 
 void MoietyWidget::init()
 {
+  btnRun = new QPushButton("&Recalculate", this);
+  mHLayout->addWidget(btnRun);
+  connect(btnRun, SIGNAL(clicked ()), this,
+          SLOT(slotBtnRunClicked()));
+
   numCols = 4;
   table->setNumCols(numCols);
   //table->QTable::setNumRows(1);
@@ -43,6 +48,7 @@ void MoietyWidget::init()
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Status");
+  table->hideColumn(0);
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Equation");
   tableHeader->setLabel(3, "Number");
@@ -71,3 +77,13 @@ CCopasiObject* MoietyWidget::createNewObject(const std::string & name)
 
 void MoietyWidget::deleteObjects(const std::vector<std::string> & keys)
 {}
+
+void MoietyWidget::slotBtnRunClicked()
+{
+  dataModel->getModel()->compile();
+  fillTable();
+
+  mIgnoreUpdates = true; //to avoid recursive calls
+  ListViews::notify(ListViews::MODEL, ListViews::CHANGE);
+  mIgnoreUpdates = false; //to avoid recursive calls
+}

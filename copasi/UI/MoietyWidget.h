@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 08:21:10 $
+   $Date: 2004/06/07 08:59:26 $
    End CVS Header */
 
 #ifndef MOIETY_WIDGET_H
@@ -22,7 +22,11 @@ class MoietyWidget : public CopasiTableWidget
         : CopasiTableWidget(parent, true, name, f)
     {init();}
 
+  protected slots:
+    virtual void slotBtnRunClicked();
+
   protected:
+    QPushButton* btnRun;
 
     /**
      * This initializes the widget 
