@@ -495,27 +495,14 @@ void COutput::repStruct(ofstream &fout)
   // Create a arry to store name from
   vector < string > inverse;
 
-  for (i = 0 ; i < model->getMetabolitesInd().size(); i++)
+  for (i = 0; i < model->getMetabolitesInd().size(); i++)
     inverse.push_back(model->getMetabolitesInd()[i]->getName());
 
-  for (j = 0 ; j < model->getDepMetab(); j++)
+  for (j = 0; j < model->getDepMetab(); j++)
     inverse.push_back(model->getMetabolitesDep()[j]->getName());
 
-  TNT::Matrix < C_FLOAT64 > Inverse;
-
-  TNT::Matrix < C_FLOAT64 > ml;
-
-  ml = model->getML();
-
-  const TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
-  & InverseLView =
-    TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >(ml);
-
-  Inverse.newsize(InverseLView.num_rows(), InverseLView.num_cols());
-
-  for (i = 0; i < (unsigned C_INT32) InverseLView.num_rows(); i++)
-    for (j = 0; j < (unsigned C_INT32) InverseLView.num_cols(); j++)
-      Inverse[i][j] = InverseLView.array()(j + 1, i + 1);
+  const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
+  & Inverse = model->getInverseL();
 
   for (i = 0; i < model->getIntMetab(); i++)
     {
@@ -529,7 +516,7 @@ void COutput::repStruct(ofstream &fout)
           else
             fout.setf(ios::right);
 
-          fout << setprecision(1) << setw(4) << Inverse[i][j];
+          fout << setprecision(1) << setw(4) << Inverse(i + 1, j + 1);
 
           //fout << setprecision(1) << setw(4) << model->getML()[i][j];
         }
@@ -548,16 +535,16 @@ void COutput::repStruct(ofstream &fout)
 
       fout.setf(ios::fixed)
 
-        ;
+;
       for (i = 0; i < model->getMoieties().size(); i++)
         {
-          fout << model->getMoieties()[i]->getDescription() << " = " ;
+          fout << model->getMoieties()[i]->getDescription() << " = ";
           fout << model->getMoieties()[i]->getNumber() << endl;
         }
 
       fout.unsetf(ios::fixed)
 
-        ;
+;
     }
 
   fout << endl;
@@ -782,7 +769,7 @@ void COutput::repMCA(ofstream &fout)
 #if 0
 
   if (mSolution->getSolution != SS_FOUND)
-    return ;
+    return;
   else
     {
       fout << endl << "METABOLIC CONTROL ANALYSIS" << endl;
