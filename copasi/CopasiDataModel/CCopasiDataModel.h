@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/08 16:29:16 $
+   $Date: 2005/02/15 23:04:46 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
 #define COPASI_CCopasiDataModel
 
+class CVersion;
 class CModel;
 class CReportDefinitionVector;
 class CPlotSpecification;
@@ -22,6 +23,7 @@ template <class CType> class CCopasiVectorN;
 
 class CCopasiDataModel
   {
+    // Operations
   public:
     CCopasiDataModel();
 
@@ -40,17 +42,24 @@ class CCopasiDataModel
     CReportDefinitionVector * getReportDefinitionList();
     CCopasiVectorN< CPlotSpecification > * getPlotDefinitionList();
     CFunctionDB * getFunctionList();
+    CVersion * getVersion();
 
     bool isChanged() const;
     void changed(const bool & changed = true);
 
+    // Attributes
+  public:
+    static CCopasiDataModel * Global;
+
   protected:
+    CVersion * mpVersion;
     CFunctionDB * mpFunctionList;
     CModel * mpModel;
     CCopasiVectorN< CCopasiTask > * mpTaskList;
     CReportDefinitionVector * mpReportDefinitionList;
     CCopasiVectorN< CPlotSpecification > * mpPlotDefinitionList;
 
+    std::string mSaveFileName;
     bool mChanged;
   };
 

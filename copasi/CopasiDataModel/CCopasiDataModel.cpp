@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/08 16:29:16 $
+   $Date: 2005/02/15 23:04:46 $
    End CVS Header */
 
 #include "copasi.h"
+#include "copasiversion.h"
 #include "CCopasiDataModel.h"
 
 #include "function/CFunctionDB.h"
@@ -25,7 +26,10 @@
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLExporter.h"
 
+CCopasiDataModel * CCopasiDataModel::Global = NULL;
+
 CCopasiDataModel::CCopasiDataModel():
+    mpVersion(new CVersion),
     mpFunctionList(new CFunctionDB),
     mpModel(NULL),
     mpTaskList(NULL),
@@ -33,6 +37,10 @@ CCopasiDataModel::CCopasiDataModel():
     mpPlotDefinitionList(NULL),
     mChanged(false)
 {
+  mpVersion->setVersion(COPASI_VERSION_MAJOR,
+                        COPASI_VERSION_MINOR,
+                        COPASI_VERSION_BUILD);
+
   mpFunctionList->load();
   newModel();
 }
@@ -56,6 +64,12 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
 
   if (!Line.compare(0, 8, "Version="))
     {
+      if (fileName.rfind(".gps") == fileName.length() - 4 ||
+          fileName.rfind(".GPS") == fileName.length() - 4)
+        mSaveFileName = fileName.substr(0, fileName.length() - 4) + ".cps";
+      else
+        mSaveFileName = fileName + ".cps";
+
       File.close();
       CReadConfig inbuf(fileName.c_str());
 
@@ -114,7 +128,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
 
 bool CCopasiDataModel::saveModel(const std::string & fileName)
 {
-  if (fileName == "") return false;
+  std::string FileName = (fileName != "") ? fileName : mSaveFileName;
 
   mpModel->compileIfNecessary();
 
@@ -130,11 +144,11 @@ bool CCopasiDataModel::saveModel(const std::string & fileName)
   std::ostringstream tmp;
   if (!XML.save(tmp)) return false;
 
-  std::ofstream os(fileName.c_str());
+  std::ofstream os(FileName.c_str());
   if (os.fail()) return false;
 
   os << tmp.str();
-  return true;
+  return !os.fail();
 }
 
 bool CCopasiDataModel::newModel(CModel * pModel)
@@ -161,6 +175,12 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
 bool CCopasiDataModel::importSBML(const std::string & fileName)
 {
+  if (fileName.rfind(".xml") == fileName.length() - 4 ||
+      fileName.rfind(".XML") == fileName.length() - 4)
+    mSaveFileName = fileName.substr(0, fileName.length() - 4) + ".cps";
+  else
+    mSaveFileName = fileName + ".cps";
+
   SBMLImporter importer;
   CModel * pModel = importer.readSBML(fileName, mpFunctionList);
 
@@ -267,6 +287,9 @@ CCopasiVectorN< CPlotSpecification > * CCopasiDataModel::getPlotDefinitionList()
 
 CFunctionDB * CCopasiDataModel::getFunctionList()
 {return mpFunctionList;}
+
+CVersion * CCopasiDataModel::getVersion()
+{return mpVersion;}
 
 bool CCopasiDataModel::isChanged() const
   {return mChanged;}
