@@ -218,10 +218,16 @@ void CGA::mutate( unsigned int i )
  //double mn, mx, mut;
  double  mut;
  // mutate the parameters
-
-   // calculate the mutatated parameter
+ 
+ for (j = 0; j < nparam; j++) {
+ //YOHE: test
+ //  double indtmp = indv[i][j];
+ //  double rnorm = rnormal01();
+ //  mut = indtmp * (1 + mutvar * rnorm);
+ 
+  // calculate the mutatated parameter
    mut = indv[i][j] * ( 1 + mutvar * rnormal01()); 
-  
+ 
   // force it to be within the bounds
    if( mut <= mn ) mut = mn + DBL_EPSILON;
    else
@@ -232,9 +238,10 @@ void CGA::mutate( unsigned int i )
    {if( mut > mx ) mut = mx;}
    // store it
    indv[i][j] = mut;
-
+ }
  // evaluate the fitness
  candx[i] = evaluate(i);
+ 
 }
 
 void CGA::crossover( unsigned int p1, unsigned int p2, unsigned int c1, unsigned int c2 )
@@ -476,10 +483,30 @@ int CGA::Optimise()
  times(&before);
  dTime=time(NULL);
 
- CGA Ga_10param(4000,4000, atoi(argv[1]));  //define a object
+ 
+ //CGA Ga_10param(4000,4000, atoi(argv[1]));  //define a object
+ CGA Ga_10param(4000,40, atoi(argv[1]));  //define a object
 
  Ga_10param.Set_mn(atoi(argv[2]));
  Ga_10param.Set_mx(atoi(argv[3]));
+
+ //int tmp1 = atoi(argv[1]);
+ //int tmp2 = atoi(argv[2]);
+ //int tmp3 = atoi(argv[3]);
+
+ //cout << "tmp1 = "<<tmp1<<", tmp2= "<<tmp2<<", tmp3 = "<<tmp3<<endl;
+  
+ cout << "mn = "<<mn<<", mx= "<<mx<<", nparam = "<<nparam<<endl;
+
+ //YOHE: test again
+ // CGA Ga_10param(3000,3000, 100);  //define a object
+
+ //Ga_10param.Set_mn(-10);
+ //Ga_10param.Set_mx(10);
+
+ // cout << "tmp1 = "<<tmp1<<", tmp2= "<<tmp2<<", tmp3 = "<<tmp3<<endl;
+ cout << "mn = "<<mn<<", mx= "<<mx<<", nparam = "<<nparam<<endl;
+ cout << "mn = "<<Ga_10param.mn<<", mx= "<<Ga_10param.mx<<", nparam = "<<Ga_10param.nparam<<endl;
 
 //Initialise the random number generator with time
  Ga_10param.OptRandomInit();
