@@ -44,5 +44,12 @@ class COptFunction: public CKinFunction
     void cleanup();
     COptProblem* mpProblem;
     COptMethod* mpMethod;
+
+  public:
+    COptProblem* getProblem()
+    {return mpProblem;}
+
+    COptMethod* getMethod()
+    {return mpMethod;}
   };
 #endif
