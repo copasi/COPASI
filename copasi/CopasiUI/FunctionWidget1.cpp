@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/17 15:52:25 $
+   $Author: stupe $ 
+   $Date: 2004/11/19 20:27:04 $
    End CVS Header */
 
 /**********************************************************************
@@ -573,11 +573,9 @@ void FunctionWidget1::updateApplication()
 {
   // :TODO: This function should be returning whether the application was actually changed //
 
-  CFunctionParameters &functParam = pFunction->getParameters();
-
-  CCopasiVectorNS < CUsageRange > & functUsage = pFunction ->getUsageDescriptions();
-
   CUsageRange Application;
+  CFunctionParameters &functParam = pFunction->getParameters();
+  CCopasiVectorNS < CUsageRange > & functUsage = pFunction ->getUsageDescriptions();
   functUsage.cleanup();
 
   Application.setUsage("SUBSTRATES");
@@ -585,6 +583,11 @@ void FunctionWidget1::updateApplication()
     {
       Application.setRange(functParam.getUsageRanges()["SUBSTRATE"]->getLow(),
                            functParam.getUsageRanges()["SUBSTRATE"]->getHigh());
+      functUsage.add(Application);
+    }
+  else
+    {
+      Application.setRange(Application.Constants::NoRange, Application.getHigh());
       functUsage.add(Application);
     }
 
@@ -595,12 +598,22 @@ void FunctionWidget1::updateApplication()
                            functParam.getUsageRanges()["PRODUCT"]->getHigh());
       functUsage.add(Application);
     }
+  else
+    {
+      Application.setRange(Application.Constants::NoRange, Application.getHigh());
+      functUsage.add(Application);
+    }
 
   Application.setUsage("MODIFIERS");
   if (functParam.getUsageRanges().getIndex("MODIFIER") != C_INVALID_INDEX)
     {
       Application.setRange(functParam.getUsageRanges()["MODIFIER"]->getLow(),
                            functParam.getUsageRanges()["MODIFIER"]->getHigh());
+      functUsage.add(Application);
+    }
+  else
+    {
+      Application.setRange(Application.Constants::NoRange, Application.getHigh());
       functUsage.add(Application);
     }
 }
@@ -822,7 +835,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                              // Yes or Enter
+        case 0:                               // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -839,7 +852,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                              // No or Escape
+        case 1:                               // No or Escape
           break;
         }
     }
