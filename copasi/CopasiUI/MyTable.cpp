@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyTable.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/13 14:58:58 $
+   $Author: shoops $ 
+   $Date: 2004/08/13 21:14:52 $
    End CVS Header */
 
 #include <iostream>
@@ -67,7 +67,7 @@ void MyTable::showEvent(QShowEvent* e)
           for (counter = 0; counter < numCols; counter++)
             {
               this->exactColumnWidth[counter] = (double)this->columnWidth(counter) * factor;
-              this->setColumnWidth(counter, (int)lround(this->exactColumnWidth[counter]));
+              this->setColumnWidth(counter, (int)ceil(this->exactColumnWidth[counter]));
             }
         }
     }
@@ -84,7 +84,7 @@ void MyTable::resizeEvent(QResizeEvent* e)
   double oldWidth = (double)(e->oldSize().width() - vertHeaderWidth);
   double width = (double)(e->size().width()) - vertHeaderWidth;
   int numColumns = this->numCols();
-  int optSizes[numColumns];
+  int * optSizes = new int[numColumns];
   int counter;
   if (this->contentsWidth() > width && oldWidth < width)
     {
@@ -106,6 +106,7 @@ void MyTable::resizeEvent(QResizeEvent* e)
                 {
                   //tooSmall=counter;
                   //break;
+                  delete [] optSizes;
                   return;
                 }
             }
@@ -117,6 +118,9 @@ void MyTable::resizeEvent(QResizeEvent* e)
         }
       this->scaleColumns(factor);
     }
+
+  delete [] optSizes;
+  return;
 }
 
 int MyTable::getOptimalColumnWidth(int index)
@@ -144,7 +148,7 @@ void MyTable::scaleColumns(double factor)
   for (counter = 0; counter < this->numCols(); counter++)
     {
       this->exactColumnWidth[counter] = this->exactColumnWidth[counter] * factor;
-      this->setColumnWidth(counter, (int)lround(this->exactColumnWidth[counter]));
+      this->setColumnWidth(counter, (int)ceil(this->exactColumnWidth[counter]));
     }
 }
 
@@ -182,7 +186,7 @@ void MyTable::removeColumns(const QMemArray<int> & cols)
   for (counter1 = 0; counter1 < cols.size(); counter1++)
     {
       unsigned int counter2;
-      for (counter2 = cols[counter1] + 1; counter2 < this->exactColumnWidth.size() - counter1; counter2++)
+      for (counter2 = cols.at(counter1) + 1; counter2 < this->exactColumnWidth.size() - counter1; counter2++)
         {
           this->exactColumnWidth[counter2 - 1] = this->exactColumnWidth[counter2];
         }
