@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 11:45:35 $
+   $Date: 2004/06/28 08:56:39 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -261,8 +261,9 @@ void DataModel::saveModel(const char* fileName)
 {
   if (fileName == NULL) return;
 
-  CCopasiXML XML;
+  model->compileIfNecessary();
 
+  CCopasiXML XML;
   std::ofstream os(fileName);
 
   XML.setModel(*model);
