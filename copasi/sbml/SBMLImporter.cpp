@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/04/05 16:18:23 $
+   $Date: 2005/04/05 18:51:01 $
    End CVS Header */
 
 #include "copasi.h"
@@ -818,7 +818,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   else
     {
       /* if no KineticLaw was defined for the reaction. */
-      copasiReaction->setFunction(NULL);
+      // create a fatalError until copasi can handle NULL
+      // functions
+      //copasiReaction->setFunction(NULL);
+      fatalError();
     }
   copasiReaction->setReversible(sbmlReaction->getReversible());
   //DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
