@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.205 $
+   $Revision: 1.206 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/20 17:42:38 $
+   $Date: 2004/12/29 16:22:34 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1638,6 +1638,7 @@ CCompartment* CModel::createCompartment(const std::string & name,
     }
 
   //compile();
+  mStateTemplate.add(cpt->getKey());
 
   return cpt;
 }
