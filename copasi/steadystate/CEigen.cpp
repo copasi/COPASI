@@ -16,20 +16,58 @@
  */
 CEigen::CEigen()
 { 
-  initialize();
+  // initialise variables
+  mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
+  mEigen_nzero = mEigen_ncplxconj = 0.0;
+
+
+  // 15 parameters for DGEES_()
+  // #1: (input) characer*1
+  mJobvs = 'N';
+  // #2: (input) characer*1
+  mSort = 'N';
+  // #3: (input) Logical function of two double precision arguments
+  mSelect = NULL;            
+  // #4: (input) The order of the matrix A 
+  mN = 0;
+  // #5: (input/output) The double precision array, dimension (LDA,N)
+  mA = NULL;    //initialize later
+  // #6: (input) The leading dimension of the array A. LDA >= max(1,N)
+  //C_INT32 mLDA;
+  // #7: (output) an integer
+  //C_INT32 mSdim;
+  // #8: array with dimension (mN)
+  mEigen_r = NULL;       //mWR;
+  // #9: array with dimension (mN)
+  mEigen_i = NULL;       //mWI;
+  // #10: (output) array with dimension (mLdvs, mN)
+  mVS = NULL;
+  // #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
+  mLdvs = 1;
+  // #12: (workspace/output) double precision array, dimension (mLWork)
+  mWork = NULL;
+  // #13: (input) Dimension of array Work, its value >= max(1,3*mN).
+  mLWork = 4096;
+  // #14: (workspace) Logical array, dimension (N)
+  mBWork = NULL;
+  // #15: (output) an integer
+  //C_INT32 mInfo;
+
+  //initialize();
 }
+
 
 /**
  * User defined constructor
  * @param rows is the max row number of Matrix
  * @param cols is the max column number of Matrix
  */
-CEigen::CEigen(int rows, int cols)
-{
+//CEigen::CEigen(int rows, int cols)
+//{
+//  mMatrix.newsize(rows, cols);
+//  initialize();
+//}
 
-  mMatrix.newsize(rows, cols);
-  initialize();
-}
 
 /**
  * Deconstructor
@@ -42,18 +80,18 @@ CEigen::~CEigen()
 /**
  * return the matrix
  */
-TNT::Matrix < C_FLOAT64 > CEigen::getMatrix()
-{
-  return mMatrix;
-}
+//TNT::Matrix < C_FLOAT64 > CEigen::getMatrix()
+//{
+//  return mMatrix;
+//}
 
 /**
  * Set the Matrix
  */
-void CEigen::setMatrix(int rows, int cols)
-{
-  mMatrix.newsize(rows, cols);
-}
+//void CEigen::setMatrix(int rows, int cols)
+//{
+//  mMatrix.newsize(rows, cols);
+//}
 	
 /**
  * Set the Work
@@ -71,75 +109,65 @@ C_FLOAT64 * CEigen::getWork() const
   return mWork;
 }
 
+/**
+  * #: Set the mN
+  */
+void CEigen::setN(C_INT32  aN)
+{
+  mN = aN;
+}
+
+
 //initialize variables for eigenvalue calculations
 //
 void CEigen::initialize()
 {
-   
-  // * #1: (input) characer*1
-  mJobvs = 'N';
-  // * #2: (input) characer*1
-  mSort = 'N';
-  // * #3: (input) Logical function of two double precision arguments
-  mSelect = NULL;
-  // * #4: (input) The order of the matrix A 
-  mN = 0;
-  // * #5: (input/output) The double precision array, dimension (LDA,N)
-  //C_FLOAT64 * mA;
-  // * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
-  //C_INT32 mLDA;
-  // * #7: (output) an integer
-  //C_INT32 mSdim;
-  // * #8: array with dimension (mN)
-  //C_FLOAT64 * mWR;
-  // * #9: array with dimension (mN)
-  //C_FLOAT64 * mWI;
-  // * #10: (output) array with dimension (mLdvs, mN)
-  //C_FLOAT64 * mVS;
-  // * #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
-  //C_INT32 mLdvs;
-  // * #12: (workspace/output) double precision array, dimension (mLWork)
-  //C_FLOAT64 * mWork;
-  // * #13: (input) Dimension of array Work, its value >= max(1,3*mN).
-  //C_INT32 mLWork;
-  // * #14: (workspace) Logical array, dimension (N)
-  //C_INT32 * mBWork;
-  // * #15: (output) an integer
-  //C_INT32 mInfo;
+
+  // distribute memory for Eigenvalue variables
+  //mEigen_r = new double[Model.TotMetab];
+  //mEigen_i = new double[Model.TotMetab];
+  //mA = new double[Model.TotMetab*Model.TotMetab];
+
+  //????????????????
+  //different from the original initialization ????
+  mEigen_r = new double[mN];
+  mEigen_i = new double[mN];
+  mA = new double[mN*mN];
 
 } 
 
 
-// eigenvalue calculations
-void CEigen::CalcEigenvalues( void )
+// eigenvalue calculatiosn
+void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
 { 
-
+  
   /*
 
  int res;
  //char jobvs = 'N';      //#1
  //char sort = 'N';       //#2
 
- long int lda;
- long int sdim;
+ //long int lda;
+ long int mLDA;          //#6
+ //long int sdim;
+ long int mSdim;       //#7
  // int n, pz, mx, mn;        // YH: don't use "long" any more
- int pz, mx, mn;        // YH: don't use "long" any more
- long int ldvs = 1;
- double *work;
- long int lwork = 4096;
- long int info;
+ int pz, mx, mn;        // YH: n is the 4th parameter, not here
+ //long int ldvs = 1;   //#11
+ //double *work;         //#12
+ //long int lwork = 4096;   //#13
+ //long int info;    //#15
  int i, j;
  double distt, maxt, tott;
 
  // the dimension of the matrix
  //n = Model.IndMetab;
  //lda = n>1 ? n : 1;
- mN = Model.IndMetab;
- lda = mN>1 ? mN : 1;
-
+ //mN = Model.IndMetab;    //mModel->getIndMetab(); //been set outside
+ mLDA = mN>1 ? mN : 1;
 
  // create the matrices
- work = new double[lwork];
+ mWork = new double[mLWork];
 
  // copy the jacobian into J
  // for( i=0; i<n; i++ )
@@ -147,99 +175,97 @@ void CEigen::CalcEigenvalues( void )
  //  eigen_jacob[i*n+j] = ss_jacob[i+1][j+1];
  for( i=0; i<mN; i++ )
    for( j=0; j<mN; j++ )
-     eigen_jacob[i*mN+j] = ss_jacob[i+1][j+1];
-
-
-
+     //mA[i*mN+j] = ss_jacob[i+1][j+1];
+       mA[i*mN+j] = ss_jacob[i][j];
 
  // calculate the eigenvalues
  res = dgees_( &mJobvs,                     //ok, done
-              &mSort,                       //ok, done
-	       mSelect,          //NULL,    //ok
-	       &mN,              //&n,      //ok
-                  eigen_jacob,             //ok
-                          &lda,            //ok
-                          &sdim,           //ok
-                          eigen_r,         //????? 8
-                  eigen_i,                 //????? 9
-                          NULL,            //ok
-                          &ldvs,           //ok
-                          work,            //ok
-                  &lwork,                  //ok
-                          NULL,            //ok
-                          &info);          //ok
+               &mSort,                      //ok, done
+	       mSelect,          //NULL,    //ok, done
+	       &mN,              //&n,      //ok, done
+                  mA,                       //ok, done
+                          &mLDA,            //ok, done
+                          &mSdim,           //ok, done (output)
+                          mEigen_r,         //ok, done
+                  mEigen_i,                 //ok, done
+                          mVS,              //ok, done
+                          &mLdvs,           //ok, done
+                          mWork,            //ok, done
+                  &mLWork,                  //ok, done
+	          mBWork,         //NULL    //ok, done
+                          &mInfo);          //ok, done (output)
 
  // release the work array
- delete [] work;
+ delete [] mWork;
  // initialise variables
- eigen_nreal = eigen_nimag = eigen_nposreal = eigen_nnegreal =
- eigen_nzero = eigen_ncplxconj = 0.0;
+ //mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
+ //mEigen_nzero = mEigen_ncplxconj = 0.0;
 
  // sort the eigenvalues
- qsort( eigen_r, eigen_i, 0, n-1 );
+ qsort( mEigen_r, mEigen_i, 0, mN-1 );
  // search for the number of positive real parts
- for( pz=0; pz<n; pz++ )
-  if( eigen_r[pz] < 0.0 ) break;
+ for( pz=0; pz<mN; pz++ )
+  if( mEigen_r[pz] < 0.0 ) break;
  // calculate various eigenvalue statistics
- eigen_maxrealpart = eigen_r[0];
- eigen_maximagpart = fabs(eigen_i[0]);
- for( i=0; i<n; i++ )
+ mEigen_maxrealpart = mEigen_r[0];
+ mEigen_maximagpart = fabs(mEigen_i[0]);
+ for( i=0; i<mN; i++ )
  {
   // for the largest real part
-  if( eigen_r[i] > eigen_maxrealpart ) eigen_maxrealpart = eigen_r[i];
+  if( mEigen_r[i] > mEigen_maxrealpart ) mEigen_maxrealpart = mEigen_r[i];
   // for the largest imaginary part
-  if( fabs(eigen_i[i]) > eigen_maximagpart ) eigen_maximagpart = fabs(eigen_i[i]);
-  if( fabs(eigen_r[i]) > SSRes )
+  if( fabs(mEigen_i[i]) > mEigen_maximagpart ) mEigen_maximagpart = fabs(mEigen_i[i]);
+  if( fabs(mEigen_r[i]) > SSRes )
   {
    // positive real part
-   if( eigen_r[i]>=SSRes ) eigen_nposreal += 1.0;
+   if( mEigen_r[i]>=SSRes ) mEigen_nposreal += 1.0;
    // negative real part
-   if( eigen_r[i]<=-SSRes ) eigen_nnegreal += 1.0;
-   if( fabs(eigen_i[i]) > SSRes )
+   if( mEigen_r[i]<=-SSRes ) mEigen_nnegreal += 1.0;
+   if( fabs(mEigen_i[i]) > SSRes )
    {
     // complex
-    eigen_ncplxconj += 1.0;
+    mEigen_ncplxconj += 1.0;
    }
    else
    {
     // pure real
-        eigen_nreal += 1.0;
+        mEigen_nreal += 1.0;
    }
   }
   else
   {
-   if( fabs(eigen_i[i]) > SSRes )
+   if( fabs(mEigen_i[i]) > SSRes )
    {
     // pure imaginary
-    eigen_nimag += 1.0;
+    mEigen_nimag += 1.0;
    }
    else
    {
     // zero
-        eigen_nzero += 1.0;
+        mEigen_nzero += 1.0;
    }
   }
  }
  if( pz > 0 )
  {
-  if( eigen_r[0] > fabs( eigen_r[n] ) ) mx = 0; else mx = n-1;
-  if( eigen_r[pz-1] < fabs( eigen_r[pz] ) ) mn = 0; else mn = pz;
+  if( mEigen_r[0] > fabs( mEigen_r[mN] ) ) mx = 0; else mx = mN-1;
+  if( mEigen_r[pz-1] < fabs( mEigen_r[pz] ) ) mn = 0; else mn = pz;
  }
  else
  {
-  mx = n-1; // index of the largest absolute real part
+  mx = mN-1; // index of the largest absolute real part
   mn = 0; // index of the smallest absolute real part
  }
- eigen_stiffness = fabs( eigen_r[mx] ) / fabs( eigen_r[mn] );
- maxt = tott = fabs( 1/eigen_r[mn] );
+ mEigen_stiffness = fabs( mEigen_r[mx] ) / fabs( mEigen_r[mn] );
+ maxt = tott = fabs( 1/mEigen_r[mn] );
  distt = 0.0;
- for( i=1; i<n; i++ )
+ for( i=1; i<mN; i++ )
   if( i!=mn )
   {
-   distt += maxt - fabs( 1/eigen_r[i] );
-   tott += fabs( 1/eigen_r[i] );
+   distt += maxt - fabs( 1/mEigen_r[i] );
+   tott += fabs( 1/mEigen_r[i] );
   }
- eigen_hierarchy = distt / tott / (n-1);
+ mEigen_hierarchy = distt / tott / (mN-1);
 
   */
 

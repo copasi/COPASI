@@ -17,6 +17,7 @@
 #include "model/model.h"
 #include "CNewton.h"
 #include "CJacob.h"
+#include "CEigen.h"
 
 #include "trajectory/CTrajectory.h"
 // #include <cmath>
@@ -65,6 +66,11 @@ class CSS_Solution
    *  The CNewton to work with
    */
   CNewton * mNewton;
+
+  /**
+   *  The CEigen to work with
+   */
+  CEigen * mEigen;
 
   /**
    *  variable for steady-state solution
@@ -241,6 +247,18 @@ class CSS_Solution
    *  @return mNewton private member
    */
   CNewton * getNewton() const;
+
+  /**
+   *  set CEigen
+   *  @param aEigen, CNewton pointer to be set as mNewton
+   */
+  void setEigen(CEigen * aEigen);
+
+  /**
+   *  get CEigen
+   *  @return mEigen private member
+   */
+  CEigen * getEigen() const;
 
   /**
    *  set CTrajectory pointer

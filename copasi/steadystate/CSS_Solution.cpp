@@ -21,6 +21,7 @@ CSS_Solution::CSS_Solution()
 {
   mNewton = NULL;
   mModel = NULL;
+  mEigen = NULL;
   mTraj = NULL;
   mJacob = NULL;
   mOption = 0;    //0 means normal
@@ -38,6 +39,7 @@ CSS_Solution::CSS_Solution(const CSS_Solution& source)
 {
   mNewton = source.mNewton;
   mModel = source.mModel;
+  mEigen = source.mEigen;
   mTraj = source.mTraj;
   mJacob = source.mJacob;
   mDerivFactor = source.mDerivFactor;
@@ -55,6 +57,7 @@ CSS_Solution& CSS_Solution::operator=(const CSS_Solution& source)
     {
       mNewton = source.mNewton;
       mModel = source.mModel;
+      mEigen = source.mEigen;
       mTraj = source.mTraj;
       mJacob = source.mJacob;
       mDerivFactor = source.mDerivFactor;
@@ -84,6 +87,7 @@ void CSS_Solution::initialize()
 
   mNewton = new CNewton();
   mModel = new CModel();
+  mEigen = new CEigen();
   mTraj = new CTrajectory();
   mJacob = new CJacob();
   
@@ -135,6 +139,22 @@ CNewton * CSS_Solution::getNewton() const
 {
   return mNewton;
 }
+
+
+//set mEigen
+void CSS_Solution::setEigen(CEigen * aEigen)
+{
+  mEigen = aEigen;
+}
+
+
+//get mEigen
+CEigen * CSS_Solution::getEigen() const
+{
+  return mEigen;
+}
+
+
 
 //set mModel
 void CSS_Solution:: setModel(CModel * aModel)
@@ -424,7 +444,11 @@ void CSS_Solution::afterFindSteadyState()
   mJacob->jacobEval(mSs_x, mDerivFactor, mSSRes);
 
   //calculate the eigenvalues of the jacobian
-  // ??????????????//
+  //CEigen tmp = CEigen(mSSRes,  mJocob, 
+  //mEigen = tmp;
+  mEigen->setN( mModel->getIndMetab() );
+  mEigen->initialize();
+  mEigen->CalcEigenvalues(mSSRes, mJacob->getJacob());
 
   //copy the concentrations back to the model
   mModel->setConcentrations(mSs_x);

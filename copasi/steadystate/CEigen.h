@@ -15,6 +15,7 @@
 #include "tnt/tnt.h"
 #include "tnt/cmat.h"
 #include "copasi.h"
+#include <cmath>
 
 //include clapack.h for eigenvalue calculations0
 extern "C" {
@@ -38,7 +39,22 @@ class CEigen {
    * If input is a TNT matrix, a transformation of it to arrays will 
    * be performed
    */
-  TNT::Matrix <C_FLOAT64> mMatrix;
+  //TNT::Matrix <C_FLOAT64> mMatrix;
+
+
+ /**
+   * variables for stability analysis
+   */
+ C_FLOAT64                 mEigen_maxrealpart;
+ C_FLOAT64                 mEigen_maximagpart;
+ C_FLOAT64                 mEigen_nposreal;
+ C_FLOAT64                 mEigen_nnegreal;
+ C_FLOAT64                 mEigen_nreal;
+ C_FLOAT64                 mEigen_nimag;
+ C_FLOAT64                 mEigen_ncplxconj;
+ C_FLOAT64                 mEigen_nzero;
+ C_FLOAT64                 mEigen_stiffness;
+ C_FLOAT64                 mEigen_hierarchy;
 
 
   //there are 15 parameters in the dgees() subroutine
@@ -56,6 +72,7 @@ class CEigen {
    * = 'S': Eigenvalues are ordered 
    */
   char mSort;
+ 
 
   /**
    * #3: (input) Logical function of two double precision arguments
@@ -64,12 +81,13 @@ class CEigen {
    * of the Schur form 
    * = 'N': Eigenvalues are ordered Select is not refereced.
    */
-  char mSelect;
+  //char mSelect;
+  int * mSelect;
 
   /**
    * #4: (input) The order of the matrix A 
    */
-  C_INT32 mN;
+  int mN;
 
  
   /**
@@ -85,7 +103,7 @@ class CEigen {
   /**
    * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
    */
-  C_INT32 mLDA;
+  int mLDA;
 
   /**
    * #7: (output) an integer
@@ -93,17 +111,18 @@ class CEigen {
    * if Sort = 'S', its value = number of eigenvalues (after sorting)
    *                for which mSelect is true.
    */
-  C_INT32 mSdim;
+  int mSdim;
 
   /**
    * #8: array with dimension (mN)
    */
-  C_FLOAT64 * mWR;
+  C_FLOAT64 * mEigen_r;
+
 
   /**
    * #9: array with dimension (mN)
    */
-  C_FLOAT64 * mWI;
+  C_FLOAT64 * mEigen_i;
 
   /**
    * #10: (output) array with dimension (mLdvs, mN)
@@ -165,8 +184,7 @@ class CEigen {
    * @param rows is the max row number of the Matrix
    * @param cols is the max column number of the Matrix
    */
-  CEigen(int rows, int cols);
-
+  //CEigen(int rows, int cols);
 
   /**
    * Destructor
@@ -174,16 +192,23 @@ class CEigen {
 
   ~CEigen();
 
+
+ /**
+   * initialize variables for eigenvalue calculations
+   */
+
+  void initialize();
+
  
   /**
    * return the matrix
    */
-  TNT::Matrix < C_FLOAT64 > getMatrix();
+  //TNT::Matrix < C_FLOAT64 > getMatrix();
 
   /**
    * Set the Matrix
    */
-  void setMatrix(int rows, int cols);
+  //void setMatrix(int rows, int cols);
 
 
   /**
@@ -198,110 +223,16 @@ class CEigen {
 
 
   /**
+   * #: Set the mN
+   */
+  void setN(C_INT32  aN);
+
+
+  /**
    * Eigenvalue calculations
+   * @param SSRes the steady state resolution.
    */
-  void CalcEigenvalues();
-
-
-  //there are 15 parameters in the dgees() subroutine
-
-  /**
-   * #1: (input) characer*1
-   */
-  //char mJobvs;
-
- /**
-   * #2: (input) characer*1
-   */
-  //char mSort;
-
-  /**
-   * #3: (input) Logical function of two double precision arguments
-   */
-  //char mSelect;
-
-  /**
-   * #4: (input) The order of the matrix A 
-   */
-  //C_INT32 mN;
-
- 
-  /**
-   * #5: (input/output) The double precision array, dimension (LDA,N)
-   */
-  //C_FLOAT64 * mA;
-
-
-  /**
-   * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
-   */
-  //C_INT32 mLDA;
-
-  /**
-   * #7: (output) an integer
-   */
-  //C_INT32 mSdim;
-
-  /**
-   * #8: array with dimension (mN)
-   */
-  //C_FLOAT64 * mWR;
-
-  /**
-   * #9: array with dimension (mN)
-   */
-  //C_FLOAT64 * mWI;
-
-  /**
-   * #10: (output) array with dimension (mLdvs, mN)
-   */
-  //C_FLOAT64 * mVS;
-
-  /**
-   * #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
-   */
-  //C_INT32 mLdvs;
-
-  /**
-   * #12: (workspace/output) double precision array, dimension (mLWork)
-   */
-  //C_FLOAT64 * mWork;
-
-  /**
-   * #13: (input) Dimension of array Work, its value >= max(1,3*mN).
-   */
-  //C_INT32 mLWork;
-
-  /**
-   * #14: (workspace) Logical array, dimension (N)
-   */
-  //C_INT32 * mBWork;
-
-
-  /**
-   * #15: (output) an integer
-   */
-  //C_INT32 mInfo;
-
-
-  /*
-
-// variables for stability analysis
- double                 *eigen_r;
- double                 *eigen_i;
- double                 *eigen_jacob;
- double                 eigen_maxrealpart;
- double                 eigen_maximagpart;
- double                 eigen_nposreal;
- double                 eigen_nnegreal;
- double                 eigen_nreal;
- double                 eigen_nimag;
- double                 eigen_ncplxconj;
- double                 eigen_nzero;
- double                 eigen_stiffness;
- double                 eigen_hierarchy;
-
-  */
+  void CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64> ss_jacob);
 
 
 };
