@@ -188,10 +188,11 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = librandomGenerator.a
 
-librandomGenerator_a_SOURCES =  	CRandom.cpp 	Cr250.cpp 
+librandomGenerator_a_SOURCES =  	CRandom.cpp 	Cr250.cpp 	Cmt19937.cpp
 
 
-EXTRA_DIST =  	CRandom.h 		CRandom.cpp 	Cr250.h			Cr250.cpp 
+EXTRA_DIST =  	CRandom.h 	CRandom.cpp 	Cr250.h		Cr250.cpp 	Cmt19937.h	Cmt19937.cpp
+
 
 ####### kdevelop will overwrite this part!!! (end)############
 
@@ -208,7 +209,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 librandomGenerator_a_LIBADD = 
-librandomGenerator_a_OBJECTS =  CRandom.$(OBJEXT) Cr250.$(OBJEXT)
+librandomGenerator_a_OBJECTS =  CRandom.$(OBJEXT) Cr250.$(OBJEXT) \
+Cmt19937.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -222,7 +224,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/CRandom.P .deps/Cr250.P
+DEP_FILES =  .deps/CRandom.P .deps/Cmt19937.P .deps/Cr250.P
 SOURCES = $(librandomGenerator_a_SOURCES)
 OBJECTS = $(librandomGenerator_a_OBJECTS)
 
