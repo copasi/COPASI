@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/19 15:54:00 $
+   $Author: shoops $ 
+   $Date: 2004/05/19 18:37:36 $
    End CVS Header */
 
 /*******************************************************************
@@ -340,17 +340,17 @@ bool CopasiTableWidget::enter(const std::string & C_UNUSED(key))
 
 void CopasiTableWidget::init()
 {std::cout << "**** init: method of CopasiTableWidget should never be called ****" << std::endl;}
-std::vector<const CCopasiObject*> CopasiTableWidget::getObjects() const
-  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
+// std::vector<const CCopasiObject*> CopasiTableWidget::getObjects() const
+//  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
 void CopasiTableWidget::tableLineFromObject(const CCopasiObject* , unsigned C_INT32)
 {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
 void CopasiTableWidget::tableLineToObject(unsigned C_INT32, CCopasiObject*)
 {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-CCopasiObject* CopasiTableWidget::createNewObject(const std::string &)
-{std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
+// CCopasiObject* CopasiTableWidget::createNewObject(const std::string &)
+//  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
 void CopasiTableWidget::deleteObjects(const std::vector<std::string> &)
 {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
 void CopasiTableWidget::defaultTableLineContent(unsigned C_INT32)
 {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-QString CopasiTableWidget::defaultObjectName() const
-  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
+// QString CopasiTableWidget::defaultObjectName() const
+//  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}

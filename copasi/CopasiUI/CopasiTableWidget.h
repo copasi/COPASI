@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/19 15:54:00 $
+   $Author: shoops $ 
+   $Date: 2004/05/19 18:37:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -81,7 +81,7 @@ class CopasiTableWidget : public CopasiWidget
     /**
      * returns a list of objects that should be displayed
      */
-    virtual std::vector<const CCopasiObject*> getObjects() const;
+    virtual std::vector<const CCopasiObject*> getObjects() const = 0;
 
     /**
      * fills one table row with the data from one object
@@ -96,7 +96,7 @@ class CopasiTableWidget : public CopasiWidget
     /**
      * creates a new object
      */
-    virtual CCopasiObject* createNewObject(const std::string & name);
+    virtual CCopasiObject* createNewObject(const std::string & name) = 0;
 
     /**
      * deletes objects. Performs all additional tasks, like asking the user, ...
@@ -112,7 +112,7 @@ class CopasiTableWidget : public CopasiWidget
     /**
      * the prefix that is used to construct new object names
      */
-    virtual QString defaultObjectName() const;
+    virtual QString defaultObjectName() const = 0;
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.172 $
+   $Revision: 1.173 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/19 10:04:43 $
+   $Author: shoops $ 
+   $Date: 2004/05/19 18:37:35 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1638,6 +1638,7 @@ std::set<std::string> CModel::listReactionsDependentOnMetab(const std::string & 
 std::set<std::string> CModel::listReactionsDependentOnCompartment(const std::string & key)
 {
   std::set<std::string> compReacKeys, metabReacKeys;
+  std::set<std::string>::iterator it, end;
 
   CCompartment* comp = dynamic_cast< CCompartment *>(GlobalKeys.get(key));
   const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
@@ -1646,7 +1647,12 @@ std::set<std::string> CModel::listReactionsDependentOnCompartment(const std::str
   for (j = 0; j < jmax; j++)
     {
       metabReacKeys = listReactionsDependentOnMetab(Metabs[j]->getKey());
-      compReacKeys.insert(metabReacKeys.begin(), metabReacKeys.end());
+
+      // Visual C++ does not implement insert(iterator first, iterator last)
+      // Therfore the following does not compile:
+      // compReacKeys.insert(metabReacKeys.begin(), metabReacKeys.end());
+      for (it = metabReacKeys.begin(), end = metabReacKeys.end(); it != end; ++it)
+        compReacKeys.insert(*it);
     }
 
   return compReacKeys;
