@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.164 $
+   $Revision: 1.165 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/16 21:20:51 $
+   $Date: 2004/11/30 03:03:54 $
    End CVS Header */
 
 /****************************************************************************
@@ -187,7 +187,39 @@ QString FolderListItem::key(int, bool) const
  ************************************************************/
 ListViews::ListViews(QWidget *parent, const char *name):
     QSplitter(Qt::Horizontal, parent, name),
-    mpMathModel(NULL)
+    mpMathModel(NULL),
+    mpCMCAResultWidget(NULL),
+    mpCMCAWidget(NULL),
+    compartmentSymbols(NULL),
+    compartmentsWidget(NULL),
+    compartmentsWidget1(NULL),
+    constantSymbols(NULL),
+    defaultWidget(NULL),
+    differentialEquations(NULL),
+    fixedMetaboliteSymbols(NULL),
+    functionSymbols(NULL),
+    functionWidget(NULL),
+    functionWidget1(NULL),
+    metaboliteSymbols(NULL),
+    metabolitesWidget(NULL),
+    metabolitesWidget1(NULL),
+    modelWidget(NULL),
+    modesWidget(NULL),
+    moietyWidget(NULL),
+    moietyWidget1(NULL),
+    optimizationWidget(NULL),
+    paramFittingWidget(NULL),
+    plotWidget(NULL),
+    plotWidget1(NULL),
+    reactionsWidget(NULL),
+    reactionsWidget1(NULL),
+    scanWidget(NULL),
+    stateWidget(NULL),
+    steadystateWidget(NULL),
+    tableDefinition(NULL),
+    tableDefinition1(NULL),
+    timeSeriesWidget(NULL),
+    trajectoryWidget(NULL)
 {
   this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 1, 1));
   setChildrenCollapsible(false);
@@ -274,102 +306,98 @@ void ListViews::setupFolders()
 void ListViews::ConstructNodeWidgets()
 {
   // create the model widgets
-  modelWidget = new ModelWidget(this);
-  modelWidget->hide();
-
-  compartmentsWidget = new CompartmentsWidget(this);
-  compartmentsWidget->hide();
-
-  metabolitesWidget = new MetabolitesWidget(this);
-  metabolitesWidget->hide();
-
-  reactionsWidget = new ReactionsWidget(this);
-  reactionsWidget->hide();
-
-  moietyWidget = new MoietyWidget(this);
-  moietyWidget->hide();
-
-  functionWidget = new FunctionWidget(this);
-  functionWidget->hide();
-
-  //*
-  compartmentsWidget1 = new CompartmentsWidget1(this);
-  compartmentsWidget1->hide();
-
-  metabolitesWidget1 = new MetabolitesWidget1(this);
-  metabolitesWidget1->hide();
-
-  reactionsWidget1 = new ReactionsWidget1(this);
-  reactionsWidget1->hide();
-
-  moietyWidget1 = new MoietyWidget1(this);
-  moietyWidget1->hide();
-
-  functionWidget1 = new FunctionWidget1(this);
-  functionWidget1->hide();
-
-  //*
-  metaboliteSymbols = new MetaboliteSymbols(this);
-  metaboliteSymbols->hide();
-
-  differentialEquations = new DifferentialEquations(this);
-  differentialEquations->hide();
-
-  fixedMetaboliteSymbols = new FixedMetaboliteSymbols(this);
-  fixedMetaboliteSymbols->hide();
-
-  compartmentSymbols = new CompartmentSymbols(this);
+  if (!compartmentSymbols) compartmentSymbols = new CompartmentSymbols(this);
   compartmentSymbols->hide();
 
-  constantSymbols = new ConstantSymbols(this);
+  if (!compartmentsWidget) compartmentsWidget = new CompartmentsWidget(this);
+  compartmentsWidget->hide();
+
+  if (!compartmentsWidget1) compartmentsWidget1 = new CompartmentsWidget1(this);
+  compartmentsWidget1->hide();
+
+  if (!constantSymbols) constantSymbols = new ConstantSymbols(this);
   constantSymbols->hide();
 
-  functionSymbols = new FunctionSymbols(this);
+  if (!differentialEquations) differentialEquations = new DifferentialEquations(this);
+  differentialEquations->hide();
+
+  if (!fixedMetaboliteSymbols) fixedMetaboliteSymbols = new FixedMetaboliteSymbols(this);
+  fixedMetaboliteSymbols->hide();
+
+  if (!functionSymbols) functionSymbols = new FunctionSymbols(this);
   functionSymbols->hide();
 
-  //*
-  tableDefinition = new TableDefinition(this);
-  tableDefinition->hide();
+  if (!functionWidget) functionWidget = new FunctionWidget(this);
+  functionWidget->hide();
 
-  tableDefinition1 = new TableDefinition1(this);
-  tableDefinition1->hide();
+  if (!functionWidget1) functionWidget1 = new FunctionWidget1(this);
+  functionWidget1->hide();
 
-  plotWidget = new PlotWidget(this);
-  plotWidget->hide();
+  if (!metaboliteSymbols) metaboliteSymbols = new MetaboliteSymbols(this);
+  metaboliteSymbols->hide();
 
-  plotWidget1 = new PlotWidget1(this);
-  plotWidget1->hide();
+  if (!metabolitesWidget) metabolitesWidget = new MetabolitesWidget(this);
+  metabolitesWidget->hide();
 
-  steadystateWidget = new SteadyStateWidget(this);
-  steadystateWidget->hide();
+  if (!metabolitesWidget1) metabolitesWidget1 = new MetabolitesWidget1(this);
+  metabolitesWidget1->hide();
 
-  stateWidget = new StateWidget(this);
-  stateWidget->hide();
+  if (!modelWidget) modelWidget = new ModelWidget(this);
+  modelWidget->hide();
 
-  scanWidget = new ScanWidget(this);
-  scanWidget->hide();
-
-  //**********
-  trajectoryWidget = new TrajectoryWidget(this);
-  trajectoryWidget->hide();
-
-  timeSeriesWidget = new TimeSeriesWidget(this);
-  timeSeriesWidget->hide();
-
-  paramFittingWidget = new ParamFittingWidget(this);
-  paramFittingWidget->hide();
-
-  optimizationWidget = new OptimizationWidget(this);
-  optimizationWidget->hide();
-
-  modesWidget = new ModesWidget(this);
+  if (!modesWidget) modesWidget = new ModesWidget(this);
   modesWidget->hide();
 
-  mpCMCAWidget = new CMCAWidget(this);
+  if (!moietyWidget) moietyWidget = new MoietyWidget(this);
+  moietyWidget->hide();
+
+  if (!moietyWidget1) moietyWidget1 = new MoietyWidget1(this);
+  moietyWidget1->hide();
+
+  if (!mpCMCAResultWidget) mpCMCAResultWidget = new CMCAResultWidget(this);
+  mpCMCAResultWidget->hide();
+
+  if (!mpCMCAWidget) mpCMCAWidget = new CMCAWidget(this);
   mpCMCAWidget->hide();
 
-  mpCMCAResultWidget = new CMCAResultWidget(this);
-  mpCMCAResultWidget->hide();
+  if (!optimizationWidget) optimizationWidget = new OptimizationWidget(this);
+  optimizationWidget->hide();
+
+  if (!paramFittingWidget) paramFittingWidget = new ParamFittingWidget(this);
+  paramFittingWidget->hide();
+
+  if (!plotWidget) plotWidget = new PlotWidget(this);
+  plotWidget->hide();
+
+  if (!plotWidget1) plotWidget1 = new PlotWidget1(this);
+  plotWidget1->hide();
+
+  if (!reactionsWidget) reactionsWidget = new ReactionsWidget(this);
+  reactionsWidget->hide();
+
+  if (!reactionsWidget1) reactionsWidget1 = new ReactionsWidget1(this);
+  reactionsWidget1->hide();
+
+  if (!scanWidget) scanWidget = new ScanWidget(this);
+  scanWidget->hide();
+
+  if (!stateWidget) stateWidget = new StateWidget(this);
+  stateWidget->hide();
+
+  if (!steadystateWidget) steadystateWidget = new SteadyStateWidget(this);
+  steadystateWidget->hide();
+
+  if (!tableDefinition) tableDefinition = new TableDefinition(this);
+  tableDefinition->hide();
+
+  if (!tableDefinition1) tableDefinition1 = new TableDefinition1(this);
+  tableDefinition1->hide();
+
+  if (!timeSeriesWidget) timeSeriesWidget = new TimeSeriesWidget(this);
+  timeSeriesWidget->hide();
+
+  if (!trajectoryWidget) trajectoryWidget = new TrajectoryWidget(this);
+  trajectoryWidget->hide();
 }
 
 /**
@@ -453,7 +481,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                       //Report
+      case 43:                        //Report
         return tableDefinition;
         break;
       case 42:

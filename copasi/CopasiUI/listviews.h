@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.90 $
+   $Revision: 1.92 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/16 21:11:14 $
+   $Date: 2004/12/20 17:35:45 $
    End CVS Header */
 
 /****************************************************************************
@@ -141,38 +141,38 @@ class ListViews : public QSplitter
     //the widgets
     QListView *folders;
 
-    ScanWidget *scanWidget;
-    SteadyStateWidget *steadystateWidget;
-    TrajectoryWidget *trajectoryWidget;
-    MetabolitesWidget *metabolitesWidget;
-    ReactionsWidget *reactionsWidget;
-    CompartmentsWidget *compartmentsWidget;
+    CMCAResultWidget* mpCMCAResultWidget;
+    CMCAWidget* mpCMCAWidget;
     CompartmentSymbols *compartmentSymbols;
-    MoietyWidget *moietyWidget;
-    FunctionWidget *functionWidget;
-    FunctionSymbols *functionSymbols;
-    DifferentialEquations *differentialEquations;
-    ReactionsWidget1 *reactionsWidget1;
-    MetabolitesWidget1 *metabolitesWidget1;
-    MetaboliteSymbols *metaboliteSymbols;
-    FixedMetaboliteSymbols *fixedMetaboliteSymbols;
+    CompartmentsWidget *compartmentsWidget;
     CompartmentsWidget1 *compartmentsWidget1;
     ConstantSymbols *constantSymbols;
-    MoietyWidget1 *moietyWidget1;
+    CopasiDefaultWidget *defaultWidget;
+    DifferentialEquations *differentialEquations;
+    FixedMetaboliteSymbols *fixedMetaboliteSymbols;
+    FunctionSymbols *functionSymbols;
+    FunctionWidget *functionWidget;
     FunctionWidget1 *functionWidget1;
-    ModesWidget *modesWidget;
+    MetaboliteSymbols *metaboliteSymbols;
+    MetabolitesWidget *metabolitesWidget;
+    MetabolitesWidget1 *metabolitesWidget1;
     ModelWidget *modelWidget;
+    ModesWidget *modesWidget;
+    MoietyWidget *moietyWidget;
+    MoietyWidget1 *moietyWidget1;
+    OptimizationWidget *optimizationWidget;
+    ParamFittingWidget *paramFittingWidget;
+    PlotWidget *plotWidget;
+    PlotWidget1 *plotWidget1;
+    ReactionsWidget *reactionsWidget;
+    ReactionsWidget1 *reactionsWidget1;
+    ScanWidget *scanWidget;
+    StateWidget *stateWidget;
+    SteadyStateWidget *steadystateWidget;
     TableDefinition *tableDefinition;
     TableDefinition1 *tableDefinition1;
-    OptimizationWidget *optimizationWidget;
-    PlotWidget1 *plotWidget1;
-    PlotWidget *plotWidget;
-    CopasiDefaultWidget *defaultWidget;
     TimeSeriesWidget *timeSeriesWidget;
-    StateWidget *stateWidget;
-    ParamFittingWidget *paramFittingWidget;
-    CMCAWidget* mpCMCAWidget;
-    CMCAResultWidget* mpCMCAResultWidget;
+    TrajectoryWidget *trajectoryWidget;
   };
 
 #endif
