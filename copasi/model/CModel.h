@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:24:57 $
+   $Author: gasingh $ 
+   $Date: 2003/10/24 20:35:52 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -847,6 +847,8 @@ class CModel : public CCopasiContainer
      */
     bool addCompartment(const std::string & name,
                         const C_FLOAT64 & volume = 1.0);
+
+    bool removeCompartment(const std::string & name);
 
     /**
      * Add a new rection to the model
