@@ -1,4 +1,4 @@
-#! /usr/bin/perl -w
+#! /usr/bin/perl
 #
 # Virginia Bioinformatics Institute, Virginia Tech
 # Biochemical Networks Modeling Group
@@ -57,12 +57,13 @@ $gfile = $ARGV[0];
     if ($vertex < 500)
 	{
 	  # Layout the graph into postscript
-	  system "$NEATO -Tps -G\"page=8.5,11\" -G\"size=7.5,10\" -o$psfile $gfile 2>>layout.log";
+#	  system "$NEATO -Tps -G\"page=8.5,11\" -G\"size=7.5,10\" -o$psfile $gfile 2>>layout.log";
 
- 	  print ".";
+# 	  print ".";
 
 	  # Layout the graph into a picture (png)
 	  system "$NEATO -G\"size=8,8\" -Tpng -o$pngfilen $gfile 2>>layout.log";
+	  print ".";
 	}
 	else
 	{
@@ -75,8 +76,6 @@ $gfile = $ARGV[0];
 
 	  system "$NEATO -G\"size=8,8\" -Tpng -o$pngfilen tmp.gvz 2>>layout.log";
 	} 
-
-	print ".";
 
 	# convert to PBM, process, and convert back to desired bitmap format
 	$bfile = $gfile;
@@ -96,7 +95,6 @@ $gfile = $ARGV[0];
 	 {system "$DOT -G\"size=8,8\" -Tpng -o$pngfiled $gfile 2>>layout.log";}
 	else
 	 {system "$DOT -G\"size=8,8\" -Tpng -o$pngfiled tmp.gvz 2>>layout.log";}
-
 
     print ".";
 
@@ -163,7 +161,7 @@ $gfile = $ARGV[0];
 	print( HTFILE "<a href=\"#deg\">Degree distribution</a> |\n");
 	print( HTFILE "<a href=\"#files\">Files</a>\n");
 	print( HTFILE "</div>\n");
-	print( HTFILE "<h2>Statistics</h2>\n<table>\n");
+	print( HTFILE "<h2>Network statistics</h2>\n<table>\n");
     foreach $line (@stats)
 	{ 
 	  chop($line);
@@ -180,7 +178,7 @@ $gfile = $ARGV[0];
 	print( HTFILE "<tr><td>Graphviz</td><td><a href=\"$gfile.dot\">$gfile.dot</a></td></tr>\n");
 	print( HTFILE "<tr><td>Pajek</td><td><a href=\"$gfile.net\">$gfile.net</a></td></tr>\n");
 	print( HTFILE "<tr><td>Gnuplot degree distribution</td><td><a href=\"$gfile.distri.plt\">$gfile.distri.plt</a></td></tr>\n");
-	print( HTFILE "<tr><td>Network statistics</td><td><a href=\"$gfile.netstat\">$gfile.netstat</a></td></tr>\n");
+#	print( HTFILE "<tr><td>Network statistics</td><td><a href=\"$gfile.netstat\">$gfile.netstat</a></td></tr>\n");
 	print( HTFILE "<tr><td>Gepasi report file</td><td><a href=\"$gfile.txt\">$gfile.txt</a></td></tr>\n");
 	print( HTFILE "</table>\n");
 	print( HTFILE "</center>\n</div>\n");
@@ -190,9 +188,9 @@ $gfile = $ARGV[0];
 	print ".";
 
 	# run Gepasi
-	$sfile = $gfile . ".gps";
+#	$sfile = $gfile . ".gps";
 #	$sfile =~ s/\.$GRAPHEXTENSION/\.gps/;
-	system "$GEPASI $sfile";
+#	system "$GEPASI $sfile";
 
 	print ".\n";
 
