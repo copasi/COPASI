@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/31 18:34:46 $
+   $Date: 2005/02/07 09:32:16 $
    End CVS Header */
 
 /********************************************************
@@ -131,6 +131,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   //QLabel* tmpLable = new QLabel(tmpBox);
   //tmpLable->setText(trUtf8("Start output after t="));
   mLineEditStartOutput = new QLineEdit(tmpBox);
+  mLineEditStartOutput->setValidator(new QDoubleValidator(nEndTime));
   TrajectoryWidgetLayout->addMultiCellWidget(tmpBox, 4, 4, 1, 2);
 
   //
@@ -250,6 +251,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(nEndTime, SIGNAL(edited()), this, SLOT(EndTimeSlot()));
   connect(nStepSize, SIGNAL(edited()), this, SLOT(StepsizeSlot()));
   connect(nStepNumber, SIGNAL(edited()), this, SLOT(NumStepsSlot()));
+
+  connect(mCheckBoxStartOutput, SIGNAL(toggled(bool)),
+          mLineEditStartOutput, SLOT(setEnabled(bool)));
 }
 
 /*
@@ -485,6 +489,11 @@ void TrajectoryWidget::loadTrajectoryTask()
   nStartTime->setText(QString::number(trajectoryproblem->getStartTime()));
   nEndTime->setText(QString::number(trajectoryproblem->getEndTime()));
 
+  bool tmpflag (trajectoryproblem->getStartTime() == trajectoryproblem->getOutputStartTime());
+  mCheckBoxStartOutput->setChecked(!tmpflag);
+  mLineEditStartOutput->setEnabled(!tmpflag);
+  mLineEditStartOutput->setText(QString::number(trajectoryproblem->getOutputStartTime()));
+
   //store time series checkbox
   bStoreTimeSeries->setChecked(trajectoryproblem->timeSeriesRequested());
   checkTimeSeries();
@@ -554,6 +563,11 @@ void TrajectoryWidget::saveTrajectoryTask()
     trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
   trajectoryproblem->setStartTime(nStartTime->text().toDouble());
   trajectoryproblem->setEndTime(nEndTime->text().toDouble());
+
+  if (mCheckBoxStartOutput->isChecked())
+    trajectoryproblem->setOutputStartTime(mLineEditStartOutput->text().toDouble());
+  else
+    trajectoryproblem->setOutputStartTime(nStartTime->text().toDouble());
 
   trajectoryproblem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/03 13:04:34 $
+   $Date: 2005/02/07 09:31:44 $
    End CVS Header */
 
 /**
@@ -151,31 +151,40 @@ bool CTrajectoryTask::process()
   pMethod->setCurrentState(mpState);
   pMethod->setProblem(pProblem);
 
+  C_FLOAT64 StepSize = pProblem->getStepSize();
+  C_FLOAT64 ActualStepSize;
+  const C_FLOAT64 & Time = mpState->getTime();
+  C_FLOAT64 EndTime = pProblem->getEndTime() - StepSize;
+  C_FLOAT64 outputStartTime = pProblem->getOutputStartTime();
+
   bool flagStopped = false;
   C_FLOAT64 handlerFactor = 1000 / (pProblem->getEndTime() - pProblem->getStartTime());
   if (mpProgressHandler) mpProgressHandler->init(1000, "performing simulation...", true);
   pProblem->getModel()->setState(mpState);
   pProblem->getModel()->updateRates();
   mReport.printHeader();
-  mReport.printBody();
   if (mpOutputHandler) mpOutputHandler->init();
   if (mTimeSeriesRequested) mTimeSeries.init(pProblem->getStepNumber(), mpState);
-  if (mpOutputHandler) mpOutputHandler->doOutput();
-  if (mTimeSeriesRequested) mTimeSeries.add();
 
-  C_FLOAT64 StepSize = pProblem->getStepSize();
-  C_FLOAT64 ActualStepSize;
-  const C_FLOAT64 & Time = mpState->getTime();
-  C_FLOAT64 EndTime = pProblem->getEndTime() - StepSize;
+  if (outputStartTime <= Time)
+    {
+      mReport.printBody();
+      if (mpOutputHandler) mpOutputHandler->doOutput();
+      if (mTimeSeriesRequested) mTimeSeries.add();
+    }
 
   ActualStepSize = pMethod->step(StepSize, mpState);
 
   if (mpProgressHandler) flagStopped = mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
-  pProblem->getModel()->setState(mpState);
-  pProblem->getModel()->updateRates();
-  mReport.printBody();
-  if (mpOutputHandler) mpOutputHandler->doOutput();
-  if (mTimeSeriesRequested) mTimeSeries.add();
+
+  if (outputStartTime <= Time)
+    {
+      pProblem->getModel()->setState(mpState);
+      pProblem->getModel()->updateRates();
+      mReport.printBody();
+      if (mpOutputHandler) mpOutputHandler->doOutput();
+      if (mTimeSeriesRequested) mTimeSeries.add();
+    }
 
 #ifdef  XXXX_Event
   if (ActualStepSize != StepSize)
@@ -189,12 +198,15 @@ bool CTrajectoryTask::process()
       ActualStepSize = pMethod->step(StepSize);
 
       if (mpProgressHandler) flagStopped = mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
-      pProblem->getModel()->setState(mpState);
-      pProblem->getModel()->updateRates();
-      mReport.printBody();
-      if (mpOutputHandler) mpOutputHandler->doOutput();
-      if (mTimeSeriesRequested) mTimeSeries.add();
 
+      if (outputStartTime <= Time)
+        {
+          pProblem->getModel()->setState(mpState);
+          pProblem->getModel()->updateRates();
+          mReport.printBody();
+          if (mpOutputHandler) mpOutputHandler->doOutput();
+          if (mTimeSeriesRequested) mTimeSeries.add();
+        }
 #ifdef  XXXX_Event
       if (ActualStepSize != StepSize)
         {
@@ -208,12 +220,15 @@ bool CTrajectoryTask::process()
       ActualStepSize = pMethod->step(pProblem->getEndTime() - Time);
 
       if (mpProgressHandler) flagStopped = mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
-      pProblem->getModel()->setState(mpState);
-      pProblem->getModel()->updateRates();
-      mReport.printBody();
-      if (mpOutputHandler) mpOutputHandler->doOutput();
-      if (mTimeSeriesRequested) mTimeSeries.add();
 
+      if (outputStartTime <= Time)
+        {
+          pProblem->getModel()->setState(mpState);
+          pProblem->getModel()->updateRates();
+          mReport.printBody();
+          if (mpOutputHandler) mpOutputHandler->doOutput();
+          if (mTimeSeriesRequested) mTimeSeries.add();
+        }
 #ifdef  XXXX_Event
       if (ActualStepSize != (pProblem->getEndTime() - Time))
         {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 09:19:10 $
+   $Date: 2005/02/07 09:31:44 $
    End CVS Header */
 
 /**
@@ -120,6 +120,18 @@ class CTrajectoryProblem : public CCopasiProblem
      * @return "const C_FLOAT64 &" endTime
      */
     const C_FLOAT64 & getEndTime() const;
+
+    /**
+     * Set the end time.
+     * @param "const C_FLOAT64 &" endTime
+     */
+    void setOutputStartTime(const C_FLOAT64 & endTime);
+
+    /**
+     * Retrieve the end time.
+     * @return "const C_FLOAT64 &" endTime
+     */
+    const C_FLOAT64 & getOutputStartTime() const;
 
     /**
      *.
