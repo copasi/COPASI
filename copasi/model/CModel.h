@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:08:33 $
+   $Date: 2004/09/09 12:27:28 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -696,7 +696,7 @@ class CModel : public CCopasiContainer
      * &param CState * state (input)
      * &param  C_FLOAT64 * rates (output)
      */
-    void getRates(CState * state, C_FLOAT64 * rates);
+    void getRates(const CState * state, C_FLOAT64 * rates);
 
     /**
      * Calculate the rates of the reaction in the given state in 
@@ -705,7 +705,7 @@ class CModel : public CCopasiContainer
      * &param CStateX * stateX (input)
      * &param  C_FLOAT64 * rates (output)
      */
-    void getRatesX(CStateX * state, C_FLOAT64 * rates);
+    void getRatesX(const CStateX * state, C_FLOAT64 * rates);
 
     /**
      * Calculate the changes of particles numbers of the metabolites 

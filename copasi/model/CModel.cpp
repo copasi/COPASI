@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.188 $
+   $Revision: 1.189 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:08:33 $
+   $Date: 2004/09/09 12:27:28 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1188,7 +1188,7 @@ void CModel::updateDepMetabNumbers(CStateX const & state) const
 
 //**********************************************************************
 
-void CModel::getRates(CState * state, C_FLOAT64 * rates)
+void CModel::getRates(const CState * state, C_FLOAT64 * rates)
 {
   setState(state);
 
@@ -1200,7 +1200,7 @@ void CModel::getRates(CState * state, C_FLOAT64 * rates)
   return;
 }
 
-void CModel::getRatesX(CStateX * state, C_FLOAT64 * rates)
+void CModel::getRatesX(const CStateX * state, C_FLOAT64 * rates)
 {
   setStateX(state);
 
