@@ -13,5 +13,5 @@ extern "C"
 
 #ifdef WIN32
 #define min _cpp_min
-#define max _cpp_min
+#define max _cpp_max
 #endif // WIN32
