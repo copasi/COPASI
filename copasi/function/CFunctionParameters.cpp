@@ -173,7 +173,8 @@ void CFunctionParameters::updateUsageRanges()
 
       if (pUsageRange)
         {
-          if ((CFunctionParameter::VINT32 <= Type) || (pUsageRange->getHigh() == CRange::Infinity))
+          if ((CFunctionParameter::VINT32 <= Type) ||
+              (pUsageRange->getHigh() == (unsigned C_INT32) CRange::Infinity))
             CCopasiMessage(CCopasiMessage::ERROR, MCFunctionParameters + 1,
                            Usage.c_str(), Type);
           // this means a vector parameter must be the only parameter with the respective usage
