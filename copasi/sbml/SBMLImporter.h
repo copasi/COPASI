@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/21 15:20:56 $
+   $Date: 2004/06/22 04:29:27 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -56,13 +56,13 @@ class SBMLImporter
      * Creates and returns a Copasi CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<std::string, CCompartment*> compartmentMap);
 
     /**
      * Traverses the brach of the given AST node recursively and prefixes all substrate
      * parameters with "substrate_", all product parameters with "product_" and all modifier parameters with "modifier_".
      */
-    void replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction, const Model* sbmlModel);
+    void replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction);
 
     /**
      * Recursively replaces all parameter names in the branch of the given AST node
@@ -117,6 +117,11 @@ class SBMLImporter
      *  UnitDefinition.
      */
     CModel::TimeUnit handleTimeUnit(const UnitDefinition* uDef);
+
+    /**
+     * Replaces all compartment nodes in an AST tree with the initial volume of the compartment.
+     */
+    void replaceCompartmentNodes(ConverterASTNode* node, std::map<std::string, CCompartment*> compartmentMap);
 
   public:
     SBMLImporter();

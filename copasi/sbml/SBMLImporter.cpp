@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/21 15:20:55 $
+   $Date: 2004/06/22 04:29:26 $
    End CVS Header */
 
 #include <iostream>
@@ -146,7 +146,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
   num = sbmlModel->getNumReactions();
   for (unsigned int counter = 0; counter < num; counter++)
     {
-      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel);
+      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, compartmentMap);
     }
   copasiModel->compile();
   return copasiModel;
@@ -259,7 +259,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<std::string, CCompartment*> compartmentMap)
 {
   /* Check if the name of the reaction is unique. */
   if (sbmlReaction == NULL)
@@ -433,7 +433,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       DebugFile << "Replacing the user defined functions failed." << std::endl;
       throw StdException("Error. Replacing the user defined functions failed.");
     }
-  this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction, sbmlModel);
+  this->replaceCompartmentNodes((ConverterASTNode*)node, compartmentMap);
+  this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
   this->replacePowerFunctionNodes(node);
   /* if it is a single compartment reaction, we have to devide the whole kinetic
   ** equation by the volume of the compartment because copasi expects
@@ -736,7 +737,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
  * parameters with "substrate_", all product parameters with "product_" and all modifier parameters with "modifier_".
  */
 void
-SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction, const Model* sbmlModel)
+SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction)
 {
   std::map< std::string, std::map<std::string, std::string> > substances;
   substances["substrates"] = std::map< std::string, std::string >();
@@ -790,6 +791,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::strin
 {
   if (node->isName())
     {
+      bool set = false;
       std::map<std::string, std::string> substances = substMap["products"];
       if (reversible)
         {
@@ -797,6 +799,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::strin
           if (it != substances.end())
             {
               node->setName(it->second.c_str());
+              set = true;
             }
         }
       substances = substMap["substrates"];
@@ -804,12 +807,29 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::strin
       if (it != substances.end())
         {
           node->setName(it->second.c_str());
+          set = true;
         }
       substances = substMap["modifiers"];
       it = substances.find(node->getName());
       if (it != substances.end())
         {
           node->setName(it->second.c_str());
+          set = true;
+        }
+      /* if there was no replacement so far, it might still be a modifier that has not been specified in the listOfModifiers
+       */
+      if (!set)
+        {
+          std::map<std::string, CMetab*>::iterator pos = this->speciesMap.find(node->getName());
+          if (pos != this->speciesMap.end())
+            {
+              std::string mName = node->getName();
+              if (mName.find("modifier_") != 0)
+                {
+                  mName = "modifier_" + mName;
+                }
+              node->setName(mName.c_str());
+            }
         }
     }
   else
@@ -1249,4 +1269,22 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
       throw StdException("Error. Invalid SBML volume unit definition.");
     }
   return vUnit;
+}
+
+void SBMLImporter::replaceCompartmentNodes(ConverterASTNode* node, std::map<std::string, CCompartment*> compartmentMap)
+{
+  if (node->getType() == AST_NAME)
+    {
+      std::map<std::string, CCompartment*>::iterator pos = compartmentMap.find(node->getName());
+      if (pos != compartmentMap.end())
+        {
+          node->setType(AST_REAL);
+          node->setValue(pos->second->getInitialVolume());
+        }
+    }
+  unsigned int num = node->getNumChildren();
+  for (unsigned int counter = 0; counter < num; counter++)
+    {
+      this->replaceCompartmentNodes((ConverterASTNode*)(node->getChild(counter)), compartmentMap);
+    }
 }
