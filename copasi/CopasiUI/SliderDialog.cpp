@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/10 12:05:13 $
+   $Date: 2005/03/11 13:22:05 $
    End CVS Header */
 
 #include <iostream>
@@ -224,7 +224,8 @@ void SliderDialog::editSlider()
   pSettingsDialog->disableObjectChoosing(true);
   pSettingsDialog->setSlider(this->currSlider->getCSlider());
   pSettingsDialog->exec();
-  this->currSlider->updateLabel();
+  //this->currSlider->updateLabel();
+  this->currSlider->updateSliderData();
   delete pSettingsDialog;
   delete pVector;
 }
