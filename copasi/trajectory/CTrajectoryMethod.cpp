@@ -19,7 +19,8 @@ const std::string CTrajectoryMethod::TypeName[] =
   {
     "deterministic",
     "stochastic",
-    "hybrid"
+    "hybrid",
+    ""
   };
 
 CTrajectoryMethod *
