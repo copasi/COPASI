@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/07 18:15:36 $
+   $Date: 2003/11/14 22:11:41 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -201,6 +201,8 @@ class CCopasiParameter: public CCopasiContainer
      * @return bool isValidValue
      */
     bool isValidValue(const std::vector< CCopasiParameter * > & value) const;
+
+    virtual void * getReference() const;
 
   private:
     /**

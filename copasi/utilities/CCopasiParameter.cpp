@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 16:44:26 $
+   $Date: 2003/11/14 22:11:41 $
    End CVS Header */
 
 /**
@@ -135,6 +135,9 @@ bool CCopasiParameter::isValidValue(const CCopasiParameterGroup::parameterGroup 
     if (mType != CCopasiParameter::GROUP) return false;
     return true;
   }
+
+void * CCopasiParameter::getReference() const
+{return const_cast<void *>(mpValue);}
 
 void * CCopasiParameter::createValue(const void * pValue)
 {
