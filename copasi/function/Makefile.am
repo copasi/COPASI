@@ -11,6 +11,7 @@ libfunction_a_SOURCES = \
 	CKinFunctionFlexLexer.cpp \
 	CMassAction.cpp \
 	CFunctionDB.cpp \
+	CCallParameters.cpp \
 	CNodeK.cpp
 
 EXTRA_DIST = \
@@ -25,9 +26,7 @@ EXTRA_DIST = \
 	CKinFunctionFlexLexer.lpp \
 	CFunctionDB.h		CFunctionDB.cpp \
 	CNodeK.h		CNodeK.cpp \
-	CCallParameter.h \
-	CCallParameters.h \
-	function.h
+	CCallParameters.h CCallParameters.cpp 
 
 ####### kdevelop will overwrite this part!!! (end)############
 
