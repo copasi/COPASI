@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSelectionWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 12:45:09 $
+   $Date: 2004/12/10 12:49:23 $
    End CVS Header */
 
 #include "CCopasiSelectionWidget.h"
@@ -100,6 +100,12 @@ void CCopasiSelectionWidget::commit()
       if (this->mExpertMode)
         {
           this->mpObjectBrowser->commitClicked();
+          if (this->mSingleSelect && this->mpOutputVector->size() > 1)
+            {
+              CCopasiObject* object = this->mpOutputVector->at(0);
+              this->mpOutputVector->clear();
+              this->mpOutputVector->push_back(object);
+            }
         }
       else
         {
