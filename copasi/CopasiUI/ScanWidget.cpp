@@ -357,8 +357,8 @@ void ScanWidget::upButtonClicked()
 
   CCopasiObject* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
   CCopasiObject* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(pObjectUp);
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(pObjectDown);
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(scanTask->getProblem()->getScanItem(activeObject - 1));
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(scanTask->getProblem()->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->loadObject();
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->loadObject();
   activeObject--;
@@ -398,8 +398,8 @@ void ScanWidget::downButtonClicked()
   activeObject++;
   CCopasiObject* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
   CCopasiObject* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(pObjectUp);
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(pObjectDown);
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(scanTask->getProblem()->getScanItem(activeObject - 1));
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(scanTask->getProblem()->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->loadObject();
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->loadObject();
 
@@ -551,11 +551,9 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   scrollview->addChild(newTitleBar, 0, widgetOffset - nTitleHeight);
   selectedList.push_back(newTitleBar);
 
-  parameterTable->setObject(pObject);
-
   parameterTable->setFixedWidth(ScanItemWidgetWidth);
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
-  parameterTable->setObject(pObject);
+  //  parameterTable->setObject(pObject);
   parameterTable->loadObject();
 
   scrollview->addChild(parameterTable, 0 , widgetOffset);
@@ -566,6 +564,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   nSelectedObjects++;
   //  if (pObject->isContainer())
   scanTask->getProblem()->addScanItem(CMethodParameterList(pObject->getCN().c_str(), (CCopasiContainer*)pObject, pObject->getObjectType()));
+  parameterTable->setObject(scanTask->getProblem()->getScanItem(nSelectedObjects - 1));
   emit show_me();
   return true;
 }

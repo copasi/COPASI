@@ -16,6 +16,7 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
+#include "utilities/cmethodparameterlist.h" 
 /*
  *  Constructs a ScanItemWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -209,7 +210,7 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
    
     ScanItemWidgetLayout->addMultiCellLayout(Layout34, 0, 1, 0, 0);
   */
-  pObject = NULL;
+  pParameter = NULL;
 }
 
 /*
@@ -222,7 +223,7 @@ ScanItemWidget::~ScanItemWidget()
 
 void ScanItemWidget::loadObject()
 {
-  if (!pObject)
+  if (!pParameter)
     return;
   int i = 0;
 }

@@ -25,13 +25,15 @@ class ScanCheckBox;
 class ScanLineEdit;
 class ScanRadioButton;
 class QScrollView;
+class CMethodParameterList;
 
 class ScanItemWidget : public QWidget
   {
     Q_OBJECT
   private:
     QScrollView* mParent;
-    CCopasiObject* pObject;
+    CMethodParameterList* pParameter;
+
   public:
     ScanItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanItemWidget();
@@ -63,14 +65,14 @@ class ScanItemWidget : public QWidget
     {
       QWidget::mousePressEvent(e);
     }
-    void setObject(CCopasiObject* pNewObject)
+    void setObject(CMethodParameterList* pNewParameter)
     {
-      pObject = pNewObject;
+      pParameter = pNewParameter;
     }
 
-    CCopasiObject* getObject()
+    CMethodParameterList* getObject()
     {
-      return pObject;
+      return pParameter;
     }
     void loadObject();
   };
