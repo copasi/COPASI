@@ -174,6 +174,13 @@ class CTrajectory
   C_INT32 getArrSize() const;
 
   /*
+   * calculate the time lenghth
+   * @return mN
+   */
+  C_FLOAT64 calcTimeLength();
+
+
+  /*
    * Set the end of time points
    * @param aDouble a double type to be set as mEndTime
    */	
