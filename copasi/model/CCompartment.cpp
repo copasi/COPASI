@@ -90,6 +90,7 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
                                        (void *) & MetabolitesNo)))
     return Fail;
 
+  CMetab::setParentCompartment(this);
   mMetabolites.load(configbuffer, MetabolitesNo);
 
   return Fail;

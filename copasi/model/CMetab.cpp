@@ -12,11 +12,21 @@
 #include "CCompartment.h"
 #include "CMetab.h"
 
+const CCompartment * CMetab::mpParentCompartment = NULL;
+
+void CMetab::setParentCompartment(const CCompartment * parentCompartment)
+{mpParentCompartment = parentCompartment; }
+
 /////////////////////////////////////////////////////////////////////////////
 // CMetab
 
-CMetab::CMetab()
+CMetab::CMetab(const CModel * pModel)
 {
+  if (pModel)
+    mpModel = pModel;
+  else
+    mpModel = Copasi->Model;
+
   // initialize everything
   CONSTRUCTOR_TRACE;
   mName = "metab";
@@ -25,22 +35,13 @@ CMetab::CMetab()
     fatalError();
 
   mConcDbl = Copasi->DefaultConc;
-
   mIConcDbl = Copasi->DefaultConc;
-
   mNumberInt = (C_INT32) (Copasi->DefaultConc * Copasi->DefaultVolume);
-
   mINumberInt = (C_INT32) (Copasi->DefaultConc * Copasi->DefaultVolume);
-
   mRate = 1.0;
-
   mTT = 0.0;
-
   mStatus = METAB_VARIABLE;
-
-  mCompartment = NULL;
-
-  mpModel = NULL;
+  mCompartment = const_cast<CCompartment *>(mpParentCompartment);
 }
 
 CMetab::CMetab(const CMetab & src)
@@ -113,13 +114,13 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
   if (Fail)
     return Fail;
 
-  Fail = configbuffer.getVariable("Concentration(double)", "C_FLOAT64",
+  Fail = configbuffer.getVariable("InitialConcentration", "C_FLOAT64",
                                   (void *) & mIConcDbl);
 
   setInitialConcentration(mIConcDbl);
   setConcentration(mIConcDbl);
 
-  Fail = configbuffer.getVariable("Concentration(long)", "C_INT32",
+  Fail = configbuffer.getVariable("InitialParticleNumber", "C_INT32",
                                   (void *) & mINumberInt);
 
   if (Fail)
@@ -166,13 +167,13 @@ C_INT32 CMetab::save(CWriteConfig &configbuffer)
   if (Fail)
     return Fail;
 
-  Fail = configbuffer.setVariable("Concentration(double)", "C_FLOAT64",
+  Fail = configbuffer.setVariable("InitialConcentration", "C_FLOAT64",
                                   (void *) & mIConcDbl);
 
   if (Fail)
     return Fail;
 
-  Fail = configbuffer.setVariable("Concentration(long)", "C_INT32",
+  Fail = configbuffer.setVariable("InitialParticleNumber", "C_INT32",
                                   (void *) & mINumberInt);
 
   if (Fail)
@@ -186,8 +187,7 @@ C_INT32 CMetab::save(CWriteConfig &configbuffer)
 
 C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
 {
-  C_INT32 c, i, s, Fail = 0;
-  CCopasiVector < CCompartment > cpts;
+  C_INT32 c, Fail = 0;
 
   Fail = configbuffer.setVariable("Metabolite", "string", (void *) & mName);
   if (Fail)
@@ -195,17 +195,7 @@ C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
   Fail = configbuffer.setVariable("Concentration", "C_FLOAT64", (void *) & mIConcDbl);
   if (Fail)
     return Fail;
-  // we need to find the index of the compartment in the vector of compartments. ugly code!
-  cpts = mpModel->getCompartments();
-  s = cpts.size();
-  for (i = 0, c = -1; i < s; i++)
-    if (cpts[i] == mCompartment)
-      {
-        c = i;
-        break;
-      }
-  if (c == -1)
-    return -1;
+  c = mpModel->getCompartments().getIndex(mCompartment->getName());
   Fail = configbuffer.setVariable("Compartment", "C_INT32", (void *) & c);
   if (Fail)
     return Fail;
@@ -276,10 +266,10 @@ CCompartment * CMetab::getCompartment()
   return mCompartment;
 }
 
-CModel * CMetab::getModel()
-{
-  return mpModel;
-}
+const CModel * CMetab::getModel() const
+  {
+    return mpModel;
+  }
 
 void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
 {

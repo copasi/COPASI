@@ -11,13 +11,9 @@
 #include <iostream>
 
 class CCompartment;
-
 class CReadConfig;
-
 class CWriteConfig;
-
 class CMetabOld;
-
 class CModel;
 
 //constants for use with Status
@@ -33,7 +29,6 @@ using std::endl;
 class CMetab
   {
     // Attributes
-
   private:
     /**
      *  Name of the metabolite
@@ -87,15 +82,19 @@ class CMetab
      *  pointer to the model the metabolite is located in.
      *  The metab needs to know about the unit for concentrations.
      */
-    CModel * mpModel;
+    const CModel * mpModel;
+
+    /**
+     * This the default parent compartmnet used on creation
+     */
+    static const CCompartment *mpParentCompartment;
 
     // Operations
-
   public:
     /**
      *  Default constructor
      */
-    CMetab();
+    CMetab(const CModel * pModel = NULL);
 
     /**
      *  Copy constructor
@@ -267,7 +266,7 @@ class CMetab
     /**
      *
      */
-    CModel * getModel();
+    const CModel * getModel() const;
 
     /**
      *  Set transition time
@@ -331,6 +330,12 @@ class CMetab
 
       return os;
     }
+
+    /**
+     * Set the default parent compartment
+     * @param const CCompartment * parentCompartmnte
+     */
+    static void setParentCompartment(const CCompartment * parentCompartment);
 
   private:
     /**
