@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/01/07 21:46:09 $
+   $Date: 2004/01/08 19:47:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -57,6 +57,7 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(1, "Elementary Mode");
 
   btnCalculate = new QPushButton("&Run", this);
+  modes = new CElementaryFluxModes();
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -96,29 +97,32 @@ void ModesWidget::loadModes(CModel *model)
       table->removeRow(0);
     }
 
-  /***CL *** // fill table with new values
-  unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
-  table->setNumRows(noOfModesRows);
-  //bool status;
-  C_INT32 j;
-  for (j = 0; j < noOfModesRows; j++)
+  /***CL ***/ // fill table with new values
+  if (modes != NULL)
     {
-      // status=modes->isFluxModeReversible(j);
-      if (modes->isFluxModeReversible(j) == true)
+      unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
+      table->setNumRows(noOfModesRows);
+      //bool status;
+      C_INT32 j;
+      for (j = 0; j < noOfModesRows; j++)
         {
-          table->setText(j, 0, "Reversible");
-        }
-      else
-        {
-          table->setText(j, 0, "Irrversible");
-        }
-      //QString y=modes->isFluxModeReversible(j)->c_str();
-      //QString x=modes->getFluxModeDescription(j).c_str();
-      //QMessageBox::information(this, "recahed ",x);
-      //table->setText(j, 0,y);
-      //table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
-      table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
-    } *** CL ***/
+          // status=modes->isFluxModeReversible(j);
+          if (modes->isFluxModeReversible(j) == true)
+            {
+              table->setText(j, 0, "Reversible");
+            }
+          else
+            {
+              table->setText(j, 0, "Irreversible");
+            }
+          //QString y=modes->isFluxModeReversible(j)->c_str();
+          //QString x=modes->getFluxModeDescription(j).c_str();
+          //QMessageBox::information(this, "recahed ",x);
+          //table->setText(j, 0,y);
+          //table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
+          table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
+        } /*** CL ***/
+    }
 }
 
 /*void ModesWidget::slotTableCurrentChanged(int row,int col,int C_UNUSED(m) ,const QPoint & C_UNUSED(n))
@@ -227,9 +231,10 @@ void ModesWidget::slotBtnCalculateClicked()
       table->removeRow(0);
     }******CL***/
 
-  modes = new CElementaryFluxModes();
+  //modes = new CElementaryFluxModes();
   modes->calculate(mModel);
-  unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
+  loadModes(mModel);
+  /***CL***unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
   //QString y=QString::number(noOfModesRows);
 
   //QMessageBox::information(this, "recahed ",y);
@@ -245,7 +250,7 @@ void ModesWidget::slotBtnCalculateClicked()
         }
       else
         {
-          table->setText(j, 0, "Irrversible");
+          table->setText(j, 0, "Irreversible");
         }
       //QString y=modes->isFluxModeReversible(j)->c_str();
       //QString x=modes->getFluxModeDescription(j).c_str();
@@ -253,7 +258,7 @@ void ModesWidget::slotBtnCalculateClicked()
       //table->setText(j, 0,y);
       //table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
       table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
-    }
+    }***CL***/
 }
 
 bool ModesWidget::enter(const std::string & C_UNUSED(key))
