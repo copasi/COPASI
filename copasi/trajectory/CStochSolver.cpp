@@ -75,13 +75,16 @@ void CStochMethod::cleanup()
 C_INT32 CStochMethod::updatePropensities()
 {
   mA0 = 0;
+  //cout << "        updatePropensities: ";
 
   for (unsigned C_INT32 i = 0; i < mModel->getReactions().size(); i++)
     {
       calculateAmu(i);
+      //cout << mAmu[i] << " ";
       mA0 += mAmu[i];
     }
 
+  //cout << endl;
   return 0;
 }
 
@@ -109,19 +112,25 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       num_ident = static_cast<C_INT32>(substrates[i]->getMultiplicity());
-      cout << "Num ident = " << num_ident << endl;
+      //cout << "Num ident = " << num_ident << endl;
       total_substrates += num_ident;
       number = static_cast<C_INT32> (substrates[i]->getMetabolite().getNumber());
       lower_bound = number - num_ident;
-      cout << "Number = " << number << "  Lower bound = " << lower_bound << endl;
+      //cout << "Number = " << number << "  Lower bound = " << lower_bound << endl;
       substrate_factor = substrate_factor * pow(number, num_ident);
-      cout << "Substrate factor = " << substrate_factor << endl;
+      //cout << "Substrate factor = " << substrate_factor << endl;
 
       while (number > lower_bound)
         {
           amu *= number;
           number--;
         }
+    }
+
+  if (amu == 0)  // at least one substrate particle number is zero
+    {
+      mAmu[index] = 0;
+      return 0;
     }
 
   // We assume that all substrates are in the same compartment.
@@ -137,16 +146,16 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
+  C_FLOAT64 dummy = mModel->getReactions()[index]->calculate() ;
+
   C_FLOAT64 rate_factor = mModel->getReactions()[index]->calculate() / substrate_factor;
 
-  cout << "Rate factor = " << rate_factor << endl;
-
+  //cout << "Rate factor = " << rate_factor << endl;
   amu *= rate_factor;
 
   mAmu[index] = amu;
 
-  cout << "Index = " << index << "  Amu = " << amu << endl;
-
+  //cout << "Index = " << index << "  Amu = " << amu << endl;
   return 0;
 }
 
@@ -173,6 +182,12 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
   // Update the model to take into account the new particle numbers
   mModel->setConcentrations(mModel->getNumbers());
+
+  //cout << "Reaktion " << rxn << " new state: " ;
+  for (int j = 0 ; j < 2 ; j++)
+    cout << mModel->getMetabolites()[j]->getNumber() << "  ";
+
+  cout << endl;
 
   return 0;
 }
@@ -202,7 +217,7 @@ C_INT32 CStochMethod::generateReactionIndex()
 C_FLOAT64 CStochMethod::generateReactionTime()
 {
   C_FLOAT32 rand2 = mRandomGenerator->getUniformRandom();
-  return -1 * log(rand2 / mA0);
+  return -1 * log(rand2) / mA0;
 }
 
 CStochDirectMethod::CStochDirectMethod()
