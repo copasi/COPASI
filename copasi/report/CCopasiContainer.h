@@ -31,9 +31,10 @@ class CCopasiContainer: public CCopasiObject
   public:
     static CCopasiContainer * Root;
 
+    typedef std::multimap< const std::string, CCopasiObject * > objectMap;
   protected:
     /** @dia:route 0,8; h,23.7081,50.8343,19.6311,4.45372,40.5964 */
-    std::map< const std::string, CCopasiObject * > mObjects;
+    objectMap mObjects;
 
     // Operations
   private:
@@ -56,9 +57,9 @@ class CCopasiContainer: public CCopasiObject
 
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
-    virtual const std::map< const std::string, CCopasiObject * > & getObjects() const;
+    virtual const objectMap & getObjects() const;
 
-    bool add(CCopasiObject * pObject);
+    virtual bool add(CCopasiObject * pObject, const bool & adopt = true);
 
     bool remove(CCopasiObject * pObject);
 

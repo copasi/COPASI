@@ -17,14 +17,16 @@ CCopasiContainer * CCopasiContainer::Root = NULL;
 void CCopasiContainer::init() {CCopasiContainer::Root = new CCopasiContainer();}
 
 CCopasiContainer::CCopasiContainer() :
-    CCopasiObject("Root", NULL, "CN", CCopasiObject::Container)
+    CCopasiObject("Root", NULL, "CN", CCopasiObject::Container),
+    mObjects()
 {}
 
 CCopasiContainer::CCopasiContainer(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    const std::string & type,
                                    const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, type, flag | CCopasiObject::Container)
+    CCopasiObject(name, pParent, type, flag | CCopasiObject::Container),
+    mObjects()
 {}
 
 CCopasiContainer::CCopasiContainer(const CCopasiContainer & src,
@@ -35,8 +37,8 @@ CCopasiContainer::CCopasiContainer(const CCopasiContainer & src,
 
 CCopasiContainer::~CCopasiContainer()
 {
-  std::map< const std::string, CCopasiObject * >::iterator it = mObjects.begin();
-  std::map< const std::string, CCopasiObject * >::iterator end = mObjects.end();
+  objectMap::iterator it = mObjects.begin();
+  objectMap::iterator end = mObjects.end();
 
   for (; it != end; it++)
     if (it->second->getObjectParent() == this)
@@ -62,10 +64,16 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
     if (getObjectName() == Name && getObjectType() == Type)
       return getObject(cn.getRemainder());
 
-    std::map< const std::string, CCopasiObject * >::const_iterator it =
-      mObjects.find(Name);
+    std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
+      mObjects.equal_range(Name);
 
-    if (it == mObjects.end()) return NULL;
+    if (range.first == range.second) return false;
+
+    /* We just pick the first one since in real containers the name should be */
+    /* unique. The exeption is CCopasiContainer but in those the name is not  */
+    /* meaningful anyway. */
+    objectMap::const_iterator it = range.first;
+
     if (it->second->getObjectType() != Type) return NULL;
 
     const CCopasiObject * pObject = NULL;
@@ -98,37 +106,50 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
     return it->second->getObject(cn.getRemainder());
   }
 
-const std::map< const std::string, CCopasiObject * > & CCopasiContainer::getObjects() const
-  {
-    return mObjects;
-  }
+const CCopasiContainer::objectMap & CCopasiContainer::getObjects() const
+{return mObjects;}
 
 void CCopasiContainer::initObjects() {}
 
-bool CCopasiContainer::add(CCopasiObject * pObject)
+bool CCopasiContainer::add(CCopasiObject * pObject,
+                           const bool & adopt)
 {
-  if (mObjects.find(pObject->getObjectName()) != mObjects.end()) return false;
+  /* We check wheter we are already containing that object. */
+  std::pair< objectMap::iterator, objectMap::iterator > range =
+    mObjects.equal_range(pObject->getObjectName());
+  objectMap::iterator it;
 
-  mObjects[pObject->getObjectName()] = pObject;
+  for (it = range.first; it != range.second; ++it)
+    if (it->second == pObject) break;
+
+  if (it != range.second)
+    {
+      std::cout << "multiple add: " << pObject->getCN() << ", "
+      << (void *) pObject << std::endl;
+      return false;
+    }
+
+  /* This object is not contained, so we can add it. */
+  mObjects.insert
+  (std::pair<std::string, CCopasiObject * >(pObject->getObjectName(),
+      pObject));
+
+  if (adopt) pObject->setObjectParent(this);
   return true;
 }
 
 bool CCopasiContainer::remove(CCopasiObject * pObject)
 {
-  std::map< const std::string, CCopasiObject * >::iterator it =
-    mObjects.find(pObject->getObjectName());
-  if (it == mObjects.end()) return false;
+  std::pair< objectMap::iterator, objectMap::iterator > range =
+    mObjects.equal_range(pObject->getObjectName());
+  objectMap::iterator it;
+
+  for (it = range.first; it != range.second; ++it)
+    if (it->second == pObject) break;
+
+  if (it == range.second) return false;
 
   mObjects.erase(it);
-  return false;
+
+  return true;
 }
-
-#ifdef XXXX
-CCopasiContainer CRootContainer::mRoot("Root");
-
-CRootContainer::CRootContainer() {}
-
-CRootContainer::~CRootContainer() {}
-
-CCopasiContainer & CRootContainer::ref() {return mRoot;}
-#endif // XXXX
