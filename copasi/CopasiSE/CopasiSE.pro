@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.15 $ $Author: shoops $ $Date: 2005/02/28 02:46:41 $  
+# $Revision: 1.16 $ $Author: shoops $ $Date: 2005/03/01 18:02:43 $  
 ######################################################################
 
 TEMPLATE = app
@@ -32,10 +32,9 @@ COPASI_LIBS = \
           
 
 contains(BUILD_OS, WIN32) {
-
   LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
+  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 }
 
 contains(BUILD_OS, Linux) {
@@ -59,6 +58,8 @@ contains(BUILD_OS, SunOS) {
 }  
 
 contains(BUILD_OS, Darwin){
+  QMAKE_LFLAGS += -Wl,-search_paths_first
+  
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $$LIBS
   
