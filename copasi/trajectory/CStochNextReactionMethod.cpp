@@ -38,6 +38,7 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
 {
   C_FLOAT64 time;
 
+  mPQ.clear();
   for (unsigned C_INT32 i = 0; i < mpModel->getReactions().size(); i++)
     {
       time = start_time + generateReactionTime(i);

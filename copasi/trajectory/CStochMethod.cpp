@@ -23,6 +23,8 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 {
   // Here several checks will be performed to validate the model
   return 2; // suggest next reaction method
+
+  // TODO check if stoich is integer
 }
 
 CStochMethod *
@@ -125,6 +127,7 @@ const double CStochMethod::step(const double & deltaT,
   mpModel = mpProblem->getModel();
   mpProblem->getModel()->setState(mpCurrentState);
 
+  mAmu.clear(); mAmuOld.clear();
   for (unsigned C_INT32 i = 0; i < mpModel->getReactions().size(); i++)
     {
       mAmu.push_back(0);
@@ -184,7 +187,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
       num_ident = static_cast<C_INT32>(substrates[i]->getMultiplicity());
       //std::cout << "Num ident = " << num_ident << std::endl;
       total_substrates += num_ident;
-      number =   /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
+      number =    /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
       lower_bound = number - num_ident;
       //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
       substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
@@ -312,6 +315,7 @@ C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 
 void CStochMethod::setupDependencyGraphAndBalances()
 {
+  mDG.clear();
   std::vector< std::set<const CMetab*>* > DependsOn;
   std::vector< std::set<const CMetab*>* > Affects;
   //    std::set<CMetab> *tmpdepends = 0;
