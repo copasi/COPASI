@@ -33,7 +33,8 @@ template < class CType > class CCopasiVector:
        */
       CCopasiVector(const std::string & name = "NoName",
                     const CCopasiContainer * pParent = NULL,
-                    const unsigned C_INT32 & flag = CCopasiObject::Vector):
+                    const unsigned C_INT32 &
+                    flag = CCopasiObject::Vector + CCopasiObject::Container):
           std::vector< CType * >(),
           CCopasiContainer(name, pParent, "Vector", flag)
       {CONSTRUCTOR_TRACE;}
@@ -308,7 +309,8 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       CCopasiVectorN(const std::string & name = "NoName",
                      const CCopasiContainer * pParent = NULL):
           CCopasiVector< CType >(name, pParent,
-                                 CCopasiObject::Vector
+                                 CCopasiObject::Container
+                                 + CCopasiObject::Vector
                                  + CCopasiObject::NameVector)
       {}
 
