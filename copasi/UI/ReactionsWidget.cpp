@@ -86,16 +86,14 @@ void ReactionsWidget::loadReactions(CModel *model)
       C_INT32 noOfReactionsRows = reactions.size();
       table->setNumRows(noOfReactionsRows);
 
-      //Now filling the table.
+      // Now filling the table.
       CReaction *reactn;
-      CChemEq chemEq;
 
       for (C_INT32 j = 0; j < noOfReactionsRows; j++)
         {
           reactn = reactions[j];
           table->setText(j, 0, reactn->getName().c_str());
-          chemEq = reactn->getChemEq();
-          table->setText(j, 1, chemEq.getChemicalEquation().c_str());
+          table->setText(j, 1, reactn->getChemEq().getChemicalEquation().c_str());
         }
     }
 }
