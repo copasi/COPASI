@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:45:58 $
+   $Date: 2004/10/08 09:01:36 $
    End CVS Header */
 
 /********************************************************
@@ -68,6 +68,11 @@ class TrajectoryWidget : public CopasiWidget
     virtual void StepsizeSlot();
     virtual void NumStepsSlot();
 
+    //virtual void storeSlot();
+
+    //checks whether the time series will be too huge
+    void checkTimeSeries();
+
   private:
 
     std::string objKey;
@@ -87,6 +92,7 @@ class TrajectoryWidget : public CopasiWidget
     QComboBox* ComboBox1;
     QLineEdit* nStartTime;
     QCheckBox* bExecutable;
+    QCheckBox* bStoreTimeSeries;
     QLabel* parameterValueLabel;
     QLabel* TextLabel1;
     QLabel* TextLabel1_3;

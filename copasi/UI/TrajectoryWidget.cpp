@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:45:58 $
+   $Date: 2004/10/08 09:01:18 $
    End CVS Header */
 
 /********************************************************
@@ -42,6 +42,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "MyLineEdit.h"
 #include "utilities/CCopasiException.h"
 #include "CProgressBar.h"
+#include "plot/CPlotSpec2Vector.h"
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -56,9 +57,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   setCaption(trUtf8("TrajectoryWidget"));
   TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
 
-  line8 = new QFrame(this, "line8");
-  TrajectoryWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 3);
-
   parameterTable = new QTable(this, "parameterTable");
   parameterTable->setNumRows(0);
   parameterTable->setNumCols(1);
@@ -66,35 +64,21 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   colHeader->setLabel(0, tr("Value"));
   TrajectoryWidgetLayout->addMultiCellWidget(parameterTable, 7, 8, 1, 3);
 
+  //Name
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
   TrajectoryWidgetLayout->addWidget(taskNameLabel, 0, 0);
 
-  line7 = new QFrame(this, "line7");
-  line7->setFrameShape(QFrame::HLine);
-  line7->setFrameShadow(QFrame::Sunken);
-  line7->setFrameShape(QFrame::HLine);
-  TrajectoryWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 3);
-
-  line7_2 = new QFrame(this, "line7_2");
-  line7_2->setFrameShape(QFrame::HLine);
-  line7_2->setFrameShadow(QFrame::Sunken);
-  line7_2->setFrameShape(QFrame::HLine);
-  TrajectoryWidgetLayout->addMultiCellWidget(line7_2, 4, 4, 0, 3);
-
   taskName = new QLineEdit(this, "taskName");
   TrajectoryWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 2);
-
-  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-  TrajectoryWidgetLayout->addMultiCellWidget(ComboBox1, 5, 5, 1, 2);
 
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable "));
   TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
 
-  TextLabel1_3_2 = new QLabel(this, "TextLabel1_3_2");
-  TextLabel1_3_2->setText(trUtf8("Method"));
-  TrajectoryWidgetLayout->addWidget(TextLabel1_3_2, 5, 0);
+  line8 = new QFrame(this, "line8");
+  line8->setFrameShape(QFrame::HLine);
+  TrajectoryWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 3);
 
   //*****************************
 
@@ -137,13 +121,35 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TextLabel1_2->setText(trUtf8("Intervals"));
   TrajectoryWidgetLayout->addWidget(TextLabel1_2, 3, 2);
 
-  //******************************
+  //
+  bStoreTimeSeries = new QCheckBox(this, "bStoreTimeSeries");
+  bStoreTimeSeries->setText(trUtf8("store time series in memory "));
+  TrajectoryWidgetLayout->addWidget(bStoreTimeSeries, 4, 1);
+
+  //****
+  line7_2 = new QFrame(this, "line7_2");
+  line7_2->setFrameShape(QFrame::HLine);
+  line7_2->setFrameShadow(QFrame::Sunken);
+  TrajectoryWidgetLayout->addMultiCellWidget(line7_2, 5, 5, 0, 3);
+
+  //***** method *************************
+  TextLabel1_3_2 = new QLabel(this, "TextLabel1_3_2");
+  TextLabel1_3_2->setText(trUtf8("Method"));
+  TrajectoryWidgetLayout->addWidget(TextLabel1_3_2, 6, 0);
+
+  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
+  TrajectoryWidgetLayout->addMultiCellWidget(ComboBox1, 6, 6, 1, 2);
+
+  /*line7 = new QFrame(this, "line7");
+  line7->setFrameShape(QFrame::HLine);
+  line7->setFrameShadow(QFrame::Sunken);
+  TrajectoryWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 3);*/
+
+  //
 
   line6 = new QFrame(this, "line6");
   line6->setFrameShape(QFrame::HLine);
   line6->setFrameShadow(QFrame::Sunken);
-  line6->setFrameShape(QFrame::HLine);
-
   TrajectoryWidgetLayout->addMultiCellWidget(line6, 9, 9, 0, 3);
 
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
@@ -225,6 +231,8 @@ TrajectoryWidget::~TrajectoryWidget()
 
 //**********************************************************
 
+#define TSMAX 10000000
+
 void TrajectoryWidget::StartTimeSlot()
 {
   C_FLOAT64 start = nStartTime->text().toDouble();
@@ -275,7 +283,31 @@ void TrajectoryWidget::NumStepsSlot()
 
   if (steps <= 0) return;
   nStepSize->setText(QString::number((end - start) / (C_FLOAT64)steps));
+
+  checkTimeSeries();
 }
+
+//void TrajectoryWidget::storeSlot()
+//{
+//  C_INT32 steps = nStepNumber->text().toInt();
+//}
+
+void TrajectoryWidget::checkTimeSeries()
+{
+  //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << dataModel->getModel()->getIntMetab() << std::endl;
+
+  if (nStepNumber->text().toLong() * dataModel->getModel()->getIntMetab() > TSMAX)
+    {
+      bStoreTimeSeries->setChecked(false);
+      bStoreTimeSeries->setEnabled(false);
+    }
+  else
+    {
+      bStoreTimeSeries->setEnabled(true);
+    }
+}
+
+#undef TSMAX
 
 //************************************************************
 
@@ -291,6 +323,7 @@ void TrajectoryWidget::CommitChange()
 
 void TrajectoryWidget::runTrajectoryTask()
 {
+  checkTimeSeries();
   saveTrajectoryTask();
 
   if (bRunTask->text() != "Run")
@@ -305,13 +338,19 @@ void TrajectoryWidget::runTrajectoryTask()
 
   tt->initialize();
 
-  if (!tt->getReport().getStream())
-    //if ((std::vector<CPlotSpecification*>*)(dataModel->getPlotSpecVectorAddr())->size()==0) //TODO
+  CTrajectoryProblem* trajectoryproblem =
+    dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
+  assert(trajectoryproblem);
+
+  if ((!tt->getReport().getStream())
+       && (dataModel->getPlotSpecVectorAddr()->size() == 0)
+       && (!trajectoryproblem->timeSeriesRequested())
+)
     {
-      //      if (QMessageBox::information (NULL, "No output specified,",
-      //                                    "No report output target defined, Copasi cannot create output for you.\n Do you want to continue running trajectory task with no output?",
+      QMessageBox::information (NULL, "No output specified",
+                                "No output would be generated from this simulation. \nSpecify a report, a plot, or activate the \"Store time series in memory\" checkbox.");
       //                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-      //        return;
+      return;
     }
 
   setCursor(Qt::WaitCursor);
@@ -330,7 +369,7 @@ void TrajectoryWidget::runTrajectoryTask()
 
   tt->restore();
 
-  pdelete(tmpBar);
+  tmpBar->finish(); pdelete(tmpBar);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE,
                   dataModel->getModel()->getKey());
@@ -377,6 +416,10 @@ void TrajectoryWidget::loadTrajectoryTask()
   nStepNumber->setText(QString::number(trajectoryproblem->getStepNumber()));
   nStartTime->setText(QString::number(trajectoryproblem->getStartTime()));
   nEndTime->setText(QString::number(trajectoryproblem->getEndTime()));
+
+  //store time series checkbox
+  bStoreTimeSeries->setChecked(trajectoryproblem->timeSeriesRequested());
+  checkTimeSeries();
 
   //method parameters
   loadMethodParameters();
@@ -442,6 +485,8 @@ void TrajectoryWidget::saveTrajectoryTask()
     trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
   trajectoryproblem->setStartTime(nStartTime->text().toDouble());
   trajectoryproblem->setEndTime(nEndTime->text().toDouble());
+
+  trajectoryproblem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
 
   //method
   if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
