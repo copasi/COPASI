@@ -322,13 +322,16 @@ void TrajectoryWidget::runTrajectoryTask()
   tt->getProblem()->
   setStartTime(tt->getProblem()->getStartTime());
 
+  std::ofstream output;
   if (tt->getReport()->getTarget() != "")
     {
-      std::ofstream output;
       if (tt->getReport()->append())
         output.open(tt->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);
       else
         output.open(tt->getReport()->getTarget().c_str(), std::ios_base::out);
+    }
+  if (output.is_open())
+    {
       output << "# "; // Hack for gnuplot
       tt->initializeReporting(output);
     }

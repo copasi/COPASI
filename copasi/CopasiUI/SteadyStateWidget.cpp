@@ -275,15 +275,16 @@ void SteadyStateWidget::runSteadyStateTask()
   //  std::ofstream output("steadystate.txt");
   //  mSteadyStateTask->initializeReporting(output);
 
-  if (mSteadyStateTask->getReport()->getTarget() != "")
+  std::ofstream output;
+  if (tt->getReport()->getTarget() != "")
     {
-      std::ofstream output;
       if (mSteadyStateTask->getReport()->append())
         output.open(mSteadyStateTask->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);
       else
         output.open(mSteadyStateTask->getReport()->getTarget().c_str(), std::ios_base::out);
-      mSteadyStateTask->initializeReporting(output);
     }
+  if (output.is_open())
+    mSteadyStateTask->initializeReporting(output);
   else //ask if user insists on proceeding
     {
       if (QMessageBox::information (NULL, "No output specified,",
