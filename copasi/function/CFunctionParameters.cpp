@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 18:38:03 $
+   $Author: chlee $ 
+   $Date: 2003/11/13 22:08:20 $
    End CVS Header */
 
 /**
@@ -161,7 +161,6 @@ unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & na
           }
       }
 
-    fatalError()
     return C_INVALID_INDEX;
   }
 
