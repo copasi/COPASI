@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.1 2003/10/14 15:08:39 huwenjun Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.2 2003/10/14 15:57:05 huwenjun Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -13,6 +13,7 @@
 //#include <qapplication.h>
 #include <vector>
 #include <string>
+#include <fstream>
 #include <qvariant.h>
 #include <qwidget.h>
 
@@ -20,8 +21,6 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QFrame;
-//class QIconView;
-//class QIconViewItem;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -143,6 +142,24 @@ class PlotWidget1 : public QWidget
     // the key of the current plot; -1 on entering the PlotWidget indicates this is a new plot.
     // also serves as the index into vectors plotSpecVector and plotWinVector
     int currentPlotKey;
+
+    //-------------------------------------------------
+    // temporary, all for the test application
+    std::fstream targetfile;
+
+    // the write position
+    std::streampos pos;
+
+    // the size of the increment
+    int stepSize;
+
+    // the count of the steps
+    int count;
+
+    void writeFile(int step);
+
+  private slots:
+    void appendData();
   };
 
 #endif // PLOTWIDGET1_H
