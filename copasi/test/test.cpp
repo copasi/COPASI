@@ -10,7 +10,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <strstream>
 #include <vector>
 #include <iomanip>
 #include <algorithm>
