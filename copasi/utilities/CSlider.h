@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/23 18:58:37 $
+   $Date: 2005/03/30 09:26:35 $
    End CVS Header */
 
 #ifndef COPASI_CSlider
@@ -18,7 +18,7 @@ class CSlider : public CCopasiContainer
     /**
      *  Enum of valid quantitye units
      */
-    enum Type {Float = 0, UnsignedFloat, Integer, UnsignedInteger};
+    enum Type {Float = 0, UnsignedFloat, Integer, UnsignedInteger, Undefined};
 
     /**
      *  Enum of valid scales

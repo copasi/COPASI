@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/23 18:58:37 $
+   $Date: 2005/03/30 09:26:35 $
    End CVS Header */
 
 #include "copasi.h"
@@ -14,7 +14,7 @@
 #include "report/CCopasiObjectReference.h"
 
 const char * CSlider::TypeName[] =
-  {"float", "unsignedFloat", "integer", "unsignedInteger", NULL};
+  {"float", "unsignedFloat", "integer", "unsignedInteger", "Undefined", NULL};
 
 const char * CSlider::ScaleName[] =
   {"linear", "logarithmic", "undefined", NULL};
@@ -89,6 +89,18 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
   if (!setObjectName(pObject->getCN())) return false;
 
   mpSliderObject = pObject;
+  if (mpSliderObject->isValueInt())
+    {
+      this->setSliderType(Integer);
+    }
+  else if (mpSliderObject->isValueDbl())
+    {
+      this->setSliderType(Float);
+    }
+  else
+    {
+      this->setSliderType(Undefined);
+    }
   if (this->mSync) this->sync();
   this->resetRange();
   return true;
@@ -96,9 +108,12 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
 
 void CSlider::resetRange()
 {
-  C_FLOAT64 value = this->getSliderValue();
-  this->mMinValue = value / 2.0;
-  this->mMaxValue = value * 2.0;
+  if (this->mSliderType != Undefined)
+    {
+      C_FLOAT64 value = this->getSliderValue();
+      this->mMinValue = value / 2.0;
+      this->mMaxValue = value * 2.0;
+    }
 }
 
 bool CSlider::setSliderObject(const CCopasiObjectName & objectCN)
@@ -122,22 +137,29 @@ const CSlider::Type CSlider::getSliderType() const
 bool CSlider::setSliderValue(const C_FLOAT64 value,
                              const bool & writeToObject)
 {
-  mValue = value;
-  if (mValue < this->mMinValue)
+  if (mSliderType != Undefined)
     {
-      mValue = this->mMinValue;
-    }
-  if (mValue > this->mMaxValue)
-    {
-      mValue = this->mMaxValue;
-    }
+      mValue = value;
+      if (mValue < this->mMinValue)
+        {
+          mValue = this->mMinValue;
+        }
+      if (mValue > this->mMaxValue)
+        {
+          mValue = this->mMaxValue;
+        }
 
-  if (this->mSync && writeToObject)
-    {
-      this->writeToObject();
-    }
+      if (this->mSync && writeToObject)
+        {
+          this->writeToObject();
+        }
 
-  return true;
+      return true;
+    }
+  else
+    {
+      return false;
+    }
 }
 
 void CSlider::sync()
@@ -177,33 +199,47 @@ const C_FLOAT64 CSlider::getSliderValue() const
 
 bool CSlider::setMinValue(const C_FLOAT64 minValue)
 {
-  if (minValue > mMaxValue) return false;
+  if (mSliderType != Undefined)
+    {
+      if (minValue > mMaxValue) return false;
 
-  mMinValue = minValue;
+      mMinValue = minValue;
 
-  if (mpSliderObject && getSliderValue() < mMinValue)
-    this->mValue = this->mMinValue;
+      if (mpSliderObject && getSliderValue() < mMinValue)
+        this->mValue = this->mMinValue;
 
-  return true;
+      return true;
+    }
+  else
+    {
+      return false;
+    }
 }
 
 const C_FLOAT64 CSlider::getMinValue() const
-{return mMinValue;}
+  {return mMinValue;}
 
 bool CSlider::setMaxValue(const C_FLOAT64 maxValue)
 {
-  if (maxValue < mMinValue) return false;
+  if (mSliderType != Undefined)
+    {
+      if (maxValue < mMinValue) return false;
 
-  mMaxValue = maxValue;
+      mMaxValue = maxValue;
 
-  if (mpSliderObject && getSliderValue() > mMaxValue)
-    this->mValue = this->mMaxValue;
+      if (mpSliderObject && getSliderValue() > mMaxValue)
+        this->mValue = this->mMaxValue;
 
-  return true;
+      return true;
+    }
+  else
+    {
+      return false;
+    }
 }
 
 const C_FLOAT64 CSlider::getMaxValue() const
-{return mMaxValue;}
+  {return mMaxValue;}
 
 bool CSlider::setTickNumber(const unsigned C_INT32 tickNumber)
 {
