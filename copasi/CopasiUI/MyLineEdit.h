@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyLineEdit.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 13:36:31 $
+   $Date: 2004/09/21 11:27:46 $
    End CVS Header */
 
 #ifndef MYLINEEDIT_H
@@ -17,18 +17,16 @@ class MyLineEdit: public QLineEdit
   public:
     MyLineEdit(QWidget * parent = 0, const char * name = 0);
     MyLineEdit (const QString & contents, QWidget * parent, const char * name = 0);
-    //void focusOutEvent (QFocusEvent *);
-
-    bool isChanged() const {return mChanged;};
 
   protected:
-    QString mOldText;
-    bool mChanged;
     QColor mOldColor;
     QColor mNewColor;
+    QColor mErrorColor;
 
     void process();
     void setupWidget();
+
+    virtual void updateColor();
 
   protected slots:
     void slotLostFocus();

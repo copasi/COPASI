@@ -1,26 +1,23 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 13:36:30 $
+   $Date: 2004/09/21 11:27:46 $
    End CVS Header */
 
 #include "MyLineEdit.h"
+#include <qvalidator.h>
 
 MyLineEdit::MyLineEdit(QWidget * parent, const char * name)
     : QLineEdit(parent, name)
 {
-  mChanged = false;
-  mOldText = text();
   setupWidget();
 }
 
 MyLineEdit::MyLineEdit(const QString & contents, QWidget * parent, const char * name)
     : QLineEdit(contents, parent, name)
 {
-  mChanged = false;
-  mOldText = contents;
   setupWidget();
 }
 
@@ -35,14 +32,15 @@ void MyLineEdit::setupWidget()
   mOldColor.getHsv(&h, &s, &v);
   if (s < 20) s = 20;
   mNewColor.setHsv(240, s, v);
+
+  mErrorColor.setHsv(0, s, v);
 }
 
 void MyLineEdit::process()
 {
-  if (mChanged)
+  if (isModified())
     {
-      mChanged = false;
-      mOldText = text();
+      clearModified();
       emit edited();
     }
 }
@@ -58,21 +56,30 @@ void MyLineEdit::slotForceUpdate()
 
 void MyLineEdit::slotTextChanged(const QString & text)
 {
-  if (text != mOldText)
+  updateColor();
+}
+
+void MyLineEdit::updateColor()
+{
+  if (isModified())
     {
-      mChanged = true;
       setPaletteBackgroundColor(mNewColor);
     }
   else
     {
-      mChanged = false;
       setPaletteBackgroundColor(mOldColor);
     }
+
+  const QValidator * val = validator();
+  int dummy = 0;
+  QString ttt = text();
+  if (val)
+    if (val->validate(ttt, dummy) == QValidator::Intermediate)
+      setPaletteBackgroundColor(mErrorColor);
 }
 
 void MyLineEdit::setText(const QString & text)
 {
-  mChanged = false;
-  mOldText = text;
   QLineEdit::setText(text);
+  updateColor();
 }
