@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 13:34:14 $
+   $Date: 2004/12/22 10:40:00 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -89,7 +89,7 @@ bool StateWidget::leave()
   return true;
 }
 
-bool StateWidget::enter(const std::string & key)
+bool StateWidget::enter(const std::string & C_UNUSED(key))
 {
   return loadFromBackend();
   /*objKey = key;
