@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/08 16:46:19 $
+   $Author: gauges $ 
+   $Date: 2004/11/12 09:59:22 $
    End CVS Header */
 
 #include <cmath>
@@ -26,6 +26,7 @@ CopasiSlider::CopasiSlider(CCopasiObject* object, QWidget* parent): QVBox(parent
   this->updateSliderData();
 
   connect(this->mpSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
+  connect(this->mpSlider, SIGNAL(sliderReleased()), this, SLOT(qSliderReleased()));
 }
 
 CopasiSlider::~CopasiSlider()
@@ -228,6 +229,11 @@ void CopasiSlider::sliderValueChanged(int value)
   this->updateLabel();
 
   emit valueChanged(this->mValue);
+}
+
+void CopasiSlider::qSliderReleased()
+{
+  emit sliderReleased();
 }
 
 CopasiSlider::NumberType CopasiSlider::type() const

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 14:48:39 $
+   $Date: 2004/11/12 09:59:22 $
    End CVS Header */
 
 #ifndef CopasiSlider_H__
@@ -44,9 +44,11 @@ class CopasiSlider: public QVBox
 
   public slots:
     void sliderValueChanged(int value);
+    void qSliderReleased();
 
   signals:
     void valueChanged(double);
+    void sliderReleased();
 
   protected:
     CCopasiObject* mpObject;
