@@ -14,8 +14,7 @@
 CChemEq::CChemEq(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Chemical Equation"),
-    mChemicalEquation(),
-    mChemicalEquationConverted(),
+    mReversible(false),
     mSubstrates("Substrates", this),
     mProducts("Products", this),
     mBalances("Balances", this)
@@ -24,8 +23,7 @@ CChemEq::CChemEq(const std::string & name,
 CChemEq::CChemEq(const CChemEq & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mChemicalEquation(src.mChemicalEquation),
-    mChemicalEquationConverted(src.mChemicalEquationConverted),
+    mReversible(src.mReversible),
     mSubstrates(src.mSubstrates, this),
     mProducts(src.mProducts, this),
     mBalances(src.mBalances, this)
@@ -50,12 +48,11 @@ void CChemEq::compile(const CCopasiVectorN < CCompartment > & compartments)
 bool CChemEq::setChemicalEquation(const std::string & chemicalEquation)
 {
   std::string Substrates, Products;
-  bool reversible;
 
   cleanup();
   mChemicalEquation = chemicalEquation;
 
-  reversible = splitChemEq(Substrates, Products);
+  mReversible = splitChemEq(Substrates, Products);
 
   setChemEqElements(mSubstrates, Substrates);
 
@@ -64,35 +61,109 @@ bool CChemEq::setChemicalEquation(const std::string & chemicalEquation)
   setChemEqElements(mBalances, Substrates, CChemEq::SUBSTRATE);
   setChemEqElements(mBalances, Products);
 
-  writeChemicalEquation();
-  writeChemicalEquationConverted();
-  return reversible;
+  return mReversible;
 }
 
-const std::string & CChemEq::getChemicalEquation() const
+const std::string CChemEq::getChemicalEquation() const
   {
-    return mChemicalEquation;
+    //    std::string::size_type equal = std::string::npos;
+    //    std::string Separator[] = {"->", "=>", "=", ""};
+
+    //    while (Separator[i] != "" && equal == std::string::npos)
+    //      equal = ChemicalEquation.find(Separator[i++]);
+
+    //    if (equal == std::string::npos)
+    //      fatalError();
+
+    std::string ChemicalEquation;
+    unsigned C_INT32 j;
+
+    for (j = 0; j < mSubstrates.size(); j++)
+      {
+        if (j)
+          ChemicalEquation += " + ";
+
+        ChemicalEquation += mSubstrates[j]->writeElement();
+      }
+
+    if (mReversible)
+      ChemicalEquation += " = ";
+    else
+      ChemicalEquation += " -> ";
+
+    for (j = 0; j < mProducts.size(); j++)
+      {
+        if (j)
+          ChemicalEquation += " + ";
+
+        ChemicalEquation += mProducts[j]->writeElement();
+      }
+    return ChemicalEquation;
   }
 
-const std::string & CChemEq::getChemicalEquationConverted() const
+const std::string CChemEq::getChemicalEquationConverted() const
   {
-    return mChemicalEquationConverted;
+    //    std::string::size_type equal = std::string::npos;
+    //    std::string Separator[] = {"->", "=>", "=", ""};
+    //    unsigned C_INT32 i = 0, j, k, kmax;
+
+    //    while (Separator[i] != "" && equal == std::string::npos)
+    //      equal = mChemicalEquation.find(Separator[i++]);
+
+    //    if (equal == std::string::npos)
+    //      fatalError();
+
+    //    mChemicalEquationConverted.erase();
+    std::string ChemicalEquation;
+    unsigned C_INT32 j, k, kmax;
+
+    for (j = 0; j < mSubstrates.size(); j++)
+      {
+        if (j)
+          ChemicalEquation += " + ";
+
+        kmax = (unsigned C_INT32) mSubstrates[j]->getMultiplicity();
+
+        for (k = 0; k < kmax; k++)
+          {
+            if (k)
+              ChemicalEquation += " + ";
+
+            ChemicalEquation += mSubstrates[j]->getMetaboliteName();
+          }
+      }
+
+    if (mReversible)
+      ChemicalEquation += " = ";
+    else
+      ChemicalEquation += " -> ";
+
+    for (j = 0; j < mProducts.size(); j++)
+      {
+        if (j)
+          ChemicalEquation += " + ";
+
+        kmax = (unsigned C_INT32) mProducts[j]->getMultiplicity();
+
+        for (k = 0; k < kmax; k++)
+          {
+            if (k)
+              ChemicalEquation += " + ";
+
+            ChemicalEquation += mProducts[j]->getMetaboliteName();
+          }
+      }
+    return ChemicalEquation;
   }
 
 const CCopasiVector < CChemEqElement > & CChemEq::getSubstrates() const
-  {
-    return mSubstrates;
-  }
+{return mSubstrates;}
 
 const CCopasiVector < CChemEqElement > & CChemEq::getProducts() const
-  {
-    return mProducts;
-  }
+  {return mProducts;}
 
 const CCopasiVector < CChemEqElement > & CChemEq::getBalances() const
-  {
-    return mBalances;
-  }
+  {return mBalances;}
 
 unsigned C_INT32 CChemEq::getCompartmentNumber() const
   {
@@ -236,88 +307,6 @@ void CChemEq::compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
 
   for (i = 0; i < imax; i++)
     elements[i]->compile(compartments);
-}
-
-void CChemEq::writeChemicalEquation()
-{
-  std::string::size_type equal = std::string::npos;
-  std::string Separator[] = {"->", "=>", "=", ""};
-  unsigned C_INT32 i = 0, j;
-
-  while (Separator[i] != "" && equal == std::string::npos)
-    equal = mChemicalEquation.find(Separator[i++]);
-
-  if (equal == std::string::npos)
-    fatalError();
-
-  mChemicalEquation.erase();
-
-  for (j = 0; j < mSubstrates.size(); j++)
-    {
-      if (j)
-        mChemicalEquation += " + ";
-
-      mChemicalEquation += mSubstrates[j]->writeElement();
-    }
-
-  mChemicalEquation += " " + Separator[--i] + " ";
-
-  for (j = 0; j < mProducts.size(); j++)
-    {
-      if (j)
-        mChemicalEquation += " + ";
-
-      mChemicalEquation += mProducts[j]->writeElement();
-    }
-}
-
-void CChemEq::writeChemicalEquationConverted()
-{
-  std::string::size_type equal = std::string::npos;
-  std::string Separator[] = {"->", "=>", "=", ""};
-  unsigned C_INT32 i = 0, j, k, kmax;
-
-  while (Separator[i] != "" && equal == std::string::npos)
-    equal = mChemicalEquation.find(Separator[i++]);
-
-  if (equal == std::string::npos)
-    fatalError();
-
-  mChemicalEquationConverted.erase();
-
-  for (j = 0; j < mSubstrates.size(); j++)
-    {
-      if (j)
-        mChemicalEquationConverted += " + ";
-
-      kmax = (unsigned C_INT32) mSubstrates[j]->getMultiplicity();
-
-      for (k = 0; k < kmax; k++)
-        {
-          if (k)
-            mChemicalEquationConverted += " + ";
-
-          mChemicalEquationConverted += mSubstrates[j]->getMetaboliteName();
-        }
-    }
-
-  mChemicalEquationConverted += " " + Separator[--i] + " ";
-
-  for (j = 0; j < mProducts.size(); j++)
-    {
-      if (j)
-        mChemicalEquationConverted += " + ";
-
-      kmax = (unsigned C_INT32) mProducts[j]->getMultiplicity();
-
-      for (k = 0; k < kmax; k++)
-        {
-          if (k)
-            mChemicalEquationConverted += " + ";
-
-          mChemicalEquationConverted += mProducts[j]->getMetaboliteName();
-        }
-    }
 }
 
 bool CChemEq::initialized() const

@@ -76,27 +76,18 @@ void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity)
 
 void CChemEqElement::compile(const CCopasiVectorN < CCompartment > & compartments)
 {
-  std::string CompartmentName = "";
   unsigned C_INT32 i, imax = compartments.size();
 
   for (i = 0; i < imax; i++)
-    {
-      try
-        {
-          compartments[i]->getMetabolites()[mMetaboliteName];
-          CompartmentName = compartments[i]->getName();
-        }
-      catch (CCopasiException Exception)
-        {
-          if ((MCCopasiVector + 1) == Exception.getMessage().getNumber())
-            continue;
-          else
-            throw Exception;
-        }
-    }
+    if (compartments[i]->getMetabolites().getIndex(mMetaboliteName) != C_INVALID_INDEX)
+      break;
 
-  mpMetabolite =
-    compartments[CompartmentName]->getMetabolites()[mMetaboliteName];
+  if (i < imax)
+    mpMetabolite = compartments[i]->getMetabolites()[mMetaboliteName];
+  else if (mpMetabolite)
+    mMetaboliteName = mpMetabolite->getName();
+  else
+    mpMetabolite = NULL;
 }
 
 std::string CChemEqElement::writeElement() const

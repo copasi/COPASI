@@ -27,14 +27,14 @@ class CChemEq : public CCopasiContainer
 
   private:
     /**
-     *  The chemical equation with multipliers
+     * The chemical equation
      */
     std::string mChemicalEquation;
 
     /**
-     *  The chemical equation without multipliers
+     * Indicates whetrer the chemical equation is reversible
      */
-    std::string mChemicalEquationConverted;
+    bool mReversible;
 
     /**
      *  A vector of substrates and their multiplicity in the chemical reaction
@@ -104,16 +104,16 @@ class CChemEq : public CCopasiContainer
 
     /**
      *  Retrieves the chemical equation with multipliers.
-     *  @return "const string &" ChemicalEquation
+     *  @return "const string" ChemicalEquation
      */
-    const std::string & getChemicalEquation() const;
+    const std::string getChemicalEquation() const;
 
     /**
      *  Retrieves the converted form of chemical equation.
      *  This does not contain any multipliers.
-     *  @return "const string &" ChemicalEquationConverted
+     *  @return "const string" ChemicalEquationConverted
      */
-    const std::string & getChemicalEquationConverted() const;
+    const std::string getChemicalEquationConverted() const;
 
     /**
      *  Retrieves the vector of substrates and their multiplicity 
@@ -215,21 +215,11 @@ class CChemEq : public CCopasiContainer
      */
     bool splitChemEq(std::string & left, std::string & right) const;
 
-    /**
-     *  Writes the chemical equation in a form with multipliers.
-     */
-    void writeChemicalEquation();
-
-    /**
-     *  Writes the chemical equation in a form without multipliers.
-     */
-    void writeChemicalEquationConverted();
-
     friend std::ostream & operator<<(std::ostream &os, const CChemEq & d)
     {
       os << "CChemEq:" << std::endl;
-      os << "   mChemicalEquation:          " << d.mChemicalEquation << std::endl;
-      os << "   mChemicalEquationConverted: " << d.mChemicalEquationConverted << std::endl;
+      os << "   mChemicalEquation:          " << d.getChemicalEquation() << std::endl;
+      os << "   mChemicalEquationConverted: " << d.getChemicalEquationConverted() << std::endl;
 
       os << "   mSubstrates:" << std::endl;
       os << d.mSubstrates;
