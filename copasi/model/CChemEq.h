@@ -137,7 +137,17 @@ class CChemEq : public CCopasiContainer
 
     /**
      *  Returns true if a chemical equation has already been set */
-    bool initialized();
+    bool initialized() const;
+
+    /**
+     *  Checks if it is possible to figure out a compartment from the
+     *  information in the chemical equation. If there are substrates and if
+     *  all the substrates are in the same compartment this compartment will be
+     *  returned. If there are no substrates and there are Products and all Products are in the
+     *  same compartment this compartment will be returned, else an exception
+     *  will be thrown.
+     */
+    const CCompartment* CheckAndGetFunctionCompartment() const;
 
   private:
     /**

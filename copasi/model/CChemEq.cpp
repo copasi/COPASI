@@ -296,7 +296,39 @@ void CChemEq::writeChemicalEquationConverted()
     }
 }
 
-bool CChemEq::initialized()
-{
-  return !mChemicalEquation.empty();
-}
+bool CChemEq::initialized() const
+  {
+    return !mChemicalEquation.empty();
+  }
+
+const CCompartment* CChemEq::CheckAndGetFunctionCompartment() const
+  {
+    // check initialized() and compiled
+
+    const CCompartment* comp = NULL;
+    unsigned C_INT32 i, imax;
+
+    if (mSubstrates.size() > 0)
+      {
+        comp = mSubstrates[0]->getMetabolite().getCompartment();
+        imax = mSubstrates.size();
+        for (i = 1; i < imax; i++)
+          if (comp != mSubstrates[i]->getMetabolite().getCompartment())
+          {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 2);} // substs in different compartments
+        return comp; // all substrates are in the same compartment
+      }
+    else if (mProducts.size() > 0)
+      {
+        comp = mProducts[0]->getMetabolite().getCompartment();
+        imax = mProducts.size();
+        for (i = 1; i < imax; i++)
+          if (comp != mProducts[i]->getMetabolite().getCompartment())
+          {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 3);}  // products in different compartments
+        return comp; // all products are in the same compartment
+      }
+    else
+      {
+        CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 1); // error: no subs. and no product
+        return NULL;
+      }
+  }
