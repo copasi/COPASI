@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/12/05 22:12:38 $
+   $Date: 2003/12/08 15:18:15 $
    End CVS Header */
 
 /***********************************************************************
@@ -138,12 +138,12 @@ void MetabolitesWidget::fillTable()
       compartmentType.push_back(compartments[j]->getName().c_str());
     }
 
-  QComboBox * statusComboBox = new QComboBox(NULL , "");
-  //statusComboBox->insertStrList(&statusType);
-  statusComboBox->insertItem("fixed");
-  statusComboBox->insertItem("variable");
-  //table->setCellWidget(0,3,statusComboBox);
-  //statusComboBox->setCurrentText("ABC");
+  QComboBox * statusComboBox; /* = new QComboBox(NULL , "");
+    //statusComboBox->insertStrList(&statusType);
+    statusComboBox->insertItem("fixed");
+    statusComboBox->insertItem("variable");
+    table->setCellWidget(0,3,statusComboBox);
+    statusComboBox->setCurrentText("ABC");*/
 
   for (j = 0; j < jmax; ++j)
     {
@@ -162,6 +162,14 @@ void MetabolitesWidget::fillTable()
         }
 
       table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
+      statusComboBox = new QComboBox(NULL , "");
+      //statusComboBox->insertStrList(&statusType);
+      //statusComboBox->insertItem("fixed");
+      statusComboBox->insertItem("variable");
+      statusComboBox->insertItem("fixed");
+      table->setCellWidget(j, 3, statusComboBox);
+      statusComboBox->setCurrentText(CMetab::StatusName[obj->getStatus()].c_str());
+
       //table->setText(j, 4, obj->getCompartment()->getName().c_str());
 
       //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
@@ -457,7 +465,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:            // Yes or Enter
+        case 0:             // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -470,7 +478,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:            // No or Escape
+        case 1:             // No or Escape
           break;
         }
     }
