@@ -35,7 +35,7 @@
 #include "tnt/vec.h"
 #include "tnt/subscript.h"
 
-#include "ABiochem/Cgene.h"
+#include "ABiochem/CGene.h"
 
 extern "C" void r250_init(int seed);
 extern "C" unsigned int r250n(unsigned n);
@@ -45,7 +45,7 @@ using namespace std;
 
 C_INT32 Erdos(C_INT32 n, C_INT32 k, CCopasiVector < CGene > &gene)
 {
-  C_INT32 i, j, l;
+  C_INT i, j, l;
   char gn[1024];
 
   // create and name genes
@@ -66,7 +66,8 @@ C_INT32 Erdos(C_INT32 n, C_INT32 k, CCopasiVector < CGene > &gene)
 
 void WriteDot(ofstream &fout, string &Title, CCopasiVector < CGene > &gene)
 {
-  C_INT32 i, j;
+  unsigned C_INT32 i;
+  C_INT32 j;
 
   // dot file header
   fout << "digraph \"" << Title << "\" {\n";
