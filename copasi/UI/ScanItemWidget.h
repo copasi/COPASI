@@ -11,36 +11,44 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
+#include <qcheckbox.h>
+#include <qradiobutton.h>
+#include <qlineedit.h>
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QButtonGroup;
-class QCheckBox;
 class QLabel;
-class QLineEdit;
-class QRadioButton;
+class ScanWidget;
+class ScanCheckBox;
+class ScanLineEdit;
+class ScanRadioButton;
+class QScrollView;
 
 class ScanItemWidget : public QWidget
   {
     Q_OBJECT
+  private:
+    QScrollView* mParent;
 
   public:
     ScanItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanItemWidget();
 
-    QCheckBox* bMaster;
-    QCheckBox* bLogarithmic;
+    ScanCheckBox* bMaster;
+    ScanCheckBox* bLogarithmic;
     QButtonGroup* RandomGroup;
-    QRadioButton* mUniformRadio;
-    QRadioButton* mPosNormalRadio;
-    QRadioButton* mNormalRadio;
-    QRadioButton* bRegularGrid;
+    ScanRadioButton* mUniformRadio;
+    ScanRadioButton* mPosNormalRadio;
+    ScanRadioButton* mNormalRadio;
+    ScanRadioButton* bRegularGrid;
     QLabel* TextLabel3;
     QLabel* TextLabel2;
     QLabel* TextLabel1;
-    QLineEdit* nMin;
-    QLineEdit* nMax;
-    QLineEdit* nDensity;
+    ScanLineEdit* nMin;
+    ScanLineEdit* nMax;
+    ScanLineEdit* nDensity;
 
   protected:
     QGridLayout* ScanItemWidgetLayout;
@@ -49,6 +57,66 @@ class ScanItemWidget : public QWidget
     QGridLayout* Layout34;
     QGridLayout* Layout7;
     QVBoxLayout* Layout33;
+  public:
+    virtual void mousePressEvent (QMouseEvent * e)
+    {
+      QWidget::mousePressEvent(e);
+      //  mParent->mousePressEvent(e);
+    }
+  };
+
+class ScanCheckBox : public QCheckBox
+  {
+    Q_OBJECT
+  private:
+    ScanItemWidget* mParent;
+  public:
+    ScanCheckBox(QWidget* parent = 0, const char* name = 0)
+        : QCheckBox(parent, name)
+    {
+      mParent = (ScanItemWidget*)parent;
+    }
+    virtual void mousePressEvent (QMouseEvent * e)
+    {
+      QCheckBox::mousePressEvent(e);
+      mParent->mousePressEvent(e);
+    }
+  };
+
+class ScanRadioButton: public QRadioButton
+  {
+    Q_OBJECT
+  private:
+    ScanItemWidget* mParent;
+  public:
+    ScanRadioButton(QWidget* parent = 0, const char* name = 0)
+        : QRadioButton(parent, name)
+    {
+      mParent = (ScanItemWidget*)parent;
+    }
+    virtual void mousePressEvent (QMouseEvent * e)
+    {
+      QRadioButton::mousePressEvent(e);
+      mParent->mousePressEvent(e);
+    }
+  };
+
+class ScanLineEdit: public QLineEdit
+  {
+    Q_OBJECT
+  private:
+    ScanItemWidget* mParent;
+  public:
+    ScanLineEdit(QWidget* parent = 0, const char* name = 0)
+        : QLineEdit(parent, name)
+    {
+      mParent = (ScanItemWidget*)parent;
+    }
+    virtual void mousePressEvent (QMouseEvent * e)
+    {
+      QWidget::mousePressEvent(e);
+      mParent->mousePressEvent(e);
+    }
   };
 
 #endif // SCANITEMWIDGET_H

@@ -32,6 +32,18 @@ class SteadyStateWidget;
 class TrajectoryWidget;
 class ScanItemWidget;
 class CCopasiObject;
+class ScanWidget;
+
+class ScanScrollView: public QScrollView
+  {
+    Q_OBJECT
+  private:
+    ScanWidget* mParent;
+
+  public:
+    ScanScrollView(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    virtual void contentsMousePressEvent (QMouseEvent * e);
+  };
 
 class ScanWidget : public CopasiWidget
   {
@@ -50,7 +62,7 @@ class ScanWidget : public CopasiWidget
     QLabel* TextLabel1;
     QLineEdit* taskName;
     QFrame* Line1;
-    QScrollView* scrollview;
+    ScanScrollView* scrollview;
     QFrame* Line2;
     QCheckBox* sExecutable;
     QPushButton* commitChange;
@@ -98,7 +110,9 @@ class ScanWidget : public CopasiWidget
     virtual void SteadyStateEditing();
     virtual void TrajectoryEditing();
 
-    virtual void mousePressEvent (QMouseEvent * e);
+  public:
+    void mouseSelected(ScanItemWidget* pSelected);
+    void viewMousePressEvent(QMouseEvent* e);
   };
 
 #endif

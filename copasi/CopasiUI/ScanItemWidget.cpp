@@ -7,14 +7,11 @@
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 #include "ScanItemWidget.h"
-
+#include "ScanWidget.h"
 #include <qvariant.h>
 #include <qbuttongroup.h>
-#include <qcheckbox.h>
 #include <qlabel.h>
-#include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qradiobutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
@@ -34,11 +31,11 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 
   Layout13 = new QVBoxLayout(0, 0, 6, "Layout13");
 
-  bMaster = new QCheckBox(this, "bMaster");
+  bMaster = new ScanCheckBox(this, "bMaster");
   bMaster->setText(trUtf8("          Master"));
   Layout13->addWidget(bMaster);
 
-  bLogarithmic = new QCheckBox(this, "bLogarithmic");
+  bLogarithmic = new ScanCheckBox(this, "bLogarithmic");
   bLogarithmic->setText(trUtf8("          Logarithmic"));
   Layout13->addWidget(bLogarithmic);
 
@@ -52,24 +49,24 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   privateLayoutWidget->setGeometry(QRect(9, 25, 110, 68));
   Layout4 = new QGridLayout(privateLayoutWidget, 1, 1, 0, 6, "Layout4");
 
-  mUniformRadio = new QRadioButton(privateLayoutWidget, "mUniformRadio");
+  mUniformRadio = new ScanRadioButton(privateLayoutWidget, "mUniformRadio");
   mUniformRadio->setText(trUtf8("Uniform"));
 
   Layout4->addWidget(mUniformRadio, 0, 0);
 
-  mPosNormalRadio = new QRadioButton(privateLayoutWidget, "mPosNormalRadio");
+  mPosNormalRadio = new ScanRadioButton(privateLayoutWidget, "mPosNormalRadio");
   mPosNormalRadio->setText(trUtf8("Pos. Normal"));
 
   Layout4->addWidget(mPosNormalRadio, 2, 0);
 
-  mNormalRadio = new QRadioButton(privateLayoutWidget, "mNormalRadio");
+  mNormalRadio = new ScanRadioButton(privateLayoutWidget, "mNormalRadio");
   mNormalRadio->setText(trUtf8("Normal"));
 
   Layout4->addWidget(mNormalRadio, 1, 0);
 
   ScanItemWidgetLayout->addMultiCellWidget(RandomGroup, 1, 2, 1, 1);
 
-  bRegularGrid = new QRadioButton(this, "bRegularGrid");
+  bRegularGrid = new ScanRadioButton(this, "bRegularGrid");
   bRegularGrid->setText(trUtf8("Regular Grid"));
 
   ScanItemWidgetLayout->addWidget(bRegularGrid, 0, 1);
@@ -99,17 +96,17 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   QSpacerItem* spacer = new QSpacerItem(170, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
   Layout33->addItem(spacer);
 
-  nMin = new QLineEdit(this, "nMin");
+  nMin = new ScanLineEdit(this, "nMin");
   Layout33->addWidget(nMin);
   QSpacerItem* spacer_2 = new QSpacerItem(170, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
   Layout33->addItem(spacer_2);
 
-  nMax = new QLineEdit(this, "nMax");
+  nMax = new ScanLineEdit(this, "nMax");
   Layout33->addWidget(nMax);
   QSpacerItem* spacer_3 = new QSpacerItem(150, 26, QSizePolicy::Minimum, QSizePolicy::Expanding);
   Layout33->addItem(spacer_3);
 
-  nDensity = new QLineEdit(this, "nDensity");
+  nDensity = new ScanLineEdit(this, "nDensity");
   nDensity->setText(trUtf8(""));
   Layout33->addWidget(nDensity);
   QSpacerItem* spacer_4 = new QSpacerItem(170, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
