@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:13 $
+   $Author: gasingh $ 
+   $Date: 2004/03/10 04:19:33 $
    End CVS Header */
 
 /**
@@ -39,21 +39,25 @@ bool CEFMAlgorithm::calculate(const std::vector < std::vector < C_FLOAT64 > > & 
                               std::vector < CFluxMode > & fluxModes)
 {
   bool Success = true;
-  unsigned C_INT32 Step, MaxSteps = stoi[0].size();
 
-  /* initialize the current tableu matrix */
-  mCurrentTableau = new CTableauMatrix(stoi, reversibleNumber);
+  if (stoi.size())
+    {
+      unsigned C_INT32 Step, MaxSteps = stoi[0].size();
 
-  /* Do the iteration */
+      /* initialize the current tableu matrix */
+      mCurrentTableau = new CTableauMatrix(stoi, reversibleNumber);
 
-  for (Step = 0; Step < MaxSteps; Step++)
-    calculateNextTableau();
+      /* Do the iteration */
 
-  /* Build the elementary flux modes to be returned */
-  buildFluxModes(fluxModes);
+      for (Step = 0; Step < MaxSteps; Step++)
+        calculateNextTableau();
 
-  /* Delete the current / final tableu matrix */
-  pdelete(mCurrentTableau);
+      /* Build the elementary flux modes to be returned */
+      buildFluxModes(fluxModes);
+
+      /* Delete the current / final tableu matrix */
+      pdelete(mCurrentTableau);
+    }
 
   return Success;
 }
