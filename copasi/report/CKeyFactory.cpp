@@ -22,7 +22,8 @@ std::string CKeyFactory::add(const std::string & prefix,
                              CCopasiObject * pObject)
 {
   std::stringstream key;
-  key.str(prefix + "_");
+
+  key << prefix + "";
 
   if (mCounterMap.count(prefix) == 0)
     {
@@ -36,7 +37,8 @@ std::string CKeyFactory::add(const std::string & prefix,
   if (mOverflowMap[prefix] == true)
     while (mKeyMap.count(key.str()))
       {
-        key.str(prefix + "_");
+        key.str();
+        key << prefix + "_";
         key << (*count)++;
       }
 
