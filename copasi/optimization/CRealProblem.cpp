@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:38 $
+   $Date: 2004/11/18 20:28:41 $
    End CVS Header */
 
 /**
@@ -61,7 +61,7 @@ C_FLOAT64 CRealProblem::calculate()
 
       fitness = fitness0 / 2.0;
     }
-  catch (unsigned int e)
+  catch (int)
     {
       fitness = DBL_MAX;
     }
