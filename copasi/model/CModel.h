@@ -13,6 +13,9 @@
 #include "CMoiety.h"
 #include "tnt/tnt.h"
 #include "tnt/cmat.h"
+#include "tnt/triang.h"
+#include "tnt/transv.h"
+
 template < class CType > class CCopasiVector;
 class CCompartment;
 
@@ -74,10 +77,23 @@ class CModel
   TNT::Matrix < C_FLOAT64 > mRedStoi;
     
   /**
-   *   Conservation Relationship
+   *   The Matrix which stores the L_0 U_0 Decompasition
    */
-  TNT::Matrix < C_FLOAT64 > mConsRel;
-    
+  TNT::Matrix < C_FLOAT64 > mLU;
+
+  /**
+   *   The inverse of L_0
+   */
+  TNT::Matrix < C_FLOAT64 > mL;
+
+#ifdef  XXXX
+  TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > *pmLView;
+#define mLView (*pmLView)
+  TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
+    *pmInverseLView;  
+#define mInverseLView (*pmInverseLView)
+#endif // XXXX
+  
 #ifdef XXXX
   /**
    *  number of internal metabolites
@@ -252,7 +268,12 @@ class CModel
    *  Build the Stoichiometry Matrix from the chemical equations of the steps
    */
   void buildStoi();
-    
+
+  /**
+   *  Build L and InverseL
+   */
+  void buildL();  
+
   /**
    *  LU-Decomposition of the stoichiometry matrix
    */
@@ -271,7 +292,7 @@ class CModel
   /**
    *  Build the Conservation Relationssips based on the LU decomposition
    */
-  void buildConsRel();
+  // void buildConsRel();
     
   /**
    *  Build the Moities based on the LU decomposition

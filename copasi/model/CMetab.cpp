@@ -176,7 +176,7 @@ void CMetab::setConcentration(const C_FLOAT64 concentration)
 
 void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
 {
-  mConc = initialConcentration;
+  mIConc = initialConcentration;
 }
 
 void CMetab::setNumber(const C_FLOAT64 number)

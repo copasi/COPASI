@@ -453,7 +453,7 @@ class UnitUpperTriangularView
 {
     protected:
 
-        const MaTRiX  &A_;
+        const MaTRiX  *A_;
         const typename MaTRiX::element_type zero;
         const typename MaTRiX::element_type one;
 
@@ -465,14 +465,14 @@ class UnitUpperTriangularView
     typedef element_type T;
 
     Subscript lbound() const { return 1; }
-    Subscript dim(Subscript d) const {  return A_.dim(d); }
-    Subscript num_rows() const { return A_.num_rows(); }
-    Subscript num_cols() const { return A_.num_cols(); }
+    Subscript dim(Subscript d) const {  return A_->dim(d); }
+    Subscript num_rows() const { return A_->num_rows(); }
+    Subscript num_cols() const { return A_->num_cols(); }
 
     
     // constructors
 
-    UnitUpperTriangularView(/*const*/ MaTRiX &A) : A_(A), zero(0), one(1) {}
+    UnitUpperTriangularView(/*const*/ MaTRiX &A) : A_(&A), zero(0), one(1) {}
 
 
     inline const_reference get(Subscript i, Subscript j) const

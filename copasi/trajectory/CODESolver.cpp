@@ -157,7 +157,7 @@ C_INT32 CODESolver::loadLSODAParameters(CReadConfig & configbuffer)
     
   if ((Fail = configbuffer.getVariable("RelativeTolerance", "C_FLOAT64",
 				       (void *) &mRtol,
-				       CReadConfig::SEARCH)))
+				       CReadConfig::LOOP)))
     return Fail;
   if ((Fail = configbuffer.getVariable("AbsoluteTolerance", "C_FLOAT64",
 				       (void *) &mAtol)))

@@ -285,29 +285,31 @@ void CReaction::setIdentifiers()
       (*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
 	(*mSubstrates)[i].mpMetabolite->getConcentration();
     }
-    
-  for (i = 0; i < mProducts->size(); i++)
-    {
-      if ((*mProducts)[i].mIdentifierName == "") continue;
-        
-      Tuple = mFunction->findIdentifier((*mProducts)[i].mIdentifierName);
 
-      if ( !(Tuple.first + 1) || !(Tuple.second + 1)) fatalError();
-      if ((*mCallParameters)[Tuple.first].getType()
-	  != CCallParameter::VECTOR_DOUBLE) fatalError();
-                                                     
-      if ((OldSize = (*mCallParameters)[Tuple.first].identifiers().size())
-	  < Tuple.second + 1)
-        {
-	  (*mCallParameters)[Tuple.first].identifiers().
-	    resize(Tuple.second + 1);
-	  for( j = OldSize; j < Tuple.second + 1; j++)
-	    (*mCallParameters)[Tuple.first].identifiers()[j] = NULL;
-        }
+  /* :TODO: this is broken for "Mass action (irreversible)" */
+  if (mFunction->getName() != "Mass action (irreversible)")
+    for (i = 0; i < mProducts->size(); i++)
+      {
+	if ((*mProducts)[i].mIdentifierName == "") continue;
         
-      (*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
-	(*mProducts)[i].mpMetabolite->getConcentration();
-    }
+	Tuple = mFunction->findIdentifier((*mProducts)[i].mIdentifierName);
+
+	if ( !(Tuple.first + 1) || !(Tuple.second + 1)) fatalError();
+	if ((*mCallParameters)[Tuple.first].getType()
+	    != CCallParameter::VECTOR_DOUBLE) fatalError();
+                                                     
+	if ((OldSize = (*mCallParameters)[Tuple.first].identifiers().size())
+	    < Tuple.second + 1)
+	  {
+	    (*mCallParameters)[Tuple.first].identifiers().
+	      resize(Tuple.second + 1);
+	    for( j = OldSize; j < Tuple.second + 1; j++)
+	      (*mCallParameters)[Tuple.first].identifiers()[j] = NULL;
+	  }
+        
+	(*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
+	  (*mProducts)[i].mpMetabolite->getConcentration();
+      }
 
   for (i = 0; i < mModifiers->size(); i++)
     {

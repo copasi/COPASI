@@ -113,8 +113,7 @@ void CMoiety::setInitialValue()
     
   for (unsigned C_INT32 i=0; i<mEquation.size(); i++)
     mINumber += mEquation[i].mValue *
-      *mEquation[i].mMetab->getConcentration() * 
-      mEquation[i].mMetab->getCompartment()->getVolume();
+      mEquation[i].mMetab->getInitialNumber();
 
   return;
 }

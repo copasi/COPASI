@@ -82,8 +82,8 @@ C_INT main(void)
       // TestCompartment();
       // TestDatum();
       // TestMetab();
-      TestReadSample();
-      // TestTrajectory();
+      // TestReadSample();
+      TestTrajectory();
       // TestMoiety();
       // TestKinFunction();
       // TestBaseFunction();
@@ -341,14 +341,14 @@ C_INT32 TestReadSample(void)
 
 C_INT32 TestTrajectory(void)
 {
-  CReadConfig inbuf("gps/BakkerComp.gps");
+  CReadConfig inbuf("gps/HMM.GPS");
   CModel model;
   model.load(inbuf);
   model.buildStoi();
   model.lUDecomposition();
   model.setMetabolitesStatus();
   model.buildRedStoi();
-  model.buildConsRel();
+  model.buildL();
   model.buildMoieties();
     
   CTrajectory traj(&model, 20, 10.0, 1);

@@ -13,6 +13,8 @@
 #include "CModel.h"
 #include "CCompartment.h"
 #include "tnt/luX.h"
+#include "tnt/triang.h"
+#include "tnt/transv.h"
 
 CModel::CModel()
 {
@@ -155,7 +157,8 @@ void CModel::buildStoi()
 {
   vector < CReaction::ELEMENT > Structure;
   unsigned C_INT32 i,j,k;
-    
+  string Name;
+  
   mStoi.newsize(mMetabolites.size(), mSteps->size());
     
   for (i=0; i<mSteps->size(); i++)
@@ -164,13 +167,15 @@ void CModel::buildStoi()
         
       for (j=0; j<mMetabolites.size(); j++)
         {
-	  for (k=0; k<Structure.size(); k++)
-	    if (Structure[k].mName == mMetabolites[j]->getName()) break;
+	  mStoi[j][i] = 0.0;
+	  Name = mMetabolites[j]->getName();
 
-	  if (k<Structure.size())
-	    mStoi[j][i] = Structure[k].mValue;
-	  else
-	    mStoi[j][i] = 0.0;
+	  for (k=0; k<Structure.size(); k++)
+	    if (Structure[k].mName == Name)
+	      {
+		mStoi[j][i] = Structure[k].mValue;
+		break;
+	      }
         }
     }
   cout << mStoi << endl;
@@ -184,8 +189,16 @@ void CModel::lUDecomposition()
     
   TNT::Vector < unsigned C_INT32 > rowLU(mStoi.num_rows());
   TNT::Vector < unsigned C_INT32 > colLU(mStoi.num_cols());
-    
-  TNT::LUX_factor(mStoi, rowLU, colLU);
+  
+  mLU = mStoi;
+  
+  TNT::LUX_factor(mLU, rowLU, colLU);
+  
+  TNT::UpperTriangularView < TNT::Matrix < C_FLOAT64 > > U(mLU);
+  TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
+
+  cout << U << endl;
+  cout << L << endl;
 
   mMetabolitesX = mMetabolites;
     
@@ -217,7 +230,7 @@ void CModel::lUDecomposition()
 	  mStepsX[colLU[i]-1] = pStep;
         }
     }
-  cout << mStoi << endl;
+  cout << mLU << endl;
 
   return;
 }
@@ -227,31 +240,32 @@ void CModel::setMetabolitesStatus()
   C_INT32 i,j,k;
   C_FLOAT64 Sum;
     
-  // for (i=0; i<min(mStoi.num_rows(), mStoi.num_cols()); i++)
+  // for (i=0; i<min(mLU.num_rows(), mLU.num_cols()); i++)
   // for compiler
-  C_INT32 imax = (mStoi.num_rows() < mStoi.num_cols()) ? mStoi.num_cols() : mStoi.num_rows();
+  C_INT32 imax = (mLU.num_rows() < mLU.num_cols()) ? 
+    mLU.num_rows() : mLU.num_cols();
   for (i=0; i<imax; i++)
     {
-      if (mStoi[i][i] == 0.0) break;
+      if (mLU[i][i] == 0.0) break;
       mMetabolitesX[i]->setStatus(METAB_VARIABLE);
     }
   mMetabolitesInd.clear();
   mMetabolitesInd.insert(0,&mMetabolitesX[0],&mMetabolitesX[i]);
   mStepsInd.insert(0,&mStepsX[0],&mStepsX[i]);
     
-  for (j=i; j<mStoi.num_rows(); j++)
+  for (j=i; j<mLU.num_rows(); j++)
     {
       Sum = 0.0;
         
-      for (k=0; k<mStoi.num_cols(); k++)
-	Sum += fabs(mStoi[j][k]);
+      for (k=0; k<mLU.num_cols(); k++)
+	Sum += fabs(mLU[j][k]);
       if (Sum == 0.0) break;
       mMetabolitesX[j]->setStatus(METAB_DEPENDENT);
     }
   mMetabolitesDep.clear();
   mMetabolitesDep.insert(0,&mMetabolitesX[i],&mMetabolitesX[j]);
 
-  for (k=j; k<mStoi.num_rows(); k++)
+  for (k=j; k<mLU.num_rows(); k++)
     mMetabolitesX[k]->setStatus(METAB_FIXED);
 
   return;
@@ -261,19 +275,30 @@ void CModel::buildRedStoi()
 {
   C_INT32 i,j,k;
   C_FLOAT64 Sum;
-  C_INT32 kmax;		// wei for compiler
+  C_INT32 imax, jmax, kmax;		// wei for compiler
 
-  mRedStoi.newsize(mMetabolitesInd.size(),mStepsX.size());
-    
-  for (i=0; i<mRedStoi.num_rows(); i++)
-    for (j=0; j<mRedStoi.num_cols(); j++)
+  imax = mMetabolitesInd.size();
+  jmax = mStepsX.size();
+  
+  mRedStoi.newsize(imax, jmax);
+  
+  for (i=0; i<imax; i++)
+    for (j=0; j<jmax; j++)
       {
 	Sum = 0.0;
-	//for (k=0; k<min(i,j+1); k++) for compiler
-	kmax = (i < j+1) ? i : j+1;
+
+	/* Since L[i,k] = 1 for k = i and L[i,k] = 0 for k > i
+	   we have to avoid L[i,k] where k >= i, i.e.. k < i.
+	   Similarly, since U[k,j] = 0 for k > j
+	   we have to avoid U[k,j] where k > j, i.e., k <= j.
+	   Therefore, kmax = min(i-1, j). */
+	kmax = (i - 1 < j) ? i - 1: j;
 	for (k=0; k<kmax; k++)
-	  Sum += mStoi[i][k] * mStoi[k][j];
-	if (i<=j) Sum += mStoi[i][j];
+	  Sum += mLU[i][k] * mLU[k][j];
+
+	/* For i - 1 < j we are missing a part of the sum: */
+	if (i - 1 < j) Sum += /* mLU[i][i]* */ mLU[i][j]; // since L[i,i] = 1
+
 	mRedStoi[i][j] = Sum;
       }
   cout << mRedStoi << endl;
@@ -281,50 +306,100 @@ void CModel::buildRedStoi()
   return;
 }
 
+void CModel::buildL()
+{
+  unsigned C_INT32 size = mMetabolites.size();
+  unsigned C_INT32 i, j, jmax;
+  TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
+  cout << L << endl;
+  
+  mL.newsize(size,size);
+  jmax = (size < mSteps->size()) ? size : mSteps->size();
+ 
+  /* Create L from the UnitLowerTriangularView of mLU */
+  for (i=0; i<size; i++)
+    for (j=0; j<jmax; j++)
+      mL[i][j] = L(i+1,j+1);
+  
+  /* We complete L so that it is a square matrix */
+  for (i=0; i<size; i++)
+    for (j=jmax; j<size; j++)
+      mL[i][j] = 0.0;
+
+  for (j=jmax; j<size; j++)
+    mL[j][j] = 1.0;
+
+  cout << mL << endl;
+  
+  /* Calculate the inverse of L and store it in the upper triangular 
+     part of L */
+  for (i=1; i<size; i++)
+    {
+      mL[i-1][i] = - mL[i][i-1];
+      for (j=0; j<i-1; j++)
+	mL[j][i] = mL[i][j] - mL[i][i-1] * mL[j][i-1];
+    }
+
+  cout << 
+    TNT::UnitLowerTriangularView< TNT::Matrix< C_FLOAT64 > >(mL) 
+       << endl;
+  cout << 
+    TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >(mL)
+       << endl;
+  
+}
+
+#ifdef XXXX
 void CModel::buildConsRel()
 {
-  // Since we do not use L anymore we could use L to store ConsRel !!!
   mConsRel.newsize(mMetabolites.size(), mMetabolitesInd.size());
     
   C_INT32 i,j;
 
-  C_INT32 imin = (mConsRel.num_rows() > mConsRel.num_cols()) ? 
+  C_INT32 imax = (mConsRel.num_rows() > mConsRel.num_cols()) ? 
     mConsRel.num_cols() : mConsRel.num_rows();
     
   // wei for compiler for (i=0; i<min(mConsRel.num_rows(), mConsRel.num_cols()); i++)
-  for (i=0; i<imin; i++)
-    mConsRel[i+1][i] = mStoi[i+1][i];
+  for (i=0; i<imax; i++)
+    mConsRel[i+1][i] = mLU[i+1][i];
     
   for (j=0; j<mConsRel.num_cols(); j++)
     for (i=j+2; i<mConsRel.num_rows(); i++)
-      mConsRel[i][j] = mStoi[i][j] + mStoi[i][i-1] * mConsRel[i-1][j];
+      mConsRel[i][j] = mLU[i][j] + mLU[i][i-1] * mConsRel[i-1][j];
 
+  cout << mConsRel << endl;
+  
   return;
 }
+#endif // XXXX
 
 void CModel::buildMoieties()
 {
   unsigned C_INT32 i;
-  C_INT32 j;
+  unsigned C_INT32 imin = mMetabolitesInd.size();
+  unsigned C_INT32 imax = imin + mMetabolitesDep.size();
+  unsigned C_INT32 j;
+  unsigned C_INT32 jmax = imin;
+  
   CMoiety Moiety;
     
   mMoieties->cleanup();
 
-  for (i=mMetabolitesDep.size();
-       i<mMetabolitesDep.size() + mMetabolitesInd.size(); i++)
+  for (i=imin; i<imax; i++)
     {
       Moiety.cleanup();
     
       Moiety.setName(mMetabolitesX[i]->getName());
       Moiety.add(1.0, mMetabolitesX[i]);
         
-      for (j=0; j<mConsRel.num_cols(); j++)
+      for (j=0; j<jmax; j++)
         {
-	  if (mConsRel[i][j] != 0.0)
-	    Moiety.add(mConsRel[i][j], mMetabolitesX[j]);
+	  if (mL[i][j] != 0.0)
+	    Moiety.add(mL[i][j], mMetabolitesX[j]);
         }
       Moiety.setInitialValue();
-        
+      cout << Moiety.getDescription() << endl;
+      
       mMoieties->add(Moiety);
     }
     

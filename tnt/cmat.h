@@ -171,9 +171,10 @@ class Matrix
 
   public:
 
-//    operator T**(){ return  row_; }
-//    operator T**() const { return row_; }
-
+#ifdef WIN32
+    operator T**(){ return  row_; }
+    operator T**() const { return row_; }
+#endif // WIN32
 
     Subscript size() const { return mn_; }
 
