@@ -1,5 +1,5 @@
 // copasi.h
-// 
+//
 // This file contains compatability issues
 // (C) Stefan Hoops 2001
 //
@@ -9,6 +9,7 @@
 
 #include <assert.h>
 #include <fstream>
+
 using namespace std ;
 
 //YH: new defined parameters used by more than one classes
@@ -36,7 +37,7 @@ using namespace std ;
 # define C_FLOAT32 float
 #endif
 
-#ifdef WIN32 
+#ifdef WIN32
 # define C_INT32 int
 # define C_INT int
 # define C_INT16 short
@@ -44,6 +45,8 @@ using namespace std ;
 # define C_FLOAT32 float
 # define vsnprintf _vsnprintf // they just have a different name for this guy
 # define snprintf  _snprintf  // they just have a different name for this guy
+# define timeb _timeb         // they just have a different name for this guy
+# define ftime _ftime         // they just have a different name for this guy
 #endif  // WIN32
 
 /* Define COPASI_DEBUG */
@@ -52,7 +55,7 @@ using namespace std ;
 #else
 # ifdef _DEBUG             // for Visual Studio
 #  define COPASI_DEBUG
-# else 
+# else
 #  undef COPASI_DEBUG
 # endif // _DEBUG
 #endif // not NDEBUG
@@ -60,27 +63,29 @@ using namespace std ;
 /* Define Constructor/Destructor Trace */
 #ifdef COPASI_DEBUG
 # ifdef COPASI_MAIN
-   std::ofstream DebugFile("trace");
+
+std::ofstream DebugFile("trace");
 # else
 #  include <fstream>
-   extern std::ofstream DebugFile;
+
+extern std::ofstream DebugFile;
 # endif // COPASI_MAIN
 # if (defined COPASI_TRACE_CONSTRUCTION)
 #  include <typeinfo>
 #  define CONSTRUCTOR_TRACE \
-    {DebugFile << "Construct: " << typeid(*this).name() \
-               << ", \tAddress: " << (void *) this << endl;}
+  {DebugFile << "Construct: " << typeid(*this).name() \
+    << ", \tAddress: " << (void *) this << endl; }
 #  define DESTRUCTOR_TRACE \
-    {DebugFile << "Destruct: " << typeid(*this).name() \
-               << ", \tAddress: " << (void *) this << endl;}
+  {DebugFile << "Destruct: " << typeid(*this).name() \
+    << ", \tAddress: " << (void *) this << endl; }
 # endif // COPASI_TRACE_CONSTRUCTION
 #endif // COPASI_DEBUG
 
-#ifndef CONSTRUCTOR_TRACE 
+#ifndef CONSTRUCTOR_TRACE
 # define CONSTRUCTOR_TRACE
 #endif
 
-#ifndef DESTRUCTOR_TRACE 
+#ifndef DESTRUCTOR_TRACE
 # define DESTRUCTOR_TRACE
 #endif
 
@@ -94,10 +99,9 @@ using namespace std ;
 #endif
 #define FALSE 0
 
-   // protected free
-#define pfree(p) {if (p) {free(p); p = NULL;}}
-#define pdelete(p) {if (p) {delete p; p = NULL;}}
-#define pcleanup(p) {if (p) {p->cleanup(); delete p; p = NULL;}}
+// protected free
+#define pfree(p) {if (p) {free(p); p = NULL; }}
+#define pdelete(p) {if (p) {delete p; p = NULL; }}
+#define pcleanup(p) {if (p) {p->cleanup(); delete p; p = NULL; }}
 
 #endif // COPASI_copasi
-

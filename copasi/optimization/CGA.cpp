@@ -262,8 +262,8 @@ int CGA::getPopSize()
 // init  optimization random numbers
 int CGA::initOptRandom()
 {
-  struct _timeb init_time;
-  _ftime(&init_time);
+  struct timeb init_time;
+  ftime(&init_time);
   r250_init(init_time.millitm);
   return 0;
 }
@@ -380,15 +380,19 @@ void CGA::mutate(unsigned int i)
         mut = mMin + DBL_EPSILON;
       else
 
-        {if (mut < mMin)
-          mut = mMin; }
+        {
+          if (mut < mMin)
+            mut = mMin;
+        }
 
       if (mut >= mMax)
         mut = mMax - DBL_EPSILON;
       else
 
-        {if (mut > mMax)
-          mut = mMax; }
+        {
+          if (mut > mMax)
+            mut = mMax;
+        }
 
       // store it
       mIndV[i][j] = mut;
@@ -466,8 +470,7 @@ void CGA::crossover(unsigned int p1, unsigned int p2, unsigned int c1, unsigned 
         }
     }
   catch (unsigned int e)
-  {}
-}
+    {}}
 
 // shuffle data
 void CGA::shuffle(void)
@@ -515,7 +518,7 @@ void CGA::select(int method)
 
   switch (method)
     {
-    case 1:   // parent-offspring competition
+    case 1:    // parent-offspring competition
 
       for (i = mPopSize; i < 2*mPopSize; i++)
         {
@@ -527,7 +530,7 @@ void CGA::select(int method)
 
       break;
 
-    case 2:   // tournament competition
+    case 2:    // tournament competition
       // compete with 20% of the population
       nopp = mPopSize / 5;
       // but at least one
@@ -671,10 +674,10 @@ int CGA::optimise()
   unsigned int i, last_update, u100, u300, u500;
   double bx;
 
-  struct _timeb before, after;
+  struct timeb before, after;
   double dTime = 0;
 
-  _ftime(&before);
+  ftime(&before);
   dTime = time(NULL);
 
   //mMin = *(mRealProblem.getParameterMin());
@@ -777,7 +780,7 @@ int CGA::optimise()
         }
     }
 
-  _ftime(&after);
+  ftime(&after);
   ofstream tout("time.dat");
 
   if (!tout)
