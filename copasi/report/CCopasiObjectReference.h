@@ -29,7 +29,7 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
     CCopasiObjectReference(const std::string & name,
                            const CCopasiContainer * pParent,
                            CType & reference):
-        CCopasiObject(name, pParent, "Reference", 0),
+        CCopasiObject(name, pParent, "Reference", CCopasiObject::Reference),
         mReference(reference)
     {}
 
@@ -61,7 +61,7 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
     CCopasiVectorReference(const std::string & name,
                            const CCopasiContainer * pParent,
                            CType & reference):
-        CCopasiObject(name, pParent, "Reference", 0),
+        CCopasiObject(name, pParent, "Reference", CCopasiObject::Reference),
         mReference(reference)
     {}
 
@@ -101,7 +101,7 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
     CCopasiMatrixReference(const std::string & name,
                            const CCopasiContainer * pParent,
                            CType & reference):
-        CCopasiObject(name, pParent, "Reference", 0),
+        CCopasiObject(name, pParent, "Reference", CCopasiObject::Reference),
         mReference(reference)
     {}
 
