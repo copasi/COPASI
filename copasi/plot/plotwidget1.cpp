@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/17 14:47:29 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:25:27 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.35 2005/02/17 14:47:29 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.36 2005/02/18 16:25:27 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -38,7 +38,8 @@
 #include "report/CKeyFactory.h"
 #include "CopasiUI/CCopasiPlotSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
-#include "CopasiUI/DataModelGUI.h" 
+#include "CopasiDataModel/CCopasiDataModel.h"
+
 //temporary
 #include "mathematics.h"
 
@@ -225,7 +226,7 @@ void PlotWidget1::addCurveTab(const std::string & title,
   item->addChannel(y);
 
   Curve2DWidget * curveWidget = new Curve2DWidget(tabs);
-  curveWidget->setModel(dataModel->getModel());
+  curveWidget->setModel(CCopasiDataModel::Global->getModel());
   curveWidget->LoadFromCurveSpec(item);
   tabs->addTab(curveWidget, item->getTitle().c_str());
 
@@ -238,7 +239,7 @@ void PlotWidget1::addCurve2D()
   std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
   std::vector<CCopasiObject*>* pVector2 = new std::vector<CCopasiObject*>();
   pBrowser->setOutputVectors(pVector1, pVector2);
-  pBrowser->setModel(dataModel->getModel());
+  pBrowser->setModel(CCopasiDataModel::Global->getModel());
 
   if (pBrowser->exec () == QDialog::Rejected)
     {
@@ -343,7 +344,7 @@ void PlotWidget1::addHisto1DTab(const std::string & title,
   item->addChannel(x);
 
   HistoWidget * curveWidget = new HistoWidget(tabs);
-  curveWidget->setModel(dataModel->getModel());
+  curveWidget->setModel(CCopasiDataModel::Global->getModel());
   curveWidget->LoadFromCurveSpec(item);
   tabs->addTab(curveWidget, item->getTitle().c_str());
 
@@ -467,7 +468,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
       if (curves[i]->getType() == CPlotItem::curve2d)
         {
           Curve2DWidget* curve = new Curve2DWidget(tabs);
-          curve->setModel(dataModel->getModel());
+          curve->setModel(CCopasiDataModel::Global->getModel());
           curve->LoadFromCurveSpec(curves[i]);
           tabs->addTab(curve, curves[i]->getTitle().c_str());
         }
@@ -475,7 +476,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
       if (curves[i]->getType() == CPlotItem::histoItem1d)
         {
           HistoWidget* histo = new HistoWidget(tabs);
-          histo->setModel(dataModel->getModel());
+          histo->setModel(CCopasiDataModel::Global->getModel());
           histo->LoadFromCurveSpec(curves[i]);
           tabs->addTab(histo, curves[i]->getTitle().c_str());
         }

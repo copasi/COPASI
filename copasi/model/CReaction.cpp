@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.110 $
+   $Revision: 1.111 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/20 17:42:39 $
+   $Date: 2005/02/18 16:25:26 $
    End CVS Header */
 
 // CReaction
@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <stdio.h>
 
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "CReaction.h"
 #include "CCompartment.h"
 #include "CModel.h"
@@ -196,7 +196,7 @@ void CReaction::setReversible(bool reversible)
 
 bool CReaction::setFunction(const std::string & functionName)
 {
-  CFunction * pFunction = Copasi->pFunctionDB->findLoadFunction(functionName);
+  CFunction * pFunction = CCopasiDataModel::Global->getFunctionList()->findLoadFunction(functionName);
   if (!pFunction)
     CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
 
@@ -538,7 +538,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       name = StringPrint("Subs%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
 
-      metabName = (*Copasi->pOldMetabolites)[index]->getObjectName();
+      metabName = (*CCopasiDataModel::Global->pOldMetabolites)[index]->getObjectName();
 
       if (Type < CFunctionParameter::VINT32)
         {
@@ -568,7 +568,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       name = StringPrint("Prod%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
 
-      metabName = (*Copasi->pOldMetabolites)[index]->getObjectName();
+      metabName = (*CCopasiDataModel::Global->pOldMetabolites)[index]->getObjectName();
 
       if (Type < CFunctionParameter::VINT32)
         {
@@ -598,7 +598,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       name = StringPrint("Modf%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
 
-      metabName = (*Copasi->pOldMetabolites)[index]->getObjectName();
+      metabName = (*CCopasiDataModel::Global->pOldMetabolites)[index]->getObjectName();
 
       if (Type < CFunctionParameter::VINT32)
         {

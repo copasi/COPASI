@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/08 23:14:48 $
+   $Date: 2005/02/18 16:25:27 $
    End CVS Header */
 
 #include <string>
@@ -12,7 +12,7 @@
 #include "CReaction.h"
 #include "CModel.h"
 #include "CChemEqElement.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CFunctionDB.h"
 #include "report/CKeyFactory.h"
 #include "model/CMetabNameInterface.h"
@@ -41,9 +41,9 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
       reversible = TriTrue;
 
     CCopasiVector<CFunction>* pFunctionVector =
-      Copasi->pFunctionDB->suitableFunctions(mChemEqI.getMolecularity("SUBSTRATE"),
-                                             mChemEqI.getMolecularity("PRODUCT"),
-                                             reversible);
+      CCopasiDataModel::Global->getFunctionList()->suitableFunctions(mChemEqI.getMolecularity("SUBSTRATE"),
+          mChemEqI.getMolecularity("PRODUCT"),
+          reversible);
 
     std::vector<std::string> ret;
     ret.clear();
@@ -152,7 +152,7 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
   CFunctionParameters *oldParameters = mpParameters;
 
   //get the function
-  mpFunction = Copasi->pFunctionDB->findLoadFunction(fn);
+  mpFunction = CCopasiDataModel::Global->getFunctionList()->findLoadFunction(fn);
   if (!mpFunction) fatalError();
   mpParameters = new CFunctionParameters(mpFunction->getParameters());
 

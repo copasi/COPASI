@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.212 $
+   $Revision: 1.213 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/09 00:57:55 $
+   $Date: 2005/02/18 16:25:26 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiVector.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVector.h"
 #include "utilities/CluX.h"
 #include "utilities/utility.h"
@@ -189,7 +189,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   C_INT32 Fail = 0;
   unsigned C_INT32 i;
   std::string tmp;
-  Copasi->pModel = this;
 
   // For old Versions we must read the list of Metabolites beforehand
   if (configBuffer.getVersion() < "4")
@@ -198,7 +197,8 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                            &Size, CReadConfig::LOOP)))
         return Fail;
 
-      Copasi->pOldMetabolites->load(configBuffer, Size);
+      // :TODO: Remove OldMetabolites as part of the data model.
+      CCopasiDataModel::Global->pOldMetabolites->load(configBuffer, Size);
     }
 
   if ((Fail = configBuffer.getVariable("Title", "string", &tmp,
@@ -285,13 +285,13 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       // Create the correct compartment / metabolite relationships
       CMetab *pMetabolite;
 
-      for (i = 0; i < Copasi->pOldMetabolites->size(); i++)
+      for (i = 0; i < CCopasiDataModel::Global->pOldMetabolites->size(); i++)
         {
           pMetabolite = new CMetab;
-          mCompartments[(*Copasi->pOldMetabolites)[i]->getIndex()]->
+          mCompartments[(*CCopasiDataModel::Global->pOldMetabolites)[i]->getIndex()]->
           addMetabolite(pMetabolite);
 
-          (*pMetabolite) = *(*Copasi->pOldMetabolites)[i];
+          (*pMetabolite) = *(*CCopasiDataModel::Global->pOldMetabolites)[i];
         }
     }
 
@@ -299,7 +299,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   initializeMetabolites();
 
-  if ((Fail = Copasi->pFunctionDB->load(configBuffer))) // slow
+  if ((Fail = CCopasiDataModel::Global->getFunctionList()->load(configBuffer))) // slow
     return Fail;
 
   if ((Fail = configBuffer.getVariable("TotalSteps", "C_INT32", &Size,
@@ -315,7 +315,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   // DebugFile << "After compiling " << std::endl << mSteps << std::endl;   //debug
 
-  Copasi->pOldMetabolites->cleanup();
+  CCopasiDataModel::Global->pOldMetabolites->cleanup();
 
   setCompileFlag();
   return Fail;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/07 09:31:44 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:25:27 $
    End CVS Header */
 
 /**
@@ -21,7 +21,7 @@
 #include "CTrajectoryProblem.h"
 #include "model/CModel.h"
 #include "model/CState.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 /**
  *  Default constructor.
@@ -222,7 +222,7 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
 
   if (configBuffer.getVersion() < "4.0")
     {
-      mpModel = Copasi->pModel;
+      mpModel = CCopasiDataModel::Global->getModel();
       configBuffer.getVariable("EndTime", "C_FLOAT64",
                                & dbl,
                                CReadConfig::LOOP);

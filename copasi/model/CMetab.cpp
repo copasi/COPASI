@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/31 14:49:17 $
+   $Date: 2005/02/18 16:25:26 $
    End CVS Header */
 
 #include <iostream>
@@ -13,7 +13,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
@@ -109,7 +109,7 @@ void CMetab::cleanup() {}
 void CMetab::initModel()
 {
   mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
-  if (!mpModel && Copasi) mpModel = Copasi->pModel;
+  if (!mpModel && CCopasiDataModel::Global) mpModel = CCopasiDataModel::Global->getModel();
 }
 
 void CMetab::initCompartment(const CCompartment * pCompartment)

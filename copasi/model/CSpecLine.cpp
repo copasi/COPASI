@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:48 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:25:27 $
    End CVS Header */
 
 #include <iostream>
@@ -16,7 +16,7 @@
 #include "CReaction.h"
 #include "CModel.h"
 
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CKinFunction.h"
 #include "function/CFunctionDB.h"
 
@@ -392,7 +392,7 @@ void CTempReaction::compile(CModel *model,
 
   fun->compile();
   // it is important to call add(fun) instead of add(*fun). Otherwise type information of the polymorphic object would be lost.
-  Copasi->pFunctionDB->loadedFunctions().add(fun);
+  CCopasiDataModel::Global->getFunctionList()->loadedFunctions().add(fun);
   // Associate this kinetic function with the reaction
   reaction->setFunction("function_" + mName);
   // Finally, add the reaction to the model

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/05 12:31:06 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:25:27 $
    End CVS Header */
 
 /**
@@ -21,7 +21,7 @@
 #include "CSteadyStateProblem.h"
 #include "model/CModel.h"
 #include "model/CState.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 /**
  *  Default constructor.
@@ -134,7 +134,7 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
 {
   if (configBuffer.getVersion() < "4.0")
     {
-      mpModel = Copasi->pModel;
+      mpModel = CCopasiDataModel::Global->getModel();
       mInitialState = mpModel->getInitialState();
       configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
                                getValue("StabilityAnalysisRequested"),

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 14:02:06 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:25:27 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -21,7 +21,7 @@
 #include "utilities/CCopasiException.h"
 #include "FlexLexer.h"
 #include "CModel.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "CSpec2Model.h"
 #include "CSpecLine.h"
 #include "CDeTerm.h"
@@ -544,7 +544,7 @@ void CSpec2Model::processFunctions()
                 }
             }
           std::cout << Function.getParameters() << std::endl;
-          Copasi->pFunctionDB->add(Function);
+          CCopasiDataModel::Global->getFunctionList()->add(Function);
           // ((CKinFunction *)pFunction)->compile();
           std::cout << it->getString() << std::endl;
         }
