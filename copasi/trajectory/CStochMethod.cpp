@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/07 09:34:06 $
+   $Date: 2004/10/08 09:18:15 $
    End CVS Header */
 
 #include "copasi.h"
@@ -131,7 +131,7 @@ const double CStochMethod::step(const double & deltaT,
   /* get configuration data */
   mMaxSteps = * (C_INT32 *) getValue("STOCH.MaxSteps");
 
-  *mpCurrentState = *initialState;
+  *mpCurrentState = *initialState; //TODO seem to be identical
 
   unsigned C_INT32 i, imax;
 
