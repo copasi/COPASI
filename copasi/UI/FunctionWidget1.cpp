@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.104 $
+   $Revision: 1.105 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/22 15:50:42 $
+   $Author: shoops $ 
+   $Date: 2004/12/29 01:51:37 $
    End CVS Header */
 
 /**********************************************************************
@@ -415,7 +415,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   //MathML widget
   std::ostringstream mml;
   pFunction->writeMathML(mml);
-  mMmlWidget->setContent(mml.str());
+  mMmlWidget->setContent(FROM_UTF8(mml.str()));
 
   return true;
 }
@@ -850,7 +850,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                  // Yes or Enter
+        case 0:                                   // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -867,7 +867,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                  // No or Escape
+        case 1:                                   // No or Escape
           break;
         }
     }
