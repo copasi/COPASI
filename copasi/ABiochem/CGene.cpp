@@ -23,7 +23,7 @@ CGeneModifier::CGeneModifier()
   mK = 1.0;
 }
 
-CGeneModifier::CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K)
+CGeneModifier::CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
 {
   mModifier = modf;
   if ((type >= 0) && (type < 2))
@@ -31,6 +31,7 @@ CGeneModifier::CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K)
   else
     type = 0;
   mK = K > 0.0 ? K : 1.0;
+  mn = n > 0.0 ? n : 1.0;
 }
 
 CGeneModifier::~CGeneModifier()
@@ -49,6 +50,11 @@ C_INT32 CGeneModifier::getType(void)
 C_FLOAT64 CGeneModifier::getK(void)
 {
   return mK;
+}
+
+C_FLOAT64 CGeneModifier::getn(void)
+{
+  return mn;
 }
 void CGeneModifier::cleanup() {}
 
@@ -98,10 +104,10 @@ C_FLOAT64 CGene::getDegradationRate(void)
   return mDegradationRate;
 }
 
-void CGene::addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K)
+void CGene::addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
 {
   CGeneModifier *temp;
-  temp = new CGeneModifier(modf, type, K);
+  temp = new CGeneModifier(modf, type, K, n);
   mModifier.add(temp);
 }
 
@@ -110,9 +116,14 @@ C_INT32 CGene::getModifierType(C_INT32 n)
   return mModifier[n]->getType();
 }
 
-C_FLOAT64 CGene::getK(C_INT32 n)
+C_FLOAT64 CGene::getK(C_INT32 i)
 {
-  return mModifier[n]->getK();
+  return mModifier[i]->getK();
+}
+
+C_FLOAT64 CGene::getn(C_INT32 i)
+{
+  return mModifier[i]->getn();
 }
 
 void CGene::cleanup()

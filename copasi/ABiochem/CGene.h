@@ -30,9 +30,14 @@ class CGeneModifier
     C_INT32 mType;
 
     /**
-     *  Constant
+     *  Inhibition/activation constant
      */
     C_FLOAT64 mK;
+
+    /**
+     *  Hill coefficient
+     */
+    C_FLOAT64 mn;
 
   public:
 
@@ -47,7 +52,7 @@ class CGeneModifier
      *  @param type (0=Inhibition, 1=Activation).
      *  @param K positive value for effect strength.
      */
-    CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K);
+    CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n);
 
     /**
      *  Retrieves the pointer to the modifier
@@ -60,9 +65,14 @@ class CGeneModifier
     C_INT32 getType(void);
 
     /**
-     *  Retrieves the constant
+     *  Retrieves the inhibition/activation constant
      */
     C_FLOAT64 getK(void);
+
+    /**
+     *  Retrieves the Hill coefficient
+     */
+    C_FLOAT64 getn(void);
 
     /**
      *  Destructor
@@ -157,7 +167,7 @@ class CGene
     /**
      *  Add a new Modifier to this gene.
      */
-    void addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K);
+    void addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n);
 
     /**
      *  Retrieve the type of Modifier n.
@@ -165,9 +175,14 @@ class CGene
     C_INT32 getModifierType(C_INT32 n);
 
     /**
-     *  Retrieve the constant of Modifier n.
+     *  Retrieve the inhibition/activation constant of Modifier i.
      */
-    C_FLOAT64 getK(C_INT32 n);
+    C_FLOAT64 getK(C_INT32 i);
+
+    /**
+     *  Retrieve the Hill coefficient of Modifier i.
+     */
+    C_FLOAT64 getn(C_INT32 i);
 
     /**
      *  Retrieve the number of negative modifiers

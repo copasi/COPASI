@@ -56,20 +56,24 @@ void Erdos(C_INT32 n, C_INT32 k, CCopasiVector < CGene > &gene)
       gene[i]->setName(gn);
     }
   for (i = 0; i < n; i++)
-    for (j = 0; j < k; j++)
-      {
-        for (l = -1; l < 0; )
-          {
-            l = r250n(n);
-            for (m = 0; m < gene[i]->getModifierNumber(); m++)
-              if (gene[l] == gene[i]->getModifier(m))
-                {
-                  l = -1;
-                  break;
-                }
-          }
-        gene[i]->addModifier(gene[l], r250n(2), dr250()*10.0 + 1e-5);
-      }
+    {
+      for (j = 0; j < k; j++)
+        {
+          for (l = -1; l < 0; )
+            {
+              l = r250n(n);
+              for (m = 0; m < gene[i]->getModifierNumber(); m++)
+                if (gene[l] == gene[i]->getModifier(m))
+                  {
+                    l = -1;
+                    break;
+                  }
+            }
+          gene[i]->addModifier(gene[l], r250n(2), dr250()*100.0 + 1e-5, dr250()*6.0 + 0.1);
+        }
+      gene[i]->setRate(dr250()*9.99 + 1e-2);
+      gene[i]->setDegradationRate(gene[i]->getRate()*(dr250()*5.83 + 0.17));
+    }
 }
 
 void WriteDot(ofstream &fout, char *Title, CCopasiVector < CGene > &gene)
@@ -189,9 +193,7 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
           id2param.setValue(gene[i]->getK(j));
           react->getId2Parameters().add(id2param);
           id2param.setIdentifierName(strname2);
-          // for now all Hill coefficients are 1, later
-          // they should come from the CGene object
-          id2param.setValue(1.0);
+          id2param.setValue(gene[i]->getn(j));
           react->getId2Parameters().add(id2param);
         }
       model.addReaction(react);
@@ -293,6 +295,32 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
     }
 }
 
+void WriteGepasi(ofstream &fout, char *Title, CModel &model)
+{
+  string linein;
+  linein.reserve(100);
+  // first part of the file come from a template
+  ifstream fin("templategps");
+  getline(fin, linein);
+  do
+    {
+      fout << linein << endl;
+      getline(fin, linein);
+    }
+  while (linein.find_first_of("----") != 0);
+  // output the model
+  // model.saveold();
+  // last part also comes from the template
+  getline(fin, linein);
+  do
+    {
+      fout << linein << endl;
+      getline(fin, linein);
+    }
+  while (!fin.eof());
+  fin.close();
+}
+
 C_INT main(C_INT argc, char *argv[])
 {
   C_INT32 n, k, i, tot;
@@ -300,6 +328,7 @@ C_INT main(C_INT argc, char *argv[])
   char NetTitle[512];
   char strtmp[1024];
   CModel model;
+  ofstream fo;
 
   Copasi = new CGlobals;
   Copasi->setArguments(argc, argv);
@@ -321,14 +350,17 @@ C_INT main(C_INT argc, char *argv[])
       // create GraphViz file
       sprintf(NetTitle, "Net%03ld", i + 1);
       sprintf(strtmp, "%s.dot", NetTitle);
-      ofstream fo(strtmp);
+      fo.open(strtmp, ios_base::out);
       WriteDot(fo, NetTitle, GeneList);
       fo.close();
       // create COPASI model
       MakeModel(NetTitle, GeneList, n, k, model);
+      // save Gepasi model
+      sprintf(strtmp, "%s.gps", NetTitle);
+      fo.open(strtmp, ios_base::out);
+      WriteGepasi(fo, NetTitle, model);
+      fo.close();
       // cleanup model and vectors
-      CWriteConfig of("messy.gps");
-      model.save(of);
       model.cleanup();
       GeneList.cleanup();
     }
