@@ -23,9 +23,10 @@ class COptProblem
 
   private:
 
-    double * mParameterValues;        // pointer to parameters
+    double * mParameterValues;  // pointer to parameters
     int mParameterNum;          // the number of parameters
     double mBestValue;          // the best result of the problem
+    double * mBestParameters;   // the parameters leading the best result
     double * mParameterMin;     // the minimum values of parameters
     double * mParameterMax;     // the maximum values of parameters
 
