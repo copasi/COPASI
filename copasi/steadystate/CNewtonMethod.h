@@ -37,6 +37,7 @@ class CNewtonMethod : private CSteadyStateMethod
 
     C_FLOAT64 mFactor;
     C_FLOAT64 mResolution;
+    C_FLOAT64 mScaledResolution;
     C_INT32 mDimension;
     C_FLOAT64 mMaxrate;
     C_FLOAT64 * mX;
@@ -64,6 +65,14 @@ class CNewtonMethod : private CSteadyStateMethod
      *  Destructor.
      */
     ~CNewtonMethod();
+
+    /**
+     * Load a list of parameters
+     * @param "CReadConfig &" configBuffer
+     * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)
+     */
+    virtual void load(CReadConfig & configBuffer,
+                      CReadConfig::Mode mode = CReadConfig::SEARCH);
 
     /**
      * This instructs the method to calculate a the steady state

@@ -21,18 +21,10 @@ extern "C"
 
 /* clapack includes f2c.h which defines min and max. We need
    to remove the define since we use std::min and std::max */
-#ifdef min
-#undef min
-#endif
-
-#ifdef max
-#undef max
-#endif
-
-#ifdef WIN32
-#define min _cpp_min
-#define max _cpp_max
-#endif // WIN32
+#if (defined min && ! defined WIN32)
+# undef min
+# undef max
+#endif // min && ! WIN32
 
 CNewtonMethod::CNewtonMethod():
     CSteadyStateMethod(),
@@ -62,6 +54,75 @@ void CNewtonMethod::cleanup()
   pdelete(mIpiv);
 }
 
+void CNewtonMethod::load(CReadConfig & configBuffer,
+                         CReadConfig::Mode mode)
+{
+  if (configBuffer.getVersion() < "4.0")
+    {
+      C_FLOAT64 Dbl;
+      C_INT32 Int;
+      bool Bool;
+
+      configBuffer.getVariable("SSStrategy", "C_INT32", &Int, CReadConfig::LOOP);
+      switch (Int)
+        {
+        case 0:
+          setValue("Newton.UseNewton", 1);
+          setValue("Newton.UseIntegration", 1);
+          setValue("Newton.UseBackIntegration", 0);
+          break;
+
+        case 1:
+          setValue("Newton.UseNewton", 0);
+          setValue("Newton.UseIntegration", 1);
+          setValue("Newton.UseBackIntegration", 0);
+          break;
+
+        case 2:
+          setValue("Newton.UseNewton", 1);
+          setValue("Newton.UseIntegration", 0);
+          setValue("Newton.UseBackIntegration", 0);
+          break;
+
+        case 3:
+          setValue("Newton.UseNewton", 0);
+          setValue("Newton.UseIntegration", 0);
+          setValue("Newton.UseBackIntegration", 1);
+          break;
+
+        default:
+          fatalError();
+        }
+
+      configBuffer.getVariable("SSBackIntegration", "bool", &Bool);
+      if (Bool) setValue("Newton.UseBackIntegration", 1);
+
+      configBuffer.getVariable("NewtonLimit", "C_FLOAT64", &Dbl,
+                               CReadConfig::SEARCH);
+      setValue("Newton.IterationLimit", Dbl);
+
+      configBuffer.getVariable("SSResoltion", "C_FLOAT64", &Dbl);
+      setValue("Newton.Resolution", Dbl);
+
+      configBuffer.getVariable("RelativeTolerance", "C_FLOAT64", &Dbl);
+      setValue("Newton.LSODA.RelativeTolerance", Dbl);
+
+      configBuffer.getVariable("AbsoluteTolerance", "C_FLOAT64", &Dbl);
+      setValue("Newton.LSODA.AbsoluteTolerance", Dbl);
+
+      configBuffer.getVariable("AdamsMaxOrder", "C_FLOAT64", &Dbl);
+      setValue("Newton.LSODA.AdamsMaxOrder", Dbl);
+
+      configBuffer.getVariable("BDFMaxOrder", "C_FLOAT64", &Dbl);
+      setValue("Newton.LSODA.BDFMaxOrder", Dbl);
+
+      configBuffer.getVariable("DerivationFactor", "C_FLOAT64", &Dbl);
+      setValue("Newton.DerivationFactor", Dbl);
+    }
+  else
+    CMethodParameterList::load(configBuffer, mode);
+}
+
 CSteadyStateMethod::ReturnCode
 CNewtonMethod::process(CState & steadyState,
                        const CState & initialState)
@@ -85,6 +146,8 @@ CNewtonMethod::process(CState & steadyState,
   mIterationLimit = (C_INT32) getValue("Newton.IterationLimit");
   mFactor = getValue("Newton.DerivationFactor");
   mResolution = getValue("Newton.Resolution");
+  mScaledResolution =
+    mResolution * initialState.getModel()->getQuantity2NumberFactor();
 
   if (mUseIntegration || mUseBackIntegration)
     {
@@ -223,23 +286,15 @@ CNewtonMethod::processNewton (CStateX & steadyState,
 
   // Start the iterations
   C_INT32 info = 0;
-  char N = 'N';
+  char T = 'T'; /* difference between fortran's and c's matrix storrage */
   C_INT32 one = 1;
 
-  for (k = 0; k < mIterationLimit && mMaxrate > mResolution; k++)
+  for (k = 0; k < mIterationLimit && mMaxrate > mScaledResolution; k++)
     {
       memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
 
       steadyState.getJacobian(mJacobian, std::min(mFactor, mMaxrate),
-                              mResolution);
-
-      for (i = 0; i < mDimension; i++)
-        {
-          for (j = 0; j < mDimension; j++)
-;
-          //cout << "  " << mJacobian[i * mDimension + j];
-          //cout << endl;
-        }
+                              mScaledResolution);
 
       /* We use dgetrf_ and dgetrs_ to solve
          mJacobian * b = mH for b (the result is in mdxdt) */
@@ -337,7 +392,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
        *          = 0:  successful exit
        *          < 0:  if info = -i, the i-th argument had an illegal value
        */
-      dgetrs_(&N, &mDimension, &one, mJacobian.array(),
+      dgetrs_(&T, &mDimension, &one, mJacobian.array(),
               &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
 
       if (info)
@@ -360,7 +415,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,     /* fortran style vector */
+                           mdxdt.array() - 1,      /* fortran style vector */
                            1);
         }
 
@@ -372,7 +427,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
 
           if (isSteadyState())
             ReturnCode = CNewtonMethod::found;
-          else if (mMaxrate < mResolution)
+          else if (mMaxrate < mScaledResolution)
             ReturnCode = CNewtonMethod::notFound;
           else
             ReturnCode = CNewtonMethod::dampingLimitExceeded;
@@ -388,7 +443,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
 
   if (isSteadyState())
     ReturnCode = CNewtonMethod::found;
-  else if (mMaxrate < mResolution)
+  else if (mMaxrate < mScaledResolution)
     ReturnCode = CNewtonMethod::notFound;
   else
     ReturnCode = CNewtonMethod::iterationLimitExceeded;
@@ -417,10 +472,10 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,     /* fortran style vector */
+                   mdxdt.array() - 1,      /* fortran style vector */
                    1);
 
-  if (mMaxrate > mResolution)
+  if (mMaxrate > mScaledResolution)
     return false;
 
   for (i = 0; i < mDimension; i++)
