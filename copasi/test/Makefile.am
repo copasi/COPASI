@@ -47,17 +47,19 @@ LDADD = \
         ../trajectory/libtrajectory.a \
         ../utilities/libutilities.a
 
-#SUBDIRS = \
-#        function \
-#        output \
-#        model \
-#        steadystate \
-#        trajectory \
-#        utilities
+SUBDIRS = \
+	elementaryFluxModes \
+	function \
+	model \
+	optimization \
+	output \
+	steadystate \
+	trajectory \
+	utilities
 
-#all-recursive install-data-recursive install-exec-recursive \
-#installdirs-recursive install-recursive uninstall-recursive  \
-#check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
+all-recursive install-data-recursive install-exec-recursive \
+installdirs-recursive install-recursive uninstall-recursive  \
+check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
 
-#$(SUBDIRS): ../
-#	@test -d $@ || ln -s ../$@ $@
+$(SUBDIRS): ../
+	@test -d $@ || ln -s ../$@ $@

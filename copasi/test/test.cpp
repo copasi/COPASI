@@ -21,7 +21,7 @@
 #include "function/function.h"
 #include "trajectory/trajectory.h"
 #include "steadystate/steadystate.h"
-//#include "optimization/optimization.h"
+#include "optimization/optimization.h"
 #include "utilities/CGlobals.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "tnt/tnt.h"
@@ -51,7 +51,7 @@ C_INT32  TestStochDirectMethod(void);
 C_INT32  TestNewton(void);
 C_INT32  TestSSSolution(void);
 C_INT32  TestEigen(void);
-//C_INT32  TestOptimization(void);     //yohe: new
+C_INT32  TestOptimization(void);     //yohe: new
 C_INT32  TestElementaryFluxMode(void);
 
 C_INT32  ConvertFunctionDB(void);

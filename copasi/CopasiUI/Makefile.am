@@ -2,57 +2,37 @@
 bin_PROGRAMS = CopasiUI
 
 CopasiUI_SOURCES = \
-	CompartmentsWidget.cpp \
-	listviews.cpp \
-	CompartmentsWidget1.cpp \
 	main.cpp \
-	MetabolitesWidget.cpp \
-	moc_CompartmentsWidget.cpp \
-	MetabolitesWidget1.cpp \
-	moc_CompartmentsWidget1.cpp \
-	moc_MetabolitesWidget.cpp \
-	MoietyWidget.cpp \
-	moc_MetabolitesWidget1.cpp \
-	MoietyWidget1.cpp \
 	MyTable.cpp \
-	moc_MoietyWidget.cpp \
 	Observer.cpp \
-	moc_MoietyWidget1.cpp \
-	ReactionsWidget.cpp \
-	moc_ReactionsWidget.cpp \
-	ReactionsWidget1.cpp \
-	moc_ReactionsWidget1.cpp \
 	Subject.cpp \
-	moc_copasiui3window.cpp \
-	copasiui3window.cpp \
-	moc_listviews.cpp
-
-# matrix_SOURCES = matrix.cpp
+	CompartmentsWidget.cpp 	moc_CompartmentsWidget1.cpp \
+	CompartmentsWidget1.cpp	moc_CompartmentsWidget.cpp \
+	MetabolitesWidget.cpp	moc_MetabolitesWidget.cpp \
+	MetabolitesWidget1.cpp	moc_MetabolitesWidget1.cpp \
+	MoietyWidget.cpp	moc_MoietyWidget.cpp \
+	MoietyWidget1.cpp	moc_MoietyWidget1.cpp \
+	ReactionsWidget.cpp	moc_ReactionsWidget.cpp \
+	ReactionsWidget1.cpp	moc_ReactionsWidget1.cpp \
+	copasiui3window.cpp	moc_copasiui3window.cpp \
+	listviews.cpp		moc_listviews.cpp
 
 EXTRA_DIST = \
-	CompartmentsWidget.h	CompartmentsWidget.cpp \
-	Observer.h Observer.cpp \
-	moc_MetabolitesWidget.cpp \
-	CompartmentsWidget.h	CompartmentsWidget1.cpp \
-	ReactionsWidget.h	ReactionsWidget.cpp \
-	moc_MoietiesWidget.cpp \
-	MetabolitesWidget.h	MetabolitesWidget.cpp \
-	ReactionsWidget1.h	ReactionsWidget1.cpp \
-	moc_MoietyWidget.cpp \
-	MetabolitesWidget1.h	MetabolitesWidget1.cpp \
-	Subject.h	Subject.cpp \
-	moc_ReactionsWidget.cpp \
-	MoietiesWidget.h		MoietiesWidget.cpp \
-	copasiui3window.h	copasiui3window.cpp \
-	moc_ReactionsWidget1.cpp \
-	MoietyWidget.h 		MoietyWidget.cpp \
-	listviews.h listviews.cpp \
-	moc_copasiui3window.cpp \
-	MoietyWidget1.h 		MoietyWidget1.cpp \
 	main.cpp \
-	moc_listviews.cpp \
-	MyTable.h			MyTable.cpp \
-	moc_CompartmentsWidget.cpp
+	Tree.h \
+	MyTable.h MyTable.cpp \
+	Observer.h Observer.cpp \
+	Subject.h Subject.cpp \
+	CompartmentsWidget.h CompartmentsWidget.cpp moc_CompartmentsWidget1.cpp \
+	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp \
+	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp \
+	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp \
+	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp \
+	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp \
+	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp \
+	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp \
+	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
+	listviews.h listviews.cpp moc_listviews.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 bin_PROGRAMS = CopasiUI
@@ -61,52 +41,57 @@ bin_PROGRAMS = CopasiUI
 INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
-LIBS = \
+LIBS = $(LIB_QT) \
 	-lelementaryFluxModes \
-	-lfunction \
 	-lmodel \
+	-lfunction \
 	-loutput \
 	-lsteadystate \
 	-ltrajectory \
 	-lutilities \
 	-loutput \
-	-lqt \
-	-lqui \
-	-lmkl_lapack \
-	-lmkl_p3 \
-	-lg2c \
-	-lpthread \
-	-lXft \
-	-lfreetype \
-	-lXrender \
-	-lSM \
-	-lICE \
-	-lXinerama \
-	-lXext \
-	-lX11 \
-	-ldl
+	-lfunction \
+	-lmodel \
+	-llapack \
+	-lblas \
+	-lF77 \
+	-lfl
+
+#	-lqt \
+#	-lqui \
+#	-lXft \
+#	-lfreetype \
+#	-lXrender \
+#	-lSM \
+#	-lICE \
+#	-lXinerama \
+#	-lXext \
+#	-lX11 \
+#	-ldl
+
+#	-lmkl_lapack \
+#	-lmkl_p3 \
+#	-lg2c \
+#	-lpthread \
 
 # the library search path.
-LDFLAGS = -all-static \
+LDFLAGS = $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
 	-L../function \
 	-L../model \
 	-L../output \
 	-L../steadystate \
 	-L../trajectory \
-	-L../utilities \
-	-L/usr/X11R6/lib \
-	-L$(QTDIR)/lib \
-	$(USER_LDFLAGS)
+	-L../utilities
 
-LDADD = \
-	../elementaryFluxModes/libelementaryFluxModes.a \
-	../function/libfunction.a \
-	../model/libmodel.a \
-	../output/liboutput.a \
-	../steadystate/libsteadystate.a \
-	../trajectory/libtrajectory.a \
-	../utilities/libutilities.a
+#LDADD = \
+#	../elementaryFluxModes/libelementaryFluxModes.a \
+#	../function/libfunction.a \
+#	../model/libmodel.a \
+#	../output/liboutput.a \
+#	../steadystate/libsteadystate.a \
+#	../trajectory/libtrajectory.a \
+#	../utilities/libutilities.a
 
 #SUBDIRS = \
 #        function \

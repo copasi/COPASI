@@ -11,10 +11,13 @@ copasi_LDADD = \
 	./utilities/libutilities.a 
 
 SUBDIRS = \
+	CopasiUI \
+	commandline\
 	elementaryFluxModes \
 	function \
 	output \
 	model \
+	optimization \
 	steadystate \
 	trajectory \
 	utilities \

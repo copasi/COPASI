@@ -1,4 +1,5 @@
 SUBDIRS = \
+	commandline \
 	elementaryFluxModes \
 	function \
 	output \

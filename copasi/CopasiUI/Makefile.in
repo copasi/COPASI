@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -189,26 +189,38 @@ x_libraries = @x_libraries@
 ####### kdevelop will overwrite this part!!! (end)############
 bin_PROGRAMS = CopasiUI
 
-CopasiUI_SOURCES =  	CompartmentsWidget.cpp 	listviews.cpp 	CompartmentsWidget1.cpp 	main.cpp 	MetabolitesWidget.cpp 	moc_CompartmentsWidget.cpp 	MetabolitesWidget1.cpp 	moc_CompartmentsWidget1.cpp 	moc_MetabolitesWidget.cpp 	MoietyWidget.cpp 	moc_MetabolitesWidget1.cpp 	MoietyWidget1.cpp 	MyTable.cpp 	moc_MoietyWidget.cpp 	Observer.cpp 	moc_MoietyWidget1.cpp 	ReactionsWidget.cpp 	moc_ReactionsWidget.cpp 	ReactionsWidget1.cpp 	moc_ReactionsWidget1.cpp 	Subject.cpp 	moc_copasiui3window.cpp 	copasiui3window.cpp 	moc_listviews.cpp
+CopasiUI_SOURCES =  	main.cpp 	MyTable.cpp 	Observer.cpp 	Subject.cpp 	CompartmentsWidget.cpp 	moc_CompartmentsWidget1.cpp 	CompartmentsWidget1.cpp	moc_CompartmentsWidget.cpp 	MetabolitesWidget.cpp	moc_MetabolitesWidget.cpp 	MetabolitesWidget1.cpp	moc_MetabolitesWidget1.cpp 	MoietyWidget.cpp	moc_MoietyWidget.cpp 	MoietyWidget1.cpp	moc_MoietyWidget1.cpp 	ReactionsWidget.cpp	moc_ReactionsWidget.cpp 	ReactionsWidget1.cpp	moc_ReactionsWidget1.cpp 	copasiui3window.cpp	moc_copasiui3window.cpp 	listviews.cpp		moc_listviews.cpp
 
 
-# matrix_SOURCES = matrix.cpp
-
-EXTRA_DIST =  	CompartmentsWidget.h	CompartmentsWidget.cpp 	Observer.h Observer.cpp 	moc_MetabolitesWidget.cpp 	CompartmentsWidget.h	CompartmentsWidget1.cpp 	ReactionsWidget.h	ReactionsWidget.cpp 	moc_MoietiesWidget.cpp 	MetabolitesWidget.h	MetabolitesWidget.cpp 	ReactionsWidget1.h	ReactionsWidget1.cpp 	moc_MoietyWidget.cpp 	MetabolitesWidget1.h	MetabolitesWidget1.cpp 	Subject.h	Subject.cpp 	moc_ReactionsWidget.cpp 	MoietiesWidget.h		MoietiesWidget.cpp 	copasiui3window.h	copasiui3window.cpp 	moc_ReactionsWidget1.cpp 	MoietyWidget.h 		MoietyWidget.cpp 	listviews.h listviews.cpp 	moc_copasiui3window.cpp 	MoietyWidget1.h 		MoietyWidget1.cpp 	main.cpp 	moc_listviews.cpp 	MyTable.h			MyTable.cpp 	moc_CompartmentsWidget.cpp
+EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 	Subject.h Subject.cpp 	CompartmentsWidget.h CompartmentsWidget.cpp moc_CompartmentsWidget1.cpp 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp 	listviews.h listviews.cpp moc_listviews.cpp
 
 
 # set the include path found by configure
 INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
-LIBS =  	-lelementaryFluxModes 	-lfunction 	-lmodel 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lqt 	-lqui 	-lmkl_lapack 	-lmkl_p3 	-lg2c 	-lpthread 	-lXft 	-lfreetype 	-lXrender 	-lSM 	-lICE 	-lXinerama 	-lXext 	-lX11 	-ldl
+LIBS = $(LIB_QT) 	-lelementaryFluxModes 	-lmodel 	-lfunction 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lfunction 	-lmodel 	-llapack 	-lblas 	-lF77 	-lfl
 
+
+#	-lqt \
+#	-lqui \
+#	-lXft \
+#	-lfreetype \
+#	-lXrender \
+#	-lSM \
+#	-lICE \
+#	-lXinerama \
+#	-lXext \
+#	-lX11 \
+#	-ldl
+
+#	-lmkl_lapack \
+#	-lmkl_p3 \
+#	-lg2c \
+#	-lpthread \
 
 # the library search path.
-LDFLAGS = -all-static 	-L../elementaryFluxModes 	-L../function 	-L../model 	-L../output 	-L../steadystate 	-L../trajectory 	-L../utilities 	-L/usr/X11R6/lib 	-L$(QTDIR)/lib 	$(USER_LDFLAGS)
-
-
-LDADD =  	../elementaryFluxModes/libelementaryFluxModes.a 	../function/libfunction.a 	../model/libmodel.a 	../output/liboutput.a 	../steadystate/libsteadystate.a 	../trajectory/libtrajectory.a 	../utilities/libutilities.a
+LDFLAGS = $(all_libraries) $(USER_LDFLAGS) 	-L../elementaryFluxModes 	-L../function 	-L../model 	-L../output 	-L../steadystate 	-L../trajectory 	-L../utilities
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -219,23 +231,20 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
-CopasiUI_OBJECTS =  CompartmentsWidget.$(OBJEXT) listviews.$(OBJEXT) \
-CompartmentsWidget1.$(OBJEXT) main.$(OBJEXT) \
-MetabolitesWidget.$(OBJEXT) moc_CompartmentsWidget.$(OBJEXT) \
-MetabolitesWidget1.$(OBJEXT) moc_CompartmentsWidget1.$(OBJEXT) \
-moc_MetabolitesWidget.$(OBJEXT) MoietyWidget.$(OBJEXT) \
-moc_MetabolitesWidget1.$(OBJEXT) MoietyWidget1.$(OBJEXT) \
-MyTable.$(OBJEXT) moc_MoietyWidget.$(OBJEXT) Observer.$(OBJEXT) \
+CopasiUI_OBJECTS =  main.$(OBJEXT) MyTable.$(OBJEXT) Observer.$(OBJEXT) \
+Subject.$(OBJEXT) CompartmentsWidget.$(OBJEXT) \
+moc_CompartmentsWidget1.$(OBJEXT) CompartmentsWidget1.$(OBJEXT) \
+moc_CompartmentsWidget.$(OBJEXT) MetabolitesWidget.$(OBJEXT) \
+moc_MetabolitesWidget.$(OBJEXT) MetabolitesWidget1.$(OBJEXT) \
+moc_MetabolitesWidget1.$(OBJEXT) MoietyWidget.$(OBJEXT) \
+moc_MoietyWidget.$(OBJEXT) MoietyWidget1.$(OBJEXT) \
 moc_MoietyWidget1.$(OBJEXT) ReactionsWidget.$(OBJEXT) \
 moc_ReactionsWidget.$(OBJEXT) ReactionsWidget1.$(OBJEXT) \
-moc_ReactionsWidget1.$(OBJEXT) Subject.$(OBJEXT) \
-moc_copasiui3window.$(OBJEXT) copasiui3window.$(OBJEXT) \
+moc_ReactionsWidget1.$(OBJEXT) copasiui3window.$(OBJEXT) \
+moc_copasiui3window.$(OBJEXT) listviews.$(OBJEXT) \
 moc_listviews.$(OBJEXT)
 CopasiUI_LDADD = $(LDADD)
-CopasiUI_DEPENDENCIES =  ../elementaryFluxModes/libelementaryFluxModes.a \
-../function/libfunction.a ../model/libmodel.a ../output/liboutput.a \
-../steadystate/libsteadystate.a ../trajectory/libtrajectory.a \
-../utilities/libutilities.a
+CopasiUI_DEPENDENCIES = 
 CopasiUI_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -388,7 +397,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -523,6 +532,15 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+#LDADD = \
+#	../elementaryFluxModes/libelementaryFluxModes.a \
+#	../function/libfunction.a \
+#	../model/libmodel.a \
+#	../output/liboutput.a \
+#	../steadystate/libsteadystate.a \
+#	../trajectory/libtrajectory.a \
+#	../utilities/libutilities.a
 
 #SUBDIRS = \
 #        function \
