@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/10 16:14:37 $
+   $Author: shoops $ 
+   $Date: 2004/12/06 20:01:25 $
    End CVS Header */
 
 /**
@@ -100,25 +100,37 @@ bool CCopasiXML::load(std::istream & is)
       if (mpIstream->eof()) done = true;
       if (mpIstream->fail() && !done) fatalError();
 
-      Parser.parse(pBuffer, -1, done);
+      if (!Parser.parse(pBuffer, -1, done))
+        {
+          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
+                                 Parser.getCurrentLineNumber(),
+                                 Parser.getCurrentColumnNumber(),
+                                 Parser.getErrorString());
+          done = true;
+          success = false;
+        }
     }
   delete [] pBuffer;
 #undef BUFFER_SIZE
 
-  mpFunctionList = Parser.getFunctionList();
-  mpModel = Parser.getModel();
-  mpReportList = Parser.getReportList();
-  mpTaskList = Parser.getTaskList();
-  mpPlotList = Parser.getPlotList();
-  if (mpPlotList)
+  if (success)
     {
-      //std::cout << "Number of Plots: " << mpPlotList->size() << std::endl;
-      unsigned int count;
-      for (count = 0; count < mpPlotList->size(); count++)
+      mpFunctionList = Parser.getFunctionList();
+      mpModel = Parser.getModel();
+      mpReportList = Parser.getReportList();
+      mpTaskList = Parser.getTaskList();
+      mpPlotList = Parser.getPlotList();
+      if (mpPlotList)
         {
-          //std::cout << "Number of PlotItems for plot @" << (*mpPlotList)[count] << ": " << (*mpPlotList)[count]->getItems().size() << std::endl;
+          //std::cout << "Number of Plots: " << mpPlotList->size() << std::endl;
+          unsigned int count;
+          for (count = 0; count < mpPlotList->size(); count++)
+            {
+              //std::cout << "Number of PlotItems for plot @" << (*mpPlotList)[count] << ": " << (*mpPlotList)[count]->getItems().size() << std::endl;
+            }
         }
     }
+
   return success;
 }
 
