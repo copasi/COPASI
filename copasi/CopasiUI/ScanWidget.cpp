@@ -172,6 +172,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   scrollview = new ScanScrollView(this, 0, 0);
   scrollview->setVScrollBarMode(QScrollView::Auto);
+  scrollview->setHScrollBarMode(QScrollView::Auto);
   scrollview->setSelectedList(&selectedList);
   Layout8->addWidget(scrollview);
 
@@ -535,6 +536,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   selectedList.push_back(newTitleBar);
 
   parameterTable->setObject(pObject);
+
   if (scrollview->visibleWidth() >= parameterTable->minimumSizeHint().width())
     parameterTable->setFixedWidth(scrollview->visibleWidth());
   else
