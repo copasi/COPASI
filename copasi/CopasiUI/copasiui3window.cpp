@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.108 $
+   $Revision: 1.109 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/11 15:58:58 $
+   $Author: anuragr $ 
+   $Date: 2004/11/16 21:25:43 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -33,6 +33,7 @@
 #include "report/CKeyFactory.h"
 #include "SliderDialog.h"
 
+#include "./icons/filenew.xpm"
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"
 #include "./icons/fileprint.xpm"
@@ -173,14 +174,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                            // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                             // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                            // Discard clicked or Alt+D pressed
+        case 1:                                             // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                            // Cancel clicked or Escape pressed
+        case 2:                                             // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -235,14 +236,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                            // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                             // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                            // Discard clicked or Alt+D pressed
+            case 1:                                             // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                            // Cancel clicked or Escape pressed
+            case 2:                                             // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -357,14 +358,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                            // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                             // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                            // Discard clicked or Alt+D pressed
+        case 1:                                             // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                            // Cancel clicked or Escape pressed
+        case 2:                                             // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -386,14 +387,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                            // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                             // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                            // Discard clicked or Alt+D pressed
+            case 1:                                             // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                            // Cancel clicked or Escape pressed
+            case 2:                                             // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -451,33 +452,38 @@ void CopasiUI3Window::aboutQt()
 void CopasiUI3Window::createToolBar()
 {
   QToolBar *tbMain = new QToolBar(this, "MainToolBar");
+  const int numofIcons = 3;
 
   // put something in it
-  QPixmap icon[2] = {fileopen, filesave};
-  const char* iconName[2] = {"Open", "Save"};
-  const char* slotFileName[2] = {SLOT(slotFileOpen()), SLOT(slotFileSave())};
+  QPixmap icon[numofIcons ] = {filenew, fileopen, filesave};
+  const char* iconName[numofIcons ] = {"New", "Open", "Save"};
+  const char* slotFileName[numofIcons ] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave())};
 
-  const char* toolTip[2];
+  const char* toolTip[numofIcons ];
 
-  toolTip[0] = "Click this button to open a <em>new file</em>. <br>"
+  toolTip[0] = "Click this button to create a <em>new file</em>. <br>"
+               "You can also select the <b>New</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[1] = "Click this button to open a <em>new file</em>. <br>"
                "You can also select the <b>Open</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[1] = "<p>Click this button to save the file you "
+  toolTip[2] = "<p>Click this button to save the file you "
                "are editing. You will be prompted for a file name.\n"
                "You can also select the <b>Save</b> command "
                "from the <b>File</b> menu.</p>";
 
   QToolButton* toolb;
   int j;
-  for (j = 0; j < 2; j++)
+  for (j = 0; j < numofIcons; j++)
     {
       toolb = new QToolButton(icon[j], iconName[j], QString::null,
                               this, slotFileName[j], tbMain);
 
       QWhatsThis::add(toolb, toolTip[j]);
 
-      if (j == 1)
+      if (j == numofIcons - 1)
         msave_button = toolb;
     }
 
@@ -497,11 +503,11 @@ void CopasiUI3Window::createToolBar()
 void CopasiUI3Window::createMenuBar()
 {
   //modified on 5th feb : Ankur (left for further modification...later
-  QPixmap icon[7] = {fileopen, fileopen, filesave, filesave, fileopen, filesave, fileopen};
+  QPixmap icon[7] = {filenew, fileopen, filesave, filesave, fileopen, filesave, fileopen};
   const char* toolTip[8];
 
-  toolTip[0] = "Click this button to open a <em>new file</em>. <br>"
-               "You can also select the <b>Open</b> command "
+  toolTip[0] = "Click this button to create a <em>new file</em>. <br>"
+               "You can also select the <b>New</b> command "
                "from the <b>File</b> menu.</p>";
 
   toolTip[1] = "Click this button to open a <em>new file</em>. <br>"
@@ -622,14 +628,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                            // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                             // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                            // Discard clicked or Alt+D pressed
+            case 1:                                             // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                            // Cancel clicked or Escape pressed
+            case 2:                                             // Cancel clicked or Escape pressed
               return;
               break;
             }
