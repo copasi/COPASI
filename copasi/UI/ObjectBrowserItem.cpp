@@ -22,7 +22,10 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
           pTmp = pTmp->pNext;
         }
       if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
-        pBrowserObject = pTmp->pItem->getObject();
+        {
+          pBrowserObject = pTmp->pItem->getObject();
+          setChild(pTmp->pItem->child());
+        }
       else
         {
           browserObject* newBrowserObject = new browserObject();
@@ -63,7 +66,10 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
           pTmp = pTmp->pNext;
         }
       if (pTmp && pTmp->pItem->getObject()->pCopasiObject == mObject) //exist already in list
-        pBrowserObject = pTmp->pItem->getObject();
+        {
+          pBrowserObject = pTmp->pItem->getObject();
+          setChild(pTmp->pItem->child());
+        }
       else
         {
           browserObject* newBrowserObject = new browserObject();
