@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/09 14:48:34 $
+   $Date: 2004/01/09 21:24:42 $
    End CVS Header */
 
 /**
@@ -442,7 +442,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       else
         mCommon.pFunctionList->add(mCommon.pFunction, true);
 
-      mCommon.KeyMap[Key] = mCommon.pFunction->getKey();
+      mCommon.KeyMap.addFix(Key , mCommon.pFunction);
 
       break;
 
@@ -774,8 +774,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
 
       if (mCommon.mExistingFunction)
         {
-          mCommon.KeyMap[Key] =
-            mCommon.pFunction->getParameters()[Name]->getKey();
+          mCommon.KeyMap.addFix(Key, mCommon.pFunction->getParameters()[Name]);
         }
       else
         {
@@ -789,7 +788,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
             pParm->setType(CFunctionParameter::VFLOAT64);
 
           mCommon.pFunction->getParameters().add(pParm, true);
-          mCommon.KeyMap[Key] = pParm->getKey();
+          mCommon.KeyMap.addFix(Key, pParm);
         }
       break;
 
@@ -876,7 +875,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
 
       if (!mCommon.pModel) mCommon.pModel = new CModel();
-      mCommon.KeyMap[Key] = mCommon.pModel->getKey();
+      mCommon.KeyMap.addFix(Key, mCommon.pModel);
       mCommon.pModel->setTitle(Name);
       mCommon.pModel->setTimeUnit(TimeUnit);
       mCommon.pModel->setVolumeUnit(VolumeUnit);
@@ -1143,7 +1142,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
 
       pCompartment = new CCompartment();
-      mCommon.KeyMap[Key] = pCompartment->getKey();
+      mCommon.KeyMap.addFix(Key, pCompartment);
       pCompartment->setName(Name);
 
       mCommon.pModel->getCompartments().add(pCompartment, true);
@@ -1266,7 +1265,6 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
   const char * status;
   CMetab::Status Status;
   const char * StateVariable;
-  std::map< std::string, std::string >::const_iterator CompartmentKey;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -1283,15 +1281,12 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
 
       pMetabolite = new CMetab();
-      mCommon.KeyMap[Key] = pMetabolite->getKey();
+      mCommon.KeyMap.addFix(Key, pMetabolite);
       pMetabolite->setName(Name);
       pMetabolite->setStatus(Status);
 
-      CompartmentKey = mCommon.KeyMap.find(Compartment);
-      if (CompartmentKey == mCommon.KeyMap.end()) fatalError();
-
       pCompartment =
-        dynamic_cast< CCompartment* >(GlobalKeys.get(CompartmentKey->second));
+        dynamic_cast< CCompartment* >(mCommon.KeyMap.get(Compartment));
       if (!pCompartment) fatalError();
 
       pCompartment->addMetabolite(pMetabolite);
@@ -1423,7 +1418,6 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
   const char * Compartment; // Default Compartment_00
   const char * reversible;
   bool Reversible;
-  std::map< std::string, std::string >::const_iterator CompartmentKey;
 
   mCurrentElement++; /* We should always be on the next element */
   mpCurrentHandler = NULL;
@@ -1441,17 +1435,14 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       Reversible = mParser.toBool(reversible);
 
       mCommon.pReaction = new CReaction();
-      mCommon.KeyMap[Key] = mCommon.pReaction->getKey();
+      mCommon.KeyMap.addFix(Key, mCommon.pReaction);
       mCommon.pReaction->setName(Name);
       mCommon.pReaction->setReversible(Reversible);
 
       if (strcmp(Compartment, "Compartment_00"))
         {
-          CompartmentKey = mCommon.KeyMap.find(Compartment);
-          if (CompartmentKey == mCommon.KeyMap.end()) fatalError();
-
           pCompartment =
-            dynamic_cast< CCompartment* >(GlobalKeys.get(CompartmentKey->second));
+            dynamic_cast< CCompartment* >(mCommon.KeyMap.get(Compartment));
           if (!pCompartment) fatalError();
 
           mCommon.pReaction->setCompartment(pCompartment);
@@ -1653,8 +1644,7 @@ void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Metabolite;
-  std::map< std::string, std::string >::const_iterator MetaboliteKey;
-  //CMetab * pMetabolite;
+  CMetab * pMetabolite;
 
   const char * Stoichiometry;
 
@@ -1667,10 +1657,10 @@ void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
       Metabolite = mParser.getAttributeValue("metabolite", papszAttrs);
       Stoichiometry = mParser.getAttributeValue("stoichiometry", papszAttrs);
 
-      MetaboliteKey = mCommon.KeyMap.find(Metabolite);
-      if (MetaboliteKey == mCommon.KeyMap.end()) fatalError();
+      pMetabolite = dynamic_cast< CMetab * >(mCommon.KeyMap.get(Metabolite));
+      if (!pMetabolite) fatalError();
 
-      mCommon.pReaction->addSubstrate(MetaboliteKey->second,
+      mCommon.pReaction->addSubstrate(pMetabolite->getKey(),
                                       atof(Stoichiometry));
       break;
 
@@ -1784,8 +1774,7 @@ void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Metabolite;
-  std::map< std::string, std::string >::const_iterator MetaboliteKey;
-  //CMetab * pMetabolite;
+  CMetab * pMetabolite;
 
   const char * Stoichiometry;
 
@@ -1798,10 +1787,11 @@ void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
       Metabolite = mParser.getAttributeValue("metabolite", papszAttrs);
       Stoichiometry = mParser.getAttributeValue("stoichiometry", papszAttrs);
 
-      MetaboliteKey = mCommon.KeyMap.find(Metabolite);
-      if (MetaboliteKey == mCommon.KeyMap.end()) fatalError();
+      pMetabolite = dynamic_cast< CMetab * >(mCommon.KeyMap.get(Metabolite));
+      if (!pMetabolite) fatalError();
 
-      mCommon.pReaction->addProduct(MetaboliteKey->second, atof(Stoichiometry));
+      mCommon.pReaction->addProduct(pMetabolite->getKey(),
+                                    atof(Stoichiometry));
       break;
 
     default:
@@ -1914,8 +1904,7 @@ void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Metabolite;
-  std::map< std::string, std::string >::const_iterator MetaboliteKey;
-  //CMetab * pMetabolite;
+  CMetab * pMetabolite;
 
   const char * Stoichiometry;
 
@@ -1928,10 +1917,10 @@ void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
       Metabolite = mParser.getAttributeValue("metabolite", papszAttrs);
       Stoichiometry = mParser.getAttributeValue("stoichiometry", papszAttrs);
 
-      MetaboliteKey = mCommon.KeyMap.find(Metabolite);
-      if (MetaboliteKey == mCommon.KeyMap.end()) fatalError();
+      pMetabolite = dynamic_cast< CMetab * >(mCommon.KeyMap.get(Metabolite));
+      if (!pMetabolite) fatalError();
 
-      mCommon.pReaction->addModifier(MetaboliteKey->second,
+      mCommon.pReaction->addModifier(pMetabolite->getKey(),
                                      atof(Stoichiometry));
       break;
 
@@ -2064,8 +2053,8 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
                                    CCopasiParameter::DOUBLE,
                                    (C_FLOAT64) atof(Value));
 
-      mCommon.KeyMap[Key] =
-        mCommon.pReaction->getParameters().getParameter(Name)->getKey();
+      mCommon.KeyMap.addFix(Key,
+                            mCommon.pReaction->getParameters().getParameter(Name));
 
       break;
 
@@ -2112,7 +2101,6 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Function;
-  std::map< std::string, std::string >::const_iterator FunctionKey;
   CFunction * pFunction;
 
   mCurrentElement++; /* We should always be on the next element */
@@ -2124,11 +2112,8 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
 
       Function = mParser.getAttributeValue("function", papszAttrs);
 
-      FunctionKey = mCommon.KeyMap.find(Function);
-      if (FunctionKey == mCommon.KeyMap.end()) fatalError();
-
       pFunction =
-        dynamic_cast< CFunction* >(GlobalKeys.get(FunctionKey->second));
+        dynamic_cast< CFunction* >(mCommon.KeyMap.get(Function));
       if (!pFunction) fatalError();
 
       mCommon.pReaction->setFunction(pFunction);
@@ -2261,7 +2246,6 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * FunctionParameter;
-  std::map< std::string, std::string >::const_iterator FunctionParameterKey;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -2272,11 +2256,9 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
 
       FunctionParameter =
         mParser.getAttributeValue("functionParameter", papszAttrs);
-      FunctionParameterKey = mCommon.KeyMap.find(FunctionParameter);
-      if (FunctionParameterKey == mCommon.KeyMap.end()) fatalError();
 
       mpFunctionParameter =
-        dynamic_cast< CFunctionParameter* >(GlobalKeys.get(FunctionParameterKey->second));
+        dynamic_cast< CFunctionParameter* >(mCommon.KeyMap.get(FunctionParameter));
       if (!mpFunctionParameter) fatalError();
 
       mCommon.SourceParameterKeys.clear();
@@ -2352,8 +2334,9 @@ void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
   mCurrentElement++; /* We should always be on the next element */
 
   const char * Reference;
-  std::map< std::string, std::string >::const_iterator ReferenceKey;
-
+  CCopasiObject * pObject;
+  CCopasiParameter * pParameter;
+  CMetab * pMetabolite;
   switch (mCurrentElement)
     {
     case SourceParameter:
@@ -2361,10 +2344,15 @@ void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
 
       Reference =
         mParser.getAttributeValue("reference", papszAttrs);
-      ReferenceKey = mCommon.KeyMap.find(Reference);
-      if (ReferenceKey == mCommon.KeyMap.end()) fatalError();
 
-      mCommon.SourceParameterKeys.push_back(ReferenceKey->second);
+      pObject = mCommon.KeyMap.get(Reference);
+
+      if ((pParameter = dynamic_cast< CCopasiParameter * >(pObject)))
+        mCommon.SourceParameterKeys.push_back(pParameter->getKey());
+      else if ((pMetabolite = dynamic_cast< CMetab * >(pObject)))
+        mCommon.SourceParameterKeys.push_back(pMetabolite->getKey());
+      else fatalError();
+
       break;
 
     default:
@@ -2480,8 +2468,13 @@ void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszNa
 {
   const char * Key;
   const char * ObjectReference;
-  std::map< std::string, std::string >::const_iterator ObjectKey;
-  std::pair< std::string, std::string > Map;
+  CCopasiObject * pObject;
+  CMetab * pMetabolite;
+  CCompartment * pCompartment;
+  CModel * pModel;
+
+  //  std::map< std::string, std::string >::const_iterator ObjectKey;
+  //  std::pair< std::string, std::string > Map;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -2494,10 +2487,15 @@ void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszNa
       ObjectReference = mParser.getAttributeValue("objectReference",
                         papszAttrs);
 
-      ObjectKey = mCommon.KeyMap.find(ObjectReference);
-      if (ObjectKey == mCommon.KeyMap.end()) fatalError();
+      pObject = mCommon.KeyMap.get(ObjectReference);
 
-      mCommon.StateVariableList.push_back(ObjectKey->second);
+      if ((pMetabolite = dynamic_cast< CMetab * >(pObject)))
+        mCommon.StateVariableList.push_back(pMetabolite->getKey());
+      else if ((pCompartment = dynamic_cast< CCompartment * >(pObject)))
+        mCommon.StateVariableList.push_back(pCompartment->getKey());
+      else if ((pModel = dynamic_cast< CModel * >(pObject)))
+        mCommon.StateVariableList.push_back(pModel->getKey());
+      else fatalError();
 
       break;
 
@@ -2754,7 +2752,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
       /* We have a new report and add it to the list */
       mCommon.pReportList->add(mCommon.pReport, true);
-      mCommon.KeyMap[Key] = mCommon.pReport->getKey();
+      mCommon.KeyMap.addFix(Key, mCommon.pReport);
 
       break;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/12 03:22:18 $
+   $Date: 2004/01/09 21:24:43 $
    End CVS Header */
 
 /**
@@ -24,6 +24,7 @@
 #include "CExpat.h"
 #include "CXMLHandler.h"
 #include "utilities/CCopasiVector.h"
+#include "report/CKeyFactory.h"
 
 class CModel;
 class CReaction;
@@ -76,8 +77,9 @@ struct SCopasiXMLParserCommon
 
     /**
      * A map relating CopasiXML function keys with internal keys
-     */
-    std::map< std::string, std::string > KeyMap;
+     */ 
+    //    std::map< std::string, std::string > KeyMap;
+    CKeyFactory KeyMap;
 
     /**
      * A map relating StateVariables to Object keys
