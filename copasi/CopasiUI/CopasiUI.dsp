@@ -106,6 +106,10 @@ SOURCE=.\FixedMetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\FunctionItemWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\FunctionSymbols.cpp
 # End Source File
 # Begin Source File
@@ -283,6 +287,10 @@ SOURCE=.\Expression.h
 # Begin Source File
 
 SOURCE=.\FixedMetaboliteSymbols.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionItemWidget.h
 # End Source File
 # Begin Source File
 
