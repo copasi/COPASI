@@ -95,6 +95,10 @@ SOURCE=.\CIndexedPriorityQueue.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COutputHandler.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CVersion.cpp
 # End Source File
 # Begin Source File
@@ -168,6 +172,10 @@ SOURCE=.\CluX.h
 # Begin Source File
 
 SOURCE=.\CMatrix.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COutputHandler.h
 # End Source File
 # Begin Source File
 
