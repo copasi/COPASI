@@ -3,14 +3,25 @@
 ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after)
     : QListViewItem(parent, after)
 {
+  //here is the ROOT
   setParent(NULL);
   setBrother(NULL);
   setChild(NULL);
+  if (after != NULL)
+    after->setBrother(this);
 }
 
 ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after)
     : QListViewItem(parent, after)
-{}
+{
+  setParent(parent);
+  setBrother(NULL);
+  setChild(NULL);
+  if (parent != NULL)
+    parent->setChild(this);
+  if (after != NULL)
+    after->setBrother(this);
+}
 
 ObjectBrowserItem::setParent(ObjectBrowserItem* parent)
 {
