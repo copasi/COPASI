@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:26 $
+   $Author: ssahle $ 
+   $Date: 2004/05/10 13:00:05 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.33 2004/05/03 20:20:26 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.34 2004/05/10 13:00:05 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -248,8 +248,8 @@ TableDefinition1::~TableDefinition1()
 void TableDefinition1::languageChange()
 {
   setCaption(tr("Reports"));
-  confirmButton->setText(tr("confirm"));
-  cancelButton->setText(tr("cancel"));
+  confirmButton->setText(tr("Commit"));
+  cancelButton->setText(tr("Revert"));
   itemsLabel->setText(tr("Items"));
   upButton->setText(QString::null);
   downButton->setText(QString::null);
@@ -268,6 +268,7 @@ void TableDefinition1::loadTableDefinition1()
 {
   CReportDefinition* pReportDefinition =
     dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
+
   itemsTable->clear();
 
   nameEdit->setText(FROM_UTF8(pReportDefinition->getObjectName()));
@@ -317,6 +318,11 @@ void TableDefinition1::slotBtnConfirmClicked()
   pReportDefinition->getHeaderAddr()->clear();
   pReportDefinition->getBodyAddr()->clear();
 
+  //    nameEdit->setText(FROM_UTF8(pReportDefinition->getObjectName()));
+  //  commentEdit->setText(FROM_UTF8(pReportDefinition->getComment()));
+  pReportDefinition->setObjectName((const char*)nameEdit->text().utf8());
+  pReportDefinition->setComment((const char*)commentEdit->text().utf8());
+
   C_INT32 i;
   CCopasiStaticString Seperator;
   if (tabChecked->isChecked())
@@ -325,8 +331,8 @@ void TableDefinition1::slotBtnConfirmClicked()
     Seperator = (const char *)seperatorEdit->text().utf8();
 
   pReportDefinition->setTitle(titleChecked->isChecked());
-  pReportDefinition->
-  setComment(CCopasiStaticString((const char *)commentEdit->text().utf8()).getCN());
+  //pReportDefinition->
+  //setComment(CCopasiStaticString((const char *)commentEdit->text().utf8()).getCN());
 
   CCopasiObjectName SeperatorCN(Seperator.getCN());
   CCopasiObjectName Title;
@@ -509,11 +515,11 @@ bool TableDefinition1::enter(const std::string & key)
 bool TableDefinition1::leave()
 {
   //let the user confirm?
-  if (bUpdated && (QMessageBox::warning(NULL, "Report Definition Save", "Do you want to save the change you have made to this Report Definition ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes))
-    {
-      slotBtnConfirmClicked();
-      bUpdated = false;
-    }
+  //if (bUpdated && (QMessageBox::warning(NULL, "Report Definition Save", "Do you want to save the change you have made to this Report Definition ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes))
+  {
+    slotBtnConfirmClicked();
+    bUpdated = false;
+  }
   return true;
 }
 
