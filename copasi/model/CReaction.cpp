@@ -395,7 +395,7 @@ CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Substrates()
 CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Products()
 {return mId2Products;}
 
-CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Modifiers()
+CCopasiVectorN < CReaction::CId2Metab > &CReaction::getId2Modifiers()
 {return mId2Modifiers;}
 
 const CCopasiVectorN < CReaction::CId2Param > &CReaction::getId2Parameters() const

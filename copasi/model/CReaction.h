@@ -321,7 +321,7 @@ class CReaction : public CCopasiContainer
      *  and function parameters
      */
     /** @dia:route 20,17; h,135.488,82.2337,133.093,102.545,126.108 */
-    CCopasiVector < CId2Metab > mId2Modifiers;
+    CCopasiVectorN < CId2Metab > mId2Modifiers;
 
     /**
      *  A vector of links between the kinetic parameters of the reaction 
@@ -431,9 +431,9 @@ class CReaction : public CCopasiContainer
 
     /**
      *  Retrieves the vector of modifiers
-     *  @return "CCopasiVector < CId2Metab > &"
+     *  @return "CCopasiVectorN < CId2Metab > &"
      */
-    CCopasiVector < CId2Metab > &getId2Modifiers();
+    CCopasiVectorN < CId2Metab > &getId2Modifiers();
 
     /**
      *  Retrieves the vector of parameters
