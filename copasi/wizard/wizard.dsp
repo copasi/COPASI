@@ -76,6 +76,10 @@ SOURCE=.\wizard.ui.h
 # End Group
 # Begin Source File
 
+SOURCE=.\wizard.pro
+# End Source File
+# Begin Source File
+
 SOURCE=.\wizard.ui
 # End Source File
 # End Target

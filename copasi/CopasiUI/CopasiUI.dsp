@@ -246,6 +246,14 @@ SOURCE=.\TableDefinition1.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\TimeSeriesSubwidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\TrajectoryWidget.cpp
 # End Source File
 # End Group
@@ -451,6 +459,18 @@ SOURCE=.\TableDefinition.h
 # Begin Source File
 
 SOURCE=.\TableDefinition1.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesSubwidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesSubwidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesWidget.h
 # End Source File
 # Begin Source File
 
