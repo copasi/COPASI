@@ -1779,7 +1779,7 @@ C_INT32 TestElementaryFluxMode(void)
   FluxModes.calculate(&Model);
 
   ofstream output("ElementaryFluxModes.txt");
-  ((ostream) output) << FluxModes;
+  output << FluxModes;
 
   return 0;
 }

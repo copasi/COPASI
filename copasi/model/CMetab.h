@@ -8,7 +8,7 @@
 #define COPASI_CMetab
 
 #include <string>
-#include <ostream>
+#include <iostream>
 
 class CCompartment;
 

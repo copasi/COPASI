@@ -39,10 +39,10 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 	$(LEX) -t $< | \
 	sed -e 's/class istream;/#include "copasi.h"/' \
 	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
-	    -e '/#include <unistd.h>/d' > $@
+	    -e 's/#include <unistd.h>/using namespace std;/' > $@
 
 %.cpp: %.lpp
 	$(LEX) -t $< | \
 	sed -e 's/class istream;/#include "copasi.h"/' \
 	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
-	    -e '/#include <unistd.h>/d' > $@
+	    -e 's/#include <unistd.h>/using namespace std;/' > $@
