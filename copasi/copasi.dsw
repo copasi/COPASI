@@ -35,6 +35,15 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name report
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name optimization
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name scan
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mathmodel
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -91,6 +100,18 @@ Package=<4>
 ###############################################################################
 
 Project: "function"=".\function\function.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mathmodel"=".\mathmodel\mathmodel.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -195,6 +216,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "scan"=".\scan\scan.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "steadystate"=".\steadystate\steadystate.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -244,6 +277,12 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name report
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name scan
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mathmodel
     End Project Dependency
 }}}
 
