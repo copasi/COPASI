@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/08 15:26:38 $
+   $Author: shoops $ 
+   $Date: 2005/03/09 02:09:32 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -71,7 +71,7 @@ class SliderDialog: public QDialog
     virtual void runTimeCourse();
     virtual void closeEvent(QCloseEvent* e);
 
-    virtual void setDataModel(DataModelGUI* dataModel);
+    //    virtual void setDataModel(DataModelGUI* dataModel);
     virtual CCopasiTask* getTaskForFolderId(C_INT32 folderId);
     virtual void updateAllSliders();
     std::vector<CSlider*>* getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const;
