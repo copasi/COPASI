@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/24 19:36:30 $
+   $Date: 2005/02/25 01:44:24 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -73,6 +73,12 @@ MESSAGES Messages[] =
 
     // CCopasiMessage
     {MCCopasiMessage + 1, "Message (1): No more messages."},
+
+    // Configuration
+    {MCConfiguration + 1, "Configuration (1): COPASI directory is not set. Some features might not be working correctly.\n"
+     "                   Please set the environment variable COPASIDIR or use the\n"
+     "                   commandline options -c COPASIDIR or --copasidir COPASIDIR\n"
+     "                   to point to the COPASI installation directory."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
