@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.139 $
+   $Revision: 1.140 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/29 02:41:11 $
+   $Author: ssahle $ 
+   $Date: 2004/06/29 13:22:57 $
    End CVS Header */
 
 /****************************************************************************
@@ -64,7 +64,7 @@ QPixmap *folderOpen = 0;     // to store the image of open icon folder
 #include "./icons/folderopen.xpm"
 #include "./icons/folderlocked.xpm"
 
-int Folder::mModifier = 0;
+//int Folder::mModifier = 0;
 
 //////////////////////////////////////////////////////////////////////
 // Definations of the FolderListItem  class declared in listviews.h
@@ -551,7 +551,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                        //Time course
+      case 23:                                         //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -560,10 +560,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                       //Report
+      case 43:                                        //Report
         return tableDefinition;
         break;
-      case 42:                                       //Plots
+      case 42:                                        //Plots
         return plotWidget;
         break;
       case 5:

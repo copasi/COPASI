@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 22:23:24 $
+   $Date: 2004/06/29 13:22:57 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -15,6 +15,8 @@
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLExporter.h"
 #include "CProgressBar.h"
+
+int Folder::mModifier = 0;
 
 DataModel::DataModel()
 {
