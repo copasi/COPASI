@@ -43,9 +43,13 @@ CNewton::CNewton(C_INT32 anInt)
 void CNewton::init_Ss_x_new(void)
 {
   // we start with initial concentrations as the guess (modify from Gepasi)
-  for( int i=0; i<mModel->getTotMetab(); i++ )
-     mSs_x[i+1] = mSs_xnew[i+1] = mModel->Metabolite[mModel.Row[i]].IConc *
-                              mModel->Compartment[mModel.Metabolite[mModel.Row[i]].Compart].Volume;
+  for( C_INT32 i=0; i<mModel->getTotMetab(); i++ )
+    //    mSs_x[i+1] = mSs_xnew[i+1] = mModel->Metabolite[mModel.Row[i]].IConc *
+    //                         mModel->Compartment[mModel.Metabolite[mModel.Row[i]].Compart].Volume;
+
+    //YH
+    mSs_x[i+1] = mSs_xnew[i+1] = mModel->getMetabolitesInd()[i]->getInitialNumber();
+
 }
 
 
@@ -179,7 +183,7 @@ C_INT32 CNewton::getSs_nfunction() const
   return mSs_nfunction;
 }
 
-// inilialize pointers
+// initialize pointers
 void CNewton::initialize()
 {  
   cleanup();
