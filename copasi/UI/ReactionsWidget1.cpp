@@ -128,9 +128,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   ReactionsWidget1Layout->addMultiCellWidget(Line4, 3, 3, 0, 3);
 
   table = new ParameterTable(this, "table");
-  //table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Value"));
-  //table->setNumRows(0);
-  //table->setNumCols(1);
 
   ReactionsWidget1Layout->addMultiCellWidget(table, 7, 9, 1, 3);
 
