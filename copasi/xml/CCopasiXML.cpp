@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:59:29 $
+   $Author: mkulkarn $ 
+   $Date: 2003/11/03 19:49:01 $
    End CVS Header */
 
 /**
@@ -535,9 +535,9 @@ bool CCopasiXML::saveReportList()
         }
 
       //Report is not yet implemented
-      startSaveElement("Report");
+      /*startSaveElement("Report");
 
-      endSaveElement("Report");
+       endSaveElement("Report");*/
 
       endSaveElement("Header");
 
@@ -593,6 +593,7 @@ bool CCopasiXML::saveReportList()
        endSaveElement("Text");
           startSaveElement("Report");
             endSaveElement("Report")
+
       endSaveElement("Footer");*/
 
       endSaveElement("Report");
