@@ -17,7 +17,6 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qcheckbox.h>
-#include <qfont.h>
 #include <qlineedit.h>
 #include "copasi.h"
 #include "utilities/utilities.h"

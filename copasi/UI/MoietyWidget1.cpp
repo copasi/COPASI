@@ -14,7 +14,6 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include <qfont.h>
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "MoietyWidget1.h"

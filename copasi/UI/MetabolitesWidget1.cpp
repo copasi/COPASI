@@ -17,7 +17,6 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qbuttongroup.h>
-#include <qfont.h>
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
 #include "model/model.h"
@@ -33,9 +32,6 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   if (!name)
     setName("MetabolitesWidget1");
   resize(589, 380);
-  QFont f(font());
-  f.setFamily("Times New Roman");
-  setFont(f);
   setCaption(trUtf8("MetabolitesWidget1"));
   MetabolitesWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MetabolitesWidget1Layout");
 

@@ -15,7 +15,6 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qlistbox.h>
-#include <qfont.h>
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "CompartmentsWidget1.h"
