@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2005/01/11 10:14:30 $
+   $Author: shoops $ 
+   $Date: 2005/02/01 14:58:56 $
    End CVS Header */
 
 /**
@@ -26,7 +26,7 @@
 class CTrajectoryProblem;
 class CState;
 
-class CTrajectoryValidSubTypes : public CVector< CCopasiMethod::SubType >
+class CTrajectoryValidSubTypes : public std::vector< CCopasiMethod::SubType >
   {
   public:
     /**
