@@ -199,10 +199,13 @@ void CModel::buildStoi()
       mMetabolitesX[i - j] = mMetabolites[i];
   
   for (i=0; i<imax; i++)
-	cout << mMetabolitesX[i]->getName() << ": " << mMetabolitesX[i]->getStatus() << endl;
-
-  mStoi.newsize(imax-j, mSteps.size());
+    mMetabolites[i] = mMetabolitesX[i];
+  
+  mFluxes.resize(mSteps.size());
+  for (i=0; i<mSteps.size(); i++)
+    mFluxes[i] = (C_FLOAT64 *) mSteps[i]->getFluxAddr();
     
+  mStoi.newsize(imax-j, mSteps.size());
   for (i=0; i<(unsigned C_INT32) mStoi.num_cols(); i++)
     {
       Structure = mSteps[i]->getChemEq().getBalances();
@@ -210,7 +213,7 @@ void CModel::buildStoi()
       for (j=0; j<(unsigned C_INT32) mStoi.num_rows(); j++)
         {
           mStoi[j][i] = 0.0;
-          Name = mMetabolitesX[j]->getName();
+          Name = mMetabolites[j]->getName();
 
           for (k=0; k<Structure.size(); k++)
             if (Structure[k]->getMetaboliteName() == Name)
@@ -276,10 +279,10 @@ void CModel::lUDecomposition()
         }
     }
   
-  mFluxes.resize(mStepsX.size());
+  mFluxesX.resize(mStepsX.size());
   
-  for (i=0; i<mFluxes.size(); i++)
-    mFluxes[i] = (C_FLOAT64 *) mStepsX[i]->getFluxAddr();
+  for (i=0; i<mFluxesX.size(); i++)
+    mFluxesX[i] = (C_FLOAT64 *) mStepsX[i]->getFluxAddr();
   
   return;
 }
@@ -494,6 +497,40 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
   return;
 }
 
+void CModel::setTransitionTimes()
+{
+  unsigned C_INT32 i, imax = getIntMetab();
+  unsigned C_INT32 j, jmax = mSteps.size();
+  C_FLOAT64 TotalFlux, PartialFlux;
+  C_FLOAT64 TransitionTime;
+  
+  mTransitionTime = 0.0;
+  
+  for(i=0; i<imax; i++)
+    {
+      TotalFlux = 0.0;
+      for (j=0; j<jmax; j++)
+	{
+	  PartialFlux = mStoi[i][j] * *mFluxes[j];
+	  if (PartialFlux > 0.0) TotalFlux += PartialFlux;
+	}
+
+      if (TotalFlux == 0.0)
+	TransitionTime = DBL_MAX;
+      else
+	TransitionTime = mMetabolites[i]->getNumber() / TotalFlux;
+
+      mMetabolites[i]->setTransitionTime(TransitionTime);
+
+      if (TransitionTime == DBL_MAX || mTransitionTime == DBL_MAX)
+	mTransitionTime = DBL_MAX;
+      else
+	mTransitionTime += TransitionTime;
+    }
+}
+
+const C_FLOAT64 & CModel::getTransitionTime() {return mTransitionTime;}
+
 CCopasiVectorS < CReaction > & CModel::getReactions()
 {
   return mSteps;
@@ -515,7 +552,7 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
     {
       ydot[i] = 0.0;
       for (j=0; j<mSteps.size(); j++)
-        ydot[i] += mRedStoi[i][j] * *mFluxes[j];
+        ydot[i] += mRedStoi[i][j] * *mFluxesX[j];
     }
     
   return;

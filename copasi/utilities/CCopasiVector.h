@@ -7,6 +7,7 @@
 
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
+#include "CCopasiMessage.h"
 
 template < class CType >
 class CCopasiVector : protected vector < CType * >
@@ -260,7 +261,9 @@ template < class CType > class CCopasiVectorN
   virtual void remove(const string & name)
     {
       unsigned C_INT32 Index = getIndex(name);
-      if ((signed) Index == -1 ) fatalError();
+      if ((signed) Index == -1 ) 
+	CCopasiMessage(CCopasiMessage::ERROR, 
+		       MCCopasiVector + 1, name.c_str());
       
       CCopasiVector< CType >::remove(Index);
       return;
@@ -284,7 +287,9 @@ template < class CType > class CCopasiVectorN
   CType * operator[](const string &name) 
     {
       C_INT32 Index = getIndex(name);
-      if ( Index == -1 ) fatalError();
+      if ( Index == -1 )
+	CCopasiMessage(CCopasiMessage::ERROR, 
+		       MCCopasiVector + 1, name.c_str());
             
       return *(begin() + Index);
     }   

@@ -129,6 +129,11 @@ class CMetab
   C_INT32 save(CWriteConfig & configbuffer);
 
   /**
+   *
+   */
+  void setName(const string & name);
+
+  /**
    *  Retrieve the name of the metabolite.
    */
   const string & getName() const;
@@ -136,7 +141,17 @@ class CMetab
   /**
    *
    */
-  C_INT16 getStatus() const;
+  void setStatus(const C_INT16 status);
+    
+  /**
+   *
+   */
+  const C_INT16 & getStatus() const;
+    
+  /**
+   *
+   */
+  void setConcentration(const C_FLOAT64 concentration);
     
   /**
    *
@@ -146,8 +161,18 @@ class CMetab
   /**
    *
    */
+  void setNumber(const C_FLOAT64 number);
+    
+  /**
+   *
+   */
   C_FLOAT64 getNumber() const;
 
+  /**
+   *
+   */
+  void setInitialConcentration(const C_FLOAT64 initialConcentration);
+    
   /**
    *
    */
@@ -161,38 +186,25 @@ class CMetab
   /**
    *
    */
+  void setCompartment(CCompartment * compartment); 
+
+  /**
+   *
+   */
   CCompartment * getCompartment();
 
   /**
-   *
+   *  Set transition time
+   *  @param "const C_FLOAT64 &" transitionTime
    */
-  void setName(const string & name);
+  void setTransitionTime(const C_FLOAT64 & transitionTime);
 
   /**
-   *
+   *  Retrieves the transition time
+   *  @return "const C_FLOAT64 &" transitionTime
    */
-  void setConcentration(const C_FLOAT64 concentration);
-    
-  /**
-   *
-   */
-  void setInitialConcentration(const C_FLOAT64 initialConcentration);
-    
-  /**
-   *
-   */
-  void setNumber(const C_FLOAT64 number);
-    
-  /**
-   *
-   */
-  void setStatus(const C_INT16 status);
-    
-  /**
-   *
-   */
-  void setCompartment(CCompartment * compartment); 
-
+  const C_FLOAT64 & getTransitionTime();
+  
   /**
    *  Reset the values of a metabolite as if CMetab(string name) was called.
    *  @return Fail
@@ -275,17 +287,4 @@ class CMetabOld
   string getName() const;
 };
 
-#ifdef XXXX
-class CMetabolitesOld: public CCopasiVector < CMetabOld >
-{
- private:    
-  /**
-   * @supplierCardinality 0..*
-   * @associates <{CMetabOld}>
-   */
-  // CCopasiVector < CMetabOld > self;
-
-  C_INT16 isInsertAllowed(const CMetabOld & src) const {return TRUE;}
-};
-#endif // XXXX
 #endif // COPASI_CMetab

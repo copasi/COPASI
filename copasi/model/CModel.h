@@ -62,7 +62,13 @@ class CModel
    *  Note: The fluxes are the order corresponding to mStepX
    */
   vector < C_FLOAT64 * > mFluxes;
+  vector < C_FLOAT64 * > mFluxesX;
   
+  /**
+   *  Transition time 
+   */
+  C_FLOAT64 mTransitionTime;
+
   /**
    *  for array of conserved moieties
    *  @supplierCardinality 0..*
@@ -122,11 +128,6 @@ class CModel
    */
   C_INT32 mExtMetab;
 
-  /**
-   * 
-   */
-  // the overall transition time of the pathway
-  C_FLOAT64 mTransTime;
 
 
   // reaction network
@@ -134,13 +135,11 @@ class CModel
   /**
    * 
    */
-  // for the stoichiometry matrix (ptrs for the rows)
   vector < vector < C_FLOAT32 > > mStoichiometry;
 
   /**
    * 
    */
-  // for the reduced stoichiometry matrix (ptrs for the rows)
   vector < vector < C_FLOAT32 > > mRedStoi;
 
   /**
@@ -308,11 +307,6 @@ class CModel
   void buildRedStoi();
 
   /**
-   *  Build the Conservation Relationssips based on the LU decomposition
-   */
-  // void buildConsRel();
-    
-  /**
    *  Build the Moities based on the LU decomposition
    */
   void buildMoieties();
@@ -325,12 +319,6 @@ class CModel
   vector < CMetab * > & getMetabolitesInd();
   vector < CMetab * > & getMetabolitesX();
     
-  /**
-   *  Set the vector of particle numbers for independent metabolites
-   *  @param C_FLOAT64 & y
-   */
-  void setParticleNoInd(const C_FLOAT64 & y) const;
-
   /**
    *  Get the number of total metabolites
    *  @return C_INT32 totMetab
@@ -370,6 +358,18 @@ class CModel
    */
   void setConcentrations(const C_FLOAT64 *y);
 
+  /**
+   *  Set the transition times for all internal metabolites and the
+   *  transistion time of the model.
+   */
+  void setTransitionTimes();
+
+  /**
+   *  Retrieves the transition time of the model.
+   *  @return "const C_FLOAT64 &" transitionTime
+   */
+  const C_FLOAT64 & getTransitionTime();
+  
   // Added by CvG
   /**
    * Return the vector of reactions

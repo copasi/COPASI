@@ -175,9 +175,14 @@ C_FLOAT64 CMetab::getInitialNumber() const
   return mIConc * mCompartment->getVolume();
 }
 
-C_INT16 CMetab::getStatus() const {return mStatus;}
+const C_INT16 & CMetab::getStatus() const {return mStatus;}
 
 CCompartment * CMetab::getCompartment() {return mCompartment;} 
+
+void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
+{mTT = transitionTime;} 
+
+const C_FLOAT64 & CMetab::getTransitionTime() {return mTT;} 
 
 void CMetab::setName(const string & name) {mName = name;}
 
