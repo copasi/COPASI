@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/17 14:32:00 $
+   $Author: gauges $ 
+   $Date: 2004/11/17 15:27:54 $
    End CVS Header */
 
 #include "DataModelGUI.h"
 #include "DataModel.txt.h"
 #include "qtUtilities.h"
 #include "CProgressBar.h"
-#include "ListViews.h"
+#include "listviews.h"
 
 #include "function/CFunctionDB.h"
 #include "mathmodel/CMathModel.h"
