@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 14:54:26 $
+   $Date: 2003/11/12 22:13:47 $
    End CVS Header */
 
 /**
@@ -18,6 +18,7 @@
 #include "copasi.h"
 #include "CCopasiObjectName.h"
 #include "CCopasiContainer.h"
+#include "CCopasiObjectReference.h"
 #include "utilities/CCopasiVector.h"
 
 CCopasiContainer * CCopasiContainer::Root = NULL;
@@ -55,7 +56,7 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
 CCopasiContainer::CCopasiContainer() :
     CCopasiObject("Root", NULL, "CN", CCopasiObject::Container),
     mObjects()
-{}
+{addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CCopasiContainer::CCopasiContainer(const std::string & name,
                                    const CCopasiContainer * pParent,
@@ -63,13 +64,13 @@ CCopasiContainer::CCopasiContainer(const std::string & name,
                                    const unsigned C_INT32 & flag):
     CCopasiObject(name, pParent, type, flag | CCopasiObject::Container),
     mObjects()
-{}
+{addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CCopasiContainer::CCopasiContainer(const CCopasiContainer & src,
                                    const CCopasiContainer * pParent):
     CCopasiObject(src, pParent),
     mObjects()
-{}
+{addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CCopasiContainer::~CCopasiContainer()
 {
