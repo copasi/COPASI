@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 09:01:36 $
+   $Author: gauges $ 
+   $Date: 2004/11/02 17:02:30 $
    End CVS Header */
 
 /********************************************************
@@ -59,7 +59,6 @@ class TrajectoryWidget : public CopasiWidget
     virtual void CommitChange();
     //virtual void EnableRunTask();
     //virtual void ExportToFile();
-    virtual void runTrajectoryTask();
     virtual void UpdateMethod(const bool & update = true);
     virtual void ReportDefinitionClicked();
 
@@ -72,6 +71,9 @@ class TrajectoryWidget : public CopasiWidget
 
     //checks whether the time series will be too huge
     void checkTimeSeries();
+
+  public slots:
+    virtual void runTrajectoryTask();
 
   private:
 
