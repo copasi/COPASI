@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/23 12:02:08 $
+   $Date: 2004/12/23 12:20:25 $
    End CVS Header */
 
 // CNodeK.cpp : classes for function tree
@@ -554,7 +554,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         //    case N_OBJECT:
         //      return *(double*)((CCopasiObject*)mLeft)->getReference();
         //      break;
-      case N_IDENTIFIER :   //do some heuristics for indentifiers starting with "K" or "V"
+      case N_IDENTIFIER :    //do some heuristics for indentifiers starting with "K" or "V"
         out << SPC(level);
         if (mName.substr(0, 1) == "K")
           out << "<msub><mi>K</mi><mi>" << mName.substr(1) << "</mi></msub>" << std::endl;
@@ -656,28 +656,45 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
             break;
           }
         break;
-        /*    case N_FUNCTION:
-              switch (mSubtype)
-                {
-                case '+':
-                  return mLeft->value(callParameters);
-                case '-':
-                  return - mLeft->value(callParameters);
-                case N_EXP:
-                  return exp(mLeft->value(callParameters));
-                case N_LOG:
-                  return log(mLeft->value(callParameters));
-                case N_LOG10:
-                  return log10(mLeft->value(callParameters));
-                case N_SIN:
-                  return sin(mLeft->value(callParameters));
-                case N_COS:
-                  return cos(mLeft->value(callParameters));
-                default:
-                  fatalError();   // THROW EXCEPTION
-                  return 0.0;
-                }
-              break;*/ 
+      case N_FUNCTION:
+        switch (mSubtype)
+          {
+          case '+':  //do nothing
+            mLeft->writeMathML(out, level);
+            break;
+          case '-':
+            out << SPC(level) << "<mrow>" << std::endl;
+            out << SPC(level + 1) << "<mo>" << "-" << "</mo>" << std::endl;
+
+            //do we need "()" ?
+            flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+'));
+            if (flag)
+              {
+                out << SPC(level + 1) << "<mfenced>" << std::endl;
+              }
+            mLeft->writeMathML(out, level + 1);
+            if (flag)
+              {
+                out << SPC(level + 1) << "</mfenced>" << std::endl;
+              }
+            out << SPC(level) << "</mrow>" << std::endl;
+            break;
+          case N_EXP:
+            //return exp(mLeft->value(callParameters));
+          case N_LOG:
+            //return log(mLeft->value(callParameters));
+          case N_LOG10:
+            //return log10(mLeft->value(callParameters));
+          case N_SIN:
+            //return sin(mLeft->value(callParameters));
+          case N_COS:
+            //return cos(mLeft->value(callParameters));
+          default:
+            //fatalError();   // THROW EXCEPTION
+            //return 0.0;
+            break;
+          }
+        break;
         //default:
         //fatalError();   // THROW EXCEPTION
         //return 0.0;
