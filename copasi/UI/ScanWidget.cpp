@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.171 $
+   $Revision: 1.172 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/03 16:15:36 $
+   $Author: stupe $ 
+   $Date: 2004/12/08 20:19:00 $
    End CVS Header */
 
 /********************************************************
@@ -505,7 +505,13 @@ void ScanWidget::downButtonClicked()
 }
 
 void ScanWidget::CancelChangeButton()
-{}
+{
+  // Clear the Scan-item Listbox selection
+  if (ObjectListBox)
+    {
+      ObjectListBox->clearSelection();
+    }
+}
 
 void ScanWidget::ScanCheckBoxClicked()
 {
