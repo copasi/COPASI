@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MyTable.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/16 13:12:31 $
+   $Date: 2004/08/16 13:17:15 $
    End CVS Header */
 
 #include <iostream>
@@ -68,7 +68,7 @@ void MyTable::showEvent(QShowEvent* e)
           for (counter = 0; counter < numCols; counter++)
             {
               this->exactColumnWidth[counter] = (double)this->columnWidth(counter) * factor;
-              this->setColumnWidth(counter, (int)ceil(this->exactColumnWidth[counter]));
+              this->setColumnWidth(counter, (int)floor(this->exactColumnWidth[counter]));
             }
         }
     }
@@ -152,8 +152,8 @@ void MyTable::scaleColumns(double factor)
   for (counter = 0; counter < this->numCols() - 1; counter++)
     {
       this->exactColumnWidth[counter] = this->exactColumnWidth[counter] * factor;
-      this->setColumnWidth(counter, (int)ceil(this->exactColumnWidth[counter]));
-      w += (int)ceil(this->exactColumnWidth[counter]);
+      this->setColumnWidth(counter, (int)floor(this->exactColumnWidth[counter]));
+      w += (int)floor(this->exactColumnWidth[counter]);
     }
   this->exactColumnWidth[this->numCols() - 1] = this->exactColumnWidth[this->numCols() - 1] * factor;
   this->setColumnWidth(this->numCols() - 1, (int)this->exactColumnWidth[this->numCols() - 1]);
