@@ -24,9 +24,9 @@ if test "x$prefix" = "xNONE"; then
 fi
 
 if test "${enable_debug}" != no; then
-  qt_release="CONFIG+=debug"
+  cps_release="CONFIG+=debug"
 else
-  qt_release="CONFIG+=release"
+  cps_release="CONFIG+=release"
 fi
 
 if test "${MKL_PATH}" != ""; then
@@ -44,6 +44,8 @@ fi
 
 (
  cd copasi && \
+ echo executing in `pwd`: && \
+ echo "  qmake $cps_release $cps_mkl_path $cps_clapack_path $cps_expat_path" && \
  qmake $cps_release $cps_mkl_path $cps_clapack_path $cps_expat_path && \
  cat Makefile | sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' > $$.tmp && \
  mv $$.tmp Makefile \
