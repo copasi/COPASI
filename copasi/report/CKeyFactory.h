@@ -28,6 +28,7 @@ class CKeyFactory
   public:
     /**
      * Add an object with a key generated from the given prefix to the key map.
+     * The return value is the actually generated key.
      * @param const std::string & prefix
      * @param CCopasiObject * pObject
      * @return std::string key
@@ -35,14 +36,14 @@ class CKeyFactory
     static std::string add(const std::string & prefix, CCopasiObject * pObject);
 
     /**
-     * Remove the key an the related object from the key map.
+     * Remove the key and the related object from the key map.
      * @param const std::string & key
      * @return bool success
      */
     static bool remove(const std::string & key);
 
     /**
-     * Retreive the object referred bey key from the key map.
+     * Retreive the object referred by key from the key map.
      * @param const std::string & key
      * @return CCopasiObject * pObject
      */
