@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/16 18:33:12 $
+   $Author: shoops $ 
+   $Date: 2004/09/16 20:12:44 $
    End CVS Header */
 
 /*******************************************************************
@@ -159,7 +159,7 @@ void ModesWidget::loadModes(CModel *model)
               reactionEq += mode.getReactionEquation(x, mModel);
               reactionEq += "\n";
             }
-          item->setText(2, QString(reactionEq).stripWhiteSpace());
+          item->setText(2, QString(reactionEq.c_str()).stripWhiteSpace());
         } /*** CL ***/
     }
 }
@@ -173,11 +173,11 @@ void ModesWidget::loadModes(CModel *model)
  */
 void ModesWidget::slotTableSelectionChanged()
 {/*
-    if (!table->hasFocus())
-      {
-        table->setFocus();
-      }
-      */
+      if (!table->hasFocus())
+        {
+          table->setFocus();
+        }
+        */
   if (!listView->hasFocus())
     {
       listView->setFocus();
