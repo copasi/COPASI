@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-   $Revision: 1.104 $
+   $Revision: 1.105 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/08 20:20:09 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:45:09 $
    End CVS Header */
 
 // Main
@@ -284,9 +284,9 @@ C_INT32 TestCopasiObject(void)
 {
   std::map< const std::string, CMetab * > myMap;
   CMetab m1, m2;
-  myMap[m1.getName()] = &m1;
-  myMap[m1.getName()] = &m1;
-  myMap[m2.getName()] = &m2;
+  myMap[m1.getObjectName()] = &m1;
+  myMap[m1.getObjectName()] = &m1;
+  myMap[m2.getObjectName()] = &m2;
 
   CCopasiObjectName Name("CN=Root,Vector=Metabolites\\[ADH\\],Metabolite=ADH");
   cout << Name << endl;
@@ -304,7 +304,7 @@ C_INT32 TestCopasiObject(void)
   cout << Name.getPrimary() << endl;
   cout << Name.getObjectType() << endl;
   cout << Name.getObjectName() << endl;
-  cout << Name.getName() << endl;
+  cout << Name.getName(0) << endl;
   cout << Name.getIndex() << endl;
   cout << Name.getRemainder() << endl;
 
@@ -312,7 +312,7 @@ C_INT32 TestCopasiObject(void)
   cout << Name.getPrimary() << endl;
   cout << Name.getObjectType() << endl;
   cout << Name.getObjectName() << endl;
-  cout << Name.getName() << endl;
+  cout << Name.getName(0) << endl;
   cout << Name.getIndex() << endl;
   cout << Name.getRemainder() << endl;
 
@@ -320,7 +320,7 @@ C_INT32 TestCopasiObject(void)
   cout << Name.getPrimary() << endl;
   cout << Name.getObjectType() << endl;
   cout << Name.getObjectName() << endl;
-  cout << Name.getName() << endl;
+  cout << Name.getName(0) << endl;
   cout << Name.getIndex() << endl;
   cout << Name.getRemainder() << endl;
 
@@ -328,7 +328,7 @@ C_INT32 TestCopasiObject(void)
   cout << Name.getPrimary() << endl;
   cout << Name.getObjectType() << endl;
   cout << Name.getObjectName() << endl;
-  cout << Name.getName() << endl;
+  cout << Name.getName(0) << endl;
   cout << Name.getIndex() << endl;
   cout << Name.getName(1) << endl;
   cout << Name.getIndex(1) << endl;
@@ -338,7 +338,7 @@ C_INT32 TestCopasiObject(void)
   cout << Name.getPrimary() << endl;
   cout << Name.getObjectType() << endl;
   cout << Name.getObjectName() << endl;
-  cout << Name.getName() << endl;
+  cout << Name.getName(0) << endl;
   cout << Name.getIndex() << endl;
   cout << Name.getName(1) << endl;
   cout << Name.getIndex(1) << endl;
@@ -348,7 +348,7 @@ C_INT32 TestCopasiObject(void)
   cout << Name.getPrimary() << endl;
   cout << Name.getObjectType() << endl;
   cout << Name.getObjectName() << endl;
-  cout << Name.getName() << endl;
+  cout << Name.getName(0) << endl;
   cout << Name.getIndex() << endl;
   cout << Name.getRemainder() << endl;
 
@@ -526,8 +526,8 @@ C_INT32 TestTrajectory(void)
   CMathModel MathModel;
   MathModel.setModel(&model);
 
-  Copasi->pOutputList->load(inbuf);
-  Copasi->pOutputList->save(outbuf);
+  // Copasi->pOutputList->load(inbuf);
+  // Copasi->pOutputList->save(outbuf);
 
   CTrajectoryTask traj;
   //traj.setModel(&model);
@@ -558,7 +558,7 @@ C_INT32 TestTrajectoryTask(void)
   model.compile();
   model.save(outbuf);
 
-  Copasi->pOutputList->load(inbuf);
+  //  Copasi->pOutputList->load(inbuf);
 
   // COutput Output;
   // Output.resetConfiguration();
@@ -568,7 +568,7 @@ C_INT32 TestTrajectoryTask(void)
   // Output.addDatum("Time-course output", "time", 14);
   // Copasi->OutputList.addOutput(Output);
 
-  Copasi->pOutputList->save(outbuf);
+  //  Copasi->pOutputList->save(outbuf);
 
   CTrajectoryTask traj;
   traj.load(inbuf);
@@ -624,7 +624,7 @@ C_INT32 TestSSSolution(void)
   model.load(inbuf);
   model.compile();
 
-  Copasi->pOutputList->load(inbuf);
+  //  Copasi->pOutputList->load(inbuf);
 
   CSteadyStateTask ss_soln;
   ss_soln.load(inbuf);
@@ -1921,7 +1921,7 @@ C_INT32 TestSpec2Model()
   Output.addDatum("Time-course output", "X(t)", 3, "X");
   Output.addDatum("Time-course output", "Y(t)", 3, "Y");
   Output.addDatum("Time-course output", "time", 14);
-  Copasi->pOutputList->addOutput(Output);
+  //  Copasi->pOutputList->addOutput(Output);
 
   //Copasi->OutputList.save(outbuf);
 
