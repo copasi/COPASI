@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/10/09 02:02:26 $
+   $Date: 2004/10/21 17:51:51 $
    End CVS Header */
 
 /**
@@ -94,6 +94,13 @@ class CCopasiObject
 
     //    virtual const std::string & getName() const;
 
+    /**
+     * Set the name of the object. 
+     * Note: An attempt set the name to "" results in the name 
+     *       being set to "No Name".
+     * @param const std::string & name
+     * @return success
+     */
     bool setObjectName(const std::string & name);
 
     const std::string & getObjectName() const;
