@@ -115,12 +115,12 @@ class CFunctionParameters
     /**
      *
      */
-    CFunctionParameter * & operator[](unsigned C_INT32 index);
+    CFunctionParameter * operator[](unsigned C_INT32 index);
 
     /**
      *
      */
-    const CFunctionParameter * & operator[](unsigned C_INT32 index) const;
+    const CFunctionParameter * operator[](unsigned C_INT32 index) const;
 
     /**
      *

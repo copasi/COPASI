@@ -81,7 +81,7 @@ void CFunctionParameters::remove
     updateUsageRanges();
   }
 
-CFunctionParameter * & CFunctionParameters::operator[](unsigned C_INT32 index)
+CFunctionParameter * CFunctionParameters::operator[](unsigned C_INT32 index)
 {return mParameters[index]; }
 
 /*

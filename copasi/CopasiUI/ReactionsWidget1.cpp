@@ -443,7 +443,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
       //ComboBox1->insertItem("No Values", -1);
       //CFunctionDB *fFunctionDB=new CFunctionDB();
       //CCopasiVectorN < CFunction > & Functions = fFunctionDB->suitableFunctions(num_substrates,num_products, TriFalse);
-      CCopasiVectorN < CFunction > & Functions = (Copasi->FunctionDB).suitableFunctions(num_substrates, num_products, TriFalse);
+      const CCopasiVectorN < CFunction > & Functions = (Copasi->FunctionDB).suitableFunctions(num_substrates, num_products, TriFalse);
       int m = 0;
       QStringList comboEntries;
       QString comboEntry;
@@ -451,7 +451,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 
       for (temp2 = 0; temp2 < Functions.size(); temp2++)
         {
-          CFunction *function = Functions[temp2];
+          const CFunction *function = Functions[temp2];
           comboEntry = function->getName().c_str();
           comboEntries.push_back(comboEntry);
           //ComboBox1->insertItem(function->getName().c_str(), 0);
@@ -475,7 +475,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
        int m = -1;
        function = &reactn1->getFunction();
        ComboBox1->insertItem(function->getName().c_str(), m); */
-      CCopasiVectorN < CFunction > & Functions = (Copasi->FunctionDB).suitableFunctions(num_substrates, num_products, TriTrue);
+      const CCopasiVectorN < CFunction > & Functions = (Copasi->FunctionDB).suitableFunctions(num_substrates, num_products, TriTrue);
       int m = 0;
       QStringList comboEntries;
       QString comboEntry;
@@ -483,7 +483,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 
       for (temp2 = 0; temp2 < Functions.size(); temp2++)
         {
-          CFunction *function = Functions[temp2];
+          const CFunction *function = Functions[temp2];
           comboEntry = function->getName().c_str();
           comboEntries.push_back(comboEntry);
           //ComboBox1->insertItem(function->getName().c_str(), 0);

@@ -127,7 +127,7 @@ class CCopasiVector : protected vector < CType * >
     /**
      *
      */
-    const CType * & operator[](unsigned C_INT32 index) const
+    const CType * operator[](unsigned C_INT32 index) const
       {
         assert(index < vector < CType * >::size());
         return *(const CType **)(begin() + index);
@@ -136,7 +136,7 @@ class CCopasiVector : protected vector < CType * >
     /**
      *
      */
-    CType * & operator[](unsigned C_INT32 index)
+    CType * operator[](unsigned C_INT32 index)
     {
       assert(index < vector < CType * >::size());
       return *(begin() + index);
@@ -245,7 +245,7 @@ class CCopasiVectorS
     /**
      *
      */
-    CType * & operator[](unsigned C_INT32 index)
+    CType * operator[](unsigned C_INT32 index)
   {return ((CCopasiVector <CType>*) this)->operator [](index); }
 
     /**
@@ -331,19 +331,19 @@ class CCopasiVectorN
     /**
      *
      */
-    CType * & operator[](unsigned C_INT32 index)
+    CType * operator[](unsigned C_INT32 index)
   {return ((CCopasiVector <CType>*) this)->operator [](index); }
 
     /**
      *
      */
-    const CType * & operator[](unsigned C_INT32 index) const
+    const CType * operator[](unsigned C_INT32 index) const
       {return ((CCopasiVector <CType>*) this)->operator [](index); }
 
     /**
      *
      */
-    CType * & operator[](const string &name)
+    CType * operator[](const string &name)
     {
       C_INT32 Index = getIndex(name);
 
@@ -357,7 +357,7 @@ class CCopasiVectorN
     /**
      *
      */
-    const CType * & operator[](const string &name) const
+    const CType * operator[](const string &name) const
       {
         C_INT32 Index = getIndex(name);
 
@@ -454,25 +454,25 @@ class CCopasiVectorNS
     /**
      *
      */
-    CType * & operator[](unsigned C_INT32 index)
+    CType * operator[](unsigned C_INT32 index)
   {return ((CCopasiVector <CType>*) this)->operator [](index); }
 
     /**
      *
      */
-    const CType * & operator[](unsigned C_INT32 index) const
+    const CType * operator[](unsigned C_INT32 index) const
       {return ((const CCopasiVector <CType>) *this)[index]; }
 
     /**
      *
      */
-    CType * & operator[](const string &name)
+    CType * operator[](const string &name)
     { return ((CCopasiVectorN <CType>*) this)->operator [](name); }
 
     /**
      *
      */
-    const CType * & operator[](const string &name) const
+    const CType * operator[](const string &name) const
       { return ((CCopasiVectorN <CType>*) this)->operator [](name); }
 
   private:

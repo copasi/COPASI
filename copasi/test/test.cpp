@@ -116,12 +116,12 @@ C_INT main(C_INT argc, char *argv[])
       //      TestMCA();
       //      TestOutputEvent();
       //      MakeFunctionDB();
-      //      ConvertFunctionDB();
+      ConvertFunctionDB();
 
       //      TestRandom(10000, 100);
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
-      TestSpec2Model();
+      //      TestSpec2Model();
 
       //      TestElementaryFluxMode();
     }
@@ -1520,11 +1520,11 @@ C_INT32 ConvertFunctionDB(void)
 {
   CFunctionDB FunctionDB;
 
-  FunctionDB.setFilename("FunctionDB.gps");
+  FunctionDB.setFilename("FunctionDBold.gps");
   FunctionDB.initialize();
 
-  FunctionDB.findFunction("Mass action (reversible)");
-  FunctionDB.findFunction("Mass action (irreversible)");
+  // FunctionDB.findFunction("Mass action (reversible)");
+  // FunctionDB.findFunction("Mass action (irreversible)");
 
   FunctionDB.findFunction("Constant flux (irreversible)");
   FunctionDB.findFunction("Constant flux (reversible)");
