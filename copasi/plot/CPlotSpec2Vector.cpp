@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/02 20:49:45 $
+   $Author: ssahle $ 
+   $Date: 2005/03/17 10:09:56 $
    End CVS Header */
 
 #include <limits>
@@ -235,13 +235,13 @@ C_INT32 CPlotSpec2Vector::getIndexFromCN(const CCopasiObjectName & name)
 
   if (it != mObjectNames.end())
     {
-      std::cout << "CPlotSpec2Vector::getIndexFromCN; existing object: " << name << std::endl;
+      //std::cout << "CPlotSpec2Vector::getIndexFromCN; existing object: " << name << std::endl;
       return (it - mObjectNames.begin());
     }
 
   //the name is not yet in the list
   mObjectNames.push_back(name);
-  std::cout << "CPlotSpec2Vector::getIndexFromCN; new object: " << name << std::endl;
+  //std::cout << "CPlotSpec2Vector::getIndexFromCN; new object: " << name << std::endl;
   return mObjectNames.size() - 1;
 }
 
@@ -254,7 +254,7 @@ bool CPlotSpec2Vector::compile()
   std::vector<CCopasiObjectName>::const_iterator it;
   for (it = mObjectNames.begin(); it != mObjectNames.end(); ++it)
     {
-      std::cout << "CPlotSpecVector::compile  " << *it << std::endl;
+      //std::cout << "CPlotSpecVector::compile  " << *it << std::endl;
       pSelected = CCopasiContainer::ObjectFromName(*it);
       if (!pSelected)
         {
