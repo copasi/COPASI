@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 13:40:38 $
+   $Date: 2004/10/06 09:47:19 $
    End CVS Header */
 
 /**
@@ -64,7 +64,8 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
-    mpOutputHandler(NULL)
+    mpOutputHandler(NULL),
+    mpProgressHandler(NULL)
 {}
 
 CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
@@ -77,7 +78,8 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
-    mpOutputHandler(NULL)
+    mpOutputHandler(NULL),
+    mpProgressHandler(NULL)
 {}
 
 CCopasiTask::CCopasiTask(const CCopasiTask & src,
@@ -89,7 +91,8 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(src.mReport),
-    mpOutputHandler(NULL)
+    mpOutputHandler(NULL),
+    mpProgressHandler(NULL)
 {}
 
 CCopasiTask::~CCopasiTask()
@@ -142,3 +145,6 @@ void CCopasiTask::setOutputHandler(CCallbackHandler* pHandler)
 
 CCallbackHandler* CCopasiTask::getOutputHandlerAddr()
 {return mpOutputHandler;}
+
+void CCopasiTask::setProgressHandler(CCallbackHandler* pHandler)
+{mpProgressHandler = pHandler;}
