@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/02/15 23:00:23 $  
+# $Revision: 1.12 $ $Author: shoops $ $Date: 2005/02/18 16:17:03 $  
 ######################################################################
 
 TEMPLATE = app
@@ -12,7 +12,7 @@ DEPENDPATH += ..
 INCLUDEPATH += ..
 
 contains(BUILD_OS, WIN32) {
-  LIBS += \
+  COPASI_LIBS = \
     ../lib/commandline.lib \
     ../lib/copasiDM.lib \
     ../lib/copasiXML.lib \
@@ -30,7 +30,8 @@ contains(BUILD_OS, WIN32) {
     ../lib/trajectory.lib \
     ../lib/utilities.lib
 
-  TARGETDEPS += $$LIBS
+  LIBS += $$COPASI_LIBS
+  TARGETDEPS += $$COPASI_LIBS
 
 } else {
   LIBS = -L../lib \
