@@ -248,7 +248,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const vector < CMetab* >
             break;
           }
       if (c == -1)
-        return -1;
+        return - 1;
       sprintf(strtmp, "Subs%ld", i);
       if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
         return Fail;
@@ -264,7 +264,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const vector < CMetab* >
             break;
           }
       if (c == -1)
-        return -1;
+        return - 1;
       sprintf(strtmp, "Prod%ld", i);
       if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
         return Fail;
@@ -279,7 +279,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const vector < CMetab* >
             break;
           }
       if (c == -1)
-        return -1;
+        return - 1;
       sprintf(strtmp, "Modf%ld", i);
       if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
         return Fail;
@@ -297,7 +297,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const vector < CMetab* >
 void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
 {
   string tmpstr, tmpstr2;
-  C_INT32 i;
+  unsigned C_INT32 i;
   CCopasiVector < CChemEqElement > rr;
   CCopasiVectorS < CNodeK > node;
 
@@ -863,7 +863,7 @@ C_INT32 CReaction::findPara(string &Target)
         return i;
     }
 
-  return -1;
+  return - 1;
 }
 
 void CReaction::cleanupCallParameters()
