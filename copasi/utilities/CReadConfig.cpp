@@ -53,7 +53,7 @@ C_INT32 CReadConfig::fail()
   // return the failure state
   return mFail;
 }
-string CReadConfig::getVersion() { return mVersion; }
+string CReadConfig::getVersion() {return mVersion;}
 
 void CReadConfig::getDefaults()
 {}
@@ -144,12 +144,7 @@ C_INT32 CReadConfig::getVariable(const string& name,
 
               // Rewind the buffer
               mode = CReadConfig::SEARCH;
-
-              mBuffer.clear();
-
-              mBuffer.seekg(0);
-
-              mLineNumber = 0;
+              rewind();
             }
 
           continue;
@@ -306,7 +301,8 @@ string CReadConfig::lookAhead()
 
   string Line;
   mBuffer >> Line;
-  mBuffer.seekg(pos);
+
+  mBuffer.seekg(pos - mBuffer.tellg(), ios::cur);
 
   return Line.substr(0, Line.find("="));
 }
@@ -314,7 +310,7 @@ string CReadConfig::lookAhead()
 void CReadConfig::rewind()
 {
   mBuffer.clear();
-  mBuffer.seekg(0);
+  mBuffer.seekg(0, ios::beg);
   mLineNumber = 0;
 
   return;
