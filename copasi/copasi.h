@@ -20,48 +20,6 @@ using namespace std ;
 #define MCA_OK 0
 #define MCA_SINGULAR 1
 
-/* Define COPASI_DEBUG */
-#ifndef NDEBUG              // for gcc
-# define COPASI_DEBUG
-#else
-# ifdef _DEBUG             // for Visual Studio
-#  define COPASI_DEBUG
-# else 
-#  undef COPASI_DEBUG
-# endif // _DEBUG
-#endif // not NDEBUG
-
-/* Define Constructor/Destructor Trace */
-#ifdef COPASI_DEBUG
-# pragma message("  Compiling with debug information.")
-# ifdef COPASI_MAIN
-#  pragma message("  Initialize DebugFile") 
-   std::ofstream DebugFile("trace");
-# else
-#  include <fstream>
-#  pragma message("  External DebugFile") 
-   extern std::ofstream DebugFile;
-# endif // COPASI_MAIN
-# if (defined COPASI_TRACE_CONSTRUCTION && !defined WIN32)
-#  pragma message("  Tracing Constructor and Destructor")
-#  include <typeinfo>
-#  define CONSTRUCTOR_TRACE \
-    {DebugFile << "Construct: " << typeid(*this).name() \
-               << ", \tAddress: " << (void *) this << endl;}
-#  define DESTRUCTOR_TRACE \
-    {DebugFile << "Destruct: " << typeid(*this).name() \
-               << ", \tAddress: " << (void *) this << endl;}
-# endif // COPASI_TRACE_CONSTRUCTION
-#endif // COPASI_DEBUG
-
-#ifndef CONSTRUCTOR_TRACE 
-# define CONSTRUCTOR_TRACE
-#endif
-
-#ifndef DESTRUCTOR_TRACE 
-# define DESTRUCTOR_TRACE
-#endif
-
 #if (defined sparc || defined __CYGWIN__)
 # define C_INT32 long
 # define C_INT int
@@ -88,6 +46,43 @@ using namespace std ;
 # define snprintf  _snprintf  // they just have a different name for this guy
 #endif  // WIN32
 
+/* Define COPASI_DEBUG */
+#ifndef NDEBUG              // for gcc
+# define COPASI_DEBUG
+#else
+# ifdef _DEBUG             // for Visual Studio
+#  define COPASI_DEBUG
+# else 
+#  undef COPASI_DEBUG
+# endif // _DEBUG
+#endif // not NDEBUG
+
+/* Define Constructor/Destructor Trace */
+#ifdef COPASI_DEBUG
+# ifdef COPASI_MAIN
+   std::ofstream DebugFile("trace");
+# else
+#  include <fstream>
+   extern std::ofstream DebugFile;
+# endif // COPASI_MAIN
+# if (defined COPASI_TRACE_CONSTRUCTION && !defined WIN32)
+#  include <typeinfo>
+#  define CONSTRUCTOR_TRACE \
+    {DebugFile << "Construct: " << typeid(*this).name() \
+               << ", \tAddress: " << (void *) this << endl;}
+#  define DESTRUCTOR_TRACE \
+    {DebugFile << "Destruct: " << typeid(*this).name() \
+               << ", \tAddress: " << (void *) this << endl;}
+# endif // COPASI_TRACE_CONSTRUCTION
+#endif // COPASI_DEBUG
+
+#ifndef CONSTRUCTOR_TRACE 
+# define CONSTRUCTOR_TRACE
+#endif
+
+#ifndef DESTRUCTOR_TRACE 
+# define DESTRUCTOR_TRACE
+#endif
 
 #ifdef TRUE
 # undef TRUE
