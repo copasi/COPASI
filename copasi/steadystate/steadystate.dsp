@@ -24,7 +24,7 @@ CFG=steadystate - Win32 Build
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Build"
 # PROP BASE Intermediate_Dir "Build"
@@ -33,7 +33,7 @@ CFG=steadystate - Win32 Build
 # PROP BASE Target_File "../lib/steadystate.lib"
 # PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
@@ -63,6 +63,18 @@ SOURCE=.\CMca.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CMCAMethod.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCAProblem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCATask.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CNewtonMethod.cpp
 # End Source File
 # Begin Source File
@@ -88,6 +100,18 @@ SOURCE=.\CEigen.h
 # Begin Source File
 
 SOURCE=.\CMca.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCAMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCAProblem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCATask.h
 # End Source File
 # Begin Source File
 
