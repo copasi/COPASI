@@ -93,6 +93,10 @@ C_INT32 CWriteConfig::setVariable(const string & name,
                                   const void *pout)
 {
   mBuffer << name;
+
+  if (pout == NULL)
+	  return mFail;
+
   if (type != "multiline") mBuffer << "=";
     
   // Return the value depending on the type
