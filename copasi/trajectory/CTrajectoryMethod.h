@@ -33,11 +33,6 @@ class CTrajectoryMethod : public CMethodParameterList
     };
 
     /**
-     *  The name of the method
-     */
-    string mName;
-
-    /**
      *  The type of the method
      */
     CTrajectoryMethod::Type mTypeEnum;

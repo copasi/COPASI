@@ -1,6 +1,8 @@
 #ifndef COPASI_CLsodaMethod
 #define COPASI_CLsodaMethod
 
+class CStateX;
+
 class CLsodaMethod : private CTrajectoryMethod
   {
     friend CTrajectoryMethod *
@@ -8,8 +10,57 @@ class CLsodaMethod : private CTrajectoryMethod
 
     // Attributes
   private:
+    /**
+     *  A pointer to the current state in reduced model view.
+     */
+    CStateX * mpStateX;
 
-    // public:
+    /**
+     *  Dimension of the ODE system.
+     */
+    C_INT32 mDim;
+
+    /**
+     *  Pointer to the array with left hand side values.
+     */
+    C_FLOAT64 * mY;
+
+    /**
+     *  Current time.
+     */
+    C_FLOAT64 mTime;
+
+    /**
+     *  Requested end time.
+     */
+    C_FLOAT64 mEndt;
+
+    /**
+     *  LSODA state.
+     */
+    C_INT32 mLsodaStatus;
+
+    /**
+     *  Relative tolerance.
+     */
+    C_FLOAT64 mRtol;
+
+    /**
+     *  Absolute tolerance.
+     */
+    C_FLOAT64 mAtol;
+
+    /**
+     *  Maximum order for BDF method.
+     */
+    C_INT32 mBDF;
+
+    /**
+     *  Maximum order for Adams method.
+     */
+    C_INT32 mAdams;
+
+    // the following attributes were public in Clsoda.
   private:
 
     // This are standard lsoda parameters
@@ -133,5 +184,117 @@ class CLsodaMethod : private CTrajectoryMethod
      *  @return "const double" actualDeltaT
      */
     const double step(const double & deltaT, const CState * initialState);
+
+    // the following operations were public in Clsoda.
+  private:
+    void xsetf(C_INT32 mflag);
+
+    void lsoda_freevectors();
+
+    void lsoda(C_INT32 neq,
+               C_FLOAT64 *y,
+               C_FLOAT64 *t,
+               C_FLOAT64 tout,
+               C_INT32 itol,
+               C_FLOAT64 *rtol,
+               C_FLOAT64 *atol,
+               C_INT32 itask,
+               C_INT32 *istate,
+               C_INT32 iopt,
+               C_INT32 jt,
+               C_INT32 iwork1,
+               C_INT32 iwork2,
+               C_INT32 iwork5,
+               C_INT32 iwork6,
+               C_INT32 iwork7,
+               C_INT32 iwork8,
+               C_INT32 iwork9,
+               C_FLOAT64 rwork1,
+               C_FLOAT64 rwork5,
+               C_FLOAT64 rwork6,
+               C_FLOAT64 rwork7
+);
+
+    void intdy(C_FLOAT64 t,
+               C_INT32 k,
+               C_FLOAT64 * dky,
+               C_INT32 * iflag);
+
+  private:
+    /**
+     *  This in connection with mModel replaces the callback function!!!
+     */
+    void eval(C_FLOAT64 t,
+              C_FLOAT64 * y,
+              C_FLOAT64 * ydot);
+
+    // This are standard lsoda parameters
+    void terminate(C_INT32 * istate);
+
+    void terminate2(C_FLOAT64 * y,
+                    C_FLOAT64 * t);
+
+    void freevectors();
+
+    void successreturn(C_FLOAT64 *y,
+                       C_FLOAT64 *t,
+                       C_INT32 itask,
+                       C_INT32 ihit,
+                       C_FLOAT64 tcrit,
+                       C_INT32 *istate);
+
+    void stoda(C_FLOAT64 *y);
+
+    void endstoda();
+
+    void prja(C_FLOAT64 *y);
+
+    void correction(C_FLOAT64 *y,
+                    C_INT32 *corflag,
+                    C_FLOAT64 pnorm,
+                    C_FLOAT64 *del,
+                    C_FLOAT64 *delp,
+                    C_FLOAT64 *told,
+                    C_INT32 *ncf,
+                    C_FLOAT64 *rh,
+                    C_INT32 *m);
+
+    void resetcoeff();
+
+    void methodswitch(C_FLOAT64 dsm,
+                      C_FLOAT64 pnorm,
+                      C_FLOAT64 *pdh,
+                      C_FLOAT64 *rh);
+
+    void ewset(C_INT32 itol,
+               C_FLOAT64 * rtol,
+               C_FLOAT64 * atol,
+               C_FLOAT64 * ycur);
+
+    C_FLOAT64 vmnorm(C_INT32 n,
+                     C_FLOAT64 * v,
+                     C_FLOAT64 * w);
+
+    void cfode(C_INT32 meth);
+
+    void scaleh(C_FLOAT64 * rh,
+                C_FLOAT64 * pdh);
+
+    void orderswitch(C_FLOAT64 * rhup,
+                     C_FLOAT64 dsm,
+                     C_FLOAT64 * pdh,
+                     C_FLOAT64 * rh,
+                     C_INT32 * orderflag);
+
+    C_FLOAT64 fnorm(C_INT32 n,
+                    C_FLOAT64 ** a,
+                    C_FLOAT64 * w);
+
+    void corfailure(C_FLOAT64 * told,
+                    C_FLOAT64 * rh,
+                    C_INT32 * ncf,
+                    C_INT32 * corflag);
+
+    void solsy(C_FLOAT64 * y);
   };
 #endif // COPASI_CLsodaMethod

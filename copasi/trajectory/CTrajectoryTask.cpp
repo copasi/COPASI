@@ -21,6 +21,7 @@
 CTrajectoryTask::CTrajectoryTask():
     mpProblem(NULL),
     mpMethod(NULL),
+    mpState(NULL),
     mpOutInit(NULL),
     mpOutPoint(NULL),
     mpOutEnd(NULL)
@@ -29,6 +30,7 @@ CTrajectoryTask::CTrajectoryTask():
 CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src):
     mpProblem(src.mpProblem),
     mpMethod(src.mpMethod),
+    mpState(src.mpState),
     mpOutInit(src.mpOutInit),
     mpOutPoint(src.mpOutPoint),
     mpOutEnd(src.mpOutEnd)
@@ -117,25 +119,46 @@ void CTrajectoryTask::process()
   pdelete(mpState);
   mpState = new CState(*mpProblem->getInitialState());
 
+  if (mpOutInit || mpOutPoint || mpOutEnd)
+    Copasi->OutputList.compile("Time-course output",
+                               mpProblem->getModel(),
+                               mpState);
+
   mpMethod->setCurrentState(mpState);
   mpMethod->setProblem(mpProblem);
 
+  C_FLOAT64 * pDerivatives = new C_FLOAT64 [mpState->getVariableNumberSize()];
   if (mpOutInit)
-    mpOutInit->print(Copasi->OutputList, *mpOut);
+    {
+      /* Correct output depends on the model being updated */
+      /* We should try to avoid this in the future         */
+      mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+      mpOutInit->print(Copasi->OutputList, *mpOut);
+    }
+
+  if (mpOutPoint)
+    {
+      /* Correct output depends on the model being updated */
+      /* We should try to avoid this in the future         */
+      mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+      mpOutPoint->print(Copasi->OutputList, *mpOut);
+    }
 
   C_FLOAT64 StepSize = mpProblem->getStepSize();
   C_FLOAT64 ActualStepSize;
   const C_FLOAT64 & Time = mpState->getTime();
   C_FLOAT64 EndTime = mpProblem->getEndTime() - StepSize;
 
+  ActualStepSize = mpMethod->step(StepSize, mpState);
   if (mpOutPoint)
-    mpOutPoint->print(Copasi->OutputList, *mpOut);
-
-  ActualStepSize = mpMethod->step(StepSize,
-                                  mpProblem->getInitialState());
+    {
+      /* Correct output depends on the model being updated */
+      /* We should try to avoid this in the future         */
+      mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+      mpOutPoint->print(Copasi->OutputList, *mpOut);
+    }
 
 #ifdef  XXXX_Event
-
   if (ActualStepSize != StepSize)
     {
       /* Here we will do conditional event processing */
@@ -144,13 +167,17 @@ void CTrajectoryTask::process()
 
   while (Time < EndTime)
     {
-      if (mpOutPoint)
-        mpOutPoint->print(Copasi->OutputList, *mpOut);
-
       ActualStepSize = mpMethod->step(StepSize);
 
-#ifdef  XXXX_Event
+      if (mpOutPoint)
+        {
+          /* Correct output depends on the model being updated */
+          /* We should try to avoid this in the future         */
+          mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+          mpOutPoint->print(Copasi->OutputList, *mpOut);
+        }
 
+#ifdef  XXXX_Event
       if (ActualStepSize != StepSize)
         {
           /* Here we will do conditional event processing */
@@ -158,26 +185,33 @@ void CTrajectoryTask::process()
 #endif // XXXX_Event
     }
 
+#ifdef  XXXX_Event
   while (Time < mpProblem->getEndTime())
     {
-      if (mpOutPoint)
-        mpOutPoint->print(Copasi->OutputList, *mpOut);
-
       ActualStepSize = mpMethod->step(mpProblem->getEndTime() - Time);
 
-#ifdef  XXXX_Event
+      if (mpOutPoint)
+        {
+          /* Correct output depends on the model being updated */
+          /* We should try to avoid this in the future         */
+          mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+          mpOutPoint->print(Copasi->OutputList, *mpOut);
+        }
 
       if (ActualStepSize != (mpProblem->getEndTime() - Time))
         {
           /* Here we will do conditional event processing */
         }
-#endif // XXXX_Event
     }
+#endif // XXXX_Event
+
   mpProblem->setEndState(new CState(*mpState));
 
-  if (mpOutPoint)
-    mpOutPoint->print(Copasi->OutputList, *mpOut);
-
   if (mpOutEnd)
-    mpOutEnd->print(Copasi->OutputList, *mpOut);
+    {
+      /* Correct output depends on the model being updated */
+      /* We should try to avoid this in the future         */
+      mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+      mpOutEnd->print(Copasi->OutputList, *mpOut);
+    }
 }

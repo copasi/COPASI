@@ -216,7 +216,7 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
 void CTrajectoryProblem::save(CWriteConfig & configBuffer) const
   {
     string Tmp = mpModel->getTitle();
-    configBuffer.setVariable("StateModel", "string", &Tmp);
+    configBuffer.setVariable("TrajectoryProblemModel", "string", &Tmp);
 
     configBuffer.setVariable("TrajectoryProblemStepNumber",
                              "C_INT32", &mStepNumber);

@@ -30,9 +30,7 @@ CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type)
     {
     case unspecified:
     case deterministic:
-      //      Method = new ClSODA();
-      Method = new CTrajectoryMethod();
-      Method->mTypeEnum = deterministic;
+      Method = new CLsodaMethod();
       break;
 
     case stochastic:
@@ -52,7 +50,6 @@ CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type)
  */
 CTrajectoryMethod::CTrajectoryMethod() :
     CMethodParameterList(),
-    mName("No Name"),
     mTypeEnum(CTrajectoryMethod::unspecified),
     mpCurrentState(NULL),
     mpProblem(NULL)
@@ -64,7 +61,6 @@ CTrajectoryMethod::CTrajectoryMethod() :
  */
 CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src):
     CMethodParameterList(src),
-    mName(src.mName),
     mTypeEnum(src.mTypeEnum),
     mpCurrentState(src.mpCurrentState),
     mpProblem(src.mpProblem)
