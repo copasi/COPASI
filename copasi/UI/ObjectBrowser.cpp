@@ -280,7 +280,8 @@ void ObjectBrowser::nextClicked()
             ObjectItemText->setColor(blue);
           if (pHead->pItem->getObject()->pCopasiObject)
             {
-              ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN().c_str(), -1);
+              //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN().c_str(), -1);
+              ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getObjectType().c_str(), -1);
               i++;
             }
         }

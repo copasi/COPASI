@@ -14,6 +14,7 @@
 #include <qcheckbox.h>
 #include <qradiobutton.h>
 #include <qlineedit.h>
+#include "report/CCopasiObject.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -25,7 +26,6 @@ class ScanCheckBox;
 class ScanLineEdit;
 class ScanRadioButton;
 class QScrollView;
-class CCopasiObject;
 
 class ScanItemWidget : public QWidget
   {
