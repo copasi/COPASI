@@ -16,6 +16,7 @@
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
 #include "CScanProblem.h"
+#include "math.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -246,4 +247,54 @@ void CScanProblem::setSteadyStateTask(CSteadyStateTask* pSteadyStateTask)
 void CScanProblem::setTrajectoryTask(CTrajectoryTask* pTrajectoryTask)
 {
   mpTrajectory = pTrajectoryTask;
+}
+
+void CScanProblem::InitScan(void)
+{
+  int i, density;
+  unsigned C_INT32 scanDimension = getListSize();
+  // do nothing if ScanDimension is smaller than 1
+  if (scanDimension < 1)
+    {
+      scanDimension = 0;
+      return;
+    }
+  // ensure that that the first item is a master
+  setScanItemParameter(0, "indp", true);
+  // and that its density is >= 2
+  if (getScanItemParameter(0, "density") < 2)
+    setScanItemParameter(0, "density", 2);
+
+  unsigned C_INT32 TotIteration = 1;
+  for (i = 0, density = 2; i < scanDimension; i++)
+    {
+      // if this item is slave keep the density of the master
+      if (getScanItemParameter(i, "indp"))
+        {
+          density = getScanItemParameter(i, "density");
+          TotIteration *= density;
+        }
+
+      // calculate the amplitude
+      if (getScanItemParameter(i, "log"))
+        {
+          if ((getScanItemParameter(i, "min") <= 0) ||
+              (getScanItemParameter(i, "max") <= 0))
+            {
+              // logarithmic scanning requires positive arguments!
+              // user should be warned, but this should never happen!
+              setScanItemParameter(i, "min", 1.0);
+              setScanItemParameter(i, "max", 2.0);
+            }
+          setScanItemParameter(i, "ampl",
+                               log10(getScanItemParameter(i, "max"))
+                               - log10(getScanItemParameter(i, "min")));
+        }
+      else
+        setScanItemParameter(i, "ampl",
+                             getScanItemParameter(i, "max")
+                             - getScanItemParameter(i, "min"));
+      // calculate the increment
+      setScanItemParameter(i, "incr", getScanItemParameter(i, "ampl") / (getScanItemParameter(i, "density") - 1));
+    }
 }

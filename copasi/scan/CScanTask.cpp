@@ -90,7 +90,7 @@ void CScanTask::process()
     fatalError();
 
   mpMethod->setProblem(mpProblem);
-  mpMethod->InitScan();
+  mpProblem->InitScan();
   unsigned C_INT32 scanDimension = mpProblem->getListSize();
   int i;
   // find the last master

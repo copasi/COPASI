@@ -212,6 +212,12 @@ class CScanProblem
      * @param "CWriteConfig &" configBuffer
      */
     void save(CWriteConfig & configBuffer) const;
+
+    /*
+     Intialized all parameters insidethe Scan Parameter Matrix,
+    */
+
+    void InitScan(void);
   };
 
 #endif // COPASI_CScanProblem

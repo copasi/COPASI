@@ -181,56 +181,6 @@ void CScanMethod::setScanParameterValue(unsigned C_INT32 i,
     }
 }
 
-void CScanMethod::InitScan(void)
-{
-  int i, density;
-  unsigned C_INT32 scanDimension = scanProblem->getListSize();
-  // do nothing if ScanDimension is smaller than 1
-  if (scanDimension < 1)
-    {
-      scanDimension = 0;
-      return;
-    }
-  // ensure that that the first item is a master
-  scanProblem->setScanItemParameter(0, "indp", true);
-  // and that its density is >= 2
-  if (scanProblem->getScanItemParameter(0, "density") < 2)
-    scanProblem->setScanItemParameter(0, "density", 2);
-
-  unsigned C_INT32 TotIteration = 1;
-  for (i = 0, density = 2; i < scanDimension; i++)
-    {
-      // if this item is slave keep the density of the master
-      if (scanProblem->getScanItemParameter(i, "indp"))
-        {
-          density = scanProblem->getScanItemParameter(i, "density");
-          TotIteration *= density;
-        }
-
-      // calculate the amplitude
-      if (scanProblem->getScanItemParameter(i, "log"))
-        {
-          if ((scanProblem->getScanItemParameter(i, "min") <= 0) ||
-              (scanProblem->getScanItemParameter(i, "max") <= 0))
-            {
-              // logarithmic scanning requires positive arguments!
-              // user should be warned, but this should never happen!
-              scanProblem->setScanItemParameter(i, "min", 1.0);
-              scanProblem->setScanItemParameter(i, "max", 2.0);
-            }
-          scanProblem->setScanItemParameter(i, "ampl",
-                                            log10(scanProblem->getScanItemParameter(i, "max"))
-                                            - log10(scanProblem->getScanItemParameter(i, "min")));
-        }
-      else
-        scanProblem->setScanItemParameter(i, "ampl",
-                                          scanProblem->getScanItemParameter(i, "max")
-                                          - scanProblem->getScanItemParameter(i, "min"));
-      // calculate the increment
-      scanProblem->setScanItemParameter(i, "incr", scanProblem->getScanItemParameter(i, "ampl") / (scanProblem->getScanItemParameter(i, "density") - 1));
-    }
-}
-
 // this function counts the number of iterations to execute
 unsigned C_INT32 CScanMethod::CountScan(void)
 {

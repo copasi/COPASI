@@ -41,12 +41,6 @@ class CScanMethod
     // this function counts the number of iterations to execute
     unsigned C_INT32 CountScan(void);
 
-    /*
-     Intialized all parameters insidethe Scan Parameter Matrix,
-    */
-
-    void InitScan(void);
-
     /**
        * calculate function for ScanMethod
        */
