@@ -18,7 +18,7 @@ public:
      *  This opens the configuration file using a the default filename 
      *  "test.txt".
      */
-    CWriteConfig();
+     CWriteConfig();
 
     /**
      *  Specified consructor. 
@@ -33,6 +33,11 @@ public:
      *  The destructor calls the method Free().
      */
     ~CWriteConfig();
+
+    /**
+     *  Flush the output buffer
+     */
+    Flush();
 
     /**
      *  Returns the failure status.
@@ -74,6 +79,11 @@ private:
      */
     unsigned long   mLineNumber;             // Current Line Number 
 
+    /**
+     *  Open mode
+     */
+    int mOpenMode;
+                                             
     /**
      *  Failure status:
      *  0 = no error

@@ -91,7 +91,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    int Save(CWriteConfig* pconfigbuffer);
+    int Save(CWriteConfig &pconfigbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -100,7 +100,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    int Load(CReadConfig* pconfigbuffer);
+    int Load(CReadConfig &pconfigbuffer);
 
     /**
      *  Sets the value of mpValue with a pointer to a double that has 

@@ -48,18 +48,18 @@ CDatum& CDatum::operator=(CDatum &ptRHS)
     return *this;
 }
 
-int CDatum::Save(CWriteConfig *pconfigbuffer)
+int CDatum::Save(CWriteConfig &pconfigbuffer)
 {
     // this really should be changed to something like Load
     // TO BE DONE SOON
 
     // make sure fp numbers come out in scientific notation
-    mFail = pconfigbuffer->SetVariable((string) "Title", 
+    mFail = pconfigbuffer.SetVariable((string) "Title", 
                                        (string) "string",
                                        (void *) &mTitle);
     if (mFail) return mFail;
 
-    mFail = pconfigbuffer->SetVariable((string) "Type", 
+    mFail = pconfigbuffer.SetVariable((string) "Type", 
                                        (string) "int",
                                        (void *) &mType);
     if (mFail) return mFail;
@@ -100,7 +100,7 @@ int CDatum::Save(CWriteConfig *pconfigbuffer)
         case D_MOIT:
         case D_TT:
         case D_EIGVR:
-        case D_EIGVI:   mFail = pconfigbuffer->SetVariable((string) "I", 
+        case D_EIGVI:   mFail = pconfigbuffer.SetVariable((string) "I", 
                                                            (string) "string",
                                                            (void *) &mI);
                         if (mFail) return mFail;
@@ -109,11 +109,11 @@ int CDatum::Save(CWriteConfig *pconfigbuffer)
         case D_ELAST:
         case D_CCC:
         case D_FCC:
-        case D_EIG:     mFail = pconfigbuffer->SetVariable((string) "I", 
+        case D_EIG:     mFail = pconfigbuffer.SetVariable((string) "I", 
                                                            (string) "int",
                                                            (void *) &mI);
                         if (mFail) return mFail;
-                        mFail = pconfigbuffer->SetVariable((string) "J", 
+                        mFail = pconfigbuffer.SetVariable((string) "J", 
                                                            (string) "string",
                                                            (void *) &mJ);
                         if (mFail) return mFail;
@@ -127,14 +127,14 @@ int CDatum::Save(CWriteConfig *pconfigbuffer)
 }
 
 
-int CDatum::Load(CReadConfig* pconfigbuffer)
+int CDatum::Load(CReadConfig &pconfigbuffer)
 {
-    mFail = pconfigbuffer->GetVariable((string) "Title", 
+    mFail = pconfigbuffer.GetVariable((string) "Title", 
                                        (string) "string",
                                        (void *) &mTitle);
     if (mFail) return mFail;
 
-    mFail = pconfigbuffer->GetVariable((string) "Type", 
+    mFail = pconfigbuffer.GetVariable((string) "Type", 
                                        (string) "int",
                                        (void *) &mType);
     if (mFail) return mFail;
@@ -175,7 +175,7 @@ int CDatum::Load(CReadConfig* pconfigbuffer)
         case D_MOIT:
         case D_TT:
         case D_EIGVR:
-        case D_EIGVI:   mFail = pconfigbuffer->GetVariable((string) "I", 
+        case D_EIGVI:   mFail = pconfigbuffer.GetVariable((string) "I", 
                                                            (string) "string",
                                                            (void *) &mI);
                         if (mFail) return mFail;
@@ -184,11 +184,11 @@ int CDatum::Load(CReadConfig* pconfigbuffer)
         case D_ELAST:
         case D_CCC:
         case D_FCC:
-        case D_EIG:     mFail = pconfigbuffer->GetVariable((string) "I", 
+        case D_EIG:     mFail = pconfigbuffer.GetVariable((string) "I", 
                                                            (string) "int",
                                                            (void *) &mI);
                         if (mFail) return mFail;
-                        mFail = pconfigbuffer->GetVariable((string) "J", 
+                        mFail = pconfigbuffer.GetVariable((string) "J", 
                                                            (string) "string",
                                                            (void *) &mJ);
                         if (mFail) return mFail;

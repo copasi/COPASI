@@ -71,28 +71,28 @@ int CCompartment::Fail()
     return mFail;
 }
 
-int CCompartment::Load(CReadConfig *pconfigbuffer)
+int CCompartment::Load(CReadConfig &pconfigbuffer)
 {
-    mFail = pconfigbuffer->GetVariable((string) "Compartment", 
+    mFail = pconfigbuffer.GetVariable((string) "Compartment", 
                                        (string) "string",
                                        (void *) &mName);
     if (mFail) return mFail;
 
-    mFail = pconfigbuffer->GetVariable((string) "Volume", 
+    mFail = pconfigbuffer.GetVariable((string) "Volume", 
                                        (string) "double",
                                        (void *) &mVolume);
     return mFail;
 }
 
 
-int CCompartment::Save( CWriteConfig *pconfigbuffer )
+int CCompartment::Save( CWriteConfig &pconfigbuffer )
 {
-    mFail = pconfigbuffer->SetVariable((string) "Compartment",
+    mFail = pconfigbuffer.SetVariable((string) "Compartment",
                                        (string) "string",
                                        (void *) &mName);
     if (mFail) return mFail;
 
-    mFail = pconfigbuffer->SetVariable((string) "Volume", 
+    mFail = pconfigbuffer.SetVariable((string) "Volume", 
                                        (string) "double",
                                        (void *) &mVolume);
     return mFail;
