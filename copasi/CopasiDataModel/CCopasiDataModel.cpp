@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:15:07 $
+   $Author: stupe $ 
+   $Date: 2005/02/23 03:13:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -177,6 +177,7 @@ bool CCopasiDataModel::autoSave()
   if (!mAutoSaveNeeded) return true;
 
   std::string AutoSave;
+  int index;
   COptions::getValue("Tmp", AutoSave);
 
 #ifdef WIN32
@@ -185,7 +186,10 @@ bool CCopasiDataModel::autoSave()
   AutoSave += "/";
 #endif
 
-  AutoSave += "tmp_" + mSaveFileName;
+  if ((index = mSaveFileName.find_last_of('\\')) == -1)
+    index = mSaveFileName.find_last_of('/');
+  //index = mSaveFileName.find_last_of('/' || '\\');
+  AutoSave += "tmp_" + mSaveFileName.substr(index + 1, mSaveFileName.length() - index - 5) + ".cps";
 
   if (!saveModel(AutoSave, true)) return false;
 

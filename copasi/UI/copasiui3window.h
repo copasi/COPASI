@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/22 23:15:18 $
+   $Author: stupe $ 
+   $Date: 2005/02/23 03:13:15 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -70,6 +70,7 @@ class CopasiUI3Window : public QMainWindow
     bool bobject_browser_open;
     void createToolBar();
     void createMenuBar();
+    void CleanUp();
     SliderDialog* sliders;
     int mShowSlidersMenuEntry;
     QToolButton* mpToggleSliderDialogButton;
