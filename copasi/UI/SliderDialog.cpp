@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/27 17:02:44 $
+   $Date: 2005/02/27 18:34:59 $
    End CVS Header */
 
 #include <iostream>
@@ -119,6 +119,7 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   this->contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
 
   this->mpDeactivatedLabel = new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", this->sliderBox);
+  this->mpDeactivatedLabel->setHidden(true);
 
   this->taskMap[23] = &SliderDialog::runTimeCourse;
 
@@ -249,12 +250,12 @@ void SliderDialog::addSlider(CSlider* pSlider)
   this->currSlider = new CopasiSlider(pSlider, this->sliderBox);
   this->currSlider->setHidden(true);
   ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 1, this->currSlider);
-  this->currSlider->setHidden(false);
   connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
   connect(this->currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
   connect(this->currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
   connect(this->currSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
   connect(this->currSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
+  this->currSlider->setHidden(false);
 }
 
 CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
@@ -310,15 +311,13 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
       this->clearSliderBox();
 
       this->currentFolderId = -1;
-      ((QVBoxLayout*)this->sliderBox->layout())->addStretch();
-      ((QVBoxLayout*)this->sliderBox->layout())->addWidget(this->mpDeactivatedLabel);
-      ((QVBoxLayout*)this->sliderBox->layout())->addStretch();
+      ((QVBoxLayout*)this->sliderBox->layout())->add(this->mpDeactivatedLabel);
       this->mpDeactivatedLabel->setHidden(false);
     }
   else
     {
       this->mpDeactivatedLabel->setHidden(true);
-      this->sliderBox->layout()->remove(this->mpDeactivatedLabel);
+      ((QVBoxLayout*)this->sliderBox->layout())->remove(this->mpDeactivatedLabel);
       this->clearSliderBox();
       this->setEnabled(true);
 
@@ -336,10 +335,15 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
       for (i = 0; i < maxCount;++i)
         {
           CSlider* pCSlider = pVector->at(i);
-          CopasiSlider* pCopasiSlider = new CopasiSlider(pCSlider, this->sliderBox);
-          pCopasiSlider->setHidden(true);
-          ((QVBoxLayout*)this->sliderBox->layout())->addWidget(pCopasiSlider);
-          pCopasiSlider->setHidden(false);
+          this->currSlider = new CopasiSlider(pCSlider, this->sliderBox);
+          this->currSlider->setHidden(true);
+          ((QVBoxLayout*)this->sliderBox->layout())->add(this->currSlider);
+          connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+          connect(this->currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
+          connect(this->currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
+          connect(this->currSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
+          connect(this->currSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
+          this->currSlider->setHidden(false);
         }
       pdelete(pVector);
       ((QVBoxLayout*)this->sliderBox->layout())->addStretch();
