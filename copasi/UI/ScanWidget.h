@@ -34,6 +34,7 @@ class TrajectoryWidget;
 class ScanItemWidget;
 class CCopasiObject;
 class ScanWidget;
+class QVBoxLayout;
 
 class ScanScrollView: public QScrollView
   {
@@ -94,8 +95,12 @@ class ScanWidget : public CopasiWidget
   protected:
     QGridLayout* ScanWidgetLayout;
     QHBoxLayout* Layout2;
-    QHBoxLayout* Layout3;
     QHBoxLayout* Layout4;
+    QHBoxLayout* Layout3;
+    QHBoxLayout* Layout4_2;
+    QHBoxLayout* Layout8;
+    QVBoxLayout* Layout7;
+    QGridLayout* Layout6;
     CModel *mModel;
 
   signals:
