@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:58 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/16 20:00:28 $
    End CVS Header */
 
 /********************************************************
@@ -56,6 +56,8 @@ class OptimizationItemWidget : public QWidget
     ScanLineEdit* ObjectName;
 
     CCopasiObject* mpObject;
+
+    // shall add a pointer to COptFunction to change its parameter simultaneously
 
     std::string getItemUpperLimit();
     std::string getItemLowerLimit();

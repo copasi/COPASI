@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:40 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/16 20:00:29 $
    End CVS Header */
 
 /********************************************************
@@ -415,6 +415,14 @@ void OptimizationWidget::upButtonClicked()
   optFunction->mParaList [activeObject - 1] = optFunction->mParaList [activeObject];
   optFunction->mParaList [activeObject] = tmpObj;
 
+  CKinFunction* tmpFunc = optFunction->mMinFunctionList [activeObject - 1];
+  optFunction->mMinFunctionList [activeObject - 1] = optFunction->mMinFunctionList [activeObject];
+  optFunction->mMinFunctionList [activeObject] = tmpFunc;
+
+  tmpFunc = optFunction->mMaxFunctionList [activeObject - 1];
+  optFunction->mMaxFunctionList [activeObject - 1] = optFunction->mMaxFunctionList [activeObject];
+  optFunction->mMaxFunctionList [activeObject] = tmpFunc;
+
   std::string tmpStr = optFunction->mMinList [activeObject - 1];
   optFunction->mMinList [activeObject - 1] = optFunction->mMinList [activeObject];
   optFunction->mMinList [activeObject] = tmpStr;
@@ -489,6 +497,14 @@ void OptimizationWidget::downButtonClicked()
   optFunction->mParaList [activeObject - 1] = optFunction->mParaList [activeObject];
   optFunction->mParaList [activeObject] = tmpObj;
 
+  CKinFunction* tmpFunc = optFunction->mMinFunctionList [activeObject - 1];
+  optFunction->mMinFunctionList [activeObject - 1] = optFunction->mMinFunctionList [activeObject];
+  optFunction->mMinFunctionList [activeObject] = tmpFunc;
+
+  tmpFunc = optFunction->mMaxFunctionList [activeObject - 1];
+  optFunction->mMaxFunctionList [activeObject - 1] = optFunction->mMaxFunctionList [activeObject];
+  optFunction->mMaxFunctionList [activeObject] = tmpFunc;
+
   std::string tmpStr = optFunction->mMinList [activeObject - 1];
   optFunction->mMinList [activeObject - 1] = optFunction->mMinList [activeObject];
   optFunction->mMinList [activeObject] = tmpStr;
@@ -561,7 +577,7 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
   //insert a new item
 
   unsigned int i;
-  i = optFunction->addItem(pObject); // automatically creat the 3 fields
+  i = optFunction->addItem(pObject); // automatically creat the 5 fields; +/-inf, upper/lower bound, object pointer
 
   parameterTable->setCopasiObjectPtr(pObject);
   parameterTable->setItemLowerLimit(optFunction->mMinList[i]);
@@ -627,13 +643,13 @@ void OptimizationWidget::slotBtnConfirmClicked()
   unsigned i;
   for (i = 0; i < func->mParaList.size(); i++)
     {
-      func->mMinList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerLimit();
-      func->mMaxList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperLimit();
-
+      //      func->mMinList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerLimit();
+      //      func->mMaxList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperLimit();
       func->mMinOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerOper());
       func->mMaxOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperOper());
     }
-  func->compile();
+  //  func->compile();
+  func->connect();
 }
 
 void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:25:23 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/16 20:00:28 $
    End CVS Header */
 
 #include <sstream>
@@ -83,6 +83,8 @@ int COptFunction::addItem(CCopasiObject* pObject)
   mParaList.push_back(pObject);
   mMinList.push_back("-inf");
   mMaxList.push_back("+inf");
+  mMinFunctionList.push_back(NULL);
+  mMaxFunctionList.push_back(NULL);
   return mParaList.size() - 1;
 }
 
@@ -96,34 +98,38 @@ bool COptFunction::removeItem(const std::string & name)
           mParaList.erase(mParaList.begin() + i);
           mMinList.erase(mMinList.begin() + i);
           mMaxList.erase(mMaxList.begin() + i);
+          mMinFunctionList.erase(mMinFunctionList.begin() + i);
+          mMaxFunctionList.erase(mMaxFunctionList.begin() + i);
           return true;
         }
     }
   return false;
 }
 
-void COptFunction::compile()
+void COptFunction::connect()
 {
   int i;
   CKinFunction* pMinFunc, * pMaxFunc;
   for (i = 0; i < mParaList.size(); i++)
     {
-      pMinFunc = NULL;
-      pMaxFunc = NULL;
+      //      pMinFunc = NULL;
+      //      pMaxFunc = NULL;
       if (mMinList[i] != "-inf")
         {
-          pMinFunc = new CKinFunction();
-          pMinFunc->setDescription(mMinList[i].c_str());
-          pMinFunc->compile();
+          //          pMinFunc = new CKinFunction();
+          //          pMinFunc->setDescription(mMinList[i].c_str());
+          //          pMinFunc->compile();
+          mMinFunctionList[i]->connect();
         }
 
       if (mMaxList[i] != "+inf")
         {
-          pMaxFunc = new CKinFunction();
-          pMaxFunc->setDescription(mMaxList[i].c_str());
-          pMaxFunc->compile();
+          //          pMaxFunc = new CKinFunction();
+          //          pMaxFunc->setDescription(mMaxList[i].c_str());
+          //          pMaxFunc->compile();
+          mMaxFunctionList[i]->connect();
         }
-      mMinFunctionList.push_back(pMinFunc);
-      mMaxFunctionList.push_back(pMaxFunc);
+      //      mMinFunctionList.push_back(pMinFunc);
+      //      mMaxFunctionList.push_back(pMaxFunc);
     }
 }
