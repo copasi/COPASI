@@ -245,7 +245,16 @@ class CCopasiXMLInterface
                      CXMLAttributeList & attributeList);
 
     /**
-     *
+     * Start saving an XML element to the ostream. Call endSaveElement to
+     * conclude.
+     * @param const std::string & name
+     * @return bool success
+     */
+    bool startSaveElement(const std::string & name);
+
+    /**
+     * Start saving an XML element to the ostream. Call endSaveElement to
+     * conclude.
      * @param const std::string & name
      * @param CXMLAttributeList & attributeList
      * @return bool success
@@ -254,7 +263,7 @@ class CCopasiXMLInterface
                           CXMLAttributeList & attributeList);
 
     /**
-     *
+     * End saving an XML element to the ostream started by startSaveElement.
      * @param const std::string & name
      * @return bool success
      */
@@ -269,9 +278,14 @@ class CXMLAttributeList
     // Attributes
   private:
     /**
-     * The attribute list
+     * The attribute list.
      */
     std::vector< std::string > mAttributeList;
+
+    /**
+     * The list wheter an attribute is to be saved.
+     */
+    std::vector< bool > mSaveList;
 
     // Operations
   public:
@@ -313,6 +327,8 @@ class CXMLAttributeList
       mAttributeList.push_back(name);
       mAttributeList.push_back(CCopasiXMLInterface::encode(Value.str()));
 
+      mSaveList.push_back(true);
+
       return true;
     }
 
@@ -352,6 +368,8 @@ class CXMLAttributeList
       Value << value;
 
       mAttributeList[2 * index + 1] = CCopasiXMLInterface::encode(Value.str());
+      mSaveList[index] = true;
+
       return true;
     }
 
@@ -361,6 +379,13 @@ class CXMLAttributeList
      * @return const std::string & value
      */
     const std::string & getValue(const unsigned C_INT32 & index) const;
+
+    /**
+     * Set whether the indexed attribute shall be skipped during save.
+     * @param const unsigned C_INT32 & index
+     * @return bool sucess
+     */
+    bool skip(const unsigned C_INT32 & index);
 
     /**
      * Retreive the indexed attribute.

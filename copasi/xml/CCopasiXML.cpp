@@ -14,6 +14,7 @@
 
 #include "utilities/CCopasiVector.h"
 #include "model/CModel.h"
+#include "model/CState.h"
 #include "function/CFunction.h"
 
 // class CCopasiTask;
@@ -76,7 +77,271 @@ bool CCopasiXML::saveModel()
   Attributes.add("timeUnit", mpModel->getTimeUnit());
   Attributes.add("volumeUnit", mpModel->getVolumeUnit());
   Attributes.add("quantityUnit", mpModel->getQuantityUnit());
-  Attributes.add("stateVariable", mpModel->getStateTemplate().getKey(mpModel->getKey()));
+  Attributes.add("stateVariable",
+                 mpModel->getStateTemplate().getKey(mpModel->getKey()));
+
+  startSaveElement("Model", Attributes);
+
+  startSaveElement("Comment");
+
+  Attributes.erase();
+  Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
+  startSaveElement("body", Attributes);
+
+  saveData(mpModel->getComments()); // :TODO: we need to have saveXHTML
+
+  endSaveElement("body");
+
+  endSaveElement("Comment");
+
+  unsigned C_INT32 i, imax;
+
+  if ((imax = mpModel->getCompartments().size()) > 0)
+    {
+      startSaveElement("ListOfCompartments");
+
+      Attributes.erase();
+      Attributes.add("key", "");
+      Attributes.add("name", "");
+      Attributes.add("stateVariable", "");
+
+      unsigned C_INT32 i, imax = mpModel->getCompartments().size();
+      for (i = 0; i < imax; i++)
+        {
+          CCompartment * pComp = mpModel->getCompartments()[i];
+
+          Attributes.setValue(0, pComp->getKey());
+          Attributes.setValue(1, pComp->getName());
+          Attributes.setValue(2,
+                              mpModel->getStateTemplate().getKey(pComp->getKey()));
+          saveElement("Compartment", Attributes);
+        }
+
+      endSaveElement("ListOfCompartments");
+    }
+
+  if ((imax = mpModel->getMetabolites().size()) > 0)
+    {
+      startSaveElement("ListOfMetabolites");
+
+      Attributes.erase();
+      Attributes.add("key", "");
+      Attributes.add("name", "");
+      Attributes.add("compartment", "");
+      Attributes.add("stateVariable", "");
+
+      for (i = 0; i < imax; i++)
+        {
+          CMetab * pMetab = mpModel->getMetabolites()[i];
+
+          Attributes.setValue(0, pMetab->getKey());
+          Attributes.setValue(1, pMetab->getName());
+          Attributes.setValue(2, pMetab->getCompartment()->getKey());
+          Attributes.setValue(3,
+                              mpModel->getStateTemplate().getKey(pMetab->getKey()));
+
+          saveElement("Metabolite", Attributes);
+        }
+
+      endSaveElement("ListOfMetabolites");
+    }
+
+  if ((imax = mpModel->getReactions().size()) > 0)
+    {
+      startSaveElement("ListOfReactions");
+
+      CXMLAttributeList Attr;
+      const CCopasiVector< CChemEqElement > * pReactantList;
+      const CCopasiVectorN< CReaction::CId2Param > * pParamList;
+      unsigned C_INT32 j, jmax;
+
+      std::vector< const CCopasiObject * > ObjectList;
+      unsigned C_INT32 k, kmax;
+
+      Attributes.erase();
+      Attributes.add("key", "");
+      Attributes.add("name", "");
+      Attributes.add("compartment", "");
+      Attributes.add("reversible", "");
+
+      for (i = 0; i < imax; i++)
+        {
+          CReaction * pReaction = mpModel->getReactions()[i];
+
+          Attributes.setValue(0, pReaction->getKey());
+          Attributes.setValue(1, pReaction->getName());
+          if (pReaction->getCompartment())
+            Attributes.setValue(2, pReaction->getCompartment()->getKey());
+          else
+            Attributes.skip(2);
+          Attributes.setValue(3, pReaction->isReversible() ? "true" : "false");
+
+          startSaveElement("Reaction", Attributes);
+
+          Attr.erase();
+          Attr.add("metabolite", "");
+          Attr.add("stoichiometry", "");
+
+          pReactantList = & pReaction->getChemEq().getSubstrates();
+          if ((jmax = pReactantList->size()) > 0)
+            {
+              startSaveElement("ListOfSubstrates");
+
+              for (j = 0; j < jmax; j++)
+                {
+                  Attr.setValue(0,
+                                (*pReactantList)[j]->getMetabolite().getKey());
+                  Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
+
+                  saveElement("Substrate", Attr);
+                }
+
+              endSaveElement("ListOfSubstrates");
+            }
+          startSaveElement("ListOfProducts");
+
+          pReactantList = & pReaction->getChemEq().getProducts();
+          if ((jmax = pReactantList->size()) > 0)
+            {
+              for (j = 0; j < jmax; j++)
+                {
+                  Attr.setValue(0,
+                                (*pReactantList)[j]->getMetabolite().getKey());
+                  Attr.setValue(1,
+                                (*pReactantList)[j]->getMultiplicity());
+
+                  saveElement("Product", Attr);
+                }
+
+              endSaveElement("ListOfProducts");
+            }
+
+          pReactantList = & pReaction->getChemEq().getModifiers();
+          if ((jmax = pReactantList->size()) > 0)
+            {
+              startSaveElement("ListOfModifiers");
+
+              for (j = 0, jmax = pReactantList->size(); j < jmax; j++)
+                {
+                  Attr.setValue(0, (*pReactantList)[j]->getMetabolite().getKey());
+                  Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
+
+                  saveElement("Modifier", Attr);
+                }
+
+              endSaveElement("ListOfModifiers");
+            }
+
+          pParamList = & pReaction->getId2Parameters();
+          if ((jmax = pParamList->size()) > 0)
+            {
+              startSaveElement("ListOfConstants");
+
+              Attr.erase();
+              Attr.add("key", "");
+              Attr.add("name", "");
+              Attr.add("value", "");
+
+              for (j = 0; j < jmax; j++)
+                {
+                  Attr.setValue(0, (*pParamList)[j]->getKey());
+                  Attr.setValue(1, (*pParamList)[j]->getName());
+                  Attr.setValue(2, (*pParamList)[j]->getValue());
+
+                  saveElement("Constant", Attr);
+                }
+
+              endSaveElement("ListOfConstants");
+            }
+
+          if (&pReaction->getFunction())
+            {
+              Attr.erase();
+              Attr.add("function", pReaction->getFunction().getKey());
+              startSaveElement("KineticLaw", Attr);
+
+              startSaveElement("ListOfCallParameters");
+              const CFunctionParameterMap * pMap =
+                &pReaction->getFunctionParameterMap();
+
+              for (j = 0, jmax = pMap->getFunctionParameters().size(); j < jmax; j++)
+                {
+                  Attr.erase();
+                  Attr.add("functionParameter",
+                           pMap->getFunctionParameters()[j]->getKey());
+
+                  startSaveElement("CallParameter", Attr);
+                  ObjectList = pMap->getObjects(j);
+
+                  Attr.erase();
+                  Attr.add("reference", "");
+
+                  for (k = 0, kmax = ObjectList.size(); k < kmax; k++)
+                    {
+                      const CCopasiObject * pObject = ObjectList[k];
+
+                      if (pObject->getObjectType() == "Id2Param")
+                        Attr.setValue(0,
+                                      ((CReaction::CId2Param *)
+                                       (CCopasiContainer *) pObject)->getKey());
+                      else if (pObject->getObjectType() == "Metabolite")
+                        Attr.setValue(0,
+                                      ((CMetab *)
+                                       (CCopasiContainer *) pObject)->getKey());
+                      else
+                        Attr.setValue(0, "NoKey");
+
+                      saveElement("SourceParameter", Attr);
+                    }
+
+                  endSaveElement("CallParameter");
+                }
+              endSaveElement("ListOfCallParameters");
+
+              endSaveElement("KineticLaw");
+            }
+          endSaveElement("Reaction");
+        }
+      endSaveElement("ListOfReactions");
+    }
+  startSaveElement("StateTemplate");
+
+  Attributes.erase();
+  Attributes.add("key", "");
+  Attributes.add("objectReference", "");
+  std::pair< std::string, std::string > Variable;
+
+  for (i = 0, imax = mpModel->getStateTemplate().size(); i < imax; i++)
+    {
+      Variable = mpModel->getStateTemplate()[i];
+      Attributes.setValue(0, Variable.first);
+      Attributes.setValue(1, Variable.second);
+
+      saveElement("StateTemplateVariable", Attributes);
+    }
+
+  endSaveElement("StateTemplate");
+
+  Attributes.erase();
+  Attributes.add("type", "initial");
+  startSaveElement("InitialState", Attributes);
+  CState InitialState = mpModel->getInitialState();
+
+  stringstream data;
+  data << InitialState.getTime();
+  for (i = 0, imax = InitialState.getVolumeSize(); i < imax; i++)
+    data << " " << InitialState.getVolume(i);
+
+  for (i = 0, imax = InitialState.getVariableNumberSize(); i < imax; i++)
+    data << " " << InitialState.getVariableNumberDbl(i);
+
+  for (i = 0, imax = InitialState.getFixedNumberSize(); i < imax; i++)
+    data << " " << InitialState.getFixedNumberDbl(i);
+
+  saveData(data.str());
+  endSaveElement("InitialState");
+
+  endSaveElement("Model");
 
   return success;
 }
@@ -92,8 +357,7 @@ bool CCopasiXML::saveFunctionList()
   unsigned C_INT32 i, imax = mpFunctionList->size();
   CFunction * pFunction = NULL;
 
-  Attributes.erase();
-  startSaveElement("ListOfFunctions", Attributes);
+  startSaveElement("ListOfFunctions");
 
   for (i = 0; i < imax; i++)
     {
@@ -105,20 +369,20 @@ bool CCopasiXML::saveFunctionList()
       Attributes.add("type", CFunction::TypeName[pFunction->getType()]);
       startSaveElement("Function", Attributes);
 
-      Attributes.erase();
-      startSaveElement("MathML", Attributes);
+      startSaveElement("MathML");
 
-      startSaveElement("Text", Attributes);
+      startSaveElement("Text");
       saveData(pFunction->getDescription());
       endSaveElement("Text");
 
       endSaveElement("MathML");
 
-      startSaveElement("ListOfParameterDescriptions", Attributes);
+      startSaveElement("ListOfParameterDescriptions");
 
       unsigned C_INT32 j, jmax = pFunction->getParameters().size();
       CFunctionParameter * pParameter;
 
+      Attributes.erase();
       Attributes.add("key", "");
       Attributes.add("name", "");
       Attributes.add("order", "");
@@ -148,8 +412,8 @@ bool CCopasiXML::saveFunctionList()
 
           if (pParameter->getType() < CFunctionParameter::VINT32)
             {
-              Attributes.setValue(4, 1);
-              Attributes.setValue(5, 1);
+              Attributes.skip(4);
+              Attributes.skip(5);
             }
           else
             {

@@ -184,11 +184,20 @@ bool CCopasiXMLInterface::saveElement(const std::string & name,
   *mpOstream << mIndent << "<" << name;
 
   unsigned C_INT32 i, imax;
+
   for (i = 0, imax = attributeList.size(); i < imax; i++)
-    *mpOstream << " " << attributeList.getAttribute(i);
+    *mpOstream << attributeList.getAttribute(i);
 
   *mpOstream << "/>" << std::endl;
 
+  return true;
+}
+
+bool CCopasiXMLInterface::startSaveElement(const std::string & name)
+{
+  *mpOstream << mIndent << "<" << name << ">" << std::endl;
+
+  mIndent += "  ";
   return true;
 }
 
@@ -199,7 +208,7 @@ bool CCopasiXMLInterface::startSaveElement(const std::string & name,
 
   unsigned C_INT32 i, imax;
   for (i = 0, imax = attributeList.size(); i < imax; i++)
-    *mpOstream << " " << attributeList.getAttribute(i);
+    *mpOstream << attributeList.getAttribute(i);
 
   *mpOstream << ">" << std::endl;
 
@@ -216,11 +225,13 @@ bool CCopasiXMLInterface::endSaveElement(const std::string & name)
 }
 
 CXMLAttributeList::CXMLAttributeList():
-    mAttributeList()
+    mAttributeList(),
+    mSaveList()
 {}
 
 CXMLAttributeList::CXMLAttributeList(const CXMLAttributeList & src):
-    mAttributeList(src.mAttributeList)
+    mAttributeList(src.mAttributeList),
+    mSaveList(src.mSaveList)
 {}
 
 CXMLAttributeList::~CXMLAttributeList() {}
@@ -228,6 +239,8 @@ CXMLAttributeList::~CXMLAttributeList() {}
 bool CXMLAttributeList::erase()
 {
   mAttributeList.clear();
+  mSaveList.clear();
+
   return true;
 }
 
@@ -246,7 +259,16 @@ const std::string & CXMLAttributeList::getName(const unsigned C_INT32 & index) c
 const std::string & CXMLAttributeList::getValue(const unsigned C_INT32 & index) const
   {return mAttributeList[2 * index + 1];}
 
+bool CXMLAttributeList::skip(const unsigned C_INT32 & index)
+{
+  mSaveList[index] = false;
+  return true;
+}
+
 std::string CXMLAttributeList::getAttribute(const unsigned C_INT32 & index) const
   {
-    return mAttributeList[2 * index] + "=\"" + mAttributeList[2 * index + 1] + "\"";
+    if (mSaveList[index])
+      return " " + mAttributeList[2 * index] + "=\"" + mAttributeList[2 * index + 1] + "\"";
+    else
+      return "";
   }
