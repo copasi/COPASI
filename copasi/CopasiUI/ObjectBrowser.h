@@ -1,10 +1,10 @@
 /********************************************************
- Author: Liang Xu
- Version : 1.xx  <first>
- Description: 
- Date: 04/03 
- Comment : Copasi Object Browser: 
- Contact: Please contact lixu1@vt.edu.
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 04/03 
+Comment : Copasi Object Browser: 
+Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #ifndef OBJECTBROWSER_H
@@ -49,7 +49,7 @@ class ObjectBrowser : public QWidget
     QFrame* Line1;
     QTextEdit* ObjectItemText;
 
-    void export(ObjectBrowserItem* pCurrent, ObjectList* outputList);
+    void eXport(ObjectBrowserItem* pCurrent, ObjectList* outputList);
 
     void setCheck(ObjectBrowserItem* pCurrent);
     void setUncheck(ObjectBrowserItem* pCurrent);

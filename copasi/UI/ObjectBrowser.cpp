@@ -8,7 +8,7 @@ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include "ObjectBrowser.h"
 #include "ObjectBrowserItem.h"
-#include "CopasiUI3Window.h"
+#include "copasiui3window.h"
 
 #include <qmessagebox.h>
 #include <qvariant.h>
@@ -260,7 +260,7 @@ void ObjectBrowser::nextClicked()
       ObjectItemText->show();
       rootItem = objectItemList->getRoot()->pItem;
       outputList = new ObjectList();
-      export(rootItem, outputList);
+      eXport(rootItem, outputList);
       //      QMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
       ObjectListItem* pHead;
       ObjectItemText->clear();
@@ -288,14 +288,14 @@ void ObjectBrowser::nextClicked()
     }
 }
 
-void ObjectBrowser::export(ObjectBrowserItem* pCurrent, ObjectList* outputList)
+void ObjectBrowser::eXport(ObjectBrowserItem* pCurrent, ObjectList* outputList)
 {
   if (pCurrent->child())
     {
       ObjectBrowserItem* pChild = pCurrent->child();
       for (; pChild != NULL; pChild = pChild->sibling())
         if (pChild->getType() != FIELDATTR)
-          export(pChild, outputList);
+          eXport(pChild, outputList);
     }
   else //it has no child
     {
