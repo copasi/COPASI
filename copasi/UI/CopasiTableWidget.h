@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/21 08:57:52 $
+   $Date: 2004/05/24 08:19:52 $
    End CVS Header */
 
 /****************************************************************************
@@ -32,7 +32,7 @@ class CopasiTableWidget : public CopasiWidget
     Q_OBJECT
 
   public:
-    CopasiTableWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
+    CopasiTableWidget(QWidget *parent, bool ro, const char * name = 0, WFlags f = 0);
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
@@ -72,6 +72,8 @@ class CopasiTableWidget : public CopasiWidget
     std::vector<bool> mFlagRenamed;
 
     bool mIgnoreUpdates;
+    bool mRO;
+    ListViews::ObjectType mOT;
 
     //These are the methods that need to be implemented by specialized widgets:
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/21 08:57:52 $
+   $Date: 2004/05/24 08:19:52 $
    End CVS Header */
 
 /*******************************************************************
@@ -29,9 +29,11 @@
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 
-CopasiTableWidget::CopasiTableWidget(QWidget *parent, const char * name, WFlags f)
+CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
 {
+  mRO = ro;
+
   //here the table is initialized
   table = new MyTable(this, "table");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
@@ -43,24 +45,30 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, const char * name, WFlags 
   table->setColumnReadOnly(0, true);
   table->setColumnWidth(0, 20);
   //table->setVScrollBarMode(QScrollView::AlwaysOn);
+  if (mRO)
+    table->setReadOnly(true);
+  resizeTable(1);
 
   //here the buttons are defined
-  btnOK = new QPushButton("Commit", this);
-  btnCancel = new QPushButton("Revert", this);
-  btnDelete = new QPushButton("&Delete", this);
+  if (!mRO)
+    {
+      btnOK = new QPushButton("Commit", this);
+      btnCancel = new QPushButton("Revert", this);
+      btnDelete = new QPushButton("&Delete", this);
+    }
 
   mHLayout = new QHBoxLayout(vBoxLayout, 0);
-
-  //To match the Table left Vertical Header Column Width.
-  mHLayout->addSpacing(32);
-
-  mHLayout->addSpacing(50);
-  mHLayout->addWidget(btnOK);
-  mHLayout->addSpacing(5);
-  mHLayout->addWidget(btnCancel);
-  mHLayout->addSpacing(5);
-  mHLayout->addWidget(btnDelete);
-  mHLayout->addSpacing(50);
+  if (!mRO)
+    {
+      mHLayout->addSpacing(32);
+      mHLayout->addSpacing(50);
+      mHLayout->addWidget(btnOK);
+      mHLayout->addSpacing(5);
+      mHLayout->addWidget(btnCancel);
+      mHLayout->addSpacing(5);
+      mHLayout->addWidget(btnDelete);
+      mHLayout->addSpacing(50);
+    }
 
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
@@ -72,13 +80,15 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, const char * name, WFlags 
   //connect(table, SIGNAL(currentChanged(int, int)),
   //        this, SLOT(slotCurrentChanged(int, int)));
 
-  connect(btnOK, SIGNAL(clicked ()), this,
-          SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this,
-          SLOT(slotBtnCancelClicked()));
-  connect(btnDelete, SIGNAL(clicked ()), this,
-          SLOT(slotBtnDeleteClicked()));
-
+  if (!mRO)
+    {
+      connect(btnOK, SIGNAL(clicked ()), this,
+              SLOT(slotBtnOKClicked()));
+      connect(btnCancel, SIGNAL(clicked ()), this,
+              SLOT(slotBtnCancelClicked()));
+      connect(btnDelete, SIGNAL(clicked ()), this,
+              SLOT(slotBtnDeleteClicked()));
+    }
   mIgnoreUpdates = false;
 
   //call the specific initializations
@@ -111,12 +121,18 @@ void CopasiTableWidget::fillTable()
     }
   for (i = 0; i < numCols; ++i)
     table->clearCell(jmax, i);
-  btnOK->setEnabled(false);
-  btnCancel->setEnabled(false);
+
+  if (!mRO)
+    {
+      btnOK->setEnabled(false);
+      btnCancel->setEnabled(false);
+    }
 }
 
 void CopasiTableWidget::saveTable()
 {
+  if (mRO) return;
+
   if (!dataModel->getModel())
     return;
 
@@ -132,7 +148,7 @@ void CopasiTableWidget::saveTable()
         {
           CCopasiObject* pObj = createNewObject((const char *)table->text(j, 1).utf8());
           tableLineToObject(j, pObj);
-          ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD, pObj->getKey());
+          ListViews::notify(mOT, ListViews::ADD, pObj->getKey());
         }
       else if (mFlagDelete[j])
         {
@@ -144,12 +160,12 @@ void CopasiTableWidget::saveTable()
           if (mFlagChanged[j])
             {
               tableLineToObject(j, GlobalKeys.get(mKeys[j]));
-              ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, mKeys[j]);
+              ListViews::notify(mOT, ListViews::CHANGE, mKeys[j]);
             }
           if (mFlagRenamed[j])
             {
               GlobalKeys.get(mKeys[j])->setObjectName((const char *)table->text(j, 1).utf8());
-              ListViews::notify(ListViews::COMPARTMENT, ListViews::RENAME, mKeys[j]);
+              ListViews::notify(mOT, ListViews::RENAME, mKeys[j]);
             }
         }
     }
@@ -165,14 +181,22 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
     int C_UNUSED(m), const QPoint & C_UNUSED(n))
 {
   if (row >= table->numRows() || row < 0) return;
+  if (mRO && (row == table->numRows() - 1)) return;
 
-  if (row == table->numRows() - 1)
+  std::string key = mKeys[row];
+
+  if (row == table->numRows() - 1) //new Object
     {
-      //TODO: create a new Object
-      //createNewObject();
+      resizeTable(table->numRows() + 1);
+      mFlagNew[row] = true;
+      table->setText(row, 1, createNewName(defaultObjectName()));
+      defaultTableLineContent(row, 0);
     }
 
-  pListView->switchToOtherWidget(mKeys[row]);
+  saveTable(); //TODO: should we warn the user here? Propably not.
+
+  if (GlobalKeys.get(key))
+    pListView->switchToOtherWidget(key);
 }
 
 void CopasiTableWidget::slotTableSelectionChanged()
@@ -188,6 +212,7 @@ void CopasiTableWidget::slotCurrentChanged(int row, int col)
 
 void CopasiTableWidget::slotValueChanged(int row, int col)
 {
+  if (mRO) return;
   std::cout << "Table..valueChanged " << row << "  " << col << std::endl;
   btnOK->setEnabled(true);
   btnCancel->setEnabled(true);
