@@ -82,6 +82,7 @@ void ReactionsWidget::loadReactions(CModel *model)
 
       CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
       C_INT32 noOfReactionsRows = reactions.size();
+
       table->setNumRows(noOfReactionsRows);
 
       // Now filling the table.

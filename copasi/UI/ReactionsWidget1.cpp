@@ -427,6 +427,8 @@ void ReactionsWidget1::loadName(QString setValue)
       line++;
     }
 
+  ComboBox1->setCurrentText(reactn->getFunction().getName().c_str());
+  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
   //emit sideySignal();
 }
 

@@ -187,7 +187,7 @@ C_INT32 TestException()
 
   // newline
 
-  catch (char *str)
+  catch (char * C_UNUSED(str))
     {
       cout << "Caugth other exception" << endl;
     }
