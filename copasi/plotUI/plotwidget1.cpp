@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 20:52:31 $
+   $Date: 2004/12/15 13:25:34 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.28 2004/12/10 20:52:31 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.29 2004/12/15 13:25:34 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -30,8 +30,7 @@
 #include "curve2dwidget.h"
 #include "plotwindow.h"
 #include "CPlotSpecification.h"
-#include "report/CKeyFactory.h" 
-//#include "CopasiUI/SimpleSelectionDialog.h"
+#include "report/CKeyFactory.h"
 #include "CopasiUI/CCopasiPlotSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
 #include "CopasiUI/DataModelGUI.h" 
@@ -188,12 +187,6 @@ void PlotWidget1::addCurveTab(const std::string & title,
 
 void PlotWidget1::addCurveGroupBox()
 {
-  //SimpleSelectionDialog* pBrowser1 = new SimpleSelectionDialog();
-  //pBrowser1->setCaption("Choose objects to plot on X-Axis");
-
-  //SimpleSelectionDialog* pBrowser2 = new SimpleSelectionDialog();
-  //pBrowser2->setCaption("Choose objects to plot on Y-Axis");
-
   CCopasiPlotSelectionDialog* pBrowser = new CCopasiPlotSelectionDialog();
   std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
   std::vector<CCopasiObject*>* pVector2 = new std::vector<CCopasiObject*>();
@@ -216,29 +209,6 @@ void PlotWidget1::addCurveGroupBox()
       return;
     }
 
-  //pdelete(pBrowser);
-  //pBrowser = new ObjectBrowserDialog();
-
-  //std::vector<CCopasiObject*>* pVector2 = new std::vector<CCopasiObject*>();
-  //pBrowser2->setOutputVector(pVector2);
-  //pBrowser2->setModel(dataModel->getModel());
-  /*
-  if (pBrowser2->exec () == QDialog::Rejected)
-    {
-      //pdelete(pBrowser2);
-      pdelete(pVector1);
-      pdelete(pVector2);
-      return;
-    }
-
-  if (pVector1->size() == 0)
-    {
-      //pdelete(pBrowser2);
-      pdelete(pVector1);
-      pdelete(pVector2);
-      return;
-    }
-  */
   std::string cn;
   std::vector<CCopasiObjectName> objects1, objects2;
   unsigned C_INT32 i;
@@ -303,8 +273,6 @@ void PlotWidget1::addCurveGroupBox()
 
   tabs->setCurrentPage(storeTab);
 
-  //pdelete(pBrowser1);
-  //pdelete(pBrowser2);
   pdelete(pVector1);
   pdelete(pVector2);
 }
