@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/02/23 03:13:14 $
+   $Author: ssahle $ 
+   $Date: 2005/02/24 09:51:11 $
    End CVS Header */
 
 #include "copasi.h"
@@ -68,7 +68,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
     {
       CCopasiMessage Message(CCopasiMessage::RAW,
                              "File error when opening '%s'.",
-                             fileName);
+                             fileName.c_str());
       return false;
     }
 
