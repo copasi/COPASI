@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/12/15 23:07:33 $
+   $Author: jpahle $ 
+   $Date: 2004/02/24 15:24:32 $
    End CVS Header */
 
 /********************************************************
@@ -487,11 +487,10 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
               ObjectBrowserItem* objectChild = currentItem;
               if (nField) // divide into attribute and object lists
                 {
-                  loadChild(objectChild, (CCopasiContainer *) current, false);
-                  objectChild->attachKey();
-
-                  /* this change is due to the poor performance of loadField
-                  * to change replace the part inside the if(nField) with the following statements
+                  /* to change replace the part inside the if(nField) with the following statements
+                    loadChild(objectChild, (CCopasiContainer *) current, false);
+                    objectChild->attachKey();
+                    * end of change */
 
                   objectChild = new ObjectBrowserItem(currentItem, NULL, NULL, objectItemList);
                   objectChild->setObjectType(OBJECTATTR);
@@ -503,7 +502,6 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
                   loadField(fieldChild, (CCopasiContainer*) current);
                   fieldChild->attachKey();
                   objectChild->attachKey();
-                  * end of change */
                 }
               else
                 loadChild(objectChild, (CCopasiContainer *) current, nField);
@@ -524,6 +522,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
       pCurrent = childStack->pop();
       pCurrent->attachKey();
     }
+  pdelete(childStack);
 }
 
 void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent)
@@ -615,7 +614,7 @@ void ObjectBrowser::updateUI()
 {
   //refresh List stores all affected items,
 
-  refreshList->createBucketIndex(objectItemList->len()); //construct index to do binary search
+  refreshList->createBucketIndex((int)ObjectBrowserItem::getKeySpace()); //construct index to do binary search
   for (ObjectListItem* pCurrent = refreshList->getRoot(); pCurrent != NULL; pCurrent = pCurrent->pNext)
     {
       ObjectListItem * pHead = pCurrent->pItem->getObject()->referenceList->getRoot();
