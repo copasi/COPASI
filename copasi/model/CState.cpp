@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:11:19 $
+   $Date: 2003/11/18 16:53:12 $
    End CVS Header */
 
 // CSate.cpp
@@ -72,22 +72,17 @@ CState & CState::operator =(const CStateX & stateX)
          In theory it should always suffice to use set method with Dbl. */
 
       C_FLOAT64 * Dbl =
-        const_cast< C_FLOAT64 * >(mVariableNumbers.getVectorDbl().array());
-      C_INT32 * Int =
-        const_cast< C_INT32 * >(mVariableNumbers.getVectorInt().array());
+        const_cast< C_FLOAT64 * >(mVariableNumbers.getVector().array());
 
       for (i = 0; i < iVariable; i++)
         {
           *(Dbl + Permutation[i]) = stateX.mVariableNumbers.getDbl(i);
-          *(Int + Permutation[i]) = stateX.mVariableNumbers.getInt(i);
         }
 
       for (; i < iTotal; i++)
         {
           *(Dbl + Permutation[i]) =
             stateX.mDependentNumbers.getDbl(i - iVariable);
-          *(Int + Permutation[i]) =
-            stateX.mDependentNumbers.getInt(i - iVariable);
         }
     }
 
@@ -217,40 +212,20 @@ void CState::setModel(const CModel * pModel)
 
 const CModel * CState::getModel() const {return mpModel;}
 
-const CVector< C_FLOAT64 > & CState::getFixedNumberVectorDbl() const
-  {return mFixedNumbers.getVectorDbl();}
+const CVector< C_FLOAT64 > & CState::getFixedNumberVector() const
+  {return mFixedNumbers.getVector();}
 
-#ifndef COPASI_DEPRECATED
-const CVector< C_INT32 > & CState::getFixedNumberVectorInt() const
-  {return mFixedNumbers.getVectorInt();}
-#endif // COPASI_DEPRECATED
-
-const C_FLOAT64 & CState::getFixedNumberDbl(const unsigned C_INT32 & index) const
+const C_FLOAT64 & CState::getFixedNumber(const unsigned C_INT32 & index) const
   {return mFixedNumbers.getDbl(index);}
-
-#ifndef COPASI_DEPRECATED
-const C_INT32 & CState::getFixedNumberInt(const unsigned C_INT32 & index) const
-  {return mFixedNumbers.getInt(index);}
-#endif // COPASI_DEPRECATED
 
 const unsigned C_INT32 & CState::getFixedNumberSize () const
   {return mFixedNumbers.size();}
 
-const CVector< C_FLOAT64 > & CState::getVariableNumberVectorDbl() const
-  {return mVariableNumbers.getVectorDbl();}
+const CVector< C_FLOAT64 > & CState::getVariableNumberVector() const
+  {return mVariableNumbers.getVector();}
 
-#ifndef COPASI_DEPRECATED
-const CVector< C_INT32 > & CState::getVariableNumberVectorInt() const
-  {return mVariableNumbers.getVectorInt();}
-#endif // COPASI_DEPRECATED
-
-const C_FLOAT64 & CState::getVariableNumberDbl(const unsigned C_INT32 & index) const
+const C_FLOAT64 & CState::getVariableNumber(const unsigned C_INT32 & index) const
   {return mVariableNumbers.getDbl(index);}
-
-#ifndef COPASI_DEPRECATED
-const C_INT32 & CState::getVariableNumberInt(const unsigned C_INT32 & index) const
-  {return mVariableNumbers.getInt(index);}
-#endif // COPASI_DEPRECATED
 
 const unsigned C_INT32 & CState::getVariableNumberSize () const
   {return mVariableNumbers.size();}
@@ -263,28 +238,15 @@ const CVector< C_FLOAT64 > & CState::getVolumeVector() const {return mVolumes;}
 unsigned C_INT32 CState::getVolumeSize() const
   {return mVolumes.size();}
 
-void CState::setFixedNumber(const unsigned C_INT32 & index, const C_INT32 & value)
-{mFixedNumbers.set(index, value);}
-
 void CState::setFixedNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value)
 {mFixedNumbers.set(index, value);}
-
-void CState::setFixedNumberVector(const CVector< C_INT32 > & vektor)
-{mFixedNumbers.setVector(vektor);}
 
 void CState::setFixedNumberVector(const CVector< C_FLOAT64 > & vektor)
 {mFixedNumbers.setVector(vektor);}
 
 void CState::setVariableNumber(const unsigned C_INT32 & index,
-                               const C_INT32 & value)
-{mVariableNumbers.set(index, value);}
-
-void CState::setVariableNumber(const unsigned C_INT32 & index,
                                const C_FLOAT64 & value)
 {mVariableNumbers.set(index, value);}
-
-void CState::setVariableNumberVector(const CVector< C_INT32 > & vektor)
-{mVariableNumbers.setVector(vektor);}
 
 void CState::setVariableNumberVector(const CVector< C_FLOAT64 > & vektor)
 {mVariableNumbers.setVector(vektor);}
@@ -326,7 +288,7 @@ void CState::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
 {
   unsigned C_INT32 i, j, dim = mVariableNumbers.size();
   C_FLOAT64 * x =
-    const_cast<C_FLOAT64 *>(mVariableNumbers.getVectorDbl().array());
+    const_cast<C_FLOAT64 *>(mVariableNumbers.getVector().array());
   jacobian.resize(dim, dim);
 
   // constants for differentiation by finite differences
@@ -461,23 +423,18 @@ CStateX & CStateX::operator =(const CState & state)
          In theory it should always suffice to use set method with Dbl. */
 
       C_FLOAT64 * Dbl =
-        const_cast< C_FLOAT64 * >(mVariableNumbers.getVectorDbl().array());
-      C_INT32 * Int =
-        const_cast< C_INT32 * >(mVariableNumbers.getVectorInt().array());
+        const_cast< C_FLOAT64 * >(mVariableNumbers.getVector().array());
 
-      for (i = 0; i < iVariable; i++, Dbl++, Int++)
+      for (i = 0; i < iVariable; i++, Dbl++)
         {
           *Dbl = state.mVariableNumbers.getDbl(Permutation[i]);
-          *Int = state.mVariableNumbers.getInt(Permutation[i]);
         }
 
-      Dbl = const_cast< C_FLOAT64 * >(mDependentNumbers.getVectorDbl().array());
-      Int = const_cast< C_INT32 * >(mDependentNumbers.getVectorInt().array());
+      Dbl = const_cast< C_FLOAT64 * >(mDependentNumbers.getVector().array());
 
-      for (i = iVariable; i < iTotal; i++, Dbl++, Int++)
+      for (i = iVariable; i < iTotal; i++, Dbl++)
         {
           *Dbl = state.mVariableNumbers.getDbl(Permutation[i]);
-          *Int = state.mVariableNumbers.getInt(Permutation[i]);
         }
     }
 
@@ -526,31 +483,18 @@ void CStateX::setModel(const CModel * pModel)
     }
 }
 
-const CVector< C_FLOAT64 > & CStateX::getDependentNumberVectorDbl() const
-  {return mDependentNumbers.getVectorDbl();}
+const CVector< C_FLOAT64 > & CStateX::getDependentNumberVector() const
+  {return mDependentNumbers.getVector();}
 
-const CVector< C_INT32 > & CStateX::getDependentNumberVectorInt() const
-  {return mDependentNumbers.getVectorInt();}
-
-const C_FLOAT64 & CStateX::getDependentNumberDbl(const unsigned C_INT32 & index) const
+const C_FLOAT64 & CStateX::getDependentNumber(const unsigned C_INT32 & index) const
   {return mDependentNumbers.getDbl(index);}
-
-const C_INT32 & CStateX::getDependentNumberInt(const unsigned C_INT32 & index) const
-  {return mDependentNumbers.getInt(index);}
 
 const unsigned C_INT32 & CStateX::getDependentNumberSize () const
   {return mDependentNumbers.size();}
 
 void CStateX::setDependentNumber(const unsigned C_INT32 & index,
-                                 const C_INT32 & value)
-{mDependentNumbers.set(index, value);}
-
-void CStateX::setDependentNumber(const unsigned C_INT32 & index,
                                  const C_FLOAT64 & value)
 {mDependentNumbers.set(index, value);}
-
-void CStateX::setDependentNumberVector(const CVector< C_INT32 > & vektor)
-{mDependentNumbers.setVector(vektor);}
 
 void CStateX::setDependentNumberVector(const CVector< C_FLOAT64 > & vektor)
 {mDependentNumbers.setVector(vektor);}
@@ -604,7 +548,7 @@ void CStateX::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
 {
   unsigned C_INT32 i, j, dim = mVariableNumbers.size();
   C_FLOAT64 * x =
-    const_cast<C_FLOAT64 *>(mVariableNumbers.getVectorDbl().array());
+    const_cast<C_FLOAT64 *>(mVariableNumbers.getVector().array());
   jacobian.resize(dim, dim);
 
   // constants for differentiation by finite differences

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:10:45 $
+   $Date: 2003/11/18 16:53:11 $
    End CVS Header */
 
 /**
@@ -26,10 +26,6 @@ class CWriteConfig;
 class CMetabOld;
 class CModel;
 
-//constants for use with Status
-// #define METAB_FIXED 0
-// #define METAB_VARIABLE 1
-// #define METAB_DEPENDENT 2
 #define METAB_MOIETY 7
 
 /** @dia:pos 80.8289,51.5961 */
@@ -135,16 +131,6 @@ class CMetab : public CCopasiContainer
            const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Specific constructor.
-     *  @param name name of the metabolite.
-     *  @param status status of the metabolite 
-     *     (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-     *  @param compartment name of the compartment the metabolite
-     *     is located in.
-     */ 
-    // CMetab(const std::string & compartment, C_INT16 status, CCompartment & name);
-
-    /**
      *  Destructor.
      */
     ~CMetab();
@@ -231,12 +217,6 @@ class CMetab : public CCopasiContainer
     const C_INT16 & getStatus() const;
 
     /**
-     *  Check if either concentration or particle number is invalid (e.g. negativ)
-     *  and calculate it from the other
-     */
-    void checkConcentrationAndNumber();
-
-    /**
      *
      */
     void setConcentration(const C_FLOAT64 concentration);
@@ -259,16 +239,6 @@ class CMetab : public CCopasiContainer
     /**
      *
      */
-    void setNumberInt(const C_INT32 number);
-
-    /**
-     *
-     */
-    const C_INT32 & getNumberInt() const;
-
-    /**
-     *
-     */
     void setInitialConcentration(const C_FLOAT64 initialConcentration);
 
     /**
@@ -285,16 +255,6 @@ class CMetab : public CCopasiContainer
      *
      */
     C_FLOAT64 getInitialNumberDbl() const;
-
-    /**
-     *
-     */
-    void setInitialNumberInt(const C_INT32 initialNumber);
-
-    /**
-     *
-     */
-    const C_INT32 & getInitialNumberInt() const;
 
     /**
      *

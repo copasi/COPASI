@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:10:45 $
+   $Date: 2003/11/18 16:53:10 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -238,15 +238,6 @@ const std::string & CMetab::getName() const {return getObjectName();}
 
 const C_FLOAT64 & CMetab::getConcentration() const {return mConcDbl;}
 
-#ifndef COPASI_DEPRECATED
-const C_INT32 & CMetab::getNumberInt() const {return mNumberInt;}
-
-const C_INT32 & CMetab::getInitialNumberInt() const
-  {
-    return mINumberInt;
-  }
-#endif
-
 C_FLOAT64 CMetab::getNumberDbl() const
   {
     return mConcDbl * mpCompartment->getVolume()
@@ -319,22 +310,6 @@ void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
   mINumberInt = (C_INT32) (initialConcentration * mpCompartment->getVolume()
                            * mpModel->getQuantity2NumberFactor());
 }
-
-#ifndef COPASI_DEPRECATED
-void CMetab::setNumberInt(const C_INT32 number)
-{
-  mNumberInt = number;
-  mConcDbl = ((C_FLOAT64) number) * mpCompartment->getVolumeInv()
-             * mpModel->getNumber2QuantityFactor();
-}
-
-void CMetab::setInitialNumberInt(const C_INT32 initialNumber)
-{
-  mINumberInt = initialNumber;
-  mIConcDbl = ((C_FLOAT64) initialNumber) * mpCompartment->getVolumeInv()
-              * mpModel->getNumber2QuantityFactor();
-}
-#endif
 
 void CMetab::setNumberDbl(const C_FLOAT64 number)
 {
@@ -510,23 +485,6 @@ void CMetab::setRate(const C_FLOAT64 & rate)
   //  calculateTransitionTime();
 }
 void CMetab::calculateTransitionTime(void) {mTT = mConcDbl / mRate;}
-
-#ifndef COPASI_DEPRECATED
-void CMetab::checkConcentrationAndNumber()
-{
-  if (mNumberInt < 0)
-    {
-      setConcentration(getConcentration());
-      setInitialConcentration(getInitialConcentration());
-    }
-
-  if (mConcDbl < 0)
-    {
-      setNumberInt(getNumberInt());
-      setInitialNumberInt(getInitialNumberInt());
-    }
-}
-#endif
 
 void * CMetab::getReference() const
   {return const_cast<C_FLOAT64 *>(&mConcDbl);}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:10 $
+   $Date: 2003/11/18 16:53:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -118,15 +118,9 @@ const double CStochMethod::step(const double & deltaT)
   // get back the particle numbers:
 
   /* Set the variable Metabolites */
-  C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVectorDbl().array());
+  C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVector().array());
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumberDbl();
-
-#ifndef  COPASI_DEPRECATED
-  C_INT32 * Int = const_cast<C_INT32 *>(mpCurrentState->getVariableNumberVectorInt().array());
-  for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Int++)
-    *Int = mpProblem->getModel()->getMetabolites()[i]->getNumberInt();
-#endif //  COPASI_DEPRECATED
 
   return deltaT;
 }
@@ -143,15 +137,15 @@ const double CStochMethod::step(const double & deltaT,
 
   mNumNumbers = mpCurrentState->getVariableNumberSize();
   mNumbers.resize(mNumNumbers);
-  for (i = 0; i < mNumNumbers; ++i) mNumbers[i] = (C_INT32)mpCurrentState->getVariableNumberDbl(i);
+  for (i = 0; i < mNumNumbers; ++i) mNumbers[i] = (C_INT32)mpCurrentState->getVariableNumber(i);
   //TODO also put fixes variables here
 
   for (i = 0; i < mNumNumbers; ++i)
-    mpCurrentState->setVariableNumber(i, floor(mpCurrentState->getVariableNumberDbl(i)));
+    mpCurrentState->setVariableNumber(i, floor(mpCurrentState->getVariableNumber(i)));
 
   imax = mpCurrentState->getFixedNumberSize();
   for (i = 0; i < imax; ++i)
-    mpCurrentState->setFixedNumber(i, floor(mpCurrentState->getFixedNumberDbl(i)));
+    mpCurrentState->setFixedNumber(i, floor(mpCurrentState->getFixedNumber(i)));
 
   mpModel = mpProblem->getModel();
   mpProblem->getModel()->setState(mpCurrentState);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/11/03 19:49:01 $
+   $Author: shoops $ 
+   $Date: 2003/11/18 16:53:09 $
    End CVS Header */
 
 /**
@@ -369,10 +369,10 @@ bool CCopasiXML::saveModel()
     data << " " << InitialState.getVolume(i);
 
   for (i = 0, imax = InitialState.getVariableNumberSize(); i < imax; i++)
-    data << " " << InitialState.getVariableNumberDbl(i);
+    data << " " << InitialState.getVariableNumber(i);
 
   for (i = 0, imax = InitialState.getFixedNumberSize(); i < imax; i++)
-    data << " " << InitialState.getFixedNumberDbl(i);
+    data << " " << InitialState.getFixedNumber(i);
 
   saveData(data.str());
   endSaveElement("InitialState");

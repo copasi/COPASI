@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/04 20:30:03 $
+   $Date: 2003/11/18 16:53:12 $
    End CVS Header */
 
 /**
@@ -52,8 +52,6 @@ class CState
      *
      */
     CVector< C_FLOAT64 > mVolumes;
-
-    // Associations
 
     /**
      *
@@ -134,22 +132,12 @@ class CState
     /**
      *
      */
-    const CVector< C_FLOAT64 > & getFixedNumberVectorDbl() const;
+    const CVector< C_FLOAT64 > & getFixedNumberVector() const;
 
     /**
      *
      */
-    const CVector< C_INT32 > & getFixedNumberVectorInt() const;
-
-    /**
-     *
-     */
-    const C_FLOAT64 & getFixedNumberDbl(const unsigned C_INT32 & index) const;
-
-    /**
-     *
-     */
-    const C_INT32 & getFixedNumberInt(const unsigned C_INT32 & index) const;
+    const C_FLOAT64 & getFixedNumber(const unsigned C_INT32 & index) const;
 
     /**
      *
@@ -159,22 +147,12 @@ class CState
     /**
      *
      */
-    const CVector< C_FLOAT64 > & getVariableNumberVectorDbl() const;
+    const CVector< C_FLOAT64 > & getVariableNumberVector() const;
 
     /**
      *
      */
-    const CVector< C_INT32 > & getVariableNumberVectorInt() const;
-
-    /**
-     *
-     */
-    const C_FLOAT64 & getVariableNumberDbl(const unsigned C_INT32 & index) const;
-
-    /**
-     *
-     */
-    const C_INT32 & getVariableNumberInt(const unsigned C_INT32 & index) const;
+    const C_FLOAT64 & getVariableNumber(const unsigned C_INT32 & index) const;
 
     /**
      *
@@ -199,17 +177,7 @@ class CState
     /**
      *
      */
-    void setFixedNumber(const unsigned C_INT32 & index, const C_INT32 & value);
-
-    /**
-     *
-     */
     void setFixedNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value);
-
-    /**
-     *
-     */
-    void setFixedNumberVector(const CVector< C_INT32 > & vektor);
 
     /**
      *
@@ -219,17 +187,7 @@ class CState
     /**
      *
      */
-    void setVariableNumber(const unsigned C_INT32 & index, const C_INT32 & value);
-
-    /**
-     *
-     */
     void setVariableNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value);
-
-    /**
-     *
-     */
-    void setVariableNumberVector(const CVector< C_INT32 > & vektor);
 
     /**
      *
@@ -290,8 +248,6 @@ class CStateX: public CState
   protected:
     // Attributes
 
-    // Associations
-
     /**
      *
      */
@@ -351,22 +307,12 @@ class CStateX: public CState
     /**
      *
      */
-    const CVector< C_FLOAT64 > & getDependentNumberVectorDbl() const;
+    const CVector< C_FLOAT64 > & getDependentNumberVector() const;
 
     /**
      *
      */
-    const CVector< C_INT32 > & getDependentNumberVectorInt() const;
-
-    /**
-     *
-     */
-    const C_FLOAT64 & getDependentNumberDbl(const unsigned C_INT32 & index) const;
-
-    /**
-     *
-     */
-    const C_INT32 & getDependentNumberInt(const unsigned C_INT32 & index) const;
+    const C_FLOAT64 & getDependentNumber(const unsigned C_INT32 & index) const;
 
     /**
      *
@@ -377,18 +323,7 @@ class CStateX: public CState
      *
      */
     void setDependentNumber(const unsigned C_INT32 & index,
-                            const C_INT32 & value);
-
-    /**
-     *
-     */
-    void setDependentNumber(const unsigned C_INT32 & index,
                             const C_FLOAT64 & value);
-
-    /**
-     *
-     */
-    void setDependentNumberVector(const CVector< C_INT32 > & vektor);
 
     /**
      *

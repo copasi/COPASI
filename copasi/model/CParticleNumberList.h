@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CParticleNumberList.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:23 $
+   $Date: 2003/11/18 16:53:12 $
    End CVS Header */
 
 #ifndef COPASI_CParticleNumberList
@@ -15,8 +15,6 @@
 class CParticleNumberList
   {
   protected:
-    // Associations
-
     // Attributes
     /**
      * The size of the particle number list
@@ -27,11 +25,6 @@ class CParticleNumberList
      * The particle numbers stored as C_FLOAT64
      */
     CVector< C_FLOAT64 > mDbl;
-
-    /**
-     * The particle numbers stored as C_INT32
-     */
-    CVector< C_INT32 > mInt;
 
     // Operations
   public:
@@ -86,20 +79,6 @@ class CParticleNumberList
     const C_FLOAT64 & getDbl(const unsigned C_INT32 & index) const;
 
     /**
-     * Set the indexed particle number to value
-     * @param const unsigned C_INT32 & index
-     * @param const C_FLOAT64 & value
-     */
-    void set(const unsigned C_INT32 & index, const C_INT32 & value);
-
-    /**
-     * Retreive the indexed particle number as C_INT32
-     * @param const unsigned C_INT32 & index
-     * @return const C_INT32 & value
-     */
-    const C_INT32 & getInt(const unsigned C_INT32 & index) const;
-
-    /**
      * Set all particle numbers at once
      * @param const CVector< C_FLOAT64 > & vector
      */
@@ -109,20 +88,14 @@ class CParticleNumberList
      * Retreive all particle numbers as C_FLOAT64
      * @return const CVector< C_FLOAT64 > & vector
      */
-    const CVector< C_FLOAT64 > & getVectorDbl() const;
+    const CVector< C_FLOAT64 > & getVector() const;
 
     /**
-     * Set all particle numbers at once
-     * @param const CVector< C_INT32 > & vector
+     * ostream operator
+     * @param std::ostream & os
+     * @param const CParticleNumberList & 
+     * @return std::ostream &
      */
-    void setVector(const CVector< C_INT32 > & vector);
-
-    /**
-     * Retreive all particle numbers as C_INT32
-     * @return const CVector< C_INT32 > & vector
-     */
-    const CVector< C_INT32 > & getVectorInt() const;
-
     friend std::ostream & operator << (std::ostream & os,
                                        const CParticleNumberList & A);
   };

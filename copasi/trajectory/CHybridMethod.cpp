@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:48 $
+   $Date: 2003/11/18 16:53:09 $
    End CVS Header */
 
 /**
@@ -76,13 +76,13 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:            // non-integer stoichometry
+    case - 3:             // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-    case - 2:            // reversible reaction exists
+    case - 2:             // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-    case - 1:            // more than one compartment involved
+    case - 1:             // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;
       // Error: Hybrid simulation impossible
@@ -123,15 +123,9 @@ const double CHybridMethod::step(const double & deltaT)
   // get back the particle numbers
 
   /* Set the variable metabolites */
-  C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVectorDbl().array());
+  C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVector().array());
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumberDbl();
-
-#ifndef  COPASI_DEPRECATED
-  C_INT32 * Int = const_cast<C_INT32 *>(mpCurrentState->getVariableNumberVectorInt().array());
-  for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Int++)
-    *Int = mpProblem->getModel()->getMetabolites()[i]->getNumberInt();
-#endif // COPASI_DEPRECATED
 
   return deltaT;
 }
@@ -1407,7 +1401,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:            // Everything !!!
+    case 0:             // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getName() << " Method: " /* << mMethod */
       << std::endl;
@@ -1514,7 +1508,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:             // Variable values only
+    case 1:              // Variable values only
       os << "mTime: " << mpCurrentState->getTime() << std::endl;
       os << "oldState: ";
       for (i = 0; i < mDim; i++)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/07 16:56:31 $
+   $Date: 2003/11/18 16:53:10 $
    End CVS Header */
 
 #include <algorithm>
@@ -191,7 +191,7 @@ CNewtonMethod::process(CState & steadyState,
 
   mDimension = mSteadyState.getVariableNumberSize();
 
-  mX = const_cast< C_FLOAT64 * >(mSteadyState.getVariableNumberVectorDbl().array());
+  mX = const_cast< C_FLOAT64 * >(mSteadyState.getVariableNumberVector().array());
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);
@@ -432,7 +432,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                   /* fortran style vector */
+                           mdxdt.array() - 1,                    /* fortran style vector */
                            1);
         }
 
@@ -489,7 +489,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                   /* fortran style vector */
+                   mdxdt.array() - 1,                    /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)
