@@ -19,7 +19,7 @@ class CFluxMode
 
   private:
     /**
-     *  Vector containing an index to a reaction an the multiplier
+     *  Vector containing an index to a reaction and the multiplier
      *  for that reaction.
      */
     std::vector < std::pair < unsigned C_INT32, C_FLOAT64 > > mReactions;
