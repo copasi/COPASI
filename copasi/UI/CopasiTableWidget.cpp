@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/26 21:49:35 $
+   $Date: 2004/10/08 13:12:40 $
    End CVS Header */
 
 /*******************************************************************
@@ -211,6 +211,8 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
 
   if (mFlagNew[row])
     {
+      saveTable();
+      fillTable();
       return;
       //TODO: When double clicking on a new object the object should be created.
     }
