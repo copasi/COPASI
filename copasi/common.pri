@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.38 $ $Author: shoops $ $Date: 2005/02/15 03:31:42 $  
+# $Revision: 1.39 $ $Author: gauges $ $Date: 2005/02/15 12:29:28 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -50,7 +50,6 @@ contains(BUILD_OS, Darwin) {
   }
  
   contains(CONFIG, qt) {
-    LIBS += -lqwt
   }
 
   INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
@@ -59,6 +58,17 @@ contains(BUILD_OS, Darwin) {
   LIBS += -framework Carbon
   LIBS += -framework QuickTime
   LIBS += -lz
+  INCLUDEPATH += /sw/apps/qwt-4.2.0/include
+  INCLUDEPATH += /Users/ralph/tools/include/
+  INCLUDEPATH += /sw/apps/libsbml-2.2.0-04.12.20/include
+  LIBS += -L/Users/ralph/tools/lib
+  LIBS += /sw/apps/qwt-4.2.0/lib/libqwt.a
+  LIBS += /sw/apps/libsbml-2.2.0-04.12.20/lib//libsbml.a
+  INCLUDEPATH += /sw/include
+  LIBS += /sw/lib/libexpat.a
+  LIBS += $(QTDIR)/lib/libqt-mt.a
+  QMAKE_LIBS_QT =
+  QMAKE_LIBS_QT_THREAD = 
 }
 
 contains(BUILD_OS, WIN32) {
