@@ -38,8 +38,7 @@ CFG=CopasiUI - Win32 Build
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
 # PROP Cmd_Line "nmake"
-# PROP Rebuild_Opt "..\.."
-# PROP Target_File "CopasiUI.exe"
+# PROP Rebuild_Opt ""
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 # Begin Target
@@ -124,6 +123,10 @@ SOURCE=.\MetabolitesWidget1.cpp
 # Begin Source File
 
 SOURCE=.\MetaboliteSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\moc_TableDefinition1.cpp
 # End Source File
 # Begin Source File
 
