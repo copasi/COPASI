@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/10 16:14:37 $
+   $Author: gauges $ 
+   $Date: 2004/08/12 13:22:41 $
    End CVS Header */
 
 /**
@@ -3239,7 +3239,7 @@ CCopasiXMLParser::TaskElement::~TaskElement()
 
 void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  mCurrentElement++; /* We should always be on hte next element */
+  mCurrentElement++; /* We should always be on the next element */
   mpCurrentHandler = NULL;
   //std::string name;
   std::string sType;
@@ -3278,6 +3278,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           fatalError();
           break;
         }
+      return;
       break;
     case Report:
       if (!strcmp(pszName, "Report"))
@@ -3299,6 +3300,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
             }
           mpCurrentHandler = mpProblemElement;
         }
+      break;
 
     case Method:
       if (!strcmp(pszName, "Method"))
