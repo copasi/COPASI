@@ -33,7 +33,8 @@ class CCopasiContainer: public CCopasiObject
                      const std::string & type = "CN",
                      const unsigned C_INT32 & flag = 1);
 
-    CCopasiContainer(const CCopasiContainer & src);
+    CCopasiContainer(const CCopasiContainer & src,
+                     const CCopasiContainer * pParent = NULL);
 
     virtual ~CCopasiContainer();
 
@@ -44,9 +45,17 @@ class CCopasiContainer: public CCopasiObject
 
     void add(CCopasiObject * object);
 
-    template <class CType> void addReference(const std::string & name,
+    template <class CType> void addObjectReference(const std::string & name,
         CType & reference)
     {add(CCopasiObject::createReference(name, this, reference));}
+
+    template <class CType> void addVectorReference(const std::string & name,
+        CType & reference)
+    {add(CCopasiObject::createVectorReference(name, this, reference));}
+
+    template <class CType> void addMatrixReference(const std::string & name,
+        CType & reference)
+    {add(CCopasiObject::createMatrixReference(name, this, reference));}
   };
 
 /** @dia:pos 33.0468,37.5833 */

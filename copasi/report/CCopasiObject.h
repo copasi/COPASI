@@ -15,6 +15,8 @@
 class CCopasiObjectName;
 class CCopasiContainer;
 template <class CType> class CCopasiObjectReference;
+template <class CType> class CCopasiVectorReference;
+template <class CType> class CCopasiMatrixReference;
 
 /** @dia:pos 40.5964,2.55372 */
 class CCopasiObject
@@ -51,7 +53,8 @@ class CCopasiObject
                   const unsigned C_INT32 & flag = 0);
 
   public:
-    CCopasiObject(const CCopasiObject & src);
+    CCopasiObject(const CCopasiObject & src,
+                  const CCopasiContainer * pParent = NULL);
 
     virtual ~CCopasiObject();
 
@@ -77,6 +80,18 @@ class CCopasiObject
                     const CCopasiContainer * pParent,
                     CType & reference)
     {return new CCopasiObjectReference< CType >(name, pParent, reference);}
+
+    template <class CType> CCopasiVectorReference< CType > *
+    createVectorReference(const std::string & name,
+                          const CCopasiContainer * pParent,
+                          CType & reference)
+    {return new CCopasiVectorReference< CType >(name, pParent, reference);}
+
+    template <class CType> CCopasiMatrixReference< CType > *
+    createMatrixReference(const std::string & name,
+                          const CCopasiContainer * pParent,
+                          CType & reference)
+    {return new CCopasiMatrixReference< CType >(name, pParent, reference);}
 
     bool isContainer();
 
