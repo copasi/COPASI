@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.11 2003/10/06 01:33:52 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.12 2003/10/06 01:42:55 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -386,10 +386,10 @@ void OptimizationWidget::upButtonClicked()
 
   ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setCopasiObjectPtr(pObjectUp);
   ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setCopasiObjectPtr(pObjectDown);
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerLimit(mUpMin);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemLowerLimit(mDownMin);
   ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemUpperLimit(mUpMax);
   ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemUpperLimit(mDownMax);
+  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerLimit(mUpMin);
+  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemLowerLimit(mDownMin);
 
   //back end change
   CCopasiObject* tmpObj = optFunction->mParaList [activeObject - 1];
