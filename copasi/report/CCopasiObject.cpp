@@ -45,6 +45,11 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
 
 CCopasiObject::~CCopasiObject()
 {
+  cleanup();
+}
+
+void CCopasiObject::cleanup()
+{
   if (mpObjectParent)
     mpObjectParent->remove(this);
 }

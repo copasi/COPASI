@@ -72,6 +72,8 @@ class CCopasiObject
 
     virtual ~CCopasiObject();
 
+    virtual void cleanup();
+
     //  pure virtual function,
     virtual void print(std::ostream& ostream) {ostream << (*this);};
 
