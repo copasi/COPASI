@@ -71,6 +71,11 @@ class CGeneModifier: public CCopasiObject
     C_INT32 getType(void);
 
     /**
+     *  Sets the type of the modification
+     */
+    void setType(C_INT32 t);
+
+    /**
      *  Retrieves the inhibition/activation constant
      */
     C_FLOAT64 getK(void);
@@ -276,6 +281,11 @@ class CGene: public CCopasiObject
      *  cleanup()
      */
     void cleanup();
+
+    /**
+     *  Sort the order of modifiers, activators at the top
+     */
+    void sortModifiers();
   };
 
 #endif // COPASI_CGene

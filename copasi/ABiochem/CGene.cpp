@@ -58,6 +58,11 @@ C_INT32 CGeneModifier::getType(void)
   return mType;
 }
 
+void CGeneModifier::setType(C_INT32 t)
+{
+  mType = t;
+}
+
 C_FLOAT64 CGeneModifier::getK(void)
 {
   return mK;
@@ -101,7 +106,8 @@ const std::string & CGene::getName() const
 
 C_INT32 CGene::getModifierNumber()
 {
-  return mModifier.size();
+  //  return mModifier.size();
+  return mInDegree;
 }
 
 CGene * CGene::getModifier(C_INT32 n)
@@ -242,4 +248,35 @@ void CGene::decreaseOutDegree()
 C_INT32 CGene::getTotalDegree()
 {
   return mOutDegree + mInDegree;
+}
+
+void CGene::sortModifiers()
+{
+  C_INT32 np, i, j;
+  CGeneModifier *tempModf;
+  C_INT32 tempK, tempN, tempIdx;
+  np = getPositiveModifiers();
+  for (i = 0, j = mInDegree - 1; i < np; i++)
+    {
+      if (mModifier[i]->getType() == 0)
+        {
+          // this is in the wrong place, find a positive one
+          for (; j >= np; j--)
+            {
+              if (mModifier[j]->getType() == 1)
+                {
+                  // found one, let's swap
+                  tempModf = mModifier[i];
+                  tempIdx = getModifierIndex(i);
+                  mModifier[i] = mModifier[j];
+                  mModifierIndex[i] = mModifierIndex[j];
+                  mModifier[i]->setType(1);
+                  mModifier[j] = tempModf;
+                  mModifierIndex[j] = tempIdx;
+                  mModifier[j]->setType(0);
+                  break;
+                }
+            }
+        }
+    }
 }

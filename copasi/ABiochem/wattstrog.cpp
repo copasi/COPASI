@@ -20,6 +20,8 @@ extern "C" void r250_init(int seed);
 extern "C" unsigned int r250n(unsigned n);
 extern "C" double dr250();
 
+char versionString[] = " version 1.3";
+
 using namespace std;
 
 /**

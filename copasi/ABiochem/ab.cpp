@@ -22,6 +22,8 @@ extern "C" double dr250();
 
 using namespace std;
 
+char versionString[] = " version 1.2";
+
 void calculateProbabilities(CCopasiVector < CGene > &gene,
                             vector <C_FLOAT64> &prob,
                             C_INT32 n)
@@ -67,11 +69,13 @@ void MakeGeneNetwork(C_INT32 n,
                      CCopasiVector < CGene > &gene,
                      char *comments)
 {
-  C_INT32 i, j, l, m, modf, ancestors, links, ipg;
+  C_INT32 i, j, l, l2, m, modf, ancestors, links, ln, ipg;
   char gn[1024];
   vector <C_FLOAT64> prob;
   C_FLOAT64 mp;
+  double pb;
 
+  ln = 0;
   // the number of ancestors in the network
   if (n > 3)
     ancestors = 3;
@@ -84,8 +88,7 @@ void MakeGeneNetwork(C_INT32 n,
     ipg = 1;
   // the number of links added for each new gene
   links = (k - ipg * ancestors) / (n - ancestors);
-  if (links > ancestors)
-    links = ancestors;
+  //  if (links > ancestors) links = ancestors;
   // create and name genes
   gene.resize(n);
   prob.reserve(n);
@@ -110,11 +113,14 @@ void MakeGeneNetwork(C_INT32 n,
                     break;
                   }
             }
-          if (dr250() < p)
+          pb = dr250();
+          //    printf("\n%lg",pb);
+          if (pb < p)
             modf = 1;
           else
             modf = 0;
           gene[i]->addModifier(gene[l], l, modf, constval, coopval);
+          ln++;
         }
       gene[i]->setRate(rateval);
       gene[i]->setDegradationRate(rateval);
@@ -123,52 +129,176 @@ void MakeGeneNetwork(C_INT32 n,
   for (i = ancestors; i < n; i++)
     {
       prob.push_back(0.0);
-      for (j = 0; j < links; j++) // each link (one link each side)
+      if (links > 0)
         {
-          // recalculate the probability table
-          calculateProbabilities(gene, prob, i);
-          // select sign of interaction
-          if (dr250() < p)
-            modf = 1;
-          else
-            modf = 0;
-          // select modifier
-          mp = dr250();
-          for (l = -1; l < 0;)
+          for (j = 0; j < links; j++) // each link (one link each side)
             {
-              for (l = 0; l < i; l++)
-                if (mp < prob[l])
-                  break;
-              // chose which way the link goes
-              if (dr250() < 0.5)
-                {
-                  for (m = 0; m < gene[l]->getModifierNumber(); m++)
-                    if (gene[i] == gene[l]->getModifier(m))
-                      {
-                        l = -1;
-                        break;
-                      }
-                  if (l == -1)
-                    break;
-                  gene[l]->addModifier(gene[i], i, modf, constval, coopval);
-                }
+              // recalculate the probability table
+              calculateProbabilities(gene, prob, i);
+              // select sign of interaction
+              pb = dr250();
+              //      printf("\n%lg",pb);
+              if (pb < p)
+                modf = 1;
               else
+                modf = 0;
+              // select modifier
+              mp = dr250();
+              //      printf("\n%lg",mp);
+              for (l = -1; l < 0;)
                 {
-                  for (m = 0; m < gene[i]->getModifierNumber(); m++)
-                    if (gene[l] == gene[i]->getModifier(m))
-                      {
-                        l = -1;
+                  for (l = 0; l < i; l++)
+                    if (mp < prob[l])
+                      break;
+                  // chose which way the link goes
+                  pb = dr250();
+                  //        printf("\n%lg",pb);
+                  if (pb < 0.5)
+                    {
+                      for (m = 0; m < gene[l]->getModifierNumber(); m++)
+                        if (gene[i] == gene[l]->getModifier(m))
+                          {
+                            l = -1;
+                            break;
+                          }
+                      if (l == -1)
                         break;
-                      }
-                  if (l == -1)
-                    break;
-                  gene[i]->addModifier(gene[l], l, modf, constval, coopval);
+                      gene[l]->addModifier(gene[i], i, modf, constval, coopval);
+                      ln++;
+                    }
+                  else
+                    {
+                      for (m = 0; m < gene[i]->getModifierNumber(); m++)
+                        if (gene[l] == gene[i]->getModifier(m))
+                          {
+                            l = -1;
+                            break;
+                          }
+                      if (l == -1)
+                        break;
+                      gene[i]->addModifier(gene[l], l, modf, constval, coopval);
+                      ln++;
+                    }
+                }
+            }
+        }
+      else  // less links than new nodes!
+        {
+          if (ln < k)
+            {
+              // recalculate the probability table
+              calculateProbabilities(gene, prob, i);
+              // select sign of interaction
+              pb = dr250();
+              //     printf("\n%lg",pb);
+              if (pb < p)
+                modf = 1;
+              else
+                modf = 0;
+              // select modifier
+              mp = dr250();
+              //     printf("\n%lg",mp);
+              for (l = -1; l < 0;)
+                {
+                  for (l = 0; l < i; l++)
+                    if (mp < prob[l])
+                      break;
+                  // chose which way the link goes
+                  pb = dr250();
+                  //       printf("\n%lg",pb);
+                  if (pb < 0.5)
+                    {
+                      for (m = 0; m < gene[l]->getModifierNumber(); m++)
+                        if (gene[i] == gene[l]->getModifier(m))
+                          {
+                            l = -1;
+                            break;
+                          }
+                      if (l == -1)
+                        break;
+                      gene[l]->addModifier(gene[i], i, modf, constval, coopval);
+                      ln++;
+                    }
+                  else
+                    {
+                      for (m = 0; m < gene[i]->getModifierNumber(); m++)
+                        if (gene[l] == gene[i]->getModifier(m))
+                          {
+                            l = -1;
+                            break;
+                          }
+                      if (l == -1)
+                        break;
+                      gene[i]->addModifier(gene[l], l, modf, constval, coopval);
+                      ln++;
+                    }
                 }
             }
         }
       gene[i]->setRate(rateval);
       gene[i]->setDegradationRate(rateval);
     }
+  // now create the remaining links
+  for (; ln < k;)
+    {
+      // recalculate the probability table
+      calculateProbabilities(gene, prob, n);
+      // select sign of interaction
+      pb = dr250();
+      //   printf("\n%lg",pb);
+      if (pb < p)
+        modf = 1;
+      else
+        modf = 0;
+      // select first gene
+      mp = dr250();
+      //   printf("\n%lg",mp);
+      for (l2 = -1; l2 < 0;)
+        {
+          for (l2 = 0; l2 < n; l2++)
+            if (mp < prob[l2])
+              break;
+        }
+      // select the second gene
+      mp = dr250();
+      //   printf("\n%lg",mp);
+      for (l = -1; l < 0;)
+        {
+          for (l = 0; l < i; l++)
+            if (mp < prob[l])
+              break;
+          // chose which way the link goes
+          pb = dr250();
+          //    printf("\n%lg",pb);
+          if (pb < 0.5)
+            {
+              for (m = 0; m < gene[l]->getModifierNumber(); m++)
+                if (gene[l2] == gene[l]->getModifier(m))
+                  {
+                    l = -1;
+                    break;
+                  }
+              if (l == -1)
+                break;
+              gene[l]->addModifier(gene[l2], l2, modf, constval, coopval);
+              ln++;
+            }
+          else
+            {
+              for (m = 0; m < gene[l2]->getModifierNumber(); m++)
+                if (gene[l] == gene[l2]->getModifier(m))
+                  {
+                    l = -1;
+                    break;
+                  }
+              if (l == -1)
+                break;
+              gene[l2]->addModifier(gene[l], l, modf, constval, coopval);
+              ln++;
+            }
+        }
+    }
+
 #ifdef XXXX
   // now rewire with probability r
   for (i = 0; i < k; i++) // each link (one link each side)

@@ -42,6 +42,8 @@ extern "C" void r250_init(int seed);
 extern "C" unsigned int r250n(unsigned n);
 extern "C" double dr250();
 
+extern char versionString[];
+
 #define LARGE_GRAPH 1500
 
 using namespace std;
@@ -89,7 +91,7 @@ void WriteDot(char *Title, CCopasiVector < CGene > &gene)
     for (j = 0; j < gene[i]->getModifierNumber(); j++)
       {
         fout << "\t" << gene[i]->getModifier(j)->getName() << " -> " << gene[i]->getName() << endl;
-        if (gene[i]->getModifierType(j) == 1)
+        if (gene[i]->getModifierType(j) == 0)
           fout << "\t\t[arrowhead=\"tee\"\n\t\tcolor=\"red\"]" << endl;
       }
   fout << "\n}";
@@ -114,7 +116,7 @@ void WritePajek(char *Title, CCopasiVector < CGene > &gene)
     for (j = 0; j < gene[i]->getModifierNumber(); j++)
       for (l = 0; l < size; l++)
         if (gene[i]->getModifier(j) == gene[l])
-          fout << l + 1 << " " << i + 1 << " 1 c " << (gene[i]->getModifierType(j) == 0 ? "Blue" : "Red") << endl;
+          fout << l + 1 << " " << i + 1 << " 1 c " << (gene[i]->getModifierType(j) == 0 ? "Red" : "Blue") << endl;
   fout.close();
 }
 
@@ -168,7 +170,7 @@ void WriteDistri(char *Title, CCopasiVector < CGene > &gene)
   fout.close();
 }
 
-void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k, CModel &model)
+void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k, CModel &model, C_INT32 specific)
 {
   C_INT32 i, j, r, s, pos, neg;
   char strname[512], strname2[512], streq[512];
@@ -207,17 +209,29 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
         {
           react->addModifier(gene[i]->getModifier(j)->getName());
         }
-      sprintf(strname, "basal %ld inh %ld act (indp)", gene[i]->getNegativeModifiers(),
-              gene[i]->getPositiveModifiers());
+      if (specific)
+        sprintf(strname, "basal %ld inh %ld spec act (indp)", gene[i]->getNegativeModifiers(),
+                gene[i]->getPositiveModifiers());
+      else
+        sprintf(strname, "transcr %ld inh %ld act (indp)", gene[i]->getNegativeModifiers(),
+                gene[i]->getPositiveModifiers());
       kiname = strname;
       react->setFunction(kiname);
-      for (j = 0, pos = neg = 1; j < s; j++)
+      for (j = 0, pos = 1; j < s; j++)
+        {
+          if (gene[i]->getModifierType(j) == 1)
+            {
+              sprintf(strname, "A%ld", pos++);
+              react->setParameterMapping(strname, gene[i]->getModifier(j)->getName());
+            }
+        }
+      for (j = 0, neg = 1; j < s; j++)
         {
           if (gene[i]->getModifierType(j) == 0)
-            sprintf(strname, "I%ld", neg++);
-          else
-            sprintf(strname, "A%ld", pos++);
-          react->setParameterMapping(strname, gene[i]->getModifier(j)->getName());
+            {
+              sprintf(strname, "I%ld", neg++);
+              react->setParameterMapping(strname, gene[i]->getModifier(j)->getName());
+            }
         }
       // first the basal rate
       sprintf(strname, "V");
@@ -266,7 +280,7 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
   model.compile();
 }
 
-void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
+void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p, C_INT32 specific)
 {
   C_INT32 i, j;
   CKinFunction *funct;
@@ -275,7 +289,11 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
   string equation;
 
   // make name
-  sprintf(tmpstr, "basal %ld inh %ld act (indp)", k - p, p);
+  if (specific)
+    sprintf(tmpstr, "basal %ld inh %ld spec act (indp)", k - p, p);
+  else
+    sprintf(tmpstr, "transcr %ld inh %ld act (indp)", k - p, p);
+
   kiname = tmpstr;
   if (db.findFunction(kiname) == NULL)
     {
@@ -286,10 +304,21 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
       funct->setName(kiname);
       funct->setReversible(TriFalse);
       equation = "V";
-      for (i = 0, j = 1; i < p; i++, j++)
+      if (specific)
         {
-          sprintf(tmpstr, "*(A%ld/(A%ld+Ka%ld))^na%ld", j, j, j, j);
-          equation += tmpstr;
+          for (i = 0, j = 1; i < p; i++, j++)
+            {
+              sprintf(tmpstr, "*(A%ld/(A%ld+Ka%ld))^na%ld", j, j, j, j);
+              equation += tmpstr;
+            }
+        }
+      else
+        {
+          for (i = 0, j = 1; i < p; i++, j++)
+            {
+              sprintf(tmpstr, "*(1+A%ld/(A%ld+Ka%ld))^na%ld", j, j, j, j);
+              equation += tmpstr;
+            }
         }
       for (j = 1; i < k; i++, j++)
         {
@@ -619,7 +648,7 @@ void GraphMetrics(CCopasiVector < CGene > &gene, C_INT32 tedges, char *Title)
       b.reserve(n);
       Betweeness(gene, b);
       //
-      for (cbl = 0.0, i = 0; i < n; i++)
+      for (cbl = 0.0, bcenter = 0, i = 0; i < n; i++)
         {
           if (b[i] > cbl)
             {
@@ -806,11 +835,11 @@ void WriteCmdLine(CGlobals *Copasi, char *Title)
 
 C_INT main(C_INT argc, char *argv[])
 {
-  C_INT32 n, k, i, j, tot, seed, pos;
+  C_INT32 n, k, i, j, tot, seed, pos, specific;
   CCopasiVector < CGene > GeneList;
   string prefix, fdb;
   CModel model;
-  C_FLOAT64 positive, rewiring, coopval, rateval, constval;
+  C_FLOAT64 positive, interact, rewiring, coopval, rateval, constval;
 
   char NetTitle[512], comments[2048];
 
@@ -824,13 +853,21 @@ C_INT main(C_INT argc, char *argv[])
       cmdl.parse(argc, argv);
       // get options from command line parser
       const clo::options &options = cmdl.get_options();
+      if (options.version)
+        {
+          std::cout << argv[0] << versionString << endl;
+          std::cout << "Written by Pedro Mendes" << endl;
+          std::cout << "Copyright (C) 2003 Virginia Polytechnic Institute and State University" << endl;
+          return 0;
+        }
+      if (options.specific_activation) specific = 1; else specific = 0;
       seed = options.seed;
       tot = options.total;
-;
       n = options.genes;
       k = options.inputs;
       prefix = options.prefix;
       positive = options.positive;
+      interact = options.interaction;
       rewiring = options.rewire;
       coopval = options.coop;
       rateval = options.rates;
@@ -876,13 +913,15 @@ C_INT main(C_INT argc, char *argv[])
     {
       // build the gene network
       MakeGeneNetwork(n, k, positive, rewiring, coopval, rateval, constval, GeneList, comments);
+      // sort out the modifiers
+      for (j = 0; j < n; j++) GeneList[j]->sortModifiers();
       sprintf(NetTitle, "%s%03ld", prefix.data(), i + 1);
       // write the command line used to generate this model
       WriteCmdLine(Copasi, NetTitle);
       // create appropriate kinetic types, only those
       // that are really needed for this model
       for (j = 0; j < n; j++)
-        MakeKinType(*Copasi->pFunctionDB, GeneList[j]->getModifierNumber(), GeneList[j]->getPositiveModifiers());
+        MakeKinType(*Copasi->pFunctionDB, GeneList[j]->getModifierNumber(), GeneList[j]->getPositiveModifiers(), specific);
       // calculate several metrics
       GraphMetrics(GeneList, k, NetTitle);
       // create graph files
@@ -891,7 +930,7 @@ C_INT main(C_INT argc, char *argv[])
       // create distribution graph file
       WriteDistri(NetTitle, GeneList);
       // create COPASI model
-      MakeModel(NetTitle, comments, GeneList, n, k, model);
+      MakeModel(NetTitle, comments, GeneList, n, k, model, specific);
       // save Gepasi model
       WriteGepasi(NetTitle, model);
       // save SBML file
