@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CTimeSeriesTable.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 15:46:06 $
+   $Date: 2004/10/04 09:52:35 $
    End CVS Header */
 
 #include "CTimeSeriesTable.h"
+#include "qtUtilities.h"
 
 void CTimeSeriesTable::setTimeSeries(const CTimeSeries & ts)
 {
@@ -17,7 +18,7 @@ void CTimeSeriesTable::setTimeSeries(const CTimeSeries & ts)
   QHeader *tableHeader = horizontalHeader();
   C_INT32 i, imax = mTS->getNumVariables();
   for (i = 0; i < imax; ++i)
-    tableHeader->setLabel(i, mTS->getTitle(i).c_str());
+    tableHeader->setLabel(i, FROM_UTF8(mTS->getTitle(i)));
 
   //TODO save old current cell and set afterwards
 }
