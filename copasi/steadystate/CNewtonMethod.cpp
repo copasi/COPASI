@@ -1,7 +1,3 @@
-#include "tnt/tnt.h"
-#include "tnt/cmat.h"
-#include "tnt/lu.h"
-
 #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
@@ -204,6 +200,7 @@ CNewtonMethod::process(CState & steadyState,
   cleanup();
 
   steadyState = SteadyState;
+
   return returnProcess(foundSteadyState, mFactor, mResolution);
 }
 

@@ -15,11 +15,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include "tnt/tnt.h"
-#include "tnt/cmat.h"
-#include "copasi.h"
-#include <cmath>
-
 using std::ostream;
 using std::endl;
 using std::setprecision;

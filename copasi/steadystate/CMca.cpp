@@ -33,9 +33,9 @@ CMca::CMca(CModel model, C_FLOAT64 factor)
   CONSTRUCTOR_TRACE;
   Model = model;
 
-  mDxv.newsize(Model.getTotSteps(), Model.getIndMetab());
-  mFcc.newsize(Model.getTotSteps(), Model.getTotSteps());
-  mGamma.newsize(Model.getIndMetab(), Model.getTotSteps());
+  mDxv.resize(Model.getTotSteps(), Model.getIndMetab());
+  mFcc.resize(Model.getTotSteps(), Model.getTotSteps());
+  mGamma.resize(Model.getIndMetab(), Model.getTotSteps());
   mSsx.resize(Model.getIndMetab() + 1);
 
   mFactor = factor;
@@ -62,7 +62,7 @@ void CMca::setModel(CModel model)
  * return the mDxv matrix
  * @return Matrix
  */
-TNT::Matrix < C_FLOAT64 > CMca::getDxv()
+CMatrix < C_FLOAT64 > CMca::getDxv()
 {
   return mDxv;
 }
@@ -71,7 +71,7 @@ TNT::Matrix < C_FLOAT64 > CMca::getDxv()
  * return the mFCC matrix
  * @return Matrix
  */
-TNT::Matrix < C_FLOAT64 > CMca::getFcc()
+CMatrix < C_FLOAT64 > CMca::getFcc()
 {
   return mFcc;
 }
@@ -80,7 +80,7 @@ TNT::Matrix < C_FLOAT64 > CMca::getFcc()
  * return the mGamma matrix
  * @return Matrix
  */
-TNT::Matrix < C_FLOAT64 > CMca::getGamma()
+CMatrix < C_FLOAT64 > CMca::getGamma()
 {
   return mGamma;
 }
@@ -90,10 +90,10 @@ TNT::Matrix < C_FLOAT64 > CMca::getGamma()
  */
 void CMca::clearDxv()
 {
-  register int i, j;
+  unsigned C_INT32 i, j;
 
-  for (i = 0; i < mDxv.num_rows(); i++)
-    for (j = 0; j < mDxv.num_cols(); j++)
+  for (i = 0; i < mDxv.numRows(); i++)
+    for (j = 0; j < mDxv.numCols(); j++)
       mDxv[i][j] = 0.0;
 }
 
@@ -104,7 +104,7 @@ void CMca::clearDxv()
  */
 void CMca::initDxv(C_FLOAT64 res)
 {
-  register int i, j;
+  unsigned C_INT32 i, j;
   C_FLOAT64 store, temp, *f1, *f2;
   C_FLOAT64 K1, K2, K3;
 
@@ -114,12 +114,12 @@ void CMca::initDxv(C_FLOAT64 res)
   K3 = 2 * mFactor;
 
   // Arrays to store function value
-  f1 = new C_FLOAT64[mDxv.num_rows()];
-  f2 = new C_FLOAT64[mDxv.num_rows()];
+  f1 = new C_FLOAT64[mDxv.numRows()];
+  f2 = new C_FLOAT64[mDxv.numRows()];
 
   // load Dxv with elasticities
 
-  for (j = 0; j < mDxv.num_cols(); j++)
+  for (j = 0; j < mDxv.numCols(); j++)
     {
       /**
        * if src[i+1] (x_ss[i+1]) is zero, the derivative will be calculated at a small
@@ -137,18 +137,18 @@ void CMca::initDxv(C_FLOAT64 res)
       mSsx[j + 1] = temp * K1;
 
       // Calcualte the fluxes
-      for (i = 0; i < mDxv.num_rows(); i++)
+      for (i = 0; i < mDxv.numRows(); i++)
         f1[i] = Model.getReactions()[i]->calculate();
 
       // now X-dx
       mSsx[j + 1] = temp * K2;
 
       // calculate the fluxes
-      for (i = 0; i < mDxv.num_rows(); i++)
+      for (i = 0; i < mDxv.numRows(); i++)
         f2[i] = Model.getReactions()[i]->calculate();
 
       // set column j of Dxv
-      for (i = 0; i < mDxv.num_rows(); i++)
+      for (i = 0; i < mDxv.numRows(); i++)
         mDxv[i][j] = (f1[i] - f2[i]) / (temp * K3);
 
       // restore the value of (src[i])ss_x[i]
@@ -167,24 +167,24 @@ void CMca::initDxv(C_FLOAT64 res)
  */
 void CMca::CalcFCC(int condition)
 {
-  register int i, j, k;
+  unsigned C_INT32 i, j, k;
 
   if (condition == MCA_SINGULAR)
     {
-      for (i = 0; i < mFcc.num_rows(); i++)
-        for (j = 0; j < mFcc.num_cols(); j++)
+      for (i = 0; i < mFcc.numRows(); i++)
+        for (j = 0; j < mFcc.numCols(); j++)
           mFcc[i][j] = 0.0;
     }
   else
     {
       // mFcc = I + mDxv * mGamma
 
-      for (i = 0; i < mFcc.num_rows(); i++)
-        for (j = 0; j < mFcc.num_cols(); j++)
+      for (i = 0; i < mFcc.numRows(); i++)
+        for (j = 0; j < mFcc.numCols(); j++)
           {
             mFcc[i][j] = (i == j) ? 1.0 : 0.0;
 
-            for (k = 0; k < mDxv.num_cols(); k++)
+            for (k = 0; k < mDxv.numCols(); k++)
               mFcc[i][j] += mDxv[i][k] * mGamma[k][j];
           }
     }
@@ -212,15 +212,15 @@ int CMca::CalcGamma()
 
   aux2 = (C_FLOAT64 **) malloc((dim) * sizeof(*aux2));
 
-  for (i = 0 ; i < dim ; i++)
+  for (i = 0; i < dim; i++)
     {
       aux1[i] = (C_FLOAT64 *) malloc((dim) * sizeof(C_FLOAT64));
       aux2[i] = (C_FLOAT64 *) malloc((dim) * sizeof(C_FLOAT64));
     }
 
   // set mGamma to zeros
-  for (i = 0; i < (unsigned C_INT32) mGamma.num_rows(); i++)
-    for (j = 0; j < (unsigned C_INT32) mGamma.num_cols(); i++)
+  for (i = 0; i < (unsigned C_INT32) mGamma.numRows(); i++)
+    for (j = 0; j < (unsigned C_INT32) mGamma.numCols(); i++)
       mGamma[i][j] = 0.0;
 
   // aux1 = rstoi * mDxv
@@ -324,9 +324,9 @@ void CMca::delSsipvt()
  */
 void CMca::init()
 {
-  mDxv.newsize(Model.getTotSteps(), Model.getTotMetab());
-  mFcc.newsize(Model.getTotSteps(), Model.getTotSteps());
-  mGamma.newsize(Model.getIndMetab(), Model.getTotSteps());
+  mDxv.resize(Model.getTotSteps(), Model.getTotMetab());
+  mFcc.resize(Model.getTotSteps(), Model.getTotSteps());
+  mGamma.resize(Model.getIndMetab(), Model.getTotSteps());
   mSsx.resize(Model.getTotMetab() + 1);
 }
 
@@ -387,7 +387,7 @@ void CMca::ScaleMCA(int condition, int res)
   // if previous calcutations failed return now
 
   if (condition != MCA_OK)
-    return ;
+    return;
 
   // Scale Dxv
   for (i = 0; i < Model.getTotSteps(); i++)

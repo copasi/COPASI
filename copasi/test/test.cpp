@@ -28,13 +28,8 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CEigen.h"
 #include "steadystate/CMca.h"
-
-#include "tnt/tnt.h"
-#include "tnt/luX.h"
-#include "tnt/cmat.h"
-#include "tnt/vec.h"
-#include "tnt/subscript.h"
 #include "randomGenerator/CRandom.h"
+#include "utilities/CluX.h"
 
 using namespace std;
 
@@ -1370,7 +1365,7 @@ C_INT32 TestLU()
   unsigned C_INT32 i;
   C_INT32 t;
 
-  TNT::Matrix < C_FLOAT64 > A(4, 3);
+  CMatrix < C_FLOAT64 > A(4, 3);
 
   A(1, 1) = 1.0;
   A(1, 2) = -2.0;
@@ -1385,8 +1380,8 @@ C_INT32 TestLU()
   A(4, 2) = 0.0;
   A(4, 3) = -3.0;
 
-  TNT::Vector < unsigned C_INT32 > rowLU(4);
-  TNT::Vector < unsigned C_INT32 > colLU(3);
+  vector < unsigned C_INT32 > rowLU(4);
+  vector < unsigned C_INT32 > colLU(3);
 
   vector < C_INT32 > row(4);
 
@@ -1404,15 +1399,15 @@ C_INT32 TestLU()
 
   cout << A << endl;
 
-  TNT::LUX_factor(A, rowLU, colLU);
+  LUfactor(A, rowLU, colLU);
 
   //colLU(3) = 2;
 
   cout << A << endl;
 
-  cout << rowLU << endl;
+  //  cout << rowLU << endl;
 
-  cout << colLU << endl;
+  //  cout << colLU << endl;
 
   for (i = 0; i < row.size(); i++)
     {

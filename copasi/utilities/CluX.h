@@ -24,9 +24,6 @@
 //   See details below.
 //
 
-// for fabs()
-#include <cmath>
-
 // right-looking LU factorization algorithm (unblocked)
 //
 //   Factors matrix A into lower and upper  triangular matrices
@@ -148,39 +145,6 @@ int LUfactor(Matrix &A, vector< Subscript > & row, vector< Subscript > & col)
             for (jj = j + 1; jj <= N; jj++)
               A(ii, jj) -= A(ii, j) * A(j, jj);
         }
-    }
-
-  return 0;
-}
-
-template <class Matrix, class Vector, class Subscript>
-int LUsolve(const Matrix &A,
-            vector< Subscript > & row,
-            vector< Subscript > & col,
-            Vector &b)
-{
-  Subscript i, ii = 0, ip, j;
-  Subscript n = b.dim();
-  typename Matrix::elementType sum = 0.0;
-
-  for (i = 1; i <= n; i++)
-    {
-      ip = row(i);
-      sum = b(ip);
-      b(ip) = b(i);
-      if (ii)
-        for (j = ii; j <= i - 1; j++)
-          sum -= A(i, j) * b(j);
-      else if (sum)
-        ii = i;
-      b(i) = sum;
-    }
-  for (i = n; i >= 1; i--)
-    {
-      sum = b(i);
-      for (j = i + 1; j <= n; j++)
-        sum -= A(i, j) * b(j);
-      b(i) = sum / A(i, i);
     }
 
   return 0;
