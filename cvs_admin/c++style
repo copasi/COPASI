@@ -19,8 +19,6 @@ $GAWK -- '
 BEGIN {
   lastEmpty = 0
   lastOpenBracket = 0
-  lastSet = 0
-  lastAdd = 0
 }
 
 $0 ~ "^$" {
@@ -40,26 +38,9 @@ $0 !~ "^$" {
   gsub(/\{ +/, "{")
   gsub(/^\*/, " *")
         
-  if (lastSet == 1) {
-    gsub(/^ +/, " ")
-    lastSet = 0
-  }
-
-  if (lastAdd == 1) {
-    gsub(/^ +/, "")
-    lastAdd = 0
-  }
-
   $0 = gensub(/ +;/, ";", "g")
 
-  printf "%s", gensub(/;([^ }])/, "; \\1", "g")
-
-  if ($0 ~ "set$") 
-    lastSet = 1
-  else if ($0 ~ "add$")
-    lastAdd = 1
-  else
-    printf "\n"
+  printf "%s\n", gensub(/;([^ }])/, "; \\1", "g")
 
   if ($0 ~ "{$") lastOpenBracket = 1
   else lastOpenBracket = 0
