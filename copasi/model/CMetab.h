@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/17 10:13:44 $
+   $Author: shoops $ 
+   $Date: 2005/03/17 19:57:20 $
    End CVS Header */
 
 /**
@@ -143,8 +143,6 @@ class CMetab : public CCopasiContainer
 
     virtual void * getReference() const;
 
-    virtual bool setValueOfNamedReference(std::string name, C_FLOAT64 value);
-
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
     /**
@@ -213,7 +211,7 @@ class CMetab : public CCopasiContainer
     /**
      *
      */
-    void setInitialConcentration(const C_FLOAT64 initialConcentration);
+    bool setInitialConcentration(const C_FLOAT64 & initialConcentration);
 
     /**
      *
@@ -223,7 +221,7 @@ class CMetab : public CCopasiContainer
     /**
      *
      */
-    void setInitialNumber(const C_FLOAT64 initialNumber);
+    bool setInitialNumber(const C_FLOAT64 & initialNumber);
 
     /**
      *
