@@ -359,7 +359,7 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
 {
   emit hide_me();
   int widgetOffset;
-  parameterTable = new ScanItemWidget(this, "parameterTable");
+  ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
   widgetOffset = TITLE_HEIGHT + nSelectedObjects * (parameterTable->minimumSizeHint().height() + TITLE_HEIGHT);
 
   QFrame* newTitleBar = new QFrame(this, "newTitleBar");
@@ -369,13 +369,38 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   newTitleBar->setFrameShadow(QFrame::Plain);
   newTitleBar->setLineWidth(0);
   scrollview->addChild(newTitleBar, 0, widgetOffset - TITLE_HEIGHT);
+  selectedList.push_back(newTitleBar);
 
   parameterTable->setFixedWidth(scrollview->visibleWidth());
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
   scrollview->addChild(parameterTable, 0 , widgetOffset);
   scrollview->setVScrollBarMode(QScrollView::Auto);
   scrollview->resizeContents(0, widgetOffset + parameterTable->minimumSizeHint().height());
+  selectedList.push_back(parameterTable);
 
   nSelectedObjects++;
+  emit show_me();
+}
+
+void ScanWidget::mousePressEvent (QMouseEvent * e)
+{
+  if (selectedList.size() == 0)
+    return;
+  ScanItemWidget* firstWidget = (ScanItemWidget*)(&selectedList[1]);
+  emit hide_me();
+  if (activeObject >= 0)
+    {
+      QFrame* activeTitle = (QFrame*)(&selectedList[activeObject * 2]);
+      activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+    }
+  activeObject = e->y() / (firstWidget->minimumSizeHint().height() + TITLE_HEIGHT);
+  if (activeObject >= selectedList.size())
+    {
+      activeObject = -1;
+      emit show_me();
+      return;
+    }
+  QFrame* activeTitle = (QFrame*)(&selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
   emit show_me();
 }

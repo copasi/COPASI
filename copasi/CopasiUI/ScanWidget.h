@@ -12,6 +12,7 @@
 #include <qwidget.h>
 #include <qscrollview.h>
 #include "copasiWidget.h"
+#include <vector>
 
 class QVBox;
 class QHBoxLayout;
@@ -65,10 +66,11 @@ class ScanWidget : public CopasiWidget
     QLabel* TextLabel3;
     QCheckBox* trajectory;
     QToolButton* eTrajectory;
-    ScanItemWidget* parameterTable;
 
     SteadyStateWidget* pSteadyStateWidget;
     TrajectoryWidget* pTrajectoryWidget;
+
+    std::vector<QWidget*> selectedList;
 
   protected:
     QGridLayout* ScanWidgetLayout;
@@ -95,6 +97,8 @@ class ScanWidget : public CopasiWidget
 
     virtual void SteadyStateEditing();
     virtual void TrajectoryEditing();
+
+    virtual void mousePressEvent (QMouseEvent * e);
   };
 
 #endif
