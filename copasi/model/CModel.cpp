@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.129 $
+   $Revision: 1.130 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/24 20:35:52 $
+   $Date: 2003/10/24 21:03:36 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1734,7 +1734,7 @@ bool CModel::removeCompartment(const std::string & name)
   if (mCompartments.getIndex(name) == C_INVALID_INDEX)
     return false;
 
-  mCompartments.remove(name));
+  mCompartments.remove(name);
   return true;
 }
 
@@ -1775,94 +1775,94 @@ void CModel::updateDepMetabNumbers(CStateX const & state) const
   }
 
 const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mZero = 0.0;
-    const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
+const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
 
-        CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-            const CCopasiVector< CMetab > & independent):
-            mA(A),
-            mIndependent(independent)
-        {CONSTRUCTOR_TRACE;}
+CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
+    const CCopasiVector< CMetab > & independent):
+    mA(A),
+    mIndependent(independent)
+{CONSTRUCTOR_TRACE;}
 
-        CModel::CLinkMatrixView::~CLinkMatrixView()
-        {DESTRUCTOR_TRACE;}
+CModel::CLinkMatrixView::~CLinkMatrixView()
+{DESTRUCTOR_TRACE;}
 
-        CModel::CLinkMatrixView &
-        CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView & rhs)
-        {
-          const_cast< CMatrix< C_FLOAT64 > &>(mA) = rhs.mA;
-          const_cast< CCopasiVector< CMetab > &>(mIndependent) = rhs.mIndependent;
+CModel::CLinkMatrixView &
+CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView & rhs)
+{
+  const_cast< CMatrix< C_FLOAT64 > &>(mA) = rhs.mA;
+  const_cast< CCopasiVector< CMetab > &>(mIndependent) = rhs.mIndependent;
 
-          return *this;
-        }
+  return *this;
+}
 
-        unsigned C_INT32 CModel::CLinkMatrixView::numRows() const
-          {return mIndependent.size() + mA.numRows();}
+unsigned C_INT32 CModel::CLinkMatrixView::numRows() const
+  {return mIndependent.size() + mA.numRows();}
 
-        unsigned C_INT32 CModel::CLinkMatrixView::numCols() const
-          {return mA.numCols();}
+unsigned C_INT32 CModel::CLinkMatrixView::numCols() const
+  {return mA.numCols();}
 
-        CModel::CStateTemplate::CStateTemplate() :
-            mList(),
-            mKeyMap(),
-            mObjectMap()
-        {}
+CModel::CStateTemplate::CStateTemplate() :
+    mList(),
+    mKeyMap(),
+    mObjectMap()
+{}
 
-        CModel::CStateTemplate::~CStateTemplate() {cleanup();}
+CModel::CStateTemplate::~CStateTemplate() {cleanup();}
 
-        bool CModel::CStateTemplate::cleanup()
-        {
-          std::vector< std::pair< std::string, std::string > * >::iterator it =
-            mList.begin();
-          std::vector< std::pair< std::string, std::string > * >::iterator End =
-            mList.end();
+bool CModel::CStateTemplate::cleanup()
+{
+  std::vector< std::pair< std::string, std::string > * >::iterator it =
+    mList.begin();
+  std::vector< std::pair< std::string, std::string > * >::iterator End =
+    mList.end();
 
-          for (; it != End; ++it)
-            if (*it)
-              {
-                CKeyFactory::remove((*it)->first);
-                delete *it;
-                *it = NULL;
-              }
+  for (; it != End; ++it)
+    if (*it)
+      {
+        CKeyFactory::remove((*it)->first);
+        delete *it;
+        *it = NULL;
+      }
 
-          mList.clear();
-          mKeyMap.clear();
-          mObjectMap.clear();
+  mList.clear();
+  mKeyMap.clear();
+  mObjectMap.clear();
 
-          return true;
-        }
+  return true;
+}
 
-        bool CModel::CStateTemplate::add(const std::string & objectKey)
-        {
-          std::pair< std::string, std::string > * pAdd =
-            new std::pair< std::string, std::string >
-            (CKeyFactory::add("StateVariable", NULL), objectKey);
+bool CModel::CStateTemplate::add(const std::string & objectKey)
+{
+  std::pair< std::string, std::string > * pAdd =
+    new std::pair< std::string, std::string >
+    (CKeyFactory::add("StateVariable", NULL), objectKey);
 
-          mList.push_back(pAdd);
+  mList.push_back(pAdd);
 
-          mKeyMap[pAdd->first] = &objectKey;
-          mObjectMap[objectKey] = &pAdd->first;
+  mKeyMap[pAdd->first] = &objectKey;
+  mObjectMap[objectKey] = &pAdd->first;
 
-          return true;
-        }
+  return true;
+}
 
-        std::string CModel::CStateTemplate::getObjectKey(const std::string & key) const
-          {return *(*const_cast<std::map< std::string, const std::string * > *>(&mKeyMap))[key];}
+std::string CModel::CStateTemplate::getObjectKey(const std::string & key) const
+  {return *(*const_cast<std::map< std::string, const std::string * > *>(&mKeyMap))[key];}
 
-        std::string CModel::CStateTemplate::getKey(const std::string & objectKey) const
-          {return *(*const_cast<std::map< std::string, const std::string * > *>(&mObjectMap))[objectKey];}
+std::string CModel::CStateTemplate::getKey(const std::string & objectKey) const
+  {return *(*const_cast<std::map< std::string, const std::string * > *>(&mObjectMap))[objectKey];}
 
-        unsigned C_INT32 CModel::CStateTemplate::size() const {return mList.size();}
+unsigned C_INT32 CModel::CStateTemplate::size() const {return mList.size();}
 
-        std::pair< std::string, std::string >
-        CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
-          {
-            return * mList[index];
-          }
+std::pair< std::string, std::string >
+CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
+  {
+    return * mList[index];
+  }
 
-        bool CModel::hasReversibleReaction() const
-          {
-            unsigned C_INT32 i, imax = mSteps.size();
-            for (i = 0; i < imax; ++i) if (mSteps[i]->isReversible()) return true;
+bool CModel::hasReversibleReaction() const
+  {
+    unsigned C_INT32 i, imax = mSteps.size();
+    for (i = 0; i < imax; ++i) if (mSteps[i]->isReversible()) return true;
 
-            return false;
-          }
+    return false;
+  }

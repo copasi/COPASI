@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/24 21:03:36 $
+   $Date: 2003/10/24 21:05:09 $
    End CVS Header */
 
 /*******************************************************************
@@ -22,10 +22,10 @@
 #include <qfont.h>
 #include <qpushbutton.h>
 
-#include "MyTable.h" 
-//#include "model/CModel.h"
-#include "model/CCompartment.h" 
-//#include "listviews.h"
+#include "MyTable.h"
+#include "model/CModel.h"
+#include "model/CCompartment.h"
+#include "listviews.h"
 #include "report/CKeyFactory.h"
 
 /**
