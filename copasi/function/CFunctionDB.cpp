@@ -171,8 +171,38 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
   return pFunction;
 }
 
-void CFunctionDB::add(CFunction * function)
-{mLoadedFunctions.add(function);}
+CFunction * CFunctionDB::add(const CFunction & function)
+{
+  if (mLoadedFunctions.getIndex(function.getName()) != C_INVALID_INDEX)
+    return findFunction(function.getName());
+
+  CFunction * pFunction = NULL;
+  switch (function.getType())
+    {
+    case CFunction::Base:
+      pFunction = new CFunction(function, &mLoadedFunctions);
+      break;
+
+    case CFunction::MassAction:
+      pFunction = new CMassAction(function, &mLoadedFunctions);
+      break;
+
+    case CFunction::PreDefined:
+
+    case CFunction::UserDefined:
+      pFunction = new CKinFunction(function,
+                                   NULL,
+                                   &mLoadedFunctions);
+      break;
+
+    default:
+      fatalError();
+    }
+
+  mLoadedFunctions.add(pFunction);
+
+  return pFunction;
+}
 
 // void CFunctionDB::dBDelete(const string & functionName)
 // {

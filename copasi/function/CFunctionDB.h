@@ -100,10 +100,9 @@ class CFunctionDB
     /**
      *  Add the function to the database
      *  @param CKinFunction &function
-     *  @return C_INT32 Fail
+     *  @return CFunction * pFunction
      */
-    void add
-    (CFunction * function);
+    CFunction * add(const CFunction & function);
 
     /**
      *  Delete the function functionName from the database
