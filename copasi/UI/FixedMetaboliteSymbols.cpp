@@ -174,4 +174,5 @@ void FixedMetaboliteSymbols::resizeEvent(QResizeEvent * re)
       table->setColumnWidth(3, w3);
       table->setColumnWidth(4, w4);
     }
+  CopasiWidget::resizeEvent(re);
 }

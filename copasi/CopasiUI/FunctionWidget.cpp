@@ -237,4 +237,5 @@ void FunctionWidget::resizeEvent(QResizeEvent * re)
           return;
         }
     }
+  CopasiWidget::resizeEvent(re);
 }

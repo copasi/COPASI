@@ -236,6 +236,7 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
           return;
         }
     }
+  CopasiWidget::resizeEvent(re);
 }
 
 /***********ListViews::showMessage(QString caption,QString text)------------------------>

@@ -17,6 +17,7 @@ CopasiWidget::CopasiWidget(QWidget * parent, const char * name, WFlags f)
 {
   pListView = (ListViews*)parent;
   bInitialized = false;
+  bSetMinSize = false;
 }
 
 CopasiWidget::~CopasiWidget()
@@ -41,6 +42,11 @@ void CopasiWidget::resize (int w, int h)
           //   qParent->resize(realMinWidth, realMinHeight);
         }
       return;
+    }
+  if (!bSetMinSize)
+    {
+      setMinimumSize(realMinWidth, realMinHeight);
+      bSetMinSize = true;
     }
   //after initialization
   //realMinWidth and realMinHeight are set,

@@ -176,6 +176,7 @@ void ModesWidget::resizeEvent(QResizeEvent * re)
           return;
         }
     }
+  CopasiWidget::resizeEvent(re);
 }
 
 void ModesWidget::slotBtnCalculateClicked()

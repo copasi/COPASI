@@ -202,6 +202,7 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
           return;
         }
     }
+  CopasiWidget::resizeEvent(re);
 }
 
 void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)

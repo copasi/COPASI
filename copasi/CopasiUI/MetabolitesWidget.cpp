@@ -245,6 +245,7 @@ void MetabolitesWidget::resizeEvent(QResizeEvent * re)
           return;
         }
     }
+  CopasiWidget::resizeEvent(re);
 }
 
 void MetabolitesWidget::repaint_table()
