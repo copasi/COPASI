@@ -5,7 +5,509 @@
  *  Contact email: yohe@vt.edu
  *  Purpose: This is the implementation (.cpp file) of the CGA class. 
  *           It is to implement the genetic algorithm for COPASI optimization
+ *  Note: Modified from Gepasi and Dingjun Chen's implementation
  */
+
+
+
+#include "CGA.h"
+
+/******************The following is implementation of various functions*********/
+
+CGA::CGA()
+{
+
+ crp = NULL;
+ midx = NULL;
+ indv = NULL;
+ candx = NULL;
+ wins = NULL;
+ indv = NULL;
+}
+
+CGA::CGA(int psize,int num, int param)
+{
+
+ unsigned int i,j;
+
+ popsize=psize;
+ gener=num;
+ nparam=param;
+
+ candx = new double[2*psize];
+ // create array for tournament
+ wins = new unsigned int[2*psize];
+ // create array for crossover points
+ crp = new unsigned int[param];
+ // create array for shuffling the population
+ midx = new unsigned int[psize];
+ // create the population array
+ indv = new double*[2*psize];
+ // create the individuals
+ for( i=0; i<2*psize; i++ )
+ {
+  indv[i] = new double[param];
+ }
+
+
+ for( i=0; i<nparam; i++ )
+  indv[0][i] =1.1+dr250();
+
+ try
+ {
+  // calculate the fitness
+  candx[0] = evaluate(0);
+ }
+ catch( unsigned int e )
+ {
+  candx[0] = DBL_MAX;
+ }
+
+ // the others are randomly generated
+ creation( 1, popsize);
+ best=fittest();
+
+}
+
+
+CGA::~CGA()
+{
+delete indv;
+delete midx;
+delete crp;
+delete wins;
+delete candx;
+}
+
+
+int CGA::OptRandomInit()
+{
+ struct tms init_time;
+ times(&init_time);
+ r250_init( init_time.tms_utime);
+ return 0;
+}
+
+// evaluate the fitness of one individual
+double CGA::evaluate( unsigned int i )
+{
+ int j;
+ bool outside_range = FALSE;
+ double fitness;
+ double fitness0;
+ double tmp; 
+
+ // evaluate the fitness
+ try
+ {
+  fitness0=0;
+  for(j=0;j<nparam;j++)
+   {
+     fitness=fitness0+pow(indv[i][j],4.0)-16.0*pow(indv[i][j],2.0)+5.0*indv[i][j];
+     fitness0=fitness;
+    }
+    fitness=fitness0/2.0;
+ }
+ catch( unsigned int e )
+ {
+  fitness = DBL_MAX;
+ }
+
+ return fitness;
+}
+
+// copy individual o to position d
+void CGA::copy( unsigned int o, unsigned int d )
+{
+ int i;
+ for( i=0; i<nparam; i++ )
+  indv[d][i] = indv[o][i];
+ candx[d] = candx[o];
+}
+
+// swap individuals o and d
+void CGA::swap( unsigned int o, unsigned int d )
+{
+ int i;
+ double tmp;
+ for( i=0; i<nparam; i++ )
+ {
+  tmp = indv[d][i];
+  indv[d][i] = indv[o][i];
+  indv[o][i] = tmp;
+ }
+ tmp = candx[d];
+ candx[d] = candx[o];
+ candx[o] = tmp;
+ i = wins[d];
+ wins[d] = wins[o];
+ wins[o] = i;
+}
+
+//mutate one individual
+void CGA::mutate( unsigned int i )
+{
+ int j;
+ //double mn, mx, mut;
+ double  mut;
+ // mutate the parameters
+
+   // calculate the mutatated parameter
+   mut = indv[i][j] * ( 1 + mutvar * rnormal01()); 
+  
+  // force it to be within the bounds
+   if( mut <= mn ) mut = mn + DBL_EPSILON;
+   else
+   {if( mut < mn ) mut = mn;}
+ 
+  if( mut >= mx ) mut = mx - DBL_EPSILON;
+   else
+   {if( mut > mx ) mut = mx;}
+   // store it
+   indv[i][j] = mut;
+
+ // evaluate the fitness
+ candx[i] = evaluate(i);
+}
+
+void CGA::crossover( unsigned int p1, unsigned int p2, unsigned int c1, unsigned int c2 )
+{
+ int i, j, s, e;
+ unsigned int pp1, pp2, tmp, l;
+ try
+ {
+  if( nparam > 1 )
+  {
+   // get a random number of crossover points, always less than half the number of genes
+   ncross = r250n( (unsigned int) nparam / 2 );
+  }
+  else ncross = 0;
+  // if less than 0 just copy parent to child
+  if( ncross == 0 )
+  {
+   for( j=0; j<nparam; j++ )
+   {
+    indv[c1][j] = indv[p1][j];
+    indv[c2][j] = indv[p2][j];
+   }
+   return;
+  }
+  // chose first point
+  crp[0] = 1 + r250n(nparam-ncross);
+  // chose the others
+  for( i=1; i<ncross; i++ )
+  {
+   l = nparam - ncross + i - 1 - crp[i-1];
+   crp[i] = 1 + crp[i-1] + ( l==0 ? 0 : r250n( l ) );
+  }
+  // copy segments
+  pp1 = p2; pp2 = p1;
+  for( i=0; i<=ncross; i++ )
+  {
+   // swap the indexes
+   tmp = pp1;
+   pp1 = pp2;
+   pp2 = tmp;
+   if( i==0 ) s = 0; else s = crp[i-1];
+   if( i==ncross) e = nparam; else e = crp[i];
+   for( j=s; j<e; j++ )
+   {
+    indv[c1][j] = indv[pp1][j];
+    indv[c2][j] = indv[pp2][j];
+   }
+  }
+ }
+ catch( unsigned int e )
+ {
+ }
+}
+
+void CGA::shuffle( void )
+{
+ unsigned int i, a, b, tmp;
+ for( i=0; i<popsize; i++ ) midx[i] = i;
+ for( i=0; i<popsize/2; i++ )
+ {
+  a = r250n(popsize);
+  b = r250n(popsize);
+  tmp = midx[a];
+  midx[a] = midx[b];
+  midx[b] = tmp;
+ }
+}
+
+// replicate the individuals w/ crossover
+void CGA::replicate( void )
+{
+ unsigned int i;
+ 
+ // generate a random order for the parents
+ shuffle();
+ // reproduce in consecutive pairs
+ for( i=0; i<popsize/2; i++ )
+  crossover( midx[i*2], midx[i*2+1], popsize + i*2, popsize + i*2+1 );
+ // check if there is one left over and just copy it
+ if( popsize % 2 > 0 ) copy( popsize-1, 2*popsize-1 );
+ // mutate the offspring
+ for( i=0; i<popsize; i++ )
+  mutate( popsize+i );
+}
+
+// select popsize individuals
+void CGA::select( int method )
+{
+ unsigned int i, j, nopp, opp;
+ switch( method )
+ {
+  case 1:  // parent-offspring competition
+	       for( i=popsize; i<2*popsize; i++ )
+           {
+            // if offspring is fitter keep it
+            if( candx[i] < candx[j] ) copy( i, j );
+           }
+		   break;
+  case 2:  // tournament competition
+	       // compete with 20% of the population
+           nopp = popsize / 5;
+		   // but at least one
+           if( nopp<1 ) nopp = 1;
+		   // parents and offspring are all in competition
+           for( i=0; i<2*popsize; i++ )
+           {
+            wins[i] = 0;
+            for( j=0; j<nopp; j++ )
+            {
+			 // get random opponent
+             opp = r250n(popsize*2);
+             if( candx[i] <= candx[opp] ) wins[i]++;
+            }
+           }
+           // selection of top popsize winners
+           for( i=0; i< popsize; i++ )
+            for( j=i+1; j<2*popsize; j++ )
+             if( wins[i] < wins[j] ) swap( i, j );
+		   break;
+ }
+}
+
+// check the best individual at this generation
+unsigned int CGA::fittest( void )
+{
+ unsigned int i,b;
+ double f;
+ f = candx[0];
+ b = 0;
+ for( i=1; i<popsize; i++ )
+  if( candx[i] < f )
+  {
+   b = i;
+   f = candx[i];
+  }
+ return b;
+}
+
+// initialise the population
+void CGA::creation( unsigned int l, unsigned int u )
+{
+ unsigned int i;
+ int j;
+
+// double mn, mx, la;
+ double la;
+
+// BOOL linear;
+  bool linear;
+ for( i=l; i<u; i++ )
+ {
+ 
+ for( j=0; j<nparam; j++ )
+  {
+   try
+   {
+    // determine if linear or log scale
+    linear = FALSE; la = 1.0;
+    if( mn==0.0 ) mn = DBL_EPSILON;
+    if( (mx<=0.0) || (mn<=0.0) ) linear = TRUE;
+    else
+    {
+ 	 la = log10(mx) - log10(mn); 
+	 if( la < 1.8 ) linear = TRUE;
+    }
+    // set it to a random value within the interval
+    if( linear )
+     indv[i][j] = mn + dr250() * (mx - mn);
+    else
+     indv[i][j] = mn *pow( 10, la*dr250() );
+   }
+   catch( unsigned int e )
+   {
+    indv[i][j] = (mx - mn)*0.5 + mn;
+   }
+  }
+  try
+  {
+   // calculate its fitness 
+   candx[i] = evaluate(i);
+  }
+  catch( unsigned int e )
+  {
+   candx[i] = DBL_MAX;
+  }
+ }
+ // get the index of the fittest
+ best = fittest();
+}
+
+
+void CGA::dump_data( unsigned int i )
+{
+ ofstream finalout("debugopt.dat",ios::app);
+ 
+ if(!finalout)
+   	{
+   	cout<<"debugopt.dat cannot be opened!"<<endl;
+  	exit(1);
+	}
+ finalout<<"#"<<i<<"\t"<<candx[best]<<endl;
+ for(int j=0;j<nparam;j++) 
+    {
+     finalout<<indv[best][j]<<"\t";
+    }
+  finalout<<endl;
+  finalout<<endl;
+  finalout.close();
+
+}
+
+
+// main.cc changed to optimise function
+//main(int argc, char *argv[])
+//
+void CGA::Optimise(int argc, char *argv[])
+{
+
+ unsigned int i, last_update, u100, u300, u500, fr;
+ double bx;
+
+ struct tms before,after;
+ double dTime=0;
+   
+ if(argc<4)
+  { 
+   cout<<endl<<"Usage: ga nparam mini_bound maxi_bond"<<endl; 
+  exit(1);
+  }
+ 
+ times(&before);
+ dTime=time(NULL);
+
+ CGA Ga_10param(4000,4000, atoi(argv[1]));  //define a object
+
+ Ga_10param.Set_mn(atoi(argv[2]));
+ Ga_10param.Set_mx(atoi(argv[3]));
+
+//Initialise the random number generator with time
+ Ga_10param.OptRandomInit();
+
+ // initialise the variance for mutations
+ Ga_10param.Set_mutvar(0.1);
+
+ // initialise the update registers
+ last_update = 0;
+ u100 = u300 = u500 = 0;
+
+
+ //Display layout of all MPI processes
+ cout<<endl;
+ cout<<"Initial populaiton has successfully created!!!!!"<<endl;
+
+
+ // and store that value
+ bx = Ga_10param.Get_best_candidate();
+ 
+ ofstream finalout("debugopt.dat");
+ if(!finalout)
+   	{
+   	cout<<"debugopt.dat cannot be opened!"<<endl;
+  	exit(1);
+	}
+ finalout<<"-----------------------------best result at each generation---------------------"<<endl;
+ finalout<<"Generation\t"<<"Best candidate value for object function\t"<<"Display "<<Ga_10param.Get_nparam()<<" parameters"<<endl; 
+ finalout<<endl;
+ finalout.close();
+
+
+int psize = Ga_10param.Get_popsize();  
+
+// ITERATE FOR gener GENERATIONS
+
+for( i=0; i<Ga_10param.Get_gener(); i++ )
+{
+  cout<<endl;
+  cout<<"GA is processing at generation "<<i<<endl;
+ 
+  Ga_10param.dump_data( i );
+  // replicate the individuals
+  Ga_10param.replicate();
+  // select the most fit
+  Ga_10param.select( 2 );
+  // get the index of the fittest
+ // best = fittest();
+ Ga_10param.Set_best(Ga_10param.fittest());
+  if(Ga_10param.Get_best_candidate()!= bx )
+  {
+   last_update = i;
+   bx = Ga_10param.Get_best_candidate();
+  }
+  if( u100 ) u100--;
+  if( u300 ) u300--;
+  if( u500 ) u500--;
+
+  // perturb the population if we have stalled for a while
+  if( (u500==0) && (i-last_update > 500) )
+  {
+   Ga_10param.creation( psize/2, psize );
+   u500 = 500; u300=300; u100=100;
+  }
+
+  else
+  {
+   if( (u300==0) && (i-last_update > 300) )
+   {
+	Ga_10param.creation( unsigned(psize*0.7), psize );
+	u300=300; u100=100;
+   }
+
+   else
+    if( (u100==0) && (i-last_update > 100) ) 
+   {
+	Ga_10param.creation( unsigned(psize*0.9), psize );
+	u100=100;
+   }
+  }
+
+ }
+
+ times(&after);
+ ofstream tout("time.dat");
+ if(!tout)
+	{ cout<<" tout cannot output!"<<endl;
+	exit(0);
+        }
+ tout<<"CPU's Calculation Time:"<<after.tms_utime-before.tms_utime<<endl;
+ tout<<" It has taken about "<<time(NULL)-dTime<<" seconds!"<<endl;
+ tout.close();
+ 
+ cout<<endl;
+ cout<<"GA has successfully done!"<<endl;
+ cout<<" It has taken about "<<time(NULL)-dTime<<" seconds!"<<endl;
+ cout<<"and it is ready to exit now!"<<endl;
+
+}
+
+
+
+#ifdef XX
 
 
 #include "CGA.h"
@@ -754,13 +1256,10 @@ int OptDLLOptimise( double (*feval) (void) )
 }
 
 
-
-
-
-
-
-
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ end dll stuff
+
+
+#endif // XX
 
 
 #ifdef XXXX
