@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:59 $
+   $Date: 2003/11/04 20:31:04 $
    End CVS Header */
 
 /**
@@ -27,7 +27,7 @@ class CScanProblem;
 class CSteadyStateTask;
 class CTrajectory;
 
-class CScanMethod : CCopasiMethod
+class CScanMethod : public CCopasiMethod
   {
   protected:
     /**
