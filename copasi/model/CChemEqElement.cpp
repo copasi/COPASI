@@ -17,7 +17,6 @@ CChemEqElement::CChemEqElement(const std::string & name,
                                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Chemical Equation Element"),
     mMetaboliteName(),
-    //mCompartmentName(),
     mMultiplicity(0),
     mpMetabolite(NULL)
 {CONSTRUCTOR_TRACE;}
@@ -26,7 +25,6 @@ CChemEqElement::CChemEqElement(const CChemEqElement & src,
                                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mMetaboliteName(src.mMetaboliteName),
-    //mCompartmentName(src.mCompartmentName),
     mMultiplicity(src.mMultiplicity),
     mpMetabolite(src.mpMetabolite)
 {CONSTRUCTOR_TRACE;}
@@ -35,17 +33,10 @@ CChemEqElement::~CChemEqElement() {DESTRUCTOR_TRACE;}
 
 void CChemEqElement::cleanup() {}
 
-void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
-{mMultiplicity = multiplicity;}
-
-C_FLOAT64 CChemEqElement::getMultiplicity() const
-  {return mMultiplicity;}
-
 void CChemEqElement::setMetabolite(CMetab & metabolite)
 {
   mpMetabolite = &metabolite;
   mMetaboliteName = mpMetabolite->getName();
-  //mCompartmentName = mpMetabolite->getCompartment()->getName();
 }
 
 const CMetab & CChemEqElement::getMetabolite() const
@@ -55,24 +46,6 @@ const CMetab & CChemEqElement::getMetabolite() const
 
     return *mpMetabolite;
   }
-
-//CMetab * CChemEqElement::getMetaboliteAddr() const
-//{return mpMetabolite;}
-
-void CChemEqElement::setMetaboliteName(const std::string & metaboliteName)
-{mMetaboliteName = metaboliteName;}
-
-const std::string & CChemEqElement::getMetaboliteName() const
-  {return mMetaboliteName;}
-
-//void CChemEqElement::setCompartmentName(const std::string & compartmentName)
-//{mCompartmentName = compartmentName;}
-
-//const std::string & CChemEqElement::getCompartmentName() const
-//  {return mCompartmentName;}
-
-void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity)
-{mMultiplicity += multiplicity;}
 
 void CChemEqElement::compile(const CCopasiVectorN < CCompartment > & compartments)
 {

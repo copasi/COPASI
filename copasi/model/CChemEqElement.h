@@ -25,11 +25,6 @@ class CChemEqElement : public CCopasiContainer
     std::string mMetaboliteName;
 
     /**
-     *  The name of the compartment the element is located in
-     */ 
-    //std::string mCompartmentName;
-
-    /**
      *  The multiplizity of the metabolite
      */
     C_FLOAT64 mMultiplicity;
@@ -73,13 +68,22 @@ class CChemEqElement : public CCopasiContainer
      *  Set the multiplicity of the element.
      *  @param "const C_FLOAT64" multiplicity
      */
-    void setMultiplicity(const C_FLOAT64 multiplicity);
+    void setMultiplicity(const C_FLOAT64 multiplicity)
+    {mMultiplicity = multiplicity;}
+
+    /**
+     *  Add to the multiplicity of the element.
+     *  @param "const C_FLOAT64" multiplicity (default = 1.0)
+     */
+    void addToMultiplicity(const C_FLOAT64 multiplicity = 1.0)
+    {mMultiplicity += multiplicity;}
 
     /**
      *  Retrieves the multiplicity of the element.
      *  @return C_FLOAT64 multiplicity
      */
-    C_FLOAT64 getMultiplicity() const;
+    C_FLOAT64 getMultiplicity() const
+      {return mMultiplicity;}
 
     /**
      *  Set the metabolite of the element.
@@ -94,47 +98,26 @@ class CChemEqElement : public CCopasiContainer
     const CMetab & getMetabolite() const;
 
     /**
-     *  Retrieves the address of the metabolite of the element.
-     *  @return "CMetab *" metabolite
-     */ 
-    //CMetab * getMetaboliteAddr() const;
-
-    /**
-     *  Set the name of the element.
+     *  Set the metabolite name.
      *  @param "const string &" name
      */
-    void setMetaboliteName(const std::string & metabolitName);
+    void setMetaboliteName(const std::string & metaboliteName)
+    {mMetaboliteName = metaboliteName;}
 
     /**
-     *  Retrieves the name of the element.
+     *  Retrieves the metabolite name.
      *  @return "const string &" name
      */
-    const std::string & getMetaboliteName() const;
+    const std::string & getMetaboliteName() const
+      {return mMetaboliteName;}
 
     /**
-     *  Set the name of the element.
-     *  @param "const string &" name
-     */ 
-    //void setCompartmentName(const std::string & compartmentName);
-
-    /**
-     *  Retrieves the name of the element.
-     *  @return "const string &" name
-     */ 
-    //const std::string & getCompartmentName() const;
-
-    /**
-     *  Add to the multiplicity of the element.
-     *  @param "const C_FLOAT64" multiplicity (default = 0.0)
-     */
-    void addToMultiplicity(const C_FLOAT64 multiplicity = 1.0);
-
-    /**
-     *  Compile the ChemEqElement, i.e., the pointer to the metabolite
-     *  is assigned.
-     *  @param "vector < CMetab * > &" metabolites
+     *  compile() tries to set the pointer to the metabolite from the name
+     *  of the metabolite. If that is not possible it tries to set the name
+     *  from the pointer. Else the pointer is set to NULL.
      */
     void compile(const CCopasiVectorN < CCompartment > & compartments);
+
     /**
      *  Write the element in the form mMultiplier * mMetaboliteName
      *  @return "string"
@@ -143,8 +126,6 @@ class CChemEqElement : public CCopasiContainer
 
     friend std::ostream & operator<<(std::ostream &os, const CChemEqElement & d)
     {
-      //os << "CChemEqElement: [" << d.mCompartmentName << "]  " << d.mMultiplicity <<
-      //" * " << d.mMetaboliteName << std::endl;
       os << "CChemEqElement: " << d.mMultiplicity << " * " << d.mMetaboliteName << std::endl;
 
       if (d.mpMetabolite)
