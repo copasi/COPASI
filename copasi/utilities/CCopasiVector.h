@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/23 11:35:11 $
+   $Date: 2004/04/26 11:15:57 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -500,19 +500,20 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
 
           CCopasiObject * pObject = *(begin() + Index);
 
-          std::cout << "getObject: pObject->getObjType " << pObject->getObjectType() << std::endl;
-
           if (name.getObjectType() == pObject->getObjectType())
-            return pObject;
+            return pObject; //exact match of type and name
 
-          std::cout << "Warning: CCopasiVector::getObject can not determine whether the object has the right type" << std::endl;
-          std::cout << "getObject: Index " << Index << std::endl;
-          std::cout << "getObject: name  " << name << std::endl;
-          std::cout << "getObject: name.getName " << name.getName() << std::endl;
-          std::cout << "getObject: name.getObjName " << name.getObjectName() << std::endl;
-          std::cout << "getObject: name.getObjType " << name.getObjectType() << std::endl;
+          if (name.getObjectName() == "")
+            return pObject; //cn contains no "="; type cannot be checked
 
-          return pObject;
+          std::cout << "CCopasiVector::getObject: Vector contains object of right name but wrong type" << std::endl;
+          std::cout << "  CN            " << name << std::endl;
+          std::cout << "  CN.getName    " << name.getName() << std::endl;
+          std::cout << "  Index         " << Index << std::endl;
+          std::cout << "  CN.getObjName " << name.getObjectName() << std::endl;
+          std::cout << "  CN.getObjType " << name.getObjectType() << std::endl << std::endl;
+
+          return NULL;
         }
 
       /**
