@@ -22,11 +22,6 @@ CopasiUI_MOC = \
 	SteadyStateWidget.moc.cpp \
 	TrajectoryWidget.moc.cpp \
 	copasiui3window.moc.cpp \
-  MetaboliteSymbols.moc.cpp \
-  FixedMetaboliteSymbols.moc.cpp \
-  CompartmentSymbols.moc.cpp \
-  ConstantSymbols.moc.cpp \
-  FunctionSymbols.moc.cpp \
 	listviews.moc.cpp
 
 CopasiUI_SOURCES = $(CopasiUI_MOC) \
@@ -54,11 +49,6 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	SteadyStateWidget.cpp \
   TrajectoryWidget.cpp \
         copasiui3window.cpp \
-  MetaboliteSymbols.cpp \
-  FixedMetaboliteSymbols.cpp \
-  CompartmentSymbols.cpp \
-  ConstantSymbols.cpp \
-  FunctionSymbols.cpp \
         listviews.cpp
 
 CopasiUI_DEPENDENCIES = $(CopasiUI_LIBS) check_LIBS
@@ -102,11 +92,6 @@ EXTRA_DIST = \
 	SteadyStateWidget.h SteadyStateWidget.cpp SteadyStateWidget.moc.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
-  MetaboliteSymbols.h       MetaboliteSymbols.cpp       moc_MetaboliteSymbols.cpp \
-  FixedMetaboliteSymbols.h  FixedMetaboliteSymbols.cpp  moc_FixedMetaboliteSymbols.cpp \
-  CompartmentSymbols.h      CompartmentSymbols.cpp      moc_CompartmentSymbols.cpp \
-  ConstantSymbols.h         ConstantSymbols.cpp         moc_ConstantSymbols.cpp \
-  FunctionSymbols.h         FunctionSymbols.cpp         moc_FunctionSymbols.cpp \
 	listviews.h listviews.cpp moc_listviews.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
