@@ -51,7 +51,7 @@ class CScanMethod
        * calculate function for ScanMethod
        */
 
-    C_FLOAT64 simulate(bool bSteadyStateTask, bool bTrajectoryTask);
+    C_FLOAT64 simulate();
 
     /**
      * Create a trajectory method.
@@ -81,7 +81,7 @@ class CScanMethod
     /**
      *  The main scan method.
      */
-    void scan(unsigned C_INT32 i, bool nl, bool bSteadyStateTask, bool bTrajectoryTask);
+    void scan(unsigned C_INT32 i, bool nl);
 
     /**
      *  Set the value of the scan parameter based on the distribution

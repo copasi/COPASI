@@ -456,7 +456,7 @@ void ScanWidget::ScanCheckBoxClicked()
 
 void ScanWidget::ScanButtonClicked()
 {
-  scanTask->process(steadyState->isChecked(), trajectory->isChecked());
+  scanTask->process();
 }
 
 void ScanWidget::SteadyStateButtonClicked()
