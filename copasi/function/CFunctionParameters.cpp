@@ -61,9 +61,10 @@ void CFunctionParameters::add(const CFunctionParameter & parameter)
   updateUsageRanges();
 }
 
-void CFunctionParameters::add(CFunctionParameter * parameter)
+void CFunctionParameters::add(CFunctionParameter * parameter,
+                              const bool & adopt)
 {
-  mParameters.add(parameter);
+  mParameters.add(parameter, adopt);
   updateUsageRanges();
 }
 

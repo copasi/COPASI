@@ -13,6 +13,9 @@
 const std::string CFunctionParameter::DataTypeName[] =
   {"Integer", "Double", "Vector of Integer", "Vector of Double", ""};
 
+const std::string CFunctionParameter::XMLRole[] =
+  {"substrate", "product", "modifier", "constant", "other", ""};
+
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),

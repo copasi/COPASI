@@ -23,6 +23,11 @@ class CFunctionParameter : public CCopasiContainer
      */
     static const std::string DataTypeName[];
 
+    /**
+     *  The string representation of valid roles of a function
+     */
+    static const std::string XMLRole[];
+
     //Attributes
 
   public:

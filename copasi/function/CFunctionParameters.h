@@ -88,15 +88,14 @@ class CFunctionParameters : public CCopasiContainer
      *  @param "const CFunctionParameter &" parameter
      */
 
-    void add
-    (const CFunctionParameter & parameter);
+    void add(const CFunctionParameter & parameter);
 
     /**
      *  Add a parameter to the parameter list
      *  @param "CFunctionParameter *" parameter
+     *  @param const bool & adopt (Default: false)
      */
-    void add
-    (CFunctionParameter * parameter);
+    void add(CFunctionParameter * parameter, const bool & adopt = false);
 
     /**
      *  Add a parameter to the parameter list
