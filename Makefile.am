@@ -9,8 +9,11 @@ EXTRA_DIST = AUTHORS COPYING ChangeLog INSTALL README TODO copasi.doxygen
 # have all needed files, that a GNU package needs
 AUTOMAKE_OPTIONS = foreign 1.4
 
-.PHONY: doc
+.PHONY: doc depend
 
 doc:
 	-rm -rf doc/*
 	doxygen copasi.doxygen
+
+depend:
+	touch copasi/Makefile

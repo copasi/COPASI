@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.17 $ $Author: shoops $ $Date: 2003/09/22 19:15:27 $  
+# $Revision: 1.18 $ $Author: shoops $ $Date: 2003/10/30 17:43:03 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -113,3 +113,8 @@ contains(BUILD_OS, Linux) {
     }
   }
 }
+
+DEP1.target   = depend
+DEP1.depends  = qmake
+
+QMAKE_EXTRA_UNIX_TARGETS += DEP1

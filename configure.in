@@ -66,7 +66,9 @@ dnl to prevent calling aclocal, automake and configure again
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
- mv $$.tmp Makefile \
+ mv $$.tmp Makefile && \
+ echo depend:  >> Makefile && \
+ echo "	touch Makefile" >> Makefile 
 )
 
 dnl add here all your Makefiles. These will be created by configure

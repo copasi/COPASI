@@ -1672,7 +1672,9 @@ fi
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
- mv $$.tmp Makefile \
+ mv $$.tmp Makefile && \
+ echo depend:  >> Makefile && \
+ echo "	touch Makefile" >> Makefile
 )
 
           ac_config_files="$ac_config_files Makefile"
