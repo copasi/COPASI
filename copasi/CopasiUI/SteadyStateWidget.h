@@ -39,6 +39,7 @@ class SteadyStateWidget : public QWidget
     QFrame* line7;
     QFrame* line6;
     QFrame* line8;
+    QFrame* line8_2;
     QLabel* taskNameLabel;
     QRadioButton* taskJacobian;
     QLabel* taskDescriptionLabel;

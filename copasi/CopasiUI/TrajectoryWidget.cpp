@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Sun Mar 2 20:34:14 2003
+ ** Created: Mon Mar 3 13:51:02 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -9,6 +9,7 @@
 #include "TrajectoryWidget.h"
 #include "trajectory/CTrajectoryTask.h"
 #include <qmessagebox.h>
+#include <qfiledialog.h>
 
 #include <qvariant.h>
 #include <qcheckbox.h>
@@ -21,7 +22,6 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qfiledialog.h>
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -32,10 +32,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 {
   if (!name)
     setName("TrajectoryWidget");
-  resize(719, 539);
+  resize(695, 581);
   QFont f(font());
   f.setFamily("Times New Roman");
-  f.setPointSize(9);
   setFont(f);
   setCaption(trUtf8("TrajectoryWidget"));
   TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
@@ -53,7 +52,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
 
-  TrajectoryWidgetLayout->addMultiCellWidget(parameterTable, 8, 8, 1, 3);
+  TrajectoryWidgetLayout->addMultiCellWidget(parameterTable, 7, 8, 1, 3);
 
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
@@ -91,11 +90,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   bExecutable->setText(trUtf8("Task Executable "));
 
   TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
-
-  parameterValueLabel = new QLabel(this, "parameterValueLabel");
-  parameterValueLabel->setText(trUtf8("Parameter value"));
-
-  TrajectoryWidgetLayout->addMultiCellWidget(parameterValueLabel, 7, 8, 0, 0);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Step Size"));
@@ -164,6 +158,13 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   Layout2->addWidget(ExportToFileButton);
 
   TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 10, 10, 0, 3);
+  QSpacerItem* spacer = new QSpacerItem(71, 330, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  TrajectoryWidgetLayout->addItem(spacer, 8, 0);
+
+  parameterValueLabel = new QLabel(this, "parameterValueLabel");
+  parameterValueLabel->setText(trUtf8("Parameter value"));
+
+  TrajectoryWidgetLayout->addWidget(parameterValueLabel, 7, 0);
 
   // signals and slots connections
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));

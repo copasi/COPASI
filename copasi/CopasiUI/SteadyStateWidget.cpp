@@ -1,7 +1,7 @@
 /****************************************************************************
- ** Form implementation generated from reading ui file '.\SteadyStateWidget.ui'
+ ** Form implementation generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Sun Mar 2 20:14:23 2003
+ ** Created: Sun Mar 2 20:34:14 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -32,97 +32,25 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 {
   if (!name)
     setName("SteadyStateWidget");
-  resize(719, 539);
+  resize(626, 588);
   setMinimumSize(QSize(0, 0));
   QFont f(font());
   f.setFamily("Times New Roman");
-  f.setPointSize(9);
   setFont(f);
   setCaption(trUtf8("SteadyStateWidget"));
   SteadyStateWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "SteadyStateWidgetLayout");
-
-  line7 = new QFrame(this, "line7");
-  line7->setFrameShape(QFrame::HLine);
-  line7->setFrameShadow(QFrame::Sunken);
-  line7->setFrameShape(QFrame::HLine);
-
-  SteadyStateWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 4);
-  QSpacerItem* spacer = new QSpacerItem(500, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer, 7, 7, 0, 4);
-  QSpacerItem* spacer_2 = new QSpacerItem(490, 22, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_2, 5, 5, 0, 4);
-  QSpacerItem* spacer_3 = new QSpacerItem(390, 22, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_3, 3, 3, 0, 3);
-  QSpacerItem* spacer_4 = new QSpacerItem(500, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_4, 1, 1, 0, 4);
-  QSpacerItem* spacer_5 = new QSpacerItem(500, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_5, 11, 11, 0, 4);
-  QSpacerItem* spacer_6 = new QSpacerItem(490, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_6, 9, 9, 0, 4);
-
-  line6 = new QFrame(this, "line6");
-  line6->setFrameShape(QFrame::HLine);
-  line6->setFrameShadow(QFrame::Sunken);
-  line6->setFrameShape(QFrame::HLine);
-
-  SteadyStateWidgetLayout->addMultiCellWidget(line6, 10, 10, 0, 4);
-
-  line8 = new QFrame(this, "line8");
-  line8->setFrameShape(QFrame::HLine);
-  line8->setFrameShadow(QFrame::Sunken);
-  line8->setFrameShape(QFrame::HLine);
-
-  SteadyStateWidgetLayout->addMultiCellWidget(line8, 2, 2, 0, 4);
 
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
 
   SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
-
-  taskJacobian = new QRadioButton(this, "taskJacobian");
-  taskJacobian->setText(trUtf8("Jacobian"));
-
-  SteadyStateWidgetLayout->addWidget(taskJacobian, 4, 1);
-
-  taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
-  taskDescriptionLabel->setText(trUtf8("Task Description"));
-
-  SteadyStateWidgetLayout->addWidget(taskDescriptionLabel, 4, 0);
+  QSpacerItem* spacer = new QSpacerItem(91, 400, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  SteadyStateWidgetLayout->addItem(spacer, 5, 0);
 
   parameterValueLabel = new QLabel(this, "parameterValueLabel");
   parameterValueLabel->setText(trUtf8("Parameter value"));
 
-  SteadyStateWidgetLayout->addWidget(parameterValueLabel, 8, 0);
-  QSpacerItem* spacer_7 = new QSpacerItem(61, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addItem(spacer_7, 4, 2);
-
-  taskStability = new QRadioButton(this, "taskStability");
-  taskStability->setText(trUtf8("Stability Analysis"));
-
-  SteadyStateWidgetLayout->addWidget(taskStability, 4, 3);
-  QSpacerItem* spacer_8 = new QSpacerItem(61, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addItem(spacer_8, 4, 4);
-
-  bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setText(trUtf8("Task Executable"));
-
-  SteadyStateWidgetLayout->addWidget(bExecutable, 0, 4);
-
-  taskName = new QLineEdit(this, "taskName");
-  taskName->setFrameShape(QLineEdit::LineEditPanel);
-  taskName->setFrameShadow(QLineEdit::Sunken);
-
-  SteadyStateWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 2);
-  QSpacerItem* spacer_9 = new QSpacerItem(61, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addItem(spacer_9, 0, 3);
-
-  parameterTable = new QTable(this, "parameterTable");
-  parameterTable->setNumRows(0);
-  parameterTable->setNumCols(1);
-  QHeader *colHeader = parameterTable->horizontalHeader();
-  colHeader->setLabel(0, tr("Value"));
-
-  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 8, 8, 1, 3);
+  SteadyStateWidgetLayout->addWidget(parameterValueLabel, 4, 0);
 
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
@@ -143,7 +71,62 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   ExportFileButton->setText(trUtf8("Export To File"));
   Layout2->addWidget(ExportFileButton);
 
-  SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 12, 12, 0, 4);
+  SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 7, 7, 0, 2);
+
+  line6 = new QFrame(this, "line6");
+  line6->setFrameShape(QFrame::HLine);
+  line6->setFrameShadow(QFrame::Sunken);
+  line6->setFrameShape(QFrame::HLine);
+
+  SteadyStateWidgetLayout->addMultiCellWidget(line6, 6, 6, 0, 2);
+
+  taskName = new QLineEdit(this, "taskName");
+  taskName->setFrameShape(QLineEdit::LineEditPanel);
+  taskName->setFrameShadow(QLineEdit::Sunken);
+
+  SteadyStateWidgetLayout->addWidget(taskName, 0, 1);
+
+  bExecutable = new QCheckBox(this, "bExecutable");
+  bExecutable->setText(trUtf8("Task Executable"));
+
+  SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
+
+  line8 = new QFrame(this, "line8");
+  line8->setFrameShape(QFrame::HLine);
+  line8->setFrameShadow(QFrame::Sunken);
+  line8->setFrameShape(QFrame::HLine);
+
+  SteadyStateWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
+
+  parameterTable = new QTable(this, "parameterTable");
+  parameterTable->setNumRows(0);
+  parameterTable->setNumCols(1);
+  QHeader *colHeader = parameterTable->horizontalHeader();
+  colHeader->setLabel(0, tr("Value"));
+
+  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
+
+  taskStability = new QRadioButton(this, "taskStability");
+  taskStability->setText(trUtf8("Stability Analysis"));
+
+  SteadyStateWidgetLayout->addWidget(taskStability, 2, 2);
+
+  taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
+  taskDescriptionLabel->setText(trUtf8("Task Description"));
+
+  SteadyStateWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
+
+  taskJacobian = new QRadioButton(this, "taskJacobian");
+  taskJacobian->setText(trUtf8("Jacobian"));
+
+  SteadyStateWidgetLayout->addWidget(taskJacobian, 2, 1);
+
+  line8_2 = new QFrame(this, "line8_2");
+  line8_2->setFrameShape(QFrame::HLine);
+  line8_2->setFrameShadow(QFrame::Sunken);
+  line8_2->setFrameShape(QFrame::HLine);
+
+  SteadyStateWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
 
   // signals and slots connections
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));

@@ -8,14 +8,13 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>719</width>
-            <height>539</height>
+            <width>695</width>
+            <height>581</height>
         </rect>
     </property>
     <property name="font">
         <font>
             <family>Times New Roman</family>
-            <pointsize>9</pointsize>
         </font>
     </property>
     <property name="caption">
@@ -45,7 +44,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QTable" row="8" column="1" rowspan="1" colspan="3">
+        <widget class="QTable" row="7" column="1" rowspan="2" colspan="3">
             <property name="name">
                 <cstring>parameterTable</cstring>
             </property>
@@ -116,14 +115,6 @@
             </property>
             <property name="text">
                 <string>Task Executable </string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="7" column="0" rowspan="2" colspan="1">
-            <property name="name">
-                <cstring>parameterValueLabel</cstring>
-            </property>
-            <property name="text">
-                <string>Parameter value</string>
             </property>
         </widget>
         <widget class="QLabel" row="2" column="0">
@@ -251,6 +242,31 @@
                     </property>
                 </widget>
             </hbox>
+        </widget>
+        <spacer row="8" column="0">
+            <property name="name">
+                <cstring>Spacer16</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>71</width>
+                    <height>330</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="7" column="0">
+            <property name="name">
+                <cstring>parameterValueLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Parameter value</string>
+            </property>
         </widget>
     </grid>
 </widget>
