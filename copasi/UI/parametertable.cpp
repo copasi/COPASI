@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 19:57:07 $
+   $Date: 2004/08/17 09:09:19 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -122,7 +122,8 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   C_INT32 rowCounter = 0;
 
   ColorTableItem *item;
-  ComboItem *combo;
+  //ComboItem *combo;
+  QComboTableItem *combo;
   QStringList qsl;
 
   QColor subsColor(255, 210, 210);
@@ -201,8 +202,10 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                 }
               else
                 {
-                  combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
-                  combo->setText(FROM_UTF8((*metabNames)[0]));
+                  //combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
+                  combo = new QComboTableItem(this, qsl);
+                  //combo->setText(FROM_UTF8((*metabNames)[0]));
+                  combo->setCurrentItem(FROM_UTF8((*metabNames)[0]));
                   setItem(rowCounter, 2, combo);
                 }
             }
@@ -215,8 +218,10 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                 }
               else // this should not happen
                 {
-                  combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
-                  combo->setText("add metabolite");
+                  //combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
+                  combo = new QComboTableItem(this, qsl);
+                  //combo->setText("add metabolite");
+                  combo->setCurrentItem("add metabolite");
                   setItem(rowCounter, 2, combo);
                 }
               // add lines for vector parameters
