@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:19 $
+   $Date: 2003/11/17 20:57:52 $
    End CVS Header */
 
 // CChemEqElement
@@ -143,7 +143,7 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
       if (role == CChemEq::SUBSTRATE)
         Element->setMultiplicity(- Element->getMultiplicity());
 
-      structure.add(Element);
+      structure.add(Element, true);
     }
   else if (role == CChemEq::SUBSTRATE)
     structure[i]->addToMultiplicity(- element.getMultiplicity());

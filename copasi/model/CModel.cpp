@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.140 $
+   $Revision: 1.141 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:09:33 $
+   $Date: 2003/11/17 20:57:52 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -857,7 +857,7 @@ void CModel::buildMoieties()
       //      DebugFile << pMoiety->getDescription() << " = "
       //      << pMoiety->getNumber() << std::endl;
 
-      mMoieties.add(pMoiety);
+      mMoieties.add(pMoiety, true);
     }
 
   return;

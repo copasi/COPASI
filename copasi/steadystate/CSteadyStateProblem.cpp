@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/07 16:57:40 $
+   $Date: 2003/11/17 20:57:51 $
    End CVS Header */
 
 /**
@@ -33,6 +33,7 @@ CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
 {
   addParameter("JacobianRequested", CCopasiParameter::BOOL, true);
   addParameter("StabilityAnalysisRequested", CCopasiParameter::BOOL, true);
+  CONSTRUCTOR_TRACE;
 }
 
 /**

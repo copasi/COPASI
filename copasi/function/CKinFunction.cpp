@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/30 20:32:43 $
+   $Author: shoops $ 
+   $Date: 2003/11/17 20:57:53 $
    End CVS Header */
 
 /**
@@ -270,7 +270,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                  // this is an error
+        case N_NOP:                                   // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -621,29 +621,38 @@ void CKinFunction::createParameters()
             case N_SUBSTRATE:
               pParameter->setUsage("SUBSTRATE");
               if (Substrates.getIndex(pParameter->getName()) == C_INVALID_INDEX)
-                Substrates.add(pParameter, true);
+                Substrates.add(pParameter, false);
+              else
+                pdelete(pParameter);
               break;
 
             case N_PRODUCT:
               pParameter->setUsage("PRODUCT");
               if (Products.getIndex(pParameter->getName()) == C_INVALID_INDEX)
-                Products.add(pParameter, true);
+                Products.add(pParameter, false);
+              else
+                pdelete(pParameter);
               break;
 
             case N_MODIFIER:
               pParameter->setUsage("MODIFIER");
               if (Modifiers.getIndex(pParameter->getName()) == C_INVALID_INDEX)
-                Modifiers.add(pParameter, true);
+                Modifiers.add(pParameter, false);
+              else
+                pdelete(pParameter);
               break;
 
             case N_KCONSTANT:
             case N_NOP:
               pParameter->setUsage("PARAMETER");
               if (Parameters.getIndex(pParameter->getName()) == C_INVALID_INDEX)
-                Parameters.add(pParameter, true);
+                Parameters.add(pParameter, false);
+              else
+                pdelete(pParameter);
               break;
 
             default:
+              pdelete(pParameter);
               fatalError();
             }
         }
@@ -653,22 +662,22 @@ void CKinFunction::createParameters()
 
   imax = Substrates.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(*Substrates[i]);
+    getParameters().add(Substrates[i], true);
   Substrates.cleanup();
 
   imax = Products.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(*Products[i]);
+    getParameters().add(Products[i], true);
   Products.cleanup();
 
   imax = Modifiers.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(*Modifiers[i]);
+    getParameters().add(Modifiers[i], true);
   Modifiers.cleanup();
 
   imax = Parameters.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(*Parameters[i]);
+    getParameters().add(Parameters[i], true);
   Parameters.cleanup();
 }
 

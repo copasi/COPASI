@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2003/11/13 22:08:20 $
+   $Author: shoops $ 
+   $Date: 2003/11/17 20:57:52 $
    End CVS Header */
 
 /**
@@ -84,7 +84,7 @@ bool CFunctionParameters::add(const std::string & name,
 
   CFunctionParameter *parameter
   = new CFunctionParameter(name, type, usage);
-  mParameters.add(parameter);
+  mParameters.add(parameter, true);
   updateUsageRanges();
   return true;
 }
