@@ -29,10 +29,12 @@
 #include "ReactionsWidget.h"
 #include "CompartmentsWidget.h"
 #include "MoietyWidget.h"
+#include "FunctionWidget.h"
 #include "ReactionsWidget1.h"
 #include "MetabolitesWidget1.h"
 #include "CompartmentsWidget1.h"
 #include "MoietyWidget1.h"
+#include "FunctionWidget1.h"
 #include "./icons/folderclosed.xpm"
 #include "./icons/folderopen.xpm"
 #include "./icons/folderlocked.xpm"
@@ -127,10 +129,12 @@ class ListViews : public QSplitter, public Observer
     ReactionsWidget *reactionsWidget;
     CompartmentsWidget *compartmentsWidget;
     MoietyWidget *moietyWidget;
+    FunctionWidget *functionWidget;
     ReactionsWidget1 *reactionsWidget1;
     MetabolitesWidget1 *metabolitesWidget1;
     CompartmentsWidget1 *compartmentsWidget1;
     MoietyWidget1 *moietyWidget1;
+    FunctionWidget1 *functionWidget1;
 
   protected slots:
     void slotFolderChanged(QListViewItem*);
@@ -148,6 +152,7 @@ class ListViews : public QSplitter, public Observer
     void loadReactions(QListViewItem*);
     void loadMoieties(QListViewItem*);
     void loadCompartments(QListViewItem*);
+    void loadFunction(QListViewItem*);
     void showMessage(QString caption, QString text);
   };
 

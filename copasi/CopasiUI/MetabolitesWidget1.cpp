@@ -46,7 +46,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
   vboxLayout1->addWidget(Frame3);
   QGridLayout *gridLayout = new QGridLayout(Frame3, 0);
 
-  //All the other frames(rows) are embeded in it
+  //All the other frames(rows) are embedded in it
   Frame2 = new QFrame(Frame3, "Frame2");
   gridLayout->addWidget(Frame2, 0, 0, 0);
   QGridLayout *gridLayout1 = new QGridLayout(Frame2, 0);

@@ -329,7 +329,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
 
   //char * fName=item->folder()->folderName();
 
-  QListViewItem* i1 = i->parent () ;
+  QListViewItem* i1 = i->parent();
 
   // get the qlistview item in form of folderlistitem...
   FolderListItem *item1 = (FolderListItem*)i1;
@@ -348,6 +348,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     currentWidget = compartmentsWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Moiety")))
     currentWidget = moietyWidget;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Functions")))
+    currentWidget = functionWidget;
 
   else if (! (value = QString::compare(item1->folder()->folderName(), "Compartments")))
     {
@@ -379,12 +381,19 @@ void ListViews::slotFolderChanged(QListViewItem *i)
           currentWidget = moietyWidget1;
         }
     }
+  else if (! (value = QString::compare(item1->folder()->folderName(), "Functions")))
+    {
+      if (functionWidget1->isName(item->folder()->folderName()) == 1)
+        {
+          currentWidget = functionWidget1;
+        }
+    }
 
   else
     {
       switch (item->folder()->getID())
         {
-        case 21 :          // for showing addition...of new components..
+        case 21 :           // for showing addition...of new components..
 
           // deleteAllMyChildrens(i); //is used if u want to delete all mychildrens
 
@@ -471,7 +480,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:           // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:            // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
 
           if ((node = dataModel->getData()) != NULL)
@@ -493,7 +502,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:         // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:          // WHEN ANY DATA IS DELETED FROM THE TREE
           // showMessage("Ankur","It comes in delete");
 
           if ((node = dataModel->getData()) != NULL)
@@ -506,7 +515,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:           // new model is loaded.
+        case MODEL:            // new model is loaded.
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
@@ -694,6 +703,24 @@ void ListViews::loadNodes(CModel *model)
           loadNode = NULL;
         }
 
+      // UPDATE THE FUNCTIONS STUFF..
+      functionWidget->loadFunction(model);
+
+      functionWidget1->loadFunction(model);
+
+      loadNode = searchNode("Functions");
+
+      if (loadNode)
+        {
+          this->loadFunction(loadNode);
+
+          if (loadNode->isSelected())
+            if (loadNode->childCount() != 0)
+              loadNode->setPixmap(0, *folderOpen);
+
+          loadNode = NULL;
+        }
+
       // AT THE END... SET THE UPDATE FALSE SO THAT NO OTHER VIEW IS ABLE TO REPEAT THE
       // SAME STUFF AGAIN..
       dataModel->setModelUpdate(false);
@@ -727,6 +754,10 @@ void ListViews::ConstructNodeWidgets()
     moietyWidget = new MoietyWidget(this);
     moietyWidget->hide();
 
+    //Constructing the Function Widget
+    functionWidget = new FunctionWidget(this);
+    functionWidget->hide();
+
     //Constructing the Reactions Widget1
     reactionsWidget1 = new ReactionsWidget1(this);
     reactionsWidget1->hide();
@@ -742,6 +773,10 @@ void ListViews::ConstructNodeWidgets()
     //Constructing the Metabolites Widget1
     metabolitesWidget1 = new MetabolitesWidget1(this);
     metabolitesWidget1->hide();
+
+    //Constructing the Function Widget1
+    functionWidget1 = new FunctionWidget1(this);
+    functionWidget1->hide();
   }
 }
 
@@ -917,6 +952,59 @@ void ListViews::loadCompartments(QListViewItem* i)
     {
       compartn = compartments[j];
       f = new Folder(p, compartn->getName().c_str());
+      f->setID(myId + j + 1);
+      dataModel->addData(p, f);
+    }
+}
+
+/***********ListViews::loadFunction(QListViewItem* i)---------------------------->
+ **
+ ** Parameters:- QListViewItem* :- The node where these new nodes should be added to
+ ** Returns  :-  void(Nothing)
+ ** Description:-This method is used to load the function nodes to the 
+ **              i node as obtained by the parameter
+ *************************************************************************/
+void ListViews::loadFunction(QListViewItem* i)
+{
+  if (mModel == NULL)
+    return ;
+
+  if (!dataModel->getModelUpdate())
+    return ; // if the model is not updated than return
+
+  //   showMessage("Ankur","This is duplicate call");
+  FolderListItem *item = (FolderListItem*)i;
+
+  if (i->childCount() != 0)
+    deleteAllMyChildrens(i); // is used if u want to delete all mychildrens
+
+  Folder* p, *f;
+
+  p = item->folder();
+
+  int myId = item->folder()->getID();
+
+  // multiply myId by 1000000 and than add these items with seq nu..of that id..
+  myId = 1000000 * myId;
+
+  CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
+
+  C_INT32 noOfFunctionsRows = Functions.size();
+
+  //vector < CMetab * > metabolites = mModel->getMetabolites();
+
+  // C_INT32 noOfMetabolitesRows = metabolites.size();
+
+  //Now filling the table.
+  CFunction *funct;
+
+  //CMetab *metab;
+
+  for (C_INT32 j = 0; j < noOfFunctionsRows; j++)
+    {
+      funct = Functions[j];
+      //metab = metabolites[j];
+      f = new Folder(p, funct->getName().c_str());
       f->setID(myId + j + 1);
       dataModel->addData(p, f);
     }
