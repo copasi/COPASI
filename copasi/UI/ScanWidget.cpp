@@ -156,8 +156,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   vBox = new QVBox(this, 0);
 
   //Just for test
-  for (int temp = 1; temp <= 6; temp++)
-    addNewScanItem(NULL);
+  //  for (int temp = 1; temp <= 6; temp++)
+  //    addNewScanItem(NULL);
 
   scrollview->addChild(vBox);
 
@@ -241,7 +241,12 @@ void ScanWidget::addButtonClicked()
       break;
 
   if (pSelectedList->getRoot())
-    addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
+    {
+      scrollview->hide();
+      addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
+      scrollview->addChild(vBox);
+      scrollview->show();
+    }
 
   delete pSelectedObjects;
   delete pSelectedList;
@@ -316,7 +321,7 @@ void ScanWidget::loadScan(CModel *model)
       else
         steadyState->setChecked(false);
 
-      emit hide_me();
+      //      emit hide_me();
       //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
       for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
         {
@@ -341,7 +346,7 @@ void ScanWidget::loadScan(CModel *model)
           */
         }
 
-      emit show_me();
+      //     emit show_me();
       scrollview->addChild(vBox);
       ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
       scrollview->setVScrollBarMode(QScrollView::Auto);
@@ -350,12 +355,21 @@ void ScanWidget::loadScan(CModel *model)
 
 void ScanWidget::addNewScanItem(CCopasiObject* pObject)
 {
+  //  emit hide_me();
+  //  scrollview = new QScrollView(this, 0, 0);
+  //  vBox = new QVBox(this, 0);
   parameterTable = new ScanItemWidget(this, "parameterTable");
   parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
   vBox->insertChild(parameterTable);
+
   Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
   Line1->setLineWidth (4);
   vBox->insertChild(Line1);
+
+  //  emit show_me();
+  //  scrollview->addChild(vBox);
+  //  scrollview->setVScrollBarMode(QScrollView::Auto);
+  //  ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
 }
