@@ -30,20 +30,24 @@ void CopasiWidget::resize (int w, int h)
     CopasiWidget::maxMinHeight=h;
   */ QWidget::resize(w, h);
 }
-void CopasiWidget::resizeEvent (QResizeEvent *)
+void CopasiWidget::resizeEvent (QResizeEvent * event)
 {
   int i = 0;
+  QWidget::resizeEvent (event);
 }
 
-void CopasiWidget::resize (const QSize &)
+void CopasiWidget::resize (const QSize & newSize)
 {
   int i = 0;
+  QWidget::resize(newSize);
 }
 void CopasiWidget::setGeometry (int x, int y, int w, int h)
 {
   int i = 0;
+  QWidget::setGeometry(x, y, w, h);
 }
-void CopasiWidget::setGeometry (const QRect &)
+void CopasiWidget::setGeometry (const QRect & rect)
 {
   int i = 0;
+  QWidget::setGeometry(rect);
 }
