@@ -67,12 +67,12 @@ class FunctionWidget1 : public QWidget
     QString *Function_Name;
     QString *new_Name;
     QString *new_Description;
-    QString *param_Type;
-    QString *param_Name;
-    QString *param_Usage;
-    QString *app_Desc;
-    QString *app_Low;
-    QString *app_High;
+    QString param_Type;
+    QString param_Name;
+    QString param_Usage;
+    QString app_Desc;
+    QString app_Low;
+    QString app_High;
     int int_Low;
     int int_High;
     int enum_Type;

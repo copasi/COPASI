@@ -185,20 +185,22 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
 
 int FunctionWidget1::isName(QString setValue)
 {
+  int i;
+
   if (mModel == NULL)
     {
       return 0;
     }
 
   CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
-
+  C_INT32 noOfFunctionsRows = Functions.size();
   //Now filling the table.
 
   CFunction *funct1;
-  int i = 0;
-  int myValue = -1;
+  //int i = 0;
+  myValue = -1;
 
-  for (; i < Functions.size(); i++)
+  for (i = 0; i < Functions.size(); i++)
     {
       funct1 = Functions[i];
       int value = QString::compare(funct1->getName().c_str(), setValue);
@@ -237,6 +239,8 @@ void FunctionWidget1::loadFunction(CModel *model)
 
 void FunctionWidget1::loadName(QString setValue)
 {
+  int i, j;
+
   if (mModel == NULL)
     {
       return ;
@@ -247,11 +251,11 @@ void FunctionWidget1::loadName(QString setValue)
   //Now filling the table.
 
   CFunction *funct;
-  int i = 0;
+  //int i = 0;
   //int myValue=-1;
   myValue = -1;
 
-  for (; i < Functions.size(); i++)
+  for (i = 0; i < Functions.size(); i++)
     {
       funct = Functions[i];
       int value = QString::compare(funct->getName().c_str(), setValue);
@@ -292,7 +296,7 @@ void FunctionWidget1::loadName(QString setValue)
       Table1->setNumRows(noOffunctParams);
       // for parameters table
 
-      int j;
+      //int j;
 
       for (j = 0; j < noOffunctParams; j++)
         {
@@ -383,6 +387,7 @@ void FunctionWidget1::slotCancelButtonClicked()
 
 void FunctionWidget1::slotCommitButtonClicked()
 {
+  int i, j;
   QMessageBox::information(this, "Function Widget1", "Saving changes to Widget");
 
   CWriteConfig * sFunctionDB = new CWriteConfig("FunctionDB1.gps");
@@ -420,34 +425,34 @@ void FunctionWidget1::slotCommitButtonClicked()
 
   // for parameters table
 
-  int j;
+  //int j;
 
   for (j = 0; j < noOffunctParams; j++)
     {
       //param_Name = new QString(Table1->text(j,0));
-      param_Name = &Table1->text(j, 0);
+      param_Name = Table1->text(j, 0);
 
       /****** conv enumerated types ???? *****/
       //Table1->setText(j, 1, enumname[functParam[j]->getType()]);
-      param_Type = &Table1->text(j, 1);
+      param_Type = Table1->text(j, 1);
 
       //param_Usage = new QString(Table1->text(j,2));
-      param_Usage = &Table1->text(j, 2);
+      param_Usage = Table1->text(j, 2);
 
       /***** set new values *****/
-      functParam[j]->setName(param_Name->latin1());
+      functParam[j]->setName(param_Name.latin1());
       /**** enum ??? ****/
       //functParam[j]->setType(param_Type);
 
-      for (int i = 0; i < 11; i++)
+      for (i = 0; i < 11; i++)
         {
-          if (QString:: compare(*param_Type,
+          if (QString:: compare(param_Type,
                                 CFunctionParameter::DataTypeName[i].c_str()))
             enum_Type = i;
         }
 
-      //functParam[j]->setType((enum DataType)enum_Type);
-      functParam[j]->setUsage(param_Usage->latin1());
+      functParam[j]->setType((CFunctionParameter::DataType) enum_Type);
+      functParam[j]->setUsage(param_Usage.latin1());
     }
 
   /***** for Table 2: Applications table *****/
@@ -460,24 +465,24 @@ void FunctionWidget1::slotCommitButtonClicked()
   for (j = 0; j < noOfApplns; j++)
     {
       //app_Desc = new QString(Table2->text(j,0));
-      app_Desc = &Table2->text(j, 0);
+      app_Desc = Table2->text(j, 0);
       //app_Low=new QString(Table2->text(j,1));
-      app_Low = &Table2->text(j, 1);
-      int_Low = app_Low->toInt();
-      app_High = &Table2->text(j, 2);
+      app_Low = Table2->text(j, 1);
+      int_Low = app_Low.toInt();
+      app_High = Table2->text(j, 2);
       //app_High = new QString(Table2->text(j,2));
 
-      if (QString::compare(*app_High, "NA") == 0)
+      if (QString::compare(app_High, "NA") == 0)
         {
           int_High = 0;
         }
       else
         {
-          int_High = app_High->toInt();
+          int_High = app_High.toInt();
         }
 
       /***** there is no setName  here ????? ******/
-      functUsage[j]->setUsage(app_Desc->latin1());
+      functUsage[j]->setUsage(app_Desc.latin1());
 
       functUsage[j]->setLow(int_Low);
 
