@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/02 20:50:25 $
+   $Date: 2005/03/10 01:33:11 $
    End CVS Header */
 
 #include "copasi.h"
@@ -238,7 +238,7 @@ void DataModelGUI::updatePlots()
       obj = (*CCopasiDataModel::Global->getPlotDefinitionList())[j];
       parent->addChild(-1,
                         FROM_UTF8(obj->getObjectName()),
-                        obj->CCopasiParameter::getKey());
+                        obj->getKey());
     }
 }
 
