@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.15 $ $Author: lixu1 $ $Date: 2003/07/01 14:29:02 $  
+# $Revision: 1.16 $ $Author: shoops $ $Date: 2003/07/01 15:29:28 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -13,8 +13,8 @@ isEmpty(BUILD_OS) {
 DEFINES += $$BUILD_OS
 message("Configuring for $${BUILD_OS}.")
 
+TARGETDEPS += Makefile
 DEFINES+=XML_STATIC
-TARGETDEPS = Makefile
 
 # Common configuration settings
 CONFIG += exceptions
