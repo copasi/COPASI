@@ -520,12 +520,19 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
     return false;
 
   int widgetOffset;
+  int ScanItemWidgetWidth;
   emit hide_me();
+
   ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
+  if (scrollview->visibleWidth() >= parameterTable->minimumSizeHint().width())
+    ScanItemWidgetWidth = scrollview->visibleWidth();
+  else
+    ScanItemWidgetWidth = parameterTable->minimumSizeHint().width();
+
   widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
 
   ScanLineEdit* newTitleBar = new ScanLineEdit(this, "newTitleBar");
-  newTitleBar->setFixedSize(QSize(scrollview->visibleWidth(), nTitleHeight));
+  newTitleBar->setFixedSize(QSize(ScanItemWidgetWidth, nTitleHeight));
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
   pObject->getObjectUniqueName();
@@ -537,18 +544,14 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
   parameterTable->setObject(pObject);
 
-  if (scrollview->visibleWidth() >= parameterTable->minimumSizeHint().width())
-    parameterTable->setFixedWidth(scrollview->visibleWidth());
-  else
-    parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
-
+  parameterTable->setFixedWidth(ScanItemWidgetWidth);
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
   parameterTable->setObject(pObject);
   parameterTable->loadObject();
 
   scrollview->addChild(parameterTable, 0 , widgetOffset);
   scrollview->setVScrollBarMode(QScrollView::Auto);
-  scrollview->resizeContents(parameterTable->minimumSizeHint().width(), widgetOffset + parameterTable->minimumSizeHint().height());
+  scrollview->resizeContents(ScanItemWidgetWidth, widgetOffset + parameterTable->minimumSizeHint().height());
   selectedList.push_back(parameterTable);
 
   nSelectedObjects++;
