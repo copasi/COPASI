@@ -216,3 +216,15 @@ void CFunctionParameters::updateUsageRanges()
         }
     }
 }
+
+bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
+  {
+    if (size() != rhs.size()) return false;
+
+    bool flag = true;
+    C_INT32 i, imax = size();
+    for (i = 0; i < imax; ++i)
+      if (mParameters[i] != rhs.mParameters[i]) return false;
+
+    return true;
+  }

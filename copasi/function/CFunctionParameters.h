@@ -169,6 +169,8 @@ class CFunctionParameters : public CCopasiContainer
     unsigned C_INT32 findParameterByName(const std::string & name,
                                          CFunctionParameter::DataType & dataType) const;
 
+    bool operator==(const CFunctionParameters & rhs) const;
+
     /**
      * insert operator
      */
