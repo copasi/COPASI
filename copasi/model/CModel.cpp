@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.153 $
+   $Revision: 1.154 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/12/16 02:59:58 $
+   $Date: 2003/12/16 04:45:44 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1593,7 +1593,11 @@ bool CModel::addMetabolite(const std::string & name,
   pMetab->setStatus(status);
   pMetab->setInitialConcentration(iconc);
 
-  return mMetabolites.add(pMetab);
+  bool pReturn = mMetabolites.add(pMetab);
+
+  compile();
+
+  return pReturn;
 }
 
 std::vector<std::string> CModel::removeCompReacKeys(const std::string & key)
@@ -1797,6 +1801,8 @@ bool CModel::addCompartment(const std::string & name,
       delete cpt;
       return false;
     }
+
+  compile();
 
   return true;
 }
