@@ -247,17 +247,26 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   name = setValue;
-  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-
-  CFunction *function;
   CReaction *reactn;
+  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+  reactn = reactions[(std::string)setValue.latin1()];
+  TriLogic reversible;
+  if (reactn->isReversible() == FALSE)
+    reversible = TriFalse;
+  else
+    reversible = TriTrue;
+
+  const CCopasiVectorN < CFunction > & Functions =
+    Copasi->FunctionDB.suitableFunctions(reactn->getChemEq().getSubstrates().size(),
+                                         reactn->getChemEq().getSubstrates().size(), reversible);
+  CFunction *function;
+
   CChemEq * chemEq;
 
   QHeader *tableHeader1 = table->horizontalHeader();
   QHeader *tableHeader2 = table->verticalHeader();
 
   ComboBox1->clear();
-  reactn = reactions[(std::string)setValue];
 
   LineEdit1->setText(reactn->getName().c_str());
   Reaction1_Name = new QString(reactn->getName().c_str());
@@ -267,10 +276,22 @@ void ReactionsWidget1::loadName(QString setValue)
 
   LineEdit3->setText(QString::number(reactn->getFlux()));
 
-  int m = -1;
   function = &reactn->getFunction();
   function1 = &reactn->getFunction();
-  ComboBox1->insertItem(function->getName().c_str(), m);
+  //ComboBox1->insertItem(function->getName().c_str(), m);
+
+  QStringList comboEntries;
+  QString comboEntry;
+  unsigned int temp2;
+
+  for (temp2 = 0; temp2 < Functions.size(); temp2++)
+    {
+      const CFunction *function = Functions[temp2];
+      comboEntry = function->getName().c_str();
+      comboEntries.push_front(comboEntry);
+    }
+
+  ComboBox1->insertStringList(comboEntries, -1);
   checkBox->setChecked(FALSE);
 
   if (reactn->isReversible() == TRUE)
