@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/08 20:58:56 $
+   $Author: gauges $ 
+   $Date: 2004/06/11 12:45:47 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -145,14 +145,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:    // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:     // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:    // Discard clicked or Alt+D pressed
+        case 1:     // Discard clicked or Alt+D pressed
           break;
 
-        case 2:    // Cancel clicked or Escape pressed
+        case 2:     // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -204,14 +204,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:    // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:     // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:    // Discard clicked or Alt+D pressed
+            case 1:     // Discard clicked or Alt+D pressed
               break;
 
-            case 2:    // Cancel clicked or Escape pressed
+            case 2:     // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -300,14 +300,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:    // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:     // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:    // Discard clicked or Alt+D pressed
+        case 1:     // Discard clicked or Alt+D pressed
           break;
 
-        case 2:    // Cancel clicked or Escape pressed
+        case 2:     // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -329,14 +329,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:    // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:     // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:    // Discard clicked or Alt+D pressed
+            case 1:     // Discard clicked or Alt+D pressed
               break;
 
-            case 2:    // Cancel clicked or Escape pressed
+            case 2:     // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -532,7 +532,46 @@ void CopasiUI3Window::slotImportSBML()
 
   if (SBMLFile)
     {
-      CReadConfig inbuf((const char *)SBMLFile.utf8());
+      if (dataModel && dataModel->isChanged())
+        {
+          switch (QMessageBox::information(this, "COPASI",
+                                           "The document contains unsaved changes\n"
+                                           "Do you want to save the changes before exiting?",
+                                           "&Save", "&Discard", "Cancel", 0, 2))
+            {
+            case 0:     // Save clicked or Alt+S pressed or Enter pressed.
+              slotFileSave();
+              break;
+
+            case 1:     // Discard clicked or Alt+D pressed
+              break;
+
+            case 2:     // Cancel clicked or Escape pressed
+              return;
+              break;
+            }
+
+          ListViews::notify(ListViews::MODEL, ListViews::DELETE,
+                            dataModel->getModel()->getKey());
+        }
+
+      if (!dataModel)
+        {
+          dataModel = new DataModel; // create a new data model
+        }
+
+      //CReadConfig inbuf((const char *)SBMLFile.utf8());
+      SBMLImporter* importer = new SBMLImporter();
+      try
+        {
+          CModel* model = importer.readSBML(SBMLFile.latin1());
+        }
+      catch (StdException ex)
+        {
+        }
+      if (model != NULL)
+        {
+        }
     }
 }
 
