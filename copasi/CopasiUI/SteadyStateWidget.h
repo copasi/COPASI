@@ -55,7 +55,7 @@ class SteadyStateWidget : public QWidget
     QSplitter* splitter7;
     QLabel* taskNameLabel;
     QLineEdit* taskName;
-
+    // QString name;
   public slots:
     virtual void taskNameChanged();
     virtual void methodJacob();

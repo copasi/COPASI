@@ -224,6 +224,12 @@ void SteadyStateWidget::CommitChange()
     CReadConfig inbuf(mSteadyStateTask->getFileName());
     mSteadyStateTask->load(inbuf,mSteadyStateTask->getFileName());
   */
+
+  QString name = "gps//CSteadyStateTask";
+  std::string filename = ((std::string) name.latin1()) + ".gps";
+  CWriteConfig *Rtn = new CWriteConfig(filename);
+  mSteadyStateTask->save(*Rtn);
+  delete Rtn;
 }
 
 void SteadyStateWidget::CancelChange()
