@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:41:42 $
+   $Date: 2005/01/21 02:14:41 $
    End CVS Header */
 
 #include <float.h>
@@ -206,11 +206,11 @@ bool COptItem::less(const C_FLOAT64 & val1, const C_FLOAT64 & val2)
 bool COptItem::lessOrEqual(const C_FLOAT64 & val1, const C_FLOAT64 & val2)
 {return (val1 <= val2);}
 
-C_FLOAT64 * COptItem::getObjectValue()
-{return mpObjectValue;}
+const C_FLOAT64 * COptItem::getObjectValue() const
+  {return mpObjectValue;}
 
-C_FLOAT64 * COptItem::getLowerBoundValue()
-{return mpLowerBound;}
+const C_FLOAT64 * COptItem::getLowerBoundValue() const
+  {return mpLowerBound;}
 
-C_FLOAT64 * COptItem::getUpperBoundValue()
-{return mpUpperBound;}
+const C_FLOAT64 * COptItem::getUpperBoundValue() const
+  {return mpUpperBound;}
