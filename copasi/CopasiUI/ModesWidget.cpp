@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:35 $
+   $Date: 2004/01/06 21:05:25 $
    End CVS Header */
 
 /*******************************************************************
@@ -230,27 +230,8 @@ void ModesWidget::slotBtnCalculateClicked()
     }
 }
 
-/*void ModesWidget::tableValueChanged(int C_UNUSED(row),
-    int C_UNUSED(col))
+bool ModesWidget::enter(const std::string & C_UNUSED(key))
 {
-  /*CWriteConfig *Mod = new CWriteConfig("try.gps");
- 
-  CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
-  CCompartment *compartn1;
-  compartn1 = compartments1[row];
- 
-  string x = table->text(row, col).latin1();
- 
-  if (col == 0)
-    {
-      compartn1->setName(x);
-    }
-  else
-    {
-      compartn1->setVolume(int(x.c_str()));
-    }
- 
-  compartn1->save(*Mod);
-  //Copasi->Compartmentfile.save(*Mod);
-  delete Mod; 
-}*/
+  loadModes(dataModel->getModel());
+  return true;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:54 $
+   $Date: 2004/01/06 21:05:25 $
    End CVS Header */
 
 /****************************************************************************
@@ -42,6 +42,8 @@ class ModesWidget : public CopasiWidget
     ModesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
     void loadModes(CModel *model);
     void resizeEvent(QResizeEvent * re);
+
+    virtual bool enter(const std::string & key = "");
 
   signals:
     void signal_emitted(const QString &);
