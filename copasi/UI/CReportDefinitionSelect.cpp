@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.16 2003/09/17 20:59:57 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.17 2003/09/17 21:21:25 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -139,8 +139,11 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
           mpReport->setReportDefinition((*dataModel->getReportDefinitionVectorAddr())[0]); //first one report definition
           mpReport->setAppend(appendChecked->isChecked());
           mpReport->setTarget(targetEdit->text().latin1());
-          ListViews::notify(ListViews::REPORT, ListViews::CHANGE, "");
-          jumpToEdit();
+          ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
+          if (QMessageBox::information (NULL, "No Report Definition Defined",
+                                        "No report definition defined, Copasi has already created a new one for you\n Do you want to switch to the GUI to edit it?",
+                                        QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+            jumpToEdit();
         }
       catch (CCopasiException Exception)
       {}
