@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/24 20:42:23 $
+   $Date: 2005/01/24 21:06:17 $
    End CVS Header */
 
 #include <sstream>
@@ -12,62 +12,8 @@
 #include "CopasiTime.h"
 #include "utility.h"
 
-#ifdef XXXX
-CopasiTimePoint::CopasiTimePoint():
-    mTime(getCurrentTime_msec())
-{}
-
-C_INT32 CopasiTimePoint::init()
-{return mTime = getCurrentTime_msec();}
-
-C_INT32 CopasiTimePoint::get() const
-  {return mTime;}
-
-C_INT32 CopasiTimePoint::getTimeDiff() const
-  {
-    C_INT32 diff = getCurrentTime_msec() - mTime;
-    return diff & 0x7fffffff;
-  }
-
-//the following is linux (posix? unix?) specific and might not work under windows
-//from the web I guess that windows needs something with
-// #include <time.h>
-// ...
-// return timeGetTime()
-// ...
-// but I cannot test that
-
-#ifndef WIN32
-
-#include <sys/time.h>
-
-//static
-C_INT64 CopasiTimePoint::getCurrentTime_msec()
-{
-  timeval ttt;
-  gettimeofday(&ttt, 0);
-  long long int time;
-  time = ttt.tv_sec * 1000 + ttt.tv_usec / 1000;
-  return time & LLONG_MAX;
-}
-#else
-
-#include <windows.h>
-#include <winbase.h>
-
-//static
-C_INT64 CopasiTimePoint::getCurrentTime_msec()
-{
-  LARGE_INTEGER SystemTime;
-  GetSystemTimeAsFileTime((FILETIME *) &SystemTime);
-
-  return (SystemTime.QuadPart / 10000) & LLONG_MAX;
-}
-#endif
-#endif // XXXX
-
 CCopasiTimeVariable::CCopasiTimeVariable():
-    mTime(0)
+    mTime(LLONG_CONST(0))
 {}
 
 CCopasiTimeVariable::CCopasiTimeVariable(const CCopasiTimeVariable & src):
