@@ -276,8 +276,9 @@ void ScanWidget::addButtonClicked()
       return;
     }
 
-  ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects);
-  addNewScanItem((*pSelectedVector)[i]);
+  if (addNewScanItem((*pSelectedVector)[i]))
+    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
+
   pdelete(pSelectedVector);
 }
 
@@ -509,12 +510,13 @@ void ScanWidget::loadScan(CModel *model)
     }
 }
 
-void ScanWidget::addNewScanItem(CCopasiObject* pObject)
+bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 {
   if (!pObject)
-    return;
+    return false;
+
   if (scanTask->getProblem()->bExisted(pObject->getCN().c_str()))
-    return;
+    return false;
 
   int widgetOffset;
   emit hide_me();
@@ -551,6 +553,7 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   //  if (pObject->isContainer())
   scanTask->getProblem()->addScanItem(CMethodParameterList(pObject->getCN().c_str(), (CCopasiContainer*)pObject, pObject->getObjectType()));
   emit show_me();
+  return true;
 }
 
 void ScanWidget::ListBoxDoubleClicked(QListBoxItem * item)
