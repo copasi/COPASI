@@ -16,6 +16,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
 
   nParam = 0;
   mChecked = new bool(false);
+  mKey = " ";
 }
 
 ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject, objectList* pList)
@@ -33,6 +34,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
 
   nParam = 0;
   mChecked = new bool(false);
+  mKey = " ";
 }
 
 void ObjectBrowserItem::attachKey()

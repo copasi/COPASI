@@ -42,7 +42,7 @@ class ObjectBrowser : public QWidget
 
     void loadData();
     void loadChild(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
-    void loadVectors(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
+    // void loadVectors(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
     void updateUI();
   public slots:
     virtual void cancelClicked();
