@@ -121,6 +121,18 @@ SOURCE=..\..\copasi\model\CMoiety.cpp
 
 SOURCE=..\..\copasi\model\CReaction.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CScanInputFlexLexer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSpec2Model.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSpecLine.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -152,6 +164,14 @@ SOURCE=..\..\copasi\model\CMoiety.h
 # Begin Source File
 
 SOURCE=..\..\copasi\model\CReaction.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSpec2Model.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSpecLine.h
 # End Source File
 # Begin Source File
 

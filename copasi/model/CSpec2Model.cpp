@@ -11,7 +11,7 @@
 #undef yyFlexLexer
 #define yyFlexLexer CScanInputFlexLexer
 
-#include "FlexLexer.h"
+#include "function/FlexLexer.h"
 
 CSpec2Model::CSpec2Model()
 {}
@@ -126,8 +126,8 @@ void CSpec2Model::processEQNs()
 {
     // pick out the EQN or DE lines. Store the compartment name, metabolite 
     // name and contents string in a CBaseEqn instance, for later processing.
-    vector<CSpecLine>::iterator it = mSpecLines.begin();
-    for ( ; it < mSpecLines.end(); it++)
+    
+    for (vector<CSpecLine>::iterator it = mSpecLines.begin(); it < mSpecLines.end(); it++)
     {
         if (it->getType() == CSpecLine::DE)
         {
@@ -146,17 +146,19 @@ void CSpec2Model::processEQNs()
             mMoietyVector.push_back(tmp);
         }
     }
-    for (vector<CBaseEqn>::iterator it = mReactVector.begin(); it < mReactVector.end(); it++)
+
+    for (vector<CBaseEqn>::iterator itb = mReactVector.begin(); itb < mReactVector.end(); it++)
     {
-        cout << "Added DE " << it->getMetabolite();
-        cout << " in compartment " << it->getCompartment();
-        cout << " with RHS = " << it->getContents() << endl;
+        cout << "Added DE " << itb->getMetabolite();
+        cout << " in compartment " << itb->getCompartment();
+        cout << " with RHS = " << itb->getContents() << endl;
     }
-    for (vector<CBaseEqn>::iterator it = mMoietyVector.begin(); it < mMoietyVector.end(); it++)
+
+    for (vector<CBaseEqn>::iterator itc = mMoietyVector.begin(); itc < mMoietyVector.end(); it++)
     {
-        cout << "Added EQN " << it->getMetabolite();
-        cout << " in compartment " << it->getCompartment();
-        cout << " with RHS = " << it->getContents() << endl;
+        cout << "Added EQN " << itc->getMetabolite();
+        cout << " in compartment " << itc->getCompartment();
+        cout << " with RHS = " << itc->getContents() << endl;
     }
 }
 
@@ -241,7 +243,7 @@ void CSpec2Model::processRates()
     }            
 }
 
-C_INT32 CSpec2Model::parseLine(string) {}
+C_INT32 CSpec2Model::parseLine(string) {return 0;}
 
 #ifdef TEST
 
