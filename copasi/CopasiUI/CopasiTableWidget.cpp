@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 14:58:54 $
+   $Date: 2004/05/26 15:57:58 $
    End CVS Header */
 
 /*******************************************************************
@@ -44,6 +44,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   table->setFocusPolicy(QWidget::WheelFocus);
   table->setColumnReadOnly(0, true);
   table->setColumnWidth(0, 20);
+  table->setSelectionMode(QTable::MultiRow);
   //table->setVScrollBarMode(QScrollView::AlwaysOn);
   if (mRO)
     table->setReadOnly(true);
@@ -54,7 +55,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
     {
       btnOK = new QPushButton("Commit", this);
       btnCancel = new QPushButton("Revert", this);
-      btnDelete = new QPushButton("&Delete", this);
+      btnDelete = new QPushButton("Delete/Undelete", this);
     }
 
   mHLayout = new QHBoxLayout(vBoxLayout, 0);
@@ -79,6 +80,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
           this, SLOT(slotValueChanged(int, int)));
   //connect(table, SIGNAL(currentChanged(int, int)),
   //        this, SLOT(slotCurrentChanged(int, int)));
+  connect(table, SIGNAL(delKeyPressed()), this, SLOT(slotTableDelKey()));
 
   if (!mRO)
     {
@@ -106,6 +108,7 @@ void CopasiTableWidget::fillTable()
 
   for (j = 0; j < jmax; ++j)
     {
+      mFlagRO[j] = false;
       tableLineFromObject(objects[j], j);
       mKeys[j] = objects[j]->getKey();
       mFlagChanged[j] = false;
@@ -245,6 +248,14 @@ void CopasiTableWidget::slotValueChanged(int row, int col)
   updateRow(row);
 }
 
+void CopasiTableWidget::slotTableDelKey()
+{
+  //std::cout << "**del**" << std::endl;
+  //pressing del does exactly the same thing as hitting the delete button
+  if (!mRO)
+    slotBtnDeleteClicked();
+}
+
 void CopasiTableWidget::resizeTable(const unsigned C_INT32 numRows)
 {
   table->QTable::setNumRows(numRows);
@@ -253,6 +264,7 @@ void CopasiTableWidget::resizeTable(const unsigned C_INT32 numRows)
   mFlagDelete.resize(numRows);
   mFlagNew.resize(numRows);
   mFlagRenamed.resize(numRows);
+  mFlagRO.resize(numRows);
 }
 
 void CopasiTableWidget::updateRow(const C_INT32 row)
@@ -262,8 +274,14 @@ void CopasiTableWidget::updateRow(const C_INT32 row)
   if (mFlagDelete[row]) tmp += "del ";
   if (mFlagNew[row]) tmp += "new ";
   if (mFlagRenamed[row]) tmp += "ren ";
+  if (mFlagRO[row]) tmp += "ro ";
 
   table->setText(row, 0, tmp);
+
+  if (mFlagDelete[row])
+    table->setRowReadOnly(row, true);
+  else
+    table->setRowReadOnly(row, mFlagRO[row]);
 }
 
 QString CopasiTableWidget::createNewName(const QString name)
@@ -299,17 +317,29 @@ void CopasiTableWidget::slotBtnCancelClicked()
 
 void CopasiTableWidget::slotBtnDeleteClicked()
 {
-  //TODO that is not elegant
+  bool flagFirstFound = false;
+  bool flagNewDelState;
+
   unsigned C_INT32 i, imax = table->numRows() - 1;
   for (i = 0; i < imax; i++)
     {
       if (table->isRowSelected(i, true))
         {
-          mFlagDelete[i] = true;
+          if (!flagFirstFound)
+            {
+              flagFirstFound = true;
+              flagNewDelState = !mFlagDelete[i];
+            }
+
+          mFlagDelete[i] = flagNewDelState;
+          if (mFlagRO[i]) mFlagDelete[i] = false;
           updateRow(i);
-          btnOK->setEnabled(true);
-          btnCancel->setEnabled(true);
         }
+    }
+  if (flagFirstFound)
+    {
+      btnOK->setEnabled(true);
+      btnCancel->setEnabled(true);
     }
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 08:19:52 $
+   $Date: 2004/05/26 15:57:59 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,6 +43,7 @@ class CopasiTableWidget : public CopasiWidget
     virtual void slotTableSelectionChanged();
     virtual void slotValueChanged(int, int);
     virtual void slotCurrentChanged(int, int);
+    virtual void slotTableDelKey();
 
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
@@ -70,6 +71,7 @@ class CopasiTableWidget : public CopasiWidget
     std::vector<bool> mFlagDelete;
     std::vector<bool> mFlagNew;
     std::vector<bool> mFlagRenamed;
+    std::vector<bool> mFlagRO;
 
     bool mIgnoreUpdates;
     bool mRO;
