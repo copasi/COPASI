@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/06 20:12:43 $
+   $Author: stupe $ 
+   $Date: 2004/12/06 22:37:22 $
    End CVS Header */
 
 #include "copasi.h"
@@ -42,6 +42,7 @@
 CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
 {
   Model* sbmlModel = sbmlDocument->getModel();
+
   /* Create an empty model and set the title. */
   //DebugFile << "Setting units." << std::endl;
   CModel* copasiModel = new CModel();
@@ -82,7 +83,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
         }
     }
 
-  std::string title = sbmlModel->getName();
+  std::string title, comment;
+
+  comment = sbmlModel->getNotes();
+
+  copasiModel->setComments(comment);
+  title = sbmlModel->getName();
   if (title == "")
     {
       title = "NoName";
