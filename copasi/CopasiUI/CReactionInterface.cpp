@@ -114,10 +114,12 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
                 rea->clearParameterMapping(i);
                 jmax = mNameMap[i].size();
                 for (j = 0; j < jmax; ++j)
-                  rea->addParameterMapping(i, mNameMap[i][j]);
+                  // :TODO:  rea->addParameterMappingKey(i, mNameMap[i][j]);
+;
               }
             else
-              rea->setParameterMapping(i, mNameMap[i][0]);
+              // :TODO:  rea->setParameterMappingKey(i, mNameMap[i][0]);
+;
           }
       }
 

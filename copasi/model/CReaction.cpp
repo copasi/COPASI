@@ -38,6 +38,7 @@ CReaction::CReaction(const std::string & name,
     mScalingFactor2(&mDefaultScalingFactor),
     mpFunctionCompartment(NULL),
     //mCompartmentNumber(1),
+    mMetabKeyMap(),
     mParameters("Parameters", this)
 {
   CONSTRUCTOR_TRACE;
@@ -56,7 +57,7 @@ CReaction::CReaction(const CReaction & src,
     mScalingFactor2(src.mScalingFactor2),
     mpFunctionCompartment(src.mpFunctionCompartment),
     mMap(src.mMap),
-    mMetabNameMap(src.mMetabNameMap),
+    mMetabKeyMap(src.mMetabKeyMap),
     mParameters(src.mParameters, this)
 {
   CONSTRUCTOR_TRACE;
@@ -285,7 +286,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
   fout << "\t\t\t\t<kineticLaw formula=\"";
   // kinetic function string
   tmpstr2 = StringPrint("_%ld", r);
-  fout << mpFunction->getSBMLString(mMetabNameMap, tmpstr2);
+  fout << mpFunction->getSBMLString(mMetabKeyMap, tmpstr2);
   fout << "\">" << std::endl;
   fout << "\t\t\t\t\t<listOfParameters>" << std::endl;
   for (i = 0; i < mParameters.size(); i++)
@@ -358,15 +359,26 @@ bool CReaction::deleteModifier(const std::string &name)
 void CReaction::setReversible(bool reversible)
 {mChemEq.setReversibility(reversible);}
 
-void CReaction::setFunction(const std::string & functionName)
+bool CReaction::setFunction(const std::string & functionName)
 {
-  mpFunction = Copasi->pFunctionDB->findLoadFunction(functionName);
-  if (!mpFunction)
+  CFunction * pFunction = Copasi->pFunctionDB->findLoadFunction(functionName);
+  if (!pFunction)
     CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
+
+  return setFunction(pFunction);
+}
+
+bool CReaction::setFunction(CFunction * pFunction)
+{
+  if (!pFunction) fatalError();
+
+  mpFunction = pFunction;
 
   mMap.initializeFromFunctionParameters(mpFunction->getParameters());
   initializeMetaboliteNameMap(); //needs to be called before initializeParamters();
   initializeParameters();
+
+  return true;
 }
 
 // TODO: check if function is set and map initialized in the following methods
@@ -394,18 +406,33 @@ CCopasiVectorN <CParameter> & CReaction::getParameters()
   return mParameters;
 }
 
+bool CReaction::setParameterKeys(const std::string & parameterName,
+                                 const std::vector< std::string > & sourceKeys)
+{
+  return true;
+}
+
 void CReaction::setParameterMapping(const std::string & parameterName, const CMetab & metab)
 {
   if (!mpFunction) fatalError();
-  //std::vector<CCopasiObject*>::const_iterator it, ende; //TODO: these lines should rather be CCopasiContainer::getObjectByName()
-  //it = metab.getObjects().begin();
-  //ende = metab.getObjects().end();
-  //for (; it != ende; ++it) {if ((*it)->getName() == "Concentration") break;}
-  //if (it == ende) fatalError(); // concentration reference not found
 
   mMap.setCallParameter(parameterName, &metab);
 }
 
+void CReaction::setParameterMappingKey(const std::string & parameterName, const CMetab & metab)
+{
+  CFunctionParameter::DataType type;
+  unsigned C_INT32 index;
+
+  if (!mpFunction) fatalError();
+
+  index = mMap.findParameterByName(parameterName, type);
+  if (type == CFunctionParameter::VFLOAT64) fatalError();
+
+  mMetabKeyMap[index][0] = metab.getKey();
+}
+
+#ifdef XXXX
 void CReaction::setParameterMapping(const std::string & parameterName, const std::string & metabName)
 {
   if (!mpFunction) fatalError();
@@ -413,18 +440,17 @@ void CReaction::setParameterMapping(const std::string & parameterName, const std
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
   if (type != CFunctionParameter::FLOAT64) fatalError(); //wrong data type
-  mChemEq.findElementByName(metabName); //just to check if available
   // TODO : check if parameter role fits. At the moment do not allow PARAMETER.
-  mMetabNameMap[index][0] = metabName;
+  mMetabKeyMap[index][0] = mChemEq.findElementByName(metabName).getMetabolite().getKey();
 }
 
 void CReaction::setParameterMapping(C_INT32 index, const std::string & metabName)
 {
   if (!mpFunction) fatalError();
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::FLOAT64) fatalError();
-  mChemEq.findElementByName(metabName); //just to check if available
+
   // TODO : check if parameter role fits. At the moment do not allow PARAMETER.
-  mMetabNameMap[index][0] = metabName;
+  mMetabKeyMap[index][0] = mChemEq.findElementByName(metabName).getMetabolite().getKey();
 }
 
 void CReaction::setParameterMapping(const std::string & parameterName,
@@ -439,6 +465,7 @@ void CReaction::setParameterMapping(const std::string & parameterName,
 
   return;
 }
+#endif // XXXX
 
 void CReaction::clearParameterMapping(const std::string & parameterName)
 {
@@ -447,7 +474,7 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
   if (type != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
-  mMetabNameMap[index].clear();
+  mMetabKeyMap[index].clear();
   //mMap.clearCallParameter(parameterName);
 }
 
@@ -455,22 +482,31 @@ void CReaction::clearParameterMapping(C_INT32 index)
 {
   if (!mpFunction) fatalError();
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError();
-  mMetabNameMap[index].clear();
+  mMetabKeyMap[index].clear();
   //mMap.clearCallParameter(parameterName);
 }
 
 void CReaction::addParameterMapping(const std::string & parameterName, const CMetab & metab)
 {
   if (!mpFunction) fatalError();
-  //std::vector<CCopasiObject*>::const_iterator it, ende;
-  //it = metab.getObjects().begin();
-  //ende = metab.getObjects().end();
-  //for (; it != ende; ++it) {if ((*it)->getName() == "Concentration") break;}
-  //if (it == ende) fatalError(); // concentration reference not found
 
   mMap.addCallParameter(parameterName, &metab);
 }
 
+void CReaction::addParameterMappingKey(const std::string & parameterName, const CMetab & metab)
+{
+  CFunctionParameter::DataType type;
+  unsigned C_INT32 index;
+
+  if (!mpFunction) fatalError();
+
+  index = mMap.findParameterByName(parameterName, type);
+  if (type != CFunctionParameter::VFLOAT64) fatalError();
+
+  mMetabKeyMap[index].push_back(metab.getKey());
+}
+
+#ifdef XXXX
 void CReaction::addParameterMapping(const std::string & parameterName, const std::string & metabName)
 {
   if (!mpFunction) fatalError();
@@ -478,9 +514,9 @@ void CReaction::addParameterMapping(const std::string & parameterName, const std
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
   if (type != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
-  mChemEq.findElementByName(metabName); //just to check if available
+
   // TODO : check if parameter role fits. At the moment do not allow PARAMETER.
-  mMetabNameMap[index].push_back(metabName);
+  mMetabKeyMap[index].push_back(mChemEq.findElementByName(metabName).getMetabolite().getKey());
   //addParameterMapping(parameterName, mChemEq.findElementByName(metabName).getMetabolite());
 }
 
@@ -490,12 +526,42 @@ void CReaction::addParameterMapping(C_INT32 index, const std::string & metabName
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
   mChemEq.findElementByName(metabName); //just to check if available
   // TODO : check if parameter role fits. At the moment do not allow PARAMETER.
-  mMetabNameMap[index].push_back(metabName);
+  mMetabKeyMap[index].push_back(mChemEq.findElementByName(metabName).getMetabolite().getKey());
 }
 
 const std::vector<std::string> & CReaction::getParameterMappingName(C_INT32 index) const  //TODO reference&
   {
     return mMetabNameMap[index];
+  }
+#endif // XXXX
+
+const std::vector< std::vector<std::string> > CReaction::getParameterMappingName() const
+  {
+    std::vector< std::vector<std::string> > ParameterNames;
+    std::vector< std::vector<std::string> >::const_iterator it
+    = mMetabKeyMap.begin();
+    std::vector< std::vector<std::string> >::const_iterator iEnd
+    = mMetabKeyMap.end();
+    std::vector<std::string> SubList;
+    std::vector<std::string>::const_iterator jt;
+    std::vector<std::string>::const_iterator jEnd;
+    CMetab * pMetab;
+
+    for (; it != iEnd; ++it)
+      {
+        SubList.clear();
+        for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
+          {
+            pMetab = ((CMetab*)(CCopasiContainer*)(CKeyFactory::get(*jt)));
+            if (pMetab)
+              SubList.push_back(pMetab->getName());
+            else
+              SubList.push_back(*jt);
+          }
+        ParameterNames.push_back(SubList);
+      }
+
+    return ParameterNames;
   }
 
 std::vector<const CMetab *> CReaction::getParameterMappingMetab(C_INT32 index) const
@@ -503,9 +569,11 @@ std::vector<const CMetab *> CReaction::getParameterMappingMetab(C_INT32 index) c
     if (!mpFunction) fatalError();
     if (getFunctionParameters()[index]->getUsage() == "PARAMETER") fatalError();
     std::vector<const CMetab *> metablist;
-    unsigned C_INT32 i, imax = mMetabNameMap[index].size();
+    unsigned C_INT32 i, imax = mMetabKeyMap[index].size();
 
-    for (i = 0; i < imax; ++i) metablist.push_back(&mChemEq.findElementByName(mMetabNameMap[index][i]).getMetabolite());
+    for (i = 0; i < imax; ++i)
+      //      metablist.push_back(&mChemEq.findElementByName(mMetabNameMap[index][i]).getMetabolite());
+      metablist.push_back((CMetab*)(CCopasiContainer*)CKeyFactory::get(mMetabKeyMap[index][i]));
 
     return metablist;
   }
@@ -546,7 +614,7 @@ void CReaction::initializeParameters()
       name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getName();
       param.setName(name);
       mParameters.add(param);
-      mMetabNameMap[pos - 1][0] = name;
+      mMetabKeyMap[pos - 1][0] = name;
     }
 
   compileParameters();
@@ -558,13 +626,13 @@ void CReaction::initializeMetaboliteNameMap()
   unsigned C_INT32 i;
   unsigned C_INT32 imax = mMap.getFunctionParameters().size();
 
-  mMetabNameMap.resize(imax);
+  mMetabKeyMap.resize(imax);
   for (i = 0; i < imax; ++i)
     {
       if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
-        mMetabNameMap[i].resize(0);
+        mMetabKeyMap[i].resize(0);
       else
-        mMetabNameMap[i].resize(1);
+        mMetabKeyMap[i].resize(1);
     }
 }
 
@@ -591,14 +659,16 @@ void CReaction::compile(const CCopasiVectorNS < CCompartment > & compartments)
             {
               paramName = getFunctionParameters()[i]->getName();
               mMap.clearCallParameter(paramName);
-              jmax = mMetabNameMap[i].size();
+              jmax = mMetabKeyMap[i].size();
               for (j = 0; j < jmax; ++j)
                 addParameterMapping(paramName,
-                                    mChemEq.findElementByName(mMetabNameMap[i][j]).getMetabolite());
+                                    *(CMetab*)(CCopasiContainer*)CKeyFactory::get(mMetabKeyMap[i][j]));
+              //                                    mChemEq.findElementByName(mMetabNameMap[i][j]).getMetabolite());
             }
           else
             setParameterMapping(getFunctionParameters()[i]->getName(),
-                                mChemEq.findElementByName(mMetabNameMap[i][0]).getMetabolite());
+                                *(CMetab*)(CCopasiContainer*)CKeyFactory::get(mMetabKeyMap[i][0]));
+          //                    mChemEq.findElementByName(mMetabNameMap[i][0]).getMetabolite());
         }
     }
 
@@ -625,6 +695,10 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   // Construct substrates mapping
   // this works only because of a strange signed->unsigned cast in usageRangeSize()!
   imax = std::min(SubstrateSize, usageRangeSize("SUBSTRATE")); //some checks?
+
+  CModel * pModel = (CModel*) getObjectAncestor("Model");
+  const CCopasiVectorN< CMetab > & Metabolites = pModel->getMetabolites();
+
   for (i = 0, pos = 0, Type = CFunctionParameter::INT32; i < imax; i++)
     {
       name = StringPrint("Subs%d", i);
@@ -641,9 +715,9 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
         }
 
       if (Type >= CFunctionParameter::VINT32)
-        addParameterMapping(parName, metabName);
+        addParameterMappingKey(parName, *Metabolites[metabName]);
       else
-        setParameterMapping(parName, metabName);
+        setParameterMappingKey(parName, *Metabolites[metabName]);
     }
 
   for (i = imax; i < SubstrateSize; i++)
@@ -671,9 +745,9 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
         }
 
       if (Type >= CFunctionParameter::VINT32)
-        addParameterMapping(parName, metabName);
+        addParameterMappingKey(parName, *Metabolites[metabName]);
       else
-        setParameterMapping(parName, metabName);
+        setParameterMappingKey(parName, *Metabolites[metabName]);
     }
 
   for (i = imax; i < ProductSize; i++)
@@ -701,9 +775,9 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
         }
 
       if (Type >= CFunctionParameter::VINT32)
-        addParameterMapping(parName, metabName);
+        addParameterMappingKey(parName, *Metabolites[metabName]);
       else
-        setParameterMapping(parName, metabName);
+        setParameterMappingKey(parName, *Metabolites[metabName]);
 
       // in the old files the chemical equation does not contain
       // information about modifiers. This has to be extracted from here.

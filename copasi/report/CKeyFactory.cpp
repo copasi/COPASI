@@ -37,4 +37,10 @@ bool CKeyFactory::remove(const std::string & key)
 {return mKeyMap.erase(key) > 0;}
 
 CCopasiObject * CKeyFactory::get(const std::string & key)
-{return mKeyMap[key];}
+{
+  std::map< std::string, CCopasiObject * >::const_iterator it;
+  it = mKeyMap.find(key);
+
+  if (it != mKeyMap.end()) return it->second;
+  else return NULL;
+}

@@ -2061,7 +2061,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
       pFunction =
         (CFunction*)(CCopasiContainer*)CKeyFactory::get(FunctionKey->second);
 
-      //      mCommon.pReaction->setFunction(pFunction);
+      mCommon.pReaction->setFunction(pFunction);
       break;
 
 #ifdef XXXX

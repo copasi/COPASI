@@ -95,8 +95,9 @@ class CReaction : public CCopasiContainer
     /**
      *  This describes the mapping of the Metabs to the function parameters. Here the
      *  names of the metabolites (as in the chemical equation) are stored.
-     */
-    std::vector< std::vector< std::string > > mMetabNameMap;
+     */ 
+    //    std::vector< std::vector< std::string > > mMetabNameMap;
+    std::vector< std::vector< std::string > > mMetabKeyMap;
 
     /**
      *  This is a list of parameter objects.
@@ -271,10 +272,18 @@ class CReaction : public CCopasiContainer
     bool deleteModifier(const std::string &name);
 
     /**
-     *  Sets the rate function of the reaction
-     *  @param "const string &" functionName
+     * Sets the rate function of the reaction
+     * @param const string & functionName
+     * @return bool success
      */
-    void setFunction(const std::string & functionName);
+    bool setFunction(const std::string & functionName);
+
+    /**
+     * Sets the rate function of the reaction
+     * @param CFunction * pFunction
+     * @return bool success
+     */
+    bool setFunction(CFunction * pFunction);
 
     //****************************************************************************************
 
@@ -289,16 +298,26 @@ class CReaction : public CCopasiContainer
     const C_FLOAT64 & getParameterValue(const std::string & parameterName) const;
 
     /**
-     *  Maps a function parameter to a metab (only for non vector parameters).
+     * Set the parameter keys
+     * @param const std::string & parameterName
+     * @param const std::vetor< std::string > & sourceKeys
+     * @return bool succes
      */
-    void setParameterMapping(const std::string & parameterName, const std::string & metabName);
-    void setParameterMapping(C_INT32 index, const std::string & metabName);
+    bool setParameterKeys(const std::string & parameterName,
+                          const std::vector< std::string > & sourceKeys);
 
     /**
      *  Clears a function parameter->metab mapping (only for vector parameters).
      */
     void clearParameterMapping(const std::string & parameterName);
     void clearParameterMapping(C_INT32 index);
+
+#ifdef XXXX
+    /**
+     *  Maps a function parameter to a metab (only for non vector parameters).
+     */
+    void setParameterMapping(const std::string & parameterName, const std::string & metabName);
+    void setParameterMapping(C_INT32 index, const std::string & metabName);
 
     /**
      *  Maps a function parameter to a metab (only for vector parameters).
@@ -314,9 +333,16 @@ class CReaction : public CCopasiContainer
     //void setParameterMapping(C_INT32 index, const std::vector<std::string> & metabNames);
 
     std::vector<std::string> getParameterMappingName(const std::string & parameterName) const;
+
     const std::vector<std::string> & getParameterMappingName(C_INT32 index) const;
-    const std::vector< std::vector<std::string> > & getParameterMappingName() const
-      {return mMetabNameMap;}
+
+    const std::vector< std::vector<std::string> > & getParameterMappings() const
+      {return mMetabKeyMap;}
+#endif // XXXX
+    const std::vector< std::vector<std::string> > getParameterMappingName() const;
+
+    const std::vector< std::vector<std::string> > & getParameterMappings() const
+      {return mMetabKeyMap;}
 
     std::vector<const CMetab *> getParameterMappingMetab(const std::string & parameterName) const;
     std::vector<const CMetab *> getParameterMappingMetab(C_INT32 index) const;
@@ -437,10 +463,21 @@ class CReaction : public CCopasiContainer
     void setParameterMapping(const std::string & parameterName, const CMetab & metab);
 
     /**
+     *  It set the key for a parameter mapping
+     *  metabolite and tells mKeyMap about it.
+     */
+    void setParameterMappingKey(const std::string & parameterName, const CMetab & metab);
+
+    /**
      *  used by compile(). It finds the reference to the transient concentration in the
      *  metabolite and tells mMap about it.
      */
     void addParameterMapping(const std::string & parameterName, const CMetab & metab);
+
+    /**
+     *  It adds a key to a Metabolite to the parameter map.
+     */
+    void addParameterMappingKey(const std::string & parameterName, const CMetab & metab);
 
     /**
      *
