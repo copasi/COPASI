@@ -10,7 +10,7 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
-
+#include "copasiwidget.h"
 #include <qscrollview.h>
 class QVBox;
 class QHBoxLayout;
@@ -26,7 +26,7 @@ class CScanProblem;
 class CScanMethod;
 class CModel;
 
-class ScanWidget : public QWidget
+class ScanWidget : public CopasiWidget
   {
     Q_OBJECT
 

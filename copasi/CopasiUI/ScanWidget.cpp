@@ -31,7 +31,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
-    : QWidget(parent, name, f)
+    : CopasiWidget(parent, name, f)
 {
   if (!name)
     setName("ScanWidget");
