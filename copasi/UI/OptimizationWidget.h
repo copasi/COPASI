@@ -3,7 +3,7 @@ Author: Liang Xu
 Version : 1.xx  <first>
 Description: 
 Date: 09/19
-Comment : OptimizationWidget for embeded widget for limit of the optimization function
+Comment : OptimizationWidget for UI of the optimization function
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 

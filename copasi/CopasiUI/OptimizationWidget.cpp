@@ -615,7 +615,17 @@ void OptimizationWidget::slotBtnCancelClicked()
 {}
 
 void OptimizationWidget::slotBtnConfirmClicked()
-{}
+{
+  COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(key);
+  for (int i = 0; i < func->mParaList.size(); i++)
+    {
+      func->mMinList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerLimit();
+      func->mMaxList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperLimit();
+
+      func->mMinOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerOper());
+      func->mMaxOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperOper());
+    }
+}
 
 void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)
 {
