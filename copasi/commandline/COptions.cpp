@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:20:09 $
+   $Date: 2004/02/18 21:35:59 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -80,6 +80,9 @@ void COptions::init(C_INT argc, char *argv[])
     {
       if (errno != ENOENT) throw(e);
 
+#ifdef XXXX
+      /* This is currently not needed since a system wide configuration
+         is not supported */
       std::ostringstream error;
       error << std::endl
       << "file '" << ConfigFile << "' does not exist." << std::endl
@@ -88,6 +91,7 @@ void COptions::init(C_INT argc, char *argv[])
       << "  to point to the Copasi installation directory" << std::endl;
 
       throw copasi::option_error(error.str());
+#endif // XXXX
     }
 
   /* Parse the user's configuration file */
@@ -101,9 +105,11 @@ void COptions::init(C_INT argc, char *argv[])
     {
       if (errno != ENOENT) throw(e);
 
+#ifdef XXXX
       /* Make sure that the user's configuration file exists in the future */
       /* :TODO: we should create a template that will be copied */
       std::ofstream f(ConfigFile.c_str());
+#endif // XXXX
     }
 
   /* Parse the commandline specified file */
