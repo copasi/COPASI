@@ -1,19 +1,24 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:44 $
+   $Date: 2004/02/18 20:47:19 $
    End CVS Header */
 
 #include <qapplication.h>
+
 #define COPASI_MAIN
+#include "copasiversion.h"
+
 #include "copasiui3window.h" 
 //#include "objectdebug.h"
 
 #include "utilities/CGlobals.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
+#include "commandline/COptionParser.h"
+#include "commandline/COptions.h"
 
 int main(int argc, char **argv)
 {
@@ -21,6 +26,12 @@ int main(int argc, char **argv)
 
   Copasi = new CGlobals;
   Copasi->pFunctionDB->load();
+  Copasi->ProgramVersion.setVersion(COPASI_VERSION_MAJOR,
+                                    COPASI_VERSION_MINOR,
+                                    COPASI_VERSION_BUILD);
+
+  // Parse the commandline options
+  COptions::init(argc, argv);
 
   QApplication a(argc, argv);
 
