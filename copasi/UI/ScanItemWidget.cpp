@@ -154,6 +154,8 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   connect(mUniformRadio, SIGNAL(clicked()), this, SLOT(UniformClicked()));
   connect(mGaussianRadio, SIGNAL(clicked()), this, SLOT(GaussianClicked()));
   connect(mPosGaussianRadio, SIGNAL(clicked()), this, SLOT(PosGaussianClicked()));
+
+  isFirstWidget = false;
 }
 
 void ScanItemWidget::MaxValueChanged(const QString&)
@@ -183,6 +185,8 @@ void ScanItemWidget::DensityValueChanged(const QString&)
 
 void ScanItemWidget::IndependentClicked()
 {
+  if (isFirstWidget)
+    mIndependent->setChecked(true);
   pParameter->setValue("indp", mIndependent->isChecked());
   /*  for verfication
    if (pParameter->getIndex("indp")==C_INVALID_INDEX)
@@ -258,6 +262,7 @@ void ScanItemWidget::ResetData()
   mMin->setText("1.0");
   mDensity->setText("2.0");
   mLogarithmic->setChecked(FALSE);
+  // for the FirstWidget it is must be master
   mIndependent->setChecked(TRUE);
   mRegularGridRadio->setChecked(1);
   mGaussianRadio->setChecked(0);
@@ -363,4 +368,14 @@ void ScanItemWidget::languageChange()
   mPosGaussianRadio->setText(tr("Pos. Normal"));
   mRegularGridRadio->setText(tr("Regular Grid"));
   randomeLabel->setText(tr("Random"));
+}
+
+void ScanItemWidget::setFirstWidget(bool isFirst)
+{
+  if (isFirst)
+    {
+      mIndependent->setChecked(true);
+      pParameter->setValue("indp", mIndependent->isChecked());
+    }
+  isFirstWidget = isFirst;
 }

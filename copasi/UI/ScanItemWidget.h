@@ -31,6 +31,7 @@ class ScanItemWidget : public QWidget
   {
     Q_OBJECT
   private:
+    bool isFirstWidget;
     static int labelMaxWidth;
     QString strDensityLabel;
     QString strMaxLabel;
@@ -92,6 +93,7 @@ class ScanItemWidget : public QWidget
     }
     void loadObject();
     void updateObject();
+    void setFirstWidget(bool isFirst);
 
     void MaxValueChanged(const QString&);
     void MinValueChanged(const QString&);

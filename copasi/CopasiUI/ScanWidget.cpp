@@ -321,6 +321,8 @@ void ScanWidget::deleteButtonClicked()
 
   emit hide_me();
 
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+
   CMethodParameterList* pObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getObject();
   scanTask->getProblem()->removeScanItem(pObject->getName().c_str());
   scrollview->removeChild(selectedList[2*activeObject]);
@@ -367,6 +369,12 @@ void ScanWidget::deleteButtonClicked()
     }
   nSelectedObjects--;
   scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
+
+  if (selectedList.size() > 0)
+    {
+      ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+    }
+
   emit show_me();
 
   if (activeObject >= 0)
@@ -382,6 +390,7 @@ void ScanWidget::upButtonClicked()
     return;
 
   emit hide_me();
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
 
   CMethodParameterList* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
   CMethodParameterList* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
@@ -410,6 +419,7 @@ void ScanWidget::upButtonClicked()
 
   scanTask->getProblem()->swapScanItem(activeObject + 1, activeObject);
 
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
   emit show_me();
   if (activeObject >= 0)
     ListBoxClicked(ObjectListBox->item(activeObject));
@@ -421,6 +431,9 @@ void ScanWidget::downButtonClicked()
     return;
 
   emit hide_me();
+
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+
   activeObject++;
   CMethodParameterList* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
   CMethodParameterList* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
@@ -445,6 +458,8 @@ void ScanWidget::downButtonClicked()
   ObjectListBox->changeItem (NULL, tmp, activeObject - 1);
 
   scanTask->getProblem()->swapScanItem(activeObject - 1, activeObject);
+
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
 
   emit show_me();
   if (activeObject >= 0)
@@ -534,6 +549,11 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   int ScanItemWidgetWidth;
   emit hide_me();
 
+  if (selectedList.size() > 0)
+    {
+      ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+    }
+  //by default isFirstWidget is set as false,
   ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
   ScanItemWidgetWidth = scrollview->visibleWidth();
 
@@ -564,6 +584,9 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   scanTask->getProblem()->addScanItem(*pNewMethodItem);
   parameterTable->setObject(scanTask->getProblem()->getScanItem(nSelectedObjects - 1));
   parameterTable->loadObject();
+
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+
   emit show_me();
   return true;
 }
