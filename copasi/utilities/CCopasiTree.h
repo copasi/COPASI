@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 21:49:12 $
+   $Date: 2003/11/04 15:22:37 $
    End CVS Header */
 
 /**
@@ -315,8 +315,8 @@ template <class _Node>
 std::ostream & operator<< (std::ostream & os,
                            const CCopasiTree< _Node > & A)
 {
-  CCopasiTree< _Node >::iterator it = A.begin();
-  CCopasiTree< _Node >::iterator end = A.end();
+  typename CCopasiTree< _Node >::iterator it = A.begin();
+  typename CCopasiTree< _Node >::iterator end = A.end();
 
   for (; it != end && &*it != NULL; ++it)
     os << &*it << ": parent: " << it->getParent()
