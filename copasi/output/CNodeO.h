@@ -13,6 +13,7 @@
 #include "model/model.h"
 #include "utilities/utilities.h"
 #include "function/function.h"
+#include "CDatum.h"
 
 class CNodeO: public CNodeK
 {
@@ -33,6 +34,20 @@ private:
 	 * J String of the node
 	 */
 	string mJ;
+	/**
+	 * pointer to a datum object (if an identifier)
+	 */
+	CDatum *mDatum;
+	/**
+	 *  The left branch of the tree originating from tyhis node
+	 */
+	CNodeO * mLeft;
+
+	/**
+	 *  The right branch of the tree originating from tyhis node
+	 */
+	CNodeO * mRight;
+
 
 public:
 	/**
@@ -121,6 +136,48 @@ public:
     * Set the node's Datum Type
 	*/
    void setDatumType(const C_INT32 datumType);
+
+   /**
+    * Calculates the value of this sub-tree
+	*/
+   C_FLOAT64 value();
+
+  /**
+   * Retrieving mLeft the left branch of a node
+   * @return CNodeO
+   */
+  CNodeO & getLeft() const;
+
+  /**
+   * Retrieving mRight the left branch of a node
+   * @return CNodeO
+   */
+  CNodeO & getRight() const;
+  /**
+   * Setting mLeft the pointer to the left branch
+   * @param CNodeO &left
+   */
+  void setLeft(CNodeO & left);
+
+  /**
+   * Setting mLeft the pointer to the left branch
+   * @param CNodeO *pleft
+   */
+  void setLeft(CNodeO * pleft);
+
+  /**
+   * Setting mRight the pointer to the right branch
+   * @param CNodeO &right
+   */
+  void setRight(CNodeO & right);
+
+  /**
+   * Setting mRight the pointer to the right branch
+   * @param CNodeO *pright
+   */
+  void setRight(CNodeO * pright);
+
+
 };
 #endif
 
