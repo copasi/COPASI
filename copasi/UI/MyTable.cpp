@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MyTable.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/26 15:54:43 $
+   $Author: gauges $ 
+   $Date: 2004/08/10 13:58:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -12,7 +12,7 @@
 //#include "listviews.h"
 
 MyTable::MyTable(QWidget * parent, const char * name)
-    : StretchTable (parent, name)
+    : QTable (parent, name)
 {}
 
 /*void MyTable::mousePressEvent(QMouseEvent *mpe)

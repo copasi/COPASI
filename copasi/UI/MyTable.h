@@ -1,21 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MyTable.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/26 15:54:43 $
+   $Author: gauges $ 
+   $Date: 2004/08/10 13:58:14 $
    End CVS Header */
 
 #ifndef MY_TABLE_H
 #define MY_TABLE_H
 
-#include "qtable.h"
-#include "StretchTable.h"
+#include "qtable.h" 
+//#include "StretchTable.h"
 
 /*
  Table class to support a signal for delete key (and popups eventually)
  */
-class MyTable: public StretchTable
+class MyTable: public QTable
   {
     Q_OBJECT
 

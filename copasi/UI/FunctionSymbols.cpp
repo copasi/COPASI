@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 15:24:04 $
+   $Author: gauges $ 
+   $Date: 2004/08/10 13:58:14 $
    End CVS Header */
 
 /*******************************************************************
@@ -76,7 +76,7 @@ FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
   table->sortColumn (0, true, true);
   table->setSorting (true);
   table->setFocusPolicy(QWidget::WheelFocus);
-  table->setProtected(true);
+  //table->setProtected(true);
 
   // signals and slots connections
   connect(table, SIGNAL(selectionChanged ()),

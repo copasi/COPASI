@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:37 $
+   $Author: gauges $ 
+   $Date: 2004/08/10 13:58:14 $
    End CVS Header */
 
 /*******************************************************************
@@ -73,7 +73,7 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   table->sortColumn (0, true, true);
   table->setSorting (true);
   table->setFocusPolicy(QWidget::WheelFocus);
-  table->setProtected(true);
+  //table->setProtected(true);
 
   // signals and slots connections
   //  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
