@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SimpleSelectionDialog.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/08 09:00:57 $
+   $Date: 2004/10/18 20:31:32 $
    End CVS Header */
 
 #include "SimpleSelectionDialog.h"
@@ -21,8 +21,8 @@ SimpleSelectionDialog::SimpleSelectionDialog(QWidget * parent , const char * nam
   this->mainLayout = new QVBoxLayout(this);
   this->mainLayout->setAutoAdd(false);
   this->simpleSelectionWidget = new SimpleSelectionWidget(this);
-  this->objectBrowserWidget = new ObjectBrowserWidget(this);
-  this->objectBrowserWidget->setHidden(true);
+  //this->objectBrowserWidget = new ObjectBrowserWidget(this);
+  //this->objectBrowserWidget->setHidden(true);
   this->mainWidget = this->simpleSelectionWidget;
   this->buttonBox = new QHBoxLayout(0);
   ((QBoxLayout*)this->buttonBox->layout())->addStretch();
@@ -117,6 +117,10 @@ void SimpleSelectionDialog::modeButton_clicked()
     {
       this->expertMode = true;
       this->modeButton->setText("Simple");
+      if (!this->objectBrowserWidget)
+        {
+          this->objectBrowserWidget = new ObjectBrowserWidget(this);
+        }
       this->objectBrowserWidget->selectObjects(this->tmpVector);
       this->tmpVector->clear();
       this->objectBrowserWidget->setOutputVector(this->tmpVector);
