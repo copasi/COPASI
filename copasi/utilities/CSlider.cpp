@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/01 03:01:16 $
+   $Date: 2005/03/02 20:48:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -145,19 +145,18 @@ const C_FLOAT64 CSlider::getSliderValue() const
 
 bool CSlider::setMinValue(const C_FLOAT64 minValue)
 {
-  if (minValue > this->mMaxValue) return false;
+  if (minValue > mMaxValue) return false;
 
   mMinValue = minValue;
 
-  if (this->getSliderValue() < this->mMinValue)
-    {
-      this->setSliderValue(this->mMinValue);
-    }
+  if (mpSliderObject && getSliderValue() < mMinValue)
+    setSliderValue(this->mMinValue);
+
   return true;
 }
 
 const C_FLOAT64 CSlider::getMinValue() const
-  {return mMinValue;}
+{return mMinValue;}
 
 bool CSlider::setMaxValue(const C_FLOAT64 maxValue)
 {
@@ -165,15 +164,14 @@ bool CSlider::setMaxValue(const C_FLOAT64 maxValue)
 
   mMaxValue = maxValue;
 
-  if (this->getSliderValue() > mMaxValue)
-    {
-      this->setSliderValue(mMaxValue);
-    }
+  if (mpSliderObject && getSliderValue() > mMaxValue)
+    setSliderValue(mMaxValue);
+
   return true;
 }
 
 const C_FLOAT64 CSlider::getMaxValue() const
-  {return mMaxValue;}
+{return mMaxValue;}
 
 bool CSlider::setTickNumber(const unsigned C_INT32 tickNumber)
 {
