@@ -34,6 +34,7 @@
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
 #include "output/COutputList.h"
+#include "output/COutput.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -111,7 +112,7 @@ void processTrajectory(CModel & model, CReadConfig & copasiFile)
 
   task.getProblem()->setModel(&model);
 
-  ofstream TrajectoryFile(Copasi->pOutputList->getTrajectoryFile().c_str());
+  std::ofstream TrajectoryFile(Copasi->pOutputList->getTrajectoryFile().c_str());
   task.initializeReporting(TrajectoryFile);
 
   task.process();
@@ -125,7 +126,7 @@ void processSteadyState(CModel & model, CReadConfig & copasiFile)
 
   task.getProblem()->setModel(&model);
 
-  ofstream SteadyStateFile(Copasi->pOutputList->getSteadyStateFile().c_str());
+  std::ofstream SteadyStateFile(Copasi->pOutputList->getSteadyStateFile().c_str());
   task.initializeReporting(SteadyStateFile);
 
   task.process();
