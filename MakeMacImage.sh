@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TMPDIR=/tmp
-RELEASE="11"
+RELEASE="12"
 
 SETFILE=/Developer/Tools/SetFile
 HDIUTIL=/usr/bin/hdiutil
@@ -11,7 +11,8 @@ GREP=/usr/bin/grep
 STRIP=/usr/bin/strip
 OTOOL=/usr/bin/otool
 
-EXAMPLES="brusselator.cps YeastGlycolysis.gps CircadianClock.cps Metabolism-2000Poo.xml"
+#EXAMPLES="brusselator.cps YeastGlycolysis.gps CircadianClock.cps Metabolism-2000Poo.xml"
+EXAMPLES=`find ./TestSuite/distribution/ -type f -maxdepth 1` 
 
 # check if the binary is there
 if test -e ./copasi/CopasiUI/CopasiUI.app/Contents/MacOS/CopasiUI ; then
@@ -54,7 +55,7 @@ echo "Set the icon in the Info.plist file."
     mkdir -p ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/examples
     echo "Copy examples to example directory."
     for EXAMPLE in $EXAMPLES;do
-        cp ./TestSuite/distribution/${EXAMPLE} ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/examples/
+        cp ${EXAMPLE} ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/examples/
     done
 
 # copy the files for the wizard into the Resources directory

@@ -34,7 +34,7 @@ if [ x"$#" = x1 ]; then
     chmod 755 copasi/bin/CopasiUI
 
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
-    chmod 644 copasi/share/doc/copasi/examples/*
+    chmod 644 copasi/share/copasi/examples/*
 
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
     chmod 644 copasi/share/copasi/doc/html/*.html

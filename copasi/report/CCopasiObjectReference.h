@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/12 23:07:27 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:18 $
    End CVS Header */
 
 /**
@@ -84,7 +84,7 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
                   {
                     return "<font color=\"#2222cc\">[</font>"
                     + getObjectParent()->getObjectDisplayName(regular, richtext)
-                    + "<font color=\"#2222cc\">]<sub>Init</sub></font>";
+                    + "<font color=\"#2222cc\">]<sub>0</sub></font>";
                   }
                 else
                 {return "[" + getObjectParent()->getObjectDisplayName(regular, richtext) + "]_0";}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/09 11:52:30 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:16 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -233,7 +233,7 @@ std::string COptions::getCopasiDir(void)
     }
 #endif // Darwin
 
-#ifdef XXXX // :TODO: use CCopasiMessage
+#if (defined SunOS || defined Linux) // :TODO: use CCopasiMessage
   if (CopasiDir == "")
     {
       std::ostringstream error;
@@ -244,7 +244,7 @@ std::string COptions::getCopasiDir(void)
 
       throw copasi::option_error(error.str());
     }
-#endif // XXXX
+#endif // SunOS || Linux
 
   return CopasiDir;
 }

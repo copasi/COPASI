@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/24 13:29:58 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:17 $
    End CVS Header */
+
+#include <stdexcept>
 
 #include <qapplication.h>
 
@@ -32,7 +34,15 @@ int main(int argc, char **argv)
                                     COPASI_VERSION_BUILD);
 
   // Parse the commandline options
-  COptions::init(argc, argv);
+  try
+    {
+      COptions::init(argc, argv);
+    }
+  catch (copasi::option_error & msg)
+    {
+      std::cout << msg.what() << std::endl;
+      return 1;
+    }
 
   QApplication a(argc, argv);
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.106 $
+   $Revision: 1.107 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/29 19:01:37 $
+   $Date: 2005/01/31 14:49:17 $
    End CVS Header */
 
 /**********************************************************************
@@ -63,8 +63,8 @@
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
     CopasiWidget(parent, name, fl),
     objKey(""),
-    mMmlWidget(NULL),
-    mScrollView(NULL),
+    //    mMmlWidget(NULL),
+    //    mScrollView(NULL),
     pFunction(NULL)
 {
   if (!name)
@@ -218,8 +218,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
 FunctionWidget1::~FunctionWidget1()
 {
-  pdelete(mMmlWidget);
-  pdelete(mScrollView);
+  //  pdelete(mMmlWidget);
+  //  pdelete(mScrollView);
   pdelete(pFunction);
 }
 
@@ -418,9 +418,9 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   flagChanged = false;
 
   //MathML widget
-  std::ostringstream mml;
+  /*std::ostringstream mml;
   pFunction->writeMathML(mml);
-  mMmlWidget->setContent(FROM_UTF8(mml.str()));
+  mMmlWidget->setContent(FROM_UTF8(mml.str()));*/
 
   return true;
 }
@@ -855,7 +855,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                    // Yes or Enter
+        case 0:                                      // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -872,7 +872,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                    // No or Escape
+        case 1:                                      // No or Escape
           break;
         }
     }
@@ -906,7 +906,7 @@ bool FunctionWidget1::leave()
 {
   if (isValid)
     saveToFunction();
-  mScrollView->hide();
+  //  mScrollView->hide();
   return true;
 }
 
@@ -918,13 +918,13 @@ bool FunctionWidget1::enter(const std::string & key)
   //debug
   //func->writeMathML(std::cout);
 
-  if (!mScrollView) mScrollView = new QScrollView();
-  mScrollView->resize(400, 200);
-
-  if (!mMmlWidget) mMmlWidget = new QtMmlWidget(mScrollView);
-  mScrollView->addChild(mMmlWidget);
-  mScrollView->setResizePolicy(QScrollView::AutoOneFit);
-  mScrollView->show();
+  /*  if (!mScrollView) mScrollView = new QScrollView();
+    mScrollView->resize(400, 200);
+   
+    if (!mMmlWidget) mMmlWidget = new QtMmlWidget(mScrollView);
+    mScrollView->addChild(mMmlWidget);
+    mScrollView->setResizePolicy(QScrollView::AutoOneFit);
+    mScrollView->show();*/
 
   if (func) return loadFromFunction(func);
   else return false;
