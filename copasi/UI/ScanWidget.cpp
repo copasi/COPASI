@@ -135,8 +135,9 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChangeButton()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
 
-  connect(sExecutable, SIGNAL(clicked()), this, SLOT(SteadyStateButtonClicked()));
+  connect(steadyState, SIGNAL(clicked()), this, SLOT(SteadyStateButtonClicked()));
   connect(trajectory, SIGNAL(clicked()), this, SLOT(TrajectoryButtonClicked()));
+  connect(sExecutable, SIGNAL(clicked()), this, SLOT(ScanButtonClicked()));
 }
 
 ScanWidget::~ScanWidget()
@@ -150,11 +151,29 @@ void ScanWidget::CancelChangeButton()
 void ScanWidget::CommitChangeButton()
 {}
 
+void ScanWidget::ScanButtonClicked()
+{
+  if (sExecutable->isChecked())
+    {
+      int i = 0;
+    }
+}
+
 void ScanWidget::SteadyStateButtonClicked()
-{}
+{
+  if (steadyState->isChecked())
+    {
+      int i = 0;
+    }
+}
 
 void ScanWidget::TrajectoryButtonClicked()
-{}
+{
+  if (trajectory->isChecked())
+    {
+      int i = 0;
+    }
+}
 
 void ScanWidget::loadScan(CModel *model)
 {
