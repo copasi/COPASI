@@ -72,7 +72,7 @@ C_FLOAT64 * CEigen::getWork() const
 void CEigen::CalcEigenvalues( void )
 {
 
- 
+  /* 
  int res;
  char jobvs = 'N';
  char sort = 'N';
@@ -188,7 +188,7 @@ void CEigen::CalcEigenvalues( void )
   }
  eigen_hierarchy = distt / tott / (n-1);
 
- 
+  */
 
 }
 
