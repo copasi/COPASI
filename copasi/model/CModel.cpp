@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.169 $
+   $Revision: 1.170 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/14 13:45:06 $
+   $Date: 2004/05/19 09:25:28 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1490,6 +1490,7 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
   CModel::QuantityUnit Unit = unit;
   bool success = true;
 
+  //TODO use AVOGADRO !!!!
   switch (Unit)
     {
     case Mol:
@@ -1544,6 +1545,8 @@ const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
 
 bool CModel::setTitle(const std::string &title)
 {
+  if (title == "")
+    return setObjectName("NoTitle");
   return setObjectName(title);
 }
 
@@ -1567,8 +1570,8 @@ CMetab* CModel::createMetabolite(const std::string & name,
 {
   unsigned C_INT32 Index;
 
-  if (mCompartments.size() == 0)
-    createCompartment("compartment_0");
+  //if (mCompartments.size() == 0)
+  //  createCompartment("compartment_0");
 
   if (compartment == "")
     Index = 0;
