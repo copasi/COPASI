@@ -324,7 +324,11 @@ void TrajectoryWidget::RunTask()
 
   if (tt->getReport()->getTarget() != "")
     {
-      std::ofstream output(tt->getReport()->getTarget().c_str());
+      std::ofstream output;
+      if (tt->getReport()->append())
+        output.open(tt->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);
+      else
+        output.open(tt->getReport()->getTarget().c_str(), std::ios_base::out);
       output << "# "; // Hack for gnuplot
       tt->initializeReporting(output);
     }

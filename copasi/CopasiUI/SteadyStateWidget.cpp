@@ -277,7 +277,11 @@ void SteadyStateWidget::RunButtonClicked()
 
   if (mSteadyStateTask->getReport()->getTarget() != "")
     {
-      std::ofstream output(mSteadyStateTask->getReport()->getTarget().c_str());
+      std::ofstream output;
+      if (mSteadyStateTask->getReport()->append())
+        output.open(mSteadyStateTask->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);
+      else
+        output.open(mSteadyStateTask->getReport()->getTarget().c_str(), std::ios_base::out);
       mSteadyStateTask->initializeReporting(output);
     }
   else //ask if user insists on proceeding

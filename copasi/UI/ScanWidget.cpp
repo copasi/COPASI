@@ -508,7 +508,11 @@ void ScanWidget::ScanButtonClicked()
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   if (scanTask->getReport()->getTarget() != "")
     {
-      std::ofstream output(scanTask->getReport()->getTarget().c_str());
+      std::ofstream output;
+      if (scanTask->getReport()->append())
+        output.open(scanTask->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);
+      else
+        output.open(scanTask->getReport()->getTarget().c_str(), std::ios_base::out);
       scanTask->initializeReporting(output);
     }
   else //ask if user insists on proceeding
