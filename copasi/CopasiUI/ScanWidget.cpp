@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.174 $
+   $Revision: 1.175 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/30 15:31:02 $
+   $Date: 2005/01/04 17:18:37 $
    End CVS Header */
 
 /********************************************************
@@ -56,6 +56,8 @@ Contact: Please contact lixu1@vt.edu.
 #include "report/CKeyFactory.h"
 #include "CReportDefinitionSelect.h"
 #include "qtUtilities.h"
+#include "CProgressBar.h"
+#include "utilities/CCopasiException.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
 
@@ -267,7 +269,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   //pTrajectoryWidget->loadTrajectoryTask(/*new CTrajectoryTask()*/);
 
   sExecutable->setEnabled(false);
-  scanButton->setEnabled(false);
+  scanButton->setEnabled(true /*false*/);
 
   steadyState->setEnabled(false);
   eSteadyState->setEnabled(false);
@@ -525,6 +527,37 @@ void ScanWidget::runScanTask()
 {
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  if (!scanTask) return;
+
+  ((CScanProblem*)(scanTask->getProblem()))->createDebugScan(dataModel->getModel());
+
+  scanTask->initialize(NULL);
+
+  setCursor(Qt::WaitCursor);
+  CProgressBar* tmpBar = new CProgressBar(dataModel);
+  scanTask->setProgressHandler(tmpBar);
+
+  try
+    {
+      scanTask->process();
+    }
+  catch (CCopasiException Exception)
+    {
+      std::cout << std::endl << "exception in scan task" << std::endl;
+      //TODO: message box
+    }
+
+  //should be renamed?
+  scanTask->restore();
+
+  tmpBar->finish(); pdelete(tmpBar);
+
+  protectedNotify(ListViews::STATE, ListViews::CHANGE,
+                  dataModel->getModel()->getKey());
+
+  unsetCursor();
+
+  return;
 
   std::ofstream output;
   if (scanTask->getReport().getTarget() != "")
@@ -537,7 +570,7 @@ void ScanWidget::runScanTask()
                     std::ios_base::out);
     }
   if (output.is_open())
-    scanTask->initializeReporting(output);
+    scanTask->initialize(&output);
   else //ask if user insists on proceeding
     {
       if (QMessageBox::information (NULL, "No output specified,",
@@ -786,7 +819,11 @@ bool ScanWidget::enter(const std::string & key)
 
 bool ScanWidget::leave()
 {
-  //let the user confirm?
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  if (!scanTask) return false;
+
+  ((CScanProblem*)(scanTask->getProblem()))->createDebugScan(dataModel->getModel());
   return true;
 }
 
