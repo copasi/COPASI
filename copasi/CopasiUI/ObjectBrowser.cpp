@@ -138,7 +138,9 @@ void ObjectBrowser::closeEvent (QCloseEvent * e)
   this->~ObjectBrowser();
 }
 
-ObjectBrowser::~ObjectBrowser()
+ObjectBrowser::~ObjectBrowser() {cleanup();}
+
+void ObjectBrowser::cleanup()
 {
   pdelete(objectItemList);
   pdelete(refreshList);
@@ -268,8 +270,8 @@ void ObjectBrowser::nextClicked()
       rootItem = objectItemList->getRoot()->pItem;
       eXport(rootItem, mOutputObjectVector);
       mOutputObjectVector = NULL;
+      cleanup();
       QDialog::done(QDialog::Accepted);
-      delete(this);
       return;
     }
 
