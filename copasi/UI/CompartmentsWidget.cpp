@@ -13,7 +13,8 @@
 #include "CompartmentsWidget.h"
 #include "listviews.h"
 #include "model/CMetab.h"
-
+#include <qfont.h>
+#include "utilities/CGlobals.h" 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
  *  This widget is a child of 'parent', with the 
@@ -30,7 +31,6 @@
  */
 CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlags f)
     : QWidget(parent, name, f)
-
 {
   mModel = NULL;
   table = new MyTable(0, 2, this, "tblCompartments");
@@ -44,6 +44,9 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
+
+  btnOK->setFont(QFont("Times", 10, QFont::Bold));
+  btnCancel->setFont(QFont("Times", 10, QFont::Bold));
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -147,9 +150,48 @@ void CompartmentsWidget::showMessage(QString title, QString text)
 
 void CompartmentsWidget::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Moiety Widget",
-                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
+  //QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
+
+  CWriteConfig FunctionDB1("oo.gps");
+  CWriteConfig ModelFile("model.gps");
+  //CWriteConfig *Fun = new CWriteConfig();
+  string outstring = "Laber";
+  //mModel->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
+  mModel->save(ModelFile);
+  Copasi->FunctionDB.save(FunctionDB1);
 }
+
+/*C_INT32  TestWriteConfig(void)
+{
+  cout << "Entering TestWriteConfig." << endl;
+  // CWriteConfig Default;
+  CWriteConfig Specific((string) "TestWriteConfig.txt");
+  
+  Specific.setVariable((string) "Compartment", 
+                       (string) "string", 
+                       (void *) &outstring);
+  Specific.flush();
+  C_FLOAT64 outdouble = 1.03e3;
+  Specific.setVariable((string) "Volume", 
+                       (string) "C_FLOAT64", 
+                       (void *) &outdouble);
+  Specific.flush();
+    
+  outstring = "Blubber";
+  Specific.setVariable((string) "Compartment", 
+                       (string) "string", 
+                       (void *) &outstring);
+  outdouble = 1.03e3;
+  Specific.setVariable((string) "Junk", 
+                       (string) "C_FLOAT64", 
+                       (void *) &outdouble);
+  Specific.flush();
+    
+  cout << endl;
+  return 0;
+}
+ 
+ */
 
 void CompartmentsWidget::slotBtnCancelClicked()
 {

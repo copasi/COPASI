@@ -12,7 +12,7 @@
 #include <qmessagebox.h>
 #include "listviews.h"
 #include "ReactionsWidget.h"
-
+#include <qfont.h> 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree.
  *  This widget is a child of 'parent', with the 
@@ -42,6 +42,8 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
+  btnOK->setFont(QFont("Times", 10, QFont::Bold));
+  btnCancel->setFont(QFont("Times", 10, QFont::Bold));
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 

@@ -11,7 +11,8 @@
 #include <qmessagebox.h>
 #include "MetabolitesWidget.h"
 #include "model/CMetab.h"
-#include "listviews.h" 
+#include "listviews.h"
+#include <qfont.h>
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
  *  displaying the Metabolites in model 'model'.
@@ -44,6 +45,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
+  btnOK->setFont(QFont("Times", 10, QFont::Bold));
+  btnCancel->setFont(QFont("Times", 10, QFont::Bold));
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -156,8 +159,10 @@ void MetabolitesWidget::showMessage(QString title, QString text)
 
 void MetabolitesWidget::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Moiety Widget",
-                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
+  //QMessageBox::information(this, "Moiety Widget","clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
+
+  CWriteConfig ModelFile("model.gps");
+  mModel->save(ModelFile);
 }
 
 void MetabolitesWidget::slotBtnCancelClicked()
