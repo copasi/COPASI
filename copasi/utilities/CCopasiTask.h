@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/10 16:39:46 $
+   $Author: ssahle $ 
+   $Date: 2005/02/27 20:06:52 $
    End CVS Header */
 
 /**
@@ -197,6 +197,11 @@ class CCopasiTask : public CCopasiContainer
      * Process the task
      */
     virtual bool process();
+
+    /**
+     * Process the task. This is called by the scan task.
+     */
+    virtual bool processForScan(bool useInitialConditions, bool doOutput);
 
     /**
      * Perform neccessary cleaup procedures
