@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/21 16:30:39 $
+   $Date: 2003/11/21 19:46:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -20,7 +20,7 @@ const std::vector< CCopasiContainer * > CReport::EmptyList;
 //
 //////////////////////////////////////////////////
 CReport::CReport(const CCopasiContainer * pParent):
-    CCopasiObject("Report", pParent, "Report"),
+    CCopasiContainer("Report", pParent, "Report"),
     mpOstream(NULL),
     mStreamOwner(false),
     mpReportDef(NULL),
@@ -31,7 +31,7 @@ CReport::CReport(const CCopasiContainer * pParent):
 
 CReport::CReport(const CReport & src,
                  const CCopasiContainer * pParent):
-    CCopasiObject("Report", pParent, "Report"),
+    CCopasiContainer("Report", pParent, "Report"),
     mpOstream(src.mpOstream),
     mStreamOwner(false),
     mpReportDef(src.mpReportDef),
@@ -122,12 +122,18 @@ bool CReport::compile(const std::vector< CCopasiContainer * > listOfContainer)
   // check if there is a Report Definition Defined
   if (!mpReportDef) return false;
 
+  const_cast<std::vector< CCopasiContainer * > *>(&listOfContainer)->
+  push_back(this);
+
   generateObjectsFromName(&listOfContainer, headerObjectList,
                           mpReportDef->getHeaderAddr());
   generateObjectsFromName(&listOfContainer, bodyObjectList,
                           mpReportDef->getBodyAddr());
   generateObjectsFromName(&listOfContainer, footerObjectList,
                           mpReportDef->getFooterAddr());
+
+  const_cast<std::vector< CCopasiContainer * > *>(&listOfContainer)->
+  pop_back();
 
   return true;
 }
@@ -175,44 +181,17 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
   unsigned C_INT32 i;
   CCopasiObject* pSelected;
 
-  // if no specified container list
-  if (!pListOfContainer)
-    for (i = 0; i < nameVector->size(); i++)
-      {
-        pSelected = NULL;
-        pSelected =
-          (CCopasiObject*)CCopasiContainer::Root->getObject((*(nameVector))[i]);
-        if (pSelected)
-          objectList.push_back(pSelected);
-      }
-  else
+  for (i = 0; i < nameVector->size(); i++)
     {
-      CCopasiContainer* pCopasiObject;
-      unsigned C_INT32 containerIndex;
-      for (i = 0; i < nameVector->size(); i++)
+      pSelected = CCopasiContainer::ObjectFromName(*pListOfContainer,
+                  (*nameVector)[i]);
+
+      if (pSelected)
         {
-          //favor to search the list of container first
-          pSelected = NULL;
-          for (containerIndex = 0; containerIndex < pListOfContainer->size(); containerIndex++)
-            {
-              pCopasiObject = (*pListOfContainer)[containerIndex];
-              pSelected =
-                (CCopasiObject*)pCopasiObject->getObject((*(nameVector))[i]);
-              if (pSelected)
-                {
-                  objectList.push_back(pSelected);
-                  break;
-                }
-            }
-          // if not find search the root
-          if (!pSelected)
-            {
-              pSelected =
-                (CCopasiObject*)CCopasiContainer::Root->getObject((*(nameVector))[i]);
-              // has been deleted all where
-              if (pSelected)
-                objectList.push_back(pSelected);
-            }
+          if (pSelected->getObjectType() == "String")
+            pSelected->setObjectParent(this);
+
+          objectList.push_back(pSelected);
         }
     }
 }

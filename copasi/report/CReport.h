@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:45 $
+   $Date: 2003/11/21 19:46:39 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,7 +17,7 @@
 #ifndef COPASI_CReport
 #define COPASI_CReport
 
-#include "CCopasiObject.h"
+#include "CCopasiContainer.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -26,7 +26,7 @@ class CReportDefinition;
 class CBody;
 class CReportTable;
 
-class CReport : public CCopasiObject
+class CReport : public CCopasiContainer
   {
   public:
     static const std::vector< CCopasiContainer * > EmptyList;
