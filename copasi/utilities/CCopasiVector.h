@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/02/26 00:37:53 $
+   $Author: shoops $ 
+   $Date: 2004/03/01 20:48:38 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -200,9 +200,9 @@ template < class CType > class CCopasiVector:
        */
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
         {
-          C_INT32 Index = name.getIndex();
+          unsigned C_INT32 Index = name.getIndex();
 
-          if (-1 < Index && Index < size())
+          if (Index < size())
             {
               CCopasiObject * pObject = *(begin() + Index);
 
@@ -212,10 +212,11 @@ template < class CType > class CCopasiVector:
 
           return NULL;
         }
+
       /**
-      *  Retrieves the size of the vector
-      *  @return "unsigned C_INT32" size
-      */
+       *  Retrieves the size of the vector
+       *  @return "unsigned C_INT32" size
+       */
       virtual unsigned C_INT32 size() const
       {return ((std::vector< CType * > *)this)->size();}
 
