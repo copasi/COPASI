@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.214 $
+   $Revision: 1.215 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/28 15:32:51 $
+   $Author: ssahle $ 
+   $Date: 2005/03/17 10:12:27 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -781,6 +781,13 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
   //std::cout << mLView << std::endl;
 }
 
+void CModel::updateMoietyValues()
+{
+  C_INT32 i, imax = mMoieties.size();
+  for (i = 0; i < imax; ++i)
+    mMoieties[i]->setInitialValue();
+}
+
 void CModel::buildMoieties()
 {
   unsigned C_INT32 i;
@@ -806,13 +813,13 @@ void CModel::buildMoieties()
             pMoiety->add(- mLView(i, j), mMetabolitesX[j]);
         }
 
-      pMoiety->setInitialValue();
+      //pMoiety->setInitialValue();
       //      DebugFile << pMoiety->getDescription() << " = "
       //      << pMoiety->getNumber() << std::endl;
 
       mMoieties.add(pMoiety, true);
     }
-
+  updateMoietyValues();
   return;
 }
 
@@ -984,7 +991,7 @@ const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
 const CMatrix < C_FLOAT64 >& CModel::getStoi() const
   {CCHECK return mStoi;}
 
-const CCopasiVectorN < CMoiety > & CModel::getMoieties() const
+const CCopasiVector < CMoiety > & CModel::getMoieties() const
   {return mMoieties;} //TODO: resolv when to recalculate moieties...
 
 const CCopasiVectorN< CReaction > & CModel::getStepsX() const

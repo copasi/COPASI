@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/28 15:32:51 $
+   $Author: ssahle $ 
+   $Date: 2005/03/17 10:12:27 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -318,7 +318,7 @@ class CModel : public CCopasiContainer
      *  for array of conserved moieties
      */
     /** @dia:route 178,7; h,177.081,100.342,168.006,136.562,80.2566 */
-    CCopasiVectorN< CMoiety > mMoieties;
+    CCopasiVector< CMoiety > mMoieties;
 
     /**
      *   Stoichiometry Matrix
@@ -478,6 +478,12 @@ class CModel : public CCopasiContainer
      *  Build the Moities based on the LU decomposition
      */
     void buildMoieties();
+
+    /**
+     *  compute the actual initial value of all moieties 
+     *  (from the initial values of the metabolites).
+     */
+    void updateMoietyValues();
 
     /**
      *  This calculate the right hand side (ydot) of the ODE for LSODA
@@ -659,7 +665,7 @@ class CModel : public CCopasiContainer
      * Return the mMoieties of this model 
      * @return CCopasiVectorN < CMoiety > & 
      */
-    const CCopasiVectorN < CMoiety > & getMoieties() const;
+    const CCopasiVector < CMoiety > & getMoieties() const;
 
     /**
      * Returns the index of the metab
