@@ -18,10 +18,18 @@
 
 CModel::CModel()
 {
+  
   mCompartments = NULL;
   mSteps        = NULL;
   mMoieties     = NULL;
 
+  mpLView = new
+    TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
+  
+  mpInverseLView = new
+    TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
+    (mL);
+  
   initialize();
 }
 
@@ -34,6 +42,9 @@ void CModel::initialize()
 
 CModel::~CModel()
 {
+  delete mpLView;
+  delete mpInverseLView;
+  
   cleanup();
 }
 
@@ -553,7 +564,7 @@ vector < CMetab * > & CModel::getMetabolites()
 /**
  *  Get the Reduced Stoichiometry Matrix of this Model
  */
-TNT::Matrix < C_FLOAT64 >& CModel::getRedStoi()
+const TNT::Matrix < C_FLOAT64 >& CModel::getRedStoi() const
 {
   return mRedStoi;
 }
@@ -651,13 +662,24 @@ void CModel::initializeMetabolites()
  */
 vector < CReaction * > & CModel::getStepsX()
 {
-	return mStepsX;
+  return mStepsX;
 }
 
 /**
  *  Get the mLU matrix of this model
  */
-TNT::Matrix < C_FLOAT64 >& CMolde::getmLU()
+const TNT::Matrix < C_FLOAT64 > & CModel::getmLU() const
 {
-	return mLU;
+  return mLU;
+}
+
+const TNT::UnitLowerTriangularView<TNT::Matrix<C_FLOAT64 > > & CModel::getL() const
+{
+  return *mpLView;
+}
+  
+const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
+& CModel::getInverseL() const
+{
+  return *mpInverseLView;
 }

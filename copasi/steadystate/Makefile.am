@@ -3,12 +3,14 @@ noinst_LIBRARIES = libsteadystate.a
 
 libsteadystate_a_SOURCES = \
 	CJacob.cpp \
+	CMca.cpp \
 	CNewton.cpp \
 	CSS_Solution.cpp 
 
 EXTRA_DIST = \
 	steadystate.h \
 	CJacob.h CJacob.cpp \
+	CMca.h CMca.cpp \
 	CNewton.h CNewton.cpp \
 	CSS_Solution.h	CSS_Solution.cpp 
 

@@ -149,7 +149,7 @@ public:
 	 * the time dependent MCA entry point
 	 * @param refer to the resolution
 	 */
-	void CMca::CalculateTimeMCA(int res);
+	void CalculateTimeMCA(int res);
 
 	/**
 	 * Return the mSSx vector for calculate time mca

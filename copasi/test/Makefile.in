@@ -187,9 +187,11 @@ x_includes = @x_includes@
 x_libraries = @x_libraries@
 
 ####### kdevelop will overwrite this part!!! (end)############
-bin_PROGRAMS = test matrix
+bin_PROGRAMS = test matrix SHvirtual
 
 test_SOURCES = test.cpp
+
+SHvirtual_SOURCES = VirtualMain.cpp
 
 matrix_SOURCES = matrix.cpp
 
@@ -214,7 +216,7 @@ SUBDIRS =          function         output         model         steadystate    
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  test$(EXEEXT) matrix$(EXEEXT)
+bin_PROGRAMS =  test$(EXEEXT) matrix$(EXEEXT) SHvirtual$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -232,6 +234,12 @@ matrix_DEPENDENCIES =  ../utilities/libutilities.a \
 ../function/libfunction.a ../output/liboutput.a ../model/libmodel.a \
 ../trajectory/libtrajectory.a
 matrix_LDFLAGS = 
+SHvirtual_OBJECTS =  VirtualMain.$(OBJEXT)
+SHvirtual_LDADD = $(LDADD)
+SHvirtual_DEPENDENCIES =  ../utilities/libutilities.a \
+../function/libfunction.a ../output/liboutput.a ../model/libmodel.a \
+../trajectory/libtrajectory.a
+SHvirtual_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -244,9 +252,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/matrix.P .deps/test.P
-SOURCES = $(test_SOURCES) $(matrix_SOURCES)
-OBJECTS = $(test_OBJECTS) $(matrix_OBJECTS)
+DEP_FILES =  .deps/VirtualMain.P .deps/matrix.P .deps/test.P
+SOURCES = $(test_SOURCES) $(matrix_SOURCES) $(SHvirtual_SOURCES)
+OBJECTS = $(test_OBJECTS) $(matrix_OBJECTS) $(SHvirtual_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -329,6 +337,10 @@ test$(EXEEXT): $(test_OBJECTS) $(test_DEPENDENCIES)
 matrix$(EXEEXT): $(matrix_OBJECTS) $(matrix_DEPENDENCIES)
 	@rm -f matrix$(EXEEXT)
 	$(CXXLINK) $(matrix_LDFLAGS) $(matrix_OBJECTS) $(matrix_LDADD) $(LIBS)
+
+SHvirtual$(EXEEXT): $(SHvirtual_OBJECTS) $(SHvirtual_DEPENDENCIES)
+	@rm -f SHvirtual$(EXEEXT)
+	$(CXXLINK) $(SHvirtual_LDFLAGS) $(SHvirtual_OBJECTS) $(SHvirtual_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.obj:

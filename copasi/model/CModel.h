@@ -77,22 +77,25 @@ class CModel
   TNT::Matrix < C_FLOAT64 > mRedStoi;
     
   /**
-   *   The Matrix which stores the L_0 U_0 Decompasition
+   *   The Matrix which stores the L U Decompasition
    */
   TNT::Matrix < C_FLOAT64 > mLU;
 
   /**
-   *   The inverse of L_0
+   *   This matrix stores L and the inverse of L
    */
   TNT::Matrix < C_FLOAT64 > mL;
 
-#ifdef  XXXX
-  TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > *pmLView;
-#define mLView (*pmLView)
+  /**
+   *   This is used to return a view to L
+   */
+  TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > *mpLView;
+
+  /**
+   *   This is used to return a view to the inverse of L
+   */
   TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
-    *pmInverseLView;  
-#define mInverseLView (*pmInverseLView)
-#endif // XXXX
+    *mpInverseLView;  
   
 #ifdef XXXX
   /**
@@ -400,7 +403,7 @@ class CModel
   /**
    *  Get the Reduced Stoichiometry Matrix of this Model
    */
-  TNT::Matrix < C_FLOAT64 >& getRedStoi();
+  const TNT::Matrix < C_FLOAT64 >& getRedStoi() const;
 
   /**
    *	Return the mMoieties of this model	
@@ -437,7 +440,13 @@ class CModel
   /**
    *  Get the mLU matrix of this model
    */
-  TNT::Matrix < C_FLOAT64 >& getmLU();
+  const TNT::Matrix < C_FLOAT64 > & getmLU() const;
+
+  const TNT::UnitLowerTriangularView<TNT::Matrix<C_FLOAT64 > > & getL() const;
+  
+  const 
+    TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
+    & getInverseL() const;
   
 
 #ifdef XXXX

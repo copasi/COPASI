@@ -188,10 +188,10 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libsteadystate.a
 
-libsteadystate_a_SOURCES =  	CJacob.cpp 	CNewton.cpp 	CSS_Solution.cpp 
+libsteadystate_a_SOURCES =  	CJacob.cpp 	CMca.cpp 	CNewton.cpp 	CSS_Solution.cpp 
 
 
-EXTRA_DIST =  	steadystate.h 	CJacob.h CJacob.cpp 	CNewton.h CNewton.cpp 	CSS_Solution.h	CSS_Solution.cpp 
+EXTRA_DIST =  	steadystate.h 	CJacob.h CJacob.cpp 	CMca.h CMca.cpp 	CNewton.h CNewton.cpp 	CSS_Solution.h	CSS_Solution.cpp 
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -209,8 +209,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libsteadystate_a_LIBADD = 
-libsteadystate_a_OBJECTS =  CJacob.$(OBJEXT) CNewton.$(OBJEXT) \
-CSS_Solution.$(OBJEXT)
+libsteadystate_a_OBJECTS =  CJacob.$(OBJEXT) CMca.$(OBJEXT) \
+CNewton.$(OBJEXT) CSS_Solution.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -224,7 +224,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/CJacob.P .deps/CNewton.P .deps/CSS_Solution.P
+DEP_FILES =  .deps/CJacob.P .deps/CMca.P .deps/CNewton.P \
+.deps/CSS_Solution.P
 SOURCES = $(libsteadystate_a_SOURCES)
 OBJECTS = $(libsteadystate_a_OBJECTS)
 
