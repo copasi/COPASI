@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:49 $
+   $Date: 2004/10/04 09:55:52 $
    End CVS Header */
 
 /********************************************************
@@ -66,20 +66,16 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 
   parameterValueLabel = new QLabel(this, "parameterValueLabel");
   parameterValueLabel->setText(trUtf8("Parameter value"));
-
   SteadyStateWidgetLayout->addWidget(parameterValueLabel, 4, 0);
 
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
   bRunButton = new QPushButton(this, "bRunButton");
-
   if (parent == NULL)
     bRunButton->setText(trUtf8("OK"));
   else
     bRunButton->setText(trUtf8("Run"));
-
-  //  bRunButton->setText(trUtf8("Run"));
-  bRunButton->setEnabled((parent == NULL));
+  bRunButton->setEnabled(true /*(parent == NULL)*/);
   Layout2->addWidget(bRunButton);
 
   //  commitChange = new QPushButton(this, "commitChange");
@@ -103,30 +99,25 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   line6 = new QFrame(this, "line6");
   line6->setFrameShape(QFrame::HLine);
   line6->setFrameShadow(QFrame::Sunken);
-  line6->setFrameShape(QFrame::HLine);
-
+  //line6->setFrameShape(QFrame::HLine);
   SteadyStateWidgetLayout->addMultiCellWidget(line6, 6, 6, 0, 2);
 
   taskName = new QLineEdit(this, "taskName");
-  taskName->setFrameShape(QLineEdit::LineEditPanel);
-  taskName->setFrameShadow(QLineEdit::Sunken);
-
+  //taskName->setFrameShape(QLineEdit::LineEditPanel);
+  //taskName->setFrameShadow(QLineEdit::Sunken);
   SteadyStateWidgetLayout->addWidget(taskName, 0, 1);
 
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable"));
-
   // this is the child widget to edit an steadystatetask
   bExecutable->setChecked(parent == NULL);
   bExecutable->setEnabled(parent != NULL);
-
   SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
 
   line8 = new QFrame(this, "line8");
   line8->setFrameShape(QFrame::HLine);
-  line8->setFrameShadow(QFrame::Sunken);
-  line8->setFrameShape(QFrame::HLine);
-
+  //line8->setFrameShadow(QFrame::Sunken);
+  //line8->setFrameShape(QFrame::HLine);
   SteadyStateWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
 
   parameterTable = new QTable(this, "parameterTable");
@@ -134,41 +125,34 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   parameterTable->setNumCols(1);
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
-
   SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
 
   taskStability = new QRadioButton(this, "taskStability");
   taskStability->setText(trUtf8("Stability Analysis"));
-
   SteadyStateWidgetLayout->addWidget(taskStability, 2, 2);
 
   taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
   taskDescriptionLabel->setText(trUtf8("Task Description"));
-
   SteadyStateWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
 
   taskJacobian = new QRadioButton(this, "taskJacobian");
   taskJacobian->setText(trUtf8("Jacobian"));
-
   SteadyStateWidgetLayout->addWidget(taskJacobian, 2, 1);
+  //TODO: should not be a radio button
 
   line8_2 = new QFrame(this, "line8_2");
   line8_2->setFrameShape(QFrame::HLine);
-  line8_2->setFrameShadow(QFrame::Sunken);
-  line8_2->setFrameShape(QFrame::HLine);
-
+  //line8_2->setFrameShadow(QFrame::Sunken);
+  //line8_2->setFrameShape(QFrame::HLine);
   SteadyStateWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
 
   // signals and slots connections
   connect(bRunButton, SIGNAL(clicked()), this, SLOT(runSteadyStateTask()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelButtonClicked()));
   connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFileButtonClicked()));
-  connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonChecked()));
+  //connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonChecked()));
   //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitButtonClicked()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
-  //connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,
-  //        SLOT(loadModelNodes(CModel*)));
-
   connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
   // tab order
@@ -190,8 +174,6 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
  */
 SteadyStateWidget::~SteadyStateWidget()
 {
-  // no need to delete child widgets, Qt does it all for us
-
   //I believe this should not be done in this place. Sven
   /*CSteadyStateTask* mSteadyStateTask =
     dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(objKey));
@@ -240,16 +222,16 @@ void SteadyStateWidget::CommitButtonClicked()
   loadSteadyStateTask();
 }
 
-void SteadyStateWidget::RunButtonChecked()
+/*void SteadyStateWidget::RunButtonChecked()
 {
   if (!dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey)))
     return;
-
+ 
   if (!bExecutable->isChecked())
     bRunButton->setEnabled(false);
   else
     bRunButton->setEnabled(true);
-}
+}*/
 
 void SteadyStateWidget::parameterValueChanged()
 {
@@ -272,13 +254,14 @@ void SteadyStateWidget::runSteadyStateTask()
 
   mSteadyStateTask->initialize();
 
+  /*
   if (!mSteadyStateTask->getReport().getStream())
     {
       if (QMessageBox::information (NULL, "No output specified,",
                                     "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running steadystate task with no output?",
                                     QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
         return;
-    }
+    }*/
 
   setCursor(Qt::WaitCursor);
 
@@ -303,14 +286,6 @@ void SteadyStateWidget::runSteadyStateTask()
 
   unsetCursor();
 }
-
-//void SteadyStateWidget::setModel(CModel* newModel)
-//{
-//  if (!GlobalKeys.get(objKey)) return;
-//  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)GlobalKeys.get(objKey);
-//  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
-//  steadystateproblem->setModel(newModel);
-//}
 
 void SteadyStateWidget::loadSteadyStateTask()
 {
@@ -353,10 +328,10 @@ void SteadyStateWidget::loadSteadyStateTask()
       parameterTable->setItem(i, 0, pItem);
     }
 
-  if (!bExecutable->isChecked())
+  /*if (!bExecutable->isChecked())
     bRunButton->setEnabled(false);
   else
-    bRunButton->setEnabled(true);
+    bRunButton->setEnabled(true);*/
 }
 
 void SteadyStateWidget::ExportToFileButtonClicked()

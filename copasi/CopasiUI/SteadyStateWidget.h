@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:13:01 $
+   $Author: ssahle $ 
+   $Date: 2004/10/04 09:55:52 $
    End CVS Header */
 
 /********************************************************
@@ -79,7 +79,7 @@ class SteadyStateWidget : public CopasiWidget
     virtual void CommitButtonClicked();
     virtual void ExportToFileButtonClicked();
     virtual void parameterValueChanged();
-    virtual void RunButtonChecked();
+    //virtual void RunButtonChecked();
     virtual void runSteadyStateTask();
     virtual void ReportDefinitionClicked();
 
