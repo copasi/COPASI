@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/12/22 07:12:02 $
+   $Author: shoops $ 
+   $Date: 2003/12/29 20:27:19 $
    End CVS Header */
 
 /*******************************************************************
@@ -85,10 +85,7 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
 
 void MetaboliteSymbols::filltable()
 {
-  CMathModel *mpMathModel = new CMathModel();
-  mpMathModel->setModel(dataModel->getModel());
-
-  loadMetaboliteSymbols(mpMathModel);
+  loadMetaboliteSymbols(dataModel->getMathModel());
 }
 
 void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)

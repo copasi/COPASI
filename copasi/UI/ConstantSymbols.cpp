@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/12/22 07:12:03 $
+   $Author: shoops $ 
+   $Date: 2003/12/29 20:27:19 $
    End CVS Header */
 
 /*******************************************************************
@@ -82,10 +82,7 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
 
 void ConstantSymbols::filltable()
 {
-  CMathModel *mpMathModel = new CMathModel();
-  mpMathModel->setModel(dataModel->getModel());
-
-  loadConstantSymbols(mpMathModel);
+  loadConstantSymbols(dataModel->getMathModel());
 }
 
 void ConstantSymbols::loadConstantSymbols(CMathModel *model)
