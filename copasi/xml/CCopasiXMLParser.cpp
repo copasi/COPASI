@@ -404,6 +404,7 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
     {
     case Function:
       if (strcmp(pszName, "Function")) fatalError();
+      mCommon.pFunction->setDescription(mCommon.FunctionDescription);
       mCurrentElement = -1;
       mParser.popElementHandler();
 
@@ -530,7 +531,7 @@ void CCopasiXMLParser::TextElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Text")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = -1;
-      mCommon.pFunction->setDescription(mCommon.pParser->getCharacterData("\n\t ", ""));
+      mCommon.FunctionDescription = mCommon.pParser->getCharacterData("\n\t ", "");
 
       mCommon.pParser->enableCharacterDataHandler(false);
       //    mCommon.pParser->enableCdataSectionHandler(false);
@@ -1329,7 +1330,8 @@ CCopasiXMLParser::ReactionElement::ReactionElement(CCopasiXMLParser & parser,
     mpListOfSubstratesElement(NULL),
     mpListOfProductsElement(NULL),
     mpListOfModifiersElement(NULL),
-    mpListOfConstantsElement(NULL)
+    mpListOfConstantsElement(NULL),
+    mpKineticLawElement(NULL)
 {}
 
 CCopasiXMLParser::ReactionElement::~ReactionElement()
@@ -1338,6 +1340,7 @@ CCopasiXMLParser::ReactionElement::~ReactionElement()
   pdelete(mpListOfProductsElement);
   pdelete(mpListOfModifiersElement);
   pdelete(mpListOfConstantsElement);
+  pdelete(mpKineticLawElement);
 }
 
 void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
@@ -1398,7 +1401,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       if (strcmp(pszName, "ListOfProducts")) fatalError();
 
       /* If we do not have a ListOfProducts element handler we create one. */
-      if (!mpCurrentHandler)
+      if (!mpListOfProductsElement)
         mpListOfProductsElement = new ListOfProductsElement(mParser, mCommon);
 
       /* Push the ListOfProducts element handler on the stack and call it. */
@@ -1411,7 +1414,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       if (strcmp(pszName, "ListOfModifiers")) fatalError();
 
       /* If we do not have a ListOfModifiers element handler we create one. */
-      if (!mpCurrentHandler)
+      if (!mpListOfModifiersElement)
         mpListOfModifiersElement = new ListOfModifiersElement(mParser, mCommon);
 
       /* Push the ListOfModifiers element handler on the stack and call it. */
@@ -1424,7 +1427,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       if (strcmp(pszName, "ListOfConstants")) fatalError();
 
       /* If we do not have a ListOfConstants element handler we create one. */
-      if (!mpCurrentHandler)
+      if (!mpListOfConstantsElement)
         mpListOfConstantsElement = new ListOfConstantsElement(mParser, mCommon);
 
       /* Push the ListOfConstants element handler on the stack and call it. */
@@ -1433,19 +1436,18 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
-#ifdef XXXX
     case KineticLaw:
       if (strcmp(pszName, "KineticLaw")) fatalError();
 
       /* If we do not have a KineticLaw element handler we create one. */
-      if (!mpCurrentHandler)
-        mpCurrentHandler = new KineticLawElement(mParser, mCommon);
+      if (!mpKineticLawElement)
+        mpKineticLawElement = new KineticLawElement(mParser, mCommon);
 
       /* Push the KineticLaw element handler on the stack and call it. */
+      mpCurrentHandler = mpKineticLawElement;
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
       break;
-#endif // XXXX
 
     default:
       fatalError();
@@ -2018,6 +2020,244 @@ void CCopasiXMLParser::ConstantElement::end(const XML_Char *pszName)
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::KineticLawElement::KineticLawElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::KineticLawElement::~KineticLawElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  const char * Function;
+  std::map< std::string, std::string >::const_iterator FunctionKey;
+  CFunction * pFunction;
+
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case KineticLaw:
+      if (strcmp(pszName, "KineticLaw")) fatalError();
+
+      Function = mParser.getAttributeValue("function", papszAttrs);
+
+      FunctionKey = mCommon.KeyMap.find(Function);
+      if (FunctionKey == mCommon.KeyMap.end()) fatalError();
+      pFunction =
+        (CFunction*)(CCopasiContainer*)CKeyFactory::get(FunctionKey->second);
+
+      mCommon.pReaction->setFunction(pFunction);
+      break;
+
+#ifdef XXXX
+    case ListOfCallParameters:
+      if (strcmp(pszName, "ListOfCallParameters")) fatalError();
+
+      /* If we do not have a etc element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new ListOfCallParametersElement(mParser, mCommon);
+
+      /* Push the etc element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+#endif // XXXX
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case KineticLaw:
+      if (strcmp(pszName, "KineticLaw")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case ListOfCallParameters:
+      if (strcmp(pszName, "ListOfCallParameters")) fatalError();
+      mCurrentElement = KineticLaw;
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::ListOfCallParametersElement::ListOfCallParametersElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfCallParametersElement::~ListOfCallParametersElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfCallParametersElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case ListOfCallParameters:
+      if (strcmp(pszName, "ListOfCallParameters")) fatalError();
+      break;
+
+    case CallParameter:
+      if (strcmp(pszName, "CallParameter")) fatalError();
+
+      /* If we do not have a CallParameter element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new CallParameterElement(mParser, mCommon);
+
+      /* Push the CallParameter element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfCallParametersElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case ListOfCallParameters:
+      if (strcmp(pszName, "ListOfCallParameters")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case CallParameter:
+      if (strcmp(pszName, "CallParameter")) fatalError();
+      mCurrentElement = ListOfCallParameters;
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::CallParameterElement::CallParameterElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::CallParameterElement::~CallParameterElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  const char * FunctionParameter;
+  std::map< std::string, std::string >::const_iterator FunctionParameterKey;
+
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case CallParameter:
+      if (strcmp(pszName, "CallParameter")) fatalError();
+
+      FunctionParameter =
+        mParser.getAttributeValue("functionParameter", papszAttrs);
+      FunctionParameterKey = mCommon.KeyMap.find(FunctionParameter);
+      if (FunctionParameterKey == mCommon.KeyMap.end()) fatalError();
+      mpFunctionParameter =
+        (CFunctionParameter*)(CCopasiContainer*)CKeyFactory::get(FunctionParameterKey->second);
+
+      mCommon.SourceParameterKeys.clear();
+      break;
+
+#ifdef XXXX
+    case SourceParameter:
+      if (strcmp(pszName, "SourceParameter")) fatalError();
+
+      /* If we do not have a SourceParameter element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new SourceParameterElement(mParser, mCommon);
+
+      /* Push the SourceParameter element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+#endif // XXXX
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case CallParameter:
+      if (strcmp(pszName, "CallParameter")) fatalError();
+#ifdef XXXX
+      if (mCommon.SourceParameterKeys.size() > 0)
+        {
+          mCommon.pReaction->setParameterKeys(mpFunctionParameter->getName(),
+                                              mCommon.SourceParameterKeys);
+          mCommon.SourceParameterKeys.clear();
+        }
+#endif // XXXX
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case SourceParameter:
+      if (strcmp(pszName, "SourceParameter")) fatalError();
+      mCurrentElement = CallParameter;
       break;
 
     default:

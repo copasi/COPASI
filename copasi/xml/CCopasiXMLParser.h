@@ -17,8 +17,9 @@
 #include "utilities/CCopasiVector.h"
 
 class CModel;
-class CFunction;
 class CReaction;
+class CFunction;
+class CFunctionParameter;
 class CCopasiXMLParser;
 
 struct SCopasiXMLParserCommon
@@ -39,9 +40,19 @@ struct SCopasiXMLParserCommon
     CFunction * pFunction;
 
     /**
+     * The description of the function.
+     */
+    std::string FunctionDescription;
+
+    /**
      * Pointer to the currently processed reaction.
      */
     CReaction * pReaction;
+
+    /**
+     * The keys of the source parameters for a call parameter.
+     */
+    std::vector< std::string > SourceParameterKeys;
 
     /**
      * A map relating CopasiXML function keys with internal keys
@@ -124,6 +135,137 @@ class CCopasiXMLParser : public CExpat
       };
 
 #endif // COPASI_TEMPLATE
+
+  class CallParameterElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          CallParameter = 0,
+          SourceParameter
+        };
+
+        /**
+         * A pointer to the function parameter.
+         */
+        CFunctionParameter * mpFunctionParameter;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        CallParameterElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~CallParameterElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfCallParametersElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfCallParameters = 0,
+          CallParameter
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfCallParametersElement(CCopasiXMLParser & parser,
+                                    SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfCallParametersElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class KineticLawElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          KineticLaw = 0,
+          ListOfCallParameters
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        KineticLawElement(CCopasiXMLParser & parser,
+                          SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~KineticLawElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
 
   class ConstantElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
@@ -494,6 +636,11 @@ class CCopasiXMLParser : public CExpat
          * Pointer to ListOfConstantsElement element handler.
          */
         ListOfConstantsElement * mpListOfConstantsElement;
+
+        /**
+         * Pointer to ListOfConstantsElement element handler.
+         */
+        KineticLawElement * mpKineticLawElement;
 
         // Operations
       public:
