@@ -12,6 +12,7 @@
 #include "output/CUDFunction.h"
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiObjectReference.h"
+#include "report/CKeyFactory.h"
 #include "utilities/CMethodParameter.h"
 #include "xml/CCopasiXML.h"
 
@@ -28,7 +29,7 @@ CFunctionDB::CFunctionDB(const std::string & name,
 CFunctionDB::~CFunctionDB()
 {
   cleanup();
-  // DESTRUCTOR_TRACE;
+  DESTRUCTOR_TRACE;
 }
 
 void CFunctionDB::cleanup() {mLoadedFunctions.cleanup();}

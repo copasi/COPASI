@@ -24,10 +24,6 @@ class CCompartment : public CCopasiContainer
     // Attributes
 
   private:
-    /**
-     *  Key of the compartment.
-     */
-    std::string mKey;
 
     /**
      *  The initial volume of the compartment.
@@ -52,6 +48,9 @@ class CCompartment : public CCopasiContainer
     /** @dia:route 3,9; h,128.756,34.203,126.793,53.4961,117.263 */
     CCopasiVectorNS < CMetab > mMetabolites;
     // Operations
+
+    //unique key for one obj
+    std::string mKey;
 
   public:
     /**

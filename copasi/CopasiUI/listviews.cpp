@@ -521,13 +521,13 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:           //Time course
+      case 23:            //Time course
         return trajectoryWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:          //Report
+      case 43:           //Report
         return tableDefinition;
         break;
       case 5:
@@ -1144,6 +1144,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modelWidget->update(objectType, action, key);
       //        tableDefinition->update(objectType, action, key);
       //     tableDefinition1->update(objectType, action, key);
+
       break;
     case MODEL:
       scanWidget->update(objectType, action, key);
