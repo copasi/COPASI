@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/06 14:56:40 $
+   $Date: 2004/08/09 15:39:59 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -154,7 +154,7 @@ void DataModel::loadModel(const char* fileName)
       XML.setTaskList(TaskList);
 
       CPlotSpec2Vector * pNewPlotSpecs = new CPlotSpec2Vector();
-      //TODO XML.setPlotList(*pNewPlotSpecs);
+      XML.setPlotList(*pNewPlotSpecs);
 
       XML.load(File);
 

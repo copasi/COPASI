@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/06 14:59:34 $
+   $Date: 2004/08/09 15:40:00 $
    End CVS Header */
 
 /**
@@ -32,6 +32,7 @@
 #include "scan/CScanTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "plot/CPlotSpecification.h"
+#include "plot/CPlotItem.h"
 
 #ifdef COPASI_TEMPLATE
 CCopasiXMLParser::TEMPLATEElement::TEMPLATEElement(CCopasiXMLParser & parser,
@@ -2655,6 +2656,125 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
   return;
 }
 
+CCopasiXMLParser::ListOfPlotItemsElement::ListOfPlotItemsElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfPlotItemsElement::~ListOfPlotItemsElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfPlotItemsElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case ListOfPlotItems:
+      if (strcmp(pszName, "ListOfPlotItems")) fatalError();
+      break;
+    case PlotItem:
+      if (strcmp(pszName, "PlotItem")) fatalError();
+      // If we do not have a plot specification element handler, we create one
+      if (!mpCurrentHandler)
+        {
+          mpCurrentHandler = new PlotItemElement(mParser, mCommon);
+        }
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+    default:
+      fatalError();
+      break;
+    }
+  return;
+}
+
+void CCopasiXMLParser::ListOfPlotItemsElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+    case ListOfPlotItems:
+      if (strcmp(pszName, "ListOfPlotItems")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+      mParser.onEndElement(pszName);
+      break;
+    case PlotItem:
+      if (strcmp(pszName, "PlotItem")) fatalError();
+      mCommon.pCurrentPlotItem = mCommon.pCurrentPlot;
+      mCurrentElement = ListOfPlotItems;
+      break;
+    default:
+      fatalError();
+      break;
+    }
+  return;
+}
+
+CCopasiXMLParser::ListOfChannelsElement::ListOfChannelsElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfChannelsElement::~ListOfChannelsElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfChannelsElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case ListOfChannels:
+      if (strcmp(pszName, "ListOfChannels")) fatalError();
+      break;
+    case ChannelSpec:
+      if (strcmp(pszName, "ChannelSpec")) fatalError();
+      if (!mpCurrentHandler)
+        {
+          mpCurrentHandler = new ChannelSpecElement(mParser, mCommon);
+        }
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+    default:
+      fatalError();
+      break;
+    }
+  return;
+}
+
+void CCopasiXMLParser::ListOfChannelsElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+    case ListOfChannels:
+      if (strcmp(pszName, "ListOfChannels")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+      mParser.onEndElement(pszName);
+      break;
+    case ChannelSpec:
+      if (strcmp(pszName, "ChannelSpec")) fatalError();
+      mCommon.pCurrentPlotItem->getChannels().push_back(*mCommon.pCurrentChannelSpec);
+      delete mCommon.pCurrentChannelSpec;
+      mCommon.pCurrentChannelSpec = NULL;
+      mCurrentElement = ListOfChannels;
+      break;
+    default:
+      fatalError();
+      break;
+    }
+  return;
+}
+
 CCopasiXMLParser::ListOfPlotsElement::ListOfPlotsElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
@@ -2674,25 +2794,23 @@ void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
     {
     case ListOfPlots:
       if (strcmp(pszName, "ListOfPlots")) fatalError();
-      if (!mCommon.pTaskList)
+      if (!mCommon.pPlotList)
         {
           mCommon.pPlotList = new CCopasiVectorN<CPlotSpecification>;
         }
       break;
     case PlotSpecification:
-      /*
       if (strcmp(pszName, "PlotSpecification")) fatalError();
-      // If we do not have a plot specification element handler, we create one 
+      // If we do not have a plot specification element handler, we create one
       if (!mpCurrentHandler)
         {
           mpCurrentHandler = new PlotSpecificationElement(mParser, mCommon);
         }
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
-      */
       break;
     default:
-      //fatalError();
+      fatalError();
       break;
     }
   return;
@@ -2709,17 +2827,329 @@ void CCopasiXMLParser::ListOfPlotsElement::end(const XML_Char * pszName)
       mParser.onEndElement(pszName);
       break;
     case PlotSpecification:
-      /*
       if (strcmp(pszName, "PlotSpecification")) fatalError();
-      // add mCommon.pCurrentTask to the listOfTasks and set
-      // mCommon.pCurrentTask to NULL
-      mCommon.pPlotList->add(mCommon.pCurrentPlot);
+      // add mCommon.pCurrentPlot to the listOfPlots and set
+      // mCommon.pCurrentPlot to NULL
+      mCommon.pPlotList->add(*mCommon.pCurrentPlot);
+      delete mCommon.pCurrentPlot;
       mCommon.pCurrentPlot = NULL;
+      mCommon.pCurrentPlotItem = NULL;
       mCurrentElement = ListOfPlots;
-      */
       break;
     default:
-      //fatalError();
+      fatalError();
+      break;
+    }
+  return;
+}
+
+CCopasiXMLParser::ChannelSpecElement::ChannelSpecElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ChannelSpecElement::~ChannelSpecElement()
+{}
+
+void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on hte next element */
+  mpCurrentHandler = NULL;
+  std::string name;
+  double min;
+  double max;
+  const char* sMin;
+  const char* sMax;
+
+  switch (mCurrentElement)
+    {
+    case ChannelSpec:
+      if (strcmp(pszName, "ChannelSpec")) fatalError();
+      // create a new CPlotSpecification element depending on the type
+      mCommon.pCurrentChannelSpec = new CPlotDataChannelSpec();
+      name = mParser.getAttributeValue("cn", papszAttrs);
+      mCommon.pCurrentChannelSpec = new CPlotDataChannelSpec(name);
+      sMin = mParser.getAttributeValue("min", papszAttrs, false);
+      if (sMin == NULL)
+        {
+          mCommon.pCurrentChannelSpec->minAutoscale = true;
+        }
+      else
+        {
+          min = atof(sMin);
+          mCommon.pCurrentChannelSpec->min = min;
+        }
+      sMax = mParser.getAttributeValue("max", papszAttrs, false);
+      if (sMax == NULL)
+        {
+          mCommon.pCurrentChannelSpec->maxAutoscale = true;
+        }
+      else
+        {
+          max = atof(sMax);
+          mCommon.pCurrentChannelSpec->max = max;
+        }
+      return;
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
+
+  return;
+}
+
+void CCopasiXMLParser::ChannelSpecElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case ChannelSpec:
+      if (strcmp(pszName, "ChannelSpec")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+      mParser.onEndElement(pszName);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+  return;
+}
+
+CCopasiXMLParser::PlotItemElement::PlotItemElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::PlotItemElement::~PlotItemElement()
+{}
+
+void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on hte next element */
+  mpCurrentHandler = NULL;
+  std::string name;
+  std::string sType;
+
+  switch (mCurrentElement)
+    {
+    case PlotItem:
+      if (strcmp(pszName, "PlotItem")) fatalError();
+      // create a new CPlotSpecification element depending on the type
+      name = mParser.getAttributeValue("name", papszAttrs);
+      sType = mParser.getAttributeValue("type", papszAttrs);
+      mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, CPlotItem::TypeNameToEnum(sType));
+      std::cout << "Created Item for Plot @" << mCommon.pCurrentPlot << ": " << mCommon.pCurrentPlotItem << std::endl;
+      return;
+      break;
+
+    case Parameter:
+      if (!strcmp(pszName, "Parameter"))
+        {
+          if (!mpCurrentHandler)
+            {
+              mpCurrentHandler = new ParameterElement(mParser, mCommon);
+            }
+        }
+      break;
+
+    case ParameterGroup:
+      if (!strcmp(pszName, "ParameterGroup"))
+        {
+          if (!mpCurrentHandler)
+            {
+              mpCurrentHandler = new ParameterGroupElement(mParser, mCommon);
+            }
+        }
+      break;
+
+    case ListOfChannels:
+      if (!strcmp(pszName, "ListOfChannels"))
+        {
+          if (!mpCurrentHandler)
+            {
+              mpCurrentHandler = new ListOfChannelsElement(mParser, mCommon);
+            }
+        }
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
+
+  return;
+}
+
+void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case PlotItem:
+      if (strcmp(pszName, "PlotItem")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+      mParser.onEndElement(pszName);
+      break;
+
+    case Parameter:
+      if (!strcmp(pszName, "Parameter"))
+        {
+          mCurrentElement = PlotItem;
+        }
+      break;
+
+    case ParameterGroup:
+      if (!strcmp(pszName, "ParameterGroup"))
+        {
+          mCurrentElement = PlotItem;
+        }
+      break;
+
+    case ListOfChannels:
+      if (!strcmp(pszName, "ListOfChannels"))
+        {
+          mCurrentElement = PlotItem;
+        }
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+  return;
+}
+
+CCopasiXMLParser::PlotSpecificationElement::PlotSpecificationElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::PlotSpecificationElement::~PlotSpecificationElement()
+{}
+
+void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on hte next element */
+  mpCurrentHandler = NULL;
+  std::string name;
+  std::string sType;
+  bool active;
+
+  switch (mCurrentElement)
+    {
+    case PlotSpecification:
+      if (strcmp(pszName, "PlotSpecification")) fatalError();
+      // create a new CPlotSpecification element depending on the type
+      mCommon.pCurrentPlot = new CPlotSpecification();
+      mCommon.pCurrentPlotItem = mCommon.pCurrentPlot;
+      name = mParser.getAttributeValue("name", papszAttrs);
+      mCommon.pCurrentPlot->setObjectName(name);
+      sType = mParser.getAttributeValue("type", papszAttrs);
+      mCommon.pCurrentPlot->setType(CPlotItem::TypeNameToEnum(sType));
+      active = mParser.getAttributeValue("active", papszAttrs, "true");
+
+      mCommon.pCurrentPlot->setActive(active);
+      return;
+      break;
+
+    case Parameter:
+      if (!strcmp(pszName, "Parameter"))
+        {
+          if (!mpCurrentHandler)
+            {
+              mpCurrentHandler = new ParameterElement(mParser, mCommon);
+            }
+        }
+      break;
+
+    case ParameterGroup:
+      if (!strcmp(pszName, "ParameterGroup"))
+        {
+          if (!mpCurrentHandler)
+            {
+              mpCurrentHandler = new ParameterGroupElement(mParser, mCommon);
+            }
+        }
+
+    case ListOfChannels:
+      if (!strcmp(pszName, "ListOfChannels"))
+        {
+          if (!mpCurrentHandler)
+            {
+              mpCurrentHandler = new ListOfChannelsElement(mParser, mCommon);
+            }
+        }
+      break;
+    case ListOfPlotItems:
+      if (!strcmp(pszName, "ListOfPlotItems"))
+        {
+          if (!mpCurrentHandler)
+            {
+              mpCurrentHandler = new ListOfPlotItemsElement(mParser, mCommon);
+            }
+        }
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
+
+  return;
+}
+
+void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case PlotSpecification:
+      if (!strcmp(pszName, "PlotSpecification"))
+        {
+          mParser.popElementHandler();
+          mCurrentElement = -1;
+          mParser.onEndElement(pszName);
+        }
+      break;
+
+    case Parameter:
+      if (!strcmp(pszName, "Parameter"))
+        {
+          mCurrentElement = PlotSpecification;
+        }
+      break;
+
+    case ParameterGroup:
+      if (strcmp(pszName, "ParameterGroup"))
+        {
+          mCurrentElement = PlotSpecification;
+        }
+      break;
+
+    case ListOfChannels:
+      if (!strcmp(pszName, "ListOfChannels"))
+        {
+          mCurrentElement = PlotSpecification;
+        }
+      break;
+
+    case ListOfPlotItems:
+      if (!strcmp(pszName, "ListOfPlotItems"))
+        {
+          mCurrentElement = PlotSpecification;
+        }
+      break;
+
+    default:
+      fatalError();
       break;
     }
   return;

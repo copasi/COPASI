@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/06 14:59:34 $
+   $Date: 2004/08/09 15:40:00 $
    End CVS Header */
 
 /**
@@ -33,6 +33,8 @@ class CFunctionParameter;
 class CCopasiXMLParser;
 class CReportDefinition;
 class CPlotSpecification;
+class CPlotItem;
+class CPlotDataChannelSpec;
 class CCopasiParameter;
 class CCopasiParameterGroup;
 
@@ -131,6 +133,16 @@ struct SCopasiXMLParserCommon
      * Pointer to the currently processed plot
      */
     CPlotSpecification* pCurrentPlot;
+
+    /**
+     * Pointer to the currently processed plot item.
+     */
+    CPlotItem* pCurrentPlotItem;
+
+    /**
+     * Pointer to the currently processed channel.
+     */
+    CPlotDataChannelSpec* pCurrentChannelSpec;
 
     /**
      * Nesting level of the currently processed parameter group
@@ -1195,6 +1207,215 @@ class CCopasiXMLParser : public CExpat
          * Destructor
          */
         virtual ~ModelElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ChannelSpecElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * 
+         */
+        enum Element
+        {
+          ChannelSpec = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ChannelSpecElement(CCopasiXMLParser & parser,
+                           SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ChannelSpecElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class PlotItemElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * 
+         */
+        enum Element
+        {
+          PlotItem = 0,
+          Parameter,
+          ParameterGroup,
+          ListOfChannels
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        PlotItemElement(CCopasiXMLParser & parser,
+                        SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~PlotItemElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfChannelsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * 
+         */
+        enum Element
+        {
+          ListOfChannels = 0,
+          ChannelSpec
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfChannelsElement(CCopasiXMLParser & parser,
+                              SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfChannelsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfPlotItemsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * 
+         */
+        enum Element
+        {
+          ListOfPlotItems = 0,
+          PlotItem
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfPlotItemsElement(CCopasiXMLParser & parser,
+                               SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfPlotItemsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class PlotSpecificationElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * 
+         */
+        enum Element
+        {
+          PlotSpecification = 0,
+          Parameter,
+          ParameterGroup,
+          ListOfChannels,
+          ListOfPlotItems
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        PlotSpecificationElement(CCopasiXMLParser & parser,
+                                 SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~PlotSpecificationElement();
 
         /**
          * Start element handler

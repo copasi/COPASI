@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/06 14:59:33 $
+   $Date: 2004/08/09 15:39:59 $
    End CVS Header */
 
 /**
@@ -110,7 +110,15 @@ bool CCopasiXML::load(std::istream & is)
   mpReportList = Parser.getReportList();
   mpTaskList = Parser.getTaskList();
   mpPlotList = Parser.getPlotList();
-
+  if (mpPlotList)
+    {
+      std::cout << "Number of Plots: " << mpPlotList->size() << std::endl;
+      unsigned int count;
+      for (count = 0; count < mpPlotList->size(); count++)
+        {
+          std::cout << "Number of PlotItems for plot @" << (*mpPlotList)[count] << ": " << (*mpPlotList)[count]->getItems().size() << std::endl;
+        }
+    }
   return success;
 }
 
@@ -518,8 +526,9 @@ bool CCopasiXML::savePlotList()
       const CPlotSpecification* pPlot = (*mpPlotList)[i];
 
       Attributes.erase();
+      Attributes.add("name", pPlot->getObjectName());
       Attributes.add("type", CPlotSpecification::XMLType[pPlot->getType()]);
-      //Attributes.add("active", CPlotSpecification::XMLType[pPlot->getActive()]);
+      Attributes.add("active", CPlotSpecification::XMLType[pPlot->isActive()]);
       startSaveElement("PlotSpecification", Attributes);
       saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *)pPlot->CCopasiParameter::getValue());
       startSaveElement("ListOfPlotItems");
@@ -529,6 +538,7 @@ bool CCopasiXML::savePlotList()
         {
           const CPlotItem* pPlotItem = pPlot->getItems()[j];
           Attributes.erase();
+          Attributes.add("name", pPlotItem->getObjectName());
           Attributes.add("type", CPlotItem::XMLType[pPlotItem->getType()]);
           startSaveElement("PlotItem", Attributes);
           saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *)pPlotItem->CCopasiParameter::getValue());
