@@ -1130,18 +1130,22 @@ CState CModel::getInitialState() const
     for (i = 0, imax = getIntMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolites[i]->getInitialNumberDbl();
 
+#ifndef COPASI_DEPRECATED
     C_INT32 * Int = const_cast<C_INT32 *>(s.getVariableNumberVectorInt().array());
     for (i = 0, imax = getIntMetab(); i < imax; i++, Int++)
       *Int = mMetabolites[i]->getInitialNumberInt();
+#endif // COPASI_DEPRECATED
 
     /* Set the fixed Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVectorDbl().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolites[i]->getInitialNumberDbl();
 
+#ifndef COPASI_DEPRECATED
     Int = const_cast<C_INT32 *>(s.getFixedNumberVectorInt().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Int++)
       *Int = mMetabolites[i]->getInitialNumberInt();
+#endif // COPASI_DEPRECATED
 
     //     DebugFile << "getInitialState " << mInitialTime;
     //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
@@ -1169,27 +1173,33 @@ CStateX CModel::getInitialStateX() const
     for (i = 0, imax = getIndMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
 
+#ifndef COPASI_DEPRECATED
     C_INT32 * Int = const_cast<C_INT32 *>(s.getVariableNumberVectorInt().array());
     for (i = 0, imax = getIndMetab(); i < imax; i++, Int++)
       *Int = mMetabolitesX[i]->getInitialNumberInt();
+#endif // COPASI_DEPRECATED
 
     /* Set the dependent variable Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s.getDependentNumberVectorDbl().array());
     for (i = getIndMetab(), imax = getIntMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
 
+#ifndef COPASI_DEPRECATED
     Int = const_cast<C_INT32 *>(s.getDependentNumberVectorInt().array());
     for (i = getIndMetab(), imax = getIntMetab(); i < imax; i++, Int++)
       *Int = mMetabolitesX[i]->getInitialNumberInt();
+#endif // COPASI_DEPRECATED
 
     /* Set the fixed Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVectorDbl().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
 
+#ifndef COPASI_DEPRECATED
     Int = const_cast<C_INT32 *>(s.getFixedNumberVectorInt().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Int++)
       *Int = mMetabolitesX[i]->getInitialNumberInt();
+#endif // COPASI_DEPRECATED
 
     //     DebugFile << "getInitialStateX " << mInitialTime;
     //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
@@ -1220,10 +1230,11 @@ void CModel::setInitialState(const CState * state)
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
+#ifndef  COPASI_DEPRECATED
   const C_INT32 * Int = state->getVariableNumberVectorInt().array();
   for (i = 0, imax = getIntMetab(); i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolites[i]->getInitialNumberInt()) = *Int;
-
+#endif // COPASI_DEPRECATED
   /* Set the fixed metabolites */
   /* We are not using the set method since it automatically updates the
      numbers which are provided separately in a state */
@@ -1235,9 +1246,11 @@ void CModel::setInitialState(const CState * state)
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
+#ifndef COPASI_DEPRECATED
   Int = state->getFixedNumberVectorInt().array();
   for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolites[i]->getInitialNumberInt()) = *Int;
+#endif // COPASI_DEPRECATED
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -1266,9 +1279,11 @@ void CModel::setInitialState(const CStateX * state)
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
+#ifndef COPASI_DEPRECATED
   const C_INT32 * Int = state->getVariableNumberVectorInt().array();
   for (i = 0, imax = getIndMetab(); i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolitesX[i]->getInitialNumberInt()) = *Int;
+#endif // COPASI_DEPRECATED
 
   /* Set the dependent variable metabolites */
   /* We are not using the set method since it automatically updates the
@@ -1281,9 +1296,11 @@ void CModel::setInitialState(const CStateX * state)
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
+#ifndef COPASI_DEPRECATED
   Int = state->getVariableNumberVectorInt().array();
   for (i = getIndMetab(), imax = getIntMetab(); i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolitesX[i]->getInitialNumberInt()) = *Int;
+#endif // COPASI_DEPRECATED
 
   /* Set the fixed metabolites */
   /* We are not using the set method since it automatically updates the
@@ -1296,9 +1313,11 @@ void CModel::setInitialState(const CStateX * state)
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
+#ifndef COPASI_DEPRECATED
   Int = state->getFixedNumberVectorInt().array();
   for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolites[i]->getInitialNumberInt()) = *Int;
+#endif // COPASI_DEPRECATED
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -1332,11 +1351,13 @@ void CModel::setState(const CState * state)
     = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv()
       * mNumber2QuantityFactor;
 
+#ifndef COPASI_DEPRECATED
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
   const C_INT32 * Int = state->getVariableNumberVectorInt().array();
   for (i = 0, imax = getIntMetab(); i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolites[i]->getNumberInt()) = *Int;
+#endif //  COPASI_DEPRECATED
 
   //   DebugFile << "setState " << mTime;
   //   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
@@ -1402,9 +1423,11 @@ void CModel::setState(const CStateX * state)
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
+#ifndef COPASI_DEPRECATED
   const C_INT32 * Int = state->getVariableNumberVectorInt().array();
   for (i = 0, imax = getIndMetab(); i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolitesX[i]->getNumberInt()) = *Int;
+#endif
 
   /* We need to update the dependent metabolites by using moieties */
   /* This changes need to be reflected in the current state */
