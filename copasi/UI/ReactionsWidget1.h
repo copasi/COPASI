@@ -52,7 +52,7 @@ class ReactionsWidget1 : public QWidget
     QPushButton* newKinetics;
     CModel *mModel;
     QTable *table;
-    CFunctionDB *fFunctionDB;
+    //CFunctionDB *fFunctionDB;
 
   public:
     ReactionsWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
@@ -90,6 +90,9 @@ class ReactionsWidget1 : public QWidget
     CReaction *reactn1;
     QCheckBox* checkBox;
     QComboBox* ComboBox1;
+
+    int num_substrates;
+    int num_products;
 
   protected slots:
     virtual void slotBtnCancelClicked();

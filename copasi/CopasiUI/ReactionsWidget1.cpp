@@ -26,6 +26,7 @@
 #include "listviews.h"
 #include "model/model.h"
 #include "function/function.h"
+#include "utilities/CGlobals.h"
 
 using std::cout;
 using std::endl;
@@ -265,6 +266,10 @@ void ReactionsWidget1::loadName(QString setValue)
   QHeader *tableHeader1 = table->horizontalHeader();
   QHeader *tableHeader2 = table->verticalHeader();
 
+  //Required for the suitablefunctions comboBox.
+  num_substrates = reactn->getId2Substrates().size();
+  num_products = reactn->getId2Products().size();
+
   int numrows = reactn->getId2Substrates().size() +
                 reactn->getId2Products().size() +
                 reactn->getId2Modifiers().size() +
@@ -431,40 +436,60 @@ void ReactionsWidget1::slotCheckBoxClicked()
       QString chemical_reaction = LineEdit2->text();
       int i = chemical_reaction.find ("=", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 1, "->");
-
       //chemical_reaction =  chemical_reaction.replace(QRegExp("="), "->");
       LineEdit2->setText(chemical_reaction);
+
       ComboBox1->clear();
-      ComboBox1->insertItem("No Values", -1);
-      //  CCopasiVectorN < CFunction > & Functions = fFunctionDB->suitableFunctions(k, m, TriFalse);
-      //  int m = 0;
-      /*  if (Functions.size() > 0) {
-       CFunction *function = Functions[0];
-       ComboBox1->insertItem(function->getName().c_str(), 0);
-       //reactn1->setReversible(TriFalse);
-       
-        }*/
+      //ComboBox1->insertItem("No Values", -1);
+      //CFunctionDB *fFunctionDB=new CFunctionDB();
+      //CCopasiVectorN < CFunction > & Functions = fFunctionDB->suitableFunctions(num_substrates,num_products, TriFalse);
+      CCopasiVectorN < CFunction > & Functions = (Copasi->FunctionDB).suitableFunctions(num_substrates, num_products, TriFalse);
+      int m = 0;
+      QStringList comboEntries;
+      QString comboEntry;
+      int temp2;
+
+      for (temp2 = 0; temp2 < Functions.size(); temp2++)
+        {
+          CFunction *function = Functions[temp2];
+          comboEntry = function->getName().c_str();
+          comboEntries.push_back(comboEntry);
+          //ComboBox1->insertItem(function->getName().c_str(), 0);
+        }
+
+      ComboBox1->insertStringList(comboEntries, -1);
       QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
     }
 
   else
     //if (reactn1->isReversible() == FALSE && checkBox->isChecked() == FALSE)
-
     {
       //for Chemical Reaction
       QString chemical_reaction = LineEdit2->text();
       int i = chemical_reaction.find ("->", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 2, "=");
-
-      //chemical_reaction =  chemical_reaction.replace(QRegExp("="), "->");
       LineEdit2->setText(chemical_reaction);
-      ComboBox1->clear();
-      CFunction *function;
-      int m = -1;
-      function = &reactn1->getFunction();
-      ComboBox1->insertItem(function->getName().c_str(), m);
 
-      // ComboBox1->insertItem("No Values", -1);
+      ComboBox1->clear();
+      /* CFunction *function;
+       int m = -1;
+       function = &reactn1->getFunction();
+       ComboBox1->insertItem(function->getName().c_str(), m); */
+      CCopasiVectorN < CFunction > & Functions = (Copasi->FunctionDB).suitableFunctions(num_substrates, num_products, TriTrue);
+      int m = 0;
+      QStringList comboEntries;
+      QString comboEntry;
+      int temp2;
+
+      for (temp2 = 0; temp2 < Functions.size(); temp2++)
+        {
+          CFunction *function = Functions[temp2];
+          comboEntry = function->getName().c_str();
+          comboEntries.push_back(comboEntry);
+          //ComboBox1->insertItem(function->getName().c_str(), 0);
+        }
+
+      ComboBox1->insertStringList(comboEntries, -1);
       QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
     }
 }
