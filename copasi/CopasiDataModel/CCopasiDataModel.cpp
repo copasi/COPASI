@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/03/07 15:00:18 $
+   $Author: shoops $ 
+   $Date: 2005/03/09 14:11:53 $
    End CVS Header */
 
 #include "copasi.h"
@@ -144,6 +144,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
         {
           pdelete(mpPlotDefinitionList);
           mpPlotDefinitionList = XML.getPlotList();
+          mpPlotDefinitionList->setObjectName("PlotList");
+          CCopasiContainer::Root->add(mpPlotDefinitionList, true);
         }
 
       if (mWithGUI)
@@ -230,7 +232,7 @@ bool CCopasiDataModel::newModel(CModel * pModel)
   mpReportDefinitionList = new CReportDefinitionVector;
 
   pdelete(mpPlotDefinitionList);
-  mpPlotDefinitionList = new CCopasiVectorN< CPlotSpecification >;
+  mpPlotDefinitionList = new CCopasiVectorN< CPlotSpecification >("PlotList", CCopasiContainer::Root);
 
   if (mWithGUI)
     {
