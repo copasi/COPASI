@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/16 14:04:08 $
+   $Date: 2005/01/13 12:46:48 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.30 2004/12/16 14:04:08 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.31 2005/01/13 12:46:48 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -214,6 +214,7 @@ void PlotWidget1::addCurveGroupBox()
   unsigned C_INT32 i;
   std::vector<CCopasiObjectName>::const_iterator sit;
 
+  //translate to CNs and remove duplicates
   for (i = 0; i < pVector1->size(); i++)
     if ((*pVector1)[i])
       {
@@ -223,7 +224,7 @@ void PlotWidget1::addCurveGroupBox()
         if (sit == objects1.end())
           {
             objects1.push_back(cn);
-            std::cout << "***" << cn << std::endl;
+            //std::cout << "***" << cn << std::endl;
           }
       }
 
@@ -236,7 +237,7 @@ void PlotWidget1::addCurveGroupBox()
         if (sit == objects2.end())
           {
             objects2.push_back(cn);
-            std::cout << "---" << cn << std::endl;
+            //std::cout << "---" << cn << std::endl;
           }
       }
 
@@ -249,8 +250,9 @@ void PlotWidget1::addCurveGroupBox()
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectName()
-                      + "/" + CCopasiContainer::ObjectFromName(objects1[0])->getObjectName(),
+          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectDisplayName()
+                      + "|"
+                      + CCopasiContainer::ObjectFromName(objects1[0])->getObjectDisplayName(),
                       objects1[0], objects2[i]);
         }
     }
@@ -258,8 +260,9 @@ void PlotWidget1::addCurveGroupBox()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addCurveTab(CCopasiContainer::ObjectFromName(objects2[0])->getObjectName()
-                      + "/" + CCopasiContainer::ObjectFromName(objects1[i])->getObjectName(),
+          addCurveTab(CCopasiContainer::ObjectFromName(objects2[0])->getObjectDisplayName()
+                      + "|"
+                      + CCopasiContainer::ObjectFromName(objects1[i])->getObjectDisplayName(),
                       objects1[i], objects2[0]);
         }
     }
@@ -273,8 +276,9 @@ void PlotWidget1::addCurveGroupBox()
 
       for (i = 0; i < imax; ++i)
         {
-          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectName()
-                      + "/" + CCopasiContainer::ObjectFromName(objects1[i])->getObjectName() ,
+          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectDisplayName()
+                      + "|"
+                      + CCopasiContainer::ObjectFromName(objects1[i])->getObjectDisplayName() ,
                       objects1[i], objects2[i]);
         }
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/17 14:49:17 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:17 $
    End CVS Header */
 
 #include "model/CModel.h"
@@ -56,27 +56,10 @@ bool CPlotSpecification::createDefaultPlot(const CModel* model)
   //TODO cleanup before?
   //title = "Default Data Plot 2D";
 
-  /*axes.resize(4);
-
-  axes[QwtPlot::xBottom].active = true;
-  axes[QwtPlot::xBottom].autoscale = true;
-  axes[QwtPlot::xBottom].title = "X-Achse";
-
-  axes[QwtPlot::yLeft].active = true;
-  axes[QwtPlot::yLeft].autoscale = true;
-  axes[QwtPlot::yLeft].title = "Y-Achse";
-
-  axes[QwtPlot::xTop].active = false;
-  axes[QwtPlot::xTop].autoscale = true;
-  axes[QwtPlot::xTop].title = "X2-Achse";
-
-  axes[QwtPlot::yRight].active = false;
-  axes[QwtPlot::yRight].autoscale = true;
-  axes[QwtPlot::yRight].title = "Y2-Achse";*/
-
   CPlotItem * plItem;
   std::string itemTitle;
   CPlotDataChannelSpec name2;
+  const CCopasiObject * tmp;
 
   CPlotDataChannelSpec name1 = model->getObject(CCopasiObjectName("Reference=Time"))->getCN();
   std::cout << name1 << std::endl;
@@ -84,9 +67,10 @@ bool CPlotSpecification::createDefaultPlot(const CModel* model)
   unsigned C_INT32 i, imax = model->getMetabolites().size();
   for (i = 0; i < imax; ++i)
     {
-      name2 = model->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN();
-      itemTitle = model->getMetabolites()[i]->getObjectName();
-      std::cout << itemTitle << " : " << name2 << std::endl;
+      tmp = model->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"));
+      name2 = tmp->getCN();
+      itemTitle = tmp->getObjectDisplayName();
+      //std::cout << itemTitle << " : " << name2 << std::endl;
 
       plItem = this->createItem(itemTitle, CPlotItem::curve2d);
       plItem->addChannel(name1);
