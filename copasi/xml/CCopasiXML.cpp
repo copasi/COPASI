@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 16:13:40 $
+   $Author: shoops $ 
+   $Date: 2004/06/24 21:12:01 $
    End CVS Header */
 
 /**
@@ -699,9 +699,8 @@ bool CCopasiXML::saveReportList()
           Attributes.erase();
           Attributes.add("cn", "");
 
-          for (j = 0; j < jmax; j += 2)
+          for (j = 0; j < jmax; j += 2) // We skip the seperator
             {
-              //Write in Object
               Attributes.setValue(0, Table[j]);
               saveElement("Object", Attributes);
             }
