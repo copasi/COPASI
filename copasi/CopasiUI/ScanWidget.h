@@ -23,6 +23,7 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTable;
+class QListBox;
 class CScanTask;
 class CScanProblem;
 class CScanMethod;
@@ -61,11 +62,13 @@ class ScanWidget : public CopasiWidget
     void loadScan(CModel *model);
     void addNewScanItem(CCopasiObject* pObject);
 
-    QLabel* TextLabel1;
+    QListBox* ObjectListBox;
     QLineEdit* taskName;
     QFrame* Line1;
-    ScanScrollView* scrollview;
     QFrame* Line2;
+    QFrame* Line1_2;
+
+    ScanScrollView* scrollview;
     QCheckBox* sExecutable;
     QPushButton* commitChange;
     QPushButton* cancelChange;
@@ -73,11 +76,13 @@ class ScanWidget : public CopasiWidget
     QPushButton* upButton;
     QPushButton* deleteButton;
     QPushButton* addButton;
-    QFrame* Line1_2;
+
+    QLabel* TextLabel1;
     QLabel* TextLabel2;
+    QLabel* TextLabel3;
+
     QCheckBox* steadyState;
     QToolButton* eSteadyState;
-    QLabel* TextLabel3;
     QCheckBox* trajectory;
     QToolButton* eTrajectory;
 
