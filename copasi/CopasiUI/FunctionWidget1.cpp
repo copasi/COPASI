@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 08:50:53 $
+   $Date: 2004/10/09 14:39:35 $
    End CVS Header */
 
 /**********************************************************************
@@ -238,7 +238,7 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   //create list of data types (for combobox)
   QStringList functionType;
   for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
-    functionType.push_back(FROM_UTF8(CFunctionParameter::DataTypeName[i]));
+    functionType += (FROM_UTF8(CFunctionParameter::DataTypeName[i]));
 
   for (j = 0; j < params.size(); j++)
     {
@@ -255,17 +255,21 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
 
       // col. 1
       QString temp = FROM_UTF8(CFunctionParameter::DataTypeName[params[j]->getType()]);
+      //QComboTableItem * item = new QComboTableItem(Table1, functionType);
       ComboItem * item = new ComboItem(Table1, QTableItem::WhenCurrent, color, functionType);
       Table1->setItem(j, 1, item);
+      //item->setCurrentItem(temp);
       item->setText(temp);
 
       // col. 2
-      item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
-      item->setText(qUsage);
-      if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
-      if (usage == "PRODUCT") item->setPixmap(*pProduct);
-      if (usage == "MODIFIER") item->setPixmap(*pModifier);
-      Table1->setItem(j, 2, item);
+      //item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
+      QComboTableItem * item2 = new QComboTableItem(Table1, Usages);
+      //item->setText(qUsage);
+      item2->setCurrentItem(qUsage);
+      if (usage == "SUBSTRATE") item2->setPixmap(*pSubstrate);
+      if (usage == "PRODUCT") item2->setPixmap(*pProduct);
+      if (usage == "MODIFIER") item2->setPixmap(*pModifier);
+      Table1->setItem(j, 2, item2);
     }
   return true;
 }
@@ -786,7 +790,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                           // Yes or Enter
+        case 0:                            // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -818,7 +822,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                           // No or Escape
+        case 1:                            // No or Escape
           break;
         }
     }
