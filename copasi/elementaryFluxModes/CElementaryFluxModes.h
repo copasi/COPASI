@@ -63,7 +63,7 @@ class CElementaryFluxModes
   friend ostream &operator<<(ostream &os, CElementaryFluxModes &A)
     {
       /* Get the reactions from the model */
-      const CCopasiVectorS < CReaction > & Reaction = A.mModel->getReactions();
+      const CCopasiVectorNS < CReaction > & Reaction = A.mModel->getReactions();
 
       unsigned C_INT32 i, imax = A.mFluxModes.size();
       unsigned C_INT32 j, jmax;

@@ -36,7 +36,7 @@ void CElementaryFluxModes::calculate(const CModel * model)
   
   /* Get the reactions from the model */
   /* Note: We have as many reactions as we have rows in ModelStoi */
-  const CCopasiVectorS < CReaction > & Reaction = mModel->getReactions();
+  const CCopasiVectorNS < CReaction > & Reaction = mModel->getReactions();
   
   /* Vector to keep track of the rearangements neccessary to put the */
   /* reversible reactions to the top of Stoi */
