@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:17 $
+   $Date: 2004/05/13 13:36:19 $
    End CVS Header */
 
 #include "copasi.h"
@@ -105,7 +105,7 @@ bool CPlotSpec::createDefaultPlot(const CModel* model)
   for (i = 0; i < imax; ++i)
     {
       name2 = model->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN();
-      title = model->getMetabolites()[i]->getName();
+      title = model->getMetabolites()[i]->getObjectName();
       std::cout << title << " : " << name2 << std::endl;
 
       curves.push_back(Curve2DSpec(title, name1, name2));

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/30 20:24:31 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:38:28 $
    End CVS Header */
 
 /****************************************************************************
@@ -34,7 +34,7 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   if (obj->isValueInt()) flags += "Int";
 else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
 
-  element = new QListViewItem((QListViewItem*)parent, obj->getName().c_str(),
+  element = new QListViewItem((QListViewItem*)parent, obj->getObjectName().c_str(),
                               obj->getObjectType().c_str(),
                               flags,
                               obj->getObjectUniqueName().c_str(),
@@ -78,9 +78,20 @@ void ObjectDebug::update()
   CCopasiObject * obj;
 
   QListViewItem * element;
-  element = new QListViewItem(ListOfObjects, "root");
+  element = new QListViewItem(ListOfObjects, "*");
 
-  obj = (CCopasiObject*)Copasi->pModel;
+  /*
+    obj = (CCopasiObject*)Copasi->pModel;
+    if (!obj) return;
+   
+    while (obj->getObjectParent())
+      {obj = (CCopasiObject*)obj->getObjectParent();}
+    // now we have the root object
+   
+    addObjectRecursive((QWidget*)element, (void*)obj);
+  */ 
+  //zusätzliche Objekte zeigen
+  obj = (CCopasiObject*)CCopasiContainer::Root;
   if (!obj) return;
 
   //while (obj->getObjectParent())
