@@ -35,7 +35,16 @@ CState::~CState() {}
 
 CState & CState::operator =(const CStateX & stateX)
 {
-  mpModel = stateX.mpModel;
+  if (mpModel != stateX.mpModel)
+    {
+      mpModel = stateX.mpModel;
+
+      if (mpModel)
+        mVariableNumbers.resize(mpModel->getIntMetab());
+      else
+        mVariableNumbers.resize(0);
+    }
+
   mTime = stateX.mTime;
   mVolumes = stateX.mVolumes;
   mFixedNumbers = stateX.mFixedNumbers;
@@ -46,8 +55,6 @@ CState & CState::operator =(const CStateX & stateX)
 
       iVariable = stateX.mVariableNumbers.size();
       iTotal = iVariable + stateX.mDependentNumbers.size();
-
-      mVariableNumbers.resize(iTotal);
 
       const CVector< unsigned C_INT32 > & Permutation =
         mpModel->getMetabolitePermutation();
@@ -75,8 +82,6 @@ CState & CState::operator =(const CStateX & stateX)
             stateX.mDependentNumbers.getInt(i - iVariable);
         }
     }
-  else
-    mVariableNumbers.resize(0);
 
   return *this;
 }
@@ -142,49 +147,49 @@ void CState::load(CReadConfig & configBuffer)
   return;
 }
 
-void CState::save(CWriteConfig & configBuffer)
-{
-  std::string Tmp;
-  C_FLOAT64 Dbl;
-  C_INT32 Size;
-  unsigned C_INT32 i;
+void CState::save(CWriteConfig & configBuffer) const
+  {
+    std::string Tmp;
+    C_FLOAT64 Dbl;
+    C_INT32 Size;
+    unsigned C_INT32 i;
 
-  Tmp = mpModel->getTitle();
-  configBuffer.setVariable("State.Model", "string", &Tmp);
+    Tmp = mpModel->getTitle();
+    configBuffer.setVariable("State.Model", "string", &Tmp);
 
-  configBuffer.setVariable("State.Time", "C_FLOAT64", &mTime);
+    configBuffer.setVariable("State.Time", "C_FLOAT64", &mTime);
 
-  Size = mVolumes.size();
-  configBuffer.setVariable("State.VolumeSize", "C_INT32", &Size);
+    Size = mVolumes.size();
+    configBuffer.setVariable("State.VolumeSize", "C_INT32", &Size);
 
-  for (i = 0; i < (unsigned C_INT32) Size; i++)
-    {
-      Tmp = StringPrint("State.Volume[%ld]", i);
-      configBuffer.setVariable(Tmp, "C_FLOAT64", &mVolumes[i]);
-    }
+    for (i = 0; i < (unsigned C_INT32) Size; i++)
+      {
+        Tmp = StringPrint("State.Volume[%ld]", i);
+        configBuffer.setVariable(Tmp, "C_FLOAT64", &mVolumes[i]);
+      }
 
-  Size = mFixedNumbers.size();
-  configBuffer.setVariable("State.FixedNumberSize", "C_INT32", &Size);
+    Size = mFixedNumbers.size();
+    configBuffer.setVariable("State.FixedNumberSize", "C_INT32", &Size);
 
-  for (i = 0; i < mFixedNumbers.size(); i++)
-    {
-      Dbl = mFixedNumbers.getDbl(i);
-      Tmp = StringPrint("State.FixedNumber[%ld]", i);
-      configBuffer.setVariable(Tmp, "C_FLOAT64", & Dbl);
-    }
+    for (i = 0; i < mFixedNumbers.size(); i++)
+      {
+        Dbl = mFixedNumbers.getDbl(i);
+        Tmp = StringPrint("State.FixedNumber[%ld]", i);
+        configBuffer.setVariable(Tmp, "C_FLOAT64", & Dbl);
+      }
 
-  Size = mVariableNumbers.size();
-  configBuffer.setVariable("State.VariableNumberSize", "C_INT32", &Size);
+    Size = mVariableNumbers.size();
+    configBuffer.setVariable("State.VariableNumberSize", "C_INT32", &Size);
 
-  for (i = 0; i < mVariableNumbers.size(); i++)
-    {
-      Dbl = mVariableNumbers.getDbl(i);
-      Tmp = StringPrint("State.VariableNumber[%ld]", i);
-      configBuffer.setVariable(Tmp, "C_FLOAT64", & Dbl);
-    }
+    for (i = 0; i < mVariableNumbers.size(); i++)
+      {
+        Dbl = mVariableNumbers.getDbl(i);
+        Tmp = StringPrint("State.VariableNumber[%ld]", i);
+        configBuffer.setVariable(Tmp, "C_FLOAT64", & Dbl);
+      }
 
-  return;
-}
+    return;
+  }
 
 void CState::setTime(const C_FLOAT64 & time) {mTime = time;}
 
@@ -394,7 +399,22 @@ CStateX::~CStateX(){}
 
 CStateX & CStateX::operator =(const CState & state)
 {
-  mpModel = state.mpModel;
+  if (mpModel != state.mpModel)
+    {
+      mpModel = state.mpModel;
+
+      if (mpModel)
+        {
+          mVariableNumbers.resize(mpModel->getIndMetab());
+          mDependentNumbers.resize(mpModel->getDepMetab());
+        }
+      else
+        {
+          mVariableNumbers.resize(0);
+          mDependentNumbers.resize(0);
+        }
+    }
+
   mTime = state.mTime;
   mVolumes = state.mVolumes;
   mFixedNumbers = state.mFixedNumbers;
@@ -402,9 +422,6 @@ CStateX & CStateX::operator =(const CState & state)
   if (mpModel)
     {
       unsigned C_INT32 i, iVariable, iTotal;
-
-      mVariableNumbers.resize(mpModel->getIndMetab());
-      mDependentNumbers.resize(mpModel->getDepMetab());
 
       iVariable = mVariableNumbers.size();
       iTotal = iVariable + mDependentNumbers.size();
@@ -435,11 +452,6 @@ CStateX & CStateX::operator =(const CState & state)
           *Dbl = state.mVariableNumbers.getDbl(Permutation[i]);
           *Int = state.mVariableNumbers.getInt(Permutation[i]);
         }
-    }
-  else
-    {
-      mVariableNumbers.resize(0);
-      mDependentNumbers.resize(0);
     }
 
   return *this;
@@ -614,10 +626,10 @@ void CStateX::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                   const C_FLOAT64 & resolution) const
   {
     const_cast<CModel *>(mpModel)->setState(this);
-    const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
+    const CCopasiVector< CReaction > & Reactions = mpModel->getReactionsX();
     unsigned C_INT32 i, imax = Reactions.size();
 
-    const CCopasiVectorN< CMetab > & Metabolites = mpModel->getMetabolites();
+    const CCopasiVectorN< CMetab > & Metabolites = mpModel->getMetabolitesX();
     unsigned C_INT32 j, jmax = mpModel->getIntMetab();
 
     C_FLOAT64 * x;
@@ -630,9 +642,9 @@ void CStateX::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
           {
             elasticityMatrix(i, j) =
               Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
-            std::cout << *x << ", " << elasticityMatrix(i, j) << std::endl;
           }
       }
 
+    DebugFile << "Elasiticity Matrix: " << elasticityMatrix << std::endl;
     return;
   }
