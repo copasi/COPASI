@@ -498,6 +498,7 @@ void ScanWidget::ScanButtonClicked()
   scanTask->initializeReporting(output);
   scanTask->process();
   ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+  unsetCursor();
 }
 
 void ScanWidget::SteadyStateButtonClicked()
