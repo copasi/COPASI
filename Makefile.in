@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.8 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.9 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -257,8 +257,7 @@ DIST_COMMON = README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
 	admin/ChangeLog admin/config.guess admin/config.sub \
 	admin/depcomp admin/install-sh admin/ltconfig admin/ltmain.sh \
 	admin/missing admin/mkinstalldirs admin/ylwrap config.guess \
-	config.h.in config.sub configure configure.in install-sh \
-	ltconfig ltmain.sh missing mkinstalldirs
+	config.h.in config.sub configure configure.in
 DIST_SUBDIRS = $(SUBDIRS)
 #>- all: config.h
 #>+ 1
@@ -415,7 +414,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=templategps Makefile.dist subdirs acinclude.m4.in trace FunctionDB.gps libtool.m4.in qtwxwindows.tex 
+KDE_DIST=templategps Makefile.dist acinclude.m4.in FunctionDB.gps qtwxwindows.tex 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
