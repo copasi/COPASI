@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.34 $ $Author: ssahle $ $Date: 2004/06/22 09:30:50 $  
+# $Revision: 1.35 $ $Author: shoops $ $Date: 2004/06/24 21:07:20 $  
 ######################################################################
 
 include(../common.pri)
@@ -17,7 +17,6 @@ contains(BUILD_OS, WIN32) {
           ../lib/mathmodel.lib \
           ../lib/model.lib \
           ../lib/optimization.lib \
-#          ../lib/output.lib \
           ../lib/randomGenerator.lib \
           ../lib/report.lib \
           ../lib/sbmlimport.lib \
@@ -30,9 +29,15 @@ contains(BUILD_OS, WIN32) {
   LIBS += $$COPASI_LIBS
   LIBS += $(QTDIR)/lib/qwt.lib
 
+  
   TARGETDEPS += $$COPASI_LIBS
 
+  debug {
+    LIBS += libsbmlD.lib libexpat-compatD.lib
+  }
+
   release {
+    LIBS += libsbml.lib libexpat-compat.lib
     distribution.extra = bash ../../admin/mkbuild.sh $${BUILD_OS}
   }
 } else {
@@ -43,7 +48,6 @@ contains(BUILD_OS, WIN32) {
               ../lib/libmathmodel.a \
               ../lib/libmodel.a \
               ../lib/libfunction.a \
-#              ../lib/liboutput.a \
               ../lib/libreport.a \
               ../lib/liboptimization.a \
               ../lib/libsbmlimport.a \
@@ -53,7 +57,6 @@ contains(BUILD_OS, WIN32) {
               ../lib/librandomGenerator.a \
               ../lib/libplot.a \
               ../lib/libutilities.a \
-#              ../lib/liboutput.a \
               ../lib/libreport.a \
               ../lib/libfunction.a \
               ../lib/libmodel.a
