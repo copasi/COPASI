@@ -28,12 +28,12 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
   public:
     CCopasiObjectReference(const std::string & name,
                            const CCopasiContainer * pParent,
-                           CType & reference):
+                           referenceType & reference):
         CCopasiObject(name, pParent, "Reference", CCopasiObject::Reference),
         mReference(reference)
     {}
 
-    CCopasiObjectReference(const CCopasiObjectReference< CType > & src):
+    CCopasiObjectReference(const CCopasiObjectReference< referenceType > & src):
         CCopasiObject(src),
         mReference(src.mReference)
     {}
@@ -60,12 +60,12 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
   public:
     CCopasiVectorReference(const std::string & name,
                            const CCopasiContainer * pParent,
-                           CType & reference):
+                           referenceType & reference):
         CCopasiObject(name, pParent, "Reference", CCopasiObject::Reference),
         mReference(reference)
     {}
 
-    CCopasiVectorReference(const CCopasiVectorReference< CType > & src):
+    CCopasiVectorReference(const CCopasiVectorReference< referenceType > & src):
         CCopasiObject(src),
         mReference(src.mReference)
     {}
@@ -74,7 +74,11 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
 
     virtual CCopasiObject * getObject(const CCopasiObjectName & cn)
     {
-      return new CCopasiObjectReference< CType::elementType >
+#ifdef WIN32
+      return new CCopasiObjectReference< referenceType::elementType >
+#else
+      return new CCopasiObjectReference< typename referenceType::elementType >
+#endif
       (mObjectName + cn,
        getObjectParent(),
        mReference[cn.getIndex()]);
@@ -100,12 +104,12 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
   public:
     CCopasiMatrixReference(const std::string & name,
                            const CCopasiContainer * pParent,
-                           CType & reference):
+                           referenceType & reference):
         CCopasiObject(name, pParent, "Reference", CCopasiObject::Reference),
         mReference(reference)
     {}
 
-    CCopasiMatrixReference(const CCopasiMatrixReference< CType > & src):
+    CCopasiMatrixReference(const CCopasiMatrixReference< referenceType > & src):
         CCopasiObject(src),
         mReference(src.mReference)
     {}
@@ -114,7 +118,11 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
 
     virtual CCopasiObject * getObject(const CCopasiObjectName & cn)
     {
-      return new CCopasiObjectReference< CType::elementType >
+#ifdef WIN32
+      return new CCopasiObjectReference< referenceType::elementType >
+#else
+      return new CCopasiObjectReference< typename referenceType::elementType >
+#endif
       (mObjectName + cn,
        getObjectParent(),
        mReference(cn.getIndex(),
