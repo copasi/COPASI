@@ -6,6 +6,7 @@ Date: 04/03
 Comment : Copasi Object Browser: 
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
+#include "copasi.h"
 #include "ObjectBrowser.h"
 #include "ObjectBrowserItem.h"
 #include "copasiui3window.h"
@@ -125,7 +126,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   ObjectBrowserItem::resetKeySpace();
   loadData();
   currentPage = LISTVIEWPAGE;
-  mOutputObjectList = NULL;
+  mOutputObjectVector = NULL;
 }
 
 /*
@@ -139,8 +140,8 @@ void ObjectBrowser::closeEvent (QCloseEvent * e)
 
 ObjectBrowser::~ObjectBrowser()
 {
-  delete objectItemList;
-  delete refreshList;
+  pdelete(objectItemList);
+  pdelete(refreshList);
   // no need to delete child widgets, Qt does it all for us
   if (mparent)
     mparent->enabled_object_browser_menu();
@@ -254,9 +255,9 @@ ObjectList* ObjectBrowser::outputList()
 }
  */
 
-void ObjectBrowser::setOutputList(ObjectList* pObjectList)
+void ObjectBrowser::setOutputVector(std::vector<CCopasiObject*>* pObjectVector)
 {
-  mOutputObjectList = pObjectList;
+  mOutputObjectVector = pObjectVector;
 }
 
 void ObjectBrowser::nextClicked()
@@ -265,40 +266,56 @@ void ObjectBrowser::nextClicked()
     {
       ObjectBrowserItem* rootItem;
       rootItem = objectItemList->getRoot()->pItem;
-      eXport(rootItem, mOutputObjectList);
+      eXport(rootItem, mOutputObjectVector);
+      mOutputObjectVector = NULL;
       QDialog::done(QDialog::Accepted);
+      delete(this);
       return;
     }
 
-  ObjectList* outputList;
+  std::vector<CCopasiObject*>* outputVector;
   ObjectBrowserItem* rootItem;
+  int i;
   switch (currentPage)
     {
     case LISTVIEWPAGE:
       ObjectListView->hide(); //last page
       ObjectItemText->show();
       rootItem = objectItemList->getRoot()->pItem;
-      outputList = new ObjectList();
-      eXport(rootItem, outputList);
+      outputVector = new std::vector<CCopasiObject*>();
+      eXport(rootItem, outputVector);
       //      QMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
-      ObjectListItem* pHead;
+      //   ObjectListItem* pHead;
       ObjectItemText->clear();
-      int i;
-      for (pHead = outputList->getRoot(), i = 1; pHead != NULL; pHead = pHead->pNext)
+
+      for (i = 0; i < outputVector->size(); i++)
         {
           if (double(i) / 2 == int(i / 2))
             ObjectItemText->setColor(red);
           else
             ObjectItemText->setColor(blue);
-          if (pHead->pItem->getObject()->pCopasiObject)
+          if ((*outputVector)[i])
             {
               //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN().c_str(), -1);
-              ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getObjectType().c_str(), -1);
-              i++;
+              ObjectItemText->insertParagraph((*outputVector)[i]->getObjectType().c_str(), -1);
             }
         }
-
-      delete outputList;
+      /*
+            for (pHead = outputVector->getRoot(), i = 1; pHead != NULL; pHead = pHead->pNext)
+              {
+                if (double(i) / 2 == int(i / 2))
+                  ObjectItemText->setColor(red);
+                else
+                  ObjectItemText->setColor(blue);
+                if (pHead->pItem->getObject()->pCopasiObject)
+                  {
+                    //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN().c_str(), -1);
+                    ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getObjectType().c_str(), -1);
+                    i++;
+                  }
+              }
+      */
+      pdelete(outputVector);
       currentPage = SELECTEDITEMPAGE;
       break;
     case SELECTEDITEMPAGE:
@@ -308,20 +325,22 @@ void ObjectBrowser::nextClicked()
     }
 }
 
-void ObjectBrowser::eXport(ObjectBrowserItem* pCurrent, ObjectList* outputList)
+void ObjectBrowser::eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObject*>* outputVector)
 {
   if (pCurrent->child())
     {
       ObjectBrowserItem* pChild = pCurrent->child();
       for (; pChild != NULL; pChild = pChild->sibling())
         if (pChild->getType() != FIELDATTR)
-          eXport(pChild, outputList);
+          eXport(pChild, outputVector);
     }
   else //it has no child
     {
       if (pCurrent->isChecked() && (pCurrent->getType() != FIELDATTR))
         {
-          ObjectBrowserItem* pCopyCurrent = new ObjectBrowserItem(pCurrent, 0, pCurrent->getObject()->pCopasiObject, outputList);
+          if (pCurrent->getObject())
+            //   ObjectBrowserItem* pCopyCurrent = new ObjectBrowserItem((ObjectBrowserItem*)(NULL), 0, pCurrent->getObject()->pCopasiObject,outputList);
+            outputVector->push_back(pCurrent->getObject()->pCopasiObject);
         }
       // else skip current item
     }

@@ -13,6 +13,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qvariant.h>
 #include <qwidget.h>
 #include <qdialog.h>
+#include <vector>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -36,7 +37,7 @@ class ObjectBrowser : public QDialog
   private:
     pageIndex currentPage;
     CopasiUI3Window* mparent;
-    ObjectList* mOutputObjectList;
+    std::vector<CCopasiObject*>* mOutputObjectVector;
 
   public:
     ObjectList* objectItemList;
@@ -54,7 +55,7 @@ class ObjectBrowser : public QDialog
     //Each Function calls the output shall be responsible to delete the list
     //    ObjectList* outputList();
 
-    void eXport(ObjectBrowserItem* pCurrent, ObjectList* outputList);
+    void eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObject*>* outputVector);
 
     void setCheck(ObjectBrowserItem* pCurrent);
     void setUncheck(ObjectBrowserItem* pCurrent);
@@ -66,7 +67,7 @@ class ObjectBrowser : public QDialog
     void loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
 
     CCopasiObject* getFieldCopasiObject(CCopasiObject* pCurrent, const char* name);
-    void setOutputList(ObjectList* pObjectList);
+    void setOutputVector(std::vector<CCopasiObject*>* pObjectVector);
 
     void updateUI();
     void loadUI();

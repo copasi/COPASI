@@ -21,6 +21,8 @@
 #include <qscrollview.h>
 #include <qtoolbutton.h>
 #include <qcanvas.h>
+
+#include "copasi.h"
 #include "ScanWidget.h"
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"
@@ -221,46 +223,61 @@ void ScanWidget::TrajectoryEditing()
 
 ScanWidget::~ScanWidget()
 {
-  delete scanTask;
-  delete pTrajectoryWidget;
-  delete pSteadyStateWidget;
-  // no need to delete child widgets, Qt does it all for us
+  pdelete(scanTask);
+  pdelete(pTrajectoryWidget);
+  pdelete(pSteadyStateWidget);
+  // no need to pdelete child widgets, Qt does it all for us
 }
 
 void ScanWidget::addButtonClicked()
 {
   ObjectBrowser* pSelectedObjects = new ObjectBrowser();
-  ObjectList* pSelectedList = new ObjectList();
-  pSelectedObjects->setOutputList(pSelectedList);
+  std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
+  pSelectedObjects->setOutputVector(pSelectedVector);
 
   if (pSelectedObjects->exec () == QDialog::Rejected)
     {
-      delete pSelectedList;
+      pdelete(pSelectedVector);
       return;
     }
 
-  if (pSelectedList->len() <= 0)
+  if (pSelectedVector->size() < 0)
     {
-      delete pSelectedObjects;
-      delete pSelectedList;
+      //      pdelete(pSelectedObjects);
+      pdelete(pSelectedVector);
       return;
     }
-
-  ObjectListItem* pListItem = pSelectedList->getRoot();
-  for (; pListItem; pListItem = pListItem->pNext)
-    if ((pListItem->pItem) && (pListItem->pItem->getObject()) && (pListItem->pItem->getObject()->pCopasiObject))
+  /*
+    ObjectListItem* pListItem = pSelectedList->getRoot();
+    for (; pListItem; pListItem = pListItem->pNext)
+      if ((pListItem->pItem) && (pListItem->pItem->getObject()) && (pListItem->pItem->getObject()->pCopasiObject))
+        break;
+    if (!pSelectedList->getRoot()) //no result returned
+      {
+        pdelete pSelectedObjects;
+        pdelete pSelectedList;
+        return;
+      }
+   
+    addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
+    pdelete pSelectedObjects;
+    pdelete pSelectedList;
+  */
+  int i = 0;
+  for (; i < pSelectedVector->size(); i++)
+    if ((*pSelectedVector)[i])
       break;
 
-  if (!pSelectedList->getRoot()) //no result returned
+  if (i >= pSelectedVector->size()) //no result returned
     {
-      delete pSelectedObjects;
-      delete pSelectedList;
+      //      pdelete(pSelectedObjects);
+      pdelete(pSelectedVector);
       return;
     }
 
-  addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
-  delete pSelectedObjects;
-  delete pSelectedList;
+  addNewScanItem((*pSelectedVector)[i]);
+  //  pdelete(pSelectedObjects);
+  pdelete(pSelectedVector);
 }
 
 void ScanWidget::deleteButtonClicked()
@@ -289,9 +306,9 @@ void ScanWidget::deleteButtonClicked()
       if (it - selectedList.begin() == 2*activeObject)
         {
           BeginDel = it;
-          delete (*it);
+          pdelete (*it);
           ToDel = ++it;
-          delete (*ToDel);
+          pdelete (*ToDel);
           ++ToDel;
           selectedList.erase(BeginDel, ToDel);
           break;

@@ -7,12 +7,12 @@ Comment : Copasi Object Browser including:
 
 browserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject,
-  there may exist multiply wrappers to one browserObject
+ there may exist multiply wrappers to one browserObject
 ObjectListItem
 ObjectList: A queue for all element: 
- The reason I dont use std:vector is
- for efficiency requirement for all 
- object browser item update
+The reason I dont use std:vector is
+for efficiency requirement for all 
+object browser item update
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
@@ -252,7 +252,7 @@ ObjectBrowserItem* ObjectList::pop()
   if (root)
     root->pLast = NULL;
   length--;
-  delete delNode;
+  pdelete(delNode);
   return returnValue;
 }
 
@@ -266,7 +266,7 @@ void ObjectList::delDuplicate()
         {
           objectLast->pNext = objectNext->pNext;
           objectNext->pNext->pLast = objectLast;
-          delete objectNext;
+          pdelete(objectNext);
           length--;
           objectNext = objectLast;
         }
@@ -346,7 +346,7 @@ void ObjectList::createBucketIndex(int max)
           if (pHead->pNext)
             pHead->pNext->pLast = pHead->pLast;
           pHead = pHead->pNext;
-          delete pDel;
+          pdelete(pDel);
           length--;
         }
       else //
