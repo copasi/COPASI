@@ -33,12 +33,15 @@
 #include "utilities/CluX.h"
 #include "report/CCopasiObjectName.h"
 #include "mathmodel/CMathModel.h"
+#include "utilities/CCopasiNode.h"
+#include "utilities/CCopasiTree.h"
 
 using namespace std;
 
 C_INT32 TestReadConfig(void);
 C_INT32 TestWriteConfig(void);
 C_INT32 TestCompartment(void);
+C_INT32 TestCopasiTree(void);
 C_INT32 TestException(void);
 C_INT32 TestDatum(void);
 C_INT32 TestMetab(void);
@@ -116,7 +119,8 @@ int main(int argc, char *argv[])
       //YOHE: new test
       //  TestOptimization();
       //      TestEigen();
-      TestTrajectory();
+      TestCopasiTree();
+      //      TestTrajectory();
       //      TestTrajectoryTask();
       //      TestMoiety();
       //      TestKinFunction();
@@ -427,6 +431,35 @@ C_INT32 TestReadSample(void)
   CWriteConfig outbuf2("copasi2.gps");
   model2.save(outbuf2);
   outbuf2.flush();
+
+  return 0;
+}
+
+C_INT32 TestCopasiTree(void)
+{
+  CCopasiTree< CCopasiNode > * tree = new CCopasiTree< CCopasiNode >;
+  CCopasiTree< CCopasiNode >::iterator it;
+  CCopasiTree< CCopasiNode >::iterator end = tree->end();
+
+  CCopasiNode * n = new CCopasiNode[5];
+
+  std::cout << tree->attachNode(&n[0]) << std::endl;
+  std::cout << tree->attachNode(&n[1]) << std::endl;
+  std::cout << tree->attachNode(&n[4], &n[0]) << std::endl;
+  std::cout << tree->attachNode(&n[2], &n[0], &n[0]) << std::endl;
+  std::cout << tree->attachNode(&n[3], &n[0], &n[2]) << std::endl;
+
+  for (it = tree->begin(); it != end; ++it)
+    std::cout << &*it << " ";
+  std::cout << std::endl;
+
+  std::cout << tree->moveNode(&n[0]) << std::endl;
+
+  for (it = tree->begin(); it != end; ++it)
+    std::cout << &*it << " ";
+  std::cout << std::endl;
+
+  delete tree;
 
   return 0;
 }
