@@ -8,430 +8,387 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>655</width>
-            <height>639</height>
+            <width>532</width>
+            <height>527</height>
         </rect>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>0</width>
+            <height>0</height>
+        </size>
+    </property>
+    <property name="font">
+        <font>
+            <family>Times New Roman</family>
+        </font>
     </property>
     <property name="caption">
         <string>SteadyStateWidget</string>
     </property>
-    <spacer>
+    <grid>
         <property name="name">
-            <cstring>spacer7_2</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
+        <property name="margin">
+            <number>11</number>
         </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
+        <property name="spacing">
+            <number>6</number>
         </property>
-        <property name="sizeHint">
-            <size>
-                <width>570</width>
-                <height>21</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>42</y>
-                <width>570</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="Line">
-        <property name="name">
-            <cstring>line8</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>71</y>
-                <width>568</width>
-                <height>16</height>
-            </rect>
-        </property>
-        <property name="frameShape">
-            <enum>HLine</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Sunken</enum>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-    </widget>
-    <spacer>
-        <property name="name">
-            <cstring>spacer7_4</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>568</width>
-                <height>22</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>80</y>
-                <width>568</width>
-                <height>22</height>
-            </rect>
-        </property>
-    </spacer>
-    <spacer>
-        <property name="name">
-            <cstring>spacer7_3</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>568</width>
-                <height>22</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>134</y>
-                <width>568</width>
-                <height>22</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="Line">
-        <property name="name">
-            <cstring>line7</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>162</y>
-                <width>568</width>
-                <height>16</height>
-            </rect>
-        </property>
-        <property name="frameShape">
-            <enum>HLine</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Sunken</enum>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-    </widget>
-    <spacer>
-        <property name="name">
-            <cstring>spacer7_6</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>568</width>
-                <height>21</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>171</y>
-                <width>568</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>taskDescriptionLabel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>108</y>
-                <width>90</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Task Description</string>
-        </property>
-    </widget>
-    <widget class="QRadioButton">
-        <property name="name">
-            <cstring>taskJacobian</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>105</x>
-                <y>109</y>
-                <width>186</width>
-                <height>18</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Jacobian</string>
-        </property>
-    </widget>
-    <widget class="QRadioButton">
-        <property name="name">
-            <cstring>taskStability</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>297</x>
-                <y>109</y>
-                <width>185</width>
-                <height>18</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Stability Analysis</string>
-        </property>
-    </widget>
-    <spacer>
-        <property name="name">
-            <cstring>spacer7_5</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>578</width>
-                <height>21</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>371</y>
-                <width>578</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="Line">
-        <property name="name">
-            <cstring>line6</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>398</y>
-                <width>578</width>
-                <height>16</height>
-            </rect>
-        </property>
-        <property name="frameShape">
-            <enum>HLine</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Sunken</enum>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-    </widget>
-    <spacer>
-        <property name="name">
-            <cstring>spacer7_7</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>578</width>
-                <height>21</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>407</y>
-                <width>578</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>taskNameLabel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>12</x>
-                <y>15</y>
-                <width>90</width>
-                <height>19</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Task Name</string>
-        </property>
-    </widget>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>Layout5</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>440</y>
-                <width>570</width>
-                <height>25</height>
-            </rect>
-        </property>
-        <hbox>
+        <widget class="Line" row="6" column="0" rowspan="1" colspan="10">
             <property name="name">
-                <cstring>unnamed</cstring>
+                <cstring>line7</cstring>
             </property>
-            <property name="margin">
-                <number>0</number>
+            <property name="frameShape">
+                <enum>HLine</enum>
             </property>
-            <property name="spacing">
-                <number>6</number>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
             </property>
-            <widget class="QPushButton">
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <spacer row="7" column="0" rowspan="1" colspan="10">
+            <property name="name">
+                <cstring>spacer7_6</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>500</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="5" column="0" rowspan="1" colspan="10">
+            <property name="name">
+                <cstring>spacer7_3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>490</width>
+                    <height>22</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="3" column="0" rowspan="1" colspan="9">
+            <property name="name">
+                <cstring>spacer7_4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>390</width>
+                    <height>22</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="1" column="0" rowspan="1" colspan="10">
+            <property name="name">
+                <cstring>spacer7_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>500</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="11" column="0" rowspan="1" colspan="10">
+            <property name="name">
+                <cstring>spacer7_7</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>500</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget" row="12" column="0" rowspan="1" colspan="10">
+            <property name="name">
+                <cstring>Layout6</cstring>
+            </property>
+            <hbox>
                 <property name="name">
-                    <cstring>bRunButton</cstring>
+                    <cstring>unnamed</cstring>
                 </property>
-                <property name="text">
-                    <string>Run</string>
+                <property name="margin">
+                    <number>0</number>
                 </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>commitChange</cstring>
+                <property name="spacing">
+                    <number>6</number>
                 </property>
-                <property name="text">
-                    <string>Commit Change</string>
-                </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>cancelChange</cstring>
-                </property>
-                <property name="text">
-                    <string>Cancel Change</string>
-                </property>
-            </widget>
-        </hbox>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>taskName</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>102</x>
-                <y>15</y>
-                <width>240</width>
-                <height>20</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>parameterValueLabel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>14</x>
-                <y>205</y>
-                <width>80</width>
-                <height>160</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Parameter value</string>
-        </property>
-    </widget>
-    <widget class="QTable">
-        <property name="name">
-            <cstring>parameterTable</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>100</x>
-                <y>205</y>
-                <width>484</width>
-                <height>160</height>
-            </rect>
-        </property>
-        <property name="numRows">
-            <number>3</number>
-        </property>
-        <property name="numCols">
-            <number>3</number>
-        </property>
-    </widget>
-    <widget class="QCheckBox">
-        <property name="name">
-            <cstring>bExecutable</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>399</x>
-                <y>15</y>
-                <width>141</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Task Executable</string>
-        </property>
-    </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>bRunButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Run</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>commitChange</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Commit Change</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>cancelChange</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel Change</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <spacer row="9" column="0" rowspan="1" colspan="10">
+            <property name="name">
+                <cstring>spacer7_5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>490</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="Line" row="10" column="0" rowspan="1" colspan="10">
+            <property name="name">
+                <cstring>line6</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="0" column="9">
+            <property name="name">
+                <cstring>bExecutable</cstring>
+            </property>
+            <property name="text">
+                <string>Task Executable</string>
+            </property>
+        </widget>
+        <widget class="Line" row="2" column="0" rowspan="1" colspan="10">
+            <property name="name">
+                <cstring>line8</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <spacer row="4" column="6">
+            <property name="name">
+                <cstring>Spacer31_3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>60</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="8" column="8" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>Spacer22</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>140</width>
+                    <height>258</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>taskNameLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Task Name</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="0" column="5" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>taskName</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>LineEditPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+        </widget>
+        <widget class="QRadioButton" row="4" column="5">
+            <property name="name">
+                <cstring>taskJacobian</cstring>
+            </property>
+            <property name="text">
+                <string>Jacobian</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="4" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>taskDescriptionLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Task Description</string>
+            </property>
+        </widget>
+        <widget class="QTable" row="8" column="5" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>parameterTable</cstring>
+            </property>
+            <property name="numRows">
+                <number>3</number>
+            </property>
+            <property name="numCols">
+                <number>3</number>
+            </property>
+        </widget>
+        <widget class="QRadioButton" row="4" column="7" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>taskStability</cstring>
+            </property>
+            <property name="text">
+                <string>Stability Analysis</string>
+            </property>
+        </widget>
+        <spacer row="0" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>Spacer34</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>21</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="4" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>Spacer34_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>21</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="8" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>parameterValueLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Parameter value</string>
+            </property>
+        </widget>
+        <spacer row="8" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>Spacer34_3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>21</width>
+                    <height>220</height>
+                </size>
+            </property>
+        </spacer>
+    </grid>
 </widget>
 <connections>
     <connection>
-        <sender>taskName</sender>
-        <signal>textChanged(const QString&amp;)</signal>
+        <sender>bExecutable</sender>
+        <signal>clicked()</signal>
         <receiver>SteadyStateWidget</receiver>
-        <slot>taskNameChanged()</slot>
+        <slot>RunButtonClicked()</slot>
     </connection>
     <connection>
-        <sender>taskJacobian</sender>
-        <signal>stateChanged(int)</signal>
+        <sender>bRunButton</sender>
+        <signal>clicked()</signal>
         <receiver>SteadyStateWidget</receiver>
-        <slot>methodJacob()</slot>
-    </connection>
-    <connection>
-        <sender>taskStability</sender>
-        <signal>stateChanged(int)</signal>
-        <receiver>SteadyStateWidget</receiver>
-        <slot>methodStability()</slot>
-    </connection>
-    <connection>
-        <sender>parameterTable</sender>
-        <signal>valueChanged(int,int)</signal>
-        <receiver>SteadyStateWidget</receiver>
-        <slot>parameterValueChanged()</slot>
+        <slot>RunTask()</slot>
     </connection>
     <connection>
         <sender>commitChange</sender>
@@ -446,37 +403,31 @@
         <slot>CancelChange()</slot>
     </connection>
     <connection>
-        <sender>bRunButton</sender>
-        <signal>clicked()</signal>
+        <sender>parameterTable</sender>
+        <signal>valueChanged(int,int)</signal>
         <receiver>SteadyStateWidget</receiver>
-        <slot>RunTask()</slot>
-    </connection>
-    <connection>
-        <sender>bExecutable</sender>
-        <signal>clicked()</signal>
-        <receiver>SteadyStateWidget</receiver>
-        <slot>RunButtonClicked()</slot>
+        <slot>parameterValueChanged()</slot>
     </connection>
 </connections>
 <tabstops>
+    <tabstop>taskName</tabstop>
     <tabstop>bExecutable</tabstop>
     <tabstop>taskJacobian</tabstop>
     <tabstop>taskStability</tabstop>
     <tabstop>parameterTable</tabstop>
-    <tabstop>taskName</tabstop>
     <tabstop>bRunButton</tabstop>
     <tabstop>commitChange</tabstop>
     <tabstop>cancelChange</tabstop>
 </tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">SteadyStateWidget.ui.h</include>
+</includes>
 <slots>
     <slot>CancelChange()</slot>
     <slot>CommitChange()</slot>
-    <slot>methodJacob()</slot>
-    <slot>methodStability()</slot>
     <slot>RunButtonClicked()</slot>
     <slot>parameterValueChanged()</slot>
     <slot>RunTask()</slot>
-    <slot>taskNameChanged()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
