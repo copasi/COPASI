@@ -192,7 +192,7 @@ class CMetab
     /**
      *
      */
-    const C_FLOAT64 getNumberDbl() const;
+    C_FLOAT64 getNumberDbl() const;
 
     /**
      *
@@ -222,7 +222,7 @@ class CMetab
     /**
      *
      */
-    const C_FLOAT64 getInitialNumberDbl() const;
+    C_FLOAT64 getInitialNumberDbl() const;
 
     /**
      *

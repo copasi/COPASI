@@ -197,7 +197,7 @@ const C_INT32 & CMetab::getNumberInt() const
     return mNumberInt;
   }
 
-const C_FLOAT64 CMetab::getNumberDbl() const
+C_FLOAT64 CMetab::getNumberDbl() const
   {
     return mConcDbl * mCompartment->getVolume()
            * mpModel->getQuantity2NumberFactor();
@@ -209,7 +209,7 @@ const C_INT32 & CMetab::getInitialNumberInt() const
     return mINumberInt;
   }
 
-const C_FLOAT64 CMetab::getInitialNumberDbl() const
+C_FLOAT64 CMetab::getInitialNumberDbl() const
   {
     return mIConcDbl * mCompartment->getVolume()
            * mpModel->getQuantity2NumberFactor();
