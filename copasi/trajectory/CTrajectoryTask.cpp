@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:14 $
+   $Date: 2003/11/19 14:45:40 $
    End CVS Header */
 
 /**
@@ -126,7 +126,7 @@ void CTrajectoryTask::initializeReporting(std::ostream & out)
   mpOutPoint = new COutputEvent(1);
   mpOutEnd = new COutputEvent(2);
 
-  mReport->setOutputStreamAddr(mpOut);
+  mReport->open(mpOut);
 }
 
 void CTrajectoryTask::load(CReadConfig & configBuffer)

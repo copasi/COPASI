@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:28 $
+   $Date: 2003/11/19 14:45:40 $
    End CVS Header */
 
 /**
@@ -79,7 +79,7 @@ void CSteadyStateTask::initializeReporting(std::ostream & out)
 
   mpOut = & out;
   mpOutEnd = new COutputEvent(*this);
-  mReport->setOutputStreamAddr(mpOut);
+  mReport->open(mpOut);
 }
 
 void CSteadyStateTask::load(CReadConfig & configBuffer)

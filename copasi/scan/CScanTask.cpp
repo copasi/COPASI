@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:13:59 $
+   $Date: 2003/11/19 14:45:40 $
    End CVS Header */
 
 /**
@@ -70,7 +70,7 @@ void CScanTask::initializeReporting(std::ostream & out)
   pdelete(mpOutEnd);
   mpOut = & out;
   // added by Liang for Scan Report
-  mReport->setOutputStreamAddr(mpOut);
+  mReport->open(mpOut);
   mReport->compile();
 
   // for Steadystate Report

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 17:22:30 $
+   $Date: 2003/11/19 14:45:41 $
    End CVS Header */
 
 /****************************************************************************
@@ -28,8 +28,13 @@ class CReportTable;
 
 class CReport : public CCopasiObject
   {
+  public:
+    static const std::vector< CCopasiContainer * > EmptyList;
+
   private:
-    std::ostream * ostream;
+    std::ostream * mpOstream;
+    bool mStreamOwner;
+
     CReportDefinition *mpReportDef;
     std::string mTarget;
     bool mAppend;
@@ -57,74 +62,76 @@ class CReport : public CCopasiObject
     ~CReport();
 
     /**
-    set the ostream 
-    */
-    void setOutputStreamAddr(std::ostream * outStream)
-    {
-      ostream = outStream;
-    }
-
-    /**
-    returns the reference of the Report Tag
-    */
+     * returns the reference of the Report Tag
+     */
     CReportDefinition* getReportDefinition();
 
     /**
-    compile the object list from name vector
-    */
-    void compile(const std::vector< CCopasiContainer * > * pListOfContainer = NULL);
+     * compile the object list from name vector
+     * @param const std::vector< CCopasiContainer * > listOfContainer
+     * @return bool success
+     */
+    bool compile(const std::vector< CCopasiContainer * > listOfContainer =
+                   EmptyList);
 
     /**
-    transfer every individual object list from name vector
-    */
+     * Open the defined target stream or use the given argument
+     * @param std::ostream * pOstream (default: NULL)
+     * @return std::ostream * mpOstream
+     */
+    std::ostream * open(std::ostream * pOstream = NULL);
+
+    /**
+     * transfer every individual object list from name vector
+     */
     void generateObjectsFromName(
       const std::vector< CCopasiContainer * > * pListOfContainer,
       std::vector<CCopasiObject*> & objectList,
       std::vector<CCopasiObjectName>* nameVector);
 
     /**
-       sets the reference to the report
-       */
+     * sets the reference to the report
+     */
     void setReportDefinition(CReportDefinition *reportDef);
 
     /**
-    returns the target of the Report Tag
-    */
+     * returns the target of the Report Tag
+     */
     const std::string& getTarget();
 
     /**
-    sets the reference to the report
-    */
+     * sets the reference to the report
+     */
     void setTarget(std::string target);
 
     /**
-    Returns whether the Report Tag is appended or not
-    */
+     * Returns whether the Report Tag is appended or not
+     */
     bool append();
 
     /**
-       sets the append attribute if the report tag
-    */
+     * sets the append attribute if the report tag
+     */
     void setAppend(bool append);
 
     /**
-    to print header
-    */
+     * to print header
+     */
     void printHeader();
 
     /**
-    to print body
-    */
+     * to print body
+     */
     void printBody();
 
     /**
-       to print footer
-       */
+     * to print footer
+     */
     void printFooter();
 
     /**
-    to print body
-    */
+     *  to print body
+     */
     static void printBody(CReport * pReport);
   };
 

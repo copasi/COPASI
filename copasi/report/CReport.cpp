@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 22:12:48 $
+   $Date: 2003/11/19 14:45:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -12,6 +12,8 @@
 #include "CReport.h"
 #include "CCopasiContainer.h"
 
+const std::vector< CCopasiContainer * > CReport::EmptyList;
+
 //////////////////////////////////////////////////
 //
 //class CReport
@@ -19,7 +21,8 @@
 //////////////////////////////////////////////////
 CReport::CReport():
     CCopasiObject("Report", NULL, "Report", CCopasiObject::Container),
-    ostream(NULL),
+    mpOstream(NULL),
+    mStreamOwner(false),
     mpReportDef(NULL),
     mTarget(""),
     mAppend(true)
@@ -45,6 +48,12 @@ void CReport::cleanup()
   headerObjectList.clear();
   bodyObjectList.clear();
   footerObjectList.clear();
+
+  if (mStreamOwner) pdelete(mpOstream);
+
+  mpOstream = NULL;
+  mStreamOwner = false;
+
   //  CKeyFactory::remove(mKey);
   // mpReportDef pointer shall be dealt outside, where it is created
   //  pdelete(mpReportDef);
@@ -71,47 +80,77 @@ void CReport::setAppend(bool append)
 void CReport::printHeader()
 {
   // check if there is a target defined,
-  if (!ostream)
+  if (!mpOstream)
     return;
   // for loop print out mpReportDef->getHeader()
   unsigned C_INT32 i;
   for (i = 0; i < headerObjectList.size(); i++)
-    headerObjectList[i]->print(ostream);
+    headerObjectList[i]->print(mpOstream);
 }
 
 void CReport::printBody()
 {
   // check if there is a target defined,
-  if (!ostream)
+  if (!mpOstream)
     return;
   // for loop print out mpReportDef->getBody()
   unsigned C_INT32 i;
   for (i = 0; i < bodyObjectList.size(); i++)
-    bodyObjectList[i]->print(ostream);
+    bodyObjectList[i]->print(mpOstream);
 }
 
 void CReport::printFooter()
 {
   // check if there is a target defined,
-  if (!ostream)
+  if (!mpOstream)
     return;
   // for loop print out mpReportDef->getFooter()
   unsigned C_INT32 i;
   for (i = 0; i < footerObjectList.size(); i++)
-    footerObjectList[i]->print(ostream);
+    footerObjectList[i]->print(mpOstream);
 }
 
 // Compile the List of Report Objects;
 // Support Parellel
 
-void CReport::compile(const std::vector< CCopasiContainer * > * pListOfContainer)
+bool CReport::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
   // check if there is a Report Definition Defined
-  if (!mpReportDef)
-    return;
-  generateObjectsFromName(pListOfContainer, headerObjectList, mpReportDef->getHeaderAddr());
-  generateObjectsFromName(pListOfContainer, bodyObjectList, mpReportDef->getBodyAddr());
-  generateObjectsFromName(pListOfContainer, footerObjectList, mpReportDef->getFooterAddr());
+  if (!mpReportDef) return false;
+
+  generateObjectsFromName(&listOfContainer, headerObjectList,
+                          mpReportDef->getHeaderAddr());
+  generateObjectsFromName(&listOfContainer, bodyObjectList,
+                          mpReportDef->getBodyAddr());
+  generateObjectsFromName(&listOfContainer, footerObjectList,
+                          mpReportDef->getFooterAddr());
+
+  return true;
+}
+
+std::ostream * CReport::open(std::ostream * pOstream)
+{
+  if (mStreamOwner) pdelete(mpOstream);
+
+  if (pOstream)
+    {
+      mpOstream = pOstream;
+      mStreamOwner = false;
+    }
+  else if (mTarget != "")
+    {
+      mpOstream = new std::ofstream;
+      mStreamOwner = true;
+
+      if (mAppend)
+        ((std::ofstream *) mpOstream)->
+        open(mTarget.c_str(), std::ios_base::out | std::ios_base::app);
+      else
+        ((std::ofstream *) mpOstream)->
+        open(mTarget.c_str(), std::ios_base::out);
+    }
+
+  return mpOstream;
 }
 
 void CReport::printBody(CReport * pReport)
