@@ -116,7 +116,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
       num_ident = static_cast<C_INT32>(substrates[i]->getMultiplicity());
       //cout << "Num ident = " << num_ident << endl;
       total_substrates += num_ident;
-      number = static_cast<C_INT32> (substrates[i]->getMetabolite().getNumber());
+      number = static_cast<C_INT32> (substrates[i]->getMetabolite().getNumberInt());
       lower_bound = number - num_ident;
       //cout << "Number = " << number << "  Lower bound = " << lower_bound << endl;
       substrate_factor = substrate_factor * pow(number, num_ident);
@@ -141,13 +141,16 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   if (substrates.size() > 0)
     {
       C_FLOAT64 volume =
-        substrates[0]->getMetabolite().getCompartment()->getVolume();
+        substrates[0]->getMetabolite().getCompartment()->getVolume()
+        * substrates[0]->getMetabolite().getModel()->getQuantity2NumberFactor();
       amu = amu / pow(volume, total_substrates - 1);
+      substrate_factor = substrate_factor / pow(volume, total_substrates - 1);
     }
 
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
+
   C_FLOAT64 dummy = mModel->getReactions()[index]->calculate() ;
 
   C_FLOAT64 rate_factor = mModel->getReactions()[index]->calculate() / substrate_factor;
@@ -173,21 +176,22 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
     const_cast < CCopasiVector <CChemEqElement> & >
     (mModel->getReactions()[rxn]->getChemEq().getBalances());
   CChemEqElement *bal = 0;
-  C_FLOAT32 new_num;
+  C_INT32 new_num; // ??? this was a float ???
 
   for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
       bal = balances[i];
-      new_num = bal->getMetabolite().getNumber() + bal->getMultiplicity();
-      bal->getMetabolite().setNumber(new_num);
+      new_num = bal->getMetabolite().getNumberInt() + floor(0.1 + bal->getMultiplicity());
+      bal->getMetabolite().setNumberInt(new_num);
     }
 
   // Update the model to take into account the new particle numbers
-  mModel->setConcentrations(mModel->getNumbers());
+  // needs to be replaced by smt more efficient
+  mModel->setNumbersDblAndUpdateConcentrations(mModel->getNumbersDbl());
 
   //cout << "Reaktion " << rxn << " new state: " ;
   for (int j = 0 ; j < 2 ; j++)
-    cout << mModel->getMetabolites()[j]->getNumber() << "  ";
+    cout << mModel->getMetabolites()[j]->getNumberInt() << "  ";
 
   cout << endl;
 

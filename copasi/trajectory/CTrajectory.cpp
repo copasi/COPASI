@@ -48,7 +48,7 @@ void CTrajectory::initialize()
 
   mN = mModel->getIndMetab();
 
-  mY = mModel->getInitialNumbers();
+  mY = mModel->getInitialNumbersDbl();
 
   mStartTime = 0;
 
@@ -196,7 +196,7 @@ void CTrajectory::setStartingPoint(const C_FLOAT64 & time,
         mY[i] = particleNumbers[i];
     }
   else
-    mY = mModel->getInitialNumbers();
+    mY = mModel->getInitialNumbersDbl();
 }
 
 void CTrajectory::setMaxSteps(const C_INT32 max_steps)
@@ -231,7 +231,7 @@ const CTrajectory::MethodType & CTrajectory::getMethod() const
 
 void CTrajectory::process(ofstream &fout)
 {
-  mModel->setConcentrations(mY);
+  mModel->setNumbersDblAndUpdateConcentrations(mY);
 
   //print for the initial time point
 
@@ -255,7 +255,7 @@ void CTrajectory::process(ofstream &fout)
           mODESolver->step(mTime, mTime + length);
 
           //update CModel
-          mModel->setConcentrations(mY);
+          mModel->setNumbersDblAndUpdateConcentrations(mY);
           mTime += length;
 
           //print for current time point in the outputEvent
@@ -272,7 +272,8 @@ void CTrajectory::process(ofstream &fout)
       while (step < mMaxSteps && time < mEndTime && time >= 0)
         {
           time = mStochSolver->getStochMethod()->doStep(time);
-          cout << "Step: " << step << "       Time: " << time << endl;
+          //cout << "Step: " << step << "       Time: " << time << endl;
+          cout << " " << time << " ";
           step++;
         }
     }
