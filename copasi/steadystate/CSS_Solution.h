@@ -19,7 +19,6 @@
 #include "CJacob.h"
 #include "CEigen.h"
 #include "trajectory/CTrajectory.h"
-#include "trajectory/Clsoda.h"
 
 using std::ofstream;
 

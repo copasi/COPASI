@@ -14,7 +14,6 @@
 #include "model/model.h" 
 // #include "output/output.h"
 #include "utilities/utilities.h"
-#include "CODESolver.h"
 #include "CStochSolver.h"
 
 // #include "COutputEvent.h"
@@ -38,11 +37,6 @@ class CTrajectory
      *  The pointer to the CModel with which we are working
      */
     CModel * mModel;
-
-    /**
-     *  The pointer to the CODESolver with which we are working
-     */
-    CODESolver * mODESolver;
 
     /**
      * The stochastic solver
@@ -161,12 +155,6 @@ class CTrajectory
      *  @return mCModel
      */
     CModel * getModel() const;
-
-    /**
-     *  Get the CODESolver member variable
-     *  @return mODESolver
-     */
-    CODESolver * getODESolver() const;
 
     /*
      * Set the time points

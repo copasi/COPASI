@@ -2,8 +2,6 @@
 noinst_LIBRARIES = libtrajectory.a
 
 libtrajectory_a_SOURCES = \
-	Clsoda.cpp \
-	CODESolver.cpp \
 	CTrajectory.cpp \
 	CStochSolver.cpp \
 	CTrajectoryTask.cpp \
@@ -13,8 +11,6 @@ libtrajectory_a_SOURCES = \
 
 EXTRA_DIST = \
 	trajectory.h \
-	Clsoda.h	Clsoda.cpp \
-	CODESolver.h	CODESolver.cpp \
 	CTrajectory.h	CTrajectory.cpp \
 	CStochSolver.h	CStochSolver.cpp \
 	CTrajectoryTask.h	CTrajectoryTask.cpp \

@@ -15,7 +15,6 @@
 #include "copasi.h"
 #include "CGlobals.h"
 #include "CWriteConfig.h"
-#include "trajectory/CODESolver.h"
 
 using namespace std;
 
@@ -92,9 +91,7 @@ C_INT32 CWriteConfig::commit(void)
 }
 
 void CWriteConfig::setDefaults()
-{
-  CODESolver::saveLSODAParameters(*this);
-}
+{}
 
 C_INT32 CWriteConfig::fail()
 {

@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.10 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.11 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -236,8 +236,6 @@ x_libraries = @x_libraries@
 noinst_LIBRARIES = libtrajectory.a
 
 libtrajectory_a_SOURCES = \
-	Clsoda.cpp \
-	CODESolver.cpp \
 	CTrajectory.cpp \
 	CStochSolver.cpp \
 	CTrajectoryTask.cpp \
@@ -248,8 +246,6 @@ libtrajectory_a_SOURCES = \
 
 EXTRA_DIST = \
 	trajectory.h \
-	Clsoda.h	Clsoda.cpp \
-	CODESolver.h	CODESolver.cpp \
 	CTrajectory.h	CTrajectory.cpp \
 	CStochSolver.h	CStochSolver.cpp \
 	CTrajectoryTask.h	CTrajectoryTask.cpp \
@@ -270,17 +266,17 @@ LIBRARIES = $(noinst_LIBRARIES)
 
 libtrajectory_a_AR = $(AR) cru
 libtrajectory_a_LIBADD =
-am_libtrajectory_a_OBJECTS = Clsoda.$(OBJEXT) CODESolver.$(OBJEXT) \
-	CTrajectory.$(OBJEXT) CStochSolver.$(OBJEXT) \
-	CTrajectoryTask.$(OBJEXT) CTrajectoryProblem.$(OBJEXT) \
-	CTrajectoryMethod.$(OBJEXT) CLsodaMethod.$(OBJEXT)
+am_libtrajectory_a_OBJECTS = CTrajectory.$(OBJEXT) \
+	CStochSolver.$(OBJEXT) CTrajectoryTask.$(OBJEXT) \
+	CTrajectoryProblem.$(OBJEXT) CTrajectoryMethod.$(OBJEXT) \
+	CLsodaMethod.$(OBJEXT)
 #>- libtrajectory_a_OBJECTS = $(am_libtrajectory_a_OBJECTS)
 #>+ 7
 libtrajectory_a_final_OBJECTS = libtrajectory_a.all_cpp.o 
-libtrajectory_a_nofinal_OBJECTS = Clsoda.$(OBJEXT) CODESolver.$(OBJEXT) \
-	CTrajectory.$(OBJEXT) CStochSolver.$(OBJEXT) \
-	CTrajectoryTask.$(OBJEXT) CTrajectoryProblem.$(OBJEXT) \
-	CTrajectoryMethod.$(OBJEXT) CLsodaMethod.$(OBJEXT)
+libtrajectory_a_nofinal_OBJECTS = CTrajectory.$(OBJEXT) \
+	CStochSolver.$(OBJEXT) CTrajectoryTask.$(OBJEXT) \
+	CTrajectoryProblem.$(OBJEXT) CTrajectoryMethod.$(OBJEXT) \
+	CLsodaMethod.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@libtrajectory_a_OBJECTS = $(libtrajectory_a_nofinal_OBJECTS)
 @KDE_USE_FINAL_TRUE@libtrajectory_a_OBJECTS = $(libtrajectory_a_final_OBJECTS)
 
@@ -291,11 +287,10 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CLsodaMethod.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CODESolver.Po $(DEPDIR)/CStochSolver.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CTrajectory.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CStochSolver.Po $(DEPDIR)/CTrajectory.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CTrajectoryMethod.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CTrajectoryProblem.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CTrajectoryTask.Po $(DEPDIR)/Clsoda.Po
+	@AMDEP_TRUE@	$(DEPDIR)/CTrajectoryTask.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -362,13 +357,11 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CLsodaMethod.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CODESolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CStochSolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CTrajectory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CTrajectoryMethod.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CTrajectoryProblem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CTrajectoryTask.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Clsoda.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
@@ -427,7 +420,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=trajectory.dsp libtrajectory.a lsoda.c lsoda.f 
+KDE_DIST=trajectory.dsp CODESolver.h CODESolver.cpp libtrajectory.a cvode.tar.gz Clsoda.cpp Clsoda.h lsoda.c lsoda.f 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -556,11 +549,11 @@ force-reedit:
 
 
 #>+ 11
-libtrajectory_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/Clsoda.cpp $(srcdir)/CODESolver.cpp $(srcdir)/CTrajectory.cpp $(srcdir)/CStochSolver.cpp $(srcdir)/CTrajectoryTask.cpp $(srcdir)/CTrajectoryProblem.cpp $(srcdir)/CTrajectoryMethod.cpp $(srcdir)/CLsodaMethod.cpp
+libtrajectory_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CTrajectory.cpp $(srcdir)/CStochSolver.cpp $(srcdir)/CTrajectoryTask.cpp $(srcdir)/CTrajectoryProblem.cpp $(srcdir)/CTrajectoryMethod.cpp $(srcdir)/CLsodaMethod.cpp
 	@echo 'creating libtrajectory_a.all_cpp.cpp ...'; \
 	rm -f libtrajectory_a.all_cpp.files libtrajectory_a.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> libtrajectory_a.all_cpp.final; \
-	for file in Clsoda.cpp CODESolver.cpp CTrajectory.cpp CStochSolver.cpp CTrajectoryTask.cpp CTrajectoryProblem.cpp CTrajectoryMethod.cpp CLsodaMethod.cpp ; do \
+	for file in CTrajectory.cpp CStochSolver.cpp CTrajectoryTask.cpp CTrajectoryProblem.cpp CTrajectoryMethod.cpp CLsodaMethod.cpp ; do \
 	  echo "#include \"$$file\"" >> libtrajectory_a.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libtrajectory_a.all_cpp.final; \
 	done; \

@@ -359,13 +359,9 @@ C_INT32 TestReadSample(void)
   model.buildRedStoi();
   model.buildMoieties();
 
-  CODESolver odeSolver;
   size = model.getMetabolitesInd().size();
   C_FLOAT64 *y;
   y = new double[size];
-
-  odeSolver.initialize(model, y, size);
-  odeSolver.step(0.0, 1.0);
 
   CWriteConfig outbuf("copasi.gps");
   model.save(outbuf);

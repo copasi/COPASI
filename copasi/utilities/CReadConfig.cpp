@@ -16,7 +16,6 @@
 #include "CCopasiMessage.h"
 #include "CReadConfig.h"
 #include "model/model.h"
-#include "trajectory/CODESolver.h"
 
 using namespace std;
 
@@ -57,9 +56,7 @@ C_INT32 CReadConfig::fail()
 string CReadConfig::getVersion() { return mVersion; }
 
 void CReadConfig::getDefaults()
-{
-  CODESolver::loadLSODAParameters(*this);
-}
+{}
 
 C_INT32 CReadConfig::getVariable(const string& name,
                                  const string& type,

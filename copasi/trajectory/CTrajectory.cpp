@@ -25,7 +25,6 @@ CTrajectory::CTrajectory()
 
   mY = NULL;
   mModel = NULL;
-  mODESolver = NULL;
   mStochSolver = NULL;
 
   mOutInit = NULL;
@@ -57,8 +56,7 @@ void CTrajectory::initialize()
   switch (mMethod)
     {
     case CONTINUOUS_ODE:
-      mODESolver = new CODESolver();
-      mODESolver->initialize(* mModel, mY, mN, mMethod);
+      fatalError();
       break;
 
     case STOCH_DIRECT:
@@ -96,14 +94,6 @@ void CTrajectory::cleanup()
     delete [] mY;
 
   mY = NULL;
-
-  if (mODESolver)
-    {
-      mODESolver->cleanup();
-      delete mODESolver;
-    }
-
-  mODESolver = NULL;
 
   if (mStochSolver)
     {
@@ -170,11 +160,6 @@ void CTrajectory::setModel(CModel * aModel)
 CModel * CTrajectory::getModel() const
   {
     return mModel;
-  }
-
-CODESolver * CTrajectory::getODESolver() const
-  {
-    return mODESolver;
   }
 
 void CTrajectory::setPoints(const C_INT32 anInt)
@@ -266,27 +251,7 @@ void CTrajectory::process(ofstream &fout)
   // one of the stochastic solver, or a hybrid method (as yet unimplemented)
   if (mMethod == CONTINUOUS_ODE)
     {
-      //calculates number of iterations and time intervals
-      C_FLOAT64 length = (mEndTime - mStartTime) / mPoints;
-      mTime = mStartTime;
-
-      if (mOutPoint && mOutputTimeZero)
-        mOutPoint->print(Copasi->OutputList, fout);
-
-      for (C_INT32 i = 0; i < mPoints; i++)
-        {
-          // Calculate the new time point
-          mODESolver->step(mTime, mTime + length);
-
-          //update CModel
-          mModel->setNumbersDblAndUpdateConcentrations(mY);
-          mTime += length;
-
-          //print for current time point in the outputEvent
-
-          if (mOutPoint)
-            mOutPoint->print(Copasi->OutputList, fout);
-        }
+      fatalError();
     }
   else if (mMethod == STOCH_DIRECT || mMethod == STOCH_NEXTREACTION)
     {
