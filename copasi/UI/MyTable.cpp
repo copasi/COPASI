@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MyTable.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/17 08:02:16 $
+   $Date: 2004/08/18 08:59:10 $
    End CVS Header */
 
 #include <iostream>
@@ -41,23 +41,23 @@ void MyTable::keyPressEvent (QKeyEvent * e)
     }
 }
 
-void MyTable::showEvent(QShowEvent* e)
+void MyTable::resizeEvent(QResizeEvent* e)
 {
-  int vertHeaderWidth = 0;
-  int vertScrollbarWidth = 0;
-  if (this->verticalHeader() && this->verticalHeader()->count() > 0 && this->verticalHeader()->isShown())
-    {
-      vertHeaderWidth = this->verticalHeader()->sectionRect(0).width();
-    }
-  if (this->verticalScrollBar() && this->verticalScrollBar()->isShown())
-    {
-      vertScrollbarWidth = this->verticalScrollBar()->width();
-    }
-  int width = this->width() - vertHeaderWidth - vertScrollbarWidth;
-
-  if (this->firstTime)
+  if (this->firstTime && this->width() != 1)
     {
       this->firstTime = false;
+      int vertHeaderWidth = 0;
+      int vertScrollbarWidth = 0;
+      if (this->verticalHeader() && this->verticalHeader()->count() > 0 && this->verticalHeader()->isShown())
+        {
+          vertHeaderWidth = this->verticalHeader()->sectionRect(0).width();
+        }
+      if (this->verticalScrollBar() && this->verticalScrollBar()->isShown())
+        {
+          vertScrollbarWidth = this->verticalScrollBar()->width();
+        }
+      int width = this->width() - vertHeaderWidth - vertScrollbarWidth;
+
       int widthOfColumns = 0;
       unsigned int counter, numCols;
       numCols = this->numCols();
@@ -77,48 +77,46 @@ void MyTable::showEvent(QShowEvent* e)
             }
         }
     }
-  QTable::showEvent(e);
-}
-
-void MyTable::resizeEvent(QResizeEvent* e)
-{
-  double vertHeaderWidth = 0.0;
-  double vertScrollbarWidth = 0.0;
-  if (this->verticalHeader() && this->verticalHeader()->count() > 0 && this->verticalHeader()->isVisible())
+  else
     {
-      vertHeaderWidth = (double)(this->verticalHeader()->sectionRect(0).width());
-    }
-  if (this->verticalScrollBar() && this->verticalScrollBar()->isVisible())
-    {
-      vertScrollbarWidth = this->verticalScrollBar()->width();
-    }
-  double oldWidth = (double)(e->oldSize().width() - vertHeaderWidth - vertScrollbarWidth);
-  double width = (double)(e->size().width()) - vertHeaderWidth - vertScrollbarWidth;
-  int numColumns = this->numCols();
-  int * optSizes = new int[numColumns];
-  int counter;
-  if (!(this->contentsWidth() > width && oldWidth < width))
-    {
-      double factor = width / oldWidth;
-      //std::cout << "oldWidth: " << oldWidth << std::endl;
-      //std::cout << "width: " << width << std::endl;
-      //std::cout << "factor: " << factor << std::endl;
-      if (width < oldWidth)
+      double vertHeaderWidth = 0.0;
+      double vertScrollbarWidth = 0.0;
+      if (this->verticalHeader() && this->verticalHeader()->count() > 0 && this->verticalHeader()->isVisible())
         {
-          for (counter = 0; counter < numColumns; counter++)
+          vertHeaderWidth = (double)(this->verticalHeader()->sectionRect(0).width());
+        }
+      if (this->verticalScrollBar() && this->verticalScrollBar()->isVisible())
+        {
+          vertScrollbarWidth = this->verticalScrollBar()->width();
+        }
+      double oldWidth = (double)(e->oldSize().width() - vertHeaderWidth - vertScrollbarWidth);
+      double width = (double)(e->size().width()) - vertHeaderWidth - vertScrollbarWidth;
+      int numColumns = this->numCols();
+      int * optSizes = new int[numColumns];
+      int counter;
+      if (!(this->contentsWidth() > width && oldWidth < width))
+        {
+          double factor = width / oldWidth;
+          //std::cout << "oldWidth: " << oldWidth << std::endl;
+          //std::cout << "width: " << width << std::endl;
+          //std::cout << "factor: " << factor << std::endl;
+          if (width < oldWidth)
             {
-              optSizes[counter] = this->getOptimalColumnWidth(counter);
-              if ((int)(this->exactColumnWidth[counter]*factor) < optSizes[counter])
+              for (counter = 0; counter < numColumns; counter++)
                 {
-                  delete [] optSizes;
-                  return;
+                  optSizes[counter] = this->getOptimalColumnWidth(counter);
+                  if ((int)(this->exactColumnWidth[counter]*factor) < optSizes[counter])
+                    {
+                      delete [] optSizes;
+                      return;
+                    }
                 }
             }
+          this->scaleColumns(factor);
         }
-      this->scaleColumns(factor);
+      delete [] optSizes;
     }
   QTable::resizeEvent(e);
-  delete [] optSizes;
   return;
 }
 

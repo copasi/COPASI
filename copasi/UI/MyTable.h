@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MyTable.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/16 11:54:48 $
+   $Date: 2004/08/18 08:59:10 $
    End CVS Header */
 
 #ifndef MY_TABLE_H
@@ -31,8 +31,7 @@ class MyTable: public QTable
     virtual void MyTable::setNumCols(int count);
 
   protected:
-    virtual void showEvent(QShowEvent* e);
-    virtual void MyTable::resizeEvent(QResizeEvent* e);
+    virtual void resizeEvent(QResizeEvent* e);
     virtual int getOptimalColumnWidth(int index);
     virtual void scaleColumns(double factor);
     virtual QSize headerSectionSizeHint(int section) const;
