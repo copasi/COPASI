@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/10 22:16:16 $
+   $Date: 2003/12/11 16:00:02 $
    End CVS Header */
 
 /**
@@ -689,7 +689,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
       Name = mParser.getAttributeValue("name", papszAttrs);
 
       Order = mParser.getAttributeValue("order", papszAttrs);
-      if (atoi(Order) != mOrder) fatalError();
+      if ((unsigned C_INT32) atoi(Order) != mOrder) fatalError();
       mOrder++;
 
       role = mParser.getAttributeValue("role", papszAttrs);
@@ -2506,7 +2506,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
       it = mCommon.StateVariableList.begin();
       end = mCommon.StateVariableList.end();
 
-      for (; it != end && !Values.fail(); ++it, Values >> Value)
+      for (Values >> Value; it != end && !Values.fail(); ++it, Values >> Value)
         {
           pMetabolite = dynamic_cast< CMetab* >(CKeyFactory::get(*it));
           if (pMetabolite)
@@ -2531,6 +2531,8 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 
           fatalError();
         }
+
+      if (it != end || !Values.fail() || !Values.eof()) fatalError();
 
       mParser.popElementHandler();
       mCurrentElement = -1;
