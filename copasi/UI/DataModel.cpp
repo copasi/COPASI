@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:55:51 $
+   $Date: 2004/08/06 12:55:40 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -17,7 +17,6 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "scan/CScanTask.h"
 #include "report/CReportDefinitionVector.h"
-#include "plot/CPlotSpecVector.h"
 #include "plot/CPlotSpec2Vector.h"
 #include "optimization/COptFunction.h"
 #include "xml/CCopasiXML.h"
