@@ -114,15 +114,6 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
 
 C_FLOAT64 CScanMethod::simulate()
 {
-  InitScan();
-  unsigned C_INT32 scanDimension = scanProblem->getListSize();
-  int i;
-  // find the last master
-  for (i = scanDimension - 1; i >= 0; i--)
-    if (scanProblem->getScanItemParameter(i, "indp")) break;
-  if (i >= 0)
-    // execute many simulations
-    scan(i, true);
   scanProblem->calculate();
   return 0;
 }

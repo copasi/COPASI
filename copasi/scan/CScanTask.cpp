@@ -70,7 +70,15 @@ void CScanTask::process()
     fatalError();
 
   mpMethod->setProblem(mpProblem);
-
+  mpMethod->InitScan();
+  unsigned C_INT32 scanDimension = mpProblem->getListSize();
+  int i;
+  // find the last master
+  for (i = scanDimension - 1; i >= 0; i--)
+    if (mpProblem->getScanItemParameter(i, "indp")) break;
+  if (i >= 0)
+    // execute many simulations
+    mpMethod->scan(i, true);
   mpMethod->simulate();
 
   return;
