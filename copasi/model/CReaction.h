@@ -191,6 +191,7 @@ class CReaction : public CCopasiContainer
      *  @return string
      */
     const CChemEq & getChemEq() const;
+    CChemEq & getChemEq();
 
     /**
      *  Retrieves the rate function of the reaction

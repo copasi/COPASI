@@ -24,6 +24,7 @@
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "CMetabNameInterface.h"
+#include "CChemEqInterface.h" //only for load()
 
 C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 
@@ -100,7 +101,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
     return Fail;
 
   CModel * pModel = (CModel*) getObjectAncestor("Model");
-  setChemEqFromString(ChemEq, *pModel);
+  CChemEqInterface::setChemEqFromString(pModel, *this, ChemEq);
 
   if ((Fail = configbuffer.getVariable("KineticType", "string", &tmp)))
     return Fail;
@@ -141,7 +142,9 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   tmp = getObjectName();
   if ((Fail = configbuffer.setVariable("Step", "string", &tmp)))
     return Fail;
-  tmp = mChemEq.getChemicalEquation();
+  tmp = "TODO";  // mChemEq.getChemicalEquation();
+  // CChemEqInterface is not guaranteed to write a chemical equation that gepasi will understand
+
   tmp = tmp.substr(0, tmp.find(';'));
   if ((Fail = configbuffer.setVariable("Equation", "string", &tmp)))
     return Fail;
@@ -317,6 +320,9 @@ const std::string & CReaction::getName() const
 const CChemEq & CReaction::getChemEq() const
   {return mChemEq;}
 
+CChemEq & CReaction::getChemEq()
+{return mChemEq;}
+
 const CFunction & CReaction::getFunction() const
   {return *mpFunction;}
 
@@ -334,8 +340,8 @@ bool CReaction::setName(const std::string & name)
   return setObjectName(name);
 }
 
-void CReaction::setChemEqFromString(const std::string & chemEq, const CModel & model)
-{mChemEq.setChemicalEquation(chemEq, model);}
+//void CReaction::setChemEqFromString(const std::string & chemEq, const CModel & model)
+//{mChemEq.setChemicalEquation(chemEq, model);}
 
 /*bool CReaction::addSubstrate(CMetab * pMetab,
                              const C_FLOAT64 & multiplicity)
@@ -524,6 +530,7 @@ void CReaction::clearParameterMapping(C_INT32 index)
   mMetabKeyMap[index].push_back(metab.getKey());
 }*/
 
+#ifdef xxx
 const std::vector< std::vector<std::string> > CReaction::getParameterMappingName() const
   {
     std::vector< std::vector<std::string> > ParameterNames;
@@ -558,6 +565,7 @@ const std::vector< std::vector<std::string> > CReaction::getParameterMappingName
 
     return ParameterNames;
   } //TODO: this functionality should be in CReactionInterface
+#endif
 
 std::vector<const CMetab *> CReaction::getParameterMappingMetab(C_INT32 index) const
   {

@@ -50,12 +50,6 @@ const std::string & CChemEqElement::getMetaboliteKey() const
 const CMetab & CChemEqElement::getMetabolite() const
   {return *(CMetab*)(CCopasiContainer*)CKeyFactory::get(mMetaboliteKey);}
 
-//void CChemEqElement::setMetaboliteName(const std::string & metaboliteName)
-//{mMetaboliteName = metaboliteName;}
-
-//const std::string & CChemEqElement::getMetaboliteName() const
-//  {return mMetaboliteName;}
-
 void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity = multiplicity;}
 
@@ -82,12 +76,3 @@ void CChemEqElement::compile(const CCopasiVectorN < CCompartment > & compartment
     else
       mpMetabolite = NULL;*/
 }
-
-std::string CChemEqElement::writeElement() const
-  {
-    std::string name = CMetabNameInterface::getDisplayName(mMetaboliteKey);
-    if (mMultiplicity == 1.0)
-      return name;
-    else
-      return StringPrint("%g * %s", mMultiplicity, name.c_str());
-  }
