@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/23 21:30:51 $
+   $Author: gauges $ 
+   $Date: 2005/04/05 20:45:38 $
    End CVS Header */
 
 #include <iostream>
@@ -230,12 +230,20 @@ void SliderDialog::removeSlider()
               break;
             }
         }
+      this->deleteSlider(this->currSlider);
+    }
+}
+
+void SliderDialog::deleteSlider(CopasiSlider* pSlider)
+{
+  if (pSlider)
+    {
       std::vector<QWidget*>* v = &this->sliderMap[this->currentFolderId];
       std::vector<QWidget*>::iterator it = v->begin();
       std::vector<QWidget*>::iterator end = v->end();
       while (it != end)
         {
-          if (*it == this->currSlider)
+          if (*it == pSlider)
             {
               break;
             }
@@ -243,8 +251,8 @@ void SliderDialog::removeSlider()
         }
       assert(it != end);
       v->erase(it);
-      ((QVBoxLayout*)this->sliderBox->layout())->remove(this->currSlider);
-      pdelete(this->currSlider);
+      ((QVBoxLayout*)this->sliderBox->layout())->remove(pSlider);
+      pdelete(pSlider);
     }
 }
 
@@ -261,16 +269,18 @@ void SliderDialog::editSlider()
   pSettingsDialog->disableObjectChoosing(true);
 
   pSettingsDialog->setSlider(this->currSlider->getCSlider());
-  pSettingsDialog->exec();
-  if (pSettingsDialog->mpGlobalCheckBox->isChecked())
+  if (pSettingsDialog->exec() == QDialog::Accepted)
     {
-      this->currSlider->getCSlider()->setAssociatedEntityKey("");
+      this->currSlider->updateSliderData();
+      if (pSettingsDialog->mpGlobalCheckBox->isChecked())
+        {
+          this->currSlider->getCSlider()->setAssociatedEntityKey("");
+        }
+      else
+        {
+          this->currSlider->getCSlider()->setAssociatedEntityKey(this->getTaskForFolderId(this->currentFolderId)->getKey());
+        }
     }
-  else
-    {
-      this->currSlider->getCSlider()->setAssociatedEntityKey(this->getTaskForFolderId(this->currentFolderId)->getKey());
-    }
-  this->currSlider->updateSliderData();
   delete pSettingsDialog;
   delete pVector;
 }
@@ -438,7 +448,7 @@ void SliderDialog::fillSliderBox()
             {
               CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
               assert(pTmpSlider);
-              this->removeSlider(pTmpSlider);
+              this->deleteSlider(pTmpSlider);
             }
         }
       delete pVector;

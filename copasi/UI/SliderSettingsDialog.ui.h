@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/04/05 16:56:05 $
+   $Date: 2005/04/05 20:45:38 $
    End CVS Header */
 
 /****************************************************************************
@@ -87,6 +87,14 @@ void SliderSettingsDialog::updateInputFieldsValues()
   else
     {
       this->mpLogCheckBox->setChecked(false);
+    }
+  if (this->mpSlider->getAssociatedEntityKey() == "")
+    {
+      this->mpGlobalCheckBox->setChecked(true);
+    }
+  else
+    {
+      this->mpGlobalCheckBox->setChecked(false);
     }
 }
 
