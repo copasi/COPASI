@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/26 18:58:55 $
+   $Date: 2005/03/11 18:49:13 $
    End CVS Header */
 
 /**
@@ -150,7 +150,7 @@ class CCopasiXMLInterface
      * @param std::istream & is
      * @return bool success
      */
-    virtual bool load(std::istream & is) = NULL;
+    virtual bool load(std::istream & is) = 0;
 
     /**
      * Load information from a file.
@@ -164,7 +164,7 @@ class CCopasiXMLInterface
      * @param std::ostream & os
      * @return bool success
      */
-    virtual bool save(std::ostream & os) = NULL;
+    virtual bool save(std::ostream & os) = 0;
 
     /**
      * Save information to a file.
