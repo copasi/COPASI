@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHGASA.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/19 10:14:35 $
+   $Date: 2004/11/23 12:31:29 $
    End CVS Header */
 
 /***************************************************************************
@@ -160,15 +160,15 @@ C_INT32 COptMethodHGASA::optimise()
   // store that value
   current_best_value = Get_BestFoundSoFar_candidate();
 
-  ofstream finalout("debugopt.dat");
+  std::ofstream finalout("debugopt.dat");
   if (!finalout)
     {
-      cout << "debugopt.dat cannot be opened!" << endl;
+      std::cout << "debugopt.dat cannot be opened!" << std::endl;
       exit(1);
     }
-  finalout << "----------------------------- the best result at each generation---------------------" << endl;
-  finalout << "Generation\t" << "Best candidate value for object function\t" << "Display " << NumParameter << " parameters" << endl;
-  finalout << endl;
+  finalout << "----------------------------- the best result at each generation---------------------" << std::endl;
+  finalout << "Generation\t" << "Best candidate value for object function\t" << "Display " << NumParameter << " parameters" << std::endl;
+  finalout << std::endl;
   finalout.close();
 
   srand(time(NULL)); rand();
@@ -179,8 +179,8 @@ C_INT32 COptMethodHGASA::optimise()
   // Iterations of GA
   for (i = 0; i < NumGeneration; i++)
     {
-      cout << endl;
-      cout << "GA is processing at generation " << i << endl;
+      std::cout << std::endl;
+      std::cout << "GA is processing at generation " << i << std::endl;
 
       TrackDataFile(i);
       // replicate the individuals
@@ -495,8 +495,8 @@ C_INT32 COptMethodHGASA::optimise()
   delete WinScore;
   delete CandidateValue;
 
-  cout << endl;
-  cout << "GA has successfully done!" << endl;
+  std::cout << std::endl;
+  std::cout << "GA has successfully done!" << std::endl;
 
   return 0;
 }
@@ -665,7 +665,7 @@ void COptMethodHGASA::select(int SelectionStrategy)
 
   switch (SelectionStrategy)
     {
-    case 1:    // parent-offspring competition
+    case 1:     // parent-offspring competition
       for (i = PopulationSize; i < 2*PopulationSize; i++)
         {
           // if offspring is fitter keep it
@@ -675,7 +675,7 @@ void COptMethodHGASA::select(int SelectionStrategy)
             }
         }
       break;
-    case 2:    // tournament competition
+    case 2:     // tournament competition
       // compete with 20% of the population
       TournamentSize = PopulationSize / 5;
       // but at least one
@@ -742,22 +742,22 @@ int COptMethodHGASA::fittest(void)
 
 void COptMethodHGASA::TrackDataFile(int i)
 {
-  ofstream finalout("debugopt.dat", ios::app);
+  std::ofstream finalout("debugopt.dat", std::ios::app);
 
   if (!finalout)
     {
-      cout << "debugopt.dat cannot be opened!" << endl;
+      std::cout << "debugopt.dat cannot be opened!" << std::endl;
       exit(1);
     }
-  finalout << "#" << i << "\t" << setprecision(8) << CandidateValue[BestFoundSoFar] << endl;
+  finalout << "#" << i << "\t" << std::setprecision(8) << CandidateValue[BestFoundSoFar] << std::endl;
 
   for (int j = 0; j < NumParameter; j++)
     {
-      finalout << setprecision(8) << individual[BestFoundSoFar][j] << "\t";
+      finalout << std::setprecision(8) << individual[BestFoundSoFar][j] << "\t";
     }
 
-  finalout << endl;
-  finalout << endl;
+  finalout << std::endl;
+  finalout << std::endl;
 
   finalout.close();
 }

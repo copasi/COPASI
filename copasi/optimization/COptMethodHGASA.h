@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHGASA.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/18 20:29:28 $
+   $Author: ssahle $ 
+   $Date: 2004/11/23 12:31:29 $
    End CVS Header */
 
 /**
@@ -16,9 +16,9 @@
 #define TRUE 1
 #define FALSE 0
 
-#include <iostream.h>
-#include <iomanip.h>
-#include <fstream.h> 
+#include <iostream>
+#include <iomanip>
+#include <fstream> 
 // #include <sys/times.h>
 // #include <sys/types.h>
 #include "stdio.h"
