@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:01 $
+   $Date: 2004/06/23 14:01:34 $
    End CVS Header */
 
 // CReaction
@@ -669,7 +669,7 @@ const CFunctionParameters & CReaction::getFunctionParameters() const
     return mMap.getFunctionParameters();
   }
 
-void CReaction::compile(/*const CCopasiVectorNS < CCompartment > & compartments*/)
+void CReaction::compile()
 {
   //mChemEq.compile(compartments);
 

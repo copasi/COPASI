@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/10 12:56:35 $
+   $Date: 2004/06/23 14:02:44 $
    End CVS Header */
 
 /**
@@ -104,7 +104,7 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
 
   if (!mReport.open(pOstream)) success = false;
   if (!mReport.compile()) success = false;
-  if (!pProblem->getModel()->compile()) success = false;
+  if (!pProblem->getModel()->compile2()) success = false;
 
   pdelete(mpSteadyState);
   mpSteadyState = new CState(pProblem->getInitialState());

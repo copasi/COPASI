@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:01 $
+   $Date: 2004/06/23 14:01:34 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -433,6 +433,7 @@ class CModel : public CCopasiContainer
     /**
      *  Compile the model
      */
+    bool compile2();
     bool compile();
 
     /**

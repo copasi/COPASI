@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:12:43 $
+   $Date: 2004/06/23 14:02:35 $
    End CVS Header */
 
 /**
@@ -143,11 +143,11 @@ bool CScanTask::process()
 
   if ((pProblem->getSteadyStateTask() != NULL) && pProblem->processSteadyState())
     {
-      pProblem->getSteadyStateTask()->getProblem()->getModel()->compile();
+      pProblem->getSteadyStateTask()->getProblem()->getModel()->compile2();
     }
   if ((pProblem->getTrajectoryTask() != NULL) && pProblem->processTrajectory())
     {
-      pProblem->getTrajectoryTask()->getProblem()->getModel()->compile();
+      pProblem->getTrajectoryTask()->getProblem()->getModel()->compile2();
     }
 
   unsigned C_INT32 scanDimension = pProblem->getListSize();

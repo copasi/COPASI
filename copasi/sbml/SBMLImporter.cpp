@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/23 13:21:22 $
+   $Author: ssahle $ 
+   $Date: 2004/06/23 14:02:06 $
    End CVS Header */
 
 #include <iostream>
@@ -150,7 +150,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
     {
       this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, compartmentMap);
     }
-  copasiModel->compile();
+  copasiModel->compile2();
   return copasiModel;
 }
 

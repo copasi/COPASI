@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.180 $
+   $Revision: 1.181 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 14:01:34 $
+   $Date: 2004/06/23 14:04:52 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -482,6 +482,8 @@ bool CModel::compile2()
   buildL(LU);
   buildMoieties();
   buildStateTemplate();
+
+  std::cout << "CModel::compile2() called" << std::endl;
 
   return true;
 }
