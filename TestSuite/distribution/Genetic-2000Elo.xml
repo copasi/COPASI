@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level1" level="1" version="1">
+<model name="repressilator">
+	<notes>
+		<body xmlns="http://www.w3.org/1999/xhtml">
+			<h1>Repressilator: A synthetic oscillatory network of transcriptional 
+			regulators</h1>
+
+			<table border="0" cellspacing="0" cellpadding="2" >
+				<thead>
+					<tr>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Citation</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Elowitz MB, Leibler S (2000)
+							 A synthetic oscillatory network of transcriptional regulators.Nature.403 :
+							 335 - 338.
+						<a href="http://www.nature.com/cgi-taf/
+							DynaPage.taf?file=/nature/journal/v403/n6767/full/403335a0_fs.html">
+							http://
+							www.nature.com/cgi-taf/DynaPage.taf?file=/nature/journal/v403/n6767/full/
+							403335a0_fs.html
+						</a></td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<table border="0" cellspacing="0" cellpadding="2" >
+				<thead>
+					<tr>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							This file describes the repressilator system. The authors of this model (
+							see reference)
+							 use three transcriptional repressor systems that are not part of any natural biological clock to build an oscillating network that they called the repressilator.  The model system was induced in Escherichia coli.In this system,
+							 LacI (variable X is the mRNA,
+							 variable PX is the protein)
+							 inhibits the tetracycline-
+							resistance transposon tetR (Y,
+							 PY describe mRNA and protein)
+							. Protein tetR inhibits the gene Cl from phage Lambda (
+							Z, PZ: mRNA, protein),
+							 and protein Cl inhibits lacI expression. With appropriate parameter values this system oscillates.</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<table border="0" cellspacing="0" cellpadding="2" >
+				<thead>
+					<tr>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Rate&#160;constant&#160;&#160;&#160;&#160;&#160;&#160;</th>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Reaction</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>k1&#160;=&#160;1</td>
+						<td>X&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>k1&#160;=&#160;1</td>
+						<td>Y&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>k1&#160;=&#160;1</td>
+						<td>Z&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>K&#160;=&#160;1&#160;(hill&#160;khalf)</td>
+						<td>PX&#160;|->&#160;Y</td>
+					</tr>
+					<tr>
+						<td>K&#160;=&#160;1&#160;(hill&#160;khalf)</td>
+						<td>PY&#160;|->&#160;Z</td>
+					</tr>
+					<tr>
+						<td>K&#160;=&#160;1&#160;(hill&#160;khalf)</td>
+						<td>PZ&#160;|->&#160;X</td>
+					</tr>
+					<tr>
+						<td>n&#160;=&#160;2.1&#160;(hill&#160;nhill)</td>
+						<td>PX&#160;|->&#160;Y</td>
+					</tr>
+					<tr>
+						<td>n&#160;=&#160;2.1&#160;(hill&#160;nhill)</td>
+						<td>PY&#160;|->&#160;Z</td>
+					</tr>
+					<tr>
+						<td>n&#160;=&#160;2.1&#160;(hill&#160;nhill)</td>
+						<td>PZ&#160;|->&#160;X</td>
+					</tr>
+					<tr>
+						<td>{alpha0,&#160;alpha}&#160;=&#160;{0,&#160;250}&#160;(hill&#160;basalRate)</td>
+						<td>PX&#160;|->&#160;Y</td>
+					</tr>
+					<tr>
+						<td>{alpha0,&#160;alpha}&#160;=&#160;{0,&#160;250}&#160;(hill&#160;basalRate)</td>
+						<td>PY&#160;|->&#160;Z</td>
+					</tr>
+					<tr>
+						<td>{alpha0,&#160;alpha}&#160;=&#160;{0,&#160;250}&#160;(hill&#160;basalRate)</td>
+						<td>PZ&#160;|->&#160;X</td>
+					</tr>
+					<tr>
+						<td>alpha1&#160;=&#160;0&#160;(hill&#160;vmax)</td>
+						<td>PX&#160;|->&#160;Y</td>
+					</tr>
+					<tr>
+						<td>alpha1&#160;=&#160;0&#160;(hill&#160;vmax)</td>
+						<td>PY&#160;|->&#160;Z</td>
+					</tr>
+					<tr>
+						<td>alpha1&#160;=&#160;0&#160;(hill&#160;vmax)</td>
+						<td>PZ&#160;|->&#160;X</td>
+					</tr>
+					<tr>
+						<td>beta&#160;=&#160;5</td>
+						<td>PX&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>beta&#160;=&#160;5</td>
+						<td>PY&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>beta&#160;=&#160;5</td>
+						<td>PZ&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>beta&#160;=&#160;5</td>
+						<td>X&#160;+&#160;EmptySet&#160;->&#160;PX&#160;+&#160;X</td>
+					</tr>
+					<tr>
+						<td>beta&#160;=&#160;5</td>
+						<td>Y&#160;+&#160;EmptySet&#160;->&#160;PY&#160;+&#160;Y</td>
+					</tr>
+					<tr>
+						<td>beta&#160;=&#160;5</td>
+						<td>Z&#160;+&#160;EmptySet&#160;->&#160;PZ&#160;+&#160;Z</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<table border="0" cellspacing="0" cellpadding="2" >
+				<thead>
+					<tr>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Variable</th>
+						<th align="left" valign="middle" bgcolor="#eeeeee">IC&#160;&#160;</th>
+						<th align="left" valign="middle" bgcolor="#eeeeee">ODE</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>PX</td>
+						<td>5</td>
+						<td>PX'[t]&#160;==&#160;-(beta*PX[t])&#160;+&#160;beta*X[t]</td>
+					</tr>
+					<tr>
+						<td>PY</td>
+						<td>0</td>
+						<td>PY'[t]&#160;==&#160;-(beta*PY[t])&#160;+&#160;beta*Y[t]</td>
+					</tr>
+					<tr>
+						<td>PZ</td>
+						<td>15</td>
+						<td>PZ'[t]&#160;==&#160;-(beta*PZ[t])&#160;+&#160;beta*Z[t]</td>
+					</tr>
+					<tr>
+						<td>X</td>
+						<td>0</td>
+						<td>X'[t]&#160;==&#160;alpha0&#160;+&#160;(alpha&#160;+&#160;alpha1*PZ[t]^n)/(K^n&#160;+
+							&#160;PZ[t]^n)&#160;-&#160;k1*X[t]</td>
+					</tr>
+					<tr>
+						<td>Y</td>
+						<td>0</td>
+						<td>Y'[t]&#160;==&#160;alpha0&#160;+&#160;(alpha&#160;+&#160;alpha1*PX[t]^n)/(K^n&#160;+
+							&#160;PX[t]^n)&#160;-&#160;k1*Y[t]</td>
+					</tr>
+					<tr>
+						<td>Z</td>
+						<td>0</td>
+						<td>Z'[t]&#160;==&#160;alpha0&#160;+&#160;(alpha&#160;+&#160;alpha1*PY[t]^n)/(K^n&#160;+
+							&#160;PY[t]^n)&#160;-&#160;k1*Z[t]</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>Generated by Cellerator Version 1.0 update 2.1127 using Mathematica 4.2 for 
+				Mac OS X (June 4, 2002), November 27, 2002 12:15:32, using (PowerMac,PowerPC,
+				Mac OS X,MacOSX,Darwin)</p>
+			<p>author=B.E.Shapiro</p>
+
+		</body>
+	</notes>
+	<listOfCompartments>
+		<compartment name="cell"/>
+	</listOfCompartments>
+	<listOfSpecies>
+		<specie name="EmptySet" initialAmount="0" boundaryCondition="true" compartment="cell"/>
+		<specie name="PX" initialAmount="5" compartment="cell"/>
+		<specie name="PY" initialAmount="0" compartment="cell"/>
+		<specie name="PZ" initialAmount="15" compartment="cell"/>
+		<specie name="X" initialAmount="0" compartment="cell"/>
+		<specie name="Y" initialAmount="0" compartment="cell"/>
+		<specie name="Z" initialAmount="0" compartment="cell"/>
+	</listOfSpecies>
+	<listOfReactions>
+		<reaction name="Reaction1" reversible="false">
+			<listOfReactants>
+				<specieReference specie="X" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="k1*X">
+				<listOfParameters>
+					<parameter name="k1" value="1" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction2" reversible="false">
+			<listOfReactants>
+				<specieReference specie="Y" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="k1*Y">
+				<listOfParameters>
+					<parameter name="k1" value="1" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction3" reversible="false">
+			<listOfReactants>
+				<specieReference specie="Z" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="k1*Z">
+				<listOfParameters>
+					<parameter name="k1" value="1" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction4" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+				<specieReference specie="X" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="PX" />
+				<specieReference specie="X" />
+			</listOfProducts>
+			<kineticLaw formula="X*beta">
+				<listOfParameters>
+					<parameter name="beta" value="5" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction5" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+				<specieReference specie="Y" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="PY" />
+				<specieReference specie="Y" />
+			</listOfProducts>
+			<kineticLaw formula="Y*beta">
+				<listOfParameters>
+					<parameter name="beta" value="5" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction6" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+				<specieReference specie="Z" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="PZ" />
+				<specieReference specie="Z" />
+			</listOfProducts>
+			<kineticLaw formula="Z*beta">
+				<listOfParameters>
+					<parameter name="beta" value="5" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction7" reversible="false">
+			<listOfReactants>
+				<specieReference specie="PX" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="PX*beta">
+				<listOfParameters>
+					<parameter name="beta" value="5" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction8" reversible="false">
+			<listOfReactants>
+				<specieReference specie="PY" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="PY*beta">
+				<listOfParameters>
+					<parameter name="beta" value="5" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction9" reversible="false">
+			<listOfReactants>
+				<specieReference specie="PZ" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="PZ*beta">
+				<listOfParameters>
+					<parameter name="beta" value="5" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction10" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="X" />
+			</listOfProducts>
+			<kineticLaw formula="alpha0 + (alpha + PZ^n*alpha1)/(K^n + PZ^n)">
+				<listOfParameters>
+					<parameter name="alpha1" value="0" />
+					<parameter name="n" value="2.1" />
+					<parameter name="K" value="1" />
+					<parameter name="alpha0" value="0" />
+					<parameter name="alpha" value="250" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction11" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="Y" />
+			</listOfProducts>
+			<kineticLaw formula="alpha0 + (alpha + PX^n*alpha1)/(K^n + PX^n)">
+				<listOfParameters>
+					<parameter name="alpha1" value="0" />
+					<parameter name="n" value="2.1" />
+					<parameter name="K" value="1" />
+					<parameter name="alpha0" value="0" />
+					<parameter name="alpha" value="250" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction12" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="Z" />
+			</listOfProducts>
+			<kineticLaw formula="alpha0 + (alpha + PY^n*alpha1)/(K^n + PY^n)">
+				<listOfParameters>
+					<parameter name="alpha1" value="0" />
+					<parameter name="n" value="2.1" />
+					<parameter name="K" value="1" />
+					<parameter name="alpha0" value="0" />
+					<parameter name="alpha" value="250" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+	</listOfReactions>
+</model>
+</sbml>

@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by XMLPrettyPrinter on 27/10/03 from JDesigner 1.8k -->
+<sbml level = "1" version = "1" xmlns = "http://www.sbml.org/sbml/level1">
+   <!--                     -->
+   <!--  Model Starts Here  -->
+   <!--                     -->
+   <model name = "untitled">
+      <listOfCompartments>
+         <compartment name = "compartment" volume = "1"/>
+      </listOfCompartments>
+      <listOfSpecies>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_CO2"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.33644" name = "RuBP_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "3.35479" name = "PGA_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.49806" name = "ATP_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.14825" name = "BPGA_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.21" name = "x_NADPH_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.01334" name = "GAP_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1.5662" name = "Pi_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.29345" name = "DHAP_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.02776" name = "FBP_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1.36481" name = "F6P_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.41021" name = "E4P_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00363" name = "X5P_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1.56486" name = "SBP_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00541" name = "S7P_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00599" name = "R5P_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00235" name = "Ru5P_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.5" name = "x_Pi_cyt"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_GAP_cyt"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "3.1396" name = "G6P_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.29" name = "x_NADP_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_PGA_cyt"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.00149" name = "ADP_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_DHAP_cyt"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1.26E-5" name = "x_Proton_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "0.18206" name = "G1P_ch"/>
+         <specie boundaryCondition = "false" compartment = "compartment" initialAmount = "1" name = "x_Starch_ch"/>
+      </listOfSpecies>
+      <listOfReactions>
+         <reaction name = "J0" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "RuBP_ch" stoichiometry = "1"/>
+               <specieReference specie = "x_CO2" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "PGA_ch" stoichiometry = "2"/>
+            </listOfProducts>
+            <kineticLaw formula = "Light_on*Rbco_vm*RuBP_ch/(RuBP_ch+Rbco_km*(1+PGA_ch/Rbco_KiPGA+FBP_ch/Rbco_KiFBP+SBP_ch/Rbco_KiSBP+Pi_ch/Rbco_KiPi+x_NADPH_ch/Rbco_KiNADPH))">
+               <listOfParameters>
+                  <parameter name = "Light_on" value = "1"/>
+                  <parameter name = "Rbco_vm" value = "340"/>
+                  <parameter name = "Rbco_km" value = "0.02"/>
+                  <parameter name = "Rbco_KiPGA" value = "0.84"/>
+                  <parameter name = "Rbco_KiFBP" value = "0.04"/>
+                  <parameter name = "Rbco_KiSBP" value = "0.075"/>
+                  <parameter name = "Rbco_KiPi" value = "0.9"/>
+                  <parameter name = "Rbco_KiNADPH" value = "0.07"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J1" reversible = "true">
+            <listOfReactants>
+               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "DHAP_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "TPI_v*(GAP_ch-DHAP_ch/q4)">
+               <listOfParameters>
+                  <parameter name = "TPI_v" value = "5000000000"/>
+                  <parameter name = "q4" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J2" reversible = "true">
+            <listOfReactants>
+               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
+               <specieReference specie = "DHAP_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "FBP_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "F_Aldo_v*(DHAP_ch*GAP_ch-FBP_ch/q5)">
+               <listOfParameters>
+                  <parameter name = "F_Aldo_v" value = "5000000000"/>
+                  <parameter name = "q5" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J3" reversible = "true">
+            <listOfReactants>
+               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
+               <specieReference specie = "F6P_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "X5P_ch" stoichiometry = "1"/>
+               <specieReference specie = "E4P_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "F_TKL_v*(F6P_ch*GAP_ch-E4P_ch*X5P_ch/q7)">
+               <listOfParameters>
+                  <parameter name = "F_TKL_v" value = "5000000000"/>
+                  <parameter name = "q7" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J4" reversible = "true">
+            <listOfReactants>
+               <specieReference specie = "DHAP_ch" stoichiometry = "1"/>
+               <specieReference specie = "E4P_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "SBP_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "E_Aldo_v*(E4P_ch*DHAP_ch-SBP_ch/q8)">
+               <listOfParameters>
+                  <parameter name = "E_Aldo_v" value = "5000000000"/>
+                  <parameter name = "q8" value = "13"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J5" reversible = "true">
+            <listOfReactants>
+               <specieReference specie = "S7P_ch" stoichiometry = "1"/>
+               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "R5P_ch" stoichiometry = "1"/>
+               <specieReference specie = "X5P_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "G_TKL_v*(GAP_ch*S7P_ch-X5P_ch*R5P_ch/q10)">
+               <listOfParameters>
+                  <parameter name = "G_TKL_v" value = "5000000000"/>
+                  <parameter name = "q10" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J6" reversible = "true">
+            <listOfReactants>
+               <specieReference specie = "R5P_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "Ru5P_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "R5Piso_v*(R5P_ch-Ru5P_ch/q11)">
+               <listOfParameters>
+                  <parameter name = "R5Piso_v" value = "5000000000"/>
+                  <parameter name = "q11" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J7" reversible = "true">
+            <listOfReactants>
+               <specieReference specie = "X5P_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "Ru5P_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "X5Pepi_v*(X5P_ch-Ru5P_ch/q12)">
+               <listOfParameters>
+                  <parameter name = "X5Pepi_v" value = "5000000000"/>
+                  <parameter name = "q12" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J8" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "x_Pi_cyt" stoichiometry = "1"/>
+               <specieReference specie = "PGA_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "x_PGA_cyt" stoichiometry = "1"/>
+               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "PGA_xpMult*TP_Piap_vm*PGA_ch/(TP_Piap_kPGA_ch*(1+(1+TP_Piap_kPi_cyt/x_Pi_cyt)*(Pi_ch/TP_Piap_kPi_ch+PGA_ch/TP_Piap_kPGA_ch+DHAP_ch/TP_Piap_kDHAP_ch+GAP_ch/TP_Piap_kGAP_ch)))">
+               <listOfParameters>
+                  <parameter name = "PGA_xpMult" value = "0.2"/>
+                  <parameter name = "TP_Piap_vm" value = "250"/>
+                  <parameter name = "TP_Piap_kPGA_ch" value = "0.25"/>
+                  <parameter name = "TP_Piap_kPi_cyt" value = "0.74"/>
+                  <parameter name = "TP_Piap_kPi_ch" value = "0.63"/>
+                  <parameter name = "TP_Piap_kDHAP_ch" value = "0.077"/>
+                  <parameter name = "TP_Piap_kGAP_ch" value = "0.075"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J9" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "x_Pi_cyt" stoichiometry = "1"/>
+               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "x_GAP_cyt" stoichiometry = "1"/>
+               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "TP_Piap_vm*GAP_ch/(TP_Piap_kGAP_ch*(1+(1+TP_Piap_kPi_cyt/x_Pi_cyt)*(Pi_ch/TP_Piap_kPi_ch+PGA_ch/TP_Piap_kPGA_ch+DHAP_ch/TP_Piap_kDHAP_ch+GAP_ch/TP_Piap_kGAP_ch)))">
+               <listOfParameters>
+                  <parameter name = "TP_Piap_vm" value = "0"/>
+                  <parameter name = "TP_Piap_kGAP_ch" value = "1"/>
+                  <parameter name = "TP_Piap_kPi_cyt" value = "1"/>
+                  <parameter name = "TP_Piap_kPi_ch" value = "1"/>
+                  <parameter name = "TP_Piap_kPGA_ch" value = "1"/>
+                  <parameter name = "TP_Piap_kDHAP_ch" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J10" reversible = "true">
+            <listOfReactants>
+               <specieReference specie = "F6P_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "G6P_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "PGI_v*(F6P_ch-G6P_ch/q14)">
+               <listOfParameters>
+                  <parameter name = "PGI_v" value = "5000000000"/>
+                  <parameter name = "q14" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J11" reversible = "true">
+            <listOfReactants>
+               <specieReference specie = "G6P_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "G1P_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "PGM_v*(G6P_ch-G1P_ch/q15)">
+               <listOfParameters>
+                  <parameter name = "PGM_v" value = "5000000000"/>
+                  <parameter name = "q15" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J12" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
+               <specieReference specie = "ADP_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "ATP_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "Light_on*LR_vm*ADP_ch*Pi_ch/((ADP_ch+LR_kmADP)*(Pi_ch+LR_kmPi))">
+               <listOfParameters>
+                  <parameter name = "Light_on" value = "0"/>
+                  <parameter name = "LR_vm" value = "1500"/>
+                  <parameter name = "LR_kmADP" value = "0.014"/>
+                  <parameter name = "LR_kmPi" value = "0.3"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J13" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "Ru5P_ch" stoichiometry = "1"/>
+               <specieReference specie = "ATP_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "RuBP_ch" stoichiometry = "1"/>
+               <specieReference specie = "ADP_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "Light_on*Ru5Pk_ch_vm*Ru5P_ch*ATP_ch/((Ru5P_ch+Ru5Pk_ch_km1*(1+PGA_ch/Ru5Pk_ch_KiPGA+RuBP_ch/Ru5Pk_ch_KiRuBP+Pi_ch/Ru5Pk_ch_KiPi))*(ATP_ch*(1+ADP_ch/Ru5Pk_ch_KiADP1)+Ru5Pk_ch_km2*(1+ADP_ch/Ru5Pk_ch_KiADP2)))">
+               <listOfParameters>
+                  <parameter name = "Light_on" value = "0"/>
+                  <parameter name = "Ru5Pk_ch_vm" value = "10000"/>
+                  <parameter name = "Ru5Pk_ch_km1" value = "0.05"/>
+                  <parameter name = "Ru5Pk_ch_KiPGA" value = "2"/>
+                  <parameter name = "Ru5Pk_ch_KiRuBP" value = "0.7"/>
+                  <parameter name = "Ru5Pk_ch_KiPi" value = "4"/>
+                  <parameter name = "Ru5Pk_ch_KiADP1" value = "2.5"/>
+                  <parameter name = "Ru5Pk_ch_km2" value = "0.05"/>
+                  <parameter name = "Ru5Pk_ch_KiADP2" value = "0.4"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J14" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "PGA_ch" stoichiometry = "1"/>
+               <specieReference specie = "ATP_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "BPGA_ch" stoichiometry = "1"/>
+               <specieReference specie = "ADP_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "Light_on*PGK_v*(PGA_ch*ATP_ch-BPGA_ch*ADP_ch/q2)">
+               <listOfParameters>
+                  <parameter name = "Light_on" value = "0"/>
+                  <parameter name = "PGK_v" value = "5000000000"/>
+                  <parameter name = "q2" value = "0.00031"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J15" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "ATP_ch" stoichiometry = "1"/>
+               <specieReference specie = "G1P_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "x_Starch_ch" stoichiometry = "1"/>
+               <specieReference specie = "ADP_ch" stoichiometry = "1"/>
+               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "StSyn_vm*G1P_ch*ATP_ch/((G1P_ch+stsyn_ch_km1)*(1+ADP_ch/stsyn_ch_Ki)*(ATP_ch+stsyn_ch_km2)+stsyn_ch_km2*Pi_ch/(stsyn_ch_ka1*PGA_ch)+(stsyn_ch_ka2*F6P_ch)+(stsyn_ch_ka3*FBP_ch))">
+               <listOfParameters>
+                  <parameter name = "StSyn_vm" value = "40"/>
+                  <parameter name = "stsyn_ch_km1" value = "0.08"/>
+                  <parameter name = "stsyn_ch_Ki" value = "10"/>
+                  <parameter name = "stsyn_ch_km2" value = "0.08"/>
+                  <parameter name = "stsyn_ch_ka1" value = "0.1"/>
+                  <parameter name = "stsyn_ch_ka2" value = "0.02"/>
+                  <parameter name = "stsyn_ch_ka3" value = "0.02"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J16" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "x_Starch_ch" stoichiometry = "1"/>
+               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "G1P_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "StPase_Vm*Pi_ch/(Pi_ch+StPase_km*(1+G1P_ch/StPase_kiG1P))">
+               <listOfParameters>
+                  <parameter name = "StPase_Vm" value = "40"/>
+                  <parameter name = "StPase_km" value = "5"/>
+                  <parameter name = "StPase_kiG1P" value = "3.12"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J17" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "FBP_ch" stoichiometry = "1"/>
+               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "F6P_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "Light_on*FBPase_ch_vm*FBP_ch/(FBP_ch+FBPase_ch_km*(1+F6P_ch/FBPase_ch_KiF6P+Pi_ch/FBPase_ch_KiPi))">
+               <listOfParameters>
+                  <parameter name = "Light_on" value = "0"/>
+                  <parameter name = "FBPase_ch_vm" value = "200"/>
+                  <parameter name = "FBPase_ch_km" value = "0.03"/>
+                  <parameter name = "FBPase_ch_KiF6P" value = "0.7"/>
+                  <parameter name = "FBPase_ch_KiPi" value = "12"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J18" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "x_Pi_cyt" stoichiometry = "1"/>
+               <specieReference specie = "DHAP_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "x_DHAP_cyt" stoichiometry = "1"/>
+               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "TP_Piap_vm*DHAP_ch/(TP_Piap_kDHAP_ch*(1+(1+TP_Piap_kPi_cyt/x_Pi_cyt)*(Pi_ch/TP_Piap_kPi_ch+PGA_ch/TP_Piap_kPGA_ch+DHAP_ch/TP_Piap_kDHAP_ch+GAP_ch/TP_Piap_kGAP_ch)))">
+               <listOfParameters>
+                  <parameter name = "TP_Piap_vm" value = "0"/>
+                  <parameter name = "TP_Piap_kDHAP_ch" value = "1"/>
+                  <parameter name = "TP_Piap_kPi_cyt" value = "1"/>
+                  <parameter name = "TP_Piap_kPi_ch" value = "1"/>
+                  <parameter name = "TP_Piap_kPGA_ch" value = "1"/>
+                  <parameter name = "TP_Piap_kGAP_ch" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J19" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "x_NADPH_ch" stoichiometry = "1"/>
+               <specieReference specie = "BPGA_ch" stoichiometry = "1"/>
+               <specieReference specie = "x_Proton_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "x_NADP_ch" stoichiometry = "1"/>
+               <specieReference specie = "GAP_ch" stoichiometry = "1"/>
+               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "Light_on*G3Pdh_v*(BPGA_ch*x_NADPH_ch*x_Proton_ch-x_NADP_ch*GAP_ch*Pi_ch/q3)">
+               <listOfParameters>
+                  <parameter name = "Light_on" value = "0"/>
+                  <parameter name = "G3Pdh_v" value = "5000000000"/>
+                  <parameter name = "q3" value = "1"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+         <reaction name = "J20" reversible = "false">
+            <listOfReactants>
+               <specieReference specie = "SBP_ch" stoichiometry = "1"/>
+            </listOfReactants>
+            <listOfProducts>
+               <specieReference specie = "Pi_ch" stoichiometry = "1"/>
+               <specieReference specie = "S7P_ch" stoichiometry = "1"/>
+            </listOfProducts>
+            <kineticLaw formula = "Light_on*SBPase_ch_vm*SBP_ch/(SBP_ch+SBPase_ch_km*(1+Pi_ch/SBPase_ch_KiPi))">
+               <listOfParameters>
+                  <parameter name = "Light_on" value = "0"/>
+                  <parameter name = "SBPase_ch_vm" value = "40"/>
+                  <parameter name = "SBPase_ch_km" value = "0.013"/>
+                  <parameter name = "SBPase_ch_KiPi" value = "12"/>
+               </listOfParameters>
+            </kineticLaw>
+         </reaction>
+      </listOfReactions>
+   </model>
+</sbml>
