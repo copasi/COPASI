@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/12 20:03:17 $
+   $Author: ssahle $ 
+   $Date: 2004/12/02 15:25:28 $
    End CVS Header */
 
 #include <algorithm>
@@ -241,7 +241,7 @@ CNewtonMethod::processInternal()
 
           *mpSteadyStateX = *pTrajectory->getState();
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
-          if (isSteadyState())
+          if (isSteadyState(targetFunction(mdxdt)))
             {
               *mpSteadyState = *mpSteadyStateX; //convert back to CState
               return returnProcess(true, mFactor, mResolution);
@@ -275,7 +275,7 @@ CNewtonMethod::processInternal()
 
           *mpSteadyStateX = *pTrajectory->getState();
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
-          if (isSteadyState())
+          if (isSteadyState(targetFunction(mdxdt)))
             {
               *mpSteadyState = *mpSteadyStateX; //convert back to CState
               return returnProcess(true, mFactor, mResolution);
@@ -305,11 +305,14 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 {
   CNewtonMethod::NewtonReturnCode ReturnCode = CNewtonMethod::notFound;
   C_INT32 i, j, k;
-  C_FLOAT64 nmaxrate;
+  C_FLOAT64 oldMaxRate, newMaxRate;
 
   const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
-  if (isSteadyState())
+  oldMaxRate = targetFunction(mdxdt);
+  if (isSteadyState(oldMaxRate))
     return returnNewton(CNewtonMethod::found);
+
+  std::cout << "Before: " << oldMaxRate << std::endl;
 
   // Start the iterations
   C_INT info = 0;
@@ -318,7 +321,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
   std::cout << "processNewton called" << std::endl;
 
-  for (k = 0; k < mIterationLimit && mMaxrate > mScaledResolution; k++)
+  for (k = 0; k < mIterationLimit && oldMaxRate > mScaledResolution; k++)
     {
       if (mpProgressHandler) /*flagStopped =*/ mpProgressHandler->reInit(0, "newton method...");
       if (mpProgressHandler) if (mpProgressHandler->progress(-1)) break;
@@ -328,7 +331,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       mXold = *mX; //should be almost as efficient as the above
 
       //      DebugFile << "Iteration: " << k << std::endl;
-      mpSteadyStateX->calculateJacobian(*mpJacobianX, std::min(mFactor, mMaxrate),
+      mpSteadyStateX->calculateJacobian(*mpJacobianX, std::min(mFactor, oldMaxRate),
                                         mResolution); //X
       //std::cout << "Jacobian: " << mJacobianX << std::endl;
 
@@ -437,13 +440,13 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       if (info)
         fatalError();
 
-      nmaxrate = mMaxrate * 1.001;
+      newMaxRate = oldMaxRate * 1.001;
 
       // copy values of increment to h
       for (i = 0; i < mDimension; i++)
         mH[i] = mdxdt[i];
 
-      for (i = 0; (i < 32) && (nmaxrate >= mMaxrate); i++)
+      for (i = 0; (i < 32) && (newMaxRate >= oldMaxRate); i++)
         {
           for (j = 0; j < mDimension; j++)
             {
@@ -452,25 +455,25 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
             }
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
-          nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                              /* fortran style vector */
-                           1);
+          newMaxRate = targetFunction(mdxdt);
+          std::cout << "k: " << k << " i: " << i << " target: " << newMaxRate << std::endl;
         }
 
-      std::cout << k << "th Newton Step. i = " << i << " maxRate = " << nmaxrate << std::endl;
+      std::cout << k << "th Newton Step. i = " << i << " maxRate = " << newMaxRate << std::endl;
 
       if (i == 32)
         {
-          std::cout << "a newton step did not succeed" << std::endl;
+          std::cout << "a newton step did not improve the target function" << std::endl;
 
           //discard the step
           *mX = mXold; //memcpy(mX->array(), mXold.array(), mDimension * sizeof(C_FLOAT64));
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          oldMaxRate = targetFunction(mdxdt);
 
-          if (isSteadyState())
+          if (isSteadyState(oldMaxRate))
             ReturnCode = CNewtonMethod::found;
-          else if (mMaxrate < mScaledResolution)
+          else if (oldMaxRate < mScaledResolution)
             ReturnCode = CNewtonMethod::notFound;
           else
             ReturnCode = CNewtonMethod::dampingLimitExceeded;
@@ -481,12 +484,12 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       //      for (i = 0; i < mDimension; i++)
       //        mSs_x[i] = mSs_xnew[i];
 
-      mMaxrate = nmaxrate;
+      oldMaxRate = newMaxRate;
     }
 
-  if (isSteadyState())
+  if (isSteadyState(oldMaxRate))
     ReturnCode = CNewtonMethod::found;
-  else if (mMaxrate < mScaledResolution)
+  else if (oldMaxRate < mScaledResolution)
     ReturnCode = CNewtonMethod::notFound;
   else
     ReturnCode = CNewtonMethod::iterationLimitExceeded;
@@ -516,21 +519,28 @@ CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
   return returnCode;
 }
 
-bool CNewtonMethod::isSteadyState()
+bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 {
-  C_INT32 i;
-
-  if (mDimension == 0) return true;
-
-  mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                              /* fortran style vector */
-                   1);
-
-  if (mMaxrate > mScaledResolution)
+  if (value > mScaledResolution)
     return false;
 
-  //for (i = 0; i < mDimension; i++)
-  //  if (mX[i] < - mResolution) return false;
-  //TODO: check if the above is really unnecessary...
   return true;
 }
+
+C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particlefluxes) const
+  {
+    const CCopasiVector<CMetab> & metabs = mpSteadyStateX->getModel()->getMetabolitesInd();
+    const C_FLOAT64 & factor = mpSteadyStateX->getModel()->getNumber2QuantityFactor();
+
+    C_FLOAT64 tmp, store = 0;
+
+    C_INT32 i, imax = metabs.size();
+    for (i = 0; i < imax; ++i)
+      {
+        tmp = fabs(mdxdt[i] * metabs[i]->getCompartment()->getVolumeInv() * factor);
+        if (tmp > store)
+          store = tmp;
+        //std::cout << metabs[i]->getObjectName() << "  " << tmp << std::endl;
+      }
+    return store;
+  }

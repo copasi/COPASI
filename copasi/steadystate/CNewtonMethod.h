@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/26 15:19:27 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 18:19:25 $
    End CVS Header */
 
 /**
@@ -46,7 +46,7 @@ class CNewtonMethod : public CSteadyStateMethod
     C_FLOAT64 mResolution;
     C_FLOAT64 mScaledResolution;
     C_INT mDimension;
-    C_FLOAT64 mMaxrate;
+    //C_FLOAT64 mMaxrate;
     CVector< C_FLOAT64 > * mX;
     CVector< C_FLOAT64 > mH;
     CVector< C_FLOAT64 > mXold;
@@ -95,9 +95,16 @@ class CNewtonMethod : public CSteadyStateMethod
      * @param const CState & initialState
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
-    virtual CSteadyStateMethod::ReturnCode
-    processInternal();
-    bool isSteadyState();
+    virtual CSteadyStateMethod::ReturnCode processInternal();
+
+    bool isSteadyState(C_FLOAT64 value);
+
+    /**
+     * This is the function that is supposed to be near zero if a steady 
+     * state is detected.
+     * @param const CVector< C_FLOAT64 > & particlefluxes
+     */
+    C_FLOAT64 targetFunction(const CVector< C_FLOAT64 > & particlefluxes) const;
 
   private:
     /**
