@@ -1,20 +1,22 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/12 09:59:22 $
+   $Date: 2004/11/25 14:33:42 $
    End CVS Header */
 
 #ifndef CopasiSlider_H__
 #define CopasiSlider_H__
 
 #include "qvbox.h"
+#include "utilities/CCopasiParameter.h"
 
 class QSlider;
 class QWidget;
 class CCopasiObject;
 class QLabel;
+class CCopasiParameterGroup;
 
 class CopasiSlider: public QVBox
   {
@@ -25,22 +27,24 @@ class CopasiSlider: public QVBox
     CopasiSlider(CCopasiObject* object, QWidget* parent = 0);
     virtual ~CopasiSlider();
 
-    NumberType type() const;
-    void setType(NumberType type);
+    CCopasiParameter::Type type() const;
+    void setType(CCopasiParameter::Type type);
 
-    double value() const;
-    void setValue(double value);
-    unsigned int minorMajorFactor() const;
-    void setMinorMajorFactor(unsigned int factor);
-    double minorTickInterval() const;
-    unsigned int numMinorTicks() const;
-    void setNumMinorTicks(unsigned int numMinorTicks);
+    C_FLOAT64 value() const;
+    void setValue(C_FLOAT64 value);
+    unsigned C_INT32 minorMajorFactor() const;
+    void setMinorMajorFactor(unsigned C_INT32 factor);
+    C_FLOAT64 minorTickInterval() const;
+    unsigned C_INT32 numMinorTicks() const;
+    void setNumMinorTicks(unsigned C_INT32 numMinorTicks);
     CCopasiObject* object() const;
     void setObject(CCopasiObject* object);
-    void setMinValue(double value);
-    void setMaxValue(double value);
-    double minValue() const;
-    double maxValue() const;
+    void setMinValue(C_FLOAT64 value);
+    void setMaxValue(C_FLOAT64 value);
+    C_FLOAT64 minValue() const;
+    C_FLOAT64 maxValue() const;
+    CCopasiParameterGroup* parameterGroup() const;
+    void setParameterGroup(CCopasiParameterGroup* parameterGroup);
 
   public slots:
     void sliderValueChanged(int value);
@@ -52,15 +56,16 @@ class CopasiSlider: public QVBox
 
   protected:
     CCopasiObject* mpObject;
-    NumberType mTypeVar;
-    double mMinValue;
-    double mMaxValue;
-    int mNumMinorTicks;
-    unsigned int mMinorMajorFactor;
     QSlider* mpSlider;
     QLabel* mpLabel;
-    double mTickInterval;
-    double mValue;
+    CCopasiParameterGroup* mpParameterGroup;
+    C_FLOAT64 mTickInterval;
+    C_FLOAT64 mMinValue;
+    C_FLOAT64 mMaxValue;
+    C_FLOAT64 mValue;
+    unsigned C_INT32 mNumMinorTicks;
+    unsigned C_INT32 mMinorMajorFactor;
+    CCopasiParameter::Type mType;
 
     void updateSliderData();
     void updateLabel();
