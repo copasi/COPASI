@@ -100,9 +100,9 @@ void ModelWidget::loadModel(CModel *model)
       ComboBox3->clear();
       QStringList comboEntries;
 
-      for (unsigned int temp1 = 0; CModel::TimeUnitName[temp1] != ""; temp1++)
+      for (unsigned int temp1 = 0; mModel->TimeUnitName[temp1] != ""; temp1++)
         {
-          comboEntries.push_front(CModel::TimeUnitName[temp1].c_str());
+          comboEntries.push_front(mModel->TimeUnitName[temp1].c_str());
           //QMessageBox::information(this, "tIME uNIT", mModel->TimeUnitName[temp1].c_str());
         }
       ComboBox1->insertStringList(comboEntries, -1);
@@ -116,7 +116,6 @@ void ModelWidget::loadModel(CModel *model)
         }
       ComboBox2->insertStringList(comboEntries1, -1);
       ComboBox2->setCurrentText(mModel->getVolumeUnit().c_str());
-
       QStringList comboEntries2;
       for (temp1 = 0; CModel::QuantityUnitName[temp1] != ""; temp1++)
         {
@@ -132,4 +131,49 @@ void ModelWidget::slotBtnCancelClicked()
 {}
 
 void ModelWidget::slotBtnOKClicked()
-{}
+{
+  /*
+  if (model != NULL)
+      {
+    CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
+    CSteadyStateMethod* steadystatemethod = mSteadyStateTask->getMethod();
+   
+    bool bJacobian = taskJacobian->isChecked ();
+    bool bStatistics = taskStability->isChecked ();
+   
+    steadystateproblem->setJacobianRequested(bJacobian);
+    steadystateproblem->setStabilityAnalysisRequested(bStatistics);
+   
+    QTableItem * pItem;
+    QString substrate;
+    QString strname;
+    unsigned C_INT32 i;
+    for (i = 0; i < steadystatemethod->size(); i++)
+      {
+        pItem = parameterTable->item(i, 0);
+        substrate = pItem->text();
+        strname = (steadystatemethod->getName(i)).c_str();
+        switch (steadystatemethod->getType((const char *)strname.utf8()))
+          {
+          case CParameter::DOUBLE:
+            steadystatemethod->setValue((const char *)strname.utf8(),
+                                        substrate.toDouble());
+            break;
+          case CParameter::INT:
+            steadystatemethod->setValue((const char *)strname.utf8(),
+                                        (C_INT32) substrate.toInt());
+            break;
+          case CParameter::UINT:
+            steadystatemethod->setValue((const char *)strname.utf8(),
+                                        (unsigned C_INT32) substrate.toUInt());
+            break;
+          case CParameter::BOOL:;
+            steadystatemethod->setValue((const char *)strname.utf8(),
+                                        (bool) substrate.toUShort());
+            break;
+          }
+      }
+    loadSteadyStateTask(mSteadyStateTask);
+  }
+  */
+}
