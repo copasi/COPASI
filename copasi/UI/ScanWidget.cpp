@@ -424,22 +424,7 @@ void ScanWidget::addButtonClicked()
       pdelete(pSelectedVector);
       return;
     }
-  /*
-    ObjectListItem* pListItem = pSelectedList->getRoot();
-    for (; pListItem; pListItem = pListItem->pNext)
-      if ((pListItem->pItem) && (pListItem->pItem->getObject()) && (pListItem->pItem->getObject()->pCopasiObject))
-        break;
-    if (!pSelectedList->getRoot()) //no result returned
-      {
-        pdelete pSelectedObjects;
-        pdelete pSelectedList;
-        return;
-      }
-   
-    addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
-    pdelete pSelectedObjects;
-    pdelete pSelectedList;
-  */
+
   int i = 0;
   for (; i < pSelectedVector->size(); i++)
     if ((*pSelectedVector)[i])
@@ -447,13 +432,11 @@ void ScanWidget::addButtonClicked()
 
   if (i >= pSelectedVector->size()) //no result returned
     {
-      //      pdelete(pSelectedObjects);
       pdelete(pSelectedVector);
       return;
     }
 
   addNewScanItem((*pSelectedVector)[i]);
-  //  pdelete(pSelectedObjects);
   pdelete(pSelectedVector);
 }
 
