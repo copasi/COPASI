@@ -370,7 +370,7 @@ void MetabolitesWidget1::slotBtnCancelClicked()
 
 void MetabolitesWidget1::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel the changes?");
+  QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit the changes?");
   string filename = ((string) name.latin1()) + ".gps";
   CWriteConfig *Met = new CWriteConfig(filename);
 
