@@ -201,7 +201,7 @@ EXTRA_DIST =  	CompartmentsWidget.h	CompartmentsWidget.cpp 	Observer.h Observer.
 INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
-LIBS =  	-lelementaryFluxModes 	-lfunction 	-lmodel 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lqt 	-lqui 	-lmkl_lapack 	-lmkl_p3 	-lg2c 	-lpthread 	-lXft 	-lfreetype 	-lXrender 	-lSM 	-lICE 	-lXinerama 	-lXext 	-lX11 	-lc
+LIBS =  	-lelementaryFluxModes 	-lfunction 	-lmodel 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lqt 	-lqui 	-lmkl_lapack 	-lmkl_p3 	-lg2c 	-lpthread 	-lXft 	-lfreetype 	-lXrender 	-lSM 	-lICE 	-lXinerama 	-lXext 	-lX11 	-ldl
 
 
 # the library search path.
