@@ -26,6 +26,7 @@
 #include "scan/CScanMethod.h"
 #include "model/CModel.h"
 #include "listviews.h"
+#include "ScanItemWidget.h"
 
 #include "SteadyStateWidget.h"
 #include "TrajectoryWidget.h"
@@ -69,14 +70,14 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   //Just for test
   for (int temp = 1; temp <= 7; temp++)
     {
-      parameterTable = new QTable(this, "parameterTable");
-      parameterTable->setNumRows(5);
-      parameterTable->setNumCols(5);
-      parameterTable->setFocusPolicy(QWidget::WheelFocus);
-      QHeader *colHeader = parameterTable->horizontalHeader();
-      colHeader->setLabel(0, tr("Value"));
+      parameterTable = new ScanItemWidget(this, "parameterTable");
+      parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
+      parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
       vBox->insertChild(parameterTable);
-      vBox->setSpacing(25);
+      Line1 = new QFrame(this, "Line1");
+      Line1->setFrameShape(QFrame::HLine);
+      Line1->setLineWidth (4);
+      vBox->insertChild(Line1);
     }
 
   scrollview->addChild(vBox);
@@ -257,23 +258,25 @@ void ScanWidget::loadScan(CModel *model)
       //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
       for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
         {
-          CMethodParameterList *itemList = scanProblem->getScanItem(i);
-          itemList->getName();
-          parameterTable = new QTable(scrollview, "parameterTable");
-          parameterTable->setNumCols(1);
-          parameterTable->setFocusPolicy(QWidget::WheelFocus);
-          parameterTable->horizontalHeader()->setLabel(0, "Value");
-
-          for (C_INT32 j = 0; j < itemList->size(); j++)
-            {
-              parameterTable->setNumRows(itemList->size());
-              //rowHeader->setLabel(j, itemList(j).c_str());
-
-              parameterTable->verticalHeader()->setLabel(j, itemList->getName(j).c_str());
-              parameterTable->setText(j, 0, QString::number(itemList->getValue(j)));
-            }
-          vBox->insertChild(parameterTable);
-          vBox->setSpacing(15);
+          /*
+                    CMethodParameterList *itemList = scanProblem->getScanItem(i);
+                    itemList->getName();
+                    parameterTable = new QTable(scrollview, "parameterTable");
+                    parameterTable->setNumCols(1);
+                    parameterTable->setFocusPolicy(QWidget::WheelFocus);
+                    parameterTable->horizontalHeader()->setLabel(0, "Value");
+           
+                    for (C_INT32 j = 0; j < itemList->size(); j++)
+                      {
+                        parameterTable->setNumRows(itemList->size());
+                        //rowHeader->setLabel(j, itemList(j).c_str());
+           
+                        parameterTable->verticalHeader()->setLabel(j, itemList->getName(j).c_str());
+                        parameterTable->setText(j, 0, QString::number(itemList->getValue(j)));
+                      }
+                    vBox->insertChild(parameterTable);
+                    vBox->setSpacing(15);
+          */
         }
 
       emit show_me();
