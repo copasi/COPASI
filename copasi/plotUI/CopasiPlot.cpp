@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/14 13:45:39 $
+   $Date: 2005/02/17 14:46:55 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -138,8 +138,23 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
   unsigned C_INT32 k;
   for (k = 0; k < plotspec->getItems().size(); k++)
     {
-      tmpType = (CPlotItem::Type)mItemTypes[k];
       pItem = plotspec->getItems()[k];
+
+      // set up the curve
+      long crv = insertCurve(FROM_UTF8(pItem->getTitle()));
+
+      setCurvePen(crv, QPen(curveColours[k % 5]));
+      //      setCurveXAxis(crv, plotspec->getItems()[k].xAxis);
+      //      setCurveYAxis(crv, plotspec->getItems()[k].yAxis);
+
+      QwtLegendButton* button = dynamic_cast<QwtLegendButton*>(legend()->findItem(crv));
+      if (button)
+        {
+          button->setToggleButton(true);
+          button->setOn(true);
+        }
+
+      tmpType = (CPlotItem::Type)mItemTypes[k];
 
       switch (tmpType)
         {
@@ -156,23 +171,12 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
 
           mHistograms.push_back(CHistogram(tmpIncr));
           mHistoIndices[k] = mHistograms.size() - 1;
+
+          setCurveStyle(crv, QwtCurve::Steps);
           break;
 
         default :
           fatalError();
-        }
-      // set up the curve
-      long crv = insertCurve(FROM_UTF8(plotspec->getItems()[k]->getTitle()));
-
-      setCurvePen(crv, QPen(curveColours[k % 5]));
-      //      setCurveXAxis(crv, plotspec->getItems()[k].xAxis);
-      //      setCurveYAxis(crv, plotspec->getItems()[k].yAxis);
-
-      QwtLegendButton* button = dynamic_cast<QwtLegendButton*>(legend()->findItem(crv));
-      if (button)
-        {
-          button->setToggleButton(true);
-          button->setOn(true);
         }
     }
 
