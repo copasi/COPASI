@@ -13,6 +13,10 @@
 #include "COptProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "steadystate/CSteadyStateProblem.h"
+#include "trajectory/CTrajectoryProblem.h"
+
+#include "model/CModel.h"
 #include "model/CCompartment.h"
 
 //  Default constructor
@@ -81,11 +85,19 @@ C_FLOAT64 COptProblem::calculate()
   if (mpSteadyState != NULL)
     {
       // std::cout << "COptProblem: mpSteadyState";
+      mpSteadyState->getProblem()->getModel()->compile();
+      mpSteadyState->getProblem()->
+      setInitialState(mpSteadyState->getProblem()->getModel()->getInitialState());
       mpSteadyState->process();
     }
   if (mpTrajectory != NULL)
     {
       // std::cout << "COptProblem: mpTrajectory";
+      mpTrajectory->getProblem()->getModel()->compile();
+      mpTrajectory->getProblem()->
+      setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
+      mpTrajectory->getProblem()->
+      setStartTime(mpTrajectory->getProblem()->getStartTime());
       mpTrajectory->process();
     }
   return 0;
