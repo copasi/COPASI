@@ -2,13 +2,15 @@
  ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.2 2003/09/30 04:10:09 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.3 2003/09/30 05:00:30 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #include "OptimizationItemWidget.h"
 #include "ScanItemWidget.h"
+#include "FunctionItemWidget.h"
+
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
@@ -165,5 +167,11 @@ void OptimizationItemWidget::slotNegInfClicked()
 
 void OptimizationItemWidget::slotUpperEdit()
 {
-  qWarning("OptimizationItemWidget::slotUpperEdit(): Not implemented yet");
+  //qWarning("OptimizationItemWidget::slotUpperEdit(): Not implemented yet");
+  FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
+  if (pFuncDlg->exec () == QDialog::Accepted)
+    {
+      int i = 0;
+      return;
+    }
 }
