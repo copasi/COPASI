@@ -27,7 +27,7 @@
 #include "listviews.h"
 #include "utilities/CCopasiException.h"
 #include "report/CKeyFactory.h"
-
+#include "CReportDefinitionSelect.h" 
 /*
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -148,7 +148,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelButtonClicked()));
   connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFileButtonClicked()));
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonChecked()));
-  //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
+  //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitButtonClicked()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
   connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,
           SLOT(loadModelNodes(CModel*)));
@@ -393,5 +393,9 @@ bool SteadyStateWidget::leave()
 
 void SteadyStateWidget::ReportDefinitionClicked()
 {
-  int i = 0;
+  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect();
+  if (pSelectDlg->exec () == QDialog::Rejected)
+    {
+      return;
+    }
 }

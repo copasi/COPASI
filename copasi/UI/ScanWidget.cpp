@@ -44,6 +44,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "report/CKeyFactory.h"
+#include "CReportDefinitionSelect.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
 
@@ -131,6 +132,10 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   cancelChange->setText(trUtf8("cancelChange"));
   Layout2->addWidget(cancelChange);
 
+  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
+  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
+  Layout2->addWidget(reportDefinitionButton);
+
   ScanWidgetLayout->addMultiCellLayout(Layout2, 6, 6, 0, 2);
 
   Line1 = new QFrame(this, "Line1");
@@ -210,7 +215,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   setTabOrder(downButton, ObjectListBox);
   setTabOrder(ObjectListBox, scrollview);
   setTabOrder(scrollview, sExecutable);
-  setTabOrder(scanButton, cancelChange);
+  setTabOrder(scanButton, cancelChange)
+  setTabOrder(cancelChange, reportDefinitionButton);
 
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
@@ -764,6 +770,14 @@ bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
   return true;
 }
 
+void ScanWidget::ReportDefinitionClicked()
+{
+  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect();
+  if (pSelectDlg->exec () == QDialog::Rejected)
+    {
+      return;
+    }
+}
 /****************************************
  * The implementation of ScanScrollView 
  ****************************************/

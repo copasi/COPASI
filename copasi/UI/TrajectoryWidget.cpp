@@ -26,6 +26,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "model/CModel.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "CReportDefinitionSelect.h"
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -162,6 +163,10 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   cancelChange->setText(trUtf8("Cancel"));
   Layout2->addWidget(cancelChange);
 
+  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
+  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
+  Layout2->addWidget(reportDefinitionButton);
+
   ExportToFileButton = new QPushButton(this, "ExportToFileButton");
   ExportToFileButton->setText(trUtf8("Export To File"));
   Layout2->addWidget(ExportToFileButton);
@@ -187,6 +192,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   //  setTabOrder(commitChange, cancelChange);
   setTabOrder(bRunTask, cancelChange);
   setTabOrder(cancelChange, ExportToFileButton);
+  setTabOrder(ExportToFileButton, reportDefinitionButton);
 
   // signals and slots connections
   //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
@@ -445,4 +451,13 @@ bool TrajectoryWidget::enter(const std::string & key)
   loadTrajectoryTask();
 
   return true;
+}
+
+void TrajectoryWidget::ReportDefinitionClicked()
+{
+  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect();
+  if (pSelectDlg->exec () == QDialog::Rejected)
+    {
+      return;
+    }
 }

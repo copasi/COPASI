@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.2 2003/08/15 13:29:07 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.3 2003/08/18 16:08:30 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,7 +25,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+    : QDialog(parent, name, fl)
 {
   if (!name)
     setName("CReportDefinitionSelect");
@@ -102,5 +102,5 @@ void CReportDefinitionSelect::languageChange()
   reportLabel->setText(tr("ReportDefinitions"));
   targetLabel->setText(tr("Target"));
   appendChecked->setText(tr("Append"));
-  jumpButton->setText(tr("Jump to..."));
+  jumpButton->setText(tr("Go editing..."));
 }

@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.1 2003/08/15 13:28:03 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.2 2003/08/18 16:08:30 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -11,7 +11,7 @@
 #define CREPORTDEFINITIONSELECT_H
 
 #include <qvariant.h>
-#include <qwidget.h>
+#include <qDialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -23,7 +23,7 @@ class QComboBox;
 class QLineEdit;
 class QCheckBox;
 
-class CReportDefinitionSelect : public QWidget
+class CReportDefinitionSelect : public QDialog
   {
     Q_OBJECT
 

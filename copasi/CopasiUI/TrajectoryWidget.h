@@ -53,6 +53,7 @@ class TrajectoryWidget : public CopasiWidget
     virtual void ExportToFile();
     virtual void RunTask();
     virtual void UpdateMethod();
+    virtual void ReportDefinitionClicked();
 
   private:
 
@@ -84,6 +85,7 @@ class TrajectoryWidget : public CopasiWidget
     //    QPushButton* commitChange;
     QPushButton* cancelChange;
     QPushButton* ExportToFileButton;
+    QPushButton* reportDefinitionButton;
   };
 
 #endif // TRAJECTORYWIDGET_H

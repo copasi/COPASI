@@ -106,6 +106,7 @@ class ScanWidget : public CopasiWidget
     TrajectoryWidget* pTrajectoryWidget;
     std::vector<QWidget*> selectedList;
 
+    QPushButton* reportDefinitionButton;
   protected:
     QGridLayout* ScanWidgetLayout;
     QHBoxLayout* Layout4;
@@ -138,6 +139,7 @@ class ScanWidget : public CopasiWidget
     virtual void ListBoxClicked (QListBoxItem * item);
     virtual void ListBoxDoubleClicked (QListBoxItem* item);
 
+    virtual void ReportDefinitionClicked();
   public:
     void mouseSelected(ScanItemWidget* pSelected);
     void viewMousePressEvent(QMouseEvent* e);
