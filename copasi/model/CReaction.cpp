@@ -697,6 +697,9 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       mId2Modifiers[i]->mMetaboliteName =
         (*Copasi->pOldMetabolites)[index]->getName();
 
+      mChemEq.addMetaboliteByName(mId2Modifiers[i]->mMetaboliteName,
+                                  0, CChemEq::MODIFIER);
+
       if (Type < CFunctionParameter::VINT32)
         Type =
           mMap.getFunctionParameters().getParameterByUsage("MODIFIER", pos).getType();
