@@ -427,7 +427,7 @@ class CModel : public CCopasiContainer
      * Retreives the vector of steps in the order used by the reduced model.
      * @return const CCopasiVectorN< CReaction > &
      */
-    const CCopasiVectorN< CReaction > & getReactionsX();
+    const CCopasiVectorN< CReaction > & getReactionsX() const;
 
     // Added by Yongqun He
     /**
@@ -559,16 +559,16 @@ class CModel : public CCopasiContainer
     /**
      * Get the initial state of the model, i.e., initial concentrations 
      * and volumes.
-     * @return CState * initialState
+     * @return CState initialState
      */
-    CState * getInitialState() const;
+    CState getInitialState() const;
 
     /**
      * Get the initial state of the model, i.e., initial concentrations 
      * and volumes in reduced model representation.
-     * @return CStateX * initialStateX
+     * @return CStateX initialStateX
      */
-    CStateX * getInitialStateX() const;
+    CStateX getInitialStateX() const;
 
     /**
      * Set the initial state of the model, i.e., initial concentrations 

@@ -14,20 +14,23 @@
 #define DBL_MAX 1.7976931348623158e+308
 #endif //DBL_MAX
 
+#define DEBUG_MATRIX
+
 #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CCopasiVector.h"
-#include "utilities/CGlobals.h"
-#include "utilities/CluX.h"
-#include "utilities/CVector.h"
-#include "utilities/utility.h"
-#include "report/CCopasiObjectReference.h"
-#include "CModel.h"
 #include "CCompartment.h"
+#include "CMetab.h"
+#include "CModel.h"
 #include "CState.h"
 #include "function/CFunctionDB.h"
+#include "report/CCopasiObjectReference.h"
+#include "utilities/CCopasiException.h"
+#include "utilities/CCopasiMessage.h"
+#include "utilities/CCopasiVector.h"
+#include "utilities/CGlobals.h"
+#include "utilities/CVector.h"
+#include "utilities/CluX.h"
+#include "utilities/utility.h"
 
 #include "clapackwrap.h"
 
@@ -214,7 +217,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         }
     }
 
-  //std::cout << mCompartments;       //debug
+  //DebugFile << mCompartments;       //debug
 
   initializeMetabolites();
 
@@ -227,19 +230,19 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   mSteps.load(configBuffer, Size);
 
-  // std::cout << std::endl << mSteps << std::endl;  //debug
+  // DebugFile << std::endl << mSteps << std::endl;  //debug
 
   // We must postprocess the steps for old file versions
   if (configBuffer.getVersion() < "4")
     for (i = 0; i < mSteps.size(); i++)
       mSteps[i]->old2New(mMetabolites);
 
-  // std::cout << "After postprocessing " << std::endl << mSteps << std::endl;
+  // DebugFile << "After postprocessing " << std::endl << mSteps << std::endl;
 
   for (i = 0; i < mSteps.size(); i++)
     mSteps[i]->compile(mCompartments);
 
-  // std::cout << "After compiling " << std::endl << mSteps << std::endl;   //debug
+  // DebugFile << "After compiling " << std::endl << mSteps << std::endl;   //debug
 
   Copasi->pOldMetabolites->cleanup();
 
@@ -449,8 +452,8 @@ void CModel::buildStoi()
     }
 
 #ifdef DEBUG_MATRIX
-  std::cout << "Stoichiometry Matrix" << std::endl;
-  std::cout << mStoi << std::endl;
+  DebugFile << "Stoichiometry Matrix" << std::endl;
+  DebugFile << mStoi << std::endl;
 #endif
 
   return;
@@ -479,10 +482,10 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
   CUpperTriangularView < CMatrix < C_FLOAT64 > > U(LU, 0.0);
   CUnitLowerTriangularView < CMatrix < C_FLOAT64 > > L(LU, 0.0, 1.0);
 
-  std::cout << "U" << std::endl;
-  std::cout << U << std::endl;
-  std::cout << "L" << std::endl;
-  std::cout << L << std::endl;
+  DebugFile << "U" << std::endl;
+  DebugFile << U << std::endl;
+  DebugFile << "L" << std::endl;
+  DebugFile << L << std::endl;
 #endif
 
   // mMetabolitesX = mMetabolites;
@@ -530,8 +533,11 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
           mColLU[colLU[i]] = tmp;
         }
     }
-  //   std::cout << mRowLU << std::endl;
-  //   std::cout << mColLU << std::endl;
+
+#ifdef DEBUG_MATRIX
+  DebugFile << mRowLU << std::endl;
+  DebugFile << mColLU << std::endl;
+#endif
 
   mFluxesX.resize(mStepsX.size());
   mScaledFluxesX.resize(mStepsX.size());
@@ -640,8 +646,8 @@ void CModel::buildRedStoi()
 #endif // XXXX
 
 #ifdef DEBUG_MATRIX
-  std::cout << "Reduced Stoichiometry Matrix" << std::endl;
-  std::cout << mRedStoi << std::endl;
+  DebugFile << "Reduced Stoichiometry Matrix" << std::endl;
+  DebugFile << mRedStoi << std::endl;
 #endif
 
   return;
@@ -743,8 +749,8 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
       }
 
 #ifdef DEBUG_MATRIX
-  std::cout << "Link Matrix:" << std::endl;
-  std::cout << mLView << std::endl;
+  DebugFile << "Link Matrix:" << std::endl;
+  DebugFile << mLView << std::endl;
 #endif // DEBUG_MATRIX
 }
 
@@ -776,7 +782,7 @@ void CModel::buildMoieties()
         }
 
       pMoiety->setInitialValue();
-      //      std::cout << pMoiety->getDescription() << " = "
+      //      DebugFile << pMoiety->getDescription() << " = "
       //      << pMoiety->getNumber() << std::endl;
 
       mMoieties.add(pMoiety);
@@ -844,7 +850,7 @@ CCopasiVectorNS < CReaction > & CModel::getReactions()
 const CCopasiVectorNS < CReaction > & CModel::getReactions() const
   {return mSteps;}
 
-const CCopasiVectorN< CReaction > & CModel::getReactionsX() {return mStepsX;}
+const CCopasiVectorN< CReaction > & CModel::getReactionsX() const {return mStepsX;}
 
 /**
  *        Return the metabolites of this model
@@ -1031,89 +1037,89 @@ const CCopasiVectorN< CReaction > & CModel::getStepsX() const {return mStepsX;}
 const CModel::CLinkMatrixView & CModel::getL() const
   {return mLView;}
 
-CState * CModel::getInitialState() const
+CState CModel::getInitialState() const
   {
     unsigned C_INT32 i, imax;
-    CState * s = new CState(this);
+    CState s(this);
 
     /* Set the time */
-    s->setTime(mInitialTime);
+    s.setTime(mInitialTime);
 
     /* Set the volumes */
-    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s->getVolumeVector().array());
+    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s.getVolumeVector().array());
     for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
       *Dbl = mCompartments[i]->getInitialVolume();
 
     /* Set the variable Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s->getVariableNumberVectorDbl().array());
+    Dbl = const_cast<C_FLOAT64 *>(s.getVariableNumberVectorDbl().array());
     for (i = 0, imax = getIntMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolites[i]->getInitialNumberDbl();
 
-    C_INT32 * Int = const_cast<C_INT32 *>(s->getVariableNumberVectorInt().array());
+    C_INT32 * Int = const_cast<C_INT32 *>(s.getVariableNumberVectorInt().array());
     for (i = 0, imax = getIntMetab(); i < imax; i++, Int++)
       *Int = mMetabolites[i]->getInitialNumberInt();
 
     /* Set the fixed Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s->getFixedNumberVectorDbl().array());
+    Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVectorDbl().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolites[i]->getInitialNumberDbl();
 
-    Int = const_cast<C_INT32 *>(s->getFixedNumberVectorInt().array());
+    Int = const_cast<C_INT32 *>(s.getFixedNumberVectorInt().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Int++)
       *Int = mMetabolites[i]->getInitialNumberInt();
 
-    //     std::cout << "getInitialState " << mInitialTime;
+    //     DebugFile << "getInitialState " << mInitialTime;
     //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
-    //       std::cout << " " << mMetabolitesX[i]->getInitialConcentration();
-    //     std::cout << std::endl;
+    //       DebugFile << " " << mMetabolitesX[i]->getInitialConcentration();
+    //     DebugFile << std::endl;
 
     return s;
   }
 
-CStateX * CModel::getInitialStateX() const
+CStateX CModel::getInitialStateX() const
   {
     unsigned C_INT32 i, imax;
-    CStateX * s = new CStateX(this);
+    CStateX s(this);
 
     /* Set the time */
-    s->setTime(mInitialTime);
+    s.setTime(mInitialTime);
 
     /* Set the volumes */
-    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s->getVolumeVector().array());
+    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s.getVolumeVector().array());
     for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
       *Dbl = mCompartments[i]->getInitialVolume();
 
     /* Set the independent variable Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s->getVariableNumberVectorDbl().array());
+    Dbl = const_cast<C_FLOAT64 *>(s.getVariableNumberVectorDbl().array());
     for (i = 0, imax = getIndMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
 
-    C_INT32 * Int = const_cast<C_INT32 *>(s->getVariableNumberVectorInt().array());
+    C_INT32 * Int = const_cast<C_INT32 *>(s.getVariableNumberVectorInt().array());
     for (i = 0, imax = getIndMetab(); i < imax; i++, Int++)
       *Int = mMetabolitesX[i]->getInitialNumberInt();
 
     /* Set the dependent variable Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s->getDependentNumberVectorDbl().array());
+    Dbl = const_cast<C_FLOAT64 *>(s.getDependentNumberVectorDbl().array());
     for (i = getIndMetab(), imax = getIntMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
 
-    Int = const_cast<C_INT32 *>(s->getDependentNumberVectorInt().array());
+    Int = const_cast<C_INT32 *>(s.getDependentNumberVectorInt().array());
     for (i = getIndMetab(), imax = getIntMetab(); i < imax; i++, Int++)
       *Int = mMetabolitesX[i]->getInitialNumberInt();
 
     /* Set the fixed Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s->getFixedNumberVectorDbl().array());
+    Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVectorDbl().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Dbl++)
       *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
 
-    Int = const_cast<C_INT32 *>(s->getFixedNumberVectorInt().array());
+    Int = const_cast<C_INT32 *>(s.getFixedNumberVectorInt().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Int++)
       *Int = mMetabolitesX[i]->getInitialNumberInt();
 
-    //     std::cout << "getInitialStateX " << mInitialTime;
+    //     DebugFile << "getInitialStateX " << mInitialTime;
     //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
-    //       std::cout << " " << mMetabolitesX[i]->getInitialConcentration();
-    //     std::cout << std::endl;
+    //       DebugFile << " " << mMetabolitesX[i]->getInitialConcentration();
+    //     DebugFile << std::endl;
 
     return s;
   }
@@ -1231,7 +1237,7 @@ void CModel::setState(const CState * state)
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
 
-  //  std::cout << *state << std::endl;
+  //  DebugFile << *state << std::endl;
   /* Set the time */
   mTime = state->getTime();
 
@@ -1257,10 +1263,10 @@ void CModel::setState(const CState * state)
   for (i = 0, imax = getIntMetab(); i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolites[i]->getNumberInt()) = *Int;
 
-  //   std::cout << "setState " << mTime;
+  //   DebugFile << "setState " << mTime;
   //   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
-  //     std::cout << " " << mMetabolitesX[i]->getConcentration();
-  //   std::cout << std::endl;
+  //     DebugFile << " " << mMetabolitesX[i]->getConcentration();
+  //   DebugFile << std::endl;
 
   return;
 }
@@ -1299,7 +1305,7 @@ void CModel::setState(const CStateX * state)
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
 
-  //  std::cout << *state << std::endl;
+  //  DebugFile << *state << std::endl;
   /* Set the time */
   mTime = state->getTime();
 
@@ -1339,10 +1345,10 @@ void CModel::setState(const CStateX * state)
       (const_cast<CStateX *>(state))->setDependentNumber(i, NumberDbl);
     }
 
-  //   std::cout << "setStateX " << mTime;
+  //   DebugFile << "setStateX " << mTime;
   //   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
-  //     std::cout << " " << mMetabolitesX[i]->getConcentration();
-  //   std::cout << std::endl;
+  //     DebugFile << " " << mMetabolitesX[i]->getConcentration();
+  //   DebugFile << std::endl;
 
   return;
 }
