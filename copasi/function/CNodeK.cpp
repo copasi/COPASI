@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/22 12:33:01 $
+   $Date: 2004/12/23 12:02:08 $
    End CVS Header */
 
 // CNodeK.cpp : classes for function tree
@@ -540,24 +540,22 @@ C_FLOAT64 CNodeK::value(const CCallParameterPointers & callParameters) const
     return 0.0;
   }
 
+#define SPC(level) std::string(level, ' ')
+
 void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
   {
     bool flag = false;
-    C_INT32 i;
-    //for (i=0; i<level; ++i) out << " ";
-    //out << mType << " " << mSubtype << " " << mName << std::endl;
 
     switch (mType)
       {
       case N_NUMBER:
-        for (i = 0; i < level; ++i) out << " ";
-        out << "<mn>" << mConstant << "</mn>" << std::endl;
+        out << SPC(level) << "<mn>" << mConstant << "</mn>" << std::endl;
         break;
         //    case N_OBJECT:
         //      return *(double*)((CCopasiObject*)mLeft)->getReference();
         //      break;
-      case N_IDENTIFIER :
-        for (i = 0; i < level; ++i) out << " ";
+      case N_IDENTIFIER :   //do some heuristics for indentifiers starting with "K" or "V"
+        out << SPC(level);
         if (mName.substr(0, 1) == "K")
           out << "<msub><mi>K</mi><mi>" << mName.substr(1) << "</mi></msub>" << std::endl;
         else if (mName.substr(0, 1) == "V")
@@ -569,114 +567,92 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         switch (mSubtype)
           {
           case '+':
-            for (i = 0; i < level; ++i) out << " ";
-            out << "<mrow>" << std::endl;
+            out << SPC(level) << "<mrow>" << std::endl;
             mLeft->writeMathML(out, level + 1);
-            for (i = 0; i < level + 1; ++i) out << " ";
-            out << "<mo>" << "+" << "</mo>" << std::endl;
+            out << SPC(level + 1) << "<mo>" << "+" << "</mo>" << std::endl;
             mRight->writeMathML(out, level + 1);
-            for (i = 0; i < level; ++i) out << " ";
-            out << "</mrow>" << std::endl;
+            out << SPC(level) << "</mrow>" << std::endl;
             break;
           case '-':
-            for (i = 0; i < level; ++i) out << " ";
-            out << "<mrow>" << std::endl;
+            out << SPC(level) << "<mrow>" << std::endl;
             mLeft->writeMathML(out, level + 1);
-            for (i = 0; i < level + 1; ++i) out << " ";
-            out << "<mo>" << "-" << "</mo>" << std::endl;
+            out << SPC(level + 1) << "<mo>" << "-" << "</mo>" << std::endl;
+
+            //do we need "()" ?
             flag = (mRight->mType == N_OPERATOR) && ((mRight->mSubtype == '-') || (mRight->mSubtype == '+'));
             if (flag)
               {
-                for (i = 0; i < level + 1; ++i) out << " ";
-                out << "<mfenced>" << std::endl;
+                out << SPC(level + 1) << "<mfenced>" << std::endl;
               }
             mRight->writeMathML(out, level + 1);
             if (flag)
               {
-                for (i = 0; i < level + 1; ++i) out << " ";
-                out << "</mfenced>" << std::endl;
+                out << SPC(level + 1) << "</mfenced>" << std::endl;
               }
-            for (i = 0; i < level; ++i) out << " ";
-            out << "</mrow>" << std::endl;
+            out << SPC(level) << "</mrow>" << std::endl;
             break;
           case '*':
-            for (i = 0; i < level; ++i) out << " ";
-            out << "<mrow>" << std::endl;
+            out << SPC(level) << "<mrow>" << std::endl;
+
+            //do we need "()" ?
             flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+'));
             if (flag)
               {
-                for (i = 0; i < level + 1; ++i) out << " ";
-                out << "<mfenced>" << std::endl;
+                out << SPC(level + 1) << "<mfenced>" << std::endl;
               }
             mLeft->writeMathML(out, level + 1);
             if (flag)
               {
-                for (i = 0; i < level + 1; ++i) out << " ";
-                out << "</mfenced>" << std::endl;
+                out << SPC(level + 1) << "</mfenced>" << std::endl;
               }
-            for (i = 0; i < level + 1; ++i) out << " ";
-            out << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
+            out << SPC(level + 1) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
             flag = (mRight->mType == N_OPERATOR) && ((mRight->mSubtype == '-') || (mRight->mSubtype == '+'));
             if (flag)
               {
-                for (i = 0; i < level + 1; ++i) out << " ";
-                out << "<mfenced>" << std::endl;
+                out << SPC(level) << "<mfenced>" << std::endl;
               }
             mRight->writeMathML(out, level + 1);
             if (flag)
               {
-                for (i = 0; i < level + 1; ++i) out << " ";
-                out << "</mfenced>" << std::endl;
+                out << SPC(level + 1) << "</mfenced>" << std::endl;
               }
-            for (i = 0; i < level; ++i) out << " ";
-            out << "</mrow>" << std::endl;
+            out << SPC(level) << "</mrow>" << std::endl;
             break;
           case '^':
-            for (i = 0; i < level; ++i) out << " ";
-            out << "<msup>" << std::endl;
+            out << SPC(level) << "<msup>" << std::endl;
 
+            //do we need "()" ?
             flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+')
                                                     || (mLeft->mSubtype == '*') || (mLeft->mSubtype == '/')
                                                     || (mLeft->mSubtype == '^'));
             if (flag)
               {
-                for (i = 0; i < level + 1; ++i) out << " ";
-                out << "<mfenced>" << std::endl;
+                out << SPC(level + 1) << "<mfenced>" << std::endl;
               }
             mLeft->writeMathML(out, level + 2);
             if (flag)
               {
-                for (i = 0; i < level + 1; ++i) out << " ";
-                out << "</mfenced>" << std::endl;
+                out << SPC(level + 1) << "</mfenced>" << std::endl;
               }
 
-            for (i = 0; i < level + 1; ++i) out << " ";
-            out << "<mrow>" << std::endl;
+            out << SPC(level + 1) << "<mrow>" << std::endl;
             mRight->writeMathML(out, level + 2);
-            for (i = 0; i < level + 1; ++i) out << " ";
-            out << "</mrow>" << std::endl;
+            out << SPC(level + 1) << "</mrow>" << std::endl;
 
-            for (i = 0; i < level; ++i) out << " ";
-            out << "</msup>" << std::endl;
+            out << SPC(level) << "</msup>" << std::endl;
             break;
           case '/':
-            for (i = 0; i < level; ++i) out << " ";
-            out << "<mfrac>" << std::endl;
+            out << SPC(level) << "<mfrac>" << std::endl;
 
-            for (i = 0; i < level + 1; ++i) out << " ";
-            out << "<mrow>" << std::endl;
+            out << SPC(level + 1) << "<mrow>" << std::endl;
             mLeft->writeMathML(out, level + 2);
-            for (i = 0; i < level + 1; ++i) out << " ";
-            out << "</mrow>" << std::endl;
+            out << SPC(level + 1) << "</mrow>" << std::endl;
 
-            for (i = 0; i < level + 1; ++i) out << " ";
-            out << "<mrow>" << std::endl;
+            out << SPC(level + 1) << "<mrow>" << std::endl;
             mRight->writeMathML(out, level + 2);
-            for (i = 0; i < level + 1; ++i) out << " ";
-            out << "</mrow>" << std::endl;
+            out << SPC(level + 1) << "</mrow>" << std::endl;
 
-            for (i = 0; i < level; ++i) out << " ";
-            out << "</mfrac>" << std::endl;
+            out << SPC(level) << "</mfrac>" << std::endl;
             break;
           }
         break;
@@ -706,7 +682,6 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         //fatalError();   // THROW EXCEPTION
         //return 0.0;
       }
-
-    //if (mLeft) mLeft->writeMathML(out, level+1);
-    //if (mRight) mRight->writeMathML(out, level+1);
   }
+
+#undef SPC
