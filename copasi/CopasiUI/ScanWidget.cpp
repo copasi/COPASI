@@ -370,6 +370,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(trajectory, SIGNAL(clicked()), this, SLOT(TrajectoryButtonClicked()));
   connect(sExecutable, SIGNAL(clicked()), this, SLOT(ScanButtonClicked()));
 
+  connect(ObjectListBox, SIGNAL(clicked(QListBoxItem*)), this, SLOT(clicked(QListBoxItem*)));
+
   connect(eSteadyState, SIGNAL(clicked()), this, SLOT(SteadyStateEditing()));
   connect(eTrajectory, SIGNAL(clicked()), this, SLOT(TrajectoryEditing()));
 
@@ -436,7 +438,7 @@ void ScanWidget::addButtonClicked()
       return;
     }
 
-  ObjectListBox->insertItem ((*pSelectedVector)[i]->getName().c_str(), nSelectedObjects);
+  ObjectListBox->insertItem ((*pSelectedVector)[i]->getCN().c_str(), nSelectedObjects);
   addNewScanItem((*pSelectedVector)[i]);
   pdelete(pSelectedVector);
 }
@@ -676,6 +678,19 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   emit show_me();
 }
 
+void ScanWidget::clicked(QListBoxItem * item)
+{
+  if (item) //select an object
+    {
+      double newActiveObject = ObjectListBox->index(item) + 0.5;
+      QPoint point(0, newActiveObject * (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + TITLE_HEIGHT));
+      QMouseEvent e(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton);
+      scrollview->center(e.x(), e.y());
+      viewMousePressEvent(&e);
+      //emit scrollview(&e);
+    }
+}
+
 void ScanWidget::mouseSelected(ScanItemWidget* pSelected)
 {
   if (selectedList.size() == 0)
@@ -696,6 +711,9 @@ void ScanWidget::mouseSelected(ScanItemWidget* pSelected)
 
   activeObject = i / 2;
 
+  ObjectListBox->setSelected(ObjectListBox->currentItem(), false);
+  ObjectListBox->setSelected(activeObject, true);
+
   QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
   emit show_me();
@@ -714,6 +732,9 @@ void ScanWidget::viewMousePressEvent(QMouseEvent* e)
     }
 
   activeObject = e->y() / (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + TITLE_HEIGHT);
+  if (ObjectListBox->currentItem() != -1)
+    ObjectListBox->setSelected(ObjectListBox->currentItem(), false);
+  ObjectListBox->setSelected(activeObject, true);
 
   if (activeObject >= selectedList.size() / 2)
     {

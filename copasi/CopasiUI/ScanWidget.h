@@ -22,8 +22,9 @@ class QFrame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-class QTable;
 class QListBox;
+class QListBoxItem;
+class QVBoxLayout;
 class CScanTask;
 class CScanProblem;
 class CScanMethod;
@@ -34,7 +35,6 @@ class TrajectoryWidget;
 class ScanItemWidget;
 class CCopasiObject;
 class ScanWidget;
-class QVBoxLayout;
 
 class ScanScrollView: public QScrollView
   {
@@ -121,6 +121,7 @@ class ScanWidget : public CopasiWidget
 
     virtual void SteadyStateEditing();
     virtual void TrajectoryEditing();
+    virtual void clicked (QListBoxItem * item);
 
   public:
     void mouseSelected(ScanItemWidget* pSelected);
