@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 20:30:39 $
+   $Date: 2004/10/06 15:54:56 $
    End CVS Header */
 
 /**
@@ -30,8 +30,8 @@
 CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::timeCourse, pParent),
     mStepNumberSetLast(true),
-    mInitialState(),
-    mEndState()
+    mInitialState()
+    //mEndState()
 {
   addParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
   addParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01);
@@ -49,8 +49,8 @@ CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
                                        const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
     mStepNumberSetLast(src.mStepNumberSetLast),
-    mInitialState(src.mInitialState),
-    mEndState(src.mEndState)
+    mInitialState(src.mInitialState)
+    //mEndState(src.mEndState)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -67,7 +67,7 @@ bool CTrajectoryProblem::setModel(CModel * pModel)
 {
   mpModel = pModel;
   mInitialState.setModel(mpModel);
-  mEndState.setModel(mpModel);
+  //mEndState.setModel(mpModel);
 
   return true;
 }
@@ -174,23 +174,23 @@ const CState & CTrajectoryProblem::getInitialState() const
 /**
  * Set the end state of the problem.
  * @param "const CState *" pEndState
- */
-void CTrajectoryProblem::setEndState(const CState * pEndState)
-{mEndState = *pEndState;}
+ */ 
+//void CTrajectoryProblem::setEndState(const CState * pEndState)
+//{mEndState = *pEndState;}
 
 /**
  * Set the end state of the problem.
  * @param "const CStateX *" pEndState
- */
-void CTrajectoryProblem::setEndState(const CStateX * pEndState)
-{mEndState = *pEndState;}
+ */ 
+//void CTrajectoryProblem::setEndState(const CStateX * pEndState)
+//{mEndState = *pEndState;}
 
 /**
  * Retrieve the end state of the problem.
  * @return "const CState &" pEndState
- */
-const CState & CTrajectoryProblem::getEndState() const
-  {return mEndState;}
+ */ 
+//const CState & CTrajectoryProblem::getEndState() const
+//  {return mEndState;}
 
 /**
  * Load a trajectory problem

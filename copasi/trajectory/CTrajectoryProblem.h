@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:13:38 $
+   $Date: 2004/10/06 15:54:56 $
    End CVS Header */
 
 /**
@@ -42,8 +42,8 @@ class CTrajectoryProblem : public CCopasiProblem
 
     /**
      *  The final state of the trajectory at time EndTime
-     */
-    CState mEndState;
+     */ 
+    //CState mEndState;
 
   public:
     // Operations
@@ -142,20 +142,20 @@ class CTrajectoryProblem : public CCopasiProblem
     /**
      * Set the end state of the problem.
      * @param "const CState *" pEndState
-     */
-    void setEndState(const CState * pEndState);
+     */ 
+    //void setEndState(const CState * pEndState);
 
     /**
      * Set the end state of the problem.
      * @param "const CStateX *" pEndState
-     */
-    void setEndState(const CStateX * pEndState);
+     */ 
+    //void setEndState(const CStateX * pEndState);
 
     /**
      * Retrieve the end state of the problem.
      * @return "const CState &" pEndState
-     */
-    const CState & getEndState() const;
+     */ 
+    //const CState & getEndState() const;
 
     /**
      * Load a trajectory problem
