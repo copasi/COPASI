@@ -7,7 +7,7 @@
 
 #ifndef COPASI_CReportDefinition
 #define COPASI_CReportDefinition
-
+#include "CCopasiObject.h"
 #include <string>
 class CReportDefinition;
 class CComment;
@@ -18,7 +18,7 @@ class CReport;
 class CReportTable;
 #include <vector>
 
-class CReportDefinition
+class CReportDefinition : public CCopasiObject
   {
     // Operations
   protected:
@@ -246,13 +246,13 @@ class CReportObject
     void setName(const std::string *name);
   };
 
-class CReport
+class CReport : public CCopasiObject
   {
   private:
     CReportDefinition *rReportDef;
     const std::string * rTarget;
     bool rAppend;
-    //std::string reportKey;
+    std::string reportKey;
 
   public:
     /**

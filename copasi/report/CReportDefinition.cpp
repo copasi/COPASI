@@ -180,8 +180,8 @@ void CReportObject::setName(const std::string * name)
 //////////////////////////////////////////////////
 CReport::CReport():
     rReportDef(new CReportDefinition),
-    rAppend(true)
-    // reportKey(CKeyFactory::add("Report", this))
+    rAppend(true),
+    reportKey(CKeyFactory::add("Report", this))
 {}
 
 CReport::~CReport()
