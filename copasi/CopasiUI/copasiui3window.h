@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/03/07 15:02:38 $
+   $Author: gauges $ 
+   $Date: 2005/03/14 12:19:25 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -16,6 +16,7 @@ class DataModelGUI;
 class SliderDialog;
 class QListViewItem;
 class TrajectoryWidget;
+class SteadyStateWidget;
 
 class CopasiUI3Window : public QMainWindow
   {
@@ -29,6 +30,7 @@ class CopasiUI3Window : public QMainWindow
     DataModelGUI* getDataModel();
     void saveFile();
     TrajectoryWidget* getTrajectoryWidget();
+    SteadyStateWidget* getSteadyStateWidget();
     void checkPendingMessages();
 
   protected:

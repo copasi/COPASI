@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/11 13:22:05 $
+   $Date: 2005/03/14 12:19:25 $
    End CVS Header */
 
 #include <iostream>
@@ -27,6 +27,7 @@
 #include "SliderDialog.h"
 #include "copasiui3window.h"
 #include "TrajectoryWidget.h"
+#include "SteadyStateWidget.h"
 #include "SliderSettingsDialog.h"
 #include "xml/CCopasiXMLInterface.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -37,16 +38,17 @@
 #include "report/CCopasiObjectName.h"
 #include "qtUtilities.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "steadystate/CSteadyStateTask.h"
 #include "utilities/CSlider.h"
 
-C_INT32 SliderDialog::numMappings = 2;
+C_INT32 SliderDialog::numMappings = 4;
 C_INT32 SliderDialog::folderMappings[][2] = {
-      {23, 23}, {231, 23}
+      {21, 21}, {211, 21}, {23, 23}, {231, 23}
     };
 
-C_INT32 SliderDialog::numKnownTasks = 1;
-C_INT32 SliderDialog::knownTaskIDs[] = {23};
-char* SliderDialog::knownTaskNames[] = {"Time Course"};
+C_INT32 SliderDialog::numKnownTasks = 2;
+C_INT32 SliderDialog::knownTaskIDs[] = {21, 23};
+char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course"};
 
 SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
     runTaskButton(NULL),
@@ -118,6 +120,7 @@ SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
   this->sliderMap[ -1].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", this->sliderBox));
 
   this->taskMap[23] = &SliderDialog::runTimeCourse;
+  this->taskMap[21] = &SliderDialog::runSteadyStateTask;
 
   connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(newSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
@@ -340,6 +343,7 @@ void SliderDialog::fillSliderBox()
     {
       std::vector<CSlider*>* pVector = this->getCSlidersForCurrentFolderId();
       // maybe other program parts have added or deleted some sliders
+      assert(pVector);
       unsigned int i, j, maxSliders, maxWidgets;
       maxWidgets = v.size();
       maxSliders = pVector->size();
@@ -471,6 +475,14 @@ void SliderDialog::runTimeCourse()
     }
 }
 
+void SliderDialog::runSteadyStateTask()
+{
+  CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
+  if (p)
+    {
+      p->getSteadyStateWidget()->runSteadyStateTask();
+    }
+}
 void SliderDialog::closeEvent(QCloseEvent* e)
 {
   QDialog::closeEvent(e);
@@ -487,6 +499,9 @@ CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
   CCopasiTask* task = NULL;
   switch (folderId)
     {
+    case 21:
+      task = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+      break;
     case 23:
       task = dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       break;
