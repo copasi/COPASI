@@ -192,9 +192,6 @@
                 <property name="text">
                     <string>Value</string>
                 </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
-                </property>
             </column>
             <property name="name">
                 <cstring>table</cstring>
@@ -274,5 +271,18 @@
         </widget>
     </grid>
 </widget>
+<tabstops>
+    <tabstop>LineEdit1</tabstop>
+    <tabstop>LineEdit2</tabstop>
+    <tabstop>ComboBox1</tabstop>
+    <tabstop>newKinetics</tabstop>
+    <tabstop>CheckBox</tabstop>
+    <tabstop>table</tabstop>
+    <tabstop>LineEdit3</tabstop>
+    <tabstop>commitChanges</tabstop>
+    <tabstop>cancelChanges</tabstop>
+    <tabstop>newReaction</tabstop>
+    <tabstop>deleteReaction</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

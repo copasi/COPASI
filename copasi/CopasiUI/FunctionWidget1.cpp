@@ -161,6 +161,15 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
 
   FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
 
+  setTabOrder(LineEdit1, LineEdit2);
+  setTabOrder(LineEdit2, RadioButton1);
+  setTabOrder(RadioButton1, RadioButton2);
+  setTabOrder(RadioButton2, RadioButton3);
+  setTabOrder(RadioButton3, Table1);
+  setTabOrder(Table1, Table2);
+  setTabOrder(Table2, commitChanges);
+  setTabOrder(commitChanges, cancelChanges);
+
   // signals and slots connections
   /*** For Cancel Button Clicked ***/
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));

@@ -166,6 +166,18 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   TrajectoryWidgetLayout->addWidget(parameterValueLabel, 7, 0);
 
+  setTabOrder(taskName, bExecutable);
+  setTabOrder(bExecutable, nStepSize);
+  setTabOrder(nStepSize, nStepNumber);
+  setTabOrder(nStepNumber, nStartTime);
+  setTabOrder(nStartTime, nEndTime);
+  setTabOrder(nEndTime, ComboBox1);
+  setTabOrder(ComboBox1, parameterTable);
+  setTabOrder(parameterTable, bRunTask);
+  setTabOrder(bRunTask, commitChange);
+  setTabOrder(commitChange, cancelChange);
+  setTabOrder(cancelChange, ExportToFileButton);
+
   // signals and slots connections
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));

@@ -209,6 +209,21 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   Layout7->addWidget(cancelChanges);
 
   MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 11, 11, 0, 3);
+
+  setTabOrder(LineEdit1, ComboBox1);
+  setTabOrder(ComboBox1, RadioButton1);
+  setTabOrder(RadioButton1, RadioButton2);
+  setTabOrder(RadioButton2, RadioButton3);
+  setTabOrder(RadioButton3, RadioButton4);
+  setTabOrder(RadioButton4, RadioButton5);
+  setTabOrder(RadioButton5, LineEdit4);
+  setTabOrder(LineEdit4, LineEdit5);
+  setTabOrder(LineEdit5, LineEdit9);
+  setTabOrder(LineEdit9, LineEdit7);
+  setTabOrder(LineEdit7, LineEdit8);
+  setTabOrder(LineEdit8, commitChanges);
+  setTabOrder(commitChanges, cancelChanges);
+
   // OK button
   connect(commitChanges, SIGNAL(clicked()),
           this, SLOT(slotBtnOKClicked()));

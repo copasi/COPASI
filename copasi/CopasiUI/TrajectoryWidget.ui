@@ -308,6 +308,20 @@
         <slot>ExportToFile()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>taskName</tabstop>
+    <tabstop>bExecutable</tabstop>
+    <tabstop>nStepSize</tabstop>
+    <tabstop>nStepNumber</tabstop>
+    <tabstop>nStartTime</tabstop>
+    <tabstop>nEndTime</tabstop>
+    <tabstop>ComboBox1</tabstop>
+    <tabstop>parameterTable</tabstop>
+    <tabstop>bRunTask</tabstop>
+    <tabstop>commitChange</tabstop>
+    <tabstop>cancelChange</tabstop>
+    <tabstop>ExportToFileButton</tabstop>
+</tabstops>
 <slots>
     <slot>CancelChange()</slot>
     <slot>CommitChange()</slot>

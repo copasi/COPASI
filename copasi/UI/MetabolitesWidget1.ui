@@ -385,5 +385,21 @@
         </widget>
     </grid>
 </widget>
+<tabstops>
+    <tabstop>LineEdit1</tabstop>
+    <tabstop>ComboBox1</tabstop>
+    <tabstop>RadioButton1</tabstop>
+    <tabstop>RadioButton2</tabstop>
+    <tabstop>RadioButton3</tabstop>
+    <tabstop>RadioButton4</tabstop>
+    <tabstop>RadioButton5</tabstop>
+    <tabstop>LineEdit4</tabstop>
+    <tabstop>LineEdit5</tabstop>
+    <tabstop>LineEdit9</tabstop>
+    <tabstop>LineEdit7</tabstop>
+    <tabstop>LineEdit8</tabstop>
+    <tabstop>commitChanges</tabstop>
+    <tabstop>cancelChanges</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -37,6 +37,12 @@
             <property name="name">
                 <cstring>LineEdit2</cstring>
             </property>
+            <property name="frameShape">
+                <enum>LineEditPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
         </widget>
         <widget class="Line" row="4" column="0" rowspan="1" colspan="2">
             <property name="name">
@@ -316,5 +322,16 @@
         </widget>
     </grid>
 </widget>
+<tabstops>
+    <tabstop>LineEdit1</tabstop>
+    <tabstop>LineEdit2</tabstop>
+    <tabstop>RadioButton1</tabstop>
+    <tabstop>RadioButton2</tabstop>
+    <tabstop>RadioButton3</tabstop>
+    <tabstop>Table1</tabstop>
+    <tabstop>Table2</tabstop>
+    <tabstop>commitChanges</tabstop>
+    <tabstop>cancelChanges</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -157,6 +157,17 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   ReactionsWidget1Layout->addWidget(CheckBox, 5, 3);
 
+  setTabOrder(LineEdit1, LineEdit2);
+  setTabOrder(LineEdit2, ComboBox1);
+  setTabOrder(ComboBox1, newKinetics);
+  setTabOrder(newKinetics, CheckBox);
+  setTabOrder(CheckBox, table);
+  setTabOrder(table, LineEdit3);
+  setTabOrder(LineEdit3, commitChanges);
+  setTabOrder(commitChanges, cancelChanges);
+  setTabOrder(cancelChanges, newReaction);
+  setTabOrder(newReaction, deleteReaction);
+
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(const QString &)));
@@ -165,7 +176,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
   connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
   connect(this, SIGNAL(new_reaction()), (ListViews*)parent, SLOT(slotNewReaction()));
-
   connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadReactionsNodes(CModel*)));
   connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
