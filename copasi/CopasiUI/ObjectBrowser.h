@@ -42,7 +42,7 @@ class ObjectBrowser : public QWidget
 
     void loadData();
     void loadChild(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
-    void loadField(ObjectBrowserItem* parent, CCopasiCOnainner * copaParent, int nAttr);
+    void loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent, int nAttr);
     // void loadVectors(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
     void updateUI();
   public slots:

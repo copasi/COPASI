@@ -208,7 +208,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
               fieldChild->attachKey();
               fieldChild->setObjectType(FIELDATTR);
               fieldChild->setText(0, "Attribute list");
-              loadFields(fieldChild, (CCopasiContainer*) current, 0);
+              loadField(fieldChild, (CCopasiContainer*) current, 0);
 
               ObjectBrowserItem* objectChild = new ObjectBrowserItem(currentItem, fieldChild, NULL, objectItemList);
               objectChild->attachKey();
