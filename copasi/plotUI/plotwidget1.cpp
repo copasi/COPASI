@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:25:27 $
+   $Author: anuragr $ 
+   $Date: 2005/03/09 22:23:59 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.36 2005/02/18 16:25:27 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.37 2005/03/09 22:23:59 anuragr Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -39,6 +39,7 @@
 #include "CopasiUI/CCopasiPlotSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiUI/DataModelGUI.h"
 
 //temporary
 #include "mathematics.h"
@@ -158,23 +159,23 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 
   //*********** buttons *****************
 
-  layoutButtons = new QHBoxLayout(0, 0, 6, "layoutButtons");
+  layoutButtons = new QHBoxLayout(0, 0, 2, "layoutButtons");
 
   startPlotButton = new QPushButton(this, "Commit");
   startPlotButton->setText(tr("Commit"));
   layoutButtons->addWidget(startPlotButton);
 
-  //deletePlotButton = new QPushButton(/*this*/0, "deletePlotButton");
-  //deletePlotButton->setText(tr("Delete Plot"));
-  //layout4->addWidget(deletePlotButton);
-
-  //addPlotButton = new QPushButton(/*this*/0, "addPlotButton");
-  //addPlotButton->setText(tr("New Plot"));
-  //layout4->addWidget(addPlotButton);
-
   resetButton = new QPushButton(this, "Revert");
   resetButton->setText(tr("Revert"));
   layoutButtons->addWidget(resetButton);
+
+  addPlotButton = new QPushButton(this, "addPlotButton");
+  addPlotButton->setText(tr("New Plot"));
+  layoutButtons->addWidget(addPlotButton);
+
+  deletePlotButton = new QPushButton(this, "deletePlotButton");
+  deletePlotButton->setText(tr("Delete Plot"));
+  layoutButtons->addWidget(deletePlotButton);
 
   PlotWidget1Layout->addMultiCellLayout(layoutButtons, 8, 8, 0, 1);
 
@@ -187,8 +188,8 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   connect(addHistoButton, SIGNAL(clicked()), this, SLOT(addHistoSlot()));
   connect(deleteCurveButton, SIGNAL(clicked()), this, SLOT(removeCurve()));
   connect(startPlotButton, SIGNAL(clicked()), this, SLOT(startPlot()));
-  //connect(deletePlotButton, SIGNAL(clicked()), this, SLOT(deletePlot()));
-  //connect(addPlotButton, SIGNAL(clicked()), this, SLOT(addPlot()));
+  connect(deletePlotButton, SIGNAL(clicked()), this, SLOT(deletePlot()));
+  connect(addPlotButton, SIGNAL(clicked()), this, SLOT(addPlot()));
   connect(resetButton, SIGNAL(clicked()), this, SLOT(resetPlot()));
   connect(comboType, SIGNAL(activated(int)), this, SLOT(typeChanged()));
 
@@ -384,12 +385,35 @@ void PlotWidget1::startPlot()
 //-----------------------------------------------------------------------------
 
 void PlotWidget1::deletePlot()
-{}
+{
+  if (!CCopasiDataModel::Global->getModel())
+    return;
+
+  dataModel->getPlotDefinitionList().removePlotSpec(objKey);
+
+  ListViews::notify(ListViews::PLOT, ListViews::DELETE, objKey);
+}
 
 //-----------------------------------------------------------------------------
 
 void PlotWidget1::addPlot()
-{}
+{
+  std::string name = "plot_";
+  int i = 0;
+  CPlotSpecification* pPl = NULL;
+  name += (const char *)QString::number(i).utf8();
+
+  while (!(pPl = dataModel->getPlotDefinitionList().createPlotSpec(name, CPlotItem::plot2d)))
+    {
+      i++;
+      name = "plot_";
+      name += (const char *)QString::number(i).utf8();
+    }
+
+  protectedNotify(ListViews::PLOT, ListViews::ADD);
+
+  enter(pPl->getKey());
+}
 
 //-----------------------------------------------------------------------------
 
