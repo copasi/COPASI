@@ -73,7 +73,7 @@ class ObjectBrowserItem : public QListViewItem
     // inline const QString & getKey() const {return mKey;}
 
     ObjectBrowserItem (QListView * parent = NULL, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
-    ObjectBrowserItem (ObjectBrowserItem * parent = NULL, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
+    ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
     ~ObjectBrowserItem()
     {
       if (getType() != FIELDATTR) //To avoid cross reference/multi deletion

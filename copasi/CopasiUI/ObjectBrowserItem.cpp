@@ -78,7 +78,8 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
       pBrowserObject->referenceList->insert(this);
     }
 
-  pList->insert(this);
+  if (pList)
+    pList->insert(this);
   mKey = " ";
 }
 
@@ -125,7 +126,8 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
       pBrowserObject->referenceList->insert(this);
     }
 
-  pList->insert(this);
+  if (pList)
+    pList->insert(this);
   mKey = " ";
 }
 
