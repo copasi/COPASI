@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/02/02 19:01:29 $
+   $Author: shoops $ 
+   $Date: 2005/02/09 01:07:38 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -21,7 +21,7 @@
 #include "model/CCompartment.h"
 #include "model/CChemEqInterface.h"
 #include "model/CReaction.h"
-#include "CReactionInterface.h"
+#include "model/CReactionInterface.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "report/CKeyFactory.h"

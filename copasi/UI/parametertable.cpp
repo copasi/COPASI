@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/22 15:52:24 $
+   $Author: shoops $ 
+   $Date: 2005/02/09 01:07:38 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -13,7 +13,7 @@
 #include <stdlib.h>
 
 #include "parametertable.h"
-#include "CReactionInterface.h"
+#include "model/CReactionInterface.h"
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
 #include "qtUtilities.h"

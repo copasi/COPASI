@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/12/20 20:28:38 $
+   $Author: shoops $ 
+   $Date: 2005/02/09 01:07:38 $
    End CVS Header */
 
 /*******************************************************************
@@ -26,7 +26,7 @@
 #include "copasi.h"
 #include "ModelWidget.h"
 #include "listviews.h"
-#include "CReactionInterface.h"
+#include "model/CReactionInterface.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
