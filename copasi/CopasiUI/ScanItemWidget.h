@@ -26,6 +26,7 @@ class ScanLineEdit;
 class ScanRadioButton;
 class QScrollView;
 class CMethodParameterList;
+class CCopasiObject;
 
 class ScanItemWidget : public QWidget
   {
@@ -41,6 +42,7 @@ class ScanItemWidget : public QWidget
 
     QScrollView* mParent;
     CMethodParameterList* pParameter;
+    CCopasiObject* pObject;
     void ResetData();
     void InitializeParameterList();
 
@@ -82,15 +84,27 @@ class ScanItemWidget : public QWidget
     {
       QWidget::mousePressEvent(e);
     }
-    void setObject(CMethodParameterList* pNewParameter)
+
+    void setScanObject(CMethodParameterList* pNewParameter)
     {
       pParameter = pNewParameter;
     }
 
-    CMethodParameterList* getObject()
+    CMethodParameterList* getScanObject()
     {
       return pParameter;
     }
+
+    void setCopasiObject(CCopasiObject* pNewObject)
+    {
+      pObject = pNewObject;
+    }
+
+    CCopasiObject* getCopasiObject()
+    {
+      return pObject;
+    }
+
     void loadObject();
     void updateObject();
     void setFirstWidget(bool isFirst);

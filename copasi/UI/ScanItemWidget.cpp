@@ -252,6 +252,7 @@ void ScanItemWidget::PosGaussianClicked()
  */
 ScanItemWidget::~ScanItemWidget()
 {
+  pObject = NULL; // cannot be deleted here
   // no need to delete child widgets, Qt does it all for us
 }
 

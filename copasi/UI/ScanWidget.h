@@ -12,6 +12,7 @@
 #include <qwidget.h>
 #include <qscrollview.h>
 #include "copasiWidget.h"
+#include "utilities/CVector.h"
 #include <vector>
 
 class QVBox;
@@ -60,6 +61,8 @@ class ScanWidget : public CopasiWidget
     int activeObject;
     QWidget* pParent;
     std::string scanTaskKey;
+    CVector<C_FLOAT64*> valueMatrix;
+
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanWidget();
