@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/10/27 17:48:08 $
+   $Date: 2003/10/29 17:29:53 $
    End CVS Header */
 
 /**********************************************************************
@@ -234,8 +234,11 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
   QString usage, qUsage;
 
   // for Name and Description text boxes
-  LineEdit1->setText(func->getName().c_str());
-  textBrowser->setText(func->getDescription().c_str());
+  //****************
+  //LineEdit1->setText(func->getName().c_str());
+  LineEdit1->setText(pFunction->getName().c_str());
+  //textBrowser->setText(func->getDescription().c_str());
+  textBrowser->setText(pFunction->getDescription().c_str());
   //  Function_Name = new QString(funct->getName().c_str());
 
   //TODO: the following is unnecessary
@@ -253,7 +256,9 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
       Table2->removeRow(0);
     }
 
-  const CFunctionParameters &functParam = func->getParameters();
+  // ************
+  //const CFunctionParameters &functParam = func->getParameters();
+  const CFunctionParameters &functParam = pFunction->getParameters();
   C_INT32 noOffunctParams = functParam.size();
   Table1->setNumRows(noOffunctParams);
 
@@ -291,7 +296,9 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
     }
 
   // for application table
-  CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
+  //**************
+  //CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
+  CCopasiVectorNS < CUsageRange > & functUsage = pFunction->getUsageDescriptions();
 
   C_INT32 noOfApplns = functUsage.size();
 
@@ -320,8 +327,11 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
   /***********  RADIO BUTTONS ***********************/
   /*** if function is predefined ****/
   /*** disables some widgets so user cannot make changes **/
-  if (func->getType() == CFunction::MassAction ||
-      func->getType() == CFunction::PreDefined)
+  //*****************
+  //if (func->getType() == CFunction::MassAction ||
+  //    func->getType() == CFunction::PreDefined)
+  if (pFunction->getType() == CFunction::MassAction ||
+      pFunction->getType() == CFunction::PreDefined)
     {
       RadioButton1->setEnabled(false);
       RadioButton2->setEnabled(false);
@@ -347,8 +357,9 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
       commitChanges->setEnabled(true);
       cancelChanges->setEnabled(true);
     }
-
-  switch (func->isReversible())
+  //*********
+  //switch (func->isReversible())
+  switch (pFunction->isReversible())
     {
     case TriUnspecified:
       RadioButton3->setEnabled(true);
@@ -371,27 +382,32 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 //**** Try to get parameters table to display proper texts
 void FunctionWidget1::updateParameters()
 {
-  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  // ************
+  //CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
 
   // next step place the text area contents into the function description
-  func->setDescription(textBrowser->text().latin1());
+  //***************
+  //func->setDescription(textBrowser->text().latin1());
+  pFunction->setDescription(textBrowser->text().latin1());
 
   // compile and retrieve nodes
-  CKinFunction* kinFunc = (CKinFunction*) func;
+  //CKinFunction* kinFunc = (CKinFunction*) func;
+  CKinFunction* kinFunc = (CKinFunction*) pFunction;
   try
     {
       kinFunc->compile();
       std::vector<CNodeK *> v = kinFunc->getNodes();
 
       // go through nodes and determine if identifier, if so, then add to parameters
-      func->getParameters().cleanup();
+      //func->getParameters().cleanup();
+      pFunction->getParameters().cleanup();
       for (int i = 0; i < v.size(); i++)
         {
           if (((CNodeK*)v[i])->isIdentifier())
-            func->addParameter(((CNodeK*)v[i])->getName(), CFunctionParameter::FLOAT64, "PARAMETER");
+            pFunction->addParameter(((CNodeK*)v[i])->getName(), CFunctionParameter::FLOAT64, "PARAMETER");
         }
       // Call loadFromFunction to display the table
-      loadFromFunction(func);
+      loadFromFunction();
     }
   catch (CCopasiException Exception)
     {
@@ -402,10 +418,10 @@ void FunctionWidget1::updateParameters()
                                    "Retry",
                                    "Quit", 0, 0, 1))
         {
-        case 0:         // The user clicked the Retry again button or pressed Enter
+        case 0:          // The user clicked the Retry again button or pressed Enter
           // try again
           break;
-        case 1:         // The user clicked the Quit or pressed Escape
+        case 1:          // The user clicked the Quit or pressed Escape
           // exit
           break;
         }
@@ -586,12 +602,12 @@ bool FunctionWidget1::saveToFunction()
 
 void FunctionWidget1::updateApplication()
 {
-  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  //CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
   //CFunctionParameters &functParam = func ->getParameters();
   CFunctionParameters &functParam = pFunction->getParameters();
 
-  //CCopasiVectorNS < CUsageRange > & functUsage = pFunction ->getUsageDescriptions();
-  CCopasiVectorNS < CUsageRange > & functUsage = func ->getUsageDescriptions();
+  //CCopasiVectorNS < CUsageRange > & functUsage = func ->getUsageDescriptions();
+  CCopasiVectorNS < CUsageRange > & functUsage = pFunction ->getUsageDescriptions();
 
   CUsageRange Application;
   functUsage.cleanup();
@@ -613,7 +629,7 @@ void FunctionWidget1::updateApplication()
   functUsage.add(Application);
 
   // reload
-  //loadFromFunction();
+  loadFromFunction();
 }
 
 /*This function is called when the Function Description LineEdit is changed.*/
@@ -640,6 +656,23 @@ void FunctionWidget1::slotCommitButtonClicked()
 void FunctionWidget1::slotTableValueChanged(int row, int col)
 {
   std::cout << "table changed " << row << " " << col << std::endl;
+
+  CFunctionParameters &functParam = pFunction->getParameters();
+  CFunctionParameter::DataType Type;
+
+  if (col == 1)
+    {
+      param_Type = Table1->text(row, col);
+      //functParam[row]->setType(Table1->text(row, col).latin1());
+      for (int i = 0; i < 4; i++)
+        {
+          if (param_Type.latin1() == CFunctionParameter::DataTypeName[i])
+            Type = (CFunctionParameter::DataType) i;
+        }
+
+      functParam[row]->setType(Type);
+    }
+
   if (col == 2)
     {
       QColor subsColor(255, 210, 210);
@@ -666,6 +699,8 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
       ((ComboItem*)Table1->item(row, 2))->setColor(color);
       Table1->setPixmap(row, 2, *pPixMap);
       Table1->setRowHeight(row, Table1->rowHeight(row)); // updateCell()
+
+      functParam[row]->setUsage(usage.latin1());
     }
   updateApplication();
   //saveToFunction();
