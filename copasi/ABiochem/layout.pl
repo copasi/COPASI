@@ -151,28 +151,42 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	print( HTFILE "<head>\n<style type=\"text/css\" media=\"all\">\@import \"nets.css\";</style>\n");
 	print( HTFILE "<title>$gfile</title>\n</head>\n");
 	# write the HTML body
-	print( HTFILE "<body>\n<center>\n");
-	print( HTFILE "<div id=\"topmenu\">\n<ul>\n");
-	print( HTFILE "<li class=\"first\"><a href=\"http://www.vbi.vt.edu/~mendes\">Biochemical Networks Modeling Group</a></li>\n");
-	print( HTFILE "<li><a href=\"..\">Artificial Gene Networks</a></li>\n");
-	print( HTFILE "</ul></div>\n");
+	print( HTFILE "<body>\n");
+	print( HTFILE "<div id=\"topmenu\">\n");
+	print( HTFILE "<a href=\"http://www.vbi.vt.edu/~mendes\">Biochemical Networks Modeling Group</a> |\n");
+	print( HTFILE "<a href=\"..\..\">Artificial Gene Networks Home</a> |\n");
+	print( HTFILE "<a href=\"..\">Data set index</a> |\n");
+	print( HTFILE "</div>\n");
+	print( HTFILE "<div id=\"main\">\n<center>\n");
 	print( HTFILE "<h1>Artificial Gene Network $gfile</h1>\n");
-	print( HTFILE "<h2>statistics</h2>\n<table>\n");
+	print( HTFILE "<div id=\"menu\">\n");
+	print( HTFILE "<a href=\"#neato\">Force field layout</a> |\n");
+	print( HTFILE "<a href=\"#dot\">Hierarchical layout</a> |\n");
+	print( HTFILE "<a href=\"#deg\">Degree distribution</a> |\n");
+	print( HTFILE "<a href=\"#files\">Files</a>\n");
+	print( HTFILE "</div>\n");
+	print( HTFILE "<h2>Statistics</h2>\n<table>\n");
     foreach $line (@stats)
 	{ 
+	  chop($line);
       $line =~ s/\t/<\/td><td>/;
       print( HTFILE "<tr><td>$line</td></tr>\n");
 	}
 	print( HTFILE "</table>\n");
-	print( HTFILE "<div id=\"menu\">\n<ul>\n");
-	print( HTFILE "<li class=\"first\"><a href=\"#neato\">Force field layout</a></li>\n");
-	print( HTFILE "<li><a href=\"#dot\">Hierarchical layout</a></li>\n");
-	print( HTFILE "<li><a href=\"#deg\">Degree distribution</a></li>\n");
-	print( HTFILE "</ul></div>\n");
-	print( HTFILE "<h2><a name=\"Force field layout\">neato</a></h2>\n<img border=\"0\" src=\"$pngfilen\">\n");
-	print( HTFILE "<h2><a name=\"dot\">Hierarchical layout</a></h2>\n<img border=\"0\" src=\"$pngfiled\">\n");
-	print( HTFILE "<h2><a name=\"deg\">Degree distribution</a></h2>\n<img border=\"0\" src=\"$pngfileg\">\n");
-	print( HTFILE "</center>\n</body>\n</html>");
+	print( HTFILE "<h2><a name=\"neato\">Force field layout</a></h2>\n<img src=\"$pngfilen\">\n");
+	print( HTFILE "<h2><a name=\"dot\">Hierarchical layout</a></h2>\n<img src=\"$pngfiled\">\n");
+	print( HTFILE "<h2><a name=\"deg\">Degree distribution</a></h2>\n<img src=\"$pngfileg\">\n");
+	print( HTFILE "<h2><a name=\"files\">Files</a></h2>\n<table>\n");
+	print( HTFILE "<tr><td>Gepasi</td><td><a href=\"$gfile.gps\">$gfile.gps</a></td></tr>\n");
+	print( HTFILE "<tr><td>SBML</td><td><a href=\"$gfile.xml\">$gfile.xml</a></td></tr>\n");
+	print( HTFILE "<tr><td>Graphviz</td><td><a href=\"$gfile.dot\">$gfile.dot</a></td></tr>\n");
+	print( HTFILE "<tr><td>Pajek</td><td><a href=\"$gfile.net\">$gfile.net</a></td></tr>\n");
+	print( HTFILE "<tr><td>Gnuplot degree distribution</td><td><a href=\"$gfile.distri.plt\">$gfile.distri.plt</a></td></tr>\n");
+	print( HTFILE "<tr><td>Network statistics</td><td><a href=\"$gfile.netstat\">$gfile.netstat</a></td></tr>\n");
+	print( HTFILE "<tr><td>Gepasi report file</td><td><a href=\"$gfile.txt\">$gfile.txt</a></td></tr>\n");
+	print( HTFILE "</table>\n");
+	print( HTFILE "</center>\n</div>\n");
+	print( HTFILE "</body>\n</html>");
 	close( HTFILE );
 
 	print ".";
