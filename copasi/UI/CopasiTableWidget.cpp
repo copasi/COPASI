@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 12:14:23 $
+   $Date: 2004/08/31 13:12:03 $
    End CVS Header */
 
 /*******************************************************************
@@ -130,8 +130,17 @@ void CopasiTableWidget::fillTable()
       mFlagRenamed[j] = false;
       updateRow(j);
     }
+
+  //clear last line
   for (i = 0; i < numCols; ++i)
     table->clearCell(jmax, i);
+  mFlagRO[jmax] = false;
+  mKeys[jmax] = "";
+  mFlagChanged[jmax] = false;
+  mFlagDelete[jmax] = false;
+  mFlagNew[jmax] = false;
+  mFlagRenamed[jmax] = false;
+  //updateRow(j);
 
   if (!mRO)
     {
@@ -215,7 +224,7 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
       defaultTableLineContent(row, 0);
     }
 
-  saveTable(); //TODO: should we warn the user here? Propably not.
+  saveTable();
 
   if (flagNew)
     {
@@ -367,7 +376,17 @@ void CopasiTableWidget::slotBtnDeleteClicked()
 
 void CopasiTableWidget::slotBtnNewClicked()
 {
-  //TODO
+  C_INT32 row = table->numRows() - 1;
+  resizeTable(table->numRows() + 1);
+  mFlagNew[row] = true;
+
+  table->setText(row, 1, createNewName(defaultObjectName()));
+  defaultTableLineContent(row, 0);
+
+  updateRow(row);
+
+  btnOK->setEnabled(true);
+  btnCancel->setEnabled(true);
 }
 
 //*********** Standard Interface to Copasi Widgets ******************
@@ -392,28 +411,6 @@ bool CopasiTableWidget::enter(const std::string & C_UNUSED(key))
   fillTable();
   return true;
 }
-
-/*void CopasiTableWidget::resizeEvent(QResizeEvent * re)
-{
-  if (isVisible())
-    {
-      //      repaint_table();
-      if (true)
-        {
-          int newWidth = re->size().width();
-          newWidth -= 35; //Accounting for the left (vertical) header width.
-          float weight0 = 3.5, weight1 = 6.5;
-          float weightSum = weight0 + weight1;
-          int w0, w1;
-          w0 = (int)(newWidth * (weight0 / weightSum));
-          w1 = newWidth - w0 - table->verticalScrollBar()->width();
-          table->setColumnWidth(0, w0);
-          table->setColumnWidth(1, w1);
-          binitialized = false;
-        }
-    }
-  CopasiWidget::resizeEvent(re);
-}*/
 
 void CopasiTableWidget::init()
 {std::cout << "**** init: method of CopasiTableWidget should never be called ****" << std::endl;}
