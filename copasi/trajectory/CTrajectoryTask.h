@@ -111,11 +111,6 @@ class CTrajectoryTask
     ~CTrajectoryTask();
 
     /**
-     * cleanup()
-     */
-    void cleanup();
-
-    /**
      * Initilize the reporting feature
      * @param ofstream & out
      */
@@ -181,5 +176,11 @@ class CTrajectoryTask
      * Do the integration
      */
     void process();
+
+  private:
+    /**
+     * cleanup()
+     */
+    void cleanup();
   };
 #endif // COPASI_CTrajectoryTask

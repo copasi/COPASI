@@ -22,13 +22,17 @@
 CTrajectoryProblem::CTrajectoryProblem():
     mpModel(NULL),
     mStepNumber(1),
+    mStepSize(1),
     mStepNumberSetLast(true),
     mStartTime(0),
-    mEndTime(0),
+    mEndTime(1),
     mInitialState(),
     mEndState()
 {
   CONSTRUCTOR_TRACE;
+  mInitialState.setModel(mpModel);
+  mEndState.setModel(mpModel);
+
   if (mpModel)
     mInitialState = mpModel->getInitialState();
 
@@ -46,6 +50,9 @@ CTrajectoryProblem::CTrajectoryProblem(CModel * pmodel,
     mInitialState(),
     mEndState()
 {
+  mInitialState.setModel(mpModel);
+  mEndState.setModel(mpModel);
+
   if (mpModel)
     mInitialState = mpModel->getInitialState();
 
@@ -78,7 +85,12 @@ CTrajectoryProblem::~CTrajectoryProblem()
  * Set the model the problem is dealing with.
  * @param "CModel *" pModel
  */
-void CTrajectoryProblem::setModel(CModel * pModel) {mpModel = pModel;}
+void CTrajectoryProblem::setModel(CModel * pModel)
+{
+  mpModel = pModel;
+  mInitialState.setModel(mpModel);
+  mEndState.setModel(mpModel);
+}
 
 /**
  * Retrieve the model the problem is dealing with.
@@ -157,21 +169,21 @@ const double & CTrajectoryProblem::getEndTime() const {return mEndTime;}
 
 /**
  * Set the initial state of the problem.
- * @param "const CState *" pInitialState
+ * @param "const CState &" initialState
  */
-void CTrajectoryProblem::setInitialState(CState * pInitialState)
+void CTrajectoryProblem::setInitialState(const CState & initialState)
 {
-  mInitialState = *pInitialState;
+  mInitialState = initialState;
   setStartTime(mInitialState.getTime());
 }
 
 /**
  * Set the initial state of the problem.
- * @param "const CStateX *" pInitialState
+ * @param "const CStateX &" initialState
  */
-void CTrajectoryProblem::setInitialState(CStateX * pInitialState)
+void CTrajectoryProblem::setInitialState(const CStateX & initialState)
 {
-  mInitialState = *pInitialState;
+  mInitialState = initialState;
   setStartTime(mInitialState.getTime());
 }
 

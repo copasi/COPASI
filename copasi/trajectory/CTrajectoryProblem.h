@@ -153,15 +153,15 @@ class CTrajectoryProblem
 
     /**
      * Set the initial state of the problem.
-     * @param "const CState *" pInitialState
+     * @param "const CState &" initialState
      */
-    void setInitialState(CState * pInitialState);
+    void setInitialState(const CState & initialState);
 
     /**
      * Set the initial state of the problem.
-     * @param "const CStateX *" pInitialState
+     * @param "const CStateX &" initialState
      */
-    void setInitialState(CStateX * pInitialState);
+    void setInitialState(const CStateX & initialState);
 
     /**
      * Retrieve the initial state of the problem.

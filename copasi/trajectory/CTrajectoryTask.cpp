@@ -19,8 +19,8 @@
 #define XXXX_Reporting
 
 CTrajectoryTask::CTrajectoryTask():
-    mpProblem(NULL),
-    mpMethod(NULL),
+    mpProblem(new CTrajectoryProblem),
+    mpMethod(CTrajectoryMethod::createTrajectoryMethod()),
     mpState(NULL),
     mpOutInit(NULL),
     mpOutPoint(NULL),
@@ -39,40 +39,26 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src):
 CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
                                  CTrajectoryMethod::Type type):
     mpProblem(pProblem),
-    mpMethod(NULL),
+    mpMethod(CTrajectoryMethod::createTrajectoryMethod(type, pProblem)),
     mpState(NULL),
     mpOutInit(NULL),
     mpOutPoint(NULL),
     mpOutEnd(NULL)
-{
-  if (mpProblem)
-    {
-      mpMethod = CTrajectoryMethod::createTrajectoryMethod(type, pProblem);
-    }
-}
+{}
 
 CTrajectoryTask::CTrajectoryTask(CModel * pModel,
                                  C_FLOAT64 starttime, C_FLOAT64 endtime,
                                  unsigned C_INT32 stepnumber,
                                  CTrajectoryMethod::Type type):
-    mpProblem(NULL),
-    mpMethod(NULL),
+    mpProblem(new CTrajectoryProblem(pModel, starttime, endtime, stepnumber)),
+    mpMethod(CTrajectoryMethod::createTrajectoryMethod(type, mpProblem)),
     mpState(NULL),
     mpOutInit(NULL),
     mpOutPoint(NULL),
     mpOutEnd(NULL)
-{
-  mpProblem = new CTrajectoryProblem(pModel, starttime, endtime, stepnumber);
-  if (mpProblem)
-    {
-      mpMethod = CTrajectoryMethod::createTrajectoryMethod(type, mpProblem);
-    }
-}
+{}
 
-CTrajectoryTask::~CTrajectoryTask()
-{
-  cleanup();
-}
+CTrajectoryTask::~CTrajectoryTask() {cleanup();}
 
 void CTrajectoryTask::cleanup()
 {
@@ -109,6 +95,7 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   mpProblem = new CTrajectoryProblem();
   mpProblem->load(configBuffer);
 
+  pdelete(mpMethod);
   if (configBuffer.getVersion() < "4.0")
     {
       mpMethod = CTrajectoryMethod::createTrajectoryMethod();

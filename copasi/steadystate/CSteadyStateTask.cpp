@@ -172,9 +172,3 @@ void CSteadyStateTask::process()
 
   return;
 }
-
-void CSteadyStateTask::setModel(CModel* mModel)
-{
-  if (mpProblem)
-    mpProblem->setModel(mModel);
-}

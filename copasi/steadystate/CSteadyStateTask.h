@@ -76,7 +76,6 @@ class CSteadyStateTask
     //Operations
   public:
 
-    void setModel(CModel* mModel);
     /**
      * default constructor
      */
@@ -92,11 +91,6 @@ class CSteadyStateTask
      * Destructor
      */
     ~CSteadyStateTask();
-
-    /**
-     * cleanup()
-     */
-    void cleanup();
 
     /**
      * Initilize the reporting feature
@@ -199,5 +193,11 @@ class CSteadyStateTask
 
       return os;
     }
+
+  private:
+    /**
+     * cleanup()
+     */
+    void cleanup();
   };
 #endif // COPASI_CSteadyStateTask

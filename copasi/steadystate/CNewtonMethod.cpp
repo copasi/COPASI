@@ -202,7 +202,7 @@ CNewtonMethod::process(CState & steadyState,
     {
       for (EndTime = 1; EndTime < 1.0e10; EndTime *= 10)
         {
-          pTrajectoryProblem->setInitialState(&InitialState);
+          pTrajectoryProblem->setInitialState(InitialState);
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
                                          + EndTime);
           pTrajectory->process();
@@ -235,7 +235,7 @@ CNewtonMethod::process(CState & steadyState,
     {
       for (EndTime = -1; EndTime > -1.0e10; EndTime *= 10)
         {
-          pTrajectoryProblem->setInitialState(&InitialState);
+          pTrajectoryProblem->setInitialState(InitialState);
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
                                          + EndTime);
           pTrajectory->process();
