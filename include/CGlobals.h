@@ -10,7 +10,7 @@ class CGlobals
 {
 // Attributes
 public:
-    CVersion ProgramVersion(4,0,101);
+    CVersion ProgramVersion;
     
     CFunctionDB FunctionDB;
     double DefaultConc;
@@ -23,3 +23,4 @@ public:
 extern CGlobals Copasi;
 
 #endif // COPASI_CGlobals
+
