@@ -8,15 +8,11 @@
 using std::vector;
 using std::ostream;
 using std::endl;
-
-using std::set
-
-  ;
+using std::set;
 
 /**
  * CDependencyGraphNode describes a node in the dependency graph.
  */
-
 class CDependencyGraphNode
   {
   public:
@@ -49,8 +45,7 @@ class CDependencyGraphNode
      * @return A vector of the dependents.
      */
 
-    const set
-      <C_INT32> &getDependents();
+    const set <C_INT32> &getDependents();
 
     /**
      * insert operator
@@ -60,7 +55,7 @@ class CDependencyGraphNode
       unsigned int i;
 
       for (i = 0; i < d.mDependents.size(); i++)
-        // os << d.mDependents[i] << "  " ;
+        // os << d.mDependents[i] << "  ";
 
         os << endl;
 
@@ -73,8 +68,7 @@ class CDependencyGraphNode
      * specified by the remote node to which it connects.
      */
 
-    set
-      <C_INT32> mDependents;
+    set <C_INT32> mDependents;
   };
 
 /**
@@ -113,8 +107,7 @@ class CDependencyGraph
      * @return A vector of node numbers.
      */
 
-    const set
-      <C_INT32> &getDependents(C_INT32 node);
+    const set <C_INT32> &getDependents(C_INT32 node);
 
   private:
     /**
@@ -130,7 +123,7 @@ class CDependencyGraph
       unsigned int i;
 
       for (i = 0; i < d.mNodes.size(); i++)
-        os << d.mNodes[i] ;
+        os << d.mNodes[i];
 
       os << endl;
 
