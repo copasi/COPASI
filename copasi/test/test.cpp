@@ -3,6 +3,10 @@
 // (C) Pedro Mendes 2000
 //
 
+#define COPASI_MAIN
+
+#include "copasi.h"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -11,11 +15,8 @@
 #include <iomanip>
 #include <algorithm>
 
-#define COPASI_MAIN
-
-#include "copasi.h"
-
 #include "utilities/utilities.h"
+#include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "model/model.h"
 #include "model/CSpec2Model.h"
 #include "output/output.h"
@@ -24,12 +25,13 @@
 #include "steadystate/steadystate.h"
 #include "optimization/optimization.h"
 #include "utilities/CGlobals.h"
-#include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
 #include "tnt/cmat.h"
 #include "tnt/vec.h"
 #include "tnt/subscript.h"
+
+using namespace std;
 
 C_INT32 TestReadConfig(void);
 C_INT32 TestWriteConfig(void);
@@ -1777,7 +1779,7 @@ C_INT32 TestElementaryFluxMode(void)
   FluxModes.calculate(&Model);
 
   ofstream output("ElementaryFluxModes.txt");
-  output << FluxModes;
+  ((ostream) output) << FluxModes;
 
   return 0;
 }

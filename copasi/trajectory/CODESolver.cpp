@@ -32,6 +32,8 @@
 #include "model/CCompartment.h"
 #include "CODESolver.h"
 
+using namespace std;
+
 C_INT32 CODESolver::mAdamsDefault;
 C_INT32 CODESolver::mBDFDefault;
 C_FLOAT64 CODESolver::mAtolDefault;
@@ -87,7 +89,7 @@ void CODESolver::cleanup()
 {
   switch (mMethod)
     {
-    case 1:   // LSODA
+    case 1:    // LSODA
       mLsoda->lsoda_freevectors();
       delete mLsoda;
       mLsoda = NULL;
@@ -107,7 +109,7 @@ C_INT32 CODESolver::step(C_FLOAT64 t, C_FLOAT64 et)
 {
   switch (mMethod)
     {
-    case 1:  //LSODA
+    case 1:   //LSODA
 
       if ((mState < 1) || (mState > 2))
         return mState;
@@ -157,7 +159,7 @@ C_INT32 CODESolver::load(CReadConfig & configbuffer)
       // loadLSODAParameters(configbuffer);
       break;
 
-    default:  /* TODO: generate an error message */
+    default:   /* TODO: generate an error message */
       fatalError();
     }
 
@@ -180,7 +182,7 @@ C_INT32 CODESolver::save(CWriteConfig & configbuffer)
       // saveLSODAParameters(configbuffer);
       break;
 
-    default:  /* TODO: generate an error message */
+    default:   /* TODO: generate an error message */
       fatalError();
     }
 
@@ -225,26 +227,26 @@ C_INT32 CODESolver::lSODAStep(C_FLOAT64 t, C_FLOAT64 et)
 {
   mTime = t;
   mEndt = et;
-  mLsoda->lsoda(mModel,            // the function evaluator
-                mDim,              // number of variables
-                mY - 1,            // the array of current concentrations
+  mLsoda->lsoda(mModel,             // the function evaluator
+                mDim,               // number of variables
+                mY - 1,             // the array of current concentrations
                 // fortran style vector !!!
-                &mTime,            // the current time
-                mEndt,             // the final time
-                1,                 // scalar error control
-                (&mRtol) - 1,      // relative tolerance array
+                &mTime,             // the current time
+                mEndt,              // the final time
+                1,                  // scalar error control
+                (&mRtol) - 1,       // relative tolerance array
                 // fortran style vector !!!
-                (&mAtol) - 1,      // absolute tolerance array
+                (&mAtol) - 1,       // absolute tolerance array
                 // fortran style vector !!!
-                1,                 // output by overshoot & interpolatation
-                &mState,           // the state control variable
-                1,                 // optional inputs are being used
-                2,                 // jacobian calculated internally
-                0, 0, 0,             // options left at default values
-                10000,             // max iterations for each lsoda call
-                0,                 // another value left at the default
-                mAdams,            // max order for Adams method
-                mBDF,              // max order for BDF method
+                1,                  // output by overshoot & interpolatation
+                &mState,            // the state control variable
+                1,                  // optional inputs are being used
+                2,                  // jacobian calculated internally
+                0, 0, 0,              // options left at default values
+                10000,              // max iterations for each lsoda call
+                0,                  // another value left at the default
+                mAdams,             // max order for Adams method
+                mBDF,               // max order for BDF method
                 0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if ((mState != 1) && (mState != 2))

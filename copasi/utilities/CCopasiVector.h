@@ -6,11 +6,14 @@
 #include <iostream>
 #include <assert.h>
 
+#include "CCopasiMessage.h"
+
 class CReadConfig;
 
 class CWriteConfig;
 
-#include "CCopasiMessage.h"
+using std::vector;
+using std::ostream;
 
 template < class CType >
 

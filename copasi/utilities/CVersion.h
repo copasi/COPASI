@@ -8,93 +8,95 @@
 #define COPASI_CVersion
 
 #include <string>
-#include "copasi.h"
 
-class CVersion  
-{
-  // Attributes
- private:
-  /**
-   *  Major version number.
-   *  (4 for first Copasi release)
-   */
-  C_INT32 mMajor;
+using std::string;
 
-  /**
-   *  Minor version number.
-   *  (changes with releases that are mostly bugfixes)
-   */
-  C_INT32 mMinor;
+class CVersion
+  {
+    // Attributes
 
-  /**
-   *  Develpment stage version.
-   *  Alpha versions are numbered 101 -> 199
-   *  Beta versions are numbered 201 -> 299
-   *  Release versions are always 300
-   */
-  C_INT32 mDevel;
+  private:
+    /**
+     *  Major version number.
+     *  (4 for first Copasi release)
+     */
+    C_INT32 mMajor;
 
-  /**
-   *  Version string.
-   *  (printable version number in the form "4.01 beta 2")
-   */
-  string mVersion;
+    /**
+     *  Minor version number.
+     *  (changes with releases that are mostly bugfixes)
+     */
+    C_INT32 mMinor;
 
-  // Operations
- public:
-  /**
-   *  Default consructor. 
-   *  This creates a version object without any version info.
-   */
-  CVersion();
+    /**
+     *  Develpment stage version.
+     *  Alpha versions are numbered 101 -> 199
+     *  Beta versions are numbered 201 -> 299
+     *  Release versions are always 300
+     */
+    C_INT32 mDevel;
 
-  /**
-   *  Destructor. 
-   */
-  ~CVersion();
+    /**
+     *  Version string.
+     *  (printable version number in the form "4.01 beta 2")
+     */
+    string mVersion;
 
-  /**
-   *  Returns the major version number.
-   *  @return mMajor
-   *  @see mMajor  
-   */
-  C_INT32 getVersionMajor() const;
+    // Operations
 
-  /**
-   *  Returns the minor version number.
-   *  @return mMinor
-   *  @see mMinor  
-   */
-  C_INT32 getVersionMinor() const;
+  public:
+    /**
+     *  Default consructor. 
+     *  This creates a version object without any version info.
+     */
+    CVersion();
 
-  /**
-   *  Returns the development version number.
-   *  @return mDevel
-   *  @see mDevel  
-   */
-  C_INT32 getVersionDevel() const;
+    /**
+     *  Destructor. 
+     */
+    ~CVersion();
 
-  /**
-   *  Returns a string with the full version number.
-   *  @return mVersion
-   *  @see mVersion  
-   */
-  const string & getVersion() const;
+    /**
+     *  Returns the major version number.
+     *  @return mMajor
+     *  @see mMajor  
+     */
+    C_INT32 getVersionMajor() const;
 
+    /**
+     *  Returns the minor version number.
+     *  @return mMinor
+     *  @see mMinor  
+     */
+    C_INT32 getVersionMinor() const;
 
-  /** 
-   *  Sets a version number 
-   *  @param major major version number. 
-   *  @param minor minor version number. 
-   *  @param devel development version number. 
-   */
-  void setVersion(C_INT32 major, C_INT32 minor, C_INT32 devel);
+    /**
+     *  Returns the development version number.
+     *  @return mDevel
+     *  @see mDevel  
+     */
+    C_INT32 getVersionDevel() const;
 
- private:
-  /**
-   *  Creates the version string.
-   */
-  void setString();
-};
+    /**
+     *  Returns a string with the full version number.
+     *  @return mVersion
+     *  @see mVersion  
+     */
+    const string & getVersion() const;
+
+    /**
+     *  Sets a version number 
+     *  @param major major version number. 
+     *  @param minor minor version number. 
+     *  @param devel development version number. 
+     */
+    void setVersion(C_INT32 major, C_INT32 minor, C_INT32 devel);
+
+  private:
+    /**
+     *  Creates the version string.
+     */
+    void setString();
+  };
 
 #endif // COPASI_CVersion

@@ -3,6 +3,8 @@
 #include "utilities/utilities.h"
 #include "CDeTerm.h"
 
+using namespace std;
+
 CDeTerm::CDeTerm()
     : mSign(1),
     mMultiplier(1)

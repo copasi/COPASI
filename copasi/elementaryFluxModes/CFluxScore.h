@@ -10,40 +10,46 @@
 #define COPASI_CFluxScore
 
 #include <vector>
+
+using std::vector;
+
 class CFluxScore
-{
-  // Attributes  
- private:    
-  /**
-   *  The score of a flux mode
-   */
-  vector <int> mScore;
+  {
+    // Attributes
 
-  // Operations
- public:    
-  /**
-   *  Default constructor
-   */
-  CFluxScore();
-  
-  /**
-   *  Specific constructor
-   *  @param "const vector < C_FLOAT64 > &" fluxModes
-   */
-  CFluxScore(const vector < C_FLOAT64 > & fluxModes);
-  
-  /**
-   *  Destructor();
-   */
-  ~CFluxScore();
+  private:
+    /**
+     *  The score of a flux mode
+     */
+    vector <int> mScore;
 
-  /**
-   *  Comparison operator deciding whether lhs has a smaller flux score than
-   *  rhs
-   *  @param "const CFluxScore &" lhs
-   *  @param "const CFluxScore &" rhs
-   *  @return "bool" 
-   */
-  bool operator < (const CFluxScore & rhs) const;
-};
+    // Operations
+
+  public:
+    /**
+     *  Default constructor
+     */
+    CFluxScore();
+
+    /**
+     *  Specific constructor
+     *  @param "const vector < C_FLOAT64 > &" fluxModes
+     */
+    CFluxScore(const vector < C_FLOAT64 > & fluxModes);
+
+    /**
+     *  Destructor();
+     */
+    ~CFluxScore();
+
+    /**
+     *  Comparison operator deciding whether lhs has a smaller flux score than
+     *  rhs
+     *  @param "const CFluxScore &" lhs
+     *  @param "const CFluxScore &" rhs
+     *  @return "bool" 
+     */
+    bool operator < (const CFluxScore & rhs) const;
+  };
+
 #endif // COPASI_CFluxScore

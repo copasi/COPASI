@@ -9,19 +9,19 @@
  *           (4) Backward Integration, (5) Backward integration if all else fails.
  */
 
-
 #ifndef COPASI_CSS_Solution
 #define COPASI_CSS_Solution
 
-#include "copasi.h"
+#include <iostream>
+
 #include "model/model.h"
 #include "CNewton.h"
 #include "CJacob.h"
 #include "CEigen.h"
-
 #include "trajectory/CTrajectory.h"
-// #include <cmath>
 #include "trajectory/Clsoda.h"
+
+using std::ofstream;
 
 //#define NEWTON 1;
 //#define TRAJ 2;
@@ -34,7 +34,6 @@
 //#define SS_FOUND 1
 //#define SS_NOT_FOUND 0              //declare in copasi.h file
 
-
 //#define SS_SINGULAR_JACOBIAN 2
 //#define SS_DAMPING_LIMIT 3
 //#define SS_ITERATION_LIMIT 4
@@ -44,269 +43,272 @@
 /**
  * These are from CNewton.h
  */
-#define DefaultNewtonLimit 1
+#define DefaultNewtonLimit 1 
 //Note: they may not be 1.0, check where it comes from orignially (Y.H.)
 #define DefaultSSRes 1.0
 #define DefaultDerivFactor 1.0
 
 class CNewton;
+
 class CTrajectory;
+
 class COutputEvent;
 
 class CSS_Solution
-{
-  //Attibutes
- private:
+  {
+    //Attibutes
 
-  /**
-   *  variable for steady-state solution
-   *  its result is either SS_FOUND or SS_NOT_FOUND
-   */
-  C_INT32 mSs_solution;
+  private:
 
-  /**
-   * The steady state resolution
-   */
-  C_FLOAT64 mSSRes;
+    /**
+     *  variable for steady-state solution
+     *  its result is either SS_FOUND or SS_NOT_FOUND
+     */
+    C_INT32 mSs_solution;
 
-  /**
-   *  Limit of iterations used by the Newton method
-   */
-  C_INT32 mNewtonLimit;
+    /**
+     * The steady state resolution
+     */
+    C_FLOAT64 mSSRes;
 
-  /**
-   *  The derivation factor used in the Jacobian
-   */
-  C_FLOAT64 mDerivFactor;
+    /**
+     *  Limit of iterations used by the Newton method
+     */
+    C_INT32 mNewtonLimit;
 
-  /**
-   *  Whether to use the Newton Method
-   */
-  C_INT32 mUseNewton;
+    /**
+     *  The derivation factor used in the Jacobian
+     */
+    C_FLOAT64 mDerivFactor;
 
-  /**
-   *  Whether to use the Integration Method
-   */
-  C_INT32 mUseIntegration;
+    /**
+     *  Whether to use the Newton Method
+     */
+    C_INT32 mUseNewton;
 
-  /**
-   *  Whether to use the Back-Integration Method
-   */
-  C_INT32 mUseBackIntegration;
+    /**
+     *  Whether to use the Integration Method
+     */
+    C_INT32 mUseIntegration;
 
-  /**
-   *  The coordinats of the steady-state solution
-   */
-  C_FLOAT64 * mSs_x;
+    /**
+     *  Whether to use the Back-Integration Method
+     */
+    C_INT32 mUseBackIntegration;
 
-  /**
-   *  The time derivative of the steady-state solution
-   */
-  TNT::Vector < C_FLOAT64 > mSs_dxdt;
+    /**
+     *  The coordinats of the steady-state solution
+     */
+    C_FLOAT64 * mSs_x;
 
-  /**
-   *  The CModel to work with
-   */
-  CModel * mModel;
+    /**
+     *  The time derivative of the steady-state solution
+     */
+    TNT::Vector < C_FLOAT64 > mSs_dxdt;
 
-  /**
-   *  The CNewton to work with
-   */
-  CNewton * mNewton;
+    /**
+     *  The CModel to work with
+     */
+    CModel * mModel;
 
-  /**
-   *  The CTrajectory to work with
-   */
-  CTrajectory * mTraj;
+    /**
+     *  The CNewton to work with
+     */
+    CNewton * mNewton;
 
-  /**
-   *  The CJacob to work with
-   */
-  CJacob * mJacob;
+    /**
+     *  The CTrajectory to work with
+     */
+    CTrajectory * mTraj;
 
-  /**
-   *  The CEigen to work with
-   */
-  CEigen * mEigen;
+    /**
+     *  The CJacob to work with
+     */
+    CJacob * mJacob;
 
-  /**
-   * SteadyState Output Event
-   */
-  COutputEvent *mSSOutput;
-  //Operations
- public:
+    /**
+     *  The CEigen to work with
+     */
+    CEigen * mEigen;
 
+    /**
+     * SteadyState Output Event
+     */
+    COutputEvent *mSSOutput;
+    //Operations
 
-  /**
-   * default constructor
-   */
-  CSS_Solution();
+  public:
 
-  /**
-   *  destructor
-   */
-  ~CSS_Solution();
+    /**
+     * default constructor
+     */
+    CSS_Solution();
 
-  /**
-   *  initialize()
-   */
-  void initialize();
+    /**
+     *  destructor
+     */
+    ~CSS_Solution();
 
-  /**
-   * Clean up internal pointer variables
-   */
-  void cleanup(void);
+    /**
+     *  initialize()
+     */
+    void initialize();
 
-  /**
-   *  Loads parameters for this solver with data coming from a
-   *  CReadConfig object. (CReadConfig object reads an input stream)
-   *  @param configbuffer reference to a CReadConfig object.
-   *  @return mFail
-   *  @see mFail
-   */
-  void load(CReadConfig & configbuffer);
+    /**
+     * Clean up internal pointer variables
+     */
+    void cleanup(void);
 
-  /**
-   *  Saves the parameters of the solver to a CWriteConfig object.
-   *  (Which usually has a file attached but may also have socket)
-   *  @param configbuffer reference to a CWriteConfig object.
-   *  @return mFail
-   *  @see mFail
-   */
-  void save(CWriteConfig & configbuffer);
+    /**
+     *  Loads parameters for this solver with data coming from a
+     *  CReadConfig object. (CReadConfig object reads an input stream)
+     *  @param configbuffer reference to a CReadConfig object.
+     *  @return mFail
+     *  @see mFail
+     */
+    void load(CReadConfig & configbuffer);
 
-  /**
-   *  Set whether to use the Newton Method
-   *  @param "const C_INT32 &" useNewton
-   */
-  void setUseNewton(const C_INT32 & useNewton);
+    /**
+     *  Saves the parameters of the solver to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param configbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     *  @see mFail
+     */
+    void save(CWriteConfig & configbuffer);
 
-  /**
-   *  Retreives whether to use the Newton Method
-   *  @return "const C_INT32 &" useNewton
-   */
-  const C_INT32 & getUseNewton() const;
+    /**
+     *  Set whether to use the Newton Method
+     *  @param "const C_INT32 &" useNewton
+     */
+    void setUseNewton(const C_INT32 & useNewton);
 
-  /**
-   *  Set whether to use the Integration Method
-   *  @param "const C_INT32 &" useIntegration
-   */
-  void setUseIntegration(const C_INT32 & useIntegration);
+    /**
+     *  Retreives whether to use the Newton Method
+     *  @return "const C_INT32 &" useNewton
+     */
+    const C_INT32 & getUseNewton() const;
 
-  /**
-   *  Retreives whether to use the Intgration Method
-   *  @return "const C_INT32 &" useIntegration
-   */
-  const C_INT32 & getUseIntegration() const;
+    /**
+     *  Set whether to use the Integration Method
+     *  @param "const C_INT32 &" useIntegration
+     */
+    void setUseIntegration(const C_INT32 & useIntegration);
 
-  /**
-   *  Set whether to use the Back-Integration Method
-   *  @param "const C_INT32 &" useBackIntegration
-   */
-  void setUseBackIntegration(const C_INT32 & useBackIntegration);
+    /**
+     *  Retreives whether to use the Intgration Method
+     *  @return "const C_INT32 &" useIntegration
+     */
+    const C_INT32 & getUseIntegration() const;
 
-  /**
-   *  Retreives whether to use the Back-Intgration Method
-   *  @return "const C_INT32 &" useBackIntegration
-   */
-  const C_INT32 & getUseBackIntegration() const;
+    /**
+     *  Set whether to use the Back-Integration Method
+     *  @param "const C_INT32 &" useBackIntegration
+     */
+    void setUseBackIntegration(const C_INT32 & useBackIntegration);
 
-  /**
-   * set mSSRes
-   * @param aDouble a double value
-   */
-  void setSSRes(C_FLOAT64 aDouble);
+    /**
+     *  Retreives whether to use the Back-Intgration Method
+     *  @return "const C_INT32 &" useBackIntegration
+     */
+    const C_INT32 & getUseBackIntegration() const;
 
-  /**
-   * get mSSRes
-   * @return int mOption
-   */
-  C_FLOAT64 getSSRes() const;
+    /**
+     * set mSSRes
+     * @param aDouble a double value
+     */
+    void setSSRes(C_FLOAT64 aDouble);
 
-  /**
-   *  set CModel
-   *  @param aModel is the CModel set as mModel
-   */
-  void setModel(CModel * aModel);
+    /**
+     * get mSSRes
+     * @return int mOption
+     */
+    C_FLOAT64 getSSRes() const;
 
-  /**
-   *  get CModel
-   *  @return mModel
-   */
-  CModel * getModel() const;
+    /**
+     *  set CModel
+     *  @param aModel is the CModel set as mModel
+     */
+    void setModel(CModel * aModel);
 
-  /**
-   *  get CNewton
-   *  @return mNewton private member
-   */
-  CNewton * getNewton() const;
+    /**
+     *  get CModel
+     *  @return mModel
+     */
+    CModel * getModel() const;
 
-  /**
-   *  get CEigen
-   *  @return mEigen private member
-   */
-  CEigen * getEigen() const;
+    /**
+     *  get CNewton
+     *  @return mNewton private member
+     */
+    CNewton * getNewton() const;
 
-  /**
-   *  get CTrajectory pointer
-   *  @return mTraj
-   */
-  CTrajectory * getTrajectory() const;
+    /**
+     *  get CEigen
+     *  @return mEigen private member
+     */
+    CEigen * getEigen() const;
 
-  /**
-   *  get mJacob
-   *  @return mY_traj
-   */
-  CJacob * getJacob() const;
+    /**
+     *  get CTrajectory pointer
+     *  @return mTraj
+     */
+    CTrajectory * getTrajectory() const;
 
-  /**
-   *  get mSs_x
-   *  @return mSs_x
-   */
-  const C_FLOAT64 * getSs_x() const;
+    /**
+     *  get mJacob
+     *  @return mY_traj
+     */
+    CJacob * getJacob() const;
 
-  /**
-   *  get mSs_dxdt
-   *  @return mSs_dxdt
-   */
-  const TNT::Vector < C_FLOAT64 > & getSs_dxdt() const;
+    /**
+     *  get mSs_x
+     *  @return mSs_x
+     */
+    const C_FLOAT64 * getSs_x() const;
 
-  /**
-   *  get mSs_solution
-   *  @return mSs_solution  WeiSun 03/27/02
-   */
-  C_INT32 getSolution() const;
+    /**
+     *  get mSs_dxdt
+     *  @return mSs_dxdt
+     */
+    const TNT::Vector < C_FLOAT64 > & getSs_dxdt() const;
 
-  /**
-   * Get the pointer of SSRes for output  WeiSun 04/02/02
-   */
-  void * getSSResAddr();
+    /**
+     *  get mSs_solution
+     *  @return mSs_solution  WeiSun 03/27/02
+     */
+    C_INT32 getSolution() const;
 
-  /**
-   * Get the pointer of DerivFactor for output WeiSun 04/02/02
-   */
-  void * getDerivFactorAddr();
+    /**
+     * Get the pointer of SSRes for output  WeiSun 04/02/02
+     */
+    void * getSSResAddr();
 
-  /**
-   *  to process the primary function of this class
-   */
-  void process(ofstream &fout);
+    /**
+     * Get the pointer of DerivFactor for output WeiSun 04/02/02
+     */
+    void * getDerivFactorAddr();
 
-  /**
-   *  Process after the steady state is found
-   */
-  void afterFindSteadyState();
+    /**
+     *  to process the primary function of this class
+     */
+    void process(ofstream &fout);
 
-  /**
-   *  Analyze steady state
-   */
-  void steadyState(void);
+    /**
+     *  Process after the steady state is found
+     */
+    void afterFindSteadyState();
 
-  /**
-   *  Check if it is steady state
-   *  @return an int acting like a bool
-   */
-  C_INT32 isSteadyState();
-};
+    /**
+     *  Analyze steady state
+     */
+    void steadyState(void);
+
+    /**
+     *  Check if it is steady state
+     *  @return an int acting like a bool
+     */
+    C_INT32 isSteadyState();
+  };
 
 #endif // COPASI_CSS_Solution

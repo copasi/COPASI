@@ -7,13 +7,13 @@
  *           It is to solve the trajectory time course problem of copasi
  */
 
-
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "CTrajectory.h"
 
+using namespace std;
 
 //default constructor
 CTrajectory::CTrajectory()
@@ -43,26 +43,32 @@ void CTrajectory::initialize()
 {
   cleanup();
 
-  if (!mModel) fatalError();
+  if (!mModel)
+    fatalError();
 
   mN = mModel->getIndMetab();
+
   mY = mModel->getInitialNumbers();
+
   mStartTime = 0;
 
   cout << "Method = " << mMethod << endl;
+
   switch (mMethod)
     {
     case CONTINUOUS_ODE:
       mODESolver = new CODESolver();
       mODESolver->initialize(* mModel, mY, mN, mMethod);
       break;
+
     case STOCH_DIRECT:
       // we're doing a stochastic simulation
-        cout << "In trajectory: performing a stochastic simulation\n";
+      cout << "In trajectory: performing a stochastic simulation\n";
       mStochSolver = new CStochSolver(mMethod);
       cout << "Initializing the solver\n";
       mStochSolver->initialize(mModel);
       break;
+
     default:
       fatalError();
     }
@@ -70,15 +76,17 @@ void CTrajectory::initialize()
   mOutInit = new COutputEvent(*this, 0);
   mOutPoint = new COutputEvent(*this, 1);
   mOutEnd = new COutputEvent(*this, 2);
-//  if (mOutInit || mOutPoint || mOutEnd)
-//      Copasi->OutputList.compile("Time-course output",mModel,this);
+  //  if (mOutInit || mOutPoint || mOutEnd)
+  //      Copasi->OutputList.compile("Time-course output",mModel,this);
 
-  return;
+  return ;
 }
 
 void CTrajectory::cleanup()
 {
-  if (mY) delete [] mY;
+  if (mY)
+    delete [] mY;
+
   mY = NULL;
 
   if (mODESolver)
@@ -86,14 +94,17 @@ void CTrajectory::cleanup()
       mODESolver->cleanup();
       delete mODESolver;
     }
+
   mODESolver = NULL;
+
   if (mStochSolver)
     {
       mStochSolver->cleanup();
       delete mStochSolver;
     }
+
   mStochSolver = NULL;
-  return;
+  return ;
 }
 
 C_INT32 CTrajectory::load(CReadConfig & configbuffer)
@@ -105,18 +116,18 @@ C_INT32 CTrajectory::load(CReadConfig & configbuffer)
   else
     configbuffer.getVariable("TrajectoryMethod", "C_INT32", &mMethod,
                              CReadConfig::SEARCH);
-  
+
   if ((Fail = configbuffer.getVariable("EndTime", "C_FLOAT64",
-                                       (void *) &mEndTime,
+                                       (void *) & mEndTime,
                                        CReadConfig::LOOP)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("Points", "C_INT32",
-                                       (void *) &mPoints)))
+                                       (void *) & mPoints)))
     return Fail;
 
   if ((Fail = configbuffer.getVariable("OutputTimeZero", "C_INT16",
-                                       (void *) &mOutputTimeZero)))
+                                       (void *) & mOutputTimeZero)))
     return Fail;
 
   return Fail;
@@ -127,17 +138,17 @@ C_INT32 CTrajectory::save(CWriteConfig & configbuffer)
   C_INT32 Fail = 0;
 
   configbuffer.setVariable("TrajectoryMethod", "C_INT32", &mMethod);
-  
+
   if ((Fail = configbuffer.setVariable("EndTime", "C_FLOAT64",
-                                       (void *) &mEndTime)))
+                                       (void *) & mEndTime)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("Points", "C_FLOAT64",
-                                       (void *) &mPoints)))
+                                       (void *) & mPoints)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("OutputTimeZero", "C_INT16",
-                                       (void *) &mOutputTimeZero)))
+                                       (void *) & mOutputTimeZero)))
     return Fail;
 
   return Fail;
@@ -148,17 +159,15 @@ void CTrajectory::setModel(CModel * aModel)
   mModel = aModel;
 }
 
-
 CModel * CTrajectory::getModel() const
-{
-  return mModel;
-}
-
+  {
+    return mModel;
+  }
 
 CODESolver * CTrajectory::getODESolver() const
-{
-  return mODESolver;
-}
+  {
+    return mODESolver;
+  }
 
 void CTrajectory::setPoints(const C_INT32 anInt)
 {
@@ -166,21 +175,24 @@ void CTrajectory::setPoints(const C_INT32 anInt)
 }
 
 C_INT32 CTrajectory::getPoints() const
-{
-  return mPoints;
-}
+  {
+    return mPoints;
+  }
 
 void CTrajectory::setStartingPoint(const C_FLOAT64 & time,
                                    const C_FLOAT64 * particleNumbers)
 {
   mStartTime = time;
-  if (mY) delete [] mY;
+
+  if (mY)
+    delete [] mY;
 
   if (particleNumbers)
     {
       unsigned C_INT32 dim = mModel->getIndMetab();
       mY = new C_FLOAT64[dim];
-      for (unsigned C_INT32 i=0; i<dim; i++)
+
+      for (unsigned C_INT32 i = 0; i < dim; i++)
         mY[i] = particleNumbers[i];
     }
   else
@@ -189,7 +201,7 @@ void CTrajectory::setStartingPoint(const C_FLOAT64 & time,
 
 void CTrajectory::setMaxSteps(const C_INT32 max_steps)
 {
-    mMaxSteps = max_steps;
+  mMaxSteps = max_steps;
 }
 
 void CTrajectory::setEndTime(const C_FLOAT64 aDouble)
@@ -198,15 +210,14 @@ void CTrajectory::setEndTime(const C_FLOAT64 aDouble)
 }
 
 const C_FLOAT64 & CTrajectory::getEndTime() const
-{
-  return mEndTime;
-}
+  {
+    return mEndTime;
+  }
 
 const C_FLOAT64 & CTrajectory::getTime() const
-{
-  return mTime;
-}
-
+  {
+    return mTime;
+  }
 
 void CTrajectory::setMethod(const CTrajectory::MethodType & anInt)
 {
@@ -214,16 +225,18 @@ void CTrajectory::setMethod(const CTrajectory::MethodType & anInt)
 }
 
 const CTrajectory::MethodType & CTrajectory::getMethod() const
-{
-  return mMethod;
-}
+  {
+    return mMethod;
+  }
 
 void CTrajectory::process(ofstream &fout)
 {
   mModel->setConcentrations(mY);
 
   //print for the initial time point
-  if (mOutInit) mOutInit->print(*this, Copasi->OutputList, fout);
+
+  if (mOutInit)
+    mOutInit->print(*this, Copasi->OutputList, fout);
 
   // The trajectory can be calculated using the ODE solver,
   // one of the stochastic solver, or a hybrid method (as yet unimplemented)
@@ -239,13 +252,14 @@ void CTrajectory::process(ofstream &fout)
       for (C_INT32 i = 0; i < mPoints; i++)
         {
           // Calculate the new time point
-          mODESolver->step(mTime, mTime+length);
+          mODESolver->step(mTime, mTime + length);
 
           //update CModel
           mModel->setConcentrations(mY);
           mTime += length;
 
           //print for current time point in the outputEvent
+
           if (mOutPoint)
             mOutPoint->print(*this, Copasi->OutputList, fout);
         }
@@ -254,6 +268,7 @@ void CTrajectory::process(ofstream &fout)
     {
       C_FLOAT64 time = 0;
       C_INT32 step = 0;
+
       while (step < mMaxSteps && time < mEndTime && time >= 0)
         {
           time = mStochSolver->getStochMethod()->doStep(time);
@@ -262,5 +277,6 @@ void CTrajectory::process(ofstream &fout)
         }
     }
 
-  if (mOutEnd &&!mOutPoint) mOutEnd->print(*this, Copasi->OutputList, fout);
+  if (mOutEnd && !mOutPoint)
+    mOutEnd->print(*this, Copasi->OutputList, fout);
 }

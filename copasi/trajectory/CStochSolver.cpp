@@ -9,6 +9,8 @@
 #include "CStochSolver.h"
 #include "CTrajectory.h"
 
+using namespace std;
+
 CStochSolver::CStochSolver()
     : mMethodType(CTrajectory::STOCH_DIRECT),
     mMethod(0)

@@ -16,6 +16,8 @@
 #include "CDatum.h"
 #include "COutputLine.h"
 
+using namespace std;
+
 /**
  *  Default constructor. 
  */

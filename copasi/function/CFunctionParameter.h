@@ -9,9 +9,13 @@
 #define COPASI_CFunctionParameter
 
 #include <string>
+#include <iostream>
 
-#include "copasi.h"
 #include "utilities/utilities.h"
+
+using std::string;
+using std::ostream;
+using std::endl;
 
 class CFunctionParameter
   {

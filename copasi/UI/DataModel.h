@@ -22,6 +22,8 @@ class CReadConfig;
 
 class Folder;
 
+using std::ifstream;
+
 template <class T>
 
 class DataModel: public Subject

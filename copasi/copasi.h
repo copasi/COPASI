@@ -14,8 +14,6 @@
 #include <assert.h>
 #include <fstream>
 
-using namespace std ;
-
 //YH: new defined parameters used by more than one classes
 #define SS_FOUND 1             //steady state found
 #define SS_NOT_FOUND 0         //steady state not found
@@ -78,10 +76,10 @@ extern std::ofstream DebugFile;
 #  include <typeinfo>
 #  define CONSTRUCTOR_TRACE \
   {DebugFile << "Construct: " << typeid(*this).name() \
-    << ", \tAddress: " << (void *) this << endl; }
+    << ", \tAddress: " << (void *) this << std::endl; }
 #  define DESTRUCTOR_TRACE \
   {DebugFile << "Destruct: " << typeid(*this).name() \
-    << ", \tAddress: " << (void *) this << endl; }
+    << ", \tAddress: " << (void *) this << std::endl; }
 # endif // COPASI_TRACE_CONSTRUCTION
 #endif // COPASI_DEBUG
 

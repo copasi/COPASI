@@ -16,9 +16,11 @@
 #include "CSpec2Model.h"
 #include "CSpecLine.h"
 #include "CDeTerm.h"
+
+using namespace std;
 CSpec2Model::CSpec2Model() {CONSTRUCTOR_TRACE; }
 
-CSpec2Model::CSpec2Model(std::string filename)
+CSpec2Model::CSpec2Model(string filename)
 {
   CONSTRUCTOR_TRACE;
   mSpecFileName = filename;
@@ -32,7 +34,7 @@ C_INT32 CSpec2Model::addFileContents()
       CCopasiMessage(CCopasiMessage::ERROR, "Input file not specified");
     }
 
-  std::ifstream infile(mSpecFileName.c_str());
+  ifstream infile(mSpecFileName.c_str());
 
   if (!infile)
     {
@@ -52,17 +54,17 @@ C_INT32 CSpec2Model::addFileContents()
 void CSpec2Model::printInput()
 {
   cout << "\n\n\n";
-  //     std::cout << "What we read: \n";
-  //     std::vector<std::string>::iterator it = mSpecContents.begin();
+  //     cout << "What we read: \n";
+  //     vector<string>::iterator it = mSpecContents.begin();
   //     int cnt = mSpecContents.size();
-  //     std::cout << "There were " << cnt << " lines." << std::endl;
+  //     cout << "There were " << cnt << " lines." << endl;
   //     int linecount = 0;
   //     while (it <  mSpecContents.end())
   //     {
-  //         std::cout << "Line " << linecount++ << ": ";
-  //         std::cout << *it++ << std::endl;
+  //         cout << "Line " << linecount++ << ": ";
+  //         cout << *it++ << endl;
   //     }
-  std::vector<CSpecLine>::iterator it = mSpecLines.begin();
+  vector<CSpecLine>::iterator it = mSpecLines.begin();
   cout << endl;
 
   while (it < mSpecLines.end())
@@ -591,7 +593,7 @@ C_INT32 CSpec2Model::parseLine(string) { return 0; }
 
 CGlobals *Copasi = new CGlobals;
 
-std::ofstream DebugFile("junk");
+ofstream DebugFile("junk");
 
 int main(int argc, char**argv)
 {

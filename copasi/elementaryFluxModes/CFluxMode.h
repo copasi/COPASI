@@ -11,72 +11,77 @@
 
 #include <vector>
 
-#include "CTableauLine.h"
+class CTableauLine;
+
+using std::vector;
+using std::pair;
 
 class CFluxMode
-{
-  // Attributes
- private:
-  /**
-   *  Vector containing an index to a reaction an the multiplier
-   *  for that reaction.
-   */
-  vector < pair < unsigned C_INT32, C_FLOAT64 > > mReactions ;
+  {
+    // Attributes
 
-  /**
-   *  Reversibility of the mode.
-   */
-  bool mReversible;
+  private:
+    /**
+     *  Vector containing an index to a reaction an the multiplier
+     *  for that reaction.
+     */
+    vector < pair < unsigned C_INT32, C_FLOAT64 > > mReactions ;
 
-  // Operations
- public:
-  /**
-   *  Default constructor
-   */
-  CFluxMode();
+    /**
+     *  Reversibility of the mode.
+     */
+    bool mReversible;
 
-  /**
-   *  Copy constructor
-   *  @param "const CFluxMode &" src
-   */
-  CFluxMode(const CFluxMode & src);
+    // Operations
 
-  /**
-   *  Specific constructor
-   *  @param "const CTableauLine &" line
-   */
-  CFluxMode(const CTableauLine * line);
+  public:
+    /**
+     *  Default constructor
+     */
+    CFluxMode();
 
-  /**
-   *  Destructor
-   */
-  ~CFluxMode();
+    /**
+     *  Copy constructor
+     *  @param "const CFluxMode &" src
+     */
+    CFluxMode(const CFluxMode & src);
 
-  /**
-   *  Retrieve the index of the reaction
-   *  @param "const unsigned C_INT32 &" index
-   *  @return "const unsigned C_INT32 &" index
-   */
-  const unsigned C_INT32 & getReaction(const unsigned C_INT32 & index) const;
+    /**
+     *  Specific constructor
+     *  @param "const CTableauLine &" line
+     */
+    CFluxMode(const CTableauLine * line);
 
-  /**
-   *  Retrieves the multiplier for the reaction
-   *  @param "const unsigned C_INT32 &" index
-   *  @return "const unsigned C_INT32 &" index
-   */
-  const C_FLOAT64 & getMultiplier(const unsigned C_INT32 & index) const;
+    /**
+     *  Destructor
+     */
+    ~CFluxMode();
 
-  /**
-   *  Check whether the mode is reversible
-   *  @return "const bool &" isReversible
-   */
-  const bool & isReversible() const;
+    /**
+     *  Retrieve the index of the reaction
+     *  @param "const unsigned C_INT32 &" index
+     *  @return "const unsigned C_INT32 &" index
+     */
+    const unsigned C_INT32 & getReaction(const unsigned C_INT32 & index) const;
 
-  /**
-   *  Retrieves the size of the mode
-   *  @return "const unsigned C_INT32 &" size
-   */
-  const unsigned C_INT32 size() const;
-};
+    /**
+     *  Retrieves the multiplier for the reaction
+     *  @param "const unsigned C_INT32 &" index
+     *  @return "const unsigned C_INT32 &" index
+     */
+    const C_FLOAT64 & getMultiplier(const unsigned C_INT32 & index) const;
+
+    /**
+     *  Check whether the mode is reversible
+     *  @return "const bool &" isReversible
+     */
+    const bool & isReversible() const;
+
+    /**
+     *  Retrieves the size of the mode
+     *  @return "const unsigned C_INT32 &" size
+     */
+    const unsigned C_INT32 size() const;
+  };
 
 #endif // COPASI_CFluxMode

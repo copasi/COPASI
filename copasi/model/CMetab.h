@@ -8,6 +8,7 @@
 #define COPASI_CMetab
 
 #include <string>
+#include <ostream>
 
 class CCompartment;
 
@@ -22,6 +23,10 @@ class CMetabOld;
 #define METAB_VARIABLE 1
 #define METAB_DEPENDENT 2
 #define METAB_MOIETY 7
+
+using std::string;
+using std::ostream;
+using std::endl;
 
 class CMetab
   {

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "copasi.h"
+using std::string;
 
 #define INITIALTEXTSIZE 1024
 
@@ -20,9 +20,9 @@ string StringPrint(const char * format, ...);
 /**
  *
  */
-void dgefa(C_FLOAT64 ** a, 
-           C_INT32 n, 
-           C_INT32 * ipvt, 
+void dgefa(C_FLOAT64 ** a,
+           C_INT32 n,
+           C_INT32 * ipvt,
            C_INT32 * info);
 
 /**
@@ -37,7 +37,7 @@ void dgefa(C_FLOAT64 ** a,
 C_INT32 idamax(C_INT32 n,
                C_FLOAT64 * dx,
                C_INT32 incx);
-                         
+
 /**
  *  Returns the maximum of the absolute values of the components of 
  *  the vector dx. The vector dx is incremented (n-1) times by the incx.
@@ -49,23 +49,23 @@ C_INT32 idamax(C_INT32 n,
 C_FLOAT64 xNorm(C_INT32 n,
                 C_FLOAT64 * dx,
                 C_INT32 incx);
-                         
+
 /**
  *
  */
 void dgesl(C_FLOAT64 ** a,
            C_INT32 n,
-           C_INT32 * ipvt, 
-           C_FLOAT64 * b, 
+           C_INT32 * ipvt,
+           C_FLOAT64 * b,
            C_INT32 job);
 
 /**
  *
  */
 void daxpy(C_INT32 n,
-           C_FLOAT64 da, 
+           C_FLOAT64 da,
            C_FLOAT64 * dx,
-           C_INT32 incx, 
+           C_INT32 incx,
            C_FLOAT64 * dy,
            C_INT32 incy);
 
@@ -80,11 +80,10 @@ void lsoda_dscal(C_INT32 n,
 /**
  *
  */
-C_FLOAT64 ddot(C_INT32 n, 
+C_FLOAT64 ddot(C_INT32 n,
                C_FLOAT64 * dx,
-               C_INT32 incx, 
+               C_INT32 incx,
                C_FLOAT64 * dy,
                C_INT32 incy);
-
 
 #endif // COPASI_utilities

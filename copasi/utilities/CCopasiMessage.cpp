@@ -20,6 +20,8 @@
 string TimeStamp();
 #define INITIALTEXTSIZE 1024
 
+using namespace std;
+
 CCopasiMessage::CCopasiMessage(void)
 {
   // initialize everything

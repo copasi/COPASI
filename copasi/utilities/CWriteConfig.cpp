@@ -17,6 +17,8 @@
 #include "CWriteConfig.h"
 #include "trajectory/CODESolver.h"
 
+using namespace std;
+
 CWriteConfig::CWriteConfig(void)
 {
   // initialize everything

@@ -6,6 +6,11 @@
 #include "model/model.h"
 #include <set>
 #include <queue>
+
+using std::set
+
+  ;
+
 /**
  * CStochSolver
  *
@@ -46,51 +51,52 @@
 class CStochMethod;
 
 class CStochSolver
-{
- private:
-  // Private attributes
-  /**
-   * The type of the stochastic solver method
-   */
-  C_INT32 mMethodType;
-  /**
-   * A pointer to the method used
-   */
-  CStochMethod *mMethod;
- public:
-  // Lifecycle methods
-  /**
-   * The default constructor
-   */
-  CStochSolver();
-  /**
-   * The named constructor, giving a method to use
-   * @param method An integer specifying the method to use
-   */
-  CStochSolver(C_INT32 method);
+  {
+  private:
+    // Private attributes
+    /**
+     * The type of the stochastic solver method
+     */
+    C_INT32 mMethodType;
+    /**
+     * A pointer to the method used
+     */
+    CStochMethod *mMethod;
 
-  /**
-   * The destructor
-   */
-  ~CStochSolver();
+  public:
+    // Lifecycle methods
+    /**
+     * The default constructor
+     */
+    CStochSolver();
+    /**
+     * The named constructor, giving a method to use
+     * @param method An integer specifying the method to use
+     */
+    CStochSolver(C_INT32 method);
 
-  /**
-   * This initializes the solver, creates an instance of the method,
-   * and initializes that with the given model.
-   * @param model A pointer to an instance of CModel
-   */
-  void initialize(CModel *model);
-  /**
-   * Clean up
-   */
-  void cleanup();
-  // Operations methods
-  /**
-   * Returns a pointer to the instance of the solver method.
-   * @return mMethod
-   */
-  CStochMethod *getStochMethod();
-};
+    /**
+     * The destructor
+     */
+    ~CStochSolver();
+
+    /**
+     * This initializes the solver, creates an instance of the method,
+     * and initializes that with the given model.
+     * @param model A pointer to an instance of CModel
+     */
+    void initialize(CModel *model);
+    /**
+     * Clean up
+     */
+    void cleanup();
+    // Operations methods
+    /**
+     * Returns a pointer to the instance of the solver method.
+     * @return mMethod
+     */
+    CStochMethod *getStochMethod();
+  };
 
 /**
  * CStochMethod is a parent to concrete solvers derived from it.
@@ -108,102 +114,104 @@ class CStochSolver
  */
 
 class CStochMethod
-{
- protected:
-  // Protected attributes
-  /**
-   * A pointer to the instance of CModel being used.
-   */
-  CModel *mModel;
-  /**
-   * The propensities for the reactions
-   */
-  std::vector<C_FLOAT64> mAmu;
-  /**
-   * The sum of the propensities
-   */
-  C_FLOAT64 mA0;
-  /**
-   * The random number generator
-   */
-  CRandom *mRandomGenerator;
-  /**
-   * Failure status.
-   * 0 = Success
-   * !0 = Failure
-   */
-  C_INT32 mFail;
- public:
-  // Lifecycle methods
-  /**
-   * Default constructor
-   */
-  CStochMethod();
-  CStochMethod(CModel *model);
-  /**
-   * Destructor
-   */
-  virtual ~CStochMethod();
-  void cleanup();
-  // Operations
-  /**
-   * Initialize the method
-   * @return mFail
-   * @see mFail
-   */
-  virtual C_INT32 initMethod() = 0;
-  /**
-   * Do one iteration of the simulation
-   * @return Current simulation time or -1 if error.
-   */
-  virtual C_FLOAT64 doStep(C_FLOAT64 time) = 0;
- protected:
-  // Protected operations
-  /**
-   * Calculate the propensities for all reactions
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 updatePropensities();
-  /**
-   * Calculate one of the propensities
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 calculateAmu(C_INT32 reaction_index);
-  /**
-   * Generate the index of a putative reaction.
-   * @return The reaction index
-   */
-  C_INT32 generateReactionIndex();
-  /**
-   * Generate the putative time taken before a reaction
-   * @return The time before the reaction
-   */
-  C_FLOAT64 generateReactionTime();
-  /**
-   * Update the particle numbers according to which reaction ocurred
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 updateSystemState(C_INT32 reaction_index);
+  {
+  protected:
+    // Protected attributes
+    /**
+     * A pointer to the instance of CModel being used.
+     */
+    CModel *mModel;
+    /**
+     * The propensities for the reactions
+     */
+    std::vector<C_FLOAT64> mAmu;
+    /**
+     * The sum of the propensities
+     */
+    C_FLOAT64 mA0;
+    /**
+     * The random number generator
+     */
+    CRandom *mRandomGenerator;
+    /**
+     * Failure status.
+     * 0 = Success
+     * !0 = Failure
+     */
+    C_INT32 mFail;
+
+  public:
+    // Lifecycle methods
+    /**
+     * Default constructor
+     */
+    CStochMethod();
+    CStochMethod(CModel *model);
+    /**
+     * Destructor
+     */
+    virtual ~CStochMethod();
+    void cleanup();
+    // Operations
+    /**
+     * Initialize the method
+     * @return mFail
+     * @see mFail
+     */
+    virtual C_INT32 initMethod() = 0;
+    /**
+     * Do one iteration of the simulation
+     * @return Current simulation time or -1 if error.
+     */
+    virtual C_FLOAT64 doStep(C_FLOAT64 time) = 0;
+
+  protected:
+    // Protected operations
+    /**
+     * Calculate the propensities for all reactions
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 updatePropensities();
+    /**
+     * Calculate one of the propensities
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 calculateAmu(C_INT32 reaction_index);
+    /**
+     * Generate the index of a putative reaction.
+     * @return The reaction index
+     */
+    C_INT32 generateReactionIndex();
+    /**
+     * Generate the putative time taken before a reaction
+     * @return The time before the reaction
+     */
+    C_FLOAT64 generateReactionTime();
+    /**
+     * Update the particle numbers according to which reaction ocurred
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 updateSystemState(C_INT32 reaction_index);
 #if 0 // Because these are now done in one step
-  /**
-   * Determine the value of one of the cmu's
-   * @param index The position in the vector of this value of Cmu
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 CalculateCmu(C_INT32 index);
-  /**
-   * Determine the value of one of the hmu's
-   * @param index The position in the vector of this value of Cmu
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 CalculateHmu(C_INT32 index);
+    /**
+     * Determine the value of one of the cmu's
+     * @param index The position in the vector of this value of Cmu
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 CalculateCmu(C_INT32 index);
+    /**
+     * Determine the value of one of the hmu's
+     * @param index The position in the vector of this value of Cmu
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 CalculateHmu(C_INT32 index);
 #endif // 0
-};
+  };
 
 /**
  * CStochDirectMethod implements Gillespie's Direct Method algorithm.
@@ -215,34 +223,34 @@ class CStochMethod
  */
 
 class CStochDirectMethod : public CStochMethod
-{
- public:
-  // Lifecycle methods
-  /**
-   * Default constructor
-   */
-  CStochDirectMethod();
-  /**
-   * Named constructor
-   */
-  CStochDirectMethod(CModel *model);
-  /**
-   * Destructor
-   */
-  ~CStochDirectMethod();
-  // Operations
-  /**
-   * Initialize the method
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 initMethod();
-  /**
-   * Do one iteration of the simulation
-   * @return Current simulation time or -1 if error.
-   */
-  C_FLOAT64 doStep(C_FLOAT64 time);
-};
+  {
+  public:
+    // Lifecycle methods
+    /**
+     * Default constructor
+     */
+    CStochDirectMethod();
+    /**
+     * Named constructor
+     */
+    CStochDirectMethod(CModel *model);
+    /**
+     * Destructor
+     */
+    ~CStochDirectMethod();
+    // Operations
+    /**
+     * Initialize the method
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 initMethod();
+    /**
+     * Do one iteration of the simulation
+     * @return Current simulation time or -1 if error.
+     */
+    C_FLOAT64 doStep(C_FLOAT64 time);
+  };
 
 /**
  * CStochFirstReactionMethod implements the First Reaction method.
@@ -257,76 +265,82 @@ class CStochDirectMethod : public CStochMethod
  */
 
 class CStochNextReactionMethod: public CStochMethod
-{
- private:
-  // Private attributes
-  /**
-   * The graph of reactions and their dependent reactions. When a reaction is
-   * executed, the propensities for each of its dependents must be updated.
-   */
-  CDependencyGraph mDG;
+  {
+  private:
+    // Private attributes
+    /**
+     * The graph of reactions and their dependent reactions. When a reaction is
+     * executed, the propensities for each of its dependents must be updated.
+     */
+    CDependencyGraph mDG;
 
-  /**
-   * The set of putative reactions and associated times at which each reaction occurs.
-   * This is represented as a priority queue, indexed on the reaction time.
-   */
-  CIndexedPriorityQueue mPQ;
- public:
-  // Lifecycle methods
-  /**
-   * Default constructor
-   */
-  CStochNextReactionMethod();
+    /**
+     * The set of putative reactions and associated times at which each reaction occurs.
+     * This is represented as a priority queue, indexed on the reaction time.
+     */
+    CIndexedPriorityQueue mPQ;
 
-  /**
-   * Named constructor
-   */
-  CStochNextReactionMethod(CModel *model);
-  /**
-   * Destructor
-   */
-  ~CStochNextReactionMethod();
-  // Operations
-  /**
-   * Initialize the method
-   * @param start_time The time at which the simulation starts
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 initMethod(C_FLOAT64 start_time = 0);
-  /**
-   * Do one iteration of the simulation
-   * @return Current simulation time or -1 if error.
-   */
-  C_FLOAT64 doStep();
- private:
-  // Private operations
-  /**
-   * Set up the dependency graph
-   */
-  void setupDependencyGraph();
-  /**
-   * Set up the priority queue.
-   * @param start_time The time at which the simulation starts.
-   */
-  void setupPriorityQueue(C_FLOAT64 start_time = 0);
-  /**
-   * Update the priority queue
-   */
-  void updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time);
-  /**
-   * Get the set of metabolites on which a given reaction depends.
-   * @param reaction_index The index of the reaction being executed.
-   * @return The set of metabolites depended on.
-   */
-  set<CMetab> *getDependsOn(C_INT32 reaction_index);
-  /**
-   * Get the set of metaboloites which change number when a given
-   * reaction is executed.
-   * @param reaction_index The index of the reaction being executed.
-   * @return The set of affected metabolites.
-   */
-  set<CMetab> *getAffects(C_INT32 reaction_index);
-};
+  public:
+    // Lifecycle methods
+    /**
+     * Default constructor
+     */
+    CStochNextReactionMethod();
+
+    /**
+     * Named constructor
+     */
+    CStochNextReactionMethod(CModel *model);
+    /**
+     * Destructor
+     */
+    ~CStochNextReactionMethod();
+    // Operations
+    /**
+     * Initialize the method
+     * @param start_time The time at which the simulation starts
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 initMethod(C_FLOAT64 start_time = 0);
+    /**
+     * Do one iteration of the simulation
+     * @return Current simulation time or -1 if error.
+     */
+    C_FLOAT64 doStep();
+
+  private:
+    // Private operations
+    /**
+     * Set up the dependency graph
+     */
+    void setupDependencyGraph();
+    /**
+     * Set up the priority queue.
+     * @param start_time The time at which the simulation starts.
+     */
+    void setupPriorityQueue(C_FLOAT64 start_time = 0);
+    /**
+     * Update the priority queue
+     */
+    void updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time);
+    /**
+     * Get the set of metabolites on which a given reaction depends.
+     * @param reaction_index The index of the reaction being executed.
+     * @return The set of metabolites depended on.
+     */
+
+    set
+      <CMetab> *getDependsOn(C_INT32 reaction_index);
+
+    /**
+     * Get the set of metaboloites which change number when a given
+     * reaction is executed.
+     * @param reaction_index The index of the reaction being executed.
+     * @return The set of affected metabolites.
+     */
+    set
+      <CMetab> *getAffects(C_INT32 reaction_index);
+  };
 
 #endif // COPASI_CStochSolver

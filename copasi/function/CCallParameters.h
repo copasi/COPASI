@@ -7,7 +7,11 @@
 
 #ifndef COPASI_CCallParameters
 #define COPASI_CCallParameters
+
+#include <vector>
 #include "CCallParameter.h"
+
+using std::vector;
 
 class CCallParameters : public vector < const void * >
   {}

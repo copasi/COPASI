@@ -19,6 +19,8 @@
 #include "utilities/CGlobals.h"
 #include "tnt/transv.h"
 
+using namespace std;
+
 /**
  *  Default constructor. 
  */

@@ -1,7 +1,11 @@
 #ifndef CDETERM_H
 #define CDETERM_H
 
+#include <vector>
 #include "CSpecLine.h"
+
+using std::vector;
+using std::pair;
 
 /**
  * This class describes a term in the differential equation.

@@ -12,9 +12,11 @@
 #include <qmessagebox.h>
 #include <qfont.h>
 
-#include "CompartmentsWidget.h"
+#include "copasi.h"
 #include "model/CCompartment.h"
-#include "listviews.h" 
+#include "CompartmentsWidget.h"
+#include "listviews.h"
+
 // #include "utilities/CGlobals.h"
 
 /**

@@ -10,87 +10,90 @@
 #define COPASI_CTableauLine
 
 #include <vector>
-
 #include "CFluxScore.h"
 
+using std::vector;
+
 class CTableauLine
-{
-  // Attributes  
- private:    
-  /**
-   *  
-   */
-  vector <double> mReaction;
+  {
+    // Attributes
 
-  /**
-   *  
-   */
-  bool mReversible;
+  private:
+    /**
+     *  
+     */
+    vector <double> mReaction;
 
-  /**
-   *  
-   */
-  vector <double> mFluxMode;
+    /**
+     *  
+     */
+    bool mReversible;
 
-  /**
-   *  
-   */
-  CFluxScore *mFluxScore;
+    /**
+     *  
+     */
+    vector <double> mFluxMode;
 
-  // Operations
-public:
-  /**
-   *  Default constructor
-   */
-  CTableauLine();
+    /**
+     *  
+     */
+    CFluxScore *mFluxScore;
 
-  /**
-   *  Specific constructor
-   */
-  CTableauLine(const vector <C_FLOAT64> & reaction,
-               bool reversible,
-               const C_INT32 & reactionCounter,
-               const C_INT32 & reactionNumber);
+    // Operations
 
-  /**
-   *  Specific constructor
-   */
-  CTableauLine(const C_FLOAT64 & m1,
-               const CTableauLine & src1,
-               const C_FLOAT64 & m2,
-               const CTableauLine & src2);  
+  public:
+    /**
+     *  Default constructor
+     */
+    CTableauLine();
 
-  /**
-   *  Destructor
-   */
-  ~CTableauLine();
+    /**
+     *  Specific constructor
+     */
+    CTableauLine(const vector <C_FLOAT64> & reaction,
+                 bool reversible,
+                 const C_INT32 & reactionCounter,
+                 const C_INT32 & reactionNumber);
 
-  /**
-   *  Retreives the flux score
-   */
-  const CFluxScore & getScore() const;
+    /**
+     *  Specific constructor
+     */
+    CTableauLine(const C_FLOAT64 & m1,
+                 const CTableauLine & src1,
+                 const C_FLOAT64 & m2,
+                 const CTableauLine & src2);
 
-  /**
-   *  Retreives the "index" coefficient of the reaction
-   *  @param "const unsigned C_INT32 &" index
-   */
-  const C_FLOAT64 & getReaction(const unsigned C_INT32 & index) const;
+    /**
+     *  Destructor
+     */
+    ~CTableauLine();
 
-  /**
-   *  Retreives the flux mode
-   */
-  const vector < C_FLOAT64 > & getFluxMode() const;
+    /**
+     *  Retreives the flux score
+     */
+    const CFluxScore & getScore() const;
 
-  /**
-   *  Checks whether the reaction is reversible
-   *  @return "bool" isReversible
-   */
-  bool isReversible() const;
+    /**
+     *  Retreives the "index" coefficient of the reaction
+     *  @param "const unsigned C_INT32 &" index
+     */
+    const C_FLOAT64 & getReaction(const unsigned C_INT32 & index) const;
 
-  /**
-   *  Remove the first entry from the reaction vector
-   */
-  void truncate();
-  
-};
+    /**
+     *  Retreives the flux mode
+     */
+    const vector < C_FLOAT64 > & getFluxMode() const;
+
+    /**
+     *  Checks whether the reaction is reversible
+     *  @return "bool" isReversible
+     */
+    bool isReversible() const;
+
+    /**
+     *  Remove the first entry from the reaction vector
+     */
+    void truncate();
+  };
+
 #endif // COPASI_CTableauLine

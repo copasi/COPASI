@@ -17,6 +17,7 @@ class CDeTerm;
  * This class represents a line of input from the spec file. It contains
  * a type identifier and a string, representing the actual input.
  */
+using std::vector;
 
 class CSpecLine
   {
@@ -26,14 +27,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,  // Comments
-      DE,   // Differential equations
-      EQN,  // Moiety specification equations
-      INIT,  // Initializations
-      CNST,  // Constant assignments
-      VOL,  // Volume assignment
-      CPT,  // Compartment volume assignments
-      RATE,  // Rate constant assignments
+      CMNT,   // Comments
+      DE,    // Differential equations
+      EQN,   // Moiety specification equations
+      INIT,   // Initializations
+      CNST,   // Constant assignments
+      VOL,   // Volume assignment
+      CPT,   // Compartment volume assignments
+      RATE,   // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 

@@ -7,12 +7,12 @@
 #include <string>
 #include <vector>
 #include <limits.h>
+
 #ifndef DBL_MAX
 #define DBL_MAX 1.7976931348623158e+308
 #endif //DBL_MAX
 
 #define  COPASI_TRACE_CONSTRUCTION
-
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "CModel.h"
@@ -22,6 +22,8 @@
 #include "tnt/triang.h"
 #include "tnt/transv.h"
 #include "utilities/CGlobals.h"
+
+using std::cout;
 
 CModel::CModel()
 {

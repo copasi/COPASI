@@ -10,13 +10,13 @@
 #undef yyFlexLexer
 #define yyFlexLexer CKinFunctionFlexLexer
 
-// #include <strstream>
-// #include <iostream>
 #include <sstream>
 
 #include "copasi.h"
 #include "FlexLexer.h"
 #include "CKinFunction.h"
+
+using std::istringstream;
 
 CKinFunction::CKinFunction() : CFunction()
 {
@@ -171,7 +171,7 @@ C_INT32 CKinFunction::parse()
           mNodes.add(CNodeK(N_FUNCTION, N_COS));
           break;
 
-        case N_NOP:         // this is an error
+        case N_NOP:          // this is an error
           mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -321,8 +321,8 @@ CNodeK * CKinFunction::parseExpression(C_INT16 priority)
     return NULL;
 
   while (mNidx < mNodes.size() &&
-          mNodes[mNidx]->isOperator() &&
-          priority < mNodes[mNidx]->leftPrecedence())
+         mNodes[mNidx]->isOperator() &&
+         priority < mNodes[mNidx]->leftPrecedence())
     {
       op = mNidx;
       rhs = NULL;

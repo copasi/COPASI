@@ -11,6 +11,9 @@
 #include <strstream>
 #include <string>
 
+using std::strstream;
+using std::string;
+
 // available operations mode for the configurations buffer
 // #define CReadConfig_SEARCH 0x01
 // #define CReadConfig_LOOP   0x02

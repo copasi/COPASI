@@ -18,6 +18,8 @@
 #include "model/model.h"
 #include "trajectory/CODESolver.h"
 
+using namespace std;
+
 // char *initInputBuffer(char *name);
 // static C_INT32 GetFileSize(const char *name);
 

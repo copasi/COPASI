@@ -15,8 +15,13 @@
 #include "utilities/utilities.h"
 #include "model/model.h"
 
-#include "CEFMAlgorithm.h"
+// #include "CEFMAlgorithm.h"
 #include "CFluxMode.h"
+
+class CEFMAlgorithm;
+
+using std::ostream;
+using std::endl;
 
 class CElementaryFluxModes
   {

@@ -6,6 +6,8 @@
 #include "CSpecLine.h"
 #include "CDeTerm.h"
 #include "utilities/CGlobals.h"
+
+using namespace std;
 CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE; }
 
 CSpecLine::CSpecLine(C_INT32 type, string contents)

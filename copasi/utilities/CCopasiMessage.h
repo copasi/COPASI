@@ -7,6 +7,7 @@
 #define COPASI_CCopasiMessage
 
 #include <string>
+using std::string;
 typedef struct MESSAGES {unsigned C_INT32 No; const char * Text; }
 
 Message;

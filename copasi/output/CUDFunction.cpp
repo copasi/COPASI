@@ -1,8 +1,8 @@
 /*****************************************************************************
-* PROGRAM NAME: CUDFunction.cpp
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: Implement the user defined function object
-*****************************************************************************/
+ * PROGRAM NAME: CUDFunction.cpp
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: Implement the user defined function object
+ *****************************************************************************/
 
 #define COPASI_TRACE_CONSTRUCTION
 
@@ -12,7 +12,7 @@
 #include <sstream>
 #include <iostream>
 
-#define  COPASI_TRACE_CONSTRUCTION 
+#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "FlexLexer.h"
@@ -20,6 +20,8 @@
 #include "CNodeO.h"
 #include "CUDFunction.h"
 #include "utilities/CGlobals.h"
+
+using namespace std;
 
 /**
  *  Default constructor
@@ -31,10 +33,10 @@ CUDFunction::CUDFunction() : CKinFunction()
 }
 
 CUDFunction::CUDFunction(const CFunction & src) : CKinFunction(src)
-{CONSTRUCTOR_TRACE;}
+{CONSTRUCTOR_TRACE; }
 
 CUDFunction::CUDFunction(const CUDFunction & src) : CKinFunction(src)
-{CONSTRUCTOR_TRACE;}
+{CONSTRUCTOR_TRACE; }
 
 /**
  *  This creates a user defined function with a name an description
@@ -53,7 +55,7 @@ CUDFunction::CUDFunction(const string & name,
 /**
  *  Destructor
  */
-CUDFunction::~CUDFunction() {cleanup(); DESTRUCTOR_TRACE;}
+CUDFunction::~CUDFunction() {cleanup(); DESTRUCTOR_TRACE; }
 
 /**
  *  Delete
@@ -65,7 +67,7 @@ void CUDFunction::cleanup()
   CFunction::cleanup();
 }
 
-#ifdef XXXX
+#ifdef XXXX 
 /**
  *  Copy
  */
@@ -79,6 +81,7 @@ void CUDFunction::copy(const CUDFunction & in)
 
   connectNodes();
 }
+
 #endif // XXXX
 
 /**
@@ -97,7 +100,7 @@ void CUDFunction::load(CReadConfig & configbuffer,
     {
       configbuffer.getVariable("Name", "string", &Name, mode);
       setName(Name);
-  
+
       configbuffer.getVariable("Description", "string", &Description);
       setDescription(Description);
 
@@ -106,22 +109,22 @@ void CUDFunction::load(CReadConfig & configbuffer,
   else
     CFunction::load(configbuffer, mode);
 
-  parse(); 
-  
+  parse();
+
   if (configbuffer.getVersion() < "4")
     {
       configbuffer.getVariable("Nodes", "C_INT32", &Size);
 
-      mNodes.load(configbuffer,Size);
+      mNodes.load(configbuffer, Size);
       createParameters();
-      //mNodes.cleanup();		// create exception
+      //mNodes.cleanup();  // create exception
     }
-  
+
   //compile();
   //parse();
   connectNodes();
 
-  return;
+  return ;
 }
 
 void CUDFunction::createParameters()
@@ -129,11 +132,11 @@ void CUDFunction::createParameters()
   CCopasiVectorN < CFunctionParameter > Data;
 
   unsigned C_INT32 i, imax = mNodes.size();
-  
+
   CFunctionParameter Parameter;
   Parameter.setType(CFunctionParameter::FLOAT64);
-  
-  for (i=0; i<imax; i++)
+
+  for (i = 0; i < imax; i++)
     {
       if (mNodes[i]->getType() == N_IDENTIFIER)
         {
@@ -153,9 +156,9 @@ void CUDFunction::createParameters()
     }
 
   imax = Data.size();
-  for (i=0; i<imax; i++)
-      getParameters().add(Data[i]);
 
+  for (i = 0; i < imax; i++)
+    getParameters().add(Data[i]);
 }
 
 /**
@@ -164,27 +167,25 @@ void CUDFunction::createParameters()
  */
 C_FLOAT64 CUDFunction::calcValue()
 {
-
-	mValue = mNodes[0]->getLeft().value();
-	return mValue;
+  mValue = mNodes[0]->getLeft().value();
+  return mValue;
 }
 
 /**
- *	Get the pointer of user defined functions
+ * Get the pointer of user defined functions
  */
 void * CUDFunction::getValueAddr()
 {
-	return &mValue;
+  return &mValue;
 }
 
 /**
  * Return the value of user defined function
  */
 C_FLOAT64 CUDFunction::getValue() const
-{
-	return mValue;
-}
-
+  {
+    return mValue;
+  }
 
 C_INT32 CUDFunction::connectNodes()
 {
@@ -196,9 +197,10 @@ C_INT32 CUDFunction::connectNodes()
   mNidx = 1;
 
   // point all Left & Right to the root node
-  for (i=1; i<mNodes.size(); i++)
+
+  for (i = 1; i < mNodes.size(); i++)
     {
-	  CNodeO *npt = mNodes[i];
+      CNodeO *npt = mNodes[i];
       mNodes[i]->setLeft(mNodes[0]);
       mNodes[i]->setRight(mNodes[0]);
     }
@@ -215,81 +217,95 @@ C_INT32 CUDFunction::connectNodes()
       //  errnode should index the node in error
       //  but we don't know its index (pointer only)
       CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2,
-		     getName().c_str());
+                     getName().c_str());
       errnode = -1;
       errfl++;
     }
 
-  for (i=1; i<mNodes.size() && !errfl; i++)
+  for (i = 1; i < mNodes.size() && !errfl; i++)
     {
       switch (mNodes[i]->getType())
         {
         case N_OPERATOR:
-	  if (!mNodes[i]->isLeftValid()      ||
-	      !mNodes[i]->isRightValid()     ||
-	      &mNodes[i]->getLeft()  == mNodes[0] ||
-	      &mNodes[i]->getRight() == mNodes[0])
-	    if (mNodes[i]->getSubtype() != '(' &&
-		mNodes[i]->getSubtype() != ')')
-	      {
-		if (!errfl)
-		  {
-		    // sprintf(errstr, "ERROR - incorrect number of operands");
-		    fatalError();
-		    errnode = i;
-		  }
-		errfl++;
-	      }
-	  if (!errfl)
+
+          if (!mNodes[i]->isLeftValid() ||
+              !mNodes[i]->isRightValid() ||
+              &mNodes[i]->getLeft() == mNodes[0] ||
+              &mNodes[i]->getRight() == mNodes[0])
+            if (mNodes[i]->getSubtype() != '(' &&
+                mNodes[i]->getSubtype() != ')')
+              {
+                if (!errfl)
+                  {
+                    // sprintf(errstr, "ERROR - incorrect number of operands");
+                    fatalError();
+                    errnode = i;
+                  }
+
+                errfl++;
+              }
+
+          if (!errfl)
             {
-	      if (mNodes[i]->isLeftValid()    &&
-		  mNodes[i]->getLeft().isOperator() &&
-		  mNodes[i]->getLeft().getSubtype() == '(' )
+              if (mNodes[i]->isLeftValid() &&
+                  mNodes[i]->getLeft().isOperator() &&
+                  mNodes[i]->getLeft().getSubtype() == '(')
                 {
-		  //           sprintf(errstr, "ERROR - missing operand");
-		  fatalError();
-		  errnode = -1;
-		  errfl++;
+                  //           sprintf(errstr, "ERROR - missing operand");
+                  fatalError();
+                  errnode = -1;
+                  errfl++;
                 }
-	      if (mNodes[i]->isRightValid()    &&
-		  mNodes[i]->getRight().isOperator() &&
-		  mNodes[i]->getRight().getSubtype() == ')' )
+
+              if (mNodes[i]->isRightValid() &&
+                  mNodes[i]->getRight().isOperator() &&
+                  mNodes[i]->getRight().getSubtype() == ')')
                 {
-		  //           sprintf(errstr, "ERROR - missing operand");
-		  fatalError();
-		  errnode = -1;
-		  errfl++;
+                  //           sprintf(errstr, "ERROR - missing operand");
+                  fatalError();
+                  errnode = -1;
+                  errfl++;
                 }
             }
-	  break;
+
+          break;
+
         case N_IDENTIFIER:
-	  if (mNodes[i]->isLeftValid() ||
-	      mNodes[i]->isRightValid()  )
+
+          if (mNodes[i]->isLeftValid() ||
+              mNodes[i]->isRightValid())
             {
-	      if (!errfl)
+              if (!errfl)
                 {
-		  //           sprintf(errstr, "ERROR - unexpected identifier");
-		  fatalError();
-		  errnode = -1;
+                  //           sprintf(errstr, "ERROR - unexpected identifier");
+                  fatalError();
+                  errnode = -1;
                 }
-	      ++errfl;
+
+              ++errfl;
             }
-	  break;
+
+          break;
+
         case N_NUMBER:
-	  if (mNodes[i]->isLeftValid() ||
-	      mNodes[i]->isRightValid()  )
+
+          if (mNodes[i]->isLeftValid() ||
+              mNodes[i]->isRightValid())
             {
-	      if (!errfl)
+              if (!errfl)
                 {
-		  //           sprintf(errstr, "ERROR - unexpected constant");
-		  fatalError();
-		  errnode = -1;
+                  //           sprintf(errstr, "ERROR - unexpected constant");
+                  fatalError();
+                  errnode = -1;
                 }
-	      ++errfl;
+
+              ++errfl;
             }
-	  break;
+
+          break;
         }
     }
+
   // return
   return errfl;
 }
@@ -303,33 +319,38 @@ CNodeO * CUDFunction::parseExpression(C_INT16 priority)
   C_INT32 op;
 
   lhs = parsePrimary();
-  if (!lhs) return NULL;
 
-  while( mNidx < mNodes.size() &&
-	 mNodes[mNidx]->isOperator() &&
-	 priority < mNodes[mNidx]->leftPrecedence())
+  if (!lhs)
+    return NULL;
+
+  while (mNidx < mNodes.size() &&
+          mNodes[mNidx]->isOperator() &&
+          priority < mNodes[mNidx]->leftPrecedence())
     {
       op = mNidx;
       rhs = NULL;
       ++mNidx;
       rhs = parseExpression(mNodes[op]->rightPrecedence());
+
       if (!rhs)
         {
-	  if (!errfl)
+          if (!errfl)
             {
-	      //    sprintf(errstr, "ERROR - unexpected operator");
-	      fatalError();
-	      errnode = op;
+              //    sprintf(errstr, "ERROR - unexpected operator");
+              fatalError();
+              errnode = op;
             }
-	  ++errfl;
+
+          ++errfl;
         }
       else
         {
-	  mNodes[op]->setLeft(lhs);
-	  mNodes[op]->setRight(rhs);
-	  lhs = mNodes[op] ;
+          mNodes[op]->setLeft(lhs);
+          mNodes[op]->setRight(rhs);
+          lhs = mNodes[op] ;
         }
     }
+
   return lhs;
 }
 
@@ -344,6 +365,7 @@ CNodeO * CUDFunction::parsePrimary()
   npt = NULL;
 
   //    if (Node[mNidx]==NULL)
+
   if (mNidx >= mNodes.size())
     {
       //  if (!errfl) // execute only if no previous error
@@ -370,71 +392,90 @@ CNodeO * CUDFunction::parsePrimary()
       npt = mNodes[mNidx];
       ++mNidx;
       return npt;
-    case '(': ++mNidx;
+
+    case '(':
+      ++mNidx;
       npt = parseExpression(0);
-      if (mNidx < mNodes.size()      &&
-	  mNodes[mNidx]->isOperator() &&
-	  mNodes[mNidx]->getSubtype() == ')')
+
+      if (mNidx < mNodes.size() &&
+          mNodes[mNidx]->isOperator() &&
+          mNodes[mNidx]->getSubtype() == ')')
         {
-	  ++mNidx;
-	  return npt;
+          ++mNidx;
+          return npt;
         }
       else
         {
-	  if (!errfl) // execute only if no previous error
+          if (!errfl) // execute only if no previous error
             {
-	      //             sprintf(errstr, "ERROR - right bracket missing");
-	      errnode = mNidx;
+              //             sprintf(errstr, "ERROR - right bracket missing");
+              errnode = mNidx;
             }
-	  errfl++;
+
+          errfl++;
         }
+
     case '+':
+
     case '-':
+
     case N_LOG:
+
     case N_LOG10:
+
     case N_EXP:
+
     case N_SIN:
-    case N_COS:   op = mNidx; primary = NULL;
+
+    case N_COS:
+      op = mNidx;
+      primary = NULL;
       ++mNidx;
       primary = parsePrimary();
-      if (primary==NULL)
+
+      if (primary == NULL)
         {
-	  if (!errfl)
+          if (!errfl)
             {
-	      //                  sprintf(errstr, "ERROR - missing operator");
-	      errnode = op;
+              //                  sprintf(errstr, "ERROR - missing operator");
+              errnode = op;
             }
-	  ++errfl;
+
+          ++errfl;
         }
       else
         {
-	  npt = mNodes[op];
-	  // unary operators are taken as functions
-	  mNodes[op]->setType(N_FUNCTION);
-	  mNodes[op]->setLeft(primary);
-	  mNodes[op]->setRight(NULL);
-	  return mNodes[op];
+          npt = mNodes[op];
+          // unary operators are taken as functions
+          mNodes[op]->setType(N_FUNCTION);
+          mNodes[op]->setLeft(primary);
+          mNodes[op]->setRight(NULL);
+          return mNodes[op];
         }
-    default:  return NULL;
+
+    default:
+      return NULL;
     }
-  if (mNidx < mNodes.size()      &&
+
+  if (mNidx < mNodes.size() &&
       mNodes[mNidx]->isOperator() &&
       mNodes[mNidx]->getSubtype() == '(')
     {
       ++mNidx;
-      if (mNidx < mNodes.size()      &&
-	  mNodes[mNidx]->isOperator() &&
-	  mNodes[mNidx]->getSubtype() == ')')
+
+      if (mNidx < mNodes.size() &&
+          mNodes[mNidx]->isOperator() &&
+          mNodes[mNidx]->getSubtype() == ')')
         {
-	  mNodes[mNidx]->setLeft(npt);
-	  mNodes[mNidx]->setRight(NULL);
-	  return mNodes[mNidx];
+          mNodes[mNidx]->setLeft(npt);
+          mNodes[mNidx]->setRight(NULL);
+          return mNodes[mNidx];
         }
-      else parseExpression(0);
+      else
+        parseExpression(0);
     }
 }
-
-CCopasiVectorS < CNodeO > & CUDFunction::getNodes() {return mNodes;}
+CCopasiVectorS < CNodeO > & CUDFunction::getNodes() { return mNodes; }
 
 void CUDFunction::compile()
 {
@@ -453,31 +494,76 @@ C_INT32 CUDFunction::parse()
   mNodes.add(CNodeO(N_ROOT, N_NOP));
 
   // call the lexical analyser successively until done
+
   while (i)
     {
       i = Scanner.yylex();
+
       switch (i)
         {
-        case N_IDENTIFIER: mNodes.add(CNodeO(Scanner.YYText())); break;
-        case N_NUMBER:     mNodes.add(CNodeO(atof(Scanner.YYText()))); break;
-        case '+':          mNodes.add(CNodeO(N_OPERATOR, '+')); break;
-        case '-':          mNodes.add(CNodeO(N_OPERATOR, '-')); break;
-        case '*':          mNodes.add(CNodeO(N_OPERATOR, '*')); break;
-        case '/':          mNodes.add(CNodeO(N_OPERATOR, '/')); break;
-        case '^':          mNodes.add(CNodeO(N_OPERATOR, '^')); break;
-        case '(':          mNodes.add(CNodeO(N_OPERATOR, '(')); break;
-        case ')':          mNodes.add(CNodeO(N_OPERATOR, ')')); break;
-        case N_LOG:        mNodes.add(CNodeO(N_FUNCTION, N_LOG)); break;
-        case N_LOG10:      mNodes.add(CNodeO(N_FUNCTION, N_LOG10)); break;
-        case N_EXP:        mNodes.add(CNodeO(N_FUNCTION, N_EXP)); break;
-        case N_SIN:        mNodes.add(CNodeO(N_FUNCTION, N_SIN)); break;
-        case N_COS:        mNodes.add(CNodeO(N_FUNCTION, N_COS)); break;
-        case N_NOP:        // this is an error
-	  mNodes.cleanup();
+        case N_IDENTIFIER:
+          mNodes.add(CNodeO(Scanner.YYText()));
+          break;
+
+        case N_NUMBER:
+          mNodes.add(CNodeO(atof(Scanner.YYText())));
+          break;
+
+        case '+':
+          mNodes.add(CNodeO(N_OPERATOR, '+'));
+          break;
+
+        case '-':
+          mNodes.add(CNodeO(N_OPERATOR, '-'));
+          break;
+
+        case '*':
+          mNodes.add(CNodeO(N_OPERATOR, '*'));
+          break;
+
+        case '/':
+          mNodes.add(CNodeO(N_OPERATOR, '/'));
+          break;
+
+        case '^':
+          mNodes.add(CNodeO(N_OPERATOR, '^'));
+          break;
+
+        case '(':
+          mNodes.add(CNodeO(N_OPERATOR, '('));
+          break;
+
+        case ')':
+          mNodes.add(CNodeO(N_OPERATOR, ')'));
+          break;
+
+        case N_LOG:
+          mNodes.add(CNodeO(N_FUNCTION, N_LOG));
+          break;
+
+        case N_LOG10:
+          mNodes.add(CNodeO(N_FUNCTION, N_LOG10));
+          break;
+
+        case N_EXP:
+          mNodes.add(CNodeO(N_FUNCTION, N_EXP));
+          break;
+
+        case N_SIN:
+          mNodes.add(CNodeO(N_FUNCTION, N_SIN));
+          break;
+
+        case N_COS:
+          mNodes.add(CNodeO(N_FUNCTION, N_COS));
+          break;
+
+        case N_NOP:         // this is an error
+          mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
-	  return 0;
+          return 0;
         }
     }
+
   return 0;
 }

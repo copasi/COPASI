@@ -9,7 +9,12 @@
 #define COPASI_CUsageRange
 
 #include <string>
+#include <iostream>
+
 #include "CRange.h"
+
+using std::ostream;
+using std::endl;
 
 class CUsageRange : public CRange
   {
