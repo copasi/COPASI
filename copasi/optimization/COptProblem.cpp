@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:29:27 $
+   $Date: 2005/03/30 22:10:16 $
    End CVS Header */
 
 /**
@@ -28,6 +28,9 @@
 
 #include "model/CModel.h"
 #include "model/CCompartment.h"
+
+#include "report/CCopasiObjectReference.h"
+#include "utilities/CCopasiCallBack.h"
 
 //  Default constructor
 COptProblem::COptProblem(const CCopasiContainer * pParent):
@@ -70,9 +73,27 @@ bool COptProblem::setModel(CModel * pModel)
   return true;
 }
 
+bool COptProblem::setCallBack(CCopasiCallBack * pCallBack)
+{
+  CCopasiProblem::setCallBack(pCallBack);
+  std::vector< CCopasiCallBackItem > List;
+  List.push_back(CCopasiCallBackItem("Simulation Counter", DBL_MAX,
+                                     getObject(CCopasiObjectName("Reference=Simulation Counter"))));
+
+  mpCallBack->init(List);
+
+  return true;
+}
+
+void COptProblem::initObjects()
+{
+  addObjectReference("Simulation Counter", mCounter, CCopasiObject::ValueDbl);
+}
+
 bool COptProblem::initialize()
 {
   if (!mpModel) return false;
+  mpModel->compileIfNecessary();
 
   std::vector< CCopasiContainer * > ContainerList;
   ContainerList.push_back(mpModel);
@@ -93,7 +114,7 @@ bool COptProblem::initialize()
     }
 
   return true;
-} // :TODO:
+}
 
 bool COptProblem::checkParametricConstraints()
 {
@@ -136,11 +157,14 @@ bool COptProblem::calculate()
 
   // :TODO: mCalculateValue = mpFunction->calvValue(NULL);
 
+  mCounter += 1;
+
+  if (mpCallBack) return mpCallBack->progress();
   return true;
 }
 
 const C_FLOAT64 & COptProblem::getCalculateValue() const
-  {return mCalculateValue;}
+{return mCalculateValue;}
 
 void COptProblem::setSolutionVariables(const CVector< C_FLOAT64 > & variables)
 {mSolutionVariables = variables;}

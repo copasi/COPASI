@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:31:34 $
+   $Date: 2005/03/30 22:09:43 $
    End CVS Header */
 
 /**
@@ -25,6 +25,7 @@
 #include "model/CState.h"
 
 class CModel;
+class CCopasiCallBack;
 
 class CCopasiProblem : public CCopasiParameterGroup
   {
@@ -40,6 +41,11 @@ class CCopasiProblem : public CCopasiParameterGroup
      * The model of the problem
      */
     CModel * mpModel;
+
+    /**
+     * a pointer to the callback 
+     */
+    CCopasiCallBack * mpCallBack;
 
     // propably for optimization only
 #ifdef XXXX
@@ -112,6 +118,13 @@ class CCopasiProblem : public CCopasiParameterGroup
      * @result CModel * pModel
      */
     CModel * getModel() const;
+
+    /**
+     * Set the call back of the problem
+     * @param CCopasiCallBack * pCallBack
+     * @result bool succes
+     */
+    virtual bool setCallBack(CCopasiCallBack * pCallBack);
 
     /**
      * Sets the initial value (in case this applies to the specific problem)

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.10 $ $Author: shoops $ $Date: 2005/02/18 21:59:11 $  
+# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/03/30 22:10:16 $  
 ######################################################################
 
 LIB = utilities
@@ -9,6 +9,7 @@ include(../common.pri)
 
 # Input
 HEADERS += CAnnotatedMatrix.h \
+           CCopasiCallBack.h \
            CCopasiException.h \
            CCopasiMessage.h \
            CCopasiMethod.h \
@@ -35,6 +36,7 @@ HEADERS += CAnnotatedMatrix.h \
            utility.h
 
 SOURCES += CAnnotatedMatrix.cpp \
+           CCopasiCallBack.cpp \
            CCopasiException.cpp \
            CCopasiMessage.cpp \
            CCopasiMethod.cpp \

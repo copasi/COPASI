@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:53:57 $
+   $Date: 2005/03/30 22:10:16 $
    End CVS Header */
 
 /**
@@ -58,42 +58,31 @@ void COptTask::cleanup(){}
 
 bool COptTask::initialize(std::ostream * pOstream)
 {
-  assert(mpProblem && mpMethod);
-  COptProblem* pProblem =
-    dynamic_cast<COptProblem *>(mpProblem);
+  COptProblem * pProblem = dynamic_cast<COptProblem *>(mpProblem);
+  COptMethod * pMethod = dynamic_cast<COptMethod *>(mpMethod);
+
+  if (!pProblem || !pMethod) return false;
 
   bool success = true;
 
   if (!mReport.open(pOstream)) success = false;
   if (!mReport.compile()) success = false;
-  if (!pProblem->getModel()->compileIfNecessary()) success = false;
+
+  if (!pProblem->initialize()) return false;
+
+  pMethod->setProblem(pProblem);
 
   return success;
 }
 
-/*void COptTask::load(CReadConfig & configBuffer)
-{
-  COptProblem* pProblem =
-    dynamic_cast<COptProblem *>(mpProblem);
-  assert(pProblem);
- 
-  //pProblem->load(configBuffer);
-}*/
-
 bool COptTask::process()
 {
-  /*if (!mpProblem)
-    fatalError();
-  if (!mpMethod)
-    fatalError();*/
-  assert(mpProblem && mpMethod);
+  COptProblem * pProblem = dynamic_cast<COptProblem *>(mpProblem);
+  COptMethod * pMethod = dynamic_cast<COptMethod *>(mpMethod);
 
-  bool success = true;
+  if (!pProblem || !pMethod) return false;
 
-  COptProblem * pProblem = (COptProblem *) mpProblem;
-  COptMethod * pMethod = (COptMethod *) mpMethod;
-
-  return success;
+  return pMethod->optimise();
 }
 
 bool COptTask::setMethodType(const int & type)

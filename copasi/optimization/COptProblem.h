@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 18:45:00 $
+   $Date: 2005/03/30 22:10:16 $
    End CVS Header */
 
 /**
@@ -79,6 +79,8 @@ class COptProblem : public CCopasiProblem
      */
     C_FLOAT64 mSolutionValue;
 
+    C_FLOAT64 mCounter;
+
     // Implementation
   public:
 
@@ -107,6 +109,13 @@ class COptProblem : public CCopasiProblem
      * @result bool succes
      */
     virtual bool setModel(CModel * pModel);
+
+    /**
+     * Set the call back of the problem
+     * @param CCopasiCallBack * pCallBack
+     * @result bool succes
+     */
+    virtual bool setCallBack(CCopasiCallBack * pCallBack);
 
     /**
      * Do all neccessary initialization so that calls to caluclate will 
@@ -220,6 +229,9 @@ class COptProblem : public CCopasiProblem
      */
     bool swapOptItem(const unsigned C_INT32 & iFrom,
                      const unsigned C_INT32 & iTo);
+
+  private:
+    virtual void initObjects();
   };
 
 #endif  // the end

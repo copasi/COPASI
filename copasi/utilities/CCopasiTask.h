@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:06:52 $
+   $Author: shoops $ 
+   $Date: 2005/03/30 22:09:43 $
    End CVS Header */
 
 /**
@@ -26,6 +26,7 @@ class CCopasiProblem;
 class CCopasiMethod;
 class CCallbackHandler;
 class CCopasiParameterGroup;
+class CCopasiCallBack;
 
 class CCopasiTask : public CCopasiContainer
   {
@@ -195,8 +196,10 @@ class CCopasiTask : public CCopasiContainer
 
     /**
      * Process the task
+     * @param CCopasiCallBack * pCallBack;
+     * @return bool success
      */
-    virtual bool process();
+    virtual bool process(CCopasiCallBack * pCallBack);
 
     /**
      * Process the task. This is called by the scan task.

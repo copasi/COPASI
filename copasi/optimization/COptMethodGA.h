@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 18:43:57 $
+   $Date: 2005/03/30 22:10:16 $
    End CVS Header */
 
 /**
@@ -38,6 +38,13 @@ class COptMethodGA : public COptMethod
     virtual ~COptMethodGA();
 
     /**
+     * Set the call back of the problem
+     * @param CCopasiCallBack * pCallBack
+     * @result bool succes
+     */
+    virtual bool setCallBack(CCopasiCallBack * pCallBack);
+
+    /**
      * Execute the optimization algorithm calling simulation routine 
      * when needed. It is noted that this procedure can give feedback 
      * of its progress by the callback function set with SetCallback.
@@ -51,6 +58,8 @@ class COptMethodGA : public COptMethod
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     COptMethodGA(const CCopasiContainer * pParent = NULL);
+
+    virtual void initObjects();
 
     /**
      * Initialize arrays and pointer.
@@ -185,6 +194,10 @@ class COptMethodGA : public COptMethod
      * variance for mutations
      */
     C_FLOAT64 mMutationVarians;
+
+    C_FLOAT64 mBestValue;
+    unsigned C_INT32 mBestIndex;
+    unsigned C_INT32 mGeneration;
   };
 
 #endif  // COPASI_COptMethodGA

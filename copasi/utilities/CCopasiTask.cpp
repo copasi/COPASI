@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:06:52 $
+   $Author: shoops $ 
+   $Date: 2005/03/30 22:09:43 $
    End CVS Header */
 
 /**
@@ -125,7 +125,7 @@ const bool & CCopasiTask::isScheduled() const {return mScheduled;}
 
 bool CCopasiTask::initialize(std::ostream * C_UNUSED(pOstream)) {return true;}
 
-bool CCopasiTask::process() {return true;}
+bool CCopasiTask::process(CCopasiCallBack * pCallBack) {return true;}
 
 bool CCopasiTask::processForScan(bool C_UNUSED(useInitialConditions), bool C_UNUSED(doOutput)) {return true;}
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2005/01/11 10:14:30 $
+   $Author: shoops $ 
+   $Date: 2005/03/30 22:09:43 $
    End CVS Header */
 
 /**
@@ -80,7 +80,8 @@ CCopasiMethod::SubType CCopasiMethod::XMLNameToEnum(const char * xmlTypeName)
 CCopasiMethod::CCopasiMethod():
     CCopasiParameterGroup("NoName", NULL, "Method"),
     mType(CCopasiTask::unset),
-    mSubType(unset)
+    mSubType(unset),
+    mpCallBack(NULL)
 {setObjectName(SubTypeName[mType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
@@ -88,17 +89,25 @@ CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
                              const CCopasiContainer * pParent):
     CCopasiParameterGroup(TypeName[type], pParent, "Method"),
     mType(type),
-    mSubType(subType)
+    mSubType(subType),
+    mpCallBack(NULL)
 {setObjectName(SubTypeName[mSubType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
                              const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
     mType(src.mType),
-    mSubType(src.mSubType)
+    mSubType(src.mSubType),
+    mpCallBack(src.mpCallBack)
 {}
 
 CCopasiMethod::~CCopasiMethod() {}
+
+bool CCopasiMethod::setCallBack(CCopasiCallBack * pCallBack)
+{
+  mpCallBack = pCallBack;
+  return true;
+}
 
 const CCopasiTask::Type & CCopasiMethod::getType() const {return mType;}
 

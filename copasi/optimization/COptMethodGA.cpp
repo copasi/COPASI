@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 18:43:57 $
+   $Date: 2005/03/30 22:10:16 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -15,6 +15,8 @@
 #include "COptItem.h"
 
 #include "randomGenerator/CRandom.h"
+#include "utilities/CCopasiCallBack.h"
+#include "report/CCopasiObjectReference.h"
 
 COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
     COptMethod(CCopasiMethod::GeneticAlgorithm, pParent),
@@ -28,7 +30,11 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
     mValue(0),
     mShuffle(0),
     mWins(0),
-    mMutationVarians(0.1)
+    mMutationVarians(0.1),
+    mBestValue(DBL_MAX),
+    mBestIndex(C_INVALID_INDEX),
+    mGeneration(0)
+
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
@@ -49,11 +55,27 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
     mValue(0),
     mShuffle(0),
     mWins(0),
-    mMutationVarians(0.1)
+    mMutationVarians(0.1),
+    mBestValue(DBL_MAX),
+    mBestIndex(C_INVALID_INDEX),
+    mGeneration(0)
 {}
 
 COptMethodGA::~COptMethodGA()
 {cleanup();}
+
+bool COptMethodGA::setCallBack(CCopasiCallBack * pCallBack)
+{
+  CCopasiMethod::setCallBack(pCallBack);
+
+  std::vector< CCopasiCallBackItem > List;
+  List.push_back(CCopasiCallBackItem("Current Generation", mGenerations,
+                                     getObject(CCopasiObjectName("Reference=Current Generation"))));
+  List.push_back(CCopasiCallBackItem("Objective Value", DBL_MAX,
+                                     getObject(CCopasiObjectName("Reference=Objective Value"))));
+
+  return mpCallBack->init(List);
+}
 
 // evaluate the fitness of one individual
 C_FLOAT64 COptMethodGA::evaluate(const CVector< C_FLOAT64 > & individual)
@@ -379,6 +401,12 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
   return true;
 }
 
+void COptMethodGA::initObjects()
+{
+  addObjectReference("Current Generation", mGeneration, CCopasiObject::ValueInt);
+  addObjectReference("Objective Value", mBestValue, CCopasiObject::ValueDbl);
+}
+
 bool COptMethodGA::initialize()
 {
   unsigned C_INT32 i;
@@ -439,9 +467,6 @@ bool COptMethodGA::optimise()
 
   unsigned C_INT32 i;
 
-  C_FLOAT64 BestValue;
-  unsigned C_INT32 BestIndex;
-
   // initialise the population
   // first individual is the initial guess
   for (i = 0; i < mVariableSize; i++)
@@ -462,15 +487,15 @@ bool COptMethodGA::optimise()
   creation(1, mPopulationSize);
   // initialise the update register
   // get the index of the fittest
-  BestIndex = fittest();
+  mBestIndex = fittest();
   // and store that value
-  BestValue = mValue[BestIndex];
+  mBestValue = mValue[mBestIndex];
 
-  mpOptProblem->setSolutionValue(BestValue);
-  mpOptProblem->setSolutionVariables(*mIndividual[BestIndex]);
+  mpOptProblem->setSolutionValue(mBestValue);
+  mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
 
   // ITERATE FOR gener GENERATIONS
-  for (i = 0; i < mGenerations; i++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
+  for (mGeneration = 0; mGeneration < mGenerations; mGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
@@ -515,18 +540,21 @@ bool COptMethodGA::optimise()
         }
 
       // get the index of the fittest
-      BestIndex = fittest();
-      if (mValue[BestIndex] < BestValue)
+      mBestIndex = fittest();
+      if (mValue[mBestIndex] < mBestValue)
         {
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
-          BestValue = mValue[BestIndex];
+          mBestValue = mValue[mBestIndex];
 
-          mpOptProblem->setSolutionValue(BestValue);
-          mpOptProblem->setSolutionVariables(*mIndividual[BestIndex]);
+          mpOptProblem->setSolutionValue(mBestValue);
+          mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
         }
 
-      // signal another generation
-      //  if(callback != NULL) callback(mValue[best]);
+      if (mpCallBack && !mpCallBack->progress())
+        {
+          success = false;
+          break;
+        }
     }
 
   cleanup();
