@@ -1,10 +1,10 @@
 /********************************************************
-    Author: Liang Xu
-    Version : 1.xx  <first>
-    Description: 
-    Date: 04/03 
-    Comment : Copasi Object Browser: 
-    Contact: Please contact lixu1@vt.edu.
+   Author: Liang Xu
+   Version : 1.xx  <first>
+   Description: 
+   Date: 04/03 
+   Comment : Copasi Object Browser: 
+   Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include "ObjectBrowser.h"
 #include "ObjectBrowserItem.h"
@@ -304,6 +304,7 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
     {
       currentField = *fieldIt;
       ObjectBrowserItem* currentItemField = new ObjectBrowserItem(parent, lastField, NULL, objectItemList);
+      currentItemField->attachKey();
       currentItemField->setObjectType(FIELDATTR);
       currentItemField->setText(0, currentField->getObjectName().c_str());
       lastField = currentItemField;
@@ -314,9 +315,9 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
           current = *it;
           CCopasiObject* pSubField = getFieldCopasiObject(current, currentField->getObjectName().c_str());
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, pSubField, objectItemList);
-
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(FIELDATTR);
+          currentItem->attachKey();
           last = currentItem;
           it++;
         }
