@@ -157,6 +157,7 @@ unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & na
 void CFunctionParameters::updateUsageRanges()
 {
   unsigned C_INT32 i, imax = mParameters.size();
+  unsigned C_INT32 index;
 
   CUsageRange * pUsageRange = NULL;
   CUsageRange UsageRange;
@@ -171,41 +172,28 @@ void CFunctionParameters::updateUsageRanges()
       Usage = mParameters[i]->getUsage();
       Type = mParameters[i]->getType();
 
-      try
+      if ((index = mUsageRanges.getIndex(Usage)) == C_INVALID_INDEX)
         {
-          pUsageRange = mUsageRanges[Usage];
-        }
-
-      catch (CCopasiException Exception)
-        {
-          /* Usage not found */
-
-          if ((MCCopasiVector + 1) == Exception.getMessage().getNumber())
+          if (Type < CFunctionParameter::VINT32)
             {
-              if (Type < CFunctionParameter::VINT32)
-                {
-                  /* Non vectors are assumed to have a fixed number
-                     of elements */
-                  UsageRange.setRange(1, CRange::NoRange);
-                  UsageRange.setUsage(Usage);
-                  mUsageRanges.add(UsageRange);
-                }
-              else
-                {
-                  /* Vectors are assumed to have at least one element */
-                  UsageRange.setRange(1, CRange::Infinity);
-                  UsageRange.setUsage(Usage);
-                  mUsageRanges.add(UsageRange);
-                }
-
-              pUsageRange = NULL;
+              /* Non vectors are assumed to have a fixed number
+                 of elements */
+              UsageRange.setRange(1, CRange::NoRange);
+              UsageRange.setUsage(Usage);
+              mUsageRanges.add(UsageRange);
             }
           else
-            throw Exception;
+            {
+              /* Vectors are assumed to have at least one element */
+              UsageRange.setRange(1, CRange::Infinity);
+              UsageRange.setUsage(Usage);
+              mUsageRanges.add(UsageRange);
+            }
         }
-
-      if (pUsageRange)
+      else
         {
+          pUsageRange = mUsageRanges[index];
+
           if ((CFunctionParameter::VINT32 <= Type) ||
               (pUsageRange->getHigh() == (unsigned C_INT32) CRange::Infinity))
             CCopasiMessage(CCopasiMessage::ERROR, MCFunctionParameters + 1,
