@@ -1506,15 +1506,18 @@ C_INT32 CModel::addCompartment(std::string &name, C_FLOAT64 vol)
     return - 1;
 }
 
-C_INT32 CModel::addReaction(CReaction *r)
+unsigned C_INT32 CModel::addReaction(const CReaction & r)
 {
+  if (mSteps.getIndex(r.getName()) != C_INVALID_INDEX)
+    return C_INVALID_INDEX;
+
   mSteps.add(r);
-  r->compile(mCompartments);
+  mSteps[r.getName()]->compile(mCompartments);
   return mSteps.size();
 }
 
 const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
-  {return mRowLU;}
+{return mRowLU;}
 
 const CVector<unsigned C_INT32> & CModel::getReactionPermutation() const
   {return mColLU;}

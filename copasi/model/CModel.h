@@ -669,7 +669,7 @@ class CModel : public CCopasiContainer
      * @param r a pointer to the new reaction
      * @return C_INT32 number of reactions in the model (after insertion)
      */
-    C_INT32 addReaction(CReaction *r);
+    unsigned C_INT32 addReaction(const CReaction & r);
 
     /**
      * Retrieve the metabolite permutation vector
