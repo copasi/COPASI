@@ -6,7 +6,9 @@ liboutput_a_SOURCES = \
 	COutput.cpp \
 	COutputEvent.cpp \
 	COutputLine.cpp \
-	COutputList.cpp   
+	COutputList.cpp \
+	CUDFunction.cpp \
+	CUDFunctionDB.cpp
 
 
 EXTRA_DIST = \
@@ -15,7 +17,9 @@ EXTRA_DIST = \
 	COutput.h COutput.cpp \
 	COutputEvent.h COutputEvent.cpp \
 	COutputLine.h COutputLine.cpp \
-	COutputList.h COutputList.cpp   
+	COutputList.h COutputList.cpp \
+	CUDFunction.h	CUDFunction.cpp \
+	CUDFunctionDB.h	CUDFunctionDB.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 

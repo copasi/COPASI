@@ -278,7 +278,8 @@ class CBaseFunction
     {
     BASIC = 0,
     USERDEFINED,
-    BUILTIN
+    BUILTIN,
+    OUTPUT
     };
   
  private:

@@ -188,16 +188,16 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = liboutput.a
 
-liboutput_a_SOURCES =  	CDatum.cpp 	COutput.cpp 	COutputEvent.cpp 	COutputLine.cpp 	COutputList.cpp   
+liboutput_a_SOURCES =  	CDatum.cpp 	COutput.cpp 	COutputEvent.cpp 	COutputLine.cpp 	COutputList.cpp 	CUDFunction.cpp 	CUDFunctionDB.cpp
 
 
-EXTRA_DIST =  	output.h 	CDatum.h CDatum.cpp 	COutput.h COutput.cpp 	COutputEvent.h COutputEvent.cpp 	COutputLine.h COutputLine.cpp 	COutputList.h COutputList.cpp   
+EXTRA_DIST =  	output.h 	CDatum.h CDatum.cpp 	COutput.h COutput.cpp 	COutputEvent.h COutputEvent.cpp 	COutputLine.h COutputLine.cpp 	COutputList.h COutputList.cpp 	CUDFunction.h	CUDFunction.cpp 	CUDFunctionDB.h	CUDFunctionDB.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
 
 # set the include path found by configure
-INCLUDES = $(all_includes) -I$(top_srcdir)/copasi
+INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -210,7 +210,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 liboutput_a_LIBADD = 
 liboutput_a_OBJECTS =  CDatum.$(OBJEXT) COutput.$(OBJEXT) \
-COutputEvent.$(OBJEXT) COutputLine.$(OBJEXT) COutputList.$(OBJEXT)
+COutputEvent.$(OBJEXT) COutputLine.$(OBJEXT) COutputList.$(OBJEXT) \
+CUDFunction.$(OBJEXT) CUDFunctionDB.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -222,10 +223,11 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/CDatum.P .deps/COutput.P .deps/COutputEvent.P \
-.deps/COutputLine.P .deps/COutputList.P
+.deps/COutputLine.P .deps/COutputList.P .deps/CUDFunction.P \
+.deps/CUDFunctionDB.P
 SOURCES = $(liboutput_a_SOURCES)
 OBJECTS = $(liboutput_a_OBJECTS)
 
