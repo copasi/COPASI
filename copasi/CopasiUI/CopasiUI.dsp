@@ -114,6 +114,10 @@ SOURCE=.\DataModel.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\DataModelGUI.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\DifferentialEquations.cpp
 # End Source File
 # Begin Source File
@@ -288,6 +292,10 @@ SOURCE=.\TimeSeriesWidget.cpp
 
 SOURCE=.\TrajectoryWidget.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\Tree.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -359,6 +367,10 @@ SOURCE=.\DataModel.h
 # Begin Source File
 
 SOURCE=.\DataModel.txt.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DataModelGUI.h
 # End Source File
 # Begin Source File
 
