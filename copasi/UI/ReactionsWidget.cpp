@@ -63,11 +63,16 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(const QString &)));
-  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
+          this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  connect(this, SIGNAL(name(const QString &)),
+          (ListViews*)parent, SLOT(slotReactionTableChanged(const QString &)));
+  connect(table, SIGNAL(selectionChanged ()),
+          this, SLOT(slotTableSelectionChanged ()));
+  connect(btnOK, SIGNAL(clicked ()),
+          this, SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()),
+          this, SLOT(slotBtnCancelClicked()));
 }
 
 void ReactionsWidget::loadReactions(CModel *model)
