@@ -79,7 +79,7 @@ void CScanProblem::removeScanItem(const std::string & name)
  */
 void CScanProblem::swapScanItem(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
 {
-  mScanItemList.Swap(indexFrom, indexTo);
+  mScanItemList.swap(indexFrom, indexTo);
 }
 
 /**

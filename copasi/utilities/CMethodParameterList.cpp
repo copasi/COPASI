@@ -186,9 +186,9 @@ void CMethodParameterList::remove(const std::string & name)
 /*
   Swap
  */
-void CMethodParameterList::Swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
+void CMethodParameterList::swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
 {
-  mMethodParameters.Swap(indexFrom, indexTo);
+  mMethodParameters.swap(indexFrom, indexTo);
 }
 
 /**

@@ -187,7 +187,7 @@ class CMethodParameterList : public CCopasiContainer
     /**
     * Delete a parameter in the list
     */
-    void Swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo);
+    void swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo);
 
     /**
      * Load a list of parameters

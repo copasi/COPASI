@@ -101,29 +101,15 @@ template < class CType > class CCopasiVector:
       /**
        *
        */
-      virtual void Swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
+      virtual void swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
       {
-        iterator it = begin();
-        iterator End = end();
-        iterator from = NULL, to = NULL;
+        assert(indexFrom < ((std::vector< CType * > *)this)->size());
+        assert(indexTo < ((std::vector< CType * > *)this)->size());
 
-        for (; it != End; it++)
-          {
-            if (it - begin() == indexFrom)
-              {
-                from = it;
-                if (to)
-                  break;
-              }
-            else
-              if (it - begin() == indexTo)
-                {
-                  to = it;
-                  if (from)
-                    break;
-                }
-          }
-        CType* tmp = *from;
+        iterator from = begin() + indexFrom;
+        iterator to = begin() + indexTo;
+
+        value_type tmp = *from;
         *from = *to;
         *to = tmp;
       }
