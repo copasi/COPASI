@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/10/21 17:51:51 $
+   $Author: ssahle $ 
+   $Date: 2004/11/18 15:35:29 $
    End CVS Header */
 
 /**
@@ -106,6 +106,8 @@ class CCopasiObject
     const std::string & getObjectName() const;
 
     virtual const std::string getObjectUniqueName() const;
+
+    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
     const std::string & getObjectType() const;
 

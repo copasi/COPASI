@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/10/21 17:56:53 $
+   $Author: ssahle $ 
+   $Date: 2004/11/18 15:35:29 $
    End CVS Header */
 
 /**
@@ -130,6 +130,39 @@ bool CCopasiObject::setObjectName(const std::string & name)
 
   return true;
 }
+
+/*virtual*/
+std::string CCopasiObject::getObjectDisplayName(bool regular /*=true*/, bool richtext /*=false*/) const
+  {
+    std::string ret = "";
+
+    if (mpObjectParent)
+      {
+        ret = mpObjectParent->getObjectDisplayName(regular, richtext);
+        if (ret == "(CN)Root") ret = "";
+      }
+
+    if (ret.length() >= 2)
+      if ((ret.substr(ret.length() - 2) == "[]") && (!isReference()))
+        {
+          ret.insert(ret.length() - 1, getObjectName());
+          if (isNameVector() || isVector())
+            ret += "[]";
+          return ret;
+        }
+
+    if (ret.length() != 0)
+      ret += ".";
+
+    if (isNameVector() || isVector())
+      ret += getObjectName() + "[]";
+    else if (isReference())
+      ret += getObjectName();
+    else
+      ret += "(" + getObjectType() + ")" + getObjectName();
+
+    return ret;
+  }
 
 const std::string & CCopasiObject::getObjectName() const {return mObjectName;}
 
