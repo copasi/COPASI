@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2003/09/12 18:39:11 $  
+# $Revision: 1.6 $ $Author: shoops $ $Date: 2003/09/12 19:10:36 $  
 ######################################################################
 
 include(../common.pri)
@@ -25,25 +25,23 @@ contains(BUILD_OS, WIN32) {
           ../lib/trajectory.lib \
           ../lib/utilities.lib
 } else {
-  # The order of libs is important 
-  tmpLIBS = $${LIBS}
-  LIBS = -L../lib \
-         -Wl,-lmodel \
-         -Wl,-lcommandline \
-         -Wl,-lelementaryFluxModes \
-         -Wl,-lmathmodel \
-         -Wl,-loptimization \
-         -Wl,-lscan \
-         -Wl,-lsteadystate \
-         -Wl,-ltrajectory \
-         -Wl,-lrandomGenerator \
-         -Wl,-lutilities \
-         -Wl,-loutput \
-         -Wl,-lreport \
-         -Wl,-lfunction \
-         -Wl,-lcopasiXML \
-         -Wl,-lmodel
-  LIBS += $${tmpLIBS}
+  # The order of objects is important 
+  OBJECTS += ../lib/libmodel.a \
+             ../lib/libcommandline.a \
+             ../lib/libelementaryFluxModes.a \
+             ../lib/libmathmodel.a \
+             ../lib/liboptimization.a \
+             ../lib/libscan.a \
+             ../lib/libsteadystate.a \
+             ../lib/libtrajectory.a \
+             ../lib/librandomGenerator.a \
+             ../lib/libutilities.a \
+             ../lib/liboutput.a \
+             ../lib/libreport.a \
+             ../lib/libfunction.a \
+             ../lib/libcopasiXML.a \
+             ../lib/libmodel.a
+
   LIBS += -lexpat
   
   TARGETDEPS += ../lib/libcommandline.a \
@@ -60,7 +58,6 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libsteadystate.a \
                 ../lib/libtrajectory.a \
                 ../lib/libutilities.a
-
 }
 
 # Input
