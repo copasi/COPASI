@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\ObjectBrowser.ui'
- **
- ** Created: Tue Apr 22 13:27:37 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/********************************************************
+    Author: Liang Xu
+    Version : 1.xx  <first>
+    Description: 
+    Date: 04/03 
+    Comment : Copasi Object Browser: 
+    Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 #include "ObjectBrowser.h"
 #include "ObjectBrowserItem.h"
 

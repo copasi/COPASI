@@ -4,8 +4,12 @@
  **  
  ** This is the header file for the Metabolites Widget, i.e the First level 
  ** of Metabolites.
- *****************************************************************************/
-
+ *****************************************************************************/ 
+/*
+ resizeEvent functions modified 
+ Goal: to memorize the user change and expand according
+ comments: Liang Xu 
+ */
 #ifndef METABOLITES_WIDGET_H
 #define METABOLITES_WIDGET_H
 

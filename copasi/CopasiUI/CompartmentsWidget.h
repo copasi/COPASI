@@ -6,6 +6,12 @@
  ** of Compartments.
  *****************************************************************************/
 
+/*
+ resize functions modified 
+ Goal: to memorize the user change and expand according
+ comments: Liang Xu 
+ */
+
 #ifndef COMPARTMENTS_WIDGET_H
 #define COMPARTMENTS_WIDGET_H
 

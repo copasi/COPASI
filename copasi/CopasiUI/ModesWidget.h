@@ -3,8 +3,12 @@
  **  $ Author  : Mudita Singhal
  **  
  ** This is the header file for the Elementary Modes Widget
- *****************************************************************************/
-
+ *****************************************************************************/ 
+/*
+ resizeEvent functions modified 
+ Goal: to memorize the user change and expand according
+ comments: Liang Xu 
+ */
 #ifndef MODES_WIDGET_H
 #define MODES_WIDGET_H
 

@@ -1,3 +1,11 @@
+/********************************************************
+    Author: Liang Xu
+    Version : 1.xx  <first>
+    Description: 
+    Date: 04/03 
+    Comment : Provide automatic stretch for all tables as base class
+    Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 #include <qmessagebox.h>
 #include "StretchTable.h"
 

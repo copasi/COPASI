@@ -1,3 +1,8 @@
+/*
+base class modifided to StretchTable
+by Liang Xu
+to support re size functions
+ */
 #ifndef MY_TABLE_H
 #define MY_TABLE_H
 

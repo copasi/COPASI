@@ -5,6 +5,13 @@
  ** This is the header file for the Function Widget, i.e the First level 
  ** widget which shows the table of function names and types
  *****************************************************************************/
+
+/*
+ resize functions modified 
+ Goal: to memorize the user change and expand according
+ comments: Liang Xu 
+ */
+
 #ifndef FUNCTIONWIDGET_H
 #define FUNCTIONWIDGET_H
 #include <qvariant.h>

@@ -5,8 +5,12 @@
  ** This is the header file for the Reactions Widget, i.e the First level 
  ** of Reactions.
  **
- *****************************************************************************/
-
+ *****************************************************************************/ 
+/*
+ resizeEvent functions modified 
+ Goal: to memorize the user change and expand according
+ comments: Liang Xu 
+ */
 #ifndef REACTIONS_WIDGET_H
 #define REACTIONS_WIDGET_H
 

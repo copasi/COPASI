@@ -4,8 +4,12 @@
  **  
  ** This is the header file for the Moiety Widget, i.e the First level 
  ** of Moieties.
- *****************************************************************************/
-
+ *****************************************************************************/ 
+/*
+ resizeEvent functions modified 
+ Goal: to memorize the user change and expand according
+ comments: Liang Xu 
+ */
 #ifndef MOIETY_WIDGET_H
 #define MOIETY_WIDGET_H
 

@@ -4,7 +4,11 @@
  **  
  ** This is the header file for the Compartments Widget1, i.e the second level 
  ** of Compartments.
- *****************************************************************************/
+ *****************************************************************************/ 
+/*
+ reimplement UI to automatically change internal components size
+ Author: Liang Xu
+ */
 #ifndef COMPARTMENTSWIDGET1_H
 #define COMPARTMENTSWIDGET1_H
 
