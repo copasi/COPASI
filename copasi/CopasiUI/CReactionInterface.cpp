@@ -284,7 +284,7 @@ bool CReactionInterface::isLocked(std::string usage) const
     else
       {
         // we cannot be pedantic about modifiers.
-        if ((listSize != paramSize) && (usage != "MODIFIER")) fatalError();
+        if ((listSize < paramSize) && (usage != "MODIFIER")) fatalError();
         if (listSize <= 1) return true; else return false;
       }
   }
