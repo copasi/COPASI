@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/17 15:21:06 $
+   $Date: 2005/02/14 13:45:06 $
    End CVS Header */
 
 #include "CPlotItem.h"
@@ -12,6 +12,8 @@ const std::string CPlotItem::TypeName[] =
   {
     "Unset",
     "2D Curve",
+    "Histogram",
+
     "2D Plot",
     "SimWiz",
     ""
@@ -21,6 +23,8 @@ const std::string CPlotItem::XMLType[] =
   {
     "Unset",
     "Curve2D",
+    "Histogram1DItem",
+
     "Plot2D",
     "SimWiz",
     ""
@@ -102,6 +106,11 @@ void CPlotItem::setType(CPlotItem::Type type)
     {
       addParameter("log X", CCopasiParameter::BOOL, false);
       addParameter("log Y", CCopasiParameter::BOOL, false);
+    }
+
+  if (type == histoItem1d)
+    {
+      addParameter("increment", CCopasiParameter::DOUBLE, (C_FLOAT64)0.1);
     }
 }
 

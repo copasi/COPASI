@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/08/13 21:12:37 $
+   $Author: ssahle $ 
+   $Date: 2005/02/14 13:45:06 $
    End CVS Header */
 
 /**
@@ -74,7 +74,7 @@ class CPlotItem : public CCopasiParameterGroup
      */
     enum Type
     {
-      unset = 0, curve2d,     //for plot items
+      unset = 0, curve2d, histoItem1d,      //for plot items
       plot2d, simWiz   //for plot specifications
     };
 

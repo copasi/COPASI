@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/04 10:38:48 $
+   $Date: 2005/02/14 13:45:39 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -31,26 +31,53 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
   C_INT32 index;
   std::vector<C_INT32>::iterator it; // iterator for indexTable
   C_INT32 iterindex;
+  CPlotItem::Type tmpType;
 
   C_INT32 i, imax = pspec->getItems().size();
   dataIndices.resize(imax);
+  mItemTypes.resize(imax);
   for (i = 0; i < imax; ++i) //all curves
     {
       jjmax = pspec->getItems()[i]->getNumChannels();
       dataIndices[i].resize(jjmax);
+      tmpType = pspec->getItems()[i]->getType();
+      mItemTypes[i] = (C_INT32)tmpType;
 
-      for (jj = 0; jj < jjmax; ++jj) //all Channels (should be 2)
+      switch (tmpType)
         {
-          //get the index in the data vector
-          index = psv->getIndexFromCN(pspec->getItems()[i]->getChannels()[jj]);
+        case CPlotItem::curve2d :
+          for (jj = 0; jj < jjmax; ++jj) //all Channels
+            {
+              //get the index in the data vector
+              index = psv->getIndexFromCN(pspec->getItems()[i]->getChannels()[jj]);
 
-          for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
-          {if (*it == index) break;};
-          if (it == indexTable.end()) //index is not yet in indexTable
-            indexTable.push_back(index);
-          dataIndices[i][jj] = iterindex;
+              for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
+              {if (*it == index) break;};
+              if (it == indexTable.end()) //index is not yet in indexTable
+                indexTable.push_back(index);
+              dataIndices[i][jj] = iterindex;
+            }
+          break;
+
+        case CPlotItem::histoItem1d :
+          for (jj = 0; jj < jjmax; ++jj) //all Channels
+            {
+              //get the index in the data vector
+              index = psv->getIndexFromCN(pspec->getItems()[i]->getChannels()[jj]);
+              dataIndices[i][jj] = index;
+            }
+          break;
+
+        default :
+          fatalError();
         }
     }
+  //the indexTable now has a list of all the indices of the channels that need to be stored
+  //internally in the copasiPlot (the channels that are needed for curves, not histograms).
+
+  //the meaning of the dataIndices[][] differs for curves/histograms:
+  //  curves: points to an entry in indexTable (stored channels)
+  //  histograms: points to an entry in the data vector
 }
 
 CopasiPlot::CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec, QWidget* parent)
@@ -60,6 +87,8 @@ CopasiPlot::CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec
   enableLegend(TRUE);
   setAutoLegend(TRUE); //curves have to be inserted after this is set
   setLegendPos(Qwt::Bottom);
+  //enableLegend(FALSE);
+  //setAutoLegend(FALSE); //curves have to be inserted after this is set
 
   initFromSpec(psv, plotspec);
 
@@ -85,6 +114,8 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
   setTitle(FROM_UTF8(plotspec->getTitle()));
 
   removeCurves();
+  mHistograms.clear();
+  mHistoIndices.resize(plotspec->getItems().size());
 
   //delete Buffers
   while (data.size() > 0)
@@ -102,9 +133,34 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
   ndata = 0;
 
   QColor curveColours[5] = {red, blue, green, cyan, magenta}; //TODO
+  CPlotItem::Type tmpType;
+  CPlotItem* pItem;
   unsigned C_INT32 k;
   for (k = 0; k < plotspec->getItems().size(); k++)
     {
+      tmpType = (CPlotItem::Type)mItemTypes[k];
+      pItem = plotspec->getItems()[k];
+
+      switch (tmpType)
+        {
+        case CPlotItem::curve2d :
+          break;
+
+        case CPlotItem::histoItem1d :
+          C_FLOAT64 tmpIncr;
+          const void* tmp;
+          if (!(tmp = pItem->getValue("increment")))
+            tmpIncr = 0.1; //or error?
+          else
+            tmpIncr = *(const C_FLOAT64*)tmp;
+
+          mHistograms.push_back(CHistogram(tmpIncr));
+          mHistoIndices[k] = mHistograms.size() - 1;
+          break;
+
+        default :
+          fatalError();
+        }
       // set up the curve
       long crv = insertCurve(FROM_UTF8(plotspec->getItems()[k]->getTitle()));
 
@@ -119,6 +175,8 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
           button->setOn(true);
         }
     }
+
+  //setAxisOptions(QwtPlot::yLeft,QwtAutoScale::Logarithmic);
   return true; //TODO really check!
 }
 
@@ -133,24 +191,51 @@ void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
         data[i]->resize(newSize);
     }
 
+  //the data that needs to be stored internally:
   for (i = 0; i < indexTable.size(); ++i)
     {
       data[i]->at(ndata) = dataVector[indexTable[i]];
     }
   ++ndata;
+
+  //the data that is used immediately:
+  for (i = 0; i < mItemTypes.size(); ++i)
+    {
+      if ((CPlotItem::Type)mItemTypes[i] == CPlotItem::histoItem1d)
+        {
+          mHistograms[mHistoIndices[i]].addValue(dataVector[dataIndices[i][0]]);
+        }
+    }
 }
 
 void CopasiPlot::updatePlot()
 {
   // TODO: only do this once
   QMemArray<long> crvKeys = curveKeys();
+  CPlotItem::Type tmpType;
 
   unsigned C_INT32 k;
   for (k = 0; k < crvKeys.size(); k++)
     {
-      curve(crvKeys.at(k))->setRawData(data[dataIndices[k][0]]->data(),
-                                       data[dataIndices[k][1]]->data(),
-                                       ndata);
+      tmpType = (CPlotItem::Type)mItemTypes[k];
+
+      switch (tmpType)
+        {
+        case CPlotItem::curve2d :
+          curve(crvKeys.at(k))->setRawData(data[dataIndices[k][0]]->data(),
+                                           data[dataIndices[k][1]]->data(),
+                                           ndata);
+          break;
+
+        case CPlotItem::histoItem1d :
+          curve(crvKeys.at(k))->setRawData(mHistograms[mHistoIndices[k]].getXArray(),
+                                           mHistograms[mHistoIndices[k]].getYArray(),
+                                           mHistograms[mHistoIndices[k]].size());
+          break;
+
+        default :
+          fatalError();
+        }
       //drawCurveInterval(crvKeys[k], 0, ndata-1);
     }
   replot();

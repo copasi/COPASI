@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 15:31:48 $
+   $Date: 2005/02/14 13:45:39 $
    End CVS Header */
 
 // the plot object for copasi
@@ -18,7 +18,8 @@
 #include <qmemarray.h>
 
 #include "copasi.h"
-#include "zoomplot.h" 
+#include "zoomplot.h"
+#include "CHistogram.h" 
 //#include "plotspec.h"
 
 class CPlotSpec2Vector;
@@ -70,6 +71,15 @@ class CopasiPlot : public ZoomPlot
 
     // for each channel in each curve tells where the data is stored
     std::vector<std::vector<C_INT32> > dataIndices;
+
+    //stores the type of each item (curve)
+    std::vector<C_INT32> mItemTypes;
+
+    //the histograms (if there are some)
+    std::vector<CHistogram> mHistograms;
+
+    //points from the item index to the histogram index
+    std::vector<C_INT32> mHistoIndices;
 
     // populate indexTable and dataIndices
     void createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec);

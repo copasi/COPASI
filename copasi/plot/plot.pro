@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
+# $Revision: 1.12 $ $Author: ssahle $ $Date: 2005/02/14 13:42:19 $  
 ######################################################################
 
 LIB = plot
@@ -9,7 +9,8 @@ include(../common.pri)
 
 CONFIG += qt
 
-HEADERS += plotwidget1.h \
+HEADERS += CHistogram.h \
+           plotwidget1.h \
            doublerect.h \
            zoomplot.h \
            CopasiPlot.h \
@@ -20,7 +21,8 @@ HEADERS += plotwidget1.h \
            plotwindow.h  
 #           curve2dwidget.h
 
-SOURCES += CopasiPlot.cpp \
+SOURCES += CHistogram.cpp \
+           CopasiPlot.cpp \
            doublerect.cpp \
            plotwidget1.cpp \
            plotwindow.cpp \
@@ -32,3 +34,4 @@ SOURCES += CopasiPlot.cpp \
 #           curve2dwidget.cpp
 
 FORMS +=  curve2dwidget.ui
+FORMS +=  HistoWidget.ui
