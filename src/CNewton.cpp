@@ -120,14 +120,14 @@ void CNewton::ProcessNewton(void)
 {
   //new from Yongqun
   // variables for steady-state solution
-  double	*ss_x;
-  double	*ss_dxdt;
-  double	*ss_xnew;
-  double	*ss_h;
-  double	**ss_jacob;
-  int		*ss_ipvt;
-  int		ss_solution;
-  int		ss_unstable;
+  double        *ss_x;
+  double        *ss_dxdt;
+  double        *ss_xnew;
+  double        *ss_h;
+  double        **ss_jacob;
+  C_INT32        *ss_ipvt;
+  int                ss_solution;
+  int                ss_unstable;
 
   //new from Yongqun
   // Newton variables
@@ -135,14 +135,14 @@ void CNewton::ProcessNewton(void)
   ss_xnew = new double[mModel->getTotMetab()+1];
   ss_dxdt = new double[mModel->getTotMetab()+1];
   ss_h = new double[mModel->getTotMetab()+1];
-  ss_ipvt = new int[mModel->getIndMetab()+1];
+  ss_ipvt = new C_INT32[mModel->getIndMetab()+1];
   ss_jacob = new double *[mModel->getTotMetab()+1];
   for( int i=0; i<mModel->getTotMetab()+1; i++ )
     ss_jacob[i] = new double[mModel->getTotMetab()+1];
 
   int i,j,k,l,m;
   double maxrate, nmaxrate;
-  int info;
+  C_INT32 info;
   ss_solution = SS_NOT_FOUND;
 
   //  try
@@ -160,7 +160,7 @@ void CNewton::ProcessNewton(void)
       if( ss_x[i+1] < 0.0 )
       {
         ss_solution = SS_NOT_FOUND;
-	break;
+        break;
       }
     }
     // }
@@ -222,12 +222,12 @@ void CNewton::ProcessNewton(void)
     if( maxrate < mSSRes )
     {
     ss_solution = SS_FOUND;
-	// check if solution is valid
+        // check if solution is valid
     for( i=0; i<mModel->getIntMetab(); i++ )
      if( ss_x[i+1] < 0.0 )
      {
       ss_solution = SS_NOT_FOUND;
- 	  break;
+           break;
      }
 
      // from Yongqun
@@ -282,7 +282,7 @@ void CNewton::ProcessNewton(void)
 
 // Clean up internal pointer variables
 void CNewton::Cleanup(double * ss_x, double * ss_xnew, double * ss_dxdt, 
-                       double * ss_h, int * ss_ipvt, double ** ss_jacob)
+                       double * ss_h, C_INT32 * ss_ipvt, double ** ss_jacob)
 {
   //copy from void CGepasiDoc::CleanupEngine( void )
   // Newton variables
@@ -308,7 +308,7 @@ void CNewton::FEval(int num, double time, double *y, double *ydot )
    {
    if( mModel->Stoichiometry[mModel->Row[i]][mModel->Col[j]] != 0.0 )
       ydot[i+1] += mModel->Stoichiometry[mModel->Row[i]][mModel->Col[j]]
-	  * (*(mModel->Step[mModel->Col[j]].Kinetics->Function))((void *)mModel, &y[1], mModel->Col[j]);
+          * (*(mModel->Step[mModel->Col[j]].Kinetics->Function))((void *)mModel, &y[1], mModel->Col[j]);
   }
 //  ydot[i+1] *= mModel->Compartment[mModel->Metabolite[mModel->Row[i]].Compart].Volume;
  }
