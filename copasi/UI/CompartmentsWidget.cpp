@@ -154,6 +154,7 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
         }
       else
         {
+          int t = frameGeometry().width();
           table->DisableColWidthUpdate();
           int newWidth = re->size().width();
           int i;
@@ -169,8 +170,8 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
           //Zoom in
           if (newWidth > re->oldSize().width())
             {
-              //     int i= table->columnWidth(0);
-              //     i= table->columnWidth(1);
+              //              i= table->columnWidth(0);
+              //              i= table->columnWidth(1);
               if (newWidth > totalWidth) // can do expansion
                 {
                   if (totalWidth < re->oldSize().width())
@@ -178,7 +179,7 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
                       table->setColumnWidth(i, newWidth*table->columnWidth(i) / re->oldSize().width());
                   else
                     for (i = 0; i < table->numCols(); i++) // Do expansion
-                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / totalWidth);
+                      table->setColumnWidth(i, float(newWidth)*float(table->columnWidth(i)) / float(totalWidth));
                 }
               else
                 for (i = 0; i < table->numCols(); i++) // Do not expand
@@ -202,7 +203,6 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
             {
               for (i = 0; i < table->numCols(); i++)
                 table->setColumnWidth(i, table->minColWidth[i]);
-              resize (minTotalWidth, re->size().height());
               table->EnableColWidthUpdate();
               return;
             }
