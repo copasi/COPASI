@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/16 14:00:47 $
+   $Date: 2005/02/03 16:21:32 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -111,6 +111,13 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
       setCurvePen(crv, QPen(curveColours[k % 5]));
       //      setCurveXAxis(crv, plotspec->getItems()[k].xAxis);
       //      setCurveYAxis(crv, plotspec->getItems()[k].yAxis);
+
+      QwtLegendButton* button = dynamic_cast<QwtLegendButton*>(legend()->findItem(crv));
+      if (button)
+        {
+          button->setToggleButton(true);
+          button->setOn(true);
+        }
     }
   return true; //TODO really check!
 }
@@ -211,6 +218,13 @@ void CopasiPlot::toggleCurve(long curveId)
   QwtPlotCurve *c = curve(curveId);
   if (c)
     {
+      /*QwtLegendButton* button = dynamic_cast<QwtLegendButton*>(legend()->findItem(curveId));
+      if (button)
+        {
+          //button->setToggleButton(true);
+          button->setDown(c->enabled());// QButton::On
+        }*/
+
       c->setEnabled(!c->enabled());
       replot();
     }
