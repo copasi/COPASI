@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:26 $
+   $Date: 2003/11/12 22:12:48 $
    End CVS Header */
 
 /**
@@ -56,6 +56,8 @@ CCopasiObject::~CCopasiObject()
   if (mpObjectParent)
     mpObjectParent->remove(this);
 }
+
+void CCopasiObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
 CCopasiObjectName CCopasiObject::getCN() const
   {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 17:22:30 $
+   $Date: 2003/11/12 22:12:48 $
    End CVS Header */
 
 #include "copasi.h"
@@ -76,7 +76,7 @@ void CReport::printHeader()
   // for loop print out mpReportDef->getHeader()
   unsigned C_INT32 i;
   for (i = 0; i < headerObjectList.size(); i++)
-    headerObjectList[i]->print(*ostream);
+    headerObjectList[i]->print(ostream);
 }
 
 void CReport::printBody()
@@ -87,7 +87,7 @@ void CReport::printBody()
   // for loop print out mpReportDef->getBody()
   unsigned C_INT32 i;
   for (i = 0; i < bodyObjectList.size(); i++)
-    bodyObjectList[i]->print(*ostream);
+    bodyObjectList[i]->print(ostream);
 }
 
 void CReport::printFooter()
@@ -98,7 +98,7 @@ void CReport::printFooter()
   // for loop print out mpReportDef->getFooter()
   unsigned C_INT32 i;
   for (i = 0; i < footerObjectList.size(); i++)
-    footerObjectList[i]->print(*ostream);
+    footerObjectList[i]->print(ostream);
 }
 
 // Compile the List of Report Objects;

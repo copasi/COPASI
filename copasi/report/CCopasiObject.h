@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:44 $
+   $Date: 2003/11/12 22:12:48 $
    End CVS Header */
 
 /**
@@ -81,7 +81,7 @@ class CCopasiObject
     virtual ~CCopasiObject();
 
     //  pure virtual function,
-    virtual void print(std::ostream& ostream) {ostream << (*this);};
+    virtual void print(std::ostream * ostream) const;
 
     virtual const std::string & getName() const;
 
