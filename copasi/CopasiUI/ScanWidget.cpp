@@ -58,7 +58,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout2->addWidget(bRunButton);*/
 
   commitChange = new QPushButton(this, "commitChange");
-  commitChange->setText(trUtf8("Commit"));
+  commitChange->setText(trUtf8("Scan"));
   Layout2->addWidget(commitChange);
 
   cancelChange = new QPushButton(this, "cancelChange");
@@ -154,9 +154,9 @@ void ScanWidget::CommitChangeButton()
 void ScanWidget::ScanButtonClicked()
 {
   if (sExecutable->isChecked())
-    {
-      int i = 0;
-    }
+    commitChange->setEnabled(true);
+  else
+    commitChange->setEnabled(false);
 }
 
 void ScanWidget::SteadyStateButtonClicked()
