@@ -165,6 +165,8 @@ class CIndexedPriorityQueue
      */
     friend std::ostream & operator<<(std::ostream &os, const CIndexedPriorityQueue & d)
     {
+      unsigned C_INT32 i;
+
       os << "PQ: " << endl;
 
       std::vector <PQNode>::const_iterator it;
