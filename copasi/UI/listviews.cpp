@@ -1,6 +1,7 @@
 /****************************************************************************
  **  $ CopasiUI/listviews.cpp                 Modified on : 18th March, 2002
  **  $ Author  : Ankur Gupta
+ **  $ Author  : Mudita Singhal
  **  $ Author  : Mrinmayee Kulkarni           Modified on : 17th Sept ,2002
  **  
  ** This file contains the defination of the routines declared in listviews.h header
@@ -426,7 +427,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     {
       switch (item->folder()->getID())
         {
-        case 21 :                // for showing addition...of new components..
+        case 21 :                 // for showing addition...of new components..
 
           // deleteAllMyChildrens(i); //is used if u want to delete all mychildrens
 
@@ -513,7 +514,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:                 // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:                  // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
 
           if ((node = dataModel->getData()) != NULL)
@@ -535,7 +536,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:               // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:                // WHEN ANY DATA IS DELETED FROM THE TREE
           // showMessage("Ankur","It comes in delete");
 
           if ((node = dataModel->getData()) != NULL)
@@ -548,7 +549,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:                 // new model is loaded.
+        case MODEL:                  // new model is loaded.
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
@@ -882,22 +883,6 @@ void ListViews::loadMoieties(QListViewItem* i)
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
   myId = 1000000 * myId;
 
-  /*CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
-
-   C_INT32 noOfMoietyRows = moieties.size();
-
-   
-    //Now filling the table.
-   CMoiety *moiety;
-   for (C_INT32  j = 0; j < noOfMoietyRows; j++)
-   {
-    moiety = moieties[j];
-             f=new Folder(p,moiety->getName().c_str());
-    f->setID(myId+j+1);
-    dataModel->addData(p,f);
-    
-   }*/
-
   CCopasiVectorN < CMoiety > * moieties = &mModel->getMoieties();
 
   //Now filling the table.
@@ -920,7 +905,6 @@ void ListViews::loadReactions(QListViewItem* i)
   if (!dataModel->getModelUpdate())
     return; // if the model is not updated than return
 
-  //   showMessage("Ankur","This is duplicate call");
   FolderListItem *item = (FolderListItem*)i;
 
   if (i->childCount() != 0)
@@ -935,16 +919,14 @@ void ListViews::loadReactions(QListViewItem* i)
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
   myId = 1000000 * myId;
 
-  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-
-  C_INT32 noOfReactionsRows = reactions.size();
+  CCopasiVectorNS < CReaction > * reactions = &mModel->getReactions();
 
   //Now filling the table.
   CReaction *reactn;
 
-  for (C_INT32 j = 0; j < noOfReactionsRows; j++)
+  for (unsigned C_INT32 j = 0; j < reactions->size(); j++)
     {
-      reactn = reactions[j];
+      reactn = (*reactions)[j];
       f = new Folder(p, reactn->getName().c_str());
       f->setID(myId + j + 1);
       dataModel->addData(p, f);
