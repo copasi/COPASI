@@ -13,6 +13,9 @@ Contact: Please contact lixu1@vt.edu.
 #include "function/CKinFunction.h"
 #include "utilities/readwrite.h"
 
+class COptMethod;
+class COptProblem;
+
 class COptFunction: public CKinFunction
   {
   public:
@@ -26,20 +29,12 @@ class COptFunction: public CKinFunction
 
     /**
      * Copy constructor
-     * @param "const CFunction &" src
+     * @param "const COptFunction &" src
      * @param "CReadConfig *" configBuffer (Default = NULL)
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COptFunction(const CFunction & src,
+    COptFunction(const COptFunction & src,
                  CReadConfig * configBuffer = NULL,
-                 const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Copy constructor
-     * @param "const CKinFunction &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    COptFunction(const CKinFunction & src,
                  const CCopasiContainer * pParent = NULL);
 
     ~COptFunction();
@@ -47,5 +42,7 @@ class COptFunction: public CKinFunction
   protected:
 
     void cleanup();
+    COptProblem* mpProblem;
+    COptMethod* mpMethod;
   };
 #endif
