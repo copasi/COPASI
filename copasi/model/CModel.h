@@ -53,7 +53,7 @@ class CModel
    *  @supplierCardinality 0..*
    *  @associates <{CReaction}>
    */
-  CCopasiVectorS < CReaction > mSteps;
+  CCopasiVectorNS < CReaction > mSteps;
   vector < CReaction * > mStepsX;
   vector < CReaction * > mStepsInd;
   
@@ -393,8 +393,8 @@ class CModel
    * Return the vector of reactions
    * @return "CCopasiVectorS <CReaction> &"
    */
-  CCopasiVectorS < CReaction > & getReactions();
-  const CCopasiVectorS < CReaction > & getReactions() const;
+  CCopasiVectorNS < CReaction > & getReactions();
+  const CCopasiVectorNS < CReaction > & getReactions() const;
   vector < CReaction * > & getReactionsX();
 
   // Added by Yongqun He

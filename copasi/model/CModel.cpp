@@ -52,7 +52,7 @@ CModel::CModel(const CModel & src)
   mComments = src.mComments;
 
   mCompartments = CCopasiVectorNS < CCompartment >(src.mCompartments);
-  mSteps = CCopasiVectorS < CReaction >(src.mSteps);
+  mSteps = CCopasiVectorNS < CReaction >(src.mSteps);
 
   unsigned C_INT32 i, imax = mSteps.size();
   for (i = 0; i < imax; i++)
@@ -577,12 +577,12 @@ void CModel::setTransitionTimes()
 const C_FLOAT64 & CModel::getTransitionTime() {return mTransitionTime;}
 #endif // XXXX
 
-CCopasiVectorS < CReaction > & CModel::getReactions()
+CCopasiVectorNS < CReaction > & CModel::getReactions()
 {
   return mSteps;
 }
 
-const CCopasiVectorS < CReaction > & CModel::getReactions() const
+const CCopasiVectorNS < CReaction > & CModel::getReactions() const
 {
   return mSteps;
 }
