@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: ssahle $ $Date: 2003/06/20 11:08:20 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2003/06/25 18:56:52 $  
 ######################################################################
 
 include(../common.pri)
@@ -10,7 +10,8 @@ DEPENDPATH += ..
 INCLUDEPATH += ..
 
 contains(BUILD_OS, WIN32) {
-  LIBS += ../lib/copasiXML.lib \
+  COPASI_LIBS += ../lib/commandline.lib \
+          ../lib/copasiXML.lib \
           ../lib/elementaryFluxModes.lib \
           ../lib/function.lib \
           ../lib/mathmodel.lib \
@@ -23,6 +24,9 @@ contains(BUILD_OS, WIN32) {
           ../lib/steadystate.lib \
           ../lib/trajectory.lib \
           ../lib/utilities.lib
+
+  LIBS += $$COPASI_LIBS
+  TARGETDEPS += $$COPASI_LIBS
 } else {
   # The order of libs is important 
   tmpLIBS = $${LIBS}
