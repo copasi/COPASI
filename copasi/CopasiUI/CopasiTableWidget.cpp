@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/07 08:57:48 $
+   $Date: 2004/06/22 12:47:27 $
    End CVS Header */
 
 /*******************************************************************
@@ -148,9 +148,12 @@ void CopasiTableWidget::saveTable()
     {
       if (mFlagNew[j])
         {
-          CCopasiObject* pObj = createNewObject((const char *)table->text(j, 1).utf8());
-          tableLineToObject(j, pObj);
-          ListViews::notify(mOT, ListViews::ADD, pObj->getKey());
+          if (!mFlagDelete[j])
+            {
+              CCopasiObject* pObj = createNewObject((const char *)table->text(j, 1).utf8());
+              tableLineToObject(j, pObj);
+              ListViews::notify(mOT, ListViews::ADD, pObj->getKey());
+            }
         }
       else if (mFlagDelete[j])
         {
@@ -187,6 +190,12 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
 
   std::string key = mKeys[row];
   bool flagNew = false;
+
+  if (mFlagNew[row])
+    {
+      return;
+      //TODO: When double clicking on a new object the object should be created.
+    }
 
   if (row == table->numRows() - 1) //new Object
     {
