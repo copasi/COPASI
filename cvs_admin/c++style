@@ -18,6 +18,7 @@ $GAWK -- '
 BEGIN {
   lastEmpty = 0
   lastOpenBracket = 0
+  lastClosingBracket = 0
 }
 
 $0 ~ "^$" {
@@ -28,8 +29,13 @@ $0 ~ "^$" {
 
 $0 !~ "^$" {
   if (lastEmpty == 1) {
-    if ($0 !~ "^ *};*$") printf "\n"
+    if ($0 !~ "^ *}.*$") printf "\n"
     lastEmpty = 0
+  }
+
+  if (lastClosingBracket == 1) {
+    if ($0 !~ "^ *;")  printf "\n"
+    lastClosingBracket = 0
   }
 
   gsub(/\( +/, "(")
@@ -40,8 +46,15 @@ $0 !~ "^$" {
   $0 = gensub(/ +;/, ";", "g")
   $0 = gensub(/;([a-zA-Z0-9])/, "; \\1", "g")
   $0 = gensub(/([^ ]) +}/, "\\1}", "g")
-
-  printf "%s\n", $0
+  
+  if ($0 ~ ".*}$") {
+    lastClosingBracket = 1
+    printf "%s", $0
+  }
+  else {
+    lastClosingBracket = 0
+    printf "%s\n", $0
+  }
 
   if ($0 ~ "{$") lastOpenBracket = 1
   else lastOpenBracket = 0
