@@ -168,32 +168,16 @@ class CIndexedPriorityQueue
       os << "PQ: " << endl;
 
       std::vector <PQNode>::const_iterator it;
+      os << "  mHeap: " << endl;
       for (it = d.mHeap.begin(); it != d.mHeap.end(); it++)
         os << *it << std::endl;
-
-      os << std::endl;
-
-      return os;
-    }
-
-    /**
-     *   Insert operator.
-     *
-     *   added by juergen 27 August, 2002
-     */
-    friend ostream & operator<<(ostream &os, const CIndexedPriorityQueue & d)
-    {
-      unsigned C_INT32 i;
-
-      os << "CIndexedPriorityQueue " << endl;
       os << "  mIndexPointer: " << endl;
       for (i = 0; i < d.mIndexPointer.size(); i++)
         os << d.mIndexPointer[i] << " ";
       os << endl;
-      os << "  mHeap: " << endl;
-      for (i = 0; i < d.mHeap.size(); i++)
-        os << d.mHeap[i] << " ";
-      os << endl;
+
+      os << std::endl;
+
       return os;
     }
 
