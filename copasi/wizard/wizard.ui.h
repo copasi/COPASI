@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 13:37:09 $
+   $Author: ssahle $ 
+   $Date: 2004/09/23 14:53:12 $
    End CVS Header */
 
 /****************************************************************************
@@ -132,7 +132,7 @@ void Form1::textBrowser_anchorClicked(const QString &name, const QString &link)
     }
   else
     {
-      QMessageBox::warning(this, "Error", "Sorry. I don't know this link!", QMessageBox::Ok | QMessageBox::Default);
+      QMessageBox::warning(this, "Error", "Sorry. I don't know this link!", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
       std::cerr << "Unknown anchor: " << name << std::endl;
     }
 }
