@@ -2,12 +2,16 @@
  ** Form implementation generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.5 2003/10/04 19:04:59 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.6 2003/10/05 01:13:38 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #include "FunctionItemWidget.h"
+#include "ObjectBrowser.h"
+#include "copasi.h"
+#include "report/CCopasiObject.h"
+#include "report/CCopasiObjectName.h"
 
 #include <qvariant.h>
 #include <qpushbutton.h>
@@ -347,7 +351,40 @@ void FunctionItemWidget::slotButton1()
 
 void FunctionItemWidget::slotButtonItems()
 {
-  qWarning("FunctionItemWidget::slotButtonItems(): Not implemented yet");
+  ObjectBrowser* pSelectedObjects = new ObjectBrowser();
+  std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
+  pSelectedObjects->setOutputVector(pSelectedVector);
+
+  if (pSelectedObjects->exec () == QDialog::Rejected)
+    {
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  if (pSelectedVector->size() == 0)
+    {
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  int i = 0;
+  for (; i < pSelectedVector->size(); i++)
+    if ((*pSelectedVector)[i])
+      break;
+
+  if (i >= pSelectedVector->size()) //no result returned
+    {
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  //  if (addNewScanItem((*pSelectedVector)[i]))
+  //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
+
+  // wrap the object name;
+  objectLinkWrapper((*pSelectedVector)[i]);
+
+  pdelete(pSelectedVector);
 }
 
 void FunctionItemWidget::slotButton2()
@@ -588,4 +625,19 @@ void FunctionItemWidget::setStrFunction(std::string * targetFunctionPtr)
   strFunction = targetFunctionPtr;
   textFunction->setText(strFunction->c_str());
   textFunction->moveCursor(QTextEdit::MoveEnd, false);
+}
+
+void FunctionItemWidget::objectLinkWrapper(CCopasiObject * pObject)
+{
+  std::string lnk;
+  lnk = "<a href=";
+  lnk = lnk + pObject->getCN().c_str();
+  lnk = lnk + ">";
+  lnk = lnk + pObject->getObjectUniqueName().c_str();
+  lnk = lnk + "</a>";
+  textFunction->setText(textFunction->text() + lnk.c_str());
+  int para, index;
+  textFunction->getCursorPosition(&para, &index);
+  index += strlen(lnk.c_str());
+  textFunction->setCursorPosition(para, index);
 }

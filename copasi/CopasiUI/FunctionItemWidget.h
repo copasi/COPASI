@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.h,v 1.5 2003/10/04 16:30:24 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.h,v 1.6 2003/10/05 01:13:38 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -22,6 +22,7 @@ class QButtonGroup;
 class QRadioButton;
 class QPushButton;
 class QFrame;
+class CCopasiObject;
 
 class FunctionItemWidget : public QDialog
   {
@@ -107,6 +108,10 @@ class FunctionItemWidget : public QDialog
     QGridLayout* radioGroupLayout;
     QGridLayout* layout1;
     std::string* strFunction;
+    /*
+     wrapper a object to object cn
+    */
+    void objectLinkWrapper(CCopasiObject * pObject);
 
   protected slots:
     virtual void languageChange();
