@@ -138,14 +138,16 @@ class CFunctionDB : public CCopasiContainer
     /**
      *  Retrieves the vector of functions that are suitable for a
      *  number of substrates, products and reversibility status.
+     *  Note: The returnes CCopasiVector has to be deleted after use!
      *  @param "const unsigned C_INT32" noSubstrates the number of substrates
      *  @param "const unsigned C_INT32" noProducts the number of products
      *  @param "const TriLogic" reversible the reversibility status
      *  @return "CCopasiVectorN < CKinFunction > " suitableFunctions
      */
-    CCopasiVector <CFunction>* suitableFunctions(const unsigned C_INT32 noSubstrates,
-        const unsigned C_INT32 noProducts,
-        const TriLogic reversible);
+    CCopasiVector <CFunction> *
+    suitableFunctions(const unsigned C_INT32 noSubstrates,
+                      const unsigned C_INT32 noProducts,
+                      const TriLogic reversible);
   };
 
 #endif // COPASI_CFunctionDB

@@ -246,7 +246,7 @@ CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
 CCopasiVectorNS < CFunction > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
 
-CCopasiVector <CFunction>*
+CCopasiVector <CFunction> *
 CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
                                const unsigned C_INT32 noProducts,
                                const TriLogic reversible)
