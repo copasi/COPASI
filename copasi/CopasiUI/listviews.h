@@ -25,6 +25,8 @@
 // #include "model/model.h"
 class CSteadyStateTask;
 
+class CTrajectoryTask;
+
 class SteadyStateWidget;
 
 class MetabolitesWidget;
@@ -133,6 +135,7 @@ class ListViews : public QSplitter, public Observer
   protected:
     CModel *mModel;  // the re to the model...
     CSteadyStateTask *mSteadyStateTask;
+    CTrajectoryTask *mTrajectoryTask;
     void loadModelNodes(CModel *model);
     void ConstructNodeWidgets();
 
