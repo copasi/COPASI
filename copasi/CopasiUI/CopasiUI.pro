@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.87 $ $Author: shoops $ $Date: 2005/03/01 19:24:55 $  
+# $Revision: 1.88 $ $Author: shoops $ $Date: 2005/03/02 17:27:29 $  
 ######################################################################
 
 TEMPLATE = app
@@ -81,6 +81,7 @@ contains(BUILD_OS, Linux) {
               strip $@
 
     QMAKE_EXTRA_UNIX_TARGETS += dynamic
+    TARGET += $${dynamic.target}
   }
 }
 
