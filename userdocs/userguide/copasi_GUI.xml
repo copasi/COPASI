@@ -583,7 +583,7 @@ In order to select objects in the multi selection tree, you select them in the t
 </para>
 <para>
  Once you are finished with your selection, you confirm your selection with the <guibutton>OK</guibutton> button.
-Copasi now creates a curve object for each object you selected for the y axis and adds it to the plot. Each curve is represented as a tab in the plot definition dialog. <caution><para>On Mac OS X, the tab widget does not handle very wide tabs or many tabs well. This problem will be dealt with in upcoming versions of Copasi.</para></caution></para>
+Copasi now creates a curve object for each object you selected for the y axis and adds it to the plot. Each curve is represented as a tab in the plot definition dialog. Each curve object has a title, and the information what will be drawn on the x- and y-axis. Additionally you can specify wether the curve should be drawn as a line, as points or as symbols. This has to be specified for each curve separately. <caution><para>On Mac OS X, the tab widget does not handle very wide tabs or many tabs well. This problem will be dealt with in upcoming versions of Copasi.</para></caution></para>
 <para>In the plot definition dialog, in addition to adding and removing curve objects, you can specify a name for the plot definition and you can specify wether the plot should be active or not with the <guilabel>active</guilabel> checkbox. (Only plots that are active are drawn when a <link linkend="calculatingTrajectory">time course simulation</link> is run!)</para>
 <para>Another way to specify wether a plot is active or not is in the plot table where all the plots are listed. Each row in the table contains a column named <guilabel>active</guilabel> that contains a checkbox with which you can toggle the state of a plot. If you changed the state of one or more plots, you have to commit these changes either by clicking the <guibutton>Commit</guibutton> button or any other action that is equivalent to pressing the <guibutton>Commit</guibutton> button (see <xref linkend="addingCompartments" /> section).
 </para>
@@ -1232,7 +1232,7 @@ After adjusting the minimum and maximum as well as the number of intervals, you 
 </screenshot>
 </para>
 <para>
-    The "Repeat" item can be used to repeat a certain action several times. E.g. if you add a Repeat widget above a "Random distribution" item, the parameter will be give a random value as many times as specified in the "Repeat" item and run a time course simulation with this value or one of the other tasks specified in the <guilabel>Task</guilabel> item at the bottom of the main widget.
+    The "Repeat" item can be used to repeat a certain action several times. E.g. if you add a <guilabel>Repeat</guilabel> widget above a "Random distribution" item, the parameter will be give a random value as many times as specified in the "Repeat" item and run a time course simulation with this value or one of the other tasks specified in the <guilabel>Task</guilabel> item at the bottom of the main widget.
 </para>
 <para>
 <screenshot>
@@ -1260,7 +1260,92 @@ After adjusting the minimum and maximum as well as the number of intervals, you 
 Different items can be combined in many ways to achieve certain goals. E.g. you could run 10 parameter scans for a certain value each with a different random value for another parameter by combining a "Parameter Scan" item with a "Random distribution" item and a repeat item.
 </para>
 <para>
-With the buttons on the left of each item other then the <guilabel>Task</guilabel> at the bottom, you can move the items up or down in the list or close an item you no longer need. The order of the items in the main widgets determines how Copasi will handle the actions. A widget is controlled by the widget above it. So a <guilabel>Repeat</guilabel> item acts on the widget directly below it.
+With the buttons on the left of each item other then the <guilabel>Task</guilabel> at the bottom, you can move the items up or down in the list or close an item you no longer need. The order of the items in the main widgets determines in which order Copasi will handle the actions. A widget is controlled by the widget above it. So a <guilabel>Repeat</guilabel> item acts on the widget directly below it. This can be rather important. Consider you have added a <guilabel>Repeat</guilabel> widget and a <guilabel>Random distribution</guilabel> widget to the main widget. Now the <guilabel>Repeat</guilabel> widget can be either above the <guilabel>Random distribution</guilabel> widget or below it and the results you get when you push the run button are very different. Lets first look at the case where the <guilabel>Repeat</guilabel> widget is above the <guilabel>Random distribution</guilabel> widget. If you push the run button, Copasi will run the task as many times as you have specified in the <guilabel>Repeat</guilabel> widget, each time with a different random value for the parameter you have chosen in the <guilabel>Random distribution</guilabel> widget. Now lets assume the <guilabel>Repeat</guilabel> is below the <guilabel>Random distribution</guilabel>. If you push the run button now, Copasi will also run the task as many times as you specified in the <guilabel>Repeat</guilabel> widget, the difference is that this time, the parameter value gets a random value before the repeat takes effect, i.e. all runs are done with the same random value for the chosen parameter. If you do this for a deterministic time course simulation and a concentration plot is defined, the difference becomes imediatelly obvious becuase in the first case, you will probably get X different curves, whereas in the second case you will get X times the same curve.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_07.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_07.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_07.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing scan task dialog with a repeated random distribution</phrase>
+ </textobject>
+ <caption>
+  <para>scan task dialog with repeated random distribution</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_08.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_08.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_08.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>plot with 10 different curves</phrase>
+ </textobject>
+ <caption>
+  <para>plot with 10 different curves</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_09.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_09.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_09.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing scan task dialog with a random distribution where the time course task is repeated</phrase>
+ </textobject>
+ <caption>
+  <para>scan task dialog with with random distribution where time course task is repeated</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_10.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_10.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_10.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>plot with 10 times the same curve</phrase>
+ </textobject>
+ <caption>
+  <para>plot with 10 identical curves</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+
 </para>
 </sect1>
 <sect1 id="usingSliders" xreflabel="Defining and Using Sliders">
