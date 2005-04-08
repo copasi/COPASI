@@ -98,10 +98,16 @@
                             <property name="name">
                                 <cstring>comboType</cstring>
                             </property>
+                            <property name="currentItem">
+                                <number>1</number>
+                            </property>
                         </widget>
                         <widget class="QToolButton">
                             <property name="name">
                                 <cstring>buttonEdit</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -147,7 +153,13 @@
                                 <cstring>checkInitialConditions</cstring>
                             </property>
                             <property name="text">
-                                <string>use initial conditions</string>
+                                <string>always use initial conditions</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>If this is activated every calculation will start with the initial conditions specified in the model. &lt;p&gt;If it is not activated only the first calculation will use the initial value specified in the model. All subsequent calculations will start with the result of the previous calculation.</string>
                             </property>
                         </widget>
                         <spacer>
@@ -172,7 +184,16 @@
                                 <cstring>checkOutput</cstring>
                             </property>
                             <property name="text">
-                                <string>do output during task</string>
+                                <string>Output time series</string>
+                            </property>
+                            <property name="accel">
+                                <string>Ctrl+T, Ctrl+R</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>if this is activated all the calculated time series will be plotted. &lt;p&gt;If it is not activated only the state at the end of each simulation will be plotted.</string>
                             </property>
                         </widget>
                         <spacer>
@@ -198,6 +219,14 @@
         </widget>
     </vbox>
 </widget>
+<connections>
+    <connection>
+        <sender>comboType</sender>
+        <signal>activated(int)</signal>
+        <receiver>CScanWidgetTask</receiver>
+        <slot>typeChanged(int)</slot>
+    </connection>
+</connections>
 <includes>
     <include location="local" impldecl="in declaration">utilities/CCopasiParameterGroup.h</include>
     <include location="local" impldecl="in declaration">scan/CScanProblem.h</include>
@@ -207,6 +236,9 @@
     <variable>CCopasiObject* mpObject;</variable>
     <variable>const CModel* mpModel;</variable>
 </variables>
+<slots>
+    <slot access="private">typeChanged( int n )</slot>
+</slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function returnType="bool">initFromScanProblem( CScanProblem * pg, const CModel * model )</function>

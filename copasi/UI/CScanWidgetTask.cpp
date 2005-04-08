@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:22:57 $
+   $Date: 2005/04/08 12:57:41 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
  **
- ** Created: Do Feb 24 23:35:51 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.2 2005/02/27 20:22:57 ssahle Exp $)
+ ** Created: Fr Apr 8 14:45:49 2005
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.3 2005/04/08 12:57:41 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -57,6 +57,7 @@ CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, WFlags fl)
   layout1->addWidget(comboType);
 
   buttonEdit = new QToolButton(frame, "buttonEdit");
+  buttonEdit->setEnabled(FALSE);
   buttonEdit->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, buttonEdit->sizePolicy().hasHeightForWidth()));
   layout1->addWidget(buttonEdit);
   spacer2 = new QSpacerItem(21, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -66,11 +67,13 @@ CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, WFlags fl)
   layout2 = new QHBoxLayout(0, 0, 6, "layout2");
 
   checkInitialConditions = new QCheckBox(frame, "checkInitialConditions");
+  checkInitialConditions->setChecked(TRUE);
   layout2->addWidget(checkInitialConditions);
   spacer3 = new QSpacerItem(30, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
   layout2->addItem(spacer3);
 
   checkOutput = new QCheckBox(frame, "checkOutput");
+  checkOutput->setChecked(TRUE);
   layout2->addWidget(checkOutput);
   spacer4 = new QSpacerItem(41, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   layout2->addItem(spacer4);
@@ -79,6 +82,9 @@ CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, WFlags fl)
   languageChange();
   resize(QSize(524, 80).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
+
+  // signals and slots connections
+  connect(comboType, SIGNAL(activated(int)), this, SLOT(typeChanged(int)));
   init();
 }
 
@@ -102,7 +108,11 @@ void CScanWidgetTask::languageChange()
   comboType->insertItem(tr("Steady State"));
   comboType->insertItem(tr("Time course"));
   comboType->insertItem(tr("Metabolic Control Analysis"));
+  comboType->setCurrentItem(1);
   buttonEdit->setText(tr("..."));
-  checkInitialConditions->setText(tr("use initial conditions"));
-  checkOutput->setText(tr("do output during task"));
+  checkInitialConditions->setText(tr("always use initial conditions"));
+  QToolTip::add(checkInitialConditions, tr("If this is activated every calculation will start with the initial conditions specified in the model. <p>If it is not activated only the first calculation will use the initial value specified in the model. All subsequent calculations will start with the result of the previous calculation."));
+  checkOutput->setText(tr("Output time series"));
+  checkOutput->setAccel(QKeySequence(tr("Ctrl+T, Ctrl+R")));
+  QToolTip::add(checkOutput, tr("if this is activated all the calculated time series will be plotted. <p>If it is not activated only the state at the end of each simulation will be plotted."));
 }

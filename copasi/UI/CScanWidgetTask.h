@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:22:57 $
+   $Date: 2005/04/08 12:57:41 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CScanWidgetTask.ui'
  **
- ** Created: Do Feb 24 23:35:45 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.h,v 1.2 2005/02/27 20:22:57 ssahle Exp $)
+ ** Created: Fr Apr 8 14:45:41 2005
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.h,v 1.3 2005/04/08 12:57:41 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -69,6 +69,9 @@ class CScanWidgetTask : public QWidget
 
   private:
     void init();
+
+  private slots:
+    virtual void typeChanged(int n);
   };
 
 #endif // CSCANWIDGETTASK_H

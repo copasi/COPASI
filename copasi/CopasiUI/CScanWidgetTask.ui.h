@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetTask.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 15:54:51 $
+   $Date: 2005/04/08 12:57:41 $
    End CVS Header */
 
 /****************************************************************************
@@ -33,21 +33,24 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
   mpModel = model;
 
   CCopasiTask::Type type = pg->getSubtask();
+  int n;
   switch (type)
     {
     case CCopasiTask::steadyState :
-      comboType->setCurrentItem(0);
+      n = 0;
       break;
     case CCopasiTask::timeCourse :
-      comboType->setCurrentItem(1);
+      n = 1;
       break;
     case CCopasiTask::mca :
-      comboType->setCurrentItem(2);
+      n = 2;
       break;
     default :
       std::cout << "unknown subtask in scan. Should not happen." << std::endl;
-      comboType->setCurrentItem(0);
+      n = 0;
     }
+  comboType->setCurrentItem(n);
+  typeChanged(n);
 
   checkInitialConditions->setChecked(!(pg->getAdjustInitialConditions()));
 
@@ -81,3 +84,11 @@ bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
 
     return true;
   }
+
+void CScanWidgetTask::typeChanged(int n)
+{
+  if (n == 1) //time course
+    checkOutput->setEnabled(true);
+  else
+    checkOutput->setEnabled(false);
+}
