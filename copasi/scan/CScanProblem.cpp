@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:32:01 $
+   $Date: 2005/04/08 12:59:30 $
    End CVS Header */
 
 /**
@@ -28,13 +28,13 @@ CScanProblem::CScanProblem(const CCopasiContainer * pParent):
     mInitialState()
     //mEndState()
 {
-  addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::steadyState);
+  addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::timeCourse);
 
   addGroup("ScanItems");
   mpScanItems = dynamic_cast<CCopasiParameterGroup*>(getParameter("ScanItems"));
 
-  addParameter("Output in subtask", CCopasiParameter::BOOL, false);
-  addParameter("Adjust initial conditions", CCopasiParameter::BOOL, true);
+  addParameter("Output in subtask", CCopasiParameter::BOOL, true);
+  addParameter("Adjust initial conditions", CCopasiParameter::BOOL, false);
 
   CONSTRUCTOR_TRACE;
 }
