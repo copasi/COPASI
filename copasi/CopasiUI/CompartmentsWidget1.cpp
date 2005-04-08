@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/03/14 04:49:00 $
+   $Author: ssahle $ 
+   $Date: 2005/04/08 13:06:48 $
    End CVS Header */
 
 /*******************************************************************
@@ -233,6 +233,7 @@ bool CompartmentsWidget1::saveToCompartment()
       m1 = volume.toDouble();
       comp->setInitialVolume(m1);
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, objKey);
+      volumeSave = volume;
     }
   return true;
 }
@@ -345,7 +346,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                            // Yes or Enter
+    case 0:                             // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getCompartments().size();
         unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -363,7 +364,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                            // No or Escape
+    case 1:                             // No or Escape
       break;
     }
 }
