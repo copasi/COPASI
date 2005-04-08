@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 13:55:32 $
+   $Author: shoops $ 
+   $Date: 2005/04/08 02:53:53 $
    End CVS Header */
 
 /**
@@ -160,17 +160,18 @@ class CCompartment : public CCopasiContainer
     /**
      *  Sets the initial volume of this compartment.
      *  @param volume the volume of the compartment.
-     *  @param adapt if true the particle numbers of the metabolites are adapted
+     *  @return bool success
      *  @see mVolume
      */
-    void setInitialVolume(C_FLOAT64 volume, bool adapt = true);
+    bool setInitialVolume(const C_FLOAT64 & volume);
 
     /**
      *  Sets the volume of this compartment.
-     *  @param volume the volume of the compartment.
+     *  @param const C_FLOAT64 & volume
+     *  @return bool success
      *  @see mVolume
      */
-    void setVolume(C_FLOAT64 volume);
+    bool setVolume(const C_FLOAT64 & volume);
 
     /**
      * Returns the address of mVolume  Wei Sun

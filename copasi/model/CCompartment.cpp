@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 13:55:32 $
+   $Author: shoops $ 
+   $Date: 2005/04/08 02:53:53 $
    End CVS Header */
 
 // CCompartment
@@ -155,31 +155,32 @@ bool CCompartment::setName(const std::string & name)
   return setObjectName(name);
 }
 
-void CCompartment::setInitialVolume(C_FLOAT64 volume, bool adapt)
+bool CCompartment::setInitialVolume(const C_FLOAT64 & volume)
 {
   mInitialVolume = volume;
 
   /* This has to be moved to the state */
   setVolume(volume);
 
-  if (adapt)
+  C_INT32 i, imax = mMetabolites.size();
+  for (i = 0; i < imax; ++i)
     {
-      C_INT32 i, imax = mMetabolites.size();
-      for (i = 0; i < imax; ++i)
-        {
-          //update particle numbers
-          mMetabolites[i]->setInitialConcentration(mMetabolites[i]->getInitialConcentration());
-          mMetabolites[i]->setConcentration(mMetabolites[i]->getConcentration());
-        }
+      //update particle numbers
+      mMetabolites[i]->setInitialConcentration(mMetabolites[i]->getInitialConcentration());
+      mMetabolites[i]->setConcentration(mMetabolites[i]->getConcentration());
     }
+
+  return true;
 }
 
-void CCompartment::setVolume(C_FLOAT64 volume)
+bool CCompartment::setVolume(const C_FLOAT64 & volume)
 {
   mVolume = volume;
 
   if (volume != 0.0) mVolumeInv = 1.0 / volume;
   else mVolumeInv = DBL_MAX;
+
+  return true;
 }
 
 /* Note: the metabolite stored in mMetabolites has definetly mpCompartment set.
@@ -213,8 +214,14 @@ bool CCompartment::removeMetabolite(CMetab * pMetabolite)
 
 void CCompartment::initObjects()
 {
-  addObjectReference("Volume", mVolume, CCopasiObject::ValueDbl);
-  //  add(&mMetabolites);
+  CCopasiObject * pObject;
+  pObject = addObjectReference("Volume", mInitialVolume, CCopasiObject::ValueDbl);
+  pObject->setUpdateMethod(this, &CCompartment::setInitialVolume);
+
+  //  Volume is currently constant, i.e., we only can modify the initial volume.
+  //  To avoid confusion we call it volume :)
+  //  pObject = addObjectReference("Volume", mVolume, CCopasiObject::ValueDbl);
+  //  pObject->setUpdateMethod(this, &CCompartment::setVolume);
 }
 
 void * CCompartment::getVolumeAddr()
