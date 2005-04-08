@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/17 19:58:34 $
+   $Author: ssahle $ 
+   $Date: 2005/04/08 13:03:44 $
    End CVS Header */
 
 /**
@@ -56,8 +56,8 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(const CCopasiParameterGro
   if (type == CScanProblem::SCAN_RANDOM)
     tmp = new CScanItemRandom(si, rg);
 
-  if (type == CScanProblem::SCAN_BREAK)
-    tmp = new CScanItemBreak(si, st);
+  /*  if (type == CScanProblem::SCAN_BREAK)
+      tmp = new CScanItemBreak(si, st);*/
 
   return tmp;
 }
@@ -187,20 +187,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:    //uniform
+        case 0:     //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:    //normal
+        case 1:     //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:    //poisson
+        case 2:     //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
@@ -214,7 +214,7 @@ void CScanItemRandom::step()
 
 //*******
 
-CScanItemBreak::CScanItemBreak(const CCopasiParameterGroup* si, CScanTask* st)
+/*CScanItemBreak::CScanItemBreak(const CCopasiParameterGroup* si, CScanTask* st)
     : CScanItem(si),
     mPlotB(0),
     mReportB(0),
@@ -225,7 +225,7 @@ CScanItemBreak::CScanItemBreak(const CCopasiParameterGroup* si, CScanTask* st)
   mST = st;
   mNumSteps = 0;
 }
-
+ 
 void CScanItemBreak::step()
 {
   //the index
@@ -236,9 +236,9 @@ void CScanItemBreak::step()
       //TODO: tell the task what exactly to do...
       mST->outputSeparatorCallback();
     }
-
+ 
   ++mIndex;
-}
+}*/
 
 //**************** CScanMethod class ***************************
 

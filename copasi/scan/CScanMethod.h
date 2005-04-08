@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/17 19:58:34 $
+   $Author: ssahle $ 
+   $Date: 2005/04/08 13:03:44 $
    End CVS Header */
 
 /**
@@ -105,7 +105,7 @@ class CScanItemRandom: public CScanItem
 
 //***********************************+
 
-class CScanItemBreak: public CScanItem
+/*class CScanItemBreak: public CScanItem
   {
   private:
     unsigned C_INT32 mPlotB, mReportB;
@@ -113,7 +113,7 @@ class CScanItemBreak: public CScanItem
   public:
     CScanItemBreak(const CCopasiParameterGroup* si, CScanTask* st);
     void step();
-  };
+  };*/
 
 //*******************************************+
 //*******************************************+
