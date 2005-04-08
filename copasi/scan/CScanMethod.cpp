@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/08 13:03:44 $
+   $Date: 2005/04/08 15:22:17 $
    End CVS Header */
 
 /**
@@ -187,20 +187,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:     //uniform
+        case 0:      //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:     //normal
+        case 1:      //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:     //poisson
+        case 2:      //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
@@ -301,6 +301,22 @@ bool CScanMethod::init()
       mTotalSteps *= mScanItems[i]->getNumSteps();
     }
 
+  //set mLastNestingItem
+  mLastNestingItem = -1;
+  if (imax != 0)
+    {
+      //search from the end
+      C_INT32 j;
+      for (j = mScanItems.size() - 1; j >= 0; --j)
+        {
+          if (mScanItems[j]->isNesting())
+            {
+              mLastNestingItem = j;
+              break;
+            }
+        }
+    }
+
   return true;
 }
 
@@ -337,9 +353,17 @@ bool CScanMethod::loop(unsigned C_INT32 level)
       //TODO: handle slave SIs
 
       if (isLastMasterItem)
-      {if (!calculate()) return false;}
+        {
+          if (!calculate()) return false;
+        }
       else
-      {if (!loop(level + 1)) return false;} //TODO
+        {
+          if (!loop(level + 1)) return false;
+        } //TODO
+
+      //separator needs to be handled slightly differently if we are at the last item
+      if (currentSI->isNesting())
+        ((CScanTask*)(getObjectParent()))->outputSeparatorCallback(level == mLastNestingItem);
     }
 
   return true;

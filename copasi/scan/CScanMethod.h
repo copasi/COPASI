@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/08 13:03:44 $
+   $Date: 2005/04/08 15:22:17 $
    End CVS Header */
 
 /**
@@ -58,6 +58,8 @@ class CScanItem
 
     virtual bool isFinished() const;
 
+    virtual bool isNesting() const {return true;};
+
   protected:
 
     CScanItem(const CCopasiParameterGroup* si);
@@ -101,6 +103,7 @@ class CScanItemRandom: public CScanItem
   public:
     CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg);
     void step();
+    virtual bool isNesting() const {return false;};
   };
 
 //***********************************+
@@ -113,6 +116,7 @@ class CScanItemRandom: public CScanItem
   public:
     CScanItemBreak(const CCopasiParameterGroup* si, CScanTask* st);
     void step();
+    virtual bool isNesting() const {return false;};
   };*/
 
 //*******************************************+
@@ -134,6 +138,12 @@ class CScanMethod : public CCopasiMethod
     std::vector<CScanItem*> mScanItems;
 
     unsigned C_INT32 mTotalSteps;
+
+    /**
+     * the index of the last item that has several subitems,
+     * also the last item that need to generate output separators
+     */
+    C_INT32 mLastNestingItem;
 
     /**
      *

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:32:01 $
+   $Date: 2005/04/08 15:22:17 $
    End CVS Header */
 
 /**
@@ -103,8 +103,10 @@ class CScanTask : public CCopasiTask
 
     /**
      * output separators
+     * if isLast==true this method has to decide if a spearator should
+     * be generated dependend on mOutputInSubtask.
      */
-    bool outputSeparatorCallback();
+    bool outputSeparatorCallback(bool isLast = false);
 
   protected:
 

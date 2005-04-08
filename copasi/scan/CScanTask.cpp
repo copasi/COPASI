@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/08 19:12:56 $
+   $Author: ssahle $ 
+   $Date: 2005/04/08 15:22:17 $
    End CVS Header */
 
 /**
@@ -152,9 +152,10 @@ bool CScanTask::processCallback()
   return true;
 }
 
-bool CScanTask::outputSeparatorCallback()
+bool CScanTask::outputSeparatorCallback(bool isLast)
 {
-  if (mpOutputHandler) return mpOutputHandler->doSeparator();
+  if ((!isLast) || mOutputInSubtask)
+    if (mpOutputHandler) return mpOutputHandler->doSeparator();
   return true;
 }
 
@@ -206,6 +207,8 @@ bool CScanTask::initSubtask()
   mpSubtask->initialize();
 
   mOutputInSubtask = *(bool*)(pProblem->getValue("Output in subtask"));
+  if (type != CCopasiTask::timeCourse)
+    mOutputInSubtask = false;
 
   mAdjustInitialConditions = *(bool*)(pProblem->getValue("Adjust initial conditions"));
 
