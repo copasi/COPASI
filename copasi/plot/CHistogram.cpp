@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CHistogram.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/17 14:46:18 $
+   $Date: 2005/04/08 08:04:00 $
    End CVS Header */
 
 #include "CHistogram.h"
@@ -42,6 +42,10 @@ CHistogram::~CHistogram()
 
 void CHistogram::addValue(const C_FLOAT64 & val)
 {
+  //just ignore breaks. Later we perhaps want to start a new histogram...
+  if (val != val) //NaN
+    return;
+
   mUptodate = false;
   //std::cout << val<< "  " << (C_INT32)(val/mIncrement)<< std::endl;
   mMap[(C_INT32)(val * mInvIncrement)]++;
