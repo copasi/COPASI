@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:47 $
+   $Author: shoops $ 
+   $Date: 2005/04/11 20:40:32 $
    End CVS Header */
 
 /**
@@ -108,15 +108,14 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
           fatalError();
         }
 
-      try
+      if (!mLoadedFunctions.add(pFunction))
         {
-          mLoadedFunctions.add(pFunction, true);
-        }
+          pdelete(pFunction);
+          // We ignore:
+          // CCopasiVector (2): Object '%s' allready exists.
+          if ((MCCopasiVector + 2) != CCopasiMessage::getLastMessage().getNumber())
 
-      catch (CCopasiException Exception)
-        {
-          if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
-            throw Exception;
+            pFunction = mLoadedFunctions[Function.getObjectName()];
         }
     }
 
@@ -202,18 +201,14 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
       fatalError();
     }
 
-  try
-    {
-      mLoadedFunctions.add(pFunction);
-    }
-  catch (CCopasiException Exception)
+  if (!mLoadedFunctions.add(pFunction))
     {
       pdelete(pFunction);
       // We ignore:
       // CCopasiVector (2): Object '%s' allready exists.
-      if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
-        throw Exception;
-      pFunction = mLoadedFunctions[Function.getObjectName()];
+      if ((MCCopasiVector + 2) != CCopasiMessage::getLastMessage().getNumber())
+
+        pFunction = mLoadedFunctions[Function.getObjectName()];
     }
 
   return pFunction;

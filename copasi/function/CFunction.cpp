@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/22 10:50:31 $
+   $Author: shoops $ 
+   $Date: 2005/04/11 20:40:32 $
    End CVS Header */
 
 /**
@@ -307,10 +307,10 @@ void CFunction::addUsage(const std::string& usage, C_INT32 low, C_INT32 high)
   mUsageDescriptions.add(u);
 }
 
-void CFunction::addParameter(const std::string & name,
+bool CFunction::addParameter(const std::string & name,
                              const CFunctionParameter::DataType & type,
                              const std::string & usage)
-{mParameters.add(name, type, usage);}
+{return mParameters.add(name, type, usage);}
 
 void CFunction::guessModifierUsageRange()
 {

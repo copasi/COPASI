@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:25:27 $
+   $Date: 2005/04/11 20:40:32 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -524,22 +524,15 @@ void CSpec2Model::processFunctions()
                 {
                   ParameterName = scanner.YYText();
                   std::cout << "ParameterName: " << ParameterName << std::endl;
-                  try
-                    {
-                      //Parameters.add(ParameterName,
-                      //               CFunctionParameter::FLOAT64,
-                      //               "PARAMETER");
-                      Function.addParameter(ParameterName,
-                                            CFunctionParameter::FLOAT64,
-                                            "PARAMETER");
-                    }
-                  catch (CCopasiException Exception)
+
+                  if (!Function.addParameter(ParameterName,
+                                             CFunctionParameter::FLOAT64,
+                                             "PARAMETER"))
                     {
                       /* Parameter exists not found */
 
-                      std::cout << "Exception" << std::endl;
-                      if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
-                        throw Exception;
+                      if ((MCCopasiVector + 2) != CCopasiMessage::getLastMessage().getNumber())
+                        return;
                     }
                 }
             }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/22 10:50:31 $
+   $Author: shoops $ 
+   $Date: 2005/04/11 20:40:32 $
    End CVS Header */
 
 /**
@@ -260,12 +260,13 @@ class CFunction : public CCopasiContainer
     virtual void addUsage(const std::string& usage, C_INT32 low, C_INT32 high);
 
     /**
-     *  Adds the description of one parameter 
-     *  @param "const string &" name the name of the parameter
-     *  @param "CFunctionParameter::DataType &" type type of parameter (usually FLOAT64)
-     *  @param "const string &" usage usage for this paramter (SUBSTRATE, PRODUCT, MODIFIER, PARAMETER)
+     * Adds the description of one parameter 
+     * @param "const string &" name the name of the parameter
+     * @param "CFunctionParameter::DataType &" type type of parameter (usually FLOAT64)
+     * @param "const string &" usage usage for this paramter (SUBSTRATE, PRODUCT, MODIFIER, PARAMETER)
+     * @return bool success
      */
-    virtual void addParameter(const std::string & name,
+    virtual bool addParameter(const std::string & name,
                               const CFunctionParameter::DataType & type,
                               const std::string & usage);
 

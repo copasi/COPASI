@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:48 $
+   $Author: shoops $ 
+   $Date: 2005/04/11 20:40:32 $
    End CVS Header */
 
 /**
@@ -99,17 +99,19 @@ class CFunctionParameters : public CCopasiContainer
     void add(const CFunctionParameter & parameter);
 
     /**
-     *  Add a parameter to the parameter list
-     *  @param "CFunctionParameter *" parameter
-     *  @param const bool & adopt (Default: false)
+     * Add a parameter to the parameter list
+     * @param "CFunctionParameter *" parameter
+     * @param const bool & adopt (Default: false)
+     * @return bool success
      */
-    void add(CFunctionParameter * parameter, const bool & adopt = false);
+    bool add(CFunctionParameter * parameter, const bool & adopt = false);
 
     /**
-     *  Add a parameter to the parameter list
-     *  @param "const string & name
-     *  @param "const CFunctionParameter::DataType &" type
-     *  @param "const string &" usage
+     * Add a parameter to the parameter list
+     * @param "const string & name
+     * @param "const CFunctionParameter::DataType &" type
+     * @param "const string &" usage
+     * @return bool success
      */
     bool add(const std::string & name,
              const CFunctionParameter::DataType & type,
