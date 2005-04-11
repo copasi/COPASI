@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/05 16:12:55 $
+   $Author: shoops $ 
+   $Date: 2005/04/11 17:52:11 $
    End CVS Header */
 
 #include <math.h>
@@ -50,6 +50,9 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): QHBox(parent), mp
   connect(this->mpQSlider, SIGNAL(sliderPressed()), this, SLOT(qSliderPressed()));
   connect(this->mpCloseButton, SIGNAL(clicked()), this, SLOT(closeButtonClicked()));
   connect(this->mpEditButton, SIGNAL(clicked()), this, SLOT(editButtonClicked()));
+
+  // We need to assure that the slider is compiled
+  if (mpCSlider) mpCSlider->compile();
 }
 
 CopasiSlider::~CopasiSlider()
