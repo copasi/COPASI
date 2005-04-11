@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:31:53 $
+   $Date: 2005/04/11 20:40:06 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -25,7 +25,7 @@ MESSAGES Messages[] =
 
     // CCopasiVector
     {MCCopasiVector + 1, "CCopasiVector (1): Object '%s' not found."},
-    {MCCopasiVector + 2, "CCopasiVector (2): Object '%s' allready exists."},
+    {MCCopasiVector + 2, "CCopasiVector (2): Object '%s' already exists."},
 
     // CFunctionParameters
     {MCFunctionParameters + 1, "CFunctionParameters (1): The usage '%s' "
