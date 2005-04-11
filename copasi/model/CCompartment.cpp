@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/08 02:53:53 $
+   $Date: 2005/04/11 17:53:23 $
    End CVS Header */
 
 // CCompartment
@@ -157,6 +157,7 @@ bool CCompartment::setName(const std::string & name)
 
 bool CCompartment::setInitialVolume(const C_FLOAT64 & volume)
 {
+  C_FLOAT64 Factor = volume / mInitialVolume;
   mInitialVolume = volume;
 
   /* This has to be moved to the state */
@@ -166,8 +167,8 @@ bool CCompartment::setInitialVolume(const C_FLOAT64 & volume)
   for (i = 0; i < imax; ++i)
     {
       //update particle numbers
-      mMetabolites[i]->setInitialConcentration(mMetabolites[i]->getInitialConcentration());
-      mMetabolites[i]->setConcentration(mMetabolites[i]->getConcentration());
+      mMetabolites[i]->setInitialNumber(mMetabolites[i]->getInitialNumber() * Factor);
+      mMetabolites[i]->setNumber(mMetabolites[i]->getNumber() * Factor);
     }
 
   return true;
