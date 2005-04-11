@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/11 17:36:15 $
+   $Date: 2005/04/11 21:19:24 $
    End CVS Header */
 
 /**
@@ -188,20 +188,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:       //uniform
+        case 0:        //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:       //normal
+        case 1:        //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:       //poisson
+        case 2:        //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
@@ -337,7 +337,10 @@ bool CScanMethod::scan()
     mScanItems[i]->storeValue();
 
   //Do the scan...
-  success = loop(0);
+  if (imax) //there are scan items
+    success = loop(0);
+  else
+    success = calculate(); //nothing to scan, only one call to the subtask
 
   //restore old parameter values
   for (i = 0; i < imax; ++i)
