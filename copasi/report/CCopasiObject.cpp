@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:19:56 $
+   $Date: 2005/04/11 20:17:49 $
    End CVS Header */
 
 /**
@@ -118,15 +118,14 @@ bool CCopasiObject::setObjectName(const std::string & name)
 {
   if (name == mObjectName) return true;
 
-  if (mpObjectParent && mpObjectParent->isNameVector())
-    {
-      CCopasiObjectName NewObject = CCopasiObjectName::escape(getObjectType() + "=" + name);
+  std::string Name = (name == "") ? "No Name" : name;
 
-      if (mpObjectParent->getObject(NewObject))
-        return false;
-    }
+  if (mpObjectParent &&
+      mpObjectParent->isNameVector() &&
+      mpObjectParent->getObject("[" + Name + "]"))
+    return false;
 
-  mObjectName = (name == "") ? "No Name" : name;
+  mObjectName = Name;
 
   if (mpObjectParent)
     {
