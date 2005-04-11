@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetTask.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/08 12:57:41 $
+   $Date: 2005/04/11 21:29:28 $
    End CVS Header */
 
 /****************************************************************************
@@ -42,9 +42,9 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
     case CCopasiTask::timeCourse :
       n = 1;
       break;
-    case CCopasiTask::mca :
-      n = 2;
-      break;
+      //case CCopasiTask::mca :
+      //  n = 2;
+      //  break;
     default :
       std::cout << "unknown subtask in scan. Should not happen." << std::endl;
       n = 0;
@@ -70,9 +70,9 @@ bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
       case 1 :
         pg->setSubtask(CCopasiTask::timeCourse);
         break;
-      case 2 :
-        pg->setSubtask(CCopasiTask::mca);
-        break;
+        //case 2 :
+        //  pg->setSubtask(CCopasiTask::mca);
+        //  break;
       default :
         std::cout << "unknown subtask in scan. Should not happen." << std::endl;
         pg->setSubtask(CCopasiTask::steadyState);

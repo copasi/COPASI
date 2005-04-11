@@ -90,11 +90,6 @@
                                     <string>Time course</string>
                                 </property>
                             </item>
-                            <item>
-                                <property name="text">
-                                    <string>Metabolic Control Analysis</string>
-                                </property>
-                            </item>
                             <property name="name">
                                 <cstring>comboType</cstring>
                             </property>
