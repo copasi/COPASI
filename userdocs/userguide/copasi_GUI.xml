@@ -463,7 +463,7 @@ The only thing that is now left is to connect this report to a file. This has to
 </sect2>
 <sect2 id="plotDefinitions" xreflabel="Defining Plots">
 <title>Defining Plots</title>
-<para>Plotting is another form of output that Copasi can do. So far plotting is limited to the results of a <link linkend="calculatingTrajectory">time course analysis</link> but plotting of other results will eventually be available where it makes sense. Most of the time, you probably want to plot some or all of the metabolites concentrations during a time course simulation. </para>
+<para>Plotting is another form of output that Copasi can do. Most of the time, you probably want to plot some or all of the metabolites concentrations during a time course simulation. </para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
