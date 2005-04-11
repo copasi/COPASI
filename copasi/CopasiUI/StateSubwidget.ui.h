@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/03/29 21:13:26 $
+   $Author: ssahle $ 
+   $Date: 2005/04/11 14:44:15 $
    End CVS Header */
 
 /****************************************************************************
@@ -158,7 +158,6 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
 
 void StateSubwidget::showUnits()
 {
-  DataModelGUI* dataModel = ListViews::getDataModel();
   CCopasiDataModel::Global->getModel()->getVolumeUnit();
 
   concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 1, tr("Transition Time\n("\
