@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/23 21:18:08 $
+   $Author: ssahle $ 
+   $Date: 2005/04/11 23:06:50 $
    End CVS Header */
 
 /**
@@ -191,7 +191,8 @@ bool CTrajectoryProblem::timeSeriesRequested() const
 void CTrajectoryProblem::setInitialState(const CState & initialState)
 {
   mInitialState = initialState;
-  setStartTime(mInitialState.getTime());
+  mInitialState.setTime(getStartTime());
+  //setStartTime(mInitialState.getTime());
   mpModel = const_cast<CModel*>(mInitialState.getModel());
 }
 
@@ -202,7 +203,9 @@ void CTrajectoryProblem::setInitialState(const CState & initialState)
 void CTrajectoryProblem::setInitialState(const CStateX & initialState)
 {
   mInitialState = initialState;
-  setStartTime(mInitialState.getTime());
+  mInitialState.setTime(getStartTime());
+  //setStartTime(mInitialState.getTime());
+  mpModel = const_cast<CModel*>(mInitialState.getModel());
 }
 
 /**
