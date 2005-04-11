@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/08 15:22:17 $
+   $Date: 2005/04/11 17:36:15 $
    End CVS Header */
 
 /**
@@ -26,6 +26,7 @@
 #include "CScanProblem.h"
 #include "CScanMethod.h"
 #include "CScanTask.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 // this will have to be defined somewhere else with the
 // values of other distribution types
@@ -187,20 +188,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:      //uniform
+        case 0:       //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:      //normal
+        case 1:       //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:      //poisson
+        case 2:       //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
@@ -324,6 +325,9 @@ bool CScanMethod::scan()
 {
   if (!mpProblem) return false;
 
+  //a hack to ensure that the first subtask is run with initial conditions
+  CCopasiDataModel::Global->getModel()->setState(&mpProblem->getInitialState());
+
   bool success = true;
 
   unsigned C_INT32 i, imax = mScanItems.size();
@@ -377,150 +381,3 @@ bool CScanMethod::calculate() const
 
 void CScanMethod::setProblem(const CScanProblem * problem)
 {mpProblem = problem;}
-
-//*************************************************
-//*************************************************
-//*************************************************
-
-#ifdef XXXX
-void CScanMethod::scan(unsigned C_INT32 s,
-                       bool C_UNUSED(nl),
-                       void (*pCallback)(CReport *),
-                       CReport *pReport)
-{
-  mVariableSize = mpProblem->getVariableSize();
-  mpVariables = mpProblem->getCalculateVariables();
-
-  mpRandomGenerator =
-    CRandom::createGenerator(CRandom::TypeNameToEnum(* (std::string *) getValue("Random Number Generator")),
-                             * (C_INT32 *) getValue("Random Number Seed"));
-
-  unsigned C_INT32 i, next, top;
-  //1.  find the first/last master scan item
-
-  if (s > 0)
-    {
-      for (i = s - 1; i > 0; i--)
-        //if(scanItem[i]->Indp) break;
-        //  if (scanProblem->getScanItemParameter(i, "indp")) break;
-
-        next = i;
-    }
-
-  else
-    next = 0;
-
-  /* 2.  find the last slave item */
-
-  //if(s<scandimension-1)
-  if (s < mVariableSize - 1)
-    {
-      for (i = s + 1; i < mVariableSize; i++)
-        //     if (scanProblem->getScanItemParameter(i, "indp")) break;
-        top = i;
-    }
-  else
-    top = mVariableSize;
-
-  /* 3.  switch the grid type (distribution) - regular, normal etc */
-
-  /* The "gridType" is just a temporary name for the parameter.
-     A proper name will have to be given at the time of entering
-     this parameter into the vector.
-  */ 
-  //switch(gridtype[distribution])
-  switch ((int)scanProblem->getScanItemParameter(s, "gridType"))
-    {
-    case SD_UNIFORM:
-    case SD_GAUSS:
-    case SD_BOLTZ:
-      // start with the min values
-      setScanParameterValue(0, s, top);
-      //different from SD_REGULR by initial value
-      for (i = 0; i < * (unsigned C_INT32 *) scanProblem->getScanItemParameter(s, "density"); i++)
-        {
-          if (s != 0) scan(next, false, pCallback, pReport);
-          else
-            // some function
-            {
-              scanProblem->calculate();
-              pCallback(pReport);
-            }
-          setScanParameterValue(i, s, top);
-        }
-      break;
-    case SD_REGULAR:
-      //start with min value - give 0 as first param in setscanparametervalue
-      setScanParameterValue(0, s, top);
-
-      for (i = 1; i <= * (unsigned C_INT32 *) scanProblem->getScanItemParameter(s, "density"); i++)
-        {
-          if (s != 0)
-            scan(next, false, pCallback, pReport);
-          else
-            // some function
-            {
-              scanProblem->calculate();
-              pCallback(pReport);
-            }
-          setScanParameterValue(i, s, top);
-        }
-      break;
-    }
-
-  pdelete(mpRandomGenerator);
-} // scan() ends
-
-void CScanMethod::setScanParameterValue(unsigned C_INT32 i,
-                                        unsigned C_INT32 first,
-                                        unsigned C_INT32 last)
-{
-  unsigned C_INT32 j;
-  double min, max, incr, ampl;
-  for (j = first; j < last; j++)
-    {
-      // making a copy of the min and max parameters of the scanItem j
-      min = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "min");
-      max = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "max");
-      ampl = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "ampl");
-      incr = * (C_FLOAT64 *) scanProblem->getScanItemParameter(j, "incr");
-
-      // switch the grid type and set values accordingly
-      switch ((int)scanProblem->getScanItemParameter(j, "gridType"))
-        {
-        case SD_UNIFORM:
-          if (scanProblem->getScanItemParameter(j, "log"))
-            mpVariables[j] =
-              min * pow(10, ampl * mpRandomGenerator->getRandomCO());
-          else
-            mpVariables[j] =
-              min + ampl * mpRandomGenerator->getRandomCO();
-          break;
-
-        case SD_GAUSS:
-          if (scanProblem->getScanItemParameter(j, "log"))
-            mpVariables[j] = mpRandomGenerator->getRandomNormalLog(min, max);
-          else
-            mpVariables[j] = mpRandomGenerator->getRandomNormal(min, max);
-          break;
-
-        case SD_BOLTZ:
-          if (scanProblem->getScanItemParameter(j, "log"))
-            mpVariables[j] = mpRandomGenerator->getRandomNormalLog(min, max);
-          else
-            mpVariables[j] =
-              mpRandomGenerator->getRandomNormalPositive(min, max);
-          break;
-
-        case SD_REGULAR:
-          // log scale
-          if (scanProblem->getScanItemParameter(j, "log"))
-            mpVariables[j] = min * pow(10, incr * i);
-          // non-log scale
-          else
-            mpVariables[j] = (min + incr * i);
-          break;
-        }
-    }
-}
-#endif
