@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.113 $
+   $Revision: 1.114 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/17 10:16:11 $
+   $Author: shoops $ 
+   $Date: 2005/04/11 20:45:07 $
    End CVS Header */
 
 /*******************************************************************
@@ -323,7 +323,22 @@ bool MetabolitesWidget1::saveToMetabolite()
   QString name(mEditName->text());
   if ((const char *)name.utf8() != metab->getObjectName())
     {
-      metab->setObjectName((const char *)name.utf8());
+      if (!metab->setObjectName((const char *)name.utf8()))
+        {
+          QString msg;
+          msg = "Unable to rename metabolite '" + FROM_UTF8(metab->getObjectName()) + "'\n"
+                + "to '" + name + "' since a metabolite with that name already exist\n"
+                + "in the compartment '" + FROM_UTF8(metab->getCompartment()->getObjectName()) + "'.";
+
+          QMessageBox::warning(this,
+                               "Unable to rename Metabolite",
+                               msg,
+                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+          mEditName->setText(FROM_UTF8(metab->getObjectName()));
+          return false;
+        }
+
       protectedNotify(ListViews::METABOLITE, ListViews::RENAME, objKey);
     }
 
@@ -332,7 +347,22 @@ bool MetabolitesWidget1::saveToMetabolite()
   if ((const char *)Compartment.utf8() != metab->getCompartment()->getObjectName())
     {
       std::string CompartmentToRemove = metab->getCompartment()->getObjectName();
-      CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(metab);
+      if (!CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(metab))
+        {
+          QString msg;
+          msg = "Unable to move metabolite '" + FROM_UTF8(metab->getObjectName()) + "'\n"
+                + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
+                + "since a metabolite with that name already exist in the target compartment.";
+
+          QMessageBox::warning(this,
+                               "Unable to move Metabolite",
+                               msg,
+                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+          mComboCompartment->setCurrentText(FROM_UTF8(CompartmentToRemove));
+          return false;
+        }
+
       CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getObjectName());
       CCopasiDataModel::Global->getModel()->setCompileFlag();
       CCopasiDataModel::Global->getModel()->initializeMetabolites();
@@ -510,7 +540,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                             // Yes or Enter
+    case 0:                                              // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -533,7 +563,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                             // No or Escape
+    case 1:                                              // No or Escape
       break;
     }
 }

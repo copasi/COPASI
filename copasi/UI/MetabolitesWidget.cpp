@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.116 $
+   $Revision: 1.117 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/17 10:16:32 $
+   $Author: shoops $ 
+   $Date: 2005/04/11 20:45:07 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -176,7 +176,20 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
       && (Compartment != ""))
     {
       std::string CompartmentToRemove = pMetab->getCompartment()->getObjectName();
-      CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
+      if (!CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab))
+        {
+          QString msg;
+          msg = "Unable to move metabolite '" + FROM_UTF8(pMetab->getObjectName()) + "'\n"
+                + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
+                + "since a metabolite with that name already exist in the target compartment.";
+
+          QMessageBox::warning(this,
+                               "Unable to move Metabolite",
+                               msg,
+                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+          return;
+        }
       CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pMetab->getObjectName());
       CCopasiDataModel::Global->getModel()->setCompileFlag();
       CCopasiDataModel::Global->getModel()->initializeMetabolites();
@@ -329,7 +342,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                    // Yes or Enter
+    case 0:                                     // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -341,7 +354,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                    // No or Escape
+    case 1:                                     // No or Escape
       break;
     }
 }
