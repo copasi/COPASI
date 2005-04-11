@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/23 21:14:12 $
+   $Author: ssahle $ 
+   $Date: 2005/04/11 14:45:05 $
    End CVS Header */
 
 #include <iostream>
@@ -169,7 +169,7 @@ void CMetab::setConcentration(const C_FLOAT64 concentration)
 
 bool CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 {
-  if (mIConc == initialConcentration) return true;
+  //if (mIConc == initialConcentration) return true;
 
   mIConc = initialConcentration;
   mINumber = initialConcentration * mpCompartment->getVolume()
@@ -198,7 +198,7 @@ void CMetab::setNumber(const C_FLOAT64 number)
 
 bool CMetab::setInitialNumber(const C_FLOAT64 & initialNumber)
 {
-  if (mINumber == initialNumber) return true;
+  //if (mINumber == initialNumber) return true;
 
   mIConc = initialNumber * mpCompartment->getVolumeInv()
            * mpModel->getNumber2QuantityFactor();
