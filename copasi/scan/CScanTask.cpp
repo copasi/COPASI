@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/08 15:22:17 $
+   $Date: 2005/04/11 17:37:41 $
    End CVS Header */
 
 /**
@@ -140,6 +140,12 @@ bool CScanTask::process()
 bool CScanTask::processCallback()
 {
   //do tasks
+  CSteadyStateProblem * ssProblem = dynamic_cast<CSteadyStateProblem*>(mpSubtask->getProblem());
+  if (ssProblem)
+  {ssProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());}
+  CTrajectoryProblem * ttProblem = dynamic_cast<CTrajectoryProblem*>(mpSubtask->getProblem());
+  if (ttProblem)
+  {ttProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());}
   mpSubtask->processForScan(!mAdjustInitialConditions, mOutputInSubtask);
 
   //do output
