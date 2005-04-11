@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/17 08:56:20 $
+   $Author: shoops $ 
+   $Date: 2005/04/11 20:14:57 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -418,8 +418,11 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       virtual bool add(const CType & src)
       {
         if (!isInsertAllowed(&src))
-          CCopasiMessage(CCopasiMessage::ERROR,
-                         MCCopasiVector + 2, src.getObjectName().c_str());
+          {
+            CCopasiMessage(CCopasiMessage::ERROR,
+                           MCCopasiVector + 2, src.getObjectName().c_str());
+            return false;
+          }
 
         CType * Element = new CType(src);
 
@@ -433,9 +436,11 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       virtual bool add(CType * src, bool adopt = false)
       {
         if (!isInsertAllowed(src))
-          CCopasiMessage(CCopasiMessage::ERROR,
-                         MCCopasiVector + 2, src->getObjectName().c_str());
-
+          {
+            CCopasiMessage(CCopasiMessage::ERROR,
+                           MCCopasiVector + 2, src->getObjectName().c_str());
+            return false;
+          }
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(src);
@@ -449,12 +454,14 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       {
         unsigned C_INT32 Index = getIndex(name);
 
-        if ((signed) Index == -1)
-          CCopasiMessage(CCopasiMessage::ERROR,
-                         MCCopasiVector + 1, name.c_str());
+        if (Index == C_INVALID_INDEX)
+          {
+            CCopasiMessage(CCopasiMessage::ERROR,
+                           MCCopasiVector + 1, name.c_str());
+            return;
+          }
 
         CCopasiVector< CType >::remove(Index);
-
         return;
       }
 
@@ -462,7 +469,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        *
        */
       value_type & operator[](unsigned C_INT32 index)
-    {return ((CCopasiVector <CType>*) this)->operator[](index);}
+      {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
        *
@@ -477,8 +484,8 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       {
         C_INT32 Index = getIndex(name);
 
-        if (Index == -1)
-          CCopasiMessage(CCopasiMessage::ERROR,
+        if (Index == C_INVALID_INDEX)
+          CCopasiMessage(CCopasiMessage::EXCEPTION,
                          MCCopasiVector + 1, name.c_str());
 
         return *(this->begin() + Index);
@@ -491,8 +498,8 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
         {
           C_INT32 Index = getIndex(name);
 
-          if (Index == -1)
-            CCopasiMessage(CCopasiMessage::ERROR,
+          if (Index == C_INVALID_INDEX)
+            CCopasiMessage(CCopasiMessage::EXCEPTION,
                            MCCopasiVector + 1, name.c_str());
 
           return *(this->begin() + Index);
