@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/12 15:54:00 $
+   $Date: 2005/04/12 15:56:14 $
    End CVS Header */
 
 /**
@@ -188,20 +188,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:         //uniform
+        case 0:          //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:         //normal
+        case 1:          //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:         //poisson
+        case 2:          //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
@@ -209,7 +209,7 @@ void CScanItemRandom::step()
         }
     }
 
-  mpValue->setObjectValue(Value);
+  if (mpValue) mpValue->setObjectValue(Value);
   ++mIndex;
 }
 
