@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.161 $
+   $Revision: 1.162 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/12 12:47:55 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 16:52:35 $
    End CVS Header */
 
 /*********************************************************************
@@ -140,7 +140,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   LineEdit3->setEnabled(FALSE);
   ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 5, 5, 2, 3);
 
-  LineEdit1 = new QLineEdit(this, "LineEdit1");
+  //name
+  LineEdit1 = new MyLineEdit(this, "LineEdit1");
   ReactionsWidget1Layout->addMultiCellWidget(LineEdit1, 0, 0, 1, 3);
 
   // equation line
@@ -190,6 +191,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
+  connect(LineEdit1, SIGNAL(edited()), this, SLOT(slotNameChanged()));
 
   //connect(table, SIGNAL(signalChanged(int, int, Qstring)), this, SLOT(slotTableChanged(int, int, QString)));
 }
@@ -291,7 +293,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 /*This function is called when the "Chemical Reaction" LineEdit is changed.*/
 void ReactionsWidget1::slotLineEditChanged()
 {
-  std::string rName = (const char *)LineEdit1->text().utf8();
+  //std::string rName = (const char *)LineEdit1->text().utf8();
 
   std::string eq = (const char *)LineEdit2->text().utf8();
 
@@ -304,12 +306,18 @@ void ReactionsWidget1::slotLineEditChanged()
     }
 
   // tell the reaction interface
-  mRi.setReactionName(rName);
+  //mRi.setReactionName(rName);
 
   mRi.setChemEqString(eq);
 
   // update the widget
   FillWidgetFromRI();
+}
+
+void ReactionsWidget1::slotNameChanged()
+{
+  std::string rName = (const char *)LineEdit1->text().utf8();
+  mRi.setReactionName(rName);
 }
 
 // added 5/19/04
@@ -361,7 +369,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                            // Yes or Enter
+        case 0:                             // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -393,7 +401,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                   // No or Escape
+        default:                                    // No or Escape
           break;
         }
       //}

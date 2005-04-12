@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/09 01:07:38 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 16:52:35 $
    End CVS Header */
 
 /****************************************************************************
@@ -54,6 +54,7 @@ class ReactionsWidget1 : public CopasiWidget
     virtual void slotComboBoxSelectionChanged(const QString &);
     virtual void slotLineEditChanged();
     virtual void slotNewFunction();
+    virtual void slotNameChanged();
 
     //  public slots:
     virtual void slotTableChanged(int index, int sub, QString newValue);
