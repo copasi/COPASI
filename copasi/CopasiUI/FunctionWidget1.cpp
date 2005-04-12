@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.113 $
+   $Revision: 1.114 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/04/12 13:17:23 $
    End CVS Header */
 
 /**********************************************************************
@@ -594,10 +594,24 @@ bool FunctionWidget1::saveToFunction()
   if (!func) return false;
 
   //name
-  if (func->getObjectName() != (const char *)LineEdit1->text().utf8())
+  QString name(LineEdit1->text());
+  if (func->getObjectName() != (const char *)name.utf8())
     {
-      func->setName((const char *)LineEdit1->text().utf8());
-      protectedNotify(ListViews::FUNCTION, ListViews::RENAME, objKey);
+      if (!func->setName((const char *)name.utf8()))
+        {
+          QString msg;
+          msg = "Unable to rename function '" + FROM_UTF8(func->getObjectName()) + "'\n"
+                + "to '" + name + "' since a function with that name already exists.";
+
+          QMessageBox::warning(this,
+                               "Unable to rename Function",
+                               msg,
+                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+          LineEdit1->setText(FROM_UTF8(func->getObjectName()));
+        }
+      else
+        protectedNotify(ListViews::FUNCTION, ListViews::RENAME, objKey);
     }
 
   //radio buttons
@@ -950,7 +964,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                            // Yes or Enter
+        case 0:                                             // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -967,7 +981,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                            // No or Escape
+        case 1:                                             // No or Escape
           break;
         }
     }
