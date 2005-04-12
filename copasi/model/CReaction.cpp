@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.111 $
+   $Revision: 1.112 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:25:26 $
+   $Date: 2005/04/12 12:25:39 $
    End CVS Header */
 
 // CReaction
@@ -53,6 +53,7 @@ CReaction::CReaction(const std::string & name,
 {
   CONSTRUCTOR_TRACE;
   initObjects();
+  setFunction("Constant flux (irreversible)");
 }
 
 CReaction::CReaction(const CReaction & src,
