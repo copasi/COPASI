@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/11 21:19:24 $
+   $Date: 2005/04/12 15:54:00 $
    End CVS Header */
 
 /**
@@ -148,7 +148,7 @@ void CScanItemLinear::step()
   if (mIndex > mNumSteps)
     mFlagFinished = true;
 
-  mpValue->setObjectValue(Value);
+  if (mpValue) mpValue->setObjectValue(Value);
   ++mIndex;
 
   //std::cout << "SILinear " << mMin + (mIndex-1)*mFaktor<< std::endl;
@@ -163,7 +163,7 @@ CScanItemRandom::CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg)
     mLog(false)
 {
   mRandomType = *(unsigned C_INT32*)(si->getValue("Distribution type"));
-  std::cout << " ****** " << mRandomType << std::endl;
+  //std::cout << " ****** " << mRandomType << std::endl;
   mLog = *(bool*)(si->getValue("log"));
   mMin = *(C_FLOAT64*)(si->getValue("Minimum"));
   mMax = *(C_FLOAT64*)(si->getValue("Maximum"));
@@ -188,20 +188,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:        //uniform
+        case 0:         //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:        //normal
+        case 1:         //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:        //poisson
+        case 2:         //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
