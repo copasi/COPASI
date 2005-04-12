@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/12 14:09:40 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 15:09:13 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -23,6 +23,22 @@ template <class CType> class CCopasiVectorS;
 template <class CType> class CCopasiVectorN;
 
 #include "utilities/CCopasiTask.h"
+
+//******************************************************************************
+
+#include "report/CRenameHandler.h"
+class CCopasiDataModel;
+
+class CDataModelRenameHandler : public CRenameHandler
+  {
+  public:
+    CDataModelRenameHandler(CCopasiDataModel* dm);
+
+    virtual bool handle(const std::string & oldCN, const std::string & newCN) const;
+
+  private:
+    CCopasiDataModel * mpDataModel;
+  };
 
 //******************************************************************************
 
@@ -73,6 +89,7 @@ class CCopasiDataModel
     std::string mSaveFileName;
     bool mChanged;
     bool mAutoSaveNeeded;
+    CDataModelRenameHandler mRenameHandler;
 
   public:
     static CCopasiDataModel * Global;

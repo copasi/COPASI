@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/12 14:09:40 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 15:09:13 $
    End CVS Header */
 
 #include "copasi.h"
@@ -28,6 +28,21 @@
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLExporter.h"
 
+CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
+    : mpDataModel(dm)
+{}
+
+bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::string & newCN) const
+  {
+    std::cout << "CDataModelRenameHandler::handle()" << std::endl;
+    std::cout << " old: " << oldCN << std::endl;
+    std::cout << " new: " << newCN << std::endl << std::endl;
+
+    return true;
+  }
+
+//********************************************************************
+
 CCopasiDataModel * CCopasiDataModel::Global = NULL;
 
 CCopasiDataModel::CCopasiDataModel(const bool withGUI):
@@ -41,6 +56,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mpGUI(NULL),
     mChanged(false),
     mAutoSaveNeeded(false),
+    mRenameHandler(this),
     pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
@@ -49,6 +65,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
 
   mpFunctionList->load();
   newModel();
+  CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the contructor should this be called?
 }
 
 CCopasiDataModel::~CCopasiDataModel()
