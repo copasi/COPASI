@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 09:47:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -219,7 +219,18 @@ void CopasiTableWidget::saveTable()
             }
           if (mFlagRenamed[j])
             {
-              GlobalKeys.get(mKeys[j])->setObjectName((const char *)table->text(j, 1).utf8());
+              if (!GlobalKeys.get(mKeys[j])->setObjectName((const char *)table->text(j, 1).utf8()))
+                {
+                  QString msg;
+                  msg = "Unable to rename object '" + FROM_UTF8(GlobalKeys.get(mKeys[j])->getObjectName()) + "'\n"
+                        + "to '" + (const char *)table->text(j, 1).utf8()
+                        + "' since an object with that name already exists.";
+
+                  QMessageBox::warning(this,
+                                       "Unable to rename",
+                                       msg,
+                                       QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                }
               ListViews::notify(mOT, ListViews::RENAME, mKeys[j]);
             }
         }
