@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/06 12:57:46 $
+   $Date: 2005/04/12 15:57:04 $
    End CVS Header */
 
 // CCopasiMessage
@@ -29,6 +29,24 @@ std::string TimeStamp();
 #define INITIALTEXTSIZE 1024
 
 std::deque< CCopasiMessage > CCopasiMessage::mMessageDeque;
+
+const CCopasiMessage & CCopasiMessage::peekFirstMessage()
+{
+  if (mMessageDeque.empty())
+    CCopasiMessage(CCopasiMessage::RAW,
+                   MCCopasiMessage + 1);
+
+  return mMessageDeque.front();
+}
+
+const CCopasiMessage & CCopasiMessage::peekLastMessage()
+{
+  if (mMessageDeque.empty())
+    CCopasiMessage(CCopasiMessage::RAW,
+                   MCCopasiMessage + 1);
+
+  return mMessageDeque.back();
+}
 
 CCopasiMessage CCopasiMessage::getFirstMessage()
 {

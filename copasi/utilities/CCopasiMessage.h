@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/12 12:12:01 $
+   $Author: shoops $ 
+   $Date: 2005/04/12 15:57:04 $
    End CVS Header */
 
 /**
@@ -98,12 +98,28 @@ class CCopasiMessage
 
   public:
     /**
+     * This function peeks at the first message created in COPASI.
+     * If no more messages are in the deque the message 
+     * (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
+     * @return const CCopasiMessage & message
+     */
+    static const CCopasiMessage & peekFirstMessage();
+
+    /**
+     * This function peeks at the last message created in COPASI.
+     * If no more messages are in the deque the message 
+     * (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
+     * @return const CCopasiMessage & message
+     */
+    static const CCopasiMessage & peekLastMessage();
+
+    /**
      * This function retrieves the first message created in COPASI.
      * Consecutive calls allow for the retrieval of all generated 
      * messages in chronological order. If no more messages are in
      * the deque the message (MCCopasiMessage + 1, "Message (1): 
      * No more messages." is returned.
-     * @return CCopasiMessage
+     * @return CCopasiMessage  message
      */
     static CCopasiMessage getFirstMessage();
 
@@ -113,7 +129,7 @@ class CCopasiMessage
      * messages in reverse chronological order. If no more messages 
      * are in the deque the message (MCCopasiMessage + 1, "Message
      * (1): No more messages." is returned.
-     * @return CCopasiMessage
+     * @return CCopasiMessage message
      */
     static CCopasiMessage getLastMessage();
 
