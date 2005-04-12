@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/11 20:14:57 $
+   $Date: 2005/04/12 10:29:30 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -482,7 +482,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        */
       value_type & operator[](const std::string &name)
       {
-        C_INT32 Index = getIndex(name);
+        unsigned C_INT32 Index = getIndex(name);
 
         if (Index == C_INVALID_INDEX)
           CCopasiMessage(CCopasiMessage::EXCEPTION,
