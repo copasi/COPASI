@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.114 $
+   $Revision: 1.115 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/11 20:45:07 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 09:48:51 $
    End CVS Header */
 
 /*******************************************************************
@@ -327,7 +327,7 @@ bool MetabolitesWidget1::saveToMetabolite()
         {
           QString msg;
           msg = "Unable to rename metabolite '" + FROM_UTF8(metab->getObjectName()) + "'\n"
-                + "to '" + name + "' since a metabolite with that name already exist\n"
+                + "to '" + name + "' since a metabolite with that name already exists\n"
                 + "in the compartment '" + FROM_UTF8(metab->getCompartment()->getObjectName()) + "'.";
 
           QMessageBox::warning(this,
@@ -540,7 +540,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                              // Yes or Enter
+    case 0:                                               // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -563,7 +563,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                              // No or Escape
+    case 1:                                               // No or Escape
       break;
     }
 }
