@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/12 15:09:13 $
+   $Date: 2005/04/12 22:13:15 $
    End CVS Header */
 
 #include "copasi.h"
@@ -36,8 +36,18 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
   {
     std::cout << "CDataModelRenameHandler::handle()" << std::endl;
     std::cout << " old: " << oldCN << std::endl;
-    std::cout << " new: " << newCN << std::endl << std::endl;
+    std::cout << " new: " << newCN << std::endl;
 
+    const std::set<CRegisteredObjectName*> nameSet = CRegisteredObjectName::getSet();
+
+    std::cout << " ************ " << nameSet.size() << std::endl;
+    std::set<CRegisteredObjectName*>::const_iterator it, itEnd = nameSet.end();
+    for (it = nameSet.begin(); it != itEnd; ++it)
+      {
+        std::cout << "      " << **it << std::endl;
+      }
+
+    std::cout << " " << std::endl;
     return true;
   }
 
