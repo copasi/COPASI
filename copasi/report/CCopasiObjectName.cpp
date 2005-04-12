@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/07/06 17:41:30 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 22:14:59 $
    End CVS Header */
 
 /**
@@ -25,17 +25,26 @@ using std::string;
 
 CCopasiObjectName::CCopasiObjectName():
     string()
-{}
+{
+  //std::cout << "CCopasiObjectName::CCopasiObjectName()" << std::endl;
+}
 
 CCopasiObjectName::CCopasiObjectName(const std::string & name):
     string(name)
-{}
+{
+  //std::cout << "CCopasiObjectName::CCopasiObjectName(): " << name << std::endl;
+}
 
 CCopasiObjectName::CCopasiObjectName(const CCopasiObjectName & src):
     string(src)
-{}
+{
+  //std::cout << "CCopasiObjectName::CCopasiObjectName(src): " << src << std::endl;
+}
 
-CCopasiObjectName::~CCopasiObjectName() {}
+CCopasiObjectName::~CCopasiObjectName()
+{
+  //std::cout << "CCopasiObjectName::Destructor "  << std::endl;
+}
 
 CCopasiObjectName CCopasiObjectName::getPrimary() const
   {return substr(0, findEx(","));}
@@ -155,3 +164,38 @@ CCopasiObjectName::findEx(const std::string & toFind,
 
     return where;
   }
+
+//********** CRegisteredObjectName ***************
+
+std::set<CRegisteredObjectName*> CRegisteredObjectName::mSet;
+
+CRegisteredObjectName::CRegisteredObjectName():
+    CCopasiObjectName()
+{
+  mSet.insert(this);
+  std::cout << "CRegisteredObjectName::CRegisteredObjectName()" << std::endl;
+  std::cout << " ***** " << mSet.size() << std::endl;
+}
+
+CRegisteredObjectName::CRegisteredObjectName(const std::string & name):
+    CCopasiObjectName(name)
+{
+  mSet.insert(this);
+  std::cout << "CRegisteredObjectName::CRegisteredObjectName(): " << name << std::endl;
+  std::cout << " ***** " << mSet.size() << std::endl;
+}
+
+CRegisteredObjectName::CRegisteredObjectName(const CRegisteredObjectName & src):
+    CCopasiObjectName(src)
+{
+  mSet.insert(this);
+  std::cout << "CRegisteredObjectName::CRegisteredObjectName(src): " << src << std::endl;
+  std::cout << " ***** " << mSet.size() << std::endl;
+}
+
+CRegisteredObjectName::~CRegisteredObjectName()
+{
+  mSet.erase(this);
+  std::cout << "CRegisteredObjectName::Destructor " << std::endl;
+  std::cout << " ***** " << mSet.size() << std::endl;
+}

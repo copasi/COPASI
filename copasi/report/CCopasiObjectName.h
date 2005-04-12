@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/07/06 17:41:30 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 22:14:59 $
    End CVS Header */
 
 /**
@@ -18,6 +18,7 @@
 #define COPASI_CCopasiObjectName
 
 #include <string>
+#include <set>
 
 /** @dia:pos 21.4754,29.8662 */
 class CCopasiObjectName: public std::string
@@ -53,4 +54,23 @@ class CCopasiObjectName: public std::string
     std::string::size_type findEx(const std::string & toFind,
                                   const std::string::size_type & pos = 0) const;
   };
+
+class CRegisteredObjectName: public CCopasiObjectName
+  {
+  public:
+    CRegisteredObjectName();
+
+    CRegisteredObjectName(const std::string & name);
+
+    CRegisteredObjectName(const CRegisteredObjectName & src);
+
+    ~CRegisteredObjectName();
+
+    static const std::set<CRegisteredObjectName*> & getSet()
+    {return mSet;}
+
+  private:
+    static std::set<CRegisteredObjectName*> mSet;
+  };
+
 #endif // COPASI_CCopasiObjectName
