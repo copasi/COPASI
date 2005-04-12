@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/08 13:06:48 $
+   $Author: shoops $ 
+   $Date: 2005/04/12 12:47:55 $
    End CVS Header */
 
 /*******************************************************************
@@ -221,8 +221,21 @@ bool CompartmentsWidget1::saveToCompartment()
   QString name(LineEdit1->text());
   if ((const char *)name.utf8() != comp->getObjectName())
     {
-      comp->setName((const char *)name.utf8());
-      protectedNotify(ListViews::COMPARTMENT, ListViews::RENAME, objKey);
+      if (!comp->setName((const char *)name.utf8()))
+        {
+          QString msg;
+          msg = "Unable to rename compartment '" + FROM_UTF8(comp->getObjectName()) + "'\n"
+                + "to '" + name + "' since a compartment with that name already exists.";
+
+          QMessageBox::warning(this,
+                               "Unable to rename Compartment",
+                               msg,
+                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+          LineEdit1->setText(FROM_UTF8(comp->getObjectName()));
+        }
+      else
+        protectedNotify(ListViews::COMPARTMENT, ListViews::RENAME, objKey);
     }
 
   //volume
@@ -346,7 +359,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                             // Yes or Enter
+    case 0:                              // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getCompartments().size();
         unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -364,7 +377,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                             // No or Escape
+    case 1:                              // No or Escape
       break;
     }
 }

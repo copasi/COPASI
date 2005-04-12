@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.160 $
+   $Revision: 1.161 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/04/12 12:47:55 $
    End CVS Header */
 
 /*********************************************************************
@@ -229,7 +229,24 @@ bool ReactionsWidget1::saveToReaction()
   mRi.setReactionName((const char *)LineEdit1->text().utf8());
 
   //this writes all changes to the reaction
-  mRi.writeBackToReaction(*(CCopasiDataModel::Global->getModel()));
+  if (!mRi.writeBackToReaction(*(CCopasiDataModel::Global->getModel())))
+    {
+      CCopasiObject * pReaction = GlobalKeys.get(objKey);
+      if (mRi.getReactionName() != pReaction->getObjectName())
+        {
+          QString msg;
+          msg = "Unable to rename reaction '" + FROM_UTF8(pReaction->getObjectName()) + "'\n"
+                + "to '" + FROM_UTF8(mRi.getReactionName()) + "' since a reation with that name already exists.";
+
+          QMessageBox::warning(this,
+                               "Unable to rename Reaction",
+                               msg,
+                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+          mRi.setReactionName(pReaction->getObjectName());
+          LineEdit1->setText(FROM_UTF8(mRi.getReactionName()));
+        }
+    }
 
   //CCopasiDataModel::Global->getModel()->compile();
 
@@ -344,7 +361,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                           // Yes or Enter
+        case 0:                            // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -376,7 +393,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                  // No or Escape
+        default:                                   // No or Escape
           break;
         }
       //}
