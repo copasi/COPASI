@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/09/30 15:26:26 $
+   $Date: 2005/04/12 12:12:01 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -138,7 +138,7 @@ class SBMLExporter
      ** argument to the function. The function return "true" on success and
      ** "false" on failure.
      */
-    bool exportSBML(const CModel* copasiModel, std::string sbmlFilename, int sbmlLevel = 2, int sbmlVersion = 1) throw (StdException);
+    bool exportSBML(const CModel* copasiModel, std::string sbmlFilename, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1) throw (StdException);
 
     /**
     ** This method tests if a string only consists of whitespace characters

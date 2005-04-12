@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/09 16:07:04 $
+   $Author: gauges $ 
+   $Date: 2005/04/12 12:12:01 $
    End CVS Header */
 
 #include "copasi.h"
@@ -270,15 +270,13 @@ bool CCopasiDataModel::importSBML(const std::string & fileName)
   return newModel(pModel);
 }
 
-bool CCopasiDataModel::exportSBML(const std::string & fileName)
+bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile)
 {
   if (fileName == "") return false;
 
   SBMLExporter exporter;
 
-  exporter.exportSBML(mpModel, fileName.c_str());
-
-  return true;
+  return exporter.exportSBML(mpModel, fileName.c_str(), overwriteFile);
 }
 
 CModel * CCopasiDataModel::getModel()

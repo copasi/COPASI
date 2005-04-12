@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/24 15:56:02 $
+   $Author: gauges $ 
+   $Date: 2005/04/12 12:12:01 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -41,7 +41,7 @@ class CCopasiDataModel
     bool newModel(CModel * pModel = NULL);
 
     bool importSBML(const std::string & fileName);
-    bool exportSBML(const std::string & fileName);
+    bool exportSBML(const std::string & fileName, bool overwriteFile = false);
 
     CModel * getModel();
     CCopasiVectorN< CCopasiTask > * getTaskList();

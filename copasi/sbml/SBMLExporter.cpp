@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:25:27 $
+   $Author: gauges $ 
+   $Date: 2005/04/12 12:12:01 $
    End CVS Header */
 
 #include "copasi.h"
@@ -20,6 +20,8 @@
 
 #include "sbml/ModifierSpeciesReference.h"
 #include "xml/CCopasiXMLInterface.h"
+
+#include <fstream>
 
 const char* SBMLExporter::HTML_HEADER = "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
 
@@ -51,7 +53,7 @@ SBMLExporter::~SBMLExporter()
  ** argument to the function. The function return "true" on success and
  ** "false" on failure.
  */
-bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilename, int sbmlLevel, int sbmlVersion) throw (StdException)
+bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion) throw (StdException)
 {
   /* create the SBMLDocument from the copasi model */
   this->sbmlDocument = this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion);
@@ -63,6 +65,16 @@ bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilenam
       SBMLWriter_setProgramName(writer, "COPASI");
       SBMLWriter_setProgramVersion(writer, CCopasiDataModel::Global->getVersion()->getVersion().c_str());
 
+      /* check if the file already exisits.
+         If yes, write if overwrite is true, 
+         else create an appropriate  CCopasiMessage. */
+      std::ifstream testInfile(sbmlFilename.c_str(), std::ios::in);
+      if (testInfile && !overwriteFile)
+        {
+          // create a CCopasiMessage with the appropriate error
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 1, sbmlFilename.c_str());
+          return false;
+        }
       /* write the document to a file */
       int returnValue = SBMLWriter_writeSBML(writer, (SBMLDocument_t*)sbmlDocument, sbmlFilename.c_str());
       SBMLWriter_free(writer);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/11 20:40:06 $
+   $Author: gauges $ 
+   $Date: 2005/04/12 12:12:01 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -85,6 +85,9 @@ MESSAGES Messages[] =
     {MCOptimization + 2, "Optimization (2): Lower Bound '%s' not found."},
     {MCOptimization + 3, "Optimization (3): Upper Bound '%s' not found."},
     {MCOptimization + 4, "Optimization (3): Invalid Relationship: '%s'."},
+
+    // SBML
+    {MCSBML + 1, "SBML (1): File '%s' already exists."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
