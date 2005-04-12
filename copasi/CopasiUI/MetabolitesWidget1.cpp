@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.115 $
+   $Revision: 1.116 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/12 09:48:51 $
+   $Author: shoops $ 
+   $Date: 2005/04/12 10:49:13 $
    End CVS Header */
 
 /*******************************************************************
@@ -336,10 +336,9 @@ bool MetabolitesWidget1::saveToMetabolite()
                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mEditName->setText(FROM_UTF8(metab->getObjectName()));
-          return false;
         }
-
-      protectedNotify(ListViews::METABOLITE, ListViews::RENAME, objKey);
+      else
+        protectedNotify(ListViews::METABOLITE, ListViews::RENAME, objKey);
     }
 
   //compartment
@@ -360,15 +359,16 @@ bool MetabolitesWidget1::saveToMetabolite()
                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
           mComboCompartment->setCurrentText(FROM_UTF8(CompartmentToRemove));
-          return false;
         }
-
-      CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getObjectName());
-      CCopasiDataModel::Global->getModel()->setCompileFlag();
-      CCopasiDataModel::Global->getModel()->initializeMetabolites();
-      //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
-      protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-      protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+      else
+        {
+          CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getObjectName());
+          CCopasiDataModel::Global->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->initializeMetabolites();
+          //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+          protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+        }
     }
 
   //for Initial Concentration and Initial Number
@@ -540,7 +540,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                               // Yes or Enter
+    case 0:                                                // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -563,7 +563,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                               // No or Escape
+    case 1:                                                // No or Escape
       break;
     }
 }

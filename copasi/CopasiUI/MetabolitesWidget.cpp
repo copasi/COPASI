@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.117 $
+   $Revision: 1.118 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/11 20:45:07 $
+   $Date: 2005/04/12 10:49:13 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -187,16 +187,16 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
                                "Unable to move Metabolite",
                                msg,
                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-
-          return;
         }
-      CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pMetab->getObjectName());
-      CCopasiDataModel::Global->getModel()->setCompileFlag();
-      CCopasiDataModel::Global->getModel()->initializeMetabolites();
-      //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
-      ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, "");
-      ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
-
+      else
+        {
+          CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pMetab->getObjectName());
+          CCopasiDataModel::Global->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->initializeMetabolites();
+          //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+          ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, "");
+          ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+        }
       /*unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->
                                getCompartments().getIndex((const char *)Compartment.utf8());
       if (index != C_INVALID_INDEX)
@@ -342,7 +342,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                     // Yes or Enter
+    case 0:                                      // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -354,7 +354,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                     // No or Escape
+    case 1:                                      // No or Escape
       break;
     }
 }
