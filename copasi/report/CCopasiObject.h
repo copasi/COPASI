@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/30 14:19:56 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 15:06:33 $
    End CVS Header */
 
 /**
@@ -68,6 +68,8 @@ template <class CType, class VType> class SpecificUpdateMethod : public UpdateMe
       {return (*mpType.*mMethod)(value);};              // execute member function
     };
 
+class CRenameHandler;
+
 /** @dia:pos 40.5964,2.55372 */
 class CCopasiObject
   {
@@ -112,6 +114,8 @@ class CCopasiObject
     static const C_FLOAT64 DummyValue;
 
     static UpdateMethod mDefaultUpdateMethod;
+
+    static const CRenameHandler * smpRenameHandler;
 
     //Operations
   protected:
@@ -243,6 +247,9 @@ class CCopasiObject
     }
 
     UpdateMethod * getUpdateMethod() const;
+
+    static void setRenameHandler(CRenameHandler* rh)
+  {smpRenameHandler = rh;}
   };
 
 template <class CType> CCopasiObjectReference< CType > *

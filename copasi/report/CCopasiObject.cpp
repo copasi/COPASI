@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/11 20:17:49 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 15:06:33 $
    End CVS Header */
 
 /**
@@ -20,9 +20,15 @@
 #include "CCopasiObjectName.h"
 #include "CCopasiObject.h"
 #include "CCopasiContainer.h"
+#include "CRenameHandler.h"
 
+//static
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
 
+//static
+const CRenameHandler * CCopasiObject::smpRenameHandler = NULL;
+
+//static
 UpdateMethod CCopasiObject::mDefaultUpdateMethod;
 
 CCopasiObject::CCopasiObject():
@@ -125,7 +131,19 @@ bool CCopasiObject::setObjectName(const std::string & name)
       mpObjectParent->getObject("[" + Name + "]"))
     return false;
 
-  mObjectName = Name;
+  if (smpRenameHandler && mpObjectParent)
+    {
+      std::string oldCN = this->getCN();
+      mObjectName = Name;
+      std::string newCN = this->getCN();
+      smpRenameHandler->handle(oldCN, newCN);
+
+      //TODO performance considerations.
+      //Right now after every rename the CNs are checked. In some cases
+      //we may know that this is not necessary
+    }
+  else
+  {mObjectName = Name;}
 
   if (mpObjectParent)
     {

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
+# $Revision: 1.10 $ $Author: ssahle $ $Date: 2005/04/12 15:06:34 $  
 ######################################################################
 
 LIB = report
@@ -13,6 +13,7 @@ HEADERS += CCopasiContainer.h \
            CCopasiObjectName.h \
            CCopasiStaticString.h \
            CCopasiObjectReference.h \
+           CRenameHandler.h \
 		   CReportDefinition.h \
 		   CReportDefinitionVector.h \
 		   CKeyFactory.h \
