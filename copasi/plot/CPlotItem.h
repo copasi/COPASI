@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/10 02:20:37 $
+   $Author: ssahle $ 
+   $Date: 2005/04/12 22:16:23 $
    End CVS Header */
 
 /**
@@ -21,7 +21,7 @@
 #include "report/CCopasiObjectName.h" 
 //#include "utilities/CCopasiVector.h"
 
-class CPlotDataChannelSpec : public CCopasiObjectName
+class CPlotDataChannelSpec : public CRegisteredObjectName
   {
   public:
     /**
@@ -41,7 +41,7 @@ class CPlotDataChannelSpec : public CCopasiObjectName
     bool maxAutoscale;
 
     CPlotDataChannelSpec()
-        : CCopasiObjectName(),
+        : CRegisteredObjectName(),
         min(0.0),
         max(0.0),
         minAutoscale(true),
@@ -49,7 +49,7 @@ class CPlotDataChannelSpec : public CCopasiObjectName
     {}
 
     CPlotDataChannelSpec(const CCopasiObjectName & obj)
-        : CCopasiObjectName(obj),
+        : CRegisteredObjectName(obj),
         min(0.0),
         max(0.0),
         minAutoscale(true),
@@ -57,7 +57,7 @@ class CPlotDataChannelSpec : public CCopasiObjectName
     {}
 
     CPlotDataChannelSpec(const CCopasiObjectName & obj, C_FLOAT64 minimum, C_FLOAT64 maximum)
-        : CCopasiObjectName(obj),
+        : CRegisteredObjectName(obj),
         min(minimum),
         max(maximum),
         minAutoscale(false),
@@ -74,7 +74,7 @@ class CPlotItem : public CCopasiParameterGroup
      */
     enum Type
     {
-      unset = 0, curve2d, histoItem1d,        //for plot items
+      unset = 0, curve2d, histoItem1d,         //for plot items
       plot2d, simWiz   //for plot specifications
     };
 
