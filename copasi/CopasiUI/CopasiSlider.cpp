@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/11 17:52:11 $
+   $Author: gauges $ 
+   $Date: 2005/04/12 08:11:30 $
    End CVS Header */
 
 #include <math.h>
@@ -42,6 +42,7 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): QHBox(parent), mp
   this->mpEditButton = new QToolButton(buttonLayout);
   this->mpEditButton->setPixmap(icons[1]);
   this->mpEditButton->setFixedSize(13, 13);
+  this->mpCSlider->compile();
   this->updateSliderData();
   QToolTip::add(this->mpCloseButton, tr("remove slider"));
   QToolTip::add(this->mpEditButton, tr("edit slider"));
