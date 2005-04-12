@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/04/12 12:12:01 $
+   $Date: 2005/04/12 14:09:40 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -48,7 +48,7 @@ class DataModelGUI
 
     bool loadModel(const char* fileName);
     bool createModel();
-    bool saveModel(const char* fileName);
+    bool saveModel(const char* fileName, bool overwriteFile = false);
 
     bool importSBML(const char* fileName);
     bool exportSBML(const char* fileName, bool overwriteFile = false);

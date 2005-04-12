@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/04/12 12:12:01 $
+   $Date: 2005/04/12 14:09:40 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -35,6 +35,7 @@ class CCopasiDataModel
 
     bool loadModel(const std::string & fileName);
     bool saveModel(const std::string & fileName,
+                   bool overwriteFile = false,
                    const bool & autoSave = false);
     bool autoSave();
 

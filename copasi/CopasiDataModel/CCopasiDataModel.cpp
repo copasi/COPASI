@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/04/12 12:12:01 $
+   $Date: 2005/04/12 14:09:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -170,10 +170,19 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
   return true;
 }
 
-bool CCopasiDataModel::saveModel(const std::string & fileName,
+bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFile,
                                  const bool & autoSave)
 {
   std::string FileName = (fileName != "") ? fileName : mSaveFileName;
+
+  // test first if a file would accidentaly overwritten.
+  std::ifstream testInfile(FileName.c_str(), std::ios::in);
+
+  if (testInfile && !overwriteFile)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 1, FileName.c_str());
+      return false;
+    }
 
   mpModel->compileIfNecessary();
 
