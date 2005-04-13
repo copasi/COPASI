@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/05 20:45:38 $
+   $Author: shoops $ 
+   $Date: 2005/04/13 16:20:18 $
    End CVS Header */
 
 #include <iostream>
@@ -41,6 +41,7 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "utilities/CSlider.h"
+#include "model/CModel.h"
 
 C_INT32 SliderDialog::numMappings = 4;
 C_INT32 SliderDialog::folderMappings[][2] = {
@@ -181,14 +182,6 @@ void SliderDialog::createNewSlider()
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       CSlider* pCSlider = pSettingsDialog->getSlider();
-      if (pSettingsDialog->mpGlobalCheckBox->isChecked())
-        {
-          pCSlider->setAssociatedEntityKey("");
-        }
-      else
-        {
-          pCSlider->setAssociatedEntityKey(this->getTaskForFolderId(this->currentFolderId)->getKey());
-        }
       if (pCSlider)
         {
           if (!this->equivalentSliderExists(pCSlider))
@@ -272,14 +265,6 @@ void SliderDialog::editSlider()
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       this->currSlider->updateSliderData();
-      if (pSettingsDialog->mpGlobalCheckBox->isChecked())
-        {
-          this->currSlider->getCSlider()->setAssociatedEntityKey("");
-        }
-      else
-        {
-          this->currSlider->getCSlider()->setAssociatedEntityKey(this->getTaskForFolderId(this->currentFolderId)->getKey());
-        }
     }
   delete pSettingsDialog;
   delete pVector;
@@ -607,7 +592,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
     for (i = 0; i < maxSliders;++i)
       {
         CSlider* pSlider = (*pSliderList)[i];
-        if (pSlider->getAssociatedEntityKey() == std::string("") || pSlider->getAssociatedEntityKey() == pObject->getKey())
+        if (pSlider->getAssociatedEntityKey() == CCopasiDataModel::Global->getModel()->getKey() || pSlider->getAssociatedEntityKey() == pObject->getKey())
           {
             pVector->push_back(pSlider);
           }

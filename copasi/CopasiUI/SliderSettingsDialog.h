@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/31 13:38:07 $
+   $Author: shoops $ 
+   $Date: 2005/04/13 16:20:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Thu Mar 31 12:12:50 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.7 2005/03/31 13:38:07 gauges Exp $)
+ ** Created: Wed Apr 13 09:48:29 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.8 2005/04/13 16:20:18 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -52,7 +52,6 @@ class SliderSettingsDialog : public QDialog
     QLabel* mpMaxValueLabel;
     QLineEdit* mpMaxValueEdit;
     QCheckBox* mpLogCheckBox;
-    QCheckBox* mpGlobalCheckBox;
     QPushButton* mpExtendedOptionsButton;
     QFrame* mpExtendedOptionsFrame;
     QLabel* mpMinorMajorFactorLabel;

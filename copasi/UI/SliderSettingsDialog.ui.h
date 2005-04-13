@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/05 20:45:38 $
+   $Author: shoops $ 
+   $Date: 2005/04/13 16:20:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -42,7 +42,8 @@ void SliderSettingsDialog::setSlider(CSlider * slider)
   if (found)
     {
       this->mpSlider = slider;
-      this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getCN()));
+      //      this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getCN()));
+      this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getObjectDisplayName()));
       this->mpObjectBrowseButton->hide();
       this->updateInputFields();
       this->updateInputFieldsValues();
@@ -88,14 +89,6 @@ void SliderSettingsDialog::updateInputFieldsValues()
     {
       this->mpLogCheckBox->setChecked(false);
     }
-  if (this->mpSlider->getAssociatedEntityKey() == "")
-    {
-      this->mpGlobalCheckBox->setChecked(true);
-    }
-  else
-    {
-      this->mpGlobalCheckBox->setChecked(false);
-    }
 }
 
 void SliderSettingsDialog::updateInputFields()
@@ -103,6 +96,7 @@ void SliderSettingsDialog::updateInputFields()
   // if the current slider is NULL, disable all input fields
   if (this->mpSlider)
     {
+      mpObjectNameLineEdit->setEnabled(false);
       this->mpMaxValueEdit->setEnabled(true);
       this->mpMinValueEdit->setEnabled(true);
       this->mpMinorMajorFactorEdit->setEnabled(true);
@@ -110,10 +104,10 @@ void SliderSettingsDialog::updateInputFields()
       this->mpNumMinorTicksEdit->setEnabled(true);
       this->mpObjectValueEdit->setEnabled(true);
       this->mpLogCheckBox->setEnabled(true);
-      this->mpGlobalCheckBox->setEnabled(true);
     }
   else
     {
+      mpObjectNameLineEdit->setEnabled(true);
       this->mpMaxValueEdit->setEnabled(false);
       this->mpMinValueEdit->setEnabled(false);
       this->mpMinorMajorFactorEdit->setEnabled(false);
@@ -121,7 +115,6 @@ void SliderSettingsDialog::updateInputFields()
       this->mpNumMinorTicksEdit->setEnabled(false);
       this->mpObjectValueEdit->setEnabled(false);
       this->mpLogCheckBox->setEnabled(false);
-      this->mpGlobalCheckBox->setEnabled(false);
     }
 }
 
@@ -243,7 +236,7 @@ void SliderSettingsDialog::init()
   this->mChanged = false;
   this->mScaling = CSlider::linear;
   this->mpExtendedOptionsFrame->hide();
-  this->mpExtendedOptionsButton->setText("extended options");
+  this->mpExtendedOptionsButton->setText("Advanced >>");
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
   mpMaxValueEdit->setValidator(new QDoubleValidator(this));
@@ -276,6 +269,18 @@ void SliderSettingsDialog::browseButtonPressed()
           this->mpObjectNameLineEdit->setText("");
           return;
         }
+      /* Determine the associated entity key */
+      CCopasiContainer * pAncestor = object->getObjectAncestor("Task");
+      if (!pAncestor) pAncestor = object->getObjectAncestor("Model");
+
+      if (!pAncestor)
+        {
+          QMessageBox::critical(this, "Invalid Object", "You chose an object that\ndoes cannot be used as a slider.\nPlease choose an object that corresponds to an integet or float value.", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          this->mpSlider = NULL;
+          this->mpObjectNameLineEdit->setText("");
+          return;
+        }
+
       // check if this object already has a slider object
       // if yes, call setSlider with the correct slider object
       // else create a new slider object for this object and add it to the sliders
@@ -316,11 +321,15 @@ void SliderSettingsDialog::browseButtonPressed()
         {
           this->mpSlider = new CSlider();
           this->mpSlider->setSliderObject(object);
+
+          if (pAncestor)
+            this->mpSlider->setAssociatedEntityKey(pAncestor->getKey());
+
           this->mpSlider->resetRange();
           this->updateInputFields();
           this->updateInputFieldsValues();
         }
-      this->mpObjectNameLineEdit->setText(FROM_UTF8(this->mpSlider->getSliderObject()->getCN()));
+      this->mpObjectNameLineEdit->setText(FROM_UTF8(this->mpSlider->getSliderObject()->getObjectDisplayName()));
     }
   else
     {
@@ -373,12 +382,12 @@ void SliderSettingsDialog::extendedOptionsClicked()
 {
   if (this->mpExtendedOptionsFrame->isHidden())
     {
-      this->mpExtendedOptionsButton->setText("base options");
+      this->mpExtendedOptionsButton->setText("Advanced <<");
       this->mpExtendedOptionsFrame->show();
     }
   else
     {
-      this->mpExtendedOptionsButton->setText("extended options");
+      this->mpExtendedOptionsButton->setText("Advanced >>");
       this->mpExtendedOptionsFrame->hide();
     }
 }

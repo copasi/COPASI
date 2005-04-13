@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/05 16:56:05 $
+   $Author: shoops $ 
+   $Date: 2005/04/13 16:20:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Mon Apr 4 10:58:44 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.8 2005/04/05 16:56:05 gauges Exp $)
+ ** Created: Wed Apr 13 09:48:30 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.9 2005/04/13 16:20:18 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -58,7 +58,9 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
   mpLayout11->addWidget(mpObjectLabel);
 
   mpObjectNameLineEdit = new QLineEdit(this, "mpObjectNameLineEdit");
-  mpObjectNameLineEdit->setEnabled(TRUE);
+  mpObjectNameLineEdit->setEnabled(FALSE);
+  mpObjectNameLineEdit->setFrameShape(QLineEdit::LineEditPanel);
+  mpObjectNameLineEdit->setFrameShadow(QLineEdit::Sunken);
   mpObjectNameLineEdit->setReadOnly(TRUE);
   mpLayout11->addWidget(mpObjectNameLineEdit);
 
@@ -91,9 +93,6 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
 
   mpLogCheckBox = new QCheckBox(this, "mpLogCheckBox");
   layout10->addWidget(mpLogCheckBox);
-
-  mpGlobalCheckBox = new QCheckBox(this, "mpGlobalCheckBox");
-  layout10->addWidget(mpGlobalCheckBox);
   mpSpacer1_2_2 = new QSpacerItem(200, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
   layout10->addItem(mpSpacer1_2_2);
   SliderSettingsDialogLayout->addLayout(layout10);
@@ -194,8 +193,7 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
   setTabOrder(mpObjectBrowseButton, mpMinValueEdit);
   setTabOrder(mpMinValueEdit, mpMaxValueEdit);
   setTabOrder(mpMaxValueEdit, mpLogCheckBox);
-  setTabOrder(mpLogCheckBox, mpGlobalCheckBox);
-  setTabOrder(mpGlobalCheckBox, mpExtendedOptionsButton);
+  setTabOrder(mpLogCheckBox, mpExtendedOptionsButton);
   setTabOrder(mpExtendedOptionsButton, mpNumMinorTicksEdit);
   setTabOrder(mpNumMinorTicksEdit, mpMinorTickSizeEdit);
   setTabOrder(mpMinorTickSizeEdit, mpMinorMajorFactorEdit);
@@ -246,14 +244,6 @@ void SliderSettingsDialog::languageChange()
                                       "logarithmic scale. Minimum\n"
                                       "and maximum value must be \n"
                                       "greater than 0.0."));
-  mpGlobalCheckBox->setText(tr("use for all tasks"));
-  QToolTip::add(mpGlobalCheckBox, tr("Wether slider will be usable in all tasks."));
-  QWhatsThis::add(mpGlobalCheckBox, tr("If checked, the slider will show up in all tasks\n"
-                                         "that support sliders.\n"
-                                         "Making a slider that controls a task specific\n"
-                                         "parameter (e.g. StepNumber in time course) global\n"
-                                         "is not prohibited, but on the other hand, it probably\n"
-                                         "does not make much sense either."));
   mpExtendedOptionsButton->setText(tr("more options"));
   QToolTip::add(mpExtendedOptionsButton, tr("Displays or hides an extended set of options."));
   QWhatsThis::add(mpExtendedOptionsButton, tr("Clicking this button either displays or hides\n"
