@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/30 14:19:10 $
+   $Author: ssahle $ 
+   $Date: 2005/04/13 11:35:10 $
    End CVS Header */
 
 #ifndef COPASI_CSlider
@@ -42,7 +42,7 @@ class CSlider : public CCopasiContainer
      * @param const std::string & name (default: "NoName")
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSlider(const std::string & name = "NoName",
+    CSlider(const std::string & name = "Slider",
             const CCopasiContainer * pParent = NULL);
 
     /**
@@ -297,6 +297,11 @@ class CSlider : public CCopasiContainer
      * The scaling of the slider.
      */
     Scale mScaling;
+
+    /**
+     * The CN of the object that the slider modifies.
+     */
+    CRegisteredObjectName mCN;
   };
 
 #endif

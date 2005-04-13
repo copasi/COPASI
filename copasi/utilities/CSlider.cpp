@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/05 16:56:05 $
+   $Author: ssahle $ 
+   $Date: 2005/04/13 11:35:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -32,7 +32,8 @@ CSlider::CSlider(const std::string & name,
     mTickNumber(1000),
     mTickFactor(100),
     mSync(true),
-    mScaling(CSlider::linear)
+    mScaling(CSlider::linear),
+    mCN()
 {}
 
 CSlider::CSlider(const CSlider & src,
@@ -48,7 +49,8 @@ CSlider::CSlider(const CSlider & src,
     mTickNumber(src.mTickNumber),
     mTickFactor(src.mTickFactor),
     mSync(src.mSync),
-    mScaling(src.mScaling)
+    mScaling(src.mScaling),
+    mCN()
 {}
 
 CSlider::~CSlider()
@@ -56,7 +58,8 @@ CSlider::~CSlider()
 
 bool CSlider::compile(const std::vector< CCopasiContainer * > & listOfContainer)
 {
-  setSliderObject(CCopasiContainer::ObjectFromName(listOfContainer, getObjectName()));
+  //setSliderObject(CCopasiContainer::ObjectFromName(listOfContainer, getObjectName()));
+  setSliderObject(CCopasiContainer::ObjectFromName(listOfContainer, mCN));
   if (this->mSync) this->sync();
   return (mpSliderObject != NULL);
 }
@@ -86,7 +89,8 @@ const std::string & CSlider::getAssociatedEntityKey() const
 
 bool CSlider::setSliderObject(CCopasiObject * pObject)
 {
-  if (!setObjectName(pObject->getCN())) return false;
+  //if (!setObjectName(pObject->getCN())) return false;
+  mCN = pObject->getCN();
 
   mpSliderObject = pObject;
   if (mpSliderObject->isValueInt())
@@ -125,13 +129,17 @@ void CSlider::resetRange()
 }
 
 bool CSlider::setSliderObject(const CCopasiObjectName & objectCN)
-{return setObjectName(objectCN);}
+{
+  //return setObjectName(objectCN);
+  mCN = objectCN;
+  return true;
+}
 
 CCopasiObject * CSlider::getSliderObject()
 {return mpSliderObject;}
 
 const std::string & CSlider::getSliderObjectCN() const
-  {return getObjectName();}
+  {return mCN; /*getObjectName();*/}
 
 bool CSlider::setSliderType(const CSlider::Type type)
 {
