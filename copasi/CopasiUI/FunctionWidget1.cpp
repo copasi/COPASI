@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.114 $
+   $Revision: 1.115 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/12 13:17:23 $
+   $Date: 2005/04/13 12:14:18 $
    End CVS Header */
 
 /**********************************************************************
@@ -901,7 +901,7 @@ void FunctionWidget1::slotCommitButtonClicked()
 void FunctionWidget1::slotNewButtonClicked()
 {
   //TODO: check if a commit is necessary here
-  std::string name = "function_0";
+  std::string name = "function";
   int i = 0;
   CFunction* pFunc;
   while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefined)))
@@ -964,7 +964,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                             // Yes or Enter
+        case 0:                                              // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -981,7 +981,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                             // No or Escape
+        case 1:                                              // No or Escape
           break;
         }
     }
