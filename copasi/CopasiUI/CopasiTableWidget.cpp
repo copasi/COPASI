@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/12 09:47:42 $
+   $Author: shoops $ 
+   $Date: 2005/04/13 12:17:06 $
    End CVS Header */
 
 /*******************************************************************
@@ -201,6 +201,19 @@ void CopasiTableWidget::saveTable()
           if (!mFlagDelete[j])
             {
               CCopasiObject* pObj = createNewObject((const char *)table->text(j, 1).utf8());
+              if (pObj->getObjectName() != (const char *)table->text(j, 1).utf8())
+                {
+                  QString msg;
+                  msg = "Unable to create object '" + table->text(j, 1)
+                        + "' since an object with that name already exists.\n"
+                        + "New object renamed to '"
+                        + FROM_UTF8(pObj->getObjectName()) + "'.";
+
+                  QMessageBox::warning(this,
+                                       "Unable to create",
+                                       msg,
+                                       QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                }
               tableLineToObject(j, pObj);
               ListViews::notify(mOT, ListViews::ADD, pObj->getKey());
             }
@@ -223,15 +236,17 @@ void CopasiTableWidget::saveTable()
                 {
                   QString msg;
                   msg = "Unable to rename object '" + FROM_UTF8(GlobalKeys.get(mKeys[j])->getObjectName()) + "'\n"
-                        + "to '" + (const char *)table->text(j, 1).utf8()
+                        + "to '" + table->text(j, 1)
                         + "' since an object with that name already exists.";
 
                   QMessageBox::warning(this,
                                        "Unable to rename",
                                        msg,
                                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                  table->setCurrentCell(j, 1);
                 }
-              ListViews::notify(mOT, ListViews::RENAME, mKeys[j]);
+              else
+                ListViews::notify(mOT, ListViews::RENAME, mKeys[j]);
             }
         }
     }
@@ -239,6 +254,8 @@ void CopasiTableWidget::saveTable()
   if (flagDelete) deleteObjects(delKeys);
 
   mIgnoreUpdates = false;
+
+  return;
 }
 
 //  ***** Slots for table signals ********
