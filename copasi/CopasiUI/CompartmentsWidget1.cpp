@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/12 12:47:55 $
+   $Date: 2005/04/13 11:58:53 $
    End CVS Header */
 
 /*******************************************************************
@@ -263,7 +263,7 @@ void CompartmentsWidget1::slotBtnOKClicked()
 
 void CompartmentsWidget1::slotBtnNewClicked()
 {
-  std::string name = "compartment_0";
+  std::string name = "compartment";
   int i = 0;
   CCompartment* pCom;
   while (!(pCom = CCopasiDataModel::Global->getModel()->createCompartment(name)))
@@ -359,7 +359,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                              // Yes or Enter
+    case 0:                               // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getCompartments().size();
         unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -377,7 +377,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                              // No or Escape
+    case 1:                               // No or Escape
       break;
     }
 }
