@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/08 02:53:53 $
+   $Date: 2005/04/13 10:36:30 $
    End CVS Header */
 
 /**
@@ -2181,6 +2181,7 @@ void CCopasiXMLParser::ListOfConstantsElement::start(const XML_Char *pszName,
     {
     case ListOfConstants:
       if (strcmp(pszName, "ListOfConstants")) fatalError();
+      mCommon.pReaction->getParameters().clear();
       break;
 
     case Constant:
