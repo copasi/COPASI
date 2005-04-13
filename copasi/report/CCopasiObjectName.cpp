@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/12 22:14:59 $
+   $Date: 2005/04/13 11:33:07 $
    End CVS Header */
 
 /**
@@ -173,29 +173,29 @@ CRegisteredObjectName::CRegisteredObjectName():
     CCopasiObjectName()
 {
   mSet.insert(this);
-  std::cout << "CRegisteredObjectName::CRegisteredObjectName()" << std::endl;
-  std::cout << " ***** " << mSet.size() << std::endl;
+  //std::cout << "CRegisteredObjectName::CRegisteredObjectName()" << std::endl;
+  //std::cout << " ***** " << mSet.size() << std::endl;
 }
 
 CRegisteredObjectName::CRegisteredObjectName(const std::string & name):
     CCopasiObjectName(name)
 {
   mSet.insert(this);
-  std::cout << "CRegisteredObjectName::CRegisteredObjectName(): " << name << std::endl;
-  std::cout << " ***** " << mSet.size() << std::endl;
+  //std::cout << "CRegisteredObjectName::CRegisteredObjectName(): " << name << std::endl;
+  //std::cout << " ***** " << mSet.size() << std::endl;
 }
 
 CRegisteredObjectName::CRegisteredObjectName(const CRegisteredObjectName & src):
     CCopasiObjectName(src)
 {
   mSet.insert(this);
-  std::cout << "CRegisteredObjectName::CRegisteredObjectName(src): " << src << std::endl;
-  std::cout << " ***** " << mSet.size() << std::endl;
+  //std::cout << "CRegisteredObjectName::CRegisteredObjectName(src): " << src << std::endl;
+  //std::cout << " ***** " << mSet.size() << std::endl;
 }
 
 CRegisteredObjectName::~CRegisteredObjectName()
 {
   mSet.erase(this);
-  std::cout << "CRegisteredObjectName::Destructor " << std::endl;
-  std::cout << " ***** " << mSet.size() << std::endl;
+  //std::cout << "CRegisteredObjectName::Destructor " << std::endl;
+  //std::cout << " ***** " << mSet.size() << std::endl;
 }
