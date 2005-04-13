@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/04/13 12:15:05 $
    End CVS Header */
 
 /*******************************************************************
@@ -122,7 +122,7 @@ CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
   while (!(pCom = CCopasiDataModel::Global->getModel()->createCompartment(nname)))
     {
       i++;
-      nname = name;
+      nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
   std::cout << " *** created Compartment: " << nname << " : " << pCom->getKey() << std::endl;
@@ -214,7 +214,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                   // Yes or Enter
+    case 0:                    // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -226,7 +226,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                   // No or Escape
+    case 1:                    // No or Escape
       break;
     }
 }

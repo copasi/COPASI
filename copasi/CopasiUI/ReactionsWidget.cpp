@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/04/13 12:14:51 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -137,7 +137,7 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
   while (!(pRea = CCopasiDataModel::Global->getModel()->createReaction(nname)))
     {
       i++;
-      nname = name;
+      nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
   std::cout << " *** created Reaction: " << nname << " : " << pRea->getKey() << std::endl;

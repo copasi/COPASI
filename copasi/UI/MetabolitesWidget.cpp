@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.118 $
+   $Revision: 1.119 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/12 10:49:13 $
+   $Date: 2005/04/13 12:14:51 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -276,7 +276,7 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
   while (!(pMetab = CCopasiDataModel::Global->getModel()->createMetabolite(nname, "", 1.0, CMetab::METAB_VARIABLE)))
     {
       i++;
-      nname = name;
+      nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
   std::cout << " *** created Metabolite: " << nname << " : " << pMetab->getKey() << std::endl;
@@ -342,7 +342,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                      // Yes or Enter
+    case 0:                                       // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -354,7 +354,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                      // No or Escape
+    case 1:                                       // No or Escape
       break;
     }
 }
