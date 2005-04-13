@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSelectionWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/19 13:51:21 $
+   $Date: 2005/04/13 16:22:29 $
    End CVS Header */
 
 #include <iostream>
@@ -14,7 +14,8 @@
 
 #include "copasi.h"
 
-CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent , const char* name , WFlags fl): QWidgetStack(parent, name, fl), mpSimpleTree(NULL), mpObjectBrowser(NULL), mpOutputVector(NULL)
+CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent , const char* name , WFlags fl): QWidgetStack(parent, name, fl), mpSimpleTree(NULL), mpObjectBrowser(NULL), mpOutputVector(NULL),
+    mSingleSelect(false), mExpertMode(false)
 {
   this->mpSimpleTree = new CCopasiSimpleSelectionTree(this);
   this->addWidget(this->mpSimpleTree);
