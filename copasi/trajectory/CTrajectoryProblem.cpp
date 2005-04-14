@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/11 23:06:50 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 10:35:47 $
    End CVS Header */
 
 /**
@@ -14,6 +14,7 @@
  *  Created for Copasi by Stefan Hoops 2002
  */
 
+#include <math.h>
 #include <string>
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -274,12 +275,10 @@ bool CTrajectoryProblem::sync()
     setValue("StepSize", Tmp / (C_FLOAT64) getStepNumber());
   else
     {
-      Tmp /= getStepSize();
+      /* Assure that the step size has the appropriate sign. */
+      setValue("StepSize", (Tmp < 0.0) ? - fabs(getStepSize()) : fabs(getStepSize()));
 
-      if (Tmp == (unsigned C_INT32) Tmp)
-        setValue("StepNumber", (unsigned C_INT32) Tmp);
-      else
-        setValue("StepNumber", 1 + (unsigned C_INT32) Tmp);
+      setValue("StepNumber", (unsigned C_INT32) ceil(Tmp / getStepSize()));
     }
 
   return true;
