@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/24 16:15:16 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 10:36:53 $
    End CVS Header */
 
 /********************************************************
@@ -55,7 +55,8 @@ Contact: Please contact lixu1@vt.edu.
  */
 TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
     : CopasiWidget(parent, name, fl),
-    pParent(parent)
+    pParent(parent),
+    mpProblem(NULL)
 {
   if (!name)
     setName("TrajectoryWidget");
@@ -297,9 +298,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
  */
 TrajectoryWidget::~TrajectoryWidget()
 {
-  //  CTrajectoryTask* tt =
-  //    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
-  //  pdelete(tt);
+  pdelete(mpProblem);
 }
 
 //**********************************************************
@@ -308,54 +307,35 @@ TrajectoryWidget::~TrajectoryWidget()
 
 void TrajectoryWidget::StartTimeSlot()
 {
-  C_FLOAT64 start = nStartTime->text().toDouble();
-  C_FLOAT64 end = nEndTime->text().toDouble();
-  //C_FLOAT64 delta = nStepSize->text().toDouble();
-  C_INT32 steps = nStepNumber->text().toInt();
+  mpProblem->setStartTime(nStartTime->text().toDouble());
+  nStepSize->setText(QString::number(mpProblem->getStepSize()));
+  nStepNumber->setText(QString::number(mpProblem->getStepNumber()));
 
-  if (steps <= 0) return;
-  if (end <= start)
-    {
-      nEndTime->setText(QString::number(start + 1.0));
-      nStepSize->setText(QString::number(1.0 / (C_FLOAT64)steps));
-    }
-  else
-    nStepSize->setText(QString::number((end - start) / steps));
+  checkTimeSeries();
 }
+
 void TrajectoryWidget::EndTimeSlot()
 {
-  C_FLOAT64 start = nStartTime->text().toDouble();
-  C_FLOAT64 end = nEndTime->text().toDouble();
-  //C_FLOAT64 delta = nStepSize->text().toDouble();
-  C_INT32 steps = nStepNumber->text().toInt();
+  mpProblem->setEndTime(nEndTime->text().toDouble());
+  nStepSize->setText(QString::number(mpProblem->getStepSize()));
+  nStepNumber->setText(QString::number(mpProblem->getStepNumber()));
 
-  if (steps <= 0) return;
-  if (end <= start)
-    {
-      nStartTime->setText(QString::number(end - 1.0));
-      nStepSize->setText(QString::number(1.0 / (C_FLOAT64)steps));
-    }
-  else
-    nStepSize->setText(QString::number((end - start) / steps));
+  checkTimeSeries();
 }
+
 void TrajectoryWidget::StepsizeSlot()
 {
-  C_FLOAT64 start = nStartTime->text().toDouble();
-  //C_FLOAT64 end = nEndTime->text().toDouble();
-  C_FLOAT64 delta = nStepSize->text().toDouble();
-  C_INT32 steps = nStepNumber->text().toInt();
+  mpProblem->setStepSize(nStepSize->text().toDouble());
+  nStepSize->setText(QString::number(mpProblem->getStepSize()));
+  nStepNumber->setText(QString::number(mpProblem->getStepNumber()));
 
-  nEndTime->setText(QString::number(start + steps*delta));
+  checkTimeSeries();
 }
+
 void TrajectoryWidget::NumStepsSlot()
 {
-  C_FLOAT64 start = nStartTime->text().toDouble();
-  C_FLOAT64 end = nEndTime->text().toDouble();
-  //C_FLOAT64 delta = nStepSize->text().toDouble();
-  C_INT32 steps = nStepNumber->text().toInt();
-
-  if (steps <= 0) return;
-  nStepSize->setText(QString::number((end - start) / (C_FLOAT64)steps));
+  mpProblem->setStepNumber(nStepNumber->text().toULong());
+  nStepSize->setText(QString::number(mpProblem->getStepSize()));
 
   checkTimeSeries();
 }
@@ -511,6 +491,9 @@ void TrajectoryWidget::loadTrajectoryTask()
   CTrajectoryProblem* trajectoryproblem =
     dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
   assert(trajectoryproblem);
+
+  pdelete(mpProblem);
+  mpProblem = new CTrajectoryProblem(*trajectoryproblem);
 
   CTrajectoryMethod* trajectorymethod =
     dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
