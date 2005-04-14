@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:32:53 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 15:50:20 $
    End CVS Header */
 
 /**
@@ -30,6 +30,18 @@
 #include "utilities/COutputHandler.h"
 
 #define XXXX_Reporting
+
+bool fle(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
+{return (d1 <= d2);}
+
+bool fl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
+{return (d1 < d2);}
+
+bool ble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
+{return (d1 >= d2);}
+
+bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
+{return (d1 > d2);}
 
 CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::timeCourse, pParent),
@@ -116,11 +128,30 @@ bool CTrajectoryTask::process()
   pMethod->setProblem(pProblem);
 
   C_FLOAT64 StepSize = pProblem->getStepSize();
+
+  bool (*LE)(const C_FLOAT64 &, const C_FLOAT64 &);
+  bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &);
+  if (StepSize < 0.0)
+    {
+      LE = &ble;
+      L = &bl;
+    }
+  else
+    {
+      LE = &fle;
+      L = &fl;
+    }
+
   C_FLOAT64 ActualStepSize;
   const C_FLOAT64 & Time = mpState->getTime();
   C_FLOAT64 EndTime = pProblem->getEndTime() - StepSize;
   C_FLOAT64 outputStartTime = pProblem->getOutputStartTime();
 
+  if (StepSize == 0.0 && pProblem->getEndTime() != pProblem->getStartTime())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 5, StepSize);
+      return false;
+    }
   bool flagStopped = false;
   C_FLOAT64 handlerFactor = 1000 / (pProblem->getEndTime() - pProblem->getStartTime());
   if (mpProgressHandler) mpProgressHandler->init(1000, "performing simulation...", true);
@@ -140,7 +171,7 @@ bool CTrajectoryTask::process()
       if (mTimeSeriesRequested) mTimeSeries.init(pProblem->getStepNumber(), mpState);
     }
 
-  if ((outputStartTime <= Time) && (mDoOutput))
+  if ((*LE)(outputStartTime, Time) && (mDoOutput))
     {
       mReport.printBody();
       if (mpOutputHandler) mpOutputHandler->doOutput();
@@ -149,9 +180,10 @@ bool CTrajectoryTask::process()
 
   ActualStepSize = pMethod->step(StepSize, mpState);
 
-  if (mpProgressHandler) flagStopped = mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
+  if (mpProgressHandler) flagStopped =
+      mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
 
-  if ((outputStartTime <= Time) && (mDoOutput))
+  if ((*LE)(outputStartTime, Time) && (mDoOutput))
     {
       pProblem->getModel()->setState(mpState);
       pProblem->getModel()->updateRates();
@@ -167,13 +199,13 @@ bool CTrajectoryTask::process()
     }
 #endif // XXXX_Event
 
-  while ((Time < EndTime) && (!flagStopped))
+  while ((*L)(Time, EndTime) && (!flagStopped))
     {
       ActualStepSize = pMethod->step(StepSize);
 
       if (mpProgressHandler) flagStopped = mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
 
-      if ((outputStartTime <= Time) && (mDoOutput))
+      if ((*LE)(outputStartTime, Time) && (mDoOutput))
         {
           pProblem->getModel()->setState(mpState);
           pProblem->getModel()->updateRates();
@@ -189,13 +221,13 @@ bool CTrajectoryTask::process()
 #endif // XXXX_Event
     }
 
-  while ((Time < pProblem->getEndTime()) && (!flagStopped))
+  while ((*L)(Time, pProblem->getEndTime()) && (!flagStopped))
     {
       ActualStepSize = pMethod->step(pProblem->getEndTime() - Time);
 
       if (mpProgressHandler) flagStopped = mpProgressHandler->progress((C_INT32)((Time - pProblem->getStartTime()) * handlerFactor));
 
-      if ((outputStartTime <= Time) && (mDoOutput))
+      if ((*LE)(outputStartTime, Time) && (mDoOutput))
         {
           pProblem->getModel()->setState(mpState);
           pProblem->getModel()->updateRates();
@@ -217,7 +249,7 @@ bool CTrajectoryTask::process()
   pProblem->getModel()->setState(mpState);
   pProblem->getModel()->updateRates();
 
-  if ((outputStartTime <= Time) && (mDoOutput))
+  if ((*LE)(outputStartTime, Time) && (mDoOutput))
     {
       mReport.printFooter();
       if (mpOutputHandler) mpOutputHandler->finish();
@@ -282,12 +314,14 @@ bool CTrajectoryTask::processSimple(bool singleStep) //without output
 
   pMethod->setProblem(pProblem);
 
+  C_FLOAT64 StepSize = pProblem->getEndTime() - pProblem->getInitialState().getTime();
+  bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &) = (StepSize < 0.0) ? &bl : &fl;
+
   bool flagStopped = false;
   C_FLOAT64 handlerFactor = 1000 / (pProblem->getEndTime() - pProblem->getStartTime());
   if (mpProgressHandler) mpProgressHandler->init(1000, "performing simulation...", true);
 
   //first step
-  C_FLOAT64 StepSize = pProblem->getEndTime() - pProblem->getInitialState().getTime();
   pMethod->step(StepSize, &pProblem->getInitialState());
 
   if (mpProgressHandler) flagStopped =
@@ -297,7 +331,7 @@ bool CTrajectoryTask::processSimple(bool singleStep) //without output
   if (singleStep) return false; //end not reached but only one step requested
 
   //more Steps if necessary
-  while ((mpState->getTime() < pProblem->getEndTime()) && (!flagStopped))
+  while ((*L)(mpState->getTime(), pProblem->getEndTime()) && (!flagStopped))
     {
       StepSize = pProblem->getEndTime() - mpState->getTime();
       pMethod->step(StepSize);
