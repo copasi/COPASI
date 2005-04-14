@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/11 20:40:32 $
+   $Date: 2005/04/14 17:35:12 $
    End CVS Header */
 
 /**
@@ -168,6 +168,7 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
   CFunction Function("NoName", &mLoadedFunctions);
   CFunction * pFunction = NULL;
 
+  if (mFilename == "") return NULL;
   CReadConfig inbuf(mFilename);
 
   while (functionName != Function.getObjectName())
