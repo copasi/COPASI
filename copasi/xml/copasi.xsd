@@ -347,6 +347,15 @@
                         <xs:attribute name="maxValue" type="xs:double" use="required" id="copasi.GUI.ListOfSliders.Sliders.maxValue"/>
                         <xs:attribute name="tickNumber" type="xs:positiveInteger" use="optional" default="1000"/>
                         <xs:attribute name="tickFactor" type="xs:positiveInteger" use="optional" default="100"/>
+                        <xs:attribute name="scaling" use="optional" default="linear">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                              <xs:enumeration value="linear"/>
+                              <xs:enumeration value="logarithmic"/>
+                              <xs:enumeration value="undefined"/>
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
