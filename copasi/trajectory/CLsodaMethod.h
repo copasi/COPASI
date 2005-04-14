@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/06 15:54:18 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 15:22:24 $
    End CVS Header */
 
 #ifndef COPASI_CLsodaMethod
 #define COPASI_CLsodaMethod
 
+#include <string>
 #include "utilities/CVector.h"
 
 class CStateX;
@@ -80,6 +81,11 @@ class CLsodaMethod : public CTrajectoryMethod
      *  Maximum number of steps for one call of lsoda.
      */
     C_INT32 mMaxSteps;
+
+    /**
+     *
+     */
+    std::string mErrorMsg;
 
     // the following attributes were public in Clsoda.
   private:

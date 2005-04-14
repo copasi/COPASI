@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/12 20:03:17 $
+   $Date: 2005/04/14 15:22:24 $
    End CVS Header */
 
 /*
@@ -154,11 +154,7 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
   addParameter("LSODA.MaxStepsInternal",
                CCopasiParameter::UINT, (unsigned C_INT32) 10000);
 
-#ifdef COPASI_DEBUG // We only want lsoda to output information while debuging.
-  prfl = 1;
-#else
-  prfl = 0;
-#endif
+  prfl = 1; // The information is printed for an error msg in case of failure.
 
   illin = 0;
   init = 0;
@@ -206,25 +202,25 @@ CLsodaMethod::~CLsodaMethod()
 
 const double CLsodaMethod::step(const double & deltaT)
 {
-  lsoda(mDim,                                    // number of variables
-        mY - 1,                                  // the array of current concentrations
+  lsoda(mDim,                                     // number of variables
+        mY - 1,                                   // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                                  // the current time
-        mTime + deltaT,                          // the final time
-        1,                                       // scalar error control
-        (&mRtol) - 1,                            // relative tolerance array
+        &mTime,                                   // the current time
+        mTime + deltaT,                           // the final time
+        1,                                        // scalar error control
+        (&mRtol) - 1,                             // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,                            // absolute tolerance array
+        (&mAtol) - 1,                             // absolute tolerance array
         // fortran style vector !!!
-        1,                                       // output by overshoot & interpolatation
-        &mLsodaStatus,                           // the state control variable
-        1,                                       // optional inputs are being used
-        2,                                       // jacobian calculated internally
-        0, 0, 0,                                 // options left at default values
-        mMaxSteps,                               // max iterations for each lsoda call
-        0,                                       // another value left at the default
-        mAdams,                                  // max order for Adams method
-        mBDF,                                    // max order for BDF method
+        1,                                        // output by overshoot & interpolatation
+        &mLsodaStatus,                            // the state control variable
+        1,                                        // optional inputs are being used
+        2,                                        // jacobian calculated internally
+        0, 0, 0,                                  // options left at default values
+        mMaxSteps,                                // max iterations for each lsoda call
+        0,                                        // another value left at the default
+        mAdams,                                   // max order for Adams method
+        mBDF,                                     // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -232,7 +228,7 @@ const double CLsodaMethod::step(const double & deltaT)
   if ((mLsodaStatus != 1) && (mLsodaStatus != 2) && (mLsodaStatus != -1))
     {
       lsoda_freevectors(); // freevectors is part of LSODA
-      fatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.c_str());
     }
 
   mpStateX->setTime(mTime);
@@ -248,6 +244,7 @@ const double CLsodaMethod::step(const double & deltaT,
   /* Reset lsoda */
   lsoda_freevectors();
   mLsodaStatus = 1;
+  mErrorMsg = "";
 
   /* Configure lsoda */
   mRtol = * (C_FLOAT64 *) getValue("LSODA.RelativeTolerance");
@@ -317,8 +314,8 @@ void CLsodaMethod::terminate(C_INT32 *istate)
 {
   if ((illin == 5) && prfl)
     {
-      printf("\nlsoda -- repeated occurrence of illegal input\n");
-      printf("         run aborted.. apparent infinite loop");
+      mErrorMsg += StringPrint("\nlsoda -- repeated occurrence of illegal input\n");
+      mErrorMsg += StringPrint("         run aborted.. apparent infinite loop");
     }
   else
     {
@@ -441,7 +438,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
   if (*istate < 1 || *istate > 3)
     {
       if (prfl)
-        printf("\nlsoda -- illegal istate = %ld", *istate);
+        mErrorMsg += StringPrint("\nlsoda -- illegal istate = %ld", *istate);
 
       terminate(istate);
       return;
@@ -449,7 +446,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
   if (itask < 1 || itask > 5)
     {
       if (prfl)
-        printf("\nlsoda -- illegal itask = %ld", itask);
+        mErrorMsg += StringPrint("\nlsoda -- illegal itask = %ld", itask);
 
       terminate(istate);
       return;
@@ -457,7 +454,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
   if (init == 0 && (*istate == 2 || *istate == 3))
     {
       if (prfl)
-        printf("\nlsoda -- istate > 1 but lsoda not initialized");
+        mErrorMsg += StringPrint("\nlsoda -- istate > 1 but lsoda not initialized");
       terminate(istate);
       return;
     }
@@ -471,8 +468,8 @@ void CLsodaMethod::lsoda(C_INT32 neq,
             return;
           if (prfl)
             {
-              printf("\nlsoda -- repeated calls with istate = 1 and tout = t");
-              printf("\n         run aborted.. apparent infinite loop");
+              mErrorMsg += StringPrint("\nlsoda -- repeated calls with istate = 1 and tout = t");
+              mErrorMsg += StringPrint("\n         run aborted.. apparent infinite loop");
             }
           return;
         }
@@ -494,7 +491,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       if (neq <= 0)
         {
           if (prfl)
-            printf("\nlsoda -- neq = %ld is less than 1", neq);
+            mErrorMsg += StringPrint("\nlsoda -- neq = %ld is less than 1", neq);
 
           terminate(istate);
           return;
@@ -502,7 +499,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       if (*istate == 3 && neq > n)
         {
           if (prfl)
-            printf("\nlsoda -- istate = 3 and neq increased");
+            mErrorMsg += StringPrint("\nlsoda -- istate = 3 and neq increased");
           terminate(istate);
           return;
         }
@@ -510,7 +507,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       if (itol < 1 || itol > 4)
         {
           if (prfl)
-            printf("\nlsoda -- itol = %ld illegal", itol);
+            mErrorMsg += StringPrint("\nlsoda -- itol = %ld illegal", itol);
 
           terminate(istate);
           return;
@@ -518,7 +515,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       if (iopt < 0 || iopt > 1)
         {
           if (prfl)
-            printf("\nlsoda -- iopt = %ld illegal", iopt);
+            mErrorMsg += StringPrint("\nlsoda -- iopt = %ld illegal", iopt);
 
           terminate(istate);
           return;
@@ -526,7 +523,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       if (jt == 3 || jt < 1 || jt > 5)
         {
           if (prfl)
-            printf("\nlsoda -- jt = %ld illegal", jt);
+            mErrorMsg += StringPrint("\nlsoda -- jt = %ld illegal", jt);
 
           terminate(istate);
           return;
@@ -539,7 +536,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (_ml < 0 || _ml >= n)
             {
               if (prfl)
-                printf("\nlsoda -- _ml = %ld not between 1 and neq", _ml);
+                mErrorMsg += StringPrint("\nlsoda -- _ml = %ld not between 1 and neq", _ml);
 
               terminate(istate);
               return;
@@ -547,7 +544,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (mu < 0 || mu >= n)
             {
               if (prfl)
-                printf("\nlsoda -- mu = %ld not between 1 and neq", mu);
+                mErrorMsg += StringPrint("\nlsoda -- mu = %ld not between 1 and neq", mu);
 
               terminate(istate);
               return;
@@ -581,7 +578,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (ixpr < 0 || ixpr > 2)
             {
               if (prfl)
-                printf("\nlsoda -- ixpr = %ld is illegal", ixpr);
+                mErrorMsg += StringPrint("\nlsoda -- ixpr = %ld is illegal", ixpr);
 
               terminate(istate);
               return;
@@ -590,7 +587,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (mxstep < 0)
             {
               if (prfl)
-                printf("\nlsoda -- mxstep < 0");
+                mErrorMsg += StringPrint("\nlsoda -- mxstep < 0");
               terminate(istate);
               return;
             }
@@ -600,7 +597,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (mxhnil < 0)
             {
               if (prfl)
-                printf("\nlsoda -- mxhnil < 0");
+                mErrorMsg += StringPrint("\nlsoda -- mxhnil < 0");
               terminate(istate);
               return;
             }
@@ -611,7 +608,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
               if (mxordn < 0)
                 {
                   if (prfl)
-                    printf("\nlsoda -- mxordn = %ld is less than 0", mxordn);
+                    mErrorMsg += StringPrint("\nlsoda -- mxordn = %ld is less than 0", mxordn);
 
                   terminate(istate);
                   return;
@@ -623,7 +620,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
               if (mxords < 0)
                 {
                   if (prfl)
-                    printf("\nlsoda -- mxords = %ld is less than 0", mxords);
+                    mErrorMsg += StringPrint("\nlsoda -- mxords = %ld is less than 0", mxords);
 
                   terminate(istate);
                   return;
@@ -635,9 +632,9 @@ void CLsodaMethod::lsoda(C_INT32 neq,
                 {
                   if (prfl)
                     {
-                      printf("\nlsoda -- tout = %g behind t = %g", tout, *t);
-                      printf("\n         integration direction is given by %g",
-                             h0);
+                      mErrorMsg += StringPrint("\nlsoda -- tout = %g behind t = %g", tout, *t);
+                      mErrorMsg += StringPrint("\n         integration direction is given by %g",
+                                               h0);
                     }
                   terminate(istate);
                   return;
@@ -647,7 +644,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (hmax < 0.)
             {
               if (prfl)
-                printf("\nlsoda -- hmax < 0.");
+                mErrorMsg += StringPrint("\nlsoda -- hmax < 0.");
               terminate(istate);
               return;
             }
@@ -658,7 +655,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (hmin < 0.)
             {
               if (prfl)
-                printf("\nlsoda -- hmin < 0.");
+                mErrorMsg += StringPrint("\nlsoda -- hmin < 0.");
               terminate(istate);
               return;
             }
@@ -684,7 +681,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       if (yh == NULL)
         {
           if (prfl)
-            printf("\nlsoda -- insufficient memory for your problem");
+            mErrorMsg += StringPrint("\nlsoda -- insufficient memory for your problem");
           terminate(istate);
           return;
         }
@@ -696,7 +693,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
         {
           mem_free(yh);
           if (prfl)
-            printf("\nlsoda -- insufficient memory for your problem");
+            mErrorMsg += StringPrint("\nlsoda -- insufficient memory for your problem");
           terminate(istate);
           return;
         }
@@ -709,7 +706,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           mem_free(yh);
           mem_free(wm);
           if (prfl)
-            printf("\nlsoda -- insufficient memory for your problem");
+            mErrorMsg += StringPrint("\nlsoda -- insufficient memory for your problem");
           terminate(istate);
           return;
         }
@@ -721,17 +718,17 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           mem_free(wm);
           mem_free(ewt);
           if (prfl)
-            printf("\nlsoda -- insufficient memory for your problem");
+            mErrorMsg += StringPrint("\nlsoda -- insufficient memory for your problem");
           terminate(istate);
           return;
         }
 
       /*
-        printf("\nLSODA Block B - before acor alloc");
-        printf("\n -  low = %lf, ampl = %lf, dens = %d",
+        mErrorMsg += StringPrint("\nLSODA Block B - before acor alloc");
+        mErrorMsg += StringPrint("\n -  low = %lf, ampl = %lf, dens = %d",
         sparam[24].low, sparam[24].ampl, sparam[24].dens);
-        printf("\nlow = %Fp", &sparam[24].low);
-        printf("\nacor = %Fp", acor);
+        mErrorMsg += StringPrint("\nlow = %Fp", &sparam[24].low);
+        mErrorMsg += StringPrint("\nacor = %Fp", acor);
       */
       acor = (C_FLOAT64 *) mem_malloc((1 + nyh) * sizeof(C_FLOAT64));
       if (acor == NULL)
@@ -741,7 +738,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           mem_free(ewt);
           mem_free(savf);
           if (prfl)
-            printf("\nlsoda -- insufficient memory for your problem");
+            mErrorMsg += StringPrint("\nlsoda -- insufficient memory for your problem");
           terminate(istate);
           return;
         }
@@ -755,7 +752,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           mem_free(savf);
           mem_free(acor);
           if (prfl)
-            printf("\nlsoda -- insufficient memory for your problem");
+            mErrorMsg += StringPrint("\nlsoda -- insufficient memory for your problem");
           terminate(istate);
           return;
         }
@@ -776,7 +773,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (rtoli < 0.)
             {
               if (prfl)
-                printf("\nlsoda -- rtol = %g is less than 0.", rtoli);
+                mErrorMsg += StringPrint("\nlsoda -- rtol = %g is less than 0.", rtoli);
               terminate(istate);
               freevectors();
               return;
@@ -784,7 +781,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (atoli < 0.)
             {
               if (prfl)
-                printf("\nlsoda -- atol = %g is less than 0.", atoli);
+                mErrorMsg += StringPrint("\nlsoda -- atol = %g is less than 0.", atoli);
               terminate(istate);
               freevectors();
               return;
@@ -817,7 +814,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if ((tcrit - tout) * (tout - *t) < 0.)
             {
               if (prfl)
-                printf("\nlsoda -- itask = 4 or 5 and tcrit behind tout");
+                mErrorMsg += StringPrint("\nlsoda -- itask = 4 or 5 and tcrit behind tout");
               terminate(istate);
               freevectors();
               return;
@@ -862,7 +859,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
 
             {
               if (prfl)
-                printf("\nlsoda -- ewt[%ld] = %g <= 0.", i, ewt[i]);
+                mErrorMsg += StringPrint("\nlsoda -- ewt[%ld] = %g <= 0.", i, ewt[i]);
 
               terminate(istate);
               return;
@@ -901,7 +898,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (tdist < 2. * DBL_EPSILON * w0)
             {
               if (prfl)
-                printf("\nlsoda -- tout too close to t to start integration\n ");
+                mErrorMsg += StringPrint("\nlsoda -- tout too close to t to start integration\n ");
               terminate(istate);
               freevectors();
               return;
@@ -964,9 +961,9 @@ void CLsodaMethod::lsoda(C_INT32 neq,
               if (iflag != 0)
                 {
                   if (prfl)
-                    printf("\nlsoda -- trouble from intdy,"
-                           " itask = %ld, tout = %g",
-                           itask, tout);
+                    mErrorMsg += StringPrint("\nlsoda -- trouble from intdy,"
+                                             " itask = %ld, tout = %g",
+                                             itask, tout);
                   terminate(istate);
                   freevectors();
                   return;
@@ -985,8 +982,8 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if ((tp - tout) * h > 0.)
             {
               if (prfl)
-                printf("\nlsoda -- itask = %ld and tout behind tcur - hu",
-                       itask);
+                mErrorMsg += StringPrint("\nlsoda -- itask = %ld and tout behind tcur - hu",
+                                         itask);
 
               terminate(istate);
               freevectors();
@@ -1001,7 +998,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if ((tn - tcrit) * h > 0.)
             {
               if (prfl)
-                printf("\nlsoda -- itask = 4 or 5 and tcrit behind tcur");
+                mErrorMsg += StringPrint("\nlsoda -- itask = 4 or 5 and tcrit behind tcur");
               terminate(istate);
               freevectors();
               return;
@@ -1009,7 +1006,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if ((tcrit - tout) * h < 0.)
             {
               if (prfl)
-                printf("\nlsoda -- itask = 4 or 5 and tcrit behind tout");
+                mErrorMsg += StringPrint("\nlsoda -- itask = 4 or 5 and tcrit behind tout");
               terminate(istate);
               freevectors();
               return;
@@ -1020,9 +1017,9 @@ void CLsodaMethod::lsoda(C_INT32 neq,
               if (iflag != 0)
                 {
                   if (prfl)
-                    printf("\nlsoda -- trouble from intdy,"
-                           " itask = %ld, tout = %g",
-                           itask, tout);
+                    mErrorMsg += StringPrint("\nlsoda -- trouble from intdy,"
+                                             " itask = %ld, tout = %g",
+                                             itask, tout);
                   terminate(istate);
                   freevectors();
                   return;
@@ -1040,7 +1037,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
               if ((tn - tcrit) * h > 0.)
                 {
                   if (prfl)
-                    printf("\nlsoda -- itask = 4 or 5 and tcrit behind tcur");
+                    mErrorMsg += StringPrint("\nlsoda -- itask = 4 or 5 and tcrit behind tcur");
                   terminate(istate);
                   freevectors();
                   return;
@@ -1082,8 +1079,8 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if ((nst - nslast) >= mxstep)
             {
               if (prfl)
-                printf("\nlsoda -- %ld steps taken before reaching tout",
-                       mxstep);
+                mErrorMsg += StringPrint("\nlsoda -- %ld steps taken before reaching tout",
+                                         mxstep);
 
               *istate = -1;
               terminate2(y, t);
@@ -1095,7 +1092,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
               if (ewt[i] <= 0.)
                 {
                   if (prfl)
-                    printf("\nlsoda -- ewt[%ld] = %g <= 0.", i, ewt[i]);
+                    mErrorMsg += StringPrint("\nlsoda -- ewt[%ld] = %g <= 0.", i, ewt[i]);
 
                   *istate = -6;
                   terminate2(y, t);
@@ -1112,9 +1109,9 @@ void CLsodaMethod::lsoda(C_INT32 neq,
             {
               if (prfl)
                 {
-                  printf("\nlsoda -- at start of problem, too much accuracy");
-                  printf("\n         requested for precision of machine,");
-                  printf("\n         suggested scaling factor = %g", tolsf);
+                  mErrorMsg += StringPrint("\nlsoda -- at start of problem, too much accuracy");
+                  mErrorMsg += StringPrint("\n         requested for precision of machine,");
+                  mErrorMsg += StringPrint("\n         suggested scaling factor = %g", tolsf);
                 }
               terminate(istate);
               freevectors();
@@ -1122,9 +1119,9 @@ void CLsodaMethod::lsoda(C_INT32 neq,
             }
           if (prfl)
             {
-              printf("\nlsoda -- at t = %g, too much accuracy requested", *t);
-              printf("\n         for precision of machine, suggested");
-              printf("\n         scaling factor = %g", tolsf);
+              mErrorMsg += StringPrint("\nlsoda -- at t = %g, too much accuracy requested", *t);
+              mErrorMsg += StringPrint("\n         for precision of machine, suggested");
+              mErrorMsg += StringPrint("\n         scaling factor = %g", tolsf);
             }
           *istate = -2;
           terminate2(y, t);
@@ -1137,18 +1134,18 @@ void CLsodaMethod::lsoda(C_INT32 neq,
             {
               if (prfl)
                 {
-                  printf("\nlsoda -- warning..internal t = %g and h = %g are",
-                         tn, h);
-                  printf("\n         such that in the machine,"
-                         " t + h = t on the next step");
-                  printf("\n         solver will continue anyway.");
+                  mErrorMsg += StringPrint("\nlsoda -- warning..internal t = %g and h = %g are",
+                                           tn, h);
+                  mErrorMsg += StringPrint("\n         such that in the machine,"
+                                           " t + h = t on the next step");
+                  mErrorMsg += StringPrint("\n         solver will continue anyway.");
                 }
               if ((nhnil == mxhnil) && prfl)
                 {
-                  printf("\nlsoda -- above warning has been issued %ld times,",
-                         nhnil);
-                  printf("\n         it will not be issued again"
-                         " for this problem");
+                  mErrorMsg += StringPrint("\nlsoda -- above warning has been issued %ld times,",
+                                           nhnil);
+                  mErrorMsg += StringPrint("\n         it will not be issued again"
+                                           " for this problem");
                 }
             }
         }
@@ -1166,9 +1163,9 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       */
       if ((ixpr == 2) && prfl)
         {
-          printf("\nmeth= %ld,   order= %ld,   nfe= %ld,   nje= %ld",
-                 meth, nq, nfe, nje);
-          printf("\nt= %20.15e,   h= %20.15e,   nst=%ld", tn, h, nst);
+          mErrorMsg += StringPrint("\nmeth= %ld,   order= %ld,   nfe= %ld,   nje= %ld",
+                                   meth, nq, nfe, nje);
+          mErrorMsg += StringPrint("\nt= %20.15e,   h= %20.15e,   nst=%ld", tn, h, nst);
         }
 
       if (kflag == 0)
@@ -1193,16 +1190,16 @@ void CLsodaMethod::lsoda(C_INT32 neq,
               if (ixpr && prfl)
                 {
                   if (meth == 2)
-                    printf("\nlsoda -- a switch to the stiff"
-                           " method has occurred");
+                    mErrorMsg += StringPrint("\nlsoda -- a switch to the stiff"
+                                             " method has occurred");
 
                   if (meth == 1)
-                    printf("\nlsoda -- a switch to the nonstiff method"
-                           " has occurred");
+                    mErrorMsg += StringPrint("\nlsoda -- a switch to the nonstiff method"
+                                             " has occurred");
 
-                  printf("\n         at t = %g, tentative step size h = %g,"
-                         " step nst = %ld",
-                         tn, h, nst);
+                  mErrorMsg += StringPrint("\n         at t = %g, tentative step size h = %g,"
+                                           " step nst = %ld",
+                                           tn, h, nst);
                 }
             }         /*   end if (meth != mused)   */
           /*
@@ -1292,13 +1289,13 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       if (kflag == -1 || kflag == -2)
         {
           if (prfl)
-            printf("\nlsoda -- at t = %g and step size h = %g, the", tn, h);
+            mErrorMsg += StringPrint("\nlsoda -- at t = %g and step size h = %g, the", tn, h);
           if (kflag == -1)
             {
               if (prfl)
                 {
-                  printf("\n         error test failed repeatedly or");
-                  printf("\n         with fabs(h) = hmin");
+                  mErrorMsg += StringPrint("\n         error test failed repeatedly or");
+                  mErrorMsg += StringPrint("\n         with fabs(h) = hmin");
                 }
               *istate = -4;
             }
@@ -1306,9 +1303,9 @@ void CLsodaMethod::lsoda(C_INT32 neq,
             {
               if (prfl)
                 {
-                  printf("\n         corrector convergence "
-                         " failed repeatedly or");
-                  printf("\n         with fabs(h) = hmin");
+                  mErrorMsg += StringPrint("\n         corrector convergence "
+                                           " failed repeatedly or");
+                  mErrorMsg += StringPrint("\n         with fabs(h) = hmin");
                 }
               *istate = -5;
             }
@@ -1779,7 +1776,7 @@ void CLsodaMethod::intdy(C_FLOAT64 t,
   if (k < 0 || k > nq)
     {
       if (prfl)
-        printf("\nintdy -- k = %ld illegal", k);
+        mErrorMsg += StringPrint("\nintdy -- k = %ld illegal", k);
 
       *iflag = -1;
       return;
@@ -1789,8 +1786,8 @@ void CLsodaMethod::intdy(C_FLOAT64 t,
     {
       if (prfl)
         {
-          printf("\nintdy -- t = %g illegal", t);
-          printf("\n         t not in interval tcur - hu to tcur");
+          mErrorMsg += StringPrint("\nintdy -- t = %g illegal", t);
+          mErrorMsg += StringPrint("\n         t not in interval tcur - hu to tcur");
         }
       *iflag = -2;
       return;
@@ -2024,7 +2021,7 @@ void CLsodaMethod::prja(C_FLOAT64 *y)
   if (miter != 2)
     {
       if (prfl)
-        printf("\nprja -- miter != 2");
+        mErrorMsg += StringPrint("\nprja -- miter != 2");
       return;
     }
 
@@ -2330,7 +2327,7 @@ void CLsodaMethod::solsy(C_FLOAT64 * y)
   if (miter != 2)
     {
       if (prfl)
-        printf("\nsolsy -- miter != 2");
+        mErrorMsg += StringPrint("\nsolsy -- miter != 2");
       return;
     }
 
@@ -2631,7 +2628,7 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::eval(C_FLOAT64 t,
-                        C_FLOAT64 * y,                     /* Fortran style vector */
+                        C_FLOAT64 * y,                      /* Fortran style vector */
                         C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);

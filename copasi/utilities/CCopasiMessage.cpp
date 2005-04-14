@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/12 15:57:04 $
+   $Date: 2005/04/14 15:22:24 $
    End CVS Header */
 
 // CCopasiMessage
@@ -190,25 +190,25 @@ void CCopasiMessage::handler(const bool & _throw)
       break;
 
     case TRACE:
-      mText = ">TRACE    ";
+      mText = ">TRACE ";
       mText += TimeStamp();
       mText += "<\n";
       break;
 
     case WARNING:
-      mText = ">WARNING  ";
+      mText = ">WARNING ";
       mText += TimeStamp();
       mText += "<\n";
       break;
 
     case ERROR:
-      mText = ">ERROR    ";
+      mText = ">ERROR ";
       mText += TimeStamp();
       mText += "<\n";
       break;
 
     case EXCEPTION:
-      mText = ">EXCEPTION";
+      mText = ">EXCEPTION ";
       mText += TimeStamp();
       mText += "<\n";
       break;

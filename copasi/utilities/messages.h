@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/12 12:12:01 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 15:22:24 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -62,7 +62,11 @@ MESSAGES Messages[] =
      "applicable, since reversible reactions exists."},
     {MCTrajectoryMethod + 3, "CTrajectoryMethod (3): Hybrid simulation not "
      "applicable, since more than one compartment is involved."},
-    {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): CHybridMethod.initMethod(): Error: mLowerStochLimit ('%d') is greater than mUpperStochLimit ('%d')."},
+    {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): CHybridMethod.initMethod(): "
+     "Error: mLowerStochLimit ('%d') is greater than mUpperStochLimit ('%d')."},
+    {MCTrajectoryMethod + 5, "CTrajectoryMethod (5): Invalid step size = '%f'."},
+    {MCTrajectoryMethod + 6, "CTrajectoryMethod (6): Deterministic integration failed. "
+     "LSODA reported: %s \n\nPlease see result for indications of numerical instability."},
 
     // XML Package
     {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
