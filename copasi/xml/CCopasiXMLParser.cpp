@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/13 10:36:30 $
+   $Author: ssahle $ 
+   $Date: 2005/04/14 10:50:11 $
    End CVS Header */
 
 /**
@@ -4184,6 +4184,11 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
       else if (sType == "string")
         {
           type = CCopasiParameter::STRING;
+          pValue = &sValue;
+        }
+      else if (sType == "cn")
+        {
+          type = CCopasiParameter::CN;
           pValue = &sValue;
         }
       else
