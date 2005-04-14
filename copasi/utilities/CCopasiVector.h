@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/12 10:29:30 $
+   $Date: 2005/04/14 17:38:00 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -168,7 +168,9 @@ template < class CType > class CCopasiVector:
 
       virtual bool remove(CCopasiObject * pObject)
       {
-        const unsigned C_INT32 & index = getIndex(pObject);
+        const unsigned C_INT32 index = getIndex(pObject);
+        if (index == C_INVALID_INDEX) return false;
+
         iterator Target = this->begin() + index;
         assert(index < ((std::vector< CType * > *)this)->size());
 
