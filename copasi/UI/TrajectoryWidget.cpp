@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.99 $
+   $Revision: 1.100 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 15:22:54 $
+   $Author: ssahle $ 
+   $Date: 2005/04/14 23:45:15 $
    End CVS Header */
 
 /********************************************************
@@ -430,6 +430,12 @@ void TrajectoryWidget::runTrajectoryTask()
         {
           QMessageBox::information (NULL, "Stochastic simulation not possible",
                                     FROM_UTF8(message));
+          return;
+        }
+      if (trajectoryproblem->getEndTime() < trajectoryproblem->getStartTime())
+        {
+          QMessageBox::information (NULL, "Stochastic simulation not possible",
+                                    "Backwards simulation is not possible with this method.");
           return;
         }
     }
