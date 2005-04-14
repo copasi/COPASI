@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/14 15:22:24 $
+   $Date: 2005/04/14 16:12:57 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -92,6 +92,7 @@ MESSAGES Messages[] =
 
     // SBML
     {MCSBML + 1, "SBML (1): File '%s' already exists."},
+    {MCSBML + 2, "SBML (2): The SBML document contains no model."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
