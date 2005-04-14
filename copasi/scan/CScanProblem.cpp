@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/08 12:59:30 $
+   $Date: 2005/04/14 10:48:24 $
    End CVS Header */
 
 /**
@@ -192,9 +192,9 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, uns
   tmp->addParameter("Type", CCopasiParameter::UINT, (unsigned C_INT32) type);
 
   if (obj)
-    tmp->addParameter("Object", CCopasiParameter::STRING, obj->getCN());
+    tmp->addParameter("Object", CCopasiParameter::CN, obj->getCN());
   else
-    tmp->addParameter("Object", CCopasiParameter::STRING, std::string(""));
+    tmp->addParameter("Object", CCopasiParameter::CN, CCopasiObjectName(""));
 
   //create specific parameters
   if ((type == SCAN_LINEAR) || (type == SCAN_RANDOM))
