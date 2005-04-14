@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/02 17:50:43 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 15:47:39 $
    End CVS Header */
 
 #include <qprogressdialog.h>
@@ -83,8 +83,11 @@ bool CProgressBar::progress(C_INT32 steps)
 
 bool CProgressBar::finish()
 {
-  mpWidget->setProgress(mpWidget->totalSteps());
-  mpWidget->reset();
+  if (mpWidget)
+    {
+      mpWidget->setProgress(mpWidget->totalSteps());
+      mpWidget->reset();
+    }
   //std::cout << "ProgressBar: finish" << std::endl;
   return true;
 }
