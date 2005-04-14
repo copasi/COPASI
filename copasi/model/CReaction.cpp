@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.112 $
+   $Revision: 1.113 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/12 12:25:39 $
+   $Date: 2005/04/14 17:37:17 $
    End CVS Header */
 
 // CReaction
@@ -53,7 +53,7 @@ CReaction::CReaction(const std::string & name,
 {
   CONSTRUCTOR_TRACE;
   initObjects();
-  setFunction("Constant flux (irreversible)");
+  setFunction(CCopasiDataModel::Global->mpUndefined);
 }
 
 CReaction::CReaction(const CReaction & src,
@@ -206,9 +206,10 @@ bool CReaction::setFunction(const std::string & functionName)
 
 bool CReaction::setFunction(CFunction * pFunction)
 {
-  if (!pFunction) fatalError();
-
-  mpFunction = pFunction;
+  if (!pFunction)
+    mpFunction = CCopasiDataModel::Global->mpUndefined;
+  else
+    mpFunction = pFunction;
 
   mMap.initializeFromFunctionParameters(mpFunction->getParameters());
   initializeMetaboliteNameMap(); //needs to be called before initializeParamters();
