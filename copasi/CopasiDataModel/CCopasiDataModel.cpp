@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/13 11:30:59 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 20:19:41 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,6 +23,7 @@
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAMethod.h"
 #include "report/CReportDefinitionVector.h"
+#include "report/CKeyFactory.h"
 #include "plot/CPlotSpecification.h"
 #include "xml/CCopasiXML.h"
 #include "sbml/SBMLImporter.h"
@@ -81,6 +82,10 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
                         COPASI_VERSION_MINOR,
                         COPASI_VERSION_BUILD);
+
+  mpUndefined = new CFunction("undefined");
+  GlobalKeys.remove(mpUndefined->getKey());
+  GlobalKeys.addFix("UndefinedFunction", mpUndefined);
 
   mpFunctionList->load();
   newModel();

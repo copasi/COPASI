@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/12 15:09:13 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 20:19:41 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -14,6 +14,7 @@ class CModel;
 class CReportDefinitionVector;
 class CPlotSpecification;
 class CFunctionDB;
+class CFunction;
 class SCopasiXMLGUI;
 
 // :TODO: remove
@@ -93,6 +94,7 @@ class CCopasiDataModel
 
   public:
     static CCopasiDataModel * Global;
+    CFunction * mpUndefined;
 
     /**
      *  This is a hack at the moment to be able to read old configuration files
