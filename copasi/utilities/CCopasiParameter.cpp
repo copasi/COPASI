@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/18 20:46:37 $
+   $Author: ssahle $ 
+   $Date: 2005/04/14 10:51:28 $
    End CVS Header */
 
 /**
@@ -32,6 +32,7 @@ const std::string CCopasiParameter::TypeName[] =
     "bool",
     "group",
     "string",
+    "common name",
     ""
   };
 
@@ -44,6 +45,7 @@ const char* CCopasiParameter::XMLType[] =
     "bool",
     "group",
     "string",
+    "cn",
     NULL
   };
 
@@ -70,7 +72,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                      CCopasiObject::Container |
                      ((type == DOUBLE || type == UDOUBLE) ? CCopasiObject::ValueDbl :
                       ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
-                       ((type == STRING) ? CCopasiObject::ValueString :
+                       ((type == STRING || type == CN) ? CCopasiObject::ValueString :
                         (type == BOOL) ? CCopasiObject::ValueBool : 0)))),
     mKey(GlobalKeys.add(objectType, this)),
     mType(type),
@@ -133,6 +135,12 @@ bool CCopasiParameter::isValidValue(const std::string & C_UNUSED(value)) const
     return true;
   }
 
+bool CCopasiParameter::isValidValue(const CCopasiObjectName & C_UNUSED(value)) const
+  {
+    if (mType != CCopasiParameter::CN) return false;
+    return true;
+  }
+
 bool CCopasiParameter::isValidValue(const CCopasiParameterGroup::parameterGroup & C_UNUSED(value)) const
   {
     if (mType != CCopasiParameter::GROUP) return false;
@@ -184,6 +192,14 @@ void * CCopasiParameter::createValue(const void * pValue)
       addObjectReference("Value", * (std::string *) mpValue, CCopasiObject::ValueString);
       break;
 
+    case CCopasiParameter::CN:
+      if (pValue)
+        mpValue = new CRegisteredObjectName(* (CRegisteredObjectName *) pValue);
+      else mpValue = new CRegisteredObjectName;
+      mSize = sizeof(std::string);
+      addObjectReference("Value", * (std::string *) mpValue, CCopasiObject::ValueString);
+      break;
+
     case CCopasiParameter::GROUP:
     case CCopasiParameter::INVALID:
       mpValue = NULL;
@@ -219,6 +235,10 @@ void CCopasiParameter::deleteValue()
 
     case CCopasiParameter::STRING:
       delete (std::string *) mpValue;
+      break;
+
+    case CCopasiParameter::CN:
+      delete (CRegisteredObjectName *) mpValue;
       break;
 
     default:

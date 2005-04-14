@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/18 20:46:37 $
+   $Author: ssahle $ 
+   $Date: 2005/04/14 10:51:28 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "report/CCopasiContainer.h"
+#include "report/CCopasiObjectName.h"
 
 class CCopasiParameterGroup;
 
@@ -39,6 +40,7 @@ class CCopasiParameter: public CCopasiContainer
       BOOL,
       GROUP,
       STRING,
+      CN,
       INVALID
     };
 
@@ -203,6 +205,13 @@ class CCopasiParameter: public CCopasiContainer
      * @return bool isValidValue
      */
     bool isValidValue(const std::string & value) const;
+
+    /**
+     * Check whether the value corresponds to the type
+     * @param const CRegisteredObjectName & value
+     * @return bool isValidValue
+     */
+    bool isValidValue(const CCopasiObjectName & value) const;
 
     /**
      * Check whether the value corresponds to the type
