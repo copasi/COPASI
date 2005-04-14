@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/14 10:50:11 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 17:40:02 $
    End CVS Header */
 
 /**
@@ -344,7 +344,8 @@ bool CCopasiXML::saveModel()
               endSaveElement("ListOfConstants");
             }
 
-          if (&pReaction->getFunction())
+          if (&pReaction->getFunction() !=
+              dynamic_cast<CFunction *>(GlobalKeys.get("UndefinedFunction")))
             {
               Attr.erase();
               Attr.add("function", pReaction->getFunction().getKey());
@@ -902,7 +903,9 @@ bool CCopasiXML::buildFunctionList()
     {
       CFunction * pFunction =
         const_cast< CFunction * >(&mpModel->getReactions()[i]->getFunction());
-      if (pFunction) FunctionMap[pFunction->getKey()] = pFunction;
+      if (pFunction &&
+          pFunction != GlobalKeys.get("UndefinedFunction"))
+        FunctionMap[pFunction->getKey()] = pFunction;
     }
 
   CCopasiVectorN< CFunction > * pFunctionList = new CCopasiVectorN< CFunction >;
