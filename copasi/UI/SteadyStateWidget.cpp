@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/24 16:15:16 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 15:46:49 $
    End CVS Header */
 
 /********************************************************
@@ -321,8 +321,17 @@ void SteadyStateWidget::runSteadyStateTask()
 
   try
     {
-      mSteadyStateTask->process();
-      if (setInitialState->isChecked())
+      if (!mSteadyStateTask->process())
+        {
+          tmpBar->finish();
+          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+            {
+              tmpBar->finish();
+              QMessageBox::warning(this, "Simulation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+              CCopasiMessage::clearDeque();
+            }
+        }
+      else if (setInitialState->isChecked())
         {
           const CState *currentState = mSteadyStateTask->getState();
           if (currentState)
@@ -332,13 +341,13 @@ void SteadyStateWidget::runSteadyStateTask()
 
   catch (CCopasiException Exception)
     {
-      QMessageBox mb("Copasi",
-                     "Could not find a Steady State",
-                     QMessageBox::NoIcon,
-                     QMessageBox::Ok | QMessageBox::Escape,
-                     QMessageBox::NoButton,
-                     QMessageBox::NoButton);
-      mb.exec();
+      tmpBar->finish();
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          tmpBar->finish();
+          QMessageBox::warning(this, "Simulation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
     }
 
   tmpBar->finish(); pdelete(tmpBar);
