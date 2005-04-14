@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/22 17:24:14 $
+   $Author: shoops $ 
+   $Date: 2005/04/14 11:52:15 $
    End CVS Header */
 
 #include <algorithm>
@@ -270,7 +270,7 @@ CNewtonMethod::processInternal()
         }
     }
 
-  if (false /*mUseBackIntegration*/) //TODO:disabled at the moment
+  if (mUseBackIntegration)
     {
       for (EndTime = -1; EndTime > -1.0e10; EndTime *= 10)
         {
