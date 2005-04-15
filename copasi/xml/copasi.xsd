@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2005 sp2 U (http://www.altova.com) by Stefan Hoops (VBI) -->
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Stefan Hoops (VBI) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
   <xs:element name="COPASI" id="copasi.COPASI">
     <xs:annotation>
@@ -164,20 +164,28 @@
             <xs:attribute name="timeUnit" use="required" id="copasi.Model.timeUnit">
               <xs:simpleType>
                 <xs:restriction base="xs:string">
-                  <xs:enumeration value="s"/>
-                  <xs:enumeration value="m"/>
-                  <xs:enumeration value="h"/>
                   <xs:enumeration value="d"/>
+                  <xs:enumeration value="h"/>
+                  <xs:enumeration value="m"/>
+                  <xs:enumeration value="s"/>
+                  <xs:enumeration value="ms"/>
+                  <xs:enumeration value="µs"/>
+                  <xs:enumeration value="ns"/>
+                  <xs:enumeration value="ps"/>
+                  <xs:enumeration value="fs"/>
                 </xs:restriction>
               </xs:simpleType>
             </xs:attribute>
             <xs:attribute name="volumeUnit" use="required" id="copasi.Model.volumeUnit">
               <xs:simpleType>
                 <xs:restriction base="xs:string">
+                  <xs:enumeration value="m³"/>
                   <xs:enumeration value="l"/>
                   <xs:enumeration value="ml"/>
-                  <xs:enumeration value="microl"/>
+                  <xs:enumeration value="µl"/>
                   <xs:enumeration value="nl"/>
+                  <xs:enumeration value="pl"/>
+                  <xs:enumeration value="fl"/>
                 </xs:restriction>
               </xs:simpleType>
             </xs:attribute>
@@ -186,8 +194,10 @@
                 <xs:restriction base="xs:string">
                   <xs:enumeration value="Mol"/>
                   <xs:enumeration value="mMol"/>
-                  <xs:enumeration value="microMol"/>
+                  <xs:enumeration value="µMol"/>
                   <xs:enumeration value="nMol"/>
+                  <xs:enumeration value="pMol"/>
+                  <xs:enumeration value="fMol"/>
                   <xs:enumeration value="#"/>
                 </xs:restriction>
               </xs:simpleType>
@@ -208,17 +218,7 @@
                     <xs:element name="Problem">
                       <xs:complexType>
                         <xs:complexContent>
-                          <xs:extension base="cPARAMETER_LIST">
-                            <xs:sequence>
-                              <xs:element name="InitialState" id="copasiTask.Problem.InitialState" minOccurs="0">
-                                <xs:complexType>
-                                  <xs:simpleContent>
-                                    <xs:extension base="cSTATE_TYPE"/>
-                                  </xs:simpleContent>
-                                </xs:complexType>
-                              </xs:element>
-                            </xs:sequence>
-                          </xs:extension>
+                          <xs:extension base="cPARAMETER_LIST"/>
                         </xs:complexContent>
                       </xs:complexType>
                       <xs:unique name="ProblemParameterName">
@@ -352,7 +352,6 @@
                             <xs:restriction base="xs:string">
                               <xs:enumeration value="linear"/>
                               <xs:enumeration value="logarithmic"/>
-                              <xs:enumeration value="undefined"/>
                             </xs:restriction>
                           </xs:simpleType>
                         </xs:attribute>
@@ -459,10 +458,10 @@
   </xs:complexType>
   <xs:complexType name="cFUNCTION_CALL" id="copasi.FUNCTION_CALL">
     <xs:sequence>
-      <xs:element name="ListOfCallParameters" id="copasi.FUNCTION.ListOfCallParameters">
+      <xs:element name="ListOfCallParameters" id="copasi.FUNCTION.ListOfCallParameters" minOccurs="0">
         <xs:complexType mixed="true">
           <xs:sequence>
-            <xs:element name="CallParameter" type="cFUNCTION_CALL_PARAMETER" id="copasi.FUNCTION_CALL.ListOfCallParameters.CallParameter" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="CallParameter" type="cFUNCTION_CALL_PARAMETER" id="copasi.FUNCTION_CALL.ListOfCallParameters.CallParameter" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
         <xs:unique name="CallParameterName">
