@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/AboutDialog.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/12/22 13:51:06 $
+   $Author: shoops $ 
+   $Date: 2005/04/15 15:16:47 $
    End CVS Header */
 
 #include "AboutDialog.h"
@@ -16,7 +16,38 @@
 #include "copasi.h"
 #include "icons/copasi_beta_background.xpm"
 
-const char* AboutDialog::text = "COPASI is a simulator for biochemical networks. It is a joint project by the Mendes and Kummer groups at VBI and EML Research, respectively.\n\nThis version of COPASI is a test version. Most likely a new one has already been released and you should download it from www.copasi.org.\nPlease report errors to bugs@copasi.org .\n\n\n\nCOPASI is provided \"AS IS\" without warranty of any kind, either express or implied, including but not limited to the implied warranties of merchantability and fitness for a particular purpose. In no event shall the Authors be liable for any damages whatsoever including direct, indirect, incidental, consequential, loss of business profits or special damages, even if the Authors have been advised of the possibility of such damages.\n\nThe following software and algorithms are being used by Copasi:\n\n- Qt3 GUI framework\n- QWT 4.2rc2 plotting framework\n- Expat XML parser\n- libsbml 2.2.0\n- CLAPACK\n- LSODA from ODEPACK";
+const char* AboutDialog::text =
+  "COPASI is a simulator for biochemical networks. It is a joint project "
+  "by the Mendes and Kummer groups at VBI and EML Research, "
+  "respectively.\n"
+  "\n"
+  "This version of COPASI is a test version. Most likely a new one has "
+  "already been released and you should download it from "
+  "www.copasi.org.\n"
+  "\n"
+  "Please report errors to bugs@copasi.org.\n"
+  "\n"
+  "\n"
+  "\n"
+  "COPASI is provided \"AS IS\" without warranty of any kind, either "
+  "express or implied, including but not limited to the implied "
+  "warranties of merchantability and fitness for a particular purpose. In "
+  "no event shall the Authors be liable for any damages whatsoever "
+  "including direct, indirect, incidental, consequential, loss of "
+  "business profits or special damages, even if the Authors have been "
+  "advised of the possibility of such damages.\n"
+  "\n"
+  "The following software and algorithms are being used by Copasi:\n"
+  "\n"
+  "- Qt3 GUI framework\n"
+  "- QWT 4.2.0 plotting framework\n"
+  "- Expat 1.95.7 XML parser\n"
+  "- libsbml 2.2.0\n"
+  "- CLAPACK 3.0 or LAPACK 3.0\n"
+  "- LSODA from ODEPACK\n"
+  "- Mersenne Twister random number generator,\n"
+  "   Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura"
+;
 
 AboutDialog::AboutDialog(QWidget* parent): QDialog(parent), closeButton(NULL), textEdit(NULL), backgroundPixmap(NULL), mainLayout(NULL)
 {
