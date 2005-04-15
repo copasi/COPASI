@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/19 02:01:48 $
+   $Author: ssahle $ 
+   $Date: 2005/04/15 11:16:08 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,6 +18,7 @@
 #define COPASI_CReport
 
 #include "CCopasiContainer.h"
+#include "CCopasiObjectName.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -101,7 +102,7 @@ class CReport : public CCopasiContainer
     void generateObjectsFromName(
       const std::vector< CCopasiContainer * > * pListOfContainer,
       std::vector<CCopasiObject*> & objectList,
-      std::vector<CCopasiObjectName>* nameVector);
+      const std::vector<CRegisteredObjectName>* nameVector);
 
     /**
      * sets the reference to the report

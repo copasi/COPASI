@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 15:26:37 $
+   $Date: 2005/04/15 11:16:08 $
    End CVS Header */
 
 /****************************************************************************
@@ -41,9 +41,9 @@ class CReportDefinition : public CCopasiObject
     std::string mComment;
     CCopasiTask::Type mTaskType;
 
-    std::vector<CCopasiObjectName> mHeaderVector;
-    std::vector<CCopasiObjectName> mBodyVector;
-    std::vector<CCopasiObjectName> mFooterVector;
+    std::vector<CRegisteredObjectName> mHeaderVector;
+    std::vector<CRegisteredObjectName> mBodyVector;
+    std::vector<CRegisteredObjectName> mFooterVector;
 
     CCopasiStaticString mSeparator;
     bool mTable;
@@ -91,17 +91,17 @@ class CReportDefinition : public CCopasiObject
     /**
      *gets the body in the report tag
      */
-    std::vector<CCopasiObjectName>* getBodyAddr();
+    std::vector<CRegisteredObjectName>* getBodyAddr();
 
     /**
      *gets the header in the report tag
      */
-    std::vector<CCopasiObjectName>* getHeaderAddr();
+    std::vector<CRegisteredObjectName>* getHeaderAddr();
 
     /**
      *gets the footer in the report tag
      */
-    std::vector<CCopasiObjectName>* getFooterAddr();
+    std::vector<CRegisteredObjectName>* getFooterAddr();
 
     /**
      * This adds header and body entries for one table element 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:39:58 $
+   $Date: 2005/04/15 11:16:08 $
    End CVS Header */
 
 /**
@@ -58,13 +58,13 @@ void CReportDefinition::cleanup()
   mFooterVector.clear();
 }
 
-std::vector<CCopasiObjectName>* CReportDefinition::getBodyAddr()
+std::vector<CRegisteredObjectName>* CReportDefinition::getBodyAddr()
 {return &mBodyVector;}
 
-std::vector<CCopasiObjectName>* CReportDefinition::getHeaderAddr()
+std::vector<CRegisteredObjectName>* CReportDefinition::getHeaderAddr()
 {return &mHeaderVector;}
 
-std::vector<CCopasiObjectName>* CReportDefinition::getFooterAddr()
+std::vector<CRegisteredObjectName>* CReportDefinition::getFooterAddr()
 {return &mFooterVector;}
 
 bool CReportDefinition::setTaskType(const CCopasiTask::Type & taskType)

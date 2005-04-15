@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/19 02:01:48 $
+   $Author: ssahle $ 
+   $Date: 2005/04/15 11:16:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -188,7 +188,7 @@ void CReport::printBody(CReport * pReport)
 // make to support parallel tasks
 void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
                                       std::vector<CCopasiObject*> & objectList,
-                                      std::vector<CCopasiObjectName>* nameVector)
+                                      const std::vector<CRegisteredObjectName>* nameVector)
 {
   unsigned C_INT32 i;
   CCopasiObject* pSelected;
