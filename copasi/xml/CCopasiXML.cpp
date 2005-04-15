@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 17:40:02 $
+   $Author: ssahle $ 
+   $Date: 2005/04/15 11:17:46 $
    End CVS Header */
 
 /**
@@ -739,7 +739,7 @@ bool CCopasiXML::saveParameterGroup(const std::vector< CCopasiParameter * > & gr
 
 //Mrinmayee
 bool CCopasiXML::saveReportSection(const std::string & name,
-                                   const std::vector <CCopasiObjectName> & section)
+                                   const std::vector <CRegisteredObjectName> & section)
 {
   CXMLAttributeList Attributes;
   Attributes.add("NoName", "");
@@ -812,7 +812,7 @@ bool CCopasiXML::saveReportList()
           Attributes.add("printTitle", pReport->getTitle());
           startSaveElement("Table", Attributes);
 
-          const std::vector <CCopasiObjectName> & Table = * pReport->getBodyAddr();
+          const std::vector <CRegisteredObjectName> & Table = * pReport->getBodyAddr();
           unsigned C_INT32 j, jmax = Table.size();
 
           Attributes.erase();

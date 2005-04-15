@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/19 02:58:49 $
+   $Author: ssahle $ 
+   $Date: 2005/04/15 11:17:46 $
    End CVS Header */
 
 /**
@@ -23,7 +23,7 @@
 
 class CCopasiParameter;
 class CCopasiParameterGroup;
-class CCopasiObjectName;
+class CRegisteredObjectName;
 
 class CCopasiXML : public CCopasiXMLInterface
   {
@@ -119,7 +119,7 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     bool saveReportSection(const std::string & name,
-                           const std::vector <CCopasiObjectName> & section);
+                           const std::vector <CRegisteredObjectName> & section);
 
     /**
      * Build a list of functions.

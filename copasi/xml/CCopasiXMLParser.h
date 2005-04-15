@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/19 02:59:37 $
+   $Author: ssahle $ 
+   $Date: 2005/04/15 11:17:46 $
    End CVS Header */
 
 /**
@@ -170,7 +170,7 @@ struct SCopasiXMLParserCommon
      * A map that stores a vector of pairs of header,body or footer adresses
      *  with the index together with the key to the reference.
      */
-    std::map<std::string , std::vector < std::pair < std::vector <CCopasiObjectName >*, unsigned int > > > reportReferenceMap;
+    std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned int > > > reportReferenceMap;
 
     SCopasiXMLGUI * pGUI;
   };
