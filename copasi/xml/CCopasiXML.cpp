@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/15 11:17:46 $
+   $Author: shoops $ 
+   $Date: 2005/04/15 18:54:30 $
    End CVS Header */
 
 /**
@@ -350,47 +350,48 @@ bool CCopasiXML::saveModel()
               Attr.erase();
               Attr.add("function", pReaction->getFunction().getKey());
               startSaveElement("KineticLaw", Attr);
-
-              startSaveElement("ListOfCallParameters");
-              const CFunctionParameterMap * pMap =
-                &pReaction->getFunctionParameterMap();
-
-              for (j = 0, jmax = pReaction->getFunctionParameters().size(); j < jmax; j++)
+              if (jmax = pReaction->getFunctionParameters().size())
                 {
-                  Attr.erase();
-                  Attr.add("functionParameter",
-                           pReaction->
-                           getFunction().getParameters()[j]->getKey());
+                  startSaveElement("ListOfCallParameters");
+                  const CFunctionParameterMap * pMap =
+                    &pReaction->getFunctionParameterMap();
 
-                  startSaveElement("CallParameter", Attr);
-
-                  ObjectList = pMap->getObjects(j);
-
-                  Attr.erase();
-                  Attr.add("reference", "");
-
-                  for (k = 0, kmax = ObjectList.size(); k < kmax; k++)
+                  for (j = 0; j < jmax; j++)
                     {
-                      const CCopasiObject * pObject = ObjectList[k];
+                      Attr.erase();
+                      Attr.add("functionParameter",
+                               pReaction->
+                               getFunction().getParameters()[j]->getKey());
 
-                      if (pObject->getObjectType() == "Parameter")
-                        Attr.setValue(0,
-                                      ((CCopasiParameter *)
-                                       (CCopasiContainer *) pObject)->getKey());
-                      else if (pObject->getObjectType() == "Metabolite")
-                        Attr.setValue(0,
-                                      ((CMetab *)
-                                       (CCopasiContainer *) pObject)->getKey());
-                      else
-                        Attr.setValue(0, "NoKey");
+                      startSaveElement("CallParameter", Attr);
 
-                      saveElement("SourceParameter", Attr);
+                      ObjectList = pMap->getObjects(j);
+
+                      Attr.erase();
+                      Attr.add("reference", "");
+
+                      for (k = 0, kmax = ObjectList.size(); k < kmax; k++)
+                        {
+                          const CCopasiObject * pObject = ObjectList[k];
+
+                          if (pObject->getObjectType() == "Parameter")
+                            Attr.setValue(0,
+                                          ((CCopasiParameter *)
+                                           (CCopasiContainer *) pObject)->getKey());
+                          else if (pObject->getObjectType() == "Metabolite")
+                            Attr.setValue(0,
+                                          ((CMetab *)
+                                           (CCopasiContainer *) pObject)->getKey());
+                          else
+                            Attr.setValue(0, "NoKey");
+
+                          saveElement("SourceParameter", Attr);
+                        }
+
+                      endSaveElement("CallParameter");
                     }
-
-                  endSaveElement("CallParameter");
+                  endSaveElement("ListOfCallParameters");
                 }
-              endSaveElement("ListOfCallParameters");
-
               endSaveElement("KineticLaw");
             }
           endSaveElement("Reaction");
