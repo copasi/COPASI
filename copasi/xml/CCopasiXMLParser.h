@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/15 11:17:46 $
+   $Author: shoops $ 
+   $Date: 2005/04/15 12:57:19 $
    End CVS Header */
 
 /**
@@ -2849,6 +2849,13 @@ class CCopasiXMLParser : public CExpat
      * @return SCopasiXMLGUI * pGUI
      */
     SCopasiXMLGUI * getGUI() const;
+
+    /**
+     * Retrieve an object by its CN within the context of the parser
+     * @param const std::string & cn
+     * @return const CCopasiObject * pObject
+     */
+    const CCopasiObject * getObjectFromName(const std::string & cn) const;
   };
 
 #endif // COPASI_CCopasiXMLParser

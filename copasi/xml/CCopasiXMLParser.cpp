@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/15 11:17:46 $
+   $Author: shoops $ 
+   $Date: 2005/04/15 12:57:19 $
    End CVS Header */
 
 /**
@@ -248,6 +248,23 @@ void CCopasiXMLParser::setGUI(SCopasiXMLGUI * pGUI)
 
 SCopasiXMLGUI * CCopasiXMLParser::getGUI() const
   {return mCommon.pGUI;}
+
+const CCopasiObject * CCopasiXMLParser::getObjectFromName(const std::string & cn) const
+  {
+    const CCopasiObject * pObject = NULL;
+    CCopasiObjectName CN = CCopasiObjectName(cn).getRemainder();
+
+    if (mCommon.pModel &&
+        (pObject = mCommon.pModel->getObject(CN))) return pObject;
+
+    if (mCommon.pTaskList &&
+        (pObject = mCommon.pTaskList->getObject(CN))) return pObject;
+
+    if (mCommon.pFunctionList &&
+        (pObject = mCommon.pFunctionList->getObject(CN))) return pObject;
+
+    return NULL;
+  }
 
 CCopasiXMLParser::UnknownElement::UnknownElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
@@ -5135,6 +5152,7 @@ void CCopasiXMLParser::TableElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
 {
+  const CCopasiObject * pObject = NULL;
   switch (mCurrentElement)
     {
     case Table:
@@ -5148,7 +5166,8 @@ void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
 
     case Object:
       if (strcmp(pszName, "Object")) fatalError();
-      mCommon.pReport->addTableElement(mCommon.Comment);
+      pObject = mParser.getObjectFromName(mCommon.Comment);
+      mCommon.pReport->addTableElement(pObject);
       mCommon.Comment = "";
       mCurrentElement = Table;
       break;
