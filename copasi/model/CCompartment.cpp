@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/15 16:50:07 $
+   $Date: 2005/04/15 17:01:22 $
    End CVS Header */
 
 // CCompartment
@@ -200,6 +200,7 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
     {
       pMetabolite->setParentCompartment(this);
       pMetabolite->setInitialConcentration(pMetabolite->getInitialConcentration()); // a hack
+      pMetabolite->setConcentration(pMetabolite->getConcentration()); // a hack
     }
 
   return success;
