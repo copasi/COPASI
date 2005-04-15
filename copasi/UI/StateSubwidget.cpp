@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:18:09 $
+   $Author: ssahle $ 
+   $Date: 2005/04/15 11:59:06 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Sat Oct 9 15:44:20 2004
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.6 2005/01/24 16:18:09 anuragr Exp $)
+ ** Created: Fri Apr 15 13:53:29 2005
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.7 2005/04/15 11:59:06 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,8 +31,7 @@
 #include "model/CMetabNameInterface.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "StateSubwidget.ui.h"
-#include "listviews.h"
-#include "DataModelGUI.h" 
+
 /*
  *  Constructs a StateSubwidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -43,6 +42,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("StateSubwidget");
   StateSubwidgetLayout = new QVBoxLayout(this, 11, 6, "StateSubwidgetLayout");
+
   topLabel = new QLabel(this, "topLabel");
   StateSubwidgetLayout->addWidget(topLabel);
 
@@ -62,9 +62,9 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 1, tr("Transition Time"));
   concentrationsTable->setNumRows(3);
   concentrationsTable->setNumCols(4);
-
+  concentrationsTable->setReadOnly(TRUE);
   tabLayout->addWidget(concentrationsTable);
-  tabWidget->insertTab(tab, QString(""));
+  tabWidget->insertTab(tab, QString::fromLatin1(""));
 
   tab_2 = new QWidget(tabWidget, "tab_2");
   tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
@@ -80,8 +80,9 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   numbersTable->horizontalHeader()->setLabel(numbersTable->numCols() - 1, tr("Transition Time"));
   numbersTable->setNumRows(3);
   numbersTable->setNumCols(4);
+  numbersTable->setReadOnly(TRUE);
   tabLayout_2->addWidget(numbersTable);
-  tabWidget->insertTab(tab_2, QString(""));
+  tabWidget->insertTab(tab_2, QString::fromLatin1(""));
 
   TabPage = new QWidget(tabWidget, "TabPage");
   TabPageLayout = new QVBoxLayout(TabPage, 11, 6, "TabPageLayout");
@@ -97,8 +98,9 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   tableFlux->horizontalHeader()->setLabel(tableFlux->numCols() - 1, tr("Chemical equation"));
   tableFlux->setNumRows(3);
   tableFlux->setNumCols(4);
+  tableFlux->setReadOnly(TRUE);
   TabPageLayout->addWidget(tableFlux);
-  tabWidget->insertTab(TabPage, QString(""));
+  tabWidget->insertTab(TabPage, QString::fromLatin1(""));
 
   TabPage_2 = new QWidget(tabWidget, "TabPage_2");
   TabPageLayout_2 = new QVBoxLayout(TabPage_2, 11, 6, "TabPageLayout_2");
@@ -113,6 +115,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   tableJacobian = new QTable(privateLayoutWidget, "tableJacobian");
   tableJacobian->setNumRows(3);
   tableJacobian->setNumCols(3);
+  tableJacobian->setReadOnly(TRUE);
 
   layoutJacobian->addMultiCellWidget(tableJacobian, 1, 1, 0, 1);
 
@@ -132,6 +135,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   tableEigenValues->horizontalHeader()->setLabel(tableEigenValues->numCols() - 1, tr("Imaginary"));
   tableEigenValues->setNumRows(3);
   tableEigenValues->setNumCols(2);
+  tableEigenValues->setReadOnly(TRUE);
 
   layoutEigenvalues->addMultiCellWidget(tableEigenValues, 1, 1, 0, 1);
   spacer4 = new QSpacerItem(141, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -141,7 +145,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
 
   layoutEigenvalues->addWidget(textLabelEigenvalues, 0, 0);
   TabPageLayout_2->addWidget(splitterJacobian);
-  tabWidget->insertTab(TabPage_2, QString(""));
+  tabWidget->insertTab(TabPage_2, QString::fromLatin1(""));
 
   TabPage_3 = new QWidget(tabWidget, "TabPage_3");
   TabPageLayout_3 = new QVBoxLayout(TabPage_3, 11, 6, "TabPageLayout_3");
@@ -156,6 +160,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   tableJacobianX = new QTable(privateLayoutWidget_3, "tableJacobianX");
   tableJacobianX->setNumRows(3);
   tableJacobianX->setNumCols(3);
+  tableJacobianX->setReadOnly(TRUE);
 
   layoutJacobianX->addMultiCellWidget(tableJacobianX, 1, 1, 0, 1);
 
@@ -175,6 +180,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   tableEigenValuesX->horizontalHeader()->setLabel(tableEigenValuesX->numCols() - 1, tr("Imaginary"));
   tableEigenValuesX->setNumRows(3);
   tableEigenValuesX->setNumCols(2);
+  tableEigenValuesX->setReadOnly(TRUE);
 
   layoutEigenvaluesX->addMultiCellWidget(tableEigenValuesX, 1, 1, 0, 1);
   spacer4_2 = new QSpacerItem(141, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -184,14 +190,15 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
 
   layoutEigenvaluesX->addWidget(textLabelEigenvaluesX, 0, 0);
   TabPageLayout_3->addWidget(splitterJacobianX);
-  tabWidget->insertTab(TabPage_3, QString(""));
+  tabWidget->insertTab(TabPage_3, QString::fromLatin1(""));
 
   TabPage_4 = new QWidget(tabWidget, "TabPage_4");
   TabPageLayout_4 = new QVBoxLayout(TabPage_4, 11, 6, "TabPageLayout_4");
 
   stabilityTextEdit = new QTextEdit(TabPage_4, "stabilityTextEdit");
+  stabilityTextEdit->setReadOnly(TRUE);
   TabPageLayout_4->addWidget(stabilityTextEdit);
-  tabWidget->insertTab(TabPage_4, QString(""));
+  tabWidget->insertTab(TabPage_4, QString::fromLatin1(""));
   StateSubwidgetLayout->addWidget(tabWidget);
   languageChange();
   resize(QSize(551, 422).expandedTo(minimumSizeHint()));
@@ -215,7 +222,6 @@ void StateSubwidget::languageChange()
 {
   setCaption(tr("Form1"));
   topLabel->setText(tr("textLabel1"));
-
   concentrationsTable->horizontalHeader()->setLabel(0, tr("Metabolite name"));
   concentrationsTable->horizontalHeader()->setLabel(1, tr("Concentration"));
   concentrationsTable->horizontalHeader()->setLabel(2, tr("Rate"));

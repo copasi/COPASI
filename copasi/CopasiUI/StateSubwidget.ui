@@ -72,6 +72,9 @@
                         <property name="numCols">
                             <number>4</number>
                         </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
                     </widget>
                 </vbox>
             </widget>
@@ -115,6 +118,9 @@
                         </property>
                         <property name="numCols">
                             <number>4</number>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
                         </property>
                     </widget>
                 </vbox>
@@ -160,6 +166,9 @@
                         <property name="numCols">
                             <number>4</number>
                         </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
                     </widget>
                 </vbox>
             </widget>
@@ -201,6 +210,9 @@
                                     </property>
                                     <property name="numCols">
                                         <number>3</number>
+                                    </property>
+                                    <property name="readOnly">
+                                        <bool>true</bool>
                                     </property>
                                 </widget>
                                 <widget class="QLabel" row="0" column="0">
@@ -257,6 +269,9 @@
                                     </property>
                                     <property name="numCols">
                                         <number>2</number>
+                                    </property>
+                                    <property name="readOnly">
+                                        <bool>true</bool>
                                     </property>
                                 </widget>
                                 <spacer row="0" column="1">
@@ -328,6 +343,9 @@
                                     <property name="numCols">
                                         <number>3</number>
                                     </property>
+                                    <property name="readOnly">
+                                        <bool>true</bool>
+                                    </property>
                                 </widget>
                                 <widget class="QLabel" row="0" column="0">
                                     <property name="name">
@@ -384,6 +402,9 @@
                                     <property name="numCols">
                                         <number>2</number>
                                     </property>
+                                    <property name="readOnly">
+                                        <bool>true</bool>
+                                    </property>
                                 </widget>
                                 <spacer row="0" column="1">
                                     <property name="name">
@@ -430,6 +451,9 @@
                         <property name="name">
                             <cstring>stabilityTextEdit</cstring>
                         </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
                     </widget>
                 </vbox>
             </widget>
@@ -450,6 +474,7 @@
 <slots>
     <slot access="protected">init()</slot>
     <slot>loadJacobian( const CSteadyStateTask * task )</slot>
+    <slot>showUnits()</slot>
 </slots>
 <functions>
     <function returnType="bool">loadMetabolites( const CModel * model )</function>

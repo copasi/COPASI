@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:17:34 $
+   $Author: ssahle $ 
+   $Date: 2005/04/15 11:59:06 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Sat Oct 9 15:44:17 2004
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.5 2005/01/24 16:17:34 anuragr Exp $)
+ ** Created: Fri Apr 15 13:53:25 2005
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.6 2005/04/15 11:59:06 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -68,10 +68,10 @@ class StateSubwidget : public QWidget
     virtual bool loadMetabolites(const CModel * model);
     virtual bool loadReactions(const CModel * model);
     virtual bool loadAll(const CSteadyStateTask * task);
-    virtual void showUnits();
 
   public slots:
     virtual void loadJacobian(const CSteadyStateTask * task);
+    virtual void showUnits();
 
   protected:
     QVBoxLayout* StateSubwidgetLayout;
