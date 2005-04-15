@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/03/10 21:31:07 $
+   $Author: ssahle $ 
+   $Date: 2005/04/15 11:14:03 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.46 2005/03/10 21:31:07 anuragr Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.47 2005/04/15 11:14:03 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -290,7 +290,7 @@ void TableDefinition1::loadTableDefinition1()
     {
       new MyListBoxItem(itemsTable,
                         FROM_UTF8(CCopasiContainer::ObjectFromName((*(pReportDefinition->getBodyAddr()))[i])
-                                  ->getObjectUniqueName()),
+                                  ->getObjectDisplayName()),
                         (*(pReportDefinition->getBodyAddr()))[i]);
     }
   comboTask->setEnabled(true);
@@ -460,7 +460,7 @@ void TableDefinition1::addButtonClicked()
         if (!found)
           {
             new MyListBoxItem(itemsTable,
-                              FROM_UTF8((*pSelectedVector)[i]->getObjectUniqueName()),
+                              FROM_UTF8((*pSelectedVector)[i]->getObjectDisplayName()),
                               //FROM_UTF8((*pSelectedVector)[i]->getCN()),
                               (*pSelectedVector)[i]->getCN());
             //FROM_UTF8(CCopasiContainer::ObjectFromName(ListOfContainer, (*pSelectedVector)[i]->getCN())->getObjectUniqueName()),
