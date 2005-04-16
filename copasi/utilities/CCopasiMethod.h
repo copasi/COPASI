@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/30 22:09:43 $
+   $Author: ssahle $ 
+   $Date: 2005/04/16 09:36:26 $
    End CVS Header */
 
 /**
@@ -147,6 +147,12 @@ class CCopasiMethod : public CCopasiParameterGroup
      * @return CCopasiMethod::SubType & subType
      */
     const CCopasiMethod::SubType & getSubType() const;
+
+    /**
+     * Check if the method is suitable for this problem
+     * @return bool suitability of the method
+     */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
     /**
      * Load a list of parameters
