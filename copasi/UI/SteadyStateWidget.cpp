@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 15:46:49 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 20:04:01 $
    End CVS Header */
 
 /********************************************************
@@ -327,7 +327,7 @@ void SteadyStateWidget::runSteadyStateTask()
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
               tmpBar->finish();
-              QMessageBox::warning(this, "Simulation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+              QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
               CCopasiMessage::clearDeque();
             }
         }
@@ -345,7 +345,7 @@ void SteadyStateWidget::runSteadyStateTask()
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
           tmpBar->finish();
-          QMessageBox::warning(this, "Simulation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
     }
