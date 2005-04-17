@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/17 13:33:56 $
+   $Date: 2005/04/17 16:45:24 $
    End CVS Header */
 
 /**
@@ -172,4 +172,6 @@ bool CTrajectoryMethod::isValidProblem(const CCopasiProblem * pProblem)
       CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a trajectory problem.");
       return false;
     }
+
+  return true;
 }
