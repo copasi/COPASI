@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 17:35:45 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 20:09:15 $
    End CVS Header */
 
 /****************************************************************************
@@ -33,6 +33,7 @@ void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
   if (mcaMethod)
     {
       mMCAMethod = mcaMethod;
+      if (!mcaMethod->getModel()) return;
 
       if (mcaMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
         {
