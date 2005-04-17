@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/12/22 10:47:48 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 13:33:56 $
    End CVS Header */
 
 #ifdef WIN32
@@ -436,7 +436,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
   mMaxBalance = maxBalance; std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =      /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =       /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
@@ -495,4 +495,41 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
 
   std::cout << std::endl;
   return retset;
+}
+
+//virtual
+bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  //TODO: create messages in message.h;
+  //      rewrite CModel::suitableForStochasticSimulation() to use
+  //      CCopasiMessage
+  if (!pProblem)
+    {
+      //no problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
+      return false;
+    }
+
+  const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
+  if (!pTP)
+    {
+      //not a TrajectoryProblem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a trajectory problem.");
+      return false;
+    }
+
+  if (pTP->getEndTime() < pTP->getStartTime())
+    {
+      //back integration not possible
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Negative time steps not possible with stochastic simulation.");
+      return false;
+    }
+
+  std::string message = pTP->getModel()->suitableForStochasticSimulation();
+  if (message != "")
+    {
+      //model not suitable, message describes the problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      return false;
+    }
 }

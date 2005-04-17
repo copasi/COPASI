@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/01 14:58:56 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 13:33:56 $
    End CVS Header */
 
 /**
@@ -147,6 +147,12 @@ class CTrajectoryMethod : public CCopasiMethod
      *  @return "const double" actualDeltaT
      */
     virtual const double step(const double & deltaT, const CState * initialState);
+
+    /**
+     * Check if the method is suitable for this problem
+     * @return bool suitability of the method
+     */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
   };
 
 #include "CLsodaMethod.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2005/01/11 10:14:29 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 13:33:56 $
    End CVS Header */
 
 /**
@@ -523,4 +523,41 @@ void CTauLeapMethod::updateSystem()
   for (i = 0; i < mNumNumbers; i++)
     mpModel->getMetabolites()[i]->setNumber(mNumbers[i]);
   return;
+}
+
+//virtual
+bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  //TODO: create messages in message.h;
+  //      rewrite CModel::suitableForStochasticSimulation() to use
+  //      CCopasiMessage
+  if (!pProblem)
+    {
+      //no problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
+      return false;
+    }
+
+  const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
+  if (!pTP)
+    {
+      //not a TrajectoryProblem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a trajectory problem.");
+      return false;
+    }
+
+  if (pTP->getEndTime() < pTP->getStartTime())
+    {
+      //back integration not possible
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Negative time steps not possible with stochastic simulation.");
+      return false;
+    }
+
+  std::string message = pTP->getModel()->suitableForStochasticSimulation();
+  if (message != "")
+    {
+      //model not suitable, message describes the problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      return false;
+    }
 }

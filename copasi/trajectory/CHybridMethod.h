@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/12/17 14:50:03 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 13:33:56 $
    End CVS Header */
 
 /**
@@ -153,6 +153,12 @@ class CHybridMethod : public CTrajectoryMethod
      *  @return "const double" actualDeltaT
      */
     const double step(const double & deltaT, const CState * initialState);
+
+    /**
+    * Check if the method is suitable for this problem
+    * @return bool suitability of the method
+    */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
     /* PROTECTED METHODS *******************************************************/
 

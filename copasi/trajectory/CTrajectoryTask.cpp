@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 15:50:20 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 13:33:56 $
    End CVS Header */
 
 /**
@@ -114,7 +114,8 @@ bool CTrajectoryTask::initialize(std::ostream * pOstream)
 
 bool CTrajectoryTask::process()
 {
-  assert(mpProblem && mpMethod);
+  assert(/*mpProblem && */mpMethod);
+  mpMethod->isValidProblem(mpProblem);
 
   CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
   CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
@@ -262,7 +263,8 @@ bool CTrajectoryTask::process()
 //virtual
 bool CTrajectoryTask::processForScan(bool useInitialConditions, bool doOutput)
 {
-  assert(mpProblem /*&& mpMethod*/);
+  assert(/*mpProblem && */mpMethod);
+  mpMethod->isValidProblem(mpProblem);
 
   CTrajectoryProblem* pProblem =
     dynamic_cast<CTrajectoryProblem *>(mpProblem);
@@ -302,7 +304,8 @@ bool CTrajectoryTask::processForScan(bool useInitialConditions, bool doOutput)
 
 bool CTrajectoryTask::processSimple(bool singleStep) //without output
 {
-  assert(mpProblem && mpMethod);
+  assert(/*mpProblem && */mpMethod);
+  mpMethod->isValidProblem(mpProblem); //TODO perhaps omit this check for performance reasons?
 
   CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
   CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/23 03:57:38 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 13:33:56 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -200,6 +200,12 @@ class CStochMethod : public CTrajectoryMethod
      *  @return "const double" actualDeltaT
      */
     const double step(const double & deltaT, const CState * initialState);
+
+    /**
+    * Check if the method is suitable for this problem
+    * @return bool suitability of the method
+    */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   protected:
 

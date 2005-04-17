@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2005/02/03 14:17:44 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 13:33:56 $
    End CVS Header */
 
 /**
@@ -1288,7 +1288,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                        // Everything !!!
+    case 0:                         // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << std::endl;
       os << "current time: " << mpCurrentState->getTime() << std::endl;
@@ -1398,7 +1398,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                         // Variable values only
+    case 1:                          // Variable values only
       os << "current time: " << mpCurrentState->getTime() << std::endl;
       /*
       case 1:
@@ -1509,4 +1509,41 @@ std::ostream & operator<<(std::ostream & os, const CHybridBalance & d)
   os << "  mIndex: " << d.mIndex << " mMultiplicity: " << d.mMultiplicity
   << " mpMetabolite: " << d.mpMetabolite << std::endl;
   return os;
+}
+
+//virtual
+bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  //TODO: create messages in message.h;
+  //      rewrite CModel::suitableForStochasticSimulation() to use
+  //      CCopasiMessage
+  if (!pProblem)
+    {
+      //no problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
+      return false;
+    }
+
+  const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
+  if (!pTP)
+    {
+      //not a TrajectoryProblem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a trajectory problem.");
+      return false;
+    }
+
+  if (pTP->getEndTime() < pTP->getStartTime())
+    {
+      //back integration not possible
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Negative time steps not possible with stochastic simulation.");
+      return false;
+    }
+
+  std::string message = pTP->getModel()->suitableForStochasticSimulation();
+  if (message != "")
+    {
+      //model not suitable, message describes the problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      return false;
+    }
 }
