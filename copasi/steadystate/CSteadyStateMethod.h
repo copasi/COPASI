@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 18:19:25 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 16:44:27 $
    End CVS Header */
 
 /**
@@ -144,6 +144,12 @@ class CSteadyStateMethod : public CCopasiMethod
                                            CEigen * pEigenValues,
                                            CEigen * pEigenValuesX,
                                            CCallbackHandler* handler);
+
+    /**
+     * Check if the method is suitable for this problem
+     * @return bool suitability of the method
+     */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   protected:
 

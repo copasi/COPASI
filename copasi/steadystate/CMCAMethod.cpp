@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/03/03 10:38:14 $
+   $Date: 2005/04/17 16:44:27 $
    End CVS Header */
 
 #include <cmath>
@@ -18,6 +18,7 @@
 #include "model/CModel.h"
 #include "utilities/CCopasiTask.h"
 #include "CMCAMethod.h"
+#include "CMCAProblem.h"
 
 /**
  * Default constructor
@@ -451,3 +452,24 @@ const CModel* CMCAMethod::getModel() const
   {
     return this->mpModel;
   }
+
+//virtual
+bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  if (!pProblem)
+    {
+      //no problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
+      return false;
+    }
+
+  const CMCAProblem * pP = dynamic_cast<const CMCAProblem *>(pProblem);
+  if (!pP)
+    {
+      //not a TrajectoryProblem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not an MCA problem.");
+      return false;
+    }
+
+  return true;
+}

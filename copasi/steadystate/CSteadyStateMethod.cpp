@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 18:19:25 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 16:44:27 $
    End CVS Header */
 
 /**
@@ -190,3 +190,24 @@ bool CSteadyStateMethod::hasNegativeConcentrations(const C_FLOAT64 & resolution)
 
     return false;
   }
+
+//virtual
+bool CSteadyStateMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  if (!pProblem)
+    {
+      //no problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
+      return false;
+    }
+
+  const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
+  if (!pP)
+    {
+      //not a TrajectoryProblem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a steady state problem.");
+      return false;
+    }
+
+  return true;
+}

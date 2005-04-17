@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/03/03 10:38:14 $
+   $Date: 2005/04/17 16:44:27 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -143,5 +143,11 @@ class CMCAMethod: public CCopasiMethod
     void setFactor(C_FLOAT64 factor);
 
     void setSteadyStateResolution(C_FLOAT64 factor);
+
+    /**
+     * Check if the method is suitable for this problem
+     * @return bool suitability of the method
+     */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
   };
 #endif // COPASI_CMca
