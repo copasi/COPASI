@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/14 23:45:15 $
+   $Date: 2005/04/17 16:42:04 $
    End CVS Header */
 
 /********************************************************
@@ -423,22 +423,6 @@ void TrajectoryWidget::runTrajectoryTask()
   CTrajectoryMethod* trajectorymethod =
     dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
   assert(trajectorymethod);
-  if (trajectorymethod->getSubType() != CCopasiMethod::deterministic)
-    {
-      std::string message = CCopasiDataModel::Global->getModel()->suitableForStochasticSimulation();
-      if (message != "")
-        {
-          QMessageBox::information (NULL, "Stochastic simulation not possible",
-                                    FROM_UTF8(message));
-          return;
-        }
-      if (trajectoryproblem->getEndTime() < trajectoryproblem->getStartTime())
-        {
-          QMessageBox::information (NULL, "Stochastic simulation not possible",
-                                    "Backwards simulation is not possible with this method.");
-          return;
-        }
-    }
 
   setCursor(Qt::WaitCursor);
   CProgressBar* tmpBar = new CProgressBar(dataModel);
