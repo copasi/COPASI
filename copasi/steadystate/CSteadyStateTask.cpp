@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:34:21 $
+   $Date: 2005/04/17 20:05:43 $
    End CVS Header */
 
 /**
@@ -144,7 +144,8 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
 
 bool CSteadyStateTask::process()
 {
-  assert(mpProblem && mpMethod);
+  assert(/*mpProblem && */mpMethod);
+  mpMethod->isValidProblem(mpProblem);
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
@@ -173,7 +174,8 @@ bool CSteadyStateTask::process()
 
 bool CSteadyStateTask::processForScan(bool useInitialConditions, bool doOutput)
 {
-  assert(mpProblem && mpMethod);
+  assert(/*mpProblem && */mpMethod);
+  mpMethod->isValidProblem(mpProblem);
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
