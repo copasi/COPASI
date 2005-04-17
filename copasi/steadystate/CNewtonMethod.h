@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/22 10:48:42 $
+   $Date: 2005/04/17 20:05:08 $
    End CVS Header */
 
 /**
@@ -106,6 +106,12 @@ class CNewtonMethod : public CSteadyStateMethod
      * @param const CVector< C_FLOAT64 > & particlefluxes
      */
     C_FLOAT64 targetFunction(const CVector< C_FLOAT64 > & particlefluxes) const;
+
+    /**
+     * Check if the method is suitable for this problem
+     * @return bool suitability of the method
+     */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   private:
     /**

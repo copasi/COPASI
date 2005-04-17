@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 11:52:15 $
+   $Author: ssahle $ 
+   $Date: 2005/04/17 20:05:08 $
    End CVS Header */
 
 #include <algorithm>
@@ -549,3 +549,33 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
       }
     return store;
   }
+
+//virtual
+bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  if (!pProblem)
+    {
+      //no problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
+      return false;
+    }
+
+  const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
+  if (!pP)
+    {
+      //not a TrajectoryProblem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a steady state problem.");
+      return false;
+    }
+
+  if (!((* (bool *) getValue("Newton.UseNewton"))
+         || (* (bool *) getValue("Newton.UseIntegration"))
+         || (* (bool *) getValue("Newton.UseBackIntegration"))))
+    {
+      //would do nothing
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
+      return false;
+    }
+
+  return true;
+}
