@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 10:36:53 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 11:40:02 $
    End CVS Header */
 
 /********************************************************
@@ -61,6 +61,7 @@ class TrajectoryWidget : public CopasiWidget
     //virtual void ExportToFile();
     virtual void UpdateMethod(const bool & update = true);
     virtual void ReportDefinitionClicked();
+    virtual void outputDefinitionClicked();
 
     virtual void StartTimeSlot();
     virtual void EndTimeSlot();
@@ -110,6 +111,7 @@ class TrajectoryWidget : public CopasiWidget
     QPushButton* cancelChange;
     //QPushButton* ExportToFileButton;
     QPushButton* reportDefinitionButton;
+    QPushButton* outputDefinitionButton;
     QLineEdit* mLineEditStartOutput;
     QCheckBox* mCheckBoxStartOutput;
     CTrajectoryProblem * mpProblem;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/17 16:42:04 $
+   $Date: 2005/04/18 11:40:02 $
    End CVS Header */
 
 /********************************************************
@@ -48,7 +48,8 @@ Contact: Please contact lixu1@vt.edu.
 
 #include "copasiui3window.h"
 #include "qmessagebox.h"
-#include "qapplication.h" 
+#include "qapplication.h"
+#include "DefaultplotDialog.h" 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -258,6 +259,10 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   reportDefinitionButton->setText(trUtf8("ReportDefinition"));
   Layout2->addWidget(reportDefinitionButton);
 
+  outputDefinitionButton = new QPushButton(this, "OutputDefinition");
+  outputDefinitionButton->setText(trUtf8("Output definition"));
+  Layout2->addWidget(outputDefinitionButton);
+
   TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 13, 13, 0, 3);
 
   //setTabOrder(taskName, bExecutable);
@@ -280,6 +285,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(bRunTask, SIGNAL(clicked()), this, SLOT(runTrajectoryTask()));
   connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
+  connect(outputDefinitionButton, SIGNAL(clicked()), this, SLOT(outputDefinitionClicked()));
   //connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
   //connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
@@ -478,6 +484,27 @@ void TrajectoryWidget::ReportDefinitionClicked()
   pSelectDlg->exec();
 
   delete pSelectDlg;
+}
+
+void TrajectoryWidget::outputDefinitionClicked()
+{
+  CTrajectoryTask* trajectoryTask =
+    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(objKey));
+  assert(trajectoryTask);
+
+  DefaultPlotDialog * pDlg = new DefaultPlotDialog(this);
+  pDlg->setProblem(trajectoryTask->getProblem());
+  if (pDlg->exec() == QDialog::Accepted)
+    {
+      //std::cout << "plot created" << std::endl;
+      protectedNotify(ListViews::PLOT, ListViews::ADD, "");
+    }
+  else
+    {
+      //std::cout << "no plot created" << std::endl;
+    }
+
+  if (pDlg)delete pDlg;
 }
 
 //**************************************************************************
