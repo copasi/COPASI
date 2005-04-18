@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/17 13:33:56 $
+   $Date: 2005/04/18 09:05:49 $
    End CVS Header */
 
 /**
@@ -560,4 +560,6 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
       CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
       return false;
     }
+
+  return true;
 }
