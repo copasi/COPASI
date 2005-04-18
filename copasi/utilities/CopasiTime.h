@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/28 16:13:09 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:02:03 $
    End CVS Header */
 
 #ifndef COPASI_time
 #define COPASI_time
+
+#include "copasi.h"
 
 /**
  * This class is for handling execution time related values. 
