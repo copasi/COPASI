@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 10:35:47 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:34:20 $
    End CVS Header */
 
 /**
@@ -283,3 +283,97 @@ bool CTrajectoryProblem::sync()
 
   return true;
 }
+
+//virtual
+std::vector<CDefaultPlotDescription> CTrajectoryProblem::getListOfDefaultPlotDescriptions() const
+  {
+    std::vector<CDefaultPlotDescription> ret;
+    CDefaultPlotDescription tmp;
+
+    //concentrations plot
+    tmp.id = 0;
+    tmp.name = "Concentrations plot";
+    tmp.description = "A plot of all the metabolite concentrations vs. time.";
+    tmp.isPlot = true;
+    ret.push_back(tmp);
+
+    //particle numbers plot
+    tmp.id = 1;
+    tmp.name = "Particle numbers plot";
+    tmp.description = "A plot of all the metabolite particle numbers vs. time.";
+    tmp.isPlot = true;
+    ret.push_back(tmp);
+
+    return ret;
+  }
+
+#include "plot/COutputDefinitionVector.h"
+
+//virtual
+bool CTrajectoryProblem::createDefaultPlot(C_INT32 id) const
+  {
+    std::cout << id << std::endl;
+    if (!mpModel) return false;
+
+    std::string bname;
+    switch (id)
+      {
+      case 0:
+        bname = "Concentrations Plot";
+        break;
+      case 1:
+        bname = "Particle numbers Plot";
+        break;
+      default:
+        return false;
+      }
+
+    //TODO this part of this method is propably the  same for all problems. Could be moved elsewhere
+    int i = 0;
+    CPlotSpecification* pPl;
+    std::ostringstream nname;
+    nname << bname;
+    while (!(pPl = CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(nname.str(), CPlotItem::plot2d)))
+      {
+        i++;
+        nname.str("");
+        nname << bname << "_" << i;
+      }
+
+    //pPl->createDefaultPlot(CCopasiDataModel::Global->getModel());
+    //ListViews::notify(ListViews::PLOT, ListViews::ADD, pPl->CCopasiParameter::getKey());
+
+    return true;
+  }
+
+/*bool CPlotSpecification::createDefaultPlot(const CModel* model)
+{
+  mActive = true;
+ 
+  //TODO cleanup before?
+  //title = "Default Data Plot 2D";
+ 
+  CPlotItem * plItem;
+  std::string itemTitle;
+  CPlotDataChannelSpec name2;
+  const CCopasiObject * tmp;
+ 
+  CPlotDataChannelSpec name1 = model->getObject(CCopasiObjectName("Reference=Time"))->getCN();
+  std::cout << name1 << std::endl;
+ 
+  unsigned C_INT32 i, imax = model->getMetabolites().size();
+  for (i = 0; i < imax; ++i)
+    {
+      tmp = model->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"));
+      name2 = tmp->getCN();
+      itemTitle = tmp->getObjectDisplayName();
+      //std::cout << itemTitle << " : " << name2 << std::endl;
+ 
+      plItem = this->createItem(itemTitle, CPlotItem::curve2d);
+      plItem->addChannel(name1);
+      plItem->addChannel(name2);
+    }
+  return true; //TODO: really check;
+}
+ 
+ */
