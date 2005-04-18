@@ -127,10 +127,12 @@ echo "Set the icon in the Info.plist file."
 
     tar -czf ../Copasi-$build-$1.tar.gz copasi
 
-    cp ../copasi/CopasiUI/CopasiUI-dynamic  copasi/bin/CopasiUI
-    chmod 755 copasi/bin/CopasiUI
+    if [ x"$1" == "xLinux" ]; then
+      cp ../copasi/CopasiUI/CopasiUI-dynamic  copasi/bin/CopasiUI
+      chmod 755 copasi/bin/CopasiUI
 
-    tar -czf ../Copasi-$build-$1-Dynamic.tar.gz copasi
+      tar -czf ../Copasi-$build-$1-Dynamic.tar.gz copasi
+    fi
 
     cd ..
     rm -rf $build-$1
