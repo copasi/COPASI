@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/15 12:57:19 $
+   $Date: 2005/04/18 13:32:02 $
    End CVS Header */
 
 /**
@@ -31,7 +31,8 @@ class CReaction;
 class CFunction;
 class CFunctionParameter;
 class CCopasiXMLParser;
-class CReportDefinition;
+class CReportDefinitionVector;
+class COutputDefinitionVector;
 class CPlotSpecification;
 class CPlotItem;
 class CPlotDataChannelSpec;
@@ -110,13 +111,13 @@ struct SCopasiXMLParserCommon
      * Pointer to a vector of reports which has been loaded or is to be saved.
      * The ownership is handed to the user.
      */
-    CCopasiVectorN< CReportDefinition > * pReportList;
+    CReportDefinitionVector * pReportList;
 
     /**
      * Pointer to a vector of plots which has been loaded or is to be saved.
      * The ownership is handed to the user.
      */
-    CCopasiVectorN< CPlotSpecification > * pPlotList;
+    COutputDefinitionVector * pPlotList;
 
     /**
      * Pointer to the currently processed report
@@ -2803,15 +2804,15 @@ class CCopasiXMLParser : public CExpat
 
     /**
      * Set the list of loaded reports
-     * @param CCopasiVectorN< CReportDefinition > * pReportList
+     * @param CReportDefinitionVector * pReportList
      */
-    void setReportList(CCopasiVectorN< CReportDefinition > * pReportList);
+    void setReportList(CReportDefinitionVector * pReportList);
 
     /**
      * Retrieve the list of loaded reports
-     * @return CCopasiVectorN< CReportDefinition > * pReportList
+     * @return CReportDefinitionVector * pReportList
      */
-    CCopasiVectorN< CReportDefinition > * CCopasiXMLParser::getReportList() const;
+    CReportDefinitionVector * CCopasiXMLParser::getReportList() const;
 
     //Mrinmayee
     /**
@@ -2828,15 +2829,15 @@ class CCopasiXMLParser : public CExpat
 
     /**
      * Set the list of loaded plots
-     * @param CCopasiVectorN< CPlotSpecification > * pPlotList
+     * @param COutputDefinitionVector * pPlotList
      */
-    void setPlotList(CCopasiVectorN< CPlotSpecification > * pPlotList);
+    void setPlotList(COutputDefinitionVector * pPlotList);
 
     /**
      * Retrieve the list of loaded functions
-     * @return CCopasiVectorN< CPlotSpecification > * pPlotList
+     * @return COutputDefinitionVector * pPlotList
      */
-    CCopasiVectorN< CPlotSpecification > * getPlotList() const;
+    COutputDefinitionVector * getPlotList() const;
 
     /**
      * Set the GUI information to be saved

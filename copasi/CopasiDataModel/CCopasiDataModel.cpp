@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:26:19 $
+   $Author: shoops $ 
+   $Date: 2005/04/18 13:32:02 $
    End CVS Header */
 
 #include "copasi.h"
@@ -187,26 +187,14 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
       if (XML.getReportList())
         {
           pdelete(mpReportDefinitionList);
-          mpReportDefinitionList = new CReportDefinitionVector;
-          *static_cast< CCopasiVector< CReportDefinition > * >(mpReportDefinitionList) = *XML.getReportList();
-          mpReportDefinitionList->setObjectName("ReportDefinitions");
+          mpReportDefinitionList = XML.getReportList();
         }
 
       if (XML.getPlotList())
         {
           pdelete(mpPlotDefinitionList);
-          mpPlotDefinitionList = new COutputDefinitionVector;
-          *static_cast< CCopasiVector< CPlotSpecification > * >(mpPlotDefinitionList) = *XML.getPlotList();
-          mpPlotDefinitionList->setObjectName("OutputDefinitions");
-        }
-
-      /*if (XML.getPlotList())
-        {
-          pdelete(mpPlotDefinitionList);
           mpPlotDefinitionList = XML.getPlotList();
-          mpPlotDefinitionList->setObjectName("PlotList");
-          CCopasiContainer::Root->add(mpPlotDefinitionList, true);
-        }*/
+        }
 
       if (mWithGUI)
         {

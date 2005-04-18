@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/15 12:57:19 $
+   $Date: 2005/04/18 13:32:02 $
    End CVS Header */
 
 /**
@@ -24,6 +24,7 @@
 #include "function/CFunction.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
+#include "report/CReportDefinitionVector.h"
 #include "report/CReportDefinition.h"
 
 #include "utilities/CCopasiParameter.h"
@@ -33,6 +34,7 @@
 #include "steadystate/CMCATask.h"
 #include "scan/CScanTask.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"
 
@@ -223,10 +225,10 @@ void CCopasiXMLParser::setModel(CModel * pModel) {mCommon.pModel = pModel;}
 CModel * CCopasiXMLParser::getModel() const
   {return mCommon.pModel;}
 
-void CCopasiXMLParser::setReportList(CCopasiVectorN< CReportDefinition > * pReportList)
+void CCopasiXMLParser::setReportList(CReportDefinitionVector * pReportList)
 {mCommon.pReportList = pReportList;}
 
-CCopasiVectorN< CReportDefinition > * CCopasiXMLParser::getReportList() const
+CReportDefinitionVector * CCopasiXMLParser::getReportList() const
   {return mCommon.pReportList;}
 
 //Mrinmayee
@@ -237,10 +239,10 @@ void CCopasiXMLParser::setTaskList(CCopasiVectorN< CCopasiTask > * pTaskList)
 CCopasiVectorN< CCopasiTask > * CCopasiXMLParser::getTaskList() const
   {return mCommon.pTaskList;}
 
-void CCopasiXMLParser::setPlotList(CCopasiVectorN< CPlotSpecification > * pPlotList)
+void CCopasiXMLParser::setPlotList(COutputDefinitionVector * pPlotList)
 {mCommon.pPlotList = pPlotList;}
 
-CCopasiVectorN< CPlotSpecification > * CCopasiXMLParser::getPlotList() const
+COutputDefinitionVector * CCopasiXMLParser::getPlotList() const
   {return mCommon.pPlotList;}
 
 void CCopasiXMLParser::setGUI(SCopasiXMLGUI * pGUI)
@@ -3054,7 +3056,7 @@ void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
       if (strcmp(pszName, "ListOfPlots")) fatalError();
       if (!mCommon.pPlotList)
         {
-          mCommon.pPlotList = new CCopasiVectorN<CPlotSpecification>;
+          mCommon.pPlotList = new COutputDefinitionVector;
         }
       break;
 
@@ -4460,7 +4462,7 @@ void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
     case ListOfReports:
       if (strcmp(pszName, "ListOfReports")) fatalError();
       if (!mCommon.pReportList)
-        mCommon.pReportList = new CCopasiVectorN< CReportDefinition >;
+        mCommon.pReportList = new CReportDefinitionVector;
       break;
 
     case Report:

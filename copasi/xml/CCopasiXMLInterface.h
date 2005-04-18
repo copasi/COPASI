@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/11 18:49:13 $
+   $Author: shoops $ 
+   $Date: 2005/04/18 13:32:02 $
    End CVS Header */
 
 /**
@@ -28,9 +28,9 @@ template <class CType> class CCopasiVector;
 template <class CType> class CCopasiVectorN;
 class CFunction;
 class CCopasiTask;
-class CReportDefinition;
+class CReportDefinitionVector;
 class CXMLAttributeList;
-class CPlotSpecification;
+class COutputDefinitionVector;
 class CSlider;
 
 /**
@@ -104,13 +104,13 @@ class CCopasiXMLInterface
      * Pointer to a vector of reports which has been loaded or is to be saved.
      * The ownership is handed to the user.
      */
-    CCopasiVectorN< CReportDefinition > * mpReportList;
+    CReportDefinitionVector * mpReportList;
 
     /**
      * Pointer to a vector of plots which has been loaded or is to be saved.
      * The ownership is handed to the user.
      */
-    CCopasiVectorN< CPlotSpecification > * mpPlotList;
+    COutputDefinitionVector * mpPlotList;
 
     /**
      * Pointer to a GUI related information, which has been loaded or is to be saved.
@@ -250,16 +250,16 @@ class CCopasiXMLInterface
 
     /**
      * Set the plot list.
-     * @param const CCopasiVectorN< CPlotSpecification > & plotList
+     * @param const COutputDefinitionVector & plotList
      * @return bool success
      */
-    bool setPlotList(const CCopasiVectorN< CPlotSpecification > & plotList);
+    bool setPlotList(const COutputDefinitionVector & plotList);
 
     /**
      * Retreive the plot list.
-     * @return CCopasiVectorN< CPlotSpecification > * plotList
+     * @return COutputDefinitionVector * plotList
      */
-    CCopasiVectorN< CPlotSpecification > * getPlotList() const;
+    COutputDefinitionVector * getPlotList() const;
 
     /**
      * Retreive whether the XML contains a plot list.
@@ -275,16 +275,16 @@ class CCopasiXMLInterface
 
     /**
      * Set the report list.
-     * @param const CCopasiVectorN< CCopasiReport > & reportList
+     * @param const CReportDefinitionVector & reportList
      * @return bool success
      */
-    bool setReportList(const CCopasiVectorN< CReportDefinition > & reportList);
+    bool setReportList(const CReportDefinitionVector & reportList);
 
     /**
      * Retreive the report list.
-     * @return CCopasiVectorN< CCopasiReport > * reportList
+     * @return CReportDefinitionVector * reportList
      */
-    CCopasiVectorN< CReportDefinition > * getReportList() const;
+    CReportDefinitionVector * getReportList() const;
 
     /**
      * Retreive whether the XML contains a report list.
