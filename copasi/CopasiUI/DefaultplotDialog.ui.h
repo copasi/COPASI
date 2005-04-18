@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DefaultplotDialog.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:04:14 $
+   $Author: shoops $ 
+   $Date: 2005/04/18 12:45:21 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,6 +17,8 @@
  ** These will automatically be called by the form's constructor and
  ** destructor.
  *****************************************************************************/
+
+#include "qtUtilities.h"
 
 void DefaultPlotDialog::slotCreate()
 {
@@ -43,7 +45,7 @@ void DefaultPlotDialog::setProblem(const CCopasiProblem * p)
   std::vector<CDefaultPlotDescription>::const_iterator it, itEnd = mList.end();
   for (it = mList.begin(); it != itEnd; ++it)
     {
-      listBox->insertItem(it->name);
+      listBox->insertItem(FROM_UTF8(it->name));
     }
   listBox->setSelected(0, true);
 }
