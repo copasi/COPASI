@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.13 $ $Author: ssahle $ $Date: 2005/02/15 12:56:47 $  
+# $Revision: 1.14 $ $Author: ssahle $ $Date: 2005/04/18 09:23:41 $  
 ######################################################################
 
 LIB = plot
@@ -18,6 +18,7 @@ HEADERS += CHistogram.h \
            CPlotItem.h \
            CPlotSpecification.h \
            CPlotSpec2Vector.h \
+           COutputDefinitionVector.h \
            plotwindow.h  
 #           curve2dwidget.h
 
@@ -30,6 +31,7 @@ SOURCES += CHistogram.cpp \
            CPlotItem.cpp \
            CPlotSpecification.cpp \
            CPlotSpec2Vector.cpp \
+           COutputDefinitionVector.cpp \
            zoomplot.cpp 
 #           curve2dwidget.cpp
 
