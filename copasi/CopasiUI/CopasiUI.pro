@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.91 $ $Author: shoops $ $Date: 2005/03/17 03:08:34 $  
+# $Revision: 1.92 $ $Author: ssahle $ $Date: 2005/04/18 11:09:46 $  
 ######################################################################
 
 TEMPLATE = app
@@ -262,6 +262,7 @@ HEADERS += \
            CScanWidgetRepeat.h \
            CScanWidgetScan.h \
            CScanWidgetTask.h  \ 
+           DefaultplotDialog.h \
            objectdebug.h \
            SliderSettingsDialog.h \
            StateSubwidget.h \
@@ -276,6 +277,7 @@ SOURCES += \
            CScanWidgetRepeat.cpp \
            CScanWidgetScan.cpp \
            CScanWidgetTask.cpp \  
+           DefaultplotDialog.cpp \
            objectdebug.cpp \
            SliderSettingsDialog.cpp \
            StateSubwidget.cpp \
@@ -293,6 +295,7 @@ SOURCES += \
 # FORMS += CScanWidgetRepeat.ui
 # FORMS += CScanWidgetScan.ui
 # FORMS += CScanWidgetTask.ui
+# FORMS += DefaultplotDialog.ui
 
 release {
   distribution.path = .
