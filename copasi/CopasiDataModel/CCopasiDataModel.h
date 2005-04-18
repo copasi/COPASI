@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 20:19:41 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:26:19 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -12,7 +12,8 @@
 class CVersion;
 class CModel;
 class CReportDefinitionVector;
-class CPlotSpecification;
+class COutputDefinitionVector;
+//class CPlotSpecification;
 class CFunctionDB;
 class CFunction;
 class SCopasiXMLGUI;
@@ -67,7 +68,7 @@ class CCopasiDataModel
     bool addDefaultTasks();
 
     CReportDefinitionVector * getReportDefinitionList();
-    CCopasiVectorN<CPlotSpecification> * getPlotDefinitionList();
+    COutputDefinitionVector * getPlotDefinitionList();
 
     CFunctionDB * getFunctionList();
     SCopasiXMLGUI * getGUI();
@@ -83,7 +84,10 @@ class CCopasiDataModel
     CModel * mpModel;
     CCopasiVectorN< CCopasiTask > * mpTaskList;
     CReportDefinitionVector * mpReportDefinitionList;
-    CCopasiVectorN<CPlotSpecification> * mpPlotDefinitionList;
+
+    //CCopasiVectorN<CPlotSpecification> * mpPlotDefinitionList;
+    COutputDefinitionVector * mpPlotDefinitionList;
+
     bool mWithGUI;
     SCopasiXMLGUI * mpGUI;
 

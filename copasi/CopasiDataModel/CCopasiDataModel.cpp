@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 20:19:41 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:26:19 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,8 +23,9 @@
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAMethod.h"
 #include "report/CReportDefinitionVector.h"
-#include "report/CKeyFactory.h"
-#include "plot/CPlotSpecification.h"
+#include "report/CKeyFactory.h" 
+//#include "plot/CPlotSpecification.h"
+#include "plot/COutputDefinitionVector.h"
 #include "xml/CCopasiXML.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLExporter.h"
@@ -188,15 +189,24 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           pdelete(mpReportDefinitionList);
           mpReportDefinitionList = new CReportDefinitionVector;
           *static_cast< CCopasiVector< CReportDefinition > * >(mpReportDefinitionList) = *XML.getReportList();
+          mpReportDefinitionList->setObjectName("ReportDefinitions");
         }
 
       if (XML.getPlotList())
         {
           pdelete(mpPlotDefinitionList);
+          mpPlotDefinitionList = new COutputDefinitionVector;
+          *static_cast< CCopasiVector< CPlotSpecification > * >(mpPlotDefinitionList) = *XML.getPlotList();
+          mpPlotDefinitionList->setObjectName("OutputDefinitions");
+        }
+
+      /*if (XML.getPlotList())
+        {
+          pdelete(mpPlotDefinitionList);
           mpPlotDefinitionList = XML.getPlotList();
           mpPlotDefinitionList->setObjectName("PlotList");
           CCopasiContainer::Root->add(mpPlotDefinitionList, true);
-        }
+        }*/
 
       if (mWithGUI)
         {
@@ -291,7 +301,7 @@ bool CCopasiDataModel::newModel(CModel * pModel)
   mpReportDefinitionList = new CReportDefinitionVector;
 
   pdelete(mpPlotDefinitionList);
-  mpPlotDefinitionList = new CCopasiVectorN< CPlotSpecification >("PlotList", CCopasiContainer::Root);
+  mpPlotDefinitionList = new COutputDefinitionVector;
 
   if (mWithGUI)
     {
@@ -414,7 +424,7 @@ bool CCopasiDataModel::addDefaultTasks()
 CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
 {return mpReportDefinitionList;}
 
-CCopasiVectorN<CPlotSpecification> * CCopasiDataModel::getPlotDefinitionList()
+COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList()
 {return mpPlotDefinitionList;}
 
 CFunctionDB * CCopasiDataModel::getFunctionList()

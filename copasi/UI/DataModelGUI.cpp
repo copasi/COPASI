@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/12 14:09:40 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:27:22 $
    End CVS Header */
 
 #include "copasi.h"
@@ -20,6 +20,7 @@
 #include "model/CMetabNameInterface.h"
 #include "optimization/COptFunction.h"
 #include "plot/COutputHandlerPlot.h"
+#include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpec2Vector.h"
 #include "report/CReportDefinitionVector.h"
 #include "scan/CScanTask.h"
@@ -71,7 +72,8 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(115)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey()); //parameters
 
   mTree.findNodeFromId(43)->setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());
-  mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
+  //mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
+  mTree.findNodeFromId(42)->setObjectKey(CCopasiDataModel::Global->getPlotDefinitionList()->getKey());
 
   ListViews::setDataModel(this);
 }
