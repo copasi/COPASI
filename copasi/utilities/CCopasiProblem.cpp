@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/30 22:09:43 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:01:16 $
    End CVS Header */
 
 /**
@@ -58,6 +58,19 @@ bool CCopasiProblem::setCallBack(CCopasiCallBack * pCallBack)
   mpCallBack = pCallBack;
   return true;
 }
+
+//virtual
+std::vector<CDefaultPlotDescription> CCopasiProblem::getListOfDefaultPlotDescriptions() const
+  {
+    std::vector<CDefaultPlotDescription> ret;
+    return ret;
+  }
+
+//virtual
+bool CCopasiProblem::createDefaultPlot(C_INT32 C_UNUSED(id)) const
+  {
+    return false;
+  }
 
 //void CCopasiProblem::setInitialState(const CState & initialState) {}
 

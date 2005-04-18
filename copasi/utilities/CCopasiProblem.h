@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/30 22:09:43 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:01:16 $
    End CVS Header */
 
 /**
@@ -26,6 +26,15 @@
 
 class CModel;
 class CCopasiCallBack;
+
+class CDefaultPlotDescription
+  {
+  public:
+    C_INT32 id;
+    std::string name;
+    std::string description;
+    bool isPlot;
+  };
 
 class CCopasiProblem : public CCopasiParameterGroup
   {
@@ -125,6 +134,9 @@ class CCopasiProblem : public CCopasiParameterGroup
      * @result bool succes
      */
     virtual bool setCallBack(CCopasiCallBack * pCallBack);
+
+    virtual std::vector<CDefaultPlotDescription> getListOfDefaultPlotDescriptions() const;
+    virtual bool createDefaultPlot(C_INT32 id) const;
 
     /**
      * Sets the initial value (in case this applies to the specific problem)
