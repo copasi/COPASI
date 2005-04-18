@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/02 20:50:25 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:30:53 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -18,8 +18,8 @@
 //#include "MyTable.h"
 #include "model/CModel.h"
 #include "listviews.h"
-#include "report/CKeyFactory.h"
-#include "report/CReportDefinition.h"
+#include "report/CKeyFactory.h" 
+//#include "report/CReportDefinition.h"
 #include "report/CCopasiStaticString.h"
 #include "qtUtilities.h"
 #include "plot/CPlotSpec2Vector.h"
@@ -117,7 +117,7 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CPlotSpecification* pPl;
-  while (!(pPl = dataModel->getPlotDefinitionList().createPlotSpec(nname, CPlotItem::plot2d)))
+  while (!(pPl = CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(nname, CPlotItem::plot2d)))
     {
       i++;
       nname = name;
@@ -141,7 +141,7 @@ void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++)
     {
-      dataModel->getPlotDefinitionList().removePlotSpec(keys[i]);
+      CCopasiDataModel::Global->getPlotDefinitionList()->removePlotSpec(keys[i]);
       ListViews::notify(ListViews::PLOT, ListViews::DELETE, keys[i]);
     }
 }
@@ -153,7 +153,7 @@ void PlotWidget::slotBtnDefaultClicked()
   std::string nname = "ConcentrationPlot";
   int i = 0;
   CPlotSpecification* pPl;
-  while (!(pPl = dataModel->getPlotDefinitionList().createPlotSpec(nname, CPlotItem::plot2d)))
+  while (!(pPl = CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(nname, CPlotItem::plot2d)))
     {
       i++;
       nname = "ConcentrationPlot";

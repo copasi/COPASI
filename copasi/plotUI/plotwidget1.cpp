@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/11 02:26:29 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:32:21 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.40 2005/03/11 02:26:29 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.41 2005/04/18 09:32:21 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -389,9 +389,10 @@ void PlotWidget1::deletePlot()
   if (!CCopasiDataModel::Global->getModel())
     return;
 
-  dataModel->getPlotDefinitionList().removePlotSpec(objKey);
+  //dataModel->getPlotDefinitionList().removePlotSpec(objKey);
+  CCopasiDataModel::Global->getPlotDefinitionList()->removePlotSpec(objKey);
 
-  C_INT32 size = ((CCopasiDataModel::Global)->getPlotDefinitionList())->size();
+  C_INT32 size = CCopasiDataModel::Global->getPlotDefinitionList()->size();
 
   if (size >= 1)
     {
@@ -417,7 +418,7 @@ void PlotWidget1::addPlot()
   CPlotSpecification* pPl = NULL;
   name += (const char *)QString::number(i).utf8();
 
-  while (!(pPl = dataModel->getPlotDefinitionList().createPlotSpec(name, CPlotItem::plot2d)))
+  while (!(pPl = CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(name, CPlotItem::plot2d)))
     {
       i++;
       name = "plot_";
