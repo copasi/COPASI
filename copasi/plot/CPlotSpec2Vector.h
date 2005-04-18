@@ -1,32 +1,35 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/02 20:49:45 $
+   $Author: ssahle $ 
+   $Date: 2005/04/18 09:23:17 $
    End CVS Header */
 
 #if !defined PLOTSPECIFICATION_VECTOR
 #define PLOTSPECIFICATION_VECTOR
 
 #include <iostream>
-#include <string>
-#include "CPlotSpecification.h"
+#include <string> 
+//#include "CPlotSpecification.h"
 #include "utilities/CopasiTime.h"
 #include "report/CCopasiObject.h"
+#include "COutputDefinitionVector.h"
 
 class PlotWindow;
 
 class CPlotSpec2Vector : public CCopasiObject
   {
   private:
-    std::string mKey;
+    //std::string mKey;
 
     std::vector<CCopasiObjectName> mObjectNames;
     std::vector<CCopasiObject*> mObjects;
 
     std::vector<C_FLOAT64> data;
-    CCopasiVectorN<CPlotSpecification> * mpPlotDefinitionList;
+
+    //CCopasiVectorN<CPlotSpecification> * mpPlotDefinitionList;
+    COutputDefinitionVector * mpPlotDefinitionList;
 
     enum inputType {NO_INPUT, FROM_STREAM, FROM_OBJECTS};
     inputType inputFlag;
@@ -53,9 +56,9 @@ class CPlotSpec2Vector : public CCopasiObject
 
     ~CPlotSpec2Vector();
 
-    CPlotSpecification* createPlotSpec(const std::string & name,
-                                       CPlotItem::Type type = CPlotItem::plot2d);
-    bool removePlotSpec(const std::string & key);
+    //    CPlotSpecification* createPlotSpec(const std::string & name,
+    //                                       CPlotItem::Type type = CPlotItem::plot2d);
+    //    bool removePlotSpec(const std::string & key);
 
     //look up on which column in the data stream a specific object is
     //also adds the object to the data stream if necessary
@@ -69,9 +72,9 @@ class CPlotSpec2Vector : public CCopasiObject
 
     void cleanup();
 
-    const std::string& getKey();
+    //const std::string& getKey();
 
-    bool setPlotDefinitionList(CCopasiVectorN< CPlotSpecification > * pPlotDefinitionList);
+    bool setPlotDefinitionList(COutputDefinitionVector * pPlotDefinitionList);
     CCopasiVectorN< CPlotSpecification > * getPlotDefintionList();
   };
 

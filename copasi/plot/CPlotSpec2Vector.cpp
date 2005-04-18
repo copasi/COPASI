@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/06 13:10:42 $
+   $Date: 2005/04/18 09:23:16 $
    End CVS Header */
 
 #include <limits>
@@ -19,7 +19,7 @@
 CPlotSpec2Vector::CPlotSpec2Vector(const std::string & name):
     CCopasiObject(name),
     //    CCopasiVectorN<CPlotSpecification>(name, pParent),
-    mKey(GlobalKeys.add("CPlotSpecificationVector", this)),
+    //    mKey(GlobalKeys.add("CPlotSpecificationVector", this)),
     mpPlotDefinitionList(NULL),
     inputFlag(NO_INPUT)
 {}
@@ -37,14 +37,14 @@ CPlotSpec2Vector::~CPlotSpec2Vector()
 }
 
 void CPlotSpec2Vector::cleanup()
-{GlobalKeys.remove(mKey);}
+{/*GlobalKeys.remove(mKey);*/}
 
-const std::string& CPlotSpec2Vector::getKey()
+/*const std::string& CPlotSpec2Vector::getKey()
 {
   return mKey;
-}
+}*/
 
-bool CPlotSpec2Vector::setPlotDefinitionList(CCopasiVectorN<CPlotSpecification> * pPlotDefinitionList)
+bool CPlotSpec2Vector::setPlotDefinitionList(COutputDefinitionVector * pPlotDefinitionList)
 {
   mpPlotDefinitionList = pPlotDefinitionList;
   return true;
@@ -53,38 +53,40 @@ bool CPlotSpec2Vector::setPlotDefinitionList(CCopasiVectorN<CPlotSpecification> 
 CCopasiVectorN< CPlotSpecification> * CPlotSpec2Vector::getPlotDefintionList()
 {return mpPlotDefinitionList;}
 
+/*
 CPlotSpecification* CPlotSpec2Vector::createPlotSpec(const std::string & name,
     CPlotItem::Type type)
 {
   if (!mpPlotDefinitionList) return NULL;
-
+ 
   unsigned C_INT32 i;
   for (i = 0; i < mpPlotDefinitionList->size(); i++)
     if ((*mpPlotDefinitionList)[i]->getObjectName() == name)
       return NULL; // duplicate name
-
+ 
   CPlotSpecification* pNewPlotSpec = new CPlotSpecification(name, mpPlotDefinitionList, type);
   pNewPlotSpec->setObjectName(name);
-
+ 
   mpPlotDefinitionList->add(pNewPlotSpec);
   return pNewPlotSpec;
 }
-
+ 
 bool CPlotSpec2Vector::removePlotSpec(const std::string & key)
 {
   if (!mpPlotDefinitionList) return false;
-
+ 
   CPlotSpecification* pPl =
     dynamic_cast<CPlotSpecification*>(GlobalKeys.get(key));
   unsigned C_INT32 index =
     mpPlotDefinitionList->CCopasiVector<CPlotSpecification>::getIndex(pPl);
   if (index == C_INVALID_INDEX)
     return false;
-
+ 
   mpPlotDefinitionList->CCopasiVector<CPlotSpecification>::remove(index);
-
+ 
   return true;
 }
+ */
 
 bool CPlotSpec2Vector::initPlottingFromObjects()
 {
