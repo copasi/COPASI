@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:47 $
+   $Date: 2005/04/18 08:58:25 $
    End CVS Header */
 
 /**
@@ -50,7 +50,7 @@ class CFunctionDB : public CCopasiContainer
      * @param const std::string & name (default: "NoName")
      * @param const CCopasiContainer * pParent (default: RootContainer)
      */
-    CFunctionDB(const std::string & name = "NoName",
+    CFunctionDB(const std::string & name = "FunctionDB",
                 const CCopasiContainer * pParent = CCopasiContainer::Root);
 
     /**
