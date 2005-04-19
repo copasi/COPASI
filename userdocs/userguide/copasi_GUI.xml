@@ -322,6 +322,7 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
 <listitem><para>Metabolite A and B are reversibly converted to Metabolite C, the reaction has to modifiers C and D. The chemical equation for this in Copasi would be: "A + B = C; C,D"</para><para>Note that one of the modifiers is the product!</para></listitem>  
 </orderedlist>   
 </para>
+<caution><para>If the reaction takes place in one compartment, the reaction kinetic specifies a rate of concentration change, whereas if the reaction takes place in several compartments, the kinetic specifies the amount of substance change over time.</para><para>E.g. in the reaction A -> B, if A and B are in the same compartment, the kinetic function for the reaction returns its result in Mol/(l*s). If A and B reside in different compartments, the result is returned in Mol/s. (This assumes that your default units are set to Mol, l and s.)</para></caution>
 </sect1>
 <sect1 id="parameterView" xreflabel="Parameter View">
 <title>Parameter View</title>
@@ -999,6 +1000,8 @@ The dialog that pops up will let you choose the report you want to use (in case 
 <para>
 The results dialog is located directly below the time course branch in the object tree. In this widget you can choose whether you want the results to be displayed as concentrations or as particle numbers and you have the possibility to store the results to file. The advantage a report has over writing a file in the results widget is that you can choose exactly which metabolite concentrations you want to store whereas the results dialog always stores all metabolites concentrations.  
 </para>
+<para>In Copasi Build 13 a new button at the bottom of the dialog let's you create a plot output for the time course simulation. If you click on the button labelled <guilabel>Output definition</guilabel>, you can choose from a list of predefined plots. When you click on one of the plots in the list on the left side of the dialog, you can see a short description of what the plot does on the right side of the dialog. By selecting one of the predefined plots and clicking on the <guilable>Create!</guilabel> button, Copasi will create the corresponding plot item.  
+</para>
 <sect2 id="workingWithPlots" xreflabel="Working with Plots">
 <title>Working with Plots</title>
 <para>If you have an active plot defined while calculating a trajectory Copasi will draw the plot. The plot window has three elements. A toolbar at the top, that lets you zoom into the plot or print the plot. The actual plot and a legend at the bottom. The legend at the bottom is interactive and drawing of certain curves can be toggled by clicking on the corresponding legend entry.</para>
@@ -1131,7 +1134,7 @@ Depending on whether a steady state was found or not, only the elasticities tab 
 </screenshot>
 </para>
 <para>
-    The tasks for which scan can be conducted are steady state, time course and metabolic control analysis calculations. So if we want to do a scan for a time course calculation, we choose "Time Course" from the dropdown list in the <guilabel>Task</guilabel> widget. We will ignore the two checkboxes for the time being and take a look at the dropdown list at the top of the <guilabel>Scan Task</guilabel> dialog. This dropdown list contains four entries named "Parameter Scan", "Repeat", "Random distribution" and "Output separator". Those are additional elements that can be added to the main widget below to form complex tasks. Let's look at one after the other and start with the "Parameter Scan". As it is right now, the scan task does not do anything since we haven't told it yet which parameter we want to scan. To define a parameter for the scan, you choose "Parameter Scan" from the dropdown list at the top and press the create button. Copasi will add a new widget to the dialog that is called <guilabel>Scan</guilabel>. The <guilabel>Scan</guilabel> widget contains some empty lineedit fields and a button labelled <guibutton>...</guibutton> and a checkbox labelled <guilabel>logarithmic</guilabel>. </para>
+    The tasks for which scan can be conducted are steady state, time course and metabolic control analysis calculations. So if we want to do a scan for a time course calculation, we choose "Time Course" from the dropdown list in the <guilabel>Task</guilabel> widget. We will ignore the two checkboxes for the time being and take a look at the dropdown list at the top of the <guilabel>Scan Task</guilabel> dialog. This dropdown list contains four entries named "Parameter Scan", "Repeat" and "Random distribution". Those are additional elements that can be added to the main widget below to form complex tasks. Let's look at one after the other and start with the "Parameter Scan". As it is right now, the scan task does not do anything since we haven't told it yet which parameter we want to scan. To define a parameter for the scan, you choose "Parameter Scan" from the dropdown list at the top and press the create button. Copasi will add a new widget to the dialog that is called <guilabel>Scan</guilabel>. The <guilabel>Scan</guilabel> widget contains some empty lineedit fields and a button labelled <guibutton>...</guibutton> and a checkbox labelled <guilabel>logarithmic</guilabel>. </para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
@@ -1344,6 +1347,13 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
 </mediaobject>
 </screenshot>
 </para>
+<para>
+What we have left out so far are the two checkboxes at the bottom of the <guilabel>Task</guilabel> widget. The first checkbox is labeled <guilabel>always use initial conditions</guilabel>. If this checkbox is checked, each task that is run runs with the same initial conditions. If the checkbox is not checked, only the first task that runs uses the initial conditions from the model, each subsequent task uses the conditions as they are after the preceding task has finished. 
+</para>
+<para>
+The second checkbox is labeled <guilabel>Output time series</guilabel> is it is checked, Copasi will plot the complete time series result each time a time series task runs. So if during your scan, 10 time series are calculated, all ten are overlayed in the same window. If the checkbox is unchecked, Copasi will only plot the end result,i.e. the concentrations after the last step, of each time series. Since this checkbox only makes sense for the time series task, it will be disabled if another task is chosen for the scan.
+</para>
+
 </sect1>
 <sect1 id="usingSliders" xreflabel="Defining and Using Sliders">
 <title>Defining and Using Sliders</title>
@@ -1399,7 +1409,7 @@ Alternatively you can now add and modify existing sliders via a context menu. Th
 </para>
 <para>
 Once you are in the dialog for the definition of a new slider, you have to choose an object to manipulate via the slider. This object can be selected from the selection dialog that pops up when you click on the <guibutton>choose object</guibutton> button. The selection tree is the same as the ones you get when <link linkend="plotDefinitions">selecting objects for a plot</link>. The selection dialog also offers an expert mode in case the object you want to manipulate with the slider is not present in the simplified tree. Usually the objects that you want to modify in  the time course simulation are one or several of the reaction parameters. This way you can interactively see how the behaviour of your model changes when you change a specific parameter. In combination with plots this is a very powerful way to examine the behaviour of your model.</para>
-<para>Once you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. Additionally you can specify if the slider shall have a logarithmic scale and if the slider should be used for all tasks that support sliders or only for the task the slider was defined in. Per default sliders have a linear scale and are only defined for the task in which the you create them.
+<para>After you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. Additionally you can specify if the slider shall have a logarithmic or a linear scale<!-- and if the slider should be used for all tasks that support sliders or only for the task the slider was defined in-->. Per default sliders have a linear scale<!-- and are only defined for the task in which the you create them-->. Normally a slider will be available for all tasks that support sliders. An exception to this are slider for bjects that are directly associated with a specific task, e.g. the number of steps in a time series, if you choose such an object for a slider, the slider will only be available for this task.  
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
