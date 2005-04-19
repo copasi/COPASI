@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Date: 2005/04/19 13:43:06 $
    End CVS Header */
 
 #ifndef COPASI_CProcessReport
@@ -103,6 +103,15 @@ class CProcessReport
      * @param bool continue
      */
     virtual bool progress(const unsigned C_INT32 & handle = C_INVALID_INDEX);
+
+    /**
+     * Check whether processing shall proceed. If the return value is false 
+     * the calling process must halt execution and return. This method is 
+     * provided so that lenghty processing without advances in any of the 
+     * reporting items can check whether continuation is requested.
+     * @param bool continue
+     */
+    virtual bool proceed();
 
     /**
      * Reset item handle. This means that the value of the item has changed

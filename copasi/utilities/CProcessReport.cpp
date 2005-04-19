@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Date: 2005/04/19 13:43:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -94,11 +94,14 @@ unsigned C_INT32 CProcessReport::addItem(const std::string & name,
   return handle;
 }
 
-bool CProcessReport::progress(const unsigned C_INT32 & C_UNUSED(handle))
+bool CProcessReport::progress(const unsigned C_INT32 & handle)
+{return isValidHandle(handle);}
+
+bool CProcessReport::proceed()
 {return true;}
 
-bool CProcessReport::reset(const unsigned C_INT32 & C_UNUSED(handle))
-{return true;}
+bool CProcessReport::reset(const unsigned C_INT32 & handle)
+{return isValidHandle(handle);}
 
 bool CProcessReport::finish(const unsigned C_INT32 & handle)
 {
