@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Date: 2005/04/19 13:12:17 $
    End CVS Header */
 
 /**
@@ -122,7 +122,7 @@ COptTask::CallBack::CallBack(CProcessReport & parentCallBack):
     mParentCallBack(parentCallBack)
 {}
 
-COptTask::CallBack::~CallBack();
+COptTask::CallBack::~CallBack() {}
 
 unsigned C_INT32 COptTask::CallBack::addItem(const std::string & name,
     const CCopasiParameter::Type & type,
