@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/04/15 09:21:30 $
+   $Date: 2005/04/19 09:46:32 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1112,10 +1112,21 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB)
       this->functionDB = funDB;
       SBMLReader* reader = new SBMLReader(XML_SCHEMA_VALIDATION_NONE);
       SBMLDocument* sbmlDoc = reader->readSBML(filename);
-
+      sbmlDoc->validate();
       if (sbmlDoc->getNumFatals() > 0)
         {
           ParseMessage * pSBMLMessage = sbmlDoc->getFatal(0);
+
+          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
+                                 pSBMLMessage->getLine(),
+                                 pSBMLMessage->getColumn(),
+                                 pSBMLMessage->getMessage().c_str());
+
+          return NULL;
+        }
+      else if (sbmlDoc->getNumErrors() > 0)
+        {
+          ParseMessage * pSBMLMessage = sbmlDoc->getError(0);
 
           CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
                                  pSBMLMessage->getLine(),
