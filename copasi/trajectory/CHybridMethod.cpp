@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 16:45:24 $
+   $Author: jpahle $ 
+   $Date: 2005/04/19 15:32:16 $
    End CVS Header */
 
 /**
@@ -65,13 +65,13 @@ CHybridMethod::~CHybridMethod()
  *   Creates a HybridMethod adequate for the problem.
  *   (only CHybridNextReactionRKMethod so far)
  */
-CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
+CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(pProblem))
 {
   C_INT32 result = 1; // hybrid NextReactionRungeKutta method as default
-  if (pProblem && pProblem->getModel())
-    {
+  /*  if (pProblem && pProblem->getModel())
+      {
       result = checkModel(pProblem->getModel());
-    }
+      }*/
   CHybridMethod * method = NULL;
 
   switch (result)
@@ -213,8 +213,6 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   std::cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << std::endl;
   mUpperStochLimit = * (C_FLOAT64 *) getValue("HYBRID.UpperStochLimit");
   std::cout << "HYBRID.UpperStochLimit: " << mUpperStochLimit << std::endl;
-  if (mLowerStochLimit > mUpperStochLimit)
-    CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
   mStepsize = * (C_FLOAT64 *) getValue("HYBRID.RungeKuttaStepsize");
   std::cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << std::endl;
   mPartitioningInterval = * (unsigned C_INT32 *) getValue("HYBRID.PartitioningInterval");
@@ -1288,7 +1286,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                          // Everything !!!
+    case 0:                           // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << std::endl;
       os << "current time: " << mpCurrentState->getTime() << std::endl;
@@ -1398,7 +1396,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                           // Variable values only
+    case 1:                            // Variable values only
       os << "current time: " << mpCurrentState->getTime() << std::endl;
       /*
       case 1:
@@ -1514,13 +1512,12 @@ std::ostream & operator<<(std::ostream & os, const CHybridBalance & d)
 //virtual
 bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  //TODO: create messages in message.h;
-  //      rewrite CModel::suitableForStochasticSimulation() to use
+  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
   if (!pProblem)
     {
       //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 7);
       return false;
     }
 
@@ -1528,14 +1525,14 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!pTP)
     {
       //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a trajectory problem.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 8);
       return false;
     }
 
   if (pTP->getEndTime() < pTP->getStartTime())
     {
       //back integration not possible
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Negative time steps not possible with stochastic simulation.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
       return false;
     }
 
@@ -1546,6 +1543,11 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
       CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
       return false;
     }
+
+  mLowerStochLimit = * (C_FLOAT64 *) getValue("HYBRID.LowerStochLimit");
+  mUpperStochLimit = * (C_FLOAT64 *) getValue("HYBRID.UpperStochLimit");
+  if (mLowerStochLimit > mUpperStochLimit)
+    CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
 
   return true;
 }

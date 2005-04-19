@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:05:49 $
+   $Author: jpahle $ 
+   $Date: 2005/04/19 15:32:16 $
    End CVS Header */
 
 /**
@@ -18,7 +18,7 @@
  *   Author: Juergen Pahle
  *   Email: juergen.pahle@eml-r.villa-bosch.de
  *
- *   Last change: 20, December 2004
+ *   Last change: 3, March 2004
  *
  *   (C) European Media Lab 2004.
  */
@@ -286,7 +286,8 @@ void CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
 
   updatePropensities();
   for (i = 0; i < mNumReactions; i++)
-    mK[i] = getRandomPoisson(mAmu[i] * ds);
+    // todo: check conversion warning for following line
+    mK[i] = mpRandomGenerator->getRandomPoisson(mAmu[i] * ds);
   updateSystem();
   return;
 }
@@ -339,7 +340,8 @@ void CTauLeapMethod::setupBalances()
 
 /**
  *   Get a poisson-distributed random variable.
- *   (taken from Numerical Recipes for now)
+ *   (this is the version from Numerical Recipes, BUT
+ *    we use the generator in CRandom instead!)
  */
 C_INT32 CTauLeapMethod::getRandomPoisson(C_FLOAT64 lambda)
 {
@@ -528,13 +530,12 @@ void CTauLeapMethod::updateSystem()
 //virtual
 bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  //TODO: create messages in message.h;
-  //      rewrite CModel::suitableForStochasticSimulation() to use
+  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
   if (!pProblem)
     {
       //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 7);
       return false;
     }
 
@@ -542,14 +543,14 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!pTP)
     {
       //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a trajectory problem.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 8);
       return false;
     }
 
   if (pTP->getEndTime() < pTP->getStartTime())
     {
       //back integration not possible
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Negative time steps not possible with stochastic simulation.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
       return false;
     }
 

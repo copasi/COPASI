@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 16:45:24 $
+   $Author: jpahle $ 
+   $Date: 2005/04/19 15:32:16 $
    End CVS Header */
 
 #ifdef WIN32
@@ -436,7 +436,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
   mMaxBalance = maxBalance; std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =        /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =         /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
@@ -500,13 +500,12 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
 //virtual
 bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  //TODO: create messages in message.h;
-  //      rewrite CModel::suitableForStochasticSimulation() to use
+  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
   if (!pProblem)
     {
       //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 7);
       return false;
     }
 
@@ -514,14 +513,14 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!pTP)
     {
       //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a trajectory problem.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 8);
       return false;
     }
 
   if (pTP->getEndTime() < pTP->getStartTime())
     {
       //back integration not possible
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Negative time steps not possible with stochastic simulation.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
       return false;
     }
 
