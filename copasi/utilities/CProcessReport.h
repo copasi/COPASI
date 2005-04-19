@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/19 13:43:06 $
+   $Date: 2005/04/19 13:57:47 $
    End CVS Header */
 
 #ifndef COPASI_CProcessReport
@@ -137,11 +137,26 @@ class CProcessReport
     /**
      * Check whether the handle is valid, i.e., usable in progress, reset and finish.
      */
-    bool isValidHandle(const unsigned C_INT32 handle) const;
+    virtual bool isValidHandle(const unsigned C_INT32 handle) const;
+
+    /**
+     * Set the name of the process.
+     * @param const std::string & name
+     * @return sucess
+     */
+    virtual bool setName(const std::string & name);
 
     // Attributes
   protected:
+    /**
+     * The list process report items.
+     */
     CVector< CProcessReportItem * > mProcessReportItemList;
+
+    /**
+     * The name of the process.
+     */
+    std::string mName;
   };
 
 #endif // COPASI_CProcessReport
