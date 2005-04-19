@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/16 09:36:26 $
+   $Author: shoops $ 
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /**
@@ -103,7 +103,7 @@ CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
 
 CCopasiMethod::~CCopasiMethod() {}
 
-bool CCopasiMethod::setCallBack(CCopasiCallBack * pCallBack)
+bool CCopasiMethod::setCallBack(CProcessReport * pCallBack)
 {
   mpCallBack = pCallBack;
   return true;

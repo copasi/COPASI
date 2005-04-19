@@ -55,10 +55,6 @@ CFG=utilities - Win32 Build
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\CCopasiCallBack.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CCopasiException.cpp
 # End Source File
 # Begin Source File
@@ -103,6 +99,10 @@ SOURCE=.\COutputHandler.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CProcessReport.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReadConfig.cpp
 # End Source File
 # Begin Source File
@@ -133,10 +133,6 @@ SOURCE=.\utility.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=.\CCopasiCallBack.h
-# End Source File
 # Begin Source File
 
 SOURCE=.\CCopasiException.h
@@ -200,6 +196,10 @@ SOURCE=.\CopasiTime.h
 # Begin Source File
 
 SOURCE=.\COutputHandler.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CProcessReport.h
 # End Source File
 # Begin Source File
 

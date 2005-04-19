@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 22:10:16 $
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /**
@@ -56,6 +56,16 @@ COptTask::~COptTask()
 
 void COptTask::cleanup(){}
 
+bool COptTask::setCallBack(CProcessReport * pCallBack)
+{
+  bool success = true;
+
+  if (!mpProblem->setCallBack(pCallBack)) success = false;
+  if (!mpMethod->setCallBack(pCallBack)) success = false;
+
+  return success;
+}
+
 bool COptTask::initialize(std::ostream * pOstream)
 {
   COptProblem * pProblem = dynamic_cast<COptProblem *>(mpProblem);
@@ -105,4 +115,35 @@ bool COptTask::setMethodType(const int & type)
   //mpMethod->setObjectParent(this);
 
   return true;
+}
+
+COptTask::CallBack::CallBack(CProcessReport & parentCallBack):
+    CProcessReport(),
+    mParentCallBack(parentCallBack)
+{}
+
+COptTask::CallBack::~CallBack();
+
+unsigned C_INT32 COptTask::CallBack::addItem(const std::string & name,
+    const CCopasiParameter::Type & type,
+    const void * pValue,
+    const void * pEndValue)
+{
+  CProcessReport::addItem(name, type, pValue, pEndValue);
+  return mParentCallBack.addItem(name, type, pValue, pEndValue);
+}
+
+bool COptTask::CallBack::progress(const unsigned C_INT32 & index)
+{
+  return mParentCallBack.progress(index);
+}
+
+bool COptTask::CallBack::reset(const unsigned C_INT32 & index)
+{
+  return mParentCallBack.reset(index);
+}
+
+bool COptTask::CallBack::finish(const unsigned C_INT32 & index)
+{
+  return mParentCallBack.finish(index);
 }

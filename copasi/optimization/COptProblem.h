@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 22:10:16 $
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /**
@@ -112,10 +112,10 @@ class COptProblem : public CCopasiProblem
 
     /**
      * Set the call back of the problem
-     * @param CCopasiCallBack * pCallBack
+     * @param CProcessReport * pCallBack
      * @result bool succes
      */
-    virtual bool setCallBack(CCopasiCallBack * pCallBack);
+    virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
      * Do all neccessary initialization so that calls to caluclate will 

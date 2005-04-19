@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:01:16 $
+   $Author: shoops $ 
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /**
@@ -25,7 +25,7 @@
 #include "model/CState.h"
 
 class CModel;
-class CCopasiCallBack;
+class CProcessReport;
 
 class CDefaultPlotDescription
   {
@@ -54,7 +54,7 @@ class CCopasiProblem : public CCopasiParameterGroup
     /**
      * a pointer to the callback 
      */
-    CCopasiCallBack * mpCallBack;
+    CProcessReport * mpCallBack;
 
     // propably for optimization only
 #ifdef XXXX
@@ -130,10 +130,10 @@ class CCopasiProblem : public CCopasiParameterGroup
 
     /**
      * Set the call back of the problem
-     * @param CCopasiCallBack * pCallBack
+     * @param CProcessReport * pCallBack
      * @result bool succes
      */
-    virtual bool setCallBack(CCopasiCallBack * pCallBack);
+    virtual bool setCallBack(CProcessReport * pCallBack);
 
     virtual std::vector<CDefaultPlotDescription> getListOfDefaultPlotDescriptions() const;
     virtual bool createDefaultPlot(C_INT32 id) const;

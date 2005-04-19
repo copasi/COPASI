@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/16 09:36:26 $
+   $Author: shoops $ 
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /**
@@ -23,7 +23,7 @@
 #include "CCopasiTask.h"
 #include "CReadConfig.h"
 
-class CCopasiCallBack;
+class CProcessReport;
 
 class CCopasiMethod : public CCopasiParameterGroup
   {
@@ -76,7 +76,7 @@ class CCopasiMethod : public CCopasiParameterGroup
     /**
      * a pointer to the callback 
      */
-    CCopasiCallBack * mpCallBack;
+    CProcessReport * mpCallBack;
 
     // Operations
 
@@ -131,10 +131,10 @@ class CCopasiMethod : public CCopasiParameterGroup
 
     /**
      * Set the call back of the problem
-     * @param CCopasiCallBack * pCallBack
+     * @param CProcessReport * pCallBack
      * @result bool succes
      */
-    virtual bool setCallBack(CCopasiCallBack * pCallBack);
+    virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
      * Retrieve the type of the method

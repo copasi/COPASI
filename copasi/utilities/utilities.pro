@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/03/30 22:10:16 $  
+# $Revision: 1.12 $ $Author: shoops $ $Date: 2005/04/19 11:43:41 $  
 ######################################################################
 
 LIB = utilities
@@ -9,7 +9,6 @@ include(../common.pri)
 
 # Input
 HEADERS += CAnnotatedMatrix.h \
-           CCopasiCallBack.h \
            CCopasiException.h \
            CCopasiMessage.h \
            CCopasiMethod.h \
@@ -25,6 +24,7 @@ HEADERS += CAnnotatedMatrix.h \
            CluX.h \
            CMatrix.h \
            COutputHandler.h \
+           CProcessReport.h \
            CReadConfig.h \
            CSlider.h \
 #           CSparseMatrix.h \
@@ -36,7 +36,6 @@ HEADERS += CAnnotatedMatrix.h \
            utility.h
 
 SOURCES += CAnnotatedMatrix.cpp \
-           CCopasiCallBack.cpp \
            CCopasiException.cpp \
            CCopasiMessage.cpp \
            CCopasiMethod.cpp \
@@ -47,6 +46,7 @@ SOURCES += CAnnotatedMatrix.cpp \
            CDependencyGraph.cpp \
            CIndexedPriorityQueue.cpp \
            COutputHandler.cpp \
+           CProcessReport.cpp \
            CReadConfig.cpp \
            CSlider.cpp \
 #           CSparseMatrix.cpp \

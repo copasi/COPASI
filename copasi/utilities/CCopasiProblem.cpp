@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:01:16 $
+   $Author: shoops $ 
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /**
@@ -53,7 +53,7 @@ bool CCopasiProblem::setModel(CModel * pModel)
 
 CModel * CCopasiProblem::getModel() const {return mpModel;}
 
-bool CCopasiProblem::setCallBack(CCopasiCallBack * pCallBack)
+bool CCopasiProblem::setCallBack(CProcessReport * pCallBack)
 {
   mpCallBack = pCallBack;
   return true;

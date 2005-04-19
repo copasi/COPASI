@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 22:09:43 $
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /**
@@ -26,7 +26,7 @@ class CCopasiProblem;
 class CCopasiMethod;
 class CCallbackHandler;
 class CCopasiParameterGroup;
-class CCopasiCallBack;
+class CProcessReport;
 
 class CCopasiTask : public CCopasiContainer
   {
@@ -187,6 +187,13 @@ class CCopasiTask : public CCopasiContainer
     const bool & isScheduled() const;
 
     /**
+     * Set the call back of the task
+     * @param CProcessReport * pCallBack
+     * @result bool succes
+     */
+    virtual bool setCallBack(CProcessReport * pCallBack);
+
+    /**
      * Initialize the task. If an ostream is given this ostream is used
      * instead of the target specified in the report. This allows nested 
      * tasks to share the same output device.
@@ -196,10 +203,9 @@ class CCopasiTask : public CCopasiContainer
 
     /**
      * Process the task
-     * @param CCopasiCallBack * pCallBack;
      * @return bool success
      */
-    virtual bool process(CCopasiCallBack * pCallBack);
+    virtual bool process();
 
     /**
      * Process the task. This is called by the scan task.

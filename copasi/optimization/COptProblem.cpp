@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 22:10:16 $
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /**
@@ -30,7 +30,7 @@
 #include "model/CCompartment.h"
 
 #include "report/CCopasiObjectReference.h"
-#include "utilities/CCopasiCallBack.h"
+#include "utilities/CProcessReport.h"
 
 //  Default constructor
 COptProblem::COptProblem(const CCopasiContainer * pParent):
@@ -73,14 +73,13 @@ bool COptProblem::setModel(CModel * pModel)
   return true;
 }
 
-bool COptProblem::setCallBack(CCopasiCallBack * pCallBack)
+bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
-  std::vector< CCopasiCallBackItem > List;
-  List.push_back(CCopasiCallBackItem("Simulation Counter", DBL_MAX,
-                                     getObject(CCopasiObjectName("Reference=Simulation Counter"))));
 
-  mpCallBack->init(List);
+  mpCallBack->addItem("Simulation Counter",
+                      CCopasiParameter::DOUBLE,
+                      getObject(CCopasiObjectName("Reference=Simulation Counter")));
 
   return true;
 }

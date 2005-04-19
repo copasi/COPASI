@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 22:10:16 $
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -15,7 +15,7 @@
 #include "COptItem.h"
 
 #include "randomGenerator/CRandom.h"
-#include "utilities/CCopasiCallBack.h"
+#include "utilities/CProcessReport.h"
 #include "report/CCopasiObjectReference.h"
 
 COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
@@ -64,17 +64,22 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
 COptMethodGA::~COptMethodGA()
 {cleanup();}
 
-bool COptMethodGA::setCallBack(CCopasiCallBack * pCallBack)
+bool COptMethodGA::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiMethod::setCallBack(pCallBack);
 
-  std::vector< CCopasiCallBackItem > List;
-  List.push_back(CCopasiCallBackItem("Current Generation", mGenerations,
-                                     getObject(CCopasiObjectName("Reference=Current Generation"))));
-  List.push_back(CCopasiCallBackItem("Objective Value", DBL_MAX,
-                                     getObject(CCopasiObjectName("Reference=Objective Value"))));
+  pCallBack->addItem("Current Generation",
+                     CCopasiParameter::UINT,
+                     getObject(CCopasiObjectName("Reference=Current Generation")),
+                     & mGenerations);
 
-  return mpCallBack->init(List);
+  C_FLOAT64 EndValue = DBL_MAX;
+  pCallBack->addItem("Objective Value",
+                     CCopasiParameter::DOUBLE,
+                     getObject(CCopasiObjectName("Reference=Objective Value")),
+                     & EndValue);
+
+  return true;
 }
 
 // evaluate the fitness of one individual

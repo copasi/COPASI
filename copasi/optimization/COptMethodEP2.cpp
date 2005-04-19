@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/18 02:58:23 $
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /***************************************************************************
@@ -63,7 +63,7 @@ C_INT32 COptMethodEP2::optimise()
 {
   NumGeneration = (C_INT32) getValue("EvolutionaryProgram2.Iterations");
   PopulationSize = (C_INT32) getValue("EvolutionaryProgram2.PopulationSize");
-  NumParameter = mOptProblem->getVariableSize();
+  NumParameter = mpOptProblem->getVariableSize();
 
   /* Create a random number generator */
   CRandom::Type Type;
@@ -74,23 +74,10 @@ C_INT32 COptMethodEP2::optimise()
 
   assert(pRand);
 
-  const double ** Minimum = mOptProblem->getParameterMin().array();
-  const double ** Maximum = mOptProblem->getParameterMax().array();
+  const double ** Minimum = mpOptProblem->getParameterMin().array();
+  const double ** Maximum = mpOptProblem->getParameterMax().array();
 
-  CVector< C_FLOAT64 > & Parameter = mOptProblem->getCalculateVariables();
-
-#ifdef XXXX
-  double **Parameter;
-  Parameter = new double * [2 * PopulationSize];
-
-  for (int ii = 0; ii < 2*PopulationSize; ii++)
-    {
-      Parameter[ii] = new double[NumParameter];
-    }
-
-  for (int dd = 0; dd < 2*PopulationSize; dd++)
-    Parameter[dd] = mParameters->array();
-#endif // XXXX
+  std::vector< UpdateMethod * > & Parameter = mpOptProblem->getCalculateVariableUpdateMethods();
 
   double current_best_value, la;
   int i, j, last_update, u10, u30, u50;
@@ -109,12 +96,10 @@ C_INT32 COptMethodEP2::optimise()
   CrossPoint = new int[NumParameter];
 
   // create the population array
-  individual = new double * [2 * PopulationSize];
+  individual.resize(2 * PopulationSize);
   // create the individuals
   for (i = 0; i < 2*PopulationSize; i++)
-    {
-      individual[i] = new double[NumParameter];
-    }
+    individual[i].resize(NumParameter);
 
   // Prepare inital population
   //Generate the initial population at random
@@ -146,8 +131,10 @@ C_INT32 COptMethodEP2::optimise()
       try
         {
           // calculate its fitness value
-          for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[i][kk];}
-          CandidateValue[i] = mOptProblem->calculate();
+          for (int kk = 0; kk < NumParameter; kk++)
+            (*Parameter[kk])(individual[i][kk]);
+
+          CandidateValue[i] = mpOptProblem->calculate();
         }
       catch (int)
         {
@@ -274,10 +261,9 @@ C_INT32 COptMethodEP2::optimise()
             }
           // evaluate the fitness
           for (int kk = 0; kk < NumParameter; kk++)
-            {
-              Parameter[kk] = individual[nn][kk];
-            }
-          CandidateValue[nn] = mOptProblem->calculate();
+            (*Parameter[kk])(individual[nn][kk]);
+
+          CandidateValue[nn] = mpOptProblem->calculate();
         }
 
       // select approprate individuals as new population
@@ -325,8 +311,10 @@ C_INT32 COptMethodEP2::optimise()
               try
                 {
                   // calculate its fitness
-                  for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[mm][kk];}
-                  CandidateValue[mm] = mOptProblem->calculate();
+                  for (int kk = 0; kk < NumParameter; kk++)
+                    (*Parameter[kk])(individual[mm][kk]);
+
+                  CandidateValue[mm] = mpOptProblem->calculate();
                 }
               catch (int)
                 {
@@ -369,8 +357,10 @@ C_INT32 COptMethodEP2::optimise()
                   try
                     {
                       // calculate its fitness
-                      for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[mm][kk];}
-                      CandidateValue[mm] = mOptProblem->calculate();
+                      for (int kk = 0; kk < NumParameter; kk++)
+                        (*Parameter[kk])(individual[mm][kk]);
+
+                      CandidateValue[mm] = mpOptProblem->calculate();
                     }
                   catch (int)
                     {
@@ -413,8 +403,10 @@ C_INT32 COptMethodEP2::optimise()
                       try
                         {
                           // calculate its fitness
-                          for (int kk = 0; kk < NumParameter; kk++) {Parameter[kk] = individual[mm][kk];}
-                          CandidateValue[mm] = mOptProblem->calculate();
+                          for (int kk = 0; kk < NumParameter; kk++)
+                            (*Parameter[kk])(individual[mm][kk]);
+
+                          CandidateValue[mm] = mpOptProblem->calculate();
                         }
                       catch (int)
                         {
@@ -430,19 +422,13 @@ C_INT32 COptMethodEP2::optimise()
         }
     } // end iteration of generations
 
-  for (int kk = 0; kk < NumParameter; kk++)
-    {
-      Parameter[kk] = individual[BestFoundSoFar][kk];
-    }
+  //store the combination of the BestFoundSoFar parameter values found so far
+  mpOptProblem->setSolutionVariables(individual[BestFoundSoFar]);
 
   //set the  BestFoundSoFar function value
-  mOptProblem->setSolutionValue(Get_BestFoundSoFar_candidate());
-
-  //store the combination of the BestFoundSoFar parameter values found so far
-  mOptProblem->getSolutionVariables() = Parameter;
+  mpOptProblem->setSolutionValue(CandidateValue[BestFoundSoFar]);
 
   //free memory space
-  delete individual;
   delete CrossPoint;
   delete WinScore;
   delete CandidateValue;
@@ -515,7 +501,7 @@ void COptMethodEP2::select(int SelectionStrategy)
 
   switch (SelectionStrategy)
     {
-    case 1:       // parent-offspring competition
+    case 1:        // parent-offspring competition
       for (i = PopulationSize; i < 2*PopulationSize; i++)
         {
           // if offspring is fitter keep it
@@ -525,7 +511,7 @@ void COptMethodEP2::select(int SelectionStrategy)
             }
         }
       break;
-    case 2:       // tournament competition
+    case 2:        // tournament competition
       // compete with 20% of the population
       TournamentSize = PopulationSize / 5;
       // but at least one

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2005/01/24 16:11:29 $
+   $Author: shoops $ 
+   $Date: 2005/04/19 11:43:41 $
    End CVS Header */
 
 /**
@@ -18,11 +18,12 @@
 #define COPASI_COptTask
 
 #include "utilities/CVector.h"
+#include "utilities/CCopasiTask.h"
+#include "utilities/CProcessReport.h"
 
 class COptProblem;
 class COptMethod;
 class CReport;
-#include "utilities/CCopasiTask.h"
 
 class COptTask : public CCopasiTask
   {
@@ -38,6 +39,42 @@ class COptTask : public CCopasiTask
      * Unique Key
      */
     std::string mKey;
+
+  class CallBack: public CProcessReport
+      {
+        // Attributes
+      private:
+        CProcessReport & mParentCallBack;
+
+        // Operations
+      public:
+        CallBack(CProcessReport & parentCallBack);
+
+        virtual ~CallBack();
+
+        virtual unsigned C_INT32 addItem(const std::string & name,
+                                         const CCopasiParameter::Type & type,
+                                         const void * pValue,
+                                         const void * pEndValue = NULL);
+
+        virtual bool progress(const unsigned C_INT32 & index = C_INVALID_INDEX);
+
+        virtual bool reset(const unsigned C_INT32 & index = C_INVALID_INDEX);
+
+        virtual bool finish(const unsigned C_INT32 & index = C_INVALID_INDEX);
+
+        bool setParentCallBack(CProcessReport * pCallBack);
+      };
+
+    /**
+     * problem callback
+     */
+    CallBack *mpProblemCallBack;
+
+    /**
+     * method callback
+     */
+    CallBack * mpMethodCallBack;
 
     /**
      * for progress bar
@@ -79,6 +116,13 @@ class COptTask : public CCopasiTask
      * cleanup()
      */
     void cleanup();
+
+    /**
+     * Set the call back of the task
+     * @param CProcessReport * pCallBack
+     * @result bool succes
+     */
+    virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
      * Initilize 
