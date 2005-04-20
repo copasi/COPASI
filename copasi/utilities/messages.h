@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2005/04/19 15:32:16 $
+   $Date: 2005/04/20 12:01:01 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -62,7 +62,7 @@ MESSAGES Messages[] =
      "applicable, since reversible reactions exists."},
     {MCTrajectoryMethod + 3, "CTrajectoryMethod (3): Hybrid simulation not "
      "applicable, since more than one compartment is involved."},
-    {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): mLowerStochLimit ('%f') is greater than mUpperStochLimit ('%f')."},
+    {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): mLowerStochLimit ('%.2f') is greater than mUpperStochLimit ('%.2f')."},
     {MCTrajectoryMethod + 5, "CTrajectoryMethod (5): Invalid step size = '%f'."},
     {MCTrajectoryMethod + 6, "CTrajectoryMethod (6): Deterministic integration failed. "
      "LSODA reported: %s \n\nPlease see result for indications of numerical instability."},
