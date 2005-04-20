@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 13:33:56 $
+   $Author: jpahle $ 
+   $Date: 2005/04/20 14:21:57 $
    End CVS Header */
 
 /**
@@ -213,7 +213,7 @@ class CTauLeapMethod : public CTrajectoryMethod
      *   The k-values of the reactions, that is the
      *   probabilistic number of firings within one leap.
      */
-    std::vector <C_INT32> mK;
+    std::vector <C_INT64> mK;
 
     /**
      *   The particle numbers.

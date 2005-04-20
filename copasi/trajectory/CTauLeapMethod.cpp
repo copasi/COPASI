@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2005/04/19 15:32:16 $
+   $Date: 2005/04/20 14:21:57 $
    End CVS Header */
 
 /**
@@ -18,7 +18,7 @@
  *   Author: Juergen Pahle
  *   Email: juergen.pahle@eml-r.villa-bosch.de
  *
- *   Last change: 3, March 2004
+ *   Last change: 20, April 2004
  *
  *   (C) European Media Lab 2004.
  */
@@ -47,6 +47,7 @@
 #include "utilities/CIndexedPriorityQueue.h"
 #include "randomGenerator/CRandom.h"
 
+/* needed for the poisson random generator in Numerical Recipes */
 const C_FLOAT64 CTauLeapMethod::cof[6] =
   {
     76.18009172947146,
@@ -73,13 +74,13 @@ CTauLeapMethod::~CTauLeapMethod()
  *   Creates a TauLeapMethod adequate for the problem.
  *   (only regular TauLeapMethod so far)
  */
-CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * pProblem)
+CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSED(pProblem))
 {
   C_INT32 result = 1; // regular TauLeap method as default
-  if (pProblem && pProblem->getModel())
-    {
+  /*  if (pProblem && pProblem->getModel())
+      {
       result = checkModel(pProblem->getModel());
-    }
+      }*/
   CTauLeapMethod * method = NULL;
 
   switch (result)
@@ -283,11 +284,15 @@ C_INT32 CTauLeapMethod::checkModel(CModel * model)
 void CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
 {
   unsigned C_INT32 i;
+  C_FLOAT64 lambda;
 
   updatePropensities();
   for (i = 0; i < mNumReactions; i++)
-    // todo: check conversion warning for following line
-    mK[i] = mpRandomGenerator->getRandomPoisson(mAmu[i] * ds);
+    {
+      if ((lambda = mAmu[i] * ds) < 0.0)
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 10);
+      mK[i] = (C_INT64)mpRandomGenerator->getRandomPoisson(mAmu[i] * ds);
+    }
   updateSystem();
   return;
 }
@@ -520,7 +525,7 @@ void CTauLeapMethod::updateSystem()
 
   for (i = 0; i < mNumReactions; i++)
     for (it = mLocalBalances[i].begin(); it != mLocalBalances[i].end(); it++)
-      mNumbers[it->mIndex] += mK[i] * (it->mMultiplicity);
+      mNumbers[it->mIndex] += mK[i] * (C_INT64)(it->mMultiplicity);
 
   for (i = 0; i < mNumNumbers; i++)
     mpModel->getMetabolites()[i]->setNumber(mNumbers[i]);
@@ -559,6 +564,14 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
     {
       //model not suitable, message describes the problem
       CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      return false;
+    }
+
+  mTau = * (C_FLOAT64 *) getValue("TAULEAP.Tau");
+  if (mTau <= 0.0)
+    {
+      // tau-value is not positive
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 11, mTau);
       return false;
     }
 
