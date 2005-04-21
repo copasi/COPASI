@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/03/16 14:51:29 $
+   $Date: 2005/04/21 08:53:07 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -176,7 +176,13 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
                 {
                   indexTable.push_back(index);
 
-                  indexTableNames.push_back("+"); //TODO: get display names from somewhere
+                  //store object names
+                  CCopasiObject* tmpObj =
+                    CCopasiContainer::ObjectFromName(pspec->getItems()[i]->getChannels()[jj]);
+                  if (tmpObj)
+                    indexTableNames.push_back(tmpObj->getObjectDisplayName());
+                  else
+                    indexTableNames.push_back("?");
                 }
               dataIndices[i][jj] = iterindex;
             }
@@ -305,13 +311,13 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
             tmpType = *(const unsigned C_INT32*)tmp;
           switch (tmpType)
             {
-            case 0:    //curve
+            case 0:        //curve
               setCurveStyle(crv, QwtCurve::Lines);
               break;
-            case 1:    //points
+            case 1:        //points
               setCurveStyle(crv, QwtCurve::Dots);
               break;
-            case 2:    //symbols
+            case 2:        //symbols
               setCurveStyle(crv, QwtCurve::NoCurve);
               const QColor &c = curveColours[k % 5];
               setCurveSymbol(crv, QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
@@ -353,6 +359,8 @@ void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
           unsigned C_INT32 newSize = data[0]->size() + 1000;
           for (i = 0; i < data.size(); i++)
             data[i]->resize(newSize);
+          updateCurves(false); //tell the curves that the location of the data has changed
+          //otherwise repaint events could crash
         }
 
       //the data that needs to be stored internally:
@@ -372,7 +380,7 @@ void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
     }
 }
 
-void CopasiPlot::updatePlot()
+void CopasiPlot::updateCurves(bool doHisto)
 {
   // TODO: only do this once
   QMemArray<long> crvKeys = curveKeys();
@@ -393,16 +401,22 @@ void CopasiPlot::updatePlot()
           break;
 
         case CPlotItem::histoItem1d :
-          curve(crvKeys.at(k))->setRawData(mHistograms[mHistoIndices[k]].getXArray(),
-                                           mHistograms[mHistoIndices[k]].getYArray(),
-                                           mHistograms[mHistoIndices[k]].size());
+          if (doHisto)
+            curve(crvKeys.at(k))->setRawData(mHistograms[mHistoIndices[k]].getXArray(),
+                                             mHistograms[mHistoIndices[k]].getYArray(),
+                                             mHistograms[mHistoIndices[k]].size());
           break;
 
         default :
           fatalError();
         }
-      //drawCurveInterval(crvKeys[k], 0, ndata-1);
     }
+}
+
+void CopasiPlot::updatePlot()
+{
+  updateCurves(true);
+
   replot();
 }
 
@@ -505,7 +519,7 @@ bool CopasiPlot::saveData(const std::string & filename)
       fs << "# ";
       unsigned C_INT32 i, imax = indexTable.size();
       for (i = 0; i < imax; ++i)
-        fs << indexTableNames[i] << " ";
+        fs << indexTableNames[i] << "\t";
       fs << "\n";
 
       //now the data
@@ -515,7 +529,7 @@ bool CopasiPlot::saveData(const std::string & filename)
           if (data[0]->at(j) == data[0]->at(j)) // not NaN
             {
               for (i = 0; i < imax; ++i)
-                fs << data[i]->at(j) << " ";
+                fs << data[i]->at(j) << "\t";
             }
           fs << "\n";
         }
@@ -537,7 +551,7 @@ bool CopasiPlot::saveData(const std::string & filename)
           const double* y = mHistograms[j].getYArray();
           for (i = 0; i < imax; ++i)
             {
-              fs << *x++ << " " << *y++ << "\n";
+              fs << *x++ << "\t" << *y++ << "\n";
             }
         }
     }

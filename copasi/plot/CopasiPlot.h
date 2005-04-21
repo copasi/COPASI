@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/03/16 14:51:29 $
+   $Date: 2005/04/21 08:53:08 $
    End CVS Header */
 
 // the plot object for copasi
@@ -106,6 +106,11 @@ class CopasiPlot : public ZoomPlot
     void updatePlot();
 
     bool saveData(const std::string & filename);
+
+  private:
+    // tell the curves where the data is located. Is used before redraw
+    // and after reallocating the memory for the curve data
+    void updateCurves(bool doHisto);
 
   private slots:
     void mousePressed(const QMouseEvent &e);
