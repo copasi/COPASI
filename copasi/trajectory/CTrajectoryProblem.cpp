@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/18 11:36:51 $
+   $Date: 2005/04/25 11:23:47 $
    End CVS Header */
 
 /**
@@ -288,19 +288,52 @@ bool CTrajectoryProblem::sync()
 std::vector<CDefaultPlotDescription> CTrajectoryProblem::getListOfDefaultPlotDescriptions() const
   {
     std::vector<CDefaultPlotDescription> ret;
+    if (!mpModel) return ret;
     CDefaultPlotDescription tmp;
 
     //concentrations plot
     tmp.id = 0;
     tmp.name = "Concentrations plot";
-    tmp.description = "A plot of all the metabolite concentrations vs. time.";
+    tmp.description = "A plot of the variable metabolite concentrations vs. time.\nIt does not contain the concentrations of fixed metabolites.";
     tmp.isPlot = true;
     ret.push_back(tmp);
 
     //particle numbers plot
     tmp.id = 1;
     tmp.name = "Particle numbers plot";
-    tmp.description = "A plot of all the metabolite particle numbers vs. time.";
+    tmp.description = "A plot of the variable metabolite particle numbers vs. time.\nIt does not contain the particle numbers of fixed metabolites.";
+    tmp.isPlot = true;
+    ret.push_back(tmp);
+
+    //offer some plots only if there are fixed metabs
+    bool fixedMetab = false;
+    const CCopasiVector< CMetab > & metabs = mpModel->getMetabolites();
+    C_INT32 i, imax = metabs.size();
+    for (i = 0; i < imax; ++i)
+      if (metabs[i]->getStatus() == CMetab::METAB_FIXED)
+      {fixedMetab = true; break;}
+
+    if (fixedMetab)
+      {
+        //complete concentrations plot
+        tmp.id = 2;
+        tmp.name = "Complete concentrations plot";
+        tmp.description = "A plot of all the metabolite concentrations vs. time (including fixed metabolites).";
+        tmp.isPlot = true;
+        ret.push_back(tmp);
+
+        //complete particle numbers plot
+        tmp.id = 3;
+        tmp.name = "Complete particle numbers plot";
+        tmp.description = "A plot of all the metabolite particle numbers vs. time (including fixed metabolites).";
+        tmp.isPlot = true;
+        ret.push_back(tmp);
+      }
+
+    //empty plot
+    tmp.id = 99;
+    tmp.name = "Empty plot";
+    tmp.description = "A plot with nothing in it.";
     tmp.isPlot = true;
     ret.push_back(tmp);
 
@@ -313,17 +346,26 @@ std::vector<CDefaultPlotDescription> CTrajectoryProblem::getListOfDefaultPlotDes
 //virtual
 bool CTrajectoryProblem::createDefaultPlot(C_INT32 id) const
   {
-    std::cout << id << std::endl;
+    //std::cout << id << std::endl;
     if (!mpModel) return false;
 
     std::string bname;
     switch (id)
       {
       case 0:
-        bname = "Concentrations Plot";
+        bname = "Concentrations plot";
         break;
       case 1:
-        bname = "Particle numbers Plot";
+        bname = "Particle numbers plot";
+        break;
+      case 2:
+        bname = "Complete concentrations plot";
+        break;
+      case 3:
+        bname = "Complete particle numbers plot";
+        break;
+      case 99:
+        bname = "Empty plot";
         break;
       default:
         return false;
@@ -341,6 +383,10 @@ bool CTrajectoryProblem::createDefaultPlot(C_INT32 id) const
         nname << bname << "_" << i;
       }
 
+    //empty plot
+    if (id == 99) return true;
+
+    //id 0,1,2,3
     CPlotItem * plItem;
     std::string itemTitle;
     CPlotDataChannelSpec name2;
@@ -348,21 +394,26 @@ bool CTrajectoryProblem::createDefaultPlot(C_INT32 id) const
 
     CPlotDataChannelSpec name1 = mpModel->getObject(CCopasiObjectName("Reference=Time"))->getCN();
 
+    bool allMetabs = (id == 2) || (id == 3);
+
     unsigned C_INT32 imax = mpModel->getMetabolites().size();
     for (i = 0; i < imax; ++i)
       {
-        if (id == 0)
-          tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"));
-        else
-          tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=ParticleNumber"));
+        if ((mpModel->getMetabolites()[i]->getStatus() != CMetab::METAB_FIXED) || allMetabs)
+          {
+            if ((id == 0) || (id == 2))
+              tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"));
+            else
+              tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=ParticleNumber"));
 
-        name2 = tmp->getCN();
-        itemTitle = tmp->getObjectDisplayName();
-        //std::cout << itemTitle << " : " << name2 << std::endl;
+            name2 = tmp->getCN();
+            itemTitle = tmp->getObjectDisplayName();
+            //std::cout << itemTitle << " : " << name2 << std::endl;
 
-        plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
-        plItem->addChannel(name1);
-        plItem->addChannel(name2);
+            plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
+            plItem->addChannel(name1);
+            plItem->addChannel(name2);
+          }
       }
     return true;
   }
