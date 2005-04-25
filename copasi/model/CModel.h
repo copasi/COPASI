@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/17 10:12:27 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:16:13 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -24,7 +24,7 @@
 class CCompartment;
 class CState;
 class CStateX;
-class CCallbackHandler;
+class CProcessReport;
 
 /** @dia:pos 177.081,30.2423 */
 class CModel : public CCopasiContainer
@@ -380,7 +380,7 @@ class CModel : public CCopasiContainer
      */
     bool mCompileIsNecessary;
 
-    CCallbackHandler * mpCompileHandler;
+    CProcessReport * mpCompileHandler;
 
     /**
      * The number of fixed metabs in the model
@@ -954,12 +954,12 @@ class CModel : public CCopasiContainer
     /**
      * set Progress bar handler
      **/
-    void setCompileHandler(CCallbackHandler* pHandler);
+    void setCompileHandler(CProcessReport* pHandler);
 
     /**
      * get address of progress bar handler
      **/
-    CCallbackHandler* getCompileHandlerAddr();
+    CProcessReport* getCompileHandlerAddr();
 
     /**
      * check if the model is suitable for stochastic simulation

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 16:44:27 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:16:13 $
    End CVS Header */
 
 /**
@@ -27,7 +27,7 @@ class CSteadyStateProblem;
 class CState;
 class CStateX;
 class CEigen;
-class CCallbackHandler;
+class CProcessReport;
 
 class CSteadyStateMethod : public CCopasiMethod
   {
@@ -79,7 +79,7 @@ class CSteadyStateMethod : public CCopasiMethod
     /**
      * A pointer to the progress bar handler
      */
-    CCallbackHandler * mpProgressHandler;
+    CProcessReport * mpProgressHandler;
 
     // Operations
   private:
@@ -143,7 +143,7 @@ class CSteadyStateMethod : public CCopasiMethod
                                            CMatrix< C_FLOAT64 > & jacobianX,
                                            CEigen * pEigenValues,
                                            CEigen * pEigenValuesX,
-                                           CCallbackHandler* handler);
+                                           CProcessReport * handler);
 
     /**
      * Check if the method is suitable for this problem

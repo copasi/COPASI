@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 20:04:01 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:16:14 $
    End CVS Header */
 
 /********************************************************
@@ -316,8 +316,9 @@ void SteadyStateWidget::runSteadyStateTask()
   mSteadyStateTask->initialize();
 
   setCursor(Qt::WaitCursor);
-  CProgressBar* tmpBar = new CProgressBar(dataModel);
+  CProgressBar * tmpBar = new CProgressBar();
   mSteadyStateTask->setProgressHandler(tmpBar);
+  tmpBar->show();
 
   try
     {

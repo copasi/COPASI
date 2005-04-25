@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.92 $ $Author: ssahle $ $Date: 2005/04/18 11:09:46 $  
+# $Revision: 1.93 $ $Author: shoops $ $Date: 2005/04/25 18:13:22 $  
 ######################################################################
 
 TEMPLATE = app
@@ -253,9 +253,31 @@ SOURCES += \
            TrajectoryWidget.cpp \
            Tree.cpp
 
+# FORMS +=  TimeSeriesSubwidget.ui
+# FORMS +=  StateSubwidget.ui
+# FORMS +=  CMCAResultSubwidget.ui
+# FORMS +=  SimpleSelectionWidget.ui        
+# FORMS +=  SliderSettingsDialog.ui    
+# FORMS +=  objectdebug.ui       
+# FORMS += CUpDownSubwidget.ui
+# FORMS += CScanWidgetBreak.ui
+# FORMS += CScanWidgetRandom.ui
+# FORMS += CScanWidgetRepeat.ui
+# FORMS += CScanWidgetScan.ui
+# FORMS += CScanWidgetTask.ui
+# FORMS += DefaultplotDialog.ui
+# FORMS += CQProgressItem.ui
+# FORMS += CQProgressItemBar.ui
+# FORMS += CQProgressItemText.ui
+# FORMS += CQProgressDialog.ui
+
 # headers generated from .ui files   
 HEADERS += \
            CMCAResultSubwidget.h \
+           CQProgressItem.h \
+           CQProgressItemBar.h \
+           CQProgressItemText.h \
+           CQProgressDialog.h \
            CUpDownSubwidget.h \
            CScanWidgetBreak.h \
            CScanWidgetRandom.h \
@@ -271,6 +293,10 @@ HEADERS += \
 # sources generated from .ui files   
 SOURCES += \
            CMCAResultSubwidget.cpp \
+           CQProgressItem.cpp \
+           CQProgressItemBar.cpp \
+           CQProgressItemText.cpp \
+           CQProgressDialog.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \
            CScanWidgetRandom.cpp \
@@ -282,20 +308,6 @@ SOURCES += \
            SliderSettingsDialog.cpp \
            StateSubwidget.cpp \
            TimeSeriesSubwidget.cpp 
-
-# FORMS +=  TimeSeriesSubwidget.ui
-# FORMS +=  StateSubwidget.ui
-# FORMS +=  CMCAResultSubwidget.ui
-# FORMS +=  SimpleSelectionWidget.ui        
-# FORMS +=  SliderSettingsDialog.ui    
-# FORMS +=  objectdebug.ui       
-# FORMS += CUpDownSubwidget.ui
-# FORMS += CScanWidgetBreak.ui
-# FORMS += CScanWidgetRandom.ui
-# FORMS += CScanWidgetRepeat.ui
-# FORMS += CScanWidgetScan.ui
-# FORMS += CScanWidgetTask.ui
-# FORMS += DefaultplotDialog.ui
 
 release {
   distribution.path = .

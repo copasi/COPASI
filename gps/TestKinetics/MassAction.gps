@@ -1,16 +1,16 @@
 Version=3.21301
-EndTime=1.000000e+001
-Points=100
+EndTime=1.372000e+001
+Points=100000
 OutputTimeZero=1
 RealTime=0
-SleepTime=1
+SleepTime=0
 TimeUnit=s
 ConcentrationUnit=mM
 VolumeUnit=ml
 TimeElasticities=0
-Dynamics=0
-SteadyState=1
-Report=1
+Dynamics=1
+SteadyState=0
+Report=0
 DynTitles=1
 SSTitles=0
 DynQuotes=0
@@ -83,7 +83,7 @@ Comments
 
 EndComments
 PlotType=2
-PlotDyn=1
+PlotDyn=0
 Plot3d=0
 PlotGrid=0
 PlotKey=0
@@ -94,17 +94,19 @@ PlotHidden3d=0
 PlotLogX=0
 PlotLogY=0
 PlotLogZ=0
-PlotXEntry=-1
-PlotYTotal=1
+PlotXEntry=0
+PlotYTotal=3
 PlotZTotal=1
-PlotY0=9471856
-PlotZ0=9472208
+PlotY0=1
+PlotY1=2
+PlotY2=3
+PlotZ0=-1
 User-defined functions
 Items=0
 Interactive time course
 Items=0
 Time-course output
-Items=5
+Items=4
 Title=time
 Type=14
 Title=[H2]t
@@ -116,9 +118,6 @@ I=O2
 Title=[H2O]t
 Type=3
 I=H2O
-Title=J(R1)
-Type=5
-I=R1
 Steady-state output
 Items=17
 Title=[H2]ss

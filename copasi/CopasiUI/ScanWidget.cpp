@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.182 $
+   $Revision: 1.183 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/08 13:02:36 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:16:14 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -183,8 +183,9 @@ void ScanWidget::runScanTask()
   scanTask->initialize(NULL);
 
   setCursor(Qt::WaitCursor);
-  CProgressBar* tmpBar = new CProgressBar(dataModel);
+  CProgressBar * tmpBar = new CProgressBar();
   scanTask->setProgressHandler(tmpBar);
+  tmpBar->show();
 
   CCopasiTimeVariable time = CCopasiTimeVariable::getCurrentWallTime();
 

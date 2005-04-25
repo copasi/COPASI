@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 20:05:08 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:16:13 $
    End CVS Header */
 
 #include <algorithm>
@@ -26,7 +26,7 @@
 
 #include "clapackwrap.h"        //use CLAPACK
 #include "utilities/utility.h"
-#include "utilities/COutputHandler.h"
+#include "utilities/CProcessReport.h"
 
 CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
     CSteadyStateMethod(CCopasiMethod::Newton, pParent),
@@ -181,7 +181,13 @@ CNewtonMethod::processInternal()
   //mJacobianX.resize(mDimension, mDimension);
   mIpiv = new C_INT [mDimension];
 
-  if (mpProgressHandler) mpProgressHandler->init(0, "performing steady state calculation...", true);
+  /*
+    if (mpProgressHandler) 
+      mpProgressHandler->init(0, "performing steady state calculation...", true);
+  */
+
+  if (mpProgressHandler)
+    mpProgressHandler->setName("performing steady state calculation...");
 
   CNewtonMethod::NewtonReturnCode returnCode;
   if (mUseNewton)
@@ -226,10 +232,21 @@ CNewtonMethod::processInternal()
   if (mUseIntegration)
     {
       std::cout << "Try integrating ..." << std::endl;
-      for (EndTime = 0.01; EndTime < 1.0e10; EndTime *= 2)
+
+      unsigned C_INT32 hProcess;
+      unsigned C_INT32 Step = 0;
+      unsigned C_INT32 MaxSteps = ceil(log(1.0e12) / log(2.0));
+
+      if (mpProgressHandler)
+        hProcess = mpProgressHandler->addItem("forward integrating...",
+                                              CCopasiParameter::UINT,
+                                              & Step,
+                                              & MaxSteps);
+
+      for (EndTime = 0.01; EndTime < 1.0e10; EndTime *= 2, Step++)
         {
-          if (mpProgressHandler) mpProgressHandler->reInit(0, "forward integrating...");
-          if (mpProgressHandler) if (mpProgressHandler->progress(-1)) break;
+          if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
+
           std::cout << "   integrating up to " << EndTime << std::endl;
 
           pTrajectoryProblem->setInitialState(mpProblem->getInitialState()); //TODO: on second run do not start from the beginning
@@ -268,12 +285,25 @@ CNewtonMethod::processInternal()
               break;
             }
         }
+      if (mpProgressHandler) mpProgressHandler->finish(hProcess);
     }
 
   if (mUseBackIntegration)
     {
-      for (EndTime = -1; EndTime > -1.0e10; EndTime *= 10)
+      unsigned C_INT32 hProcess;
+      unsigned C_INT32 Step = 0;
+      unsigned C_INT32 MaxSteps = ceil(log(1.0e12) / log(2.0));
+
+      if (mpProgressHandler)
+        hProcess = mpProgressHandler->addItem("forward integrating...",
+                                              CCopasiParameter::UINT,
+                                              & Step,
+                                              & MaxSteps);
+
+      for (EndTime = -0.01; EndTime > -1.0e10; EndTime *= 2, Step++)
         {
+          if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
+
           pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
                                          + EndTime);
@@ -296,6 +326,7 @@ CNewtonMethod::processInternal()
               {return returnProcess(true, mFactor, mResolution);}
             }
         }
+      if (mpProgressHandler) mpProgressHandler->finish(hProcess);
     }
 
   pdelete(pTrajectory);
@@ -327,10 +358,19 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
   std::cout << "processNewton called" << std::endl;
 
+  unsigned C_INT32 hProcess;
+  k = 0;
+
+  if (mpProgressHandler)
+    hProcess = mpProgressHandler->addItem("newton method...",
+                                          CCopasiParameter::UINT,
+                                          & k,
+                                          & mIterationLimit);
+
   for (k = 0; k < mIterationLimit && oldMaxRate > mScaledResolution; k++)
     {
-      if (mpProgressHandler) /*flagStopped =*/ mpProgressHandler->reInit(0, "newton method...");
-      if (mpProgressHandler) if (mpProgressHandler->progress(-1)) break;
+      if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
+
       //std::cout << "newton: " << k << std::endl << mStateX;
 
       //memcpy(mXold.array(), mX->array(), mDimension * sizeof(C_FLOAT64));
@@ -495,6 +535,8 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       oldMaxRate = newMaxRate;
     }
 
+  if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+
   if (isSteadyState(oldMaxRate))
     ReturnCode = CNewtonMethod::found;
   else if (oldMaxRate < mScaledResolution)
@@ -569,8 +611,8 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   if (!((* (bool *) getValue("Newton.UseNewton"))
-         || (* (bool *) getValue("Newton.UseIntegration"))
-         || (* (bool *) getValue("Newton.UseBackIntegration"))))
+        || (* (bool *) getValue("Newton.UseIntegration"))
+        || (* (bool *) getValue("Newton.UseBackIntegration"))))
     {
       //would do nothing
       CCopasiMessage(CCopasiMessage::EXCEPTION, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");

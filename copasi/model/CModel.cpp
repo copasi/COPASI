@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.217 $
+   $Revision: 1.218 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/23 13:48:51 $
+   $Date: 2005/04/25 18:16:13 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@
 #include "utilities/CVector.h"
 #include "utilities/CluX.h"
 #include "utilities/utility.h"
-#include "utilities/COutputHandler.h"
+#include "utilities/CProcessReport.h"
 #include "CReactionInterface.h"
 #include "clapackwrap.h"
 
@@ -330,24 +330,49 @@ bool CModel::compile()
   for (i = 0; i < imax; i++)
     mSteps[i]->compile(/*mCompartments*/);
 
-  if (mpCompileHandler) mpCompileHandler->init(100, "");
+  unsigned C_INT32 CompileStep = 0;
+  unsigned C_INT32 hCompileStep;
+  if (mpCompileHandler)
+    {
+      mpCompileHandler->setName("Compiling model...");
+      unsigned C_INT32 totalSteps = 7;
+      hCompileStep = mpCompileHandler->addItem("Step",
+                     CCopasiParameter::UINT,
+                     & CompileStep,
+                     &totalSteps);
+    }
+
   buildStoi();
+  CompileStep = 1;
+  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   lUDecomposition(LU);
-  if (mpCompileHandler) mpCompileHandler->progress(2);
+  CompileStep = 2;
+  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+
   setMetabolitesStatus(LU);
-  if (mpCompileHandler) mpCompileHandler->progress(3);
+  CompileStep = 3;
+  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+
   buildRedStoi();
-  if (mpCompileHandler) mpCompileHandler->progress(4);
+  CompileStep = 4;
+  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+
   buildL(LU);
-  if (mpCompileHandler) mpCompileHandler->progress(5);
+  CompileStep = 5;
+  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+
   buildMoieties();
-  if (mpCompileHandler) mpCompileHandler->progress(6);
+  CompileStep = 6;
+  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+
   buildStateTemplate();
+  CompileStep = 7;
+  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   mCompileIsNecessary = false;
 
-  if (mpCompileHandler) mpCompileHandler->finish();
+  if (mpCompileHandler) mpCompileHandler->finish(hCompileStep);
   return true;
 }
 
@@ -397,12 +422,20 @@ void CModel::buildStoi()
   imax = mMetabolites.size();
   mStoi.resize(imax - mNumFixed, mSteps.size());
 
-  if (mpCompileHandler) mpCompileHandler->reInit(mStoi.numCols(),
-        "building stoichiometry matrix...");
+  unsigned C_INT32 hProcess;
+  if (mpCompileHandler)
+    {
+      i = 0;
+      unsigned C_INT32 imax = mStoi.numCols();
+      hProcess = mpCompileHandler->addItem("Building Stoichiometry",
+                                           CCopasiParameter::UINT,
+                                           &i,
+                                           &imax);
+    }
 
   for (i = 0; i < (unsigned C_INT32) mStoi.numCols(); i++)
     {
-      if (mpCompileHandler) mpCompileHandler->progress(i);
+      if (mpCompileHandler && !mpCompileHandler->progress(hProcess)) return;
 
       const CCopasiVector < CChemEqElement > &Structure
       = mSteps[i]->getChemEq().getBalances();
@@ -430,6 +463,9 @@ void CModel::buildStoi()
   DebugFile << "Stoichiometry Matrix" << std::endl;
   DebugFile << mStoi << std::endl;
 #endif
+
+  if (mpCompileHandler)
+    mpCompileHandler->finish(hProcess);
 
   return;
 }
@@ -1941,10 +1977,10 @@ bool CModel::hasReversibleReaction() const
     return false;
   }
 
-void CModel::setCompileHandler(CCallbackHandler* pHandler)
+void CModel::setCompileHandler(CProcessReport* pHandler)
 {mpCompileHandler = pHandler;}
 
-CCallbackHandler* CModel::getCompileHandlerAddr()
+CProcessReport* CModel::getCompileHandlerAddr()
 {return mpCompileHandler;}
 
 //**********************************************************************

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/11 17:37:41 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:16:13 $
    End CVS Header */
 
 /**
@@ -29,6 +29,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "utilities/COutputHandler.h"
+#include "utilities/CProcessReport.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 CScanTask::CScanTask(const CCopasiContainer * pParent):
@@ -122,8 +123,23 @@ bool CScanTask::process()
 
   //init progress bar
   mProgress = 0;
-  if (mpProgressHandler) mpProgressHandler->init(pMethod->getTotalNumberOfSteps(), "performing parameter scan...", true);
+  /*
+    if (mpProgressHandler) 
+      mpProgressHandler->init(pMethod->getTotalNumberOfSteps(),
+                              "performing parameter scan...",
+                              true);
+  */
 
+  if (mpProgressHandler)
+    {
+      mpProgressHandler->setName("performing parameter scan...");
+
+      unsigned C_INT32 totalSteps = pMethod->getTotalNumberOfSteps();
+      mpProgressHandler->addItem("Number of Steps",
+                                 CCopasiParameter::UINT,
+                                 &mProgress,
+                                 &totalSteps);
+    }
   //init output handler (plotting)
   if (mpOutputHandler) mpOutputHandler->init();
 
@@ -153,7 +169,7 @@ bool CScanTask::processCallback()
 
   //do progress bar
   ++mProgress;
-  if (mpProgressHandler) return !mpProgressHandler->progress(mProgress);
+  if (mpProgressHandler) return !mpProgressHandler->progress();
 
   return true;
 }

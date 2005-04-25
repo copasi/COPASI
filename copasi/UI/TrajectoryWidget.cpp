@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 11:40:02 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:16:14 $
    End CVS Header */
 
 /********************************************************
@@ -313,7 +313,16 @@ TrajectoryWidget::~TrajectoryWidget()
 
 void TrajectoryWidget::StartTimeSlot()
 {
-  mpProblem->setStartTime(nStartTime->text().toDouble());
+  if (!mpProblem->setStartTime(nStartTime->text().toDouble()) &&
+      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+    {
+      QMessageBox::warning(this, QString("File Warning"),
+                           FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                           QMessageBox::Ok,
+                           QMessageBox::NoButton,
+                           QMessageBox::NoButton);
+    }
+
   nStepSize->setText(QString::number(mpProblem->getStepSize()));
   nStepNumber->setText(QString::number(mpProblem->getStepNumber()));
 
@@ -322,7 +331,16 @@ void TrajectoryWidget::StartTimeSlot()
 
 void TrajectoryWidget::EndTimeSlot()
 {
-  mpProblem->setEndTime(nEndTime->text().toDouble());
+  if (!mpProblem->setEndTime(nEndTime->text().toDouble()) &&
+      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+    {
+      QMessageBox::warning(this, QString("File Warning"),
+                           FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                           QMessageBox::Ok,
+                           QMessageBox::NoButton,
+                           QMessageBox::NoButton);
+    }
+
   nStepSize->setText(QString::number(mpProblem->getStepSize()));
   nStepNumber->setText(QString::number(mpProblem->getStepNumber()));
 
@@ -331,7 +349,16 @@ void TrajectoryWidget::EndTimeSlot()
 
 void TrajectoryWidget::StepsizeSlot()
 {
-  mpProblem->setStepSize(nStepSize->text().toDouble());
+  if (!mpProblem->setStepSize(nStepSize->text().toDouble()) &&
+      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+    {
+      QMessageBox::warning(this, QString("File Warning"),
+                           FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                           QMessageBox::Ok,
+                           QMessageBox::NoButton,
+                           QMessageBox::NoButton);
+    }
+
   nStepSize->setText(QString::number(mpProblem->getStepSize()));
   nStepNumber->setText(QString::number(mpProblem->getStepNumber()));
 
@@ -340,7 +367,16 @@ void TrajectoryWidget::StepsizeSlot()
 
 void TrajectoryWidget::NumStepsSlot()
 {
-  mpProblem->setStepNumber(nStepNumber->text().toULong());
+  if (!mpProblem->setStepNumber(nStepNumber->text().toULong()) &&
+      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+    {
+      QMessageBox::warning(this, QString("File Warning"),
+                           FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                           QMessageBox::Ok,
+                           QMessageBox::NoButton,
+                           QMessageBox::NoButton);
+    }
+
   nStepSize->setText(QString::number(mpProblem->getStepSize()));
 
   checkTimeSeries();
@@ -431,8 +467,9 @@ void TrajectoryWidget::runTrajectoryTask()
   assert(trajectorymethod);
 
   setCursor(Qt::WaitCursor);
-  CProgressBar* tmpBar = new CProgressBar(dataModel);
+  CProgressBar * tmpBar = new CProgressBar();
   tt->setProgressHandler(tmpBar);
+  tmpBar->show();
 
   try
     {

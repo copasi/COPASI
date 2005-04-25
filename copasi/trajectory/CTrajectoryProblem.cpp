@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/25 11:23:47 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:16:13 $
    End CVS Header */
 
 /**
@@ -269,19 +269,34 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
  */
 bool CTrajectoryProblem::sync()
 {
+  bool success = true;
   C_FLOAT64 Tmp = getEndTime() - getStartTime();
 
   if (mStepNumberSetLast)
     setValue("StepSize", Tmp / (C_FLOAT64) getStepNumber());
   else
     {
-      /* Assure that the step size has the appropriate sign. */
-      setValue("StepSize", (Tmp < 0.0) ? - fabs(getStepSize()) : fabs(getStepSize()));
+      C_FLOAT64 StepSize = getStepSize();
+      C_FLOAT64 StepNumber = fabs(ceil(Tmp / StepSize));
 
-      setValue("StepNumber", (unsigned C_INT32) ceil(Tmp / getStepSize()));
+      /* Protect against overflow */
+      if ((C_FLOAT64) ULONG_MAX < StepNumber)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING,
+                         MCTrajectoryProblem + 2, StepNumber);
+
+          StepNumber = (C_FLOAT64) ULONG_MAX;
+          StepSize = Tmp / StepNumber;
+
+          success = false;
+        }
+
+      /* Assure that the step size has the appropriate sign. */
+      setValue("StepSize", (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize));
+      setValue("StepNumber", (unsigned C_INT32) StepNumber);
     }
 
-  return true;
+  return success;
 }
 
 //virtual

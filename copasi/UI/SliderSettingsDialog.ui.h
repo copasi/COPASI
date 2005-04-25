@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/13 16:20:18 $
+   $Date: 2005/04/25 18:16:14 $
    End CVS Header */
 
 /****************************************************************************
@@ -235,8 +235,8 @@ void SliderSettingsDialog::init()
   this->mpSlider = NULL;
   this->mChanged = false;
   this->mScaling = CSlider::linear;
-  this->mpExtendedOptionsFrame->hide();
-  this->mpExtendedOptionsButton->setText("Advanced >>");
+  // this->mpExtendedOptionsFrame->hide();
+  this->mpExtendedOptionsButton->setText("Advanced <<");
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
   mpMaxValueEdit->setValidator(new QDoubleValidator(this));
