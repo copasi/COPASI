@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/18 13:32:02 $
+   $Date: 2005/04/25 18:37:00 $
    End CVS Header */
 
 /**
@@ -350,7 +350,7 @@ bool CCopasiXML::saveModel()
               Attr.erase();
               Attr.add("function", pReaction->getFunction().getKey());
               startSaveElement("KineticLaw", Attr);
-              if (jmax = pReaction->getFunctionParameters().size())
+              if ((jmax = pReaction->getFunctionParameters().size()))
                 {
                   startSaveElement("ListOfCallParameters");
                   const CFunctionParameterMap * pMap =
