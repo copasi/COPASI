@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/18 13:32:02 $
+   $Date: 2005/04/25 18:37:34 $
    End CVS Header */
 
 /**
@@ -20,6 +20,7 @@
 #include "CCopasiXMLInterface.h"
 #include "model/CModel.h"
 #include "report/CReportDefinition.h"
+#include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "CCopasiXMLParser.h"
