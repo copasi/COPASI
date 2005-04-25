@@ -112,7 +112,7 @@
 <customwidgets>
     <customwidget>
         <class>CQProgressItem</class>
-        <header location="global">C:/cygwin/home/shoops/development/copasi_dev/copasi/CopasiUI/CQProgressItem.h</header>
+        <header location="local">CQProgressItem.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>

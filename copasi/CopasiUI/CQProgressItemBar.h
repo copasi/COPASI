@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQProgressItemBar.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:22 $
+   $Date: 2005/04/25 18:30:38 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQProgressItemBar.ui'
  **
- ** Created: Mon Apr 25 13:10:34 2005
- **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.1 2005/04/25 18:13:22 shoops Exp $)
+ ** Created: Mon Apr 25 14:29:35 2005
+ **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.2 2005/04/25 18:30:38 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,7 +20,6 @@
 
 #include <qvariant.h>
 #include <qpixmap.h>
-#include <C:/cygwin/home/shoops/development/copasi_dev/copasi/CopasiUI/CQProgressItem.h>
 #include "CQProgressItem.h"
 #include "utilities/CVector.h"
 #include "utilities/CProcessReport.h"
