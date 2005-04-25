@@ -1,0 +1,113 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>CQProgressItemText</class>
+<widget class="CQProgressItem">
+    <property name="name">
+        <cstring>CQProgressItemText</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>404</width>
+            <height>44</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>mLabel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>330</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>mItemName</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>3</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>100</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Item Name</string>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>mSpacer</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Maximum</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>16</width>
+                        <height>16</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLineEdit">
+                <property name="name">
+                    <cstring>mValue</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>3</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>200</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="frameShape">
+                    <enum>LineEditPanel</enum>
+                </property>
+                <property name="frameShadow">
+                    <enum>Sunken</enum>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+</widget>
+<includes>
+    <include location="local" impldecl="in declaration">CQProgressItem.h</include>
+    <include location="local" impldecl="in declaration">utilities/CVector.h</include>
+    <include location="local" impldecl="in declaration">utilities/CProcessReport.h</include>
+    <include location="local" impldecl="in implementation">CQProgressItemText.ui.h</include>
+</includes>
+<functions>
+    <function returnType="bool">initFromProcessReportItem( CProcessReportItem * pItem)</function>
+    <function returnType="bool">process()</function>
+    <function returnType="bool">reset()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

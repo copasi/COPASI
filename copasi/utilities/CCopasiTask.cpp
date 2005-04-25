@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Date: 2005/04/25 18:13:21 $
    End CVS Header */
 
 /**
@@ -156,7 +156,7 @@ void CCopasiTask::setOutputHandler(CCallbackHandler* pHandler)
 CCallbackHandler* CCopasiTask::getOutputHandlerAddr()
 {return mpOutputHandler;}
 
-void CCopasiTask::setProgressHandler(CCallbackHandler* pHandler)
+void CCopasiTask::setProgressHandler(CProcessReport * pHandler)
 {mpProgressHandler = pHandler;}
 
 CCopasiParameterGroup * CCopasiTask::getSliders()

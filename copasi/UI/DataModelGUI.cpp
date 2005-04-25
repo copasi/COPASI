@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:27:22 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:16:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -11,6 +11,7 @@
 #include "DataModelGUI.h"
 #include "DataModel.txt.h"
 #include "qtUtilities.h"
+#include "utilities/CVector.h"
 #include "CProgressBar.h"
 #include "listviews.h"
 
@@ -47,8 +48,11 @@ void DataModelGUI::linkDataModelToGUI()
 {
   //TODO: delete old handler
   //progress bar
-  CProgressBar* tmpBar = new CProgressBar(this);
+  CProgressBar* tmpBar = new CProgressBar();
+
   CCopasiDataModel::Global->getModel()->setCompileHandler(tmpBar);
+
+  tmpBar->show();
 
   //output handler
   COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
@@ -75,6 +79,7 @@ void DataModelGUI::linkDataModelToGUI()
   //mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
   mTree.findNodeFromId(42)->setObjectKey(CCopasiDataModel::Global->getPlotDefinitionList()->getKey());
 
+  pdelete(tmpBar);
   ListViews::setDataModel(this);
 }
 

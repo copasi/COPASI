@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Date: 2005/04/25 18:13:21 $
    End CVS Header */
 
 /**
@@ -97,7 +97,7 @@ class CCopasiTask : public CCopasiContainer
     /**
      * progress bar handler 
      */
-    CCallbackHandler * mpProgressHandler;
+    CProcessReport * mpProgressHandler;
 
     /**
      * Pointer to group of sliders associated with the task.
@@ -258,7 +258,7 @@ class CCopasiTask : public CCopasiContainer
     /**
      * set Output handler
      **/
-    void setProgressHandler(CCallbackHandler* pHandler);
+    void setProgressHandler(CProcessReport * pHandler);
 
     /**
      * Retrieve a pointer to the group of sliders.

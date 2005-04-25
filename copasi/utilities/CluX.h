@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/17 08:56:20 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:13:21 $
    End CVS Header */
 
 #ifndef COPASI_CluX
@@ -56,10 +56,10 @@
 // int      (0 if successful, 1 otherwise)
 //
 //
-#include "COutputHandler.h"
+#include "CProcessReport.h"
 
 template <class Matrix, class Subscript>
-      int LUfactor(Matrix &A, std::vector< Subscript > & row, std::vector< Subscript > & col, CCallbackHandler* cb = NULL)
+      int LUfactor(Matrix &A, std::vector< Subscript > & row, std::vector< Subscript > & col, CProcessReport * cb = NULL)
   {
     Subscript M = A.numRows();
     Subscript N = A.numCols();
@@ -84,10 +84,17 @@ template <class Matrix, class Subscript>
 
   Subscript minMN = (M < N ? M : N);        // min(M,N);
 
-    if (cb) cb->reInit(minMN, "LU decomposition...");
+    unsigned C_INT32 hProcess;
+    if (cb)
+      hProcess = cb->addItem("LU decomposition...",
+                             CCopasiParameter::UINT,
+                             &j,
+                             &minMN);
+
     for (j = 0; j < minMN; j++)
       {
-        if (cb) cb->progress(j);
+        if (cb && !cb->progress(hProcess)) return 1;
+
         // find pivot in column j and  test for singularity.
         while (true)
           {
@@ -157,6 +164,8 @@ template <class Matrix, class Subscript>
                 A(ii, jj) -= A(ii, j) * A(j, jj);
           }
       }
+
+    if (cb) cb->finish(hProcess);
 
     return 0;
   }

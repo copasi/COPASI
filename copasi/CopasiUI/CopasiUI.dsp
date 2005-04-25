@@ -58,6 +58,22 @@ SOURCE=.\AboutDialog.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiPlotSelectionDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiSelectionDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiSelectionWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiSimpleSelectionTree.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CMCAResultSubwidget.cpp
 # End Source File
 # Begin Source File
@@ -118,6 +134,22 @@ SOURCE=.\CProgressBar.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQProgressDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItemBar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItemText.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReactionInterface.cpp
 # End Source File
 # Begin Source File
@@ -126,11 +158,43 @@ SOURCE=.\CReportDefinitionSelect.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CScanContainerWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetBreak.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetRandom.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetRepeat.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetScan.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetTask.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CTimeSeriesTable.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CUpDownSubwidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\DataModelGUI.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DefaultplotDialog.cpp
 # End Source File
 # Begin Source File
 
@@ -242,6 +306,10 @@ SOURCE=.\OptimizationWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ParametersWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\parametertable.cpp
 # End Source File
 # Begin Source File
@@ -271,6 +339,10 @@ SOURCE=.\ReactionsWidget1.cpp
 # Begin Source File
 
 SOURCE=.\ScanItemWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ScanScrollView.cpp
 # End Source File
 # Begin Source File
 
@@ -346,6 +418,22 @@ SOURCE=.\AboutDialog.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiPlotSelectionDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiSelectionDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiSelectionWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiSimpleSelectionTree.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ChemEqValidator.h
 # End Source File
 # Begin Source File
@@ -414,6 +502,38 @@ SOURCE=.\CProgressBar.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQProgressDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressDialog.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItem.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItemBar.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItemBar.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItemText.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItemText.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReactionInterface.h
 # End Source File
 # Begin Source File
@@ -422,7 +542,59 @@ SOURCE=.\CReportDefinitionSelect.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CScanContainerWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetBreak.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetBreak.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetRandom.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetRandom.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetRepeat.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetRepeat.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetScan.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetScan.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetTask.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanWidgetTask.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CTimeSeriesTable.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUpDownSubwidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUpDownSubwidget.ui.h
 # End Source File
 # Begin Source File
 
@@ -431,6 +603,14 @@ SOURCE=.\DataModel.txt.h
 # Begin Source File
 
 SOURCE=.\DataModelGUI.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DefaultplotDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DefaultplotDialog.ui.h
 # End Source File
 # Begin Source File
 
@@ -546,6 +726,10 @@ SOURCE=.\OptimizationWidget.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ParametersWidget.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\parametertable.h
 # End Source File
 # Begin Source File
@@ -575,6 +759,10 @@ SOURCE=.\ReactionsWidget1.h
 # Begin Source File
 
 SOURCE=.\ScanItemWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ScanScrollView.h
 # End Source File
 # Begin Source File
 
@@ -668,6 +856,22 @@ SOURCE=..\common.pri
 # Begin Source File
 
 SOURCE=.\CopasiUI.pro
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressDialog.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItem.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItemBar.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQProgressItemText.ui
 # End Source File
 # End Target
 # End Project

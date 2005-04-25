@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2005/04/20 14:21:57 $
+   $Author: shoops $ 
+   $Date: 2005/04/25 18:13:21 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -63,7 +63,6 @@ MESSAGES Messages[] =
     {MCTrajectoryMethod + 3, "CTrajectoryMethod (3): Hybrid simulation not "
      "applicable, since more than one compartment is involved."},
     {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): mLowerStochLimit ('%.2f') is greater than mUpperStochLimit ('%.2f')."},
-    {MCTrajectoryMethod + 5, "CTrajectoryMethod (5): Invalid step size = '%f'."},
     {MCTrajectoryMethod + 6, "CTrajectoryMethod (6): Deterministic integration failed. "
      "LSODA reported: %s \n\nPlease see result for indications of numerical instability."},
     {MCTrajectoryMethod + 7, "CTrajectoryMethod (7): pProblem == NULL"},
@@ -97,6 +96,10 @@ MESSAGES Messages[] =
     // SBML
     {MCSBML + 1, "SBML (1): File '%s' already exists."},
     {MCSBML + 2, "SBML (2): The SBML document contains no model."},
+
+    {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
+    {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
+     "exceeds the limit. The step size has been adjusted to avoid over flow."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

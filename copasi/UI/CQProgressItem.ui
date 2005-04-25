@@ -1,0 +1,50 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>CQProgressItem</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CQProgressItem</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>404</width>
+            <height>44</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>mLabel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>330</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+        </hbox>
+    </widget>
+</widget>
+<includes>
+    <include location="local" impldecl="in declaration">utilities/CVector.h</include>
+    <include location="local" impldecl="in declaration">utilities/CProcessReport.h</include>
+</includes>
+<variables>
+    <variable>CProcessReportItem * mpItem;</variable>
+</variables>
+<functions>
+    <function returnType="bool">initFromProcessReportItem( CProcessReportItem * pItem)</function>
+    <function returnType="bool">process()</function>
+    <function returnType="bool">reset()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

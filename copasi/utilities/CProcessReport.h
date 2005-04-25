@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/19 13:57:47 $
+   $Date: 2005/04/25 18:13:21 $
    End CVS Header */
 
 #ifndef COPASI_CProcessReport
@@ -47,7 +47,8 @@ class CProcessReportItem: public CCopasiParameter
     ~CProcessReportItem();
 
     /**
-     * Retrieve the private end value of the parameter.
+     * Retrieve the private end value of the parameter. This method
+     * returns NULL if no end value has been set.
      * @return const void * pEndValue
      */
     const void * getEndValue() const;
@@ -64,6 +65,11 @@ class CProcessReportItem: public CCopasiParameter
      *  A pointer to the value of the parameter.
      */
     void * mpEndValue;
+
+    /**
+     * Indicator whether an endvalue has been provided
+     */
+    bool mHasEndValue;
   };
 
 class CProcessReport
@@ -96,13 +102,19 @@ class CProcessReport
                                      const void * pValue,
                                      const void * pEndValue = NULL);
     /**
-     * Report process on item handle. If no handle is given all items will
-     * be treated as having changed. If the return value is false the calling 
+     * Report process on all items. If the return value is false the calling 
      * process must halt execution and return.
-     * @param const unsigned C_INT32 & handle = C_INVALID_INDEX
      * @param bool continue
      */
-    virtual bool progress(const unsigned C_INT32 & handle = C_INVALID_INDEX);
+    virtual bool progress();
+
+    /**
+     * Report process on item handle. If the return value is false the calling 
+     * process must halt execution and return.
+     * @param const unsigned C_INT32 & handle
+     * @param bool continue
+     */
+    virtual bool progress(const unsigned C_INT32 & handle);
 
     /**
      * Check whether processing shall proceed. If the return value is false 
@@ -114,25 +126,40 @@ class CProcessReport
     virtual bool proceed();
 
     /**
-     * Reset item handle. This means that the value of the item has changed
-     * but not as part of a continous process. If you run multiple precesses
-     * call reset beween them. If no handle is given all items will
-     * be reset. If the return value is false the calling 
+     * Reset all item handle. This means that the values of the items have changed
+     * but not as part of a continous process. If you run multiple processes
+     * call reset beween them. If the return value is false the calling 
      * process must halt execution and return.
-     * @param const unsigned C_INT32 & handle = C_INVALID_INDEX
      * @param bool continue
      */
-    virtual bool reset(const unsigned C_INT32 & handle = C_INVALID_INDEX);
+    virtual bool reset();
 
     /**
-     * Indicate that item handle is finished reporting. If no handle is given 
-     * all items will be treated as having finshed. The handle of that item is no longer
-     * valid after the call. If the return value is false the calling 
+     * Reset item handle. This means that the value of the item has changed
+     * but not as part of a continous process. If you run multiple processes
+     * call reset beween them. If the return value is false the calling 
      * process must halt execution and return.
-     * @param const unsigned C_INT32 & handle = C_INVALID_INDEX
+     * @param const unsigned C_INT32 & handle
      * @param bool continue
      */
-    virtual bool finish(const unsigned C_INT32 & handle = C_INVALID_INDEX);
+    virtual bool reset(const unsigned C_INT32 & handle);
+
+    /**
+     * Indicate that all items are finished reporting. All item handles loose
+     * their validity. If the return value is false the calling 
+     * process must halt execution and return.
+     * @param bool continue
+     */
+    virtual bool finish();
+
+    /**
+     * Indicate that item handle is finished reporting. The handle of that 
+     * item is no longer valid after the call. If the return value is false 
+     * the calling process must halt execution and return.
+     * @param const unsigned C_INT32 & handle
+     * @param bool continue
+     */
+    virtual bool finish(const unsigned C_INT32 & handle);
 
     /**
      * Check whether the handle is valid, i.e., usable in progress, reset and finish.
