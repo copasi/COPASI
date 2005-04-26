@@ -101,6 +101,9 @@
                         <property name="numCols">
                             <number>0</number>
                         </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
                     </widget>
                 </vbox>
             </widget>
@@ -125,6 +128,9 @@
                         <property name="numCols">
                             <number>0</number>
                         </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
                     </widget>
                 </vbox>
             </widget>
@@ -148,6 +154,9 @@
                         </property>
                         <property name="numCols">
                             <number>0</number>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
                         </property>
                     </widget>
                 </vbox>

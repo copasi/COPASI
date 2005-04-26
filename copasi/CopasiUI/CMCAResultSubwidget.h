@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/29 12:15:22 $
+   $Date: 2005/04/26 10:42:12 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Sat Nov 27 15:17:50 2004
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.4 2004/11/29 12:15:22 ssahle Exp $)
+ ** Created: Mo Apr 25 16:46:35 2005
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.5 2005/04/26 10:42:12 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

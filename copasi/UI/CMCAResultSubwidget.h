@@ -9,8 +9,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Sat Nov 27 15:17:50 2004
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
+ ** Created: Mo Apr 25 16:46:35 2005
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.4   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

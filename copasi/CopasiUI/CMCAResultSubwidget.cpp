@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/29 12:15:22 $
+   $Date: 2005/04/26 10:42:12 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Sat Nov 27 15:17:53 2004
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.cpp,v 1.4 2004/11/29 12:15:22 ssahle Exp $)
+ ** Created: Mo Apr 25 16:46:39 2005
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.cpp,v 1.5 2005/04/26 10:42:12 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -64,8 +64,9 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   mTableElasticities = new QTable(tab, "mTableElasticities");
   mTableElasticities->setNumRows(0);
   mTableElasticities->setNumCols(0);
+  mTableElasticities->setReadOnly(TRUE);
   tabLayout->addWidget(mTableElasticities);
-  mTabWidget->insertTab(tab, QString(""));
+  mTabWidget->insertTab(tab, QString::fromLatin1(""));
 
   tab_2 = new QWidget(mTabWidget, "tab_2");
   tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
@@ -73,8 +74,9 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   mTableFCC = new QTable(tab_2, "mTableFCC");
   mTableFCC->setNumRows(0);
   mTableFCC->setNumCols(0);
+  mTableFCC->setReadOnly(TRUE);
   tabLayout_2->addWidget(mTableFCC);
-  mTabWidget->insertTab(tab_2, QString(""));
+  mTabWidget->insertTab(tab_2, QString::fromLatin1(""));
 
   TabPage = new QWidget(mTabWidget, "TabPage");
   TabPageLayout = new QVBoxLayout(TabPage, 11, 6, "TabPageLayout");
@@ -82,8 +84,9 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   mTableCCC = new QTable(TabPage, "mTableCCC");
   mTableCCC->setNumRows(0);
   mTableCCC->setNumCols(0);
+  mTableCCC->setReadOnly(TRUE);
   TabPageLayout->addWidget(mTableCCC);
-  mTabWidget->insertTab(TabPage, QString(""));
+  mTabWidget->insertTab(TabPage, QString::fromLatin1(""));
   CMCAResultSubwidgetLayout->addWidget(mTabWidget);
   languageChange();
   resize(QSize(580, 422).expandedTo(minimumSizeHint()));
