@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CProgressBar.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:22 $
+   $Date: 2005/04/26 14:29:21 $
    End CVS Header */
 
 #if !defined HANDLER_PROGRESS_BAR
 #define HANDLER_PROGRESS_BAR
+
+#include <qdatetime.h>
 
 #include "utilities/CProcessReport.h"
 #include "CQProgressDialog.h"
@@ -98,6 +100,8 @@ class CProgressBar : public CProcessReport, public CQProgressDialog
 
   private:
     CVector< CQProgressItem * > mProgressItemList;
+
+    QTime mNextEventProcessing;
   };
 
 #endif

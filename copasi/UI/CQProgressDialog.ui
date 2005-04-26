@@ -170,12 +170,44 @@
         <data format="PNG" length="104">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000002f49444154789c63fcffff3f0325808922dd83c200167401464646bc81f2ffff7f46aaba60d480c16000e3685e600000f2ba0a1b437ae1230000000049454e44ae426082</data>
     </image>
 </images>
+<connections>
+    <connection>
+        <sender>mpBtnStop</sender>
+        <signal>clicked()</signal>
+        <receiver>CQProgressDialog</receiver>
+        <slot>btnStopPressed()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnPause</sender>
+        <signal>clicked()</signal>
+        <receiver>CQProgressDialog</receiver>
+        <slot>btnPausePressed()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnContinue</sender>
+        <signal>clicked()</signal>
+        <receiver>CQProgressDialog</receiver>
+        <slot>btnContinuePressed()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>mpBtnStop</tabstop>
+    <tabstop>mpBtnPause</tabstop>
+    <tabstop>mpBtnContinue</tabstop>
+</tabstops>
 <includes>
     <include location="local" impldecl="in declaration">CQProgressItem.h</include>
 </includes>
 <variables>
     <variable access="private">unsigned C_INT32 mItemCount;</variable>
+    <variable>bool mProceed;</variable>
+    <variable>bool mPause;</variable>
 </variables>
+<slots>
+    <slot access="protected" specifier="non virtual">btnStopPressed()</slot>
+    <slot access="protected" specifier="non virtual">btnPausePressed()</slot>
+    <slot access="protected" specifier="non virtual">btnContinuePressed()</slot>
+</slots>
 <functions>
     <function specifier="non virtual" returnType="bool">insertProgressItem(CQProgressItem * pItem)</function>
     <function access="private" specifier="non virtual">init()</function>

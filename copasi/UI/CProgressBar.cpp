@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:22 $
+   $Date: 2005/04/26 14:29:21 $
    End CVS Header */
 
 #include <qprogressdialog.h>
 #include <qapplication.h>
 #include <qlayout.h>
+#include <qapplication.h>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -18,11 +19,14 @@
 #include "CQProgressItemText.h"
 #include "CQProgressItemBar.h"
 
+extern QApplication *pApp;
+
 CProgressBar::CProgressBar(QWidget* parent, const char* name,
                            bool modal, WFlags fl):
     CProcessReport(),
     CQProgressDialog(parent, name, modal, fl),
-    mProgressItemList(1)
+    mProgressItemList(1),
+    mNextEventProcessing(QTime::currentTime())
 {mProgressItemList[0] = NULL;}
 
 CProgressBar::~CProgressBar()
@@ -73,14 +77,20 @@ bool CProgressBar::reset(const unsigned C_INT32 & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
-  return mProgressItemList[handle]->reset();
+  return (mProgressItemList[handle]->reset() && mProceed);
 }
 
 bool CProgressBar::progress(const unsigned C_INT32 & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
-  return mProgressItemList[handle]->process();
+  if (mNextEventProcessing < QTime::currentTime())
+    {
+      mNextEventProcessing = QTime::currentTime().addMSecs(1000);
+      pApp->processEvents();
+    }
+
+  return (mProgressItemList[handle]->process() && mProceed);
 }
 
 bool CProgressBar::finish()
@@ -93,7 +103,7 @@ bool CProgressBar::finish()
   CProcessReport::finish();
   done(1);
 
-  return true;
+  return mProceed;
 }
 
 bool CProgressBar::finish(const unsigned C_INT32 & handle)
@@ -103,14 +113,14 @@ bool CProgressBar::finish(const unsigned C_INT32 & handle)
   removeProgressItem(mProgressItemList[handle]);
   pdelete(mProgressItemList[handle]);
 
-  return CProcessReport::finish(handle);
+  return (CProcessReport::finish(handle) && mProceed);
 }
 
 bool CProgressBar::proceed()
-{return true;}
+{return mProceed;}
 
 bool CProgressBar::setName(const std::string & name)
 {
   setCaption(FROM_UTF8(name));
-  return CProcessReport::setName(name);
+  return (CProcessReport::setName(name) && mProceed);
 }

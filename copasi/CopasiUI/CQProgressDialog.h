@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQProgressDialog.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:22 $
+   $Date: 2005/04/26 14:29:21 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQProgressDialog.ui'
  **
- ** Created: Mon Apr 25 13:14:32 2005
- **      by: The User Interface Compiler ($Id: CQProgressDialog.h,v 1.1 2005/04/25 18:13:22 shoops Exp $)
+ ** Created: Tue Apr 26 09:30:16 2005
+ **      by: The User Interface Compiler ($Id: CQProgressDialog.h,v 1.2 2005/04/26 14:29:21 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -47,6 +47,9 @@ class CQProgressDialog : public QDialog
     bool removeProgressItem(CQProgressItem * pItem);
 
   protected:
+    bool mProceed;
+    bool mPause;
+
     QVBoxLayout* CQProgressDialogLayout;
     QSpacerItem* mpSpacer;
     QHBoxLayout* mpBtnLayout;
@@ -54,6 +57,10 @@ class CQProgressDialog : public QDialog
 
   protected slots:
     virtual void languageChange();
+
+    void btnStopPressed();
+    void btnPausePressed();
+    void btnContinuePressed();
 
   private:
     unsigned C_INT32 mItemCount;

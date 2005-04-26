@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQProgressDialog.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:22 $
+   $Date: 2005/04/26 14:29:21 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQProgressDialog.ui'
  **
- ** Created: Mon Apr 25 13:14:33 2005
- **      by: The User Interface Compiler ($Id: CQProgressDialog.cpp,v 1.1 2005/04/25 18:13:22 shoops Exp $)
+ ** Created: Tue Apr 26 09:30:17 2005
+ **      by: The User Interface Compiler ($Id: CQProgressDialog.cpp,v 1.2 2005/04/26 14:29:21 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -122,6 +122,15 @@ CQProgressDialog::CQProgressDialog(QWidget* parent, const char* name, bool modal
   languageChange();
   resize(QSize(363, 57).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
+
+  // signals and slots connections
+  connect(mpBtnStop, SIGNAL(clicked()), this, SLOT(btnStopPressed()));
+  connect(mpBtnPause, SIGNAL(clicked()), this, SLOT(btnPausePressed()));
+  connect(mpBtnContinue, SIGNAL(clicked()), this, SLOT(btnContinuePressed()));
+
+  // tab order
+  setTabOrder(mpBtnStop, mpBtnPause);
+  setTabOrder(mpBtnPause, mpBtnContinue);
   init();
 }
 
