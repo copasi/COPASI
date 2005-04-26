@@ -89,6 +89,11 @@ On the top of the main window, you have the menubar (on the Mac, the menubar is 
 </mediaobject>
 </screenshot>
 </para>
+<para>
+<caution>
+<para>You should be aware that changing the defaults units actually changes the model. If you for example change the default volume units from liters to mililiters, all the particle numbers in your model change by a factor of 1000.</para>
+</caution>
+</para>
 </sect1>
 <sect1 id="addingCompartments" xreflabel="Adding and Editing Compartments">
 <title>Adding and Editing Compartments</title>
