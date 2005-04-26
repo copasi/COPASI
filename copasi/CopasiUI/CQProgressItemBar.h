@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQProgressItemBar.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:30:38 $
+   $Date: 2005/04/26 14:28:19 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQProgressItemBar.ui'
  **
- ** Created: Mon Apr 25 14:29:35 2005
- **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.2 2005/04/25 18:30:38 shoops Exp $)
+ ** Created: Tue Apr 26 09:49:49 2005
+ **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.3 2005/04/26 14:28:19 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,6 +20,7 @@
 
 #include <qvariant.h>
 #include <qpixmap.h>
+#include <C:/cygwin/home/shoops/development/copasi_dev/copasi/CopasiUI/CQProgressItem.h>
 #include "CQProgressItem.h"
 #include "utilities/CVector.h"
 #include "utilities/CProcessReport.h"
@@ -45,17 +46,8 @@ class CQProgressItemBar : public CQProgressItem
     virtual bool initFromProcessReportItem(CProcessReportItem * pItem);
     virtual bool process();
     virtual bool reset();
-    virtual void setProgressFromDOUBLE();
-    virtual void setProgressFromINT();
-    virtual void setProgressFromUINT();
 
   protected:
-    void * mpValue;
-    void * mpStart;
-    void * mpEnd;
-    C_FLOAT64 mFactor;
-    void (CQProgressItemBar::*mpProgress)();
-
     QHBoxLayout* mpLayout;
     QSpacerItem* mSpacer;
 
@@ -63,7 +55,19 @@ class CQProgressItemBar : public CQProgressItem
     virtual void languageChange();
 
   private:
+    void (CQProgressItemBar::*mpSetValue)();
+    C_FLOAT64 mFactor;
+    void * mpEnd;
+    void * mpStart;
+    void * mpValue;
+    C_INT32 mLastSet;
+    C_INT32 mValue;
+
     QPixmap image0;
+
+    virtual void setValueFromDOUBLE();
+    virtual void setValueFromINT();
+    virtual void setValueFromUINT();
   };
 
 #endif // CQPROGRESSITEMBAR_H
