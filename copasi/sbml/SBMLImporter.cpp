@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/04/19 09:46:32 $
+   $Date: 2005/05/02 09:27:36 $
    End CVS Header */
 
 #include "copasi.h"
@@ -45,7 +45,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
   Model* sbmlModel = sbmlDocument->getModel();
 
   /* Create an empty model and set the title. */
-  //DebugFile << "Setting units." << std::endl;
   CModel* copasiModel = new CModel();
   copasiModel->setVolumeUnit(CModel::l);
   copasiModel->setTimeUnit(CModel::s);
@@ -99,7 +98,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
   /* Set standard units to match the standard units of SBML files. */
   std::map<std::string, CCompartment*> compartmentMap;
   /* Create the compartments */
-  //DebugFile << "Creating compartments." << std::endl;
   unsigned int num = sbmlModel->getNumCompartments();
   unsigned int counter;
   for (counter = 0; counter < num; counter++)
@@ -107,8 +105,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
       Compartment* sbmlCompartment = sbmlModel->getCompartment(counter);
       if (sbmlCompartment == NULL)
         {
-          //DebugFile << "Error. Expected SBML Compartment, got NULL pointer." << std::endl;
-          //throw StdException("Error. Expected SBML Compartment, got NULL pointer.");
           fatalError();
         }
       CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel);
@@ -118,11 +114,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
           key = sbmlCompartment->getName();
         }
       compartmentMap[key] = copasiCompartment;
-      //DebugFile << "Added compartment with key " << key << " to compartmentMap." << std::endl;
     }
 
   /* Create all species */
-  //DebugFile << "Creating Metabolites." << std::endl;
   num = sbmlModel->getNumSpecies();
 
   for (counter = num; counter > 0; counter--)
@@ -130,8 +124,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
       Species* sbmlSpecies = sbmlModel->getSpecies(counter - 1);
       if (sbmlSpecies == NULL)
         {
-          //DebugFile << "Error. Expected SBML species, got NULL pointer." << std::endl;
-          //throw StdException("Error. Expected SBML species, got NULL pointer.");
           fatalError();
         }
       CCompartment* copasiCompartment = compartmentMap[sbmlSpecies->getCompartment()];
@@ -151,20 +143,26 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
         }
       else
         {
-          //DebugFile << "Error. Could not find compartment " << sbmlSpecies->getCompartment() << std::endl;
-          //throw StdException("Error. Could not find compartment " + sbmlSpecies->getCompartment() + ".");
-          fatalError();
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 5 , sbmlSpecies->getCompartment().c_str(), sbmlSpecies->getId().c_str());
         }
     }
 
   /* Create all reactions */
-  //DebugFile << "Creating reactions." << std::endl;
   num = sbmlModel->getNumReactions();
   for (counter = 0; counter < num; counter++)
     {
       this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, compartmentMap);
     }
   copasiModel->setCompileFlag();
+  if (sbmlModel->getNumCompartments() > 0)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 3);
+    }
+  if (sbmlModel->getNumEvents() > 0)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 4);
+    }
+
   return copasiModel;
 }
 
