@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 13:33:56 $
+   $Author: shoops $ 
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -152,6 +152,8 @@ class CStochMethod : public CTrajectoryMethod
     * This is set to maxint - mMaxSteps*mMaxBalance
     */
     C_INT64 mMaxIntBeforeStep;
+
+    bool mMaxStepsReached;
 
   protected:
     /**

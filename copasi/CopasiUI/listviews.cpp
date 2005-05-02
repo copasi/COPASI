@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.173 $
+   $Revision: 1.174 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:27:54 $
+   $Author: shoops $ 
+   $Date: 2005/05/02 11:52:01 $
    End CVS Header */
 
 /****************************************************************************
@@ -480,7 +480,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                                //Report
+      case 43:                                  //Report
         return tableDefinition;
         break;
       case 42:
@@ -722,7 +722,7 @@ void ListViews::restoreCurrentItemInAllListViews()
 bool ListViews::updateDataModelAndListviews(ObjectType objectType,
     Action action, const std::string & C_UNUSED(key)) //static
 {
-  std::cout << "ListViews::updateDataModelAndListviews " << std::endl;
+  //std::cout << "ListViews::updateDataModelAndListviews " << std::endl;
 
   bool success = true;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:16:14 $
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 /********************************************************
@@ -473,20 +473,20 @@ void TrajectoryWidget::runTrajectoryTask()
 
   try
     {
-      if (!tt->process())
+      if (tt->process())
         {
-          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+          if (setInitialState->isChecked())
             {
-              tmpBar->finish();
-              QMessageBox::warning(this, "Simulation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-              CCopasiMessage::clearDeque();
+              const CState *currentState = tt->getState();
+              if (currentState)
+                (CCopasiDataModel::Global->getModel())->setInitialState(currentState);
             }
         }
-      else if (setInitialState->isChecked())
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
-          const CState *currentState = tt->getState();
-          if (currentState)
-            (CCopasiDataModel::Global->getModel())->setInitialState(currentState);
+          tmpBar->finish();
+          QMessageBox::warning(this, "Simulation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
         }
     }
   catch (CCopasiException Exception)

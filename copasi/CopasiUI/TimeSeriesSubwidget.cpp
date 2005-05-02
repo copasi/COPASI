@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/07 16:57:54 $
+   $Author: shoops $ 
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Thu Sep 30 17:54:10 2004
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.6 2004/10/07 16:57:54 gauges Exp $)
+ ** Created: Tue Apr 19 17:26:57 2005
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.7 2005/05/02 11:52:02 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,13 +18,14 @@
 #include "TimeSeriesSubwidget.h"
 
 #include <qvariant.h>
+#include <qregexp.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qfiledialog.h>
-#include <qmessagebox.h>
+#include "qmessagebox.h"
+#include "qfiledialog.h"
 #include "CTimeSeriesTable.h"
 #include "TimeSeriesSubwidget.ui.h"
 

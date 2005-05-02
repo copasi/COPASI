@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 20:05:08 $
+   $Author: shoops $ 
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 /**
@@ -125,6 +125,7 @@ class CNewtonMethod : public CSteadyStateMethod
     CNewtonMethod::NewtonReturnCode processNewton();
 
     bool allPositive() const;
+    bool containsNaN() const;
 
     CNewtonMethod::NewtonReturnCode
     returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode);

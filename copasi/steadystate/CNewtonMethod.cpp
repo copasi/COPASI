@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:16:13 $
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 #include <algorithm>
@@ -249,7 +249,8 @@ CNewtonMethod::processInternal()
 
           std::cout << "   integrating up to " << EndTime << std::endl;
 
-          pTrajectoryProblem->setInitialState(mpProblem->getInitialState()); //TODO: on second run do not start from the beginning
+          pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
+          //TODO: on second run do not start from the beginning
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
           try
             {
@@ -263,7 +264,15 @@ CNewtonMethod::processInternal()
             }
 
           *mpSteadyStateX = *pTrajectory->getState();
+
+          if (containsNaN())
+            break;
+
+          if (!(allPositive() || mAcceptNegative))
+            break;
+
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+
           if (isSteadyState(targetFunction(mdxdt)))
             {
               *mpSteadyState = *mpSteadyStateX; //convert back to CState
@@ -295,7 +304,7 @@ CNewtonMethod::processInternal()
       unsigned C_INT32 MaxSteps = ceil(log(1.0e12) / log(2.0));
 
       if (mpProgressHandler)
-        hProcess = mpProgressHandler->addItem("forward integrating...",
+        hProcess = mpProgressHandler->addItem("backward integrating...",
                                               CCopasiParameter::UINT,
                                               & Step,
                                               & MaxSteps);
@@ -305,11 +314,27 @@ CNewtonMethod::processInternal()
           if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
           pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
-          pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
-                                         + EndTime);
-          pTrajectory->processSimple();
+          pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
+
+          try
+            {
+              stepLimitReached = !pTrajectory->processSimple(true); //single step
+            }
+          catch (CCopasiException Exception)
+            {
+              std::cout << std::endl << "exception in trajectory task" << std::endl;
+              *mpSteadyStateX = *pTrajectory->getState();
+              break;
+            }
 
           *mpSteadyStateX = *pTrajectory->getState();
+
+          if (containsNaN())
+            break;
+
+          if (!(allPositive() || mAcceptNegative))
+            break;
+
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
           if (isSteadyState(targetFunction(mdxdt)))
             {
@@ -324,6 +349,11 @@ CNewtonMethod::processInternal()
               returnCode = processNewton();
               if (returnCode == CNewtonMethod::found)
               {return returnProcess(true, mFactor, mResolution);}
+            }
+          if (stepLimitReached)
+            {
+              std::cout << "Step limit reached at Endtime " << EndTime << std::endl;
+              break;
             }
         }
       if (mpProgressHandler) mpProgressHandler->finish(hProcess);
@@ -556,6 +586,16 @@ bool CNewtonMethod::allPositive() const
     return true;
   }
 
+bool CNewtonMethod::containsNaN() const
+  {
+    //checks for NaNs
+    C_INT32 i, imax = mX->size();
+    for (i = 0; i < imax; ++i)
+      if ((*mX)[i] != (*mX)[i]) return true;
+
+    return false;
+  }
+
 CNewtonMethod::NewtonReturnCode
 CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 {
@@ -568,6 +608,9 @@ CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 
 bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 {
+  if (containsNaN())
+    return false;
+
   if (value > mScaledResolution)
     return false;
 

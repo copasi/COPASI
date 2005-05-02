@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:30 $
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 #ifndef COPASI_CDependencyGraph
@@ -74,6 +74,8 @@ class CDependencyGraph
      * Desctructor
      */
     ~CDependencyGraph();
+
+    void resize(C_INT32 n);
 
     /**
      * Add a dependent for a particular node.

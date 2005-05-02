@@ -37,10 +37,11 @@ if [ x"$#" = x1 ]; then
     strip ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
 
 # copy the commandline version if it exists
-    if [ -e copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ] ; then    
-      cp copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ${TMPDIR}/copasi/
-      strip ${TMPDIR}/copasi/CopasiSE
-    fi  
+#    :TODO: Uncomment when CopasiSE is ready for ptime time.
+#    if [ -e copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ] ; then    
+#      cp copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ${TMPDIR}/copasi/
+#      strip ${TMPDIR}/copasi/CopasiSE
+#    fi  
     
 # copy the icon into the Resources directory
     echo "Creating Resources directory."
@@ -112,8 +113,9 @@ echo "Set the icon in the Info.plist file."
     cp ../copasi/CopasiUI/CopasiUI  copasi/bin
     chmod 755 copasi/bin/CopasiUI
 
-    cp ../copasi/CopasiSE/CopasiSE  copasi/bin
-    chmod 755 copasi/bin/CopasiSE
+#    :TODO: Uncomment when CopasiSE is ready for ptime time.
+#    cp ../copasi/CopasiSE/CopasiSE  copasi/bin
+#    chmod 755 copasi/bin/CopasiSE
 
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 644 copasi/share/copasi/examples/*

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParametersWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/26 11:02:37 $
+   $Author: shoops $ 
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -73,7 +73,8 @@ class CParameterListItem : public QListViewItem
       QListViewItem::okRename(col);
       //std::cout << "okrename" << std::endl;
       mIsChanged = true;
-      setText(0, "*" + text(0)); //TODO: find better way to display changed values
+      if ('*' != text(0)[0])
+        setText(0, "*" + text(0)); //TODO: find better way to display changed values
     }
   };
 

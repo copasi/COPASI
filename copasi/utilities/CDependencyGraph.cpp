@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:30 $
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 #define  COPASI_TRACE_CONSTRUCTION
@@ -45,6 +45,11 @@ void CDependencyGraph::addNode(const C_INT32 node)
     mNodes.resize(node + 1);
 
   //  mNodes.push_back(node);
+}
+
+void CDependencyGraph::resize(C_INT32 n)
+{
+  mNodes.resize(n);
 }
 
 void CDependencyGraph::addDependent(const C_INT32 node, const C_INT32 dependent)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetTask.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/11 21:29:28 $
+   $Author: shoops $ 
+   $Date: 2005/05/02 11:52:01 $
    End CVS Header */
 
 /****************************************************************************
@@ -24,6 +24,7 @@
 void CScanWidgetTask::init()
 {
   //no validators to be set in this widget
+  buttonEdit->hide();
 }
 
 #include "report/CCopasiObjectName.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/16 14:51:29 $
+   $Author: shoops $ 
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -19,6 +19,9 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qcursor.h>
+#include <qregexp.h>
+
+C_INT32 checkSelection(const QString & file);
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
@@ -116,9 +119,25 @@ void PlotWindow::printPlot()
 
 void PlotWindow::slotSaveData()
 {
-  QString fileName = QFileDialog::getSaveFileName(QString::null, QString::null, this, 0, "Save to");
-  //std::cout << "fileName: " << fileName << std::endl;
-  if (fileName.isEmpty()) return;
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName = QFileDialog::getSaveFileName(QString::null, QString::null, this, 0, "Save to");
+      //std::cout << "fileName: " << fileName << std::endl;
+      if (fileName.isEmpty()) return;
+
+      if (!fileName.endsWith(".txt") &&
+          !fileName.endsWith(".")) fileName += ".txt";
+
+      fileName = fileName.remove(QRegExp("\\.$"));
+
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
   bool success = false;
   if (mpPlot)
     {

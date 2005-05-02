@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 16:44:27 $
+   $Author: shoops $ 
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 #include <cmath>
@@ -117,8 +117,8 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
   for (i = 0; i < numReacs; i++)
   {reacs[i]->calculate();}
 
-  std::cout << "elasticities" << std::endl;
-  std::cout << (CMatrix<C_FLOAT64>)mUnscaledElasticities << std::endl;
+  //std::cout << "elasticities" << std::endl;
+  //std::cout << (CMatrix<C_FLOAT64>)mUnscaledElasticities << std::endl;
 }
 
 int CMCAMethod::calculateUnscaledConcentrationCC()
@@ -177,14 +177,15 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       }
 
   //debug
-  std::cout << "aux2 = aux1 * L,  equals reduced Jacobian" << std::endl;
+  //std::cout << "aux2 = aux1 * L,  equals reduced Jacobian" << std::endl;
+
   for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
     {
       for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
         std::cout << "  " << aux2[i + 1][j + 1];
       std::cout << std::endl;
     }
-  std::cout << std::endl;
+  //std::cout << std::endl;
 
   // LU decomposition of aux2 (for inversion)
   // dgefa -> luX??
@@ -267,8 +268,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   free((void *) aux2);
   pfree(ssipvt);
 
-  std::cout << "ConcCC  (= aux2*RedStoi = -L * redJac^-1 * redStoi)" << std::endl;
-  std::cout << (CMatrix<C_FLOAT64>)mUnscaledConcCC << std::endl;
+  //std::cout << "ConcCC  (= aux2*RedStoi = -L * redJac^-1 * redStoi)" << std::endl;
+  //std::cout << (CMatrix<C_FLOAT64>)mUnscaledConcCC << std::endl;
 
   return MCA_OK;
 }
@@ -330,8 +331,8 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
         else
           mScaledElasticities[i][j] = DBL_MAX;
       }
-  std::cout << "scElas " << std::endl;
-  std::cout << (CMatrix<C_FLOAT64>)mScaledElasticities << std::endl;
+  //std::cout << "scElas " << std::endl;
+  //std::cout << (CMatrix<C_FLOAT64>)mScaledElasticities << std::endl;
 
   // Scale ConcCC
   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
@@ -348,8 +349,8 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
         else
           mScaledConcCC[i][j] = DBL_MAX;
       }
-  std::cout << "scConcCC " << std::endl;
-  std::cout << (CMatrix<C_FLOAT64>)mScaledConcCC << std::endl;
+  //std::cout << "scConcCC " << std::endl;
+  //std::cout << (CMatrix<C_FLOAT64>)mScaledConcCC << std::endl;
 
   // Scale FluxCC
   mScaledFluxCC.resize(mUnscaledFluxCC.numRows(), mUnscaledFluxCC.numCols());
@@ -365,8 +366,8 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
         else
           mScaledFluxCC[i][j] = DBL_MAX;
       }
-  std::cout << "scFluxCC " << std::endl;
-  std::cout << (CMatrix<C_FLOAT64>)mScaledFluxCC << std::endl;
+  //std::cout << "scFluxCC " << std::endl;
+  //std::cout << (CMatrix<C_FLOAT64>)mScaledFluxCC << std::endl;
 }
 
 /**

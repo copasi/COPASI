@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/03 16:15:36 $
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 /****************************************************************************
@@ -22,9 +22,25 @@
 
 void TimeSeriesSubWidget::saveDataToFile()
 {
-  QString fileName = QFileDialog::getSaveFileName(QString::null, QString::null, this, 0, "Save to");
-  std::cout << "fileName: " << fileName << std::endl;
-  if (fileName.isEmpty()) return;
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName = QFileDialog::getSaveFileName(QString::null, QString::null, this, 0, "Save to");
+      std::cout << "fileName: " << fileName << std::endl;
+      if (fileName.isEmpty()) return;
+
+      if (!fileName.endsWith(".txt") &&
+          !fileName.endsWith(".")) fileName += ".txt";
+
+      fileName = fileName.remove(QRegExp("\\.$"));
+
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
   const CTimeSeries* timeSeries = this->table()->getTimeSeries();
   int failed = 0;
   if (timeSeries)
@@ -58,4 +74,16 @@ void TimeSeriesSubWidget::init()
 CTimeSeriesTable* TimeSeriesSubWidget::table()
 {
   return dataTable;
+}
+
+C_INT32 TimeSeriesSubWidget::checkSelection(const QString & file)
+{
+  if (QFileInfo(file).exists())
+    return QMessageBox::question(NULL, "File exists!",
+                                 "Overwrite existing file " + file + "?",
+                                 QMessageBox::Yes,
+                                 QMessageBox::No | QMessageBox::Default,
+                                 QMessageBox::Cancel | QMessageBox::Escape);
+  else
+    return QMessageBox::Yes;
 }

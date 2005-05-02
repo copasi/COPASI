@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.218 $
+   $Revision: 1.219 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:16:13 $
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -386,11 +386,13 @@ void CModel::setCompileFlag(bool flag)
 
 bool CModel::compileIfNecessary()
 {
+  /*
   std::cout << "** compiling a CModel is requested. ";
   if (mCompileIsNecessary)
     std::cout << "It will be done...." << std::endl;
   else
     std::cout << " " << std::endl;
+  */
 
   if (mCompileIsNecessary)
     return compile();

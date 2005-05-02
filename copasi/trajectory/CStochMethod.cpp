@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2005/04/19 15:32:16 $
+   $Author: shoops $ 
+   $Date: 2005/05/02 11:52:02 $
    End CVS Header */
 
 #ifdef WIN32
@@ -102,6 +102,7 @@ const double CStochMethod::step(const double & deltaT)
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
     if (mpProblem->getModel()->getMetabolites()[i]->getNumber() >= mMaxIntBeforeStep)
       {
+        CCopasiMessage(CCopasiMessage::EXCEPTION, "at least one particle number got to big.");
         // TODO:throw exception or something like that
       }
 
@@ -114,6 +115,12 @@ const double CStochMethod::step(const double & deltaT)
       time = doSingleStep(time, endtime);
     }
   mpCurrentState->setTime(time);
+
+  if ((i >= (unsigned C_INT32) mMaxSteps) && (!mMaxStepsReached))
+    {
+      mMaxStepsReached = true; //only report this message once
+      CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
+    }
 
   // get back the particle numbers:
 
@@ -160,12 +167,13 @@ const double CStochMethod::step(const double & deltaT,
     }
 
   setupDependencyGraphAndBalances();
-  std::cout << mDG;
+  //std::cout << mDG;
   updatePropensities();
 
   // call init of the specific simulation method
   initMethod(mpCurrentState->getTime());
 
+  mMaxStepsReached = false;
   return step(deltaT);
 }
 
@@ -362,6 +370,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
   // For each possible pair of reactions i and j, if the intersection of
   // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.
+  mDG.resize(mNumReactions);
   for (i = 0; i < mNumReactions; i++)
     {
       for (j = 0; j < mNumReactions; j++)
@@ -434,9 +443,10 @@ void CStochMethod::setupDependencyGraphAndBalances()
             }
         }
     }
-  mMaxBalance = maxBalance; std::cout << "maxbalance" << mMaxBalance << std::endl;
+  mMaxBalance = maxBalance;
+  //std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =         /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =  /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
@@ -455,7 +465,7 @@ std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
   unsigned C_INT32 j, jmax;
 
   std::vector <const CMetab*> metablist;
-  std::cout << reaction_index << " depends on ";
+  //std::cout << reaction_index << " depends on ";
 
   for (i = 0; i < imax; ++i)
     {
@@ -466,10 +476,10 @@ std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
       for (j = 0; j < jmax; ++j)
         {
           retset->insert(metablist[j]->getKey());
-          std::cout << "  " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
+          //std::cout << "  " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
         }
     }
-  std::cout << std::endl;
+  //std::cout << std::endl;
   return retset;
 }
 
@@ -481,7 +491,7 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
   const CCopasiVector<CChemEqElement> & balances = mpModel->getReactions()[reaction_index]->getChemEq().getBalances();
 
-  std::cout << reaction_index << " affects ";
+  //std::cout << reaction_index << " affects ";
 
   for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
@@ -489,11 +499,11 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
         if (balances[i]->getMetabolite().getStatus() != CMetab::METAB_FIXED)
           {
             retset->insert(balances[i]->getMetabolite().getKey());
-            std::cout << " " << balances[i]->getMetabolite().getObjectName() << ":" << balances[i]->getMetabolite().getKey();
+            //std::cout << " " << balances[i]->getMetabolite().getObjectName() << ":" << balances[i]->getMetabolite().getKey();
           }
     }
 
-  std::cout << std::endl;
+  //std::cout << std::endl;
   return retset;
 }
 
@@ -529,6 +539,13 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
     {
       //model not suitable, message describes the problem
       CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+      return false;
+    }
+
+  if (* (C_INT32 *) getValue("STOCH.MaxSteps") <= 0)
+    {
+      //max steps should be at least 1
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "MaxSteps needs to be positive.");
       return false;
     }
 
