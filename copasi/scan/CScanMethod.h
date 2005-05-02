@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/08 15:22:17 $
+   $Author: gauges $ 
+   $Date: 2005/05/02 09:17:33 $
    End CVS Header */
 
 /**
@@ -60,6 +60,8 @@ class CScanItem
 
     virtual bool isNesting() const {return true;};
 
+    virtual ~CScanItem(){};
+
   protected:
 
     CScanItem(const CCopasiParameterGroup* si);
@@ -77,6 +79,8 @@ class CScanItemRepeat: public CScanItem
   public:
     CScanItemRepeat(const CCopasiParameterGroup* si);
     void step();
+
+    virtual ~CScanItemRepeat(){};
   };
 
 //***********************************+
@@ -89,6 +93,8 @@ class CScanItemLinear: public CScanItem
   public:
     CScanItemLinear(const CCopasiParameterGroup* si);
     void step();
+
+    virtual ~CScanItemLinear(){};
   };
 
 //***********************************+
@@ -102,6 +108,8 @@ class CScanItemRandom: public CScanItem
     bool mLog;
   public:
     CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg);
+    virtual ~CScanItemRandom(){};
+
     void step();
     virtual bool isNesting() const {return false;};
   };

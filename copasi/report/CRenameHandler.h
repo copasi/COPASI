@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CRenameHandler.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/12 15:06:33 $
+   $Author: gauges $ 
+   $Date: 2005/05/02 09:17:33 $
    End CVS Header */
 
 #ifndef COPASI_CRenameHandler
@@ -14,6 +14,8 @@
 class CRenameHandler
   {
   public:
+    virtual ~CRenameHandler(){};
+
     virtual bool handle(const std::string & oldCN, const std::string & newCN) const = 0;
   };
 
