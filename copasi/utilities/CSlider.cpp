@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/13 11:35:10 $
+   $Author: gauges $ 
+   $Date: 2005/05/02 09:20:34 $
    End CVS Header */
 
 #include "copasi.h"
@@ -214,12 +214,17 @@ bool CSlider::setMinValue(const C_FLOAT64 minValue)
 {
   if (mSliderType != Undefined)
     {
-      if (minValue > mMaxValue) return false;
-
       mMinValue = minValue;
 
+      if (mMaxValue < mMinValue)
+        {
+          mMaxValue = mMinValue;
+        }
       if (mpSliderObject && getSliderValue() < mMinValue)
-        this->mValue = this->mMinValue;
+        {
+          this->mValue = this->mMinValue;
+          this->writeToObject();
+        }
 
       return true;
     }
@@ -236,13 +241,17 @@ bool CSlider::setMaxValue(const C_FLOAT64 maxValue)
 {
   if (mSliderType != Undefined)
     {
-      if (maxValue < mMinValue) return false;
-
       mMaxValue = maxValue;
 
+      if (mMaxValue < mMinValue)
+        {
+          mMinValue = mMaxValue;
+        }
       if (mpSliderObject && getSliderValue() > mMaxValue)
-        this->mValue = this->mMaxValue;
-
+        {
+          this->mValue = this->mMaxValue;
+          this->writeToObject();
+        }
       return true;
     }
   else

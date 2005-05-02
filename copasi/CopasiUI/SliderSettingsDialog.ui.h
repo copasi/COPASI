@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/25 18:16:14 $
+   $Author: gauges $ 
+   $Date: 2005/05/02 09:20:33 $
    End CVS Header */
 
 /****************************************************************************
@@ -173,10 +173,19 @@ void SliderSettingsDialog::minValueChanged()
   // check if it is smaller than the current value
   // if not, set it to the current value
   this->mMinValue = mpMinValueEdit->text().toDouble();
+  if (this->mMinValue > this->mMaxValue)
+    {
+      this->mMaxValue = this->mMinValue;
+      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+    }
   if (this->mMinValue > this->mValue)
     {
-      this->mMinValue = this->mValue;
-      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+      /*
+        this->mMinValue = this->mValue;
+        this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+        */
+      this->mValue = this->mMinValue;
+      this->mpObjectValueEdit->setText(QString::number(this->mValue));
     }
   this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
@@ -194,10 +203,19 @@ void SliderSettingsDialog::maxValueChanged()
   // check if it is larget then the current value
   // else set it to the current value
   this->mMaxValue = mpMaxValueEdit->text().toDouble();
+  if (this->mMinValue > this->mMaxValue)
+    {
+      this->mMinValue = this->mMaxValue;
+      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+    }
   if (this->mMaxValue < this->mValue)
     {
+      /*
       this->mMaxValue = this->mValue;
       this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+      */
+      this->mValue = this->mMaxValue;
+      this->mpObjectValueEdit->setText(QString::number(this->mValue));
     }
   this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
@@ -212,13 +230,21 @@ void SliderSettingsDialog::objectValueChanged()
   this->mValue = mpObjectValueEdit->text().toDouble();
   if (this->mValue > this->mMaxValue)
     {
+      /*
       this->mValue = this->mMaxValue;
       this->mpObjectValueEdit->setText(QString::number(this->mValue));
+      */
+      this->mMaxValue = this->mValue;
+      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
     }
   if (this->mValue < this->mMinValue)
     {
+      /*
       this->mValue = this->mMinValue;
       this->mpObjectValueEdit->setText(QString::number(this->mValue));
+        */
+      this->mMinValue = this->mValue;
+      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
     }
   this->mChanged = false;
 }
