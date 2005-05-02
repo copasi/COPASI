@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:26:19 $
+   $Author: gauges $ 
+   $Date: 2005/05/02 09:26:31 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -35,6 +35,8 @@ class CDataModelRenameHandler : public CRenameHandler
   {
   public:
     CDataModelRenameHandler(CCopasiDataModel* dm);
+
+    virtual ~CDataModelRenameHandler(){};
 
     virtual bool handle(const std::string & oldCN, const std::string & newCN) const;
 
