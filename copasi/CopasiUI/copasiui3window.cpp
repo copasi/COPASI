@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/13 18:02:47 $
+   $Author: gauges $ 
+   $Date: 2005/05/02 09:24:12 $
    End CVS Header */
 
 #include <vector>
@@ -205,14 +205,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                                    // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                                     // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                                    // Discard clicked or Alt+D pressed
+        case 1:                                                                     // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                                    // Cancel clicked or Escape pressed
+        case 2:                                                                     // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -270,14 +270,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                    // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                     // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                    // Discard clicked or Alt+D pressed
+            case 1:                                                                     // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                    // Cancel clicked or Escape pressed
+            case 2:                                                                     // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -423,14 +423,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                                    // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                                     // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                                    // Discard clicked or Alt+D pressed
+        case 1:                                                                     // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                                    // Cancel clicked or Escape pressed
+        case 2:                                                                     // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -452,14 +452,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                    // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                     // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                    // Discard clicked or Alt+D pressed
+            case 1:                                                                     // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                    // Cancel clicked or Escape pressed
+            case 2:                                                                     // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -724,14 +724,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                    // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                     // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                    // Discard clicked or Alt+D pressed
+            case 1:                                                                     // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                    // Cancel clicked or Escape pressed
+            case 2:                                                                     // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -772,6 +772,16 @@ void CopasiUI3Window::slotImportSBML()
 
           QMessageBox::critical(this, QString("File Error"), Message,
                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
+
+      /* still check for warnings.
+       * Maybe events or rules were ignored while reading 
+       * the file.
+       */
+      if (success)
+        {
+          this->checkPendingMessages();
         }
 
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
