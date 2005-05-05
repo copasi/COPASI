@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/15 11:16:08 $
+   $Author: shoops $ 
+   $Date: 2005/05/05 12:32:29 $
    End CVS Header */
 
 /****************************************************************************
@@ -72,10 +72,11 @@ class CReport : public CCopasiContainer
 
     /**
      * compile the object list from name vector
-     * @param const std::vector< CCopasiContainer * > listOfContainer
+     * @param std::vector< CCopasiContainer * > listOfContainer
+     * (default: CCopasiContainer::EmptyList)
      * @return bool success
      */
-    bool compile(const std::vector< CCopasiContainer * > listOfContainer =
+    bool compile(std::vector< CCopasiContainer * > listOfContainer =
                    CCopasiContainer::EmptyList);
 
     /**

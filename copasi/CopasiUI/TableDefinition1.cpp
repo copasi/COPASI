@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/15 11:14:03 $
+   $Author: shoops $ 
+   $Date: 2005/05/05 12:32:28 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.47 2005/04/15 11:14:03 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.48 2005/05/05 12:32:28 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -285,13 +285,13 @@ void TableDefinition1::loadTableDefinition1()
   //object list
   //std::vector< CCopasiContainer * > ListOfContainer; //dummy
   unsigned C_INT32 i;
-  // i+=2; is due to skip to show the separator
-  for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i += 2)
+
+  for (i = 0; i < pReportDefinition->getTableAddr()->size(); i++)
     {
       new MyListBoxItem(itemsTable,
-                        FROM_UTF8(CCopasiContainer::ObjectFromName((*(pReportDefinition->getBodyAddr()))[i])
+                        FROM_UTF8(CCopasiContainer::ObjectFromName((*(pReportDefinition->getTableAddr()))[i])
                                   ->getObjectDisplayName()),
-                        (*(pReportDefinition->getBodyAddr()))[i]);
+                        (*(pReportDefinition->getTableAddr()))[i]);
     }
   comboTask->setEnabled(true);
 
@@ -388,11 +388,13 @@ void TableDefinition1::slotBtnConfirmClicked()
   //object list
   pReportDefinition->getHeaderAddr()->clear();
   pReportDefinition->getBodyAddr()->clear();
+  pReportDefinition->getFooterAddr()->clear();
+  pReportDefinition->getTableAddr()->clear();
 
   C_INT32 i;
   for (i = 0; i < itemsTable->numRows(); i++)
     {
-      pReportDefinition->addTableElement(CCopasiObjectName(((MyListBoxItem*)(itemsTable->item(i)))->getCN()));
+      pReportDefinition->getTableAddr()->push_back(((MyListBoxItem*)itemsTable->item(i))->getCN());
     }
 
   protectedNotify(ListViews::REPORT, ListViews::CHANGE, reportKey);

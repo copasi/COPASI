@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/15 11:16:08 $
+   $Author: shoops $ 
+   $Date: 2005/05/05 12:32:29 $
    End CVS Header */
 
 #include "copasi.h"
@@ -116,7 +116,7 @@ void CReport::printFooter()
 // Compile the List of Report Objects;
 // Support Parellel
 
-bool CReport::compile(const std::vector< CCopasiContainer * > listOfContainer)
+bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
   headerObjectList.clear();
   bodyObjectList.clear();
@@ -125,19 +125,17 @@ bool CReport::compile(const std::vector< CCopasiContainer * > listOfContainer)
   // check if there is a Report Definition Defined
   if (!mpReportDef) return false;
 
-  const_cast<std::vector< CCopasiContainer * > *>(&listOfContainer)->
-  push_back(this);
+  listOfContainer.push_back(this);
 
-  if (mpReportDef->getTitle())
-    generateObjectsFromName(&listOfContainer, headerObjectList,
-                            mpReportDef->getHeaderAddr());
+  if (mpReportDef->isTable())
+    if (!mpReportDef->preCompileTable(listOfContainer)) return false;
+
+  generateObjectsFromName(&listOfContainer, headerObjectList,
+                          mpReportDef->getHeaderAddr());
   generateObjectsFromName(&listOfContainer, bodyObjectList,
                           mpReportDef->getBodyAddr());
   generateObjectsFromName(&listOfContainer, footerObjectList,
                           mpReportDef->getFooterAddr());
-
-  const_cast<std::vector< CCopasiContainer * > *>(&listOfContainer)->
-  pop_back();
 
   return true;
 }

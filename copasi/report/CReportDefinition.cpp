@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/15 12:55:31 $
+   $Date: 2005/05/05 12:32:29 $
    End CVS Header */
 
 /**
@@ -56,6 +56,25 @@ void CReportDefinition::cleanup()
   mHeaderVector.clear();
   mBodyVector.clear();
   mFooterVector.clear();
+  mTableVector.clear();
+}
+
+bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > & listOfContainer)
+{
+  bool success = true;
+
+  mHeaderVector.clear();
+  mBodyVector.clear();
+  mFooterVector.clear();
+
+  std::vector<CRegisteredObjectName>::const_iterator it = mTableVector.begin();
+  std::vector<CRegisteredObjectName>::const_iterator end = mTableVector.end();
+
+  for (; it != end; ++it)
+    if (!addTableElement(CCopasiContainer::ObjectFromName(listOfContainer, *it)))
+      success = false;
+
+  return success;
 }
 
 std::vector<CRegisteredObjectName>* CReportDefinition::getBodyAddr()
@@ -66,6 +85,9 @@ std::vector<CRegisteredObjectName>* CReportDefinition::getHeaderAddr()
 
 std::vector<CRegisteredObjectName>* CReportDefinition::getFooterAddr()
 {return &mFooterVector;}
+
+std::vector<CRegisteredObjectName>* CReportDefinition::getTableAddr()
+{return &mTableVector;}
 
 bool CReportDefinition::setTaskType(const CCopasiTask::Type & taskType)
 {mTaskType = taskType; return true;}
@@ -94,13 +116,7 @@ void CReportDefinition::setIsTable(bool table)
 const std::string & CReportDefinition::getKey() const
   {return mKey;}
 
-void CReportDefinition::addTableElement(const std::string & cn)
-{
-  addTableElement(CCopasiContainer::ObjectFromName(cn));
-  return;
-}
-
-void CReportDefinition::addTableElement(const CCopasiObject * pSelectedObject)
+bool CReportDefinition::addTableElement(const CCopasiObject * pSelectedObject)
 {
   bool isFirst = false;
   if ((mHeaderVector.size() == 0) && (mBodyVector.size() == 0))
@@ -109,29 +125,30 @@ void CReportDefinition::addTableElement(const CCopasiObject * pSelectedObject)
   CCopasiObjectName SeparatorCN(mSeparator.getCN());
   CCopasiObjectName Title;
 
-  if (pSelectedObject)
+  if (!pSelectedObject) return false;
+
+  if (!isFirst)
     {
-      if (!isFirst)
-        {
-          mHeaderVector.push_back(SeparatorCN);
-          mBodyVector.push_back(SeparatorCN);
-        }
-
-      if (pSelectedObject->getObjectParent())
-        {
-          Title =
-            pSelectedObject->getObjectParent()->getCN();
-          Title += ",Reference=Name";
-          getHeaderAddr()->push_back(Title);
-
-          Title =
-            CCopasiStaticString("[" + pSelectedObject->getObjectName() + "]").getCN();
-        }
-      else
-        Title =
-          CCopasiStaticString(pSelectedObject->getObjectName()).getCN();
-
-      mHeaderVector.push_back(Title);
-      mBodyVector.push_back(pSelectedObject->getCN());
+      mHeaderVector.push_back(SeparatorCN);
+      mBodyVector.push_back(SeparatorCN);
     }
+
+  if (pSelectedObject->getObjectParent())
+    {
+      Title =
+        pSelectedObject->getObjectParent()->getCN();
+      Title += ",Reference=Name";
+      getHeaderAddr()->push_back(Title);
+
+      Title =
+        CCopasiStaticString("[" + pSelectedObject->getObjectName() + "]").getCN();
+    }
+  else
+    Title =
+      CCopasiStaticString(pSelectedObject->getObjectName()).getCN();
+
+  mHeaderVector.push_back(Title);
+  mBodyVector.push_back(pSelectedObject->getCN());
+
+  return true;
 }

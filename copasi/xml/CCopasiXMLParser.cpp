@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/18 13:32:02 $
+   $Date: 2005/05/05 12:32:29 $
    End CVS Header */
 
 /**
@@ -4594,6 +4594,10 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
     case Report:
       if (strcmp(pszName, "Report")) fatalError();
 
+      // We have not found anything yet.
+      tableFound = false;
+      otherFound = false;
+
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       //taskType = mParser.getAttributeValue("taskType", papszAttrs);
@@ -4719,6 +4723,10 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
 {
+  if (!strcmp(pszName, "Report") &&
+      (mCurrentElement == Header || mCurrentElement == Body))
+    mCurrentElement = Report;
+
   switch (mCurrentElement)
     {
     case Report:
@@ -5168,8 +5176,7 @@ void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
 
     case Object:
       if (strcmp(pszName, "Object")) fatalError();
-      pObject = mParser.getObjectFromName(mCommon.Comment);
-      mCommon.pReport->addTableElement(pObject);
+      mCommon.pReport->getTableAddr()->push_back(mCommon.Comment);
       mCommon.Comment = "";
       mCurrentElement = Table;
       break;
