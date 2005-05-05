@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/18 13:32:02 $
+   $Date: 2005/05/05 14:24:54 $
    End CVS Header */
 
 /**
@@ -432,7 +432,15 @@ class CXMLAttributeList
                                    const CType & value)
     {
       std::ostringstream Value;
-      Value << value;
+      try
+        {
+          Value << value;
+        }
+
+      catch (...)
+        {
+          Value << "";
+        }
 
       mAttributeList.push_back(name);
       mAttributeList.push_back(CCopasiXMLInterface::encode(Value.str(),
