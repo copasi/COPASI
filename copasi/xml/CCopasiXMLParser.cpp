@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/05 12:32:29 $
+   $Date: 2005/05/05 14:26:36 $
    End CVS Header */
 
 /**
@@ -3583,8 +3583,8 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
   mpCurrentHandler = NULL;
 
   const char * Key;
-  std::string sType;
-  CCopasiTask::Type type;
+  const char * type;
+  CCopasiTask::Type Type;
   bool Scheduled = false;
 
   switch (mCurrentElement)
@@ -3595,12 +3595,12 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
       mCommon.pCurrentTask = NULL;
 
       Key = mParser.getAttributeValue("key", papszAttrs, false);
-      sType = mParser.getAttributeValue("type", papszAttrs);
-      type = CCopasiTask::XMLNameToEnum(sType.c_str());
+      type = mParser.getAttributeValue("type", papszAttrs);
+      Type = (CCopasiTask::Type)mParser.toEnum(type, CCopasiTask::XMLType);
       Scheduled = mParser.toBool(mParser.getAttributeValue("scheduled", papszAttrs, "false"));
 
       // create a new CCopasiTask element depending on the type
-      switch (type)
+      switch (Type)
         {
         case CCopasiTask::steadyState:
           mCommon.pCurrentTask = new CSteadyStateTask(mCommon.pTaskList);
@@ -3619,7 +3619,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           mParser.onStartElement(pszName, papszAttrs);
 
           CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 5,
-                                 sType.c_str(), mParser.getCurrentLineNumber());
+                                 type, mParser.getCurrentLineNumber());
           break;
         }
 
@@ -4581,7 +4581,6 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Key;
-  //const char * taskType;
   const char * Name;
 
   CCopasiTask::Type type;
@@ -4600,31 +4599,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
-      //taskType = mParser.getAttributeValue("taskType", papszAttrs);
-      type = (CCopasiTask::Type)atoi(mParser.getAttributeValue("taskType", papszAttrs));
-      /*
-      if(taskType=="steadyState"){
-          type=CCopasiTask::steadyState;
-      }
-      else if(taskType=="timeCourse"){
-          type=CCopasiTask::timeCourse;
-      }
-      else if(taskType=="scan"){
-          type=CCopasiTask::scan;
-      }
-      else if(taskType=="fluxMode"){
-          type=CCopasiTask::fluxMode;
-      }
-      else if(taskType=="optimization"){
-          type=CCopasiTask::optimization;
-      }
-      else if(taskType=="parameterFitting"){
-          type=CCopasiTask::parameterFitting;
-      }
-      else{
-          fatalError();
-      }
-      */ 
+      type = (CCopasiTask::Type)mParser.toEnum(mParser.getAttributeValue("taskType", papszAttrs),
+             CCopasiTask::XMLType);
       // create a new report
       mCommon.pReport = new CReportDefinition();
       mCommon.pReport->setObjectName(Name);
@@ -5429,28 +5405,28 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
 
       // This is always the case if the XML is conforming to the schema.
 
-      //if (mCommon.KeyMap.get(AssociatedEntityKey))
-      //  {
-      pSlider = new CSlider;
-      mCommon.KeyMap.addFix(Key, pSlider);
-      if (strncmp(AssociatedEntityKey, "", 1))
+      if (mCommon.KeyMap.get(AssociatedEntityKey))
         {
-          pSlider->setAssociatedEntityKey(mCommon.KeyMap.get(AssociatedEntityKey)->getKey());
+          pSlider = new CSlider;
+          mCommon.KeyMap.addFix(Key, pSlider);
+          if (strncmp(AssociatedEntityKey, "", 1))
+            {
+              pSlider->setAssociatedEntityKey(mCommon.KeyMap.get(AssociatedEntityKey)->getKey());
+            }
+          else
+            {
+              pSlider->setAssociatedEntityKey("");
+            }
+          pSlider->setSliderObject((std::string) ObjectCN);
+          pSlider->setSliderType(ObjectType);
+          pSlider->setMaxValue(MaxValue);
+          pSlider->setMinValue(MinValue);
+          pSlider->setSliderValue(ObjectValue);
+          pSlider->setTickNumber(TickNumber);
+          pSlider->setTickFactor(TickFactor);
+          pSlider->setScaling(pSlider->convertScaleNameToScale(scaling));
+          mCommon.pGUI->pSliderList->add(pSlider, true);
         }
-      else
-        {
-          pSlider->setAssociatedEntityKey("");
-        }
-      pSlider->setSliderObject((std::string) ObjectCN);
-      pSlider->setSliderType(ObjectType);
-      pSlider->setMaxValue(MaxValue);
-      pSlider->setMinValue(MinValue);
-      pSlider->setSliderValue(ObjectValue);
-      pSlider->setTickNumber(TickNumber);
-      pSlider->setTickFactor(TickFactor);
-      pSlider->setScaling(pSlider->convertScaleNameToScale(scaling));
-      mCommon.pGUI->pSliderList->add(pSlider, true);
-      //}
       break;
 
     default:

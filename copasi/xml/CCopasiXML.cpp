@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/05 12:32:29 $
+   $Date: 2005/05/05 14:26:36 $
    End CVS Header */
 
 /**
@@ -795,7 +795,7 @@ bool CCopasiXML::saveReportList()
       Attributes.erase();
       Attributes.add("key", pReport->getKey());
       Attributes.add("name", pReport->getObjectName());
-      Attributes.add("taskType", pReport->getTaskType());
+      Attributes.add("taskType", CCopasiTask::XMLType[pReport->getTaskType()]);
       startSaveElement("Report", Attributes);
 
       startSaveElement("Comment");

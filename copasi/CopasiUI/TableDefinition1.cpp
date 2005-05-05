@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/05 12:32:28 $
+   $Date: 2005/05/05 14:26:36 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.48 2005/05/05 12:32:28 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.49 2005/05/05 14:26:36 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -147,9 +147,10 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   frame4Layout->addWidget(separatorLabel, 2, 0);
 
   comboTask = new QComboBox(FALSE, frame4, "comboTask");
-  comboTask->insertItem("Scan Task");
-  comboTask->insertItem("Trajectory Task");
-  comboTask->insertItem("SteadyState Task");
+
+  unsigned C_INT32 i;
+  for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
+    comboTask->insertItem(FROM_UTF8(CCopasiTask::TypeName[i]));
 
   frame4Layout->addWidget(comboTask, 0, 1);
 
@@ -279,6 +280,8 @@ void TableDefinition1::loadTableDefinition1()
   //comment
   commentEdit->setText(FROM_UTF8(pReportDefinition->getComment()));
 
+  comboTask->setCurrentItem(pReportDefinition->getTaskType());
+
   //title checkbox
   titleChecked->setChecked(pReportDefinition->getTitle());
 
@@ -376,6 +379,8 @@ void TableDefinition1::slotBtnConfirmClicked()
 
   //title
   pReportDefinition->setTitle(titleChecked->isChecked());
+
+  pReportDefinition->setTaskType((CCopasiTask::Type) comboTask->currentItem());
 
   //separator
   CCopasiStaticString Separator;
