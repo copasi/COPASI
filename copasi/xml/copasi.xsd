@@ -243,18 +243,7 @@
                   </xs:sequence>
                   <xs:attribute name="key" type="cTASK_KEY" use="required"/>
                   <xs:attribute name="name" type="xs:string" use="required"/>
-                  <xs:attribute name="type" use="required">
-                    <xs:simpleType>
-                      <xs:restriction base="xs:string">
-                        <xs:enumeration value="steadyState"/>
-                        <xs:enumeration value="timeCourse"/>
-                        <xs:enumeration value="scan"/>
-                        <xs:enumeration value="fluxMode"/>
-                        <xs:enumeration value="optimization"/>
-                        <xs:enumeration value="parameterFitting"/>
-                      </xs:restriction>
-                    </xs:simpleType>
-                  </xs:attribute>
+                  <xs:attribute name="type" type="cTASK_TYPE" use="required"/>
                   <xs:attribute name="scheduled" type="xs:boolean" use="optional" default="false"/>
                 </xs:complexType>
               </xs:element>
@@ -287,7 +276,7 @@
                   </xs:sequence>
                   <xs:attribute name="key" type="cREPORT_KEY" use="required"/>
                   <xs:attribute name="name" type="xs:string" use="required"/>
-                  <xs:attribute name="taskType" type="xs:string" use="required"/>
+                  <xs:attribute name="taskType" type="cTASK_TYPE" use="required"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -706,6 +695,17 @@
   <xs:simpleType name="cSLIDER_KEYREF">
     <xs:restriction base="cKEYREF">
       <xs:pattern value="Slider_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cTASK_TYPE">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="steadyState"/>
+      <xs:enumeration value="timeCourse"/>
+      <xs:enumeration value="scan"/>
+      <xs:enumeration value="fluxMode"/>
+      <xs:enumeration value="optimization"/>
+      <xs:enumeration value="parameterFitting"/>
+      <xs:enumeration value="metabolicControlAnalysis"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
