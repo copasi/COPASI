@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/02 09:27:36 $
+   $Date: 2005/05/09 02:18:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -154,7 +154,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
       this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, compartmentMap);
     }
   copasiModel->setCompileFlag();
-  if (sbmlModel->getNumCompartments() > 0)
+  if (sbmlModel->getNumRules() > 0)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 3);
     }
