@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/19 13:12:17 $
+   $Date: 2005/05/09 13:32:11 $
    End CVS Header */
 
 // Main
@@ -57,79 +57,82 @@ int main(int argc, char *argv[])
       return 1;
     }
 
-  // Create the root container.
-  CCopasiContainer::init();
-
-  // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
-
-  const COptions::nonOptionType & Files = COptions::getNonOptions();
-
-  if (!COptions::compareValue("ImportSBML", std::string("")))
+  try
     {
-      // Import the SBML File
-      std::string ImportSBML;
-      COptions::getValue("ImportSBML", ImportSBML);
-      CCopasiDataModel::Global->importSBML(ImportSBML);
+      // Create the root container.
+      CCopasiContainer::init();
 
-      // Save the COPASI File, which is the only thing to do.
-      std::string Save;
-      COptions::getValue("Save", Save);
-      CCopasiDataModel::Global->saveModel(Save);
-    }
+      // Create the global data model.
+      CCopasiDataModel::Global = new CCopasiDataModel;
 
-  COptions::nonOptionType::const_iterator it = Files.begin();
-  COptions::nonOptionType::const_iterator end = Files.end();
+      const COptions::nonOptionType & Files = COptions::getNonOptions();
 
-  for (; it != end; ++it)
-    {
-      CCopasiDataModel::Global->loadModel(*it);
-
-      // Check whether exporting to SBML is requested.
-      if (!COptions::compareValue("ExportSBML", std::string("")))
+      if (!COptions::compareValue("ImportSBML", std::string("")))
         {
-          // Export the SBML File
-          std::string ExportSBML;
-          COptions::getValue("ExportSBML", ExportSBML);
-          CCopasiDataModel::Global->exportSBML(ExportSBML);
+          // Import the SBML File
+          std::string ImportSBML;
+          COptions::getValue("ImportSBML", ImportSBML);
+          CCopasiDataModel::Global->importSBML(ImportSBML);
 
-          // Since only one export file name can be specified we
-          // stop execution.
-          return 0;
-        }
-
-      CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
-      unsigned C_INT32 i, imax = TaskList.size();
-
-      for (i = 0; i < imax; i++)
-        if (TaskList[i]->isScheduled())
-          {
-            TaskList[i]->getProblem()->setModel(CCopasiDataModel::Global->getModel());
-
-            TaskList[i]->initialize();
-            TaskList[i]->process();
-            TaskList[i]->restore();
-          }
-
-      // Check whether a file for saving the resulting model is given
-      if (!COptions::compareValue("Save", std::string("")))
-        {
+          // Save the COPASI File, which is the only thing to do.
           std::string Save;
           COptions::getValue("Save", Save);
           CCopasiDataModel::Global->saveModel(Save);
-
-          // Since only one save file name can be specified we
-          // stop execution.
-          return 0;
         }
 
-      //      CCopasiDataModel::Global->saveModel("");
+      COptions::nonOptionType::const_iterator it = Files.begin();
+      COptions::nonOptionType::const_iterator end = Files.end();
+
+      for (; it != end; ++it)
+        {
+          CCopasiDataModel::Global->loadModel(*it);
+
+          // Check whether exporting to SBML is requested.
+          if (!COptions::compareValue("ExportSBML", std::string("")))
+            {
+              // Export the SBML File
+              std::string ExportSBML;
+              COptions::getValue("ExportSBML", ExportSBML);
+              CCopasiDataModel::Global->exportSBML(ExportSBML);
+
+              // Since only one export file name can be specified we
+              // stop execution.
+              return 0;
+            }
+
+          CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
+          unsigned C_INT32 i, imax = TaskList.size();
+
+          for (i = 0; i < imax; i++)
+            if (TaskList[i]->isScheduled())
+              {
+                TaskList[i]->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+
+                TaskList[i]->initialize();
+                TaskList[i]->process();
+                TaskList[i]->restore();
+              }
+
+          // Check whether a file for saving the resulting model is given
+          if (!COptions::compareValue("Save", std::string("")))
+            {
+              std::string Save;
+              COptions::getValue("Save", Save);
+              CCopasiDataModel::Global->saveModel(Save);
+
+              // Since only one save file name can be specified we
+              // stop execution.
+              return 0;
+            }
+
+          //      CCopasiDataModel::Global->saveModel("");
+        }
     }
 
-  //  catch (CCopasiException Exception)
-  //    {
-  //      std::cout << Exception.getMessage().getText() << std::endl;
-  //}
+  catch (CCopasiException Exception)
+    {
+      std::cout << Exception.getMessage().getText() << std::endl;
+    }
 
   pdelete(CCopasiDataModel::Global);
   pdelete(CCopasiContainer::Root);
