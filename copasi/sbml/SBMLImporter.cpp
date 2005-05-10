@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/09 02:18:54 $
+   $Date: 2005/05/10 02:46:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -838,43 +838,99 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
   substances["products"] = std::map< std::string, std::string >();
   substances["modifiers"] = std::map< std::string, std::string >();
   unsigned int counter;
+  KineticLaw* kLaw = reaction->getKineticLaw();
+  std::vector<std::string> shadowedSubstances;
   for (counter = 0; counter < reaction->getNumReactants(); counter++)
     {
       std::string name = reaction->getReactant(counter)->getSpecies();
-      if (name.find("substrate_") == 0)
+      bool isShadowed = false;
+      unsigned int counter2;
+      if (kLaw)
         {
-          substances["substrates"][name] = name;
+          for (counter2 = 0; counter2 < kLaw->getNumParameters();++counter2)
+            {
+              Parameter* param = kLaw->getParameter(counter2);
+              if (param->getId() == name)
+                {
+                  isShadowed = true;
+                  shadowedSubstances.push_back(name);
+                  break;
+                }
+            }
         }
-      else
+      if (!isShadowed)
         {
-          substances["substrates"][name] = "substrate_" + name;
+          if (name.find("substrate_") == 0)
+            {
+              substances["substrates"][name] = name;
+            }
+          else
+            {
+              substances["substrates"][name] = "substrate_" + name;
+            }
         }
     }
   for (counter = 0; counter < reaction->getNumProducts(); counter++)
     {
       std::string name = reaction->getProduct(counter)->getSpecies();
-      if (name.find("product_") == 0)
+      bool isShadowed = false;
+      unsigned int counter2;
+      if (kLaw)
         {
-          substances["products"][name] = name;
+          for (counter2 = 0; counter2 < kLaw->getNumParameters();++counter2)
+            {
+              Parameter* param = kLaw->getParameter(counter2);
+              if (param->getId() == name)
+                {
+                  isShadowed = true;
+                  shadowedSubstances.push_back(name);
+                  break;
+                }
+            }
         }
-      else
+      if (!isShadowed)
         {
-          substances["products"][name] = "product_" + name;
+          if (name.find("product_") == 0)
+            {
+              substances["products"][name] = name;
+            }
+          else
+            {
+              substances["products"][name] = "product_" + name;
+            }
         }
     }
   for (counter = 0; counter < reaction->getNumModifiers(); counter++)
     {
       std::string name = reaction->getModifier(counter)->getSpecies();
-      if (name.find("modifier_") == 0)
+      bool isShadowed = false;
+      unsigned int counter2;
+      if (kLaw)
         {
-          substances["modifiers"][name] = name;
+          for (counter2 = 0; counter2 < kLaw->getNumParameters();++counter2)
+            {
+              Parameter* param = kLaw->getParameter(counter2);
+              if (param->getId() == name)
+                {
+                  isShadowed = true;
+                  shadowedSubstances.push_back(name);
+                  break;
+                }
+            }
         }
-      else
+      if (!isShadowed)
         {
-          substances["modifiers"][name] = "modifier_" + name;
+          if (name.find("modifier_") == 0)
+            {
+              substances["modifiers"][name] = name;
+            }
+          else
+            {
+              substances["modifiers"][name] = "modifier_" + name;
+            }
         }
     }
-  this->replaceSubstanceNames(node, substances, reaction->getReversible());
+  this->replaceSubstanceNames(node, substances, shadowedSubstances, reaction->getReversible());
 }
 
 /**
@@ -882,7 +938,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
  * with the ones give in the map.
  */
 void
-SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::string, std::map<std::string, std::string > > substMap, bool reversible)
+SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::string, std::map<std::string, std::string > > substMap, const std::vector<std::string>& shadowedSubstances, bool reversible)
 {
   if (node->isName() || node->isConstant() || node->isLogical())
     {
@@ -918,12 +974,25 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::strin
           std::map<std::string, CMetab*>::iterator pos = this->speciesMap.find(node->getName());
           if (pos != this->speciesMap.end())
             {
-              std::string mName = node->getName();
-              if (mName.find("modifier_") != 0)
+              unsigned int i;
+              bool isShadowed = false;
+              for (i = 0; i < shadowedSubstances.size();++i)
                 {
-                  mName = "modifier_" + mName;
+                  if (shadowedSubstances[i] == node->getName())
+                    {
+                      isShadowed = true;
+                      break;
+                    }
                 }
-              node->setName(mName.c_str());
+              if (!isShadowed)
+                {
+                  std::string mName = node->getName();
+                  if (mName.find("modifier_") != 0)
+                    {
+                      mName = "modifier_" + mName;
+                    }
+                  node->setName(mName.c_str());
+                }
             }
         }
     }
@@ -932,7 +1001,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::strin
       unsigned int counter;
       for (counter = 0; counter < node->getNumChildren(); counter++)
         {
-          this->replaceSubstanceNames((ConverterASTNode*)node->getChild(counter), substMap, reversible);
+          this->replaceSubstanceNames((ConverterASTNode*)node->getChild(counter), substMap, shadowedSubstances, reversible);
         }
     }
 }

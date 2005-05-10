@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/22 04:29:27 $
+   $Date: 2005/05/10 02:46:43 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -68,7 +68,7 @@ class SBMLImporter
      * Recursively replaces all parameter names in the branch of the given AST node
      * with the ones give in the map.
      */
-    void replaceSubstanceNames(ConverterASTNode* node, std::map< std::string, std::map <std::string, std::string > > substMap, bool reversible);
+    void replaceSubstanceNames(ConverterASTNode* node, std::map< std::string, std::map <std::string, std::string > > substMap, const std::vector<std::string>& shadowedSubstances, bool reversible);
 
     /**
      * Replaces SBML user defined functions with the actual funtcion definition.
