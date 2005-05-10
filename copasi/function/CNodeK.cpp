@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/10 04:07:04 $
+   $Date: 2005/05/10 07:53:34 $
    End CVS Header */
 
 // CNodeK.cpp : classes for function tree
@@ -269,6 +269,98 @@ std::string CNodeK::getExplicitFunctionString(const std::vector< std::vector< st
           mExplicitFunction = "tan(" + mLeft->getExplicitFunctionString(callParameterNames, r)
                               + ")";
           break;
+        case N_SEC:
+          mExplicitFunction = "sec(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_CSC:
+          mExplicitFunction = "csc(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_COT:
+          mExplicitFunction = "cot(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_SINH:
+          mExplicitFunction = "sinh(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_COSH:
+          mExplicitFunction = "cosh(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_TANH:
+          mExplicitFunction = "tanh(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_SECH:
+          mExplicitFunction = "sech(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_CSCH:
+          mExplicitFunction = "csch(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_COTH:
+          mExplicitFunction = "coth(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCSIN:
+          mExplicitFunction = "arcsin(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCCOS:
+          mExplicitFunction = "arccos(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCTAN:
+          mExplicitFunction = "arctan(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCSEC:
+          mExplicitFunction = "arcsec(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCCSC:
+          mExplicitFunction = "arccsc(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCCOT:
+          mExplicitFunction = "arccot(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCSINH:
+          mExplicitFunction = "arcsinh(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCCOSH:
+          mExplicitFunction = "arccosh(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCTANH:
+          mExplicitFunction = "arctanh(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCSECH:
+          mExplicitFunction = "arcsech(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCCSCH:
+          mExplicitFunction = "arccsch(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ARCCOTH:
+          mExplicitFunction = "arccoth(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_ABS:
+          mExplicitFunction = "abs(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_SQRT:
+          mExplicitFunction = "sqrt(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
         case N_GAUSS:
         case N_BOLTZ:
         case N_RND:
@@ -527,12 +619,68 @@ C_FLOAT64 CNodeK::value(const CCallParameterPointers & callParameters) const
             return log(mLeft->value(callParameters));
           case N_LOG10:
             return log10(mLeft->value(callParameters));
+
           case N_SIN:
             return sin(mLeft->value(callParameters));
           case N_COS:
             return cos(mLeft->value(callParameters));
           case N_TAN:
             return tan(mLeft->value(callParameters));
+
+          case N_SEC:
+            return 1 / cos(mLeft->value(callParameters));
+          case N_CSC:
+            return 1 / sin(mLeft->value(callParameters));
+          case N_COT:
+            return 1 / tan(mLeft->value(callParameters));
+
+          case N_SINH:
+            return sinh(mLeft->value(callParameters));
+          case N_COSH:
+            return cosh(mLeft->value(callParameters));
+          case N_TANH:
+            return tanh(mLeft->value(callParameters));
+
+          case N_SECH:
+            return 1 / cosh(mLeft->value(callParameters));
+          case N_CSCH:
+            return 1 / sinh(mLeft->value(callParameters));
+          case N_COTH:
+            return 1 / tanh(mLeft->value(callParameters));
+
+          case N_ARCSIN:
+            return asin(mLeft->value(callParameters));
+          case N_ARCCOS:
+            return acos(mLeft->value(callParameters));
+          case N_ARCTAN:
+            return atan(mLeft->value(callParameters));
+
+          case N_ARCSEC: //TODO
+            return tan(mLeft->value(callParameters));
+          case N_ARCCSC: //TODO
+            return tan(mLeft->value(callParameters));
+          case N_ARCCOT: //TODO
+            return tan(mLeft->value(callParameters));
+
+          case N_ARCSINH:
+            return asinh(mLeft->value(callParameters));
+          case N_ARCCOSH:
+            return acosh(mLeft->value(callParameters));
+          case N_ARCTANH:
+            return atanh(mLeft->value(callParameters));
+
+          case N_ARCSECH:
+            return tan(mLeft->value(callParameters));
+          case N_ARCCSCH:
+            return tan(mLeft->value(callParameters));
+          case N_ARCCOTH:
+            return tan(mLeft->value(callParameters));
+
+          case N_ABS:
+            return fabs(mLeft->value(callParameters));
+          case N_SQRT:
+            return sqrt(mLeft->value(callParameters));
+
           default:
             fatalError();   // THROW EXCEPTION
             return 0.0;

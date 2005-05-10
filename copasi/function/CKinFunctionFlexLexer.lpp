@@ -62,14 +62,14 @@ CSCH   return N_CSCH;
 coth   |
 COTH   return N_COTH;
 
-arcsin   |
-ARCSIN   return N_ARCSIN;
+asin   |
+ASIN   return N_ARCSIN;
 
-arccos   |
-ARCCOS   return N_ARCCOS;
+acos   |
+ACOS   return N_ARCCOS;
 
-arctan   |
-ARCTAN   return N_ARCTAN;
+atan   |
+ATAN   return N_ARCTAN;
 
 arcsec   |
 ARCSEC   return N_ARCSEC;

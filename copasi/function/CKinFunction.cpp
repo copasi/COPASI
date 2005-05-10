@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/22 12:32:15 $
+   $Date: 2005/05/10 07:53:34 $
    End CVS Header */
 
 /**
@@ -264,13 +264,46 @@ C_INT32 CKinFunction::parse()
         case N_LOG:
         case N_LOG10:
         case N_EXP:
+
         case N_SIN:
         case N_COS:
+        case N_TAN:
+
+        case N_SEC:
+        case N_CSC:
+        case N_COT:
+
+        case N_SINH:
+        case N_COSH:
+        case N_TANH:
+
+        case N_SECH:
+        case N_CSCH:
+        case N_COTH:
+
+        case N_ARCSIN:
+        case N_ARCCOS:
+        case N_ARCTAN:
+
+        case N_ARCSEC:
+        case N_ARCCSC:
+        case N_ARCCOT:
+
+        case N_ARCSINH:
+        case N_ARCCOSH:
+        case N_ARCTANH:
+
+        case N_ARCSECH:
+        case N_ARCCSCH:
+        case N_ARCCOTH:
+
+        case N_ABS:
+        case N_SQRT:
           pNode = new CNodeK(N_FUNCTION, i);
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                       // this is an error
+        case N_NOP:                                        // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -547,8 +580,40 @@ CNodeK * CKinFunction::parsePrimary()
     case N_EXP:
 
     case N_SIN:
-
     case N_COS:
+    case N_TAN:
+
+    case N_SEC:
+    case N_CSC:
+    case N_COT:
+
+    case N_SINH:
+    case N_COSH:
+    case N_TANH:
+
+    case N_SECH:
+    case N_CSCH:
+    case N_COTH:
+
+    case N_ARCSIN:
+    case N_ARCCOS:
+    case N_ARCTAN:
+
+    case N_ARCSEC:
+    case N_ARCCSC:
+    case N_ARCCOT:
+
+    case N_ARCSINH:
+    case N_ARCCOSH:
+    case N_ARCTANH:
+
+    case N_ARCSECH:
+    case N_ARCCSCH:
+    case N_ARCCOTH:
+
+    case N_ABS:
+    case N_SQRT:
+
       op = mNidx;
       primary = NULL;
       ++mNidx;
