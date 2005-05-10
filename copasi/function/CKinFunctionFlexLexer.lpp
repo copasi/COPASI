@@ -97,6 +97,12 @@ ARCCSCH   return N_ARCCSCH;
 
 arccoth   |
 ARCCOTH   return N_ARCCOTH;
+
+sqrt   |
+SQRT   return N_SQRT;
+
+abs   |
+ABS   return N_ABS;
       
 "+"   return '+';
 "-"   return '-';
