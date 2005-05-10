@@ -34,7 +34,70 @@ COS   return N_COS;
 
 tan   |
 TAN   return N_TAN;
-     
+
+sec   |
+SEC   return N_SEC;
+
+csc   |
+CSC   return N_CSC;
+
+cot   |
+COT   return N_COT;
+
+sinh   |
+SINH   return N_SINH;
+
+cosh   |
+COSH   return N_COSH;
+
+tanh   |
+TANH   return N_TANH;
+
+sech   |
+SECH   return N_SECH;
+
+csch   |
+CSCH   return N_CSCH;
+
+coth   |
+COTH   return N_COTH;
+
+arcsin   |
+ARCSIN   return N_ARCSIN;
+
+arccos   |
+ARCCOS   return N_ARCCOS;
+
+arctan   |
+ARCTAN   return N_ARCTAN;
+
+arcsec   |
+ARCSEC   return N_ARCSEC;
+
+arccsc   |
+ARCCSC   return N_ARCCSC;
+
+arccot   |
+ARCCOT   return N_ARCCOT;
+
+arcsinh   |
+ARCSINH   return N_ARCSINH;
+
+arccosh   |
+ARCCOSH   return N_ARCCOSH;
+
+arctanh   |
+ARCTANH   return N_ARCTANH;
+
+arcsech   |
+ARCSECH   return N_ARCSECH;
+ 
+arccsch   |
+ARCCSCH   return N_ARCCSCH;
+
+arccoth   |
+ARCCOTH   return N_ARCCOTH;
+      
 "+"   return '+';
 "-"   return '-';
 "*"   return '*';

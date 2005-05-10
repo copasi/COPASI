@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/10 04:07:04 $
+   $Author: gauges $ 
+   $Date: 2005/05/10 04:47:34 $
    End CVS Header */
 
 /*  CNodeK
@@ -46,6 +46,27 @@
 #define N_BOLTZ 'B'
 
 #define N_TAN 't'
+#define N_SEC 'a'
+#define N_CSC 'b'
+#define N_COT 'c'
+#define N_SINH 'd'
+#define N_COSH 'f'
+#define N_TANH 'g'
+#define N_SECH 'h'
+#define N_CSCH 'i'
+#define N_COTH 'j'
+#define N_ARCSIN 'n'
+#define N_ARCCOS 'q'
+#define N_ARCTAN 'r'
+#define N_ARCSEC 'u'
+#define N_ARCCSC 'v'
+#define N_ARCCOT 'w'
+#define N_ARCSINH 'x'
+#define N_ARCCOSH 'y'
+#define N_ARCTANH 'z'
+#define N_ARCSECH 'A'
+#define N_ARCCSCH 'D'
+#define N_ARCCOTH 'E'
 
 // subtypes for N_IDENTIFIER
 #define N_SUBSTRATE 's'
