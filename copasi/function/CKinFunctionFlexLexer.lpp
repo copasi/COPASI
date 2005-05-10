@@ -103,6 +103,12 @@ SQRT   return N_SQRT;
 
 abs   |
 ABS   return N_ABS;
+
+exponentiale |
+EXPONENTIALE return N_NUMBER;
+
+pi |
+PI return N_NUMBER;
       
 "+"   return '+';
 "-"   return '-';
