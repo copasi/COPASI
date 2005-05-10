@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/22 10:50:31 $
+   $Date: 2005/05/10 04:07:04 $
    End CVS Header */
 
 /*  CNodeK
@@ -44,6 +44,8 @@
 #define N_RND 'R'
 #define N_GAUSS 'G'
 #define N_BOLTZ 'B'
+
+#define N_TAN 't'
 
 // subtypes for N_IDENTIFIER
 #define N_SUBSTRATE 's'

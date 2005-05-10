@@ -31,6 +31,9 @@ SIN   return N_SIN;
 
 cos   |
 COS   return N_COS;
+
+tan   |
+TAN   return N_TAN;
      
 "+"   return '+';
 "-"   return '-';

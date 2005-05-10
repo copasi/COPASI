@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/23 12:20:25 $
+   $Date: 2005/05/10 04:07:04 $
    End CVS Header */
 
 // CNodeK.cpp : classes for function tree
@@ -263,6 +263,10 @@ std::string CNodeK::getExplicitFunctionString(const std::vector< std::vector< st
           break;
         case N_COS:
           mExplicitFunction = "cos(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_TAN:
+          mExplicitFunction = "tan(" + mLeft->getExplicitFunctionString(callParameterNames, r)
                               + ")";
           break;
         case N_GAUSS:
@@ -527,6 +531,8 @@ C_FLOAT64 CNodeK::value(const CCallParameterPointers & callParameters) const
             return sin(mLeft->value(callParameters));
           case N_COS:
             return cos(mLeft->value(callParameters));
+          case N_TAN:
+            return tan(mLeft->value(callParameters));
           default:
             fatalError();   // THROW EXCEPTION
             return 0.0;
@@ -554,7 +560,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         //    case N_OBJECT:
         //      return *(double*)((CCopasiObject*)mLeft)->getReference();
         //      break;
-      case N_IDENTIFIER :    //do some heuristics for indentifiers starting with "K" or "V"
+      case N_IDENTIFIER :     //do some heuristics for indentifiers starting with "K" or "V"
         out << SPC(level);
         if (mName.substr(0, 1) == "K")
           out << "<msub><mi>K</mi><mi>" << mName.substr(1) << "</mi></msub>" << std::endl;
@@ -659,7 +665,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
       case N_FUNCTION:
         switch (mSubtype)
           {
-          case '+':  //do nothing
+          case '+':   //do nothing
             mLeft->writeMathML(out, level);
             break;
           case '-':
@@ -688,6 +694,8 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
           case N_SIN:
             //return sin(mLeft->value(callParameters));
           case N_COS:
+            //return cos(mLeft->value(callParameters));
+          case N_TAN:
             //return cos(mLeft->value(callParameters));
           default:
             //fatalError();   // THROW EXCEPTION
