@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.219 $
+   $Revision: 1.220 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Date: 2005/05/11 17:31:17 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -323,7 +323,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
 bool CModel::compile()
 {
-  mCompileIsNecessary = false;
   CMatrix< C_FLOAT64 > LU;
 
   unsigned C_INT32 i, imax = mSteps.size();
@@ -370,9 +369,9 @@ bool CModel::compile()
   CompileStep = 7;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
-  mCompileIsNecessary = false;
-
   if (mpCompileHandler) mpCompileHandler->finish(hCompileStep);
+
+  mCompileIsNecessary = false;
   return true;
 }
 
