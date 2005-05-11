@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:27 $
+   $Date: 2005/05/11 16:33:59 $
    End CVS Header */
 
 /**
@@ -25,8 +25,9 @@
 
 #include "utilities/CMatrix.h"
 #include "utilities/CVector.h"
+#include "report/CCopasiContainer.h"
 
-class CEigen
+class CEigen: public CCopasiContainer
   {
   private:
     // variables for stability analysis
@@ -34,52 +35,52 @@ class CEigen
     /**
      * the real part of the maximum eigenvalue
      */
-    C_FLOAT64 mEigen_maxrealpart;
+    C_FLOAT64 mMaxrealpart;
 
     /**
      * the imaginary part of the maximum eigenvalue
      */
-    C_FLOAT64 mEigen_maximagpart;
+    C_FLOAT64 mMaximagpart;
 
     /**
      * the number of eigenvalues with positive real part
      */
-    C_INT32 mEigen_nposreal;
+    C_INT32 mNposreal;
 
     /**
      * the number of eigenvalues with negative real part
      */
-    C_INT32 mEigen_nnegreal;
+    C_INT32 mNnegreal;
 
     /**
      * the number of real eigenvalues
      */
-    C_INT32 mEigen_nreal;
+    C_INT32 mNreal;
 
     /**
      * the number of imaginary eigenvalue numbers
      */
-    C_INT32 mEigen_nimag;
+    C_INT32 mNimag;
 
     /**
      *
      */
-    C_INT32 mEigen_ncplxconj;
+    C_INT32 mNcplxconj;
 
     /**
      * the number of eigenvalues with value of zero
      */
-    C_INT32 mEigen_nzero;
+    C_INT32 mNzero;
 
     /**
      * the stiffness of eigenvalues
      */
-    C_FLOAT64 mEigen_stiffness;
+    C_FLOAT64 mStiffness;
 
     /**
      * the hierary of the eigenvalues
      */
-    C_FLOAT64 mEigen_hierarchy;
+    C_FLOAT64 mHierarchy;
 
     /**
      * The resolution of needed for the stability analysis
@@ -108,9 +109,8 @@ class CEigen
      * = 'S': Select is used to select eigenvalues to sort to the top left
      * of the Schur form
      * = 'N': Eigenvalues are ordered Select is not refereced.
-     */ 
-    //char mSelect;
-    C_INT32 * mSelect;
+     */
+    C_INT32 * mpSelect;
 
     /**
      * #4: (input) The order of the matrix A
@@ -142,19 +142,19 @@ class CEigen
     /**
      * #8: array with dimension (mN)
      */
-    CVector< C_FLOAT64 > mEigen_r;
+    CVector< C_FLOAT64 > mR;
 
     /**
      * #9: array with dimension (mN)
      */
-    CVector< C_FLOAT64 > mEigen_i;
+    CVector< C_FLOAT64 > mI;
 
     /**
      * #10: (output) array with dimension (mLdvs, mN)
      * If mJobvs='V', mVS contains the orthogoanl matrix Z of Schur vectors
      * If mJobvs='N', mVS is not referenced
      */
-    C_FLOAT64 * mVS;
+    C_FLOAT64 * mpVS;
 
     /**
      * #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
@@ -166,7 +166,7 @@ class CEigen
      * #12: (workspace/output) double precision array, dimension (mLWork)
      * On exit, if mInfo=0; mWork(1) contains the optimal mLWork
      */
-    C_FLOAT64 * mWork;
+    C_FLOAT64 * mpWork;
 
     /**
      * #13: (input) Dimension of array Work, its value >= max(1,3*mN).
@@ -178,7 +178,7 @@ class CEigen
      * #14: (workspace) Logical array, dimension (N)
      * Not referenced if mSort = 'N'
      */
-    C_INT * mBWork;
+    C_INT * mpBWork;
 
     /**
      * #15: (output) an integer
@@ -211,14 +211,33 @@ class CEigen
 
   public:
     /**
-     * Defaulut constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CEigen();
+    CEigen(const std::string & name = "NoName",
+           const CCopasiContainer * pParent = NULL);
 
+    /**
+     * Copy constructor
+     * @param const CMetab & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CEigen(const CEigen & src,
+           const CCopasiContainer * pParent = NULL);
     /**
      * Destructor
      */
-    ~CEigen();
+    virtual ~CEigen();
+
+    /**
+     * This is the output method for any object. The default implementation
+     * provided with CCopasiObject uses the ostream operator<< of the object
+     * to print the object.To overide this default behaviour one needs to
+     * reimplement the virtual print function.
+     * @param std::ostream * ostream
+     */
+    virtual void print(std::ostream * ostream) const;
 
     /**
      * initialize variables for eigenvalue calculations
@@ -245,56 +264,62 @@ class CEigen
     /**
      * Get the max eigenvalue real part
      */
-    const C_FLOAT64 & getEigen_maxrealpart() const;
+    const C_FLOAT64 & getMaxrealpart() const;
 
     /**
      * Get the max eigenvalue imaginary  part
      */
-    const C_FLOAT64 & getEigen_maximagpart() const;
+    const C_FLOAT64 & getMaximagpart() const;
 
     /**
      * Get the number of zero eigenvalues
      */
-    const C_INT32 & getEigen_nzero() const;
+    const C_INT32 & getNzero() const;
 
     /**
      * Get the eigenvalue stiffness
      */
-    const C_FLOAT64 & getEigen_stiffness() const;
+    const C_FLOAT64 & getStiffness() const;
 
     /**
      * Get the eigenvalue hierarchy
      */
-    const C_FLOAT64 & getEigen_hierarchy() const;
+    const C_FLOAT64 & getHierarchy() const;
 
     /**
      * Return number of real eigenvalues WeiSun 3/28/02
      */
-    const C_INT32 & getEigen_nreal() const;
+    const C_INT32 & getNreal() const;
 
     /**
      * Return the number of imaginary eigenvalue numbers
      */
-    const C_INT32 & getEigen_nimag() const;
+    const C_INT32 & getNimag() const;
 
-    const C_INT32 & getEigen_ncplxconj() const;
+    const C_INT32 & getNcplxconj() const;
 
     /**
      * Return the number of eigenvalues with positive real part
      */
-    const C_INT32 & getEigen_nposreal() const;
+    const C_INT32 & getNposreal() const;
 
     /**
      * Return the number of eigenvalues with negative real part
      */
-    const C_INT32 & getEigen_nnegreal() const;
+    const C_INT32 & getNnegreal() const;
 
-    const CVector< C_FLOAT64 > & getEigen_i() const;
+    const CVector< C_FLOAT64 > & getI() const;
 
-    const CVector< C_FLOAT64 > & getEigen_r() const;
+    const CVector< C_FLOAT64 > & getR() const;
 
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os, const CEigen &A);
+
+  private:
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
   };
 
 #endif

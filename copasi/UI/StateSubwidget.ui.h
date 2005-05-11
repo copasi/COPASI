@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/11 14:44:15 $
+   $Author: shoops $ 
+   $Date: 2005/05/11 16:34:13 $
    End CVS Header */
 
 /****************************************************************************
@@ -102,8 +102,8 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
     }
 
   //Eigenvalues...
-  const CVector< C_FLOAT64 > & eigen_i = task->getEigenValues()->getEigen_i();
-  const CVector< C_FLOAT64 > & eigen_r = task->getEigenValues()->getEigen_r();
+  const CVector< C_FLOAT64 > & eigen_i = task->getEigenValues().getI();
+  const CVector< C_FLOAT64 > & eigen_r = task->getEigenValues().getR();
 
   imax = eigen_i.size();
   tableEigenValues->setNumRows(imax);
@@ -136,8 +136,8 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
     }
 
   //Eigenvalues...
-  const CVector< C_FLOAT64 > & eigen_iX = task->getEigenValuesReduced()->getEigen_i();
-  const CVector< C_FLOAT64 > & eigen_rX = task->getEigenValuesReduced()->getEigen_r();
+  const CVector< C_FLOAT64 > & eigen_iX = task->getEigenValuesReduced().getI();
+  const CVector< C_FLOAT64 > & eigen_rX = task->getEigenValuesReduced().getR();
 
   imax = eigen_iX.size();
   tableEigenValuesX->setNumRows(imax);
@@ -151,7 +151,7 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
   stabilityTextEdit->setReadOnly(true);
 
   std::ostringstream ss;
-  ss << *task->getEigenValuesReduced();
+  ss << task->getEigenValuesReduced();
 
   stabilityTextEdit->setText(FROM_UTF8(ss.str()));
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 09:22:28 $
+   $Author: shoops $ 
+   $Date: 2005/05/11 16:33:59 $
    End CVS Header */
 
 /**
@@ -19,49 +19,85 @@
 #include <cmath>
 
 #define  COPASI_TRACE_CONSTRUCTION
+
 #include "copasi.h"
+#include "clapackwrap.h"        //use CLAPACK
+#include "report/CCopasiObjectReference.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiMessage.h"
 
 #include "CEigen.h"
 
-#include "clapackwrap.h"        //use CLAPACK
-
 /**
  * Default constructor
  */
-CEigen::CEigen()
+CEigen::CEigen(const std::string & name,
+               const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Eigen Values",
+                     CCopasiObject::Container),
+    mMaxrealpart(0),
+    mMaximagpart(0),
+    mNposreal(0),
+    mNnegreal(0),
+    mNreal(0),
+    mNimag(0),
+    mNcplxconj(0),
+    mNzero(0),
+    mStiffness(0),
+    mHierarchy(0),
+    mResolution(0),
+    mJobvs('N'),
+    mSort('N'),
+    mpSelect(NULL),
+    mN(0),
+    mA(),
+    mLDA(0),
+    mSdim(0),
+    mR(),
+    mI(),
+    mpVS(NULL),
+    mLdvs(1),
+    mpWork(NULL),
+    mLWork(4096),
+    mpBWork(NULL),
+    mInfo(0)
 {
   CONSTRUCTOR_TRACE;
-  // initialise variables
-  mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
-                                  mEigen_nzero = mEigen_ncplxconj = 0;
+  initObjects();
+}
 
-  // 15 parameters for DGEES_()
-  // #1: (input) characer*1
-  mJobvs = 'N';
-  // #2: (input) characer*1
-  mSort = 'N';
-  // #3: (input) Logical function of two double precision arguments
-  mSelect = NULL;
-  // #4: (input) The order of the matrix A
-  mN = 0;
-  // #6: (input) The leading dimension of the array A. LDA >= max(1,N)
-  //C_INT32 mLDA;
-  // #7: (output) an integer
-  //C_INT32 mSdim;
-  // #10: (output) array with dimension (mLdvs, mN)
-  mVS = NULL;
-  // #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
-  mLdvs = 1;
-  // #12: (workspace/output) double precision array, dimension (mLWork)
-  mWork = NULL;
-  // #13: (input) Dimension of array Work, its value >= max(1,3*mN).
-  mLWork = 4096;
-  // #14: (workspace) Logical array, dimension (N)
-  mBWork = NULL;
-  // #15: (output) an integer
-  //C_INT32 mInfo;
+CEigen::CEigen(const CEigen & src,
+               const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mMaxrealpart(src.mMaxrealpart),
+    mMaximagpart(src.mMaximagpart),
+    mNposreal(src.mNposreal),
+    mNnegreal(src.mNnegreal),
+    mNreal(src.mNreal),
+    mNimag(src.mNimag),
+    mNcplxconj(src.mNcplxconj),
+    mNzero(src.mNzero),
+    mStiffness(src.mStiffness),
+    mHierarchy(src.mHierarchy),
+    mResolution(src.mResolution),
+    mJobvs(src.mSort),
+    mSort(src.mSort),
+    mpSelect(NULL),
+    mN(src.mN),
+    mA(src.mA),
+    mLDA(src.mLDA),
+    mSdim(src.mSdim),
+    mR(src.mR),
+    mI(src.mI),
+    mpVS(NULL),
+    mLdvs(src.mLdvs),
+    mpWork(NULL),
+    mLWork(src.mLWork),
+    mpBWork(NULL),
+    mInfo(src.mInfo)
+{
+  CONSTRUCTOR_TRACE;
+  initObjects();
 }
 
 /**
@@ -71,6 +107,25 @@ CEigen::~CEigen()
 {
   cleanup();
   DESTRUCTOR_TRACE;
+}
+
+void CEigen::print(std::ostream * ostream) const {(*ostream) << (*this);}
+
+void CEigen::initObjects()
+{
+  addObjectReference("Maximum real part", mMaxrealpart, CCopasiObject::ValueDbl);
+  addObjectReference("Maximum imaginary part", mMaximagpart, CCopasiObject::ValueDbl);
+  addObjectReference("# Positive eigenvalues", mNposreal, CCopasiObject::ValueInt);
+  addObjectReference("# Negative eigenvalues", mNnegreal, CCopasiObject::ValueInt);
+  addObjectReference("# Real eigenvalues", mNreal, CCopasiObject::ValueInt);
+  addObjectReference("# Imaginary eigenvalues", mNimag, CCopasiObject::ValueInt);
+  addObjectReference("# Complex conjugated eigenvalues", mNcplxconj, CCopasiObject::ValueInt);
+  addObjectReference("# Zero eigenvalues", mNzero, CCopasiObject::ValueInt);
+  addObjectReference("Stiffness", mStiffness, CCopasiObject::ValueDbl);
+  addObjectReference("Time hierachy", mHierarchy, CCopasiObject::ValueDbl);
+  addObjectReference("Resolution", mResolution, CCopasiObject::ValueDbl);
+  addVectorReference("Vector of real part of eigenvalues", mR, CCopasiObject::ValueDbl);
+  addVectorReference("Vector of imaginary part of eigenvalues", mI, CCopasiObject::ValueDbl);
 }
 
 /**
@@ -90,33 +145,33 @@ CEigen::~CEigen()
 //}
 
 //Get the max eigenvalue real part
-const C_FLOAT64 & CEigen::getEigen_maxrealpart() const
+const C_FLOAT64 & CEigen::getMaxrealpart() const
   {
-    return mEigen_maxrealpart;
+    return mMaxrealpart;
   }
 
 //Get the max eigenvalue imaginary  part
-const C_FLOAT64 & CEigen::getEigen_maximagpart() const
+const C_FLOAT64 & CEigen::getMaximagpart() const
   {
-    return mEigen_maximagpart;
+    return mMaximagpart;
   }
 
 // Get the number of zero eigenvalues
-const C_INT32 & CEigen::getEigen_nzero() const
+const C_INT32 & CEigen::getNzero() const
   {
-    return mEigen_nzero;
+    return mNzero;
   }
 
 //Get the eigenvalue stiffness
-const C_FLOAT64 & CEigen::getEigen_stiffness() const
+const C_FLOAT64 & CEigen::getStiffness() const
   {
-    return mEigen_stiffness;
+    return mStiffness;
   }
 
 //Get the eigenvalue hierarchy
-const C_FLOAT64 & CEigen::getEigen_hierarchy() const
+const C_FLOAT64 & CEigen::getHierarchy() const
   {
-    return mEigen_hierarchy;
+    return mHierarchy;
   }
 
 //initialize variables for eigenvalue calculations
@@ -125,22 +180,22 @@ void CEigen::initialize()
 {
   cleanup();
 
-  mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
-                                  mEigen_nzero = mEigen_ncplxconj = 0;
+  mNreal = mNimag = mNposreal = mNnegreal =
+                                  mNzero = mNcplxconj = 0;
 
   mLDA = mN > 1 ? mN : 1;
 
-  mEigen_r.resize(mN);
-  mEigen_i.resize(mN);
+  mR.resize(mN);
+  mI.resize(mN);
 
   mLWork = mN > 1365 ? mN * 3 : 4096;
 
-  mWork = new C_FLOAT64[mLWork];
+  mpWork = new C_FLOAT64[mLWork];
 }
 
 void CEigen::cleanup()
 {
-  if (mWork) delete [] mWork; mWork = NULL;
+  pdelete(mpWork);
 }
 
 void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
@@ -268,18 +323,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,             // mSelect,           //NULL,
-         &mN,                            //&n,
+         NULL,               // mSelect,           //NULL,
+         &mN,                              //&n,
          mA.array(),
          & mLDA,
-         & mSdim,                    // output
-         mEigen_r.array(),
-         mEigen_i.array(),
-         mVS,
+         & mSdim,                      // output
+         mR.array(),
+         mI.array(),
+         mpVS,
          & mLdvs,
-         mWork,
+         mpWork,
          & mLWork,
-         mBWork,                      //NULL
+         mpBWork,                        //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();
@@ -295,67 +350,67 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   mResolution = resolution;
 
   // sort the eigenvalues
-  quicksort(mEigen_r, mEigen_i, 0, mN - 1);
+  quicksort(mR, mI, 0, mN - 1);
 
   // calculate various eigenvalue statistics
-  mEigen_maxrealpart = mEigen_r[0];
-  mEigen_maximagpart = fabs(mEigen_i[0]);
+  mMaxrealpart = mR[0];
+  mMaximagpart = fabs(mI[0]);
 
   for (i = 0; i < mN; i++)
     {
       // for the largest real part
-      if (mEigen_r[i] > mEigen_maxrealpart)
-        mEigen_maxrealpart = mEigen_r[i];
+      if (mR[i] > mMaxrealpart)
+        mMaxrealpart = mR[i];
       // for the largest imaginary part
-      if (fabs(mEigen_i[i]) > mEigen_maximagpart)
-        mEigen_maximagpart = fabs(mEigen_i[i]);
+      if (fabs(mI[i]) > mMaximagpart)
+        mMaximagpart = fabs(mI[i]);
 
-      if (fabs(mEigen_r[i]) > resolution)
+      if (fabs(mR[i]) > resolution)
         {
           // positive real part
-          if (mEigen_r[i] >= resolution)
-            mEigen_nposreal++;
+          if (mR[i] >= resolution)
+            mNposreal++;
           // negative real part
-          if (mEigen_r[i] <= -resolution)
-            mEigen_nnegreal++;
-          if (fabs(mEigen_i[i]) > resolution)
+          if (mR[i] <= -resolution)
+            mNnegreal++;
+          if (fabs(mI[i]) > resolution)
             {
               // complex
-              mEigen_ncplxconj++;
+              mNcplxconj++;
             }
           else
             {
               // pure real
-              mEigen_nreal++;
+              mNreal++;
             }
         }
       else
         {
-          if (fabs(mEigen_i[i]) > resolution)
+          if (fabs(mI[i]) > resolution)
             {
               // pure imaginary
-              mEigen_nimag++;
+              mNimag++;
             }
           else
             {
               // zero
-              mEigen_nzero++;
+              mNzero++;
             }
         }
     }
 
-  if (mEigen_nposreal > 0)
+  if (mNposreal > 0)
     {
-      if (mEigen_r[0] > fabs(mEigen_r[mN - 1]))
+      if (mR[0] > fabs(mR[mN - 1]))
         mx = 0;
       else
         mx = mN - 1;
-      if (mEigen_nposreal == mN)
-        mn = mEigen_nposreal - 1;
-      else if (mEigen_r[mEigen_nposreal - 1] < fabs(mEigen_r[mEigen_nposreal]))
-        mn = mEigen_nposreal - 1;
+      if (mNposreal == mN)
+        mn = mNposreal - 1;
+      else if (mR[mNposreal - 1] < fabs(mR[mNposreal]))
+        mn = mNposreal - 1;
       else
-        mn = mEigen_nposreal;
+        mn = mNposreal;
     }
   else
     {
@@ -363,17 +418,17 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
       mn = 0; // index of the smallest absolute real part
     }
 
-  mEigen_stiffness = fabs(mEigen_r[mx]) / fabs(mEigen_r[mn]);
+  mStiffness = fabs(mR[mx]) / fabs(mR[mn]);
 
-  maxt = tott = fabs(1 / mEigen_r[mn]);
+  maxt = tott = fabs(1 / mR[mn]);
   distt = 0.0;
   for (i = 1; i < mN; i++)
     if (i != mn)
       {
-        distt += maxt - fabs(1 / mEigen_r[i]);
-        tott += fabs(1 / mEigen_r[i]);
+        distt += maxt - fabs(1 / mR[i]);
+        tott += fabs(1 / mR[i]);
       }
-  mEigen_hierarchy = distt / tott / (mN - 1);
+  mHierarchy = distt / tott / (mN - 1);
 }
 
 // routines for sorting one matrix taking along another one
@@ -422,45 +477,45 @@ void CEigen::quicksort(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
 /**
  * Return number of real eigenvalues WeiSun 3/28/02
  */
-const C_INT32 & CEigen::getEigen_nreal() const
+const C_INT32 & CEigen::getNreal() const
   {
-    return mEigen_nreal;
+    return mNreal;
   }
 
 /**
  * Return the number of imaginary eigenvalue numbers
  */
-const C_INT32 & CEigen::getEigen_nimag() const
+const C_INT32 & CEigen::getNimag() const
   {
-    return mEigen_nimag;
+    return mNimag;
   }
 
-const C_INT32 & CEigen::getEigen_ncplxconj() const
+const C_INT32 & CEigen::getNcplxconj() const
   {
-    return mEigen_ncplxconj;
+    return mNcplxconj;
   }
 
 /**
  * Return the number of eigenvalues with positive real part
  */
-const C_INT32 & CEigen::getEigen_nposreal() const
+const C_INT32 & CEigen::getNposreal() const
   {
-    return mEigen_nposreal;
+    return mNposreal;
   }
 
 /**
  * Return the number of eigenvalues with negative real part
  */
-const C_INT32 & CEigen::getEigen_nnegreal() const
+const C_INT32 & CEigen::getNnegreal() const
   {
-    return mEigen_nnegreal;
+    return mNnegreal;
   }
 
-const CVector< C_FLOAT64 > & CEigen::getEigen_i() const
-  {return mEigen_i;}
+const CVector< C_FLOAT64 > & CEigen::getI() const
+  {return mI;}
 
-const CVector< C_FLOAT64 > & CEigen::getEigen_r() const
-  {return mEigen_r;}
+const CVector< C_FLOAT64 > & CEigen::getR() const
+  {return mR;}
 
 std::ostream &operator<<(std::ostream &os, const CEigen &A)
 {
@@ -475,14 +530,14 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
 
   // Output statistics
 
-  if (A.mEigen_maxrealpart > A.mResolution)
+  if (A.mMaxrealpart > A.mResolution)
     os << "is unstable";
-  else if (A.mEigen_maxrealpart < -A.mResolution)
+  else if (A.mMaxrealpart < -A.mResolution)
     os << "is asymptotically stable";
   else
     os << "stability is undetermined";
 
-  if (A.mEigen_maximagpart > A.mResolution)
+  if (A.mMaximagpart > A.mResolution)
     {
       os << "," << std::endl;
       os << "transient states in its vicinity have oscillatory components";
@@ -494,36 +549,36 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
   os << "Eigenvalue statistics:" << std::endl;
   // Output Max Real Part
   os << " Largest real part: ";
-  os << std::setprecision(6) << A.mEigen_maxrealpart << std::endl;
+  os << std::setprecision(6) << A.mMaxrealpart << std::endl;
   // Output Max imaginary Part
   os << " Largest absolute imaginary part:  ";
-  os << std::setprecision(6) << A.mEigen_maximagpart << std::endl;
+  os << std::setprecision(6) << A.mMaximagpart << std::endl;
   // Output Eigen-nreal
   os.unsetf(std::ios_base::scientific);
   os.unsetf(std::ios_base::showpoint);
-  os << " " << A.mEigen_nreal;
+  os << " " << A.mNreal;
   os << " are purely real" << std::endl;
   // Output Eigen-nimage
-  os << " " << A.mEigen_nimag;
+  os << " " << A.mNimag;
   os << " are purely imaginary" << std::endl;
   // Output Eigen-ncplxconj
-  os << " " << A.mEigen_ncplxconj;
+  os << " " << A.mNcplxconj;
   os << " are complex" << std::endl;
   // Output Eigen-nzero
-  os << " " << A.mEigen_nzero;
+  os << " " << A.mNzero;
   os << " are equal to zero" << std::endl;
   // Output Eigen-nposreal
-  os << " " << A.mEigen_nposreal;
+  os << " " << A.mNposreal;
   os << " have positive real part" << std::endl;
   // Output Eigen-nnegreal
-  os << " " << A.mEigen_nnegreal;
+  os << " " << A.mNnegreal;
   os << " have negative real part" << std::endl;
 
   // Set point manipulators
   os.setf(std::ios_base::showpoint);
   // Output Eigne-stiffness
-  os << " stiffness = " << A.mEigen_stiffness << std::endl;
-  os << " time hierarchy = " << A.mEigen_hierarchy << std::endl;
+  os << " stiffness = " << A.mStiffness << std::endl;
+  os << " time hierarchy = " << A.mHierarchy << std::endl;
 
   return os;
 }

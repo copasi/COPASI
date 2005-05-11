@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:16:13 $
+   $Date: 2005/05/11 16:33:59 $
    End CVS Header */
 
 /**
@@ -132,8 +132,12 @@ class CSteadyStateMethod : public CCopasiMethod
      * The steady state is returned in the object pointed to by steadyState.
      * @param CState * steadyState
      * @param const CState * initialState
-     * @param C_FLOAT64 * jacobian
-     * @param CEigen * pEigenValues
+     * @param const CSteadyStateProblem * pProblem
+     * @param CMatrix< C_FLOAT64 > & jacobian
+     * @param CMatrix< C_FLOAT64 > & jacobianX
+     * @param CEigen & EigenValues
+     * @param CEigen & EigenValuesX
+     * @param CProcessReport * handler
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     CSteadyStateMethod::ReturnCode process(CState * pState,
@@ -141,8 +145,8 @@ class CSteadyStateMethod : public CCopasiMethod
                                            const CSteadyStateProblem * pProblem,
                                            CMatrix< C_FLOAT64 > & jacobian,
                                            CMatrix< C_FLOAT64 > & jacobianX,
-                                           CEigen * pEigenValues,
-                                           CEigen * pEigenValuesX,
+                                           CEigen & EigenValues,
+                                           CEigen & EigenValuesX,
                                            CProcessReport * handler);
 
     /**

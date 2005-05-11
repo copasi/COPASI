@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:34:21 $
+   $Author: shoops $ 
+   $Date: 2005/05/11 16:33:59 $
    End CVS Header */
 
 /**
@@ -25,10 +25,11 @@
 #include "utilities/CMatrix.h"
 #include "utilities/CReadConfig.h"
 #include "CSteadyStateMethod.h"
+#include "CEigen.h"
 
 class CSteadyStateProblem;
 class CState;
-class CEigen;
+class CReportDefinitionVector;
 
 class CSteadyStateTask : public CCopasiTask
   {
@@ -61,14 +62,14 @@ class CSteadyStateTask : public CCopasiTask
     bool mCalculateReducedSystem;
 
     /**
-     *  The CEigen to work with
+     * The Eigenvalues of the Jacobian of the system
      */
-    CEigen * mpEigenValues;
+    CEigen mEigenValues;
 
     /**
-     *  The CEigen to work with
+     * The Eigenvalues of the Jacobian the reduced system
      */
-    CEigen * mpEigenValuesX;
+    CEigen mEigenValuesX;
 
     /**
      * The result of the steady state analysis.
@@ -113,6 +114,15 @@ class CSteadyStateTask : public CCopasiTask
     virtual bool processForScan(bool useInitialConditions, bool doOutput);
 
     /**
+     * This is the output method for any object. The default implementation
+     * provided with CCopasiObject uses the ostream operator<< of the object
+     * to print the object.To overide this default behaviour one needs to
+     * reimplement the virtual print function.
+     * @param std::ostream * ostream
+     */
+    virtual void print(std::ostream * ostream) const;
+
+    /**
      * Loads parameters for this solver with data coming from a
      * CReadConfig object. (CReadConfig object reads an input stream)
      * @param configbuffer reference to a CReadConfig object.
@@ -140,15 +150,15 @@ class CSteadyStateTask : public CCopasiTask
 
     /**
      * Retrieves a the eigen values of the steady state.
-     * @return const CEigen * eigenValues
+     * @return const CEigen & eigenValues
      */
-    const CEigen * getEigenValues() const;
+    const CEigen & getEigenValues() const;
 
     /**
      * Retrieves a the eigen values of the steady state.
-     * @return const CEigen * eigenValues
+     * @return const CEigen & eigenValues
      */
-    const CEigen * getEigenValuesReduced() const;
+    const CEigen & getEigenValuesReduced() const;
 
     const CSteadyStateMethod::ReturnCode & getResult() const {return mResult;}
 
