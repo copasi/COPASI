@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:05:39 $
+   $Date: 2005/05/11 17:49:58 $
    End CVS Header */
 
 /**
@@ -540,7 +540,7 @@ class CXMLAttributeList
      * @param const CType & value
      * @return bool success
      */
-    template <class CType> bool inline setValue(const unsigned C_INT32 & index,
+    template <class CType> inline bool setValue(const unsigned C_INT32 & index,
         const CType & value)
     {return setValue(index, value, CCopasiXMLInterface::attribute);}
 
