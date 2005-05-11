@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.174 $
+   $Revision: 1.175 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:01 $
+   $Date: 2005/05/11 17:55:23 $
    End CVS Header */
 
 /****************************************************************************
@@ -61,6 +61,7 @@
 #include "ParamFittingWidget.h"
 #include "CMCAWidget.h"
 #include "CMCAResultWidget.h"
+#include "CQReportDefinition.h"
 
 //QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 //QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -386,7 +387,7 @@ void ListViews::ConstructNodeWidgets()
   if (!tableDefinition) tableDefinition = new TableDefinition(this);
   tableDefinition->hide();
 
-  if (!tableDefinition1) tableDefinition1 = new TableDefinition1(this);
+  if (!tableDefinition1) tableDefinition1 = new CQReportDefinition(this);
   tableDefinition1->hide();
 
   if (!timeSeriesWidget) timeSeriesWidget = new TimeSeriesWidget(this);
@@ -480,7 +481,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                                  //Report
+      case 43:                                   //Report
         return tableDefinition;
         break;
       case 42:
