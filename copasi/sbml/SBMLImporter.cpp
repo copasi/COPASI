@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/11 02:10:08 $
+   $Date: 2005/05/11 03:02:11 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1197,13 +1197,27 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB)
       else if (sbmlDoc->getNumErrors() > 0)
         {
           ParseMessage * pSBMLMessage = sbmlDoc->getError(0);
+          /* some level 1 files have an annotation in the wrong place
+           * This is considered an error by libsbml, but
+           * it does not really affect the model, so we try to
+           * read it anyway.
+           */
+          if ((sbmlDoc->getNumErrors() > 1) ||
+               (strncmp(pSBMLMessage->getMessage().c_str(),
+                        "The <sbml> element cannot contain an <annotation>.  Use the <model> element instead."
+                        , 85) != 0))
+            {
+              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
+                                     pSBMLMessage->getLine(),
+                                     pSBMLMessage->getColumn(),
+                                     pSBMLMessage->getMessage().c_str());
 
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
-                                 pSBMLMessage->getLine(),
-                                 pSBMLMessage->getColumn(),
-                                 pSBMLMessage->getMessage().c_str());
-
-          return NULL;
+              return NULL;
+            }
+          else
+            {
+              CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 6);
+            }
         }
       if (sbmlDoc->getModel() == NULL)
         {
