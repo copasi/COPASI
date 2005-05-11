@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.93 $ $Author: shoops $ $Date: 2005/04/25 18:13:22 $  
+# $Revision: 1.94 $ $Author: shoops $ $Date: 2005/05/11 17:55:47 $  
 ######################################################################
 
 TEMPLATE = app
@@ -137,6 +137,7 @@ HEADERS += \
            copasiWidget.h \
            copasiui3window.h \
            CProgressBar.h \
+           CQReportListItem.h \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
            DataModelGUI.h \
@@ -209,6 +210,7 @@ SOURCES += \
            copasiWidget.cpp \
            copasiui3window.cpp \
            CProgressBar.cpp \
+           CQReportListItem.cpp \
            CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \
            DataModelGUI.cpp \
@@ -253,12 +255,12 @@ SOURCES += \
            TrajectoryWidget.cpp \
            Tree.cpp
 
-# FORMS +=  TimeSeriesSubwidget.ui
-# FORMS +=  StateSubwidget.ui
-# FORMS +=  CMCAResultSubwidget.ui
-# FORMS +=  SimpleSelectionWidget.ui        
-# FORMS +=  SliderSettingsDialog.ui    
-# FORMS +=  objectdebug.ui       
+# FORMS += TimeSeriesSubwidget.ui
+# FORMS += StateSubwidget.ui
+# FORMS += CMCAResultSubwidget.ui
+# FORMS += SimpleSelectionWidget.ui        
+# FORMS += SliderSettingsDialog.ui    
+# FORMS += objectdebug.ui       
 # FORMS += CUpDownSubwidget.ui
 # FORMS += CScanWidgetBreak.ui
 # FORMS += CScanWidgetRandom.ui
@@ -270,14 +272,21 @@ SOURCES += \
 # FORMS += CQProgressItemBar.ui
 # FORMS += CQProgressItemText.ui
 # FORMS += CQProgressDialog.ui
+# FORMS += CQReportDefinition.ui
 
 # headers generated from .ui files   
 HEADERS += \
            CMCAResultSubwidget.h \
            CQProgressItem.h \
+           CQProgressItem.ui.h \
+           CQProgressItemBar.ui.h \
            CQProgressItemBar.h \
            CQProgressItemText.h \
+           CQProgressItemText.ui.h \
            CQProgressDialog.h \
+           CQProgressDialog.ui.h \
+           CQReportDefinition.h \
+           CQReportDefinition.ui.h \
            CUpDownSubwidget.h \
            CScanWidgetBreak.h \
            CScanWidgetRandom.h \
@@ -297,6 +306,7 @@ SOURCES += \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \
            CQProgressDialog.cpp \
+           CQReportDefinition.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \
            CScanWidgetRandom.cpp \
