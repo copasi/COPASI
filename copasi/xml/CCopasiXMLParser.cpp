@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/05 14:26:36 $
+   $Date: 2005/05/11 17:02:55 $
    End CVS Header */
 
 /**
@@ -4582,7 +4582,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 {
   const char * Key;
   const char * Name;
-
+  const char * Separator;
   CCopasiTask::Type type;
 
   mCurrentElement++; /* We should always be on the next element */
@@ -4601,10 +4601,13 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       type = (CCopasiTask::Type)mParser.toEnum(mParser.getAttributeValue("taskType", papszAttrs),
              CCopasiTask::XMLType);
+      Separator = mParser.getAttributeValue("separator", papszAttrs, "\t");
+
       // create a new report
       mCommon.pReport = new CReportDefinition();
       mCommon.pReport->setObjectName(Name);
       mCommon.pReport->setTaskType(type);
+      mCommon.pReport->setSeparator(CCopasiReportSeparator(Separator));
 
       /* We have a new report and add it to the list */
       mCommon.pReportList->add(mCommon.pReport, true);
@@ -4665,7 +4668,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
             mpFooterElement = new FooterElement(mParser, mCommon);
 
           /* Push the Body element handler on the stack and call it. */
-          mpCurrentHandler = mpBodyElement;
+          mpCurrentHandler = mpFooterElement;
         }
       break;
 
@@ -5105,16 +5108,13 @@ void CCopasiXMLParser::TableElement::start(const XML_Char *pszName,
 {
   mCurrentElement++; // We should always be on the next element
 
-  const char * separator;
   const char * printTitle;
 
   switch (mCurrentElement)
     {
     case Table:
       if (strcmp(pszName, "Table")) fatalError();
-      separator = mParser.getAttributeValue("separator", papszAttrs, " ");
       printTitle = mParser.getAttributeValue("printTitle", papszAttrs, "false");
-      mCommon.pReport->setSeparator(CCopasiStaticString(separator));
       mCommon.pReport->setTitle(mParser.toBool(printTitle));
       break;
 

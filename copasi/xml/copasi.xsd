@@ -263,7 +263,6 @@
                           <xs:sequence>
                             <xs:element name="Object" type="cOBJECT" minOccurs="0" maxOccurs="unbounded"/>
                           </xs:sequence>
-                          <xs:attribute name="separator" type="xs:string" use="optional" default=" "/>
                           <xs:attribute name="printTitle" type="xs:boolean" use="optional" default="true"/>
                         </xs:complexType>
                       </xs:element>
@@ -277,6 +276,7 @@
                   <xs:attribute name="key" type="cREPORT_KEY" use="required"/>
                   <xs:attribute name="name" type="xs:string" use="required"/>
                   <xs:attribute name="taskType" type="cTASK_TYPE" use="required"/>
+                  <xs:attribute name="separator" type="xs:string" use="optional" default=" &#x09;"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
