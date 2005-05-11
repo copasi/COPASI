@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/12 15:06:33 $
+   $Author: shoops $ 
+   $Date: 2005/05/11 17:44:13 $
    End CVS Header */
 
 /**
@@ -260,6 +260,9 @@ bool CCopasiObject::isStaticString() const
 
 bool CCopasiObject::isValueString() const
   {return (0 < (mObjectFlag & ValueString));}
+
+bool CCopasiObject::isSeparator() const
+  {return (0 < (mObjectFlag & Separator));}
 
 const std::string & CCopasiObject::getKey() const
   {

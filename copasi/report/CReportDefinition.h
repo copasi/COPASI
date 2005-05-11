@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/05 12:32:29 $
+   $Date: 2005/05/11 17:46:17 $
    End CVS Header */
 
 /****************************************************************************
@@ -46,7 +46,7 @@ class CReportDefinition : public CCopasiObject
     std::vector<CRegisteredObjectName> mFooterVector;
     std::vector<CRegisteredObjectName> mTableVector;
 
-    CCopasiStaticString mSeparator;
+    CCopasiReportSeparator mSeparator;
     bool mTable;
     bool mbTitle;
 
@@ -130,12 +130,12 @@ class CReportDefinition : public CCopasiObject
     /**
      *
      */
-    void setSeparator(const CCopasiStaticString& Separator);
+    void setSeparator(const CCopasiReportSeparator & Separator);
 
     /**
      *
      */
-    const CCopasiStaticString& getSeparator() const;
+    const CCopasiReportSeparator & getSeparator() const;
 
     /**
      *

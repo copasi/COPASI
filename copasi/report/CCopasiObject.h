@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/02 09:17:33 $
+   $Author: shoops $ 
+   $Date: 2005/05/11 17:44:13 $
    End CVS Header */
 
 /**
@@ -35,7 +35,6 @@ template <class CType> class CCopasiVector;
 class UpdateMethod
   {
   public:
-    virtual ~UpdateMethod(){};
 
     virtual bool operator()(const C_FLOAT64 & C_UNUSED(value))
     {return false;}
@@ -63,8 +62,6 @@ template <class CType, class VType> class SpecificUpdateMethod : public UpdateMe
         mpType = pType;
         mMethod = method;
       };
-
-      virtual ~SpecificUpdateMethod(){};
 
       // override operator "()"
       virtual bool operator()(const VType & value)
@@ -96,7 +93,8 @@ class CCopasiObject
       ValueDbl = 0x80,
       NonUniqueName = 0x100,
       StaticString = 0x200,
-      ValueString = 0x400
+      ValueString = 0x400,
+      Separator = 0x800
     };
 
   private:
@@ -137,14 +135,11 @@ class CCopasiObject
 
     virtual ~CCopasiObject();
 
-    //  pure virtual function,
     /**
      * This is the output method for any object. The default implementation
      * provided with CCopasiObject uses the ostream operator<< of the object
-     * to print the object.
-     * There exist two ways to modify the print behaviour of an object
-     * 1) implement an ostream operator for the object
-     * 2) reimplement the virtual print function.
+     * to print the object.To overide this default behaviour one needs to
+     * reimplement the virtual print function.
      * @param std::ostream * ostream
      */
     virtual void print(std::ostream * ostream) const;
@@ -199,6 +194,7 @@ class CCopasiObject
     bool isNonUniqueName() const;
     bool isStaticString() const;
     bool isValueString() const;
+    bool isSeparator() const;
 
     virtual void * getReference() const;
 

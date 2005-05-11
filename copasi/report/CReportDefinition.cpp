@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/05 12:32:29 $
+   $Date: 2005/05/11 17:46:17 $
    End CVS Header */
 
 /**
@@ -95,10 +95,10 @@ bool CReportDefinition::setTaskType(const CCopasiTask::Type & taskType)
 const CCopasiTask::Type & CReportDefinition::getTaskType() const
   {return mTaskType;}
 
-void CReportDefinition::setSeparator(const CCopasiStaticString& Separator)
+void CReportDefinition::setSeparator(const CCopasiReportSeparator & Separator)
 {mSeparator = Separator;}
 
-const CCopasiStaticString& CReportDefinition::getSeparator() const
+const CCopasiReportSeparator & CReportDefinition::getSeparator() const
   {return mSeparator;}
 
 bool CReportDefinition::getTitle() const

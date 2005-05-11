@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiStaticString.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/04 17:36:32 $
+   $Date: 2005/05/11 17:44:13 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,8 +13,10 @@
 #include "CCopasiObjectName.h"
 
 CCopasiStaticString::CCopasiStaticString(const std::string & name,
-    const CCopasiContainer * pParent):
-    CCopasiObject(name, pParent, "String", CCopasiObject::StaticString),
+    const CCopasiContainer * pParent,
+    const std::string & type,
+    const unsigned C_INT32 & flag):
+    CCopasiObject(name, pParent, type, flag | CCopasiObject::StaticString),
     mStaticString(name)
 {}
 
@@ -38,3 +40,21 @@ void CCopasiStaticString::print(std::ostream * ostream) const
 
 const std::string & CCopasiStaticString::getStaticString() const
   {return mStaticString;}
+
+CCopasiReportSeparator::CCopasiReportSeparator(const std::string & name,
+    const CCopasiContainer * pParent):
+    CCopasiStaticString(name, pParent, "Separator", CCopasiObject::Separator)
+{}
+
+CCopasiReportSeparator::CCopasiReportSeparator(const CCopasiStaticString & src,
+    const CCopasiContainer * pParent):
+    CCopasiStaticString(src, pParent)
+{}
+
+CCopasiReportSeparator::~CCopasiReportSeparator() {}
+
+CCopasiReportSeparator & CCopasiReportSeparator::operator = (const std::string & rhs)
+{
+  * (CCopasiStaticString *) this = rhs;
+  return *this;
+}
