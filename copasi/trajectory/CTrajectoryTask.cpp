@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/25 18:16:13 $
+   $Author: ssahle $ 
+   $Date: 2005/05/11 03:54:46 $
    End CVS Header */
 
 /**
@@ -121,6 +121,9 @@ bool CTrajectoryTask::process()
   CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
   CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
 
+  //the following is a hack that has to disappear soon.
+  pProblem->setInitialState(pProblem->getModel()->getInitialState());
+
   mTimeSeriesRequested = pProblem->timeSeriesRequested();
 
   pdelete(mpState);
@@ -226,6 +229,8 @@ bool CTrajectoryTask::process()
     {
       ActualStepSize = pMethod->step(StepSize);
 
+      //std::cout << EndTime << "  " << Time << "  " << EndTime-Time << std::endl;
+
       if (mpProgressHandler)
         {
           Percentage = (Time - pProblem->getStartTime()) * handlerFactor;
@@ -248,7 +253,9 @@ bool CTrajectoryTask::process()
 #endif // XXXX_Event
     }
 
-  while ((*L)(Time, pProblem->getEndTime()) && flagProceed)
+  C_FLOAT64 modifiedEndTime = (StepSize < 0.0) ? pProblem->getEndTime() + StepSize * 1e-5 : pProblem->getEndTime() - StepSize * 1e-5;
+
+  while ((*L)(Time, modifiedEndTime) && flagProceed)
     {
       ActualStepSize = pMethod->step(pProblem->getEndTime() - Time);
 
