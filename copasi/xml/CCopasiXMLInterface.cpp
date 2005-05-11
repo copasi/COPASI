@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:37:34 $
+   $Date: 2005/05/11 17:02:25 $
    End CVS Header */
 
 /**
@@ -87,6 +87,10 @@ void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
 
     case '\"':
       xml << "&quot;";
+      break;
+
+    case '\t':    // Without this <tab> is converted to <space>
+      xml << "&#x09;";
       break;
 
     default:
