@@ -1,29 +1,417 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/09 14:13:16 $
+   $Date: 2005/05/11 17:43:08 $
    End CVS Header */
 
-void CQReportDefinition::btnAdvanceClicked()
-{
-  if (mAdvanced)
-    {
-      // :TODO: We should issue a warning that this might result in loss of customization.
-      mAdvanced = false;
+#include "CQReportListItem.h"
+#include "CCopasiSelectionDialog.h"
+#include "qtUtilities.h"
 
-      mpBtnAdvanced->setText("Advanced >>");
-      mpReportSectionTab->setTabEnabled(mpTableList, true);
-      mpReportSectionTab->setTabEnabled(mpHeaderList, false);
-      mpReportSectionTab->setTabEnabled(mpBodyList, false);
-      mpReportSectionTab->setTabEnabled(mpFooterList, false);
-      mpReportSectionTab->setCurrentPage(0);
-      mpBtnSeparator->hide();
-      mpBtnText->hide();
-      mpTitleCheck->show();
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CKeyFactory.h"
+#include "report/CReportDefinition.h"
+#include "report/CReportDefinitionVector.h"
+#include "report/CCopasiStaticString.h"
+
+void CQReportDefinition::nameChanged()
+{mChanged = true;}
+
+void CQReportDefinition::taskChanged()
+{mChanged = true;}
+
+void CQReportDefinition::commentChanged()
+{mChanged = true;}
+
+void CQReportDefinition::separatorChanged()
+{mChanged = true;}
+
+void CQReportDefinition::chkTabClicked()
+{
+  mChanged = true;
+
+  if (mpTabCheck->isChecked())
+    mpSeparator->setEnabled(false);
+  else
+    mpSeparator->setEnabled(true);
+}
+
+void CQReportDefinition::btnAdvancedClicked()
+{
+  // :TODO: implement warning message and conversion.
+  setAdvancedMode(!mAdvanced);
+}
+
+void CQReportDefinition::btnItemClicked()
+{
+  CModel* pModel = CCopasiDataModel::Global->getModel();
+  if (!pModel) return;
+
+  CCopasiSelectionDialog* pBrowseDialog = new CCopasiSelectionDialog(this);
+  pBrowseDialog->setModel(pModel);
+  std::vector<CCopasiObject *> SelectedVector;
+  pBrowseDialog->setOutputVector(&SelectedVector);
+
+  if (pBrowseDialog->exec () == QDialog::Rejected) return;
+  if (SelectedVector.size() == 0) return;
+
+  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+  std::vector<CCopasiObject *>::const_iterator it = SelectedVector.begin();
+  std::vector<CCopasiObject *>::const_iterator end = SelectedVector.end();
+
+  for (; it != end; ++it)
+    new CQReportListItem(pList, *it);
+
+  return;
+}
+
+void CQReportDefinition::btnSeparatorClicked()
+{
+  CCopasiReportSeparator Separator;
+  if (mpTabCheck->isChecked())
+    Separator = "\t";
+  else
+    Separator = (const char *) mpSeparator->text().utf8();
+
+  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+  new CQReportListItem(pList, Separator.getCN());
+
+  return;
+}
+
+void CQReportDefinition::btnTextClicked()
+{
+  // :TODO:
+  qWarning("CQReportDefinition::btnTextClicked(): Not implemented yet");
+}
+
+void CQReportDefinition::btnDeleteClicked()
+{
+  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+  QListBoxItem * pNewSelection = NULL;
+  unsigned C_INT32 i, multipleSelection;
+
+  for (i = pList->count() - 1, multipleSelection = 0; i < ULONG_MAX; i--)
+    if (pList->isSelected(i))
+      {
+        pList->removeItem(i);
+        if (!pNewSelection) pNewSelection = pList->item(i); // We select the next.
+
+        multipleSelection++;
+      }
+
+  if (multipleSelection == 0) return; // Nothing selected,
+
+  mChanged = true;
+  pList->clearSelection();
+
+  if (multipleSelection > 1) return;
+
+  // Only one item was select and we move the selection to the next
+  if (!pNewSelection && pList->count()) // We have removed item at the end.
+    pNewSelection = pList->item(pList->count() - 1);
+
+  // pNewSelection is NULL if the list is empty
+  if (pNewSelection)
+    {
+      pList->setCurrentItem(pNewSelection);
+      pList->setSelected(pNewSelection, TRUE);
+    }
+
+  return;
+}
+
+void CQReportDefinition::btnUpClicked()
+{
+  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+  unsigned C_INT32 i, multipleSelection;
+
+  QListBoxItem * pAfter;
+  QListBoxItem * pMove;
+
+  for (i = pList->count() - 1, multipleSelection = 0; i < ULONG_MAX; i--)
+    if (pList->isSelected(i))
+      {
+        if (multipleSelection == 0) pAfter = pList->item(i);
+        multipleSelection++;
+      }
+    else if (multipleSelection > 0)
+      {
+        pMove = pList->item(i);
+
+        if (pMove)
+          {
+            pList->takeItem(pMove);
+            pList->insertItem(pMove, pAfter);
+
+            multipleSelection = 0;
+            mChanged = true;
+          }
+      }
+
+  // Unselect things we can not move.
+  for (i = 0; i < multipleSelection; i++)
+    pList->setSelected(i, false);
+
+  return;
+}
+
+void CQReportDefinition::btnDownClicked()
+{
+  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+  unsigned C_INT32 i, imax, multipleSelection, before;
+
+  QListBoxItem * pMove;
+
+  // Find the index of the first selected item.
+  for (i = 0, imax = pList->count(), multipleSelection = 0; i < imax; i++)
+    if (pList->isSelected(i))
+      {
+        if (multipleSelection == 0) before = i;
+        multipleSelection++;
+      }
+    else if (multipleSelection > 0)
+      {
+        pMove = pList->item(i);
+
+        if (pMove)
+          {
+            pList->takeItem(pMove);
+            pList->insertItem(pMove, pList->item(before - 1));
+
+            multipleSelection = 0;
+            mChanged = true;
+          }
+      }
+
+  // Unselect things we can not move.
+  for (i = pList->count() - multipleSelection, imax = pList->count(); i < imax; i++)
+    pList->setSelected(i, false);
+
+  return;
+}
+
+void CQReportDefinition::chkTitleClicked()
+{mChanged = true;}
+
+void CQReportDefinition::btnDeleteReportClicked()
+{
+  unsigned C_INT32 Index, Size;
+
+  Index = CCopasiDataModel::Global->getReportDefinitionList()->CCopasiVector<CReportDefinition>::getIndex(mpReportDefinition);
+  CCopasiDataModel::Global->getReportDefinitionList()->removeReportDefinition(mKey);
+
+  Size = CCopasiDataModel::Global->getReportDefinitionList()->size();
+
+  if (Size > 0)
+    enter((*CCopasiDataModel::Global->getReportDefinitionList())[std::min(Index, Size - 1)]->getKey());
+
+  protectedNotify(ListViews::REPORT, ListViews::DELETE, mKey);
+}
+
+void CQReportDefinition::btnNewReportClicked()
+{
+  std::string Name = "report";
+
+  int i = 0;
+  CReportDefinition* pRep;
+  while (!(pRep = CCopasiDataModel::Global->getReportDefinitionList()->createReportDefinition(Name, "")))
+    {
+      i++;
+      Name = "report_";
+      Name += (const char *) QString::number(i).utf8();
+    }
+
+  protectedNotify(ListViews::REPORT, ListViews::ADD);
+  enter(pRep->getKey());
+}
+
+void CQReportDefinition::btnRevertClicked()
+{load();}
+
+void CQReportDefinition::btnCommitClicked()
+{save();}
+
+void CQReportDefinition::init()
+{
+  mKey = "";
+  mpReportDefinition = NULL;
+
+  // We start with the table since this is simpler.
+  setAdvancedMode(false);
+
+  unsigned C_INT32 i;
+  for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
+    mpTaskBox->insertItem(FROM_UTF8(CCopasiTask::TypeName[i]));
+
+  mpHeaderList->setSelectionMode(QListBox::Multi);
+  mpBodyList->setSelectionMode(QListBox::Multi);
+  mpFooterList->setSelectionMode(QListBox::Multi);
+  mpTableList->setSelectionMode(QListBox::Multi);
+}
+
+void CQReportDefinition::destroy()
+{}
+
+bool CQReportDefinition::update(ListViews::ObjectType objectType,
+                                ListViews::Action action,
+                                const std::string & key)
+{
+  if (key != mKey) return true;
+  return load();
+}
+
+bool CQReportDefinition::leave()
+{return save();}
+
+bool CQReportDefinition::enter(const std::string & key)
+{
+  mKey = key;
+  mpReportDefinition = dynamic_cast<CReportDefinition *>(GlobalKeys.get(mKey));
+
+  return load();
+}
+
+bool CQReportDefinition::load()
+{
+  if (!mpReportDefinition) return false;
+
+  // Reset everything.
+  mpHeaderList->clear();
+  mpBodyList->clear();
+  mpFooterList->clear();
+  mpTableList->clear();
+
+  mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
+  mpTaskBox->setCurrentItem(mpReportDefinition->getTaskType());
+  mpCommentEdit->setText(FROM_UTF8(mpReportDefinition->getComment()));
+
+  //separator
+  if (mpReportDefinition->getSeparator().getStaticString() == "\t")
+    {
+      mpSeparator->setEnabled(false);
+      mpTabCheck->setChecked(true);
     }
   else
+    {
+      mpSeparator->setEnabled(true);
+      mpTabCheck->setChecked(false);
+      mpSeparator->setText(FROM_UTF8(mpReportDefinition->getSeparator().getStaticString()));
+    }
+
+  std::vector< CRegisteredObjectName > * pList = NULL;
+  std::vector< CRegisteredObjectName >::const_iterator it;
+  std::vector< CRegisteredObjectName >::const_iterator end;
+
+  // Toggle the display mode.
+  if (mpReportDefinition->isTable())
+    {
+      setAdvancedMode(false);
+
+      mpTitleCheck->setChecked(mpReportDefinition->getTitle());
+
+      pList = mpReportDefinition->getTableAddr();
+      for (it = pList->begin(), end = pList->end(); it != end; ++it)
+        new CQReportListItem(mpTableList, *it);
+    }
+  else
+    {
+      setAdvancedMode(true);
+
+      pList = mpReportDefinition->getHeaderAddr();
+      for (it = pList->begin(), end = pList->end(); it != end; ++it)
+        new CQReportListItem(mpHeaderList, *it);
+
+      pList = mpReportDefinition->getBodyAddr();
+      for (it = pList->begin(), end = pList->end(); it != end; ++it)
+        new CQReportListItem(mpBodyList, *it);
+
+      pList = mpReportDefinition->getFooterAddr();
+      for (it = pList->begin(), end = pList->end(); it != end; ++it)
+        new CQReportListItem(mpFooterList, *it);
+    }
+
+  mChanged = false;
+  return true;
+}
+
+bool CQReportDefinition::save()
+{
+  if (!mChanged) return true;
+  if (!mpReportDefinition) return false;
+
+  if (mpReportDefinition->getObjectName() != (const char*) mpName->text().utf8())
+    {
+      mpReportDefinition->setObjectName((const char*) mpName->text().utf8());
+      protectedNotify(ListViews::REPORT, ListViews::RENAME, mKey);
+    }
+
+  mpReportDefinition->setTaskType((CCopasiTask::Type) mpTaskBox->currentItem());
+  mpReportDefinition->setComment((const char*) mpCommentEdit->text().utf8());
+
+  CCopasiReportSeparator Separator;
+  if (mpTabCheck->isChecked())
+    Separator = "\t";
+  else
+    Separator = (const char *) mpSeparator->text().utf8();
+  mpReportDefinition->setSeparator(Separator);
+
+  mpReportDefinition->getHeaderAddr()->clear();
+  mpReportDefinition->getBodyAddr()->clear();
+  mpReportDefinition->getFooterAddr()->clear();
+  mpReportDefinition->getTableAddr()->clear();
+
+  std::vector< CRegisteredObjectName > * pList = NULL;
+  unsigned C_INT32 i, imax;
+
+  if (mAdvanced)
+    {
+      mpReportDefinition->setIsTable(false);
+
+      pList = mpReportDefinition->getHeaderAddr();
+      for (i = 0, imax = mpHeaderList->numRows(); i < imax; i++)
+        if (static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN().getObjectType()
+            == "Separator")
+          pList->push_back(Separator.getCN());
+        else
+          pList->push_back(static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN());
+
+      pList = mpReportDefinition->getBodyAddr();
+      for (i = 0, imax = mpBodyList->numRows(); i < imax; i++)
+        if (static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN().getObjectType()
+            == "Separator")
+          pList->push_back(Separator.getCN());
+        else
+          pList->push_back(static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN());
+
+      pList = mpReportDefinition->getFooterAddr();
+      for (i = 0, imax = mpFooterList->numRows(); i < imax; i++)
+        if (static_cast<CQReportListItem *>(mpFooterList->item(i))->getCN().getObjectType()
+            == "Separator")
+          pList->push_back(Separator.getCN());
+        else
+          pList->push_back(static_cast<CQReportListItem *>(mpFooterList->item(i))->getCN());
+    }
+  else
+    {
+      mpReportDefinition->setIsTable(true);
+
+      mpReportDefinition->setTitle(mpTitleCheck->isChecked());
+
+      pList = mpReportDefinition->getTableAddr();
+      for (i = 0, imax = mpTableList->numRows(); i < imax; i++)
+        pList->push_back(static_cast<CQReportListItem *>(mpTableList->item(i))->getCN());
+    }
+
+  mChanged = false;
+  return false;
+}
+
+bool CQReportDefinition::setAdvancedMode(const bool & advanced)
+{
+  if (advanced)
     {
       mAdvanced = true;
 
@@ -37,89 +425,20 @@ void CQReportDefinition::btnAdvanceClicked()
       mpBtnText->show();
       mpTitleCheck->hide();
     }
-}
+  else
+    {
+      mAdvanced = false;
 
-void CQReportDefinition::btnItemClicked()
-{
-  qWarning("CQReportDefinition::btnItemClicked(): Not implemented yet");
-}
+      mpBtnAdvanced->setText("Advanced >>");
+      mpReportSectionTab->setTabEnabled(mpTableList, true);
+      mpReportSectionTab->setTabEnabled(mpHeaderList, false);
+      mpReportSectionTab->setTabEnabled(mpBodyList, false);
+      mpReportSectionTab->setTabEnabled(mpFooterList, false);
+      mpReportSectionTab->setCurrentPage(0);
+      mpBtnSeparator->hide();
+      mpBtnText->hide();
+      mpTitleCheck->show();
+    }
 
-void CQReportDefinition::btnSeparatorClicked()
-{
-  qWarning("CQReportDefinition::btnSeparatorClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::btnTextClicked()
-{
-  qWarning("CQReportDefinition::btnTextClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::btnDeleteClicked()
-{
-  qWarning("CQReportDefinition::btnDeleteClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::btnUpClicked()
-{
-  qWarning("CQReportDefinition::btnUpClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::btnDownClicked()
-{
-  qWarning("CQReportDefinition::btnDownClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::chkTabClicked()
-{
-  qWarning("CQReportDefinition::chkTabClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::chkTitleClicked()
-{
-  qWarning("CQReportDefinition::chkTitleClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::btnDeleteReportClicked()
-{
-  qWarning("CQReportDefinition::btnDeleteReportClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::btnNewReportClicked()
-{
-  qWarning("CQReportDefinition::btnNewReportClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::btnRevertClicked()
-{
-  qWarning("CQReportDefinition::btnRevertClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::btnCommitClicked()
-{
-  qWarning("CQReportDefinition::btnCommitClicked(): Not implemented yet");
-}
-
-void CQReportDefinition::init()
-{
-  // We start with the table since this is simpler.
-  mAdvanced = true;
-
-  btnAdvanceClicked();
-}
-
-bool CQReportDefinition::update(ListViews::ObjectType objectType,
-                                ListViews::Action action,
-                                const std::string & key)
-{
-  return false;
-}
-
-bool CQReportDefinition::leave()
-{
-  return false;
-}
-
-bool CQReportDefinition::enter(const std::string & key)
-{
-  return false;
+  return true;
 }

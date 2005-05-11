@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/09 14:13:16 $
+   $Date: 2005/05/11 17:43:08 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQReportDefinition.ui'
  **
- ** Created: Wed May 4 13:45:23 2005
- **      by: The User Interface Compiler ($Id: CQReportDefinition.cpp,v 1.1 2005/05/09 14:13:16 shoops Exp $)
+ ** Created: Wed May 11 13:40:05 2005
+ **      by: The User Interface Compiler ($Id: CQReportDefinition.cpp,v 1.2 2005/05/11 17:43:08 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -195,9 +195,13 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
   clearWState(WState_Polished);
 
   // signals and slots connections
+  connect(mpName, SIGNAL(changed()), this, SLOT(nameChanged()));
+  connect(mpTaskBox, SIGNAL(changed()), this, SLOT(taskChanged()));
+  connect(mpCommentEdit, SIGNAL(changed()), this, SLOT(commentChanged()));
+  connect(mpSeparator, SIGNAL(changed()), this, SLOT(separatorChanged()));
   connect(mpTabCheck, SIGNAL(clicked()), this, SLOT(chkTabClicked()));
   connect(mpTitleCheck, SIGNAL(clicked()), this, SLOT(chkTitleClicked()));
-  connect(mpBtnAdvanced, SIGNAL(clicked()), this, SLOT(btnAdvanceClicked()));
+  connect(mpBtnAdvanced, SIGNAL(clicked()), this, SLOT(btnAdvancedClicked()));
   connect(mpBtnItem, SIGNAL(clicked()), this, SLOT(btnItemClicked()));
   connect(mpBtnSeparator, SIGNAL(clicked()), this, SLOT(btnSeparatorClicked()));
   connect(mpBtnText, SIGNAL(clicked()), this, SLOT(btnTextClicked()));
@@ -235,6 +239,7 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
  */
 CQReportDefinition::~CQReportDefinition()
 {
+  destroy();
   // no need to delete child widgets, Qt does it all for us
 }
 

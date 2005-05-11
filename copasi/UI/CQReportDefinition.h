@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/09 14:13:16 $
+   $Date: 2005/05/11 17:43:08 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQReportDefinition.ui'
  **
- ** Created: Wed May 4 13:45:23 2005
- **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.1 2005/05/09 14:13:16 shoops Exp $)
+ ** Created: Wed May 11 13:40:05 2005
+ **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.2 2005/05/11 17:43:08 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,6 +36,7 @@ class QPushButton;
 class QTabWidget;
 class QListBox;
 class QListBoxItem;
+class CReportDefinition;
 
 class CQReportDefinition : public CopasiWidget
   {
@@ -91,18 +92,29 @@ class CQReportDefinition : public CopasiWidget
 
   private:
     bool mAdvanced;
+    bool mChanged;
+    std::string mKey;
+    CReportDefinition * mpReportDefinition;
 
     void init();
+    void destroy();
+    bool load();
+    bool save();
+    bool setAdvancedMode(const bool & advanced);
 
   private slots:
-    void btnAdvanceClicked();
+    void nameChanged();
+    void taskChanged();
+    void commentChanged();
+    void separatorChanged();
+    void chkTabClicked();
+    void btnAdvancedClicked();
     void btnItemClicked();
     void btnSeparatorClicked();
     void btnTextClicked();
     void btnDeleteClicked();
     void btnUpClicked();
     void btnDownClicked();
-    void chkTabClicked();
     void chkTitleClicked();
     void btnCommitClicked();
     void btnRevertClicked();

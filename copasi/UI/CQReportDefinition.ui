@@ -564,6 +564,30 @@
 </widget>
 <connections>
     <connection>
+        <sender>mpName</sender>
+        <signal>changed()</signal>
+        <receiver>CQReportDefinition</receiver>
+        <slot>nameChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpTaskBox</sender>
+        <signal>changed()</signal>
+        <receiver>CQReportDefinition</receiver>
+        <slot>taskChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpCommentEdit</sender>
+        <signal>changed()</signal>
+        <receiver>CQReportDefinition</receiver>
+        <slot>commentChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpSeparator</sender>
+        <signal>changed()</signal>
+        <receiver>CQReportDefinition</receiver>
+        <slot>separatorChanged()</slot>
+    </connection>
+    <connection>
         <sender>mpTabCheck</sender>
         <signal>clicked()</signal>
         <receiver>CQReportDefinition</receiver>
@@ -579,7 +603,7 @@
         <sender>mpBtnAdvanced</sender>
         <signal>clicked()</signal>
         <receiver>CQReportDefinition</receiver>
-        <slot>btnAdvanceClicked()</slot>
+        <slot>btnAdvancedClicked()</slot>
     </connection>
     <connection>
         <sender>mpBtnItem</sender>
@@ -662,22 +686,32 @@
     <tabstop>mpBtnNewReport</tabstop>
     <tabstop>mpBtnDeleteReport</tabstop>
 </tabstops>
+<forwards>
+    <forward>class CReportDefinition;</forward>
+</forwards>
 <includes>
     <include location="global" impldecl="in declaration">qlistbox.h</include>
     <include location="local" impldecl="in declaration">CopasiWidget.h</include>
 </includes>
 <variables>
     <variable access="private">bool mAdvanced;</variable>
+    <variable access="private">bool mChanged;</variable>
+    <variable access="private">std::string mKey;</variable>
+    <variable access="private">CReportDefinition * mpReportDefinition;</variable>
 </variables>
 <slots>
-    <slot access="private" specifier="non virtual">btnAdvanceClicked()</slot>
+    <slot access="private" specifier="non virtual">nameChanged()</slot>
+    <slot access="private" specifier="non virtual">taskChanged()</slot>
+    <slot access="private" specifier="non virtual">commentChanged()</slot>
+    <slot access="private" specifier="non virtual">separatorChanged()</slot>
+    <slot access="private" specifier="non virtual">chkTabClicked()</slot>
+    <slot access="private" specifier="non virtual">btnAdvancedClicked()</slot>
     <slot access="private" specifier="non virtual">btnItemClicked()</slot>
     <slot access="private" specifier="non virtual">btnSeparatorClicked()</slot>
     <slot access="private" specifier="non virtual">btnTextClicked()</slot>
     <slot access="private" specifier="non virtual">btnDeleteClicked()</slot>
     <slot access="private" specifier="non virtual">btnUpClicked()</slot>
     <slot access="private" specifier="non virtual">btnDownClicked()</slot>
-    <slot access="private" specifier="non virtual">chkTabClicked()</slot>
     <slot access="private" specifier="non virtual">chkTitleClicked()</slot>
     <slot access="private" specifier="non virtual">btnCommitClicked()</slot>
     <slot access="private" specifier="non virtual">btnRevertClicked()</slot>
@@ -686,9 +720,13 @@
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
     <function access="public" specifier="virtual" returnType="bool">update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key)</function>
     <function access="public" specifier="virtual" returnType="bool">leave()</function>
     <function access="public" specifier="virtual" returnType="bool">enter(const std::string &amp; key = "")</function>
+    <function access="private" specifier="non virtual" returnType="bool">load()</function>
+    <function access="private" specifier="non virtual" returnType="bool">save()</function>
+    <function access="private" specifier="non virtual" returnType="bool">setAdvancedMode(const bool &amp; advanced)</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
