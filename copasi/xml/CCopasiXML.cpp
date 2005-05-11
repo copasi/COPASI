@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/05 14:26:36 $
+   $Author: ssahle $ 
+   $Date: 2005/05/11 03:59:05 $
    End CVS Header */
 
 /**
@@ -537,16 +537,16 @@ bool CCopasiXML::saveFunctionList()
 
 bool CCopasiXML::savePlotList()
 {
-  std::cerr << "Saving plot list. " << std::endl;
+  //std::cerr << "Saving plot list. " << std::endl;
   bool success = true;
   if (!havePlotList())
     {
-      std::cerr << "No plot list defined." << std::endl;
+      //std::cerr << "No plot list defined." << std::endl;
       return success;
     }
 
   unsigned C_INT32 i, imax = mpPlotList->size();
-  std::cerr << "Saving " << imax << " plots." << std::endl;
+  //std::cerr << "Saving " << imax << " plots." << std::endl;
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
@@ -565,7 +565,7 @@ bool CCopasiXML::savePlotList()
       saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *)pPlot->CCopasiParameter::getValue());
       startSaveElement("ListOfPlotItems");
       unsigned C_INT32 j, jmax = pPlot->getItems().size();
-      std::cerr << "Saving " << jmax << "PlotItems." << std::endl;
+      //std::cerr << "Saving " << jmax << "PlotItems." << std::endl;
       for (j = 0; j < jmax; j++)
         {
           const CPlotItem* pPlotItem = pPlot->getItems()[j];
@@ -576,7 +576,7 @@ bool CCopasiXML::savePlotList()
           saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *)pPlotItem->CCopasiParameter::getValue());
           startSaveElement("ListOfChannels");
           unsigned C_INT32 k, kmax = pPlotItem->getNumChannels();
-          std::cerr << "Saving " << kmax << " Channels." << std::endl;
+          //std::cerr << "Saving " << kmax << " Channels." << std::endl;
           for (k = 0; k < kmax; k++)
             {
               const CPlotDataChannelSpec pDataChannelSpec = pPlotItem->getChannels()[k];

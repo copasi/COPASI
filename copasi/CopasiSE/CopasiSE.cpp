@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/09 13:32:11 $
+   $Author: ssahle $ 
+   $Date: 2005/05/11 03:56:54 $
    End CVS Header */
 
 // Main
@@ -137,6 +137,6 @@ int main(int argc, char *argv[])
   pdelete(CCopasiDataModel::Global);
   pdelete(CCopasiContainer::Root);
 
-  std::cout << "Leaving main program." << std::endl;
+  //std::cout << "Leaving main program." << std::endl;
   return 0;
 }

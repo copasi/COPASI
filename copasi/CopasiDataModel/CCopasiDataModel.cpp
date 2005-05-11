@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/18 13:32:02 $
+   $Author: ssahle $ 
+   $Date: 2005/05/11 03:56:18 $
    End CVS Header */
 
 #include "copasi.h"
@@ -141,7 +141,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
     {
       mSaveFileName = fileName;
 
-      std::cout << "XML Format" << std::endl;
+      //std::cout << "XML Format" << std::endl;
       File.seekg(0, std::ios_base::beg);
 
       CCopasiXML XML;
