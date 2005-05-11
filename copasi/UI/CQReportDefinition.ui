@@ -691,7 +691,7 @@
 </forwards>
 <includes>
     <include location="global" impldecl="in declaration">qlistbox.h</include>
-    <include location="local" impldecl="in declaration">CopasiWidget.h</include>
+    <include location="local" impldecl="in declaration">copasiWidget.h</include>
 </includes>
 <variables>
     <variable access="private">bool mAdvanced;</variable>

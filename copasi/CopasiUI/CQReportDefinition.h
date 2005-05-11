@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:43:08 $
+   $Date: 2005/05/11 18:07:49 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQReportDefinition.ui'
  **
- ** Created: Wed May 11 13:40:05 2005
- **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.2 2005/05/11 17:43:08 shoops Exp $)
+ ** Created: Wed May 11 14:05:34 2005
+ **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.3 2005/05/11 18:07:49 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,7 +20,7 @@
 
 #include <qvariant.h>
 #include <qlistbox.h>
-#include "CopasiWidget.h"
+#include "copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
