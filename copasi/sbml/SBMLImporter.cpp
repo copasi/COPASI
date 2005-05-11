@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/10 02:46:43 $
+   $Date: 2005/05/11 02:10:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -464,6 +464,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       this->replaceCompartmentNodes((ConverterASTNode*)node, compartmentMap);
       this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
       this->replacePowerFunctionNodes(node);
+      this->replaceLog((ConverterASTNode*)node);
+      this->replaceRoot((ConverterASTNode*)node);
+      this->replaceFunnyOperatorCalls((ConverterASTNode*)node);
       //ConverterASTNode::printASTNode(node);
       /* if it is a single compartment reaction, we have to devide the whole kinetic
       ** equation by the volume of the compartment because copasi expects
@@ -1503,5 +1506,179 @@ void SBMLImporter::replaceCompartmentNodes(ConverterASTNode* node, std::map<std:
   for (counter = 0; counter < num; counter++)
     {
       this->replaceCompartmentNodes((ConverterASTNode*)(node->getChild(counter)), compartmentMap);
+    }
+}
+
+void SBMLImporter::replaceLog(ConverterASTNode* sourceNode)
+{
+  if (sourceNode->getType() == AST_FUNCTION_LOG && sourceNode->getNumChildren() == 2)
+    {
+      List* l = new List();
+      ConverterASTNode* child1 = (ConverterASTNode*)sourceNode->getChild(0);
+      ConverterASTNode* child2 = (ConverterASTNode*)sourceNode->getChild(1);
+      ConverterASTNode* logNode1 = new ConverterASTNode(AST_FUNCTION_LOG);
+      l->add(child1);
+      logNode1->setChildren(l);
+      ConverterASTNode* logNode2 = new ConverterASTNode(AST_FUNCTION_LOG);
+      l = new List();
+      l->add(child2);
+      logNode2->setChildren(l);
+      l = new List();
+      l->add(logNode2);
+      l->add(logNode1);
+      sourceNode->setChildren(l);
+      sourceNode->setType(AST_DIVIDE);
+      // go down the children and replace logs
+      this->replaceLog(child1);
+      this->replaceLog(child2);
+    }
+  else
+    {
+      // go down to the children and replace logs
+      unsigned int i;
+      for (i = 0; i < sourceNode->getNumChildren();++i)
+        {
+          this->replaceLog((ConverterASTNode*)sourceNode->getChild(i));
+        }
+    }
+}
+
+void SBMLImporter::replaceRoot(ConverterASTNode* sourceNode)
+{
+  if (sourceNode->getType() == AST_FUNCTION_ROOT && sourceNode->getNumChildren() == 2)
+    {
+      ConverterASTNode* child1 = (ConverterASTNode*)sourceNode->getChild(0);
+      ConverterASTNode* child2 = (ConverterASTNode*)sourceNode->getChild(1);
+      ConverterASTNode* divideNode = new ConverterASTNode(AST_DIVIDE);
+      ConverterASTNode* oneNode = new ConverterASTNode(AST_REAL);
+      oneNode->setValue(1.0);
+      List* l = new List();
+      l->add(divideNode);
+      divideNode->addChild(oneNode);
+      divideNode->addChild(child1);
+
+      List* l2 = new List();
+      l2->add(child2);
+      l2->add(divideNode);
+
+      sourceNode->setChildren(l2);
+      sourceNode->setType(AST_POWER);
+      // go down the children and replace root functions
+      this->replaceRoot(child1);
+      this->replaceRoot(child2);
+    }
+  else
+    {
+      // go down to the children and replace root functions
+      unsigned int i;
+      for (i = 0; i < sourceNode->getNumChildren();++i)
+        {
+          this->replaceRoot((ConverterASTNode*)sourceNode->getChild(i));
+        }
+    }
+}
+
+void SBMLImporter::replaceFunnyOperatorCalls(ConverterASTNode* sourceNode)
+{
+  ASTNodeType_t type = sourceNode->getType();
+  if ((type == AST_PLUS || type == AST_TIMES) && (sourceNode->getNumChildren() < 2))
+    {
+      if (type == AST_PLUS)
+        {
+          if (sourceNode->getNumChildren() == 0)
+            {
+              // make the node a 0 node because otherwise we would have to
+              // see if we just made the parent operator have less then 2 arguments
+              sourceNode->setType(AST_REAL);
+              sourceNode->setValue(0.0);
+            }
+          else
+            {
+              ConverterASTNode* child = (ConverterASTNode*)sourceNode->getChild(0);
+              List* l = new List();
+              unsigned int i;
+              for (i = 0; i < child->getNumChildren();++i)
+                {
+                  l->add(child->getChild(i));
+                }
+              sourceNode->setChildren(l);
+
+              sourceNode->setType(child->getType());
+
+              if (child->isReal())
+                {
+                  sourceNode->setValue(child->getReal());
+                }
+              else if (child->isRational())
+                {
+                  sourceNode->setValue(child->getNumerator(), child->getDenominator());
+                }
+              else if (child->isInteger())
+                {
+                  sourceNode->setValue(child->getInteger());
+                }
+              else if (child->isFunction() || child->isName())
+                {
+                  sourceNode->setName(child->getName());
+                }
+
+              delete child;
+              for (i = 0; i < sourceNode->getNumChildren();++i)
+                {
+                  this->replaceFunnyOperatorCalls((ConverterASTNode*)sourceNode->getChild(i));
+                }
+            }
+        }
+      else
+        {
+          if (sourceNode->getNumChildren() == 0)
+            {
+              // make the node a 1.0 node because otherwise we would have to
+              // see if we just made the parent operator have less then 2 arguments
+              sourceNode->setType(AST_REAL);
+              sourceNode->setValue(1.0);
+            }
+          else
+            {
+              ConverterASTNode* child = (ConverterASTNode*)sourceNode->getChild(0);
+              List* l = new List();
+              unsigned int i;
+              for (i = 0; i < child->getNumChildren();++i)
+                {
+                  l->add(child->getChild(i));
+                }
+              sourceNode->setChildren(l);
+              sourceNode->setType(child->getType());
+              if (child->isReal())
+                {
+                  sourceNode->setValue(child->getReal());
+                }
+              else if (child->isRational())
+                {
+                  sourceNode->setValue(child->getNumerator(), child->getDenominator());
+                }
+              else if (child->isInteger())
+                {
+                  sourceNode->setValue(child->getInteger());
+                }
+              else if (child->isFunction() || child->isName())
+                {
+                  sourceNode->setName(child->getName());
+                }
+              delete child;
+              for (i = 0; i < sourceNode->getNumChildren();++i)
+                {
+                  this->replaceFunnyOperatorCalls((ConverterASTNode*)sourceNode->getChild(i));
+                }
+            }
+        }
+    }
+  else
+    {
+      unsigned int i;
+      for (i = 0; i < sourceNode->getNumChildren();++i)
+        {
+          this->replaceFunnyOperatorCalls((ConverterASTNode*)sourceNode->getChild(i));
+        }
     }
 }

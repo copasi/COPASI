@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/10 02:46:43 $
+   $Date: 2005/05/11 02:10:08 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -122,6 +122,23 @@ class SBMLImporter
      * Replaces all compartment nodes in an AST tree with the initial volume of the compartment.
      */
     void replaceCompartmentNodes(ConverterASTNode* node, std::map<std::string, CCompartment*> compartmentMap);
+
+    /**
+     * Replaces all occurences of the log function with two arguments by
+     * a division of two separate calls to log.
+     */
+    void replaceLog(ConverterASTNode* sourceNode);
+
+    /**
+     * Replaces all occurences of the root function with two arguments by
+     * a call to the power function with the inverse of the first argument.
+     */
+    void replaceRoot(ConverterASTNode* sourceNode);
+
+    /**
+     * Replaces all + and * nodes that have zero or one argument.
+     */
+    void replaceFunnyOperatorCalls(ConverterASTNode* sourceNode);
 
   public:
     SBMLImporter();
