@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:16:14 $
+   $Date: 2005/05/11 17:33:11 $
    End CVS Header */
 
 #include "copasi.h"
@@ -79,7 +79,9 @@ void DataModelGUI::linkDataModelToGUI()
   //mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
   mTree.findNodeFromId(42)->setObjectKey(CCopasiDataModel::Global->getPlotDefinitionList()->getKey());
 
+  CCopasiDataModel::Global->getModel()->setCompileHandler(NULL);
   pdelete(tmpBar);
+
   ListViews::setDataModel(this);
 }
 
