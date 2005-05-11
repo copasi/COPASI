@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/05 14:24:54 $
+   $Date: 2005/05/11 17:05:39 $
    End CVS Header */
 
 /**
@@ -428,8 +428,21 @@ class CXMLAttributeList
      * @param const CType & value
      * @return bool success
      */
-    template <class CType>bool add(const std::string & name,
-                                   const CType & value)
+    template <class CType> inline bool add(const std::string & name,
+                                           const CType & value)
+    {return add(name, value, CCopasiXMLInterface::attribute);}
+
+    /**
+     * Add an attribute to the end of the list.
+     * Note: the value will be XML encoded
+     * @param const std::string & name
+     * @param const CType & value
+     * @param const CCopasiXMLInterface::EncodingType & encodingType
+     * @return bool success
+     */
+    template <class CType> bool add(const std::string & name,
+                                    const CType & value,
+                                    const CCopasiXMLInterface::EncodingType & encodingType)
     {
       std::ostringstream Value;
       try
@@ -444,7 +457,7 @@ class CXMLAttributeList
 
       mAttributeList.push_back(name);
       mAttributeList.push_back(CCopasiXMLInterface::encode(Value.str(),
-                               CCopasiXMLInterface::attribute));
+                               encodingType));
 
       mSaveList.push_back(true);
 
@@ -481,18 +494,40 @@ class CXMLAttributeList
      * @param const CType & value
      * @return bool success
      */
+    template <class CType> inline bool set(const unsigned C_INT32 & index,
+                                           const std::string & name,
+                                           const CType & value)
+    {return set(index, name, value, CCopasiXMLInterface::attribute);}
+    /**
+    * Set the name and value of the indexed attribute
+    * Note: the value will be XML encoded
+    * @param const unsigned C_INT32 & index
+    * @param const std::string & name
+    * @param const CType & value
+    * @param const CCopasiXMLInterface::EncodingType & encodingType
+    * @return bool success
+    */
     template <class CType> bool set(const unsigned C_INT32 & index,
                                     const std::string & name,
-                                    const CType & value)
+                                    const CType & value,
+                                    const CCopasiXMLInterface::EncodingType & encodingType)
     {
       mAttributeList[2 * index] = name;
 
       std::ostringstream Value;
-      Value << value;
+      try
+        {
+          Value << value;
+        }
+
+      catch (...)
+        {
+          Value << "";
+        }
 
       mAttributeList[2 * index + 1] =
         CCopasiXMLInterface::encode(Value.str(),
-                                    CCopasiXMLInterface::attribute);
+                                    encodingType);
       mSaveList[index] = true;
 
       return true;
@@ -505,15 +540,36 @@ class CXMLAttributeList
      * @param const CType & value
      * @return bool success
      */
+    template <class CType> bool inline setValue(const unsigned C_INT32 & index,
+        const CType & value)
+    {return setValue(index, value, CCopasiXMLInterface::attribute);}
+
+    /**
+     * Set the value of the indexed attribute
+     * Note: the value will be XML encoded
+     * @param const unsigned C_INT32 & index
+     * @param const CType & value
+     * @param const CCopasiXMLInterface::EncodingType & encodingType
+     * @return bool success
+     */
     template <class CType> bool setValue(const unsigned C_INT32 & index,
-                                         const CType & value)
+                                         const CType & value,
+                                         const CCopasiXMLInterface::EncodingType & encodingType)
     {
       std::ostringstream Value;
-      Value << value;
+      try
+        {
+          Value << value;
+        }
+
+      catch (...)
+        {
+          Value << "";
+        }
 
       mAttributeList[2 * index + 1] =
         CCopasiXMLInterface::encode(Value.str(),
-                                    CCopasiXMLInterface::attribute);
+                                    encodingType);
       mSaveList[index] = true;
 
       return true;
@@ -534,7 +590,7 @@ class CXMLAttributeList
     bool skip(const unsigned C_INT32 & index);
 
     /**
-     * Retreive the indexed attribute.
+     * Retreive the indexed attribute (' name="value"' or '' if skipped).
      * @param const unsigned C_INT32 & index
      * @return std::string attribute
      */
