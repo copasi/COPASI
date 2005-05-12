@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiStaticString.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:46:17 $
+   $Date: 2005/05/12 11:37:46 $
    End CVS Header */
 
 /**
@@ -39,6 +39,8 @@ class CCopasiStaticString: public CCopasiObject
 
     ~CCopasiStaticString();
 
+    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+
     CCopasiStaticString & operator = (const std::string & rhs);
 
     virtual void print(std::ostream * ostream) const;
@@ -56,6 +58,8 @@ class CCopasiReportSeparator: public CCopasiStaticString
                            const CCopasiContainer * pParent = NULL);
 
     ~CCopasiReportSeparator();
+
+    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
     CCopasiReportSeparator & operator = (const std::string & rhs);
   };
