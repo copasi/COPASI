@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportListItem.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:59:10 $
+   $Date: 2005/05/12 11:43:55 $
    End CVS Header */
 
 #include <string>
@@ -52,8 +52,6 @@ void CQReportListItem::refreshText()
 
   if (pObject)
     setText(FROM_UTF8(pObject->getObjectDisplayName()));
-  else if (mCN.getObjectType() == "Separator")
-    setText(QString("Separator"));
   else
     setText(QString("Not found: ") + FROM_UTF8(mCN));
 }
