@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/20 04:28:38 $
+   $Date: 2005/05/12 11:36:18 $
    End CVS Header */
 
 /**
@@ -135,6 +135,8 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
       {
         if (Type == "String")
           return new CCopasiStaticString(Name, this);
+        else if (Type == "Separator")
+          return new CCopasiReportSeparator(Name, this);
         else
           return NULL;
       }
@@ -162,7 +164,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
         if (cn.getElementName(0, false) == "")
           return it->second;
 
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +            //TODO really?
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +             //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
