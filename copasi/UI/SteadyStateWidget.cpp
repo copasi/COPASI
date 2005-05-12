@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:16:14 $
+   $Date: 2005/05/12 19:02:48 $
    End CVS Header */
 
 /********************************************************
@@ -208,7 +208,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   //setTabOrder(ExportFileButton, reportDefinitionButton);
 
   //  mSteadyStateTask = NULL;
-  reportDefinitionButton->setEnabled(false);
+  // reportDefinitionButton->setEnabled(false);
 }
 
 /*
