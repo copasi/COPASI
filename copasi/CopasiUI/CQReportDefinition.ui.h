@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/12 12:56:31 $
+   $Date: 2005/05/12 13:10:16 $
    End CVS Header */
 
 #include <qmessagebox.h>
@@ -329,11 +329,12 @@ void CQReportDefinition::init()
 void CQReportDefinition::destroy()
 {}
 
-bool CQReportDefinition::update(ListViews::ObjectType objectType,
+bool CQReportDefinition::update(ListViews::ObjectType C_UNUSED(objectType),
                                 ListViews::Action action,
                                 const std::string & key)
 {
-  if (key != mKey) return true;
+  if (key != mKey &&
+      action != ListViews::RENAME) return true;
   return load();
 }
 
