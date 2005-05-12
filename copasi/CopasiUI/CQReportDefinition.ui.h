@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/12 11:44:25 $
+   $Date: 2005/05/12 11:53:37 $
    End CVS Header */
 
 #include "CQReportListItem.h"
@@ -94,7 +94,7 @@ void CQReportDefinition::btnTextClicked()
   if (pDialog->exec() == QDialog::Accepted &&
       pDialog->getText() != "")
     {
-      CCopasiStaticString Text = (const char *) pDialog->getText().utf8();
+      CCopasiStaticString Text((const char *) pDialog->getText().utf8());
       QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
       new CQReportListItem(pList, Text.getCN());
     }
