@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.94 $ $Author: shoops $ $Date: 2005/05/11 17:55:47 $  
+# $Revision: 1.95 $ $Author: shoops $ $Date: 2005/05/12 11:42:34 $  
 ######################################################################
 
 TEMPLATE = app
@@ -273,6 +273,7 @@ SOURCES += \
 # FORMS += CQProgressItemText.ui
 # FORMS += CQProgressDialog.ui
 # FORMS += CQReportDefinition.ui
+# FORMS += CQTextDialog.ui
 
 # headers generated from .ui files   
 HEADERS += \
@@ -287,6 +288,8 @@ HEADERS += \
            CQProgressDialog.ui.h \
            CQReportDefinition.h \
            CQReportDefinition.ui.h \
+           CQTextDialog.h \
+           CQTextDialog.ui.h \
            CUpDownSubwidget.h \
            CScanWidgetBreak.h \
            CScanWidgetRandom.h \
@@ -307,6 +310,7 @@ SOURCES += \
            CQProgressItemText.cpp \
            CQProgressDialog.cpp \
            CQReportDefinition.cpp \
+           CQTextDialog.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \
            CScanWidgetRandom.cpp \

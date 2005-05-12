@@ -158,6 +158,10 @@ SOURCE=.\CQReportListItem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQTextDialog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReactionInterface.cpp
 # End Source File
 # Begin Source File
@@ -554,6 +558,14 @@ SOURCE=.\CQReportListItem.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQTextDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTextDialog.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReactionInterface.h
 # End Source File
 # Begin Source File
@@ -896,6 +908,10 @@ SOURCE=.\CQProgressItemText.ui
 # Begin Source File
 
 SOURCE=.\CQReportDefinition.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTextDialog.ui
 # End Source File
 # End Target
 # End Project
