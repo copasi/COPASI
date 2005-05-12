@@ -1,13 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:43:08 $
+   $Date: 2005/05/12 11:44:25 $
    End CVS Header */
 
 #include "CQReportListItem.h"
 #include "CCopasiSelectionDialog.h"
+#include "CQTextDialog.h"
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -54,16 +55,20 @@ void CQReportDefinition::btnItemClicked()
   std::vector<CCopasiObject *> SelectedVector;
   pBrowseDialog->setOutputVector(&SelectedVector);
 
-  if (pBrowseDialog->exec () == QDialog::Rejected) return;
-  if (SelectedVector.size() == 0) return;
+  if (pBrowseDialog->exec () != QDialog::Rejected &&
+      SelectedVector.size() != 0)
+    {
+      QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+      std::vector<CCopasiObject *>::const_iterator it = SelectedVector.begin();
+      std::vector<CCopasiObject *>::const_iterator end = SelectedVector.end();
 
-  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
-  std::vector<CCopasiObject *>::const_iterator it = SelectedVector.begin();
-  std::vector<CCopasiObject *>::const_iterator end = SelectedVector.end();
+      for (; it != end; ++it)
+        new CQReportListItem(pList, *it);
 
-  for (; it != end; ++it)
-    new CQReportListItem(pList, *it);
+      mChanged = true;
+    }
 
+  delete pBrowseDialog;
   return;
 }
 
@@ -78,13 +83,26 @@ void CQReportDefinition::btnSeparatorClicked()
   QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
   new CQReportListItem(pList, Separator.getCN());
 
+  mChanged = true;
   return;
 }
 
 void CQReportDefinition::btnTextClicked()
 {
-  // :TODO:
-  qWarning("CQReportDefinition::btnTextClicked(): Not implemented yet");
+  CQTextDialog * pDialog = new CQTextDialog(this);
+
+  if (pDialog->exec() == QDialog::Accepted &&
+      pDialog->getText() != "")
+    {
+      CCopasiStaticString Text = (const char *) pDialog->getText().utf8();
+      QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+      new CQReportListItem(pList, Text.getCN());
+    }
+
+  delete pDialog;
+
+  mChanged = true;
+  return;
 }
 
 void CQReportDefinition::btnDeleteClicked()
