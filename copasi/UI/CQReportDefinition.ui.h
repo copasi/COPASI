@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/12 11:53:37 $
+   $Date: 2005/05/12 12:56:31 $
    End CVS Header */
+
+#include <qmessagebox.h>
 
 #include "CQReportListItem.h"
 #include "CCopasiSelectionDialog.h"
@@ -41,8 +43,62 @@ void CQReportDefinition::chkTabClicked()
 
 void CQReportDefinition::btnAdvancedClicked()
 {
-  // :TODO: implement warning message and conversion.
-  setAdvancedMode(!mAdvanced);
+  if (mAdvanced)
+    {
+      if (QMessageBox::Ok ==
+          QMessageBox::question(NULL, "Report Conversion",
+                                "Converting an advanced report to a table may result in loss of customization.\n"
+                                "Do you want to proceed?",
+                                QMessageBox::Ok,
+                                QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
+                                QMessageBox::NoButton))
+        {
+          // We convert the body without the separators to a table.
+          mpTableList->clear();
+
+          unsigned C_INT32 i, imax;
+          for (i = 0, imax = mpBodyList->numRows(); i < imax; i++)
+            if (static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN().getObjectType()
+                != "Separator")
+              new CQReportListItem(mpTableList, static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN());
+
+          mpHeaderList->clear();
+          mpBodyList->clear();
+          mpFooterList->clear();
+
+          setAdvancedMode(false);
+
+          mChanged = true;
+        }
+    }
+  else
+    {
+      // To achieve the same result as with the table we use the preCompileTable
+      // method of CReportDefinition. Since we must not change the existing report,
+      // which may only be done by btnCommitClicked or leave, we create a temporary
+      // copy.
+      CReportDefinition * pStore = mpReportDefinition;
+
+      mpReportDefinition = new CReportDefinition();
+
+      // We avoid the renaming signal.
+      mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
+
+      mChanged = true;
+      save();
+
+      mpReportDefinition->preCompileTable();
+      mpReportDefinition->setIsTable(false);
+
+      load();
+
+      delete mpReportDefinition;
+
+      mpReportDefinition = pStore;
+      // Reset the name in the display.
+      mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
+      mChanged = true;
+    }
 }
 
 void CQReportDefinition::btnItemClicked()
