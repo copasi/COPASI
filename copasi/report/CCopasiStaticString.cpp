@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiStaticString.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/12 11:37:46 $
+   $Date: 2005/05/12 11:48:16 $
    End CVS Header */
 
 #include "copasi.h"
@@ -38,8 +38,8 @@ CCopasiStaticString & CCopasiStaticString::operator = (const std::string & rhs)
 void CCopasiStaticString::print(std::ostream * ostream) const
   {(*ostream) << mStaticString;}
 
-std::string CCopasiStaticString::getObjectDisplayName(bool regular /*=true*/,
-    bool richtext /*=false*/) const
+std::string CCopasiStaticString::getObjectDisplayName(bool C_UNUSED(regular) /*=true*/,
+    bool C_UNUSED(richtext) /*=false*/) const
   {return "'" + mStaticString + "'";}
 
 const std::string & CCopasiStaticString::getStaticString() const
@@ -57,8 +57,8 @@ CCopasiReportSeparator::CCopasiReportSeparator(const CCopasiStaticString & src,
 
 CCopasiReportSeparator::~CCopasiReportSeparator() {}
 
-std::string CCopasiReportSeparator::getObjectDisplayName(bool regular /*=true*/,
-    bool richtext /*=false*/) const
+std::string CCopasiReportSeparator::getObjectDisplayName(bool C_UNUSED(regular) /*=true*/,
+    bool C_UNUSED(richtext) /*=false*/) const
   {return getObjectType();}
 
 CCopasiReportSeparator & CCopasiReportSeparator::operator = (const std::string & rhs)
