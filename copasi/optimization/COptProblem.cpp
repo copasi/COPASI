@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Author: anuragr $ 
+   $Date: 2005/05/13 18:04:46 $
    End CVS Header */
 
 /**
@@ -240,3 +240,9 @@ bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
 
   return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->swap(iFrom, iTo);
 }
+
+const std::vector< COptItem * > & COptProblem::getOptItemList() const
+{return mOptItemList;}
+
+const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMethods() const
+  {return mUpdateMethods;}

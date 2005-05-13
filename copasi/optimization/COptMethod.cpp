@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/18 10:29:19 $
+   $Author: anuragr $ 
+   $Date: 2005/05/13 18:04:46 $
    End CVS Header */
 
 /**
@@ -36,15 +36,15 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
   switch (subType)
     {
     case RandomSearch:
-      pMethod = new CRandomSearch();
+      //      pMethod = new CRandomSearch();
       break;
 
     case RandomSearchMaster:
-      pMethod = new CRandomSearchMaster();
+      //      pMethod = new CRandomSearchMaster();
       break;
 
     case SimulatedAnnealing:
-      pMethod = new COptMethodSA();
+      //      pMethod = new COptMethodSA();
       break;
 
     case GeneticAlgorithm:
@@ -52,11 +52,11 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
       break;
 
     case EvolutionaryProgram2:
-      pMethod = new COptMethodEP2();
+      //      pMethod = new COptMethodEP2();
       break;
 
     case HybridGASA:
-      pMethod = new COptMethodHGASA();
+      //      pMethod = new COptMethodHGASA();
       break;
 
     default:

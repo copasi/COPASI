@@ -1,15 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Author: anuragr $ 
+   $Date: 2005/05/13 18:04:46 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
 //
+#include <float.h>
 
 #include "copasi.h"
+#include "mathematics.h"
 #include "COptMethod.h"
 #include "COptProblem.h"
 #include "COptItem.h"
@@ -352,16 +354,16 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
           try
             {
               // determine if linear or log scale
-              linear = FALSE; la = 1.0;
+              linear = false; la = 1.0;
 
               if (mn == 0.0) mn = DBL_EPSILON;
 
               if ((mn < 0.0) || (mx <= 0.0))
-                linear = TRUE;
+                linear = true;
               else
                 {
                   la = log10(mx) - log10(mn);
-                  if (la < 1.8) linear = TRUE;
+                  if (la < 1.8) linear = true;
                 }
 
               // set it to a random value within the interval
