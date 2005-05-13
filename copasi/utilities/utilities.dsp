@@ -87,6 +87,10 @@ SOURCE=.\CDependencyGraph.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CDirEntry.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CIndexedPriorityQueue.cpp
 # End Source File
 # Begin Source File
@@ -176,6 +180,10 @@ SOURCE=.\CCopasiVector.h
 # Begin Source File
 
 SOURCE=.\CDependencyGraph.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CDirEntry.h
 # End Source File
 # Begin Source File
 

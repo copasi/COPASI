@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.12 $ $Author: shoops $ $Date: 2005/04/19 11:43:41 $  
+# $Revision: 1.13 $ $Author: shoops $ $Date: 2005/05/13 13:19:31 $  
 ######################################################################
 
 LIB = utilities
@@ -20,6 +20,7 @@ HEADERS += CAnnotatedMatrix.h \
            CCopasiTree.h \
            CCopasiVector.h \
            CDependencyGraph.h \
+           CDirEntry.h \
            CIndexedPriorityQueue.h \
            CluX.h \
            CMatrix.h \
@@ -44,6 +45,7 @@ SOURCES += CAnnotatedMatrix.cpp \
            CCopasiProblem.cpp \
            CCopasiTask.cpp \
            CDependencyGraph.cpp \
+           CDirEntry.h \
            CIndexedPriorityQueue.cpp \
            COutputHandler.cpp \
            CProcessReport.cpp \
