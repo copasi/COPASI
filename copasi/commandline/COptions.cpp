@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/03/07 15:45:02 $
+   $Author: shoops $ 
+   $Date: 2005/05/13 18:25:09 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -29,6 +29,7 @@
 #include <errno.h>
 
 #include "utilities/CCopasiMessage.h"
+#include "utilities/CDirEntry.h"
 #include "COptionParser.h"
 #include "COptions.h"
 
@@ -296,35 +297,43 @@ std::string COptions::getHome(void)
 
 std::string COptions::getTemp(void)
 {
-  std::string Temp, User, mCreateUserDir;
-  int i;
+  std::string Temp, User, CreateCopasiDir, CreateUserDir;
+
   Temp = getEnvironmentVariable("TEMP");
   if (Temp == "") Temp = getEnvironmentVariable("TMP");
 
   User = getEnvironmentVariable("USER");
   if (User == "") User = getEnvironmentVariable("USERNAME");
   if (User == "") User = "CopasiUser";
-  if (Temp == "")
+
+  if (Temp == "") // OS specific fallback.
 #ifdef WIN32
     Temp = getEnvironmentVariable("windir") + "\\Temp";
 #else
     Temp = "/tmp";
-
 #endif // WIN32
 
-#ifdef WIN32
-  mCreateUserDir = Temp + "\\" + User;
-#else
-  mCreateUserDir = Temp + "/" + User;
-#endif
-  Temp = mCreateUserDir;
-  mCreateUserDir = "mkdir " + mCreateUserDir;
-  i = system(mCreateUserDir.c_str());
-  if (i == -1)
-    {
-      CCopasiMessage Message(CCopasiMessage::RAW, "Unable to Create Temoporary Directory:\nAutoSave feature is disabled." , "");
-      Temp = "";
-    }
+  // Assure that Temp exists and is a directory.
+  if (!CDirEntry::isDir(Temp) || !CDirEntry::isWritable(Temp))
+    return "";
 
+#ifdef WIN32
+  CreateCopasiDir = Temp + "\\copasi";
+  CreateUserDir = CreateCopasiDir + "\\" + User;
+#else
+  CreateCopasiDir = Temp + "/copasi";
+  CreateUserDir = CreateCopasiDir + "/" + User;
+#endif
+
+  //Assure that CreateCopasiDir exists and is a writable directory.
+  if (!CDirEntry::createDir("copasi", Temp))
+    return Temp;
+
+  Temp = CreateCopasiDir;
+  //Assure that CreateUserDir exists and is a writable directory.
+  if (!CDirEntry::createDir(User, Temp))
+    return Temp;
+
+  Temp = CreateUserDir;
   return Temp;
 }
