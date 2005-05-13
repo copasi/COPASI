@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/13 17:27:50 $
+   $Date: 2005/05/13 18:21:34 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -124,24 +124,18 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
   if (hList == -1) return success;
 
-  if (Entry.attrib | _A_NORMAL)
+  do
     {
-      if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;
+      if (Entry.attrib | _A_NORMAL)
+        {
+          if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;
+        }
+      else
+        {
+          if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;
+        }
     }
-  else
-    {
-      if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;
-    }
-
-  while (_findnext(hList, &Entry) == 0)
-    if (Entry.attrib | _A_NORMAL)
-      {
-        if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;
-      }
-    else
-      {
-        if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;
-      }
+  while (_findnext(hList, &Entry) == 0);
 
   _findclose(hList);
 
