@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/13 13:15:52 $
+   $Date: 2005/05/13 13:32:14 $
    End CVS Header */
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <io.h>
 
 #ifdef WIN32
+# include <io.h>
 # include <direct.h>
 # define stat _stat
 # define S_IFREG _S_IFREG
@@ -90,7 +90,11 @@ bool CDirEntry::createDir(const std::string & dir,
   // Check whether the parent directory exists and is writable.
   if (!isDir(parent) || !isWritable(parent)) return false;
 
+#ifdef WIN32
   return (mkdir(Dir.c_str()) == 0);
+#else
+  return (mkdir(Dir.c_str(), 0) == 0);
+#endif
 }
 
 bool CDirEntry::remove(const std::string & path)
@@ -121,15 +125,23 @@ bool CDirEntry::removeFiles(const std::string & pattern,
   if (hList == -1) return success;
 
   if (Entry.attrib | _A_NORMAL)
-  {if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;}
+    {
+      if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;
+    }
   else
-  {if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;}
+    {
+      if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;
+    }
 
   while (_findnext(hList, &Entry) == 0)
     if (Entry.attrib | _A_NORMAL)
-    {if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;}
+      {
+        if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;
+      }
     else
-    {if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;}
+      {
+        if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;
+      }
 
   _findclose(hList);
 
@@ -140,19 +152,25 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
   struct dirent * pEntry;
 
-  while (pEntry = readdir(dir))
+  while ((pEntry = readdir(pDir)) != NULL)
     {
       // Match pattern.
 
       if (pEntry->d_type == DT_DIR)
-      {if (rmdir((path + "/" + pEntry.d_name).c_str()) != 0) success = false;}
+        {
+          if (rmdir((path + "/" + pEntry->d_name).c_str()) != 0)
+            success = false;
+        }
       else
-      {if (::remove((path + "/" + pEntry.d_name).c_str()) != 0) success = false;}
+        {
+          if (::remove((path + "/" + pEntry->d_name).c_str()) != 0)
+            success = false;
+        }
 
-      pEntry = readdir(dir);
+      pEntry = readdir(pDir);
     }
 
-  closedir(dir);
+  closedir(pDir);
 
 #endif // WIN32
 
