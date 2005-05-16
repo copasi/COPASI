@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/16 21:17:26 $
+   $Date: 2005/05/16 21:19:04 $
    End CVS Header */
 
 #ifndef COPASI_CDirEntry
@@ -36,8 +36,7 @@ class CDirEntry
     static bool isDir(const std::string & path);
 
     /**
-     * Check whether the directory entry specified by 'path' is
-     * is readable.
+     * Check whether the directory entry specified by 'path' exists.
      * @param const std::string & path
      * @return bool exist
      */
@@ -45,7 +44,7 @@ class CDirEntry
 
     /**
      * Check whether the directory entry specified by 'path' is
-     *
+     * is readable.
      * @param const std::string & path
      * @return bool isReadable
      */
