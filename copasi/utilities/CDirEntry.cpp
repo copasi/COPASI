@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/16 20:53:58 $
+   $Date: 2005/05/16 20:55:32 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -154,7 +154,7 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
   while ((pEntry = readdir(pDir)) != NULL)
     {
-      if (match(Entry.name, PatternList))
+      if (match(pEntry->d_name, PatternList))
         {
           if (isDir(pEntry->d_name))
             {
