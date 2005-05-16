@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/16 20:45:08 $
+   $Date: 2005/05/16 20:53:58 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -115,10 +115,10 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
   PatternList = compilePattern(pattern);
 
-  // :TODO:
 #ifdef WIN32
 
-  // Append to the "path" mask for all files in directory
+  // We want the same pattern matching behaviour for all platforms.
+  // Therefore, we do not use the MS provided one and list all files instead.
   std::string FilePattern = path + "\\*";
 
   // Open directory stream and try read info about first entry
@@ -154,20 +154,19 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
   while ((pEntry = readdir(pDir)) != NULL)
     {
-      // Match pattern.
-
-      if (isDir(pEntry->d_name))
+      if (match(Entry.name, PatternList))
         {
-          if (rmdir((path + "/" + pEntry->d_name).c_str()) != 0)
-            success = false;
+          if (isDir(pEntry->d_name))
+            {
+              if (rmdir((path + "/" + pEntry->d_name).c_str()) != 0)
+                success = false;
+            }
+          else
+            {
+              if (::remove((path + "/" + pEntry->d_name).c_str()) != 0)
+                success = false;
+            }
         }
-      else
-        {
-          if (::remove((path + "/" + pEntry->d_name).c_str()) != 0)
-            success = false;
-        }
-
-      pEntry = readdir(pDir);
     }
 
   closedir(pDir);
