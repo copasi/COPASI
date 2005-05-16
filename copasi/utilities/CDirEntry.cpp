@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/13 18:21:34 $
+   $Date: 2005/05/16 20:45:08 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -111,12 +111,15 @@ bool CDirEntry::removeFiles(const std::string & pattern,
                             const std::string & path)
 {
   bool success = true;
+  std::vector< std::string > PatternList;
+
+  PatternList = compilePattern(pattern);
 
   // :TODO:
 #ifdef WIN32
 
   // Append to the "path" mask for all files in directory
-  std::string FilePattern = path + "\\" + pattern;
+  std::string FilePattern = path + "\\*";
 
   // Open directory stream and try read info about first entry
   struct _finddata_t Entry;
@@ -126,13 +129,16 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
   do
     {
-      if (Entry.attrib | _A_NORMAL)
+      if (match(Entry.name, PatternList))
         {
-          if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;
-        }
-      else
-        {
-          if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;
+          if (Entry.attrib | _A_NORMAL)
+            {
+              if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;
+            }
+          else
+            {
+              if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;
+            }
         }
     }
   while (_findnext(hList, &Entry) == 0);
@@ -169,4 +175,94 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 #endif // WIN32
 
   return success;
+}
+
+std::vector< std::string > CDirEntry::compilePattern(const std::string & pattern)
+{
+  std::string::size_type pos = 0;
+  std::string::size_type start = 0;
+  std::string::size_type end = 0;
+  std::vector< std::string > PatternList;
+
+  while (pos != std::string::npos)
+    {
+      start = pos;
+      pos = pattern.find_first_of("*?", pos);
+
+      end = std::min(pos, pattern.length());
+
+      if (start != end)
+        PatternList.push_back(pattern.substr(start, end - start));
+      else
+        {
+          PatternList.push_back(pattern.substr(start, 1));
+          pos++;
+        }
+    };
+
+  return PatternList;
+}
+
+bool CDirEntry::match(const std::string & name,
+                      const std::vector< std::string > & patternList)
+{
+  std::vector< std::string >::const_iterator it = patternList.begin();
+  std::vector< std::string >::const_iterator end = patternList.end();
+  std::string::size_type at = 0;
+  std::string::size_type after = 0;
+
+  bool Match = true;
+  while (it != end && Match)
+    Match = check(name, *it++, at, after);
+
+  return Match;
+}
+
+bool CDirEntry::check(const std::string & name,
+                      const std::string pattern,
+                      std::string::size_type & at,
+                      std::string::size_type & after)
+{
+  bool Match = true;
+
+  switch (pattern[0])
+    {
+    case '*':
+      if (at != std::string::npos)
+        {
+          after = at;
+          at = std::string::npos;
+        }
+      break;
+
+    case '?':
+      if (at != std::string::npos)
+        {
+          ++at;
+          Match = (name.length() >= at);
+        }
+      else
+        {
+          ++after;
+          Match = (name.length() >= after);
+        }
+      break;
+
+    default:
+      if (at != std::string::npos)
+        {
+          Match = (name.compare(at, pattern.length(), pattern) == 0);
+          at += pattern.length();
+        }
+      else
+        {
+          at = name.find(pattern, after);
+          Match = (at != std::string::npos);
+          at += pattern.length();
+        }
+
+      break;
+    }
+
+  return Match;
 }
