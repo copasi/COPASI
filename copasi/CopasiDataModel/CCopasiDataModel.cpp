@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/11 03:56:18 $
+   $Author: shoops $ 
+   $Date: 2005/05/17 14:29:59 $
    End CVS Header */
 
 #include "copasi.h"
@@ -188,6 +188,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
         {
           pdelete(mpReportDefinitionList);
           mpReportDefinitionList = XML.getReportList();
+          addDefaultReports();
         }
 
       if (XML.getPlotList())
@@ -214,13 +215,16 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
 {
   std::string FileName = (fileName != "") ? fileName : mSaveFileName;
 
-  // test first if a file would accidentaly overwritten.
-  std::ifstream testInfile(FileName.c_str(), std::ios::in);
-
-  if (testInfile && !overwriteFile)
+  if (!overwriteFile)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 1, FileName.c_str());
-      return false;
+      // Test if the file exit.
+      std::ifstream testInfile(FileName.c_str(), std::ios::in);
+
+      if (testInfile.fail())
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 1, FileName.c_str());
+          return false;
+        }
     }
 
   mpModel->compileIfNecessary();
@@ -287,6 +291,7 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
   pdelete(mpReportDefinitionList);
   mpReportDefinitionList = new CReportDefinitionVector;
+  addDefaultReports();
 
   pdelete(mpPlotDefinitionList);
   mpPlotDefinitionList = new COutputDefinitionVector;
@@ -321,6 +326,18 @@ bool CCopasiDataModel::importSBML(const std::string & fileName)
 bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile)
 {
   if (fileName == "") return false;
+
+  if (!overwriteFile)
+    {
+      // Test if the file exit.
+      std::ifstream testInfile(fileName.c_str(), std::ios::in);
+
+      if (testInfile.fail())
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 1, fileName.c_str());
+          return false;
+        }
+    }
 
   SBMLExporter exporter;
 
@@ -385,26 +402,68 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 
 bool CCopasiDataModel::addDefaultTasks()
 {
-  if (mpTaskList->getIndex("Steady-State") == C_INVALID_INDEX)
-    addTask(CCopasiTask::steadyState);
+  unsigned C_INT32 i;
+  for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
+    if (mpTaskList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
+      addTask((CCopasiTask::Type) i);
 
-  if (mpTaskList->getIndex("Time-Course") == C_INVALID_INDEX)
-    addTask(CCopasiTask::timeCourse);
+  return true;
+}
 
-  if (mpTaskList->getIndex("Scan") == C_INVALID_INDEX)
-    addTask(CCopasiTask::scan);
+CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskType)
+{
+  CReportDefinition * pReport = NULL;
 
-  if (mpTaskList->getIndex("Elementary Flux Modes") == C_INVALID_INDEX)
-    addTask(CCopasiTask::fluxMode);
+  switch (taskType)
+    {
+    case CCopasiTask::steadyState:
+      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      pReport->setTaskType(taskType);
+      pReport->setComment("Automatically generated report.");
+      pReport->setIsTable(false);
+      pReport->setSeparator(CCopasiReportSeparator("\t"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Steady-State]"));
+      break;
 
-  if (mpTaskList->getIndex("Optimization") == C_INVALID_INDEX)
-    addTask(CCopasiTask::optimization);
+    case CCopasiTask::timeCourse:
+      // No default report available.
+      break;
 
-  if (mpTaskList->getIndex("Parameter Fitting") == C_INVALID_INDEX)
-    addTask(CCopasiTask::parameterFitting);
+    case CCopasiTask::scan:
+      // No default report available.
+      break;
 
-  if (mpTaskList->getIndex("Metabolic Control Analysis") == C_INVALID_INDEX)
-    addTask(CCopasiTask::mca);
+    case CCopasiTask::fluxMode:
+      // :TODO: implement task for elementary flux mode analysis
+      break;
+
+    case CCopasiTask::optimization:
+      // :TODO: implement task for optimization
+      break;
+
+    case CCopasiTask::parameterFitting:
+      // :TODO: implement task for parameter fitting
+      break;
+
+    case CCopasiTask::mca:
+      // :TODO: implement default report for MCA
+      break;
+
+    default:
+      return pReport;
+    }
+
+  if (pReport) mpReportDefinitionList->add(pReport, true);
+
+  return pReport;
+}
+
+bool CCopasiDataModel::addDefaultReports()
+{
+  unsigned C_INT32 i;
+  for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
+    if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
+      addReport((CCopasiTask::Type) i);
 
   return true;
 }

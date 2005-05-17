@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/02 09:26:31 $
+   $Author: shoops $ 
+   $Date: 2005/05/17 14:29:59 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -70,6 +70,9 @@ class CCopasiDataModel
     bool addDefaultTasks();
 
     CReportDefinitionVector * getReportDefinitionList();
+    CReportDefinition * addReport(const CCopasiTask::Type & taskType);
+    bool addDefaultReports();
+
     COutputDefinitionVector * getPlotDefinitionList();
 
     CFunctionDB * getFunctionList();
