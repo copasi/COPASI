@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 14:29:59 $
+   $Date: 2005/05/17 15:48:34 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -68,6 +68,7 @@ class CCopasiDataModel
     CCopasiVectorN< CCopasiTask > * getTaskList();
     CCopasiTask * addTask(const CCopasiTask::Type & taskType);
     bool addDefaultTasks();
+    std::set<std::string> listTaskDependentOnReport(const std::string & key);
 
     CReportDefinitionVector * getReportDefinitionList();
     CReportDefinition * addReport(const CCopasiTask::Type & taskType);

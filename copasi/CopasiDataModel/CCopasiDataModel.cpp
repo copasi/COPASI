@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 14:29:59 $
+   $Date: 2005/05/17 15:48:34 $
    End CVS Header */
 
 #include "copasi.h"
@@ -408,6 +408,22 @@ bool CCopasiDataModel::addDefaultTasks()
       addTask((CCopasiTask::Type) i);
 
   return true;
+}
+
+std::set<std::string> CCopasiDataModel::listTaskDependentOnReport(const std::string & key)
+{
+  std::set<std::string> TaskKeys;
+
+  CReportDefinition * pReportDefinition
+  = dynamic_cast< CReportDefinition * >(GlobalKeys.get(key));
+  if (!pReportDefinition) return TaskKeys;
+
+  unsigned C_INT32 i, imax = mpTaskList->size();
+  for (i = 0; i < imax; i++)
+    if (pReportDefinition == (*mpTaskList)[i]->getReport().getReportDefinition())
+      TaskKeys.insert((*mpTaskList)[i]->getKey());
+
+  return TaskKeys;
 }
 
 CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskType)
