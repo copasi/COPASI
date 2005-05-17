@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/12 13:10:16 $
+   $Date: 2005/05/17 15:49:31 $
    End CVS Header */
 
 #include <qmessagebox.h>
@@ -273,6 +273,35 @@ void CQReportDefinition::chkTitleClicked()
 void CQReportDefinition::btnDeleteReportClicked()
 {
   unsigned C_INT32 Index, Size;
+
+  std::set< std::string > TaskKeys =
+    CCopasiDataModel::Global->listTaskDependentOnReport(mKey);
+  if (TaskKeys.size() > 0)
+    {
+      std::set< std::string >::const_iterator it = TaskKeys.begin();
+      std::set< std::string >::const_iterator end = TaskKeys.end();
+
+      CCopasiTask * pTask;
+      QString msg = "The following tasks are effected:\n";
+
+      for (; it != end; ++it)
+        if ((pTask = dynamic_cast< CCopasiTask * >(GlobalKeys.get(*it))))
+          msg += FROM_UTF8(pTask->getObjectName()) + ", ";
+
+      msg = msg.remove(msg.length() - 2, 2);
+
+      if (QMessageBox::question(this,
+                                "CONFIRM DELETE",
+                                msg,
+                                QMessageBox::Ok,
+                                QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
+                                QMessageBox::NoButton) == QMessageBox::Cancel)
+        return;
+
+      for (it = TaskKeys.begin(); it != end; ++it)
+        if ((pTask = dynamic_cast< CCopasiTask * >(GlobalKeys.get(*it))))
+          pTask->getReport().setReportDefinition(NULL);
+    }
 
   Index = CCopasiDataModel::Global->getReportDefinitionList()->CCopasiVector<CReportDefinition>::getIndex(mpReportDefinition);
   CCopasiDataModel::Global->getReportDefinitionList()->removeReportDefinition(mKey);

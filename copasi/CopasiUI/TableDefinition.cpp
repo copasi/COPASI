@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:51 $
+   $Date: 2005/05/17 15:49:31 $
    End CVS Header */
 
 #include "TableDefinition.h"
@@ -106,19 +106,51 @@ void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
     return;
 
   unsigned C_INT32 i, imax = keys.size();
-  unsigned C_INT32 j, jmax = CCopasiDataModel::Global->getTaskList()->size();
+
+  std::set< std::string > TaskKeys;
+  std::set< std::string >::const_iterator it;
+  std::set< std::string >::const_iterator end;
 
   for (i = 0; i < imax; i++)
     {
-      //check where the report is used...
-      CReportDefinition* rd = dynamic_cast< CReportDefinition * >(GlobalKeys.get(keys[i]));
-      if (!rd) break;
+      //check where the reports are used...
+      std::set< std::string > Keys =
+        CCopasiDataModel::Global->listTaskDependentOnReport(keys[i]);
 
-      for (j = 0; j < jmax; j++)
-        if ((*CCopasiDataModel::Global->getTaskList())[j]->getReport().getReportDefinition() == rd)
-          (*CCopasiDataModel::Global->getTaskList())[j]->getReport().setReportDefinition(NULL);
+      for (it = Keys.begin(), end = Keys.end(); it != end; ++it)
+        TaskKeys.insert(*it);
+    }
 
-      //remove the report
+  if (TaskKeys.size() > 0)
+    {
+      std::set< std::string >::const_iterator it = TaskKeys.begin();
+      std::set< std::string >::const_iterator end = TaskKeys.end();
+
+      CCopasiTask * pTask;
+      QString msg = "The following tasks are effected:\n";
+
+      for (it = TaskKeys.begin(), end = TaskKeys.end(); it != end; ++it)
+        if ((pTask = dynamic_cast< CCopasiTask * >(GlobalKeys.get(*it))))
+          msg += FROM_UTF8(pTask->getObjectName()) + ", ";
+
+      msg = msg.remove(msg.length() - 2, 2);
+
+      if (QMessageBox::question(this,
+                                "CONFIRM DELETE",
+                                msg,
+                                QMessageBox::Ok,
+                                QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
+                                QMessageBox::NoButton) == QMessageBox::Cancel)
+        return;
+
+      for (it = TaskKeys.begin(); it != end; ++it)
+        if ((pTask = dynamic_cast< CCopasiTask * >(GlobalKeys.get(*it))))
+          pTask->getReport().setReportDefinition(NULL);
+    }
+
+  //remove the reports
+  for (i = 0; i < imax; i++)
+    {
       CCopasiDataModel::Global->getReportDefinitionList()->removeReportDefinition(keys[i]);
       ListViews::notify(ListViews::REPORT, ListViews::DELETE, keys[i]);
     }
