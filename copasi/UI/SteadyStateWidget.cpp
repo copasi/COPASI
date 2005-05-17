@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/12 19:02:48 $
+   $Date: 2005/05/17 17:50:40 $
    End CVS Header */
 
 /********************************************************
@@ -266,6 +266,9 @@ void SteadyStateWidget::CommitButtonClicked()
       setParameterValue(steadystatemethod, i, value);
     }
   loadSteadyStateTask();
+
+  // :TODO Bug 322: This should only be called when actual changes have been saved.
+  CCopasiDataModel::Global->changed();
 }
 
 /*void SteadyStateWidget::RunButtonChecked()

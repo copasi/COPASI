@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Date: 2005/05/17 17:50:40 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -17,6 +17,7 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "model/CMetabNameInterface.h"
@@ -251,6 +252,9 @@ bool ParametersWidget::saveToModel() const
           }
         child = (CParameterListItem *)child->nextSibling();
       }
+
+    // :TODO Bug 322: This should only be called when actual changes have been saved.
+    CCopasiDataModel::Global->changed();
 
     return true;
   }

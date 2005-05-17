@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:36:36 $
+   $Date: 2005/05/17 17:50:40 $
    End CVS Header */
 
 /********************************************************
@@ -681,6 +681,9 @@ void TrajectoryWidget::saveTrajectoryTask()
       value = pItem->text();
       setParameterValue(trajectorymethod, i, value);
     }
+
+  // :TODO Bug 322: This should only be called when actual changes have been saved.
+  CCopasiDataModel::Global->changed();
 }
 
 //*********************************************************************

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ParamFittingWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/22 16:00:02 $
+   $Author: shoops $ 
+   $Date: 2005/05/17 17:50:40 $
    End CVS Header */
 
 /********************************************************
@@ -1040,6 +1040,10 @@ void ParamFittingWidget::slotBtnConfirmClicked()
             } //end of if
         } //end of catch
     } //end of for
+ 
+  // :TODO Bug 322: This should only be called when actual changes have been saved.
+  CCopasiDataModel::Global->changed();
+ 
 }
  
 void ParamFittingWidget::viewMousePressEvent(QMouseEvent* e)

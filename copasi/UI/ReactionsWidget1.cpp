@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.163 $
+   $Revision: 1.164 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/13 12:14:18 $
+   $Date: 2005/05/17 17:50:40 $
    End CVS Header */
 
 /*********************************************************************
@@ -257,6 +257,10 @@ bool ReactionsWidget1::saveToReaction()
   protectedNotify(ListViews::REACTION, ListViews::CHANGE, objKey);
 
   //TODO: detect rename events (mRi.writeBackToReaction has to do this)
+
+  // :TODO Bug 322: This should only be called when actual changes have been saved.
+  CCopasiDataModel::Global->changed();
+
   return true;
 }
 
@@ -369,7 +373,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                              // Yes or Enter
+        case 0:                               // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -401,7 +405,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                     // No or Escape
+        default:                                      // No or Escape
           break;
         }
       //}

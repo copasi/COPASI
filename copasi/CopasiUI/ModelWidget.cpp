@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/14 13:40:00 $
+   $Author: shoops $ 
+   $Date: 2005/05/17 17:50:40 $
    End CVS Header */
 
 /*******************************************************************
@@ -24,6 +24,7 @@
 #include <qlistbox.h>
 
 #include "copasi.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "ModelWidget.h"
 #include "listviews.h"
 #include "model/CReactionInterface.h"
@@ -199,6 +200,9 @@ bool ModelWidget::saveToModel()
       model->setQuantityUnit((const char *)ComboBox3->currentText().utf8());
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
+
+  // :TODO Bug 322: This should only be called when actual changes have been saved.
+  CCopasiDataModel::Global->changed();
 
   return success;
 }

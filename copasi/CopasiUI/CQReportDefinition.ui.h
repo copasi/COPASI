@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 15:49:31 $
+   $Date: 2005/05/17 17:50:39 $
    End CVS Header */
 
 #include <qmessagebox.h>
@@ -508,6 +508,8 @@ bool CQReportDefinition::save()
       for (i = 0, imax = mpTableList->numRows(); i < imax; i++)
         pList->push_back(static_cast<CQReportListItem *>(mpTableList->item(i))->getCN());
     }
+
+  CCopasiDataModel::Global->changed();
 
   mChanged = false;
   return false;

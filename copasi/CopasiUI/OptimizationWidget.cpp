@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/23 21:17:02 $
+   $Date: 2005/05/17 17:50:40 $
    End CVS Header */
 
 /********************************************************
@@ -32,6 +32,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qradiobutton.h>
 
 //#include "ScanWidget.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "ScanScrollView.h"
 #include "ScanItemWidget.h"
 #include "OptimizationItemWidget.h"
@@ -943,6 +944,9 @@ void OptimizationWidget::slotBtnConfirmClicked()
             } //end of if
         } //end of catch
     } //end of for
+
+  // :TODO Bug 322: This should only be called when actual changes have been saved.
+  CCopasiDataModel::Global->changed();
 }
 
 void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:21 $
+   $Date: 2005/05/17 17:50:39 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -374,6 +374,9 @@ void CMCAWidget::saveMCATask()
           setParameterValue(mcaMethod, k, value);
         }
     }
+
+  // :TODO Bug 322: This should only be called when actual changes have been saved.
+  CCopasiDataModel::Global->changed();
 }
 
 bool CMCAWidget::enter(const std::string & key)
