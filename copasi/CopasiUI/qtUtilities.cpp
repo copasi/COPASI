@@ -1,12 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/qtUtilities.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/03 20:20:22 $
+   $Date: 2005/05/17 18:11:02 $
    End CVS Header */
 
 #include <qstring.h>
+#include <qfileinfo.h>
+#include <qmessagebox.h>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -123,3 +125,15 @@ bool setParameterValue(CCopasiParameterGroup * group,
                        const std::string & name,
                        const QString & value)
 {return setParameterValue(group, group->getIndex(name), value);}
+
+C_INT32 checkSelection(const QString & file)
+{
+  if (QFileInfo(file).exists())
+    return QMessageBox::question(NULL, "File exists!",
+                                 "Overwrite existing file " + file + "?",
+                                 QMessageBox::Yes,
+                                 QMessageBox::No | QMessageBox::Default,
+                                 QMessageBox::Cancel | QMessageBox::Escape);
+  else
+    return QMessageBox::Yes;
+}

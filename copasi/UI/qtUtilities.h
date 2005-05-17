@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/06 17:02:24 $
+   $Date: 2005/05/17 18:11:02 $
    End CVS Header */
 
 #ifndef COPASI_qtUtilities
@@ -64,5 +64,15 @@ bool setParameterValue(CCopasiParameterGroup * group,
  * Convert a utf8 encoded std::string to a QString
  */
 #define FROM_UTF8(__x) QString::fromUtf8((__x).c_str())
+
+/**
+ * Checks whether the file exists. If the file exist the user
+ * is prompted whether to overwrite the file. The return value is 
+ * one of QMessageBox::Yes, QMessageBox::No, or QMessageBox::Cancel.
+ * If the file does not exist QMessageBox::Yes is returned.
+ * param const QString & file
+ * @return C_INT32 overwrite
+ */
+C_INT32 checkSelection(const QString & file);
 
 #endif // COPASI_qtUtilities

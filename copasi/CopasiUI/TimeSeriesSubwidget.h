@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Date: 2005/05/17 18:11:02 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
  ** Created: Tue Apr 19 17:26:54 2005
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.6 2005/05/02 11:52:02 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.7 2005/05/17 18:11:02 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -42,8 +42,6 @@ class TimeSeriesSubWidget : public QWidget
     QComboBox* comboBox;
     QPushButton* ButtonSaveData;
     CTimeSeriesTable* dataTable;
-
-    virtual C_INT32 checkSelection(const QString& file);
 
   public slots:
     virtual CTimeSeriesTable * table();

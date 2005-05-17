@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Date: 2005/05/17 18:11:02 $
    End CVS Header */
 
 /****************************************************************************
@@ -74,16 +74,4 @@ void TimeSeriesSubWidget::init()
 CTimeSeriesTable* TimeSeriesSubWidget::table()
 {
   return dataTable;
-}
-
-C_INT32 TimeSeriesSubWidget::checkSelection(const QString & file)
-{
-  if (QFileInfo(file).exists())
-    return QMessageBox::question(NULL, "File exists!",
-                                 "Overwrite existing file " + file + "?",
-                                 QMessageBox::Yes,
-                                 QMessageBox::No | QMessageBox::Default,
-                                 QMessageBox::Cancel | QMessageBox::Escape);
-  else
-    return QMessageBox::Yes;
 }

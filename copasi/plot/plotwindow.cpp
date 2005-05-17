@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Date: 2005/05/17 18:11:02 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -20,8 +20,6 @@
 #include <qmessagebox.h>
 #include <qcursor.h>
 #include <qregexp.h>
-
-C_INT32 checkSelection(const QString & file);
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
