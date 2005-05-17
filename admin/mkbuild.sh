@@ -105,6 +105,7 @@ echo "Set the icon in the Info.plist file."
     mkdir copasi/share/copasi/doc/html
     mkdir copasi/share/copasi/doc/html/figures
     mkdir copasi/share/copasi/examples
+    mkdir copasi/share/copasi/icons
     chmod -R 755 copasi
 
     cp ../README.$1 copasi/README
@@ -113,12 +114,15 @@ echo "Set the icon in the Info.plist file."
     cp ../copasi/CopasiUI/CopasiUI  copasi/bin
     chmod 755 copasi/bin/CopasiUI
 
-#    :TODO: Uncomment when CopasiSE is ready for ptime time.
+#    :TODO: Uncomment when CopasiSE is ready for prime time.
 #    cp ../copasi/CopasiSE/CopasiSE  copasi/bin
 #    chmod 755 copasi/bin/CopasiSE
 
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 644 copasi/share/copasi/examples/*
+
+    cp ../copasi/CopasiUI/icons/copasi_icon_small.png copasi/share/copasi/icons
+    chmod 644 copasi/share/copasi/icons
 
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
     chmod 644 copasi/share/copasi/doc/html/*.html
