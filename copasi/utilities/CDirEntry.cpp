@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/16 20:55:32 $
+   $Date: 2005/05/17 15:57:43 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -212,15 +212,15 @@ bool CDirEntry::match(const std::string & name,
 
   bool Match = true;
   while (it != end && Match)
-    Match = check(name, *it++, at, after);
+    Match = matchInternal(name, *it++, at, after);
 
   return Match;
 }
 
-bool CDirEntry::check(const std::string & name,
-                      const std::string pattern,
-                      std::string::size_type & at,
-                      std::string::size_type & after)
+bool CDirEntry::matchInternal(const std::string & name,
+                              const std::string pattern,
+                              std::string::size_type & at,
+                              std::string::size_type & after)
 {
   bool Match = true;
 

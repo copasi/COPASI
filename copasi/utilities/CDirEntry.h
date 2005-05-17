@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/16 21:19:04 $
+   $Date: 2005/05/17 15:57:43 $
    End CVS Header */
 
 #ifndef COPASI_CDirEntry
@@ -114,10 +114,10 @@ class CDirEntry
      * @param std::string::size_type & after
      * @return bool match
      */
-    static bool check(const std::string & name,
-                      const std::string pattern,
-                      std::string::size_type & at,
-                      std::string::size_type & after);
+    static bool matchInternal(const std::string & name,
+                              const std::string pattern,
+                              std::string::size_type & at,
+                              std::string::size_type & after);
   };
 
 #endif // COPASI_CDirEntry
