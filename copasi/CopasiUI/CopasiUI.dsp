@@ -118,6 +118,10 @@ SOURCE=.\CopasiTableWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CopasiUI.rc
+# End Source File
+# Begin Source File
+
 SOURCE=.\copasiui3window.cpp
 # End Source File
 # Begin Source File
@@ -880,6 +884,10 @@ SOURCE=.\Tree.h
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=.\icons\Copasi.ico
+# End Source File
 # End Group
 # Begin Source File
 

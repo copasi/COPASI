@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.95 $ $Author: shoops $ $Date: 2005/05/12 11:42:34 $  
+# $Revision: 1.96 $ $Author: shoops $ $Date: 2005/05/19 18:27:18 $  
 ######################################################################
 
 TEMPLATE = app
@@ -30,6 +30,8 @@ COPASI_LIBS = \
          wizard
 
 contains(BUILD_OS, WIN32) {
+  RC_FILE = CopasiUI.rc
+
   LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
   TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
