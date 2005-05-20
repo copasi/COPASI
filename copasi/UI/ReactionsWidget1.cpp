@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.164 $
+   $Revision: 1.165 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 17:50:40 $
+   $Date: 2005/05/20 17:29:13 $
    End CVS Header */
 
 /*********************************************************************
@@ -134,11 +134,11 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   TextLabel8->setText(trUtf8("Flux"));
   TextLabel8->setAlignment(int(QLabel::AlignVCenter
                                | QLabel::AlignRight));
-  ReactionsWidget1Layout->addWidget(TextLabel8, 5, 1);
+  ReactionsWidget1Layout->addWidget(TextLabel8, 5, 0);
 
   LineEdit3 = new QLineEdit(this, "LineEdit3");
   LineEdit3->setEnabled(FALSE);
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 5, 5, 2, 3);
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 5, 5, 1, 2);
 
   //name
   LineEdit1 = new MyLineEdit(this, "LineEdit1");
@@ -205,9 +205,9 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 {
   if (!reaction) return false;
 
-  TextLabel8->setText(trUtf8("Flux ("
-                             + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit())
-                             + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
+  TextLabel8->setText(tr("Flux ("
+                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit())
+                         + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
@@ -373,7 +373,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                               // Yes or Enter
+        case 0:                                // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -405,7 +405,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                      // No or Escape
+        default:                                       // No or Escape
           break;
         }
       //}
