@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.119 $
+   $Revision: 1.120 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/19 18:15:04 $
+   $Date: 2005/05/20 17:18:06 $
    End CVS Header */
 
 /*******************************************************************
@@ -548,7 +548,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                                   // Yes or Enter
+    case 0:                                                    // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -571,7 +571,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                                   // No or Escape
+    case 1:                                                    // No or Escape
       break;
     }
 }
@@ -599,7 +599,6 @@ void MetabolitesWidget1::slotNumberChanged()
 
 void MetabolitesWidget1::slotCompChanged()
 {
-  CMetab* mpMetab = dynamic_cast< CMetab * >(GlobalKeys.get(objKey));
   if (!mpMetab || !mpCurrentCompartment) return;
 
   QString Compartment = mComboCompartment->currentText();
