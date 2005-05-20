@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/17 19:57:20 $
+   $Date: 2005/05/20 17:06:45 $
    End CVS Header */
 
 /**
@@ -53,6 +53,28 @@ class CMetab : public CCopasiContainer
      * XML representation of the states
      */
     static const char * XMLStatus[];
+
+    /**
+     * Converts the concentration to number
+     * @param const C_FLOAT64 & concentration
+     * @param const CCompartment & compartment
+     * @param const CModel & model
+     * @return C_FLOAT64 number
+     */
+    static C_FLOAT64 convertToNumber(const C_FLOAT64 & concentration,
+                                     const CCompartment & compartment,
+                                     const CModel & model);
+
+    /**
+     * Converts the number to concentration
+     * @param const C_FLOAT64 & number
+     * @param const CCompartment & compartment
+     * @param const CModel & model
+     * @return C_FLOAT64 concentration
+     */
+    static C_FLOAT64 convertToConcentration(const C_FLOAT64 & number,
+                                            const CCompartment & compartment,
+                                            const CModel & model);
 
     // Attributes
   private:

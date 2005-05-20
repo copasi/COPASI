@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/11 14:45:05 $
+   $Author: shoops $ 
+   $Date: 2005/05/20 17:06:45 $
    End CVS Header */
 
 #include <iostream>
@@ -36,6 +36,18 @@ const char * CMetab::XMLStatus[] =
 //static
 void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 {mpParentCompartment = parentCompartment;}
+
+//static
+C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration,
+                                  const CCompartment & compartment,
+                                  const CModel & model)
+{return concentration * compartment.getVolume() * model.getQuantity2NumberFactor();}
+
+//static
+C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number,
+    const CCompartment & compartment,
+    const CModel & model)
+{return number * compartment.getVolumeInv() * model.getNumber2QuantityFactor();}
 
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
