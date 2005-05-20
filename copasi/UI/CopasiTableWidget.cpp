@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/13 12:17:06 $
+   $Date: 2005/05/20 13:18:34 $
    End CVS Header */
 
 /*******************************************************************
@@ -338,6 +338,9 @@ void CopasiTableWidget::slotValueChanged(int row, int col)
     }
   else
     {
+      // We need a hook here to call the derived classes to do their work.
+      valueChanged(row, col);
+
       if (col == 1)
         mFlagRenamed[row] = true;
       else

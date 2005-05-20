@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/11/17 21:43:23 $
+   $Author: shoops $ 
+   $Date: 2005/05/20 13:18:34 $
    End CVS Header */
 
 /****************************************************************************
@@ -136,8 +136,17 @@ class CopasiTableWidget : public CopasiWidget
     virtual QString defaultObjectName() const = 0;
 
     /**
-        * to catch the delKeyEvent 
-        */
+     * This method provides a hook for derived classes to act on changes in
+     * the table.
+     * @param unsigned C_INT32 row
+     * @param unsigned C_INT32 col
+     */
+    virtual void valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
+    {return;}
+
+    /**
+     * to catch the delKeyEvent 
+     */
     virtual void keyPressEvent (QKeyEvent * e);
   signals:
     void delKeyPressed();
