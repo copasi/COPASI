@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:20:54 $
+   $Author: shoops $ 
+   $Date: 2005/05/20 17:19:10 $
    End CVS Header */
 
 /****************************************************************************
@@ -20,6 +20,8 @@
 #include <qtable.h>
 #include "copasi.h"
 #include "CopasiTableWidget.h"
+
+class CCompartment;
 
 class MetabolitesWidget : public CopasiTableWidget
   {
@@ -83,6 +85,33 @@ class MetabolitesWidget : public CopasiTableWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const;
+
+    /**
+     * This method provides a hook for derived classes to act on changes in
+     * the table.
+     * @param unsigned C_INT32 row
+     * @param unsigned C_INT32 col
+     */
+    virtual void valueChanged(unsigned C_INT32 row, unsigned C_INT32 col);
+
+  private:
+    /**
+     * Called when the initial concentration changed in the table.
+     * @param unsigned C_INT32 row
+     */
+    void initialConcentrationChanged(unsigned C_INT32 row);
+
+    /**
+     * Called when the initial number changed in the table.
+     * @param unsigned C_INT32 row
+     */
+    void initialNumberChanged(unsigned C_INT32 row);
+
+    /**
+     * Called when the compartment selection changed in the table.
+     * @param unsigned C_INT32 row
+     */
+    void compartmentChanged(unsigned C_INT32 row);
   };
 
 #endif

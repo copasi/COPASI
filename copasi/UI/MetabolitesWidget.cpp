@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.119 $
+   $Revision: 1.120 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/13 12:14:51 $
+   $Date: 2005/05/20 17:19:10 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -23,6 +23,19 @@
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 
+#define COL_MARK               0
+#define COL_NAME               1
+#define COL_ICONCENTRATION     2
+#define COL_INUMBER            3
+#define COL_CONCENTRATION      4
+#define COL_NUMBER             5
+#define COL_FIXED              6
+#define COL_STATUS             7
+#define COL_COMPARTMENT        8
+#define COL_OLDCOMPARTMENT     9
+#define COL_CRATE             10
+#define COL_NRATE             11
+
 std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
   {
     CCopasiVector<CMetab>& tmp = CCopasiDataModel::Global->getModel()->getMetabolites();
@@ -38,97 +51,86 @@ std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
 void MetabolitesWidget::init()
 {
   mOT = ListViews::METABOLITE;
-  mFlagConc = true;
   mExtraLayout->addStretch();
   btnToggle = new QPushButton("&Show Numbers", this);
   mExtraLayout->addWidget(btnToggle);
   connect(btnToggle, SIGNAL(clicked ()), this,
           SLOT(slotBtnToggleClicked()));
 
-  numCols = 8;
+  numCols = 12;
   table->setNumCols(numCols);
   //table->QTable::setNumRows(1);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Status");
-  tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Initial Concentration");
-  tableHeader->setLabel(3, "Concentration");
-  tableHeader->setLabel(4, "Fixed");
-  table->setColumnWidth(4, 40);
-  tableHeader->setLabel(5, "Status");
-  tableHeader->setLabel(6, "Compartment");
-  tableHeader->setLabel(7, "Rate");
+  tableHeader->setLabel(COL_MARK, "Status");
 
-  //this restricts users from editing concentration values on the table
-  table->setColumnReadOnly (3, true);
-  //this restricts users from editing status values on the table
-  table->setColumnReadOnly (5, true);
-  table->setColumnReadOnly (7, true);
-}
+  tableHeader->setLabel(COL_NAME, "Name");
 
-void MetabolitesWidget::showHeaders()
-{
-  /* <-- to show the units for the quantities */
+  tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+                        FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
 
-  QHeader *tableHeader = table->horizontalHeader();
-  if (mFlagConc)
-    {
-      tableHeader->setLabel(2, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
-                            FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
-      tableHeader->setLabel(3, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
-                            FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  tableHeader->setLabel(COL_INUMBER, "Initial Number");
 
-      tableHeader->setLabel(7, "Rate\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
-                            "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
-    }
-  else
-    {
-      tableHeader->setLabel(2, "Initial Number");
-      tableHeader->setLabel(3, "Number");
-      tableHeader->setLabel(7, "Number rate");
-    }
+  tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+                        FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  table->setColumnReadOnly (COL_CONCENTRATION, true);
 
-  /* --> */
+  tableHeader->setLabel(COL_NUMBER, "Number");
+
+  table->setColumnReadOnly (COL_NUMBER, true);
+
+  tableHeader->setLabel(COL_FIXED, "Fixed");
+  table->setColumnWidth(COL_FIXED, 40);
+
+  tableHeader->setLabel(COL_STATUS, "Status");
+  table->setColumnReadOnly (COL_STATUS, true);
+
+  tableHeader->setLabel(COL_COMPARTMENT, "Compartment");
+
+  tableHeader->setLabel(COL_OLDCOMPARTMENT, "Old Compartment");
+  table->setColumnReadOnly (COL_OLDCOMPARTMENT, true);
+  table->hideColumn(COL_OLDCOMPARTMENT);
+
+  tableHeader->setLabel(COL_CRATE, "Rate\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
+                        "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
+  table->setColumnReadOnly (COL_CRATE, true);
+
+  tableHeader->setLabel(COL_NRATE, "Number Rate");
+  table->setColumnReadOnly (COL_NRATE, true);
+
+  // We start with the concentration showing.
+  mFlagConc = true;
+  table->hideColumn(COL_INUMBER);
+  table->hideColumn(COL_NUMBER);
+  table->hideColumn(COL_NRATE);
 }
 
 void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
-  const CMetab* pMetab = (const CMetab*)obj;
-  showHeaders();
+  const CMetab* pMetab = static_cast<const CMetab *>(obj);
 
   //1: name
 
-  table->setText(row, 1, FROM_UTF8(pMetab->getObjectName()));
+  table->setText(row, COL_NAME, FROM_UTF8(pMetab->getObjectName()));
 
-  //2,3,7: Concentrations, Numbers
+  table->setText(row, COL_ICONCENTRATION, QString::number(pMetab->getInitialConcentration()));
 
-  if (mFlagConc)
-    {
-      table->setText(row, 2, QString::number(pMetab->getInitialConcentration()));
-      table->setText(row, 3, QString::number(pMetab->getConcentration()));
+  table->setText(row, COL_INUMBER, QString::number(pMetab->getInitialNumber()));
 
-      table->setText(row, 7, QString::number(pMetab->getConcentrationRate()));
-    }
-  else
-    {
-      table->setText(row, 2, QString::number(pMetab->getInitialNumber()));
-      table->setText(row, 3, QString::number(pMetab->getNumber()));
-
-      table->setText(row, 7, QString::number(pMetab->getNumberRate()));
-    }
+  table->setText(row, COL_CONCENTRATION, QString::number(pMetab->getConcentration()));
+  table->setText(row, COL_NUMBER, QString::number(pMetab->getNumber()));
 
   //4: Fixed
   QCheckTableItem * fixedCB;
   fixedCB = new QCheckTableItem(table, "");
   if (pMetab->getStatus() == CMetab::METAB_FIXED)
     fixedCB->setChecked(true);
-  table->setItem(row, 4, fixedCB);
+  table->setItem(row, COL_FIXED, fixedCB);
 
   //5: Status
-  table->setText(row, 5, FROM_UTF8(CMetab::StatusName[pMetab->getStatus()]));
+  table->setText(row, COL_STATUS, FROM_UTF8(CMetab::StatusName[pMetab->getStatus()]));
 
   //6: Compartment
   QStringList compartmentType;
@@ -136,42 +138,24 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
     compartmentType.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
   QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
-  table->setItem(row, 6, item);
+  table->setItem(row, COL_COMPARTMENT, item);
   item->setCurrentItem(FROM_UTF8(pMetab->getCompartment()->getObjectName()));
+  table->setText(row, COL_OLDCOMPARTMENT,
+                 FROM_UTF8(pMetab->getCompartment()->getObjectName()));
+
+  table->setText(row, COL_CRATE, QString::number(pMetab->getConcentrationRate()));
+  table->setText(row, COL_NRATE, QString::number(pMetab->getNumberRate()));
 }
 
 void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
-  CMetab* pMetab = (CMetab*)obj;
-
-  //2: for Initial Concentration and Initial Number
-  if (mFlagConc)
-    pMetab->setInitialConcentration(table->text(row, 2).toDouble());
-  else
-    pMetab->setInitialNumber(table->text(row, 2).toDouble());
-
-  //fixed? //TODO
-  bool fixed = ((QCheckTableItem*)(table->item(row, 4)))->isChecked();
-  if (fixed)
-    {
-      if (pMetab->getStatus() != CMetab::METAB_FIXED)
-        {
-          pMetab->setStatus(CMetab::METAB_FIXED);
-          CCopasiDataModel::Global->getModel()->setCompileFlag();
-        }
-    }
-  else
-    {
-      if (pMetab->getStatus() == CMetab::METAB_FIXED)
-        {
-          pMetab->setStatus(CMetab::METAB_VARIABLE);
-          CCopasiDataModel::Global->getModel()->setCompileFlag();
-        }
-    }
+  CMetab* pMetab = static_cast<CMetab *>(obj);
 
   //6: compartment
-  QString Compartment(table->text(row, 6));
+  // This must be set first for setInitialConcentration and
+  // setInitialNumber to work correctly.
+  QString Compartment(table->text(row, COL_COMPARTMENT));
   if (((const char *)Compartment.utf8() != pMetab->getCompartment()->getObjectName()) //has changed
       && (Compartment != ""))
     {
@@ -211,38 +195,54 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
         }*/
     } //TODO check if changing the compartment of a metabolite really works. NO!!!
 
+  //2: for Initial Concentration and Initial Number
+  if (mFlagConc)
+    pMetab->setInitialConcentration(table->text(row, COL_ICONCENTRATION).toDouble());
+  else
+    pMetab->setInitialNumber(table->text(row, COL_INUMBER).toDouble());
+
+  //fixed? //TODO
+  bool fixed = ((QCheckTableItem*)(table->item(row, COL_FIXED)))->isChecked();
+  if (fixed)
+    {
+      if (pMetab->getStatus() != CMetab::METAB_FIXED)
+        {
+          pMetab->setStatus(CMetab::METAB_FIXED);
+          CCopasiDataModel::Global->getModel()->setCompileFlag();
+        }
+    }
+  else
+    {
+      if (pMetab->getStatus() == CMetab::METAB_FIXED)
+        {
+          pMetab->setStatus(CMetab::METAB_VARIABLE);
+          CCopasiDataModel::Global->getModel()->setCompileFlag();
+        }
+    }
+
   //CCopasiDataModel::Global->getModel()->setCompileFlag();
 }
 
 void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  //2,3,7: Concentrations, Numbers
-  if (exc != 2)
-    {
-      if (mFlagConc)
-        {
-          table->setText(row, 2, QString::number(1.0));
-          table->setText(row, 3, "");
-        }
-      else
-        {
-          table->setText(row, 2, QString::number(100.0));
-          table->setText(row, 3, "");
-        }
-    }
-  //4: Fixed
-  if (exc != 4)
+  if (exc != COL_ICONCENTRATION)
+    table->setText(row, COL_ICONCENTRATION, QString::number(1.0));
+  if (exc != COL_INUMBER)
+    table->setText(row, COL_INUMBER, QString::number(100.0));
+  if (exc != COL_CONCENTRATION)
+    table->setText(row, COL_CONCENTRATION, "");
+  if (exc != COL_NUMBER)
+    table->setText(row, COL_NUMBER, "");
+  if (exc != COL_FIXED)
     {
       QCheckTableItem * fixedCB;
       fixedCB = new QCheckTableItem(table, "");
       fixedCB->setChecked(false);
-      table->setItem(row, 4, fixedCB);
+      table->setItem(row, COL_FIXED, fixedCB);
     }
-  //5: Status
-  table->setText(row, 5, "");
-
-  //6: Compartment
-  if (exc != 6)
+  if (exc != COL_STATUS)
+    table->setText(row, COL_STATUS, "");
+  if (exc != COL_COMPARTMENT)
     {
       QStringList compartmentType;
       const CCopasiVector < CCompartment > & compartments = CCopasiDataModel::Global->getModel()->getCompartments();
@@ -251,13 +251,14 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
           for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
             compartmentType.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
           QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
-          table->setItem(row, 6, item);
+          table->setItem(row, COL_COMPARTMENT, item);
           if (compartments.size()) item->setCurrentItem(FROM_UTF8(compartments[0]->getObjectName()));
         }
     }
-
-  //7: Rate
-  table->setText(row, 7, "");
+  if (exc != COL_CRATE)
+    table->setText(row, COL_CRATE, "");
+  if (exc != COL_NRATE)
+    table->setText(row, COL_NRATE, "");
 }
 
 QString MetabolitesWidget::defaultObjectName() const
@@ -342,7 +343,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                       // Yes or Enter
+    case 0:                                        // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -354,44 +355,124 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                       // No or Escape
+    case 1:                                        // No or Escape
       break;
     }
 }
 
 void MetabolitesWidget::slotBtnToggleClicked()
 {
-  C_INT32 choice;
-  if (btnOK->isEnabled())
-    choice = QMessageBox::question(this,
-                                   "Toggle View",
-                                   "There are changes in the table. Do you want to commit the changes or revert to the original values?",
-                                   "Commit", "Revert", "Cancel", 0, 2);
-  else
-    choice = 0;
-
-  if (choice == 2) return; //cancel
-
-  if (choice == 0) saveTable(); //commit
-
   QHeader *tableHeader = table->horizontalHeader();
 
   if (mFlagConc)
     {
-      tableHeader->setLabel(2, "Initial Number");
-      tableHeader->setLabel(3, "Number");
-      tableHeader->setLabel(7, "Number rate");
+      table->hideColumn(COL_ICONCENTRATION);
+      table->hideColumn(COL_CONCENTRATION);
+      table->hideColumn(COL_CRATE);
+
+      table->showColumn(COL_INUMBER);
+      table->showColumn(COL_NUMBER);
+      table->showColumn(COL_NRATE);
+
       btnToggle->setText("&Show Concentrations");
       mFlagConc = false;
     }
   else
     {
-      tableHeader->setLabel(2, "Initial Concentration");
-      tableHeader->setLabel(3, "Concentration");
-      tableHeader->setLabel(7, "Concentration rate");
+      table->showColumn(COL_ICONCENTRATION);
+      table->showColumn(COL_CONCENTRATION);
+      table->showColumn(COL_CRATE);
+
+      table->hideColumn(COL_INUMBER);
+      table->hideColumn(COL_NUMBER);
+      table->hideColumn(COL_NRATE);
+
       btnToggle->setText("&Show Numbers");
       mFlagConc = true;
     }
 
-  fillTable();
+  //  fillTable();
+}
+
+void MetabolitesWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
+{
+  switch (col)
+    {
+    case COL_ICONCENTRATION:
+      initialConcentrationChanged(row);
+      break;
+
+    case COL_INUMBER:
+      initialNumberChanged(row);
+      break;
+
+    case COL_COMPARTMENT:
+      compartmentChanged(row);
+      break;
+
+    default:
+      break;
+    }
+  return;
+}
+
+void MetabolitesWidget::initialConcentrationChanged(unsigned C_INT32 row)
+{
+  const CMetab * pMetab
+  = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
+
+  const CCompartment * pCompartment
+  = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_OLDCOMPARTMENT).utf8()];
+
+  if (!pMetab || !pCompartment) return;
+
+  table->setText(row, COL_INUMBER,
+                 QString::number(CMetab::convertToNumber(table->text(row, COL_ICONCENTRATION).toDouble(),
+                                                         *pCompartment,
+                                                         *CCopasiDataModel::Global->getModel())));
+  return;
+}
+
+void MetabolitesWidget::initialNumberChanged(unsigned C_INT32 row)
+{
+  const CMetab * pMetab
+  = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
+
+  const CCompartment * pCompartment
+  = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_OLDCOMPARTMENT).utf8()];
+
+  if (!pMetab || !pCompartment) return;
+
+  table->setText(row, COL_ICONCENTRATION,
+                 QString::number(CMetab::convertToNumber(table->text(row, COL_INUMBER).toDouble(),
+                                                         *pCompartment,
+                                                         *CCopasiDataModel::Global->getModel())));
+  return;
+}
+
+void MetabolitesWidget::compartmentChanged(unsigned C_INT32 row)
+{
+  const CMetab * pMetab
+  = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
+
+  const CCompartment * pCompartment
+  = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_OLDCOMPARTMENT).utf8()];
+
+  if (!pMetab || !pCompartment) return;
+
+  C_FLOAT64 Factor = 1.0 / pCompartment->getInitialVolume();
+
+  QString Compartment = table->text(row, COL_COMPARTMENT);
+  table->setText(row, COL_OLDCOMPARTMENT, Compartment);
+
+  pCompartment
+  = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()];
+  Factor *= pCompartment->getInitialVolume();
+
+  table->setText(row, COL_INUMBER,
+                 QString::number(Factor * table->text(row, COL_INUMBER).toDouble()));
+  table->setText(row, COL_NUMBER,
+                 QString::number(Factor * table->text(row, COL_NUMBER).toDouble()));
+
+  return;
 }
