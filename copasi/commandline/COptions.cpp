@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/13 18:25:09 $
+   $Date: 2005/05/23 21:12:56 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -223,10 +223,10 @@ std::string COptions::getCopasiDir(void)
       delete [] PrgName;
 
       /* Get rid of the executable */
-      CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
+      CopasiDir = CDirEntry::dirName(CopasiDir);
 
       /* Get rid of bin or sbin */
-      CopasiDir = CopasiDir.substr(0, CopasiDir.find_last_of('\\'));
+      CopasiDir = CDirEntry::dirName(CopasiDir);
     }
 #endif // WIN32
 
@@ -308,7 +308,7 @@ std::string COptions::getTemp(void)
 
   if (Temp == "") // OS specific fallback.
 #ifdef WIN32
-    Temp = getEnvironmentVariable("windir") + "\\Temp";
+    Temp = getEnvironmentVariable("windir") + CDirEntry::Separator + "Temp";
 #else
     Temp = "/tmp";
 #endif // WIN32
@@ -317,13 +317,8 @@ std::string COptions::getTemp(void)
   if (!CDirEntry::isDir(Temp) || !CDirEntry::isWritable(Temp))
     return "";
 
-#ifdef WIN32
-  CreateCopasiDir = Temp + "\\copasi";
-  CreateUserDir = CreateCopasiDir + "\\" + User;
-#else
-  CreateCopasiDir = Temp + "/copasi";
-  CreateUserDir = CreateCopasiDir + "/" + User;
-#endif
+  CreateCopasiDir = Temp + CDirEntry::Separator + "copasi";
+  CreateUserDir = CreateCopasiDir + CDirEntry::Separator + User;
 
   //Assure that CreateCopasiDir exists and is a writable directory.
   if (!CDirEntry::createDir("copasi", Temp))
