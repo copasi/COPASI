@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 15:57:43 $
+   $Date: 2005/05/23 17:20:25 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -26,6 +26,12 @@
 #include "copasi.h"
 
 #include "CDirEntry.h"
+
+#ifdef WIN32
+const std::string CDirEntry::Separator = "\\";
+#else
+const std::string CDirEntry::Separator = "/";
+#endif
 
 bool CDirEntry::isFile(const std::string & path)
 {
@@ -70,16 +76,65 @@ bool CDirEntry::isReadable(const std::string & path)
 bool CDirEntry::isWritable(const std::string & path)
 {return (access(path.c_str(), 0x2) == 0);}
 
+std::string CDirEntry::baseName(const std::string & path)
+{
+  std::string::size_type start = path.find_last_of(Separator);
+#ifdef WIN32 // WIN32 also understands '/' as the separator.
+  if (start == std::string::npos)
+    start = path.find_last_of("/");
+#endif
+
+  if (start == std::string::npos) start = 0;
+  else start++; // We do not want the separator.
+
+  std::string::size_type end = path.find_last_of(".");
+  if (end == std::string::npos || end < start)
+    end = path.length();
+
+  return path.substr(start, end - start);
+}
+
+std::string CDirEntry::dirName(const std::string & path)
+{
+#ifdef WIN32 // WIN32 also understands '/' as the separator.
+  std::string::size_type end = path.find_last_of(Separator + "/");
+#else
+  std::string::size_type end = path.find_last_of(Separator);
+#endif
+
+  if (end == path.length() - 1)
+    {
+#ifdef WIN32 // WIN32 also understands '/' as the separator.
+      end = path.find_last_of(Separator + "/", end);
+#else
+      end = path.find_last_of(Separator, end);
+#endif
+    }
+
+  return path.substr(0, end);
+}
+
+std::string CDirEntry::suffix(const std::string & path)
+{
+  std::string::size_type start = path.find_last_of(Separator);
+#ifdef WIN32 // WIN32 also understands '/' as the separator.
+  if (start == std::string::npos)
+    start = path.find_last_of("/");
+#endif
+
+  if (start == std::string::npos) start = 0;
+  else start++; // We do not want the separator.
+
+  std::string::size_type end = path.find_last_of(".");
+  if (end == std::string::npos || end < start)
+    return "";
+  else
+    return path.substr(end);
+}
+
 bool CDirEntry::createDir(const std::string & dir,
                           const std::string & parent)
 {
-  std::string Separator;
-#ifdef WIN32
-  Separator = "\\";
-#else
-  Separator = "/";
-#endif
-
   std::string Dir;
   if (parent != "") Dir = parent + Separator;
   Dir += dir;
@@ -133,11 +188,11 @@ bool CDirEntry::removeFiles(const std::string & pattern,
         {
           if (Entry.attrib | _A_NORMAL)
             {
-              if (::remove((path + "\\" + Entry.name).c_str()) != 0) success = false;
+              if (::remove((path + Separator + Entry.name).c_str()) != 0) success = false;
             }
           else
             {
-              if (rmdir((path + "\\" + Entry.name).c_str()) != 0) success = false;
+              if (rmdir((path + Separator + Entry.name).c_str()) != 0) success = false;
             }
         }
     }
@@ -158,12 +213,12 @@ bool CDirEntry::removeFiles(const std::string & pattern,
         {
           if (isDir(pEntry->d_name))
             {
-              if (rmdir((path + "/" + pEntry->d_name).c_str()) != 0)
+              if (rmdir((path + Separator + pEntry->d_name).c_str()) != 0)
                 success = false;
             }
           else
             {
-              if (::remove((path + "/" + pEntry->d_name).c_str()) != 0)
+              if (::remove((path + Separator + pEntry->d_name).c_str()) != 0)
                 success = false;
             }
         }

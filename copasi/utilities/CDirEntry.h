@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 15:57:43 $
+   $Date: 2005/05/23 17:20:26 $
    End CVS Header */
 
 #ifndef COPASI_CDirEntry
@@ -19,6 +19,11 @@
 class CDirEntry
   {
   public:
+    /**
+     * The character used to separate directory entries.
+     */
+    const static std::string Separator;
+
     /**
      * Check whether the directory entry specified by 'path' is
      * a file.
@@ -57,6 +62,30 @@ class CDirEntry
      * @return bool isWritable
      */
     static bool isWritable(const std::string & path);
+
+    /**
+     * Returns the base name, i.e., the directory path and the 
+     * the suffix are removed from 'path'.
+     * @param const std::string & path
+     * @return std::string baseName
+     */
+    static std::string baseName(const std::string & path);
+
+    /**
+     * Returns the directory path to the parent directoryu, i.e., 
+     * the file name or directory name are removed from 'path'.
+     * @param const std::string & path
+     * @return std::string dirName
+     */
+    static std::string dirName(const std::string & path);
+
+    /**
+     * Returns the suffix, i.e., the directory path and the 
+     * the base name are removed from 'path'.
+     * @param const std::string & path
+     * @return std::string basename
+     */
+    static std::string suffix(const std::string & path);
 
     /**
      * Create the directory 'dir' in the parent directory 'parent'.
