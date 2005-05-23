@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/11 03:02:11 $
+   $Author: shoops $ 
+   $Date: 2005/05/23 17:22:07 $
    End CVS Header */
 
-MESSAGES Messages[] =
+const MESSAGES Messages[] =
   {
     // CReadConfig
     {MCReadConfig + 1, "CReadConfig (1): Variable '%s' not found in '%s(%d)'."},
@@ -94,7 +94,7 @@ MESSAGES Messages[] =
     {MCOptimization + 4, "Optimization (3): Invalid Relationship: '%s'."},
 
     // SBML
-    {MCSBML + 1, "SBML (1): File '%s' already exists."},
+    // {MCSBML + 1, "SBML (1): Available"},
     {MCSBML + 2, "SBML (2): The SBML document contains no model."},
     {MCSBML + 3, "SBML (3): The SBML document contains rules that were ignored."},
     {MCSBML + 4, "SBML (4): The SBML document contains events that were ignored."},
@@ -104,6 +104,10 @@ MESSAGES Messages[] =
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
      "exceeds the limit. The step size has been adjusted to avoid over flow."},
+
+    // SBML
+    {MCDirEntry + 1, "DirEntry (1): Directory entry '%s' already exists."},
+    {MCDirEntry + 2, "DirEntry (2): Directory entry '%s' is read-only."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

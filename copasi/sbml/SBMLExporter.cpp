@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/12 12:12:01 $
+   $Author: shoops $ 
+   $Date: 2005/05/23 17:22:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -72,7 +72,7 @@ bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilenam
       if (testInfile && !overwriteFile)
         {
           // create a CCopasiMessage with the appropriate error
-          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 1, sbmlFilename.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 1, sbmlFilename.c_str());
           return false;
         }
       /* write the document to a file */
