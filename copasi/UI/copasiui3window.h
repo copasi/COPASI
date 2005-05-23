@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/23 17:24:24 $
+   $Date: 2005/05/23 21:13:40 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -61,9 +61,7 @@ class CopasiUI3Window : public QMainWindow
   private:
     int closeFlag;
     int newFlag;
-    //    QString gpsFile;
     QString FixedTitle;
-    QString Title;
     QToolButton * msave_button;
     QPopupMenu * mpFileMenu, * tools;
 
@@ -79,4 +77,5 @@ class CopasiUI3Window : public QMainWindow
     int mShowSlidersMenuEntry;
     QToolButton* mpToggleSliderDialogButton;
     bool mSaveAsRequired;
+    void updateTitle();
   };

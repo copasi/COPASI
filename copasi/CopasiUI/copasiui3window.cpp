@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.140 $
+   $Revision: 1.141 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/23 17:24:24 $
+   $Date: 2005/05/23 21:13:40 $
    End CVS Header */
 
 #include <vector>
@@ -78,7 +78,7 @@ CopasiUI3Window::CopasiUI3Window():
   FixedTitle = "COPASI (";
   FixedTitle += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
   FixedTitle += " test version) ";
-  setCaption(FixedTitle);
+  updateTitle();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
   //  mpFileMenu = new QPopupMenu;
@@ -179,9 +179,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
       if (mSuccess = dataModel->saveModel((const char *) tmp.utf8(), true))
         {
           CCopasiDataModel::Global->changed(false);
-          //          gpsFile = tmp;
-          Title = FixedTitle + FROM_UTF8(CCopasiDataModel::Global->getFileName());
-          setCaption(Title);
+          updateTitle();
         }
       else
         {
@@ -220,14 +218,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                                           // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                                          // Discard clicked or Alt+D pressed
+        case 1:                                                                           // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                                          // Cancel clicked or Escape pressed
+        case 2:                                                                           // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -246,8 +244,7 @@ void CopasiUI3Window::newDoc()
   mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   msave_button->setEnabled(true);
   mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  Title = FixedTitle + FROM_UTF8(CCopasiDataModel::Global->getFileName());
-  setCaption(Title);
+  updateTitle();
   ListViews::switchAllListViewsToWidget(1, "");
   mSaveAsRequired = true;
 }
@@ -285,14 +282,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                           // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                          // Discard clicked or Alt+D pressed
+            case 1:                                                                           // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                          // Cancel clicked or Escape pressed
+            case 2:                                                                           // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -372,8 +369,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
       msave_button->setEnabled(true);
       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-      Title = FixedTitle + FROM_UTF8(CCopasiDataModel::Global->getFileName());
-      setCaption(Title);
+      updateTitle();
       ListViews::switchAllListViewsToWidget(1, "");
     }
 }
@@ -456,14 +452,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                                           // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                                          // Discard clicked or Alt+D pressed
+        case 1:                                                                           // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                                          // Cancel clicked or Escape pressed
+        case 2:                                                                           // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -485,14 +481,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                           // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                          // Discard clicked or Alt+D pressed
+            case 1:                                                                           // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                          // Cancel clicked or Escape pressed
+            case 2:                                                                           // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -533,7 +529,7 @@ void CopasiUI3Window::slotFilePrint()
 void CopasiUI3Window::about()
 {
   AboutDialog* aboutDialog = new AboutDialog(this);
-  aboutDialog->setCaption(Title);
+  aboutDialog->setCaption(FixedTitle);
   aboutDialog->exec();
 }
 
@@ -744,14 +740,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                           // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                          // Discard clicked or Alt+D pressed
+            case 1:                                                                           // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                          // Cancel clicked or Escape pressed
+            case 2:                                                                           // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -817,8 +813,7 @@ void CopasiUI3Window::slotImportSBML()
       ListViews::switchAllListViewsToWidget(1, "");
     }
 
-  Title = FixedTitle + FROM_UTF8(CCopasiDataModel::Global->getFileName());
-  setCaption(Title);
+  updateTitle();
 
   mSaveAsRequired = true;
 }
@@ -935,4 +930,27 @@ void CopasiUI3Window::checkPendingMessages()
       QMessageBox::warning(this, QString("File Warning"), text,
                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
+}
+
+void CopasiUI3Window::updateTitle()
+{
+  QString FileName = FROM_UTF8(CCopasiDataModel::Global->getFileName());
+
+#ifdef WIN32 // Windows allows mixxing of '/' and '\' as separator.
+  FileName.replace("\\", "/");
+#endif
+
+  if (FileName.length() > 40)
+    {
+#ifdef WIN32
+      QRegExp mask("^(([A-Z]:/)?[^/]+/).*(/[^/]+/[^/]+$)");
+#else
+      QRegExp mask("^((/*)[^/]+/).*(/[^/]+/[^/]+$)");
+#endif
+
+      mask.search(FileName);
+      FileName = mask.cap(1) + "..." + mask.cap(3);
+    }
+
+  setCaption(FixedTitle + FileName);
 }
