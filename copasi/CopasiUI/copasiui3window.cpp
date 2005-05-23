@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.139 $
+   $Revision: 1.140 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/19 18:26:39 $
+   $Date: 2005/05/23 17:24:24 $
    End CVS Header */
 
 #include <vector>
@@ -63,12 +63,12 @@ CopasiUI3Window::CopasiUI3Window():
     dataModel(NULL),
     //    splitter(NULL),
     listViews(NULL),
-    gpsFile(),
+    //    gpsFile(),
     msave_button(NULL),
     mpFileMenu(NULL),
     sliders(NULL),
-    mpToggleSliderDialogButton(NULL)
-
+    mpToggleSliderDialogButton(NULL),
+    mSaveAsRequired(true)
 {
   setIcon(QPixmap((const char **) Copasi16_Alpha_xpm));
 
@@ -160,6 +160,8 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
                                          this, "Save File Dialog",
                                          "Choose a filename to save under.");
 
+      if (tmp == "") return;
+
       if (!tmp.endsWith(".cps") &&
           !tmp.endsWith(".")) tmp += ".cps";
 
@@ -174,23 +176,28 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      if (mSuccess = dataModel->saveModel(tmp.utf8(), true))
+      if (mSuccess = dataModel->saveModel((const char *) tmp.utf8(), true))
         {
           CCopasiDataModel::Global->changed(false);
-          gpsFile = tmp;
-          Title = FixedTitle + gpsFile;
+          //          gpsFile = tmp;
+          Title = FixedTitle + FROM_UTF8(CCopasiDataModel::Global->getFileName());
           setCaption(Title);
         }
       else
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
-              QMessageBox::critical(this, "Export Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+              QMessageBox::critical(this, "Save File Error",
+                                    CCopasiMessage::getAllMessageText().c_str(),
+                                    QMessageBox::Ok | QMessageBox::Default,
+                                    QMessageBox::NoButton);
               CCopasiMessage::clearDeque();
             }
         }
       setCursor(oldCursor);
     }
+
+  mSaveAsRequired = false;
 }
 
 /***************CopasiUI3Window::newDoc()******
@@ -213,14 +220,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                                         // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                                         // Discard clicked or Alt+D pressed
+        case 1:                                                                          // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                                         // Cancel clicked or Escape pressed
+        case 2:                                                                          // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -231,7 +238,6 @@ void CopasiUI3Window::newDoc()
   if (!dataModel)
     dataModel = new DataModelGUI(); // create the data model
 
-  gpsFile = "";
   dataModel->createModel();
   ListViews::notify(ListViews::MODEL, ListViews::ADD, CCopasiDataModel::Global->getModel()->getKey());
   if (!bobject_browser_open)
@@ -240,9 +246,10 @@ void CopasiUI3Window::newDoc()
   mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   msave_button->setEnabled(true);
   mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  Title = FixedTitle + gpsFile;
+  Title = FixedTitle + FROM_UTF8(CCopasiDataModel::Global->getFileName());
   setCaption(Title);
   ListViews::switchAllListViewsToWidget(1, "");
+  mSaveAsRequired = true;
 }
 
 /***************CopasiUI3Window::slotFileOpen()******
@@ -278,14 +285,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                         // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                         // Discard clicked or Alt+D pressed
+            case 1:                                                                          // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                         // Cancel clicked or Escape pressed
+            case 2:                                                                          // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -299,7 +306,6 @@ void CopasiUI3Window::slotFileOpen(QString file)
       if (!dataModel)
         dataModel = new DataModelGUI; // create a new data model
 
-      gpsFile = newFile;
       QCursor oldCursor = this->cursor();
       this->setCursor(Qt::WaitCursor);
 
@@ -307,7 +313,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
       try
         {
-          success = dataModel->loadModel((const char *)gpsFile.utf8());
+          success = dataModel->loadModel((const char *)newFile.utf8());
         }
       catch (CCopasiException except)
         {
@@ -346,10 +352,15 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
+      if (stricmp(CDirEntry::suffix((const char *)newFile.utf8()).c_str(), ".cps") == 0)
+        mSaveAsRequired = false;
+      else
+        mSaveAsRequired = true;
+
       if (!CCopasiDataModel::Global->getModel())
         {
           newDoc();
-          gpsFile = newFile;
+          mSaveAsRequired = true;
         }
 
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
@@ -361,7 +372,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
       msave_button->setEnabled(true);
       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-      Title = FixedTitle + gpsFile;
+      Title = FixedTitle + FROM_UTF8(CCopasiDataModel::Global->getFileName());
       setCaption(Title);
       ListViews::switchAllListViewsToWidget(1, "");
     }
@@ -377,21 +388,22 @@ void CopasiUI3Window::slotFileOpen(QString file)
 void CopasiUI3Window::slotFileSave()
 {
   ListViews::commit();
-
-  if (gpsFile.isEmpty())
+  std::string FileName = CCopasiDataModel::Global->getFileName();
+  if (mSaveAsRequired || FileName == "")
     {
-      slotFileSaveAs();
+      slotFileSaveAs(FROM_UTF8(FileName));
       return;
     }
 
-  std::ifstream File(gpsFile.utf8());
+  std::ifstream File(FileName.c_str());
   std::string Line;
   File >> Line;
   File.close();
 
   int choice = 0;
 
-  if (!Line.compare(0, 8, "Version=") || gpsFile.endsWith(".gps"))
+  if (!Line.compare(0, 8, "Version=") ||
+      stricmp(FileName.c_str(), ".gps") == 0)
     {
       /* Ask for permision to overwrite write? */
       /* If no call slotFileSaveAs */
@@ -404,19 +416,32 @@ void CopasiUI3Window::slotFileSave()
 
       if (!choice)
         {
-          slotFileSaveAs(gpsFile.replace(QRegExp("\\.gps$"), ".cps"));
+          slotFileSaveAs(FROM_UTF8(FileName));
           return;
         }
     }
 
   if (dataModel)
     {
+      bool mSuccess;
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      dataModel->saveModel(gpsFile.utf8(), true);
+      if (mSuccess = dataModel->saveModel(FileName, true))
+        {
+          CCopasiDataModel::Global->changed(false);
+        }
+      else
+        {
+          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+            {
+              QMessageBox::critical(this, "Save File Error",
+                                    CCopasiMessage::getAllMessageText().c_str(),
+                                    QMessageBox::Ok | QMessageBox::Default,
+                                    QMessageBox::NoButton);
+              CCopasiMessage::clearDeque();
+            }
+        }
       setCursor(oldCursor);
-
-      CCopasiDataModel::Global->changed(false);
     }
 }
 
@@ -431,14 +456,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                                         // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                                         // Discard clicked or Alt+D pressed
+        case 1:                                                                          // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                                         // Cancel clicked or Escape pressed
+        case 2:                                                                          // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -460,14 +485,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                         // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                         // Discard clicked or Alt+D pressed
+            case 1:                                                                          // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                         // Cancel clicked or Escape pressed
+            case 2:                                                                          // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -719,14 +744,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                         // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                          // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                         // Discard clicked or Alt+D pressed
+            case 1:                                                                          // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                         // Cancel clicked or Escape pressed
+            case 2:                                                                          // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -791,6 +816,11 @@ void CopasiUI3Window::slotImportSBML()
 
       ListViews::switchAllListViewsToWidget(1, "");
     }
+
+  Title = FixedTitle + FROM_UTF8(CCopasiDataModel::Global->getFileName());
+  setCaption(Title);
+
+  mSaveAsRequired = true;
 }
 
 void CopasiUI3Window::slotExportSBML()
@@ -820,7 +850,7 @@ void CopasiUI3Window::slotExportSBML()
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      if (!dataModel->exportSBML(tmp.utf8(), true))
+      if (!dataModel->exportSBML((const char *) tmp.utf8(), true))
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 15:48:34 $
+   $Date: 2005/05/23 17:24:23 $
    End CVS Header */
 
 #include "copasi.h"
@@ -16,6 +16,7 @@
 #include "utilities/CCopasiVector.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiProblem.h"
+#include "utilities/CDirEntry.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "scan/CScanTask.h"
@@ -122,12 +123,6 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
 
   if (!Line.compare(0, 8, "Version="))
     {
-      if (fileName.rfind(".gps") == fileName.length() - 4 ||
-          fileName.rfind(".GPS") == fileName.length() - 4)
-        mSaveFileName = fileName.substr(0, fileName.length() - 4) + ".cps";
-      else
-        mSaveFileName = fileName + ".cps";
-
       File.close();
       CReadConfig inbuf(fileName.c_str());
 
@@ -136,11 +131,19 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
 
       dynamic_cast<CSteadyStateTask *>((*mpTaskList)["Steady-State"])->load(inbuf);
       dynamic_cast<CTrajectoryTask *>((*mpTaskList)["Time-Course"])->load(inbuf);
+
+      mSaveFileName = CDirEntry::dirName(fileName)
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName(fileName);
+
+      std::string Suffix = CDirEntry::suffix(fileName);
+      if (stricmp(Suffix.c_str(), ".gps") != 0)
+        mSaveFileName += Suffix;
+
+      mSaveFileName += ".cps";
     }
   else if (!Line.compare(0, 5, "<?xml"))
     {
-      mSaveFileName = fileName;
-
       //std::cout << "XML Format" << std::endl;
       File.seekg(0, std::ios_base::beg);
 
@@ -202,6 +205,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           pdelete(mpGUI);
           mpGUI = pGUI;
         }
+
+      mSaveFileName = fileName;
     }
 
   if (mpModel) mpModel->setCompileFlag();
@@ -215,14 +220,21 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
 {
   std::string FileName = (fileName != "") ? fileName : mSaveFileName;
 
-  if (!overwriteFile)
+  if (CDirEntry::exist(fileName))
     {
-      // Test if the file exit.
-      std::ifstream testInfile(FileName.c_str(), std::ios::in);
-
-      if (testInfile.fail())
+      if (!overwriteFile)
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 1, FileName.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 1,
+                         FileName.c_str());
+          return false;
+        }
+
+      if (!CDirEntry::isWritable(fileName))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 2,
+                         FileName.c_str());
           return false;
         }
     }
@@ -250,6 +262,8 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
 
   if (!autoSave) changed(false);
 
+  // Remember for future saves.
+  mSaveFileName = FileName;
   return true;
 }
 
@@ -261,16 +275,20 @@ bool CCopasiDataModel::autoSave()
   int index;
   COptions::getValue("Tmp", AutoSave);
   if (AutoSave == "") return false;
-#ifdef WIN32
-  AutoSave += "\\";
-#else
-  AutoSave += "/";
-#endif
 
-  if ((index = mSaveFileName.find_last_of('\\')) == -1)
-    index = mSaveFileName.find_last_of('/');
-  //index = mSaveFileName.find_last_of('/' || '\\');
-  AutoSave += "tmp_" + mSaveFileName.substr(index + 1, mSaveFileName.length() - index - 5) + ".cps";
+  AutoSave += CDirEntry::Separator + "tmp_";
+
+  if (mSaveFileName != "")
+    {
+      index = mSaveFileName.find_last_of(CDirEntry::Separator);
+#ifdef WIN32 // WIN32 also understands '/' as the separator.
+      if (index == C_INVALID_INDEX)
+        index = mSaveFileName.find_last_of("/");
+#endif
+      AutoSave += mSaveFileName.substr(index + 1,
+                                       mSaveFileName.length() - index - 5);
+    }
+  AutoSave += ".cps";
 
   if (!saveModel(AutoSave, true)) return false;
 
@@ -281,7 +299,14 @@ bool CCopasiDataModel::autoSave()
 bool CCopasiDataModel::newModel(CModel * pModel)
 {
   pdelete(mpModel);
-  mpModel = (pModel) ? pModel : new CModel();
+
+  if (pModel)
+    mpModel = pModel;
+  else
+    {
+      mpModel = new CModel();
+      mSaveFileName = "";
+    }
 
   pdelete(mpTaskList);
   mpTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", CCopasiContainer::Root);
@@ -309,16 +334,20 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
 bool CCopasiDataModel::importSBML(const std::string & fileName)
 {
-  if (fileName.rfind(".xml") == fileName.length() - 4 ||
-      fileName.rfind(".XML") == fileName.length() - 4)
-    mSaveFileName = fileName.substr(0, fileName.length() - 4) + ".cps";
-  else
-    mSaveFileName = fileName + ".cps";
-
   SBMLImporter importer;
   CModel * pModel = importer.readSBML(fileName, mpFunctionList);
 
   if (pModel == NULL) return false;
+
+  mSaveFileName = CDirEntry::dirName(fileName)
+                  + CDirEntry::Separator
+                  + CDirEntry::baseName(fileName);
+
+  std::string Suffix = CDirEntry::suffix(fileName);
+  if (stricmp(Suffix.c_str(), ".xml") != 0)
+    mSaveFileName += Suffix;
+
+  mSaveFileName += ".cps";
 
   return newModel(pModel);
 }
@@ -334,7 +363,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
       if (testInfile.fail())
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 1, fileName.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 1, fileName.c_str());
           return false;
         }
     }
@@ -498,6 +527,9 @@ SCopasiXMLGUI * CCopasiDataModel::getGUI()
 
 CVersion * CCopasiDataModel::getVersion()
 {return mpVersion;}
+
+const std::string & CCopasiDataModel::getFileName() const
+  {return mSaveFileName;}
 
 bool CCopasiDataModel::isChanged() const
   {return mChanged;}

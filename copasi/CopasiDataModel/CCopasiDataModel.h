@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 15:48:34 $
+   $Date: 2005/05/23 17:24:23 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -79,6 +79,7 @@ class CCopasiDataModel
     CFunctionDB * getFunctionList();
     SCopasiXMLGUI * getGUI();
     CVersion * getVersion();
+    const std::string & getFileName() const;
 
     bool isChanged() const;
     void changed(const bool & changed = true);

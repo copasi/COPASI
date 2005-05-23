@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:33:11 $
+   $Date: 2005/05/23 17:24:24 $
    End CVS Header */
 
 #include "copasi.h"
@@ -270,7 +270,7 @@ bool DataModelGUI::createModel()
   return true;
 }
 
-bool DataModelGUI::loadModel(const char* fileName)
+bool DataModelGUI::loadModel(const std::string & fileName)
 {
   if (!CCopasiDataModel::Global->loadModel(fileName)) return false;
 
@@ -281,7 +281,7 @@ bool DataModelGUI::loadModel(const char* fileName)
   return true;
 }
 
-bool DataModelGUI::saveModel(const char* fileName, bool overwriteFile)
+bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 {
   assert(mPlotDefinitionList.getPlotDefintionList() ==
          CCopasiDataModel::Global->getPlotDefinitionList());
@@ -289,7 +289,7 @@ bool DataModelGUI::saveModel(const char* fileName, bool overwriteFile)
   return CCopasiDataModel::Global->saveModel(fileName, overwriteFile);
 }
 
-bool DataModelGUI::importSBML(const char* fileName)
+bool DataModelGUI::importSBML(const std::string & fileName)
 {
   if (!CCopasiDataModel::Global->importSBML(fileName)) return false;
 
@@ -299,7 +299,7 @@ bool DataModelGUI::importSBML(const char* fileName)
   return true;
 }
 
-bool DataModelGUI::exportSBML(const char* fileName, bool overwriteFile)
+bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile)
 {
   assert(mPlotDefinitionList.getPlotDefintionList() ==
          CCopasiDataModel::Global->getPlotDefinitionList());

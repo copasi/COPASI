@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/12 14:09:40 $
+   $Author: shoops $ 
+   $Date: 2005/05/23 17:24:24 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -46,12 +46,12 @@ class DataModelGUI
     const IndexedNode * getRootNode() const;
     const IndexedNode * getNode(const int & id) const;
 
-    bool loadModel(const char* fileName);
+    bool loadModel(const std::string & fileName);
     bool createModel();
-    bool saveModel(const char* fileName, bool overwriteFile = false);
+    bool saveModel(const std::string & fileName, bool overwriteFile = false);
 
-    bool importSBML(const char* fileName);
-    bool exportSBML(const char* fileName, bool overwriteFile = false);
+    bool importSBML(const std::string & fileName);
+    bool exportSBML(const std::string & fileName, bool overwriteFile = false);
 
     CPlotSpec2Vector & getPlotDefinitionList();
 
