@@ -67,6 +67,7 @@ echo "Set the icon in the Info.plist file."
     echo "Copy examples to example directory."
     cp ./TestSuite/distribution/* \
       ${TMPDIR}/copasi/examples/
+    chmod 444 ${TMPDIR}/copasi/examples/
 
 # copy the files for the wizard into the Resources directory
     echo "Making directory for wizard."
@@ -119,9 +120,9 @@ echo "Set the icon in the Info.plist file."
 #    chmod 755 copasi/bin/CopasiSE
 
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
-    chmod 644 copasi/share/copasi/examples/*
+    chmod 444 copasi/share/copasi/examples/*
 
-    cp ../copasi/CopasiUI/icons/copasi_icon_small.png copasi/share/copasi/icons
+    cp ../copasi/CopasiUI/icons/Copasi??-Alpha.xpm copasi/share/copasi/icons
     chmod 644 copasi/share/copasi/icons
 
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
