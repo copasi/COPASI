@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/10 12:45:03 $
+   $Date: 2005/05/24 13:23:40 $
    End CVS Header */
 
 /**
@@ -248,10 +248,18 @@ C_INT32 CKinFunction::parse()
           break;
 
         case N_NUMBER:
-          if (0 == strncmp(Scanner.YYText(), "pi", 3) || 0 == strncmp(Scanner.YYText(), "PI", 3))
-            pNode = new CNodeK(M_PI);
-          else if (0 == strncmp(Scanner.YYText(), "exponentiale", 13) || 0 == strncmp(Scanner.YYText(), "EXPONENTIALE", 13))
-            pNode = new CNodeK(M_E);
+          if (0 == strncmp(Scanner.YYText(), "pi", 3) ||
+              0 == strncmp(Scanner.YYText(), "PI", 3))
+            {
+              pNode = new CNodeK(M_PI);
+              pNode->setName("PI");
+            }
+          else if (0 == strncmp(Scanner.YYText(), "exponentiale", 13) ||
+                   0 == strncmp(Scanner.YYText(), "EXPONENTIALE", 13))
+            {
+              pNode = new CNodeK(M_E);
+              pNode->setName("EXPONENTIALE");
+            }
           else
             pNode = new CNodeK(atof(Scanner.YYText()));
           mNodes.push_back(pNode);
@@ -310,7 +318,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                          // this is an error
+        case N_NOP:                                           // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
