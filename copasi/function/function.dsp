@@ -63,6 +63,10 @@ SOURCE=.\CEvaluationNode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeConstant.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNodeNumber.cpp
 # End Source File
 # Begin Source File
@@ -116,6 +120,10 @@ SOURCE=.\CCallParameters.h
 # Begin Source File
 
 SOURCE=.\CEvaluationNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeConstant.h
 # End Source File
 # Begin Source File
 
