@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/23 17:20:26 $
+   $Author: gauges $ 
+   $Date: 2005/05/24 08:27:19 $
    End CVS Header */
 
 #ifndef COPASI_CDirEntry
@@ -22,7 +22,7 @@ class CDirEntry
     /**
      * The character used to separate directory entries.
      */
-    const static std::string Separator;
+    static const std::string Separator;
 
     /**
      * Check whether the directory entry specified by 'path' is
