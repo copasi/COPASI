@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 18:11:02 $
+   $Date: 2005/05/24 12:48:59 $
    End CVS Header */
 
 #include <qstring.h>
@@ -13,6 +13,7 @@
 #include "copasi.h"
 #include "qtUtilities.h"
 #include "utilities/CCopasiParameterGroup.h"
+#include "utilities/CDirEntry.h"
 
 QString getParameterValue(const CCopasiParameterGroup * group,
                           const unsigned C_INT32 & index,
@@ -129,11 +130,23 @@ bool setParameterValue(CCopasiParameterGroup * group,
 C_INT32 checkSelection(const QString & file)
 {
   if (QFileInfo(file).exists())
-    return QMessageBox::question(NULL, "File exists!",
-                                 "Overwrite existing file " + file + "?",
-                                 QMessageBox::Yes,
-                                 QMessageBox::No | QMessageBox::Default,
-                                 QMessageBox::Cancel | QMessageBox::Escape);
+    {
+      if (CDirEntry::isWritable((const char *)file.utf8()))
+        return QMessageBox::question(NULL, "File exists!",
+                                     "Overwrite existing file " + file + "?",
+                                     QMessageBox::Yes,
+                                     QMessageBox::No | QMessageBox::Default,
+                                     QMessageBox::Cancel | QMessageBox::Escape);
+      else
+        {
+          QMessageBox::information(NULL, "File read-only",
+                                   "The file is read-only. Please select another file!",
+                                   QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape,
+                                   QMessageBox::NoButton,
+                                   QMessageBox::NoButton);
+          return QMessageBox::No;
+        }
+    }
   else
     return QMessageBox::Yes;
 }
