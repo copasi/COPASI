@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/24 18:06:17 $
+   $Date: 2005/05/24 21:03:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -25,7 +25,9 @@ CEvaluationNodeNumber::~CEvaluationNodeNumber() {}
 
 bool CEvaluationNodeNumber::setData(const Data & data)
 {
+  mData = data;
+
   char * end;
-  mValue = strtod(data.c_str(), &end);
+  mValue = strtod(mData.c_str(), &end);
   return (*end == NULL);
 }
