@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/24 08:27:57 $
+   $Author: shoops $ 
+   $Date: 2005/05/24 12:03:47 $
    End CVS Header */
 
 #include "copasi.h"
@@ -220,7 +220,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
 {
   std::string FileName = (fileName != "") ? fileName : mSaveFileName;
 
-  if (CDirEntry::exist(fileName))
+  if (CDirEntry::exist(FileName))
     {
       if (!overwriteFile)
         {
@@ -356,14 +356,21 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 {
   if (fileName == "") return false;
 
-  if (!overwriteFile)
+  if (CDirEntry::exist(fileName))
     {
-      // Test if the file exit.
-      std::ifstream testInfile(fileName.c_str(), std::ios::in);
-
-      if (testInfile.fail())
+      if (!overwriteFile)
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 1, fileName.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 1,
+                         fileName.c_str());
+          return false;
+        }
+
+      if (!CDirEntry::isWritable(fileName))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 2,
+                         fileName.c_str());
           return false;
         }
     }
