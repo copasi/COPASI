@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/11 03:02:11 $
+   $Date: 2005/05/24 12:30:56 $
    End CVS Header */
 
 #include "copasi.h"
@@ -40,12 +40,13 @@
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
  */
-CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
+CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   Model* sbmlModel = sbmlDocument->getModel();
 
   /* Create an empty model and set the title. */
   CModel* copasiModel = new CModel();
+  copasi2sbmlmap[copasiModel] = sbmlModel;
   copasiModel->setVolumeUnit(CModel::l);
   copasiModel->setTimeUnit(CModel::s);
   copasiModel->setQuantityUnit(CModel::Mol);
@@ -107,7 +108,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
         {
           fatalError();
         }
-      CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel);
+      CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel, copasi2sbmlmap);
+      copasi2sbmlmap[copasiCompartment] = sbmlCompartment;
       std::string key = sbmlCompartment->getId();
       if (!sbmlCompartment->isSetId())
         {
@@ -129,7 +131,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
       CCompartment* copasiCompartment = compartmentMap[sbmlSpecies->getCompartment()];
       if (copasiCompartment != NULL)
         {
-          CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment);
+          CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment, copasi2sbmlmap);
+          copasi2sbmlmap[copasiMetabolite] = sbmlSpecies;
           std::string key;
           if (!sbmlSpecies->isSetId())
             {
@@ -151,7 +154,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
   num = sbmlModel->getNumReactions();
   for (counter = 0; counter < num; counter++)
     {
-      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, compartmentMap);
+      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, compartmentMap, copasi2sbmlmap);
     }
   copasiModel->setCompileFlag();
   if (sbmlModel->getNumRules() > 0)
@@ -171,7 +174,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
  * given as argument.
  */
 CCompartment*
-SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel)
+SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& C_UNUSED(copasi2sbmlmap))
 {
   if (sbmlCompartment->isSetUnits())
     {
@@ -210,7 +213,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
  * Creates and returns a Copasi CMetab from the given SBML Species object.
  */
 CMetab*
-SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment)
+SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& C_UNUSED(copasi2sbmlmap))
 {
   if (sbmlSpecies->isSetSubstanceUnits())
     {
@@ -276,7 +279,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<std::string, CCompartment*> compartmentMap)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<std::string, CCompartment*> compartmentMap, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   /* Check if the name of the reaction is unique. */
   if (sbmlReaction == NULL)
@@ -302,6 +305,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
   /* create a new reaction with the unique name */
   CReaction* copasiReaction = copasiModel->createReaction(name + appendix);
+  copasi2sbmlmap[copasiReaction] = const_cast<Reaction*>(sbmlReaction);
   if (copasiReaction == NULL)
     {
       //DebugFile << "Could not create Copasi reaction." << std::endl;
@@ -1174,7 +1178,7 @@ void SBMLImporter::replacePowerFunctionNodes(ASTNode* node)
  * caller.
  */
 CModel*
-SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB)
+SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   CModel* pModel = NULL;
   if (funDB != NULL)
@@ -1203,9 +1207,9 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB)
            * read it anyway.
            */
           if ((sbmlDoc->getNumErrors() > 1) ||
-               (strncmp(pSBMLMessage->getMessage().c_str(),
-                        "The <sbml> element cannot contain an <annotation>.  Use the <model> element instead."
-                        , 85) != 0))
+              (strncmp(pSBMLMessage->getMessage().c_str(),
+                       "The <sbml> element cannot contain an <annotation>.  Use the <model> element instead."
+                       , 85) != 0))
             {
               CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
                                      pSBMLMessage->getLine(),
@@ -1229,9 +1233,8 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB)
       //DebugFile << "Number of Compartments: " << sbmlDoc->getModel()->getNumCompartments() << std::endl;
       //DebugFile << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
       //DebugFile << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
-
-      pModel = this->createCModelFromSBMLDocument(sbmlDoc);
-      delete sbmlDoc;
+      pSBMLDocument = sbmlDoc;
+      pModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
     }
   else
     {

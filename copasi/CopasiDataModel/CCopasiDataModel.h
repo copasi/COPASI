@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/23 17:24:23 $
+   $Author: gauges $ 
+   $Date: 2005/05/24 12:30:55 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -17,12 +17,16 @@ class COutputDefinitionVector;
 class CFunctionDB;
 class CFunction;
 class SCopasiXMLGUI;
+class SBMLDocument;
+class SBase;
 
 // :TODO: remove
 class CMetabOld;
 template <class CType> class CCopasiVectorS;
 
 template <class CType> class CCopasiVectorN;
+
+#include <map>
 
 #include "utilities/CCopasiTask.h"
 
@@ -102,6 +106,19 @@ class CCopasiDataModel
     bool mChanged;
     bool mAutoSaveNeeded;
     CDataModelRenameHandler mRenameHandler;
+
+    /**
+     * This will hold the SBMLDocument that was imported
+     * to create the current Model.
+     */
+    SBMLDocument* mpCurrentSBMLDocument;
+
+    /**
+     * This will map each Copasi object to the
+     * corresponding SBML object if the current model
+     * was created by an SBML import.
+     */
+    std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
 
   public:
     static CCopasiDataModel * Global;

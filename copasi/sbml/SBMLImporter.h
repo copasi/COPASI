@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/11 02:10:08 $
+   $Date: 2005/05/24 12:30:56 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -29,6 +29,7 @@ class Compartment;
 class SBMLDocument;
 class ConverterASTNode;
 class FunctionDefinition;
+class SBase;
 
 class SBMLImporter
   {
@@ -39,24 +40,24 @@ class SBMLImporter
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
      */
-    CModel* createCModelFromSBMLDocument(SBMLDocument* doc);
+    CModel* createCModelFromSBMLDocument(SBMLDocument* doc, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Creates and returns a Copasi CCompartment from the SBML Compartment
      * given as argument.
      */
-    CCompartment* createCCompartmentFromCompartment(const Compartment* sbmlComp, CModel* copasiModel);
+    CCompartment* createCCompartmentFromCompartment(const Compartment* sbmlComp, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Creates and returns a Copasi CMetab from the given SBML Species object.
      */
-    CMetab* createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment);
+    CMetab* createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Creates and returns a Copasi CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<std::string, CCompartment*> compartmentMap);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<std::string, CCompartment*> compartmentMap, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Traverses the brach of the given AST node recursively and prefixes all substrate
@@ -143,7 +144,7 @@ class SBMLImporter
   public:
     SBMLImporter();
     ~SBMLImporter();
-    CModel* readSBML(std::string filename, CFunctionDB* funDB);
+    CModel* readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/24 12:03:47 $
+   $Author: gauges $ 
+   $Date: 2005/05/24 12:30:55 $
    End CVS Header */
 
 #include "copasi.h"
@@ -79,6 +79,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mChanged(false),
     mAutoSaveNeeded(false),
     mRenameHandler(this),
+    mpCurrentSBMLDocument(NULL),
     pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
@@ -103,6 +104,7 @@ CCopasiDataModel::~CCopasiDataModel()
   pdelete(mpReportDefinitionList);
   pdelete(mpPlotDefinitionList);
   pdelete(mpGUI);
+  pdelete(mpCurrentSBMLDocument);
   pdelete(pOldMetabolites);
 }
 
@@ -335,7 +337,7 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 bool CCopasiDataModel::importSBML(const std::string & fileName)
 {
   SBMLImporter importer;
-  CModel * pModel = importer.readSBML(fileName, mpFunctionList);
+  CModel * pModel = importer.readSBML(fileName, mpFunctionList, mpCurrentSBMLDocument, mCopasi2SBMLMap);
 
   if (pModel == NULL) return false;
 
