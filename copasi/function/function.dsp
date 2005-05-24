@@ -59,6 +59,14 @@ SOURCE=.\CCallParameters.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeNumber.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CFunction.cpp
 # End Source File
 # Begin Source File
@@ -104,6 +112,14 @@ SOURCE=.\CUsageRange.cpp
 # Begin Source File
 
 SOURCE=.\CCallParameters.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeNumber.h
 # End Source File
 # Begin Source File
 
