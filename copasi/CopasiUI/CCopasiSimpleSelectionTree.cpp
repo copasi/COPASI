@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/03 14:44:37 $
+   $Date: 2005/05/24 09:54:08 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -63,9 +63,9 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
   const CCopasiVector<CMetab>& metabolites = model->getMetabolites();
   unsigned int counter;
   unsigned int maxCount = metabolites.size();
-  for (counter = 0; counter < maxCount;++counter)
+  for (counter = maxCount; counter != 0;--counter)
     {
-      const CMetab* metab = metabolites[counter];
+      const CMetab* metab = metabolites[counter - 1];
       std::string name = metab->getObjectName();
       bool unique = this->isMetaboliteNameUnique(name, metabolites);
       if (!unique)
@@ -95,9 +95,9 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
   // find all reactions and create items in the reaction subtree
   const CCopasiVectorNS<CReaction>& reactions = model->getReactions();
   maxCount = reactions.size();
-  for (counter = 0; counter < maxCount;++counter)
+  for (counter = maxCount; counter != 0; --counter)
     {
-      const CReaction* react = reactions[counter];
+      const CReaction* react = reactions[counter - 1];
       std::string name = react->getObjectName();
       name = "flux(" + name + ")";
       item = new QListViewItem(this->concentrationFluxSubtree,
@@ -112,9 +112,9 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
       const CCopasiParameterGroup& parameters = react->getParameters();
       unsigned int j;
       unsigned int numParameters = parameters.size();
-      for (j = 0; j < numParameters;++j)
+      for (j = numParameters; j != 0; --j)
         {
-          CCopasiParameter* parameter = ((CCopasiParameterGroup&)parameters).getParameter(j);
+          CCopasiParameter* parameter = ((CCopasiParameterGroup&)parameters).getParameter(j - 1);
           QListViewItem* parameterItem =
             new QListViewItem(item,
                               FROM_UTF8(parameter->getObjectName()));
