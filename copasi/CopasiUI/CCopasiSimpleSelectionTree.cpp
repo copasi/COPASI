@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/24 09:54:08 $
+   $Date: 2005/05/24 12:04:36 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -195,10 +195,11 @@ std::vector<CCopasiObject*>* CCopasiSimpleSelectionTree::getTreeSelection()
                     {
                       if ((tmpItem->childCount() == 0) && (this->treeItems.find(tmpItem) != this->treeItems.end()))
                         {
-                          selection->push_back(this->treeItems[currentItem]);
+                          selection->push_back(this->treeItems[tmpItem]);
                         }
                       ++it2;
                       tmpItem = it2.current();
+                      if ((tmpItem == currentItem->nextSibling()) || (tmpItem == currentItem->parent()->nextSibling())) break;
                     }
                 }
             }
