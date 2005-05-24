@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/25 18:16:13 $
+   $Author: ssahle $ 
+   $Date: 2005/05/24 12:37:23 $
    End CVS Header */
 
 /**
@@ -169,7 +169,7 @@ bool CScanTask::processCallback()
 
   //do progress bar
   ++mProgress;
-  if (mpProgressHandler) return !mpProgressHandler->progress();
+  if (mpProgressHandler) return mpProgressHandler->progress();
 
   return true;
 }
