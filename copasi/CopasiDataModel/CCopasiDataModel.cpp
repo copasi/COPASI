@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/23 17:24:23 $
+   $Author: gauges $ 
+   $Date: 2005/05/24 08:27:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -137,7 +137,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
                       + CDirEntry::baseName(fileName);
 
       std::string Suffix = CDirEntry::suffix(fileName);
-      if (stricmp(Suffix.c_str(), ".gps") != 0)
+      if (strcasecmp(Suffix.c_str(), ".gps") != 0)
         mSaveFileName += Suffix;
 
       mSaveFileName += ".cps";
@@ -344,7 +344,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName)
                   + CDirEntry::baseName(fileName);
 
   std::string Suffix = CDirEntry::suffix(fileName);
-  if (stricmp(Suffix.c_str(), ".xml") != 0)
+  if (strcasecmp(Suffix.c_str(), ".xml") != 0)
     mSaveFileName += Suffix;
 
   mSaveFileName += ".cps";
