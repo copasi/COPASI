@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/25 15:55:42 $
+   $Date: 2005/05/25 17:56:03 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeNumber
@@ -20,6 +20,17 @@ class CEvaluationNodeNumber : public CEvaluationNode
     friend
     CEvaluationNode * CEvaluationNode::create(const Type & type,
         const Data & data);
+
+  public:
+    /**
+     * Enumeration of possible node types.
+     */
+    enum SubType
+    {
+      INVALID = 0x00FFFFFF,
+      DOUBLE = 0x00000000,
+      INTEGER = 0x00000001
+    };
 
     // Operations
   private:
