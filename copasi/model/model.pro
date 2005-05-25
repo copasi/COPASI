@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2005/02/08 23:14:48 $  
+# $Revision: 1.10 $ $Author: ssahle $ $Date: 2005/05/25 09:50:08 $  
 ######################################################################
 
 LIB = model
@@ -16,6 +16,7 @@ HEADERS += CChemEq.h \
            CMetab.h \
            CMetabNameInterface.h \
            CModel.h \
+           CModelValue.h \
            CMoiety.h \
            #CParticleNumberList.h \
            CReaction.h \
@@ -33,6 +34,7 @@ SOURCES += CChemEq.cpp \
            CMetab.cpp \
            CMetabNameInterface.cpp \
            CModel.cpp \
+           CModelValue.cpp \
            CMoiety.cpp \
            #CParticleNumberList.cpp \
            CReaction.cpp \
