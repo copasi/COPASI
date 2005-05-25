@@ -71,6 +71,10 @@ SOURCE=.\CEvaluationNodeNumber.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeOperator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CFunction.cpp
 # End Source File
 # Begin Source File
@@ -128,6 +132,10 @@ SOURCE=.\CEvaluationNodeConstant.h
 # Begin Source File
 
 SOURCE=.\CEvaluationNodeNumber.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeOperator.h
 # End Source File
 # Begin Source File
 

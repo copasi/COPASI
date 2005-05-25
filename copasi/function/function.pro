@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2005/05/24 21:03:57 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2005/05/25 18:20:46 $  
 ######################################################################
 
 LIB = function
@@ -10,8 +10,9 @@ include(../common.pri)
 # Input
 HEADERS += CCallParameters.h \
            CEvaluationNode.h \
-           CEvaluationNodeNumber.h \
            CEvaluationNodeConstant.h \
+           CEvaluationNodeNumber.h \
+           CEvaluationNodeOperator.h \
            CFunction.h \
            CFunctionDB.h \
            CFunctionParameter.h \
@@ -24,8 +25,9 @@ HEADERS += CCallParameters.h \
 
 SOURCES += CCallParameters.cpp \
            CEvaluationNode.cpp \
-           CEvaluationNodeNumber.cpp \
            CEvaluationNodeConstant.cpp \
+           CEvaluationNodeNumber.cpp \
+           CEvaluationNodeOperator.cpp \
            CFunction.cpp \
            CFunctionDB.cpp \
            CFunctionParameter.cpp \

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/25 15:55:42 $
+   $Date: 2005/05/25 18:20:53 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -92,6 +92,12 @@ class CEvaluationNode : public CCopasiNode< std::string >
     virtual const C_FLOAT64 & value() const = 0;
 
     /**
+     * Compile a node;
+     * @return bool success;
+     */
+    virtual bool compile();
+
+    /**
      * Retrieve the value of the node. This method is superceded
      * value() which will perform faster.
      * @return const Data & value
@@ -124,7 +130,8 @@ class CEvaluationNode : public CCopasiNode< std::string >
     Data mData;
   };
 
-#include "CEvaluationNodeNumber.h"
 #include "CEvaluationNodeConstant.h"
+#include "CEvaluationNodeNumber.h"
+#include "CEvaluationNodeOperator.h"
 
 #endif // COPASI_CEvaluationNode
