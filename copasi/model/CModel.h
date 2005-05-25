@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.99 $
+   $Revision: 1.100 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/25 09:49:29 $
+   $Author: shoops $ 
+   $Date: 2005/05/25 16:29:56 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -25,7 +25,12 @@ class CCompartment;
 class CState;
 class CStateX;
 class CProcessReport;
+
+#ifdef WIN32
+# include "model/CModelValue.h"
+#else
 class CModelValue;
+#endif // WIN32
 
 /** @dia:pos 177.081,30.2423 */
 class CModel : public CCopasiContainer
