@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/24 18:06:17 $
+   $Date: 2005/05/25 15:55:42 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeNumber
@@ -20,6 +20,7 @@ class CEvaluationNodeNumber : public CEvaluationNode
     friend
     CEvaluationNode * CEvaluationNode::create(const Type & type,
         const Data & data);
+
     // Operations
   private:
     /**
@@ -29,9 +30,11 @@ class CEvaluationNodeNumber : public CEvaluationNode
 
     /**
      * Default constructor
+     * @param const Type & subType
      * @param const Data & data
      */
-    CEvaluationNodeNumber(const Data & data);
+    CEvaluationNodeNumber(const Type & subType,
+                          const Data & data);
 
   public:
     /**
@@ -50,13 +53,6 @@ class CEvaluationNodeNumber : public CEvaluationNode
      * @return const C_FLOAT64 & value
      */
     virtual inline const C_FLOAT64 & value() const {return mValue;}
-
-    /**
-     * Set the data of the Node.
-     * @param const Data & data
-     * @return bool success
-     */
-    virtual bool setData(const Data & data);
   };
 
 #endif // COPASI_CEvaluationNodeNumber

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/24 21:02:52 $
+   $Date: 2005/05/25 15:55:42 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -22,27 +22,41 @@ class CEvaluationNode : public CCopasiNode< std::string >
      */
     enum Type
     {
-      INVALID = -1,
-      NUMBER = 0,
-      CONSTANT,
-      OPERATOR,
-      OBJECT,
-      FUNCTION,
-      CALL,
-      PARENTHESIS,
-      CHOICE,
-      VARIABLE
+      INVALID = 0xFF000000,
+      NUMBER = 0x01000000,
+      CONSTANT = 0x02000000,
+      OPERATOR = 0x03000000,
+      OBJECT = 0x04000000,
+      FUNCTION = 0x05000000,
+      CALL = 0x06000000,
+      STRUCTURE = 0x07000000,
+      CHOICE = 0x08000000,
+      VARIABLE = 0x09000000
     };
 
     // Methods
     /**
-     * Creates an evaluation node of type and subtype
+     * Creates an evaluation node of type with the given data
      * @param const Type & type
      * @param const Data & data
      * @return CEvaluationNode * evaluationNode
      */
     static CEvaluationNode * create(const Type & type,
                                     const Data & data);
+
+    /**
+     * Retrieve the subtype part of type
+     * @param const Type & type
+     * @return Type subType
+     */
+    static Type subType(const Type & type);
+
+    /**
+     * Retrieve the type part of type
+     * @param const Type & type
+     * @return Type type
+     */
+    static Type type(const Type & type);
 
   private:
     /**
@@ -54,8 +68,10 @@ class CEvaluationNode : public CCopasiNode< std::string >
     /**
      * Specific constructor
      * @param const Type & type
+     * @param const Data & data
      */
-    CEvaluationNode(const Type & type);
+    CEvaluationNode(const Type & type,
+                    const Data & data);
 
   public:
     /**
@@ -81,6 +97,13 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * @return const Data & value
      */
     virtual Data getData() const;
+
+    /**
+     * Set the data of the Node.
+     * @param const Data & data
+     * @return bool success
+     */
+    virtual bool setData(const Data & data);
 
     // Attributes
   private:
