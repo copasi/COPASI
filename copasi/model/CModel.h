@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.98 $
+   $Revision: 1.99 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/25 18:16:13 $
+   $Author: ssahle $ 
+   $Date: 2005/05/25 09:49:29 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -25,6 +25,7 @@ class CCompartment;
 class CState;
 class CStateX;
 class CProcessReport;
+class CModelValue;
 
 /** @dia:pos 177.081,30.2423 */
 class CModel : public CCopasiContainer
@@ -300,6 +301,11 @@ class CModel : public CCopasiContainer
     CVector< const C_FLOAT64 * > mParticleFluxesX;
 
     /**
+     *  vector of non concentration values in the model
+     */
+    CCopasiVectorN< CModelValue > mValues;
+
+    /**
      * The initial time for modeling (default = 0)
      */
     C_FLOAT64 mInitialTime;
@@ -490,6 +496,8 @@ class CModel : public CCopasiContainer
      */ 
     //void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
 
+    //********** Metabs *****************************
+
     /**
      * Return the metabolites of this model
      * @return CCopasiVectorN< CMetab > & metabolites
@@ -547,11 +555,30 @@ class CModel : public CCopasiContainer
      */
     unsigned C_INT32 getNumDependentMetabs() const;
 
+    //********** additional values *****************************
+
+    /**
+     * Return the non concentration values of this model
+     * @return CCopasiVectorN< CModelValue > & values
+     */
+    const CCopasiVectorN< CModelValue > & getModelValues() const;
+    CCopasiVectorN< CModelValue > & getModelValues();
+
+    /**
+     *  Get the number of non concentration values
+     *  @return C_INT32 
+     */
+    unsigned C_INT32 getNumModelValues() const;
+
+    //********** TT *****************************
+
     /**
      *  Set the transition times for all internal metabolites and the
      *  transistion time of the model.
      */
     void setTransitionTimes();
+
+    //********** Reactions *****************************
 
     /**
      * Return the vector of reactions
@@ -615,6 +642,8 @@ class CModel : public CCopasiContainer
      */
     void setComments(const std::string &comments);
 
+    //************** time *********************
+
     /**
      * Set the start time for modeling
      * @param const C_FLOAT64 & time
@@ -638,6 +667,8 @@ class CModel : public CCopasiContainer
      * @return const C_FLOAT64 & time
      */
     const C_FLOAT64 & getTime() const;
+
+    //************** compartments *********************
 
     /**
      * Return the compartments of this model
@@ -680,8 +711,8 @@ class CModel : public CCopasiContainer
     /**
      * Returns the mStepsX of this model
      * @return const CCopasiVectorN< CReaction > & 
-     */
-    const CCopasiVectorN< CReaction > & getStepsX() const;
+     */ 
+    //const CCopasiVectorN< CReaction > & getStepsX() const;
 
     /**
      * Get the LU decomposition matrix of this model
@@ -849,6 +880,8 @@ class CModel : public CCopasiContainer
      */
     const C_FLOAT64 & getNumber2QuantityFactor() const;
 
+    //************  create/remove model entities *******************
+
     /**
      * Add a metabolite to the model
      * @param const std::string & name
@@ -874,6 +907,9 @@ class CModel : public CCopasiContainer
 
     /* Retreives list of Reactions Keys which are dependent on the Compartment*/
     std::set<std::string> listReactionsDependentOnCompartment(const std::string & key);
+
+    /* Retreives list of Reactions Keys which are dependent on the non concentration value*/
+    std::set<std::string> listReactionsDependentOnModelValue(const std::string & key);
 
     /**
      * Add a compartment to the model
@@ -903,6 +939,18 @@ class CModel : public CCopasiContainer
 
     /* Remove a reaction from the model*/
     bool removeReaction(const std::string & key);
+
+    /**
+     * Add a non concentration value to the model
+     * @param const std::string &name
+     * @param const C_FLOAT64 & value (default 0.0)
+     */
+    CModelValue* createModelValue(const std::string & name,
+                                  const C_FLOAT64 & value = 0.0);
+
+    bool removeModelValue(const std::string & key);
+
+    //*************************
 
     /**
      * Retrieve the metabolite permutation vector

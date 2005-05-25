@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.220 $
+   $Revision: 1.221 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/11 17:31:17 $
+   $Author: ssahle $ 
+   $Date: 2005/05/25 09:49:29 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,7 @@
 #include "CMetab.h"
 #include "CModel.h"
 #include "CState.h"
+#include "CModelValue.h"
 #include "function/CFunctionDB.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
@@ -76,6 +77,7 @@ CModel::CModel():
     mFluxesX(),
     mParticleFluxes(),
     mParticleFluxesX(),
+    mValues("Values", this),
     mInitialTime(0),
     mTime(0),
     mTransitionTime(0),
@@ -129,6 +131,7 @@ CModel::CModel(const CModel & src):
     mFluxesX(src.mFluxesX),
     mParticleFluxes(src.mParticleFluxes),
     mParticleFluxesX(src.mParticleFluxesX),
+    mValues(src.mValues, this),
     mInitialTime(src.mInitialTime),
     mTime(src.mTime),
     mTransitionTime(src.mTransitionTime),
@@ -985,6 +988,12 @@ const CCopasiVector< CMetab > & CModel::getMetabolitesInd() const
 const CCopasiVector< CMetab > & CModel::getVariableMetabolites() const
   {CCHECK return mMetabolitesVar;}
 
+const CCopasiVectorN< CModelValue > & CModel::getModelValues() const
+  {return mValues;}
+
+CCopasiVectorN< CModelValue > & CModel::getModelValues()
+{return mValues;}
+
 //********
 
 unsigned C_INT32 CModel::getNumMetabs() const
@@ -1001,6 +1010,9 @@ unsigned C_INT32 CModel::getNumDependentMetabs() const
 
 unsigned C_INT32 CModel::getTotSteps() const
   {return mSteps.size();}
+
+unsigned C_INT32 CModel::getNumModelValues() const
+  {return mValues.size();}
 
 const std::string & CModel::getComments() const
   {return mComments;}
@@ -1029,8 +1041,8 @@ const CMatrix < C_FLOAT64 >& CModel::getStoi() const
 const CCopasiVector < CMoiety > & CModel::getMoieties() const
   {return mMoieties;} //TODO: resolv when to recalculate moieties...
 
-const CCopasiVectorN< CReaction > & CModel::getStepsX() const
-  {CCHECK return mStepsX;}
+//const CCopasiVectorN< CReaction > & CModel::getStepsX() const
+//  {CCHECK return mStepsX;}
 
 const CModel::CLinkMatrixView & CModel::getL() const
   {CCHECK return mLView;}
@@ -1678,6 +1690,37 @@ std::set<std::string> CModel::listReactionsDependentOnFunction(const std::string
   return reacKeys;
 }
 
+std::set<std::string> CModel::listReactionsDependentOnModelValue(const std::string & key)
+{
+  std::set<std::string> Keys;
+  const CCopasiVectorN<CReaction> & Reactions = getReactions();
+  C_INT32 j, jmax = Reactions.size();
+  //TODO
+
+  /* for (j = 0; j < jmax; j++)
+     {
+       const CCopasiVector <CChemEqElement> &Substrates = Reactions[j]->getChemEq().getSubstrates();
+       C_INT32 i, imax = Substrates.size();
+       for (i = 0; i < imax; i++)
+         if (key == Substrates[i]->getMetaboliteKey())
+           Keys.insert(Reactions[j]->getKey());
+
+       const CCopasiVector <CChemEqElement> &Products = Reactions[j]->getChemEq().getProducts();
+       imax = Products.size();
+       for (i = 0; i < imax; i++)
+         if (key == Products[i]->getMetaboliteKey())
+           Keys.insert(Reactions[j]->getKey());
+
+       const CCopasiVector <CChemEqElement> &Modifiers = Reactions[j]->getChemEq().getModifiers();
+       imax = Modifiers.size();
+       for (i = 0; i < imax; i++)
+         if (key == Modifiers[i]->getMetaboliteKey())
+           Keys.insert(Reactions[j]->getKey());
+     }*/
+
+  return Keys;
+}
+
 //**********************************************************************
 
 CMetab* CModel::createMetabolite(const std::string & name,
@@ -1843,6 +1886,57 @@ bool CModel::removeReaction(const std::string & key)
 
   setCompileFlag();
   mMoieties.resize(0);
+
+  return true;
+}
+
+CModelValue* CModel::createModelValue(const std::string & name,
+                                      const C_FLOAT64 & value)
+{
+  // check if there is already a value with this name
+  if (mValues.getIndex(name) != C_INVALID_INDEX)
+    return NULL;
+
+  CModelValue * cmv = new CModelValue(name);
+
+  cmv->setInitialValue(value);
+  cmv->setValue(value);
+
+  if (!mValues.add(cmv, true))
+    {
+      delete cmv;
+      return NULL;
+    }
+
+  //compile();
+  //mStateTemplate.add(cpt->getKey());
+
+  return cmv;
+}
+
+bool CModel::removeModelValue(const std::string & key)
+{
+  CModelValue *pModelValue =
+    dynamic_cast< CModelValue * >(GlobalKeys.get(key));
+
+  if (!pModelValue)
+    return false;
+
+  /* Before deleting the value, delete all the reactions that are dependent */
+  std::set<std::string> reacKeys = listReactionsDependentOnModelValue(key);
+  std::set<std::string>::const_iterator it, itEnd = reacKeys.end();
+  for (it = reacKeys.begin(); it != itEnd; ++it)
+    removeReaction(*it);
+
+  //Check if Value with that name exists
+  unsigned C_INT32 index =
+    mValues.CCopasiVector< CModelValue >::getIndex(pModelValue);
+  if (index == C_INVALID_INDEX)
+    return false;
+
+  mValues.CCopasiVector< CModelValue >::remove(index);
+
+  //compile();
 
   return true;
 }
