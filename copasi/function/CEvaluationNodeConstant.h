@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/25 15:55:42 $
+   $Date: 2005/05/25 17:56:51 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeConstant
@@ -28,10 +28,10 @@ class CEvaluationNodeConstant : public CEvaluationNode
     enum SubType
     {
       INVALID = 0x00FFFFFF,
-      PI = 0x00000001,
-      EXPONENTIALE = 0x00000002,
-      TRUE = 0x00000003,
-      FALSE = 0x00000004
+      PI = 0x00000000,
+      EXPONENTIALE = 0x00000001,
+      TRUE = 0x00000002,
+      FALSE = 0x00000003
     };
 
     // Operations
