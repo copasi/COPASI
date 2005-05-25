@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/23 17:24:24 $
+   $Author: ssahle $ 
+   $Date: 2005/05/25 09:52:32 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -38,6 +38,7 @@ class DataModelGUI
     void updateCompartments();
     void updateMetabolites();
     void updateReactions();
+    void updateModelValues();
     void updateMoieties();
     void updateFunctions();
     void updateReportDefinitions();

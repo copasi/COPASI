@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.96 $ $Author: shoops $ $Date: 2005/05/19 18:27:18 $  
+# $Revision: 1.97 $ $Author: ssahle $ $Date: 2005/05/25 09:51:59 $  
 ######################################################################
 
 TEMPLATE = app
@@ -153,6 +153,7 @@ HEADERS += \
            MetabolitesWidget.h \
            MetabolitesWidget1.h \
            ModelWidget.h \
+           ModelValuesWidget.h \
            ModesWidget.h \
            MoietyWidget.h \
            MoietyWidget1.h \
@@ -227,6 +228,7 @@ SOURCES += \
            MetaboliteSymbols.cpp \
            MetabolitesWidget.cpp \
            MetabolitesWidget1.cpp \
+           ModelValuesWidget.cpp \
            ModelWidget.cpp \
            ModesWidget.cpp \
            MoietyWidget.cpp \

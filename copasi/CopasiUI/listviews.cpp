@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.175 $
+   $Revision: 1.176 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/11 17:55:23 $
+   $Author: ssahle $ 
+   $Date: 2005/05/25 09:52:32 $
    End CVS Header */
 
 /****************************************************************************
@@ -36,6 +36,7 @@
 #include "MetabolitesWidget.h"
 #include "MetabolitesWidget1.h"
 #include "ModelWidget.h"
+#include "ModelValuesWidget.h"
 #include "ModesWidget.h"
 #include "MoietyWidget.h"
 #include "MoietyWidget1.h"
@@ -197,6 +198,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     metabolitesWidget(NULL),
     metabolitesWidget1(NULL),
     modelWidget(NULL),
+    modelValuesWidget(NULL),
     modesWidget(NULL),
     moietyWidget(NULL),
     moietyWidget1(NULL),
@@ -339,6 +341,9 @@ void ListViews::ConstructNodeWidgets()
   if (!modelWidget) modelWidget = new ModelWidget(this);
   modelWidget->hide();
 
+  if (!modelValuesWidget) modelValuesWidget = new ModelValuesWidget(this);
+  modelValuesWidget->hide();
+
   if (!modesWidget) modesWidget = new ModesWidget(this);
   modesWidget->hide();
 
@@ -428,6 +433,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         return reactionsWidget;
         break;
       case 115:
+        return modelValuesWidget;
+        break;
+      case 116:
         return parametersWidget;
         break;
       case 121:
@@ -481,7 +489,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                                   //Report
+      case 43:                                    //Report
         return tableDefinition;
         break;
       case 42:
@@ -735,6 +743,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
     case ListViews::REACTION:
+    case ListViews::MODELVALUE:
       dataModel->scheduleMathModelUpdate();
       break;
     default:;
@@ -819,6 +828,31 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
         }
       break;
 
+    case MODELVALUE:
+      switch (action)
+        {
+        case CHANGE:
+          break;
+        case RENAME:
+          break;
+        case ADD:
+          break;
+        case DELETE:
+          // check if it was the last value, if yes,
+          // make the model value table the current widget
+          if (dataModel)
+            {
+              unsigned int numValues = CCopasiDataModel::Global->getModel()->getNumModelValues();
+              if (numValues == 0)
+                {
+                  ListViews::switchAllListViewsToWidget(115, "");
+                }
+            }
+          break;
+        default:
+          break;
+        }
+      break;
       //case FUNCTION:
 
     case PLOT:
@@ -894,6 +928,9 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
   dataModel->updateReactions();
   updateAllListviews(114);
+
+  dataModel->updateModelValues();
+  updateAllListviews(115);
 
   dataModel->updateMoieties();
   updateAllListviews(222);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/23 17:24:24 $
+   $Author: ssahle $ 
+   $Date: 2005/05/25 09:52:32 $
    End CVS Header */
 
 #include "copasi.h"
@@ -18,6 +18,7 @@
 #include "function/CFunctionDB.h"
 #include "mathmodel/CMathModel.h"
 #include "model/CModel.h"
+#include "model/CModelValue.h"
 #include "model/CMetabNameInterface.h"
 #include "optimization/COptFunction.h"
 #include "plot/COutputHandlerPlot.h"
@@ -73,7 +74,7 @@ void DataModelGUI::linkDataModelToGUI()
 
   mTree.findNodeFromId(31)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
   //  mTree.findNodeFromId(32).setObjectKey(pOptFunction->getKey());
-  mTree.findNodeFromId(115)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey()); //parameters
+  mTree.findNodeFromId(116)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey()); //parameters
 
   mTree.findNodeFromId(43)->setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());
   //mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
@@ -164,6 +165,24 @@ void DataModelGUI::updateReactions()
   const CCopasiVectorN< CReaction > & objects = CCopasiDataModel::Global->getModel()->getReactions();
   C_INT32 j, jmax = objects.size();
   CReaction *obj;
+  for (j = 0; j < jmax; j++)
+    {
+      obj = objects[j];
+      parent->addChild(-1,
+                        FROM_UTF8(obj->getObjectName()),
+                        obj->getKey());
+    }
+}
+
+void DataModelGUI::updateModelValues()
+{
+  IndexedNode * parent = mTree.findNodeFromId(115);
+
+  parent->removeChildren();
+
+  const CCopasiVectorN< CModelValue > & objects = CCopasiDataModel::Global->getModel()->getModelValues();
+  C_INT32 j, jmax = objects.size();
+  CModelValue *obj;
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
