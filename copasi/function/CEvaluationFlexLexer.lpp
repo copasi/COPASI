@@ -1,0 +1,149 @@
+/* scanner for kinetic functions */
+
+%option outfile="CEvaluationFlexLexer.cpp"
+%option prefix="CEvaluation"
+%option noyywrap
+%option never-interactive
+%option c++
+
+%{
+#include <vector>
+
+#include "CEvaluationNode.h"
+#include "CEvaluationFlexLexer.h"
+
+#define YY_USER_INIT \
+  {\
+    CEvaluationNode * pNode = NULL;\
+    mPosition = 0;\
+    mpNodeList = new std::vector< CEvaluationNode * >;\
+  }
+
+#define YY_BREAK mPosition += yyleng; mpNodeList->push_back(pNode); break;
+%}
+
+DIGIT    [0-9]
+ID       [a-z_A-Z][a-z_A-Z0-9]*
+   
+%%
+
+{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?  pNode = CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, yytext);
+ 
+log/(   |
+LOG/(   return N_LOG;
+
+log10/( |
+LOG10/( return N_LOG10;
+
+exp/(   |
+EXP/(   return N_EXP;
+
+sin/(   |
+SIN/(   return N_SIN;
+
+cos/(   |
+COS/(   return N_COS;
+
+tan/(   |
+TAN/(   return N_TAN;
+
+sec/(   |
+SEC/(   return N_SEC;
+
+csc/(   |
+CSC/(   return N_CSC;
+
+cot/(   |
+COT/(   return N_COT;
+
+sinh/(   |
+SINH/(   return N_SINH;
+
+cosh/(   |
+COSH/(   return N_COSH;
+
+tanh/(   |
+TANH/(   return N_TANH;
+
+sech/(   |
+SECH/(   return N_SECH;
+
+csch/(   |
+CSCH/(   return N_CSCH;
+
+coth/(   |
+COTH/(   return N_COTH;
+
+asin/(   |
+ASIN/(   return N_ARCSIN;
+
+acos/(   |
+ACOS/(   return N_ARCCOS;
+
+atan/(   |
+ATAN/(   return N_ARCTAN;
+
+arcsec/(   |
+ARCSEC/(   return N_ARCSEC;
+
+arccsc/(   |
+ARCCSC/(   return N_ARCCSC;
+
+arccot/(   |
+ARCCOT/(   return N_ARCCOT;
+
+arcsinh/(   |
+ARCSINH/(   return N_ARCSINH;
+
+arccosh/(   |
+ARCCOSH/(   return N_ARCCOSH;
+
+arctanh/(   |
+ARCTANH/(   return N_ARCTANH;
+
+arcsech/(   |
+ARCSECH/(   return N_ARCSECH;
+ 
+arccsch/(   |
+ARCCSCH/(   return N_ARCCSCH;
+
+arccoth/(   |
+ARCCOTH/(   return N_ARCCOTH;
+
+sqrt/(   |
+SQRT/(   return N_SQRT;
+
+abs/(   |
+ABS/(   return N_ABS;
+
+exponentiale |
+EXPONENTIALE pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::EXPONENTIALE, yytext);
+
+pi |
+PI pNode = CEvaluationNodeConstant(CEvaluationNodeConstant::PI, yytext);
+      
+"^"   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, yytext);
+
+"*"   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, yytext);
+
+"/"   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, yytext);
+
+"%"   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MODULUS, yytext);
+
+"+"   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, yytext);
+
+"-"   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, yytext);
+
+"("   return '(';
+"'"   return ',';
+")"   return ')';
+
+{ID}  return N_IDENTIFIER;
+
+\<([^\\\>]|\\.)*\>  return N_OBJECT;
+     
+[ \t\r\n]+ /* eat up whitespace */
+     
+.     return N_NOP;
+     
+%%

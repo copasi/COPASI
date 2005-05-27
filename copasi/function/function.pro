@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2005/05/25 18:20:46 $  
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2005/05/27 16:58:08 $  
 ######################################################################
 
 LIB = function
@@ -43,4 +43,9 @@ SOURCES += CCallParameters.cpp \
 1.depends  = CKinFunctionFlexLexer.lpp 
 1.commands = $$myLex
 QMAKE_EXTRA_UNIX_TARGETS += 1
+
+2.target   = CEvaluationFlexLexer.cpp
+2.depends  = CEvaluationFlexLexer.lpp 
+2.commands = $$myLex
+QMAKE_EXTRA_UNIX_TARGETS += 2
 
