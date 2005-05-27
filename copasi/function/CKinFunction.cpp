@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/24 13:23:40 $
+   $Date: 2005/05/27 18:06:28 $
    End CVS Header */
 
 /**
@@ -23,7 +23,7 @@
 #include "copasi.h"
 #include "mathematics.h"
 
-#include "FlexLexer.h"
+#include "CKinFunctionFlexLexer.h"
 #include "CKinFunction.h"
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiContainer.h"
@@ -318,7 +318,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                           // this is an error
+        case N_NOP:                                            // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
