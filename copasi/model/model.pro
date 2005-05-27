@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.10 $ $Author: ssahle $ $Date: 2005/05/25 09:50:08 $  
+# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/05/27 19:35:48 $  
 ######################################################################
 
 LIB = model
@@ -21,6 +21,7 @@ HEADERS += CChemEq.h \
            #CParticleNumberList.h \
            CReaction.h \
            CReactionInterface.h \
+           CScanInputFlexLexer.h \
            CSpec2Model.h \
            CSpecLine.h \
            CState.h \
