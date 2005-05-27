@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 21:00:58 $
+   $Date: 2005/05/27 21:14:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -48,11 +48,11 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
       break;
 
     case SEC:
-      mpFunction = NULL;
+      mpFunction = csc;
       break;
 
     case CSC:
-      mpFunction = NULL;
+      mpFunction = cot;
       break;
 
     case COT:
@@ -72,15 +72,15 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
       break;
 
     case SECH:
-      mpFunction = NULL;
+      mpFunction = sech;
       break;
 
     case CSCH:
-      mpFunction = NULL;
+      mpFunction = csch;
       break;
 
     case COTH:
-      mpFunction = NULL;
+      mpFunction = coth;
       break;
 
     case ARCSIN:
@@ -96,39 +96,39 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
       break;
 
     case ARCSEC:
-      mpFunction = NULL;
+      mpFunction = arcsec;
       break;
 
     case ARCCSC:
-      mpFunction = NULL;
+      mpFunction = arccsc;
       break;
 
     case ARCCOT:
-      mpFunction = NULL;
+      mpFunction = arccot;
       break;
 
     case ARCSINH:
-      mpFunction = NULL;
+      mpFunction = asinh;
       break;
 
     case ARCCOSH:
-      mpFunction = NULL;
+      mpFunction = acosh;
       break;
 
     case ARCTANH:
-      mpFunction = NULL;
+      mpFunction = atanh;
       break;
 
     case ARCSECH:
-      mpFunction = NULL;
+      mpFunction = asech;
       break;
 
     case ARCCSCH:
-      mpFunction = NULL;
+      mpFunction = acsch;
       break;
 
     case ARCCOTH:
-      mpFunction = NULL;
+      mpFunction = acoth;
       break;
 
     case SQRT:
