@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 21:14:54 $
+   $Date: 2005/05/27 21:17:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -44,19 +44,19 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
       break;
 
     case TAN:
-      mpFunction = sec;
+      mpFunction = tan;
       break;
 
     case SEC:
-      mpFunction = csc;
+      mpFunction = sec;
       break;
 
     case CSC:
-      mpFunction = cot;
+      mpFunction = csc;
       break;
 
     case COT:
-      mpFunction = NULL;
+      mpFunction = cot;
       break;
 
     case SINH:
