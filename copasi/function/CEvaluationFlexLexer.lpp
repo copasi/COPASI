@@ -117,6 +117,6 @@ PI mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::PI, yytext);
      
 [ \t\r\n]+ /* eat up whitespace */
      
-.     return mPosition;
+.     return freeNodeList(mpNodeList); mPosition;
      
 %%

@@ -1,25 +1,59 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CEvaluationFlexLexer.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 18:10:50 $
+   $Date: 2005/05/27 18:51:48 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationFlexLexer
 #define COPASI_CEvaluationFlexLexer
 
+/**
+ * This is a bas class for the CEvaluationFlexLexer adding member
+ * attributes to enhance the internal functionality.
+ */
 class CEvaluationFlexLexerBase
   {
   public:
+    /**
+     * Default constructor
+     */
     CEvaluationFlexLexerBase():
         mpNode(NULL),
         mpNodeList(NULL),
         mPosition(0)
     {}
 
+    /**
+     * Destructor
+     */
+    ~CEvaluationFlexLexerBase() {}
+
+    /**
+     * Retrieve the generated list of nodes.
+     * The user owns the list and is repsonsible for the destruction.
+     * Please note that each call to yylex() creates a new list which
+     * must be destoyed.
+     * @return std::vector< CEvaluationNode * > * pNodeList
+     */
     std::vector< CEvaluationNode * > *getNodeList()
     {return mpNodeList;}
+
+    /**
+     * Convenient function to free the list of generated nodes.
+     * @param std::vector< CEvaluationNode * > * pNodeList
+     */
+    static void freeNodeList(std::vector< CEvaluationNode * > * pNodeList)
+    {
+      std::vector< CEvaluationNode * >::iterator it = pNodeList->begin();
+      std::vector< CEvaluationNode * >::iterator end = pNodeList->end();
+
+      for (; it != end; ++it)
+        pdelete(*it);
+
+      pdelete(pNodeList);
+    }
 
   protected:
     CEvaluationNode * mpNode;
