@@ -59,11 +59,19 @@ SOURCE=.\CCallParameters.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationFlexLexer.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNode.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\CEvaluationNodeConstant.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeFunction.cpp
 # End Source File
 # Begin Source File
 
@@ -123,11 +131,19 @@ SOURCE=.\CCallParameters.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationFlexLexer.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNode.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\CEvaluationNodeConstant.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeFunction.h
 # End Source File
 # Begin Source File
 
@@ -182,6 +198,10 @@ SOURCE=.\FunctionDB.xml.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\CEvaluationFlexLexer.lpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\CKinFunctionFlexLexer.lpp

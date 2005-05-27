@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2005/05/27 18:10:50 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2005/05/27 21:00:58 $  
 ######################################################################
 
 LIB = function
@@ -12,6 +12,7 @@ HEADERS += CCallParameters.h \
            CEvaluationFlexLexer.h \
            CEvaluationNode.h \
            CEvaluationNodeConstant.h \
+           CEvaluationNodeFunction.h \
            CEvaluationNodeNumber.h \
            CEvaluationNodeOperator.h \
            CFunction.h \
@@ -28,6 +29,7 @@ SOURCES += CCallParameters.cpp \
            CEvaluationFlexLexer.cpp \
            CEvaluationNode.cpp \
            CEvaluationNodeConstant.cpp \
+           CEvaluationNodeFunction.cpp \
            CEvaluationNodeNumber.cpp \
            CEvaluationNodeOperator.cpp \
            CFunction.cpp \
