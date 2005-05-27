@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2005/05/27 16:58:08 $  
+# $Revision: 1.9 $ $Author: shoops $ $Date: 2005/05/27 18:10:50 $  
 ######################################################################
 
 LIB = function
@@ -9,6 +9,7 @@ include(../common.pri)
 
 # Input
 HEADERS += CCallParameters.h \
+           CEvaluationFlexLexer.h \
            CEvaluationNode.h \
            CEvaluationNodeConstant.h \
            CEvaluationNodeNumber.h \
@@ -24,6 +25,7 @@ HEADERS += CCallParameters.h \
            CUsageRange.h
 
 SOURCES += CCallParameters.cpp \
+           CEvaluationFlexLexer.cpp \
            CEvaluationNode.cpp \
            CEvaluationNodeConstant.cpp \
            CEvaluationNodeNumber.cpp \

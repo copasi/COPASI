@@ -1,31 +1,31 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CEvaluationFlexLexer.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 16:58:08 $
+   $Date: 2005/05/27 18:10:50 $
    End CVS Header */
-
-#include "FlexLexer.h"
 
 #ifndef COPASI_CEvaluationFlexLexer
 #define COPASI_CEvaluationFlexLexer
 
-class CEvaluationFlexLexerBase;
-{
-public:
-  CEvaluationFlexLexerBase():
-      mpNodes(NULL),
-      mPosition(0)
-  {}
+class CEvaluationFlexLexerBase
+  {
+  public:
+    CEvaluationFlexLexerBase():
+        mpNode(NULL),
+        mpNodeList(NULL),
+        mPosition(0)
+    {}
 
-  std::vector< CEvaluationNode * > *getNodes()
-  {return mpNodes;}
+    std::vector< CEvaluationNode * > *getNodeList()
+    {return mpNodeList;}
 
-protected:
-  std::vector< CEvaluationNode * > * mpNodes;
-  unsigned C_INT32 mPosition;
-};
+  protected:
+    CEvaluationNode * mpNode;
+    std::vector< CEvaluationNode * > * mpNodeList;
+    unsigned C_INT32 mPosition;
+  };
 
 class CEvaluationFlexLexer : public FlexLexer, public CEvaluationFlexLexerBase
   {
