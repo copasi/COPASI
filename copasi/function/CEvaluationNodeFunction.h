@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 21:00:58 $
+   $Date: 2005/05/27 21:12:10 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -127,25 +127,14 @@ class CEvaluationNodeFunction : public CEvaluationNode
     static inline C_FLOAT64 arccot(C_FLOAT64 value)
     {return atan(1.0 / value);}
 
-#ifdef WIN32
-    static inline C_FLOAT64 arcsinh(C_FLOAT64 value)
-    {return asinh(value);}
+    static inline C_FLOAT64 asech(C_FLOAT64 value)
+    {return acosh(1.0 / value);}
 
-    static inline C_FLOAT64 arccosh(C_FLOAT64 value)
-    {return acosh(value);}
+    static inline C_FLOAT64 acsch(C_FLOAT64 value)
+    {return asinh(1.0 / value);}
 
-    static inline C_FLOAT64 arctanh(C_FLOAT64 value)
-    {return atanh(value);}
-#endif WIN32
-
-    static inline C_FLOAT64 arcsech(C_FLOAT64 value)
-    {return arccosh(1.0 / value);}
-
-    static inline C_FLOAT64 arccsch(C_FLOAT64 value)
-    {return arcsinh(1.0 / value);}
-
-    static inline C_FLOAT64 arccoth(C_FLOAT64 value)
-    {return arctanh(1.0 / value);}
+    static inline C_FLOAT64 acoth(C_FLOAT64 value)
+    {return atanh(1.0 / value);}
 
     // Attributes
   private:
