@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/25 18:20:53 $
+   $Date: 2005/05/27 18:08:59 $
    End CVS Header */
 
 #include "copasi.h"
@@ -17,17 +17,17 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
   switch (CEvaluationNode::type(type))
     {
     case CEvaluationNode::CONSTANT:
-      pNode = new CEvaluationNodeConstant(subType(type),
+      pNode = new CEvaluationNodeConstant((CEvaluationNodeConstant::SubType) subType(type),
                                           contents);
       break;
 
     case CEvaluationNode::NUMBER:
-      pNode = new CEvaluationNodeNumber(subType(type),
+      pNode = new CEvaluationNodeNumber((CEvaluationNodeNumber::SubType) subType(type),
                                         contents);
       break;
 
     case CEvaluationNode::OPERATOR:
-      pNode = new CEvaluationNodeOperator(subType(type),
+      pNode = new CEvaluationNodeOperator((CEvaluationNodeOperator::SubType) subType(type),
                                           contents);
       break;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/25 15:55:42 $
+   $Date: 2005/05/27 18:08:59 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,7 +13,7 @@ CEvaluationNodeNumber::CEvaluationNodeNumber():
     CEvaluationNode(CEvaluationNode::INVALID, "")
 {}
 
-CEvaluationNodeNumber::CEvaluationNodeNumber(const Type & subType,
+CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
     const Data & data):
     CEvaluationNode((Type) (CEvaluationNode::NUMBER | subType), data)
 {

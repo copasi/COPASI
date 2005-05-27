@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/25 17:56:51 $
+   $Date: 2005/05/27 18:08:59 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeConstant
@@ -14,13 +14,6 @@
  */
 class CEvaluationNodeConstant : public CEvaluationNode
   {
-    /**
-     * friend declaration
-     */
-    friend
-    CEvaluationNode * CEvaluationNode::create(const Type & type,
-        const Data & data);
-
   public:
     /**
      * Enumeration of possible node types.
@@ -41,15 +34,15 @@ class CEvaluationNodeConstant : public CEvaluationNode
      */
     CEvaluationNodeConstant();
 
+  public:
     /**
      * Default constructor
-     * @param const Type & subType
+     * @param const SubType & subType
      * @param const Data & data
      */
-    CEvaluationNodeConstant(const Type & subType,
+    CEvaluationNodeConstant(const SubType & subType,
                             const Data & data);
 
-  public:
     /**
      * Copy constructor
      * @param const CEvaluationNodeConstant & src
