@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/25 09:48:48 $
+   $Date: 2005/05/27 12:07:30 $
    End CVS Header */
 
 /**
@@ -24,7 +24,79 @@ class CModel;
 
 // #define METAB_MOIETY 7
 
-class CModelValue : public CCopasiContainer
+/**
+ * CModelEntity is a base class for CCompartment, CMetab and CModelValue.
+ * These three classes have in common that (in the long run) they can each be model variables 
+ * (subject to ODEs), constant, or subject to algebraic assignments.
+ * In addition, the CMetab objects can also be subject to reactions, and conservation rules.
+ *
+ */
+class CModelEntity : public CCopasiContainer
+  {
+  public:
+    /**
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CModelEntity(const std::string & name = "NoName",
+                 const CCopasiContainer * pParent = NULL,
+                 const std::string & type = "ModelEntity",
+                 const unsigned C_INT32 & flag = CCopasiObject::Container | CCopasiObject::ValueDbl);
+
+    /**
+     * Copy constructor
+     * @param const CModelValue & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CModelEntity(const CModelEntity & src,
+                 const CCopasiContainer * pParent = NULL);
+
+    /**
+     *  Destructor.
+     */
+    ~CModelEntity();
+  };
+
+/*
+Table of possible CModelEntity objects with different Status
+ 
+                        current status        corresponding sbml object
+-------------------------------------------------------------------------------------------------
+CMetab:                                       Species
+ 
+FIXED                   implemented           constant=true
+SUBJECT_TO_REACTION     implemented           constant=false, boundaryCondition=false
+DEPENDENT               implemented           constant=false, boundaryCondition=false
+ODE                     not implemented       constant=false, boundaryCondition=true, rate rule
+ASSIGNMENT              not implemented       constant=false, boundaryCondition=true, assignment rule
+ 
+ 
+CCompartment:                                 Compartment
+ 
+FIXED                   implemented           constant=true
+SUBJECT_TO_REACTION     -
+DEPENDENT               -
+ODE                     not implemented       constant=false, rate rule
+ASSIGNMENT              not implemented       constant=false, assignment rule
+  
+ 
+CModelValue:                                  Parameter
+ 
+FIXED                   in progress           constant=true
+SUBJECT_TO_REACTION     -
+DEPENDENT               -
+ODE                     not implemented       constant=false, rate rule
+ASSIGNMENT              not implemented       constant=false, rate rule
+  
+ */
+
+/**
+ * CModelValue represents an entity in the model that has a value but is not a concentration (like species) 
+ * or a volume (like compartments).
+ * It correspondents to global parameters in sbml
+ */
+class CModelValue : public CModelEntity
   {
   public:
     /**

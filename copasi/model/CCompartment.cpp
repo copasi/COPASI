@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/15 17:01:22 $
+   $Date: 2005/05/27 12:07:30 $
    End CVS Header */
 
 // CCompartment
@@ -28,7 +28,7 @@
 
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Compartment"),
+    CModelEntity(name, pParent, "Compartment"),
     mKey(GlobalKeys.add("Compartment", this)),
     mInitialVolume(1.0),
     mVolume(1.0),
@@ -41,7 +41,7 @@ CCompartment::CCompartment(const std::string & name,
 
 CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
+    CModelEntity(src, pParent),
     mKey(GlobalKeys.add("Compartment", this)),
     mInitialVolume(src.mInitialVolume),
     mVolume(src.mVolume),

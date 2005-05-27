@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/20 17:06:45 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 12:07:30 $
    End CVS Header */
 
 #include <iostream>
@@ -51,10 +51,8 @@ C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number,
 
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Metabolite",
-                     CCopasiObject::Container |
-                     CCopasiObject::ValueDbl |
-                     CCopasiObject::NonUniqueName),
+    CModelEntity(name, pParent, "Metabolite",
+                 CCopasiObject::NonUniqueName),
     mKey(GlobalKeys.add("Metabolite", this)),
     mConc(-1.0),
     mIConc(-1.0),
@@ -81,7 +79,7 @@ CMetab::CMetab(const std::string & name,
 
 CMetab::CMetab(const CMetab & src,
                const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
+    CModelEntity(src, pParent),
     mKey(GlobalKeys.add("Metabolite", this)),
     mConc(src.mConc),
     mIConc(src.mIConc),
@@ -174,8 +172,8 @@ void CMetab::setConcentration(const C_FLOAT64 concentration)
             * mpModel->getQuantity2NumberFactor();
 
 #ifdef COPASI_DEBUG
-  if (mStatus == METAB_FIXED)
-    std::cout << "warning: set the transient concentration on a fixed metab" << std::endl;
+  //if (mStatus == METAB_FIXED)
+  //std::cout << "warning: set the transient concentration on a fixed metab" << std::endl;
 #endif
 }
 
@@ -202,9 +200,9 @@ void CMetab::setNumber(const C_FLOAT64 number)
           * mpModel->getNumber2QuantityFactor();
   mNumber = number;
 
-#ifdef COPASI_DEBUG
-  if (mStatus == METAB_FIXED)
-    std::cout << "warning: set the transient particle number on a fixed metab" << std::endl;
+#ifdef COPASI_DEBUG 
+  //  if (mStatus == METAB_FIXED)
+  //    std::cout << "warning: set the transient particle number on a fixed metab" << std::endl;
 #endif
 }
 

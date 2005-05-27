@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/20 17:06:45 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 12:07:30 $
    End CVS Header */
 
 /**
@@ -18,7 +18,7 @@
 #include <string>
 #include <iostream>
 
-#include "report/CCopasiContainer.h"
+#include "model/CModelValue.h"
 
 class CCompartment;
 class CReadConfig;
@@ -29,7 +29,7 @@ class CModel;
 #define METAB_MOIETY 7
 
 /** @dia:pos 80.8289,51.5961 */
-class CMetab : public CCopasiContainer
+class CMetab : public CModelEntity
   {
   public:
     /**

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/25 09:48:48 $
+   $Date: 2005/05/27 12:07:30 $
    End CVS Header */
 
 #include <iostream>
@@ -20,6 +20,41 @@
 #include "CModel.h"
 #include "CModelValue.h"
 
+CModelEntity::CModelEntity(const std::string & name,
+                           const CCopasiContainer * pParent,
+                           const std::string & type,
+                           const unsigned C_INT32 & flag):
+    CCopasiContainer(name, pParent, type, flag)
+    //mValue(-1.0),
+    //mIValue(-1.0),
+    //mRate(0.0),
+    //    mTT(0.0),
+    //mStatus(METAB_VARIABLE)
+    //    mpModel(NULL)
+{
+  //initObjects();
+  CONSTRUCTOR_TRACE;
+}
+
+CModelEntity::CModelEntity(const CModelEntity & src,
+                           const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent)
+    //mValue(src.mValue),
+    //mIValue(src.mIValue),
+    //mRate(src.mRate),
+    //    mTT(src.mTT),
+    //mStatus(src.mStatus)
+    //    mpModel(NULL)
+{
+  //initObjects();
+  CONSTRUCTOR_TRACE;
+}
+
+CModelEntity::~CModelEntity()
+{
+  DESTRUCTOR_TRACE;
+}
+
 //static
 const std::string CModelValue::StatusName[] =
   {"fixed", "independent", "dependent", "unused", ""};
@@ -30,11 +65,8 @@ const char * CModelValue::XMLStatus[] =
 
 CModelValue::CModelValue(const std::string & name,
                          const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Metabolite",
-                     CCopasiObject::Container |
-                     CCopasiObject::ValueDbl |
-                     CCopasiObject::NonUniqueName),
-    mKey(GlobalKeys.add("Metabolite", this)),
+    CModelEntity(name, pParent, "ModelValue"),
+    mKey(GlobalKeys.add("ModelValue", this)),
     mValue(-1.0),
     mIValue(-1.0),
     mRate(0.0),
@@ -48,8 +80,8 @@ CModelValue::CModelValue(const std::string & name,
 
 CModelValue::CModelValue(const CModelValue & src,
                          const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Metabolite", this)),
+    CModelEntity(src, pParent),
+    mKey(GlobalKeys.add("ModelValue", this)),
     mValue(src.mValue),
     mIValue(src.mIValue),
     mRate(src.mRate),

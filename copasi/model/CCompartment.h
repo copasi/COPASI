@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/08 02:53:53 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 12:07:30 $
    End CVS Header */
 
 /**
@@ -19,7 +19,7 @@
 
 #include <string>
 
-#include "report/CCopasiContainer.h"
+#include "CModelValue.h"
 #include "utilities/CCopasiVector.h"
 #include "CMetab.h"
 
@@ -27,7 +27,7 @@ class CReadConfig;
 //class CWriteConfig;
 
 /** @dia:pos 128.756,34.703 */
-class CCompartment : public CCopasiContainer
+class CCompartment : public CModelEntity
   {
     // Attributes
 
