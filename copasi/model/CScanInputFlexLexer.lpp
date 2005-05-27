@@ -1,16 +1,18 @@
-%{
-
-#include "CSpecLine.h"
-#include "CDeTerm.h"
-#include <iostream>
-
-%}
-
-%option c++
 %option outfile="CScanInputFlexLexer.cpp"
 %option prefix="CScanInput"
 %option noyywrap
 %option never-interactive
+%option c++
+
+%{
+#include <iostream>
+
+#include "copasi.h"
+
+#include "CSpecLine.h"
+#include "CDeTerm.h"
+#include "CScanInputFlexLexer.h"
+%}
 
 ident [_!@%~]?[a-zA-Z]+[_!@%~a-zA-Z0-9]*[ \t]*
 
