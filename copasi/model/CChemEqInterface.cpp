@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:56 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:06:54 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -464,7 +464,7 @@ bool CChemEqInterface::createNonExistingMetabs(CModel * model) const
           model->createCompartment(compName, 1);
         model->createMetabolite(CMetabNameInterface::extractMetabName(model, *it),
                                 compName,
-                                0.1, CMetab::METAB_VARIABLE);
+                                0.1, CModelEntity::REACTIONS);
       }
 
     return ret;

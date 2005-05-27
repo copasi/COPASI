@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2005/04/19 15:32:16 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:08:14 $
    End CVS Header */
 
 /**
@@ -740,7 +740,7 @@ void CHybridMethod::setupBalances()
           newElement.mIndex = mpModel->getMetabolites().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
-          if ((newElement.mpMetabolite->getStatus()) != CMetab::METAB_FIXED)
+          if ((newElement.mpMetabolite->getStatus()) != CModelEntity::FIXED)
             {
               if (newElement.mMultiplicity > maxBalance) maxBalance = newElement.mMultiplicity;
               mLocalBalances[i].push_back(newElement); // element is copied for the push_back
@@ -1286,7 +1286,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                           // Everything !!!
+    case 0:                            // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << std::endl;
       os << "current time: " << mpCurrentState->getTime() << std::endl;
@@ -1396,7 +1396,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                            // Variable values only
+    case 1:                             // Variable values only
       os << "current time: " << mpCurrentState->getTime() << std::endl;
       /*
       case 1:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:08:14 $
    End CVS Header */
 
 #ifdef WIN32
@@ -419,7 +419,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
           bb.mIndex = mpModel->getMetabolites().getIndex(&(*bbb)[j]->getMetabolite());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
-          if (((*bbb)[j]->getMetabolite().getStatus()) != CMetab::METAB_FIXED)
+          if (((*bbb)[j]->getMetabolite().getStatus()) != CModelEntity::FIXED)
             {
               if (bb.mMultiplicity > maxBalance) maxBalance = bb.mMultiplicity;
               mLocalBalances[i].push_back(bb);
@@ -446,7 +446,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
   mMaxBalance = maxBalance;
   //std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =  /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =   /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
@@ -496,7 +496,7 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
   for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
       if (fabs(balances[i]->getMultiplicity()) >= 0.1)
-        if (balances[i]->getMetabolite().getStatus() != CMetab::METAB_FIXED)
+        if (balances[i]->getMetabolite().getStatus() != CModelEntity::FIXED)
           {
             retset->insert(balances[i]->getMetabolite().getKey());
             //std::cout << " " << balances[i]->getMetabolite().getObjectName() << ":" << balances[i]->getMetabolite().getKey();

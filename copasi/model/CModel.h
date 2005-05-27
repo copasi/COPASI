@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/25 16:29:56 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:06:54 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -899,7 +899,7 @@ class CModel : public CCopasiContainer
     CMetab* createMetabolite(const std::string & name,
                              const std::string & compartment,
                              const C_FLOAT64 & iconc = 1.0,
-                             const CMetab::Status & status = CMetab::METAB_VARIABLE);
+                             const CModelEntity::Status & status = CModelEntity::REACTIONS);
 
     /* Remove a metabolite from the model */
     bool removeMetabolite(const std::string & key);

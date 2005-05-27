@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/20 18:48:59 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:12:38 $
    End CVS Header */
 
 /**
@@ -386,7 +386,7 @@ bool CMathModel::buildEqList()
           const CMetab * pMetab = &(*ChemEq)[j]->getMetabolite();
 
           /* skip fixed metabolites */
-          if (pMetab->getStatus() == CMetab::METAB_FIXED) continue;
+          if (pMetab->getStatus() == CModelEntity::FIXED) continue;
 
           CMathNodeFunction * pFunction = createFunction(pReaction);
           CMathNode * pScalingFactor = createScalingFactor(pReaction);

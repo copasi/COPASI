@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.120 $
+   $Revision: 1.121 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/20 17:18:06 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:10:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -294,7 +294,7 @@ bool MetabolitesWidget1::loadFromMetabolite()
   mEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
   mEditRate->setReadOnly(true);
 
-  if (mpMetab->getStatus() == CMetab::METAB_FIXED)
+  if (mpMetab->getStatus() == CModelEntity::FIXED)
     mCheckStatus->setChecked(true);
   else
     mCheckStatus->setChecked(false);
@@ -391,18 +391,18 @@ bool MetabolitesWidget1::saveToMetabolite()
   //fixed?
   if (mCheckStatus->isChecked() == true)
     {
-      if (mpMetab->getStatus() != CMetab::METAB_FIXED)
+      if (mpMetab->getStatus() != CModelEntity::FIXED)
         {
-          mpMetab->setStatus(CMetab::METAB_FIXED);
+          mpMetab->setStatus(CModelEntity::FIXED);
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
           CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }
   else
     {
-      if (mpMetab->getStatus() != CMetab::METAB_VARIABLE) //TODO: should be ...==METAB_FIXED ?
+      if (mpMetab->getStatus() != CModelEntity::REACTIONS) //TODO: should be ...==METAB_FIXED ?
         {
-          mpMetab->setStatus(CMetab::METAB_VARIABLE);
+          mpMetab->setStatus(CModelEntity::REACTIONS);
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
           CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
@@ -481,7 +481,7 @@ void MetabolitesWidget1::slotBtnNewClicked()
   std::string name = "metabolite";
   int i = 0;
   CMetab* mpMetab;
-  while (!(mpMetab = CCopasiDataModel::Global->getModel()->createMetabolite(name, "", 1.0, CMetab::METAB_VARIABLE)))
+  while (!(mpMetab = CCopasiDataModel::Global->getModel()->createMetabolite(name, "", 1.0, CModelEntity::REACTIONS)))
     {
       i++;
       name = "metabolite_";
@@ -548,7 +548,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                                    // Yes or Enter
+    case 0:                                                     // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -571,7 +571,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                                    // No or Escape
+    case 1:                                                     // No or Escape
       break;
     }
 }

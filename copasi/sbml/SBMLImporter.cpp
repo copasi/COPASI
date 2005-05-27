@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/24 12:30:56 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:08:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -256,11 +256,11 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
   if (sbmlSpecies->getConstant() || sbmlSpecies->getBoundaryCondition())
     {
-      copasiMetabolite->setStatus(CMetab::METAB_FIXED);
+      copasiMetabolite->setStatus(CModelEntity::FIXED);
     }
   else
     {
-      copasiMetabolite->setStatus(CMetab::METAB_VARIABLE);
+      copasiMetabolite->setStatus(CModelEntity::REACTIONS);
     }
   if (sbmlSpecies->isSetInitialAmount())
     {

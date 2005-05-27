@@ -1,16 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 12:07:30 $
+   $Date: 2005/05/27 16:06:54 $
    End CVS Header */
-
-/**
- *  CMetab class.
- *  Derived from Gepasi's cmetab.cpp. (C) Pedro Mendes 1995-2000.
- *  Converted for Copasi by Stefan Hoops 2001
- */
 
 #ifndef COPASI_CModelValue
 #define COPASI_CModelValue
@@ -22,8 +16,6 @@
 
 class CModel;
 
-// #define METAB_MOIETY 7
-
 /**
  * CModelEntity is a base class for CCompartment, CMetab and CModelValue.
  * These three classes have in common that (in the long run) they can each be model variables 
@@ -34,6 +26,29 @@ class CModel;
 class CModelEntity : public CCopasiContainer
   {
   public:
+    /**
+     *  The valid states for metabolites
+     */
+    enum Status
+    {
+      FIXED = 0,  //the entity is constant (for metabs even if they are part of a reaction)
+      REACTIONS,  //applies only for metabs, the metab concentration is changed by reactions
+      DEPENDENT,  //applies only for metabs, the metab concentration is determined by conservation rules
+      ODE,        //the entity is changed by an ordinary differential equation
+      ASSIGNMENT, //the entity is changed by an assignment rule
+      UNUSED
+    };
+
+    /**
+     * String representation of the states
+     */
+    static const std::string StatusName[];
+
+    /**
+     * XML representation of the states
+     */
+    static const char * XMLStatus[];
+
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -56,6 +71,54 @@ class CModelEntity : public CCopasiContainer
      *  Destructor.
      */
     ~CModelEntity();
+
+    /**
+     *
+     */
+    const CModelEntity::Status & getStatus() const;
+
+    /**
+     *
+     */
+    const C_FLOAT64 & getValue() const;
+
+    /**
+     *
+     */
+    const C_FLOAT64 & getInitialValue() const;
+
+    /**
+     * Return rate of production of this entity
+     */
+    const C_FLOAT64 & getRate() const;
+
+  protected:
+    /**
+     *  Concentration of the metabolite as double.
+     */
+    C_FLOAT64 mValue;
+
+    /**
+     *  Initial concentration of the metabolite as double
+     */
+    C_FLOAT64 mIValue;
+
+    /**
+     *  Rate of production of this metabolite
+     *  (concentration/time).
+     */
+    C_FLOAT64 mRate;
+
+    /**
+     *  Transition time of the metabolite
+     */ 
+    //C_FLOAT64 mTT;
+
+    /**
+     *  Status of the metabolite.  
+     *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
+     */
+    Status mStatus;
   };
 
 /*
@@ -98,70 +161,12 @@ ASSIGNMENT              not implemented       constant=false, rate rule
  */
 class CModelValue : public CModelEntity
   {
-  public:
-    /**
-     *  The valid states for metabolites
-     */
-    enum Status
-    {
-      METAB_FIXED = 0,
-      METAB_VARIABLE,
-      METAB_DEPENDENT,
-      METAB_UNUSED
-    };
-
-  public:
-    /**
-     * String representation of the states
-     */
-    static const std::string StatusName[];
-
-    /**
-     * XML representation of the states
-     */
-    static const char * XMLStatus[];
-
     // Attributes
   private:
     /**
      *  Key of the metabolite
      */
     std::string mKey;
-
-    /**
-     *  Concentration of the metabolite as double.
-     */
-    C_FLOAT64 mValue;
-
-    /**
-     *  Initial concentration of the metabolite as double
-     */
-    C_FLOAT64 mIValue;
-
-    /**
-     *  Rate of production of this metabolite
-     *  (concentration/time).
-     */
-    C_FLOAT64 mRate;
-
-    /**
-     *  Transition time of the metabolite
-     */ 
-    //C_FLOAT64 mTT;
-
-    /**
-     *  Status of the metabolite.  
-     *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-     */
-    Status mStatus;
-
-    /**
-     *  pointer to the model the metabolite is located in.
-     *  The metab needs to know about the unit for concentrations.
-     */
-    /** @dia:route 15,38; h,108.729,55.8961,170.684,44.1423,177.081 */
-    //const CModel * mpModel;
-    //TODO
 
     // Operations
   public:
@@ -197,19 +202,6 @@ class CModelValue : public CModelEntity
     //void initModel();
 
     /**
-     *  Assignment operator.
-     */ 
-    //CModelValue & operator=(const CModelValueOld & rhs);
-
-    /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return Fail
-     */ 
-    //C_INT32 load(CReadConfig & configbuffer);
-
-    /**
      * Sets the parent of the metabolite;
      * @param const CCopasiContainer * pParent
      * @return bool success
@@ -230,42 +222,12 @@ class CModelValue : public CModelEntity
     /**
      *
      */
-    const CModelValue::Status & getStatus() const;
-
-    /**
-     *
-     */
     void setValue(const C_FLOAT64 v);
 
     /**
      *
      */
-    const C_FLOAT64 & getValue() const;
-
-    /**
-     *
-     */
     bool setInitialValue(const C_FLOAT64 & iV);
-
-    /**
-     *
-     */
-    const C_FLOAT64 & getInitialValue() const;
-
-    /**
-     *
-     */ 
-    //void setModel(CModel * model);
-
-    /**
-     *
-     */ 
-    //const CModel * getModel() const;
-
-    /**
-     * Return rate of production of this metaboLite
-     */
-    const C_FLOAT64 & getRate() const;
 
     /**
      *  Set the rate (dmValue/dt)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 12:07:30 $
+   $Date: 2005/05/27 16:06:54 $
    End CVS Header */
 
 #include <iostream>
@@ -26,12 +26,12 @@
 const CCompartment * CMetab::mpParentCompartment = NULL;
 
 //static
-const std::string CMetab::StatusName[] =
-  {"fixed", "independent", "dependent", "unused", ""};
+//const std::string CMetab::StatusName[] =
+//  {"fixed", "independent", "dependent", "unused", ""};
 
 //static
-const char * CMetab::XMLStatus[] =
-  {"fixed", "variable", "variable", "variable", NULL};
+//const char * CMetab::XMLStatus[] =
+//  {"fixed", "variable", "variable", "variable", NULL};
 
 //static
 void CMetab::setParentCompartment(const CCompartment * parentCompartment)
@@ -60,7 +60,7 @@ CMetab::CMetab(const std::string & name,
     mINumber(-1.0),
     mRate(0.0),
     mTT(0.0),
-    mStatus(METAB_VARIABLE),
+    mStatus(REACTIONS),
     mpCompartment(NULL),
     mpModel(NULL)
 {
@@ -185,7 +185,7 @@ bool CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
   mINumber = initialConcentration * mpCompartment->getVolume()
              * mpModel->getQuantity2NumberFactor();
 
-  if (mStatus == METAB_FIXED)
+  if (mStatus == FIXED)
     setConcentration(initialConcentration);
 
   if (mpModel)
@@ -200,7 +200,7 @@ void CMetab::setNumber(const C_FLOAT64 number)
           * mpModel->getNumber2QuantityFactor();
   mNumber = number;
 
-#ifdef COPASI_DEBUG 
+#ifdef COPASI_DEBUG
   //  if (mStatus == METAB_FIXED)
   //    std::cout << "warning: set the transient particle number on a fixed metab" << std::endl;
 #endif
@@ -214,7 +214,7 @@ bool CMetab::setInitialNumber(const C_FLOAT64 & initialNumber)
            * mpModel->getNumber2QuantityFactor();
   mINumber = initialNumber;
 
-  if (mStatus == METAB_FIXED)
+  if (mStatus == FIXED)
     setNumber(initialNumber);
 
   if (mpModel)
@@ -228,7 +228,7 @@ bool CMetab::setInitialNumber(const C_FLOAT64 & initialNumber)
 void CMetab::setStatus(const CMetab::Status & status)
 {
   mStatus = status;
-  if (mStatus == METAB_FIXED)
+  if (mStatus == FIXED)
     {
       if (mpCompartment)
         setNumber(getInitialNumber());
@@ -288,8 +288,8 @@ void CMetab::setNumberRate(const C_FLOAT64 & rate)
           * mpModel->getNumber2QuantityFactor();
 }
 
-void CMetab::setConcentrationRate(const C_FLOAT64 & rate)
-{mRate = rate;}
+//void CMetab::setConcentrationRate(const C_FLOAT64 & rate)
+//{mRate = rate;}
 
 void * CMetab::getReference() const
   {return const_cast<C_FLOAT64 *>(&mConc);}
@@ -348,7 +348,7 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
                      "The file specifies a non-existing type "
                      "for '%s'.\nReset to internal metabolite.",
                      getObjectName().c_str());
-      mStatus = CMetab::METAB_VARIABLE;
+      mStatus = CMetab::REACTIONS;
     }
 
   // sanity check
@@ -381,7 +381,7 @@ CMetabOld::CMetabOld(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Old Metabolite"),
     mIConc(1.0),
-    mStatus(CMetab::METAB_VARIABLE),
+    mStatus(CModelEntity::REACTIONS),
     mCompartment()
 {CONSTRUCTOR_TRACE;}
 
@@ -435,7 +435,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
                      "The file specifies a non-existing type "
                      "for '%s'.\nReset to internal metabolite.",
                      getObjectName().c_str());
-      mStatus = CMetab::METAB_VARIABLE;
+      mStatus = CModelEntity::REACTIONS;
     }
 
   // sanity check

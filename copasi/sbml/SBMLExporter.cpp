@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/23 17:22:08 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:08:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -345,8 +345,8 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolit
   Species* sbmlSpecies = new Species();
   sbmlSpecies->setId(copasiMetabolite->getKey().c_str());
   sbmlSpecies->setName(copasiMetabolite->getObjectName().c_str());
-  sbmlSpecies->setBoundaryCondition(copasiMetabolite->getStatus() == CMetab::METAB_FIXED);
-  sbmlSpecies->setConstant(copasiMetabolite->getStatus() == CMetab::METAB_FIXED);
+  sbmlSpecies->setBoundaryCondition(copasiMetabolite->getStatus() == CModelEntity::FIXED);
+  sbmlSpecies->setConstant(copasiMetabolite->getStatus() == CModelEntity::FIXED);
   sbmlSpecies->setCompartment(copasiMetabolite->getCompartment()->getKey().c_str());
   sbmlSpecies->setInitialConcentration(copasiMetabolite->getInitialConcentration());
   return sbmlSpecies;

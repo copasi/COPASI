@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2005/04/20 14:21:57 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:08:14 $
    End CVS Header */
 
 /**
@@ -324,7 +324,7 @@ void CTauLeapMethod::setupBalances()
           newElement.mIndex = mpModel->getMetabolites().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
-          if ((newElement.mpMetabolite->getStatus()) != CMetab::METAB_FIXED)
+          if ((newElement.mpMetabolite->getStatus()) != CModelEntity::FIXED)
             mLocalBalances[i].push_back(newElement); // element is copied for the push_back
         }
 

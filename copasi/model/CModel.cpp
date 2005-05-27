@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.221 $
+   $Revision: 1.222 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/25 09:49:29 $
+   $Date: 2005/05/27 16:06:54 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -509,7 +509,7 @@ bool CModel::handleUnusedMetabolites()
       if (itUnused != endUnused && i == *itUnused)
         {
           pMetab = mMetabolites[i];
-          pMetab->setStatus(CMetab::METAB_UNUSED);
+          pMetab->setStatus(CModelEntity::UNUSED);
           UnusedMetabolites[k] = pMetab;
 
           k++;
@@ -638,13 +638,13 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
       // Interupt processing when first dependent metabolite is found.
       if (LU[i][i] == 0.0) break;
 
-      mMetabolitesX[i]->setStatus(CMetab::METAB_VARIABLE);
+      mMetabolitesX[i]->setStatus(CModelEntity::REACTIONS);
     }
 
   iIndependent = i;
 
   for (; i < LU.numRows(); i++)
-    mMetabolitesX[i]->setStatus(CMetab::METAB_DEPENDENT);
+    mMetabolitesX[i]->setStatus(CModelEntity::DEPENDENT);
 
   iVariable = i;
 
@@ -839,7 +839,7 @@ void CModel::buildMoieties()
 
   for (i = imin; i < imax; i++)
     {
-      if (mMetabolitesX[i]->getStatus() == CMetab::METAB_UNUSED) continue;
+      if (mMetabolitesX[i]->getStatus() == CModelEntity::UNUSED) continue;
 
       pMoiety = new CMoiety;
       pMoiety->setName(mMetabolitesX[i]->getObjectName());
@@ -873,7 +873,7 @@ void CModel::setTransitionTimes()
 
   for (i = 0; i < imax; i++)
     {
-      if (CMetab::METAB_FIXED == mMetabolites[i]->getStatus())
+      if (CModelEntity::FIXED == mMetabolites[i]->getStatus())
         mMetabolites[i]->setTransitionTime(DBL_MAX);
       else
         {
@@ -940,7 +940,7 @@ void CModel::initializeMetabolites()
 
   // We reorder mMetabolitesX so that the fixed metabolites appear at the end.
   for (i = 0, mNumFixed = 0; i < imax; i++)
-    if (mMetabolites[i]->getStatus() == CMetab::METAB_FIXED)
+    if (mMetabolites[i]->getStatus() == CModelEntity::FIXED)
       mMetabolitesX[imax - ++mNumFixed] = mMetabolites[i];
     else
       mMetabolitesX[i - mNumFixed] = mMetabolites[i];

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/25 18:16:13 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:08:14 $
    End CVS Header */
 
 /**
@@ -325,7 +325,7 @@ std::vector<CDefaultPlotDescription> CTrajectoryProblem::getListOfDefaultPlotDes
     const CCopasiVector< CMetab > & metabs = mpModel->getMetabolites();
     C_INT32 i, imax = metabs.size();
     for (i = 0; i < imax; ++i)
-      if (metabs[i]->getStatus() == CMetab::METAB_FIXED)
+      if (metabs[i]->getStatus() == CModelEntity::FIXED)
       {fixedMetab = true; break;}
 
     if (fixedMetab)
@@ -414,7 +414,7 @@ bool CTrajectoryProblem::createDefaultPlot(C_INT32 id) const
     unsigned C_INT32 imax = mpModel->getMetabolites().size();
     for (i = 0; i < imax; ++i)
       {
-        if ((mpModel->getMetabolites()[i]->getStatus() != CMetab::METAB_FIXED) || allMetabs)
+        if ((mpModel->getMetabolites()[i]->getStatus() != CModelEntity::FIXED) || allMetabs)
           {
             if ((id == 0) || (id == 2))
               tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"));

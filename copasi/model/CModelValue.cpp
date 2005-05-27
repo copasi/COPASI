@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 12:07:30 $
+   $Date: 2005/05/27 16:06:54 $
    End CVS Header */
 
 #include <iostream>
@@ -20,17 +20,26 @@
 #include "CModel.h"
 #include "CModelValue.h"
 
+//static
+const std::string CModelEntity::StatusName[] =
+  {"fixed", "independent variable modified by reactions", "determined by moieties", "ode", "assignment", "unused", ""};
+
+//static
+const char * CModelEntity::XMLStatus[] =
+  {"fixed", "variable", "variable", "ode", "assignment", "variable", NULL};
+// the "variable" keyword is used for compatibility reasons. It actually means "this metab is part
+// of the reaction network, copasi needs to figure out if it is independent, dependent (moieties) or unused."
+
 CModelEntity::CModelEntity(const std::string & name,
                            const CCopasiContainer * pParent,
                            const std::string & type,
                            const unsigned C_INT32 & flag):
-    CCopasiContainer(name, pParent, type, flag)
-    //mValue(-1.0),
-    //mIValue(-1.0),
-    //mRate(0.0),
+    CCopasiContainer(name, pParent, type, flag),
+    mValue(0.0),
+    mIValue(0.0),
+    mRate(0.0),
     //    mTT(0.0),
-    //mStatus(METAB_VARIABLE)
-    //    mpModel(NULL)
+    mStatus(FIXED)
 {
   //initObjects();
   CONSTRUCTOR_TRACE;
@@ -38,13 +47,12 @@ CModelEntity::CModelEntity(const std::string & name,
 
 CModelEntity::CModelEntity(const CModelEntity & src,
                            const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent)
-    //mValue(src.mValue),
-    //mIValue(src.mIValue),
-    //mRate(src.mRate),
+    CCopasiContainer(src, pParent),
+    mValue(src.mValue),
+    mIValue(src.mIValue),
+    mRate(src.mRate),
     //    mTT(src.mTT),
-    //mStatus(src.mStatus)
-    //    mpModel(NULL)
+    mStatus(src.mStatus)
 {
   //initObjects();
   CONSTRUCTOR_TRACE;
@@ -55,25 +63,29 @@ CModelEntity::~CModelEntity()
   DESTRUCTOR_TRACE;
 }
 
-//static
-const std::string CModelValue::StatusName[] =
-  {"fixed", "independent", "dependent", "unused", ""};
+const C_FLOAT64 & CModelEntity::getValue() const {return mValue;}
 
-//static
-const char * CModelValue::XMLStatus[] =
-  {"fixed", "variable", "variable", "variable", NULL};
+const C_FLOAT64 & CModelEntity::getInitialValue() const {return mIValue;}
+
+const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
+
+/**
+ * Return rate of production of this entity
+ */
+const C_FLOAT64 & CModelEntity::getRate() const
+  {
+    return mRate;
+  }
+
+//********************************************************************+
 
 CModelValue::CModelValue(const std::string & name,
                          const CCopasiContainer * pParent):
     CModelEntity(name, pParent, "ModelValue"),
-    mKey(GlobalKeys.add("ModelValue", this)),
-    mValue(-1.0),
-    mIValue(-1.0),
-    mRate(0.0),
+    mKey(GlobalKeys.add("ModelValue", this))
     //    mTT(0.0),
-    mStatus(METAB_VARIABLE)
-    //    mpModel(NULL)
 {
+  mStatus = FIXED;
   initObjects();
   CONSTRUCTOR_TRACE;
 }
@@ -81,13 +93,8 @@ CModelValue::CModelValue(const std::string & name,
 CModelValue::CModelValue(const CModelValue & src,
                          const CCopasiContainer * pParent):
     CModelEntity(src, pParent),
-    mKey(GlobalKeys.add("ModelValue", this)),
-    mValue(src.mValue),
-    mIValue(src.mIValue),
-    mRate(src.mRate),
+    mKey(GlobalKeys.add("ModelValue", this))
     //    mTT(src.mTT),
-    mStatus(src.mStatus)
-    //    mpModel(NULL)
 {
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -108,12 +115,6 @@ void CModelValue::cleanup() {}
 }*/
 
 const std::string & CModelValue::getKey() const {return mKey;}
-
-const C_FLOAT64 & CModelValue::getValue() const {return mValue;}
-
-const C_FLOAT64 & CModelValue::getInitialValue() const {return mIValue;}
-
-const CModelValue::Status & CModelValue::getStatus() const {return mStatus;}
 
 //const CModel * CModelValue::getModel() const {return mpModel;}
 
@@ -145,7 +146,7 @@ bool CModelValue::setInitialValue(const C_FLOAT64 & iV)
 
   mIValue = iV;
 
-  if (mStatus == METAB_FIXED)
+  if (mStatus == FIXED)
     setValue(iV);
 
   return true;
@@ -169,14 +170,6 @@ void CModelValue::initObjects()
   //pObject->setUpdateMethod(this, &CModelValue::setInitialConcentration);
   //addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
 }
-
-/**
- * Return rate of production of this metaboLite
- */
-const C_FLOAT64 & CModelValue::getRate() const
-  {
-    return mRate;
-  }
 
 void CModelValue::setRate(const C_FLOAT64 & rate)
 {mRate = rate;}

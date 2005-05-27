@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/11 20:40:32 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:06:54 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -189,7 +189,7 @@ void CSpec2Model::processInits()
           if (vit != mDeVector.end())  // this _does_ correspond to a metabolite.
             {
               C_FLOAT64 iconc = atof(contents.c_str());
-              mModel->createMetabolite(metab_name, comp_name, iconc, CMetab::METAB_VARIABLE);
+              mModel->createMetabolite(metab_name, comp_name, iconc, CModelEntity::REACTIONS);
             }
           else
             {
@@ -459,7 +459,7 @@ void CSpec2Model::processMoieties()
                                            contents));
 
           metab.setObjectName(moiety_name);
-          mModel->createMetabolite(moiety_name, compartment_name, 0, CMetab::METAB_DEPENDENT);
+          mModel->createMetabolite(moiety_name, compartment_name, 0, CModelEntity::DEPENDENT);
           std::cout << "Added moiety " << moiety_name
           << ", " << compartment_name
           << ", " << contents << std::endl;

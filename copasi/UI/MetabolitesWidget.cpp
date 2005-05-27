@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.120 $
+   $Revision: 1.121 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/20 17:19:10 $
+   $Author: ssahle $ 
+   $Date: 2005/05/27 16:10:47 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -125,7 +125,7 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   //4: Fixed
   QCheckTableItem * fixedCB;
   fixedCB = new QCheckTableItem(table, "");
-  if (pMetab->getStatus() == CMetab::METAB_FIXED)
+  if (pMetab->getStatus() == CModelEntity::FIXED)
     fixedCB->setChecked(true);
   table->setItem(row, COL_FIXED, fixedCB);
 
@@ -205,17 +205,17 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   bool fixed = ((QCheckTableItem*)(table->item(row, COL_FIXED)))->isChecked();
   if (fixed)
     {
-      if (pMetab->getStatus() != CMetab::METAB_FIXED)
+      if (pMetab->getStatus() != CModelEntity::FIXED)
         {
-          pMetab->setStatus(CMetab::METAB_FIXED);
+          pMetab->setStatus(CModelEntity::FIXED);
           CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }
   else
     {
-      if (pMetab->getStatus() == CMetab::METAB_FIXED)
+      if (pMetab->getStatus() == CModelEntity::FIXED)
         {
-          pMetab->setStatus(CMetab::METAB_VARIABLE);
+          pMetab->setStatus(CModelEntity::REACTIONS);
           CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }
@@ -274,7 +274,7 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CMetab* pMetab;
-  while (!(pMetab = CCopasiDataModel::Global->getModel()->createMetabolite(nname, "", 1.0, CMetab::METAB_VARIABLE)))
+  while (!(pMetab = CCopasiDataModel::Global->getModel()->createMetabolite(nname, "", 1.0, CModelEntity::REACTIONS)))
     {
       i++;
       nname = name + "_";
@@ -343,7 +343,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                        // Yes or Enter
+    case 0:                                         // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -355,7 +355,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                        // No or Escape
+    case 1:                                         // No or Escape
       break;
     }
 }

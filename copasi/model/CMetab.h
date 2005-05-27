@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 12:07:30 $
+   $Date: 2005/05/27 16:06:54 $
    End CVS Header */
 
 /**
@@ -35,24 +35,24 @@ class CMetab : public CModelEntity
     /**
      *  The valid states for metabolites
      */
-    enum Status
-    {
-      METAB_FIXED = 0,
-      METAB_VARIABLE,
-      METAB_DEPENDENT,
-      METAB_UNUSED
-    };
+    /* enum Status
+     {
+       METAB_FIXED = 0,
+       METAB_VARIABLE,
+       METAB_DEPENDENT,
+       METAB_UNUSED
+     };*/
 
   public:
     /**
      * String representation of the states
-     */
-    static const std::string StatusName[];
+     */ 
+    //static const std::string StatusName[];
 
     /**
      * XML representation of the states
-     */
-    static const char * XMLStatus[];
+     */ 
+    //static const char * XMLStatus[];
 
     /**
      * Converts the concentration to number
@@ -291,8 +291,8 @@ class CMetab : public CModelEntity
     /**
      *  Set the rate (dmConc/dt)
      *  @param "const C_FLOAT64 &" rate (unit: particle/time)
-     */
-    void setConcentrationRate(const C_FLOAT64 & rate);
+     */ 
+    //void setConcentrationRate(const C_FLOAT64 & rate);
     void setNumberRate(const C_FLOAT64 & rate);
 
     /**
