@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.114 $
+   $Revision: 1.115 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 14:25:30 $
+   $Date: 2005/05/29 21:40:55 $
    End CVS Header */
 
 // CReaction
@@ -501,10 +501,14 @@ void CReaction::compile()
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
               for (j = 0; j < jmax; ++j)
-                mMap.addCallParameter(paramName, GlobalKeys.get(mMetabKeyMap[i][j]));
+                mMap.addCallParameter(paramName,
+                                      GlobalKeys.get(mMetabKeyMap[i][j])->getObject(CCopasiObjectName("Reference=Concentration")));
+              //mMap.addCallParameter(paramName, GlobalKeys.get(mMetabKeyMap[i][j]));
             }
           else
-            mMap.setCallParameter(getFunctionParameters()[i]->getObjectName(), GlobalKeys.get(mMetabKeyMap[i][0]));
+            mMap.setCallParameter(getFunctionParameters()[i]->getObjectName(),
+                                  GlobalKeys.get(mMetabKeyMap[i][0])->getObject(CCopasiObjectName("Reference=Concentration")));
+          //mMap.setCallParameter(getFunctionParameters()[i]->getObjectName(), GlobalKeys.get(mMetabKeyMap[i][0]));
         }
     }
 
