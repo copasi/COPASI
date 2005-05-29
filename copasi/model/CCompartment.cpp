@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 12:07:30 $
+   $Date: 2005/05/29 21:44:02 $
    End CVS Header */
 
 // CCompartment
@@ -30,12 +30,14 @@ CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
     CModelEntity(name, pParent, "Compartment"),
     mKey(GlobalKeys.add("Compartment", this)),
-    mInitialVolume(1.0),
-    mVolume(1.0),
+    //mInitialVolume(1.0),
+    //mVolume(1.0),
     mVolumeInv(1.0),
     mMetabolites("Metabolites", this)
 {
+  mStatus = FIXED;
   initObjects();
+  setValue(1.0);
   CONSTRUCTOR_TRACE;
 }
 
@@ -43,8 +45,8 @@ CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
     CModelEntity(src, pParent),
     mKey(GlobalKeys.add("Compartment", this)),
-    mInitialVolume(src.mInitialVolume),
-    mVolume(src.mVolume),
+    //mInitialVolume(src.mInitialVolume),
+    //mVolume(src.mVolume),
     mVolumeInv(src.mVolumeInv),
     mMetabolites(src.mMetabolites, this)
 {
@@ -73,10 +75,10 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
   setObjectName(tmp);
 
   if ((Fail = configbuffer.getVariable("Volume", "C_FLOAT64",
-                                       (void *) & mInitialVolume)))
+                                       (void *) & mIValue)))
     return Fail;
 
-  setVolume(mInitialVolume);
+  setVolume(mIValue);
 
   if (configbuffer.getVersion() < "4")
     return Fail;
@@ -93,54 +95,7 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-/*C_INT32 CCompartment::save(CWriteConfig & configbuffer)
-{
-  C_INT32 Fail = 0;
-  std::string tmp = getObjectName();
-  if ((Fail = configbuffer.setVariable("Compartment", "string",
-                                       (void *) & tmp)))
-    return Fail;
-  if ((Fail = configbuffer.setVariable("Volume", "C_FLOAT64",
-                                       (void *) & mVolume)))
-    return Fail;
-  C_INT32 size = mMetabolites.size();
-  if ((Fail = configbuffer.setVariable("MetabolitesNo", "C_INT32",
-                                       (void *) & size)))
-    return Fail;
-  mMetabolites.save(configbuffer);
-  return Fail;
-}
- 
-C_INT32 CCompartment::saveOld(CWriteConfig & configbuffer)
-{
-  C_INT32 Fail = 0;
- 
-  std::string tmp = getObjectName();
-  if ((Fail = configbuffer.setVariable("Compartment", "string",
-                                       (void *) & tmp)))
-    return Fail;
-  if ((Fail = configbuffer.setVariable("Volume", "C_FLOAT64",
-                                       (void *) & mVolume)))
-    return Fail;
-  return Fail;
-}*/
-
-/*void CCompartment::saveSBML(std::ofstream &fout)
-{
-  std::string str;
-  FixSName(getObjectName(), str);
-  fout << "\t\t\t<compartment name=\"" << str << "\"";
-  fout << " volume=\"" << mVolume << "\"/>" << std::endl;
-}*/
-
 const std::string & CCompartment::getKey() const {return mKey;}
-
-//const std::string & CCompartment::getName() const {return getObjectName();}
-
-const C_FLOAT64 & CCompartment::getInitialVolume() const
-  {return mInitialVolume;}
-
-const C_FLOAT64 & CCompartment::getVolume() const {return mVolume;}
 
 const C_FLOAT64 & CCompartment::getVolumeInv() const {return mVolumeInv;}
 
@@ -150,18 +105,13 @@ CCopasiVectorNS < CMetab > & CCompartment::getMetabolites()
 const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
   {return mMetabolites;}
 
-bool CCompartment::setName(const std::string & name)
+bool CCompartment::setInitialValue(const C_FLOAT64 & volume)
 {
-  return setObjectName(name);
-}
+  C_FLOAT64 Factor = volume / mIValue;
+  mIValue = volume;
 
-bool CCompartment::setInitialVolume(const C_FLOAT64 & volume)
-{
-  C_FLOAT64 Factor = volume / mInitialVolume;
-  mInitialVolume = volume;
-
-  /* This has to be moved to the state */
-  setVolume(volume);
+  /* This assumes state==FIXED */
+  setValue(volume);
 
   C_INT32 i, imax = mMetabolites.size();
   for (i = 0; i < imax; ++i)
@@ -174,9 +124,9 @@ bool CCompartment::setInitialVolume(const C_FLOAT64 & volume)
   return true;
 }
 
-bool CCompartment::setVolume(const C_FLOAT64 & volume)
+bool CCompartment::setValue(const C_FLOAT64 & volume)
 {
-  mVolume = volume;
+  mValue = volume;
 
   if (volume != 0.0) mVolumeInv = 1.0 / volume;
   else mVolumeInv = DBL_MAX;
@@ -223,8 +173,9 @@ bool CCompartment::removeMetabolite(CMetab * pMetabolite)
 void CCompartment::initObjects()
 {
   CCopasiObject * pObject;
-  pObject = addObjectReference("Volume", mInitialVolume, CCopasiObject::ValueDbl);
-  pObject->setUpdateMethod(this, &CCompartment::setInitialVolume);
+  addObjectReference("InitialVolume", mIValue, CCopasiObject::ValueDbl);
+  pObject = addObjectReference("Volume", mValue, CCopasiObject::ValueDbl);
+  pObject->setUpdateMethod(this, &CCompartment::setInitialValue);
 
   //  Volume is currently constant, i.e., we only can modify the initial volume.
   //  To avoid confusion we call it volume :)
@@ -232,14 +183,14 @@ void CCompartment::initObjects()
   //  pObject->setUpdateMethod(this, &CCompartment::setVolume);
 }
 
-void * CCompartment::getVolumeAddr()
+/*void * CCompartment::getVolumeAddr()
 {
   return &mVolume;
-}
+}*/
 
 std::ostream & operator<<(std::ostream &os, const CCompartment & d)
 {
-  os << "++++CCompartment: " << d.getObjectName() << " mVolume " << d.mVolume
+  os << "++++CCompartment: " << d.getObjectName() << " mValue " << d.mValue
   << " mVolumeInv " << d.mVolumeInv << std::endl;
   os << "    CCompartment.mMetabolites " << std::endl << d.mMetabolites;
   os << "----CCompartment " << std::endl;

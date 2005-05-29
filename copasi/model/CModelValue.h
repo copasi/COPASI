@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:06:54 $
+   $Date: 2005/05/29 21:44:02 $
    End CVS Header */
 
 #ifndef COPASI_CModelValue
@@ -31,12 +31,12 @@ class CModelEntity : public CCopasiContainer
      */
     enum Status
     {
-      FIXED = 0,  //the entity is constant (for metabs even if they are part of a reaction)
-      REACTIONS,  //applies only for metabs, the metab concentration is changed by reactions
-      DEPENDENT,  //applies only for metabs, the metab concentration is determined by conservation rules
-      ODE,        //the entity is changed by an ordinary differential equation
-      ASSIGNMENT, //the entity is changed by an assignment rule
-      UNUSED
+      FIXED = 0,   //the entity is constant (for metabs even if they are part of a reaction)
+      REACTIONS,   //applies only for metabs, the metab concentration is changed by reactions
+      DEPENDENT,   //applies only for metabs, the metab concentration is determined by conservation rules
+      UNUSED,
+      ODE,         //the entity is changed by an ordinary differential equation
+      ASSIGNMENT  //the entity is changed by an assignment rule
     };
 
     /**
@@ -92,6 +92,29 @@ class CModelEntity : public CCopasiContainer
      */
     const C_FLOAT64 & getRate() const;
 
+    /**
+     *
+     */
+    virtual void setStatus(const CModelEntity::Status & status);
+
+    /**
+     *
+     */
+    virtual void setValue(const C_FLOAT64 v);
+
+    /**
+     *
+     */
+    virtual bool setInitialValue(const C_FLOAT64 & iV);
+
+    /**
+     *  Set the rate (dmValue/dt)
+     *  @param "const C_FLOAT64 &" rate 
+     */
+    void setRate(const C_FLOAT64 & rate);
+
+    virtual void * getReference() const;
+
   protected:
     /**
      *  Concentration of the metabolite as double.
@@ -119,6 +142,12 @@ class CModelEntity : public CCopasiContainer
      *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
      */
     Status mStatus;
+
+  private:
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
   };
 
 /*
@@ -161,14 +190,12 @@ ASSIGNMENT              not implemented       constant=false, rate rule
  */
 class CModelValue : public CModelEntity
   {
-    // Attributes
   private:
     /**
      *  Key of the metabolite
      */
     std::string mKey;
 
-    // Operations
   public:
     /**
      * Default constructor
@@ -191,16 +218,6 @@ class CModelValue : public CModelEntity
      */
     ~CModelValue();
 
-    virtual void * getReference() const;
-
-    //virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
-
-    /**
-     *  Cleanup
-     */
-    void cleanup();
-    //void initModel();
-
     /**
      * Sets the parent of the metabolite;
      * @param const CCopasiContainer * pParent
@@ -215,27 +232,6 @@ class CModelValue : public CModelEntity
     virtual const std::string & getKey() const;
 
     /**
-     *
-     */
-    void setStatus(const CModelValue::Status & status);
-
-    /**
-     *
-     */
-    void setValue(const C_FLOAT64 v);
-
-    /**
-     *
-     */
-    bool setInitialValue(const C_FLOAT64 & iV);
-
-    /**
-     *  Set the rate (dmValue/dt)
-     *  @param "const C_FLOAT64 &" rate 
-     */
-    void setRate(const C_FLOAT64 & rate);
-
-    /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CModelValue & d);
@@ -247,4 +243,4 @@ class CModelValue : public CModelEntity
     void initObjects();
   };
 
-#endif // COPASI_CMetab
+#endif

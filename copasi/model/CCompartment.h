@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 12:07:30 $
+   $Date: 2005/05/29 21:44:02 $
    End CVS Header */
 
 /**
@@ -24,13 +24,10 @@
 #include "CMetab.h"
 
 class CReadConfig;
-//class CWriteConfig;
 
 /** @dia:pos 128.756,34.703 */
 class CCompartment : public CModelEntity
   {
-    // Attributes
-
   private:
     /**
      *  The key of the compartment.
@@ -39,13 +36,13 @@ class CCompartment : public CModelEntity
 
     /**
      *  The initial volume of the compartment.
-     */
-    C_FLOAT64 mInitialVolume;
+     */ 
+    //C_FLOAT64 mInitialVolume; replaced by CModelEntity::mIValue
 
     /**
      *  Volume of the compartment.
-     */
-    C_FLOAT64 mVolume;
+     */ 
+    //C_FLOAT64 mVolume; replaced by CModelEntity::mValue
 
     /**
      *  1/Volume of the compartment.
@@ -108,14 +105,14 @@ class CCompartment : public CModelEntity
      *  @return const C_FLOAT64 & InitialVolume
      *  @see mInitialVolume
      */
-    const C_FLOAT64 & getInitialVolume() const;
+    inline const C_FLOAT64 & getInitialVolume() const {return getInitialValue();};
 
     /**
      *  Returns a C_FLOAT64 with the volume of this compartment.
      *  @return mVolume
      *  @see mVolume
      */
-    const C_FLOAT64 & getVolume() const;
+    inline const C_FLOAT64 & getVolume() const {return getValue();};
 
     /**
      *  Returns a C_FLOAT64 with the 1/volume of this compartment.
@@ -124,7 +121,7 @@ class CCompartment : public CModelEntity
      */
     const C_FLOAT64 & getVolumeInv() const;
 
-    /*
+    /**
      *
      */
     CCopasiVectorNS < CMetab > & getMetabolites();
@@ -151,19 +148,14 @@ class CCompartment : public CModelEntity
     bool removeMetabolite(CMetab *metabolite);
 
     /**
-     *  Sets the name of this compartment.
-     *  @param name string with the name of the compartment.
-     *  @see mName
-     */
-    bool setName(const std::string & name);
-
-    /**
      *  Sets the initial volume of this compartment.
      *  @param volume the volume of the compartment.
      *  @return bool success
      *  @see mVolume
      */
-    bool setInitialVolume(const C_FLOAT64 & volume);
+    inline bool setInitialVolume(const C_FLOAT64 & volume) {return setInitialValue(volume);};
+
+    virtual bool setInitialValue(const C_FLOAT64 & volume);
 
     /**
      *  Sets the volume of this compartment.
@@ -171,12 +163,9 @@ class CCompartment : public CModelEntity
      *  @return bool success
      *  @see mVolume
      */
-    bool setVolume(const C_FLOAT64 & volume);
+    inline bool setVolume(const C_FLOAT64 & volume) {setValue(volume); return true;};
 
-    /**
-     * Returns the address of mVolume  Wei Sun
-     */
-    void * getVolumeAddr();
+    virtual bool setValue(const C_FLOAT64 & volume);
 
     friend std::ostream & operator<<(std::ostream &os, const CCompartment & d);
 
@@ -184,8 +173,8 @@ class CCompartment : public CModelEntity
 
     /**
      *  Check whether the name is valid.
-     */
-    bool isValidName(const std::string & name) const;
+     */ 
+    //bool isValidName(const std::string & name) const;
 
     /**
      * Initialize the contained CCopasiObjects

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:06:54 $
+   $Date: 2005/05/29 21:44:02 $
    End CVS Header */
 
 /**
@@ -32,27 +32,6 @@ class CModel;
 class CMetab : public CModelEntity
   {
   public:
-    /**
-     *  The valid states for metabolites
-     */
-    /* enum Status
-     {
-       METAB_FIXED = 0,
-       METAB_VARIABLE,
-       METAB_DEPENDENT,
-       METAB_UNUSED
-     };*/
-
-  public:
-    /**
-     * String representation of the states
-     */ 
-    //static const std::string StatusName[];
-
-    /**
-     * XML representation of the states
-     */ 
-    //static const char * XMLStatus[];
 
     /**
      * Converts the concentration to number
@@ -95,19 +74,19 @@ class CMetab : public CModelEntity
 
     /**
      *  Concentration of the metabolite as long.
-     */
-    C_FLOAT64 mNumber;
+     */ 
+    //C_FLOAT64 mNumber;  replaced by CModelEntity::mValue
 
     /**
      * Initial concentration of the metabolite as long.
-     */
-    C_FLOAT64 mINumber;
+     */ 
+    //C_FLOAT64 mINumber;  replaced by CModelEntity::mIValue
 
     /**
      *  Rate of production of this metabolite
      *  (concentration/time).
-     */
-    C_FLOAT64 mRate;
+     */ 
+    //C_FLOAT64 mRate;    replaced by CModelEntity::mRate
 
     /**
      *  Transition time of the metabolite
@@ -117,8 +96,8 @@ class CMetab : public CModelEntity
     /**
      *  Status of the metabolite.  
      *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-     */
-    Status mStatus;
+     */ 
+    //Status mStatus;   replaced by CModelEntity::mStatus
 
     /**
      *  pointer to the compartment the metabolite is located in.
@@ -163,7 +142,8 @@ class CMetab : public CModelEntity
      */
     ~CMetab();
 
-    virtual void * getReference() const;
+    //virtual void * getReference() const;
+    //TODO: discuss if it should be concentration or particle number...
 
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
@@ -207,8 +187,8 @@ class CMetab : public CModelEntity
 
     /**
      *
-     */
-    const CMetab::Status & getStatus() const;
+     */ 
+    //const CMetab::Status & getStatus() const;
 
     /**
      *
@@ -223,12 +203,14 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    void setNumber(const C_FLOAT64 number);
+    inline void setNumber(const C_FLOAT64 number) {setValue(number);};
+
+    virtual void setValue(const C_FLOAT64 number);
 
     /**
      *
      */
-    const C_FLOAT64 & getNumber() const;
+    inline const C_FLOAT64 & getNumber() const {return getValue();};
 
     /**
      *
@@ -243,12 +225,15 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    bool setInitialNumber(const C_FLOAT64 & initialNumber);
+    inline bool setInitialNumber(const C_FLOAT64 & initialNumber)
+    {return setInitialValue(initialNumber);};
+
+    virtual bool setInitialValue(const C_FLOAT64 & initialNumber);
 
     /**
      *
      */
-    const C_FLOAT64 & getInitialNumber() const;
+    inline const C_FLOAT64 & getInitialNumber() const {return getInitialValue();};
 
     /**
      *
@@ -285,15 +270,15 @@ class CMetab : public CModelEntity
     /**
      * Return rate of production of this metaboLite
      */
-    const C_FLOAT64 & getConcentrationRate() const;
-    C_FLOAT64 getNumberRate() const;
+    C_FLOAT64 getConcentrationRate() const;
+
+    inline const C_FLOAT64 & getNumberRate() const {return getRate();};
 
     /**
      *  Set the rate (dmConc/dt)
      *  @param "const C_FLOAT64 &" rate (unit: particle/time)
-     */ 
-    //void setConcentrationRate(const C_FLOAT64 & rate);
-    void setNumberRate(const C_FLOAT64 & rate);
+     */
+    inline void setNumberRate(const C_FLOAT64 & rate) {setRate(rate);};
 
     /**
      * insert operator

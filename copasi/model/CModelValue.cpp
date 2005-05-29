@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:06:54 $
+   $Date: 2005/05/29 21:44:02 $
    End CVS Header */
 
 #include <iostream>
@@ -22,11 +22,11 @@
 
 //static
 const std::string CModelEntity::StatusName[] =
-  {"fixed", "independent variable modified by reactions", "determined by moieties", "ode", "assignment", "unused", ""};
+  {"fixed", "independent variable modified by reactions", "determined by moieties", "unused", "ode", "assignment", ""};
 
 //static
 const char * CModelEntity::XMLStatus[] =
-  {"fixed", "variable", "variable", "ode", "assignment", "variable", NULL};
+  {"fixed", "variable", "variable", "variable", "ode", "assignment", NULL};
 // the "variable" keyword is used for compatibility reasons. It actually means "this metab is part
 // of the reaction network, copasi needs to figure out if it is independent, dependent (moieties) or unused."
 
@@ -41,7 +41,7 @@ CModelEntity::CModelEntity(const std::string & name,
     //    mTT(0.0),
     mStatus(FIXED)
 {
-  //initObjects();
+  initObjects();
   CONSTRUCTOR_TRACE;
 }
 
@@ -54,7 +54,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     //    mTT(src.mTT),
     mStatus(src.mStatus)
 {
-  //initObjects();
+  initObjects();
   CONSTRUCTOR_TRACE;
 }
 
@@ -76,6 +76,55 @@ const C_FLOAT64 & CModelEntity::getRate() const
   {
     return mRate;
   }
+
+//***********
+
+void CModelEntity::setValue(const C_FLOAT64 v)
+{
+  mValue = v;
+
+#ifdef COPASI_DEBUG
+  //if (mStatus == FIXED)
+  //std::cout << "warning: set the transient concentration on a fixed entity" << std::endl;
+#endif
+}
+
+bool CModelEntity::setInitialValue(const C_FLOAT64 & iV)
+{
+  //if (mIConc == initialConcentration) return true;
+
+  mIValue = iV;
+
+  if (mStatus == FIXED)
+    setValue(iV);
+
+  return true;
+}
+
+void CModelEntity::setRate(const C_FLOAT64 & rate)
+{
+  mRate = rate;
+}
+
+//  ******************
+
+void CModelEntity::setStatus(const CModelValue::Status & status)
+{
+  mStatus = status;
+  if (mStatus == FIXED)
+    {
+      setValue(getInitialValue());
+    }
+}
+
+void * CModelEntity::getReference() const
+  {return const_cast<C_FLOAT64 *>(&mValue);}
+
+void CModelEntity::initObjects()
+{
+  addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
+  addObjectReference("InitialValue", mIValue, CCopasiObject::ValueDbl);
+}
 
 //********************************************************************+
 
@@ -106,17 +155,7 @@ CModelValue::~CModelValue()
   DESTRUCTOR_TRACE;
 }
 
-void CModelValue::cleanup() {}
-
-/*void CModelValue::initModel()
-{
-  mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
-  if (!mpModel && CCopasiDataModel::Global) mpModel = CCopasiDataModel::Global->getModel();
-}*/
-
 const std::string & CModelValue::getKey() const {return mKey;}
-
-//const CModel * CModelValue::getModel() const {return mpModel;}
 
 /*bool CModelValue::setObjectParent(const CCopasiContainer * pParent)
 {
@@ -128,54 +167,15 @@ const std::string & CModelValue::getKey() const {return mKey;}
   return true;
 }*/
 
-// ***** set quantities ********
-
-void CModelValue::setValue(const C_FLOAT64 v)
-{
-  mValue = v;
-
-#ifdef COPASI_DEBUG
-  //if (mStatus == METAB_FIXED)
-  //std::cout << "warning: set the transient concentration on a fixed metab" << std::endl;
-#endif
-}
-
-bool CModelValue::setInitialValue(const C_FLOAT64 & iV)
-{
-  //if (mIConc == initialConcentration) return true;
-
-  mIValue = iV;
-
-  if (mStatus == FIXED)
-    setValue(iV);
-
-  return true;
-}
-
-//  ******************
-
-void CModelValue::setStatus(const CModelValue::Status & status)
-{
-  mStatus = status;
-}
-
-//void CModelValue::setModel(CModel * model) {mpModel = model;}
-
 void CModelValue::initObjects()
 {
-  CCopasiObject * pObject;
+  //CCopasiObject * pObject;
 
-  addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
-  pObject = addObjectReference("InitialValue", mIValue, CCopasiObject::ValueDbl);
+  //addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
+  //pObject = addObjectReference("InitialValue", mIValue, CCopasiObject::ValueDbl);
   //pObject->setUpdateMethod(this, &CModelValue::setInitialConcentration);
   //addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
 }
-
-void CModelValue::setRate(const C_FLOAT64 & rate)
-{mRate = rate;}
-
-void * CModelValue::getReference() const
-  {return const_cast<C_FLOAT64 *>(&mValue);}
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {
@@ -186,14 +186,3 @@ std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 
   return os;
 }
-
-/*std::string CModelValue::getObjectDisplayName(bool regular, bool richtext) const
-  {
-    CModel* tmp = dynamic_cast<CModel*>(this->getObjectAncestor("Model"));
-    if (tmp)
-      {
-        return CModelValueNameInterface::getDisplayName(tmp, *this);
-      }
- 
-    return CCopasiObject::getObjectDisplayName(regular, richtext);
-  }*/
