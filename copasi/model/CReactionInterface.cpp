@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 14:26:50 $
+   $Date: 2005/05/29 14:28:38 $
    End CVS Header */
 
 #include <string>
@@ -445,6 +445,8 @@ bool CReactionInterface::setGlobalParameter(unsigned C_INT32 index, std::string 
   mIsLocal[index] = false;
 
   mNameMap[index][0] = pn;
+
+  return true;
 }
 
 const std::string & CReactionInterface::getGlobalParameter(unsigned C_INT32 index) const
