@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/12 12:47:55 $
+   $Author: ssahle $ 
+   $Date: 2005/05/29 14:26:50 $
    End CVS Header */
 
 #include <string>
@@ -88,8 +88,15 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
 
       C_INT32 i, imax = size();
       mValues.resize(imax);
+      mIsLocal.resize(imax);
       for (i = 0; i < imax; ++i)
-        if (getUsage(i) == "PARAMETER") mValues[i] = rea->getParameterValue(getParameterName(i));
+        if (getUsage(i) == "PARAMETER")
+          {
+            mValues[i] = rea->getParameterValue(getParameterName(i));
+            mIsLocal[i] = true; //TODO
+          }
+        else
+          mIsLocal[i] = false;
 
       mValid = true; //assume a reaction is valid before editing
     }
@@ -429,6 +436,23 @@ void CReactionInterface::setMetab(unsigned C_INT32 index, std::string mn)
     if ((getUsage(j) != "PARAMETER") && (getMetabs(j)[0] == "unknown"))
       mValid = false;
 }
+
+bool CReactionInterface::setGlobalParameter(unsigned C_INT32 index, std::string pn)
+{
+  if (getUsage(index) != "PARAMETER")
+    return false;
+
+  mIsLocal[index] = false;
+
+  mNameMap[index][0] = pn;
+}
+
+const std::string & CReactionInterface::getGlobalParameter(unsigned C_INT32 index) const
+  {
+    assert(getUsage(index) == "PARAMETER");
+    assert(mNameMap[index].size() == 1);
+    return mNameMap[index][0];
+  }
 
 std::vector<std::string> CReactionInterface::getExpandedMetabList(const std::string & role) const
   {

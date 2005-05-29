@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/12 12:47:55 $
+   $Author: ssahle $ 
+   $Date: 2005/05/29 14:26:50 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -64,6 +64,11 @@ class CReactionInterface
      * values of the kinetic parameters
      */
     std::vector< C_FLOAT64 > mValues;
+
+    /**
+     * values of the kinetic parameters
+     */
+    std::vector<bool> mIsLocal;
 
     /**
      * is the reaction valid?
@@ -141,12 +146,30 @@ class CReactionInterface
       }
 
     void setMetab(unsigned C_INT32 index, std::string mn);
+
     void removeMetab(unsigned C_INT32 index, std::string mn);
+
     const std::vector< std::string > & getMetabs(unsigned C_INT32 index) const
     {return mNameMap[index];}
 
-    void setValue(unsigned C_INT32 index, C_FLOAT64 value) {mValues[index] = value;}
+    void setValue(unsigned C_INT32 index, C_FLOAT64 value)
+    {
+      mValues[index] = value;
+      mIsLocal[index] = true;
+    }
+
     const C_FLOAT64 & getValue(unsigned C_INT32 index) const {return mValues[index];}
+
+    bool isLocalValue(unsigned C_INT32 index) const {return mIsLocal[index];};
+
+    /**
+     *  associate the function parameter referenced by "index" with the global  
+     *  parameter named pn. Only valid if the role for this function parameter is "PARAMETER".
+     *  returns success
+     */
+    bool setGlobalParameter(unsigned C_INT32 index, std::string pn);
+
+    const std::string & getGlobalParameter(unsigned C_INT32 index) const;
 
     void initFromReaction(const CModel & model, const std::string & key);
 
