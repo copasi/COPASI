@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.165 $
+   $Revision: 1.166 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/20 17:29:13 $
+   $Author: ssahle $ 
+   $Date: 2005/05/29 14:31:12 $
    End CVS Header */
 
 /*********************************************************************
@@ -335,8 +335,6 @@ void ReactionsWidget1::slotBtnNewClicked()
       name = "reaction_";
       name += QString::number(i).utf8();
     }
-  //table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
-  //table->setNumRows(table->numRows());
   protectedNotify(ListViews::REACTION, ListViews::ADD);
   enter(CCopasiDataModel::Global->getModel()->getReactions()[name]->getKey());
   //pListView->switchToOtherWidget(mKeys[row]);
@@ -347,24 +345,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 {
   if (CCopasiDataModel::Global->getModel())
     {
-      //unsigned C_INT32 i, imax = table->numRows() - 1;
-      //std::vector< unsigned C_INT32 > ToBeDeleted;
-
-      /*for (i = 0; i < imax; i++)
-        {
-          if (table->isRowSelected(i, true))
-            ToBeDeleted.push_back(i);
-        }*/
-
-      //if (ToBeDeleted.size() > 0)
-      //  {
-      QString reacList = "Are you sure you want to delete the REACTION?\n";
-      /*for (i = 0; i < ToBeDeleted.size(); i++)
-        {
-          reacList.append(table->text(ToBeDeleted[i], 0));
-          reacList.append(", ");
-        }
-      reacList.remove(reacList.length() - 2, 2);*/
+      QString reacList = "Are you sure you want to delete the reaction?\n";
       reacList.append(FROM_UTF8(mRi.getReactionName()));
 
       int choice = QMessageBox::warning(this, "CONFIRM DELETE",
@@ -373,11 +354,8 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                                // Yes or Enter
+        case 0:                                 // Yes or Enter
           {
-            /*for (i = ToBeDeleted.size(); 0 < i;)
-              {
-                i--;*/ 
             //unsigned C_INT32 size = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().size();
             unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getReactions().size();
             //unsigned C_INT32 index = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -394,21 +372,15 @@ void ReactionsWidget1::slotBtnDeleteClicked()
               {
                 enter(CCopasiDataModel::Global->getModel()->getReactions()[std::min(index, size - 2)]->getKey());
               }
-            //CCopasiDataModel::Global->getModel()->removeReaction(objKey);
-            // table->removeRow(ToBeDeleted[i]);
-            //}
 
-            //for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
-            // protectedNotify(ListViews::REACTION, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
             protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
 
             break;
           }
 
-        default:                                       // No or Escape
+        default:                                        // No or Escape
           break;
         }
-      //}
     }
 }
 
@@ -456,24 +428,45 @@ void ReactionsWidget1::FillWidgetFromRI()
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
-  //std::cout << "slotValueChanged " << index << " " << sub << " " << newValue <<  std::endl;
+  std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
 
   // setValue
   if (mRi.getUsage(index) == "PARAMETER")
     {
       if (sub != 0) return;
-      mRi.setValue(index, newValue.toDouble()); // TODO: check
+
+      if (mRi.isLocalValue(index))
+        mRi.setValue(index, newValue.toDouble()); // TODO: check
+      else
+        mRi.setGlobalParameter(index, newValue);
     }
   else
     {
-      if (sub == 0)
+      if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          mRi.setMetab(index, (const char *)table->text(table->mIndex2Line[index], 2).utf8());
+          mRi.setMetab(index, (const char *)table->text(table->mIndex2Line[index], 3).utf8());
         }
     }
 
   // update the widget
+  int rrr = table->currentRow();
+  int ccc = table->currentColumn();
   FillWidgetFromRI();
+  table->setCurrentCell(rrr, ccc);
+}
+
+void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
+{
+  if (local)
+    mRi.setValue(index, 0.1);
+  else
+    mRi.setGlobalParameter(index, "");
+
+  // update the widget
+  int rrr = table->currentRow();
+  int ccc = table->currentColumn();
+  FillWidgetFromRI();
+  table->setCurrentCell(rrr, ccc);
 }
 
 void ReactionsWidget1::slotNewFunction()

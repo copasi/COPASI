@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 19:57:08 $
+   $Date: 2005/05/29 14:31:12 $
    End CVS Header */
 
 #ifndef PARAMETERTABLE_H
@@ -30,6 +30,19 @@ class ColorTableItem : public QTableItem
     QColor color;
   };
 
+class ColorCheckTableItem : public QCheckTableItem
+  {
+  public:
+    ColorCheckTableItem(QTable *t, QColor c, const QString txt);
+    ~ColorCheckTableItem();
+    void setColor(QColor col) {color = col; table()->repaint();}
+
+  private:
+    void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);
+
+    QColor color;
+  };
+
 class ComboItem : public ColorTableItem
   {
   public:
@@ -42,6 +55,8 @@ class ComboItem : public ColorTableItem
     QComboBox *cb;
     QStringList mSL;
   };
+
+//table used in the reactions widget
 
 class ParameterTable : public QTable
   {
@@ -62,6 +77,7 @@ class ParameterTable : public QTable
 
   signals:
     void signalChanged(int, int, QString);
+    void parameterStatusChanged(int, bool);
 
   private:
     //void initTable();
@@ -69,6 +85,9 @@ class ParameterTable : public QTable
     //convenience function. It gets a List of all metab names in the CMetabNameInterface format
     static const std::vector<std::string> getListOfAllMetabNames(const CModel & model,
         const CReactionInterface & ri);
+
+    //convenience function.
+    static QStringList ParameterTable::getListOfAllGlobalParameterNames(const CModel & model);
 
     int mOldRow;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/12 16:52:35 $
+   $Date: 2005/05/29 14:31:12 $
    End CVS Header */
 
 /****************************************************************************
@@ -58,7 +58,7 @@ class ReactionsWidget1 : public CopasiWidget
 
     //  public slots:
     virtual void slotTableChanged(int index, int sub, QString newValue);
-
+    virtual void slotParameterStatusChanged(int index, bool local);
   protected:
     bool loadFromReaction(const CReaction* reaction);
     bool saveToReaction();

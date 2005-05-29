@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/04 12:53:48 $
+   $Date: 2005/05/29 14:31:12 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -45,6 +45,9 @@ ParameterTable::ParameterTable(QWidget * parent, const char * name)
 
   connect(this, SIGNAL(signalChanged(int, int, QString)),
           parent, SLOT(slotTableChanged(int, int, QString)));
+
+  connect(this, SIGNAL(parameterStatusChanged(int, bool)),
+          parent, SLOT(slotParameterStatusChanged(int, bool)));
 }
 
 void ParameterTable::initTable()
@@ -57,13 +60,15 @@ void ParameterTable::initTable()
   //setFocusStyle(QTable::FollowStyle);
 
   setNumRows(3);
-  setNumCols(3);
+  setNumCols(4);
   horizontalHeader()->setLabel(0, "Description");
   horizontalHeader()->setLabel(1, "Name");
-  horizontalHeader()->setLabel(2, "Value");
+  horizontalHeader()->setLabel(2, "");
+  horizontalHeader()->setLabel(3, "Value");
   setColumnStretchable(0, true);
   setColumnStretchable(1, true);
-  setColumnStretchable(2, true);
+  setColumnStretchable(2, false);
+  setColumnStretchable(3, true);
 
   setShowGrid(false);
 }
@@ -124,13 +129,29 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
   return ret;
 }
 
+//static
+QStringList ParameterTable::getListOfAllGlobalParameterNames(const CModel & model)
+{
+  QStringList ret;
+
+  ret += "unknown";
+
+  //all the global paramters  in the model
+  unsigned C_INT32 i, imax = model.getNumModelValues();
+  for (i = 0; i < imax; ++i)
+    ret += FROM_UTF8(model.getModelValues()[i]->getObjectName());
+
+  return ret;
+}
+
 void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & model)
 {
   C_INT32 i, imax = ri.size();
   C_INT32 j, jmax;
   C_INT32 rowCounter = 0;
 
-  ColorTableItem *item;
+  //ColorTableItem *item;
+  QTableItem *item;
   //ComboItem *combo;
   QComboTableItem *combo;
   QStringList qsl;
@@ -191,6 +212,18 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         }
       setItem(rowCounter, 1, item);
 
+      // add second column
+      if (usage == "PARAMETER")
+        {
+          item = new ColorCheckTableItem(this, color, "local");
+          dynamic_cast<ColorCheckTableItem*>(item)->setChecked(ri.isLocalValue(i));
+        }
+      else
+        {
+          item = new ColorTableItem(this, QTableItem::Never, color, "");
+        }
+      setItem(rowCounter, 2, item);
+
       // add a line for a metabolite Parameter
       if ((usage == "SUBSTRATE") || (usage == "PRODUCT") || (usage == "MODIFIER"))
         {
@@ -210,7 +243,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
               if (ri.isLocked(i))
                 {
                   item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8((*metabNames)[0]));
-                  setItem(rowCounter, 2, item);
+                  setItem(rowCounter, 3, item);
                 }
               else
                 {
@@ -218,7 +251,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                   combo = new QComboTableItem(this, qsl);
                   //combo->setText(FROM_UTF8((*metabNames)[0]));
                   combo->setCurrentItem(FROM_UTF8((*metabNames)[0]));
-                  setItem(rowCounter, 2, combo);
+                  setItem(rowCounter, 3, combo);
                 }
             }
           else
@@ -226,7 +259,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
               if (ri.isLocked(i))
                 {
                   item = new ColorTableItem(this, QTableItem::Never, color, "");
-                  setItem(rowCounter, 2, item);
+                  setItem(rowCounter, 3, item);
                 }
               else // this should not happen
                 {
@@ -234,7 +267,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                   combo = new QComboTableItem(this, qsl);
                   //combo->setText("add metabolite");
                   combo->setCurrentItem("add metabolite");
-                  setItem(rowCounter, 2, combo);
+                  setItem(rowCounter, 3, combo);
                 }
               // add lines for vector parameters
               jmax = metabNames->size();
@@ -243,21 +276,30 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                 {
                   ++rowCounter;
                   item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8((*metabNames)[j]));
-                  setItem(rowCounter, 2, item);
+                  setItem(rowCounter, 3, item);
                 }
             }
         }
       // add a line for a kinetic parameter
       else if (usage == "PARAMETER")
         {
-          item = new ColorTableItem(this, QTableItem::OnTyping, color, QString::number(ri.getValue(i)));
-          setItem(rowCounter, 2, item);
+          if (ri.isLocalValue(i))
+            {
+              item = new ColorTableItem(this, QTableItem::OnTyping, color, QString::number(ri.getValue(i)));
+              setItem(rowCounter, 3, item);
+            }
+          else //global parameter
+            {
+              combo = new QComboTableItem(this, getListOfAllGlobalParameterNames(model));
+              combo->setCurrentItem(FROM_UTF8(ri.getGlobalParameter(i)));
+              setItem(rowCounter, 3, combo);
+            }
         }
       // add a line for an unknown role
       else
         {
           item = new ColorTableItem(this, QTableItem::OnTyping, color, QString::number(ri.getValue(i)));
-          setItem(rowCounter, 2, item);
+          setItem(rowCounter, 3, item);
         }
 
       adjustRow(rowCounter);
@@ -266,39 +308,60 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       ++rowCounter;
     }
+  adjustColumn(2);
 }
 
 void ParameterTable::handleCurrentCell(int row, int col)
 {
   //std::cout << row << " " << col << std::endl;
 
-  int changed = 0;
+  bool changed = false;
 
   int i, imax = mIndex2Line.size();
   for (i = 0; i < imax; ++i)
     if (mIndex2Line[i] - 1 == row)
       {
-        changed = 1;
+        changed = true;
         if ((mOldRow < row) || (row == 0)) ++row; else --row;
 
         break;
       }
 
-if (col != 2) {changed = 1; col = 2;}
+if (col > 3) {changed = true; col = 3;}
+  if (col < 2) {changed = true; col = 2;}
 
   mOldRow = row;
   if (changed) setCurrentCell(row, col);
+
+  //TODO: allow keyboard editing of col 2
 }
 
 void ParameterTable::slotCellChanged(int row, int col)
 {
   //std::cout << "table: cell changed" << std::endl;
+
   // find the index of the parameter
   C_INT32 i, imax = mIndex2Line.size();
   for (i = imax - 1; i >= 0; --i)
     if (mIndex2Line[i] <= row) break;
 
-  emit signalChanged(i, row - mIndex2Line[i], text(row, col));
+  //handle the check boxes
+  if (col == 2) //only checkboxes is this column
+    {
+      QCheckTableItem *tmp = dynamic_cast<QCheckTableItem*>(this->item(row, col));
+      if (!tmp) return;
+      /*if (tmp->isChecked())
+        {
+        }
+      else
+        {
+        }*/
+      emit parameterStatusChanged(i, tmp->isChecked());
+    }
+  else
+    {
+      emit signalChanged(i, row - mIndex2Line[i], text(row, col));
+    }
 }
 
 //**************************************************************************
@@ -355,4 +418,23 @@ void ColorTableItem::paint(QPainter *p, const QColorGroup &cg,
   QColorGroup g(cg);
   g.setColor(QColorGroup::Base, color);
   QTableItem::paint(p, g, cr, selected);
+}
+
+//**********************************************************************
+
+ColorCheckTableItem::ColorCheckTableItem(QTable *t, QColor c, const QString txt)
+    : QCheckTableItem(t, txt)
+{
+  color = c;
+}
+
+ColorCheckTableItem::~ColorCheckTableItem()
+{}
+
+void ColorCheckTableItem::paint(QPainter *p, const QColorGroup &cg,
+                                const QRect &cr, bool selected)
+{
+  QColorGroup g(cg);
+  g.setColor(QColorGroup::Base, color);
+  QCheckTableItem::paint(p, g, cr, selected);
 }
