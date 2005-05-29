@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/11 17:02:55 $
+   $Author: ssahle $ 
+   $Date: 2005/05/29 21:45:45 $
    End CVS Header */
 
 /**
@@ -1327,7 +1327,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
 
       pCompartment = new CCompartment();
       mCommon.KeyMap.addFix(Key, pCompartment);
-      pCompartment->setName(Name);
+      pCompartment->setObjectName(Name);
 
       mCommon.pModel->getCompartments().add(pCompartment, true);
       break;

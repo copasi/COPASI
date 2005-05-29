@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 17:50:39 $
+   $Author: ssahle $ 
+   $Date: 2005/05/29 21:46:26 $
    End CVS Header */
 
 /*******************************************************************
@@ -221,7 +221,7 @@ bool CompartmentsWidget1::saveToCompartment()
   QString name(LineEdit1->text());
   if ((const char *)name.utf8() != comp->getObjectName())
     {
-      if (!comp->setName((const char *)name.utf8()))
+      if (!comp->setObjectName((const char *)name.utf8()))
         {
           QString msg;
           msg = "Unable to rename compartment '" + FROM_UTF8(comp->getObjectName()) + "'\n"
@@ -363,7 +363,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                // Yes or Enter
+    case 0:                                 // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getCompartments().size();
         unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -381,7 +381,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                                // No or Escape
+    case 1:                                 // No or Escape
       break;
     }
 }
