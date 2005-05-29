@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 17:42:39 $
+   $Author: ssahle $ 
+   $Date: 2005/05/29 14:25:30 $
    End CVS Header */
 
 /**
@@ -342,9 +342,9 @@ class CReaction : public CCopasiContainer
 
     const CFunctionParameterMap & getFunctionParameterMap() const {return mMap;}
 
-    C_INT32 getSubstrateMolecularity() const;
-    C_INT32 getProductMolecularity() const;
-    C_INT32 getModifierMolecularity() const;
+    //C_INT32 getSubstrateMolecularity() const;
+    //C_INT32 getProductMolecularity() const;
+    //C_INT32 getModifierMolecularity() const;
 
     /**
      * insert operator

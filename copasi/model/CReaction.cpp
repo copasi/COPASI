@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.113 $
+   $Revision: 1.114 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 17:37:17 $
+   $Author: ssahle $ 
+   $Date: 2005/05/29 14:25:30 $
    End CVS Header */
 
 // CReaction
@@ -756,12 +756,12 @@ const CCompartment* CReaction::getCompartment() const
 const CCallParameterPointers & CReaction::getCallParameterObjects() const
   {return mMap.getObjects();}
 
-C_INT32 CReaction::getSubstrateMolecularity() const
-  {return mChemEq.getMolecularity(CChemEq::SUBSTRATE);}
-C_INT32 CReaction::getProductMolecularity() const
-  {return mChemEq.getMolecularity(CChemEq::PRODUCT);}
-C_INT32 CReaction::getModifierMolecularity() const
-  {return mChemEq.getMolecularity(CChemEq::MODIFIER);}
+//C_INT32 CReaction::getSubstrateMolecularity() const
+//  {return mChemEq.getMolecularity(CChemEq::SUBSTRATE);}
+//C_INT32 CReaction::getProductMolecularity() const
+//  {return mChemEq.getMolecularity(CChemEq::PRODUCT);}
+//C_INT32 CReaction::getModifierMolecularity() const
+//  {return mChemEq.getMolecularity(CChemEq::MODIFIER);}
 
 void CReaction::initObjects()
 {
