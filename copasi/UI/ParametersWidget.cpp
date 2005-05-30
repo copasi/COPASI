@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/30 13:25:00 $
+   $Date: 2005/05/30 13:30:58 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -235,6 +235,8 @@ bool ParametersWidget::saveToModel() const
           }
       }
 
+    bool changed = false;
+
     CParameterListItem * child;
 
     //Metabs
@@ -244,6 +246,7 @@ bool ParametersWidget::saveToModel() const
         //std::cout << child->getObject()->getObjectName() << std::endl;
         if (child->isChanged())
           {
+            changed = true;
             CMetab* tmp = dynamic_cast<CMetab*>(child->getObject());
             if (tmp) tmp->setInitialConcentration(child->getValue());
           }
@@ -257,6 +260,7 @@ bool ParametersWidget::saveToModel() const
         //std::cout << child->getObject()->getObjectName() << std::endl;
         if (child->isChanged())
           {
+            changed = true;
             CCompartment* tmp = dynamic_cast<CCompartment*>(child->getObject());
             if (tmp) tmp->setVolume(child->getValue());
           }
@@ -274,6 +278,7 @@ bool ParametersWidget::saveToModel() const
             //std::cout << child2->getObject()->getObjectName() << std::endl;
             if (child2->isChanged())
               {
+                changed = true;
                 CCopasiParameter* tmp = dynamic_cast<CCopasiParameter*>(child2->getObject());
                 if (tmp) tmp->setValue(child2->getValue());
               }
@@ -289,14 +294,15 @@ bool ParametersWidget::saveToModel() const
         //std::cout << child->getObject()->getObjectName() << std::endl;
         if (child->isChanged())
           {
+            changed = true;
             CModelValue* tmp = dynamic_cast<CModelValue*>(child->getObject());
             if (tmp) tmp->setValue(child->getValue());
           }
         child = (CParameterListItem *)child->nextSibling();
       }
 
-    // :TODO Bug 322: This should only be called when actual changes have been saved.
-    CCopasiDataModel::Global->changed();
+    if (changed)
+      CCopasiDataModel::Global->changed();
 
     return true;
   }
