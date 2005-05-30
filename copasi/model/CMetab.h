@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 21:44:02 $
+   $Date: 2005/05/30 16:42:59 $
    End CVS Header */
 
 /**
@@ -142,7 +142,7 @@ class CMetab : public CModelEntity
      */
     ~CMetab();
 
-    //virtual void * getReference() const;
+    virtual void * getReference() const;
     //TODO: discuss if it should be concentration or particle number...
 
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
