@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.115 $
+   $Revision: 1.116 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 21:40:55 $
+   $Date: 2005/05/30 16:46:27 $
    End CVS Header */
 
 // CReaction
@@ -136,8 +136,6 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
 
 const std::string & CReaction::getKey() const {return mKey;}
 
-//const std::string & CReaction::getName() const {return getObjectName();}
-
 const CChemEq & CReaction::getChemEq() const
   {return mChemEq;}
 
@@ -155,27 +153,6 @@ const C_FLOAT64 & CReaction::getParticleFlux() const
 
 bool CReaction::isReversible() const
   {return mChemEq.getReversibility();}
-
-bool CReaction::setName(const std::string & name)
-{
-  return setObjectName(name);
-}
-
-//void CReaction::setChemEqFromString(const std::string & chemEq, const CModel & model)
-//{mChemEq.setChemicalEquation(chemEq, model);}
-
-/*bool CReaction::addSubstrate(CMetab * pMetab,
-                             const C_FLOAT64 & multiplicity)
-{return mChemEq.addMetabolite(pMetab, multiplicity, CChemEq::SUBSTRATE);}
- 
-bool CReaction::addProduct(CMetab * pMetab,
-                           const C_FLOAT64 & multiplicity)
-{return mChemEq.addMetabolite(pMetab, multiplicity, CChemEq::PRODUCT);}
- 
-bool CReaction::addModifier(CMetab * pMetab,
-                            const C_FLOAT64 & multiplicity)
-{return mChemEq.addMetabolite(pMetab, multiplicity, CChemEq::MODIFIER);}
- */
 
 bool CReaction::addSubstrate(const std::string & metabKey,
                              const C_FLOAT64 & multiplicity)
@@ -237,29 +214,6 @@ const CCopasiParameterGroup & CReaction::getParameters() const
 
 CCopasiParameterGroup & CReaction::getParameters()
 {return mParameters;}
-
-//bool CReaction::setParameterKeys(const std::string & parameterName,
-//                                 const std::vector< std::string > & sourceKeys)
-//{return true;}
-
-//void CReaction::setParameterMapping(const std::string & parameterName, const CMetab & metab)
-//{
-//  if (!mpFunction) fatalError();
-//  mMap.setCallParameter(parameterName, &metab);
-//}
-
-/*void CReaction::setParameterMappingKey(const std::string & parameterName, const CMetab & metab)
-{
-  CFunctionParameter::DataType type;
-  unsigned C_INT32 index;
- 
-  if (!mpFunction) fatalError();
- 
-  index = mMap.findParameterByName(parameterName, type);
-  if (type == CFunctionParameter::VFLOAT64) fatalError();
- 
-  mMetabKeyMap[index][0] = metab.getKey();
-}*/
 
 void CReaction::setParameterMapping(C_INT32 index, const std::string & key)
 {
@@ -332,25 +286,6 @@ void CReaction::clearParameterMapping(C_INT32 index)
   mMetabKeyMap[index].clear();
   //mMap.clearCallParameter(parameterName);
 }
-
-//void CReaction::addParameterMapping(const std::string & parameterName, const CMetab & metab)
-//{
-//  if (!mpFunction) fatalError();
-//  mMap.addCallParameter(parameterName, &metab);
-//}
-
-/*void CReaction::addParameterMappingKey(const std::string & parameterName, const CMetab & metab)
-{
-  CFunctionParameter::DataType type;
-  unsigned C_INT32 index;
- 
-  if (!mpFunction) fatalError();
- 
-  index = mMap.findParameterByName(parameterName, type);
-  if (type != CFunctionParameter::VFLOAT64) fatalError();
- 
-  mMetabKeyMap[index].push_back(metab.getKey());
-}*/
 
 #ifdef xxx
 const std::vector< std::vector<std::string> > CReaction::getParameterMappingName() const
@@ -437,10 +372,13 @@ void CReaction::initializeParameters()
       name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getObjectName();
       //      param.setName(name);
       if (!mParameters.getParameter(name))
-        mParameters.addParameter(name,
-                                 CCopasiParameter::DOUBLE,
-                                 (C_FLOAT64) 1.0);
-      mMetabKeyMap[pos - 1][0] = name;
+        {
+          mParameters.addParameter(name,
+                                   CCopasiParameter::DOUBLE,
+                                   (C_FLOAT64) 1.0);
+        }
+      CCopasiParameter * tmpPar = mParameters.getParameter(name);
+      mMetabKeyMap[pos - 1][0] = tmpPar->getKey();
     }
 
   /* Remove parameters not fitting current function */
@@ -494,7 +432,7 @@ void CReaction::compile()
 
       for (i = 0; i < imax; ++i)
         {
-          if (mMap.getFunctionParameters()[i]->getUsage() == "PARAMETER") continue;
+          /*if (mMap.getFunctionParameters()[i]->getUsage() == "PARAMETER") continue;
           if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
             {
               paramName = getFunctionParameters()[i]->getObjectName();
@@ -508,7 +446,18 @@ void CReaction::compile()
           else
             mMap.setCallParameter(getFunctionParameters()[i]->getObjectName(),
                                   GlobalKeys.get(mMetabKeyMap[i][0])->getObject(CCopasiObjectName("Reference=Concentration")));
-          //mMap.setCallParameter(getFunctionParameters()[i]->getObjectName(), GlobalKeys.get(mMetabKeyMap[i][0]));
+          //mMap.setCallParameter(getFunctionParameters()[i]->getObjectName(), GlobalKeys.get(mMetabKeyMap[i][0]));*/
+
+          paramName = getFunctionParameters()[i]->getObjectName();
+          if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
+            {
+              mMap.clearCallParameter(paramName);
+              jmax = mMetabKeyMap[i].size();
+              for (j = 0; j < jmax; ++j)
+                mMap.addCallParameter(paramName, GlobalKeys.get(mMetabKeyMap[i][j]));
+            }
+          else
+            mMap.setCallParameter(paramName, GlobalKeys.get(mMetabKeyMap[i][0]));
         }
     }
 

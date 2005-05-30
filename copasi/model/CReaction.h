@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 14:25:30 $
+   $Date: 2005/05/30 16:46:28 $
    End CVS Header */
 
 /**
@@ -185,13 +185,6 @@ class CReaction : public CCopasiContainer
      *  @return bool
      */
     bool isReversible() const;
-
-    /**
-     *  Sets the name of the reaction
-     *  @param "const string &" name
-     *  @return bool success
-     */
-    bool setName(const std::string & name);
 
     /**
      * Add a substrate to the reaction
