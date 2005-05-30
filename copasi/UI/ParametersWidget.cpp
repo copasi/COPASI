@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 17:50:40 $
+   $Author: ssahle $ 
+   $Date: 2005/05/30 13:25:00 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -26,6 +26,9 @@
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
 
+#define COL_NAME 0
+#define COL_VALUE 2
+
 class CParameterListItem : public QListViewItem
   {
   public:
@@ -47,18 +50,18 @@ class CParameterListItem : public QListViewItem
 
     CParameterListItem(CParameterListItem *parent, const QString & name,
                        CCopasiObject* obj, C_FLOAT64 value, const QString & unit)
-        : QListViewItem(parent, name, QString::number(value), unit),
+        : QListViewItem(parent, name, "", QString::number(value), unit),
         mpObject(obj),
         mIsChanged(false)
     {
-      setRenameEnabled(1, true);
+      setRenameEnabled(COL_VALUE, true);
     }
 
     CCopasiObject* getObject() const
       {return mpObject;}
 
     C_FLOAT64 getValue() const
-      {return text(1).toDouble();}
+      {return text(COL_VALUE).toDouble();}
 
     bool isChanged() const
       {return mIsChanged;}
@@ -71,11 +74,14 @@ class CParameterListItem : public QListViewItem
 
     virtual void okRename (int col)
     {
+      QString oldText = text(COL_VALUE);
       QListViewItem::okRename(col);
-      //std::cout << "okrename" << std::endl;
+      QString newText = text(COL_VALUE);
+      if (oldText == newText) return;
+
       mIsChanged = true;
-      if ('*' != text(0)[0])
-        setText(0, "*" + text(0)); //TODO: find better way to display changed values
+      if ('*' != text(COL_NAME)[0])
+        setText(COL_NAME, "*" + text(COL_NAME)); //TODO: find better way to display changed values
     }
   };
 
@@ -101,6 +107,7 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, WFlags fl)
 
   listView = new QListView(this, "listView");
   listView->addColumn("Name");
+  listView->addColumn("Status");
   listView->addColumn("Value");
   listView->addColumn("Unit");
   listView->setSelectionMode(QListView::Single);
@@ -166,7 +173,7 @@ bool ParametersWidget::loadFromModel()
   QString unit;
 
   //Compartments
-  mCompItem = new CParameterListItem(listView, "Volumes");
+  mCompItem = new CParameterListItem(listView, "Compartment volumes");
   unit = FROM_UTF8(model->getVolumeUnit());
   const CCopasiVector< CCompartment > & comps = model->getCompartments();
   imax = comps.size();
@@ -201,11 +208,33 @@ bool ParametersWidget::loadFromModel()
                                *(C_FLOAT64*)reac->getParameters().getParameter(j)->getValue(), "");
     }
 
+  //global Parameters
+  mParamItem = new CParameterListItem(listView, "Global parameters");
+  unit = "";
+  const CCopasiVector< CModelValue > & params = model->getModelValues();
+  imax = params.size();
+  for (i = 0; i < imax; ++i)
+    new CParameterListItem(mParamItem, FROM_UTF8(params[i]->getObjectName()),
+                           params[i], params[i]->getInitialValue(), unit);
+
   return true;
 }
 
 bool ParametersWidget::saveToModel() const
   {
+    if (listView->isRenaming())
+      {
+        //std::cout << "renaming" << std::endl;
+
+        //the following is a hack to force termination of an active editor
+        QListViewItem* tmp = listView->currentItem();
+        listView->setCurrentItem(listView->firstChild());
+        if (tmp)
+          {
+            listView->setCurrentItem(tmp);
+          }
+      }
+
     CParameterListItem * child;
 
     //Metabs
@@ -253,6 +282,19 @@ bool ParametersWidget::saveToModel() const
         child = (CParameterListItem *)child->nextSibling();
       }
 
+    //global Parameters
+    child = (CParameterListItem *)mParamItem->firstChild();
+    while (child)
+      {
+        //std::cout << child->getObject()->getObjectName() << std::endl;
+        if (child->isChanged())
+          {
+            CModelValue* tmp = dynamic_cast<CModelValue*>(child->getObject());
+            if (tmp) tmp->setValue(child->getValue());
+          }
+        child = (CParameterListItem *)child->nextSibling();
+      }
+
     // :TODO Bug 322: This should only be called when actual changes have been saved.
     CCopasiDataModel::Global->changed();
 
@@ -263,15 +305,15 @@ bool ParametersWidget::saveToModel() const
 void ParametersWidget::editItem(QListViewItem * item, const QPoint & C_UNUSED(pnt), int c)
 {
   if (!item) return;
-  if (c == 1) //column 1
-    item->startRename(1);
+  if (c == COL_VALUE) //column 1
+    item->startRename(COL_VALUE);
 }
 
 //slot
 void ParametersWidget::editItem(QListViewItem * item)
 {
   if (!item) return;
-  item->startRename(1);
+  item->startRename(COL_VALUE);
 }
 
 //***********************************************************************************

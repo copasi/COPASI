@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/25 10:52:14 $
+   $Date: 2005/05/30 13:25:00 $
    End CVS Header */
 
 #ifndef PARAMETERSWIDGET_H
@@ -55,6 +55,7 @@ class ParametersWidget : public CopasiWidget
     CParameterListItem* mCompItem;
     CParameterListItem* mReacItem;
     CParameterListItem* mMetabItem;
+    CParameterListItem* mParamItem;
 
   protected slots:
     virtual void commitPressed();
