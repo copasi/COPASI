@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/11 17:06:33 $
+   $Author: ssahle $ 
+   $Date: 2005/05/30 16:48:54 $
    End CVS Header */
 
 /**
@@ -560,7 +560,7 @@ bool CCopasiXML::savePlotList()
       Attributes.erase();
       Attributes.add("name", pPlot->getObjectName());
       Attributes.add("type", CPlotSpecification::XMLType[pPlot->getType()]);
-      Attributes.add("active", CPlotSpecification::XMLType[pPlot->isActive()]);
+      Attributes.add("active", pPlot->isActive());
       startSaveElement("PlotSpecification", Attributes);
       saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *)pPlot->CCopasiParameter::getValue());
       startSaveElement("ListOfPlotItems");
