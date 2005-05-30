@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.166 $
+   $Revision: 1.167 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 14:31:12 $
+   $Date: 2005/05/30 14:10:39 $
    End CVS Header */
 
 /*********************************************************************
@@ -354,7 +354,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                                 // Yes or Enter
+        case 0:                                  // Yes or Enter
           {
             //unsigned C_INT32 size = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().size();
             unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getReactions().size();
@@ -378,7 +378,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                        // No or Escape
+        default:                                         // No or Escape
           break;
         }
     }
@@ -438,7 +438,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
       if (mRi.isLocalValue(index))
         mRi.setValue(index, newValue.toDouble()); // TODO: check
       else
-        mRi.setGlobalParameter(index, newValue);
+        mRi.setGlobalParameter(index, (const char *)newValue.utf8());
     }
   else
     {
