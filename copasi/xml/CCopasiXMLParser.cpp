@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 21:45:45 $
+   $Date: 2005/05/30 16:48:17 $
    End CVS Header */
 
 /**
@@ -1636,7 +1636,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
 
       mCommon.pReaction = new CReaction();
       mCommon.KeyMap.addFix(Key, mCommon.pReaction);
-      mCommon.pReaction->setName(Name);
+      mCommon.pReaction->setObjectName(Name);
       mCommon.pReaction->setReversible(Reversible);
 
       if (strcmp(Compartment, "Compartment_00"))

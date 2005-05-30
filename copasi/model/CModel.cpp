@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.222 $
+   $Revision: 1.223 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:06:54 $
+   $Date: 2005/05/30 16:43:35 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1972,12 +1972,12 @@ bool CModel::convert2NonReversible()
         //create the two new reactions
         reac1 = new CReaction(*reac0, &steps);
         rn1 = reac1->getObjectName() + " (forward)";
-        reac1->setName(rn1);
+        reac1->setObjectName(rn1);
         steps.add(reac1);
 
         reac2 = new CReaction(*reac0, &steps);
         rn2 = reac2->getObjectName() + " (backward)";
-        reac2->setName(rn2);
+        reac2->setObjectName(rn2);
         steps.add(reac2);
 
         ri1.initFromReaction(*this, reac1->getKey());

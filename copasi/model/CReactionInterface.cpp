@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 14:28:38 $
+   $Date: 2005/05/30 16:45:35 $
    End CVS Header */
 
 #include <string>
@@ -117,7 +117,7 @@ bool CReactionInterface::writeBackToReaction(CModel & model) const
     CReaction *rea;
     rea = dynamic_cast< CReaction *>(GlobalKeys.get(mReactionReferenceKey));
 
-    if (!rea->setName(mReactionName))
+    if (!rea->setObjectName(mReactionName))
       success = false;
 
     mChemEqI.writeToChemEq(&model, rea->getChemEq());
