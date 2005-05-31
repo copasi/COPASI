@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.117 $
+   $Revision: 1.118 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/31 09:39:14 $
+   $Date: 2005/05/31 14:34:53 $
    End CVS Header */
 
 // CReaction
@@ -46,8 +46,6 @@ CReaction::CReaction(const std::string & name,
     mParticleFlux(0),
     mScalingFactor(&mDefaultScalingFactor),
     mUnitScalingFactor(&mDefaultScalingFactor),
-    mpFunctionCompartment(NULL),
-    //mCompartmentNumber(1),
     mMetabKeyMap(),
     mParameters("Parameters", this)
 {
@@ -66,7 +64,6 @@ CReaction::CReaction(const CReaction & src,
     mParticleFlux(src.mParticleFlux),
     mScalingFactor(src.mScalingFactor),
     mUnitScalingFactor(src.mUnitScalingFactor),
-    mpFunctionCompartment(src.mpFunctionCompartment),
     mMap(src.mMap),
     mMetabKeyMap(src.mMetabKeyMap),
     mParameters(src.mParameters, this)
@@ -89,7 +86,6 @@ CReaction::~CReaction()
 void CReaction::cleanup()
 {
   // TODO: mMap.cleanup();
-
   //mParameterDescription.cleanup();
 }
 
@@ -287,73 +283,7 @@ void CReaction::clearParameterMapping(C_INT32 index)
   //mMap.clearCallParameter(parameterName);
 }
 
-#ifdef xxx
-const std::vector< std::vector<std::string> > CReaction::getParameterMappingName() const
-  {
-    std::vector< std::vector<std::string> > ParameterNames;
-    std::vector< std::vector<std::string> >::const_iterator it
-    = mMetabKeyMap.begin();
-    std::vector< std::vector<std::string> >::const_iterator iEnd
-    = mMetabKeyMap.end();
-    std::vector<std::string> SubList;
-    std::vector<std::string>::const_iterator jt;
-    std::vector<std::string>::const_iterator jEnd;
-    //CMetab * pMetab;
-    std::string metabName;
-
-    for (; it != iEnd; ++it)
-      {
-        SubList.clear();
-        for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
-          {
-            metabName = CMetabNameInterface::getDisplayName(*jt);
-            if (metabName != "")
-              SubList.push_back(metabName);
-            else
-              SubList.push_back(*jt);
-            //pMetab = ((CMetab*)(CCopasiContainer*)(GlobalKeys.get(*jt)));
-            //if (pMetab)
-            //  SubList.push_back(pMetab->getName());
-            //else
-            //  SubList.push_back(*jt);
-          }
-        ParameterNames.push_back(SubList);
-      }
-
-    return ParameterNames;
-  } //TODO: this functionality should be in CReactionInterface
-#endif
-
-/*std::vector<const CMetab *> CReaction::getParameterMappingMetab(C_INT32 index) const
-  {
-    if (!mpFunction) fatalError();
-    if (getFunctionParameters()[index]->getUsage() == "PARAMETER") fatalError();
-    std::vector<const CMetab *> metablist;
-    unsigned C_INT32 i, imax = mMetabKeyMap[index].size();
- 
-    for (i = 0; i < imax; ++i)
-      //      metablist.push_back(&mChemEq.findElementByName(mMetabNameMap[index][i]).getMetabolite());
-      metablist.push_back(dynamic_cast< CMetab * >(GlobalKeys.get(mMetabKeyMap[index][i])));
- 
-    return metablist;
-  }*/
-
 //***********************************************************************************************
-
-/*void CReaction::compileParameters()
-{
-  if (!mpFunction) fatalError();
-  unsigned C_INT32 i;
-  unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage("PARAMETER");
-  unsigned C_INT32 pos;
-  std::string name;
- 
-  for (i = 0, pos = 0; i < imax; ++i)
-    {
-      name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getObjectName();
-      mMap.setCallParameter(name, mParameters.getParameter(name));
-    }
-}*/
 
 void CReaction::initializeParameters()
 {
@@ -394,8 +324,6 @@ void CReaction::initializeParameters()
       if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
         mParameters.removeParameter(name);
     }
-
-  //compileParameters();
 }
 
 void CReaction::initializeMetaboliteKeyMap()
@@ -432,22 +360,6 @@ void CReaction::compile()
 
       for (i = 0; i < imax; ++i)
         {
-          /*if (mMap.getFunctionParameters()[i]->getUsage() == "PARAMETER") continue;
-          if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
-            {
-              paramName = getFunctionParameters()[i]->getObjectName();
-              mMap.clearCallParameter(paramName);
-              jmax = mMetabKeyMap[i].size();
-              for (j = 0; j < jmax; ++j)
-                mMap.addCallParameter(paramName,
-                                      GlobalKeys.get(mMetabKeyMap[i][j])->getObject(CCopasiObjectName("Reference=Concentration")));
-              //mMap.addCallParameter(paramName, GlobalKeys.get(mMetabKeyMap[i][j]));
-            }
-          else
-            mMap.setCallParameter(getFunctionParameters()[i]->getObjectName(),
-                                  GlobalKeys.get(mMetabKeyMap[i][0])->getObject(CCopasiObjectName("Reference=Concentration")));
-          //mMap.setCallParameter(getFunctionParameters()[i]->getObjectName(), GlobalKeys.get(mMetabKeyMap[i][0]));*/
-
           paramName = getFunctionParameters()[i]->getObjectName();
           if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
             {
@@ -699,23 +611,6 @@ void CReaction::setScalingFactor()
     mUnitScalingFactor = & mDefaultScalingFactor;
 }
 
-//TODO: these dont do anything
-//void CReaction::setCompartment(const CCompartment* comp)
-//  {mpFunctionCompartment = comp;}
-
-//const CCompartment* CReaction::getCompartment() const
-//  {return mpFunctionCompartment;}
-
-//const CCallParameterPointers & CReaction::getCallParameterObjects() const
-//  {return mMap.getObjects();}
-
-//C_INT32 CReaction::getSubstrateMolecularity() const
-//  {return mChemEq.getMolecularity(CChemEq::SUBSTRATE);}
-//C_INT32 CReaction::getProductMolecularity() const
-//  {return mChemEq.getMolecularity(CChemEq::PRODUCT);}
-//C_INT32 CReaction::getModifierMolecularity() const
-//  {return mChemEq.getMolecularity(CChemEq::MODIFIER);}
-
 void CReaction::initObjects()
 {
   addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl);
@@ -745,11 +640,6 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
     os << "   mScalingFactor == 0 " << std::endl;
 
   os << "   mUnitScalingFactor: " << d.mUnitScalingFactor << std::endl;
-  //os << "   mCompartmentNumber: " << d.mCompartmentNumber << std::endl;
-  if (d.mpFunctionCompartment)
-    os << "   *mpFunctionCompartment " << d.mpFunctionCompartment->getObjectName() << std::endl;
-  else
-    os << "   mpFunctionCompartment == 0 " << std::endl;
   os << "----CReaction" << std::endl;
 
   return os;

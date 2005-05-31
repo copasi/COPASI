@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/31 09:39:14 $
+   $Date: 2005/05/31 14:34:53 $
    End CVS Header */
 
 /**
@@ -30,7 +30,6 @@
 #include "CCompartment.h"
 
 //template < class CType > class CVector;
-//class CWriteConfig;
 class CReadConfig;
 
 /** @dia:pos 129.788,76.3337 */
@@ -82,15 +81,6 @@ class CReaction : public CCopasiContainer
     const C_FLOAT64 * mUnitScalingFactor;
 
     /**
-     *  Pointer to the compartment in which the kinetic function is defined.
-     *  (the kinetic function gives a rate as concentration/time unit. If there is
-     *  more than one compartment involved it must be specified to which volume
-     *  the concentration change refers)
-     */
-    /** @dia:route 9,23; h,155.606,36.603,165.837,83.8337,159.088 */
-    const CCompartment * mpFunctionCompartment;
-
-    /**
      *  This describes the mapping of the Metabs and Params to the function parameters.
      *  Here are the pointers to the actual objects and values.
      */
@@ -106,8 +96,6 @@ class CReaction : public CCopasiContainer
      *  This is a list of parameter objects.
      */
     CCopasiParameterGroup mParameters;
-
-    // Operations
 
   public:
     /**
@@ -135,11 +123,6 @@ class CReaction : public CCopasiContainer
      *  Delete
      */
     void cleanup();
-
-    /**
-     *  Assignment operator
-     */ 
-    //CReaction & operator=(const CReaction & rhs);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -256,13 +239,8 @@ class CReaction : public CCopasiContainer
     void clearParameterMapping(const std::string & parameterName);
     void clearParameterMapping(C_INT32 index);
 
-    //const std::vector< std::vector<std::string> > getParameterMappingName() const;
-
     const std::vector< std::vector<std::string> > & getParameterMappings() const
       {return mMetabKeyMap;}
-
-    //std::vector<const CMetab *> getParameterMappingMetab(const std::string & parameterName) const;
-    //std::vector<const CMetab *> getParameterMappingMetab(C_INT32 index) const;
 
     /**
      *  Gets the list of kinetic parameter objects of the reaction/function
@@ -292,7 +270,7 @@ class CReaction : public CCopasiContainer
      *  and the reaction only hold the names of the metabolites).
      *  @param "CCopasiVectorNS < CCompartment > &" compartments
      */
-    void compile(/*const CCopasiVectorNS < CCompartment > & compartments*/);
+    void compile();
 
     /**
      *  Calculate the kinetic function
@@ -312,16 +290,6 @@ class CReaction : public CCopasiContainer
                                          const C_FLOAT64 & resolution);
 
     /**
-     * Sets the Compartment related to the kinetic function
-     */ 
-    //void setCompartment(const CCompartment* comp);
-
-    /**
-     * Gets the Compartment related to the kinetic function
-     */ 
-    //const CCompartment* getCompartment() const;
-
-    /**
      *  Retrieves the number of compartments the reaction is acting in.
      *  @return "unsigned C_INT32" the compartment number
      */
@@ -333,45 +301,12 @@ class CReaction : public CCopasiContainer
     const CCompartment & getLargestCompartment() const;
     const CCompartment & getSmallestCompartment() const;
 
-    //const CFunctionParameterMap & getFunctionParameterMap() const {return mMap;}
-
-    //C_INT32 getSubstrateMolecularity() const;
-    //C_INT32 getProductMolecularity() const;
-    //C_INT32 getModifierMolecularity() const;
-
     /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CReaction & d);
 
-    /**
-     * Retrieve the list of CallParameterObjects()
-     */ 
-    //const CCallParameterPointers & getCallParameterObjects() const;
   private:
-
-    /**
-     *  used by compile(). It finds the reference to the transient concentration in the
-     *  metabolite and tells mMap about it.
-     */ 
-    //void setParameterMapping(const std::string & parameterName, const CMetab & metab);
-
-    /**
-     *  It set the key for a parameter mapping
-     *  metabolite and tells mKeyMap about it.
-     */ 
-    //    void setParameterMappingKey(const std::string & parameterName, const CMetab & metab);
-
-    /**
-     *  used by compile(). It finds the reference to the transient concentration in the
-     *  metabolite and tells mMap about it.
-     */ 
-    //void addParameterMapping(const std::string & parameterName, const CMetab & metab);
-
-    /**
-     *  It adds a key to a Metabolite to the parameter map.
-     */ 
-    //    void addParameterMappingKey(const std::string & parameterName, const CMetab & metab);
 
     /**
      *
@@ -397,12 +332,6 @@ class CReaction : public CCopasiContainer
      * mMap needs to be initialized before.
      */
     void initializeParameters();
-
-    /**
-     * sets the pointers in mMap to the kinetic parameters. This is needed
-     * by initializeParameters() and the copy constructor.
-     */ 
-    //void compileParameters();
 
     /**
      * Initializes the mMetabNameMap vectors to the right size.
