@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/05/13 18:04:46 $
+   $Date: 2005/05/31 20:30:22 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -225,8 +225,8 @@ bool COptMethodGA::shuffle()
 
   for (i = 0; i < mPopulationSize / 2; i++)
     {
-      from = mpRandom->getRandomU(mPopulationSize);
-      to = mpRandom->getRandomU(mPopulationSize);
+      from = mpRandom->getRandomU(mPopulationSize - 1);
+      to = mpRandom->getRandomU(mPopulationSize - 1);
 
       tmp = mShuffle[to];
       mShuffle[to] = mShuffle[from];
@@ -239,6 +239,8 @@ bool COptMethodGA::shuffle()
 bool COptMethodGA::replicate()
 {
   unsigned C_INT32 i;
+
+  C_INT32 temp_size = mIndividual.size();
 
   // generate a random order for the parents
   shuffle();
@@ -428,21 +430,21 @@ bool COptMethodGA::initialize()
 
   mVariableSize = mpOptItem->size();
 
-  mIndividual.resize(mPopulationSize);
-  for (i = 0; i < mPopulationSize; i++)
+  mIndividual.resize(2*mPopulationSize);
+  for (i = 0; i < 2*mPopulationSize; i++)
     mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mCrossOverFalse.resize(mVariableSize);
   mCrossOverFalse = false;
   mCrossOver.resize(mVariableSize);
 
-  mValue.resize(mPopulationSize);
+  mValue.resize(2*mPopulationSize);
 
   mShuffle.resize(mPopulationSize);
   for (i = 0; i < mPopulationSize; i++)
     mShuffle[i] = i;
 
-  mWins.resize(mPopulationSize);
+  mWins.resize(2*mPopulationSize);
 
   // initialise the variance for mutations
   mMutationVarians = 0.1;
@@ -455,7 +457,7 @@ bool COptMethodGA::cleanup()
   unsigned C_INT32 i;
 
   pdelete(mpRandom);
-  for (i = 0; i < mPopulationSize; i++)
+  for (i = 0; i < 2*mPopulationSize; i++)
     pdelete(mIndividual[i]);
 
   return true;
