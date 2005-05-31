@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/05/31 17:48:57 $  
+# $Revision: 1.12 $ $Author: shoops $ $Date: 2005/05/31 17:53:33 $  
 ######################################################################
 
 LIB = function
@@ -36,9 +36,9 @@ SOURCES += CCallParameters.cpp \
            CEvaluationNodeConstant.cpp \
            CEvaluationNodeFunction.cpp \
            CEvaluationNodeNumber.cpp \
-           CEvaluationNodeObject.h \
+           CEvaluationNodeObject.cpp \
            CEvaluationNodeOperator.cpp \
-           CEvaluationNodeStructure.h \
+           CEvaluationNodeStructure.cpp \
            CEvaluationNodeVariable.cpp \
            CEvaluationNodeWhiteSpace.cpp \
            CEvaluationTree.cpp \
