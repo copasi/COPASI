@@ -6,6 +6,8 @@
 %option never-interactive
 %option c++
 
+%s SIGN OPERATOR
+
 %{
 #include <vector>
 
@@ -89,6 +91,8 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 
 (abs|ABS)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ABS, yytext);
 
+<INITIAL,SIGN>"-"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeFunction::MINUS, yytext);
+
 exponentiale |
 EXPONENTIALE mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::EXPONENTIALE, yytext);
 
@@ -105,7 +109,7 @@ PI mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::PI, yytext);
 
 "+"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, yytext);
 
-"-"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, yytext);
+<OPERATOR>"-"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, yytext);
 
 "("   return 0; // '(';
 "'"   return 0; // ',';
