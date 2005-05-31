@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:08:14 $
+   $Date: 2005/05/31 09:31:27 $
    End CVS Header */
 
 /**
@@ -1154,19 +1154,21 @@ std::set<std::string> *CHybridMethod::getDependsOn(C_INT32 rIndex)
   unsigned C_INT32 i, imax = (*mpReactions)[rIndex]->getFunctionParameters().size();
   unsigned C_INT32 j, jmax;
 
-  std::vector <const CMetab*> metablist;
-  std::cout << rIndex << " depends on ";
+  //std::vector <const CMetab*> metablist;
+  //std::cout << rIndex << " depends on ";
 
   for (i = 0; i < imax; ++i)
     {
       if ((*mpReactions)[rIndex]->getFunctionParameters()[i]->getUsage() == "PARAMETER")
         continue;
-      metablist = (*mpReactions)[rIndex]->getParameterMappingMetab(i);
-      jmax = metablist.size();
+      //metablist = (*mpReactions)[rIndex]->getParameterMappingMetab(i);
+      const std::vector <std::string> & metabKeylist =
+        (*mpReactions)[rIndex]->getParameterMappings()[i];
+      jmax = metabKeylist.size();
       for (j = 0; j < jmax; ++j)
         {
-          retset->insert(metablist[j]->getKey());
-          std::cout << " " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
+          retset->insert(metabKeylist[j]);
+          //std::cout << " " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
         }
     }
   std::cout << std::endl;
@@ -1286,7 +1288,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                            // Everything !!!
+    case 0:                             // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << std::endl;
       os << "current time: " << mpCurrentState->getTime() << std::endl;
@@ -1396,7 +1398,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                             // Variable values only
+    case 1:                              // Variable values only
       os << "current time: " << mpCurrentState->getTime() << std::endl;
       /*
       case 1:

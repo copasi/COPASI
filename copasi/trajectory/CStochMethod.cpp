@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:08:14 $
+   $Date: 2005/05/31 09:31:27 $
    End CVS Header */
 
 #ifdef WIN32
@@ -446,7 +446,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
   mMaxBalance = maxBalance;
   //std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =   /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =    /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
@@ -464,18 +464,20 @@ std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
   unsigned C_INT32 i, imax = mpModel->getReactions()[reaction_index]->getFunctionParameters().size();
   unsigned C_INT32 j, jmax;
 
-  std::vector <const CMetab*> metablist;
+  //std::vector <const CMetab*> metablist;
   //std::cout << reaction_index << " depends on ";
 
   for (i = 0; i < imax; ++i)
     {
       if (mpModel->getReactions()[reaction_index]->getFunctionParameters()[i]->getUsage() == "PARAMETER")
         continue;
-      metablist = mpModel->getReactions()[reaction_index]->getParameterMappingMetab(i);
-      jmax = metablist.size();
+      //metablist = mpModel->getReactions()[reaction_index]->getParameterMappingMetab(i);
+      const std::vector <std::string> & metabKeylist =
+        mpModel->getReactions()[reaction_index]->getParameterMappings()[i];
+      jmax = metabKeylist.size();
       for (j = 0; j < jmax; ++j)
         {
-          retset->insert(metablist[j]->getKey());
+          retset->insert(metabKeylist[j]);
           //std::cout << "  " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
         }
     }

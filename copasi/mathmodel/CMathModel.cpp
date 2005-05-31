@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:12:38 $
+   $Date: 2005/05/31 09:30:19 $
    End CVS Header */
 
 /**
@@ -426,7 +426,7 @@ CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
 
   const CFunctionParameters & Description =
     pReaction->getFunction().getParameters();
-  const CCallParameterPointers & Objects = pReaction->getCallParameterObjects();
+  const std::vector<std::vector<std::string> > & keyMap = pReaction->getParameterMappings();
 
   unsigned C_INT32 i, imax = Description.size();
   unsigned C_INT32 j, jmax;
@@ -434,7 +434,7 @@ CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
   for (i = 0; i < imax; i++)
     {
       if (Description[i]->getType() < CFunctionParameter::VINT32)
-        pL->addChild(new CMathNodeSymbol(CMathSymbol::find((CCopasiObject *)Objects[i])));
+        pL->addChild(new CMathNodeSymbol(CMathSymbol::find(keyMap[i][0])));
       //TODO reac : the pointer to CCopasiObject is never a pointer to a CMetab (as it is expected here).
       // instead it is a pointer to an object reference object (the concentration of the metabolite).
       else
@@ -442,13 +442,10 @@ CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
           pV = new CMathNodeList();
           pL->addChild(pV);
 
-          std::vector< CCopasiObject * > * V =
-            (std::vector< CCopasiObject * > *) Objects[i];
-
-          jmax = V->size();
+          jmax = keyMap[i].size();
 
           for (j = 0; j < jmax; j++)
-            pV->addChild(new CMathNodeSymbol(CMathSymbol::find((*V)[j]))); //dito
+            pV->addChild(new CMathNodeSymbol(CMathSymbol::find(keyMap[i][j]))); //dito
         }
     }
 

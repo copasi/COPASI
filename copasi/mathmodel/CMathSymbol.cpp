@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathSymbol.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:24:29 $
+   $Author: ssahle $ 
+   $Date: 2005/05/31 09:30:19 $
    End CVS Header */
 
 /**
@@ -18,6 +18,7 @@
 
 #include "copasi.h"
 #include "CMathSymbol.h"
+#include "report/CKeyFactory.h"
 
 std::map< std::string, CMathSymbol * > CMathSymbol::mList;
 
@@ -36,6 +37,7 @@ std::string & CMathSymbol::alternateName(std::string & name)
   return name = tmpName.str();
 }
 
+//static
 CMathSymbol * CMathSymbol::find(const CCopasiObject * pObject)
 {
   std::map< std::string, CMathSymbol * >::iterator it = mList.begin();
@@ -45,6 +47,13 @@ CMathSymbol * CMathSymbol::find(const CCopasiObject * pObject)
 
   if (it == end) return NULL;
   else return it->second;
+}
+
+//static
+CMathSymbol * CMathSymbol::find(const std::string & key)
+{
+  CCopasiObject * tmp = GlobalKeys.get(key);
+  return find(tmp);
 }
 
 CMathSymbol::CMathSymbol():

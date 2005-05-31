@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathSymbol.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:24:29 $
+   $Author: ssahle $ 
+   $Date: 2005/05/31 09:30:19 $
    End CVS Header */
 
 /**
@@ -88,6 +88,8 @@ class CMathSymbol
      * @return CMathSymbol *
      */
     static CMathSymbol * find(const CCopasiObject * pObject);
+
+    static CMathSymbol * find(const std::string & key);
 
     /**
      * Specific constructor
