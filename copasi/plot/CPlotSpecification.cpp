@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:17 $
+   $Author: ssahle $ 
+   $Date: 2005/05/31 09:43:16 $
    End CVS Header */
 
 #include "model/CModel.h"
 
 #include "CPlotSpecification.h"
+#include "report/CCopasiObjectReference.h"
 
 CPlotSpecification::CPlotSpecification(const std::string & name,
                                        const CCopasiContainer * pParent,
@@ -16,14 +17,14 @@ CPlotSpecification::CPlotSpecification(const std::string & name,
     CPlotItem(name, pParent, type),
     items("Curves", this),
     mActive(true)
-{}
+{initObjects();}
 
 CPlotSpecification::CPlotSpecification(const CPlotSpecification & src,
                                        const CCopasiContainer * pParent):
     CPlotItem(src, pParent),
     items(src.getItems(), this),
-    mActive(true)
-{}
+    mActive(src.mActive)
+{initObjects();}
 
 CPlotSpecification::~CPlotSpecification() {}
 
@@ -34,7 +35,21 @@ void CPlotSpecification::cleanup()
 }
 
 void CPlotSpecification::initObjects()
-{}
+{
+  CCopasiContainer::addObjectReference("Active", mActive, CCopasiObject::ValueBool);
+}
+
+void CPlotSpecification::setActive(bool act)
+{
+  //std::cout << "plotspec::setActive " << act << std::endl;
+  mActive = act;
+}
+
+bool CPlotSpecification::isActive() const
+  {
+    //std::cout << "plotspec::getActive " << mActive << std::endl;
+    return mActive;
+  }
 
 CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::Type type)
 {
