@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/05/31 19:17:49 $
+   $Author: shoops $ 
+   $Date: 2005/05/31 21:06:45 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -467,7 +467,7 @@ void OptimizationWidget::slotChooseObject()
       if (mObject)
         {
           parseList.push_back(mObject);
-          mPrevExpr = (expressionText->text());
+          mPrevExpr = (const char *) expressionText->text().utf8();
           parseMe = CRegisteredObjectName(mObject->getCN());
           mPrevExpr = mPrevExpr.append("<");
           mPrevExpr = mPrevExpr.append(mObject->getObjectDisplayName());
@@ -516,11 +516,11 @@ bool OptimizationWidget::parseExpression()
   std::string mDisplayName = "";
   std::string mRNDesc = "";
   std::string temp = "";
-  std::string mDesc = std::string(expressionText->text());
+  std::string mDesc = (const char *)expressionText->text().utf8();
   std::vector<CCopasiObject *>::iterator it = parseList.begin();
   //CFunction* pFunc;
   //pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefined)
-  for (int i = 0; i < mDesc.length(); i++)
+  for (unsigned int i = 0; i < mDesc.length(); i++)
     {
       mRNDesc += mDesc[i];
       mDisplayName = "";
@@ -560,6 +560,8 @@ bool OptimizationWidget::parseExpression()
   COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
   if (!optimizationProblem) return false;
   optimizationProblem->setFunction(pFunction);
+
+  return true;
 }
 
 void OptimizationWidget::slotSteadystatechecked()
