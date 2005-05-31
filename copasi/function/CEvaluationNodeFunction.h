@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Date: 2005/05/31 18:18:34 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -38,26 +38,26 @@ class CEvaluationNodeFunction : public CEvaluationNode
       CSC = 0x00000007,
       COT = 0x00000008,
       SINH = 0x00000009,
-      COSH = 0x00000010,
-      TANH = 0x00000011,
-      SECH = 0x00000012,
-      CSCH = 0x00000013,
-      COTH = 0x00000014,
-      ARCSIN = 0x00000015,
-      ARCCOS = 0x00000016,
-      ARCTAN = 0x00000017,
-      ARCSEC = 0x00000018,
-      ARCCSC = 0x00000019,
-      ARCCOT = 0x00000020,
-      ARCSINH = 0x00000021,
-      ARCCOSH = 0x00000022,
-      ARCTANH = 0x00000023,
-      ARCSECH = 0x00000024,
-      ARCCSCH = 0x00000025,
-      ARCCOTH = 0x00000026,
-      SQRT = 0x00000027,
-      ABS = 0x00000028,
-      MINUS = 0x00000029
+      COSH = 0x0000000a,
+      TANH = 0x0000000b,
+      SECH = 0x0000000c,
+      CSCH = 0x0000000d,
+      COTH = 0x0000000e,
+      ARCSIN = 0x0000000f,
+      ARCCOS = 0x00000010,
+      ARCTAN = 0x00000011,
+      ARCSEC = 0x00000012,
+      ARCCSC = 0x00000013,
+      ARCCOT = 0x00000014,
+      ARCSINH = 0x00000015,
+      ARCCOSH = 0x00000016,
+      ARCTANH = 0x00000017,
+      ARCSECH = 0x00000018,
+      ARCCSCH = 0x00000019,
+      ARCCOTH = 0x0000001a,
+      SQRT = 0x0000001b,
+      ABS = 0x0000001c,
+      MINUS = 0x0000001d
     };
 
     // Operations
