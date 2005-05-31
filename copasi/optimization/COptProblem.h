@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Author: anuragr $ 
+   $Date: 2005/05/31 20:29:55 $
    End CVS Header */
 
 /**
@@ -29,7 +29,7 @@
 
 class CSteadyStateTask;
 class CTrajectoryTask;
-class COptFunction;
+class CKinFunction;
 class COptItem;
 
 enum ProblemType
@@ -58,7 +58,7 @@ class COptProblem : public CCopasiProblem
     /**
      * The objective function which should be minimized or maximized.
      */
-    COptFunction * mpFunction;
+    CKinFunction* mpFunction;
 
     std::vector< COptItem * > mOptItemList;
 
@@ -82,6 +82,7 @@ class COptProblem : public CCopasiProblem
     C_FLOAT64 mCounter;
 
     // Implementation
+
   public:
 
     /**
@@ -229,6 +230,11 @@ class COptProblem : public CCopasiProblem
      */
     bool swapOptItem(const unsigned C_INT32 & iFrom,
                      const unsigned C_INT32 & iTo);
+
+    /**
+     * Set optimization function 
+     */
+    bool setFunction(CKinFunction*);
 
   private:
     virtual void initObjects();

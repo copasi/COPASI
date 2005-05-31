@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/05/13 18:04:46 $
+   $Date: 2005/05/31 20:29:50 $
    End CVS Header */
 
 /**
@@ -20,6 +20,8 @@
 #include "copasi.h"
 #include "COptProblem.h"
 #include "COptItem.h"
+
+#include "function/CKinFunction.h"
 
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -154,7 +156,12 @@ bool COptProblem::calculate()
       mpTrajectory->process();
     }
 
-  // :TODO: mCalculateValue = mpFunction->calvValue(NULL);
+  CCallParameterPointers CallParameters;
+  CallParameters.push_back(NULL);
+
+  //C_FLOAT64 r = f.calcValue(CallParameters);
+
+  mCalculateValue = mpFunction->calcValue(CallParameters);
 
   mCounter += 1;
 
@@ -246,3 +253,9 @@ const std::vector< COptItem * > & COptProblem::getOptItemList() const
 
 const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMethods() const
   {return mUpdateMethods;}
+
+bool COptProblem::setFunction(CKinFunction* func)
+{
+  mpFunction = func;
+  return true;
+}
