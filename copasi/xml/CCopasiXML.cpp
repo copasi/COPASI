@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/30 16:48:54 $
+   $Date: 2005/05/31 09:33:26 $
    End CVS Header */
 
 /**
@@ -248,7 +248,7 @@ bool CCopasiXML::saveModel()
       Attributes.erase();
       Attributes.add("key", "");
       Attributes.add("name", "");
-      Attributes.add("compartment", "");
+      Attributes.add("compartment", ""); //TODO necessary?
       Attributes.add("reversible", "");
 
       for (i = 0; i < imax; i++)
@@ -257,10 +257,10 @@ bool CCopasiXML::saveModel()
 
           Attributes.setValue(0, pReaction->getKey());
           Attributes.setValue(1, pReaction->getObjectName());
-          if (pReaction->getCompartment())
-            Attributes.setValue(2, pReaction->getCompartment()->getKey());
-          else
-            Attributes.skip(2);
+          //if (pReaction->getCompartment())
+          //  Attributes.setValue(2, pReaction->getCompartment()->getKey());
+          //else
+          Attributes.skip(2);
           Attributes.setValue(3, pReaction->isReversible() ? "true" : "false");
 
           startSaveElement("Reaction", Attributes);
@@ -353,8 +353,8 @@ bool CCopasiXML::saveModel()
               if ((jmax = pReaction->getFunctionParameters().size()))
                 {
                   startSaveElement("ListOfCallParameters");
-                  const CFunctionParameterMap * pMap =
-                    &pReaction->getFunctionParameterMap();
+                  const std::vector< std::vector<std::string> > & rMap =
+                    pReaction->getParameterMappings();
 
                   for (j = 0; j < jmax; j++)
                     {
@@ -365,26 +365,12 @@ bool CCopasiXML::saveModel()
 
                       startSaveElement("CallParameter", Attr);
 
-                      ObjectList = pMap->getObjects(j);
-
                       Attr.erase();
                       Attr.add("reference", "");
 
-                      for (k = 0, kmax = ObjectList.size(); k < kmax; k++)
+                      for (k = 0, kmax = rMap[j].size(); k < kmax; k++)
                         {
-                          const CCopasiObject * pObject = ObjectList[k];
-
-                          if (pObject->getObjectType() == "Parameter")
-                            Attr.setValue(0,
-                                          ((CCopasiParameter *)
-                                           (CCopasiContainer *) pObject)->getKey());
-                          else if (pObject->getObjectType() == "Metabolite")
-                            Attr.setValue(0,
-                                          ((CMetab *)
-                                           (CCopasiContainer *) pObject)->getKey());
-                          else
-                            Attr.setValue(0, "NoKey");
-
+                          Attr.setValue(0, rMap[j][k]);
                           saveElement("SourceParameter", Attr);
                         }
 
