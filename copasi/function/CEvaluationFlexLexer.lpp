@@ -6,7 +6,7 @@
 %option never-interactive
 %option c++
 
-%s SIGN OPERATOR
+%s sSIGN sOPERATOR
 
 %{
 #include <vector>
@@ -31,93 +31,93 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
    
 %%
 
-{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?  mpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, yytext);
+{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?  BEGIN(sOPERATOR); mpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, yytext);
  
-(log|LOG)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG, yytext);
+(log|LOG)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG, yytext);
 
-(log10|LOG10)/\( mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10, yytext);
+(log10|LOG10)/\( BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10, yytext);
 
-(exp|EXP)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::EXP, yytext);
+(exp|EXP)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::EXP, yytext);
 
-(sin|SIN)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SIN, yytext);
+(sin|SIN)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SIN, yytext);
 
-(cos|COS)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COS, yytext);
+(cos|COS)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COS, yytext);
 
-(tan|TAN)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TAN, yytext);
+(tan|TAN)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TAN, yytext);
 
-(sec|SEC)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SEC, yytext);
+(sec|SEC)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SEC, yytext);
 
-(csc|CSC)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSC, yytext);
+(csc|CSC)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSC, yytext);
 
-(cot|COT)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COT, yytext);
+(cot|COT)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COT, yytext);
 
-(sinh|SINH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SINH, yytext);
+(sinh|SINH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SINH, yytext);
 
-(cosh|COSH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COSH, yytext);
+(cosh|COSH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COSH, yytext);
 
-(tanh|TANH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TANH, yytext);
+(tanh|TANH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TANH, yytext);
 
-(sech|SECH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SECH, yytext);
+(sech|SECH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SECH, yytext);
 
-(csch|CSCH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSCH, yytext);
+(csch|CSCH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSCH, yytext);
 
-(coth|COTH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COTH, yytext);
+(coth|COTH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COTH, yytext);
 
-(asin|ASIN)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSIN, yytext);
+(asin|ASIN)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSIN, yytext);
 
-(acos|ACOS)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOS, yytext);
+(acos|ACOS)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOS, yytext);
 
-(atan|ATAN)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTAN, yytext);
+(atan|ATAN)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTAN, yytext);
 
-(arcsec|ARCSEC)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSEC, yytext);
+(arcsec|ARCSEC)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSEC, yytext);
 
-(arccsc|ARCCSC)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSC, yytext);
+(arccsc|ARCCSC)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSC, yytext);
 
-(arccot|ARCCOT)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOT, yytext);
+(arccot|ARCCOT)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOT, yytext);
 
-(arcsinh|ARCSINH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSINH, yytext);
+(arcsinh|ARCSINH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSINH, yytext);
 
-(arccosh|ARCCOSH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOSH, yytext);
+(arccosh|ARCCOSH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOSH, yytext);
 
-(arctanh|ARCTANH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTANH, yytext);
+(arctanh|ARCTANH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTANH, yytext);
 
-(arcsech|ARCSECH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSECH, yytext);
+(arcsech|ARCSECH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSECH, yytext);
  
-(arccsch|ARCCSCH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSCH, yytext);
+(arccsch|ARCCSCH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSCH, yytext);
 
-(arccoth|ARCCOTH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOTH, yytext);
+(arccoth|ARCCOTH)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOTH, yytext);
 
-(sqrt|SQRT)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SQRT, yytext);
+(sqrt|SQRT)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SQRT, yytext);
 
-(abs|ABS)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ABS, yytext);
+(abs|ABS)/\(   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ABS, yytext);
 
-<INITIAL,SIGN>"-"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeFunction::MINUS, yytext);
+<INITIAL,sSIGN>"-"   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, yytext);
 
 exponentiale |
-EXPONENTIALE mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::EXPONENTIALE, yytext);
+EXPONENTIALE BEGIN(sOPERATOR); mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::EXPONENTIALE, yytext);
 
 pi |
-PI mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::PI, yytext);
+PI BEGIN(sSIGN); mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::PI, yytext);
       
-"^"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, yytext);
+"^"   BEGIN(sSIGN); mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, yytext);
 
-"*"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, yytext);
+"*"   BEGIN(sSIGN); mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, yytext);
 
-"/"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, yytext);
+"/"   BEGIN(sSIGN); mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, yytext);
 
-"%"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MODULUS, yytext);
+"%"   BEGIN(sSIGN); mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MODULUS, yytext);
 
-"+"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, yytext);
+"+"   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, yytext);
 
-<OPERATOR>"-"   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, yytext);
+<sOPERATOR>"-"   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, yytext);
 
-"("   return 0; // '(';
-"'"   return 0; // ',';
-")"   return 0; // ')';
+"("   BEGIN(sSIGN); return 0; // '(';
+","   BEGIN(sSIGN); return 0; // ',';
+")"   BEGIN(sOPERATOR); return 0; // ')';
 
-{ID}  return 0; // CEvaluationNodeVariable::IDENTIFIER;
+{ID}  BEGIN(sOPERATOR); return 0; // CEvaluationNodeVariable::IDENTIFIER;
 
-\<([^\\\>]|\\.)*\>  return 0; // CEvaluationNodeObject::OBJECT;
+\<([^\\\>]|\\.)*\>  BEGIN(sOPERATOR); return 0; // CEvaluationNodeObject::OBJECT;
      
 [ \t\r\n]+ /* eat up whitespace */
      
