@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/30 16:46:28 $
+   $Date: 2005/05/31 09:39:14 $
    End CVS Header */
 
 /**
@@ -256,13 +256,13 @@ class CReaction : public CCopasiContainer
     void clearParameterMapping(const std::string & parameterName);
     void clearParameterMapping(C_INT32 index);
 
-    const std::vector< std::vector<std::string> > getParameterMappingName() const;
+    //const std::vector< std::vector<std::string> > getParameterMappingName() const;
 
     const std::vector< std::vector<std::string> > & getParameterMappings() const
       {return mMetabKeyMap;}
 
     //std::vector<const CMetab *> getParameterMappingMetab(const std::string & parameterName) const;
-    std::vector<const CMetab *> getParameterMappingMetab(C_INT32 index) const;
+    //std::vector<const CMetab *> getParameterMappingMetab(C_INT32 index) const;
 
     /**
      *  Gets the list of kinetic parameter objects of the reaction/function
@@ -313,13 +313,13 @@ class CReaction : public CCopasiContainer
 
     /**
      * Sets the Compartment related to the kinetic function
-     */
-    void setCompartment(const CCompartment* comp);
+     */ 
+    //void setCompartment(const CCompartment* comp);
 
     /**
      * Gets the Compartment related to the kinetic function
-     */
-    const CCompartment* getCompartment() const;
+     */ 
+    //const CCompartment* getCompartment() const;
 
     /**
      *  Retrieves the number of compartments the reaction is acting in.
@@ -333,7 +333,7 @@ class CReaction : public CCopasiContainer
     const CCompartment & getLargestCompartment() const;
     const CCompartment & getSmallestCompartment() const;
 
-    const CFunctionParameterMap & getFunctionParameterMap() const {return mMap;}
+    //const CFunctionParameterMap & getFunctionParameterMap() const {return mMap;}
 
     //C_INT32 getSubstrateMolecularity() const;
     //C_INT32 getProductMolecularity() const;
@@ -347,9 +347,7 @@ class CReaction : public CCopasiContainer
     /**
      * Retrieve the list of CallParameterObjects()
      */ 
-    //
-
-    const CCallParameterPointers & getCallParameterObjects() const;
+    //const CCallParameterPointers & getCallParameterObjects() const;
   private:
 
     /**
@@ -403,13 +401,13 @@ class CReaction : public CCopasiContainer
     /**
      * sets the pointers in mMap to the kinetic parameters. This is needed
      * by initializeParameters() and the copy constructor.
-     */
-    void compileParameters();
+     */ 
+    //void compileParameters();
 
     /**
      * Initializes the mMetabNameMap vectors to the right size.
      */
-    void initializeMetaboliteNameMap();
+    void initializeMetaboliteKeyMap();
   };
 
 #endif // COPASI_CReaction

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.116 $
+   $Revision: 1.117 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/30 16:46:27 $
+   $Date: 2005/05/31 09:39:14 $
    End CVS Header */
 
 // CReaction
@@ -75,7 +75,7 @@ CReaction::CReaction(const CReaction & src,
   initObjects();
   if (mpFunction)
     {
-      compileParameters();
+      //compileParameters();
     }
 }
 
@@ -189,7 +189,7 @@ bool CReaction::setFunction(CFunction * pFunction)
     mpFunction = pFunction;
 
   mMap.initializeFromFunctionParameters(mpFunction->getParameters());
-  initializeMetaboliteNameMap(); //needs to be called before initializeParamters();
+  initializeMetaboliteKeyMap(); //needs to be called before initializeParamters();
   initializeParameters();
 
   return true;
@@ -324,36 +324,36 @@ const std::vector< std::vector<std::string> > CReaction::getParameterMappingName
   } //TODO: this functionality should be in CReactionInterface
 #endif
 
-std::vector<const CMetab *> CReaction::getParameterMappingMetab(C_INT32 index) const
+/*std::vector<const CMetab *> CReaction::getParameterMappingMetab(C_INT32 index) const
   {
     if (!mpFunction) fatalError();
     if (getFunctionParameters()[index]->getUsage() == "PARAMETER") fatalError();
     std::vector<const CMetab *> metablist;
     unsigned C_INT32 i, imax = mMetabKeyMap[index].size();
-
+ 
     for (i = 0; i < imax; ++i)
       //      metablist.push_back(&mChemEq.findElementByName(mMetabNameMap[index][i]).getMetabolite());
       metablist.push_back(dynamic_cast< CMetab * >(GlobalKeys.get(mMetabKeyMap[index][i])));
-
+ 
     return metablist;
-  }
+  }*/
 
 //***********************************************************************************************
 
-void CReaction::compileParameters()
+/*void CReaction::compileParameters()
 {
   if (!mpFunction) fatalError();
   unsigned C_INT32 i;
   unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage("PARAMETER");
   unsigned C_INT32 pos;
   std::string name;
-
+ 
   for (i = 0, pos = 0; i < imax; ++i)
     {
       name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getObjectName();
       mMap.setCallParameter(name, mParameters.getParameter(name));
     }
-}
+}*/
 
 void CReaction::initializeParameters()
 {
@@ -395,10 +395,10 @@ void CReaction::initializeParameters()
         mParameters.removeParameter(name);
     }
 
-  compileParameters();
+  //compileParameters();
 }
 
-void CReaction::initializeMetaboliteNameMap()
+void CReaction::initializeMetaboliteKeyMap()
 {
   if (!mpFunction) fatalError();
   unsigned C_INT32 i;
@@ -700,14 +700,14 @@ void CReaction::setScalingFactor()
 }
 
 //TODO: these dont do anything
-void CReaction::setCompartment(const CCompartment* comp)
-{mpFunctionCompartment = comp;}
+//void CReaction::setCompartment(const CCompartment* comp)
+//  {mpFunctionCompartment = comp;}
 
-const CCompartment* CReaction::getCompartment() const
-  {return mpFunctionCompartment;}
+//const CCompartment* CReaction::getCompartment() const
+//  {return mpFunctionCompartment;}
 
-const CCallParameterPointers & CReaction::getCallParameterObjects() const
-  {return mMap.getObjects();}
+//const CCallParameterPointers & CReaction::getCallParameterObjects() const
+//  {return mMap.getObjects();}
 
 //C_INT32 CReaction::getSubstrateMolecularity() const
 //  {return mChemEq.getMolecularity(CChemEq::SUBSTRATE);}
