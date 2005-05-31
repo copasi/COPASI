@@ -87,6 +87,10 @@ SOURCE=.\CModel.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CModelValue.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CMoiety.cpp
 # End Source File
 # Begin Source File
@@ -155,6 +159,10 @@ SOURCE=.\CModel.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CModelValue.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CMoiety.h
 # End Source File
 # Begin Source File
@@ -168,6 +176,10 @@ SOURCE=.\CReaction.h
 # Begin Source File
 
 SOURCE=.\CReactionInterface.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CScanInputFlexLexer.h
 # End Source File
 # Begin Source File
 
