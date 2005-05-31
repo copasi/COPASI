@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.97 $ $Author: ssahle $ $Date: 2005/05/25 09:51:59 $  
+# $Revision: 1.98 $ $Author: shoops $ $Date: 2005/05/31 15:11:16 $  
 ######################################################################
 
 TEMPLATE = app
@@ -107,6 +107,7 @@ contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
   
   COPASI_LIBS += randomGenerator
+  COPASI_LIBS += function
   
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $$LIBS
