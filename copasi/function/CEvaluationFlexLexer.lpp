@@ -31,63 +31,63 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 
 {DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?  mpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, yytext);
  
-(log|LOG)/\(   return 0; // CEvaluationNodeFunction::LOG;
+(log|LOG)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG, yytext);
 
-(log10|LOG10)/\( return 0; // CEvaluationNodeFunction::LOG10;
+(log10|LOG10)/\( mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10, yytext);
 
-(exp|EXP)/\(   return 0; // CEvaluationNodeFunction::EXP;
+(exp|EXP)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::EXP, yytext);
 
-(sin|SIN)/\(   return 0; // CEvaluationNodeFunction::SIN;
+(sin|SIN)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SIN, yytext);
 
-(cos|COS)/\(   return 0; // CEvaluationNodeFunction::COS;
+(cos|COS)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COS, yytext);
 
-(tan|TAN)/\(   return 0; // CEvaluationNodeFunction::TAN;
+(tan|TAN)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TAN, yytext);
 
-(sec|SEC)/\(   return 0; // CEvaluationNodeFunction::SEC;
+(sec|SEC)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SEC, yytext);
 
-(csc|CSC)/\(   return 0; // CEvaluationNodeFunction::CSC;
+(csc|CSC)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSC, yytext);
 
-(cot|COT)/\(   return 0; // CEvaluationNodeFunction::COT;
+(cot|COT)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COT, yytext);
 
-(sinh|SINH)/\(   return 0; // CEvaluationNodeFunction::SINH;
+(sinh|SINH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SINH, yytext);
 
-(cosh|COSH)/\(   return 0; // CEvaluationNodeFunction::COSH;
+(cosh|COSH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COSH, yytext);
 
-(tanh|TANH)/\(   return 0; // CEvaluationNodeFunction::TANH;
+(tanh|TANH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TANH, yytext);
 
-(sech|SECH)/\(   return 0; // CEvaluationNodeFunction::SECH;
+(sech|SECH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SECH, yytext);
 
-(csch|CSCH)/\(   return 0; // CEvaluationNodeFunction::CSCH;
+(csch|CSCH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSCH, yytext);
 
-(coth|COTH)/\(   return 0; // CEvaluationNodeFunction::COTH;
+(coth|COTH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COTH, yytext);
 
-(asin|ASIN)/\(   return 0; // CEvaluationNodeFunction::ARCSIN;
+(asin|ASIN)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSIN, yytext);
 
-(acos|ACOS)/\(   return 0; // CEvaluationNodeFunction::ARCCOS;
+(acos|ACOS)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOS, yytext);
 
-(atan|ATAN)/\(   return 0; // CEvaluationNodeFunction::ARCTAN;
+(atan|ATAN)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTAN, yytext);
 
-(arcsec|ARCSEC)/\(   return 0; // CEvaluationNodeFunction::ARCSEC;
+(arcsec|ARCSEC)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSEC, yytext);
 
-(arccsc|ARCCSC)/\(   return 0; // CEvaluationNodeFunction::ARCCSC;
+(arccsc|ARCCSC)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSC, yytext);
 
-(arccot|ARCCOT)/\(   return 0; // CEvaluationNodeFunction::ARCCOT;
+(arccot|ARCCOT)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOT, yytext);
 
-(arcsinh|ARCSINH)/\(   return 0; // CEvaluationNodeFunction::ARCSINH;
+(arcsinh|ARCSINH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSINH, yytext);
 
-(arccosh|ARCCOSH)/\(   return 0; // CEvaluationNodeFunction::ARCCOSH;
+(arccosh|ARCCOSH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOSH, yytext);
 
-(arctanh|ARCTANH)/\(   return 0; // CEvaluationNodeFunction::ARCTANH;
+(arctanh|ARCTANH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTANH, yytext);
 
-(arcsech|ARCSECH)/\(   return 0; // CEvaluationNodeFunction::ARCSECH;
+(arcsech|ARCSECH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSECH, yytext);
  
-(arccsch|ARCCSCH)/\(   return 0; // CEvaluationNodeFunction::ARCCSCH;
+(arccsch|ARCCSCH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSCH, yytext);
 
-(arccoth|ARCCOTH)/\(   return 0; // CEvaluationNodeFunction::ARCCOTH;
+(arccoth|ARCCOTH)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOTH, yytext);
 
-(sqrt|SQRT)/\(   return 0; // CEvaluationNodeFunction::SQRT;
+(sqrt|SQRT)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SQRT, yytext);
 
-(abs|ABS)/\(   return 0; // CEvaluationNodeFunction::ABS;
+(abs|ABS)/\(   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ABS, yytext);
 
 exponentiale |
 EXPONENTIALE mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::EXPONENTIALE, yytext);
