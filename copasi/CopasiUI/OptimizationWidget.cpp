@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/05/31 18:45:03 $
+   $Date: 2005/05/31 19:17:49 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -41,8 +41,8 @@
 #include "CProgressBar.h"
 #include "utilities/CCopasiException.h"
 #include "CScanContainerWidget.h"
-#include "utilities/CopasiTime.h"
-#include "COptWidgetTask.h"
+#include "utilities/CopasiTime.h" 
+//#include "COptWidgetTask.h"
 
 OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f)
@@ -171,6 +171,9 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   param3Edit->hide();
   param4Edit->show();
   param5Edit->show();
+
+  // for the default option
+  timeCheck->setChecked(true);
 }
 
 OptimizationWidget::~OptimizationWidget()
@@ -182,8 +185,7 @@ void OptimizationWidget::CancelChangeButton()
 }
 
 void OptimizationWidget::CheckBoxClicked()
-{
-}
+{}
 
 void OptimizationWidget::runOptimizationTask()
 {
@@ -502,8 +504,7 @@ void OptimizationWidget::slotChooseObject()
     }
 
   else
-  {}
-}
+    {}}
 
 /* function - slotParseExpression
  * Description -  parsing */ 
@@ -523,6 +524,7 @@ bool OptimizationWidget::parseExpression()
     {
       mRNDesc += mDesc[i];
       mDisplayName = "";
+
       if (mDesc[i] == '<')
         {
           i++;
