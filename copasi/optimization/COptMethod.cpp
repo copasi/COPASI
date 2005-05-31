@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/05/13 18:04:46 $
+   $Date: 2005/05/31 20:30:51 $
    End CVS Header */
 
 /**
@@ -35,33 +35,40 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
   COptMethod * pMethod = NULL;
   switch (subType)
     {
-    case RandomSearch:
-      //      pMethod = new CRandomSearch();
-      break;
+      /*
+       case RandomSearch:
 
-    case RandomSearchMaster:
-      //      pMethod = new CRandomSearchMaster();
-      break;
+         //      pMethod = new CRandomSearch();
+         break;
 
-    case SimulatedAnnealing:
-      //      pMethod = new COptMethodSA();
-      break;
+       case RandomSearchMaster:
+         //      pMethod = new CRandomSearchMaster();
+         break;
 
-    case GeneticAlgorithm:
-      pMethod = new COptMethodGA();
-      break;
+       case SimulatedAnnealing:
+         //      pMethod = new COptMethodSA();
+         break;
 
-    case EvolutionaryProgram2:
-      //      pMethod = new COptMethodEP2();
-      break;
+       case GeneticAlgorithm:
+         pMethod = new COptMethodGA();
+         break;
 
-    case HybridGASA:
-      //      pMethod = new COptMethodHGASA();
-      break;
+       case EvolutionaryProgram2:
+         //      pMethod = new COptMethodEP2();
+         break;
 
-    default:
-      fatalError();
+       case HybridGASA:
+         //      pMethod = new COptMethodHGASA();
+         break;
+
+       default:
+
+      //      fatalError();*/
     }
+
+  //<temporarily added>
+  pMethod = new COptMethodGA();
+  //</temporarily added>
 
   return pMethod;
 }
@@ -121,7 +128,7 @@ bool COptMethod::optimise(void)
 
 bool COptMethod::initialize()
 {
-  if (mpOptProblem)
+  if (!mpOptProblem)
     return false;
   if (!(mpOptItem = &mpOptProblem->getOptItemList()))
     return false;
