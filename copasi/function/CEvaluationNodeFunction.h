@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 21:12:10 $
+   $Date: 2005/05/31 13:09:11 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -31,6 +31,9 @@ class CEvaluationNodeFunction : public CEvaluationNode
       SIN = 0x00000003,
       COS = 0x00000004,
       TAN = 0x00000005,
+#ifdef SEC
+# undef SEC
+#endif
       SEC = 0x00000006,
       CSC = 0x00000007,
       COT = 0x00000008,
