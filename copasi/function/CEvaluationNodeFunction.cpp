@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 21:17:39 $
+   $Date: 2005/05/31 13:54:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -137,6 +137,10 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
     case ABS:
       mpFunction = fabs;
+      break;
+
+    case MINUS:
+      mpFunction = minus;
       break;
 
     default:
