@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Date: 2005/05/31 19:12:36 $
    End CVS Header */
 
 #include "copasi.h"
@@ -19,10 +19,7 @@ CEvaluationNodeVariable::CEvaluationNodeVariable(const SubType & subType,
     const Data & data):
     CEvaluationNode((Type) (CEvaluationNode::VARIABLE | subType), data),
     mpValue(NULL)
-{
-  char * end;
-  mValue = strtod(mData.c_str(), &end);
-}
+{}
 
 CEvaluationNodeVariable::CEvaluationNodeVariable(const CEvaluationNodeVariable & src):
     CEvaluationNode(src),

@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CEvaluationFlexLexer.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 18:51:48 $
+   $Date: 2005/05/31 19:12:36 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationFlexLexer
 #define COPASI_CEvaluationFlexLexer
+
+#include "FlexLexer.h"
 
 /**
  * This is a bas class for the CEvaluationFlexLexer adding member

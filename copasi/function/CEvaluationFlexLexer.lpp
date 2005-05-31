@@ -120,6 +120,8 @@ PI BEGIN(sSIGN); mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::P
 \<([^\\\>]|\\.)*\>  BEGIN(sOPERATOR); mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, yytext);
      
 [ \t\r\n]+ mpNode = new CEvaluationNodeWhiteSpace(CEvaluationNodeWhiteSpace::ANY, yytext);
+
+<<EOF>>  return mPosition;
      
 .     freeNodeList(mpNodeList); return mPosition;
      
