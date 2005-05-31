@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/30 16:42:59 $
+   $Date: 2005/05/31 09:34:09 $
    End CVS Header */
 
 #include <iostream>
@@ -285,7 +285,7 @@ C_FLOAT64 CMetab::getConcentrationRate() const
 
 void * CMetab::getReference() const
   {
-    std::cout << "CMetab::getReference();" << std::endl;
+    //std::cout << "CMetab::getReference();" << std::endl;
     return const_cast<C_FLOAT64 *>(&mConc);
   }
 
