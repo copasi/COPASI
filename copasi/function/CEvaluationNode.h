@@ -1,15 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 21:00:58 $
+   $Date: 2005/05/31 17:48:57 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
 #define COPASI_CEvaluationNode
 
 #include "utilities/CCopasiNode.h"
+
+class CEvaluationTree;
 
 /**
  * This is the base class for nodes used in an evaluation trees
@@ -31,7 +33,8 @@ class CEvaluationNode : public CCopasiNode< std::string >
       CALL = 0x06000000,
       STRUCTURE = 0x07000000,
       CHOICE = 0x08000000,
-      VARIABLE = 0x09000000
+      VARIABLE = 0x09000000,
+      WHITESPACE = 0x0a000000
     };
 
     // Methods
@@ -58,7 +61,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
      */
     static Type type(const Type & type);
 
-  private:
+  public:
     /**
      * Default constructor
      */
@@ -89,13 +92,14 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * Retrieve the value of the node
      * @return const C_FLOAT64 & value
      */
-    virtual const C_FLOAT64 & value() const = 0;
+    virtual inline const C_FLOAT64 & value() const {return mValue;}
 
     /**
      * Compile a node;
+     * @param const CEvaluationTree * pTree
      * @return bool success;
      */
-    virtual bool compile();
+    virtual bool compile(const CEvaluationTree * pTree);
 
     /**
      * Retrieve the value of the node. This method is superceded
@@ -133,6 +137,10 @@ class CEvaluationNode : public CCopasiNode< std::string >
 #include "CEvaluationNodeConstant.h"
 #include "CEvaluationNodeFunction.h"
 #include "CEvaluationNodeNumber.h"
+#include "CEvaluationNodeObject.h"
 #include "CEvaluationNodeOperator.h"
+#include "CEvaluationNodeStructure.h"
+#include "CEvaluationNodeVariable.h"
+#include "CEvaluationNodeWhiteSpace.h"
 
 #endif // COPASI_CEvaluationNode

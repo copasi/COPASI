@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 13:54:10 $
+   $Date: 2005/05/31 17:48:57 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -99,9 +99,10 @@ class CEvaluationNodeFunction : public CEvaluationNode
 
     /**
      * Compile a node;
+     * @param const CEvaluationTree * pTree
      * @return bool success;
      */
-    virtual bool compile();
+    virtual bool compile(const CEvaluationTree * pTree);
 
   private:
     static inline C_FLOAT64 sec(C_FLOAT64 value)

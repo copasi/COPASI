@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 18:08:59 $
+   $Date: 2005/05/31 17:48:57 $
    End CVS Header */
 
 #include <string>
@@ -19,7 +19,7 @@ CEvaluationNodeConstant::CEvaluationNodeConstant():
 
 CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::NUMBER | subType), data)
+    CEvaluationNode((Type) (CEvaluationNode::CONSTANT | subType), data)
 {
   switch ((SubType) subType)
     {

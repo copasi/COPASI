@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 19:20:58 $
+   $Date: 2005/05/31 17:48:57 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeConstant
@@ -61,12 +61,6 @@ class CEvaluationNodeConstant : public CEvaluationNode
      * Destructor
      */
     virtual ~CEvaluationNodeConstant();
-
-    /**
-     * Retrieve the value of the node
-     * @return const C_FLOAT64 & value
-     */
-    virtual inline const C_FLOAT64 & value() const {return mValue;}
   };
 
 #endif // COPASI_CEvaluationNodeConstant

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 18:08:59 $
+   $Date: 2005/05/31 17:48:57 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeNumber
@@ -51,12 +51,6 @@ class CEvaluationNodeNumber : public CEvaluationNode
      * Destructor
      */
     virtual ~CEvaluationNodeNumber();
-
-    /**
-     * Retrieve the value of the node
-     * @return const C_FLOAT64 & value
-     */
-    virtual inline const C_FLOAT64 & value() const {return mValue;}
   };
 
 #endif // COPASI_CEvaluationNodeNumber

@@ -111,15 +111,15 @@ PI BEGIN(sSIGN); mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::P
 
 <sOPERATOR>"-"   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, yytext);
 
-"("   BEGIN(sSIGN); return 0; // '(';
-","   BEGIN(sSIGN); return 0; // ',';
-")"   BEGIN(sOPERATOR); return 0; // ')';
+"("   BEGIN(sSIGN); mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::OPEN, yytext);
+","   BEGIN(sSIGN); mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::COMMA, yytext);
+")"   BEGIN(sOPERATOR); mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::CLOSE, yytext);
 
-{ID}  BEGIN(sOPERATOR); return 0; // CEvaluationNodeVariable::IDENTIFIER;
+{ID}  BEGIN(sOPERATOR); mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, yytext);
 
-\<([^\\\>]|\\.)*\>  BEGIN(sOPERATOR); return 0; // CEvaluationNodeObject::OBJECT;
+\<([^\\\>]|\\.)*\>  BEGIN(sOPERATOR); mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, yytext);
      
-[ \t\r\n]+ /* eat up whitespace */
+[ \t\r\n]+ mpNode = new CEvaluationNodeWhiteSpace(CEvaluationNodeWhiteSpace::ANY, yytext);
      
 .     freeNodeList(mpNodeList); return mPosition;
      

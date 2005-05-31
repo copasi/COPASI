@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 18:08:59 $
+   $Date: 2005/05/31 17:48:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -15,7 +15,7 @@ CEvaluationNodeOperator::CEvaluationNodeOperator():
 
 CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::NUMBER | subType), data),
+    CEvaluationNode((Type) (CEvaluationNode::OPERATOR | subType), data),
     mpOperation(NULL),
     mpLeft(NULL),
     mpRight(NULL)
@@ -60,7 +60,7 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const CEvaluationNodeOperator &
 
 CEvaluationNodeOperator::~CEvaluationNodeOperator() {}
 
-bool CEvaluationNodeOperator::compile()
+bool CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
 {
   mpLeft = static_cast<CEvaluationNode *>(getChild());
   if (mpLeft == NULL) return false;
