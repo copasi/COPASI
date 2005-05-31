@@ -1,1003 +1,572 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 17:50:40 $
+   $Author: anuragr $ 
+   $Date: 2005/05/31 18:45:03 $
    End CVS Header */
 
-/********************************************************
-Author: Liang Xu
-Version : 1.xx  <first>
-Description: 
-Date: 09/19
-Comment : OptimizationWidget for UI of the optimization function
-Contact: Please contact lixu1@vt.edu.
- *********************************************************/
-
+#include <qfiledialog.h>
 #include <qvariant.h>
-#include <qpushbutton.h>
-#include <qframe.h>
+#include <qcheckbox.h>
 #include <qlabel.h>
-#include <qcombobox.h>
-#include <qlistbox.h>
-#include <qlineedit.h>
-#include <qtextedit.h>
+#include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qtextbrowser.h>
 #include <qmessagebox.h>
-#include <qbuttongroup.h>
-#include <qradiobutton.h>
+#include <qcombobox.h>
+#include <qgroupbox.h>
+#include <qframe.h>
+#include <qlineedit.h>
+#include <qtable.h>
 
-//#include "ScanWidget.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "ScanScrollView.h"
-#include "ScanItemWidget.h"
-#include "OptimizationItemWidget.h"
-#include "OptimizationWidget.h"
 #include "copasi.h"
+
+#include "OptimizationWidget.h"
+#include "optimization/COptTask.h"
+#include "optimization/COptProblem.h"
+#include "optimization/COptMethod.h"
+#include "model/CModel.h"
 #include "listviews.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "OptimizationItemWidget.h"
 #include "ObjectBrowserDialog.h"
-#include "function/CFunction.h"
-#include "function/CFunctionDB.h"
-#include "function/CKinFunction.h"
-#include "optimization/COptFunction.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "TrajectoryWidget.h"
-#include "SteadyStateWidget.h"
-#include "utilities/CCopasiException.h"
-#include "qtUtilities.h"
-
+#include "ObjectBrowserItem.h"
+#include "CCopasiSelectionDialog.h"
 #include "report/CKeyFactory.h"
-#include "./icons/scanwidgetbuttonicon.xpm"
 
-/*
- *  Constructs a OptimizationWidget as a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f'.
- */
-OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags fl)
-    : CopasiParametersWidget(parent, name, fl),
-    bUpdated(false)
+//#include "CReportDefinitionSelect.h"
+#include "qtUtilities.h"
+#include "CProgressBar.h"
+#include "utilities/CCopasiException.h"
+#include "CScanContainerWidget.h"
+#include "utilities/CopasiTime.h"
+#include "COptWidgetTask.h"
+
+OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags f)
+    : CopasiWidget(parent, name, f)
+    //    pParent(parent)
 {
-  nSelectedObjects = 0;
-  nTitleHeight = 16;
-  activeObject = -1;
-  selectedList.clear();
-
-  QPixmap image0((const char**) image0_data);
-  QPixmap image1((const char**) image1_data);
-  QPixmap image2((const char**) image2_data);
-  QPixmap image3((const char**) image3_data);
-
-  /*
-    if (!name)
-      setName("OptimizationWidget");
-    OptimizationWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "OptimizationWidgetLayout");
-   
-    layout18 = new QVBoxLayout(0, 0, 6, "layout18");
-   
-    layout17 = new QGridLayout(0, 1, 1, 0, 6, "layout17");
-   
-    //    expressionText = new QTextBrowser(this, "expressionText");
-    //   expressionText = new QLineEdit(this, "expressionText");
-    expressionText = new QLineEdit(this, "expressionText");
-   
-    layout17->addWidget(expressionText, 1, 1);
-   
-    expressionName = new QLineEdit(this, "expressionName");
-    expressionName->setFrameShape(QLineEdit::LineEditPanel);
-    expressionName->setFrameShadow(QLineEdit::Sunken);
-   
-    layout17->addWidget(expressionName, 0, 1);
-   
-    expressionEditlabel = new QLabel(this, "expressionEditlabel");
-   
-    layout17->addWidget(expressionEditlabel, 1, 0);
-   
-    expressionNameLabel = new QLabel(this, "expressionNameLabel");
-   
-    layout17->addWidget(expressionNameLabel, 0, 0);
-    layout18->addLayout(layout17);
-   
-    bodyField_2 = new QFrame(this, "bodyField_2");
-    bodyField_2->setFrameShape(QFrame::HLine);
-    bodyField_2->setFrameShadow(QFrame::Sunken);
-    bodyField_2->setFrameShape(QFrame::HLine);
-    layout18->addWidget(bodyField_2);
-   
-    layout16 = new QHBoxLayout(0, 0, 6, "layout16");
-   
-    layout15 = new QVBoxLayout(0, 0, 6, "layout15");
-   
-    itemsLabel = new QLabel(this, "itemsLabel");
-    layout15->addWidget(itemsLabel);
-   
-    layout14 = new QGridLayout(0, 1, 1, 0, 6, "layout14");
-   
-    downButton = new QPushButton(this, "downButton");
-    downButton->setText(trUtf8(""));
-    downButton->setPixmap(image1);
-    layout14->addWidget(downButton, 1, 1);
-   
-    deleteButton = new QPushButton(this, "deleteButton");
-    deleteButton->setText(trUtf8(""));
-    deleteButton->setPixmap(image0);
-   
-    layout14->addWidget(deleteButton, 0, 1);
-   
-    addButton = new QPushButton(this, "addButton");
-    addButton->setText(trUtf8(""));
-    addButton->setPixmap(image2);
-    layout14->addWidget(addButton, 0, 0);
-   
-    //manually change to add icon for alignment need
-    upButton = new QPushButton(this, "upButton");
-    upButton->setText(trUtf8(""));
-    upButton->setPixmap(image3);
-    layout14->addWidget(upButton, 1, 0);
-   
-    itemnamesTable = new QListBox(this, "itemnamesTable");
-    itemnamesTable->insertItem(trUtf8("click here to add new item"));
-    layout14->addMultiCellWidget(itemnamesTable, 2, 2, 0, 1);
-   
-    layout15->addLayout(layout14);
-    layout16->addLayout(layout15);
-   
-    itemsTable = new ScanScrollView(this, 0, 0);
-    OptimizationItemWidget* parameterTable = new OptimizationItemWidget(this, "parameterTable");
-    itemsTable->setMinimumWidth(parameterTable->minimumSizeHint().width());
-    pdelete(parameterTable);
-    itemsTable->setVScrollBarMode(QScrollView::Auto);
-    itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
-    itemsTable->setSelectedList(&selectedList);
-   
-    // itemsTable = new QListBox(this, "itemsTable");
-    layout16->addWidget(itemsTable);
-    layout18->addLayout(layout16);
-   
-    bodyField = new QFrame(this, "bodyField");
-    bodyField->setFrameShape(QFrame::HLine);
-    bodyField->setFrameShadow(QFrame::Sunken);
-    bodyField->setFrameShape(QFrame::HLine);
-    layout18->addWidget(bodyField);
-   
-    layout14_2 = new QHBoxLayout(0, 0, 6, "layout14_2");
-   
-    confirmButton = new QPushButton(this, "confirmButton");
-    layout14_2->addWidget(confirmButton);
-   
-    cancelButton = new QPushButton(this, "cancelButton");
-    layout14_2->addWidget(cancelButton);
-    layout18->addLayout(layout14_2);
-   
-    OptimizationWidgetLayout->addLayout(layout18, 0, 0);
-  */
-
   if (!name)
-    setName("ExpressionWidget");
-  ExpressionWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ExpressionWidgetLayout");
+    setName("OptimizationWidget");
+  setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, sizePolicy().hasHeightForWidth()));
 
-  bodyField = new QFrame(this, "bodyField");
-  bodyField->setFrameShape(QFrame::HLine);
-  bodyField->setFrameShadow(QFrame::Sunken);
-  bodyField->setFrameShape(QFrame::HLine);
+  buttonsSeparator = new QFrame(this, "buttonsSeparator");
+  buttonsSeparator->setGeometry(QRect(11, 281, 558, 16));
+  buttonsSeparator->setFrameShape(QFrame::HLine);
+  buttonsSeparator->setFrameShadow(QFrame::Sunken);
+  buttonsSeparator->setFrameShape(QFrame::HLine);
 
-  ExpressionWidgetLayout->addMultiCellWidget(bodyField, 10, 10, 0, 2);
+  paramsGroupBox = new QGroupBox(this, "paramsGroupBox");
+  paramsGroupBox->setGeometry(QRect(11, 290 - 30, 558, 98 + 120));
 
-  layout14 = new QHBoxLayout(0, 0, 6, "layout14");
+  typeGroupBox = new QGroupBox(this, "typeGroupBox");
+  typeGroupBox->setGeometry(QRect(327, 131, 242, 108 - 30));
+
+  timeCheck = new QCheckBox(typeGroupBox, "timeCheck");
+  timeCheck->setGeometry(QRect(11, 45, 84, 19));
+
+  steadystateCheck = new QCheckBox(typeGroupBox, "steadystateCheck");
+  steadystateCheck->setGeometry(QRect(11, 20, 84, 19));
+
+  AddTaskButton = new QPushButton(this, "AddTaskButton");
+  AddTaskButton->setGeometry(QRect(327, 245 - 30, 242, 24));
+  AddTaskButton->setAutoMask(TRUE);
+  AddTaskButton->setOn(FALSE);
+
+  methodGroupBox = new QGroupBox(this, "methodGroupBox");
+  methodGroupBox->setGeometry(QRect(11, 131, 310, 138 - 30));
+
+  expressionNameLabel_2 = new QLabel(methodGroupBox, "expressionNameLabel_2");
+  expressionNameLabel_2->setGeometry(QRect(12, 21, 89, 20));
+
+  methodCombo = new QComboBox(FALSE, methodGroupBox, "methodCombo");
+  methodCombo->setGeometry(QRect(60, 20, 220, 20));
+
+  param1Edit = new QLineEdit(methodGroupBox, "param1Edit");
+  param1Edit->setGeometry(QRect(10, 50, 50, 20));
+
+  param3Edit = new QLineEdit(methodGroupBox, "param3Edit");
+  param3Edit->setGeometry(QRect(130, 50, 50, 20));
+
+  param2Edit = new QLineEdit(methodGroupBox, "param2Edit");
+  param2Edit->setGeometry(QRect(70, 50, 50, 20));
+
+  param4Edit = new QLineEdit(methodGroupBox, "param4Edit");
+  param4Edit->setGeometry(QRect(190, 50, 50, 20));
+
+  param5Edit = new QLineEdit(methodGroupBox, "param5Edit");
+  param5Edit->setGeometry(QRect(250, 50, 50, 20));
 
   confirmButton = new QPushButton(this, "confirmButton");
-  layout14->addWidget(confirmButton);
+  confirmButton->setGeometry(QRect(12, 404 + 100, 181, 24));
+
+  runButton = new QPushButton(this, "runButton");
+  runButton->setGeometry(QRect(199, 404 + 100, 182, 24));
 
   cancelButton = new QPushButton(this, "cancelButton");
-  layout14->addWidget(cancelButton);
+  cancelButton->setGeometry(QRect(387, 404 + 100, 181, 24));
 
-  ExpressionWidgetLayout->addMultiCellLayout(layout14, 11, 11, 0, 2);
+  selectParameterButton = new QPushButton(this, "selectParameterButton");
+  selectParameterButton->setGeometry(QRect(489, 71, 80, 24));
 
-  //******* 2nd set of copasi items added
-  itemsTable2 = new ScanScrollView(this, 0, 0);
-  OptimizationItemWidget* parameterTable2 = new OptimizationItemWidget(this, "parameterTable2");
-  itemsTable2->setMinimumWidth(parameterTable2->minimumSizeHint().width());
-  pdelete(parameterTable2);
-  itemsTable2->setVScrollBarMode(QScrollView::Auto);
-  itemsTable2->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
-  itemsTable2->setSelectedList(&selectedList);
-
-  ExpressionWidgetLayout->addWidget(itemsTable2, 9, 2);
-
-  copasiItemsTableLayout = new QGridLayout(0, 1, 1, 0, 6, "copasiItemsTableLayout");
-
-  downButton2 = new QPushButton(this, "downButton2");
-  downButton2->setText(trUtf8(""));
-  downButton2->setPixmap(image1);
-  copasiItemsTableLayout->addWidget(downButton2, 2, 1);  //was layout 8
-
-  deleteButton2 = new QPushButton(this, "deleteButton2");
-  deleteButton2->setText(trUtf8(""));
-  deleteButton2->setPixmap(image0);
-  copasiItemsTableLayout->addWidget(deleteButton2, 1, 1);
-
-  addButton2 = new QPushButton(this, "addButton2");
-  addButton2->setText(trUtf8(""));
-  addButton2->setPixmap(image2);
-  copasiItemsTableLayout->addWidget(addButton2, 1, 0);
-
-  //manually change to add icon for alignment need
-  upButton2 = new QPushButton(this, "upButton2");
-  upButton2->setText(trUtf8(""));
-  upButton2->setPixmap(image3);
-  copasiItemsTableLayout->addWidget(upButton2, 2, 0);
-
-  itemnamesTable2 = new QListBox(this, "itemnamesTable2");
-  copasiItemsTableLayout->addMultiCellWidget(itemnamesTable2, 3, 3, 0, 1);
-
-  itemsLabel2 = new QLabel(this, "itemsLabel2");
-  itemsLabel2->setText("Copasi Items");
-
-  copasiItemsTableLayout->addMultiCellWidget(itemsLabel2, 0, 0, 0, 1);
-
-  ExpressionWidgetLayout->addMultiCellLayout(copasiItemsTableLayout, 9, 9, 0, 1);
-
-  // below is the code for the division line between the two items tables sections
-  copasiItemsDivider = new QFrame(this, "copasiItemsDivider");
-  copasiItemsDivider->setFrameShape(QFrame::HLine);
-  copasiItemsDivider->setFrameShadow(QFrame::Sunken);
-  copasiItemsDivider->setFrameShape(QFrame::HLine);
-
-  ExpressionWidgetLayout->addMultiCellWidget(copasiItemsDivider, 8, 8, 0, 2);
-  //********
-
-  itemsTable = new ScanScrollView(this, 0, 0);
-  OptimizationItemWidget* parameterTable = new OptimizationItemWidget(this, "parameterTable");
-  itemsTable->setMinimumWidth(parameterTable->minimumSizeHint().width());
-  pdelete(parameterTable);
-  itemsTable->setVScrollBarMode(QScrollView::Auto);
-  itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
-  itemsTable->setSelectedList(&selectedList);
-
-  ExpressionWidgetLayout->addWidget(itemsTable, 7, 2);
-
-  layout8 = new QGridLayout(0, 1, 1, 0, 6, "layout8");
-
-  downButton = new QPushButton(this, "downButton");
-  downButton->setText(trUtf8(""));
-  downButton->setPixmap(image1);
-  layout8->addWidget(downButton, 2, 1);
-
-  deleteButton = new QPushButton(this, "deleteButton");
-  deleteButton->setText(trUtf8(""));
-  deleteButton->setPixmap(image0);
-  layout8->addWidget(deleteButton, 1, 1);
-
-  addButton = new QPushButton(this, "addButton");
-  addButton->setText(trUtf8(""));
-  addButton->setPixmap(image2);
-  layout8->addWidget(addButton, 1, 0);
-
-  //manually change to add icon for alignment need
-  upButton = new QPushButton(this, "upButton");
-  upButton->setText(trUtf8(""));
-  upButton->setPixmap(image3);
-  layout8->addWidget(upButton, 2, 0);
-
-  itemnamesTable = new QListBox(this, "itemnamesTable");
-  layout8->addMultiCellWidget(itemnamesTable, 3, 3, 0, 1);
-
-  itemsLabel = new QLabel(this, "itemsLabel");
-
-  layout8->addMultiCellWidget(itemsLabel, 0, 0, 0, 1);
-
-  ExpressionWidgetLayout->addMultiCellLayout(layout8, 7, 7, 0, 1);
-
-  bodyField_2 = new QFrame(this, "bodyField_2");
-  bodyField_2->setFrameShape(QFrame::HLine);
-  bodyField_2->setFrameShadow(QFrame::Sunken);
-  bodyField_2->setFrameShape(QFrame::HLine);
-
-  ExpressionWidgetLayout->addMultiCellWidget(bodyField_2, 6, 6, 0, 2);
-
-  layout7 = new QHBoxLayout(0, 0, 6, "layout7");
-
-  steadystateCheck = new QCheckBox(this, "steadystateCheck");
-  layout7->addWidget(steadystateCheck);
-
-  steadystateEditButton = new QPushButton(this, "steadystateEditButton");
-  layout7->addWidget(steadystateEditButton);
-  QSpacerItem* spacer = new QSpacerItem(101, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout7->addItem(spacer);
-
-  timeCheck = new QCheckBox(this, "timeCheck");
-  layout7->addWidget(timeCheck);
-
-  timeEditButton = new QPushButton(this, "timeEditButton");
-  layout7->addWidget(timeEditButton);
-
-  ExpressionWidgetLayout->addMultiCellLayout(layout7, 5, 5, 0, 2);
-
-  bodyField_2_2 = new QFrame(this, "bodyField_2_2");
-  bodyField_2_2->setFrameShape(QFrame::HLine);
-  bodyField_2_2->setFrameShadow(QFrame::Sunken);
-  bodyField_2_2->setFrameShape(QFrame::HLine);
-
-  ExpressionWidgetLayout->addMultiCellWidget(bodyField_2_2, 4, 4, 0, 2);
+  expressionNameLabel = new QLabel(this, "expressionNameLabel");
+  expressionNameLabel->setGeometry(QRect(11, 33, 51, 20));
 
   expressionName = new QLineEdit(this, "expressionName");
+  expressionName->setGeometry(QRect(68, 33, 415, 20));
   expressionName->setFrameShape(QLineEdit::LineEditPanel);
   expressionName->setFrameShadow(QLineEdit::Sunken);
 
-  ExpressionWidgetLayout->addMultiCellWidget(expressionName, 0, 0, 1, 2);
-
-  methodCombo = new QComboBox(FALSE, this, "methodCombo");
-  methodCombo->insertItem("Genetic algorithms(SA--)");
-  methodCombo->insertItem("Random Search");
-
-  ExpressionWidgetLayout->addMultiCellWidget(methodCombo, 2, 2, 1, 2);
-
-  optimizationLabel = new QLabel(this, "optimizationLabel");
-
-  ExpressionWidgetLayout->addWidget(optimizationLabel, 2, 0);
-
   expressionEditlabel = new QLabel(this, "expressionEditlabel");
-
-  ExpressionWidgetLayout->addWidget(expressionEditlabel, 3, 0);
+  expressionEditlabel->setGeometry(QRect(11, 71, 51, 24));
 
   expressionText = new QLineEdit(this, "expressionText");
+  expressionText->setGeometry(QRect(68, 73, 415, 20));
   expressionText->setFrameShape(QLineEdit::LineEditPanel);
   expressionText->setFrameShadow(QLineEdit::Sunken);
-
-  ExpressionWidgetLayout->addMultiCellWidget(expressionText, 3, 3, 1, 2);
-
-  // added by Christine below used to indicate minimize or maximize optimization type
-  qbuttongroup = new QButtonGroup(this, "buttonGroup");
-  radioButtonLayout = new QHBoxLayout(qbuttongroup, 0, 6, "radioButtonLayout");
-  maximizeRadio = new QRadioButton("Maximize", qbuttongroup, "maximizeRadio");
-  maximizeRadio->setChecked(true);
-  minimizeRadio = new QRadioButton("Minimize", qbuttongroup, "minimizeRadio");
-  radioButtonLayout->addWidget(maximizeRadio);
-  radioButtonLayout->addWidget(minimizeRadio);
-  ExpressionWidgetLayout->addMultiCellWidget(qbuttongroup, 1, 1, 0, 2);
-
-  expressionNameLabel = new QLabel(this, "expressionNameLabel");
-
-  ExpressionWidgetLayout->addWidget(expressionNameLabel, 0, 0);
-
   languageChange();
-  clearWState(WState_Polished);
+  resize(QSize(581, 447).expandedTo(minimumSizeHint()));
+  //   clearWState(WState_Polished);
+
+  // signals and slots connections
 
   // tab order
-  setTabOrder(expressionName, methodCombo);
-  setTabOrder(methodCombo, expressionText);
+  setTabOrder(expressionName, expressionText);
   setTabOrder(expressionText, steadystateCheck);
-  setTabOrder(steadystateCheck, steadystateEditButton);
-  setTabOrder(steadystateEditButton, timeCheck);
-  setTabOrder(timeCheck, timeEditButton);
-  setTabOrder(timeEditButton, addButton);
-  setTabOrder(addButton, deleteButton);
-  setTabOrder(deleteButton, upButton);
-  setTabOrder(upButton, downButton);
-  setTabOrder(downButton, itemnamesTable);
-  setTabOrder(itemnamesTable, itemsTable);
-  setTabOrder(itemsTable, confirmButton);
+  setTabOrder(steadystateCheck, timeCheck);
+  setTabOrder(timeCheck, confirmButton);
   setTabOrder(confirmButton, cancelButton);
 
-  connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
-  connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
-  connect(upButton, SIGNAL(clicked()), this, SLOT(upButtonClicked()));
-  connect(downButton, SIGNAL(clicked()), this, SLOT(downButtonClicked()));
+  //scrollview
 
-  connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotBtnConfirmClicked()));
-  connect(cancelButton, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  Layoutparams = new QHBoxLayout(paramsGroupBox, 0, 6, "Layout24");
+  scrollview = new CScanContainerWidget(paramsGroupBox);
+  Layoutparams->addWidget(scrollview);
 
-  //  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
-  //  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+  mObject = NULL;
 
-  connect(itemnamesTable, SIGNAL(clicked(QListBoxItem*)), this, SLOT(ListBoxClicked(QListBoxItem*)));
-  connect(itemnamesTable, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(ListBoxDoubleClicked(QListBoxItem*)));
+  methodCombo->insertItem("Genetic Algorithm");
+  methodCombo->insertItem("Simulated Annealing");
+  methodCombo->insertItem("EP2");
+  methodCombo->insertItem("Hybrid GA/SA");
 
-  //  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
-  //  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+  //connect the runButton with the respective slot
+  connect(runButton, SIGNAL(clicked()), this, SLOT(runOptimizationTask()));
+  // connect the combo box with the respective slot
+  connect(methodCombo, SIGNAL(activated(int)), this, SLOT(changeMethod(int)));
 
-  connect(steadystateCheck, SIGNAL(clicked()), this, SLOT(steadystateEnable()));
-  connect(timeCheck, SIGNAL(clicked()), this, SLOT(timeEnable()));
+  connect(timeCheck, SIGNAL(clicked()), this, SLOT(slotTimechecked()));
+  connect(steadystateCheck, SIGNAL(clicked()), this, SLOT(slotSteadystatechecked()));
 
-  connect(steadystateEditButton, SIGNAL(clicked()), this, SLOT(steadystateEditing()));
-  connect(timeEditButton, SIGNAL(clicked()), this, SLOT(timeEditing()));
+  connect(AddTaskButton , SIGNAL(clicked()), this, SLOT(slotAddItem()));
+  connect(selectParameterButton , SIGNAL(clicked()), this, SLOT(slotChooseObject()));
 
-  nTitleHeight = fontMetrics().height() + 6;
-  expressionName->setText("Optimization Task");
-  expressionName->setEnabled(false);
+  //reportDefinitionButton->setEnabled(false);
 
-  expressionText->setText("-inf|Function  <|<=|== Optimization Item <|<=|== +inf|Function");
-  expressionText->setEnabled(false);
-
-  itemnamesTable->insertItem(trUtf8("click here to add new item"));
-
-  steadystateEditButton->setEnabled(false);
-  timeEditButton->setEnabled(false);
-
-  // The following breaks COPASI
-  // SteadyStateKey = (new CSteadyStateTask(NULL))->getKey();
-  // TrajectoryKey = (new CTrajectoryTask(NULL))->getKey();
-  // pSteadyStateWidget = new SteadyStateWidget(NULL);
-  // pTrajectoryWidget = new TrajectoryWidget(NULL);
-  // pSteadyStateWidget->hide();
-  // pTrajectoryWidget->hide();
+  // for the default GA option
+  param1Edit->hide();
+  param2Edit->hide();
+  param3Edit->hide();
+  param4Edit->show();
+  param5Edit->show();
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 OptimizationWidget::~OptimizationWidget()
-{
-  // no need to delete child widgets, Qt does it all for us
-  CSteadyStateTask * sst =
-    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(SteadyStateKey));
-  pdelete(sst);
+{}
 
-  CTrajectoryTask* tt =
-    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(TrajectoryKey));
-  pdelete(tt);
+void OptimizationWidget::CancelChangeButton()
+{
+  loadOptimization();
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void OptimizationWidget::languageChange()
+void OptimizationWidget::CheckBoxClicked()
 {
-  setCaption(tr("Expression"));
-  confirmButton->setText(tr("confirm"));
-  cancelButton->setText(tr("cancel"));
-  addButton->setText(QString::null);
-  deleteButton->setText(QString::null);
-  downButton->setText(QString::null);
-  itemsLabel->setText(tr("Copasi Items"));
-  upButton->setText(QString::null);
-  steadystateCheck->setText(tr("Steady State"));
-  steadystateEditButton->setText(tr("edit"));
-  timeCheck->setText(tr("Time Course"));
-  timeEditButton->setText(tr("edit"));
-  optimizationLabel->setText(tr("Optimization Method"));
-  expressionEditlabel->setText(tr("Expression"));
-  expressionNameLabel->setText(tr("Name"));
 }
 
-bool OptimizationWidget::update(ListViews::ObjectType objectType,
-                                ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+void OptimizationWidget::runOptimizationTask()
+{
+  COptTask* optimizationTask =
+    dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
+
+  if (!optimizationTask) return;
+
+  // save the state of the widget
+  saveOptimization();
+
+  optimizationTask->initialize(NULL);
+
+  setCursor(Qt::WaitCursor);
+  CProgressBar* tmpBar = new CProgressBar();
+
+  optimizationTask->setProgressHandler(tmpBar);
+
+  CCopasiTimeVariable time = CCopasiTimeVariable::getCurrentWallTime();
+
+  try
+    {
+      optimizationTask->process();
+    }
+  catch (CCopasiException Exception)
+    {
+      std::cout << std::endl << "exception in optimization task" << std::endl;
+      //TODO: message box
+    }
+
+  std::cout << "*************** The optimization took "
+  << (CCopasiTimeVariable::getCurrentWallTime() - time).isoFormat()
+  << " ***************" << std::endl;
+
+  //should be renamed?
+
+  optimizationTask->restore();
+
+  tmpBar->finish(); pdelete(tmpBar);
+
+  protectedNotify(ListViews::STATE, ListViews::CHANGE,
+                  CCopasiDataModel::Global->getModel()->getKey());
+
+  unsetCursor();
+
+  return;
+
+  std::ofstream output;
+
+  if (optimizationTask->getReport().getTarget() != "")
+    {
+      if (optimizationTask->getReport().append())
+        output.open(FROM_UTF8(optimizationTask->getReport().getTarget()),
+                    std::ios_base::out | std::ios_base::app);
+      else
+        output.open(FROM_UTF8(optimizationTask->getReport().getTarget()),
+                    std::ios_base::out);
+    }
+
+  if (output.is_open())
+    optimizationTask->initialize(&output);
+
+  else //ask if user insists on proceeding
+    {
+      if (QMessageBox::information (NULL, "No output specified,",
+                                    "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running optimization task with no output?",
+                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        return;
+    }
+
+  optimizationTask->process();
+
+  //  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+  unsetCursor();
+}
+
+bool OptimizationWidget::loadOptimization()
+{
+  COptTask* optimizationTask =
+    dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
+
+  if (!optimizationTask) return false;
+
+  COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
+  if (!optimizationProblem) return false;
+
+  mModel = optimizationProblem->getModel();
+
+  scrollview->clearWidgetList();
+
+  //scrollview->updateFromWidgetList();
+
+  return true;
+}
+
+bool OptimizationWidget::slotAddItem()
+{
+  if (expressionText->text().length() > 0)
+    {
+      parseExpression(); // populates CKinFunction
+
+      OptimizationItemWidget * tmp;
+      //create item to get the default values
+      COptProblem* tmpProblem = new COptProblem();
+
+      tmp = new OptimizationItemWidget(scrollview);
+      //tmp1->initFromOptimizationItem(tmpItem, CCopasiDataModel::Global->getModel());
+      scrollview->addWidget(tmp);
+      if (tmpProblem) delete tmpProblem;
+      return true;
+    }
+  else
+    return false;
+}
+
+bool OptimizationWidget::saveOptimization() const
+  {
+    COptTask* optimizationTask =
+      dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
+    if (!optimizationTask) return false;
+
+    COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
+    if (!optimizationProblem) return false;
+
+    // optimizationProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
+
+    return true;
+  }
+
+void OptimizationWidget::ReportDefinitionClicked()
+{
+  /*  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
+    COptTask* optimizationTask = (COptTask*)(CCopasiContainer*)GlobalKeys.get(optimizationTaskKey);
+    pSelectDlg->setReport(&(optimizationTask->getReport()));
+    pSelectDlg->loadReportDefinitionVector();
+    if (pSelectDlg->exec () == QDialog::Rejected)
+      {
+        return;
+      }*/
+}
+
+//************* CCopasiWidget interface *******************************
+
+bool OptimizationWidget::enter(const std::string & key)
+{
+  COptTask* optimizationTask =
+    dynamic_cast< COptTask * >(GlobalKeys.get(key));
+  if (!optimizationTask) return false;
+
+  optimizationTaskKey = key;
+
+  //pSteadyStateWidget->enter(SteadyStateKey);
+  //pTrajectoryWidget->enter(TrajectoryKey);
+
+  // ((COptProblem*)(optimizationTask->getProblem()))->createDebugOptimization(dataModel->getModel());
+
+  loadOptimization();
+
+  return true;
+}
+
+bool OptimizationWidget::leave()
+{
+  COptTask* optimizationTask =
+    dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
+  if (!optimizationTask) return false;
+
+  return saveOptimization();
+}
+
+bool OptimizationWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   if (mIgnoreUpdates) return true;
 
   switch (objectType)
     {
     case ListViews::MODEL:
+      // check if there is a list of Report Defs
+      CReportDefinitionVector* pReportDefinitionVector;
+      pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
+      if (pReportDefinitionVector)
+        reportDefinitionButton->setEnabled(true);
       break;
-
     default:
       break;
     }
   return true;
 }
 
-bool OptimizationWidget::leave()
+std::string OptimizationWidget::getKey()
 {
-  slotBtnConfirmClicked();
-  bUpdated = false;
-  return true;
+  return optimizationTaskKey;
 }
 
-bool OptimizationWidget::enter(const std::string & key)
+bool OptimizationWidget::changeMethod(int index)
 {
-  objKey = key;
-  COptFunction* func = dynamic_cast< COptFunction * >(GlobalKeys.get(key));
-  pSteadyStateWidget->enter(SteadyStateKey);
-  pTrajectoryWidget->enter(TrajectoryKey);
-
-  if (func)
-    return loadFromExpression(func);
-  else
-    return false;
-}
-
-bool OptimizationWidget::loadFromExpression(COptFunction*)
-{
-  bUpdated = false;
-  COptFunction* func = dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
-  expressionName->setText(FROM_UTF8(func->getObjectUniqueName()));
-  //  expressionText->setText(func-> serialize a function to a std::stream
-  return true;
-}
-
-void OptimizationWidget::addButtonClicked()
-{
-  ObjectBrowserDialog* pSelectedObjects = new ObjectBrowserDialog();
-  std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
-  pSelectedObjects->setOutputVector(pSelectedVector);
-
-  if (pSelectedObjects->exec () == QDialog::Rejected)
+  switch (index)
     {
-      pdelete(pSelectedVector);
-      return;
-    }
-
-  if (pSelectedVector->size() == 0)
-    {
-      pdelete(pSelectedVector);
-      return;
-    }
-
-  unsigned int i = 0;
-  for (; i < pSelectedVector->size(); i++)
-    if ((*pSelectedVector)[i])
+    case 0:
+      // OptimizationGA
+      // show only relevant boxes
+      param1Edit->hide();
+      param2Edit->hide();
+      param3Edit->hide();
+      param4Edit->show();
+      param5Edit->show();
       break;
 
-  if (i >= pSelectedVector->size()) //no result returned
-    {
-      pdelete(pSelectedVector);
-      return;
+    case 1:
+      param1Edit->hide();
+      param2Edit->hide();
+      param3Edit->hide();
+      param4Edit->hide();
+      param5Edit->show();
+      break;
+    case 2:
+      param1Edit->hide();
+      param2Edit->hide();
+      param3Edit->hide();
+      param4Edit->hide();
+      param5Edit->show();
+      break;
+
+    default:
+;
     }
-
-  if (addNewOptItem((*pSelectedVector)[i]))
-    itemnamesTable->insertItem (FROM_UTF8((*pSelectedVector)[i]->getObjectUniqueName()), nSelectedObjects - 1);
-
-  pdelete(pSelectedVector);
-}
-
-void OptimizationWidget::deleteButtonClicked()
-{
-  if (activeObject < 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
-    return;
-
-  emit hide_me();
-
-  COptFunction* optFunction =
-    dynamic_cast< COptFunction *>(GlobalKeys.get(objKey));
-  CCopasiObject* pOptObject =
-    ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getCopasiObject();
-  if (optFunction->mParaList.size() > 0)  // for reloading
-    optFunction->removeItem(pOptObject->getCN());
-
-  itemsTable->removeChild(selectedList[2*activeObject]);
-  itemsTable->removeChild(selectedList[2*activeObject + 1]);
-
-  itemnamesTable->removeItem (activeObject);
-
-  unsigned int i = activeObject + 1;
-  int offsetY = ((OptimizationItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight;
-
-  for (; i < selectedList.size() / 2; i++)
-    {
-      itemsTable->moveChild(selectedList[2*i], 0, (i - 1)*offsetY);
-      itemsTable->moveChild(selectedList[2*i + 1], 0, (i - 1)*offsetY + nTitleHeight);
-    }
-
-  std::vector<QWidget*>::iterator it = selectedList.begin();
-  std::vector<QWidget*>::iterator BeginDel;
-  std::vector<QWidget*>::iterator ToDel;
-  while (it < selectedList.end())
-    {
-      if (it - selectedList.begin() == 2*activeObject)
-        {
-          BeginDel = it;
-          pdelete (*it);
-          ToDel = ++it;
-          pdelete (*ToDel);
-          ++ToDel;
-          selectedList.erase(BeginDel, ToDel);
-          break;
-        }
-      it++;
-      it++;
-    }
-
-  activeObject--;
-  if ((activeObject >= 0) && (optFunction->mParaList.size() > 0))
-    {
-      pOptObject = ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getCopasiObject();
-      ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
-      activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-      activeTitle->setText(FROM_UTF8(pOptObject->getCN()));
-    }
-
-  nSelectedObjects--;
-  itemsTable->resizeContents(0, offsetY*selectedList.size() / 2);
-
-  emit show_me();
-
-  //update the active
-  if (activeObject >= 0)
-    ListBoxClicked(itemnamesTable->item(activeObject));
-
-  // to verify the size of the mparameterlist in ScanProblem
-  // optFunction->getProblem()->paraCount();
-}
-
-void OptimizationWidget::upButtonClicked()
-{
-  if (activeObject <= 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
-    return;
-
-  emit hide_me();
-
-  std::string mDownMin = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getItemLowerLimit();
-  std::string mUpMin = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getItemLowerLimit();
-  std::string mDownMax = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getItemUpperLimit();
-  std::string mUpMax = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getItemUpperLimit();
-
-  std::string mDownLowerOp = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1]) ->getItemLowerOper();
-  std::string mUpLowerOp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1]) ->getItemLowerOper();
-  std::string mDownUpperOp = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1]) ->getItemUpperOper();
-  std::string mUpUpperOp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1]) ->getItemUpperOper();
-
-  CCopasiObject* pObjectDown = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getCopasiObject();
-  CCopasiObject* pObjectUp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getCopasiObject();
-
-  COptFunction* optFunction =
-    dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
-
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setCopasiObjectPtr(pObjectUp);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setCopasiObjectPtr(pObjectDown);
-
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemUpperOper(mUpUpperOp);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemUpperOper(mDownUpperOp);
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerOper(mUpLowerOp);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemLowerOper(mDownLowerOp);
-
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemUpperLimit(mUpMax);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemUpperLimit(mDownMax);
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerLimit(mUpMin);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemLowerLimit(mDownMin);
-
-  //back end change
-  CCopasiObject* tmpObj = optFunction->mParaList [activeObject - 1];
-  optFunction->mParaList [activeObject - 1] = optFunction->mParaList [activeObject];
-  optFunction->mParaList [activeObject] = tmpObj;
-
-  CKinFunction* tmpFunc = optFunction->mMinFunctionList [activeObject - 1];
-  optFunction->mMinFunctionList [activeObject - 1] = optFunction->mMinFunctionList [activeObject];
-  optFunction->mMinFunctionList [activeObject] = tmpFunc;
-
-  tmpFunc = optFunction->mMaxFunctionList [activeObject - 1];
-  optFunction->mMaxFunctionList [activeObject - 1] = optFunction->mMaxFunctionList [activeObject];
-  optFunction->mMaxFunctionList [activeObject] = tmpFunc;
-
-  std::string tmpStr = optFunction->mMinList [activeObject - 1];
-  optFunction->mMinList [activeObject - 1] = optFunction->mMinList [activeObject];
-  optFunction->mMinList [activeObject] = tmpStr;
-
-  tmpStr = optFunction->mMaxList [activeObject - 1];
-  optFunction->mMaxList [activeObject - 1] = optFunction->mMaxList [activeObject];
-  optFunction->mMaxList [activeObject] = tmpStr;
-
-  activeObject--;
-
-  //deactivate
-  //lower one
-  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(FROM_UTF8(pObjectUp->getCN()));
-
-  //activate
-  //upper one
-  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(FROM_UTF8(pObjectDown->getCN()));
-
-  //Update ListBox
-  QString tmp = itemnamesTable->text (activeObject);
-  itemnamesTable->changeItem (NULL, itemnamesTable->text(activeObject + 1) , activeObject);
-  itemnamesTable->changeItem (NULL, tmp, activeObject + 1);
-
-  emit show_me();
-  if (activeObject >= 0)
-    ListBoxClicked(itemnamesTable->item(activeObject));
-}
-
-void OptimizationWidget::downButtonClicked()
-{
-  if (activeObject < 0 || activeObject >= selectedList.size() / 2 - 1)  // not a valid entry
-    return;
-
-  emit hide_me();
-
-  activeObject++;
-
-  std::string mDownMin = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getItemLowerLimit();
-  std::string mUpMin = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getItemLowerLimit();
-  std::string mDownMax = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getItemUpperLimit();
-  std::string mUpMax = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getItemUpperLimit();
-
-  std::string mDownLowerOp = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1]) ->getItemLowerOper();
-  std::string mUpLowerOp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1]) ->getItemLowerOper();
-  std::string mDownUpperOp = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1]) ->getItemUpperOper();
-  std::string mUpUpperOp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1]) ->getItemUpperOper();
-
-  CCopasiObject* pObjectDown = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getCopasiObject();
-  CCopasiObject* pObjectUp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getCopasiObject();
-
-  COptFunction* optFunction =
-    dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
-
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setCopasiObjectPtr(pObjectUp);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setCopasiObjectPtr(pObjectDown);
-
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemUpperOper(mUpUpperOp);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemUpperOper(mDownUpperOp);
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerOper(mUpLowerOp);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemLowerOper(mDownLowerOp);
-
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemUpperLimit(mUpMax);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemUpperLimit(mDownMax);
-  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerLimit(mUpMin);
-  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemLowerLimit(mDownMin);
-
-  //back end change
-  CCopasiObject* tmpObj = optFunction->mParaList [activeObject - 1];
-  optFunction->mParaList [activeObject - 1] = optFunction->mParaList [activeObject];
-  optFunction->mParaList [activeObject] = tmpObj;
-
-  CKinFunction* tmpFunc = optFunction->mMinFunctionList [activeObject - 1];
-  optFunction->mMinFunctionList [activeObject - 1] = optFunction->mMinFunctionList [activeObject];
-  optFunction->mMinFunctionList [activeObject] = tmpFunc;
-
-  tmpFunc = optFunction->mMaxFunctionList [activeObject - 1];
-  optFunction->mMaxFunctionList [activeObject - 1] = optFunction->mMaxFunctionList [activeObject];
-  optFunction->mMaxFunctionList [activeObject] = tmpFunc;
-
-  std::string tmpStr = optFunction->mMinList [activeObject - 1];
-  optFunction->mMinList [activeObject - 1] = optFunction->mMinList [activeObject];
-  optFunction->mMinList [activeObject] = tmpStr;
-
-  tmpStr = optFunction->mMaxList [activeObject - 1];
-  optFunction->mMaxList [activeObject - 1] = optFunction->mMaxList [activeObject];
-  optFunction->mMaxList [activeObject] = tmpStr;
-
-  //upper one
-  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(FROM_UTF8(pObjectDown->getCN()));
-
-  //bottom one
-  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(FROM_UTF8(pObjectUp->getCN()));
-
-  //Update ListBox
-  QString tmp = itemnamesTable->text (activeObject);
-  itemnamesTable->changeItem (NULL, itemnamesTable->text(activeObject - 1) , activeObject);
-  itemnamesTable->changeItem (NULL, tmp, activeObject - 1);
-
-  emit show_me();
-  if (activeObject >= 0)
-    ListBoxClicked(itemnamesTable->item(activeObject));
-}
-
-bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
-{
-  if (!pObject)
-    return false;
-
-  COptFunction* optFunction =
-    dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
-  // cannot be found in the list
-  if (optFunction->Index(pObject->getCN()) != C_INVALID_INDEX)
-    return false;
-
-  int widgetOffset;
-  int ScanItemWidgetWidth;
-  emit hide_me();
-
-  //by default isFirstWidget is set as false,
-  OptimizationItemWidget* parameterTable = new OptimizationItemWidget(this, "parameterTable");
-
-  ScanItemWidgetWidth = itemsTable->visibleWidth();
-
-  widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
-
-  ScanLineEdit* newTitleBar = new ScanLineEdit(this, "newTitleBar");
-  newTitleBar->setFixedSize(QSize(ScanItemWidgetWidth, nTitleHeight));
-  newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
-  newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
-
-  newTitleBar->setText(FROM_UTF8(pObject->getCN()));
-  newTitleBar->setReadOnly(TRUE);
-
-  itemsTable->addChild(newTitleBar, 0, widgetOffset - nTitleHeight);
-  selectedList.push_back(newTitleBar);
-
-  parameterTable->setFixedWidth(ScanItemWidgetWidth);
-  parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
-
-  itemsTable->addChild(parameterTable, 0 , widgetOffset);
-  itemsTable->setVScrollBarMode(QScrollView::Auto);
-  itemsTable->resizeContents(ScanItemWidgetWidth, widgetOffset + parameterTable->minimumSizeHint().height());
-  selectedList.push_back(parameterTable);
-
-  nSelectedObjects++;
-
-  //insert a new item
-
-  unsigned int i;
-  i = optFunction->addItem(pObject); // automatically creat the 5 fields; +/-inf, upper/lower bound, object pointer
-
-  parameterTable->setCopasiObjectPtr(pObject);
-  parameterTable->setItemLowerLimit(optFunction->mMinList[i]);
-  parameterTable->setItemUpperLimit(optFunction->mMaxList[i]);
-
-  emit show_me();
   return true;
 }
 
-void OptimizationWidget::ListBoxDoubleClicked(QListBoxItem * item)
+void OptimizationWidget::languageChange()
 {
-  if (itemnamesTable->index(item) >= nSelectedObjects)
-    addButtonClicked();
+  setCaption(tr("Optimization"));
+  typeGroupBox->setTitle(tr("Type"));
+  timeCheck->setText(tr("Time Course"));
+  steadystateCheck->setText(tr("Steady State"));
+  AddTaskButton->setText(tr("Add"));
+  methodGroupBox->setTitle(tr("Optimization Technique"));
+  expressionNameLabel_2->setText(tr("Method"));
+  param2Edit->setText(QString::null);
+  confirmButton->setText(tr("confirm"));
+  runButton->setText(tr("run"));
+  cancelButton->setText(tr("cancel"));
+  selectParameterButton->setText(tr("..."));
+  expressionNameLabel->setText(tr("Name"));
+  expressionEditlabel->setText(tr("Expression"));
+  expressionText->setText(QString::null);
 }
 
-void OptimizationWidget::ListBoxClicked(QListBoxItem * item)
+/* function - slotChooseObject
+ * Description -  parsing */ 
+/* Author - stupe   */
+
+void OptimizationWidget::slotChooseObject()
 {
-  if (nSelectedObjects && itemnamesTable->index(item) >= 0) //select an object
+  //  int rowCount;
+  std::string mPrevExpr;
+  std::string mStr;
+  std::string parseMe;
+  CCopasiObject* mpObj;
+  mModel = CCopasiDataModel::Global->getModel();
+  CCopasiObjectName CN;
+
+  CCopasiObject* tmpObject = mObject;
+  // open a selection dialog with single selection mode
+  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
+
+  browseDialog->setModel(mModel);
+
+  browseDialog->setSingleSelection(true);
+  //browseDialog->enableExpertMode(false);
+  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
+  if (mObject)
+    selection->push_back(mObject);
+  browseDialog->setOutputVector(selection);
+
+  if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)
     {
-      double newActiveObject = itemnamesTable->index(item) + 0.5;
-      QPoint point(0, newActiveObject * (((OptimizationItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight));
-      QMouseEvent e(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton);
-      itemsTable->center(e.x(), e.y());
-      viewMousePressEvent(&e);
-      //emit itemsTable(&e);
-    }
-}
-
-void OptimizationWidget::mouseSelected(OptimizationItemWidget* pSelected)
-{
-  if (selectedList.size() == 0)
-    return;
-
-  unsigned int i = 1;
-  for (; (i < selectedList.size()) && (pSelected != selectedList[i]); i += 2)
-;
-  if (pSelected != selectedList[i]) //not find
-    return;
-
-  emit hide_me();
-  if (activeObject >= 0)
-    {
-      QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
-      activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-    }
-
-  activeObject = i / 2;
-
-  itemnamesTable->setSelected(itemnamesTable->currentItem(), false);
-  itemnamesTable->setSelected(activeObject, true);
-
-  QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  emit show_me();
-}
-
-void OptimizationWidget::slotBtnCancelClicked()
-{}
-
-void OptimizationWidget::slotBtnConfirmClicked()
-{
-  COptFunction* func =
-    dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
-  unsigned i;
-  for (i = 0; i < func->mParaList.size(); i++)
-    {
-      func->mMinList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerLimit();
-      func->mMaxList[i] = ((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperLimit();
-      func->mMinOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemLowerOper());
-      func->mMaxOperList.push_back(((OptimizationItemWidget*)(selectedList[i * 2 + 1]))->getItemUpperOper());
-    }
-
-  bool up;
-  for (i = 0; i < func->mParaList.size(); i++)
-    {
-      try
+      mObject = selection->at(0);
+      if (mObject)
         {
-          if (func->mMinList[i] != "-inf")
-            {
-              if (!func->mMinFunctionList[i])
-                func->mMinFunctionList[i] = new CKinFunction();
-              up = false;
-              func->mMinFunctionList[i]->setDescription(func->mMinList[i]);
-              // will automatically call the compile function for CKinFunction
-            }
+          parseList.push_back(mObject);
+          mPrevExpr = (expressionText->text());
+          parseMe = CRegisteredObjectName(mObject->getCN());
+          mPrevExpr = mPrevExpr.append("<");
+          mPrevExpr = mPrevExpr.append(mObject->getObjectDisplayName());
+          mPrevExpr = mPrevExpr.append(">");
+          //CN = CCopasiObjectName(mObject->getObjectName());
+          mpObj = (CCopasiObject*)CCopasiContainer::Root->getObject(parseMe);
+          //parseMe =
+          //mpObj = (CCopasiObject*)CCopasiContainer::Root->getObject(CN.getRemainder());
+          C_FLOAT64 value = *(C_FLOAT64*)mObject->getReference();
+          //value = *(C_FLOAT64*)mpObj->getReference();
+          /*/mStr = mObject->getObjectDisplayName();
+          //const QString mPrevExpr(mStr.c_str());
+          //expressionText->remove(expressionText->len
+          //expressionText->append(mPrevExpr.truncate(mPrevExpr.lenght()-1));*/
 
-          if (func->mMaxList[i] != "+inf")
+          //mPrevExpr = mPrevExpr.append(mObject->getCN());
+          expressionText->setText(FROM_UTF8(mPrevExpr));
+          //rowCount = expressionText->numLines();
+          //expressionText->setCursorPosition(rowCount ,1000);
+
+          if (mObject != tmpObject)
             {
-              if (!func->mMaxFunctionList[i])
-                func->mMaxFunctionList[i] = new CKinFunction();
-              up = true;
-              func->mMaxFunctionList[i]->setDescription(func->mMaxList[i]);
-              // will automatically call the compile function for CKinFunction
+              if (mObject->isValueDbl())
+                {
+                  value = *(C_FLOAT64*)mObject->getReference();
+                  //lineEditMin->setText(QString::number(value*0.5));
+                  //lineEditMax->setText(QString::number(value*2));
+                }
             }
         }
-      catch (CCopasiException Exception)
+
+      else
+        expressionName->setText("");
+    }
+
+  else
+  {}
+}
+
+/* function - slotParseExpression
+ * Description -  parsing */ 
+/* Author - stupe   */
+
+bool OptimizationWidget::parseExpression()
+{
+  std::string mName = "temp";
+  std::string mDisplayName = "";
+  std::string mRNDesc = "";
+  std::string temp = "";
+  std::string mDesc = std::string(expressionText->text());
+  std::vector<CCopasiObject *>::iterator it = parseList.begin();
+  //CFunction* pFunc;
+  //pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefined)
+  for (int i = 0; i < mDesc.length(); i++)
+    {
+      mRNDesc += mDesc[i];
+      mDisplayName = "";
+      if (mDesc[i] == '<')
         {
-          std::string warning_msg = "Invalid function expression. with common name<";
-          warning_msg += func->mParaList[i]->getCN();
-          if (up)
-            warning_msg += ">\n Please check the upper bound function again \n";
-          else
-            warning_msg += ">\n Please check the lower bound function again \n";
-          warning_msg += "Do you still want to keep your input ? \nPress <Yes> to keep.";
-
-          if (QMessageBox::warning(this, "Invalid Function Input",
-                                   FROM_UTF8(warning_msg),
-                                   QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+          i++;
+          it = parseList.begin();
+          while (i < mDesc.length() && mDesc[i] != '>')
             {
-              activeObject = i;
-              if (up)
-                {
-                  func->mMaxList[i] = "";
-                  ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineUpper->setText("");
-                }
-              else
-                {
-                  func->mMinList[i] = "";
-                  ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->lineLower->setText("");
-                }
-            } //end of if
-        } //end of catch
-    } //end of for
+              mDisplayName += mDesc[i];
+              i++;
+            }
 
-  // :TODO Bug 322: This should only be called when actual changes have been saved.
-  CCopasiDataModel::Global->changed();
-}
+          while (it < parseList.end())
+            {
+              temp = (*it)->getObjectDisplayName();
+              if ((*it)->getObjectDisplayName() == mDisplayName)
+                {
+                  mRNDesc += (*it)->getCN();
+                  break;
+                }
 
-void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)
-{
-  if (selectedList.size() == 0)
-    return;
-  emit hide_me();
-  if (activeObject >= 0)
-    {
-      QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
-      activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+              it++;
+            }
+
+          mRNDesc += ">";
+        }
     }
 
-  activeObject = e->y() / (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight);
-  if (itemnamesTable->currentItem() != -1)
-    itemnamesTable->setSelected(itemnamesTable->currentItem(), false);
-  itemnamesTable->setSelected(activeObject, true);
+  CKinFunction* pFunction = new CKinFunction(mName);
+  pFunction->setDescription(mRNDesc);
+  COptTask* optimizationTask =
+    dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
+  if (!optimizationTask) return false;
 
-  if (activeObject >= selectedList.size() / 2)
-    {
-      emit show_me();
-      activeObject = -1;
-      return;
-    }
-
-  QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
-  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  emit show_me();
+  COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
+  if (!optimizationProblem) return false;
+  optimizationProblem->setFunction(pFunction);
 }
 
-const std::string OptimizationWidget::getKey()
+void OptimizationWidget::slotSteadystatechecked()
 {
-  return objKey;
+  timeCheck->setChecked(false);
 }
 
-void OptimizationWidget::steadystateEditing()
+void OptimizationWidget::slotTimechecked()
 {
-  pSteadyStateWidget->show();
+  steadystateCheck->setChecked(false);
 }
-
-void OptimizationWidget::timeEditing()
-{
-  pTrajectoryWidget->show();
-}
-
-void OptimizationWidget::steadystateEnable()
-{
-  steadystateEditButton->setEnabled(steadystateCheck->isChecked());
-}
-
-void OptimizationWidget::timeEnable()
-{
-  timeEditButton->setEnabled(timeCheck->isChecked());
-}
+//***********************************************************

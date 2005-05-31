@@ -1,18 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:26 $
+   $Author: anuragr $ 
+   $Date: 2005/05/31 18:42:10 $
    End CVS Header */
 
 /********************************************************
-Author: Liang Xu
-Version : 1.xx  <first>
-Description: 
-Date: 10/01
 Comment : OptimizationItemWidget for embeded widget for limit of the optimization function
-Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #ifndef OPTIMIZATIONITEMWIDGET_H
@@ -20,6 +15,8 @@ Contact: Please contact lixu1@vt.edu.
 
 #include <qvariant.h>
 #include <qwidget.h>
+#include <qlineedit.h>
+#include <qcheckbox.h>
 
 #include "copasi.h"
 #include "report/CCopasiObject.h"
@@ -40,27 +37,26 @@ class OptimizationItemWidget : public QWidget
     Q_OBJECT
 
   public:
-    OptimizationItemWidget(OptimizationWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    OptimizationItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~OptimizationItemWidget();
-    OptimizationWidget* mpParent;
+    QWidget* mpParent;
 
-    QLabel* textLabel2;
-    ScanLineEdit* lineLower;
-    QPushButton* buttonLowerEdit;
-    QComboBox* comboBoxUpperOp;
-    QLabel* textLabel3;
-    QComboBox* comboBoxLowerOp;
-    ScanCheckBox* checkLowerInf;
-    ScanLineEdit* lineUpper;
-    QPushButton* buttonUpperEdit;
-    QLabel* textLabel4;
-    QFrame* line10;
-    ScanCheckBox* checkUpperInf;
-    QFrame* line11;
-    ScanLineEdit* ObjectName;
     CCopasiObject* mpObject;
-
-    // shall add a pointer to COptFunction to change its parameter simultaneously
+    QLabel* textLabel2;
+    QComboBox* comboBoxLowerOp;
+    QLabel* textLabel4;
+    QLineEdit* lineLower;
+    QLineEdit* ObjectName;
+    QPushButton* buttonParamEdit;
+    QPushButton* buttonLowerEdit;
+    QFrame* line3;
+    QComboBox* comboBoxUpperOp;
+    QFrame* line3_2;
+    QLabel* textLabel3;
+    QLineEdit* lineUpper;
+    QPushButton* buttonUpperEdit;
+    QCheckBox* checkUpperInf;
+    QCheckBox* checkLowerInf;
 
     std::string getItemUpperLimit();
     std::string getItemLowerLimit();
@@ -82,6 +78,7 @@ class OptimizationItemWidget : public QWidget
     virtual void slotLowerEdit();
     virtual void slotNegInfClicked();
     virtual void slotUpperEdit();
+    virtual void slotParamEdit();
 
   protected:
     QGridLayout* OptimizationItemWidgetLayout;

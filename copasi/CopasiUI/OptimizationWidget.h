@@ -1,144 +1,132 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/11/15 00:03:40 $
+   $Author: anuragr $ 
+   $Date: 2005/05/31 18:45:31 $
    End CVS Header */
 
-/********************************************************
-Author: Liang Xu
-Version : 1.xx  <first>
-Description: 
-Date: 09/19
-Comment : OptimizationWidget for UI of the optimization function
-Contact: Please contact lixu1@vt.edu.
- *********************************************************/
+/****************************************************************************
+ **  $ CopasiUI/OptimizationWidget.h               
+ **  $ Author  : Anrurag Srivastava
+ **  
+ ** This is the header file for the Optimization Widget
+ *****************************************************************************/
 
-#ifndef OptimizationWidget_H
-#define OptimizationWidget_H
+#ifndef OPTIMIZATIONWIDGET_H
+#define OPTIMIZATIONWIDGET_H
 
-#include <vector>
+#include "copasi.h"
 #include <qvariant.h>
+#include <qwidget.h>
 #include "copasiWidget.h"
+#include "utilities/CVector.h"
+#include <vector>
+#include "CScanContainerWidget.h"
+#include "utilities/CCopasiVector.h"
+#include "report/CKeyFactory.h"
+#include "function/CFunction.h"
 
-class QButtonGroup;
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QSpacerItem;
+class QGroupBox;
+class QCheckBox;
+class QLineEdit;
+class QLabel;
+class QTable;
 class QFrame;
 class QPushButton;
-class QRadioButton;
-class QLabel;
 class QComboBox;
-class QListBox;
-class QLineEdit;
-class QTextEdit;
-class COptFunction;
-class ScanScrollView;
-class OptimizationItemWidget;
-class QListBoxItem;
-class QCheckBox;
-class SteadyStateWidget;
-class TrajectoryWidget;
+
+class COptTask;
+class COptProblem;
+class COptMethod;
+class CModel;
 class CCopasiObject;
 
-class OptimizationWidget : public CopasiParametersWidget
+class OptimizationWidget : public CopasiWidget
   {
     Q_OBJECT
 
+  private:
+    std::string optimizationTaskKey;
+    //CFunction * pFunction;
+
   public:
+
     OptimizationWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~OptimizationWidget();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
-
-    const std::string getKey();
-    //manually added
-    QLineEdit* expressionText;
-    ScanScrollView* itemsTable;
-    ScanScrollView* itemsTable2;
-    std::vector<QWidget*> selectedList;
-    QListBox* itemnamesTable;
-    QListBox* itemnamesTable2;
-
-    QFrame* bodyField;
-    QFrame* copasiItemsDivider; // added for division line between copasi items tables
-    QPushButton* confirmButton;
-    QPushButton* cancelButton;
-    QPushButton* addButton;
-    QPushButton* deleteButton;
-    QPushButton* downButton;
-    QPushButton* addButton2;
-    QPushButton* deleteButton2;
-    QPushButton* downButton2;
-    QLabel* itemsLabel;
-    QLabel* itemsLabel2;
-    QPushButton* upButton;
-    QPushButton* upButton2;
-    QFrame* bodyField_2;
-    QCheckBox* steadystateCheck;
-    QPushButton* steadystateEditButton;
-    QCheckBox* timeCheck;
-    QPushButton* timeEditButton;
-    QFrame* bodyField_2_2;
-    QLineEdit* expressionName;
-    QComboBox* methodCombo;
-    QLabel* optimizationLabel;
-    QLabel* expressionEditlabel;
-    QLabel* expressionNameLabel;
-
-    //next three added for minimize/maximize radio buttons
-    QButtonGroup* qbuttongroup;
-    QRadioButton* maximizeRadio;
-    QRadioButton* minimizeRadio;
+    virtual std::string getKey();
 
   protected:
-    QGridLayout* ExpressionWidgetLayout;
-    QHBoxLayout* layout14;
-    QGridLayout* layout8;
-    QGridLayout* copasiItemsTableLayout;
-    QHBoxLayout* layout7;
-    QHBoxLayout* radioButtonLayout;  //added for minimize/maximize radio buttons
+    bool loadOptimization();
+    bool saveOptimization() const;
 
-    bool loadFromExpression(COptFunction*);
-    bool bUpdated;
+    /* functions for parsing <start>*/
+    bool parseExpression();
+
+    /* functions for parsing <end>*/
+
+    CScanContainerWidget* scrollview;
+    CCopasiObject* mObject;
+    CModel *mModel;
+    std::vector<CCopasiObject *> parseList;
+
+    QPushButton* reportDefinitionButton;
+    QHBoxLayout* scrollviewLayout;
+
+    /*<from UIC>*/
+
+    QHBoxLayout* Layoutparams;
+
+    QFrame* buttonsSeparator;
+    QGroupBox* paramsGroupBox;
+    QFrame* bodyField;
+    QGroupBox* typeGroupBox;
+    QCheckBox* timeCheck;
+    QCheckBox* steadystateCheck;
+    QPushButton* AddTaskButton;
+    QGroupBox* methodGroupBox;
+    QLabel* expressionNameLabel_2;
+    QComboBox* methodCombo;
+    QLineEdit* param1Edit;
+    QLineEdit* param3Edit;
+    QLineEdit* param2Edit;
+    QLineEdit* param4Edit;
+    QLineEdit* param5Edit;
+    QPushButton* confirmButton;
+    QPushButton* runButton;
+    QPushButton* cancelButton;
+    QPushButton* selectParameterButton;
+    QLabel* expressionNameLabel;
+    QLineEdit* expressionName;
+    QLabel* expressionEditlabel;
+    QLineEdit* expressionText;
+
+  protected:
+
+    /*</from UIC>*/
+
+  public slots:
+
+    virtual void CancelChangeButton();
+    virtual void CheckBoxClicked();
+    virtual void ReportDefinitionClicked();
+    virtual void runOptimizationTask();
+    virtual void slotTimechecked();
+    virtual void slotSteadystatechecked();
 
   protected slots:
-    void addButtonClicked();
-    void deleteButtonClicked();
-    void upButtonClicked();
-    void downButtonClicked();
     virtual void languageChange();
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnConfirmClicked();
-    virtual void ListBoxClicked (QListBoxItem * item);
-    virtual void ListBoxDoubleClicked (QListBoxItem* item);
-    virtual void steadystateEditing();
-    virtual void timeEditing();
-    virtual void steadystateEnable();
-    virtual void timeEnable();
-
-  signals:
-    void hide_me();
-    void show_me();
-
-  private:
-    void mouseSelected(OptimizationItemWidget* pSelected);
-    void viewMousePressEvent(QMouseEvent* e);
-    int nSelectedObjects;
-    int nTitleHeight;
-    int activeObject;
-    std::string objKey;
-
-    std::string SteadyStateKey;
-    std::string TrajectoryKey;
-    SteadyStateWidget* pSteadyStateWidget;
-    TrajectoryWidget* pTrajectoryWidget;
-
-    bool addNewOptItem(CCopasiObject* pObject);
+    bool changeMethod(int);
+    void slotChooseObject();
+    bool slotAddItem();
   };
 
-#endif // OptimizationWidget_H
+#endif
