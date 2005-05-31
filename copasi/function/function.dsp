@@ -79,11 +79,27 @@ SOURCE=.\CEvaluationNodeNumber.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeObject.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNodeOperator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeStructure.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNodeVariable.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeWhiteSpace.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationTree.cpp
 # End Source File
 # Begin Source File
 
@@ -155,11 +171,27 @@ SOURCE=.\CEvaluationNodeNumber.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeObject.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNodeOperator.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeStructure.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNodeVariable.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeWhiteSpace.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationTree.h
 # End Source File
 # Begin Source File
 
@@ -180,6 +212,10 @@ SOURCE=.\CFunctionParameters.h
 # Begin Source File
 
 SOURCE=.\CKinFunction.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CKinFunctionFlexLexer.h
 # End Source File
 # Begin Source File
 
