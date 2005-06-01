@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/13 11:33:07 $
+   $Author: shoops $ 
+   $Date: 2005/06/01 15:58:13 $
    End CVS Header */
 
 /**
@@ -115,7 +115,7 @@ std::string CCopasiObjectName::getElementName(const unsigned C_INT32 & pos,
 
 std::string CCopasiObjectName::escape(const std::string & name)
 {
-#define toBeEscaped "\\[]=,"
+#define toBeEscaped "\\[]=,>"
   std::string Escaped(name);
   std::string::size_type pos = Escaped.find_first_of(toBeEscaped);
 
