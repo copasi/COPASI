@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/30 16:42:59 $
+   $Date: 2005/06/01 14:55:37 $
    End CVS Header */
 
 /**
@@ -57,11 +57,6 @@ class CMetab : public CModelEntity
 
     // Attributes
   private:
-    /**
-     *  Key of the metabolite
-     */
-    std::string mKey;
-
     /**
      *  Concentration of the metabolite as double.
      */
@@ -173,12 +168,6 @@ class CMetab : public CModelEntity
      * @return bool success
      */
     virtual bool setObjectParent(const CCopasiContainer * pParent);
-
-    /**
-     *  Retrieve the key of the metabolite.
-     * @return std::string key
-     */
-    virtual const std::string & getKey() const;
 
     /**
      *

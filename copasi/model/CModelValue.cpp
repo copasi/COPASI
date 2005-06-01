@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 21:44:02 $
+   $Date: 2005/06/01 14:55:37 $
    End CVS Header */
 
 #include <iostream>
@@ -35,6 +35,7 @@ CModelEntity::CModelEntity(const std::string & name,
                            const std::string & type,
                            const unsigned C_INT32 & flag):
     CCopasiContainer(name, pParent, type, flag),
+    mKey(""),
     mValue(0.0),
     mIValue(0.0),
     mRate(0.0),
@@ -48,6 +49,7 @@ CModelEntity::CModelEntity(const std::string & name,
 CModelEntity::CModelEntity(const CModelEntity & src,
                            const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mKey(""),
     mValue(src.mValue),
     mIValue(src.mIValue),
     mRate(src.mRate),
@@ -62,6 +64,8 @@ CModelEntity::~CModelEntity()
 {
   DESTRUCTOR_TRACE;
 }
+
+const std::string & CModelEntity::getKey() const {return mKey;}
 
 const C_FLOAT64 & CModelEntity::getValue() const {return mValue;}
 
@@ -130,10 +134,9 @@ void CModelEntity::initObjects()
 
 CModelValue::CModelValue(const std::string & name,
                          const CCopasiContainer * pParent):
-    CModelEntity(name, pParent, "ModelValue"),
-    mKey(GlobalKeys.add("ModelValue", this))
-    //    mTT(0.0),
+    CModelEntity(name, pParent, "ModelValue")
 {
+  mKey = GlobalKeys.add("ModelValue", this);
   mStatus = FIXED;
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -141,10 +144,9 @@ CModelValue::CModelValue(const std::string & name,
 
 CModelValue::CModelValue(const CModelValue & src,
                          const CCopasiContainer * pParent):
-    CModelEntity(src, pParent),
-    mKey(GlobalKeys.add("ModelValue", this))
-    //    mTT(src.mTT),
+    CModelEntity(src, pParent)
 {
+  mKey = GlobalKeys.add("ModelValue", this);
   initObjects();
   CONSTRUCTOR_TRACE;
 }
@@ -154,18 +156,6 @@ CModelValue::~CModelValue()
   GlobalKeys.remove(mKey);
   DESTRUCTOR_TRACE;
 }
-
-const std::string & CModelValue::getKey() const {return mKey;}
-
-/*bool CModelValue::setObjectParent(const CCopasiContainer * pParent)
-{
-  CCopasiObject::setObjectParent(pParent);
- 
-  initCompartment(NULL);
-  initModel();
- 
-  return true;
-}*/
 
 void CModelValue::initObjects()
 {

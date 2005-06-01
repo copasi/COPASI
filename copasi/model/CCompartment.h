@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 21:44:02 $
+   $Date: 2005/06/01 14:55:37 $
    End CVS Header */
 
 /**
@@ -29,11 +29,6 @@ class CReadConfig;
 class CCompartment : public CModelEntity
   {
   private:
-    /**
-     *  The key of the compartment.
-     */
-    std::string mKey;
-
     /**
      *  The initial volume of the compartment.
      */ 
@@ -93,12 +88,6 @@ class CCompartment : public CModelEntity
      *  @see mFail
      */
     C_INT32 load(CReadConfig & configbuffer);
-
-    /**
-     *  Returns a string with the name of this compartment.
-     *  @return std::string key
-     */
-    virtual const std::string & getKey() const;
 
     /**
      *  Returns a C_FLOAT64 with the volume of this compartment.

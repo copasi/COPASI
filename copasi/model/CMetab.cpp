@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/31 09:34:09 $
+   $Date: 2005/06/01 14:55:37 $
    End CVS Header */
 
 #include <iostream>
@@ -45,7 +45,7 @@ CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
     CModelEntity(name, pParent, "Metabolite",
                  CCopasiObject::NonUniqueName),
-    mKey(GlobalKeys.add("Metabolite", this)),
+    //mKey(GlobalKeys.add("Metabolite", this)),
     mConc(-1.0),
     mIConc(-1.0),
     //mNumber(-1.0),
@@ -56,6 +56,7 @@ CMetab::CMetab(const std::string & name,
     mpCompartment(NULL),
     mpModel(NULL)
 {
+  mKey = GlobalKeys.add("Metabolite", this);
   mStatus = REACTIONS;
   if (getObjectParent())
     {
@@ -73,7 +74,7 @@ CMetab::CMetab(const std::string & name,
 CMetab::CMetab(const CMetab & src,
                const CCopasiContainer * pParent):
     CModelEntity(src, pParent),
-    mKey(GlobalKeys.add("Metabolite", this)),
+    //mKey(GlobalKeys.add("Metabolite", this)),
     mConc(src.mConc),
     mIConc(src.mIConc),
     //mNumber(src.mNumber),
@@ -84,6 +85,7 @@ CMetab::CMetab(const CMetab & src,
     mpCompartment(NULL),
     mpModel(NULL)
 {
+  mKey = GlobalKeys.add("Metabolite", this);
   initModel();
   initCompartment(src.mpCompartment);
   initObjects();
@@ -124,8 +126,6 @@ void CMetab::initCompartment(const CCompartment * pCompartment)
   if (!mpCompartment) mpCompartment = pCompartment;
   if (!mpCompartment) mpCompartment = mpParentCompartment;
 }
-
-const std::string & CMetab::getKey() const {return mKey;}
 
 const C_FLOAT64 & CMetab::getConcentration() const {return mConc;}
 

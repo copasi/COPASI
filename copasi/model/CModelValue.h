@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 21:44:02 $
+   $Date: 2005/06/01 14:55:37 $
    End CVS Header */
 
 #ifndef COPASI_CModelValue
@@ -25,17 +25,23 @@ class CModel;
  */
 class CModelEntity : public CCopasiContainer
   {
+  protected:
+    /**
+     *  Key of the model entity. It is stored here, but constructed in the derived classes.
+     */
+    std::string mKey;
+
   public:
     /**
      *  The valid states for metabolites
      */
     enum Status
     {
-      FIXED = 0,   //the entity is constant (for metabs even if they are part of a reaction)
-      REACTIONS,   //applies only for metabs, the metab concentration is changed by reactions
-      DEPENDENT,   //applies only for metabs, the metab concentration is determined by conservation rules
+      FIXED = 0,    //the entity is constant (for metabs even if they are part of a reaction)
+      REACTIONS,    //applies only for metabs, the metab concentration is changed by reactions
+      DEPENDENT,    //applies only for metabs, the metab concentration is determined by conservation rules
       UNUSED,
-      ODE,         //the entity is changed by an ordinary differential equation
+      ODE,          //the entity is changed by an ordinary differential equation
       ASSIGNMENT  //the entity is changed by an assignment rule
     };
 
@@ -71,6 +77,12 @@ class CModelEntity : public CCopasiContainer
      *  Destructor.
      */
     ~CModelEntity();
+
+    /**
+     *  Retrieve the key 
+     * @return std::string key
+     */
+    virtual const std::string & getKey() const;
 
     /**
      *
@@ -133,13 +145,7 @@ class CModelEntity : public CCopasiContainer
     C_FLOAT64 mRate;
 
     /**
-     *  Transition time of the metabolite
-     */ 
-    //C_FLOAT64 mTT;
-
-    /**
-     *  Status of the metabolite.  
-     *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
+     *  Status of the model entity.  
      */
     Status mStatus;
 
@@ -190,12 +196,6 @@ ASSIGNMENT              not implemented       constant=false, rate rule
  */
 class CModelValue : public CModelEntity
   {
-  private:
-    /**
-     *  Key of the metabolite
-     */
-    std::string mKey;
-
   public:
     /**
      * Default constructor
@@ -217,19 +217,6 @@ class CModelValue : public CModelEntity
      *  Destructor.
      */
     ~CModelValue();
-
-    /**
-     * Sets the parent of the metabolite;
-     * @param const CCopasiContainer * pParent
-     * @return bool success
-     */ 
-    //virtual bool setObjectParent(const CCopasiContainer * pParent);
-
-    /**
-     *  Retrieve the key of the metabolite.
-     * @return std::string key
-     */
-    virtual const std::string & getKey() const;
 
     /**
      * insert operator

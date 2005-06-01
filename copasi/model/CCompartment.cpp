@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 21:44:02 $
+   $Date: 2005/06/01 14:55:37 $
    End CVS Header */
 
 // CCompartment
@@ -29,12 +29,13 @@
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
     CModelEntity(name, pParent, "Compartment"),
-    mKey(GlobalKeys.add("Compartment", this)),
+    //mKey(GlobalKeys.add("Compartment", this)),
     //mInitialVolume(1.0),
     //mVolume(1.0),
     mVolumeInv(1.0),
     mMetabolites("Metabolites", this)
 {
+  mKey = GlobalKeys.add("Compartment", this);
   mStatus = FIXED;
   initObjects();
   setValue(1.0);
@@ -44,12 +45,13 @@ CCompartment::CCompartment(const std::string & name,
 CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
     CModelEntity(src, pParent),
-    mKey(GlobalKeys.add("Compartment", this)),
+    //mKey(GlobalKeys.add("Compartment", this)),
     //mInitialVolume(src.mInitialVolume),
     //mVolume(src.mVolume),
     mVolumeInv(src.mVolumeInv),
     mMetabolites(src.mMetabolites, this)
 {
+  mKey = GlobalKeys.add("Compartment", this);
   CONSTRUCTOR_TRACE;
   initObjects();
   //  for (unsigned C_INT32 i = 0; i < mMetabolites.size(); i++)
@@ -94,8 +96,6 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
 
   return Fail;
 }
-
-const std::string & CCompartment::getKey() const {return mKey;}
 
 const C_FLOAT64 & CCompartment::getVolumeInv() const {return mVolumeInv;}
 
