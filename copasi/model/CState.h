@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/14 21:20:18 $
+   $Date: 2005/06/01 14:54:06 $
    End CVS Header */
 
 /**
@@ -62,6 +62,8 @@ class CState
      */
     /** @dia:route 9,0; h,107.298,-17.5621,117.574,-24.3708,127.851 */
     CVector< C_FLOAT64 > mVariableNumbers;
+
+    CVector< C_FLOAT64 > mGlobalParameters;
 
     // Operations
   public:
@@ -189,6 +191,16 @@ class CState
      *
      */
     void setVolumeVector(const CVector< C_FLOAT64 > & vektor);
+
+    const CVector< C_FLOAT64 > & getGlobalParameterVector() const;
+
+    const C_FLOAT64 & getGlobalParameter(const unsigned C_INT32 & index) const;
+
+    unsigned C_INT32 getGlobalParameterSize() const;
+
+    void setGlobalParameter(const unsigned C_INT32 & index, const C_FLOAT64 & value);
+
+    void setGlobalParameterVector(const CVector< C_FLOAT64 > & vektor);
 
     /**
      * Calculates the jacobian of the state and stores it in the provided 

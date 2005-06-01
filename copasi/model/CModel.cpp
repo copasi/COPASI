@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.223 $
+   $Revision: 1.224 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/30 16:43:35 $
+   $Date: 2005/06/01 14:54:06 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1134,6 +1134,9 @@ bool CModel::buildStateTemplate()
   for (i = 0, imax = mMetabolites.size(); i < imax; i++)
     mStateTemplate.add(mMetabolites[i]->getKey());
 
+  for (i = 0, imax = mValues.size(); i < imax; i++)
+    mStateTemplate.add(mValues[i]->getKey());
+
   return success;
 }
 
@@ -1159,6 +1162,12 @@ CState CModel::getState() const
     Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVector().array());
     for (i = getNumVariableMetabs(), imax = getNumMetabs(); i < imax; i++, Dbl++)
       *Dbl = mMetabolites[i]->getNumber();
+
+    /* Set the global parameters */
+    Dbl = const_cast<C_FLOAT64 *>(s.getGlobalParameterVector().array());
+    for (i = 0, imax = mValues.size(); i < imax; i++, Dbl++)
+      *Dbl = mValues[i]->getValue();
+
     return s;
   }
 
@@ -1184,6 +1193,11 @@ CState CModel::getInitialState() const
     Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVector().array());
     for (i = getNumVariableMetabs(), imax = getNumMetabs(); i < imax; i++, Dbl++)
       *Dbl = mMetabolites[i]->getInitialNumber();
+
+    /* Set the global parameters */
+    Dbl = const_cast<C_FLOAT64 *>(s.getGlobalParameterVector().array());
+    for (i = 0, imax = mValues.size(); i < imax; i++, Dbl++)
+      *Dbl = mValues[i]->getInitialValue();
 
     //     DebugFile << "getInitialState " << mInitialTime;
     //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
@@ -1222,6 +1236,11 @@ CStateX CModel::getInitialStateX() const
     for (i = getNumVariableMetabs(), imax = getNumMetabs(); i < imax; i++, Dbl++)
       *Dbl = mMetabolitesX[i]->getInitialNumber();
 
+    /* Set the global parameters */
+    Dbl = const_cast<C_FLOAT64 *>(s.getGlobalParameterVector().array());
+    for (i = 0, imax = mValues.size(); i < imax; i++, Dbl++)
+      *Dbl = mValues[i]->getInitialValue();
+
     //     DebugFile << "getInitialStateX " << mInitialTime;
     //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
     //       DebugFile << " " << mMetabolitesX[i]->getInitialConcentration();
@@ -1254,6 +1273,11 @@ void CModel::setInitialState(const CState * state)
   for (i = getNumVariableMetabs(), imax = getNumMetabs(); i < imax; i++, Dbl++)
     mMetabolites[i]->setInitialNumber(*Dbl);
 
+  /* Set the global parameters */
+  Dbl = state->getGlobalParameterVector().array();
+  for (i = 0, imax = mValues.size(); i < imax; i++, Dbl++)
+    mValues[i]->setInitialValue(*Dbl);
+
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
     mMoieties[i]->setInitialValue();
@@ -1285,6 +1309,11 @@ void CModel::setInitialStateX(const CStateX * state)
   Dbl = state->getFixedNumberVector().array();
   for (i = getNumVariableMetabs(), imax = getNumMetabs(); i < imax; i++, Dbl++)
     mMetabolitesX[i]->setInitialNumber(*Dbl);
+
+  /* Set the global parameters */
+  Dbl = state->getGlobalParameterVector().array();
+  for (i = 0, imax = mValues.size(); i < imax; i++, Dbl++)
+    mValues[i]->setInitialValue(*Dbl);
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -1909,7 +1938,7 @@ CModelValue* CModel::createModelValue(const std::string & name,
     }
 
   //compile();
-  //mStateTemplate.add(cpt->getKey());
+  mStateTemplate.add(cmv->getKey());
 
   return cmv;
 }

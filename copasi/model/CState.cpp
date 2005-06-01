@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:56 $
+   $Author: ssahle $ 
+   $Date: 2005/06/01 14:54:06 $
    End CVS Header */
 
 // CSate.cpp
@@ -33,7 +33,8 @@ CState::CState(const CState & state):
     mTime(state.mTime),
     mVolumes(state.mVolumes),
     mFixedNumbers(state.mFixedNumbers),
-    mVariableNumbers(state.mVariableNumbers)
+    mVariableNumbers(state.mVariableNumbers),
+    mGlobalParameters(state.mGlobalParameters)
 {}
 
 CState::CState(const CStateX & stateX)
@@ -54,6 +55,7 @@ CState & CState::operator =(const CStateX & stateX)
   mTime = stateX.mTime;
   mVolumes = stateX.mVolumes;
   mFixedNumbers = stateX.mFixedNumbers;
+  mGlobalParameters = stateX.mGlobalParameters;
 
   if (mpModel)
     {
@@ -108,6 +110,7 @@ CState & CState::operator =(const CState & state)
   mVolumes = state.mVolumes;
   mFixedNumbers = state.mFixedNumbers;
   mVariableNumbers = state.mVariableNumbers;
+  mGlobalParameters = state.mGlobalParameters;
 
   return *this;
 }
@@ -127,6 +130,7 @@ void CState::setModel(const CModel * pModel)
 
       mFixedNumbers.resize(mpModel->getNumMetabs() - mpModel->getNumVariableMetabs());
       mVariableNumbers.resize(mpModel->getNumVariableMetabs());
+      mGlobalParameters.resize(mpModel->getNumModelValues());
     }
 }
 
@@ -176,6 +180,23 @@ void CState::setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value)
 
 void CState::setVolumeVector(const CVector< C_FLOAT64 > & vektor)
 {mVolumes = vektor;}
+
+const CVector< C_FLOAT64 > & CState::getGlobalParameterVector() const
+  {return mGlobalParameters;}
+
+const C_FLOAT64 & CState::getGlobalParameter(const unsigned C_INT32 & index) const
+  {return mGlobalParameters[index];}
+
+unsigned C_INT32 CState::getGlobalParameterSize() const
+  {return mGlobalParameters.size();}
+
+void CState::setGlobalParameter(const unsigned C_INT32 & index, const C_FLOAT64 & value)
+{mGlobalParameters[index] = value;}
+
+void CState::setGlobalParameterVector(const CVector< C_FLOAT64 > & vektor)
+{mGlobalParameters = vektor;}
+
+//******
 
 void CState::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & factor,
@@ -289,10 +310,11 @@ void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
 std::ostream & operator << (std::ostream & os, const CState & A)
 {
   os << "State: " << std::endl;
-  os << "  Time:     " << A.mTime << std::endl;
-  os << "  Volumes:  " << A.mVolumes;
-  os << "  Fixed:    " << A.mFixedNumbers;
-  os << "  Variable: " << A.mVariableNumbers << std::endl;
+  os << "  Time:       " << A.mTime << std::endl;
+  os << "  Volumes:    " << A.mVolumes;
+  os << "  Fixed:      " << A.mFixedNumbers;
+  os << "  Variable:   " << A.mVariableNumbers << std::endl;
+  os << "  Parameters: " << A.mGlobalParameters << std::endl;
 
   return os;
 }
@@ -313,6 +335,9 @@ void CState::check(const std::string & m) const
 
     if (mVariableNumbers.size() != mpModel->getNumVariableMetabs())
     {std::cout << "CState: " << m << ": mismatch in variableNumbers" << std::endl;}
+
+    if (mGlobalParameters.size() != mpModel->getNumModelValues())
+    {std::cout << "CState: " << m << ": mismatch in globalParameters" << std::endl;}
   }
 #endif
 
@@ -345,6 +370,7 @@ CStateX & CStateX::operator =(const CState & state)
   mTime = state.mTime;
   mVolumes = state.mVolumes;
   mFixedNumbers = state.mFixedNumbers;
+  mGlobalParameters = state.mGlobalParameters;
 
   if (mpModel)
     {
@@ -403,6 +429,7 @@ CStateX & CStateX::operator =(const CStateX & stateX)
   mFixedNumbers = stateX.mFixedNumbers;
   mVariableNumbers = stateX.mVariableNumbers;
   mDependentNumbers = stateX.mDependentNumbers;
+  mGlobalParameters = stateX.mGlobalParameters;
 
   return *this;
 }
@@ -419,6 +446,7 @@ void CStateX::setModel(const CModel * pModel)
       mFixedNumbers.resize(mpModel->getNumMetabs() - mpModel->getNumVariableMetabs());
       mVariableNumbers.resize(mpModel->getNumIndependentMetabs());
       mDependentNumbers.resize(mpModel->getNumDependentMetabs());
+      mGlobalParameters.resize(mpModel->getNumModelValues());
     }
 }
 
@@ -580,6 +608,7 @@ std::ostream & operator << (std::ostream & os, const CStateX & A)
   os << "  Fixed:       " << A.mFixedNumbers;
   os << "  Independend: " << A.mVariableNumbers;
   os << "  Dependend:   " << A.mDependentNumbers << std::endl;
+  os << "  Parameters:  " << A.mGlobalParameters << std::endl;
 
   return os;
 }
@@ -603,5 +632,8 @@ void CStateX::check(const std::string & m) const
 
     if (mDependentNumbers.size() != mpModel->getNumDependentMetabs())
     {std::cout << "CStateX: " << m << ": mismatch in dependentNumbers" << std::endl;}
+
+    if (mGlobalParameters.size() != mpModel->getNumModelValues())
+    {std::cout << "CState: " << m << ": mismatch in globalParameters" << std::endl;}
   }
 #endif
