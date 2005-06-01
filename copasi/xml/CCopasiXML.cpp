@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/31 09:33:26 $
+   $Date: 2005/06/01 14:59:35 $
    End CVS Header */
 
 /**
@@ -234,6 +234,31 @@ bool CCopasiXML::saveModel()
       endSaveElement("ListOfMetabolites");
     }
 
+  if ((imax = mpModel->getModelValues().size()) > 0)
+    {
+      startSaveElement("ListOfModelValues");
+
+      Attributes.erase();
+      Attributes.add("key", "");
+      Attributes.add("name", "");
+      Attributes.add("status", "");
+      Attributes.add("stateVariable", "");
+
+      for (i = 0; i < imax; i++)
+        {
+          CModelValue * pMV = mpModel->getModelValues()[i];
+
+          Attributes.setValue(0, pMV->getKey());
+          Attributes.setValue(1, pMV->getObjectName());
+          Attributes.setValue(2, CModelValue::XMLStatus[pMV->getStatus()]);
+          Attributes.setValue(3, mpModel->getStateTemplate().getKey(pMV->getKey()));
+
+          saveElement("ModelValue", Attributes);
+        }
+
+      endSaveElement("ListOfModelValues");
+    }
+
   if ((imax = mpModel->getReactions().size()) > 0)
     {
       startSaveElement("ListOfReactions");
@@ -417,6 +442,9 @@ bool CCopasiXML::saveModel()
 
   for (i = 0, imax = InitialState.getFixedNumberSize(); i < imax; i++)
     data << " " << InitialState.getFixedNumber(i);
+
+  for (i = 0, imax = InitialState.getGlobalParameterSize(); i < imax; i++)
+    data << " " << InitialState.getGlobalParameter(i);
 
   saveData(data.str());
   endSaveElement("InitialState");

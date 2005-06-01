@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/31 09:33:26 $
+   $Date: 2005/06/01 14:59:35 $
    End CVS Header */
 
 /**
@@ -1059,6 +1059,11 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         mpCurrentHandler = new ListOfMetabolitesElement(mParser, mCommon);
       break;
 
+    case ListOfModelValues:
+      if (!strcmp(pszName, "ListOfModelValues"))
+        mpCurrentHandler = new ListOfModelValuesElement(mParser, mCommon);
+      break;
+
     case ListOfReactions:
       if (!strcmp(pszName, "ListOfReactions"))
         mpCurrentHandler = new ListOfReactionsElement(mParser, mCommon);
@@ -1117,6 +1122,11 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
 
     case ListOfMetabolites:
       if (strcmp(pszName, "ListOfMetabolites")) fatalError();
+      pdelete(mpCurrentHandler);
+      break;
+
+    case ListOfModelValues:
+      if (strcmp(pszName, "ListOfModelValues")) fatalError();
       pdelete(mpCurrentHandler);
       break;
 
@@ -1517,6 +1527,155 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
 
   return;
 }
+
+//******
+
+CCopasiXMLParser::ListOfModelValuesElement::ListOfModelValuesElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfModelValuesElement::~ListOfModelValuesElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfModelValuesElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case ListOfModelValues:
+      if (strcmp(pszName, "ListOfModelValues")) fatalError();
+      break;
+
+    case ModelValue:
+      if (strcmp(pszName, "ModelValue")) fatalError();
+
+      /* If we do not have a function element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new ModelValueElement(mParser, mCommon);
+
+      /* Push the Metabolite element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+    default:
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfModelValuesElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case ListOfModelValues:
+      if (strcmp(pszName, "ListOfModelValues")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = START_ELEMENT;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case ModelValue:
+      if (strcmp(pszName, "ModelValue")) fatalError();
+      mCurrentElement = ListOfModelValues;
+      break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::ModelValueElement::ModelValueElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ModelValueElement::~ModelValueElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  CModelValue * pMV;
+  const char * Key;
+  const char * Name;
+  const char * status;
+  CModelEntity::Status Status;
+  const char * StateVariable;
+
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case ModelValue:
+      if (strcmp(pszName, "ModelValue")) fatalError();
+
+      Key = mParser.getAttributeValue("key", papszAttrs);
+      Name = mParser.getAttributeValue("name", papszAttrs);
+      status = mParser.getAttributeValue("status", papszAttrs);
+      Status = (CMetab::Status) mParser.toEnum(status, CModelEntity::XMLStatus);
+      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
+
+      pMV = new CModelValue();
+      mCommon.KeyMap.addFix(Key, pMV);
+      pMV->setObjectName(Name);
+      pMV->setStatus(Status);
+
+      mCommon.pModel->getModelValues().add(pMV);
+      break;
+
+    default:
+      mParser.pushElementHandler(&mParser.mUnknownElement);
+      mParser.onStartElement(pszName, papszAttrs);
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case ModelValue:
+      if (strcmp(pszName, "ModelValue")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = START_ELEMENT;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case UNKNOWN_ELEMENT:
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+//******
 
 CCopasiXMLParser::ListOfReactionsElement::ListOfReactionsElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
@@ -2726,8 +2885,10 @@ void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszNa
   const char * Key;
   const char * ObjectReference;
   CCopasiObject * pObject;
-  CMetab * pMetabolite;
-  CCompartment * pCompartment;
+  //CMetab * pMetabolite;
+  //CCompartment * pCompartment;
+  //CModelValue * pMV;
+  CModelEntity * pME;
   CModel * pModel;
 
   //  std::map< std::string, std::string >::const_iterator ObjectKey;
@@ -2746,10 +2907,18 @@ void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszNa
 
       pObject = mCommon.KeyMap.get(ObjectReference);
 
-      if ((pMetabolite = dynamic_cast< CMetab * >(pObject)))
+      /*if ((pMetabolite = dynamic_cast< CMetab * >(pObject)))
         mCommon.StateVariableList.push_back(pMetabolite->getKey());
       else if ((pCompartment = dynamic_cast< CCompartment * >(pObject)))
         mCommon.StateVariableList.push_back(pCompartment->getKey());
+      else if ((pMV = dynamic_cast< CModelValue * >(pObject)))
+        mCommon.StateVariableList.push_back(pMV->getKey());
+      else if ((pModel = dynamic_cast< CModel * >(pObject)))
+        mCommon.StateVariableList.push_back(pModel->getKey());
+      else fatalError();*/
+
+      if ((pME = dynamic_cast< CModelEntity * >(pObject)))
+        mCommon.StateVariableList.push_back(pME->getKey());
       else if ((pModel = dynamic_cast< CModel * >(pObject)))
         mCommon.StateVariableList.push_back(pModel->getKey());
       else fatalError();
@@ -2833,8 +3002,9 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
   std::vector< std::string >::iterator end;
   double Value;
   CModel * pModel;
-  CCompartment * pCompartment;
-  CMetab * pMetabolite;
+  //CCompartment * pCompartment;
+  //CMetab * pMetabolite;
+  CModelEntity * pME;
 
   switch (mCurrentElement)
     {
@@ -2848,7 +3018,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 
       for (Values >> Value; it != end && !Values.fail(); ++it, Values >> Value)
         {
-          pMetabolite = dynamic_cast< CMetab* >(GlobalKeys.get(*it));
+          /*pMetabolite = dynamic_cast< CMetab* >(GlobalKeys.get(*it));
           if (pMetabolite)
             {
               pMetabolite->setInitialNumber(Value);
@@ -2861,6 +3031,15 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
             {
               pCompartment->setInitialVolume(Value);
               pCompartment->setVolume(Value);
+              continue;
+            }*/
+
+          //handles compartments, metabs, and model values
+          pME = dynamic_cast< CModelEntity* >(GlobalKeys.get(*it));
+          if (pME)
+            {
+              pME->setInitialValue(Value);
+              pME->setValue(Value);
               continue;
             }
 

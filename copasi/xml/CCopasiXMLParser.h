@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/18 13:32:02 $
+   $Author: ssahle $ 
+   $Date: 2005/06/01 14:59:35 $
    End CVS Header */
 
 /**
@@ -1202,6 +1202,89 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  class ModelValueElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ModelValue = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ModelValueElement(CCopasiXMLParser & parser,
+                          SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ModelValueElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ListOfModelValuesElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          ListOfModelValues = 0,
+          ModelValue
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfModelValuesElement(CCopasiXMLParser & parser,
+                                 SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfModelValuesElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
   class CommentElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
@@ -1258,6 +1341,7 @@ class CCopasiXMLParser : public CExpat
           Comment,
           ListOfCompartments,
           ListOfMetabolites,
+          ListOfModelValues,
           ListOfReactions,
           StateTemplate,
           InitialState
