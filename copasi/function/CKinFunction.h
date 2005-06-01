@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/22 10:50:31 $
+   $Author: shoops $ 
+   $Date: 2005/06/01 19:42:08 $
    End CVS Header */
 
 /**
@@ -156,15 +156,25 @@ class CKinFunction : public CFunction
     C_INT32 connectNodes();
 
     /**
-     *  This function is part of the algorithm that builds the binary tree
-     *  @param C_INT16 priority
-     *  @return CNodeK *
+     * This function is part of the algorithm that builds the binary tree.
+     * The expression to the right of the current node (mNidx) is parsed until
+     * an operand with a left priority <= the argument (right priority) 
+     * is encounterd. The pointer to the top node of the parsed expression is
+     * returned.
+     * @param C_INT16 priority
+     * @return CNodeK *
      */
     CNodeK * parseExpression(C_INT16 priority);
 
     /**
-     *  This function is part of the algorithm that builds the binary tree
-     *  @return CNodeK *
+     * This function is part of the algorithm that builds the binary tree.
+     * It returns a pointer to next primary node. Here next is with repect 
+     * to the internal counter mNidx. If the node is a dead end, i.e., any contant
+     * a pointer the node is returned. If then node is '(' the expression between
+     * the node and the matching ')' is parsed and a pointer to the resulting top
+     * node is returned. If the node is a function or a unary minus the argument is
+     * parsed and a pointer to the function node is returned. 
+     * @return CNodeK *
      */
     CNodeK * parsePrimary();
 
