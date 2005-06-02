@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/31 14:34:53 $
+   $Date: 2005/06/02 09:19:23 $
    End CVS Header */
 
 /**
@@ -251,6 +251,10 @@ class CReaction : public CCopasiContainer
      *  Gets the list of kinetic parameter objects of the reaction/function
      */
     CCopasiParameterGroup & getParameters();
+
+    bool isLocalParameter(C_INT32 index) const;
+
+    //***********************
 
     /**
      *  Gets the description of what parameters the function expects.

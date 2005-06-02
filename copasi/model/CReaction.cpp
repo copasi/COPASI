@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.118 $
+   $Revision: 1.119 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/31 14:34:53 $
+   $Date: 2005/06/02 09:19:23 $
    End CVS Header */
 
 // CReaction
@@ -132,20 +132,19 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
 
 const std::string & CReaction::getKey() const {return mKey;}
 
-const CChemEq & CReaction::getChemEq() const
-  {return mChemEq;}
-
-CChemEq & CReaction::getChemEq()
-{return mChemEq;}
-
-const CFunction & CReaction::getFunction() const
-  {return *mpFunction;}
-
 const C_FLOAT64 & CReaction::getFlux() const
   {return mFlux;}
 
 const C_FLOAT64 & CReaction::getParticleFlux() const
   {return mParticleFlux;}
+
+//****************************************
+
+const CChemEq & CReaction::getChemEq() const
+  {return mChemEq;}
+
+CChemEq & CReaction::getChemEq()
+{return mChemEq;}
 
 bool CReaction::isReversible() const
   {return mChemEq.getReversibility();}
@@ -167,6 +166,11 @@ bool CReaction::addModifier(const std::string & metabKey,
 
 void CReaction::setReversible(bool reversible)
 {mChemEq.setReversibility(reversible);}
+
+//****************************************
+
+const CFunction & CReaction::getFunction() const
+  {return *mpFunction;}
 
 bool CReaction::setFunction(const std::string & functionName)
 {
@@ -191,12 +195,29 @@ bool CReaction::setFunction(CFunction * pFunction)
   return true;
 }
 
+//****************************************
+
 // TODO: check if function is set and map initialized in the following methods
 
 void CReaction::setParameterValue(const std::string & parameterName, C_FLOAT64 value)
 {
   if (!mpFunction) fatalError();
   mParameters.setValue(parameterName, value);
+
+  //make shure that this local parameter is actually used:
+
+  //first find index
+  CFunctionParameter::DataType Type;
+  C_INT32 index = mMap.findParameterByName(parameterName, Type);
+  //std::cout << "reaction::setParameterValue  " << parameterName << " index " << index << std::endl;
+
+  if (index == C_INVALID_INDEX)
+    return;
+
+  if (getFunctionParameters()[index]->getType() != CFunctionParameter::FLOAT64) fatalError(); //wrong data type
+
+  //set the key map
+  mMetabKeyMap[index][0] = mParameters.getParameter(parameterName)->getKey();
 }
 
 const C_FLOAT64 & CReaction::getParameterValue(const std::string & parameterName) const
@@ -213,6 +234,7 @@ CCopasiParameterGroup & CReaction::getParameters()
 
 void CReaction::setParameterMapping(C_INT32 index, const std::string & key)
 {
+  //std::cout << "CReaction::setParameterMapping, index = " << index << ", key = " << key << std::endl;
   if (!mpFunction) fatalError();
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::FLOAT64) fatalError(); //wrong data type
 
@@ -282,6 +304,17 @@ void CReaction::clearParameterMapping(C_INT32 index)
   mMetabKeyMap[index].clear();
   //mMap.clearCallParameter(parameterName);
 }
+
+bool CReaction::isLocalParameter(C_INT32 index) const
+  {
+    unsigned C_INT32 i, imax = mParameters.size();
+    for (i = 0; i < imax; ++i)
+      {
+        if (mParameters.getParameter(i)->getKey() == mMetabKeyMap[index][0])
+          return true;
+      }
+    return false;
+  }
 
 //***********************************************************************************************
 
