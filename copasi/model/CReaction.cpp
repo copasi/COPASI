@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.119 $
+   $Revision: 1.120 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 09:19:23 $
+   $Date: 2005/06/02 13:42:38 $
    End CVS Header */
 
 // CReaction
@@ -199,10 +199,12 @@ bool CReaction::setFunction(CFunction * pFunction)
 
 // TODO: check if function is set and map initialized in the following methods
 
-void CReaction::setParameterValue(const std::string & parameterName, C_FLOAT64 value)
+void CReaction::setParameterValue(const std::string & parameterName, C_FLOAT64 value, bool updateStatus)
 {
   if (!mpFunction) fatalError();
   mParameters.setValue(parameterName, value);
+
+  if (!updateStatus) return;
 
   //make shure that this local parameter is actually used:
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 09:19:23 $
+   $Date: 2005/06/02 13:42:38 $
    End CVS Header */
 
 /**
@@ -214,8 +214,14 @@ class CReaction : public CCopasiContainer
 
     /**
      *  Sets a parameter value
+     *  if updateStatus==true the status is also updated to make shure 
+     *  the value is actually used (instead of a global value that may 
+     *  have been used before). 
+     *  if updateStatus==false only the value of the local parameter is 
+     *  set, even if it is not used
      */
-    void setParameterValue(const std::string & parameterName, C_FLOAT64 value);
+    void setParameterValue(const std::string & parameterName, C_FLOAT64 value,
+                           bool updateStatus = true);
 
     /**
      *  Gets a parameter value
