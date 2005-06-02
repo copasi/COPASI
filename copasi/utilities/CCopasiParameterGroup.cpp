@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/18 20:22:49 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 09:24:29 $
    End CVS Header */
 
 /**
@@ -195,6 +195,14 @@ CCopasiParameter * CCopasiParameterGroup::getParameter(const unsigned C_INT32 & 
 
   return NULL;
 }
+
+const CCopasiParameter * CCopasiParameterGroup::getParameter(const unsigned C_INT32 & index) const
+  {
+    if (index < size())
+      return * (((parameterGroup *) mpValue)->begin() + index);
+
+    return NULL;
+  }
 
 const void * CCopasiParameterGroup::getValue(const std::string & name) const
   {

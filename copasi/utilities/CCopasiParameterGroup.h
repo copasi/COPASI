@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/18 21:39:34 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 09:24:29 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -185,6 +185,7 @@ class CCopasiParameterGroup: public CCopasiParameter
      * @return CCopasiParameter * parameter
      */
     CCopasiParameter * getParameter(const unsigned C_INT32 & index);
+    const CCopasiParameter * getParameter(const unsigned C_INT32 & index) const;
 
     /**
      * Retreive a pointer to the value of a parameter or subgroup
