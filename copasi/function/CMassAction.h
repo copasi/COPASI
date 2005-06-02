@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:06:02 $
+   $Date: 2005/06/02 20:06:52 $
    End CVS Header */
 
 /**
@@ -54,20 +54,6 @@ class CMassAction : public CFunction
      *  Destructor
      */
     ~CMassAction();
-
-    /**
-     *  Retrieves the position of a parameter in the function call
-     *  @param "const string &" name
-     *  @return "const unsigned C_INT32" index
-     */ 
-    //virtual unsigned C_INT32 getParameterPosition(const std::string & name) const;
-
-    /**
-     *  Returns a string containing the explicit function in SBML format
-     *  @param "vector < void * >" callParameters
-    *  @param "const string &" r a suffix for parameter names (usually reaction number)
-     */ 
-    //    std::string getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames, const std::string &r) const;
 
     /**
      *  Calculates the value of the function

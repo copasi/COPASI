@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:06:02 $
+   $Date: 2005/06/02 20:06:52 $
    End CVS Header */
 
 /**
@@ -73,62 +73,6 @@ CMassAction::CMassAction(const TriLogic & reversible,
     }
 }
 CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
-
-/*unsigned C_INT32 CMassAction::getParameterPosition(const std::string & name) const
-{
-  if (isReversible() != TriFalse && isReversible() != TriTrue)
-    CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
- 
-  if (name == "k1")
-    return 0;
-  if (name.substr(0, strlen("substrate")) == "substrate")
-    return 1;
-  if (name == "k2" &&
-      isReversible() == TriTrue)
-    return 2;
-  if (name.substr(0, strlen("product")) == "product" &&
-      isReversible() == TriTrue)
-    return 3;
- 
-  return (unsigned C_INT32) - 1;
-}*/
-
-/*std::string CMassAction::getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
-                                       const std::string &r) const
-  {
-    std::string sf, tmpstr;
-    unsigned C_INT32 i, imax;
-    const std::vector<std::string> * pFactors;
- 
-    pFactors = &(callParameterNames[1]);   // first substr.
-    imax = pFactors->size();   // NoSubstrates
-    if (imax)
-      {
-        sf = callParameterNames[0][0] + r;           // k1
-        for (i = 0; i < imax; i++)
-          {
-            FixSName((*pFactors)[i], tmpstr);
-            sf += "*" + tmpstr;
-          }
-      }
- 
-    if (isReversible() == TriFalse)
-      return sf;
- 
-    pFactors = &(callParameterNames[3]);
-    imax = pFactors->size();
-    if (imax)
-      {
-        sf += "-" + callParameterNames[2][0] + r;
-        for (i = 0; i < imax; i++)
-          {
-            FixSName((*pFactors)[i], tmpstr);
-            sf += "*" + tmpstr;
-          }
-      }
- 
-    return sf;
-  }*/
 
 C_FLOAT64 CMassAction::calcValue(const CCallParameterPointers & callParameters) const
   {
