@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Date: 2005/06/02 17:49:39 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeNumber
@@ -22,7 +22,9 @@ class CEvaluationNodeNumber : public CEvaluationNode
     {
       INVALID = 0x00FFFFFF,
       DOUBLE = 0x00000000,
-      INTEGER = 0x00000001
+      INTEGER = 0x00000001,
+      ENOTATION = 0x00000002,
+      RATIONALE = 0x00000003
     };
 
     // Operations
