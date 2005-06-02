@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 14:31:12 $
+   $Date: 2005/06/02 09:17:02 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -212,11 +212,11 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         }
       setItem(rowCounter, 1, item);
 
-      // add second column
+      // add  column
       if (usage == "PARAMETER")
         {
-          item = new ColorCheckTableItem(this, color, "local");
-          dynamic_cast<ColorCheckTableItem*>(item)->setChecked(ri.isLocalValue(i));
+          item = new ColorCheckTableItem(this, color, "global");
+          dynamic_cast<ColorCheckTableItem*>(item)->setChecked(!ri.isLocalValue(i));
         }
       else
         {
@@ -356,7 +356,7 @@ void ParameterTable::slotCellChanged(int row, int col)
       else
         {
         }*/
-      emit parameterStatusChanged(i, tmp->isChecked());
+      emit parameterStatusChanged(i, !tmp->isChecked());
     }
   else
     {
