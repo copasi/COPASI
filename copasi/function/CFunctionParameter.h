@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:47 $
+   $Date: 2005/06/02 20:01:01 $
    End CVS Header */
 
 /**
@@ -34,11 +34,17 @@ class CFunctionParameter : public CCopasiContainer
     /**
      *  The string representation of valid roles of a function parameter
      */
-    static const char * RoleName[];
-
-    //Attributes
+    static const std::string RoleNameXML[];
+    static const std::string RoleNameInternal[];
+    static const std::string RoleNameDisplay[];
 
   public:
+
+    static const std::string & convertRoleNameToXML(const std::string & role);
+    static const std::string & convertXMLRoleNameToInternal(const std::string & role);
+    static const std::string & convertRoleNameToDisplay(const std::string & role);
+    static const std::string & convertDisplayRoleNameToInternal(const std::string & role);
+
     /**
      *  Valid data type for a function parameter
      */
@@ -46,8 +52,8 @@ class CFunctionParameter : public CCopasiContainer
 
     /**
      * Valid roles for a function parameter
-     */
-    enum Role {substrate = 0, product, modifier, constant, other};
+     */ 
+    //enum Role {substrate = 0, product, modifier, constant, volume, other};
 
   private:
     /**

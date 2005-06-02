@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:05:47 $
+   $Date: 2005/06/02 20:01:01 $
    End CVS Header */
 
 /**
@@ -18,11 +18,56 @@
 #include "CFunctionParameter.h"
 #include "report/CKeyFactory.h"
 
+//static
 const std::string CFunctionParameter::DataTypeName[] =
   {"Integer", "Double", "Vector of Integer", "Vector of Double", ""};
 
-const char * CFunctionParameter::RoleName[] =
-  {"substrate", "product", "modifier", "constant", "other", NULL};
+//static
+const std::string CFunctionParameter::RoleNameXML[] =
+  {"substrate", "product", "modifier", "constant", "volume", "other", ""};
+
+//static
+const std::string CFunctionParameter::RoleNameInternal[] =
+  {"SUBSTRATE", "PRODUCT", "MODIFIER", "PARAMETER", "VOLUME", "PARAMETER", ""};
+
+//static
+const std::string CFunctionParameter::RoleNameDisplay[] =
+  {"Substrate", "Product", "Modifier", "Parameter", "Volume", "Parameter", ""};
+
+//const char * CFunctionParameter::RoleName[] =
+//  {"substrate", "product", "modifier", "constant", "other", NULL};
+
+//static
+const std::string & CFunctionParameter::convertRoleNameToXML(const std::string & role)
+{
+  C_INT32 i;
+  for (i = 0; (RoleNameInternal[i] != "") && (RoleNameInternal[i] != role); ++i);
+  return RoleNameXML[i];
+}
+
+//static
+const std::string & CFunctionParameter::convertXMLRoleNameToInternal(const std::string & role)
+{
+  C_INT32 i;
+  for (i = 0; (RoleNameXML[i] != "") && (RoleNameXML[i] != role); ++i);
+  return RoleNameInternal[i];
+}
+
+//static
+const std::string & CFunctionParameter::convertRoleNameToDisplay(const std::string & role)
+{
+  C_INT32 i;
+  for (i = 0; (RoleNameInternal[i] != "") && (RoleNameInternal[i] != role); ++i);
+  return RoleNameDisplay[i];
+}
+
+//static
+const std::string & CFunctionParameter::convertDisplayRoleNameToInternal(const std::string & role)
+{
+  C_INT32 i;
+  for (i = 0; (RoleNameDisplay[i] != "") && (RoleNameDisplay[i] != role); ++i);
+  return RoleNameInternal[i];
+}
 
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):
