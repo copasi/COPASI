@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 17:50:39 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 12:23:43 $
    End CVS Header */
 
 #include <qmessagebox.h>
@@ -124,7 +124,8 @@ void CQReportDefinition::btnItemClicked()
       mChanged = true;
     }
 
-  delete pBrowseDialog;
+  //delete pBrowseDialog;
+  //it seems that exec() automatically deletes the dialog (at least in this case)
   return;
 }
 
