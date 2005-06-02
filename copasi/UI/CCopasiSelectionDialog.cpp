@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/19 13:51:21 $
+   $Date: 2005/06/02 12:20:50 $
    End CVS Header */
 
 #include "CCopasiSelectionDialog.h"
@@ -50,12 +50,12 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
 
 CCopasiSelectionDialog::~CCopasiSelectionDialog()
 {
-  delete this->mpOKButton;
-  delete this->mpCancelButton;
-  delete this->mpModeCheckBox;
-  delete this->mpButtonBox;
-  delete this->mpMainLayout;
-  delete this->mpSelectionWidget;
+  /*  delete this->mpOKButton;
+    delete this->mpCancelButton;
+    delete this->mpModeCheckBox;
+    delete this->mpButtonBox;
+    delete this->mpMainLayout;
+    delete this->mpSelectionWidget;*/
 }
 
 void CCopasiSelectionDialog::setModel(const CModel* model)
