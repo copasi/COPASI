@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/10 08:40:01 $
+   $Date: 2005/06/02 20:06:27 $
    End CVS Header */
 
 // CNodeK.cpp : classes for function tree
@@ -126,66 +126,6 @@ C_INT32 CNodeK::load(CReadConfig & configbuffer)
 
   return Fail;
 }
-
-/*C_INT32 CNodeK::save(CWriteConfig & C_UNUSED(configbuffer)) const
-  {
-    C_INT32 Fail = 0;
-#ifdef XXXX
- 
-    // the file has already been opened
-    // we don't care about exceptions here.
-    // They should be caught by the calling function
-    // First the Type and subtype
-    if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
-      return Fail;
- 
-    // leave the Left & Right pointers out
-    // value of the constant if one
-    if (mType == N_NUMBER)
-      {
-        if ((Fail = configbuffer.setVariable("Value", "C_FLOAT64", &mConstant)))
-          return Fail;
-      }
-    else if (isIdentifier())
-      {
-        if ((Fail = configbuffer.setVariable("Index", "C_INT32", &mIndex)))
-          return Fail;
-        if ((Fail = configbuffer.setVariable("Name", "string", &mName)))
-          return Fail;
-      }
-#endif // XXXX
-    return Fail;
-  }
- 
-C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
-  {
-    C_INT32 Fail = 0;
-    char dummy = N_NOP;
- 
-    if (isIdentifier())
-      {
-        if ((Fail = configbuffer.setVariable("Node", "node", &mSubtype, &dummy)))
-          return Fail;
-      }
-    else
-      {
-        if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
-          return Fail;
-      }
-    if (mType == N_NUMBER)
-      {
-        if ((Fail = configbuffer.setVariable("Value", "C_FLOAT64", &mConstant)))
-          return Fail;
-      }
-    else if (isIdentifier())
-      {
-        if ((Fail = configbuffer.setVariable("Index", "C_INT32", &mOldIndex)))
-          return Fail;
-        if ((Fail = configbuffer.setVariable("Name", "string", &mName)))
-          return Fail;
-      }
-    return Fail;
-  }*/
 
 std::string CNodeK::getExplicitFunctionString(const std::vector< std::vector< std::string > > & callParameterNames,
     const std::string &r)
@@ -503,6 +443,7 @@ C_INT16 CNodeK::isIdentifier() const
       case N_PRODUCT:
       case N_MODIFIER:
       case N_KCONSTANT:
+      case N_VOLUME:
         return true;
       default:
         return false;
@@ -655,11 +596,11 @@ C_FLOAT64 CNodeK::value(const CCallParameterPointers & callParameters) const
           case N_ARCTAN:
             return atan(mLeft->value(callParameters));
 
-          case N_ARCSEC:  //TODO
+          case N_ARCSEC:   //TODO
             return acos(1 / mLeft->value(callParameters));
-          case N_ARCCSC:  //TODO
+          case N_ARCCSC:   //TODO
             return asin(1 / mLeft->value(callParameters));
-          case N_ARCCOT:  //TODO
+          case N_ARCCOT:   //TODO
             return atan(1 / mLeft->value(callParameters));
 
           case N_ARCSINH:
@@ -708,7 +649,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         //    case N_OBJECT:
         //      return *(double*)((CCopasiObject*)mLeft)->getReference();
         //      break;
-      case N_IDENTIFIER :      //do some heuristics for indentifiers starting with "K" or "V"
+      case N_IDENTIFIER :       //do some heuristics for indentifiers starting with "K" or "V"
         out << SPC(level);
         if (mName.substr(0, 1) == "K")
           out << "<msub><mi>K</mi><mi>" << mName.substr(1) << "</mi></msub>" << std::endl;
@@ -813,7 +754,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
       case N_FUNCTION:
         switch (mSubtype)
           {
-          case '+':    //do nothing
+          case '+':     //do nothing
             mLeft->writeMathML(out, level);
             break;
           case '-':

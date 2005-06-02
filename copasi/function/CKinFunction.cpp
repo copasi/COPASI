@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/27 18:06:28 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 20:06:27 $
    End CVS Header */
 
 /**
@@ -114,22 +114,6 @@ void CKinFunction::load(CReadConfig & configBuffer,
   compile();
 }
 #endif // XXXX
-
-/*void CKinFunction::saveOld(CWriteConfig & configBuffer)
-{
-  C_INT32 i, size;
-  CFunction::saveOld(configBuffer);
-  size = mNodes.size();
-  configBuffer.setVariable("Nodes", "C_INT32", &size);
-  for (i = 0; i < size; i++)
-    mNodes[i]->saveOld(configBuffer);
-}*/
-
-/*std::string CKinFunction::getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
-                                        const std::string &r) const
-  {
-    return mNodes[0]->getExplicitFunctionString(callParameterNames, r);
-  }*/
 
 bool CKinFunction::createObjList()
 {
@@ -318,7 +302,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                            // this is an error
+        case N_NOP:                                             // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -683,6 +667,7 @@ void CKinFunction::createParameters()
   CCopasiVectorN < CFunctionParameter > Products;
   CCopasiVectorN < CFunctionParameter > Modifiers;
   CCopasiVectorN < CFunctionParameter > Parameters;
+  CCopasiVectorN < CFunctionParameter > Volumes;
 
   unsigned C_INT32 i, imax = mNodes.size();
 
@@ -731,6 +716,14 @@ void CKinFunction::createParameters()
                 pdelete(pParameter);
               break;
 
+            case N_VOLUME:
+              pParameter->setUsage("VOLUME");
+              if (Volumes.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
+                Volumes.add(pParameter, false);
+              else
+                pdelete(pParameter);
+              break;
+
             default:
               pdelete(pParameter);
               fatalError();
@@ -759,6 +752,11 @@ void CKinFunction::createParameters()
   for (i = 0; i < imax; i++)
     getParameters().add(Parameters[i], true);
   Parameters.cleanup();
+
+  imax = Volumes.size();
+  for (i = 0; i < imax; i++)
+    getParameters().add(Volumes[i], true);
+  Volumes.cleanup();
 }
 
 void CKinFunction::initIdentifierNodes()
@@ -769,7 +767,7 @@ void CKinFunction::initIdentifierNodes()
   std::string IdentifierName, ParameterName, Usage;
   unsigned C_INT32 i, imax = getParameters().size();
   unsigned C_INT32 j, jmax = mNodes.size();
-  C_INT32 subidx, prodidx, modfidx, constidx;
+  C_INT32 subidx, prodidx, modfidx, constidx, volidx;
 
   for (j = 0; j < jmax; j++)
     {
@@ -785,7 +783,7 @@ void CKinFunction::initIdentifierNodes()
         continue;
 
       IdentifierName = mNodes[j]->getName();
-      subidx = prodidx = modfidx = constidx = -1;
+      subidx = prodidx = modfidx = constidx = volidx = -1;
       for (i = 0; i < imax; i++)
         {
           Usage = getParameters()[i]->getUsage();
@@ -797,6 +795,8 @@ void CKinFunction::initIdentifierNodes()
             modfidx++;
           else if (Usage == "PARAMETER")
             constidx++;
+          else if (Usage == "VOLUME")
+            volidx++;
 
           ParameterName = getParameters()[i]->getObjectName();
           if (IdentifierName != ParameterName)
@@ -825,6 +825,11 @@ void CKinFunction::initIdentifierNodes()
             {
               mNodes[j]->setSubtype(N_KCONSTANT);
               mNodes[j]->setOldIndex(constidx);
+            }
+          else if (Usage == "VOLUME")
+            {
+              mNodes[j]->setSubtype(N_VOLUME);
+              mNodes[j]->setOldIndex(volidx);
             }
           else if (Usage == "UNKNOWN")
             mNodes[j]->setSubtype(N_NOP);

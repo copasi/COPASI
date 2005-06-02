@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/10 05:47:16 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 20:06:27 $
    End CVS Header */
 
 /*  CNodeK
@@ -75,6 +75,7 @@
 #define N_PRODUCT 'p'
 #define N_MODIFIER 'm'
 #define N_KCONSTANT 'k'
+#define N_VOLUME 'V'
 
 /** @dia:pos 12.7478,42.4925 */
 class CNodeK
