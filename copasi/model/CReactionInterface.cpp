@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 13:43:50 $
+   $Date: 2005/06/02 20:07:56 $
    End CVS Header */
 
 #include <string>
@@ -141,6 +141,10 @@ bool CReactionInterface::writeBackToReaction(CModel & model) const
                 rea->setParameterValue(getParameterName(i), mValues[i], false);
                 rea->setParameterMapping(i, model.getModelValues()[mNameMap[i][0]]->getKey());
               }
+          }
+        else if (getUsage(i) == "VOLUME")
+          {
+            rea->setParameterMapping(i, model.getCompartments()[mNameMap[i][0]]->getKey());
           }
         else
           {
@@ -367,7 +371,7 @@ bool CReactionInterface::isLocked(std::string usage) const
   {
     // get number of metabs in chemEq
     unsigned C_INT32 listSize;
-    if ((usage == "PARAMETER") || (usage == "MODIFIER"))
+    if ((usage == "PARAMETER") || (usage == "MODIFIER") || (usage == "VOLUME"))
       return false; //modifiers are never locked!
     else
       listSize = mChemEqI.getListOfNames(usage).size();
@@ -395,7 +399,7 @@ void CReactionInterface::setMetab(unsigned C_INT32 index, std::string mn)
 {
   std::string usage = getUsage(index);
   unsigned C_INT32 listSize;
-  if (usage == "PARAMETER")
+  if ((usage == "PARAMETER") || (usage == "VOLUME"))
     return;
   else
     listSize = mChemEqI.getListOfNames(usage).size();
@@ -442,13 +446,6 @@ void CReactionInterface::setMetab(unsigned C_INT32 index, std::string mn)
           mNameMap[pos][0] = otherMetab;
         }
     }
-
-  //check for validity. A reaction is invalid if it has a metab "unknown"
-  /*mValid = true;
-  unsigned C_INT j, jmax = size();
-  for (j = 0; j < jmax; ++j)
-    if ((getUsage(j) != "PARAMETER") && (getMetabs(j)[0] == "unknown"))
-      mValid = false;*/
 }
 
 bool CReactionInterface::setGlobalParameter(unsigned C_INT32 index, std::string pn)
@@ -466,6 +463,25 @@ bool CReactionInterface::setGlobalParameter(unsigned C_INT32 index, std::string 
 const std::string & CReactionInterface::getGlobalParameter(unsigned C_INT32 index) const
   {
     assert(getUsage(index) == "PARAMETER");
+    assert(mNameMap[index].size() == 1);
+    return mNameMap[index][0];
+  }
+
+bool CReactionInterface::setCompartment(unsigned C_INT32 index, std::string pn)
+{
+  if (getUsage(index) != "VOLUME")
+    return false;
+
+  mIsLocal[index] = false;
+
+  mNameMap[index][0] = pn;
+
+  return true;
+}
+
+const std::string & CReactionInterface::getCompartment(unsigned C_INT32 index) const
+  {
+    assert(getUsage(index) == "VOLUME");
     assert(mNameMap[index].size() == 1);
     return mNameMap[index][0];
   }
@@ -530,10 +546,10 @@ bool CReactionInterface::isValid() const
   {
     if (!mpFunction) return false;
 
-    //A reaction is invalid if it has a metab "unknown"
+    //A reaction is invalid if it has a metab, a global parameter, or a compartment "unknown"
     unsigned C_INT j, jmax = size();
     for (j = 0; j < jmax; ++j)
-      if (mNameMap[j][0] == "unknown")
+      if ((mNameMap[j][0] == "unknown") && (!mIsLocal[j]))
         return false;
 
     return true;

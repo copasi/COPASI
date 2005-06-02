@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 13:43:50 $
+   $Date: 2005/06/02 20:07:56 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -175,6 +175,10 @@ class CReactionInterface
     bool setGlobalParameter(unsigned C_INT32 index, std::string pn);
 
     const std::string & getGlobalParameter(unsigned C_INT32 index) const;
+
+    bool setCompartment(unsigned C_INT32 index, std::string pn);
+
+    const std::string & getCompartment(unsigned C_INT32 index) const;
 
     void initFromReaction(const CModel & model, const std::string & key);
 
