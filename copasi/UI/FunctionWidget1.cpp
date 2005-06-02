@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.116 $
+   $Revision: 1.117 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 17:50:39 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 19:54:54 $
    End CVS Header */
 
 /**********************************************************************
@@ -290,34 +290,36 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   QColor prodColor(210, 255, 210);
   QColor modiColor(250, 250, 190);
   QColor paraColor(210, 210, 255);
+  QColor volColor(210, 210, 255);
   QColor color;
+
+  unsigned C_INT32 i, j;
 
   // list of usages for combobox
   QStringList Usages;
-  Usages += "Substrate";
-  Usages += "Product";
-  Usages += "Modifier";
-  Usages += "Parameter";
-
-  unsigned C_INT32 i, j;
-  std::string usage;
-  QString qUsage;
-
-  //C_INT32 noOffunctParams = functParam.size();
-  Table1->setNumRows(params.size());
+  for (i = 0; CFunctionParameter::RoleNameDisplay[i] != ""; i++)
+    Usages += (FROM_UTF8(CFunctionParameter::RoleNameDisplay[i]));
 
   //create list of data types (for combobox)
   QStringList functionType;
   for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
     functionType += (FROM_UTF8(CFunctionParameter::DataTypeName[i]));
 
+  std::string usage;
+  QString qUsage;
+
+  //C_INT32 noOffunctParams = functParam.size();
+  Table1->setNumRows(params.size());
+
   for (j = 0; j < params.size(); j++)
     {
       usage = params[j]->getUsage();
-      if (usage == "SUBSTRATE") {qUsage = "Substrate"; color = subsColor;}
-      else if (usage == "PRODUCT") {qUsage = "Product"; color = prodColor;}
-      else if (usage == "MODIFIER") {qUsage = "Modifier"; color = modiColor;}
-      else if (usage == "PARAMETER") {qUsage = "Parameter"; color = paraColor;}
+      qUsage = FROM_UTF8(CFunctionParameter::convertRoleNameToDisplay(usage));
+      if (usage == "SUBSTRATE") {color = subsColor;}
+      else if (usage == "PRODUCT") {color = prodColor;}
+      else if (usage == "MODIFIER") {color = modiColor;}
+      else if (usage == "PARAMETER") {color = paraColor;}
+      else if (usage == "VOLUME") {color = volColor;}
       else {qUsage = "unknown"; color = QColor(255, 20, 20);}
 
       // col. 0
@@ -363,14 +365,16 @@ bool FunctionWidget1::loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages)
     {
       s1 = "Number of ";
       name = usages[j]->getObjectName();
-      if (name == "SUBSTRATES")
+      /*if (name == "SUBSTRATES")
         s1 += "Substrates:";
       else if (name == "PRODUCTS")
         s1 += "Products:";
       else if (name == "MODIFIERS")
         s1 += "Modifiers:";
       else
-        s1 += FROM_UTF8(name);
+        s1 += FROM_UTF8(name);*/
+      s1 += FROM_UTF8(CFunctionParameter::convertRoleNameToDisplay(name)) + "s:";
+      //relies on the fact that the plural of all roles is regular
 
       Table2->setText(j, 0, s1);
       //Table2->adjustColumn(0);
@@ -744,6 +748,8 @@ void FunctionWidget1::updateApplication()
       //Application.setRange(CRange::NoRange, Application.getHigh());
       //functUsage.add(Application);
     }
+
+  //TODO: Volumes?
 }
 
 //************** slots for changes in the widgets *************************************
@@ -807,12 +813,13 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
   if (col == 2) //Usage
     {
       QString qUsage = Table1->text(row, col);
-      std::string usage;
-      if (qUsage == "Substrate") {usage = "SUBSTRATE";}
+      std::string usage = CFunctionParameter::convertDisplayRoleNameToInternal((const char*)qUsage.utf8());
+      /*if (qUsage == "Substrate") {usage = "SUBSTRATE";}
       else if (qUsage == "Product") {usage = "PRODUCT";}
       else if (qUsage == "Modifier") {usage = "MODIFIER";}
       else if (qUsage == "Parameter") {usage = "PARAMETER";}
-      else {fatalError();}
+      else {fatalError();}*/
+      if (usage == "") fatalError();
 
       functParam[row]->setUsage(usage);
       functParam.updateUsageRanges();
@@ -967,7 +974,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                               // Yes or Enter
+        case 0:                                                // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -984,7 +991,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                               // No or Escape
+        case 1:                                                // No or Escape
           break;
         }
     }

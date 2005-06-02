@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 14:31:12 $
+   $Date: 2005/06/02 19:56:23 $
    End CVS Header */
 
 #ifndef PARAMETERTABLE_H
@@ -88,6 +88,8 @@ class ParameterTable : public QTable
 
     //convenience function.
     static QStringList ParameterTable::getListOfAllGlobalParameterNames(const CModel & model);
+    //convenience function.
+    static QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model);
 
     int mOldRow;
 

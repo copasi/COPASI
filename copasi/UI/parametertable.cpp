@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 09:17:02 $
+   $Date: 2005/06/02 19:56:23 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -144,6 +144,21 @@ QStringList ParameterTable::getListOfAllGlobalParameterNames(const CModel & mode
   return ret;
 }
 
+//static
+QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
+{
+  QStringList ret;
+
+  ret += "unknown";
+
+  //all the global paramters  in the model
+  unsigned C_INT32 i, imax = model.getCompartments().size();
+  for (i = 0; i < imax; ++i)
+    ret += FROM_UTF8(model.getCompartments()[i]->getObjectName());
+
+  return ret;
+}
+
 void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & model)
 {
   C_INT32 i, imax = ri.size();
@@ -160,6 +175,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   QColor prodColor(210, 255, 210);
   QColor modiColor(250, 250, 190);
   QColor paraColor(210, 210, 255);
+  QColor volColor(210, 210, 255);
 
   QPixmap * pProduct = new QPixmap((const char**)product_xpm);
   QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
@@ -191,10 +207,12 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       // set the stuff that is different for the specific usages
       usage = ri.getUsage(i);
-      if (usage == "SUBSTRATE") {qUsage = "Substrate"; color = subsColor;}
-      else if (usage == "PRODUCT") {qUsage = "Product"; color = prodColor;}
-      else if (usage == "MODIFIER") {qUsage = "Modifier"; color = modiColor;}
-      else if (usage == "PARAMETER") {qUsage = "Parameter"; color = paraColor;}
+      qUsage = FROM_UTF8(CFunctionParameter::convertRoleNameToDisplay(usage));
+      if (usage == "SUBSTRATE") {color = subsColor;}
+      else if (usage == "PRODUCT") {color = prodColor;}
+      else if (usage == "MODIFIER") {color = modiColor;}
+      else if (usage == "PARAMETER") {color = paraColor;}
+      else if (usage == "VOLUME") {color = volColor;}
       else {qUsage = "unknown"; color = QColor(255, 20, 20);}
 
       // add first column
@@ -206,7 +224,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       // add second column
       item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8(ri.getParameterName(i)));
-      if (usage != "PARAMETER")
+      if ((usage != "PARAMETER") && (usage != "VOLUME"))
         {
           if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
         }
@@ -294,6 +312,13 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
               combo->setCurrentItem(FROM_UTF8(ri.getGlobalParameter(i)));
               setItem(rowCounter, 3, combo);
             }
+        }
+      // add a line for a kinetic parameter
+      else if (usage == "VOLUME")
+        {
+          combo = new QComboTableItem(this, getListOfAllCompartmentNames(model));
+          combo->setCurrentItem(FROM_UTF8(ri.getCompartment(i)));
+          setItem(rowCounter, 3, combo);
         }
       // add a line for an unknown role
       else
