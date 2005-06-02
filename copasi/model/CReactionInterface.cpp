@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/30 16:45:35 $
+   $Date: 2005/06/02 09:21:40 $
    End CVS Header */
 
 #include <string>
@@ -87,13 +87,15 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
       loadNameMap(model, *rea);
 
       C_INT32 i, imax = size();
+
       mValues.resize(imax);
       mIsLocal.resize(imax);
       for (i = 0; i < imax; ++i)
         if (getUsage(i) == "PARAMETER")
           {
+            mIsLocal[i] = rea->isLocalParameter(i);
+            //std::cout << "isLocal" << i << " " << mIsLocal[i] << std::endl;
             mValues[i] = rea->getParameterValue(getParameterName(i));
-            mIsLocal[i] = true; //TODO
           }
         else
           mIsLocal[i] = false;
@@ -131,7 +133,14 @@ bool CReactionInterface::writeBackToReaction(CModel & model) const
     for (i = 0; i < imax; ++i)
       {
         if (getUsage(i) == "PARAMETER")
-        {rea->setParameterValue(getParameterName(i), mValues[i]);}
+          {
+            if (mIsLocal[i])
+              rea->setParameterValue(getParameterName(i), mValues[i]);
+            else
+              {
+                rea->setParameterMapping(i, model.getModelValues()[mNameMap[i][0]]->getKey());
+              }
+          }
         else
           {
             if (isVector(i))
@@ -173,6 +182,7 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
   unsigned C_INT32 j, jmax = oldValues.size();
   unsigned C_INT32 i, imax = size();
   mValues.resize(imax);
+  mIsLocal.resize(imax);
   for (i = 0; i < imax; ++i)
     {
       if (getUsage(i) == "PARAMETER")
@@ -182,6 +192,8 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
 
           if (j == jmax) mValues[i] = 0.1;
           else mValues[i] = oldValues[j];
+
+          mIsLocal[i] = true;
         }
     }
 
@@ -496,11 +508,12 @@ void CReactionInterface::loadNameMap(const CModel & model, const CReaction & rea
       SubList.clear();
       for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
         {
+          //std::cout <<*jt << std::endl;
           metabName = CMetabNameInterface::getDisplayName(&model, *jt);
           if (metabName != "")
             SubList.push_back(metabName);
-          else
-            SubList.push_back(*jt);
+          else //it's no metab
+            SubList.push_back(GlobalKeys.get(*jt)->getObjectName());
         }
       mNameMap.push_back(SubList);
     }
