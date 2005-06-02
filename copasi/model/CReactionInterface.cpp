@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 09:21:40 $
+   $Date: 2005/06/02 13:43:50 $
    End CVS Header */
 
 #include <string>
@@ -100,18 +100,18 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
         else
           mIsLocal[i] = false;
 
-      mValid = true; //assume a reaction is valid before editing
+      //mValid = true; //assume a reaction is valid before editing
     }
   else
     {
       setFunction("");
-      mValid = false;
+      //mValid = false;
     }
 }
 
 bool CReactionInterface::writeBackToReaction(CModel & model) const
   {
-    if (!mValid) return false; // do nothing
+    if (!isValid()) return false; // do nothing
     if (!(*mpParameters == mpFunction->getParameters())) return false; // do nothing
 
     bool success = true;
@@ -138,6 +138,7 @@ bool CReactionInterface::writeBackToReaction(CModel & model) const
               rea->setParameterValue(getParameterName(i), mValues[i]);
             else
               {
+                rea->setParameterValue(getParameterName(i), mValues[i], false);
                 rea->setParameterMapping(i, model.getModelValues()[mNameMap[i][0]]->getKey());
               }
           }
@@ -206,7 +207,7 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
     }
 
   //guess initial connections between metabs and function parameters
-  mValid = true;
+  //mValid = true;
   connectFromScratch("SUBSTRATE", true);
   connectFromScratch("PRODUCT", true);
   connectFromScratch("MODIFIER", false); // we can not be pedantic about modifiers
@@ -220,7 +221,7 @@ void CReactionInterface::clearFunction()
 {
   mpFunction = NULL;
   pdelete(mpParameters);
-  mValid = false;
+  //mValid = false;
 
   mValues.clear();
   mNameMap.clear();
@@ -343,7 +344,7 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
       if (el.size() > 0)
         mNameMap[pos - 1][0] = el[0];
       else
-      {mNameMap[pos - 1][0] = "unknown"; mValid = false;}
+      {mNameMap[pos - 1][0] = "unknown"; /*mValid = false;*/}
 
       for (i = 1; i < imax; ++i)
         {
@@ -352,7 +353,8 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 
           if (el.size() > i)
             mNameMap[pos - 1][0] = el[i];
-        else {mNameMap[pos - 1][0] = "unknown"; mValid = false;}
+          else
+          {mNameMap[pos - 1][0] = "unknown"; /*mValid = false;*/}
         }
     }
   else fatalError();
@@ -442,11 +444,11 @@ void CReactionInterface::setMetab(unsigned C_INT32 index, std::string mn)
     }
 
   //check for validity. A reaction is invalid if it has a metab "unknown"
-  mValid = true;
+  /*mValid = true;
   unsigned C_INT j, jmax = size();
   for (j = 0; j < jmax; ++j)
     if ((getUsage(j) != "PARAMETER") && (getMetabs(j)[0] == "unknown"))
-      mValid = false;
+      mValid = false;*/
 }
 
 bool CReactionInterface::setGlobalParameter(unsigned C_INT32 index, std::string pn)
@@ -522,4 +524,17 @@ void CReactionInterface::loadNameMap(const CModel & model, const CReaction & rea
 bool CReactionInterface::createMetabolites(CModel & model) const
   {
     return mChemEqI.createNonExistingMetabs(&model);
+  }
+
+bool CReactionInterface::isValid() const
+  {
+    if (!mpFunction) return false;
+
+    //A reaction is invalid if it has a metab "unknown"
+    unsigned C_INT j, jmax = size();
+    for (j = 0; j < jmax; ++j)
+      if (mNameMap[j][0] == "unknown")
+        return false;
+
+    return true;
   }

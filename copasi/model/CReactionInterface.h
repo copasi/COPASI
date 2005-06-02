@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 14:26:50 $
+   $Date: 2005/06/02 13:43:50 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -72,8 +72,8 @@ class CReactionInterface
 
     /**
      * is the reaction valid?
-     */
-    bool mValid;
+     */ 
+    //bool mValid;
 
   public:
     CReactionInterface();
@@ -158,6 +158,11 @@ class CReactionInterface
       mIsLocal[index] = true;
     }
 
+    void setValue(unsigned C_INT32 index)
+    {
+      mIsLocal[index] = true;
+    }
+
     const C_FLOAT64 & getValue(unsigned C_INT32 index) const {return mValues[index];}
 
     bool isLocalValue(unsigned C_INT32 index) const {return mIsLocal[index];};
@@ -177,7 +182,7 @@ class CReactionInterface
 
     bool createMetabolites(CModel & model) const;
 
-    bool isValid() const {return mValid;}
+    bool isValid() const;
 
     /**
      * is the mapping of this parameter locked?
