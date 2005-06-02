@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Date: 2005/06/02 12:37:15 $
    End CVS Header */
 
 #include "copasi.h"
@@ -24,26 +24,32 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
     {
     case POWER:
       mpOperation = operationPower;
+      mPrecedence = PRECEDENCE_OPERATOR_POWER;
       break;
 
     case MULTIPLY:
       mpOperation = operationMultiply;
+      mPrecedence = PRECEDENCE_OPERATOR_MULTIPLY;
       break;
 
     case DIVIDE:
       mpOperation = operationDivide;
+      mPrecedence = PRECEDENCE_OPERATOR_DIVIDE;
       break;
 
     case MODULUS:
       mpOperation = operationModulus;
+      mPrecedence = PRECEDENCE_OPERATOR_MODULUS;
       break;
 
     case PLUS:
       mpOperation = operationPlus;
+      mPrecedence = PRECEDENCE_OPERATOR_PLUS;
       break;
 
     case MINUS:
       mpOperation = operationMinus;
+      mPrecedence = PRECEDENCE_OPERATOR_MINUS;
       break;
 
     default:

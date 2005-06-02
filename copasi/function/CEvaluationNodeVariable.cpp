@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 19:12:36 $
+   $Date: 2005/06/02 12:37:15 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,13 +13,13 @@
 CEvaluationNodeVariable::CEvaluationNodeVariable():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
     mpValue(NULL)
-{}
+{mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeVariable::CEvaluationNodeVariable(const SubType & subType,
     const Data & data):
     CEvaluationNode((Type) (CEvaluationNode::VARIABLE | subType), data),
     mpValue(NULL)
-{}
+{mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeVariable::CEvaluationNodeVariable(const CEvaluationNodeVariable & src):
     CEvaluationNode(src),

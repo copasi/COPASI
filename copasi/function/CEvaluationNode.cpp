@@ -1,13 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Date: 2005/06/02 12:37:15 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
+
+CEvaluationNode::CPrecedence::CPrecedence(const unsigned C_INT32 & left,
+    const unsigned C_INT32 & right):
+    left(left),
+    right(right)
+{}
+
+CEvaluationNode::CPrecedence::CPrecedence(const CPrecedence & src):
+    left(src.left),
+    right(src.right)
+{}
+
+CEvaluationNode::CPrecedence::~CPrecedence() {}
 
 CEvaluationNode * CEvaluationNode::create(const Type & type,
     const std::string & contents)
@@ -58,7 +71,8 @@ CEvaluationNode::CEvaluationNode():
     CCopasiNode<Data>(),
     mType(CEvaluationNode::INVALID),
     mValue(0.0),
-    mData("")
+    mData(""),
+    mPrecedence(PRECEDENCE_DEFAULT)
 {}
 
 CEvaluationNode::CEvaluationNode(const Type & type,
@@ -66,14 +80,16 @@ CEvaluationNode::CEvaluationNode(const Type & type,
     CCopasiNode<Data>(),
     mType(type),
     mValue(0.0),
-    mData(data)
+    mData(data),
+    mPrecedence(PRECEDENCE_DEFAULT)
 {}
 
 CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
     CCopasiNode<Data>(src),
     mType(src.mType),
     mValue(src.mValue),
-    mData(src.mData)
+    mData(src.mData),
+    mPrecedence(src.mPrecedence)
 {}
 
 CEvaluationNode::~CEvaluationNode() {}
@@ -91,3 +107,6 @@ bool CEvaluationNode::setData(const Data & data)
   mData = data;
   return true;
 }
+
+bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
+{return (mPrecedence.right < rhs.mPrecedence.left);}

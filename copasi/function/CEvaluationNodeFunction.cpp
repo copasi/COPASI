@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Date: 2005/06/02 12:37:15 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,7 +13,7 @@
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
     CEvaluationNode(CEvaluationNode::INVALID, "")
-{}
+{mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
     const Data & data):
@@ -148,6 +148,8 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
       fatalError();
       break;
     }
+
+  mPrecedence = PRECEDENCE_FUNCTION;
 }
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const CEvaluationNodeFunction & src):
