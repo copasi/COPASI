@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/11 20:40:32 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 20:01:33 $
    End CVS Header */
 
 /**
@@ -82,14 +82,6 @@ class CFunctionParameters : public CCopasiContainer
      */
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param "CWriteConfig &" configBuffer
-     *  @return Fail
-     */ 
-    //    void save(CWriteConfig & configBuffer);
 
     /**
      *  Add a parameter to the parameter list

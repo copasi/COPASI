@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/11 20:40:32 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 19:58:13 $
    End CVS Header */
 
 /**
@@ -198,70 +198,6 @@ void CFunction::load(CReadConfig & configBuffer,
 
   guessModifierUsageRange();
 }
-
-/*void CFunction::save(CWriteConfig & configBuffer)
-{
-  std::string tmp;
-  configBuffer.setVariable("FunctionType", "C_INT32", &mType);
-  tmp = getObjectName();
-  configBuffer.setVariable("FunctionName", "string", &tmp);
-  configBuffer.setVariable("Description", "string", &mDescription);
-  configBuffer.setVariable("Reversible", "C_INT32", &mReversible);
- 
-  unsigned C_INT32 Size = mUsageDescriptions.size();
-  configBuffer.setVariable("UsageDescriptionSize", "C_INT32", &Size);
-  mUsageDescriptions.save(configBuffer);
-  mParameters.save(configBuffer);
-}
- 
-void CFunction::saveOld(CWriteConfig & configBuffer)
-{
-  C_INT32 dummy, i, sizem, sizep;
-  unsigned C_INT32 pos;
-  std::string tmpstr1, tmpstr2;
-  CCopasiVectorNS < CUsageRange > tmpusage;
- 
-  if (mType == UserDefined)
-    dummy = 1;
-  else
-    dummy = 0;
-  tmpstr1 = getObjectName();
-  configBuffer.setVariable("UDKType", "string", &tmpstr1);
-  configBuffer.setVariable("User-defined", "C_INT32", &dummy);
-  configBuffer.setVariable("Reversible", "C_INT32", &mReversible);
-  dummy = mUsageDescriptions["SUBSTRATES"]->getLow();
-  configBuffer.setVariable("Substrates", "C_INT32", &dummy);
-  dummy = mUsageDescriptions["PRODUCTS"]->getLow();
-  configBuffer.setVariable("Products", "C_INT32", &dummy);
-  tmpusage = mParameters.getUsageRanges();
-  i = tmpusage.getIndex("MODIFIER");
-  if (i == -1)
-    sizem = 0;
-  else
-    sizem = tmpusage[i]->getLow();
-  configBuffer.setVariable("Modifiers", "C_INT32", &sizem);
-  sizep = mParameters.getUsageRanges()["PARAMETER"]->getLow();
-  configBuffer.setVariable("Constants", "C_INT32", &sizep);
-  for (i = 0, pos = 0; i < sizem; i++)
-    {
-      tmpstr1 = mParameters.getParameterByUsage("MODIFIER", pos).getObjectName();
-      tmpstr2 = StringPrint("Modifier%d", i);
-      configBuffer.setVariable(tmpstr2, "string", &tmpstr1);
-    }
-  for (i = 0, pos = 0; i < sizep; i++)
-    {
-      tmpstr1 = mParameters.getParameterByUsage("PARAMETER", pos).getObjectName();
-      tmpstr2 = StringPrint("Parameter%d", i);
-      configBuffer.setVariable(tmpstr2, "string", &tmpstr1);
-    }
-  tmpstr1 = getObjectName();
-  configBuffer.setVariable("FunctionName", "string", &tmpstr1);
-  configBuffer.setVariable("Description", "string", &mDescription);
-}*/
-
-/*std::string CFunction::getSBMLString(const std::vector< std::vector< std::string > > & C_UNUSED(callParameterNames),
-                                     const std::string & C_UNUSED(r)) const
-  {return "0";}*/
 
 const std::string & CFunction::getKey() const {return mKey;}
 

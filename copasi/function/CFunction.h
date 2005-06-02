@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/11 20:40:32 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 19:58:13 $
    End CVS Header */
 
 /**
@@ -142,39 +142,10 @@ class CFunction : public CCopasiContainer
                       CReadConfig::Mode mode = CReadConfig::SEARCH);
 
     /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param "CWriteConfig &" configBuffer.
-     *  @return Fail
-     */ 
-    //    virtual void save(CWriteConfig & configBuffer);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  Output is in Gepasi 3.21 file format.
-     *  @param "CWriteConfig &" configBuffer.
-     *  @return Fail
-     */ 
-    //    virtual void saveOld(CWriteConfig & configBuffer);
-
-    /**
-     *  Returns a string containing the explicit function in SBML format
-     *  @param "vector < void * >" callParameters
-    *  @param "const string &" r a suffix for parameter names (usually reaction number)
-     */ 
-    //    virtual std::string getSBMLString(const std::vector< std::vector < std::string> > & callParameterNames, const std::string &r) const;
-
-    /**
      *  Retrieves the key of the function
      *  @return std::string name
      */
     virtual const std::string & getKey() const;
-
-    /**
-     *  Retrieves the name of the function
-     *  @return "const string &" name
-     */ 
-    //    virtual const std::string& getName() const;
 
     /**
      *  Set the name of the function

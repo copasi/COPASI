@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/11 20:40:32 $
+   $Author: ssahle $ 
+   $Date: 2005/06/02 20:01:33 $
    End CVS Header */
 
 /**
@@ -51,17 +51,6 @@ void CFunctionParameters::load(CReadConfig & configBuffer,
   configBuffer.getVariable("UsageParameterSize", "C_INT32", &Size);
   mUsageRanges.load(configBuffer, Size);
 }
-
-/*void CFunctionParameters::save(CWriteConfig & configBuffer)
-{
-  unsigned C_INT32 Size = mParameters.size();
-  configBuffer.setVariable("ParameterSize", "C_INT32", &Size);
-  mParameters.save(configBuffer);
- 
-  Size = mUsageRanges.size();
-  configBuffer.setVariable("UsageParameterSize", "C_INT32", &Size);
-  mUsageRanges.save(configBuffer);
-}*/
 
 void CFunctionParameters::add(const CFunctionParameter & parameter)
 {
