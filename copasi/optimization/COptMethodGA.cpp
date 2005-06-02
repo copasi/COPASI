@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/05/31 20:30:22 $
+   $Author: shoops $ 
+   $Date: 2005/06/02 19:08:43 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -152,13 +152,23 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
         case - 1:
           mut = *OptItem.getLowerBoundValue();
           if (!OptItem.checkLowerBound(mut)) // Inequality
-            mut += DBL_EPSILON;
+            {
+              if (mut == 0.0)
+                mut = DBL_MIN;
+              else
+                mut += mut * DBL_EPSILON;
+            }
           break;
 
         case 1:
           mut = *OptItem.getUpperBoundValue();
           if (!OptItem.checkUpperBound(mut)) // Inequality
-            mut -= DBL_EPSILON;
+            {
+              if (mut == 0.0)
+                mut = -DBL_MIN;
+              else
+                mut -= mut * DBL_EPSILON;
+            }
           break;
         }
     }
@@ -386,13 +396,23 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
             case - 1:
               mut = *OptItem.getLowerBoundValue();
               if (!OptItem.checkLowerBound(mut)) // Inequality
-                mut += DBL_EPSILON;
+                {
+                  if (mut == 0.0)
+                    mut = DBL_MIN;
+                  else
+                    mut += mut * DBL_EPSILON;
+                }
               break;
 
             case 1:
               mut = *OptItem.getUpperBoundValue();
               if (!OptItem.checkUpperBound(mut)) // Inequality
-                mut -= DBL_EPSILON;
+                {
+                  if (mut == 0.0)
+                    mut = - DBL_MIN;
+                  else
+                    mut -= mut * DBL_EPSILON;
+                }
               break;
             }
         }
