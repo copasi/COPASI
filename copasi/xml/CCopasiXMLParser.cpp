@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 09:22:49 $
+   $Date: 2005/06/02 20:09:28 $
    End CVS Header */
 
 /**
@@ -896,13 +896,14 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
   const char * Name;
   const char * Order;
   const char * role; /*substrate, product, modifier, constant, other*/
-  CFunctionParameter::Role Role;
+  //CFunctionParameter::Role Role;
+  std::string Role;
   const char * minOccurs;
   unsigned C_INT32 MinOccurs;
   const char * maxOccurs;
   unsigned C_INT32 MaxOccurs;
 
-  std::string Usage[] = {"SUBSTRATE", "PRODUCT", "MODIFIER", "PARAMETER"};
+  //std::string Usage[] = {"SUBSTRATE", "PRODUCT", "MODIFIER", "PARAMETER"};
   CFunctionParameter * pParm = NULL;
 
   mCurrentElement++; /* We should always be on the next element */
@@ -919,8 +920,10 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
       mOrder++;
 
       role = mParser.getAttributeValue("role", papszAttrs);
-      Role = (CFunctionParameter::Role) mParser.toEnum(role, CFunctionParameter::RoleName);
-      if (Role == -1) fatalError();
+      //Role = (CFunctionParameter::Role) mParser.toEnum(role, CFunctionParameter::RoleName);
+      //if (Role == -1) fatalError();
+      Role = CFunctionParameter::convertXMLRoleNameToInternal(role);
+      if (Role == "") fatalError();
 
       minOccurs = mParser.getAttributeValue("minOccurs", papszAttrs, "1");
       MinOccurs = atoi(minOccurs);
@@ -937,7 +940,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
         {
           pParm = new CFunctionParameter();
           pParm->setName(Name);
-          pParm->setUsage(Usage[Role]);
+          pParm->setUsage(Role);
 
           if (MaxOccurs == 1 && MinOccurs == 1)
             pParm->setType(CFunctionParameter::FLOAT64);
