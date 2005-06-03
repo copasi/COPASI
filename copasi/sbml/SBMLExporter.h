@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/04/12 12:12:01 $
+   $Author: ssahle $ 
+   $Date: 2005/06/03 09:29:49 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -15,14 +15,14 @@
 #include "model/CReaction.h"
 #include "function/CKinFunction.h"
 
-#include "sbml/SBMLDocument.hpp"
-#include "sbml/Model.hpp"
-#include "sbml/Compartment.hpp"
-#include "sbml/Species.hpp"
-#include "sbml/Reaction.hpp"
-#include "sbml/KineticLaw.hpp"
-#include "sbml/ASTNode.hpp"
-#include "sbml/Parameter.hpp"
+#include "sbml/SBMLDocument.h"
+#include "sbml/Model.h"
+#include "sbml/Compartment.h"
+#include "sbml/Species.h"
+#include "sbml/Reaction.h"
+#include "sbml/KineticLaw.h"
+#include "sbml/math/ASTNode.h"
+#include "sbml/Parameter.h"
 #include "sbml/StdException.h"
 
 class SBMLExporter

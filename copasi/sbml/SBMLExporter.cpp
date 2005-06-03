@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:08:40 $
+   $Date: 2005/06/03 09:29:48 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,12 +13,15 @@
 
 #include "SBMLExporter.h"
 
-#include "sbml/Unit.hpp"
+//#include "sbml/SBMLTypes.h"
+#include "sbml/Unit.h"
+#include "sbml/UnitDefinition.h"
 #include "sbml/UnitKind.h"
 #include "sbml/SBMLDocument.h"
 #include "sbml/SBMLWriter.h"
 
 #include "sbml/ModifierSpeciesReference.h"
+#include "sbml/SpeciesReference.h"
 #include "xml/CCopasiXMLInterface.h"
 
 #include <fstream>

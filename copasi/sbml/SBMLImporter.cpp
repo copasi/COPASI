@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:08:40 $
+   $Date: 2005/06/03 09:29:49 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,14 +23,22 @@
 #include "function/CNodeK.h"
 #include "function/CFunctionDB.h"
 
-#include "sbml/SBMLReader.hpp"
-#include "sbml/SBMLDocument.hpp"
-#include "sbml/Compartment.hpp"
-#include "sbml/Species.hpp"
-#include "sbml/Reaction.hpp"
-#include "sbml/FormulaFormatter.h"
-#include "sbml/Model.hpp"
+#include "sbml/SBMLReader.h"
+#include "sbml/SBMLDocument.h"
+#include "sbml/Compartment.h"
+#include "sbml/Species.h"
+#include "sbml/SpeciesReference.h"
+#include "sbml/ModifierSpeciesReference.h"
+#include "sbml/Reaction.h"
+#include "sbml/KineticLaw.h"
+#include "sbml/math/FormulaFormatter.h"
+#include "sbml/Model.h"
 #include "sbml/UnitKind.h"
+#include "sbml/Unit.h"
+#include "sbml/Parameter.h"
+#include "sbml/FunctionDefinition.h" 
+//#include "sbml/SBMLTypes.h"
+#include "sbml/xml/ParseMessage.h"
 
 #include "SBMLImporter.h"
 #include "ConverterASTNode.h"

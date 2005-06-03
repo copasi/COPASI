@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/24 12:30:56 $
+   $Author: ssahle $ 
+   $Date: 2005/06/03 09:29:50 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -11,11 +11,11 @@
 
 #include <string>
 #include <map>
-#include "sbml/ASTNode.hpp"
+#include "sbml/math/ASTNode.h"
 
 #include "function/CFunctionDB.h"
 #include "sbml/StdException.h"
-#include "sbml/UnitDefinition.hpp"
+#include "sbml/UnitDefinition.h"
 #include "model/CModel.h"
 
 class SBMLDocument;

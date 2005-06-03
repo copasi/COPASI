@@ -1,15 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/16 13:29:59 $
+   $Author: ssahle $ 
+   $Date: 2005/06/03 09:28:35 $
    End CVS Header */
 
 #ifndef ConverterASTNode_HPP__
 #define ConverterASTNode_HPP__
 
-#include "sbml/ASTNode.hpp"
+#include "sbml/math/ASTNode.h"
 
 class ConverterASTNode : public ASTNode
   {

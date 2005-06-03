@@ -1,9 +1,11 @@
 #ifndef UnitConversionFactory_hpp__
 #define UnitConversionFactory_hpp__
 
-#include "sbml/UnitDefinition.hpp"
-#include "sbml/Unit.hpp"
-#include "sbml/ListOf.hpp"
+
+//#include "sbml/SBMLTypes.h"
+#include "sbml/UnitDefinition.h"
+#include "sbml/Unit.h"
+#include "sbml/ListOf.h"
 #include <vector>
 #include <string>
 
