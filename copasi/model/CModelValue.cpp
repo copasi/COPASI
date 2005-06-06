@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/01 14:55:37 $
+   $Date: 2005/06/06 14:51:33 $
    End CVS Header */
 
 #include <iostream>
@@ -128,6 +128,7 @@ void CModelEntity::initObjects()
 {
   addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
   addObjectReference("InitialValue", mIValue, CCopasiObject::ValueDbl);
+  addObjectReference("Rate", mRate, CCopasiObject::ValueDbl);
 }
 
 //********************************************************************+
