@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/24 12:04:36 $
+   $Author: ssahle $ 
+   $Date: 2005/06/06 14:52:07 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -21,26 +21,39 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->setSelectionMode(QListView::Extended);
   this->setSortColumn(-1);
   this->setRootIsDecorated(true);
-  this->addColumn("Column 1");
+  this->addColumn("");
   this->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, this->sizePolicy().hasHeightForWidth()));
   this->expertSubtree = new QListViewItem(this, "expert");
+
+  this->modelValueSubtree = new QListViewItem(this, "global parameters");
+  //this->valueSubtree = new QListViewItem(this->modelValueSubtree, "transient values");
+  //this->initialValueSubtree = new QListViewItem(this->modelValueSubtree, "initial values");
+  this->valueSubtree = new QListViewItem(this->modelValueSubtree, "values");
+
   this->reactionSubtree = new QListViewItem(this, "reactions");
   this->particleFluxSubtree = new QListViewItem(this->reactionSubtree, "particle fluxes");
   this->concentrationFluxSubtree = new QListViewItem(this->reactionSubtree, "concentration fluxes");
+  this->reactionParameterSubtree = new QListViewItem(this->reactionSubtree, "reaction parameters");
 
   this->metaboliteSubtree = new QListViewItem(this, "metabolites");
-  this->reactionParameterSubtree = new QListViewItem(this->reactionSubtree, "reaction parameters");
   this->transientParticleNumberSubtree = new QListViewItem(this->metaboliteSubtree, "transient particle numbers");
   this->transientConcentrationSubtree = new QListViewItem(this->metaboliteSubtree, "transient concentrations");
   this->initialParticleNumberSubtree = new QListViewItem(this->metaboliteSubtree, "initial particle numbers");
   this->initialConcentrationSubtree = new QListViewItem(this->metaboliteSubtree, "initial concentrations");
 
+  this->compartmentSubtree = new QListViewItem(this, "compartments");
+  //this->volumeSubtree = new QListViewItem(this->compartmentSubtree, "transient volumes");
+  //this->initialVolumeSubtree = new QListViewItem(this->compartmentSubtree, "initial volumes");
+  this->volumeSubtree = new QListViewItem(this->compartmentSubtree, "volumes");
+
   this->timeSubtree = new QListViewItem(this, "time");
+
+  //TODO enable initial values for compartments and global parameters when we need them.
 }
 
 CCopasiSimpleSelectionTree::~CCopasiSimpleSelectionTree()
 {
-  this->clearTree();
+  /*this->clearTree();
   delete this->timeSubtree;
   delete this->concentrationFluxSubtree;
   delete this->particleFluxSubtree;
@@ -51,15 +64,17 @@ CCopasiSimpleSelectionTree::~CCopasiSimpleSelectionTree()
   delete this->transientConcentrationSubtree;
   delete this->metaboliteSubtree;
   delete this->reactionSubtree;
-  delete this->expertSubtree;
+  delete this->expertSubtree;*/
 }
 
 void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
 {
   if (!model) return;
-  // find all metabolites and create items in the metabolite subtree
+
   QListViewItem* item = new QListViewItem(this->timeSubtree, "time");
   this->treeItems[item] = (CCopasiObject*)model->getObject(CCopasiObjectName("Reference=Time"));
+
+  // find all metabolites and create items in the metabolite subtree
   const CCopasiVector<CMetab>& metabolites = model->getMetabolites();
   unsigned int counter;
   unsigned int maxCount = metabolites.size();
@@ -121,6 +136,49 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
           treeItems[parameterItem] = (CCopasiObject*)(parameter->getObject(CCopasiObjectName("Reference=Value")));
         }
     }
+
+  // find all global parameters aka model variables
+  const CCopasiVector<CModelValue>& objects = model->getModelValues();
+  maxCount = objects.size();
+  for (counter = maxCount; counter != 0;--counter)
+    {
+      const CModelEntity* object = objects[counter - 1];
+      std::string name = object->getObjectName();
+
+      //item = new QListViewItem(this->initialValueSubtree,
+      //                         FROM_UTF8((name + "(t=0)")));
+      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
+
+      item = new QListViewItem(this->valueSubtree,
+                               FROM_UTF8(name /*+ "(t)"*/));
+      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
+
+      //item = new QListViewItem(this->valueRateSubtree,
+      //                         FROM_UTF8(("d(" + name + ")/dt")));
+      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Rate"));
+    }
+
+  // find all compartments
+  const CCopasiVector<CCompartment>& objects2 = model->getCompartments();
+  maxCount = objects2.size();
+  for (counter = maxCount; counter != 0;--counter)
+    {
+      const CModelEntity* object = objects2[counter - 1];
+      std::string name = object->getObjectName();
+
+      //item = new QListViewItem(this->initialVolumeSubtree,
+      //                         FROM_UTF8((name + "(t=0)")));
+      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
+
+      item = new QListViewItem(this->volumeSubtree,
+                               FROM_UTF8(name /*+ "(t)"*/));
+      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
+
+      //item = new QListViewItem(this->volumeRateSubtree,
+      //                         FROM_UTF8(("d(" + name + ")/dt")));
+      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Rate"));
+    }
+
   if (this->selectionMode() == QListView::NoSelection)
     {
       // see if some objects are there, if yes set to single selection
@@ -231,7 +289,7 @@ bool CCopasiSimpleSelectionTree::isMetaboliteNameUnique(const std::string & name
   return unique;
 }
 
-void CCopasiSimpleSelectionTree::clearTree()
+/*void CCopasiSimpleSelectionTree::clearTree()
 {
   QListViewItem* child = this->timeSubtree->firstChild();
   QListViewItem* nextSibling;
@@ -305,7 +363,7 @@ void CCopasiSimpleSelectionTree::clearTree()
         }
       child = nextSibling;
     }
-}
+}*/
 
 QListViewItem * CCopasiSimpleSelectionTree::findListViewItem(const CCopasiObject * object)
 {

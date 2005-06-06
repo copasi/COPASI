@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/19 13:51:22 $
+   $Date: 2005/06/06 14:52:07 $
    End CVS Header */
 
 #ifndef SimpleSelectionTree_H__
@@ -46,13 +46,19 @@ class CCopasiSimpleSelectionTree: public QListView
     QListViewItem* concentrationFluxSubtree;
     QListViewItem* reactionSubtree;
     QListViewItem* metaboliteSubtree;
+    QListViewItem* modelValueSubtree;
+    QListViewItem* valueSubtree;
+    QListViewItem* initialValueSubtree;
+    QListViewItem* compartmentSubtree;
+    QListViewItem* volumeSubtree;
+    QListViewItem* initialVolumeSubtree;
     QListViewItem* expertSubtree;
     std::map<QListViewItem*, CCopasiObject*> treeItems;
     std::vector<CCopasiObject*>* mpOutputVector;
 
     virtual bool treeHasSelection();
     virtual bool isMetaboliteNameUnique(const std::string & name, const CCopasiVector<CMetab> & metabolites);
-    virtual void clearTree();
+    //virtual void clearTree();
     virtual QListViewItem * findListViewItem(const CCopasiObject * object);
     virtual void selectObjects(std::vector<CCopasiObject *> * objects);
     virtual std::vector<CCopasiObject*>* getTreeSelection();
