@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 20:09:28 $
+   $Date: 2005/06/06 14:50:01 $
    End CVS Header */
 
 /**
@@ -1642,7 +1642,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
       pMV->setObjectName(Name);
       pMV->setStatus(Status);
 
-      mCommon.pModel->getModelValues().add(pMV);
+      mCommon.pModel->getModelValues().add(pMV, true);
       break;
 
     default:
