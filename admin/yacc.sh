@@ -4,6 +4,7 @@ PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
 SOURCE_FILE=$4
 TARGET_FILE_C=y.tab.c
+TARGET_FILE_H=y.tab.h
 
 echo $SOURCE_FILE
 echo $TARGET_FILE
@@ -15,5 +16,6 @@ sed -e 's/yyparse /yyYaccParser::yyparse /g' \
 mv $$.tmp $TARGET_FILE_C
 
 if [ x`uname -a | grep -ic cygwin` = x"1" ]; then
-  unix2dos $TARGET_FILE_C $TARGET_FILE_H
+  unix2dos $TARGET_FILE_C
+  unix2dos $TARGET_FILE_H
 fi
