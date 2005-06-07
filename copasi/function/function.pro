@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.12 $ $Author: shoops $ $Date: 2005/05/31 17:53:33 $  
+# $Revision: 1.13 $ $Author: shoops $ $Date: 2005/06/07 14:47:18 $  
 ######################################################################
 
 LIB = function
@@ -9,7 +9,7 @@ include(../common.pri)
 
 # Input
 HEADERS += CCallParameters.h \
-           CEvaluationFlexLexer.h \
+           CEvaluationLexer.h \
            CEvaluationNode.h \
            CEvaluationNodeConstant.h \
            CEvaluationNodeFunction.h \
@@ -31,7 +31,6 @@ HEADERS += CCallParameters.h \
            CUsageRange.h
 
 SOURCES += CCallParameters.cpp \
-           CEvaluationFlexLexer.cpp \
            CEvaluationNode.cpp \
            CEvaluationNodeConstant.cpp \
            CEvaluationNodeFunction.cpp \
@@ -53,13 +52,13 @@ SOURCES += CCallParameters.cpp \
            CRange.cpp \
            CUsageRange.cpp
 
+LEXSOURCES += CEvaluationLexer.lpp  
+
+YACCSOURCES += CEvaluationParser.ypp
+
 1.target   = CKinFunctionFlexLexer.cpp
 1.depends  = CKinFunctionFlexLexer.lpp 
 1.commands = $$myLex
 QMAKE_EXTRA_UNIX_TARGETS += 1
 
-2.target   = CEvaluationFlexLexer.cpp
-2.depends  = CEvaluationFlexLexer.lpp 
-2.commands = $$myLex
-QMAKE_EXTRA_UNIX_TARGETS += 2
 

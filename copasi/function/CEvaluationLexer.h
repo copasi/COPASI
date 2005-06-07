@@ -1,18 +1,22 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CEvaluationFlexLexer.h,v $
-   $Revision: 1.4 $
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
+   $Revision: 1.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 19:12:36 $
+   $Date: 2005/06/07 14:47:17 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationFlexLexer
 #define COPASI_CEvaluationFlexLexer
 
+#include <vector>
+
+#undef yyFlexLexer
+#define yyFlexLexer CEvaluationFlexLexer
 #include "FlexLexer.h"
 
 /**
- * This is a bas class for the CEvaluationFlexLexer adding member
+ * This is a base class for the CEvaluationFlexLexer adding member
  * attributes to enhance the internal functionality.
  */
 class CEvaluationFlexLexerBase
@@ -23,6 +27,7 @@ class CEvaluationFlexLexerBase
      */
     CEvaluationFlexLexerBase():
         mpNode(NULL),
+        mpRootNode(NULL),
         mpNodeList(NULL),
         mPosition(0)
     {}
@@ -57,8 +62,15 @@ class CEvaluationFlexLexerBase
       pdelete(pNodeList);
     }
 
+    virtual int yylex() = 0;
+
+    virtual int yyparse();
+
+  CEvaluationNode * getRootNode() {return mpRootNode;}
+
   protected:
     CEvaluationNode * mpNode;
+    CEvaluationNode * mpRootNode;
     std::vector< CEvaluationNode * > * mpNodeList;
     unsigned C_INT32 mPosition;
   };

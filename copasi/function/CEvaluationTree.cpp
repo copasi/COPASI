@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 19:12:36 $
+   $Date: 2005/06/07 14:47:18 $
    End CVS Header */
 
 #include "copasi.h"
@@ -14,14 +14,12 @@
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 
-#undef yyFlexLexer
-#define yyFlexLexer CEvaluationFlexLexer
-#include "CEvaluationFlexLexer.h"
+#include "CEvaluationLexer.h"
 
 CEvaluationTree::CEvaluationTree():
-    CCopasiTree<CEvaluationNode>(),
     mDescription(),
-    mErrorPosition(std::string::npos)
+    mErrorPosition(std::string::npos),
+    mpRoot(NULL)
 {}
 
 CEvaluationTree::~CEvaluationTree()
@@ -55,8 +53,15 @@ bool CEvaluationTree::parse()
 
   CEvaluationFlexLexer Scanner(&buffer);
 
-  mErrorPosition = Scanner.yylex();
+  Scanner.yyparse();
+
+  pdelete(mpRoot);
+
+  mpRoot = Scanner.getRootNode();
   mpNodeList = Scanner.getNodeList();
+
+  /*
+  mErrorPosition = Scanner.yylex();
   if (mErrorPosition < mDescription.length())
     {
       CEvaluationFlexLexer::freeNodeList(mpNodeList);
@@ -65,6 +70,8 @@ bool CEvaluationTree::parse()
     }
 
   mErrorPosition = std::string::npos;
+  */
+
   return true;
 }
 

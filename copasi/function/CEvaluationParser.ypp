@@ -1,0 +1,87 @@
+// The bison parser together with CEvaluationFlexLexer builds
+// the evaluation tree.
+
+%{
+#define YYSTYPE CEvaluationNode *
+#define yylval  mpNode
+#define yyerror(__str) CCopasiMessage(CCopasiMessage::EXCEPTION, MCFunction + 1, __str)
+#define YYDEBUG 1
+
+#include "copasi.h"
+#include "CEvaluationNode.h"
+#include "CEvaluationLexer.h"
+%}
+
+// %output="CEvaluationBisonParser.hpp"
+// %debug
+
+/* BISON Declarations */
+%token TOKEN_NUMBER
+
+%token TOKEN_FUNCTION
+%token TOKEN_SIGN
+
+%token TOKEN_OPERATOR_POWER
+%token TOKEN_OPERATOR_MULTIPLY
+%token TOKEN_OPERATOR_MODULUS
+%token TOKEN_OPERATOR_PLUS
+
+%token TOKEN_STRUCTURE_OPEN
+%token TOKEN_STRUCTURE_COMMA
+%token TOKEN_STRUCTURE_CLOSE
+
+// Precedence
+%left TOKEN_OPERATOR_PLUS
+%left TOKEN_OPERATOR_MODULUS
+%left TOKEN_OPERATOR_MULTIPLY
+%right TOKEN_OPERATOR_POWER
+
+// Right Precedence
+%right TOKEN_FUNCTION // Will never occur
+%right TOKEN_SIGN // Will never occur
+
+/* Grammar follows */
+%%
+
+exp:      TOKEN_NUMBER  {mpRootNode = $1;}
+        | exp TOKEN_OPERATOR_PLUS exp 
+          {
+            mpRootNode = $2; 
+            $2->addChild($1); 
+            $2->addChild($3);
+          }
+        | exp TOKEN_OPERATOR_MODULUS exp 
+          {
+            mpRootNode = $2; 
+            $2->addChild($1); 
+            $2->addChild($3);
+          }
+        | exp TOKEN_OPERATOR_MULTIPLY exp
+          {
+            mpRootNode = $2;
+            $2->addChild($1);
+            $2->addChild($3);
+          }
+        | exp TOKEN_OPERATOR_POWER exp
+          {
+            mpRootNode = $2;
+            $2->addChild($1);
+            $2->addChild($3);
+          }
+        | TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_CLOSE
+          {
+            mpRootNode = $2;
+          }
+        | TOKEN_FUNCTION TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_CLOSE
+          {
+            mpRootNode = $1;
+            $1->addChild($3);
+          }
+        | TOKEN_SIGN exp
+          {
+            $1->addChild($2);
+          }
+;
+
+%%
+

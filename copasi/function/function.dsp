@@ -59,10 +59,6 @@ SOURCE=.\CCallParameters.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CEvaluationFlexLexer.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CEvaluationNode.cpp
 # End Source File
 # Begin Source File
@@ -96,6 +92,10 @@ SOURCE=.\CEvaluationNodeVariable.cpp
 # Begin Source File
 
 SOURCE=.\CEvaluationNodeWhiteSpace.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationParser_yacc.cpp
 # End Source File
 # Begin Source File
 
@@ -151,7 +151,7 @@ SOURCE=.\CCallParameters.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CEvaluationFlexLexer.h
+SOURCE=.\CEvaluationLexer.h
 # End Source File
 # Begin Source File
 
@@ -188,6 +188,10 @@ SOURCE=.\CEvaluationNodeVariable.h
 # Begin Source File
 
 SOURCE=.\CEvaluationNodeWhiteSpace.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationParser_yacc.h
 # End Source File
 # Begin Source File
 
@@ -244,7 +248,11 @@ SOURCE=.\FunctionDB.xml.h
 # End Group
 # Begin Source File
 
-SOURCE=.\CEvaluationFlexLexer.lpp
+SOURCE=.\CEvaluationLexer.lpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationParser.ypp
 # End Source File
 # Begin Source File
 

@@ -1,0 +1,407 @@
+/* scanner for kinetic functions */
+
+%option outfile="CEvaluationFlexLexer_lex.cpp"
+%option prefix="CEvaluation"
+%option noyywrap
+%option never-interactive
+%option c++
+
+%s sSIGN sOPERATOR
+
+%{
+#include <vector>
+
+#include "copasi.h"
+#include "CEvaluationNode.h"
+#include "CEvaluationLexer.h"
+#include "CEvaluationParser_yacc.h"
+
+#define YY_USER_INIT \
+    mpNode = NULL;\
+    mPosition = 0;\
+    mpNodeList = new std::vector< CEvaluationNode * >;
+
+#define COMMON_ACTION \
+    mPosition += yyleng;\
+    mpNodeList->push_back(mpNode);
+
+%}
+
+DIGIT    [0-9]
+ID       [a-z_A-Z][a-z_A-Z0-9]*
+   
+%%
+
+{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?  %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,
+                                     yytext);
+  COMMON_ACTION;
+  return TOKEN_NUMBER;
+%}
+ 
+(log|LOG)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(log10|LOG10)/\( %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(exp|EXP)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::EXP,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(sin|SIN)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SIN,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(cos|COS)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COS,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(tan|TAN)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TAN,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(sec|SEC)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SEC,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(csc|CSC)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSC,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(cot|COT)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COT,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(sinh|SINH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SINH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(cosh|COSH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COSH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(tanh|TANH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::TANH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(sech|SECH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SECH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(csch|CSCH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CSCH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(coth|COTH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::COTH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(asin|ASIN)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSIN,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(acos|ACOS)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOS,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(atan|ATAN)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTAN,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(arcsec|ARCSEC)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSEC,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(arccsc|ARCCSC)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSC,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(arccot|ARCCOT)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOT,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(arcsinh|ARCSINH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSINH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(arccosh|ARCCOSH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOSH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(arctanh|ARCTANH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCTANH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(arcsech|ARCSECH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCSECH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+ 
+(arccsch|ARCCSCH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCSCH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(arccoth|ARCCOTH)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ARCCOTH,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(sqrt|SQRT)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SQRT,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(abs|ABS)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::ABS,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+<INITIAL,sSIGN>"-"   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_SIGN;
+%}
+
+<INITIAL,sSIGN>"+"   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::PLUS,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_SIGN;
+%}
+
+exponentiale |
+EXPONENTIALE %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::EXPONENTIALE,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_NUMBER;
+%}
+
+pi |
+PI %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::PI,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_NUMBER;
+%}
+      
+"^"   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_OPERATOR_POWER;
+%}
+
+"*"   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_OPERATOR_MULTIPLY;
+%}
+
+"/"   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_OPERATOR_MULTIPLY;
+%}
+
+"%"   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MODULUS,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_OPERATOR_MODULUS;
+%}
+
+<sOPERATOR>"+"   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_OPERATOR_PLUS;
+%}
+
+<sOPERATOR>"-"   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_OPERATOR_PLUS;
+%}
+
+"("   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::OPEN,
+                                        yytext);
+  COMMON_ACTION;
+  return TOKEN_STRUCTURE_OPEN;
+%}
+
+","   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::COMMA,
+                                        yytext);
+  COMMON_ACTION;
+  return TOKEN_STRUCTURE_COMMA;
+%}
+
+")"   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::CLOSE,
+                                        yytext);
+  COMMON_ACTION;
+  return TOKEN_STRUCTURE_CLOSE;
+%}
+
+{ID}  %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_NUMBER;
+%}
+
+\<([^\\\>]|\\.)*\>  %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY,
+                                     yytext);
+  COMMON_ACTION;
+  return TOKEN_NUMBER;
+%}
+     
+[ \t\r\n]+ %{
+  mpNode = new CEvaluationNodeWhiteSpace(CEvaluationNodeWhiteSpace::ANY,
+                                         yytext);
+  COMMON_ACTION;
+%}
+
+<<EOF>>  return 0;
+     
+.     CCopasiMessage(CCopasiMessage::EXCEPTION, MCFunction + 2, mPosition);
+     
+%%

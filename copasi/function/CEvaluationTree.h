@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 19:12:36 $
+   $Date: 2005/06/07 14:47:18 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -11,12 +11,11 @@
 
 #include <vector>
 
-#include "utilities/CCopasiTree.h"
 #include "CEvaluationNode.h"
 
 class CCopasiObjectName;
 
-class CEvaluationTree : public CCopasiTree < CEvaluationNode >
+class CEvaluationTree
   {
     // Operations
   public:
@@ -100,6 +99,11 @@ class CEvaluationTree : public CCopasiTree < CEvaluationNode >
      * A vector of nodes containing the result of parse.
      */
     std::vector< CEvaluationNode * > * mpNodeList;
+
+    /**
+     * The root node of the tree.
+     */
+    CEvaluationNode * mpRoot;
   };
 
 #endif // COPASI_CEvaluationTree
