@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/07 19:19:52 $
+   $Date: 2005/06/07 20:35:12 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationLexer
@@ -17,6 +17,11 @@
 
 #undef yyYaccParser
 #define yyYaccParser CEvaluationParser
+
+#undef YYDEBUG
+#ifdef COPASI_DEBUG
+# define YYDEBUG 1
+#endif // COPASI_DEBUG
 
 /**
  * This is a base class for the CEvaluationLexer adding member
