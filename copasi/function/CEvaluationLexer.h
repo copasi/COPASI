@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/07 15:18:54 $
+   $Date: 2005/06/07 19:14:01 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationLexer
@@ -43,6 +43,7 @@ class yyYaccParser
     /**
      * Retrieve the generated list of nodes.
      * The user owns the list and is repsonsible for the destruction.
+     * To delete the list please use freeNodeList.
      * Please note that each call to yylex() creates a new list which
      * must be destoyed.
      * @return std::vector< CEvaluationNode * > * pNodeList
@@ -59,7 +60,11 @@ class yyYaccParser
       std::vector< CEvaluationNode * >::iterator it = pNodeList->begin();
       std::vector< CEvaluationNode * >::iterator end = pNodeList->end();
 
-      for (; it != end; ++it)
+      for (it = pNodeList->begin(); it != end; ++it)
+        if (*it && (*it)->getParent())
+          (*it)->getParent()->removeChild(*it);
+
+      for (it = pNodeList->begin(); it != end; ++it)
         pdelete(*it);
 
       pdelete(pNodeList);
