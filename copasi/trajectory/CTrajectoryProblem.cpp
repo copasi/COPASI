@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:08:14 $
+   $Date: 2005/06/07 18:31:16 $
    End CVS Header */
 
 /**
@@ -345,6 +345,34 @@ std::vector<CDefaultPlotDescription> CTrajectoryProblem::getListOfDefaultPlotDes
         ret.push_back(tmp);
       }
 
+    //concentration rate plot
+    /*tmp.id = 4;
+    tmp.name = "Concentration rates plot";
+    tmp.description = "A plot of the rate of change of all variable metabolite concentrations vs. time.\nIt does not contain the rates of fixed metabolites.";
+    tmp.isPlot = true;
+    ret.push_back(tmp);*/ //not possible at the moment
+
+    //particle rate plot
+    tmp.id = 5;
+    tmp.name = "Particle number rates plot";
+    tmp.description = "A plot of the rate of change of all variable metabolite particle numbers vs. time.\nIt does not contain the rates of fixed metabolites.";
+    tmp.isPlot = true;
+    ret.push_back(tmp);
+
+    //reaction particle flux
+    tmp.id = 6;
+    tmp.name = "Plot of reaction fluxes";
+    tmp.description = "A plot of the the fluxes of all the reactions vs. time, in concentration/time unit.";
+    tmp.isPlot = true;
+    ret.push_back(tmp);
+
+    //reaction particle flux
+    tmp.id = 7;
+    tmp.name = "Plot of reaction event fluxes";
+    tmp.description = "A plot of the the fluxes of all the reactions vs. time, in reaction events/time unit.";
+    tmp.isPlot = true;
+    ret.push_back(tmp);
+
     //empty plot
     tmp.id = 99;
     tmp.name = "Empty plot";
@@ -379,6 +407,18 @@ bool CTrajectoryProblem::createDefaultPlot(C_INT32 id) const
       case 3:
         bname = "Complete particle numbers plot";
         break;
+      case 4:
+        bname = "Concentration rates plot";
+        break;
+      case 5:
+        bname = "Particle number rates plot";
+        break;
+      case 6:
+        bname = "Reaction fluxes";
+        break;
+      case 7:
+        bname = "Reaction events/time";
+        break;
       case 99:
         bname = "Empty plot";
         break;
@@ -398,10 +438,9 @@ bool CTrajectoryProblem::createDefaultPlot(C_INT32 id) const
         nname << bname << "_" << i;
       }
 
-    //empty plot
+    //empty plot (99)
     if (id == 99) return true;
 
-    //id 0,1,2,3
     CPlotItem * plItem;
     std::string itemTitle;
     CPlotDataChannelSpec name2;
@@ -409,17 +448,48 @@ bool CTrajectoryProblem::createDefaultPlot(C_INT32 id) const
 
     CPlotDataChannelSpec name1 = mpModel->getObject(CCopasiObjectName("Reference=Time"))->getCN();
 
-    bool allMetabs = (id == 2) || (id == 3);
-
-    unsigned C_INT32 imax = mpModel->getMetabolites().size();
-    for (i = 0; i < imax; ++i)
+    //id 0,1,2,3,4,5
+    if ((id >= 0) && (id <= 5))
       {
-        if ((mpModel->getMetabolites()[i]->getStatus() != CModelEntity::FIXED) || allMetabs)
+        bool allMetabs = (id == 2) || (id == 3);
+
+        unsigned C_INT32 imax = mpModel->getMetabolites().size();
+        for (i = 0; i < imax; ++i)
           {
-            if ((id == 0) || (id == 2))
-              tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"));
-            else
-              tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=ParticleNumber"));
+            if ((mpModel->getMetabolites()[i]->getStatus() != CModelEntity::FIXED) || allMetabs)
+              {
+                if ((id == 0) || (id == 2)) //concentrations
+                  tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"));
+                else if ((id == 1) || (id == 3)) //particle numbers
+                  tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=ParticleNumber"));
+                else if (id == 4) //conc rate, does not work at the moment
+                  tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=xxxConcentrationRate"));
+                else if (id == 5) //number rate
+                  tmp = mpModel->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Rate"));
+
+                if (!tmp) continue;
+
+                name2 = tmp->getCN();
+                itemTitle = tmp->getObjectDisplayName();
+                //std::cout << itemTitle << " : " << name2 << std::endl;
+
+                plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
+                plItem->addChannel(name1);
+                plItem->addChannel(name2);
+              }
+          }
+      }
+    else if ((id >= 6) && (id <= 7))
+      {
+        unsigned C_INT32 imax = mpModel->getReactions().size();
+        for (i = 0; i < imax; ++i)
+          {
+            if (id == 6) //concentration fluxes
+              tmp = mpModel->getReactions()[i]->getObject(CCopasiObjectName("Reference=Flux"));
+            else if (id == 7) //particle fluxes
+              tmp = mpModel->getReactions()[i]->getObject(CCopasiObjectName("Reference=ParticleFlux"));
+
+            if (!tmp) continue;
 
             name2 = tmp->getCN();
             itemTitle = tmp->getObjectDisplayName();
@@ -430,5 +500,6 @@ bool CTrajectoryProblem::createDefaultPlot(C_INT32 id) const
             plItem->addChannel(name2);
           }
       }
+
     return true;
   }
