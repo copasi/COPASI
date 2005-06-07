@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.h,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 17:23:31 $
+   $Date: 2005/06/07 21:45:41 $
    End CVS Header */
 
 /****************************************************************************
@@ -73,6 +73,7 @@ class ScanWidget : public CopasiWidget
     QLabel* TextLabel3;
 
     QPushButton* reportDefinitionButton;
+    QPushButton* outputDefinitionButton;
 
     QGridLayout* ScanWidgetLayout;
     QHBoxLayout* Layout2;
@@ -91,6 +92,7 @@ class ScanWidget : public CopasiWidget
     //virtual void TrajectoryEditing();
 
     virtual void ReportDefinitionClicked();
+    virtual void outputDefinitionClicked();
 
   protected slots:
     bool slotAddItem();

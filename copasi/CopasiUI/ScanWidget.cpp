@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.184 $
+   $Revision: 1.185 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 17:50:40 $
+   $Author: ssahle $ 
+   $Date: 2005/06/07 21:45:41 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -32,6 +32,7 @@
 #include "ScanItemWidget.h"
 #include "ObjectBrowserDialog.h"
 #include "ObjectBrowserItem.h"
+#include "DefaultplotDialog.h"
 
 //#include "SteadyStateWidget.h"
 //#include "TrajectoryWidget.h"
@@ -118,6 +119,10 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   reportDefinitionButton->setText(trUtf8("Report..."));
   Layout2->addWidget(reportDefinitionButton);
 
+  outputDefinitionButton = new QPushButton(this, "OutputDefinition");
+  outputDefinitionButton->setText(trUtf8("Output assistant..."));
+  Layout2->addWidget(outputDefinitionButton);
+
   ScanWidgetLayout->addMultiCellLayout(Layout2, 6, 6, 0, 2);
 
   //*****************************
@@ -143,6 +148,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(scanButton, SIGNAL(clicked()), this, SLOT(runScanTask()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
   connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
+  connect(outputDefinitionButton, SIGNAL(clicked()), this, SLOT(outputDefinitionClicked()));
   connect(buttonNewItem, SIGNAL(clicked()), this, SLOT(slotAddItem()));
 
   //connect(sExecutable, SIGNAL(clicked()), this, SLOT(ScanCheckBoxClicked()));
@@ -442,6 +448,27 @@ void ScanWidget::ReportDefinitionClicked()
       {
         return;
       }*/
+}
+
+void ScanWidget::outputDefinitionClicked()
+{
+  CCopasiTask* task =
+    dynamic_cast< CCopasiTask * >(GlobalKeys.get(scanTaskKey));
+  assert(task);
+
+  DefaultPlotDialog * pDlg = new DefaultPlotDialog(this);
+  pDlg->setProblem(task->getProblem());
+  if (pDlg->exec() == QDialog::Accepted)
+    {
+      //std::cout << "plot created" << std::endl;
+      protectedNotify(ListViews::PLOT, ListViews::ADD, "");
+    }
+  else
+    {
+      //std::cout << "no plot created" << std::endl;
+    }
+
+  if (pDlg)delete pDlg;
 }
 
 //************* CCopasiWidget interface *******************************
