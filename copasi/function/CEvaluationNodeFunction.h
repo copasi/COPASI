@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 18:18:34 $
+   $Date: 2005/06/07 14:41:50 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -57,7 +57,8 @@ class CEvaluationNodeFunction : public CEvaluationNode
       ARCCOTH = 0x0000001a,
       SQRT = 0x0000001b,
       ABS = 0x0000001c,
-      MINUS = 0x0000001d
+      MINUS = 0x0000001d,
+      PLUS = 0x0000001e
     };
 
     // Operations
@@ -143,6 +144,9 @@ class CEvaluationNodeFunction : public CEvaluationNode
 
     static inline C_FLOAT64 minus(C_FLOAT64 value)
     {return - value;}
+
+    static inline C_FLOAT64 plus(C_FLOAT64 value)
+    {return value;}
 
     // Attributes
   private:
