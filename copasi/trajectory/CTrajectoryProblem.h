@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/18 09:34:20 $
+   $Date: 2005/06/07 21:50:06 $
    End CVS Header */
 
 /**
@@ -191,8 +191,8 @@ class CTrajectoryProblem : public CCopasiProblem
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
 
-    virtual std::vector<CDefaultPlotDescription> getListOfDefaultPlotDescriptions() const;
-    virtual bool createDefaultPlot(C_INT32 id) const;
+    //virtual std::vector<CDefaultPlotDescription> getListOfDefaultPlotDescriptions() const;
+    //virtual bool createDefaultPlot(C_INT32 id) const;
 
   private:
     /**
