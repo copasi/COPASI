@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/07 15:48:07 $
+   $Author: ssahle $ 
+   $Date: 2005/06/07 18:25:55 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -35,7 +35,7 @@
 #include "ObjectBrowserItem.h"
 #include "CCopasiSelectionDialog.h"
 #include "report/CKeyFactory.h"
-#include "qtutilities.h"
+#include "qtUtilities.h"
 
 //#include "CReportDefinitionSelect.h"
 #include "qtUtilities.h"
