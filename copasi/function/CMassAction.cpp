@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 20:06:52 $
+   $Date: 2005/06/07 19:03:16 $
    End CVS Header */
 
 /**
@@ -51,7 +51,7 @@ CMassAction::CMassAction(const TriLogic & reversible,
   getParameters().add("substrate",
                       CFunctionParameter::VFLOAT64,
                       "SUBSTRATE");
-  addUsage("SUBSTRATES", 1, CRange::Infinity);
+  addUsage("SUBSTRATE", 1, CRange::Infinity);
 
   if (isReversible() == TriTrue)
     {
@@ -64,7 +64,7 @@ CMassAction::CMassAction(const TriLogic & reversible,
       getParameters().add("product",
                           CFunctionParameter::VFLOAT64,
                           "PRODUCT");
-      addUsage("PRODUCTS", 1, CRange::Infinity);
+      addUsage("PRODUCT", 1, CRange::Infinity);
     }
   else
     {

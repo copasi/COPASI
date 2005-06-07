@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/01 14:59:35 $
+   $Date: 2005/06/07 19:04:54 $
    End CVS Header */
 
 /**
@@ -500,7 +500,7 @@ bool CCopasiXML::saveFunctionList()
       Attributes.add("minOccurs", "");
       Attributes.add("maxOccurs", "");
 
-      std::string Usage;
+      //std::string Usage;
 
       for (j = 0; j < jmax; j++)
         {
@@ -508,7 +508,7 @@ bool CCopasiXML::saveFunctionList()
           Attributes.setValue(0, pParameter->getKey());
           Attributes.setValue(1, pParameter->getObjectName());
           Attributes.setValue(2, j);
-          Usage = pParameter->getUsage();
+          /*Usage = pParameter->getUsage();
           if (Usage == "SUBSTRATE")
             Attributes.setValue(3, "substrate");
           else if (Usage == "PRODUCT")
@@ -518,7 +518,8 @@ bool CCopasiXML::saveFunctionList()
           else if (Usage == "PARAMETER")
             Attributes.setValue(3, "constant");
           else
-            Attributes.setValue(3, "other");
+            Attributes.setValue(3, "other");*/
+          Attributes.setValue(3, CFunctionParameter::convertRoleNameToXML(pParameter->getUsage()));
 
           if (pParameter->getType() < CFunctionParameter::VINT32)
             {

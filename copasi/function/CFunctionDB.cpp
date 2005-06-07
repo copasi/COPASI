@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/14 17:35:12 $
+   $Author: ssahle $ 
+   $Date: 2005/06/07 19:03:16 $
    End CVS Header */
 
 /**
@@ -352,10 +352,10 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
         {
           pRange = pFunction->getUsageDescriptions()[j];
 
-          if (pRange->getUsage() == "SUBSTRATES")
+          if (pRange->getUsage() == "SUBSTRATE")
             if (!pRange->isInRange(noSubstrates)) break;
 
-          if (pRange->getUsage() == "PRODUCTS")
+          if (pRange->getUsage() == "PRODUCT")
             if (!pRange->isInRange(noProducts)) break;
         }
 

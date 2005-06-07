@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 19:58:13 $
+   $Date: 2005/06/07 19:03:16 $
    End CVS Header */
 
 /**
@@ -154,7 +154,7 @@ void CFunction::load(CReadConfig & configBuffer,
       configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
 
       configBuffer.getVariable("Substrates", "C_INT32", &Type);
-      UsageDescription.setUsage("SUBSTRATES");
+      UsageDescription.setUsage("SUBSTRATE");
       if (Type == 0)
         UsageDescription.setRange(Type, CRange::Infinity);
       else
@@ -162,7 +162,7 @@ void CFunction::load(CReadConfig & configBuffer,
       mUsageDescriptions.add(UsageDescription);
 
       configBuffer.getVariable("Products", "C_INT32", &Type);
-      UsageDescription.setUsage("PRODUCTS");
+      UsageDescription.setUsage("PRODUCT");
       if (Type == 0)
         UsageDescription.setRange(Type, CRange::Infinity);
       else

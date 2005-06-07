@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/06 14:50:01 $
+   $Date: 2005/06/07 19:04:54 $
    End CVS Header */
 
 /**
@@ -831,7 +831,7 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
       if (!mCommon.mExistingFunction)
         {
           pUsageRanges = & mCommon.pFunction->getParameters().getUsageRanges();
-          UsageDescription.setUsage("SUBSTRATES");
+          UsageDescription.setUsage("SUBSTRATE");
           if ((index = pUsageRanges->getIndex("SUBSTRATE")) != C_INVALID_INDEX)
             {
               UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
@@ -839,7 +839,7 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
               mCommon.pFunction->getUsageDescriptions().add(UsageDescription);
             }
 
-          UsageDescription.setUsage("PRODUCTS");
+          UsageDescription.setUsage("PRODUCT");
           if ((index = pUsageRanges->getIndex("PRODUCT")) != C_INVALID_INDEX)
             {
               UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
@@ -847,7 +847,7 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
               mCommon.pFunction->getUsageDescriptions().add(UsageDescription);
             }
 
-          UsageDescription.setUsage("MODIFIERS");
+          UsageDescription.setUsage("MODIFIER");
           if ((index = pUsageRanges->getIndex("MODIFIER")) != C_INVALID_INDEX)
             {
               UsageDescription.setRange((*pUsageRanges)[index]->getLow(),

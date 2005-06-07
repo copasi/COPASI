@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.117 $
+   $Revision: 1.118 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 19:54:54 $
+   $Date: 2005/06/07 19:01:24 $
    End CVS Header */
 
 /**********************************************************************
@@ -365,11 +365,11 @@ bool FunctionWidget1::loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages)
     {
       s1 = "Number of ";
       name = usages[j]->getObjectName();
-      /*if (name == "SUBSTRATES")
+      /*if (name == "SUBSTRATE")
         s1 += "Substrates:";
-      else if (name == "PRODUCTS")
+      else if (name == "PRODUCT")
         s1 += "Products:";
-      else if (name == "MODIFIERS")
+      else if (name == "MODIFIER")
         s1 += "Modifiers:";
       else
         s1 += FROM_UTF8(name);*/
@@ -710,7 +710,7 @@ void FunctionWidget1::updateApplication()
   CCopasiVectorNS < CUsageRange > & functUsage = mpFunction ->getUsageDescriptions();
   functUsage.cleanup();
 
-  Application.setUsage("SUBSTRATES");
+  Application.setUsage("SUBSTRATE");
   if (functParam.getUsageRanges().getIndex("SUBSTRATE") != C_INVALID_INDEX)
     {
       Application.setRange(functParam.getUsageRanges()["SUBSTRATE"]->getLow(),
@@ -723,7 +723,7 @@ void FunctionWidget1::updateApplication()
       //functUsage.add(Application);
     }
 
-  Application.setUsage("PRODUCTS");
+  Application.setUsage("PRODUCT");
   if (functParam.getUsageRanges().getIndex("PRODUCT") != C_INVALID_INDEX)
     {
       Application.setRange(functParam.getUsageRanges()["PRODUCT"]->getLow(),
@@ -736,7 +736,7 @@ void FunctionWidget1::updateApplication()
       //functUsage.add(Application);
     }
 
-  Application.setUsage("MODIFIERS");
+  Application.setUsage("MODIFIER");
   if (functParam.getUsageRanges().getIndex("MODIFIER") != C_INVALID_INDEX)
     {
       Application.setRange(functParam.getUsageRanges()["MODIFIER"]->getLow(),
@@ -974,7 +974,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                                // Yes or Enter
+        case 0:                                                 // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -991,7 +991,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                                // No or Escape
+        case 1:                                                 // No or Escape
           break;
         }
     }
