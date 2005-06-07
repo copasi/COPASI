@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/07 19:14:01 $
+   $Date: 2005/06/07 19:19:52 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationLexer
@@ -38,7 +38,7 @@ class yyYaccParser
     /**
      * Destructor
      */
-    ~yyYaccParser() {}
+    virtual ~yyYaccParser() {}
 
     /**
      * Retrieve the generated list of nodes.
