@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/23 17:22:07 $
+   $Date: 2005/06/07 14:34:19 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -91,7 +91,7 @@ const MESSAGES Messages[] =
     {MCOptimization + 1, "Optimization (1): Object '%s' not found."},
     {MCOptimization + 2, "Optimization (2): Lower Bound '%s' not found."},
     {MCOptimization + 3, "Optimization (3): Upper Bound '%s' not found."},
-    {MCOptimization + 4, "Optimization (3): Invalid Relationship: '%s'."},
+    {MCOptimization + 4, "Optimization (4): Invalid Relationship: '%s'."},
 
     // SBML
     // {MCSBML + 1, "SBML (1): Available"},
@@ -105,9 +105,13 @@ const MESSAGES Messages[] =
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
      "exceeds the limit. The step size has been adjusted to avoid over flow."},
 
-    // SBML
+    // Directory Entries
     {MCDirEntry + 1, "DirEntry (1): Directory entry '%s' already exists."},
     {MCDirEntry + 2, "DirEntry (2): Directory entry '%s' is read-only."},
+
+    // Function
+    {MCFunction + 1, "Function (1): Parser error: '%s'."},
+    {MCFunction + 2, "Function (2): Lexer error at position: '%d'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
