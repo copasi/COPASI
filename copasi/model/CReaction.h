@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 13:42:38 $
+   $Date: 2005/06/07 18:32:24 $
    End CVS Header */
 
 /**
@@ -59,12 +59,12 @@ class CReaction : public CCopasiContainer
     const CFunction * mpFunction;
 
     /**
-     *  The flux of the reaction
+     *  The flux of the reaction, as amount of substance/time
      */
     C_FLOAT64 mFlux;
 
     /**
-     *  The scaled flux of the reaction
+     *  The scaled flux of the reaction, as particle number/time
      */
     C_FLOAT64 mParticleFlux;
 
