@@ -1,6 +1,6 @@
 /* scanner for kinetic functions */
 
-%option outfile="CEvaluationFlexLexer_lex.cpp"
+%option outfile="CEvaluationLexer_lex.cpp"
 %option prefix="CEvaluation"
 %option noyywrap
 %option never-interactive

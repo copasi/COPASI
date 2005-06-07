@@ -1,31 +1,34 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/07 14:47:17 $
+   $Date: 2005/06/07 15:18:54 $
    End CVS Header */
 
-#ifndef COPASI_CEvaluationFlexLexer
-#define COPASI_CEvaluationFlexLexer
+#ifndef COPASI_CEvaluationLexer
+#define COPASI_CEvaluationLexer
 
 #include <vector>
 
 #undef yyFlexLexer
-#define yyFlexLexer CEvaluationFlexLexer
+#define yyFlexLexer CEvaluationLexer
 #include "FlexLexer.h"
 
+#undef yyYaccParser
+#define yyYaccParser CEvaluationParser
+
 /**
- * This is a base class for the CEvaluationFlexLexer adding member
+ * This is a base class for the CEvaluationLexer adding member
  * attributes to enhance the internal functionality.
  */
-class CEvaluationFlexLexerBase
+class yyYaccParser
   {
   public:
     /**
      * Default constructor
      */
-    CEvaluationFlexLexerBase():
+    yyYaccParser():
         mpNode(NULL),
         mpRootNode(NULL),
         mpNodeList(NULL),
@@ -35,7 +38,7 @@ class CEvaluationFlexLexerBase
     /**
      * Destructor
      */
-    ~CEvaluationFlexLexerBase() {}
+    ~yyYaccParser() {}
 
     /**
      * Retrieve the generated list of nodes.
@@ -75,14 +78,14 @@ class CEvaluationFlexLexerBase
     unsigned C_INT32 mPosition;
   };
 
-class CEvaluationFlexLexer : public FlexLexer, public CEvaluationFlexLexerBase
+class CEvaluationLexer : public FlexLexer, public yyYaccParser
   {
   public:
     // arg_yyin and arg_yyout default to the cin and cout, but we
     // only make that assignment when initializing in yylex().
-    CEvaluationFlexLexer(std::istream* arg_yyin = 0, std::ostream* arg_yyout = 0);
+    CEvaluationLexer(std::istream* arg_yyin = 0, std::ostream* arg_yyout = 0);
 
-    virtual ~CEvaluationFlexLexer();
+    virtual ~CEvaluationLexer();
 
     void yy_switch_to_buffer(struct yy_buffer_state* new_buffer);
 
@@ -163,4 +166,4 @@ class CEvaluationFlexLexer : public FlexLexer, public CEvaluationFlexLexerBase
     int yy_prev_more_offset;
   };
 
-#endif // COPASI_CEvaluationFlexLexer
+#endif // COPASI_CEvaluationLexer

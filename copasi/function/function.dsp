@@ -59,6 +59,10 @@ SOURCE=.\CCallParameters.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationLexer_lex.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNode.cpp
 # End Source File
 # Begin Source File

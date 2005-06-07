@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/07 14:47:17 $
+   $Date: 2005/06/07 15:18:54 $
    End CVS Header */
 
 #ifndef lint
@@ -266,7 +266,7 @@ static int yygrowstack()
 #endif /* ! YYPARSE_PARAM */
 
 int
-CEvaluationFlexLexerBase::yyparse (YYPARSE_PARAM_ARG)
+yyYaccParser::yyparse (YYPARSE_PARAM_ARG)
 YYPARSE_PARAM_DECL
 {
   register int yym, yyn, yystate;
