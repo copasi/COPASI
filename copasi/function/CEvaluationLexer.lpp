@@ -402,6 +402,9 @@ PI %{
 
 <<EOF>>  return 0;
      
-.     CCopasiMessage(CCopasiMessage::EXCEPTION, MCFunction + 2, mPosition);
+.     %{
+  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
+  return YYERRCODE;
+%}
      
 %%
