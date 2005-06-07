@@ -46,40 +46,48 @@
 exp:      TOKEN_NUMBER  {mpRootNode = $1;}
         | exp TOKEN_OPERATOR_PLUS exp 
           {
-            mpRootNode = $2; 
-            $2->addChild($1); 
-            $2->addChild($3);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
           }
         | exp TOKEN_OPERATOR_MODULUS exp 
           {
-            mpRootNode = $2; 
-            $2->addChild($1); 
-            $2->addChild($3);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
           }
         | exp TOKEN_OPERATOR_MULTIPLY exp
           {
-            mpRootNode = $2;
-            $2->addChild($1);
-            $2->addChild($3);
+            $$ = $2;
+            $$->addChild($1);
+            $$->addChild($3);
+            mpRootNode = $$; 
           }
         | exp TOKEN_OPERATOR_POWER exp
           {
-            mpRootNode = $2;
-            $2->addChild($1);
-            $2->addChild($3);
+            $$ = $2;
+            $$->addChild($1);
+            $$->addChild($3);
+            mpRootNode = $$; 
           }
         | TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_CLOSE
           {
-            mpRootNode = $2;
+            $$ = $2;
+            mpRootNode = $$; 
           }
         | TOKEN_FUNCTION TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_CLOSE
           {
-            mpRootNode = $1;
-            $1->addChild($3);
+            $$ = $1;
+            $$->addChild($3);
+            mpRootNode = $$; 
           }
         | TOKEN_SIGN exp
           {
-            $1->addChild($2);
+            $$ = $1;
+            $$->addChild($2);
+            mpRootNode = $$; 
           }
 ;
 

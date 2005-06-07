@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/07 15:18:54 $
+   $Date: 2005/06/07 19:13:05 $
    End CVS Header */
 
 #ifndef lint
@@ -205,7 +205,7 @@ short *yyss;
 short *yysslim;
 YYSTYPE *yyvs;
 int yystacksize;
-#line 87 "CEvaluationParser.ypp"
+#line 95 "CEvaluationParser.ypp"
 
 #line 183 "y.tab.c" 
 /* allocate initial stack or double stack size, up to YYMAXDEPTH */
@@ -409,55 +409,63 @@ YYPARSE_PARAM_DECL
       case 2:
 #line 48 "CEvaluationParser.ypp"
         {
-          mpRootNode = yyvsp[ -1];
-          yyvsp[ -1]->addChild(yyvsp[ -2]);
-          yyvsp[ -1]->addChild(yyvsp[0]);
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
         break;
       case 3:
-#line 54 "CEvaluationParser.ypp"
+#line 55 "CEvaluationParser.ypp"
         {
-          mpRootNode = yyvsp[ -1];
-          yyvsp[ -1]->addChild(yyvsp[ -2]);
-          yyvsp[ -1]->addChild(yyvsp[0]);
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
         break;
       case 4:
-#line 60 "CEvaluationParser.ypp"
+#line 62 "CEvaluationParser.ypp"
         {
-          mpRootNode = yyvsp[ -1];
-          yyvsp[ -1]->addChild(yyvsp[ -2]);
-          yyvsp[ -1]->addChild(yyvsp[0]);
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
         break;
       case 5:
-#line 66 "CEvaluationParser.ypp"
+#line 69 "CEvaluationParser.ypp"
         {
-          mpRootNode = yyvsp[ -1];
-          yyvsp[ -1]->addChild(yyvsp[ -2]);
-          yyvsp[ -1]->addChild(yyvsp[0]);
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
         break;
       case 6:
-#line 72 "CEvaluationParser.ypp"
+#line 76 "CEvaluationParser.ypp"
         {
-          mpRootNode = yyvsp[ -1];
+          yyval = yyvsp[ -1];
+          mpRootNode = yyval;
         }
         break;
       case 7:
-#line 76 "CEvaluationParser.ypp"
+#line 81 "CEvaluationParser.ypp"
         {
-          mpRootNode = yyvsp[ -3];
-          yyvsp[ -3]->addChild(yyvsp[ -1]);
+          yyval = yyvsp[ -3];
+          yyval->addChild(yyvsp[ -1]);
+          mpRootNode = yyval;
         }
         break;
       case 8:
-#line 81 "CEvaluationParser.ypp"
+#line 87 "CEvaluationParser.ypp"
         {
-          yyvsp[ -1]->addChild(yyvsp[0]);
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
         break;
-#line 433 "y.tab.c"
+#line 441 "y.tab.c"
       }
   yyssp -= yym;
   yystate = *yyssp;
