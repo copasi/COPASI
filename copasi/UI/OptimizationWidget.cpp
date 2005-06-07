@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/31 21:06:45 $
+   $Author: anuragr $ 
+   $Date: 2005/06/07 15:48:07 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -35,14 +35,14 @@
 #include "ObjectBrowserItem.h"
 #include "CCopasiSelectionDialog.h"
 #include "report/CKeyFactory.h"
+#include "qtutilities.h"
 
 //#include "CReportDefinitionSelect.h"
 #include "qtUtilities.h"
 #include "CProgressBar.h"
 #include "utilities/CCopasiException.h"
 #include "CScanContainerWidget.h"
-#include "utilities/CopasiTime.h" 
-//#include "COptWidgetTask.h"
+#include "utilities/CopasiTime.h"
 
 OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f)
@@ -59,32 +59,32 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   buttonsSeparator->setFrameShape(QFrame::HLine);
 
   paramsGroupBox = new QGroupBox(this, "paramsGroupBox");
-  paramsGroupBox->setGeometry(QRect(11, 290 - 30, 558, 98 + 120));
+  paramsGroupBox->setGeometry(QRect(11, 270, 558, 228));
 
   typeGroupBox = new QGroupBox(this, "typeGroupBox");
-  typeGroupBox->setGeometry(QRect(327, 131, 242, 108 - 30));
+  typeGroupBox->setGeometry(QRect(330, 100, 230, 120));
 
   timeCheck = new QCheckBox(typeGroupBox, "timeCheck");
-  timeCheck->setGeometry(QRect(11, 45, 84, 19));
+  timeCheck->setGeometry(QRect(30, 50, 84, 19));
 
   steadystateCheck = new QCheckBox(typeGroupBox, "steadystateCheck");
-  steadystateCheck->setGeometry(QRect(11, 20, 84, 19));
+  steadystateCheck->setGeometry(QRect(30, 20, 90, 20));
 
   AddTaskButton = new QPushButton(this, "AddTaskButton");
-  AddTaskButton->setGeometry(QRect(327, 245 - 30, 242, 24));
+  AddTaskButton->setGeometry(QRect(490, 230, 70, 30));
   AddTaskButton->setAutoMask(TRUE);
   AddTaskButton->setOn(FALSE);
 
   methodGroupBox = new QGroupBox(this, "methodGroupBox");
-  methodGroupBox->setGeometry(QRect(11, 131, 310, 138 - 30));
+  methodGroupBox->setGeometry(QRect(10, 100, 300, 160));
 
   expressionNameLabel_2 = new QLabel(methodGroupBox, "expressionNameLabel_2");
-  expressionNameLabel_2->setGeometry(QRect(12, 21, 89, 20));
+  expressionNameLabel_2->setGeometry(QRect(10, 30, 50, 20));
 
   methodCombo = new QComboBox(FALSE, methodGroupBox, "methodCombo");
-  methodCombo->setGeometry(QRect(60, 20, 220, 20));
+  methodCombo->setGeometry(QRect(50, 30, 220, 20));
 
-  param1Edit = new QLineEdit(methodGroupBox, "param1Edit");
+  /*param1Edit = new QLineEdit(methodGroupBox, "param1Edit");
   param1Edit->setGeometry(QRect(10, 50, 50, 20));
 
   param3Edit = new QLineEdit(methodGroupBox, "param3Edit");
@@ -97,16 +97,16 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   param4Edit->setGeometry(QRect(190, 50, 50, 20));
 
   param5Edit = new QLineEdit(methodGroupBox, "param5Edit");
-  param5Edit->setGeometry(QRect(250, 50, 50, 20));
+  param5Edit->setGeometry(QRect(250, 50, 50, 20));*/
 
   confirmButton = new QPushButton(this, "confirmButton");
-  confirmButton->setGeometry(QRect(12, 404 + 100, 181, 24));
+  confirmButton->setGeometry(QRect(12, 504, 181, 24));
 
   runButton = new QPushButton(this, "runButton");
-  runButton->setGeometry(QRect(199, 404 + 100, 182, 24));
+  runButton->setGeometry(QRect(199, 504, 182, 24));
 
   cancelButton = new QPushButton(this, "cancelButton");
-  cancelButton->setGeometry(QRect(387, 404 + 100, 181, 24));
+  cancelButton->setGeometry(QRect(387, 504, 181, 24));
 
   selectParameterButton = new QPushButton(this, "selectParameterButton");
   selectParameterButton->setGeometry(QRect(489, 71, 80, 24));
@@ -128,7 +128,14 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   expressionText->setFrameShadow(QLineEdit::Sunken);
   languageChange();
   resize(QSize(581, 447).expandedTo(minimumSizeHint()));
-  //   clearWState(WState_Polished);
+
+  parameterTable = new QTable(methodGroupBox, "parameterTable");
+  parameterTable->setNumRows(0);
+  parameterTable->setNumCols(1);
+  QHeader *colHeader = parameterTable->horizontalHeader();
+  colHeader->setLabel(0, tr("Value"));
+  parameterTable->setColumnStretchable(0, true);
+  parameterTable->setGeometry(QRect(50, 60, 220, 90));
 
   // signals and slots connections
 
@@ -136,7 +143,8 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   setTabOrder(expressionName, expressionText);
   setTabOrder(expressionText, steadystateCheck);
   setTabOrder(steadystateCheck, timeCheck);
-  setTabOrder(timeCheck, confirmButton);
+  setTabOrder(timeCheck, parameterTable);
+  setTabOrder(parameterTable, confirmButton);
   setTabOrder(confirmButton, cancelButton);
 
   //scrollview
@@ -162,15 +170,9 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   connect(AddTaskButton , SIGNAL(clicked()), this, SLOT(slotAddItem()));
   connect(selectParameterButton , SIGNAL(clicked()), this, SLOT(slotChooseObject()));
+  connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotConfirm()));
 
   //reportDefinitionButton->setEnabled(false);
-
-  // for the default GA option
-  param1Edit->hide();
-  param2Edit->hide();
-  param3Edit->hide();
-  param4Edit->show();
-  param5Edit->show();
 
   // for the default option
   timeCheck->setChecked(true);
@@ -278,6 +280,26 @@ bool OptimizationWidget::loadOptimization()
 
   //scrollview->updateFromWidgetList();
 
+  //<todo>
+  COptMethod *optimizationMethod = dynamic_cast<COptMethod*>(optimizationTask->getMethod());
+  if (!optimizationMethod) return false;
+  // for GA
+  parameterTable->setNumRows(optimizationMethod->size());
+  for (C_INT32 i = 0; i < optimizationMethod->size(); ++i)
+    {
+      QHeader *rowHeader = parameterTable->verticalHeader();
+      rowHeader->setLabel(i, FROM_UTF8(optimizationMethod->getName(i)));
+      CCopasiParameter::Type Type;
+      QString value = getParameterValue(optimizationMethod, i, &Type);
+      QTableItem * pItem = new QTableItem (parameterTable, QTableItem::Always, value);
+      parameterTable->setItem(i, 0, pItem);
+    }
+
+  //QHeader *rowHeader = parameterTable->verticalHeader();
+  //rowHeader->setLabel(i, tr(strname));
+  //pItem = new QTableItem (parameterTable, QTableItem::Always, value);
+  //parameterTable->setItem(i, 0, pItem);
+
   return true;
 }
 
@@ -289,14 +311,17 @@ bool OptimizationWidget::slotAddItem()
 
       OptimizationItemWidget * tmp;
       //create item to get the default values
-      COptProblem* tmpProblem = new COptProblem();
+      //COptProblem* tmpProblem = new COptProblem();
 
       tmp = new OptimizationItemWidget(scrollview);
       //tmp1->initFromOptimizationItem(tmpItem, CCopasiDataModel::Global->getModel());
+
       scrollview->addWidget(tmp);
-      if (tmpProblem) delete tmpProblem;
+      //if (tmpProblem) delete tmpProblem;
+
       return true;
     }
+
   else
     return false;
 }
@@ -310,6 +335,30 @@ bool OptimizationWidget::saveOptimization() const
     COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
     if (!optimizationProblem) return false;
 
+    COptMethod *optimizationMethod = dynamic_cast<COptMethod*>(optimizationTask->getMethod());
+    if (!optimizationMethod) return false;
+
+    unsigned C_INT32 i;
+    QTableItem * pItem;
+    QString value, strname;
+
+    for (i = 0; i < optimizationMethod->size(); i++)
+      {
+        pItem = parameterTable->item(i, 0);
+        value = pItem->text();
+        setParameterValue(optimizationMethod, i, value);
+      }
+
+    const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
+    unsigned C_INT32 imax = widgetList.size();
+
+    for (i = 0; i < imax; ++i)
+      {
+        const OptimizationItemWidget* tmp = dynamic_cast<OptimizationItemWidget*>(widgetList[i]);
+        if (tmp) {tmp->saveToOptItem(optimizationProblem); continue;}
+      }
+
+    //CCopasiDataModel::Global->getModel()->compileIfNecessary();
     // optimizationProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
     return true;
@@ -382,36 +431,38 @@ std::string OptimizationWidget::getKey()
 
 bool OptimizationWidget::changeMethod(int index)
 {
+  /*
   switch (index)
-    {
-    case 0:
-      // OptimizationGA
-      // show only relevant boxes
-      param1Edit->hide();
-      param2Edit->hide();
-      param3Edit->hide();
-      param4Edit->show();
-      param5Edit->show();
-      break;
+     {
+     case 0:
+       // OptimizationGA
+       // show only relevant boxes
+       param1Edit->hide();
+       param2Edit->hide();
+       param3Edit->hide();
+       param4Edit->show();
+       param5Edit->show();
+       break;
 
-    case 1:
-      param1Edit->hide();
-      param2Edit->hide();
-      param3Edit->hide();
-      param4Edit->hide();
-      param5Edit->show();
-      break;
-    case 2:
-      param1Edit->hide();
-      param2Edit->hide();
-      param3Edit->hide();
-      param4Edit->hide();
-      param5Edit->show();
-      break;
+     case 1:
+       param1Edit->hide();
+       param2Edit->hide();
+       param3Edit->hide();
+       param4Edit->hide();
+       param5Edit->show();
+       break;
 
-    default:
+     case 2:
+       param1Edit->hide();
+       param2Edit->hide();
+       param3Edit->hide();
+       param4Edit->hide();
+       param5Edit->show();
+       break;
+
+     default:
 ;
-    }
+     }*/
   return true;
 }
 
@@ -424,7 +475,6 @@ void OptimizationWidget::languageChange()
   AddTaskButton->setText(tr("Add"));
   methodGroupBox->setTitle(tr("Optimization Technique"));
   expressionNameLabel_2->setText(tr("Method"));
-  param2Edit->setText(QString::null);
   confirmButton->setText(tr("confirm"));
   runButton->setText(tr("run"));
   cancelButton->setText(tr("cancel"));
@@ -440,7 +490,6 @@ void OptimizationWidget::languageChange()
 
 void OptimizationWidget::slotChooseObject()
 {
-  //  int rowCount;
   std::string mPrevExpr;
   std::string mStr;
   std::string parseMe;
@@ -573,4 +622,10 @@ void OptimizationWidget::slotTimechecked()
 {
   steadystateCheck->setChecked(false);
 }
+
+void OptimizationWidget::slotConfirm()
+{
+  saveOptimization();
+}
+
 //***********************************************************
