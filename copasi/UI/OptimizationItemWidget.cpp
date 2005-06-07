@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/05/31 18:41:43 $
+   $Date: 2005/06/07 16:00:14 $
    End CVS Header */
 
 /********************************************************
@@ -33,7 +33,8 @@ Contact: Please contact lixu1@vt.edu.
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
-#include "optimization/COptFunction.h"
+#include "optimization/COptItem.h"
+
 #include "utilities/CCopasiException.h"
 #include "qtUtilities.h"
 #include "ObjectBrowserItem.h"
@@ -54,13 +55,13 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   textLabel2->setGeometry(QRect(190, 10, 48, 20));
 
   comboBoxLowerOp = new QComboBox(FALSE, this, "comboBoxLowerOp");
-  comboBoxLowerOp->setGeometry(QRect(10, 30, 43, 20));
+  comboBoxLowerOp->setGeometry(QRect(130, 30, 43, 20));
 
   textLabel4 = new QLabel(this, "textLabel4");
-  textLabel4->setGeometry(QRect(10, 10, 30, 16));
+  textLabel4->setGeometry(QRect(130, 10, 30, 16));
 
   lineLower = new QLineEdit(this, "lineLower");
-  lineLower->setGeometry(QRect(60, 30, 80, 20));
+  lineLower->setGeometry(QRect(10, 30, 80, 20));
   lineLower->setFrameShape(QLineEdit::LineEditPanel);
   lineLower->setFrameShadow(QLineEdit::Sunken);
 
@@ -74,7 +75,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   buttonParamEdit->setGeometry(QRect(280, 30, 16, 20));
 
   buttonLowerEdit = new QPushButton(this, "buttonLowerEdit");
-  buttonLowerEdit->setGeometry(QRect(150, 30, 16, 20));
+  buttonLowerEdit->setGeometry(QRect(100, 30, 16, 20));
 
   line3 = new QFrame(this, "line3");
   line3->setGeometry(QRect(170, 20, 20, 40));
@@ -104,7 +105,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   checkUpperInf->setGeometry(QRect(370, 60, 50, 16));
 
   checkLowerInf = new QCheckBox(this, "checkLowerInf");
-  checkLowerInf->setGeometry(QRect(60, 60, 50, 16));
+  checkLowerInf->setGeometry(QRect(10, 60, 50, 16));
   languageChange();
   resize(QSize(494, 78).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
@@ -135,6 +136,8 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   lineUpper->setEnabled(false);
   lineLower->setEnabled(false);
   ObjectName->setEnabled(true);
+
+  paramObject = lbObject = ubObject = NULL;
 }
 
 /*
@@ -150,10 +153,12 @@ void OptimizationItemWidget::languageChange()
   setCaption(tr("Optimization Item"));
   textLabel2->setText(tr("Parameter"));
   textLabel4->setText(tr("Lower"));
+
   comboBoxLowerOp->clear();
-  comboBoxLowerOp->insertItem(tr(">"));
-  comboBoxLowerOp->insertItem(tr(">="));
+  comboBoxLowerOp->insertItem(tr("<"));
+  comboBoxLowerOp->insertItem(tr("<="));
   comboBoxLowerOp->insertItem(tr("=="));
+
   comboBoxUpperOp->clear();
   comboBoxUpperOp->insertItem(tr("<"));
   comboBoxUpperOp->insertItem(tr("<="));
@@ -176,7 +181,6 @@ void OptimizationItemWidget::slotLowerEdit()
 {
   checkLowerInf->setChecked(false);
   lineLower->setEnabled(true);
-  CCopasiObject* tmpObject = NULL;
   CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
   browseDialog->setModel(CCopasiDataModel::Global->getModel());
   browseDialog->setSingleSelection(true);
@@ -185,8 +189,8 @@ void OptimizationItemWidget::slotLowerEdit()
 
   if (browseDialog->exec () == QDialog::Accepted && selection->size() != 0)
     {
-      tmpObject = selection->at(0);
-      lineLower->setText(FROM_UTF8(tmpObject->getObjectDisplayName()));
+      lbObject = selection->at(0);
+      lineLower->setText(FROM_UTF8(lbObject->getObjectDisplayName()));
     }
 }
 
@@ -198,10 +202,8 @@ void OptimizationItemWidget::slotNegInfClicked()
 
 void OptimizationItemWidget::slotUpperEdit()
 {
-  //qWarning("OptimizationItemWidget::slotUpperEdit(): Not implemented yet");
   checkUpperInf->setChecked(false);
   lineUpper->setEnabled(true);
-  CCopasiObject* tmpObject = NULL;
   CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
   browseDialog->setModel(CCopasiDataModel::Global->getModel());
   browseDialog->setSingleSelection(true);
@@ -210,8 +212,8 @@ void OptimizationItemWidget::slotUpperEdit()
 
   if (browseDialog->exec () == QDialog::Accepted && selection->size() != 0)
     {
-      tmpObject = selection->at(0);
-      lineUpper->setText(FROM_UTF8(tmpObject->getObjectDisplayName()));
+      ubObject = selection->at(0);
+      lineUpper->setText(FROM_UTF8(ubObject->getObjectDisplayName()));
     }
 }
 
@@ -303,7 +305,6 @@ void OptimizationItemWidget::setItemLowerOper(std::string oper)
 void OptimizationItemWidget::slotParamEdit()
 {
   ObjectName->setEnabled(true);
-  CCopasiObject* tmpObject = NULL;
   CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
   browseDialog->setModel(CCopasiDataModel::Global->getModel());
   browseDialog->setSingleSelection(true);
@@ -312,12 +313,25 @@ void OptimizationItemWidget::slotParamEdit()
 
   if (browseDialog->exec () == QDialog::Accepted && selection->size() != 0)
     {
-      tmpObject = selection->at(0);
-      ObjectName->setText(FROM_UTF8(tmpObject->getObjectDisplayName()));
+      paramObject = selection->at(0);
+      ObjectName->setText(FROM_UTF8(paramObject->getObjectDisplayName()));
 
       //   dynamic_cast< COptTask* >(GlobalKeys.get(mpParent->getKey()));
-
-      tmpObject->getCN();
-      // use COptProblem::addOptItem, here!
+      //paramObject->getCN();
     }
 }
+
+bool OptimizationItemWidget::saveToOptItem(COptProblem * pg) const
+
+  {
+    if (paramObject != NULL) // <todo="update condition">lbObject!=NULL && ubObject!=NULL)
+      {
+        pg->addOptItem(paramObject->getCN());
+
+        // <todo="add bounds">
+        return true;
+      }
+
+    else
+      return false;
+  }

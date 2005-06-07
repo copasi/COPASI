@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/05/31 18:42:10 $
+   $Date: 2005/06/07 15:59:24 $
    End CVS Header */
 
 /********************************************************
@@ -20,6 +20,7 @@ Comment : OptimizationItemWidget for embeded widget for limit of the optimizatio
 
 #include "copasi.h"
 #include "report/CCopasiObject.h"
+#include "optimization/COptProblem.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -72,6 +73,12 @@ class OptimizationItemWidget : public QWidget
 
     CCopasiObject* getCopasiObject();
     void setCopasiObjectPtr (CCopasiObject* sourceObject);
+
+    virtual bool saveToOptItem(COptProblem * pg) const;
+
+  private:
+
+    CCopasiObject *paramObject, *lbObject, *ubObject;
 
   public slots:
     virtual void slotPosInfClicked();
