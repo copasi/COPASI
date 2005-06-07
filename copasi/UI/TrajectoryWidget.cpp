@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.106 $
+   $Revision: 1.107 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 17:50:40 $
+   $Author: ssahle $ 
+   $Date: 2005/06/07 21:47:13 $
    End CVS Header */
 
 /********************************************************
@@ -256,11 +256,11 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   //Layout2->addWidget(ExportToFileButton);
 
   reportDefinitionButton = new QPushButton(this, "ReportDefinition");
-  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
+  reportDefinitionButton->setText(trUtf8("Report..."));
   Layout2->addWidget(reportDefinitionButton);
 
   outputDefinitionButton = new QPushButton(this, "OutputDefinition");
-  outputDefinitionButton->setText(trUtf8("Output definition"));
+  outputDefinitionButton->setText(trUtf8("Output assistant..."));
   Layout2->addWidget(outputDefinitionButton);
 
   TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 13, 13, 0, 3);
@@ -527,12 +527,12 @@ void TrajectoryWidget::ReportDefinitionClicked()
 
 void TrajectoryWidget::outputDefinitionClicked()
 {
-  CTrajectoryTask* trajectoryTask =
-    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(objKey));
-  assert(trajectoryTask);
+  CCopasiTask* task =
+    dynamic_cast< CCopasiTask * >(GlobalKeys.get(objKey));
+  assert(task);
 
   DefaultPlotDialog * pDlg = new DefaultPlotDialog(this);
-  pDlg->setProblem(trajectoryTask->getProblem());
+  pDlg->setProblem(task->getProblem());
   if (pDlg->exec() == QDialog::Accepted)
     {
       //std::cout << "plot created" << std::endl;
