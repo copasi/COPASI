@@ -5,8 +5,7 @@ PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 SOURCE_FILE=$2
 TARGET_FILE=lex.${SOURCE_FILE/%.*/.c}
 
-echo $SOURCE_FILE
-echo $TARGET_FILE
+echo compiling $SOURCE_FILE '==>' ${SOURCE_FILE/%.*/_lex.cpp}
 
 flex  -t $SOURCE_FILE | \
      sed -e 's/<FlexLexer.h>/"FlexLexer.h"/' \

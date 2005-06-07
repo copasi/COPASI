@@ -3,19 +3,19 @@
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
 SOURCE_FILE=$4
-TARGET_FILE_C=y.tab.c
-TARGET_FILE_H=y.tab.h
+TARGET_FILE_C=${SOURCE_FILE/%.*/_yacc.cpp}
+TARGET_FILE_H=${SOURCE_FILE/%.*/_yacc.h}
 
-echo $SOURCE_FILE
-echo $TARGET_FILE
+echo compiling $SOURCE_FILE '==>' $TARGET_FILE_C, $TARGET_FILE_H
 
 byacc -dt $SOURCE_FILE
 sed -e 's/yyparse /yyYaccParser::yyparse /g' \
+    -e 's/y.tab.c/'$TARGET_FILE'/g' \
     -e 's/int yydebug;/int yydebug = 1;/' \
-    $TARGET_FILE_C > $$.tmp && \
-mv $$.tmp $TARGET_FILE_C
+    y.tab.c > $$.tmp && \
+mv $$.tmp y.tab.c
 
 if [ x`uname -a | grep -ic cygwin` = x"1" ]; then
-  unix2dos $TARGET_FILE_C
-  unix2dos $TARGET_FILE_H
+  unix2dos y.tab.c
+  unix2dos y.tab.h
 fi
