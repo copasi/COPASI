@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PATH=$PATH:/bin:/usr/bin:/usr/local/bin
+
 SOURCE_FILE=$2
 TARGET_FILE=lex.${SOURCE_FILE/%.*/.c}
 
