@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.43 $ $Author: shoops $ $Date: 2005/03/01 19:24:34 $  
+# $Revision: 1.44 $ $Author: shoops $ $Date: 2005/06/07 14:41:05 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -27,6 +27,8 @@ debug {
 
 !contains(BUILD_OS, WIN32) {
   QMAKE_QMAKE = $(QTDIR)/bin/qmake
+  QMAKE_LEX = ../../admin/flex.sh
+  QMAKE_YACC = ../../admin/yacc.sh
   
   # The character # (hex 23) can not be escaped we therefore create 
   # a variable containing it
@@ -41,6 +43,7 @@ debug {
               -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
               -e 's/$${HASH}include <unistd.h>/using namespace std;/' > $@
 }
+
 
 contains(BUILD_OS, Darwin) {
   release {
@@ -88,6 +91,9 @@ contains(BUILD_OS, Darwin) {
 
 contains(BUILD_OS, WIN32) {
   QMAKE_QMAKE = $(QTDIR)\bin\qmake.exe
+  QMAKE_LEX = C:\cygwin\bin\bash ../../admin/flex.sh
+  QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
+
   DEFINES -= UNICODE 
   debug {
     QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
