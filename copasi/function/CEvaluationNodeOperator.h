@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:07:59 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeOperator
@@ -12,6 +12,8 @@
 #include "mathematics.h"
 
 #include "utilities/CCopasiMessage.h"
+
+class ASTNode;
 
 /**
  * This is the class for nodes presenting opertors used in an evaluation trees.
@@ -76,6 +78,13 @@ class CEvaluationNodeOperator : public CEvaluationNode
      * @return bool success;
      */
     virtual bool compile(const CEvaluationTree * pTree);
+
+    /**
+     * Create a new operator node from an ASTNode tree.
+     * @param const ASTNode* node
+     * @return CEvaluationNode* return a pointer to the newly created node;
+     */
+    static CEvaluationNode* createNodeFromASTTree(const ASTNode* node);
 
   private:
     static inline C_FLOAT64 operationPower(const C_FLOAT64 & value1,

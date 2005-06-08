@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:07:59 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeConstant
 #define COPASI_CEvaluationNodeConstant
+
+class ASTNode;
 
 /**
  * This is class for nodes presenting Constants used in an evaluation trees
@@ -61,6 +63,13 @@ class CEvaluationNodeConstant : public CEvaluationNode
      * Destructor
      */
     virtual ~CEvaluationNodeConstant();
+
+    /**
+     * Create a new operator node from an ASTNode tree.
+     * @param const ASTNode* node
+     * @return CEvaluationNode* return a pointer to the newly created node;
+     */
+    static CEvaluationNode* createNodeFromASTTree(const ASTNode* node);
   };
 
 #endif // COPASI_CEvaluationNodeConstant

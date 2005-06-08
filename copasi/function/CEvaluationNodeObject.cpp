@@ -1,15 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/02 12:37:15 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:07:59 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "report/CCopasiObjectName.h"
+
+#include "sbml/math/ASTNode.h"
 
 CEvaluationNodeObject::CEvaluationNodeObject():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
@@ -36,4 +38,9 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
   if (mpValue == NULL) return false;
 
   return (getChild() == NULL); // We must not have any children.
+}
+
+CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode* node)
+{
+  return new CEvaluationNodeObject();
 }

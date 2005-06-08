@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/02 12:37:15 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:07:59 $
    End CVS Header */
 
 #include <string>
@@ -12,6 +12,8 @@
 #include "mathematics.h"
 
 #include "CEvaluationNode.h"
+
+#include "sbml/math/ASTNode.h"
 
 CEvaluationNodeConstant::CEvaluationNodeConstant():
     CEvaluationNode(CEvaluationNode::INVALID, "")
@@ -52,3 +54,33 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const CEvaluationNodeConstant &
 {}
 
 CEvaluationNodeConstant::~CEvaluationNodeConstant() {}
+
+CEvaluationNode* CEvaluationNodeConstant::createNodeFromASTTree(const ASTNode* node)
+{
+  ASTNodeType_t type = node->getType();
+  SubType subType;
+  std::string data = "";
+  switch (type)
+    {
+    case AST_CONSTANT_E:
+      subType = EXPONENTIALE;
+      data = "EXPONENTIALE";
+      break;
+    case AST_CONSTANT_PI:
+      subType = PI;
+      data = "PI";
+      break;
+    case AST_CONSTANT_TRUE:
+      subType = TRUE;
+      data = "TRUE";
+      break;
+    case AST_CONSTANT_FALSE:
+      subType = FALSE;
+      data = "FALSE";
+      break;
+    default:
+      subType = INVALID;
+      break;
+    }
+  return new CEvaluationNodeConstant(subType, data);
+}

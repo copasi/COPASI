@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:07:59 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeObject
 #define COPASI_CEvaluationNodeObject
+
+class ASTNode;
 
 /**
  * This is class for nodes presenting numbers used in an evaluation trees
@@ -64,6 +66,13 @@ class CEvaluationNodeObject : public CEvaluationNode
      * @return const C_FLOAT64 & value
      */
     virtual inline const C_FLOAT64 & value() const {return *mpValue;}
+
+    /**
+     * Create a new operator node from an ASTNode tree.
+     * @param const ASTNode* node
+     * @return CEvaluationNode* return a pointer to the newly created node;
+     */
+    static CEvaluationNode* createNodeFromASTTree(const ASTNode* node);
 
     //Attributes
   private:

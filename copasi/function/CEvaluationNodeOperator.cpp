@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/02 12:37:15 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:07:59 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
+
+#include "sbml/math/ASTNode.h"
 
 CEvaluationNodeOperator::CEvaluationNodeOperator():
     CEvaluationNode(CEvaluationNode::INVALID, "")
@@ -75,4 +77,39 @@ bool CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
   if (mpRight == NULL) return false;
 
   return (mpRight->getSibling() == NULL); // We must have only two children
+}
+
+CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode* node)
+{
+  ASTNodeType_t type = node->getType();
+  SubType subType;
+  std::string data = "";
+  switch (type)
+    {
+    case AST_PLUS:
+      subType = PLUS;
+      data = "+";
+      break;
+    case AST_MINUS:
+      subType = MINUS;
+      data = "-";
+      break;
+    case AST_TIMES:
+      subType = MULTIPLY;
+      data = "*";
+      break;
+    case AST_DIVIDE:
+      subType = DIVIDE;
+      data = "/";
+      break;
+    case AST_POWER:
+    case AST_FUNCTION_POWER:
+      subType = POWER;
+      data = "^";
+      break;
+    default:
+      subType = INVALID;
+      break;
+    }
+  return new CEvaluationNodeOperator(subType, data);
 }

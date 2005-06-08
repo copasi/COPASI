@@ -1,13 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/03 14:51:09 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:07:59 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
+
+#include "sbml/math/ASTNode.h"
+
+#include <sstream>
 
 CEvaluationNodeNumber::CEvaluationNodeNumber():
     CEvaluationNode(CEvaluationNode::INVALID, "")
@@ -44,3 +48,38 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const CEvaluationNodeNumber & src):
 {}
 
 CEvaluationNodeNumber::~CEvaluationNodeNumber() {}
+
+CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode* node)
+{
+  ASTNodeType_t type = node->getType();
+  std::stringstream ss;
+  SubType subType;
+  std::string data = "";
+  switch (type)
+    {
+    case AST_INTEGER:
+      subType = INTEGER;
+      ss << node->getInteger();
+      data = ss.str();
+      break;
+    case AST_REAL:
+      subType = DOUBLE;
+      ss << node->getReal();
+      data = ss.str();
+      break;
+    case AST_REAL_E:
+      subType = ENOTATION;
+      ss << node->getReal();
+      data = ss.str();
+      break;
+    case AST_RATIONAL:
+      subType = RATIONALE;
+      ss << "(" << node->getNumerator() << " / " << node->getDenominator() << ")";
+      data = ss.str();
+      break;
+    default:
+      subType = INVALID;
+      break;
+    }
+  return new CEvaluationNodeNumber(subType, data);
+}

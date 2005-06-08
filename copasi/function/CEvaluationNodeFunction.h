@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/07 14:41:50 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:07:59 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -104,6 +104,13 @@ class CEvaluationNodeFunction : public CEvaluationNode
      * @return bool success;
      */
     virtual bool compile(const CEvaluationTree * pTree);
+
+    /**
+     * Creates a new CEvaluationNodeFunction from an ASTNode.
+     * @param const ASTNode* node
+     * @return CEvaluationNode* return a pointer to the newly created node;
+     */
+    static CEvaluationNode* createNodeFromASTTree(const ASTNode* node);
 
   private:
     static inline C_FLOAT64 sec(C_FLOAT64 value)
