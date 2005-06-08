@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParametersWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/30 13:30:58 $
+   $Date: 2005/06/08 08:04:32 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -27,7 +27,9 @@
 #include "DataModelGUI.h"
 
 #define COL_NAME 0
+#define COL_STATUS 1
 #define COL_VALUE 2
+#define COL_UNIT 3
 
 class CParameterListItem : public QListViewItem
   {
@@ -55,10 +57,38 @@ class CParameterListItem : public QListViewItem
         mIsChanged(false)
     {
       setRenameEnabled(COL_VALUE, true);
+
+      CModelEntity* me = dynamic_cast<CModelEntity*>(obj);
+      if (me) //object is a CModelEntity
+        {
+          CModelEntity::Status status = me->getStatus();
+          switch (status)
+            {
+            case CModelEntity::FIXED:
+              setText(COL_STATUS, "fixed");
+              break;
+            case CModelEntity::REACTIONS:
+              setText(COL_STATUS, "indep");
+              break;
+            case CModelEntity::DEPENDENT:
+              setText(COL_STATUS, "dep");
+              break;
+            case CModelEntity::UNUSED:
+              setText(COL_STATUS, "unused");
+              break;
+            case CModelEntity::ODE:
+              setText(COL_STATUS, "ode");
+              break;
+            case CModelEntity::ASSIGNMENT:
+              setText(COL_STATUS, "assign");
+              setRenameEnabled(COL_VALUE, false);
+              break;
+            }
+        }
     }
 
     CCopasiObject* getObject() const
-      {return mpObject;}
+    {return mpObject;}
 
     C_FLOAT64 getValue() const
       {return text(COL_VALUE).toDouble();}
