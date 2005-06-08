@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/02 12:37:15 $
+   $Date: 2005/06/08 13:02:51 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -116,6 +116,15 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * @return bool success
      */
     virtual bool setData(const Data & data);
+
+    /**
+     * Retrieve the type of the node.
+     * Note the type combines type and subType information. To
+     * Retrieve the type use type(getType()) and to retrieve the 
+     * subType use subType(getType()).
+     * @return const Type & type.
+     */
+    const Type & getType() const;
 
     /**
      * Comparison operator used to evaluate the precedence of the node.
