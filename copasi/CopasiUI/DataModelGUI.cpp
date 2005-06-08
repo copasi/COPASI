@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/25 09:52:32 $
+   $Author: anuragr $ 
+   $Date: 2005/06/08 16:27:48 $
    End CVS Header */
 
 #include "copasi.h"
@@ -61,6 +61,9 @@ void DataModelGUI::linkDataModelToGUI()
   (*CCopasiDataModel::Global->getTaskList())["Time-Course"]->setOutputHandler(tmpHandler);
   (*CCopasiDataModel::Global->getTaskList())["Scan"]->setOutputHandler(tmpHandler);
 
+  // optimization
+  (*CCopasiDataModel::Global->getTaskList())["Optimization"]->setOutputHandler(tmpHandler);
+
   //math model
   pdelete(mpMathModel);
   mpMathModel = new CMathModel();
@@ -73,7 +76,8 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(24)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]->getKey());
 
   mTree.findNodeFromId(31)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
-  //  mTree.findNodeFromId(32).setObjectKey(pOptFunction->getKey());
+  mTree.findNodeFromId(32)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Optimization"]->getKey());
+
   mTree.findNodeFromId(116)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey()); //parameters
 
   mTree.findNodeFromId(43)->setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());

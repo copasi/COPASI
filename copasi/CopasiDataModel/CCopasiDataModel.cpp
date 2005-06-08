@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/24 12:30:55 $
+   $Author: anuragr $ 
+   $Date: 2005/06/08 16:27:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -414,7 +414,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 
     case CCopasiTask::optimization:
       // :TODO: implement task for optimization
-      return pTask;
+      pTask = new COptTask(mpTaskList);
       break;
 
     case CCopasiTask::parameterFitting:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 09:27:44 $
+   $Author: anuragr $ 
+   $Date: 2005/06/08 16:28:00 $
    End CVS Header */
 
 static char DataModeltxt[] =
@@ -35,7 +35,7 @@ static char DataModeltxt[] =
   "0:3:Multiple Task\n"
   "3:31:Parameter Scan\n"
 #ifdef COPASI_DEBUG
-  // "3:32:Optimization\n"
+  "3:32:Optimization\n"
   // "3:33:Parameter Fitting\n"
 #endif // COPASI_DEBUG
   "0:4:Output\n"
