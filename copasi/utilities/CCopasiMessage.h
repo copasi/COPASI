@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/07 12:28:14 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:09:52 $
    End CVS Header */
 
 /**
@@ -43,6 +43,7 @@ Message;
 #define MCTrajectoryProblem   MCopasiBase + 1800
 #define MCDirEntry            MCopasiBase + 1900
 #define MCFunction            MCopasiBase + 2000
+#define MCMathML              MCopasiBase + 2100
 
 /**
  *  This throws an exception with information where the error occured.

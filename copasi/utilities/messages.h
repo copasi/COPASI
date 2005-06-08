@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/07 14:34:19 $
+   $Author: gauges $ 
+   $Date: 2005/06/08 14:09:52 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -108,6 +108,10 @@ const MESSAGES Messages[] =
     // Directory Entries
     {MCDirEntry + 1, "DirEntry (1): Directory entry '%s' already exists."},
     {MCDirEntry + 2, "DirEntry (2): Directory entry '%s' is read-only."},
+
+    // MathML
+    {MCMathML + 1, "MathML (1): Unsupported element '%s'."},
+    {MCMathML + 2, "MathML (2): Unknown element in MathML expression."},
 
     // Function
     {MCFunction + 1, "Function (1): Parser error: '%s'."},
