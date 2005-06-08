@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/07 19:04:54 $
+   $Date: 2005/06/08 12:22:02 $
    End CVS Header */
 
 /**
@@ -3007,13 +3007,12 @@ void CCopasiXMLParser::InitialStateElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 {
-  std::istringstream Values;
+  //std::istringstream Values;
+  //const char* s;
   std::vector< std::string >::iterator it;
   std::vector< std::string >::iterator end;
-  double Value;
+  //double Value;
   CModel * pModel;
-  //CCompartment * pCompartment;
-  //CMetab * pMetabolite;
   CModelEntity * pME;
 
   switch (mCurrentElement)
@@ -3021,29 +3020,13 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
     case InitialState:
       if (strcmp(pszName, "InitialState")) fatalError();
 
-      Values.str(mParser.getCharacterData("\x0a\x0d\t ", " "));
+      /*Values.str(mParser.getCharacterData("\x0a\x0d\t ", " "));
 
       it = mCommon.StateVariableList.begin();
       end = mCommon.StateVariableList.end();
 
       for (Values >> Value; it != end && !Values.fail(); ++it, Values >> Value)
         {
-          /*pMetabolite = dynamic_cast< CMetab* >(GlobalKeys.get(*it));
-          if (pMetabolite)
-            {
-              pMetabolite->setInitialNumber(Value);
-              pMetabolite->setNumber(Value);
-              continue;
-            }
-
-          pCompartment = dynamic_cast< CCompartment* >(GlobalKeys.get(*it));
-          if (pCompartment)
-            {
-              pCompartment->setInitialVolume(Value);
-              pCompartment->setVolume(Value);
-              continue;
-            }*/
-
           //handles compartments, metabs, and model values
           pME = dynamic_cast< CModelEntity* >(GlobalKeys.get(*it));
           if (pME)
@@ -3063,7 +3046,46 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
           fatalError();
         }
 
-      if (it != end || !Values.fail() || !Values.eof()) fatalError();
+      if (it != end || !Values.fail() || !Values.eof()) fatalError();*/
+
+      {
+        const char* s = mParser.getCharacterData("\x0a\x0d\t ", " ").c_str();
+        char* nptr = new char[strlen(s)];
+        strncpy(nptr, s, strlen(s) + 1);
+        char* ptr = nptr;
+        char* endptr = ptr;
+
+        it = mCommon.StateVariableList.begin();
+        end = mCommon.StateVariableList.end();
+
+        for (; it != end; ++it)
+          {
+            C_FLOAT64 d = strtod(ptr, &ptr);
+            if (ptr == endptr) break;
+            endptr = ptr;
+
+            //handles compartments, metabs, and model values
+            pME = dynamic_cast< CModelEntity* >(GlobalKeys.get(*it));
+            if (pME)
+              {
+                pME->setInitialValue(d);
+                pME->setValue(d);
+                continue;
+              }
+
+            pModel = dynamic_cast< CModel* >(GlobalKeys.get(*it));
+            if (pModel)
+              {
+                pModel->setTime(d);
+                continue;
+              }
+
+            fatalError();
+          }
+        delete nptr;
+
+        if (it != end) fatalError();
+      }
 
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
