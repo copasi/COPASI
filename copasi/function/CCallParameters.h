@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:31:49 $
+   $Date: 2005/06/09 16:42:35 $
    End CVS Header */
 
 /**
@@ -37,7 +37,7 @@ class CCallParameters : private std::vector<void *>
         std::vector<const Type *> * vector;
       };
 
-    typedef std::vector< UType >::const_iterator const_iterator;
+    typedef typename std::vector< UType >::const_iterator const_iterator;
 
     // Operations
   public:
@@ -55,8 +55,10 @@ class CCallParameters : private std::vector<void *>
     {
       ((std::vector<UType> *)this)->resize(size);
 
-      std::vector<UType>::iterator it = ((std::vector<UType> *)this)->begin();
-      std::vector<UType>::iterator end = ((std::vector<UType> *)this)->end();
+      typename std::vector<UType>::iterator it
+      = ((std::vector<UType> *)this)->begin();
+      typename std::vector<UType>::iterator end
+      = ((std::vector<UType> *)this)->end();
 
       for (; it != end; ++it) it->value = NULL;
     }
