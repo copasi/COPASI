@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/08 14:07:59 $
+   $Date: 2005/06/09 13:46:28 $
    End CVS Header */
 
 #include <string>
@@ -83,4 +83,28 @@ CEvaluationNode* CEvaluationNodeConstant::createNodeFromASTTree(const ASTNode* n
       break;
     }
   return new CEvaluationNodeConstant(subType, data);
+}
+
+ASTNode* CEvaluationNodeConstant::toASTNode()
+{
+  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  ASTNode* node = new ASTNode();
+  switch (subType)
+    {
+    case PI:
+      node->setType(AST_CONSTANT_PI);
+      break;
+    case EXPONENTIALE:
+      node->setType(AST_CONSTANT_E);
+      break;
+    case TRUE:
+      node->setType(AST_CONSTANT_TRUE);
+      break;
+    case FALSE:
+      node->setType(AST_CONSTANT_FALSE);
+      break;
+    case INVALID:
+      break;
+    }
+  return node;
 }

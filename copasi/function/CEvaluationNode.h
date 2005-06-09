@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/08 13:02:51 $
+   $Author: gauges $ 
+   $Date: 2005/06/09 13:46:28 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -12,6 +12,7 @@
 #include "utilities/CCopasiNode.h"
 
 class CEvaluationTree;
+class ASTNode;
 
 /**
  * This is the base class for nodes used in an evaluation trees
@@ -125,6 +126,12 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * @return const Type & type.
      */
     const Type & getType() const;
+
+    /**
+     * Create a new invalid ASTNode. 
+     * @return ASTNode* return a pointer to the newly created node;
+     */
+    virtual ASTNode* toASTNode();
 
     /**
      * Comparison operator used to evaluate the precedence of the node.

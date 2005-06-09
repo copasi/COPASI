@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/08 13:02:51 $
+   $Author: gauges $ 
+   $Date: 2005/06/09 13:46:28 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
+
+#include "sbml/math/ASTNode.h"
 
 CEvaluationNode::CPrecedence::CPrecedence(const unsigned C_INT32 & left,
     const unsigned C_INT32 & right):
@@ -111,3 +113,8 @@ const CEvaluationNode::Type & CEvaluationNode::getType() const
 
 bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
 {return (mPrecedence.right < rhs.mPrecedence.left);}
+
+ASTNode* CEvaluationNode::toASTNode()
+{
+  return new ASTNode();
+}

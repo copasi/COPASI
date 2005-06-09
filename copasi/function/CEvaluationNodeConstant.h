@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/08 14:07:59 $
+   $Date: 2005/06/09 13:46:28 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeConstant
@@ -70,6 +70,12 @@ class CEvaluationNodeConstant : public CEvaluationNode
      * @return CEvaluationNode* return a pointer to the newly created node;
      */
     static CEvaluationNode* createNodeFromASTTree(const ASTNode* node);
+
+    /**
+     * Create a new ASTNode corresponding to this ConstantNode.
+     * @return ASTNode* return a pointer to the newly created node;
+     */
+    virtual ASTNode* toASTNode();
   };
 
 #endif // COPASI_CEvaluationNodeConstant

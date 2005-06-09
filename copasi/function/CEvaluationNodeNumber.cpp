@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/08 14:07:59 $
+   $Date: 2005/06/09 13:46:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -82,4 +82,43 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode* nod
       break;
     }
   return new CEvaluationNodeNumber(subType, data);
+}
+
+ASTNode* CEvaluationNodeNumber::toASTNode()
+{
+  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  ASTNode* node = new ASTNode();
+  double num1;
+  double num2;
+  char* end;
+  const char * str = mData.c_str();
+
+  switch (subType)
+    {
+    case DOUBLE:
+      node->setType(AST_REAL);
+      node->setValue(this->value());
+      break;
+    case INTEGER:
+      node->setType(AST_INTEGER);
+      node->setValue((long)this->value());
+      break;
+    case ENOTATION:
+      node->setType(AST_REAL_E);
+      num2 = floor(log10(this->value()));
+      num1 = pow(10, log10(this->value()) - num2);
+      node->setValue(num1, (long)num2);
+      break;
+    case RATIONALE:
+      node->setType(AST_RATIONAL);
+      str++; // Skip the '('
+      num1 = strtod(str, &end);
+      end++; // Skip the '/'
+      num2 /= strtod(end, NULL);
+      node->setValue((long)num1, (long)num2);
+      break;
+    case INVALID:
+      break;
+    }
+  return node;
 }

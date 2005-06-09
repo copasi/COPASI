@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/08 14:07:59 $
+   $Date: 2005/06/09 13:46:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -112,4 +112,74 @@ CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode* n
       break;
     }
   return new CEvaluationNodeOperator(subType, data);
+}
+
+ASTNode* CEvaluationNodeOperator::toASTNode()
+{
+  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  ASTNode* node = new ASTNode();
+  switch (subType)
+    {
+    case POWER:
+      node->setType(AST_POWER);
+      break;
+    case MULTIPLY:
+      node->setType(AST_TIMES);
+      break;
+    case DIVIDE:
+      node->setType(AST_DIVIDE);
+      break;
+    case MODULUS:
+      // replace this with a more complex subtree
+      CEvaluationNodeOperator::createModuloTree(this, node);
+      break;
+    case PLUS:
+      node->setType(AST_PLUS);
+      break;
+    case MINUS:
+      node->setType(AST_MINUS);
+      break;
+    case INVALID:
+      break;
+    }
+  // for all but INVALID and MODULUS two children have to be converted
+  if (subType != INVALID && subType != MODULUS)
+    {
+      CEvaluationNode* child1 = dynamic_cast<CEvaluationNode*>(this->getChild());
+      CEvaluationNode* child2 = dynamic_cast<CEvaluationNode*>(child1->getSibling());
+      node->addChild(child1->toASTNode());
+      node->addChild(child2->toASTNode());
+    }
+  return node;
+}
+
+bool CEvaluationNodeOperator::createModuloTree(CEvaluationNodeOperator* pNode, ASTNode* pASTNode)
+{
+  // x%y -> x-floor(x/y)*x
+  bool result = false;
+  if ((SubType)CEvaluationNode::subType(pNode->getType()) == MODULUS)
+    {
+      // the node has two children x and y
+      CEvaluationNode* x = dynamic_cast<CEvaluationNode*>(pNode->getChild());
+      if (x != NULL)
+        {
+          CEvaluationNode* y = dynamic_cast<CEvaluationNode*>(x->getSibling());
+          if (y != NULL)
+            {
+              pASTNode->setType(AST_MINUS);
+              ASTNode* tmpASTNode = new ASTNode(AST_DIVIDE);
+              tmpASTNode->addChild(x->toASTNode());
+              tmpASTNode->addChild(y->toASTNode());
+              ASTNode* tmpASTNode2 = new ASTNode(AST_FUNCTION_FLOOR);
+              tmpASTNode2->addChild(tmpASTNode);
+              tmpASTNode = new ASTNode(AST_TIMES);
+              tmpASTNode->addChild(x->toASTNode());
+              tmpASTNode->addChild(tmpASTNode2);
+              pASTNode->addChild(x->toASTNode());
+              pASTNode->addChild(tmpASTNode);
+              result = true;
+            }
+        }
+    }
+  return result;
 }

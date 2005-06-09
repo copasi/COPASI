@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/08 14:07:59 $
+   $Date: 2005/06/09 13:46:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -286,4 +286,118 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode* n
       break;
     }
   return new CEvaluationNodeFunction(subType, data);
+}
+
+ASTNode* CEvaluationNodeFunction::toASTNode()
+{
+  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  ASTNode* node = new ASTNode();
+  switch (subType)
+    {
+    case INVALID:
+      break;
+    case LOG:
+      node->setType(AST_FUNCTION_LN);
+      break;
+    case LOG10:
+      node->setType(AST_FUNCTION_LOG);
+      break;
+    case EXP:
+      node->setType(AST_FUNCTION_EXP);
+      break;
+    case SIN:
+      node->setType(AST_FUNCTION_SIN);
+      break;
+    case COS:
+      node->setType(AST_FUNCTION_COS);
+      break;
+    case TAN:
+      node->setType(AST_FUNCTION_TAN);
+      break;
+    case SEC:
+      node->setType(AST_FUNCTION_SEC);
+      break;
+    case CSC:
+      node->setType(AST_FUNCTION_CSC);
+      break;
+    case COT:
+      node->setType(AST_FUNCTION_COT);
+      break;
+    case SINH:
+      node->setType(AST_FUNCTION_SINH);
+      break;
+    case COSH:
+      node->setType(AST_FUNCTION_COSH);
+      break;
+    case TANH:
+      node->setType(AST_FUNCTION_TANH);
+      break;
+    case SECH:
+      node->setType(AST_FUNCTION_SECH);
+      break;
+    case CSCH:
+      node->setType(AST_FUNCTION_CSCH);
+      break;
+    case COTH:
+      node->setType(AST_FUNCTION_COTH);
+      break;
+    case ARCSIN:
+      node->setType(AST_FUNCTION_ARCSIN);
+      break;
+    case ARCCOS:
+      node->setType(AST_FUNCTION_ARCCOS);
+      break;
+    case ARCTAN:
+      node->setType(AST_FUNCTION_ARCTAN);
+      break;
+    case ARCSEC:
+      node->setType(AST_FUNCTION_ARCSEC);
+      break;
+    case ARCCSC:
+      node->setType(AST_FUNCTION_ARCCSC);
+      break;
+    case ARCCOT:
+      node->setType(AST_FUNCTION_ARCCOT);
+      break;
+    case ARCSINH:
+      node->setType(AST_FUNCTION_ARCSINH);
+      break;
+    case ARCCOSH:
+      node->setType(AST_FUNCTION_ARCCOSH);
+      break;
+    case ARCTANH:
+      node->setType(AST_FUNCTION_ARCTANH);
+      break;
+    case ARCSECH:
+      node->setType(AST_FUNCTION_ARCSECH);
+      break;
+    case ARCCSCH:
+      node->setType(AST_FUNCTION_ARCCSCH);
+      break;
+    case ARCCOTH:
+      node->setType(AST_FUNCTION_ARCCOTH);
+      break;
+    case SQRT:
+      node->setType(AST_FUNCTION_ROOT);
+      break;
+    case ABS:
+      node->setType(AST_FUNCTION_ABS);
+      break;
+    case MINUS:
+      node->setType(AST_MINUS);
+      break;
+    case PLUS:
+      // if this is the unary plus as I suspect,
+      // the nodde will be replaced by its only child
+      delete node;
+      node = dynamic_cast<CEvaluationNode*>(this->getChild())->toASTNode();
+      break;
+    }
+  // for all but INVALID one child has to be converted
+  if (subType != INVALID)
+    {
+      CEvaluationNode* child1 = dynamic_cast<CEvaluationNode*>(this->getChild());
+      node->addChild(child1->toASTNode());
+    }
+  return node;
 }
