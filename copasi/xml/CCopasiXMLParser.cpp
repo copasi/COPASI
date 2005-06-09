@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/08 12:22:02 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 14:50:35 $
    End CVS Header */
 
 /**
@@ -3049,20 +3049,19 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
       if (it != end || !Values.fail() || !Values.eof()) fatalError();*/
 
       {
-        const char* s = mParser.getCharacterData("\x0a\x0d\t ", " ").c_str();
-        char* nptr = new char[strlen(s)];
-        strncpy(nptr, s, strlen(s) + 1);
-        char* ptr = nptr;
-        char* endptr = ptr;
+        std::string Data = mParser.getCharacterData("\x0a\x0d\t ", " ");
+
+        const char * ptr = Data.c_str();
+        char * endptr = NULL;
 
         it = mCommon.StateVariableList.begin();
         end = mCommon.StateVariableList.end();
 
         for (; it != end; ++it)
           {
-            C_FLOAT64 d = strtod(ptr, &ptr);
+            C_FLOAT64 d = strtod(ptr, &endptr);
             if (ptr == endptr) break;
-            endptr = ptr;
+            ptr = endptr;
 
             //handles compartments, metabs, and model values
             pME = dynamic_cast< CModelEntity* >(GlobalKeys.get(*it));
@@ -3082,7 +3081,6 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 
             fatalError();
           }
-        delete nptr;
 
         if (it != end) fatalError();
       }
