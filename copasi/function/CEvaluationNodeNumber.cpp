@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/09 13:46:28 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 17:27:59 $
    End CVS Header */
 
 #include "copasi.h"
@@ -114,7 +114,7 @@ ASTNode* CEvaluationNodeNumber::toASTNode()
       str++; // Skip the '('
       num1 = strtod(str, &end);
       end++; // Skip the '/'
-      num2 /= strtod(end, NULL);
+      num2 = strtod(end, NULL);
       node->setValue((long)num1, (long)num2);
       break;
     case INVALID:
