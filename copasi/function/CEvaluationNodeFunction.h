@@ -1,16 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/09 13:46:28 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 17:31:14 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
 #define COPASI_CEvaluationNodeFunction
 
-#include "mathematics.h"
+#include <limits>
 
+#include "mathematics.h"
 #include "utilities/CCopasiMessage.h"
 
 /**
@@ -57,8 +58,11 @@ class CEvaluationNodeFunction : public CEvaluationNode
       ARCCOTH = 0x0000001a,
       SQRT = 0x0000001b,
       ABS = 0x0000001c,
-      MINUS = 0x0000001d,
-      PLUS = 0x0000001e
+      FLOOR = 0x0000001d,
+      CEIL = 0x0000001e,
+      FACTORIAL = 0x0000001f,
+      MINUS = 0x00000020,
+      PLUS = 0x00000021
     };
 
     // Operations
@@ -155,8 +159,28 @@ class CEvaluationNodeFunction : public CEvaluationNode
     static inline C_FLOAT64 acoth(C_FLOAT64 value)
     {return atanh(1.0 / value);}
 
+    static inline C_FLOAT64 factorial(C_FLOAT64 value)
+    {
+      if (value < 0.0 ||
+          value != ceil(value))
+        return std::numeric_limits<C_FLOAT64>::signaling_NaN();
+
+      if (value > 170)
+        return std::numeric_limits<C_FLOAT64>::infinity();
+
+      if (value == 0.0)
+        return 0.0;
+
+      C_FLOAT64 Value = 1.0;
+      C_FLOAT64 Result = 1.0;
+
+      while (Value < value) Result *= Value++;
+
+      return Result;
+    }
+
     static inline C_FLOAT64 minus(C_FLOAT64 value)
-    {return - value;}
+  {return - value;}
 
     static inline C_FLOAT64 plus(C_FLOAT64 value)
     {return value;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/09 13:46:28 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 17:31:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -139,6 +139,18 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
     case ABS:
       mpFunction = fabs;
+      break;
+
+    case FLOOR:
+      mpFunction = floor;
+      break;
+
+    case CEIL:
+      mpFunction = ceil;
+      break;
+
+    case FACTORIAL:
+      mpFunction = factorial;
       break;
 
     case MINUS:

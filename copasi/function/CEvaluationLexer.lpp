@@ -272,6 +272,30 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_FUNCTION;
 %}
 
+(floor|FLOOR)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::FLOOR,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(ceil|CEIL)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::CEIL,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
+(factorial|FACTORIAL)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::FACTORIAL,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
 <INITIAL,sSIGN>"-"   %{
   BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS,
