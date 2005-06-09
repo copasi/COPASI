@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 20:06:52 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 16:31:49 $
    End CVS Header */
 
 /**
@@ -57,20 +57,20 @@ class CMassAction : public CFunction
 
     /**
      *  Calculates the value of the function
-     *  @param "vector < void * >" callParameters
+     *  @param const CCallParameters<C_FLOAT64> & callParameters
      *  @return "C_FLOAT64" result
      */
     virtual C_FLOAT64
-    calcValue(const CCallParameterPointers & callParameters) const;
+    calcValue(const CCallParameters<C_FLOAT64> & callParameters) const;
 
     /**
      * Returns whether the function depends on the given parameter
      * &param const void * parameter
-     * &param const CCallParameters & callParameters
+     * &param const CCallParameters<C_FLOAT64> & callParameters
      * &param bool dependsOn
      */
     virtual bool dependsOn(const void * parameter,
-                           const CCallParameterPointers & callParameters) const;
+                           const CCallParameters<C_FLOAT64> & callParameters) const;
   };
 
 #endif // COPASI_CMassAction

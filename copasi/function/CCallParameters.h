@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:49 $
+   $Date: 2005/06/09 16:31:49 $
    End CVS Header */
 
 /**
@@ -27,8 +27,58 @@
  * This is what is actually passed to a function. Some of the void* can be
  * pointers to vector<const CCopasiObject*>
  */
-class CCallParameterPointers : public std::vector< const void * >
-  {};
+template < typename Type >
+class CCallParameters : private std::vector<void *>
+  {
+  public:
+    union UType
+      {
+        const Type * value;
+        std::vector<const Type *> * vector;
+      };
+
+    typedef std::vector< UType >::const_iterator const_iterator;
+
+    // Operations
+  public:
+    CCallParameters(const unsigned C_INT32 & size = 0):
+        std::vector<void *>(size)
+    {}
+
+    CCallParameters(const CCallParameters & src):
+        std::vector<void *>(src)
+    {}
+
+    ~CCallParameters() {}
+
+    void resize(const unsigned C_INT32 & size)
+    {
+      ((std::vector<UType> *)this)->resize(size);
+
+      std::vector<UType>::iterator it = ((std::vector<UType> *)this)->begin();
+      std::vector<UType>::iterator end = ((std::vector<UType> *)this)->end();
+
+      for (; it != end; ++it) it->value = NULL;
+    }
+
+    inline void clear()
+  {((std::vector<UType> *)this)->clear();}
+
+    inline unsigned C_INT32 size() const
+      {return ((const std::vector< UType > *)this)->size();}
+
+    inline UType & operator[](const unsigned C_INT32 & index)
+    {return (*(std::vector< UType > *)this)[index];}
+
+    inline const UType & operator[](const unsigned C_INT32 & index) const
+      {return (*(const std::vector< UType > *)this)[index];}
+
+    inline const_iterator begin() const
+      {return ((const std::vector< UType > *)this)->begin();}
+
+    inline const_iterator end() const
+      {return ((const std::vector< UType > *)this)->end();}
+  };
 
 /**
  * CFunctionParameterMap         
@@ -99,13 +149,13 @@ class CFunctionParameterMap
     /**
      * This is a vector of pointers to the data that is passed to a function
      */
-    CCallParameterPointers mPointers;
+    CCallParameters<C_FLOAT64> mPointers;
 
     /**
      * This is a vector of pointers to objects. Each objects needs to have a value
      * that can be passed to a function
      */
-    CCallParameterPointers mObjects;
+    CCallParameters<CCopasiObject> mObjects;
 
     /**
      * The CFunctionParameters object provides the data types of the call parameters
@@ -114,11 +164,15 @@ class CFunctionParameterMap
 
     // these are preliminary
   public:
-    CCallParameterPointers & getPointers();
-    CCallParameterPointers & getObjects();
-    std::vector< const CCopasiObject * > getObjects(const unsigned C_INT32 & index) const;
-    const CCallParameterPointers & getObjects() const;
     const CFunctionParameters & getFunctionParameters() const;
+
+    CCallParameters<C_FLOAT64> & getPointers();
+
+    CCallParameters<CCopasiObject> & getObjects();
+
+    const CCallParameters<CCopasiObject> & getObjects() const;
+
+    std::vector< const CCopasiObject * > getObjects(const unsigned C_INT32 & index) const;
   };
 
 #endif // COPASI_CCallParameters

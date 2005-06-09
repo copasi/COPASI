@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 14:50:35 $
+   $Date: 2005/06/09 16:31:51 $
    End CVS Header */
 
 /**
@@ -3050,16 +3050,16 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 
       {
         std::string Data = mParser.getCharacterData("\x0a\x0d\t ", " ");
+        C_FLOAT64 d;
 
         const char * ptr = Data.c_str();
         char * endptr = NULL;
-
         it = mCommon.StateVariableList.begin();
         end = mCommon.StateVariableList.end();
 
         for (; it != end; ++it)
           {
-            C_FLOAT64 d = strtod(ptr, &endptr);
+            d = strtod(ptr, &endptr);
             if (ptr == endptr) break;
             ptr = endptr;
 

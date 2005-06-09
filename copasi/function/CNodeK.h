@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 20:06:27 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 16:31:49 $
    End CVS Header */
 
 /*  CNodeK
@@ -348,10 +348,10 @@ class CNodeK
 
     /**
      *  This calculates the value of this sub-tree (ie with this node as root)
-     *  @param "vector < C_FLOAT64 * >" &identifiers
+     *  @param const CCallParameters<C_FLOAT64> & callParameters
      *  @return C_FLOAT64
      */
-    C_FLOAT64 value(const CCallParameterPointers & callParameters) const;
+    C_FLOAT64 value(const CCallParameters<C_FLOAT64> & callParameters) const;
   };
 
 #endif // COPASI_CNodeK

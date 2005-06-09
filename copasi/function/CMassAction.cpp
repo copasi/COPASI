@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 19:03:16 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 16:31:49 $
    End CVS Header */
 
 /**
@@ -74,18 +74,18 @@ CMassAction::CMassAction(const TriLogic & reversible,
 }
 CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
 
-C_FLOAT64 CMassAction::calcValue(const CCallParameterPointers & callParameters) const
+C_FLOAT64 CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters) const
   {
     unsigned C_INT32 i, imax;
-    C_FLOAT64 **Factor;
+    std::vector<const C_FLOAT64 *>::const_iterator Factor;
+
     C_FLOAT64 Substrates = 0.0, Products = 0.0;
 
-    imax = ((std::vector< C_FLOAT64 *> *)callParameters[1])->size();   // NoSubstrates
+    imax = callParameters[1].vector->size();   // NoSubstrates
     if (imax)
       {
-        Substrates = *(C_FLOAT64 *) callParameters[0];           // k1
-        Factor =
-          &*((std::vector< C_FLOAT64*>*)callParameters[1])->begin();   // first substr.
+        Substrates = * callParameters[0].value;           // k1
+        Factor = callParameters[1].vector->begin();   // first substr.
 
         for (i = 0; i < imax; i++)
           Substrates *= **(Factor++);
@@ -94,12 +94,11 @@ C_FLOAT64 CMassAction::calcValue(const CCallParameterPointers & callParameters) 
     if (isReversible() == TriFalse)
       return Substrates;
 
-    imax = ((std::vector< C_FLOAT64 *> *)callParameters[3])->size();   // NoProducts
+    imax = callParameters[3].vector->size();   // NoProducts
     if (imax)
       {
-        Products = *(C_FLOAT64 *) callParameters[2];             // k2
-        Factor =
-          &*((std::vector< C_FLOAT64*>*)callParameters[3])->begin();   // first product
+        Products = * callParameters[2].value;             // k2
+        Factor = callParameters[3].vector->begin();   // first product
 
         for (i = 0; i < imax; i++)
           Products *= **(Factor++);
@@ -109,24 +108,24 @@ C_FLOAT64 CMassAction::calcValue(const CCallParameterPointers & callParameters) 
   }
 
 bool CMassAction::dependsOn(const void * parameter,
-                            const CCallParameterPointers & callParameters) const
+                            const CCallParameters<C_FLOAT64> & callParameters) const
   {
-    if (parameter == callParameters[0]) return true;
+    if (parameter == callParameters[0].value) return true;
 
-    std::vector< C_FLOAT64 * >::const_iterator it;
-    std::vector< C_FLOAT64 * >::const_iterator end;
+    std::vector<const C_FLOAT64 *>::const_iterator it;
+    std::vector<const C_FLOAT64 *>::const_iterator end;
 
-    it = ((std::vector< C_FLOAT64 * > *) callParameters[1])->begin();
-    end = ((std::vector< C_FLOAT64 * > *) callParameters[1])->end();
+    it = callParameters[1].vector->begin();
+    end = callParameters[1].vector->end();
 
     for (; it != end; it++) if (parameter == *it) return true;
 
     if (isReversible() == TriFalse) return false;
 
-    if (parameter == callParameters[2]) return true;
+    if (parameter == callParameters[2].value) return true;
 
-    it = ((std::vector< C_FLOAT64 * > *) callParameters[3])->begin();
-    end = ((std::vector< C_FLOAT64 * > *) callParameters[3])->end();
+    it = callParameters[3].vector->begin();
+    end = callParameters[3].vector->end();
 
     for (; it != end; it++) if (parameter == *it) return true;
 

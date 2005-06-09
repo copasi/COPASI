@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/05/31 20:29:50 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 16:31:51 $
    End CVS Header */
 
 /**
@@ -156,10 +156,8 @@ bool COptProblem::calculate()
       mpTrajectory->process();
     }
 
-  CCallParameterPointers CallParameters;
-  CallParameters.push_back(NULL);
-
-  //C_FLOAT64 r = f.calcValue(CallParameters);
+  CCallParameters<C_FLOAT64> CallParameters;
+  CallParameters.clear();
 
   mCalculateValue = mpFunction->calcValue(CallParameters);
 

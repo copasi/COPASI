@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 20:06:27 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 16:31:49 $
    End CVS Header */
 
 // CNodeK.cpp : classes for function tree
@@ -516,7 +516,7 @@ C_INT16 CNodeK::rightPrecedence() const
     return 0;
   }
 
-C_FLOAT64 CNodeK::value(const CCallParameterPointers & callParameters) const
+C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
   {
     // if it is a constant or an identifier just return its value
     if (isNumber())
@@ -527,7 +527,7 @@ C_FLOAT64 CNodeK::value(const CCallParameterPointers & callParameters) const
         return *(double*)((CCopasiObject*)mLeft)->getReference();
         break;
       case N_IDENTIFIER :
-        return * (C_FLOAT64 *) callParameters[mIndex];
+        return * callParameters[mIndex].value;
         break;
       case N_OPERATOR:
         switch (mSubtype)
@@ -596,11 +596,11 @@ C_FLOAT64 CNodeK::value(const CCallParameterPointers & callParameters) const
           case N_ARCTAN:
             return atan(mLeft->value(callParameters));
 
-          case N_ARCSEC:   //TODO
+          case N_ARCSEC:    //TODO
             return acos(1 / mLeft->value(callParameters));
-          case N_ARCCSC:   //TODO
+          case N_ARCCSC:    //TODO
             return asin(1 / mLeft->value(callParameters));
-          case N_ARCCOT:   //TODO
+          case N_ARCCOT:    //TODO
             return atan(1 / mLeft->value(callParameters));
 
           case N_ARCSINH:
@@ -649,7 +649,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         //    case N_OBJECT:
         //      return *(double*)((CCopasiObject*)mLeft)->getReference();
         //      break;
-      case N_IDENTIFIER :       //do some heuristics for indentifiers starting with "K" or "V"
+      case N_IDENTIFIER :        //do some heuristics for indentifiers starting with "K" or "V"
         out << SPC(level);
         if (mName.substr(0, 1) == "K")
           out << "<msub><mi>K</mi><mi>" << mName.substr(1) << "</mi></msub>" << std::endl;
@@ -754,7 +754,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
       case N_FUNCTION:
         switch (mSubtype)
           {
-          case '+':     //do nothing
+          case '+':      //do nothing
             mLeft->writeMathML(out, level);
             break;
           case '-':

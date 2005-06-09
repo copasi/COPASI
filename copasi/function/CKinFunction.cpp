@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 20:06:27 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 16:31:49 $
    End CVS Header */
 
 /**
@@ -302,7 +302,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                             // this is an error
+        case N_NOP:                                              // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -323,18 +323,18 @@ void CKinFunction::setDescription(const std::string& description)
   compile();
 }
 
-C_FLOAT64 CKinFunction::calcValue(const CCallParameterPointers & callParameters) const
+C_FLOAT64 CKinFunction::calcValue(const CCallParameters<C_FLOAT64> & callParameters) const
   {
     return mNodes[0]->getLeft().value(callParameters);
   }
 
 bool CKinFunction::dependsOn(const void * parameter,
-                             const CCallParameterPointers & callParameters) const
+                             const CCallParameters<C_FLOAT64> & callParameters) const
   {
-    std::vector< const void * >::const_iterator it = callParameters.begin();
-    std::vector< const void * >::const_iterator end = callParameters.end();
+    CCallParameters<C_FLOAT64>::const_iterator it = callParameters.begin();
+    CCallParameters<C_FLOAT64>::const_iterator end = callParameters.end();
 
-    for (; it != end; it++) if (parameter == *it) return true;
+    for (; it != end; it++) if (parameter == it->value) return true;
 
     return false;
   }
