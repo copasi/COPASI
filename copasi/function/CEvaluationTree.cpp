@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/08 14:07:59 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 21:09:01 $
    End CVS Header */
 
 #include "copasi.h"
@@ -42,7 +42,6 @@ bool CEvaluationTree::setDescription(const std::string & description)
 bool CEvaluationTree::compile()
 {
   if (!parse()) return false;
-  if (!linkNodes()) return false;
   if (!compileNodes()) return false;
 
   return true;
@@ -56,41 +55,62 @@ C_FLOAT64 * CEvaluationTree::getObjectValue(const CCopasiObjectName & /* CN */) 
 
 bool CEvaluationTree::parse()
 {
-  if (mpNodeList != NULL) CEvaluationParser::freeNodeList(mpNodeList);
+  bool success = true;
+
+  // clean up
+  CEvaluationParser::freeNodeList(mpNodeList);
   mpNodeList = NULL;
   mpRoot = NULL;
 
+  // parse the description into a linked node tree
   std::istringstream buffer(mDescription);
   CEvaluationLexer Parser(&buffer);
 
-  Parser.yyparse();
+  CCopasiMessage::clearDeque();
 
-  mpRoot = Parser.getRootNode();
+  success = (Parser.yyparse() == 0);
+
   mpNodeList = Parser.getNodeList();
+  mpRoot = Parser.getRootNode();
 
-  /*
-  mErrorPosition = Scanner.yylex();
-  if (mErrorPosition < mDescription.length())
+  // clean up if parsing failed
+  if (!success)
     {
-      CEvaluationLexer::freeNodeList(mpNodeList);
+      mErrorPosition = Parser.getErrorPosition();
+
+      CEvaluationParser::freeNodeList(mpNodeList);
       mpNodeList = NULL;
-      return false;
+      mpRoot = NULL;
     }
 
-  mErrorPosition = std::string::npos;
-  */
-
-  return true;
-}
-
-bool CEvaluationTree::linkNodes()
-{
-  return true;
+  return success;
 }
 
 bool CEvaluationTree::compileNodes()
 {
-  return true;
+  if (mpNodeList == NULL) return false;
+
+  bool success = true;
+
+  std::vector< CEvaluationNode * >::iterator it;
+  std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
+
+  for (it = mpNodeList->begin(); it != end && success; ++it)
+    success = (*it)->compile(this);
+
+  if (!success)
+    {
+      end = it;
+      mErrorPosition = 0;
+
+      for (it = mpNodeList->begin(); it != end; ++it)
+        mErrorPosition += (*it)->getData().length();
+
+      mErrorPosition -= (*--it)->getData().length();
+      CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 3, mErrorPosition);
+    }
+
+  return success;
 }
 
 bool CEvaluationTree::setTree(const ASTNode* pRootNode)

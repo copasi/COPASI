@@ -4,7 +4,9 @@
 %{
 #define YYSTYPE CEvaluationNode *
 #define yylval  mpNode
-#define yyerror(__str) CCopasiMessage(CCopasiMessage::EXCEPTION, MCFunction + 1, __str)
+#define yyerror(__str) \
+  if (yychar != YYERRCODE) correctErrorPosition(); \
+  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 #define YYDEBUG 1
 
 #include "copasi.h"

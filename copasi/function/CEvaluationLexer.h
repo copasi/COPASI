@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/07 20:35:12 $
+   $Date: 2005/06/09 21:09:00 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationLexer
@@ -62,7 +62,9 @@ class yyYaccParser
      */
     static void freeNodeList(std::vector< CEvaluationNode * > * pNodeList)
     {
-      std::vector< CEvaluationNode * >::iterator it = pNodeList->begin();
+      if (pNodeList == NULL) return;
+
+      std::vector< CEvaluationNode * >::iterator it;
       std::vector< CEvaluationNode * >::iterator end = pNodeList->end();
 
       for (it = pNodeList->begin(); it != end; ++it)
@@ -81,11 +83,29 @@ class yyYaccParser
 
   CEvaluationNode * getRootNode() {return mpRootNode;}
 
+    unsigned C_INT32 getErrorPosition() {return mPosition;}
+
   protected:
     CEvaluationNode * mpNode;
     CEvaluationNode * mpRootNode;
     std::vector< CEvaluationNode * > * mpNodeList;
     unsigned C_INT32 mPosition;
+
+  private:
+    void correctErrorPosition()
+    {
+      std::vector< CEvaluationNode * >::iterator it
+      = mpNodeList->begin();
+      std::vector< CEvaluationNode * >::iterator end
+      = mpNodeList->end();
+      unsigned C_INT32 oldPosition = mPosition;
+      mPosition = 0;
+
+      for (; it != end && mPosition < oldPosition; ++it)
+        mPosition += (*it)->getData().length();
+
+      mPosition -= (*--it)->getData().length();
+    }
   };
 
 class CEvaluationLexer : public FlexLexer, public yyYaccParser

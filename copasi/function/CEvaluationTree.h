@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/08 14:07:59 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 21:09:01 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -77,12 +77,6 @@ class CEvaluationTree
      * @return bool success
      */
     bool parse();
-
-    /**
-     * Link the nodes in the tree.
-     * @return bool success
-     */
-    bool linkNodes();
 
     /**
      * Compile the individual nodes.

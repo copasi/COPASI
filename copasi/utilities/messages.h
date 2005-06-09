@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/08 14:09:52 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 21:09:01 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -114,8 +114,9 @@ const MESSAGES Messages[] =
     {MCMathML + 2, "MathML (2): Unknown element in MathML expression."},
 
     // Function
-    {MCFunction + 1, "Function (1): Parser error: '%s'."},
-    {MCFunction + 2, "Function (2): Lexer error at position: '%d'."},
+    {MCFunction + 1, "Function (1): Parser error after position: '%d'."},
+    {MCFunction + 2, "Function (2): Lexer error after position: '%d'."},
+    {MCFunction + 3, "Function (3): Compile error after position: '%d'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
