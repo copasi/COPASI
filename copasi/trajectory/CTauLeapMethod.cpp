@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/27 16:08:14 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 17:08:45 $
    End CVS Header */
 
 /**
@@ -341,73 +341,6 @@ void CTauLeapMethod::setupBalances()
     }
 
   return;
-}
-
-/**
- *   Get a poisson-distributed random variable.
- *   (this is the version from Numerical Recipes, BUT
- *    we use the generator in CRandom instead!)
- */
-C_INT32 CTauLeapMethod::getRandomPoisson(C_FLOAT64 lambda)
-{
-  C_FLOAT64 em, t, y;
-  C_FLOAT64 pi_local = 3.141592654;
-
-  if (lambda < 12.0)
-    {// use direct method
-      if (lambda != oldm)
-        {
-          oldm = lambda;
-          g = exp(-lambda); // if lambda is new, compute exponential
-        }
-      em = 0;
-      t = mpRandomGenerator->getRandomOO();
-      while (t > g)
-        {// instead of adding exponential deviates it is equivalent to multiply uniform deviates. We never actually have to take the log, merely compare to the precomputed exponential
-          ++em;
-          t *= mpRandomGenerator->getRandomOO();
-        }
-    }
-  else
-    {
-      if (lambda != oldm)
-        {// if lambda has changed since the last call, then precompute some functions that occur below
-          oldm = lambda;
-          sq = sqrt(2.0 * lambda);
-          alxm = log(lambda);
-          g = lambda * alxm - gammaln(lambda + 1.0); // the function gammaln is the natural log of the gamma function
-        }
-      do
-        {
-          do
-            {
-              y = tan(pi_local * mpRandomGenerator->getRandomOO()); // y is a deviate from a Lorentzian comparison function
-              em = sq * y + lambda; // em is y, shifted and scaled
-            }
-          while (em < 0.0); // reject if in the regime of zero probability
-          em = floor(em); // the trick for integer-valued distributions
-          t = 0.9 * (1.0 + y * y) * exp(em * alxm - gammaln(em + 1.0) - g); // the ratio of the dsired distribution to the comparison function; we accept or reject by comparing it to another uniform deviate. The factor 0.9 is chosen so that t never exceeds 1
-        }
-      while (mpRandomGenerator->getRandomOO() < t);
-    }
-  return (C_INT32) em;
-}
-
-/**
- *   Helper function for the poission-distr. random number generation
- *   (taken from Numerical Recipes for now)
- */
-C_FLOAT64 CTauLeapMethod::gammaln(C_FLOAT64 xx)
-{
-  C_FLOAT64 x, y, tmp, ser;
-  C_INT32 j;
-
-  y = x = xx;
-  tmp = x + 5.5;
-  tmp -= (x + 0.5) * log(tmp);
-  ser = 1.000000000190015;
-  for (j = 0; j <= 5; j++) ser += cof[j] / ++y;
-  return - tmp + log(2.5066282746310005*ser / x);
 }
 
 void CTauLeapMethod::updatePropensities()

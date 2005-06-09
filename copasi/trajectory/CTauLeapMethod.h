@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2005/04/20 14:21:57 $
+   $Author: shoops $ 
+   $Date: 2005/06/09 17:08:45 $
    End CVS Header */
 
 /**
@@ -141,18 +141,6 @@ class CTauLeapMethod : public CTrajectoryMethod
      *   model.
      */
     void setupBalances();
-
-    /**
-     *   Get a poisson-distributed random variable.
-     *   (taken from Numerical Recipes for now)
-     */
-    C_INT32 getRandomPoisson(C_FLOAT64 lambda);
-
-    /**
-     *   Helper function for the poission-distr. random number generation
-     *   (taken from Numerical Recipes for now)
-     */
-    C_FLOAT64 gammaln(C_FLOAT64 xx);
 
     /**
      * Calculate the propensities for all reactions
