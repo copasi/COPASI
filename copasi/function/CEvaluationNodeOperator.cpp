@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/10 11:54:30 $
+   $Date: 2005/06/10 12:00:15 $
    End CVS Header */
 
 #include "copasi.h"
@@ -122,11 +122,11 @@ CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode& n
         case 1:
           delete convertedNode;
           convertedNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, data);
-          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getLeftChild()));
+          convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
           break;
         case 2:
-          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getLeftChild()));
-          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getRightChild()));
+          convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
+          convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getRightChild()));
           break;
         default:
           // error
@@ -140,8 +140,8 @@ CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode& n
       switch (node.getNumChildren())
         {
         case 2:
-          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getLeftChild()));
-          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getRightChild()));
+          convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
+          convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getRightChild()));
           break;
         default:
           // error
@@ -172,16 +172,16 @@ CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode& n
         case 1:
           // replace the current node with its only child
           delete convertedNode;
-          convertedNode = CEvaluationTree::convertASTNode(node.getLeftChild());
+          convertedNode = CEvaluationTree::convertASTNode(*node.getLeftChild());
           break;
         default:
-          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getLeftChild()));
+          convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
           pTmpNode = dynamic_cast<CEvaluationNodeOperator*>(convertedNode);
           for (i = 1; i < numChildren;++i)
             {
               pTmpNode->addChild(new CEvaluationNodeOperator(*pTmpNode));
               pTmpNode = dynamic_cast<CEvaluationNodeOperator*>(pTmpNode->getChild());
-              pTmpNode->addChild(CEvaluationTree::convertASTNode(node.getChild(i)));
+              pTmpNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(i)));
             }
           break;
         }
