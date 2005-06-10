@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 21:09:00 $
+   $Date: 2005/06/10 17:45:18 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationLexer
@@ -21,6 +21,8 @@
 #undef YYDEBUG
 #ifdef COPASI_DEBUG
 # define YYDEBUG 1
+#else
+# define YYDEBUG 0
 #endif // COPASI_DEBUG
 
 /**
