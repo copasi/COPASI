@@ -59,6 +59,14 @@ SOURCE=.\CCallParameters.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationExpression.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationFunction.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationLexer_lex.cpp
 # End Source File
 # Begin Source File
@@ -152,6 +160,14 @@ SOURCE=.\CUsageRange.cpp
 # Begin Source File
 
 SOURCE=.\CCallParameters.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationExpression.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationFunction.h
 # End Source File
 # Begin Source File
 
