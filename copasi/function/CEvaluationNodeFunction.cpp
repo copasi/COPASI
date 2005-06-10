@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/09 17:31:14 $
+   $Author: gauges $ 
+   $Date: 2005/06/10 08:44:15 $
    End CVS Header */
 
 #include "copasi.h"
@@ -228,11 +228,9 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode* n
     case AST_FUNCTION_ARCTANH:
       subType = ARCTANH;
       break;
-      /*
-      case AST_FUNCTION_CEILING:
-      subType=ARCCOS;
+    case AST_FUNCTION_CEILING:
+      subType = CEIL;
       break;
-      */
     case AST_FUNCTION_COS:
       subType = COS;
       break;
@@ -254,16 +252,12 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode* n
     case AST_FUNCTION_EXP:
       subType = EXP;
       break;
-      /*
-      case AST_FUNCTION_FACTORIAL:
-          subType=ARCCOS;
-          break;
-          */
-      /*
-      case AST_FUNCTION_FLOOR:
-          subType=FLOOR;
-          break;
-          */
+    case AST_FUNCTION_FACTORIAL:
+      subType = FACTORIAL;
+      break;
+    case AST_FUNCTION_FLOOR:
+      subType = FLOOR;
+      break;
     case AST_FUNCTION_LN:
       subType = LOG;
       break;
@@ -394,6 +388,15 @@ ASTNode* CEvaluationNodeFunction::toASTNode()
       break;
     case ABS:
       node->setType(AST_FUNCTION_ABS);
+      break;
+    case CEIL:
+      node->setType(AST_FUNCTION_CEILING);
+      break;
+    case FLOOR:
+      node->setType(AST_FUNCTION_FLOOR);
+      break;
+    case FACTORIAL:
+      node->setType(AST_FUNCTION_FACTORIAL);
       break;
     case MINUS:
       node->setType(AST_MINUS);

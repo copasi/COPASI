@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/09 21:09:01 $
+   $Author: gauges $ 
+   $Date: 2005/06/10 08:44:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -168,6 +168,7 @@ bool CEvaluationTree::setTree(const ASTNode* pRootNode)
         case AST_FUNCTION_ARCSINH:
         case AST_FUNCTION_ARCTAN:
         case AST_FUNCTION_ARCTANH:
+        case AST_FUNCTION_CEILING:
         case AST_FUNCTION_COS:
         case AST_FUNCTION_COSH:
         case AST_FUNCTION_COT:
@@ -175,6 +176,8 @@ bool CEvaluationTree::setTree(const ASTNode* pRootNode)
         case AST_FUNCTION_CSC:
         case AST_FUNCTION_CSCH:
         case AST_FUNCTION_EXP:
+        case AST_FUNCTION_FACTORIAL:
+        case AST_FUNCTION_FLOOR:
         case AST_FUNCTION_LN:
         case AST_FUNCTION_LOG:
         case AST_FUNCTION_ROOT:
@@ -188,9 +191,6 @@ bool CEvaluationTree::setTree(const ASTNode* pRootNode)
           pRoot = CEvaluationNodeFunction::createNodeFromASTTree(pRootNode);
           break;
 
-        case AST_FUNCTION_CEILING:
-        case AST_FUNCTION_FACTORIAL:
-        case AST_FUNCTION_FLOOR:
         case AST_CONSTANT_FALSE:
         case AST_CONSTANT_TRUE:
         case AST_FUNCTION_DELAY:
