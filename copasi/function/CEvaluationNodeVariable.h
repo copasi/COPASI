@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Date: 2005/06/10 17:48:37 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeVariable
@@ -63,14 +63,19 @@ class CEvaluationNodeVariable : public CEvaluationNode
      * Retrieve the value of the node
      * @return const C_FLOAT64 & value
      */
-    virtual inline const C_FLOAT64 & value() const {return *mpValue;}
+    virtual inline const C_FLOAT64 & value() const;
 
     //Attributes
   private:
     /**
-     * Pointer to the value of the variable.
+     * Pointer to the evaluation tree.
      */
-    C_FLOAT64 * mpValue;
+    const CEvaluationTree * mpTree;
+
+    /**
+     * Index of the variable used to retrieve its value from the tree.
+     */
+    unsigned C_INT32 mIndex;
   };
 
 #endif // COPASI_CEvaluationNodeVariable

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/10 11:54:31 $
+   $Author: shoops $ 
+   $Date: 2005/06/10 17:48:37 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -18,6 +18,9 @@ class ASTNode;
 
 class CEvaluationTree
   {
+  public:
+    typedef const C_FLOAT64 & (CEvaluationTree::*VariableValue)();
+
     // Operations
   public:
     /**
@@ -46,17 +49,17 @@ class CEvaluationTree
     static CEvaluationNode* convertASTNode(const ASTNode& node);
 
     /**
-     * Set the string description of the tree and compile it.
-     * @param const std::string & description
+     * Set the infix description of the tree and compile it.
+     * @param const std::string & infix
      * @return bool success
      */
-    bool setDescription(const std::string & description);
+    bool setInfix(const std::string & infix);
 
     /**
-     * Compile the description into a tree.
-     * @return bool success
+     * Retrieve the infix description of the tree
+     * @return const std::string & infix
      */
-    bool compile();
+    const std::string & getInfix() const;
 
     /**
      * Retrieve the position of the error in the string description.
@@ -66,20 +69,27 @@ class CEvaluationTree
     std::string::size_type getErrorPosition() const;
 
     /**
-     * Retrieve a pointer to the value of the named variable.
+     * Retrieve the index to the value of the named variable.
      * @param const std::string & name
-     * @return C_FLOAT64 * value
+     * @return unsigned C_INT32
      */
-    C_FLOAT64 * getVariableValue(const std::string & name) const;
+    virtual unsigned C_INT32 getVariableIndex(const std::string & name) const;
+
+    /**
+     * Retrieve the value of the indexed variable
+     * @param const unsigned C_INT32 & index
+     * @return const C_FLOAT64 & variableValue
+     */
+    virtual const C_FLOAT64 & getVariableValue(const unsigned C_INT32 & index) const;
 
     /**
      * Retrieve a pointer to the value of the object define dby CN.
      * @param const CCopasiObjectName & CN
      * @return C_FLOAT64 * value
      */
-    C_FLOAT64 * getObjectValue(const CCopasiObjectName & CN) const;
+    virtual C_FLOAT64 * getObjectValue(const CCopasiObjectName & CN) const;
 
-  private:
+  protected:
     /**
      * Parse the description
      * @return bool success
@@ -95,9 +105,9 @@ class CEvaluationTree
     // Attributes
   private:
     /**
-     * The string representation of the expression
+     * The infix representation of the expression
      */
-    std::string mDescription;
+    std::string mInfix;
 
     /**
      * The error position in case the compilation fails.

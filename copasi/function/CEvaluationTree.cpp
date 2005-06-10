@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/10 11:54:31 $
+   $Author: shoops $ 
+   $Date: 2005/06/10 17:48:37 $
    End CVS Header */
 
 #include "copasi.h"
@@ -21,7 +21,7 @@
 #include "CEvaluationLexer.h"
 
 CEvaluationTree::CEvaluationTree():
-    mDescription(),
+    mInfix(),
     mErrorPosition(std::string::npos),
     mpNodeList(NULL),
     mpRoot(NULL)
@@ -32,25 +32,28 @@ CEvaluationTree::~CEvaluationTree()
   if (mpNodeList != NULL) CEvaluationParser::freeNodeList(mpNodeList);
 }
 
-bool CEvaluationTree::setDescription(const std::string & description)
+bool CEvaluationTree::setInfix(const std::string & infix)
 {
-  mDescription = description;
+  mInfix = infix;
 
-  return compile();
-}
-
-bool CEvaluationTree::compile()
-{
   if (!parse()) return false;
-  if (!compileNodes()) return false;
 
   return true;
 }
 
-C_FLOAT64 * CEvaluationTree::getVariableValue(const std::string & /* name */) const
-{return NULL;}
+const std::string & CEvaluationTree::getInfix() const
+{return mInfix;}
 
-C_FLOAT64 * CEvaluationTree::getObjectValue(const CCopasiObjectName & /* CN */) const
+unsigned C_INT32 CEvaluationTree::getVariableIndex(const std::string & /*name*/) const
+  {return C_INVALID_INDEX;}
+
+const C_FLOAT64 & CEvaluationTree::getVariableValue(const unsigned C_INT32 & /*index*/) const
+  {
+    static C_FLOAT64 Value = std::numeric_limits<C_FLOAT64>::signaling_NaN();
+    return Value;
+  }
+
+C_FLOAT64 * CEvaluationTree::getObjectValue(const CCopasiObjectName & /*CN*/) const
   {return NULL;}
 
 bool CEvaluationTree::parse()
@@ -63,7 +66,7 @@ bool CEvaluationTree::parse()
   mpRoot = NULL;
 
   // parse the description into a linked node tree
-  std::istringstream buffer(mDescription);
+  std::istringstream buffer(mInfix);
   CEvaluationLexer Parser(&buffer);
 
   CCopasiMessage::clearDeque();
