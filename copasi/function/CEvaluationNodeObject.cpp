@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/08 14:07:59 $
+   $Date: 2005/06/10 11:54:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -40,7 +40,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
   return (getChild() == NULL); // We must not have any children.
 }
 
-CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode* node)
+CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& node)
 {
   return new CEvaluationNodeObject();
 }

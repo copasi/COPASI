@@ -1,13 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/09 13:46:28 $
+   $Date: 2005/06/10 11:54:30 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
+#include "CEvaluationTree.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -79,9 +80,9 @@ bool CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
   return (mpRight->getSibling() == NULL); // We must have only two children
 }
 
-CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode* node)
+CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode& node)
 {
-  ASTNodeType_t type = node->getType();
+  ASTNodeType_t type = node.getType();
   SubType subType;
   std::string data = "";
   switch (type)
@@ -111,7 +112,81 @@ CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode* n
       subType = INVALID;
       break;
     }
-  return new CEvaluationNodeOperator(subType, data);
+  CEvaluationNode* convertedNode = new CEvaluationNodeOperator(subType, data);
+
+  // handle "-" since it can be unary or binary
+  if (type == AST_MINUS)
+    {
+      switch (node.getNumChildren())
+        {
+        case 1:
+          delete convertedNode;
+          convertedNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, data);
+          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getLeftChild()));
+          break;
+        case 2:
+          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getLeftChild()));
+          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getRightChild()));
+          break;
+        default:
+          // error
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 3);
+          break;
+        }
+    }
+  // handle binary operators (POWER,/)
+  else if (type == AST_DIVIDE || type == AST_POWER || type == AST_FUNCTION_POWER)
+    {
+      switch (node.getNumChildren())
+        {
+        case 2:
+          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getLeftChild()));
+          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getRightChild()));
+          break;
+        default:
+          // error
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 4);
+          break;
+        }
+    }
+  // handle n-ary operators (+,*)
+  else if (type == AST_PLUS || type == AST_TIMES)
+    {
+      unsigned int numChildren = node.getNumChildren();
+      unsigned int i;
+      CEvaluationNodeOperator* pTmpNode;
+      switch (numChildren)
+        {
+        case 0:
+          // replace the current node with the identity node
+          delete convertedNode;
+          if (type == AST_PLUS)
+            {
+              convertedNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
+            }
+          else
+            {
+              convertedNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+            }
+          break;
+        case 1:
+          // replace the current node with its only child
+          delete convertedNode;
+          convertedNode = CEvaluationTree::convertASTNode(node.getLeftChild());
+          break;
+        default:
+          convertedNode->addChild(CEvaluationTree::convertASTNode(node.getLeftChild()));
+          pTmpNode = dynamic_cast<CEvaluationNodeOperator*>(convertedNode);
+          for (i = 1; i < numChildren;++i)
+            {
+              pTmpNode->addChild(new CEvaluationNodeOperator(*pTmpNode));
+              pTmpNode = dynamic_cast<CEvaluationNodeOperator*>(pTmpNode->getChild());
+              pTmpNode->addChild(CEvaluationTree::convertASTNode(node.getChild(i)));
+            }
+          break;
+        }
+    }
+  return convertedNode;
 }
 
 ASTNode* CEvaluationNodeOperator::toASTNode()

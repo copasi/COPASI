@@ -1,15 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/10 08:44:15 $
+   $Date: 2005/06/10 11:54:30 $
    End CVS Header */
 
 #include "copasi.h"
 
 #include "mathematics.h"
 #include "CEvaluationNode.h"
+#include "CEvaluationTree.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -185,9 +186,9 @@ bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
   return (mpLeft->getSibling() == NULL); // We must have only one child
 }
 
-CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode* node)
+CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& node)
 {
-  ASTNodeType_t type = node->getType();
+  ASTNodeType_t type = node.getType();
   SubType subType;
   std::string data = "";
   switch (type)
@@ -291,7 +292,14 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode* n
       subType = INVALID;
       break;
     }
-  return new CEvaluationNodeFunction(subType, data);
+  // all functions have one child
+  // convert child and add the converted node as child
+  // to the current node.
+  CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
+  ASTNode* child = node.getLeftChild();
+  CEvaluationNode* convertedChildNode = CEvaluationTree::convertASTNode(child);
+  convertedNode->addChild(convertedChildNode);
+  return convertedNode;
 }
 
 ASTNode* CEvaluationNodeFunction::toASTNode()

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/09 21:09:01 $
+   $Author: gauges $ 
+   $Date: 2005/06/10 11:54:31 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -112,6 +112,8 @@ const MESSAGES Messages[] =
     // MathML
     {MCMathML + 1, "MathML (1): Unsupported element '%s'."},
     {MCMathML + 2, "MathML (2): Unknown element in MathML expression."},
+    {MCMathML + 3, "MathML (3): MINUS operator can only have one or two arguments."},
+    {MCMathML + 4, "MathML (4): DIVIDE and POWER operator can only have 2 arguments."},
 
     // Function
     {MCFunction + 1, "Function (1): Parser error after position: '%d'."},

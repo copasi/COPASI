@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/09 17:27:59 $
+   $Author: gauges $ 
+   $Date: 2005/06/10 11:54:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -49,9 +49,9 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const CEvaluationNodeNumber & src):
 
 CEvaluationNodeNumber::~CEvaluationNodeNumber() {}
 
-CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode* node)
+CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& node)
 {
-  ASTNodeType_t type = node->getType();
+  ASTNodeType_t type = node.getType();
   std::stringstream ss;
   SubType subType;
   std::string data = "";
@@ -59,22 +59,22 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode* nod
     {
     case AST_INTEGER:
       subType = INTEGER;
-      ss << node->getInteger();
+      ss << node.getInteger();
       data = ss.str();
       break;
     case AST_REAL:
       subType = DOUBLE;
-      ss << node->getReal();
+      ss << node.getReal();
       data = ss.str();
       break;
     case AST_REAL_E:
       subType = ENOTATION;
-      ss << node->getReal();
+      ss << node.getReal();
       data = ss.str();
       break;
     case AST_RATIONAL:
       subType = RATIONALE;
-      ss << "(" << node->getNumerator() << " / " << node->getDenominator() << ")";
+      ss << "(" << node.getNumerator() << " / " << node.getDenominator() << ")";
       data = ss.str();
       break;
     default:

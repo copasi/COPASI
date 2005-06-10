@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/09 21:09:01 $
+   $Author: gauges $ 
+   $Date: 2005/06/10 11:54:31 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -31,11 +31,19 @@ class CEvaluationTree
     virtual ~CEvaluationTree();
 
     /**
-     * Sets the complete tree from an SBML MathMLDocument.
-     * @param const MathMLDocument* document
+     * Sets the complete tree from an SBML ASTNode.
+     * @param const ASTNode& root node of the tree
      * @return bool success
      */
-    bool setTree(const ASTNode* pRootNode);
+    bool setTree(const ASTNode& pRootNode);
+
+    /**
+     * Converts an SBML ASTNode to the corresponding
+     * CEvaluationNode tree. 
+     * @param const ASTNode& node
+     * @return CEvaluationNode*
+     */
+    static CEvaluationNode* convertASTNode(const ASTNode& node);
 
     /**
      * Set the string description of the tree and compile it.
