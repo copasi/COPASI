@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/13 14:23:51 $
+   $Author: shoops $ 
+   $Date: 2005/06/13 16:29:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -12,6 +12,7 @@
 #include <vector>
 #include <sstream>
 #include <map>
+#include <limits>
 
 #include "mathematics.h"
 
@@ -232,7 +233,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     {
       // Set value to NaN and create a warning if it is the first time
       // this happend
-      value = NAN;
+      value = std::numeric_limits<C_FLOAT64>::signaling_NaN();
       if (!this->mIncompleteModel)
         {
           this->mIncompleteModel = true;
@@ -309,7 +310,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
   else
     {
-      copasiMetabolite->setInitialConcentration(NAN);      // CHECK UNITS !!!
+      copasiMetabolite->setInitialConcentration(std::numeric_limits<C_FLOAT64>::signaling_NaN());      // CHECK UNITS !!!
       if (!this->mIncompleteModel)
         {
           this->mIncompleteModel = true;
@@ -821,7 +822,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                             }
                           else
                             {
-                              copasiReaction->setParameterValue(nodeName, NAN);
+                              copasiReaction->setParameterValue(nodeName, std::numeric_limits<C_FLOAT64>::signaling_NaN());
                             }
                           break;
                         }
@@ -1818,7 +1819,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     {
       // Set value to NaN and create a warning if it is the first time
       // this happend
-      value = NAN;
+      value = std::numeric_limits<C_FLOAT64>::signaling_NaN();
       if (!this->mIncompleteModel)
         {
           this->mIncompleteModel = true;
