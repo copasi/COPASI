@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:02:03 $
+   $Author: shoops $ 
+   $Date: 2005/06/13 20:09:46 $
    End CVS Header */
 
 #ifndef COPASI_time
@@ -142,7 +142,6 @@ class CCopasiTimeVariable
      */
     static CCopasiTimeVariable getCPUTime();
 
-  private:
     /**
      * Helper function to convert a C_INT32 to a std::string.
      * If the number of digits is non zero the value is padded with 
