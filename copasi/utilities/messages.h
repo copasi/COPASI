@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/10 11:54:31 $
+   $Date: 2005/06/13 14:23:50 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -100,6 +100,7 @@ const MESSAGES Messages[] =
     {MCSBML + 4, "SBML (4): The SBML document contains events that were ignored."},
     {MCSBML + 5, "SBML (5): Compartment %s referenced by species %s does not exist."},
     {MCSBML + 6, "SBML (6): Annotations in SBase element of SBML Level 1 files, this is invalid and has been ignored."},
+    {MCSBML + 7, "SBML (7): One or more model values have not been set."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

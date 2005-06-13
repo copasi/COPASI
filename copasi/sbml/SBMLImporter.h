@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/03 09:29:50 $
+   $Author: gauges $ 
+   $Date: 2005/06/13 14:23:51 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -28,6 +28,7 @@ class Model;
 class Compartment;
 class SBMLDocument;
 class ConverterASTNode;
+class Parameter;
 class FunctionDefinition;
 class SBase;
 
@@ -36,6 +37,7 @@ class SBMLImporter
   protected:
     std::map<std::string, CMetab*> speciesMap;
     CFunctionDB* functionDB;
+    bool mIncompleteModel;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -52,6 +54,11 @@ class SBMLImporter
      * Creates and returns a Copasi CMetab from the given SBML Species object.
      */
     CMetab* createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Creates and returns a Copasi CModelValue from the given SBML Parameter object.
+     */
+    CModelValue* createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Creates and returns a Copasi CReaction object from the given SBML

@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/03 09:29:48 $
+   $Author: gauges $ 
+   $Date: 2005/06/13 14:23:51 $
    End CVS Header */
+
+#include <math.h>
 
 #include "copasi.h"
 
@@ -175,6 +177,12 @@ Model* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
       Species* sbmlSpecies = this->createSBMLSpeciesFromCMetab(copasiModel->getMetabolites()[counter]);
       sbmlModel->addSpecies(*sbmlSpecies);
     }
+  /* create all global parameters */
+  for (counter = 0; counter < copasiModel->getModelValues().size(); counter++)
+    {
+      Parameter* sbmlParameter = this->createSBMLParameterFromCModelValue(copasiModel->getModelValues()[counter]);
+      sbmlModel->addParameter(*sbmlParameter);
+    }
   /* create all reactions */
   for (counter = 0; counter < copasiModel->getReactions().size(); counter++)
     {
@@ -334,8 +342,14 @@ Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(const CCompartm
   sbmlCompartment->setId(copasiCompartment->getKey().c_str());
   sbmlCompartment->setName(copasiCompartment->getObjectName().c_str());
   sbmlCompartment->setSpatialDimensions(3);
-  sbmlCompartment->setConstant(1);
-  sbmlCompartment->setVolume(copasiCompartment->getInitialVolume());
+  sbmlCompartment->setConstant(true);
+  double value = copasiCompartment->getInitialVolume();
+  // if the value is NaN, leave the parameter value unset.
+  if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+    // seems to be a Mac OS X bug
+    {
+      sbmlCompartment->setVolume(value);
+    }
   return sbmlCompartment;
 }
 
@@ -351,8 +365,33 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolit
   sbmlSpecies->setBoundaryCondition(copasiMetabolite->getStatus() == CModelEntity::FIXED);
   sbmlSpecies->setConstant(copasiMetabolite->getStatus() == CModelEntity::FIXED);
   sbmlSpecies->setCompartment(copasiMetabolite->getCompartment()->getKey().c_str());
-  sbmlSpecies->setInitialConcentration(copasiMetabolite->getInitialConcentration());
+  double value = copasiMetabolite->getInitialConcentration();
+  // if the value is NaN, leave the parameter value unset.
+  if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+    // seems to be a Mac OS X bug
+    {
+      sbmlSpecies->setInitialConcentration(value);
+    }
   return sbmlSpecies;
+}
+
+/**
+ ** This method takes a pointer to a copasi CModelValue object and creates a SBML 
+ ** Parameter object. The pointer to the parameter object is returned.
+ */
+Parameter* SBMLExporter::createSBMLParameterFromCModelValue(const CModelValue* pModelValue)
+{
+  Parameter* pSBMLParameter = new Parameter();
+  pSBMLParameter->setId(pModelValue->getKey());
+  pSBMLParameter->setName(pModelValue->getObjectName());
+  double value = pModelValue->getValue();
+  // if the value is NaN, leave the parameter value unset.
+  if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+    // seems to be a Mac OS X bug
+    {
+      pSBMLParameter->setValue(pModelValue->getValue());
+    }
+  return pSBMLParameter;
 }
 
 /**
@@ -424,11 +463,26 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
       ASTNode* parameterNode1 = new ASTNode(AST_NAME);
       std::string parameterName1 = cMassAction.getParameters()[0]->getObjectName();
       parameterNode1->setName(parameterName1.c_str());
-      Parameter* parameter1 = new Parameter();
-      parameter1->setId(parameterName1.c_str());
-      parameter1->setValue(copasiReaction->getParameterValue(parameterName1));
-      kLaw->addParameter(*parameter1);
-
+      // only create a parameter instance if it is a local parameter
+      if (copasiReaction->isLocalParameter(0))
+        {
+          Parameter* parameter1 = new Parameter();
+          parameter1->setId(parameterName1.c_str());
+          double value = copasiReaction->getParameterValue(parameterName1);
+          // if the value is NaN, leave the parameter value unset.
+          if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+            // seems to be a Mac OS X bug
+            {
+              parameter1->setValue(value);
+            }
+          kLaw->addParameter(*parameter1);
+        }
+      else
+        {
+          // Need to get the name from the mapping
+          std::string modelValueKey = copasiReaction->getParameterMappings()[0][0];
+          parameterNode1->setName(modelValueKey.c_str());
+        }
       forwardNode->addChild(parameterNode1);
       forwardNode->addChild(this->createTimesTree(copasiReaction->getChemEq().getSubstrates()));
       /* if the reaction is reversible, create the ASTNode tree that
@@ -442,10 +496,26 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
           ASTNode* parameterNode2 = new ASTNode(AST_NAME);
           std::string parameterName2 = cMassAction.getParameters()[2]->getObjectName();
           parameterNode2->setName(parameterName2.c_str());
-          Parameter* parameter2 = new Parameter();
-          parameter2->setId(parameterName2.c_str());
-          parameter2->setValue(copasiReaction->getParameterValue(parameterName2));
-          kLaw->addParameter(*parameter2);
+          // only create a parameter instance if it is a local parameter
+          if (copasiReaction->isLocalParameter(2))
+            {
+              Parameter* parameter2 = new Parameter();
+              parameter2->setId(parameterName2);
+              double value = copasiReaction->getParameterValue(parameterName2);
+              if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+                // seems to be a Mac OS X bug
+                {
+                  parameter2->setValue(value);
+                }
+              parameter2->setValue(copasiReaction->getParameterValue(parameterName2));
+              kLaw->addParameter(*parameter2);
+            }
+          else
+            {
+              // Need to get the name from the mapping
+              std::string modelValueKey = copasiReaction->getParameterMappings()[2][0];
+              parameterNode2->setName(modelValueKey.c_str());
+            }
           backwardNode->addChild(parameterNode2);
 
           backwardNode->addChild(this->createTimesTree(copasiReaction->getChemEq().getProducts()));
@@ -546,13 +616,30 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
           const CFunctionParameter* para = copasiReaction->getFunctionParameters()[counter];
           if (para->getUsage() == "PARAMETER")
             {
-              Parameter* sbmlPara = new Parameter();
+              // only create a parameter if it is a local parameter,
+              // otherwise the parameter already has been created
+              if (copasiReaction->isLocalParameter(counter))
+                {
+                  Parameter* sbmlPara = new Parameter();
 
-              std::string parameterKey = copasiReaction->getParameterMappings()[counter][0];
+                  std::string parameterKey = copasiReaction->getParameterMappings()[counter][0];
 
-              sbmlPara->setId(para->getObjectName().c_str());
-              sbmlPara->setValue(copasiReaction->getParameterValue(para->getObjectName()));
-              kLaw->addParameter(*sbmlPara);
+                  sbmlPara->setId(para->getObjectName().c_str());
+                  double value = copasiReaction->getParameterValue(para->getObjectName());
+                  // if the value is NaN, leave the parameter value unset.
+                  if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+                    // seems to be a Mac OS X bug
+                    {
+                      sbmlPara->setValue(value);
+                    }
+                  kLaw->addParameter(*sbmlPara);
+                }
+              else
+                {
+                  // the corresponding node has to be changed
+                  std::string modelValueKey = copasiReaction->getParameterMappings()[counter][0];
+                  this->replaceNodeName(node, para->getObjectName(), modelValueKey);
+                }
             }
         }
     }
@@ -745,4 +832,18 @@ bool SBMLExporter::isEmptyString(const std::string str)
         }
     }
   return result;
+}
+
+void SBMLExporter::replaceNodeName(ASTNode* pNode, const std::string& oldName, const std::string& newName)
+{
+  if (pNode->isName() && pNode->getName() == oldName)
+    {
+      pNode->setName(newName.c_str());
+    }
+  unsigned int i;
+  unsigned int maxI = pNode->getNumChildren();
+  for (i = 0; i < maxI;++i)
+    {
+      replaceNodeName(pNode->getChild(i), oldName, newName);
+    }
 }

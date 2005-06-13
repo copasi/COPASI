@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/03 09:29:49 $
+   $Author: gauges $ 
+   $Date: 2005/06/13 14:23:51 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -68,6 +68,12 @@ class SBMLExporter
     Species* createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolite);
 
     /**
+     ** This method takes a pointer to a copasi CModelValue object and creates a SBML 
+     ** Parameter object. The pointer to the parameter object is returned.
+     */
+    Parameter* createSBMLParameterFromCModelValue(const CModelValue* pModelValue);
+
+    /**
      ** This method takes a pointer to a copasi CReaction object and creates an
      ** SBML Reaction object. The pointer to the created reaction object is
      ** returned.
@@ -119,6 +125,11 @@ class SBMLExporter
      ** KineticLaw object.
      */
     ASTNode* createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKinFunction& kinFunction, const std::vector< std::vector < std::string > >& vect);
+
+    /**
+     * Replaces the name on all nodes with oldName with newName.
+     */
+    void replaceNodeName(ASTNode* pNode, const std::string& oldName, const std::string& newName);
 
   public:
 

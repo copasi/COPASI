@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/03 09:29:49 $
+   $Author: gauges $ 
+   $Date: 2005/06/13 14:23:51 $
    End CVS Header */
 
 #include "copasi.h"
@@ -19,6 +19,7 @@
 #include "model/CCompartment.h"
 #include "model/CMetab.h"
 #include "model/CReaction.h"
+#include "model/CModelValue.h"
 #include "copasi.h"
 #include "function/CNodeK.h"
 #include "function/CFunctionDB.h"
@@ -117,7 +118,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           fatalError();
         }
       CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel, copasi2sbmlmap);
-      copasi2sbmlmap[copasiCompartment] = sbmlCompartment;
       std::string key = sbmlCompartment->getId();
       if (!sbmlCompartment->isSetId())
         {
@@ -140,7 +140,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (copasiCompartment != NULL)
         {
           CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment, copasi2sbmlmap);
-          copasi2sbmlmap[copasiMetabolite] = sbmlSpecies;
           std::string key;
           if (!sbmlSpecies->isSetId())
             {
@@ -156,6 +155,18 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 5 , sbmlSpecies->getCompartment().c_str(), sbmlSpecies->getId().c_str());
         }
+    }
+
+  /* Create the global Parameters */
+  num = sbmlModel->getNumParameters();
+  for (counter = 0; counter < num; ++counter)
+    {
+      Parameter* sbmlParameter = sbmlModel->getParameter(counter);
+      if (sbmlParameter == NULL)
+        {
+          fatalError();
+        }
+      this->createCModelValueFromParameter(sbmlParameter, copasiModel, copasi2sbmlmap);
     }
 
   /* Create all reactions */
@@ -182,7 +193,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
  * given as argument.
  */
 CCompartment*
-SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& C_UNUSED(copasi2sbmlmap))
+SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (sbmlCompartment->isSetUnits())
     {
@@ -212,8 +223,26 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       numberStream << "_" << counter;
       appendix = numberStream.str();
     }
-  CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, sbmlCompartment->getVolume());
+  double value;
+  if (sbmlCompartment->isSetVolume())
+    {
+      value = sbmlCompartment->getVolume();
+    }
+  else
+    {
+      // Set value to NaN and create a warning if it is the first time
+      // this happend
+      value = NAN;
+      if (!this->mIncompleteModel)
+        {
+          this->mIncompleteModel = true;
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+        }
+    }
+
+  CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, value);
   //DebugFile << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
+  copasi2sbmlmap[copasiCompartment] = const_cast<Compartment*>(sbmlCompartment);
   return copasiCompartment;
 }
 
@@ -221,7 +250,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
  * Creates and returns a Copasi CMetab from the given SBML Species object.
  */
 CMetab*
-SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& C_UNUSED(copasi2sbmlmap))
+SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (sbmlSpecies->isSetSubstanceUnits())
     {
@@ -278,7 +307,17 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     {
       copasiMetabolite->setInitialConcentration(sbmlSpecies->getInitialConcentration());      // CHECK UNITS !!!
     }
+  else
+    {
+      copasiMetabolite->setInitialConcentration(NAN);      // CHECK UNITS !!!
+      if (!this->mIncompleteModel)
+        {
+          this->mIncompleteModel = true;
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+        }
+    }
   //DebugFile << "Created metabolite: " << copasiMetabolite->getObjectName() << std::endl;
+  copasi2sbmlmap[copasiMetabolite] = const_cast<Species*>(sbmlSpecies);
   return copasiMetabolite;
 }
 
@@ -480,7 +519,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       this->replaceRoot((ConverterASTNode*)node);
       this->replaceFunnyOperatorCalls((ConverterASTNode*)node);
       //ConverterASTNode::printASTNode(node);
-      /* if it is a single compartment reaction, we have to devide the whole kinetic
+      /* if it is a single compartment reaction, we have to divide the whole kinetic
       ** equation by the volume of the compartment because copasi expects
       ** kinetic laws that specify concentration/time for single compartment
       ** reactions.
@@ -615,7 +654,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                         }
                       else
                         {
-                          parameterName = parameter->getName();
+                          // a parameter must have an id.
+                          fatalError();
                         }
                       if (parameter->isSetUnits())
                         {
@@ -769,12 +809,20 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                         }
                       else
                         {
-                          parameterName = parameter->getName();
+                          // a parameter must have an id
+                          fatalError();
                         }
                       if (parameterName == nodeName)
                         {
                           found = true;
-                          copasiReaction->setParameterValue(nodeName, parameter->getValue());
+                          if (parameter->isSetValue())
+                            {
+                              copasiReaction->setParameterValue(nodeName, parameter->getValue());
+                            }
+                          else
+                            {
+                              copasiReaction->setParameterValue(nodeName, NAN);
+                            }
                           break;
                         }
                     }
@@ -797,12 +845,35 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                             }
                           else
                             {
-                              parameterName = parameter->getName();
+                              // does not make sense -> parameterName = parameter->getName();
+                              // a parameter has to have an id.
+                              fatalError();
                             }
                           if (parameterName == nodeName)
                             {
                               found = true;
-                              copasiReaction->setParameterValue(nodeName, parameter->getValue());
+                              // find the global parameter
+                              CModelValue* value = NULL;
+                              std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
+                              std::map<CCopasiObject*, SBase*>::iterator endIt = copasi2sbmlmap.end();
+                              while (it != endIt)
+                                {
+                                  Parameter* p = dynamic_cast<Parameter*>(it->second);
+                                  if (p != NULL && p->getId() == parameterName)
+                                    {
+                                      value = (CModelValue*)(it->first);
+                                      break;
+                                    }
+                                  ++it;
+                                }
+                              // if it is a global sbml parameter, there must be an entry in the map
+                              // otherwise there is an error
+                              if (value == NULL)
+                                {
+                                  fatalError();
+                                }
+                              //copasiReaction->setParameterValue(nodeName, parameter->getValue());
+                              copasiReaction->setParameterMapping(nodeName, value->getKey());
                               break;
                             }
                         }
@@ -1151,6 +1222,7 @@ SBMLImporter::SBMLImporter()
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
+  this->mIncompleteModel = false;
 }
 
 /**
@@ -1706,4 +1778,55 @@ void SBMLImporter::replaceFunnyOperatorCalls(ConverterASTNode* sourceNode)
           this->replaceFunnyOperatorCalls((ConverterASTNode*)sourceNode->getChild(i));
         }
     }
+}
+
+CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  if (sbmlParameter->isSetUnits())
+    {
+      std::string cU = sbmlParameter->getUnits();
+      if (cU != "volume" && cU != "area" && cU != "length")
+        {
+          fatalError();
+        }
+      else if (cU == "area" || cU == "length")
+        {
+          /* !!!! create a warning that the units will be ignored. */
+        }
+    }
+  std::string name = sbmlParameter->getName();
+  if (!sbmlParameter->isSetName())
+    {
+      name = sbmlParameter->getId();
+    }
+  std::string appendix = "";
+  unsigned int counter = 0;
+  while (copasiModel->getModelValues().getIndex(name + appendix) != static_cast < unsigned C_INT32
+         > (-1))
+    {
+      counter++;
+      std::ostringstream numberStream;
+      numberStream << "_" << counter;
+      appendix = numberStream.str();
+    }
+  double value;
+  if (sbmlParameter->isSetValue())
+    {
+      value = sbmlParameter->getValue();
+    }
+  else
+    {
+      // Set value to NaN and create a warning if it is the first time
+      // this happend
+      value = NAN;
+      if (!this->mIncompleteModel)
+        {
+          this->mIncompleteModel = true;
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+        }
+    }
+  CModelValue* pMV = copasiModel->createModelValue(name + appendix, value);
+  copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
+
+  return pMV;
 }
