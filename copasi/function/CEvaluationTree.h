@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/10 17:48:37 $
+   $Date: 2005/06/14 17:34:38 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -27,6 +27,12 @@ class CEvaluationTree
      * Default constructor
      */
     CEvaluationTree();
+
+    /**
+     * Copy constructor
+     * @param const CEvaluationTree & src
+     */
+    CEvaluationTree(const CEvaluationTree & src);
 
     /**
      * Destructor
@@ -53,7 +59,7 @@ class CEvaluationTree
      * @param const std::string & infix
      * @return bool success
      */
-    bool setInfix(const std::string & infix);
+    virtual bool setInfix(const std::string & infix);
 
     /**
      * Retrieve the infix description of the tree
@@ -115,6 +121,7 @@ class CEvaluationTree
      */
     std::string::size_type mErrorPosition;
 
+  protected:
     /**
      * A vector of nodes containing the result of parse.
      */
