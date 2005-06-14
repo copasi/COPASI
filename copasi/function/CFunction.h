@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Date: 2005/06/14 18:20:10 $
    End CVS Header */
 
 #ifndef COPASI_CFunction
@@ -102,7 +102,7 @@ class CFunction:
      * @param const CCallParameters<C_FLOAT64> & callParameters
      * @return C_FLOAT64 result
      */
-    virtual C_FLOAT64 calcValue(const CCallParameters<C_FLOAT64> & callParameters) const;
+    virtual C_FLOAT64 calcValue(const CCallParameters<C_FLOAT64> & callParameters);
 
     /**
      * Returns whether the function depends on the given parameter

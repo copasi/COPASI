@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Date: 2005/06/14 18:20:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -157,11 +157,11 @@ CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
 const CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions() const
   {return mUsageDescriptions;}
 
-C_FLOAT64 CFunction::calcValue(const CCallParameters<C_FLOAT64> & callParameters) const
-  {
-    const_cast<const CCallParameters<C_FLOAT64> *>(mpCallParameters) = & callParameters;
-    return mpRoot->value();
-  }
+C_FLOAT64 CFunction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
+{
+  mpCallParameters = & callParameters;
+  return mpRoot->value();
+}
 
 bool CFunction::dependsOn(const C_FLOAT64 * parameter,
                           const CCallParameters<C_FLOAT64> & callParameters) const

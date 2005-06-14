@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Date: 2005/06/14 18:20:10 $
    End CVS Header */
 
 /**
@@ -61,7 +61,7 @@ class CMassAction : public CFunction
      *  @return "C_FLOAT64" result
      */
     virtual C_FLOAT64
-    calcValue(const CCallParameters<C_FLOAT64> & callParameters) const;
+    calcValue(const CCallParameters<C_FLOAT64> & callParameters);
 
     /**
      * Returns whether the function depends on the given parameter

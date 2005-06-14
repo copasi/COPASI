@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 18:32:24 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 18:20:11 $
    End CVS Header */
 
 /**
@@ -56,7 +56,7 @@ class CReaction : public CCopasiContainer
     /**
      *  A pointer to the rate function of the reaction
      */
-    const CFunction * mpFunction;
+    CFunction * mpFunction;
 
     /**
      *  The flux of the reaction, as amount of substance/time
