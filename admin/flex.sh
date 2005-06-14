@@ -2,7 +2,10 @@
 
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
-SOURCE_FILE=$2
+for arg in $@; do
+  SOURCE_FILE=$arg
+done
+
 TARGET_FILE=lex.${SOURCE_FILE/%.*/.c}
 
 echo compiling $SOURCE_FILE '==>' ${SOURCE_FILE/%.*/_lex.cpp}
