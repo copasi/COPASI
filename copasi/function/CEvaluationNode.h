@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/09 13:46:28 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:05:40 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -143,13 +143,12 @@ class CEvaluationNode : public CCopasiNode< std::string >
     bool operator < (const CEvaluationNode & rhs);
 
     // Attributes
-  private:
+  protected:
     /**
      * The type the node
      */
     Type mType;
 
-  protected:
     /**
      * The numerical value of the node
      */
