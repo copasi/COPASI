@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/10 11:54:30 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 15:49:18 $
    End CVS Header */
 
 #include <string>
@@ -42,7 +42,7 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
       break;
 
     default:
-      mValue = 0.0; // :TODO: this should be NaN
+      mValue = std::numeric_limits<C_FLOAT64>::signaling_NaN();
       break;
     }
 
