@@ -16,6 +16,10 @@
 #include "CEvaluationLexer.h"
 #include "CEvaluationParser_yacc.h"
 
+#ifndef YYERRCODE
+#define YYERRCODE 256
+#endif
+
 #define YY_USER_INIT \
     mpNode = NULL;\
     mPosition = 0;\
