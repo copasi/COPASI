@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/10 12:00:15 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:07:46 $
    End CVS Header */
 
 #include "copasi.h"
@@ -19,52 +19,12 @@ CEvaluationNodeOperator::CEvaluationNodeOperator():
 CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
     const Data & data):
     CEvaluationNode((Type) (CEvaluationNode::OPERATOR | subType), data),
-    mpOperation(NULL),
     mpLeft(NULL),
     mpRight(NULL)
-{
-  switch (subType)
-    {
-    case POWER:
-      mpOperation = operationPower;
-      mPrecedence = PRECEDENCE_OPERATOR_POWER;
-      break;
-
-    case MULTIPLY:
-      mpOperation = operationMultiply;
-      mPrecedence = PRECEDENCE_OPERATOR_MULTIPLY;
-      break;
-
-    case DIVIDE:
-      mpOperation = operationDivide;
-      mPrecedence = PRECEDENCE_OPERATOR_DIVIDE;
-      break;
-
-    case MODULUS:
-      mpOperation = operationModulus;
-      mPrecedence = PRECEDENCE_OPERATOR_MODULUS;
-      break;
-
-    case PLUS:
-      mpOperation = operationPlus;
-      mPrecedence = PRECEDENCE_OPERATOR_PLUS;
-      break;
-
-    case MINUS:
-      mpOperation = operationMinus;
-      mPrecedence = PRECEDENCE_OPERATOR_MINUS;
-      break;
-
-    default:
-      mpOperation = NULL;
-      fatalError();
-      break;
-    }
-}
+{}
 
 CEvaluationNodeOperator::CEvaluationNodeOperator(const CEvaluationNodeOperator & src):
-    CEvaluationNode(src),
-    mpOperation(src.mpOperation)
+    CEvaluationNode(src)
 {}
 
 CEvaluationNodeOperator::~CEvaluationNodeOperator() {}

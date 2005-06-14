@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/10 11:54:31 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:07:46 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeOperator
@@ -68,8 +68,38 @@ class CEvaluationNodeOperator : public CEvaluationNode
      */
     virtual inline const C_FLOAT64 & value() const
       {
-        return *const_cast<C_FLOAT64 *>(&mValue)
-        = (*mpOperation)(mpLeft->value(), mpRight->value());
+        C_FLOAT64 &Value = *const_cast<C_FLOAT64 *>(&mValue);
+        switch (mType & 0x00FFFFFF)
+          {
+          case POWER:
+            Value = pow(mpLeft->value(), mpRight->value());
+            break;
+
+          case MULTIPLY:
+            Value = mpLeft->value() * mpRight->value();
+            break;
+
+          case DIVIDE:
+            Value = mpLeft->value() / mpRight->value();
+            break;
+
+          case MODULUS:
+            Value = (C_FLOAT64) (((C_INT32) mpLeft->value()) * ((C_INT32) mpRight->value()));
+            break;
+
+          case PLUS:
+            Value = mpLeft->value() + mpRight->value();
+            break;
+
+          case MINUS:
+            Value = mpLeft->value() - mpRight->value();
+            break;
+
+          default:
+            break;
+          }
+
+        return Value;
       }
 
     /**
@@ -101,36 +131,8 @@ class CEvaluationNodeOperator : public CEvaluationNode
      */
     bool createModuloTree(CEvaluationNodeOperator* pNode, ASTNode* pASTNode);
 
-  private:
-    static inline C_FLOAT64 operationPower(const C_FLOAT64 & value1,
-                                           const C_FLOAT64 & value2)
-    {return pow(value1, value2);}
-
-    static inline C_FLOAT64 operationMultiply(const C_FLOAT64 & value1,
-        const C_FLOAT64 & value2)
-    {return value1 * value2;}
-
-    static inline C_FLOAT64 operationDivide(const C_FLOAT64 & value1,
-                                            const C_FLOAT64 & value2)
-    {return value1 / value2;}
-
-    static inline C_FLOAT64 operationModulus(const C_FLOAT64 & value1,
-        const C_FLOAT64 & value2)
-    {return (C_FLOAT64) (((C_INT32) value1) % ((C_INT32) value2));}
-
-    static inline C_FLOAT64 operationPlus(const C_FLOAT64 & value1,
-                                          const C_FLOAT64 & value2)
-    {return value1 + value2;}
-
-    static inline C_FLOAT64 operationMinus(const C_FLOAT64 & value1,
-                                           const C_FLOAT64 & value2)
-    {return value1 - value2;}
-
     // Attributes
   private:
-    C_FLOAT64 (*mpOperation)(const C_FLOAT64 & value1,
-                             const C_FLOAT64 & value2);
-
     CEvaluationNode * mpLeft;
 
     CEvaluationNode * mpRight;
