@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/27 18:24:18 $
+   $Date: 2005/06/14 17:43:06 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -25,7 +25,9 @@
 #include "CSpec2Model.h"
 #include "CSpecLine.h"
 #include "CDeTerm.h"
+
 #include "function/CKinFunction.h"
+
 #include "function/CFunctionDB.h"
 
 CSpec2Model::CSpec2Model() {CONSTRUCTOR_TRACE;}
@@ -482,7 +484,7 @@ void CSpec2Model::processFunctions()
 
           std::string::size_type p1 = tmp.find_first_not_of(" \t");
           std::string::size_type p2 = tmp.find_first_of("(");
-          Function.setName(tmp.substr(p1, p2 - p1));
+          Function.setObjectName(tmp.substr(p1, p2 - p1));
 
           std::string parameter =
             tmp.substr(p2 + 1, tmp.find_last_of(")") - p2 - 1);
@@ -500,16 +502,14 @@ void CSpec2Model::processFunctions()
               //Parameters.add(ParameterName,
               //               CFunctionParameter::FLOAT64,
               //               "unknown");
-              Function.addParameter(ParameterName,
-                                    CFunctionParameter::FLOAT64,
-                                    "unknown");
+              Function.addVariable(ParameterName, "unknown");
             }
 
           tmp = it->extractRight();
           p1 = tmp.find_first_not_of(" \t");
           p2 = tmp.find_last_not_of(" \t");
           tmp = tmp.substr(p1, p2 - p1 + 1);
-          Function.setDescription(tmp);
+          Function.setInfix(tmp);
           // :TODO: We have to identify constants
           //        and define them as parameters.
 
@@ -525,9 +525,8 @@ void CSpec2Model::processFunctions()
                   ParameterName = scanner.YYText();
                   std::cout << "ParameterName: " << ParameterName << std::endl;
 
-                  if (!Function.addParameter(ParameterName,
-                                             CFunctionParameter::FLOAT64,
-                                             "PARAMETER"))
+                  if (!Function.addVariable(ParameterName,
+                                            "PARAMETER"))
                     {
                       /* Parameter exists not found */
 
@@ -536,8 +535,10 @@ void CSpec2Model::processFunctions()
                     }
                 }
             }
-          std::cout << Function.getParameters() << std::endl;
+          std::cout << Function.getVariables() << std::endl;
+
           CCopasiDataModel::Global->getFunctionList()->add(Function);
+
           // ((CKinFunction *)pFunction)->compile();
           std::cout << it->getString() << std::endl;
         }

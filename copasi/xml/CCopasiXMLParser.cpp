@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:31:51 $
+   $Date: 2005/06/14 17:46:20 $
    End CVS Header */
 
 /**
@@ -512,7 +512,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 
       mCommon.mExistingFunction = false;
       mCommon.pFunction = CFunction::createFunction(Type);
-      mCommon.pFunction->setName(Name);
+      mCommon.pFunction->setObjectName(Name);
       if (mParser.toBool(Positive))
         mCommon.pFunction->setReversible(TriTrue);
       else
@@ -539,13 +539,13 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
                   if (index != C_INVALID_INDEX)
                     mCommon.pFunctionList->remove(tmp);
 
-                  mCommon.pFunction->setName(tmp);
+                  mCommon.pFunction->setObjectName(tmp);
                   mCommon.pFunctionList->add(mCommon.pFunction, true);
                 }
               break;
 
-            case CFunction::PreDefined:
-              if (Type == CFunction::PreDefined)
+            case CFunction::PreDefinedKineticLaw:
+              if (Type == CFunction::PreDefinedKineticLaw)
                 {
                   pdelete(mCommon.pFunction);
                   mCommon.pFunction = (*mCommon.pFunctionList)[index];
@@ -559,13 +559,15 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
                   if (index != C_INVALID_INDEX)
                     mCommon.pFunctionList->remove(tmp);
 
-                  mCommon.pFunction->setName(tmp);
+                  mCommon.pFunction->setObjectName(tmp);
                   mCommon.pFunctionList->add(mCommon.pFunction, true);
                 }
               break;
 
-            case CFunction::UserDefined:
+            case CFunction::UserDefinedKineticLaw:
+#ifdef FFFF
             case CFunction::Expression:
+#endif // FFFF
             case CFunction::Base:
               mCommon.pFunctionList->remove(Name);
               mCommon.pFunctionList->add(mCommon.pFunction, true);
@@ -621,7 +623,10 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
     case Function:
       if (strcmp(pszName, "Function")) fatalError();
       if (!mCommon.mExistingFunction)
-        mCommon.pFunction->setDescription(mCommon.FunctionDescription);
+        {
+          mCommon.pFunction->setInfix(mCommon.FunctionDescription);
+          mCommon.pFunction->compile();
+        }
 
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
@@ -830,7 +835,7 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
 
       if (!mCommon.mExistingFunction)
         {
-          pUsageRanges = & mCommon.pFunction->getParameters().getUsageRanges();
+          pUsageRanges = & mCommon.pFunction->getVariables().getUsageRanges();
           UsageDescription.setUsage("SUBSTRATE");
           if ((index = pUsageRanges->getIndex("SUBSTRATE")) != C_INVALID_INDEX)
             {
@@ -934,7 +939,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
 
       if (mCommon.mExistingFunction)
         {
-          mCommon.KeyMap.addFix(Key, mCommon.pFunction->getParameters()[Name]);
+          mCommon.KeyMap.addFix(Key, mCommon.pFunction->getVariables()[Name]);
         }
       else
         {
@@ -947,7 +952,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
           else
             pParm->setType(CFunctionParameter::VFLOAT64);
 
-          mCommon.pFunction->getParameters().add(pParm, true);
+          mCommon.pFunction->getVariables().add(pParm, true);
           mCommon.KeyMap.addFix(Key, pParm);
         }
       break;

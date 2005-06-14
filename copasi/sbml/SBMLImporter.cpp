@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/14 14:15:00 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,6 +23,7 @@
 #include "model/CModelValue.h"
 #include "copasi.h"
 #include "function/CNodeK.h"
+#include "function/CKinFunction.h"
 #include "function/CFunctionDB.h"
 
 #include "sbml/SBMLReader.h"
@@ -593,7 +594,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           appendix = numberStream.str();
         }
 
-      CFunction* cFun = this->functionDB->createFunction(functionName + appendix, CFunction::UserDefined);
+      CFunction* cFun = this->functionDB->createFunction(functionName + appendix, CFunction::UserDefinedKineticLaw);
       //ConverterASTNode::printASTNode(node);
       //DebugFile << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
       //std::cerr << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
@@ -603,8 +604,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           //throw StdException("Error. Could not create function for name " + functionName + ".");
           fatalError();
         }
-      cFun->setDescription(SBML_formulaToString(node));
-      cFun->setType(CFunction::UserDefined);
+      cFun->setInfix(SBML_formulaToString(node));
+      cFun->setType(CFunction::UserDefinedKineticLaw);
       cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
       //create parameters
       std::vector<CNodeK*>& v = dynamic_cast<CKinFunction*>(cFun)->getNodes();
@@ -623,15 +624,15 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                  */
               if (nodeName.find("substrate_") == 0)
                 {
-                  cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "SUBSTRATE");
+                  cFun->addVariable(nodeName, "SUBSTRATE", CFunctionParameter::FLOAT64);
                 }
               else if (nodeName.find("product_") == 0)
                 {
-                  cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "PRODUCT");
+                  cFun->addVariable(nodeName, "PRODUCT", CFunctionParameter::FLOAT64);
                 }
               else if (nodeName.find("modifier_") == 0)
                 {
-                  cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "MODIFIER");
+                  cFun->addVariable(nodeName, "MODIFIER", CFunctionParameter::FLOAT64);
                 }
               else
                 {
@@ -665,7 +666,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       if (parameterName == nodeName)
                         {
                           found = true;
-                          cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "PARAMETER");
+                          cFun->addVariable(nodeName, "PARAMETER", CFunctionParameter::FLOAT64);
                           break;
                         }
                     }
@@ -701,7 +702,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                           if (parameterName == nodeName)
                             {
                               found = true;
-                              cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "PARAMETER");
+                              cFun->addVariable(nodeName, "PARAMETER", CFunctionParameter::FLOAT64);
                               break;
                             }
                         }
@@ -712,11 +713,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                     {
                       if (nodeName == "Pi")
                         {
-                          cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "PARAMETER");
+                          cFun->addVariable(nodeName, "PARAMETER", CFunctionParameter::FLOAT64);
                         }
                       else if (nodeName == "ExponentialE")
                         {
-                          cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "PARAMETER");
+                          cFun->addVariable(nodeName, "PARAMETER", CFunctionParameter::FLOAT64);
                         }
                       else
                         {

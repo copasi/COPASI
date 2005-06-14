@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/13 12:14:51 $
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 #include "FunctionWidget.h"
@@ -73,7 +73,7 @@ void FunctionWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
       break;
     }
   table->setText(row, 2, ftype);
-  table->setText(row, 3, FROM_UTF8(pFunc->getDescription()));
+  table->setText(row, 3, FROM_UTF8(pFunc->getInfix()));
 }
 
 void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -100,7 +100,7 @@ CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CFunction* pFunc;
-  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(nname, CFunction::UserDefined)))
+  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(nname, CFunction::UserDefinedKineticLaw)))
     {
       i++;
       nname = name + "_";
@@ -170,7 +170,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                      // Yes or Enter
+    case 0:                       // Yes or Enter
       {
         //first delete reactions
         std::set<std::string>::const_iterator it, itEnd = totalEffectedReacKeys.end();
@@ -190,7 +190,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
         break;
       }
-    case 1:                      // No or Escape
+    case 1:                       // No or Escape
       break;
     }
 }

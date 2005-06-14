@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:31:49 $
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 /**
@@ -71,6 +71,11 @@ class CMassAction : public CFunction
      */
     virtual bool dependsOn(const void * parameter,
                            const CCallParameters<C_FLOAT64> & callParameters) const;
+
+    /**
+     * Compile the function.
+     */
+    virtual bool compile();
   };
 
 #endif // COPASI_CMassAction

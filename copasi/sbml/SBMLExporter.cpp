@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/13 14:23:51 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:06 $
    End CVS Header */
 
 #include <math.h>
@@ -461,7 +461,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
       ASTNode* forwardNode = new ASTNode(AST_TIMES);
 
       ASTNode* parameterNode1 = new ASTNode(AST_NAME);
-      std::string parameterName1 = cMassAction.getParameters()[0]->getObjectName();
+      std::string parameterName1 = cMassAction.getVariables()[0]->getObjectName();
       parameterNode1->setName(parameterName1.c_str());
       // only create a parameter instance if it is a local parameter
       if (copasiReaction->isLocalParameter(0))
@@ -494,7 +494,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
           ASTNode* backwardNode = new ASTNode(AST_TIMES);
 
           ASTNode* parameterNode2 = new ASTNode(AST_NAME);
-          std::string parameterName2 = cMassAction.getParameters()[2]->getObjectName();
+          std::string parameterName2 = cMassAction.getVariables()[2]->getObjectName();
           parameterNode2->setName(parameterName2.c_str());
           // only create a parameter instance if it is a local parameter
           if (copasiReaction->isLocalParameter(2))
@@ -673,7 +673,7 @@ ASTNode* SBMLExporter::createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKinF
         }
       else
         {
-          node->setName(vect[kinFunction.getParameters().findParameterByName(cNodeK.getName(), dataType)][0].c_str());
+          node->setName(vect[kinFunction.getVariables().findParameterByName(cNodeK.getName(), dataType)][0].c_str());
         }
       break;
     case N_OPERATOR:

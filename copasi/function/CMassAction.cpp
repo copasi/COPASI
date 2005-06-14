@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:31:49 $
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 /**
@@ -36,7 +36,8 @@ CMassAction::CMassAction(const TriLogic & reversible,
     CFunction((reversible == TriTrue) ?
               "Mass action (reversible)" :
               "Mass action (irreversible)",
-              pParent)
+              pParent,
+              CFunction::MassAction)
 {
   CONSTRUCTOR_TRACE;
   if (reversible != TriFalse && reversible != TriTrue)
@@ -45,31 +46,31 @@ CMassAction::CMassAction(const TriLogic & reversible,
   setType(CFunction::MassAction);
   setReversible(reversible);
 
-  getParameters().add("k1",
-                      CFunctionParameter::FLOAT64,
-                      "PARAMETER");
-  getParameters().add("substrate",
-                      CFunctionParameter::VFLOAT64,
-                      "SUBSTRATE");
+  getVariables().add("k1",
+                     CFunctionParameter::FLOAT64,
+                     "PARAMETER");
+  getVariables().add("substrate",
+                     CFunctionParameter::VFLOAT64,
+                     "SUBSTRATE");
   addUsage("SUBSTRATE", 1, CRange::Infinity);
 
   if (isReversible() == TriTrue)
     {
       // setName("Mass action (reversible)");
-      setDescription("k1 * PRODUCT <substrate_i> "
-                     "- k2 * PRODUCT <product_j>");
-      getParameters().add("k2",
-                          CFunctionParameter::FLOAT64,
-                          "PARAMETER");
-      getParameters().add("product",
-                          CFunctionParameter::VFLOAT64,
-                          "PRODUCT");
+      setInfix("k1 * PRODUCT <substrate_i> "
+               "- k2 * PRODUCT <product_j>");
+      getVariables().add("k2",
+                         CFunctionParameter::FLOAT64,
+                         "PARAMETER");
+      getVariables().add("product",
+                         CFunctionParameter::VFLOAT64,
+                         "PRODUCT");
       addUsage("PRODUCT", 1, CRange::Infinity);
     }
   else
     {
       // setName("Mass action (irreversible)");
-      setDescription("k1 * PRODUCT <substrate_i>");
+      setInfix("k1 * PRODUCT <substrate_i>");
     }
 }
 CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
@@ -131,3 +132,5 @@ bool CMassAction::dependsOn(const void * parameter,
 
     return false;
   }
+
+bool CMassAction::compile() {return true;}

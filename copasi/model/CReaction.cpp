@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.120 $
+   $Revision: 1.121 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 13:42:38 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:06 $
    End CVS Header */
 
 // CReaction
@@ -188,7 +188,7 @@ bool CReaction::setFunction(CFunction * pFunction)
   else
     mpFunction = pFunction;
 
-  mMap.initializeFromFunctionParameters(mpFunction->getParameters());
+  mMap.initializeFromFunctionParameters(mpFunction->getVariables());
   initializeMetaboliteKeyMap(); //needs to be called before initializeParamters();
   initializeParameters();
 

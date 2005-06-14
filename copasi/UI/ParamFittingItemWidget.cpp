@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ParamFittingItemWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/11/04 15:53:28 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 #include <qvariant.h>
@@ -195,7 +195,7 @@ void ParamFittingItemWidget::slotLowerEdit()
       if (!(func->mMinFunctionList[nIndex]))
         func->mMinFunctionList[nIndex] = new CKinFunction();
       // dont go through the compile function
-      func->mMinFunctionList[nIndex]->CFunction::setDescription(func->mMinList[nIndex]);
+      func->mMinFunctionList[nIndex]->CFunction::setInfix(func->mMinList[nIndex]);
       try
         {
           func->mMinFunctionList[nIndex]->compile();
@@ -240,7 +240,7 @@ void ParamFittingItemWidget::slotUpperEdit()
       if (!(func->mMaxFunctionList[nIndex]))
         func->mMaxFunctionList[nIndex] = new CKinFunction();
       // dont go through the compile function
-      func->mMaxFunctionList[nIndex]->CFunction::setDescription(func->mMaxList[nIndex]);
+      func->mMaxFunctionList[nIndex]->CFunction::setInfix(func->mMaxList[nIndex]);
       try
         {
           func->mMaxFunctionList[nIndex]->compile();

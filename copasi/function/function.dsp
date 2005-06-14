@@ -63,10 +63,6 @@ SOURCE=.\CEvaluationExpression.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CEvaluationFunction.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CEvaluationLexer_lex.cpp
 # End Source File
 # Begin Source File
@@ -164,10 +160,6 @@ SOURCE=.\CCallParameters.h
 # Begin Source File
 
 SOURCE=.\CEvaluationExpression.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\CEvaluationFunction.h
 # End Source File
 # Begin Source File
 

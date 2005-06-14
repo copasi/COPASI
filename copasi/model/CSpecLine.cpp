@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:25:27 $
+   $Date: 2005/06/14 17:43:06 $
    End CVS Header */
 
 #include <iostream>
@@ -18,6 +18,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CKinFunction.h"
+
 #include "function/CFunctionDB.h"
 
 CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE;}
@@ -339,8 +340,8 @@ void CTempReaction::compile(CModel *model,
 
   // Set up the kinetic function, and add it to the database
   CKinFunction *fun = new CKinFunction();
-  fun->setName("function_" + mName);
-  fun->setDescription(mRateDescription);
+  fun->setObjectName("function_" + mName);
+  fun->setInfix(mRateDescription);
 
   // Parse the identifiers to specify the function parameters and the
   // Id2... stuff of the reaction

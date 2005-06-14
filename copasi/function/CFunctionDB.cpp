@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 19:03:16 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 /**
@@ -15,6 +15,9 @@
 
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
+
+#include "CKinFunction.h"
+
 #include "CFunctionDB.h"
 #include "CMassAction.h" 
 //#include "output/CUDFunction.h"
@@ -97,9 +100,9 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
           pFunction = new CMassAction(Function);
           break;
 
-        case CFunction::PreDefined:
+        case CFunction::PreDefinedKineticLaw:
 
-        case CFunction::UserDefined:
+        case CFunction::UserDefinedKineticLaw:
           pFunction = new CKinFunction(Function,
                                        &configbuffer);
           break;
@@ -107,6 +110,8 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
         default:
           fatalError();
         }
+
+      pFunction->compile();
 
       if (!mLoadedFunctions.add(pFunction))
         {
@@ -163,6 +168,7 @@ void CFunctionDB::setFilename(const std::string & filename)
 std::string CFunctionDB::getFilename() const
   {return mFilename;}
 
+#ifdef FFFF
 CFunction * CFunctionDB::dBLoad(const std::string & functionName)
 {
   CFunction Function("NoName", &mLoadedFunctions);
@@ -214,6 +220,7 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
 
   return pFunction;
 }
+#endif // FFFF
 
 CFunction * CFunctionDB::createFunction(const std::string & name, const CFunction::Type & type)
 {
@@ -233,9 +240,8 @@ CFunction * CFunctionDB::createFunction(const std::string & name, const CFunctio
       pFunction = new CMassAction(name);
       break;
 
-    case CFunction::PreDefined:
-
-    case CFunction::UserDefined:
+    case CFunction::PreDefinedKineticLaw:
+    case CFunction::UserDefinedKineticLaw:
       pFunction = new CKinFunction(name);
       break;
 
@@ -267,9 +273,8 @@ CFunction * CFunctionDB::add(const CFunction & function)
       pFunction = new CMassAction(function, &mLoadedFunctions);
       break;
 
-    case CFunction::PreDefined:
-
-    case CFunction::UserDefined:
+    case CFunction::PreDefinedKineticLaw:
+    case CFunction::UserDefinedKineticLaw:
       pFunction = new CKinFunction(function,
                                    NULL,
                                    &mLoadedFunctions);
@@ -321,10 +326,10 @@ CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
     if (functionName == mLoadedFunctions[i]->getObjectName())
       return mLoadedFunctions[i];
 
-  return dBLoad(functionName);
+  return NULL;
 }
 
-CCopasiVectorNS < CFunction > & CFunctionDB::loadedFunctions()
+CCopasiVectorN < CFunction > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
 
 CCopasiVector <CFunction> *

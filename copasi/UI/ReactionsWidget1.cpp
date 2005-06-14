@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.169 $
+   $Revision: 1.170 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 19:56:23 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 /*********************************************************************
@@ -354,7 +354,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                                    // Yes or Enter
+        case 0:                                     // Yes or Enter
           {
             //unsigned C_INT32 size = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().size();
             unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getReactions().size();
@@ -378,7 +378,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                           // No or Escape
+        default:                                            // No or Escape
           break;
         }
     }
@@ -484,7 +484,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   int i = 0;
   CFunction* pFunc;
-  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(nname, CFunction::UserDefined)))
+  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(nname, CFunction::UserDefinedKineticLaw)))
     {
       i++;
       nname = name;

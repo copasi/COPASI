@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 20:07:56 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:06 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -120,7 +120,7 @@ class CReactionInterface
       {if (mpFunction) return mpFunction->getObjectName(); else return emptyString;};
 
     const std::string & getFunctionDescription() const
-    {if (mpFunction) return mpFunction->getDescription(); else return emptyString;};
+    {if (mpFunction) return mpFunction->getInfix(); else return emptyString;};
 
     std::vector< std::string > getListOfPossibleFunctions() const;
 

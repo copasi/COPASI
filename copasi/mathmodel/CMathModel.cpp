@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/31 09:30:19 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:06 $
    End CVS Header */
 
 /**
@@ -425,7 +425,7 @@ CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
   pF->addChild(pL);
 
   const CFunctionParameters & Description =
-    pReaction->getFunction().getParameters();
+    pReaction->getFunction().getVariables();
   const std::vector<std::vector<std::string> > & keyMap = pReaction->getParameterMappings();
 
   unsigned C_INT32 i, imax = Description.size();

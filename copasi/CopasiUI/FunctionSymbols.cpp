@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 /*******************************************************************
@@ -117,7 +117,7 @@ void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
           CFunction *metabObject = (CFunction *)mathSymbol->getObject();
           table->setText(index, 1, FROM_UTF8(metabObject->getObjectName()));
           QStringList functionType;
-          CFunctionParameters &functParam = metabObject->getParameters();
+          CFunctionParameters &functParam = metabObject->getVariables();
           for (unsigned C_INT32 j = 0; j < functParam.size(); j++)
             {
               functionType.push_back(FROM_UTF8(functParam[j]->getObjectName()));

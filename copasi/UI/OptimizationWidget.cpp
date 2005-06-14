@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 18:25:55 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -601,7 +601,7 @@ bool OptimizationWidget::parseExpression()
     }
 
   CKinFunction* pFunction = new CKinFunction(mName);
-  pFunction->setDescription(mRNDesc);
+  pFunction->setInfix(mRNDesc);
   COptTask* optimizationTask =
     dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
   if (!optimizationTask) return false;

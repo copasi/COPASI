@@ -1,137 +1,195 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:31:49 $
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
-/**
- * CFunction
- * 
- * Created for Copasi by Stefan Hoops
- * (C) Stefan Hoops 2001
- */
-
-#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
-#include "CFunctionParameter.h"
-#include "CFunctionParameters.h"
+
 #include "CFunction.h"
-#include "utilities/utility.h"
 #include "report/CKeyFactory.h"
 
 const std::string CFunction::TypeName[] =
-  {"predefined", "predefined", "predefined", "userdefined", "userdefined", ""};
+  {"userdefined", "predefined", "predefined", "userdefined", ""};
 
 const char* CFunction::XMLType[] =
-  {"Base", "MassAction", "PreDefined", "UserDefined", "Expression", NULL};
+  {"Base", "MassAction", "PreDefined", "UserDefined", NULL};
 
-CFunction * CFunction::createFunction(const CFunction * pFunction)
+CFunction *
+CFunction::createFunction(CFunction::Type type)
 {
   CFunction * pNewFunction = NULL;
-
-  switch (pFunction->getType())
-    {
-    case Base:
-      pNewFunction = new CFunction(* (CFunction *) pFunction);
-      break;
-
-    case MassAction:
-      pNewFunction = new CMassAction(* (CMassAction *) pFunction);
-      break;
-
-    case PreDefined:
-      pNewFunction = new CKinFunction(* (CKinFunction *) pFunction);
-      pNewFunction->setType(PreDefined);
-      break;
-
-    case UserDefined:
-      pNewFunction = new CKinFunction(* (CKinFunction *) pFunction);
-      break;
-
-    case Expression:
-      //      pFunction = new
-      //      break;
-
-    default:
-      fatalError();
-    }
-  return pNewFunction;
-}
-
-CFunction * CFunction::createFunction(enum CFunction::Type type)
-{
-  CFunction * pFunction = NULL;
 
   switch (type)
     {
     case Base:
-      pFunction = new CFunction();
+      pNewFunction = new CFunction();
       break;
 
     case MassAction:
-      pFunction = new CMassAction();
+      pNewFunction = new CMassAction();
       break;
 
-    case PreDefined:
-      pFunction = new CKinFunction();
-      pFunction->setType(PreDefined);
+    case PreDefinedKineticLaw:
+      pNewFunction = new CKinFunction();
+      pNewFunction->setType(PreDefinedKineticLaw);
       break;
 
-    case UserDefined:
-      pFunction = new CKinFunction();
+    case UserDefinedKineticLaw:
+      pNewFunction = new CKinFunction();
       break;
-
-    case Expression:
-      //      pFunction = new
-      //      break;
 
     default:
       fatalError();
     }
-  return pFunction;
+
+  return pNewFunction;
+}
+
+CFunction *
+CFunction::copyFunction(const CFunction & src)
+{
+  CFunction * pNewFunction = NULL;
+
+  switch (src.getType())
+    {
+    case Base:
+      pNewFunction = new CFunction(src);
+      break;
+
+    case MassAction:
+      pNewFunction = new CMassAction(static_cast<CMassAction>(src));
+      break;
+
+    case PreDefinedKineticLaw:
+      pNewFunction = new CKinFunction(static_cast<CKinFunction>(src));
+      pNewFunction->setType(PreDefinedKineticLaw);
+      break;
+
+    case UserDefinedKineticLaw:
+      pNewFunction = new CKinFunction(static_cast<CKinFunction>(src));
+      break;
+
+    default:
+      fatalError();
+    }
+
+  return pNewFunction;
 }
 
 CFunction::CFunction(const std::string & name,
-                     const CCopasiContainer * pParent):
+                     const CCopasiContainer * pParent,
+                     const CFunction::Type & type):
     CCopasiContainer(name, pParent, "Function"),
-    mType(CFunction::Base),
+    CEvaluationTree(),
+    mType(type),
     mKey(GlobalKeys.add("Function", this)),
-    mDescription(),
-    mReversible(TriUnspecified),
-    mUsageDescriptions("Usage Descriptions", this),
-    mParameters("Variable Descriptions", this)
-{CONSTRUCTOR_TRACE;}
+    mVariables(),
+    mUsageDescriptions(),
+    mpCallParameters(NULL)
+{}
 
 CFunction::CFunction(const CFunction & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    CEvaluationTree(src),
     mType(src.mType),
     mKey(GlobalKeys.add("Function", this)),
-    mDescription(src.mDescription),
-    mReversible(src.mReversible),
-    mUsageDescriptions(src.mUsageDescriptions, this),
-    mParameters(src.mParameters, this)
-{CONSTRUCTOR_TRACE;}
+    mVariables(src.mVariables),
+    mUsageDescriptions(src.mUsageDescriptions),
+    mpCallParameters(NULL)
+{}
 
 CFunction::~CFunction()
+{GlobalKeys.remove(mKey);}
+
+bool CFunction::setInfix(const std::string & infix)
 {
-  GlobalKeys.remove(mKey);
-  cleanup();
-  DESTRUCTOR_TRACE;
+  if (!CEvaluationTree::setInfix(infix)) return false;
+  if (!initVariables()) return false;
+
+  return true;
 }
 
-void CFunction::cleanup()
+bool CFunction::compile()
+{return compileNodes();}
+
+unsigned C_INT32 CFunction::getVariableIndex(const std::string & name) const
+  {
+    CFunctionParameter::DataType VariableType;
+    return mVariables.findParameterByName(name, VariableType);
+  }
+
+const C_FLOAT64 & CFunction::getVariableValue(const unsigned C_INT32 & index) const
+  {return *(*mpCallParameters)[index].value;}
+
+const CFunction::Type & CFunction::getType() const
+  {return mType;}
+
+void CFunction::setType(const CFunction::Type & type)
+{mType = type;}
+
+void CFunction::setReversible(const TriLogic & reversible)
+{mReversible = reversible;}
+
+const TriLogic & CFunction::isReversible() const
+  {return mReversible;}
+
+const std::string & CFunction::getKey() const
+  {return mKey;}
+
+CFunctionParameters & CFunction::getVariables()
+{return mVariables;}
+
+const CFunctionParameters & CFunction::getVariables() const
+  {return mVariables;}
+
+bool CFunction::addVariable(const std::string & name,
+                            const std::string & usage,
+                            const CFunctionParameter::DataType & type)
+{return mVariables.add(name, type, usage);}
+
+CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
+{return mUsageDescriptions;}
+
+const CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions() const
+  {return mUsageDescriptions;}
+
+C_FLOAT64 CFunction::calcValue(const CCallParameters<C_FLOAT64> & callParameters) const
+  {
+    const_cast<const CCallParameters<C_FLOAT64> *>(mpCallParameters) = & callParameters;
+    return mpRoot->value();
+  }
+
+bool CFunction::dependsOn(const C_FLOAT64 * parameter,
+                          const CCallParameters<C_FLOAT64> & callParameters) const
+  {
+    CCallParameters<C_FLOAT64>::const_iterator it = callParameters.begin();
+    CCallParameters<C_FLOAT64>::const_iterator end = callParameters.end();
+
+    for (; it != end; it++) if (parameter == it->value) return true;
+
+    return false;
+  }
+
+void CFunction::addUsage(const std::string& usage,
+                         const unsigned C_INT32 & lowerBound,
+                         const unsigned C_INT32 & upperBound)
 {
-  mUsageDescriptions.cleanup();
-  mParameters.cleanup();
+  CUsageRange *u;
+  u = new CUsageRange();
+  u->setUsage(usage);
+  u->setLow(lowerBound);
+  u->setHigh(upperBound);
+  mUsageDescriptions.add(u);
 }
 
 void CFunction::load(CReadConfig & configBuffer,
                      CReadConfig::Mode mode)
 {
-  cleanup();
+  //  cleanup();
 
   if (configBuffer.getVersion() < "4")
     {
@@ -144,7 +202,7 @@ void CFunction::load(CReadConfig & configBuffer,
       switch (Type)
         {
         case 1:
-          mType = CFunction::UserDefined;
+          mType = UserDefinedKineticLaw;
           break;
 
         default:
@@ -181,7 +239,8 @@ void CFunction::load(CReadConfig & configBuffer,
   configBuffer.getVariable("FunctionName", "string", &tmp, mode);
   setObjectName(tmp);
 
-  configBuffer.getVariable("Description", "string", &mDescription);
+  configBuffer.getVariable("Description", "string", &tmp);
+  setInfix(tmp);
 
   if (configBuffer.getVersion() >= "4")
     {
@@ -189,7 +248,7 @@ void CFunction::load(CReadConfig & configBuffer,
       configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
       configBuffer.getVariable("UsageDescriptionSize", "C_INT32", &Size);
       mUsageDescriptions.load(configBuffer, Size);
-      mParameters.load(configBuffer);
+      mVariables.load(configBuffer);
     }
 
   // For older file version the parameters have to be build from information
@@ -199,71 +258,35 @@ void CFunction::load(CReadConfig & configBuffer,
   guessModifierUsageRange();
 }
 
-const std::string & CFunction::getKey() const {return mKey;}
-
-bool CFunction::setName(const std::string& name) {return setObjectName(name);}
-
-void CFunction::setDescription(const std::string & description) {mDescription = description;}
-
-const std::string & CFunction::getDescription() const {return mDescription;}
-
-void CFunction::setType(const CFunction::Type & type) {mType = type;}
-
-const CFunction::Type & CFunction::getType() const {return mType;}
-
-void CFunction::setReversible(const TriLogic & reversible) {mReversible = reversible;}
-
-const TriLogic & CFunction::isReversible() const {return mReversible;}
-
-CFunctionParameters & CFunction::getParameters() {return mParameters;}
-
-const CFunctionParameters & CFunction::getParameters() const
-  {return mParameters;}
-
-CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
-{return mUsageDescriptions;}
-
-const CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions() const
-  {return mUsageDescriptions;}
-
-C_FLOAT64 CFunction::calcValue(const CCallParameters<C_FLOAT64> & /* callParameters */) const
-  {return 0.0;}
-
-bool CFunction::dependsOn(const void * C_UNUSED(parameter),
-                          const CCallParameters<C_FLOAT64> & /* callParameters */) const
-  {return false;}
-
-void CFunction::addUsage(const std::string& usage, C_INT32 low, C_INT32 high)
+bool CFunction::initVariables()
 {
-  CUsageRange *u;
-  u = new CUsageRange();
-  u->setUsage(usage);
-  u->setLow(low);
-  u->setHigh(high);
-  mUsageDescriptions.add(u);
+  if (mpNodeList == NULL) return false;
+
+  std::vector< CEvaluationNode * >::iterator it
+  = mpNodeList->begin();
+  std::vector< CEvaluationNode * >::iterator end
+  = mpNodeList->end();
+
+  for (; it != end; ++it)
+    if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::VARIABLE)
+      mVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, "VARIABLE");
+
+  return true;
 }
 
-bool CFunction::addParameter(const std::string & name,
-                             const CFunctionParameter::DataType & type,
-                             const std::string & usage)
-{return mParameters.add(name, type, usage);}
-
-void CFunction::guessModifierUsageRange()
+bool CFunction::guessModifierUsageRange()
 {
-  unsigned C_INT32 pos, imax;
+  unsigned C_INT32 imax = mVariables.getNumberOfParametersByUsage("MODIFIER");
 
-  imax = mParameters.getNumberOfParametersByUsage("MODIFIER");
+  if (imax != 0)
+    {
+      unsigned C_INT32 pos = 0;
 
-  if (!imax) return;
+      if (mVariables.getParameterByUsage("MODIFIER", pos).getType() == CFunctionParameter::VFLOAT64)
+        addUsage("MODIFIER", 0, CRange::Infinity);
+      else
+        addUsage("MODIFIER", imax, CRange::NoRange);
+    }
 
-  pos = 0;
-  if (mParameters.getParameterByUsage("MODIFIER", pos).getType() == CFunctionParameter::VFLOAT64)
-  {addUsage("MODIFIER", 0, CRange::Infinity);}
-  else
-  {addUsage("MODIFIER", imax, CRange::NoRange);}
+  return true;
 }
-
-void CFunction::writeMathML(std::ostream & out) const
-  {
-    out << "!!!" << std::endl;
-  }

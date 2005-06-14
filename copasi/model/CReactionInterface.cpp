@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 20:07:56 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:06 $
    End CVS Header */
 
 #include <string>
@@ -83,7 +83,7 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
     {
       mpFunction = &(rea->getFunction());
       pdelete(mpParameters)
-      mpParameters = new CFunctionParameters(mpFunction->getParameters());
+      mpParameters = new CFunctionParameters(mpFunction->getVariables());
       loadNameMap(model, *rea);
 
       C_INT32 i, imax = size();
@@ -112,7 +112,7 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
 bool CReactionInterface::writeBackToReaction(CModel & model) const
   {
     if (!isValid()) return false; // do nothing
-    if (!(*mpParameters == mpFunction->getParameters())) return false; // do nothing
+    if (!(*mpParameters == mpFunction->getVariables())) return false; // do nothing
 
     bool success = true;
 
@@ -179,7 +179,7 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
   //get the function
   mpFunction = CCopasiDataModel::Global->getFunctionList()->findLoadFunction(fn);
   if (!mpFunction) fatalError();
-  mpParameters = new CFunctionParameters(mpFunction->getParameters());
+  mpParameters = new CFunctionParameters(mpFunction->getVariables());
 
   //initialize mValues[]
   //try to keep old values if the name is the same

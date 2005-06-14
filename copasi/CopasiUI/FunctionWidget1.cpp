@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.118 $
+   $Revision: 1.119 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 19:01:24 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 /**********************************************************************
@@ -437,7 +437,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   if (func)
     {
       pdelete(mpFunction);
-      mpFunction = CFunction::createFunction(func);
+      mpFunction = CFunction::copyFunction(*func);
       flagChanged = false;
     }
   else if (!mpFunction)
@@ -448,7 +448,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
 
   // make dialogue read only for predefined functions
   if (pFunction->getType() == CFunction::MassAction ||
-      pFunction->getType() == CFunction::PreDefined)
+      pFunction->getType() == CFunction::PreDefinedKineticLaw)
     {
       flagRO = true;
       RadioButton1->setEnabled(false);
@@ -481,7 +481,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   LineEdit1->setText(FROM_UTF8(pFunction->getObjectName()));
 
   /* Insert line breaks in the function description */
-  std::string desc = pFunction->getDescription();
+  std::string desc = pFunction->getInfix();
   int l = 0;
   int n = 0;
   int len = desc.length();
@@ -498,16 +498,19 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
         }
       desc.insert(l, 1, '\n');
     }
+  disconnect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
   textBrowser->setText(FROM_UTF8(desc));
+  connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
 
   //radio buttons
   loadReversibility(pFunction->isReversible());
 
   //parameter table
-  loadParameterTable(pFunction->getParameters());
+  loadParameterTable(pFunction->getVariables());
 
   // application table
-  loadUsageTable(pFunction->getUsageDescriptions());
+  // loadUsageTable(pFunction->getUsageDescriptions());
+  loadUsageTable(pFunction->getVariables().getUsageRanges());
 
   isValid = true;
   flagChanged = false;
@@ -523,8 +526,8 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
 bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunction* target)
 {
   //Parameters
-  CFunctionParameters &functParam = target->getParameters();
-  const CFunctionParameters &pfunctParam = src->getParameters();
+  CFunctionParameters &functParam = target->getVariables();
+  const CFunctionParameters &pfunctParam = src->getVariables();
   CFunctionParameter::DataType Type;
   unsigned C_INT32 index;
   unsigned C_INT32 i, j;
@@ -584,7 +587,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
   //Description
   try
     {
-      target->setDescription(src->getDescription());
+      target->CEvaluationTree::setInfix(src->getInfix());
     }
   catch (CCopasiException Exception)
   {}
@@ -601,7 +604,7 @@ bool FunctionWidget1::saveToFunction()
   QString name(LineEdit1->text());
   if (func->getObjectName() != (const char *)name.utf8())
     {
-      if (!func->setName((const char *)name.utf8()))
+      if (!func->setObjectName((const char *)name.utf8()))
         {
           QString msg;
           msg = "Unable to rename function '" + FROM_UTF8(func->getObjectName()) + "'\n"
@@ -658,7 +661,7 @@ void FunctionWidget1::updateParameters()
   // :TODO: This function should be returning whether the parameters were actually changed. //
 
   const std::vector<CNodeK*> & v = ((CKinFunction*) mpFunction)->getNodes();
-  CFunctionParameters & params = mpFunction->getParameters();
+  CFunctionParameters & params = mpFunction->getVariables();
 
   unsigned C_INT32 index;
   CFunctionParameter::DataType type;
@@ -674,8 +677,8 @@ void FunctionWidget1::updateParameters()
           index = params.findParameterByName(v[i]->getName(), type);
           if (index == C_INVALID_INDEX)
             {
-              mpFunction->addParameter(v[i]->getName(),
-                                       CFunctionParameter::FLOAT64, "PARAMETER");
+              mpFunction->addVariable(v[i]->getName(), "PARAMETER",
+                                      CFunctionParameter::FLOAT64);
             }
         }
     }
@@ -706,7 +709,7 @@ void FunctionWidget1::updateApplication()
   // :TODO: This function should be returning whether the application was actually changed //
 
   CUsageRange Application;
-  const CFunctionParameters &functParam = mpFunction->getParameters();
+  const CFunctionParameters &functParam = mpFunction->getVariables();
   CCopasiVectorNS < CUsageRange > & functUsage = mpFunction ->getUsageDescriptions();
   functUsage.cleanup();
 
@@ -764,18 +767,18 @@ void FunctionWidget1::slotFcnDescriptionChanged()
   //just set the description (with implicit compile()) and update parameters.
   try
     {
-      mpFunction->setDescription((const char *)textBrowser->text().utf8());
+      mpFunction->setInfix((const char *)textBrowser->text().utf8());
     }
   catch (CCopasiException Exception)
   {}
   updateParameters();
 
   //try again (to see if the description is valid)
-  //the first call to setDescription would have thrown an exc. even if a param name has changed
+  //the first call to setInfix would have thrown an exc. even if a param name has changed
   isValid = true;
   try
     {
-      mpFunction->setDescription((const char *)textBrowser->text().utf8());
+      mpFunction->setInfix((const char *)textBrowser->text().utf8());
     }
   catch (CCopasiException Exception)
     {
@@ -793,12 +796,12 @@ void FunctionWidget1::slotFcnDescriptionChanged()
     }
 
   //parameter table
-  loadParameterTable(mpFunction->getParameters());
+  loadParameterTable(mpFunction->getVariables());
 
   // application table
   updateApplication();
-  loadUsageTable(mpFunction->getUsageDescriptions());
-
+  // loadUsageTable(mpFunction->getUsageDescriptions());
+  loadUsageTable(mpFunction->getVariables().getUsageRanges());
   //
   textBrowser->setFocus();
 }
@@ -808,7 +811,7 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
   std::cout << "table changed " << row << " " << col << std::endl;
   flagChanged = true;
 
-  CFunctionParameters &functParam = mpFunction->getParameters();
+  CFunctionParameters &functParam = mpFunction->getVariables();
 
   if (col == 2) //Usage
     {
@@ -826,9 +829,10 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
     }
 
   //update tables
-  loadParameterTable(mpFunction->getParameters());
+  loadParameterTable(mpFunction->getVariables());
   updateApplication();
-  loadUsageTable(mpFunction->getUsageDescriptions());
+  // loadUsageTable(mpFunction->getUsageDescriptions());
+  loadUsageTable(mpFunction->getVariables().getUsageRanges());
 }
 
 void FunctionWidget1::slotAppTableValueChanged(int C_UNUSED(row), int C_UNUSED(col))
@@ -914,7 +918,7 @@ void FunctionWidget1::slotNewButtonClicked()
   std::string name = "function";
   int i = 0;
   CFunction* pFunc;
-  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefined)))
+  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefinedKineticLaw)))
     {
       i++;
       name = "function_";
@@ -974,7 +978,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                                 // Yes or Enter
+        case 0:                                                  // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -991,7 +995,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                                 // No or Escape
+        case 1:                                                  // No or Escape
           break;
         }
     }

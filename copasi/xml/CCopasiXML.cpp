@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 19:04:54 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:06 $
    End CVS Header */
 
 /**
@@ -386,7 +386,7 @@ bool CCopasiXML::saveModel()
                       Attr.erase();
                       Attr.add("functionParameter",
                                pReaction->
-                               getFunction().getParameters()[j]->getKey());
+                               getFunction().getVariables()[j]->getKey());
 
                       startSaveElement("CallParameter", Attr);
 
@@ -482,14 +482,14 @@ bool CCopasiXML::saveFunctionList()
       startSaveElement("MathML");
 
       startSaveElement("Text");
-      saveData(pFunction->getDescription());
+      saveData(pFunction->getInfix());
       endSaveElement("Text");
 
       endSaveElement("MathML");
 
       startSaveElement("ListOfParameterDescriptions");
 
-      unsigned C_INT32 j, jmax = pFunction->getParameters().size();
+      unsigned C_INT32 j, jmax = pFunction->getVariables().size();
       CFunctionParameter * pParameter;
 
       Attributes.erase();
@@ -504,7 +504,7 @@ bool CCopasiXML::saveFunctionList()
 
       for (j = 0; j < jmax; j++)
         {
-          pParameter = pFunction->getParameters()[j];
+          pParameter = pFunction->getVariables()[j];
           Attributes.setValue(0, pParameter->getKey());
           Attributes.setValue(1, pParameter->getObjectName());
           Attributes.setValue(2, j);
@@ -529,7 +529,7 @@ bool CCopasiXML::saveFunctionList()
           else
             {
               CUsageRange * pUsageRange =
-                pFunction->getParameters().getUsageRanges()[pParameter->getUsage()];
+                pFunction->getVariables().getUsageRanges()[pParameter->getUsage()];
               Attributes.setValue(4, pUsageRange->getLow());
               if (pUsageRange->getHigh() == (unsigned C_INT32) CRange::Infinity)
                 Attributes.setValue(5, "unbounded");

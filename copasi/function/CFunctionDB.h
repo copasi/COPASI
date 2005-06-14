@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 08:58:25 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:43:05 $
    End CVS Header */
 
 /**
@@ -40,7 +40,7 @@ class CFunctionDB : public CCopasiContainer
      *  @supplierCardinality 0..*
      */
     /** @dia:route 2,0; h,98.6992,12.15,102.581,17.0878,106.082 */
-    CCopasiVectorNS < CFunction > mLoadedFunctions;
+    CCopasiVectorN < CFunction > mLoadedFunctions;
 
     // Operations
 
@@ -101,12 +101,14 @@ class CFunctionDB : public CCopasiContainer
      */
     std::string getFilename() const;
 
+#ifdef FFFF
     /**
      *  Load the function functionName from the database
      *  @param "const string" &functionName
      *  @return CFunction * function (NULL if function can not be loaded)
      */
     CFunction * dBLoad(const std::string & functionName);
+#endif // FFFF
 
     /**
      *  Add the function to the database
@@ -153,7 +155,7 @@ class CFunctionDB : public CCopasiContainer
      *  Retrieves the vector of loaded functions.
      *  @return "CCopasiVectorNS < CKinFunction > &" loadedFunctions
      */
-    CCopasiVectorNS < CFunction > & loadedFunctions();
+    CCopasiVectorN < CFunction > & loadedFunctions();
 
     /**
      *  Retrieves the vector of functions that are suitable for a
