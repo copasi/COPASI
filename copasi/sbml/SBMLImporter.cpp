@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/14 09:43:00 $
+   $Date: 2005/06/14 14:15:00 $
    End CVS Header */
 
 #include "copasi.h"
@@ -857,6 +857,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                                 {
                                   Parameter* p = dynamic_cast<Parameter*>(it->second);
                                   std::string parameterId;
+                                  if (!p)
+                                    {
+                                      ++it;
+                                      continue;
+                                    }
                                   if (this->pLevel == 1)
                                     {
                                       parameterId = p->getName();
