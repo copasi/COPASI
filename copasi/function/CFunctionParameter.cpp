@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 20:01:01 $
+   $Author: shoops $ 
+   $Date: 2005/06/14 17:32:54 $
    End CVS Header */
 
 /**
@@ -24,15 +24,15 @@ const std::string CFunctionParameter::DataTypeName[] =
 
 //static
 const std::string CFunctionParameter::RoleNameXML[] =
-  {"substrate", "product", "modifier", "constant", "volume", "other", ""};
+  {"substrate", "product", "modifier", "constant", "volume", "variable", ""};
 
 //static
 const std::string CFunctionParameter::RoleNameInternal[] =
-  {"SUBSTRATE", "PRODUCT", "MODIFIER", "PARAMETER", "VOLUME", "PARAMETER", ""};
+  {"SUBSTRATE", "PRODUCT", "MODIFIER", "PARAMETER", "VOLUME", "VARIABLE", ""};
 
 //static
 const std::string CFunctionParameter::RoleNameDisplay[] =
-  {"Substrate", "Product", "Modifier", "Parameter", "Volume", "Parameter", ""};
+  {"Substrate", "Product", "Modifier", "Parameter", "Volume", "Variable", ""};
 
 //const char * CFunctionParameter::RoleName[] =
 //  {"substrate", "product", "modifier", "constant", "other", NULL};
