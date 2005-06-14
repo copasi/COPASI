@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/13 16:29:06 $
+   $Author: gauges $ 
+   $Date: 2005/06/14 09:43:00 $
    End CVS Header */
 
 #include "copasi.h"
@@ -120,7 +120,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         }
       CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel, copasi2sbmlmap);
       std::string key = sbmlCompartment->getId();
-      if (!sbmlCompartment->isSetId())
+      if (pLevel == 1)
         {
           key = sbmlCompartment->getName();
         }
@@ -142,7 +142,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         {
           CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment, copasi2sbmlmap);
           std::string key;
-          if (!sbmlSpecies->isSetId())
+          if (this->pLevel == 1)
             {
               key = sbmlSpecies->getName();
             }
@@ -649,14 +649,13 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                           //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
                           fatalError();
                         }
-                      if (parameter->isSetId())
+                      if (this->pLevel != 1)
                         {
                           parameterName = parameter->getId();
                         }
                       else
                         {
-                          // a parameter must have an id.
-                          fatalError();
+                          parameterName = parameter->getName();
                         }
                       if (parameter->isSetUnits())
                         {
@@ -686,7 +685,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                               fatalError();
                             }
                           std::string parameterName;
-                          if (parameter->isSetId())
+                          if (this->pLevel != 1)
                             {
                               parameterName = parameter->getId();
                             }
@@ -804,14 +803,13 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                           fatalError();
                         }
                       std::string parameterName;
-                      if (parameter->isSetId())
+                      if (this->pLevel != 1)
                         {
                           parameterName = parameter->getId();
                         }
                       else
                         {
-                          // a parameter must have an id
-                          fatalError();
+                          parameterName = parameter->getName();
                         }
                       if (parameterName == nodeName)
                         {
@@ -840,15 +838,13 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                               fatalError();
                             }
                           std::string parameterName;
-                          if (parameter->isSetId())
+                          if (this->pLevel != 1)
                             {
                               parameterName = parameter->getId();
                             }
                           else
                             {
-                              // does not make sense -> parameterName = parameter->getName();
-                              // a parameter has to have an id.
-                              fatalError();
+                              parameterName = parameter->getName();
                             }
                           if (parameterName == nodeName)
                             {
@@ -860,7 +856,16 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                               while (it != endIt)
                                 {
                                   Parameter* p = dynamic_cast<Parameter*>(it->second);
-                                  if (p != NULL && p->getId() == parameterName)
+                                  std::string parameterId;
+                                  if (this->pLevel == 1)
+                                    {
+                                      parameterId = p->getName();
+                                    }
+                                  else
+                                    {
+                                      parameterId = p->getId();
+                                    }
+                                  if (p != NULL && parameterId == parameterName)
                                     {
                                       value = (CModelValue*)(it->first);
                                       break;
@@ -937,7 +942,16 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
           for (counter2 = 0; counter2 < kLaw->getNumParameters();++counter2)
             {
               Parameter* param = kLaw->getParameter(counter2);
-              if (param->getId() == name)
+              std::string parameterName;
+              if (this->pLevel == 1)
+                {
+                  parameterName = param->getName();
+                }
+              else
+                {
+                  parameterName = param->getId();
+                }
+              if (parameterName == name)
                 {
                   isShadowed = true;
                   shadowedSubstances.push_back(name);
@@ -967,7 +981,16 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
           for (counter2 = 0; counter2 < kLaw->getNumParameters();++counter2)
             {
               Parameter* param = kLaw->getParameter(counter2);
-              if (param->getId() == name)
+              std::string parameterName;
+              if (this->pLevel == 1)
+                {
+                  parameterName = param->getName();
+                }
+              else
+                {
+                  parameterName = param->getId();
+                }
+              if (parameterName == name)
                 {
                   isShadowed = true;
                   shadowedSubstances.push_back(name);
@@ -997,7 +1020,17 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
           for (counter2 = 0; counter2 < kLaw->getNumParameters();++counter2)
             {
               Parameter* param = kLaw->getParameter(counter2);
-              if (param->getId() == name)
+              std::string parameterName;
+              if (this->pLevel == 1)
+                {
+                  parameterName = param->getName();
+                }
+              else
+                {
+                  parameterName = param->getId();
+                }
+
+              if (parameterName == name)
                 {
                   isShadowed = true;
                   shadowedSubstances.push_back(name);
@@ -1315,6 +1348,7 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
       //DebugFile << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
       //DebugFile << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
       pSBMLDocument = sbmlDoc;
+      this->pLevel = pSBMLDocument->getLevel();
       pModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
     }
   else

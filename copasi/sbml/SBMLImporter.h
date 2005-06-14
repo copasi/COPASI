@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/13 14:23:51 $
+   $Date: 2005/06/14 09:43:00 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -38,6 +38,7 @@ class SBMLImporter
     std::map<std::string, CMetab*> speciesMap;
     CFunctionDB* functionDB;
     bool mIncompleteModel;
+    unsigned int pLevel;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
