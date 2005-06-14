@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.13 $ $Author: shoops $ $Date: 2005/06/07 14:47:18 $  
+# $Revision: 1.14 $ $Author: shoops $ $Date: 2005/06/14 18:52:05 $  
 ######################################################################
 
 LIB = function
@@ -9,6 +9,7 @@ include(../common.pri)
 
 # Input
 HEADERS += CCallParameters.h \
+           CEvaluationParser_yacc.h \
            CEvaluationLexer.h \
            CEvaluationNode.h \
            CEvaluationNodeConstant.h \
@@ -52,9 +53,9 @@ SOURCES += CCallParameters.cpp \
            CRange.cpp \
            CUsageRange.cpp
 
-LEXSOURCES += CEvaluationLexer.lpp  
-
 YACCSOURCES += CEvaluationParser.ypp
+
+LEXSOURCES += CEvaluationLexer.lpp  
 
 1.target   = CKinFunctionFlexLexer.cpp
 1.depends  = CKinFunctionFlexLexer.lpp 
