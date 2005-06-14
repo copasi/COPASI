@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:31:49 $
+   $Date: 2005/06/14 17:47:44 $
    End CVS Header */
 
 /**
@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "CFunction.h"
+
 #include "CNodeK.h"
 #include "utilities/CReadConfig.h"
 
@@ -95,22 +96,29 @@ class CKinFunction : public CFunction
 
     virtual void writeMathML(std::ostream & out) const;
 
+#ifdef FFFF
     /**
      *  Compile a function
      */
-    void compile();
+    void CNodeKcompile();
+#endif // FFFF
 
+#ifdef  FFFF
     /**
      *  This parses the function into a binary tree
      */
     C_INT32 parse();
+#endif // FFFF
 
+#ifdef FFFF
     /**
      *  Set the description of the function
      *  @param "const string &" description
      */
     virtual void setDescription(const std::string& description);
+#endif // FFFF
 
+#ifdef FFFF
     /**
      *  Calculates the value of the function
      *  @param const CCallParameters<C_FLOAT64> & callParameters
@@ -118,7 +126,9 @@ class CKinFunction : public CFunction
      */
     virtual C_FLOAT64
     calcValue(const CCallParameters<C_FLOAT64> & callParameters) const;
+#endif // FFFF
 
+#ifdef FFFF
     /**
      * Returns whether the function depends on the given parameter
      * &param const void * parameter
@@ -127,6 +137,7 @@ class CKinFunction : public CFunction
      */
     virtual bool dependsOn(const void * parameter,
                            const CCallParameters<C_FLOAT64> & callParameters) const;
+#endif // FFFF
 
     /**
      *  Retreives the nodes of the function
@@ -183,12 +194,14 @@ class CKinFunction : public CFunction
      */
     void createParameters();
 
+#ifdef  FFFF
     /**
      *  This function assignes the appropriate indeces to nodes of type identifier
      *  so that the value of the matching call parameter is returned when 
      *  calculating the function.
      */
     void initIdentifierNodes();
+#endif // FFFF
 
     /**
      * Cleanup nodes

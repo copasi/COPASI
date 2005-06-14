@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:31:49 $
+   $Date: 2005/06/14 17:47:44 $
    End CVS Header */
 
 /**
@@ -32,10 +32,9 @@
 
 CKinFunction::CKinFunction(const std::string & name,
                            const CCopasiContainer * pParent):
-    CFunction(name, pParent)
+    CFunction(name, pParent, CFunction::PreDefinedKineticLaw)
 {
   CONSTRUCTOR_TRACE;
-  setType(CFunction::UserDefined);
 }
 
 CKinFunction::CKinFunction(const CFunction & src,
@@ -63,7 +62,7 @@ CKinFunction::CKinFunction(const CFunction & src,
         cleanupNodes();
       }
 
-  compile();
+  //  compile();
 }
 
 CKinFunction::CKinFunction(const CKinFunction & src,
@@ -88,7 +87,6 @@ CKinFunction::~CKinFunction()
 void CKinFunction::cleanup()
 {
   cleanupNodes();
-  CFunction::cleanup();
 }
 
 #ifdef XXXX
@@ -115,6 +113,7 @@ void CKinFunction::load(CReadConfig & configBuffer,
 }
 #endif // XXXX
 
+#ifdef FFFF
 bool CKinFunction::createObjList()
 {
   std::string mDescription = CFunction::getDescription();
@@ -173,8 +172,10 @@ bool CKinFunction::createObjList()
   fatalError(); //thorough exception first
   return false; //partial match
 }
+#endif // FFFF
 
-void CKinFunction::compile()
+#ifdef FFFF
+void CKinFunction::CNodeKcompile()
 {
   cleanupNodes();
   if (createObjList())
@@ -190,6 +191,7 @@ void CKinFunction::compile()
   */
   ObjList.clear();
 }
+#endif // FFFF
 
 /*
 void CKinFunction::preCompile()
@@ -206,6 +208,7 @@ void CKinFunction::connect()
 }
  */
 
+#ifdef FFFF
 C_INT32 CKinFunction::parse()
 {
   int i = 1;
@@ -302,7 +305,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                              // this is an error
+        case N_NOP:                                               // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -315,19 +318,25 @@ C_INT32 CKinFunction::parse()
 
   return 0;
 }
+#endif // FFFF
 
+#ifdef FFFF
 void CKinFunction::setDescription(const std::string& description)
 {
   CFunction::setDescription(description);
 
   compile();
 }
+#endif // FFFF
 
+#ifdef FFFF
 C_FLOAT64 CKinFunction::calcValue(const CCallParameters<C_FLOAT64> & callParameters) const
   {
     return mNodes[0]->getLeft().value(callParameters);
   }
+#endif // FFFF
 
+#ifdef FFFF
 bool CKinFunction::dependsOn(const void * parameter,
                              const CCallParameters<C_FLOAT64> & callParameters) const
   {
@@ -338,7 +347,9 @@ bool CKinFunction::dependsOn(const void * parameter,
 
     return false;
   }
+#endif // FFFF
 
+#ifdef FFFF
 C_INT32 CKinFunction::connectNodes()
 {
   C_INT32 errfl = 0;     // !!! do we need this?
@@ -460,7 +471,9 @@ C_INT32 CKinFunction::connectNodes()
   // return
   return errfl;
 }
+#endif // FFFF
 
+#ifdef FFFF
 CNodeK * CKinFunction::parseExpression(C_INT16 priority)
 {
   C_INT32 errfl = 0;     // !!! do we need this?
@@ -504,7 +517,9 @@ CNodeK * CKinFunction::parseExpression(C_INT16 priority)
 
   return lhs;
 }
+#endif // FFFF
 
+#ifdef FFFF
 CNodeK * CKinFunction::parsePrimary()
 {
   C_INT32 errfl = 0;     // !!! do we need this?
@@ -660,7 +675,9 @@ CNodeK * CKinFunction::parsePrimary()
         parseExpression(0);
     }
 }
+#endif // FFFF
 
+// This is used when reading Gepasi Files
 void CKinFunction::createParameters()
 {
   CCopasiVectorN < CFunctionParameter > Substrates;
@@ -731,34 +748,35 @@ void CKinFunction::createParameters()
         }
     }
 
-  getParameters().cleanup();
+  getVariables().cleanup();
 
   imax = Substrates.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(Substrates[i], true);
+    getVariables().add(Substrates[i], true);
   Substrates.cleanup();
 
   imax = Products.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(Products[i], true);
+    getVariables().add(Products[i], true);
   Products.cleanup();
 
   imax = Modifiers.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(Modifiers[i], true);
+    getVariables().add(Modifiers[i], true);
   Modifiers.cleanup();
 
   imax = Parameters.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(Parameters[i], true);
+    getVariables().add(Parameters[i], true);
   Parameters.cleanup();
 
   imax = Volumes.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(Volumes[i], true);
+    getVariables().add(Volumes[i], true);
   Volumes.cleanup();
 }
 
+#ifdef FFFF
 void CKinFunction::initIdentifierNodes()
 {
   // CCopasiVectorNS < CFunctionParameter > * BaseParameters;
@@ -843,6 +861,7 @@ void CKinFunction::initIdentifierNodes()
         fatalError();
     }
 }
+#endif // FFFF
 
 std::vector< CNodeK * > & CKinFunction::getNodes() {return mNodes;}
 
