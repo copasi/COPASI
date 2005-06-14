@@ -16,6 +16,10 @@ flex  -t $SOURCE_FILE | \
          -e 's/using std::istream;/using namespace std;/' \
          -e '/using std::ostream;/d' \
          -e '/#include <unistd.h>/d' \
+         -e '/class istream/i \
+#include <iostream> \
+' \
+         -e 's/class istream/using namespace std/' \
          > $TARGET_FILE
 
 if [ x`uname -a | grep -ic cygwin` = x"1" ]; then
