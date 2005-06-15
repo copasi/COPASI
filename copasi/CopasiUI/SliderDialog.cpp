@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/15 13:37:07 $
+   $Date: 2005/06/15 14:10:33 $
    End CVS Header */
 
 #include <iostream>
@@ -267,10 +267,12 @@ void SliderDialog::editSlider()
     {
       this->addSlider(pSettingsDialog->getSlider());
       this->currSlider->updateSliderData();
+      /*
       if ((!this->currSlider->isEnabled()) && this->currSlider->getCSlider()->compile())
         {
           this->currSlider->setEnabled(true);
         }
+        */
     }
   delete pSettingsDialog;
   delete pVector;
@@ -400,9 +402,14 @@ void SliderDialog::fillSliderBox()
       SCopasiXMLGUI* pGUI = CCopasiDataModel::Global->getGUI();
       assert(pGUI);
       // add CopasiSlider for all CSliders that don't have one.
+      bool issueWarning = false;
       for (i = 0; i < maxSliders;++i)
         {
           bool found = false;
+          if (!(*pVector)[i]->compile())
+            {
+              issueWarning = true;
+            }
           for (j = 0; j < maxWidgets; j++)
             {
               CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
@@ -447,6 +454,11 @@ void SliderDialog::fillSliderBox()
               this->deleteSlider(pTmpSlider);
             }
         }
+      if (issueWarning)
+        {
+          QMessageBox::warning(NULL, "Invalid Slider", "One or more sliders are invalid\n and have been disabled!", QMessageBox::Ok, QMessageBox::NoButton);
+        }
+
       delete pVector;
     }
   v = this->sliderMap[this->currentFolderId];
@@ -612,10 +624,6 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
               }
             pVector->push_back(pSlider);
           }
-      }
-    if (issueWarning)
-      {
-        QMessageBox::warning(NULL, "Invalid Slider", "One or more sliders are invalid\n and have been disabled!", QMessageBox::Ok, QMessageBox::NoButton);
       }
     return pVector;
   }

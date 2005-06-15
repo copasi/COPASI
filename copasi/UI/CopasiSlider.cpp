@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/15 13:37:07 $
+   $Date: 2005/06/15 14:10:33 $
    End CVS Header */
 
 #include <math.h>
@@ -44,7 +44,7 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): QHBox(parent), mp
   this->mpEditButton->setFixedSize(13, 13);
   if (!this->mpCSlider->compile())
     {
-      this->setEnabled(false);
+      this->mpQSlider->setEnabled(false);
     }
   this->updateSliderData();
   QToolTip::add(this->mpCloseButton, tr("remove slider"));
@@ -76,6 +76,13 @@ void CopasiSlider::updateSliderData()
       this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
       connect(this->mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
       this->updateLabel();
+      if (this->mpQSlider->isEnabled() == false)
+        {
+          if (this->mpCSlider->getSliderObject() != NULL)
+            {
+              this->mpQSlider->setEnabled(true);
+            }
+        }
     }
 }
 
