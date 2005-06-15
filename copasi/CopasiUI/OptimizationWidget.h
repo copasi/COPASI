@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/07 15:58:36 $
+   $Author: shoops $ 
+   $Date: 2005/06/15 01:38:00 $
    End CVS Header */
 
 /****************************************************************************
@@ -16,12 +16,14 @@
 #ifndef OPTIMIZATIONWIDGET_H
 #define OPTIMIZATIONWIDGET_H
 
-#include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
+
+#include <vector>
+
+#include "copasi.h"
 #include "copasiWidget.h"
 #include "utilities/CVector.h"
-#include <vector>
 #include "CScanContainerWidget.h"
 #include "utilities/CCopasiVector.h"
 #include "report/CKeyFactory.h"
