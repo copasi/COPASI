@@ -1,15 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/10 11:54:30 $
+   $Author: shoops $ 
+   $Date: 2005/06/15 18:10:51 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeObject
 #define COPASI_CEvaluationNodeObject
 
-class ASTNode;
+#include "report/CCopasiObjectName.h"
+
+class CRegisteredObjectName;
 
 /**
  * This is class for nodes presenting numbers used in an evaluation trees
@@ -68,6 +70,20 @@ class CEvaluationNodeObject : public CEvaluationNode
     virtual inline const C_FLOAT64 & value() const {return *mpValue;}
 
     /**
+     * Retrieve the value of the node. This method is superceded
+     * value() which will perform faster.
+     * @return const Data & value
+     */
+    virtual Data getData() const;
+
+    /**
+     * Set the data of the Node.
+     * @param const Data & data
+     * @return bool success
+     */
+    virtual bool setData(const Data & data);
+
+    /**
      * Create a new operator node from an ASTNode tree.
      * @param const ASTNode* node
      * @return CEvaluationNode* return a pointer to the newly created node;
@@ -80,6 +96,11 @@ class CEvaluationNodeObject : public CEvaluationNode
      * Pointer to the value of the variable.
      */
     C_FLOAT64 * mpValue;
+
+    /**
+     * The registered object name to track eventual renaming.
+     */
+    CRegisteredObjectName mRegisteredObjectCN;
   };
 
 #endif // COPASI_CEvaluationNodeObject
