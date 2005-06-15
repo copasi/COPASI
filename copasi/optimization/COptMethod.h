@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/05/13 18:04:46 $
+   $Date: 2005/06/15 16:24:06 $
    End CVS Header */
 
 /**
@@ -132,7 +132,7 @@ class COptMethod : public CCopasiMethod
     virtual bool cleanup();
   };
 
-// #include "CRandomSearch.h"
+#include "CRandomSearch.h" 
 // #include "CRandomSearchMaster.h"
 // #include "COptMethodSA.h"
 #include "COptMethodGA.h" 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2005/06/14 18:17:00 $
+   $Author: anuragr $ 
+   $Date: 2005/06/15 16:26:31 $
    End CVS Header */
 
 /***************************************************************************
@@ -83,9 +83,9 @@ bool CRandomSearch::initialize()
   //C_FLOAT64 la, x, candx = DBL_MAX;
   C_FLOAT64 candx = DBL_MAX;
   //C_INT32 i, imax = (C_INT32) getValue("Number of Iterations");
-  mIterations = (C_INT32) getValue("Number of Iterations");
+  mIterations = * (unsigned C_INT32 *) getValue("Number of Iterations");
   //C_INT32 j, jmax = mpOptProblem->getVariableSize();
-  C_INT32 jmax = mpOptProblem->getVariableSize();
+  //C_INT32 jmax = mpOptProblem->getVariableSize();
   //mGenerations = * (unsigned C_INT32 *) getValue("Number of Generations");
   //mPopulationSize = * (unsigned C_INT32 *) getValue("Population Size");
   mpRandom = CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator"),
@@ -133,9 +133,11 @@ bool CRandomSearch::optimise()
 {
   bool linear;
 
+  if (!initialize()) return false;
+
   C_FLOAT64 la, candx = DBL_MAX;
   //C_INT32 i, imax = (C_INT32) getValue("RandomSearch.Iterations");
-  mIterations = (C_INT32) getValue("Number of Iterations");
+  mIterations = * (unsigned C_INT32 *) getValue("Number of Iterations");
   //C_INT32 j, jmax = mpOptProblem->getVariableSize();
   C_INT32 i, j;
   //C_INT32 varSize = mpOptProblem->getVariableSize();

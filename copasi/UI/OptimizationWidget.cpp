@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Author: anuragr $ 
+   $Date: 2005/06/15 16:28:46 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -155,9 +155,11 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   mObject = NULL;
 
-  methodCombo->insertItem("Genetic Algorithm");
+  methodCombo->insertItem("Random Search");
+  methodCombo->insertItem("RandomSearch Master");
   methodCombo->insertItem("Simulated Annealing");
-  methodCombo->insertItem("EP2");
+  methodCombo->insertItem("Genetic Algorithm");
+  methodCombo->insertItem("Evolutionary Program2");
   methodCombo->insertItem("Hybrid GA/SA");
 
   //connect the runButton with the respective slot
@@ -431,38 +433,10 @@ std::string OptimizationWidget::getKey()
 
 bool OptimizationWidget::changeMethod(int index)
 {
-  /*
-  switch (index)
-     {
-     case 0:
-       // OptimizationGA
-       // show only relevant boxes
-       param1Edit->hide();
-       param2Edit->hide();
-       param3Edit->hide();
-       param4Edit->show();
-       param5Edit->show();
-       break;
-
-     case 1:
-       param1Edit->hide();
-       param2Edit->hide();
-       param3Edit->hide();
-       param4Edit->hide();
-       param5Edit->show();
-       break;
-
-     case 2:
-       param1Edit->hide();
-       param2Edit->hide();
-       param3Edit->hide();
-       param4Edit->hide();
-       param5Edit->show();
-       break;
-
-     default:
-;
-     }*/
+  COptTask* optimizationTask =
+    dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
+  optimizationTask->setMethodType(index + 1);
+  loadOptimization();
   return true;
 }
 
