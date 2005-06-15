@@ -59,10 +59,6 @@ SOURCE=.\CCallParameters.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CEvaluationExpression.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CEvaluationLexer_lex.cpp
 # End Source File
 # Begin Source File
@@ -108,6 +104,10 @@ SOURCE=.\CEvaluationParser_yacc.cpp
 # Begin Source File
 
 SOURCE=.\CEvaluationTree.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CExpression.cpp
 # End Source File
 # Begin Source File
 
@@ -159,10 +159,6 @@ SOURCE=.\CCallParameters.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CEvaluationExpression.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\CEvaluationLexer.h
 # End Source File
 # Begin Source File
@@ -208,6 +204,10 @@ SOURCE=.\CEvaluationParser_yacc.h
 # Begin Source File
 
 SOURCE=.\CEvaluationTree.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CExpression.h
 # End Source File
 # Begin Source File
 
