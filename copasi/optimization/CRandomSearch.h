@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/15 16:26:59 $
+   $Author: shoops $ 
+   $Date: 2005/06/15 19:13:57 $
    End CVS Header */
 
 /**
@@ -17,7 +17,7 @@
 //*** need to be added for definition
 class COptProblem;
 class COptMethod;
-#include "randomGenerator\CRandom.h"
+#include "randomGenerator/CRandom.h"
 #include "utilities/CVector.h"
 
 // YOHE: this is an abstract class that contains many virtual functions
