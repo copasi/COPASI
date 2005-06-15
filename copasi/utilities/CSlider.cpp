@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/02 09:20:34 $
+   $Date: 2005/06/15 13:37:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -90,6 +90,7 @@ const std::string & CSlider::getAssociatedEntityKey() const
 bool CSlider::setSliderObject(CCopasiObject * pObject)
 {
   //if (!setObjectName(pObject->getCN())) return false;
+  if (!pObject) return false;
   mCN = pObject->getCN();
 
   mpSliderObject = pObject;

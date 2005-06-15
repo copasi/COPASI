@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/02 09:20:33 $
+   $Date: 2005/06/15 13:37:07 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,8 +43,15 @@ void SliderSettingsDialog::setSlider(CSlider * slider)
     {
       this->mpSlider = slider;
       //      this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getCN()));
-      this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getObjectDisplayName()));
-      this->mpObjectBrowseButton->hide();
+      if (slider->getSliderObject())
+        {
+          this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getObjectDisplayName()));
+        }
+      else
+        {
+          this->mpObjectNameLineEdit->setText("Object not avalable!");
+        }
+      //this->mpObjectBrowseButton->hide();
       this->updateInputFields();
       this->updateInputFieldsValues();
     }
@@ -64,30 +71,33 @@ void SliderSettingsDialog::setDefinedSliders(std::vector<CSlider *> sliderVect)
 
 void SliderSettingsDialog::updateInputFieldsValues()
 {
-  this->mValue = this->mpSlider->getSliderValue();
-  this->mpObjectValueEdit->setText(QString::number(this->mValue));
-
-  this->mMinValue = this->mpSlider->getMinValue();
-  this->mpMinValueEdit->setText(QString::number(this->mMinValue));
-
-  this->mMaxValue = this->mpSlider->getMaxValue();
-  this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
-
-  this->mNumMinorTicks = this->mpSlider->getTickNumber();
-  this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
-
-  this->mMinorMajorFactor = this->mpSlider->getTickFactor();
-  this->mpMinorMajorFactorEdit->setText(QString::number(this->mMinorMajorFactor));
-
-  this->numMinorTicksChanged();
-
-  if (this->mpSlider->getScaling() == CSlider::logarithmic)
+  if (this->mpSlider)
     {
-      this->mpLogCheckBox->setChecked(true);
-    }
-  else
-    {
-      this->mpLogCheckBox->setChecked(false);
+      this->mValue = this->mpSlider->getSliderValue();
+      this->mpObjectValueEdit->setText(QString::number(this->mValue));
+
+      this->mMinValue = this->mpSlider->getMinValue();
+      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+
+      this->mMaxValue = this->mpSlider->getMaxValue();
+      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+
+      this->mNumMinorTicks = this->mpSlider->getTickNumber();
+      this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
+
+      this->mMinorMajorFactor = this->mpSlider->getTickFactor();
+      this->mpMinorMajorFactorEdit->setText(QString::number(this->mMinorMajorFactor));
+
+      this->numMinorTicksChanged();
+
+      if (this->mpSlider->getScaling() == CSlider::logarithmic)
+        {
+          this->mpLogCheckBox->setChecked(true);
+        }
+      else
+        {
+          this->mpLogCheckBox->setChecked(false);
+        }
     }
 }
 

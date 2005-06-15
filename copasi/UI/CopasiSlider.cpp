@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/04/12 08:11:30 $
+   $Date: 2005/06/15 13:37:07 $
    End CVS Header */
 
 #include <math.h>
@@ -42,7 +42,10 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): QHBox(parent), mp
   this->mpEditButton = new QToolButton(buttonLayout);
   this->mpEditButton->setPixmap(icons[1]);
   this->mpEditButton->setFixedSize(13, 13);
-  this->mpCSlider->compile();
+  if (!this->mpCSlider->compile())
+    {
+      this->setEnabled(false);
+    }
   this->updateSliderData();
   QToolTip::add(this->mpCloseButton, tr("remove slider"));
   QToolTip::add(this->mpEditButton, tr("edit slider"));
@@ -169,22 +172,25 @@ void CopasiSlider::updateLabel()
   maxValue = this->mpCSlider->getMaxValue();
   currValue = this->mpCSlider->getSliderValue();
   CCopasiObject* object = this->mpCSlider->getSliderObject();
-
   QString labelString = "";
   if (object)
     {
       labelString += FROM_UTF8(object->getObjectDisplayName(true, true));
+      labelString += " : [";
+      labelString += QString::number(minValue);
+      labelString += "-";
+      labelString += QString::number(maxValue);
+      labelString += "] {";
+      labelString += QString::number(currValue);
+      labelString += "}";
+      if (this->mValueOutOfRange)
+        {
+          labelString += " (Value out of range!)";
+        }
     }
-  labelString += " : [";
-  labelString += QString::number(minValue);
-  labelString += "-";
-  labelString += QString::number(maxValue);
-  labelString += "] {";
-  labelString += QString::number(currValue);
-  labelString += "}";
-  if (this->mValueOutOfRange)
+  else
     {
-      labelString += " (Value out of range!)";
+      labelString += "Object not available!";
     }
   this->mpLabel->setText(labelString);
 }

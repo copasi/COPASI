@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/13 16:20:18 $
+   $Author: gauges $ 
+   $Date: 2005/06/15 13:37:07 $
    End CVS Header */
 
 #include <iostream>
@@ -224,6 +224,7 @@ void SliderDialog::removeSlider()
             }
         }
       this->deleteSlider(this->currSlider);
+      this->currSlider = NULL;
     }
 }
 
@@ -259,12 +260,17 @@ void SliderDialog::editSlider()
   std::vector<CSlider*>* pVector = this->getCSlidersForCurrentFolderId();
   pSettingsDialog->setDefinedSliders(*pVector);
 
-  pSettingsDialog->disableObjectChoosing(true);
+  //pSettingsDialog->disableObjectChoosing(true);
 
   pSettingsDialog->setSlider(this->currSlider->getCSlider());
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
+      this->addSlider(pSettingsDialog->getSlider());
       this->currSlider->updateSliderData();
+      if ((!this->currSlider->isEnabled()) && this->currSlider->getCSlider()->compile())
+        {
+          this->currSlider->setEnabled(true);
+        }
     }
   delete pSettingsDialog;
   delete pVector;
@@ -301,7 +307,8 @@ void SliderDialog::addSlider(CSlider* pSlider)
     {
       pGUI->pSliderList->add(pSlider);
     }
-  if (!findCopasiSliderForCSlider(pSlider))
+  CopasiSlider* tmp = findCopasiSliderForCSlider(pSlider);
+  if (!tmp)
     {
       this->setCurrentSlider(new CopasiSlider(pSlider, this->sliderBox));
       this->currSlider->installEventFilter(this);
@@ -315,6 +322,10 @@ void SliderDialog::addSlider(CSlider* pSlider)
       connect(this->currSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
       connect(this->currSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
       this->currSlider->setHidden(false);
+    }
+  else
+    {
+      this->currSlider = tmp;
     }
 }
 
@@ -589,13 +600,22 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
     CCopasiVector<CSlider>* pSliderList = pGUI->pSliderList;
     assert(pSliderList);
     unsigned int i, maxSliders = pSliderList->size();
+    bool issueWarning = false;
     for (i = 0; i < maxSliders;++i)
       {
         CSlider* pSlider = (*pSliderList)[i];
         if (pSlider->getAssociatedEntityKey() == CCopasiDataModel::Global->getModel()->getKey() || pSlider->getAssociatedEntityKey() == pObject->getKey())
           {
+            if (!pSlider->compile())
+              {
+                issueWarning = true;
+              }
             pVector->push_back(pSlider);
           }
+      }
+    if (issueWarning)
+      {
+        QMessageBox::warning(NULL, "Invalid Slider", "One or more sliders are invalid\n and have been disabled!", QMessageBox::Ok, QMessageBox::NoButton);
       }
     return pVector;
   }
