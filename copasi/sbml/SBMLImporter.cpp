@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/14 17:43:06 $
+   $Author: gauges $ 
+   $Date: 2005/06/16 16:13:44 $
    End CVS Header */
 
 #include "copasi.h"
@@ -121,7 +121,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         }
       CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel, copasi2sbmlmap);
       std::string key = sbmlCompartment->getId();
-      if (pLevel == 1)
+      if (mLevel == 1)
         {
           key = sbmlCompartment->getName();
         }
@@ -143,7 +143,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         {
           CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment, copasi2sbmlmap);
           std::string key;
-          if (this->pLevel == 1)
+          if (this->mLevel == 1)
             {
               key = sbmlSpecies->getName();
             }
@@ -650,7 +650,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                           //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
                           fatalError();
                         }
-                      if (this->pLevel != 1)
+                      if (this->mLevel != 1)
                         {
                           parameterName = parameter->getId();
                         }
@@ -686,7 +686,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                               fatalError();
                             }
                           std::string parameterName;
-                          if (this->pLevel != 1)
+                          if (this->mLevel != 1)
                             {
                               parameterName = parameter->getId();
                             }
@@ -804,7 +804,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                           fatalError();
                         }
                       std::string parameterName;
-                      if (this->pLevel != 1)
+                      if (this->mLevel != 1)
                         {
                           parameterName = parameter->getId();
                         }
@@ -839,7 +839,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                               fatalError();
                             }
                           std::string parameterName;
-                          if (this->pLevel != 1)
+                          if (this->mLevel != 1)
                             {
                               parameterName = parameter->getId();
                             }
@@ -863,7 +863,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                                       ++it;
                                       continue;
                                     }
-                                  if (this->pLevel == 1)
+                                  if (this->mLevel == 1)
                                     {
                                       parameterId = p->getName();
                                     }
@@ -949,7 +949,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
             {
               Parameter* param = kLaw->getParameter(counter2);
               std::string parameterName;
-              if (this->pLevel == 1)
+              if (this->mLevel == 1)
                 {
                   parameterName = param->getName();
                 }
@@ -988,7 +988,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
             {
               Parameter* param = kLaw->getParameter(counter2);
               std::string parameterName;
-              if (this->pLevel == 1)
+              if (this->mLevel == 1)
                 {
                   parameterName = param->getName();
                 }
@@ -1027,7 +1027,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
             {
               Parameter* param = kLaw->getParameter(counter2);
               std::string parameterName;
-              if (this->pLevel == 1)
+              if (this->mLevel == 1)
                 {
                   parameterName = param->getName();
                 }
@@ -1354,7 +1354,7 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
       //DebugFile << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
       //DebugFile << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
       pSBMLDocument = sbmlDoc;
-      this->pLevel = pSBMLDocument->getLevel();
+      this->mLevel = pSBMLDocument->getLevel();
       pModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
     }
   else
@@ -1870,4 +1870,117 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
 
   return pMV;
+}
+
+bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  bool success = true;
+  unsigned int i, iMax = pNode->getNumChildren();
+  if (pNode->getType() == AST_NAME)
+    {
+      Compartment* pSBMLCompartment = NULL;
+      Species* pSBMLSpecies = NULL;
+      Reaction* pSBMLReaction = NULL;
+      Parameter* pSBMLParameter = NULL;
+      std::string sbmlId;
+
+      std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
+      std::map<CCopasiObject*, SBase*>::iterator endIt = copasi2sbmlmap.end();
+      while (it != endIt)
+        {
+          SBMLTypeCode_t type = it->second->getTypeCode();
+          switch (type)
+            {
+            case SBML_COMPARTMENT:
+              pSBMLCompartment = dynamic_cast<Compartment*>(it->second);
+              if (this->mLevel == 1)
+                {
+                  sbmlId = pSBMLCompartment->getName();
+                }
+              else
+                {
+                  sbmlId = pSBMLCompartment->getId();
+                }
+              if (sbmlId == pNode->getName())
+                {
+                  pNode->setName(dynamic_cast<CCompartment*>(it->first)->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN().c_str());
+                }
+              break;
+            case SBML_SPECIES:
+              pSBMLSpecies = dynamic_cast<Species*>(it->second);
+              if (this->mLevel == 1)
+                {
+                  sbmlId = pSBMLSpecies->getName();
+                }
+              else
+                {
+                  sbmlId = pSBMLSpecies->getId();
+                }
+              if (sbmlId == pNode->getName())
+                {
+                  // I am not sure if the code below is correct.
+                  // I guess the CEvaluationTree will always generate
+                  // either object nodes for concentration or particle numbers.
+                  // so the CN I set here would be independent of the stuff that was
+                  // set in the SBL file.
+                  if (pSBMLSpecies->isSetInitialAmount())
+                    {
+                      pNode->setName(dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialParticleNumber"))->getCN().c_str());
+                    }
+                  else if (pSBMLSpecies->isSetInitialConcentration())
+                    {
+                      pNode->setName(dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN().c_str());
+                    }
+                  else
+                    {
+                      return false;
+                    }
+                }
+              break;
+            case SBML_REACTION:
+              pSBMLReaction = dynamic_cast<Reaction*>(it->second);
+              if (this->mLevel == 1)
+                {
+                  sbmlId = pSBMLReaction->getName();
+                }
+              else
+                {
+                  sbmlId = pSBMLReaction->getId();
+                }
+              if (sbmlId == pNode->getName())
+                {
+                  pNode->setName(dynamic_cast<CReaction*>(it->first)->getObject(CCopasiObjectName("Reference=ParticleFlux"))->getCN().c_str());
+                }
+
+              break;
+            case SBML_PARAMETER:
+              pSBMLParameter = dynamic_cast<Parameter*>(it->second);
+              if (this->mLevel == 1)
+                {
+                  sbmlId = pSBMLParameter->getName();
+                }
+              else
+                {
+                  sbmlId = pSBMLParameter->getId();
+                }
+              if (sbmlId == pNode->getName())
+                {
+                  pNode->setName(dynamic_cast<CModelValue*>(it->first)->getObject(CCopasiObjectName("Reference=Value"))->getCN().c_str());
+                }
+              break;
+            default:
+              break;
+            }
+          ++it;
+        }
+    }
+  for (i = 0; i < iMax;++i)
+    {
+      if (!this->sbmlId2CopasiCN(pNode->getChild(i), copasi2sbmlmap))
+        {
+          success = false;
+          break;
+        }
+    }
+  return success;
 }

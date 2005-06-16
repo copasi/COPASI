@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/14 09:43:00 $
+   $Date: 2005/06/16 16:13:45 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -38,7 +38,7 @@ class SBMLImporter
     std::map<std::string, CMetab*> speciesMap;
     CFunctionDB* functionDB;
     bool mIncompleteModel;
-    unsigned int pLevel;
+    unsigned int mLevel;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -148,6 +148,12 @@ class SBMLImporter
      * Replaces all + and * nodes that have zero or one argument.
      */
     void replaceFunnyOperatorCalls(ConverterASTNode* sourceNode);
+
+    /**
+     * Replaces the ids of named nodes in an ASTNode tree with
+     * the correspondingCopasi Common Names.
+     */
+    bool sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   public:
     SBMLImporter();
