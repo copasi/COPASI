@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:34:38 $
+   $Date: 2005/06/17 15:14:18 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -12,32 +12,96 @@
 #include <vector>
 
 #include "CEvaluationNode.h"
+#include "report/CCopasiContainer.h"
 
-class CCopasiObjectName;
 class ASTNode;
 
-class CEvaluationTree
+class CEvaluationTree:
+      public CCopasiContainer
   {
   public:
-    typedef const C_FLOAT64 & (CEvaluationTree::*VariableValue)();
+    /**
+     *  The valid types of a function
+     */
+    enum Type
+    {
+      Function = 0,
+      MassAction,
+      PreDefined,
+      UserDefined,
+      Expression
+    };
+
+    /**
+     *  The string representation of valid types of a function
+     */
+    static const std::string TypeName[];
+
+    /**
+     *  The string representation of valid types of a function
+     */
+    static const char * XMLType[];
 
     // Operations
   public:
     /**
-     * Default constructor
+     * Create an EvaluationTree of the specified type.
+     * Note: the returned object has to be released after use with delete.
+     * @param CEvaluationTree::Type type 
+     * @return EvaluationTree * pEvaluationTree
      */
-    CEvaluationTree();
+    static CEvaluationTree *
+    create(CEvaluationTree::Type type);
+
+    /**
+     * Copy an EvaluationTree of the specified type.
+     * Note: the returned object has to be released after use with delete.
+     * @param const EvaluationTree & src
+     * @return EvaluationTree * pEvaluationTree
+     */
+    static CEvaluationTree *
+    copy(const CEvaluationTree & src);
+
+    /**
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const CEvaluationTree::Type & type (default: Function)
+     */
+    CEvaluationTree(const std::string & name = "NoName",
+                    const CCopasiContainer * pParent = NULL,
+                    const Type & type = Function);
 
     /**
      * Copy constructor
      * @param const CEvaluationTree & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CEvaluationTree(const CEvaluationTree & src);
+    CEvaluationTree(const CEvaluationTree & src,
+                    const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
      */
     virtual ~CEvaluationTree();
+
+    /**
+     * Retrieves the type of the function
+     * @return const CEvaluationTree::Type & type
+     */
+    const CEvaluationTree::Type & getType() const;
+
+    /**
+     * Set the type of the function
+     * @param const CEvaluationTree::Type & type
+     */
+    void setType(const CEvaluationTree::Type & type);
+
+    /**
+     * Retrieves the key of the EvaluationTree
+     * @return const std::string & key
+     */
+    const std::string & getKey() const;
 
     /**
      * Sets the complete tree from an SBML ASTNode.
@@ -110,6 +174,16 @@ class CEvaluationTree
 
     // Attributes
   private:
+    /**
+     * The type of the function
+     */
+    CEvaluationTree::Type mType;
+
+    /**
+     * The key of the function
+     */
+    std::string mKey;
+
     /**
      * The infix representation of the expression
      */

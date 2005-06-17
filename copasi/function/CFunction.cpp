@@ -1,91 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 18:20:10 $
+   $Date: 2005/06/17 15:14:18 $
    End CVS Header */
 
 #include "copasi.h"
 
 #include "CFunction.h"
-#include "report/CKeyFactory.h"
-
-const std::string CFunction::TypeName[] =
-  {"userdefined", "predefined", "predefined", "userdefined", ""};
-
-const char* CFunction::XMLType[] =
-  {"Base", "MassAction", "PreDefined", "UserDefined", NULL};
-
-CFunction *
-CFunction::createFunction(CFunction::Type type)
-{
-  CFunction * pNewFunction = NULL;
-
-  switch (type)
-    {
-    case Base:
-      pNewFunction = new CFunction();
-      break;
-
-    case MassAction:
-      pNewFunction = new CMassAction();
-      break;
-
-    case PreDefinedKineticLaw:
-      pNewFunction = new CKinFunction();
-      pNewFunction->setType(PreDefinedKineticLaw);
-      break;
-
-    case UserDefinedKineticLaw:
-      pNewFunction = new CKinFunction();
-      break;
-
-    default:
-      fatalError();
-    }
-
-  return pNewFunction;
-}
-
-CFunction *
-CFunction::copyFunction(const CFunction & src)
-{
-  CFunction * pNewFunction = NULL;
-
-  switch (src.getType())
-    {
-    case Base:
-      pNewFunction = new CFunction(src);
-      break;
-
-    case MassAction:
-      pNewFunction = new CMassAction(static_cast<CMassAction>(src));
-      break;
-
-    case PreDefinedKineticLaw:
-      pNewFunction = new CKinFunction(static_cast<CKinFunction>(src));
-      pNewFunction->setType(PreDefinedKineticLaw);
-      break;
-
-    case UserDefinedKineticLaw:
-      pNewFunction = new CKinFunction(static_cast<CKinFunction>(src));
-      break;
-
-    default:
-      fatalError();
-    }
-
-  return pNewFunction;
-}
 
 CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent,
-                     const CFunction::Type & type):
-    CCopasiContainer(name, pParent, "Function"),
-    CEvaluationTree(),
-    mType(type),
-    mKey(GlobalKeys.add("Function", this)),
+                     const CEvaluationTree::Type & type):
+    CEvaluationTree(name, pParent, type),
     mVariables(),
     mUsageDescriptions(),
     mpCallParameters(NULL)
@@ -93,17 +21,14 @@ CFunction::CFunction(const std::string & name,
 
 CFunction::CFunction(const CFunction & src,
                      const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    CEvaluationTree(src),
-    mType(src.mType),
-    mKey(GlobalKeys.add("Function", this)),
+    CEvaluationTree(src, pParent),
     mVariables(src.mVariables),
     mUsageDescriptions(src.mUsageDescriptions),
     mpCallParameters(NULL)
 {}
 
 CFunction::~CFunction()
-{GlobalKeys.remove(mKey);}
+{}
 
 bool CFunction::setInfix(const std::string & infix)
 {
@@ -125,20 +50,11 @@ unsigned C_INT32 CFunction::getVariableIndex(const std::string & name) const
 const C_FLOAT64 & CFunction::getVariableValue(const unsigned C_INT32 & index) const
   {return *(*mpCallParameters)[index].value;}
 
-const CFunction::Type & CFunction::getType() const
-  {return mType;}
-
-void CFunction::setType(const CFunction::Type & type)
-{mType = type;}
-
 void CFunction::setReversible(const TriLogic & reversible)
 {mReversible = reversible;}
 
 const TriLogic & CFunction::isReversible() const
   {return mReversible;}
-
-const std::string & CFunction::getKey() const
-  {return mKey;}
 
 CFunctionParameters & CFunction::getVariables()
 {return mVariables;}
@@ -202,7 +118,7 @@ void CFunction::load(CReadConfig & configBuffer,
       switch (Type)
         {
         case 1:
-          mType = UserDefinedKineticLaw;
+          setType(UserDefined);
           break;
 
         default:
@@ -230,10 +146,7 @@ void CFunction::load(CReadConfig & configBuffer,
       mode = CReadConfig::SEARCH;
     }
   else
-    {
-      configBuffer.getVariable("FunctionType", "C_INT32", &mType, mode);
-      mode = CReadConfig::NEXT;
-    }
+    fatalError();
 
   std::string tmp;
   configBuffer.getVariable("FunctionName", "string", &tmp, mode);

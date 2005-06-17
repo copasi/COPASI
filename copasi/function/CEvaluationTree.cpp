@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:34:38 $
+   $Date: 2005/06/17 15:14:18 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,21 +13,105 @@
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
+#include "CFunction.h"
+#include "CExpression.h"
 
+#include "report/CKeyFactory.h"
 #include "sbml/math/ASTNode.h"
 
 #undef yyFlexLexer
 #define yyFlexLexer CEvaluationFlexLexer
 #include "CEvaluationLexer.h"
 
-CEvaluationTree::CEvaluationTree():
+const std::string CEvaluationTree::TypeName[] =
+  {"userdefined", "predefined", "predefined", "userdefined", "userdefined", ""};
+
+const char* CEvaluationTree::XMLType[] =
+  {"Function", "MassAction", "PreDefined", "UserDefined", "Expression", NULL};
+
+CEvaluationTree *
+CEvaluationTree::create(CEvaluationTree::Type type)
+{
+  CEvaluationTree * pNew = NULL;
+
+  switch (type)
+    {
+    case Function:
+      pNew = new CFunction();
+      break;
+
+    case MassAction:
+      pNew = new CMassAction();
+      break;
+
+    case PreDefined:
+      pNew = new CKinFunction();
+      pNew->setType(PreDefined);
+      break;
+
+    case UserDefined:
+      pNew = new CKinFunction();
+      break;
+
+    case Expression:
+      pNew = new CExpression();
+      break;
+
+    default:
+      fatalError();
+    }
+
+  return pNew;
+}
+
+CEvaluationTree *
+CEvaluationTree::copy(const CEvaluationTree & src)
+{
+  CEvaluationTree * pNew = NULL;
+
+  switch (src.getType())
+    {
+    case Function:
+      pNew = new CFunction(*static_cast<const CFunction *>(&src));
+      break;
+
+    case MassAction:
+      pNew = new CMassAction(*static_cast<const CMassAction *>(&src));
+      break;
+
+    case PreDefined:
+    case UserDefined:
+      pNew = new CKinFunction(*static_cast<const CKinFunction *>(&src));
+      break;
+
+    case Expression:
+      pNew = new CExpression(*static_cast<const CExpression *>(&src));
+      break;
+
+    default:
+      fatalError();
+    }
+
+  return pNew;
+}
+
+CEvaluationTree::CEvaluationTree(const std::string & name,
+                                 const CCopasiContainer * pParent,
+                                 const CEvaluationTree::Type & type):
+    CCopasiContainer(name, pParent, "Function"),
+    mType(type),
+    mKey(GlobalKeys.add("Function", this)),
     mInfix(),
     mErrorPosition(std::string::npos),
     mpNodeList(NULL),
     mpRoot(NULL)
 {}
 
-CEvaluationTree::CEvaluationTree(const CEvaluationTree & src):
+CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
+                                 const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mType(src.mType),
+    mKey(GlobalKeys.add("Function", this)),
     mInfix(),
     mErrorPosition(std::string::npos),
     mpNodeList(NULL),
@@ -37,7 +121,17 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src):
 CEvaluationTree::~CEvaluationTree()
 {
   if (mpNodeList != NULL) CEvaluationParser::freeNodeList(mpNodeList);
+  GlobalKeys.remove(mKey);
 }
+
+const CEvaluationTree::Type & CEvaluationTree::getType() const
+{return mType;}
+
+void CEvaluationTree::setType(const CEvaluationTree::Type & type)
+{mType = type;}
+
+const std::string & CEvaluationTree::getKey() const
+  {return mKey;}
 
 bool CEvaluationTree::setInfix(const std::string & infix)
 {

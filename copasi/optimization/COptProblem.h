@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/05/31 20:29:55 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 15:15:39 $
    End CVS Header */
 
 /**
@@ -23,13 +23,13 @@
 #include <vector>
 
 #include "utilities/CCopasiProblem.h"
-
 #include "utilities/CVector.h"
 #include "utilities/CCopasiVector.h"
 
+#include "function/CExpression.h"
+
 class CSteadyStateTask;
 class CTrajectoryTask;
-class CKinFunction;
 class COptItem;
 
 enum ProblemType
@@ -58,7 +58,7 @@ class COptProblem : public CCopasiProblem
     /**
      * The objective function which should be minimized or maximized.
      */
-    CKinFunction* mpFunction;
+    CExpression mFunction;
 
     std::vector< COptItem * > mOptItemList;
 
@@ -234,7 +234,7 @@ class COptProblem : public CCopasiProblem
     /**
      * Set optimization function 
      */
-    bool setFunction(CKinFunction*);
+    bool setObjectivFunction(const std::string & infix);
 
   private:
     virtual void initObjects();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/15 19:09:28 $
+   $Date: 2005/06/17 15:14:18 $
    End CVS Header */
 
 #ifndef COPASI_CExpression
@@ -13,12 +13,11 @@
 #include "report/CCopasiContainer.h"
 
 class CExpression:
-      public CCopasiContainer,
-      protected CEvaluationTree
+      public CEvaluationTree
 
   {
     // Operations
-  private:
+  public:
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")

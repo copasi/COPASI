@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/17 14:23:12 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 15:15:59 $
    End CVS Header */
 
 #include "copasi.h"
@@ -611,7 +611,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           appendix = numberStream.str();
         }
 
-      CFunction* cFun = this->functionDB->createFunction(functionName + appendix, CFunction::UserDefinedKineticLaw);
+      CFunction * cFun = new CKinFunction(functionName + appendix);
+      this->functionDB->add(cFun, true);
+
       //ConverterASTNode::printASTNode(node);
       //DebugFile << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
       //std::cerr << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
@@ -622,7 +624,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           fatalError();
         }
       cFun->setInfix(SBML_formulaToString(node));
-      cFun->setType(CFunction::UserDefinedKineticLaw);
+      cFun->setType(CFunction::UserDefined);
       cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
       //create parameters
       std::vector<CNodeK*>& v = dynamic_cast<CKinFunction*>(cFun)->getNodes();

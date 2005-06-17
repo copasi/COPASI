@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Date: 2005/06/17 15:15:44 $
    End CVS Header */
 
 #include "FunctionWidget.h"
@@ -26,12 +26,13 @@
 
 std::vector<const CCopasiObject*> FunctionWidget::getObjects() const
   {
-    CCopasiVectorN<CFunction>& tmp = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+    CCopasiVectorN<CEvaluationTree>& tmp = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
     for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+      if (dynamic_cast<CFunction *>(tmp[i]))
+        ret.push_back(tmp[i]);
 
     return ret;
   }
@@ -99,13 +100,18 @@ CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
 {
   std::string nname = name;
   int i = 0;
+  CCopasiVectorN<CEvaluationTree>& FunctionList = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
   CFunction* pFunc;
-  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(nname, CFunction::UserDefinedKineticLaw)))
+
+  while (FunctionList.getIndex(nname) != C_INVALID_INDEX)
     {
       i++;
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
+
+  CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(nname), true);
+
   std::cout << " *** created Function: " << nname << " : " << pFunc->getKey() << std::endl;
   return pFunc;
 }
@@ -170,7 +176,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                       // Yes or Enter
+    case 0:                        // Yes or Enter
       {
         //first delete reactions
         std::set<std::string>::const_iterator it, itEnd = totalEffectedReacKeys.end();
@@ -190,7 +196,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
         break;
       }
-    case 1:                       // No or Escape
+    case 1:                        // No or Escape
       break;
     }
 }

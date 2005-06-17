@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 18:20:10 $
+   $Date: 2005/06/17 15:14:18 $
    End CVS Header */
 
 #ifndef COPASI_CFunction
@@ -12,65 +12,22 @@
 #include "CEvaluationTree.h"
 #include "CFunctionParameters.h"
 #include "CCallParameters.h"
-#include "report/CCopasiContainer.h"
 #include "utilities/CCopasiVector.h"
 
 class CFunction:
-      public CCopasiContainer,
       public CEvaluationTree
   {
-  public:
-    /**
-     *  The valid types of a function
-     */
-    enum Type
-    {
-      Base = 0,
-      MassAction,
-      PreDefinedKineticLaw,
-      UserDefinedKineticLaw
-    };
-
-    /**
-     *  The string representation of valid types of a function
-     */
-    static const std::string TypeName[];
-
-    /**
-     *  The string representation of valid types of a function
-     */
-    static const char * XMLType[];
-
     // Operations
   public:
-
-    /**
-     * Create a function of the specified type.
-     * Note: the returned object has to be released after use with delete.
-     * @param CFunction::Type type (Default: Base)
-     * @return CFunction * pFunction
-     */
-    static CFunction *
-    createFunction(CFunction::Type type = CFunction::Base);
-
-    /**
-     * Copy a function of the specified type.
-     * Note: the returned object has to be released after use with delete.
-     * @param const CFunction & src
-     * @return CFunction * pFunction
-     */
-    static CFunction *
-    copyFunction(const CFunction & src);
-
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
-     * @param const CFunction::Type & type (default: Base)
+     * @param const CEvaluationTree::Type & type (default: Function)
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CFunction(const std::string & name = "NoName",
               const CCopasiContainer * pParent = NULL,
-              const Type & type = Base);
+              const Type & type = Function);
 
     /**
      * Copy constructor
@@ -130,18 +87,6 @@ class CFunction:
     virtual const C_FLOAT64 & getVariableValue(const unsigned C_INT32 & index) const;
 
     /**
-     * Retrieves the type of the function
-     * @return const CFunction::Type & type
-     */
-    const CFunction::Type & getType() const;
-
-    /**
-     * Set the type of the function
-     * @param const CFunction::Type & type
-     */
-    void setType(const CFunction::Type & type);
-
-    /**
      *  Set whether the function is reversible.
      */
     void setReversible(const TriLogic & reversible);
@@ -150,12 +95,6 @@ class CFunction:
      *  Retrieves whether the function is reversible.
      */
     const TriLogic & isReversible() const;
-
-    /**
-     * Retrieves the key of the function
-     * @return const std::string & key
-     */
-    const std::string & getKey() const;
 
     /**
      * Retrives the definition of the parameters
@@ -218,16 +157,6 @@ class CFunction:
 
     // Attributes
   private:
-
-    /**
-     * The type of the function
-     */
-    CFunction::Type mType;
-
-    /**
-     * The key of the function
-     */
-    std::string mKey;
 
     /**
      *  The discription of the variables of the function.

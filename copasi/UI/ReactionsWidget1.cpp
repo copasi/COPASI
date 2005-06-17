@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.170 $
+   $Revision: 1.171 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Date: 2005/06/17 15:15:44 $
    End CVS Header */
 
 /*********************************************************************
@@ -354,7 +354,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                                     // Yes or Enter
+        case 0:                                      // Yes or Enter
           {
             //unsigned C_INT32 size = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().size();
             unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getReactions().size();
@@ -378,7 +378,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                            // No or Escape
+        default:                                             // No or Escape
           break;
         }
     }
@@ -483,14 +483,18 @@ void ReactionsWidget1::slotNewFunction()
   std::string name = std::string("Kinetics_for_") + (const char *)LineEdit1->text().utf8();
   std::string nname = name;
   int i = 0;
+  CCopasiVectorN<CEvaluationTree>& FunctionList
+  = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
   CFunction* pFunc;
-  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(nname, CFunction::UserDefinedKineticLaw)))
+
+  while (FunctionList.getIndex(nname) != C_INVALID_INDEX)
     {
       i++;
-      nname = name;
+      nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-  std::cout << " *** created Function: " << nname << " : " << pFunc->getKey() << std::endl;
+
+  CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(nname), true);
   protectedNotify(ListViews::FUNCTION, ListViews::ADD);
 
   pListView->switchToOtherWidget(0, pFunc->getKey());

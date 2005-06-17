@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:49:58 $
+   $Date: 2005/06/17 15:14:17 $
    End CVS Header */
 
 /**
@@ -26,7 +26,7 @@
 class CModel;
 template <class CType> class CCopasiVector;
 template <class CType> class CCopasiVectorN;
-class CFunction;
+class CEvaluationTree;
 class CCopasiTask;
 class CReportDefinitionVector;
 class CXMLAttributeList;
@@ -92,7 +92,7 @@ class CCopasiXMLInterface
      * Pointer to a vector of functions which has been loaded or is to be saved.
      * The ownership is handed to the user.
      */
-    CCopasiVectorN< CFunction > * mpFunctionList;
+    CCopasiVectorN< CEvaluationTree > * mpFunctionList;
 
     /**
      * Pointer to a vector of tasks which has been loaded or is to be saved.
@@ -200,16 +200,16 @@ class CCopasiXMLInterface
 
     /**
      * Set the function list.
-     * @param const CCopasiVectorN< CFunction > & functionList
+     * @param const CCopasiVectorN< CEvaluationTree > & functionList
      * @return bool success
      */
-    bool setFunctionList(const CCopasiVectorN< CFunction > & functionList);
+    bool setFunctionList(const CCopasiVectorN< CEvaluationTree > & functionList);
 
     /**
      * Retreive the function list.
-     * @return CCopasiVectorN< CFunction > * functionList
+     * @return CCopasiVectorN< CEvaluationTree > * functionList
      */
-    CCopasiVectorN< CFunction > * getFunctionList() const;
+    CCopasiVectorN< CEvaluationTree > * getFunctionList() const;
 
     /**
      * Retreive whether the XML contains a function list.

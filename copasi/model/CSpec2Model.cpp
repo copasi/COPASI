@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:06 $
+   $Date: 2005/06/17 15:15:39 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -472,19 +472,20 @@ void CSpec2Model::processMoieties()
 void CSpec2Model::processFunctions()
 {
   // Find each function line
-  CKinFunction Function;
+  CFunction * pFunction;
   std::vector<CSpecLine>::iterator it = mSpecLines.begin();
 
   for (; it < mSpecLines.end(); it++)
     {
       if (it->getType() == CSpecLine::FUN)
         {
-          Function.cleanup();
+          pFunction = new CKinFunction()
+;
           std::string tmp = it->extractLeft();
 
           std::string::size_type p1 = tmp.find_first_not_of(" \t");
           std::string::size_type p2 = tmp.find_first_of("(");
-          Function.setObjectName(tmp.substr(p1, p2 - p1));
+          pFunction->setObjectName(tmp.substr(p1, p2 - p1));
 
           std::string parameter =
             tmp.substr(p2 + 1, tmp.find_last_of(")") - p2 - 1);
@@ -502,14 +503,14 @@ void CSpec2Model::processFunctions()
               //Parameters.add(ParameterName,
               //               CFunctionParameter::FLOAT64,
               //               "unknown");
-              Function.addVariable(ParameterName, "unknown");
+              pFunction->addVariable(ParameterName, "unknown");
             }
 
           tmp = it->extractRight();
           p1 = tmp.find_first_not_of(" \t");
           p2 = tmp.find_last_not_of(" \t");
           tmp = tmp.substr(p1, p2 - p1 + 1);
-          Function.setInfix(tmp);
+          pFunction->setInfix(tmp);
           // :TODO: We have to identify constants
           //        and define them as parameters.
 
@@ -525,8 +526,8 @@ void CSpec2Model::processFunctions()
                   ParameterName = scanner.YYText();
                   std::cout << "ParameterName: " << ParameterName << std::endl;
 
-                  if (!Function.addVariable(ParameterName,
-                                            "PARAMETER"))
+                  if (!pFunction->addVariable(ParameterName,
+                                              "PARAMETER"))
                     {
                       /* Parameter exists not found */
 
@@ -535,11 +536,11 @@ void CSpec2Model::processFunctions()
                     }
                 }
             }
-          std::cout << Function.getVariables() << std::endl;
+          std::cout << pFunction->getVariables() << std::endl;
 
-          CCopasiDataModel::Global->getFunctionList()->add(Function);
+          pFunction->compile();
+          CCopasiDataModel::Global->getFunctionList()->add(pFunction, true);
 
-          // ((CKinFunction *)pFunction)->compile();
           std::cout << it->getString() << std::endl;
         }
     }

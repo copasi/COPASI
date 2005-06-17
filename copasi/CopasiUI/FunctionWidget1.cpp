@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.119 $
+   $Revision: 1.120 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Date: 2005/06/17 15:15:44 $
    End CVS Header */
 
 /**********************************************************************
@@ -437,7 +437,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   if (func)
     {
       pdelete(mpFunction);
-      mpFunction = CFunction::copyFunction(*func);
+      mpFunction = dynamic_cast<CFunction *>(CEvaluationTree::copy(*func));
       flagChanged = false;
     }
   else if (!mpFunction)
@@ -448,7 +448,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
 
   // make dialogue read only for predefined functions
   if (pFunction->getType() == CFunction::MassAction ||
-      pFunction->getType() == CFunction::PreDefinedKineticLaw)
+      pFunction->getType() == CFunction::PreDefined)
     {
       flagRO = true;
       RadioButton1->setEnabled(false);
@@ -918,12 +918,18 @@ void FunctionWidget1::slotNewButtonClicked()
   std::string name = "function";
   int i = 0;
   CFunction* pFunc;
-  while (!(pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefinedKineticLaw)))
+  CCopasiVectorN<CEvaluationTree>& FunctionList
+  = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+
+  while (FunctionList.getIndex(name) != C_INVALID_INDEX)
     {
       i++;
       name = "function_";
-      name += QString::number(i).utf8();
+      name += (const char *)QString::number(i).utf8();
     }
+
+  CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(name), true);
+
   protectedNotify(ListViews::FUNCTION, ListViews::ADD);
   enter(pFunc->getKey());
 }
@@ -978,7 +984,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                                  // Yes or Enter
+        case 0:                                                   // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -995,7 +1001,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                                  // No or Escape
+        case 1:                                                   // No or Escape
           break;
         }
     }

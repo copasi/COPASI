@@ -405,14 +405,23 @@
     <xs:attribute name="type" use="required" id="copasi.FUNCTION.type">
       <xs:simpleType>
         <xs:restriction base="xs:string">
-          <xs:enumeration value="MassAction"/>
-          <xs:enumeration value="PreDefined"/>
-          <xs:enumeration value="UserDefined"/>
+          <xs:enumeration value="Function"/>
           <xs:enumeration value="Expression"/>
+          <xs:enumeration value="MassAction"/>
+          <xs:enumeration value="PreDefinedKineticLaw"/>
+          <xs:enumeration value="UserDefinedKineticLaw"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="positive" type="xs:boolean" use="required"/>
+    <xs:attribute name="positive" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="true"/>
+          <xs:enumeration value="false"/>
+          <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="cFUNCTION_PARAMETER" id="copasi.FUNCTION_PARAMETER">
     <xs:attribute name="key" type="cFUNCTION_PARAMETER_KEY" use="required" id="copasi.FUNCTION_PARAMETER.key"/>

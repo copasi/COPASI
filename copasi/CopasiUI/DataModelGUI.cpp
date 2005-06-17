@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/13 17:49:05 $
+   $Date: 2005/06/17 15:15:44 $
    End CVS Header */
 
 #include "copasi.h"
@@ -222,15 +222,15 @@ void DataModelGUI::updateFunctions()
 
   parent->removeChildren();
 
-  const CCopasiVectorN< CFunction > & objects = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+  const CCopasiVectorN< CEvaluationTree > & objects = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
   C_INT32 j, jmax = objects.size();
   CFunction *obj;
   for (j = 0; j < jmax; j++)
     {
-      obj = objects[j];
-      parent->addChild(-1,
-                        FROM_UTF8(obj->getObjectName()),
-                        obj->getKey());
+      if ((obj = dynamic_cast<CFunction *>(objects[j])))
+        parent->addChild(-1,
+                          FROM_UTF8(obj->getObjectName()),
+                          obj->getKey());
     }
 }
 

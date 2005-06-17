@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/01 14:59:35 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 15:14:17 $
    End CVS Header */
 
 /**
@@ -28,7 +28,7 @@
 
 class CModel;
 class CReaction;
-class CFunction;
+class CEvaluationTree;
 class CFunctionParameter;
 class CCopasiXMLParser;
 class CReportDefinitionVector;
@@ -63,12 +63,12 @@ struct SCopasiXMLParserCommon
      * Pointer to a vector of functions which has been loaded or is to be saved.
      * The ownership is handed to the user.
      */
-    CCopasiVectorN< CFunction > * pFunctionList;
+    CCopasiVectorN< CEvaluationTree > * pFunctionList;
 
     /**
      * Pointer to the currently processed function.
      */
-    CFunction * pFunction;
+    CEvaluationTree * pFunction;
 
     /**
      * The description of the function.
@@ -2864,15 +2864,15 @@ class CCopasiXMLParser : public CExpat
 
     /**
      * Set the list of loaded functions
-     * @param CCopasiVectorN< CFunction > * pFunctionList
+     * @param CCopasiVectorN< CEvaluationTree > * pFunctionList
      */
-    void setFunctionList(CCopasiVectorN< CFunction > * pFunctionList);
+    void setFunctionList(CCopasiVectorN< CEvaluationTree > * pFunctionList);
 
     /**
      * Retrieve the list of loaded functions
-     * @return CCopasiVectorN< CFunction > * pFunctionList
+     * @return CCopasiVectorN< CEvaluationTree > * pFunctionList
      */
-    CCopasiVectorN< CFunction > * getFunctionList() const;
+    CCopasiVectorN< CEvaluationTree > * getFunctionList() const;
 
     /**
      * Set the loaded model functions

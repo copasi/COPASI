@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:02:25 $
+   $Date: 2005/06/17 15:14:17 $
    End CVS Header */
 
 /**
@@ -89,7 +89,7 @@ void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
       xml << "&quot;";
       break;
 
-    case '\t':    // Without this <tab> is converted to <space>
+    case '\t':     // Without this <tab> is converted to <space>
       xml << "&#x09;";
       break;
 
@@ -223,13 +223,13 @@ bool CCopasiXMLInterface::freeModel()
   return true;
 }
 
-bool CCopasiXMLInterface::setFunctionList(const CCopasiVectorN< CFunction > & functionList)
+bool CCopasiXMLInterface::setFunctionList(const CCopasiVectorN< CEvaluationTree > & functionList)
 {
-  mpFunctionList = const_cast<CCopasiVectorN< CFunction > *>(&functionList);
+  mpFunctionList = const_cast<CCopasiVectorN< CEvaluationTree > *>(&functionList);
   return true;
 }
 
-CCopasiVectorN< CFunction > * CCopasiXMLInterface::getFunctionList() const
+CCopasiVectorN< CEvaluationTree > * CCopasiXMLInterface::getFunctionList() const
   {return mpFunctionList;}
 
 bool CCopasiXMLInterface::haveFunctionList() const

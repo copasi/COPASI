@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Date: 2005/06/17 15:14:18 $
    End CVS Header */
 
 /**
@@ -18,12 +18,13 @@
 
 #include <string>
 
+#include "CEvaluationTree.h"
+
 #include "report/CCopasiContainer.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
-#include "CFunction.h"
 
-//class CFunction;
+class CFunction;
 
 /** @dia:pos 106.082,17.0878 */
 class CFunctionDB : public CCopasiContainer
@@ -40,7 +41,7 @@ class CFunctionDB : public CCopasiContainer
      *  @supplierCardinality 0..*
      */
     /** @dia:route 2,0; h,98.6992,12.15,102.581,17.0878,106.082 */
-    CCopasiVectorN < CFunction > mLoadedFunctions;
+    CCopasiVectorN < CEvaluationTree > mLoadedFunctions;
 
     // Operations
 
@@ -105,25 +106,28 @@ class CFunctionDB : public CCopasiContainer
     /**
      *  Load the function functionName from the database
      *  @param "const string" &functionName
-     *  @return CFunction * function (NULL if function can not be loaded)
+     *  @return CEvaluationTree * function (NULL if function can not be loaded)
      */
-    CFunction * dBLoad(const std::string & functionName);
+    CEvaluationTree * dBLoad(const std::string & functionName);
 #endif // FFFF
 
     /**
-     *  Add the function to the database
-     *  @param CKinFunction &function
-     *  @return CFunction * pFunction
+     * Add the function to the database
+     * @param CEvaluationTree * pFunction
+     * @param const bool & adopt (default = false)
+     * @return bool success
      */
-    CFunction * add(const CFunction & function);
+    bool add(CEvaluationTree * pFunction, const bool & adopt);
 
+#ifdef FFFF
     /**
      *  Add the function to the database
      *  @param const std::string & name
-     *  @param const CFunction::Type & type (Default: CFunction::Base)
+     *  @param const CEvaluationTree::Type & type (Default: CEvaluationTree::Base)
      *  @return bool success
      */
-    CFunction* createFunction(const std::string &name, const CFunction::Type & type = CFunction::Base);
+    CEvaluationTree* createFunction(const std::string &name, const CEvaluationTree::Type & type = CEvaluationTree::Function);
+#endif // FFFF
 
     bool removeFunction(const std::string &key);
 
@@ -138,24 +142,24 @@ class CFunctionDB : public CCopasiContainer
      *  Search for a function among the loaded functions. If no
      *  function is found NULL is returned
      *  @param "const string" &functionName
-     *  @return CFunction *
+     *  @return CEvaluationTree *
      */
-    CFunction * findFunction(const std::string & functionName);
+    CEvaluationTree * findFunction(const std::string & functionName);
 
     /**
      *  Search for a function among the loaded functions. If no
      *  function is found the database is searched and the apropriate 
      *  function is loaded.
      *  @param "const string" &functionName
-     *  @return CFunction * function (NULL if function is not found)
+     *  @return CEvaluationTree * function (NULL if function is not found)
      */
-    CFunction * findLoadFunction(const std::string & functionName);
+    CEvaluationTree * findLoadFunction(const std::string & functionName);
 
     /**
      *  Retrieves the vector of loaded functions.
      *  @return "CCopasiVectorNS < CKinFunction > &" loadedFunctions
      */
-    CCopasiVectorN < CFunction > & loadedFunctions();
+    CCopasiVectorN < CEvaluationTree > & loadedFunctions();
 
     /**
      *  Retrieves the vector of functions that are suitable for a
@@ -164,7 +168,7 @@ class CFunctionDB : public CCopasiContainer
      *  @param "const unsigned C_INT32" noSubstrates the number of substrates
      *  @param "const unsigned C_INT32" noProducts the number of products
      *  @param "const TriLogic" reversible the reversibility status
-     *  @return "CCopasiVectorN < CKinFunction > " suitableFunctions
+     *  @return "CCopasiVectorN < CFunction > " suitableFunctions
      */
     CCopasiVector <CFunction> *
     suitableFunctions(const unsigned C_INT32 noSubstrates,

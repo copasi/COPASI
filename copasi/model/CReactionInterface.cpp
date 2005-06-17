@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:06 $
+   $Date: 2005/06/17 15:15:39 $
    End CVS Header */
 
 #include <string>
@@ -177,7 +177,7 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
   CFunctionParameters *oldParameters = mpParameters;
 
   //get the function
-  mpFunction = CCopasiDataModel::Global->getFunctionList()->findLoadFunction(fn);
+  mpFunction = dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findLoadFunction(fn));
   if (!mpFunction) fatalError();
   mpParameters = new CFunctionParameters(mpFunction->getVariables());
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:47:44 $
+   $Date: 2005/06/17 15:14:18 $
    End CVS Header */
 
 /**
@@ -32,7 +32,7 @@
 
 CKinFunction::CKinFunction(const std::string & name,
                            const CCopasiContainer * pParent):
-    CFunction(name, pParent, CFunction::PreDefinedKineticLaw)
+    CFunction(name, pParent, CFunction::UserDefined)
 {
   CONSTRUCTOR_TRACE;
 }
@@ -305,7 +305,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                                               // this is an error
+        case N_NOP:                                                // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

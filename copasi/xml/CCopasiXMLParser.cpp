@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:46:20 $
+   $Date: 2005/06/17 15:14:17 $
    End CVS Header */
 
 /**
@@ -214,10 +214,10 @@ void CCopasiXMLParser::pushElementHandler(CXMLElementHandler< CCopasiXMLParser, 
 void CCopasiXMLParser::popElementHandler()
 {mElementHandlerStack.pop();}
 
-void CCopasiXMLParser::setFunctionList(CCopasiVectorN< CFunction > * pFunctionList)
+void CCopasiXMLParser::setFunctionList(CCopasiVectorN< CEvaluationTree > * pFunctionList)
 {mCommon.pFunctionList = pFunctionList;}
 
-CCopasiVectorN< CFunction > * CCopasiXMLParser::getFunctionList() const
+CCopasiVectorN< CEvaluationTree > * CCopasiXMLParser::getFunctionList() const
   {return mCommon.pFunctionList;}
 
 void CCopasiXMLParser::setModel(CModel * pModel) {mCommon.pModel = pModel;}
@@ -421,7 +421,7 @@ void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
     case ListOfFunctions:
       if (strcmp(pszName, "ListOfFunctions")) fatalError();
       if (!mCommon.pFunctionList)
-        mCommon.pFunctionList = new CCopasiVectorN< CFunction >;
+        mCommon.pFunctionList = new CCopasiVectorN< CEvaluationTree >;
       break;
 
     case Function:
@@ -492,10 +492,11 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 {
   const char * Key;
   const char * type;
-  CFunction::Type Type;
+  CEvaluationTree::Type Type;
   const char * Name;
   const char * Positive;
   unsigned C_INT32 index;
+  CFunction * pFunction;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -507,16 +508,24 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       type = mParser.getAttributeValue("type", papszAttrs);
-      Type = (CFunction::Type) mParser.toEnum(type, CFunction::XMLType);
-      Positive = mParser.getAttributeValue("positive", papszAttrs);
+      Type = (CEvaluationTree::Type) mParser.toEnum(type, CEvaluationTree::XMLType);
+      Positive = mParser.getAttributeValue("positive", papszAttrs, "unspecified");
 
       mCommon.mExistingFunction = false;
-      mCommon.pFunction = CFunction::createFunction(Type);
+      mCommon.pFunction = CEvaluationTree::create(Type);
+      pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
+
       mCommon.pFunction->setObjectName(Name);
-      if (mParser.toBool(Positive))
-        mCommon.pFunction->setReversible(TriTrue);
-      else
-        mCommon.pFunction->setReversible(TriFalse);
+      if (pFunction)
+        {
+          if (!strcmp(Positive, "unspecified"))
+            pFunction->setReversible(TriUnspecified);
+          else if (!strcmp(Positive, "true"))
+            pFunction->setReversible(TriTrue);
+          else if (!strcmp(Positive, "false"))
+            pFunction->setReversible(TriFalse);
+          else fatalError();
+        }
 
       /* We have a new function and add it to the list */
       index = mCommon.pFunctionList->getIndex(Name);
@@ -524,8 +533,8 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
         {
           switch ((*mCommon.pFunctionList)[index]->getType())
             {
-            case CFunction::MassAction:
-              if (Type == CFunction::MassAction)
+            case CEvaluationTree::MassAction:
+              if (Type == CEvaluationTree::MassAction)
                 {
                   pdelete(mCommon.pFunction);
                   mCommon.pFunction = (*mCommon.pFunctionList)[index];
@@ -534,7 +543,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
               else
                 {
                   std::string tmp(Name);
-                  tmp += "[" + CFunction::TypeName[Type] + "]";
+                  tmp += "[" + CEvaluationTree::TypeName[Type] + "]";
                   index = mCommon.pFunctionList->getIndex(tmp);
                   if (index != C_INVALID_INDEX)
                     mCommon.pFunctionList->remove(tmp);
@@ -544,8 +553,8 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
                 }
               break;
 
-            case CFunction::PreDefinedKineticLaw:
-              if (Type == CFunction::PreDefinedKineticLaw)
+            case CEvaluationTree::PreDefined:
+              if (Type == CEvaluationTree::PreDefined)
                 {
                   pdelete(mCommon.pFunction);
                   mCommon.pFunction = (*mCommon.pFunctionList)[index];
@@ -554,7 +563,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
               else
                 {
                   std::string tmp(Name);
-                  tmp += "[" + CFunction::TypeName[Type] + "]";
+                  tmp += "[" + CEvaluationTree::TypeName[Type] + "]";
                   index = mCommon.pFunctionList->getIndex(tmp);
                   if (index != C_INVALID_INDEX)
                     mCommon.pFunctionList->remove(tmp);
@@ -564,11 +573,11 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
                 }
               break;
 
-            case CFunction::UserDefinedKineticLaw:
+            case CEvaluationTree::UserDefined:
 #ifdef FFFF
-            case CFunction::Expression:
+            case CEvaluationTree::Expression:
 #endif // FFFF
-            case CFunction::Base:
+            case CEvaluationTree::Function:
               mCommon.pFunctionList->remove(Name);
               mCommon.pFunctionList->add(mCommon.pFunction, true);
               break;
@@ -625,7 +634,10 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
       if (!mCommon.mExistingFunction)
         {
           mCommon.pFunction->setInfix(mCommon.FunctionDescription);
-          mCommon.pFunction->compile();
+
+          CFunction * pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
+          if (pFunction)
+            pFunction->compile();
         }
 
       mCurrentElement = START_ELEMENT;
@@ -833,33 +845,37 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
     case ListOfParameterDescriptions:
       if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
 
-      if (!mCommon.mExistingFunction)
-        {
-          pUsageRanges = & mCommon.pFunction->getVariables().getUsageRanges();
-          UsageDescription.setUsage("SUBSTRATE");
-          if ((index = pUsageRanges->getIndex("SUBSTRATE")) != C_INVALID_INDEX)
-            {
-              UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
-                                        (*pUsageRanges)[index]->getHigh());
-              mCommon.pFunction->getUsageDescriptions().add(UsageDescription);
-            }
+      // :TODO: This should be obsolete.
+      {
+        CFunction * pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
+        if (!mCommon.mExistingFunction && pFunction)
+          {
+            pUsageRanges = & pFunction->getVariables().getUsageRanges();
+            UsageDescription.setUsage("SUBSTRATE");
+            if ((index = pUsageRanges->getIndex("SUBSTRATE")) != C_INVALID_INDEX)
+              {
+                UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
+                                          (*pUsageRanges)[index]->getHigh());
+                pFunction->getUsageDescriptions().add(UsageDescription);
+              }
 
-          UsageDescription.setUsage("PRODUCT");
-          if ((index = pUsageRanges->getIndex("PRODUCT")) != C_INVALID_INDEX)
-            {
-              UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
-                                        (*pUsageRanges)[index]->getHigh());
-              mCommon.pFunction->getUsageDescriptions().add(UsageDescription);
-            }
+            UsageDescription.setUsage("PRODUCT");
+            if ((index = pUsageRanges->getIndex("PRODUCT")) != C_INVALID_INDEX)
+              {
+                UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
+                                          (*pUsageRanges)[index]->getHigh());
+                pFunction->getUsageDescriptions().add(UsageDescription);
+              }
 
-          UsageDescription.setUsage("MODIFIER");
-          if ((index = pUsageRanges->getIndex("MODIFIER")) != C_INVALID_INDEX)
-            {
-              UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
-                                        (*pUsageRanges)[index]->getHigh());
-              mCommon.pFunction->getUsageDescriptions().add(UsageDescription);
-            }
-        }
+            UsageDescription.setUsage("MODIFIER");
+            if ((index = pUsageRanges->getIndex("MODIFIER")) != C_INVALID_INDEX)
+              {
+                UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
+                                          (*pUsageRanges)[index]->getHigh());
+                pFunction->getUsageDescriptions().add(UsageDescription);
+              }
+          }
+      }
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -908,10 +924,12 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
   const char * maxOccurs;
   unsigned C_INT32 MaxOccurs;
 
+  mCurrentElement++; /* We should always be on the next element */
+
   //std::string Usage[] = {"SUBSTRATE", "PRODUCT", "MODIFIER", "PARAMETER"};
   CFunctionParameter * pParm = NULL;
-
-  mCurrentElement++; /* We should always be on the next element */
+  CFunction * pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
+  if (!pFunction) mCurrentElement++;
 
   switch (mCurrentElement)
     {
@@ -939,7 +957,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
 
       if (mCommon.mExistingFunction)
         {
-          mCommon.KeyMap.addFix(Key, mCommon.pFunction->getVariables()[Name]);
+          mCommon.KeyMap.addFix(Key, pFunction->getVariables()[Name]);
         }
       else
         {
@@ -952,7 +970,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
           else
             pParm->setType(CFunctionParameter::VFLOAT64);
 
-          mCommon.pFunction->getVariables().add(pParm, true);
+          pFunction->getVariables().add(pParm, true);
           mCommon.KeyMap.addFix(Key, pParm);
         }
       break;

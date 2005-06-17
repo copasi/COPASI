@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/15 16:28:46 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 15:15:44 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -535,55 +535,57 @@ void OptimizationWidget::slotChooseObject()
 
 bool OptimizationWidget::parseExpression()
 {
-  std::string mName = "temp";
-  std::string mDisplayName = "";
-  std::string mRNDesc = "";
-  std::string temp = "";
+  /*
+    std::string mName = "temp";
+    std::string mDisplayName = "";
+    std::string mRNDesc = "";
+    std::string temp = "";
+  */
   std::string mDesc = (const char *)expressionText->text().utf8();
-  std::vector<CCopasiObject *>::iterator it = parseList.begin();
-  //CFunction* pFunc;
-  //pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefined)
-  for (unsigned int i = 0; i < mDesc.length(); i++)
-    {
-      mRNDesc += mDesc[i];
-      mDisplayName = "";
-
-      if (mDesc[i] == '<')
-        {
-          i++;
-          it = parseList.begin();
-          while (i < mDesc.length() && mDesc[i] != '>')
-            {
-              mDisplayName += mDesc[i];
-              i++;
-            }
-
-          while (it < parseList.end())
-            {
-              temp = (*it)->getObjectDisplayName();
-              if ((*it)->getObjectDisplayName() == mDisplayName)
-                {
-                  mRNDesc += (*it)->getCN();
-                  break;
-                }
-
-              it++;
-            }
-
-          mRNDesc += ">";
-        }
-    }
-
-  CKinFunction* pFunction = new CKinFunction(mName);
-  pFunction->setInfix(mRNDesc);
+  /*
+    std::vector<CCopasiObject *>::iterator it = parseList.begin();
+    //CFunction* pFunc;
+    //pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefined)
+    for (unsigned int i = 0; i < mDesc.length(); i++)
+      {
+        mRNDesc += mDesc[i];
+        mDisplayName = "";
+   
+        if (mDesc[i] == '<')
+          {
+            i++;
+            it = parseList.begin();
+            while (i < mDesc.length() && mDesc[i] != '>')
+              {
+                mDisplayName += mDesc[i];
+                i++;
+              }
+   
+            while (it < parseList.end())
+              {
+                temp = (*it)->getObjectDisplayName();
+                if ((*it)->getObjectDisplayName() == mDisplayName)
+                  {
+                    mRNDesc += (*it)->getCN();
+                    break;
+                  }
+   
+                it++;
+              }
+   
+            mRNDesc += ">";
+          }
+      }
+  */
   COptTask* optimizationTask =
     dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
   if (!optimizationTask) return false;
 
   COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
   if (!optimizationProblem) return false;
-  optimizationProblem->setFunction(pFunction);
+  optimizationProblem->setObjectivFunction(mDesc);
 
+  // :TODO: need to handle errors.
   return true;
 }
 

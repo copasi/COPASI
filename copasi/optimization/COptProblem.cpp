@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:31:51 $
+   $Date: 2005/06/17 15:15:38 $
    End CVS Header */
 
 /**
@@ -156,10 +156,7 @@ bool COptProblem::calculate()
       mpTrajectory->process();
     }
 
-  CCallParameters<C_FLOAT64> CallParameters;
-  CallParameters.clear();
-
-  mCalculateValue = mpFunction->calcValue(CallParameters);
+  mCalculateValue = mFunction.calcValue();
 
   mCounter += 1;
 
@@ -252,8 +249,5 @@ const std::vector< COptItem * > & COptProblem::getOptItemList() const
 const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMethods() const
   {return mUpdateMethods;}
 
-bool COptProblem::setFunction(CKinFunction* func)
-{
-  mpFunction = func;
-  return true;
-}
+bool COptProblem::setObjectivFunction(const std::string & infix)
+{return mFunction.setInfix(infix);}

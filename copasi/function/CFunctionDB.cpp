@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Date: 2005/06/17 15:14:18 $
    End CVS Header */
 
 /**
@@ -16,11 +16,9 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
-#include "CKinFunction.h"
-
 #include "CFunctionDB.h"
-#include "CMassAction.h" 
-//#include "output/CUDFunction.h"
+#include "CFunction.h"
+
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiObjectReference.h"
 #include "xml/CCopasiXML.h"
@@ -59,7 +57,7 @@ bool CFunctionDB::load()
   if (DB.fail()) return false;
   if (!XML.load(DB)) return false;
 
-  CCopasiVectorN< CFunction > * pFunctionList = XML.getFunctionList();
+  CCopasiVectorN< CEvaluationTree > * pFunctionList = XML.getFunctionList();
 
   unsigned C_INT32 i, imax = pFunctionList->size();
 
@@ -92,17 +90,16 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 
       switch (Function.getType())
         {
-        case CFunction::Base:
+        case CEvaluationTree::Function:
           pFunction = new CFunction(Function);
           break;
 
-        case CFunction::MassAction:
+        case CEvaluationTree::MassAction:
           pFunction = new CMassAction(Function);
           break;
 
-        case CFunction::PreDefinedKineticLaw:
-
-        case CFunction::UserDefinedKineticLaw:
+        case CEvaluationTree::PreDefined:
+        case CEvaluationTree::UserDefined:
           pFunction = new CKinFunction(Function,
                                        &configbuffer);
           break;
@@ -113,14 +110,13 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 
       pFunction->compile();
 
-      if (!mLoadedFunctions.add(pFunction))
+      if (!mLoadedFunctions.add(pFunction, true))
         {
           pdelete(pFunction);
           // We ignore:
           // CCopasiVector (2): Object '%s' allready exists.
-          if ((MCCopasiVector + 2) != CCopasiMessage::getLastMessage().getNumber())
-
-            pFunction = mLoadedFunctions[Function.getObjectName()];
+          if ((MCCopasiVector + 2) != CCopasiMessage::peekLastMessage().getNumber())
+            return Fail = 1;
         }
     }
 
@@ -222,26 +218,27 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
 }
 #endif // FFFF
 
-CFunction * CFunctionDB::createFunction(const std::string & name, const CFunction::Type & type)
+#ifdef FFFF
+CEvaluationTree * CFunctionDB::createFunction(const std::string & name, const CEvaluationTree::Type & type)
 {
   if (mLoadedFunctions.getIndex(name) != C_INVALID_INDEX)
     return NULL;
 
   //CFunction * pFunction = new CFunction(name);
 
-  CFunction * pFunction = NULL;
+  CEvaluationTree * pFunction = NULL;
   switch (type)
     {
-    case CFunction::Base:
+    case CEvaluationTree::Base:
       pFunction = new CFunction(name);
       break;
 
-    case CFunction::MassAction:
+    case CEvaluationTree::MassAction:
       pFunction = new CMassAction(name);
       break;
 
-    case CFunction::PreDefinedKineticLaw:
-    case CFunction::UserDefinedKineticLaw:
+    case CEvaluationTree::PreDefinedKineticLaw:
+    case CEvaluationTree::UserDefinedKineticLaw:
       pFunction = new CKinFunction(name);
       break;
 
@@ -256,49 +253,22 @@ CFunction * CFunctionDB::createFunction(const std::string & name, const CFunctio
     }
   return pFunction;
 }
+#endif // FFFF
 
-CFunction * CFunctionDB::add(const CFunction & function)
-{
-  if (mLoadedFunctions.getIndex(function.getObjectName()) != C_INVALID_INDEX)
-    return findFunction(function.getObjectName());
-
-  CFunction * pFunction = NULL;
-  switch (function.getType())
-    {
-    case CFunction::Base:
-      pFunction = new CFunction(function, &mLoadedFunctions);
-      break;
-
-    case CFunction::MassAction:
-      pFunction = new CMassAction(function, &mLoadedFunctions);
-      break;
-
-    case CFunction::PreDefinedKineticLaw:
-    case CFunction::UserDefinedKineticLaw:
-      pFunction = new CKinFunction(function,
-                                   NULL,
-                                   &mLoadedFunctions);
-      break;
-
-    default:
-      fatalError();
-    }
-
-  mLoadedFunctions.add(pFunction);
-
-  return pFunction;
-}
+bool CFunctionDB::add(CEvaluationTree * pFunction,
+                      const bool & adopt)
+{return mLoadedFunctions.add(pFunction, adopt);}
 
 bool CFunctionDB::removeFunction(const std::string &key)
 {
-  CFunction* func = dynamic_cast< CFunction * >(GlobalKeys.get(key));
+  CEvaluationTree* func = dynamic_cast< CEvaluationTree * >(GlobalKeys.get(key));
   if (!func) return false;
 
   unsigned C_INT32 index =
-    mLoadedFunctions.CCopasiVector<CFunction>::getIndex(func);
+    mLoadedFunctions.CCopasiVector<CEvaluationTree>::getIndex(func);
   if (index == C_INVALID_INDEX) return false;
 
-  mLoadedFunctions.CCopasiVector<CFunction>::remove(index);
+  mLoadedFunctions.CCopasiVector<CEvaluationTree>::remove(index);
 
   return true;
 }
@@ -307,7 +277,7 @@ bool CFunctionDB::removeFunction(const std::string &key)
 // {
 //}
 
-CFunction * CFunctionDB::findFunction(const std::string & functionName)
+CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
 {
   unsigned C_INT32 i;
 
@@ -318,7 +288,7 @@ CFunction * CFunctionDB::findFunction(const std::string & functionName)
   return NULL;
 }
 
-CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
+CEvaluationTree * CFunctionDB::findLoadFunction(const std::string & functionName)
 {
   unsigned C_INT32 i;
 
@@ -329,7 +299,7 @@ CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
   return NULL;
 }
 
-CCopasiVectorN < CFunction > & CFunctionDB::loadedFunctions()
+CCopasiVectorN < CEvaluationTree > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
 
 CCopasiVector <CFunction> *
@@ -345,7 +315,8 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
 
   for (i = 0, imax = mLoadedFunctions.size(); i < imax; i++)
     {
-      pFunction = mLoadedFunctions[i];
+      pFunction = dynamic_cast<CFunction *>(mLoadedFunctions[i]);
+      if (!pFunction) continue;
 
       if (reversible != TriUnspecified &&
           reversible != pFunction->isReversible() &&

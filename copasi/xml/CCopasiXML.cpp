@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:06 $
+   $Date: 2005/06/17 15:14:17 $
    End CVS Header */
 
 /**
@@ -27,7 +27,7 @@
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
 #include "model/CState.h"
-#include "function/CFunction.h"
+#include "function/CEvaluationTree.h"
 #include "report/CReportDefinitionVector.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"
@@ -464,83 +464,89 @@ bool CCopasiXML::saveFunctionList()
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
+  CEvaluationTree * pEvaluationTree = NULL;
   CFunction * pFunction = NULL;
 
   startSaveElement("ListOfFunctions");
 
   for (i = 0; i < imax; i++)
     {
-      pFunction = (*mpFunctionList)[i];
+      pEvaluationTree = (*mpFunctionList)[i];
+      pFunction = dynamic_cast<CFunction *>(pEvaluationTree);
 
       Attributes.erase();
-      Attributes.add("key", pFunction->getKey());
-      Attributes.add("name", pFunction->getObjectName());
-      Attributes.add("type", CFunction::XMLType[pFunction->getType()]);
-      Attributes.add("positive", pFunction->isReversible() ? "true" : "false");
+      Attributes.add("key", pEvaluationTree->getKey());
+      Attributes.add("name", pEvaluationTree->getObjectName());
+      Attributes.add("type", CEvaluationTree::XMLType[pEvaluationTree->getType()]);
+      if (pFunction)
+        Attributes.add("positive", pFunction->isReversible() ? "true" : "false");
       startSaveElement("Function", Attributes);
 
       startSaveElement("MathML");
 
       startSaveElement("Text");
-      saveData(pFunction->getInfix());
+      saveData(pEvaluationTree->getInfix());
       endSaveElement("Text");
 
       endSaveElement("MathML");
 
-      startSaveElement("ListOfParameterDescriptions");
-
-      unsigned C_INT32 j, jmax = pFunction->getVariables().size();
-      CFunctionParameter * pParameter;
-
-      Attributes.erase();
-      Attributes.add("key", "");
-      Attributes.add("name", "");
-      Attributes.add("order", "");
-      Attributes.add("role", "");
-      Attributes.add("minOccurs", "");
-      Attributes.add("maxOccurs", "");
-
-      //std::string Usage;
-
-      for (j = 0; j < jmax; j++)
+      if (pFunction)
         {
-          pParameter = pFunction->getVariables()[j];
-          Attributes.setValue(0, pParameter->getKey());
-          Attributes.setValue(1, pParameter->getObjectName());
-          Attributes.setValue(2, j);
-          /*Usage = pParameter->getUsage();
-          if (Usage == "SUBSTRATE")
-            Attributes.setValue(3, "substrate");
-          else if (Usage == "PRODUCT")
-            Attributes.setValue(3, "product");
-          else if (Usage == "MODIFIER")
-            Attributes.setValue(3, "modifier");
-          else if (Usage == "PARAMETER")
-            Attributes.setValue(3, "constant");
-          else
-            Attributes.setValue(3, "other");*/
-          Attributes.setValue(3, CFunctionParameter::convertRoleNameToXML(pParameter->getUsage()));
+          startSaveElement("ListOfParameterDescriptions");
 
-          if (pParameter->getType() < CFunctionParameter::VINT32)
+          unsigned C_INT32 j, jmax = pFunction->getVariables().size();
+          CFunctionParameter * pParameter;
+
+          Attributes.erase();
+          Attributes.add("key", "");
+          Attributes.add("name", "");
+          Attributes.add("order", "");
+          Attributes.add("role", "");
+          Attributes.add("minOccurs", "");
+          Attributes.add("maxOccurs", "");
+
+          //std::string Usage;
+
+          for (j = 0; j < jmax; j++)
             {
-              Attributes.skip(4);
-              Attributes.skip(5);
-            }
-          else
-            {
-              CUsageRange * pUsageRange =
-                pFunction->getVariables().getUsageRanges()[pParameter->getUsage()];
-              Attributes.setValue(4, pUsageRange->getLow());
-              if (pUsageRange->getHigh() == (unsigned C_INT32) CRange::Infinity)
-                Attributes.setValue(5, "unbounded");
+              pParameter = pFunction->getVariables()[j];
+              Attributes.setValue(0, pParameter->getKey());
+              Attributes.setValue(1, pParameter->getObjectName());
+              Attributes.setValue(2, j);
+              /*Usage = pParameter->getUsage();
+              if (Usage == "SUBSTRATE")
+                Attributes.setValue(3, "substrate");
+              else if (Usage == "PRODUCT")
+                Attributes.setValue(3, "product");
+              else if (Usage == "MODIFIER")
+                Attributes.setValue(3, "modifier");
+              else if (Usage == "PARAMETER")
+                Attributes.setValue(3, "constant");
               else
-                Attributes.setValue(5, pUsageRange->getHigh());
+                Attributes.setValue(3, "other");*/
+              Attributes.setValue(3, CFunctionParameter::convertRoleNameToXML(pParameter->getUsage()));
+
+              if (pParameter->getType() < CFunctionParameter::VINT32)
+                {
+                  Attributes.skip(4);
+                  Attributes.skip(5);
+                }
+              else
+                {
+                  CUsageRange * pUsageRange =
+                    pFunction->getVariables().getUsageRanges()[pParameter->getUsage()];
+                  Attributes.setValue(4, pUsageRange->getLow());
+                  if (pUsageRange->getHigh() == (unsigned C_INT32) CRange::Infinity)
+                    Attributes.setValue(5, "unbounded");
+                  else
+                    Attributes.setValue(5, pUsageRange->getHigh());
+                }
+
+              saveElement("ParameterDescription", Attributes);
             }
 
-          saveElement("ParameterDescription", Attributes);
+          endSaveElement("ListOfParameterDescriptions");
         }
-
-      endSaveElement("ListOfParameterDescriptions");
 
       endSaveElement("Function");
     }
@@ -911,27 +917,29 @@ bool CCopasiXML::buildFunctionList()
 {
   bool success = true;
 
-  std::map< std::string, CFunction * > FunctionMap;
+  std::map< std::string, CEvaluationTree * > FunctionMap;
 
   unsigned C_INT32 i, imax = mpModel->getReactions().size();
 
   for (i = 0; i < imax; i++)
     {
-      CFunction * pFunction =
+      CEvaluationTree * pFunction =
         const_cast< CFunction * >(&mpModel->getReactions()[i]->getFunction());
       if (pFunction &&
           pFunction != GlobalKeys.get("UndefinedFunction"))
         FunctionMap[pFunction->getKey()] = pFunction;
     }
 
-  CCopasiVectorN< CFunction > * pFunctionList = new CCopasiVectorN< CFunction >;
+  CCopasiVectorN< CEvaluationTree > * pFunctionList = new CCopasiVectorN< CEvaluationTree >;
   pFunctionList->resize(FunctionMap.size(), false);
 
-  std::map< std::string, CFunction * >::iterator it = FunctionMap.begin();
-  std::map< std::string, CFunction * >::iterator End = FunctionMap.end();
+  std::map< std::string, CEvaluationTree * >::iterator it = FunctionMap.begin();
+  std::map< std::string, CEvaluationTree * >::iterator End = FunctionMap.end();
 
   for (i = 0; it != End; ++it, i++)
     (*pFunctionList)[i] = it->second;
+
+  // :TODO: Add all used expressions.
 
   if (!setFunctionList(*pFunctionList)) success = false;
 

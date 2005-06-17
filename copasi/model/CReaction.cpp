@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.121 $
+   $Revision: 1.122 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:06 $
+   $Date: 2005/06/17 15:15:39 $
    End CVS Header */
 
 // CReaction
@@ -174,7 +174,8 @@ const CFunction & CReaction::getFunction() const
 
 bool CReaction::setFunction(const std::string & functionName)
 {
-  CFunction * pFunction = CCopasiDataModel::Global->getFunctionList()->findLoadFunction(functionName);
+  CFunction * pFunction =
+    dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findLoadFunction(functionName));
   if (!pFunction)
     CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
 
