@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:14:17 $
+   $Date: 2005/06/17 20:54:59 $
    End CVS Header */
 
 /**
@@ -722,10 +722,7 @@ bool CCopasiXML::saveParameter(const CCopasiParameter & parameter)
       break;
 
     case CCopasiParameter::STRING:
-      Attributes.add("value", * (std::string *) parameter.getValue());
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
+    case CCopasiParameter::KEY:
     case CCopasiParameter::CN:
       Attributes.add("value", * (std::string *) parameter.getValue());
       if (!saveElement("Parameter", Attributes)) success = false;

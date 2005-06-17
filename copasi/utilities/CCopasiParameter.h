@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/14 10:51:28 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 20:54:59 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -41,6 +41,7 @@ class CCopasiParameter: public CCopasiContainer
       GROUP,
       STRING,
       CN,
+      KEY,
       INVALID
     };
 

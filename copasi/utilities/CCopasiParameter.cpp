@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/14 10:51:28 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 20:54:59 $
    End CVS Header */
 
 /**
@@ -33,6 +33,7 @@ const std::string CCopasiParameter::TypeName[] =
     "group",
     "string",
     "common name",
+    "key",
     ""
   };
 
@@ -46,6 +47,7 @@ const char* CCopasiParameter::XMLType[] =
     "group",
     "string",
     "cn",
+    "key",
     NULL
   };
 
@@ -72,7 +74,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                      CCopasiObject::Container |
                      ((type == DOUBLE || type == UDOUBLE) ? CCopasiObject::ValueDbl :
                       ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
-                       ((type == STRING || type == CN) ? CCopasiObject::ValueString :
+                       ((type == STRING || type == CN || type == KEY) ? CCopasiObject::ValueString :
                         (type == BOOL) ? CCopasiObject::ValueBool : 0)))),
     mKey(GlobalKeys.add(objectType, this)),
     mType(type),
@@ -129,8 +131,14 @@ bool CCopasiParameter::isValidValue(const bool & C_UNUSED(value)) const
     return true;
   }
 
-bool CCopasiParameter::isValidValue(const std::string & C_UNUSED(value)) const
+bool CCopasiParameter::isValidValue(const std::string & value) const
   {
+    if (mType == CCopasiParameter::KEY)
+      {
+        if (CKeyFactory::isValidKey(value)) return true;
+        else return false;
+      }
+
     if (mType != CCopasiParameter::STRING) return false;
     return true;
   }
@@ -185,6 +193,7 @@ void * CCopasiParameter::createValue(const void * pValue)
       break;
 
     case CCopasiParameter::STRING:
+    case CCopasiParameter::KEY:
       if (pValue)
         mpValue = new std::string(* (std::string *) pValue);
       else mpValue = new std::string;
@@ -234,6 +243,7 @@ void CCopasiParameter::deleteValue()
       break;
 
     case CCopasiParameter::STRING:
+    case CCopasiParameter::KEY:
       delete (std::string *) mpValue;
       break;
 
