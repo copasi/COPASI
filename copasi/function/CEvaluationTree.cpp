@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:14:18 $
+   $Date: 2005/06/17 19:38:13 $
    End CVS Header */
 
 #include "copasi.h"
@@ -144,6 +144,9 @@ bool CEvaluationTree::setInfix(const std::string & infix)
 
 const std::string & CEvaluationTree::getInfix() const
 {return mInfix;}
+
+const std::vector< CEvaluationNode * > & CEvaluationTree::getNodeList() const
+  {return *mpNodeList;}
 
 unsigned C_INT32 CEvaluationTree::getVariableIndex(const std::string & /*name*/) const
   {return C_INVALID_INDEX;}
