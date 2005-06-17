@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 16:18:33 $
+   $Date: 2005/06/17 16:34:12 $
    End CVS Header */
 
 #include "copasi.h"
@@ -93,9 +93,12 @@ bool CFunction::dependsOn(const C_FLOAT64 * parameter,
     CCallParameters<C_FLOAT64>::const_iterator it = callParameters.begin();
     CCallParameters<C_FLOAT64>::const_iterator end = callParameters.end();
 
-    for (; it != end; it++) if (parameter == it->value) return true;
+    while (it != end && parameter != it->value) it++;
 
-    return false;
+    if (it != end)
+      return true;
+    else
+      return false;
   }
 
 void CFunction::addUsage(const std::string& usage,
