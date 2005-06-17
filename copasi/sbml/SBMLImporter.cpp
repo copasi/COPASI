@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:59 $
+   $Date: 2005/06/17 19:41:23 $
    End CVS Header */
 
 #include "copasi.h"
@@ -344,7 +344,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
     }
   std::string appendix = "";
   unsigned int counter = 0;
-  while (copasiModel->getReactions().getIndex(name + appendix) != static_cast<unsigned C_INT32>(-1))
+  while (copasiModel->getReactions().getIndex(name + appendix) != C_INVALID_INDEX)
     {
       counter++;
       std::ostringstream numberStream;
@@ -626,16 +626,21 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       cFun->setInfix(SBML_formulaToString(node));
       cFun->setType(CFunction::UserDefined);
       cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
+
+      // :TODO: This needs to use CEvaluationTree::mpNodeList
+
       //create parameters
-      std::vector<CNodeK*>& v = dynamic_cast<CKinFunction*>(cFun)->getNodes();
+      // std::vector<CNodeK*>& v = dynamic_cast<CKinFunction*>(cFun)->getNodes();
+      const std::vector<CEvaluationNode *> & v = cFun->getNodeList();
+
       unsigned int counter;
       for (counter = 0; counter < v.size(); counter++)
         {
           /* assign a type and a mapping */
-          CNodeK* node = v[counter];
-          if (node->isIdentifier())
+          const CEvaluationNode * node = v[counter];
+          if (CEvaluationNode::type(node->getType()) == CEvaluationNode::VARIABLE)
             {
-              std::string nodeName = node->getName();
+              std::string nodeName = node->getData();
               /* if the name start with "substrate_" it is a substrate
                  if it starts with product_ it is a product
                  if it start with modifier_ it is a modifier
@@ -758,10 +763,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       for (counter = 0; counter < v.size(); counter++)
         {
           /* assign a type and a mapping */
-          CNodeK* node = v[counter];
-          if (node->isIdentifier())
+          const CEvaluationNode * node = v[counter];
+          if (CEvaluationNode::type(node->getType()) == CEvaluationNode::VARIABLE)
             {
-              std::string nodeName = node->getName();
+              std::string nodeName = node->getData();
               /* if the name start with "substrate_" it is a substrate
                  if it starts with product_ it is a product
                  if it start with modifier_ it is a modifier
