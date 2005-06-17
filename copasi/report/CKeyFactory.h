@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:37:42 $
+   $Date: 2005/06/17 20:40:24 $
    End CVS Header */
 
 /**
@@ -72,8 +72,22 @@ class CKeyFactory
      */
     static CDecisionVector isDigit;
 
+    /**
+     * Fast way to decide whether a character is a valid part of the prefix.
+     */
+    static CDecisionVector isPrefix;
+
     // Operations
   public:
+    /**
+     * check whether the key is valid
+     * @param const std::string & key
+     * @param const std::string & prefix (default: check for [_a-zA-Z]+_\d+)
+     * @return bool isValid
+     */
+    static bool isValidKey(const std::string & key,
+                           const std::string & prefix = "");
+
     /**
      * Default constructor
      */

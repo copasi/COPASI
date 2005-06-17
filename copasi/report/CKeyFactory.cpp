@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/06 13:55:55 $
+   $Date: 2005/06/17 20:40:24 $
    End CVS Header */
 
 /**
@@ -21,6 +21,25 @@
 #include "CKeyFactory.h"
 
 CKeyFactory GlobalKeys;
+
+bool CKeyFactory::isValidKey(const std::string & key,
+                             const std::string & prefix)
+{
+  unsigned C_INT32 pos_ = key.length() - 1;
+  while (isDigit(key[pos_]) && pos_) --pos_;
+
+  if (pos_ < 1 || pos_ > key.length() - 2 || key[pos_] != '_') return false;
+
+  if (prefix != "")
+    {
+      if (prefix != key.substr(0, pos_)) return false;
+      else return true;
+    }
+
+  unsigned C_INT32 posD = 0;
+  while (isPrefix(key[posD]) && posD < pos_) ++posD;
+  return (posD == pos_);
+}
 
 CKeyFactory::CDecisionVector::CDecisionVector():
     CVector< bool >()
@@ -134,6 +153,8 @@ bool CKeyFactory::HashTable::remove(const unsigned C_INT32 & index)
 }
 
 CKeyFactory::CDecisionVector CKeyFactory::isDigit("0123456789");
+
+CKeyFactory::CDecisionVector CKeyFactory::isPrefix("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 
 CKeyFactory::CKeyFactory():
     mKeyTable()
