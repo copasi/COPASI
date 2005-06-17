@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/10 16:07:43 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 16:03:41 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,8 +17,6 @@
 #ifndef PLOT_WIDGET_H
 #define PLOT_WIDGET_H
 
-#include <qtable.h>
-#include "copasi.h"
 #include "CopasiTableWidget.h"
 
 class PlotWidget : public CopasiTableWidget

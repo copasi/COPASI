@@ -1,16 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelValuesWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/25 09:51:14 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 16:03:41 $
    End CVS Header */
 
 #ifndef MODELVALUES_WIDGET_H
 #define MODELVALUES_WIDGET_H
 
-#include <qtable.h>
-#include "copasi.h"
 #include "CopasiTableWidget.h"
 
 class ModelValuesWidget : public CopasiTableWidget

@@ -1,16 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/07 08:59:26 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 16:03:41 $
    End CVS Header */
 
 #ifndef MOIETY_WIDGET_H
 #define MOIETY_WIDGET_H
 
-#include <qtable.h>
-#include "copasi.h"
 #include "CopasiTableWidget.h"
 
 class MoietyWidget : public CopasiTableWidget

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/20 17:19:10 $
+   $Date: 2005/06/17 16:03:41 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,8 +17,6 @@
 #ifndef METABOLITES_WIDGET_H
 #define METABOLITES_WIDGET_H
 
-#include <qtable.h>
-#include "copasi.h"
 #include "CopasiTableWidget.h"
 
 class CCompartment;

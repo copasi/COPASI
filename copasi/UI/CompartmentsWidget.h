@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/01/24 16:21:25 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 16:03:41 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,8 +17,6 @@
 #ifndef COMPARTMENTS_WIDGET_H
 #define COMPARTMENTS_WIDGET_H
 
-#include <qtable.h>
-#include "copasi.h"
 #include "CopasiTableWidget.h"
 
 class CompartmentsWidget : public CopasiTableWidget

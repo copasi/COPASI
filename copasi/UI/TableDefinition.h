@@ -1,16 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/27 10:35:32 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 16:03:41 $
    End CVS Header */
 
 #ifndef TABLE_WIDGET_H
 #define TABLE_WIDGET_H
 
-#include <qtable.h>
-#include "copasi.h"
 #include "CopasiTableWidget.h"
 
 class TableDefinition : public CopasiTableWidget
