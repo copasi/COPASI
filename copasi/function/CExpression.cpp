@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:14:18 $
+   $Date: 2005/06/17 16:18:33 $
    End CVS Header */
 
 #include "copasi.h"
@@ -31,7 +31,16 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
 }
 
 C_FLOAT64 CExpression::calcValue()
-{return mpRoot->value();}
+{
+  try
+    {
+      return mpRoot->value();
+    }
+  catch (...)
+    {
+      return std::numeric_limits<C_FLOAT64>::signaling_NaN();
+    }
+}
 
 C_FLOAT64 * CExpression::getObjectValue(const CCopasiObjectName & CN) const
   {return (C_FLOAT64 *) CCopasiContainer::ObjectFromName(*mpListOfContainer, CN)->getReference();}
