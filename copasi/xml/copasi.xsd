@@ -519,6 +519,8 @@
           <xs:enumeration value="bool"/>
           <xs:enumeration value="group"/>
           <xs:enumeration value="string"/>
+          <xs:enumeration value="cn"/>
+          <xs:enumeration value="key"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
