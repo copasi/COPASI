@@ -1,12 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/17 10:22:48 $
+   $Author: shoops $ 
+   $Date: 2005/06/17 20:58:12 $
    End CVS Header */
-
-#include "MoietyWidget.h"
 
 #include <qlayout.h>
 #include <qwidget.h>
@@ -14,18 +12,20 @@
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
+#include <qmessagebox.h>
+#include <qapplication.h>
+
+#include "MoietyWidget.h"
+#include "listviews.h"
+#include "DataModelGUI.h"
+#include "qtUtilities.h"
+#include "copasiui3window.h"
 
 //#include "MyTable.h"
 #include "model/CModel.h"
 #include "model/CMoiety.h"
-#include "listviews.h"
-#include "DataModelGUI.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
-#include "qtUtilities.h"
-#include "qmessagebox.h"
-#include "qapplication.h"
-#include "copasiui3window.h"
 
 std::vector<const CCopasiObject*> MoietyWidget::getObjects() const
   {
