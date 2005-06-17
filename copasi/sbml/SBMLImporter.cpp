@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/16 16:13:44 $
+   $Date: 2005/06/17 14:23:12 $
    End CVS Header */
 
 #include "copasi.h"
@@ -496,6 +496,23 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (!kLaw->isSetMath())
         {
           kLaw->setMathFromFormula();
+        }
+
+      for (counter = 0; counter < kLaw->getNumParameters();++counter)
+        {
+          Parameter* pSBMLParameter = kLaw->getParameter(counter);
+          std::string id;
+          if (this->mLevel == 1)
+            {
+              id = pSBMLParameter->getName();
+            }
+          else
+            {
+              id = pSBMLParameter->getId();
+            }
+          CCopasiParameter* pCopasiParameter = new CCopasiParameter(id, CCopasiParameter::DOUBLE);
+          pCopasiParameter->setValue(pSBMLParameter->getValue());
+          copasi2sbmlmap[pCopasiParameter] = pSBMLParameter;
         }
       const ASTNode* kLawMath = kLaw->getMath();
       if (kLawMath == NULL)

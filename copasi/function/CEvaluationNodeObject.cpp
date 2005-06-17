@@ -1,15 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/17 13:40:46 $
+   $Date: 2005/06/17 14:23:12 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "report/CCopasiObjectName.h"
+#include "report/CCopasiObject.h"
+#include "report/CCopasiContainer.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -62,15 +64,10 @@ CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& nod
   switch (type)
     {
     case AST_NAME:
-      pObject = CCopasiContainer::ObjectFromName(node.getName());
+      pObject = CCopasiContainer::ObjectFromName(CCopasiObjectName(node.getName()));
       if (pObject)
         {
-          pNode = new CEvaluationNodeObject(ANY, node.getName());
-        }
-      else
-        {
-          // Maybe create a temporary CCopasiFunctionParameterObject.
-          // I have to think about this.
+          pNode = new CEvaluationNodeObject(ANY, CCopasiObjectName(node.getName()));
         }
       break;
     case AST_NAME_TIME:
