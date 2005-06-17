@@ -262,6 +262,10 @@ SOURCE=.\MetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ModelValuesWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ModelWidget.cpp
 # End Source File
 # Begin Source File
@@ -695,6 +699,10 @@ SOURCE=.\MetabolitesWidget1.h
 # Begin Source File
 
 SOURCE=.\MetaboliteSymbols.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModelValuesWidget.h
 # End Source File
 # Begin Source File
 
