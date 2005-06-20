@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/06/07 15:59:24 $
+   $Date: 2005/06/20 21:09:31 $
    End CVS Header */
 
 /********************************************************
@@ -59,8 +59,8 @@ class OptimizationItemWidget : public QWidget
     QCheckBox* checkUpperInf;
     QCheckBox* checkLowerInf;
 
-    std::string getItemUpperLimit();
-    std::string getItemLowerLimit();
+    std::string getItemUpperLimit() const;
+    std::string getItemLowerLimit() const;
 
     void setItemUpperLimit(std::string strUpperLimit);
     void setItemLowerLimit(std::string strLowerLimit);

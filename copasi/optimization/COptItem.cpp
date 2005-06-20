@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/30 14:26:21 $
+   $Author: anuragr $ 
+   $Date: 2005/06/20 21:10:48 $
    End CVS Header */
 
 #include <float.h>
@@ -145,19 +145,19 @@ bool COptItem::isValid() const
   {
     CCopasiParameter * pParameter;
 
-    pParameter = (CCopasiParameter *) mpGroup->getValue(0);
+    pParameter = (CCopasiParameter *) mpGroup->getParameter(0);
     if (!pParameter || pParameter->getObjectName() != "ObjectCN") return false;
 
-    pParameter = (CCopasiParameter *) mpGroup->getValue(1);
+    pParameter = (CCopasiParameter *) mpGroup->getParameter(1);
     if (!pParameter || pParameter->getObjectName() != "LowerBound") return false;
 
-    pParameter = (CCopasiParameter *) mpGroup->getValue(2);
+    pParameter = (CCopasiParameter *) mpGroup->getParameter(2);
     if (!pParameter || pParameter->getObjectName() != "LowerRelation") return false;
 
-    pParameter = (CCopasiParameter *) mpGroup->getValue(3);
+    pParameter = (CCopasiParameter *) mpGroup->getParameter(3);
     if (!pParameter || pParameter->getObjectName() != "UpperBound") return false;
 
-    pParameter = (CCopasiParameter *) mpGroup->getValue(4);
+    pParameter = (CCopasiParameter *) mpGroup->getParameter(4);
     if (!pParameter || pParameter->getObjectName() != "UpperRelation") return false;
 
     COptItem *pTmp = const_cast<COptItem *>(this);
