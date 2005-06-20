@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 20:40:24 $
+   $Date: 2005/06/20 15:26:42 $
    End CVS Header */
 
 /**
@@ -25,20 +25,22 @@ CKeyFactory GlobalKeys;
 bool CKeyFactory::isValidKey(const std::string & key,
                              const std::string & prefix)
 {
-  unsigned C_INT32 pos_ = key.length() - 1;
-  while (isDigit(key[pos_]) && pos_) --pos_;
+  if (key == "" && prefix != "") return true;
 
-  if (pos_ < 1 || pos_ > key.length() - 2 || key[pos_] != '_') return false;
+  unsigned C_INT32 digitsStart = key.length() - 1;
+  while (isDigit(key[digitsStart]) && digitsStart) --digitsStart;
+
+  if (digitsStart < 1 || digitsStart > key.length() - 2 || key[digitsStart] != '_') return false;
 
   if (prefix != "")
     {
-      if (prefix != key.substr(0, pos_)) return false;
+      if (prefix != key.substr(0, digitsStart)) return false;
       else return true;
     }
 
-  unsigned C_INT32 posD = 0;
-  while (isPrefix(key[posD]) && posD < pos_) ++posD;
-  return (posD == pos_);
+  unsigned C_INT32 prefixEnd = 0;
+  while (isPrefix(key[prefixEnd]) && prefixEnd < digitsStart) ++prefixEnd;
+  return (prefixEnd == digitsStart);
 }
 
 CKeyFactory::CDecisionVector::CDecisionVector():
