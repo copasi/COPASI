@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/20 18:06:33 $
+   $Author: anuragr $ 
+   $Date: 2005/06/20 21:11:17 $
    End CVS Header */
 
 /**
@@ -211,22 +211,25 @@ COptItem COptProblem::getOptItem(const unsigned C_INT32 & index)
 }
 
 const unsigned C_INT32 COptProblem::getOptItemSize() const
-  {return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->size();}
+  {return ((std::vector<void*> *)getValue("OptimizationItemList"))->size();}
 
 COptItem COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
   unsigned C_INT32 index = getOptItemSize();
-  CCopasiParameterGroup * pOptimizationItemList
-  = (CCopasiParameterGroup *) getValue("OptimizationItemList");
+
+  CCopasiParameterGroup * pOptimizationItemList = (CCopasiParameterGroup *) getParameter("OptimizationItemList");
 
   pOptimizationItemList->addGroup("OptimizationItem");
 
   CCopasiParameterGroup * pOptItem =
-    (CCopasiParameterGroup *) pOptimizationItemList->getValue(index);
+    (CCopasiParameterGroup *) pOptimizationItemList->getParameter(index);
 
   assert(pOptItem != NULL);
 
   COptItem * pTmp = new COptItem(*pOptItem);
+
+  //pTmp->setLowerBound(
+
   if (!pTmp->initialize(objectCN)) fatalError();
 
   mOptItemList.push_back(pTmp);
