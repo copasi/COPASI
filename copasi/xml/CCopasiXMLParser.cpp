@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/20 19:01:53 $
+   $Date: 2005/06/20 19:07:53 $
    End CVS Header */
 
 /**
@@ -3544,7 +3544,14 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                   break;
 
                 case CCopasiParameter::KEY:
-                  p->setValue(mCommon.KeyMap.get(*((std::string*)mCommon.pCurrentParameter->getValue())));
+                  {
+                    CCopasiObject * pObject =
+                      mCommon.KeyMap.get(* (std::string*) mCommon.pCurrentParameter->getValue());
+                    if (pObject)
+                      p->setValue(pObject->getKey());
+                    else
+                      p->setValue(std::string(""));
+                  }
                   break;
 
                 case CCopasiParameter::CN:
@@ -4143,7 +4150,14 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
               break;
 
             case CCopasiParameter::KEY:
-              p->setValue(mCommon.KeyMap.get(*((std::string*)mCommon.pCurrentParameter->getValue())));
+              {
+                CCopasiObject * pObject =
+                  mCommon.KeyMap.get(* (std::string*) mCommon.pCurrentParameter->getValue());
+                if (pObject)
+                  p->setValue(pObject->getKey());
+                else
+                  p->setValue(std::string(""));
+              }
               break;
 
             case CCopasiParameter::CN:
@@ -4625,7 +4639,14 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
               break;
 
             case CCopasiParameter::KEY:
-              p->setValue(mCommon.KeyMap.get(*((std::string*)mCommon.pCurrentParameter->getValue())));
+              {
+                CCopasiObject * pObject =
+                  mCommon.KeyMap.get(* (std::string*) mCommon.pCurrentParameter->getValue());
+                if (pObject)
+                  p->setValue(pObject->getKey());
+                else
+                  p->setValue(std::string(""));
+              }
               break;
 
             case CCopasiParameter::CN:
