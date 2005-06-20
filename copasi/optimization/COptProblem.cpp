@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:38 $
+   $Date: 2005/06/20 15:54:19 $
    End CVS Header */
 
 /**
@@ -32,6 +32,8 @@
 #include "model/CCompartment.h"
 
 #include "report/CCopasiObjectReference.h"
+#include "report/CKeyFactory.h"
+
 #include "utilities/CProcessReport.h"
 
 //  Default constructor
@@ -39,6 +41,7 @@ COptProblem::COptProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::optimization, pParent),
     mpSteadyState(NULL),
     mpTrajectory(NULL),
+    mpFunction(NULL),
     mOptItemList()
 {
   addGroup("OptimizationItemList");
@@ -46,7 +49,7 @@ COptProblem::COptProblem(const CCopasiContainer * pParent):
 
   addParameter("SteadyState", CCopasiParameter::STRING, (std::string) "");
   addParameter("Trajectory", CCopasiParameter::STRING, (std::string) "");
-  addParameter("ObjectiveFunction", CCopasiParameter::STRING, (std::string) "");
+  addParameter("ObjectiveFunction", CCopasiParameter::KEY, (std::string) "");
   addParameter("Maximize", CCopasiParameter::BOOL, (bool) false);
 }
 
@@ -56,8 +59,12 @@ COptProblem::COptProblem(const COptProblem& src,
     CCopasiProblem(src, pParent),
     mpSteadyState(src.mpSteadyState),
     mpTrajectory(src.mpTrajectory),
+    mpFunction((src.mpFunction) ? static_cast<CExpression *>(CEvaluationTree::copy(*src.mpFunction)) : NULL),
     mOptItemList()
-{}
+{
+  if (mpFunction)
+    setValue("ObjectiveFunction", mpFunction->getKey());
+}
 
 // Destructor
 COptProblem::~COptProblem()
@@ -67,6 +74,8 @@ COptProblem::~COptProblem()
 
   for (; it != end; ++it)
     pdelete(*it);
+
+  pdelete(mpFunction);
 }
 
 bool COptProblem::setModel(CModel * pModel)
@@ -114,7 +123,13 @@ bool COptProblem::initialize()
       mUpdateMethods[i] = (*it)->getUpdateMethod();
     }
 
-  return true;
+  if (!mpFunction)
+    mpFunction =
+      dynamic_cast<CExpression *>(GlobalKeys.get(*(const std::string *)getValue("ObjectiveFunction")));
+
+  if (!mpFunction) return false;
+
+  return mpFunction->compile(ContainerList);
 }
 
 bool COptProblem::checkParametricConstraints()
@@ -156,7 +171,7 @@ bool COptProblem::calculate()
       mpTrajectory->process();
     }
 
-  mCalculateValue = mFunction.calcValue();
+  mCalculateValue = mpFunction->calcValue();
 
   mCounter += 1;
 
@@ -250,4 +265,23 @@ const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMet
   {return mUpdateMethods;}
 
 bool COptProblem::setObjectivFunction(const std::string & infix)
-{return mFunction.setInfix(infix);}
+{
+  if (!mpFunction)
+    {
+      mpFunction = new CExpression();
+      setValue("ObjectiveFunction", mpFunction->getKey());
+    }
+
+  return mpFunction->setInfix(infix);
+}
+
+const std::string COptProblem::getObjectFunction()
+{
+  if (!mpFunction)
+    {
+      mpFunction = new CExpression();
+      setValue("ObjectiveFunction", mpFunction->getKey());
+    }
+
+  return mpFunction->getInfix();
+}

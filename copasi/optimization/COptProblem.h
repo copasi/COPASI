@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:39 $
+   $Date: 2005/06/20 15:54:19 $
    End CVS Header */
 
 /**
@@ -58,7 +58,7 @@ class COptProblem : public CCopasiProblem
     /**
      * The objective function which should be minimized or maximized.
      */
-    CExpression mFunction;
+    CExpression * mpFunction;
 
     std::vector< COptItem * > mOptItemList;
 
@@ -233,8 +233,16 @@ class COptProblem : public CCopasiProblem
 
     /**
      * Set optimization function 
+     * @param const std::string & infix
+     * @return bool sccuess
      */
     bool setObjectivFunction(const std::string & infix);
+
+    /**
+     * Retrieve the objective function.
+     * @return const std::string infix.
+     */
+    const std::string getObjectFunction();
 
   private:
     virtual void initObjects();
