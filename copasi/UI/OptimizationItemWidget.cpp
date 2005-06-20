@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/06/07 16:00:14 $
+   $Date: 2005/06/20 21:11:46 $
    End CVS Header */
 
 /********************************************************
@@ -217,21 +217,21 @@ void OptimizationItemWidget::slotUpperEdit()
     }
 }
 
-std::string OptimizationItemWidget::getItemUpperLimit()
-{
-  if (checkUpperInf->isChecked())
-    return "+inf";
-  else
-    return (const char*)lineUpper->text().utf8();
-}
+std::string OptimizationItemWidget::getItemUpperLimit() const
+  {
+    if (checkUpperInf->isChecked())
+      return "+inf";
+    else
+      return (const char*)lineUpper->text().utf8();
+  }
 
-std::string OptimizationItemWidget::getItemLowerLimit()
-{
-  if (checkLowerInf->isChecked())
-    return "-inf";
-  else
-    return (const char*)lineLower->text().utf8();
-}
+std::string OptimizationItemWidget::getItemLowerLimit() const
+  {
+    if (checkLowerInf->isChecked())
+      return "-inf";
+    else
+      return (const char*)lineLower->text().utf8();
+  }
 
 CCopasiObject* OptimizationItemWidget::getCopasiObject()
 {
@@ -326,9 +326,9 @@ bool OptimizationItemWidget::saveToOptItem(COptProblem * pg) const
   {
     if (paramObject != NULL) // <todo="update condition">lbObject!=NULL && ubObject!=NULL)
       {
-        pg->addOptItem(paramObject->getCN());
-
-        // <todo="add bounds">
+        COptItem & pTmp = (pg->addOptItem(paramObject->getCN()));
+        pTmp.setLowerBound(getItemLowerLimit());
+        pTmp.setUpperBound(getItemUpperLimit());
         return true;
       }
 
