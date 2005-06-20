@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/20 15:54:19 $
+   $Date: 2005/06/20 18:06:33 $
    End CVS Header */
 
 /**
@@ -264,22 +264,32 @@ const std::vector< COptItem * > & COptProblem::getOptItemList() const
 const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMethods() const
   {return mUpdateMethods;}
 
-bool COptProblem::setObjectivFunction(const std::string & infix)
+bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
+  if (!mpFunction)
+    mpFunction =
+      dynamic_cast<CExpression *>(GlobalKeys.get(*(const std::string *)getValue("ObjectiveFunction")));
+
   if (!mpFunction)
     {
       mpFunction = new CExpression();
+      mpFunction->setObjectName("ObjectiveFunction");
       setValue("ObjectiveFunction", mpFunction->getKey());
     }
 
   return mpFunction->setInfix(infix);
 }
 
-const std::string COptProblem::getObjectFunction()
+const std::string COptProblem::getObjectiveFunction()
 {
+  if (!mpFunction)
+    mpFunction =
+      dynamic_cast<CExpression *>(GlobalKeys.get(*(const std::string *)getValue("ObjectiveFunction")));
+
   if (!mpFunction)
     {
       mpFunction = new CExpression();
+      mpFunction->setObjectName("ObjectiveFunction");
       setValue("ObjectiveFunction", mpFunction->getKey());
     }
 

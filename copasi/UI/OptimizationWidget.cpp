@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/20 15:57:00 $
+   $Date: 2005/06/20 18:06:33 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -581,7 +581,7 @@ bool OptimizationWidget::saveExpression()
   COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
   if (!optimizationProblem) return false;
 
-  optimizationProblem->setObjectivFunction(InfixCN);
+  optimizationProblem->setObjectiveFunction(InfixCN);
 
   // :TODO: need to handle errors.
   return true;

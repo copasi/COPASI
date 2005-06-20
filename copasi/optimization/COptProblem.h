@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/20 15:54:19 $
+   $Date: 2005/06/20 18:06:33 $
    End CVS Header */
 
 /**
@@ -236,13 +236,13 @@ class COptProblem : public CCopasiProblem
      * @param const std::string & infix
      * @return bool sccuess
      */
-    bool setObjectivFunction(const std::string & infix);
+    bool setObjectiveFunction(const std::string & infix);
 
     /**
      * Retrieve the objective function.
      * @return const std::string infix.
      */
-    const std::string getObjectFunction();
+    const std::string getObjectiveFunction();
 
   private:
     virtual void initObjects();
