@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/15 01:38:00 $
+   $Date: 2005/06/20 15:57:00 $
    End CVS Header */
 
 /****************************************************************************
@@ -68,10 +68,10 @@ class OptimizationWidget : public CopasiWidget
 
   protected:
     bool loadOptimization();
-    bool saveOptimization() const;
+    bool saveOptimization();
 
     /* functions for parsing <start>*/
-    bool parseExpression();
+    bool saveExpression();
 
     /* functions for parsing <end>*/
 

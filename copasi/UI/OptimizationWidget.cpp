@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:44 $
+   $Date: 2005/06/20 15:57:00 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -309,8 +309,6 @@ bool OptimizationWidget::slotAddItem()
 {
   if (expressionText->text().length() > 0)
     {
-      parseExpression(); // populates CKinFunction
-
       OptimizationItemWidget * tmp;
       //create item to get the default values
       //COptProblem* tmpProblem = new COptProblem();
@@ -328,43 +326,45 @@ bool OptimizationWidget::slotAddItem()
     return false;
 }
 
-bool OptimizationWidget::saveOptimization() const
-  {
-    COptTask* optimizationTask =
-      dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
-    if (!optimizationTask) return false;
+bool OptimizationWidget::saveOptimization()
+{
+  COptTask* optimizationTask =
+    dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
+  if (!optimizationTask) return false;
 
-    COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
-    if (!optimizationProblem) return false;
+  COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
+  if (!optimizationProblem) return false;
 
-    COptMethod *optimizationMethod = dynamic_cast<COptMethod*>(optimizationTask->getMethod());
-    if (!optimizationMethod) return false;
+  COptMethod *optimizationMethod = dynamic_cast<COptMethod*>(optimizationTask->getMethod());
+  if (!optimizationMethod) return false;
 
-    unsigned C_INT32 i;
-    QTableItem * pItem;
-    QString value, strname;
+  unsigned C_INT32 i;
+  QTableItem * pItem;
+  QString value, strname;
 
-    for (i = 0; i < optimizationMethod->size(); i++)
-      {
-        pItem = parameterTable->item(i, 0);
-        value = pItem->text();
-        setParameterValue(optimizationMethod, i, value);
-      }
+  for (i = 0; i < optimizationMethod->size(); i++)
+    {
+      pItem = parameterTable->item(i, 0);
+      value = pItem->text();
+      setParameterValue(optimizationMethod, i, value);
+    }
 
-    const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
-    unsigned C_INT32 imax = widgetList.size();
+  const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
+  unsigned C_INT32 imax = widgetList.size();
 
-    for (i = 0; i < imax; ++i)
-      {
-        const OptimizationItemWidget* tmp = dynamic_cast<OptimizationItemWidget*>(widgetList[i]);
-        if (tmp) {tmp->saveToOptItem(optimizationProblem); continue;}
-      }
+  for (i = 0; i < imax; ++i)
+    {
+      const OptimizationItemWidget* tmp = dynamic_cast<OptimizationItemWidget*>(widgetList[i]);
+      if (tmp) {tmp->saveToOptItem(optimizationProblem); continue;}
+    }
 
-    //CCopasiDataModel::Global->getModel()->compileIfNecessary();
-    // optimizationProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
+  //CCopasiDataModel::Global->getModel()->compileIfNecessary();
+  // optimizationProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
-    return true;
-  }
+  saveExpression(); // save objective function
+
+  return true;
+}
 
 void OptimizationWidget::ReportDefinitionClicked()
 {
@@ -533,57 +533,55 @@ void OptimizationWidget::slotChooseObject()
  * Description -  parsing */ 
 /* Author - stupe   */
 
-bool OptimizationWidget::parseExpression()
+bool OptimizationWidget::saveExpression()
 {
-  /*
-    std::string mName = "temp";
-    std::string mDisplayName = "";
-    std::string mRNDesc = "";
-    std::string temp = "";
-  */
-  std::string mDesc = (const char *)expressionText->text().utf8();
-  /*
-    std::vector<CCopasiObject *>::iterator it = parseList.begin();
-    //CFunction* pFunc;
-    //pFunc = CCopasiDataModel::Global->getFunctionList()->createFunction(name, CFunction::UserDefined)
-    for (unsigned int i = 0; i < mDesc.length(); i++)
-      {
-        mRNDesc += mDesc[i];
-        mDisplayName = "";
-   
-        if (mDesc[i] == '<')
-          {
-            i++;
-            it = parseList.begin();
-            while (i < mDesc.length() && mDesc[i] != '>')
-              {
-                mDisplayName += mDesc[i];
-                i++;
-              }
-   
-            while (it < parseList.end())
-              {
-                temp = (*it)->getObjectDisplayName();
-                if ((*it)->getObjectDisplayName() == mDisplayName)
-                  {
-                    mRNDesc += (*it)->getCN();
-                    break;
-                  }
-   
-                it++;
-              }
-   
-            mRNDesc += ">";
-          }
-      }
-  */
+  std::string DisplayName = "";
+  std::string InfixCN = "";
+
+  std::string InfixDispayName = (const char *)expressionText->text().utf8();
+  std::vector<CCopasiObject *>::iterator it = parseList.begin();
+
+  for (unsigned int i = 0; i < InfixDispayName.length(); i++)
+    {
+      InfixCN += InfixDispayName[i];
+      DisplayName = "";
+
+      if (InfixDispayName[i] == '<')
+        {
+          i++;
+          while (i < InfixDispayName.length() && InfixDispayName[i] != '>')
+            {
+              if (InfixDispayName[i] == '\\') // '\' is an escape character.
+                DisplayName += InfixDispayName[i++];
+
+              DisplayName += InfixDispayName[i++];
+            }
+
+          it = parseList.begin();
+          while (it < parseList.end())
+            {
+              if ((*it)->getObjectDisplayName() == DisplayName)
+                {
+                  InfixCN += (*it)->getCN();
+                  break;
+                }
+
+              it++;
+            }
+
+          InfixCN += ">";
+        }
+    }
+
   COptTask* optimizationTask =
     dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
+
   if (!optimizationTask) return false;
 
   COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
   if (!optimizationProblem) return false;
-  optimizationProblem->setObjectivFunction(mDesc);
+
+  optimizationProblem->setObjectivFunction(InfixCN);
 
   // :TODO: need to handle errors.
   return true;
