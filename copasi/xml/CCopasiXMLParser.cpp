@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.93 $
+   $Revision: 1.94 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 20:54:59 $
+   $Date: 2005/06/20 19:01:53 $
    End CVS Header */
 
 /**
@@ -3540,8 +3540,11 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                   break;
 
                 case CCopasiParameter::STRING:
-                case CCopasiParameter::KEY:
                   p->setValue(*((std::string*)mCommon.pCurrentParameter->getValue()));
+                  break;
+
+                case CCopasiParameter::KEY:
+                  p->setValue(mCommon.KeyMap.get(*((std::string*)mCommon.pCurrentParameter->getValue())));
                   break;
 
                 case CCopasiParameter::CN:
@@ -4136,8 +4139,11 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
               break;
 
             case CCopasiParameter::STRING:
-            case CCopasiParameter::KEY:
               p->setValue(*((std::string*)mCommon.pCurrentParameter->getValue()));
+              break;
+
+            case CCopasiParameter::KEY:
+              p->setValue(mCommon.KeyMap.get(*((std::string*)mCommon.pCurrentParameter->getValue())));
               break;
 
             case CCopasiParameter::CN:
@@ -4615,8 +4621,11 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
               break;
 
             case CCopasiParameter::STRING:
-            case CCopasiParameter::KEY:
               p->setValue(*((std::string*)mCommon.pCurrentParameter->getValue()));
+              break;
+
+            case CCopasiParameter::KEY:
+              p->setValue(mCommon.KeyMap.get(*((std::string*)mCommon.pCurrentParameter->getValue())));
               break;
 
             case CCopasiParameter::CN:
