@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 18:20:10 $
+   $Date: 2005/06/21 20:32:02 $
    End CVS Header */
 
 /**
@@ -69,7 +69,7 @@ class CMassAction : public CFunction
      * &param const CCallParameters<C_FLOAT64> & callParameters
      * &param bool dependsOn
      */
-    virtual bool dependsOn(const void * parameter,
+    virtual bool dependsOn(const C_FLOAT64 * parameter,
                            const CCallParameters<C_FLOAT64> & callParameters) const;
 
     /**

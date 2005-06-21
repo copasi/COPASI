@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 18:20:10 $
+   $Date: 2005/06/21 20:32:02 $
    End CVS Header */
 
 /**
@@ -108,7 +108,7 @@ C_FLOAT64 CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParamete
   return Substrates - Products;
 }
 
-bool CMassAction::dependsOn(const void * parameter,
+bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
                             const CCallParameters<C_FLOAT64> & callParameters) const
   {
     if (parameter == callParameters[0].value) return true;
