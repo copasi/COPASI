@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/20 21:11:17 $
+   $Author: ssahle $ 
+   $Date: 2005/06/21 11:19:23 $
    End CVS Header */
 
 /**
@@ -213,7 +213,7 @@ COptItem COptProblem::getOptItem(const unsigned C_INT32 & index)
 const unsigned C_INT32 COptProblem::getOptItemSize() const
   {return ((std::vector<void*> *)getValue("OptimizationItemList"))->size();}
 
-COptItem COptProblem::addOptItem(const CCopasiObjectName & objectCN)
+COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
   unsigned C_INT32 index = getOptItemSize();
 

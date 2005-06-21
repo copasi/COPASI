@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/20 18:06:33 $
+   $Author: ssahle $ 
+   $Date: 2005/06/21 11:19:23 $
    End CVS Header */
 
 /**
@@ -213,7 +213,7 @@ class COptProblem : public CCopasiProblem
      * @param const CCopasiObjectName & objectCN
      * @return COptItem optItemAdded
      */
-    COptItem addOptItem(const CCopasiObjectName & objectCN);
+    COptItem & addOptItem(const CCopasiObjectName & objectCN);
 
     /**
      * Remove an optimization items.
