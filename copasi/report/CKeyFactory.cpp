@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/20 15:26:42 $
+   $Author: anuragr $ 
+   $Date: 2005/06/21 20:58:02 $
    End CVS Header */
 
 /**
@@ -25,7 +25,7 @@ CKeyFactory GlobalKeys;
 bool CKeyFactory::isValidKey(const std::string & key,
                              const std::string & prefix)
 {
-  if (key == "" && prefix != "") return true;
+  if (key == "" && prefix == "") return true;
 
   unsigned C_INT32 digitsStart = key.length() - 1;
   while (isDigit(key[digitsStart]) && digitsStart) --digitsStart;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/21 20:34:20 $
+   $Author: anuragr $ 
+   $Date: 2005/06/21 20:57:33 $
    End CVS Header */
 
 #include <float.h>
@@ -213,11 +213,11 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
                                                Bound)) != NULL &&
            pObject->isValueDbl())
     mpLowerBound = (C_FLOAT64 *) pObject->getReference();
-  if (!mpLowerBound) return false;
-  {
-    CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, Bound.c_str());
-    return false;
-  }
+  if (!mpLowerBound)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, Bound.c_str());
+      return false;
+    }
 
   if (getLowerRelation() == "<") mpLowerRel = less;
   else mpLowerRel = lessOrEqual;
