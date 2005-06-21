@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/qtUtilities.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:33:59 $
+   $Date: 2005/06/21 20:47:56 $
    End CVS Header */
 
 #include <qstring.h>
@@ -88,6 +88,7 @@ bool setParameterValue(CCopasiParameterGroup * group,
   unsigned C_INT32 UINT;
   bool BOOL;
   std::string STRING;
+  CCopasiObjectName CN;
 
   switch (group->getType(index))
     {
@@ -122,8 +123,14 @@ bool setParameterValue(CCopasiParameterGroup * group,
       break;
 
     case CCopasiParameter::STRING:
+    case CCopasiParameter::KEY:
       STRING = value.utf8();
       return group->setValue(index, STRING);
+      break;
+
+    case CCopasiParameter::CN:
+      CN = (std::string) value.utf8();
+      return group->setValue(index, CN);
       break;
 
     case CCopasiParameter::GROUP:
