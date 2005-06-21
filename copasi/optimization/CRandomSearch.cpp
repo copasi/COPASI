@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/21 20:34:20 $
+   $Author: anuragr $ 
+   $Date: 2005/06/21 20:38:30 $
    End CVS Header */
 
 /***************************************************************************
@@ -99,10 +99,9 @@ bool CRandomSearch::initialize()
   //***mIndividual defined as C_FLOAT64 member variable
 
   mVariableSize = mpOptItem->size();
-
   //*** Single mIndividual defined as a member
-  /*mIndividual.resize(2*mPopulationSize);
-  for (i = 0; i < 2*mPopulationSize; i++)
+  mIndividual.resize(mVariableSize);
+  /*for (i = 0; i < 2*mPopulationSize; i++)
     mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   /*mCrossOverFalse.resize(mVariableSize);
