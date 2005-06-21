@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/20 18:06:33 $
+   $Author: anuragr $ 
+   $Date: 2005/06/21 20:59:42 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -27,6 +27,7 @@
 #include "optimization/COptTask.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptMethod.h"
+#include "optimization/COptItem.h"
 #include "model/CModel.h"
 #include "listviews.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -83,21 +84,6 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   methodCombo = new QComboBox(FALSE, methodGroupBox, "methodCombo");
   methodCombo->setGeometry(QRect(50, 30, 220, 20));
-
-  /*param1Edit = new QLineEdit(methodGroupBox, "param1Edit");
-  param1Edit->setGeometry(QRect(10, 50, 50, 20));
-
-  param3Edit = new QLineEdit(methodGroupBox, "param3Edit");
-  param3Edit->setGeometry(QRect(130, 50, 50, 20));
-
-  param2Edit = new QLineEdit(methodGroupBox, "param2Edit");
-  param2Edit->setGeometry(QRect(70, 50, 50, 20));
-
-  param4Edit = new QLineEdit(methodGroupBox, "param4Edit");
-  param4Edit->setGeometry(QRect(190, 50, 50, 20));
-
-  param5Edit = new QLineEdit(methodGroupBox, "param5Edit");
-  param5Edit->setGeometry(QRect(250, 50, 50, 20));*/
 
   confirmButton = new QPushButton(this, "confirmButton");
   confirmButton->setGeometry(QRect(12, 504, 181, 24));
@@ -355,7 +341,11 @@ bool OptimizationWidget::saveOptimization()
   for (i = 0; i < imax; ++i)
     {
       const OptimizationItemWidget* tmp = dynamic_cast<OptimizationItemWidget*>(widgetList[i]);
-      if (tmp) {tmp->saveToOptItem(optimizationProblem); continue;}
+      if (tmp)
+        {
+          tmp->saveToOptItem(optimizationProblem);
+          continue;
+        }
     }
 
   //CCopasiDataModel::Global->getModel()->compileIfNecessary();
