@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:53:57 $
+   $Date: 2005/06/21 20:35:15 $
    End CVS Header */
 
 /**
@@ -69,7 +69,7 @@ void CMCAProblem::load(CReadConfig & configBuffer,
   if (configBuffer.getVersion() < "4.0")
     {
       configBuffer.getVariable("RepxSteadyStateAnalysis", "bool" ,
-                               getValue("SteadyStateRequested"),
+                               getValue("SteadyStateRequested").pBOOL,
                                CReadConfig::LOOP);
     }
 }
@@ -113,4 +113,4 @@ void CMCAProblem::setSteadyStateRequested(bool & steadyStateRequested)
  * @return bool steadyStateRequested
  */
 bool CMCAProblem::isSteadyStateRequested() const
-  {return * (bool *) getValue("SteadyStateRequested");}
+  {return * getValue("SteadyStateRequested").pBOOL;}

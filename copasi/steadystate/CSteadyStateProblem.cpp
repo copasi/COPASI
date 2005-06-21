@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:34:21 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:36:22 $
    End CVS Header */
 
 /**
@@ -119,7 +119,7 @@ void CSteadyStateProblem::setJacobianRequested(bool & jacobianRequested)
  * @return bool jacobianRequested
  */
 bool CSteadyStateProblem::isJacobianRequested() const
-  {return * (bool *) getValue("JacobianRequested");}
+  {return * getValue("JacobianRequested").pBOOL;}
 
 /**
  * Set whether stabilty analysis is requested.
@@ -133,7 +133,7 @@ void CSteadyStateProblem::setStabilityAnalysisRequested(bool & stabilityAnalysis
  * @return bool stabilityAnalysisRequested
  */
 bool CSteadyStateProblem::isStabilityAnalysisRequested() const
-  {return * (bool *) getValue("StabilityAnalysisRequested");}
+  {return * getValue("StabilityAnalysisRequested").pBOOL;}
 
 /**
  * Load a steadystate problem
@@ -148,10 +148,10 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
       mInitialState = mpModel->getInitialState();
       mHasInitialState = false;
       configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
-                               getValue("StabilityAnalysisRequested"),
+                               getValue("StabilityAnalysisRequested").pBOOL,
                                CReadConfig::LOOP);
       setValue("JacobianRequested",
-               * (bool *) getValue("StabilityAnalysisRequested"));
+               * getValue("StabilityAnalysisRequested").pBOOL);
     }
 }
 

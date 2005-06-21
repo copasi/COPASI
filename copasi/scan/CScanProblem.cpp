@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/14 10:48:24 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:51 $
    End CVS Header */
 
 /**
@@ -75,7 +75,7 @@ void CScanProblem::setSubtask(CCopasiTask::Type type)
 }
 
 CCopasiTask::Type CScanProblem::getSubtask() const
-  {return * (CCopasiTask::Type *) getValue("Subtask");}
+  {return * (CCopasiTask::Type *) getValue("Subtask").pUINT;}
 
 //************************************
 
@@ -85,7 +85,7 @@ void CScanProblem::setOutputInSubtask(bool ois)
 }
 
 const bool & CScanProblem::getOutputInSubtask() const
-  {return * (bool *) getValue("Output in subtask");}
+  {return * getValue("Output in subtask").pBOOL;}
 
 //************************************
 
@@ -95,7 +95,7 @@ void CScanProblem::setAdjustInitialConditions(bool aic)
 }
 
 const bool & CScanProblem::getAdjustInitialConditions() const
-  {return * (bool *) getValue("Adjust initial conditions");}
+  {return * getValue("Adjust initial conditions").pBOOL;}
 
 //************************************
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.185 $
+   $Revision: 1.186 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 21:45:41 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:33:59 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -273,7 +273,7 @@ bool ScanWidget::loadScan()
   for (i = 0; i < imax; ++i)
     {
       void* pTmp;
-      if (!(pTmp = scanProblem->getScanItem(i)->getValue("Type"))) return false;
+      if (!(pTmp = scanProblem->getScanItem(i)->getValue("Type").pVOID)) return false;
       CScanProblem::Type type = *(CScanProblem::Type*)pTmp;
 
       switch (type)

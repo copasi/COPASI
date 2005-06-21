@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/20 19:07:53 $
+   $Date: 2005/06/21 20:36:47 $
    End CVS Header */
 
 /**
@@ -3520,33 +3520,33 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
               switch (mCommon.pCurrentParameter->getType())
                 {
                 case CCopasiParameter::INT:
-                  p->setValue(*((C_INT32*)mCommon.pCurrentParameter->getValue()));
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
                   break;
 
                 case CCopasiParameter::UINT:
-                  p->setValue(*((unsigned C_INT32*)mCommon.pCurrentParameter->getValue()));
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pUINT);
                   break;
 
                 case CCopasiParameter::DOUBLE:
-                  p->setValue(*((C_FLOAT64*)mCommon.pCurrentParameter->getValue()));
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pDOUBLE);
                   break;
 
                 case CCopasiParameter::UDOUBLE:
-                  p->setValue(*((C_FLOAT64*)mCommon.pCurrentParameter->getValue()));
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pUDOUBLE);
                   break;
 
                 case CCopasiParameter::BOOL:
-                  p->setValue(*((bool*)mCommon.pCurrentParameter->getValue()));
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pBOOL);
                   break;
 
                 case CCopasiParameter::STRING:
-                  p->setValue(*((std::string*)mCommon.pCurrentParameter->getValue()));
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pSTRING);
                   break;
 
                 case CCopasiParameter::KEY:
                   {
                     CCopasiObject * pObject =
-                      mCommon.KeyMap.get(* (std::string*) mCommon.pCurrentParameter->getValue());
+                      mCommon.KeyMap.get(* mCommon.pCurrentParameter->getValue().pKEY);
                     if (pObject)
                       p->setValue(pObject->getKey());
                     else
@@ -3555,7 +3555,7 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                   break;
 
                 case CCopasiParameter::CN:
-                  p->setValue(*((CCopasiObjectName*)mCommon.pCurrentParameter->getValue()));
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
                   break;
 
                 case CCopasiParameter::GROUP:
@@ -4126,33 +4126,33 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
           switch (mCommon.pCurrentParameter->getType())
             {
             case CCopasiParameter::INT:
-              p->setValue(*((C_INT32*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
               break;
 
             case CCopasiParameter::UINT:
-              p->setValue(*((unsigned C_INT32*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pUINT);
               break;
 
             case CCopasiParameter::DOUBLE:
-              p->setValue(*((C_FLOAT64*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pDOUBLE);
               break;
 
             case CCopasiParameter::UDOUBLE:
-              p->setValue(*((C_FLOAT64*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pUDOUBLE);
               break;
 
             case CCopasiParameter::BOOL:
-              p->setValue(*((bool*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pBOOL);
               break;
 
             case CCopasiParameter::STRING:
-              p->setValue(*((std::string*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pSTRING);
               break;
 
             case CCopasiParameter::KEY:
               {
                 CCopasiObject * pObject =
-                  mCommon.KeyMap.get(* (std::string*) mCommon.pCurrentParameter->getValue());
+                  mCommon.KeyMap.get(* mCommon.pCurrentParameter->getValue().pKEY);
                 if (pObject)
                   p->setValue(pObject->getKey());
                 else
@@ -4161,7 +4161,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
               break;
 
             case CCopasiParameter::CN:
-              p->setValue(*((CCopasiObjectName*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
               break;
 
             case CCopasiParameter::GROUP:
@@ -4615,33 +4615,33 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
           switch (mCommon.pCurrentParameter->getType())
             {
             case CCopasiParameter::INT:
-              p->setValue(*((C_INT32*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
               break;
 
             case CCopasiParameter::UINT:
-              p->setValue(*((unsigned C_INT32*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pUINT);
               break;
 
             case CCopasiParameter::DOUBLE:
-              p->setValue(*((C_FLOAT64*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pDOUBLE);
               break;
 
             case CCopasiParameter::UDOUBLE:
-              p->setValue(*((C_FLOAT64*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pUDOUBLE);
               break;
 
             case CCopasiParameter::BOOL:
-              p->setValue(*((bool*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pBOOL);
               break;
 
             case CCopasiParameter::STRING:
-              p->setValue(*((std::string*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pSTRING);
               break;
 
             case CCopasiParameter::KEY:
               {
                 CCopasiObject * pObject =
-                  mCommon.KeyMap.get(* (std::string*) mCommon.pCurrentParameter->getValue());
+                  mCommon.KeyMap.get(* mCommon.pCurrentParameter->getValue().pKEY);
                 if (pObject)
                   p->setValue(pObject->getKey());
                 else
@@ -4650,7 +4650,7 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
               break;
 
             case CCopasiParameter::CN:
-              p->setValue(*((CCopasiObjectName*)mCommon.pCurrentParameter->getValue()));
+              p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
               break;
 
             case CCopasiParameter::GROUP:

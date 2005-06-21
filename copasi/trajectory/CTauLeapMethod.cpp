@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 17:08:45 $
+   $Date: 2005/06/21 20:36:24 $
    End CVS Header */
 
 /**
@@ -206,11 +206,11 @@ void CTauLeapMethod::initMethod()
     mpCurrentState->setFixedNumber(i, floor(mpCurrentState->getFixedNumber(i)));
 
   /* get configuration data */
-  mTau = * (C_FLOAT64 *) getValue("TAULEAP.Tau");
+  mTau = * getValue("TAULEAP.Tau").pDOUBLE;
   std::cout << "TAULEAP.Tau: " << mTau << std::endl;
-  mUseRandomSeed = * (bool *) getValue("TAULEAP.UseRandomSeed");
+  mUseRandomSeed = * getValue("TAULEAP.UseRandomSeed").pBOOL;
   std::cout << "TAULEAP.UseRandomSeed: " << mUseRandomSeed << std::endl;
-  mRandomSeed = * (unsigned C_INT32 *) getValue("TAULEAP.RandomSeed");
+  mRandomSeed = * getValue("TAULEAP.RandomSeed").pUINT;
   std::cout << "TAULEAP.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
 
@@ -500,7 +500,7 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  mTau = * (C_FLOAT64 *) getValue("TAULEAP.Tau");
+  mTau = * getValue("TAULEAP.Tau").pDOUBLE;
   if (mTau <= 0.0)
     {
       // tau-value is not positive

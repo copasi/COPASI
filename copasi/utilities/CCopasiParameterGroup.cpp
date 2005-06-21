@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 13:15:28 $
+   $Date: 2005/06/21 20:36:38 $
    End CVS Header */
 
 /**
@@ -17,6 +17,7 @@
 #include "copasi.h"
 
 #include "CCopasiParameterGroup.h"
+#include "CCopasiMessage.h"
 
 CCopasiParameterGroup::CCopasiParameterGroup():
     CCopasiParameter("NoName", GROUP)
@@ -25,7 +26,7 @@ CCopasiParameterGroup::CCopasiParameterGroup():
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
     const CCopasiContainer * pParent):
     CCopasiParameter(src, pParent)
-{createGroup((parameterGroup *) src.CCopasiParameter::getValue());}
+{createGroup(src.mValue.pGROUP);}
 
 CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
     const CCopasiContainer * pParent,
@@ -204,42 +205,46 @@ const CCopasiParameter * CCopasiParameterGroup::getParameter(const unsigned C_IN
     return NULL;
   }
 
-const void * CCopasiParameterGroup::getValue(const std::string & name) const
+const CCopasiParameter::Value & CCopasiParameterGroup::getValue(const std::string & name) const
   {
     CCopasiParameter * pParameter =
       const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
 
-    if (pParameter) return pParameter->getValue();
+    if (!pParameter)
+      fatalError();
 
-    return NULL;
+    return pParameter->getValue();
   }
 
-const void * CCopasiParameterGroup::getValue(const unsigned C_INT32 & index) const
+const CCopasiParameter::Value & CCopasiParameterGroup::getValue(const unsigned C_INT32 & index) const
   {
     CCopasiParameter * pParameter =
       const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
 
-    if (pParameter) return pParameter->getValue();
+    if (!pParameter)
+      fatalError();
 
-    return NULL;
+    return pParameter->getValue();
   }
 
-void * CCopasiParameterGroup::getValue(const std::string & name)
+CCopasiParameter::Value & CCopasiParameterGroup::getValue(const std::string & name)
 {
   CCopasiParameter * pParameter = getParameter(name);
 
-  if (pParameter) return pParameter->getValue();
+  if (!pParameter)
+    fatalError();
 
-  return NULL;
+  return pParameter->getValue();
 }
 
-void * CCopasiParameterGroup::getValue(const unsigned C_INT32 & index)
+CCopasiParameter::Value & CCopasiParameterGroup::getValue(const unsigned C_INT32 & index)
 {
   CCopasiParameter * pParameter = getParameter(index);
 
-  if (pParameter) return pParameter->getValue();
+  if (!pParameter)
+    fatalError();
 
-  return NULL;
+  return pParameter->getValue();
 }
 
 CCopasiParameter::Type CCopasiParameterGroup::getType(const std::string & name) const

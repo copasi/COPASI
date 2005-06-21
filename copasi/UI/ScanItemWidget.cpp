@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ScanItemWidget.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:41 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:33:59 $
    End CVS Header */
 
 /********************************************************
@@ -259,9 +259,9 @@ void ScanItemWidget::updateObject()
   mMax->setText(getParameterValue(pParameter, "max"));
   mMin->setText(getParameterValue(pParameter, "min"));
   mDensity-> setText(getParameterValue(pParameter, "density"));
-  mLogarithmic->setChecked(* (bool *) pParameter->getValue("log"));
-  mIndependent->setChecked(* (bool *) pParameter->getValue("indp"));
-  switch (int(* (C_INT32 *)pParameter->getValue("gridType")))
+  mLogarithmic->setChecked(* pParameter->getValue("log").pBOOL);
+  mIndependent->setChecked(* pParameter->getValue("indp").pBOOL);
+  switch (* pParameter->getValue("gridType").pINT)
     {
     case CScanProblem::SD_REGULAR:
       mMinLabel->setText(tr("Min"));

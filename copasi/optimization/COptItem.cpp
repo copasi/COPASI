@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/20 21:10:48 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:20 $
    End CVS Header */
 
 #include <float.h>
@@ -48,10 +48,10 @@ bool COptItem::initialize(const CCopasiObjectName & objectCN)
 {
   mpGroup->clear();
 
-  mpGroup->addParameter("ObjectCN", CCopasiParameter::STRING, (std::string) objectCN);
-  mpGroup->addParameter("LowerBound", CCopasiParameter::STRING, (std::string) "-inf");
+  mpGroup->addParameter("ObjectCN", CCopasiParameter::CN, (CCopasiObjectName) objectCN);
+  mpGroup->addParameter("LowerBound", CCopasiParameter::CN, (CCopasiObjectName) "-inf");
   mpGroup->addParameter("LowerRelation", CCopasiParameter::STRING, (std::string) "<=");
-  mpGroup->addParameter("UpperBound", CCopasiParameter::STRING, (std::string) "inf");
+  mpGroup->addParameter("UpperBound", CCopasiParameter::CN, (CCopasiObjectName) "inf");
   mpGroup->addParameter("UpperRelation", CCopasiParameter::STRING, (std::string) "<=");
 
   return isValid();
@@ -66,13 +66,13 @@ bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
       return false;
     }
 
-  return mpGroup->setValue(0, (const std::string) objectCN);
+  return mpGroup->setValue(0, objectCN);
 }
 
 const CCopasiObjectName COptItem::getObjectCN() const
-  {return *(std::string*) mpGroup->getValue(0);}
+  {return * mpGroup->getValue(0).pCN;}
 
-bool COptItem::setLowerBound(const std::string & lowerBound)
+bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
 {
   const CCopasiObject * pObject;
 
@@ -89,7 +89,7 @@ bool COptItem::setLowerBound(const std::string & lowerBound)
 }
 
 const std::string COptItem::getLowerBound() const
-  {return *(std::string*) mpGroup->getValue(1);}
+  {return * mpGroup->getValue(1).pCN;}
 
 bool COptItem::setLowerRelation(const std::string & lowerRel)
 {
@@ -103,9 +103,9 @@ bool COptItem::setLowerRelation(const std::string & lowerRel)
 }
 
 const std::string COptItem::getLowerRelation() const
-  {return *(std::string*) mpGroup->getValue(2);}
+  {return * mpGroup->getValue(2).pSTRING;}
 
-bool COptItem::setUpperBound(const std::string & upperBound)
+bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
 {
   const CCopasiObject * pObject;
 
@@ -122,7 +122,7 @@ bool COptItem::setUpperBound(const std::string & upperBound)
 }
 
 const std::string COptItem::getUpperBound() const
-  {return *(std::string*) mpGroup->getValue(3);}
+  {return * mpGroup->getValue(3).pCN;}
 
 bool COptItem::setUpperRelation(const std::string & upperRel)
 {
@@ -136,7 +136,7 @@ bool COptItem::setUpperRelation(const std::string & upperRel)
 }
 
 const std::string COptItem::getUpperRelation() const
-  {return *(std::string*) mpGroup->getValue(4);}
+  {return * mpGroup->getValue(4).pSTRING;}
 
 UpdateMethod * COptItem::getUpdateMethod() const
   {return mpMethod;}

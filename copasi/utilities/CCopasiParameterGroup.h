@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 13:15:28 $
+   $Date: 2005/06/21 20:36:38 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -190,30 +190,30 @@ class CCopasiParameterGroup: public CCopasiParameter
     /**
      * Retreive a pointer to the value of a parameter or subgroup
      * @param const std::string & name
-     * @return const void * pValue
+     * @return const CCopasiParameter::Value & Value
      */
-    const void * getValue(const std::string & name) const;
+    const CCopasiParameter::Value & getValue(const std::string & name) const;
 
     /**
      * Retreive a pointer to the value of a parameter or subgroup
      * @param const unsigned C_INT32 & index
-     * @return const void * pValue
+     * @return const CCopasiParameter::Value & Value
      */
-    const void * getValue(const unsigned C_INT32 & index) const;
+    const CCopasiParameter::Value & getValue(const unsigned C_INT32 & index) const;
 
     /**
      * Retreive a pointer to the value of a parameter or subgroup
      * @param const std::string & name
-     * @return void * pValue
+     * @return CCopasiParameter::Value & Value
      */
-    void * getValue(const std::string & name);
+    CCopasiParameter::Value & getValue(const std::string & name);
 
     /**
      * Retreive a pointer to the value of a parameter or subgroup
      * @param const unsigned C_INT32 & index
-     * @return void * pValue
+     * @return CCopasiParameter::Value & Value
      */
-    void * getValue(const unsigned C_INT32 & index);
+    CCopasiParameter::Value & getValue(const unsigned C_INT32 & index);
 
     /**
      * Retreive the type of a parameter or subgroup

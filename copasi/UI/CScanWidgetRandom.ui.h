@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetRandom.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/04 15:18:06 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:33:59 $
    End CVS Header */
 
 //comboBoxType linear| normal
@@ -67,12 +67,12 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
 
   void* tmp;
 
-  if (!(tmp = pg->getValue("Type"))) return false;
+  if (!(tmp = pg->getValue("Type").pVOID)) return false;
   CScanProblem::Type type = *(CScanProblem::Type*)tmp;
   if (type != CScanProblem::SCAN_RANDOM)
     return false;
 
-  if (!(tmp = pg->getValue("Object"))) return false;
+  if (!(tmp = pg->getValue("Object").pVOID)) return false;
   std::string tmpString = *(std::string*)tmp;
   if (tmpString == "")
     mpObject = NULL;
@@ -84,16 +84,16 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
   else
     lineEditObject->setText("");
 
-  if (!(tmp = pg->getValue("Distribution type"))) return false;
+  if (!(tmp = pg->getValue("Distribution type").pVOID)) return false;
   comboBoxType->setCurrentItem(*(unsigned C_INT32*)tmp);
 
-  if (!(tmp = pg->getValue("Minimum"))) return false;
+  if (!(tmp = pg->getValue("Minimum").pVOID)) return false;
   lineEditMin->setText(QString::number(*(C_FLOAT64*)tmp));
 
-  if (!(tmp = pg->getValue("Maximum"))) return false;
+  if (!(tmp = pg->getValue("Maximum").pVOID)) return false;
   lineEditMax->setText(QString::number(*(C_FLOAT64*)tmp));
 
-  if (!(tmp = pg->getValue("log"))) return false;
+  if (!(tmp = pg->getValue("log").pVOID)) return false;
   checkBoxLog->setChecked(*(bool*)tmp);
 
   return true;

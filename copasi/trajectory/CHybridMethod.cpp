@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/31 09:31:27 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:36:24 $
    End CVS Header */
 
 /**
@@ -207,19 +207,19 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   k4.resize(mNumVariableMetabs);
 
   /* get configuration data */
-  mMaxSteps = * (unsigned C_INT32 *) getValue("HYBRID.MaxSteps");
+  mMaxSteps = * getValue("HYBRID.MaxSteps").pUINT;
   std::cout << "HYBRID.MaxSteps: " << mMaxSteps << std::endl;
-  mLowerStochLimit = * (C_FLOAT64 *) getValue("HYBRID.LowerStochLimit");
+  mLowerStochLimit = * getValue("HYBRID.LowerStochLimit").pDOUBLE;
   std::cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << std::endl;
-  mUpperStochLimit = * (C_FLOAT64 *) getValue("HYBRID.UpperStochLimit");
+  mUpperStochLimit = * getValue("HYBRID.UpperStochLimit").pDOUBLE;
   std::cout << "HYBRID.UpperStochLimit: " << mUpperStochLimit << std::endl;
-  mStepsize = * (C_FLOAT64 *) getValue("HYBRID.RungeKuttaStepsize");
+  mStepsize = * getValue("HYBRID.RungeKuttaStepsize").pDOUBLE;
   std::cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << std::endl;
-  mPartitioningInterval = * (unsigned C_INT32 *) getValue("HYBRID.PartitioningInterval");
+  mPartitioningInterval = * getValue("HYBRID.PartitioningInterval").pUINT;
   std::cout << "HYBRID.PartitioningInterval: " << mPartitioningInterval << std::endl;
-  mUseRandomSeed = * (bool *) getValue("HYBRID.UseRandomSeed");
+  mUseRandomSeed = * getValue("HYBRID.UseRandomSeed").pBOOL;
   std::cout << "HYBRID.UseRandomSeed: " << mUseRandomSeed << std::endl;
-  mRandomSeed = * (unsigned C_INT32 *) getValue("HYBRID.RandomSeed");
+  mRandomSeed = * getValue("HYBRID.RandomSeed").pUINT;
   std::cout << "HYBRID.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
   mStoi = mpModel->getStoi();
@@ -1288,7 +1288,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                             // Everything !!!
+    case 0:                              // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << std::endl;
       os << "current time: " << mpCurrentState->getTime() << std::endl;
@@ -1398,7 +1398,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                              // Variable values only
+    case 1:                               // Variable values only
       os << "current time: " << mpCurrentState->getTime() << std::endl;
       /*
       case 1:
@@ -1546,8 +1546,8 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  mLowerStochLimit = * (C_FLOAT64 *) getValue("HYBRID.LowerStochLimit");
-  mUpperStochLimit = * (C_FLOAT64 *) getValue("HYBRID.UpperStochLimit");
+  mLowerStochLimit = * getValue("HYBRID.LowerStochLimit").pDOUBLE;
+  mUpperStochLimit = * getValue("HYBRID.UpperStochLimit").pDOUBLE;
   if (mLowerStochLimit > mUpperStochLimit)
     CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
 

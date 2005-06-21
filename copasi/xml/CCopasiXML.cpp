@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 20:54:59 $
+   $Date: 2005/06/21 20:36:47 $
    End CVS Header */
 
 /**
@@ -361,7 +361,7 @@ bool CCopasiXML::saveModel()
                 {
                   Attr.setValue(0, pParamList->getKey(j));
                   Attr.setValue(1, pParamList->getName(j));
-                  Attr.setValue(2, * (C_FLOAT64 *) pParamList->getValue(j));
+                  Attr.setValue(2, * pParamList->getValue(j).pDOUBLE);
 
                   saveElement("Constant", Attr);
                 }
@@ -583,7 +583,7 @@ bool CCopasiXML::savePlotList()
       Attributes.add("type", CPlotSpecification::XMLType[pPlot->getType()]);
       Attributes.add("active", pPlot->isActive());
       startSaveElement("PlotSpecification", Attributes);
-      saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *)pPlot->CCopasiParameter::getValue());
+      saveParameterGroup(* pPlot->CCopasiParameter::getValue().pGROUP);
       startSaveElement("ListOfPlotItems");
       unsigned C_INT32 j, jmax = pPlot->getItems().size();
       //std::cerr << "Saving " << jmax << "PlotItems." << std::endl;
@@ -594,7 +594,7 @@ bool CCopasiXML::savePlotList()
           Attributes.add("name", pPlotItem->getObjectName());
           Attributes.add("type", CPlotItem::XMLType[pPlotItem->getType()]);
           startSaveElement("PlotItem", Attributes);
-          saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *)pPlotItem->CCopasiParameter::getValue());
+          saveParameterGroup(* pPlotItem->CCopasiParameter::getValue().pGROUP);
           startSaveElement("ListOfChannels");
           unsigned C_INT32 k, kmax = pPlotItem->getNumChannels();
           //std::cerr << "Saving " << kmax << " Channels." << std::endl;
@@ -666,7 +666,7 @@ bool CCopasiXML::saveTaskList()
 
       Attributes.erase();
       startSaveElement("Problem");
-      saveParameterGroup(* (std::vector<CCopasiParameter *> *) tProblem->CCopasiParameter::getValue());
+      saveParameterGroup(* tProblem->CCopasiParameter::getValue().pGROUP);
       endSaveElement("Problem");
 
       // Method Element
@@ -676,7 +676,7 @@ bool CCopasiXML::saveTaskList()
       Attributes.add("name", tMethod->CCopasiParameter::getObjectName());
       Attributes.add("type", CCopasiMethod::XMLSubType[tMethod->getSubType()]);
       startSaveElement("Method", Attributes);
-      saveParameterGroup(* (std::vector<CCopasiParameter *> *) tMethod->CCopasiParameter::getValue());
+      saveParameterGroup(* tMethod->CCopasiParameter::getValue().pGROUP);
       endSaveElement("Method");
 
       endSaveElement("Task");
@@ -701,36 +701,48 @@ bool CCopasiXML::saveParameter(const CCopasiParameter & parameter)
   switch (parameter.getType())
     {
     case CCopasiParameter::DOUBLE:
+      Attributes.add("value", * parameter.getValue().pDOUBLE);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
     case CCopasiParameter::UDOUBLE:
-      Attributes.add("value", * (C_FLOAT64 *) parameter.getValue());
+      Attributes.add("value", * parameter.getValue().pUDOUBLE);
       if (!saveElement("Parameter", Attributes)) success = false;
       break;
 
     case CCopasiParameter::INT:
-      Attributes.add("value", * (C_INT32 *) parameter.getValue());
+      Attributes.add("value", * parameter.getValue().pINT);
       if (!saveElement("Parameter", Attributes)) success = false;
       break;
 
     case CCopasiParameter::UINT:
-      Attributes.add("value", * (unsigned C_INT32 *) parameter.getValue());
+      Attributes.add("value", * parameter.getValue().pUINT);
       if (!saveElement("Parameter", Attributes)) success = false;
       break;
 
     case CCopasiParameter::BOOL:
-      Attributes.add("value", * (bool *) parameter.getValue());
+      Attributes.add("value", * parameter.getValue().pBOOL);
       if (!saveElement("Parameter", Attributes)) success = false;
       break;
 
     case CCopasiParameter::STRING:
+      Attributes.add("value", * parameter.getValue().pSTRING);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
     case CCopasiParameter::KEY:
+      Attributes.add("value", * parameter.getValue().pKEY);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
     case CCopasiParameter::CN:
-      Attributes.add("value", * (std::string *) parameter.getValue());
+      Attributes.add("value", * parameter.getValue().pCN);
       if (!saveElement("Parameter", Attributes)) success = false;
       break;
 
     case CCopasiParameter::GROUP:
       if (!startSaveElement("ParameterGroup", Attributes)) success = false;
-      if (!saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *) parameter.getValue())) success = false;
+      if (!saveParameterGroup(* parameter.getValue().pGROUP)) success = false;
       if (!endSaveElement("ParameterGroup")) success = false;
       break;
 

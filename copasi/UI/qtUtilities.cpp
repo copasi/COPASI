@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/24 12:48:59 $
+   $Date: 2005/06/21 20:33:59 $
    End CVS Header */
 
 #include <qstring.h>
@@ -24,25 +24,38 @@ QString getParameterValue(const CCopasiParameterGroup * group,
   switch (group->getType(index))
     {
     case CCopasiParameter::DOUBLE:
+      return QString::number(* group->getValue(index).pDOUBLE);
+      break;
+
     case CCopasiParameter::UDOUBLE:
-      return QString::number(* (C_FLOAT64 *) group->getValue(index));
+      return QString::number(* group->getValue(index).pDOUBLE);
       break;
 
     case CCopasiParameter::INT:
-      return QString::number(* (C_INT32 *) group->getValue(index));
+      return QString::number(* group->getValue(index).pINT);
       break;
 
     case CCopasiParameter::UINT:
-      return QString::number(* (unsigned C_INT32 *) group->getValue(index));
+      return QString::number(* group->getValue(index).pUINT);
       break;
 
     case CCopasiParameter::BOOL:
-      return QString::number(* (bool *) group->getValue(index));
+      return QString::number(* group->getValue(index).pBOOL);
       break;
 
     case CCopasiParameter::STRING:
       return
-      FROM_UTF8((* (std::string *) group->getValue(index)));
+      FROM_UTF8(* group->getValue(index).pSTRING);
+      break;
+
+    case CCopasiParameter::KEY:
+      return
+      FROM_UTF8(* group->getValue(index).pKEY);
+      break;
+
+    case CCopasiParameter::CN:
+      return
+      FROM_UTF8(* group->getValue(index).pCN);
       break;
 
     case CCopasiParameter::GROUP:

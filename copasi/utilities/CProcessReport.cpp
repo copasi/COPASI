@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 13:15:28 $
+   $Date: 2005/06/21 20:36:38 $
    End CVS Header */
 
 #include "copasi.h"
@@ -45,19 +45,11 @@ CProcessReportItem::~CProcessReportItem()
   mValue = mEndValue;
 }
 
-const void * CProcessReportItem::getEndValue() const
-  {
-    if (mHasEndValue) return mEndValue.pVOID;
+const CCopasiParameter::Value & CProcessReportItem::getEndValue() const
+  {return mEndValue;}
 
-    return NULL;
-  }
-
-void * CProcessReportItem::getEndValue()
-{
-  if (mHasEndValue) return mEndValue.pVOID;
-
-  return NULL;
-}
+CCopasiParameter::Value & CProcessReportItem::getEndValue()
+{return mEndValue;}
 
 CProcessReport::CProcessReport():
     mProcessReportItemList(1)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/21 11:19:23 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:20 $
    End CVS Header */
 
 /**
@@ -125,7 +125,7 @@ bool COptProblem::initialize()
 
   if (!mpFunction)
     mpFunction =
-      dynamic_cast<CExpression *>(GlobalKeys.get(*(const std::string *)getValue("ObjectiveFunction")));
+      dynamic_cast<CExpression *>(GlobalKeys.get(* getValue("ObjectiveFunction").pKEY));
 
   if (!mpFunction) return false;
 
@@ -211,7 +211,7 @@ COptItem COptProblem::getOptItem(const unsigned C_INT32 & index)
 }
 
 const unsigned C_INT32 COptProblem::getOptItemSize() const
-  {return ((std::vector<void*> *)getValue("OptimizationItemList"))->size();}
+  {return getValue("OptimizationItemList").pGROUP->size();}
 
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
@@ -244,7 +244,7 @@ bool COptProblem::removeOptItem(const unsigned C_INT32 & index)
   pdelete(mOptItemList[index]);
   mOptItemList.erase(mOptItemList.begin() + index);
 
-  return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->removeParameter(index);
+  return ((CCopasiParameterGroup *) getParameter("OptimizationItemList"))->removeParameter(index);
 }
 
 bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
@@ -258,7 +258,7 @@ bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
   mOptItemList[iFrom] = mOptItemList[iTo];
   mOptItemList[iTo] = pTmp;
 
-  return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->swap(iFrom, iTo);
+  return ((CCopasiParameterGroup *) getParameter("OptimizationItemList"))->swap(iFrom, iTo);
 }
 
 const std::vector< COptItem * > & COptProblem::getOptItemList() const
@@ -271,7 +271,7 @@ bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
   if (!mpFunction)
     mpFunction =
-      dynamic_cast<CExpression *>(GlobalKeys.get(*(const std::string *)getValue("ObjectiveFunction")));
+      dynamic_cast<CExpression *>(GlobalKeys.get(* getValue("ObjectiveFunction").pKEY));
 
   if (!mpFunction)
     {
@@ -287,7 +287,7 @@ const std::string COptProblem::getObjectiveFunction()
 {
   if (!mpFunction)
     mpFunction =
-      dynamic_cast<CExpression *>(GlobalKeys.get(*(const std::string *)getValue("ObjectiveFunction")));
+      dynamic_cast<CExpression *>(GlobalKeys.get(* getValue("ObjectiveFunction").pKEY));
 
   if (!mpFunction)
     {

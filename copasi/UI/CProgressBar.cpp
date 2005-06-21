@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/26 14:29:21 $
+   $Date: 2005/06/21 20:33:59 $
    End CVS Header */
 
 #include <qprogressdialog.h>
@@ -62,7 +62,7 @@ unsigned C_INT32 CProgressBar::addItem(const std::string & name,
       while (i < imax) mProgressItemList[i++] = NULL;
     }
 
-  if (mProcessReportItemList[hItem]->getEndValue() == NULL)
+  if (mProcessReportItemList[hItem]->getEndValue().pVOID == NULL)
     mProgressItemList[hItem] = new CQProgressItemText(static_cast<CQProgressDialog *>(this));
   else
     mProgressItemList[hItem] = new CQProgressItemBar(static_cast<CQProgressDialog *>(this));

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/31 09:31:27 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:36:24 $
    End CVS Header */
 
 #ifdef WIN32
@@ -136,7 +136,7 @@ const double CStochMethod::step(const double & deltaT,
                                 const CState * initialState)
 {
   /* get configuration data */
-  mMaxSteps = * (C_INT32 *) getValue("STOCH.MaxSteps");
+  mMaxSteps = * getValue("STOCH.MaxSteps").pINT;
 
   *mpCurrentState = *initialState; //TODO seem to be identical
 
@@ -446,7 +446,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
   mMaxBalance = maxBalance;
   //std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =    /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =     /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
@@ -544,7 +544,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (* (C_INT32 *) getValue("STOCH.MaxSteps") <= 0)
+  if (* getValue("STOCH.MaxSteps").pINT <= 0)
     {
       //max steps should be at least 1
       CCopasiMessage(CCopasiMessage::EXCEPTION, "MaxSteps needs to be positive.");

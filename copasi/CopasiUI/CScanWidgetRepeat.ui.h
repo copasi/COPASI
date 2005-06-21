@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetRepeat.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:27:39 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:33:59 $
    End CVS Header */
 
 #include <qvalidator.h>
@@ -20,12 +20,12 @@ bool CScanWidgetRepeat::initFromScanItem(CCopasiParameterGroup * pg)
 {
   void* tmp;
 
-  if (!(tmp = pg->getValue("Type"))) return false;
+  if (!(tmp = pg->getValue("Type").pVOID)) return false;
   CScanProblem::Type type = *(CScanProblem::Type*)tmp;
   if (type != CScanProblem::SCAN_REPEAT)
     return false;
 
-  if (!(tmp = pg->getValue("Number of steps"))) return false;
+  if (!(tmp = pg->getValue("Number of steps").pVOID)) return false;
   lineEditNumber->setText(QString::number(*(C_INT32*)tmp));
 
   return true;

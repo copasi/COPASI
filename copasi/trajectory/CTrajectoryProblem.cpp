@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 21:50:06 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:36:24 $
    End CVS Header */
 
 /**
@@ -112,7 +112,7 @@ bool CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
  * @return "const unsigned C_INT32 &" stepNumber
  */
 const unsigned C_INT32 & CTrajectoryProblem::getStepNumber() const
-  {return * (unsigned C_INT32 *) getValue("StepNumber");}
+  {return * getValue("StepNumber").pUINT;}
 
 /**
  * Set the size a integration step the trajectory method should do.
@@ -130,7 +130,7 @@ bool CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
  * @return "const C_FLOAT64 &" stepSize
  */
 const C_FLOAT64 & CTrajectoryProblem::getStepSize() const
-  {return * (C_FLOAT64 *) getValue("StepSize");}
+  {return * getValue("StepSize").pDOUBLE;}
 
 /**
  * Set the start time.
@@ -149,7 +149,7 @@ bool CTrajectoryProblem::setStartTime(const C_FLOAT64 & startTime)
  * @return "const C_FLOAT64 &" startTime
  */
 const C_FLOAT64 & CTrajectoryProblem::getStartTime() const
-  {return * (C_FLOAT64 *) getValue("StartTime");}
+  {return * getValue("StartTime").pDOUBLE;}
 
 /**
  * Set the end time.
@@ -167,7 +167,7 @@ bool CTrajectoryProblem::setEndTime(const C_FLOAT64 & endTime)
  * @return "const C_FLOAT64 &" endTime
  */
 const C_FLOAT64 & CTrajectoryProblem::getEndTime() const
-  {return * (C_FLOAT64 *) getValue("EndTime");}
+  {return * getValue("EndTime").pDOUBLE;}
 
 void CTrajectoryProblem::setOutputStartTime(const C_FLOAT64 & startTime)
 {
@@ -175,7 +175,7 @@ void CTrajectoryProblem::setOutputStartTime(const C_FLOAT64 & startTime)
 }
 
 const C_FLOAT64 & CTrajectoryProblem::getOutputStartTime() const
-  {return * (C_FLOAT64 *) getValue("OutputStartTime");}
+  {return * getValue("OutputStartTime").pDOUBLE;}
 
 void CTrajectoryProblem::setTimeSeriesRequested(bool flag)
 {
@@ -183,7 +183,7 @@ void CTrajectoryProblem::setTimeSeriesRequested(bool flag)
 }
 
 bool CTrajectoryProblem::timeSeriesRequested() const
-  {return * (bool *) getValue("TimeSeriesRequested");}
+  {return * getValue("TimeSeriesRequested").pBOOL;}
 
 /**
  * Set the initial state of the problem.

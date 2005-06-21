@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/02 09:50:35 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:38 $
    End CVS Header */
 
 /****************************************************************************
@@ -45,7 +45,7 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   const void* tmp;
 
-  if (!(tmp = curve->getValue("Line type"))) return false;
+  if (!(tmp = curve->getValue("Line type").pVOID)) return false;
   comboBoxType->setCurrentItem(*(unsigned C_INT32*)tmp);
 
   //for debugging:

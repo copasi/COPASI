@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQProgressItemBar.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/02 09:06:59 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:33:59 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQProgressItemBar.ui'
  **
  ** Created: Tue Apr 26 09:49:49 2005
- **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.4 2005/05/02 09:06:59 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.5 2005/06/21 20:33:59 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -57,11 +57,12 @@ class CQProgressItemBar : public CQProgressItem
   private:
     void (CQProgressItemBar::*mpSetValue)();
     C_FLOAT64 mFactor;
-    void * mpEnd;
-    void * mpStart;
-    void * mpValue;
+    CCopasiParameter::Value mEnd;
+    CCopasiParameter::Value mStart;
+    CCopasiParameter::Value mValue;
+
     C_INT32 mLastSet;
-    C_INT32 mValue;
+    C_INT32 mCurrentValue;
 
     QPixmap image0;
 

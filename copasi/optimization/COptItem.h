@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:26:21 $
+   $Date: 2005/06/21 20:34:20 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -79,10 +79,10 @@ class COptItem
 
     /**
      * Set the lower bound.
-     * @param const std::string & lowerBound
+     * @param const CCopasiObjectName & lowerBound
      * @return bool success
      */
-    bool setLowerBound(const std::string & lowerBound);
+    bool setLowerBound(const CCopasiObjectName & lowerBound);
 
     /**
      * Retrieve the lower bound.
@@ -105,10 +105,10 @@ class COptItem
 
     /**
      * Set the upper bound.
-     * @param const std::string & upperBound
+     * @param const CCopasiObjectName & upperBound
      * @return bool success
      */
-    bool setUpperBound(const std::string & upperBound);
+    bool setUpperBound(const CCopasiObjectName & upperBound);
 
     /**
      * Retrieve the upper bound.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/12 15:56:14 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:51 $
    End CVS Header */
 
 /**
@@ -44,7 +44,7 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(const CCopasiParameterGro
 {
   if (!si) return NULL;
 
-  CScanProblem::Type type = *(CScanProblem::Type*)(si->getValue("Type"));
+  CScanProblem::Type type = *(CScanProblem::Type*)(si->getValue("Type").pUINT);
 
   CScanItem* tmp;
 
@@ -70,9 +70,9 @@ CScanItem::CScanItem(const CCopasiParameterGroup* si)
     mIndex(0),
     mFlagFinished(false)
 {
-  mNumSteps = *(unsigned C_INT32*)(si->getValue("Number of steps"));
+  mNumSteps = * si->getValue("Number of steps").pUINT;
 
-  std::string tmpString = *(std::string*)(si->getValue("Object"));
+  std::string tmpString = * si->getValue("Object").pCN;
   CCopasiObject* tmpObject = CCopasiContainer::ObjectFromName(tmpString);
   if (!tmpObject) {mpValue = NULL; return;}
   if (!tmpObject->isValueDbl()) {mpValue = NULL; return;}
@@ -126,9 +126,9 @@ CScanItemLinear::CScanItemLinear(const CCopasiParameterGroup* si)
     : CScanItem(si),
     mLog(false)
 {
-  mLog = *(bool*)(si->getValue("log"));
-  mMin = *(C_FLOAT64*)(si->getValue("Minimum"));
-  mMax = *(C_FLOAT64*)(si->getValue("Maximum"));
+  mLog = * si->getValue("log").pBOOL;
+  mMin = * si->getValue("Minimum").pDOUBLE;
+  mMax = * si->getValue("Maximum").pDOUBLE;
   if (mLog)
     {
       mMin = log(mMin);
@@ -162,11 +162,11 @@ CScanItemRandom::CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg)
     mRandomType(0),
     mLog(false)
 {
-  mRandomType = *(unsigned C_INT32*)(si->getValue("Distribution type"));
+  mRandomType = * si->getValue("Distribution type").pUINT;
   //std::cout << " ****** " << mRandomType << std::endl;
-  mLog = *(bool*)(si->getValue("log"));
-  mMin = *(C_FLOAT64*)(si->getValue("Minimum"));
-  mMax = *(C_FLOAT64*)(si->getValue("Maximum"));
+  mLog = * si->getValue("log").pBOOL;
+  mMin = * si->getValue("Minimum").pDOUBLE;
+  mMax = * si->getValue("Maximum").pDOUBLE;
   if (mLog)
     {
       mMin = log(mMin);
@@ -188,20 +188,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:          //uniform
+        case 0:           //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:          //normal
+        case 1:           //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:          //poisson
+        case 2:           //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);

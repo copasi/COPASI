@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/HistoWidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/02 09:50:49 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:38 $
    End CVS Header */
 
 /****************************************************************************
@@ -69,7 +69,7 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   //other parameters:
   const void* tmp;
-  if (!(tmp = curve->getValue("increment"))) return false;
+  if (!(tmp = curve->getValue("increment").pVOID)) return false;
   lineEditInc->setText(QString::number(*(const C_FLOAT64*)tmp));
 
   return true; //TODO

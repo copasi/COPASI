@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 13:15:28 $
+   $Date: 2005/06/21 20:36:38 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -170,15 +170,17 @@ class CCopasiParameter: public CCopasiContainer
 
     /**
      * Retrieve the private value of the parameter.
-     * @return const void * pValue
-     */
-    const void * getValue() const;
+     * @return const CCopasiParameter::Value & Value
+     */ 
+    // const void * getValue() const;
+    const Value & getValue() const;
 
     /**
      * Retrieve the private value of the parameter.
-     * @return void * pValue
-     */
-    void * getValue();
+     * @return CCopasiParameter::Value & Value
+     */ 
+    // void * getValue();
+    Value & getValue();
 
     /**
      * Retrieve the type of the parameter.

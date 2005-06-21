@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/02 19:08:43 $
+   $Date: 2005/06/21 20:34:20 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -442,11 +442,11 @@ bool COptMethodGA::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mGenerations = * (unsigned C_INT32 *) getValue("Number of Generations");
-  mPopulationSize = * (unsigned C_INT32 *) getValue("Population Size");
+  mGenerations = * getValue("Number of Generations").pUINT;
+  mPopulationSize = * getValue("Population Size").pUINT;
   mpRandom =
-    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator"),
-                             * (unsigned C_INT32 *) getValue("Seed"));
+    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
+                             * (unsigned C_INT32 *) getValue("Seed").pUINT);
 
   mVariableSize = mpOptItem->size();
 

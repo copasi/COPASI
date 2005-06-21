@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/24 12:37:23 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:51 $
    End CVS Header */
 
 /**
@@ -188,7 +188,7 @@ bool CScanTask::initSubtask()
   if (!pProblem) fatalError();
 
   //get the parameters from the problem
-  CCopasiTask::Type type = *(CCopasiTask::Type*)(pProblem->getValue("Subtask"));
+  CCopasiTask::Type type = *(CCopasiTask::Type*) pProblem->getValue("Subtask").pUINT;
 
   CTrajectoryProblem* trajProblem;
   CSteadyStateProblem* ssProblem;
@@ -228,11 +228,11 @@ bool CScanTask::initSubtask()
   mpSubtask->setProgressHandler(NULL);
   mpSubtask->initialize();
 
-  mOutputInSubtask = *(bool*)(pProblem->getValue("Output in subtask"));
+  mOutputInSubtask = * pProblem->getValue("Output in subtask").pBOOL;
   if (type != CCopasiTask::timeCourse)
     mOutputInSubtask = false;
 
-  mAdjustInitialConditions = *(bool*)(pProblem->getValue("Adjust initial conditions"));
+  mAdjustInitialConditions = * pProblem->getValue("Adjust initial conditions").pBOOL;
 
   return true;
 }

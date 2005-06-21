@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/21 08:53:07 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:38 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -305,19 +305,19 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
         {
         case CPlotItem::curve2d :
           unsigned C_INT32 tmpType;
-          if (!(tmp = pItem->getValue("Line type")))
+          if (!(tmp = pItem->getValue("Line type").pVOID))
             tmpType = 0; //or error?
           else
             tmpType = *(const unsigned C_INT32*)tmp;
           switch (tmpType)
             {
-            case 0:        //curve
+            case 0:         //curve
               setCurveStyle(crv, QwtCurve::Lines);
               break;
-            case 1:        //points
+            case 1:         //points
               setCurveStyle(crv, QwtCurve::Dots);
               break;
-            case 2:        //symbols
+            case 2:         //symbols
               setCurveStyle(crv, QwtCurve::NoCurve);
               const QColor &c = curveColours[k % 5];
               setCurveSymbol(crv, QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
@@ -327,7 +327,7 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
 
         case CPlotItem::histoItem1d :
           C_FLOAT64 tmpIncr;
-          if (!(tmp = pItem->getValue("increment")))
+          if (!(tmp = pItem->getValue("increment").pVOID))
             tmpIncr = 0.1; //or error?
           else
             tmpIncr = *(const C_FLOAT64*)tmp;

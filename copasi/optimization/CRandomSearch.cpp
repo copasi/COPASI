@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/15 16:26:31 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:20 $
    End CVS Header */
 
 /***************************************************************************
@@ -83,18 +83,18 @@ bool CRandomSearch::initialize()
   //C_FLOAT64 la, x, candx = DBL_MAX;
   C_FLOAT64 candx = DBL_MAX;
   //C_INT32 i, imax = (C_INT32) getValue("Number of Iterations");
-  mIterations = * (unsigned C_INT32 *) getValue("Number of Iterations");
+  mIterations = * getValue("Number of Iterations").pUINT;
   //C_INT32 j, jmax = mpOptProblem->getVariableSize();
   //C_INT32 jmax = mpOptProblem->getVariableSize();
   //mGenerations = * (unsigned C_INT32 *) getValue("Number of Generations");
   //mPopulationSize = * (unsigned C_INT32 *) getValue("Population Size");
-  mpRandom = CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator"),
-                                      * (unsigned C_INT32 *) getValue("Seed"));
+  mpRandom = CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
+                                      * getValue("Seed").pUINT);
 
   //CRandom::Type Type;
-  Type = (CRandom::Type) (C_INT32) getValue("Random Generator Type");
+  Type = * (CRandom::Type *) getValue("Random Generator Type").pUINT;
   //unsigned C_INT32 Seed;
-  Seed = (unsigned C_INT32) getValue("Seed");
+  Seed = * getValue("Seed").pUINT;
 
   //***mIndividual defined as C_FLOAT64 member variable
 
@@ -137,7 +137,7 @@ bool CRandomSearch::optimise()
 
   C_FLOAT64 la, candx = DBL_MAX;
   //C_INT32 i, imax = (C_INT32) getValue("RandomSearch.Iterations");
-  mIterations = * (unsigned C_INT32 *) getValue("Number of Iterations");
+  mIterations = * getValue("Number of Iterations").pUINT;
   //C_INT32 j, jmax = mpOptProblem->getVariableSize();
   C_INT32 i, j;
   //C_INT32 varSize = mpOptProblem->getVariableSize();

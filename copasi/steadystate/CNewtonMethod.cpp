@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Date: 2005/06/21 20:35:15 $
    End CVS Header */
 
 #include <algorithm>
@@ -152,18 +152,18 @@ CNewtonMethod::processInternal()
   /* Configure Newton */
   mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = false;
 
-  if (* (bool *) getValue("Newton.UseNewton"))
+  if (* getValue("Newton.UseNewton").pBOOL)
     mUseNewton = true;
-  if (* (bool *) getValue("Newton.UseIntegration"))
+  if (* getValue("Newton.UseIntegration").pBOOL)
     mUseIntegration = true;
-  if (* (bool *) getValue("Newton.UseBackIntegration"))
+  if (* getValue("Newton.UseBackIntegration").pBOOL)
     mUseBackIntegration = true;
-  if (* (bool *) getValue("Newton.acceptNegativeConcentrations"))
+  if (* getValue("Newton.acceptNegativeConcentrations").pBOOL)
     mAcceptNegative = true;
 
-  mIterationLimit = * (unsigned C_INT32 *) getValue("Newton.IterationLimit");
-  mFactor = * (C_FLOAT64 *) getValue("Newton.DerivationFactor");
-  mResolution = * (C_FLOAT64 *) getValue("Newton.Resolution");
+  mIterationLimit = * getValue("Newton.IterationLimit").pUINT;
+  mFactor = * getValue("Newton.DerivationFactor").pUDOUBLE;
+  mResolution = * getValue("Newton.Resolution").pUDOUBLE;
   mScaledResolution =
     mResolution; // * initialState.getModel()->getQuantity2NumberFactor();
   //TODO discuss scaling
@@ -214,15 +214,15 @@ CNewtonMethod::processInternal()
       pTrajectoryProblem->setStepNumber(1);
 
       pTrajectoryMethod->setValue("LSODA.RelativeTolerance",
-                                  * (C_FLOAT64 *) getValue("Newton.LSODA.RelativeTolerance"));
+                                  * getValue("Newton.LSODA.RelativeTolerance").pUDOUBLE);
       pTrajectoryMethod->setValue("LSODA.AbsoluteTolerance",
-                                  * (C_FLOAT64 *) getValue("Newton.LSODA.AbsoluteTolerance"));
+                                  * getValue("Newton.LSODA.AbsoluteTolerance").pUDOUBLE);
       pTrajectoryMethod->setValue("LSODA.AdamsMaxOrder",
-                                  * (unsigned C_INT32 *) getValue("Newton.LSODA.AdamsMaxOrder"));
+                                  * getValue("Newton.LSODA.AdamsMaxOrder").pUINT);
       pTrajectoryMethod->setValue("LSODA.BDFMaxOrder",
-                                  * (unsigned C_INT32 *) getValue("Newton.LSODA.BDFMaxOrder"));
+                                  * getValue("Newton.LSODA.BDFMaxOrder").pUINT);
       pTrajectoryMethod->setValue("LSODA.MaxStepsInternal",
-                                  * (unsigned C_INT32 *) getValue("Newton.LSODA.MaxStepsInternal"));
+                                  * getValue("Newton.LSODA.MaxStepsInternal").pUINT);
 
       pTrajectory->initialize();
     }
@@ -653,9 +653,9 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (!((* (bool *) getValue("Newton.UseNewton"))
-        || (* (bool *) getValue("Newton.UseIntegration"))
-        || (* (bool *) getValue("Newton.UseBackIntegration"))))
+  if (!((* getValue("Newton.UseNewton").pBOOL)
+        || (* getValue("Newton.UseIntegration").pBOOL)
+        || (* getValue("Newton.UseBackIntegration").pBOOL)))
     {
       //would do nothing
       CCopasiMessage(CCopasiMessage::EXCEPTION, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");

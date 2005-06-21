@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:06:19 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:34:08 $
    End CVS Header */
 
 /**
@@ -130,8 +130,7 @@ bool CMathConstantParameter::setValue(const C_FLOAT64 & value)
 const C_FLOAT64 & CMathConstantParameter::getValue() const
   {
     return
-    * (C_FLOAT64 *) ((CCopasiParameter *)(CCopasiContainer *) mpObject)->
-    getValue();
+    * static_cast<CCopasiParameter *>(mpObject)->getValue().pDOUBLE;
   }
 
 const std::string & CMathConstantParameter::getReaction() const

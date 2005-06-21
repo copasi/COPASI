@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.122 $
+   $Revision: 1.123 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:39 $
+   $Date: 2005/06/21 20:34:16 $
    End CVS Header */
 
 // CReaction
@@ -226,7 +226,7 @@ void CReaction::setParameterValue(const std::string & parameterName, C_FLOAT64 v
 const C_FLOAT64 & CReaction::getParameterValue(const std::string & parameterName) const
   {
     if (!mpFunction) fatalError();
-    return * (C_FLOAT64 *) mParameters.getValue(parameterName);
+    return * mParameters.getValue(parameterName).pDOUBLE;
   }
 
 const CCopasiParameterGroup & CReaction::getParameters() const

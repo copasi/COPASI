@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParametersWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/08 08:04:32 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 20:33:59 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -235,7 +235,7 @@ bool ParametersWidget::loadFromModel()
       for (j = 0; j < jmax; ++j)
         new CParameterListItem(tmp, FROM_UTF8(reac->getParameters().getParameter(j)->getObjectName()),
                                reac->getParameters().getParameter(j),
-                               *(C_FLOAT64*)reac->getParameters().getParameter(j)->getValue(), "");
+                               * reac->getParameters().getParameter(j)->getValue().pDOUBLE, "");
     }
 
   //global Parameters
