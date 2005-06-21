@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 09:24:29 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 13:15:28 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -131,7 +131,7 @@ class CCopasiParameterGroup: public CCopasiParameter
                 return false;
               }
 
-            tmp->mpValue = const_cast< void * >((const void *) & value);
+            tmp->mValue.pVOID = const_cast<void *>((const void *) & value);
             pParameter = new CCopasiParameterGroup(*tmp);
           }
         else
@@ -355,9 +355,9 @@ class CCopasiParameterGroup: public CCopasiParameter
       os << (CCopasiParameter) A;
 
       parameterGroup::const_iterator it =
-        ((parameterGroup *)(A.mpValue))->begin();
+        A.mValue.pGROUP->begin();
       parameterGroup::const_iterator end =
-        ((parameterGroup *)(A.mpValue))->end();
+        A.mValue.pGROUP->end();
 
       for (; it != end; ++it) os << **it;
 

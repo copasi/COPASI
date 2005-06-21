@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:21 $
+   $Date: 2005/06/21 13:15:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -14,10 +14,10 @@
 
 CProcessReportItem::CProcessReportItem():
     CCopasiParameter("NoName", CCopasiParameter::DOUBLE),
-    mpEndValue(NULL)
+    mEndValue()
 {
-  mpEndValue = mpValue;
-  mpValue = NULL;
+  mEndValue = mValue;
+  mValue.pVOID = NULL;
 }
 
 CProcessReportItem::CProcessReportItem(const std::string & name,
@@ -25,36 +25,36 @@ CProcessReportItem::CProcessReportItem(const std::string & name,
                                        const void * pValue,
                                        const void * pEndValue):
     CCopasiParameter(name, type, pEndValue, NULL, "ProcessReportItem"),
-    mpEndValue(NULL),
+    mEndValue(),
     mHasEndValue(pEndValue != NULL)
 {
-  mpEndValue = mpValue;
-  mpValue = const_cast<void *>(pValue);
+  mEndValue = mValue;
+  mValue.pVOID = const_cast<void *>(pValue);
 }
 
 CProcessReportItem::CProcessReportItem(const CProcessReportItem & src):
-    CCopasiParameter(src.getObjectName(), src.getType(), src.mpEndValue, NULL, "ProcessReportItem"),
-    mpEndValue(NULL)
+    CCopasiParameter(src.getObjectName(), src.getType(), src.mEndValue.pVOID, NULL, "ProcessReportItem"),
+    mEndValue()
 {
-  mpEndValue = mpValue;
-  mpValue = src.mpValue;
+  mEndValue = mValue;
+  mValue = src.mValue;
 }
 
 CProcessReportItem::~CProcessReportItem()
 {
-  mpValue = mpEndValue;
+  mValue = mEndValue;
 }
 
 const void * CProcessReportItem::getEndValue() const
   {
-    if (mHasEndValue) return mpEndValue;
+    if (mHasEndValue) return mEndValue.pVOID;
 
     return NULL;
   }
 
 void * CProcessReportItem::getEndValue()
 {
-  if (mHasEndValue) return mpEndValue;
+  if (mHasEndValue) return mEndValue.pVOID;
 
   return NULL;
 }

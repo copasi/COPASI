@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 20:54:59 $
+   $Date: 2005/06/21 13:15:28 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -45,6 +45,20 @@ class CCopasiParameter: public CCopasiContainer
       INVALID
     };
 
+    union Value
+      {
+        C_FLOAT64 * pDOUBLE;
+        C_FLOAT64 * pUDOUBLE;
+        C_INT32 * pINT;
+        unsigned C_INT32 * pUINT;
+        bool * pBOOL;
+        std::vector< CCopasiParameter * > * pGROUP;
+        std::string * pSTRING;
+        CRegisteredObjectName * pCN;
+        std::string * pKEY;
+        void * pVOID;
+      };
+
     /**
      * String literals for the GUI to display type names of parameters known
      * to COPASI.
@@ -76,7 +90,7 @@ class CCopasiParameter: public CCopasiContainer
     /**
      *  A pointer to the value of the parameter.
      */
-    void * mpValue;
+    Value mValue;
 
     // Operations
 
@@ -141,7 +155,7 @@ class CCopasiParameter: public CCopasiContainer
     {
       if (!isValidValue(value)) return false;
 
-      * (CType *) mpValue = value;
+      * (CType *) mValue.pVOID = value;
       return true;
     }
 
@@ -226,10 +240,10 @@ class CCopasiParameter: public CCopasiContainer
   private:
     /**
      * Create or copy the value
-     * @param const void * pValue = NULL
-     * @return void * pValue
+     * @param const CCopasiParameter::Value & value
+     * @return CCopasiParameter::Value Value
      */
-    void * createValue(const void * pValue = NULL);
+    Value createValue(const Value & value);
 
     /**
      * Delete the value
@@ -244,7 +258,7 @@ class CCopasiParameter: public CCopasiContainer
      */
     friend std::ostream & operator << (std::ostream & os, const CCopasiParameter & A)
     {
-      os << A.getObjectName() << ": " << A.mType << " 0x" << A.mpValue << std::endl;
+      os << A.getObjectName() << ": " << A.mType << " 0x" << A.mValue.pVOID << std::endl;
 
       return os;
     }

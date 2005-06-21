@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 20:54:59 $
+   $Date: 2005/06/21 13:15:28 $
    End CVS Header */
 
 /**
@@ -53,8 +53,11 @@ const char* CCopasiParameter::XMLType[] =
 
 CCopasiParameter::CCopasiParameter():
     CCopasiContainer("NoName", NULL, "Parameter"),
-    mType(INVALID)
-{}
+    mKey(GlobalKeys.add("Parameter", this)),
+    mType(INVALID),
+    mSize(0),
+    mValue()
+{mValue.pVOID = NULL;}
 
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
                                    const CCopasiContainer * pParent):
@@ -62,7 +65,7 @@ CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
     mKey(GlobalKeys.add(src.getObjectType(), this)),
     mType(src.mType),
     mSize(0),
-    mpValue(createValue(src.mpValue))
+    mValue(createValue(src.mValue))
 {}
 
 CCopasiParameter::CCopasiParameter(const std::string & name,
@@ -79,8 +82,12 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
     mKey(GlobalKeys.add(objectType, this)),
     mType(type),
     mSize(0),
-    mpValue(createValue(pValue))
-{}
+    mValue()
+{
+  CCopasiParameter::Value value;
+  value.pVOID = const_cast<void *>(pValue);
+  mValue = createValue(value);
+}
 
 CCopasiParameter::~CCopasiParameter()
 {
@@ -96,9 +103,9 @@ bool CCopasiParameter::setValue(const std::vector< CCopasiParameter * > & value)
   return false;
 }
 
-const void * CCopasiParameter::getValue() const {return mpValue;}
+const void * CCopasiParameter::getValue() const {return mValue.pVOID;}
 
-void * CCopasiParameter::getValue() {return mpValue;}
+void * CCopasiParameter::getValue() {return mValue.pVOID;}
 
 const CCopasiParameter::Type & CCopasiParameter::getType() const
   {return mType;}
@@ -134,10 +141,7 @@ bool CCopasiParameter::isValidValue(const bool & C_UNUSED(value)) const
 bool CCopasiParameter::isValidValue(const std::string & value) const
   {
     if (mType == CCopasiParameter::KEY)
-      {
-        if (CKeyFactory::isValidKey(value)) return true;
-        else return false;
-      }
+      return CKeyFactory::isValidKey(value);
 
     if (mType != CCopasiParameter::STRING) return false;
     return true;
@@ -156,99 +160,100 @@ bool CCopasiParameter::isValidValue(const CCopasiParameterGroup::parameterGroup 
   }
 
 void * CCopasiParameter::getReference() const
-{return const_cast<void *>(mpValue);}
+{return const_cast<void *>(mValue.pVOID);}
 
-void * CCopasiParameter::createValue(const void * pValue)
+CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
 {
   switch (mType)
     {
     case CCopasiParameter::DOUBLE:
       case CCopasiParameter::UDOUBLE:
-      mpValue = new C_FLOAT64;
-      if (pValue) * (C_FLOAT64 *) mpValue = * (C_FLOAT64 *) pValue;
+      mValue.pDOUBLE = new C_FLOAT64;
+      if (value.pDOUBLE) * mValue.pDOUBLE = * value.pDOUBLE;
       mSize = sizeof(C_FLOAT64);
-      addObjectReference("Value", * (C_FLOAT64 *) mpValue, CCopasiObject::ValueDbl);
+      addObjectReference("Value", * mValue.pDOUBLE, CCopasiObject::ValueDbl);
       break;
 
     case CCopasiParameter::INT:
-      mpValue = new C_INT32;
-      if (pValue) * (C_INT32 *) mpValue = * (C_INT32 *) pValue;
+      mValue.pINT = new C_INT32;
+      if (value.pINT) * mValue.pINT = * value.pINT;
       mSize = sizeof(C_INT32);
-      addObjectReference("Value", * (C_INT32 *) mpValue, CCopasiObject::ValueInt);
+      addObjectReference("Value", * mValue.pINT, CCopasiObject::ValueInt);
       break;
 
     case CCopasiParameter::UINT:
-      mpValue = new unsigned C_INT32;
-      if (pValue)
-        * (unsigned C_INT32 *) mpValue = * (unsigned C_INT32 *) pValue;
+      mValue.pUINT = new unsigned C_INT32;
+      if (value.pUINT) * mValue.pUINT = * value.pUINT;
       mSize = sizeof(unsigned C_INT32);
-      addObjectReference("Value", * (unsigned C_INT32 *) mpValue, CCopasiObject::ValueInt);
+      addObjectReference("Value", * mValue.pUINT, CCopasiObject::ValueInt);
       break;
 
     case CCopasiParameter::BOOL:
-      mpValue = new bool;
-      if (pValue) * (bool *) mpValue = * (bool *) pValue;
+      mValue.pBOOL = new bool;
+      if (value.pBOOL) * mValue.pBOOL = * value.pBOOL;
       mSize = sizeof(bool);
-      addObjectReference("Value", * (bool *) mpValue, CCopasiObject::ValueBool);
+      addObjectReference("Value", * mValue.pBOOL, CCopasiObject::ValueBool);
       break;
 
     case CCopasiParameter::STRING:
     case CCopasiParameter::KEY:
-      if (pValue)
-        mpValue = new std::string(* (std::string *) pValue);
-      else mpValue = new std::string;
+      if (value.pSTRING)
+        mValue.pSTRING = new std::string(* value.pSTRING);
+      else
+        mValue.pSTRING = new std::string;
       mSize = sizeof(std::string);
-      addObjectReference("Value", * (std::string *) mpValue, CCopasiObject::ValueString);
+      addObjectReference("Value", * mValue.pSTRING, CCopasiObject::ValueString);
       break;
 
     case CCopasiParameter::CN:
-      if (pValue)
-        mpValue = new CRegisteredObjectName(* (CRegisteredObjectName *) pValue);
-      else mpValue = new CRegisteredObjectName;
-      mSize = sizeof(std::string);
-      addObjectReference("Value", * (std::string *) mpValue, CCopasiObject::ValueString);
+      if (value.pCN)
+        mValue.pCN = new CRegisteredObjectName(* value.pCN);
+      else
+        mValue.pCN = new CRegisteredObjectName;
+      mSize = sizeof(CRegisteredObjectName);
+      addObjectReference("Value", * mValue.pCN, CCopasiObject::ValueString);
       break;
 
     case CCopasiParameter::GROUP:
     case CCopasiParameter::INVALID:
-      mpValue = NULL;
+      mValue.pVOID = NULL;
       mSize = 0;
       break;
     }
 
-  return mpValue;
+  return mValue;
 }
 
 void CCopasiParameter::deleteValue()
 {
-  if (!mpValue) return;
+  if (!mValue.pVOID) return;
 
   switch (mType)
     {
     case CCopasiParameter::DOUBLE:
     case CCopasiParameter::UDOUBLE:
-      delete (C_FLOAT64 *) mpValue;
+      delete mValue.pDOUBLE;
       break;
 
     case CCopasiParameter::INT:
-      delete (C_INT32 *) mpValue;
+      delete mValue.pINT;
       break;
 
     case CCopasiParameter::UINT:
-      delete (unsigned C_INT32 *) mpValue;
+      delete mValue.pUINT;
       break;
 
     case CCopasiParameter::BOOL:
-      delete (bool *) mpValue;
+      delete mValue.pBOOL;
       break;
 
     case CCopasiParameter::STRING:
     case CCopasiParameter::KEY:
-      delete (std::string *) mpValue;
+      delete mValue.pSTRING;
       break;
 
     case CCopasiParameter::CN:
-      delete (CRegisteredObjectName *) mpValue;
+      delete mValue.pCN;
       break;
 
     default:
@@ -256,6 +261,6 @@ void CCopasiParameter::deleteValue()
       break;
     }
 
-  mpValue = NULL;
+  mValue.pVOID = NULL;
   return;
 }

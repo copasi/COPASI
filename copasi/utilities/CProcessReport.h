@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:21 $
+   $Date: 2005/06/21 13:15:28 $
    End CVS Header */
 
 #ifndef COPASI_CProcessReport
@@ -64,7 +64,7 @@ class CProcessReportItem: public CCopasiParameter
     /**
      *  A pointer to the value of the parameter.
      */
-    void * mpEndValue;
+    CCopasiParameter::Value mEndValue;
 
     /**
      * Indicator whether an endvalue has been provided

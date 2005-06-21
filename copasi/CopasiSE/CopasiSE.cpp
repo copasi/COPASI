@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/11 03:56:54 $
+   $Author: shoops $ 
+   $Date: 2005/06/21 13:15:26 $
    End CVS Header */
 
 // Main
@@ -28,6 +28,11 @@
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
 #include "function/CFunctionDB.h"
+#include "function/CEvaluationTree.h"
+
+#include "utilities/CopasiTime.h"
+#include "randomGenerator/CRandom.h"
+#include "report/CKeyFactory.h"
 
 int main(int argc, char *argv[])
 {
@@ -64,6 +69,53 @@ int main(int argc, char *argv[])
 
       // Create the global data model.
       CCopasiDataModel::Global = new CCopasiDataModel;
+
+#ifdef XXXX
+      CCallParameters<C_FLOAT64> Variables(20);
+      unsigned C_INT32 j, i, imax = Variables.size();
+      CRandom * pRandom = CRandom::createGenerator();
+
+      for (i = 0; i < imax; i++)
+        {
+          C_FLOAT64 * pValue = new C_FLOAT64;
+          *pValue = 100.0 * pRandom->getRandomOO();
+          Variables[i].value = pValue;
+        }
+
+      CCopasiTimeVariable CPU = CCopasiTimeVariable::getCPUTime();
+      CCopasiTimeVariable Wall = CCopasiTimeVariable::getCurrentWallTime();
+
+      CCopasiVectorN< CFunction > & Functions =
+        CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+      CFunction * pFunction;
+
+      for (i = 0, imax = Functions.size(); i < imax; i++)
+        {
+          pFunction = Functions[i];
+          if (pFunction->getType() != CFunction::MassAction)
+            for (j = 0; j < 100000; j++)
+              pFunction->calcValue(Variables);
+        }
+
+      CPU = CCopasiTimeVariable::getCPUTime() - CPU;
+      Wall = CCopasiTimeVariable::getCurrentWallTime() - Wall;
+
+      std::cout << "CPU time in micro seconds:  "
+      << CCopasiTimeVariable::LL2String(CPU.getMicroSeconds())
+      << std::endl;
+
+      std::cout << "Wall time in micro seconds: "
+      << CCopasiTimeVariable::LL2String(Wall.getMicroSeconds())
+      << std::endl;
+#endif // XXXX
+
+#ifdef XXXX
+      CEvaluationTree Expression;
+      Expression.setInfix("5**-sin(x)");
+      Expression.setInfix("a*5.0/-b");
+      Expression.setInfix("EXPONENTIALE+b*c");
+      Expression.setInfix("4.0*\"PI+b");
+      Expression.setInfix("2*(3+b)");
 
       const COptions::nonOptionType & Files = COptions::getNonOptions();
 
@@ -127,6 +179,8 @@ int main(int argc, char *argv[])
 
           //      CCopasiDataModel::Global->saveModel("");
         }
+
+#endif // XXXX
     }
 
   catch (CCopasiException Exception)
