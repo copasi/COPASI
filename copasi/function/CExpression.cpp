@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/20 15:52:48 $
+   $Author: anuragr $ 
+   $Date: 2005/06/21 20:58:56 $
    End CVS Header */
 
 #include "copasi.h"
@@ -19,7 +19,7 @@ CExpression::CExpression(const std::string & name,
     mpListOfContainer(NULL)
 {
   if (CCopasiDataModel::Global)
-    CCopasiDataModel::Global->getFunctionList()->loadedFunctions().add(this, true);
+    CCopasiDataModel::Global->getFunctionList()->loadedFunctions().add(this, false);
 }
 
 CExpression::CExpression(const CExpression & src,
@@ -28,7 +28,7 @@ CExpression::CExpression(const CExpression & src,
     mpListOfContainer(NULL)
 {
   if (CCopasiDataModel::Global)
-    CCopasiDataModel::Global->getFunctionList()->loadedFunctions().add(this, true);
+    CCopasiDataModel::Global->getFunctionList()->loadedFunctions().add(this, false);
 }
 
 CExpression::~CExpression() {}
