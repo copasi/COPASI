@@ -1,12 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/22 12:09:52 $
+   $Author: shoops $ 
+   $Date: 2005/06/22 15:42:42 $
    End CVS Header */
-
-#ifdef COPASI_TSS
 
 /**
  * CTSSTask class.
@@ -86,5 +84,3 @@ class CTSSTask : public CCopasiTask
   };
 
 #endif // COPASI_CTSSTask
-
-#endif // COPASI_TSS

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.100 $ $Author: ssahle $ $Date: 2005/06/22 14:23:45 $  
+# $Revision: 1.101 $ $Author: shoops $ $Date: 2005/06/22 15:42:42 $  
 ######################################################################
 
 TEMPLATE = app
@@ -261,7 +261,7 @@ SOURCES += \
            TimeSeriesWidget.cpp \
            TrajectoryWidget.cpp \
            Tree.cpp \
-           TSSWidget.h
+           TSSWidget.cpp
 
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += StateSubwidget.ui
