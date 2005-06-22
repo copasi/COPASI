@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:34:20 $
+   $Date: 2005/06/22 20:14:43 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -202,7 +202,7 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
   // We do not mind if a crossover point gets drawn twice
   for (i = 0; i < nCross; i++)
     {
-      crp = mpRandom->getRandomU(mVariableSize);
+      crp = mpRandom->getRandomU(mVariableSize - 1);
       mCrossOver[crp] = true;
     }
 
@@ -250,8 +250,6 @@ bool COptMethodGA::replicate()
 {
   unsigned C_INT32 i;
 
-  C_INT32 temp_size = mIndividual.size();
-
   // generate a random order for the parents
   shuffle();
 
@@ -294,7 +292,7 @@ bool COptMethodGA::select()
     for (j = 0; j < nopp; j++)
       {
         // get random opponent
-        opp = mpRandom->getRandomU(TotalPopulation);
+        opp = mpRandom->getRandomU(TotalPopulation - 1);
 
         if (mValue[i] < mValue[opp])
           mWins[i]++;
@@ -516,6 +514,7 @@ bool COptMethodGA::optimise()
   creation(1, mPopulationSize);
   // initialise the update register
   // get the index of the fittest
+
   mBestIndex = fittest();
   // and store that value
   mBestValue = mValue[mBestIndex];
