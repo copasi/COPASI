@@ -428,6 +428,10 @@ SOURCE=.\TrajectoryWidget.cpp
 
 SOURCE=.\Tree.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\TSSWidget.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -887,6 +891,10 @@ SOURCE=.\TrajectoryWidget.h
 # Begin Source File
 
 SOURCE=.\Tree.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TSSWidget.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
