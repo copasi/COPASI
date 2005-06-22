@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/25 18:13:21 $
+   $Author: ssahle $ 
+   $Date: 2005/06/22 12:15:49 $
    End CVS Header */
 
 /**
@@ -31,6 +31,7 @@ const std::string CCopasiTask::TypeName[] =
     "Optimization",
     "Parameter Fitting",
     "Metabolic Control Analysis",
+    "Time scale separation",
     ""
   };
 
@@ -43,6 +44,7 @@ const char* CCopasiTask::XMLType[] =
     "optimization",
     "parameterFitting",
     "metabolicControlAnalysis",
+    "timeScaleSeparation",
     NULL
   };
 

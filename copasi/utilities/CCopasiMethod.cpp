@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Author: ssahle $ 
+   $Date: 2005/06/22 12:15:49 $
    End CVS Header */
 
 /**
@@ -35,6 +35,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "tau-Leap",
     "MCA Method (Reder)",
     "Scan Framework",
+    "Time scale separation Method",
     ""
   };
 
@@ -54,6 +55,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "TauLeap",
     "MCAMethod(Reder)",
     "ScanFramework",
+    "TimeScaleSeparationMethod",
     NULL
   };
 

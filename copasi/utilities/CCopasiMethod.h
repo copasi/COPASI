@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Author: ssahle $ 
+   $Date: 2005/06/22 12:15:49 $
    End CVS Header */
 
 /**
@@ -46,7 +46,8 @@ class CCopasiMethod : public CCopasiParameterGroup
       hybrid,
       tauLeap,
       mcaMethodReder,
-      scanMethod
+      scanMethod,
+      tssMethod
     };
 
     /**

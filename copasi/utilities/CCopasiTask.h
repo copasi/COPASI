@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/25 18:13:21 $
+   $Author: ssahle $ 
+   $Date: 2005/06/22 12:15:49 $
    End CVS Header */
 
 /**
@@ -43,6 +43,7 @@ class CCopasiTask : public CCopasiContainer
       optimization,
       parameterFitting,
       mca,
+      tss,
       unset,
     };
 
