@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/14 14:15:07 $
+   $Author: ssahle $ 
+   $Date: 2005/06/22 14:48:22 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,6 +23,7 @@
 #include "optimization/COptTask.h"
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAMethod.h"
+#include "tss/CTSSTask.h"
 #include "report/CReportDefinitionVector.h"
 #include "report/CKeyFactory.h" 
 //#include "plot/CPlotSpecification.h"
@@ -428,6 +429,12 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       // :TODO: This must be avoided.
       static_cast<CMCAMethod *>(pTask->getMethod())->setModel(mpModel);
       break;
+
+#ifdef COPASI_TSS
+    case CCopasiTask::tss:
+      pTask = new CTSSTask(mpTaskList);
+      break;
+#endif
 
     default:
       return pTask;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.177 $
+   $Revision: 1.178 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/13 17:49:05 $
+   $Author: ssahle $ 
+   $Date: 2005/06/22 14:49:28 $
    End CVS Header */
 
 /****************************************************************************
@@ -56,6 +56,7 @@
 #include "CopasiDefaultWidget.h"
 #include "TrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
+#include "TSSWidget.h"
 #include "mathmodel/CMathModel.h"
 #include "listviews.h"
 #include "qtUtilities.h"
@@ -214,6 +215,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     steadystateWidget(NULL),
     tableDefinition(NULL),
     tableDefinition1(NULL),
+    tssWidget(NULL),
     timeSeriesWidget(NULL),
     trajectoryWidget(NULL)
 {
@@ -395,6 +397,11 @@ void ListViews::ConstructNodeWidgets()
   if (!tableDefinition1) tableDefinition1 = new CQReportDefinition(this);
   tableDefinition1->hide();
 
+#ifdef COPASI_TSS
+  if (!tssWidget) tssWidget = new TSSWidget(this);
+  tssWidget->hide();
+#endif
+
   if (!timeSeriesWidget) timeSeriesWidget = new TimeSeriesWidget(this);
   timeSeriesWidget->hide();
 
@@ -480,6 +487,11 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 241:
         return mpCMCAResultWidget;
         break;
+#ifdef COPASI_TSS
+      case 25:
+        return tssWidget;
+        break;
+#endif
       case 31:
         return scanWidget;
         break;
@@ -491,7 +503,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         return paramFittingWidget;
         break;
 #endif // COPASI_DEBUG
-      case 43:                                     //Report
+      case 43:                                      //Report
         return tableDefinition;
         break;
       case 42:
