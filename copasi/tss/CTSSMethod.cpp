@@ -1,12 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/22 12:09:52 $
+   $Author: shoops $ 
+   $Date: 2005/06/22 15:54:21 $
    End CVS Header */
-
-#ifdef COPASI_TSS
 
 /**
  *  CTSSMethod class.
@@ -91,7 +89,7 @@ CTSSMethod::~CTSSMethod()
  */
 bool CTSSMethod::process(CProcessReport * handler)
 {
-  //return processInternal();
+  return false;
 }
 
 //virtual
@@ -113,5 +111,3 @@ bool CTSSMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   return true;
 }
-
-#endif // COPASI_TSS
