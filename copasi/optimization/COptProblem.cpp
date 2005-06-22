@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:34:20 $
+   $Date: 2005/06/22 21:02:07 $
    End CVS Header */
 
 /**
@@ -21,7 +21,9 @@
 #include "COptProblem.h"
 #include "COptItem.h"
 
-#include "function/CKinFunction.h"
+#include "function/CFunctionDB.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -59,11 +61,15 @@ COptProblem::COptProblem(const COptProblem& src,
     CCopasiProblem(src, pParent),
     mpSteadyState(src.mpSteadyState),
     mpTrajectory(src.mpTrajectory),
-    mpFunction((src.mpFunction) ? static_cast<CExpression *>(CEvaluationTree::copy(*src.mpFunction)) : NULL),
+    mpFunction(NULL),
     mOptItemList()
 {
-  if (mpFunction)
-    setValue("ObjectiveFunction", mpFunction->getKey());
+  if (src.mpFunction)
+    {
+      createObjectiveFunction();
+      mpFunction->setInfix(src.mpFunction->getInfix());
+      setValue("ObjectiveFunction", mpFunction->getKey());
+    }
 }
 
 // Destructor
@@ -269,32 +275,47 @@ const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMet
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
-  if (!mpFunction)
-    mpFunction =
-      dynamic_cast<CExpression *>(GlobalKeys.get(* getValue("ObjectiveFunction").pKEY));
-
-  if (!mpFunction)
-    {
-      mpFunction = new CExpression();
-      mpFunction->setObjectName("ObjectiveFunction");
-      setValue("ObjectiveFunction", mpFunction->getKey());
-    }
+  if (!mpFunction) createObjectiveFunction();
 
   return mpFunction->setInfix(infix);
 }
 
 const std::string COptProblem::getObjectiveFunction()
 {
-  if (!mpFunction)
-    mpFunction =
-      dynamic_cast<CExpression *>(GlobalKeys.get(* getValue("ObjectiveFunction").pKEY));
+  if (!mpFunction) createObjectiveFunction();
+
+  return mpFunction->getInfix();
+}
+
+bool COptProblem::createObjectiveFunction()
+{
+  mpFunction =
+    dynamic_cast<CExpression *>(GlobalKeys.get(* getValue("ObjectiveFunction").pKEY));
 
   if (!mpFunction)
     {
-      mpFunction = new CExpression();
-      mpFunction->setObjectName("ObjectiveFunction");
+      std::ostringstream Name;
+      Name << "Objective Function";
+
+      int i = 0;
+
+      CCopasiVectorN<CEvaluationTree> & FunctionList
+      = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+
+      while (FunctionList.getIndex(Name.str()) != C_INVALID_INDEX)
+        {
+          i++;
+          Name.str("");
+          Name << "Objective Function" << i;
+        }
+
+      mpFunction = new CExpression(Name.str(), this);
+      FunctionList.add(mpFunction, false);
+
       setValue("ObjectiveFunction", mpFunction->getKey());
     }
+  else
+    mpFunction->setObjectParent(this);
 
-  return mpFunction->getInfix();
+  return true;
 }
