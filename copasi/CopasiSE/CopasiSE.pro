@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.18 $ $Author: shoops $ $Date: 2005/05/31 15:11:15 $  
+# $Revision: 1.19 $ $Author: ssahle $ $Date: 2005/06/22 12:12:11 $  
 ######################################################################
 
 TEMPLATE = app
@@ -27,6 +27,7 @@ COPASI_LIBS = \
          scan \
          steadystate \
          trajectory \
+         tss \
          utilities                   
 
 contains(BUILD_OS, WIN32) {
@@ -40,7 +41,8 @@ contains(BUILD_OS, Linux) {
          -Wl,--start-group \
          $$join(COPASI_LIBS, " -l", -l) \
          -Wl,--end-group \
-         $${LIBS}
+         $${LIBS} \
+				 -lexpat
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
