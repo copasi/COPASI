@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/22 21:02:07 $
+   $Date: 2005/06/22 21:05:48 $
    End CVS Header */
 
 /**
@@ -292,6 +292,9 @@ bool COptProblem::createObjectiveFunction()
   mpFunction =
     dynamic_cast<CExpression *>(GlobalKeys.get(* getValue("ObjectiveFunction").pKEY));
 
+  CCopasiVectorN<CEvaluationTree> & FunctionList =
+    CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+
   if (!mpFunction)
     {
       std::ostringstream Name;
@@ -299,14 +302,11 @@ bool COptProblem::createObjectiveFunction()
 
       int i = 0;
 
-      CCopasiVectorN<CEvaluationTree> & FunctionList
-      = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
-
       while (FunctionList.getIndex(Name.str()) != C_INVALID_INDEX)
         {
           i++;
           Name.str("");
-          Name << "Objective Function" << i;
+          Name << "Objective Function " << i;
         }
 
       mpFunction = new CExpression(Name.str(), this);
@@ -315,7 +315,12 @@ bool COptProblem::createObjectiveFunction()
       setValue("ObjectiveFunction", mpFunction->getKey());
     }
   else
-    mpFunction->setObjectParent(this);
+    {
+      mpFunction->setObjectParent(this);
+
+      if (FunctionList.getIndex(mpFunction->getObjectName()) == C_INVALID_INDEX)
+        FunctionList.add(mpFunction, false);
+    }
 
   return true;
 }
