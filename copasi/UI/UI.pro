@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.99 $ $Author: ssahle $ $Date: 2005/06/22 12:10:28 $  
+# $Revision: 1.100 $ $Author: ssahle $ $Date: 2005/06/22 14:23:45 $  
 ######################################################################
 
 TEMPLATE = app
@@ -184,7 +184,8 @@ HEADERS += \
            TableDefinition1.h \
            TimeSeriesWidget.h \
            TrajectoryWidget.h \
-           Tree.h
+           Tree.h \
+           TSSWidget.h
 
 # INTERFACES += CompartmentsWidget.ui \
 #               FunctionWidget1.ui \
@@ -259,7 +260,8 @@ SOURCES += \
            TableDefinition1.cpp \
            TimeSeriesWidget.cpp \
            TrajectoryWidget.cpp \
-           Tree.cpp
+           Tree.cpp \
+           TSSWidget.h
 
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += StateSubwidget.ui
