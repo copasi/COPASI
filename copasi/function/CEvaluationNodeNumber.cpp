@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/10 11:54:30 $
+   $Author: shoops $ 
+   $Date: 2005/06/22 16:14:27 $
    End CVS Header */
 
 #include "copasi.h"
@@ -37,6 +37,10 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
       mValue = strtod(str, &end);
       end++; // Skip the '/'
       mValue /= strtod(end, NULL);
+      break;
+
+    case INVALID:
+      fatalError();
       break;
     }
 
