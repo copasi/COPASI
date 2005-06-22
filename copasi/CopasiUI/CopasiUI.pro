@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.98 $ $Author: shoops $ $Date: 2005/05/31 15:11:16 $  
+# $Revision: 1.99 $ $Author: ssahle $ $Date: 2005/06/22 12:10:28 $  
 ######################################################################
 
 TEMPLATE = app
@@ -26,6 +26,7 @@ COPASI_LIBS = \
          scan \
          steadystate \
          trajectory \
+         tss \
          utilities \
          wizard
 
