@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/22 09:26:09 $
+   $Date: 2005/06/22 12:09:52 $
    End CVS Header */
+
+#ifdef COPASI_TSS
 
 /**
  *  CTSSMethod class.
@@ -33,8 +35,8 @@ CTSSMethod::createTSSMethod(CCopasiMethod::SubType subType)
   switch (subType)
     {
     case unset:
-    case Newton:
-      pMethod = new CTSSMethod();
+    case tssMethod:
+      pMethod = new CTSSMethod(subType);
       break;
 
     default:
@@ -49,7 +51,7 @@ CTSSMethod::createTSSMethod(CCopasiMethod::SubType subType)
  */
 CTSSMethod::CTSSMethod(CCopasiMethod::SubType subType,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(CCopasiTask::steadyState, subType, pParent),
+    CCopasiMethod(CCopasiTask::tss, subType, pParent),
     mpProblem(NULL)
 {CONSTRUCTOR_TRACE;}
 
@@ -111,3 +113,5 @@ bool CTSSMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   return true;
 }
+
+#endif // COPASI_TSS

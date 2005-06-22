@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/22 09:26:09 $
+   $Date: 2005/06/22 12:09:52 $
    End CVS Header */
+
+#ifdef COPASI_TSS
 
 /**
  * CTSSTask class.
@@ -25,10 +27,10 @@
 #define XXXX_Reporting
 
 CTSSTask::CTSSTask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::steadyState, pParent)
+    CCopasiTask(CCopasiTask::tss, pParent)
 {
   mpProblem = new CTSSProblem(this);
-  mpMethod = CTSSMethod::createTSSMethod(CCopasiMethod::Newton);
+  mpMethod = CTSSMethod::createTSSMethod(CCopasiMethod::tssMethod);
   this->add(mpMethod, true);
   //mpMethod->setObjectParent(this);
   //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
@@ -119,3 +121,5 @@ std::ostream &operator<<(std::ostream &os, const CTSSTask &A)
 {
   return os;
 }
+
+#endif // COPASI_TSS
