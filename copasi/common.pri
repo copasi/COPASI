@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.44 $ $Author: shoops $ $Date: 2005/06/07 14:41:05 $  
+# $Revision: 1.45 $ $Author: shoops $ $Date: 2005/06/22 14:02:33 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -206,14 +206,14 @@ contains(BUILD_OS, Linux) {
   !isEmpty(SBML_PATH){
     LIBS+=  -L$${SBML_PATH}/lib
     INCLUDEPATH += $${SBML_PATH}/include
-    LIBS += -lsbml
   }
+  LIBS += -lsbml
 
   !isEmpty(EXPAT_PATH){
     LIBS+=  -L$${EXPAT_PATH}/lib
     INCLUDEPATH += $${EXPAT_PATH}/include
-    LIBS += -lexpat
   }
+  LIBS += -lexpat
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL

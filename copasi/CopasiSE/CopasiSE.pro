@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.19 $ $Author: ssahle $ $Date: 2005/06/22 12:12:11 $  
+# $Revision: 1.20 $ $Author: shoops $ $Date: 2005/06/22 14:02:33 $  
 ######################################################################
 
 TEMPLATE = app
@@ -41,8 +41,7 @@ contains(BUILD_OS, Linux) {
          -Wl,--start-group \
          $$join(COPASI_LIBS, " -l", -l) \
          -Wl,--end-group \
-         $${LIBS} \
-				 -lexpat
+         $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
