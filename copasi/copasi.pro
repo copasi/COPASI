@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/02/10 19:39:14 $  
+# $Revision: 1.12 $ $Author: ssahle $ $Date: 2005/06/22 09:26:52 $  
 ######################################################################
 
 include(common.pri)
@@ -23,6 +23,7 @@ SUBDIRS += sbml
 SUBDIRS += scan
 SUBDIRS += steadystate
 SUBDIRS += trajectory
+SUBDIRS += tss
 SUBDIRS += utilities
 SUBDIRS += xml
 SUBDIRS += wizard
