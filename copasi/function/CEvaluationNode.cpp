@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 15:48:44 $
+   $Date: 2005/06/23 16:16:24 $
    End CVS Header */
 
 #include "copasi.h"
@@ -31,6 +31,11 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
 
   switch (CEvaluationNode::type(type))
     {
+    case CEvaluationNode::CHOICE:
+      pNode = new CEvaluationNodeChoice((CEvaluationNodeChoice::SubType) subType(type),
+                                        contents);
+      break;
+
     case CEvaluationNode::CONSTANT:
       pNode = new CEvaluationNodeConstant((CEvaluationNodeConstant::SubType) subType(type),
                                           contents);
@@ -84,7 +89,7 @@ CEvaluationNode::CEvaluationNode(const Type & type,
     mValue(std::numeric_limits<C_FLOAT64>::signaling_NaN()),
     mData(data),
     mPrecedence(PRECEDENCE_DEFAULT)
-{}
+{assert(mData != "");}
 
 CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
     CCopasiNode<Data>(src),
@@ -92,7 +97,7 @@ CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
     mValue(src.mValue),
     mData(src.mData),
     mPrecedence(src.mPrecedence)
-{}
+{assert(mData != "");}
 
 CEvaluationNode::~CEvaluationNode() {}
 
