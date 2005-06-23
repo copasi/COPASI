@@ -50,13 +50,19 @@ AC_ARG_WITH([qwt],
                  [Path to QWT Library ]),
   [QWT_PATH=$withval])
 
-
-
-
+AC_ARG_WITH([build-parser],
+  AC_HELP_STRING([--with-build-parser],
+                 [Specify wether to build lex and yacc sources.]),
+  [BUILD_PARSER=$withval])
 
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
+fi
+
+if test x"$BUILD_PARSER" = x"yes"; then
+  prefix=$ac_default_prefix
+  cps_build_parser="BUILD_PARSER=yes"
 fi
 
 if test x"${enable_release}" != x"yes" -a x"${enable_debug}" != x"no"; then
@@ -108,9 +114,9 @@ dnl to prevent calling aclocal, automake and configure again
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm .qmake.internal.cache */.qmake.internal.cache; \
  rm Makefile */Makefile; \
- echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" && \
+ echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser && \
  $QTDIR/bin/qmake $cps_release $cps_thread \
-                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path && \
+                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
