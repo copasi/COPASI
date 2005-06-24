@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:14:17 $
+   $Date: 2005/06/24 20:07:55 $
    End CVS Header */
 
 /**
@@ -15,6 +15,7 @@
  */
 
 #include <fstream>
+#include <limits>
 
 #include "copasi.h"
 #include "CCopasiXMLInterface.h"
@@ -89,7 +90,7 @@ void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
       xml << "&quot;";
       break;
 
-    case '\t':     // Without this <tab> is converted to <space>
+    case '\t':      // Without this <tab> is converted to <space>
       xml << "&#x09;";
       break;
 
@@ -152,6 +153,22 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
     encode(*it, xml);
 
   return xml.str();
+}
+
+std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
+{
+  std::ostringstream value;
+
+  if (dbl != dbl) // NaN != NaN
+    value << "NaN";
+  else if (dbl == std::numeric_limits<C_FLOAT64>::infinity())
+    value << "INF";
+  else if (-dbl == std::numeric_limits<C_FLOAT64>::infinity())
+    value << "-INF";
+  else
+    value << dbl;
+
+  return value.str();
 }
 
 std::string CCopasiXMLInterface::utf8(const std::string & str)
@@ -385,6 +402,13 @@ bool CXMLAttributeList::erase()
 }
 
 unsigned C_INT32 CXMLAttributeList::size() {return mAttributeList.size() / 2;}
+
+bool CXMLAttributeList::add(const std::string & name, const C_FLOAT64 & value)
+{
+  return add(name,
+             CCopasiXMLInterface::encodeDBL(value),
+             CCopasiXMLInterface::attribute);
+}
 
 bool CXMLAttributeList::setName(const unsigned C_INT32 & index,
                                 const std::string & name)

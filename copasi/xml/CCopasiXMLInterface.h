@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:14:17 $
+   $Date: 2005/06/24 20:07:55 $
    End CVS Header */
 
 /**
@@ -331,10 +331,17 @@ class CCopasiXMLInterface
     static std::string encode(const std::string & str, const EncodingType & type = std);
 
     /**
-     * Encode a given string to a utf-8 string
-     * @param const std::string & str
+     * Encode a given string to a valid XML string
+     * @param const C_FLOAT64 & dbl
      * @return std::string encoded
      */
+    static std::string encodeDBL(const C_FLOAT64 & dbl);
+
+    /**
+    * Encode a given string to a utf-8 string
+    * @param const std::string & str
+    * @return std::string encoded
+    */
     static std::string utf8(const std::string & str);
 
   protected:
@@ -431,6 +438,15 @@ class CXMLAttributeList
     template <class CType> inline bool add(const std::string & name,
                                            const CType & value)
     {return add(name, value, CCopasiXMLInterface::attribute);}
+
+    /**
+     * Add an attribute to the end of the list.
+     * Note: the value will be XML encoded
+     * @param const std::string & name
+     * @param const C_FLOAT64 & value
+     * @return bool success
+     */
+    bool add(const std::string & name, const C_FLOAT64 & value);
 
     /**
      * Add an attribute to the end of the list.
