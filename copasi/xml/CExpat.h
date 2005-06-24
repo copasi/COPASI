@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/06 19:59:38 $
+   $Date: 2005/06/24 20:05:52 $
    End CVS Header */
 
 /**
@@ -670,36 +670,61 @@ class CExpatTemplate
       }
 
     /**
-     * Convert a attribute of type xs:boolean to bool. If attribute is NULL
+     * Convert an attribute of type xs:boolean to bool. If attribute is NULL
      * false is returned.
      * @param const char * attribute
      * @return bool
      */
-    bool toBool(const char * attribute) const
-      {
-        if (!attribute) return false;
-        if (!strcmp(attribute, "true") || !strcmp(attribute, "1")) return true;
-        return false;
-      }
+    static bool toBool(const char * attribute)
+    {
+      if (!attribute) return false;
+      if (!strcmp(attribute, "true") || !strcmp(attribute, "1")) return true;
+      return false;
+    }
 
     /**
-     * Convert a attribute of type to enum. If attribute is NULL
+     * Convert an attribute to enum. If attribute is NULL
      * or no matching name is found -1 is returned. Note: enumNames must be 
      * zero terminated.
      * @param const char * attribute
      * @param const char ** enumNames 
      * @return bool
      */
-    int toEnum(const char * attribute,
-               const char ** enumNames) const
-      {
-        if (!attribute) return - 1;
+    static int toEnum(const char * attribute,
+                      const char ** enumNames)
+    {
+      if (!attribute) return - 1;
 
-        for (int i = 0; *enumNames; i++, enumNames++)
-          if (!strcmp(attribute, *enumNames)) return i;
+      for (int i = 0; *enumNames; i++, enumNames++)
+        if (!strcmp(attribute, *enumNames)) return i;
 
-        return - 1;
-      }
+      return - 1;
+    }
+
+    /**
+     * Convert an attribute to double. If attribute is NULL
+     * or cannot converted to a number NaN is returned. 
+     * @param const char * attribute
+     * @return double value
+     */
+    static double toDBL(const char * attribute)
+    {
+      if (!attribute)
+        return std::numeric_limits<C_FLOAT64>::signaling_NaN();
+
+      char * Tail;
+      double Value = strtod(attribute, & Tail);
+
+      if (!*Tail)
+        return Value;
+
+      if (!strcmp(attribute, "INF"))
+        return std::numeric_limits<C_FLOAT64>::infinity();
+      else if (!strcmp(attribute, "-INF"))
+        return - std::numeric_limits<C_FLOAT64>::infinity();
+      else
+        return std::numeric_limits<C_FLOAT64>::signaling_NaN();
+    }
 
   protected:
     /**
