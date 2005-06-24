@@ -11,6 +11,7 @@
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationLexer.h"
+
 %}
 
 /* yacc Declarations */
@@ -66,7 +67,10 @@
 /* Grammar follows */
 %%
 
-exp:      TOKEN_NUMBER  {mpRootNode = $1;}
+exp:      TOKEN_NUMBER
+          {
+            mpRootNode = $1;
+          }
         | exp TOKEN_OPERATOR_PLUS exp 
           {
             $$ = $2;
@@ -84,14 +88,14 @@ exp:      TOKEN_NUMBER  {mpRootNode = $1;}
         | exp TOKEN_OPERATOR_MULTIPLY exp
           {
             $$ = $2;
-            $$->addChild($1);
+            $$->addChild($1); 
             $$->addChild($3);
             mpRootNode = $$; 
           }
         | exp TOKEN_OPERATOR_POWER exp
           {
             $$ = $2;
-            $$->addChild($1);
+            $$->addChild($1); 
             $$->addChild($3);
             mpRootNode = $$; 
           }
@@ -132,7 +136,49 @@ bool:     TOKEN_LOGICAL_VALUE
             $$->addChild($3);
             mpRootNode = $$; 
           }
+        | exp TOKEN_LOGICAL_EQ bool
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_EQ exp
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_EQ bool
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
         | exp TOKEN_LOGICAL_NE exp
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | exp TOKEN_LOGICAL_NE bool
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_NE exp
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_NE bool
           {
             $$ = $2;
             $$->addChild($1); 
@@ -161,20 +207,6 @@ bool:     TOKEN_LOGICAL_VALUE
             mpRootNode = $$; 
           }
         | exp TOKEN_LOGICAL_LE exp
-          {
-            $$ = $2;
-            $$->addChild($1); 
-            $$->addChild($3);
-            mpRootNode = $$; 
-          }
-        | bool TOKEN_LOGICAL_EQ bool
-          {
-            $$ = $2;
-            $$->addChild($1); 
-            $$->addChild($3);
-            mpRootNode = $$; 
-          }
-        | bool TOKEN_LOGICAL_NE bool
           {
             $$ = $2;
             $$->addChild($1); 
