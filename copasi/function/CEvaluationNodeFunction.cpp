@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/24 15:28:52 $
+   $Date: 2005/06/24 15:41:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -163,7 +163,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
       break;
 
     case NOT:
-      mpFunction = not;
+      mpFunction = copasiNot;
       break;
 
     default:
@@ -418,6 +418,9 @@ ASTNode* CEvaluationNodeFunction::toASTNode()
       // the nodde will be replaced by its only child
       delete node;
       node = dynamic_cast<CEvaluationNode*>(this->getChild())->toASTNode();
+      break;
+    case NOT:
+      fatalError();
       break;
     }
   // for all but INVALID one child has to be converted

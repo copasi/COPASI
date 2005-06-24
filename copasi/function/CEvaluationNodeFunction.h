@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/24 15:28:52 $
+   $Date: 2005/06/24 15:41:17 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -186,7 +186,7 @@ class CEvaluationNodeFunction : public CEvaluationNode
     static inline C_FLOAT64 plus(C_FLOAT64 value)
     {return value;}
 
-    static inline C_FLOAT64 not(C_FLOAT64 value)
+    static inline C_FLOAT64 copasiNot(C_FLOAT64 value)
   {return (value != 0.0) ? 0.0 : 1.0;}
 
     // Attributes
