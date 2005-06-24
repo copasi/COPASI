@@ -121,8 +121,10 @@ exp:      TOKEN_NUMBER  {mpRootNode = $1;}
             mpRootNode = $$; 
           }
 
-bool:     TOKEN_LOGICAL_VALUE {mpRootNode = $1;}
-          {}
+bool:     TOKEN_LOGICAL_VALUE
+          {
+            mpRootNode = $1;
+          }
         | exp TOKEN_LOGICAL_EQ exp
           {
             $$ = $2;
