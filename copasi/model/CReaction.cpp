@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.125 $
+   $Revision: 1.126 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/24 13:41:12 $
+   $Author: gauges $ 
+   $Date: 2005/06/24 14:36:03 $
    End CVS Header */
 
 // CReaction
@@ -899,14 +899,16 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
   return pTmpNode;
 }
 
-CFunction* CReaction::convertExpressionToFunction(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
+bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
 {
   // walk the tree and replace all object nodes with variable nodes.
   CFunction* pFun = NULL;
   if (tree->getType() == CEvaluationTree::Expression)
     {
       CEvaluationNode* pOrigNode = tree->getRoot();
+
       std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> > replacementMap = std::map<std::string , std::pair<CCopasiObject*, CFunctionParameter*> >();
+
       CEvaluationNode* pFunctionTree = this->objects2variables(pOrigNode, replacementMap, copasi2sbmlmap);
       if (pFunctionTree)
         {
@@ -931,12 +933,25 @@ CFunction* CReaction::convertExpressionToFunction(CEvaluationTree* tree, std::ma
             }
 
           pFun = new CKinFunction(functionName + appendix);
-          // I guess it would be better to add the function
-          // in the routine that is calling this routine
-          // pFunctionDB->add(pFun, true);
-
-          // do the mapping
+          pFun->setRoot(pFunctionTree);
+          pFunctionDB->add(pFun, true);
+          this->setFunction(pFun);
+          // add the variables
+          // and do the mapping
+          std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator it = replacementMap.begin();
+          std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator endIt = replacementMap.end();
+          while (it != endIt)
+            {
+              CFunctionParameter* pFunPar = it->second.second;
+              pFun->addVariable(pFunPar->getObjectName(), pFunPar->getUsage(), pFunPar->getType());
+              // I am not sure if I can do the mapping already
+              // maybe I will have to go over the replacementMap
+              // a second time to do the maping.
+              this->setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
+              delete pFunPar;
+              ++it;
+            }
         }
     }
-  return pFun;
+  return pFun == NULL;
 }

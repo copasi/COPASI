@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/24 13:28:39 $
+   $Date: 2005/06/24 14:36:03 $
    End CVS Header */
 
 /**
@@ -354,7 +354,7 @@ class CReaction : public CCopasiContainer
      * Converts an expression tree into a CFunction object
      * and sets the mapping for the reaction.
      */
-    CFunction* convertExpressionToFunction(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB);
+    bool setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB);
 
     /**
      * Replaces all object nodes in an expression tree by variable nodes.
