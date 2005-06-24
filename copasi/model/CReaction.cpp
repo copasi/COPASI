@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.124 $
+   $Revision: 1.125 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/24 13:28:39 $
+   $Author: shoops $ 
+   $Date: 2005/06/24 13:41:12 $
    End CVS Header */
 
 // CReaction
@@ -714,7 +714,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                       std::string usage;
                       for (i = 0; i < v->size();++i)
                         {
-                          if ((&((*v)[i]->getMetabolite())) == object)
+                          if ((&((*v)[i]->getMetabolite())) == static_cast<CMetab *>(object))
                             {
                               found = true;
                               usage = "SUBSTRATE";
@@ -726,7 +726,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                           v = &this->getChemEq().getProducts();
                           for (i = 0; i < v->size();++i)
                             {
-                              if ((&((*v)[i]->getMetabolite())) == object)
+                              if ((&((*v)[i]->getMetabolite())) == static_cast<CMetab *>(object))
                                 {
                                   found = true;
                                   usage = "PRODUCT";
@@ -738,7 +738,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                               v = &this->getChemEq().getModifiers();
                               for (i = 0; i < v->size();++i)
                                 {
-                                  if ((&((*v)[i]->getMetabolite())) == object)
+                                  if ((&((*v)[i]->getMetabolite())) == static_cast<CMetab *>(object))
                                     {
                                       found = true;
                                       usage = "MODIFIER";
