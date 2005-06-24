@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/10 11:54:30 $
+   $Author: shoops $ 
+   $Date: 2005/06/24 15:28:52 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -62,7 +62,8 @@ class CEvaluationNodeFunction : public CEvaluationNode
       CEIL = 0x0000001e,
       FACTORIAL = 0x0000001f,
       MINUS = 0x00000020,
-      PLUS = 0x00000021
+      PLUS = 0x00000021,
+      NOT = 0x00000022
     };
 
     // Operations
@@ -184,6 +185,9 @@ class CEvaluationNodeFunction : public CEvaluationNode
 
     static inline C_FLOAT64 plus(C_FLOAT64 value)
     {return value;}
+
+    static inline C_FLOAT64 not(C_FLOAT64 value)
+  {return (value != 0.0) ? 0.0 : 1.0;}
 
     // Attributes
   private:
