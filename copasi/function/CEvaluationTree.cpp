@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/24 13:28:40 $
+   $Date: 2005/06/24 13:52:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -218,12 +218,13 @@ bool CEvaluationTree::compileNodes()
   return success;
 }
 
-bool CEvaluationTree::setTree(const ASTNode& pRootNode)
+bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 {
+  if (pRootNode == NULL) return false;
   if (mpNodeList != NULL)
     CEvaluationParser::freeNodeList(mpNodeList);
 
-  mpRoot = CEvaluationTree::convertASTNode(pRootNode);
+  mpRoot = pRootNode;
 
   CCopasiTree<CEvaluationNode>::iterator it = mpRoot;
   CCopasiTree<CEvaluationNode>::iterator end = NULL;
@@ -234,6 +235,11 @@ bool CEvaluationTree::setTree(const ASTNode& pRootNode)
     mpNodeList->push_back(&*it);
 
   return true;
+}
+
+bool CEvaluationTree::setTree(const ASTNode& pRootNode)
+{
+  return this->setRoot(CEvaluationTree::convertASTNode(pRootNode));
 }
 
 CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)

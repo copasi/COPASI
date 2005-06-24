@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/24 13:28:40 $
+   $Date: 2005/06/24 13:52:06 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -102,6 +102,13 @@ class CEvaluationTree:
      * @return const std::string & key
      */
     const std::string & getKey() const;
+
+    /**
+     * Sets the root node of the tree.
+     * @param CEvaluationNode* root node of the tree
+     * @return bool success
+     */
+    bool setRoot(CEvaluationNode* pRootNode);
 
     /**
      * Sets the complete tree from an SBML ASTNode.
