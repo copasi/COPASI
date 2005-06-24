@@ -59,6 +59,101 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_NUMBER;
 %}
 
+(true|TRUE) %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_NUMBER;
+%}
+
+(false|FALSE) %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_NUMBER;
+%}
+
+<INITIAL,sSIGN>(not|NOT)   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_NOT;
+%}
+
+<sOPERATOR>(le|LE)   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE,
+                                      yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_LE;
+%}
+
+<sOPERATOR>(lt|LT)   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT,
+                                      yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_LT;
+%}
+
+<sOPERATOR>(ge|GE)   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE,
+                                      yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_GE;
+%}
+
+<sOPERATOR>(gt|GT)   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GT,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_GT;
+%}
+
+<sOPERATOR>(ne|NE)   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::NE,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_NE;
+%}
+
+<sOPERATOR>(eq|EQ)   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_EQ;
+%}
+
+<sOPERATOR>(and|AND)   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_AND;
+%}
+
+<sOPERATOR>(xor|XOR)   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_XOR;
+%}
+
+<sOPERATOR>(or|OR)   %{
+  mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_OR;
+%}
+
 {ID}  %{
   BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY,
@@ -331,6 +426,14 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_FUNCTION;
 %}
 
+(if|IF)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeChoice(CEvaluationNodeChoice::IF,
+                                     yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_CHOICE;
+%}
+
 <INITIAL,sSIGN>"-"   %{
   BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS,
@@ -380,7 +483,6 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 %}
 
 <sOPERATOR>"+"   %{
-  BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS,
                                        yytext);
   COMMON_ACTION;
@@ -388,7 +490,6 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 %}
 
 <sOPERATOR>"-"   %{
-  BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS,
                                        yytext);
   COMMON_ACTION;

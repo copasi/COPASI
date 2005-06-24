@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/10 17:46:03 $
+   $Date: 2005/06/24 15:44:37 $
    End CVS Header */
 
 #ifndef lint
@@ -40,115 +40,155 @@ static int yygrowstack();
 #define TOKEN_OPERATOR_MULTIPLY 261
 #define TOKEN_OPERATOR_MODULUS 262
 #define TOKEN_OPERATOR_PLUS 263
-#define TOKEN_STRUCTURE_OPEN 264
-#define TOKEN_STRUCTURE_COMMA 265
-#define TOKEN_STRUCTURE_CLOSE 266
+#define TOKEN_LOGICAL_CHOICE 264
+#define TOKEN_LOGICAL_VALUE 265
+#define TOKEN_LOGICAL_NOT 266
+#define TOKEN_LOGICAL_OR 267
+#define TOKEN_LOGICAL_XOR 268
+#define TOKEN_LOGICAL_AND 269
+#define TOKEN_LOGICAL_EQ 270
+#define TOKEN_LOGICAL_NE 271
+#define TOKEN_LOGICAL_GT 272
+#define TOKEN_LOGICAL_GE 273
+#define TOKEN_LOGICAL_LT 274
+#define TOKEN_LOGICAL_LE 275
+#define TOKEN_STRUCTURE_OPEN 276
+#define TOKEN_STRUCTURE_COMMA 277
+#define TOKEN_STRUCTURE_CLOSE 278
 const short yylhs[] =
   {
     -1,
-    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 2,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1,
   };
 const short yylen[] =
   {
     2,
-    1, 3, 3, 3, 3, 3, 4, 2,
+    1, 3, 3, 3, 3, 3, 4, 2, 8, 0,
+    2, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 3, 3, 2,
   };
 const short yydefred[] =
   {
     0,
-    1, 0, 0, 0, 0, 0, 8, 0, 0, 0,
-    0, 0, 0, 6, 0, 0, 0, 0, 7,
+    1, 0, 0, 0, 0, 0, 0, 8, 0, 0,
+    0, 0, 0, 0, 0, 10, 0, 0, 0, 0,
+    6, 0, 0, 0, 0, 7, 11, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 23, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 19, 0, 0, 0, 9,
   };
 const short yydgoto[] =
   {
-    5,
+    19,
+    20, 27,
   };
 const short yysindex[] =
   {
-    -254,
-    0, -264, -254, -254, -223, -254, 0, -237, -254, -254,
-    -254, -254, -230, 0, -258, -258, -243, -219, 0,
+    -251,
+    0, -276, -251, -261, -251, -258, -251, 0, -205, -188,
+    -251, -251, -251, -251, -175, 0, -205, -205, -156, -79,
+    0, -243, -243, -178, -198, 0, 0, -74, -194, -96,
+    -251, -251, -251, -251, -251, -251, -205, -205, -205, -205,
+    -205, -251, 0, -258, -258, -258, -258, -258, -258, -213,
+    -137, -121, -247, 0, -165, -251, -169, 0,
   };
 const short yyrindex[] =
   {
     0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 7, 9, 11, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 19, 36, 49, 0, 0, -111, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, -147, -142, -130, -125, -113, -108, -249,
+    -167, -230, -91, 0, 0, 0, 0, 0,
   };
 const short yygindex[] =
   {
-    10,
+    9,
+    -7, 0,
   };
-#define YYTABLESIZE 277
+#define YYTABLESIZE 327
 const short yytable[] =
   {
-    6,
-    5, 9, 1, 2, 3, 0, 4, 0, 3, 4,
-    2, 0, 7, 8, 0, 13, 9, 10, 15, 16,
-    17, 18, 9, 10, 11, 12, 0, 0, 14, 9,
-    10, 11, 12, 0, 0, 19, 9, 10, 11, 12,
-    9, 10, 11, 0, 0, 0, 0, 0, 0, 0,
+    7,
+    5, 11, 12, 13, 14, 1, 2, 3, 6, 28,
+    30, 8, 4, 10, 9, 15, 11, 20, 4, 22,
+    23, 24, 25, 41, 5, 0, 29, 20, 20, 50,
+    51, 52, 53, 54, 0, 3, 22, 22, 22, 44,
+    45, 46, 47, 48, 49, 0, 22, 22, 2, 0,
+    55, 1, 2, 3, 38, 39, 40, 41, 4, 16,
+    17, 11, 12, 13, 57, 11, 12, 13, 14, 0,
+    18, 11, 12, 13, 14, 31, 32, 33, 34, 35,
+    36, 11, 12, 21, 11, 12, 13, 14, 0, 21,
+    11, 12, 13, 14, 11, 12, 13, 14, 0, 21,
+    21, 0, 26, 11, 12, 13, 14, 0, 58, 21,
+    21, 56, 0, 31, 32, 33, 34, 35, 36, 12,
+    12, 12, 12, 12, 13, 13, 13, 13, 13, 12,
+    12, 39, 40, 41, 13, 13, 14, 14, 14, 14,
+    14, 15, 15, 15, 15, 15, 14, 14, 40, 41,
+    0, 15, 15, 16, 16, 16, 16, 16, 17, 17,
+    17, 17, 17, 16, 16, 24, 24, 0, 17, 17,
+    37, 38, 39, 40, 41, 18, 18, 18, 18, 0,
+    0, 43, 0, 0, 0, 18, 18, 37, 38, 39,
+    40, 41, 37, 38, 39, 40, 41, 42, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 5, 5, 5, 0, 0, 5, 4, 4, 4,
-    3, 3, 4, 2, 3, 0, 2,
+    0, 5, 5, 5, 0, 0, 0, 5, 5, 5,
+    5, 5, 5, 5, 5, 5, 0, 5, 5, 4,
+    4, 4, 0, 0, 0, 4, 4, 4, 4, 4,
+    4, 4, 4, 4, 0, 4, 4, 3, 3, 0,
+    0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 2, 3, 3, 0, 2, 2, 2, 2, 2,
+    2, 2, 2, 2, 0, 2, 2,
   };
 const short yycheck[] =
   {
-    264,
-    0, 260, 257, 258, 259, -1, 0, -1, 0, 264,
-    0, -1, 3, 4, -1, 6, 260, 261, 9, 10,
-    11, 12, 260, 261, 262, 263, -1, -1, 266, 260,
-    261, 262, 263, -1, -1, 266, 260, 261, 262, 263,
-    260, 261, 262, -1, -1, -1, -1, -1, -1, -1,
+    276,
+    0, 260, 261, 262, 263, 257, 258, 259, 0, 17,
+    18, 3, 264, 5, 276, 7, 260, 267, 0, 11,
+    12, 13, 14, 271, 276, -1, 18, 277, 278, 37,
+    38, 39, 40, 41, -1, 0, 267, 268, 269, 31,
+    32, 33, 34, 35, 36, -1, 277, 278, 0, -1,
+    42, 257, 258, 259, 268, 269, 270, 271, 264, 265,
+    266, 260, 261, 262, 56, 260, 261, 262, 263, -1,
+    276, 260, 261, 262, 263, 270, 271, 272, 273, 274,
+    275, 260, 261, 278, 260, 261, 262, 263, -1, 278,
+    260, 261, 262, 263, 260, 261, 262, 263, -1, 267,
+    268, -1, 278, 260, 261, 262, 263, -1, 278, 277,
+    278, 277, -1, 270, 271, 272, 273, 274, 275, 267,
+    268, 269, 270, 271, 267, 268, 269, 270, 271, 277,
+    278, 269, 270, 271, 277, 278, 267, 268, 269, 270,
+    271, 267, 268, 269, 270, 271, 277, 278, 270, 271,
+    -1, 277, 278, 267, 268, 269, 270, 271, 267, 268,
+    269, 270, 271, 277, 278, 277, 278, -1, 277, 278,
+    267, 268, 269, 270, 271, 267, 268, 269, 270, -1,
+    -1, 278, -1, -1, -1, 277, 278, 267, 268, 269,
+    270, 271, 267, 268, 269, 270, 271, 277, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, 261, 262, 263, -1, -1, 266, 261, 262, 263,
-    262, 263, 266, 263, 266, -1, 266,
+    -1, 261, 262, 263, -1, -1, -1, 267, 268, 269,
+    270, 271, 272, 273, 274, 275, -1, 277, 278, 261,
+    262, 263, -1, -1, -1, 267, 268, 269, 270, 271,
+    272, 273, 274, 275, -1, 277, 278, 262, 263, -1,
+    -1, -1, 267, 268, 269, 270, 271, 272, 273, 274,
+    275, 263, 277, 278, -1, 267, 268, 269, 270, 271,
+    272, 273, 274, 275, -1, 277, 278,
   };
-#define YYFINAL 5
+#define YYFINAL 6
 #ifndef YYDEBUG
 #define YYDEBUG 1
 #endif
-#define YYMAXTOKEN 266
+#define YYMAXTOKEN 278
 #if YYDEBUG
 const char * const yyname[] =
   {
@@ -160,8 +200,11 @@ const char * const yyname[] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "TOKEN_NUMBER", "TOKEN_FUNCTION",
     "TOKEN_SIGN", "TOKEN_OPERATOR_POWER", "TOKEN_OPERATOR_MULTIPLY",
-    "TOKEN_OPERATOR_MODULUS", "TOKEN_OPERATOR_PLUS", "TOKEN_STRUCTURE_OPEN",
-    "TOKEN_STRUCTURE_COMMA", "TOKEN_STRUCTURE_CLOSE",
+    "TOKEN_OPERATOR_MODULUS", "TOKEN_OPERATOR_PLUS", "TOKEN_LOGICAL_CHOICE",
+    "TOKEN_LOGICAL_VALUE", "TOKEN_LOGICAL_NOT", "TOKEN_LOGICAL_OR",
+    "TOKEN_LOGICAL_XOR", "TOKEN_LOGICAL_AND", "TOKEN_LOGICAL_EQ", "TOKEN_LOGICAL_NE",
+    "TOKEN_LOGICAL_GT", "TOKEN_LOGICAL_GE", "TOKEN_LOGICAL_LT", "TOKEN_LOGICAL_LE",
+    "TOKEN_STRUCTURE_OPEN", "TOKEN_STRUCTURE_COMMA", "TOKEN_STRUCTURE_CLOSE",
   };
 const char * const yyrule[] =
   {
@@ -174,6 +217,22 @@ const char * const yyrule[] =
     "exp : TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_CLOSE",
     "exp : TOKEN_FUNCTION TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_CLOSE",
     "exp : TOKEN_SIGN exp",
+    "exp : TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_CLOSE",
+    "$$1 :",
+    "bool : TOKEN_LOGICAL_VALUE $$1",
+    "bool : exp TOKEN_LOGICAL_EQ exp",
+    "bool : exp TOKEN_LOGICAL_NE exp",
+    "bool : exp TOKEN_LOGICAL_GT exp",
+    "bool : exp TOKEN_LOGICAL_GE exp",
+    "bool : exp TOKEN_LOGICAL_LT exp",
+    "bool : exp TOKEN_LOGICAL_LE exp",
+    "bool : bool TOKEN_LOGICAL_EQ bool",
+    "bool : bool TOKEN_LOGICAL_NE bool",
+    "bool : bool TOKEN_LOGICAL_OR bool",
+    "bool : bool TOKEN_LOGICAL_XOR bool",
+    "bool : bool TOKEN_LOGICAL_AND bool",
+    "bool : TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_CLOSE",
+    "bool : TOKEN_LOGICAL_NOT bool",
   };
 #endif
 #ifndef YYSTYPE
@@ -206,9 +265,9 @@ short *yyss;
 short *yysslim;
 YYSTYPE *yyvs;
 int yystacksize;
-#line 96 "CEvaluationParser.ypp"
+#line 217 "CEvaluationParser.ypp"
 
-#line 184 "CEvaluationParser_yacc.cpp" 
+#line 243 "CEvaluationParser_yacc.cpp" 
 /* allocate initial stack or double stack size, up to YYMAXDEPTH */
 static int yygrowstack()
 {
@@ -404,11 +463,11 @@ YYPARSE_PARAM_DECL
   switch (yyn)
     {
     case 1:
-#line 47 "CEvaluationParser.ypp"
+#line 69 "CEvaluationParser.ypp"
     {mpRootNode = yyvsp[0];}
         break;
       case 2:
-#line 49 "CEvaluationParser.ypp"
+#line 71 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -417,7 +476,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 3:
-#line 56 "CEvaluationParser.ypp"
+#line 78 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -426,7 +485,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 4:
-#line 63 "CEvaluationParser.ypp"
+#line 85 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -435,7 +494,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 5:
-#line 70 "CEvaluationParser.ypp"
+#line 92 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -444,14 +503,14 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 6:
-#line 77 "CEvaluationParser.ypp"
+#line 99 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           mpRootNode = yyval;
         }
         break;
       case 7:
-#line 82 "CEvaluationParser.ypp"
+#line 104 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -3];
           yyval->addChild(yyvsp[ -1]);
@@ -459,14 +518,146 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 8:
-#line 88 "CEvaluationParser.ypp"
+#line 110 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[0]);
           mpRootNode = yyval;
         }
         break;
-#line 442 "CEvaluationParser_yacc.cpp"
+      case 9:
+#line 116 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -7];
+          yyval->addChild(yyvsp[ -6]);
+          yyval->addChild(yyvsp[ -4]);
+          yyval->addChild(yyvsp[ -2]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 10:
+#line 124 "CEvaluationParser.ypp"
+      {mpRootNode = yyvsp[0];}
+        break;
+      case 11:
+#line 125 "CEvaluationParser.ypp"
+      {}
+        break;
+      case 12:
+#line 127 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 13:
+#line 134 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 14:
+#line 141 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 15:
+#line 148 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 16:
+#line 155 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 17:
+#line 162 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 18:
+#line 169 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 19:
+#line 176 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 20:
+#line 183 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 21:
+#line 190 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 22:
+#line 197 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+      case 23:
+#line 204 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          mpRootNode = yyval;
+        }
+        break;
+      case 24:
+#line 209 "CEvaluationParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
+        }
+        break;
+#line 633 "CEvaluationParser_yacc.cpp"
       }
   yyssp -= yym;
   yystate = *yyssp;

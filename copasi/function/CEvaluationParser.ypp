@@ -13,10 +13,7 @@
 #include "CEvaluationLexer.h"
 %}
 
-// %output="CEvaluationBisonParser.hpp"
-// %debug
-
-/* BISON Declarations */
+/* yacc Declarations */
 %token TOKEN_NUMBER
 
 %token TOKEN_FUNCTION
@@ -27,11 +24,35 @@
 %token TOKEN_OPERATOR_MODULUS
 %token TOKEN_OPERATOR_PLUS
 
+%token TOKEN_LOGICAL_CHOICE
+%token TOKEN_LOGICAL_VALUE
+%token TOKEN_LOGICAL_NOT
+%token TOKEN_LOGICAL_OR
+%token TOKEN_LOGICAL_XOR
+%token TOKEN_LOGICAL_AND
+%token TOKEN_LOGICAL_EQ
+%token TOKEN_LOGICAL_NE
+%token TOKEN_LOGICAL_GT
+%token TOKEN_LOGICAL_GE
+%token TOKEN_LOGICAL_LT
+%token TOKEN_LOGICAL_LE
+
 %token TOKEN_STRUCTURE_OPEN
 %token TOKEN_STRUCTURE_COMMA
 %token TOKEN_STRUCTURE_CLOSE
 
 // Precedence
+%right TOKEN_LOGICAL_NOT
+%left TOKEN_LOGICAL_OR
+%left TOKEN_LOGICAL_XOR
+%left TOKEN_LOGICAL_AND
+%left TOKEN_LOGICAL_EQ
+%left TOKEN_LOGICAL_NE
+%left TOKEN_LOGICAL_GT
+%left TOKEN_LOGICAL_GE
+%left TOKEN_LOGICAL_LT
+
+%left TOKEN_LOGICAL_LE
 %left TOKEN_OPERATOR_PLUS
 %left TOKEN_OPERATOR_MODULUS
 %left TOKEN_OPERATOR_MULTIPLY
@@ -40,6 +61,7 @@
 // Right Precedence
 %right TOKEN_FUNCTION // Will never occur
 %right TOKEN_SIGN // Will never occur
+%right TOKEN_LOGICAL_CHOICE // Will never occur
 
 /* Grammar follows */
 %%
@@ -85,6 +107,105 @@ exp:      TOKEN_NUMBER  {mpRootNode = $1;}
             mpRootNode = $$; 
           }
         | TOKEN_SIGN exp
+          {
+            $$ = $1;
+            $$->addChild($2);
+            mpRootNode = $$; 
+          }
+        | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = $1;
+            $$->addChild($2); 
+            $$->addChild($4); 
+            $$->addChild($6); 
+            mpRootNode = $$; 
+          }
+
+bool:     TOKEN_LOGICAL_VALUE {mpRootNode = $1;}
+          {}
+        | exp TOKEN_LOGICAL_EQ exp
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | exp TOKEN_LOGICAL_NE exp
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | exp TOKEN_LOGICAL_GT exp
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | exp TOKEN_LOGICAL_GE exp
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | exp TOKEN_LOGICAL_LT exp
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | exp TOKEN_LOGICAL_LE exp
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_EQ bool
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_NE bool
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_OR bool
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_XOR bool
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_AND bool
+          {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = $2;
+            mpRootNode = $$; 
+          }
+        | TOKEN_LOGICAL_NOT bool
           {
             $$ = $1;
             $$->addChild($2);
