@@ -119,9 +119,9 @@ exp:      TOKEN_NUMBER
         | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_CLOSE
           {
             $$ = $1;
-            $$->addChild($2); 
-            $$->addChild($4); 
-            $$->addChild($6); 
+            $$->addChild($3); 
+            $$->addChild($5); 
+            $$->addChild($7); 
             mpRootNode = $$; 
           }
 

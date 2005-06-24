@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/24 18:39:59 $
+   $Date: 2005/06/24 19:19:28 $
    End CVS Header */
 
 #ifndef lint
@@ -538,9 +538,9 @@ YYPARSE_PARAM_DECL
 #line 120 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -7];
-          yyval->addChild(yyvsp[ -6]);
-          yyval->addChild(yyvsp[ -4]);
-          yyval->addChild(yyvsp[ -2]);
+          yyval->addChild(yyvsp[ -5]);
+          yyval->addChild(yyvsp[ -3]);
+          yyval->addChild(yyvsp[ -1]);
           mpRootNode = yyval;
         }
         break;
