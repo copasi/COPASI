@@ -67,11 +67,19 @@ SOURCE=.\CEvaluationNode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeChoice.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNodeConstant.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\CEvaluationNodeFunction.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeLogical.cpp
 # End Source File
 # Begin Source File
 
@@ -167,11 +175,19 @@ SOURCE=.\CEvaluationNode.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeChoice.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNodeConstant.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\CEvaluationNodeFunction.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeLogical.h
 # End Source File
 # Begin Source File
 

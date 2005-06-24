@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/23 16:16:24 $
+   $Date: 2005/06/24 15:31:32 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -273,6 +273,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
 #include "CEvaluationNodeChoice.h"
 #include "CEvaluationNodeConstant.h"
 #include "CEvaluationNodeFunction.h"
+#include "CEvaluationNodeLogical.h"
 #include "CEvaluationNodeNumber.h"
 #include "CEvaluationNodeObject.h"
 #include "CEvaluationNodeOperator.h"
