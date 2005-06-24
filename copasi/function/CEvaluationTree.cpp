@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 19:38:13 $
+   $Date: 2005/06/24 13:25:56 $
    End CVS Header */
 
 #include "copasi.h"
@@ -15,13 +15,11 @@
 #include "CEvaluationTree.h"
 #include "CFunction.h"
 #include "CExpression.h"
+#include "CEvaluationLexer.h"
 
 #include "report/CKeyFactory.h"
 #include "sbml/math/ASTNode.h"
-
-#undef yyFlexLexer
-#define yyFlexLexer CEvaluationFlexLexer
-#include "CEvaluationLexer.h"
+#include "utilities/CCopasiTree.h"
 
 const std::string CEvaluationTree::TypeName[] =
   {"userdefined", "predefined", "predefined", "userdefined", "userdefined", ""};
@@ -222,7 +220,19 @@ bool CEvaluationTree::compileNodes()
 
 bool CEvaluationTree::setTree(const ASTNode& pRootNode)
 {
+  if (mpNodeList != NULL)
+    CEvaluationParser::freeNodeList(mpNodeList);
+
   mpRoot = CEvaluationTree::convertASTNode(pRootNode);
+
+  CCopasiTree<CEvaluationNode>::iterator it = mpRoot;
+  CCopasiTree<CEvaluationNode>::iterator end = NULL;
+
+  mpNodeList = new std::vector< CEvaluationNode * >;
+
+  for (; it != end; ++it)
+    mpNodeList->push_back(&*it);
+
   return true;
 }
 
