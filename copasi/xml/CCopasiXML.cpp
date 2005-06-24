@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:36:47 $
+   $Date: 2005/06/24 20:22:48 $
    End CVS Header */
 
 /**
@@ -433,18 +433,18 @@ bool CCopasiXML::saveModel()
   CState InitialState = mpModel->getInitialState();
 
   std::stringstream data;
-  data << InitialState.getTime();
+  data << encodeDBL(InitialState.getTime());
   for (i = 0, imax = InitialState.getVolumeSize(); i < imax; i++)
-    data << " " << InitialState.getVolume(i);
+    data << " " << encodeDBL(InitialState.getVolume(i));
 
   for (i = 0, imax = InitialState.getVariableNumberSize(); i < imax; i++)
-    data << " " << InitialState.getVariableNumber(i);
+    data << " " << encodeDBL(InitialState.getVariableNumber(i));
 
   for (i = 0, imax = InitialState.getFixedNumberSize(); i < imax; i++)
-    data << " " << InitialState.getFixedNumber(i);
+    data << " " << encodeDBL(InitialState.getFixedNumber(i));
 
   for (i = 0, imax = InitialState.getGlobalParameterSize(); i < imax; i++)
-    data << " " << InitialState.getGlobalParameter(i);
+    data << " " << encodeDBL(InitialState.getGlobalParameter(i));
 
   saveData(data.str());
   endSaveElement("InitialState");
