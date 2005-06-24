@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/13 14:23:50 $
+   $Date: 2005/06/24 13:28:38 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -45,6 +45,10 @@ const MESSAGES Messages[] =
     {MCReaction + 1, "CReaction (1): Function '%s' not found."},
     {MCReaction + 2, "CReaction (2): In Reaction '%s' the compartment could not be guessed."},
     {MCReaction + 3, "CReaction (3): Reaction '%s' has no substrates and no products."},
+    {MCReaction + 4, "CReaction (4): Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions."},
+    {MCReaction + 5, "CReaction (5): Nodes of type %s are not implemented yet."},
+    {MCReaction + 6, "CReaction (6): Nodes of type VARIABLE must not appear in an expression."},
+    {MCReaction + 7, "CReaction (7): CMetab object '%s' is neither substrate, product nor modifier to the reaction."},
 
     // CChemEq
     {MCChemEq + 1, "CChemEq (1): No Substrates and no Products."},

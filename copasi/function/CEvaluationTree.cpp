@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/24 13:25:56 $
+   $Author: gauges $ 
+   $Date: 2005/06/24 13:28:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -337,4 +337,9 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
       break;
     }
   return pResultNode;
+}
+
+CEvaluationNode* CEvaluationTree::getRoot()
+{
+  return this->mpRoot;
 }

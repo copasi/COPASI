@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/14 18:20:11 $
+   $Author: gauges $ 
+   $Date: 2005/06/24 13:28:39 $
    End CVS Header */
 
 /**
@@ -31,6 +31,8 @@
 
 //template < class CType > class CVector;
 class CReadConfig;
+class SBase;
+class CFunctionDB;
 
 /** @dia:pos 129.788,76.3337 */
 class CReaction : public CCopasiContainer
@@ -347,6 +349,32 @@ class CReaction : public CCopasiContainer
      * Initializes the mMetabNameMap vectors to the right size.
      */
     void initializeMetaboliteKeyMap();
+
+    /**
+     * Converts an expression tree into a CFunction object
+     * and sets the mapping for the reaction.
+     */
+    CFunction* convertExpressionToFunction(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB);
+
+    /**
+     * Replaces all object nodes in an expression tree by variable nodes.
+     * The usage term of the variable nodes is recorded in terms
+     * of CFunctionParameters that are stored in the replacementMap.
+     * On failure a NULL pointer is returned.
+     */
+    CEvaluationNode* objects2variables (CEvaluationNode* expression,
+                                        std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap,
+                                        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Converts a single object node to a variable node. 
+     * The usage term of the variable nodes is recorded in terms
+     * of CFunctionParameters that are stored in the replacementMap.
+     * On failure a NULL pointer is returned.
+     */
+    CEvaluationNodeVariable* object2variable(CEvaluationNodeObject* objectNode,
+        std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap,
+        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
   };
 
 #endif // COPASI_CReaction

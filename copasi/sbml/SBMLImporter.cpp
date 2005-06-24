@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/17 19:41:23 $
+   $Author: gauges $ 
+   $Date: 2005/06/24 13:28:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1942,23 +1942,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                 }
               if (sbmlId == pNode->getName())
                 {
-                  // I am not sure if the code below is correct.
-                  // I guess the CEvaluationTree will always generate
-                  // either object nodes for concentration or particle numbers.
-                  // so the CN I set here would be independent of the stuff that was
-                  // set in the SBL file.
-                  if (pSBMLSpecies->isSetInitialAmount())
-                    {
-                      pNode->setName(dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialParticleNumber"))->getCN().c_str());
-                    }
-                  else if (pSBMLSpecies->isSetInitialConcentration())
-                    {
-                      pNode->setName(dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN().c_str());
-                    }
-                  else
-                    {
-                      return false;
-                    }
+                  pNode->setName(dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN().c_str());
                 }
               break;
             case SBML_REACTION:

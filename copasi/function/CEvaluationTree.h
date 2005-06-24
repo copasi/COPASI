@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/17 19:38:13 $
+   $Author: gauges $ 
+   $Date: 2005/06/24 13:28:40 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -139,7 +139,7 @@ class CEvaluationTree:
     std::string::size_type getErrorPosition() const;
 
     /**
-     * Retreive the list of nodes
+     * Retrieve the list of nodes
      * @return const std::vector< CEvaluationNode * > & nodeList;
      */
     const std::vector< CEvaluationNode * > & getNodeList() const;
@@ -164,6 +164,11 @@ class CEvaluationTree:
      * @return C_FLOAT64 * value
      */
     virtual C_FLOAT64 * getObjectValue(const CCopasiObjectName & CN) const;
+
+    /**
+     * Returns the root node of the tree.
+     */
+    CEvaluationNode* getRoot();
 
   protected:
     /**
