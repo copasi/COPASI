@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: shoops $ $Date: 2005/06/23 14:20:45 $  
+# $Revision: 1.3 $ $Author: ssahle $ $Date: 2005/06/24 09:01:40 $  
 ######################################################################
 
 LIB = tss
@@ -8,7 +8,7 @@ include(../lib.pri)
 include(../common.pri)
 
 # Input
-HEADERS += CTSSTask.h \
+HEADERS += CTSSMethod.h \
            CTSSProblem.h \
            CTSSTask.h
 
