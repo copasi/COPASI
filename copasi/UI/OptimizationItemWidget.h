@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/06/20 21:09:31 $
+   $Date: 2005/06/27 19:42:21 $
    End CVS Header */
 
 /********************************************************
@@ -65,8 +65,8 @@ class OptimizationItemWidget : public QWidget
     void setItemUpperLimit(std::string strUpperLimit);
     void setItemLowerLimit(std::string strLowerLimit);
 
-    std::string getItemUpperOper();
-    std::string getItemLowerOper();
+    std::string getItemUpperOper() const;
+    std::string getItemLowerOper() const;
 
     void setItemUpperOper(std::string oper);
     void setItemLowerOper(std::string oper);
@@ -75,10 +75,11 @@ class OptimizationItemWidget : public QWidget
     void setCopasiObjectPtr (CCopasiObject* sourceObject);
 
     virtual bool saveToOptItem(COptProblem * pg) const;
+    virtual bool initFromOptItem(COptItem&);
 
   private:
 
-    CCopasiObject *paramObject, *lbObject, *ubObject;
+    CCopasiObjectName* paramObjectCN;
 
   public slots:
     virtual void slotPosInfClicked();

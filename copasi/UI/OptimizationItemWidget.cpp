@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/06/20 21:11:46 $
+   $Date: 2005/06/27 19:42:12 $
    End CVS Header */
 
 /********************************************************
@@ -26,8 +26,8 @@ Contact: Please contact lixu1@vt.edu.
 
 #include "OptimizationWidget.h"
 #include "OptimizationItemWidget.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "ScanItemWidget.h"
+#include "CopasiDataModel/CCopasiDataModel.h" 
+//#include "ScanItemWidget.h"
 #include "FunctionItemWidget.h"
 #include "report/CKeyFactory.h"
 #include "function/CFunction.h"
@@ -137,7 +137,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   lineLower->setEnabled(false);
   ObjectName->setEnabled(true);
 
-  paramObject = lbObject = ubObject = NULL;
+  paramObjectCN = NULL;
 }
 
 /*
@@ -189,8 +189,7 @@ void OptimizationItemWidget::slotLowerEdit()
 
   if (browseDialog->exec () == QDialog::Accepted && selection->size() != 0)
     {
-      lbObject = selection->at(0);
-      lineLower->setText(FROM_UTF8(lbObject->getObjectDisplayName()));
+      lineLower->setText(FROM_UTF8((selection->at(0))->getObjectDisplayName()));
     }
 }
 
@@ -212,15 +211,14 @@ void OptimizationItemWidget::slotUpperEdit()
 
   if (browseDialog->exec () == QDialog::Accepted && selection->size() != 0)
     {
-      ubObject = selection->at(0);
-      lineUpper->setText(FROM_UTF8(ubObject->getObjectDisplayName()));
+      lineUpper->setText(FROM_UTF8((selection->at(0))->getObjectDisplayName()));
     }
 }
 
 std::string OptimizationItemWidget::getItemUpperLimit() const
   {
     if (checkUpperInf->isChecked())
-      return "+inf";
+      return "inf";
     else
       return (const char*)lineUpper->text().utf8();
   }
@@ -248,7 +246,7 @@ void OptimizationItemWidget::setCopasiObjectPtr (CCopasiObject* sourceObject)
 
 void OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
 {
-  if (strUpperLimit == "+inf")
+  if (strUpperLimit == "inf")
     {
       checkUpperInf->setChecked(true);
       //buttonUpperEdit->setEnabled(false);
@@ -282,15 +280,15 @@ void OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
     }
 }
 
-std::string OptimizationItemWidget::getItemUpperOper()
-{
-  return (const char*)comboBoxUpperOp->currentText().utf8();
-}
+std::string OptimizationItemWidget::getItemUpperOper() const
+  {
+    return (const char*)comboBoxUpperOp->currentText().utf8();
+  }
 
-std::string OptimizationItemWidget::getItemLowerOper()
-{
-  return (const char*)comboBoxLowerOp->currentText().utf8();
-}
+std::string OptimizationItemWidget::getItemLowerOper() const
+  {
+    return (const char*)comboBoxLowerOp->currentText().utf8();
+  }
 
 void OptimizationItemWidget::setItemUpperOper(std::string oper)
 {
@@ -313,25 +311,40 @@ void OptimizationItemWidget::slotParamEdit()
 
   if (browseDialog->exec () == QDialog::Accepted && selection->size() != 0)
     {
-      paramObject = selection->at(0);
-      ObjectName->setText(FROM_UTF8(paramObject->getObjectDisplayName()));
-
-      //   dynamic_cast< COptTask* >(GlobalKeys.get(mpParent->getKey()));
-      //paramObject->getCN();
+      paramObjectCN = new CCopasiObjectName();
+      *paramObjectCN = (selection->at(0))->getCN();
+      ObjectName->setText(FROM_UTF8((selection->at(0))->getObjectDisplayName()));
     }
 }
 
 bool OptimizationItemWidget::saveToOptItem(COptProblem * pg) const
-
   {
-    if (paramObject != NULL) // <todo="update condition">lbObject!=NULL && ubObject!=NULL)
+    if (paramObjectCN != NULL)
       {
-        COptItem & pTmp = (pg->addOptItem(paramObject->getCN()));
+        COptItem & pTmp = (pg->addOptItem(*paramObjectCN));
         pTmp.setLowerBound(getItemLowerLimit());
+        pTmp.setLowerRelation(getItemLowerOper());
         pTmp.setUpperBound(getItemUpperLimit());
+        pTmp.setUpperRelation(getItemUpperOper());
         return true;
       }
 
     else
       return false;
   }
+
+bool OptimizationItemWidget::initFromOptItem(COptItem& item)
+{
+  if (paramObjectCN == NULL) paramObjectCN = new CCopasiObjectName();
+
+  *paramObjectCN = item.getObjectCN();
+  ObjectName->setText(FROM_UTF8(paramObjectCN->getObjectName()));
+
+  setItemUpperLimit(item.getUpperBound());
+  setItemLowerLimit(item.getLowerBound());
+
+  setItemUpperOper(item.getUpperRelation());
+  setItemLowerOper(item.getLowerRelation());
+
+  return true;
+}

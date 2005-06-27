@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/06/21 20:59:42 $
+   $Date: 2005/06/27 19:42:27 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -273,6 +273,7 @@ bool OptimizationWidget::loadOptimization()
   if (!optimizationMethod) return false;
   // for GA
   parameterTable->setNumRows(optimizationMethod->size());
+
   for (C_INT32 i = 0; i < optimizationMethod->size(); ++i)
     {
       QHeader *rowHeader = parameterTable->verticalHeader();
@@ -283,10 +284,18 @@ bool OptimizationWidget::loadOptimization()
       parameterTable->setItem(i, 0, pItem);
     }
 
-  //QHeader *rowHeader = parameterTable->verticalHeader();
-  //rowHeader->setLabel(i, tr(strname));
-  //pItem = new QTableItem (parameterTable, QTableItem::Always, value);
-  //parameterTable->setItem(i, 0, pItem);
+  // the optimization items
+
+  unsigned C_INT32 imax = optimizationProblem->getOptItemSize();
+
+  for (i = 0; i < imax; ++i)
+    {
+      OptimizationItemWidget * tmp;
+      COptItem& item = optimizationProblem->getOptItem(i);
+      tmp = new OptimizationItemWidget(scrollview);
+      tmp->initFromOptItem(item);
+      scrollview->addWidget(tmp);
+    }
 
   return true;
 }
@@ -296,15 +305,8 @@ bool OptimizationWidget::slotAddItem()
   if (expressionText->text().length() > 0)
     {
       OptimizationItemWidget * tmp;
-      //create item to get the default values
-      //COptProblem* tmpProblem = new COptProblem();
-
       tmp = new OptimizationItemWidget(scrollview);
-      //tmp1->initFromOptimizationItem(tmpItem, CCopasiDataModel::Global->getModel());
-
       scrollview->addWidget(tmp);
-      //if (tmpProblem) delete tmpProblem;
-
       return true;
     }
 
@@ -336,6 +338,13 @@ bool OptimizationWidget::saveOptimization()
     }
 
   const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
+
+  // clearing up the COptItems in COptProblem
+  C_INT32 optItemSize = optimizationProblem->getOptItemSize(), numItem;
+
+  for (numItem = optItemSize - 1; numItem >= 0;--numItem)
+    optimizationProblem->removeOptItem(numItem);
+
   unsigned C_INT32 imax = widgetList.size();
 
   for (i = 0; i < imax; ++i)
@@ -348,6 +357,7 @@ bool OptimizationWidget::saveOptimization()
         }
     }
 
+  optItemSize = optimizationProblem->getOptItemSize();
   //CCopasiDataModel::Global->getModel()->compileIfNecessary();
   // optimizationProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
@@ -423,6 +433,7 @@ std::string OptimizationWidget::getKey()
 
 bool OptimizationWidget::changeMethod(int index)
 {
+  saveOptimization();
   COptTask* optimizationTask =
     dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
   optimizationTask->setMethodType(index + 1);
