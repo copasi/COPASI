@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/24 13:28:38 $
+   $Date: 2005/06/27 15:08:12 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -105,6 +105,8 @@ const MESSAGES Messages[] =
     {MCSBML + 5, "SBML (5): Compartment %s referenced by species %s does not exist."},
     {MCSBML + 6, "SBML (6): Annotations in SBase element of SBML Level 1 files, this is invalid and has been ignored."},
     {MCSBML + 7, "SBML (7): One or more model values have not been set."},
+    {MCSBML + 8, "SBML (8): Expression tree for kinetic of reaction '%s' could not be converted."},
+    {MCSBML + 9, "SBML (9): Could not set function from expression in reaction '%s'."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

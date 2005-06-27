@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/24 13:28:39 $
+   $Date: 2005/06/27 15:08:11 $
    End CVS Header */
 
 #include "copasi.h"
@@ -25,6 +25,7 @@
 #include "function/CNodeK.h"
 #include "function/CKinFunction.h"
 #include "function/CFunctionDB.h"
+#include "function/CEvaluationTree.h"
 
 #include "sbml/SBMLReader.h"
 #include "sbml/SBMLDocument.h"
@@ -175,7 +176,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   num = sbmlModel->getNumReactions();
   for (counter = 0; counter < num; counter++)
     {
-      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, compartmentMap, copasi2sbmlmap);
+      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, copasi2sbmlmap);
     }
   copasiModel->setCompileFlag();
   if (sbmlModel->getNumRules() > 0)
@@ -328,13 +329,11 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<std::string, CCompartment*> compartmentMap, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   /* Check if the name of the reaction is unique. */
   if (sbmlReaction == NULL)
     {
-      //DebugFile << "createCReactionFromReaction get NULL pointer as first argument." << std::endl;
-      //throw StdException("Error. Function createCReactionFromReaction got NULL pointer as first argument.");
       fatalError();
     }
   std::string name = sbmlReaction->getName();
@@ -354,11 +353,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
   /* create a new reaction with the unique name */
   CReaction* copasiReaction = copasiModel->createReaction(name + appendix);
+  copasiReaction->setReversible(sbmlReaction->getReversible());
   copasi2sbmlmap[copasiReaction] = const_cast<Reaction*>(sbmlReaction);
   if (copasiReaction == NULL)
     {
-      //DebugFile << "Could not create Copasi reaction." << std::endl;
-      //throw StdException("Error. Could not create Copasi reaction.");
       fatalError();
     }
   /* Add all substrates to the reaction */
@@ -370,8 +368,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       SpeciesReference* sr = sbmlReaction->getReactant(counter);
       if (sr == NULL)
         {
-          //DebugFile << "Expected SpeciesReference, got NULL pointer." << std::endl;
-          //throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
           fatalError();
         }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
@@ -379,11 +375,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
-          //DebugFile << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
-          //throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
           fatalError();
-
-          //exit(1);
         }
       if (compartment == NULL)
         {
@@ -406,8 +398,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       SpeciesReference* sr = sbmlReaction->getProduct(counter);
       if (sr == NULL)
         {
-          //DebugFile << "Expected SpeciesReference, got NULL pointer." << std::endl;
-          //throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
           fatalError();
         }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
@@ -415,10 +405,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
-          //DebugFile << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
-          //throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
           fatalError();
-          //exit(1);
         }
       if (compartment == NULL)
         {
@@ -441,18 +428,13 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       ModifierSpeciesReference* sr = sbmlReaction->getModifier(counter);
       if (sr == NULL)
         {
-          //DebugFile << "Expected SpeciesReference, got NULL pointer." << std::endl;
-          //throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
           fatalError();
         }
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
-          //DebugFile << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
-          //throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
           fatalError();
-          //exit(1);
         }
       if (compartment == NULL)
         {
@@ -470,7 +452,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
   /* replace substance names with something more meaningfull */
   /* in the newly created CFunction set the types for all parameters and
-  ** either a mapping or a value */
+   * either a mapping or a value 
+   */
   KineticLaw* kLaw = sbmlReaction->getKineticLaw();
   if (kLaw != NULL)
     {
@@ -479,7 +462,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           std::string cU = kLaw->getSubstanceUnits();
           if (cU != "substance")
             {
-              //throw StdException("Error. KineticLaw substance unit other than \"substance\" are not supported.");
               fatalError();
             }
         }
@@ -488,7 +470,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           std::string cU = kLaw->getTimeUnits();
           if (cU != "time")
             {
-              //throw StdException("Error. KineticLaw time unit other than \"time\" are not supported.");
               fatalError();
             }
         }
@@ -514,30 +495,30 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           pCopasiParameter->setValue(pSBMLParameter->getValue());
           copasi2sbmlmap[pCopasiParameter] = pSBMLParameter;
         }
+
       const ASTNode* kLawMath = kLaw->getMath();
       if (kLawMath == NULL)
         {
-          //DebugFile << "Expected ASTNode, got NULL pointer." << std::endl;
-          //throw StdException("Error. Expected ASTNode, got NULL pointer.");
           fatalError();
         }
-      //ConverterASTNode::printASTNode(kLawMath);
       ASTNode* node = new ConverterASTNode(*kLawMath);
 
       node = this->replaceUserDefinedFunctions(node, sbmlModel);
       if (node == NULL)
         {
-          //DebugFile << "Replacing the user defined functions failed." << std::endl;
-          //throw StdException("Error. Replacing the user defined functions failed.");
           fatalError();
         }
-      this->replaceCompartmentNodes((ConverterASTNode*)node, compartmentMap);
-      this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
+
+      // Replacing substance nodes and compartment nodes should be obsolete with
+      // the new expression tree conversion methods
+      //this->replaceCompartmentNodes((ConverterASTNode*)node, compartmentMap);
+      //this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
       this->replacePowerFunctionNodes(node);
       this->replaceLog((ConverterASTNode*)node);
       this->replaceRoot((ConverterASTNode*)node);
-      this->replaceFunnyOperatorCalls((ConverterASTNode*)node);
-      //ConverterASTNode::printASTNode(node);
+      // handling of funny operator cllas should now also be
+      // handled by the new expression tree conversion functions
+      //this->replaceFunnyOperatorCalls((ConverterASTNode*)node);
       /* if it is a single compartment reaction, we have to divide the whole kinetic
       ** equation by the volume of the compartment because copasi expects
       ** kinetic laws that specify concentration/time for single compartment
@@ -581,7 +562,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       tmpNode1->addChild(node);
                       ConverterASTNode* tmpNode2 = new ConverterASTNode();
                       tmpNode2->setValue(compartment->getInitialVolume());
-                      //std::cerr << "Multiplying with volume: " << compartment->getInitialVolume() << std::endl;
                       tmpNode1->addChild(tmpNode2);
                       node = tmpNode1;
                     }
@@ -589,20 +569,37 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
             }
           else
             {
-              //DebugFile << "Error. Could not determine compartment for single compartment reaction." << std::endl;
-              //throw StdException("Error. Could not determine compartment for single compartment reaction.");
               fatalError();
             }
         }
 
       /* Create a new user defined CKinFunction */
+      CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
+      if (pExpressionTreeRoot)
+        {
+          CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
+          pTmpTree->setRoot(pExpressionTreeRoot);
+          if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
+            {
+              // error message
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
+            }
+          // delete the temporary tree and all the nodes
+          delete pTmpTree;
+        }
+      else
+        {
+          // error message
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, copasiReaction->getObjectName().c_str());
+        }
 
+      /*
       std::string functionName = "function_4_" + copasiReaction->getObjectName();
 
       appendix = "";
       counter = 0;
-      /* create a unique function name by adding the unique reaction name to some
-       * prefix */
+      // create a unique function name by adding the unique reaction name to some
+      // prefix 
       while (this->functionDB->findFunction(functionName + appendix) != NULL)
         {
           counter++;
@@ -624,6 +621,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           fatalError();
         }
       cFun->setInfix(SBML_formulaToString(node));
+
       cFun->setType(CFunction::UserDefined);
       cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
 
@@ -636,16 +634,15 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       unsigned int counter;
       for (counter = 0; counter < v.size(); counter++)
         {
-          /* assign a type and a mapping */
+          // assign a type and a mapping 
           const CEvaluationNode * node = v[counter];
           if (CEvaluationNode::type(node->getType()) == CEvaluationNode::VARIABLE)
             {
               std::string nodeName = node->getData();
-              /* if the name start with "substrate_" it is a substrate
-                 if it starts with product_ it is a product
-                 if it start with modifier_ it is a modifier
-                 else it is a parameter
-                 */
+              // if the name start with "substrate_" it is a substrate
+              //   if it starts with product_ it is a product
+              //   if it start with modifier_ it is a modifier
+              //   else it is a parameter
               if (nodeName.find("substrate_") == 0)
                 {
                   cFun->addVariable(nodeName, "SUBSTRATE", CFunctionParameter::FLOAT64);
@@ -661,7 +658,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               else
                 {
                   bool found = false;
-                  /* first check if the parameter is defined in the reaction */
+                  // first check if the parameter is defined in the reaction 
                   unsigned int x;
                   for (x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
                     {
@@ -684,8 +681,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                         }
                       if (parameter->isSetUnits())
                         {
-                          /* !!! */
-                          /* create a warning that the units will be ignored */
+                          // !!! 
+                          // create a warning that the units will be ignored 
                         }
                       if (parameterName == nodeName)
                         {
@@ -694,8 +691,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                           break;
                         }
                     }
-                  /* if the paramter was not defined in the reaction, check if it
-                   * is a global parameter */
+                  // if the paramter was not defined in the reaction, check if it
+                  // is a global parameter 
                   if (!found)
                     {
                       unsigned int x;
@@ -720,8 +717,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                             }
                           if (parameter->isSetUnits())
                             {
-                              /* !!! */
-                              /* create a warning that the units will be ignored */
+                              // create a warning that the units will be ignored 
                             }
                           if (parameterName == nodeName)
                             {
@@ -731,8 +727,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                             }
                         }
                     }
-                  /* If we have not found the parameter yet, we have a problem.
-                   * */
+                  // If we have not found the parameter yet, we have a problem.
                   if (!found)
                     {
                       if (nodeName == "Pi")
@@ -758,20 +753,19 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       static_cast<CKinFunction*>(cFun)->compile();
       copasiReaction->setFunction(cFun);
 
-      /* do the mapping from reaction metabolites to the parameters of the
-       * kinetic function */
+      // do the mapping from reaction metabolites to the parameters of the
+      //  kinetic function 
       for (counter = 0; counter < v.size(); counter++)
         {
-          /* assign a type and a mapping */
+          // assign a type and a mapping 
           const CEvaluationNode * node = v[counter];
           if (CEvaluationNode::type(node->getType()) == CEvaluationNode::VARIABLE)
             {
               std::string nodeName = node->getData();
-              /* if the name start with "substrate_" it is a substrate
-                 if it starts with product_ it is a product
-                 if it start with modifier_ it is a modifier
-                 else it is a parameter
-                 */
+              // if the name start with "substrate_" it is a substrate
+              // if it starts with product_ it is a product
+              // if it start with modifier_ it is a modifier
+              // else it is a parameter
               if (nodeName.find("substrate_") == 0)
                 {
                   std::string speciesKey = nodeName.substr(10);
@@ -934,16 +928,13 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                 }
             }
         }
+      */
     }
   else
     {
       /* if no KineticLaw was defined for the reaction. */
-      // create a fatalError until copasi can handle NULL
-      // functions
       copasiReaction->setFunction(NULL);
-      //fatalError();
     }
-  copasiReaction->setReversible(sbmlReaction->getReversible());
   //DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
   return copasiReaction;
 }

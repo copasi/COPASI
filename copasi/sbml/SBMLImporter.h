@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/16 16:13:45 $
+   $Date: 2005/06/27 15:08:11 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -65,7 +65,7 @@ class SBMLImporter
      * Creates and returns a Copasi CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<std::string, CCompartment*> compartmentMap, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Traverses the brach of the given AST node recursively and prefixes all substrate

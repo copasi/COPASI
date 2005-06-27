@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/24 13:52:06 $
+   $Date: 2005/06/27 15:08:12 $
    End CVS Header */
 
 #include "copasi.h"
@@ -274,6 +274,8 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
       break;
     case AST_CONSTANT_E:
     case AST_CONSTANT_PI:
+    case AST_CONSTANT_FALSE:
+    case AST_CONSTANT_TRUE:
       // create a CEvaluationNodeConstant
       pResultNode = CEvaluationNodeConstant::createNodeFromASTTree(node);
       break;
@@ -313,16 +315,12 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
     case AST_FUNCTION_SINH:
     case AST_FUNCTION_TAN:
     case AST_FUNCTION_TANH:
+    case AST_LOGICAL_NOT:
       // create a CEvaluationNodeFunction
       pResultNode = CEvaluationNodeFunction::createNodeFromASTTree(node);
       break;
 
-    case AST_CONSTANT_FALSE:
-    case AST_CONSTANT_TRUE:
-    case AST_FUNCTION_DELAY:
-    case AST_FUNCTION_PIECEWISE:
     case AST_LOGICAL_AND:
-    case AST_LOGICAL_NOT:
     case AST_LOGICAL_OR:
     case AST_LOGICAL_XOR:
     case AST_RELATIONAL_EQ:
@@ -331,6 +329,12 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
     case AST_RELATIONAL_LEQ:
     case AST_RELATIONAL_LT:
     case AST_RELATIONAL_NEQ:
+      pResultNode = CEvaluationNodeLogical::createNodeFromASTTree(node);
+      break;
+    case AST_FUNCTION_PIECEWISE:
+      pResultNode = CEvaluationNodeChoice::createNodeFromASTTree(node);
+      break;
+    case AST_FUNCTION_DELAY:
       // create an unsupported element error
       Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 1,
                                node.getName());

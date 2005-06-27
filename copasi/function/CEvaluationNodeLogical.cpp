@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/24 15:31:32 $
+   $Author: gauges $ 
+   $Date: 2005/06/27 15:08:12 $
    End CVS Header */
 
 #include "copasi.h"
@@ -44,7 +44,55 @@ CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& no
 {
   SubType subType;
   std::string data = "";
+  switch (node.getType())
+    {
+    case AST_LOGICAL_AND:
+      subType = AND;
+      data = "and";
+      break;
+    case AST_LOGICAL_OR:
+      subType = OR;
+      data = "or";
+      break;
+    case AST_LOGICAL_XOR:
+      subType = XOR;
+      data = "xor";
+      break;
+    case AST_RELATIONAL_EQ:
+      subType = EQ;
+      data = "eq";
+      break;
+    case AST_RELATIONAL_GEQ:
+      subType = GE;
+      data = "ge";
+      break;
+    case AST_RELATIONAL_GT:
+      subType = GT;
+      data = "gt";
+      break;
+    case AST_RELATIONAL_LEQ:
+      subType = LE;
+      data = "le";
+      break;
+    case AST_RELATIONAL_LT:
+      subType = LT;
+      data = "lt";
+      break;
+    case AST_RELATIONAL_NEQ:
+      subType = NE;
+      data = "ne";
+      break;
+    default:
+      subType = INVALID;
+      break;
+    }
   CEvaluationNode* convertedNode = new CEvaluationNodeLogical(subType, data);
+  // convert the two children
+  if (subType != INVALID)
+    {
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getRightChild()));
+    }
 
   return convertedNode;
 }

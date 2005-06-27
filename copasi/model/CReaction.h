@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/24 14:36:03 $
+   $Date: 2005/06/27 15:08:11 $
    End CVS Header */
 
 /**
@@ -314,6 +314,12 @@ class CReaction : public CCopasiContainer
     const CCompartment & getSmallestCompartment() const;
 
     /**
+     * Converts an expression tree into a CFunction object
+     * and sets the mapping for the reaction.
+     */
+    bool setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB);
+
+    /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CReaction & d);
@@ -349,12 +355,6 @@ class CReaction : public CCopasiContainer
      * Initializes the mMetabNameMap vectors to the right size.
      */
     void initializeMetaboliteKeyMap();
-
-    /**
-     * Converts an expression tree into a CFunction object
-     * and sets the mapping for the reaction.
-     */
-    bool setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB);
 
     /**
      * Replaces all object nodes in an expression tree by variable nodes.

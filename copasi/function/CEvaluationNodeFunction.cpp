@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/24 15:41:17 $
+   $Author: gauges $ 
+   $Date: 2005/06/27 15:08:12 $
    End CVS Header */
 
 #include "copasi.h"
@@ -292,6 +292,9 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
     case AST_FUNCTION_TANH:
       subType = TANH;
       break;
+    case AST_LOGICAL_NOT:
+      subType = NOT;
+      break;
     default:
       subType = INVALID;
       break;
@@ -300,9 +303,12 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
   // convert child and add the converted node as child
   // to the current node.
   CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
-  ASTNode* child = node.getLeftChild();
-  CEvaluationNode* convertedChildNode = CEvaluationTree::convertASTNode(*child);
-  convertedNode->addChild(convertedChildNode);
+  if (subType != INVALID)
+    {
+      ASTNode* child = node.getLeftChild();
+      CEvaluationNode* convertedChildNode = CEvaluationTree::convertASTNode(*child);
+      convertedNode->addChild(convertedChildNode);
+    }
   return convertedNode;
 }
 

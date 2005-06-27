@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/23 16:16:24 $
+   $Author: gauges $ 
+   $Date: 2005/06/27 15:08:12 $
    End CVS Header */
 
 #include "copasi.h"
@@ -71,8 +71,24 @@ CEvaluationNode* CEvaluationNodeChoice::createNodeFromASTTree(const ASTNode& nod
 {
   SubType subType;
   std::string data = "";
+  switch (node.getType())
+    {
+    case AST_FUNCTION_PIECEWISE:
+      subType = IF;
+      data = "if";
+      break;
+    default:
+      subType = INVALID;
+      break;
+    }
 
   CEvaluationNodeChoice* convertedNode = new CEvaluationNodeChoice(subType, data);
+  // convert the two children
+  if (subType != INVALID)
+    {
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getRightChild()));
+    }
   return convertedNode;
 }
 

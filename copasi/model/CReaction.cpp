@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.126 $
+   $Revision: 1.127 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/24 14:36:03 $
+   $Date: 2005/06/27 15:08:11 $
    End CVS Header */
 
 // CReaction
@@ -933,9 +933,10 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
             }
 
           pFun = new CKinFunction(functionName + appendix);
+          pFun->setType(CFunction::UserDefined);
           pFun->setRoot(pFunctionTree);
+          pFun->setReversible(this->isReversible() ? TriTrue : TriFalse);
           pFunctionDB->add(pFun, true);
-          this->setFunction(pFun);
           // add the variables
           // and do the mapping
           std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator it = replacementMap.begin();
@@ -944,9 +945,13 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
             {
               CFunctionParameter* pFunPar = it->second.second;
               pFun->addVariable(pFunPar->getObjectName(), pFunPar->getUsage(), pFunPar->getType());
-              // I am not sure if I can do the mapping already
-              // maybe I will have to go over the replacementMap
-              // a second time to do the maping.
+              ++it;
+            }
+          this->setFunction(pFun);
+          it = replacementMap.begin();
+          while (it != endIt)
+            {
+              CFunctionParameter* pFunPar = it->second.second;
               this->setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
               delete pFunPar;
               ++it;
