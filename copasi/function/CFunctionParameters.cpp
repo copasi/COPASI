@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 19:40:09 $
+   $Date: 2005/06/27 14:53:35 $
    End CVS Header */
 
 /**
@@ -72,18 +72,13 @@ bool CFunctionParameters::add(const std::string & name,
                               const std::string & usage)
 {
   unsigned C_INT32 Index = mParameters.getIndex(name);
-  if (Index != C_INVALID_INDEX)
-    {
-      if (type != mParameters[Index]->getType()) return false;
 
-      mParameters[Index]->setUsage(usage);
-    }
-  else
-    {
-      CFunctionParameter *parameter
-      = new CFunctionParameter(name, type, usage);
-      mParameters.add(parameter, true);
-    }
+  if (Index != C_INVALID_INDEX)
+    return false;
+
+  CFunctionParameter *parameter =
+    new CFunctionParameter(name, type, usage);
+  mParameters.add(parameter, true);
 
   updateUsageRanges();
   return true;
