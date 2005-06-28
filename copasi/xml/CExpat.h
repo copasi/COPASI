@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/24 20:05:52 $
+   $Date: 2005/06/28 14:26:20 $
    End CVS Header */
 
 /**
@@ -723,7 +723,7 @@ class CExpatTemplate
       else if (!strcmp(attribute, "-INF"))
         return - std::numeric_limits<C_FLOAT64>::infinity();
       else
-        return std::numeric_limits<C_FLOAT64>::signaling_NaN();
+        return std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 
   protected:
