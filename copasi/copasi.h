@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/28 16:13:41 $
+   $Date: 2005/06/28 14:39:51 $
    End CVS Header */
 
 // copasi.h
@@ -67,8 +67,9 @@
 # define vsnprintf _vsnprintf // they just have a different name for this guy
 # define snprintf  _snprintf  // they just have a different name for this guy
 # define strcasecmp _stricmp  // they just have a different name for this guy
-# define min _cpp_min
-# define max _cpp_max
+# define isnan _isnan         // they just have a different name for this guy
+# define min _cpp_min         // they just have a different name for this guy
+# define max _cpp_max         // they just have a different name for this guy
 #else
 # define C_INT64 long long int
 # ifndef LLONG_MAX
