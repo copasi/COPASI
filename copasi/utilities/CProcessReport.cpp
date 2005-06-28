@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 19:47:15 $
+   $Date: 2005/06/28 20:03:32 $
    End CVS Header */
 
 #include "copasi.h"
@@ -14,10 +14,11 @@
 
 CProcessReportItem::CProcessReportItem():
     CCopasiParameter("NoName", CCopasiParameter::DOUBLE),
-    mEndValue()
+    mEndValue(),
+    mHasEndValue(false)
 {
   mEndValue = mValue;
-  mValue.pVOID = NULL;
+  mValue.pDOUBLE = NULL;
 }
 
 CProcessReportItem::CProcessReportItem(const std::string & name,
@@ -34,7 +35,8 @@ CProcessReportItem::CProcessReportItem(const std::string & name,
 
 CProcessReportItem::CProcessReportItem(const CProcessReportItem & src):
     CCopasiParameter(src.getObjectName(), src.getType(), src.mEndValue.pVOID, NULL, "ProcessReportItem"),
-    mEndValue()
+    mEndValue(),
+    mHasEndValue(src.mHasEndValue)
 {
   mEndValue = mValue;
   mValue = src.mValue;
