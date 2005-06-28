@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/28 16:03:01 $
+   $Author: shoops $ 
+   $Date: 2005/06/28 16:34:51 $
    End CVS Header */
 
 /**
@@ -16,7 +16,12 @@
 
 #include <fstream>
 #include <limits>
-#include <float.h>
+
+#ifdef SunOS
+# include <ieeefp.h>
+#else
+# include <float.h>
+#endif
 
 #include "copasi.h"
 #include "CCopasiXMLInterface.h"
@@ -91,7 +96,7 @@ void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
       xml << "&quot;";
       break;
 
-    case '\t':         // Without this <tab> is converted to <space>
+    case '\t':          // Without this <tab> is converted to <space>
       xml << "&#x09;";
       break;
 
@@ -163,12 +168,12 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
   //if (isnan(dbl)) does not work on current gcc in Mac OS X
   if (dbl != dbl)
     value << "NaN";
-  else if (dbl == std::numeric_limits<C_FLOAT64>::infinity())
-    value << "INF";
-  else if (-dbl == std::numeric_limits<C_FLOAT64>::infinity())
-    value << "-INF";
-  else
+  else if (finite(dbl))
     value << dbl;
+  else if (dbl > 0.0)
+    value << "INF";
+  else if (dbl < 0.0)
+    value << "-INF";
 
   return value.str();
 }
