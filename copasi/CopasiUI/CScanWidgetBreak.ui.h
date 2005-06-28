@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetBreak.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:33:59 $
+   $Date: 2005/06/28 20:07:42 $
    End CVS Header */
 
 #include <qvalidator.h>
@@ -19,18 +19,17 @@ void CScanWidgetBreak::init()
 #include "report/CCopasiObjectName.h"
 bool CScanWidgetBreak::initFromScanItem(CCopasiParameterGroup * pg)
 {
-  void* tmp;
+  unsigned C_INT32 * tmp;
 
-  if (!(tmp = pg->getValue("Type").pVOID)) return false;
-  CScanProblem::Type type = *(CScanProblem::Type*)tmp;
-  if (type != CScanProblem::SCAN_BREAK)
+  if (!(tmp = pg->getValue("Type").pUINT)) return false;
+  if (* (CScanProblem::Type *) tmp != CScanProblem::SCAN_BREAK)
     return false;
 
-  if (!(tmp = pg->getValue("Report break").pVOID)) return false;
-  comboBoxReport->setCurrentItem(*(unsigned C_INT32*)tmp);
+  if (!(tmp = pg->getValue("Report break").pUINT)) return false;
+  comboBoxReport->setCurrentItem(*tmp);
 
-  if (!(tmp = pg->getValue("Plot break").pVOID)) return false;
-  comboBoxPlot->setCurrentItem(*(unsigned C_INT32*)tmp);
+  if (!(tmp = pg->getValue("Plot break").pUINT)) return false;
+  comboBoxPlot->setCurrentItem(*tmp);
 
   return true;
 }
