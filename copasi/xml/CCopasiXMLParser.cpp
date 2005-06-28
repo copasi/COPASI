@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:36:47 $
+   $Date: 2005/06/28 14:31:48 $
    End CVS Header */
 
 /**
@@ -2054,7 +2054,7 @@ void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
       if (!pMetabolite) fatalError();
 
       mCommon.pReaction->addSubstrate(pMetabolite->getKey(),
-                                      atof(Stoichiometry));
+                                      mParser.toDBL(Stoichiometry));
       break;
 
     default:
@@ -2192,7 +2192,7 @@ void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
       if (!pMetabolite) fatalError();
 
       mCommon.pReaction->addProduct(pMetabolite->getKey(),
-                                    atof(Stoichiometry));
+                                    mParser.toDBL(Stoichiometry));
       break;
 
     default:
@@ -2330,7 +2330,7 @@ void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
       if (!pMetabolite) fatalError();
 
       mCommon.pReaction->addModifier(pMetabolite->getKey(),
-                                     atof(Stoichiometry));
+                                     mParser.toDBL(Stoichiometry));
       break;
 
     default:
@@ -2469,7 +2469,7 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
       mCommon.pReaction->
       getParameters().addParameter(Name,
                                    CCopasiParameter::DOUBLE,
-                                   (C_FLOAT64) atof(Value));
+                                   mParser.toDBL(Value));
 
       mCommon.KeyMap.addFix(Key,
                             mCommon.pReaction->getParameters().getParameter(Name));
@@ -3030,11 +3030,13 @@ void CCopasiXMLParser::InitialStateElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 {
-  //std::istringstream Values;
+  std::istringstream Values;
+  std::istringstream::pos_type pos;
+  std::string StringValue;
   //const char* s;
   std::vector< std::string >::iterator it;
   std::vector< std::string >::iterator end;
-  //double Value;
+  double Value;
   CModel * pModel;
   CModelEntity * pME;
 
@@ -3043,13 +3045,17 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
     case InitialState:
       if (strcmp(pszName, "InitialState")) fatalError();
 
-      /*Values.str(mParser.getCharacterData("\x0a\x0d\t ", " "));
+      Values.str(mParser.getCharacterData("\x0a\x0d\t ", " "));
 
       it = mCommon.StateVariableList.begin();
       end = mCommon.StateVariableList.end();
 
-      for (Values >> Value; it != end && !Values.fail(); ++it, Values >> Value)
+      for (Values >> StringValue; it != end; ++it, Values >> StringValue)
         {
+          if (Values.fail()) break;
+
+          Value = mParser.toDBL(StringValue.c_str());
+
           //handles compartments, metabs, and model values
           pME = dynamic_cast< CModelEntity* >(GlobalKeys.get(*it));
           if (pME)
@@ -3069,44 +3075,8 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
           fatalError();
         }
 
-      if (it != end || !Values.fail() || !Values.eof()) fatalError();*/
-
-      {
-        std::string Data = mParser.getCharacterData("\x0a\x0d\t ", " ");
-        C_FLOAT64 d;
-
-        const char * ptr = Data.c_str();
-        char * endptr = NULL;
-        it = mCommon.StateVariableList.begin();
-        end = mCommon.StateVariableList.end();
-
-        for (; it != end; ++it)
-          {
-            d = strtod(ptr, &endptr);
-            if (ptr == endptr) break;
-            ptr = endptr;
-
-            //handles compartments, metabs, and model values
-            pME = dynamic_cast< CModelEntity* >(GlobalKeys.get(*it));
-            if (pME)
-              {
-                pME->setInitialValue(d);
-                pME->setValue(d);
-                continue;
-              }
-
-            pModel = dynamic_cast< CModel* >(GlobalKeys.get(*it));
-            if (pModel)
-              {
-                pModel->setTime(d);
-                continue;
-              }
-
-            fatalError();
-          }
-
-        if (it != end) fatalError();
-      }
+      if (it != end || !Values.fail() || !Values.eof())
+        fatalError();
 
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
@@ -3374,7 +3344,7 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
         }
       else
         {
-          min = atof(sMin);
+          min = mParser.toDBL(sMin);
           mCommon.pCurrentChannelSpec->min = min;
         }
       sMax = mParser.getAttributeValue("max", papszAttrs, false);
@@ -3384,7 +3354,7 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
         }
       else
         {
-          max = atof(sMax);
+          max = mParser.toDBL(sMax);
           mCommon.pCurrentChannelSpec->max = max;
         }
       return;
@@ -4430,13 +4400,13 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
       if (sType == "float")
         {
           type = CCopasiParameter::DOUBLE;
-          double d = atof(sValue.c_str());
+          double d = mParser.toDBL(sValue.c_str());
           pValue = &d;
         }
       else if (sType == "unsignedFloat")
         {
           type = CCopasiParameter::UDOUBLE;
-          d = atof(sValue.c_str());
+          d = mParser.toDBL(sValue.c_str());
           pValue = &d;
         }
       else if (sType == "integer")
@@ -5672,11 +5642,11 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
       objectType = mParser.getAttributeValue("objectType", papszAttrs);
       ObjectType = (CSlider::Type) mParser.toEnum(objectType, CSlider::TypeName);
       tmp = mParser.getAttributeValue("objectValue", papszAttrs);
-      ObjectValue = atof(tmp);
+      ObjectValue = mParser.toDBL(tmp);
       tmp = mParser.getAttributeValue("minValue", papszAttrs);
-      MinValue = atof(tmp);
+      MinValue = mParser.toDBL(tmp);
       tmp = mParser.getAttributeValue("maxValue", papszAttrs);
-      MaxValue = atof(tmp);
+      MaxValue = mParser.toDBL(tmp);
       tmp = mParser.getAttributeValue("tickNumber", papszAttrs, "1000");
       TickNumber = atoi(tmp);
       tmp = mParser.getAttributeValue("tickFactor", papszAttrs, "100");
