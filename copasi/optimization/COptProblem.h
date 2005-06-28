@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/22 21:02:07 $
+   $Author: ssahle $ 
+   $Date: 2005/06/28 08:29:22 $
    End CVS Header */
 
 /**
@@ -200,7 +200,7 @@ class COptProblem : public CCopasiProblem
      * @param const unsigned C_INT32 & index
      * @return COptItem optItem
      */
-    COptItem getOptItem(const unsigned C_INT32 & index);
+    COptItem & getOptItem(const unsigned C_INT32 & index);
 
     /**
      * Retrieve the number of optimization items.

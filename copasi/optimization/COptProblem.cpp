@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/22 21:05:48 $
+   $Author: ssahle $ 
+   $Date: 2005/06/28 08:29:22 $
    End CVS Header */
 
 /**
@@ -210,7 +210,7 @@ void COptProblem::setProblemType(ProblemType type)
     mpTrajectory = new CTrajectoryTask(/*this*/NULL);
 }
 
-COptItem COptProblem::getOptItem(const unsigned C_INT32 & index)
+COptItem & COptProblem::getOptItem(const unsigned C_INT32 & index)
 {
   assert (index < mOptItemList.size());
   return *mOptItemList[index];
