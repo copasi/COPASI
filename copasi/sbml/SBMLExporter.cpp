@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 17:09:14 $
+   $Date: 2005/06/28 17:15:14 $
    End CVS Header */
 
 #include <math.h>
@@ -470,7 +470,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
           parameter1->setId(parameterName1.c_str());
           double value = copasiReaction->getParameterValue(parameterName1);
           // if the value is NaN, leave the parameter value unset.
-          if (isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
+          if (!isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
             // seems to be a Mac OS X bug
             {
               parameter1->setValue(value);
