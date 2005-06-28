@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/23 16:16:24 $
+   $Date: 2005/06/28 16:46:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -77,7 +77,7 @@ CEvaluationNode::Type CEvaluationNode::type(const Type & type)
 CEvaluationNode::CEvaluationNode():
     CCopasiNode<Data>(),
     mType(CEvaluationNode::INVALID),
-    mValue(std::numeric_limits<C_FLOAT64>::signaling_NaN()),
+    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mData(""),
     mPrecedence(PRECEDENCE_DEFAULT)
 {}
@@ -86,7 +86,7 @@ CEvaluationNode::CEvaluationNode(const Type & type,
                                  const Data & data):
     CCopasiNode<Data>(),
     mType(type),
-    mValue(std::numeric_limits<C_FLOAT64>::signaling_NaN()),
+    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mData(data),
     mPrecedence(PRECEDENCE_DEFAULT)
 {assert(mData != "");}

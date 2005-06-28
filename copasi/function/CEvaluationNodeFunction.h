@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/24 15:41:17 $
+   $Date: 2005/06/28 16:46:17 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -164,7 +164,7 @@ class CEvaluationNodeFunction : public CEvaluationNode
     {
       if (value < 0.0 ||
           value != ceil(value))
-        return std::numeric_limits<C_FLOAT64>::signaling_NaN();
+        return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       if (value > 170)
         return std::numeric_limits<C_FLOAT64>::infinity();

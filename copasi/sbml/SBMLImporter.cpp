@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/28 15:42:43 $
+   $Author: shoops $ 
+   $Date: 2005/06/28 16:46:16 $
    End CVS Header */
 
 #include "copasi.h"
@@ -235,7 +235,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     {
       // Set value to NaN and create a warning if it is the first time
       // this happend
-      value = std::numeric_limits<C_FLOAT64>::signaling_NaN();
+      value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       if (!this->mIncompleteModel)
         {
           this->mIncompleteModel = true;
@@ -312,7 +312,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
   else
     {
-      copasiMetabolite->setInitialConcentration(std::numeric_limits<C_FLOAT64>::signaling_NaN());      // CHECK UNITS !!!
+      copasiMetabolite->setInitialConcentration(std::numeric_limits<C_FLOAT64>::quiet_NaN());      // CHECK UNITS !!!
       if (!this->mIncompleteModel)
         {
           this->mIncompleteModel = true;
@@ -841,7 +841,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                             }
                           else
                             {
-                              copasiReaction->setParameterValue(nodeName, std::numeric_limits<C_FLOAT64>::signaling_NaN());
+                              copasiReaction->setParameterValue(nodeName, std::numeric_limits<C_FLOAT64>::quiet_NaN());
                             }
                           break;
                         }
@@ -1876,7 +1876,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     {
       // Set value to NaN and create a warning if it is the first time
       // this happend
-      value = std::numeric_limits<C_FLOAT64>::signaling_NaN();
+      value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       if (!this->mIncompleteModel)
         {
           this->mIncompleteModel = true;

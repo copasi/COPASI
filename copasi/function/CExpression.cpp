@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/22 20:59:43 $
+   $Date: 2005/06/28 16:46:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -41,7 +41,7 @@ C_FLOAT64 CExpression::calcValue()
     }
   catch (...)
     {
-      return std::numeric_limits<C_FLOAT64>::signaling_NaN();
+      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 }
 

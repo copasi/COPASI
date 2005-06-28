@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 16:34:51 $
+   $Date: 2005/06/28 16:46:17 $
    End CVS Header */
 
 /**
@@ -19,6 +19,7 @@
 
 #include <assert.h>
 #include <expat.h>
+#include <float.h>
 
 #include "utilities/CCopasiMessage.h"
 
@@ -710,7 +711,7 @@ class CExpatTemplate
     static double toDBL(const char * attribute)
     {
       if (!attribute)
-        return std::numeric_limits<C_FLOAT64>::signaling_NaN();
+        return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       char * Tail;
       double Value = strtod(attribute, & Tail);

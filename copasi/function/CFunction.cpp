@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 16:34:12 $
+   $Date: 2005/06/28 16:46:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -83,7 +83,7 @@ C_FLOAT64 CFunction::calcValue(const CCallParameters<C_FLOAT64> & callParameters
     }
   catch (...)
     {
-      return std::numeric_limits<C_FLOAT64>::signaling_NaN();
+      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 }
 
