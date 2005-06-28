@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:36:39 $
+   $Date: 2005/06/28 19:47:15 $
    End CVS Header */
 
 #ifndef COPASI_CProcessReport
@@ -52,6 +52,12 @@ class CProcessReportItem: public CCopasiParameter
      * @return const CCopasiParameter::Value & endValue
      */
     const CCopasiParameter::Value & getEndValue() const;
+
+    /**
+     * Retrieve whether the item has an end value.
+     * @return const bool & hasEndValue
+     */
+    const bool & hasEndValue() const;
 
     /**
      * Retrieve the private end value of the parameter.

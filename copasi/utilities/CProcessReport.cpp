@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:36:38 $
+   $Date: 2005/06/28 19:47:15 $
    End CVS Header */
 
 #include "copasi.h"
@@ -44,6 +44,8 @@ CProcessReportItem::~CProcessReportItem()
 {
   mValue = mEndValue;
 }
+
+const bool & CProcessReportItem::hasEndValue() const {return mHasEndValue;}
 
 const CCopasiParameter::Value & CProcessReportItem::getEndValue() const
   {return mEndValue;}
