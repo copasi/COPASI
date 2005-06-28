@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQProgressItemBar.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:33:59 $
+   $Date: 2005/06/28 19:50:14 $
    End CVS Header */
 
 #include "qtUtilities.h"
@@ -12,7 +12,6 @@ bool CQProgressItemBar::initFromProcessReportItem(CProcessReportItem * pItem)
 {
   mpItem = pItem;
   mValue = mpItem->getValue();
-  mStart.pVOID = NULL;
   mEnd = mpItem->getEndValue();
 
   mItemName->setText(FROM_UTF8(mpItem->getObjectName()));
@@ -20,6 +19,7 @@ bool CQProgressItemBar::initFromProcessReportItem(CProcessReportItem * pItem)
 
   mLastSet = -1; // indcates was never set;
 
+  mStart.pDOUBLE = NULL; // needed so that reset() does allocation
   return reset();
 }
 
@@ -27,7 +27,11 @@ bool CQProgressItemBar::process()
 {
   (this->*mpSetValue)();
 
-  if (mCurrentValue != mLastSet) mProgressBar->setProgress(mCurrentValue);
+  if (mCurrentValue != mLastSet)
+    {
+      mProgressBar->setProgress(mCurrentValue);
+      mLastSet = mCurrentValue;
+    }
 
   return true;
 }
