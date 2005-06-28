@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/24 20:07:55 $
+   $Date: 2005/06/28 14:27:14 $
    End CVS Header */
 
 /**
@@ -16,6 +16,7 @@
 
 #include <fstream>
 #include <limits>
+#include <float.h>
 
 #include "copasi.h"
 #include "CCopasiXMLInterface.h"
@@ -90,7 +91,7 @@ void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
       xml << "&quot;";
       break;
 
-    case '\t':      // Without this <tab> is converted to <space>
+    case '\t':       // Without this <tab> is converted to <space>
       xml << "&#x09;";
       break;
 
@@ -159,7 +160,7 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 {
   std::ostringstream value;
 
-  if (dbl != dbl) // NaN != NaN
+  if (_isnan(dbl))
     value << "NaN";
   else if (dbl == std::numeric_limits<C_FLOAT64>::infinity())
     value << "INF";
