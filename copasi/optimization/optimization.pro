@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.12 $ $Author: chlee $ $Date: 2005/06/14 18:14:51 $  
+# $Revision: 1.13 $ $Author: anuragr $ $Date: 2005/06/28 20:32:56 $  
 ######################################################################
 
 LIB = optimization
@@ -15,6 +15,7 @@ HEADERS += COptMethod.h \
 #           COptMethodSA.h \
            COptProblem.h \
            CRandomSearch.h \
+		   COptMethodGASR.h \
 #           CRandomSearchMaster.h \
            CRealProblem.h \
            COptFunction.h \
@@ -28,6 +29,7 @@ SOURCES += COptMethod.cpp \
 #           COptMethodSA.cpp \
            COptProblem.cpp \
            CRandomSearch.cpp \
+		   COptMethodGASR.cpp \
 #           CRandomSearchMaster.cpp \
            CRealProblem.cpp \
            COptFunction.cpp \

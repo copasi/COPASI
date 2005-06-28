@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/06/28 19:26:05 $
+   $Date: 2005/06/28 20:32:43 $
    End CVS Header */
 
 /****************************************************************************
@@ -106,8 +106,6 @@ class OptimizationWidget : public CopasiWidget
     QPushButton* runButton;
     QPushButton* cancelButton;
     QPushButton* selectParameterButton;
-    //QLabel* expressionNameLabel;
-    //QLineEdit* expressionName;
     QLabel* expressionEditlabel;
     QLineEdit* expressionText;
     QTable* parameterTable;
@@ -125,7 +123,6 @@ class OptimizationWidget : public CopasiWidget
     virtual void slotTimechecked();
     virtual void slotSteadystatechecked();
     virtual void slotConfirm();
-    //virtual void parameterValueChanged();
 
   protected slots:
     virtual void languageChange();

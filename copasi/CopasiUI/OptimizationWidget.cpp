@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/06/28 19:28:10 $
+   $Date: 2005/06/28 20:32:49 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -134,6 +134,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   methodCombo->insertItem("Genetic Algorithm");
   methodCombo->insertItem("Evolutionary Program2");
   methodCombo->insertItem("Hybrid GA/SA");
+  methodCombo->insertItem("Genetic Algorithm Stoch. Rank");
 
   // signals and slots connections
 
