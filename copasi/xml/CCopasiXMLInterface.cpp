@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 16:34:51 $
+   $Date: 2005/06/28 16:46:49 $
    End CVS Header */
 
 /**
@@ -96,7 +96,7 @@ void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
       xml << "&quot;";
       break;
 
-    case '\t':          // Without this <tab> is converted to <space>
+    case '\t':           // Without this <tab> is converted to <space>
       xml << "&#x09;";
       break;
 
@@ -165,8 +165,7 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 {
   std::ostringstream value;
 
-  //if (isnan(dbl)) does not work on current gcc in Mac OS X
-  if (dbl != dbl)
+  if (isnan(dbl))
     value << "NaN";
   else if (finite(dbl))
     value << dbl;
