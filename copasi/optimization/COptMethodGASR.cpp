@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2005/06/24 19:09:47 $
+   $Author: anuragr $ 
+   $Date: 2005/06/28 20:33:58 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -380,7 +380,7 @@ C_FLOAT64 COptMethodGASR::Phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   for (int i = 0; i < mVariableSize; i++)  /******* here double check to see if indv array parameter is same as number of parameters ****
-                Clarify if should go through additional for loop for number of parameters */
+                    Clarify if should go through additional for loop for number of parameters */
     {
       C_FLOAT64 phiCalc;
       COptItem & OptItem = *(*mpOptItem)[i];
@@ -524,11 +524,13 @@ bool COptMethodGASR::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mGenerations = * (unsigned C_INT32 *) getValue("Number of Generations");
-  mPopulationSize = * (unsigned C_INT32 *) getValue("Population Size");
+  //mGenerations = * (unsigned C_INT32 *) getValue("Number of Generations");
+  //mPopulationSize = * (unsigned C_INT32 *) getValue("Population Size");
+  mGenerations = * getValue("Number of Generations").pUINT;
+  mPopulationSize = * getValue("Population Size").pUINT;
   mpRandom =
-    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator"),
-                             * (unsigned C_INT32 *) getValue("Seed"));
+    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
+                             * (unsigned C_INT32 *) getValue("Seed").pUINT);
 
   mVariableSize = mpOptItem->size();
 
@@ -555,7 +557,7 @@ bool COptMethodGASR::initialize()
   // initialise the variance for mutations
   mMutationVarians = 0.1;
 
-  C_FLOAT64 p = *(C_FLOAT64*) getValue("Pf");
+  C_FLOAT64 p = *(C_FLOAT64*) getValue("Pf").pDOUBLE;
   if ((p > 0.4) && (p < 0.5))
     Pf = p;
   else Pf = 0.475;
