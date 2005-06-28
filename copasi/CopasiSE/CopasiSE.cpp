@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/21 13:15:26 $
+   $Author: ssahle $ 
+   $Date: 2005/06/28 13:14:27 $
    End CVS Header */
 
 // Main
@@ -116,6 +116,7 @@ int main(int argc, char *argv[])
       Expression.setInfix("EXPONENTIALE+b*c");
       Expression.setInfix("4.0*\"PI+b");
       Expression.setInfix("2*(3+b)");
+#endif
 
       const COptions::nonOptionType & Files = COptions::getNonOptions();
 
@@ -180,7 +181,7 @@ int main(int argc, char *argv[])
           //      CCopasiDataModel::Global->saveModel("");
         }
 
-#endif // XXXX
+      //#endif // XXXX
     }
 
   catch (CCopasiException Exception)
