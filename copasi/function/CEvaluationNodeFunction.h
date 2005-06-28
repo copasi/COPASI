@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 16:46:17 $
+   $Date: 2005/06/28 18:56:05 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -13,6 +13,11 @@
 
 #include "mathematics.h"
 #include "utilities/CCopasiMessage.h"
+
+// warning C4056: overflow in floating-point constant arithmetic
+#ifdef WIN32
+# pragma warning (disable: 4056)
+#endif
 
 /**
  * This is the class for nodes presenting opertors used in an evaluation trees.
@@ -167,7 +172,7 @@ class CEvaluationNodeFunction : public CEvaluationNode
         return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       if (value > 170)
-        return std::numeric_limits<C_FLOAT64>::infinity();
+        return DBL_MAX * 2;
 
       if (value == 0.0)
         return 0.0;
@@ -195,5 +200,9 @@ class CEvaluationNodeFunction : public CEvaluationNode
 
     CEvaluationNode * mpLeft;
   };
+
+#ifdef WIN32
+# pragma warning (default: 4056)
+#endif
 
 #endif // COPASI_CEvaluationNodeFunction
