@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/28 08:25:30 $
+   $Date: 2005/06/28 08:30:47 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -292,7 +292,7 @@ bool OptimizationWidget::loadOptimization()
   for (i = 0; i < imax; ++i)
     {
       OptimizationItemWidget * tmp;
-      COptItem& item = optimizationProblem->getOptItem(i);
+      const COptItem& item = optimizationProblem->getOptItem(i);
       tmp = new OptimizationItemWidget(scrollview);
       tmp->initFromOptItem(item);
       scrollview->addWidget(tmp);

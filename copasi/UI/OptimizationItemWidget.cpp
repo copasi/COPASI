@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/27 19:42:12 $
+   $Author: ssahle $ 
+   $Date: 2005/06/28 08:30:47 $
    End CVS Header */
 
 /********************************************************
@@ -333,7 +333,7 @@ bool OptimizationItemWidget::saveToOptItem(COptProblem * pg) const
       return false;
   }
 
-bool OptimizationItemWidget::initFromOptItem(COptItem& item)
+bool OptimizationItemWidget::initFromOptItem(const COptItem& item)
 {
   if (paramObjectCN == NULL) paramObjectCN = new CCopasiObjectName();
 

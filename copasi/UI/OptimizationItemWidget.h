@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/27 19:42:21 $
+   $Author: ssahle $ 
+   $Date: 2005/06/28 08:30:47 $
    End CVS Header */
 
 /********************************************************
@@ -75,7 +75,7 @@ class OptimizationItemWidget : public QWidget
     void setCopasiObjectPtr (CCopasiObject* sourceObject);
 
     virtual bool saveToOptItem(COptProblem * pg) const;
-    virtual bool initFromOptItem(COptItem&);
+    virtual bool initFromOptItem(const COptItem&);
 
   private:
 
