@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/27 19:42:27 $
+   $Author: ssahle $ 
+   $Date: 2005/06/28 08:25:30 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -274,7 +274,8 @@ bool OptimizationWidget::loadOptimization()
   // for GA
   parameterTable->setNumRows(optimizationMethod->size());
 
-  for (C_INT32 i = 0; i < optimizationMethod->size(); ++i)
+  unsigned C_INT32 i;
+  for (i = 0; i < optimizationMethod->size(); ++i)
     {
       QHeader *rowHeader = parameterTable->verticalHeader();
       rowHeader->setLabel(i, FROM_UTF8(optimizationMethod->getName(i)));
