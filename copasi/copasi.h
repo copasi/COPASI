@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 14:39:51 $
+   $Date: 2005/06/28 16:10:20 $
    End CVS Header */
 
 // copasi.h
@@ -81,6 +81,10 @@
 # define C_FLOAT64 double
 # define C_FLOAT32 float
 #endif
+#endif
+
+#ifdef Darwin
+# define isnan(__x) ((__x == __x) != true)
 #endif
 
 #if (defined __GNUC__ && __GNUC__ < 3)
