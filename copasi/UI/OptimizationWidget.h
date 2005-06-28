@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/20 15:57:00 $
+   $Author: anuragr $ 
+   $Date: 2005/06/28 19:26:05 $
    End CVS Header */
 
 /****************************************************************************
@@ -106,8 +106,8 @@ class OptimizationWidget : public CopasiWidget
     QPushButton* runButton;
     QPushButton* cancelButton;
     QPushButton* selectParameterButton;
-    QLabel* expressionNameLabel;
-    QLineEdit* expressionName;
+    //QLabel* expressionNameLabel;
+    //QLineEdit* expressionName;
     QLabel* expressionEditlabel;
     QLineEdit* expressionText;
     QTable* parameterTable;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/28 08:30:47 $
+   $Author: anuragr $ 
+   $Date: 2005/06/28 19:28:10 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -63,13 +63,13 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   paramsGroupBox->setGeometry(QRect(11, 270, 558, 228));
 
   typeGroupBox = new QGroupBox(this, "typeGroupBox");
-  typeGroupBox->setGeometry(QRect(330, 100, 230, 120));
+  typeGroupBox->setGeometry(QRect(330, 100 - 40, 230, 120 + 40));
 
   timeCheck = new QCheckBox(typeGroupBox, "timeCheck");
-  timeCheck->setGeometry(QRect(30, 50, 84, 19));
+  timeCheck->setGeometry(QRect(30, 50 + 20, 84, 19));
 
   steadystateCheck = new QCheckBox(typeGroupBox, "steadystateCheck");
-  steadystateCheck->setGeometry(QRect(30, 20, 90, 20));
+  steadystateCheck->setGeometry(QRect(30, 20 + 20, 90, 20));
 
   AddTaskButton = new QPushButton(this, "AddTaskButton");
   AddTaskButton->setGeometry(QRect(490, 230, 70, 30));
@@ -77,13 +77,10 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   AddTaskButton->setOn(FALSE);
 
   methodGroupBox = new QGroupBox(this, "methodGroupBox");
-  methodGroupBox->setGeometry(QRect(10, 100, 300, 160));
-
-  expressionNameLabel_2 = new QLabel(methodGroupBox, "expressionNameLabel_2");
-  expressionNameLabel_2->setGeometry(QRect(10, 30, 50, 20));
+  methodGroupBox->setGeometry(QRect(10, 100 - 40, 300, 160 + 40));
 
   methodCombo = new QComboBox(FALSE, methodGroupBox, "methodCombo");
-  methodCombo->setGeometry(QRect(50, 30, 220, 20));
+  methodCombo->setGeometry(QRect(30, 30, 220, 20));
 
   confirmButton = new QPushButton(this, "confirmButton");
   confirmButton->setGeometry(QRect(12, 504, 181, 24));
@@ -95,21 +92,13 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   cancelButton->setGeometry(QRect(387, 504, 181, 24));
 
   selectParameterButton = new QPushButton(this, "selectParameterButton");
-  selectParameterButton->setGeometry(QRect(489, 71, 80, 24));
-
-  expressionNameLabel = new QLabel(this, "expressionNameLabel");
-  expressionNameLabel->setGeometry(QRect(11, 33, 51, 20));
-
-  expressionName = new QLineEdit(this, "expressionName");
-  expressionName->setGeometry(QRect(68, 33, 415, 20));
-  expressionName->setFrameShape(QLineEdit::LineEditPanel);
-  expressionName->setFrameShadow(QLineEdit::Sunken);
+  selectParameterButton->setGeometry(QRect(489, 71 - 55, 50, 24));
 
   expressionEditlabel = new QLabel(this, "expressionEditlabel");
-  expressionEditlabel->setGeometry(QRect(11, 71, 51, 24));
+  expressionEditlabel->setGeometry(QRect(11, 71 - 55, 51, 24));
 
   expressionText = new QLineEdit(this, "expressionText");
-  expressionText->setGeometry(QRect(68, 73, 415, 20));
+  expressionText->setGeometry(QRect(68, 73 - 55, 415, 20));
   expressionText->setFrameShape(QLineEdit::LineEditPanel);
   expressionText->setFrameShadow(QLineEdit::Sunken);
   languageChange();
@@ -121,12 +110,10 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
   parameterTable->setColumnStretchable(0, true);
-  parameterTable->setGeometry(QRect(50, 60, 220, 90));
-
-  // signals and slots connections
+  parameterTable->setGeometry(QRect(30, 60, 220, 90 + 40));
 
   // tab order
-  setTabOrder(expressionName, expressionText);
+
   setTabOrder(expressionText, steadystateCheck);
   setTabOrder(steadystateCheck, timeCheck);
   setTabOrder(timeCheck, parameterTable);
@@ -148,14 +135,15 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   methodCombo->insertItem("Evolutionary Program2");
   methodCombo->insertItem("Hybrid GA/SA");
 
-  //connect the runButton with the respective slot
+  // signals and slots connections
+
+  // * connect the runButton with the respective slot
   connect(runButton, SIGNAL(clicked()), this, SLOT(runOptimizationTask()));
-  // connect the combo box with the respective slot
+  // * connect the combo box with the respective slot
   connect(methodCombo, SIGNAL(activated(int)), this, SLOT(changeMethod(int)));
 
   connect(timeCheck, SIGNAL(clicked()), this, SLOT(slotTimechecked()));
   connect(steadystateCheck, SIGNAL(clicked()), this, SLOT(slotSteadystatechecked()));
-
   connect(AddTaskButton , SIGNAL(clicked()), this, SLOT(slotAddItem()));
   connect(selectParameterButton , SIGNAL(clicked()), this, SLOT(slotChooseObject()));
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotConfirm()));
@@ -450,12 +438,12 @@ void OptimizationWidget::languageChange()
   steadystateCheck->setText(tr("Steady State"));
   AddTaskButton->setText(tr("Add"));
   methodGroupBox->setTitle(tr("Optimization Technique"));
-  expressionNameLabel_2->setText(tr("Method"));
+  //expressionNameLabel_2->setText(tr("Method"));
   confirmButton->setText(tr("confirm"));
   runButton->setText(tr("run"));
   cancelButton->setText(tr("cancel"));
   selectParameterButton->setText(tr("..."));
-  expressionNameLabel->setText(tr("Name"));
+  //expressionNameLabel->setText(tr("Name"));
   expressionEditlabel->setText(tr("Expression"));
   expressionText->setText(QString::null);
 }
@@ -524,8 +512,8 @@ void OptimizationWidget::slotChooseObject()
             }
         }
 
-      else
-        expressionName->setText("");
+      //else
+      //expressionName->setText("");
     }
 
   else
