@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 19:00:48 $
+   $Date: 2005/06/28 19:05:42 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -15,9 +15,10 @@
 #include "mathematics.h"
 #include "utilities/CCopasiMessage.h"
 
+#ifdef WIN32 
 // warning C4056: overflow in floating-point constant arithmetic
-#ifdef WIN32
-# pragma warning (disable: 4056)
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
 #endif
 
 /**
@@ -203,7 +204,7 @@ class CEvaluationNodeFunction : public CEvaluationNode
   };
 
 #ifdef WIN32
-# pragma warning (default: 4056)
+# pragma warning (default: 4056 4756)
 #endif
 
 #endif // COPASI_CEvaluationNodeFunction

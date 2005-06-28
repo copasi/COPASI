@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 18:56:04 $
+   $Date: 2005/06/28 19:05:42 $
    End CVS Header */
 
 /**
@@ -23,9 +23,10 @@
 
 #include "utilities/CCopasiMessage.h"
 
+#ifdef WIN32 
 // warning C4056: overflow in floating-point constant arithmetic
-#ifdef WIN32
-# pragma warning (disable: 4056)
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
 #endif
 
 /**
@@ -945,7 +946,7 @@ class CExpatTemplate
   };
 
 #ifdef WIN32
-# pragma warning (default: 4056)
+# pragma warning (default: 4056 4756)
 #endif
 
 /**
