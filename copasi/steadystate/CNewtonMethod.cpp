@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:35:15 $
+   $Date: 2005/06/28 17:09:29 $
    End CVS Header */
 
 #include <algorithm>
@@ -591,7 +591,7 @@ bool CNewtonMethod::containsNaN() const
     //checks for NaNs
     C_INT32 i, imax = mX->size();
     for (i = 0; i < imax; ++i)
-      if ((*mX)[i] != (*mX)[i]) return true;
+      if (isnan((*mX)[i])) return true;
 
     return false;
   }

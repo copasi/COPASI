@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:34:38 $
+   $Date: 2005/06/28 17:09:14 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -15,6 +15,8 @@
 #include <qwt_plot_canvas.h>
 #include <qwt_curve.h>
 #include <qwt_scale.h>
+
+#include <float.h>
 
 #include "CopasiPlot.h"
 #include "CPlotSpec2Vector.h"
@@ -78,7 +80,7 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
         const double xv = *xIt++;
         const double yv = *yIt++;
 
-        if (xv != xv) //NaN
+        if (isnan(xv)) //NaN
           continue;
 
         if (xv < minX)
@@ -105,7 +107,7 @@ void MyQwtPlotCurve::myDrawLines(QPainter *painter,
     {
       int i;
       for (i = from; i <= to; ++i)
-        if (x(i) != x(i)) //NaN
+        if (isnan(x(i))) //NaN
           break;
 
       if (i == from)
@@ -311,13 +313,13 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
             tmpType = *(const unsigned C_INT32*)tmp;
           switch (tmpType)
             {
-            case 0:         //curve
+            case 0:          //curve
               setCurveStyle(crv, QwtCurve::Lines);
               break;
-            case 1:         //points
+            case 1:          //points
               setCurveStyle(crv, QwtCurve::Dots);
               break;
-            case 2:         //symbols
+            case 2:          //symbols
               setCurveStyle(crv, QwtCurve::NoCurve);
               const QColor &c = curveColours[k % 5];
               setCurveSymbol(crv, QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
@@ -526,7 +528,7 @@ bool CopasiPlot::saveData(const std::string & filename)
       unsigned j, jmax = ndata;
       for (j = 0; j < jmax; ++j)
         {
-          if (data[0]->at(j) == data[0]->at(j)) // not NaN
+          if (!isnan(data[0]->at(j))) // not NaN
             {
               for (i = 0; i < imax; ++i)
                 fs << data[i]->at(j) << "\t";

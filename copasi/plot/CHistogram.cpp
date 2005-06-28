@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CHistogram.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/08 08:04:00 $
+   $Author: shoops $ 
+   $Date: 2005/06/28 17:09:14 $
    End CVS Header */
+
+#include <float.h>
 
 #include "CHistogram.h"
 
@@ -43,7 +45,7 @@ CHistogram::~CHistogram()
 void CHistogram::addValue(const C_FLOAT64 & val)
 {
   //just ignore breaks. Later we perhaps want to start a new histogram...
-  if (val != val) //NaN
+  if (isnan(val)) //NaN
     return;
 
   mUptodate = false;

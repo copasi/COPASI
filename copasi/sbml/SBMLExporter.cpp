@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:06 $
+   $Date: 2005/06/28 17:09:14 $
    End CVS Header */
 
 #include <math.h>
@@ -345,7 +345,7 @@ Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(const CCompartm
   sbmlCompartment->setConstant(true);
   double value = copasiCompartment->getInitialVolume();
   // if the value is NaN, leave the parameter value unset.
-  if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+  if (!isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
     // seems to be a Mac OS X bug
     {
       sbmlCompartment->setVolume(value);
@@ -367,7 +367,7 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(const CMetab* copasiMetabolit
   sbmlSpecies->setCompartment(copasiMetabolite->getCompartment()->getKey().c_str());
   double value = copasiMetabolite->getInitialConcentration();
   // if the value is NaN, leave the parameter value unset.
-  if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+  if (!isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
     // seems to be a Mac OS X bug
     {
       sbmlSpecies->setInitialConcentration(value);
@@ -386,7 +386,7 @@ Parameter* SBMLExporter::createSBMLParameterFromCModelValue(const CModelValue* p
   pSBMLParameter->setName(pModelValue->getObjectName());
   double value = pModelValue->getValue();
   // if the value is NaN, leave the parameter value unset.
-  if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+  if (!isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
     // seems to be a Mac OS X bug
     {
       pSBMLParameter->setValue(pModelValue->getValue());
@@ -470,7 +470,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
           parameter1->setId(parameterName1.c_str());
           double value = copasiReaction->getParameterValue(parameterName1);
           // if the value is NaN, leave the parameter value unset.
-          if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+          if (isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
             // seems to be a Mac OS X bug
             {
               parameter1->setValue(value);
@@ -502,7 +502,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
               Parameter* parameter2 = new Parameter();
               parameter2->setId(parameterName2);
               double value = copasiReaction->getParameterValue(parameterName2);
-              if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+              if (!isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
                 // seems to be a Mac OS X bug
                 {
                   parameter2->setValue(value);
@@ -627,7 +627,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
                   sbmlPara->setId(para->getObjectName().c_str());
                   double value = copasiReaction->getParameterValue(para->getObjectName());
                   // if the value is NaN, leave the parameter value unset.
-                  if (value == value) // tried to use isnan, but compiler always told me that it was undeclared
+                  if (!isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
                     // seems to be a Mac OS X bug
                     {
                       sbmlPara->setValue(value);
