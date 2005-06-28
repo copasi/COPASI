@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/28 16:46:16 $
+   $Author: gauges $ 
+   $Date: 2005/06/28 20:17:00 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1903,7 +1903,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
       CCopasiParameter* pParam = pParamGroup.getParameter(pNode->getName());
       if (pParam)
         {
-          pNode->setName(pParam->getCN().c_str());
+          pNode->setName((std::string("<") + pParam->getCN() + std::string(">")).c_str());
         }
       else
         {
@@ -1926,7 +1926,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                     }
                   if (sbmlId == pNode->getName())
                     {
-                      pNode->setName(dynamic_cast<CCompartment*>(it->first)->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN().c_str());
+                      pNode->setName((std::string("<") + dynamic_cast<CCompartment*>(it->first)->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + std::string(">")).c_str());
                     }
                   break;
                 case SBML_SPECIES:
@@ -1941,7 +1941,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                     }
                   if (sbmlId == pNode->getName())
                     {
-                      pNode->setName(dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN().c_str());
+                      pNode->setName((std::string("<") + dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN() + std::string(">")).c_str());
                     }
                   break;
                 case SBML_REACTION:
@@ -1956,7 +1956,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                     }
                   if (sbmlId == pNode->getName())
                     {
-                      pNode->setName(dynamic_cast<CReaction*>(it->first)->getObject(CCopasiObjectName("Reference=ParticleFlux"))->getCN().c_str());
+                      pNode->setName((std::string("<") + dynamic_cast<CReaction*>(it->first)->getObject(CCopasiObjectName("Reference=ParticleFlux"))->getCN() + std::string(">")).c_str());
                     }
 
                   break;
@@ -1972,7 +1972,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                     }
                   if (sbmlId == pNode->getName())
                     {
-                      pNode->setName(dynamic_cast<CModelValue*>(it->first)->getObject(CCopasiObjectName("Reference=Value"))->getCN().c_str());
+                      pNode->setName((std::string("<") + dynamic_cast<CModelValue*>(it->first)->getObject(CCopasiObjectName("Reference=Value"))->getCN() + std::string(">")).c_str());
                     }
                   break;
                 default:
