@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/27 15:08:11 $
+   $Date: 2005/06/28 15:42:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -491,9 +491,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
             {
               id = pSBMLParameter->getId();
             }
-          CCopasiParameter* pCopasiParameter = new CCopasiParameter(id, CCopasiParameter::DOUBLE);
-          pCopasiParameter->setValue(pSBMLParameter->getValue());
-          copasi2sbmlmap[pCopasiParameter] = pSBMLParameter;
+          //CCopasiParameter* pCopasiParameter = new CCopasiParameter(id, CCopasiParameter::DOUBLE);
+          //pCopasiParameter->setValue(pSBMLParameter->getValue());
+          copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, pSBMLParameter->getValue());
+          //copasi2sbmlmap[pCopasiParameter] = pSBMLParameter;
         }
 
       const ASTNode* kLawMath = kLaw->getMath();
@@ -574,6 +575,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         }
 
       /* Create a new user defined CKinFunction */
+      if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters())) fatalError();
       CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
       if (pExpressionTreeRoot)
         {
@@ -1887,7 +1889,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   return pMV;
 }
 
-bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiParameterGroup& pParamGroup)
 {
   bool success = true;
   unsigned int i, iMax = pNode->getNumChildren();
@@ -1898,84 +1900,91 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
       Reaction* pSBMLReaction = NULL;
       Parameter* pSBMLParameter = NULL;
       std::string sbmlId;
-
-      std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
-      std::map<CCopasiObject*, SBase*>::iterator endIt = copasi2sbmlmap.end();
-      while (it != endIt)
+      CCopasiParameter* pParam = pParamGroup.getParameter(pNode->getName());
+      if (pParam)
         {
-          SBMLTypeCode_t type = it->second->getTypeCode();
-          switch (type)
+          pNode->setName(pParam->getCN().c_str());
+        }
+      else
+        {
+          std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
+          std::map<CCopasiObject*, SBase*>::iterator endIt = copasi2sbmlmap.end();
+          while (it != endIt)
             {
-            case SBML_COMPARTMENT:
-              pSBMLCompartment = dynamic_cast<Compartment*>(it->second);
-              if (this->mLevel == 1)
+              SBMLTypeCode_t type = it->second->getTypeCode();
+              switch (type)
                 {
-                  sbmlId = pSBMLCompartment->getName();
-                }
-              else
-                {
-                  sbmlId = pSBMLCompartment->getId();
-                }
-              if (sbmlId == pNode->getName())
-                {
-                  pNode->setName(dynamic_cast<CCompartment*>(it->first)->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN().c_str());
-                }
-              break;
-            case SBML_SPECIES:
-              pSBMLSpecies = dynamic_cast<Species*>(it->second);
-              if (this->mLevel == 1)
-                {
-                  sbmlId = pSBMLSpecies->getName();
-                }
-              else
-                {
-                  sbmlId = pSBMLSpecies->getId();
-                }
-              if (sbmlId == pNode->getName())
-                {
-                  pNode->setName(dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN().c_str());
-                }
-              break;
-            case SBML_REACTION:
-              pSBMLReaction = dynamic_cast<Reaction*>(it->second);
-              if (this->mLevel == 1)
-                {
-                  sbmlId = pSBMLReaction->getName();
-                }
-              else
-                {
-                  sbmlId = pSBMLReaction->getId();
-                }
-              if (sbmlId == pNode->getName())
-                {
-                  pNode->setName(dynamic_cast<CReaction*>(it->first)->getObject(CCopasiObjectName("Reference=ParticleFlux"))->getCN().c_str());
-                }
+                case SBML_COMPARTMENT:
+                  pSBMLCompartment = dynamic_cast<Compartment*>(it->second);
+                  if (this->mLevel == 1)
+                    {
+                      sbmlId = pSBMLCompartment->getName();
+                    }
+                  else
+                    {
+                      sbmlId = pSBMLCompartment->getId();
+                    }
+                  if (sbmlId == pNode->getName())
+                    {
+                      pNode->setName(dynamic_cast<CCompartment*>(it->first)->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN().c_str());
+                    }
+                  break;
+                case SBML_SPECIES:
+                  pSBMLSpecies = dynamic_cast<Species*>(it->second);
+                  if (this->mLevel == 1)
+                    {
+                      sbmlId = pSBMLSpecies->getName();
+                    }
+                  else
+                    {
+                      sbmlId = pSBMLSpecies->getId();
+                    }
+                  if (sbmlId == pNode->getName())
+                    {
+                      pNode->setName(dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN().c_str());
+                    }
+                  break;
+                case SBML_REACTION:
+                  pSBMLReaction = dynamic_cast<Reaction*>(it->second);
+                  if (this->mLevel == 1)
+                    {
+                      sbmlId = pSBMLReaction->getName();
+                    }
+                  else
+                    {
+                      sbmlId = pSBMLReaction->getId();
+                    }
+                  if (sbmlId == pNode->getName())
+                    {
+                      pNode->setName(dynamic_cast<CReaction*>(it->first)->getObject(CCopasiObjectName("Reference=ParticleFlux"))->getCN().c_str());
+                    }
 
-              break;
-            case SBML_PARAMETER:
-              pSBMLParameter = dynamic_cast<Parameter*>(it->second);
-              if (this->mLevel == 1)
-                {
-                  sbmlId = pSBMLParameter->getName();
+                  break;
+                case SBML_PARAMETER:
+                  pSBMLParameter = dynamic_cast<Parameter*>(it->second);
+                  if (this->mLevel == 1)
+                    {
+                      sbmlId = pSBMLParameter->getName();
+                    }
+                  else
+                    {
+                      sbmlId = pSBMLParameter->getId();
+                    }
+                  if (sbmlId == pNode->getName())
+                    {
+                      pNode->setName(dynamic_cast<CModelValue*>(it->first)->getObject(CCopasiObjectName("Reference=Value"))->getCN().c_str());
+                    }
+                  break;
+                default:
+                  break;
                 }
-              else
-                {
-                  sbmlId = pSBMLParameter->getId();
-                }
-              if (sbmlId == pNode->getName())
-                {
-                  pNode->setName(dynamic_cast<CModelValue*>(it->first)->getObject(CCopasiObjectName("Reference=Value"))->getCN().c_str());
-                }
-              break;
-            default:
-              break;
+              ++it;
             }
-          ++it;
         }
     }
   for (i = 0; i < iMax;++i)
     {
-      if (!this->sbmlId2CopasiCN(pNode->getChild(i), copasi2sbmlmap))
+      if (!this->sbmlId2CopasiCN(pNode->getChild(i), copasi2sbmlmap, pParamGroup))
         {
           success = false;
           break;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/27 15:08:11 $
+   $Date: 2005/06/28 15:42:43 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -153,7 +153,7 @@ class SBMLImporter
      * Replaces the ids of named nodes in an ASTNode tree with
      * the correspondingCopasi Common Names.
      */
-    bool sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    bool sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiParameterGroup& pParamGroup);
 
   public:
     SBMLImporter();
