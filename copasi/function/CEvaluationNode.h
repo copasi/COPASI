@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/24 15:31:32 $
+   $Date: 2005/06/29 16:18:30 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -256,11 +256,11 @@ class CEvaluationNode : public CCopasiNode< std::string >
 #define PRECEDENCE_LOGIG_LE CPrecedence(20, 21)
 
 #define PRECEDENCE_OPERATOR_MINUS CPrecedence(22, 23)
-#define PRECEDENCE_OPERATOR_PLUS CPrecedence(24, 25)
+#define PRECEDENCE_OPERATOR_PLUS CPrecedence(22, 23)
 #define PRECEDENCE_OPERATOR_MODULUS CPrecedence(26, 27)
 #define PRECEDENCE_OPERATOR_DIVIDE CPrecedence(28, 29)
-#define PRECEDENCE_OPERATOR_MULTIPLY CPrecedence(30, 31)
-#define PRECEDENCE_OPERATOR_POWER CPrecedence(33, 31)
+#define PRECEDENCE_OPERATOR_MULTIPLY CPrecedence(28, 29)
+#define PRECEDENCE_OPERATOR_POWER CPrecedence(33, 32)
 
 #define PRECEDENCE_FUNCTION CPrecedence(35, 34)
 

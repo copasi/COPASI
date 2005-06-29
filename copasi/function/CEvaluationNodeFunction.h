@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 19:05:42 $
+   $Date: 2005/06/29 16:18:30 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -116,6 +116,13 @@ class CEvaluationNodeFunction : public CEvaluationNode
      * @return bool success;
      */
     virtual bool compile(const CEvaluationTree * pTree);
+
+    /**
+     * Retrieve the value of the node. This method is superceded
+     * value() which will perform faster.
+     * @return const Data & value
+     */
+    virtual Data getData() const;
 
     /**
      * Creates a new CEvaluationNodeFunction from an ASTNode.

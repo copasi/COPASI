@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/29 09:06:35 $
+   $Author: shoops $ 
+   $Date: 2005/06/29 16:18:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -21,7 +21,37 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
     CEvaluationNode((Type) (CEvaluationNode::OPERATOR | subType), data),
     mpLeft(NULL),
     mpRight(NULL)
-{}
+{
+  switch (mType & 0x00FFFFFF)
+    {
+    case POWER:
+      mPrecedence = PRECEDENCE_OPERATOR_POWER;
+      break;
+
+    case MULTIPLY:
+      mPrecedence = PRECEDENCE_OPERATOR_MULTIPLY;
+      break;
+
+    case DIVIDE:
+      mPrecedence = PRECEDENCE_OPERATOR_DIVIDE;
+      break;
+
+    case MODULUS:
+      mPrecedence = PRECEDENCE_OPERATOR_MODULUS;
+      break;
+
+    case PLUS:
+      mPrecedence = PRECEDENCE_OPERATOR_PLUS;
+      break;
+
+    case MINUS:
+      mPrecedence = PRECEDENCE_OPERATOR_MINUS;
+      break;
+
+    default:
+      break;
+    }
+}
 
 CEvaluationNodeOperator::CEvaluationNodeOperator(const CEvaluationNodeOperator & src):
     CEvaluationNode(src)
@@ -39,6 +69,30 @@ bool CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
 
   return (mpRight->getSibling() == NULL); // We must have only two children
 }
+
+CEvaluationNode::Data CEvaluationNodeOperator::getData() const
+  {
+    if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
+      {
+        Data Infix;
+
+        if (*mpLeft < *(CEvaluationNode *)this)
+          Infix = "(" + mpLeft->getData() + ")";
+        else
+          Infix = mpLeft->getData();
+
+        Infix += mData;
+
+        if (!(*(CEvaluationNode *)this < *mpRight))
+          Infix += "(" + mpRight->getData() + ")";
+        else
+          Infix += mpRight->getData();
+
+        return Infix;
+      }
+    else
+      return "@";
+  }
 
 CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode& node)
 {

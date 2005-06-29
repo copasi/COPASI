@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 16:46:17 $
+   $Date: 2005/06/29 16:18:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -141,7 +141,7 @@ bool CEvaluationTree::setInfix(const std::string & infix)
 }
 
 const std::string & CEvaluationTree::getInfix() const
-{return mInfix;}
+{return mInfix;;}
 
 const std::vector< CEvaluationNode * > & CEvaluationTree::getNodeList() const
   {return *mpNodeList;}
@@ -225,6 +225,8 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
     CEvaluationParser::freeNodeList(mpNodeList);
 
   mpRoot = pRootNode;
+
+  mInfix = mpRoot->getData();
 
   CCopasiTree<CEvaluationNode>::iterator it = mpRoot;
   CCopasiTree<CEvaluationNode>::iterator end = NULL;

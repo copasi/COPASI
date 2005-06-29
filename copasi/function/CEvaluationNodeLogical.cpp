@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/27 15:08:12 $
+   $Author: shoops $ 
+   $Date: 2005/06/29 16:18:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -21,7 +21,46 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
     CEvaluationNode((Type) (CEvaluationNode::OPERATOR | subType), data),
     mpLeft(NULL),
     mpRight(NULL)
-{}
+{
+  switch (mType & 0x00FFFFFF)
+    {
+    case OR:
+      mPrecedence = PRECEDENCE_LOGIG_OR;
+      break;
+
+    case XOR:
+      mPrecedence = PRECEDENCE_LOGIG_XOR;
+      break;
+
+    case AND:
+      mPrecedence = PRECEDENCE_LOGIG_AND;
+      break;
+
+    case EQ:
+      mPrecedence = PRECEDENCE_LOGIG_EQ;
+      break;
+
+    case NE:
+      mPrecedence = PRECEDENCE_LOGIG_NE;
+      break;
+
+    case GT:
+      mPrecedence = PRECEDENCE_LOGIG_GT;
+      break;
+
+    case GE:
+      mPrecedence = PRECEDENCE_LOGIG_GE;
+      break;
+
+    case LT:
+      mPrecedence = PRECEDENCE_LOGIG_LT;
+      break;
+
+    case LE:
+      mPrecedence = PRECEDENCE_LOGIG_LE;
+      break;
+    }
+}
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const CEvaluationNodeLogical & src):
     CEvaluationNode(src)
@@ -39,6 +78,30 @@ bool CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
 
   return (mpRight->getSibling() == NULL); // We must have exactly two children
 }
+
+CEvaluationNode::Data CEvaluationNodeLogical::getData() const
+  {
+    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+      {
+        Data Infix;
+
+        if (*mpLeft < *(CEvaluationNode *)this)
+          Infix = "(" + mpLeft->getData() + ")";
+        else
+          Infix = mpLeft->getData() + " ";
+
+        Infix += mData;
+
+        if (!(*(CEvaluationNode *)this < *mpRight))
+          Infix += "(" + mpRight->getData() + ")";
+        else
+          Infix += " " + mpRight->getData();
+
+        return Infix;
+      }
+    else
+      return "@";
+  }
 
 CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& node)
 {
