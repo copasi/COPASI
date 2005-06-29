@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 16:46:17 $
+   $Date: 2005/06/29 21:54:01 $
    End CVS Header */
 
 #include "copasi.h"
@@ -112,6 +112,9 @@ bool CEvaluationNode::setData(const Data & data)
   mData = data;
   return true;
 }
+
+std::string CEvaluationNode::getInfix() const
+  {return mData;}
 
 const CEvaluationNode::Type & CEvaluationNode::getType() const
   {return mType;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/29 09:06:34 $
+   $Author: shoops $ 
+   $Date: 2005/06/29 21:54:01 $
    End CVS Header */
 
 #include "copasi.h"
@@ -55,6 +55,9 @@ bool CEvaluationNodeObject::setData(const Data & data)
 
   return true;
 }
+
+std::string CEvaluationNodeObject::getInfix() const
+  {return "<" + mRegisteredObjectCN + ">";}
 
 CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& node)
 {

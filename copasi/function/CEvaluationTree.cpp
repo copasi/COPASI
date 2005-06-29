@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/29 18:47:03 $
+   $Date: 2005/06/29 21:54:00 $
    End CVS Header */
 
 #include "copasi.h"
@@ -229,7 +229,7 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 
   mpRoot = pRootNode;
 
-  mInfix = mpRoot->getData();
+  mInfix = mpRoot->getInfix();
 
   CCopasiTree<CEvaluationNode>::iterator it = mpRoot;
   CCopasiTree<CEvaluationNode>::iterator end = NULL;

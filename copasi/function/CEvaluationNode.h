@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/29 16:18:30 $
+   $Date: 2005/06/29 21:54:01 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -107,7 +107,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
     /**
      * Retrieve the value of the node. This method is superceded
      * value() which will perform faster.
-     * @return const Data & value
+     * @return const Data value
      */
     virtual Data getData() const;
 
@@ -117,6 +117,12 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * @return bool success
      */
     virtual bool setData(const Data & data);
+
+    /**
+     * Retrieve the infix value of the node and its eventual child nodes.
+     * @return const Data & value
+     */
+    virtual std::string getInfix() const;
 
     /**
      * Retrieve the type of the node.

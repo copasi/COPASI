@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/29 16:18:30 $
+   $Date: 2005/06/29 21:54:01 $
    End CVS Header */
 
 #include "copasi.h"
@@ -67,7 +67,7 @@ bool CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
   return (mpFalse->getSibling() == NULL); // We must have exactly three children
 }
 
-CEvaluationNode::Data CEvaluationNodeChoice::getData() const
+std::string CEvaluationNodeChoice::getInfix() const
   {
     if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
       return mData + "(" + mpIf->getData() + "," + mpTrue->getData() + "," + mpFalse->getData() + ")";
