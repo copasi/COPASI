@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 16:46:17 $
+   $Date: 2005/06/29 13:26:07 $
    End CVS Header */
 
 #include "copasi.h"
@@ -15,7 +15,7 @@
 
 CExpression::CExpression(const std::string & name,
                          const CCopasiContainer * pParent):
-    CEvaluationTree(name, pParent),
+    CEvaluationTree(name, pParent, Expression),
     mpListOfContainer(NULL)
 {}
 
