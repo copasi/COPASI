@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:32:02 $
+   $Date: 2005/06/29 18:47:03 $
    End CVS Header */
 
 /**
@@ -58,9 +58,9 @@ class CMassAction : public CFunction
     /**
      *  Calculates the value of the function
      *  @param const CCallParameters<C_FLOAT64> & callParameters
-     *  @return "C_FLOAT64" result
+     *  @return const C_FLOAT64 & result
      */
-    virtual C_FLOAT64
+    virtual const C_FLOAT64 &
     calcValue(const CCallParameters<C_FLOAT64> & callParameters);
 
     /**

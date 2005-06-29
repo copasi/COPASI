@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/24 13:52:06 $
+   $Author: shoops $ 
+   $Date: 2005/06/29 18:47:03 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -190,6 +190,12 @@ class CEvaluationTree:
      */
     bool compileNodes();
 
+  private:
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
+
     // Attributes
   private:
     /**
@@ -223,6 +229,11 @@ class CEvaluationTree:
      * The root node of the tree.
      */
     CEvaluationNode * mpRoot;
+
+    /**
+     * The last computed value of the tree;
+     */
+    C_FLOAT64 mValue;
   };
 
 #endif // COPASI_CEvaluationTree

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:14:18 $
+   $Date: 2005/06/29 18:47:03 $
    End CVS Header */
 
 #ifndef COPASI_CExpression
@@ -49,9 +49,9 @@ class CExpression:
 
     /**
      * Calculates the value of the function
-     * @return C_FLOAT64 result
+     * @return const C_FLOAT64 & result
      */
-    virtual C_FLOAT64 calcValue();
+    virtual const C_FLOAT64 & calcValue();
 
     /**
      * Retrieve a pointer to the value of the object define dby CN.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:32:02 $
+   $Date: 2005/06/29 18:47:03 $
    End CVS Header */
 
 /**
@@ -75,25 +75,26 @@ CMassAction::CMassAction(const TriLogic & reversible,
 }
 CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
 
-C_FLOAT64 CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
+const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
 {
   unsigned C_INT32 i, imax;
   std::vector<const C_FLOAT64 *>::const_iterator Factor;
 
-  C_FLOAT64 Substrates = 0.0, Products = 0.0;
+  mValue = 0.0;
+  C_FLOAT64 Products = 0.0;
 
   imax = callParameters[1].vector->size();   // NoSubstrates
   if (imax)
     {
-      Substrates = * callParameters[0].value;           // k1
+      mValue = * callParameters[0].value;           // k1
       Factor = callParameters[1].vector->begin();   // first substr.
 
       for (i = 0; i < imax; i++)
-        Substrates *= **(Factor++);
+        mValue *= **(Factor++);
     }
 
   if (isReversible() == TriFalse)
-    return Substrates;
+    return mValue;
 
   imax = callParameters[3].vector->size();   // NoProducts
   if (imax)
@@ -105,7 +106,7 @@ C_FLOAT64 CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParamete
         Products *= **(Factor++);
     }
 
-  return Substrates - Products;
+  return mValue -= Products;
 }
 
 bool CMassAction::dependsOn(const C_FLOAT64 * parameter,

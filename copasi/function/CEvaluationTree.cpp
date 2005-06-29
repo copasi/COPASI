@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/29 16:18:30 $
+   $Date: 2005/06/29 18:47:03 $
    End CVS Header */
 
 #include "copasi.h"
@@ -18,6 +18,7 @@
 #include "CEvaluationLexer.h"
 
 #include "report/CKeyFactory.h"
+#include "report/CCopasiObjectReference.h"
 #include "sbml/math/ASTNode.h"
 #include "utilities/CCopasiTree.h"
 
@@ -102,8 +103,9 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     mInfix(),
     mErrorPosition(std::string::npos),
     mpNodeList(NULL),
-    mpRoot(NULL)
-{}
+    mpRoot(NULL),
+    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN())
+{initObjects();}
 
 CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
                                  const CCopasiContainer * pParent):
@@ -113,8 +115,9 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mInfix(),
     mErrorPosition(std::string::npos),
     mpNodeList(NULL),
-    mpRoot(NULL)
-{setInfix(src.mInfix);}
+    mpRoot(NULL),
+    mValue(src.mValue)
+{initObjects(); setInfix(src.mInfix);}
 
 CEvaluationTree::~CEvaluationTree()
 {
@@ -354,4 +357,9 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
 CEvaluationNode* CEvaluationTree::getRoot()
 {
   return this->mpRoot;
+}
+
+void CEvaluationTree::initObjects()
+{
+  addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
 }
