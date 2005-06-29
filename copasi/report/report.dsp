@@ -71,6 +71,10 @@ SOURCE=.\CCopasiStaticString.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiTimer.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CKeyFactory.cpp
 # End Source File
 # Begin Source File
@@ -112,6 +116,10 @@ SOURCE=.\CCopasiObjectReference.h
 # Begin Source File
 
 SOURCE=.\CCopasiStaticString.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiTimer.h
 # End Source File
 # Begin Source File
 
