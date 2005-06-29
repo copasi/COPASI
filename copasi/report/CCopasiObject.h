@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:44:13 $
+   $Date: 2005/06/29 20:24:05 $
    End CVS Header */
 
 /**
@@ -68,6 +68,35 @@ template <class CType, class VType> class SpecificUpdateMethod : public UpdateMe
       {return (*mpType.*mMethod)(value);};              // execute member function
     };
 
+class Actualize
+  {
+  public:
+
+    virtual bool operator()(void)
+    {return false;}
+  };
+
+template <typename CType> class ActualizeTemplate : public Actualize
+  {
+  private:
+    CType * mpType;                 // pointer to object
+    bool (CType::*mMethod)(void);   // pointer to member function
+
+  public:
+
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    ActualizeTemplate(CType * pType, bool(CType::*method)(void))
+    {
+      mpType = pType;
+      mMethod = method;
+    };
+
+    // override operator "()"
+    virtual bool operator()(void)
+    {return (*mpType.*mMethod)();};              // execute member function
+  };
+
 class CRenameHandler;
 
 /** @dia:pos 40.5964,2.55372 */
@@ -110,6 +139,8 @@ class CCopasiObject
     unsigned C_INT32 mObjectFlag;
 
     UpdateMethod * mpUpdateMethod;
+
+    Actualize * mpActualize;
 
   private:
     static const C_FLOAT64 DummyValue;
@@ -247,8 +278,22 @@ class CCopasiObject
 
     UpdateMethod * getUpdateMethod() const;
 
+    template <class CType>
+    bool setActualize(CType * pType,
+                      bool (CType::*method)(void))
+    {
+      pdelete(mpActualize);
+
+      mpActualize =
+        new ActualizeTemplate< CType >(pType, method);
+
+      return true;
+    }
+
+    Actualize * getActualize() const;
+
     static void setRenameHandler(CRenameHandler* rh)
-  {smpRenameHandler = rh;}
+    {smpRenameHandler = rh;}
   };
 
 template <class CType> CCopasiObjectReference< CType > *
