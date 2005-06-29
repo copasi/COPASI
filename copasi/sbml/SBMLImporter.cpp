@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/28 20:17:00 $
+   $Date: 2005/06/29 09:06:33 $
    End CVS Header */
 
 #include "copasi.h"
@@ -594,343 +594,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           // error message
           CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, copasiReaction->getObjectName().c_str());
         }
-
-      /*
-      std::string functionName = "function_4_" + copasiReaction->getObjectName();
-
-      appendix = "";
-      counter = 0;
-      // create a unique function name by adding the unique reaction name to some
-      // prefix 
-      while (this->functionDB->findFunction(functionName + appendix) != NULL)
-        {
-          counter++;
-          std::ostringstream numberStream;
-          numberStream << "_" << counter;
-          appendix = numberStream.str();
-        }
-
-      CFunction * cFun = new CKinFunction(functionName + appendix);
-      this->functionDB->add(cFun, true);
-
-      //ConverterASTNode::printASTNode(node);
-      //DebugFile << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
-      //std::cerr << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
-      if (cFun == NULL)
-        {
-          //DebugFile << "Could not create function " << functionName << "." << std::endl;
-          //throw StdException("Error. Could not create function for name " + functionName + ".");
-          fatalError();
-        }
-      cFun->setInfix(SBML_formulaToString(node));
-
-      cFun->setType(CFunction::UserDefined);
-      cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
-
-      // :TODO: This needs to use CEvaluationTree::mpNodeList
-
-      //create parameters
-      // std::vector<CNodeK*>& v = dynamic_cast<CKinFunction*>(cFun)->getNodes();
-      const std::vector<CEvaluationNode *> & v = cFun->getNodeList();
-
-      unsigned int counter;
-      for (counter = 0; counter < v.size(); counter++)
-        {
-          // assign a type and a mapping 
-          const CEvaluationNode * node = v[counter];
-          if (CEvaluationNode::type(node->getType()) == CEvaluationNode::VARIABLE)
-            {
-              std::string nodeName = node->getData();
-              // if the name start with "substrate_" it is a substrate
-              //   if it starts with product_ it is a product
-              //   if it start with modifier_ it is a modifier
-              //   else it is a parameter
-              if (nodeName.find("substrate_") == 0)
-                {
-                  cFun->addVariable(nodeName, "SUBSTRATE", CFunctionParameter::FLOAT64);
-                }
-              else if (nodeName.find("product_") == 0)
-                {
-                  cFun->addVariable(nodeName, "PRODUCT", CFunctionParameter::FLOAT64);
-                }
-              else if (nodeName.find("modifier_") == 0)
-                {
-                  cFun->addVariable(nodeName, "MODIFIER", CFunctionParameter::FLOAT64);
-                }
-              else
-                {
-                  bool found = false;
-                  // first check if the parameter is defined in the reaction 
-                  unsigned int x;
-                  for (x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
-                    {
-                      Parameter* parameter = sbmlReaction->getKineticLaw()->getParameter(x);
-                      std::string parameterName;
-                      //DebugFile << "local parameter " << x << ": " << parameter << std::endl;
-                      if (parameter == NULL)
-                        {
-                          //DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
-                          //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
-                          fatalError();
-                        }
-                      if (this->mLevel != 1)
-                        {
-                          parameterName = parameter->getId();
-                        }
-                      else
-                        {
-                          parameterName = parameter->getName();
-                        }
-                      if (parameter->isSetUnits())
-                        {
-                          // !!! 
-                          // create a warning that the units will be ignored 
-                        }
-                      if (parameterName == nodeName)
-                        {
-                          found = true;
-                          cFun->addVariable(nodeName, "PARAMETER", CFunctionParameter::FLOAT64);
-                          break;
-                        }
-                    }
-                  // if the paramter was not defined in the reaction, check if it
-                  // is a global parameter 
-                  if (!found)
-                    {
-                      unsigned int x;
-                      for (x = 0; x < sbmlModel->getNumParameters(); x++)
-                        {
-                          Parameter* parameter = sbmlModel->getParameter(x);
-                          //DebugFile << "global parameter " << x << ": " << parameter << std::endl;
-                          if (parameter == NULL)
-                            {
-                              //DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
-                              //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
-                              fatalError();
-                            }
-                          std::string parameterName;
-                          if (this->mLevel != 1)
-                            {
-                              parameterName = parameter->getId();
-                            }
-                          else
-                            {
-                              parameterName = parameter->getName();
-                            }
-                          if (parameter->isSetUnits())
-                            {
-                              // create a warning that the units will be ignored 
-                            }
-                          if (parameterName == nodeName)
-                            {
-                              found = true;
-                              cFun->addVariable(nodeName, "PARAMETER", CFunctionParameter::FLOAT64);
-                              break;
-                            }
-                        }
-                    }
-                  // If we have not found the parameter yet, we have a problem.
-                  if (!found)
-                    {
-                      if (nodeName == "Pi")
-                        {
-                          cFun->addVariable(nodeName, "PARAMETER", CFunctionParameter::FLOAT64);
-                        }
-                      else if (nodeName == "ExponentialE")
-                        {
-                          cFun->addVariable(nodeName, "PARAMETER", CFunctionParameter::FLOAT64);
-                        }
-                      else
-                        {
-                          //DebugFile << "Could not find parameter: " << nodeName << std::endl;
-                          //throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
-                          fatalError();
-                        }
-                    }
-                }
-            }
-        }
-
-      //for internal structures in the function that can only be set after defining the parameters
-      static_cast<CKinFunction*>(cFun)->compile();
-      copasiReaction->setFunction(cFun);
-
-      // do the mapping from reaction metabolites to the parameters of the
-      //  kinetic function 
-      for (counter = 0; counter < v.size(); counter++)
-        {
-          // assign a type and a mapping 
-          const CEvaluationNode * node = v[counter];
-          if (CEvaluationNode::type(node->getType()) == CEvaluationNode::VARIABLE)
-            {
-              std::string nodeName = node->getData();
-              // if the name start with "substrate_" it is a substrate
-              // if it starts with product_ it is a product
-              // if it start with modifier_ it is a modifier
-              // else it is a parameter
-              if (nodeName.find("substrate_") == 0)
-                {
-                  std::string speciesKey = nodeName.substr(10);
-                  CMetab* cM = this->speciesMap[speciesKey];
-                  if (cM != NULL)
-                    {
-                      copasiReaction->setParameterMapping(nodeName, cM->getKey());
-                    }
-                  else
-                    {
-                      //throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
-                      fatalError();
-                    }
-                }
-              else if (nodeName.find("product_") == 0)
-                {
-                  std::string speciesKey = nodeName.substr(8);
-                  CMetab* cM = this->speciesMap[speciesKey];
-                  if (cM != NULL)
-                    {
-                      copasiReaction->setParameterMapping(nodeName, cM->getKey());
-                    }
-                  else
-                    {
-                      //throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
-                      fatalError();
-                    }
-                }
-              else if (nodeName.find("modifier_") == 0)
-                {
-                  std::string speciesKey = nodeName.substr(9);
-                  CMetab* cM = this->speciesMap[speciesKey];
-                  if (cM != NULL)
-                    {
-                      copasiReaction->setParameterMapping(nodeName, cM->getKey());
-                    }
-                  else
-                    {
-                      //throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
-                      fatalError();
-                    }
-                }
-              else
-                {
-                  bool found = false;
-                  unsigned int x;
-                  for (x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
-                    {
-                      Parameter* parameter = sbmlReaction->getKineticLaw()->getParameter(x);
-                      if (parameter == NULL)
-                        {
-                          //DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
-                          //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
-                          fatalError();
-                        }
-                      std::string parameterName;
-                      if (this->mLevel != 1)
-                        {
-                          parameterName = parameter->getId();
-                        }
-                      else
-                        {
-                          parameterName = parameter->getName();
-                        }
-                      if (parameterName == nodeName)
-                        {
-                          found = true;
-                          if (parameter->isSetValue())
-                            {
-                              copasiReaction->setParameterValue(nodeName, parameter->getValue());
-                            }
-                          else
-                            {
-                              copasiReaction->setParameterValue(nodeName, std::numeric_limits<C_FLOAT64>::quiet_NaN());
-                            }
-                          break;
-                        }
-                    }
-                  if (!found)
-                    {
-                      unsigned int x;
-                      for (x = 0; x < sbmlModel->getNumParameters(); x++)
-                        {
-                          Parameter* parameter = sbmlModel->getParameter(x);
-                          if (parameter == NULL)
-                            {
-                              //DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
-                              //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
-                              fatalError();
-                            }
-                          std::string parameterName;
-                          if (this->mLevel != 1)
-                            {
-                              parameterName = parameter->getId();
-                            }
-                          else
-                            {
-                              parameterName = parameter->getName();
-                            }
-                          if (parameterName == nodeName)
-                            {
-                              found = true;
-                              // find the global parameter
-                              CModelValue* value = NULL;
-                              std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
-                              std::map<CCopasiObject*, SBase*>::iterator endIt = copasi2sbmlmap.end();
-                              while (it != endIt)
-                                {
-                                  Parameter* p = dynamic_cast<Parameter*>(it->second);
-                                  std::string parameterId;
-                                  if (!p)
-                                    {
-                                      ++it;
-                                      continue;
-                                    }
-                                  if (this->mLevel == 1)
-                                    {
-                                      parameterId = p->getName();
-                                    }
-                                  else
-                                    {
-                                      parameterId = p->getId();
-                                    }
-                                  if (p != NULL && parameterId == parameterName)
-                                    {
-                                      value = (CModelValue*)(it->first);
-                                      break;
-                                    }
-                                  ++it;
-                                }
-                              // if it is a global sbml parameter, there must be an entry in the map
-                              // otherwise there is an error
-                              if (value == NULL)
-                                {
-                                  fatalError();
-                                }
-                              //copasiReaction->setParameterValue(nodeName, parameter->getValue());
-                              copasiReaction->setParameterMapping(nodeName, value->getKey());
-                              break;
-                            }
-                        }
-                    }
-                  if (!found)
-                    {
-                      if (nodeName == "Pi")
-                        {
-                          copasiReaction->setParameterValue(nodeName, M_PI);
-                        }
-                      else if (nodeName == "ExponentialE")
-                        {
-                          copasiReaction->setParameterValue(nodeName, M_E);
-                        }
-                      else
-                        {
-                          //DebugFile << "Could not find parameter: " << nodeName << std::endl;
-                          //throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
-                          fatalError();
-                        }
-                    }
-                }
-            }
-        }
-      */
     }
   else
     {
@@ -1903,7 +1566,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
       CCopasiParameter* pParam = pParamGroup.getParameter(pNode->getName());
       if (pParam)
         {
-          pNode->setName((std::string("<") + pParam->getCN() + std::string(">")).c_str());
+          pNode->setName(pParam->getCN().c_str());
         }
       else
         {
@@ -1926,7 +1589,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                     }
                   if (sbmlId == pNode->getName())
                     {
-                      pNode->setName((std::string("<") + dynamic_cast<CCompartment*>(it->first)->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + std::string(">")).c_str());
+                      pNode->setName(dynamic_cast<CCompartment*>(it->first)->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN().c_str());
                     }
                   break;
                 case SBML_SPECIES:
@@ -1941,7 +1604,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                     }
                   if (sbmlId == pNode->getName())
                     {
-                      pNode->setName((std::string("<") + dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN() + std::string(">")).c_str());
+                      pNode->setName(dynamic_cast<CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN().c_str());
                     }
                   break;
                 case SBML_REACTION:
@@ -1956,7 +1619,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                     }
                   if (sbmlId == pNode->getName())
                     {
-                      pNode->setName((std::string("<") + dynamic_cast<CReaction*>(it->first)->getObject(CCopasiObjectName("Reference=ParticleFlux"))->getCN() + std::string(">")).c_str());
+                      pNode->setName(dynamic_cast<CReaction*>(it->first)->getObject(CCopasiObjectName("Reference=ParticleFlux"))->getCN().c_str());
                     }
 
                   break;
@@ -1972,7 +1635,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                     }
                   if (sbmlId == pNode->getName())
                     {
-                      pNode->setName((std::string("<") + dynamic_cast<CModelValue*>(it->first)->getObject(CCopasiObjectName("Reference=Value"))->getCN() + std::string(">")).c_str());
+                      pNode->setName(dynamic_cast<CModelValue*>(it->first)->getObject(CCopasiObjectName("Reference=Value"))->getCN().c_str());
                     }
                   break;
                 default:

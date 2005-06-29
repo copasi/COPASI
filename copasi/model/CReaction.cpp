@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.127 $
+   $Revision: 1.128 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/27 15:08:11 $
+   $Date: 2005/06/29 09:06:34 $
    End CVS Header */
 
 // CReaction
@@ -34,6 +34,7 @@
 #include "CMetabNameInterface.h"
 #include "CChemEqInterface.h" //only for load()
 #include "CChemEqElement.h"
+#include "function/CExpression.h"
 
 #include "sbml/Species.h"
 #include "sbml/Parameter.h"
@@ -689,7 +690,8 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
 CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objectNode, std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   CEvaluationNodeVariable* pVariableNode = NULL;
-  CCopasiObject* object = CCopasiContainer::ObjectFromName(CCopasiObjectName(objectNode->getData()));
+  std::string objectCN = objectNode->getData();
+  CCopasiObject* object = CCopasiContainer::ObjectFromName(CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)));
   std::string id;
   // if the object if of type reference
   if (object)
@@ -791,20 +793,12 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
         }
       else if (dynamic_cast<CCopasiParameter*>(object))
         {
-          std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(object);
-          if (pos != copasi2sbmlmap.end())
+          id = object->getObjectName();
+          pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+          if (replacementMap.find(id) == replacementMap.end())
             {
-              id = dynamic_cast<Parameter*>(pos->second)->getId();
-              pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
-              if (replacementMap.find(id) != replacementMap.end())
-                {
-                  CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64, "PARAMETER");
-                  replacementMap[id] = std::make_pair(object, pFunParam);
-                }
-              // remove the mapping for the parameter from the copasi2sbml map and
-              // delete the parameter object
-              copasi2sbmlmap.erase(pos);
-              delete object;
+              CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64, "PARAMETER");
+              replacementMap[id] = std::make_pair(object, pFunParam);
             }
         }
     }
@@ -903,7 +897,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
 {
   // walk the tree and replace all object nodes with variable nodes.
   CFunction* pFun = NULL;
-  if (tree->getType() == CEvaluationTree::Expression)
+  if (dynamic_cast<CExpression*>(tree))
     {
       CEvaluationNode* pOrigNode = tree->getRoot();
 
@@ -958,5 +952,5 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
             }
         }
     }
-  return pFun == NULL;
+  return pFun != NULL;
 }
