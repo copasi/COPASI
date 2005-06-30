@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/30 13:33:17 $
+   $Author: shoops $ 
+   $Date: 2005/06/30 13:50:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -193,7 +193,7 @@ bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 std::string CEvaluationNodeFunction::getInfix() const
   {
     if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      return mData + "(" + mpLeft->getData() + ")";
+      return mData + "(" + mpLeft->getInfix() + ")";
     else
       return "@";
   }
