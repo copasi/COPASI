@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 21:54:01 $
+   $Author: gauges $ 
+   $Date: 2005/06/30 08:53:12 $
    End CVS Header */
 
 #include "copasi.h"
@@ -207,75 +207,99 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
     {
     case AST_FUNCTION_ABS:
       subType = ABS;
+      data = "abs";
       break;
     case AST_FUNCTION_ARCCOS:
       subType = ARCCOS;
+      data = "acos";
       break;
     case AST_FUNCTION_ARCCOT:
       subType = ARCCOT;
+      data = "arccot";
       break;
     case AST_FUNCTION_ARCCOTH:
       subType = ARCCOTH;
+      data = "arccoth";
       break;
     case AST_FUNCTION_ARCCSC:
       subType = ARCCSC;
+      data = "arccsc";
       break;
     case AST_FUNCTION_ARCCSCH:
       subType = ARCCSCH;
+      data = "arccsch";
       break;
     case AST_FUNCTION_ARCSEC:
       subType = ARCSEC;
+      data = "arcsec";
       break;
     case AST_FUNCTION_ARCSECH:
       subType = ARCSECH;
+      data = "arcsech";
       break;
     case AST_FUNCTION_ARCSIN:
       subType = ARCSIN;
+      data = "arcsin";
       break;
     case AST_FUNCTION_ARCSINH:
       subType = ARCSINH;
+      data = "arcsinh";
       break;
     case AST_FUNCTION_ARCTAN:
       subType = ARCTAN;
+      data = "atan";
       break;
     case AST_FUNCTION_ARCTANH:
       subType = ARCTANH;
+      data = "arctanh";
       break;
     case AST_FUNCTION_CEILING:
       subType = CEIL;
+      data = "ceil";
       break;
     case AST_FUNCTION_COS:
       subType = COS;
+      data = "cos";
       break;
     case AST_FUNCTION_COSH:
       subType = COSH;
+      data = "cosh";
       break;
     case AST_FUNCTION_COT:
       subType = COT;
+      data = "cot";
       break;
     case AST_FUNCTION_COTH:
       subType = COTH;
+      data = "coth";
       break;
     case AST_FUNCTION_CSC:
       subType = CSC;
+      data = "csc";
       break;
     case AST_FUNCTION_CSCH:
       subType = CSCH;
+      data = "csch";
       break;
     case AST_FUNCTION_EXP:
       subType = EXP;
+      data = "exp";
       break;
     case AST_FUNCTION_FACTORIAL:
       subType = FACTORIAL;
+      data = "factorial";
       break;
     case AST_FUNCTION_FLOOR:
       subType = FLOOR;
+      data = "floor";
       break;
     case AST_FUNCTION_LN:
       subType = LOG;
+      data = "log";
       break;
     case AST_FUNCTION_LOG:
       subType = LOG10;
+      data = "log10";
       break;
       /*
       case AST_FUNCTION_ROOT:
@@ -284,24 +308,31 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
           */
     case AST_FUNCTION_SEC:
       subType = SEC;
+      data = "sec";
       break;
     case AST_FUNCTION_SECH:
       subType = SECH;
+      data = "sech";
       break;
     case AST_FUNCTION_SIN:
       subType = SIN;
+      data = "sin";
       break;
     case AST_FUNCTION_SINH:
       subType = SINH;
+      data = "sinh";
       break;
     case AST_FUNCTION_TAN:
       subType = TAN;
+      data = "tan";
       break;
     case AST_FUNCTION_TANH:
       subType = TANH;
+      data = "tanh";
       break;
     case AST_LOGICAL_NOT:
       subType = NOT;
+      data = "not";
       break;
     default:
       subType = INVALID;
