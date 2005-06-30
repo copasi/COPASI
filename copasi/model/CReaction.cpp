@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.128 $
+   $Revision: 1.129 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/06/29 09:06:34 $
+   $Author: shoops $ 
+   $Date: 2005/06/30 15:59:15 $
    End CVS Header */
 
 // CReaction
@@ -941,6 +941,8 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
               pFun->addVariable(pFunPar->getObjectName(), pFunPar->getUsage(), pFunPar->getType());
               ++it;
             }
+          pFun->compile();
+
           this->setFunction(pFun);
           it = replacementMap.begin();
           while (it != endIt)
