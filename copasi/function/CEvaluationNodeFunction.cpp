@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/30 08:53:12 $
+   $Date: 2005/06/30 10:29:00 $
    End CVS Header */
 
 #include "copasi.h"
@@ -239,7 +239,7 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
       break;
     case AST_FUNCTION_ARCSIN:
       subType = ARCSIN;
-      data = "arcsin";
+      data = "asin";
       break;
     case AST_FUNCTION_ARCSINH:
       subType = ARCSINH;
