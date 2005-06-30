@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.129 $
+   $Revision: 1.130 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/30 15:59:15 $
+   $Author: gauges $ 
+   $Date: 2005/06/30 19:13:18 $
    End CVS Header */
 
 // CReaction
@@ -812,10 +812,10 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
   switch (CEvaluationNode::type(expression->getType()))
     {
     case CEvaluationNode::NUMBER:
-      pTmpNode = new CEvaluationNodeNumber(*static_cast<CEvaluationNodeNumber*>(expression));
+      pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::CONSTANT:
-      pTmpNode = new CEvaluationNodeConstant(*static_cast<CEvaluationNodeConstant*>(expression));
+      pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::OPERATOR:
       pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
@@ -864,7 +864,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "CALL");
       break;
     case CEvaluationNode::STRUCTURE:
-      pTmpNode = new CEvaluationNodeStructure(*static_cast<CEvaluationNodeStructure*>(expression));
+      pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::CHOICE:
       // create an error message until there is a class for it
@@ -875,7 +875,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 6);
       break;
     case CEvaluationNode::WHITESPACE:
-      pTmpNode = new CEvaluationNodeWhiteSpace(*static_cast<CEvaluationNodeWhiteSpace*>(expression));
+      pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::LOGIC:
       // create an error message until there is a class for it
