@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/01 15:18:56 $
+   $Date: 2005/07/01 19:24:58 $
    End CVS Header */
 
 /**
@@ -94,12 +94,17 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
 
-  mpCallBack->addItem("Best Value",
-                      CCopasiParameter::DOUBLE,
-                      getObject(CCopasiObjectName("Reference=Best Value")));
-  mpCallBack->addItem("Simulation Counter",
-                      CCopasiParameter::DOUBLE,
-                      getObject(CCopasiObjectName("Reference=Simulation Counter")));
+  if (pCallBack)
+    {
+      mSolutionValue =
+        mpCallBack->addItem("Best Value",
+                            CCopasiParameter::DOUBLE,
+                            getObject(CCopasiObjectName("Reference=Best Value")));
+      mhCounter =
+        mpCallBack->addItem("Simulation Counter",
+                            CCopasiParameter::DOUBLE,
+                            getObject(CCopasiObjectName("Reference=Simulation Counter")));
+    }
 
   return true;
 }
@@ -185,7 +190,8 @@ bool COptProblem::calculate()
 
   mCounter += 1;
 
-  if (mpCallBack) return mpCallBack->progress();
+  if (mpCallBack) return mpCallBack->progress(mhCounter);
+
   return true;
 }
 
@@ -198,11 +204,16 @@ void COptProblem::setSolutionVariables(const CVector< C_FLOAT64 > & variables)
 const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
   {return mSolutionVariables;}
 
-void COptProblem::setSolutionValue(const C_FLOAT64 & value)
-{mSolutionValue = value;}
+bool COptProblem::setSolutionValue(const C_FLOAT64 & value)
+{
+  mSolutionValue = value;
+  if (mpCallBack) return mpCallBack->progress(mhSolutionValue);
+
+  return true;
+}
 
 const C_FLOAT64 & COptProblem::getSolutionValue() const
-  {return mSolutionValue;}
+{return mSolutionValue;}
 
 // set the type of problem : Steady State OR Trajectory
 void COptProblem::setProblemType(ProblemType type)

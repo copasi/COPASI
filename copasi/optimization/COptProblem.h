@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/28 08:29:22 $
+   $Author: shoops $ 
+   $Date: 2005/07/01 19:24:58 $
    End CVS Header */
 
 /**
@@ -79,7 +79,20 @@ class COptProblem : public CCopasiProblem
      */
     C_FLOAT64 mSolutionValue;
 
+    /**
+     * Counter of evaluations
+     */
     C_FLOAT64 mCounter;
+
+    /**
+     * Handle of "Best Value" process report item
+     */
+    unsigned C_INT32 mhSolutionValue;
+
+    /**
+     * Handle of "Simulation Counter" process report item
+     */
+    unsigned C_INT32 mhCounter;
 
     // Implementation
 
@@ -128,7 +141,7 @@ class COptProblem : public CCopasiProblem
     /**
      * Do the calculatting based on CalculateVariables and fill
      * CalculateResults with the results. 
-     * @result bool succes
+     * @result bool continue
      */
     virtual bool calculate();
 
@@ -181,8 +194,9 @@ class COptProblem : public CCopasiProblem
     /**
      * Set the solution value.
      * @param const C_FLOAT64 & value
+     * @return bool continue;
      */
-    void setSolutionValue(const C_FLOAT64 & value);
+    bool setSolutionValue(const C_FLOAT64 & value);
 
     /**
      * Retrieve the result for the solution
