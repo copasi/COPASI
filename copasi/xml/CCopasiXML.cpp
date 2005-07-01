@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/24 20:22:48 $
+   $Date: 2005/07/01 16:18:26 $
    End CVS Header */
 
 /**
@@ -27,6 +27,7 @@
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
 #include "model/CState.h"
+#include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
 #include "report/CReportDefinitionVector.h"
 #include "utilities/CCopasiTask.h"
@@ -925,6 +926,7 @@ bool CCopasiXML::saveGUI()
 bool CCopasiXML::buildFunctionList()
 {
   bool success = true;
+  CEvaluationTree * pFunction;
 
   std::map< std::string, CEvaluationTree * > FunctionMap;
 
@@ -932,10 +934,20 @@ bool CCopasiXML::buildFunctionList()
 
   for (i = 0; i < imax; i++)
     {
-      CEvaluationTree * pFunction =
+      pFunction =
         const_cast< CFunction * >(&mpModel->getReactions()[i]->getFunction());
       if (pFunction &&
           pFunction != GlobalKeys.get("UndefinedFunction"))
+        FunctionMap[pFunction->getKey()] = pFunction;
+    }
+
+  CCopasiVectorN < CEvaluationTree > & loadedFunctions =
+    CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+
+  for (i = 0, imax = loadedFunctions.size(); i < imax; i++)
+    {
+      pFunction = loadedFunctions[i];
+      if (pFunction->getType() == CEvaluationTree::Expression)
         FunctionMap[pFunction->getKey()] = pFunction;
     }
 
