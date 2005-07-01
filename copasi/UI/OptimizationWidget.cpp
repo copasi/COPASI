@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/28 20:32:49 $
+   $Author: shoops $ 
+   $Date: 2005/07/01 19:25:41 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -179,9 +179,10 @@ void OptimizationWidget::runOptimizationTask()
   optimizationTask->initialize(NULL);
 
   setCursor(Qt::WaitCursor);
-  CProgressBar* tmpBar = new CProgressBar();
 
+  CProgressBar* tmpBar = new CProgressBar();
   optimizationTask->setProgressHandler(tmpBar);
+  tmpBar->show();
 
   CCopasiTimeVariable time = CCopasiTimeVariable::getCurrentWallTime();
 
@@ -211,34 +212,6 @@ void OptimizationWidget::runOptimizationTask()
   unsetCursor();
 
   return;
-
-  std::ofstream output;
-
-  if (optimizationTask->getReport().getTarget() != "")
-    {
-      if (optimizationTask->getReport().append())
-        output.open(FROM_UTF8(optimizationTask->getReport().getTarget()),
-                    std::ios_base::out | std::ios_base::app);
-      else
-        output.open(FROM_UTF8(optimizationTask->getReport().getTarget()),
-                    std::ios_base::out);
-    }
-
-  if (output.is_open())
-    optimizationTask->initialize(&output);
-
-  else //ask if user insists on proceeding
-    {
-      if (QMessageBox::information (NULL, "No output specified,",
-                                    "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running optimization task with no output?",
-                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-        return;
-    }
-
-  optimizationTask->process();
-
-  //  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
-  unsetCursor();
 }
 
 bool OptimizationWidget::loadOptimization()
