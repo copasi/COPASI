@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/28 08:29:22 $
+   $Author: shoops $ 
+   $Date: 2005/07/01 15:18:56 $
    End CVS Header */
 
 /**
@@ -94,6 +94,9 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
 
+  mpCallBack->addItem("Best Value",
+                      CCopasiParameter::DOUBLE,
+                      getObject(CCopasiObjectName("Reference=Best Value")));
   mpCallBack->addItem("Simulation Counter",
                       CCopasiParameter::DOUBLE,
                       getObject(CCopasiObjectName("Reference=Simulation Counter")));
@@ -103,6 +106,7 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
 void COptProblem::initObjects()
 {
+  addObjectReference("Best Value", mSolutionValue, CCopasiObject::ValueDbl);
   addObjectReference("Simulation Counter", mCounter, CCopasiObject::ValueDbl);
 }
 
