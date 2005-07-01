@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.121 $
+   $Revision: 1.122 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:10:47 $
+   $Date: 2005/07/01 14:14:29 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -67,13 +67,13 @@ void MetabolitesWidget::init()
 
   tableHeader->setLabel(COL_NAME, "Name");
 
-  tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
-                        FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  //tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+  //                      FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
 
   tableHeader->setLabel(COL_INUMBER, "Initial Number");
 
-  tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
-                        FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  //tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+  //                      FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
   table->setColumnReadOnly (COL_CONCENTRATION, true);
 
   tableHeader->setLabel(COL_NUMBER, "Number");
@@ -92,18 +92,37 @@ void MetabolitesWidget::init()
   table->setColumnReadOnly (COL_OLDCOMPARTMENT, true);
   table->hideColumn(COL_OLDCOMPARTMENT);
 
-  tableHeader->setLabel(COL_CRATE, "Rate\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
-                        "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
+  //tableHeader->setLabel(COL_CRATE, "Rate\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
+  //                      "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
+
   table->setColumnReadOnly (COL_CRATE, true);
 
   tableHeader->setLabel(COL_NRATE, "Number Rate");
   table->setColumnReadOnly (COL_NRATE, true);
+
+  showHeaders(); //add the units to the headers
 
   // We start with the concentration showing.
   mFlagConc = true;
   table->hideColumn(COL_INUMBER);
   table->hideColumn(COL_NUMBER);
   table->hideColumn(COL_NRATE);
+}
+
+void MetabolitesWidget::showHeaders()
+{
+  QHeader *tableHeader = table->horizontalHeader();
+  tableHeader->setLabel(0, "Status");
+  tableHeader->setLabel(1, "Name");
+  if (CCopasiDataModel::Global->getModel())
+    {
+      tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+                            FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+      tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+                            FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+      tableHeader->setLabel(COL_CRATE, "Rate\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
+                            "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
+    }
 }
 
 void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -145,6 +164,8 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
 
   table->setText(row, COL_CRATE, QString::number(pMetab->getConcentrationRate()));
   table->setText(row, COL_NRATE, QString::number(pMetab->getNumberRate()));
+
+  showHeaders();
 }
 
 void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -343,7 +364,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                         // Yes or Enter
+    case 0:                                          // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -355,7 +376,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                         // No or Escape
+    case 1:                                          // No or Escape
       break;
     }
 }
