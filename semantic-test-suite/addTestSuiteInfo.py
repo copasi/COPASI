@@ -14,7 +14,7 @@ speciesNames=sys.argv[6:]
 
 domTree=parse(infileName)
 
-
+    
 def getModelName(CopasiNode):
     modelName=""
     for child in CopasiNode.childNodes:
@@ -23,8 +23,22 @@ def getModelName(CopasiNode):
             break
     return modelName
 
-def getCompartmentName(CopasiNode):
-    compartmentName=""
+#def getCompartmentName(CopasiNode):
+#    compartmentName=""
+#    for child1 in CopasiNode.childNodes:
+#        if child1.localName=="Model":
+#            for child2 in child1.childNodes:
+#                if child2.localName=="ListOfCompartments":
+#                    for child3 in child2.childNodes:
+#                        if child3.localName=="Compartment":
+#                            compartmentName=child3.getAttribute("name")
+#                            break
+#    return compartmentName
+
+
+def createSpecies2CompartmentMap(CopasiNode):
+    species2compartmentmap={}
+    compartmentKey2CompartmentNameMap={}
     for child1 in CopasiNode.childNodes:
         if child1.localName=="Model":
             for child2 in child1.childNodes:
@@ -32,9 +46,22 @@ def getCompartmentName(CopasiNode):
                     for child3 in child2.childNodes:
                         if child3.localName=="Compartment":
                             compartmentName=child3.getAttribute("name")
-                            break
-    return compartmentName
+                            compartmentKey=child3.getAttribute("key")
+                            compartmentKey2CompartmentNameMap[compartmentKey]=compartmentName
+                
+                if child2.localName=="ListOfMetabolites":
+                    for child3 in child2.childNodes:
+                        if child3.localName=="Metabolite":
+                            speciesId=child3.getAttribute("name")
+                            compartmentKey=child3.getAttribute("compartment")
+                            if(not compartmentKey2CompartmentNameMap.has_key(compartmentKey)):
+                                print "ERROR: No compartment found for key \""+compartmentKey+"\"." 
+                                sys.exit(1)    
+                            species2compartmentmap[speciesId]=compartmentKey2CompartmentNameMap[compartmentKey]
+    return species2compartmentmap;
 
+
+    
 for node in domTree.childNodes:
     startTime="0"
     if node.localName=="COPASI":
@@ -178,13 +205,16 @@ for node in domTree.childNodes:
 
         objectNode.setAttribute("cn","CN=Root,Model="+modelName+",Reference=Time")
 
-        # so far there are only single compartment models
-        compartmentName = getCompartmentName(node)
-
+        species2compartmentmap=createSpecies2CompartmentMap(node)
         for speciesName in speciesNames:
             objectNode=domTree.createElement("Object")
             tableNode.appendChild(objectNode)
-
+            compartmentName="";
+            if(species2compartmentmap.has_key(speciesName)):
+               compartmentName=species2compartmentmap[speciesName]
+            else:
+               print "ERROR: Unknown species \""+speciesName+"\"."
+               sys.exit(1)  
             objectNode.setAttribute("cn","CN=Root,Model="+modelName+",Vector=Compartments["+compartmentName+"],Vector=Metabolites["+speciesName+"],Reference=Concentration")
         
 
