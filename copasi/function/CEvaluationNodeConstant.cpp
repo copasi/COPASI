@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/28 16:46:17 $
+   $Author: gauges $ 
+   $Date: 2005/07/01 09:48:34 $
    End CVS Header */
 
 #include <string>
@@ -30,7 +30,7 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
       break;
 
     case EXPONENTIALE:
-      mValue = M_PI;
+      mValue = M_E;
       break;
 
     case TRUE:
