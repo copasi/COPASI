@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 14:31:48 $
+   $Date: 2005/07/01 18:50:45 $
    End CVS Header */
 
 /**
@@ -627,6 +627,10 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
 {
+  if (mCurrentElement == MathML &&
+      !strcmp(pszName, "Function"))
+    mCurrentElement = Function;
+
   switch (mCurrentElement)
     {
     case Function:
