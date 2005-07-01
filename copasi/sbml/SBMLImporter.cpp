@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/29 09:06:33 $
+   $Date: 2005/07/01 14:45:58 $
    End CVS Header */
 
 #include "copasi.h"
@@ -368,13 +368,20 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       SpeciesReference* sr = sbmlReaction->getReactant(counter);
       if (sr == NULL)
         {
+          delete copasiReaction;
           fatalError();
+        }
+      if (sr->isSetStoichiometryMath())
+        {
+          delete copasiReaction;
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
         }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
+          delete copasiReaction;
           fatalError();
         }
       if (compartment == NULL)
@@ -398,13 +405,20 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       SpeciesReference* sr = sbmlReaction->getProduct(counter);
       if (sr == NULL)
         {
+          delete copasiReaction;
           fatalError();
+        }
+      if (sr->isSetStoichiometryMath())
+        {
+          delete copasiReaction;
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 10);
         }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
+          delete copasiReaction;
           fatalError();
         }
       if (compartment == NULL)
@@ -428,12 +442,14 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       ModifierSpeciesReference* sr = sbmlReaction->getModifier(counter);
       if (sr == NULL)
         {
+          delete copasiReaction;
           fatalError();
         }
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
+          delete copasiReaction;
           fatalError();
         }
       if (compartment == NULL)
@@ -462,6 +478,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           std::string cU = kLaw->getSubstanceUnits();
           if (cU != "substance")
             {
+              delete copasiReaction;
               fatalError();
             }
         }
@@ -470,6 +487,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           std::string cU = kLaw->getTimeUnits();
           if (cU != "time")
             {
+              delete copasiReaction;
               fatalError();
             }
         }
@@ -507,6 +525,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       node = this->replaceUserDefinedFunctions(node, sbmlModel);
       if (node == NULL)
         {
+          delete copasiReaction;
           fatalError();
         }
 
@@ -570,6 +589,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
             }
           else
             {
+              delete copasiReaction;
               fatalError();
             }
         }
@@ -1654,4 +1674,17 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
         }
     }
   return success;
+}
+
+void SBMLImporter::printMap(const std::map<CCopasiObject*, SBase*>& map)
+{
+  std::map<CCopasiObject*, SBase*>::const_iterator it = map.begin();
+  std::map<CCopasiObject*, SBase*>::const_iterator end = map.end();
+  std::cout << "Number of elements: " << map.size() << std::endl;
+  while (it != end)
+    {
+      std::cout << "(@" << it->first << ")" << it->first->getObjectName() << " : " << "(@" << it->second << ")" << it->second->getTypeCode() << std::endl;
+      ++it;
+    }
+  std::cout << std::endl;
 }

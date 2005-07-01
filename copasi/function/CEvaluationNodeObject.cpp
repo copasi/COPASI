@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 21:54:01 $
+   $Author: gauges $ 
+   $Date: 2005/07/01 14:45:59 $
    End CVS Header */
 
 #include "copasi.h"
@@ -67,11 +67,7 @@ CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& nod
   switch (type)
     {
     case AST_NAME:
-      pObject = CCopasiContainer::ObjectFromName(CCopasiObjectName(node.getName()));
-      if (pObject)
-        {
-          pNode = new CEvaluationNodeObject(ANY, CCopasiObjectName(std::string("<") + node.getName() + std::string(">")));
-        }
+      pNode = new CEvaluationNodeObject(ANY, CCopasiObjectName(std::string("<") + node.getName() + std::string(">")));
       break;
     case AST_NAME_TIME:
       pNode = new CEvaluationNodeObject(ANY, "Reference=Time");

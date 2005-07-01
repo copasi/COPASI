@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.130 $
+   $Revision: 1.131 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/30 19:13:18 $
+   $Date: 2005/07/01 14:45:59 $
    End CVS Header */
 
 // CReaction
@@ -691,7 +691,10 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
 {
   CEvaluationNodeVariable* pVariableNode = NULL;
   std::string objectCN = objectNode->getData();
-  CCopasiObject* object = CCopasiContainer::ObjectFromName(CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)));
+  CModel * pModel = (CModel*) getObjectAncestor("Model");
+  std::vector<CCopasiContainer*> containers = std::vector<CCopasiContainer*>();
+  containers.push_back(pModel);
+  CCopasiObject* object = CCopasiContainer::ObjectFromName(containers, CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)));
   std::string id;
   // if the object if of type reference
   if (object)
@@ -702,6 +705,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
           if (object)
             {
               std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(object);
+              //assert(pos!=copasi2sbmlmap.end());
               // check if it is a CMetab, a CModelValue or a CCompartment
               if (dynamic_cast<CMetab*>(object))
                 {

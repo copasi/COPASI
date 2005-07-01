@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/28 15:42:43 $
+   $Date: 2005/07/01 14:45:58 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -159,6 +159,7 @@ class SBMLImporter
     SBMLImporter();
     ~SBMLImporter();
     CModel* readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    static void printMap(const std::map<CCopasiObject*, SBase*>& map);
   };
 
 #endif
