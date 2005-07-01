@@ -79,6 +79,10 @@ SOURCE=.\COptMethodGA.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COptMethodGASR.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptMethodHGASA.cpp
 # End Source File
 # Begin Source File
@@ -132,6 +136,10 @@ SOURCE=.\COptMethodEP2.h
 # Begin Source File
 
 SOURCE=.\COptMethodGA.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodGASR.h
 # End Source File
 # Begin Source File
 
