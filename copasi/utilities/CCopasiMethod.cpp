@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/22 12:15:49 $
+   $Date: 2005/07/01 09:39:48 $
    End CVS Header */
 
 /**
@@ -28,6 +28,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Genetic Algorithm",
     "Evolutionary Program",
     "Hybrid GA/SA",
+    "Genetic Algorithm SR",
     "Enhanced Newton",
     "Deterministic (LSODA)",
     "Stochastic",
@@ -48,6 +49,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "GeneticAlgorithm",
     "EvolutionaryProgram2",
     "HybridGASA",
+    "GeneticAlgorithmSR",
     "EnhancedNewton",
     "Deterministic(LSODA)",
     "Stochastic",
