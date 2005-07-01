@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/15 19:13:57 $
+   $Date: 2005/07/01 19:27:03 $
    End CVS Header */
 
 /**
@@ -43,33 +43,31 @@ class CRandomSearch : public COptMethod
     virtual bool initialize();
 
     /**
-        * Evaluate the fitness of one individual
-        * @param const CVector< C_FLOAT64 > & individual
-        * @return C_FLOAT64 fitness
-        */
-    C_FLOAT64 evaluate(const CVector< C_FLOAT64 > & individual);
+     * Evaluate the fitness of one individual
+     * @param const CVector< C_FLOAT64 > & individual
+     * @return bool continue
+     */
+    bool evaluate(const CVector< C_FLOAT64 > & individual);
 
     /**
-        * Find the best individual at this generation
-        * @return unsigned C_INT32 fittest
-        */
+     * Find the best individual at this generation
+     * @return unsigned C_INT32 fittest
+     */
     unsigned C_INT32 fittest();
 
     /**
-        * number of iterations
-        */
+     * number of iterations
+     */
     unsigned C_INT32 mIterations;
 
     /**
-        * a vector of the number of individuals.
-        */ 
-    //C_FLOAT64 mIndividual;
+     * a vector of the number of individuals.
+     */
     CVector<C_FLOAT64> mIndividual;
 
     /**
-        * array of values of objective function f/ individuals
-        */ 
-    //CVector< C_FLOAT64 > mValue;
+     * array of values of objective function f/ individuals
+     */
     C_FLOAT64 mValue;
 
     /**
@@ -83,18 +81,9 @@ class CRandomSearch : public COptMethod
     unsigned C_INT32 mVariableSize;
 
     /**
-        * type of random number generator
-        */
-    CRandom::Type Type;
-
-    /**
-        * Random Generator Seed
-        */
-    unsigned C_INT32 Seed;
-
+     * The best value found so far.
+     */
     C_FLOAT64 mBestValue;
-    //unsigned C_INT32 mBestValue
-    unsigned C_INT32 mBestIndex;
 
   public:
     /**

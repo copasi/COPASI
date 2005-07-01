@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/01 14:45:38 $
+   $Date: 2005/07/01 19:27:03 $
    End CVS Header */
 
 /***************************************************************************
@@ -92,6 +92,7 @@ bool CRandomSearch::initialize()
 bool CRandomSearch::optimise()
 {
   bool linear;
+  bool Continue = true;
 
   if (!initialize()) return false;
 
@@ -103,9 +104,9 @@ bool CRandomSearch::optimise()
   C_FLOAT64 mn;
   C_FLOAT64 mx;
 
-  for (i = 0; i < mIterations; i++)
+  for (i = 0; i < mIterations && Continue; i++)
     {
-      for (j = 0; j < mVariableSize; j++)
+      for (j = 0; j < mVariableSize && Continue; j++)
         {
           // CALCULATE lower and upper bounds
           COptItem & OptItem = *(*mpOptItem)[j];
@@ -166,32 +167,26 @@ bool CRandomSearch::optimise()
               break;
             }
         }
-      try
-        {
-          // calculate its fitness
-          mValue = evaluate(mIndividual);
-        }
-      catch (...)
-        {
-          mValue = DBL_MAX;
-        }
+
+      Continue = evaluate(mIndividual);
 
       // COMPARE
       if (mValue < mBestValue)
         {
           mBestValue = mValue;
-          mpOptProblem->setSolutionValue(mBestValue);
           mpOptProblem->setSolutionVariables(mIndividual);
+          Continue = mpOptProblem->setSolutionValue(mBestValue);
         }
     }
 
-  return 0;
+  return Continue;
 }
 
 // evaluate the fitness of one individual
-C_FLOAT64 CRandomSearch::evaluate(const CVector< C_FLOAT64 > & individual)
+bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & individual)
 {
   unsigned C_INT32 j;
+  bool Continue = true;
 
   std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
 
@@ -200,21 +195,27 @@ C_FLOAT64 CRandomSearch::evaluate(const CVector< C_FLOAT64 > & individual)
     (**itMethod)(individual[j]);
 
   // check whether the parametric constraints are fulfilled
-  if (!mpOptProblem->checkParametricConstraints()) return DBL_MAX;
+  if (!mpOptProblem->checkParametricConstraints())
+    {
+      mValue = DBL_MAX;
+      return Continue;
+    }
 
   // evaluate the fitness
   try
-    {
-      if (!mpOptProblem->calculate()) return DBL_MAX;
-    }
+  {Continue = mpOptProblem->calculate();}
 
   catch (...)
     {
-      return DBL_MAX;
+      mValue = DBL_MAX;
+      return Continue;
     }
 
   // check wheter the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints()) return DBL_MAX;
+  if (!mpOptProblem->checkFunctionalConstraints())
+    mValue = DBL_MAX;
+  else
+    mValue = mpOptProblem->getCalculateValue();
 
-  return mpOptProblem->getCalculateValue();
+  return Continue;
 }
