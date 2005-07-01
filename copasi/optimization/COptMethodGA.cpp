@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/01 20:22:28 $
+   $Date: 2005/07/01 20:44:01 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -551,29 +551,20 @@ bool COptMethodGA::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
-          if (!creation(mPopulationSize / 2, mPopulationSize))
-            {
-              Continue = false;
-              break;
-            }
+          if (!(Continue = creation(mPopulationSize / 2, mPopulationSize)))
+            break;
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
       else if (Stalled > 30 && Stalled30 > 30)
         {
-          if (!creation(mPopulationSize * 0.7, mPopulationSize))
-            {
-              Continue = false;
-              break;
-            }
+          if (!(Continue = creation(mPopulationSize * 0.7, mPopulationSize)))
+            break;
           Stalled10 = Stalled30 = 0;
         }
       else if (Stalled > 10 && Stalled10 > 10)
         {
-          if (!creation(mPopulationSize * 0.9, mPopulationSize))
-            {
-              Continue = false;
-              break;
-            }
+          if (!(Continue = creation(mPopulationSize * 0.9, mPopulationSize)))
+            break;
           Stalled10 = 0;
         }
       // replicate the individuals
