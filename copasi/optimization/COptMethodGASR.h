@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2005/06/24 19:09:48 $
+   $Author: shoops $ 
+   $Date: 2005/07/01 20:44:10 $
    End CVS Header */
 
 /**
@@ -76,9 +76,9 @@ class COptMethodGASR : public COptMethod
     /**
      * Evaluate the fitness of one individual
      * @param const CVector< C_FLOAT64 > & individual
-     * @return C_FLOAT64 fitness
+     * @return bool continue
      */
-    C_FLOAT64 evaluate(const CVector< C_FLOAT64 > & individual);
+    bool evaluate(const CVector< C_FLOAT64 > & individual);
 
     /**
      * Swap individuals from and to
@@ -114,7 +114,7 @@ class COptMethodGASR : public COptMethod
 
     /**
      * Replicate the individuals with crossover
-     * @return bool success
+     * @return bool continue
      */
     bool replicate();
 
@@ -150,6 +150,11 @@ class COptMethodGASR : public COptMethod
      * number of generations
      */
     unsigned C_INT32 mGenerations;
+
+    /**
+     * Handle to the process report item "Current Generation"
+     */
+    unsigned C_INT32 mhGenerations;
 
     /**
      * size of the population
@@ -211,6 +216,14 @@ class COptMethodGASR : public COptMethod
      */
     C_FLOAT64 mMutationVarians;
 
+    /**
+     * The value of the last evaluation.
+     */
+    C_FLOAT64 mEvaluationValue;
+
+    /**
+     * The best value so far.
+     */
     C_FLOAT64 mBestValue;
     unsigned C_INT32 mBestIndex;
     unsigned C_INT32 mGeneration;

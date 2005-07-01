@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/28 20:33:58 $
+   $Author: shoops $ 
+   $Date: 2005/07/01 20:44:10 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -72,24 +72,20 @@ bool COptMethodGASR::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiMethod::setCallBack(pCallBack);
 
-  pCallBack->addItem("Current Generation",
-                     CCopasiParameter::UINT,
-                     getObject(CCopasiObjectName("Reference=Current Generation")),
-                     & mGenerations);
-
-  C_FLOAT64 EndValue = DBL_MAX;
-  pCallBack->addItem("Objective Value",
-                     CCopasiParameter::DOUBLE,
-                     getObject(CCopasiObjectName("Reference=Objective Value")),
-                     & EndValue);
+  mhGenerations =
+    pCallBack->addItem("Current Generation",
+                       CCopasiParameter::UINT,
+                       getObject(CCopasiObjectName("Reference=Current Generation")),
+                       & mGenerations);
 
   return true;
 }
 
 // evaluate the fitness of one individual
-C_FLOAT64 COptMethodGASR::evaluate(const CVector< C_FLOAT64 > & individual)
+bool COptMethodGASR::evaluate(const CVector< C_FLOAT64 > & individual)
 {
   unsigned C_INT32 j;
+  bool Continue = true;
 
   std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
 
@@ -97,24 +93,19 @@ C_FLOAT64 COptMethodGASR::evaluate(const CVector< C_FLOAT64 > & individual)
   for (j = 0; j < mVariableSize; j++, ++itMethod)
     (**itMethod)(individual[j]);
 
-  // check whether the parametric constraints are fulfilled
-  if (!mpOptProblem->checkParametricConstraints()) return DBL_MAX;
-
   // evaluate the fitness
   try
-    {
-      if (!mpOptProblem->calculate()) return DBL_MAX;
-    }
+  {Continue = mpOptProblem->calculate();}
 
   catch (...)
     {
-      return DBL_MAX;
+      mEvaluationValue = DBL_MAX;
+      return Continue;
     }
 
-  // check wheter the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints()) return DBL_MAX;
+  mEvaluationValue = mpOptProblem->getCalculateValue();
 
-  return mpOptProblem->getCalculateValue();
+  return Continue;
 }
 
 bool COptMethodGASR::swap(unsigned C_INT32 from, unsigned C_INT32 to)
@@ -257,6 +248,7 @@ bool COptMethodGASR::shuffle()
 bool COptMethodGASR::replicate()
 {
   unsigned C_INT32 i;
+  bool Continue = true;
 
   C_INT32 temp_size = mIndividual.size();
 
@@ -275,13 +267,14 @@ bool COptMethodGASR::replicate()
     *mIndividual[2 * mPopulationSize - 1] = *mIndividual[mPopulationSize - 1];
 
   // mutate the offspring
-  for (i = mPopulationSize; i < 2 * mPopulationSize; i++)
+  for (i = mPopulationSize; i < 2 * mPopulationSize && Continue; i++)
     {
       mutate(*mIndividual[i]);
-      mValue[i] = evaluate(*mIndividual[i]);
+      Continue = evaluate(*mIndividual[i]);
+      mValue[i] = mEvaluationValue;
     }
 
-  return true;
+  return Continue;
 }
 
 // select mPopulationSize individuals
@@ -380,7 +373,7 @@ C_FLOAT64 COptMethodGASR::Phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   for (int i = 0; i < mVariableSize; i++)  /******* here double check to see if indv array parameter is same as number of parameters ****
-                    Clarify if should go through additional for loop for number of parameters */
+                        Clarify if should go through additional for loop for number of parameters */
     {
       C_FLOAT64 phiCalc;
       COptItem & OptItem = *(*mpOptItem)[i];
@@ -432,8 +425,9 @@ bool COptMethodGASR::creation(unsigned C_INT32 first,
   C_FLOAT64 la;
 
   bool linear;
+  bool Continue = true;
 
-  for (i = first; i < Last; i++)
+  for (i = first; i < Last && Continue; i++)
     {
       for (j = 0; j < mVariableSize; j++)
         {
@@ -470,38 +464,13 @@ bool COptMethodGASR::creation(unsigned C_INT32 first,
             {
               mut = (mx + mn) * 0.5;
             }
-
-          /****** Do not force within bounds for SR ****
-          // force it to be within the bounds
-          switch (OptItem.checkConstraint(mut))
-            {
-            case - 1:
-              mut = *OptItem.getLowerBoundValue();
-              if (!OptItem.checkLowerBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = DBL_MIN;
-                  else
-                    mut += mut * DBL_EPSILON;
-                }
-              break;
-
-            case 1:
-              mut = *OptItem.getUpperBoundValue();
-              if (!OptItem.checkUpperBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = - DBL_MIN;
-                  else
-                    mut -= mut * DBL_EPSILON;
-                }
-              break;
-            }*/
         }
+
       try
         {
           // calculate its fitness
-          mValue[i] = evaluate(*mIndividual[i]);
+          Continue = evaluate(*mIndividual[i]);
+          mValue[i] = mEvaluationValue;
         }
       catch (...)
         {
@@ -509,7 +478,7 @@ bool COptMethodGASR::creation(unsigned C_INT32 first,
         }
     }
 
-  return true;
+  return Continue;
 }
 
 void COptMethodGASR::initObjects()
@@ -581,7 +550,7 @@ bool COptMethodGASR::cleanup()
 
 bool COptMethodGASR::optimise()
 {
-  bool success = true;
+  bool Continue = true;
 
   if (!initialize()) return false;
 
@@ -600,7 +569,8 @@ bool COptMethodGASR::optimise()
   try
     {
       // calculate the fitness
-      mValue[0] = evaluate(*mIndividual[0]);
+      Continue = evaluate(*mIndividual[0]);
+      mValue[0] = mEvaluationValue;
     }
 
   catch (...)
@@ -608,16 +578,30 @@ bool COptMethodGASR::optimise()
       mValue[0] = DBL_MAX;
     }
 
+  if (!Continue)
+    {
+      cleanup();
+      return false;
+    }
+
   // the others are random
-  creation(1, mPopulationSize);
-  // initialise the update register
+  if (!(Continue = creation(1, mPopulationSize)))
+    {
+      cleanup();
+      return false;
+    }
+
   // get the index of the fittest
   mBestIndex = fittest();
   // and store that value
   mBestValue = mValue[mBestIndex];
 
-  mpOptProblem->setSolutionValue(mBestValue);
   mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
+  if (!(Continue = mpOptProblem->setSolutionValue(mBestValue)))
+    {
+      cleanup();
+      return false;
+    }
 
   // ITERATE FOR gener GENERATIONS
   for (mGeneration = 0; mGeneration < mGenerations; mGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
@@ -625,44 +609,29 @@ bool COptMethodGASR::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
-          if (!creation(mPopulationSize / 2, mPopulationSize))
-            {
-              success = false;
-              break;
-            }
+          if (!(Continue = creation(mPopulationSize / 2, mPopulationSize)))
+            break;
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
       else if (Stalled > 30 && Stalled30 > 30)
         {
-          if (!creation(mPopulationSize * 0.7, mPopulationSize))
-            {
-              success = false;
-              break;
-            }
+          if (!(Continue = creation(mPopulationSize * 0.7, mPopulationSize)))
+            break;
           Stalled10 = Stalled30 = 0;
         }
       else if (Stalled > 10 && Stalled10 > 10)
         {
-          if (!creation(mPopulationSize * 0.9, mPopulationSize))
-            {
-              success = false;
-              break;
-            }
+          if (!(Continue = creation(mPopulationSize * 0.9, mPopulationSize)))
+            break;
           Stalled10 = 0;
         }
       // replicate the individuals
-      else if (!replicate())
-        {
-          success = false;
-          break;
-        }
+      else if (!(Continue = replicate()))
+        break;
 
       // select the most fit
-      if (!select())
-        {
-          success = false;
-          break;
-        }
+      if (!(Continue = select()))
+        break;
 
       // get the index of the fittest
       mBestIndex = fittest();
@@ -671,18 +640,16 @@ bool COptMethodGASR::optimise()
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
           mBestValue = mValue[mBestIndex];
 
-          mpOptProblem->setSolutionValue(mBestValue);
           mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
+          if (!(Continue = mpOptProblem->setSolutionValue(mBestValue)))
+            break;
         }
 
-      if (mpCallBack && !mpCallBack->progress())
-        {
-          success = false;
-          break;
-        }
+      if (mpCallBack && !(Continue = mpCallBack->progress(mhGenerations)))
+        break;
     }
 
   cleanup();
 
-  return success;
+  return Continue;
 }
