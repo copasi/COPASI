@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/01 19:25:41 $
+   $Author: anuragr $ 
+   $Date: 2005/07/01 23:53:17 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -260,6 +260,48 @@ bool OptimizationWidget::loadOptimization()
       scrollview->addWidget(tmp);
     }
 
+  // load the expression
+
+  std::string objFunc = optimizationProblem->getObjectiveFunction();
+
+  i = 0;
+
+  std::string out_str = "";
+  while (i < objFunc.length())
+    {
+      if (objFunc[i] == '<')
+        {
+          i++;
+          std::string objectName = "";
+
+          while (objFunc[i] != '>')
+            {
+              objectName += objFunc[i];
+              i++;
+            }
+
+          CCopasiObjectName c1(objectName);
+          out_str += "<" + RootContainer.getObject(c1)->getObjectDisplayName() + ">";
+          continue;
+        }
+
+      else if (objFunc[i] == '>')
+        {
+          //do nothing
+        }
+
+      else
+        {
+          out_str += objFunc[i];
+        }
+
+      i++;
+    }
+
+  expressionText->setText(FROM_UTF8(out_str));
+
+  // load the list of objects
+
   return true;
 }
 
@@ -378,10 +420,11 @@ bool OptimizationWidget::update(ListViews::ObjectType objectType, ListViews::Act
     {
     case ListViews::MODEL:
       // check if there is a list of Report Defs
-      CReportDefinitionVector* pReportDefinitionVector;
+      /*CReportDefinitionVector* pReportDefinitionVector;
       pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
       if (pReportDefinitionVector)
-        reportDefinitionButton->setEnabled(true);
+        reportDefinitionButton->setEnabled(true);*/
+
       break;
     default:
       break;
