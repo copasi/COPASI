@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/28 17:15:14 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 08:12:06 $
    End CVS Header */
 
 #include <math.h>
@@ -53,22 +53,22 @@ SBMLExporter::~SBMLExporter()
 }
 
 /**
- ** This method takes a copasi CModel object, crerates an SBMLDocument from
+ ** This method takes a copasi CModel object, creates an SBMLDocument from
  ** it and writes it to a file. The filename is given as the second
  ** argument to the function. The function return "true" on success and
  ** "false" on failure.
  */
-bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion) throw (StdException)
+bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion)
 {
   /* create the SBMLDocument from the copasi model */
   this->sbmlDocument = this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion);
   if (this->sbmlDocument->getModel() != NULL)
     {
-      SBMLWriter_t* writer = SBMLWriter_create();
+      SBMLWriter* writer = new SBMLWriter();
 
       // :TODO: Bug 178 This needs to be enabled with the next libsbml release
-      SBMLWriter_setProgramName(writer, "COPASI");
-      SBMLWriter_setProgramVersion(writer, CCopasiDataModel::Global->getVersion()->getVersion().c_str());
+      writer->setProgramName("COPASI");
+      writer->setProgramVersion(CCopasiDataModel::Global->getVersion()->getVersion().c_str());
 
       /* check if the file already exisits.
          If yes, write if overwrite is true, 
@@ -81,16 +81,9 @@ bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilenam
           return false;
         }
       /* write the document to a file */
-      int returnValue = SBMLWriter_writeSBML(writer, (SBMLDocument_t*)sbmlDocument, sbmlFilename.c_str());
-      SBMLWriter_free(writer);
-      if (returnValue == 1)
-        {
-          return true;
-        }
-      else
-        {
-          return false;
-        }
+      bool returnValue = writer->write(*this->sbmlDocument, sbmlFilename);
+      pdelete(writer);
+      return returnValue;
     }
   else
     {
@@ -241,7 +234,7 @@ UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(con
     }
   else
     {
-      throw StdException("Error. Unknown copasi time unit.");
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
     }
 
   uDef->addUnit(*unit);
@@ -284,7 +277,7 @@ UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantit
     }
   else
     {
-      throw StdException("Error. Unknown copasi quantity unit.");
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
     }
   uDef->addUnit(*unit);
   return uDef;
@@ -326,7 +319,7 @@ UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit
     }
   else
     {
-      throw StdException("Error. Unknown copasi volume unit.");
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
     }
   uDef->addUnit(*unit);
   return uDef;
