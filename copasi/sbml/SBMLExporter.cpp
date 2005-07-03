@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/03 08:12:06 $
+   $Date: 2005/07/03 10:24:35 $
    End CVS Header */
 
 #include <math.h>
@@ -443,7 +443,7 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copasiR
 KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copasiReaction)
 {
   /* create a new KineticLaw */
-  KineticLaw* kLaw = new KineticLaw();;
+  KineticLaw* kLaw = new KineticLaw();
   /* if the copasi CFunction specifies a mass-action kinetic */
   if (copasiReaction->getFunction().getType() == CFunction::MassAction)
     {
@@ -463,8 +463,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
           parameter1->setId(parameterName1.c_str());
           double value = copasiReaction->getParameterValue(parameterName1);
           // if the value is NaN, leave the parameter value unset.
-          if (!isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
-            // seems to be a Mac OS X bug
+          if (!isnan(value))
             {
               parameter1->setValue(value);
             }
@@ -495,8 +494,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
               Parameter* parameter2 = new Parameter();
               parameter2->setId(parameterName2);
               double value = copasiReaction->getParameterValue(parameterName2);
-              if (!isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
-                // seems to be a Mac OS X bug
+              if (!isnan(value))
                 {
                   parameter2->setValue(value);
                 }
@@ -620,8 +618,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* cop
                   sbmlPara->setId(para->getObjectName().c_str());
                   double value = copasiReaction->getParameterValue(para->getObjectName());
                   // if the value is NaN, leave the parameter value unset.
-                  if (!isnan(value)) // tried to use isnan, but compiler always told me that it was undeclared
-                    // seems to be a Mac OS X bug
+                  if (!isnan(value))
                     {
                       sbmlPara->setValue(value);
                     }
@@ -812,19 +809,22 @@ ASTNode* SBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& vec
 /**
  ** This method tests if a string only consists of whitespace characters
  */
-bool SBMLExporter::isEmptyString(const std::string str)
+bool SBMLExporter::isEmptyString(const std::string& str)
 {
-  bool result = true;
-  unsigned int counter;
-  for (counter = 0; counter < str.size(); counter++)
-    {
-      if ((str[counter] != ' ') && (str[counter] != '\n') && (str[counter] != '\t') && (str[counter] != '\r'))
-        {
-          result = false;
-          break;
-        }
-    }
-  return result;
+  /*
+   bool result = true;
+   unsigned int counter;
+   for (counter = 0; counter < str.size(); counter++)
+     {
+       if ((str[counter] != ' ') && (str[counter] != '\n') && (str[counter] != '\t') && (str[counter] != '\r'))
+         {
+           result = false;
+           break;
+         }
+     }
+   return result;
+   */
+  return (str.find_first_not_of(" \n\t\r") == std::string::npos);
 }
 
 void SBMLExporter::replaceNodeName(ASTNode* pNode, const std::string& oldName, const std::string& newName)

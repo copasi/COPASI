@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 21:54:00 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeOperator
@@ -126,7 +126,7 @@ class CEvaluationNodeOperator : public CEvaluationNode
      * Create a new ASTNode corresponding to this OperatorNode.
      * @return ASTNode* return a pointer to the newly created node;
      */
-    virtual ASTNode* toASTNode();
+    virtual ASTNode* toAST() const;
 
     /**
      * Convert our modulo to something SBML understands
@@ -135,7 +135,7 @@ class CEvaluationNodeOperator : public CEvaluationNode
      * @param const ASTNode* pASTNode the root node for the SBML math expression
      * @return bool which is true on sucessfull conversion.
      */
-    bool createModuloTree(CEvaluationNodeOperator* pNode, ASTNode* pASTNode);
+    bool createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode) const;
 
     // Attributes
   private:

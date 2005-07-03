@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/10 17:48:37 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeVariable
 #define COPASI_CEvaluationNodeVariable
+
+class ASTNode;
 
 /**
  * This is class for nodes presenting numbers used in an evaluation trees
@@ -64,6 +66,12 @@ class CEvaluationNodeVariable : public CEvaluationNode
      * @return const C_FLOAT64 & value
      */
     virtual inline const C_FLOAT64 & value() const;
+
+    /**
+     * Converts this node to an AST Node of type AST_NAME
+     * @return ASTNode* the resulting ASTNode.
+     */
+    virtual ASTNode* toAST() const;
 
     //Attributes
   private:

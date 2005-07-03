@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 21:54:00 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #include "copasi.h"
@@ -363,3 +363,8 @@ void CEvaluationTree::initObjects()
 {
   addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
 }
+
+ASTNode* CEvaluationTree::toAST() const
+  {
+    return this->mpRoot->toAST();
+  }

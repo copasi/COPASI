@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/03 08:12:06 $
+   $Date: 2005/07/03 10:24:35 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -153,7 +153,7 @@ class SBMLExporter
     /**
     ** This method tests if a string only consists of whitespace characters
     */
-    bool isEmptyString(const std::string str);
+    bool isEmptyString(const std::string& str);
   };
 
 #endif

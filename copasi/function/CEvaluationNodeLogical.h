@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 21:54:01 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeLogical
@@ -142,7 +142,7 @@ class CEvaluationNodeLogical : public CEvaluationNode
      * Create a new ASTNode corresponding to this OperatorNode.
      * @return ASTNode* return a pointer to the newly created node;
      */
-    virtual ASTNode* toASTNode();
+    virtual ASTNode* toAST() const;
 
     // Attributes
   private:

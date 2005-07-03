@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 21:54:01 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #include "copasi.h"
@@ -122,7 +122,7 @@ const CEvaluationNode::Type & CEvaluationNode::getType() const
 bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
 {return (mPrecedence.right < rhs.mPrecedence.left);}
 
-ASTNode* CEvaluationNode::toASTNode()
-{
-  return new ASTNode();
-}
+ASTNode* CEvaluationNode::toAST() const
+  {
+    return new ASTNode();
+  }

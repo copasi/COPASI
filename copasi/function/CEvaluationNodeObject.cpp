@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/01 14:45:59 $
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #include "copasi.h"
@@ -12,6 +12,7 @@
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
+#include "model/CModel.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -63,17 +64,35 @@ CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& nod
 {
   CEvaluationNodeObject* pNode = NULL;
   ASTNodeType_t type = node.getType();
-  CCopasiObject* pObject;
   switch (type)
     {
     case AST_NAME:
       pNode = new CEvaluationNodeObject(ANY, CCopasiObjectName(std::string("<") + node.getName() + std::string(">")));
       break;
     case AST_NAME_TIME:
-      pNode = new CEvaluationNodeObject(ANY, "Reference=Time");
+      pNode = new CEvaluationNodeObject(ANY, "<Reference=Time>");
       break;
     default:
       break;
     }
   return pNode;
 }
+
+ASTNode* CEvaluationNodeObject::toAST() const
+  {
+    ASTNode* node = new ASTNode();
+    if (this->getData() == "<Reference=Time>")
+      {
+        node->setType(AST_NAME_TIME);
+      }
+    else
+      {
+        node->setType(AST_NAME);
+        // since I can not get the model in which this node is located, I just
+        // assume that it will always be the current global model.
+        CCopasiObject* object = CCopasiContainer::ObjectFromName(mRegisteredObjectCN);
+        assert(object);
+        node->setName(object->getObjectName().c_str());
+      }
+    return node;
+  }

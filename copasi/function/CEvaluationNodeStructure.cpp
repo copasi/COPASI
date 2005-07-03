@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeStructure.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/22 16:14:27 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
+
+#include "sbml/math/ASTNode.h"
 
 CEvaluationNodeStructure::CEvaluationNodeStructure():
     CEvaluationNode(CEvaluationNode::INVALID, "")
@@ -42,3 +44,9 @@ CEvaluationNodeStructure::CEvaluationNodeStructure(const CEvaluationNodeStructur
 {}
 
 CEvaluationNodeStructure::~CEvaluationNodeStructure() {}
+
+ASTNode* CEvaluationNodeStructure::toAST() const
+  {
+    ASTNode* node = new ASTNode();
+    return node;
+  }

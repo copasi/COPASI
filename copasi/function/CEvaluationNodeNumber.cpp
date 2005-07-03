@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/22 16:14:27 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #include "copasi.h"
@@ -88,41 +88,41 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
   return new CEvaluationNodeNumber(subType, data);
 }
 
-ASTNode* CEvaluationNodeNumber::toASTNode()
-{
-  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
-  ASTNode* node = new ASTNode();
-  double num1;
-  double num2;
-  char* end;
-  const char * str = mData.c_str();
+ASTNode* CEvaluationNodeNumber::toAST() const
+  {
+    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+    ASTNode* node = new ASTNode();
+    double num1;
+    double num2;
+    char* end;
+    const char * str = mData.c_str();
 
-  switch (subType)
-    {
-    case DOUBLE:
-      node->setType(AST_REAL);
-      node->setValue(this->value());
-      break;
-    case INTEGER:
-      node->setType(AST_INTEGER);
-      node->setValue((long)this->value());
-      break;
-    case ENOTATION:
-      node->setType(AST_REAL_E);
-      num2 = floor(log10(this->value()));
-      num1 = pow(10, log10(this->value()) - num2);
-      node->setValue(num1, (long)num2);
-      break;
-    case RATIONALE:
-      node->setType(AST_RATIONAL);
-      str++; // Skip the '('
-      num1 = strtod(str, &end);
-      end++; // Skip the '/'
-      num2 = strtod(end, NULL);
-      node->setValue((long)num1, (long)num2);
-      break;
-    case INVALID:
-      break;
-    }
-  return node;
-}
+    switch (subType)
+      {
+      case DOUBLE:
+        node->setType(AST_REAL);
+        node->setValue(this->value());
+        break;
+      case INTEGER:
+        node->setType(AST_INTEGER);
+        node->setValue((long)this->value());
+        break;
+      case ENOTATION:
+        node->setType(AST_REAL_E);
+        num2 = floor(log10(this->value()));
+        num1 = pow(10, log10(this->value()) - num2);
+        node->setValue(num1, (long)num2);
+        break;
+      case RATIONALE:
+        node->setType(AST_RATIONAL);
+        str++; // Skip the '('
+        num1 = strtod(str, &end);
+        end++; // Skip the '/'
+        num2 = strtod(end, NULL);
+        node->setValue((long)num1, (long)num2);
+        break;
+      case INVALID:
+        break;
+      }
+    return node;
+  }

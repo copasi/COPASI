@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 18:47:03 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:37 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -124,6 +124,12 @@ class CEvaluationTree:
      * @return CEvaluationNode*
      */
     static CEvaluationNode* convertASTNode(const ASTNode& node);
+
+    /**
+     * Converts a CEvaluationTree to an ASTNode based tree.
+     * @return ASTNode* root node of the tree.
+     */
+    virtual ASTNode* toAST() const;
 
     /**
      * Set the infix description of the tree and compile it.

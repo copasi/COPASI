@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeWhiteSpace.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/31 17:48:57 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeWhiteSpace
 #define COPASI_CEvaluationNodeWhiteSpace
+
+class ASTNode;
 
 /**
  * This is class for nodes presenting numbers used in an evaluation trees
@@ -50,6 +52,12 @@ class CEvaluationNodeWhiteSpace : public CEvaluationNode
      * Destructor
      */
     virtual ~CEvaluationNodeWhiteSpace();
+
+    /**
+     * Create a new ASTNode corresponding to this OperatorNode.
+     * @return ASTNode* return a pointer to the newly created node;
+     */
+    virtual ASTNode* toAST() const;
   };
 
 #endif // COPASI_CEvaluationNodeWhiteSpace

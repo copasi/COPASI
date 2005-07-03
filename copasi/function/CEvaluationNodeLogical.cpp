@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/30 13:50:14 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #include "copasi.h"
@@ -160,9 +160,52 @@ CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& no
   return convertedNode;
 }
 
-ASTNode* CEvaluationNodeLogical::toASTNode()
-{
-  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
-  ASTNode* node = new ASTNode();
-  return node;
-}
+ASTNode* CEvaluationNodeLogical::toAST() const
+  {
+    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+    ASTNode* node = new ASTNode();
+    switch (subType)
+      {
+      case AND:
+        node->setType(AST_LOGICAL_AND);
+        break;
+      case OR:
+        node->setType(AST_LOGICAL_OR);
+        break;
+      case XOR:
+        node->setType(AST_LOGICAL_XOR);
+        break;
+      case EQ:
+        node->setType(AST_RELATIONAL_EQ);
+        break;
+      case NE:
+        node->setType(AST_RELATIONAL_NEQ);
+        break;
+      case GT:
+        node->setType(AST_RELATIONAL_GT);
+        break;
+      case GE:
+        node->setType(AST_RELATIONAL_GEQ);
+        break;
+      case LT:
+        node->setType(AST_RELATIONAL_LT);
+        break;
+      case LE:
+        node->setType(AST_RELATIONAL_LEQ);
+        break;
+      case INVALID:
+        break;
+      default:
+        subType = INVALID;
+        break;
+      }
+    if (subType != INVALID)
+      {
+        const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
+        node->addChild(child1->toAST());
+        node->addChild(child2->toAST());
+      }
+
+    return node;
+  }

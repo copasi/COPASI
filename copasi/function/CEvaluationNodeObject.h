@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 21:54:01 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeObject
@@ -95,6 +95,12 @@ class CEvaluationNodeObject : public CEvaluationNode
      * @return CEvaluationNode* return a pointer to the newly created node;
      */
     static CEvaluationNode* createNodeFromASTTree(const ASTNode& node);
+
+    /**
+     * Converts this node to an ASTNode.
+     * @return ASTNode the resulting ASTNode.
+     */
+    virtual ASTNode* toAST() const;
 
     //Attributes
   private:

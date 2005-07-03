@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/01 09:48:34 $
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #include <string>
@@ -85,26 +85,26 @@ CEvaluationNode* CEvaluationNodeConstant::createNodeFromASTTree(const ASTNode& n
   return new CEvaluationNodeConstant(subType, data);
 }
 
-ASTNode* CEvaluationNodeConstant::toASTNode()
-{
-  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
-  ASTNode* node = new ASTNode();
-  switch (subType)
-    {
-    case PI:
-      node->setType(AST_CONSTANT_PI);
-      break;
-    case EXPONENTIALE:
-      node->setType(AST_CONSTANT_E);
-      break;
-    case TRUE:
-      node->setType(AST_CONSTANT_TRUE);
-      break;
-    case FALSE:
-      node->setType(AST_CONSTANT_FALSE);
-      break;
-    case INVALID:
-      break;
-    }
-  return node;
-}
+ASTNode* CEvaluationNodeConstant::toAST() const
+  {
+    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+    ASTNode* node = new ASTNode();
+    switch (subType)
+      {
+      case PI:
+        node->setType(AST_CONSTANT_PI);
+        break;
+      case EXPONENTIALE:
+        node->setType(AST_CONSTANT_E);
+        break;
+      case TRUE:
+        node->setType(AST_CONSTANT_TRUE);
+        break;
+      case FALSE:
+        node->setType(AST_CONSTANT_FALSE);
+        break;
+      case INVALID:
+        break;
+      }
+    return node;
+  }

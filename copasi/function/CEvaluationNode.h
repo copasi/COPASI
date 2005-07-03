@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 21:54:01 $
+   $Author: gauges $ 
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -137,7 +137,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * Create a new invalid ASTNode. 
      * @return ASTNode* return a pointer to the newly created node;
      */
-    virtual ASTNode* toASTNode();
+    virtual ASTNode* toAST() const;
 
     /**
      * Comparison operator used to evaluate the precedence of the node.

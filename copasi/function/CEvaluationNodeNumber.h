@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/10 11:54:30 $
+   $Date: 2005/07/03 10:24:36 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeNumber
@@ -65,7 +65,7 @@ class CEvaluationNodeNumber : public CEvaluationNode
      * Create a new ASTNode corresponding to this NumberNode.
      * @return ASTNode* return a pointer to the newly created node;
      */
-    ASTNode* toASTNode();
+    ASTNode* toAST() const;
   };
 
 #endif // COPASI_CEvaluationNodeNumber
