@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/05/24 12:30:55 $
+   $Date: 2005/07/04 15:26:45 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -87,6 +87,10 @@ class CCopasiDataModel
 
     bool isChanged() const;
     void changed(const bool & changed = true);
+
+    SBMLDocument* getCurrentSBMLDocument();
+
+    std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
 
     // Attributes
   protected:

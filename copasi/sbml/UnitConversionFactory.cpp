@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/18 07:57:53 $
+   $Date: 2005/07/04 15:26:44 $
    End CVS Header */
 
 class UnitDefinition;
@@ -1152,8 +1152,9 @@ UnitDefinition* UnitConversionFactory::convertToSI(const UnitDefinition& uDef)
 /*
  * Checks if two UnitDefinitions are equivalent, i.e. wether they are
  * interconvertible.
- * This is the case if they consist of the same set of units after being
- * converted to SI units.
+ * This is the case if they consist of the same set of units 
+ * with the same exponents after being
+ * converted to SI units. The scales of the equivalent units may differ.
  * If the offset of two equivalent units differ, false is returned.
  * @param const UnitDefinition& uDef1
  * @param const UnitDefinition& uDef2
@@ -1201,6 +1202,64 @@ bool UnitConversionFactory::areEquivalent(const UnitDefinition& uDef1, const Uni
       equivalent = false;
     }
   return equivalent;
+}
+
+/*
+ * Checks if two UnitDefinitions are equal.
+ * This is the case if they consist of the same set of units with the same scale and exponent 
+ * after being converted to SI units.
+ * If the offset of two equivalent units differ, false is returned.
+ * @param const UnitDefinition& uDef1
+ * @param const UnitDefinition& uDef2
+ * @return bool areEqual
+ */
+LIBSBML_EXTERN
+bool UnitConversionFactory::areEqual(const UnitDefinition& uDef1, const UnitDefinition& uDef2)
+{
+  bool equal = true;
+  UnitDefinition* pTmpUdef1 = UnitConversionFactory::convertToSI(uDef1);
+  UnitDefinition* pTmpUdef2 = UnitConversionFactory::convertToSI(uDef2);
+  if (pTmpUdef1 && pTmpUdef2)
+    {
+      unsigned int maxUnits = pTmpUdef1->getNumUnits();
+      if (maxUnits == pTmpUdef2->getNumUnits())
+        {
+          unsigned int i;
+          // for all units the UnitKind and the exponent must be the same for the unit
+          // definitions to be interconvertible
+          for (i = 0; i < maxUnits;++i)
+            {
+              Unit* pUnit1 = pTmpUdef1->getUnit(i);
+              Unit* pUnit2 = pTmpUdef2->getUnit(i);
+              if (pUnit1->getKind() != pUnit2->getKind())
+                {
+                  equal = false;
+                  break;
+                }
+              if (pUnit1->getExponent() != pUnit2->getExponent())
+                {
+                  equal = false;
+                  break;
+                }
+              if (pUnit1->getScale() != pUnit2->getScale())
+                {
+                  equal = false;
+                  break;
+                }
+            }
+        }
+      else
+        {
+          equal = false;
+        }
+      delete pTmpUdef1;
+      delete pTmpUdef2;
+    }
+  else
+    {
+      equal = false;
+    }
+  return equal;
 }
 
 /*

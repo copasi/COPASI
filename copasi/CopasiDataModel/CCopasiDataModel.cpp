@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/22 14:48:22 $
+   $Author: gauges $ 
+   $Date: 2005/07/04 15:26:45 $
    End CVS Header */
 
 #include "copasi.h"
@@ -555,4 +555,14 @@ void CCopasiDataModel::changed(const bool & changed)
 {
   mChanged = changed;
   mAutoSaveNeeded = changed;
+}
+
+SBMLDocument* CCopasiDataModel::getCurrentSBMLDocument()
+{
+  return this->mpCurrentSBMLDocument;
+}
+
+std::map<CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
+{
+  return this->mCopasi2SBMLMap;
 }

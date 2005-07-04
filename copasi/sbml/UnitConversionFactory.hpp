@@ -42,8 +42,9 @@ class UnitConversionFactory{
       /*
        * Checks if two UnitDefinitions are equivalent, i.e. wether they are
        * interconvertible.
-       * This is the case if they consist of the same set of units after being
-       * converted to SI units.
+       * This is the case if they consist of the same set of units 
+       * with the same exponents after being
+       * converted to SI units. The scales of the equivalent units may differ.
        * If the offset of two equivalent units differ, false is returned.
        * @param const UnitDefinition& uDef1
        * @param const UnitDefinition& uDef2
@@ -52,6 +53,18 @@ class UnitConversionFactory{
       LIBSBML_EXTERN
       static bool areEquivalent(const UnitDefinition& uDef1,const UnitDefinition& uDef2);  
      
+      /*
+       * Checks if two UnitDefinitions are equal.
+       * This is the case if they consist of the same set of units with the same scale and exponent 
+       * after being converted to SI units.
+       * If the offset of two equivalent units differ, false is returned.
+       * @param const UnitDefinition& uDef1
+       * @param const UnitDefinition& uDef2
+       * @return bool areEqual
+       */
+      LIBSBML_EXTERN
+      static bool areEqual(const UnitDefinition& uDef1,const UnitDefinition& uDef2);  
+
       /*
        * Converts the given value from the given source UnitDefinition to the
        * given destination UnitDefinition if the two UnitDefinitions are
