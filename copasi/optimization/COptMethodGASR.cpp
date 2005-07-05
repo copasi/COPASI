@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/01 20:44:10 $
+   $Date: 2005/07/05 20:16:36 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -75,7 +75,7 @@ bool COptMethodGASR::setCallBack(CProcessReport * pCallBack)
   mhGenerations =
     pCallBack->addItem("Current Generation",
                        CCopasiParameter::UINT,
-                       getObject(CCopasiObjectName("Reference=Current Generation")),
+                       & mGeneration,
                        & mGenerations);
 
   return true;
@@ -373,7 +373,7 @@ C_FLOAT64 COptMethodGASR::Phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   for (int i = 0; i < mVariableSize; i++)  /******* here double check to see if indv array parameter is same as number of parameters ****
-                        Clarify if should go through additional for loop for number of parameters */
+                            Clarify if should go through additional for loop for number of parameters */
     {
       C_FLOAT64 phiCalc;
       COptItem & OptItem = *(*mpOptItem)[i];

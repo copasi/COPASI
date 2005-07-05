@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/01 20:44:01 $
+   $Date: 2005/07/05 20:16:36 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -75,7 +75,7 @@ bool COptMethodGA::setCallBack(CProcessReport * pCallBack)
   mhGenerations =
     pCallBack->addItem("Current Generation",
                        CCopasiParameter::UINT,
-                       getObject(CCopasiObjectName("Reference=Current Generation")),
+                       & mGeneration,
                        & mGenerations);
 
   return true;
