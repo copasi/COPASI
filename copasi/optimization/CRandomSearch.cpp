@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/01 19:27:03 $
+   $Date: 2005/07/05 20:20:39 $
    End CVS Header */
 
 /***************************************************************************
@@ -96,8 +96,7 @@ bool CRandomSearch::optimise()
 
   if (!initialize()) return false;
 
-  C_FLOAT64 la, candx = DBL_MAX;
-  mIterations = * getValue("Number of Iterations").pUINT;
+  C_FLOAT64 la;
 
   unsigned C_INT32 i, j;
 
@@ -120,13 +119,11 @@ bool CRandomSearch::optimise()
               // determine if linear or log scale
               linear = false; la = 1.0;
 
-              if (mn == 0.0) mn = DBL_EPSILON;
-
               if ((mn < 0.0) || (mx <= 0.0))
                 linear = true;
               else
                 {
-                  la = log10(mx) - log10(mn);
+                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
                   if (la < 1.8) linear = true;
                 }
 
@@ -194,12 +191,8 @@ bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & individual)
   for (j = 0; j < mVariableSize; j++, ++itMethod)
     (**itMethod)(individual[j]);
 
-  // check whether the parametric constraints are fulfilled
-  if (!mpOptProblem->checkParametricConstraints())
-    {
-      mValue = DBL_MAX;
-      return Continue;
-    }
+  // We do not need to check whether the parametric constraints are fulfilled
+  // since the parameters are created within the bounds.
 
   // evaluate the fitness
   try
