@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItemBar.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:33:59 $
+   $Date: 2005/07/05 21:05:42 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQProgressItemBar.ui'
  **
- ** Created: Tue Apr 26 09:49:49 2005
- **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.5 2005/06/21 20:33:59 shoops Exp $)
+ ** Created: Tue Jul 5 17:03:30 2005
+ **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.6 2005/07/05 21:05:42 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,7 +20,6 @@
 
 #include <qvariant.h>
 #include <qpixmap.h>
-#include <CopasiUI/CQProgressItem.h>
 #include "CQProgressItem.h"
 #include "utilities/CVector.h"
 #include "utilities/CProcessReport.h"
@@ -60,7 +59,6 @@ class CQProgressItemBar : public CQProgressItem
     CCopasiParameter::Value mEnd;
     CCopasiParameter::Value mStart;
     CCopasiParameter::Value mValue;
-
     C_INT32 mLastSet;
     C_INT32 mCurrentValue;
 
