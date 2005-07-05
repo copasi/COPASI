@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CProgressBar.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 19:50:14 $
+   $Date: 2005/07/05 20:16:05 $
    End CVS Header */
 
 #include <qprogressdialog.h>
@@ -84,13 +84,15 @@ bool CProgressBar::progress(const unsigned C_INT32 & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
+  bool Proceed = mProgressItemList[handle]->process() && mProceed;
+
   if (mNextEventProcessing < QTime::currentTime())
     {
       mNextEventProcessing = QTime::currentTime().addMSecs(1000);
       pApp->processEvents();
     }
 
-  return (mProgressItemList[handle]->process() && mProceed);
+  return Proceed;
 }
 
 bool CProgressBar::finish()
