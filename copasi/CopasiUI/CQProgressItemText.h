@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQProgressItemText.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:22 $
+   $Date: 2005/07/05 20:13:05 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQProgressItemText.ui'
  **
- ** Created: Thu Apr 21 13:02:55 2005
- **      by: The User Interface Compiler ($Id: CQProgressItemText.h,v 1.1 2005/04/25 18:13:22 shoops Exp $)
+ ** Created: Tue Jul 5 15:56:51 2005
+ **      by: The User Interface Compiler ($Id: CQProgressItemText.h,v 1.2 2005/07/05 20:13:05 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -19,6 +19,8 @@
 #define CQPROGRESSITEMTEXT_H
 
 #include <qvariant.h>
+#include <qpixmap.h>
+#include <C:/cygwin/home/shoops/development/copasi_dev/copasi/CopasiUI/CQProgressItem.h>
 #include "CQProgressItem.h"
 #include "utilities/CVector.h"
 #include "utilities/CProcessReport.h"
@@ -51,6 +53,17 @@ class CQProgressItemText : public CQProgressItem
 
   protected slots:
     virtual void languageChange();
+
+  private:
+    void (CQProgressItemText::*mpSetValue)();
+    CCopasiParameter::Value mParameterValue;
+
+    QPixmap image0;
+
+    virtual void setValueFromDOUBLE();
+    virtual void setValueFromINT();
+    virtual void setValueFromUINT();
+    virtual void setValueFromSTRING();
   };
 
 #endif // CQPROGRESSITEMTEXT_H
