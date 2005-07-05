@@ -1,12 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/04 15:26:44 $
+   $Author: shoops $ 
+   $Date: 2005/07/05 16:27:40 $
    End CVS Header */
 
 #include <math.h>
+
+#include <algorithm>
 
 #include "copasi.h"
 
@@ -159,22 +161,22 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
       UnitDefinition* uDef = this->createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(copasiModel->getVolumeUnit());
       if (sbmlModel->getUnitDefinition("volume"))
         {
-          if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("volume"), *uDef));
-          {
-            ListOf& list = sbmlModel->getListOfUnitDefinitions();
-            unsigned int i = list.getNumItems();
-            for (; i > 0;++i)
-              {
-                UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
-                if (uDef->getId() == "volume")
-                  {
-                    list.remove(i - 1);
-                    pdelete(uDef);
-                    break;
-                  }
-              }
-            sbmlModel->addUnitDefinition(*uDef);
-          }
+          if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("volume"), *uDef))
+            {
+              ListOf& list = sbmlModel->getListOfUnitDefinitions();
+              unsigned int i = list.getNumItems();
+              for (; i > 0;++i)
+                {
+                  UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
+                  if (uDef->getId() == "volume")
+                    {
+                      list.remove(i - 1);
+                      pdelete(uDef);
+                      break;
+                    }
+                }
+              sbmlModel->addUnitDefinition(*uDef);
+            }
         }
       else
         {
@@ -190,22 +192,22 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
       UnitDefinition* uDef = this->createSBMLTimeUnitDefinitionFromCopasiTimeUnit(copasiModel->getTimeUnit());
       if (sbmlModel->getUnitDefinition("time"))
         {
-          if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("time"), *uDef));
-          {
-            ListOf& list = sbmlModel->getListOfUnitDefinitions();
-            unsigned int i = list.getNumItems();
-            for (; i > 0;++i)
-              {
-                UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
-                if (uDef->getId() == "time")
-                  {
-                    list.remove(i - 1);
-                    pdelete(uDef);
-                    break;
-                  }
-              }
-            sbmlModel->addUnitDefinition(*uDef);
-          }
+          if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("time"), *uDef))
+            {
+              ListOf& list = sbmlModel->getListOfUnitDefinitions();
+              unsigned int i = list.getNumItems();
+              for (; i > 0;++i)
+                {
+                  UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
+                  if (uDef->getId() == "time")
+                    {
+                      list.remove(i - 1);
+                      pdelete(uDef);
+                      break;
+                    }
+                }
+              sbmlModel->addUnitDefinition(*uDef);
+            }
         }
       else
         {
@@ -222,22 +224,22 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
       UnitDefinition* uDef = this->createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(copasiModel->getQuantityUnit());
       if (sbmlModel->getUnitDefinition("substance"))
         {
-          if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("substance"), *uDef));
-          {
-            ListOf& list = sbmlModel->getListOfUnitDefinitions();
-            unsigned int i = list.getNumItems();
-            for (; i > 0;++i)
-              {
-                UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
-                if (uDef->getId() == "substance")
-                  {
-                    list.remove(i - 1);
-                    pdelete(uDef);
-                    break;
-                  }
-              }
-            sbmlModel->addUnitDefinition(*uDef);
-          }
+          if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("substance"), *uDef))
+            {
+              ListOf& list = sbmlModel->getListOfUnitDefinitions();
+              unsigned int i = list.getNumItems();
+              for (; i > 0;++i)
+                {
+                  UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
+                  if (uDef->getId() == "substance")
+                    {
+                      list.remove(i - 1);
+                      pdelete(uDef);
+                      break;
+                    }
+                }
+              sbmlModel->addUnitDefinition(*uDef);
+            }
         }
       else
         {
