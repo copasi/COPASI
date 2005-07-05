@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/05 20:16:36 $
+   $Date: 2005/07/05 20:39:22 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -373,13 +373,11 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
               // determine if linear or log scale
               linear = false; la = 1.0;
 
-              if (mn == 0.0) mn = DBL_EPSILON;
-
               if ((mn < 0.0) || (mx <= 0.0))
                 linear = true;
               else
                 {
-                  la = log10(mx) - log10(mn);
+                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
                   if (la < 1.8) linear = true;
                 }
 
