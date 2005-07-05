@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/01 19:24:58 $
+   $Date: 2005/07/05 20:14:53 $
    End CVS Header */
 
 /**
@@ -82,7 +82,7 @@ class COptProblem : public CCopasiProblem
     /**
      * Counter of evaluations
      */
-    C_FLOAT64 mCounter;
+    unsigned C_INT32 mCounter;
 
     /**
      * Handle of "Best Value" process report item
