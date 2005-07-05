@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/01 23:53:17 $
+   $Author: shoops $ 
+   $Date: 2005/07/05 20:18:14 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -367,6 +367,17 @@ bool OptimizationWidget::saveOptimization()
   // optimizationProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   saveExpression(); // save objective function
+
+  if (timeCheck->isChecked())
+    {
+      optimizationProblem->setValue("Time-Course", (*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
+      optimizationProblem->setValue("Steady-State", std::string(""));
+    }
+  else
+    {
+      optimizationProblem->setValue("Time-Course", std::string(""));
+      optimizationProblem->setValue("Steady-State", (*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
+    }
 
   return true;
 }
