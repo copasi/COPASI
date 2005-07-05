@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/01 23:55:14 $
+   $Author: shoops $ 
+   $Date: 2005/07/05 20:19:22 $
    End CVS Header */
 
 /**
@@ -49,10 +49,12 @@ COptProblem::COptProblem(const CCopasiContainer * pParent):
   addGroup("OptimizationItemList");
   addGroup("OptimizationConstraintList");
 
-  addParameter("SteadyState", CCopasiParameter::STRING, (std::string) "");
-  addParameter("Trajectory", CCopasiParameter::STRING, (std::string) "");
+  addParameter("Steady-State", CCopasiParameter::KEY, (std::string) "");
+  addParameter("Time-Course", CCopasiParameter::KEY, (std::string) "");
   addParameter("ObjectiveFunction", CCopasiParameter::KEY, (std::string) "");
   addParameter("Maximize", CCopasiParameter::BOOL, (bool) false);
+
+  initObjects();
 }
 
 // copy constructor
@@ -70,6 +72,8 @@ COptProblem::COptProblem(const COptProblem& src,
       mpFunction->setInfix(src.mpFunction->getInfix());
       setValue("ObjectiveFunction", mpFunction->getKey());
     }
+
+  initObjects();
 }
 
 // Destructor
@@ -81,11 +85,10 @@ COptProblem::~COptProblem()
   for (; it != end; ++it)
     pdelete(*it);
 
-  if (mpFunction)
-    {
-      CCopasiDataModel::Global->getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
-      pdelete(mpFunction);
-    }
+  if (mpFunction && CCopasiDataModel::Global && CCopasiDataModel::Global->getFunctionList())
+    CCopasiDataModel::Global->getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
+
+  pdelete(mpFunction);
 }
 
 bool COptProblem::setModel(CModel * pModel)
@@ -100,14 +103,14 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
   if (pCallBack)
     {
-      mSolutionValue =
+      mhSolutionValue =
         mpCallBack->addItem("Best Value",
                             CCopasiParameter::DOUBLE,
-                            getObject(CCopasiObjectName("Reference=Best Value")));
+                            & mSolutionValue);
       mhCounter =
         mpCallBack->addItem("Simulation Counter",
-                            CCopasiParameter::DOUBLE,
-                            getObject(CCopasiObjectName("Reference=Simulation Counter")));
+                            CCopasiParameter::UINT,
+                            & mCounter);
     }
 
   return true;
@@ -127,6 +130,18 @@ bool COptProblem::initialize()
   std::vector< CCopasiContainer * > ContainerList;
   ContainerList.push_back(mpModel);
   ContainerList.push_back(getObjectParent());
+
+  mCounter = 0;
+
+  mpSteadyState =
+    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(* getValue("Steady-State").pKEY));
+  mpTrajectory =
+    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(* getValue("Time-Course").pKEY));
+
+  if (!mpSteadyState && !mpTrajectory) return false;
+
+  if (mpSteadyState) mpSteadyState->initialize();
+  if (mpTrajectory) mpTrajectory->initialize();
 
   unsigned C_INT32 i;
   unsigned C_INT32 Size = mOptItemList.size();
@@ -157,7 +172,7 @@ bool COptProblem::checkParametricConstraints()
   std::vector< COptItem * >::const_iterator end = mOptItemList.end();
 
   for (; it != end; ++it)
-    if (!(*it)->checkConstraint()) return false;
+    if ((*it)->checkConstraint()) return false;
 
   return true;
 }
