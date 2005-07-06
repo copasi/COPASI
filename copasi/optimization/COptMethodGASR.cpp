@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/06 17:22:00 $
+   $Date: 2005/07/06 17:39:48 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -372,7 +372,7 @@ C_FLOAT64 COptMethodGASR::Phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   for (int i = 0; i < mVariableSize; i++)  /******* here double check to see if indv array parameter is same as number of parameters ****
-                                    Clarify if should go through additional for loop for number of parameters */
+                                        Clarify if should go through additional for loop for number of parameters */
     {
       C_FLOAT64 phiCalc;
       COptItem & OptItem = *(*mpOptItem)[i];
@@ -604,34 +604,32 @@ bool COptMethodGASR::optimise()
     }
 
   // ITERATE FOR gener GENERATIONS
-  for (mGeneration = 0; mGeneration < mGenerations; mGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
+  for (mGeneration = 0;
+       mGeneration < mGenerations && Continue;
+       mGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
-          if (!(Continue = creation(mPopulationSize / 2, mPopulationSize)))
-            break;
+          Continue = creation(mPopulationSize / 2, mPopulationSize);
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
       else if (Stalled > 30 && Stalled30 > 30)
         {
-          if (!(Continue = creation(mPopulationSize * 0.7, mPopulationSize)))
-            break;
+          Continue = creation(mPopulationSize * 0.7, mPopulationSize);
           Stalled10 = Stalled30 = 0;
         }
       else if (Stalled > 10 && Stalled10 > 10)
         {
-          if (!(Continue = creation(mPopulationSize * 0.9, mPopulationSize)))
-            break;
+          Continue = creation(mPopulationSize * 0.9, mPopulationSize);
           Stalled10 = 0;
         }
       // replicate the individuals
-      else if (!(Continue = replicate()))
-        break;
+      else
+        Continue = replicate();
 
       // select the most fit
-      if (!(Continue = select()))
-        break;
+      Continue = select();
 
       // get the index of the fittest
       mBestIndex = fittest();
@@ -641,8 +639,10 @@ bool COptMethodGASR::optimise()
           mBestValue = mValue[mBestIndex];
 
           mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-          if (!(Continue = mpOptProblem->setSolutionValue(mBestValue)))
-            break;
+          Continue = mpOptProblem->setSolutionValue(mBestValue);
+
+          // We found a new best value lets report it.
+          if (mpReport) mpReport->printBody();
         }
 
       if (mpCallBack && !(Continue = mpCallBack->progress(mhGenerations)))

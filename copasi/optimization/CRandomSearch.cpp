@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/06 17:17:03 $
+   $Date: 2005/07/06 17:39:49 $
    End CVS Header */
 
 /***************************************************************************
@@ -176,6 +176,9 @@ bool CRandomSearch::optimise()
           mBestValue = mValue;
           mpOptProblem->setSolutionVariables(mIndividual);
           Continue = mpOptProblem->setSolutionValue(mBestValue);
+
+          // We found a new best value lets report it.
+          if (mpReport) mpReport->printBody();
         }
     }
 
