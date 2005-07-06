@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeWhiteSpace.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Date: 2005/07/06 13:43:13 $
    End CVS Header */
 
 #include "copasi.h"
@@ -28,6 +28,6 @@ CEvaluationNodeWhiteSpace::~CEvaluationNodeWhiteSpace() {}
 
 ASTNode* CEvaluationNodeWhiteSpace::toAST() const
   {
-    ASTNode* node = new ASTNode();
-    return node;
+    fatalError();
+    return NULL;
   }

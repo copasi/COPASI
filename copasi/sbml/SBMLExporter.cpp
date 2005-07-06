@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/05 16:27:40 $
+   $Author: gauges $ 
+   $Date: 2005/07/06 13:43:13 $
    End CVS Header */
 
 #include <math.h>
@@ -18,7 +18,6 @@
 #include "SBMLExporter.h"
 #include "UnitConversionFactory.hpp"
 
-//#include "sbml/SBMLTypes.h"
 #include "sbml/Unit.h"
 #include "sbml/UnitDefinition.h"
 #include "sbml/UnitKind.h"
@@ -27,6 +26,8 @@
 
 #include "sbml/ModifierSpeciesReference.h"
 #include "sbml/SpeciesReference.h"
+#include "sbml/FunctionDefinition.h"
+#include "sbml/Event.h"
 #include "xml/CCopasiXMLInterface.h"
 
 #include <fstream>
@@ -38,7 +39,7 @@ const char* SBMLExporter::HTML_FOOTER = "</body>";
 /**
  ** Constructor for the exporter.
  */
-SBMLExporter::SBMLExporter(): sbmlDocument(NULL)
+SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL)
 {
   /* nothing to do */
 }
@@ -143,6 +144,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
       sbmlModel->setId(copasiModel->getKey().c_str());
     }
   this->mHandledSBMLObjects.push_back(sbmlModel);
+  this->mpIdSet = SBMLExporter::createIdSet(sbmlModel);
   if (!copasiModel->getObjectName().empty())
     {
       sbmlModel->setName(copasiModel->getObjectName().c_str());
@@ -283,6 +285,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
           sbmlModel->addReaction(*sbmlReaction);
         }
     }
+  pdelete(this->mpIdSet);
   return sbmlModel;
 }
 
@@ -444,7 +447,9 @@ Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(CCompartment* c
     {
       sbmlCompartment = new Compartment();
       copasi2sbmlmap[copasiCompartment] = sbmlCompartment;
-      sbmlCompartment->setId(copasiCompartment->getKey().c_str());
+      std::string id = SBMLExporter::createUniqueId(this->mpIdSet, "compartment_");
+      this->mpIdSet->insert(id);
+      sbmlCompartment->setId(id);
       sbmlCompartment->setSpatialDimensions(3);
       sbmlCompartment->setConstant(true);
     }
@@ -481,7 +486,9 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite)
     {
       sbmlSpecies = new Species();
       copasi2sbmlmap[copasiMetabolite] = sbmlSpecies;
-      sbmlSpecies->setId(copasiMetabolite->getKey().c_str());
+      std::string id = SBMLExporter::createUniqueId(this->mpIdSet, "species_");
+      this->mpIdSet->insert(id);
+      sbmlSpecies->setId(id);
     }
   this->mHandledSBMLObjects.push_back(sbmlSpecies);
   sbmlSpecies->setName(copasiMetabolite->getObjectName().c_str());
@@ -530,7 +537,9 @@ Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelV
     {
       pParameter = new Parameter();
       copasi2sbmlmap[pModelValue] = pParameter;
-      pParameter->setId(pModelValue->getKey());
+      std::string id = SBMLExporter::createUniqueId(this->mpIdSet, "parameter_");
+      this->mpIdSet->insert(id);
+      pParameter->setId(id);
     }
   this->mHandledSBMLObjects.push_back(pParameter);
   pParameter->setName(pModelValue->getObjectName());
@@ -567,9 +576,11 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
       /* create a new reaction object */
       sbmlReaction = new Reaction();
       copasi2sbmlmap[copasiReaction] = sbmlReaction;
+      std::string id = SBMLExporter::createUniqueId(this->mpIdSet, "reaction_");
+      this->mpIdSet->insert(id);
+      sbmlReaction->setId(id);
     }
   this->mHandledSBMLObjects.push_back(sbmlReaction);
-  sbmlReaction->setId(copasiReaction->getKey().c_str());
   sbmlReaction->setName(copasiReaction->getObjectName().c_str());
   sbmlReaction->setReversible(copasiReaction->isReversible());
   const CChemEq chemicalEquation = copasiReaction->getChemEq();
@@ -642,38 +653,20 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
       kLaw = new KineticLaw();
     }
   /* if the copasi CFunction specifies a mass-action kinetic */
+  ASTNode* node = NULL;
   if (copasiReaction->getFunction().getType() == CFunction::MassAction)
     {
       const CMassAction cMassAction = static_cast<const CMassAction>(copasiReaction->getFunction());
       /* create the ASTNode that multiplies all substrates with the first
       ** kinetic constant.
       */
-      ASTNode* forwardNode = new ASTNode(AST_TIMES);
+      node = new ASTNode(AST_TIMES);
 
       ASTNode* parameterNode1 = new ASTNode(AST_NAME);
       std::string parameterName1 = cMassAction.getVariables()[0]->getObjectName();
       parameterNode1->setName(parameterName1.c_str());
-      // only create a parameter instance if it is a local parameter
-      if (copasiReaction->isLocalParameter(0))
-        {
-          Parameter* parameter1 = new Parameter();
-          parameter1->setId(parameterName1.c_str());
-          double value = copasiReaction->getParameterValue(parameterName1);
-          // if the value is NaN, leave the parameter value unset.
-          if (!isnan(value))
-            {
-              parameter1->setValue(value);
-            }
-          kLaw->addParameter(*parameter1);
-        }
-      else
-        {
-          // Need to get the name from the mapping
-          std::string modelValueKey = copasiReaction->getParameterMappings()[0][0];
-          parameterNode1->setName(modelValueKey.c_str());
-        }
-      forwardNode->addChild(parameterNode1);
-      forwardNode->addChild(this->createTimesTree(copasiReaction->getChemEq().getSubstrates()));
+      node->addChild(parameterNode1);
+      node->addChild(this->createTimesTree(copasiReaction->getChemEq().getSubstrates()));
       /* if the reaction is reversible, create the ASTNode tree that
       ** multiplies all products with the second kinetic constant and
       ** subtract this tree from the tree of the forward reaction.
@@ -685,275 +678,94 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
           ASTNode* parameterNode2 = new ASTNode(AST_NAME);
           std::string parameterName2 = cMassAction.getVariables()[2]->getObjectName();
           parameterNode2->setName(parameterName2.c_str());
-          // only create a parameter instance if it is a local parameter
-          if (copasiReaction->isLocalParameter(2))
-            {
-              Parameter* parameter2 = new Parameter();
-              parameter2->setId(parameterName2);
-              double value = copasiReaction->getParameterValue(parameterName2);
-              if (!isnan(value))
-                {
-                  parameter2->setValue(value);
-                }
-              parameter2->setValue(copasiReaction->getParameterValue(parameterName2));
-              kLaw->addParameter(*parameter2);
-            }
-          else
-            {
-              // Need to get the name from the mapping
-              std::string modelValueKey = copasiReaction->getParameterMappings()[2][0];
-              parameterNode2->setName(modelValueKey.c_str());
-            }
           backwardNode->addChild(parameterNode2);
 
           backwardNode->addChild(this->createTimesTree(copasiReaction->getChemEq().getProducts()));
           ASTNode* tempNode = new ASTNode(AST_MINUS);
-          tempNode->addChild(forwardNode);
+          tempNode->addChild(node);
           tempNode->addChild(backwardNode);
-          forwardNode = tempNode;
+          node = tempNode;
         }
-
-      /*
-       ** If the reaction takes place in a single compartment, the rate law has
-       ** to be converted from concentration/time to substance/time by
-       ** multiplying the rate law with the volume of the compartment.
-       */
-      if (copasiReaction->getCompartmentNumber() == 1)
-        {
-          ASTNode* tNode = new ASTNode(AST_TIMES);
-          ASTNode* vNode = new ASTNode(AST_REAL);
-          double volume = 0.0;
-          if (copasiReaction->getChemEq().getSubstrates().size() != 0)
-            {
-              volume = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite().getCompartment()->getInitialVolume();
-            }
-          else
-            {
-              volume = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment()->getInitialVolume();
-            }
-          /* only multiply if the volume is neither 1 nor 0 */
-          if (volume != 1.0 && volume != 0.0)
-            {
-              /* if the whole function already has been divided by the same
-              ** volume, e.g. by a formaer export, drop one level instead of
-              ** adding another one */
-              if ((forwardNode->getType() == AST_DIVIDE) && (forwardNode->getRightChild()->getType() == AST_REAL) && (forwardNode->getRightChild()->getReal() == volume))
-                {
-                  forwardNode = forwardNode->getLeftChild();
-                }
-              else
-                {
-                  vNode->setValue(volume);
-                  tNode->addChild(forwardNode);
-                  tNode->addChild(vNode);
-                  forwardNode = tNode;
-                }
-            }
-        }
-      kLaw->setMath(forwardNode);
     }
   /* if the copasi CFunction does not specify a mass-action kinetic, it is a
   ** CKinFunction */
   else
     {
       CKinFunction cKinFunction = static_cast<CKinFunction>(copasiReaction->getFunction());
-      ASTNode* node = this->createASTNodeFromCNodeK(cKinFunction.getNodes()[0]->getLeft(), cKinFunction, copasiReaction->getParameterMappings());
+      node = cKinFunction.toAST();
+    }
 
-      /*
-       ** If the reaction takes place in a single compartment, the rate law has
-       ** to be converted from concentration/time to substance/time by
-       ** multiplying the rate law with the volume of the compartment.
-       */
-      if (copasiReaction->getCompartmentNumber() == 1)
+  /*
+   ** If the reaction takes place in a single compartment, the rate law has
+   ** to be converted from concentration/time to substance/time by
+   ** multiplying the rate law with the volume of the compartment.
+   */
+  if (copasiReaction->getCompartmentNumber() == 1)
+    {
+      ASTNode* tNode = new ASTNode(AST_TIMES);
+      ASTNode* vNode = new ASTNode(AST_REAL);
+      double volume = 0.0;
+      if (copasiReaction->getChemEq().getSubstrates().size() != 0)
         {
-          ASTNode* tNode = new ASTNode(AST_TIMES);
-          ASTNode* vNode = new ASTNode(AST_REAL);
-          double volume = 0.0;
-          if (copasiReaction->getChemEq().getSubstrates().size() != 0)
+          volume = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite().getCompartment()->getInitialVolume();
+        }
+      else
+        {
+          volume = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment()->getInitialVolume();
+        }
+      if (volume != 1.0 && volume != 0.0)
+        {
+          /* if the whole function already has been divided by the same
+          ** volume, e.g. by a formaer export, drop one level instead of
+          ** adding another one */
+          if ((node->getType() == AST_DIVIDE) && (node->getRightChild()->getType() == AST_REAL) && (node->getRightChild()->getReal() == volume))
             {
-              volume = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite().getCompartment()->getInitialVolume();
+              node = node->getLeftChild();
             }
           else
             {
-              volume = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment()->getInitialVolume();
-            }
-          if (volume != 1.0 && volume != 0.0)
-            {
-              /* if the whole function already has been divided by the same
-              ** volume, e.g. by a formaer export, drop one level instead of
-              ** adding another one */
-              if ((node->getType() == AST_DIVIDE) && (node->getRightChild()->getType() == AST_REAL) && (node->getRightChild()->getReal() == volume))
-                {
-                  node = node->getLeftChild();
-                }
-              else
-                {
-                  vNode->setValue(volume);
-                  tNode->addChild(vNode);
-                  tNode->addChild(node);
-                  node = tNode;
-                }
+              vNode->setValue(volume);
+              tNode->addChild(vNode);
+              tNode->addChild(node);
+              node = tNode;
             }
         }
+    }
 
-      kLaw->setMath(node);
-      /* add the parameters */
-      unsigned int counter;
-      for (counter = 0; counter < copasiReaction->getFunctionParameters().size(); counter++)
+  kLaw->setMath(node);
+  /* add the parameters */
+  unsigned int counter;
+  for (counter = 0; counter < copasiReaction->getFunctionParameters().size(); counter++)
+    {
+      const CFunctionParameter* para = copasiReaction->getFunctionParameters()[counter];
+      if (para->getUsage() == "PARAMETER")
         {
-          const CFunctionParameter* para = copasiReaction->getFunctionParameters()[counter];
-          if (para->getUsage() == "PARAMETER")
+          // only create a parameter if it is a local parameter,
+          // otherwise the parameter already has been created
+          if (copasiReaction->isLocalParameter(counter))
             {
-              // only create a parameter if it is a local parameter,
-              // otherwise the parameter already has been created
-              if (copasiReaction->isLocalParameter(counter))
-                {
-                  Parameter* sbmlPara = new Parameter();
+              Parameter* sbmlPara = new Parameter();
 
-                  std::string parameterKey = copasiReaction->getParameterMappings()[counter][0];
+              std::string parameterKey = copasiReaction->getParameterMappings()[counter][0];
 
-                  sbmlPara->setId(para->getObjectName().c_str());
-                  double value = copasiReaction->getParameterValue(para->getObjectName());
-                  // if the value is NaN, leave the parameter value unset.
-                  if (!isnan(value))
-                    {
-                      sbmlPara->setValue(value);
-                    }
-                  kLaw->addParameter(*sbmlPara);
-                }
-              else
+              sbmlPara->setId(para->getObjectName().c_str());
+              double value = copasiReaction->getParameterValue(para->getObjectName());
+              // if the value is NaN, leave the parameter value unset.
+              if (!isnan(value))
                 {
-                  // the corresponding node has to be changed
-                  std::string modelValueKey = copasiReaction->getParameterMappings()[counter][0];
-                  this->replaceNodeName(node, para->getObjectName(), modelValueKey);
+                  sbmlPara->setValue(value);
                 }
+              kLaw->addParameter(*sbmlPara);
+            }
+          else
+            {
+              // the corresponding node has to be changed
+              std::string modelValueKey = copasiReaction->getParameterMappings()[counter][0];
+              this->replaceNodeName(node, para->getObjectName(), modelValueKey);
             }
         }
     }
   return kLaw;
-}
-
-/**
- ** This method creates an ASTNode tree where all the species specified in
- ** the given vector are multiplied. This is used to create the mass action
- ** kinetic law.
- */
-ASTNode* SBMLExporter::createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKinFunction& kinFunction, const std::vector< std::vector < std::string > >& vect)
-{
-  ASTNode* node = new ASTNode();
-  char mType = cNodeK.getType();
-  char mSubtype = cNodeK.getSubtype();
-  ASTNode* childNode = NULL;
-  switch (mType)
-    {
-    case N_NUMBER:
-      //ASTNode_setType(node, AST_REAL);
-      node->setValue(cNodeK.getConstant());
-      break;
-    case N_IDENTIFIER:
-      node->setType(AST_NAME);
-      CFunctionParameter::DataType dataType;
-      /* resolve the parameter name mapping */
-      if (mSubtype == N_KCONSTANT)
-        {
-          node->setName(cNodeK.getName().c_str());
-        }
-      else
-        {
-          node->setName(vect[kinFunction.getVariables().findParameterByName(cNodeK.getName(), dataType)][0].c_str());
-        }
-      break;
-    case N_OPERATOR:
-      switch (mSubtype)
-        {
-        case '+':
-          node->setType(AST_PLUS);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getRight(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        case '-':
-          node->setType(AST_MINUS);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getRight(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        case '*':
-          node->setType(AST_TIMES);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getRight(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        case '/':
-          node->setType(AST_DIVIDE);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getRight(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        case '^':
-          node->setType(AST_POWER);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getRight(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        default:
-          break;
-        }
-      break;
-    case N_FUNCTION:
-      switch (mSubtype)
-        {
-        case '+':
-          node = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          break;
-        case '-':
-          node->setType(AST_MINUS);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        case N_EXP:
-          node->setType(AST_FUNCTION_EXP);
-          node->setName("exp");
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        case N_LOG:
-          node->setType(AST_FUNCTION_LN);
-          node->setName("ln");
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        case N_LOG10:
-          node->setType(AST_FUNCTION_LOG);
-          node->setName("log");
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        case N_SIN:
-          node->setType(AST_FUNCTION_SIN);
-          node->setName("sin");
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        case N_COS:
-          node->setType(AST_FUNCTION_COS);
-          node->setName("cos");
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          break;
-        default:
-          break;
-        }
-      break;
-    default:
-      break;
-    }
-  return node;
 }
 
 /**
@@ -1093,4 +905,68 @@ void SBMLExporter::removeUnusedUnitDefinitions()
 {
   // does nothing yet
   // this can only be done one we understand events and rules
+}
+
+std::set<std::string>* SBMLExporter::createIdSet(const Model* pSBMLModel)
+{
+  // go through all function definitions, compartments, species, reactions,
+  // parameters and events and create a set with all used ids.
+  // Later on, we need to add the species references as well.
+
+  std::set<std::string>* pIdSet = NULL;
+  if (pSBMLModel)
+    {
+      pIdSet = new std::set<std::string>();
+      unsigned int i, iMax;
+      iMax = pSBMLModel->getNumFunctionDefinitions();
+      for (i = 0; i < iMax;++i)
+        {
+          pIdSet->insert(pSBMLModel->getFunctionDefinition(i)->getId());
+        }
+      iMax = pSBMLModel->getNumCompartments();
+      for (i = 0; i < iMax;++i)
+        {
+          pIdSet->insert(pSBMLModel->getCompartment(i)->getId());
+        }
+      iMax = pSBMLModel->getNumSpecies();
+      for (i = 0; i < iMax;++i)
+        {
+          pIdSet->insert(pSBMLModel->getSpecies(i)->getId());
+        }
+      iMax = pSBMLModel->getNumParameters();
+      for (i = 0; i < iMax;++i)
+        {
+          pIdSet->insert(pSBMLModel->getParameter(i)->getId());
+        }
+      iMax = pSBMLModel->getNumReactions();
+      for (i = 0; i < iMax;++i)
+        {
+          pIdSet->insert(pSBMLModel->getReaction(i)->getId());
+        }
+      iMax = pSBMLModel->getNumEvents();
+      for (i = 0; i < iMax;++i)
+        {
+          pIdSet->insert(pSBMLModel->getEvent(i)->getId());
+        }
+    }
+  return pIdSet;
+}
+
+std::string SBMLExporter::createUniqueId(const std::set<std::string>* idSet, const std::string& prefix)
+{
+  unsigned int i = 0;
+  std::ostringstream numberStream;
+  numberStream << i;
+  std::string id = prefix + numberStream.str();
+  if (idSet)
+    {
+      while (idSet->find(id) != idSet->end())
+        {
+          ++i;
+          numberStream.str("");
+          numberStream << i;
+          id = prefix + numberStream.str();
+        }
+    }
+  return id;
 }

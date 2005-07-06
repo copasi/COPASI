@@ -1,13 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/04 15:26:44 $
+   $Date: 2005/07/06 13:43:13 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
 #define SBMLExpoter_H__
+
+#include <set>
+#include <string>
 
 #include "model/CModel.h"
 #include "model/CCompartment.h"
@@ -45,6 +48,8 @@ class SBMLExporter
      * from the sbml model.
      */
     std::vector<SBase*> mHandledSBMLObjects;
+
+    std::set<std::string>* mpIdSet;
 
     /**
      **  This method takes a copasi CModel object and generates a SBMLDocument
@@ -121,17 +126,6 @@ class SBMLExporter
     ASTNode* createTimesTree(const CCopasiVector<CChemEqElement >& vect, unsigned int pos = 0);
 
     /**
-     ** This method takes the left side of the topmost CNodeK object tree in a
-     ** copasi CKinFunction object. This CNodeK object corresponds to the
-     ** function tree of the kinetic function. Additionally the kintic function
-     ** object and the parameter mapping vector are given as argumtns to the
-     ** function.
-     ** The method returns the corresponding ASTNode tree for use in the SBML
-     ** KineticLaw object.
-     */
-    ASTNode* createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKinFunction& kinFunction, const std::vector< std::vector < std::string > >& vect);
-
-    /**
      * Replaces the name on all nodes with oldName with newName.
      */
     void replaceNodeName(ASTNode* pNode, const std::string& oldName, const std::string& newName);
@@ -178,6 +172,10 @@ class SBMLExporter
     ** This method tests if a string only consists of whitespace characters
     */
     bool isEmptyString(const std::string& str);
+
+    static std::string createUniqueId(const std::set<std::string>* pIdSet, const std::string& prefix);
+
+    static std::set<std::string>* createIdSet(const Model* pSBMLModel);
   };
 
 #endif

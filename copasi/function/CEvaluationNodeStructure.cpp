@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeStructure.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Date: 2005/07/06 13:43:13 $
    End CVS Header */
 
 #include "copasi.h"
@@ -47,6 +47,6 @@ CEvaluationNodeStructure::~CEvaluationNodeStructure() {}
 
 ASTNode* CEvaluationNodeStructure::toAST() const
   {
-    ASTNode* node = new ASTNode();
-    return node;
+    fatalError();
+    return NULL;
   }

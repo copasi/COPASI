@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/01 14:45:58 $
+   $Date: 2005/07/06 13:43:13 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -68,18 +68,6 @@ class SBMLImporter
     CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
-     * Traverses the brach of the given AST node recursively and prefixes all substrate
-     * parameters with "substrate_", all product parameters with "product_" and all modifier parameters with "modifier_".
-     */
-    void replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction);
-
-    /**
-     * Recursively replaces all parameter names in the branch of the given AST node
-     * with the ones give in the map.
-     */
-    void replaceSubstanceNames(ConverterASTNode* node, std::map< std::string, std::map <std::string, std::string > > substMap, const std::vector<std::string>& shadowedSubstances, bool reversible);
-
-    /**
      * Replaces SBML user defined functions with the actual funtcion definition.
      */
     ConverterASTNode* replaceUserDefinedFunctions(ASTNode* node, const Model* model);
@@ -128,11 +116,6 @@ class SBMLImporter
     CModel::TimeUnit handleTimeUnit(const UnitDefinition* uDef);
 
     /**
-     * Replaces all compartment nodes in an AST tree with the initial volume of the compartment.
-     */
-    void replaceCompartmentNodes(ConverterASTNode* node, std::map<std::string, CCompartment*> compartmentMap);
-
-    /**
      * Replaces all occurences of the log function with two arguments by
      * a division of two separate calls to log.
      */
@@ -143,11 +126,6 @@ class SBMLImporter
      * a call to the power function with the inverse of the first argument.
      */
     void replaceRoot(ConverterASTNode* sourceNode);
-
-    /**
-     * Replaces all + and * nodes that have zero or one argument.
-     */
-    void replaceFunnyOperatorCalls(ConverterASTNode* sourceNode);
 
     /**
      * Replaces the ids of named nodes in an ASTNode tree with

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/01 15:22:11 $
+   $Date: 2005/07/06 13:43:13 $
    End CVS Header */
 
 #include "copasi.h"
@@ -40,8 +40,7 @@
 #include "sbml/UnitKind.h"
 #include "sbml/Unit.h"
 #include "sbml/Parameter.h"
-#include "sbml/FunctionDefinition.h" 
-//#include "sbml/SBMLTypes.h"
+#include "sbml/FunctionDefinition.h"
 #include "sbml/xml/ParseMessage.h"
 
 #include "SBMLImporter.h"
@@ -203,7 +202,6 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       std::string cU = sbmlCompartment->getUnits();
       if (cU != "volume" && cU != "area" && cU != "length")
         {
-          //throw StdException("Error. Compartment unit other than \"volume\", \"area\" or \"length\" are not supported.");
           fatalError();
         }
       else if (cU == "area" || cU == "length")
@@ -216,13 +214,15 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     {
       name = sbmlCompartment->getId();
     }
+
   std::string appendix = "";
   unsigned int counter = 0;
+  std::ostringstream numberStream;
   while (copasiModel->getCompartments().getIndex(name + appendix) != static_cast < unsigned C_INT32
          > (-1))
     {
       counter++;
-      std::ostringstream numberStream;
+      numberStream.str("");
       numberStream << "_" << counter;
       appendix = numberStream.str();
     }
@@ -260,7 +260,6 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
       std::string cU = sbmlSpecies->getSubstanceUnits();
       if (cU != "substance")
         {
-          //throw StdException("Error. Compartment unit other than \"substance\" are not supported.");
           fatalError();
         }
     }
@@ -279,10 +278,11 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
   std::string appendix = "";
   unsigned int counter = 0;
+  std::ostringstream numberStream;
   while (copasiCompartment->getMetabolites().getIndex(name + appendix) != static_cast<unsigned C_INT32>(-1))
     {
       counter++;
-      std::ostringstream numberStream;
+      numberStream.str("");
       numberStream << "_" << counter;
       appendix = numberStream.str();
     }
@@ -291,7 +291,6 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   if (copasiMetabolite == NULL)
     {
       //DebugFile << "Could not create Copasi metabolite." << std::endl;
-      //throw StdException("Error. Could not create copasi metabolite.");
       fatalError();
     }
   if (sbmlSpecies->getConstant() || sbmlSpecies->getBoundaryCondition())
@@ -343,10 +342,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
     }
   std::string appendix = "";
   unsigned int counter = 0;
+  std::ostringstream numberStream;
   while (copasiModel->getReactions().getIndex(name + appendix) != C_INVALID_INDEX)
     {
       counter++;
-      std::ostringstream numberStream;
+      numberStream.str("");
       numberStream << "_" << counter;
       appendix = numberStream.str();
     }
@@ -466,7 +466,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       copasiReaction->addModifier(pos->second->getKey());
     }
 
-  /* replace substance names with something more meaningfull */
   /* in the newly created CFunction set the types for all parameters and
    * either a mapping or a value 
    */
@@ -509,10 +508,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
             {
               id = pSBMLParameter->getId();
             }
-          //CCopasiParameter* pCopasiParameter = new CCopasiParameter(id, CCopasiParameter::DOUBLE);
-          //pCopasiParameter->setValue(pSBMLParameter->getValue());
           copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, pSBMLParameter->getValue());
-          //copasi2sbmlmap[pCopasiParameter] = pSBMLParameter;
         }
 
       const ASTNode* kLawMath = kLaw->getMath();
@@ -529,16 +525,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           fatalError();
         }
 
-      // Replacing substance nodes and compartment nodes should be obsolete with
-      // the new expression tree conversion methods
-      //this->replaceCompartmentNodes((ConverterASTNode*)node, compartmentMap);
-      //this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
       this->replacePowerFunctionNodes(node);
       this->replaceLog((ConverterASTNode*)node);
       this->replaceRoot((ConverterASTNode*)node);
-      // handling of funny operator cllas should now also be
+      // handling of funny operator calls should now also be
       // handled by the new expression tree conversion functions
-      //this->replaceFunnyOperatorCalls((ConverterASTNode*)node);
       /* if it is a single compartment reaction, we have to divide the whole kinetic
       ** equation by the volume of the compartment because copasi expects
       ** kinetic laws that specify concentration/time for single compartment
@@ -625,214 +616,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 }
 
 /**
- * Traverses the brach of the given AST node recursively and prefixes all substrate
- * parameters with "substrate_", all product parameters with "product_" and all modifier parameters with "modifier_".
- */
-void
-SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction)
-{
-  std::map< std::string, std::map<std::string, std::string> > substances;
-  substances["substrates"] = std::map< std::string, std::string >();
-  substances["products"] = std::map< std::string, std::string >();
-  substances["modifiers"] = std::map< std::string, std::string >();
-  unsigned int counter;
-  KineticLaw* kLaw = reaction->getKineticLaw();
-  std::vector<std::string> shadowedSubstances;
-  for (counter = 0; counter < reaction->getNumReactants(); counter++)
-    {
-      std::string name = reaction->getReactant(counter)->getSpecies();
-      bool isShadowed = false;
-      unsigned int counter2;
-      if (kLaw)
-        {
-          for (counter2 = 0; counter2 < kLaw->getNumParameters();++counter2)
-            {
-              Parameter* param = kLaw->getParameter(counter2);
-              std::string parameterName;
-              if (this->mLevel == 1)
-                {
-                  parameterName = param->getName();
-                }
-              else
-                {
-                  parameterName = param->getId();
-                }
-              if (parameterName == name)
-                {
-                  isShadowed = true;
-                  shadowedSubstances.push_back(name);
-                  break;
-                }
-            }
-        }
-      if (!isShadowed)
-        {
-          if (name.find("substrate_") == 0)
-            {
-              substances["substrates"][name] = name;
-            }
-          else
-            {
-              substances["substrates"][name] = "substrate_" + name;
-            }
-        }
-    }
-  for (counter = 0; counter < reaction->getNumProducts(); counter++)
-    {
-      std::string name = reaction->getProduct(counter)->getSpecies();
-      bool isShadowed = false;
-      unsigned int counter2;
-      if (kLaw)
-        {
-          for (counter2 = 0; counter2 < kLaw->getNumParameters();++counter2)
-            {
-              Parameter* param = kLaw->getParameter(counter2);
-              std::string parameterName;
-              if (this->mLevel == 1)
-                {
-                  parameterName = param->getName();
-                }
-              else
-                {
-                  parameterName = param->getId();
-                }
-              if (parameterName == name)
-                {
-                  isShadowed = true;
-                  shadowedSubstances.push_back(name);
-                  break;
-                }
-            }
-        }
-      if (!isShadowed)
-        {
-          if (name.find("product_") == 0)
-            {
-              substances["products"][name] = name;
-            }
-          else
-            {
-              substances["products"][name] = "product_" + name;
-            }
-        }
-    }
-  for (counter = 0; counter < reaction->getNumModifiers(); counter++)
-    {
-      std::string name = reaction->getModifier(counter)->getSpecies();
-      bool isShadowed = false;
-      unsigned int counter2;
-      if (kLaw)
-        {
-          for (counter2 = 0; counter2 < kLaw->getNumParameters();++counter2)
-            {
-              Parameter* param = kLaw->getParameter(counter2);
-              std::string parameterName;
-              if (this->mLevel == 1)
-                {
-                  parameterName = param->getName();
-                }
-              else
-                {
-                  parameterName = param->getId();
-                }
-
-              if (parameterName == name)
-                {
-                  isShadowed = true;
-                  shadowedSubstances.push_back(name);
-                  break;
-                }
-            }
-        }
-      if (!isShadowed)
-        {
-          if (name.find("modifier_") == 0)
-            {
-              substances["modifiers"][name] = name;
-            }
-          else
-            {
-              substances["modifiers"][name] = "modifier_" + name;
-            }
-        }
-    }
-  this->replaceSubstanceNames(node, substances, shadowedSubstances, reaction->getReversible());
-}
-
-/**
- * Recursively replaces all parameter names in the branch of the given AST node
- * with the ones give in the map.
- */
-void
-SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::string, std::map<std::string, std::string > > substMap, const std::vector<std::string>& shadowedSubstances, bool reversible)
-{
-  if (node->isName() || node->isConstant() || node->isLogical())
-    {
-      bool set = false;
-      std::map<std::string, std::string> substances = substMap["products"];
-      if (reversible)
-        {
-          std::map<std::string, std::string>::iterator it = substances.find(node->getName());
-          if (it != substances.end())
-            {
-              node->setName(it->second.c_str());
-              set = true;
-            }
-        }
-      substances = substMap["substrates"];
-      std::map<std::string, std::string>::iterator it = substances.find(node->getName());
-      if (it != substances.end())
-        {
-          node->setName(it->second.c_str());
-          set = true;
-        }
-      substances = substMap["modifiers"];
-      it = substances.find(node->getName());
-      if (it != substances.end())
-        {
-          node->setName(it->second.c_str());
-          set = true;
-        }
-      /* if there was no replacement so far, it might still be a modifier that has not been specified in the listOfModifiers
-       */
-      if (!set)
-        {
-          std::map<std::string, CMetab*>::iterator pos = this->speciesMap.find(node->getName());
-          if (pos != this->speciesMap.end())
-            {
-              unsigned int i;
-              bool isShadowed = false;
-              for (i = 0; i < shadowedSubstances.size();++i)
-                {
-                  if (shadowedSubstances[i] == node->getName())
-                    {
-                      isShadowed = true;
-                      break;
-                    }
-                }
-              if (!isShadowed)
-                {
-                  std::string mName = node->getName();
-                  if (mName.find("modifier_") != 0)
-                    {
-                      mName = "modifier_" + mName;
-                    }
-                  node->setName(mName.c_str());
-                }
-            }
-        }
-    }
-  else
-    {
-      unsigned int counter;
-      for (counter = 0; counter < node->getNumChildren(); counter++)
-        {
-          this->replaceSubstanceNames((ConverterASTNode*)node->getChild(counter), substMap, shadowedSubstances, reversible);
-        }
-    }
-}
-
-/**
  * Replaces SBML user defined functions with the actual function definition.
  */
 ConverterASTNode*
@@ -859,7 +642,6 @@ SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
       FunctionDefinition* funDef = this->getFunctionDefinitionForName(newNode->getName(), sbmlModel);
       if (funDef == NULL)
         {
-          //throw StdException((std::string("Error. Could not find user defined function with name ") + std::string(newNode->getName())).c_str());
           fatalError();
         }
       /* make a map that maps every parameter of the function definition to a
@@ -886,7 +668,6 @@ SBMLImporter::createBVarMap(const ASTNode* uDefFunction, const ASTNode* function
   if (uDefFunction->getNumChildren() != function->getNumChildren() + 1)
     {
       std::string functionName = uDefFunction->getName();
-      //throw StdException("Error. The number of parameters to the function call " + functionName + " does not correspond to the number of parameters givven in the definition of the function.");
       fatalError();
     }
   std::map<std::string, ASTNode*> varMap;
@@ -1076,7 +857,6 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
   if (uDef == NULL)
     {
       //DebugFile << "Argument to handleSubstanceUnit is NULL pointer." << std::endl;
-      //throw StdException("Error. Argument to handleSubstanceUnit is NULL pointer.");
       fatalError();
     }
   if (uDef->getNumUnits() == 1)
@@ -1085,7 +865,6 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          //throw StdException("Error. Expected Unit, got NULL pointer.");
           fatalError();
         }
       if ((u->getKind() == UNIT_KIND_MOLE))
@@ -1120,7 +899,6 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
             }
           else
             {
-              //throw StdException("Error. Invalid SBML substance unit definition.");
               fatalError();
             }
         }
@@ -1132,19 +910,16 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
             }
           else
             {
-              //throw StdException("Error. Invalid SBML substance unit definition.");
               fatalError();
             }
         }
       else
         {
-          //throw StdException("Error. Invalid SBML volume unit definition.");
           fatalError();
         }
     }
   else
     {
-      //throw StdException("Error. Invalid SBML substance unit definition.");
       fatalError();
     }
   return qUnit;
@@ -1161,7 +936,6 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
   if (uDef == NULL)
     {
       //DebugFile << "Argument to handleTimeUnit is NULL pointer." << std::endl;
-      //throw StdException("Error. Argument to handleTimeUnits is NULL pointer.");
       fatalError();
     }
   if (uDef->getNumUnits() == 1)
@@ -1170,7 +944,6 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          //throw StdException("Error. Expected Unit, got NULL pointer.");
           fatalError();
         }
       if ((u->getKind() == UNIT_KIND_SECOND))
@@ -1219,25 +992,21 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                 }
               else
                 {
-                  //throw StdException("Error. Invalid SBML time unit definition.");
                   fatalError();
                 }
             }
           else
             {
-              //throw StdException("Error. Invalid SBML time unit definition.");
               fatalError();
             }
         }
       else
         {
-          //throw StdException("Error. Invalid SBML time unit definition.");
           fatalError();
         }
     }
   else
     {
-      //throw StdException("Error. Invalid SBML time unit definition.");
       fatalError();
     }
   return tUnit;
@@ -1254,7 +1023,6 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
   if (uDef == NULL)
     {
       //DebugFile << "Argument to handleVolumeUnit is NULL pointer." << std::endl;
-      //throw StdException("Error. Argument to handleVolumeUnit is NULL pointer.");
       fatalError();
     }
   if (uDef->getNumUnits() == 1)
@@ -1263,7 +1031,6 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          //throw StdException("Error. Expected Unit, got NULL pointer.");
           fatalError();
         }
       if ((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE))
@@ -1298,7 +1065,6 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
             }
           else
             {
-              //throw StdException("Error. Invalid SBML volume unit definition.");
               fatalError();
             }
         }
@@ -1310,41 +1076,19 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
             }
           else
             {
-              //throw StdException("Error. Invalid SBML volume unit definition.");
               fatalError();
             }
         }
       else
         {
-          //throw StdException("Error. Invalid SBML volume unit definition.");
           fatalError();
         }
     }
   else
     {
-      //throw StdException("Error. Invalid SBML volume unit definition.");
       fatalError();
     }
   return vUnit;
-}
-
-void SBMLImporter::replaceCompartmentNodes(ConverterASTNode* node, std::map<std::string, CCompartment*> compartmentMap)
-{
-  if (node->getType() == AST_NAME)
-    {
-      std::map<std::string, CCompartment*>::iterator pos = compartmentMap.find(node->getName());
-      if (pos != compartmentMap.end())
-        {
-          node->setType(AST_REAL);
-          node->setValue(pos->second->getInitialVolume());
-        }
-    }
-  unsigned int num = node->getNumChildren();
-  unsigned int counter;
-  for (counter = 0; counter < num; counter++)
-    {
-      this->replaceCompartmentNodes((ConverterASTNode*)(node->getChild(counter)), compartmentMap);
-    }
 }
 
 void SBMLImporter::replaceLog(ConverterASTNode* sourceNode)
@@ -1416,111 +1160,6 @@ void SBMLImporter::replaceRoot(ConverterASTNode* sourceNode)
     }
 }
 
-void SBMLImporter::replaceFunnyOperatorCalls(ConverterASTNode* sourceNode)
-{
-  ASTNodeType_t type = sourceNode->getType();
-  if ((type == AST_PLUS || type == AST_TIMES) && (sourceNode->getNumChildren() < 2))
-    {
-      if (type == AST_PLUS)
-        {
-          if (sourceNode->getNumChildren() == 0)
-            {
-              // make the node a 0 node because otherwise we would have to
-              // see if we just made the parent operator have less then 2 arguments
-              sourceNode->setType(AST_REAL);
-              sourceNode->setValue(0.0);
-            }
-          else
-            {
-              ConverterASTNode* child = (ConverterASTNode*)sourceNode->getChild(0);
-              List* l = new List();
-              unsigned int i;
-              for (i = 0; i < child->getNumChildren();++i)
-                {
-                  l->add(child->getChild(i));
-                }
-              sourceNode->setChildren(l);
-
-              sourceNode->setType(child->getType());
-
-              if (child->isReal())
-                {
-                  sourceNode->setValue(child->getReal());
-                }
-              else if (child->isRational())
-                {
-                  sourceNode->setValue(child->getNumerator(), child->getDenominator());
-                }
-              else if (child->isInteger())
-                {
-                  sourceNode->setValue(child->getInteger());
-                }
-              else if (child->isFunction() || child->isName())
-                {
-                  sourceNode->setName(child->getName());
-                }
-
-              delete child;
-              for (i = 0; i < sourceNode->getNumChildren();++i)
-                {
-                  this->replaceFunnyOperatorCalls((ConverterASTNode*)sourceNode->getChild(i));
-                }
-            }
-        }
-      else
-        {
-          if (sourceNode->getNumChildren() == 0)
-            {
-              // make the node a 1.0 node because otherwise we would have to
-              // see if we just made the parent operator have less then 2 arguments
-              sourceNode->setType(AST_REAL);
-              sourceNode->setValue(1.0);
-            }
-          else
-            {
-              ConverterASTNode* child = (ConverterASTNode*)sourceNode->getChild(0);
-              List* l = new List();
-              unsigned int i;
-              for (i = 0; i < child->getNumChildren();++i)
-                {
-                  l->add(child->getChild(i));
-                }
-              sourceNode->setChildren(l);
-              sourceNode->setType(child->getType());
-              if (child->isReal())
-                {
-                  sourceNode->setValue(child->getReal());
-                }
-              else if (child->isRational())
-                {
-                  sourceNode->setValue(child->getNumerator(), child->getDenominator());
-                }
-              else if (child->isInteger())
-                {
-                  sourceNode->setValue(child->getInteger());
-                }
-              else if (child->isFunction() || child->isName())
-                {
-                  sourceNode->setName(child->getName());
-                }
-              delete child;
-              for (i = 0; i < sourceNode->getNumChildren();++i)
-                {
-                  this->replaceFunnyOperatorCalls((ConverterASTNode*)sourceNode->getChild(i));
-                }
-            }
-        }
-    }
-  else
-    {
-      unsigned int i;
-      for (i = 0; i < sourceNode->getNumChildren();++i)
-        {
-          this->replaceFunnyOperatorCalls((ConverterASTNode*)sourceNode->getChild(i));
-        }
-    }
-}
-
 CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (sbmlParameter->isSetUnits())
@@ -1542,11 +1181,12 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     }
   std::string appendix = "";
   unsigned int counter = 0;
+  std::ostringstream numberStream;
   while (copasiModel->getModelValues().getIndex(name + appendix) != static_cast < unsigned C_INT32
          > (-1))
     {
       counter++;
-      std::ostringstream numberStream;
+      numberStream.str("");
       numberStream << "_" << counter;
       appendix = numberStream.str();
     }
