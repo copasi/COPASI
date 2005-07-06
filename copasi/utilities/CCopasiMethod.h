@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/28 20:35:03 $
+   $Author: shoops $ 
+   $Date: 2005/07/06 17:14:24 $
    End CVS Header */
 
 /**
@@ -79,6 +79,11 @@ class CCopasiMethod : public CCopasiParameterGroup
      * a pointer to the callback 
      */
     CProcessReport * mpCallBack;
+
+    /**
+     * A pointer to the report 
+     */
+    CReport * mpReport;
 
     // Operations
 

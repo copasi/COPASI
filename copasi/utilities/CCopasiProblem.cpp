@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 21:50:33 $
+   $Author: shoops $ 
+   $Date: 2005/07/06 17:14:24 $
    End CVS Header */
 
 /**
@@ -26,7 +26,8 @@ CCopasiProblem::CCopasiProblem():
     CCopasiParameterGroup("NoName", NULL, "Problem"),
     mType(CCopasiTask::unset),
     mpModel(NULL),
-    mpCallBack(NULL)
+    mpCallBack(NULL),
+    mpReport(NULL)
 {}
 
 CCopasiProblem::CCopasiProblem(const CCopasiTask::Type & type,
@@ -34,7 +35,8 @@ CCopasiProblem::CCopasiProblem(const CCopasiTask::Type & type,
     CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Problem"),
     mType(type),
     mpModel(NULL),
-    mpCallBack(NULL)
+    mpCallBack(NULL),
+    mpReport(NULL)
 {}
 
 CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
@@ -42,7 +44,8 @@ CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
     CCopasiParameterGroup(src, pParent),
     mType(src.mType),
     mpModel(src.mpModel),
-    mpCallBack(src.mpCallBack)
+    mpCallBack(src.mpCallBack),
+    mpReport(src.mpReport)
 {}
 
 CCopasiProblem::~CCopasiProblem() {}

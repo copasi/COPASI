@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Date: 2005/07/06 17:14:24 $
    End CVS Header */
 
 /**
@@ -26,6 +26,7 @@
 
 class CModel;
 class CProcessReport;
+class CReport;
 
 class CDefaultPlotDescription
   {
@@ -55,6 +56,11 @@ class CCopasiProblem : public CCopasiParameterGroup
      * a pointer to the callback 
      */
     CProcessReport * mpCallBack;
+
+    /**
+     * A pointer to the report 
+     */
+    CReport * mpReport;
 
     // propably for optimization only
 #ifdef XXXX
