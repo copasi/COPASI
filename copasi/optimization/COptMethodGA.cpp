@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/06 17:39:48 $
+   $Date: 2005/07/06 20:13:26 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -72,6 +72,7 @@ bool COptMethodGA::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiMethod::setCallBack(pCallBack);
 
+  mGeneration = 0;
   mhGenerations =
     pCallBack->addItem("Current Generation",
                        CCopasiParameter::UINT,
@@ -280,7 +281,7 @@ bool COptMethodGA::select()
   mWins = 0; // Set all wins to 0.
 
   // compete with ~ 20% of the TotalPopulation
-  nopp = std::min<unsigned C_INT32>(1, mPopulationSize / 5);
+  nopp = std::max<unsigned C_INT32>(1, mPopulationSize / 5);
 
   // parents and offspring are all in competition
   for (i = 0; i < TotalPopulation; i++)
