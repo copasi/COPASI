@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/05 20:18:14 $
+   $Author: anuragr $ 
+   $Date: 2005/07/06 19:10:19 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -401,6 +401,9 @@ bool OptimizationWidget::enter(const std::string & key)
   COptTask* optimizationTask =
     dynamic_cast< COptTask * >(GlobalKeys.get(key));
   if (!optimizationTask) return false;
+
+  mObject = NULL; // invalidate the variable
+  parseList.clear();
 
   optimizationTaskKey = key;
 
