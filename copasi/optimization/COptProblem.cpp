@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/06 17:16:23 $
+   $Date: 2005/07/06 20:12:18 $
    End CVS Header */
 
 /**
@@ -119,9 +119,16 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
 void COptProblem::initObjects()
 {
-  addObjectReference("Best Value", mSolutionValue, CCopasiObject::ValueDbl);
   addObjectReference("Simulation Counter", mCounter, CCopasiObject::ValueDbl);
+  addObjectReference("Best Value", mSolutionValue, CCopasiObject::ValueDbl);
+  addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }
+
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
 
 bool COptProblem::initialize()
 {
@@ -130,6 +137,7 @@ bool COptProblem::initialize()
 
   mpReport = NULL;
   mCounter = 0;
+  mSolutionValue = DBL_MAX * 2;
 
   std::vector< CCopasiContainer * > ContainerList;
   ContainerList.push_back(mpModel);
@@ -174,6 +182,10 @@ bool COptProblem::initialize()
 
   return mpFunction->compile(ContainerList);
 }
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
 
 bool COptProblem::checkParametricConstraints()
 {
