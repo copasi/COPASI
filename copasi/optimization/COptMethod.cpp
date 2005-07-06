@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/28 20:34:45 $
+   $Author: shoops $ 
+   $Date: 2005/07/06 17:16:23 $
    End CVS Header */
 
 /**
@@ -16,7 +16,10 @@
  */
 
 #define COPASI_TRACE_CONSTRUCTION
+
 #include "copasi.h"
+
+#include "COptTask.h"
 #include "COptMethod.h"
 #include "COptProblem.h"
 
@@ -82,9 +85,6 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 COptMethod::COptMethod():
     CCopasiMethod(CCopasiTask::optimization, CCopasiMethod::unset),
     mpOptProblem(NULL),
-    //    mParameters(NULL),
-    //    mParameterMin(NULL),
-    //    mParameterMax(NULL),
     mBounds(false)
 {CONSTRUCTOR_TRACE;}
 
@@ -92,9 +92,6 @@ COptMethod::COptMethod(CCopasiMethod::SubType subType,
                        const CCopasiContainer * pParent):
     CCopasiMethod(CCopasiTask::optimization, subType, pParent),
     mpOptProblem(NULL),
-    //    mParameters(NULL),
-    //    mParameterMin(NULL),
-    //    mParameterMax(NULL),
     mBounds(false)
 {CONSTRUCTOR_TRACE;}
 
@@ -102,9 +99,6 @@ COptMethod::COptMethod(const COptMethod & src,
                        const CCopasiContainer * pParent):
     CCopasiMethod(src, pParent),
     mpOptProblem(src.mpOptProblem),
-    //    mParameters(src.mParameters),
-    //    mParameterMin(src.mParameterMin),
-    //    mParameterMax(src.mParameterMax),
     mBounds(src.mBounds)
 {CONSTRUCTOR_TRACE;}
 
@@ -139,6 +133,12 @@ bool COptMethod::initialize()
     return false;
   if (!(mpSetCalculateVariable = &mpOptProblem->getCalculateVariableUpdateMethods()))
     return false;
+
+  COptTask * pTask = dynamic_cast<COptTask *>(getObjectParent());
+  if (pTask &&
+      (mpReport = &pTask->getReport()) &&
+      !mpReport->getStream())
+    mpReport = NULL;
 
   return true;
 }

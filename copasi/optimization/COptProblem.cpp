@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/05 20:19:22 $
+   $Date: 2005/07/06 17:16:23 $
    End CVS Header */
 
 /**
@@ -18,6 +18,7 @@
 #include <float.h>
 
 #include "copasi.h"
+#include "COptTask.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 
@@ -127,11 +128,19 @@ bool COptProblem::initialize()
   if (!mpModel) return false;
   mpModel->compileIfNecessary();
 
+  mpReport = NULL;
+  mCounter = 0;
+
   std::vector< CCopasiContainer * > ContainerList;
   ContainerList.push_back(mpModel);
-  ContainerList.push_back(getObjectParent());
 
-  mCounter = 0;
+  COptTask * pTask = dynamic_cast<COptTask *>(getObjectParent());
+  if (pTask)
+    {
+      ContainerList.push_back(pTask);
+      mpReport = &pTask->getReport();
+      if (!mpReport->getStream()) mpReport = NULL;
+    }
 
   mpSteadyState =
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(* getValue("Steady-State").pKEY));
@@ -191,21 +200,29 @@ bool COptProblem::checkFunctionalConstraints()
  */
 bool COptProblem::calculate()
 {
-  if (mpSteadyState != NULL)
+  try
     {
-      ((CSteadyStateProblem *) mpSteadyState->getProblem())->
-      setInitialState(mpSteadyState->getProblem()->getModel()->getInitialState());
-      mpSteadyState->process();
+      if (mpSteadyState != NULL)
+        {
+          ((CSteadyStateProblem *) mpSteadyState->getProblem())->
+          setInitialState(mpSteadyState->getProblem()->getModel()->getInitialState());
+          mpSteadyState->process();
+        }
+
+      if (mpTrajectory != NULL)
+        {
+          ((CTrajectoryProblem *) mpTrajectory->getProblem())->
+          setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
+          mpTrajectory->process();
+        }
+
+      mCalculateValue = mpFunction->calcValue();
     }
 
-  if (mpTrajectory != NULL)
+  catch (...)
     {
-      ((CTrajectoryProblem *) mpTrajectory->getProblem())->
-      setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
-      mpTrajectory->process();
+      mCalculateValue = DBL_MAX;
     }
-
-  mCalculateValue = mpFunction->calcValue();
 
   mCounter += 1;
 
