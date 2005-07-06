@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/05 20:20:39 $
+   $Date: 2005/07/06 17:17:03 $
    End CVS Header */
 
 /***************************************************************************
@@ -124,7 +124,10 @@ bool CRandomSearch::optimise()
               else
                 {
                   la = log10(mx) - log10(std::max(mn, DBL_MIN));
-                  if (la < 1.8) linear = true;
+                  if (la < 1.8)
+                    linear = true;
+                  else
+                    mn = std::max(mn, DBL_MIN);
                 }
 
               // set it to a random value within the interval
@@ -168,7 +171,7 @@ bool CRandomSearch::optimise()
       Continue = evaluate(mIndividual);
 
       // COMPARE
-      if (mValue < mBestValue)
+      if (mValue < mBestValue && !isnan(mValue))
         {
           mBestValue = mValue;
           mpOptProblem->setSolutionVariables(mIndividual);
@@ -195,14 +198,7 @@ bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & individual)
   // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  try
-  {Continue = mpOptProblem->calculate();}
-
-  catch (...)
-    {
-      mValue = DBL_MAX;
-      return Continue;
-    }
+  Continue = mpOptProblem->calculate();
 
   // check wheter the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())

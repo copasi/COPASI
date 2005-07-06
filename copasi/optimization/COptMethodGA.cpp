@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/05 20:39:22 $
+   $Date: 2005/07/06 17:22:00 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -93,22 +93,11 @@ bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & individual)
   for (j = 0; j < mVariableSize; j++, ++itMethod)
     (**itMethod)(individual[j]);
 
-  // check whether the parametric constraints are fulfilled
-  if (!mpOptProblem->checkParametricConstraints())
-    {
-      mEvaluationValue = DBL_MAX;
-      return Continue;
-    }
+  // We do not need to check whether the parametric constraints are fulfilled
+  // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  try
-  {Continue = mpOptProblem->calculate();}
-
-  catch (...)
-    {
-      mEvaluationValue = DBL_MAX;
-      return Continue;
-    }
+  Continue = mpOptProblem->calculate();
 
   // check wheter the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
@@ -332,7 +321,7 @@ unsigned C_INT32 COptMethodGA::fittest()
   C_FLOAT64 BestValue = mValue[0];
 
   for (i = 1; i < mPopulationSize; i++)
-    if (mValue[i] < BestValue)
+    if (mValue[i] < BestValue && !isnan(mValue[i]))
       {
         BestIndex = i;
         BestValue = mValue[i];
@@ -378,7 +367,10 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
               else
                 {
                   la = log10(mx) - log10(std::max(mn, DBL_MIN));
-                  if (la < 1.8) linear = true;
+                  if (la < 1.8)
+                    linear = true;
+                  else
+                    mn = std::max(mn, DBL_MIN);
                 }
 
               // set it to a random value within the interval

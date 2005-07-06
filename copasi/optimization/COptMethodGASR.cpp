@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/05 20:39:22 $
+   $Date: 2005/07/06 17:22:00 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -93,15 +93,14 @@ bool COptMethodGASR::evaluate(const CVector< C_FLOAT64 > & individual)
   for (j = 0; j < mVariableSize; j++, ++itMethod)
     (**itMethod)(individual[j]);
 
-  // evaluate the fitness
-  try
-  {Continue = mpOptProblem->calculate();}
+  // We do not need to check whether the parametric constraints are fulfilled
+  // since this method allows for parameters outside the bounds
 
-  catch (...)
-    {
-      mEvaluationValue = DBL_MAX;
-      return Continue;
-    }
+  // evaluate the fitness
+  Continue = mpOptProblem->calculate();
+
+  // We do not need to check whether the functional constraints are fulfilled
+  // since this method allows for solutions outside the bounds.
 
   mEvaluationValue = mpOptProblem->getCalculateValue();
 
@@ -373,7 +372,7 @@ C_FLOAT64 COptMethodGASR::Phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   for (int i = 0; i < mVariableSize; i++)  /******* here double check to see if indv array parameter is same as number of parameters ****
-                                Clarify if should go through additional for loop for number of parameters */
+                                    Clarify if should go through additional for loop for number of parameters */
     {
       C_FLOAT64 phiCalc;
       COptItem & OptItem = *(*mpOptItem)[i];
@@ -402,7 +401,7 @@ unsigned C_INT32 COptMethodGASR::fittest()
   C_FLOAT64 BestValue = mValue[0];
 
   for (i = 1; i < mPopulationSize; i++)
-    if (mValue[i] < BestValue)
+    if (mValue[i] < BestValue && !isnan(mValue[i]))
       {
         BestIndex = i;
         BestValue = mValue[i];
@@ -448,7 +447,10 @@ bool COptMethodGASR::creation(unsigned C_INT32 first,
               else
                 {
                   la = log10(mx) - log10(std::max(mn, DBL_MIN));
-                  if (la < 1.8) linear = true;
+                  if (la < 1.8)
+                    linear = true;
+                  else
+                    mn = std::max(mn, DBL_MIN);
                 }
 
               // set it to a random value within the interval
