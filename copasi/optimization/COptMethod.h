@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/06/28 20:34:27 $
+   $Author: shoops $ 
+   $Date: 2005/07/06 20:10:48 $
    End CVS Header */
 
 /**
@@ -118,13 +118,13 @@ class COptMethod : public CCopasiMethod
      */
     void setProblem(COptProblem * problem);
 
-  protected:
     /**
      * Initialize arrays and pointer.
      * @return bool success
      */
     virtual bool initialize();
 
+  protected:
     /**
      * Cleanup arrays and pointers.
      * @return bool success
